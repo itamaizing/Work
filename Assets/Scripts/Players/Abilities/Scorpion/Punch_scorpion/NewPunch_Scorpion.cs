@@ -8,6 +8,7 @@ public class NewPunch_Scorpion : Skill
     [Header("Ability settings")]
     [SerializeField] private Character _playerLinks;
     [SerializeField] private PassiveCombo_Scorpion _comboCounter;
+    [SerializeField] private ScorpionPassive scorpionPassive;
 
     private Character _lastTarget = null;
     private Animator _animator;
@@ -27,6 +28,20 @@ public class NewPunch_Scorpion : Skill
     private void Start() => _animator = GetComponent<Animator>();
     private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
     private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
+
+    #region Talent
+    [Header("KnockdownAddChance talent")]
+    [SerializeField] private float stunningAddChance = 0.1f;
+    private bool _isStunningAddChance = false;
+
+    public void StunningAddChance(bool value) => _isStunningAddChance = value;
+
+    [Header("WarmingUp  talent")]
+    [SerializeField] private float warmingUpDuration;
+    private bool _isWarningUpAddState = false;
+
+    public void WarningUpAddState(bool value) => _isWarningUpAddState = value;
+    #endregion
 
     private bool IsTargetInRange()
     {
@@ -176,6 +191,14 @@ public class NewPunch_Scorpion : Skill
     {
         Debug.Log("[NewPunch_Scorpion] Attack Passed");
         _comboCounter.AddSkill(target, this);
+
+        if (_isStunningAddChance)
+        {
+            var state = _runtimeTarget.GetComponent<CharacterState>();
+            if (!scorpionPassive.IsAddStateUpdateChance) if (UnityEngine.Random.value <= stunningAddChance) state?.AddState(States.Stun, 1f, 0, _hero.gameObject, name);
+
+            else state?.AddState(States.Stun, 1f, 0, _hero.gameObject, name);
+        }
     }
 
     public void NewPunch_ScorpionCast()

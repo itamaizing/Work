@@ -255,6 +255,7 @@ public class CharacterState : NetworkBehaviour
 		[States.ShadowTree] = new ShadowTree(),
 		[States.MultiMagic] = new MultiMagic(),
 		[States.FireFlash] = new FireFlash(),
+		[States.WarmingUpState] = new WarmingUpState(),
 		#endregion
 
 		#region Gandollarf	
@@ -820,6 +821,7 @@ public enum States
 	Destruction,
 	HardenedFlesh,
 	FocusingOnReflexesState,
+	WarmingUpState,
 }
 public enum BaffDebaff
 {

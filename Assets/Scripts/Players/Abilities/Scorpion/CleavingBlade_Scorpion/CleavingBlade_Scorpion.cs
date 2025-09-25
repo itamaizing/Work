@@ -8,6 +8,7 @@ public class CleavingBlade_Scorpion : Skill
 {
     [Header("Ability settings")]
     [SerializeField] private PassiveCombo_Scorpion _comboCounter;
+    [SerializeField] private ScorpionPassive scorpionPassive;
     [SerializeField] [Range(0, 100)] private float _minDamage = 18f;
     [SerializeField] [Range(0, 100)] private float _maxDamage = 26f;
     [SerializeField] private GameObject blade;

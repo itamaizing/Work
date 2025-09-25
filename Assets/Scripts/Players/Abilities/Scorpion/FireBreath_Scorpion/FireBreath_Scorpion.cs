@@ -253,7 +253,7 @@ private void CmdApplyScorchedSoulDebuff(NetworkIdentity targetIdentity)
         distance = Mathf.Clamp(distance, _minDistance, _maxDistance);
 
         float normalized = (distance - _minDistance) / (_maxDistance - _minDistance);
-        return Mathf.Lerp(1f, 0.7f, normalized);
+        return Mathf.Lerp(1f, 0.5f, normalized);
     }
 
     protected override void ClearData()

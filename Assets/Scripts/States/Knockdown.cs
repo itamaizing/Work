@@ -30,7 +30,7 @@ public class Knockdown : AbstractCharacterState
 
         _duration = durationToExit;
         _baseDuration = durationToExit;
-        MaxStacksCount = 10;
+        MaxStacksCount = 3;
         CurrentStacksCount = 1;
 
         ApplyDebuff();
@@ -72,7 +72,7 @@ public class Knockdown : AbstractCharacterState
         var abilities = _characterState.GetComponentInChildren<SkillManager>();
         foreach (var ability in abilities.Abilities)
         {
-            float reduction = 1f + (0.03f * CurrentStacksCount);
+            float reduction = 1f + (0.01f * CurrentStacksCount);
             ability.Buff.Damage.ReductionPercentage(reduction);
         }
     }
@@ -82,7 +82,7 @@ public class Knockdown : AbstractCharacterState
         var abilities = _characterState.GetComponentInChildren<SkillManager>();
         foreach (var ability in abilities.Abilities)
         {
-            float reduction = 1f + (0.03f * CurrentStacksCount);
+            float reduction = 1f + (0.01f * CurrentStacksCount);
             ability.Buff.Damage.IncreasePercentage(reduction);
         }
     }

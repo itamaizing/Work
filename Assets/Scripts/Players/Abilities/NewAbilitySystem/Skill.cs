@@ -82,6 +82,8 @@ public abstract class Skill : NetworkBehaviour
     [Header("AbilitiesInfo")]
     [SerializeField] private AbilityInfo _abilityInfo;
     [Header("Main Settings")]
+    [NonSerialized] public float ExtraAnimationSpeedMultiplier = 1f; // test
+
     [SerializeField] protected bool _isSubjectToGlobalCooldownTime = true;
 
     [SerializeField] protected List<SkillEnergyCost> _skillEnergyCosts;

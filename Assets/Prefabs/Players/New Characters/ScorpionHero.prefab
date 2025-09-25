@@ -2657,6 +2657,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.53201103
       objectReference: {fileID: 0}
+    - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _enemyPrefab
+      value: 
+      objectReference: {fileID: 1369531615380711236, guid: 2a26b6e6797f5a84c88bae170eb080b3, type: 3}
     - target: {fileID: 548951138285989099, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -3307,7 +3311,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
-      value: 7
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.data[0]
@@ -3337,6 +3341,10 @@ PrefabInstance:
       propertyPath: _skills.Array.data[6]
       value: 
       objectReference: {fileID: 8732005787551451527}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _skills.Array.data[7]
+      value: 
+      objectReference: {fileID: 1595654106541851295}
     - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: materialsCharacter.Array.size
       value: 4
@@ -3443,40 +3451,116 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.size
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._id
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._id
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._id
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._name
-      value: ScorpionTalent
+      value: Ninja
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._name
+      value: Fire
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._name
+      value: Assasin
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.size
-      value: 5
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._talentGroup.Array.size
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[0]
       value: 
-      objectReference: {fileID: 2919429982104671845}
+      objectReference: {fileID: 6694511863884638036}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[1]
       value: 
-      objectReference: {fileID: 2575029517986202832}
+      objectReference: {fileID: 8667011970084610253}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[2]
       value: 
-      objectReference: {fileID: 3944936171450558076}
+      objectReference: {fileID: 7893984956880296540}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[3]
       value: 
-      objectReference: {fileID: 5146862693239755605}
+      objectReference: {fileID: 4787141543461614230}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[4]
       value: 
-      objectReference: {fileID: 5267126635196587764}
+      objectReference: {fileID: 6235391431062527375}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[0]._talentGroup.Array.data[5]
+      value: 
+      objectReference: {fileID: 7752491051264352687}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[0]
+      value: 
+      objectReference: {fileID: 310719922032413749}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[1]
+      value: 
+      objectReference: {fileID: 1414940694262201790}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[2]
+      value: 
+      objectReference: {fileID: 7510401949783811934}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[3]
+      value: 
+      objectReference: {fileID: 1579969653887513289}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[4]
+      value: 
+      objectReference: {fileID: 5560537017145461016}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentGroup.Array.data[5]
+      value: 
+      objectReference: {fileID: 4592574728981757350}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._talentGroup.Array.data[0]
+      value: 
+      objectReference: {fileID: 3359901628808772774}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._talentGroup.Array.data[1]
+      value: 
+      objectReference: {fileID: 5838140318630053426}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._talentGroup.Array.data[2]
+      value: 
+      objectReference: {fileID: 646569489505946675}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._talentGroup.Array.data[3]
+      value: 
+      objectReference: {fileID: 1156251021579265288}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._talentGroup.Array.data[4]
+      value: 
+      objectReference: {fileID: 6075198806209693070}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._talentGroup.Array.data[5]
+      value: 
+      objectReference: {fileID: 3379282054853344686}
     - target: {fileID: 6397899444093627911, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.1387713
@@ -3911,28 +3995,70 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 220446193611464409}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1595654106541851295}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2919429982104671845}
+      addedObject: {fileID: 3359901628808772774}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2575029517986202832}
+      addedObject: {fileID: 5838140318630053426}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3944936171450558076}
+      addedObject: {fileID: 646569489505946675}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5146862693239755605}
+      addedObject: {fileID: 1156251021579265288}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5267126635196587764}
+      addedObject: {fileID: 6075198806209693070}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3379282054853344686}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6694511863884638036}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8667011970084610253}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7893984956880296540}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4787141543461614230}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6235391431062527375}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7752491051264352687}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 310719922032413749}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1414940694262201790}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7510401949783811934}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1579969653887513289}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5560537017145461016}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4592574728981757350}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!1 &1049065473536513494 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
   m_PrefabInstance: {fileID: 424471191848786636}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2919429982104671845
+--- !u!114 &3359901628808772774
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3941,19 +4067,38 @@ MonoBehaviour:
   m_GameObject: {fileID: 1049065473536513494}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03044590940dabd4987ab759784f8fe0, type: 3}
+  m_Script: {fileID: 11500000, guid: 5bf24c344f714ae49a0b6bc90c13f7fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - Kick_scorpion Talent
-    _stateInfos: []
+    - "\u041A\u043B\u0438\u043D\u043E\u043A \u043F\u0440\u0438\u0442\u044F\u0433\u0438\u0432\u0430\u043D\u0438\u044F
+      - \u0432\u044B\u043A\u0438\u0434\u044B\u0432\u0430\u0435\u0442 \u043E\u0441\u0442\u0440\u044B\u0439
+      \u043A\u043B\u0438\u043D\u043E\u043A \u0438 \u043F\u0440\u0438\u0442\u044F\u0433\u0438\u0432\u0430\u0435\u0442
+      \u043F\u043E\u043F\u0430\u0432\u0448\u0443\u044E \u0446\u0435\u043B\u044C, 
+      \u043D\u0430 \u043F\u0440\u0438\u0442\u044F\u043D\u0443\u0442\u0443\u044E \u0446\u0435\u043B\u044C
+      \u0441 \u0434\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u0438 \u0431\u043E\u043B\u044C\u0448\u0435
+      1 \u043C\u0435\u0442\u0440\u0430, \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442\u0441\u044F 
+      \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0434\u0435\u0431\u0430\u0444\u0444
+      \"\u041E\u0431\u0435\u0441\u043A\u0443\u0440\u0430\u0436\u0438\u0432\u0430\u043D\u0438\u0435\""
+    _stateInfos:
+    - StateName: "\u041E\u0431\u0435\u0441\u043A\u0443\u0440\u0430\u0436\u0438\u0432\u0430\u043D\u0438\u0435"
+      Description: "\u043D\u0430 1 \u0441\u0435\u043A \u0446\u0435\u043B\u044C \u043D\u0435
+        \u043C\u043E\u0436\u0435\u0442 \u043F\u0435\u0440\u0435\u043C\u0435\u0449\u0430\u0442\u044C\u0441\u044F
+        \u0438 \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0442\u044C \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438,
+        \u0441\u043F\u0430\u0434\u0430\u0435\u0442 \u043F\u0440\u0438 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0438
+        \u0443\u0440\u043E\u043D,  \u0432\u043A\u043E\u043D\u0446\u0435 \u0441\u0435\u0440\u0438\u0438
+        \u043F\u0440\u043E\u0434\u043B\u044F\u0435\u0442\u0441\u044F \u043D\u0430
+        2 \u0441\u0435\u043A\u0443\u043D\u0434\u044B, \u0437\u0430 \u043A\u0430\u0436\u0434\u043E\u0435
+        \u043E\u0447\u043A\u043E\u043C \u043A\u043E\u043C\u0431\u043E \u043F\u0440\u043E\u0434\u043B\u044F\u0435\u0442\u0441\u044F
+        \u043D\u0430 1 \u0441\u0435\u043A."
     IsOpen: 0
-    Description: Kick_scorpion Talent
-    Icon: {fileID: 21300000, guid: 4544b6e08fc609244b20d914b4f319db, type: 3}
+    Description: "\u041A\u043B\u0438\u043D\u043E\u043A \u043F\u0440\u0438\u0442\u044F\u0433\u0438\u0432\u0430\u043D\u0438\u044F"
+    Icon: {fileID: 21300000, guid: 683eb45158c64204bbe4144adf9d6d1e, type: 3}
   character: {fileID: 5458554383432203635}
-  kick_Scorpion: {fileID: 8920276347339243132}
---- !u!114 &2575029517986202832
+  skill: {fileID: 5612755856390318882}
+  chainBlade_Scorpion: {fileID: 220446193611464409}
+--- !u!114 &5838140318630053426
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3962,44 +4107,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 1049065473536513494}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80918af95a7608940a9947a9ec7708d2, type: 3}
+  m_Script: {fileID: 11500000, guid: a9a229d8a1116c6499a996a71bec0a02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - Kick_scorpionCombo Talent
-    - Kick_scorpionCombo TalentKick_scorpionCombo Talent
-    _stateInfos: []
+    - "\u0420\u0430\u0441\u0441\u0435\u043A\u0430\u044E\u0449\u0438\u0439 \u043A\u043B\u0438\u043D\u043E\u043A
+      - \u0431\u044C\u0451\u0442 \u0432\u0440\u0430\u0433\u0430 \u043A\u043B\u0438\u043D\u043A\u043E\u043C, 
+      \u0432 \u043A\u043E\u043D\u0446\u0435 \u0441\u0435\u0440\u0438\u0438 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442
+      \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0434\u0435\u0431\u0430\u0444\u0444"
+    _stateInfos:
+    - StateName: "\u041A\u0440\u043E\u0432\u043E\u0442\u0435\u0447\u0435\u043D\u0438\u0435"
+      Description: "\u043D\u0430 6 \u0441\u0435\u043A \u043D\u0430\u043D\u043E\u0441\u0438\u0442
+        1-3 \u0443\u0440\u043E\u043D\u0430 \u0432 \u0441\u0435\u043A, \u0441\u0443\u043C\u043C\u0438\u0440\u0443\u0435\u0442\u0441\u044F
+        4 \u0440\u0430\u0437\u0430, \u0437\u0430 \u043A\u0430\u0436\u0434\u043E\u0435
+        \u043E\u0447\u043A\u043E \u043A\u043E\u043C\u0431\u043E \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442
+        1 \u0441\u0442\u0430\u043A \u043A\u0440\u043E\u0432\u043E\u0442\u0435\u0447\u0435\u043D\u0438\u044F.\n"
     IsOpen: 0
-    Description: Kick_scorpionCombo Talent
-    Icon: {fileID: 21300000, guid: b4598f5c0e01ded42b804ca9cfad5607, type: 3}
+    Description: "\u0420\u0430\u0441\u0441\u0435\u043A\u0430\u044E\u0449\u0438\u0439
+      \u043A\u043B\u0438\u043D\u043E\u043A"
+    Icon: {fileID: 21300000, guid: a2163d57b946a2f4ab785012906160eb, type: 3}
   character: {fileID: 5458554383432203635}
-  kick_Scorpion: {fileID: 8920276347339243132}
---- !u!114 &3944936171450558076
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1049065473536513494}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4ded18ac5beb254f8888d437c3c1fdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _data:
-    _descriptionsForInfoPanel:
-    - Kick_scorpionCombo Talent
-    - Kick_scorpionCombo TalentKick_scorpionCombo Talent
-    - Kick_scorpionCombo TalentKick_scorpionCombo TalentKick_scorpionCombo TalentKick_scorpionCombo
-      Talent
-    _stateInfos: []
-    IsOpen: 0
-    Description: CleavingBlade_Scorpion Talent
-    Icon: {fileID: 21300000, guid: 11f1db086077e5948b297f6fc7bc9134, type: 3}
-  character: {fileID: 5458554383432203635}
+  skill: {fileID: 5612755856390318882}
   cleavingBlade_Scorpion: {fileID: 1485408660127300276}
---- !u!114 &5146862693239755605
+--- !u!114 &646569489505946675
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4008,19 +4139,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 1049065473536513494}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba33d25a8dd84ec49a909f342467b53f, type: 3}
+  m_Script: {fileID: 11500000, guid: 3db6c4d6f89046d45abf391e4dd786db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _descriptionsForInfoPanel:
-    - Kick_scorpionCombo Talent
+    _descriptionsForInfoPanel: []
     _stateInfos: []
     IsOpen: 0
-    Description: Teleportation_Scorpion Mag Resist
-    Icon: {fileID: 21300000, guid: 697d19f58497c2c42834a105e64550ae, type: 3}
+    Description: "\u0423\u0434\u0430\u0440\u044B \u043F\u043E \u0441\u0442\u043E\u044F\u0449\u0435\u0439
+      \u0446\u0435\u043B\u0438"
+    Icon: {fileID: 21300000, guid: 5781ca622a1137147bbd71dc9656f388, type: 3}
   character: {fileID: 5458554383432203635}
-  teleportation_Scorpion: {fileID: 3741212121368607163}
---- !u!114 &5267126635196587764
+  scorpionPassive: {fileID: 1595654106541851295}
+--- !u!114 &1156251021579265288
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4029,23 +4160,390 @@ MonoBehaviour:
   m_GameObject: {fileID: 1049065473536513494}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8b9f2671989cea46aefabae5d600ed4, type: 3}
+  m_Script: {fileID: 11500000, guid: 838f113a97e8a864c90c8cb0d8ebddd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel: []
+    _stateInfos: []
+    IsOpen: 0
+    Description: '-'
+    Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
+  character: {fileID: 5458554383432203635}
+--- !u!114 &6075198806209693070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a50b127d5525cb4ebe57d9944d02a03, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel: []
+    _stateInfos: []
+    IsOpen: 0
+    Description: '-'
+    Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
+  character: {fileID: 5458554383432203635}
+--- !u!114 &3379282054853344686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed640b9c72923c845a1b02e45964d038, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel: []
+    _stateInfos: []
+    IsOpen: 0
+    Description: '-'
+    Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
+  character: {fileID: 5458554383432203635}
+--- !u!114 &6694511863884638036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65e45c69067aea64fb9f60dbcfa8d887, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - Kick_scorpionCombo Talent
-    - Kick_scorpionCombo Talent
-    - Kick_scorpionCombo Talent
-    - Kick_scorpionCombo Talent
-    - Kick_scorpionCombo Talent
-    - Kick_scorpionCombo Talent
+    - "\u041F\u043E\u043B\u0443\u0447\u0430\u044E\u0442 \u0432\u0435\u0440\u043E\u0442\u043D\u043E\u0441\u0442\u044C
+      \u043D\u0430\u043B\u043E\u0436\u0438\u0442\u044C \u0434\u0435\u0431\u0430\u0444\u0444\u044B:   
+      \u0423\u0434\u0430\u0440 \u0441 \u0440\u0443\u043A\u0438 10% - \"\u041E\u0433\u043B\u0443\u0448\u0435\u043D\u0438\u0435\"
+      \u043D\u0430 1 \u0441\u0435\u043A "
+    - "\u0423\u0434\u0430\u0440 \u0441 \u043D\u043E\u0433\u0438 30% -  \"\u041D\u043E\u043A\u0434\u0430\u0443\u043D\"
+      \u043D\u0430 13 \u0441\u0435\u043A "
+    - "\u0423\u0434\u0430\u0440 \u0441 \u043D\u043E\u0433\u0438 - \u0431\u044C\u0451\u0442
+      \u0432\u0440\u0430\u0433\u0430 \u0441 \u043D\u043E\u0433\u0438. "
+    _stateInfos:
+    - StateName: "\u041E\u0433\u043B\u0443\u0448\u0435\u043D\u0438\u0435"
+      Description: "\u043D\u0435 \u043C\u043E\u0436\u0435\u0442 \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0442\u044C
+        \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438 \u0438
+        \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0433\u0430\u0442\u044C\u0441\u044F"
+    - StateName: "\u041D\u043E\u043A\u0434\u0430\u0443\u043D"
+      Description: "\u0443\u043C\u0435\u043D\u044C\u0448\u0430\u0435\u0442 \u043D\u0430\u043D\u043E\u0441\u0438\u043C\u044B\u0439
+        \u0443\u0440\u043E\u043D \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0445
+        \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439
+        \u043D\u0430 10%, \u0441\u0443\u043C\u043C\u0438\u0440\u0443\u0435\u0442\u0441\u044F
+        \u0434\u043E 3 \u0440\u0430\u0437."
+    IsOpen: 0
+    Description: " \u0423\u0434\u0430\u0440 \u0441 \u043D\u043E\u0433\u0438"
+    Icon: {fileID: 21300000, guid: 9204ae068284fba43b442c92c1ac501a, type: 3}
+  character: {fileID: 5458554383432203635}
+  skill: {fileID: 5612755856390318882}
+  kick_Scorpion: {fileID: 8920276347339243132}
+  newPunch_Scorpion: {fileID: 6732054044553877427}
+--- !u!114 &8667011970084610253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27cbcb31be9c7934c8c330eb11f678c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u041C\u043E\u0436\u0435\u0442 \u0430\u0442\u0430\u043A\u043E\u0432\u0430\u0442\u044C
+      \u0441\u0435\u0440\u0438\u044F\u043C\u0438, \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u044F
+      3 \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0445 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438
+      \u043F\u043E\u0434\u0440\u044F\u0434 \u043F\u043E \u043E\u0434\u043D\u043E\u0439
+      \u0446\u0435\u043B\u0438, \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438
+      \u0432 \u0441\u0435\u0440\u0438\u0438 \u043D\u0435 \u0434\u043E\u043B\u0436\u043D\u044B
+      \u0431\u044B\u0442\u044C \u0432\u0441\u0435 \u043E\u0434\u0438\u043D\u0430\u043A\u043E\u0432\u044B\u0435.
+      \u041A\u0430\u0436\u0434\u0430\u044F \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C
+      \u0438\u043C\u0435\u0435\u0442 3 \u0437\u0430\u0440\u044F\u0434\u0430 \u0441
+      \u043A\u0443\u043B\u0434\u0430\u0443\u043D\u043E\u043C \u0434\u043B\u044F \u0431\u043E\u043D\u0443\u0441\u0430
+      \u0441\u0435\u0440\u0438\u0439 6 \u0441\u0435\u043A\u0443\u043D\u0434. \u041F\u0440\u0438
+      \u0443\u0441\u043F\u0435\u0448\u043D\u043E\u043C \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0438
+      \u0441\u0435\u0440\u0438\u0438 \u043F\u043E\u0441\u043B\u0435\u0434\u043D\u044F\u044F
+      \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C \u0438\u043C\u0435\u0435\u0442
+      \u0431\u043E\u043D\u0443\u0441\u043D\u044B\u0439 \u044D\u0444\u0444\u0435\u043A\u0442
+      \u0438 \u043D\u0430\u043A\u0430\u043F\u043B\u0438\u0432\u0430\u0435\u0442\u0441\u044F
+      \u043E\u0447\u043A\u043E \u043A\u043E\u043C\u0431\u043E, \u043C\u043E\u0436\u043D\u043E
+      \u043D\u0430\u043A\u043E\u043F\u0438\u0442\u044C \u0434\u043E 3 \u0435\u0434\u0438\u043D\u0438\u0446.
+      \u041E\u0447\u043A\u043E \u043A\u043E\u043C\u0431\u043E \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0435\u0442\u0441\u044F
+      \u0434\u043B\u044F \u0441\u043D\u044F\u0442\u0438\u044F \u043B\u044E\u0431\u043E\u0433\u043E
+      \u043A\u043E\u043D\u0442\u0440\u043E\u043B\u0438\u0440\u0443\u044E\u0449\u0435\u0433\u043E
+      \u044D\u0444\u0444\u0435\u043A\u0442\u0430 \u0441 \u041D\u0438\u043D\u0434\u0437\u044F. "
     _stateInfos: []
     IsOpen: 0
-    Description: ConsumeCombo_Scorpion Physic State Clear Talent
-    Icon: {fileID: 21300000, guid: 8c770b12fbc302442b33015919bd02a0, type: 3}
+    Description: "\u0421\u0435\u0440\u0438\u044F \u043A\u043E\u043C\u0431\u043E"
+    Icon: {fileID: 21300000, guid: 056dec7639a920649bcddbf484dd066b, type: 3}
   character: {fileID: 5458554383432203635}
   consume: {fileID: 8732005787551451527}
+--- !u!114 &7893984956880296540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c4455ec0d7970747b2270640a0c8c70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u041A\u0430\u0436\u0434\u044B\u0439 \u0432\u0442\u043E\u0440\u043E\u0439
+      \u0423\u0434\u0430\u0440 \u0441 \u0440\u0443\u043A\u0438 \u043F\u043E\u0434\u0440\u044F\u0434
+      \u043F\u043E \u043E\u0434\u043D\u043E\u0439 \u0446\u0435\u043B\u0438 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442
+      \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0431\u0430\u0444\u0444
+      \"\u0420\u0430\u0437\u043E\u0433\u0440\u0435\u0442\u043E\u0441\u0442\u044C\" "
+    _stateInfos:
+    - StateName: "\u0420\u0430\u0437\u043E\u0433\u0440\u0435\u0442\u043E\u0441\u0442\u044C"
+      Description: "\u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442
+        \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0445
+        \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439
+        \u043D\u0430 10% \u043D\u0430 13 \u0441\u0435\u043A. \u0441\u0443\u043C\u043C\u0438\u0440\u0443\u0435\u0442\u0441\u044F
+        \u0434\u043E 3 \u0440\u0430\u0437.\n"
+    IsOpen: 0
+    Description: "\u0424\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0440\u0430\u0437\u043E\u0433\u0440\u0435\u0432"
+    Icon: {fileID: 21300000, guid: 4366069059bee114e863ce68e5db1180, type: 3}
+  character: {fileID: 5458554383432203635}
+  newPunch: {fileID: 6732054044553877427}
+--- !u!114 &4787141543461614230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df8727606e71d5b45b6b48bf7db9075e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u041A\u0430\u0436\u0434\u044B\u0439  \xAB\u0443\u0434\u0430\u0440 \u0441
+      \u043D\u043E\u0433\u0438\xBB \u043F\u043E \u0446\u0435\u043B\u0438  \u043F\u043E\u0434\u0440\u044F\u0434
+      (\u043F\u0430\u0443\u0437\u0430 \u043D\u0435 \u0431\u043E\u043B\u0435\u0435
+      0,1 \u0441\u0435\u043A)    \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 
+      \u0432\u0435\u0440\u043E\u044F\u0442\u043D\u043E\u0441\u0442\u044C \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u044F
+      \u0434\u0435\u0431\u0430\u0444\u0444\u0430  \xAB\u043D\u043E\u043A\u0434\u0430\u0443\u043D\xBB
+      \u0432 \u0434\u0432\u0430 \u0440\u0430\u0437\u0430, \u043F\u043E\u0441\u043B\u0435
+      \u043D\u0430\u043B\u043E\u0436\u0435\u043D \u0438\u044F \u0431\u043E\u043D\u0443\u0441
+      \u0432\u0435\u0440\u043E\u044F\u0442\u043D\u043E\u0441\u0442\u0438 \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u044F
+      \xAB\u043D\u043E\u043A\u0434\u0430\u0443\u043D\xBB \u043E\u0431\u043D\u0443\u043B\u044F\u0435\u0442\u0441\u044F.
+      1\u044B\u0439 \u0443\u0434\u0430\u0440 20%, 2\u043E\u0439 \u2013 40% , 3\u0438\u0439
+      \u2013 40%, 4\u044B\u0439 \u2013 80%.) "
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u041A\u0430\u0436\u0434\u044B\u0439  \xAB\u0443\u0434\u0430\u0440
+      \u0441 \u043D\u043E\u0433\u0438\xBB"
+    Icon: {fileID: 21300000, guid: 3433c8b4fd74dc24a8391c933260b5ee, type: 3}
+  character: {fileID: 5458554383432203635}
+  kick_Scorpion: {fileID: 8920276347339243132}
+--- !u!114 &6235391431062527375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f32ad2dbb03b48348b20ff2fcd262577, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel: []
+    _stateInfos: []
+    IsOpen: 0
+    Description: '-'
+    Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
+  character: {fileID: 5458554383432203635}
+--- !u!114 &7752491051264352687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85d0e2f320d292441865a9123891e743, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel: []
+    _stateInfos: []
+    IsOpen: 0
+    Description: '-'
+    Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
+  character: {fileID: 5458554383432203635}
+--- !u!114 &310719922032413749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 523a8ca02c537c8468f42f42c3e9e792, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0422\u0435\u043B\u0435\u043F\u043E\u0440\u0442\u0430\u0446\u0438\u044F -
+      \u0441\u043A\u043E\u0440\u043F\u0438\u043E\u043D \u0442\u0435\u043B\u0435\u043F\u043E\u0440\u0442\u0438\u0440\u0443\u0435\u0442\u0441\u044F
+      \u0437\u0430 \u0441\u043F\u0438\u043D\u0443 \u0446\u0435\u043B\u0438, \u043C\u0430\u043A\u0441\u0438\u043C\u0430\u043B\u044C\u043D\u0430\u044F
+      \u0434\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u0442\u0435\u043B\u0435\u043F\u043E\u0440\u0442\u0430\u0446\u0438\u0438
+      \u0437\u0430\u0432\u0438\u0441\u0438\u0442 \u043E\u0442 \u043A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u0430
+      \u044D\u043D\u0435\u0440\u0433\u0438\u0438, \u043C\u0438\u043D\u0438\u043C\u0430\u043B\u044C\u043D\u0430\u044F
+      \u0437\u0430\u0442\u0440\u0430\u0442\u044B 20 \u044D\u043D\u0435\u0440\u0433\u0438\u0438,
+      \u043D\u0430 \u043A\u0430\u0436\u0434\u0443\u044E \u043E\u0434\u043D\u0443
+      \u043A\u043B\u0435\u0442\u043A\u0443 \u0434\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u0438,
+      \u043F\u043B\u044E\u0441 5 \u044D\u043D\u0435\u0440\u0433\u0438\u0438."
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u0422\u0435\u043B\u0435\u043F\u043E\u0440\u0442\u0430\u0446\u0438\u044F"
+    Icon: {fileID: 21300000, guid: 402c0e5b87e26974dae912f67806ac0d, type: 3}
+  character: {fileID: 5458554383432203635}
+  skill: {fileID: 5612755856390318882}
+  teleportation_Scorpion: {fileID: 3741212121368607163}
+--- !u!114 &1414940694262201790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27eec9c08446efb468c3869a60a75ba5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0414\u044B\u0445\u0430\u043D\u0438\u0435 \u043E\u0433\u043D\u044F - \u0434\u044B\u0448\u0438\u0442
+      \u043E\u0433\u043D\u0451\u043C \u043E\u0431\u0436\u0438\u0433\u0430\u044F \u043F\u043E\u043F\u0430\u0434\u0430\u044E\u0449\u0438\u0435
+      \u0446\u0435\u043B\u0438, \u043A\u0430\u0436\u0434\u044B\u0435 0,3 \u0441\u0435\u043A
+      \u043D\u0430\u043D\u043E\u0441\u0438\u0442 \u0443\u0440\u043E\u043D \u0438
+      \u0438\u043C\u0435\u0435\u0442 \u0448\u0430\u043D\u0441 \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u044F
+      \"\u041E\u043F\u0430\u043B\u0451\u043D\u043D\u0430\u044F \u0434\u0443\u0448\u0430\",
+      \u0441 \u043A\u0430\u0436\u0434\u044B\u043C \u043D\u0430\u043D\u0435\u0441\u0451\u043D\u043D\u044B\u043C
+      \u0443\u0440\u043E\u043D\u043E\u043C \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
+      \u0432 2 \u0440\u0430\u0437\u0430, \u0443\u0440\u043E\u043D \u043D\u0430\u0447\u0438\u043D\u0430\u0435\u0442\u0441\u044F
+      \u0441 1 \u0435\u0434\u0438\u043D\u0438\u0446\u044B, \u0448\u0430\u043D\u0441
+      \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u044F \u0441 10%, \u0443\u0440\u043E\u043D
+      \u0438 \u0448\u0430\u043D\u0441 \u043D\u0430\u043B\u043E\u0436\u0435\u0438\u044F
+      \u0441\u043D\u0438\u0436\u0430\u0435\u0442\u0441\u044F \u043E\u0442 \u0434\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u0438
+      \u0446\u0435\u043B\u0435\u0439 \u0432\u043F\u043B\u043E\u0442\u044C \u0434\u043E
+      50%,\_\u0437\u0430\u0442\u0440\u0430\u0447\u0435\u043D\u043D\u0430\u044F \u044D\u043D\u0435\u0440\u0433\u0438\u044F
+      \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442\u0441\u044F
+      \u0432 2 \u0440\u0430\u0437\u0430 \u043C\u0435\u0434\u043B\u0435\u043D\u043D\u0435\u0435. "
+    _stateInfos:
+    - StateName: "\u041E\u043F\u0430\u043B\u0451\u043D\u043D\u0430\u044F \u0434\u0443\u0448\u0430"
+      Description: "\u0443\u043C\u0435\u043D\u044C\u0448\u0430\u0435\u0442 \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C:
+        \u043F\u0440\u043E\u0438\u0437\u043D\u0435\u0441\u0435\u043D\u0438\u044F
+        \u0437\u0430\u043A\u043B\u0438\u043D\u0430\u043D\u0438\u044F,  \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F
+        \u043A\u043E\u043B\u0434\u0430\u0443\u043D\u0430 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439
+        \u043D\u0430 10% \u043D\u0430 6 \u0441\u0435\u043A; \u0441\u0443\u043C\u043C\u0438\u0440\u0443\u0435\u0442\u0441\u044F
+        3 \u0440\u0430\u0437\u0430."
+    IsOpen: 0
+    Description: "\u0414\u044B\u0445\u0430\u043D\u0438\u0435 \u043E\u0433\u043D\u044F"
+    Icon: {fileID: 21300000, guid: bdab9e283b8a84e49a7a02e778851d43, type: 3}
+  character: {fileID: 5458554383432203635}
+  skill: {fileID: 5612755856390318882}
+  fireBreath_Scorpion: {fileID: 6267367289068038631}
+--- !u!114 &7510401949783811934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24d7ae39fc63a764fae7f35954e9fc00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel: []
+    _stateInfos: []
+    IsOpen: 0
+    Description: '-'
+    Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
+  character: {fileID: 5458554383432203635}
+--- !u!114 &1579969653887513289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50b24f17e65f75645af838e338975e99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel: []
+    _stateInfos: []
+    IsOpen: 0
+    Description: '-'
+    Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
+  character: {fileID: 5458554383432203635}
+--- !u!114 &5560537017145461016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcaa2af2cf07cd04380908148ecbe5ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel: []
+    _stateInfos: []
+    IsOpen: 0
+    Description: '-'
+    Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
+  character: {fileID: 5458554383432203635}
+--- !u!114 &4592574728981757350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb1f5866f21082849a0d32acf9024d2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel: []
+    _stateInfos: []
+    IsOpen: 0
+    Description: '-'
+    Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
+  character: {fileID: 5458554383432203635}
 --- !u!114 &1402913355469849604 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1629212415153807048, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -4088,6 +4586,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 22d89e8fc912e73459ee8ef407455b14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5612755856390318882 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 424471191848786636}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8143091671269686944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73c845a97d0479341a34f6e1275e1107, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!224 &5881831778777970052 stripped
@@ -4146,15 +4655,15 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 9
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
+  _abilitySchool: 6
+  _abilityForm: 2
+  _damageType: 1
   _attackRangeType: 0
   _skillType: 0
   _moving: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 768
+    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -4180,6 +4689,9 @@ MonoBehaviour:
   maxCounter: 0
   _playerLinks: {fileID: 5458554383432203635}
   _comboCounter: {fileID: 5883639770937801120}
+  scorpionPassive: {fileID: 1595654106541851295}
+  stunningAddChance: 0.1
+  warmingUpDuration: 0
 --- !u!114 &8920276347339243132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4195,8 +4707,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: c86ba2dc4b3fc8a4fbb00ca788a0822c, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
@@ -4214,7 +4726,7 @@ MonoBehaviour:
   _moving: 1
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 768
+    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -4240,6 +4752,7 @@ MonoBehaviour:
   maxCounter: 0
   _playerLinks: {fileID: 5458554383432203635}
   _comboCounter: {fileID: 5883639770937801120}
+  scorpionPassive: {fileID: 1595654106541851295}
   _minDamage: 10
   _maxDamage: 15
   _baseDebuffChance: 0.2
@@ -4259,8 +4772,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 674d1ee282701154a88a87e00fa5f772, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
@@ -4278,7 +4791,7 @@ MonoBehaviour:
   _moving: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 768
+    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -4303,6 +4816,7 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   _comboCounter: {fileID: 5883639770937801120}
+  scorpionPassive: {fileID: 1595654106541851295}
   _minDamage: 18
   _maxDamage: 26
   blade: {fileID: 3194135442258839960}
@@ -4321,8 +4835,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: dfeae01f5016d594abbb890b8c058c58, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
@@ -4386,8 +4900,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 4ac214b92b88f1f43b4b3f39e43659fd, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
@@ -4454,8 +4968,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: b328702add621d74aa0b38841fc59c46, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
@@ -4533,8 +5047,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: f954632b892f43143bbee3c9ddaa45aa, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
@@ -4544,9 +5058,9 @@ MonoBehaviour:
   _cooldownTime: 2
   _castDeley: 0
   _damageValue: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
+  _abilitySchool: 6
+  _abilityForm: 2
+  _damageType: 1
   _attackRangeType: 1
   _skillType: 1
   _moving: 0
@@ -4582,6 +5096,62 @@ MonoBehaviour:
   chainArrowPrefab: {fileID: 7293680978615570491, guid: 9903945e1d35e3f4699a288cf83c9e9c, type: 3}
   spawnPoint: {fileID: 8348649775556308668}
   playerLinks: {fileID: 5458554383432203635}
+--- !u!114 &1595654106541851295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8143091671269686944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 322e5d1982caa03408c4d52cbd3b69a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
+  _abilityInfo: {fileID: 11400000, guid: 12005c696a23b0f4e8a35e58cb94742c, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
+  _castDeley: 0
+  _damageValue: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _skillType: 0
+  _moving: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _autoAttackDelay: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
 --- !u!4 &8811787553151181850 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

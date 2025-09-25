@@ -7,7 +7,7 @@ using UnityEngine;
 public class BlockPassiveSkill : Skill, IPassiveSkill
 {
     [SerializeField] private float durationWindowsBoost = 2f;
-    [SerializeField] private float blockChance = 100;
+    [SerializeField] private float blockChance = 50;
 
     private Coroutine _boostWindow;
     private bool _isCooldownActive = false;

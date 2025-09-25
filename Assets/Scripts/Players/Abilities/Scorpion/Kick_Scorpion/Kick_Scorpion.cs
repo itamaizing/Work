@@ -8,15 +8,17 @@ public class Kick_Scorpion : Skill
     [Header("Ability settings")]
     [SerializeField] private Character _playerLinks;
     [SerializeField] private PassiveCombo_Scorpion _comboCounter;
+    [SerializeField] private ScorpionPassive scorpionPassive;
     [SerializeField] [Range(0, 100)] private float _minDamage = 10f;
     [SerializeField] [Range(0, 100)] private float _maxDamage = 15f;
 
     [Header("Talent Flags")]
     private bool isKick_ScorpionRowTalent;
     private bool isKick_ScorpionComboTalent;
+    private bool isKick_ScorpionRowBonusTalent;
 
     [Header("Internal State")]
-    [SerializeField] [Range(0f, 1f)] private float _baseDebuffChance = 0.2f;
+    [SerializeField] [Range(0f, 1f)] private float _baseDebuffChance = 0.3f;
     [SerializeField] [ReadOnly] private byte _hitsInRow = 1;
 
     private Coroutine _hitsInRowCoroutine;
@@ -162,15 +164,31 @@ public class Kick_Scorpion : Skill
 
         if (isKick_ScorpionRowTalent)
         {
-            chance = _baseDebuffChance * Mathf.Pow(2, _hitsInRow - 1);
-
-            if (UnityEngine.Random.value <= Mathf.Clamp01(chance))
+            if (!scorpionPassive.IsAddStateUpdateChance)
             {
-                state?.AddState(States.Knockdown, 6f, 0, _hero.gameObject, name);
-                _hitsInRow = 1;
+                if (isKick_ScorpionRowBonusTalent)
+                {
+                    chance = _baseDebuffChance * Mathf.Pow(2, _hitsInRow - 1);
+
+                    if (UnityEngine.Random.value <= Mathf.Clamp01(chance))
+                    {
+                        state?.AddState(States.Knockdown, 13f, 0, _hero.gameObject, name);
+                        _hitsInRow = 1;
+                    }
+
+                    else _hitsInRow = (byte)Mathf.Min(_hitsInRow + 1, 4);
+                }
+
+                else
+                {
+                    chance = _baseDebuffChance;
+                    if (UnityEngine.Random.value <= Mathf.Clamp01(chance)) state?.AddState(States.Knockdown, 13f, 0, _hero.gameObject, name);
+                }
             }
-            else _hitsInRow = (byte)Mathf.Min(_hitsInRow + 1, 4);
+
+            else state?.AddState(States.Knockdown, 13f, 0, _hero.gameObject, name);
         }
+
         else _hitsInRow = 1;
 
         if (isKick_ScorpionComboTalent && state != null)
@@ -200,6 +218,11 @@ public class Kick_Scorpion : Skill
     public void Kick_ScorpionRowTalent(bool value)
     {
         isKick_ScorpionRowTalent = value;
+    }
+
+    public void Kick_ScorpionRowBonusTalent(bool value)
+    {
+        isKick_ScorpionRowBonusTalent = value;
     }
 
     public void Kick_ScorpionComboTalent(bool value)
