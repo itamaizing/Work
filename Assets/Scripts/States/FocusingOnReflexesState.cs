@@ -29,8 +29,7 @@ public class FocusingOnReflexesState : AbstractCharacterState
 
         health.EvadeMeleeDamage = 100f;
         health.EvadeRangeDamage = 60f;
-
-        _health.DamageTaken += OnDamageTaken;
+        health.DamageTaken += OnDamageTaken;
     }
 
     public override void UpdateState()
@@ -57,6 +56,7 @@ public class FocusingOnReflexesState : AbstractCharacterState
 
             health.EvadeMeleeDamage = _originalEvadeMelee;
             health.EvadeRangeDamage = _originalEvadeRange;
+            health.DamageTaken -= OnDamageTaken;
         }
 
         _characterState.RemoveState(this);

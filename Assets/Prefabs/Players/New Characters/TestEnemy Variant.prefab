@@ -227,11 +227,11 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
-  _castDeley: 1
+  _castDeley: 5
   _damageValue: 5
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
+  _abilitySchool: 6
+  _abilityForm: 2
+  _damageType: 1
   _attackRangeType: 0
   _skillType: 0
   _moving: 0

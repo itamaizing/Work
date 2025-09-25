@@ -21,9 +21,11 @@ public class Health : Resource, IDamageable, IHealingable
     private Coroutine _dOTDamageAnimJob;
     private float _dOTDamageAnimDuration = 0.1f;
     private float _totalMaxAbsorption = 0;
+    private float _blockChance;
     private bool _isDot = false;
 
     public Bar barCharacter { get => bar; }
+    public float BlockChance { get => _blockChance; set => _blockChance = value; }
     public float SumDamageTaken { get => _sumDamageTaken; }
     public float EvadeMeleeDamage { get => _evadeMeleeDamage; set => _evadeMeleeDamage = value; }
     public float EvadeRangeDamage { get => _evadeRangeDamage; set => _evadeRangeDamage = value; }
@@ -34,6 +36,7 @@ public class Health : Resource, IDamageable, IHealingable
     public List<IDamageable> Shields { get => _shields; }
 
     public event Action Evaded;
+    public event Action Block;
     public event Action<float , Skill , string> HealTaked;
     public event Action<Damage, Skill> DamageTaken;
     public event Action Died;
@@ -72,7 +75,14 @@ public class Health : Resource, IDamageable, IHealingable
             Evaded?.Invoke();
             return false;
         }
-        
+
+        if (UnityEngine.Random.Range(0f, 100f) <= _blockChance)
+        {
+            Debug.Log("2");
+            Block?.Invoke();
+            return false;
+        }
+
         Defence(ref damage);
 
         UseShields(ref damage, skill);
@@ -327,6 +337,11 @@ public class Health : Resource, IDamageable, IHealingable
 
 		PhantomValueShow(curDamage);
 	}
+
+    [Command] public void CmdSetBlockChance(float chance) => _blockChance = chance;
+    [Command] public void CmdResetBlockChance() => ResetBlockChance();
+
+    public void ResetBlockChance() => _blockChance = 0;
 
     public void IncreaseRegen(float percentValue)
     {

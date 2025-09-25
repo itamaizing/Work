@@ -26,6 +26,7 @@ public class CreeperStrike : Skill
     [SerializeField] private CreeperInvisible _creeperInvisible;
     [SerializeField] private ColdBlood _coldBlood;
     [SerializeField] private SneakySpit sneakySpit;
+    [SerializeField] private BlockPassiveSkill blockPassiveSkill;
     //[SerializeField] private AbsorptionOfPoisons _absorptionOfPoisons;
 
     [Header("Ability properties")]
@@ -296,10 +297,8 @@ public class CreeperStrike : Skill
         var lastCast = _player.Abilities.LastCastedSkill;
         var previewCast = _player.Abilities.PreviewCastedSkill;
 
-        bool isSameTarget = _lastTargetFirst == target && _lastTargetSecond == target;
-        bool isSameSkills = lastCast is CreeperStrike && previewCast is CreeperStrike;
-
-        if (isSameTarget && isSameSkills) ÑmdriggerSneakySpitFreeWindow(target);
+        if (_lastTargetFirst == target && _lastTargetSecond == target && lastCast is CreeperStrike && previewCast is CreeperStrike) ÑmdTriggerSneakySpitFreeWindow(target);
+        if (_lastTargetFirst == target && lastCast is CreeperStrike) ÑmdBlockPassiveSkillFreeWindow(target);
     }
 
     private IEnumerator TimerForTwoHit(float duration, bool isUsingLightningStrikes)
@@ -417,12 +416,20 @@ public class CreeperStrike : Skill
 
     [Command] private void CmdDamageDeal(Damage damage, GameObject target) => ApplyDamage(damage, target);
 
-    [Command] private void ÑmdriggerSneakySpitFreeWindow(Character target) => RpcTriggerGhostFreeWindow(target);
+    [Command] private void ÑmdTriggerSneakySpitFreeWindow(Character target) => RpcTriggerSneakySpitWindow(target);
+
+    [Command] private void ÑmdBlockPassiveSkillFreeWindow(Character target) => RpcBlockPassiveSkillFreeWindow(target);
 
     [ClientRpc]
-    private void RpcTriggerGhostFreeWindow(Character target)
+    private void RpcTriggerSneakySpitWindow(Character target)
     {
         if (sneakySpit != null) sneakySpit.TryStartSneakySpitBoostWindow(target);
+    }
+
+    [ClientRpc]
+    private void RpcBlockPassiveSkillFreeWindow(Character target)
+    {
+        if (blockPassiveSkill != null) blockPassiveSkill.TryStartBlockPassiveSkillBoostWindow(target);
     }
 
     #endregion

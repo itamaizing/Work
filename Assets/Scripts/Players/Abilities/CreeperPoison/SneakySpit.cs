@@ -8,15 +8,18 @@ public class SneakySpit : Skill
 {
     [SerializeField] private Character _playerLinks;
     [SerializeField] private float duration = 2f;
+    [SerializeField] private float durationWindowsBoost = 2f;
 
     private Character _target;
+    private Character _attacker;
     private Character _runtimeTarget;
     private Coroutine _boostWindow;
+    private NetworkIdentity identity;
 
     protected override bool IsCanCast => CheckCanCast();
 
     protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerCast => 0;
+    protected override int AnimTriggerCast => Animator.StringToHash("SneakySpitTrigger");
 
     protected override void SkillEnableBoostLogic()
     {
@@ -31,11 +34,13 @@ public class SneakySpit : Skill
 
     private void OnEnable() 
     {
+        Hero.Health.OnBeforeTakeDamage += HandleBeforeTakeDamage;
         Hero.Health.Evaded += OnHeroEvade;
     }
 
     private void OnDisable()
     {
+        Hero.Health.OnBeforeTakeDamage -= HandleBeforeTakeDamage;
         Hero.Health.Evaded -= OnHeroEvade;
     }
 
@@ -60,17 +65,18 @@ public class SneakySpit : Skill
 
     private void OnHeroEvade()
     {
-        if (_target == null || _boostWindow != null) return;
+        if (_attacker == null || _boostWindow != null) return;
+        TargetRpcStartSneakySpitBoostWindow(connectionToClient, _attacker.netId);
+    }
 
-        TryStartSneakySpitBoostWindow(_target);
+    private void HandleBeforeTakeDamage(Damage damage, Skill skill)
+    {
+        if (skill != null && skill.Hero != null) _attacker = skill.Hero;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (Disactive && _target == null) yield return null;
-
-        _hero.NetworkAnimator.SetTrigger(Animator.StringToHash("SneakySpitTrigger"));
-        _hero.Animator.SetTrigger(Animator.StringToHash("SneakySpitTrigger"));
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Targets.Add(_runtimeTarget);
@@ -79,6 +85,7 @@ public class SneakySpit : Skill
 
     protected override IEnumerator CastJob()
     {
+        ApplyStateAndDamage();
         yield return null;
     }
 
@@ -87,7 +94,7 @@ public class SneakySpit : Skill
         _target = target;
         if (_boostWindow != null) StopCoroutine(_boostWindow);
         EnableSkillBoost();
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(durationWindowsBoost);
         DisableSkillBoost();
         _boostWindow = null;
     }
@@ -115,5 +122,18 @@ public class SneakySpit : Skill
         }
     }
 
+    public void SneakySpitCast() => AnimStartCastCoroutine();
+    public void SneakySpitEnd() => AnimCastEnded();
+
     [Command] private void CmdAddState(Character target) => target.CharacterState.AddState(States.Blind, duration, 0, _playerLinks.gameObject, name);
+
+    [TargetRpc]
+    private void TargetRpcStartSneakySpitBoostWindow(NetworkConnection target, uint attackerNetId)
+    {
+        if (NetworkClient.spawned.TryGetValue(attackerNetId, out NetworkIdentity identity))
+        {
+            Character attacker = identity.GetComponent<Character>();
+            if (attacker != null) TryStartSneakySpitBoostWindow(attacker);
+        }
+    }
 }

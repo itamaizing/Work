@@ -102,7 +102,7 @@ public class SkillManager : MonoBehaviour
 
     private IEnumerator CastWindowResetCoroutine(int id)
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(20f);
 
         if (_castWindowId != id)
             yield break;
