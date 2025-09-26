@@ -3791,12 +3791,12 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: 62df2752dfcff2348b3c33b2082214cd, type: 2}
     - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _icons.Array.size
-      value: 53
+      value: 54
       objectReference: {fileID: 0}
     - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _icons.Array.data[53]
       value: 
-      objectReference: {fileID: 3545852164369826336, guid: 6cbb7405efe85c6409a55809aa00def2, type: 3}
+      objectReference: {fileID: 3545852164369826336, guid: ec8f1909a8abe6f4c90a32115a953f5c, type: 3}
     - target: {fileID: 8788399700865532087, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.00000009714812
@@ -4690,6 +4690,7 @@ MonoBehaviour:
   _playerLinks: {fileID: 5458554383432203635}
   _comboCounter: {fileID: 5883639770937801120}
   scorpionPassive: {fileID: 1595654106541851295}
+  _hitsInRow: 1
   stunningAddChance: 0.1
   warmingUpDuration: 0
 --- !u!114 &8920276347339243132

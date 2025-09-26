@@ -277,6 +277,7 @@ public abstract class Skill : NetworkBehaviour
     public event Action BoostEnabled;
     public event Action BoostDisabled;
     public event Action AfterCast;
+    public int AnimTriggerCastPublic => AnimTriggerCast;
 
     /// <summary>
     /// There may be a description that will be shown in the AbillityNameBox.
@@ -1462,7 +1463,8 @@ public abstract class Skill : NetworkBehaviour
             _isPlayCastAnim = true;
             _isWaitingForCastCoroutine = true;
 
-            Hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, Buff.CastSpeed.Multiplier);
+            float finalCastSpeed = Buff.CastSpeed.Multiplier * ExtraAnimationSpeedMultiplier;
+            Hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, finalCastSpeed);
             _hero.Animator.SetTrigger(AnimTriggerCast);
             _hero.NetworkAnimator.SetTrigger(AnimTriggerCast);
 

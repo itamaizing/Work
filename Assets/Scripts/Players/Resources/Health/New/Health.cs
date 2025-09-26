@@ -72,13 +72,12 @@ public class Health : Resource, IDamageable, IHealingable
         
         if (TryEvade(damage.Type, damage.PhysicAttackType))
         {
-            Evaded?.Invoke();
+            ClientRpcEvade();
             return false;
         }
 
         if (UnityEngine.Random.Range(0f, 100f) <= _blockChance)
         {
-            Debug.Log("2");
             Block?.Invoke();
             return false;
         }
@@ -309,7 +308,15 @@ public class Health : Resource, IDamageable, IHealingable
         DamageTaken?.Invoke(damage, skill);
         _animator.SetTrigger(HashAnimPlayer.TakeDamage);
     }
-    
+
+
+    [ClientRpc]
+    private void ClientRpcEvade()
+    {
+        Evaded?.Invoke();
+        _animator.SetTrigger(HashAnimPlayer.Evade);
+    }
+
     [ClientRpc]
     private void ClientRpcHealTaked(float healTaken, Skill skill, string sourceName)
     {

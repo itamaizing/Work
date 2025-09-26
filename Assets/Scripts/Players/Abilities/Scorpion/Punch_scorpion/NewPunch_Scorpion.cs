@@ -9,7 +9,9 @@ public class NewPunch_Scorpion : Skill
     [SerializeField] private Character _playerLinks;
     [SerializeField] private PassiveCombo_Scorpion _comboCounter;
     [SerializeField] private ScorpionPassive scorpionPassive;
+    [SerializeField] private byte _hitsInRow = 1;
 
+    private Coroutine _hitsInRowCoroutine;
     private Character _lastTarget = null;
     private Animator _animator;
     private bool _isRightKick = true;
@@ -192,6 +194,22 @@ public class NewPunch_Scorpion : Skill
         Debug.Log("[NewPunch_Scorpion] Attack Passed");
         _comboCounter.AddSkill(target, this);
 
+        if (_hitsInRowCoroutine != null)
+            StopCoroutine(_hitsInRowCoroutine);
+        _hitsInRowCoroutine = StartCoroutine(HitsInRowTimer());
+
+        if (_lastTarget != null && _lastTarget == target) _hitsInRow++;
+        else _hitsInRow = 1;
+
+        _lastTarget = target;
+
+        if (_isWarningUpAddState && _hitsInRow >= 2)
+        {
+            var state = _hero.CharacterState;
+            state?.AddState(States.WarmingUpState, warmingUpDuration, 0, _hero.gameObject, name);
+            _hitsInRow = 0;
+        }
+
         if (_isStunningAddChance)
         {
             var state = _runtimeTarget.GetComponent<CharacterState>();
@@ -219,6 +237,13 @@ public class NewPunch_Scorpion : Skill
     protected override void ClearData()
     {
         _hero.Move.StopLookAt();
+    }
+
+    private IEnumerator HitsInRowTimer()
+    {
+        yield return new WaitForSeconds(1f);
+        _hitsInRow = 1;
+        _hitsInRowCoroutine = null;
     }
 
     //private void AttackMissed()

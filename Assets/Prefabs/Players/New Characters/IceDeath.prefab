@@ -3798,6 +3798,7 @@ MonoBehaviour:
   _playerLinks: {fileID: 4374618947117916461}
   _deathSpiral: {fileID: 5605713643324713456}
   _seriesOfStrikes: {fileID: 3083348233968490285}
+  _sword: {fileID: 1545470976515082280}
 --- !u!114 &8854865153303019716
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -267,6 +267,7 @@ MonoBehaviour:
   - {fileID: 3545852164369826336, guid: fab2bcdc75777b941bad5e491622fde9, type: 3}
   - {fileID: 3545852164369826336, guid: c1422ee69ba691c4990ac65ab2978b01, type: 3}
   - {fileID: 943178309112352084, guid: 125cf99d293815648969b7653048fb77, type: 3}
+  - {fileID: 3545852164369826336, guid: ec8f1909a8abe6f4c90a32115a953f5c, type: 3}
   _baffColor: {r: 0.23, g: 0.9, b: 0.23, a: 1}
   _debaffColor: {r: 0.9, g: 0.15, b: 0.15, a: 1}
   _neutralColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}

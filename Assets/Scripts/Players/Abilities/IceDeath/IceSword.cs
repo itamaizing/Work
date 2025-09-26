@@ -11,6 +11,7 @@ public class IceSword : Skill
 	[SerializeField] private Character _playerLinks;
 	[SerializeField] private DeathSpiral _deathSpiral;
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
+	[SerializeField] private GameObject _sword;
 
 
 	private int _hitInTheRow = 0;
@@ -23,7 +24,6 @@ public class IceSword : Skill
 	protected override bool IsCanCast => IsCanCastCheck();
 
     protected override int AnimTriggerCastDelay => 0;
-
     protected override int AnimTriggerCast => 0;
 
     private bool IsCanCastCheck()
@@ -99,6 +99,8 @@ public class IceSword : Skill
 
 	protected override void ClearData()
 	{
+
+		_sword.SetActive(false);
 		_target = null;
 	}
 
@@ -123,6 +125,7 @@ public class IceSword : Skill
 
 		CmdApplyDamage(damage2, _target.gameObject);
 
+		_sword.SetActive(true);
 		_energy.SumDamageMake(damage2.Value);
 		_rune.SumDamageMake(damage2.Value);
 	}
