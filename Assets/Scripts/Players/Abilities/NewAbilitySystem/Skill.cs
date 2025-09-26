@@ -812,6 +812,7 @@ public abstract class Skill : NetworkBehaviour
 
     protected virtual bool TryPayCost(bool startCooldown = true)
     {
+        if (_hero.Abilities.TryConsumeNextSkillFree()) return true;
         return TryPayCost(_skillEnergyCosts, startCooldown);
     }
 

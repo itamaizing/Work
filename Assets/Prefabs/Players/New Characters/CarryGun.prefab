@@ -10495,11 +10495,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._id
-      value: 303
+      value: 301
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._id
-      value: 301
+      value: 303
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._name
@@ -10507,11 +10507,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._name
-      value: Swarm
+      value: Psionics
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._name
-      value: Psionics
+      value: Swarm
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.size
@@ -10519,11 +10519,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.size
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentGroup.Array.size
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.data[0]
@@ -10560,7 +10560,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[0]
       value: 
-      objectReference: {fileID: 6895899952551955443}
+      objectReference: {fileID: 7928657652816047543}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[1]
       value: 
@@ -10572,7 +10572,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[3]
       value: 
-      objectReference: {fileID: 3167064817309890318}
+      objectReference: {fileID: 3265292172318105642}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.data[4]
       value: 
@@ -10592,7 +10592,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentGroup.Array.data[0]
       value: 
-      objectReference: {fileID: 7928657652816047543}
+      objectReference: {fileID: 6895899952551955443}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentGroup.Array.data[1]
       value: 
@@ -11093,6 +11093,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6895899952551955443}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3265292172318105642}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!114 &3838339407395912532 stripped
 MonoBehaviour:
@@ -11124,25 +11127,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u041A\u043E\u043D\u0432\u0435\u0440\u0442\u0430\u0446\u0438\u044F - \u043A\u043E\u043D\u0432\u0435\u0440\u0442\u0438\u0440\u0443\u0435\u0442
-      \u0432\u0441\u044E \xAB\u041F\u0441\u0438\u043E\u043D\u0438\u0447\u0435\u0441\u043A\u0443\u044E
-      \u044D\u043D\u0435\u0440\u0433\u0438\u044E\xBB 1 \u043A 1 \u0432 \xAB\u0410\u0442\u0430\u043A\u0443\u044E\u0449\u0443\u044E
-      \u043F\u0441\u0438\xBB, \u043D\u043E \u043D\u0435 \u0431\u043E\u043B\u0435\u0435
-      \u043C\u0430\u043A\u0441\u0438\u043C\u0430\u043B\u044C\u043D\u043E\u0433\u043E
-      \u0437\u0430\u043F\u0430\u0441\u0430 \xAB\u0410\u0442\u0430\u043A\u0443\u044E\u0449\u0435\u0439
-      \u043F\u0441\u0438\xBB, \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0443\u0435\u0442
-      3 \u0441\u0435\u043A\u0443\u043D\u0434\u044B.\u0410\u0442\u0430\u043A\u0443\u044E\u0449\u0430\u044F
-      \u043F\u0441\u0438 - \u043D\u0430\u0434\u0435\u043B\u044F\u0435\u0442 \u043D\u0435\u043A\u043E\u0442\u043E\u0440\u044B\u0435
-      \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438 \u0434\u043E\u043F\u043E\u043B\u043D\u0438\u0442\u0435\u043B\u044C\u043D\u044B\u043C\u0438
-      \u0441\u0432\u043E\u0439\u0441\u0442\u0432\u0430\u043C\u0438 \u0438 \u0443\u0440\u043E\u043D\u043E\u043C
-      \u0448\u043A\u043E\u043B\u044B \u0432\u043E\u0437\u0434\u0443\u0445\u0430."
+    - "\u041F\u0441\u0438\u043E\u043D\u0438\u0447\u0435\u0441\u043A\u0430\u044F \u044D\u043D\u0435\u0440\u0433\u0438\u044F
+      - \u043F\u043E\u0433\u043B\u043E\u0449\u0430\u0435\u0442 \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u043C\u044B\u0439
+      \u0443\u0440\u043E\u043D \u0437\u0430\u0442\u0440\u0430\u0447\u0438\u0432\u0430\u044F
+      1 \u0435\u0434\u0438\u043D\u0438\u0446\u0443 \u044D\u043D\u0435\u0440\u0433\u0438\u0438
+      \u043D\u0430 1 \u0435\u0434\u0438\u043D\u0438\u0446\u0430 \u0443\u0440\u043E\u043D\u0430.  
+      \u041F\u0441\u0438\u043E\u043D\u0438\u0447\u0435\u0441\u043A\u0430\u044F \u044D\u043D\u0435\u0440\u0433\u0438\u044F
+      \u043D\u0430\u043A\u0430\u043F\u043B\u0438\u0432\u0430\u0435\u0442\u0441\u044F:
+      - \u041F\u0440\u0438 \u043D\u0430\u043D\u0435\u0441\u0435\u043D\u0438\u0435
+      \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E \u0443\u0440\u043E\u043D\u0430
+      \u041A\u044D\u0440\u0440\u0438\u0433\u0430\u043D \u0438\u043B\u0438 \u0435\u0451
+      \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0430\u043C\u0438, 20% \u043E\u0442
+      \u0443\u0440\u043E\u043D\u0430 - \u041F\u0440\u0438 \u043F\u0435\u0440\u0435\u043C\u0435\u0449\u0435\u043D\u0438\u0438
+      \u041A\u044D\u0440\u0440\u0438\u0433\u0430\u043D \u0438\u043B\u0438 \u043A\u0430\u043A\u043E\u0439
+      \u043B\u0438\u0431\u043E \u0446\u0435\u043B\u0438 \u043E\u0442 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439
+      \u041A\u044D\u0440\u0440\u0438\u0433\u0430\u043D, 1 \u0435\u0434\u0438\u043D\u0438\u0446\u0430
+      \u044D\u043D\u0435\u0440\u0433\u0438\u0438 \u0437\u0430 \u043A\u0430\u0436\u0434\u0443\u044E
+      \u043A\u043B\u0435\u0442\u043A\u0443 \u043F\u0435\u0440\u0435\u043C\u0435\u0449\u0435\u043D\u0438\u044F.
+      \u041C\u0430\u043A\u0441\u0438\u043C\u0430\u043B\u044C\u043D\u0430\u044F \u0451\u043C\u043A\u043E\u0441\u0442\u044C
+      \u044D\u043D\u0435\u0440\u0433\u0438\u0438 \u0440\u0430\u0432\u043D\u044F\u0435\u0442\u0441\u044F
+      \u043C\u0430\u043A\u0441\u0438\u043C\u0430\u043B\u044C\u043D\u043E\u043C\u0443
+      \u0437\u0430\u043F\u0430\u0441\u0443 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F,
+      \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0443\u0435\u0442 12 \u0441\u0435\u043A\u0443\u043D\u0434. "
     _stateInfos: []
     IsOpen: 0
     Description: "\u041F\u0441\u0438\u043E\u043D\u0438\u043A\u0430"
     Icon: {fileID: 21300000, guid: a3a8d614ed6ad3341991d578d430dc27, type: 3}
   character: {fileID: 8319872899575431858}
   skillManager: {fileID: 8453834493232682211}
-  conversion: {fileID: 1791349742383392303}
+  psionicEnergySkill: {fileID: 2069191703388085909}
 --- !u!114 &3800400519009241627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11157,29 +11170,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "C \u0430\u0442\u0430\u043A\u0443\u044E\u0449\u0435\u0439 \u043F\u0441\u0438
-      \u044D\u043D\u0435\u0440\u0433\u0438\u0435\u0439 \u0437\u0430 1 \u0435\u0434
-      \u044D\u043D\u0435\u0440\u0433\u0438\u0438 1 \u0435\u0434\u0438\u043D\u0438\u0446\u0430
-      \u0434\u043E\u043F\u043E\u043B\u043D\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0433\u043E
-      \u0443\u0440\u043E\u043D\u0430, 30% \u043F\u043E \u043E\u0441\u043D\u043E\u0432\u043D\u043E\u0439
-      \u0446\u0435\u043B\u0438 50% \u043F\u043E \u0440\u044F\u0434\u043E\u043C \u0441\u0442\u043E\u044F\u0449\u0438\u043C
-      \u0446\u0435\u043B\u044F\u043C \u043D\u0430 0.5 \u043C\u0435\u0442\u0440\u0430,
-      \u043F\u0440\u0438 \u0437\u0430\u0442\u0440\u0430\u0442\u0435 \u0431\u043E\u043B\u044C\u0448\u0435
-      10 \u0435\u0434\u0438\u043D\u0438\u0446 \u0441 \u0442\u0435\u0445 \u043A\u0442\u043E
-      \u043F\u043E\u043B\u0443\u0447\u0438\u043B \u0443\u0440\u043E\u043D \u0441\u043D\u0438\u043C\u0430\u0435\u0442\u0441\u044F
-      1 \u043F\u043E\u043B\u043E\u0436\u0438\u0442\u0435\u043B\u044C\u043D\u044B\u0439
-      \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u044D\u0444\u0444\u0435\u043A\u0442
-      \u0438 \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
-      \u043F\u043B\u043E\u0449\u0430\u0434\u044C \u043F\u043E\u0440\u0430\u0436\u0435\u043D\u0438\u044F:-
-      10 \u0435\u0434\u0438\u043D\u0438\u0446 0.5 \u043C\u0435\u0442\u0440\u0430
-      - 20 \u0435\u0434\u0438\u043D\u0438\u0446 1.5 \u043C\u0435\u0442\u0440\u0430
-      - 30 \u0435\u0434\u0438\u043D\u0438\u0446 2.5 \u043C\u0435\u0442\u0440\u0430."
+    - "\u041A\u043E\u043D\u0432\u0435\u0440\u0442\u0430\u0446\u0438\u044F - \u043A\u043E\u043D\u0432\u0435\u0440\u0442\u0438\u0440\u0443\u0435\u0442
+      \u0432\u0441\u044E \xAB\u041F\u0441\u0438\u043E\u043D\u0438\u0447\u0435\u0441\u043A\u0443\u044E
+      \u044D\u043D\u0435\u0440\u0433\u0438\u044E\xBB 1 \u043A 1 \u0432 \xAB\u0410\u0442\u0430\u043A\u0443\u044E\u0449\u0443\u044E
+      \u043F\u0441\u0438\xBB, \u043D\u043E \u043D\u0435 \u0431\u043E\u043B\u0435\u0435
+      \u043C\u0430\u043A\u0441\u0438\u043C\u0430\u043B\u044C\u043D\u043E\u0433\u043E
+      \u0437\u0430\u043F\u0430\u0441\u0430 \xAB\u0410\u0442\u0430\u043A\u0443\u044E\u0449\u0435\u0439
+      \u043F\u0441\u0438\xBB, \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0443\u0435\u0442
+      3 \u0441\u0435\u043A\u0443\u043D\u0434\u044B. \u0410\u0442\u0430\u043A\u0443\u044E\u0449\u0430\u044F
+      \u043F\u0441\u0438 - \u043D\u0430\u0434\u0435\u043B\u044F\u0435\u0442 \u043D\u0435\u043A\u043E\u0442\u043E\u0440\u044B\u0435
+      \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438 \u0434\u043E\u043F\u043E\u043B\u043D\u0438\u0442\u0435\u043B\u044C\u043D\u044B\u043C\u0438
+      \u0441\u0432\u043E\u0439\u0441\u0442\u0432\u0430\u043C\u0438 \u0438 \u0443\u0440\u043E\u043D\u043E\u043C
+      \u0448\u043A\u043E\u043B\u044B \u0432\u043E\u0437\u0434\u0443\u0445\u0430."
     _stateInfos: []
     IsOpen: 1
-    Description: "\u041F\u0441\u0438 \u0445\u0435\u043B\u0438\u0446\u0435\u0440\u044B"
+    Description: "\u0410\u0442\u0430\u043A\u0443\u044E\u0449\u0430\u044F \u043F\u0441\u0438"
     Icon: {fileID: 21300000, guid: 05e9dc472a8a279439a75ccf171a5a6f, type: 3}
   character: {fileID: 8319872899575431858}
-  cheliceraStrike: {fileID: 640134254429411212}
+  conversion: {fileID: 1791349742383392303}
+  skillManager: {fileID: 8453834493232682211}
 --- !u!114 &6595352334955899536
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11292,7 +11301,9 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: b453e03083e173e4b81acdc55b40633f, type: 3}
   character: {fileID: 8319872899575431858}
   cheliceraStrike: {fileID: 640134254429411212}
+  jumpWithChelicera: {fileID: 0}
   clawStrike: {fileID: 1846342972592633463}
+  skillManager: {fileID: 0}
 --- !u!114 &5407939514073083676
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11508,6 +11519,43 @@ MonoBehaviour:
   character: {fileID: 8319872899575431858}
   skillManager: {fileID: 8453834493232682211}
   tentacles: {fileID: 431818094498011482}
+--- !u!114 &3265292172318105642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3907305221297154583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d5db4f77011350419a3f8711dce0af6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0423\u0434\u0430\u0440 \u0441 \u0445\u0435\u043B\u0438\u0446\u0435\u0440\u043E\u0439
+      \u0441 \u0430\u0442\u0430\u043A\u0443\u044E\u0449\u0435\u0439 \u043F\u0441\u0438
+      \u044D\u043D\u0435\u0440\u0433\u0438\u0435\u0439 \u0437\u0430 1 \u0435\u0434\u0438\u043D\u0438\u0446\u044B
+      \u044D\u043D\u0435\u0440\u0433\u0438\u0438 1 \u0435\u0434 \u0434\u043E\u043F\u043E\u043B\u043D\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0433\u043E
+      \u0443\u0440\u043E\u043D\u0430, 30% \u043F\u043E \u043E\u0441\u043D\u043E\u0432\u043D\u043E\u0439
+      \u0446\u0435\u043B\u0438 50% \u043F\u043E \u0440\u044F\u0434\u043E\u043C \u0441\u0442\u043E\u044F\u0449\u0438\u043C
+      \u0446\u0435\u043B\u044F\u043C \u043D\u0430 0.5 \u043C\u0435\u0442\u0440\u0430,
+      \u043F\u0440\u0438 \u0437\u0430\u0442\u0440\u0430\u0442\u0435 \u0431\u043E\u043B\u044C\u0448\u0435
+      10 \u0435\u0434\u0438\u043D\u0438\u0446 \u0441 \u0442\u0435\u0445 \u043A\u0442\u043E
+      \u043F\u043E\u043B\u0443\u0447\u0438\u043B \u0443\u0440\u043E\u043D \u0441\u043D\u0438\u043C\u0430\u0435\u0442\u0441\u044F
+      1 \u043F\u043E\u043B\u043E\u0436\u0438\u0442\u0435\u043B\u044C\u043D\u044B\u0439
+      \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u044D\u0444\u0444\u0435\u043A\u0442
+      \u0438 \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
+      \u043F\u043B\u043E\u0449\u0430\u0434\u044C \u043F\u043E\u0440\u0430\u0436\u0435\u043D\u0438\u044F:
+      - 10 \u0435\u0434\u0438\u043D\u0438\u0446 0.5 \u043C\u0435\u0442\u0440\u0430
+      - 20 \u0435\u0434\u0438\u043D\u0438\u0446 1.5 \u043C\u0435\u0442\u0440\u0430
+      - 30 \u0435\u0434\u0438\u043D\u0438\u0446 2.5 \u043C\u0435\u0442\u0440\u0430"
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u041F\u0441\u0438 \u0445\u0435\u043B\u0438\u0446\u0435\u0440\u044B "
+    Icon: {fileID: 21300000, guid: 5b59f4ed95ee75548aaedc2c094f75e0, type: 3}
+  character: {fileID: 8319872899575431858}
+  cheliceraStrike: {fileID: 640134254429411212}
 --- !u!114 &4260348460032838645 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -11681,8 +11729,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: ca5ff545a29724646a72801386834fcd, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
@@ -11866,8 +11914,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 7137d5e19f5e1ec4c8428fe3ba81db49, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []

@@ -34,6 +34,7 @@ public class SkillManager : MonoBehaviour
     public Skill PreviewCastedSkill { get; private set; }
     public SkillQueue SkillQueue { get => _skillQueue; }
     public Skill[] SelectedSkills { get => _selectedSkills; }
+    public bool IsNextSkillFree { get; private set; }
     public IEnumerable<Skill> DefaultSkills => _skills.Where(o => o.IsTalentSpell == false);
     public IEnumerable<Skill> TalentsSkills => _skills.Where(o => o.IsTalentSpell);
 
@@ -197,6 +198,17 @@ public class SkillManager : MonoBehaviour
     {
         SkillAdded?.Invoke(null);
     }
+
+    public bool TryConsumeNextSkillFree()
+    {
+        if (!IsNextSkillFree)
+            return false;
+
+        IsNextSkillFree = false;
+        return true;
+    }
+
+    public void SetNextSkillFree() => IsNextSkillFree = true;
 
     public void DeactivateSkill(Skill skill)
     {

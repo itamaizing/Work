@@ -12,6 +12,7 @@ public class IceSword : Skill
 	[SerializeField] private DeathSpiral _deathSpiral;
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 	[SerializeField] private GameObject _sword;
+	[SerializeField] private AudioClip audioClip;
 
 
 	private int _hitInTheRow = 0;
@@ -19,14 +20,16 @@ public class IceSword : Skill
 	private Character _target;
 	private float _duration = 3;
 	private Energy _energy;
+	private Coroutine coroutineSwordTime;
 	private RuneComponent _rune;
 	private bool _critDmg = false;
+	private AudioSource _audioSource;
 	protected override bool IsCanCast => IsCanCastCheck();
 
-    protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerCast => 0;
+	protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => Animator.StringToHash("IceSword");
 
-    private bool IsCanCastCheck()
+	private bool IsCanCastCheck()
 	{
 		if (_target == null) return false;
 
@@ -51,6 +54,7 @@ public class IceSword : Skill
 			}
 		}
 
+		_audioSource = GetComponent<AudioSource>();
 	}
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -99,8 +103,6 @@ public class IceSword : Skill
 
 	protected override void ClearData()
 	{
-
-		_sword.SetActive(false);
 		_target = null;
 	}
 
@@ -125,20 +127,54 @@ public class IceSword : Skill
 
 		CmdApplyDamage(damage2, _target.gameObject);
 
-		_sword.SetActive(true);
 		_energy.SumDamageMake(damage2.Value);
 		_rune.SumDamageMake(damage2.Value);
+	}
+
+	private IEnumerator ISwordTimer()
+    {
+		Coroutine currentCoroutine = coroutineSwordTime;
+		yield return new WaitForSeconds(2.5f);
+
+		if (currentCoroutine == coroutineSwordTime)
+		{
+			_sword.SetActive(false);
+			coroutineSwordTime = null;
+		}
 	}
 
 	[Command]
 	private void CmdAdd(GameObject enemy)
 	{
 		Character enemyCharacter = enemy.GetComponent<Character>();
+		RpcPlayShotSound();
 		enemyCharacter.CharacterState.AddState(States.Cooling, _duration, 0, _playerLinks.gameObject, name);
+	}
+
+	[ClientRpc]
+	private void RpcPlayShotSound()
+	{
+		if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
 	}
 
 	public void TalentCritDmg(bool value)
 	{
 		_critDmg = value;
+	}
+
+	public void CorutineSwordTimeStart()
+	{
+        if (coroutineSwordTime != null) StopCoroutine(coroutineSwordTime);
+        coroutineSwordTime = StartCoroutine(ISwordTimer());
+    }
+
+	public void IceSwordCast()
+	{
+		AnimStartCastCoroutine();
+	}
+
+	public void IceSwordEnd()
+	{
+		AnimCastEnded();
 	}
 }

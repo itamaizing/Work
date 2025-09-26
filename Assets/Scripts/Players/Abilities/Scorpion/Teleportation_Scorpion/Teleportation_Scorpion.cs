@@ -24,6 +24,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     //private MoveComponent _tempTargetMove;
 
     [SerializeField] private ConsumeCombo_Scorpion consumeCombo_Scorpion;
+    [SerializeField] private ScorpionPassive scorpionPassive;
 
     [field: Header("Test Combo_Upgrade")]
 
@@ -248,6 +249,13 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
         {
             if (targetState != null) extraDuration = targetState.CheckStateStacks(States.ComboState);
             if (UnityEngine.Random.value <= 0.3f) _hero.CharacterState.CmdAddState(States.IdealEvade, 1f + extraDuration, 30f, _hero.gameObject, name);
+        }
+
+        if (scorpionPassive.IsImpulseMatter)
+        {
+            var passive = _hero.GetComponent<SkillManager>().Abilities.FirstOrDefault(s => s is ScorpionPassive) as ScorpionPassive;
+
+            passive?.ActivateEnergyFreeAfterTeleport();
         }
 
         yield return null;

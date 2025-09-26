@@ -226,4 +226,11 @@ public class BasePsionicEnergy : Resource, IDamageable
     {
         throw new NotImplementedException();
     }
+
+    public override void Add(float value)
+    {
+        if (psionicEnergySkill == null || !psionicEnergySkill.IsPsiEnergyActive) return;
+
+        base.Add(value);
+    }
 }

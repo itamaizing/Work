@@ -22,16 +22,25 @@ public class PsionicEnergySkill : Skill, IPassiveSkill
     [SerializeField] private BasePsionicEnergy basePsionicEnergy;
     [SerializeField] private float modifier = 1f;
 
+    private bool _isPsiEnergyActive = false;
+
+    public bool IsPsiEnergyActive { get => _isPsiEnergyActive; set => _isPsiEnergyActive = value;}
+
+    public void PsiEnergyActive(bool value) => _isPsiEnergyActive = value;
+
     public void HandleIncomingDamage(Damage damage, Skill skill)
     {
-        if (damage.Value <= 0 || basePsionicEnergy.CurrentValue <= 0) return;
+        if (_isPsiEnergyActive)
+        {
+            if (damage.Value <= 0 || basePsionicEnergy.CurrentValue <= 0) return;
 
-        float absorptionAmount = Mathf.Min(basePsionicEnergy.CurrentValue, damage.Value);
-        basePsionicEnergy.UsePsiEnergy(absorptionAmount);
+            float absorptionAmount = Mathf.Min(basePsionicEnergy.CurrentValue, damage.Value);
+            basePsionicEnergy.UsePsiEnergy(absorptionAmount);
 
-        float reduced = absorptionAmount * modifier;
-        damage.Value -= reduced;
+            float reduced = absorptionAmount * modifier;
+            damage.Value -= reduced;
 
-        damage.Value = Mathf.Max(damage.Value, 0f);
+            damage.Value = Mathf.Max(damage.Value, 0f);
+        }
     }
 }

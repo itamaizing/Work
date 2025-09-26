@@ -5,17 +5,18 @@ using UnityEngine;
 public class FrostTalent_2 : Talent
 {
     [SerializeField] private IcePuddle icePuddle;
+    [SerializeField] IceShadow iceShadow;
     [SerializeField] private SkillManager skillManager;
 
     public override void Enter()
     {
+        skillManager.ActivateSkill(iceShadow);
         skillManager.ActivateSkill(icePuddle);
-        icePuddle.IceDeathInIcePudleTalentActive(true, Data.DescriptionsForInfoPanel[1]);
     }
 
     public override void Exit()
     {
-        skillManager.ActivateSkill(icePuddle);
-        icePuddle.IceDeathInIcePudleTalentActive(true, Data.DescriptionsForInfoPanel[1]);
+        skillManager.DeactivateSkill(iceShadow);
+        skillManager.DeactivateSkill(icePuddle);
     }
 }

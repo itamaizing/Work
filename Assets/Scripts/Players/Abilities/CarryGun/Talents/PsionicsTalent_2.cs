@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class PsionicsTalent_2 : Talent
 {
-    [SerializeField] private CheliceraStrike cheliceraStrike;
+    [SerializeField] private Conversion conversion;
+    [SerializeField] private SkillManager skillManager;
 
     public override void Enter()
     {
-        cheliceraStrike.PsionicsTalentTwo(true, Data.DescriptionsForInfoPanel[0]);
+        skillManager.ActivateSkill(conversion);
     }
 
     public override void Exit()
     {
-        cheliceraStrike.PsionicsTalentTwo(false, Data.DescriptionsForInfoPanel[0]);
+        skillManager.DeactivateSkill(conversion);
     }
 }
