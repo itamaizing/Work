@@ -1,86 +1,58 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class SpellMoveTo : Skill
 {
     [SerializeField] private NavMeshAgent _agent;
-    [SerializeField] private float _enemyCheckRadius = 6;
-    [SerializeField] private LayerMask _enemyLayerMask;
-    [SerializeField] private float _damageDeley = 0.5f;
+    [SerializeField] private float _damageDelay = 0.5f;
+    [SerializeField] private float _attackDistance = 3f;
 
     private Vector3 _targetPoint = Vector3.positiveInfinity;
+    private Vector3 _runtimeTargetPoint = Vector3.positiveInfinity;
     private Character _target = null;
-    private Character _enemyTarget = null;
-    private float _currentDamageDeley;
-    private Coroutine _onClickCoroutine;
+    private Coroutine _attackCoroutine;
+    private bool _isChainedAttack = false;
+    private float _lastAttackTime;
 
     protected override int AnimTriggerCastDelay => 0;
-
     protected override int AnimTriggerCast => 0;
-
     protected override bool IsCanCast => true;
-
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _target = (Character)targetInfo.Targets[0];
-        _targetPoint = targetInfo.Points[0];
+        if (targetInfo.Points != null && targetInfo.Points.Count > 0) _targetPoint = targetInfo.Points[0];
     }
 
     protected virtual void DealDamage()
     {
+        if (_target == null) return;
+
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(_damageValue),
             Type = DamageType,
             PhysicAttackType = AttackRangeType,
         };
-        CmdApplyDamage(damage, _enemyTarget.gameObject);
+
+        CmdApplyDamage(damage, _target.gameObject);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_onClickCoroutine != null)
-            StopCoroutine(_onClickCoroutine);
+        _isChainedAttack = false;
 
-        _onClickCoroutine = StartCoroutine(OnClickJob());
-
-        while (_targetPoint != Vector3.positiveInfinity)
+        while (Vector3.Distance(transform.position, _runtimeTargetPoint) > _agent.stoppingDistance + 0.1f)
         {
-            if(_target != null)
-                _targetPoint = _target.transform.position;
-
-            _enemyTarget = CheckEnemy(_enemyCheckRadius);
-
-            if(_enemyTarget != null)
-            {
-                _agent.SetDestination(_enemyTarget.transform.position);
-
-                if(Vector3.Distance(transform.position, _enemyTarget.transform.position) <= Radius)
-                {
-                    _currentDamageDeley += Time.deltaTime;
-
-                    if (_currentDamageDeley >= _damageDeley)
-                    {
-                        DealDamage();
-                        _currentDamageDeley = 0;
-                    }
-                }
-            }
-            else
-            {
-                _currentDamageDeley = 0;
-                _agent.SetDestination(_targetPoint);
-            }
             yield return null;
-        }
-        yield return null;
+            _agent.SetDestination(_runtimeTargetPoint);
 
-        if (_onClickCoroutine != null)
-            StopCoroutine(_onClickCoroutine);
+            if (_runtimeTargetPoint != _targetPoint) yield break;
+        }
+
+        if (_attackCoroutine != null) StopCoroutine(_attackCoroutine);
+        _attackCoroutine = StartCoroutine(AttackNearbyEnemiesJob());
     }
 
     protected override void ClearData()
@@ -88,73 +60,97 @@ public class SpellMoveTo : Skill
         _agent.SetDestination(transform.position);
         _targetPoint = Vector3.positiveInfinity;
         _target = null;
-        
-        if(_onClickCoroutine != null)
-            StopCoroutine(_onClickCoroutine);
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
-        TargetInfo targetInfo = new TargetInfo();
-
-        while (float.IsPositiveInfinity(_targetPoint.x) && _target == null)
+        while (float.IsPositiveInfinity(_targetPoint.x))
         {
             if (GetMouseButton)
             {
                 _target = GetRaycastTarget();
 
-                targetInfo.Targets.Add(_target);
-
                 if (_target == null)
                 {
                     _targetPoint = GetMousePoint();
-
-                    targetInfo.Points.Add( _targetPoint );
                 }
                 else
                 {
                     _targetPoint = _target.transform.position;
-
-                    targetInfo.Points.Add( _targetPoint );
                 }
+
+                _runtimeTargetPoint = _targetPoint;
+
             }
             yield return null;
         }
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(_runtimeTargetPoint);
         targetDataSavedCallback(targetInfo);
     }
 
-    private Character CheckEnemy(float radius)
+    private IEnumerator AttackNearbyEnemiesJob()
     {
-        Collider[] coliders = Physics.OverlapSphere(_targetPoint, radius, _enemyLayerMask);
-        Character enemy = null;
+        _isChainedAttack = true;
 
-        if(coliders.Length > 0)
+        while (_isChainedAttack)
         {
-            Debug.Log(coliders[0].name);
-            coliders[0].TryGetComponent<Character>(out enemy);
-        }
+            Collider[] hits = Physics.OverlapSphere(transform.position, Radius, _targetsLayers);
 
-        return enemy;
-    }
+            Character nearest = null;
+            float minDist = float.MaxValue;
 
-    private IEnumerator OnClickJob()
-    {
-        while (true)
-        {
-            if (Input.GetMouseButton(0))
+            foreach (var hit in hits)
             {
-                _target = GetRaycastTarget();
-
-                if (_target == null)
+                Character enemy = hit.GetComponent<Character>();
+                if (enemy != null && !enemy.IsDead)
                 {
-                    _targetPoint = GetMousePoint();
-                }
-                else
-                {
-                    _targetPoint = _target.transform.position;
+                    float dist = Vector3.Distance(transform.position, enemy.transform.position);
+                    if (dist < minDist)
+                    {
+                        minDist = dist;
+                        nearest = enemy;
+                    }
                 }
             }
-            yield return null;
+
+            if (nearest != null)
+            {
+                _agent.SetDestination(nearest.transform.position);
+
+                while (nearest != null && !nearest.IsDead && Vector3.Distance(transform.position, nearest.transform.position) > Radius)
+                {
+                    yield return null;
+
+                    if (Vector3.Distance(transform.position, nearest.transform.position) <= _attackDistance)
+
+                    if (_runtimeTargetPoint != _targetPoint)
+                    {
+                        _isChainedAttack = false;
+                        yield break;
+                    }
+                }
+
+                if (nearest != null && !nearest.IsDead && Time.time - _lastAttackTime > _damageDelay)
+                {
+                    float dist = Vector3.Distance(transform.position, nearest.transform.position);
+
+                    if (dist <= _attackDistance)
+                    {
+                        _target = nearest;
+                        DealDamage();
+                        _lastAttackTime = Time.time;
+                    }
+                }
+
+                yield return new WaitForSeconds(_damageDelay);
+            }
+            else
+            {
+                _isChainedAttack = false;
+                yield break;
+            }
         }
     }
 }

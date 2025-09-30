@@ -76,14 +76,11 @@ public class PriestPassiveSkill : Skill, IPassiveSkill
             };
 
             ApplyHeal(extraHeal, Hero.gameObject, this, nameof(PriestPassiveSkill));
-            Debug.Log($"[PriestPassive] Restored {healAmount} HP from Dark damage ({damage.Value})");
         }
     }
 
     private void HandleHealDone(Heal heal)
     {
-        Debug.Log("1");
-
         if (!_isDamageDarkHealLightAddHealth) return;
         if (heal.DamageableSkill == null) return;
         if (heal.DamageableSkill.School != Schools.Light) return;
@@ -97,7 +94,5 @@ public class PriestPassiveSkill : Skill, IPassiveSkill
         };
 
         CmdApplyHeal(extraHeal, Hero.gameObject, this, nameof(PriestPassiveSkill));
-
-        Debug.Log($"[PriestPassive] Restored {healAmount} HP from Light healing ({heal.Value})");
     }
 }

@@ -35396,7 +35396,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1076844638941487828, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1076844638941487828, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: m_CarveOnlyStationary
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1766286226394323097, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
       propertyPath: m_AnchorMax.x
@@ -35521,13 +35525,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7924719075161587928, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
-    - targetCorrespondingSourceObject: {fileID: 6850243466379731925, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
 --- !u!1 &857329295
 GameObject:
@@ -46187,7 +46185,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1076844638941487828, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1076844638941487828, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: m_CarveOnlyStationary
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1766286226394323097, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
       propertyPath: m_AnchorMax.x
@@ -66411,7 +66413,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1076844638941487828, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1076844638941487828, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: m_CarveOnlyStationary
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1766286226394323097, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
       propertyPath: m_AnchorMax.x

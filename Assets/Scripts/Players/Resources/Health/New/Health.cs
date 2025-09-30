@@ -45,7 +45,10 @@ public class Health : Resource, IDamageable, IHealingable
     public event Action ShieldDeactivated;
 
     public event Action<float, DamageType, Skill> ShieldDamageTaken;
-    public event Action<Damage, Skill> OnBeforeTakeDamage;
+    public event Action<Damage, Skill> OnBeforeTakeDamage; //Test
+
+    public delegate void BeforeDamageDelegate(ref Damage damage, Skill skill);
+    public event BeforeDamageDelegate OnBeforeDamage;
 
     public event Action<float, float> EvadeMeleeDamageChanged;
     public event Action<float, float> EvadeRangeDamageChanged;
@@ -69,7 +72,8 @@ public class Health : Resource, IDamageable, IHealingable
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
         OnBeforeTakeDamage?.Invoke(damage, skill);
-        
+        OnBeforeDamage?.Invoke(ref damage, skill); //Test
+
         if (TryEvade(damage.Type, damage.PhysicAttackType))
         {
             ClientRpcEvade();

@@ -17,7 +17,6 @@ public class Tentacles : Skill
 
     private bool _isPlacingTentacles = false;
     private bool _isClickedOnGround = false;
-    private bool _isPsionicsTalentThree = false;
 
     private Vector3 _spawnPoint = Vector3.positiveInfinity;
     private HashSet<Character> _charactersInPreview = new HashSet<Character>();
@@ -29,6 +28,16 @@ public class Tentacles : Skill
     private Coroutine _radiusUpdateCoroutine;
     private MinionComponent _currentMinion;
     private float _spentAttackingPsiEnergy;
+
+    #region Talent
+    private bool _isPsionicsTalentThree = false;
+    private bool _isCocoonSpawnTalent = false;
+    private bool _isAttractionTentacleTalent = false;
+
+    public void PsionicsTalentThree(bool value) => _isPsionicsTalentThree = value;
+    public void CocoonSpawnTalent(bool value) => _isCocoonSpawnTalent = value;
+    public void AttractionTentacleTalent(bool value) => _isAttractionTentacleTalent = value;
+    #endregion
 
     public TentacleProjectile CurrentTentacle { get => _currentTentacle; set => _currentTentacle = value; }
 
@@ -137,7 +146,6 @@ public class Tentacles : Skill
 
         while (true)
         {
-            Debug.Log("2");
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             float sphereRadius = 0.1f;
@@ -241,7 +249,11 @@ public class Tentacles : Skill
         if (!IsValidVector(_spawnPoint)) yield break;
 
         if (_target != null) CmdSpawnTentacles(_spawnPoint, _target, _spentAttackingPsiEnergy);
-        else SpawnCocoon(_spawnPoint);
+
+        else
+        {
+            if (_isCocoonSpawnTalent) SpawnCocoon(_spawnPoint);
+        } 
 
         ClearData();
         _skillRender.StopDrawRadius();
@@ -331,7 +343,7 @@ public class Tentacles : Skill
         _currentTentacle = Instantiate(tentaclesPrefab, position, Quaternion.identity);
         SceneManager.MoveGameObjectToScene(_currentTentacle.gameObject, _hero.NetworkSettings.MyRoom);
 
-        _currentTentacle.Init(_player, target, position, target.transform.position, true, _isPsionicsTalentThree, _spentAttackingPsiEnergy, this);
+        _currentTentacle.Init(_player, target, position, target.transform.position, true, _isPsionicsTalentThree, _isAttractionTentacleTalent, _spentAttackingPsiEnergy, this);
 
         NetworkServer.Spawn(_currentTentacle.gameObject);
         RpcInitTentacles(_currentTentacle.gameObject, target, position, _spentAttackingPsiEnergy);
@@ -361,7 +373,7 @@ public class Tentacles : Skill
         if (!IsValidVector(position)) return;
         if (tentacleObject == null) return;
 
-        tentacleObject.GetComponent<TentacleProjectile>().Init(_player, target, position, target.transform.position, true, _isPsionicsTalentThree, _spentAttackingPsiEnergy, this);
+        tentacleObject.GetComponent<TentacleProjectile>().Init(_player, target, position, target.transform.position, true, _isPsionicsTalentThree, _isAttractionTentacleTalent, _spentAttackingPsiEnergy, this);
     }
 
     [ClientRpc]
@@ -380,13 +392,4 @@ public class Tentacles : Skill
     {
         _currentMinion = newMinion;
     }
-
-    #region Talent
-
-    public void PsionicsTalentThree(bool value)
-    {
-        _isPsionicsTalentThree = value;
-    }
-
-    #endregion
 }

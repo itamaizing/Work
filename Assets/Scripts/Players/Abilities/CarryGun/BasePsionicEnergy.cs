@@ -35,9 +35,6 @@ public class BasePsionicEnergy : Resource, IDamageable
         {
             MaxValue = _player.Data.GetAttributeValue(AttributeNames.Health);
             _player.Health.Shields.Add(this);
-
-            if (_player.DamageTracker != null) _player.DamageTracker.OnDamageTracked += OnDamageDealt;
-            if (_player.Health != null) _player.Health.OnBeforeTakeDamage += psionicEnergySkill.HandleIncomingDamage;
         }
     }
 
@@ -46,10 +43,16 @@ public class BasePsionicEnergy : Resource, IDamageable
         UpdatePsionicaBar();
     }
 
+    private void OnEnable()
+    {
+        if (_player.DamageTracker != null) _player.DamageTracker.OnDamageTracked += OnDamageDealt;
+        if (_player.Health != null) _player.Health.OnBeforeDamage += psionicEnergySkill.HandleIncomingDamage;
+    }
+
     private void OnDestroy()
     {
         if (_player != null && _player.DamageTracker != null) _player.DamageTracker.OnDamageTracked -= OnDamageDealt;
-        if (_player.Health != null) _player.Health.OnBeforeTakeDamage -= psionicEnergySkill.HandleIncomingDamage;
+        if (_player.Health != null) _player.Health.OnBeforeDamage -= psionicEnergySkill.HandleIncomingDamage;
     }
 
     private void OnDamageDealt(Damage damage, GameObject target)
@@ -164,8 +167,6 @@ public class BasePsionicEnergy : Resource, IDamageable
         }
 
         basePsionicsSlider.value = normalizedValue;
-
-        Debug.Log($"??????? ??? ???????: {CurrentValue}");
     }
 
     private IEnumerator EnergyDecayCoroutine()
@@ -180,8 +181,7 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
-        if (damage.Value == 0)
-            return true;
+        if (damage.Value == 0) return true;
 
         if (CurrentValue > 0)
         {
@@ -191,8 +191,8 @@ public class BasePsionicEnergy : Resource, IDamageable
 
             _isInternalPsiEnergy = CurrentValue > 0;
             RpcInternalPsiEnergyChanged(_isInternalPsiEnergy);
-
             UpdatePsionicaBar();
+
             return true;
         }
 

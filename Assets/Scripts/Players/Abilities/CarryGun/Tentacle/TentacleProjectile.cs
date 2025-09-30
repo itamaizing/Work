@@ -11,6 +11,7 @@ public class TentacleProjectile : NetworkBehaviour
     [SerializeField] private LayerMask obstecls;
     [SerializeField] private float basePsi = 1f;
     [SerializeField] private float grabDuration = 1.2f;
+    [SerializeField] private float lifeTentacle = 4f;
     [SerializeField] private LineRenderer tentacleLine;
     [SerializeField] private Transform tentaclePoint;
 
@@ -21,9 +22,10 @@ public class TentacleProjectile : NetworkBehaviour
     private Vector3 _endPosition;
 
     private bool _isAttackingPsiEnergyActive;
+    private bool _isAttractionTentacleActive;
     private float _spentAttackingPsiEnergy;
 
-    private float _radius = 3f;
+    private float _radius = 4f;
     private bool _radiusView;
     private bool _isCollidedWithOtherCharacter = false;
     private bool _isPullTarget = false;
@@ -62,7 +64,7 @@ public class TentacleProjectile : NetworkBehaviour
     }
 
     public void Init(Character player, Character target, Vector3 startPosition, Vector3 endPosition,
-        bool isAttackingPsiEnergyActive, bool isPsionicsTalentThree, float currentDamage, Skill skill)
+        bool isAttackingPsiEnergyActive, bool isPsionicsTalentThree, bool isAttractionTentacleTalent, float currentDamage, Skill skill)
     {
         _isPsionicsTalentThree = isPsionicsTalentThree;
         _player = player;
@@ -70,13 +72,13 @@ public class TentacleProjectile : NetworkBehaviour
         _startPosition = startPosition;
         _endPosition = endPosition;
         _isAttackingPsiEnergyActive = isAttackingPsiEnergyActive;
+        _isAttractionTentacleActive = isAttractionTentacleTalent;
         _spentAttackingPsiEnergy = currentDamage;
         _isPsionicsTalentThree = 
         _skill = skill;
 
         transform.position = startPosition;
 
-        float lifeTentacle = grabDuration * 2;
         Invoke(nameof(ReleaseTarget), lifeTentacle);
     }
 
@@ -291,8 +293,7 @@ public class TentacleProjectile : NetworkBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (!_isPullTarget)
-            StartTentaclesGrab();
+        if (_isAttractionTentacleActive && !_isPullTarget) StartTentaclesGrab();
     }
 
     private void OnTriggerExit(Collider other)
