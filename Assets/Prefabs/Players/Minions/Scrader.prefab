@@ -13770,7 +13770,7 @@ MonoBehaviour:
   _moving: 1
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 768
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -13795,6 +13795,9 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   _agent: {fileID: 6350168282755984019}
+  _alliesLayer:
+    serializedVersion: 2
+    m_Bits: 512
   _damageDelay: 0.5
   _attackDistance: 2
 --- !u!114 &2383359178136862689

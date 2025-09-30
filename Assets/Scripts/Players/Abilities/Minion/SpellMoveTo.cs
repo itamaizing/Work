@@ -6,13 +6,16 @@ using UnityEngine.AI;
 public class SpellMoveTo : Skill
 {
     [SerializeField] private NavMeshAgent _agent;
+    [SerializeField] private LayerMask _alliesLayer;
     [SerializeField] private float _damageDelay = 0.5f;
     [SerializeField] private float _attackDistance = 3f;
 
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private Vector3 _runtimeTargetPoint = Vector3.positiveInfinity;
     private Character _target = null;
+    private Character _runtimeTarget = null; 
     private Coroutine _attackCoroutine;
+    private Coroutine _followAllyCoroutine;
     private bool _isChainedAttack = false;
     private float _lastAttackTime;
 
@@ -42,24 +45,21 @@ public class SpellMoveTo : Skill
     protected override IEnumerator CastJob()
     {
         _isChainedAttack = false;
+        bool isAllyTarget = _runtimeTarget != null && ((_alliesLayer.value & (1 << _runtimeTarget.gameObject.layer)) != 0);
 
-        while (Vector3.Distance(transform.position, _runtimeTargetPoint) > _agent.stoppingDistance + 0.1f)
+        if (isAllyTarget)
         {
-            yield return null;
-            _agent.SetDestination(_runtimeTargetPoint);
-
-            if (_runtimeTargetPoint != _targetPoint) yield break;
+            if (_followAllyCoroutine != null) StopCoroutine(_followAllyCoroutine);
+            _followAllyCoroutine = StartCoroutine(FollowAllyCoroutine());
         }
 
-        if (_attackCoroutine != null) StopCoroutine(_attackCoroutine);
-        _attackCoroutine = StartCoroutine(AttackNearbyEnemiesJob());
+        else yield return StartCoroutine(MoveToPointCoroutine());
     }
 
     protected override void ClearData()
     {
         _agent.SetDestination(transform.position);
         _targetPoint = Vector3.positiveInfinity;
-        _target = null;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
@@ -69,6 +69,7 @@ public class SpellMoveTo : Skill
             if (GetMouseButton)
             {
                 _target = GetRaycastTarget();
+                _runtimeTarget = _target;
 
                 if (_target == null)
                 {
@@ -90,13 +91,39 @@ public class SpellMoveTo : Skill
         targetDataSavedCallback(targetInfo);
     }
 
+    private IEnumerator MoveToPointCoroutine()
+    {
+        while (Vector3.Distance(transform.position, _runtimeTargetPoint) > _agent.stoppingDistance + 0.1f)
+        {
+             _agent.SetDestination(_runtimeTargetPoint);
+
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        if (_attackCoroutine != null) StopCoroutine(_attackCoroutine);
+        _attackCoroutine = StartCoroutine(AttackNearbyEnemiesJob());
+    }
+
+    private IEnumerator FollowAllyCoroutine()
+    {
+        while (_runtimeTarget != null && !_runtimeTarget.IsDead)
+        {
+            _agent.SetDestination(_runtimeTarget.transform.position);
+
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        _agent.SetDestination(transform.position);
+    }
+
     private IEnumerator AttackNearbyEnemiesJob()
     {
         _isChainedAttack = true;
+        bool foundEnemy = false;
 
         while (_isChainedAttack)
         {
-            Collider[] hits = Physics.OverlapSphere(transform.position, Radius, _targetsLayers);
+            Collider[] hits = Physics.OverlapSphere(transform.position, Radius, LayerMask.GetMask("Enemy"));
 
             Character nearest = null;
             float minDist = float.MaxValue;
@@ -122,14 +149,6 @@ public class SpellMoveTo : Skill
                 while (nearest != null && !nearest.IsDead && Vector3.Distance(transform.position, nearest.transform.position) > Radius)
                 {
                     yield return null;
-
-                    if (Vector3.Distance(transform.position, nearest.transform.position) <= _attackDistance)
-
-                    if (_runtimeTargetPoint != _targetPoint)
-                    {
-                        _isChainedAttack = false;
-                        yield break;
-                    }
                 }
 
                 if (nearest != null && !nearest.IsDead && Time.time - _lastAttackTime > _damageDelay)
@@ -149,8 +168,13 @@ public class SpellMoveTo : Skill
             else
             {
                 _isChainedAttack = false;
-                yield break;
+                break;
             }
+        }
+
+        if (!foundEnemy && !_runtimeTargetPoint.Equals(Vector3.positiveInfinity))
+        {
+            _agent.SetDestination(_runtimeTargetPoint);
         }
     }
 }

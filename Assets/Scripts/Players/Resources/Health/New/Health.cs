@@ -72,7 +72,7 @@ public class Health : Resource, IDamageable, IHealingable
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
         OnBeforeTakeDamage?.Invoke(damage, skill);
-        OnBeforeDamage?.Invoke(ref damage, skill); //Test
+        OnBeforeDamage?.Invoke(ref damage, skill); //Test: we transmit incoming damage before it is inflicted by the enem
 
         if (TryEvade(damage.Type, damage.PhysicAttackType))
         {
@@ -87,6 +87,18 @@ public class Health : Resource, IDamageable, IHealingable
         }
 
         Defence(ref damage);
+
+        // Test: If the state has a damage modification, it increases the damage.
+        if (TryGetComponent(out Character character))
+        {
+            foreach (var state in character.CharacterState.CurrentStates)
+            {
+                if (state is IDamageTakenModifier modifier)
+                {
+                    damage.Value = modifier.ModifyIncomingDamage(damage);
+                }
+            }
+        }
 
         UseShields(ref damage, skill);
 

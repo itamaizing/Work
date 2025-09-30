@@ -5740,7 +5740,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8805757151207459626}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: EffectsStates
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36879,6 +36879,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: FlyChecker
       objectReference: {fileID: 0}
+    - target: {fileID: 2258005987987123644, guid: ef34d8ef179403a4faf1dbfd8e8b5187, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5851851832670087865, guid: ef34d8ef179403a4faf1dbfd8e8b5187, type: 3}
       propertyPath: m_RootOrder
       value: -1
@@ -37002,7 +37006,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7875684509955136938, guid: e5b733c903c6d9143af357e086455e86, type: 3}
       propertyPath: _icons.Array.size
-      value: 54
+      value: 55
       objectReference: {fileID: 0}
     - target: {fileID: 7875684509955136938, guid: e5b733c903c6d9143af357e086455e86, type: 3}
       propertyPath: _icons.Array.data[46]
@@ -37036,6 +37040,10 @@ PrefabInstance:
       propertyPath: _icons.Array.data[53]
       value: 
       objectReference: {fileID: 943178309112352084, guid: 125cf99d293815648969b7653048fb77, type: 3}
+    - target: {fileID: 7875684509955136938, guid: e5b733c903c6d9143af357e086455e86, type: 3}
+      propertyPath: _icons.Array.data[54]
+      value: 
+      objectReference: {fileID: 943178309112352084, guid: 897039e477c0ada44ab1eab0388c622a, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -37175,6 +37183,10 @@ PrefabInstance:
     - target: {fileID: 6919047326007600321, guid: 283857ee746ac244486cf89e7119169e, type: 3}
       propertyPath: m_Name
       value: LineRander1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6919047326007600321, guid: 283857ee746ac244486cf89e7119169e, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8731355836792048726, guid: 283857ee746ac244486cf89e7119169e, type: 3}
       propertyPath: m_RootOrder
@@ -37525,6 +37537,10 @@ PrefabInstance:
     - target: {fileID: 6919047326007600321, guid: 283857ee746ac244486cf89e7119169e, type: 3}
       propertyPath: m_Name
       value: LineRander1 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6919047326007600321, guid: 283857ee746ac244486cf89e7119169e, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8731355836792048726, guid: 283857ee746ac244486cf89e7119169e, type: 3}
       propertyPath: m_RootOrder

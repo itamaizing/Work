@@ -236,6 +236,7 @@ public class CharacterState : NetworkBehaviour
 		[States.Destruction] = new DestructionState(),
 		[States.HardenedFlesh] = new HardenedFlesh(),
 		[States.FocusingOnReflexesState] = new FocusingOnReflexesState(),
+		[States.DivineEnhancement] = new DivineEnhancementState(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -822,6 +823,7 @@ public enum States
 	HardenedFlesh,
 	FocusingOnReflexesState,
 	WarmingUpState,
+	DivineEnhancement,
 }
 public enum BaffDebaff
 {
