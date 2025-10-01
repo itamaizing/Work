@@ -5,17 +5,15 @@ using UnityEngine;
 public class DarknessTalent_2 : Talent
 {
     [SerializeField] private PullingHealth pullingHealth;
-    [SerializeField] private Silence silence;
+    [SerializeField] private SkillManager ability;
 
     public override void Enter()
     {
-        pullingHealth.SetPullingHealthGhostTalentActive(true);
-        silence.SilenceEffectsOnMinionMagic(true);
+        ability.ActivateSkill(pullingHealth);
     }
 
     public override void Exit()
     {
-        pullingHealth.SetPullingHealthGhostTalentActive(false);
-        silence.SilenceEffectsOnMinionMagic(false);
+        ability.DeactivateSkill(pullingHealth);
     }
 }

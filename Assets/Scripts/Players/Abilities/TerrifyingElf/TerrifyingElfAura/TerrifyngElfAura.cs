@@ -231,7 +231,7 @@ public class TerrifyingElfAura : NetworkBehaviour
             //    victimState.AddState(States.HuntressMark, durationHuntressMark, 0f, gameObject, "HuntressMark");
 
             if (suppressionManaAbsorptionTalent && selfState.GetState(States.Suppression) is SuppressionState suppression && suppression.CurrentStacksCount > 0 && hero.TryGetResource(ResourceType.Mana) is Mana mana)
-                mana.Add(damage.Value * 0.05f * suppression.CurrentStacksCount);
+                mana.Add(damage.Value * 0.25f * suppression.CurrentStacksCount);
 
             if (manaAbsorptionPhysicalTalent) OnDamageDealt(damage, target);
         }

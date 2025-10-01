@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IDamageTakenModifier
+public interface IDamageGivenModifier
 {
-    float ModifyIncomingDamage(Damage damage);
+    float ModifyOutgoingDamage(Damage damage);
 }

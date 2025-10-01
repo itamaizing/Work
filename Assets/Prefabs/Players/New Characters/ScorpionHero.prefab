@@ -4697,7 +4697,7 @@ MonoBehaviour:
   scorpionPassive: {fileID: 1595654106541851295}
   _hitsInRow: 1
   stunningAddChance: 0.1
-  warmingUpDuration: 0
+  warmingUpDuration: 13
 --- !u!114 &8920276347339243132
 MonoBehaviour:
   m_ObjectHideFlags: 0

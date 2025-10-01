@@ -13,6 +13,7 @@ public class HuntressTalent_6 : Talent
         reconnaissanceFire.SkillEnableBoostLogicActiveTalent(true);
         terrifyingElfAura.ElvenSkillPhysDamageHealthChance(true);
         shotIntoSky.ShotRadiusUpgradeActive(true);
+        reconnaissanceFire.ReconnaissanceFireHealthTalentActive(true);
     }
 
     public override void Exit()
@@ -20,5 +21,6 @@ public class HuntressTalent_6 : Talent
         reconnaissanceFire.SkillEnableBoostLogicActiveTalent(false);
         terrifyingElfAura.ElvenSkillPhysDamageHealthChance(false);
         shotIntoSky.ShotRadiusUpgradeActive(false);
+        reconnaissanceFire.ReconnaissanceFireHealthTalentActive(false);
     }
 }

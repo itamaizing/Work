@@ -4,11 +4,7 @@ using UnityEngine;
 public class WarmingUpState : AbstractCharacterState
 {
 	private float _duration;
-	private float _baseDuration;
-	private int _currentStacks = 1;
-
-	private const int MaxStacks = 3;
-	private const float BonusPerStack = 0.1f;
+	private const float BonusPerStack = 1f;
 
 	public AbilityForm canceledForm;
 	public bool canCancel = false;
@@ -23,11 +19,17 @@ public class WarmingUpState : AbstractCharacterState
 	public override StateType Type => StateType.Physical;
 	public override List<StatusEffect> Effects => _effects;
 
+	public WarmingUpState()
+	{
+		MaxStacksCount = 3;
+		CurrentStacksCount = 1;
+	}
+
+
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		_characterState = character;
 		_duration = durationToExit;
-		_baseDuration = durationToExit;
 
 		if (character.TryGetComponent<Character>(out var ability))
 		{
@@ -38,8 +40,8 @@ public class WarmingUpState : AbstractCharacterState
 			{
 				if (skill.AbilityForm == AbilityForm.Physical && skill.AnimTriggerCastPublic != 0)
 				{
-					skill.ExtraAnimationSpeedMultiplier *= (1 + BonusPerStack);
 					_affectedSkills.Add(skill);
+					skill.ExtraAnimationSpeedMultiplier = 1 + BonusPerStack * CurrentStacksCount;
 				}
 			}
 		}
@@ -47,6 +49,8 @@ public class WarmingUpState : AbstractCharacterState
 		{
 			Debug.LogWarning($"[WarmingUpState] Character {character.name} doesn't have abilities.");
 		}
+
+		CurrentStacksCount = 1;
 	}
 
 	public override void UpdateState()
@@ -67,7 +71,7 @@ public class WarmingUpState : AbstractCharacterState
 		{
 			if (skill != null)
 			{
-				skill.ExtraAnimationSpeedMultiplier /= (1 + BonusPerStack * _currentStacks);
+				skill.ExtraAnimationSpeedMultiplier = 1;
 			}
 		}
 
@@ -75,21 +79,23 @@ public class WarmingUpState : AbstractCharacterState
 		{
 			_abilities.SwitchAvaliable(canceledForm, true);
 		}
+
+		CurrentStacksCount = 1;
 	}
 
 	public override bool Stack(float time)
 	{
 		_duration = time;
 
-		if (_currentStacks < MaxStacks)
+		if (CurrentStacksCount < MaxStacksCount)
 		{
-			_currentStacks++;
+			CurrentStacksCount++;
 
 			foreach (var skill in _affectedSkills)
 			{
 				if (skill != null)
 				{
-					skill.ExtraAnimationSpeedMultiplier *= (1 + BonusPerStack);
+					skill.ExtraAnimationSpeedMultiplier = 1 + BonusPerStack * CurrentStacksCount;
 				}
 			}
 		}

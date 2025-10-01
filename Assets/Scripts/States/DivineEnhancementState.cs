@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DivineEnhancementState : AbstractCharacterState, IDamageTakenModifier
+public class DivineEnhancementState : AbstractCharacterState, IDamageGivenModifier
 {
     private float _duration;
 
@@ -33,8 +33,8 @@ public class DivineEnhancementState : AbstractCharacterState, IDamageTakenModifi
         return true;
     }
 
-    public float ModifyIncomingDamage(Damage damage)
+    public float ModifyOutgoingDamage(Damage damage)
     {
-        return damage.Value + 2f;
+        return damage.Value * 2f;
     }
 }

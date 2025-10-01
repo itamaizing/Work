@@ -80,8 +80,6 @@ public class NewPunch_Scorpion : Skill
             _hero.Move.StopLookAt();
             return;
         }
-
-        _hero.Move.LookAtPosition(_target.transform.position);
     }
 
     public void NewPunch_ScorpionMoveTrue()
@@ -137,8 +135,8 @@ public class NewPunch_Scorpion : Skill
             Type = DamageType,
         };
 
-        CmdApplyDamage(_runtimeTarget, damage);
-
+        Character target = _runtimeTarget;
+        CmdApplyDamage(target, damage);
         _runtimeTarget = null;
     }
 
@@ -212,10 +210,17 @@ public class NewPunch_Scorpion : Skill
 
         if (_isStunningAddChance)
         {
-            var state = _runtimeTarget.GetComponent<CharacterState>();
-            if (!scorpionPassive.IsAddStateUpdateChance) if (UnityEngine.Random.value <= stunningAddChance) state?.AddState(States.Stun, 1f, 0, _hero.gameObject, name);
+            var state = target.GetComponent<CharacterState>();
 
-            else state?.AddState(States.Stun, 1f, 0, _hero.gameObject, name);
+            if (scorpionPassive.IsAddStateUpdateChance && state != null)
+            {
+                if (state.CheckForState(States.DisappointmentState)) state.AddState(States.Stun, 1f, 0, _hero.gameObject, name);
+            }
+
+            else
+            {
+                if (UnityEngine.Random.value <= stunningAddChance) state?.AddState(States.Stun, 1f, 0, _hero.gameObject, name);
+            }
         }
     }
 
@@ -241,8 +246,8 @@ public class NewPunch_Scorpion : Skill
 
     private IEnumerator HitsInRowTimer()
     {
-        yield return new WaitForSeconds(1f);
-        _hitsInRow = 1;
+        yield return new WaitForSeconds(2f);
+        _hitsInRow = 0;
         _hitsInRowCoroutine = null;
     }
 

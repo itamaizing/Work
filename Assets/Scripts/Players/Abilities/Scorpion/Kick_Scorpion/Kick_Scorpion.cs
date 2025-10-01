@@ -164,7 +164,12 @@ public class Kick_Scorpion : Skill
 
         if (isKick_ScorpionRowTalent)
         {
-            if (!scorpionPassive.IsAddStateUpdateChance)
+            if (scorpionPassive.IsAddStateUpdateChance)
+            {
+                if (state.CheckForState(States.DisappointmentState)) state?.AddState(States.Knockdown, 13f, 0, _hero.gameObject, name);
+            }
+
+            else
             {
                 if (isKick_ScorpionRowBonusTalent)
                 {
@@ -185,8 +190,6 @@ public class Kick_Scorpion : Skill
                     if (UnityEngine.Random.value <= Mathf.Clamp01(chance)) state?.AddState(States.Knockdown, 13f, 0, _hero.gameObject, name);
                 }
             }
-
-            else state?.AddState(States.Knockdown, 13f, 0, _hero.gameObject, name);
         }
 
         else _hitsInRow = 1;

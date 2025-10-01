@@ -7,19 +7,26 @@ public class NatureTalent_5 : Talent
     [SerializeField] private ShotAstral shotAstral;
     [SerializeField] private ShotIntoSky shotIntoSky;
     [SerializeField] private ShotsIntoSky shotsIntoSky;
-    [SerializeField] private SkillManager _ability;
+    [SerializeField] private TerrifyingElfAura terrifyingElfAura;
+    [SerializeField] private SkillManager ability;
 
     public override void Enter()
     {
-        _ability.ActivateSkill(shotAstral);
+        ability.ActivateSkill(shotAstral);
         shotIntoSky.ShotsIntoSkyAstralTalentActive(true);
         shotsIntoSky.ShotsIntoSkyAstralTalentActive(true);
+        shotIntoSky.SetSilenceTalentActive(true);
+        shotsIntoSky.SetSilenceTalentActive(true);
+        terrifyingElfAura.TreeRadiusCalmessTalentActive(true);
     }
 
     public override void Exit()
     {
-        _ability.DeactivateSkill(shotAstral);
+        ability.DeactivateSkill(shotAstral);
         shotIntoSky.ShotsIntoSkyAstralTalentActive(false);
         shotsIntoSky.ShotsIntoSkyAstralTalentActive(false);
+        shotIntoSky.SetSilenceTalentActive(false);
+        shotsIntoSky.SetSilenceTalentActive(false);
+        terrifyingElfAura.TreeRadiusCalmessTalentActive(false);
     }
 }
