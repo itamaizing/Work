@@ -183,11 +183,6 @@ public class JumpWithChelicera : Skill
 
     #region Talents
 
-    public void EvolutionTalentOne(bool value)
-    {
-        MaxChargers = value ? 2 : 1;
-    }
-
     #endregion 
 
     [Command]

@@ -4,7 +4,6 @@ using UnityEngine;
 public class HuntressTalent_3 : Talent
 {
     [SerializeField] private TerrifyingElfAura terrifyingElfAura;
-    [SerializeField] private ReconnaissanceFire reconnaissanceFire;
 
     public override void Enter()
     {

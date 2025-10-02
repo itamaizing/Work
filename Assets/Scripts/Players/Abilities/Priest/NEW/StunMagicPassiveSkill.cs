@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PriestPassiveSkill : Skill, IPassiveSkill
+public class StunMagicPassiveSkill : Skill, IPassiveSkill
 {
     #region Skill
     protected override int AnimTriggerCastDelay => 0;
@@ -60,7 +60,7 @@ public class PriestPassiveSkill : Skill, IPassiveSkill
                 {
                     float stunDuration = damage.Value * 0.1f;
 
-                    target.CharacterState.AddState(States.Stun, stunDuration, 0, Hero.gameObject, nameof(PriestPassiveSkill));
+                    target.CharacterState.AddState(States.Stun, stunDuration, 0, Hero.gameObject, nameof(StunMagicPassiveSkill));
                 }
             }
         }
@@ -75,7 +75,7 @@ public class PriestPassiveSkill : Skill, IPassiveSkill
                 DamageableSkill = this
             };
 
-            ApplyHeal(extraHeal, Hero.gameObject, this, nameof(PriestPassiveSkill));
+            ApplyHeal(extraHeal, Hero.gameObject, this, nameof(StunMagicPassiveSkill));
         }
     }
 
@@ -93,6 +93,6 @@ public class PriestPassiveSkill : Skill, IPassiveSkill
             DamageableSkill = this
         };
 
-        CmdApplyHeal(extraHeal, Hero.gameObject, this, nameof(PriestPassiveSkill));
+        CmdApplyHeal(extraHeal, Hero.gameObject, this, nameof(StunMagicPassiveSkill));
     }
 }
