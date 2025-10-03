@@ -11046,12 +11046,6 @@ PrefabInstance:
       addedObject: {fileID: 7664291950465520178}
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1586150960787430152}
-    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8721327986789537015}
-    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 4459667108316582062}
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
@@ -11338,6 +11332,7 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: b453e03083e173e4b81acdc55b40633f, type: 3}
   character: {fileID: 8319872899575431858}
   jumpWithChelicera: {fileID: 7634851756353439263}
+  cheliceraStrike: {fileID: 640134254429411212}
   skillManager: {fileID: 8453834493232682211}
 --- !u!114 &5407939514073083676
 MonoBehaviour:
@@ -12140,128 +12135,6 @@ MonoBehaviour:
   attackingPsionicEnergy: {fileID: 1487487552333656207}
   baseEnergySliderTransform: {fileID: 5794954217610378670}
   attackingEnergySliderTransform: {fileID: 5613304632579208996}
---- !u!114 &1586150960787430152
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5311042088619458913}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7b2fc5d175de5a4999ba26999e34799, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
-  _abilityInfo: {fileID: 11400000, guid: fae20c68fbd43a04691d2a18e59c051d, type: 2}
-  _isSubjectToGlobalCooldownTime: 1
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
-  _castDeley: 0
-  _damageValue: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
-  _autoAttackDelay: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
-  _disactive: 0
-  _earlyCooldown: 0
-  maxCounter: 0
-  _durationBaffState: 60
---- !u!114 &8721327986789537015
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5311042088619458913}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04c323cf82777f045969e76df3a08b76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
-  _abilityInfo: {fileID: 11400000, guid: 048a51707f36a914bb8c9b86717fb736, type: 2}
-  _isSubjectToGlobalCooldownTime: 1
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
-  _castDeley: 0
-  _damageValue: 0
-  _abilitySchool: 7
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 1
-  _skillType: 0
-  _moving: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 768
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
-  _autoAttackDelay: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
-  _disactive: 0
-  _earlyCooldown: 0
-  maxCounter: 0
-  _healAmount: 35
-  _lightRange: 4
-  lightInfo: {fileID: 11400000, guid: 048a51707f36a914bb8c9b86717fb736, type: 2}
-  _damageAmount: 35
-  _darkRange: 6
-  darkInfo: {fileID: 11400000, guid: 4469c20cf324553438b48ddbcab1541f, type: 2}
-  audioClip: {fileID: 8300000, guid: 5531a0cd7bf154f4b9803db442a17de9, type: 3}
-  reversePolarity: {fileID: 0}
-  isLightMode: 1
 --- !u!114 &4459667108316582062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12337,8 +12210,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 1
-  _isSkillActive: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 2aace18361eba4e44be221559da0f797, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
