@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class LightTalent_3 : Talent
 {
-    [SerializeField] StunMagicPassiveSkill priestPassiveSkill;
+    [SerializeField] StunMagicPassiveSkill stunMagicPassiveSkill;
     [SerializeField] SkillManager manager;
 
     public override void Enter()
     {
-        manager.ActivateSkill(priestPassiveSkill);
-        priestPassiveSkill.DamageDarkLightStun(true);
+        manager.ActivateSkill(stunMagicPassiveSkill);
+        stunMagicPassiveSkill.DamageDarkLightStun(true, Data.DescriptionsForInfoPanel[0]);
     }
 
     public override void Exit()
     {
-        manager.DeactivateSkill(priestPassiveSkill);
-        priestPassiveSkill.DamageDarkLightStun(false);
+        manager.DeactivateSkill(stunMagicPassiveSkill);
+        stunMagicPassiveSkill.DamageDarkLightStun(false, Data.DescriptionsForInfoPanel[0]);
     }
 }

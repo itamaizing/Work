@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class DarkTalent_1 : Talent
 {
-    [SerializeField] PriestPassiveSkill priestPassiveSkill;
+    [SerializeField] StunMagicPassiveSkill stunMagicPassiveSkill;
+    [SerializeField] SkillManager manager;
 
     public override void Enter()
     {
-        priestPassiveSkill.DamageDarkHealLightAddHealth(true);
+        manager.ActivateSkill(stunMagicPassiveSkill);
+        stunMagicPassiveSkill.DamageDarkHealLightAddHealth(true, Data.DescriptionsForInfoPanel[0]);
     }
 
     public override void Exit()
     {
-        priestPassiveSkill.DamageDarkHealLightAddHealth(false);
+        manager.DeactivateSkill(stunMagicPassiveSkill);
+        stunMagicPassiveSkill.DamageDarkHealLightAddHealth(false, Data.DescriptionsForInfoPanel[0]);
     }
 }

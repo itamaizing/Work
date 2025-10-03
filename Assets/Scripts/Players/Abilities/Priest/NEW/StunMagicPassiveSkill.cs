@@ -21,14 +21,16 @@ public class StunMagicPassiveSkill : Skill, IPassiveSkill
     private bool _isDamageDarkLightStun;
     private bool _isDamageDarkHealLightAddHealth;
 
-    public void DamageDarkLightStun(bool value)
+    public void DamageDarkLightStun(bool value, string text)
     {
         _isDamageDarkLightStun = value;
+        AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
     }
 
-    public void DamageDarkHealLightAddHealth(bool value)
+    public void DamageDarkHealLightAddHealth(bool value, string text)
     {
         _isDamageDarkHealLightAddHealth = value;
+        AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
     }
     #endregion
 
