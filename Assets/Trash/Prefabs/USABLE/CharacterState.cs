@@ -750,7 +750,6 @@ public enum States
 	RegeneratingPoison,
 	HeatedGlands,
 	AbsorptionOfPoison,
-	BleedingCarrigan,
 	ReducingHealing,
 	Immateriality,
 	InAir,
