@@ -146,6 +146,7 @@ public class Tentacles : Skill
 
         while (true)
         {
+            Debug.Log("2");
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             float sphereRadius = 0.1f;
