@@ -34,6 +34,7 @@ public class JumpWithChelicera : Skill
     protected override int AnimTriggerCast => jumpStart;
     protected override int AnimTriggerCastDelay => 0;
 
+    public Character RuntimeTarget { get => _runtimeTarget; set => _runtimeTarget = value; }
     public bool IsJumpDone { get => _isJumpDone; set => _isJumpDone = value; }
     public bool IsCheliceraStrikeCast { get => _isCheliceraStrikeCast; set => _isCheliceraStrikeCast = value; }
 
@@ -53,7 +54,6 @@ public class JumpWithChelicera : Skill
     {
         _target = null;
         _mousePosition = Vector3.positiveInfinity;
-        _isTarget = false;
         _hasDealtDamage = false;
     }
 
@@ -78,43 +78,42 @@ public class JumpWithChelicera : Skill
                 if (_target != null)
                 {
                     _runtimeTarget = _target;
-                    _isTarget = true;
                     _isCanCancle = false;
                 }
             }
             yield return null;
         }
 
-        TargetInfo info = new();
-        info.Targets.Add(_runtimeTarget);
-        callbackDataSaved(info);
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Targets.Add(_runtimeTarget);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_isTarget && _target != null) ExecuteJump();
+        if (_runtimeTarget != null) ExecuteJump(_runtimeTarget);
 
         yield return null;
     }
 
-    private void ExecuteJump()
+    private void ExecuteJump(Character target)
     {
-        if (_target == null) return;
+        if (target == null) return;
 
         _isJumpDone = true;
 
-        float distanceToTarget = Vector2.Distance(_target.transform.position, _player.transform.position);
+        float distanceToTarget = Vector2.Distance(target.transform.position, _player.transform.position);
 
         if (distanceToTarget < 1) _additionalDamageInPercentage = 0.1f;
         else _additionalDamageInPercentage = 0.2f + Mathf.Floor((distanceToTarget - 1f)) * 0.2f;
 
-        Vector3 direction = (_target.transform.position - transform.position).normalized;
+        Vector3 direction = (target.transform.position - transform.position).normalized;
 
         //if (_player != null && _player.TryGetComponent<BasePsionicEnergy>(out var psiEnergy)) psiEnergy.CoolDownPsionicEnegry();
 
         _isCheliceraStrikeCast = true;
         clawStrike.DurationChanceApplyBleedingWithJump();
-        CmdExecuteJump(_player.gameObject, _target.netId, direction, _additionalDamageInPercentage);
+        CmdExecuteJump(_player.gameObject, target.netId, direction, _additionalDamageInPercentage);
     }
 
     //private float NormalizeDistance(float distance)
@@ -266,7 +265,6 @@ public class JumpWithChelicera : Skill
         if (targetInfo == null || targetInfo.Targets == null || targetInfo.Targets.Count == 0 || targetInfo.Targets[0] == null) return;
 
         _target = (Character)targetInfo.Targets[0];
-        _isTarget = true;
         _player.Move.LookAtTransform(_target.transform);
         _isCanCancle = false;
     }

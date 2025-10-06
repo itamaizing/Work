@@ -230,7 +230,7 @@ public class ChainArrow : Projectiles
             int comboStacks = character.CharacterState.CheckStateStacks(States.ComboState);
             duration += comboStacks;
 
-            character.CharacterState.AddState(States.DisappointmentState, 50, 0f, _dad.gameObject, _skill.name); // test: вернуть время на duration
+            character.CharacterState.AddState(States.DisappointmentState, duration, 0f, _dad.gameObject, _skill.name);
         }
     }
 

@@ -255,6 +255,7 @@ public abstract class Skill : NetworkBehaviour
     public event Action<int> CurrentChargeChanged;
     public event Action<float> CooldownStarted;
     public event Action<float> ChargeStartCooldown;
+    public event Action<int> ChargeCooldownEnded;
     public event Action CooldownEnded;
     public event Action<Skill> PreparingStarted;
     public event Action<Skill> PreparingSuccess;
@@ -582,6 +583,19 @@ public abstract class Skill : NetworkBehaviour
         _cooldownJob = StartCoroutine(CooldownCoroutine(timeToSet));
     }
 
+    public void ResetCooldown()
+    {
+        if (_cooldownJob != null)
+        {
+            StopCoroutine(_cooldownJob);
+            _cooldownJob = null;
+        }
+
+        _remainingCooldownTime = 0;
+
+        CooldownEnded?.Invoke();
+    }
+
     public void ReductionSetCooldown(float time)
     {
         if (time > _remainingCooldownTime)
@@ -591,6 +605,27 @@ public abstract class Skill : NetworkBehaviour
             StopCoroutine(_cooldownJob);
 
         _cooldownJob = StartCoroutine(CooldownCoroutine(time));
+    }
+
+    public void ResetCurrentChargeCooldown(int index)
+    {
+        if (!_isUseCharges || !_chargesHaveSeparateCooldown) return;
+
+        if (_currentChargeCooldownJob[index] != null)
+        {
+            StopCoroutine(_currentChargeCooldownJob[index]);
+            _currentChargeCooldownJob[index] = null;
+        }
+
+        _remainingCooldownTimeChargers[index] = 0f;
+
+        if (_currentChargers < _maxCharges)
+        {
+            _currentChargers++;
+            CurrentChargeChanged?.Invoke(_currentChargers);
+        }
+
+        ChargeCooldownEnded?.Invoke(index);
     }
 
     public void CheckResources()

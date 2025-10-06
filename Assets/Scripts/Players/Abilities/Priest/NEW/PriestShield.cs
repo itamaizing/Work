@@ -161,6 +161,7 @@ public class PriestShield : Skill
 
     private void TrackHealDone(Heal heal)
     {
+        if (heal.DamageableSkill == null) return;
         if (heal.DamageableSkill.School != Schools.Light) return;
 
         if (Time.time - _lastHealingTime > PhysBoostTimeWindow)

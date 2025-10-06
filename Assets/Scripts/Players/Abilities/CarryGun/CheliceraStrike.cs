@@ -126,6 +126,7 @@ public class CheliceraStrike : Skill
         if (_jumpWithChelicera.IsJumpDone)
         {
             cooldownEnergy.CastCooldownEnergySkill(_jumpWithChelicera.ChargeCooldown, _jumpWithChelicera);
+            _runtimeTarget = _jumpWithChelicera.RuntimeTarget;
             _jumpWithChelicera.IsJumpDone = false;
         }
 

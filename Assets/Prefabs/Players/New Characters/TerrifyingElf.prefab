@@ -21768,6 +21768,7 @@ MonoBehaviour:
   character: {fileID: 4534754468497973439}
   ghost: {fileID: 1718052129104348959}
   skillManager: {fileID: 4092227064955680494}
+  silence: {fileID: 4161291845396503115}
 --- !u!114 &5176031341533269077
 MonoBehaviour:
   m_ObjectHideFlags: 0

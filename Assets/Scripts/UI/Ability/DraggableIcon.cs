@@ -53,6 +53,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         _distance = distance;
 
         _skill.OnSkillStateChanged += UpdateIconState;
+        _skill.ChargeCooldownEnded += OnChargeCooldownEnded;
 
         UpdateIconState(_skill.Disactive);
 
@@ -71,6 +72,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         UnsubscribingSkillOnEvents(_skill);
         _skill.OnSkillStateChanged -= UpdateIconState;
+        _skill.ChargeCooldownEnded -= OnChargeCooldownEnded;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -120,6 +122,11 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void UpdateIconState(bool disactive)
     {
         _image.color = new Color(_image.color.r, _image.color.g, _image.color.b, disactive ? 0.5f : 1f);
+    }
+
+    private void OnChargeCooldownEnded(int index)
+    {
+        _chargeCD.RemoveChargeCD(index);
     }
 
     private void UpdateAllInfo()

@@ -62,7 +62,7 @@ public class StunMagicPassiveSkill : Skill, IPassiveSkill
                 {
                     float stunDuration = damage.Value * 0.1f;
 
-                    target.CharacterState.AddState(States.Stun, stunDuration, 0, Hero.gameObject, nameof(StunMagicPassiveSkill));
+                    target.CharacterState.AddState(States.Stun, stunDuration, 0, playerCharacter.gameObject, nameof(StunMagicPassiveSkill));
                 }
             }
         }

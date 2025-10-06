@@ -18,6 +18,20 @@ public class ChargeCDUI : MonoBehaviour
         charge.StartFill(cooldown);
     }
 
+    public void RemoveChargeCD(int index)
+    {
+        if (index < 0 || index >= _chargeCDList.Count) return;
+
+        var charge = _chargeCDList[index];
+        if (charge != null)
+        {
+            charge.Ended -= OnEnded;
+            Destroy(charge.gameObject);
+        }
+
+        _chargeCDList.RemoveAt(index);
+    }
+
     private void OnEnded(FillAmountOverTime charge)
     {
         charge.Ended -= OnEnded;

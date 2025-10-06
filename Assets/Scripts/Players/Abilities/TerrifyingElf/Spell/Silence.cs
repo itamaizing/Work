@@ -199,7 +199,7 @@ public class Silence : Skill
         {
             if (ghostAura.TryGetComponent<Health>(out var health))
             {
-                if (health.CurrentValue <= 0) Debug.Log("Сброс перезарядки зарядов призрака");
+                if (health.CurrentValue <= 0) ResetCurrentChargeCooldown(0);
             }
         }
 
