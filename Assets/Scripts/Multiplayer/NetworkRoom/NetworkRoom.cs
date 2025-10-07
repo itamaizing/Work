@@ -49,12 +49,18 @@ public class NetworkRoom
         _players = new List<GameObject>();
     }
 
-    [Server]
     public IEnumerator LoadRoomJob(LocalPhysicsMode physicsMode = LocalPhysicsMode.Physics3D)
     {
         if (!_isLoaded)
         {
-            yield return SceneManager.LoadSceneAsync(_scene, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = physicsMode });
+            var async = SceneManager.LoadSceneAsync(_scene, new LoadSceneParameters
+            {
+                loadSceneMode = LoadSceneMode.Additive,
+                localPhysicsMode = physicsMode
+            });
+
+            while (!async.isDone) yield return null;
+
             _currentRoom = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
             _isLoaded = true;
         }

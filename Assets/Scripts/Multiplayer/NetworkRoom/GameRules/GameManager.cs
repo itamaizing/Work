@@ -6,6 +6,7 @@ using UnityEngine.Scripting;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private HeroSpawnManager _heroSpawnManager;
+    [SerializeField] private PreparationAreaManager preparationAreaManager;
     [SerializeField] private MonoBehaviour _sourceUI;
     [SerializeField] private TeamsPanel _teamsPanel;
     [SerializeField] private TeamSource _sourceTabl;
@@ -29,6 +30,7 @@ public class GameManager : MonoBehaviour
     }
 
     public HeroSpawnManager HeroSpawnManager { get => _heroSpawnManager; }
+    public PreparationAreaManager PreparationAreaManager { get => preparationAreaManager; }
     public IGameSourceUI SourceUI { get => _gameSourceUI; }
     public TeamsPanel TeamsPanel { get => _teamsPanel; }
     public TeamSource Source { get => _sourceTabl; }

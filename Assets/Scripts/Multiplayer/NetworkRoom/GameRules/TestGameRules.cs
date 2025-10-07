@@ -278,6 +278,8 @@ public class TestGameRules : GameRules
         }
 
         yield return StartCoroutine(SavePositionsAndAssignLayers());
+
+        _preparationAreaManager?.PreparationAreasDisable(5f);
     }
 
     private IEnumerator CloseJob()

@@ -44,23 +44,53 @@ public class NetworkRoomsManager : NetworkBehaviour
 		}
 	}
 
-    public IEnumerator AddPlayerJob(GameObject player)
-    {
-		if (_rooms.Count <= 0 || _rooms[^1].IsHaveSlot == false)
-        {
+	/// <summary>
+	/// Old AddPlayerJob
+	/// </summary>
+	/// <param name="player"></param>
+	/// <returns></returns>
+	//   public IEnumerator AddPlayerJob(GameObject player)
+	//   {
+	//	if (_rooms.Count <= 0 || _rooms[^1].IsHaveSlot == false)
+	//       {
+	//		NetworkRoom room = new NetworkRoom();
+	//		room.Init(_scene, _maxPlayers);
+
+	//		_rooms.Add(room);
+
+	//		_rooms[^1].SlotsEnded += OnRoomSlotsEnded;
+	//		_rooms[^1].RoomClosed += OnRoomClosed;
+
+	//		yield return StartCoroutine(_rooms[^1].LoadRoomJob());
+	//           _gameRules = Instantiate(_gameRulesPref);
+	//       }
+
+	//	_rooms[^1].TryAddPlayerInRoom(player);
+	//}
+
+	public IEnumerator AddPlayerJob(GameObject player)
+	{
+		if (_rooms.Count <= 0 || !_rooms[^1].IsHaveSlot)
+		{
 			NetworkRoom room = new NetworkRoom();
 			room.Init(_scene, _maxPlayers);
 
 			_rooms.Add(room);
 
-			_rooms[^1].SlotsEnded += OnRoomSlotsEnded;
-			_rooms[^1].RoomClosed += OnRoomClosed;
+			yield return StartCoroutine(room.LoadRoomJob());
 
-			yield return StartCoroutine(_rooms[^1].LoadRoomJob());
-            _gameRules = Instantiate(_gameRulesPref);
-        }
+			while (!room.IsLoaded)	yield return null;
 
-		_rooms[^1].TryAddPlayerInRoom(player);
+			room.SlotsEnded += OnRoomSlotsEnded;
+			room.RoomClosed += OnRoomClosed;
+
+			_gameRules = Instantiate(_gameRulesPref);
+			room.TryAddPlayerInRoom(player);
+		}
+		else
+		{
+			_rooms[^1].TryAddPlayerInRoom(player);
+		}
 	}
 
 	private void OnRoomSlotsEnded(NetworkRoom room)

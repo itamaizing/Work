@@ -19,6 +19,7 @@ public abstract class GameRules : NetworkBehaviour
     [SyncVar]protected string _roomName;
 
     protected HeroSpawnManager _spawnPoints;
+    protected PreparationAreaManager _preparationAreaManager;
     protected GameManager _gameManager;
 
     [SyncVar] private bool _isStarted;
@@ -80,6 +81,7 @@ public abstract class GameRules : NetworkBehaviour
         if (_gameManager == null) return;
 
         _spawnPoints = _gameManager.HeroSpawnManager;
+        _preparationAreaManager = _gameManager.PreparationAreaManager;
 
         if (_gameManager.TeamsPanel == null) return;
     }
@@ -249,21 +251,22 @@ public abstract class GameRules : NetworkBehaviour
                 _players.Add(playerSettings);
             }
         }
-        UnityEngine.Debug.Log("this");
-        foreach (var playerSettings in _players)
-        {
-            UnityEngine.Debug.Log("123123123");
-            if (playerSettings.NetworkSettings.TeamIndex == 1)
-            {
-                _gameManager.TeamsPanel.AddInFirstTeam(playerSettings);
-                _gameManager.Source.AddInFirstTeam(playerSettings);
-            }
-            else
-            {
-                _gameManager.TeamsPanel.AddInSecondTeam(playerSettings);
-                _gameManager.Source.AddInSecondTeam(playerSettings);
-            }
-        }
+
+        //UnityEngine.Debug.Log("this");
+        //foreach (var playerSettings in _players)
+        //{
+        //    UnityEngine.Debug.Log("123123123");
+        //    if (playerSettings.NetworkSettings.TeamIndex == 1)
+        //    {
+        //        _gameManager.TeamsPanel.AddInFirstTeam(playerSettings);
+        //        _gameManager.Source.AddInFirstTeam(playerSettings);
+        //    }
+        //    else
+        //    {
+        //        _gameManager.TeamsPanel.AddInSecondTeam(playerSettings);
+        //        _gameManager.Source.AddInSecondTeam(playerSettings);
+        //    }
+        //}
 
         GameStartClient();
     }
