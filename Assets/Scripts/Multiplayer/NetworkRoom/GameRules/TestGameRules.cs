@@ -30,7 +30,7 @@ public class TestGameRules : GameRules
 
     protected override void GameStartClient()
     {
-
+        _preparationAreaManager?.PreparationAreasDisable(5f);
     }
 
     protected override void OnPlayerDied(Character player)

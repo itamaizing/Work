@@ -15,13 +15,13 @@ public class NetworkRoomsManager : NetworkBehaviour
 
 	private readonly List<NetworkRoom> _rooms = new();
 
-    public string Scene => _scene;
+	public string Scene => _scene;
 
-    public GameMode GameMode { get => _gameMode; set => _gameMode = value; }
+	public GameMode GameMode { get => _gameMode; set => _gameMode = value; }
 
-    protected override void OnValidate()
-    {
-        base.OnValidate();
+	protected override void OnValidate()
+	{
+		base.OnValidate();
 
 		switch (_gameMode)
 		{
@@ -44,62 +44,39 @@ public class NetworkRoomsManager : NetworkBehaviour
 		}
 	}
 
-	/// <summary>
-	/// Old AddPlayerJob
-	/// </summary>
-	/// <param name="player"></param>
-	/// <returns></returns>
-	//   public IEnumerator AddPlayerJob(GameObject player)
-	//   {
-	//	if (_rooms.Count <= 0 || _rooms[^1].IsHaveSlot == false)
-	//       {
-	//		NetworkRoom room = new NetworkRoom();
-	//		room.Init(_scene, _maxPlayers);
-
-	//		_rooms.Add(room);
-
-	//		_rooms[^1].SlotsEnded += OnRoomSlotsEnded;
-	//		_rooms[^1].RoomClosed += OnRoomClosed;
-
-	//		yield return StartCoroutine(_rooms[^1].LoadRoomJob());
-	//           _gameRules = Instantiate(_gameRulesPref);
-	//       }
-
-	//	_rooms[^1].TryAddPlayerInRoom(player);
-	//}
-
 	public IEnumerator AddPlayerJob(GameObject player)
 	{
-		if (_rooms.Count <= 0 || !_rooms[^1].IsHaveSlot)
+		NetworkRoom currentRoom;
+
+		if (_rooms.Count <= 0 || _rooms[^1].IsHaveSlot == false)
 		{
-			NetworkRoom room = new NetworkRoom();
-			room.Init(_scene, _maxPlayers);
+			currentRoom = new NetworkRoom();
+			currentRoom.Init(_scene, _maxPlayers);
 
-			_rooms.Add(room);
+			_rooms.Add(currentRoom);
 
-			yield return StartCoroutine(room.LoadRoomJob());
+			_rooms[^1].SlotsEnded += OnRoomSlotsEnded;
+			_rooms[^1].RoomClosed += OnRoomClosed;
 
-			while (!room.IsLoaded)	yield return null;
-
-			room.SlotsEnded += OnRoomSlotsEnded;
-			room.RoomClosed += OnRoomClosed;
-
+			yield return StartCoroutine(_rooms[^1].LoadRoomJob());
 			_gameRules = Instantiate(_gameRulesPref);
-			room.TryAddPlayerInRoom(player);
 		}
-		else
-		{
-			_rooms[^1].TryAddPlayerInRoom(player);
-		}
+
+		else currentRoom = _rooms[^1];
+
+		while (!currentRoom.IsLoaded) yield return null;
+
+		bool added = currentRoom.TryAddPlayerInRoom(player);
+		if (!added) Debug.LogError($"[NetworkRoomsManager] Failed to add player {player.name} in room");
 	}
 
 	private void OnRoomSlotsEnded(NetworkRoom room)
-    {
+	{
 		room.GameStart(_gameRules);
-    }
-	
+	}
+
 	private void OnRoomClosed(NetworkRoom room)
-    {
+	{
 		_rooms.Remove(room);
 	}
 }
@@ -122,4 +99,3 @@ public enum MainGameMode
 	Arena,
 	None
 }
-

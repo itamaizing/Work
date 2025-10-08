@@ -10,7 +10,7 @@ public class ServerManager : NetworkBehaviour
     [SerializeField] private List<HeroComponent> _heroList;
 
     [SerializeField] private GameObject _menuEnv;
-    
+
     private static ServerManager _instance;
     private int _currentHeroIndex = 0;
     private GameMode _currentGameMode = GameMode.GM1vs1;
@@ -31,7 +31,7 @@ public class ServerManager : NetworkBehaviour
         }
         _menuEnv.gameObject.SetActive(true);
     }
-    
+
     public void StartClient()
     {
         _menuEnv.gameObject.SetActive(false);
@@ -72,7 +72,7 @@ public class ServerManager : NetworkBehaviour
         user.GetComponent<User>().connectionToClient.Send(new SceneMessage { sceneName = _managers[index].Scene, sceneOperation = SceneOperation.LoadAdditive });
         //SceneManager.MoveGameObjectToScene(user, SceneManager.GetSceneAt(SceneManager.sceneCount - 1));
     }
-    
+
     public void SetPlayer(HeroComponent hero)
     {
         _currentHeroIndex = _heroList.IndexOf(hero);

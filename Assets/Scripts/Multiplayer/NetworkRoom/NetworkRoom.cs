@@ -18,7 +18,7 @@ public class NetworkRoom
     {
         get
         {
-            if(_isGameStarted == false)
+            if (_isGameStarted == false)
                 _players.RemoveAll(player => player == null);
 
             return _maxNumPlayers > _players.Count;
@@ -49,18 +49,12 @@ public class NetworkRoom
         _players = new List<GameObject>();
     }
 
+    [Server]
     public IEnumerator LoadRoomJob(LocalPhysicsMode physicsMode = LocalPhysicsMode.Physics3D)
     {
         if (!_isLoaded)
         {
-            var async = SceneManager.LoadSceneAsync(_scene, new LoadSceneParameters
-            {
-                loadSceneMode = LoadSceneMode.Additive,
-                localPhysicsMode = physicsMode
-            });
-
-            while (!async.isDone) yield return null;
-
+            yield return SceneManager.LoadSceneAsync(_scene, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = physicsMode });
             _currentRoom = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
             _isLoaded = true;
         }
