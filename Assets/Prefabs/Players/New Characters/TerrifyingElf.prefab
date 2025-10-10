@@ -19060,6 +19060,10 @@ PrefabInstance:
       value: TerrifyingElf
       objectReference: {fileID: 0}
     - target: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
@@ -19637,7 +19641,7 @@ MonoBehaviour:
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 1
-  _damageValue: 6
+  _damageValue: 55
   _abilitySchool: 6
   _abilityForm: 2
   _damageType: 1

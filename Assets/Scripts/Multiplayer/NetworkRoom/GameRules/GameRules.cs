@@ -2,6 +2,7 @@ using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -34,6 +35,8 @@ public abstract class GameRules : NetworkBehaviour
     protected abstract void UnsubscribeFromAllEvents();
     protected abstract void GameStartClient();
     protected abstract void OnPlayerDied(Character character);
+    protected abstract void OnTowerDied(Object tower);
+
 
     public void Init(NetworkRoom room)
     {
@@ -42,6 +45,7 @@ public abstract class GameRules : NetworkBehaviour
 
         AddAllPlayersInList();
         SubscribingOnPlayerEvents();
+        SubscribeToTowerDeath();
 
         StartCoroutine(FindServerGameManager());
     }
@@ -211,6 +215,16 @@ public abstract class GameRules : NetworkBehaviour
             {
                 _players.Add(playerSettings);
             }
+        }
+    }
+
+    private void SubscribeToTowerDeath()
+    {
+        var allTowers = GameObject.FindObjectsOfType<Object>().Where(obj => obj.IsTower == true);
+
+        foreach (var tower in allTowers)
+        {
+            tower.Died += OnTowerDied;
         }
     }
 

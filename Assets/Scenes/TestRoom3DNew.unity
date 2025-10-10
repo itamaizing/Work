@@ -25843,7 +25843,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 77834989}
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.5, y: -0.389, z: -0}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
   m_LocalScale: {x: 250.3909, y: 250.39087, z: 250.3909}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -144597,13 +144597,14 @@ GameObject:
   - component: {fileID: 938969947}
   - component: {fileID: 938969946}
   - component: {fileID: 938969945}
+  - component: {fileID: 938969950}
   m_Layer: 9
   m_Name: IceTeam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &938969944
 Transform:
   m_ObjectHideFlags: 0
@@ -144612,7 +144613,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 938969943}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 30.56, y: 0.669, z: 10.73}
+  m_LocalPosition: {x: 30.56, y: 0.3, z: 10.73}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -144676,6 +144677,7 @@ MonoBehaviour:
   _regenerationDelay: 0
   _objectBar: {fileID: 938969946}
   _objectData: {fileID: 11400000, guid: afb0ecbfafe8e474488bc7296e843064, type: 2}
+  obj: {fileID: 938969943}
 --- !u!114 &938969948
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144700,6 +144702,8 @@ MonoBehaviour:
   _indexTeam: 1
   uiComponent: {fileID: 0}
   live: 0
+  isDestroyOnDeath: 0
+  isTower: 1
 --- !u!114 &938969949
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144717,6 +144721,22 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
+--- !u!114 &938969950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 938969943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afb091539f545fb49b6bba4195765c13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  TeamIndex: 0
 --- !u!1 &940874348
 GameObject:
   m_ObjectHideFlags: 0
@@ -165905,7 +165925,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6086019476776207292, guid: cbb082e504b5cd74595d9455cfe3971e, type: 3}
       propertyPath: m_RootOrder
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6086019476776207292, guid: cbb082e504b5cd74595d9455cfe3971e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -181335,10 +181355,11 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 815883303719253060}
   - {fileID: 72609306}
   - {fileID: 1376233265}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1120540102
 GameObject:
@@ -181459,13 +181480,14 @@ GameObject:
   - component: {fileID: 1130355475}
   - component: {fileID: 1130355474}
   - component: {fileID: 1130355473}
+  - component: {fileID: 1130355478}
   m_Layer: 8
   m_Name: InfernoTeam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1130355472
 Transform:
   m_ObjectHideFlags: 0
@@ -181474,7 +181496,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1130355471}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.98, y: 0.434, z: 11.09}
+  m_LocalPosition: {x: -5.56, y: 0.3, z: 10.73}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -181538,6 +181560,7 @@ MonoBehaviour:
   _regenerationDelay: 0
   _objectBar: {fileID: 1130355474}
   _objectData: {fileID: 11400000, guid: afb0ecbfafe8e474488bc7296e843064, type: 2}
+  obj: {fileID: 1130355471}
 --- !u!114 &1130355476
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181562,6 +181585,8 @@ MonoBehaviour:
   _indexTeam: 1
   uiComponent: {fileID: 0}
   live: 0
+  isDestroyOnDeath: 0
+  isTower: 1
 --- !u!114 &1130355477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181579,6 +181604,22 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
+--- !u!114 &1130355478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1130355471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afb091539f545fb49b6bba4195765c13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  TeamIndex: 0
 --- !u!1 &1132931902
 GameObject:
   m_ObjectHideFlags: 0
@@ -206566,7 +206607,7 @@ RectTransform:
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0.006652832, y: 0.003189087}
   m_SizeDelta: {x: -0.06688, y: -0.07107}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -300007,7 +300048,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2025395556}
   m_LocalRotation: {x: -0.000000027130687, y: 0.6953063, z: -0.000000026247086, w: 0.7187136}
-  m_LocalPosition: {x: 0, y: -0.151, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 250.3909, y: 250.39087, z: 250.3909}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -312882,14 +312923,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2774035140186754034}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -11.387792, y: 0, z: -11.551437}
+  m_LocalPosition: {x: -1.2590017, y: 4.8814955, z: -2.5568867}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1130355472}
   - {fileID: 938969944}
-  m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_Father: {fileID: 1113800067}
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &892432338629452182
 MonoBehaviour:
@@ -315091,9 +315132,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _towerTeam_1:
-  - {fileID: 77834989}
+  - {fileID: 938969943}
   _towerTeam_2:
-  - {fileID: 2025395556}
+  - {fileID: 1130355471}
 --- !u!114 &3962780228005753804
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -316757,7 +316798,7 @@ RectTransform:
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0.006652832, y: 0.003189087}
   m_SizeDelta: {x: -0.06688, y: -0.07107}
   m_Pivot: {x: 0.5, y: 0.5}

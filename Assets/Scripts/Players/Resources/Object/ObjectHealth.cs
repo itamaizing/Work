@@ -10,6 +10,7 @@ public class ObjectHealth : Resource, IDamageable
 
     [Header("Data")]
     [SerializeField] private ObjectData _objectData;
+    [SerializeField] private Object obj;
 
     public event Action OnDeath;
 
@@ -60,7 +61,7 @@ public class ObjectHealth : Resource, IDamageable
     private void RpcSyncHP(float value)
     {
      _currentHealth = value;
-     OnHealthChanged(_currentHealth, _currentHealth);
+     OnHealthChanged(0, _currentHealth);
     }
 
     private IEnumerator FillHPCoroutine(float targetValue, float duration)
@@ -151,7 +152,7 @@ public class ObjectHealth : Resource, IDamageable
                 OnDeath?.Invoke();
 
                 GameObject target = transform.parent != null ? transform.parent.gameObject : gameObject;
-                Destroy(target);
+                if (obj.DestroyOnDeath) Destroy(target);
             }
 
             if (isServer) RpcPopupDamage(damage.Value);
@@ -167,6 +168,7 @@ public class ObjectHealth : Resource, IDamageable
             float roll = UnityEngine.Random.Range(0, 100);
             if (roll < _resistMagicDamage) return true;
         }
+
         return false;
     }
 
@@ -233,7 +235,15 @@ public class ObjectHealth : Resource, IDamageable
     public void CmdSetCurrentHealth(float newValue)
     {
         _currentHealth = Mathf.Clamp(newValue, 0, MaxValue);
-        OnHealthChanged(_currentHealth, _currentHealth);
+        OnHealthChanged(0, _currentHealth);
+    }
+
+    [Server]
+    public void ServerSetCurrentHealth(float newValue)
+    {
+        _currentHealth = Mathf.Clamp(newValue, 0, MaxValue);
+        gameObject.SetActive(true);
+        RpcSyncHP(_currentHealth);
     }
 
     [ClientRpc]

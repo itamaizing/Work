@@ -51,6 +51,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         PatentAfterDrag = parent;
         _camera = camera;
         _distance = distance;
+        _skill.LinkedChargeCDUI = _chargeCD;
 
         _skill.OnSkillStateChanged += UpdateIconState;
         _skill.ChargeCooldownEnded += OnChargeCooldownEnded;

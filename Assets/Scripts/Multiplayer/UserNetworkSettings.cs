@@ -120,6 +120,26 @@ public class UserNetworkSettings : NetworkBehaviour
 
             LayerMaskChanged?.Invoke(item.layer);
         }
-    }
 
+        TowerTeam towerTeam = FindObjectOfType<TowerTeam>();
+
+        if (towerTeam == null)
+        {
+            Debug.LogWarning("MarkUpEnemiesOrAllies: TowerTeam not found in scene!");
+            return;
+        }
+
+        if (towerTeam != null)
+        {
+            foreach (var tower in towerTeam.TowerTeam_1)
+            {
+                if (tower != null) tower.layer = _teamIndex == 1 ? LayerMask.NameToLayer("Allies") : LayerMask.NameToLayer("Enemy");
+            }
+
+            foreach (var tower in towerTeam.TowerTeam_2)
+            {
+                if (tower != null) tower.layer = _teamIndex == 2 ? LayerMask.NameToLayer("Allies") : LayerMask.NameToLayer("Enemy");
+            }
+        }
+    }
 }

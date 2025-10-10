@@ -16848,6 +16848,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GhostAura
       objectReference: {fileID: 0}
+    - target: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 8492809262968261936, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
@@ -17185,11 +17189,11 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   _agent: {fileID: 8217033100601787470}
-  _enemyCheckRadius: 6
-  _enemyLayerMask:
+  _alliesLayer:
     serializedVersion: 2
     m_Bits: 0
-  _damageDeley: 0.5
+  _damageDelay: 0.5
+  _attackDistance: 3
 --- !u!114 &-1021338090593152454
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,120 +1,205 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class TestGameRulesBattlegrounds : GameRules
 {
-    private List<GameObject> _towerTeam1;
-    private List<GameObject> _towerTeam2;
-
     [Header("Game Settings")]
     [SerializeField] private float _lifeTime = 10f;
-    [SerializeField] private int _experienceForKill = 5;
-    [SerializeField] private int _experienceForWin = 3;
-    [SerializeField] private float _bottleVolumeForWin = 1f / 3f;
-
     [SerializeField] private bool isRemoveRoom = true;
+
+    [Header("Team Settings")]
+    [SerializeField] private int experiencePerWin = 6;
+    [SerializeField] private int experiencePerLoss = 2;
+    [SerializeField] private float bottleVolumePerWin = 1f / 3f;
+
+    private TeamsPanel _teams; // need rework
+    private int[] _teamDeaths = new int[3];
+
+    private int _teamMaxScore = 1;
+    private int _team1Score = 0;
+    private int _team2Score = 0;
 
     public override void GameStartServer(HeroSpawnManager spawnPoints)
     {
         StartCoroutine(HandleTeamsAndSpawns(spawnPoints));
-        FindTeamTowers();
-
-        foreach (var playerSettings in _players)
-        {
-            //if (playerSettings is HeroComponent heroComponent)
-            //{
-            //    heroComponent.TalentManager.ClientRpcResetTalentPoints();
-            //    SaveManager.Instance.ResetAllTalents(heroComponent);
-            //}
-
-            var health = playerSettings.NetworkSettings.CachedHealth;
-            if (health != null)
-            {
-                health.Died += () => OnPlayerDeath(playerSettings);
-                health.Died += () => RespawnPlayer(playerSettings);
-                health.Died += () => ResetPlayerState(playerSettings);
-
-                playerSettings.LVL.LVLUped += (newLevel) => OnPlayerLevelUp(playerSettings);
-            }
-        }
-
-        SubscribeToTowerDeaths();
-    }
-
-    private void OnPlayerLevelUp(Character playerSettings)
-    {
-        int playerTeamIndex = playerSettings.NetworkSettings.TeamIndex;
-
-        //foreach (var player in _players)
-        //{
-        //    if (player.NetworkSettings.TeamIndex == playerTeamIndex && player is HeroComponent heroComponent)
-        //    {
-        //        heroComponent.TalentManager.ClientRpcAddPoints();
-        //        Debug.Log($"Player in Team {playerTeamIndex} received 1 talent point due to level up.");
-        //    }
-        //}
     }
 
     protected override void GameStartClient()
     {
+        _preparationAreaManager?.PreparationAreasDisable(5f);
     }
 
-    private void FindTeamTowers()
+    protected override void OnPlayerDied(Character player)
     {
-        TowerTeam towerTeam = FindObjectOfType<TowerTeam>();
-        if (towerTeam != null)
-        {
-            _towerTeam1 = new List<GameObject>(towerTeam.TowerTeam_1);
-            _towerTeam2 = new List<GameObject>(towerTeam.TowerTeam_2);
-        }
+        //AddExpForAllEnemy(player);
+        StartCoroutine(RevivalPlayerCoroutine(player));
+       
+        /*
+        var playerSettings = _players.Find(p => p.gameObject == player);
+        if (playerSettings == null || playerSettings.NetworkSettings.TeamIndex < 1 || playerSettings.NetworkSettings.TeamIndex > 2) return;
 
-        if (_towerTeam1.Count == 0 || _towerTeam2.Count == 0)
+        teamDeaths[playerSettings.NetworkSettings.TeamIndex]++;
+        CheckForRoundEnd();
+        */
+    }
+
+    private void AddScorePoint(int teamIndex)
+    {
+        switch (teamIndex)
         {
-            Debug.LogError("No towers were found for one or both teams!");
+            case 2:
+                _team1Score++;
+                RpcSetSource(1, _team1Score);
+                break;
+
+            case 1:
+                _team2Score++;
+                RpcSetSource(2, _team2Score);
+                break;
+
+            default:
+                Debug.LogError("Not found");
+                break;
         }
     }
 
-    private void SubscribeToTowerDeaths()
+    private void CancelActiveSkills(Character playerSettings)
     {
-        foreach (var tower in _towerTeam1)
+        var skills = playerSettings.Abilities.Abilities;
+        foreach (var skill in skills)
         {
-            var objectHealth = tower.GetComponent<ObjectHealth>();
-            if (objectHealth != null)
+            skill.RpcCancelActiveSkill();
+            skill.RpcResetSkillState();
+        }
+    }
+
+    private void CheckForRoundEnd()
+    {
+        if (_teamDeaths[1] == GetTeamCount(1) || _teamDeaths[2] == GetTeamCount(2))
+        {
+            _team2Score += _teamDeaths[1] == GetTeamCount(1) ? 1 : 0;
+            _team1Score += _teamDeaths[2] == GetTeamCount(2) ? 1 : 0;
+
+            Debug.Log($"Round Over! Team 1 Score: {_team1Score}, Team 2 Score: {_team2Score}");
+            if (_team1Score >= _teamMaxScore || _team2Score >= _teamMaxScore)
             {
-                objectHealth.OnDeath += () => OnTowerDestroyed(1);
+                EndGame();
+            }
+            else
+            {
+                //RestartRound();
+            }
+        }
+    }
+
+    /*
+    private void EndGame()
+    {
+        if (!isServer) return;
+
+        var user = User.Instance ?? FindObjectOfType<User>();
+
+        var bottleManager = BottleUserManager.Instance;
+        var levelManager = LevelCharacterManager.Instance;
+
+        GameMode currentMode = ServerManager.Instance.CurrentGameMode;
+        bool isMaxLevel = levelManager.GetCurrentLevel() >= LevelCharacterManager.Instance.MaxLevel;
+        bool isVictory = _team1Score >= _teamMaxScore;
+
+        switch (currentMode)
+        {
+            case GameMode.GM1vs1MaximumMode:
+                if (isVictory)
+                {
+                    if (isMaxLevel)
+                    {
+                        bottleManager.AddBottleVolume(bottleVolumePerWin);
+                    }
+                    else
+                    {
+                        levelManager.AddExperience(experiencePerWin);
+                        bottleManager.AddBottleVolume(bottleVolumePerWin);
+                    }
+                }
+
+                break;
+
+            default:
+                if (isVictory)
+                {
+                    if (isMaxLevel)
+                    {
+                        bottleManager.AddBottleVolume(bottleVolumePerWin);
+                    }
+                    else
+                    {
+                        levelManager.AddExperience(experiencePerLoss);
+                        bottleManager.AddBottleVolume(bottleVolumePerWin);
+                    }
+                }
+                break;
+        }
+
+        RpcCloseRoomOnClients();
+        StartCoroutine(CloseRoomJob());
+    }
+    */
+
+    private void RestartRound()
+    {
+        //_teamDeaths[1] = 0;
+        //_teamDeaths[2] = 0;
+
+        RpcEnablePreparationAreas(5f);
+
+        if (isServer)
+        {
+            List<NetworkIdentity> objectsToRemove = new List<NetworkIdentity>();
+
+            foreach (var networkIdentity in NetworkServer.spawned.Values)
+            {
+                bool isPlayer = _players.Exists(player => player.gameObject == networkIdentity.gameObject);
+                bool isTestGameRules = networkIdentity.GetComponent<TestGameRules>() != null;
+                bool isUser = networkIdentity.GetComponent<User>() != null;
+
+                if (networkIdentity != null && !isPlayer && !isTestGameRules && !isUser)
+                {
+                    objectsToRemove.Add(networkIdentity);
+                }
+            }
+
+            foreach (var networkIdentity in objectsToRemove)
+            {
+                bool isTower = networkIdentity.GetComponent<Object>()?.IsTower == true;
+
+                if (networkIdentity != null && networkIdentity.isServer && !isTower)
+                {
+                    NetworkServer.Destroy(networkIdentity.gameObject);
+                }
             }
         }
 
-        foreach (var tower in _towerTeam2)
+        foreach (var playerSettings in _players)
         {
-            var objectHealth = tower.GetComponent<ObjectHealth>();
-            if (objectHealth != null)
+            ResetPlayerState(playerSettings);
+
+            int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
+
+            if (_spawnPoints != null)
             {
-                objectHealth.OnDeath += () => OnTowerDestroyed(2);
+                RpcTeleportPlayer(playerSettings.gameObject, _spawnPoints.GetRandomPoint(spawnIndex), _spawnPoints.GetRotate(spawnIndex));
             }
         }
     }
 
-    private void OnPlayerDeath(Character playerSettings)
+    private void ResetPlayerState(Character player)
     {
-        Debug.Log($"Player from Team {playerSettings.NetworkSettings.TeamIndex} died.");
-
-        int enemyTeamIndex = playerSettings.NetworkSettings.TeamIndex == 1 ? 2 : 1;
-
-        foreach (var player in _players)
-        {
-            if (player.NetworkSettings.TeamIndex == enemyTeamIndex)
-            {
-                player.LVL.AddEXP(_experienceForKill);
-            }
-        }
-    }
-
-    private void ResetPlayerState(Character playerSettings)
-    {
+        //player.ServerResetAll();
+        /*
         var health = playerSettings.Health;
         health?.ResetValue();
 
@@ -130,92 +215,47 @@ public class TestGameRulesBattlegrounds : GameRules
                 characterState.RemoveState(state.State);
             }
         }
+        */
     }
 
-    private void RespawnPlayer(Character playerSettings)
+    private int GetTeamCount(int teamIndex)
     {
-        int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
-        if (_spawnPoints != null)
+        int count = 0;
+        foreach (var playerSettings in _players)
         {
-            RpcTeleportPlayer(playerSettings.gameObject, _spawnPoints.GetRandomPoint(spawnIndex), _spawnPoints.GetRotate(spawnIndex));
+            if (playerSettings.NetworkSettings.TeamIndex == teamIndex)
+            {
+                count++;
+            }
         }
-    }
-
-    private void OnTowerDestroyed(int teamIndex)
-    {
-        EndGame(teamIndex);
-    }
-
-    private void EndGame(int losingTeamIndex)
-    {
-        bool isTeam1Winner = losingTeamIndex == 2;
-        bool isTeam2Winner = losingTeamIndex == 1;
-
-        var user = User.Instance ?? FindObjectOfType<User>();
-
-        var bottleManager = BottleUserManager.Instance;
-        var levelManager = LevelCharacterManager.Instance;
-
-        if (isTeam1Winner || isTeam2Winner)
-        {
-            Debug.Log("Раунд завершен");
-            levelManager.AddExperience(_experienceForWin);
-            bottleManager.AddBottleVolume(_bottleVolumeForWin);
-        }
-
-        RpcCloseRoomOnClients();
-        StartCoroutine(CloseRoomJob());
+        return count;
     }
 
     protected override void UnsubscribeFromAllEvents()
     {
-        foreach (var playerSettings in _players)
+        if (isServer)
         {
-            var health = playerSettings.NetworkSettings.CachedHealth;
-            if (health != null)
-            {
-                health.Died -= () => OnPlayerDeath(playerSettings);
-                health.Died -= () => RespawnPlayer(playerSettings);
-                health.Died -= () => ResetPlayerState(playerSettings);
-            }
+            List<NetworkIdentity> objectsToRemove = new List<NetworkIdentity>();
 
-            var runeComponent = playerSettings.GetComponent<RuneComponent>();
-            if (runeComponent != null && health != null)
+            foreach (var networkIdentity in NetworkServer.spawned.Values)
             {
-                health.Died -= runeComponent.ResetValue;
-            }
-
-            playerSettings.LVL.LVLUped -= (newLevel) => OnPlayerLevelUp(playerSettings);
-        }
-
-        if (_towerTeam1 != null)
-        {
-            foreach (var tower in _towerTeam1)
-            {
-                var objectHealth = tower.GetComponent<ObjectHealth>();
-                if (objectHealth != null)
+                bool isPlayer = _players.Exists(player => player.gameObject == networkIdentity.gameObject);
+                if (!isPlayer)
                 {
-                    objectHealth.OnDeath -= () => OnTowerDestroyed(1);
+                    objectsToRemove.Add(networkIdentity);
                 }
             }
         }
 
-        if (_towerTeam2 != null)
-        {
-            foreach (var tower in _towerTeam2)
-            {
-                var objectHealth = tower.GetComponent<ObjectHealth>();
-                if (objectHealth != null)
-                {
-                    objectHealth.OnDeath -= () => OnTowerDestroyed(2);
-                }
-            }
-        }
+        var allTowers = GameObject.FindObjectsOfType<Object>().Where(obj => obj.IsTower == true);
+        foreach (var tower in allTowers) tower.Died -= OnTowerDied;
     }
+
 
     private IEnumerator CloseRoomOnClientAndLoadMainMenu()
     {
         yield return StartCoroutine(CloseRoomJob());
+
         SceneManager.LoadScene("MainMenu");
     }
 
@@ -245,8 +285,65 @@ public class TestGameRulesBattlegrounds : GameRules
         StartCoroutine(CloseRoomJob());
     }
 
-    protected override void OnPlayerDied(Character character)
+    private IEnumerator HandleTowerDestructionLogic(Object destroyedTower)
     {
-        throw new System.NotImplementedException();
+        yield return new WaitForSeconds(1f);
+
+        int winningTeam = destroyedTower.IndexTeam == 1 ? 2 : 1;
+        AddScorePointFromTower(winningTeam);
+
+        var allTowers = GameObject.FindObjectsOfType<Object>().Where(obj => obj.ObjectHealth != null && !obj.DestroyOnDeath);
+
+        foreach (var tower in allTowers)
+        {
+            tower.ObjectHealth.ServerSetCurrentHealth(tower.ObjectHealth.MaxValue);
+            tower.Live = true;
+        }
+
+        RestartRound();
     }
+
+    protected override void OnTowerDied(Object tower)
+    {
+        if (!isServer) return;
+
+        if (!tower.DestroyOnDeath)
+        {
+            StartCoroutine(HandleTowerDestructionLogic(tower));
+            return;
+        }
+
+        var towerHealth = tower.GetComponent<ObjectHealth>();
+        if (towerHealth != null)
+        {
+            int winningTeam = tower.IndexTeam == 1 ? 2 : 1;
+            AddScorePointFromTower(winningTeam);
+        }
+    }
+
+    private void AddScorePointFromTower(int winningTeam)
+    {
+        if (winningTeam == 1)
+        {
+            _team1Score++;
+            RpcSetSource(1, _team1Score);
+        }
+        else if (winningTeam == 2)
+        {
+            _team2Score++;
+            RpcSetSource(2, _team2Score);
+        }
+
+        if (_team1Score >= _teamMaxScore || _team2Score >= _teamMaxScore)
+        {
+            RpcShowWinner(_team1Score > _team2Score ? 1 : 2);
+            EndGame();
+        }
+        else
+        {
+            RestartRound();
+        }
+    }
+
+    [ClientRpc] private void RpcEnablePreparationAreas(float duration) => _preparationAreaManager?.PreparationAreasDisable(duration);
 }

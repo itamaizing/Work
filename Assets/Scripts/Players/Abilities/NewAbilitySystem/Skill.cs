@@ -237,6 +237,7 @@ public abstract class Skill : NetworkBehaviour
     public float ManaCostRate { get => _manaCostRate; }
     public float AutoAttackDelay { get => _autoAttackDelay; }
     public Queue<TargetInfo> TargetInfoQueue { get => _targetInfoQueue; }
+    public ChargeCDUI LinkedChargeCDUI { get; set; }
 
     public bool Disactive
     {
@@ -610,7 +611,6 @@ public abstract class Skill : NetworkBehaviour
     public void ResetCurrentChargeCooldown(int index)
     {
         if (!_isUseCharges || !_chargesHaveSeparateCooldown) return;
-
         if (_currentChargeCooldownJob[index] != null)
         {
             StopCoroutine(_currentChargeCooldownJob[index]);
@@ -619,11 +619,10 @@ public abstract class Skill : NetworkBehaviour
 
         _remainingCooldownTimeChargers[index] = 0f;
 
-        if (_currentChargers < _maxCharges)
-        {
-            _currentChargers++;
-            CurrentChargeChanged?.Invoke(_currentChargers);
-        }
+        LinkedChargeCDUI?.RemoveChargeCD(index);
+
+        _currentChargers = Mathf.Min(_currentChargers + 1, _maxCharges);
+        CurrentChargeChanged?.Invoke(_currentChargers);
 
         ChargeCooldownEnded?.Invoke(index);
     }
@@ -859,6 +858,16 @@ public abstract class Skill : NetworkBehaviour
         foreach (var hit in rayHit)
         {
             Debug.Log(hit.collider.gameObject.name);
+
+            if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed)
+            {
+                if (hit.collider.TryGetComponent<IDamageable>(out _))
+                {
+
+                    IsAutoMode = true;
+                    AutoModeChanged?.Invoke(true);
+                }
+            }
         }
         Character target = null;
 
@@ -980,6 +989,15 @@ public abstract class Skill : NetworkBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
+            if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed)
+            {
+                if (hit.collider.TryGetComponent<IDamageable>(out _))
+                {
+
+                    IsAutoMode = true;
+                    AutoModeChanged?.Invoke(true);
+                }
+            }
             return hit.point;
         }
         return Vector3.zero;

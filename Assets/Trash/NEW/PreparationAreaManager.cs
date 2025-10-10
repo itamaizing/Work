@@ -21,6 +21,7 @@ public class PreparationAreaManager : MonoBehaviour
 
     private IEnumerator IPreparationAreasDisable(float time)
     {
+        foreach (GameObject preparationArea in _preparationAreas) preparationArea.SetActive(true);
         yield return new WaitForSeconds(time);
         foreach (GameObject preparationArea in _preparationAreas) preparationArea.SetActive(false);
     }

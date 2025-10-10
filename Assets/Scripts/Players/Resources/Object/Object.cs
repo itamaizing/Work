@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,8 +18,12 @@ public class Object : NetworkBehaviour, ITargetable
     [SerializeField] private UIObjectComponents uiComponent;
 
     [SerializeField] private bool live = false;
+    [SerializeField] private bool isDestroyOnDeath = true;
+    [SerializeField] private bool isTower = false;
 
     private bool _isDeath;
+
+    public event Action<Object> Died;
 
     public bool Live { get => live; set => live = value; }
     public UIObjectComponents UIComponent => uiComponent;
@@ -28,6 +33,8 @@ public class Object : NetworkBehaviour, ITargetable
     public SelectedCircle SelectedCircle => _selectedCircle;
     public Transform TargetTransform => transform;
     public bool IsDeath => _isDeath;
+    public bool DestroyOnDeath => isDestroyOnDeath;
+    public bool IsTower => isTower;
 
     public int IndexTeam { get => _indexTeam; set => _indexTeam = value; }
 
@@ -46,11 +53,21 @@ public class Object : NetworkBehaviour, ITargetable
         if (_minimapMarker != null) _minimapMarker.IsActive = true;
     }
 
-    private void OnDied() => _isDeath = true;
+    private void OnDied()
+    {
+        _isDeath = true;
+        Died?.Invoke(this);
+    }
+
     private void Start() => Initialize();
     public override void OnStartServer() => base.OnStartServer();
     public override void OnStopServer() => base.OnStopServer();
 
-    [Server] private void ServerOnDeath() => RpcClientOnDied();
+    [Server]
+    private void ServerOnDeath()
+    {
+        OnDied();
+        RpcClientOnDied();
+    }
     [ClientRpc] private void RpcClientOnDied() => OnDied();
 }

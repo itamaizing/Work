@@ -30033,7 +30033,7 @@ GameObject:
   - component: {fileID: 798753633736636440}
   - component: {fileID: 6518625887667459061}
   - component: {fileID: 4406279120107032920}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: BaseHero
   m_TagString: Allies
   m_Icon: {fileID: 0}
