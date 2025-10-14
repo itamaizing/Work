@@ -11,7 +11,8 @@ public class SelectComponent : NetworkBehaviour
     private MoveComponent _moveComponent;
     private SkillManager _abilitiesComponent;
     private UIPlayerComponents _uiComponent;
-    
+    private SkillRenderer _skillRenderer;
+
     private bool _isCurrentPLayer;
 
     public Vector3 OffsetInGroup { get; set; }
@@ -47,12 +48,13 @@ public class SelectComponent : NetworkBehaviour
         _moveComponent = move;
         _abilitiesComponent = abilitiesComponent;
         _uiComponent = uiComponent;
+        _skillRenderer = _uiComponent.Renderer;
     } 
     
     [Client] 
     public void Select()
     {
-        if(!isOwned) return;
+        if (!isOwned) return;
         
         _uiComponent.ChangeSelection(true);
         _abilitiesComponent.SetAbilitiesPanelSelect(true);
@@ -61,12 +63,13 @@ public class SelectComponent : NetworkBehaviour
         _moveComponent.IsSelect = true;
 
         OnSelect?.Invoke();
+        _skillRenderer.StartHoverHighlight();
     }
     [Client]
     public void Deselect()
     {
         if(!isOwned) return;
-        
+
         _uiComponent.ChangeSelection(false);
         _abilitiesComponent.SetAbilitiesPanelSelect(false);
         _abilitiesComponent.OnSelect(false);
@@ -74,6 +77,7 @@ public class SelectComponent : NetworkBehaviour
         _moveComponent.IsSelect = false;
 
         OnDeselect?.Invoke();
+        _skillRenderer.StopHoverHighlight();
     }
     
 }

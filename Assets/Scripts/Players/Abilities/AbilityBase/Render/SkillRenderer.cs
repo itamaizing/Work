@@ -34,6 +34,7 @@ public class SkillRenderer : NetworkBehaviour
     private BoxArea _lineStartImage;
     //private BoxArea _lineEndImage;
     private SkillCircleRanderer _drawAutoAttackRadius;
+    private Character _hoveredTargetGeneral;
 
     private Coroutine _previewDamageCoroutine;
     private readonly HashSet<Health> _previewSet = new();
@@ -44,6 +45,7 @@ public class SkillRenderer : NetworkBehaviour
     private Coroutine _drawRadiusCoroutine;
     private Coroutine _drawAutoAttackRadiusCoroutine;
     private Coroutine _dynamicRadiusColorCoroutine;
+    private Coroutine _hoverHighlightCoroutine;
 
     //public SphereArea TempDamageZone => _tempDamageZone;
     public CircleArea TempDamageZone => _tempArea;
@@ -369,6 +371,28 @@ public class SkillRenderer : NetworkBehaviour
         }
     }
 
+    public void StartHoverHighlight()
+    {
+        if (_hoverHighlightCoroutine == null)  _hoverHighlightCoroutine = StartCoroutine(HoverHighlightJob());
+    }
+
+    public void StopHoverHighlight()
+    {
+        if (_hoverHighlightCoroutine != null)
+        {
+            StopCoroutine(_hoverHighlightCoroutine);
+            _hoverHighlightCoroutine = null;
+
+            if (_hoveredTargetGeneral != null)
+            {
+                var prev = _hoveredTargetGeneral.GetComponentInChildren<SelectedCircle>();
+                if (prev != null) prev.SwitchStroke(false);
+                _hoveredTargetGeneral = null;
+            }
+        }
+    }
+
+
     private void RotateAtMouse(Transform transform)
     {
 		Vector3 worldPosition = Vector3.zero;
@@ -379,6 +403,47 @@ public class SkillRenderer : NetworkBehaviour
 		Vector3 dir = worldPosition - gameObject.transform.position;
 		float angle = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(90, - angle + 90, 0);
+    }
+
+    private void UpdateHoverTargetAlways(Character self)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+        {
+            if (hit.transform.TryGetComponent<Character>(out Character hoveredChar) && hoveredChar != self)
+            {
+                if (_hoveredTargetGeneral != hoveredChar)
+                {
+                    _hoveredTargetGeneral = hoveredChar;
+
+                    if (_hoveredTargetGeneral != null)
+                    {
+                        if (_hoveredTargetGeneral.TryGetComponent<UIPlayerComponents>(out var uICharacter)) uICharacter.CircleSelect1.SwitchStroke(true);
+                    }         
+                }
+            }
+            else
+            {
+                if (_hoveredTargetGeneral != null && _hoveredTargetGeneral.TryGetComponent<UIPlayerComponents>(out var uICharacter)) uICharacter.CircleSelect1.SwitchStroke(false);
+                _hoveredTargetGeneral = null;
+            }
+        }
+        else
+        {
+            if (_hoveredTargetGeneral != null && _hoveredTargetGeneral.TryGetComponent<UIPlayerComponents>(out var uICharacter)) uICharacter.CircleSelect1.SwitchStroke(false);
+            _hoveredTargetGeneral = null;
+        }
+    }
+
+
+    private IEnumerator HoverHighlightJob()
+    {
+        while(true)
+        {
+            UpdateHoverTargetAlways(hero);
+            yield return null;
+        }
     }
 
     private IEnumerator DrawAutoAttackRadiusJob(float radius, Transform target)
@@ -543,13 +608,17 @@ public class SkillRenderer : NetworkBehaviour
                 _tempTarget = _targets[0];
                 _tempTarget.SelectedCircle.SwitchClostestTarget(true);
 
-                if (Vector3.Distance(_tempTarget.transform.position, transform.position) <= radius)
+                float distanceToTarget = Vector3.Distance(_tempTarget.transform.position, transform.position);
+
+                if (distanceToTarget <= radius)
                 {
                     _tempTarget.SelectedCircle.SetColorTarget(Color.green);
+                    _tempTarget.SelectedCircle.SetColorTargetVariant(Color.green);
                 }
                 else
                 {
                     _tempTarget.SelectedCircle.SetColorTarget(Color.red);
+                    _tempTarget.SelectedCircle.SetColorTargetVariant(Color.red);
                 }
             }
 

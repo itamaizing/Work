@@ -8,6 +8,7 @@ public class SelectedCircle : MonoBehaviour
     [SerializeField] private DecalProjector _stroke;
 
     private bool _isActive;
+
     private Material _mat;
 
     public bool IsActive
@@ -57,5 +58,14 @@ public class SelectedCircle : MonoBehaviour
     public void SetColorTarget(Color value) 
     {
         _mat.color = value;
+    }
+
+    public void SetColorTargetVariant(Color value)
+    {
+        var mat = _selectProjectorTargetVariant.material;
+        if (mat != null)
+        {
+            mat.color = value;
+        }
     }
 }

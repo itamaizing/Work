@@ -30497,6 +30497,7 @@ MonoBehaviour:
   CircleSelect: {fileID: 7875534060547890866}
   MarkersSelect: {fileID: 6187515459508436941}
   _castLine: {fileID: 7232052806928420198}
+  skillRenderer: {fileID: 6214007637544752149}
   _damageTracker: {fileID: 582667559171038809}
   DamageSpawn: {fileID: 8174039513679053064}
   RegenSpawn: {fileID: 4803801221496526016}
