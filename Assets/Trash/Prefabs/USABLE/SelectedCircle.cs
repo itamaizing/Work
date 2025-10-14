@@ -4,12 +4,11 @@ using UnityEngine.Rendering.Universal;
 public class SelectedCircle : MonoBehaviour
 {
     [SerializeField] private DecalProjector _selectProjector;
+    [SerializeField] private DecalProjector _selectProjectorHero;
     [SerializeField] private DecalProjector _selectProjectorTargetVariant;
     [SerializeField] private DecalProjector _stroke;
 
     private bool _isActive;
-
-    private Material _mat;
 
     public bool IsActive
     {
@@ -20,19 +19,10 @@ public class SelectedCircle : MonoBehaviour
         set
         {
             _isActive = value;
-			_selectProjector.gameObject.SetActive(_isActive);
+            _selectProjectorHero.gameObject.SetActive(_isActive);
 			//gameObject.SetActive(_isActive);
         }
     }
-
-	private void Start()
-	{
-		_mat = Instantiate(_selectProjector.material);
-		_selectProjector.material = _mat;
-		//mat.SetFloat("_GrayscaleAmount", grey);
-
-		//_closestTargetProjector.material
-	}
 
 	public void SwitchClostestTarget(bool value)
     {
@@ -48,21 +38,29 @@ public class SelectedCircle : MonoBehaviour
     public void SwitchSelectCircle(bool value)
     {
         _selectProjector.gameObject.SetActive(value);
-
-        if (value && _mat != null)
-        {
-            _mat.color = Color.green;
-        }
     }
 
-    public void SetColorTarget(Color value) 
+    public void SetColorSelectProjector(Color value)
     {
-        _mat.color = value;
+        var mat = _selectProjector.material;
+        if (mat != null)
+        {
+            mat.color = value;
+        }
     }
 
     public void SetColorTargetVariant(Color value)
     {
         var mat = _selectProjectorTargetVariant.material;
+        if (mat != null)
+        {
+            mat.color = value;
+        }
+    }
+
+    public void SetColorSelectProjectorHero(Color value)
+    {
+        var mat = _selectProjectorHero.material;
         if (mat != null)
         {
             mat.color = value;

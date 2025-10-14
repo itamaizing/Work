@@ -42,7 +42,6 @@ public class UIObjectComponents : MonoBehaviour
     public void ChangeSelection(bool isSelect)
     {
         circleSelect.IsActive = isSelect;
-        circleSelect.SetColorTarget(Color.green);
         minimapMarker.IsActive = isSelect;
     }
 

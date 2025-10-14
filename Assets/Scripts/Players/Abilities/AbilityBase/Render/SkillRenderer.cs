@@ -34,7 +34,8 @@ public class SkillRenderer : NetworkBehaviour
     private BoxArea _lineStartImage;
     //private BoxArea _lineEndImage;
     private SkillCircleRanderer _drawAutoAttackRadius;
-    private Character _hoveredTargetGeneral;
+    private Character _hovered;
+    private Character _hoveredTarget;
 
     private Coroutine _previewDamageCoroutine;
     private readonly HashSet<Health> _previewSet = new();
@@ -302,6 +303,8 @@ public class SkillRenderer : NetworkBehaviour
     public void DrawClosestTarget(float radius, LayerMask TargetsLayers, Character player)
     {
         if (_isOverrideClosestTarget) return;
+
+        if (_hoveredTarget != null) _hoveredTarget.SelectedCircle.SwitchSelectCircle(true);
         _drawClosestTargetCoroutine = StartCoroutine(DrawClosestTargetJob(radius, TargetsLayers, player));
     }
 
@@ -319,6 +322,12 @@ public class SkillRenderer : NetworkBehaviour
         {
             _tempTarget.SelectedCircle.SwitchClostestTarget(false);
             _tempTarget = null;
+        }
+
+        if (_hoveredTarget != null)
+        {
+            _hoveredTarget.SelectedCircle.SwitchSelectCircle(false);
+            _hoveredTarget = null;
         }
 
         _targets.Clear();
@@ -383,11 +392,11 @@ public class SkillRenderer : NetworkBehaviour
             StopCoroutine(_hoverHighlightCoroutine);
             _hoverHighlightCoroutine = null;
 
-            if (_hoveredTargetGeneral != null)
+            if (_hovered != null)
             {
-                var prev = _hoveredTargetGeneral.GetComponentInChildren<SelectedCircle>();
+                var prev = _hovered.GetComponentInChildren<SelectedCircle>();
                 if (prev != null) prev.SwitchStroke(false);
-                _hoveredTargetGeneral = null;
+                _hovered = null;
             }
         }
     }
@@ -413,26 +422,26 @@ public class SkillRenderer : NetworkBehaviour
         {
             if (hit.transform.TryGetComponent<Character>(out Character hoveredChar) && hoveredChar != self)
             {
-                if (_hoveredTargetGeneral != hoveredChar)
+                if (_hovered != hoveredChar)
                 {
-                    _hoveredTargetGeneral = hoveredChar;
+                    _hovered = hoveredChar;
 
-                    if (_hoveredTargetGeneral != null)
+                    if (_hovered != null)
                     {
-                        if (_hoveredTargetGeneral.TryGetComponent<UIPlayerComponents>(out var uICharacter)) uICharacter.CircleSelect1.SwitchStroke(true);
+                        if (_hovered.TryGetComponent<UIPlayerComponents>(out var uICharacter)) uICharacter.CircleSelect1.SwitchStroke(true);
                     }         
                 }
             }
             else
             {
-                if (_hoveredTargetGeneral != null && _hoveredTargetGeneral.TryGetComponent<UIPlayerComponents>(out var uICharacter)) uICharacter.CircleSelect1.SwitchStroke(false);
-                _hoveredTargetGeneral = null;
+                if (_hovered != null && _hovered.TryGetComponent<UIPlayerComponents>(out var uICharacter)) uICharacter.CircleSelect1.SwitchStroke(false);
+                _hovered = null;
             }
         }
         else
         {
-            if (_hoveredTargetGeneral != null && _hoveredTargetGeneral.TryGetComponent<UIPlayerComponents>(out var uICharacter)) uICharacter.CircleSelect1.SwitchStroke(false);
-            _hoveredTargetGeneral = null;
+            if (_hovered != null && _hovered.TryGetComponent<UIPlayerComponents>(out var uICharacter)) uICharacter.CircleSelect1.SwitchStroke(false);
+            _hovered = null;
         }
     }
 
@@ -547,8 +556,6 @@ public class SkillRenderer : NetworkBehaviour
 
     private IEnumerator DrawClosestTargetJob(float radius, LayerMask TargetsLayers, Character player)
     {
-        Character _hoveredTarget = null;
-
         while (true)
         {
             if (IsOverrideClosestTarget) yield return null;
@@ -588,7 +595,6 @@ public class SkillRenderer : NetworkBehaviour
                     if (Vector3.Distance(target.transform.position, transform.position) <= radius)
 					{
 						target.SelectedCircle.SwitchStroke(true);
-						target.SelectedCircle.SetColorTarget(Color.green);
 					}
 					else
 					{
@@ -610,15 +616,15 @@ public class SkillRenderer : NetworkBehaviour
 
                 float distanceToTarget = Vector3.Distance(_tempTarget.transform.position, transform.position);
 
-                if (distanceToTarget <= radius)
+                if (distanceToTarget <= radius) _tempTarget.SelectedCircle.SetColorTargetVariant(Color.green);
+                else _tempTarget.SelectedCircle.SetColorTargetVariant(Color.red);
+
+                if (_hoveredTarget != null)
                 {
-                    _tempTarget.SelectedCircle.SetColorTarget(Color.green);
-                    _tempTarget.SelectedCircle.SetColorTargetVariant(Color.green);
-                }
-                else
-                {
-                    _tempTarget.SelectedCircle.SetColorTarget(Color.red);
-                    _tempTarget.SelectedCircle.SetColorTargetVariant(Color.red);
+                    float distanceToTargetHover = Vector3.Distance(_hoveredTarget.transform.position, transform.position);
+
+                    if (distanceToTargetHover <= radius) _hoveredTarget.SelectedCircle.SetColorSelectProjector(Color.green);
+                    else _hoveredTarget.SelectedCircle.SetColorSelectProjector(Color.red);
                 }
             }
 
@@ -673,7 +679,6 @@ public class SkillRenderer : NetworkBehaviour
 
             yield return null;
         }
-        //yield return null;
     }
 
     private IEnumerator DynamicRadiusColorJob(float Radius)

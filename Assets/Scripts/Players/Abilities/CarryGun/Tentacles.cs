@@ -284,12 +284,10 @@ public class Tentacles : Skill
                         {
                             isCharacterInsidePreview = true;
                             character.SelectedCircle.SwitchClostestTarget(true);
-                            character.SelectedCircle.SetColorTarget(Color.green);
                         }
                         else
                         {
                             character.SelectedCircle.SwitchClostestTarget(false);
-                            character.SelectedCircle.SetColorTarget(Color.red);
                         }
 
                         newCharactersInPreview.Add(character);

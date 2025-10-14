@@ -64,6 +64,7 @@ public class SelectComponent : NetworkBehaviour
 
         OnSelect?.Invoke();
         _skillRenderer.StartHoverHighlight();
+        _uiComponent.CircleSelect1.SetColorSelectProjectorHero(Color.green);
     }
     [Client]
     public void Deselect()
@@ -78,6 +79,7 @@ public class SelectComponent : NetworkBehaviour
 
         OnDeselect?.Invoke();
         _skillRenderer.StopHoverHighlight();
+        _uiComponent.CircleSelect1.SetColorSelectProjectorHero(Color.red);
     }
     
 }

@@ -72,7 +72,6 @@ public class UIPlayerComponents : MonoBehaviour
     public void ChangeSelection(bool isSelect)
     {
         CircleSelect.IsActive = isSelect;
-        CircleSelect.SetColorTarget(Color.green);
         MarkersSelect.IsActive = isSelect;
     }
 
