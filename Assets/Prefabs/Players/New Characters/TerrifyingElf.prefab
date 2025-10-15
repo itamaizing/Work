@@ -19656,6 +19656,7 @@ MonoBehaviour:
   _attackRangeType: 1
   _skillType: 0
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -19672,12 +19673,12 @@ MonoBehaviour:
   _chargeCooldown: 0
   _radius: 7
   _area: 1
-  _castLength: 0
-  _castWidth: 0.5
+  _castLength: 7
+  _castWidth: 0.1
   _autoAttackDelay: 0
-  _isAutoRadiusRender: 1
+  _isAutoRadiusRender: 0
   _isAutoAreaRender: 0
-  _isAutoLineRender: 0
+  _isAutoLineRender: 1
   _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
@@ -19720,6 +19721,7 @@ MonoBehaviour:
   _attackRangeType: 1
   _skillType: 2
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -19789,6 +19791,7 @@ MonoBehaviour:
   _attackRangeType: 1
   _skillType: 0
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -19856,6 +19859,7 @@ MonoBehaviour:
   _attackRangeType: 1
   _skillType: 2
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -19923,6 +19927,7 @@ MonoBehaviour:
   _attackRangeType: 1
   _skillType: 0
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -19983,6 +19988,7 @@ MonoBehaviour:
   _attackRangeType: 1
   _skillType: 2
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -20051,6 +20057,7 @@ MonoBehaviour:
   _attackRangeType: 1
   _skillType: 0
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -20119,6 +20126,7 @@ MonoBehaviour:
   _attackRangeType: 1
   _skillType: 2
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -20191,6 +20199,7 @@ MonoBehaviour:
   _attackRangeType: 1
   _skillType: 0
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -20251,6 +20260,7 @@ MonoBehaviour:
   _attackRangeType: 1
   _skillType: 0
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -20310,6 +20320,7 @@ MonoBehaviour:
   _attackRangeType: 1
   _skillType: 0
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -20380,6 +20391,7 @@ MonoBehaviour:
   _attackRangeType: 1
   _skillType: 2
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -20454,6 +20466,7 @@ MonoBehaviour:
   _attackRangeType: 0
   _skillType: 0
   _moving: 1
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -20517,6 +20530,7 @@ MonoBehaviour:
   _attackRangeType: 1
   _skillType: 2
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -20613,6 +20627,7 @@ MonoBehaviour:
   _attackRangeType: 0
   _skillType: 0
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -20671,6 +20686,7 @@ MonoBehaviour:
   _attackRangeType: 1
   _skillType: 0
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -20732,6 +20748,7 @@ MonoBehaviour:
   _attackRangeType: 0
   _skillType: 0
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -20790,6 +20807,7 @@ MonoBehaviour:
   _attackRangeType: 1
   _skillType: 0
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -20848,6 +20866,7 @@ MonoBehaviour:
   _attackRangeType: 1
   _skillType: 0
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -20906,6 +20925,7 @@ MonoBehaviour:
   _attackRangeType: 1
   _skillType: 0
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768

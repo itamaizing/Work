@@ -71,7 +71,11 @@ public enum Moving
     NonStatic
 }
 
-
+public enum AutoAttack
+{
+    autoAttack,
+    nonAutoAttack
+}
 
 public abstract class Skill : NetworkBehaviour
 {
@@ -97,6 +101,7 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] private AttackRangeType _attackRangeType;
     [SerializeField] private SkillType _skillType;
     [SerializeField] private Moving _moving;
+    [SerializeField] private AutoAttack autoAttack;
     [SerializeField] protected LayerMask _targetsLayers;
     [SerializeField] protected LayerMask _obstacle;
     [Header("Streaming settings")]
@@ -231,6 +236,7 @@ public abstract class Skill : NetworkBehaviour
     public AttackRangeType AttackRangeType => _attackRangeType;
     public SkillType SkillType => _skillType;
     public Moving Moving => _moving;
+    public AutoAttack AutoAttack => autoAttack;
     public List<SkillEnergyCost> SkillEnergyCosts { get => _skillEnergyCosts; }
     public List<SkillEnergyCost> AdditionalSkillEnergyCosts { get => _additionalSkillEnergyCosts; }
     public List<SkillEnergyCost> ManaCostPerTick { get => _manaCostPerTick; }
@@ -859,16 +865,20 @@ public abstract class Skill : NetworkBehaviour
         {
             Debug.Log(hit.collider.gameObject.name);
 
-            if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed)
+            if (autoAttack == AutoAttack.autoAttack)
             {
-                if (hit.collider.TryGetComponent<IDamageable>(out _))
+                if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed)
                 {
+                    if (hit.collider.TryGetComponent<IDamageable>(out _))
+                    {
 
-                    IsAutoMode = true;
-                    AutoModeChanged?.Invoke(true);
+                        IsAutoMode = true;
+                        AutoModeChanged?.Invoke(true);
+                    }
                 }
             }
         }
+
         Character target = null;
 
         foreach (var item in rayHit)
@@ -989,15 +999,19 @@ public abstract class Skill : NetworkBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
-            if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed)
+            if (autoAttack == AutoAttack.autoAttack)
             {
-                if (hit.collider.TryGetComponent<IDamageable>(out _))
+                if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed)
                 {
+                    if (hit.collider.TryGetComponent<IDamageable>(out _))
+                    {
 
-                    IsAutoMode = true;
-                    AutoModeChanged?.Invoke(true);
+                        IsAutoMode = true;
+                        AutoModeChanged?.Invoke(true);
+                    }
                 }
             }
+
             return hit.point;
         }
         return Vector3.zero;
@@ -1228,10 +1242,11 @@ public abstract class Skill : NetworkBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-
-        _isAutoMode = true;
-        AutoModeChanged?.Invoke(true);
-
+        if (autoAttack == AutoAttack.autoAttack)
+        {
+            _isAutoMode = true;
+            AutoModeChanged?.Invoke(true);
+        }
 
         switch (_skillType)
         {

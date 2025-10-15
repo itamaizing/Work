@@ -109,14 +109,12 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnPointerEnter(PointerEventData eventData)
     {
         InputHandler.OnSwitchAutoMode += OnClickWithCtrl;
-
         PointerEnter?.Invoke(this);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         InputHandler.OnSwitchAutoMode -= OnClickWithCtrl;
-
         PointerExit?.Invoke(this);
     }
 
@@ -214,6 +212,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     private void OnClickWithCtrl()
     {
+        if (Skill.AutoAttack != AutoAttack.autoAttack) return;
 
         Skill.IsAutoMode = !Skill.IsAutoMode;
         Debug.Log("AA mode - " + Skill.IsAutoMode);
