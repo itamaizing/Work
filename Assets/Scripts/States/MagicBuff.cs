@@ -16,6 +16,7 @@ public class MagicBuff : AbstractCharacterState, IDamageable
 	public override List<StatusEffect> Effects => throw new System.NotImplementedException();
 
     public Transform transform => throw new NotImplementedException();
+    public GameObject gameObject => throw new NotImplementedException();
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{

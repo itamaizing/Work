@@ -621,6 +621,8 @@ MonoBehaviour:
   _indexTeam: 0
   uiComponent: {fileID: 2097685094144883168}
   live: 1
+  isDestroyOnDeath: 1
+  isTower: 0
 --- !u!114 &7413096228921928745
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -952,6 +954,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _selectProjector: {fileID: 2347595417492451061}
+  _selectProjectorHero: {fileID: 0}
   _selectProjectorTargetVariant: {fileID: 0}
   _stroke: {fileID: 6939952135723294615}
 --- !u!1 &3963474318237979773
@@ -1913,6 +1916,7 @@ MonoBehaviour:
   _regenerationDelay: 0
   _objectBar: {fileID: 7413096228921928745}
   _objectData: {fileID: 11400000, guid: 7ee4128bb430f07458a639f23fc41069, type: 2}
+  obj: {fileID: 0}
 --- !u!114 &4129786086200522693
 MonoBehaviour:
   m_ObjectHideFlags: 0

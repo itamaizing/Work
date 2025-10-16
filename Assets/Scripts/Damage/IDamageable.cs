@@ -20,4 +20,5 @@ public interface IDamageable
     public bool TryTakeDamage(ref Damage damage, Skill skill);
     public void ShowPhantomValue(Damage phantomValue);
     Transform transform { get; }
+    GameObject gameObject { get; }
 }

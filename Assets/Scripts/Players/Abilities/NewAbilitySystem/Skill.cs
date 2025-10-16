@@ -863,8 +863,6 @@ public abstract class Skill : NetworkBehaviour
 
         foreach (var hit in rayHit)
         {
-            Debug.Log(hit.collider.gameObject.name);
-
             if (autoAttack == AutoAttack.autoAttack)
             {
                 if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed)
@@ -881,18 +879,13 @@ public abstract class Skill : NetworkBehaviour
 
         foreach (var item in rayHit)
         {
-            if (item.transform.TryGetComponent<IDamageable>(out var damageable))
+            if (item.collider.TryGetComponent<IDamageable>(out var damageable))
             {
-                if (!isCanTargetHimself)
-                    continue;
-
-
                 _tempForDamage = damageable;
-                _tempTargetForDamage = damageable is Component comp ? comp.transform : null;
+                _tempTargetForDamage = damageable is Component component ? component.transform : null;
                 return damageable;
             }
         }
-
 
         return null;
     }

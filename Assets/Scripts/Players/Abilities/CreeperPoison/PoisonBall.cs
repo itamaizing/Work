@@ -219,7 +219,7 @@ public class PoisonBall : Skill, IAltAbility
         {
             if (GetMouseButton)
             {
-                _currentTarget = GetRaycastTarget(true);
+                //_currentTarget = GetRaycastTarget(true);
 
                 CheckWhoTarget();
                 _firstMousePosition = GetMousePoint();

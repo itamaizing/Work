@@ -248,7 +248,7 @@ public class PriestShield : Skill
         {
             if (Input.GetMouseButton(0))
             {
-                _target = GetRaycastTarget(true);
+               // _target = GetRaycastTarget(true);
 
                 if (_target == transform.GetComponentInParent<Character>())
                 {

@@ -86,7 +86,7 @@ public class TestH3 : Skill
                 _target = GetTarget().character;
                 _targetPoint = GetTarget().Position;
 
-				_target = GetRaycastTarget();
+				//_target = GetRaycastTarget();
                 _targetPoint = GetMousePoint();
             }
             yield return null;

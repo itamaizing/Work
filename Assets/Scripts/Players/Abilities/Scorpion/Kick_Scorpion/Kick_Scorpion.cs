@@ -92,7 +92,7 @@ public class Kick_Scorpion : Skill
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget();
+                //_target = GetRaycastTarget();
 
                 if (_target != null)
                     _target.SelectedCircle.IsActive = true;

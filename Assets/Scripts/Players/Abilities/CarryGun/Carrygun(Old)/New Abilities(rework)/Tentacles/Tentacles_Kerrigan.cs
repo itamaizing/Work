@@ -74,7 +74,7 @@ public class Tentacles_Kerrigan : Skill
         {
             if (GetMouseButton)
             {
-                target = GetRaycastTarget(true);
+                //target = GetRaycastTarget(true);
             }
             yield return null;
         }

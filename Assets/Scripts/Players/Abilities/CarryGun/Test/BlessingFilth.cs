@@ -19,13 +19,13 @@ public class BlessingFilth : Skill
         {
             if (Input.GetMouseButtonDown(0))
             {
-                Character selectedTarget = GetRaycastTarget(isCanTargetHimself: true);
+                //Character selectedTarget = GetRaycastTarget(isCanTargetHimself: true);
 
-                if (selectedTarget != null)
-                {
-                    _tempTargetForDamage = selectedTarget.transform;
-                    targetSelected = true;
-                }
+                //if (selectedTarget != null)
+                //{
+                //    _tempTargetForDamage = selectedTarget.transform;
+                //    targetSelected = true;
+                //}
             }
 
             yield return null;

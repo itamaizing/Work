@@ -109,10 +109,10 @@ public class FlashOfLight : Skill
         {
             if (Input.GetMouseButton(0))
             {
-                var clickedTarget = GetRaycastTarget(true);
+                //var clickedTarget = GetRaycastTarget(true);
 
-                if (clickedTarget != null && IsValidTarget(clickedTarget)) _target = clickedTarget;
-                else _target = null;
+              //  if (clickedTarget != null && IsValidTarget(clickedTarget)) _target = clickedTarget;
+                //else _target = null;
 
             }
             yield return null;

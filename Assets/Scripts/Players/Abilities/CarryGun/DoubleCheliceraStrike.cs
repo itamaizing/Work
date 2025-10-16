@@ -38,7 +38,7 @@ public class DoubleCheliceraStrike : Skill
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget();
+                //_target = GetRaycastTarget();
 
                 if (_target != null)
                 {

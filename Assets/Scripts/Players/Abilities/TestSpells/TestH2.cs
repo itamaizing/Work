@@ -76,7 +76,7 @@ public class TestH2 : Skill
             if (GetMouseButton)
             {
 				_targetPoint = GetTarget().Position;
-				_target = GetRaycastTarget(true);
+				//_target = GetRaycastTarget(true);
             }
             yield return null;
         }

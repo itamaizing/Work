@@ -26,7 +26,7 @@ public class BleedingSpell : Skill
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget(true);
+                //_target = GetRaycastTarget(true);
                 if (multiMagic != null) multiMagic.LastTarget = _target;
             }
             yield return null;

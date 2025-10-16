@@ -123,11 +123,11 @@ public class FlowOfLight : Skill
                 var candidate = GetRaycastTarget();
                 if (candidate != null)
                 {
-                    if ((isLightMode && IsAllyTarget(candidate)) || (!isLightMode && IsEnemyTarget(candidate)))
-                    {
-                        _target = candidate;
-                        _target.SelectedCircle.IsActive = true;
-                    }
+                    //if ((isLightMode && IsAllyTarget(candidate)) || (!isLightMode && IsEnemyTarget(candidate)))
+                    //{
+                    //    _target = candidate;
+                    //    _target.SelectedCircle.IsActive = true;
+                    //}
                 }
             }
             yield return null;

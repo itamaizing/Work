@@ -56,29 +56,32 @@ public class ClawStrike : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        _runtimeTarget = null;
+
         while (_target == null)
         {
             if (GetMouseButton)
             {
                 _target = GetRaycastTarget();
+
                 if (_target != null)
                 {
-                    if (_target is Character character)
+                    if (_target is Character characterTarget)
                     {
-                        character.SelectedCircle.IsActive = true;
-                        _runtimeTarget = character;
+                        characterTarget.SelectedCircle.IsActive = true;
+                        _runtimeTarget = characterTarget;
+                        _isCanCancle = false;
                     }
-
-                    _isCanCancle = false;
                     break;
                 }
+
+                _isCanCancle = false;
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        if (_runtimeTarget is Character ch) targetInfo.Targets.Add(ch);
-
+        if (_runtimeTarget is Character character) targetInfo.Targets.Add(character);
         callbackDataSaved?.Invoke(targetInfo);
     }
 
@@ -110,7 +113,7 @@ public class ClawStrike : Skill
             PhysicAttackType = AttackRangeType.MeleeAttack,
         };
 
-        CmdApplyDamage(damage, _runtimeTarget.gameObject);
+        CmdApplyDamage(damage, _target.gameObject);
 
         TryApplyBleeding();
 
@@ -133,7 +136,7 @@ public class ClawStrike : Skill
                 PhysicAttackType = AttackRangeType.MeleeAttack,
             };
 
-            CmdApplyDamage(damagePsi, _runtimeTarget.gameObject);
+            CmdApplyDamage(damagePsi, _target.gameObject);
         }
 
     }

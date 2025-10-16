@@ -23,6 +23,7 @@ public class LightShield : AbstractCharacterState, IDamageable
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 
     public Transform transform => throw new NotImplementedException();
+    public GameObject gameObject => throw new NotImplementedException();
 
     public override void EnterState(CharacterState character, float durationToExit, float maxDamageAbsorbed, Character personWhoMadeBuff, string skillName)
     {

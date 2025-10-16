@@ -207,7 +207,7 @@ public class IceRolling : Skill
 		{
 			if (GetMouseButton)
 			{
-				_target = GetRaycastTarget();
+				//_target = GetRaycastTarget();
 				_mousePos = _target != null ? _target.transform.position : GetMousePoint();
 			}
 			yield return null;

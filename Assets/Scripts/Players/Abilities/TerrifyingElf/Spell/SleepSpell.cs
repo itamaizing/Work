@@ -27,7 +27,7 @@ public class SleepSpell : Skill
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget(true);
+                //_target = GetRaycastTarget(true);
                 _runtimeTarget = _target;
                 if (multiMagic != null) multiMagic.LastTarget = _target;
             }

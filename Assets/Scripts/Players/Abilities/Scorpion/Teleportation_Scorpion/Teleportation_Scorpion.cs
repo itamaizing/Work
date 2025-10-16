@@ -180,7 +180,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget(true);
+                //_target = GetRaycastTarget(true);
 
                 if (_target == null)
                 {

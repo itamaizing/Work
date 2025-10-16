@@ -73,7 +73,7 @@ public class StreamOfIcyWater : Skill
         while (target == null)
         {
             if (GetMouseButton)
-                target = GetRaycastTarget();
+               // target = GetRaycastTarget();
 
             yield return null;
         }
