@@ -856,7 +856,7 @@ public abstract class Skill : NetworkBehaviour
         return TryPayCost(_skillEnergyCosts, startCooldown);
     }
 
-    protected Character GetRaycastTarget(bool isCanTargetHimself = false)
+    protected IDamageable GetRaycastTarget(bool isCanTargetHimself = false)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit[] rayHit = Physics.RaycastAll(ray, 100f, TargetsLayers);
@@ -879,22 +879,22 @@ public abstract class Skill : NetworkBehaviour
             }
         }
 
-        Character target = null;
-
         foreach (var item in rayHit)
         {
-            if (rayHit.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
+            if (item.transform.TryGetComponent<IDamageable>(out var damageable))
             {
-                target = enemy;
+                if (!isCanTargetHimself)
+                    continue;
 
-                //if (isCanTargetHimself == false && target.transform == _hero.transform)
-                //{
-                //    target = null;
-                //}
+
+                _tempForDamage = damageable;
+                _tempTargetForDamage = damageable is Component comp ? comp.transform : null;
+                return damageable;
             }
         }
-        _tempTargetbase = target;
-        return target;
+
+
+        return null;
     }
 
     public List<Character> GetCloserTargets(Vector3 position, float radius, bool isCanTargetHimself = false)
