@@ -23,6 +23,7 @@ public class TentacleProjectile : NetworkBehaviour
 
     private bool _isAttackingPsiEnergyActive;
     private bool _isAttractionTentacleActive;
+    private bool _isAttractionTentacle;
     private float _spentAttackingPsiEnergy;
 
     private float _radius = 4f;
@@ -36,6 +37,7 @@ public class TentacleProjectile : NetworkBehaviour
 
     private Skill _skill;
 
+    public bool IsAttractionTentacle { get => _isAttractionTentacle; set => _isAttractionTentacle = value; }
     public bool IsPreview { get => _isPreview; set => _isPreview = value; }
     public GameObject Tentacle { get => tentacle; set => tentacle = value; }
     public float Radius => _radius;
@@ -135,7 +137,7 @@ public class TentacleProjectile : NetworkBehaviour
     {
         if (_drawCircle != null)
         {
-            if (_isPreview)
+            if (_isPreview && _isAttractionTentacle)
             {
                 _drawCircle.Draw(_radius);
                 _drawCircle.SetColor(Color.red);

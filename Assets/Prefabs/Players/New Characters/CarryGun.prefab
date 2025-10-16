@@ -11885,11 +11885,11 @@ MonoBehaviour:
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
-  _isUseCharges: 1
+  _isUseCharges: 0
   _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 1
-  _maxCharges: 2
-  _chargeCooldown: 12
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _radius: 4
   _area: 0
   _castLength: 0
@@ -11908,6 +11908,7 @@ MonoBehaviour:
   cooldownEnergy: {fileID: 5998867522025010555}
   basePsi: 0.1
   distanceJump: 4
+  cooldownJump: 12
 --- !u!114 &431818094498011482
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12354,7 +12355,8 @@ MonoBehaviour:
   _regenerationDelay: 0
   _player: {fileID: 8319872899575431858}
   "\u0441ooldownEnergySlider": {fileID: 3573390916933889620}
-  jumpWithChelicera: {fileID: 7634851756353439263}
+  durationCooldown: 12
+  cooldownCharger: 2
   cheliceraStrike: {fileID: 640134254429411212}
   deafeningScream: {fileID: 4459667108316582062}
   doubleCheliceraStrike: {fileID: 7764012948064342089}

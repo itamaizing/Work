@@ -9,9 +9,10 @@ public class CooldownEnergy : Resource
     [Header("Main Settings")]
     [SerializeField] private Character _player;
     [SerializeField] private Slider ñooldownEnergySlider;
+    [SerializeField] private float durationCooldown = 12f;
+    [SerializeField] private float cooldownCharger = 2f;
 
     [Header("Skills to Track")]
-    [SerializeField] private JumpWithChelicera jumpWithChelicera;
     [SerializeField] private CheliceraStrike cheliceraStrike;
     [SerializeField] private DeafeningScream deafeningScream;
     [SerializeField] private DoubleCheliceraStrike doubleCheliceraStrike;
@@ -39,9 +40,7 @@ public class CooldownEnergy : Resource
 
     private void InitCooldownEnergyFromJumpSkill()
     {
-        if (jumpWithChelicera == null) return;
-
-        float totalCooldown = jumpWithChelicera.ChargeCooldown * jumpWithChelicera.MaxChargers;
+        float totalCooldown = durationCooldown * cooldownCharger;
 
         _maxValue = totalCooldown;
         _currentValue = _maxValue;

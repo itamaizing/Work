@@ -249,14 +249,14 @@ public class SkillManager : MonoBehaviour
     {
         if (value)
         {
-            InputHandler.OnClick += PrepereSkill;
+            InputHandler.OnShiftLeftMouse += PrepereSkill;
             InputHandler.OnAltClick += CancelSkillCast;
 
             InputHandler.OnCast += OnCastSelect;
         }
         else
         {
-            InputHandler.OnClick -= PrepereSkill;
+            InputHandler.OnShiftLeftMouse -= PrepereSkill;
             InputHandler.OnAltClick -= CancelSkillCast;
 
             InputHandler.OnCast -= OnCastSelect;

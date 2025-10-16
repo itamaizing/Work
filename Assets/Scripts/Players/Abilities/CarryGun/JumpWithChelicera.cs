@@ -11,6 +11,7 @@ public class JumpWithChelicera : Skill
     [SerializeField] private CooldownEnergy cooldownEnergy;
     [SerializeField] private float basePsi = 1f;
     [SerializeField] private float distanceJump;
+    [SerializeField] private float cooldownJump = 12f;
 
     private Animator _animator;
     private Character _target;
@@ -37,8 +38,9 @@ public class JumpWithChelicera : Skill
     public Character RuntimeTarget { get => _runtimeTarget; set => _runtimeTarget = value; }
     public bool IsJumpDone { get => _isJumpDone; set => _isJumpDone = value; }
     public bool IsCheliceraStrikeCast { get => _isCheliceraStrikeCast; set => _isCheliceraStrikeCast = value; }
+    public float CooldownJump { get => cooldownJump; set => cooldownJump = value; }
 
-    protected override bool IsCanCast => CheckCanCast() && cooldownEnergy.CurrentValue >= ChargeCooldown;
+    protected override bool IsCanCast => CheckCanCast() && cooldownEnergy.CurrentValue >= cooldownJump;
 
     #region Talent
     private bool isJumpWithCheliceraChanceDamageCrit = false;
