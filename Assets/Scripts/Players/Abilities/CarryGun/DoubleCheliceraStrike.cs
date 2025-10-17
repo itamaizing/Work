@@ -14,7 +14,7 @@ public class DoubleCheliceraStrike : Skill
     [SerializeField] private float _stunDurationWithJumpBack = 2f;
     [SerializeField] private float cooldownEnergyCost = 5;
 
-    private Character _target;
+    private IDamageable _target;
     private Character _runtimeTarget;
 
     private static readonly int DoubleCheliceraStrikeAnimTrigger = Animator.StringToHash("DoubleCheliceraStrikeAnimation");
@@ -34,21 +34,25 @@ public class DoubleCheliceraStrike : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        _runtimeTarget = null;
+
         while (_target == null)
         {
             if (GetMouseButton)
             {
-                //_target = GetRaycastTarget();
+                _target = GetRaycastTarget();
 
                 if (_target != null)
                 {
-                    _runtimeTarget = _target;
-                    _target.SelectedCircle.IsActive = true;
-                    _isCanCancle = false;
+                    if (_target is Character characterTarget)
+                    {
+                        _runtimeTarget = characterTarget;
+                        characterTarget.SelectedCircle.IsActive = true;
+                    }
                 }
-
-                break;
             }
+
+            _isCanCancle = false;
 
             yield return null;
         }
@@ -61,9 +65,9 @@ public class DoubleCheliceraStrike : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_runtimeTarget == null) yield return null;
+        if (_target == null) yield return null;
 
-        DealDoubleCheliceraStrikeDamage(_runtimeTarget);
+        DealDoubleCheliceraStrikeDamage(_target);
 
         cooldownEnergy.CastCooldownEnergySkill(cooldownEnergyCost, this);
 
@@ -83,7 +87,7 @@ public class DoubleCheliceraStrike : Skill
         _isCanCancle = true;
     }
 
-    private void DealDoubleCheliceraStrikeDamage(Character targetCharacter)
+    private void DealDoubleCheliceraStrikeDamage(IDamageable targetCharacter)
     {
         float totalDamage = _cheliceraStrikeBaseDamage * _damageMultiplier;
 
@@ -95,7 +99,7 @@ public class DoubleCheliceraStrike : Skill
         };
 
         CmdApplyDamage(damage, targetCharacter.gameObject);
-        CmdApplyStun(targetCharacter);
+        if (targetCharacter is Character character) CmdApplyStun(character);
     }
 
     public void DoubleCheliceraStrikeCast()

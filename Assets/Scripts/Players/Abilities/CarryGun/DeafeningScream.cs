@@ -11,7 +11,7 @@ public class DeafeningScream : Skill
     [SerializeField] private CooldownEnergy cooldownEnergy;
     [SerializeField] private float duration = 2f;
 
-    private Character _target;
+    private IDamageable _target;
     private Character _runtimeTarget;
 
     protected override bool IsCanCast => CheckCanCast();
@@ -39,17 +39,16 @@ public class DeafeningScream : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        _runtimeTarget = null;
+
         while (_target == null)
         {
             if (GetMouseButton)
             {
-                //_target = GetRaycastTarget();
+                _target = GetRaycastTarget();
 
-                if (_target != null)
-                {
-                    _runtimeTarget = _target;
-                    _isCanCancle = false;
-                }
+                if (_target != null) if (_target is Character characterTarget) _runtimeTarget = characterTarget;
+                _isCanCancle = false;
             }
             yield return null;
         }

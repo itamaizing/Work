@@ -15,7 +15,7 @@ MonoBehaviour:
   _name: Cocoon
   _description: 666
   type: 
-  _icon: {fileID: 21300000, guid: ee0f08a0ce484464e9adff1b91a3cba8, type: 3}
+  _icon: {fileID: 21300000, guid: ff5fc755d47826e44b2550b0e97cd502, type: 3}
   _iconSize: 0
   _attributes:
     attributesGroup:

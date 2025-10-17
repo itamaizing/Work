@@ -26,7 +26,7 @@ public abstract class Resource : NetworkBehaviour
     protected Coroutine _regenCoroutine;
 
     public float CurrentValue { get => _currentValue; set { _currentValue = value; } }
-    public float MaxValue { get => _maxValue; protected set { _maxValue = value; } }
+    public float MaxValue { get => _maxValue; set => _maxValue = value;  }
     public float RegenerationValue { get => _regenerationValue;  set { _regenerationValue = value; } }
     public float RegenerationDelay { get => _regenerationPeriod;  set { _regenerationPeriod = value; } }
 

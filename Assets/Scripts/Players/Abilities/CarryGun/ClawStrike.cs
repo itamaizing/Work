@@ -70,9 +70,7 @@ public class ClawStrike : Skill
                     {
                         characterTarget.SelectedCircle.IsActive = true;
                         _runtimeTarget = characterTarget;
-                        _isCanCancle = false;
                     }
-                    break;
                 }
 
                 _isCanCancle = false;

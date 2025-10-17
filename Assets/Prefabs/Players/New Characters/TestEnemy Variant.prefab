@@ -235,6 +235,7 @@ MonoBehaviour:
   _attackRangeType: 0
   _skillType: 0
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -292,6 +293,7 @@ MonoBehaviour:
   _attackRangeType: 0
   _skillType: 0
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -319,11 +321,11 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   _agent: {fileID: 0}
-  _enemyCheckRadius: 6
-  _enemyLayerMask:
+  _alliesLayer:
     serializedVersion: 2
     m_Bits: 0
-  _damageDeley: 0.5
+  _damageDelay: 0.5
+  _attackDistance: 3
 --- !u!114 &3009901119154364267
 MonoBehaviour:
   m_ObjectHideFlags: 0

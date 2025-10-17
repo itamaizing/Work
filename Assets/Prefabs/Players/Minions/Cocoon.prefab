@@ -12423,8 +12423,8 @@ MonoBehaviour:
   syncInterval: 0
   _hero: {fileID: 6271332717105215193}
   _characterPrefabs: []
-  _enemyPrefab: {fileID: 5830977165762126247, guid: ffa34bf0b8e63f140af24f180875a670, type: 3}
-  _allyPrefab: {fileID: 0}
+  _enemyPrefab: {fileID: 0}
+  _allyPrefab: {fileID: 5830977165762126247, guid: ffa34bf0b8e63f140af24f180875a670, type: 3}
 --- !u!195 &4697272463135853912
 NavMeshAgent:
   m_ObjectHideFlags: 0

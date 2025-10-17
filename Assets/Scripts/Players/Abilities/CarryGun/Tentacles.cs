@@ -262,7 +262,7 @@ public class Tentacles : Skill
 
         else
         {
-            if (_isCocoonSpawnTalent) SpawnCocoon(_spawnPoint);
+            if (_isCocoonSpawnTalent) SpawnWomb(_spawnPoint);
         }
 
         ClearData();
@@ -334,12 +334,12 @@ public class Tentacles : Skill
         }
     }
 
-    private void SpawnCocoon(Vector3 position)
+    private void SpawnWomb(Vector3 position)
     {
         if (!IsValidVector(position)) return;
-        _spawnComponent.CmdSpawnEnemyPoint(position, Quaternion.identity);
+        _spawnComponent.CmdSpawnEnemyPoint(position, Quaternion.identity, 0);
 
-        CmdTentacleCocoon();
+        CmdTentacleWomb();
     }
 
     [Command]
@@ -370,9 +370,9 @@ public class Tentacles : Skill
     }
 
     [Command]
-    private void CmdTentacleCocoon()
+    private void CmdTentacleWomb()
     {
-        RpcTentacleCocoon();
+        RpcTentacleWomb();
     }
 
     [ClientRpc]
@@ -385,9 +385,9 @@ public class Tentacles : Skill
     }
 
     [ClientRpc]
-    private void RpcTentacleCocoon()
+    private void RpcTentacleWomb()
     {
-        foreach (var cocoon in _spawnComponent.Units) if (cocoon.TryGetComponent<ScraderSpawn>(out ScraderSpawn scraderSpawn)) scraderSpawn.Tentacle = this;
+        foreach (var womb in _spawnComponent.Units) if (womb.TryGetComponent<CocoonSpawn>(out CocoonSpawn cocoonSpawn)) cocoonSpawn.Tentacle = this;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
