@@ -1,6 +1,7 @@
 using Mirror;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ObjectHealth : Resource, IDamageable
@@ -11,6 +12,11 @@ public class ObjectHealth : Resource, IDamageable
     [Header("Data")]
     [SerializeField] private ObjectData _objectData;
     [SerializeField] private Object obj;
+
+    [Header("Damage type ignored")]
+    [SerializeField] private List<Schools> _ignoredSchools;
+    [SerializeField] private List<AbilityForm> _ignoredForms;
+    [SerializeField] private List<SkillType> _ignoredSkillTypes;
 
     public event Action OnDeath;
 
