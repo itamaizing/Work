@@ -144,6 +144,8 @@ public class SpawnComponent : NetworkBehaviour
 
         var spawnedCharacter = Instantiate(prefab, position, rotation);
         spawnedCharacter.Initialize();
+        if (spawnedCharacter.TryGetComponent<MinionComponent>(out MinionComponent minionComponent)) minionComponent.CharacterParent = _hero;
+
         spawnedCharacter.NetworkSettings.MyRoom = _hero.NetworkSettings.MyRoom;
 
         if (_hero == null || _hero.NetworkSettings == null)

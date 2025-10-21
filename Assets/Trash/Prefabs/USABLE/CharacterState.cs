@@ -257,6 +257,7 @@ public class CharacterState : NetworkBehaviour
 		[States.MultiMagic] = new MultiMagic(),
 		[States.FireFlash] = new FireFlash(),
 		[States.WarmingUpState] = new WarmingUpState(),
+		[States.HealingSlime] = new HealingSlime(),
 		#endregion
 
 		#region Gandollarf	
@@ -823,6 +824,7 @@ public enum States
 	FocusingOnReflexesState,
 	WarmingUpState,
 	DivineEnhancement,
+	HealingSlime,
 }
 public enum BaffDebaff
 {

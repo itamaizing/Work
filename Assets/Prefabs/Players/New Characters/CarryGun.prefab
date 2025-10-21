@@ -11754,7 +11754,7 @@ MonoBehaviour:
   _abilityForm: 2
   _damageType: 1
   _attackRangeType: 1
-  _skillType: 0
+  _skillType: 2
   _moving: 0
   autoAttack: 0
   _targetsLayers:

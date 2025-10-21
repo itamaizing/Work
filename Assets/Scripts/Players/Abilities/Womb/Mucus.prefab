@@ -590,6 +590,7 @@ GameObject:
   - component: {fileID: 6602408165205967977}
   - component: {fileID: 3497751744320429761}
   - component: {fileID: 7253454835880531690}
+  - component: {fileID: 36351810140532346}
   m_Layer: 8
   m_Name: Mucus
   m_TagString: Untagged
@@ -677,6 +678,9 @@ MonoBehaviour:
   _objectBar: {fileID: 6602408165205967977}
   _objectData: {fileID: 11400000, guid: 4d9848aff32418346bf2ce8b19b940bc, type: 2}
   obj: {fileID: 6581410618162525258}
+  _ignoredSchools: 02000000
+  _ignoredForms: 
+  _ignoredSkillTypes: 000000000100000003000000
   live: 0
   isDestroyOnDeath: 1
 --- !u!114 &6602408165205967977
@@ -725,12 +729,27 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 0.9330786, y: 0.04064095, z: 0.9248446}
   m_Center: {x: -0.00003120303, y: 0, z: 0.020872086}
+--- !u!114 &36351810140532346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6581410618162525258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 148b719202c05f640bc1b6b160b14437, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &7074414954952605452
 GameObject:
   m_ObjectHideFlags: 0

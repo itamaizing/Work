@@ -6,6 +6,9 @@ using UnityEngine.AI;
 
 public class MinionComponent : Character
 {
+    [SyncVar(hook = nameof(OnCharacterParentChanged))]
+    [SerializeField] private GameObject heroParent;
+
     [SerializeField] protected int _expForDieKill = 5;
     [SerializeField] protected NavMeshAgent _navMeshAgent;
 
@@ -14,6 +17,13 @@ public class MinionComponent : Character
 
     public int ExpForDieKill { get => _expForDieKill; }
     public bool IsIntercepted { get => _isIntercepted; }
+
+    public Character CharacterParent
+    {
+        get => heroParent != null ? heroParent.GetComponent<Character>() : null;
+        set => heroParent = value != null ? value.gameObject : null;
+    }
+
 
     public event Action<MinionComponent> Destroyed;
     public event Action<MinionComponent> Intercepted;
@@ -32,6 +42,8 @@ public class MinionComponent : Character
     {
         Destroyed?.Invoke(this);
     }
+
+    private void OnCharacterParentChanged(GameObject oldValue, GameObject newValue) { }
 
     protected override void OnDied()
     {

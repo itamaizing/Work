@@ -136,10 +136,8 @@ public class ObjectHealth : Resource, IDamageable
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
-        if (TryEvade(damage.Type))
-        {
-            return false;
-        }
+        if (IsDamageIgnored(skill)) return false;
+        if (TryEvade(damage.Type)) return false;
 
         float damageValue = damage.Value;
 
@@ -270,5 +268,15 @@ public class ObjectHealth : Resource, IDamageable
     public void ShowPhantomValue(Damage phantomValue)
     {
         throw new NotImplementedException();
+    }
+
+    private bool IsDamageIgnored(Skill skill)
+    {
+        if (skill == null) return false;
+
+        if (_ignoredSchools.Contains(skill.School)) return true;
+        if (_ignoredForms.Contains(skill.AbilityForm)) return true;
+        if (_ignoredSkillTypes.Contains(skill.SkillType)) return true;
+        return false;
     }
 }
