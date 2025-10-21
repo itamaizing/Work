@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 5
   regenerationRate: 1
-  maxEndurance: 0
-  minEndurance: 1
+  maxEndurance: 1
+  minEndurance: 0

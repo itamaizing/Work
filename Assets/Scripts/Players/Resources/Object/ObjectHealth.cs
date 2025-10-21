@@ -7,7 +7,7 @@ public class ObjectHealth : Resource, IDamageable
 {
     [Header("UI / Visual")]
     [SerializeField] private ObjectBar _objectBar;
-
+    
     [Header("Data")]
     [SerializeField] private ObjectData _objectData;
     [SerializeField] private Object obj;
@@ -25,6 +25,9 @@ public class ObjectHealth : Resource, IDamageable
     private Coroutine _hideBarCoroutine;
     private Coroutine _regenerationCoroutine;
     private Coroutine _regenerationDelayCoroutine;
+
+    [SerializeField] private bool live = false;
+    [SerializeField] private bool isDestroyOnDeath = true;
 
     public ObjectData ObjectData => _objectData;
     public float ResistMagicDamage => _resistMagicDamage;
@@ -150,9 +153,14 @@ public class ObjectHealth : Resource, IDamageable
             if (_currentHealth <= 0)
             {
                 OnDeath?.Invoke();
-
                 GameObject target = transform.parent != null ? transform.parent.gameObject : gameObject;
-                if (obj.DestroyOnDeath) Destroy(target);
+                if (isDestroyOnDeath)
+                {
+                    if (isServer && target.TryGetComponent(out NetworkIdentity identity)) NetworkServer.Destroy(target);
+                    else Destroy(target);
+                } 
+                    
+                    Destroy(target);
             }
 
             if (isServer) RpcPopupDamage(damage.Value);
@@ -250,7 +258,7 @@ public class ObjectHealth : Resource, IDamageable
     private void RpcPopupDamage(float value)
     {
         Damage damage = new Damage { Value = value, Type = DamageType.Physical };
-        DamageTaken?.Invoke(damage, null);          // skill можно не передавать
+        DamageTaken?.Invoke(damage, null);
     }
 
     public void ShowPhantomValue(Damage phantomValue)

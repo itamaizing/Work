@@ -1334,6 +1334,14 @@ public abstract class Skill : NetworkBehaviour
         else return null;
     }
 
+    private bool IsValidTarget(IDamageable target)
+    {
+        if (target == null) return false;
+        if (target is MonoBehaviour monoBehaviour) return monoBehaviour != null;
+
+        return true;
+    }
+
     private void OnClick()
     {
         _isClick = true;
@@ -1532,6 +1540,15 @@ public abstract class Skill : NetworkBehaviour
 
             while (_isPlayCastAnim)
             {
+                if (_tempForDamage != null && !IsValidTarget(_tempForDamage))
+                {
+                    _isCanCancle = true;
+                    _hero.Move.CanMove = true;
+
+                    TryCancel(true);
+                    yield break;
+                }
+
                 if (!IsCanCast)
                 {
                     TryCancel(true);
@@ -1632,7 +1649,19 @@ public abstract class Skill : NetworkBehaviour
 
     public void ApplyDamage(Damage damage, GameObject target)
     {
-        target.GetComponent<IDamageable>().TryTakeDamage(ref damage, this);
+        var damageable = target != null ? target.GetComponent<IDamageable>() : null;
+        if (damageable != null)
+        {
+            damageable.TryTakeDamage(ref damage, this);
+            _hero.DamageTracker.AddDamage(damage, target, isServerRequest: isServer);
+            _hero.DamageGet(damage, target);
+        }
+
+        else
+        {
+            Debug.LogWarning($"[Skill] Target {target?.name} is not damageable or null");
+        }
+
         _hero.DamageTracker.AddDamage(damage, target, isServerRequest: isServer);
         _hero.DamageGet(damage, target);
 
@@ -1651,6 +1680,12 @@ public abstract class Skill : NetworkBehaviour
         {
             _tempTargetForDamage = target.transform;
             _tempForDamage = target.GetComponent<IDamageable>();
+        }
+
+        if (target == null)
+        {
+            Debug.LogError("[CmdApplyDamageLogic] Target is null, skipping");
+            return;
         }
 
         ApplyDamage(damage, target);

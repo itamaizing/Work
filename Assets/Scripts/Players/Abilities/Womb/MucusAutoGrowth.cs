@@ -1,6 +1,8 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using UnityEngine.SceneManagement;
 
 public class MucusAutoGrowth : Skill, IPassiveSkill
 {
@@ -12,77 +14,76 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => false;
 
-    [SerializeField] private Mucus mucus;
+    [SerializeField] private List<GameObject> points;
+    [SerializeField] private ObjectData mucusData;
+    [SerializeField] private GameObject mucus;
+    [SerializeField] private List<GameObject> _activeMucus = new();
 
-    private GameObject _mucusInstance;
-    private Coroutine _growthRoutine;
-    private float _initialY;
-    private ObjectHealth _mucusHealth;
+    private GameObject _currentMucus;
+
+    private Coroutine _activationRoutine;
 
     private void OnEnable()
     {
-        if (isServer) // Только сервер может спавнить через NetworkServer.Spawn
-        {
-            SpawnAndStartGrowth();
-        }
+      ActivateMucus();
     }
 
     private void OnDisable()
     {
-        if (_growthRoutine != null)
-            StopCoroutine(_growthRoutine);
+        if (_activationRoutine != null) StopCoroutine(_activationRoutine);
     }
 
-    [Server]
-    private void SpawnAndStartGrowth()
+    private void ActivateMucus() => _activationRoutine = StartCoroutine(ActivateMucusOverTime());
+
+    private IEnumerator ActivateMucusOverTime()
     {
-        // Спавним слизь по сети
-        _mucusInstance = Instantiate(mucus.gameObject, transform.position, Quaternion.identity);
-        NetworkServer.Spawn(_mucusInstance);
-
-        _initialY = mucus.MucusObject.transform.localScale.y;
-        _mucusInstance.transform.localScale = new Vector3(0f, _initialY, 0f);
-
-        _mucusHealth = _mucusInstance.GetComponent<ObjectHealth>();
-
-        if (_mucusHealth != null && mucus.MucusHeath != null)
+        foreach (var point in points)
         {
-            _mucusHealth.InitializeObject(mucus.MucusHeath.ObjectData);
-        }
+            yield return new WaitForSeconds(1f);
 
-        _growthRoutine = StartCoroutine(GrowMucusRoutine());
-    }
+            if (point == null) continue;
 
-    [Server]
-    private IEnumerator GrowMucusRoutine()
-    {
-        var wait = new WaitForSeconds(1f);
+            point.SetActive(true);
 
-        while (_mucusInstance != null)
-        {
-            Vector3 currentScale = _mucusInstance.transform.localScale;
-
-            float newX = Mathf.Min(currentScale.x + 0.5f, 3f);
-            float newZ = Mathf.Min(currentScale.z + 0.5f, 3f);
-
-            _mucusInstance.transform.localScale = new Vector3(newX, _initialY, newZ);
-
-            if (_mucusHealth != null)
+            foreach (Transform child in point.transform)
             {
-                mucus.MucusHeath.ObjectData.MaxHealth += 5;
-
-                float newMax = mucus.MucusHeath.ObjectData.MaxHealth;
-                _mucusHealth.MaxValue = newMax;
-                _mucusHealth.CurrentHealth = newMax;
-
-                if (_mucusHealth.TryGetComponent<ObjectBar>(out var bar))
+                if (child != null && mucus != null)
                 {
-                    bar.SetMaxHealth(newMax);
-                    bar.SetHealth(newMax);
+                    CmdSpawnMucus(child.gameObject);
                 }
             }
+        }
+    }
 
-            yield return wait;
+    [Server]
+    private void CmdSpawnMucus(GameObject point)
+    {
+        GameObject instance = Instantiate(mucus, point.transform.position, point.transform.rotation);
+        SceneManager.MoveGameObjectToScene(instance, Hero.NetworkSettings.MyRoom);
+        NetworkServer.Spawn(instance, connectionToClient);
+
+        ObjectHealth health = instance.GetComponentInChildren<ObjectHealth>();
+        if (health != null)
+        {
+            health.InitializeObject(mucusData);
+            if (mucusData.MinEndurance) health.ServerStartFillHP(health.ObjectData.MaxHealth, 1f);
+        }
+
+        _currentMucus = instance;
+        _activeMucus.Add(instance);
+
+        uint netId = instance.GetComponent<NetworkIdentity>().netId;
+        RpcClientAddMucus(netId);
+    }
+
+    [ClientRpc]
+    private void RpcClientAddMucus(uint netId)
+    {
+        if (NetworkClient.spawned.TryGetValue(netId, out var networkIdentity))
+        {
+            GameObject mucus = networkIdentity.gameObject;
+            _currentMucus = mucus;
+            _activeMucus.Add(mucus);
         }
     }
 }
