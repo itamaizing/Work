@@ -26,6 +26,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 	[SerializeField] private SpawnComponent _spawnComponent;
 	[SerializeField] private VisionComponent _visionComponent;
 	[SerializeField] private Auras _auras;
+	[SerializeField] private Character characterParent;
 
 	[SyncVar] private int _killCounter;
 	[SyncVar] private float _damageTakeCounter;
@@ -52,6 +53,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 	public SelectedCircle SelectedCircle => _selectedCircle;
     public Animator Animator => _animator;
     public NetworkAnimator NetworkAnimator => _networkAnimator;
+	public Character CharacterParent { get => characterParent; set => characterParent = value; }
     public bool IsInvisible
     {
         get => _isInvisible;

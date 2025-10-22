@@ -18,7 +18,7 @@ public class SpawnComponent : NetworkBehaviour
 
     #region Test Methods
     [SerializeField] private List<Character> _enemyPrefabs;
-    [SerializeField] private Character _allyPrefab;
+    [SerializeField] private List<Character>  _allyPrefabs;
 
     [Command]
     public void CmdSpawnUnitEnemy(int index)
@@ -27,9 +27,9 @@ public class SpawnComponent : NetworkBehaviour
     }
 
     [Command]
-    public void CmdSpawnUnitAlies()
+    public void CmdSpawnUnitAlies(int index)
     {
-        SpawnCharacter(_allyPrefab, Vector3.forward + Vector3.zero, Quaternion.identity);
+        SpawnCharacter(_allyPrefabs[index], Vector3.forward + Vector3.zero, Quaternion.identity);
     }
 
     [Command]
@@ -52,9 +52,9 @@ public class SpawnComponent : NetworkBehaviour
     }
 
     [Command]
-    public void CmdSpawnAliesPoint(Vector3 position, Quaternion rotation)
+    public void CmdSpawnAliesPoint(Vector3 position, Quaternion rotation, int index)
     {
-        SpawnCharacter(_allyPrefab, position, rotation);
+        SpawnCharacter(_allyPrefabs[index], position, rotation);
     }
 
     [Command]
@@ -64,9 +64,9 @@ public class SpawnComponent : NetworkBehaviour
     }
 
     [Command]
-    public void CmdSpawnEnemyPoint(Vector3 position, Quaternion rotation, Character toReplace, int index, bool remove)
+    public void CmdSpawnEnemyPoint(Vector3 position, Quaternion rotation, Character toReplace, int index, bool remove, Character parenCharacter)
     {
-        var spawned = SpawnCharacterTransfer(_enemyPrefabs[index], position, rotation, remove);
+        var spawned = SpawnCharacterTransfer(_enemyPrefabs[index], position, rotation, remove, parenCharacter);
 
         if (toReplace != null && remove == true)
         {
@@ -75,20 +75,20 @@ public class SpawnComponent : NetworkBehaviour
     }
 
     [Command]
-    public void CmdSpawnAliesPoint(Vector3 position, Quaternion rotation, Character toReplace)
+    public void CmdSpawnAliesPoint(Vector3 position, Quaternion rotation, Character toReplace, int index, bool remove, Character parenCharacter)
     {
-        var spawned = SpawnCharacterTransfer(_allyPrefab, position, rotation, false);
+        var spawned = SpawnCharacterTransfer(_enemyPrefabs[index], position, rotation, remove, parenCharacter);
 
-        if (toReplace != null)
+        if (toReplace != null && remove == true)
         {
             RemoveUnitServer(toReplace);
         }
     }
 
     [Command]
-    public void CmdSpawnPoint(Vector3 position, Quaternion rotation, int index)
+    public void CmdSpawnPoint(Vector3 position, Quaternion rotation, int index, Character characterParent)
     {
-        var spawned = SpawnCharacterTransfer(_units[index], position, rotation, false);
+        var spawned = SpawnCharacterTransfer(_units[index], position, rotation, false, characterParent);
     }
     #endregion
 
@@ -138,13 +138,13 @@ public class SpawnComponent : NetworkBehaviour
     }
 
     #region Test
-    private Character SpawnCharacterTransfer(Character prefab, Vector3 position, Quaternion rotation, bool remove)
+    private Character SpawnCharacterTransfer(Character prefab, Vector3 position, Quaternion rotation, bool remove, Character parenCharacter)
     {
         if (prefab == null) return null;
 
         var spawnedCharacter = Instantiate(prefab, position, rotation);
         spawnedCharacter.Initialize();
-        if (spawnedCharacter.TryGetComponent<MinionComponent>(out MinionComponent minionComponent)) minionComponent.CharacterParent = _hero;
+        spawnedCharacter.CharacterParent = _hero;
 
         spawnedCharacter.NetworkSettings.MyRoom = _hero.NetworkSettings.MyRoom;
 

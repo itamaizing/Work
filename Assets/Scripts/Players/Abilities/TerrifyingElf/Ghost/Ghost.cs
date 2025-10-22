@@ -473,7 +473,7 @@ public class Ghost : Skill
     {
         if (_spawnComponent == null) return;
         Vector3 spawnPosition = position + Vector3.up * 1f;
-        _spawnComponent.CmdSpawnAliesPoint(spawnPosition, LookRotation);
+        _spawnComponent.CmdSpawnAliesPoint(spawnPosition, LookRotation, null,  0, false, Hero);
     }
 
     private void RemoveOldestGhostIfNeeded()

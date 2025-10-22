@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using Mirror;
+using System.Linq;
 
 public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
 {
@@ -50,7 +51,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
     {
         if (_spawnComponent == null) return;
 
-        CurrentCounter = _spawnComponent.Units.Count;
+        CurrentCounter = _spawnComponent.Units.Count(unit => unit != null && !unit.TryGetComponent<MucusAutoGrowth>(out _));
 
         if (_overloadCheckRoutine == null)
             _overloadCheckRoutine = StartCoroutine(CheckOverloadRoutine());
@@ -62,14 +63,17 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
 
         while (true)
         {
-            if (CurrentCounter > MaxCounter)
+            int realCount = _spawnComponent.Units.Count(unit => unit != null && !unit.TryGetComponent<MucusAutoGrowth>(out _));
+
+            if (realCount > MaxCounter)
             {
-                float overloadCount = CurrentCounter - MaxCounter;
+                float overloadCount = realCount - MaxCounter;
                 float percentDamage = overloadCount * 0.05f;
 
                 foreach (var minion in _spawnComponent.Units)
                 {
                     if (minion == null || minion.IsDead) continue;
+                    if (minion.TryGetComponent<MucusAutoGrowth>(out _)) continue;
 
                     float damageValue = minion.Health.MaxValue * percentDamage;
 
@@ -87,6 +91,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
             yield return delay;
         }
     }
+
 
     [Command]
     private void CmdApplyDamage(Damage damage, GameObject target)

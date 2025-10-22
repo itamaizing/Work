@@ -60,7 +60,7 @@ public class CocoonSpawn : Skill
         {
             Vector3 forwardOffset = transform.forward.normalized * 1.6f;
             Vector3 spawnPos = transform.position + forwardOffset;
-            spawnComponent.CmdSpawnEnemyPoint(spawnPos, Quaternion.identity, minion, 1, false);
+            spawnComponent.CmdSpawnEnemyPoint(spawnPos, Quaternion.identity, minion, 1, false, Hero);
         }
 
         CmdTentacleCocoon(spawnComponent);
