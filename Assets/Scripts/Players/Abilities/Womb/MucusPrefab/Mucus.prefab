@@ -700,15 +700,15 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _resourceType: 0
-  _regenerationDelay: 0
+  _regenerationDelay: 5
   _objectBar: {fileID: 6602408165205967977}
   _objectData: {fileID: 11400000, guid: 4d9848aff32418346bf2ce8b19b940bc, type: 2}
   obj: {fileID: 6581410618162525258}
   _ignoredSchools: 02000000
   _ignoredForms: 
   _ignoredSkillTypes: 000000000100000003000000
-  live: 0
-  isDestroyOnDeath: 1
+  live: 1
+  isDestroyOnDeath: 0
 --- !u!114 &6602408165205967977
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -776,7 +776,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _tick: 1
 --- !u!1 &7074414954952605452
 GameObject:
   m_ObjectHideFlags: 0

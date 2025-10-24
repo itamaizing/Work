@@ -1,89 +1,168 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
 using UnityEngine.SceneManagement;
 
 public class MucusAutoGrowth : Skill, IPassiveSkill
 {
-    public override void LoadTargetData(TargetInfo targetInfo) { }
-    protected override IEnumerator CastJob() { yield break; }
-    protected override void ClearData() { }
-    protected override IEnumerator PrepareJob(System.Action<TargetInfo> targetDataSavedCallback) { yield break; }
-    protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerCast => 0;
-    protected override bool IsCanCast => false;
+    [SerializeField] private List<Transform> points;
+    [SerializeField] private GameObject mucusPrefab;
 
-    [SerializeField] private List<GameObject> points;
-    [SerializeField] private ObjectData mucusData;
-    [SerializeField] private GameObject mucus;
-    [SerializeField] private List<GameObject> _activeMucus = new();
+    private const float TickRate = 1f;
+    private const int MaxCircles = 6;
 
-    private GameObject _currentMucus;
+    private List<List<GameObject>> _mucusByCircle = new();
+    private Coroutine _spawnRoutine;
 
-    private Coroutine _activationRoutine;
+    private float _timer = 0f;
+    private float _remaining = 0f;
+    private bool _infinite = true;
+
+    private int _currentCircleIndex = 0;
 
     private void OnEnable()
     {
-      ActivateMucus();
+        _mucusByCircle.Clear();
+        for (int i = 0; i < MaxCircles; i++)
+            _mucusByCircle.Add(new List<GameObject>());
+
+        _spawnRoutine = StartCoroutine(ApplyMucusPeriodically());
     }
 
     private void OnDisable()
     {
-        if (_activationRoutine != null) StopCoroutine(_activationRoutine);
+        if (_spawnRoutine != null) StopCoroutine(_spawnRoutine);
+        CleanupAllMucus();
     }
 
-    private void ActivateMucus() => _activationRoutine = StartCoroutine(ActivateMucusOverTime());
-
-    private IEnumerator ActivateMucusOverTime()
+    public void SwitchToFinite()
     {
-        foreach (var point in points)
+        _infinite = false;
+        _remaining = Mathf.Clamp(GetCurrentCircle(), 1, 9999);
+        _timer = 0f;
+    }
+
+    public float RemainingDuration => _infinite ? 9999f : _remaining;
+
+    private IEnumerator ApplyMucusPeriodically()
+    {
+        while (_infinite || _remaining > 0)
         {
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(TickRate);
 
-            if (point == null) continue;
-
-            point.SetActive(true);
-
-            foreach (Transform child in point.transform)
+            if (!_infinite)
             {
-                if (child != null && mucus != null)
+                _timer += TickRate;
+                _remaining--;
+                if (_remaining <= 0)
                 {
-                    CmdSpawnMucus(child.gameObject);
+                    CleanupAllMucus();
+                    yield break;
+                }
+            }
+
+            if (_currentCircleIndex < MaxCircles && _currentCircleIndex < points.Count)
+            {
+                Transform parent = points[_currentCircleIndex];
+                if (parent != null)
+                {
+                    foreach (Transform point in parent)
+                    {
+                        if (point != null)
+                            CmdSpawnOrActivateMucus(point.position, _currentCircleIndex);
+                    }
+                }
+
+                _currentCircleIndex++;
+            }
+            else
+            {
+                for (int i = 0; i < _mucusByCircle.Count; i++)
+                {
+                    Transform parent = points.Count > i ? points[i] : null;
+                    if (parent == null) continue;
+
+                    int j = 0;
+                    foreach (Transform point in parent)
+                    {
+                        if (point == null) continue;
+
+                        if (j < _mucusByCircle[i].Count)
+                        {
+                            GameObject obj = _mucusByCircle[i][j];
+                            if (obj != null)
+                            {
+                                if (!obj.activeSelf)
+                                {
+                                    if (obj.TryGetComponent<ObjectHealth>(out ObjectHealth objectHealth))
+                                    {
+                                        obj.SetActive(true);
+                                        CmdSetCurrentHealth(objectHealth);
+                                    }
+                                }
+                            }
+                        }
+
+                        j++;
+                    }
                 }
             }
         }
     }
 
-    [Server]
-    private void CmdSpawnMucus(GameObject point)
+    private int GetCurrentCircle()
     {
-        GameObject instance = Instantiate(mucus, point.transform.position, point.transform.rotation);
+        for (int i = 0; i < _mucusByCircle.Count; i++)
+            if (_mucusByCircle[i].Count == 0)
+                return i;
+
+        return _mucusByCircle.Count;
+    }
+
+    [Server]
+    private void CmdSpawnOrActivateMucus(Vector3 spawnPosition, int circleIndex)
+    {
+        GameObject instance = Instantiate(mucusPrefab, spawnPosition, Quaternion.identity);
         SceneManager.MoveGameObjectToScene(instance, Hero.NetworkSettings.MyRoom);
-        NetworkServer.Spawn(instance, connectionToClient);
+        NetworkServer.Spawn(instance);
 
-        ObjectHealth health = instance.GetComponentInChildren<ObjectHealth>();
-        if (health != null)
-        {
-            health.InitializeObject(mucusData);
-            if (mucusData.MinEndurance) health.ServerStartFillHP(health.ObjectData.MaxHealth, 1f);
-        }
-
-        _currentMucus = instance;
-        _activeMucus.Add(instance);
 
         uint netId = instance.GetComponent<NetworkIdentity>().netId;
-        RpcClientAddMucus(netId);
+        RpcAddMucus(netId, circleIndex);
     }
 
     [ClientRpc]
-    private void RpcClientAddMucus(uint netId)
+    private void RpcAddMucus(uint netId, int circleIndex)
     {
-        if (NetworkClient.spawned.TryGetValue(netId, out var networkIdentity))
+        if (NetworkClient.spawned.TryGetValue(netId, out var identity))
         {
-            GameObject mucus = networkIdentity.gameObject;
-            _currentMucus = mucus;
-            _activeMucus.Add(mucus);
+            GameObject mucus = identity.gameObject;
+            if (circleIndex < _mucusByCircle.Count)
+                _mucusByCircle[circleIndex].Add(mucus);
         }
     }
+
+    [Command] private void CmdSetCurrentHealth(ObjectHealth objectHealth) => objectHealth.ServerSetCurrentHealth(5);
+
+    private void CleanupAllMucus()
+    {
+        foreach (var list in _mucusByCircle)
+        {
+            foreach (var mucus in list)
+                if (mucus != null)
+                    Destroy(mucus);
+            list.Clear();
+        }
+    }
+
+    #region NotUsedSkillOverrides
+    public override void LoadTargetData(TargetInfo targetInfo) { }
+    protected override IEnumerator CastJob() => null;
+    protected override void ClearData() { }
+    protected override IEnumerator PrepareJob(System.Action<TargetInfo> callback) => null;
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => 0;
+    protected override bool IsCanCast => false;
+    #endregion
 }

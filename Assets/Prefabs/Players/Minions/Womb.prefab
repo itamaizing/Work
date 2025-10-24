@@ -16563,6 +16563,7 @@ GameObject:
   - component: {fileID: 6149488522666102982}
   - component: {fileID: 7046688650934260390}
   - component: {fileID: 2786580149324115967}
+  - component: {fileID: 2267743082958508268}
   m_Layer: 9
   m_Name: Womb
   m_TagString: Allies
@@ -16798,6 +16799,7 @@ MonoBehaviour:
   _spawnComponent: {fileID: 7099943676139532891}
   _visionComponent: {fileID: 430165030280571863}
   _auras: {fileID: 0}
+  characterParent: {fileID: 0}
   _expForDieKill: 5
   _navMeshAgent: {fileID: 4697272463135853912}
 --- !u!114 &8102436864039870552
@@ -17019,7 +17021,7 @@ MonoBehaviour:
   _characterPrefabs:
   - {fileID: 6271332717105215193, guid: 8ff2c2f4f50e6834ebff05e5a40c88be, type: 3}
   _enemyPrefabs: []
-  _allyPrefab: {fileID: 0}
+  _allyPrefabs: []
 --- !u!195 &4697272463135853912
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -17390,15 +17392,73 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   points:
-  - {fileID: 7716571047957763812}
-  - {fileID: 6333574986492307812}
-  - {fileID: 684937538304591218}
-  - {fileID: 5363458751813455891}
-  - {fileID: 4547200423891313574}
-  - {fileID: 7439741979899526721}
-  mucusData: {fileID: 11400000, guid: 4d9848aff32418346bf2ce8b19b940bc, type: 2}
-  mucus: {fileID: 6581410618162525258, guid: a7f53fff04ebc6947aa302af5c5ecf21, type: 3}
-  _activeMucus: []
+  - {fileID: 6068758352887179223}
+  - {fileID: 2017824503523596151}
+  - {fileID: 1232838094086193569}
+  - {fileID: 2101676219215804962}
+  - {fileID: 674928425986156368}
+  - {fileID: 7303513670606648317}
+  mucusPrefab: {fileID: 6581410618162525258, guid: a7f53fff04ebc6947aa302af5c5ecf21, type: 3}
+--- !u!114 &2267743082958508268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3906734254346883187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85345f3a2dbe853448c552bc19ec2a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
+  _abilityInfo: {fileID: 11400000, guid: 80cb2a8cb91b3bf46b5a20b385ef8b1c, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
+  _castDeley: 0
+  _damageValue: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _skillType: 0
+  _moving: 0
+  autoAttack: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _autoAttackDelay: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
+  _tick: 0.1
+  _radiusGrowthInterval: 1
+  _maxRadius: 6
 --- !u!1 &3949581781584673982
 GameObject:
   m_ObjectHideFlags: 0

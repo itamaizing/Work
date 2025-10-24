@@ -23,6 +23,7 @@ public class ObjectHealth : Resource, IDamageable
     public event Action<Damage, Skill> DamageTaken;
     //public event Action<float, DamageType, Skill> DamageTakenType;
 
+    [SyncVar] private float _maxHealth;
     [SyncVar(hook = nameof(OnHealthChanged))]
     private float _currentHealth;
 
@@ -105,7 +106,7 @@ public class ObjectHealth : Resource, IDamageable
     {
         _objectData = objectData;
 
-        Initialize(objectData.MaxHealth, objectData.RegenerationRate, 0, null);
+        Initialize(objectData.MaxHealth, objectData.RegenerationRate, objectData.RegenerationTime, null);
 
         if (objectData.MaxEndurance)
         {
@@ -157,14 +158,19 @@ public class ObjectHealth : Resource, IDamageable
             if (_currentHealth <= 0)
             {
                 OnDeath?.Invoke();
+                if (obj != null) obj.IsDeath = true;
+
                 GameObject target = transform.parent != null ? transform.parent.gameObject : gameObject;
                 if (isDestroyOnDeath)
                 {
                     if (isServer && target.TryGetComponent(out NetworkIdentity identity)) NetworkServer.Destroy(target);
                     else Destroy(target);
-                } 
-                    
-                    Destroy(target);
+                }
+
+                else
+                {
+                   if (isServer) ClienRpcActive(false);
+                }
             }
 
             if (isServer) RpcPopupDamage(damage.Value);
@@ -243,6 +249,19 @@ public class ObjectHealth : Resource, IDamageable
 
     #endregion
 
+    public void ReplaceObjectData(ObjectData newData)
+    {
+        _objectData = newData;
+        _maxHealth = newData.MaxHealth;
+
+        ServerStartFillHP(_maxHealth, 0f);
+    }
+
+    private void TryUpdateBar()
+    {
+
+    }
+
     [Command]
     public void CmdSetCurrentHealth(float newValue)
     {
@@ -254,6 +273,7 @@ public class ObjectHealth : Resource, IDamageable
     public void ServerSetCurrentHealth(float newValue)
     {
         _currentHealth = Mathf.Clamp(newValue, 0, MaxValue);
+        if (obj != null) obj.IsDeath = false;
         gameObject.SetActive(true);
         RpcSyncHP(_currentHealth);
     }
@@ -263,6 +283,12 @@ public class ObjectHealth : Resource, IDamageable
     {
         Damage damage = new Damage { Value = value, Type = DamageType.Physical };
         DamageTaken?.Invoke(damage, null);
+    }
+
+    [ClientRpc]
+    private void ClienRpcActive(bool value)
+    {
+        gameObject.SetActive(value);
     }
 
     public void ShowPhantomValue(Damage phantomValue)
@@ -279,4 +305,6 @@ public class ObjectHealth : Resource, IDamageable
         if (_ignoredSkillTypes.Contains(skill.SkillType)) return true;
         return false;
     }
+
+    protected virtual void HookBonusMaxValueChanged(float oldValue, float newValue) { }
 }

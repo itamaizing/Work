@@ -32,7 +32,7 @@ public class Object : NetworkBehaviour, ITargetable
     public List<Resource> Resources => _resources;
     public SelectedCircle SelectedCircle => _selectedCircle;
     public Transform TargetTransform => transform;
-    public bool IsDeath => _isDeath;
+    public bool IsDeath { get => _isDeath; set => _isDeath = value; }
     public bool DestroyOnDeath => isDestroyOnDeath;
     public bool IsTower => isTower;
 

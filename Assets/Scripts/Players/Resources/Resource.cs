@@ -25,6 +25,8 @@ public abstract class Resource : NetworkBehaviour
     
     protected Coroutine _regenCoroutine;
 
+    private float _bonusMaxValue = 0f;
+
     public float CurrentValue { get => _currentValue; set { _currentValue = value; } }
     public float MaxValue { get => _maxValue; set => _maxValue = value;  }
     public float RegenerationValue { get => _regenerationValue;  set { _regenerationValue = value; } }
@@ -88,6 +90,14 @@ public abstract class Resource : NetworkBehaviour
     public void PhantomValueShow(float value)
     {
         PhantomValueShown?.Invoke(value);
+    }
+
+    public void InstCurrentValue(float value)
+    {
+        _currentValue = value;
+
+        if (isServer) RpcResetValueUpdate();
+        else HookValueChanged(0, _currentValue);
     }
 
     public void ChangeBarColor(Color color)

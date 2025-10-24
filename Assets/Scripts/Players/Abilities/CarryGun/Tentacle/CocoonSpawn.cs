@@ -54,8 +54,6 @@ public class CocoonSpawn : Skill
             foreach (var state in states) character.CharacterState.RemoveState(state.State);
         }
 
-        Hero.Abilities.DeactivateSkill(this);
-
         if (tentacle.TryGetComponent<SpawnComponent>(out var spawnComponent))
         {
             Vector3 forwardOffset = transform.forward.normalized * 1.6f;

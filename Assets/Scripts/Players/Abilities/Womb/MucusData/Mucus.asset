@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff84ab29f61c0cf4bb6fe08ad7e36ea3, type: 3}
   m_Name: Mucus
   m_EditorClassIdentifier: 
-  maxHealth: 5
-  regenerationRate: 1
+  maxHealth: 30
+  regenerationRate: 5
+  regenerationTime: 1
   maxEndurance: 1
   minEndurance: 0
