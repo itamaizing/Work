@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: GrowTree
   m_EditorClassIdentifier: 
   maxHealth: 50
-  regenerationRate: 1
+  regenerationAmount: 0
+  regenerationInterval: 0
   maxEndurance: 0
   minEndurance: 1

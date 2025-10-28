@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,6 +22,8 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
 
     private int _currentCircleIndex = 0;
 
+    public event Action OnAnyMucusAutoGrowthDestroyed;
+
     private void OnEnable()
     {
         _mucusByCircle.Clear();
@@ -28,12 +31,14 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
             _mucusByCircle.Add(new List<GameObject>());
 
         _spawnRoutine = StartCoroutine(ApplyMucusPeriodically());
+
+        Radius = 0;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         if (_spawnRoutine != null) StopCoroutine(_spawnRoutine);
-        CleanupAllMucus();
+        OnAnyMucusAutoGrowthDestroyed?.Invoke();
     }
 
     public void SwitchToFinite()
@@ -51,16 +56,21 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
         {
             yield return new WaitForSeconds(TickRate);
 
+            Radius = Mathf.Min(Radius + 1, 6);
+
             if (!_infinite)
             {
                 _timer += TickRate;
                 _remaining--;
+
                 if (_remaining <= 0)
                 {
                     CleanupAllMucus();
                     yield break;
                 }
             }
+
+            bool isNewCircleStarted = false;
 
             if (_currentCircleIndex < MaxCircles && _currentCircleIndex < points.Count)
             {
@@ -69,9 +79,10 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
                 {
                     foreach (Transform point in parent)
                     {
-                        if (point != null)
-                            CmdSpawnOrActivateMucus(point.position, _currentCircleIndex);
+                        if (point != null) CmdSpawnOrActivateMucus(point.position, _currentCircleIndex);
                     }
+
+                    isNewCircleStarted = true;
                 }
 
                 _currentCircleIndex++;
@@ -97,8 +108,9 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
                                 {
                                     if (obj.TryGetComponent<ObjectHealth>(out ObjectHealth objectHealth))
                                     {
-                                        obj.SetActive(true);
                                         CmdSetCurrentHealth(objectHealth);
+                                        obj.SetActive(true);
+                                        CmdStartCustomRegeneration(objectHealth);
                                     }
                                 }
                             }
@@ -108,15 +120,33 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
                     }
                 }
             }
+
+            if (isNewCircleStarted && isServer)
+            {
+                var allMucus = FindObjectsOfType<Mucus>();
+                foreach (var mucus in allMucus)
+                {
+                    if (mucus == null || mucus.MucusAutoGrowth == this) continue;
+
+                    float distance = Vector3.Distance(transform.position, mucus.transform.position);
+                    if (distance > Radius) continue;
+
+                    var health = mucus.GetComponent<ObjectHealth>();
+                    if (health == null) continue;
+
+                    health.ÑmdStartCustomRegeneration();
+                    mucus.MucusAutoGrowth = this;
+
+                    int circleIndex = Mathf.Clamp(_currentCircleIndex - 1, 0, _mucusByCircle.Count - 1);
+                    if (!_mucusByCircle[circleIndex].Contains(mucus.gameObject)) _mucusByCircle[circleIndex].Add(mucus.gameObject);
+                }
+            }
         }
     }
 
     private int GetCurrentCircle()
     {
-        for (int i = 0; i < _mucusByCircle.Count; i++)
-            if (_mucusByCircle[i].Count == 0)
-                return i;
-
+        for (int i = 0; i < _mucusByCircle.Count; i++) if (_mucusByCircle[i].Count == 0) return i;
         return _mucusByCircle.Count;
     }
 
@@ -125,8 +155,13 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
     {
         GameObject instance = Instantiate(mucusPrefab, spawnPosition, Quaternion.identity);
         SceneManager.MoveGameObjectToScene(instance, Hero.NetworkSettings.MyRoom);
-        NetworkServer.Spawn(instance);
+        NetworkServer.Spawn(instance, connectionToClient);
 
+        RpcRegenerationEnabled(instance);
+        if (instance.TryGetComponent<ObjectHealth>(out var objectHealth)) objectHealth.IsRegenerationEnabled = true;
+
+        RpcSetMucusAutoGrowth(instance);
+        if (instance.TryGetComponent<Mucus>(out var mucus)) mucus.MucusAutoGrowth = this;
 
         uint netId = instance.GetComponent<NetworkIdentity>().netId;
         RpcAddMucus(netId, circleIndex);
@@ -138,22 +173,27 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
         if (NetworkClient.spawned.TryGetValue(netId, out var identity))
         {
             GameObject mucus = identity.gameObject;
-            if (circleIndex < _mucusByCircle.Count)
-                _mucusByCircle[circleIndex].Add(mucus);
+            if (circleIndex < _mucusByCircle.Count) _mucusByCircle[circleIndex].Add(mucus);
         }
     }
 
-    [Command] private void CmdSetCurrentHealth(ObjectHealth objectHealth) => objectHealth.ServerSetCurrentHealth(5);
+    [ClientRpc]
+    private void RpcRegenerationEnabled(GameObject instance)
+    {
+        if (instance.TryGetComponent<ObjectHealth>(out var objectHealth)) objectHealth.IsRegenerationEnabled = true;
+    }
 
+    [ClientRpc]
+    private void RpcSetMucusAutoGrowth(GameObject instance)
+    {
+        if (instance.TryGetComponent<Mucus>(out var mucus)) mucus.MucusAutoGrowth = this;
+    }
+
+    [Command] private void CmdSetCurrentHealth(ObjectHealth objectHealth) => objectHealth.ServerSetCurrentHealth(5);
+    [Command] private void CmdStartCustomRegeneration(ObjectHealth objectHealth) => objectHealth.ClientRpcStartCustomRegeneration();
     private void CleanupAllMucus()
     {
-        foreach (var list in _mucusByCircle)
-        {
-            foreach (var mucus in list)
-                if (mucus != null)
-                    Destroy(mucus);
-            list.Clear();
-        }
+        foreach (var list in _mucusByCircle) list.Clear();
     }
 
     #region NotUsedSkillOverrides

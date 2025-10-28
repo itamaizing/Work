@@ -40,7 +40,7 @@ public class JumpWithChelicera : Skill
     public bool IsCheliceraStrikeCast { get => _isCheliceraStrikeCast; set => _isCheliceraStrikeCast = value; }
     public float CooldownJump { get => cooldownJump; set => cooldownJump = value; }
 
-    protected override bool IsCanCast => _target != null && cooldownEnergy.CurrentValue >= cooldownJump;
+    protected override bool IsCanCast => _target != null && cooldownEnergy.CurrentValue >= cooldownJump && CheckCanCast();
 
     private bool isJumpWithCheliceraChanceDamageCrit = false;
     public void JumpWithCheliceraChanceDamageCrit(bool value) => isJumpWithCheliceraChanceDamageCrit = value;
@@ -74,7 +74,6 @@ public class JumpWithChelicera : Skill
             {
                 _target = GetRaycastTarget();
                 if (_target is Character characterTarget) _runtimeTarget = characterTarget;
-                _isCanCancle = false;
             }
             yield return null;
         }
@@ -123,7 +122,6 @@ public class JumpWithChelicera : Skill
         _animator.applyRootMotion = false;
         _player.Move.StopLookAt();
         Hero.Move.CanMove = true;
-        _isCanCancle = true;
     }
 
     [Command]
@@ -222,7 +220,6 @@ public class JumpWithChelicera : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as Character;
-        _isCanCancle = false;
     }
 
     public void JumpWithCheliceraCast() => AnimStartCastCoroutine();

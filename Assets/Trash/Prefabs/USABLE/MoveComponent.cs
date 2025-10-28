@@ -303,7 +303,8 @@ public class MoveComponent : NetworkBehaviour
     {
 		while (!_isLookAtCursor)
         {
-			LookAtPosition(transform.position);
+			if (transform != null) LookAtPosition(transform.position);
+			else StopLookAt();
 			yield return null;
 		}
     }

@@ -1917,6 +1917,12 @@ MonoBehaviour:
   _objectBar: {fileID: 7413096228921928745}
   _objectData: {fileID: 11400000, guid: 7ee4128bb430f07458a639f23fc41069, type: 2}
   obj: {fileID: 0}
+  _ignoredSchools: 
+  _ignoredForms: 
+  _ignoredSkillTypes: 
+  live: 0
+  isDestroyOnDeath: 1
+  isRegenerationEnabled: 0
 --- !u!114 &4129786086200522693
 MonoBehaviour:
   m_ObjectHideFlags: 0

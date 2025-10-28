@@ -31,11 +31,12 @@ public class ObjectHealth : Resource, IDamageable
 
     private Coroutine _hideBarCoroutine;
     private Coroutine _regenerationCoroutine;
-    private Coroutine _regenerationDelayCoroutine;
 
     [SerializeField] private bool live = false;
     [SerializeField] private bool isDestroyOnDeath = true;
+    [SerializeField] private bool isRegenerationEnabled = false;
 
+    public bool IsDestroyOnDeath { get => isDestroyOnDeath; set => isDestroyOnDeath = value; }
     public ObjectData ObjectData => _objectData;
     public float ResistMagicDamage => _resistMagicDamage;
 
@@ -45,9 +46,75 @@ public class ObjectHealth : Resource, IDamageable
         set => _currentHealth = value;
     }
 
+    public bool IsRegenerationEnabled
+    {
+        get => isRegenerationEnabled;
+        set
+        {
+            if (isRegenerationEnabled == value) return;
+
+            isRegenerationEnabled = value;
+
+            if (isRegenerationEnabled) ÑmdStartCustomRegeneration();
+            else ÑmdStopCustomRegeneration();
+        }
+    }
+
     #region regeneration
 
     private Coroutine _fillCoroutine;
+
+    private void OnDisable()
+    {
+        StopCustomRegeneration();
+    }
+
+    public void StartCustomRegeneration()
+    {
+        if (isRegenerationEnabled)
+        {
+            if (_regenerationCoroutine != null)
+            {
+                StopCoroutine(_regenerationCoroutine);
+                _regenerationCoroutine = null;
+            }
+
+            _regenerationCoroutine = StartCoroutine(CustomRegenerationRoutine());
+        }
+    }
+
+    public void StartCustomNegativeRegeneration()
+    {
+        if (_regenerationCoroutine != null)
+        {
+            StopCoroutine(_regenerationCoroutine);
+            _regenerationCoroutine = null;
+        }
+
+        if (isRegenerationEnabled) _regenerationCoroutine = StartCoroutine(CustomNegativeRegenerationRoutine());
+    }
+
+    private void StopCustomRegeneration(bool immediate = false)
+    {
+        if (_regenerationCoroutine != null)
+        {
+            StopCoroutine(_regenerationCoroutine);
+            _regenerationCoroutine = null;
+        }
+
+        if (immediate) StopAllCoroutines();
+    }
+
+    private void StopCustomNegativeRegeneration(bool immediate = false)
+    {
+        if (_regenerationCoroutine != null)
+        {
+            StopCoroutine(_regenerationCoroutine);
+            _regenerationCoroutine = null;
+        }
+
+        if (immediate) StopAllCoroutines();
+    }
 
     [Server]
     public void ServerStartFillHP(float targetValue, float duration)
@@ -73,6 +140,46 @@ public class ObjectHealth : Resource, IDamageable
      _currentHealth = value;
      OnHealthChanged(0, _currentHealth);
     }
+
+    private IEnumerator CustomRegenerationRoutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(_objectData.RegenerationInterval);
+
+            if (_currentHealth <= 0)
+                yield break;
+
+            if (_currentHealth < MaxValue)
+            {
+                _currentHealth = Mathf.Min(MaxValue, _currentHealth + _objectData.RegenerationAmount);
+                OnHealthChanged(0, _currentHealth);
+            }
+        }
+    }
+
+    private IEnumerator CustomNegativeRegenerationRoutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(_objectData.RegenerationInterval);
+
+            if (_currentHealth > 0)
+            {
+                _currentHealth = Mathf.Max(0, _currentHealth - 1);
+                OnHealthChanged(_currentHealth, _currentHealth);
+            }
+
+            if (_currentHealth <= 0)
+            {
+                if (isServer) NetworkServer.Destroy(gameObject);
+                else Destroy(gameObject);
+
+                yield break;
+            }
+        }
+    }
+
 
     private IEnumerator FillHPCoroutine(float targetValue, float duration)
     {
@@ -106,7 +213,7 @@ public class ObjectHealth : Resource, IDamageable
     {
         _objectData = objectData;
 
-        Initialize(objectData.MaxHealth, objectData.RegenerationRate, objectData.RegenerationTime, null);
+        Initialize(objectData.MaxHealth, objectData.RegenerationAmount, objectData.RegenerationInterval, null);
 
         if (objectData.MaxEndurance)
         {
@@ -140,6 +247,7 @@ public class ObjectHealth : Resource, IDamageable
         if (IsDamageIgnored(skill)) return false;
         if (TryEvade(damage.Type)) return false;
 
+        if (_regenerationCoroutine == null) ÑmdStartCustomRegeneration();
         float damageValue = damage.Value;
 
         if (_currentHealth > 0)
@@ -161,15 +269,18 @@ public class ObjectHealth : Resource, IDamageable
                 if (obj != null) obj.IsDeath = true;
 
                 GameObject target = transform.parent != null ? transform.parent.gameObject : gameObject;
+                ÑmdStopCustomRegeneration();
+
                 if (isDestroyOnDeath)
                 {
                     if (isServer && target.TryGetComponent(out NetworkIdentity identity)) NetworkServer.Destroy(target);
                     else Destroy(target);
+
                 }
 
                 else
                 {
-                   if (isServer) ClienRpcActive(false);
+                    if (isServer) ClienRpcActive(false);
                 }
             }
 
@@ -270,6 +381,29 @@ public class ObjectHealth : Resource, IDamageable
     }
 
     [Server]
+    public void ÑmdStartCustomRegeneration()
+    {
+        StopCustomNegativeRegeneration(true);
+        StartCustomRegeneration();
+        ClientRpcStartCustomRegeneration();
+    }
+
+    [Server]
+    public void ÑmdStartCustomNegativeRegeneration()
+    {
+        StopCustomRegeneration(true);
+        StartCustomNegativeRegeneration();
+        //ClientRpcStartNegaiveCustomRegeneration();
+    }
+
+    [Server]
+    public void ÑmdStopCustomRegeneration()
+    {
+        StopCustomRegeneration();
+        ClientRpcStopCustomRegeneration();
+    }
+
+    [Server]
     public void ServerSetCurrentHealth(float newValue)
     {
         _currentHealth = Mathf.Clamp(newValue, 0, MaxValue);
@@ -290,6 +424,25 @@ public class ObjectHealth : Resource, IDamageable
     {
         gameObject.SetActive(value);
     }
+
+    [ClientRpc]
+    private void ClientRpcStopCustomRegeneration()
+    {
+        StopCustomRegeneration();
+    }
+
+    [ClientRpc]
+    public void ClientRpcStartCustomRegeneration()
+    {
+       StartCustomRegeneration();
+    }
+
+    [ClientRpc]
+    public void ClientRpcStartNegaiveCustomRegeneration()
+    {
+        StartCustomRegeneration();
+    }
+
 
     public void ShowPhantomValue(Damage phantomValue)
     {

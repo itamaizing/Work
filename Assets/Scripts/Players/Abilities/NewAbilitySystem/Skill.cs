@@ -1513,6 +1513,18 @@ public abstract class Skill : NetworkBehaviour
 
         LoadTargetDataForCheckCast();
 
+        //test
+        if (_targetInfoQueue.TryPeek(out TargetInfo info))
+        {
+            if (info.Targets.Count > 0)
+            {
+                if (info.Targets[0] is Character targetCharacter && targetCharacter != _hero)
+                {
+                    targetCharacter.UIComponent.CircleSelect1.IsActive = false;
+                }
+            }
+        }
+
         PreparingSuccess?.Invoke(this);
         _isPreparing = false;
         StopAutoDraw();
@@ -1579,6 +1591,14 @@ public abstract class Skill : NetworkBehaviour
         _isCasting = false;
 
         ClearData();
+
+        /// test
+        if (_tempTargetForDamage != null && _tempTargetForDamage.TryGetComponent(out Character character))
+        {
+            character.SelectedCircle.IsActive = false;
+            character.SelectedCircle.SwitchSelectCircle(false);
+        }
+
         LoadTargetDataForCheckCast();
 
         _hero.Move.StopLookAt();

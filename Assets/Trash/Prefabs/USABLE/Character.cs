@@ -26,13 +26,15 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 	[SerializeField] private SpawnComponent _spawnComponent;
 	[SerializeField] private VisionComponent _visionComponent;
 	[SerializeField] private Auras _auras;
-	[SerializeField] private Character characterParent;
+	[SerializeField] private Character _characterParent;
 
 	[SyncVar] private int _killCounter;
 	[SyncVar] private float _damageTakeCounter;
 	[SyncVar] private int _assystCounter;
 	[SyncVar] private int _deadsCounter;
 	[SyncVar] private float _damageGetCounter;
+	[SyncVar(hook = nameof(OnCharacterParentChanged))]
+	private uint _characterParentNetId;
 	private bool _isInvisible;
 	private bool _isDead = false;
 
@@ -53,8 +55,16 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 	public SelectedCircle SelectedCircle => _selectedCircle;
     public Animator Animator => _animator;
     public NetworkAnimator NetworkAnimator => _networkAnimator;
-	public Character CharacterParent { get => characterParent; set => characterParent = value; }
-    public bool IsInvisible
+	public Character CharacterParent
+	{
+		get => _characterParent;
+		set
+		{
+			_characterParent = value;
+			if (isServer && _characterParent != null) _characterParentNetId = _characterParent.netId;
+		}
+	}
+	public bool IsInvisible
     {
         get => _isInvisible;
 
@@ -96,8 +106,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
     public event Action<float, Skill, string> HealTaked;
 	public event Action<Character> Died;
 	public event Action Killed;
-
-    protected override void OnValidate()
+	protected override void OnValidate()
     {
 		base.OnValidate();
 
@@ -152,7 +161,12 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 
 		Health.Died += AddDeadCounter;
 	}
-	
+
+	private void OnCharacterParentChanged(uint oldNetId, uint newNetId)
+	{
+		if (newNetId == 0) return;
+		if (NetworkClient.spawned.TryGetValue(newNetId, out var identity)) _characterParent = identity.GetComponent<Character>();
+	}
 	private void Start()
 	{
 		Initialize();
@@ -200,6 +214,8 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 	{
 		ServerOnUnitSpawned?.Invoke(this);
 		Health.Died += ServerOnDied;
+
+		if (_characterParentNetId != 0 && NetworkServer.spawned.TryGetValue(_characterParentNetId, out var identity)) _characterParent = identity.GetComponent<Character>();
 	}
 
 	public override void OnStopServer()
@@ -311,14 +327,14 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 
 	//[Command]
 	//private void CmdOnDied()
- //   {
+	//   {
 	//	OnDied();
 	//	ClientRpcOnDied();
 	//}
 
 	//[ClientRpc]
 	//private void ClientRpcOnDied()
- //   {
+	//   {
 	//	OnDied();
 	//}
 

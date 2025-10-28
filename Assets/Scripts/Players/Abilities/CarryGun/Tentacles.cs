@@ -337,7 +337,7 @@ public class Tentacles : Skill
     private void SpawnWomb(Vector3 position)
     {
         if (!IsValidVector(position)) return;
-        _spawnComponent.CmdSpawnEnemyPoint(position, Quaternion.identity, 0);
+        _spawnComponent.CmdSpawnEnemyPoint(position, Quaternion.identity, null, 0, false, Hero);
 
         CmdTentacleWomb();
     }

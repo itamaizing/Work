@@ -55,7 +55,7 @@ public class ScraderSpawn : Skill
 
         Hero.Abilities.DeactivateSkill(this);
 
-        if (tentacle.TryGetComponent<SpawnComponent>(out var spawnComponent)) spawnComponent.CmdSpawnAliesPoint(_spawnPoint, Quaternion.identity, 0);
+        if (tentacle.TryGetComponent<SpawnComponent>(out var spawnComponent)) spawnComponent.CmdSpawnAliesPoint(_spawnPoint, Quaternion.identity, minion, 0, true , tentacle.Hero);
 
         yield return null;
     }

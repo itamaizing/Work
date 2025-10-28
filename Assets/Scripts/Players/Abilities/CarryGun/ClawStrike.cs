@@ -72,8 +72,6 @@ public class ClawStrike : Skill
                         _runtimeTarget = characterTarget;
                     }
                 }
-
-                _isCanCancle = false;
             }
             yield return null;
         }
@@ -102,7 +100,8 @@ public class ClawStrike : Skill
         if (_target == null) return;
 
         float attackingPsiValue = _spentAttackingPsiEnergy;
-        _baseDamage = UnityEngine.Random.Range(5f, 7.01f);
+        _baseDamage = UnityEngine.Random.Range(20f, 30f);
+        Damage = _baseDamage;
 
         var damage = new Damage
         {
@@ -179,12 +178,11 @@ public class ClawStrike : Skill
     public void ClawStrikeEnded()
     {
         AnimCastEnded();
-        _isCanCancle = true;
     }
 
     private void HandleSkillCanceled()
     {
-        _isCanCancle = true;
+
     }
 
     public void TrySpendAttackingPsi()
@@ -235,7 +233,6 @@ public class ClawStrike : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as Character;
-        _isCanCancle = false;
     }
 
     protected override void ClearData()

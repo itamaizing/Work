@@ -106,8 +106,6 @@ public class CheliceraStrike : Skill
                     _runtimeTarget = characterTarget;
                     characterTarget.SelectedCircle.IsActive = true;
                 }
-
-                _isCanCancle = false;
             }
             yield return null;
         }
@@ -141,7 +139,6 @@ public class CheliceraStrike : Skill
     private void HandleSkillCanceled()
     {
         _target = null;
-        _isCanCancle = true;
     }
 
     public void SetTarget(IDamageable target)
@@ -285,7 +282,6 @@ public class CheliceraStrike : Skill
     public void CheliceraStrikeEnded()
     {
         OnCheliceraStrikeEnd?.Invoke();
-        _isCanCancle = true;
         _player.Move.CanMove = true;
         AnimCastEnded();
     }
@@ -323,7 +319,6 @@ public class CheliceraStrike : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
-        _isCanCancle = false;
     }
 
     protected override void ClearData()

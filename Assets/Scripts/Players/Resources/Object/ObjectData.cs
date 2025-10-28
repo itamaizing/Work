@@ -6,16 +6,16 @@ public class ObjectData : ScriptableObject
 {
     [Header("Health Settings")]
     [SerializeField] private float maxHealth;
-    [SerializeField] private float regenerationRate;
-    [SerializeField] private float regenerationTime;
+    [SerializeField] private float regenerationAmount;
+    [SerializeField] private float regenerationInterval;
 
     [Header("Endurance")]
     [SerializeField] private bool maxEndurance = true;
     [SerializeField] private bool minEndurance = false;
 
     public float MaxHealth { get => maxHealth; set => maxHealth = value; }
-    public float RegenerationRate => regenerationRate;
-    public float RegenerationTime => regenerationTime;
+    public float RegenerationAmount => regenerationAmount;
+    public float RegenerationInterval => regenerationInterval;
 
     public bool MaxEndurance => maxEndurance;
     public bool MinEndurance => minEndurance;

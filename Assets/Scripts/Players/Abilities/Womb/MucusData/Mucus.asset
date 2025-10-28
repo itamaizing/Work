@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Mucus
   m_EditorClassIdentifier: 
   maxHealth: 30
-  regenerationRate: 5
-  regenerationTime: 1
+  regenerationAmount: 5
+  regenerationInterval: 1
   maxEndurance: 1
   minEndurance: 0

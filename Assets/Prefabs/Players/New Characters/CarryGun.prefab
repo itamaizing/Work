@@ -9742,9 +9742,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6271332717105215193, guid: b4974656f43ed384e9560645ff90b572, type: 3}
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _allyPrefabs.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _enemyPrefabs.Array.size
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _allyPrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 5830977165762126247, guid: ffa34bf0b8e63f140af24f180875a670, type: 3}
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _enemyPrefabs.Array.data[0]
       value: 
