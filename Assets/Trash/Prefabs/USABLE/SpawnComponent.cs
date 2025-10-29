@@ -77,7 +77,7 @@ public class SpawnComponent : NetworkBehaviour
     [Command]
     public void CmdSpawnAliesPoint(Vector3 position, Quaternion rotation, Character toReplace, int index, bool remove, Character parenCharacter)
     {
-        var spawned = SpawnCharacterTransfer(_enemyPrefabs[index], position, rotation, remove, parenCharacter);
+        var spawned = SpawnCharacterTransfer(_allyPrefabs[index], position, rotation, remove, parenCharacter);
 
         if (toReplace != null && remove == true)
         {

@@ -71,7 +71,6 @@ public class CheliceraStrike : Skill
     private bool _isChanceCritDamageIncrease = false;
 
     public void CheliceraStrikeChanceDamageCrit(bool value) => isCheliceraStrikeChanceDamageCrit = value;
-    public void CheliceraStrikeSpeed(bool value) => _player.Animator.speed = value ? 1.4f : 1f;
     public void EvolutionTalentTwo(bool value) => isEvolutionTalentTwo = value;
 
     public void PsionicsTalentTwo(bool value, string text)
@@ -261,10 +260,9 @@ public class CheliceraStrike : Skill
         CmdApplyDamage(magicDamageNearby, enemy.gameObject);
     }
 
-    public void CheliceraStrikeSpeedAnim()
+    public void CheliceraStrikePreparingForAnim()
     {
         _player.Move.CanMove = false;
-        _player.Animator.SetFloat("CheliceraStrikeSpeed", 1f / animSpeed);
         if (_attackingPsionicEnergy.IsAttackingPsiEnergy && _attackingPsionicEnergy.CurrentValue > 0f) TrySpendAttackingPsi();
         else _spentAttackingPsiEnergy = 0;
     }

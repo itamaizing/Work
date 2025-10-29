@@ -19,6 +19,8 @@ public class ClawStrike : Skill
     [SerializeField] private float chanceApplyBleedingIncrease = 0.4f;
 
     private bool _isDurationChanceApplyBleedingWithJump = false;
+    private bool _isAnimationAcceleration = false;
+    private bool _isLastClawStrike;
     private float _spentAttackingPsiEnergy;
     private float _baseDamage;
     private float _castWindowDuration = 1f;
@@ -49,7 +51,11 @@ public class ClawStrike : Skill
     private bool _isBleedingClawStrike  = false;
     private bool _isChanceApplyBleedingIncrease = false;
 
-    public void ClawStrikeSpeed(bool value) => Hero.Animator.speed = value ? 1.4f : 1f;
+    public void ClawStrikeSpeed(bool value)
+    {
+        _isAnimationAcceleration = value;
+    }
+
     public void BleedingClawStrike(bool value) => _isBleedingClawStrike = value;
     public void ChanceApplyBleedingIncrease(bool value) => _isChanceApplyBleedingIncrease = value;
     #endregion
@@ -163,9 +169,28 @@ public class ClawStrike : Skill
         if (coroutineDurationChanceApplyBleedingWithJump != null) StopCoroutine(IDurationChanceApplyBleedingWithJump());
     }
 
-    public void ClawStrikeSpeedAnim()
+    public void ClawStrikePreparingForAnim()
     {
-        _player.Animator.SetFloat("ClawStrikeSpeed", 1f / animSpeed);
+        if (_isAnimationAcceleration)
+        {
+            var lastSkill = _player.Abilities.LastCastedSkill;
+            float multiplier = 0;
+
+            if ((lastSkill is ClawStrike && _isLastClawStrike) || lastSkill is CheliceraStrike)
+            {
+                multiplier = 1.4f;
+                _isLastClawStrike = false;
+            }
+
+            else
+            {
+                multiplier = 1f;
+                _isLastClawStrike = lastSkill is ClawStrike;
+            }
+
+            Hero.Animator.SetFloat("ClawStrikeSpeed", multiplier);
+        }
+
         if (_attackingPsionicEnergy.IsAttackingPsiEnergy && _attackingPsionicEnergy.CurrentValue > 0f) TrySpendAttackingPsi();
         else _spentAttackingPsiEnergy = 0;
     }

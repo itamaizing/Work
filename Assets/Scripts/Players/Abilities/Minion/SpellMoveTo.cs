@@ -1,23 +1,30 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class SpellMoveTo : Skill
 {
+
     [SerializeField] private NavMeshAgent _agent;
     [SerializeField] private LayerMask _alliesLayer;
     [SerializeField] private float _damageDelay = 0.5f;
     [SerializeField] private float _attackDistance = 3f;
+    [SerializeField] private Animator _animator;
 
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private Vector3 _runtimeTargetPoint = Vector3.positiveInfinity;
-    private Character _target = null;
-    private Character _runtimeTarget = null; 
+    protected IDamageable _target = null;
+    private Character _runtimeTarget = null;
+    private Character _currentTargetForAnim;
     private Coroutine _attackCoroutine;
     private Coroutine _followAllyCoroutine;
     private bool _isChainedAttack = false;
+    private bool _isAttacking = false;
     private float _lastAttackTime;
+
+    private Queue<Vector3> _movementQueue = new();
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
@@ -28,6 +35,18 @@ public class SpellMoveTo : Skill
         if (targetInfo.Points != null && targetInfo.Points.Count > 0) _targetPoint = targetInfo.Points[0];
     }
 
+    public void OnAutoAttackAnimationHit()
+    {
+        if (_currentTargetForAnim == null || _currentTargetForAnim.IsDead) return;
+
+        _target = _currentTargetForAnim;
+        DealDamage();
+    }
+    public void OnAutoAttackAnimationEnd()
+    {
+        _isAttacking = false;
+        _currentTargetForAnim = null;
+    }
     protected virtual void DealDamage()
     {
         if (_target == null) return;
@@ -68,8 +87,7 @@ public class SpellMoveTo : Skill
         {
             if (GetMouseButton)
             {
-                //_target = GetRaycastTarget();
-                _runtimeTarget = _target;
+                _target = GetRaycastTarget();
 
                 if (_target == null)
                 {
@@ -77,18 +95,29 @@ public class SpellMoveTo : Skill
                 }
                 else
                 {
+                    if (_target is Character characterTarget) _runtimeTarget = characterTarget;
                     _targetPoint = _target.transform.position;
                 }
 
                 _runtimeTargetPoint = _targetPoint;
+                _movementQueue.Enqueue(_runtimeTargetPoint);
 
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_runtimeTargetPoint);
+        targetInfo.Points.AddRange(_movementQueue);
         targetDataSavedCallback(targetInfo);
+    }
+    private void AttackTargetWithAnimation(Character target)
+    {
+        if (_isAttacking || target == null || target.IsDead) return;
+
+        _isAttacking = true;
+        _currentTargetForAnim = target;
+
+        _animator.SetTrigger("AutoAttackScared");
     }
 
     private IEnumerator MoveToPointCoroutine()
@@ -157,8 +186,7 @@ public class SpellMoveTo : Skill
 
                     if (dist <= _attackDistance)
                     {
-                        _target = nearest;
-                        DealDamage();
+                        AttackTargetWithAnimation(nearest);
                         _lastAttackTime = Time.time;
                     }
                 }

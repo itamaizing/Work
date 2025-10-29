@@ -10,7 +10,7 @@ public class ScratchClaws : Skill
     [SerializeField] private float _bleedingDuration = 3f;
     [SerializeField, Range(0, 1f)] private float _bleedingChance = 0.15f;
 
-    private Character _target;
+    private IDamageable _target;
     private Character _runtimeTarget;
 
     protected override int AnimTriggerCastDelay => 0;
@@ -25,14 +25,19 @@ public class ScratchClaws : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
+        _runtimeTarget = null;
+
         while (_target == null && !_disactive)
         {
             if (GetMouseButton)
             {
-                //_target = GetRaycastTarget(true);
-                if (_target != null) _runtimeTarget = _target;
-            }
+                _target = GetRaycastTarget();
 
+                if (_target != null)
+                {
+                    if (_target is Character characterTarget) _runtimeTarget = characterTarget;
+                }
+            }
             yield return null;
         }
 
@@ -46,7 +51,7 @@ public class ScratchClaws : Skill
     protected override IEnumerator CastJob()
     {
         if (_target == null) yield break;
-        CmdApplyScratch(_target);
+        CmdApplyScratch(_target.gameObject);
 
         yield return null;
     }
@@ -57,9 +62,10 @@ public class ScratchClaws : Skill
     }
 
     [Command]
-    private void CmdApplyScratch(Character character)
+    private void CmdApplyScratch(GameObject target)
     {
-
+        if (target == null) return;
+        
         float dmgValue = UnityEngine.Random.Range(1f, 4f);
         Damage damage = new Damage
         {
@@ -67,7 +73,7 @@ public class ScratchClaws : Skill
             Type = DamageType.Physical
         };
 
-        ApplyDamage(damage, character.gameObject);
-        if (UnityEngine.Random.value <= _bleedingChance) character.CharacterState.AddState(States.Bleeding, _bleedingDuration, Damage, _playerLinks.gameObject, name);
+        ApplyDamage(damage, target);
+        if (_runtimeTarget != null && UnityEngine.Random.value <= _bleedingChance) _runtimeTarget.CharacterState.AddState(States.Bleeding, _bleedingDuration, Damage, _playerLinks.gameObject, name);
     }
 }

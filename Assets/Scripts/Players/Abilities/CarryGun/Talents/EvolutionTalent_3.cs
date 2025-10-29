@@ -9,13 +9,11 @@ public class EvolutionTalent_3 : Talent
 
     public override void Enter()
     {
-        cheliceraStrike.CheliceraStrikeSpeed(true);
         clawStrike.ClawStrikeSpeed(true);
     }
 
     public override void Exit()
     {
-        cheliceraStrike.CheliceraStrikeSpeed(false);
         clawStrike.ClawStrikeSpeed(false);
     }
 }

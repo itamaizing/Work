@@ -1144,6 +1144,7 @@ GameObject:
   - component: {fileID: 964929301270209834}
   - component: {fileID: 981000284950286532}
   - component: {fileID: 1215395125402789392}
+  - component: {fileID: 4220502775996777677}
   m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
@@ -1305,6 +1306,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &4220502775996777677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1801549179431471552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37a5c11bfb1de7c4da352b19ebb053f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spellMoveTo: {fileID: 401553106488474872}
 --- !u!1 &1816582864147950907
 GameObject:
   m_ObjectHideFlags: 0
@@ -13304,6 +13318,7 @@ MonoBehaviour:
   _spawnComponent: {fileID: 2769373615330125278}
   _visionComponent: {fileID: 0}
   _auras: {fileID: 0}
+  _characterParent: {fileID: 0}
   _expForDieKill: 5
   _navMeshAgent: {fileID: 6350168282755984019}
 --- !u!114 &245123127051599623
@@ -13523,8 +13538,8 @@ MonoBehaviour:
   syncInterval: 0
   _hero: {fileID: 5830977165762126247}
   _characterPrefabs: []
-  _enemyPrefab: {fileID: 0}
-  _allyPrefab: {fileID: 0}
+  _enemyPrefabs: []
+  _allyPrefabs: []
 --- !u!195 &6350168282755984019
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -13818,6 +13833,7 @@ MonoBehaviour:
     m_Bits: 512
   _damageDelay: 0.5
   _attackDistance: 2
+  _animator: {fileID: 1215395125402789392}
 --- !u!114 &2383359178136862689
 MonoBehaviour:
   m_ObjectHideFlags: 0
