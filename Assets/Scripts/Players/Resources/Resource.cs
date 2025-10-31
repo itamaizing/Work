@@ -56,7 +56,7 @@ public abstract class Resource : NetworkBehaviour
 
     public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data)
     {
-        _currentValue = maxValue;
+        _currentValue = maxValue/2;
         _maxValue = maxValue;
         _regenerationValue = regenValue;
         _regenerationPeriod = regenDelay;

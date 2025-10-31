@@ -23,7 +23,7 @@ public class Conversion : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
-        yield return null;
+        yield break;
     }
 
     protected override IEnumerator CastJob()
@@ -35,7 +35,11 @@ public class Conversion : Skill
                 CmdConvertEnergy();
             }
         }
-        yield return null;
+
+        var lastSkill = Hero.Abilities.LastCastedSkill;
+        if (lastSkill.AutoAttack == AutoAttack.autoAttack) lastSkill.TryPreparing();
+
+        yield break;
     }
 
     [Command]

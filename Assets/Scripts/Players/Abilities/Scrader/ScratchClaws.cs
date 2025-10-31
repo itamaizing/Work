@@ -23,8 +23,14 @@ public class ScratchClaws : Skill
         if (targetInfo.Targets.Count > 0 && targetInfo.Targets[0] is Character character) _target = character;
     }
 
+    private void OnEnable()
+    {
+        Damage = UnityEngine.Random.Range(1f, 4f);
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
+        if (Damage <= 0) Damage = UnityEngine.Random.Range(1f, 4f);
         _runtimeTarget = null;
 
         while (_target == null && !_disactive)
@@ -59,6 +65,7 @@ public class ScratchClaws : Skill
     protected override void ClearData()
     {
         _target = null;
+        Damage = 0;
     }
 
     [Command]
@@ -66,10 +73,9 @@ public class ScratchClaws : Skill
     {
         if (target == null) return;
         
-        float dmgValue = UnityEngine.Random.Range(1f, 4f);
         Damage damage = new Damage
         {
-            Value = dmgValue,
+            Value = Damage,
             Type = DamageType.Physical
         };
 

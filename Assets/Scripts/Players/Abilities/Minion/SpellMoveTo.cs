@@ -11,9 +11,11 @@ public class SpellMoveTo : Skill
     [SerializeField] private LayerMask _alliesLayer;
     [SerializeField] private float _damageDelay = 0.5f;
     [SerializeField] private float _attackDistance = 3f;
+    [SerializeField] private float _damage = 5f;
     [SerializeField] private Animator _animator;
 
     private Vector3 _targetPoint = Vector3.positiveInfinity;
+    private Vector3 _targetNewPoint = Vector3.positiveInfinity;
     private Vector3 _runtimeTargetPoint = Vector3.positiveInfinity;
     protected IDamageable _target = null;
     private Character _runtimeTarget = null;
@@ -24,11 +26,15 @@ public class SpellMoveTo : Skill
     private bool _isAttacking = false;
     private float _lastAttackTime;
 
-    private Queue<Vector3> _movementQueue = new();
-
+    private List<Vector3> _targetPoints;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
+
+    private void OnEnable()
+    {
+        _targetPoints = new List<Vector3>();
+    }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -53,7 +59,7 @@ public class SpellMoveTo : Skill
 
         Damage damage = new Damage
         {
-            Value = Buff.Damage.GetBuffedValue(_damageValue),
+            Value = Buff.Damage.GetBuffedValue(_damage),
             Type = DamageType,
             PhysicAttackType = AttackRangeType,
         };
@@ -79,10 +85,14 @@ public class SpellMoveTo : Skill
     {
         _agent.SetDestination(transform.position);
         _targetPoint = Vector3.positiveInfinity;
+        _targetNewPoint = Vector3.positiveInfinity;
+        _targetPoints?.Clear();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
+        if (_targetPoints == null) _targetPoints = new List<Vector3>();
+
         while (float.IsPositiveInfinity(_targetPoint.x))
         {
             if (GetMouseButton)
@@ -92,6 +102,7 @@ public class SpellMoveTo : Skill
                 if (_target == null)
                 {
                     _targetPoint = GetMousePoint();
+                    _targetPoints.Add(_targetPoint);
                 }
                 else
                 {
@@ -100,14 +111,12 @@ public class SpellMoveTo : Skill
                 }
 
                 _runtimeTargetPoint = _targetPoint;
-                _movementQueue.Enqueue(_runtimeTargetPoint);
-
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.AddRange(_movementQueue);
+        targetInfo.Points.Add(_runtimeTargetPoint);
         targetDataSavedCallback(targetInfo);
     }
     private void AttackTargetWithAnimation(Character target)
@@ -122,9 +131,26 @@ public class SpellMoveTo : Skill
 
     private IEnumerator MoveToPointCoroutine()
     {
-        while (Vector3.Distance(transform.position, _runtimeTargetPoint) > _agent.stoppingDistance + 0.1f)
+        while (_targetPoints != null)
         {
-             _agent.SetDestination(_runtimeTargetPoint);
+            for ( int i = 0; _targetPoints.Count > i; i++)
+            {
+                Debug.Log("1");
+
+                while (Vector3.Distance(transform.position, _targetPoints[i]) > _agent.stoppingDistance + 0.1f)
+                {
+                    _agent.SetDestination(_targetPoints[i]);
+
+                    if (Input.GetMouseButton(0))
+                    {
+                        Debug.Log("2");
+                        _targetNewPoint = GetMousePoint();
+                        _targetPoints.Add(_targetNewPoint);
+                    }
+
+                    yield return new WaitForSeconds(0.1f);
+                }    
+            }
 
             yield return new WaitForSeconds(0.1f);
         }

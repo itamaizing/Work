@@ -55,7 +55,8 @@ public class SparkOfLight : Skill
     private int _healingBonusStacks = 0;
     private float _lastFlashOfLightCastTime = 0f;
 
-    protected Character _target;
+    protected IDamageable _target;
+    private Character characterTarget;
 
     public void EnableTalentPhysicalShieldBoost(bool value) => _healthBoostActive = value;
     public void EnableLowHealthTalent(bool value) => _lowHealthTalentActive = value;
@@ -122,20 +123,29 @@ public class SparkOfLight : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        characterTarget = null;
+
         while (_target == null)
         {
             if (GetMouseButton)
             {
-             //   _target = GetRaycastTarget();
+                 _target = GetRaycastTarget();
 
-                if (_target != null && (IsAllyTarget(_target) || _target == Hero) && !isLightMode)
+                if (_target is Character character)
                 {
-                    _target = null;
-                    yield break;
-                }
+                    characterTarget = character;
 
-                if (_target != null)
-                    _target.SelectedCircle.IsActive = true;
+                    if (_target != null && (IsAllyTarget(character) || character == Hero) && !isLightMode)
+                    {
+                        _target = null;
+                        yield break;
+                    }
+
+                    if (characterTarget != null)
+                    {
+                        character.SelectedCircle.IsActive = true;
+                    }
+                }
             }
 
             yield return null;
@@ -143,13 +153,13 @@ public class SparkOfLight : Skill
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(_target.transform.position);
-        targetInfo.Targets.Add(_target);
+        targetInfo.Targets.Add(characterTarget);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_target == null) yield break;
+        if (characterTarget == null) yield break;
 
         if (!IsCanCast)
         {
@@ -158,22 +168,22 @@ public class SparkOfLight : Skill
             yield break;
         }
 
-        if (IsAllyTarget(_target))
+        if (IsAllyTarget(characterTarget))
         {
             TryPayCost(_manaCostHeal);
 
-            if (_target == playerLinks) CmdHandleDefaultMode(playerLinks);
-            else CmdSpawnProjectile(_target);
+            if (characterTarget == playerLinks) CmdHandleDefaultMode(playerLinks);
+            else CmdSpawnProjectile(characterTarget);
 
             yield break;
         }
 
-        if (IsEnemyTarget(_target))
+        if (IsEnemyTarget(characterTarget))
         {
             TryPayCost(isLightMode ? _manaCostDamage : _altManaCostDamage);
 
-            if (isLightMode) CmdSpawnProjectile(_target);
-            else CmdSpawnProjectileDark(_target);
+            if (isLightMode) CmdSpawnProjectile(characterTarget);
+            else CmdSpawnProjectileDark(characterTarget);
         }
     }
 
@@ -359,7 +369,7 @@ public class SparkOfLight : Skill
     [Command]
     private void CmdHandleDefaultMode(Character target)
     {
-        HandleDefaultMode(playerLinks);
+        HandleDefaultMode(target);
         RpcPlayShotSound();
     }
 

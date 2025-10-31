@@ -17,3 +17,4 @@ MonoBehaviour:
   regenerationInterval: 1
   maxEndurance: 1
   minEndurance: 0
+  hideBar: 1

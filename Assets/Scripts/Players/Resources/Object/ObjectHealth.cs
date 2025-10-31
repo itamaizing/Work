@@ -257,7 +257,7 @@ public class ObjectHealth : Resource, IDamageable
             DamageTaken?.Invoke(damage, skill);
             //DamageTakenType?.Invoke(damageValue, damage.Type, skill);
 
-            if (_objectBar != null)
+            if (_objectBar != null && (_objectData == null || !_objectData.HideBar))
             {
                 _objectBar.ShowHealthBar();
                 _objectBar.SetHealth(_currentHealth);
@@ -307,7 +307,7 @@ public class ObjectHealth : Resource, IDamageable
 
     private void OnHealthChanged(float oldHealth, float newHealth)
     {
-        if (_objectBar == null) return;
+        if (_objectBar == null || (_objectData != null && _objectData.HideBar)) return;
 
         _objectBar.SetHealth(newHealth);
 

@@ -77,7 +77,7 @@ public class AbilityNameBox : MonoBehaviour
 
         }
 
-        else _descriptionWithNumbers.text += $"\n{skill.CounterSkill}: {ColorOpen}{skill.MaxCounter}/{skill.CurrentCounter}{ColorEnd}";
+        else _descriptionWithNumbers.text += $"\n{skill.CounterSkill}: {ColorOpen}{skill.CurrentCounter}/{skill.MaxCounter}{ColorEnd}";
     }
 
     private string GetShoolNameForDamage(Skill skill)

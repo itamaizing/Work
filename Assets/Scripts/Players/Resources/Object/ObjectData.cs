@@ -13,11 +13,16 @@ public class ObjectData : ScriptableObject
     [SerializeField] private bool maxEndurance = true;
     [SerializeField] private bool minEndurance = false;
 
+    [Header("UI Settings")]
+    [SerializeField] private bool hideBar = false;
+
     public float MaxHealth { get => maxHealth; set => maxHealth = value; }
     public float RegenerationAmount => regenerationAmount;
     public float RegenerationInterval => regenerationInterval;
 
     public bool MaxEndurance => maxEndurance;
     public bool MinEndurance => minEndurance;
+
+    public bool HideBar => hideBar;
 
 }

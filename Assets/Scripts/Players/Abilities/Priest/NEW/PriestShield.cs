@@ -67,7 +67,8 @@ public class PriestShield : Skill
 
     private float _absorbBonus = 0;
     private float _damagePerTickBonus = 0;
-    private Character _target;
+    private IDamageable _target;
+    private Character _targetCharacter;
     private float _nextAvailableTime;
     public bool isLightMode = true;
 
@@ -244,14 +245,17 @@ public class PriestShield : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        _targetCharacter = null;
+
         while (_target == null)
         {
             if (Input.GetMouseButton(0))
             {
-               // _target = GetRaycastTarget(true);
+                _target = GetRaycastTarget(true);
 
-                if (_target == transform.GetComponentInParent<Character>())
+                if (_target is Character character && character == transform.GetComponentInParent<Character>())
                 {
+                    _targetCharacter = character;
                     _absorbBonus = 0;
                     CastDeley = selfCastTime;
                 }
@@ -260,7 +264,7 @@ public class PriestShield : Skill
         }
 
         TargetInfo targetInfo = new();
-        targetInfo.Targets.Add(_target);
+        targetInfo.Targets.Add(_targetCharacter);
         callbackDataSaved(targetInfo);
     }
 
@@ -290,12 +294,12 @@ public class PriestShield : Skill
 
     private void HandleLightShield()
     {
-        if (_target == null) return;
+        if (_targetCharacter == null) return;
         if (!TryPayCost(manaCostLight)) return;
 
         _absorbBonus = CalculateTotalAbsorbBonus();
 
-        var characterState = _target.GetComponent<CharacterState>();
+        var characterState = _targetCharacter.GetComponent<CharacterState>();
         var duration = _talentTiredSoulActive && characterState.CheckForState(States.TiredSoul)
             ? lightShieldDuration * TiredSoulEffectPercentage
             : lightShieldDuration;
@@ -304,7 +308,7 @@ public class PriestShield : Skill
             ? (absorbAmount + _absorbBonus) * TiredSoulEffectPercentage
             : absorbAmount + _absorbBonus;
 
-        CmdAddDebaff(States.LightShield, States.TiredSoul, duration, tiredSoulDuration, absorbDamage, _target.gameObject, Name);
+        CmdAddDebaff(States.LightShield, States.TiredSoul, duration, tiredSoulDuration, absorbDamage, _targetCharacter.gameObject, Name);
 
         Debug.Log($"[PriestShield] Final Absorb = {absorbDamage} (Base: {absorbAmount}, Bonus: {_absorbBonus})");
     }
@@ -316,7 +320,7 @@ public class PriestShield : Skill
         if (!TryPayCost(manaCostDark)) return;
 
         CmdAddBaff(States.DarkShield, darkShieldDuration, maxDamagePerTick + _damagePerTickBonus, _target.gameObject, Name);
-        Debug.Log("Dark Shield applied to " + _target.name);
+        Debug.Log("Dark Shield applied to " + _targetCharacter.name);
     }
 
     private float CalculateTotalAbsorbBonus()

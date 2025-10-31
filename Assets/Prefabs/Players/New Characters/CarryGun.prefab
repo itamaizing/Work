@@ -12028,9 +12028,9 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _abilitySchool: 4
-  _abilityForm: 1
+  _abilityForm: 0
   _damageType: 0
-  _attackRangeType: 0
+  _attackRangeType: 1
   _skillType: 0
   _moving: 0
   autoAttack: 0
@@ -12053,9 +12053,9 @@ MonoBehaviour:
   _castLength: 0
   _castWidth: 0
   _autoAttackDelay: 0
-  _isAutoRadiusRender: 0
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
@@ -12445,7 +12445,7 @@ MonoBehaviour:
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
-  maxCounter: 1
+  maxCounter: 2
 --- !u!224 &7572513388100405829 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6072102004952575816, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

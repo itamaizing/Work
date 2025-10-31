@@ -13793,7 +13793,7 @@ MonoBehaviour:
   _additionalSkillEnergyCosts: []
   _cooldownTime: 1
   _castDeley: 0
-  _damageValue: 5
+  _damageValue: 0
   _abilitySchool: 8
   _abilityForm: 0
   _damageType: 5
@@ -13833,6 +13833,7 @@ MonoBehaviour:
     m_Bits: 512
   _damageDelay: 0.5
   _attackDistance: 2
+  _damage: 5
   _animator: {fileID: 1215395125402789392}
 --- !u!114 &2383359178136862689
 MonoBehaviour:

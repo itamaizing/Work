@@ -56,13 +56,18 @@ public class CocoonSpawn : Skill
 
         if (tentacle.TryGetComponent<SpawnComponent>(out var spawnComponent))
         {
-            Vector3 forwardOffset = transform.forward.normalized * 1.6f;
-            Vector3 spawnPos = transform.position + forwardOffset;
+            Vector3 spawnPos = GetRandomOffsetPosition(transform.position, 1.6f);
             spawnComponent.CmdSpawnEnemyPoint(spawnPos, Quaternion.identity, minion, 1, false, Hero);
         }
 
         CmdTentacleCocoon(spawnComponent);
          yield return null;
+    }
+    private Vector3 GetRandomOffsetPosition(Vector3 center, float radius)
+    {
+        float angle = Random.Range(0f, Mathf.PI * 2);
+        Vector3 offset = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * radius;
+        return center + offset;
     }
 
     [Command]

@@ -130,7 +130,7 @@ public class ClawStrike : Skill
             else if (attackingPsiValue >= 20) dispelCount = 2;
             else if (attackingPsiValue >= 10) dispelCount = 1;
 
-            if (dispelCount > 0) for (int i = 0; i < dispelCount; i++) CmdDispel(_runtimeTarget, dispelCount);
+            if (dispelCount > 0 && _runtimeTarget != null) for (int i = 0; i < dispelCount; i++) CmdDispel(_runtimeTarget, dispelCount);
 
             var damagePsi = new Damage
             {
