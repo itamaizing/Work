@@ -20,6 +20,9 @@ public class StunMagicPassiveSkill : Skill, IPassiveSkill
     #region Talent
     private bool _isDamageDarkLightStun;
     private bool _isDamageDarkHealLightAddHealth;
+    private bool _isFillingDestruction;
+
+    public bool IsFillingDestruction { get => _isFillingDestruction; set => _isFillingDestruction = value; }
 
     public void DamageDarkLightStun(bool value, string text)
     {
@@ -32,6 +35,7 @@ public class StunMagicPassiveSkill : Skill, IPassiveSkill
         _isDamageDarkHealLightAddHealth = value;
         AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
     }
+    public void FillingDestruction(bool value) => _isFillingDestruction = value;
     #endregion
 
     private void OnEnable()

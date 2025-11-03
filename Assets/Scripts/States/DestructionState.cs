@@ -65,7 +65,13 @@ public class DestructionState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        duration = time;
+        if (_personWhoMadeBuff.TryGetComponent<StunMagicPassiveSkill>(out StunMagicPassiveSkill stunMagicPassiveSkill) && stunMagicPassiveSkill.IsFillingDestruction)
+        {
+            Debug.Log("1");
+            duration = time + 3f;
+        }
+
+        else duration = time;
         return false;
     }
 

@@ -4,18 +4,15 @@ using UnityEngine;
 
 public class DarkTalent_3 : Talent
 {
-    [SerializeField] private SparkOfLight sparkOfLight;
-    [SerializeField] private FlowOfLight flowOfLight;
+    [SerializeField] private StunMagicPassiveSkill stunMagicPassiveSkill;
 
     public override void Enter()
     {
-        sparkOfLight.FillingDestruction(true);
-        flowOfLight.FillingDestruction(true);
+        stunMagicPassiveSkill.FillingDestruction(true);
     }
 
     public override void Exit()
     {
-        sparkOfLight.FillingDestruction(false);
-        flowOfLight.FillingDestruction(false);
+        stunMagicPassiveSkill.FillingDestruction(false);
     }
 }

@@ -6026,6 +6026,7 @@ MonoBehaviour:
   playerLinks: {fileID: 4534754468497973439}
   spawnPoint: {fileID: 3812818705873013830}
   audioClip: {fileID: 8300000, guid: 8a1e601722ba8fa4c9d5091b783ebe71, type: 3}
+  stunMagicPassiveSkill: {fileID: 3842746931648952249}
   isLightMode: 1
 --- !u!114 &2650038749754245899
 MonoBehaviour:
@@ -6618,6 +6619,7 @@ MonoBehaviour:
   debuffDuration: 18
   effectPrefabDark: {fileID: 2152374494346322251, guid: f4c655cda711ee04982ae4767cff39d7, type: 3}
   darkInfo: {fileID: 11400000, guid: c626ed317560d3f4bb5f06fb98c74135, type: 2}
+  stunMagicPassiveSkill: {fileID: 3842746931648952249}
   isLightMode: 1
 --- !u!4 &3057263923131165887 stripped
 Transform:
@@ -6783,8 +6785,7 @@ MonoBehaviour:
     Description: "\u041D\u0430\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u0435 \u0440\u0430\u0437\u0440\u0443\u0448\u0435\u043D\u0438\u0435\u043C"
     Icon: {fileID: 21300000, guid: fe4df0145adb9c44b8d9aa3b1eddca61, type: 3}
   character: {fileID: 4534754468497973439}
-  sparkOfLight: {fileID: 683463177557245195}
-  flowOfLight: {fileID: 744928704386096395}
+  stunMagicPassiveSkill: {fileID: 3842746931648952249}
 --- !u!114 &3795806038531453358
 MonoBehaviour:
   m_ObjectHideFlags: 0

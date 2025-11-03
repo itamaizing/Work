@@ -15,7 +15,7 @@ public class DisciplineTalent_3 : Talent
 
     public override void Exit()
     {
-        spark.SpiritEnergyAddTalent(true);
+        spark.SpiritEnergyAddTalent(false);
         flowOfLight.SpiritEnergyAddTalent(false);
     }
 }

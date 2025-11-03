@@ -15,11 +15,14 @@ public class FlowOfLight : Skill
     [SerializeField] private GameObject effectPrefabDark;
     [SerializeField] private AbilityInfo darkInfo;
 
+    [SerializeField] private StunMagicPassiveSkill stunMagicPassiveSkill;
+
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
     public event Action OnModeChange;
 
     private GameObject _activeEffect;
-    private Character _target;
+    private IDamageable _target;
+    private Character _targetCharacter;
 
     private bool IsAllyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Allies");
     private bool IsEnemyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Enemy");
@@ -28,10 +31,7 @@ public class FlowOfLight : Skill
     protected override int AnimTriggerCast => Animator.StringToHash("FlowSpellStart");
 
     #region Talent
-    private bool _isFillingDestruction = false;
     private bool _spiritEnergyAddTalent;
-
-    public void FillingDestruction(bool value) => _isFillingDestruction = value;
     public void SpiritEnergyAddTalent(bool value) => _spiritEnergyAddTalent = value;
     #endregion
 
@@ -39,7 +39,7 @@ public class FlowOfLight : Skill
         _target != null &&
         Vector3.Distance(_target.transform.position, transform.position) <= Radius &&
         NoObstacles(_target.transform.position, transform.position, _obstacle) &&
-        ((isLightMode && IsAllyTarget(_target)) || (!isLightMode && IsEnemyTarget(_target)));
+        ((isLightMode && IsAllyTarget(_targetCharacter)) || (!isLightMode && IsEnemyTarget(_targetCharacter)));
 
     private void OnEnable()
     {
@@ -101,40 +101,37 @@ public class FlowOfLight : Skill
 
     private void TryApplyExtraState(Character target)
     {
-        if (!_isFillingDestruction || target == null) return;
+        if (!stunMagicPassiveSkill.IsFillingDestruction || target == null) return;
 
         var stateComponent = target.GetComponent<CharacterState>();
         if (stateComponent == null) return;
 
-        if (UnityEngine.Random.value <= 0.2f)
-        {
-            if (isLightMode) CmdStateRestorationOrDestruction(stateComponent, States.Restoration);
-            else CmdStateRestorationOrDestruction(stateComponent, States.Destruction);
-        }
-
+        if (!isLightMode && UnityEngine.Random.value <= 0.2f) CmdStateRestorationOrDestruction(stateComponent, States.Destruction, 12f);
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        _targetCharacter = null;
+
         while (_target == null)
         {
             if (GetMouseButton)
             {
-                var candidate = GetRaycastTarget();
-                if (candidate != null)
+                _target = GetRaycastTarget();
+                if (_target != null && _target is Character character)
                 {
-                    //if ((isLightMode && IsAllyTarget(candidate)) || (!isLightMode && IsEnemyTarget(candidate)))
-                    //{
-                    //    _target = candidate;
-                    //    _target.SelectedCircle.IsActive = true;
-                    //}
+                    if ((isLightMode && IsAllyTarget(character)) || (!isLightMode && IsEnemyTarget(character)))
+                    {
+                        _targetCharacter = character;
+                        _targetCharacter.SelectedCircle.IsActive = true;
+                    }
                 }
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Targets.Add(_target);
+        targetInfo.Targets.Add(_targetCharacter);
         callbackDataSaved(targetInfo);
     }
 
@@ -180,14 +177,14 @@ public class FlowOfLight : Skill
 
             if (elapsed % interval < Time.deltaTime)
             {
-                if (isLightMode && IsAllyTarget(_target))
+                if (isLightMode && IsAllyTarget(_targetCharacter))
                 {
                     Heal heal = new Heal { Value = tickValue };
                     CmdApplyHeal(heal, _target.gameObject, this, Name);
-                    TryApplyExtraState(_target);
-                    ApplySpiritBuff(_target);
+                    TryApplyExtraState(_targetCharacter);
+                    ApplySpiritBuff(_targetCharacter);
                 }
-                else if (!isLightMode && IsEnemyTarget(_target))
+                else if (!isLightMode && IsEnemyTarget(_targetCharacter))
                 {
                     Damage damage = new Damage
                     {
@@ -196,8 +193,8 @@ public class FlowOfLight : Skill
                         School = School
                     };
                     CmdApplyDamage(damage, _target.gameObject);
-                    TryApplyExtraState(_target);
-                    ApplySpiritBuff(_target);
+                    TryApplyExtraState(_targetCharacter);
+                    ApplySpiritBuff(_targetCharacter);
                 }
             }
 
@@ -263,11 +260,21 @@ public class FlowOfLight : Skill
         }
     }
 
-    [Command] private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states) => ClientRpcStateRestorationOrDestruction(stateComponent, states);
+    [Command]
+private void CmdStateRestorationOrDestruction(NetworkIdentity targetNetIdentity, States states, float duration)
+{
+    if (targetNetIdentity == null) return;
+
+    var stateComponent = targetNetIdentity.GetComponent<CharacterState>();
+    if (stateComponent == null) return;
+
+    stateComponent.AddState(states, duration, 0, gameObject, Name);
+}
+    [Command] private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) => ClientRpcStateRestorationOrDestruction(stateComponent, states, duration);
     [Command] private void CmdStateSpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration) => ClientRpcSpiritEnergyOrHealth(stateComponent, states, duration);
 
     [ClientRpc] private void ClientRpcSpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration) { stateComponent.AddStateLogic(states, duration, 1f, Schools.None, gameObject, Name); }
-    [ClientRpc] private void ClientRpcStateRestorationOrDestruction(CharacterState stateComponent, States states) { stateComponent.AddStateLogic(states, 3f, 0, Schools.None, gameObject, Name); }
+    [ClientRpc] private void ClientRpcStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) { stateComponent.AddStateLogic(states, duration, 0, Schools.None, gameObject, "FlowOfLight"); }
 
 
         [ClientRpc]
