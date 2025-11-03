@@ -30,6 +30,8 @@ public class DestructionState : AbstractCharacterState
         _totalDamageInInterval = 0f;
 
         _timer = _tickInterval;
+
+        Debug.Log($"duration: {duration}");
     }
 
     public override void UpdateState()
@@ -65,12 +67,7 @@ public class DestructionState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        if (_personWhoMadeBuff.TryGetComponent<StunMagicPassiveSkill>(out StunMagicPassiveSkill stunMagicPassiveSkill) && stunMagicPassiveSkill.IsFillingDestruction)
-        {
-            Debug.Log("1");
-            duration = time + 3f;
-        }
-
+        if (_personWhoMadeBuff.TryGetComponent<StunMagicPassiveSkill>(out StunMagicPassiveSkill stunMagicPassiveSkill) && stunMagicPassiveSkill.IsFillingDestruction) duration = time + 3f;
         else duration = time;
         return false;
     }
