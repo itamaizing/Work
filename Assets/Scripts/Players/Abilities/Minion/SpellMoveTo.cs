@@ -2,159 +2,120 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
+using DG.Tweening;
 
 public class SpellMoveTo : Skill
 {
-
-    [SerializeField] private NavMeshAgent _agent;
-    [SerializeField] private LayerMask _alliesLayer;
+    [SerializeField] private float _moveDurationPerUnit = 0.2f;
     [SerializeField] private float _damageDelay = 0.5f;
     [SerializeField] private float _attackDistance = 3f;
     [SerializeField] private float _damage = 5f;
     [SerializeField] private Animator _animator;
 
-    private Vector3 _targetPoint = Vector3.positiveInfinity;
-    private Vector3 _targetNewPoint = Vector3.positiveInfinity;
-    private Vector3 _runtimeTargetPoint = Vector3.positiveInfinity;
-    protected IDamageable _target = null;
-    private Character _runtimeTarget = null;
-    private Character _currentTargetForAnim;
+    private Queue<Vector3> _movementQueue = new();
+    private bool _isCasting = false;
     private Coroutine _attackCoroutine;
-    private Coroutine _followAllyCoroutine;
-    private bool _isChainedAttack = false;
-    private bool _isAttacking = false;
+    private Character _currentEnemyTarget;
     private float _lastAttackTime;
+
+    public Action<GameObject> DoMove;
+
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
-    protected override bool IsCanCast => true;
+    protected override bool IsCanCast => !_isCasting;
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.Points != null && targetInfo.Points.Count > 0) _targetPoint = targetInfo.Points[0];
-    }
-
-    public void OnAutoAttackAnimationHit()
-    {
-        if (_currentTargetForAnim == null || _currentTargetForAnim.IsDead) return;
-
-        _target = _currentTargetForAnim;
-        DealDamage();
-    }
-    public void OnAutoAttackAnimationEnd()
-    {
-        _isAttacking = false;
-        _currentTargetForAnim = null;
-    }
-    protected virtual void DealDamage()
-    {
-        if (_target == null) return;
-
-        Damage damage = new Damage
+        if (targetInfo.Points != null && targetInfo.Points.Count > 0)
         {
-            Value = Buff.Damage.GetBuffedValue(_damage),
-            Type = DamageType,
-            PhysicAttackType = AttackRangeType,
-        };
-
-        CmdApplyDamage(damage, _target.gameObject);
-    }
-
-    protected override IEnumerator CastJob()
-    {
-        _isChainedAttack = false;
-        bool isAllyTarget = _runtimeTarget != null && ((_alliesLayer.value & (1 << _runtimeTarget.gameObject.layer)) != 0);
-
-        if (isAllyTarget)
-        {
-            if (_followAllyCoroutine != null) StopCoroutine(_followAllyCoroutine);
-            _followAllyCoroutine = StartCoroutine(FollowAllyCoroutine());
-        }
-
-        else yield return StartCoroutine(MoveToPointCoroutine());
-    }
-
-    protected override void ClearData()
-    {
-        _agent.SetDestination(transform.position);
-        _targetPoint = Vector3.positiveInfinity;
-        _targetNewPoint = Vector3.positiveInfinity;
-    }
-
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
-    {
-        while (float.IsPositiveInfinity(_targetPoint.x))
-        {
-            if (GetMouseButton)
+            foreach (var point in targetInfo.Points)
             {
-                _target = GetRaycastTarget();
-
-                if (_target == null)
-                {
-                    _targetPoint = GetMousePoint();
-                }
-                else
-                {
-                    if (_target is Character characterTarget) _runtimeTarget = characterTarget;
-                    _targetPoint = _target.transform.position;
-                }
-
-                _runtimeTargetPoint = _targetPoint;
+                _movementQueue.Enqueue(point);
             }
+        }
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    {
+        while (!GetMouseButton)
+        {
             yield return null;
         }
 
+        Vector3 clickedPoint = GetMousePoint();
+
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_runtimeTargetPoint);
-        targetDataSavedCallback(targetInfo);
+        targetInfo.Points.Add(clickedPoint);
+        callbackDataSaved(targetInfo);
     }
-    private void AttackTargetWithAnimation(Character target)
+    protected override IEnumerator CastJob()
     {
-        if (_isAttacking || target == null || target.IsDead) return;
+        _isCasting = true;
 
-        _isAttacking = true;
-        _currentTargetForAnim = target;
-
-        _animator.SetTrigger("AutoAttackScared");
-    }
-
-    private IEnumerator MoveToPointCoroutine()
-    {
-        while (Vector3.Distance(transform.position, _runtimeTargetPoint) > _agent.stoppingDistance + 0.1f)
+        while (_movementQueue.Count > 0)
         {
-            _agent.SetDestination(_runtimeTargetPoint);
+            Vector3 point = _movementQueue.Dequeue();
 
-            yield return new WaitForSeconds(0.1f);
+            if (_attackCoroutine != null)
+            {
+                StopCoroutine(_attackCoroutine);
+                _attackCoroutine = null;
+            }
+
+            float distance = Vector3.Distance(transform.position, point);
+            float duration = distance * _moveDurationPerUnit;
+
+            yield return MoveToPoint(point, duration);
+
+            _attackCoroutine = StartCoroutine(AttackNearbyEnemiesJob());
         }
 
-        if (_attackCoroutine != null) StopCoroutine(_attackCoroutine);
-        _attackCoroutine = StartCoroutine(AttackNearbyEnemiesJob());
+        _isCasting = false;
     }
 
-
-    private IEnumerator FollowAllyCoroutine()
+    private IEnumerator MoveToPoint(Vector3 targetPoint, float duration)
     {
-        while (_runtimeTarget != null && !_runtimeTarget.IsDead)
-        {
-            _agent.SetDestination(_runtimeTarget.transform.position);
+        Hero.Move.CanMove = false;
 
-            yield return new WaitForSeconds(0.1f);
+        Vector3 direction = (targetPoint - transform.position).normalized;
+        if (direction.sqrMagnitude > 0.01f)
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
+            transform.rotation = lookRotation;
         }
 
-        _agent.SetDestination(transform.position);
-    }
+        float moved = 0f;
+        Vector3 prevPos = transform.position;
 
+        Tween moveTween = transform.DOMove(targetPoint, duration)
+            .SetEase(Ease.Linear)
+            .OnUpdate(() =>
+            {
+                float delta = Vector3.Distance(transform.position, prevPos);
+                moved += delta;
+                prevPos = transform.position;
+
+                if (moved >= 1f)
+                {
+                    DoMove?.Invoke(gameObject);
+                    moved = 0f;
+                }
+            });
+
+        yield return moveTween.WaitForCompletion();
+
+        Hero.Move.CanMove = true;
+    }
     private IEnumerator AttackNearbyEnemiesJob()
     {
-        _isChainedAttack = true;
-        bool foundEnemy = false;
-
-        while (_isChainedAttack)
+        while (true)
         {
             Collider[] hits = Physics.OverlapSphere(transform.position, Radius, LayerMask.GetMask("Enemy"));
 
+
             Character nearest = null;
             float minDist = float.MaxValue;
+
 
             foreach (var hit in hits)
             {
@@ -170,38 +131,75 @@ public class SpellMoveTo : Skill
                 }
             }
 
+
             if (nearest != null)
             {
-                _agent.SetDestination(nearest.transform.position);
+                float distanceToTarget = Vector3.Distance(transform.position, nearest.transform.position);
 
-                while (nearest != null && !nearest.IsDead && Vector3.Distance(transform.position, nearest.transform.position) > Radius)
+
+                if (distanceToTarget > _attackDistance && distanceToTarget <= Radius)
                 {
-                    yield return null;
+                    float duration = distanceToTarget * _moveDurationPerUnit;
+                    yield return MoveToPoint(nearest.transform.position, duration);
                 }
 
-                if (nearest != null && !nearest.IsDead && Time.time - _lastAttackTime > _damageDelay)
+
+                while (nearest != null && !nearest.IsDead && Vector3.Distance(transform.position, nearest.transform.position) <= Radius)
                 {
                     float dist = Vector3.Distance(transform.position, nearest.transform.position);
 
-                    if (dist <= _attackDistance)
+
+                    if (dist <= _attackDistance && Time.time - _lastAttackTime > _damageDelay)
                     {
-                        AttackTargetWithAnimation(nearest);
+                        _currentEnemyTarget = nearest;
+                        _animator.SetTrigger("AutoAttackScared");
                         _lastAttackTime = Time.time;
+                        yield return new WaitForSeconds(_damageDelay);
+                    }
+                    else
+                    {
+                        yield return null;
                     }
                 }
-
-                yield return new WaitForSeconds(_damageDelay);
             }
             else
             {
-                _isChainedAttack = false;
-                break;
+                yield break;
             }
-        }
 
-        if (!foundEnemy && !_runtimeTargetPoint.Equals(Vector3.positiveInfinity))
-        {
-            _agent.SetDestination(_runtimeTargetPoint);
+
+            yield return null;
         }
+    }
+    private void DealDamage()
+    {
+        if (_currentEnemyTarget == null) return;
+
+        Damage damage = new Damage
+        {
+            Value = Buff.Damage.GetBuffedValue(_damage),
+            Type = DamageType,
+            PhysicAttackType = AttackRangeType
+        };
+
+        CmdApplyDamage(damage, _currentEnemyTarget.gameObject);
+    }
+
+    public void OnAutoAttackAnimationHit()
+    {
+        if (_currentEnemyTarget == null) return;
+        DealDamage();
+    }
+
+    public void OnAutoAttackAnimationEnd()
+    {
+        _currentEnemyTarget = null;
+    }
+
+    protected override void ClearData()
+    {
+        _movementQueue.Clear();
+        _currentEnemyTarget = null;
+        _isCasting = false;
     }
 }

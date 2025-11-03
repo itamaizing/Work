@@ -237,6 +237,8 @@ public class MoveComponent : NetworkBehaviour
 
 	protected virtual void RotateAtCursor()
     {
+		if (GetComponent<MinionMove>()) return;
+
 		if (IsSelect == true && _isLookAtCursor == true)
 		{
 			Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
