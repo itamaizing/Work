@@ -101,7 +101,7 @@ public class ChainBlade_Scorpion : Skill
 
         while (Vector2.Distance(transform.position, bladeTransform.position) > 2.9f)
         {
-            /*_blade*/bladeTransform.GetComponent<BladeProjectile>()._rb.velocity = (transform.position - bladeTransform.position).normalized * 20f;
+            /*_blade*/bladeTransform.GetComponent<BladeProjectile>()._rb.linearVelocity = (transform.position - bladeTransform.position).normalized * 20f;
             yield return null;
         }
           

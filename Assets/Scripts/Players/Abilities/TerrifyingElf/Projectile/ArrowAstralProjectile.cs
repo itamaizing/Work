@@ -14,7 +14,7 @@ public class ArrowAstralProjectile : Projectiles
     {
         if (_rb != null)
         {
-            _rb.velocity = direction * _speed;
+            _rb.linearVelocity = direction * _speed;
         }
 
         Destroy(gameObject, _lifeTime);

@@ -357,7 +357,7 @@ public class IceRolling : Skill
 		if (target.TryGetComponent(out Rigidbody rb))
 		{
 			rb.isKinematic = true;
-			rb.velocity = Vector3.zero;
+			rb.linearVelocity = Vector3.zero;
 		}
 
 		target.transform.SetParent(_playerLinks.transform);

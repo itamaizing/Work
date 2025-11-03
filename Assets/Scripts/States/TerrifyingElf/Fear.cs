@@ -82,7 +82,7 @@ public class Fear : AbstractCharacterState
             moveComp.ExternalMoveDirection = Vector3.zero;
             moveComp.SetDefaultSpeed();
             moveComp.StopLookAt();
-            moveComp.Rigidbody.velocity = Vector3.zero;
+            moveComp.Rigidbody.linearVelocity = Vector3.zero;
             moveComp.SetAnimationMovement(Vector3.zero);
         }
 
@@ -139,22 +139,22 @@ public class Fear : AbstractCharacterState
             }
 
             Vector3 newDirection = Vector3.Lerp(fleeDirection, (moveComp.transform.position - _source.transform.position).normalized, Time.deltaTime * 1.5f).normalized;
-            moveComp.Rigidbody.velocity = newDirection * moveComp.CurrentSpeed;
+            moveComp.Rigidbody.linearVelocity = newDirection * moveComp.CurrentSpeed;
 
-            if (moveComp.Rigidbody.velocity.magnitude > 0.1f)
+            if (moveComp.Rigidbody.linearVelocity.magnitude > 0.1f)
             {
                 moveComp.transform.rotation = Quaternion.Slerp(
                     moveComp.transform.rotation,
-                    Quaternion.LookRotation(moveComp.Rigidbody.velocity.normalized),
+                    Quaternion.LookRotation(moveComp.Rigidbody.linearVelocity.normalized),
                     Time.deltaTime * 5f
                 );
             }
 
-            moveComp.SetAnimationMovement(moveComp.Rigidbody.velocity);
+            moveComp.SetAnimationMovement(moveComp.Rigidbody.linearVelocity);
             yield return null;
         }
 
         moveComp.SetAnimationMovement(Vector3.zero);
-        rb.velocity = Vector3.zero;
+        rb.linearVelocity = Vector3.zero;
     }
 }

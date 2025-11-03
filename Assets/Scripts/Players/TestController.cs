@@ -93,7 +93,7 @@ public class TestController : MonoBehaviour
 
 		camDir = Quaternion.AngleAxis(-_camera.transform.eulerAngles.x, _camera.transform.TransformVector(Vector3.right)) * camDir;
 
-		_rigidbody.velocity = camDir * _currentSpeed;
+		_rigidbody.linearVelocity = camDir * _currentSpeed;
 
 
 		

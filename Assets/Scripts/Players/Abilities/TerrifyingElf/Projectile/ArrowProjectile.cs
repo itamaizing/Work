@@ -17,7 +17,7 @@ public class ArrowProjectile : Projectiles
 
     public void StartFly(Vector3 direction)
     {
-        if (_rb != null) _rb.velocity = direction * _speed;
+        if (_rb != null) _rb.linearVelocity = direction * _speed;
 
         Destroy(gameObject, _lifeTime);
     }

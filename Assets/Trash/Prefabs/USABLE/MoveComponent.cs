@@ -135,7 +135,7 @@ public class MoveComponent : NetworkBehaviour
 	{
 		if (_rigidbody == null) return;
 
-		_rigidbody.velocity = Vector3.zero;
+		_rigidbody.linearVelocity = Vector3.zero;
 		_rigidbody.angularVelocity = Vector3.zero;
 
 		var agent = GetComponent<NavMeshAgent>();
@@ -200,7 +200,7 @@ public class MoveComponent : NetworkBehaviour
 
 			if (_rigidbody != null)
 			{
-                _rigidbody.velocity = Vector3.zero;
+                _rigidbody.linearVelocity = Vector3.zero;
                 _currentVelocityTemp = Vector3.zero;
                 _currentVelocity = Vector3.zero;
             } 
@@ -222,14 +222,14 @@ public class MoveComponent : NetworkBehaviour
 
 		camDir = Quaternion.AngleAxis(-_camera.transform.eulerAngles.x, _camera.transform.TransformVector(Vector3.right)) * camDir;
 
-		_rigidbody.velocity = new Vector3(camDir.x * _currentSpeed, _rigidbody.velocity.y, camDir.z * _currentSpeed);
+		_rigidbody.linearVelocity = new Vector3(camDir.x * _currentSpeed, _rigidbody.linearVelocity.y, camDir.z * _currentSpeed);
 
-		if (_rigidbody.velocity.magnitude > 0.5f && moveAudioSource != null && !moveAudioSource.isPlaying) PlayMove();
+		if (_rigidbody.linearVelocity.magnitude > 0.5f && moveAudioSource != null && !moveAudioSource.isPlaying) PlayMove();
 
 		if (_anim != null)
 		{
 			var animDir = transform.InverseTransformPoint(transform.position + camDir);
-			_animMultiplier = 0.1f * _rigidbody.velocity.magnitude + 0.5f;
+			_animMultiplier = 0.1f * _rigidbody.linearVelocity.magnitude + 0.5f;
 			_anim.SetFloat(HashAnimPlayer.VelocityZ, animDir.z * _animMultiplier);
 			_anim.SetFloat(HashAnimPlayer.VelocityX, animDir.x * _animMultiplier);
 		}
@@ -271,7 +271,7 @@ public class MoveComponent : NetworkBehaviour
     {
         Vector3 localDir = transform.InverseTransformDirection(direction);
 
-		_animMultiplier = 0.1f * _rigidbody.velocity.magnitude + 0.5f;
+		_animMultiplier = 0.1f * _rigidbody.linearVelocity.magnitude + 0.5f;
 
 		_anim.SetFloat(HashAnimPlayer.VelocityZ, localDir.z * _animMultiplier);
         _anim.SetFloat(HashAnimPlayer.VelocityX, localDir.x * _animMultiplier);
@@ -352,7 +352,7 @@ public class MoveComponent : NetworkBehaviour
 		if (!isOwned) return;
 		if (moveClips.Length == 0 || moveAudioSource == null) return;
 
-		if (_rigidbody.velocity.magnitude <= 0.1f)
+		if (_rigidbody.linearVelocity.magnitude <= 0.1f)
 		{
 			if (moveAudioSource.isPlaying) moveAudioSource.Stop();
 			return;

@@ -24,7 +24,7 @@ namespace HeathenEngineering.UnityPhysics
             if(targetTransform != null) 
             { 
                 if(targetBody != null)
-                    HasSolution = ballisticAim.Aim(targetTransform.position, targetBody.velocity);
+                    HasSolution = ballisticAim.Aim(targetTransform.position, targetBody.linearVelocity);
                 else
                     HasSolution = ballisticAim.Aim(targetTransform.position);
             }

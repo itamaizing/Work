@@ -12,8 +12,8 @@ public class ArrowFireProjectile : MonoBehaviour
     private void Start()
     {
         selfBody = GetComponent<Rigidbody>();
-        selfBody.drag = 0;
-        selfBody.angularDrag = 0;
+        selfBody.linearDamping = 0;
+        selfBody.angularDamping = 0;
         selfBody.isKinematic = true;
     }
 

@@ -587,7 +587,7 @@ public abstract class AbilityBase : MonoBehaviour
 
 				if (!CheckObstacleBetween(_player.transform.position, TargetParent.transform.position))
 				{
-					_player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+					_player.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
 
 					IsActiveAbility = true;
 
