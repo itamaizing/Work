@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.AI;
 
 public class SpellMoveTo : Skill
 {
@@ -62,10 +63,7 @@ public class SpellMoveTo : Skill
                 _attackCoroutine = null;
             }
 
-            float distance = Vector3.Distance(transform.position, point);
-            float duration = distance * _moveDurationPerUnit;
-
-            yield return MoveToPoint(point, duration);
+            yield return MoveToPointWithNavMeshPath(point, false);
 
             _attackCoroutine = StartCoroutine(AttackNearbyEnemiesJob());
         }
@@ -73,39 +71,54 @@ public class SpellMoveTo : Skill
         _isCasting = false;
     }
 
-    private IEnumerator MoveToPoint(Vector3 targetPoint, float duration)
+    private IEnumerator MoveToPointWithNavMeshPath(Vector3 targetPoint, bool stopAtObstacle)
     {
         Hero.Move.CanMove = false;
 
-        Vector3 direction = (targetPoint - transform.position).normalized;
-        if (direction.sqrMagnitude > 0.01f)
+        NavMeshPath path = new NavMeshPath();
+        bool hasPath = NavMesh.CalculatePath(transform.position, targetPoint, NavMesh.AllAreas, path);
+
+        if (!hasPath || path.status != NavMeshPathStatus.PathComplete)
         {
-            Quaternion lookRotation = Quaternion.LookRotation(direction);
-            transform.rotation = lookRotation;
+            Hero.Move.CanMove = true;
+            yield break;
         }
 
-        float moved = 0f;
-        Vector3 prevPos = transform.position;
+        for (int i = 1; i < path.corners.Length; i++)
+        {
+            Vector3 segmentTarget = path.corners[i];
+            float distance = Vector3.Distance(transform.position, segmentTarget);
+            float duration = distance * _moveDurationPerUnit;
 
-        Tween moveTween = transform.DOMove(targetPoint, duration)
-            .SetEase(Ease.Linear)
-            .OnUpdate(() =>
-            {
-                float delta = Vector3.Distance(transform.position, prevPos);
-                moved += delta;
-                prevPos = transform.position;
+            Quaternion lookRotation = Quaternion.LookRotation((segmentTarget - transform.position).normalized);
+            transform.rotation = lookRotation;
 
-                if (moved >= 1f)
+            bool interruptedByObstacle = false;
+
+            Tween moveTween = null;
+
+            moveTween = transform.DOMove(segmentTarget, duration)
+                .SetEase(Ease.Linear)
+                .OnUpdate(() =>
                 {
-                    DoMove?.Invoke(gameObject);
-                    moved = 0f;
-                }
-            });
+                    if (stopAtObstacle)
+                    {
+                        if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, 1f, LayerMask.GetMask("Obstacle")))
+                        {
+                            moveTween.Kill();
+                            interruptedByObstacle = true;
+                        }
+                    }
+                });
 
-        yield return moveTween.WaitForCompletion();
+            yield return moveTween.WaitForCompletion();
+
+            if (interruptedByObstacle) break;
+        }
 
         Hero.Move.CanMove = true;
     }
+
     private IEnumerator AttackNearbyEnemiesJob()
     {
         while (true)
@@ -137,12 +150,7 @@ public class SpellMoveTo : Skill
                 float distanceToTarget = Vector3.Distance(transform.position, nearest.transform.position);
 
 
-                if (distanceToTarget > _attackDistance && distanceToTarget <= Radius)
-                {
-                    float duration = distanceToTarget * _moveDurationPerUnit;
-                    yield return MoveToPoint(nearest.transform.position, duration);
-                }
-
+                if (distanceToTarget > _attackDistance && distanceToTarget <= Radius) yield return MoveToPointWithNavMeshPath(nearest.transform.position, true);
 
                 while (nearest != null && !nearest.IsDead && Vector3.Distance(transform.position, nearest.transform.position) <= Radius)
                 {

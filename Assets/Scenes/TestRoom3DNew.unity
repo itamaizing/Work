@@ -124742,7 +124742,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &683767152
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181406,6 +181406,12 @@ MonoBehaviour:
   _objectBar: {fileID: 1130355474}
   _objectData: {fileID: 11400000, guid: afb0ecbfafe8e474488bc7296e843064, type: 2}
   obj: {fileID: 1130355471}
+  _ignoredSchools: 
+  _ignoredForms: 
+  _ignoredSkillTypes: 
+  live: 0
+  isDestroyOnDeath: 1
+  isRegenerationEnabled: 0
 --- !u!114 &1130355476
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -288602,6 +288608,12 @@ MonoBehaviour:
   _objectBar: {fileID: 1931245828}
   _objectData: {fileID: 11400000, guid: afb0ecbfafe8e474488bc7296e843064, type: 2}
   obj: {fileID: 1931245824}
+  _ignoredSchools: 
+  _ignoredForms: 
+  _ignoredSkillTypes: 
+  live: 0
+  isDestroyOnDeath: 1
+  isRegenerationEnabled: 0
 --- !u!114 &1931245830
 MonoBehaviour:
   m_ObjectHideFlags: 0
