@@ -219,7 +219,7 @@ public abstract class Skill : NetworkBehaviour
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); protected set => _cooldownTime = value; }
     public float RemainingCooldownTime { get => _remainingCooldownTime; set => _remainingCooldownTime = value; }
     public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); set => _castDeley = value; }
-    public bool IsCasting { get => _isCasting; }
+    public bool IsCasting { get => _isCasting; set => _isCasting = value; }
     public float CastStreamDuration { get => _castDuration; set => _castDuration = value; }
     public float Radius { get => Buff.Radius.GetBuffedValue(_radius); set => _radius = value; }
     public float Area { get => Buff.Area.GetBuffedValue(_area); set => _area = value; }

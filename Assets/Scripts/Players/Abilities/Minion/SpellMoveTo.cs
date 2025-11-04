@@ -14,7 +14,6 @@ public class SpellMoveTo : Skill
     [SerializeField] private Animator _animator;
 
     private Queue<Vector3> _movementQueue = new();
-    private bool _isCasting = false;
     private Coroutine _attackCoroutine;
     private Character _currentEnemyTarget;
     private float _lastAttackTime;
@@ -23,7 +22,7 @@ public class SpellMoveTo : Skill
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
-    protected override bool IsCanCast => !_isCasting;
+    protected override bool IsCanCast => !IsCasting;
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -51,7 +50,7 @@ public class SpellMoveTo : Skill
     }
     protected override IEnumerator CastJob()
     {
-        _isCasting = true;
+        IsCasting = true;
 
         while (_movementQueue.Count > 0)
         {
@@ -68,7 +67,7 @@ public class SpellMoveTo : Skill
             _attackCoroutine = StartCoroutine(AttackNearbyEnemiesJob());
         }
 
-        _isCasting = false;
+        IsCasting = false;
     }
 
     private IEnumerator MoveToPointWithNavMeshPath(Vector3 targetPoint, bool stopAtObstacle)
@@ -83,6 +82,8 @@ public class SpellMoveTo : Skill
             Hero.Move.CanMove = true;
             yield break;
         }
+
+        Vector3 lastDoMovePoint = transform.position;
 
         for (int i = 1; i < path.corners.Length; i++)
         {
@@ -101,13 +102,17 @@ public class SpellMoveTo : Skill
                 .SetEase(Ease.Linear)
                 .OnUpdate(() =>
                 {
-                    if (stopAtObstacle)
+                    float movedDist = Vector3.Distance(lastDoMovePoint, transform.position);
+                    if (movedDist >= 1f)
                     {
-                        if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, 1f, LayerMask.GetMask("Obstacle")))
-                        {
-                            moveTween.Kill();
-                            interruptedByObstacle = true;
-                        }
+                        DoMove?.Invoke(gameObject);
+                        lastDoMovePoint = transform.position;
+                    }
+
+                    if (stopAtObstacle && Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, 1f, LayerMask.GetMask("Obstacle")))
+                    {
+                        moveTween.Kill();
+                        interruptedByObstacle = true;
                     }
                 });
 
@@ -154,28 +159,22 @@ public class SpellMoveTo : Skill
 
                 while (nearest != null && !nearest.IsDead && Vector3.Distance(transform.position, nearest.transform.position) <= Radius)
                 {
-                    float dist = Vector3.Distance(transform.position, nearest.transform.position);
+                    float distance = Vector3.Distance(transform.position, nearest.transform.position);
 
-
-                    if (dist <= _attackDistance && Time.time - _lastAttackTime > _damageDelay)
+                    if (distance <= _attackDistance && Time.time - _lastAttackTime > _damageDelay)
                     {
                         _currentEnemyTarget = nearest;
                         _animator.SetTrigger("AutoAttackScared");
                         _lastAttackTime = Time.time;
                         yield return new WaitForSeconds(_damageDelay);
                     }
-                    else
-                    {
-                        yield return null;
-                    }
+
+                    else if (distance > _attackDistance && distance <= Radius) yield return MoveToPointWithNavMeshPath(nearest.transform.position, true);
+                    else yield return null;
                 }
             }
-            else
-            {
-                yield break;
-            }
 
-
+            else yield break;
             yield return null;
         }
     }
@@ -208,6 +207,6 @@ public class SpellMoveTo : Skill
     {
         _movementQueue.Clear();
         _currentEnemyTarget = null;
-        _isCasting = false;
+        IsCasting = false;
     }
 }
