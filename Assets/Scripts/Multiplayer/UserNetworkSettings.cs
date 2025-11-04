@@ -1,5 +1,6 @@
 using Mirror;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -26,9 +27,16 @@ public class UserNetworkSettings : NetworkBehaviour
             if (isServer)
             {
                 _teamIndex = value;
-                TargetUpdateLayers(connectionToClient);
+                StartCoroutine(DelayedTargetUpdate());
             }
         }
+    }
+
+    private IEnumerator DelayedTargetUpdate()
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        if (connectionToClient != null) TargetUpdateLayers(connectionToClient);
     }
 
     public Health CachedHealth
@@ -69,20 +77,69 @@ public class UserNetworkSettings : NetworkBehaviour
 
     public void MarkUpEnemiesOrAllies()
     {
+        if (Players == null || Players.Count == 0)
+        {
+            Debug.LogWarning("MarkUpEnemiesOrAllies: Players list is empty or not synced yet.");
+            return;
+        }
+
+        _allies.Clear();
+        _enemies.Clear();
+
         foreach (var item in Players)
         {
-            if (item.GetComponent<UserNetworkSettings>().TeamIndex != _teamIndex)
+            if (item == null)
             {
-                item.gameObject.layer = LayerMask.NameToLayer("Enemy");
-                _enemies.Add(item.GetComponent<HeroComponent>());
-                item.gameObject.GetComponent<VisionComponent>().VisionRange = 0;
+                Debug.LogWarning("MarkUpEnemiesOrAllies: Player GameObject is null.");
+                continue;
+            }
+
+            var userSettings = item.GetComponent<UserNetworkSettings>();
+            var hero = item.GetComponent<HeroComponent>();
+            var vision = item.GetComponent<VisionComponent>();
+
+            if (userSettings == null || hero == null)
+            {
+                Debug.LogWarning($"MarkUpEnemiesOrAllies: Missing required components on {item.name}");
+                continue;
+            }
+
+            if (userSettings.TeamIndex != _teamIndex)
+            {
+                item.layer = LayerMask.NameToLayer("Enemy");
+                _enemies.Add(hero);
+
+                if (vision != null)
+                    vision.VisionRange = 0;
             }
             else
             {
-                item.gameObject.layer = LayerMask.NameToLayer("Allies");
-                _allies.Add(item.GetComponent<HeroComponent>());
+                item.layer = LayerMask.NameToLayer("Allies");
+                _allies.Add(hero);
             }
-            LayerMaskChanged?.Invoke(item.gameObject.layer);
+
+            LayerMaskChanged?.Invoke(item.layer);
+        }
+
+        TowerTeam towerTeam = FindObjectOfType<TowerTeam>();
+
+        if (towerTeam == null)
+        {
+            Debug.LogWarning("MarkUpEnemiesOrAllies: TowerTeam not found in scene!");
+            return;
+        }
+
+        if (towerTeam != null)
+        {
+            foreach (var tower in towerTeam.TowerTeam_1)
+            {
+                if (tower != null) tower.layer = _teamIndex == 1 ? LayerMask.NameToLayer("Allies") : LayerMask.NameToLayer("Enemy");
+            }
+
+            foreach (var tower in towerTeam.TowerTeam_2)
+            {
+                if (tower != null) tower.layer = _teamIndex == 2 ? LayerMask.NameToLayer("Allies") : LayerMask.NameToLayer("Enemy");
+            }
         }
     }
 }

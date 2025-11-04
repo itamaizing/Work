@@ -6845,7 +6845,7 @@ AnimationClip:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.26666668
-        value: -0.14099164
+        value: -0.13986532
         inSlope: -0.04043211
         outSlope: -0.04043211
         tangentMode: 0
@@ -32474,7 +32474,7 @@ AnimationClip:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.26666668
-        value: -0.14099164
+        value: -0.13986532
         inSlope: -0.04043211
         outSlope: -0.04043211
         tangentMode: 0
@@ -50080,7 +50080,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.06666667
-    functionName: StopMove
+    functionName: StopMoveIceCloud
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
@@ -50100,7 +50100,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.96666664
+  - time: 0.8333333
     functionName: CanMove
     data: 
     objectReferenceParameter: {fileID: 0}

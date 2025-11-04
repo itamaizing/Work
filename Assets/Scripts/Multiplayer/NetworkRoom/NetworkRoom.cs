@@ -18,7 +18,7 @@ public class NetworkRoom
     {
         get
         {
-            if(_isGameStarted == false)
+            if (_isGameStarted == false)
                 _players.RemoveAll(player => player == null);
 
             return _maxNumPlayers > _players.Count;

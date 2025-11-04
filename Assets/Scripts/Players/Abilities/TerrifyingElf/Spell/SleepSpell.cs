@@ -9,10 +9,11 @@ public class SleepSpell : Skill
     [SerializeField] private float duration;
 
     private Character _target;
+    private Character _runtimeTarget;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private bool _isSleepInnerDarknessTalentActive = false;
 
-    protected override bool IsCanCast => IsHaveCharge && _target != null;
+    protected override bool IsCanCast => IsHaveCharge && _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius;
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
     protected override int AnimTriggerCast => 0;
 
@@ -22,19 +23,19 @@ public class SleepSpell : Skill
     {
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && _target == null && !_disactive)
+        while (_target == null && !_disactive)
         {
             if (GetMouseButton)
             {
-                _targetPoint = GetMousePoint();
-                _target = GetRaycastTarget(true);
+                //_target = GetRaycastTarget(true);
+                _runtimeTarget = _target;
                 if (multiMagic != null) multiMagic.LastTarget = _target;
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Targets.Add(_target);
+        targetInfo.Targets.Add(_runtimeTarget);
         callbackDataSaved(targetInfo);
     }
 
@@ -60,7 +61,6 @@ public class SleepSpell : Skill
 
     protected override void ClearData()
     {
-        _targetPoint = Vector3.positiveInfinity;
         _target = null;
     }
 

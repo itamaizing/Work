@@ -22,7 +22,7 @@ MonoBehaviour:
     - Id: 1001
       Name: Health
       Points: 5
-      DefaultValue: 9999
+      DefaultValue: 10
       Icon: {fileID: 0}
       IsVisible: 1
     - Id: 1002

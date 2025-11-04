@@ -19,18 +19,21 @@ public class ClawStrike : Skill
     [SerializeField] private float chanceApplyBleedingIncrease = 0.4f;
 
     private bool _isDurationChanceApplyBleedingWithJump = false;
+    private bool _isAnimationAcceleration = false;
+    private bool _isLastClawStrike;
     private float _spentAttackingPsiEnergy;
     private float _baseDamage;
     private float _castWindowDuration = 1f;
     private float _totalChanceApplyBleeding;
     private Coroutine coroutineDurationChanceApplyBleedingWithJump;
 
-    protected Character _target;
+    protected IDamageable _target;
+    private Character _runtimeTarget;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("ClawStrikeTrigger");
 
-    protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
+    protected override bool IsCanCast => _target != null && _target.gameObject != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
 
     public float CastWindowDuration { get => _castWindowDuration; set => _castWindowDuration = value; }
 
@@ -48,43 +51,42 @@ public class ClawStrike : Skill
     private bool _isBleedingClawStrike  = false;
     private bool _isChanceApplyBleedingIncrease = false;
 
-    public void ClawStrikeSpeed(bool value) => Hero.Animator.speed = value ? 1.4f : 1f;
+    public void ClawStrikeSpeed(bool value)
+    {
+        _isAnimationAcceleration = value;
+    }
+
     public void BleedingClawStrike(bool value) => _isBleedingClawStrike = value;
     public void ChanceApplyBleedingIncrease(bool value) => _isChanceApplyBleedingIncrease = value;
     #endregion
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        TargetInfo targetInfo = new TargetInfo();
-
-        if (_target != null)
-        {
-            _hero.Move.LookAtTransform(_target.transform);
-            targetInfo.Targets.Add(_target);
-            targetInfo.Points.Add(_target.transform.position);
-            callbackDataSaved?.Invoke(targetInfo);
-            yield break;
-        }
+        _runtimeTarget = null;
 
         while (_target == null)
         {
             if (GetMouseButton)
             {
                 _target = GetRaycastTarget();
+
                 if (_target != null)
                 {
-                    _target.SelectedCircle.IsActive = true;
-                    _hero.Move.LookAtTransform(_target.transform);
-                    break;
+                    if (_target is Character characterTarget)
+                    {
+                        characterTarget.SelectedCircle.IsActive = true;
+                        _runtimeTarget = characterTarget;
+                    }
                 }
             }
             yield return null;
         }
 
-        targetInfo.Targets.Add(_target);
-        targetInfo.Points.Add(_target.transform.position);
+        TargetInfo targetInfo = new TargetInfo();
+        if (_runtimeTarget is Character character) targetInfo.Targets.Add(character);
         callbackDataSaved?.Invoke(targetInfo);
     }
+
 
     protected override IEnumerator CastJob()
     {
@@ -94,8 +96,6 @@ public class ClawStrike : Skill
         JumpBackClawStrike();
         DamageDeal();
 
-        _target = null;
-        _hero.Move.StopLookAt();
         yield return null;
     }
 
@@ -103,8 +103,11 @@ public class ClawStrike : Skill
 
     private void DamageDeal()
     {
+        if (_target == null) return;
+
         float attackingPsiValue = _spentAttackingPsiEnergy;
-        _baseDamage = UnityEngine.Random.Range(5f, 7.01f);
+        _baseDamage = UnityEngine.Random.Range(20f, 30f);
+        Damage = _baseDamage;
 
         var damage = new Damage
         {
@@ -127,7 +130,7 @@ public class ClawStrike : Skill
             else if (attackingPsiValue >= 20) dispelCount = 2;
             else if (attackingPsiValue >= 10) dispelCount = 1;
 
-            if (dispelCount > 0) for (int i = 0; i < dispelCount; i++) CmdDispel(_target, dispelCount);
+            if (dispelCount > 0 && _runtimeTarget != null) for (int i = 0; i < dispelCount; i++) CmdDispel(_runtimeTarget, dispelCount);
 
             var damagePsi = new Damage
             {
@@ -159,16 +162,35 @@ public class ClawStrike : Skill
         if (_isChanceApplyBleedingIncrease && CheckStateForBleeding()) _totalChanceApplyBleeding += chanceApplyBleedingIncrease;
 
         float rand = UnityEngine.Random.Range(0f, 1f);
-        if (rand <= _totalChanceApplyBleeding) CmdAddBleeding(_target);
+        if (rand <= _totalChanceApplyBleeding) CmdAddBleeding(_runtimeTarget);
 
         jumpWithChelicera.IsCheliceraStrikeCast = false;
         _isDurationChanceApplyBleedingWithJump = false;
         if (coroutineDurationChanceApplyBleedingWithJump != null) StopCoroutine(IDurationChanceApplyBleedingWithJump());
     }
 
-    public void ClawStrikeSpeedAnim()
+    public void ClawStrikePreparingForAnim()
     {
-        _player.Animator.SetFloat("ClawStrikeSpeed", 1f / animSpeed);
+        if (_isAnimationAcceleration)
+        {
+            var lastSkill = _player.Abilities.LastCastedSkill;
+            float multiplier = 0;
+
+            if ((lastSkill is ClawStrike && _isLastClawStrike) || lastSkill is CheliceraStrike)
+            {
+                multiplier = 1.4f;
+                _isLastClawStrike = false;
+            }
+
+            else
+            {
+                multiplier = 1f;
+                _isLastClawStrike = lastSkill is ClawStrike;
+            }
+
+            Hero.Animator.SetFloat("ClawStrikeSpeed", multiplier);
+        }
+
         if (_attackingPsionicEnergy.IsAttackingPsiEnergy && _attackingPsionicEnergy.CurrentValue > 0f) TrySpendAttackingPsi();
         else _spentAttackingPsiEnergy = 0;
     }
@@ -185,8 +207,7 @@ public class ClawStrike : Skill
 
     private void HandleSkillCanceled()
     {
-        _target = null;
-        Hero.Move.StopLookAt();
+
     }
 
     public void TrySpendAttackingPsi()
@@ -211,7 +232,7 @@ public class ClawStrike : Skill
     private bool CheckStateForBleeding()
     {
         States[] blockingStates = { States.Stun, States.Stupefaction, States.TentacleGrip };
-        if (blockingStates.Any(state => _target.CharacterState.CheckForState(state))) return true;
+        if (blockingStates.Any(state => _runtimeTarget.CharacterState.CheckForState(state))) return true;
         else return false;
     }
 
@@ -236,13 +257,11 @@ public class ClawStrike : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo == null || targetInfo.Targets == null || targetInfo.Targets.Count == 0) return;
-
-        _target = targetInfo.Targets[0] as Character;
+        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as Character;
     }
 
     protected override void ClearData()
     {
-
+        _target = null;
     }
 }

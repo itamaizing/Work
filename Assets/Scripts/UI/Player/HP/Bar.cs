@@ -69,14 +69,12 @@ public class Bar : MonoBehaviour
 
     private void Start()
     {
-        if (_resource != null)
-			Init(_resource);
+        if (_resource != null) Init(_resource);
     }
 
     private void OnEnable()
     {
-		if (_resource != null)
-			Init(_resource);
+		if (_resource != null) Init(_resource);
 	}
 
     private void OnDestroy()
@@ -97,30 +95,23 @@ public class Bar : MonoBehaviour
 
 	private void Update()
 	{
-		if(Input.GetKeyDown(KeyCode.O))
-		{
-			OnChangeBarColor(Color.red);
-		}
+		if(Input.GetKeyDown(KeyCode.O)) OnChangeBarColor(Color.red);
 	}
 
 	public virtual void UpdateBarWithShield(float healthBarTarget)
 	{
 		_bar.value = _healthBarTarget;
 
-		if (_showText)
-			_barText.text = Mathf.RoundToInt(_currentValue).ToString();
-
-		StartCoroutine(DisapearBar());
+		if (_showText) _barText.text = Mathf.RoundToInt(_currentValue).ToString();
+		if (gameObject.activeInHierarchy) StartCoroutine(DisapearBar());
 	}
 
 	public virtual void UpdateBar()
 	{
 		_bar.value = _currentValue / _maxValue;
 
-		if(_showText)
-			_barText.text = Mathf.RoundToInt(_currentValue).ToString();
-
-		StartCoroutine(DisapearBar());
+		if(_showText) _barText.text = Mathf.RoundToInt(_currentValue).ToString();
+		if (gameObject.activeInHierarchy) StartCoroutine(DisapearBar());
 	}
 
 	private void OnValueChanged(float oldValue, float newValue)

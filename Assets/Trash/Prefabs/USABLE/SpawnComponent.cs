@@ -17,19 +17,25 @@ public class SpawnComponent : NetworkBehaviour
     public event Action UnitRemoved;
 
     #region Test Methods
-    [SerializeField] private Character _enemyPrefab;
-    [SerializeField] private Character _allyPrefab;
+    [SerializeField] private List<Character> _enemyPrefabs;
+    [SerializeField] private List<Character>  _allyPrefabs;
 
     [Command]
-    public void CmdSpawnUnitEnemy()
+    public void CmdSpawnUnitEnemy(int index)
     {
-        SpawnCharacter(_enemyPrefab, Vector3.back + Vector3.up, Quaternion.identity);
+        SpawnCharacter(_enemyPrefabs[index], Vector3.back + Vector3.zero, Quaternion.identity);
     }
 
     [Command]
-    public void CmdSpawnUnitAlies()
+    public void CmdSpawnUnitAlies(int index)
     {
-        SpawnCharacter(_allyPrefab, Vector3.forward + Vector3.up, Quaternion.identity);
+        SpawnCharacter(_allyPrefabs[index], Vector3.forward + Vector3.zero, Quaternion.identity);
+    }
+
+    [Command]
+    public void CmdSpawnUnit(int index)
+    {
+        SpawnCharacter(_units[index], Vector3.forward + Vector3.zero, Quaternion.identity);
     }
 
     [Command] // не стал убирать метод с мейна, хотя мой ниже такой же, но сохраняет вращение и спавнит не по индексу, а напрямую берет префаб
@@ -40,15 +46,49 @@ public class SpawnComponent : NetworkBehaviour
     }
 
     [Command]
-    public void CmdSpawnEnemyPoint(Vector3 position, Quaternion rotation)
+    public void CmdSpawnEnemyPoint(Vector3 position, Quaternion rotation, int index)
     {
-        SpawnCharacter(_enemyPrefab, position, rotation);
+        SpawnCharacter(_enemyPrefabs[index], position, rotation);
     }
 
     [Command]
-    public void CmdSpawnAliesPoint(Vector3 position, Quaternion rotation)
+    public void CmdSpawnAliesPoint(Vector3 position, Quaternion rotation, int index)
     {
-        SpawnCharacter(_allyPrefab, position, rotation);
+        SpawnCharacter(_allyPrefabs[index], position, rotation);
+    }
+
+    [Command]
+    public void CmdSpawnUnitPoint(Vector3 position, Quaternion rotation, int index)
+    {
+        SpawnCharacter(_units[index], position, rotation);
+    }
+
+    [Command]
+    public void CmdSpawnEnemyPoint(Vector3 position, Quaternion rotation, Character toReplace, int index, bool remove, Character parenCharacter)
+    {
+        var spawned = SpawnCharacterTransfer(_enemyPrefabs[index], position, rotation, remove, parenCharacter);
+
+        if (toReplace != null && remove == true)
+        {
+            RemoveUnitServer(toReplace);
+        }
+    }
+
+    [Command]
+    public void CmdSpawnAliesPoint(Vector3 position, Quaternion rotation, Character toReplace, int index, bool remove, Character parenCharacter)
+    {
+        var spawned = SpawnCharacterTransfer(_allyPrefabs[index], position, rotation, remove, parenCharacter);
+
+        if (toReplace != null && remove == true)
+        {
+            RemoveUnitServer(toReplace);
+        }
+    }
+
+    [Command]
+    public void CmdSpawnPoint(Vector3 position, Quaternion rotation, int index, Character characterParent)
+    {
+        var spawned = SpawnCharacterTransfer(_units[index], position, rotation, false, characterParent);
     }
     #endregion
 
@@ -96,6 +136,64 @@ public class SpawnComponent : NetworkBehaviour
 
         AddUnit(spawnedCharacter);
     }
+
+    #region Test
+    private Character SpawnCharacterTransfer(Character prefab, Vector3 position, Quaternion rotation, bool remove, Character parenCharacter)
+    {
+        if (prefab == null) return null;
+
+        var spawnedCharacter = Instantiate(prefab, position, rotation);
+        spawnedCharacter.CharacterParent = parenCharacter;
+        spawnedCharacter.Initialize();
+
+        spawnedCharacter.NetworkSettings.MyRoom = _hero.NetworkSettings.MyRoom;
+
+        if (_hero == null || _hero.NetworkSettings == null)
+        {
+            Destroy(spawnedCharacter.gameObject);
+            return null;
+        }
+
+        SceneManager.MoveGameObjectToScene(spawnedCharacter.gameObject, _hero.NetworkSettings.MyRoom);
+
+        if (connectionToClient == null)
+        {
+            Destroy(spawnedCharacter.gameObject);
+            return null;
+        }
+
+        NetworkServer.Spawn(spawnedCharacter.gameObject, connectionToClient);
+        AddUnit(spawnedCharacter);
+
+        return spawnedCharacter;
+    }
+
+    public void RemoveUnitServer(Character character)
+    {
+        if (character != null && _units.Contains(character))
+        {
+            _units.Remove(character);
+
+            if (character is MinionComponent minion)
+            {
+                minion.Destroyed -= OnUnitDestroyed;
+                minion.Intercepted -= OnUnitDestroyed;
+            }
+            else if (character is HeroComponent hero)
+            {
+                hero.Died -= OnUnitDestroyed;
+            }
+
+            if (character.gameObject != null)
+            {
+                ClientRpcOnUnitDestroyed(character.gameObject);
+                NetworkServer.Destroy(character.gameObject);
+            }
+
+            UnitRemoved?.Invoke();
+        }
+    }
+    #endregion
 
     public void AddUnit(Character character)
     {
@@ -151,10 +249,9 @@ public class SpawnComponent : NetworkBehaviour
 
             if (character.gameObject != null)
             {
+                ClientRpcOnUnitDestroyed(character.gameObject);
                 NetworkServer.Destroy(character.gameObject);
             }
-
-            ClientRpcOnUnitDestroyed(character.gameObject);
         }
         else
         {
@@ -218,6 +315,6 @@ public class SpawnComponent : NetworkBehaviour
         }
 
         _units.RemoveAll(unit => unit == null);
-        UnitRemoved?.Invoke();
+        if (UnitRemoved != null) UnitRemoved.Invoke();
     }
 }

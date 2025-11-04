@@ -22,8 +22,20 @@ public class PsionicEnergySkill : Skill, IPassiveSkill
     [SerializeField] private BasePsionicEnergy basePsionicEnergy;
     [SerializeField] private float modifier = 1f;
 
-    public void HandleIncomingDamage(Damage damage, Skill skill)
+    #region Talent
+    private bool _isPsiEnergyActive = false;
+    private bool _isDischargingPsiTalent = false;
+
+    public bool IsDischargingPsiTalent { get => _isDischargingPsiTalent; set => _isDischargingPsiTalent = value; }
+    public bool IsPsiEnergyActive { get => _isPsiEnergyActive; set => _isPsiEnergyActive = value;}
+
+    public void DischargingPsiTalen(bool value) => _isDischargingPsiTalent = value;
+    public void PsiEnergyActive(bool value) => _isPsiEnergyActive = value;
+    #endregion
+
+    public void HandleIncomingDamage(ref Damage damage, Skill skill)
     {
+        if (!_isPsiEnergyActive) return;
         if (damage.Value <= 0 || basePsionicEnergy.CurrentValue <= 0) return;
 
         float absorptionAmount = Mathf.Min(basePsionicEnergy.CurrentValue, damage.Value);
@@ -31,7 +43,19 @@ public class PsionicEnergySkill : Skill, IPassiveSkill
 
         float reduced = absorptionAmount * modifier;
         damage.Value -= reduced;
-
         damage.Value = Mathf.Max(damage.Value, 0f);
+
+        if (_isDischargingPsiTalent && skill?.Hero != null)
+        {
+            Damage retaliationDamage = new Damage
+            {
+                Value = absorptionAmount,
+                Type = DamageType.Magical,
+                School = Schools.Air,
+                Form = AbilityForm.Magic,
+            };
+
+            ApplyDamage(retaliationDamage, skill.Hero.gameObject);
+        }
     }
 }

@@ -9,6 +9,7 @@ public class UIPlayerComponents : MonoBehaviour
     [SerializeField] private SelectedCircle CircleSelect;
     [SerializeField] private MinimapMarker MarkersSelect;
     [SerializeField] private FillAmountOverTime _castLine;
+    [SerializeField] private SkillRenderer skillRenderer;
 
     [SerializeField] private DamageTracker _damageTracker;
 
@@ -27,6 +28,7 @@ public class UIPlayerComponents : MonoBehaviour
     private bool isProcessingQueue = false;
 
     public SelectedCircle CircleSelect1 { get => CircleSelect; set => CircleSelect = value; }
+    public SkillRenderer Renderer { get => skillRenderer; set => skillRenderer = value; }
 
     private void Awake()
     {
@@ -70,7 +72,6 @@ public class UIPlayerComponents : MonoBehaviour
     public void ChangeSelection(bool isSelect)
     {
         CircleSelect.IsActive = isSelect;
-        CircleSelect.SetColorTarget(Color.green);
         MarkersSelect.IsActive = isSelect;
     }
 

@@ -232,6 +232,11 @@ public class CharacterState : NetworkBehaviour
 		[States.ManaRegen] = new ManaRegen(),
 		[States.Stupefaction] = new Stupefaction(),
 		[States.TentacleGrip] = new TentacleGrip(),
+		[States.Restoration] = new RestorationState(),
+		[States.Destruction] = new DestructionState(),
+		[States.HardenedFlesh] = new HardenedFlesh(),
+		[States.FocusingOnReflexesState] = new FocusingOnReflexesState(),
+		[States.DivineEnhancement] = new DivineEnhancementState(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -251,6 +256,8 @@ public class CharacterState : NetworkBehaviour
 		[States.ShadowTree] = new ShadowTree(),
 		[States.MultiMagic] = new MultiMagic(),
 		[States.FireFlash] = new FireFlash(),
+		[States.WarmingUpState] = new WarmingUpState(),
+		[States.HealingSlime] = new HealingSlime(),
 		#endregion
 
 		#region Gandollarf	
@@ -725,6 +732,9 @@ public enum StatusEffect
 	Strengthening, // For all State increasing/reduction Health/Mana/other values
 	Immateriality,
 	ReducingEfficiency,
+	Restoration,
+	Destruction,
+	Evade,
 }
 
 public enum States
@@ -741,7 +751,6 @@ public enum States
 	RegeneratingPoison,
 	HeatedGlands,
 	AbsorptionOfPoison,
-	BleedingCarrigan,
 	ReducingHealing,
 	Immateriality,
 	InAir,
@@ -809,6 +818,13 @@ public enum States
 	TentacleGrip,
     Discharge,
     CoolingAura,
+	Restoration,
+	Destruction,
+	HardenedFlesh,
+	FocusingOnReflexesState,
+	WarmingUpState,
+	DivineEnhancement,
+	HealingSlime,
 }
 public enum BaffDebaff
 {

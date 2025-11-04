@@ -95,7 +95,7 @@ public class MagicDefense : Skill
 			Debug.Log("loop");
 			if (GetMouseButton)
 			{
-				_target = GetRaycastTarget(true);
+			//	_target = GetRaycastTarget(true);
 				_position = GetMousePoint();
 			}
 			yield return null;

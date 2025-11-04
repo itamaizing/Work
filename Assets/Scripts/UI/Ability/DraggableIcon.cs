@@ -51,8 +51,10 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         PatentAfterDrag = parent;
         _camera = camera;
         _distance = distance;
+        _skill.LinkedChargeCDUI = _chargeCD;
 
         _skill.OnSkillStateChanged += UpdateIconState;
+        _skill.ChargeCooldownEnded += OnChargeCooldownEnded;
 
         UpdateIconState(_skill.Disactive);
 
@@ -71,6 +73,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         UnsubscribingSkillOnEvents(_skill);
         _skill.OnSkillStateChanged -= UpdateIconState;
+        _skill.ChargeCooldownEnded -= OnChargeCooldownEnded;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -106,20 +109,23 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnPointerEnter(PointerEventData eventData)
     {
         InputHandler.OnSwitchAutoMode += OnClickWithCtrl;
-
         PointerEnter?.Invoke(this);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         InputHandler.OnSwitchAutoMode -= OnClickWithCtrl;
-
         PointerExit?.Invoke(this);
     }
 
     public void UpdateIconState(bool disactive)
     {
         _image.color = new Color(_image.color.r, _image.color.g, _image.color.b, disactive ? 0.5f : 1f);
+    }
+
+    private void OnChargeCooldownEnded(int index)
+    {
+        _chargeCD.RemoveChargeCD(index);
     }
 
     private void UpdateAllInfo()
@@ -206,6 +212,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     private void OnClickWithCtrl()
     {
+        if (Skill.AutoAttack != AutoAttack.autoAttack) return;
 
         Skill.IsAutoMode = !Skill.IsAutoMode;
         Debug.Log("AA mode - " + Skill.IsAutoMode);

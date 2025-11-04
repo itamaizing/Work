@@ -71,7 +71,11 @@ public enum Moving
     NonStatic
 }
 
-
+public enum AutoAttack
+{
+    autoAttack,
+    nonAutoAttack
+}
 
 public abstract class Skill : NetworkBehaviour
 {
@@ -82,6 +86,8 @@ public abstract class Skill : NetworkBehaviour
     [Header("AbilitiesInfo")]
     [SerializeField] private AbilityInfo _abilityInfo;
     [Header("Main Settings")]
+    [NonSerialized] public float ExtraAnimationSpeedMultiplier = 1f; // test
+
     [SerializeField] protected bool _isSubjectToGlobalCooldownTime = true;
 
     [SerializeField] protected List<SkillEnergyCost> _skillEnergyCosts;
@@ -95,6 +101,7 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] private AttackRangeType _attackRangeType;
     [SerializeField] private SkillType _skillType;
     [SerializeField] private Moving _moving;
+    [SerializeField] private AutoAttack autoAttack;
     [SerializeField] protected LayerMask _targetsLayers;
     [SerializeField] protected LayerMask _obstacle;
     [Header("Streaming settings")]
@@ -112,6 +119,8 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected float _area;
     [SerializeField] protected float _castLength;
     [SerializeField] protected float _castWidth;
+    [Header("Area settings")]
+    [SerializeField] protected float _autoAttackDelay;
     [Header("Render settings")]
     [SerializeField] protected bool _isAutoRadiusRender = true;
     [SerializeField] protected bool _isAutoAreaRender = true;
@@ -120,6 +129,8 @@ public abstract class Skill : NetworkBehaviour
     [Header("Availability")]
     [SerializeField] protected bool _disactive = false;
     [SerializeField] protected bool _earlyCooldown = false;
+    [Header("Counter settings")]
+    [SerializeField] protected float maxCounter;
 
 
     protected SkillRenderer _skillRender;
@@ -139,6 +150,8 @@ public abstract class Skill : NetworkBehaviour
     protected bool _isPlayCastAnim;
     protected int _currentChargers;
     protected float _baseCooldownTime;
+    //test counter
+    protected float _currentCounter;
 
     private Character _tempTargetbase;
     private float _remainingCooldownTime;
@@ -151,6 +164,7 @@ public abstract class Skill : NetworkBehaviour
     private bool _isShiftClick;
     private bool _isCtrlClick;
     private bool _isSpaceClick;
+    private bool _isWaitingForCastCoroutine = false;
     private List<float> _remainingCooldownTimeChargers;
     private List<Coroutine> _currentChargeCooldownJob;
     private float _assistTimer = 5f;
@@ -185,9 +199,10 @@ public abstract class Skill : NetworkBehaviour
     public Character Hero { get => _hero; }
     public StatsBuff Buff => _statsBuff;
     public string Name => _abilityInfo.Name;
-    public string Description => _abilityInfo.Description;
+    public string Description { get => _abilityInfo.FinalDescription; set => _abilityInfo.FinalDescription = value; }
     public string State => _abilityInfo.State; // test: we output the name of the state
     public string DescriptionState => _abilityInfo.DescriptionState; // test: we output a description of the state
+    public string CounterSkill => _abilityInfo.Counter; // test: the counter is in the ability
     public Sprite Icon => _abilityInfo.Icon;
     public AbilityInfo AbilityInfoHero { get => _abilityInfo; set => _abilityInfo = value; }
     public bool IsCooldowned { get => _remainingCooldownTime <= 0; }
@@ -204,12 +219,14 @@ public abstract class Skill : NetworkBehaviour
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); protected set => _cooldownTime = value; }
     public float RemainingCooldownTime { get => _remainingCooldownTime; set => _remainingCooldownTime = value; }
     public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); set => _castDeley = value; }
-    public bool IsCasting { get => _isCasting; }
+    public bool IsCasting { get => _isCasting; set => _isCasting = value; }
     public float CastStreamDuration { get => _castDuration; set => _castDuration = value; }
     public float Radius { get => Buff.Radius.GetBuffedValue(_radius); set => _radius = value; }
     public float Area { get => Buff.Area.GetBuffedValue(_area); set => _area = value; }
     public float CastLength { get => Buff.Area.GetBuffedValue(_castLength); protected set => _castLength = value; }
     public float CastWidth { get => Buff.Area.GetBuffedValue(_castWidth); protected set => _castWidth = value; }
+    public float MaxCounter { get => maxCounter; set => maxCounter = value; }
+    public float CurrentCounter { get => _currentCounter; set => _currentCounter = value; }
     public virtual float Damage { get => _damageValue; set => _damageValue = value; }
     public bool IsUseCharges { get => _isUseCharges; }
     public LayerMask TargetsLayers { get => _targetsLayers; protected set => _targetsLayers = value; }
@@ -219,11 +236,14 @@ public abstract class Skill : NetworkBehaviour
     public AttackRangeType AttackRangeType => _attackRangeType;
     public SkillType SkillType => _skillType;
     public Moving Moving => _moving;
+    public AutoAttack AutoAttack => autoAttack;
     public List<SkillEnergyCost> SkillEnergyCosts { get => _skillEnergyCosts; }
     public List<SkillEnergyCost> AdditionalSkillEnergyCosts { get => _additionalSkillEnergyCosts; }
     public List<SkillEnergyCost> ManaCostPerTick { get => _manaCostPerTick; }
     public float ManaCostRate { get => _manaCostRate; }
+    public float AutoAttackDelay { get => _autoAttackDelay; }
     public Queue<TargetInfo> TargetInfoQueue { get => _targetInfoQueue; }
+    public ChargeCDUI LinkedChargeCDUI { get; set; }
 
     public bool Disactive
     {
@@ -242,6 +262,7 @@ public abstract class Skill : NetworkBehaviour
     public event Action<int> CurrentChargeChanged;
     public event Action<float> CooldownStarted;
     public event Action<float> ChargeStartCooldown;
+    public event Action<int> ChargeCooldownEnded;
     public event Action CooldownEnded;
     public event Action<Skill> PreparingStarted;
     public event Action<Skill> PreparingSuccess;
@@ -264,6 +285,7 @@ public abstract class Skill : NetworkBehaviour
     public event Action BoostEnabled;
     public event Action BoostDisabled;
     public event Action AfterCast;
+    public int AnimTriggerCastPublic => AnimTriggerCast;
 
     /// <summary>
     /// There may be a description that will be shown in the AbillityNameBox.
@@ -417,7 +439,24 @@ public abstract class Skill : NetworkBehaviour
             TryPayCost(IsPayCostStartCooldown);
 
             if (_targetInfoQueue.Count > 0)
-                LoadTargetData(_targetInfoQueue.Dequeue());
+            {
+                var targetInfo = _targetInfoQueue.Dequeue();
+
+                LoadTargetData(targetInfo);
+
+                if (targetInfo.Targets.Count > 0)
+                {
+                    var target = (Character)targetInfo.Targets[0];
+                    _hero.Move.LookAtTransform(target.transform);
+                }
+
+                if (targetInfo.Points.Count > 0)
+                {
+                    var point = (Vector3)targetInfo.Points[0];
+                    _hero.Move.LookAtPosition(point);
+                }
+            }
+
 
             _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
 
@@ -438,6 +477,22 @@ public abstract class Skill : NetworkBehaviour
                 TryPayCost(IsPayCostStartCooldown);
 
                 _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
+
+                if (_targetInfoQueue.Count > 0)
+                {
+                   if (targetInfo.Targets.Count > 0)
+                    {
+                        var target = (Character)targetInfo.Targets[0];
+                        _hero.Move.LookAtTransform(target.transform);
+                    }
+
+                    if (targetInfo.Points.Count > 0)
+                    {
+                        var point = (Vector3)targetInfo.Points[0];
+                        _hero.Move.LookAtPosition(point);
+                    }
+                }
+
                 return true;
             }
             else
@@ -456,6 +511,7 @@ public abstract class Skill : NetworkBehaviour
         if (foceCancel || _isCanCancle)
         {
             Canceled?.Invoke();
+            if (_isAutoMode) _hero.Move.CanMove = true;
             ClearData();
             _isPlayCastAnim = false;
 
@@ -497,7 +553,6 @@ public abstract class Skill : NetworkBehaviour
 
             _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
             _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
-
             OnSkillCanceled?.Invoke();
 
             return true;
@@ -535,6 +590,19 @@ public abstract class Skill : NetworkBehaviour
         _cooldownJob = StartCoroutine(CooldownCoroutine(timeToSet));
     }
 
+    public void ResetCooldown()
+    {
+        if (_cooldownJob != null)
+        {
+            StopCoroutine(_cooldownJob);
+            _cooldownJob = null;
+        }
+
+        _remainingCooldownTime = 0;
+
+        CooldownEnded?.Invoke();
+    }
+
     public void ReductionSetCooldown(float time)
     {
         if (time > _remainingCooldownTime)
@@ -544,6 +612,25 @@ public abstract class Skill : NetworkBehaviour
             StopCoroutine(_cooldownJob);
 
         _cooldownJob = StartCoroutine(CooldownCoroutine(time));
+    }
+
+    public void ResetCurrentChargeCooldown(int index)
+    {
+        if (!_isUseCharges || !_chargesHaveSeparateCooldown) return;
+        if (_currentChargeCooldownJob[index] != null)
+        {
+            StopCoroutine(_currentChargeCooldownJob[index]);
+            _currentChargeCooldownJob[index] = null;
+        }
+
+        _remainingCooldownTimeChargers[index] = 0f;
+
+        LinkedChargeCDUI?.RemoveChargeCD(index);
+
+        _currentChargers = Mathf.Min(_currentChargers + 1, _maxCharges);
+        CurrentChargeChanged?.Invoke(_currentChargers);
+
+        ChargeCooldownEnded?.Invoke(index);
     }
 
     public void CheckResources()
@@ -719,6 +806,7 @@ public abstract class Skill : NetworkBehaviour
 
     protected virtual void StopAutoDraw()
     {
+        _skillRender.ResetCursor();
         _skillRender.StopDrawRadius();
         _skillRender.StopDrawArea();
         _skillRender.StopDrawLine();
@@ -764,34 +852,42 @@ public abstract class Skill : NetworkBehaviour
 
     protected virtual bool TryPayCost(bool startCooldown = true)
     {
+        if (_hero.Abilities.TryConsumeNextSkillFree()) return true;
         return TryPayCost(_skillEnergyCosts, startCooldown);
     }
 
-    protected Character GetRaycastTarget(bool isCanTargetHimself = false)
+    protected IDamageable GetRaycastTarget(bool isCanTargetHimself = false)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit[] rayHit = Physics.RaycastAll(ray, 100f, TargetsLayers);
 
         foreach (var hit in rayHit)
         {
-            Debug.Log(hit.collider.gameObject.name);
+            if (autoAttack == AutoAttack.autoAttack)
+            {
+                if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed)
+                {
+                    if (hit.collider.TryGetComponent<IDamageable>(out _))
+                    {
+
+                        IsAutoMode = true;
+                        AutoModeChanged?.Invoke(true);
+                    }
+                }
+            }
         }
-        Character target = null;
 
         foreach (var item in rayHit)
         {
-            if (rayHit.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
+            if (item.collider.TryGetComponent<IDamageable>(out var damageable))
             {
-                target = enemy;
-
-                //if (isCanTargetHimself == false && target.transform == _hero.transform)
-                //{
-                //    target = null;
-                //}
+                _tempForDamage = damageable;
+                _tempTargetForDamage = damageable is Component component ? component.transform : null;
+                return damageable;
             }
         }
-        _tempTargetbase = target;
-        return target;
+
+        return null;
     }
 
     public List<Character> GetCloserTargets(Vector3 position, float radius, bool isCanTargetHimself = false)
@@ -896,6 +992,19 @@ public abstract class Skill : NetworkBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
+            if (autoAttack == AutoAttack.autoAttack)
+            {
+                if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed)
+                {
+                    if (hit.collider.TryGetComponent<IDamageable>(out _))
+                    {
+
+                        IsAutoMode = true;
+                        AutoModeChanged?.Invoke(true);
+                    }
+                }
+            }
+
             return hit.point;
         }
         return Vector3.zero;
@@ -1126,10 +1235,11 @@ public abstract class Skill : NetworkBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-
-        _isAutoMode = true;
-        AutoModeChanged?.Invoke(true);
-
+        if (autoAttack == AutoAttack.autoAttack)
+        {
+            _isAutoMode = true;
+            AutoModeChanged?.Invoke(true);
+        }
 
         switch (_skillType)
         {
@@ -1222,6 +1332,14 @@ public abstract class Skill : NetworkBehaviour
         }
         if (Vector2.Distance(closest, transform.position) < 100) return enemys;
         else return null;
+    }
+
+    private bool IsValidTarget(IDamageable target)
+    {
+        if (target == null) return false;
+        if (target is MonoBehaviour monoBehaviour) return monoBehaviour != null;
+
+        return true;
     }
 
     private void OnClick()
@@ -1385,6 +1503,7 @@ public abstract class Skill : NetworkBehaviour
         }
 
         SubscribeClickEvents();
+        _skillRender.SetPrepareCursor();
 
         yield return _prepareCoroutine = StartCoroutine(PrepareJob(SaveTargetData));
 
@@ -1393,6 +1512,18 @@ public abstract class Skill : NetworkBehaviour
         OnClickCanceled();
 
         LoadTargetDataForCheckCast();
+
+        //test
+        if (_targetInfoQueue.TryPeek(out TargetInfo info))
+        {
+            if (info.Targets.Count > 0)
+            {
+                if (info.Targets[0] is Character targetCharacter && targetCharacter != _hero)
+                {
+                    targetCharacter.UIComponent.CircleSelect1.IsActive = false;
+                }
+            }
+        }
 
         PreparingSuccess?.Invoke(this);
         _isPreparing = false;
@@ -1411,18 +1542,37 @@ public abstract class Skill : NetworkBehaviour
 
         if (AnimTriggerCast != 0)
         {
-
             _isPlayCastAnim = true;
+            _isWaitingForCastCoroutine = true;
 
-            Hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, Buff.CastSpeed.Multiplier);
+            float finalCastSpeed = Buff.CastSpeed.Multiplier * ExtraAnimationSpeedMultiplier;
+            Hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, finalCastSpeed);
             _hero.Animator.SetTrigger(AnimTriggerCast);
             _hero.NetworkAnimator.SetTrigger(AnimTriggerCast);
 
             while (_isPlayCastAnim)
             {
+                if (_tempForDamage != null && !IsValidTarget(_tempForDamage))
+                {
+                    _isCanCancle = true;
+                    _hero.Move.CanMove = true;
+
+                    TryCancel(true);
+                    yield break;
+                }
+
+                if (!IsCanCast)
+                {
+                    TryCancel(true);
+                    yield break;
+                }
+
                 yield return null;
             }
+
+            _isWaitingForCastCoroutine = false;
         }
+
         else
         {
             _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
@@ -1441,7 +1591,18 @@ public abstract class Skill : NetworkBehaviour
         _isCasting = false;
 
         ClearData();
+
+        /// test
+        if (_tempTargetForDamage != null && _tempTargetForDamage.TryGetComponent(out Character character))
+        {
+            character.SelectedCircle.IsActive = false;
+            character.SelectedCircle.SwitchSelectCircle(false);
+        }
+
         LoadTargetDataForCheckCast();
+
+        _hero.Move.StopLookAt();
+        if (!_isAutoMode) _hero.Move.CanMove = true;
 
         _castCoroutine = null;
     }
@@ -1508,7 +1669,19 @@ public abstract class Skill : NetworkBehaviour
 
     public void ApplyDamage(Damage damage, GameObject target)
     {
-        target.GetComponent<IDamageable>().TryTakeDamage(ref damage, this);
+        var damageable = target != null ? target.GetComponent<IDamageable>() : null;
+        if (damageable != null)
+        {
+            damageable.TryTakeDamage(ref damage, this);
+            _hero.DamageTracker.AddDamage(damage, target, isServerRequest: isServer);
+            _hero.DamageGet(damage, target);
+        }
+
+        else
+        {
+            Debug.LogWarning($"[Skill] Target {target?.name} is not damageable or null");
+        }
+
         _hero.DamageTracker.AddDamage(damage, target, isServerRequest: isServer);
         _hero.DamageGet(damage, target);
 
@@ -1527,6 +1700,12 @@ public abstract class Skill : NetworkBehaviour
         {
             _tempTargetForDamage = target.transform;
             _tempForDamage = target.GetComponent<IDamageable>();
+        }
+
+        if (target == null)
+        {
+            Debug.LogError("[CmdApplyDamageLogic] Target is null, skipping");
+            return;
         }
 
         ApplyDamage(damage, target);

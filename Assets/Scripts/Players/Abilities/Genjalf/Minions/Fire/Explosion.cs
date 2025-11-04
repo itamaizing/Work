@@ -59,7 +59,7 @@ public class Explosion : Skill
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget();
+                //_target = GetRaycastTarget();
             }
             yield return null;
         }

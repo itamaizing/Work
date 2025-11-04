@@ -20,7 +20,7 @@ public class FlashOfLight : Skill
 
     private bool _spiritEnergyTalent;
 
-    private Character _target;
+    private IDamageable _target;
     private Character _previousTarget;
 
     private AudioSource _audioSource;
@@ -38,8 +38,7 @@ public class FlashOfLight : Skill
     {
         if (_target == null) return false;
 
-        if (isLightMode)
-            return _target == Hero || _target.gameObject.layer == LayerMask.NameToLayer("Allies");
+        if (isLightMode) return (_target is Character character && character == Hero) || _target.gameObject.layer == LayerMask.NameToLayer("Allies");
         else
             return _target.gameObject.layer == LayerMask.NameToLayer("Enemy");
     }
@@ -105,26 +104,28 @@ public class FlashOfLight : Skill
     }
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        _previousTarget = null;
+
         while (_target == null)
         {
             if (Input.GetMouseButton(0))
             {
-                var clickedTarget = GetRaycastTarget(true);
+                _target = GetRaycastTarget(true);
 
-                if (clickedTarget != null && IsValidTarget(clickedTarget)) _target = clickedTarget;
+                if (_target != null && _target is Character characte && IsValidTarget(characte)) _previousTarget = characte;
                 else _target = null;
 
             }
             yield return null;
         }
         TargetInfo targetInfo = new();
-        targetInfo.Targets.Add(_target);
+        targetInfo.Targets.Add(_previousTarget);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_target == null || !IsCanCast) yield break;
+        if (_previousTarget == null || !IsCanCast) yield break;
 
         if (TryPayCost())
         {
@@ -145,22 +146,19 @@ public class FlashOfLight : Skill
 
     private void HandleFlashOfLight()
     {
-        if (IsNewTarget && _isCooldownTalentActive && Time.time - _lastTalentTime >= _talentCooldown)
+        if (_isCooldownTalentActive && Time.time - _lastTalentTime >= _talentCooldown)
         {
             ReduceCooldowns();
             _lastTalentTime = Time.time;
         }
 
-        Heal(_target);
-        _previousTarget = _target;
+        Heal(_previousTarget);
     }
 
     private void HandleFlashOfDarkness()
     {
-        Damage(_target);
+        Damage(_previousTarget);
     }
-
-    private bool IsNewTarget => _previousTarget != _target;
 
     private void Heal(Character target)
     {
@@ -169,7 +167,11 @@ public class FlashOfLight : Skill
 
         float bonusHealFromSpiritEnergy = 0;
         if (_spiritEnergyTalent) bonusHealFromSpiritEnergy = GetSpiritEnergyBonus(target);
-        var heal = new Heal { Value = _healAmount + bonusHealFromSpiritEnergy };
+        var heal = new Heal 
+        {
+            Value = _healAmount + bonusHealFromSpiritEnergy,
+            DamageableSkill = this
+        };
 
         CmdApplyHeal(heal, health.gameObject, this, Name);
     }

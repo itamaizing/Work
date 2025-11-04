@@ -24,6 +24,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     //private MoveComponent _tempTargetMove;
 
     [SerializeField] private ConsumeCombo_Scorpion consumeCombo_Scorpion;
+    [SerializeField] private ScorpionPassive scorpionPassive;
 
     [field: Header("Test Combo_Upgrade")]
 
@@ -60,7 +61,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
             transform.position
             );
 
-        return distance <= GetCurrentRadius() /*Radius*/;
+        return distance <= Radius;
     }
 
     private Vector3 FindPlace(Character target)
@@ -136,23 +137,6 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
         return false;
     }
 
-    private float GetCurrentRadius()
-    {
-        var mana = _hero.Resources.FirstOrDefault(o => o.Type == ResourceType.Mana);
-        if (mana == null) return 0f;
-
-        float currentMana = mana.CurrentValue;
-
-        float maxReachableTiles = Mathf.Floor(currentMana / _manaCostPerTile);
-
-        if (currentMana < _baseManaCost)
-            return 0f;
-
-        float availableDistance = (currentMana - _baseManaCost) / _manaCostPerTile;
-
-        return Mathf.Min(availableDistance, Radius);
-    }
-
     private int CalculateCurrentScale() // ��������� ���� ��� ����� ����������� ���������
     {
         //_hero.Stamina.Value
@@ -192,12 +176,11 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     {
         while (true)
         {
-            Radius = GetCurrentRadius();
             _drawCircleSelf.Draw(Radius);
 
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget(true);
+                //_target = GetRaycastTarget(true);
 
                 if (_target == null)
                 {
@@ -206,7 +189,22 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
                 }
 
                 float dist = Vector3.Distance(_target.transform.position, transform.position);
-                _skillEnergyCosts[0].resourceCost = GetCurrentManaCost(dist);
+
+                if (dist > Radius)
+                {
+                    Debug.Log("[Teleportation] Цель вне зоны действия");
+                    yield break;
+                }
+
+                int manaCost = GetCurrentManaCost(dist);
+                var mana = _hero.Resources.FirstOrDefault(r => r.Type == ResourceType.Mana);
+                if (mana == null || mana.CurrentValue < manaCost)
+                {
+                    Debug.Log("[Teleportation] Недостаточно маны");
+                    yield break;
+                }
+
+                _skillEnergyCosts[0].resourceCost = manaCost;
                 break;
             }
 
@@ -251,6 +249,13 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
         {
             if (targetState != null) extraDuration = targetState.CheckStateStacks(States.ComboState);
             if (UnityEngine.Random.value <= 0.3f) _hero.CharacterState.CmdAddState(States.IdealEvade, 1f + extraDuration, 30f, _hero.gameObject, name);
+        }
+
+        if (scorpionPassive.IsImpulseMatter)
+        {
+            var passive = _hero.GetComponent<SkillManager>().Abilities.FirstOrDefault(s => s is ScorpionPassive) as ScorpionPassive;
+
+            passive?.ActivateEnergyFreeAfterTeleport();
         }
 
         yield return null;

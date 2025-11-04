@@ -46,6 +46,9 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
     public override List<StatusEffect> Effects => _effects;
 
+    public Transform transform => throw new NotImplementedException();
+    public GameObject gameObject => throw new NotImplementedException();
+
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _characterState = character;

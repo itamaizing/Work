@@ -453,6 +453,69 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: -8, y: -5, z: -8, w: -5}
   m_Softness: {x: 0, y: 0}
+--- !u!1 &135063384
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 135063386}
+  - component: {fileID: 135063385}
+  m_Layer: 0
+  m_Name: NavMesh Surface
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &135063385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 135063384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: -1372625422
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 1
+  m_DefaultArea: 0
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.51
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 0}
+  m_BuildHeightMesh: 0
+--- !u!4 &135063386
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 135063384}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.841526, y: -0.7075085, z: 0.047589082}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &283462445
 GameObject:
   m_ObjectHideFlags: 0
@@ -1203,7 +1266,18 @@ MonoBehaviour:
   - {fileID: 2102560157480070522, guid: aedf6de1982891348890e277ff5488fa, type: 3}
   - {fileID: 8842404529923409551, guid: c543d7786e879d14cb91ce31839db008, type: 3}
   - {fileID: 3442255630167083756, guid: 8bef7db12cb9d0a4ab39fc04ec97740b, type: 3}
-  - {fileID: 8763643763125113918, guid: 7ca7e11552419974da01f50646019b88, type: 3}
+  - {fileID: 52505351587200989, guid: 73a68b36544bf624aaba1f3c25500230, type: 3}
+  - {fileID: 2152374494346322251, guid: f4c655cda711ee04982ae4767cff39d7, type: 3}
+  - {fileID: 2152374494346322251, guid: e3f8b1d07bf91a843899c3d8b908fa40, type: 3}
+  - {fileID: 3906734254346883187, guid: b4974656f43ed384e9560645ff90b572, type: 3}
+  - {fileID: 2058911381882631605, guid: 0f2f306b232c9674895cee7d74e881f8, type: 3}
+  - {fileID: 3906734254346883187, guid: efcb433fc734fc44e8abf2e45471d9b4, type: 3}
+  - {fileID: 6581410618162525258, guid: a7f53fff04ebc6947aa302af5c5ecf21, type: 3}
+  - {fileID: 6581410618162525258, guid: 0988263531e4d9b49bb07f4cd478b765, type: 3}
+  - {fileID: 6581410618162525258, guid: 3076e8c7d3e16c4419ffd11e2ca182c2, type: 3}
+  - {fileID: 6581410618162525258, guid: c082d16e8662d1a4880bcf8291bdc631, type: 3}
+  - {fileID: 6581410618162525258, guid: e00aec37170bec6438f7d01f4d6310ff, type: 3}
+  - {fileID: 6581410618162525258, guid: ff5e14a5b6fb2e340baa82eb6d6a88c0, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -1583,6 +1657,7 @@ GameObject:
   - component: {fileID: 493889667}
   - component: {fileID: 493889666}
   - component: {fileID: 493889665}
+  - component: {fileID: 493889669}
   m_Layer: 5
   m_Name: SigInButton
   m_TagString: Untagged
@@ -1717,6 +1792,21 @@ RectTransform:
   m_AnchoredPosition: {x: -211, y: -140}
   m_SizeDelta: {x: 280.6531, y: 114.2657}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &493889669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 493889664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce2327263c5235f44884e298afa0bfb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  workOn: {fileID: 1780031975}
+  workOff: {fileID: 1791073519}
+  uIMenuMainWindow: {fileID: 0}
 --- !u!1 &605208264
 GameObject:
   m_ObjectHideFlags: 0

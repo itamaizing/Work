@@ -8,6 +8,7 @@ public class ReversePolarity : Skill
     [SerializeField] private SparkOfLight sparkOfLight;
     [SerializeField] private FlashOfLight flashOfLight;
     [SerializeField] private Restoration restoration;
+    [SerializeField] private FlowOfLight flowOfLight;
     [SerializeField] private PriestShield priestShield;
 
     [SerializeField] private AudioClip audioClip;
@@ -59,7 +60,7 @@ public class ReversePolarity : Skill
 
     CmdPlayShootSound();
 
-    yield return new WaitForSeconds(CastDeley);
+    //yield return new WaitForSeconds(CastDeley);
 
     SwitchSpells();
 
@@ -114,6 +115,7 @@ public class ReversePolarity : Skill
     sparkOfLight.SwitchMode();
     flashOfLight.SwitchMode();
     restoration.SwitchMode();
+    flowOfLight.SwitchMode();
     //priestShield.SwitchMode();
     }
 

@@ -52,6 +52,8 @@ public class SeriesOfStrikes : MonoBehaviour
 	}
 	public float GetMultipliedSpeed()
 	{
+		if (!_seriesCompliteCompoTalent) return 1f;
+
 		int maxCount = 0;
 		for(int i = 0; i< _seriesOfStrikes.Count; i++)
 		{
@@ -64,6 +66,7 @@ public class SeriesOfStrikes : MonoBehaviour
 	}
 	public bool MakeHit(Character target, AbilityForm form, float usedRuneValue, float usedEnergy, float damage)
 	{
+		if (!_seriesCompliteCompoTalent) return false;
 		_energy.ChangeBarColor(new Color(255, 165, 0));
 
 		if (target != null)
@@ -168,6 +171,8 @@ public class SeriesOfStrikes : MonoBehaviour
     {
 		if (_isInTheRow)
 		{
+			if (!_seriesCompliteCompoTalent) return;
+
 			_timer -= Time.deltaTime;
 			if (_timer <= 0)
 			{

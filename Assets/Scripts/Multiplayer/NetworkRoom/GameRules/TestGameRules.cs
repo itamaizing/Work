@@ -19,7 +19,7 @@ public class TestGameRules : GameRules
     private TeamsPanel _teams; // need rework
     private int[] _teamDeaths = new int[3];
 
-    private int _teamMaxScore = 2;
+    private int _teamMaxScore = 3;
     private int _team1Score = 0;
     private int _team2Score = 0;
 
@@ -30,7 +30,7 @@ public class TestGameRules : GameRules
 
     protected override void GameStartClient()
     {
-
+        _preparationAreaManager?.PreparationAreasDisable(5f);
     }
 
     protected override void OnPlayerDied(Character player)
@@ -167,6 +167,8 @@ public class TestGameRules : GameRules
         _teamDeaths[1] = 0;
         _teamDeaths[2] = 0;
 
+        RpcEnablePreparationAreas(5f);
+
         if (isServer)
         {
             List<NetworkIdentity> objectsToRemove = new List<NetworkIdentity>();
@@ -180,14 +182,6 @@ public class TestGameRules : GameRules
                 if (networkIdentity != null && !isPlayer && !isTestGameRules && !isUser)
                 {
                     objectsToRemove.Add(networkIdentity);
-                }
-            }
-
-            foreach (var networkIdentity in objectsToRemove)
-            {
-                if (networkIdentity != null && networkIdentity.isServer)
-                {
-                    NetworkServer.Destroy(networkIdentity.gameObject);
                 }
             }
         }
@@ -289,5 +283,12 @@ public class TestGameRules : GameRules
         }
 
         StartCoroutine(CloseRoomJob());
+    }
+
+    [ClientRpc] private void RpcEnablePreparationAreas(float duration) => _preparationAreaManager?.PreparationAreasDisable(duration);
+
+    protected override void OnTowerDied(Object tower)
+    {
+        throw new System.NotImplementedException();
     }
 }

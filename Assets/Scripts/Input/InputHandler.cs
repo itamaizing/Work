@@ -10,7 +10,7 @@ public class InputHandler : MonoBehaviour
 	public static InputHandler Instance;
 
 	private string[] _keySpell = new string[16];
-
+	
 	private Vector2 _movementVector;
 	private StandardInput _inputActions;
 	private bool _IsClick;
@@ -94,7 +94,7 @@ public class InputHandler : MonoBehaviour
             if (results.Count > 0)
                 return;
 
-            OnClick?.Invoke(); 
+			OnClick?.Invoke(); 
 		};
 		_inputActions.GameplayMap.Click.canceled += i => OnClickCanceled?.Invoke();
 		_inputActions.GameplayMap.AltClick.performed += i => OnAltClick?.Invoke();

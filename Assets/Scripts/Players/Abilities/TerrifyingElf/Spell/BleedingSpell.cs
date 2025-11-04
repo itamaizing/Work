@@ -12,7 +12,7 @@ public class BleedingSpell : Skill
     private Character _target;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
 
-    protected override bool IsCanCast => true;
+    protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius;
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
     protected override int AnimTriggerCast => 0;
 
@@ -22,12 +22,11 @@ public class BleedingSpell : Skill
 
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && _target == null && !_disactive)
+        while (_target == null && !_disactive)
         {
             if (GetMouseButton)
             {
-                _targetPoint = GetMousePoint();
-                _target = GetRaycastTarget(true);
+                //_target = GetRaycastTarget(true);
                 if (multiMagic != null) multiMagic.LastTarget = _target;
             }
             yield return null;

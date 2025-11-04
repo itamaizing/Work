@@ -10,7 +10,6 @@ public class AutoSkillCast
     private MonoBehaviour _parentForCoroutine;
 
     public bool IsBusy { get { return _currentSkill != null; } }
-    public Skill CurrentSkill { get => _currentSkill; }
 
     public AutoSkillCast(MonoBehaviour parentForCoroutine)
     {
@@ -31,10 +30,11 @@ public class AutoSkillCast
     public void DeleteSkill()
     {
         if (_currentSkill == null) return;
-
         _currentSkill.TryCancel(true);
 
         _currentSkill.SkillRender.StopDrawAutoAttackRadius();
+
+        if (_currentSkill.Hero != null && _currentSkill.Hero.Move != null)  _currentSkill.Hero.Move.StopLookAt();
 
         StopTryCastCoroutine();
 
@@ -43,9 +43,13 @@ public class AutoSkillCast
 
     public void Pause()
     {
+        if (_currentSkill == null) return;
+
         _currentSkill.TryCancel(true);
 
-        StopTryCastCoroutine();
+        if (_currentSkill.Hero != null && _currentSkill.Hero.Move != null)
+            _currentSkill.Hero.Move.StopLookAt();
+
     }
 
     public void Continue()
@@ -93,10 +97,24 @@ public class AutoSkillCast
                 character.SelectedCircle.SwitchSelectCircle(true);
             }
         }
+
         while (true)
         {
+            if (_targetInfo.Targets.Count > 0 && _targetInfo.Targets[0] is Character character)
+            {
+                _currentSkill.Hero.Move.LookAtTransform(character.transform);
+                _currentSkill.Hero.Move.IsLookAtCursor = false;
+            }
+            else if (_targetInfo.Points.Count > 0)
+            {
+                _currentSkill.Hero.Move.LookAtPosition(_targetInfo.Points[0]);
+                _currentSkill.Hero.Move.IsLookAtCursor = false;
+            }
+
             _currentSkill.TryCast(_targetInfo);
-            yield return null;
+
+            yield return new WaitForSeconds(_currentSkill.AutoAttackDelay);
         }
     }
+
 }

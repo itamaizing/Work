@@ -37,21 +37,37 @@ public class IceCloud : Skill
 
 	protected override int AnimTriggerCast => Animator.StringToHash("IceCloud");
 
-	//private bool IsCanCastCheck()
-	//{
-	//	return true;
-	//	/*if (_rune.CurrentValue >= 1)
-	//	{
-	//		_rune.CmdUse(1);
-	//		return true;
-	//	}
-	//	else
-	//	{
-	//		return false;
-	//	}*/
-	//}
+    //private bool IsCanCastCheck()
+    //{
+    //	return true;
+    //	/*if (_rune.CurrentValue >= 1)
+    //	{
+    //		_rune.CmdUse(1);
+    //		return true;
+    //	}
+    //	else
+    //	{
+    //		return false;
+    //	}*/
+    //}
 
-	private void Start()
+    private void OnDestroy()
+    {
+        OnSkillCanceled -= HandleSkillCanceled;
+    }
+
+    private void OnEnable()
+    {
+        OnSkillCanceled += HandleSkillCanceled;
+    }
+
+    private void HandleSkillCanceled()
+    {
+		_target = null;
+		_mousePos = Vector3.positiveInfinity;
+	}
+
+    private void Start()
 	{
 		_audioSource = GetComponent<AudioSource>();
 
@@ -80,8 +96,8 @@ public class IceCloud : Skill
 
 		CmdCreateProjecttile(angle, _energy.CurrentValue);
 		_target = null;
-		_mousePos = Vector2.positiveInfinity;
-		ClearData();
+		//_mousePos = Vector2.positiveInfinity;
+		//ClearData();
 	}
 
 	[Command]
@@ -150,12 +166,16 @@ public class IceCloud : Skill
 			}
 			yield return null;
 		}
-    }
+
+		TargetInfo targetInfo = new TargetInfo();
+		if (_target != null) targetInfo.Points.Add(_target.Position);
+		else if (_mousePos != Vector3.positiveInfinity) targetInfo.Points.Add(_mousePos);
+		callbackDataSaved(targetInfo);
+	}
 
 	protected override IEnumerator CastJob()
 	{
 		Shoot();
-		Hero.Move.CanMove = true;
 		yield return null;
 	}
 
@@ -175,8 +195,6 @@ public class IceCloud : Skill
 		AnimCastEnded();
 	}
 
-	public void StopMove()
-	{
-		Hero.Move.CanMove = false;
-	}
+	public void CanMoveIceCloud() => Hero.Move.CanMove = true;
+	public void StopMoveIceCloud() => Hero.Move.CanMove = false;
 }

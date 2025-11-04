@@ -112,7 +112,7 @@ public class SpitPoison : Skill, IAltAbility
         {
             if (GetMouseButton)
             {
-                _currentTarget = GetRaycastTarget(true);
+                //_currentTarget = GetRaycastTarget(true);
 
                 ChooseTarget();
 

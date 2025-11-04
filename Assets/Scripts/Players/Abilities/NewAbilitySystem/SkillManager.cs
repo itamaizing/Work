@@ -25,13 +25,16 @@ public class SkillManager : MonoBehaviour
     //private AutoAttackQueue _autoAttackQueue;
     private Skill _selectedSkill;
     private Coroutine _lastCastResetCoroutine;
+    private int _castWindowId = 0;
 
     private Dictionary<Skill, Action> _castEndedHandlers = new();
 
     public TalentSystem TalesntSystem => _talentSystem;
     public Skill LastCastedSkill { get; private set; }
+    public Skill PreviewCastedSkill { get; private set; }
     public SkillQueue SkillQueue { get => _skillQueue; }
     public Skill[] SelectedSkills { get => _selectedSkills; }
+    public bool IsNextSkillFree { get; private set; }
     public IEnumerable<Skill> DefaultSkills => _skills.Where(o => o.IsTalentSpell == false);
     public IEnumerable<Skill> TalentsSkills => _skills.Where(o => o.IsTalentSpell);
 
@@ -86,17 +89,27 @@ public class SkillManager : MonoBehaviour
     {
         if (!(skill is IPassiveSkill))
         {
+            PreviewCastedSkill = LastCastedSkill;
             LastCastedSkill = skill;
+            _castWindowId++;
 
             if (_lastCastResetCoroutine != null) StopCoroutine(_lastCastResetCoroutine);
-            _lastCastResetCoroutine = StartCoroutine(CastWindowResetCoroutine());
+            _lastCastResetCoroutine = StartCoroutine(CastWindowResetCoroutine(_castWindowId));
+
+            Debug.Log($"PreviewCastedSkill: {PreviewCastedSkill}");
+            Debug.Log($"LastCastedSkill: {LastCastedSkill}");
         }
     }
 
-    private IEnumerator CastWindowResetCoroutine()
+    private IEnumerator CastWindowResetCoroutine(int id)
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(3f);
+
+        if (_castWindowId != id)
+            yield break;
+        PreviewCastedSkill = null;
         LastCastedSkill = null;
+
     }
     #endregion
 
@@ -186,6 +199,17 @@ public class SkillManager : MonoBehaviour
         SkillAdded?.Invoke(null);
     }
 
+    public bool TryConsumeNextSkillFree()
+    {
+        if (!IsNextSkillFree)
+            return false;
+
+        IsNextSkillFree = false;
+        return true;
+    }
+
+    public void SetNextSkillFree() => IsNextSkillFree = true;
+
     public void DeactivateSkill(Skill skill)
     {
         for (int i = 0; i < _selectedSkills.Length; i++)
@@ -225,14 +249,14 @@ public class SkillManager : MonoBehaviour
     {
         if (value)
         {
-            InputHandler.OnClick += PrepereSkill;
+            InputHandler.OnShiftLeftMouse += PrepereSkill;
             InputHandler.OnAltClick += CancelSkillCast;
 
             InputHandler.OnCast += OnCastSelect;
         }
         else
         {
-            InputHandler.OnClick -= PrepereSkill;
+            InputHandler.OnShiftLeftMouse -= PrepereSkill;
             InputHandler.OnAltClick -= CancelSkillCast;
 
             InputHandler.OnCast -= OnCastSelect;
@@ -372,7 +396,6 @@ public class SkillManager : MonoBehaviour
         if (_selectedSkill.IsAutoMode)
         {
             _autoSkillCast.SetSkill(skill, skill.TargetInfoQueue.Dequeue());
-            _autoSkillCast.CurrentSkill.AutoModeChanged += OnSwichAAMode;
 
             foreach (var item in _simpleSkills)
             {
@@ -389,15 +412,6 @@ public class SkillManager : MonoBehaviour
             SkillQueue.Add(_selectedSkill);
         }
     }
-    private void OnSwichAAMode(bool enable)
-    {
-        if (enable == false)
-        {
-            _autoSkillCast.CurrentSkill.AutoModeChanged += OnSwichAAMode;
-            _autoSkillCast.DeleteSkill();
-        }
-    }
-
 
     private void AutoSkillUsed(Skill skill)
     {

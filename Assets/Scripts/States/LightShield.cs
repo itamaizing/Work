@@ -22,6 +22,9 @@ public class LightShield : AbstractCharacterState, IDamageable
     public override List<StatusEffect> Effects => new List<StatusEffect>();
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 
+    public Transform transform => throw new NotImplementedException();
+    public GameObject gameObject => throw new NotImplementedException();
+
     public override void EnterState(CharacterState character, float durationToExit, float maxDamageAbsorbed, Character personWhoMadeBuff, string skillName)
     {
         _characterState = character;
@@ -39,7 +42,7 @@ public class LightShield : AbstractCharacterState, IDamageable
         SearchTalent();
 
         Debug.Log("Shield HP - " + _maxAbsorption);
-        DamageTaken += DamageEnemiesInRadius;
+        //DamageTaken += DamageEnemiesInRadius;
 
         if (_characterState.TryGetComponent<Health>(out var health))
         {
@@ -61,7 +64,7 @@ public class LightShield : AbstractCharacterState, IDamageable
     public override void ExitState()
     {
         Debug.Log("LightShield state exited.");
-        DamageTaken -= DamageEnemiesInRadius;
+        //DamageTaken -= DamageEnemiesInRadius;
 
         if (_characterState.TryGetComponent<Health>(out var health))
         {
@@ -94,7 +97,7 @@ public class LightShield : AbstractCharacterState, IDamageable
         _damageAbsorbed += damageToAbsorb;
         damage.Value -= damageToAbsorb;
 
-        _characterState.GetComponent<Character>().DamageTracker.AddDamage(damage, null);
+        _characterState.GetComponent<Character>().DamageTracker.AddDamage(damage, _characterState.gameObject, true);
 
         var tempDamage = new Damage
         {
@@ -121,28 +124,28 @@ public class LightShield : AbstractCharacterState, IDamageable
         return damage.Value == 0;
     }
 
-    private void DamageEnemiesInRadius(Damage damage, Skill skill)
-    {
-        foreach (var obj in NetworkServer.spawned.Values)
-        {
-            if (!obj.TryGetComponent(out Character enemy)) continue;
+    //private void DamageEnemiesInRadius(Damage damage, Skill skill)
+    //{
+    //    foreach (var obj in NetworkServer.spawned.Values)
+    //    {
+    //        if (!obj.TryGetComponent(out Character enemy)) continue;
 
-            var distance = Vector3.Distance(_characterState.transform.position, enemy.transform.position);
-            if (distance > 10f || distance <= 0.25f) continue;
+    //        var distance = Vector3.Distance(_characterState.transform.position, enemy.transform.position);
+    //        if (distance > 10f || distance <= 0.25f) continue;
 
-            var tempDamage = new Damage
-            {
-                Form = damage.Form,
-                PhysicAttackType = damage.PhysicAttackType,
-                School = damage.School,
-                Type = damage.Type,
-                Value = damage.Value * 0.2f
-            };
+    //        var tempDamage = new Damage
+    //        {
+    //            Form = damage.Form,
+    //            PhysicAttackType = damage.PhysicAttackType,
+    //            School = damage.School,
+    //            Type = damage.Type,
+    //            Value = damage.Value * 0.2f
+    //        };
 
-            enemy.Health.TryTakeDamage(ref tempDamage, null);
-            enemy.DamageTracker.AddDamage(tempDamage, null);
-        }
-    }
+    //        enemy.Health.TryTakeDamage(ref tempDamage, null);
+    //        enemy.DamageTracker.AddDamage(tempDamage, null);
+    //    }
+    //}
 
     public void ShowPhantomValue(Damage phantomValue)
     {

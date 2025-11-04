@@ -8,7 +8,10 @@ public class NewPunch_Scorpion : Skill
     [Header("Ability settings")]
     [SerializeField] private Character _playerLinks;
     [SerializeField] private PassiveCombo_Scorpion _comboCounter;
+    [SerializeField] private ScorpionPassive scorpionPassive;
+    [SerializeField] private byte _hitsInRow = 1;
 
+    private Coroutine _hitsInRowCoroutine;
     private Character _lastTarget = null;
     private Animator _animator;
     private bool _isRightKick = true;
@@ -27,6 +30,20 @@ public class NewPunch_Scorpion : Skill
     private void Start() => _animator = GetComponent<Animator>();
     private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
     private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
+
+    #region Talent
+    [Header("KnockdownAddChance talent")]
+    [SerializeField] private float stunningAddChance = 0.1f;
+    private bool _isStunningAddChance = false;
+
+    public void StunningAddChance(bool value) => _isStunningAddChance = value;
+
+    [Header("WarmingUp  talent")]
+    [SerializeField] private float warmingUpDuration;
+    private bool _isWarningUpAddState = false;
+
+    public void WarningUpAddState(bool value) => _isWarningUpAddState = value;
+    #endregion
 
     private bool IsTargetInRange()
     {
@@ -63,8 +80,6 @@ public class NewPunch_Scorpion : Skill
             _hero.Move.StopLookAt();
             return;
         }
-
-        _hero.Move.LookAtPosition(_target.transform.position);
     }
 
     public void NewPunch_ScorpionMoveTrue()
@@ -80,7 +95,7 @@ public class NewPunch_Scorpion : Skill
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget();
+                //_target = GetRaycastTarget();
 
                 if (_target != null) _target.SelectedCircle.IsActive = true;
             }
@@ -120,8 +135,8 @@ public class NewPunch_Scorpion : Skill
             Type = DamageType,
         };
 
-        CmdApplyDamage(_runtimeTarget, damage);
-
+        Character target = _runtimeTarget;
+        CmdApplyDamage(target, damage);
         _runtimeTarget = null;
     }
 
@@ -176,6 +191,37 @@ public class NewPunch_Scorpion : Skill
     {
         Debug.Log("[NewPunch_Scorpion] Attack Passed");
         _comboCounter.AddSkill(target, this);
+
+        if (_hitsInRowCoroutine != null)
+            StopCoroutine(_hitsInRowCoroutine);
+        _hitsInRowCoroutine = StartCoroutine(HitsInRowTimer());
+
+        if (_lastTarget != null && _lastTarget == target) _hitsInRow++;
+        else _hitsInRow = 1;
+
+        _lastTarget = target;
+
+        if (_isWarningUpAddState && _hitsInRow >= 2)
+        {
+            var state = _hero.CharacterState;
+            state?.AddState(States.WarmingUpState, warmingUpDuration, 0, _hero.gameObject, name);
+            _hitsInRow = 0;
+        }
+
+        if (_isStunningAddChance)
+        {
+            var state = target.GetComponent<CharacterState>();
+
+            if (scorpionPassive.IsAddStateUpdateChance && state != null)
+            {
+                if (state.CheckForState(States.DisappointmentState)) state.AddState(States.Stun, 1f, 0, _hero.gameObject, name);
+            }
+
+            else
+            {
+                if (UnityEngine.Random.value <= stunningAddChance) state?.AddState(States.Stun, 1f, 0, _hero.gameObject, name);
+            }
+        }
     }
 
     public void NewPunch_ScorpionCast()
@@ -196,6 +242,13 @@ public class NewPunch_Scorpion : Skill
     protected override void ClearData()
     {
         _hero.Move.StopLookAt();
+    }
+
+    private IEnumerator HitsInRowTimer()
+    {
+        yield return new WaitForSeconds(2f);
+        _hitsInRow = 0;
+        _hitsInRowCoroutine = null;
     }
 
     //private void AttackMissed()

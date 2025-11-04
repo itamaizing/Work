@@ -4,11 +4,11 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public enum ResourceType 
+public enum ResourceType
 {
-    Health, 
-    Mana, 
-    Energy, 
+    Health,
+    Mana,
+    Energy,
     Rune,
     Psionic,
     CooldownEnergy,
@@ -22,13 +22,15 @@ public abstract class Resource : NetworkBehaviour
     [SyncVar(hook = nameof(HookMaxValueChanged))] protected float _maxValue;
     [SyncVar] protected float _regenerationValue;
     [SyncVar] protected float _regenerationPeriod;
-    
+
     protected Coroutine _regenCoroutine;
 
+    private float _bonusMaxValue = 0f;
+
     public float CurrentValue { get => _currentValue; set { _currentValue = value; } }
-    public float MaxValue { get => _maxValue; protected set { _maxValue = value; } }
-    public float RegenerationValue { get => _regenerationValue;  set { _regenerationValue = value; } }
-    public float RegenerationDelay { get => _regenerationPeriod;  set { _regenerationPeriod = value; } }
+    public float MaxValue { get => _maxValue; set => _maxValue = value; }
+    public float RegenerationValue { get => _regenerationValue; set { _regenerationValue = value; } }
+    public float RegenerationDelay { get => _regenerationPeriod; set { _regenerationPeriod = value; } }
 
     public ResourceType Type => _resourceType;
 
@@ -37,10 +39,10 @@ public abstract class Resource : NetworkBehaviour
     public event Action<float> PhantomValueShown;
     public event Action<Color> ChangedBarColor;
 
-	private void Awake()
-	{
-		ClientStartRegenirateJob();
-	}
+    private void Awake()
+    {
+        ClientStartRegenirateJob();
+    }
 
     private void OnEnable()
     {
@@ -54,7 +56,7 @@ public abstract class Resource : NetworkBehaviour
 
     public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data)
     {
-        _currentValue = maxValue;
+        _currentValue = maxValue / 2;
         _maxValue = maxValue;
         _regenerationValue = regenValue;
         _regenerationPeriod = regenDelay;
@@ -65,7 +67,7 @@ public abstract class Resource : NetworkBehaviour
 
     public virtual void Add(float value)
     {
-		if (_maxValue >= _currentValue + value)
+        if (_maxValue >= _currentValue + value)
             _currentValue += value;
         else
             _currentValue = _maxValue;
@@ -73,7 +75,7 @@ public abstract class Resource : NetworkBehaviour
 
     public virtual bool TryUse(float value)
     {
-        if(_currentValue - value >= 0)
+        if (_currentValue - value >= 0)
         {
             CurrentValue -= value;
             return true;
@@ -88,6 +90,14 @@ public abstract class Resource : NetworkBehaviour
     public void PhantomValueShow(float value)
     {
         PhantomValueShown?.Invoke(value);
+    }
+
+    public void InstCurrentValue(float value)
+    {
+        _currentValue = value;
+
+        if (isServer) RpcResetValueUpdate();
+        else HookValueChanged(0, _currentValue);
     }
 
     public void ChangeBarColor(Color color)
@@ -154,7 +164,7 @@ public abstract class Resource : NetworkBehaviour
         {
             if (_regenerationValue < 0) yield return null;
 
-            if(_currentValue < _maxValue)
+            if (_currentValue < _maxValue)
             {
                 yield return new WaitForSeconds(_regenerationDelay);
 
@@ -196,7 +206,7 @@ public abstract class Resource : NetworkBehaviour
     [ClientCallback]
     protected void ClientStartRegenirateJob()
     {
-        if(_regenCoroutine == null)
+        if (_regenCoroutine == null)
             _regenCoroutine = StartCoroutine(RegenerateJob());
     }
 

@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using Mirror;
 using UnityEngine;
 
 public class MultiMagicSpell : Skill
@@ -33,5 +32,4 @@ public class MultiMagicSpell : Skill
         if (Hero.CharacterState.CheckForState(States.MultiMagic)) Hero.CharacterState.CmdRemoveState(States.MultiMagic);
         else Hero.CharacterState.CmdAddState(States.MultiMagic, 9999, 0f, Hero.gameObject, name);
     }
-
 }

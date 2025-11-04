@@ -30,6 +30,7 @@ public abstract class AutoAttackSkill : Skill
     public Vector2 LastTargetPosition { get => _lastTargetPosition; }
     public override bool IsPayCostStartCooldown { get => false; }
     public bool IsAutoattackMode { get => _isAutoattackMode; set => _isAutoattackMode = value; }
+    public Character LastTarget { get; private set; }
     protected override bool IsCanCast
     {
         get
@@ -104,7 +105,7 @@ public abstract class AutoAttackSkill : Skill
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget();
+             //   _target = GetRaycastTarget();
 
                 if(_target != null)
 				    _target.SelectedCircle.IsActive = true;
@@ -162,8 +163,9 @@ public abstract class AutoAttackSkill : Skill
                 if (_isAttacking && NoObstacles(Target.transform.position, _obstacle))
                 {
                     _lastTargetPosition = Target.transform.position;
+                    LastTarget = _target;
 
-                    if(_chargeAttackDelay > 0)
+                    if (_chargeAttackDelay > 0)
                         yield return StartCastDeleyCoroutine(_chargeAttackDelay);
 
                     //yield return new WaitForSeconds(AttackSpeed);

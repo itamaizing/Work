@@ -4,21 +4,16 @@ using UnityEngine;
 
 public class NatureTalent_2 : Talent
 {
-    [SerializeField] private ShotIntoSky shotIntoSky;
-    [SerializeField] private ShotsIntoSky shotsIntoSky;
-    [SerializeField] private TerrifyingElfAura terrifyingElfAura;
+    [SerializeField] private GrowTree growTree;
+    [SerializeField] private SkillManager _ability;
 
     public override void Enter()
     {
-        shotIntoSky.SetSilenceTalentActive(true);
-        shotsIntoSky.SetSilenceTalentActive(true);
-        terrifyingElfAura.TreeRadiusCalmessTalentActive(true);
+        _ability.ActivateSkill(growTree);
     }
 
     public override void Exit()
     {
-        shotIntoSky.SetSilenceTalentActive(false);
-        shotsIntoSky.SetSilenceTalentActive(false);
-        terrifyingElfAura.TreeRadiusCalmessTalentActive(false);
+        _ability.DeactivateSkill(growTree);
     }
 }

@@ -28,9 +28,11 @@ public class Restoration : Skill
     private float _accumulatedEffectiveness = 1f;
     private float _totalHealedInInterval = 0f;
     private bool _spiritEnergyTalent;
-    private Character _target;
+    private IDamageable _target;
+    private Character characterTarget;
 
-    public Character Target => _target;
+    public IDamageable Target => _target;
+
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
 
     protected override bool IsCanCast => IsCanCastCheck();
@@ -60,9 +62,9 @@ public class Restoration : Skill
     private void OnDisable()
     {
         OnModeChange -= UpdateMode;
-        if (_target != null)
+        if (_target != null && _target is Character character)
         {
-            var healthComponent = _target.GetComponent<Health>();
+            var healthComponent = character.GetComponent<Health>();
             if (healthComponent != null)
             {
                 healthComponent.HealTaked -= OnHealTaken;
@@ -79,6 +81,7 @@ public class Restoration : Skill
     [Command]
     private void CmdSwitchMode()
     {
+        UpdateMode();
         isLightMode = !isLightMode;
     }
 
@@ -105,19 +108,20 @@ public class Restoration : Skill
 
     private void HandleRestorationLight()
     {
-        if (_target == null) return;
+        if (characterTarget == null) return;
 
         bool isAlly = _target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
         if (isAlly && TryPayCost())
         {
-            var healthComponent = _target.GetComponent<Health>();
+            var healthComponent = characterTarget.GetComponent<Health>();
             if (healthComponent != null)
             {
                 healthComponent.HealTaked += OnHealTaken;
             }
 
-            StartCoroutine(ApplyHealOverTime(_target));
+            CmdAddState(characterTarget, States.Restoration, lightDuration);
+            //StartCoroutine(ApplyHealOverTime(characterTarget));
         }
     }
 
@@ -132,13 +136,14 @@ public class Restoration : Skill
 
     private void HandleRestorationDark()
     {
-        if (_target == null) return;
+        if (characterTarget == null) return;
 
-        bool isEnemy = _target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+        bool isEnemy = characterTarget.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
         if (isEnemy && TryPayCost())
         {
-            StartCoroutine(ApplyDamageOverTime(_target));
+            CmdAddState(characterTarget, States.Destruction, darkDuration);
+            //StartCoroutine(ApplyDamageOverTime(characterTarget));
         }
     }
 
@@ -160,7 +165,11 @@ public class Restoration : Skill
                 if (_spiritEnergyTalent) bonusHealFromSpiritEnergy = GetSpiritEnergyBonus(target);
                 float effectiveHeal = healPerTick * _accumulatedEffectiveness + bonusHealFromSpiritEnergy;
 
-                var heal = new Heal { Value = effectiveHeal };
+                var heal = new Heal 
+                { 
+                    Value = effectiveHeal,
+                    DamageableSkill = this
+                };
                 CmdApplyHeal(heal, healthComponent.gameObject, this, name);
 
                 _accumulatedEffectiveness += _totalHealedInInterval * effectivenessIncreasePerHeal;
@@ -201,17 +210,21 @@ public class Restoration : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        characterTarget = null;
+
         while (_target == null)
         {
             if (Input.GetMouseButton(0))
             {
                 _target = GetRaycastTarget();
+
+                if (_target is Character character) characterTarget = character;
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new();
-        targetInfo.Targets.Add(_target);
+        targetInfo.Targets.Add(characterTarget);
         callbackDataSaved(targetInfo);
     }
 
@@ -248,6 +261,9 @@ public class Restoration : Skill
     {
         RpcPlayShotSound();
     }
+
+    [Command]
+    private void CmdAddState(Character character, States states, float duration) => character.CharacterState.AddState(states, duration, 0, Hero.gameObject, name);
 
     [ClientRpc]
     private void RpcPlayShotSound()

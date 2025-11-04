@@ -16,12 +16,12 @@ public class TestSpawnEnemy : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Alpha0))
         {
-            Hero.SpawnComponent.CmdSpawnUnitEnemy();
+            Hero.SpawnComponent.CmdSpawnUnitEnemy(0);
         }
         if (Input.GetKeyDown(KeyCode.Alpha9))
         {
             //CmdSpawnUnitAlies();
-            Hero.SpawnComponent.CmdSpawnUnitAlies();
+            //Hero.SpawnComponent.CmdSpawnUnitAlies();
         }
     }
 }

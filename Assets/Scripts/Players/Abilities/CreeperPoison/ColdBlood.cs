@@ -75,7 +75,7 @@ public class ColdBlood : Skill
             {
                 if (GetMouseButton)
                 {
-                    _target = GetRaycastTarget(true);
+                    //_target = GetRaycastTarget(true);
                     Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / target == " + _target);
 
                     if (_target != _player)

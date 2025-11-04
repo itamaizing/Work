@@ -11,6 +11,7 @@ public struct Damage : NetworkMessage
     public Schools School;
     public AbilityForm Form;
     public AttackRangeType PhysicAttackType;
+    public SkillType SkillType;
 }
 
 public interface IDamageable
@@ -19,5 +20,6 @@ public interface IDamageable
     //public event Action<float> PhantomValueShown;
     public bool TryTakeDamage(ref Damage damage, Skill skill);
     public void ShowPhantomValue(Damage phantomValue);
-
+    Transform transform { get; }
+    GameObject gameObject { get; }
 }

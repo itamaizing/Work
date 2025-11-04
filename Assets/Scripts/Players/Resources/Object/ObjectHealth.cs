@@ -1,21 +1,29 @@
 using Mirror;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ObjectHealth : Resource, IDamageable
 {
     [Header("UI / Visual")]
     [SerializeField] private ObjectBar _objectBar;
-
+    
     [Header("Data")]
     [SerializeField] private ObjectData _objectData;
+    [SerializeField] private Object obj;
+
+    [Header("Damage type ignored")]
+    [SerializeField] private List<Schools> _ignoredSchools;
+    [SerializeField] private List<AbilityForm> _ignoredForms;
+    [SerializeField] private List<SkillType> _ignoredSkillTypes;
 
     public event Action OnDeath;
 
     public event Action<Damage, Skill> DamageTaken;
     //public event Action<float, DamageType, Skill> DamageTakenType;
 
+    [SyncVar] private float _maxHealth;
     [SyncVar(hook = nameof(OnHealthChanged))]
     private float _currentHealth;
 
@@ -23,8 +31,12 @@ public class ObjectHealth : Resource, IDamageable
 
     private Coroutine _hideBarCoroutine;
     private Coroutine _regenerationCoroutine;
-    private Coroutine _regenerationDelayCoroutine;
 
+    [SerializeField] private bool live = false;
+    [SerializeField] private bool isDestroyOnDeath = true;
+    [SerializeField] private bool isRegenerationEnabled = false;
+
+    public bool IsDestroyOnDeath { get => isDestroyOnDeath; set => isDestroyOnDeath = value; }
     public ObjectData ObjectData => _objectData;
     public float ResistMagicDamage => _resistMagicDamage;
 
@@ -34,9 +46,75 @@ public class ObjectHealth : Resource, IDamageable
         set => _currentHealth = value;
     }
 
+    public bool IsRegenerationEnabled
+    {
+        get => isRegenerationEnabled;
+        set
+        {
+            if (isRegenerationEnabled == value) return;
+
+            isRegenerationEnabled = value;
+
+            if (isRegenerationEnabled) ÑmdStartCustomRegeneration();
+            else ÑmdStopCustomRegeneration();
+        }
+    }
+
     #region regeneration
 
     private Coroutine _fillCoroutine;
+
+    private void OnDisable()
+    {
+        StopCustomRegeneration();
+    }
+
+    public void StartCustomRegeneration()
+    {
+        if (isRegenerationEnabled)
+        {
+            if (_regenerationCoroutine != null)
+            {
+                StopCoroutine(_regenerationCoroutine);
+                _regenerationCoroutine = null;
+            }
+
+            _regenerationCoroutine = StartCoroutine(CustomRegenerationRoutine());
+        }
+    }
+
+    public void StartCustomNegativeRegeneration()
+    {
+        if (_regenerationCoroutine != null)
+        {
+            StopCoroutine(_regenerationCoroutine);
+            _regenerationCoroutine = null;
+        }
+
+        if (isRegenerationEnabled) _regenerationCoroutine = StartCoroutine(CustomNegativeRegenerationRoutine());
+    }
+
+    private void StopCustomRegeneration(bool immediate = false)
+    {
+        if (_regenerationCoroutine != null)
+        {
+            StopCoroutine(_regenerationCoroutine);
+            _regenerationCoroutine = null;
+        }
+
+        if (immediate) StopAllCoroutines();
+    }
+
+    private void StopCustomNegativeRegeneration(bool immediate = false)
+    {
+        if (_regenerationCoroutine != null)
+        {
+            StopCoroutine(_regenerationCoroutine);
+            _regenerationCoroutine = null;
+        }
+
+        if (immediate) StopAllCoroutines();
+    }
 
     [Server]
     public void ServerStartFillHP(float targetValue, float duration)
@@ -60,8 +138,48 @@ public class ObjectHealth : Resource, IDamageable
     private void RpcSyncHP(float value)
     {
      _currentHealth = value;
-     OnHealthChanged(_currentHealth, _currentHealth);
+     OnHealthChanged(0, _currentHealth);
     }
+
+    private IEnumerator CustomRegenerationRoutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(_objectData.RegenerationInterval);
+
+            if (_currentHealth <= 0)
+                yield break;
+
+            if (_currentHealth < MaxValue)
+            {
+                _currentHealth = Mathf.Min(MaxValue, _currentHealth + _objectData.RegenerationAmount);
+                OnHealthChanged(0, _currentHealth);
+            }
+        }
+    }
+
+    private IEnumerator CustomNegativeRegenerationRoutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(_objectData.RegenerationInterval);
+
+            if (_currentHealth > 0)
+            {
+                _currentHealth = Mathf.Max(0, _currentHealth - 1);
+                OnHealthChanged(_currentHealth, _currentHealth);
+            }
+
+            if (_currentHealth <= 0)
+            {
+                if (isServer) NetworkServer.Destroy(gameObject);
+                else Destroy(gameObject);
+
+                yield break;
+            }
+        }
+    }
+
 
     private IEnumerator FillHPCoroutine(float targetValue, float duration)
     {
@@ -95,7 +213,7 @@ public class ObjectHealth : Resource, IDamageable
     {
         _objectData = objectData;
 
-        Initialize(objectData.MaxHealth, objectData.RegenerationRate, 0, null);
+        Initialize(objectData.MaxHealth, objectData.RegenerationAmount, objectData.RegenerationInterval, null);
 
         if (objectData.MaxEndurance)
         {
@@ -126,11 +244,10 @@ public class ObjectHealth : Resource, IDamageable
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
-        if (TryEvade(damage.Type))
-        {
-            return false;
-        }
+        if (IsDamageIgnored(skill)) return false;
+        if (TryEvade(damage.Type)) return false;
 
+        if (_regenerationCoroutine == null) ÑmdStartCustomRegeneration();
         float damageValue = damage.Value;
 
         if (_currentHealth > 0)
@@ -140,7 +257,7 @@ public class ObjectHealth : Resource, IDamageable
             DamageTaken?.Invoke(damage, skill);
             //DamageTakenType?.Invoke(damageValue, damage.Type, skill);
 
-            if (_objectBar != null)
+            if (_objectBar != null && (_objectData == null || !_objectData.HideBar))
             {
                 _objectBar.ShowHealthBar();
                 _objectBar.SetHealth(_currentHealth);
@@ -149,9 +266,22 @@ public class ObjectHealth : Resource, IDamageable
             if (_currentHealth <= 0)
             {
                 OnDeath?.Invoke();
+                if (obj != null) obj.IsDeath = true;
 
                 GameObject target = transform.parent != null ? transform.parent.gameObject : gameObject;
-                Destroy(target);
+                ÑmdStopCustomRegeneration();
+
+                if (isDestroyOnDeath)
+                {
+                    if (isServer && target.TryGetComponent(out NetworkIdentity identity)) NetworkServer.Destroy(target);
+                    else Destroy(target);
+
+                }
+
+                else
+                {
+                    if (isServer) ClienRpcActive(false);
+                }
             }
 
             if (isServer) RpcPopupDamage(damage.Value);
@@ -167,6 +297,7 @@ public class ObjectHealth : Resource, IDamageable
             float roll = UnityEngine.Random.Range(0, 100);
             if (roll < _resistMagicDamage) return true;
         }
+
         return false;
     }
 
@@ -176,7 +307,7 @@ public class ObjectHealth : Resource, IDamageable
 
     private void OnHealthChanged(float oldHealth, float newHealth)
     {
-        if (_objectBar == null) return;
+        if (_objectBar == null || (_objectData != null && _objectData.HideBar)) return;
 
         _objectBar.SetHealth(newHealth);
 
@@ -229,22 +360,104 @@ public class ObjectHealth : Resource, IDamageable
 
     #endregion
 
+    public void ReplaceObjectData(ObjectData newData)
+    {
+        _objectData = newData;
+        _maxHealth = newData.MaxHealth;
+
+        ServerStartFillHP(_maxHealth, 0f);
+    }
+
+    private void TryUpdateBar()
+    {
+
+    }
+
     [Command]
     public void CmdSetCurrentHealth(float newValue)
     {
         _currentHealth = Mathf.Clamp(newValue, 0, MaxValue);
-        OnHealthChanged(_currentHealth, _currentHealth);
+        OnHealthChanged(0, _currentHealth);
+    }
+
+    [Server]
+    public void ÑmdStartCustomRegeneration()
+    {
+        StopCustomNegativeRegeneration(true);
+        StartCustomRegeneration();
+        ClientRpcStartCustomRegeneration();
+    }
+
+    [Server]
+    public void ÑmdStartCustomNegativeRegeneration()
+    {
+        StopCustomRegeneration(true);
+        StartCustomNegativeRegeneration();
+        //ClientRpcStartNegaiveCustomRegeneration();
+    }
+
+    [Server]
+    public void ÑmdStopCustomRegeneration()
+    {
+        StopCustomRegeneration();
+        ClientRpcStopCustomRegeneration();
+    }
+
+    [Server]
+    public void ServerSetCurrentHealth(float newValue)
+    {
+        _currentHealth = Mathf.Clamp(newValue, 0, MaxValue);
+        if (obj != null) obj.IsDeath = false;
+        gameObject.SetActive(true);
+        RpcSyncHP(_currentHealth);
     }
 
     [ClientRpc]
     private void RpcPopupDamage(float value)
     {
         Damage damage = new Damage { Value = value, Type = DamageType.Physical };
-        DamageTaken?.Invoke(damage, null);          // skill ìîæíî íå ïåðåäàâàòü
+        DamageTaken?.Invoke(damage, null);
     }
+
+    [ClientRpc]
+    private void ClienRpcActive(bool value)
+    {
+        gameObject.SetActive(value);
+    }
+
+    [ClientRpc]
+    private void ClientRpcStopCustomRegeneration()
+    {
+        StopCustomRegeneration();
+    }
+
+    [ClientRpc]
+    public void ClientRpcStartCustomRegeneration()
+    {
+       StartCustomRegeneration();
+    }
+
+    [ClientRpc]
+    public void ClientRpcStartNegaiveCustomRegeneration()
+    {
+        StartCustomRegeneration();
+    }
+
 
     public void ShowPhantomValue(Damage phantomValue)
     {
         throw new NotImplementedException();
     }
+
+    private bool IsDamageIgnored(Skill skill)
+    {
+        if (skill == null) return false;
+
+        if (_ignoredSchools.Contains(skill.School)) return true;
+        if (_ignoredForms.Contains(skill.AbilityForm)) return true;
+        if (_ignoredSkillTypes.Contains(skill.SkillType)) return true;
+        return false;
+    }
+
+    protected virtual void HookBonusMaxValueChanged(float oldValue, float newValue) { }
 }

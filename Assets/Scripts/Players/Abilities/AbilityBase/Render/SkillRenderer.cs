@@ -34,6 +34,8 @@ public class SkillRenderer : NetworkBehaviour
     private BoxArea _lineStartImage;
     //private BoxArea _lineEndImage;
     private SkillCircleRanderer _drawAutoAttackRadius;
+    private Character _hovered;
+    private Character _hoveredTarget;
 
     private Coroutine _previewDamageCoroutine;
     private readonly HashSet<Health> _previewSet = new();
@@ -44,10 +46,29 @@ public class SkillRenderer : NetworkBehaviour
     private Coroutine _drawRadiusCoroutine;
     private Coroutine _drawAutoAttackRadiusCoroutine;
     private Coroutine _dynamicRadiusColorCoroutine;
+    private Coroutine _hoverHighlightCoroutine;
 
     //public SphereArea TempDamageZone => _tempDamageZone;
     public CircleArea TempDamageZone => _tempArea;
     private readonly Queue<CircleArea> _drawnZonesQueue = new();
+
+    [Header("Cursor Target")]
+    [SerializeField] private Texture2D _cursorPrepareTexture;
+    [SerializeField] private Texture2D _cursorPrepareLightTexture;
+    [SerializeField] private Texture2D _cursorDefaultTexture;
+
+
+    private Vector2 _cursorPrepareHotspot = Vector2.zero;
+    private Vector2 _cursorDefaultHotspot = Vector2.zero;
+
+    private void Awake()
+    {
+        if (_cursorPrepareTexture != null) _cursorPrepareHotspot = new Vector2(_cursorPrepareTexture.width / 2f, _cursorPrepareTexture.height / 2f);
+    }
+
+    public void SetPrepareCursorLight() => UnityEngine.Cursor.SetCursor(_cursorPrepareLightTexture, _cursorPrepareHotspot, CursorMode.Auto);
+    public void SetPrepareCursor() => UnityEngine.Cursor.SetCursor(_cursorPrepareTexture, _cursorPrepareHotspot, CursorMode.Auto);
+    public void ResetCursor() => UnityEngine.Cursor.SetCursor(_cursorDefaultTexture, _cursorDefaultHotspot, CursorMode.Auto);
 
     public bool IsOverrideClosestTarget
     {
@@ -282,6 +303,8 @@ public class SkillRenderer : NetworkBehaviour
     public void DrawClosestTarget(float radius, LayerMask TargetsLayers, Character player)
     {
         if (_isOverrideClosestTarget) return;
+
+        if (_hoveredTarget != null) _hoveredTarget.SelectedCircle.SwitchSelectCircle(true);
         _drawClosestTargetCoroutine = StartCoroutine(DrawClosestTargetJob(radius, TargetsLayers, player));
     }
 
@@ -299,6 +322,12 @@ public class SkillRenderer : NetworkBehaviour
         {
             _tempTarget.SelectedCircle.SwitchClostestTarget(false);
             _tempTarget = null;
+        }
+
+        if (_hoveredTarget != null)
+        {
+            _hoveredTarget.SelectedCircle.SwitchSelectCircle(false);
+            _hoveredTarget = null;
         }
 
         _targets.Clear();
@@ -351,6 +380,28 @@ public class SkillRenderer : NetworkBehaviour
         }
     }
 
+    public void StartHoverHighlight()
+    {
+        if (_hoverHighlightCoroutine == null)  _hoverHighlightCoroutine = StartCoroutine(HoverHighlightJob());
+    }
+
+    public void StopHoverHighlight()
+    {
+        if (_hoverHighlightCoroutine != null)
+        {
+            StopCoroutine(_hoverHighlightCoroutine);
+            _hoverHighlightCoroutine = null;
+
+            if (_hovered != null)
+            {
+                var prev = _hovered.GetComponentInChildren<SelectedCircle>();
+                if (prev != null) prev.SwitchStroke(false);
+                _hovered = null;
+            }
+        }
+    }
+
+
     private void RotateAtMouse(Transform transform)
     {
 		Vector3 worldPosition = Vector3.zero;
@@ -361,6 +412,47 @@ public class SkillRenderer : NetworkBehaviour
 		Vector3 dir = worldPosition - gameObject.transform.position;
 		float angle = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(90, - angle + 90, 0);
+    }
+
+    private void UpdateHoverTargetAlways(Character self)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+        {
+            if (hit.transform.TryGetComponent<Character>(out Character hoveredChar) && hoveredChar != self)
+            {
+                if (_hovered != hoveredChar)
+                {
+                    _hovered = hoveredChar;
+
+                    if (_hovered != null)
+                    {
+                        if (_hovered.TryGetComponent<UIPlayerComponents>(out var uICharacter)) uICharacter.CircleSelect1.SwitchStroke(true);
+                    }         
+                }
+            }
+            else
+            {
+                if (_hovered != null && _hovered.TryGetComponent<UIPlayerComponents>(out var uICharacter)) uICharacter.CircleSelect1.SwitchStroke(false);
+                _hovered = null;
+            }
+        }
+        else
+        {
+            if (_hovered != null && _hovered.TryGetComponent<UIPlayerComponents>(out var uICharacter)) uICharacter.CircleSelect1.SwitchStroke(false);
+            _hovered = null;
+        }
+    }
+
+
+    private IEnumerator HoverHighlightJob()
+    {
+        while(true)
+        {
+            UpdateHoverTargetAlways(hero);
+            yield return null;
+        }
     }
 
     private IEnumerator DrawAutoAttackRadiusJob(float radius, Transform target)
@@ -476,13 +568,8 @@ public class SkillRenderer : NetworkBehaviour
             {
                 if (collider.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
                 {
-                    if (enemy == player)
-                    {
-                        continue;
-                    }
-
-                    if(_targets.Contains(enemy) == false)
-                        _targets.Add(enemy);
+                    if (enemy == player) continue;
+                    if(_targets.Contains(enemy) == false) _targets.Add(enemy);
                 }
             }
 
@@ -508,7 +595,6 @@ public class SkillRenderer : NetworkBehaviour
                     if (Vector3.Distance(target.transform.position, transform.position) <= radius)
 					{
 						target.SelectedCircle.SwitchStroke(true);
-						target.SelectedCircle.SetColorTarget(Color.green);
 					}
 					else
 					{
@@ -528,19 +614,72 @@ public class SkillRenderer : NetworkBehaviour
                 _tempTarget = _targets[0];
                 _tempTarget.SelectedCircle.SwitchClostestTarget(true);
 
-                if (Vector3.Distance(_tempTarget.transform.position, transform.position) <= radius)
+                float distanceToTarget = Vector3.Distance(_tempTarget.transform.position, transform.position);
+
+                if (distanceToTarget <= radius) _tempTarget.SelectedCircle.SetColorTargetVariant(Color.green);
+                else _tempTarget.SelectedCircle.SetColorTargetVariant(Color.red);
+
+                if (_hoveredTarget != null)
                 {
-                    _tempTarget.SelectedCircle.SetColorTarget(Color.green);
+                    float distanceToTargetHover = Vector3.Distance(_hoveredTarget.transform.position, transform.position);
+
+                    if (distanceToTargetHover <= radius) _hoveredTarget.SelectedCircle.SetColorSelectProjector(Color.green);
+                    else _hoveredTarget.SelectedCircle.SetColorSelectProjector(Color.red);
+                }
+            }
+
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, 100f, TargetsLayers))
+            {
+                if (hit.transform.TryGetComponent<Character>(out Character hoveredChar))
+                {
+                    if (hoveredChar != player && _targets.Contains(hoveredChar))
+                    {
+                        if (_hoveredTarget != hoveredChar)
+                        {
+                            if (_hoveredTarget != null)
+                            {
+                                _hoveredTarget.SelectedCircle.SwitchSelectCircle(false);
+                            }
+
+                            _hoveredTarget = hoveredChar;
+                            _hoveredTarget.SelectedCircle.SwitchSelectCircle(true);
+                            SetPrepareCursorLight();
+                        }
+                    }
+                    else
+                    {
+                        if (_hoveredTarget != null)
+                        {
+                            _hoveredTarget.SelectedCircle.SwitchSelectCircle(false);
+                            _hoveredTarget = null;
+                            SetPrepareCursor();
+                        }
+                    }
                 }
                 else
                 {
-                    _tempTarget.SelectedCircle.SetColorTarget(Color.red);
+                    if (_hoveredTarget != null)
+                    {
+                        _hoveredTarget.SelectedCircle.SwitchSelectCircle(false);
+                        _hoveredTarget = null;
+                        SetPrepareCursor();
+                    }
                 }
             }
-			yield return null;
-		}
-		//yield return null;
-	}
+            else
+            {
+                if (_hoveredTarget != null)
+                {
+                    _hoveredTarget.SelectedCircle.SwitchSelectCircle(false);
+                    _hoveredTarget = null;
+                    SetPrepareCursor();
+                }
+            }
+
+            yield return null;
+        }
+    }
 
     private IEnumerator DynamicRadiusColorJob(float Radius)
     {

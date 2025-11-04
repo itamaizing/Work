@@ -25,6 +25,8 @@ public class CreeperStrike : Skill
     [SerializeField] private PoisonBall _poisonBall;
     [SerializeField] private CreeperInvisible _creeperInvisible;
     [SerializeField] private ColdBlood _coldBlood;
+    [SerializeField] private SneakySpit sneakySpit;
+    [SerializeField] private BlockPassiveSkill blockPassiveSkill;
     //[SerializeField] private AbsorptionOfPoisons _absorptionOfPoisons;
 
     [Header("Ability properties")]
@@ -47,6 +49,9 @@ public class CreeperStrike : Skill
 
     private bool _isTwoHit = false;
     private bool _isHit = false;
+
+    private Character _lastTargetFirst = null;
+    private Character _lastTargetSecond = null;
 
     private Coroutine _timerForTwoHitVariableCoroutine;
 
@@ -85,7 +90,7 @@ public class CreeperStrike : Skill
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget();
+                //_target = GetRaycastTarget();
                 if (_target != null)
                 {
                     _target.SelectedCircle.IsActive = true;
@@ -149,6 +154,9 @@ public class CreeperStrike : Skill
 
     public void DamageDeal(Character target, bool isUsingLightningStrikes = false)
     {
+        var last—ast = _player.Abilities.LastCastedSkill;
+        var previewCast = _player.Abilities.PreviewCastedSkill;
+
         if (target != null)
         {
             _currentDamage = UnityEngine.Random.Range(7.0f, 11.0f);
@@ -277,6 +285,20 @@ public class CreeperStrike : Skill
 
             _isHit = false;
         }
+
+        TryTriggerSneakySpitWindow(target);
+    }
+
+    private void TryTriggerSneakySpitWindow(Character target)
+    {
+        _lastTargetSecond = _lastTargetFirst;
+        _lastTargetFirst = target;
+
+        var lastCast = _player.Abilities.LastCastedSkill;
+        var previewCast = _player.Abilities.PreviewCastedSkill;
+
+        if (_lastTargetFirst == target && _lastTargetSecond == target && lastCast is CreeperStrike && previewCast is CreeperStrike) —mdTriggerSneakySpitFreeWindow(target);
+        if (_lastTargetFirst == target && lastCast is CreeperStrike) —mdBlockPassiveSkillFreeWindow(target);
     }
 
     private IEnumerator TimerForTwoHit(float duration, bool isUsingLightningStrikes)
@@ -371,10 +393,7 @@ public class CreeperStrike : Skill
 
         CmdApplyDamage(critDamage, currentTarget.gameObject);
 
-        if (_feelingOfContinuation.Data.IsOpen)
-        {
-            CmdFeelingOfContinuation(_player.gameObject, critDamage.Value);
-        }
+        if (_feelingOfContinuation.Data.IsOpen) CmdFeelingOfContinuation(_player.gameObject, critDamage.Value);
     }
 
     #endregion
@@ -385,7 +404,6 @@ public class CreeperStrike : Skill
     private void CmdFeelingOfContinuation(GameObject player, float criticalDamage)
     {
         Character playerCharacter = player.GetComponent<Character>();
-
         _feelingOfContinuation.IncreaseRegenerationMana(playerCharacter, criticalDamage);
     }
 
@@ -393,14 +411,25 @@ public class CreeperStrike : Skill
     private void CmdPreparingForFight(GameObject player)
     {
         Character playerCharacter = player.GetComponent<Character>();
-
         _preparingForFight.IncreaseManaRegeneration(playerCharacter);
     }
 
-    [Command]
-    private void CmdDamageDeal(Damage damage, GameObject target)
+    [Command] private void CmdDamageDeal(Damage damage, GameObject target) => ApplyDamage(damage, target);
+
+    [Command] private void —mdTriggerSneakySpitFreeWindow(Character target) => RpcTriggerSneakySpitWindow(target);
+
+    [Command] private void —mdBlockPassiveSkillFreeWindow(Character target) => RpcBlockPassiveSkillFreeWindow(target);
+
+    [ClientRpc]
+    private void RpcTriggerSneakySpitWindow(Character target)
     {
-        ApplyDamage(damage, target);
+        if (sneakySpit != null) sneakySpit.TryStartSneakySpitBoostWindow(target);
+    }
+
+    [ClientRpc]
+    private void RpcBlockPassiveSkillFreeWindow(Character target)
+    {
+        if (blockPassiveSkill != null) blockPassiveSkill.TryStartBlockPassiveSkillBoostWindow(target);
     }
 
     #endregion

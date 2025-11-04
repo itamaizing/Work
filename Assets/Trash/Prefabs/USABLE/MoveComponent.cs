@@ -226,7 +226,7 @@ public class MoveComponent : NetworkBehaviour
 
 		if (_rigidbody.linearVelocity.magnitude > 0.5f && moveAudioSource != null && !moveAudioSource.isPlaying) PlayMove();
 
-		if (_anim != null)
+		if (_anim != null && CanMove)
 		{
 			var animDir = transform.InverseTransformPoint(transform.position + camDir);
 			_animMultiplier = 0.1f * _rigidbody.linearVelocity.magnitude + 0.5f;
@@ -237,6 +237,8 @@ public class MoveComponent : NetworkBehaviour
 
 	protected virtual void RotateAtCursor()
     {
+		if (GetComponent<MinionMove>()) return;
+
 		if (IsSelect == true && _isLookAtCursor == true)
 		{
 			Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
@@ -303,7 +305,8 @@ public class MoveComponent : NetworkBehaviour
     {
 		while (!_isLookAtCursor)
         {
-			LookAtPosition(transform.position);
+			if (transform != null) LookAtPosition(transform.position);
+			else StopLookAt();
 			yield return null;
 		}
     }

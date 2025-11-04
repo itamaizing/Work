@@ -15,6 +15,9 @@ public class ShieldBaff : AbstractCharacterState, IDamageable
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
+    public Transform transform => throw new NotImplementedException();
+    public GameObject gameObject => throw new NotImplementedException();
+
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _characterState = character;

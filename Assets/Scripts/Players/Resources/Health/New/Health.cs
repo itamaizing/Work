@@ -21,9 +21,11 @@ public class Health : Resource, IDamageable, IHealingable
     private Coroutine _dOTDamageAnimJob;
     private float _dOTDamageAnimDuration = 0.1f;
     private float _totalMaxAbsorption = 0;
+    private float _blockChance;
     private bool _isDot = false;
 
     public Bar barCharacter { get => bar; }
+    public float BlockChance { get => _blockChance; set => _blockChance = value; }
     public float SumDamageTaken { get => _sumDamageTaken; }
     public float EvadeMeleeDamage { get => _evadeMeleeDamage; set => _evadeMeleeDamage = value; }
     public float EvadeRangeDamage { get => _evadeRangeDamage; set => _evadeRangeDamage = value; }
@@ -34,6 +36,7 @@ public class Health : Resource, IDamageable, IHealingable
     public List<IDamageable> Shields { get => _shields; }
 
     public event Action Evaded;
+    public event Action Block;
     public event Action<float , Skill , string> HealTaked;
     public event Action<Damage, Skill> DamageTaken;
     public event Action Died;
@@ -42,7 +45,10 @@ public class Health : Resource, IDamageable, IHealingable
     public event Action ShieldDeactivated;
 
     public event Action<float, DamageType, Skill> ShieldDamageTaken;
-    public event Action<Damage, Skill> OnBeforeTakeDamage;
+    public event Action<Damage, Skill> OnBeforeTakeDamage; //Test
+
+    public delegate void BeforeDamageDelegate(ref Damage damage, Skill skill);
+    public event BeforeDamageDelegate OnBeforeDamage;
 
     public event Action<float, float> EvadeMeleeDamageChanged;
     public event Action<float, float> EvadeRangeDamageChanged;
@@ -66,14 +72,30 @@ public class Health : Resource, IDamageable, IHealingable
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
         OnBeforeTakeDamage?.Invoke(damage, skill);
-        
+        OnBeforeDamage?.Invoke(ref damage, skill); //Test: we transmit incoming damage before it is inflicted by the enem
+
         if (TryEvade(damage.Type, damage.PhysicAttackType))
         {
-            Evaded?.Invoke();
+            ClientRpcEvade();
             return false;
         }
-        
+
+        if (UnityEngine.Random.Range(0f, 100f) <= _blockChance)
+        {
+            Block?.Invoke();
+            return false;
+        }
+
         Defence(ref damage);
+
+        // Test: If the state has a damage modification, it increases the damage.
+        if (skill != null && skill.Hero != null)
+        {
+            foreach (var state in skill.Hero.CharacterState.CurrentStates)
+            {
+                if (state is IDamageGivenModifier modifier) damage.Value = modifier.ModifyOutgoingDamage(damage);
+            }
+        }
 
         UseShields(ref damage, skill);
 
@@ -299,7 +321,15 @@ public class Health : Resource, IDamageable, IHealingable
         DamageTaken?.Invoke(damage, skill);
         _animator.SetTrigger(HashAnimPlayer.TakeDamage);
     }
-    
+
+
+    [ClientRpc]
+    private void ClientRpcEvade()
+    {
+        Evaded?.Invoke();
+        _animator.SetTrigger(HashAnimPlayer.Evade);
+    }
+
     [ClientRpc]
     private void ClientRpcHealTaked(float healTaken, Skill skill, string sourceName)
     {
@@ -327,6 +357,11 @@ public class Health : Resource, IDamageable, IHealingable
 
 		PhantomValueShow(curDamage);
 	}
+
+    [Command] public void CmdSetBlockChance(float chance) => _blockChance = chance;
+    [Command] public void CmdResetBlockChance() => ResetBlockChance();
+
+    public void ResetBlockChance() => _blockChance = 0;
 
     public void IncreaseRegen(float percentValue)
     {

@@ -26,12 +26,11 @@ public class ScraderSpawn : Skill
 
     protected override IEnumerator PrepareJob(System.Action<TargetInfo> callback)
     {
-        _skillRender.DrawRadius(_radius);
-        while (!GetMouseButton) yield return null;
-
         TargetInfo info = new TargetInfo();
         info.Points.Add(transform.position);
         callback?.Invoke(info);
+
+        yield break;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -56,11 +55,7 @@ public class ScraderSpawn : Skill
 
         Hero.Abilities.DeactivateSkill(this);
 
-        if (tentacle.TryGetComponent<SpawnComponent>(out var spawnComponent))
-        {
-            spawnComponent.CmdSpawnAliesPoint(_spawnPoint, Quaternion.identity);
-            spawnComponent.CmdRemoveUnit(minion);
-        }
+        if (tentacle.TryGetComponent<SpawnComponent>(out var spawnComponent)) spawnComponent.CmdSpawnAliesPoint(_spawnPoint, Quaternion.identity, minion, 0, true , tentacle.Hero);
 
         yield return null;
     }

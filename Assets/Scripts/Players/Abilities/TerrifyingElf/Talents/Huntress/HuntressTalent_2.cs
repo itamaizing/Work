@@ -4,23 +4,17 @@ public class HuntressTalent_2 : Talent
 {
     [SerializeField] private ReconnaissanceFire reconnaissanceFire;
     [SerializeField] private TerrifyingElfAura terrifyingElfAura;
-    [SerializeField] private GroundTrap groundTrap;
+    [SerializeField] private SkillManager ability;
 
     public override void Enter()
     {
-        groundTrap.GroundTrapHealthActiveTalent(true);
-        reconnaissanceFire.FireWorshipperTalentActive(true);
-
+        ability.ActivateSkill(reconnaissanceFire); 
         terrifyingElfAura.FireWorshipperTalentActive(true);
-        terrifyingElfAura.CalmnessOnElvenSkillTalent(true);
     }
 
     public override void Exit()
     {
-        groundTrap.GroundTrapHealthActiveTalent(false);
-        reconnaissanceFire.FireWorshipperTalentActive(false);
-
+        ability.DeactivateSkill(reconnaissanceFire);
         terrifyingElfAura.FireWorshipperTalentActive(false);
-        terrifyingElfAura.CalmnessOnElvenSkillTalent(false);
     }
 }

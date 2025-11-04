@@ -71,7 +71,6 @@ public class GrowTreeAura : NetworkBehaviour
             ForceExit(character);
             RpcRemoveCharacter(character.netId);
 
-
             if (charactersInZone.Count == 0 && _routine != null)
             {
                 StopCoroutine(_routine);

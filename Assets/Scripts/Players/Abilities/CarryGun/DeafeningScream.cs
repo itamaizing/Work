@@ -7,18 +7,27 @@ using UnityEngine;
 public class DeafeningScream : Skill
 {
     [SerializeField] private Character _playerLinks;
+    [SerializeField] private JumpWithChelicera jumpWithChelicera;
     [SerializeField] private CooldownEnergy cooldownEnergy;
     [SerializeField] private float duration = 2f;
 
-    private Character _target;
-    private Vector3 _targetPoint = Vector3.positiveInfinity;
+    private IDamageable _target;
+    private Character _runtimeTarget;
 
-    protected override bool IsCanCast => IsHaveCharge && _target != null;
+    protected override bool IsCanCast => CheckCanCast();
+
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("DeafeningScreamAnimation");
 
     private void OnDestroy() => Canceled -= HandleJumpEnd;
     private void OnEnable() => Canceled += HandleJumpEnd;
+
+    private bool CheckCanCast()
+    {
+        return _target != null && cooldownEnergy.CurrentValue >= jumpWithChelicera.ChargeCooldown &&
+        Vector3.Distance(_target.transform.position, transform.position) <= Radius &&
+        NoObstacles(_target.transform.position, transform.position, _obstacle);
+    }
 
     public void HandleJumpEnd()
     {
@@ -30,18 +39,22 @@ public class DeafeningScream : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (float.IsPositiveInfinity(_targetPoint.x) && _target == null && !_disactive)
+        _runtimeTarget = null;
+
+        while (_target == null)
         {
             if (GetMouseButton)
             {
-                _targetPoint = GetMousePoint();
-                _target = GetRaycastTarget(true);
+                _target = GetRaycastTarget();
+
+                if (_target != null) if (_target is Character characterTarget) _runtimeTarget = characterTarget;
+                _isCanCancle = false;
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Targets.Add(_target);
+        targetInfo.Targets.Add(_runtimeTarget);
         callbackDataSaved(targetInfo);
     }
 
@@ -49,7 +62,7 @@ public class DeafeningScream : Skill
     {
         if (_target != null) CmdApplyState(_target.gameObject);
 
-        cooldownEnergy.CastCooldownEnergySkill(CooldownTime, this);
+        cooldownEnergy.CastCooldownEnergySkill(13, this);
         AfterCastJob();
 
         yield return null;
@@ -57,7 +70,6 @@ public class DeafeningScream : Skill
 
     protected override void ClearData()
     {
-        _targetPoint = Vector3.positiveInfinity;
         _target = null;
     }
 
@@ -77,17 +89,6 @@ public class DeafeningScream : Skill
 
         _hero.Move.StopMoveAndAnimationMove();
         _hero.Move.CanMove = false;
-
-        Vector3 direction = _targetPoint - _hero.transform.position;
-        bool badDirection = float.IsInfinity(_targetPoint.x) || direction.sqrMagnitude < 0.0001f;
-
-        if (badDirection)
-        {
-            _hero.Move.StopLookAt();
-            return;
-        }
-
-        _hero.Move.LookAtPosition(_targetPoint);
     }
 
     public void DeafeningScreamCast()
@@ -101,10 +102,13 @@ public class DeafeningScream : Skill
     {
         AnimCastEnded();
         HandleJumpEnd();
+        _isCanCancle = true;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as Character;
+        Hero.Move.LookAtTransform(_target.transform);
+        _isCanCancle = false;
     }
 }

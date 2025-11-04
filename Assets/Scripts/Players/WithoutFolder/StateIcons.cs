@@ -66,7 +66,7 @@ public class StateIcons : MonoBehaviour
             newIco.border.color = GetFallbackColor(state);
         }
 
-
+        newIco.Text.color = GetTextColor(state);
         StartProgress(newIco, timeToDecrease);
         RefreshText(newIco);
 
@@ -120,6 +120,21 @@ public class StateIcons : MonoBehaviour
         ico.Text.gameObject.SetActive(ico.count > 1);
     }
 
+    private Color GetTextColor(States state)
+    {
+        if (_characterState == null) return _neutralColor;
+
+        if (_characterState.enumToState.TryGetValue(state, out var stateObj))
+        {
+            return stateObj.BaffDebaff switch
+            {
+                BaffDebaff.Baff => _baffColor,
+                BaffDebaff.Debaff => _debaffColor,
+                _ => _neutralColor
+            };
+        }
+        return _neutralColor;
+    }
     private Color GetFallbackColor(States state)
     {
         if (_characterState == null || !_characterState.enumToState.TryGetValue(state, out var stateObj)) return _neutralColor;

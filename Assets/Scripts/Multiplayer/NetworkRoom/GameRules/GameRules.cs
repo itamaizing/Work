@@ -2,6 +2,7 @@ using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -19,6 +20,7 @@ public abstract class GameRules : NetworkBehaviour
     [SyncVar]protected string _roomName;
 
     protected HeroSpawnManager _spawnPoints;
+    protected PreparationAreaManager _preparationAreaManager;
     protected GameManager _gameManager;
 
     [SyncVar] private bool _isStarted;
@@ -33,6 +35,8 @@ public abstract class GameRules : NetworkBehaviour
     protected abstract void UnsubscribeFromAllEvents();
     protected abstract void GameStartClient();
     protected abstract void OnPlayerDied(Character character);
+    protected abstract void OnTowerDied(Object tower);
+
 
     public void Init(NetworkRoom room)
     {
@@ -41,6 +45,7 @@ public abstract class GameRules : NetworkBehaviour
 
         AddAllPlayersInList();
         SubscribingOnPlayerEvents();
+        SubscribeToTowerDeath();
 
         StartCoroutine(FindServerGameManager());
     }
@@ -80,6 +85,7 @@ public abstract class GameRules : NetworkBehaviour
         if (_gameManager == null) return;
 
         _spawnPoints = _gameManager.HeroSpawnManager;
+        _preparationAreaManager = _gameManager.PreparationAreaManager;
 
         if (_gameManager.TeamsPanel == null) return;
     }
@@ -212,6 +218,16 @@ public abstract class GameRules : NetworkBehaviour
         }
     }
 
+    private void SubscribeToTowerDeath()
+    {
+        var allTowers = GameObject.FindObjectsOfType<Object>().Where(obj => obj.IsTower == true);
+
+        foreach (var tower in allTowers)
+        {
+            tower.Died += OnTowerDied;
+        }
+    }
+
     private void SubscribingOnPlayerEvents()
     {
         foreach (var item in _players)
@@ -249,21 +265,22 @@ public abstract class GameRules : NetworkBehaviour
                 _players.Add(playerSettings);
             }
         }
-        UnityEngine.Debug.Log("this");
-        foreach (var playerSettings in _players)
-        {
-            UnityEngine.Debug.Log("123123123");
-            if (playerSettings.NetworkSettings.TeamIndex == 1)
-            {
-                _gameManager.TeamsPanel.AddInFirstTeam(playerSettings);
-                _gameManager.Source.AddInFirstTeam(playerSettings);
-            }
-            else
-            {
-                _gameManager.TeamsPanel.AddInSecondTeam(playerSettings);
-                _gameManager.Source.AddInSecondTeam(playerSettings);
-            }
-        }
+
+        //UnityEngine.Debug.Log("this");
+        //foreach (var playerSettings in _players)
+        //{
+        //    UnityEngine.Debug.Log("123123123");
+        //    if (playerSettings.NetworkSettings.TeamIndex == 1)
+        //    {
+        //        _gameManager.TeamsPanel.AddInFirstTeam(playerSettings);
+        //        _gameManager.Source.AddInFirstTeam(playerSettings);
+        //    }
+        //    else
+        //    {
+        //        _gameManager.TeamsPanel.AddInSecondTeam(playerSettings);
+        //        _gameManager.Source.AddInSecondTeam(playerSettings);
+        //    }
+        //}
 
         GameStartClient();
     }
