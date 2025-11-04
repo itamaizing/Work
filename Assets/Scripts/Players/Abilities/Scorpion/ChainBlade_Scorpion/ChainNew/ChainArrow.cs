@@ -65,7 +65,7 @@ public class ChainArrow : Projectiles
     private IEnumerator FlyCoroutine()
     {
         Vector3 direction = (_targetPoint - transform.position).normalized;
-        _rb.velocity = Vector3.zero;
+        _rb.linearVelocity = Vector3.zero;
         _rb.AddForce(direction * speed, ForceMode.VelocityChange);
 
         float speedReturn = 0;
@@ -98,7 +98,7 @@ public class ChainArrow : Projectiles
 
         transform.SetParent(character.transform);
         transform.localPosition = new Vector3(0f, 0.5f, 0f);
-        _rb.velocity = Vector3.zero;
+        _rb.linearVelocity = Vector3.zero;
         _rb.isKinematic = true;
 
         RpcAttachToTarget(character);
@@ -115,13 +115,13 @@ public class ChainArrow : Projectiles
 
         transform.SetParent(character.transform);
         transform.localPosition = new Vector3(0f, 0.5f, 0f);
-        _rb.velocity = Vector3.zero;
+        _rb.linearVelocity = Vector3.zero;
         _rb.isKinematic = true;
     }
 
     private IEnumerator ReturnCoroutine(float speed)
     {
-        _rb.velocity = Vector3.zero;
+        _rb.linearVelocity = Vector3.zero;
 
         if (_hookedTarget != null)
         {
@@ -135,7 +135,7 @@ public class ChainArrow : Projectiles
                     if (_hookedMove.connectionToClient != null)
                         _hookedMove.TargetRpcDoMove(targetPosition, stopDistance);
                     else
-                        _hookedMove.TestDoMove(targetPosition, stopDistance); // Метод, для проверки на одном клиенте и Character, не синхронизированных по сети
+                        _hookedMove.TestDoMove(targetPosition, stopDistance); // пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ Character, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ
                 }
 
                 UpdateLine();

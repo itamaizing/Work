@@ -238,7 +238,7 @@ public class GoAroundObstecle2 : MonoBehaviour
 
                 Vector2 nextTarget = intermediateTargets[0];
                 Vector2 moveDirection = (nextTarget - (Vector2)transform.position).normalized;
-                _rb.velocity = moveDirection * MoveSpeed;
+                _rb.linearVelocity = moveDirection * MoveSpeed;
 
                 if (Vector2.Distance(transform.position, nextTarget) < 0.2f)
                 {

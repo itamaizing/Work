@@ -190,7 +190,7 @@ namespace HeathenEngineering.UnityPhysics
             {
                 var body = GetComponentInParent<Rigidbody>();
                 body.isKinematic = false;
-                body.velocity = velocity;
+                body.linearVelocity = velocity;
                 body.WakeUp();
             }
 

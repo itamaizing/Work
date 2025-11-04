@@ -26,7 +26,7 @@ namespace HeathenEngineering.UnityPhysics.API
         public static float3 FastIntercept(float3 position, float speed, Rigidbody targetSubject)
         {
             var distance = math.distance(position, targetSubject.position);
-            return ValidateNaN(targetSubject.position + targetSubject.velocity * (distance / speed));
+            return ValidateNaN(targetSubject.position + targetSubject.linearVelocity * (distance / speed));
         }
 
         /// <summary>
@@ -76,14 +76,14 @@ namespace HeathenEngineering.UnityPhysics.API
         {
             float3? result = null;
             float3 tPos = targetSubject.position;
-            float3 tVelocity = targetSubject.velocity;
+            float3 tVelocity = targetSubject.linearVelocity;
             float3 localPosition = tPos - position;
             float3 closingVelocity = tVelocity - math.normalize((position - tPos) * speed);
 
             var t = InterceptTime(speed, localPosition, closingVelocity);
             if(t > 0)
             {
-                result = ValidateNaN(targetSubject.position + targetSubject.velocity * t);
+                result = ValidateNaN(targetSubject.position + targetSubject.linearVelocity * t);
             }
 
             return result;
@@ -216,7 +216,7 @@ namespace HeathenEngineering.UnityPhysics.API
         /// <returns></returns>
         public static float3 ForceToReachLinearVelocity(Rigidbody body, float3 targetVelocity)
         {
-            float3 bVel = body.velocity;
+            float3 bVel = body.linearVelocity;
             return body.mass * ValidateNaN(((targetVelocity - bVel) / Time.fixedDeltaTime));
         }
 
@@ -264,7 +264,7 @@ namespace HeathenEngineering.UnityPhysics.API
             float th = math.asin(math.length(x));
             float w = th / Time.fixedDeltaTime;
 
-            return (w - body.angularVelocity) * body.mass * body.angularDrag;
+            return (w - body.angularVelocity) * body.mass * body.angularDamping;
         }
 
         /// <summary>
@@ -329,7 +329,7 @@ namespace HeathenEngineering.UnityPhysics.API
         /// <returns></returns>
         public static float3 LerpTo(Rigidbody subject, float3 targetVelocity, float acceleration, float deltaTime)
         {
-            var stepVelocity = LerpTo(subject.velocity, targetVelocity, acceleration, deltaTime);
+            var stepVelocity = LerpTo(subject.linearVelocity, targetVelocity, acceleration, deltaTime);
             return ForceToReachLinearVelocity(subject, stepVelocity);
         }
 

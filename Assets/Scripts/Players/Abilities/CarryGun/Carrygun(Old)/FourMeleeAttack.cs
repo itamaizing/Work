@@ -545,7 +545,7 @@ public class FourMeleeAttack : AbilityBase
 		if (TargetParent != null && TargetParent.GetComponent<Rigidbody2D>())
 		{
 			TargetParent.GetComponent<MoveComponent>().CanMove = true;
-			TargetParent.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+			TargetParent.GetComponent<Rigidbody2D>().linearVelocity = Vector3.zero;
 		}
 
 		Select.GetComponent<SelectObject>().CanSelect = true;

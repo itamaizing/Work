@@ -248,7 +248,7 @@ namespace HeathenEngineering.UnityPhysics
             {
                 var body = GetComponentInParent<Rigidbody2D>();
                 body.bodyType = RigidbodyType2D.Dynamic;
-                body.velocity = velocity;
+                body.linearVelocity = velocity;
                 body.WakeUp();
             }
 

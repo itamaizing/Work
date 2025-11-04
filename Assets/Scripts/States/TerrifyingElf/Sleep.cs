@@ -27,7 +27,7 @@ public class Sleep : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log("Жертва погружена в сон");
+        Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ");
 
         _characterState = character;
         _source = personWhoMadeBuff;
@@ -51,7 +51,7 @@ public class Sleep : AbstractCharacterState
             moveComponent.StopLookAt();
             moveComponent.IsSelect = false;
             moveComponent.IsMoving = false;
-            moveComponent.Rigidbody.velocity = Vector3.zero;
+            moveComponent.Rigidbody.linearVelocity = Vector3.zero;
             //moveComponent.SetAnimationMovement(Vector3.zero);
         }
 
@@ -98,7 +98,7 @@ public class Sleep : AbstractCharacterState
 
     public override void ExitState()
     {
-        Debug.Log("Эффект сна закончился");
+        Debug.Log("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
 
         _characterState.gameObject.layer = _initialLayer;
 
@@ -109,7 +109,7 @@ public class Sleep : AbstractCharacterState
         {
             moveComp.IsSelect = _previousIsSelect;
             moveComp.IsMoving = false;
-            moveComp.Rigidbody.velocity = Vector3.zero;
+            moveComp.Rigidbody.linearVelocity = Vector3.zero;
             //moveComp.SetAnimationMovement(Vector3.zero);
         }
 

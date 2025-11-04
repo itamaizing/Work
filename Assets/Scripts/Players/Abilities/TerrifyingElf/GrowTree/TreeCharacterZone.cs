@@ -34,7 +34,7 @@ public class TreeCharacterZone : NetworkBehaviour
         Rigidbody rb = moveComponentElf.Rigidbody;
         if (rb == null) return;
 
-        Vector3 horizontalVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+        Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
 
         if (horizontalVelocity.magnitude >= minVelocityToTriggerDisable)
         {

@@ -86,7 +86,7 @@ public class SuppressionState : AbstractCharacterState
     {
         if (_rigidbody == null) return 0f;
 
-        Vector3 distance = _rigidbody.velocity;
+        Vector3 distance = _rigidbody.linearVelocity;
         distance.y = 0f;
         return distance.magnitude * Time.deltaTime;
     }
