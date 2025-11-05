@@ -47,6 +47,7 @@ public class TalentColumn : MonoBehaviour
 	{
 
 	}
+
 	public void Start()
 	{
 		//_system = system;
@@ -56,17 +57,17 @@ public class TalentColumn : MonoBehaviour
 			Debug.Log("not equal counts in TalentColumn");
 			return;
 		}*/
-		for(int i = 0; i < _system.Talents.Count; i++) //(TalentsGroup group in _system.Talents) 
+		for(int i = 0; i < _system.TalentsGroups.Count; i++) //(TalentsGroup group in _system.Talents) 
 		{
 			int row = i;
 
 			var item = Instantiate(_talentContent, transform);
 			_groups.Add(item);
-			item.Initialize(_system.Talents[i]);
+			item.Initialize(_system.TalentsGroups[i]);
 			for(int j = 0; j < item.Talents.Count; j++)
 			{
 				int id = j;
-				item.Talents[j].button.onClick.AddListener(() => SwitchTalent(row, id, !_system.Talents[row].TalentsData[id].Data.IsOpen));
+				//item.Talents[j].button.onClick.AddListener(() => SwitchTalent(row, id, !_system.TalentsGroups[row].TalentsData[id].Data.IsOpen));
 			}
 
 			var button = Instantiate(_groupButton, transform);
@@ -101,7 +102,7 @@ public class TalentColumn : MonoBehaviour
 	private void SwitchTalent(int row, int id, bool value)
 	{
 		Debug.Log(id);
-		_system.SetActive(row, id, value);
+	//	_system.SetActive(row, id, value);
 		_groups[row].Talents[id].SwitchBorders(value);
 		Debug.Log("switch");
 
@@ -139,10 +140,10 @@ public class TalentColumn : MonoBehaviour
 										//if we have 3 active then we get 3 points, for the second row, 2 active-1 point, 3 active-2 points,
 										//for third row for 3 active 1 point
 	{
-		int count = 0;
+		/*int count = 0;
 		for (int i = 9; i < 12; i++)
 		{
-			if (_system.Talents[0].TalentsData[i].Data.IsOpen)
+			if (_system.TalentsGroups[0].TalentsData[i].Data.IsOpen)
 			{
 				count++;
 			}
@@ -150,7 +151,7 @@ public class TalentColumn : MonoBehaviour
 		int count2 = 0;
 		for (int i = 6; i < 9; i++)
 		{
-			if (_system.Talents[0].TalentsData[i].Data.IsOpen)
+			if (_system.TalentsGroups[0].TalentsData[i].Data.IsOpen)
 			{
 				count2++;
 			}
@@ -158,7 +159,7 @@ public class TalentColumn : MonoBehaviour
 		int count3 = 0;
 		for (int i = 3; i < 6; i++)
 		{
-			if (_system.Talents[0].TalentsData[i].Data.IsOpen)
+			if (_system.TalentsGroups[0].TalentsData[i].Data.IsOpen)
 			{
 				count3++;
 			}
@@ -198,6 +199,6 @@ public class TalentColumn : MonoBehaviour
 		{
 			_bonus3 = 1;
 		}
-		_attributePanel.SetBonus(_bonus, _bonus2, _bonus3);
+		_attributePanel.SetBonus(_bonus, _bonus2, _bonus3);*/
 	}
 }

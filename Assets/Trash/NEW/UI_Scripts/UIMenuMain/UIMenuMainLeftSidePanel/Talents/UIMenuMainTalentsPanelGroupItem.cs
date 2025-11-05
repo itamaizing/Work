@@ -23,6 +23,9 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
     [SerializeField] private Button _button;
     
     private TalentData _talent;
+    private int _row = 0;
+
+    public int Row => _row;
 
     public Button Button { get => _button; }
 
@@ -36,8 +39,9 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
         _button.onClick.RemoveListener(Select);
     }
 
-    public void Fill(TalentData talent)
+    public void Fill(TalentData talent, int row)
     {
+        _row = row;
         activeImage.sprite = talent.Icon;
         nonActiveImage.sprite = talent.Icon;
         _talent = talent;

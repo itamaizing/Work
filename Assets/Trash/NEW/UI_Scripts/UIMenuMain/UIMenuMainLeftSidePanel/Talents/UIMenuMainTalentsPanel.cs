@@ -19,7 +19,7 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
         
         _talentSystem = talentSystem;
 
-        foreach (var data in _talentSystem.Talents)
+        foreach (var data in _talentSystem.TalentsGroups)
         {
             var panel = Instantiate(_talentsPanelGroup, _itemsParent);
             

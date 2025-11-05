@@ -101,14 +101,24 @@ public class SaveManager : MonoBehaviour
         _attributeManager.LoadAttribute(_character, attributeId, _currentSaveGroup);
     }
 
-    public void SaveTalent(int idGroup, string idTalent, bool isActive)
+	/*public void SaveTalent(int idGroup, string idTalent, bool isActive)
+	{
+		_talentManager.SaveTalent(_character, idGroup, idTalent, isActive, _currentSaveGroup);
+	}
+
+	public void LoadTalent(int idGroup, string idTalent, bool needActivate)
+	{
+		_talentManager.LoadTalent(_character, idGroup, idTalent, needActivate, _currentSaveGroup);
+	}*/
+
+	public void SaveTalent(int idGroup, int row, string idTalent, bool isActive)
     {
-        _talentManager.SaveTalent(_character, idGroup, idTalent, isActive, _currentSaveGroup);
+        _talentManager.SaveTalent(_character, idGroup, row, idTalent, isActive, _currentSaveGroup);
     }
 
-    public void LoadTalent(int idGroup, string idTalent, bool needActivate)
+    public void LoadTalent(int idGroup, int row, string idTalent, bool needActivate)
     {
-        _talentManager.LoadTalent(_character, idGroup, idTalent, needActivate, _currentSaveGroup);
+        _talentManager.LoadTalent(_character, idGroup, row, idTalent, needActivate, _currentSaveGroup);
     }
 
     public int ReduceFreePoints(int pointsToDeduct)

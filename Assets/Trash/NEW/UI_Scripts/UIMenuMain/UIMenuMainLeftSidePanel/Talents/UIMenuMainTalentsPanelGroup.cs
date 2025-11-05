@@ -33,21 +33,25 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
 
         UpdateActiveTalentsCount();
 
-        foreach (var item in talentsGroup.TalentsData)
+        //foreach (var row in talentsGroup.TalentRows)
+        for (int i = 0; i < talentsGroup.TalentRows.Count; i++)
         {
-            var talent = Instantiate(_talentPrefab, _itemsParent);
-            
-            talent.Owner = this;
-            talent.Fill(item.Data);
+            foreach (var item in talentsGroup.TalentRows[i].Talents)
+            {
+                var talent = Instantiate(_talentPrefab, _itemsParent);
 
-            talent.Button.interactable = isInteractable;
-            
-            talent.Selected += OnTalentSelected;
-            talent.PointerEntered += OnPointerEnteredOnTalentIcon;
-            talent.PointerExited += OnPointerExitedOnTalentIcon;
+                talent.Owner = this;
+                talent.Fill(item.Data, i);
+                item.Data.Row = i;
+                talent.Button.interactable = isInteractable;
+
+                talent.Selected += OnTalentSelected;
+                talent.PointerEntered += OnPointerEnteredOnTalentIcon;
+                talent.PointerExited += OnPointerExitedOnTalentIcon;
 
 
-            _talents.Add(talent);
+                _talents.Add(talent);
+            }
         }
     }
     
@@ -63,21 +67,41 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
 
     void UpdateActiveTalentsCount()
     {
-        var activeTalentsCount = _talentsGroup.TalentsData.Count(o => o.Data.IsOpen);
-        _talentsCount.ChangeKey(activeTalentsCount);
+        //var activeTalentsCount = _talentsGroup.TalentsData.Count(o => o.Data.IsOpen);
+        var activeTalentsCount = GetActiveTalents();
+
+		_talentsCount.ChangeKey(activeTalentsCount);
     }
 
     void OnTalentSelected(TalentData talent, bool isOpen)
     {
 		Debug.Log("Talent selected in MAIN" + talent);
-		SaveManager.Instance.SaveTalent(_talentsGroup.ID, talent.Name, isOpen);
-        SaveManager.Instance.LoadTalent(_talentsGroup.ID, talent.Name, _isGameUI);
+		SaveManager.Instance.SaveTalent(_talentsGroup.ID, talent.Row, talent.Name, isOpen);
+        SaveManager.Instance.LoadTalent(_talentsGroup.ID, talent.Row, talent.Name, _isGameUI);
 
         UpdateActiveTalentsCount();
         _attributesPanel.UpdateAttributesPoints();
     }
+	private int GetActiveTalents()
+	{
+		List<Talent> activeTalents = new();
+		
+			foreach (TalentRow row in _talentsGroup.TalentRows)
+			{
+				foreach (Talent talent in row.Talents)
+				{
+					if (talent.Data.IsOpen)
+					{
+						activeTalents.Add(talent);
+					}
+				}
+			}
+		
 
-    public void Show()
+		return activeTalents.Count;
+
+	}
+	public void Show()
     {
         if (_itemsParent.gameObject.activeInHierarchy == false)
         {
