@@ -31,6 +31,12 @@ public class StateEffects : MonoBehaviour
     [Header("Effect Trap")]
     [SerializeField] private GameObject ropeTrap;
     [SerializeField] private GameObject trapPrefab;
+
+    [Header("Effect SpiritHealth (Dark)")]
+    [SerializeField] private GameObject spiritHealthEffect;
+
+    [Header("Effect SpiritEnergy (Light)")]
+    [SerializeField] private GameObject spiritEnergyEffect;
     #endregion
 
     #region Hero
@@ -51,6 +57,8 @@ public class StateEffects : MonoBehaviour
     public GameObject SuppressionIdle { get => suppressionIdle; set => suppressionIdle = value; }
     public GameObject SuppressionMove { get => suppressionMove; set => suppressionMove = value; }
     public GameObject ManaRegen { get => manaRegen; set => manaRegen = value; }
+    public GameObject SpiritHealthEffect { get => spiritHealthEffect; set => spiritHealthEffect = value; }
+    public GameObject SpiritEnergyEffect { get => spiritEnergyEffect; set => spiritEnergyEffect = value; }
     public List<Material> MaterialsCharacter { get => materialsCharacter; set => materialsCharacter = value; }
     public Material MaterialGhost { get => materialGhost; set => materialGhost = value; }
     public AudioClip FrostingAudio { get => frostingAudio; set => frostingAudio = value; }
