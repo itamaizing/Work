@@ -17,12 +17,29 @@ public class SpellMoveTo : Skill
     private Coroutine _attackCoroutine;
     private Character _currentEnemyTarget;
     private float _lastAttackTime;
+    private Tween _activeTween;
 
     public Action<GameObject> DoMove;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => !IsCasting;
+    private void OnDisable()
+    {
+        if (_activeTween != null && _activeTween.IsActive())
+        {
+            _activeTween.Kill();
+            _activeTween = null;
+        }
+
+        if (_attackCoroutine != null)
+        {
+            StopCoroutine(_attackCoroutine);
+            _attackCoroutine = null;
+        }
+
+        Hero.Move.CanMove = true;
+    }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -96,12 +113,18 @@ public class SpellMoveTo : Skill
 
             bool interruptedByObstacle = false;
 
-            Tween moveTween = null;
+            if (_activeTween != null && _activeTween.IsActive())
+            {
+                _activeTween.Kill();
+                _activeTween = null;
+            }
 
-            moveTween = transform.DOMove(segmentTarget, duration)
+            _activeTween = transform.DOMove(segmentTarget, duration)
                 .SetEase(Ease.Linear)
                 .OnUpdate(() =>
                 {
+                    if (this == null || !gameObject.activeInHierarchy) return;
+
                     float movedDist = Vector3.Distance(lastDoMovePoint, transform.position);
                     if (movedDist >= 1f)
                     {
@@ -109,14 +132,11 @@ public class SpellMoveTo : Skill
                         lastDoMovePoint = transform.position;
                     }
 
-                    if (stopAtObstacle && Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, 1f, LayerMask.GetMask("Obstacle")))
-                    {
-                        moveTween.Kill();
-                        interruptedByObstacle = true;
-                    }
+                    if (stopAtObstacle && Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, 1f, LayerMask.GetMask("Obstacle"))) interruptedByObstacle = true;
+                    if (interruptedByObstacle && _activeTween != null && _activeTween.IsActive()) _activeTween.Kill();
                 });
 
-            yield return moveTween.WaitForCompletion();
+            yield return _activeTween.WaitForCompletion();
 
             if (interruptedByObstacle) break;
         }
@@ -130,10 +150,8 @@ public class SpellMoveTo : Skill
         {
             Collider[] hits = Physics.OverlapSphere(transform.position, Radius, LayerMask.GetMask("Enemy"));
 
-
             Character nearest = null;
             float minDist = float.MaxValue;
-
 
             foreach (var hit in hits)
             {
@@ -149,35 +167,48 @@ public class SpellMoveTo : Skill
                 }
             }
 
-
-            if (nearest != null)
+            if (nearest == null)
             {
-                float distanceToTarget = Vector3.Distance(transform.position, nearest.transform.position);
-
-
-                if (distanceToTarget > _attackDistance && distanceToTarget <= Radius) yield return MoveToPointWithNavMeshPath(nearest.transform.position, true);
-
-                while (nearest != null && !nearest.IsDead && Vector3.Distance(transform.position, nearest.transform.position) <= Radius)
-                {
-                    float distance = Vector3.Distance(transform.position, nearest.transform.position);
-
-                    if (distance <= _attackDistance && Time.time - _lastAttackTime > _damageDelay)
-                    {
-                        _currentEnemyTarget = nearest;
-                        _animator.SetTrigger("AutoAttackScared");
-                        _lastAttackTime = Time.time;
-                        yield return new WaitForSeconds(_damageDelay);
-                    }
-
-                    else if (distance > _attackDistance && distance <= Radius) yield return MoveToPointWithNavMeshPath(nearest.transform.position, true);
-                    else yield return null;
-                }
+                yield break;
             }
 
-            else yield break;
+            while (nearest != null && !nearest.IsDead && Vector3.Distance(transform.position, nearest.transform.position) <= Radius)
+            {
+                float distance = Vector3.Distance(transform.position, nearest.transform.position);
+
+                Vector3 dir = (nearest.transform.position - transform.position).normalized;
+                if (dir != Vector3.zero)
+                    transform.rotation = Quaternion.LookRotation(dir);
+
+                if (distance > _attackDistance)
+                {
+                    Vector3 safeTarget = GetApproachPointNearEnemy(nearest);
+                    yield return MoveToPointWithNavMeshPath(safeTarget, true);
+                    continue;
+                }
+
+                if (Time.time - _lastAttackTime > _damageDelay)
+                {
+                    _currentEnemyTarget = nearest;
+                    _animator.SetTrigger("AutoAttackScared");
+                    _lastAttackTime = Time.time;
+                    yield return new WaitForSeconds(_damageDelay);
+                }
+
+                yield return null;
+            }
+
             yield return null;
         }
     }
+
+    private Vector3 GetApproachPointNearEnemy(Character enemy)
+    {
+        Vector3 toEnemy = (enemy.transform.position - transform.position).normalized;
+        float stopDistance = _attackDistance - 0.1f;
+        return enemy.transform.position - toEnemy * stopDistance;
+    }
+
     private void DealDamage()
     {
         if (_currentEnemyTarget == null) return;
