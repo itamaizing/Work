@@ -11,8 +11,9 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
     [SerializeField] private TMProLocalizer _title;
     [SerializeField] private TMProLocalizer _talentsCount;
     [SerializeField] private RectTransform _itemsParent;
+    [SerializeField] private RectTransform _rowContainer;
 
-    private bool _isGameUI = false;
+	private bool _isGameUI = false;
     public event UnityAction OnShowPanelGroup;
 
     private List<UIMenuMainTalentsPanelGroupItem> _talents = new ();
@@ -36,9 +37,10 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
         //foreach (var row in talentsGroup.TalentRows)
         for (int i = 0; i < talentsGroup.TalentRows.Count; i++)
         {
+            var row = Instantiate(_rowContainer, _itemsParent);
             foreach (var item in talentsGroup.TalentRows[i].Talents)
             {
-                var talent = Instantiate(_talentPrefab, _itemsParent);
+                var talent = Instantiate(_talentPrefab, row);
 
                 talent.Owner = this;
                 talent.Fill(item.Data, i);
