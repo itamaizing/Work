@@ -25,7 +25,7 @@ public class Kick_Scorpion : Skill
     private Character _lastTarget = null;
     private Animator _animator;
 
-    private Character _target;
+    private IDamageable _target;
     private Character _runtimeTarget;
 
     private static readonly int KickTrigger = Animator.StringToHash("KickAA");
@@ -92,10 +92,16 @@ public class Kick_Scorpion : Skill
         {
             if (GetMouseButton)
             {
-                //_target = GetRaycastTarget();
+                _target = GetRaycastTarget();
 
                 if (_target != null)
-                    _target.SelectedCircle.IsActive = true;
+                {
+                    if (_target is Character characterTarget && characterTarget != this)
+                    {
+                        characterTarget.SelectedCircle.IsActive = true;
+                        _runtimeTarget = characterTarget;
+                    }
+                }
             }
             yield return null;
         }
@@ -103,7 +109,7 @@ public class Kick_Scorpion : Skill
         _hero.Move.LookAtTransform(_target.transform);
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_target.transform.position);
+        if (_runtimeTarget is Character character) targetInfo.Targets.Add(character);
         callbackDataSaved(targetInfo);
     }
 
@@ -112,9 +118,7 @@ public class Kick_Scorpion : Skill
         if (_target == null) yield return null;
         if (!IsTargetInRange()) yield return null;
 
-        _runtimeTarget = _target;
-
-        if (_lastTarget != null && _lastTarget != _target)
+        if (_lastTarget != null && _lastTarget != _runtimeTarget)
             _comboCounter?.ResetCounter();
 
         if (_hitsInRowCoroutine != null)

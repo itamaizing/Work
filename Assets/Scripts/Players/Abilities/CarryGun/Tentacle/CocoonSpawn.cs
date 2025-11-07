@@ -31,7 +31,7 @@ public class CocoonSpawn : Skill
         info.Points.Add(transform.position);
         callback?.Invoke(info);
 
-        yield break;
+        yield return null;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -62,6 +62,7 @@ public class CocoonSpawn : Skill
 
         CmdTentacleCocoon(spawnComponent);
          yield return null;
+        CastEndedJob();
     }
     private Vector3 GetRandomOffsetPosition(Vector3 center, float radius)
     {

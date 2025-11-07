@@ -126,7 +126,7 @@ public class TentacleProjectile : NetworkBehaviour
 
             if (Physics.SphereCast(transform.position, sphereRadius, direction, out RaycastHit hit, distance, obstecls)) return;
 
-            //_target.Move.CanMove = false;
+            _target.Move.IsMoveBlocked = true;
             _isPullTarget = true;
 
             if (tentacleLine != null) _lineCoroutine = StartCoroutine(DrawAndPullTarget());
@@ -220,7 +220,7 @@ public class TentacleProjectile : NetworkBehaviour
 
     private void ReleaseTarget()
     { 
-        //if (_target != null) _target.Move.CanMove = true;
+        if (_target != null) _target.Move.IsMoveBlocked = false;
 
         if (tentacleLine != null && _lineCoroutine != null) StopCoroutine(_lineCoroutine);
 

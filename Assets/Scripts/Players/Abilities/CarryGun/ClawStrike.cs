@@ -72,7 +72,7 @@ public class ClawStrike : Skill
 
                 if (_target != null)
                 {
-                    if (_target is Character characterTarget)
+                    if (_target is Character characterTarget && characterTarget != this)
                     {
                         characterTarget.SelectedCircle.IsActive = true;
                         _runtimeTarget = characterTarget;
@@ -106,7 +106,7 @@ public class ClawStrike : Skill
         if (_target == null) return;
 
         float attackingPsiValue = _spentAttackingPsiEnergy;
-        _baseDamage = UnityEngine.Random.Range(20f, 30f);
+        _baseDamage = UnityEngine.Random.Range(5f, 8f);
         Damage = _baseDamage;
 
         var damage = new Damage
@@ -171,14 +171,14 @@ public class ClawStrike : Skill
 
     public void ClawStrikePreparingForAnim()
     {
+        var lastSkill = _player.Abilities.LastCastedSkill;
+        float multiplier = 0;
+
         if (_isAnimationAcceleration)
         {
-            var lastSkill = _player.Abilities.LastCastedSkill;
-            float multiplier = 0;
-
             if ((lastSkill is ClawStrike && _isLastClawStrike) || lastSkill is CheliceraStrike)
             {
-                multiplier = 1.4f;
+                multiplier = 10f; //Test
                 _isLastClawStrike = false;
             }
 
@@ -187,9 +187,11 @@ public class ClawStrike : Skill
                 multiplier = 1f;
                 _isLastClawStrike = lastSkill is ClawStrike;
             }
-
-            Hero.Animator.SetFloat("ClawStrikeSpeed", multiplier);
         }
+
+        else multiplier = 1f;
+
+        Hero.Animator.SetFloat("ClawStrikeSpeed", multiplier);
 
         if (_attackingPsionicEnergy.IsAttackingPsiEnergy && _attackingPsionicEnergy.CurrentValue > 0f) TrySpendAttackingPsi();
         else _spentAttackingPsiEnergy = 0;

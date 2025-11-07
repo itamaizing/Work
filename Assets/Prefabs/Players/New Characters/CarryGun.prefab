@@ -10895,7 +10895,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Layer
-      value: 8
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 8464766807629527278, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.y
@@ -11473,7 +11473,6 @@ MonoBehaviour:
     Description: "\u042D\u0432\u043E\u043B\u044E\u0446\u0438\u044F 3"
     Icon: {fileID: 21300000, guid: c2877ccf3de6df443a4d3b7a2618cdaf, type: 3}
   character: {fileID: 8319872899575431858}
-  cheliceraStrike: {fileID: 640134254429411212}
   clawStrike: {fileID: 1846342972592633463}
 --- !u!114 &3167064817309890318
 MonoBehaviour:
@@ -11847,7 +11846,7 @@ MonoBehaviour:
   autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
