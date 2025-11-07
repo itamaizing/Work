@@ -137,6 +137,8 @@ public class CheliceraStrike : Skill
 
     private void HandleSkillCanceled()
     {
+        CheliceraStrikeEnded();
+        _isPlayCastAnim = false;
         _target = null;
     }
 

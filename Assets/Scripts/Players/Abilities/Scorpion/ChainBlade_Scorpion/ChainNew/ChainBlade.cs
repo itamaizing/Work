@@ -4,6 +4,14 @@ using Mirror;
 using System;
 using UnityEngine.SceneManagement;
 
+public static class Vector3Extensions
+{
+    public static bool IsFinite(this Vector3 vector)
+    {
+        return !(float.IsNaN(vector.x) || float.IsNaN(vector.y) || float.IsNaN(vector.z) || float.IsInfinity(vector.x) || float.IsInfinity(vector.y) || float.IsInfinity(vector.z));
+    }
+}
+
 public class ChainBlade : Skill
 {
     [SerializeField] [Range(0, 100)] private float _minDamage = 3f;
@@ -13,10 +21,12 @@ public class ChainBlade : Skill
     [SerializeField] private ChainArrow chainArrowPrefab;
     [SerializeField] private GameObject spawnPoint;
     [SerializeField] private HeroComponent playerLinks;
+    [SerializeField] private LineRenderer pullLineRenderer;
+    [SerializeField] private Transform chainPoint;
 
-
+    private Coroutine _pullCoroutine;
     private ChainArrow _chainArrowPrefab;
-    private Vector3 _clickPoint = Vector3.positiveInfinity;
+    private Vector3 _targetPoint = Vector3.positiveInfinity;
     private Animator _animator;
     private Character _target;
 
@@ -27,15 +37,7 @@ public class ChainBlade : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => chainBladeStart;
 
-    protected override bool IsCanCast
-    {
-        get
-        {
-            if (_target != null) return Vector3.Distance(_target.transform.position, transform.position) <= Radius;
-
-            else return true;
-        }
-    }
+    protected override bool IsCanCast => Vector3.Distance(_targetPoint, transform.position) <= Radius && NoObstacles(_targetPoint, transform.position, _obstacle);
 
     public float DamageRange => UnityEngine.Random.Range(_minDamage, _maxDamage);
     public PassiveCombo_Scorpion ComboCounter { get => _comboCounter; set => _comboCounter = value; }
@@ -47,31 +49,31 @@ public class ChainBlade : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (float.IsPositiveInfinity(_clickPoint.x))
+        while (float.IsPositiveInfinity(_targetPoint.x))
         {
             if (GetMouseButton)
             {
                 if (GetTarget().isCharater)
                 {
-                    float distance = Vector3.Distance(_hero.transform.position, _clickPoint);
+                    float distance = Vector3.Distance(_hero.transform.position, _targetPoint);
 
-                    if (distance <= Radius) _clickPoint = GetTarget().character.transform.position;
+                    if (distance <= Radius) _targetPoint = GetTarget().character.transform.position;
 
                     else
                     {
                         _target = GetTarget().character;
-                        _clickPoint = _target.transform.position;
+                        _targetPoint = _target.transform.position;
                     }
                 }
 
-                else _clickPoint = GetTarget().Position;
+                else _targetPoint = GetTarget().Position;
             }
 
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_clickPoint);
+        targetInfo.Points.Add(_targetPoint);
         callbackDataSaved(targetInfo);
     }
 
@@ -99,20 +101,52 @@ public class ChainBlade : Skill
     protected override IEnumerator CastJob()
     {
         Hero.Move.StopMoveAndAnimationMove();
-        CmdSpawnChainArrow(_clickPoint);
+        CmdSpawnChainArrow(_targetPoint);
         yield return null;
+    }
+
+    private IEnumerator PullTargetToPlayer(Character target, float duration)
+    {
+        Transform targetTransform = target.transform;
+        Vector3 start = targetTransform.position;
+        Vector3 end = Hero.transform.position + Hero.transform.forward * 1.5f;
+
+        float timer = 0f;
+        pullLineRenderer.enabled = true;
+
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            float t = timer / duration;
+            targetTransform.position = Vector3.Lerp(start, end, t);
+
+            pullLineRenderer.SetPosition(0, chainPoint.position);
+
+            Vector3 targetPos = targetTransform.position;
+            targetPos.y += 1f;
+            pullLineRenderer.SetPosition(1, targetPos);
+
+            yield return null;
+        }
+
+        pullLineRenderer.enabled = false;
+        ChainBladeCastEnd();
     }
 
     protected override void ClearData()
     {
-        _clickPoint = Vector3.positiveInfinity;
+        _targetPoint = Vector3.positiveInfinity;
         _target = null;
     }
 
     public void ChainBladeCast()
     {
         AnimStartCastCoroutine();
-        if ((Hero.transform.position - _clickPoint).sqrMagnitude > 0.001f)  Hero.Move.LookAtPosition(_clickPoint);
+        Vector3 direction = _targetPoint - Hero.transform.position;
+        direction.y = 0;
+
+        if (direction.sqrMagnitude > 0.01f && direction.IsFinite())
+            Hero.Move.LookAtPosition(_targetPoint);
         Hero.Move.CanMove = false;
     }
 
@@ -122,23 +156,55 @@ public class ChainBlade : Skill
         ChainBladeDestroy();
     }
 
+    [Server]
+    private void HandleArrowHit(Character target, float pullDuration)
+    {
+        Debug.Log("HIT handling on server");
+
+        if (_chainArrowPrefab != null)
+        {
+            _chainArrowPrefab.OnHitTarget -= HandleArrowHit;
+            _chainArrowPrefab.Cleanup();
+            NetworkServer.Destroy(_chainArrowPrefab.gameObject);
+            _chainArrowPrefab = null;
+        }
+
+        _pullCoroutine = StartCoroutine(PullTargetToPlayer(target, pullDuration));
+
+        RpcHandleHitClient(target.netId, pullDuration);
+    }
+
     [Command]
     private void CmdSpawnChainArrow(Vector3 clickPoint)
     {
 
         Vector3 direction = (clickPoint - spawnPoint.transform.position).normalized;
         Vector3 flatDirection = new Vector3(direction.x, 0, direction.z).normalized;
-        Vector3 targetPoint = spawnPoint.transform.position + flatDirection * Radius;
+        Vector3 targetPoint = spawnPoint.transform.position + flatDirection * (Radius - 0.5f);
+        targetPoint.y = spawnPoint.transform.position.y;
 
         var arrow = Instantiate(chainArrowPrefab, spawnPoint.transform.position, Quaternion.identity);
+        if (_chainArrowPrefab != null) Destroy(_chainArrowPrefab.gameObject);
         _chainArrowPrefab = arrow;
         arrow.Init(playerLinks, 0, false, this);
+
+        arrow.OnHitTarget += HandleArrowHit;
 
         NetworkServer.Spawn(arrow.gameObject);
         SceneManager.MoveGameObjectToScene(arrow.gameObject, _hero.NetworkSettings.MyRoom);
 
         arrow.InitArrow(targetPoint, spawnPoint.transform, Radius, DamageRange);
         RpcInitArrow(arrow.gameObject, targetPoint);
+    }
+
+    [ClientRpc]
+    private void RpcHandleHitClient(uint targetId, float duration)
+    {
+        var obj = NetworkClient.spawned[targetId].gameObject;
+        var target = obj.GetComponent<Character>();
+
+        if (_pullCoroutine != null) StopCoroutine(_pullCoroutine);
+        _pullCoroutine = StartCoroutine(PullTargetToPlayer(target, duration));
     }
 
     [ClientRpc]
@@ -153,6 +219,6 @@ public class ChainBlade : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _clickPoint = targetInfo.Points[0];
+        _targetPoint = targetInfo.Points[0];
     }
 }

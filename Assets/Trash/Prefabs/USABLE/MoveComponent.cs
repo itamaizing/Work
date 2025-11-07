@@ -197,7 +197,6 @@ public class MoveComponent : NetworkBehaviour
     {
 		if ((!CanMove && !CanMoveState) || _rigidbody == null || IsMoveBlocked == true)
 		{
-
 			if (_rigidbody != null)
 			{
                 _rigidbody.linearVelocity = Vector3.zero;
@@ -454,25 +453,26 @@ public class MoveComponent : NetworkBehaviour
 		transform.position += vector3;
 	}
 
-	public void TestDoMove(Vector3 targetPosition, float maxDistance)
+	[TargetRpc]
+	public void TargetRpcTestDoMove(Vector3 targetPosition, float speed)
+	{
+		TestDoMove(targetPosition, speed);
+	}
+	public void TestDoMove(Vector3 targetPosition, float speed)
 	{
 		CanMove = false;
 
+		float distance = Vector3.Distance(transform.position, targetPosition);
+		float duration = distance / speed;
+
 		Tween moveTween = null;
 
-	     moveTween = _rigidbody.DOMove(targetPosition, 1f)
-			.SetEase(Ease.Linear)
-			.OnUpdate(() =>
-			{
-				if (Vector3.Distance(transform.position, targetPosition) <= maxDistance)
-				{
-					moveTween.Kill();
-			}
-			})
-			.OnKill(() =>
-			{
-				CanMove = true;
-			});
+		moveTween = _rigidbody.DOMove(targetPosition, duration)
+		.SetEase(Ease.Linear)
+		.OnKill(() =>
+		{
+			CanMove = true;
+		});
 	}
 
 	[ClientRpc]
