@@ -219,7 +219,7 @@ public abstract class Skill : NetworkBehaviour
     public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); protected set => _cooldownTime = value; }
     public float RemainingCooldownTime { get => _remainingCooldownTime; set => _remainingCooldownTime = value; }
     public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); set => _castDeley = value; }
-    public bool IsCasting { get => _isCasting; set => _isCasting = value; }
+    public bool IsCasting { get => _isCasting; protected set => _isCasting = value; }
     public float CastStreamDuration { get => _castDuration; set => _castDuration = value; }
     public float Radius { get => Buff.Radius.GetBuffedValue(_radius); set => _radius = value; }
     public float Area { get => Buff.Area.GetBuffedValue(_area); set => _area = value; }
@@ -434,8 +434,13 @@ public abstract class Skill : NetworkBehaviour
 
     public bool TryCast()
     {
+        if (_isCasting || _isPreparing)
+            return false;
+
+        LoadTargetDataForCheckCast();
         if (IsHaveResources && IsCanCast && _isCasting == false && NoObstacles() && Hero.IsDead == false)
         {
+            _isCasting = true;
             TryPayCost(IsPayCostStartCooldown);
 
             if (_targetInfoQueue.Count > 0)
@@ -468,8 +473,13 @@ public abstract class Skill : NetworkBehaviour
 
     public bool TryCast(TargetInfo targetInfo)
     {
+        if (_isCasting || _isPreparing)
+            return false;
+
+        LoadTargetDataForCheckCast();
         if (IsHaveResources && _isCasting == false && NoObstacles() && Hero.IsDead == false)
         {
+            _isCasting = true;
             LoadTargetData(targetInfo);
 
             if (IsCanCast)
@@ -1420,7 +1430,7 @@ public abstract class Skill : NetworkBehaviour
 
     private void LoadTargetDataForCheckCast()
     {
-        if (_targetInfoQueue.TryPeek(out TargetInfo temp))
+        if (_isCasting == false && _targetInfoQueue.TryPeek(out TargetInfo temp))
             LoadTargetData(temp);
     }
 
@@ -1494,7 +1504,7 @@ public abstract class Skill : NetworkBehaviour
     {
         PreparingStarted?.Invoke(this);
         _isPreparing = true;
-        ClearData();
+        //ClearData();
         StartAutoDraw();
 
         if (_isDynamicRenderer)
@@ -1510,8 +1520,6 @@ public abstract class Skill : NetworkBehaviour
         UnSubscribeClickEvents();
 
         OnClickCanceled();
-
-        LoadTargetDataForCheckCast();
 
         //test
         if (_targetInfoQueue.TryPeek(out TargetInfo info))
@@ -1552,6 +1560,7 @@ public abstract class Skill : NetworkBehaviour
 
             while (_isPlayCastAnim)
             {
+                //*
                 if (_tempForDamage != null && !IsValidTarget(_tempForDamage))
                 {
                     _isCanCancle = true;
@@ -1566,7 +1575,7 @@ public abstract class Skill : NetworkBehaviour
                     TryCancel(true);
                     yield break;
                 }
-
+                //*/
                 yield return null;
             }
 
@@ -1598,8 +1607,6 @@ public abstract class Skill : NetworkBehaviour
             character.SelectedCircle.IsActive = false;
             character.SelectedCircle.SwitchSelectCircle(false);
         }
-
-        LoadTargetDataForCheckCast();
 
         _hero.Move.StopLookAt();
         if (!_isAutoMode) _hero.Move.CanMove = true;

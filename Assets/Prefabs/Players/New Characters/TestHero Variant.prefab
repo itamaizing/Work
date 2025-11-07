@@ -73,7 +73,7 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: _minionPrefs.Array.data[0]
+      propertyPath: '_minionPrefs.Array.data[0]'
       value: 
       objectReference: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -81,7 +81,7 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: _characterPrefabs.Array.data[0]
+      propertyPath: '_characterPrefabs.Array.data[0]'
       value: 
       objectReference: {fileID: 6270067163818579670, guid: b9361abbea62d324688cafe08eac97d9, type: 3}
     - target: {fileID: 556128977287844779, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -111,6 +111,14 @@ PrefabInstance:
     - target: {fileID: 556128977287844779, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalRotation.z
       value: -0.16270576
+      objectReference: {fileID: 0}
+    - target: {fileID: 680587800667431627, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 680587800667431627, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 711794928314451879, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -604,6 +612,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.14508817
       objectReference: {fileID: 0}
+    - target: {fileID: 4236290764060667860, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
+      objectReference: {fileID: 0}
     - target: {fileID: 4323459146265591484, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.14642458
@@ -697,23 +709,23 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: _skills.Array.data[0]
+      propertyPath: '_skills.Array.data[0]'
       value: 
       objectReference: {fileID: 6826451857811645426}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: _skills.Array.data[1]
+      propertyPath: '_skills.Array.data[1]'
       value: 
       objectReference: {fileID: 7470037727588752420}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: _skills.Array.data[2]
+      propertyPath: '_skills.Array.data[2]'
       value: 
       objectReference: {fileID: 181286831063766870}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: _skills.Array.data[3]
+      propertyPath: '_skills.Array.data[3]'
       value: 
       objectReference: {fileID: 7442031059852679175}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: _skills.Array.data[4]
+      propertyPath: '_skills.Array.data[4]'
       value: 
       objectReference: {fileID: 3967981366499090309}
     - target: {fileID: 5338308959782739855, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -863,6 +875,10 @@ PrefabInstance:
     - target: {fileID: 7495667346702932211, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalRotation.z
       value: -0.68437344
+      objectReference: {fileID: 0}
+    - target: {fileID: 7849522353126173969, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
+      value: 1801810542
       objectReference: {fileID: 0}
     - target: {fileID: 7960456781485226568, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1206,14 +1222,17 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 10
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 1
-  _castDeley: 0.5
+  _castDeley: 2
   _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -1232,12 +1251,14 @@ MonoBehaviour:
   _area: 2
   _castLength: 5
   _castWidth: 1
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   _projectile: {fileID: 3436609779166928419, guid: d490c899d604d2c4dbb3f72e61cacb6e, type: 3}
   _animSpeed: 1
 --- !u!114 &7470037727588752420
@@ -1262,6 +1283,7 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 30
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 1
   _damageValue: 9999
@@ -1270,6 +1292,8 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -1288,12 +1312,14 @@ MonoBehaviour:
   _area: 3
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   _projectile: {fileID: 3436609779166928419, guid: d490c899d604d2c4dbb3f72e61cacb6e, type: 3}
   _damage: 9999
   _projectileCount: 8
@@ -1318,6 +1344,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: d225c810085a24647a426dd4b47a9983, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 2
   _castDeley: 0
   _damageValue: 0
@@ -1326,6 +1353,8 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -1344,12 +1373,14 @@ MonoBehaviour:
   _area: 0
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
 --- !u!114 &7442031059852679175
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1370,6 +1401,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 83e21c29a8358a84c98e9e3409e72dce, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
@@ -1378,6 +1410,8 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -1396,12 +1430,14 @@ MonoBehaviour:
   _area: 0
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   _attackZoneSize: 1
   _attackDelay: 0
   _chargeAttackDelay: 0
@@ -1427,6 +1463,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: a04aa234cf7b9fb41b6cd8c068b72528, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
@@ -1435,6 +1472,8 @@ MonoBehaviour:
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
+  _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -1453,12 +1492,14 @@ MonoBehaviour:
   _area: 0
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
 --- !u!114 &424354014363260230
 MonoBehaviour:
   m_ObjectHideFlags: 0
