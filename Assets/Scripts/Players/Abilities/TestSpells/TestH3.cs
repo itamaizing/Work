@@ -18,13 +18,22 @@ public class TestH3 : Skill
 
     protected override int AnimTriggerCast => Animator.StringToHash("H3Cast");
 
+    public Character Target { get => _target; private set
+        {
+            if (value != null)
+                Debug.Log(value.name);
+            else
+                Debug.Log(value);
+            _target = value;
+        } }
+
     private bool CheckCanCast()
     {
-        if (_target == null)
+        if (Target == null)
             return Vector3.Distance(_targetPoint, transform.position) <= Radius;
 
         return Vector3.Distance(_targetPoint, transform.position) <= Radius ||
-               Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+               Vector3.Distance(Target.transform.position, transform.position) <= Radius;
     }
 
     public void AnimCastH3()
@@ -51,15 +60,15 @@ public class TestH3 : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _target = (Character)targetInfo.Targets[0];
+        Target = (Character)targetInfo.Targets[0];
         _targetPoint = targetInfo.Points[0];
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_target != null)
+        if (Target != null)
         {
-            CmdCreateProjecttile(_target.transform);
+            CmdCreateProjecttile(Target.transform);
         }
         else
         {
@@ -71,7 +80,7 @@ public class TestH3 : Skill
 
     protected override void ClearData()
     {
-        _target = null;
+        Target = null;
         _targetPoint = Vector3.positiveInfinity;
     }
 
@@ -79,21 +88,23 @@ public class TestH3 : Skill
     {
         Buff.CastSpeed.IncreasePercentage(_animSpeed);
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && _target == null)
+        ITargetable target = null;
+        Vector3 targetPoint = Vector3.positiveInfinity;
+
+        while (float.IsPositiveInfinity(targetPoint.x) && target == null)
         {
             if (GetMouseButton)
             {
-                _target = GetTarget().character;
-                _targetPoint = GetTarget().Position;
+                if (GetRaycastTarget() is ITargetable t)
+				    target = t;
 
-				//_target = GetRaycastTarget();
-                _targetPoint = GetMousePoint();
+                targetPoint = GetMousePoint();
             }
             yield return null;
         }
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Targets.Add(_target);
-        targetInfo.Points.Add(_targetPoint);
+        targetInfo.Targets.Add(target);
+        targetInfo.Points.Add(targetPoint);
         callbackDataSaved(targetInfo);
     }
 

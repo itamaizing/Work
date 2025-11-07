@@ -108,7 +108,7 @@ public class Projectile : MonoBehaviour, IProjectile
 
         while (transform.position != position)
         {
-            transform.position = Vector2.MoveTowards(transform.position, position, _speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, position, _speed * Time.deltaTime);
             yield return null;
         }
         EndPointReached?.Invoke(this, null);
@@ -123,7 +123,7 @@ public class Projectile : MonoBehaviour, IProjectile
         {
             Rotate(_target.position);
 
-            transform.position = Vector2.MoveTowards(transform.position, _target.position, _speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, _target.position, _speed * Time.deltaTime);
             yield return null;
         }
         EndPointReached?.Invoke(this, _target.gameObject);
