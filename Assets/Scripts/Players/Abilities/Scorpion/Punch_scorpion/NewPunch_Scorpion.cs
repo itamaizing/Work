@@ -12,12 +12,11 @@ public class NewPunch_Scorpion : Skill
     [SerializeField] private byte _hitsInRow = 1;
 
     private Coroutine _hitsInRowCoroutine;
-    private Character _lastTarget = null;
+    private IDamageable _lastTarget = null;
     private Animator _animator;
     private bool _isRightKick = true;
 
-    private Character _target;
-    private Character _runtimeTarget;
+    private IDamageable _target;
 
     private static readonly int RightPunchTrigger = Animator.StringToHash("RightPunch");
     private static readonly int LeftPunchTrigger = Animator.StringToHash("LeftPunch");
@@ -91,14 +90,17 @@ public class NewPunch_Scorpion : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        _lastTarget = null;
+
         while (_target == null)
         {
             if (GetMouseButton)
             {
-                //_target = GetRaycastTarget();
+                _target = GetRaycastTarget();
 
-                if (_target != null) _target.SelectedCircle.IsActive = true;
+                if (_target != null && _target is Character character) character.SelectedCircle.IsActive = true;
             }
+
             yield return null;
         }
 
@@ -114,20 +116,18 @@ public class NewPunch_Scorpion : Skill
         if (_target == null) yield return null;
         if (!IsTargetInRange()) yield return null;
 
-        _runtimeTarget = _target;
-
-        if (_lastTarget != null && _lastTarget != _runtimeTarget)  _comboCounter.ResetCounter();
+        if (_lastTarget != null && _lastTarget != _target)  _comboCounter.ResetCounter();
 
         _isRightKick = !_isRightKick;
-        _lastTarget = _runtimeTarget;
+        _lastTarget = _target;
 
         ApplyAttackDamage();
     }
 
     private void ApplyAttackDamage()
     {
-        if (_runtimeTarget == null) return;
-        if (Vector2.Distance(_lastTarget.transform.position, _runtimeTarget.transform.position) > Radius) return;
+        if (_target == null) return;
+        if (Vector2.Distance(_lastTarget.transform.position, _target.transform.position) > Radius) return;
 
         Damage damage = new Damage
         {
@@ -135,24 +135,24 @@ public class NewPunch_Scorpion : Skill
             Type = DamageType,
         };
 
-        Character target = _runtimeTarget;
-        CmdApplyDamage(target, damage);
-        _runtimeTarget = null;
+        CmdApplyDamage(_lastTarget.gameObject, damage);
+
+        _target = null;
     }
 
     [Command]
-    private void CmdApplyDamage(Character targetObject, Damage damage)
+    private void CmdApplyDamage(GameObject target, Damage damage)
     {
-        if (targetObject == null)
+        if (target == null)
         {
             Debug.LogError("[NewPunch_Scorpion] CmdApplyDamage: TargetObject is null!");
             return;
         }
 
-        if (_tempTargetForDamage != targetObject.transform)
+        if (_tempTargetForDamage != target.transform)
         {
-            _tempTargetForDamage = targetObject.transform;
-            _tempForDamage = targetObject.GetComponent<IDamageable>();
+            _tempTargetForDamage = target.transform;
+            _tempForDamage = target.GetComponent<IDamageable>();
         }
 
         if (_tempForDamage == null)
@@ -162,8 +162,7 @@ public class NewPunch_Scorpion : Skill
         }
 
         bool isHit = _tempForDamage.TryTakeDamage(ref damage, this);
-        Hero.DamageTracker.AddDamage(damage, targetObject.gameObject, isServerRequest: true);
-        AttackPassed(targetObject);
+        if (isHit && _tempForDamage is Character character) AttackPassed(character);
 
         //RpcSelfNotifyHitResult(isHit, targetObject);
     }
@@ -196,10 +195,10 @@ public class NewPunch_Scorpion : Skill
             StopCoroutine(_hitsInRowCoroutine);
         _hitsInRowCoroutine = StartCoroutine(HitsInRowTimer());
 
-        if (_lastTarget != null && _lastTarget == target) _hitsInRow++;
+        if (_lastTarget != null && _lastTarget == _target) _hitsInRow++;
         else _hitsInRow = 1;
 
-        _lastTarget = target;
+        _lastTarget = target as Character;
 
         if (_isWarningUpAddState && _hitsInRow >= 2)
         {
@@ -241,6 +240,7 @@ public class NewPunch_Scorpion : Skill
 
     protected override void ClearData()
     {
+        _target = null;
         _hero.Move.StopLookAt();
     }
 

@@ -22,11 +22,10 @@ public class Kick_Scorpion : Skill
     [SerializeField] [ReadOnly] private byte _hitsInRow = 1;
 
     private Coroutine _hitsInRowCoroutine;
-    private Character _lastTarget = null;
+    private IDamageable _lastTarget = null;
     private Animator _animator;
 
     private IDamageable _target;
-    private Character _runtimeTarget;
 
     private static readonly int KickTrigger = Animator.StringToHash("KickAA");
 
@@ -96,11 +95,7 @@ public class Kick_Scorpion : Skill
 
                 if (_target != null)
                 {
-                    if (_target is Character characterTarget && characterTarget != this)
-                    {
-                        characterTarget.SelectedCircle.IsActive = true;
-                        _runtimeTarget = characterTarget;
-                    }
+                    if (_target is Character characterTarget && characterTarget != this) characterTarget.SelectedCircle.IsActive = true;
                 }
             }
             yield return null;
@@ -109,7 +104,7 @@ public class Kick_Scorpion : Skill
         _hero.Move.LookAtTransform(_target.transform);
 
         TargetInfo targetInfo = new TargetInfo();
-        if (_runtimeTarget is Character character) targetInfo.Targets.Add(character);
+        targetInfo.Points.Add(_target.transform.position);
         callbackDataSaved(targetInfo);
     }
 
@@ -118,22 +113,22 @@ public class Kick_Scorpion : Skill
         if (_target == null) yield return null;
         if (!IsTargetInRange()) yield return null;
 
-        if (_lastTarget != null && _lastTarget != _runtimeTarget)
+        if (_lastTarget != null && _lastTarget != _target)
             _comboCounter?.ResetCounter();
 
         if (_hitsInRowCoroutine != null)
             StopCoroutine(_hitsInRowCoroutine);
 
-        _lastTarget = _runtimeTarget;
+        _lastTarget = _target;
 
         ApplyAttackDamageKick();
     }
 
     private void ApplyAttackDamageKick()
     {
-        if (_runtimeTarget == null) return;
+        if (_target == null) return;
 
-        if (Vector2.Distance(_lastTarget.transform.position, _runtimeTarget.transform.position) > Radius)
+        if (Vector2.Distance(_lastTarget.transform.position, _target.transform.position) > Radius)
             return;
 
         Damage damage = new Damage
@@ -142,9 +137,9 @@ public class Kick_Scorpion : Skill
             Type = DamageType,
         };
 
-        CmdApplyDamage(_runtimeTarget, damage);
+        CmdApplyDamage(_lastTarget.gameObject, damage);
 
-        _runtimeTarget = null;
+        _target = null;
     }
 
     private IEnumerator HitsInRowTimer()
@@ -209,17 +204,16 @@ public class Kick_Scorpion : Skill
     }
 
     [Command]
-    private void CmdApplyDamage(Character targetObject, Damage damage)
+    private void CmdApplyDamage(GameObject target, Damage damage)
     {
-        if (targetObject == null) return;
+        if (target == null) return;
 
-        IDamageable targetHealth = targetObject.GetComponent<IDamageable>();
+        IDamageable targetHealth = target.GetComponent<IDamageable>();
         if (targetHealth == null) return;
 
         bool isHit = targetHealth.TryTakeDamage(ref damage, this);
-        Hero.DamageTracker.AddDamage(damage, targetObject.gameObject, isServerRequest: true);
 
-        if (isHit) AttackPassed(targetObject);
+        if (isHit && targetHealth is Character character) AttackPassed(character);
     }
 
     public void Kick_ScorpionRowTalent(bool value)
@@ -254,6 +248,6 @@ public class Kick_Scorpion : Skill
 
     protected override void ClearData()
     {
-
+        _target = null;
     }
 }

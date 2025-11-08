@@ -14,7 +14,7 @@ public class CleavingBlade_Scorpion : Skill
     [SerializeField] private GameObject blade;
 
     [SyncVar] private int _counter = 1;
-    private Character _target;
+    private IDamageable _target;
     private Character _runtimeTarget;
 
     private bool isCleavingBlade_ScorpionSecondTalent;
@@ -35,7 +35,7 @@ public class CleavingBlade_Scorpion : Skill
         _target = (Character)targetInfo.Targets[0];
     }
 
-    private void AttackPassed(bool shouldIncreaseCounter, Character target)
+    private void AttackPassed(Character target, bool shouldIncreaseCounter)
     {
         _comboCounter.AddSkill(target, this);
 
@@ -72,23 +72,25 @@ public class CleavingBlade_Scorpion : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        _runtimeTarget = null;
+
         while (_target == null)
         {
             if (GetMouseButton)
             {
-                //_target = GetRaycastTarget(true);
+                _target = GetRaycastTarget(true);
+                if (_target != null && _target is Character character) _runtimeTarget = character;
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new();
-        targetInfo.Targets.Add(_target);
+        targetInfo.Targets.Add(_runtimeTarget);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        _runtimeTarget = _target;
         TryAttack(true, 1f);
         yield return null;
     }
@@ -104,7 +106,7 @@ public class CleavingBlade_Scorpion : Skill
 
     private void TryAttack(bool shouldIncreaseCounter, float damageMultiplier)
     {
-        if (_runtimeTarget != null && Vector2.Distance(transform.position, _runtimeTarget.transform.position) <= Radius)
+        if (_target != null && Vector2.Distance(transform.position, _target.transform.position) <= Radius)
         {
             Damage damage = new Damage
             {
@@ -112,23 +114,23 @@ public class CleavingBlade_Scorpion : Skill
                 Type = DamageType,
             };
 
-            CmdAttack(damage, _runtimeTarget, shouldIncreaseCounter);
+            CmdAttack(damage, _target.gameObject, shouldIncreaseCounter);
 
             _runtimeTarget = null;
         }
     }
 
     [Command]
-    private void CmdAttack(Damage damage, Character hp, bool shouldIncreaseCounter)
+    private void CmdAttack(Damage damage, GameObject target, bool shouldIncreaseCounter)
     {
-        if (_tempTargetForDamage != hp.transform)
+        if (_tempTargetForDamage != target.transform)
         {
-            _tempTargetForDamage = hp.transform;
-            _tempForDamage = hp.GetComponent<IDamageable>();
+            _tempTargetForDamage = target.transform;
+            _tempForDamage = target.GetComponent<IDamageable>();
         }
 
         bool result = _tempForDamage.TryTakeDamage(ref damage, this);
-        AttackPassed(shouldIncreaseCounter, hp);
+        if (result && _tempForDamage is Character character) AttackPassed(character, shouldIncreaseCounter);
     }
 
     protected override void ClearData()
