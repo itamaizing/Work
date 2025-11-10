@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class FrostTalent_1 : Talent
 {
-    [SerializeField] private IceCloud iceCloud;
-    [SerializeField] private SkillManager skillManager;
+    [SerializeField] private IceCloud _iceCloud;
+    [SerializeField] private SkillManager _skillManager;
 
     public override void Enter()
     {
-        skillManager.ActivateSkill(iceCloud);
+        //skillManager.ActivateSkill(iceCloud);
     }
 
     public override void Exit()
     {
-        skillManager.DeactivateSkill(iceCloud);
+        //skillManager.DeactivateSkill(iceCloud);
     }
 }

@@ -26,6 +26,7 @@ public class SkillManager : MonoBehaviour
     private Skill _selectedSkill;
     private Coroutine _lastCastResetCoroutine;
     private int _castWindowId = 0;
+    private int _countBonusCharges = 0;
 
     private Dictionary<Skill, Action> _castEndedHandlers = new();
 
@@ -189,8 +190,9 @@ public class SkillManager : MonoBehaviour
                 break;
             }
         }
+        TalentSkillAdd(skill);
 
-        skill.IsSkillActive = true;
+		skill.IsSkillActive = true;
         SkillAdded?.Invoke(skill);
     }
 
@@ -216,6 +218,7 @@ public class SkillManager : MonoBehaviour
         {
             if (_selectedSkills[i] == skill && _selectedSkills.Contains(skill))
             {
+                Debug.Log("Deactivate " + skill);
                 _selectedSkills[i] = null;
                 break;
             }
@@ -422,6 +425,24 @@ public class SkillManager : MonoBehaviour
                 item.TryCancel(true);
             }
         }
+    }
+
+    private void TalentSkillAdd(Skill skill)
+    {
+        if (_countBonusCharges > 0)
+        {
+            if (skill.IsUseCharges)
+            {
+                Debug.Log("Add charge from talent");
+                _countBonusCharges--;
+                skill.AddMaxChargeCount();
+            }
+        }
+    }
+
+    public void TalentAddCharges(int countBonusCharges)
+    {
+        _countBonusCharges = countBonusCharges;
     }
 
     #region legacycode

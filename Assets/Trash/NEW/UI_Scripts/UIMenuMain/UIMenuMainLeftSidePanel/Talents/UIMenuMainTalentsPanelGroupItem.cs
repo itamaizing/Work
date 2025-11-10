@@ -26,9 +26,11 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
     private TalentData _talent;
     private int _row = 0;
 
+
     public int Row => _row;
 
     public Button Button { get => _button; }
+    public TalentData Talent => _talent;
 
     private void Start()
     {

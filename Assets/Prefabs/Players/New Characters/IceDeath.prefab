@@ -2698,7 +2698,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRow.Array.data[1].Talents.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRow.Array.data[2].Talents.Array.size
@@ -2731,7 +2731,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRow.Array.data[0].Talents.Array.data[0]'
       value: 
-      objectReference: {fileID: 3308416631096017029}
+      objectReference: {fileID: 1918352189532365359}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRow.Array.data[1].Talents.Array.data[0]'
       value: 
@@ -2740,6 +2740,10 @@ PrefabInstance:
       propertyPath: '_talents.Array.data[1]._talentRow.Array.data[1].Talents.Array.data[1]'
       value: 
       objectReference: {fileID: 2242834627366772860}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRow.Array.data[1].Talents.Array.data[2]'
+      value: 
+      objectReference: {fileID: 850994493169687921}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRow.Array.data[2].Talents.Array.data[0]'
       value: 
@@ -3290,6 +3294,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3083348233968490285}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 850994493169687921}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1918352189532365359}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!114 &323327819542905198 stripped
 MonoBehaviour:
@@ -3384,7 +3394,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 1
+  _isTalentSpell: 0
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 4149308b91515334c801b1f26c6c99ba, type: 2}
   _isSubjectToGlobalCooldownTime: 1
@@ -3447,7 +3457,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 1
+  _isTalentSpell: 0
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: e43281df2f36f8847a019f5d98c83495, type: 2}
   _isSubjectToGlobalCooldownTime: 1
@@ -4675,8 +4685,8 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
-  iceCloud: {fileID: 752221787785051408}
-  skillManager: {fileID: 4220410774128686972}
+  _iceCloud: {fileID: 752221787785051408}
+  _skillManager: {fileID: 4220410774128686972}
 --- !u!114 &6142297959774152765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4736,9 +4746,9 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
-  icePuddle: {fileID: 4310610476984543593}
-  iceShadow: {fileID: 3068634069238352843}
-  skillManager: {fileID: 4220410774128686972}
+  _icePuddle: {fileID: 4310610476984543593}
+  _iceShadow: {fileID: 3068634069238352843}
+  _skillManager: {fileID: 4220410774128686972}
 --- !u!114 &2242834627366772860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4788,7 +4798,7 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
-  icePuddle: {fileID: 4310610476984543593}
+  _icePuddle: {fileID: 4310610476984543593}
 --- !u!114 &6580995585041578627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4896,3 +4906,48 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerLinks: {fileID: 4374618947117916461}
+--- !u!114 &850994493169687921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44d6cbf7f68e2fe42b7465394dc177d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeathSpiralTalents
+  _data:
+    _descriptionsForInfoPanel: []
+    _stateInfos: []
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+    Group: 0
+    Row: 0
+  character: {fileID: 4374618947117916461}
+  _deathSpiral: {fileID: 5605713643324713456}
+  _ability: {fileID: 4220410774128686972}
+--- !u!114 &1918352189532365359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ee15131b488be545b30911557402a6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GodAbilityTalent
+  _data:
+    _descriptionsForInfoPanel: []
+    _stateInfos: []
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+    Group: 0
+    Row: 0
+  character: {fileID: 4374618947117916461}
+  _skillManager: {fileID: 4220410774128686972}

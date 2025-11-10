@@ -2,13 +2,15 @@ using UnityEngine;
 
 public class GodAbilityTalent : Talent
 {
+	[SerializeField] private SkillManager _skillManager;
+
 	public override void Enter()
 	{
-		throw new System.NotImplementedException();
+		_skillManager.TalentAddCharges(2);
 	}
 
 	public override void Exit()
 	{
-		throw new System.NotImplementedException();
+		_skillManager.TalentAddCharges(0);
 	}
 }

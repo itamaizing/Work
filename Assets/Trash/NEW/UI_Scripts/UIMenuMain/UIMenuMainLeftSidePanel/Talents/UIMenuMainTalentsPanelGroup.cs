@@ -62,6 +62,10 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
         {
             foreach(var talent in _rows[i].Talents)
             {
+                if(talent.Talent.IsOpen)
+                {
+                    _rows[i + 1].ActivateRow();
+                }
                 talent.Selected += _rows[i + 1].ActivateRow;
             }
         }

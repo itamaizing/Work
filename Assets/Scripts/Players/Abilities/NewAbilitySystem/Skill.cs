@@ -164,11 +164,12 @@ public abstract class Skill : NetworkBehaviour
     private bool _isShiftClick;
     private bool _isCtrlClick;
     private bool _isSpaceClick;
-    private bool _isWaitingForCastCoroutine = false;
-    private List<float> _remainingCooldownTimeChargers;
+    private TypeClick _click;
+	//private bool _isWaitingForCastCoroutine = false;
+	private List<float> _remainingCooldownTimeChargers = new();
     private List<Coroutine> _currentChargeCooldownJob;
-    private float _assistTimer = 5f;
-    private Coroutine _assistCoroutine;
+   // private float _assistTimer = 5f;
+    //private Coroutine _assistCoroutine;
     private Queue<TargetInfo> _targetInfoQueue = new();
     private bool _isAutoMode;
 
@@ -676,6 +677,7 @@ public abstract class Skill : NetworkBehaviour
             _hero.Resources.Where(r => r.Type == skillCost.resourceType).Sum(r => r.CurrentValue) >= Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
     }
 
+
     public void AddMaxChargeCount()
     {
         _maxCharges += 1;
@@ -684,10 +686,13 @@ public abstract class Skill : NetworkBehaviour
 
         _currentChargers += 1;
 
-        _currentChargeCooldownJob.Add(null);
+
+        Debug.Log("Зачем эта строка? крашит игру");
+        //_currentChargeCooldownJob.Add(null);
 
         CurrentChargeChanged?.Invoke(_currentChargers);
     }
+
 
     public void ReductionCooldownForAllCharges(float reductionTime, float reductionPercentage = 0)
     {
@@ -1344,6 +1349,7 @@ public abstract class Skill : NetworkBehaviour
 
     private void OnClick()
     {
+        _click = TypeClick.LMB;
         _isClick = true;
         _isCtrlClick = false;
         _isShiftClick = false;
@@ -1352,7 +1358,8 @@ public abstract class Skill : NetworkBehaviour
 
     private void OnClickCanceled()
     {
-        _isClick = false;
+		_click = TypeClick.None;
+		_isClick = false;
         _isCtrlClick = false;
         _isShiftClick = false;
         _isSpaceClick = false;
@@ -1360,7 +1367,8 @@ public abstract class Skill : NetworkBehaviour
 
     private void OnShiftClick()
     {
-        _isClick = false;
+		_click = TypeClick.ShiftLMB;
+		_isClick = false;
         _isCtrlClick = false;
         _isShiftClick = true;
         _isSpaceClick = false;
@@ -1368,7 +1376,8 @@ public abstract class Skill : NetworkBehaviour
 
     private void OnCtrlClick()
     {
-        _isClick = false;
+		_click = TypeClick.CtrlLMB;
+		_isClick = false;
         _isCtrlClick = true;
         _isShiftClick = false;
         _isSpaceClick = false;
@@ -1376,7 +1385,8 @@ public abstract class Skill : NetworkBehaviour
 
     private void OnSpaceClick()
     {
-        _isClick = false;
+		_click = TypeClick.SpaceLMB;
+		_isClick = false;
         _isCtrlClick = false;
         _isShiftClick = false;
         _isSpaceClick = true;
@@ -1543,7 +1553,7 @@ public abstract class Skill : NetworkBehaviour
         if (AnimTriggerCast != 0)
         {
             _isPlayCastAnim = true;
-            _isWaitingForCastCoroutine = true;
+            //_isWaitingForCastCoroutine = true;
 
             float finalCastSpeed = Buff.CastSpeed.Multiplier * ExtraAnimationSpeedMultiplier;
             Hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, finalCastSpeed);
@@ -1570,7 +1580,7 @@ public abstract class Skill : NetworkBehaviour
                 yield return null;
             }
 
-            _isWaitingForCastCoroutine = false;
+            //_isWaitingForCastCoroutine = false;
         }
 
         else
