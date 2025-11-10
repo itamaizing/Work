@@ -15,7 +15,6 @@ public class JumpWithChelicera : Skill
 
     private Animator _animator;
     private IDamageable _target;
-    private Character _runtimeTarget;
     private Vector3 _mousePosition = Vector3.positiveInfinity;
 
     private static readonly int jumpStart = Animator.StringToHash("JumpStart");
@@ -33,8 +32,6 @@ public class JumpWithChelicera : Skill
     public override bool IsPayCostStartCooldown => false;
     protected override int AnimTriggerCast => jumpStart;
     protected override int AnimTriggerCastDelay => 0;
-
-    public Character RuntimeTarget { get => _runtimeTarget; set => _runtimeTarget = value; }
     public IDamageable Target { get => _target; set => _target = value; }
     public bool IsJumpDone { get => _isJumpDone; set => _isJumpDone = value; }
     public bool IsCheliceraStrikeCast { get => _isCheliceraStrikeCast; set => _isCheliceraStrikeCast = value; }
@@ -65,21 +62,22 @@ public class JumpWithChelicera : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        _castDeley = _delayBeforeJump;
-        _runtimeTarget = null;
+        IDamageable target = null;
 
-        while (_target == null)
+        while (target == null)
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget();
-                if (_target is Character characterTarget) _runtimeTarget = characterTarget;
+                if (GetRaycastTarget() is IDamageable iDamageable)
+                {
+                    target = iDamageable;
+                }
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        if (_runtimeTarget != null) targetInfo.Targets.Add(_runtimeTarget);
+        if (target is Character character) targetInfo.Targets.Add(character);
         callbackDataSaved?.Invoke(targetInfo);
     }
 
@@ -236,7 +234,8 @@ public class JumpWithChelicera : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as Character;
+        _castDeley = _delayBeforeJump;
+        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
     }
 
     public void JumpWithCheliceraCast() => AnimStartCastCoroutine();

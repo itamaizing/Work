@@ -15,7 +15,6 @@ public class DoubleCheliceraStrike : Skill
     [SerializeField] private float cooldownEnergyCost = 5;
 
     private IDamageable _target;
-    private Character _runtimeTarget;
 
     private static readonly int DoubleCheliceraStrikeAnimTrigger = Animator.StringToHash("DoubleCheliceraStrikeAnimation");
 
@@ -32,35 +31,33 @@ public class DoubleCheliceraStrike : Skill
 
     private void OnDestroy() => OnSkillCanceled -= HandleSkillCanceled;
 
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        if (targetInfo.Targets.Count > 0) _target = (Character)targetInfo.Targets[0];
+        if (_target is Character character) character.SelectedCircle.IsActive = true;
+        _player.Move.CanMove = false;
+        _isCanCancle = false;
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        _runtimeTarget = null;
+        IDamageable target = null;
 
-        while (_target == null)
+        while (target == null)
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget();
-
-                if (_target != null)
+                if (GetRaycastTarget() is IDamageable iDamageable)
                 {
-                    if (_target is Character characterTarget)
-                    {
-                        _runtimeTarget = characterTarget;
-                        characterTarget.SelectedCircle.IsActive = true;
-                    }
+                    target = iDamageable;
                 }
             }
-
-            _isCanCancle = false;
-
             yield return null;
         }
 
-        _player.Move.CanMove = false;
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Targets.Add(_runtimeTarget);
-        callbackDataSaved(targetInfo);
+        if (target is Character character) targetInfo.Targets.Add(character);
+        callbackDataSaved?.Invoke(targetInfo);
     }
 
     protected override IEnumerator CastJob()
@@ -120,12 +117,6 @@ public class DoubleCheliceraStrike : Skill
 
         if ((lastSkill is JumpBack))  target.CharacterState.AddState(States.Stun, _stunDurationWithJumpBack, 0, _player.gameObject, null);
         else target.CharacterState.AddState(States.Stun, _stunDuration, 0, _player.gameObject, null);
-    }
-
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        if (targetInfo.Targets.Count > 0) _target = (Character)targetInfo.Targets[0];
-        _isCanCancle = false;
     }
 
     protected override void ClearData()

@@ -452,13 +452,13 @@ public abstract class Skill : NetworkBehaviour
                 if (targetInfo.Targets.Count > 0)
                 {
                     var target = (Character)targetInfo.Targets[0];
-                    _hero.Move.LookAtTransform(target.transform);
+                    if (target != null) _hero.Move.LookAtTransform(target.transform);
                 }
 
                 if (targetInfo.Points.Count > 0)
                 {
                     var point = (Vector3)targetInfo.Points[0];
-                    _hero.Move.LookAtPosition(point);
+                    if (point != Vector3.positiveInfinity) _hero.Move.LookAtPosition(point);
                 }
             }
 

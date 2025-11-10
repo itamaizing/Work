@@ -11835,7 +11835,7 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
-  _castDeley: 0
+  _castDeley: 1.5
   _damageValue: 0
   _abilitySchool: 6
   _abilityForm: 2
@@ -11903,7 +11903,7 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
-  _castDeley: 0
+  _castDeley: 1.5
   _damageValue: 0
   _abilitySchool: 6
   _abilityForm: 2

@@ -24,7 +24,6 @@ public class CheliceraStrike : Skill
     private Damage _dealDamage;
     private Animator _animator;
     private IDamageable _target;
-    private Character _runtimeTarget;
     private float _totalChanceApplyBleeding;
     private float _totalchanceCritDamage;
     private float _criticalDamage;
@@ -90,27 +89,31 @@ public class CheliceraStrike : Skill
             NoObstacles(_target.transform.position, transform.position, _obstacle);
     }
 
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
+        if (_target is Character character) character.SelectedCircle.IsActive = true;
+    }
+
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        _runtimeTarget = null;
+        IDamageable target = null;
 
-        while (_target == null)
+        while (target == null)
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget();
-
-                if (_target != null && _target is Character characterTarget)
+                if (GetRaycastTarget() is IDamageable iDamageable)
                 {
-                    _runtimeTarget = characterTarget;
-                    characterTarget.SelectedCircle.IsActive = true;
+                    target = iDamageable;
                 }
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        if (_runtimeTarget != null) targetInfo.Targets.Add(_runtimeTarget);
+        if (target is Character character) targetInfo.Targets.Add(character);
         callbackDataSaved?.Invoke(targetInfo);
     }
 
@@ -167,8 +170,8 @@ public class CheliceraStrike : Skill
             _totalChanceApplyBleeding = chanceApplyBleeding;
             _totalchanceCritDamage = chanceCritDamageEvolutionTwo;
 
-            if (_isChanceApplyBleedingIncrease && CheckStateForBleeding()) _totalChanceApplyBleeding += chanceApplyBleedingIncrease;
-            if (_isChanceCritDamageIncrease && CheckStateForBleeding()) _totalchanceCritDamage += chanceCritDamageIncrease;
+            if (_isChanceApplyBleedingIncrease && CheckStateForBleeding(targetCharacter)) _totalChanceApplyBleeding += chanceApplyBleedingIncrease;
+            if (_isChanceCritDamageIncrease && CheckStateForBleeding(targetCharacter)) _totalchanceCritDamage += chanceCritDamageIncrease;
 
             if (chanceCritValue <= _totalchanceCritDamage) _criticalDamage = CriticalDamageDeal(Damage, 1.6f);
 
@@ -182,7 +185,7 @@ public class CheliceraStrike : Skill
 
             _totalchanceCritDamage = chanceCritDamageEvolutionFour;
 
-            if (_isChanceCritDamageIncrease && CheckStateForBleeding()) _totalchanceCritDamage += chanceCritDamageIncrease;
+            if (_isChanceCritDamageIncrease && CheckStateForBleeding(targetCharacter)) _totalchanceCritDamage += chanceCritDamageIncrease;
 
             if (chanceCritValue <= chanceCritDamageEvolutionFour) _criticalDamage = CriticalDamageDeal(Damage, chanceCritDamageValue);
         }
@@ -208,10 +211,10 @@ public class CheliceraStrike : Skill
         return criticalDamage * multiplierCrit;
     }
 
-    private bool CheckStateForBleeding()
+    private bool CheckStateForBleeding(Character character)
     {
         States[] blockingStates = { States.Stun, States.Stupefaction, States.TentacleGrip };
-        return _runtimeTarget != null && blockingStates.Any(state => _runtimeTarget.CharacterState.CheckForState(state));
+        return character != null && blockingStates.Any(state => character.CharacterState.CheckForState(state));
     }
 
     private void DamageDealWithAttackingPsionicEnergy(Character targetCharacter)
@@ -282,6 +285,7 @@ public class CheliceraStrike : Skill
     public void CheliceraStrikeEnded()
     {
         OnCheliceraStrikeEnd?.Invoke();
+        _player.Move.StopLookAt();
         _player.Move.CanMove = true;
         AnimCastEnded();
     }
@@ -315,12 +319,6 @@ public class CheliceraStrike : Skill
     {
         targetCharacter.CharacterState.DispelStates(StateType.Magic, targetCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
     }
-
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
-    }
-
     protected override void ClearData()
     {
         _target = null;

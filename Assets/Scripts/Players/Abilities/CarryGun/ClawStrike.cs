@@ -28,7 +28,6 @@ public class ClawStrike : Skill
     private Coroutine coroutineDurationChanceApplyBleedingWithJump;
 
     protected IDamageable _target;
-    private Character _runtimeTarget;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("ClawStrikeTrigger");
@@ -59,31 +58,30 @@ public class ClawStrike : Skill
     public void BleedingClawStrike(bool value) => _isBleedingClawStrike = value;
     public void ChanceApplyBleedingIncrease(bool value) => _isChanceApplyBleedingIncrease = value;
     #endregion
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as Character;
+        if (_target is Character character) character.SelectedCircle.IsActive = true;
+    }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        _runtimeTarget = null;
+         IDamageable target = null;
 
-        while (_target == null)
+        while (target == null)
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget();
-
-                if (_target != null)
+                if (GetRaycastTarget() is IDamageable iDamageable)
                 {
-                    if (_target is Character characterTarget && characterTarget != this)
-                    {
-                        characterTarget.SelectedCircle.IsActive = true;
-                        _runtimeTarget = characterTarget;
-                    }
+                    target = iDamageable;
                 }
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        if (_runtimeTarget is Character character) targetInfo.Targets.Add(character);
+        if (target is Character character) targetInfo.Targets.Add(character);
         callbackDataSaved?.Invoke(targetInfo);
     }
 
@@ -94,16 +92,16 @@ public class ClawStrike : Skill
         if (!IsTargetInRange()) yield return null;
 
         JumpBackClawStrike();
-        DamageDeal();
+        DamageDeal(_target);
 
         yield return null;
     }
 
     private bool IsTargetInRange() { return _target != null && Vector3.Distance(_player.transform.position, _target.transform.position) <= Radius; }
 
-    private void DamageDeal()
+    private void DamageDeal(IDamageable target)
     {
-        if (_target == null) return;
+        if (target == null) return;
 
         float attackingPsiValue = _spentAttackingPsiEnergy;
         _baseDamage = UnityEngine.Random.Range(5f, 8f);
@@ -118,7 +116,9 @@ public class ClawStrike : Skill
 
         CmdApplyDamage(damage, _target.gameObject);
 
-        TryApplyBleeding();
+        Character targetCharacter = target as Character;
+
+        if (targetCharacter != null) TryApplyBleeding(targetCharacter);
 
         if (attackingPsiValue > 0)
         {
@@ -130,7 +130,7 @@ public class ClawStrike : Skill
             else if (attackingPsiValue >= 20) dispelCount = 2;
             else if (attackingPsiValue >= 10) dispelCount = 1;
 
-            if (dispelCount > 0 && _runtimeTarget != null) for (int i = 0; i < dispelCount; i++) CmdDispel(_runtimeTarget, dispelCount);
+            if (dispelCount > 0 && targetCharacter != null) for (int i = 0; i < dispelCount; i++) CmdDispel(targetCharacter, dispelCount);
 
             var damagePsi = new Damage
             {
@@ -150,7 +150,7 @@ public class ClawStrike : Skill
         if (jumpBack != null && (lastSkill is CheliceraStrike || lastSkill is ClawStrike)) jumpBack.EnableJumpBack();
     }
 
-    private void TryApplyBleeding()
+    private void TryApplyBleeding(Character target)
     {
         if (!_isBleedingClawStrike) return;
 
@@ -159,10 +159,10 @@ public class ClawStrike : Skill
 
         if (_isDurationChanceApplyBleedingWithJump && jumpWithChelicera.IsCheliceraStrikeCast && lastSkill is CheliceraStrike) _totalChanceApplyBleeding = chanceApplyBleedingWithJump;
 
-        if (_isChanceApplyBleedingIncrease && CheckStateForBleeding()) _totalChanceApplyBleeding += chanceApplyBleedingIncrease;
+        if (_isChanceApplyBleedingIncrease && CheckStateForBleeding(target)) _totalChanceApplyBleeding += chanceApplyBleedingIncrease;
 
         float rand = UnityEngine.Random.Range(0f, 1f);
-        if (rand <= _totalChanceApplyBleeding) CmdAddBleeding(_runtimeTarget);
+        if (rand <= _totalChanceApplyBleeding) CmdAddBleeding(target);
 
         jumpWithChelicera.IsCheliceraStrikeCast = false;
         _isDurationChanceApplyBleedingWithJump = false;
@@ -178,7 +178,7 @@ public class ClawStrike : Skill
         {
             if ((lastSkill is ClawStrike && _isLastClawStrike) || lastSkill is CheliceraStrike)
             {
-                multiplier = 10f; //Test
+                multiplier = 1.4f;
                 _isLastClawStrike = false;
             }
 
@@ -209,7 +209,7 @@ public class ClawStrike : Skill
 
     private void HandleSkillCanceled()
     {
-
+        _player.Move.StopLookAt();
     }
 
     public void TrySpendAttackingPsi()
@@ -231,10 +231,10 @@ public class ClawStrike : Skill
         _isDurationChanceApplyBleedingWithJump = false;
     }
     
-    private bool CheckStateForBleeding()
+    private bool CheckStateForBleeding(Character target)
     {
         States[] blockingStates = { States.Stun, States.Stupefaction, States.TentacleGrip };
-        if (blockingStates.Any(state => _runtimeTarget.CharacterState.CheckForState(state))) return true;
+        if (blockingStates.Any(state => target.CharacterState.CheckForState(state))) return true;
         else return false;
     }
 
@@ -256,12 +256,6 @@ public class ClawStrike : Skill
     {
         targetCharacter.CharacterState.DispelStates(StateType.Magic, targetCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, dispelCount > 0);
     }
-
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as Character;
-    }
-
     protected override void ClearData()
     {
         _target = null;

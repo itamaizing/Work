@@ -113,11 +113,14 @@ public class Tentacles : Skill
                     {
                         _spawnPoint = hitTarget.point;
                         float distance = Vector3.Distance(transform.position, _spawnPoint);
+                        bool foundEnemy = false;
 
                         Collider[] colliders = Physics.OverlapSphere(_spawnPoint, _radiusTarget);
                         foreach (var collider in colliders)
                         {
-                            if (collider.TryGetComponent<Character>(out Character target))
+                            if (!collider.TryGetComponent<Character>(out Character target)) continue;
+
+                            if (((1 << target.gameObject.layer) & TargetsLayers.value) != 0)
                             {
                                 _isPlacingTentacles = true;
                                 _target = target;
@@ -131,11 +134,12 @@ public class Tentacles : Skill
                                 }
 
                                 yield return new WaitForSeconds(0.1f);
+                                foundEnemy = true;
                                 break;
                             }
                         }
 
-                        if (_target == null && distance <= Radius && _isCocoonSpawnTalent)
+                        if (!foundEnemy && distance <= Radius && _isCocoonSpawnTalent)
                         {
                             if (!IsValidVector(_spawnPoint)) yield break;
 
