@@ -13,5 +13,8 @@ MonoBehaviour:
   m_Name: IceCloud
   m_EditorClassIdentifier: 
   _name: "\u041B\u0435\u0434\u044F\u043D\u043E\u0435 \u043E\u0431\u043B\u0430\u043A\u043E"
-  _description: 
+  _description: '!1111'
+  _state: 
+  _descriptionState: 131
+  _counter: 
   _icon: {fileID: 21300000, guid: 065515d67444a0f43a053540c5f49c8c, type: 3}

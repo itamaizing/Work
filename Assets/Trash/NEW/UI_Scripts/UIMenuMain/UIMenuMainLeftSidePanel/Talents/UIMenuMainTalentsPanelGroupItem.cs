@@ -10,6 +10,7 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
     public event UnityAction<TalentData> PointerEntered;
     public event UnityAction<TalentData> PointerExited;
     
+
     [ReadOnly,ShowInInspector]
     public UIMenuMainTalentsPanelGroup Owner;
     
@@ -31,8 +32,13 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
 
     private void Start()
     {
-        _button.onClick.AddListener(Select);
+       // _button.onClick.AddListener(Select);
     }
+
+    public void SetActive()
+    {
+		_button.onClick.AddListener(Select);
+	}
 
     private void OnDestroy()
     {

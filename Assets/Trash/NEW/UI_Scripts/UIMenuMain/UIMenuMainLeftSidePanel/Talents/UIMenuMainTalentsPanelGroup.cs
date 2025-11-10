@@ -11,12 +11,13 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
     [SerializeField] private TMProLocalizer _title;
     [SerializeField] private TMProLocalizer _talentsCount;
     [SerializeField] private RectTransform _itemsParent;
-    [SerializeField] private RectTransform _rowContainer;
+    [SerializeField] private UIMenuTalentRow _rowContainer;
 
 	private bool _isGameUI = false;
     public event UnityAction OnShowPanelGroup;
 
     private List<UIMenuMainTalentsPanelGroupItem> _talents = new ();
+    private List<UIMenuTalentRow> _rows = new ();
 
     private TalentsGroup _talentsGroup;
     private UIMenuMainAttributesPanel _attributesPanel;
@@ -38,9 +39,10 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
         for (int i = 0; i < talentsGroup.TalentRows.Count; i++)
         {
             var row = Instantiate(_rowContainer, _itemsParent);
+            _rows.Add(row);
             foreach (var item in talentsGroup.TalentRows[i].Talents)
             {
-                var talent = Instantiate(_talentPrefab, row);
+                var talent = Instantiate(_talentPrefab, row.Rect);
 
                 talent.Owner = this;
                 talent.Fill(item.Data, i);
@@ -51,8 +53,16 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
                 talent.PointerEntered += OnPointerEnteredOnTalentIcon;
                 talent.PointerExited += OnPointerExitedOnTalentIcon;
 
-
-                _talents.Add(talent);
+				row.AddTalent(talent);
+				_talents.Add(talent);
+            }
+        }
+        _rows[0].SetRowActive(true);
+        for(int i = 0; i < _rows.Count - 1; i++)
+        {
+            foreach(var talent in _rows[i].Talents)
+            {
+                talent.Selected += _rows[i + 1].ActivateRow;
             }
         }
     }

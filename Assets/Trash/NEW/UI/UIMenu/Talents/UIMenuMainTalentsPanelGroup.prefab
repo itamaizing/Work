@@ -685,7 +685,7 @@ MonoBehaviour:
   _title: {fileID: 4831562950713950126}
   _talentsCount: {fileID: 2289309715589204459}
   _itemsParent: {fileID: 3432667500469557706}
-  _rowContainer: {fileID: 7990676069690170440, guid: 26e97820ed039b24fb87e102c0310908, type: 3}
+  _rowContainer: {fileID: -6500425852377899729, guid: 26e97820ed039b24fb87e102c0310908, type: 3}
 --- !u!1 &6169795207322665720
 GameObject:
   m_ObjectHideFlags: 0

@@ -3021,6 +3021,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _icoDatabase
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _icons.Array.size
       value: 53
       objectReference: {fileID: 0}
@@ -3423,7 +3427,7 @@ MonoBehaviour:
   _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
-  maxCounter: 0
+  maxCounter: 1
   _projectile: {fileID: 3779490377558770127, guid: 911d5f174dbe7ac4b8da163e8aaf32a1, type: 3}
   _playerLinks: {fileID: 4374618947117916461}
   _combo: {fileID: 3083348233968490285}
