@@ -37,20 +37,6 @@ public class IceCloud : Skill
 
 	protected override int AnimTriggerCast => Animator.StringToHash("IceCloud");
 
-    //private bool IsCanCastCheck()
-    //{
-    //	return true;
-    //	/*if (_rune.CurrentValue >= 1)
-    //	{
-    //		_rune.CmdUse(1);
-    //		return true;
-    //	}
-    //	else
-    //	{
-    //		return false;
-    //	}*/
-    //}
-
     private void OnDestroy()
     {
         OnSkillCanceled -= HandleSkillCanceled;
@@ -148,7 +134,7 @@ public class IceCloud : Skill
 		{
 			if (GetMouseButton)
 			{
-				//if(GetTarget()  == null) yield return null;
+				if(GetTarget()  == null) yield return null;
 				if (GetTarget().isCharater)
 				{
 					float distance = Vector3.Distance(_hero.transform.position, _mousePos);

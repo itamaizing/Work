@@ -100,7 +100,8 @@ public class Bar : MonoBehaviour
 
 	public virtual void UpdateBarWithShield(float healthBarTarget)
 	{
-		_bar.value = _healthBarTarget;
+		//_bar.value = _healthBarTarget;
+		_bar.DOValue(_healthBarTarget, _disapearSpeed);
 
 		if (_showText) _barText.text = Mathf.RoundToInt(_currentValue).ToString();
 		if (gameObject.activeInHierarchy) StartCoroutine(DisapearBar());
@@ -108,7 +109,9 @@ public class Bar : MonoBehaviour
 
 	public virtual void UpdateBar()
 	{
-		_bar.value = _currentValue / _maxValue;
+		if(_maxValue != 0)
+			//_bar.value = _currentValue / _maxValue;
+			_bar.DOValue(_currentValue / _maxValue, _disapearSpeed);
 
 		if(_showText) _barText.text = Mathf.RoundToInt(_currentValue).ToString();
 		if (gameObject.activeInHierarchy) StartCoroutine(DisapearBar());

@@ -8,12 +8,17 @@ public class RuneComponent : Resource
 	[SerializeField] private float _sumDamageGiven = 0;
 	private bool _disableMultiplier = false;
 
-    /*private void Update()
+	/*private void Update()
     {
         Timer();
     }*/
 
-    private bool RemoveRune(float runeValue, Skill usedAbility)
+	private void Awake()
+	{
+        _regenerationDelay = 3;
+	}
+
+	private bool RemoveRune(float runeValue, Skill usedAbility)
     {
         if (_abilities.Count > 0)
         {

@@ -14,7 +14,7 @@ public class TargetSeeker : MonoBehaviour
 
 	public LayerMask TargetsLayers { get => _targetsLayers; protected set => _targetsLayers = value; }
 
-	protected TargetToShot GetTarget(TypeClick click, Action<Vector3> ClickPoint, SkillType skillType, float radius, Skill skill)
+	public TargetToShot GetTarget(TypeClick click, Action<Vector3> ClickPoint, SkillType skillType, float radius, Skill skill, bool isCanTargetHimself = false)
 	{
 		_skillType = skillType;
 		_radius = radius;
@@ -50,7 +50,98 @@ public class TargetSeeker : MonoBehaviour
 		return null;
 	}
 
-	protected TargetToShot LeftClick()
+	public Character ClosedTarget(bool isCanTargetHimself = false)
+	{
+		var closerTargets = GetCloserTargets(transform.position, 1000, isCanTargetHimself);
+
+		if (closerTargets != null && closerTargets.Count > 0)
+			return closerTargets[0];
+
+		return null;
+	}
+
+	public List<Character> GetCloserTargets(Vector3 position, float radius, bool isCanTargetHimself = false)
+	{
+		List<Character> targets = new List<Character>();
+		Collider[] collider = Physics.OverlapSphere(position, radius, TargetsLayers);
+
+		foreach (var item in collider)
+		{
+			if (collider.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
+			{
+				if (isCanTargetHimself == false && enemy.transform == _hero.transform)
+				{
+					continue;
+				}
+				targets.Add(enemy);
+			}
+		}
+		targets = targets.OrderBy(character => Vector3.Distance(character.transform.position, gameObject.transform.position)).ToList();
+
+		if (targets.Count <= 0)
+			return null;
+
+		return targets;
+	}
+
+	public IDamageable GetRaycastTarget(Skill skill, bool isCanTargetHimself = false)
+	{
+		_skill = skill;
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		RaycastHit[] rayHit = Physics.RaycastAll(ray, 100f, TargetsLayers);
+
+		foreach (var hit in rayHit)
+		{
+			if (_skill.AutoAttack == AutoAttack.autoAttack)
+			{
+				if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed)
+				{
+					if (hit.collider.TryGetComponent<IDamageable>(out _))
+					{
+						_skill.IsAutoMode = true;
+						
+					}
+				}
+			}
+		}
+
+		foreach (var item in rayHit)
+		{
+			if (item.collider.TryGetComponent<IDamageable>(out var damageable))
+			{
+				//_tempForDamage = damageable;
+				//_tempTargetForDamage = damageable is Component component ? component.transform : null;
+				return damageable;
+			}
+		}
+
+		return null;
+	}
+
+	public Character GetClosestTargets()
+	{
+		Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, 100);
+		Vector2 closest = Vector2.positiveInfinity;
+		Character enemys = null;
+		foreach (Collider2D collider in enemyDetected)
+		{
+			if (collider.gameObject != _hero.gameObject)
+
+				if (collider.TryGetComponent<Character>(out var enemy))
+				{
+					if (Vector2.Distance(collider.transform.position, transform.position) < Vector2.Distance(closest, transform.position))
+					{
+						enemys = enemy;
+						closest = collider.transform.position;
+						Debug.Log(enemy);
+					}
+				}
+		}
+		if (Vector2.Distance(closest, transform.position) < 100) return enemys;
+		else return null;
+	}
+
+	private TargetToShot LeftClick()
 	{
 		TargetToShot target = new TargetToShot();
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -134,7 +225,7 @@ public class TargetSeeker : MonoBehaviour
 		return Vector3.zero;
 	}*/
 
-	protected TargetToShot ShiftLeftClick()
+	private TargetToShot ShiftLeftClick()
 	{
 		TargetToShot target = new TargetToShot();
 		/*switch (_skillType)
@@ -160,7 +251,7 @@ public class TargetSeeker : MonoBehaviour
 		return target;
 	}
 
-		protected TargetToShot CtrlLeftClick()
+	private TargetToShot CtrlLeftClick()
 	{
 		TargetToShot target = new TargetToShot();
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -205,7 +296,7 @@ public class TargetSeeker : MonoBehaviour
 		return target;
 	}
 
-	protected TargetToShot SpaceLeftClick()
+	private TargetToShot SpaceLeftClick()
 	{
 		TargetToShot target = new TargetToShot();
 		var closerTargets = GetCloserTargets(transform.position, 1000);
@@ -218,73 +309,6 @@ public class TargetSeeker : MonoBehaviour
 		target.character = closerTarget;
 		target.isCharater = true;
 		return target;
-	}
-
-	protected Character ClosedTarget()
-	{
-		var closerTargets = GetCloserTargets(transform.position, 1000);
-
-		if (closerTargets != null && closerTargets.Count > 0)
-			return closerTargets[0];
-
-		return null;
-	}
-
-	public List<Character> GetCloserTargets(Vector3 position, float radius, bool isCanTargetHimself = false)
-	{
-		List<Character> targets = new List<Character>();
-		Collider[] collider = Physics.OverlapSphere(position, radius, TargetsLayers);
-
-		foreach (var item in collider)
-		{
-			if (collider.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
-			{
-				if (isCanTargetHimself == false && enemy.transform == _hero.transform)
-				{
-					continue;
-				}
-				targets.Add(enemy);
-			}
-		}
-		targets = targets.OrderBy(character => Vector3.Distance(character.transform.position, gameObject.transform.position)).ToList();
-
-		if (targets.Count <= 0)
-			return null;
-
-		return targets;
-	}
-
-	protected IDamageable GetRaycastTarget(bool isCanTargetHimself = false)
-	{
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		RaycastHit[] rayHit = Physics.RaycastAll(ray, 100f, TargetsLayers);
-
-		foreach (var hit in rayHit)
-		{
-			if (_skill.AutoAttack == AutoAttack.autoAttack)
-			{
-				if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed)
-				{
-					if (hit.collider.TryGetComponent<IDamageable>(out _))
-					{
-						_skill.IsAutoMode = true;
-						
-					}
-				}
-			}
-		}
-
-		foreach (var item in rayHit)
-		{
-			if (item.collider.TryGetComponent<IDamageable>(out var damageable))
-			{
-				//_tempForDamage = damageable;
-				//_tempTargetForDamage = damageable is Component component ? component.transform : null;
-				return damageable;
-			}
-		}
-
-		return null;
 	}
 }
 

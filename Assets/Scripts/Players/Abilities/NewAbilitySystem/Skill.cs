@@ -32,6 +32,7 @@ public class TargetToShot
 {
     public Vector3 Position;
     public Character character;
+    public IDamageable damageable;
     public bool isCharater = false;
 }
 
@@ -87,7 +88,6 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] private AbilityInfo _abilityInfo;
     [Header("Main Settings")]
     [NonSerialized] public float ExtraAnimationSpeedMultiplier = 1f; // test
-
     [SerializeField] protected bool _isSubjectToGlobalCooldownTime = true;
 
     [SerializeField] protected List<SkillEnergyCost> _skillEnergyCosts;
@@ -863,60 +863,12 @@ public abstract class Skill : NetworkBehaviour
 
     protected IDamageable GetRaycastTarget(bool isCanTargetHimself = false)
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit[] rayHit = Physics.RaycastAll(ray, 100f, TargetsLayers);
-
-        foreach (var hit in rayHit)
-        {
-            if (autoAttack == AutoAttack.autoAttack)
-            {
-                if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed)
-                {
-                    if (hit.collider.TryGetComponent<IDamageable>(out _))
-                    {
-
-                        IsAutoMode = true;
-                        AutoModeChanged?.Invoke(true);
-                    }
-                }
-            }
-        }
-
-        foreach (var item in rayHit)
-        {
-            if (item.collider.TryGetComponent<IDamageable>(out var damageable))
-            {
-                _tempForDamage = damageable;
-                _tempTargetForDamage = damageable is Component component ? component.transform : null;
-                return damageable;
-            }
-        }
-
-        return null;
-    }
+        return _hero.TargetSeeker.GetRaycastTarget(this, isCanTargetHimself);
+	}
 
     public List<Character> GetCloserTargets(Vector3 position, float radius, bool isCanTargetHimself = false)
     {
-        List<Character> targets = new List<Character>();
-        Collider[] collider = Physics.OverlapSphere(position, radius, TargetsLayers);
-
-        foreach (var item in collider)
-        {
-            if (collider.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
-            {
-                if (isCanTargetHimself == false && enemy.transform == _hero.transform)
-                {
-                    continue;
-                }
-                targets.Add(enemy);
-            }
-        }
-        targets = targets.OrderBy(character => Vector3.Distance(character.transform.position, gameObject.transform.position)).ToList();
-
-        if (targets.Count <= 0)
-            return null;
-
-        return targets;
+        return _hero.TargetSeeker.GetCloserTargets(position, radius, isCanTargetHimself);
     }
 
     protected bool IsTargetInRadius(float radius, Transform target)
@@ -1106,238 +1058,20 @@ public abstract class Skill : NetworkBehaviour
         _rechargeJob = null;
     }
 
-    protected TargetToShot GetTarget()
+    protected TargetToShot GetTarget(bool isCanTargetHimself = false)
     {
-        TargetToShot target = new TargetToShot();
-
-        if (_isClick)
-        {
-            target = LeftClick();
-            ClickPoint?.Invoke(target.Position);
-            return target;
-        }
-        if (_isShiftClick)
-        {
-            target = ShiftLeftClick();
-            ClickPoint?.Invoke(target.Position);
-            return target;
-        }
-        if (_isCtrlClick)
-        {
-            target = CtrlLeftClick();
-            ClickPoint?.Invoke(target.Position);
-            return target;
-        }
-        if (_isSpaceClick)
-        {
-            target = SpaceLeftClick();
-            ClickPoint?.Invoke(target.Position);
-            return target;
-        }
-
-        return null;
+        return _hero.TargetSeeker.GetTarget(_click, ClickPoint, _skillType, Radius, this, isCanTargetHimself);
     }
 
-    protected TargetToShot LeftClick()
+    protected Character ClosedTarget(bool isCanTargetHimself = false)
     {
-        TargetToShot target = new TargetToShot();
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        switch (_skillType)
-        {
-            case SkillType.Target:
-                Debug.Log("SkillType Target");
-                target.character = ClosedTarget();
-                target.isCharater = true;
-                break;
-            case SkillType.Projectile:
-                Debug.Log("SkillType Projectile");
-
-                if (Physics.Raycast(ray, out hit))
-                {
-                    if (hit.collider.TryGetComponent<Character>(out Character character))
-                    {
-                        if (character != null)
-                        {
-                            target.character = character;
-                            target.isCharater = true;
-                        }
-                    }
-                    else
-                    {
-                        var distance = Vector3.Distance(hit.point, transform.position);
-                        if (distance <= Radius || distance > Radius) target.Position = hit.point;
-                        target.isCharater = false;
-                    }
-                }
-                break;
-            case SkillType.Zone:
-                Debug.Log("SkillType Zone");
-
-                if (Physics.Raycast(ray, out hit))
-                {
-                    Debug.Log(hit);
-                }
-                if (Vector3.Distance(hit.point, transform.position) <= Radius)
-                    target.Position = hit.point;
-                target.isCharater = false;
-                break;
-            case SkillType.NonTarget:
-                Debug.Log("SkillType NonTarget");
-                break;
-            default:
-                if (Physics.Raycast(ray, out hit))
-                {
-                    Debug.Log(hit.point);
-                }
-                target.Position = hit.point;
-                target.isCharater = false;
-                break;
-        }
-        return target;
+        return _hero.TargetSeeker.ClosedTarget(isCanTargetHimself);
     }
 
-    protected Character ClosedTarget()
+    /*protected Character GetClosestTargets()
     {
-        var closerTargets = GetCloserTargets(transform.position, 1000);
-
-        if (closerTargets != null && closerTargets.Count > 0)
-            return closerTargets[0];
-
-        return null;
-    }
-
-    protected TargetToShot ShiftLeftClick()
-    {
-        TargetToShot target = new TargetToShot();
-        /*switch (_skillType)
-		{
-			case SkillType.Target:
-				//auto attack mode
-				target.Position = GetCloserTargets(transform.position, 100)[0];
-                break;
-			case SkillType.Projectile:
-				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-				break;
-			case SkillType.Zone:
-				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-				break;
-			default:
-				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-				break;
-		}*/
-        target.Position = transform.position;
-        target.character = _hero;
-        target.isCharater = true;
-
-        return target;
-    }
-
-    protected TargetToShot CtrlLeftClick()
-    {
-        TargetToShot target = new TargetToShot();
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        if (autoAttack == AutoAttack.autoAttack)
-        {
-            _isAutoMode = true;
-            AutoModeChanged?.Invoke(true);
-        }
-
-        switch (_skillType)
-        {
-            case SkillType.Target:
-                target.character = ClosedTarget();
-                target.isCharater = true;
-                break;
-            case SkillType.Projectile:
-                if (Physics.Raycast(ray, out hit))
-                {
-                    Debug.Log(hit.point);
-                }
-                target.Position = hit.point;
-                target.isCharater = false;
-                break;
-            case SkillType.Zone:
-                if (Physics.Raycast(ray, out hit))
-                {
-                    Debug.Log(hit.point);
-                }
-                target.Position = hit.point;
-                target.isCharater = false;
-                break;
-            default:
-                if (Physics.Raycast(ray, out hit))
-                {
-                    Debug.Log(hit.point);
-                }
-                target.Position = hit.point;
-                target.isCharater = false;
-                break;
-        }
-        return target;
-    }
-
-    protected TargetToShot SpaceLeftClick()
-    {
-        TargetToShot target = new TargetToShot();
-        var closerTargets = GetCloserTargets(transform.position, 1000);
-        Character closerTarget = null;
-
-        if (closerTargets != null && closerTargets.Count > 0)
-        {
-            closerTarget = GetCloserTargets(transform.position, 1000)[0];
-        }
-        target.character = closerTarget;
-        target.isCharater = true;
-        return target;
-    }
-    /* protected Vector2 GetClosestTarget()
-	 {
-		 Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, 100);
-		 Vector2 closest = Vector2.positiveInfinity;
-		 foreach (Collider2D collider in enemyDetected)
-		 {
-			 if (collider.gameObject != _hero.gameObject)
-
-			 if(collider.TryGetComponent<Character>(out var enemy))
-			 {
-				 if(Vector2.Distance(collider.transform.position, transform.position) < Vector2.Distance(closest, transform.position))
-				 {
-					 closest = collider.transform.position;
-					 Debug.Log(enemy);
-				 }
-			 }
-		 }
-		 if(Vector2.Distance(closest, transform.position) < 100)   return closest;
-		 else return Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-	 }*/
-
-    protected Character GetClosestTargets()
-    {
-        Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, 100);
-        Vector2 closest = Vector2.positiveInfinity;
-        Character enemys = null;
-        foreach (Collider2D collider in enemyDetected)
-        {
-            if (collider.gameObject != _hero.gameObject)
-
-                if (collider.TryGetComponent<Character>(out var enemy))
-                {
-                    if (Vector2.Distance(collider.transform.position, transform.position) < Vector2.Distance(closest, transform.position))
-                    {
-                        enemys = enemy;
-                        closest = collider.transform.position;
-                        Debug.Log(enemy);
-                    }
-                }
-        }
-        if (Vector2.Distance(closest, transform.position) < 100) return enemys;
-        else return null;
-    }
+        return _hero.TargetSeeker.GetClosestTargets();
+    }*/
 
     private bool IsValidTarget(IDamageable target)
     {

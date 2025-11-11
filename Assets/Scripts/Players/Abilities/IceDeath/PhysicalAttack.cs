@@ -27,7 +27,6 @@ public class PhysicalAttack : Skill
 
 	protected Character _target;
 
-
 	private static readonly int RightKickTrigger = Animator.StringToHash("RightKick");
 	private static readonly int LeftKickTrigger = Animator.StringToHash("LeftKick");
 
@@ -72,7 +71,8 @@ public class PhysicalAttack : Skill
 		{
 			if (GetMouseButton)
 			{
-				//_target = GetRaycastTarget();
+				_target = GetTarget().character;
+
 				if (_target != null)
 				{
 					_target.SelectedCircle.IsActive = true;
@@ -111,7 +111,10 @@ public class PhysicalAttack : Skill
 		if (_seriesPhysicalTalent) Hit(_target);
 		else SingleHit(_target);
 
-		_target = null;
+		if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
+		{
+			_target = null;
+		}
 		CmdPlayShotSound();
 	}
 
@@ -189,22 +192,20 @@ public class PhysicalAttack : Skill
 			//Debug.Log(_rune.CurrentValue + " REGEN Current value");
 		}
 	}
+
 	private void LastHit()
 	{
 		if (_energy.CurrentValue >= 10)
 		{
-			//_energy.CmdUse(10);
 			Damage damage = new Damage
 			{
 				Value = _damageValue * 0.5f,
 				Type = DamageType.Physical,
 			};
 			CmdApplyDamage(damage, _curTarget.gameObject);
-			//_curTarget.Health.TryTakeDamage(_damage * .5f, DamageType.Physical, AttackRangeType.MeleeAttack);
 			float curDamage = _damageValue * .5f;
 			_energy.SumDamageMake(curDamage);
 			_rune.SumDamageMake(curDamage);
-			//_curTarget.CharacterState.CmdAddState(States.Stun, 1.5f, 0, _playerLinks.gameObject, name);
 			CmdState(_curTarget.gameObject, 1.5f);
 			PushBackEnemy(_curTarget);
 			//отбрасывание 			
@@ -233,8 +234,6 @@ public class PhysicalAttack : Skill
 		enemyChar.CharacterState.AddState(States.Stun, time, 0, _playerLinks.gameObject, name);
 		Debug.Log("added state");
 	}
-
-
 
 	private void PushBackEnemy(Character enemy)
 	{
@@ -328,6 +327,7 @@ public class PhysicalAttack : Skill
 
     protected override void ClearData()
     {
+		_target = null;
 		_hero.Move.StopLookAt();
 	}
 }
