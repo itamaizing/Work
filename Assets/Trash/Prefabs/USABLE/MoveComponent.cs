@@ -40,6 +40,7 @@ public class MoveComponent : NetworkBehaviour
 	private Vector3 _currentVelocity;
 	private Vector3 _currentVelocityTemp;
 	private Coroutine _lookAtTransformJob;
+	private Coroutine _moveTowardsRoutine;
 
 	private bool _isFly;
 
@@ -346,7 +347,7 @@ public class MoveComponent : NetworkBehaviour
 	{
 		if (!isServer) return;
 
-		TargetRpcMoveTowards(connectionToClient, targetPosition, speed);
+	    TargetRpcMoveTowards(connectionToClient, targetPosition, speed);
 	}
 
 	public void PlayMove()
@@ -363,6 +364,7 @@ public class MoveComponent : NetworkBehaviour
 		int index = UnityEngine.Random.Range(0, moveClips.Length);
 		moveAudioSource.PlayOneShot(moveClips[index]);
 	}
+	[TargetRpc] public void TargetRpcStopMoveAndAnimationMove() { StopMoveAndAnimationMove(); }
 
 	[TargetRpc]
 	public void TargetRpcAddForce(Vector3 vector3)
@@ -404,6 +406,23 @@ public class MoveComponent : NetworkBehaviour
 			agent.enabled = true;
 		});
 	}
+	public void CancelMoveTowards()
+	{
+		if (_moveTowardsRoutine != null)
+		{
+			StopCoroutine(_moveTowardsRoutine);
+			_moveTowardsRoutine = null;
+		}
+
+		_rigidbody.linearVelocity = Vector3.zero;
+		_rigidbody.angularVelocity = Vector3.zero;
+
+		var agent = GetComponent<NavMeshAgent>();
+		if (agent != null && !agent.enabled)
+			agent.enabled = true;
+
+		CanMove = true;
+	}
 
 	[TargetRpc]
 	private void TargetRpcTeleportToPositionSmooth(NetworkConnection target, Vector3 position, float duration)
@@ -418,7 +437,7 @@ public class MoveComponent : NetworkBehaviour
 	[TargetRpc]
 	private void TargetRpcMoveTowards(NetworkConnection target, Vector3 targetPosition, float speed)
 	{
-		StartCoroutine(MoveTowardsCoroutine(targetPosition, speed));
+		_moveTowardsRoutine = StartCoroutine(MoveTowardsCoroutine(targetPosition, speed));
 	}
 
 	[TargetRpc]

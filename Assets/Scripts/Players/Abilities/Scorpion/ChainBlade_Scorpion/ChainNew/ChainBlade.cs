@@ -3,6 +3,7 @@ using UnityEngine;
 using Mirror;
 using System;
 using UnityEngine.SceneManagement;
+using UnityEngine.AI;
 
 public static class Vector3Extensions
 {
@@ -110,6 +111,8 @@ public class ChainBlade : Skill
         Transform targetTransform = target.transform;
         Vector3 start = targetTransform.position;
         Vector3 end = Hero.transform.position + Hero.transform.forward * 1.5f;
+        var agent = target.GetComponent<NavMeshAgent>();
+        if (agent != null && agent.enabled) agent.enabled = false;
 
         float timer = 0f;
         pullLineRenderer.enabled = true;
@@ -130,6 +133,8 @@ public class ChainBlade : Skill
         }
 
         pullLineRenderer.enabled = false;
+        if (agent != null && !agent.enabled) agent.enabled = true;
+
         ChainBladeCastEnd();
     }
 

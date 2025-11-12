@@ -228,24 +228,6 @@ public class Tentacles : Skill
                             continue;
                         }
 
-                        //if (Physics.Raycast(ray, out hit, Mathf.Infinity, TargetsLayers))
-                        //{
-                        //    if (hit.collider.TryGetComponent<Character>(out Character clickedCharacter))
-                        //    {
-                        //        Vector3 targetPosition = clickedCharacter.transform.position;
-
-                        //        if (!IsValidVector(targetPosition))
-                        //        {
-                        //            yield return null;
-                        //            continue;
-                        //        }
-
-                        //        targetPoint = targetPosition;
-                        //        _player.Move.LookAtTransform(target.transform);
-                        //        break;
-                        //    }
-                        //}
-
                         if (Physics.Raycast(ray, out hit, Mathf.Infinity, groundLayer))
                         {
                             Vector3 groundPoint = hit.point;

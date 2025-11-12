@@ -7,37 +7,41 @@ using UnityEngine;
 public class Mucus : NetworkBehaviour
 {
     private ObjectHealth _objectHealth;
-    private MucusAutoGrowth _mucusAutoGrowth;
-
-    public MucusAutoGrowth MucusAutoGrowth
-    {
-        get => _mucusAutoGrowth;
-        set
-        {
-            if (_mucusAutoGrowth != null) _mucusAutoGrowth.OnAnyMucusAutoGrowthDestroyed -= OnAutoGrowthDestroyed;
-            _mucusAutoGrowth = value;
-
-            if (_mucusAutoGrowth != null) _mucusAutoGrowth.OnAnyMucusAutoGrowthDestroyed += OnAutoGrowthDestroyed;
-        }
-    }
+    private List<MucusAutoGrowth> _mucusAutoGrowths = new();
+    public List<MucusAutoGrowth> MucusAutoGrowths { get => _mucusAutoGrowths; set => _mucusAutoGrowths = value; }
 
     private void Start()
     {
         _objectHealth = GetComponent<ObjectHealth>();
     }
-
-    private void OnDestroy()
+    public void AddMucusAutoGrowth(MucusAutoGrowth growth)
     {
-        if (_mucusAutoGrowth != null) _mucusAutoGrowth.OnAnyMucusAutoGrowthDestroyed -= OnAutoGrowthDestroyed;
+        if (growth == null) return;
+
+        if (_mucusAutoGrowths == null) _mucusAutoGrowths = new();
+
+        if (!_mucusAutoGrowths.Contains(growth))
+        {
+            _mucusAutoGrowths.Add(growth);
+            growth.OnAnyMucusAutoGrowthDestroyed += HandleMucusAutoGrowthDestroyed;
+        }
+    }
+    private void HandleMucusAutoGrowthDestroyed()
+    {
+        _mucusAutoGrowths.RemoveAll(item => item == null || !item.isActiveAndEnabled);
+        CheckAndUpdateState();
     }
 
-    private void OnAutoGrowthDestroyed()
+    private void CheckAndUpdateState()
     {
-        if (_objectHealth != null)
+        if (_mucusAutoGrowths.Count <= 0)
         {
-            _objectHealth.IsDestroyOnDeath = true;
-            _objectHealth.ÑmdStopCustomRegeneration();
-            _objectHealth.ÑmdStartCustomNegativeRegeneration();
+            if (_objectHealth != null)
+            {
+                _objectHealth.IsDestroyOnDeath = true;
+                _objectHealth.ÑmdStopCustomRegeneration();
+                _objectHealth.ÑmdStartCustomNegativeRegeneration();
+            }
         }
     }
 }

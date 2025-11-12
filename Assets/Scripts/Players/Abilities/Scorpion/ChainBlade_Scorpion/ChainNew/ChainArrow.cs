@@ -156,6 +156,8 @@ public class ChainArrow : Projectiles
             yield return null;
         }
 
+        UpdateLine();
+
         if (_skill is ChainBlade chain)
         {
             chain.ChainBladeCastEnd();

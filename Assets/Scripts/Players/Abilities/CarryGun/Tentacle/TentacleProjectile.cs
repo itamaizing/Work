@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using UnityEngine.AI;
 
 public class TentacleProjectile : NetworkBehaviour
 {
@@ -150,58 +151,61 @@ public class TentacleProjectile : NetworkBehaviour
     {
         _drawCircle?.SetColor(color);
     }
-
     private IEnumerator PullTarget()
     {
-        float elapsedTime = 0f;
-        float baseSpeed = 0.25f;
-        float speedIncrease = 0.05f;
-        float minDistance = 0.5f;
+        if (_target == null || tentaclePoint == null) yield break;
 
-        Vector3 lastTargetPosition = _target.transform.position;
-        float targetDistanceAccumulator = 0f;
-        //SetPhysicalSkillsDisactive(true);
-        if (isServer) AddStateTentacleGrip();
+        Transform targetTransform = _target.transform;
+        Vector3 start = targetTransform.position;
+        Vector3 end = transform.position;
+        var agent = _target.GetComponent<NavMeshAgent>();
+        if (agent != null && agent.enabled) agent.enabled = false;
 
-        float heightOffset = _target.transform.position.y - _target.GetComponent<Collider>().bounds.min.y;
+        float timer = 0f;
 
-        while (elapsedTime < grabDuration)
+        if (isServer)
         {
-            Vector3 toTentacle = transform.position - (_target.transform.position - new Vector3(0, heightOffset, 0));
-            float distance = toTentacle.magnitude;
-
-            if (distance <= minDistance) break;
-
-            float speed = baseSpeed + (elapsedTime / 0.1f) * speedIncrease;
-
-            if (_isCollidedWithOtherCharacter)
-                speed /= 2;
-
-            Vector3 direction = toTentacle.normalized;
-            _target.transform.position += direction * speed;
-
-            float traveled = Vector3.Distance(lastTargetPosition, _target.transform.position);
-            targetDistanceAccumulator += traveled;
-
-            while (targetDistanceAccumulator >= 0.1f)
-            {
-                targetDistanceAccumulator -= 0.1f;
-                if (_player != null && _player.TryGetComponent<BasePsionicEnergy>(out var psiEnergy))
-                {
-                    psiEnergy.AddAndResetDecayCoolDownPsionicEnegry(basePsi);
-                    psiEnergy.PsionicEnergySkill.IncreaseSetCooldownPassive(psiEnergy.PsionicaDecayTime);
-                }
-            }
-
-            lastTargetPosition = _target.transform.position;
-
-            elapsedTime += 0.1f;
-            yield return new WaitForSeconds(0.1f);
-
-
+            AddStateTentacleGrip();
+            _target.Move.StopMoveAndAnimationMove();
         }
 
-        //SetPhysicalSkillsDisactive(false);
+        if (tentacleLine != null)
+        {
+            tentacleLine.enabled = true;
+        }
+
+        while (timer < grabDuration)
+        {
+            timer += Time.deltaTime;
+            float t = timer / grabDuration;
+
+            Vector3 currentPos = Vector3.Lerp(start, end, t);
+            targetTransform.position = currentPos;
+
+            if (tentacleLine != null && tentaclePoint != null)
+            {
+                tentacleLine.SetPosition(0, tentaclePoint.position);
+                tentacleLine.SetPosition(1, currentPos + Vector3.up * 0.5f);
+            }
+
+            yield return null;
+        }
+
+        if (tentacleLine != null)
+            tentacleLine.enabled = false;
+
+        if (_target != null && isServer)
+        {
+            _target.Move.StopMoveAndAnimationMove();
+
+            if (agent != null && !agent.enabled) agent.enabled = true;
+
+            Vector3 finalPosition = end;
+
+            _target.Move.CancelMoveTowards();
+            _target.Move.TargetRpcSetTransformPosition(finalPosition);
+            _target.Move.TargetRpcStopMoveAndAnimationMove();
+        }
     }
 
     private void AttackTentacles()
