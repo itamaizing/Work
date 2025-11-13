@@ -15,11 +15,9 @@ public class ObjectData : ScriptableObject
 
     [Header("UI Settings")]
     [SerializeField] private bool hideBar = false;
-
     public float MaxHealth { get => maxHealth; set => maxHealth = value; }
-    public float RegenerationAmount => regenerationAmount;
+    public float RegenerationAmount {get => regenerationAmount; set => regenerationAmount = value; }
     public float RegenerationInterval => regenerationInterval;
-
     public bool MaxEndurance => maxEndurance;
     public bool MinEndurance => minEndurance;
 

@@ -32,10 +32,12 @@ public class ObjectHealth : Resource, IDamageable
     private Coroutine _hideBarCoroutine;
     private Coroutine _regenerationCoroutine;
 
+    private float _regenModification = 1;
+
     [SerializeField] private bool live = false;
     [SerializeField] private bool isDestroyOnDeath = true;
     [SerializeField] private bool isRegenerationEnabled = false;
-
+    public float RegenMod { get => _regenModification; set => _regenModification = value; }
     public bool IsDestroyOnDeath { get => isDestroyOnDeath; set => isDestroyOnDeath = value; }
     public ObjectData ObjectData => _objectData;
     public float ResistMagicDamage => _resistMagicDamage;
@@ -152,7 +154,7 @@ public class ObjectHealth : Resource, IDamageable
 
             if (_currentHealth < MaxValue)
             {
-                _currentHealth = Mathf.Min(MaxValue, _currentHealth + _objectData.RegenerationAmount);
+                _currentHealth = Mathf.Min(MaxValue, _currentHealth + _objectData.RegenerationAmount * RegenMod);
                 OnHealthChanged(0, _currentHealth);
             }
         }

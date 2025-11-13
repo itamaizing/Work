@@ -22,7 +22,7 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
 
     private int _currentCircleIndex = 0;
 
-    public event Action OnAnyMucusAutoGrowthDestroyed;
+    public static event Action OnAnyMucusAutoGrowthDestroyed;
 
     private void OnEnable()
     {
@@ -38,7 +38,15 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
     private void OnDestroy()
     {
         if (_spawnRoutine != null) StopCoroutine(_spawnRoutine);
+        CleanupAllMucus();
         OnAnyMucusAutoGrowthDestroyed?.Invoke();
+    }
+    private void OnDisable()
+    {
+        if (!gameObject.scene.isLoaded)
+        {
+            CleanupAllMucus();
+        }
     }
 
     public void SwitchToFinite()
@@ -189,8 +197,7 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
     [ClientRpc]
     private void RpcSetMucusAutoGrowth(GameObject instance)
     {
-        if (instance == null) return;
-        if (instance.TryGetComponent<Mucus>(out var mucus)) mucus.AddMucusAutoGrowth(this);
+        if (instance.TryGetComponent<Mucus>(out var mucus)) mucus.MucusAutoGrowths.Add(this);
     }
 
     [Command] private void CmdSetCurrentHealth(ObjectHealth objectHealth) => objectHealth.ServerSetCurrentHealth(5);
