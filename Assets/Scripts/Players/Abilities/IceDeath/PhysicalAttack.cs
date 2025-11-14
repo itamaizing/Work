@@ -223,7 +223,7 @@ public class PhysicalAttack : Skill
 			Value = curDamage,
 			Type = DamageType.Physical,
 		};
-
+		_combo.MakeHit(enemy, AbilityForm.Physical, 0, 5, curDamage);
 		CmdApplyDamage(damage, enemy.gameObject);
 	}
 

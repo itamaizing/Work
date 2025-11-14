@@ -153,7 +153,6 @@ public class IceRolling : Skill
 		_isJump = true;
 
 		_lookDir = (_mousePos - _playerLinks.transform.position).normalized;
-
 		float baseRange = _rollingWithEnemyTalent ? 4f : 2f;
 		float maxEnergy = Mathf.Min(_energy.CurrentValue, 10f);
 		int energyBlocks = Mathf.FloorToInt(maxEnergy / 5f);
@@ -197,9 +196,20 @@ public class IceRolling : Skill
 			_afterJump = true;
 		}
 
-		_mousePos = Vector3.positiveInfinity;
-		_lookDir = Vector3.zero;
-		_jumpPos = Vector3.zero;
+
+		if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
+		{
+			_target = null;
+			_mousePos = Vector3.positiveInfinity;
+			_lookDir = Vector3.zero;
+			_jumpPos = Vector3.zero;
+		}
+		else
+		{
+			_target = GetTarget().character;
+			_mousePos = _target != null ? _target.transform.position : GetMousePoint();
+		}
+		
 	}
 
 	public override void LoadTargetData(TargetInfo targetInfo)
@@ -243,8 +253,15 @@ public class IceRolling : Skill
 
 	protected override void ClearData()
 	{
-		_target = null;
-		_isJump = false;
+		if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
+		{
+			_target = null;			
+		}
+		else
+		{
+			_mousePos = GetMousePoint();
+		}
+			_isJump = false;
 		Hero.Move.StopLookAt();
 	}
 
@@ -267,6 +284,7 @@ public class IceRolling : Skill
 		_afterJumpDelay -= Time.deltaTime;
 		if (_afterJumpDelay < 0)
 		{
+			_afterJumpDelay = 1;
 			_afterJump = false;
 			_physicalAttack.TalentRollingPhys(_afterJump, 0);
 		}
@@ -317,7 +335,6 @@ public class IceRolling : Skill
 		{
 			move.CanMove = false;
 			_attachedTarget = target;
-			Debug.Log("Attach");
 			_attachedTarget.transform.SetParent(_playerLinks.transform);
 			RpcAttachTarget(_attachedTarget);
 		}

@@ -3076,6 +3076,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.39351
       objectReference: {fileID: 0}
+    - target: {fileID: 8942627360470870169, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8945266903637308655, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.12765385
@@ -3353,8 +3357,8 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 8
-  _abilitySchool: 0
-  _abilityForm: 0
+  _abilitySchool: 6
+  _abilityForm: 2
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0

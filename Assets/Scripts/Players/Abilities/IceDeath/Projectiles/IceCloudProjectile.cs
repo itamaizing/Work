@@ -25,7 +25,7 @@ public class IceCloudProjectile : Projectiles
 	private void Update()
 	{
         _spriteRenderer.DOFade(0, 1);
-		if(Vector2.Distance(transform.position, _startPos) > _distance * GlobalVariable.cellSize)
+		if(Vector2.Distance(transform.position, _startPos) > _distance)
 		{
 			Explode();
 		}
