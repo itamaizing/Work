@@ -11835,13 +11835,13 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
-  _castDeley: 1.5
+  _castDeley: 0
   _damageValue: 0
   _abilitySchool: 6
   _abilityForm: 2
   _damageType: 1
   _attackRangeType: 1
-  _skillType: 2
+  _skillType: 0
   _moving: 0
   autoAttack: 0
   _targetsLayers:
@@ -11881,6 +11881,8 @@ MonoBehaviour:
   durationBleeding: 7
   buffDurationAfterJump: 10
   chanceApplyBleedingIncrease: 0.4
+  minDamage: 5
+  maxDamage: 7
 --- !u!114 &640134254429411212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11903,7 +11905,7 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
-  _castDeley: 1.5
+  _castDeley: 0
   _damageValue: 0
   _abilitySchool: 6
   _abilityForm: 2

@@ -20,6 +20,7 @@ public class ScraderSpawn : Skill
     protected override bool IsCanCast => _spawnPoint != Vector3.positiveInfinity;
 
     public Tentacles Tentacle { get => tentacle; set => tentacle = value; }
+    public CocoonSpawn CocoonSpawn { get => cocoonSpawn; set => cocoonSpawn = value; }
 
     private void OnEnable()
     {
@@ -28,12 +29,12 @@ public class ScraderSpawn : Skill
 
     private void OnDestroy()
     {
-        cocoonSpawn.CurrentCounter--;
+        if (cocoonSpawn != null) cocoonSpawn.CurrentCounter--;
     }
 
     private void Start()
     {
-        cocoonSpawn.CurrentCounter++;
+        if (cocoonSpawn != null) cocoonSpawn.CurrentCounter++;
     }
 
     protected override IEnumerator PrepareJob(System.Action<TargetInfo> callback)

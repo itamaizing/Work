@@ -7,8 +7,7 @@ public class BleedingDebuff : AbstractCharacterState
     private float _duration;
     private float _baseDuration;
     private float timer = 0;
-    public override States State => States.Bleeding;
-    
+    public override States State => States.BleedingScrader;
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => throw new System.NotImplementedException();
@@ -60,6 +59,6 @@ public class BleedingDebuff : AbstractCharacterState
     private void DealDamage()
     {
         Debug.LogWarning("Bleeding .DealDamage()");
-        _characterState.GetComponent<HealthComponent>().CmdTryTakeDamage(Random.Range(1, 3), DamageType.Magical, AttackRangeType.MeleeAttack);
+        _characterState.GetComponent<HealthComponent>().CmdTryTakeDamage(1, DamageType.Magical, AttackRangeType.MeleeAttack);
     }
 }

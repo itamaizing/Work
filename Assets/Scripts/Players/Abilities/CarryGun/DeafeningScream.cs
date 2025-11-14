@@ -12,7 +12,6 @@ public class DeafeningScream : Skill
     [SerializeField] private float duration = 2f;
 
     private IDamageable _target;
-    private Character _runtimeTarget;
 
     protected override bool IsCanCast => CheckCanCast();
 
@@ -34,28 +33,24 @@ public class DeafeningScream : Skill
         Hero.Animator.applyRootMotion = false;
         _playerLinks.Move.StopLookAt();
         Hero.Move.CanMove = true;
-        _isCanCancle = true;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        _runtimeTarget = null;
+        ITargetable target = null;
 
-        while (_target == null)
+        while (target == null)
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget();
-
-                if (_target != null) if (_target is Character characterTarget) _runtimeTarget = characterTarget;
-                _isCanCancle = false;
+                if (GetRaycastTarget() is ITargetable targetable) target = targetable;
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Targets.Add(_runtimeTarget);
-        callbackDataSaved(targetInfo);
+        targetInfo.Targets.Add(target);
+        callbackDataSaved.Invoke(targetInfo);
     }
 
     protected override IEnumerator CastJob()
@@ -109,6 +104,5 @@ public class DeafeningScream : Skill
     {
         if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as Character;
         Hero.Move.LookAtTransform(_target.transform);
-        _isCanCancle = false;
     }
 }

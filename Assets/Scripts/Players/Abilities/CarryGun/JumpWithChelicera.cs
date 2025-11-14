@@ -60,25 +60,28 @@ public class JumpWithChelicera : Skill
         _hero.Move.CanMove = false;
     }
 
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _castDeley = _delayBeforeJump;
+        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        IDamageable target = null;
+        ITargetable target = null;
 
         while (target == null)
         {
             if (GetMouseButton)
             {
-                if (GetRaycastTarget() is IDamageable iDamageable)
-                {
-                    target = iDamageable;
-                }
+                if (GetRaycastTarget() is ITargetable targetable) target = targetable;
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        if (target is Character character) targetInfo.Targets.Add(character);
-        callbackDataSaved?.Invoke(targetInfo);
+        targetInfo.Targets.Add(target);
+        callbackDataSaved.Invoke(targetInfo);
     }
 
     protected override IEnumerator CastJob()
@@ -230,12 +233,6 @@ public class JumpWithChelicera : Skill
             _cheliceraeStrike.CheliceraStrikeCast();
             _cheliceraeStrike.ClearDataCheliceraStrike();
         }
-    }
-
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        _castDeley = _delayBeforeJump;
-        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
     }
 
     public void JumpWithCheliceraCast() => AnimStartCastCoroutine();

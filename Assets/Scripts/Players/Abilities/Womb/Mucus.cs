@@ -6,18 +6,16 @@ using UnityEngine;
 
 public class Mucus : NetworkBehaviour
 {
-    [SerializeField] private List<MucusAutoGrowth> _mucusAutoGrowths = new List<MucusAutoGrowth>();
+    [SerializeField][SyncVar] private List<MucusAutoGrowth> _mucusAutoGrowths = new List<MucusAutoGrowth>();
 
     private ObjectHealth _objectHealth;
     private Coroutine _delayedCheckCoroutine;
-    private bool _isSubscribed = false;
     public List<MucusAutoGrowth> MucusAutoGrowths 
     { 
         get => _mucusAutoGrowths;
         set
         {
             _mucusAutoGrowths = value;
-            _objectHealth.RegenMod = _mucusAutoGrowths.Count;
         }
     }
     private void OnEnable()
@@ -28,10 +26,28 @@ public class Mucus : NetworkBehaviour
     {
         MucusAutoGrowth.OnAnyMucusAutoGrowthDestroyed -= DelayedCheck;
         _mucusAutoGrowths.Clear();
+        UpdateRegenMod();
     }
     private void Start()
     {
         _objectHealth = GetComponent<ObjectHealth>();
+        UpdateRegenMod();
+    }
+
+    public void AddMucusAutoGrowth(MucusAutoGrowth autoGrowth)
+    {
+        if (autoGrowth == null || _mucusAutoGrowths.Contains(autoGrowth)) return;
+
+        _mucusAutoGrowths.Add(autoGrowth);
+        UpdateRegenMod();
+    }
+
+    public void RemoveMucusAutoGrowth(MucusAutoGrowth autoGrowth)
+    {
+        if (_mucusAutoGrowths.Remove(autoGrowth))
+        {
+            UpdateRegenMod();
+        }
     }
     public void CheckAndUpdateState()
     {
@@ -46,6 +62,10 @@ public class Mucus : NetworkBehaviour
                 _objectHealth.ÑmdStartCustomNegativeRegeneration();
             }
         }
+    }
+    private void UpdateRegenMod()
+    {
+        if (_objectHealth != null) _objectHealth.RegenMod = _mucusAutoGrowths.Count;
     }
     private void DelayedCheck()
     {

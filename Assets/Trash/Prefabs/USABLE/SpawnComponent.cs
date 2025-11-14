@@ -14,7 +14,7 @@ public class SpawnComponent : NetworkBehaviour
     public List<Character> Units => _units;
 
     public event Action<Character> UnitAdded;
-    public event Action UnitRemoved;
+    public event Action<Character> UnitRemoved;
 
     #region Test Methods
     [SerializeField] private List<Character> _enemyPrefabs;
@@ -190,7 +190,7 @@ public class SpawnComponent : NetworkBehaviour
                 NetworkServer.Destroy(character.gameObject);
             }
 
-            UnitRemoved?.Invoke();
+            UnitRemoved?.Invoke(character);
         }
     }
     #endregion
@@ -233,7 +233,7 @@ public class SpawnComponent : NetworkBehaviour
         if (_units.Contains(character))
         {
             _units.Remove(character);
-            UnitRemoved?.Invoke();
+            UnitRemoved?.Invoke(character);
 
             if (character is MinionComponent minion)
             {
@@ -270,7 +270,7 @@ public class SpawnComponent : NetworkBehaviour
             {
                 NetworkServer.Destroy(character.gameObject);
             }
-            UnitRemoved?.Invoke();
+            UnitRemoved?.Invoke(character);
         }
     }
 
@@ -312,9 +312,9 @@ public class SpawnComponent : NetworkBehaviour
             {
                 Debug.LogWarning("Character component is null on destroyed object.");
             }
-        }
 
-        _units.RemoveAll(unit => unit == null);
-        if (UnitRemoved != null) UnitRemoved.Invoke();
+            _units.RemoveAll(unit => unit == null);
+            if (UnitRemoved != null) UnitRemoved.Invoke(character);
+        }
     }
 }

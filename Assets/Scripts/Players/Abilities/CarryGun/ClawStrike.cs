@@ -18,6 +18,10 @@ public class ClawStrike : Skill
     [SerializeField] private float buffDurationAfterJump = 1f;
     [SerializeField] private float chanceApplyBleedingIncrease = 0.4f;
 
+    [Header("Damage")]
+    [SerializeField] private float minDamage = 10f;
+    [SerializeField] private float maxDamage = 11f;
+
     private bool _isDurationChanceApplyBleedingWithJump = false;
     private bool _isAnimationAcceleration = false;
     private bool _isLastClawStrike;
@@ -60,32 +64,26 @@ public class ClawStrike : Skill
     #endregion
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as Character;
         if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
-        if (_target is Character character) character.SelectedCircle.IsActive = true;
-
+        if (_target is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = true;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-         IDamageable target = null;
+         ITargetable target = null;
 
         while (target == null)
         {
             if (GetMouseButton)
             {
-                if (GetRaycastTarget() is IDamageable iDamageable)
-                {
-                    target = iDamageable;
-                }
+                if (GetRaycastTarget() is ITargetable targetable) target = targetable;
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        if (target is Character character) targetInfo.Targets.Add(character);
-        if (target is ITargetable targetable) targetInfo.Targets.Add(targetable);
-        callbackDataSaved?.Invoke(targetInfo);
+        targetInfo.Targets.Add(target);
+        callbackDataSaved.Invoke(targetInfo);
     }
 
 
@@ -107,7 +105,7 @@ public class ClawStrike : Skill
         if (target == null) return;
 
         float attackingPsiValue = _spentAttackingPsiEnergy;
-        _baseDamage = UnityEngine.Random.Range(5f, 8f);
+        _baseDamage = UnityEngine.Random.Range(minDamage, maxDamage);
         Damage = _baseDamage;
 
         var damage = new Damage

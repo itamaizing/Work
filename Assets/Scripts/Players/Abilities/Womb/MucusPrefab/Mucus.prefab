@@ -711,6 +711,7 @@ MonoBehaviour:
   _ignoredSchools: 02000000
   _ignoredForms: 
   _ignoredSkillTypes: 000000000100000003000000
+  _regenModification: 1
   live: 1
   isDestroyOnDeath: 0
   isRegenerationEnabled: 0
@@ -781,6 +782,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _mucusAutoGrowths: []
 --- !u!1 &7074414954952605452
 GameObject:
   m_ObjectHideFlags: 0

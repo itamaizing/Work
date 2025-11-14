@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cf25ca78110d1b240ac9c6549f27c30d, type: 3}
   m_Name: StateIcoDatabase_Generated
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::StateIcoDatabase
   Entries:
   - State: 0
     Icon: {fileID: 21300000, guid: ca462af3d19f7ac46b2767cf7c1d951c, type: 3}
@@ -270,4 +270,10 @@ MonoBehaviour:
     BorderColor: {r: 1, g: 1, b: 1, a: 1}
   - State: 85
     Icon: {fileID: 21300000, guid: 7a8cf3ad5418f2f42a98961f8d4848e3, type: 3}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 86
+    Icon: {fileID: -4856909232036157465, guid: 0428d550f1549974da2575ce4d49b8b5, type: 3}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 87
+    Icon: {fileID: -2820539102237515152, guid: 9f718b688f844f442849ecdd6c9ca08f, type: 3}
     BorderColor: {r: 1, g: 1, b: 1, a: 1}

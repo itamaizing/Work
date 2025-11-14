@@ -13,7 +13,7 @@ public class SpellMoveTo : Skill
     [SerializeField] private float _damage = 5f;
     [SerializeField] private Animator _animator;
 
-    private Queue<Vector3> _movementQueue = new();
+    private Vector3 _targetPoint = Vector3.positiveInfinity;
     private Coroutine _attackCoroutine;
     private Character _currentEnemyTarget;
     private float _lastAttackTime;
@@ -43,23 +43,18 @@ public class SpellMoveTo : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.Points != null && targetInfo.Points.Count > 0)
-        {
-            foreach (var point in targetInfo.Points)
-            {
-                _movementQueue.Enqueue(point);
-            }
-        }
+        _targetPoint = targetInfo.Points[0];
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (!GetMouseButton)
+        Vector3 clickedPoint = Vector3.positiveInfinity;
+
+        while (float.IsPositiveInfinity(clickedPoint.x))
         {
+            if (GetMouseButton) clickedPoint = GetMousePoint();
             yield return null;
         }
-
-        Vector3 clickedPoint = GetMousePoint();
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(clickedPoint);
@@ -69,20 +64,15 @@ public class SpellMoveTo : Skill
     {
         IsCasting = true;
 
-        while (_movementQueue.Count > 0)
+        if (_attackCoroutine != null)
         {
-            Vector3 point = _movementQueue.Dequeue();
-
-            if (_attackCoroutine != null)
-            {
-                StopCoroutine(_attackCoroutine);
-                _attackCoroutine = null;
-            }
-
-            yield return MoveToPointWithNavMeshPath(point, false);
-
-            _attackCoroutine = StartCoroutine(AttackNearbyEnemiesJob());
+            StopCoroutine(_attackCoroutine);
+            _attackCoroutine = null;
         }
+
+        yield return MoveToPointWithNavMeshPath(_targetPoint, false);
+
+        _attackCoroutine = StartCoroutine(AttackNearbyEnemiesJob());
 
         IsCasting = false;
     }
@@ -236,7 +226,7 @@ public class SpellMoveTo : Skill
 
     protected override void ClearData()
     {
-        _movementQueue.Clear();
+        _targetPoint = Vector3.positiveInfinity;
         _currentEnemyTarget = null;
         IsCasting = false;
     }

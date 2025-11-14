@@ -451,8 +451,10 @@ public abstract class Skill : NetworkBehaviour
 
                 if (targetInfo.Targets.Count > 0)
                 {
-                    var target = (Character)targetInfo.Targets[0];
-                    if (target != null) _hero.Move.LookAtTransform(target.transform);
+                    if (targetInfo.Targets[0] is Character target)
+                    {
+                        _hero.Move.LookAtTransform(target.transform);
+                    }
                 }
 
                 if (targetInfo.Points.Count > 0)
@@ -492,8 +494,10 @@ public abstract class Skill : NetworkBehaviour
                 {
                    if (targetInfo.Targets.Count > 0)
                     {
-                        var target = (Character)targetInfo.Targets[0];
-                        _hero.Move.LookAtTransform(target.transform);
+                        if (targetInfo.Targets[0] is Character target)
+                        {
+                            _hero.Move.LookAtTransform(target.transform);
+                        }
                     }
 
                     if (targetInfo.Points.Count > 0)
@@ -1552,7 +1556,7 @@ public abstract class Skill : NetworkBehaviour
         {
             _isPlayCastAnim = true;
             _isWaitingForCastCoroutine = true;
-
+            
             float finalCastSpeed = Buff.CastSpeed.Multiplier * ExtraAnimationSpeedMultiplier;
             Hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, finalCastSpeed);
             _hero.Animator.SetTrigger(AnimTriggerCast);

@@ -92,29 +92,26 @@ public class CheliceraStrike : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
-        if (_target is Character character) character.SelectedCircle.IsActive = true;
+        if (_target is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = true;
     }
 
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        IDamageable target = null;
+        ITargetable target = null;
 
         while (target == null)
         {
             if (GetMouseButton)
             {
-                if (GetRaycastTarget() is IDamageable iDamageable)
-                {
-                    target = iDamageable;
-                }
+                if (GetRaycastTarget() is ITargetable targetable) target = targetable;
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        if (target is Character character) targetInfo.Targets.Add(character);
-        callbackDataSaved?.Invoke(targetInfo);
+        targetInfo.Targets.Add(target);
+        callbackDataSaved.Invoke(targetInfo);
     }
 
     protected override IEnumerator CastJob()

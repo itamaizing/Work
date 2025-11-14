@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectHealth : Resource, IDamageable
+public class ObjectHealth : Resource, IDamageable, ITargetable
 {
     [Header("UI / Visual")]
     [SerializeField] private ObjectBar _objectBar;
@@ -32,7 +32,7 @@ public class ObjectHealth : Resource, IDamageable
     private Coroutine _hideBarCoroutine;
     private Coroutine _regenerationCoroutine;
 
-    private float _regenModification = 1;
+    [SyncVar][SerializeField] private float _regenModification = 1;
 
     [SerializeField] private bool live = false;
     [SerializeField] private bool isDestroyOnDeath = true;
@@ -61,6 +61,10 @@ public class ObjectHealth : Resource, IDamageable
             else ÑmdStopCustomRegeneration();
         }
     }
+
+    public Vector3 Position => throw new NotImplementedException();
+
+    public Transform Transform => throw new NotImplementedException();
 
     #region regeneration
 
@@ -154,7 +158,7 @@ public class ObjectHealth : Resource, IDamageable
 
             if (_currentHealth < MaxValue)
             {
-                _currentHealth = Mathf.Min(MaxValue, _currentHealth + _objectData.RegenerationAmount * RegenMod);
+                _currentHealth = Mathf.Min(MaxValue, _currentHealth + _objectData.RegenerationAmount * _regenModification);
                 OnHealthChanged(0, _currentHealth);
             }
         }
