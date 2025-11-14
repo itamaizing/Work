@@ -57,7 +57,9 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
 				_talents.Add(talent);
             }
         }
-        _rows[0].SetRowActive(true);
+        if (_rows != null)
+            if (_rows.Count > 0)
+            _rows[0].SetRowActive(true);
         for(int i = 0; i < _rows.Count - 1; i++)
         {
             foreach(var talent in _rows[i].Talents)

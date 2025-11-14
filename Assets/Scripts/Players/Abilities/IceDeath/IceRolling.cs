@@ -65,7 +65,11 @@ public class IceRolling : Skill
 		_animator = GetComponent<Animator>();
 		_audioSource = GetComponent<AudioSource>();
 
-		for (int i = 0; i < _playerLinks.Resources.Count; i++) if (_playerLinks.Resources[i].Type == ResourceType.Energy) _energy = (Energy)_playerLinks.Resources[i];
+		for (int i = 0; i < _playerLinks.Resources.Count; i++)
+		{
+			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
+				_energy = (Energy)_playerLinks.Resources[i];
+		}
 	}
 
 	private void Update()
@@ -133,10 +137,9 @@ public class IceRolling : Skill
 
 		foreach (RaycastHit hit in hits)
 		{
-			if (hit.collider.TryGetComponent(out Character character) &&
-				character == characterHit &&
-				character != _playerLinks)
+			if (hit.collider.TryGetComponent(out Character character) && character == characterHit && character != _playerLinks)
 			{
+				characterHit = character;
 				return true;
 			}
 		}
@@ -162,12 +165,15 @@ public class IceRolling : Skill
 		float distanceToClick = Vector3.Distance(startPosition, rawTargetPos);
 		float finalRange = Mathf.Min(distanceToClick, GetJumpRange());
 
+		float energyMy = finalRange / 5;
+
 		if (_isLastInSeries && _target == null && _rollingWithEnemyTalent) finalRange *= 1.5f;
 
 		Vector3 jumpPos = startPosition + _lookDir * finalRange;
 
-		float energyUsed = energyBlocks * 5f;
-		if (energyUsed > 0) _energy.CmdUse(energyUsed);
+		//float energyUsed = energyBlocks * 5f;
+		//if (energyUsed > 0) _energy.CmdUse(energyUsed);
+		_energy.CmdUse(energyMy);
 
 		Vector3 stopPosition;
 		Character characterHit;
@@ -179,8 +185,9 @@ public class IceRolling : Skill
 		Hero.Move.LookAtPosition(jumpPos);
 		float actualDistance = Vector3.Distance(startPosition, stopPosition);
 
-		if (hit && characterHit != null) CmdPush(stopPosition, actualDistance);
-		else CmdPush(stopPosition, actualDistance);
+		//if (hit && characterHit != null) CmdPush(stopPosition, actualDistance);
+		//else
+		CmdPush(stopPosition, actualDistance);
 
 		if (_rollingWithEnemyTalent && _target != null && hitTarget && characterHitTarget != null) CmdPushWithCharacter(stopPosition, characterHitTarget, actualDistance);
 
@@ -197,8 +204,9 @@ public class IceRolling : Skill
 
 	public override void LoadTargetData(TargetInfo targetInfo)
 	{
-		if (targetInfo != null && targetInfo.Targets != null && targetInfo.Targets.Count > 0) if (targetInfo.Targets[0] is Character character) _target = character;
-			else _target = ClosedTarget();
+		if (targetInfo != null && targetInfo.Targets != null && targetInfo.Targets.Count > 0) if (targetInfo.Targets[0] is Character character) 
+				_target = character;
+		else _target = ClosedTarget();
 	}
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -207,7 +215,7 @@ public class IceRolling : Skill
 		{
 			if (GetMouseButton)
 			{
-				//_target = GetRaycastTarget();
+				_target = GetTarget().character;
 				_mousePos = _target != null ? _target.transform.position : GetMousePoint();
 			}
 			yield return null;
@@ -280,12 +288,10 @@ public class IceRolling : Skill
 
 	private void OnCollisionEnter(Collision collision)
     {
-		if (_rollingWithEnemyTalent && _isJump && collision.collider.TryGetComponent(out Character character) &&
-		character != _playerLinks &&
-		character != _target &&
-		((1 << character.gameObject.layer) & _targetsLayers) != 0)
+		if (_rollingWithEnemyTalent && _isJump && collision.collider.TryGetComponent(out Character character) && character != _playerLinks && ((1 << character.gameObject.layer) & _targetsLayers) != 0)
 		{
 			Vector3 pushDir = (character.transform.position - _playerLinks.transform.position).normalized;
+			pushDir.y = 0;
 			Vector3 pushTarget = character.transform.position + pushDir * 2f;
 			CmdKnockback(character, pushTarget);
 		}
@@ -311,7 +317,7 @@ public class IceRolling : Skill
 		{
 			move.CanMove = false;
 			_attachedTarget = target;
-
+			Debug.Log("Attach");
 			_attachedTarget.transform.SetParent(_playerLinks.transform);
 			RpcAttachTarget(_attachedTarget);
 		}
@@ -327,6 +333,7 @@ public class IceRolling : Skill
 	{
 		if (target.TryGetComponent(out MoveComponent move))
 		{
+			
 			if (target.connectionToClient != null) move.TargetRpcDoMove(force, 0.05f);
 			else move.RpcDoMove(force, 0.05f);
 		}
@@ -361,7 +368,6 @@ public class IceRolling : Skill
 			rb.isKinematic = true;
 			rb.linearVelocity = Vector3.zero;
 		}
-
 		target.transform.SetParent(_playerLinks.transform);
 	}
 }

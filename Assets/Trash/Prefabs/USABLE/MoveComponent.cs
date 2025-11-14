@@ -386,6 +386,7 @@ public class MoveComponent : NetworkBehaviour
 	[TargetRpc]
 	public void TargetRpcDoMove(Vector3 vector3, float duration)
 	{
+		//Debug.Log("DoMove " + vector3, this);
 		CanMove = false;
 		_rigidbody.DOMove(vector3, duration).OnComplete(() =>
 		{
@@ -478,6 +479,7 @@ public class MoveComponent : NetworkBehaviour
 	[ClientRpc]
 	public void RpcDoMove(Vector3 vector3, float duration)
 	{
+		Debug.Log("DoMove " + vector3, this);
 		DoMove(vector3, duration);
 	}
 	#endregion
