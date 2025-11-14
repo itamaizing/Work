@@ -85,7 +85,8 @@ namespace Gangdollarff
             while (_target == null)
             {
                 if (GetMouseButton)
-                    //_target = GetRaycastTarget(true);
+                    if(GetTarget().character != null)
+                    _target = GetTarget().character;
 
                 yield return null;
             }
@@ -123,8 +124,11 @@ namespace Gangdollarff
         private void CmdMoveTaget(GameObject target, Vector3 point, float time)
         {
             var enemyMove = target.GetComponent<MoveComponent>();
-            //enemyMove.DoMove(point, time - _deleyTelekines);
-            enemyMove.TargetRpcDoMove(point, time);
+            var targetCharacter = target.GetComponent<Character>();
+			//enemyMove.DoMove(point, time - _deleyTelekines);
+			if (targetCharacter.connectionToClient != null) enemyMove.TargetRpcDoMove(point, 0.05f);
+			else enemyMove.RpcDoMove(point, 0.05f);
+			//enemyMove.TargetRpcDoMove(point, time);
         }
     }
 }
