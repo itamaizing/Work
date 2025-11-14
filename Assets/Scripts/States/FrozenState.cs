@@ -11,6 +11,7 @@ public class FrozenState : AbstractCharacterState
 	private float _baseDuration;
 	private float _damageToExit;
 	private float _damageOnStart = 0;
+	private bool _isInited = false;
 
 	private Animator _animator;
 	private AnimatorStateInfo _currentState;
@@ -25,6 +26,7 @@ public class FrozenState : AbstractCharacterState
 	{
 		Debug.Log("Entering Frozen State");
 		//MaxStacksCount = 5;
+		//CanStack = false;
 		_characterState = character;
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
@@ -36,6 +38,7 @@ public class FrozenState : AbstractCharacterState
 		{
 			_damageToExit = damageToExit;
 		}
+
 		_damageOnStart = _characterState.Character.Health.SumDamageTaken;
 		_characterState.Character.Move.CanMove = false;
 		_characterState.Character.Move.Rigidbody.isKinematic = true;
@@ -80,12 +83,14 @@ public class FrozenState : AbstractCharacterState
 			_animator.Update(0);
 			_animator.enabled = false;
 		}
-
+		_isInited = true;
 		//_characterState.Health.sumDamageTaken = 0;
 	}
 
 	public override void UpdateState()
 	{
+		if(!_isInited) return;
+		//Debug.Log("Damage to exit " + _damageToExit + " Need damage " + (_characterState.Character.Health.SumDamageTaken - _damageOnStart));
 		_duration -= Time.deltaTime;
 		if (_characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || _duration <= 0 )//|| turnOff)
 		{
@@ -124,6 +129,9 @@ public class FrozenState : AbstractCharacterState
 
 	public override bool Stack(float time)
 	{
+		Debug.Log("Try stack");
+		//_damageOnStart = _characterState.Character.Health.SumDamageTaken;
+		//_damageToExit = 1;
 		_duration = _baseDuration;
 		return true;
 	}

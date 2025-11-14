@@ -9,7 +9,7 @@ public class IceShadowObject : Projectiles
 	//[HideInInspector] public EnergyPlayer energyPlayer;
 	[HideInInspector] public float timeToDestroy = 2;
 
-	[SerializeField] private bool enemyShadow;
+	[SerializeField] private bool enemyShadow = true;
 	[SerializeField] private Animator anim;
 
 	private Health _healthPlayer;
@@ -105,7 +105,8 @@ public class IceShadowObject : Projectiles
 		{
 			//attact speed increase
 		}*/
-		if (collision.TryGetComponent<Character>(out var target) && enemyShadow)
+		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
+			//&& enemyShadow)
 		{
 			float duration = 2 + _energyDad / 20;
 

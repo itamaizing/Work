@@ -93,7 +93,7 @@ public class RuneComponent : Resource
 
     public void SumDamageMake(float damage)
     {
-        Debug.Log("SUM DAMAGE MAKE Rune" + damage);
+       // Debug.Log("SUM DAMAGE MAKE Rune" + damage);
 
         _sumDamageGiven += damage;
         while (_sumDamageGiven >= 50)

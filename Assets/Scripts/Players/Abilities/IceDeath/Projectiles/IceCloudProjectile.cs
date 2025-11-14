@@ -36,7 +36,7 @@ public class IceCloudProjectile : Projectiles
 	private void OnTriggerEnter(Collider collision)
 	{
 		if (_dad == null) return;
-		if (collision.gameObject == _dad.gameObject)
+		if (collision.gameObject == _dad.gameObject || collision.gameObject.layer == LayerMask.NameToLayer("Allies"))
 			return;
 
 		if(collision.TryGetComponent<IDamageable>(out var damageable))
@@ -78,7 +78,9 @@ public class IceCloudProjectile : Projectiles
 				//_energy.TryUse(_energyDad);
 				_energy.UseAllEnergy();
 				ClientUse(_energyDad, _energy.gameObject);
+
 				target.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
+				//target.CharacterState.AddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
 				//damage
 				GetComponent<Collider>().enabled = false;
 				Explode();

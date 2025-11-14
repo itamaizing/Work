@@ -75,7 +75,13 @@ public abstract class Resource : NetworkBehaviour
 
     public virtual bool TryUse(float value)
     {
-        if (_currentValue - value >= 0)
+        //TEST!!!
+		if (_regenCoroutine != null)
+		{
+			StopCoroutine(_regenCoroutine);
+			_regenCoroutine = StartCoroutine(RegenerateJob());
+		}
+		if (_currentValue - value >= 0)
         {
             CurrentValue -= value;
             return true;

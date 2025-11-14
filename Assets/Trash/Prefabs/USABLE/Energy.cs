@@ -74,7 +74,7 @@ public class Energy : Resource
 
 	public void SumDamageMake(float damage)
 	{
-		Debug.Log("SUM DAMAGE MAKE Energy" + damage);
+		//Debug.Log("SUM DAMAGE MAKE Energy" + damage);
 
 		_sumDamageGiven += damage;
 		while(_sumDamageGiven >= 10 ) 

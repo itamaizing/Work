@@ -66,16 +66,18 @@ public class SeriesOfStrikes : MonoBehaviour
 	}
 	public bool MakeHit(Character target, AbilityForm form, float usedRuneValue, float usedEnergy, float damage)
 	{
-		//if (!_seriesCompliteCompoTalent) return false;
+		if (!_seriesCompliteCompoTalent) return false;
 		_energy.ChangeBarColor(new Color(255, 165, 0));
 
 		if (target != null)
 		{
 			//target.CharacterState.personWhoShoted = _player;
 		}
+
 		CheckCurse(target, damage);
 		if (_iceRuneTalent) BonusRuneForDamage(damage);
 		//float usedEnergy = 0;
+
 		for(int i=0; i< _seriesOfStrikes.Count; i++)
 		{
 			if(form == _seriesOfStrikes[i].formList[_seriesOfStrikes[i].hitCount] && (target == _curTarget || target == null))

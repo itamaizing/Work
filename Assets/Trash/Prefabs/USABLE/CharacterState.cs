@@ -34,6 +34,7 @@ public abstract class AbstractCharacterState
 	public int CurrentStacksCount = 0;
 	public int MaxStacksCount = 0;
 	public float duration;
+	public bool CanStack = true;
 
 	public virtual float RemainingDuration
 	{
@@ -169,15 +170,15 @@ public abstract class HealStates : AbstractCharacterState
 public class CharacterState : NetworkBehaviour
 {
 	private Character _hero;
-	private List<AbstractCharacterState> currentStates = new List<AbstractCharacterState>();
+	private List<AbstractCharacterState> _currentStates = new List<AbstractCharacterState>();
 	[SerializeField] private StateIcons _stateIcons;
-	[SerializeField] private StateEffects stateEffects;
+	[SerializeField] private StateEffects _stateEffects;
 
 	public bool invinsible = false;
 
-	public StateEffects StateEffects => stateEffects;
+	public StateEffects StateEffects => _stateEffects;
 	public StateIcons StateIcons => _stateIcons;
-	public List<AbstractCharacterState> CurrentStates => currentStates;
+	public List<AbstractCharacterState> CurrentStates => _currentStates;
 	public Character Character => _hero;
 	public event System.Action<AbstractCharacterState> OnStateAdded;
 
@@ -294,18 +295,18 @@ public class CharacterState : NetworkBehaviour
 
 	private void Update()
 	{
-		if (currentStates.Count > 0)
+		if (_currentStates.Count > 0)
 		{
-			for (int i = 0; i < currentStates.Count; i++)
+			for (int i = 0; i < _currentStates.Count; i++)
 			{
-				currentStates[i].UpdateState();
+				_currentStates[i].UpdateState();
 			}
 		}
 	}
 
 	public void Dispel(StateType type)
 	{
-		foreach (AbstractCharacterState state in currentStates)
+		foreach (AbstractCharacterState state in _currentStates)
 		{
 			if (state.Type == type)
 			{
@@ -316,7 +317,7 @@ public class CharacterState : NetworkBehaviour
 
 	public bool Check(StatusEffect effect)
 	{
-		foreach (AbstractCharacterState state in currentStates)
+		foreach (AbstractCharacterState state in _currentStates)
 		{
 			if (state.Effects.Contains(effect))
 			{
@@ -328,7 +329,7 @@ public class CharacterState : NetworkBehaviour
 
 	public bool CheckForState(States state)
 	{
-		foreach (AbstractCharacterState states in currentStates)
+		foreach (AbstractCharacterState states in _currentStates)
 		{
 			if (states.State == state)
 			{
@@ -340,7 +341,7 @@ public class CharacterState : NetworkBehaviour
 
 	public int CheckStateStacks(States state)
 	{
-		foreach (AbstractCharacterState states in currentStates)
+		foreach (AbstractCharacterState states in _currentStates)
 		{
 			Debug.Log(states.State + " on enemy, check for " + state);
 			if (states.State == state)
@@ -352,7 +353,7 @@ public class CharacterState : NetworkBehaviour
 	}
 	public bool CheckStateType(StateType type)
 	{
-		foreach (AbstractCharacterState state in currentStates)
+		foreach (AbstractCharacterState state in _currentStates)
 		{
 			if (state.Type == type)
 			{
@@ -364,7 +365,7 @@ public class CharacterState : NetworkBehaviour
 
 	public AbstractCharacterState GetState(States state)
 	{
-		foreach (AbstractCharacterState states in currentStates)
+		foreach (AbstractCharacterState states in _currentStates)
 		{
 			Debug.Log(states.State + " on enemy, check for " + state);
 			if (states.State == state)
@@ -413,7 +414,7 @@ public class CharacterState : NetworkBehaviour
 
 	public void RemoveState(AbstractCharacterState newState)
 	{
-		if (!currentStates.Contains(newState)) return;
+		if (!_currentStates.Contains(newState)) return;
 
 		newState.CurrentStacksCount = 0;
 
@@ -421,18 +422,18 @@ public class CharacterState : NetworkBehaviour
 		{
 			RemoveShield(damageableShield);
 		}
-        if (currentStates.Contains(newState))
+        if (_currentStates.Contains(newState))
 		{
-            currentStates.Remove(newState);
+            _currentStates.Remove(newState);
 			_stateIcons?.RemoveItemByState(newState.State);
 		}
     }
 
 	private void RemoveStateLogic(States stateName)
 	{
-		if (currentStates.Count <= 0) return;
+		if (_currentStates.Count <= 0) return;
 
-		var statesCopy = new List<AbstractCharacterState>(currentStates);
+		var statesCopy = new List<AbstractCharacterState>(_currentStates);
 
 		foreach (var state in statesCopy)
 		{
@@ -444,7 +445,7 @@ public class CharacterState : NetworkBehaviour
 				}
 
 				state.ExitState();
-				currentStates.Remove(state);
+				_currentStates.Remove(state);
 
 				_stateIcons?.RemoveItemByState(stateName);
 				break;
@@ -517,15 +518,15 @@ public class CharacterState : NetworkBehaviour
 	{
 		if (invinsible) return;
 
-		for (int i = 0; i < currentStates.Count; i++)
+		for (int i = 0; i < _currentStates.Count; i++)
 		{
-			if (currentStates[i].State == state)
-			{	
-
-				if (currentStates[i].MaxStacksCount == 0)
+			if (_currentStates[i].State == state)
+			{
+				if (!_currentStates[i].CanStack) break;
+				if (_currentStates[i].MaxStacksCount == 0)
                 {
-					bool canStack = currentStates[i].Stack(duration);
-					int newMaxStack = currentStates[i].MaxStacksCount;
+					bool canStack = _currentStates[i].Stack(duration);
+					int newMaxStack = _currentStates[i].MaxStacksCount;
 
 					_stateIcons.ActivateIco(state, duration, 1, canStack, newMaxStack);
 
@@ -534,10 +535,10 @@ public class CharacterState : NetworkBehaviour
 
 				else
                 {
-					currentStates[i].Stack(duration);
-					currentStates[i].duration = Mathf.Max(currentStates[i].RemainingDuration, duration);
-					float remaining = currentStates[i].RemainingDuration > 0f ? currentStates[i].RemainingDuration : duration;
-					int newMaxStack = currentStates[i].MaxStacksCount;
+					_currentStates[i].Stack(duration);
+					_currentStates[i].duration = Mathf.Max(_currentStates[i].RemainingDuration, duration);
+					float remaining = _currentStates[i].RemainingDuration > 0f ? _currentStates[i].RemainingDuration : duration;
+					int newMaxStack = _currentStates[i].MaxStacksCount;
 
 					_stateIcons.ActivateIco(state, remaining, 1, true, newMaxStack);
 
@@ -579,17 +580,17 @@ public class CharacterState : NetworkBehaviour
 
 	private void CreateState(AbstractCharacterState state, States stateName, float duration, float damageToExit, GameObject personWhoShooted, string skillName, bool stack)
 	{
-		currentStates.Add(state);
+		_currentStates.Add(state);
 
 		state.duration = duration;
 
 		if (personWhoShooted.TryGetComponent<Character>(out var character))
 		{
-			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, character, skillName);
+			_currentStates[_currentStates.Count - 1].EnterState(this, duration, damageToExit, character, skillName);
 		}
 		else
 		{
-			currentStates[currentStates.Count - 1].EnterState(this, duration, damageToExit, null, skillName);
+			_currentStates[_currentStates.Count - 1].EnterState(this, duration, damageToExit, null, skillName);
 		}
 
 		float remaining = state.RemainingDuration;
@@ -619,13 +620,13 @@ public class CharacterState : NetworkBehaviour
 
 	public void DispelStates(StateType type, int targetTeamIndex, int playerTeamIndex, bool isDispelOneState = false)
 	{
-		if (currentStates.Count == 0) return;
+		if (_currentStates.Count == 0) return;
 
 		List<AbstractCharacterState> statesToRemove = new List<AbstractCharacterState>();
 
-		for (int i = currentStates.Count - 1; i >= 0; i--)
+		for (int i = _currentStates.Count - 1; i >= 0; i--)
 		{
-			AbstractCharacterState state = currentStates[i];
+			AbstractCharacterState state = _currentStates[i];
 
 			if (state.Type == type &&
 				((targetTeamIndex == playerTeamIndex && state.BaffDebaff == BaffDebaff.Debaff) ||
@@ -653,13 +654,13 @@ public class CharacterState : NetworkBehaviour
 
 	public void DispelStates(StateType type, bool isAlly, bool isDispelOneState = false)
 	{
-		if (currentStates.Count == 0) return;
+		if (_currentStates.Count == 0) return;
 
 		List<AbstractCharacterState> statesToRemove = new List<AbstractCharacterState>();
 
-		for (int i = currentStates.Count - 1; i >= 0; i--)
+		for (int i = _currentStates.Count - 1; i >= 0; i--)
 		{
-			AbstractCharacterState state = currentStates[i];
+			AbstractCharacterState state = _currentStates[i];
 
 			if (state.Type == type &&
 				((isAlly && state.BaffDebaff == BaffDebaff.Baff) ||
@@ -693,17 +694,17 @@ public class CharacterState : NetworkBehaviour
 
 	private void MoveStateToEnd(int index)
 	{
-		if (index < 0 || index >= currentStates.Count)
+		if (index < 0 || index >= _currentStates.Count)
 			return;
 
 		// Сохраняем ссылку на состояние
-		var state = currentStates[index];
+		var state = _currentStates[index];
 
 		// Удаляем элемент из текущей позиции
-		currentStates.RemoveAt(index);
+		_currentStates.RemoveAt(index);
 
 		// Добавляем его в конец списка
-		currentStates.Add(state);
+		_currentStates.Add(state);
 	}
 }
 
