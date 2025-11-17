@@ -50,9 +50,9 @@ public class BoxArea : MonoBehaviour
             _targets.Add(enemy);
 			enemy.SelectedCircle.SwitchClostestTarget(true);
         }
-        if (collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.parent)
+        if (collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.root)
 		{
-			//Debug.Log("ENTER " + collision.name +"  / " + _damage.Value);
+			//Debug.Log("ENTER " + collision.transform + "  / " + transform.root);
             _enemies.Add(hpEnemy);
 			hpEnemy.ShowPhantomValue(_damage);
 		}
@@ -66,7 +66,7 @@ public class BoxArea : MonoBehaviour
 			_targets.Remove(enemy);
             enemy.SelectedCircle.SwitchClostestTarget(false);
         }
-		if (collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.parent)
+		if (collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.root)
 		{
 			Damage damage = _damage;
             damage.Value = 0;

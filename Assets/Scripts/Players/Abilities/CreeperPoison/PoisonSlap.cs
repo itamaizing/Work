@@ -150,7 +150,7 @@ public class PoisonSlap : Skill
             {
                 if (GetMouseButton)
                 {
-                    //_currentTarget = GetRaycastTarget();
+                    _currentTarget = GetTarget().character;
 
                     if (_currentTarget != null)
                     {
@@ -163,7 +163,6 @@ public class PoisonSlap : Skill
                         _firstClickDone = true;
 
                     }
-
                 }
                 yield return null;
             }

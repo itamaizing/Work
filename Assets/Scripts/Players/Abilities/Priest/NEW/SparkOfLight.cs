@@ -1,7 +1,8 @@
+using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Mirror;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,7 +14,9 @@ public class SparkOfLight : Skill
     [SerializeField] private float _damageAmount = 2f;
     [SerializeField] private float _castTime = 0.8f;
     [SerializeField] private float _range = 4f;
-    [SerializeField] private List<SkillEnergyCost> _manaCostHeal;
+
+	//override TryPayCost and remove this two things
+	[SerializeField] private List<SkillEnergyCost> _manaCostHeal;
     [SerializeField] private List<SkillEnergyCost> _manaCostDamage;
     [SerializeField] private AbilityInfo lightInfo;
 
@@ -56,7 +59,7 @@ public class SparkOfLight : Skill
     private float _lastFlashOfLightCastTime = 0f;
 
     protected IDamageable _target;
-    private Character characterTarget;
+    private Character _characterTarget;
 
     public void EnableTalentPhysicalShieldBoost(bool value) => _healthBoostActive = value;
     public void EnableLowHealthTalent(bool value) => _lowHealthTalentActive = value;
@@ -70,7 +73,7 @@ public class SparkOfLight : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("SparkOfLights");
 
-    protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
+    protected override bool IsCanCast => _characterTarget != null && Vector3.Distance(_characterTarget.transform.position, transform.position) <= Radius && NoObstacles(_characterTarget.transform.position, transform.position, _obstacle);
 
     public event Action OnModeChange;
 
@@ -112,6 +115,9 @@ public class SparkOfLight : Skill
     {
         School = isLightMode ? Schools.Light : Schools.Dark;
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
+
+        ClearData();
+        _characterTarget = null;
     }
 
     public void HandleMode(Character target)
@@ -122,7 +128,7 @@ public class SparkOfLight : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        characterTarget = null;
+        //_characterTarget = null;
 
         while (_target == null)
         {
@@ -132,15 +138,16 @@ public class SparkOfLight : Skill
 
                 if (_target is Character character)
                 {
-                    characterTarget = character;
+                    _characterTarget = character;
 
                     if (_target != null && (IsAllyTarget(character) || character == Hero) && !isLightMode)
                     {
                         _target = null;
-                        yield break;
+                        _characterTarget = null;
+                        //yield break;
                     }
 
-                    if (characterTarget != null)
+                    if (_characterTarget != null)
                     {
                         character.SelectedCircle.IsActive = true;
                     }
@@ -152,13 +159,13 @@ public class SparkOfLight : Skill
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(_target.transform.position);
-        targetInfo.Targets.Add(characterTarget);
+        targetInfo.Targets.Add(_characterTarget);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (characterTarget == null) yield break;
+        if (_characterTarget == null) yield break;
 
         if (!IsCanCast)
         {
@@ -167,26 +174,48 @@ public class SparkOfLight : Skill
             yield break;
         }
 
-        if (IsAllyTarget(characterTarget))
+        if (IsAllyTarget(_characterTarget))
         {
             TryPayCost(_manaCostHeal);
 
-            if (characterTarget == playerLinks) CmdHandleDefaultMode(playerLinks);
-            else CmdSpawnProjectile(characterTarget);
+            if (_characterTarget == playerLinks) CmdHandleDefaultMode(playerLinks);
+            else CmdSpawnProjectile(_characterTarget);
 
             yield break;
         }
 
-        if (IsEnemyTarget(characterTarget))
+        if (IsEnemyTarget(_characterTarget))
         {
             TryPayCost(isLightMode ? _manaCostDamage : _altManaCostDamage);
 
-            if (isLightMode) CmdSpawnProjectile(characterTarget);
-            else CmdSpawnProjectileDark(characterTarget);
+            if (isLightMode) CmdSpawnProjectile(_characterTarget);
+            else CmdSpawnProjectileDark(_characterTarget);
         }
     }
 
-    private bool IsTargetBelowHealthThreshold(Character target)
+	protected override bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
+	{
+		if (IsHaveResourceOnSkill)
+		{
+			foreach (var skillCost in skillEnergyCosts)
+			{
+				var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+				resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
+			}
+
+			if (startCooldown)
+				IncreaseSetCooldown(CooldownTime);
+
+			if (!_useChargesAsComboPart) TryUseCharge();
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	private bool IsTargetBelowHealthThreshold(Character target)
     {
         var healthComponent = target.GetComponent<Health>();
         return healthComponent != null && healthComponent.CurrentValue <= healthComponent.MaxValue * LowHealthThreshold;
@@ -442,6 +471,7 @@ public class SparkOfLight : Skill
     protected override void ClearData()
     {
         _target = null;
+
         _hero.Move.StopLookAt();
     }
 
