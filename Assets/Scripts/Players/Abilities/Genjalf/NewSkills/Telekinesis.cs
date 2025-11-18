@@ -85,8 +85,8 @@ namespace Gangdollarff
             while (_target == null)
             {
                 if (GetMouseButton)
-                    if (GetTarget().character != null)
-                        _target = GetTarget().character;
+                    if(GetTarget().character != null)
+                    _target = GetTarget().character;
 
                 yield return null;
             }
@@ -104,8 +104,8 @@ namespace Gangdollarff
                 yield return null;
             }
             TargetInfo targetInfo = new TargetInfo();
-            targetInfo.Targets.Add(_target);
-            targetInfo.Points.Add(_point);
+            targetInfo.Targets.Add( _target );
+            targetInfo.Points.Add( _point );
             callbackDataSaved(targetInfo);
             _radiusEnemy.gameObject.SetActive(false);
         }
@@ -125,10 +125,10 @@ namespace Gangdollarff
         {
             var enemyMove = target.GetComponent<MoveComponent>();
             var targetCharacter = target.GetComponent<Character>();
-            //enemyMove.DoMove(point, time - _deleyTelekines);
-            if (targetCharacter.connectionToClient != null) enemyMove.TargetRpcDoMove(point, 0.05f);
-            else enemyMove.RpcDoMove(point, 0.05f);
-            //enemyMove.TargetRpcDoMove(point, time);
+			//enemyMove.DoMove(point, time - _deleyTelekines);
+			if (targetCharacter.connectionToClient != null) enemyMove.TargetRpcDoMove(point, 0.05f);
+			else enemyMove.RpcDoMove(point, 0.05f);
+			//enemyMove.TargetRpcDoMove(point, time);
         }
     }
 }

@@ -460,7 +460,7 @@ public abstract class Skill : NetworkBehaviour
                 if (targetInfo.Points.Count > 0)
                 {
                     var point = (Vector3)targetInfo.Points[0];
-                    if (point != Vector3.positiveInfinity) _hero.Move.LookAtPosition(point);
+                    _hero.Move.LookAtPosition(point);
                 }
             }
 
@@ -492,12 +492,9 @@ public abstract class Skill : NetworkBehaviour
 
                 if (_targetInfoQueue.Count > 0)
                 {
-                   if (targetInfo.Targets.Count > 0)
+                    if (targetInfo.Targets[0] is Character target)
                     {
-                        if (targetInfo.Targets[0] is Character target)
-                        {
-                            _hero.Move.LookAtTransform(target.transform);
-                        }
+                        _hero.Move.LookAtTransform(target.transform);
                     }
 
                     if (targetInfo.Points.Count > 0)
@@ -936,7 +933,6 @@ public abstract class Skill : NetworkBehaviour
         float distance = Vector3.Distance(target.position, transform.position);
         return distance <= radius;
     }
-
     protected bool IsPointInRadius(float radius, Vector3 point)
     {
         float distance = Vector3.Distance(point, transform.position);
@@ -1556,7 +1552,7 @@ public abstract class Skill : NetworkBehaviour
         {
             _isPlayCastAnim = true;
             _isWaitingForCastCoroutine = true;
-            
+
             float finalCastSpeed = Buff.CastSpeed.Multiplier * ExtraAnimationSpeedMultiplier;
             Hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, finalCastSpeed);
             _hero.Animator.SetTrigger(AnimTriggerCast);
