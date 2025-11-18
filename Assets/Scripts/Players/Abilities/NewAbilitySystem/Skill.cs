@@ -451,8 +451,10 @@ public abstract class Skill : NetworkBehaviour
 
                 if (targetInfo.Targets.Count > 0)
                 {
-                    var target = (Character)targetInfo.Targets[0];
-                    _hero.Move.LookAtTransform(target.transform);
+                    if (targetInfo.Targets[0] is Character target)
+                    {
+                        _hero.Move.LookAtTransform(target.transform);
+                    }
                 }
 
                 if (targetInfo.Points.Count > 0)
@@ -490,9 +492,8 @@ public abstract class Skill : NetworkBehaviour
 
                 if (_targetInfoQueue.Count > 0)
                 {
-                   if (targetInfo.Targets.Count > 0)
+                    if (targetInfo.Targets[0] is Character target)
                     {
-                        var target = (Character)targetInfo.Targets[0];
                         _hero.Move.LookAtTransform(target.transform);
                     }
 
@@ -932,7 +933,6 @@ public abstract class Skill : NetworkBehaviour
         float distance = Vector3.Distance(target.position, transform.position);
         return distance <= radius;
     }
-
     protected bool IsPointInRadius(float radius, Vector3 point)
     {
         float distance = Vector3.Distance(point, transform.position);

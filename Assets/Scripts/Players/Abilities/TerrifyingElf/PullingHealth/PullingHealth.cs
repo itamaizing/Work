@@ -16,31 +16,27 @@ public class PullingHealth : Skill
     [SerializeField] private AudioClip audioClip;
     [SerializeField] private Ghost ghostSkill;
 
-    //[Header("Pulling Ghost")]
-    //[SerializeField] private float radiusGhost;
-    [SerializeField] private bool _pullingHealthThroughGhosts;
-    [SerializeField] private bool pullingHealthGhostTalent;
-    [SerializeField] private bool _pullingHealthSpeedWithFearTalent;
-
     private AudioSource _audioSource;
     private GameObject _activeEffect;
     private List<GameObject> _activeGhostEffects = new List<GameObject>();
     private List<GameObject> _allActiveEffects = new List<GameObject>();
-    private Character _targetCharacter;
-    private ObjectHealth _targetObject;
     private IDamageable _target;
     private float _baseRadius;
     private float _baseTickInterval;
     private float _baseCastStreamDuration;
-    private Vector3 _targetPoint = Vector3.positiveInfinity;
-    private Transform _targetTransform;
-    private bool _ignoreMoveCheck;
     private float _ignoreMoveTimeLeft;
+    private bool _ignoreMoveCheck;
 
     private const float _teleportTime = 0.3f;
 
     private readonly List<IDamageable> _extraTargets = new();
     private readonly List<GameObject> _extraEffects = new();
+
+    #region Talent
+    private bool _pullingHealthThroughGhosts;
+    private bool pullingHealthGhostTalent;
+    private bool _pullingHealthSpeedWithFearTalent;
+    #endregion
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("PullingHealthCastDelay");
@@ -49,8 +45,7 @@ public class PullingHealth : Skill
     {
         get
         {
-            if (_targetCharacter != null) return Vector3.Distance(_targetCharacter.transform.position, transform.position) <= Radius;
-            else if (_targetObject != null) return Vector3.Distance(_targetObject.transform.position, transform.position) <= Radius;
+            if (_target != null) return Vector3.Distance(_target.transform.position, transform.position) <= Radius;
             return false;
         }
     }
@@ -94,86 +89,54 @@ public class PullingHealth : Skill
             _ignoreMoveTimeLeft = _teleportTime;
         }
     }
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
 
+        if (_target is Character character)
+        {
+            var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
+            if (multiMagic != null) multiMagic.LastTarget = character;
+        }
+
+        if (_pullingHealthThroughGhosts) UpdateRadiusBasedOnGhosts();
+    }
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
+        ITargetable target = null;
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
+        while (target == null)
         {
-            if (GetMouseButton)
-            {
-                #region Old
-                //if (GetTarget().isCharater)
-                //{
-                //    _target = GetTarget().character;
-                //    _targetPoint = _target.transform.position;
-                //}
-                #endregion
-
-                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out var hitCharacter, Mathf.Infinity, _targetsLayers) 
-                    && hitCharacter.collider.TryGetComponent<Character>(out Character targetCharacter))
-                {
-                    _targetCharacter = targetCharacter;
-                    _target = _targetCharacter;
-                    _targetTransform = targetCharacter.transform;
-                    _targetPoint = _targetCharacter.transform.position;
-
-                    if (multiMagic != null) multiMagic.LastTarget = targetCharacter;
-                }
-
-                else if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out var hitObject, Mathf.Infinity, _targetsLayers)
-                        && hitObject.collider.TryGetComponent<Object>(out Object targetObject) && targetObject.Live)
-                {
-                    _targetObject = targetObject.ObjectHealth;
-                    _target = _targetObject;
-                    _targetTransform = targetObject.transform;
-                    _targetPoint = _targetTransform.position;
-                }
-            }
-
-            if (_pullingHealthThroughGhosts) UpdateRadiusBasedOnGhosts();
-
+            if (GetMouseButton) if (GetRaycastTarget() is ITargetable targetable) target = targetable;
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_targetPoint);
+        targetInfo.Targets.Add(target);
         callbackDataSaved(targetInfo);
     }
 
     private void UpdateRadiusBasedOnGhosts()
     {
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, Radius);
-
         int ghostCount = 0;
-
-        foreach (var collider in hitColliders)
-        {
-            if (collider.TryGetComponent<GhostAura>(out var ghostAura))
-            {
-                ghostCount++;
-            }
-        }
-
+        foreach (var collider in hitColliders) if (collider.TryGetComponent<GhostAura>(out var ghostAura)) ghostCount++;
         Radius = _baseRadius + ghostCount * 2;
-
         Radius = Mathf.Clamp(Radius, _baseRadius, _baseRadius + 4);
-
-        if (_skillRender != null)
-        {
-            _skillRender.DrawRadius(Radius);
-        }
+        if (_skillRender != null) _skillRender.DrawRadius(Radius);
     }
 
     protected override IEnumerator CastJob()
     {
+        if (_target == null) yield return null;
+
+        Debug.Log("1");
         int innerDarknessStacks;
 
         #region Work with InnerDarkness
-        if (_targetCharacter is Component targetComponent)
+        if (_target is Character character)
         {
-            var targetComponentState = targetComponent.GetComponent<CharacterState>();
+            var targetComponentState = character.GetComponent<CharacterState>();
 
             if (pullingHealthGhostTalent && targetComponentState.CheckForState(States.InnerDarkness))
             {
@@ -185,12 +148,11 @@ public class PullingHealth : Skill
 
                 foreach (var obj in nearbyObjects)
                 {
-                    if (addedGhosts >= ghostsToAdd)
-                        break;
+                    if (addedGhosts >= ghostsToAdd) break;
 
                     if (obj.TryGetComponent<GhostAura>(out GhostAura ghostAura))
                     {
-                        float distanceToTarget = Vector3.Distance(obj.transform.position, _targetTransform.position);
+                        float distanceToTarget = Vector3.Distance(obj.transform.position, character.transform.position);
                         if (distanceToTarget <= Radius && !ghost.Contains(obj.gameObject))
                         {
                             ghost.Add(obj.gameObject);
@@ -200,7 +162,7 @@ public class PullingHealth : Skill
                     }
                 }
 
-                CmdSpawnPullingHealthEffectGhost(_targetTransform.gameObject);
+                CmdSpawnPullingHealthEffectGhost(character.gameObject);
 
                 if (innerDarknessStacks > 0)
                 {
@@ -223,24 +185,20 @@ public class PullingHealth : Skill
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
         if (multiMagic != null)
         {
-            foreach (var character in multiMagic.PopPendingTargets())
+            foreach (var characterTarget in multiMagic.PopPendingTargets())
             {
-                if (character == _targetCharacter) continue;
-                _extraTargets.Add(character);
+                if (characterTarget == _target as Character)
+                {
+                    _extraTargets.Add(characterTarget);
 
-                TryPayCost();
-                CmdSpawnExtraPullingEffect(gameObject, character.gameObject);
+                    TryPayCost();
+                    CmdSpawnExtraPullingEffect(gameObject, characterTarget.gameObject);
+                }
             }
         }
 
         AfterCastJob();
         yield return StartCoroutine(StreamDuration());
-
-        //Debug.Log("Конец каста");
-        //_hero.Animator.SetTrigger(Animator.StringToHash("PullingHealthCastDelayExit"));
-        //_hero.NetworkAnimator.SetTrigger(Animator.StringToHash("PullingHealthCastDelayExit"));
-
-        //multiMagic.ExitState();
     }
 
 
@@ -268,20 +226,18 @@ public class PullingHealth : Skill
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, Radius);
             List<GhostAura> ghostsInZone = new List<GhostAura>();
 
-            foreach (var collider in hitColliders)
-                if (collider.TryGetComponent<GhostAura>(out var ghostAura)) ghostsInZone.Add(ghostAura);
+            foreach (var collider in hitColliders) if (collider.TryGetComponent<GhostAura>(out var ghostAura)) ghostsInZone.Add(ghostAura);
 
-            ghostsInZone.Sort((a, b) => Vector3.Distance(transform.position, a.transform.position)
-                                .CompareTo(Vector3.Distance(transform.position, b.transform.position)));
+            ghostsInZone.Sort((a, b) => Vector3.Distance(transform.position, a.transform.position).CompareTo(Vector3.Distance(transform.position, b.transform.position)));
 
-            float targetDistance = Vector3.Distance(transform.position, _targetTransform.position);
-            if (targetDistance <= _baseRadius) CmdSpawnPullingHealthEffect(gameObject, _targetTransform.gameObject);
+            float targetDistance = Vector3.Distance(transform.position, _target.transform.position);
+            if (targetDistance <= _baseRadius) CmdSpawnPullingHealthEffect(gameObject, _target.gameObject);
 
             if (targetDistance <= _baseRadius + 3 && ghostsInZone.Count == 1)
             {
                 GameObject nearestGhost = ghostsInZone[0].gameObject;
                 CmdSpawnPullingHealthEffect(gameObject, nearestGhost);
-                CmdSpawnPullingHealthEffect(nearestGhost, _targetTransform.gameObject);
+                CmdSpawnPullingHealthEffect(nearestGhost, _target.transform.gameObject);
             }
 
             else if (targetDistance <= _baseRadius + 6 && ghostsInZone.Count == 2)
@@ -291,20 +247,20 @@ public class PullingHealth : Skill
 
                 CmdSpawnPullingHealthEffect(gameObject, ghost1);
                 CmdSpawnPullingHealthEffect(ghost1, ghost2);
-                CmdSpawnPullingHealthEffect(ghost2, _targetTransform.gameObject);
+                CmdSpawnPullingHealthEffect(ghost2, _target.gameObject);
             }
         }
         #endregion
 
         else
         {
-            float targetDistance = Vector3.Distance(transform.position, _targetTransform.position);
-            if (targetDistance <= _baseRadius) CmdSpawnPullingHealthEffect(gameObject, _targetTransform.gameObject);
+            float targetDistance = Vector3.Distance(transform.position, _target.transform.position);
+            if (targetDistance <= _baseRadius) CmdSpawnPullingHealthEffect(gameObject, _target.gameObject);
         }
 
         while (elapsed < CastStreamDuration)
         {
-            if ((_target as UnityEngine.Object) == null)
+            if (_target == null)
             {
                 TryCancel();
                 CmdDestroyEffect();
@@ -318,8 +274,7 @@ public class PullingHealth : Skill
                 if (_ignoreMoveTimeLeft <= 0f) _ignoreMoveCheck = false;
             }
 
-            if (Input.GetMouseButtonDown(1) || (_targetCharacter != null && Vector3.Distance(transform.position, _targetTransform.position) > Radius) 
-            || Vector3.Distance(initialPosition, transform.position) > positionThreshold && !_ignoreMoveCheck)
+            if (_target != null && (Input.GetMouseButtonDown(1) || ( Vector3.Distance(transform.position, _target.transform.position) > Radius))           || Vector3.Distance(initialPosition, transform.position) > positionThreshold && !_ignoreMoveCheck)
             {
                 _hero.Animator.ResetTrigger(Animator.StringToHash("PullingHealthCastDelay"));
                 _hero.NetworkAnimator.ResetTrigger(Animator.StringToHash("PullingHealthCastDelay"));
@@ -332,10 +287,9 @@ public class PullingHealth : Skill
                 yield break;
             }
 
-
-            if (_targetCharacter is Component targetComponent)
+            if (_target != null)
             {
-                Vector3 directionToTarget = (targetComponent.transform.position - transform.position).normalized;
+                Vector3 directionToTarget = (_target.transform.position - transform.position).normalized;
                 directionToTarget.y = 0;
                 transform.rotation = Quaternion.LookRotation(directionToTarget);
             }
@@ -380,14 +334,10 @@ public class PullingHealth : Skill
                 Type = DamageType,
             };
 
-            if (_targetCharacter is Component targetComponent)
+            if (_target != null)
             {
-                //CmdApplyDamage(targetComponent.gameObject, _damage, null);
-                CmdApplyDamage(damage, targetComponent.gameObject);
+                CmdApplyDamage(damage, _target.gameObject);
             }
-
-            //float healValue = Damage * 0.25f;
-            //health.CmdAdd(healValue);
 
             float ghostHealValue = Damage * 0.70f;
             ghostHealth.CmdAdd(ghostHealValue);
@@ -403,12 +353,10 @@ public class PullingHealth : Skill
             Type = DamageType,
         };
 
-        if (_targetCharacter != null) CmdApplyDamage(damage, _targetCharacter.gameObject);
-        else if (_targetObject != null) CmdApplyDamage(damage, _targetObject.gameObject);
+        if (_target != null) CmdApplyDamage(damage, _target.gameObject);
 
-        foreach (var damageble in _extraTargets) if (damageble is Component component && component != null) CmdApplyDamage(damage, component.gameObject);
+        foreach (var damageble in _extraTargets) CmdApplyDamage(damage, damageble.gameObject);
     }
-
     private void HealPlayer()
     {
         if (health == null) return;
@@ -421,43 +369,10 @@ public class PullingHealth : Skill
         health.CmdAdd(heal.Value);
     }
 
-    //private Transform GetTargetTransform(IDamageable target)
-    //{
-    //    return (target as Component)?.transform;
-    //}
-
-    private bool TryGetTarget(out IDamageable target)
-    {
-        target = null;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, _targetsLayers))
-        {
-            if (hit.collider.TryGetComponent<IDamageable>(out var damageable))
-            {
-                target = damageable;
-                return true;
-            }
-        }
-        return false;
-    }
-
     #region Talents
-
-    public void SetPullingHealthGhostTalentActive(bool value)
-    {
-        pullingHealthGhostTalent = value;
-    }
-
-    public void PullingHealthSpeedWithFearTalentActive(bool value)
-    {
-        _pullingHealthSpeedWithFearTalent = value;
-    }
-
-    public void PullingHealthThroughGhosts(bool value)
-    {
-        _pullingHealthThroughGhosts = value;
-    }
-
+    public void SetPullingHealthGhostTalentActive(bool value) => pullingHealthGhostTalent = value;
+    public void PullingHealthSpeedWithFearTalentActive(bool value) => _pullingHealthSpeedWithFearTalent = value;
+    public void PullingHealthThroughGhosts(bool value) => _pullingHealthThroughGhosts = value;
     #endregion
 
     private void HandleSkillCanceled()
@@ -465,28 +380,17 @@ public class PullingHealth : Skill
         if (_hero != null && _hero.Move != null)
         {
             Hero.Move.CanMove = true;
-            Hero.Animator.speed = 1;
+            Hero.Move.StopLookAt();
+           Hero.Animator.speed = 1;
         }
 
-        _targetCharacter = null;
-        _targetObject = null;
-        _targetPoint = Vector2.positiveInfinity;
+        _target = null;
         _extraTargets.Clear();
         _extraEffects.Clear();
         AfterCastJob();
         CmdStopShotSound();
     }
-
     [Command] private void CmdSyncGhosts(GameObject ghostObj) => ghost.Add(ghostObj);
-
-    //[Command]
-    //private void CmdApplyDamage(GameObject targetObject, Damage damage, Skill skill)
-    //{
-    //    if (targetObject != null && targetObject.TryGetComponent<IDamageable>(out IDamageable target))
-    //    {
-    //        target.TryTakeDamage(ref damage, skill);
-    //    }
-    //}
 
     [Command]
     private void CmdSpawnPullingHealthEffect(GameObject startPoint, GameObject targetPoint)
@@ -566,7 +470,6 @@ public class PullingHealth : Skill
         }
         _allActiveEffects.Clear();
     }
-
     [Command] private void CmdCrossFade() => _hero.Animator.CrossFade("PullingHealthCastDelayExit", 0.1f);
 
     [ClientRpc]
@@ -596,18 +499,8 @@ public class PullingHealth : Skill
         ghost.Clear();
     }
 
-    [Command]
-    private void CmdPlayShotSound()
-    {
-        RpcPlayShotSound();
-    }
-
-    [Command]
-    private void CmdStopShotSound()
-    {
-        RpcStopShotSound();
-    }
-
+    [Command] private void CmdPlayShotSound() => RpcPlayShotSound();
+    [Command] private void CmdStopShotSound() => RpcStopShotSound();
 
     [ClientRpc]
     private void RpcPlayShotSound()
@@ -620,16 +513,10 @@ public class PullingHealth : Skill
     {
         if (_audioSource != null) _audioSource.Stop();
     }
-
     protected override void ClearData()
     {
         _extraTargets.Clear();
         _extraEffects.Clear();
         Radius = _baseRadius;
-    }
-
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        _targetPoint = targetInfo.Points[0];
     }
 }
