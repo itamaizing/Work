@@ -17,7 +17,6 @@ public class Silence : Skill
     private float _baseDuration;
     private AudioSource audioSource;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
-    private Vector3 _runtimeTargetPoint = Vector3.positiveInfinity;
 
     private bool _effectsDarknessTalent;
     private bool _canAttackMinions;
@@ -26,18 +25,6 @@ public class Silence : Skill
     private bool _isSilenceAddAllCharacterWithDeabaffElf;
 
     public bool IsSilenceAddAllCharacterWithDeabaffElf { get => _isSilenceAddAllCharacterWithDeabaffElf; }
-
-    //private void OnDestroy()
-    //{
-    //    OnSkillCanceled -= HandleSkillCanceled;
-    //}
-
-    //private void OnEnable()
-    //{
-    //    OnSkillCanceled += HandleSkillCanceled;
-    //}
-
-    //private void HandleSkillCanceled() => StopDamageZone();
 
     protected override bool IsCanCast
     {
@@ -65,12 +52,12 @@ public class Silence : Skill
         _baseCooldownTime = CooldownTime;
         audioSource = GetComponent<AudioSource>();
     }
-
+    public override void LoadTargetData(TargetInfo targetInfo) => _targetPoint = targetInfo.Points[0];
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        //_duration = _baseDuration;
+        Vector3 targetPoint = Vector3.positiveInfinity;
 
-        while (float.IsPositiveInfinity(_targetPoint.x))
+        while (float.IsPositiveInfinity(targetPoint.x))
         {
             if (GetMouseButton)
             {
@@ -79,14 +66,7 @@ public class Silence : Skill
                 if (IsPointInRadius(Radius, clickedPoint))
                 {
                     _targetPoint = clickedPoint;
-                    _runtimeTargetPoint = _targetPoint;
-
-                    Collider[] hitColliders = Physics.OverlapSphere(_targetPoint, Area, TargetsLayers);
-                    int minionCount = 0;
-
-                    foreach (var hitCollider in hitColliders) if (hitCollider.TryGetComponent<MinionComponent>(out _)) minionCount++;
-
-                    DrawDamageZone(_runtimeTargetPoint);
+                    DrawDamageZone(_targetPoint);
 
                     break;
                 }
@@ -95,15 +75,17 @@ public class Silence : Skill
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_runtimeTargetPoint);
+        targetInfo.Points.Add(_targetPoint);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
+        if (_targetPoint == Vector3.positiveInfinity) yield return null;
+
         CmdAdditionalMana();
-        SpawnEffectAtTargetPoint(_runtimeTargetPoint);
-        ApplyStateToEnemiesInZone(_runtimeTargetPoint);
+        SpawnEffectAtTargetPoint(_targetPoint);
+        ApplyStateToEnemiesInZone(_targetPoint);
         StopDamageZone();
         yield return null;
     }
@@ -185,7 +167,6 @@ public class Silence : Skill
 
         if (target is Component targetComponent)
         {
-            //CmdApplyDamage(targetComponent.gameObject, _damage, null);
             CmdApplyDamage(_damage, targetComponent.gameObject);
             CmdReduceGhostCharge(target);
             StartCoroutine(IGhostHealthCheck(target));
@@ -217,16 +198,6 @@ public class Silence : Skill
     public void SilenceAddAllCharacterWithDeabaffElf(bool value) => _isSilenceAddAllCharacterWithDeabaffElf = value;
 
     #endregion
-
-    //[Command]
-    //private void CmdApplyDamage(GameObject targetObject, Damage damage, Skill skill)
-    //{
-    //    if (targetObject != null && targetObject.TryGetComponent<IDamageable>(out IDamageable target))
-    //    {
-    //        target.TryTakeDamage(ref damage, skill);
-    //    }
-    //}
-
     [Command] private void CmdTriggerGhostFreeWindow() => RpcTriggerGhostFreeWindow();
     [Command] private void CmdReduceGhostCharge(MinionComponent target) => ServerGhostHealthCheck(target);
 
@@ -279,6 +250,4 @@ public class Silence : Skill
     {
         _targetPoint = Vector3.positiveInfinity;
     }
-
-    public override void LoadTargetData(TargetInfo targetInfo) => _targetPoint = targetInfo.Points[0];
 }
