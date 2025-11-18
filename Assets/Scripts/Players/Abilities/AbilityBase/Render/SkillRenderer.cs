@@ -31,6 +31,7 @@ public class SkillRenderer : NetworkBehaviour
     private float _boxLength;
     private float _boxWidth;
     private float _circleRadius;
+    private float _radiusModifier = 0f;
     private BoxArea _lineStartImage;
     //private BoxArea _lineEndImage;
     private SkillCircleRanderer _drawAutoAttackRadius;
@@ -60,6 +61,9 @@ public class SkillRenderer : NetworkBehaviour
 
     private Vector2 _cursorPrepareHotspot = Vector2.zero;
     private Vector2 _cursorDefaultHotspot = Vector2.zero;
+
+    public float GetModifiedRadius(float baseRadius) => baseRadius + _radiusModifier;
+    public float GetModifiedLength(float baseLength) => baseLength + _radiusModifier;
 
     private void Awake()
     {
@@ -95,6 +99,10 @@ public class SkillRenderer : NetworkBehaviour
         if (_previewDamageCoroutine != null) StopCoroutine(_previewDamageCoroutine);
         _previewSet.Clear();
         _previewDamageCoroutine = StartCoroutine(PreviewDamageJob(radius, damage, layerMask));
+    }
+    public void SetRadiusModifier(float modifier)
+    {
+        _radiusModifier = modifier;
     }
 
     [ClientRpc]
@@ -237,7 +245,7 @@ public class SkillRenderer : NetworkBehaviour
 
     public void DrawRadius(float radius)
     {
-        _circle.Draw(radius);
+        _circle.Draw(GetModifiedRadius(radius));
     }
 
     public void StopDrawRadius()
@@ -253,7 +261,7 @@ public class SkillRenderer : NetworkBehaviour
     public void DrawRadiusColor(float radius, Color color) 
     {
         _circle.SetColor(color);
-        _circle.Draw(radius);
+        _circle.Draw(GetModifiedRadius(radius));
     }
 
     public void SetColor(Color color)
@@ -266,7 +274,7 @@ public class SkillRenderer : NetworkBehaviour
         if (area == null)
             area = _areaPref;
 
-        _circleRadius = radius;
+        _circleRadius = GetModifiedRadius(radius);
         _drawAreaCoroutine = StartCoroutine(DrawAreaJob(radius, damage, layerMask, area));
     }
 
@@ -281,11 +289,15 @@ public class SkillRenderer : NetworkBehaviour
 
     public void DrawLine(float length, float width, Damage damage, LayerMask layerMask, AbilityLineRenderer line = null)
     {
-        if (line == null)
-            line = _line;
-        _boxWidth = length;
-        _boxWidth = width;
-        _drawLineCoroutine = StartCoroutine(DrawLineJob(length, width, damage, layerMask, line));
+        if (line == null) line = _line;
+
+        float finalLength = GetModifiedLength(length);
+        float finalWidth = width;
+
+        _boxLength = finalLength;
+        _boxWidth = finalWidth;
+
+        _drawLineCoroutine = StartCoroutine(DrawLineJob(finalLength, finalWidth, damage, layerMask, line));
     }
 
     public void StopDrawLine()
@@ -305,7 +317,7 @@ public class SkillRenderer : NetworkBehaviour
         if (_isOverrideClosestTarget) return;
 
         if (_hoveredTarget != null) _hoveredTarget.SelectedCircle.SwitchSelectCircle(true);
-        _drawClosestTargetCoroutine = StartCoroutine(DrawClosestTargetJob(radius, TargetsLayers, player));
+        _drawClosestTargetCoroutine = StartCoroutine(DrawClosestTargetJob(GetModifiedRadius(radius), TargetsLayers, player));
     }
 
     public void StopDrawClosestTarget()
@@ -460,8 +472,10 @@ public class SkillRenderer : NetworkBehaviour
         yield return null;
     }
 
-    private IEnumerator DrawRadiusJob(float radius)
+    private IEnumerator DrawRadiusJob(float baseRadius)
     {
+        float radius = GetModifiedRadius(baseRadius);
+
         while (true)
         {
             bool hasEnemyInRadius = false;
@@ -681,18 +695,20 @@ public class SkillRenderer : NetworkBehaviour
         }
     }
 
-    private IEnumerator DynamicRadiusColorJob(float Radius)
+    private IEnumerator DynamicRadiusColorJob(float baseRadius)
     {
+        float radius = GetModifiedRadius(baseRadius);
+
         while (true)
         {
             if (_tempArea != null && _circle != null)
             {
                 float distance = Vector3.Distance(_tempArea.transform.position, transform.position);
 
-                if (distance <= Radius) _circle.SetColor(_colorForAllies);
+                if (distance <= radius) _circle.SetColor(_colorForAllies);
                 else _circle.SetColor(_colorForEnemies);
 
-                _circle.Draw(Radius);
+                _circle.Draw(radius);
             }
 
             yield return new WaitForSeconds(0.1f);

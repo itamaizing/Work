@@ -1,4 +1,5 @@
 using Mirror;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 
@@ -10,6 +11,9 @@ public class ArrowProjectile : Projectiles
     [SerializeField] private float duration;
     [SerializeField] private DamageType damageTypePhysics;
 
+    private Transform _followTarget;
+    private bool _isFollowingTarget = false;
+
     private float _magDamage;
     private float _damage;
 
@@ -19,6 +23,13 @@ public class ArrowProjectile : Projectiles
     {
         if (_rb != null) _rb.linearVelocity = direction * _speed;
 
+        Destroy(gameObject, _lifeTime);
+    }
+    public void StartFly(Transform target)
+    {
+        _followTarget = target;
+        _isFollowingTarget = true;
+        StartCoroutine(FollowTargetCoroutine());
         Destroy(gameObject, _lifeTime);
     }
 
@@ -104,5 +115,17 @@ public class ArrowProjectile : Projectiles
         if (target.TryGetComponent<Health>(out Health health)) return health.TryEvade(damageType, attackRangeType);
 
         return false;
+    }
+
+    private IEnumerator FollowTargetCoroutine()
+    {
+        while (_isFollowingTarget && _followTarget != null)
+        {
+            Vector3 dir = (_followTarget.position - transform.position).normalized;
+            if (_rb != null)
+                _rb.linearVelocity = dir * _speed;
+
+            yield return null;
+        }
     }
 }

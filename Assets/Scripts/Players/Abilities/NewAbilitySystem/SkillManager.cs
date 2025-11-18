@@ -43,6 +43,7 @@ public class SkillManager : MonoBehaviour
     public event Action<int> SkillDeselected;
     public event Action<Skill> SkillAdded;
     public event Action<Skill> SkillRemoved;
+    public event Action<Skill> OnSkillPreparedSuccessfully;
 
     private void OnEnable()
     {
@@ -112,7 +113,10 @@ public class SkillManager : MonoBehaviour
 
     }
     #endregion
-
+    public void NotifySkillPrepared(Skill skill)
+    {
+        OnSkillPreparedSuccessfully?.Invoke(skill);
+    }
     public void CancleAllSkills()
     {
         while (_selectedSkill != null && _selectedSkill.IsPreparing)
@@ -394,6 +398,8 @@ public class SkillManager : MonoBehaviour
     private void OnPreperingSuccess(Skill skill)
     {
         if (skill is IPassiveSkill) return;
+
+        NotifySkillPrepared(skill);
 
         if (_selectedSkill.IsAutoMode)
         {
