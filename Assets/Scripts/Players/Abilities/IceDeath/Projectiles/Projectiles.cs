@@ -40,13 +40,13 @@ public class Projectiles : NetworkBehaviour
 				_rune = (RuneComponent)_dad.Resources[i];
 			}
 		}
-		Debug.Log("bullet init");
+		//Debug.Log("bullet init");
 	}
 
 	[ClientRpc]
 	protected void TargetRpcDamgeMake(float value)
 	{
-		Debug.Log("CLIENT RPC");
+		//Debug.Log("CLIENT RPC");
 		_energy.SumDamageMake(value);
 		_rune.SumDamageMake(value);
 	}

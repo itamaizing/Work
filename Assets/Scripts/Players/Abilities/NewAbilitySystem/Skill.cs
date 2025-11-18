@@ -160,16 +160,9 @@ public abstract class Skill : NetworkBehaviour
     private Coroutine _actionWrapperForCastCoroutine;
     private bool _isPreparing = false;
     private bool _isCasting = false;
-    private bool _isClick;
-    private bool _isShiftClick;
-    private bool _isCtrlClick;
-    private bool _isSpaceClick;
     private TypeClick _click;
-	//private bool _isWaitingForCastCoroutine = false;
 	private List<float> _remainingCooldownTimeChargers = new();
     private List<Coroutine> _currentChargeCooldownJob;
-   // private float _assistTimer = 5f;
-    //private Coroutine _assistCoroutine;
     private Queue<TargetInfo> _targetInfoQueue = new();
     private bool _isAutoMode;
 
@@ -195,7 +188,7 @@ public abstract class Skill : NetworkBehaviour
         set => _isSkillActive = value;
     }
     public Transform TempTargetForDamage => _tempTargetForDamage;
-    public bool GetMouseButton { get => _isClick || _isShiftClick || _isCtrlClick || _isSpaceClick; }
+    public bool GetMouseButton { get => _click != TypeClick.None; }
     public bool IsSubjectToGlobalCooldownTime { get => _isSubjectToGlobalCooldownTime; }
     public Character Hero { get => _hero; }
     public StatsBuff Buff => _statsBuff;
@@ -422,8 +415,14 @@ public abstract class Skill : NetworkBehaviour
     public bool TryPreparing()
     {
         if (_isPreparing == false)
-
         {
+            foreach(var skillCost in _skillEnergyCosts)
+            {
+				//var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.resourceType);
+				var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+                resource.PhantomValueShow(skillCost.resourceCost);
+				//resourse.
+            }
             _actionWrapperForPreparingCoroutine = StartCoroutine(ActionWrapperForPreparingJob());
             return true;
         }
@@ -509,7 +508,15 @@ public abstract class Skill : NetworkBehaviour
 
     public bool TryCancel(bool foceCancel = false)
     {
-        if (foceCancel || _isCanCancle)
+		foreach (var skillCost in _skillEnergyCosts)
+		{
+			//var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.resourceType);
+			var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+			resource.PhantomValueShow(0);
+			//resourse.
+		}
+
+		if (foceCancel || _isCanCancle)
         {
             Canceled?.Invoke();
             if (_isAutoMode) _hero.Move.CanMove = true;
@@ -1068,11 +1075,6 @@ public abstract class Skill : NetworkBehaviour
         return _hero.TargetSeeker.ClosedTarget(isCanTargetHimself);
     }
 
-    /*protected Character GetClosestTargets()
-    {
-        return _hero.TargetSeeker.GetClosestTargets();
-    }*/
-
     private bool IsValidTarget(IDamageable target)
     {
         if (target == null) return false;
@@ -1084,46 +1086,26 @@ public abstract class Skill : NetworkBehaviour
     private void OnClick()
     {
         _click = TypeClick.LMB;
-        _isClick = true;
-        _isCtrlClick = false;
-        _isShiftClick = false;
-        _isSpaceClick = false;
     }
 
     private void OnClickCanceled()
     {
 		_click = TypeClick.None;
-		_isClick = false;
-        _isCtrlClick = false;
-        _isShiftClick = false;
-        _isSpaceClick = false;
     }
 
     private void OnShiftClick()
     {
 		_click = TypeClick.ShiftLMB;
-		_isClick = false;
-        _isCtrlClick = false;
-        _isShiftClick = true;
-        _isSpaceClick = false;
     }
 
     private void OnCtrlClick()
     {
 		_click = TypeClick.CtrlLMB;
-		_isClick = false;
-        _isCtrlClick = true;
-        _isShiftClick = false;
-        _isSpaceClick = false;
     }
 
     private void OnSpaceClick()
     {
 		_click = TypeClick.SpaceLMB;
-		_isClick = false;
-        _isCtrlClick = false;
-        _isShiftClick = false;
-        _isSpaceClick = true;
     }
 
     private void ReductionCooldownForCharge(int index, float reductionTime)

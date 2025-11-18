@@ -95,7 +95,7 @@ public abstract class Resource : NetworkBehaviour
 
     public void PhantomValueShow(float value)
     {
-        Debug.Log("SHOW PHANTOM " + gameObject, this);
+        //Debug.Log("SHOW PHANTOM " + gameObject + " Count " + value, this);
         PhantomValueShown?.Invoke(value);
     }
 

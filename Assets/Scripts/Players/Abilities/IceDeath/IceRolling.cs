@@ -15,10 +15,10 @@ public class IceRolling : Skill
 
 	[SerializeField] private Character _playerLinks;
 	[SerializeField] private PhysicalAttack _physicalAttack;
-	[SerializeField] private SeriesOfStrikes seriesOfStrikes;
+	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 	[SerializeField] private float _jumprange = 5f;
-	[SerializeField] private float durationOfJumpPerCell = 0.3f;
-	[SerializeField] private AudioClip audioClip;
+	[SerializeField] private float _durationOfJumpPerCell = 0.3f;
+	[SerializeField] private AudioClip _audioClip;
 	[SerializeField] private LayerMask _groundLayer;
 
 	private static readonly int iceRollingStart = Animator.StringToHash("IceRollingStart");
@@ -43,7 +43,6 @@ public class IceRolling : Skill
 	private Character _target;
 	private Character _attachedTarget;
 	private Animator _animator;
-	//private float TEMPFLOAT = 1;
 
 	protected override bool IsCanCast
 	{
@@ -245,7 +244,7 @@ public class IceRolling : Skill
 	{
 		if (!float.IsInfinity(_mousePos.x))
         {
-			_isLastInSeries = seriesOfStrikes.MakeHit(_target, AbilityForm.Physical, 1, 0, 0);
+			_isLastInSeries = _seriesOfStrikes.MakeHit(_target, AbilityForm.Physical, 1, 0, 0);
 			Jump();
 			yield return null;
 		}
@@ -319,7 +318,7 @@ public class IceRolling : Skill
 	private void CmdPush(Vector3 force, float finalRange)
 	{
 		RpcPlayShotSound();
-		_durationOfJump = finalRange * durationOfJumpPerCell;
+		_durationOfJump = finalRange * _durationOfJumpPerCell;
 		force.y = 1;
 		_playerLinks.Move.TargetRpcDoMove(force, _durationOfJump);
 		StartCoroutine(WaitForJumpEnd());
@@ -329,7 +328,7 @@ public class IceRolling : Skill
 	private void CmdPushWithCharacter(Vector3 force, Character target, float finalRange)
 	{
 		RpcPlayShotSound();
-		_durationOfJump = finalRange * durationOfJumpPerCell;
+		_durationOfJump = finalRange * _durationOfJumpPerCell;
 
 		if (target.TryGetComponent(out MoveComponent move))
 		{
@@ -371,7 +370,7 @@ public class IceRolling : Skill
 		if (target.TryGetComponent(out Rigidbody rigidbody)) rigidbody.isKinematic = false;
 	}
 
-	[ClientRpc] private void RpcPlayShotSound() => _audioSource?.PlayOneShot(audioClip);
+	[ClientRpc] private void RpcPlayShotSound() => _audioSource?.PlayOneShot(_audioClip);
 	[ClientRpc] private void RpcOnJumpEnd() => HandleJumpEnd();
 
 	[ClientRpc]

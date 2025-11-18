@@ -43,14 +43,12 @@ public class TalentSystem : NetworkBehaviour
         }
 
         return activeTalents;
-
 	}
     
 
    // [Command]
     public void Initialize()
     {
-        Debug.Log("TALENTS INIT");
         foreach (var talentRow in _talents.SelectMany(talentsGroup => talentsGroup.TalentRows))
         {
             foreach (var talent in talentRow.Talents)
@@ -105,20 +103,7 @@ public class TalentSystem : NetworkBehaviour
         _talents[group].TalentRows[row].Talents[id].SetActive(value);
 	}
 
-	/*public void SwitchTalent(int id, string talentName, bool isActive)
-    {
-		var talentGroup = TalentsGroups.FirstOrDefault(o => o.ID == id);
-		var talent = talentGroup?.TalentsData.FirstOrDefault(o => o.Data.Name == talentName);
 
-        if (isActive)
-        {
-            talent.Enter();
-        }
-        else
-        {
-            talent.Exit();
-        } 
-	}*/
 
 	public void SwitchTalent(int id, int row, string talentName, bool isActive)
 	{

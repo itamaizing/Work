@@ -40,6 +40,7 @@ public class FrozenState : AbstractCharacterState
 		}
 
 		_damageOnStart = _characterState.Character.Health.SumDamageTaken;
+		_damageOnStart = 0;
 		_characterState.Character.Move.CanMove = false;
 		_characterState.Character.Move.Rigidbody.isKinematic = true;
 		_characterState.Character.Move.LookAtTransform(_characterState.gameObject.transform);
@@ -58,12 +59,10 @@ public class FrozenState : AbstractCharacterState
 				}
 			}
 		}
-
 		else
 		{
 			Debug.Log("no ability at " + character.gameObject.name);
 		}
-
 		if (_characterState.StateEffects.FrozenStateEffect != null)
 		{
 			_frozenEffectInstance = _characterState.StateEffects.FrozenStateEffect;
@@ -90,7 +89,7 @@ public class FrozenState : AbstractCharacterState
 	public override void UpdateState()
 	{
 		if(!_isInited) return;
-		//Debug.Log("Damage to exit " + _damageToExit + " Need damage " + (_characterState.Character.Health.SumDamageTaken - _damageOnStart));
+		Debug.Log(" Diffrence" + (_damageToExit - (_characterState.Character.Health.SumDamageTaken - _damageOnStart)) + "Damage to exit " + _damageToExit + " DamageHave " + (_characterState.Character.Health.SumDamageTaken - _damageOnStart));
 		_duration -= Time.deltaTime;
 		if (_characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || _duration <= 0 )//|| turnOff)
 		{
@@ -129,7 +128,7 @@ public class FrozenState : AbstractCharacterState
 
 	public override bool Stack(float time)
 	{
-		Debug.Log("Try stack");
+		//Debug.Log("Try stack");
 		//_damageOnStart = _characterState.Character.Health.SumDamageTaken;
 		//_damageToExit = 1;
 		_duration = _baseDuration;

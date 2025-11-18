@@ -129,7 +129,7 @@ public class IcePuddleObject : Projectiles
 
 			if (_talentFrostingFrozen && target.CharacterState.CheckForState(States.Frosting))
 			{
-				target.CharacterState.AddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
+				target.CharacterState.AddState(States.Frozen, duration, 30 + target.Health.SumDamageTaken, _dad.gameObject, _skill.name);
 			}
 
 			Debug.Log(_talentEvadeDadBoost + " Talent");

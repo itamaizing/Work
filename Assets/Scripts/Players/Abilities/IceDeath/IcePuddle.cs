@@ -21,7 +21,7 @@ public class IcePuddle : Skill
     [SerializeField] private float _timeToDestroy = 3f;
     [SerializeField] private HeroComponent _playerLinks;
     [SerializeField] private MoveComponent _move;
-    [SerializeField] private AudioClip audioClip;
+    [SerializeField] private AudioClip _audioClip;
 
     [Header("Raycast")]
     [SerializeField] private LayerMask _groundLayer;
@@ -253,8 +253,8 @@ public class IcePuddle : Skill
     [ClientRpc]
     private void RpcPlayShotSound()
     {
-        if (_audioSource != null && audioClip != null)
-            _audioSource.PlayOneShot(audioClip);
+        if (_audioSource != null && _audioClip != null)
+            _audioSource.PlayOneShot(_audioClip);
     }
 
     public void SetTalentPuddleSize(bool active) => _talentPuddleSize = active;

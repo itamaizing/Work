@@ -13,7 +13,7 @@ public class Bar : MonoBehaviour
 	[SerializeField] private Slider _shieldBar;
 	[SerializeField] protected Slider _bar;
 	[SerializeField] protected Slider _barMinus;
-	[SerializeField] protected Slider _barMinusPrewiew;
+	//[SerializeField] protected Slider _barMinusPrewiew;
 	[SerializeField] protected Slider _barPlus;
 	[SerializeField] protected float _timeToDisapear = 0.2f;
 	[SerializeField] protected float _disapearSpeed = 0.5f;
@@ -157,17 +157,19 @@ public class Bar : MonoBehaviour
 
 		else
 		{
-			_barMinusPrewiew.DOValue(_currentValue / _maxValue, _disapearSpeed);
+			//_barMinusPrewiew.DOValue(_currentValue / _maxValue, _disapearSpeed);
 			_barMinus.DOValue(_currentValue / _maxValue, _disapearSpeed);
 		}
 	}
 
 	public void PreviewDoTTick(float tickDamage)
 	{
-		float previewTarget = (_barMinusPrewiew.value * _maxValue - tickDamage) / _maxValue;
+		float previewTarget = (_barMinus.value * _maxValue - tickDamage) / _maxValue;
+		//float previewTarget = (_barMinusPrewiew.value * _maxValue - tickDamage) / _maxValue;
 		previewTarget = Mathf.Clamp01(previewTarget);
 
-		_barMinusPrewiew.DOValue(previewTarget, 0.25f);
+		//_barMinusPrewiew.DOValue(previewTarget, 0.25f);
+		_barMinus.DOValue(previewTarget, 0.25f);
 	}
 
 	public void PreviewChange(float damage)
@@ -196,8 +198,6 @@ public class Bar : MonoBehaviour
 				_barMinus.gameObject.SetActive(true);
 			}
 		}
-		// fading bar
-		//_currentValue 
 	}
 
 	private void UpdateShieldBar(float absorbed, float maxAbsorption)
@@ -209,7 +209,7 @@ public class Bar : MonoBehaviour
 				_healthBarTarget = (_currentValue - (maxAbsorption - absorbed)) / _maxValue;
 				_bar.DOValue(_healthBarTarget, _disapearSpeed);
 				_barMinus.DOValue(_healthBarTarget, _disapearSpeed);
-				_barMinusPrewiew.DOValue(_healthBarTarget, _disapearSpeed);
+				//_barMinusPrewiew.DOValue(_healthBarTarget, _disapearSpeed);
 
 				ShieldActive = true;
 			}

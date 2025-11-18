@@ -89,7 +89,7 @@ public class SeriesOfStrikes : MonoBehaviour
 				_seriesOfStrikes[i].hitCount++;
 				_timer = _baseTimer;
 
-				Debug.Log("Hit from " + _seriesOfStrikes[i] + " #" + _seriesOfStrikes[i].hitCount + usedEnergy);
+				Debug.Log("Hit from " + _seriesOfStrikes[i] + " #" + _seriesOfStrikes[i].hitCount);
 
 				if (_seriesOfStrikes[i].hitCount >= _seriesOfStrikes[i].formList.Count)
 				{
@@ -130,6 +130,7 @@ public class SeriesOfStrikes : MonoBehaviour
 
 	private void LastHit(float usedRune, float usedEnergy)
 	{
+		Debug.Log("Last hit");
 		if (_seriesCompliteCompoTalent) _rune.CmdAdd(usedRune * 2 + 1);
 		_energy.CmdAdd(usedEnergy * 0.4f);
 		_energy.ForceRegenNow();

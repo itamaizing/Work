@@ -2602,7 +2602,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.size
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentGroup.Array.size
@@ -2715,7 +2715,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRow.Array.data[0].Talents.Array.data[0]'
       value: 
-      objectReference: {fileID: 8581182762776661264}
+      objectReference: {fileID: 7758366791900145808}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRow.Array.data[1].Talents.Array.data[0]'
       value: 
@@ -3587,7 +3587,7 @@ MonoBehaviour:
   _timeToDestroy: 3
   _playerLinks: {fileID: 4374618947117916461}
   _move: {fileID: 323327819542905198}
-  audioClip: {fileID: 8300000, guid: 50bdc1bbf9ce8cd47b15aa64e652f76e, type: 3}
+  _audioClip: {fileID: 0}
   _groundLayer:
     serializedVersion: 2
     m_Bits: 8192
@@ -3612,7 +3612,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
   - resourceType: 3
-    resourceCost: 0
+    resourceCost: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
@@ -3652,10 +3652,10 @@ MonoBehaviour:
   maxCounter: 0
   _playerLinks: {fileID: 4374618947117916461}
   _physicalAttack: {fileID: 7407653808177717906}
-  seriesOfStrikes: {fileID: 3083348233968490285}
+  _seriesOfStrikes: {fileID: 0}
   _jumprange: 2
-  durationOfJumpPerCell: 0.15
-  audioClip: {fileID: 8300000, guid: af3bfd6509da4624291f0fb7ec37dbd5, type: 3}
+  _durationOfJumpPerCell: 0.3
+  _audioClip: {fileID: 0}
   _groundLayer:
     serializedVersion: 2
     m_Bits: 8192
@@ -4578,7 +4578,8 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
-  seriesOfStrikes: {fileID: 3083348233968490285}
+  _seriesOfStrikes: {fileID: 3083348233968490285}
+  _physicalAttack: {fileID: 7407653808177717906}
 --- !u!114 &1789533417509439406
 MonoBehaviour:
   m_ObjectHideFlags: 0

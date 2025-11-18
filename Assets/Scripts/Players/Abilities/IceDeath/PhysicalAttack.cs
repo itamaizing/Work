@@ -35,6 +35,7 @@ public class PhysicalAttack : Skill
 	protected override int AnimTriggerCast => _animTriggerToUse = UnityEngine.Random.value > 0.5f ? RightKickTrigger : LeftKickTrigger;
 
 	protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
+	private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
 	private void Start()
 	{
@@ -75,9 +76,16 @@ public class PhysicalAttack : Skill
 
 				if (_target != null)
 				{
-					_target.SelectedCircle.IsActive = true;
-					_hero.Move.LookAtTransform(_target.transform);
-					break;
+					if (IsAllyTarget(_target) || _target == Hero)
+					{
+						_target = null;						
+					}
+					else
+					{
+						_target.SelectedCircle.IsActive = true;
+						_hero.Move.LookAtTransform(_target.transform);
+						break;
+					}
 				}
 			}
 			yield return null;
@@ -125,6 +133,7 @@ public class PhysicalAttack : Skill
 		{
 			//_energy.CmdUse(5);
 			Buff.AttackSpeed.IncreasePercentage(_multiplier);
+			Buff.CastSpeed.IncreasePercentage(_multiplier);
 			float curDamage = _damageValue + UnityEngine.Random.Range(0, 2);
 
 			if (_energy.CurrentValue >= 5)
@@ -137,6 +146,7 @@ public class PhysicalAttack : Skill
 			}
 			_multiplier = 1 + _combo.GetMultipliedSpeed() / 100;
 			Buff.AttackSpeed.ReductionPercentage(_multiplier);
+			Buff.CastSpeed.IncreasePercentage(_multiplier);
 
 			Damage damage = new Damage
 			{

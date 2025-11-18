@@ -17758,7 +17758,6 @@ MonoBehaviour:
   _shieldBar: {fileID: 0}
   _bar: {fileID: 2921584072130559270}
   _barMinus: {fileID: 8326396519385016659}
-  _barMinusPrewiew: {fileID: 0}
   _barPlus: {fileID: 3172308678144977786}
   _timeToDisapear: 0.2
   _disapearSpeed: 0.5
@@ -30113,7 +30112,6 @@ MonoBehaviour:
   _shieldBar: {fileID: 1136397912955464002}
   _bar: {fileID: 2534660588506800836}
   _barMinus: {fileID: 2032852217877359319}
-  _barMinusPrewiew: {fileID: 3110753896939165859}
   _barPlus: {fileID: 5628799290259062616}
   _timeToDisapear: 0.2
   _disapearSpeed: 0.5
@@ -30512,7 +30510,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _stateIcons: {fileID: 8723564878656041165}
-  stateEffects: {fileID: 5293857831816092782}
+  _stateEffects: {fileID: 5293857831816092782}
   invinsible: 0
 --- !u!114 &5293857831816092782
 MonoBehaviour:
@@ -31623,7 +31621,6 @@ MonoBehaviour:
   _shieldBar: {fileID: 0}
   _bar: {fileID: 8137406360974725213}
   _barMinus: {fileID: 1668731055634484883}
-  _barMinusPrewiew: {fileID: 0}
   _barPlus: {fileID: 0}
   _timeToDisapear: 0.2
   _disapearSpeed: 0.5

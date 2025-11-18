@@ -169,14 +169,14 @@ public class SparkOfLight : Skill
 
         if (!IsCanCast)
         {
-            TryPayCost(_manaCostHeal);
-            CmdHandleDefaultMode(playerLinks);
+            //TryPayCost(_manaCostHeal);
+            //CmdHandleDefaultMode(playerLinks);
             yield break;
         }
 
         if (IsAllyTarget(_characterTarget))
         {
-            TryPayCost(_manaCostHeal);
+            //TryPayCost(_manaCostHeal);
 
             if (_characterTarget == playerLinks) CmdHandleDefaultMode(playerLinks);
             else CmdSpawnProjectile(_characterTarget);
@@ -186,34 +186,51 @@ public class SparkOfLight : Skill
 
         if (IsEnemyTarget(_characterTarget))
         {
-            TryPayCost(isLightMode ? _manaCostDamage : _altManaCostDamage);
+            //TryPayCost(isLightMode ? _manaCostDamage : _altManaCostDamage);
 
             if (isLightMode) CmdSpawnProjectile(_characterTarget);
             else CmdSpawnProjectileDark(_characterTarget);
         }
     }
 
-	protected override bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
-	{
-		if (IsHaveResourceOnSkill)
-		{
-			foreach (var skillCost in skillEnergyCosts)
-			{
-				var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
-				resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
-			}
+    protected override bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
+    {
+        if (IsHaveResourceOnSkill)
+        {
+            if (isLightMode)
+            {
+                if (IsAllyTarget(_characterTarget))
+                {
+                    skillEnergyCosts = _manaCostHeal;
+                }
+                else
+                {
+                    skillEnergyCosts = _manaCostDamage;
+                }
+            }
+            else
+            {
+                skillEnergyCosts = _altManaCostDamage;
 
-			if (startCooldown)
-				IncreaseSetCooldown(CooldownTime);
+            }
 
-			if (!_useChargesAsComboPart) TryUseCharge();
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
+            foreach (var skillCost in skillEnergyCosts)
+            {
+                var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+                resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
+            }
+
+            if (startCooldown)
+                IncreaseSetCooldown(CooldownTime);
+
+            if (!_useChargesAsComboPart) TryUseCharge();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
 	private bool IsTargetBelowHealthThreshold(Character target)
     {
