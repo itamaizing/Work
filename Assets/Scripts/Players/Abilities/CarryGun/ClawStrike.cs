@@ -35,8 +35,22 @@ public class ClawStrike : Skill
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("ClawStrikeTrigger");
+    protected override bool IsCanCast
+    {
+        get
+        {
+            if (_target == null) return false;
 
-    protected override bool IsCanCast => _target != null && _target.gameObject != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
+            var targetGO = _target.gameObject;
+            if (targetGO == null) return false;
+
+            var targetTransform = _target.transform;
+            if (targetTransform == null) return false;
+
+            return Vector3.Distance(targetTransform.position, transform.position) <= Radius &&
+                   NoObstacles(targetTransform.position, transform.position, _obstacle);
+        }
+    }
 
     public float CastWindowDuration { get => _castWindowDuration; set => _castWindowDuration = value; }
 
@@ -211,6 +225,7 @@ public class ClawStrike : Skill
     private void HandleSkillCanceled()
     {
         _player.Move.StopLookAt();
+        _target = null;
     }
 
     public void TrySpendAttackingPsi()

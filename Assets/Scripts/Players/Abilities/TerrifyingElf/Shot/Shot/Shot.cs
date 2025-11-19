@@ -32,7 +32,7 @@ public class Shot : Skill
     private bool CheckCanCast()
     {
         if (_target == null) return Vector3.Distance(_targetPoint, transform.position) <= Radius;
-        return Vector3.Distance(_targetPoint, transform.position) <= Radius || Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+        return Vector3.Distance(_target.transform.position, transform.position) <= Radius;
     }
 
     private void OnDestroy()
@@ -139,14 +139,14 @@ public class Shot : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_target == null && _targetPoint == Vector3.positiveInfinity) yield return null;
-        if (_target != null && !IsTargetInRange()) yield return null;
+        if (_target == null && _targetPoint == Vector3.positiveInfinity) yield break;
+        if (_target != null && !IsTargetInRange()) yield break;
 
 
         ShotAnimationMove();
         ProcessGhostCooldownReduction();
 
-        if (_target != null) CmdCreateProjectileAtTarget(_target.transform, Damage);
+        if (_target != null) CmdCreateProjectileAtTarget(_target.gameObject, Damage);
         else CmdCreateProjectileAtPosition(_targetPoint, Damage);
 
         yield return null;
@@ -173,12 +173,17 @@ public class Shot : Skill
             _target = null;
             _targetPoint = Vector3.positiveInfinity;
             Hero.Move.StopLookAt();
+            AnimCastEnded();
         }
     }
 
     [Command]
-    public void CmdCreateProjectileAtTarget(Transform target, float damage)
+    public void CmdCreateProjectileAtTarget(GameObject targetObject, float damage)
     {
+        if (targetObject == null) return;
+
+        Transform target = targetObject.transform;
+
         Vector3 spawnPosition = spawnPoint != null ? spawnPoint.position : transform.position;
         Vector3 direction = (target.transform.position - spawnPosition).normalized;
 
@@ -231,6 +236,7 @@ public class Shot : Skill
         _targetPoint = Vector3.positiveInfinity;
         _target = null;
         _consecutiveShots = 0;
+        AnimCastEnded();
     }
 }
 

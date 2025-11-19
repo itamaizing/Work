@@ -19,8 +19,6 @@ public class ReconnaissanceFire : Skill
     [SerializeField] private float baseArea = 3f;
 
     [Header("TrickShot Settings")]
-    [SerializeField] private List<Vector3> globalConstants = new(new Vector3[] { new(0, -9.81f, 0) });
-    [SerializeField] private List<Vector3> localConstants = new();
     [SerializeField] private float speed;
 
     [Header("Raycast settings")]
@@ -28,6 +26,7 @@ public class ReconnaissanceFire : Skill
 
     private ReconnaissanceFireAura currentFireAura;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
+    private Vector3 _endPoint = Vector3.positiveInfinity;
     private float _baseDuration;
     private float _baseAnimSpeed;
     private float _baseCastDelay;
@@ -48,9 +47,9 @@ public class ReconnaissanceFire : Skill
     public ReconnaissanceFireAura CurrentFireAura => currentFireAura;
     public float BaseArea { get => baseArea; set => baseArea = value; }
 
-    protected override bool IsCanCast => !float.IsPositiveInfinity(_targetPoint.x) && IsPointInRadius(Radius, _targetPoint);
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("ThrowCastDelay");
-    protected override int AnimTriggerCast => 0;
+    protected override bool IsCanCast => Vector3.Distance(_targetPoint, transform.position) <= Radius;
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => Animator.StringToHash("ThrowCastDelay");
 
     protected override void SkillEnableBoostLogic()
     {
@@ -85,6 +84,16 @@ public class ReconnaissanceFire : Skill
         OnSkillCanceled -= HandleSkillCanceled;
     }
 
+    public void FireCastStart()
+    {
+        AnimStartCastCoroutine();
+    }
+
+    public void FireCastEnd()
+    {
+        AnimCastEnded();
+    }
+
     public void AnimationFireMove()
     {
         if (_hero == null || _hero.Move == null) return;
@@ -112,24 +121,30 @@ public class ReconnaissanceFire : Skill
 
         _boostWindow = StartCoroutine(ElvenBoostWindow());
     }
-
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _targetPoint = targetInfo.Points[0];
+        _endPoint = _targetPoint;
+    }
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        Hero.Animator.speed = Hero.Animator.speed/CastDeley;
+        Hero.Animator.speed = Hero.Animator.speed/ 1.8f;
+        _endPoint = Vector3.positiveInfinity;
 
         if (emitterObject) emitterObject.SetActive(true);
         ReconnaissanceFireHealthTalentEnter();
 
-        while (float.IsPositiveInfinity(_targetPoint.x))
+        Vector3 targetPoint = Vector3.positiveInfinity;
+
+        while (float.IsPositiveInfinity(targetPoint.x))
         {
             if (GetMouseButton)
             {
-                Vector3 clickedPoint = GetMousePoint();
+                targetPoint = GetMousePoint();
 
-                if (IsPointInRadius(Radius, clickedPoint) && NoObstacles(clickedPoint, transform.position, _obstacle))
+                if (IsPointInRadius(Radius, targetPoint) && NoObstacles(targetPoint, transform.position, _obstacle))
                 {
-                    _targetPoint = clickedPoint;
-                    Hero.Move.LookAtPosition(_targetPoint);
+                    Hero.Move.LookAtPosition(targetPoint);
                 }
             }
 
@@ -138,15 +153,17 @@ public class ReconnaissanceFire : Skill
         }
 
         if (emitterObject) emitterObject.SetActive(false);
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(targetPoint);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (trickShot == null || fireAura == null) yield break;
+        if (_targetPoint == Vector3.positiveInfinity && (trickShot == null || fireAura == null)) yield break;
 
         trickShot.Shoot();
-
-        _targetPoint = Vector3.positiveInfinity;
 
         Hero.Animator.speed = _baseAnimSpeed;
         Hero.Move.StopLookAt();
@@ -162,7 +179,7 @@ public class ReconnaissanceFire : Skill
         _boostWindow = null;
     }
 
-    private void HandleProjectilePathEnd(Vector3 position) => CmdSpawnFireAura(position);
+    private void HandleProjectilePathEnd(Vector3 position) => CmdSpawnFireAura(_endPoint);
 
     void UpdateTrickShotTrajectory()
     {
@@ -232,6 +249,7 @@ public class ReconnaissanceFire : Skill
     protected override void ClearData()
     {
         if (emitterObject != null) emitterObject.SetActive(false);
+        _targetPoint = Vector3.positiveInfinity;
     }
 
     #region ReconnaissanceFireAuraDarknesTalent
@@ -279,11 +297,6 @@ public class ReconnaissanceFire : Skill
         fireWorshipperTalent = value;
     }
 
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        _targetPoint = targetInfo.Points[0];
-        _targetPoint = Vector3.positiveInfinity;
-    }
     #endregion
 
     #region SkillEnableBoostLogicActiveTalent

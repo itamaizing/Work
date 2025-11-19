@@ -10298,8 +10298,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.5, y: 0.5, z: 0.5}
-  m_Center: {x: 0, y: 0.2, z: 0}
+  m_Size: {x: 0.5, y: 0.42731774, z: 0.5}
+  m_Center: {x: 0, y: 0.16365889, z: 0}
 --- !u!114 &1722743026723659982
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11038,7 +11038,7 @@ GameObject:
   - component: {fileID: 732501578659559874}
   - component: {fileID: 5645184583812709282}
   - component: {fileID: 9168173132586711865}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ReconnaissanceFire
   m_TagString: Allies
   m_Icon: {fileID: 0}
@@ -11199,7 +11199,7 @@ MonoBehaviour:
   flameLightPulse: {fileID: 8635874584311858127}
   characterLayer:
     serializedVersion: 2
-    m_Bits: 768
+    m_Bits: 128
 --- !u!114 &732501578659559874
 MonoBehaviour:
   m_ObjectHideFlags: 0

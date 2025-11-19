@@ -208,7 +208,7 @@ public class MoveComponent : NetworkBehaviour
 			return;
 		}
 
-		if (IsSelect == false)
+		if(!IsSelect && !CanMoveState)
 		{
 			_dir = Vector2.zero;
 		}
@@ -281,7 +281,7 @@ public class MoveComponent : NetworkBehaviour
 
     private void OnMove(Vector2 dir)
     {
-		if (IsSelect)
+		if (IsSelect || CanMoveState)
 			_dir = new Vector3(dir.x, 0, dir.y);
 	}
 

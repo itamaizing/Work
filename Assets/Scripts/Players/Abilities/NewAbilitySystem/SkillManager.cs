@@ -399,8 +399,6 @@ public class SkillManager : MonoBehaviour
     {
         if (skill is IPassiveSkill) return;
 
-        NotifySkillPrepared(skill);
-
         if (_selectedSkill.IsAutoMode)
         {
             _autoSkillCast.SetSkill(skill, skill.TargetInfoQueue.Dequeue());

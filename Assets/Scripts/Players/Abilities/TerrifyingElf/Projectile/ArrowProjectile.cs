@@ -21,6 +21,7 @@ public class ArrowProjectile : Projectiles
 
     public void StartFly(Vector3 direction)
     {
+        if (direction == Vector3.zero || float.IsNaN(direction.x) || float.IsNaN(direction.y) || float.IsNaN(direction.z)) return;
         if (_rb != null) _rb.linearVelocity = direction * _speed;
 
         Destroy(gameObject, _lifeTime);
@@ -61,23 +62,6 @@ public class ArrowProjectile : Projectiles
         ApplyEnemy(other);
         Destroy(gameObject);
     }
-
-
-    //private void TargetApply(Collider other)
-    //{
-    //    //if (other.TryGetComponent<IDamageable>(out IDamageable target))
-    //    //{
-    //    //    //if (other.TryGetComponent<UserNetworkSettings>(out UserNetworkSettings userNetworkSettings))
-    //    //    //{
-    //    //    //    if (userNetworkSettings.TeamIndex != _dad.NetworkSettings.TeamIndex)
-    //    //    //    {
-    //    //    //        ApplyEnemy(other, target);
-    //    //    //    }
-    //    //    //}
-
-    //    //    if (other.gameObject != _dad.gameObject && ((1 << other.gameObject.layer) & _skill.TargetsLayers.value) != 0) ApplyEnemy(other);
-    //    //}
-    //}
 
     #region ApplyEnemy
     private void ApplyEnemy(Collider collider)

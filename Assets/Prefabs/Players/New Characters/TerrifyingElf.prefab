@@ -20581,7 +20581,7 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
-  _castDeley: 1.8
+  _castDeley: 0
   _damageValue: 0
   _abilitySchool: 0
   _abilityForm: 2
@@ -20622,9 +20622,6 @@ MonoBehaviour:
   fireData: {fileID: 11400000, guid: 67c31e48e164c944a90e72fd98b08a37, type: 2}
   duration: 12
   baseArea: 3
-  globalConstants:
-  - {x: 0, y: 0, z: 0}
-  localConstants: []
   speed: 0
   groundLayer:
     serializedVersion: 2

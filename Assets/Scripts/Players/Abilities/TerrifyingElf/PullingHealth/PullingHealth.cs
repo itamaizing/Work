@@ -130,7 +130,6 @@ public class PullingHealth : Skill
     {
         if (_target == null) yield return null;
 
-        Debug.Log("1");
         int innerDarknessStacks;
 
         #region Work with InnerDarkness

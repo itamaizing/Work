@@ -1542,6 +1542,7 @@ public abstract class Skill : NetworkBehaviour
 
     private IEnumerator ActionWrapperForCastingJob()
     {
+        Hero.Abilities.NotifySkillPrepared(this);
         CastStarted?.Invoke();
         _isCasting = true;
 
@@ -1703,6 +1704,8 @@ public abstract class Skill : NetworkBehaviour
     [Command]
     private void CmdApplyDamageLogic(Damage damage, GameObject target)
     {
+        if (target == null) return;
+
         if (_tempTargetForDamage != target.transform)
         {
             _tempTargetForDamage = target.transform;
