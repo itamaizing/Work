@@ -145,6 +145,7 @@ public class IceCloud : Skill
 					else
 					{
 						_target = GetTarget().character;
+						_damageValue = 10 + _energy.CurrentValue / 5;
 						_mousePos = _target.transform.position;
 					}
 				}

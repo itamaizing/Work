@@ -17,7 +17,7 @@ public class Desiccuration : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		Debug.Log("Entering Desiccuration State");
+	//	Debug.Log("Entering Desiccuration State");
 
 		_characterState = character;
 
@@ -39,7 +39,7 @@ public class Desiccuration : AbstractCharacterState
 
 	public override void UpdateState()
 	{
-		Debug.Log("Updating Desiccuration State");
+	//	Debug.Log("Updating Desiccuration State");
 		_duration -= Time.deltaTime;
 		if (_duration < 0 || turnOff || _characterState.Character.Health.SumDamageTaken >= _damageToExit)
 		{
@@ -49,7 +49,7 @@ public class Desiccuration : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		Debug.Log("Exiting Desiccuration State");
+	//	Debug.Log("Exiting Desiccuration State");
 		_characterState.RemoveState(this);
 		if (!_characterState.Check(StatusEffect.Move)) _characterState.Character.Move.CanMove = true;
 		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null) _abilities.SetAbilitiesDisactive(false);

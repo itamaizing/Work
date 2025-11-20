@@ -2715,7 +2715,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRow.Array.data[0].Talents.Array.data[0]'
       value: 
-      objectReference: {fileID: 7758366791900145808}
+      objectReference: {fileID: 8581182762776661264}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRow.Array.data[1].Talents.Array.data[0]'
       value: 
@@ -2739,7 +2739,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRow.Array.data[1].Talents.Array.data[0]'
       value: 
-      objectReference: {fileID: 6142297959774152765}
+      objectReference: {fileID: 6580995585041578627}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRow.Array.data[1].Talents.Array.data[1]'
       value: 
@@ -3420,7 +3420,7 @@ MonoBehaviour:
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
-  _damageValue: 100
+  _damageValue: 10
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -3629,7 +3629,7 @@ MonoBehaviour:
     m_Bits: 256
   _obstacle:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 2098048
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
@@ -3652,13 +3652,10 @@ MonoBehaviour:
   maxCounter: 0
   _playerLinks: {fileID: 4374618947117916461}
   _physicalAttack: {fileID: 7407653808177717906}
-  _seriesOfStrikes: {fileID: 0}
+  _seriesOfStrikes: {fileID: 3083348233968490285}
   _jumprange: 2
   _durationOfJumpPerCell: 0.3
   _audioClip: {fileID: 0}
-  _groundLayer:
-    serializedVersion: 2
-    m_Bits: 8192
 --- !u!114 &5605713643324713456
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4845,8 +4842,8 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
-  runeComponent: {fileID: 3083348233968490285}
-  ninjaResources: {fileID: 5945422429078664588}
+  _seriesOfStrikes: {fileID: 3083348233968490285}
+  _ninjaResources: {fileID: 5945422429078664588}
 --- !u!114 &7185321803913916173
 MonoBehaviour:
   m_ObjectHideFlags: 0

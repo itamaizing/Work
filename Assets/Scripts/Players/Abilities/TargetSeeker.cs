@@ -1,3 +1,4 @@
+using Org.BouncyCastle.Asn1.X509;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,26 +28,36 @@ public class TargetSeeker : MonoBehaviour
 
 				target = LeftClick();
 				ClickPoint?.Invoke(target.Position);
-				return target;
+				break;
 
 			case TypeClick.ShiftLMB:
 
 				target = ShiftLeftClick();
 				ClickPoint?.Invoke(target.Position);
-				return target;
+				break;
 
 			case TypeClick.CtrlLMB:
 
 				target = CtrlLeftClick();
 				ClickPoint?.Invoke(target.Position);
-				return target;
+				break;
 
 			case TypeClick.SpaceLMB:
 
 				target = SpaceLeftClick();
 				ClickPoint?.Invoke(target.Position);
-				return target;
+				break;
 		}
+
+		if(target != null)
+		{
+			if (!target.isCharater) return target;
+
+			if (target.character.IsDead) return null;
+
+			return target;
+		}
+
 		return null;
 	}
 
@@ -55,7 +66,17 @@ public class TargetSeeker : MonoBehaviour
 		var closerTargets = GetCloserTargets(transform.position, 1000, isCanTargetHimself);
 
 		if (closerTargets != null && closerTargets.Count > 0)
-			return closerTargets[0];
+		{
+			for (int i = closerTargets.Count - 1; i >= 0; i--)
+			{
+				if (closerTargets[i].IsDead)
+				{
+					closerTargets.Remove(closerTargets[i]);
+				}
+			}
+			if(closerTargets[0] != null)
+				return closerTargets[0];
+		}
 
 		return null;
 	}
@@ -81,6 +102,14 @@ public class TargetSeeker : MonoBehaviour
 		if (targets.Count <= 0)
 			return null;
 
+		for(int i = targets.Count - 1; i >= 0; i--)
+		{
+			if (targets[i].IsDead)
+			{
+				targets.Remove(targets[i]);
+			}
+		}
+
 		return targets;
 	}
 
@@ -98,8 +127,7 @@ public class TargetSeeker : MonoBehaviour
 				{
 					if (hit.collider.TryGetComponent<IDamageable>(out _))
 					{
-						_skill.IsAutoMode = true;
-						
+						_skill.IsAutoMode = true;						
 					}
 				}
 			}
@@ -109,8 +137,11 @@ public class TargetSeeker : MonoBehaviour
 		{
 			if (item.collider.TryGetComponent<IDamageable>(out var damageable))
 			{
-				//_tempForDamage = damageable;
-				//_tempTargetForDamage = damageable is Component component ? component.transform : null;
+				if(item.collider.TryGetComponent<Character> (out var character))
+				{
+					if (character.IsDead)
+						return null;
+				}
 				return damageable;
 			}
 		}
@@ -228,22 +259,7 @@ public class TargetSeeker : MonoBehaviour
 	private TargetToShot ShiftLeftClick()
 	{
 		TargetToShot target = new TargetToShot();
-		/*switch (_skillType)
-		{
-			case SkillType.Target:
-				//auto attack mode
-				target.Position = GetCloserTargets(transform.position, 100)[0];
-                break;
-			case SkillType.Projectile:
-				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-				break;
-			case SkillType.Zone:
-				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-				break;
-			default:
-				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-				break;
-		}*/
+
 		target.Position = transform.position;
 		target.character = _hero;
 		target.isCharater = true;

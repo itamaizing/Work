@@ -829,6 +829,7 @@ public abstract class Skill : NetworkBehaviour
             _skillRender.StartDrawLineForZone(this);
         }
     }
+
     protected virtual void StopAutoDrawRadius() => _skillRender.StopDrawRadius();
 
     protected virtual void StopAutoDraw()

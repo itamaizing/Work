@@ -24,7 +24,6 @@ public class NorthernerEndurance : AbstractCharacterState
 	public override void UpdateState()
 	{
 		_durationToExit -= Time.deltaTime;
-		Debug.Log("Frozen State");
 		if (_durationToExit < 0)
 		{
 			ExitState();
@@ -33,7 +32,6 @@ public class NorthernerEndurance : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		Debug.Log("Frozen State exit");
 		_characterState.RemoveState(this);
 		
 		//_health.BoostHpReverse(_damageToExit);

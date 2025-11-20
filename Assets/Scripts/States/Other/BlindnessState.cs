@@ -23,7 +23,7 @@ public class BlindnessState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log($"Entering Blindness State on Character netId: {character.netId}");
+      //  Debug.Log($"Entering Blindness State on Character netId: {character.netId}");
 
         _duration = durationToExit;
         _baseDuration = durationToExit;
@@ -68,7 +68,7 @@ public class BlindnessState : AbstractCharacterState
 
     private void ApplyEffectToLocalCamera()
     {
-        Debug.Log("Applying Blindness effect to local camera...");
+       // Debug.Log("Applying Blindness effect to local camera...");
         var camera = Camera.main;
         if (camera == null)
         {

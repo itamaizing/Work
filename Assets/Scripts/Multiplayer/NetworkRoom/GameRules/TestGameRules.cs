@@ -18,8 +18,9 @@ public class TestGameRules : GameRules
 
     private TeamsPanel _teams; // need rework
     private int[] _teamDeaths = new int[3];
+    
 
-    private int _teamMaxScore = 3;
+	private int _teamMaxScore = 3;
     private int _team1Score = 0;
     private int _team2Score = 0;
 
@@ -35,8 +36,9 @@ public class TestGameRules : GameRules
 
     protected override void OnPlayerDied(Character player)
     {
-        //AddExpForAllEnemy(player);
-        StartCoroutine(RevivalPlayerCoroutine(player));
+        if (_regenCoroutine != null) return;
+		//AddExpForAllEnemy(player);
+		_regenCoroutine = StartCoroutine(RevivalPlayerCoroutine(player));
         AddScorePoint(player.NetworkSettings.TeamIndex);
 
         if(_team1Score >= _teamMaxScore || _team2Score >= _teamMaxScore)

@@ -279,6 +279,8 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 
 	protected virtual void OnDied()
     {
+		if(_isDead) return;
+
 		Died?.Invoke(this);
 
 		_isDead = true;

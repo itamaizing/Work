@@ -14,14 +14,14 @@ public class IceRolling : Skill
 	[SerializeField] private float _jumprange = 5f;
 	[SerializeField] private float _durationOfJumpPerCell = 0.3f;
 	[SerializeField] private AudioClip _audioClip;
-	[SerializeField] private LayerMask _groundLayer;
+	//[SerializeField] private LayerMask _groundLayer;
 
 	private static readonly int iceRollingStart = Animator.StringToHash("IceRollingStart");
 	private static readonly int iceRollingEnd = Animator.StringToHash("IceRollingEnd");
 
 	private AudioSource _audioSource;
 	private Vector3 _mousePos = Vector2.positiveInfinity;
-	private Vector3 _jumpPos;
+	//private Vector3 _jumpPos;
 	private Vector3 _lookDir;
 	private Energy _energy;
 
@@ -95,7 +95,7 @@ public class IceRolling : Skill
 		Vector3 direction = (end - start).normalized;
 		float distance = Vector3.Distance(start, end);
 
-		RaycastHit[] hits = Physics.BoxCastAll(start, new Vector3(0.05f, 0.05f, 0.05f), direction, Quaternion.identity, distance);
+		RaycastHit[] hits = Physics.BoxCastAll(start, new Vector3(0.05f, 0.05f, 0.05f), direction, Quaternion.identity, distance, _obstacle);
 
 		stopPosition = end;
 		characterHit = null;
@@ -111,10 +111,18 @@ public class IceRolling : Skill
 					return true;
 				}
 			}
-
-			if (((1 << hit.collider.gameObject.layer) & _obstacle) != 0)
+			/*int objectLayer = hit.collider.gameObject.layer;
+			int objectLayerMask = 1 << objectLayer;
+			if ((_obstacle & objectLayerMask) > 0 )
 			{
-				stopPosition = hit.point - direction;
+				stopPosition = hits[0].point - direction * 1.2f;
+				return true;
+			}*/
+			//stopPosition = hits[0].point - direction * 1.2f;
+			if (hit.collider.transform.root != transform.root)
+			{
+				Debug.Log(hit.collider.gameObject.name + " Stop point " + stopPosition);
+				stopPosition = hit.point - direction * 1.2f;
 				return true;
 			}
 		}
@@ -141,7 +149,7 @@ public class IceRolling : Skill
 		return false;
 	}
 
-	private void Jump()
+	private void Jump2()
 	{
 		Hero.Move.CanMove = false;
 		_isJump = true;
@@ -196,7 +204,7 @@ public class IceRolling : Skill
 			_target = null;
 			_mousePos = Vector3.positiveInfinity;
 			_lookDir = Vector3.zero;
-			_jumpPos = Vector3.zero;
+			//_jumpPos = Vector3.zero;
 		}
 		else
 		{
@@ -204,6 +212,60 @@ public class IceRolling : Skill
 			_mousePos = _target != null ? _target.transform.position : GetMousePoint();
 		}
 		
+	}
+
+	private void Jump()
+	{
+		Hero.Move.CanMove = false;
+		_isJump = true;
+		float actualJumpRange = _jumprange;
+
+		_lookDir = (_mousePos - _playerLinks.transform.position).normalized;
+		Vector3 jumpPos = _lookDir * actualJumpRange + _playerLinks.transform.position;
+		Vector3 stopPosition;
+		Character characterHit;
+		if (CheckObstacleBetween(_playerLinks.transform.position, jumpPos, out stopPosition, out characterHit))
+		{
+			_jumpCount = 5;
+			CmdPush(stopPosition, Vector3.Distance(stopPosition, transform.position));
+		}
+		else
+		{
+			for (int i = 0; i < 10; i++)
+			{
+				_jumpCount += 1f;
+				actualJumpRange += .2f;
+				Vector3 jumpPos2 = _lookDir * actualJumpRange + _playerLinks.transform.position;
+				if (_energy.CurrentValue >= 5 && !CheckObstacleBetween(_playerLinks.transform.position, jumpPos2, out stopPosition, out characterHit))
+				{
+					_energy.CmdUse(1);
+					jumpPos = jumpPos2;
+				}
+			}
+			CmdPush(stopPosition, Vector3.Distance(jumpPos, transform.position));
+
+			if (_rollingPhysTalent)
+			{
+				_physicalAttack.TalentRollingPhys(_afterJump, _jumpCount);
+				_afterJump = true;
+			}
+		}
+
+		if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
+		{
+			_target = null;
+			_mousePos = Vector3.positiveInfinity;
+			_lookDir = Vector3.zero;
+			//_jumpPos = Vector3.zero;
+		}
+		else
+		{
+			/*if(GetTarget().isCharater)
+				_target = GetTarget().character;
+			else*/
+			//_target = null;
+			_mousePos = _target != null ? _target.transform.position : GetMousePoint();
+		}
 	}
 
 	public override void LoadTargetData(TargetInfo targetInfo)
@@ -249,13 +311,14 @@ public class IceRolling : Skill
 	{
 		if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
 		{
-			_target = null;			
+			_target = null;
+			_mousePos = Vector3.positiveInfinity;
 		}
 		else
 		{
 			_mousePos = GetMousePoint();
 		}
-			_isJump = false;
+		_isJump = false;
 		Hero.Move.StopLookAt();
 	}
 
