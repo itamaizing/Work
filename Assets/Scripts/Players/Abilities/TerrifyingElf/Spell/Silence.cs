@@ -61,13 +61,11 @@ public class Silence : Skill
         {
             if (GetMouseButton)
             {
-                Vector3 clickedPoint = GetMousePoint();
+                targetPoint = GetMousePoint();
 
-                if (IsPointInRadius(Radius, clickedPoint))
+                if (IsPointInRadius(Radius, targetPoint))
                 {
-                    _targetPoint = clickedPoint;
-                    DrawDamageZone(_targetPoint);
-
+                    DrawDamageZone(targetPoint);
                     break;
                 }
             }
@@ -75,7 +73,7 @@ public class Silence : Skill
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_targetPoint);
+        targetInfo.Points.Add(targetPoint);
         callbackDataSaved(targetInfo);
     }
 
@@ -106,8 +104,7 @@ public class Silence : Skill
 
         foreach (var hitCollider in hitColliders)
         {
-            if (hitCollider.gameObject != Hero.gameObject)
-                ApplyEnemiesZone(hitCollider, ref minionHitCount, ref ghostAuraMinionHitCount);
+            if (hitCollider.gameObject != Hero.gameObject)  ApplyEnemiesZone(hitCollider, ref minionHitCount, ref ghostAuraMinionHitCount);
         }
 
         if (minionHitCount > 0 && _isSilenceEffectsOnMinionMagic) DecreaseSetCooldown(4f * minionHitCount);

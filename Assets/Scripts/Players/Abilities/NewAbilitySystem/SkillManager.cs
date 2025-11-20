@@ -323,6 +323,7 @@ public class SkillManager : MonoBehaviour
     {
         if (_selectedSkills[index] == null) return false;
         if (_selectedSkills[index] is IPassiveSkill) return false;
+        if (_selectedSkills[index].Disactive) return false;
 
         if (_selectedSkill != null && _selectedSkill.IsPreparing == true)
         {

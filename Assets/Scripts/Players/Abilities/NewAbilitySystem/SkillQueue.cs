@@ -28,9 +28,7 @@ public class SkillQueue : MonoBehaviour
             if (skill.SkillType == SkillType.Zone)
                 Draw(skill);
 
-            if (!skill.Disactive)
-            {
-                if (skill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
+            if (skill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
                 {
                     _targetInfo = targetInfo;
                     foreach (var item in _targetInfo.Targets)
@@ -41,16 +39,15 @@ public class SkillQueue : MonoBehaviour
                         }
                     }
                 }
-            }
 
-            if (!skill.Disactive && skill.TryCast())
+            if (skill.TryCast())
             {
                 RemoveFromQueue();
                 _currentSkill = skill;
 
-                if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
+                if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo infoTarget))
                 {
-                    _targetInfo = targetInfo;
+                    _targetInfo = infoTarget;
                     foreach (var item in _targetInfo.Targets)
                     {
                         if (item is Character character)

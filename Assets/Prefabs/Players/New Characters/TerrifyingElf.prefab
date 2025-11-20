@@ -19924,7 +19924,7 @@ MonoBehaviour:
   autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 768
+    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -20644,12 +20644,12 @@ MonoBehaviour:
   skillManager: {fileID: 4092227064955680494}
   hero: {fileID: 4534754468497973439}
   calmnessChance: 10
-  elvenSkillFromPhysChance: 10
+  elvenSkillFromPhysChance: 100
   calmnessOnElvenSkillChance: 30
   huntressMarkApplyChance: 5
   durationCalmess: 8
   durationHuntressMark: 3
-  durationElvenSkill: 3
+  durationElvenSkill: 50
   elvenSkillEffect: {fileID: 3104532032249032633}
   radiusTreeCalmess: 12
   reconnaissanceFire: {fileID: 2750012758126725032}

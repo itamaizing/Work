@@ -32,7 +32,7 @@ public class ElvenSkill : AbstractCharacterState
         {
             foreach (var skill in _skillManager.Abilities)
             {
-                if (skill.DamageType == DamageType.Physical && skill.DamageType == DamageType.Both)
+                if (skill.DamageType == DamageType.Physical || skill.DamageType == DamageType.Both)
                 {
                     skill.CastStarted += OnPhysCastStarted;
                 }
@@ -59,7 +59,7 @@ public class ElvenSkill : AbstractCharacterState
         {
             foreach (var skill in _skillManager.Abilities)
             {
-                if (skill.DamageType == DamageType.Physical && skill.DamageType == DamageType.Both)
+                if (skill.DamageType == DamageType.Physical || skill.DamageType == DamageType.Both)
                 {
                     skill.CastStarted -= OnPhysCastStarted;
                 }
