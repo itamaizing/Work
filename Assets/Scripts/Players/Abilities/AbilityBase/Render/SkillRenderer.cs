@@ -150,7 +150,7 @@ public class SkillRenderer : NetworkBehaviour
 		}
 	}
 
-    #region ������ ��� ������������ ����� �� �����
+    #region preview
     public void StopPreview()
     {
         if (_previewDamageCoroutine != null)

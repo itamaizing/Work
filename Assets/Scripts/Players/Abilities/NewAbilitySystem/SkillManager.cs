@@ -16,7 +16,7 @@ public class SkillManager : MonoBehaviour
 
     private Skill[] _selectedSkills = new Skill[16];
     private List<AutoAttackSkill> _autoAttackSkills = new List<AutoAttackSkill>();
-    private List<AutoSkill> _autoSkills = new List<AutoSkill>();
+    //private List<AutoSkill> _autoSkills = new List<AutoSkill>();
     private List<Skill> _simpleSkills = new List<Skill>();
     private float _globalCooldownTime = .5f;
     private SkillQueue _skillQueue;
@@ -452,28 +452,7 @@ public class SkillManager : MonoBehaviour
         AbilitiesManager.Instance.RemovePanel(_abilityPanel);
         */
     }
-    public void AddAbility(Ability ability)
-    {
-        /*
-        _abilities.Add(ability);
-        if (AbilitiesManager.Instance == null) return;
 
-        AbilitiesManager.Instance.RemovePanel(_abilityPanel);
-        _abilityPanel = AbilitiesManager.Instance.AddPanel(this);
-        _abilityPanel.gameObject.SetActive(true);
-        */
-    }
-    public void RemoveAbility(Ability ability)
-    {
-        /*
-        _abilities.Remove(ability);
-        if (AbilitiesManager.Instance == null) return;
-
-        AbilitiesManager.Instance.RemovePanel(_abilityPanel);
-        _abilityPanel = AbilitiesManager.Instance.AddPanel(this);
-        _abilityPanel.gameObject.SetActive(true);
-        */
-    }
     public void SetAbilitiesPanelSelect(bool isSelect)
     {
         /*

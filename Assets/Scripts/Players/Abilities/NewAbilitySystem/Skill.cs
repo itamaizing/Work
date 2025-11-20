@@ -77,6 +77,21 @@ public enum AutoAttack
     autoAttack,
     nonAutoAttack
 }
+public enum DamageType
+{
+	Magical,
+	Physical,
+	DOTPhys,
+	DOTMag,
+	Both,
+	None
+}
+
+public enum AttackRangeType
+{
+	MeleeAttack,
+	RangeAttack,
+}
 
 public abstract class Skill : NetworkBehaviour
 {

@@ -17,14 +17,10 @@ public class TalentSystem : NetworkBehaviour
 {
     [SerializeField] private List<TalentsGroup> _talents;
 
-    private TalentColumn _panel;
     private int _points = 10;
-
-    public TalentColumn Panel => _panel;
     public List<TalentsGroup> TalentsGroups => _talents;
-
-   // public List<Talent> ActiveTalents => TalentsGroups.SelectMany(o => o.TalentsData).Where(a => a.Data.IsOpen).ToList();
     public List<Talent> ActiveTalents => GetActiveTalents();
+
     public List<Talent> GetActiveTalents()
     {
         List<Talent> activeTalents = new();

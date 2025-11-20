@@ -299,6 +299,6 @@ public class LevelCharacterManager
     public void DisplayCurrentHeroLevelInfo()
     {
         if (_character == null) return;
-        Debug.Log($"Character: {_character.Data.Name} | Level: {_currentLevel} | Experience: {_currentExperience}/{_experienceForNextLevel}");
+        //Debug.Log($"Character: {_character.Data.Name} | Level: {_currentLevel} | Experience: {_currentExperience}/{_experienceForNextLevel}");
     }
 }
