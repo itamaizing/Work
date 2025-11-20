@@ -37,20 +37,6 @@ public class IceCloud : Skill
 
 	protected override int AnimTriggerCast => Animator.StringToHash("IceCloud");
 
-    //private bool IsCanCastCheck()
-    //{
-    //	return true;
-    //	/*if (_rune.CurrentValue >= 1)
-    //	{
-    //		_rune.CmdUse(1);
-    //		return true;
-    //	}
-    //	else
-    //	{
-    //		return false;
-    //	}*/
-    //}
-
     private void OnDestroy()
     {
         OnSkillCanceled -= HandleSkillCanceled;
@@ -63,6 +49,7 @@ public class IceCloud : Skill
 
     private void HandleSkillCanceled()
     {
+		CanMoveIceCloud();
 		_target = null;
 		_mousePos = Vector3.positiveInfinity;
 	}
@@ -96,8 +83,8 @@ public class IceCloud : Skill
 
 		CmdCreateProjecttile(angle, _energy.CurrentValue);
 		_target = null;
-		//_mousePos = Vector2.positiveInfinity;
-		//ClearData();
+		_mousePos = Vector2.positiveInfinity;
+		ClearData();
 	}
 
 	[Command]
@@ -148,7 +135,7 @@ public class IceCloud : Skill
 		{
 			if (GetMouseButton)
 			{
-				//if(GetTarget()  == null) yield return null;
+				if(GetTarget() == null) yield return null;
 				if (GetTarget().isCharater)
 				{
 					float distance = Vector3.Distance(_hero.transform.position, _mousePos);
@@ -181,7 +168,8 @@ public class IceCloud : Skill
 
 	protected override void ClearData()
 	{
-		//_mousePos = Vector2.positiveInfinity;
+		_target = null;
+		_mousePos = Vector2.positiveInfinity;
 		//_enabled = false;
 	}
 

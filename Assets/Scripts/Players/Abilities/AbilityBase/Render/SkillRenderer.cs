@@ -150,7 +150,7 @@ public class SkillRenderer : NetworkBehaviour
 		}
 	}
 
-    #region ������ ��� ������������ ����� �� �����
+    #region preview
     public void StopPreview()
     {
         if (_previewDamageCoroutine != null)
@@ -179,7 +179,7 @@ public class SkillRenderer : NetworkBehaviour
 
             foreach (var collider in colliders)
             {
-                if (collider.TryGetComponent(out Health hp))
+                if (collider.TryGetComponent(out Health hp) && collider.transform != transform.parent)
                 {
                     current.Add(hp);
                     hp.ShowPhantomValue(damage);

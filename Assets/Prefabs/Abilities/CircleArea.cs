@@ -47,13 +47,13 @@ public class CircleArea : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (_sprite.size != Vector2.zero && collision.transform != transform.parent && collision.transform.TryGetComponent(out UIPlayerComponents enemy))
+        if (_sprite.size != Vector2.zero && collision.transform != transform.root && collision.transform.TryGetComponent(out UIPlayerComponents enemy))
         {
             _isConcernsEnemy = true;
             enemy.CircleSelect1.SwitchClostestTarget(true);
             _enemiesUIPlayerComponents.Add(enemy);
         }
-        if(collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.parent)
+        if(collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.root)
         {
             hpEnemy.ShowPhantomValue(_damage);
 			_enemiesHP.Add(hpEnemy);
@@ -62,13 +62,13 @@ public class CircleArea : MonoBehaviour
 
     private void OnTriggerExit(Collider collision)
     {
-        if (_sprite.size != Vector2.zero && collision.transform != transform.parent && collision.transform.TryGetComponent(out UIPlayerComponents enemy))
+        if (_sprite.size != Vector2.zero && collision.transform != transform.root && collision.transform.TryGetComponent(out UIPlayerComponents enemy))
         {
             _isConcernsEnemy = false;
             enemy.CircleSelect1.SwitchClostestTarget(false);
             _enemiesUIPlayerComponents.Remove(enemy);
         }
-		if (collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.parent)
+		if (collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.root)
 		{
 			Damage damage = _damage;
 			damage.Value = 0;

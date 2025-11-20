@@ -70,7 +70,7 @@ MonoBehaviour:
     - Id: 1009
       Name: RuneRegen
       Points: 0
-      DefaultValue: 0
+      DefaultValue: 1
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1010

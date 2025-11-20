@@ -32,6 +32,7 @@ public class TargetToShot
 {
     public Vector3 Position;
     public Character character;
+    public IDamageable damageable;
     public bool isCharater = false;
 }
 
@@ -76,6 +77,21 @@ public enum AutoAttack
     autoAttack,
     nonAutoAttack
 }
+public enum DamageType
+{
+	Magical,
+	Physical,
+	DOTPhys,
+	DOTMag,
+	Both,
+	None
+}
+
+public enum AttackRangeType
+{
+	MeleeAttack,
+	RangeAttack,
+}
 
 public abstract class Skill : NetworkBehaviour
 {
@@ -87,7 +103,6 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] private AbilityInfo _abilityInfo;
     [Header("Main Settings")]
     [NonSerialized] public float ExtraAnimationSpeedMultiplier = 1f; // test
-
     [SerializeField] protected bool _isSubjectToGlobalCooldownTime = true;
 
     [SerializeField] protected List<SkillEnergyCost> _skillEnergyCosts;
@@ -110,7 +125,7 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected List<SkillEnergyCost> _manaCostPerTick;
     [Header("Charge settings")]
     [SerializeField] private bool _isUseCharges;
-    [SerializeField] private bool _useChargesAsComboPart = false; // test
+    [SerializeField] protected bool _useChargesAsComboPart = false; // test
     [SerializeField] protected bool _chargesHaveSeparateCooldown;
     [SerializeField] protected int _maxCharges;
     [SerializeField] protected float _chargeCooldown;
@@ -160,15 +175,9 @@ public abstract class Skill : NetworkBehaviour
     private Coroutine _actionWrapperForCastCoroutine;
     private bool _isPreparing = false;
     private bool _isCasting = false;
-    private bool _isClick;
-    private bool _isShiftClick;
-    private bool _isCtrlClick;
-    private bool _isSpaceClick;
-    private bool _isWaitingForCastCoroutine = false;
-    private List<float> _remainingCooldownTimeChargers;
+    private TypeClick _click;
+	private List<float> _remainingCooldownTimeChargers = new();
     private List<Coroutine> _currentChargeCooldownJob;
-    private float _assistTimer = 5f;
-    private Coroutine _assistCoroutine;
     private Queue<TargetInfo> _targetInfoQueue = new();
     private bool _isAutoMode;
 
@@ -194,7 +203,7 @@ public abstract class Skill : NetworkBehaviour
         set => _isSkillActive = value;
     }
     public Transform TempTargetForDamage => _tempTargetForDamage;
-    public bool GetMouseButton { get => _isClick || _isShiftClick || _isCtrlClick || _isSpaceClick; }
+    public bool GetMouseButton { get => _click != TypeClick.None; }
     public bool IsSubjectToGlobalCooldownTime { get => _isSubjectToGlobalCooldownTime; }
     public Character Hero { get => _hero; }
     public StatsBuff Buff => _statsBuff;
@@ -421,8 +430,14 @@ public abstract class Skill : NetworkBehaviour
     public bool TryPreparing()
     {
         if (_isPreparing == false)
-
         {
+            foreach(var skillCost in _skillEnergyCosts)
+            {
+				//var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.resourceType);
+				var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+                resource.PhantomValueShow(skillCost.resourceCost);
+				//resourse.
+            }
             _actionWrapperForPreparingCoroutine = StartCoroutine(ActionWrapperForPreparingJob());
             return true;
         }
@@ -519,7 +534,15 @@ public abstract class Skill : NetworkBehaviour
 
     public bool TryCancel(bool foceCancel = false)
     {
-        if (foceCancel || _isCanCancle)
+		foreach (var skillCost in _skillEnergyCosts)
+		{
+			//var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.resourceType);
+			var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+			resource.PhantomValueShow(0);
+			//resourse.
+		}
+
+		if (foceCancel || _isCanCancle)
         {
             Canceled?.Invoke();
             if (_isAutoMode) _hero.Move.CanMove = true;
@@ -687,6 +710,7 @@ public abstract class Skill : NetworkBehaviour
             _hero.Resources.Where(r => r.Type == skillCost.resourceType).Sum(r => r.CurrentValue) >= Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
     }
 
+
     public void AddMaxChargeCount()
     {
         _maxCharges += 1;
@@ -695,10 +719,13 @@ public abstract class Skill : NetworkBehaviour
 
         _currentChargers += 1;
 
-        _currentChargeCooldownJob.Add(null);
+
+        Debug.Log("Зачем эта строка? крашит игру");
+        //_currentChargeCooldownJob.Add(null);
 
         CurrentChargeChanged?.Invoke(_currentChargers);
     }
+
 
     public void ReductionCooldownForAllCharges(float reductionTime, float reductionPercentage = 0)
     {
@@ -869,60 +896,12 @@ public abstract class Skill : NetworkBehaviour
 
     protected IDamageable GetRaycastTarget(bool isCanTargetHimself = false)
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit[] rayHit = Physics.RaycastAll(ray, 100f, TargetsLayers);
-
-        foreach (var hit in rayHit)
-        {
-            if (autoAttack == AutoAttack.autoAttack)
-            {
-                if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed)
-                {
-                    if (hit.collider.TryGetComponent<IDamageable>(out _))
-                    {
-
-                        IsAutoMode = true;
-                        AutoModeChanged?.Invoke(true);
-                    }
-                }
-            }
-        }
-
-        foreach (var item in rayHit)
-        {
-            if (item.collider.TryGetComponent<IDamageable>(out var damageable))
-            {
-                _tempForDamage = damageable;
-                _tempTargetForDamage = damageable is Component component ? component.transform : null;
-                return damageable;
-            }
-        }
-
-        return null;
-    }
+        return _hero.TargetSeeker.GetRaycastTarget(this, isCanTargetHimself);
+	}
 
     public List<Character> GetCloserTargets(Vector3 position, float radius, bool isCanTargetHimself = false)
     {
-        List<Character> targets = new List<Character>();
-        Collider[] collider = Physics.OverlapSphere(position, radius, TargetsLayers);
-
-        foreach (var item in collider)
-        {
-            if (collider.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
-            {
-                if (isCanTargetHimself == false && enemy.transform == _hero.transform)
-                {
-                    continue;
-                }
-                targets.Add(enemy);
-            }
-        }
-        targets = targets.OrderBy(character => Vector3.Distance(character.transform.position, gameObject.transform.position)).ToList();
-
-        if (targets.Count <= 0)
-            return null;
-
-        return targets;
+        return _hero.TargetSeeker.GetCloserTargets(position, radius, isCanTargetHimself);
     }
 
     protected bool IsTargetInRadius(float radius, Transform target)
@@ -1111,237 +1090,14 @@ public abstract class Skill : NetworkBehaviour
         _rechargeJob = null;
     }
 
-    protected TargetToShot GetTarget()
+    protected TargetToShot GetTarget(bool isCanTargetHimself = false)
     {
-        TargetToShot target = new TargetToShot();
-
-        if (_isClick)
-        {
-            target = LeftClick();
-            ClickPoint?.Invoke(target.Position);
-            return target;
-        }
-        if (_isShiftClick)
-        {
-            target = ShiftLeftClick();
-            ClickPoint?.Invoke(target.Position);
-            return target;
-        }
-        if (_isCtrlClick)
-        {
-            target = CtrlLeftClick();
-            ClickPoint?.Invoke(target.Position);
-            return target;
-        }
-        if (_isSpaceClick)
-        {
-            target = SpaceLeftClick();
-            ClickPoint?.Invoke(target.Position);
-            return target;
-        }
-
-        return null;
+        return _hero.TargetSeeker.GetTarget(_click, ClickPoint, _skillType, Radius, this, isCanTargetHimself);
     }
 
-    protected TargetToShot LeftClick()
+    protected Character ClosedTarget(bool isCanTargetHimself = false)
     {
-        TargetToShot target = new TargetToShot();
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        switch (_skillType)
-        {
-            case SkillType.Target:
-                Debug.Log("SkillType Target");
-                target.character = ClosedTarget();
-                target.isCharater = true;
-                break;
-            case SkillType.Projectile:
-                Debug.Log("SkillType Projectile");
-
-                if (Physics.Raycast(ray, out hit))
-                {
-                    if (hit.collider.TryGetComponent<Character>(out Character character))
-                    {
-                        if (character != null)
-                        {
-                            target.character = character;
-                            target.isCharater = true;
-                        }
-                    }
-                    else
-                    {
-                        var distance = Vector3.Distance(hit.point, transform.position);
-                        if (distance <= Radius || distance > Radius) target.Position = hit.point;
-                        target.isCharater = false;
-                    }
-                }
-                break;
-            case SkillType.Zone:
-                Debug.Log("SkillType Zone");
-
-                if (Physics.Raycast(ray, out hit))
-                {
-                    Debug.Log(hit);
-                }
-                if (Vector3.Distance(hit.point, transform.position) <= Radius)
-                    target.Position = hit.point;
-                target.isCharater = false;
-                break;
-            case SkillType.NonTarget:
-                Debug.Log("SkillType NonTarget");
-                break;
-            default:
-                if (Physics.Raycast(ray, out hit))
-                {
-                    Debug.Log(hit.point);
-                }
-                target.Position = hit.point;
-                target.isCharater = false;
-                break;
-        }
-        return target;
-    }
-
-    protected Character ClosedTarget()
-    {
-        var closerTargets = GetCloserTargets(transform.position, 1000);
-
-        if (closerTargets != null && closerTargets.Count > 0)
-            return closerTargets[0];
-
-        return null;
-    }
-
-    protected TargetToShot ShiftLeftClick()
-    {
-        TargetToShot target = new TargetToShot();
-        /*switch (_skillType)
-		{
-			case SkillType.Target:
-				//auto attack mode
-				target.Position = GetCloserTargets(transform.position, 100)[0];
-                break;
-			case SkillType.Projectile:
-				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-				break;
-			case SkillType.Zone:
-				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-				break;
-			default:
-				target.Position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-				break;
-		}*/
-        target.Position = transform.position;
-        target.character = _hero;
-        target.isCharater = true;
-
-        return target;
-    }
-
-    protected TargetToShot CtrlLeftClick()
-    {
-        TargetToShot target = new TargetToShot();
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        if (autoAttack == AutoAttack.autoAttack)
-        {
-            _isAutoMode = true;
-            AutoModeChanged?.Invoke(true);
-        }
-
-        switch (_skillType)
-        {
-            case SkillType.Target:
-                target.character = ClosedTarget();
-                target.isCharater = true;
-                break;
-            case SkillType.Projectile:
-                if (Physics.Raycast(ray, out hit))
-                {
-                    Debug.Log(hit.point);
-                }
-                target.Position = hit.point;
-                target.isCharater = false;
-                break;
-            case SkillType.Zone:
-                if (Physics.Raycast(ray, out hit))
-                {
-                    Debug.Log(hit.point);
-                }
-                target.Position = hit.point;
-                target.isCharater = false;
-                break;
-            default:
-                if (Physics.Raycast(ray, out hit))
-                {
-                    Debug.Log(hit.point);
-                }
-                target.Position = hit.point;
-                target.isCharater = false;
-                break;
-        }
-        return target;
-    }
-
-    protected TargetToShot SpaceLeftClick()
-    {
-        TargetToShot target = new TargetToShot();
-        var closerTargets = GetCloserTargets(transform.position, 1000);
-        Character closerTarget = null;
-
-        if (closerTargets != null && closerTargets.Count > 0)
-        {
-            closerTarget = GetCloserTargets(transform.position, 1000)[0];
-        }
-        target.character = closerTarget;
-        target.isCharater = true;
-        return target;
-    }
-    /* protected Vector2 GetClosestTarget()
-	 {
-		 Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, 100);
-		 Vector2 closest = Vector2.positiveInfinity;
-		 foreach (Collider2D collider in enemyDetected)
-		 {
-			 if (collider.gameObject != _hero.gameObject)
-
-			 if(collider.TryGetComponent<Character>(out var enemy))
-			 {
-				 if(Vector2.Distance(collider.transform.position, transform.position) < Vector2.Distance(closest, transform.position))
-				 {
-					 closest = collider.transform.position;
-					 Debug.Log(enemy);
-				 }
-			 }
-		 }
-		 if(Vector2.Distance(closest, transform.position) < 100)   return closest;
-		 else return Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-	 }*/
-
-    protected Character GetClosestTargets()
-    {
-        Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, 100);
-        Vector2 closest = Vector2.positiveInfinity;
-        Character enemys = null;
-        foreach (Collider2D collider in enemyDetected)
-        {
-            if (collider.gameObject != _hero.gameObject)
-
-                if (collider.TryGetComponent<Character>(out var enemy))
-                {
-                    if (Vector2.Distance(collider.transform.position, transform.position) < Vector2.Distance(closest, transform.position))
-                    {
-                        enemys = enemy;
-                        closest = collider.transform.position;
-                        Debug.Log(enemy);
-                    }
-                }
-        }
-        if (Vector2.Distance(closest, transform.position) < 100) return enemys;
-        else return null;
+        return _hero.TargetSeeker.ClosedTarget(isCanTargetHimself);
     }
 
     private bool IsValidTarget(IDamageable target)
@@ -1354,42 +1110,27 @@ public abstract class Skill : NetworkBehaviour
 
     private void OnClick()
     {
-        _isClick = true;
-        _isCtrlClick = false;
-        _isShiftClick = false;
-        _isSpaceClick = false;
+        _click = TypeClick.LMB;
     }
 
     private void OnClickCanceled()
     {
-        _isClick = false;
-        _isCtrlClick = false;
-        _isShiftClick = false;
-        _isSpaceClick = false;
+		_click = TypeClick.None;
     }
 
     private void OnShiftClick()
     {
-        _isClick = false;
-        _isCtrlClick = false;
-        _isShiftClick = true;
-        _isSpaceClick = false;
+		_click = TypeClick.ShiftLMB;
     }
 
     private void OnCtrlClick()
     {
-        _isClick = false;
-        _isCtrlClick = true;
-        _isShiftClick = false;
-        _isSpaceClick = false;
+		_click = TypeClick.CtrlLMB;
     }
 
     private void OnSpaceClick()
     {
-        _isClick = false;
-        _isCtrlClick = false;
-        _isShiftClick = false;
-        _isSpaceClick = true;
+		_click = TypeClick.SpaceLMB;
     }
 
     private void ReductionCooldownForCharge(int index, float reductionTime)
@@ -1551,7 +1292,7 @@ public abstract class Skill : NetworkBehaviour
         if (AnimTriggerCast != 0)
         {
             _isPlayCastAnim = true;
-            _isWaitingForCastCoroutine = true;
+            //_isWaitingForCastCoroutine = true;
 
             float finalCastSpeed = Buff.CastSpeed.Multiplier * ExtraAnimationSpeedMultiplier;
             Hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, finalCastSpeed);
@@ -1579,7 +1320,7 @@ public abstract class Skill : NetworkBehaviour
                 yield return null;
             }
 
-            _isWaitingForCastCoroutine = false;
+            //_isWaitingForCastCoroutine = false;
         }
 
         else

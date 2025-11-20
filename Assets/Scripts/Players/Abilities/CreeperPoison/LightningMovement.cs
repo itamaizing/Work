@@ -93,6 +93,8 @@ public class LightningMovement : Skill
 
         _player.CharacterState.CmdAddState(States.Immateriality, _durationLeap, 0, _player.gameObject, Name);
 
+        _leapPoint = CalculateLeapPoint(_leapPoint); //To check distance
+
         Vector3 direction = (_leapPoint - _player.transform.position).normalized;
         if (direction.sqrMagnitude > 0.001f) _player.transform.rotation = Quaternion.LookRotation(direction);
 
@@ -106,7 +108,7 @@ public class LightningMovement : Skill
         _player.Move.SetAnimationMovement((_leapPoint - _player.transform.position).normalized * _player.Move.CurrentSpeed);
 
         _player.Rigidbody.DOMove(_leapPoint, _durationLeap)
-            .SetEase(Ease.OutSine)
+            .SetEase(Ease.InSine)
             .OnUpdate(() =>
             {
                 Vector3 velocity = (_leapPoint - _player.transform.position).normalized * _player.Move.CurrentSpeed;

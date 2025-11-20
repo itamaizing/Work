@@ -11,7 +11,7 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
     [SerializeField] private HeroComponent _hero;
     [SerializeField] private ComboPoints_Player _comboPlayer;
 
-    [SerializeField] private Sub_LavaPool_Scorpion _poolPrefab;
+    //[SerializeField] private Sub_LavaPool_Scorpion _poolPrefab;
 
     [Header("Skills Reference")]
     [SerializeField] private List<Skill> _skills = new();
@@ -245,13 +245,13 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
 
     private void SpawnLavaPool(Transform enemy)
     {
-        GameObject pool = Instantiate(_poolPrefab.gameObject, enemy.transform.position, Quaternion.identity);
+       /* GameObject pool = Instantiate(_poolPrefab.gameObject, enemy.transform.position, Quaternion.identity);
         pool.transform.rotation *= Quaternion.Euler(90f, 0f, 0f);
 
         SceneManager.MoveGameObjectToScene(pool, _hero.NetworkSettings.MyRoom);
 
         pool.GetComponent<Sub_LavaPool_Scorpion>().Init();
-        NetworkServer.Spawn(pool);
+        NetworkServer.Spawn(pool);*/
     }
 
     #endregion

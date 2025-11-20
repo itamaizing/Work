@@ -26,6 +26,7 @@ public class Health : Resource, IDamageable, IHealingable
 
     public Bar barCharacter { get => bar; }
     public float BlockChance { get => _blockChance; set => _blockChance = value; }
+    //public float SumDamageTaken { get { Debug.Log("Sum dmg " + _sumDamageTaken); return _sumDamageTaken; }} //=> _sumDamageTaken; }
     public float SumDamageTaken { get => _sumDamageTaken; }
     public float EvadeMeleeDamage { get => _evadeMeleeDamage; set => _evadeMeleeDamage = value; }
     public float EvadeRangeDamage { get => _evadeRangeDamage; set => _evadeRangeDamage = value; }
@@ -113,6 +114,7 @@ public class Health : Resource, IDamageable, IHealingable
         }
         ClientRpcDamage(damage, skill);
         _sumDamageTaken += damage.Value;
+        //Debug.Log("Sum damage update " + _sumDamageTaken);
         return true;
     }
 

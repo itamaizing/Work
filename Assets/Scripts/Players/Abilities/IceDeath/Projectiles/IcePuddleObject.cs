@@ -87,6 +87,7 @@ public class IcePuddleObject : Projectiles
 			_dad.Health.DecreaseRegen(1.01f);
 			return;
 		}
+		if (collision.gameObject.layer == LayerMask.NameToLayer("Allies")) return;
 		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject)
 		{
 			for(int i = 0; i < _targets.Count; i++) 
@@ -116,6 +117,7 @@ public class IcePuddleObject : Projectiles
 			if (_iceDeathInIcePudleTalent) _dad.Health.IncreaseRegen(1.01f);
 			return;
 		}
+		if (collision.gameObject.layer == LayerMask.NameToLayer("Allies")) return;
 		if (collision.TryGetComponent<Character>(out var target) && _energy != null)
 		{
 			Debug.Log(target.name);
@@ -127,7 +129,7 @@ public class IcePuddleObject : Projectiles
 
 			if (_talentFrostingFrozen && target.CharacterState.CheckForState(States.Frosting))
 			{
-				target.CharacterState.AddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
+				target.CharacterState.AddState(States.Frozen, duration, 30 + target.Health.SumDamageTaken, _dad.gameObject, _skill.name);
 			}
 
 			Debug.Log(_talentEvadeDadBoost + " Talent");

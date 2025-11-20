@@ -14,6 +14,7 @@ public class SkillQueue : MonoBehaviour
     public bool IsBusy { get => _currentSkill != null; }
     public bool IsEmpty { get => _skills.Count == 0; }
     public Skill CurrentSkill { get => _currentSkill; }
+    public Queue<Skill> Skills => _skills;
 
     public event Action<Skill> SkillAdded;
     public event Action<Skill> SkillDeleted;
@@ -22,7 +23,7 @@ public class SkillQueue : MonoBehaviour
     {
         if (IsBusy)
             return;
-
+        
         if (_skills.TryPeek(out Skill skill))
         {
             if (skill.SkillType == SkillType.Zone)

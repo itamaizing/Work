@@ -73,9 +73,11 @@ public class SeriesOfStrikes : MonoBehaviour
 		{
 			//target.CharacterState.personWhoShoted = _player;
 		}
+
 		CheckCurse(target, damage);
 		if (_iceRuneTalent) BonusRuneForDamage(damage);
 		//float usedEnergy = 0;
+
 		for(int i=0; i< _seriesOfStrikes.Count; i++)
 		{
 			if(form == _seriesOfStrikes[i].formList[_seriesOfStrikes[i].hitCount] && (target == _curTarget || target == null))
@@ -87,7 +89,7 @@ public class SeriesOfStrikes : MonoBehaviour
 				_seriesOfStrikes[i].hitCount++;
 				_timer = _baseTimer;
 
-				Debug.Log("Hit from " + _seriesOfStrikes[i] + " #" + _seriesOfStrikes[i].hitCount + usedEnergy);
+				Debug.Log("Hit from " + _seriesOfStrikes[i] + " #" + _seriesOfStrikes[i].hitCount);
 
 				if (_seriesOfStrikes[i].hitCount >= _seriesOfStrikes[i].formList.Count)
 				{
@@ -104,67 +106,6 @@ public class SeriesOfStrikes : MonoBehaviour
 			}
 		}
 		return false;
-		/*if (_hitCount1 < _formList.Count) 
-		{ 
-			if (form == _formList[_hitCount1] && (target == _curTarget || target == null))
-			{
-				//Debug.Log("HIT COUNT1 " + _hitCount1);
-				//_list1 = true;
-				_isInTheRow = true;
-				_curTarget = target;
-				_usedRunesValue1 += usedRuneValue;
-				_usedEnergy1 += usedEnergy;
-				_hitCount1++;
-				_timer = _baseTimer;
-
-			}
-			else
-			{
-				_energy.ResetUsedEnergy();
-				_isInTheRow = true;
-				_hitCount1 = 0;
-				_usedRunesValue1 = usedRuneValue;
-				_usedEnergy1 = usedEnergy;
-				_curTarget = target;
-				_timer = _baseTimer;
-			}
-		}
-		if (_hitCount2 < _formList2.Count)
-		{
-			if (form == _formList2[_hitCount2] && ( target == _curTarget || target == null))
-			{
-				//_list2 = true;
-				_isInTheRow = true;
-				_curTarget = target;
-				_usedRunesValue2 += usedRuneValue;
-				_usedEnergy2 += usedEnergy;
-				_hitCount2++;
-				Debug.Log("HIT COUNT2 " + _hitCount2);
-				_timer = _baseTimer;
-			}
-			else
-			{
-				_energy.ResetUsedEnergy();
-				_isInTheRow = true;
-				_hitCount2 = 0;
-				_usedRunesValue2 = usedRuneValue;
-				_usedEnergy2 = usedEnergy;
-				_curTarget = target;
-				_timer = _baseTimer;
-			}
-		}
-		if(_hitCount1 >=6)
-		{
-			LastHit(_usedRunesValue1, _usedEnergy1);
-			return true;
-		}
-		if(_hitCount2 >= 6)
-		{
-			
-			LastHit(_usedRunesValue2, _usedEnergy2);
-			return true;
-		}
-		return false;*/
 	}
 
 	public void Timer()
@@ -189,6 +130,7 @@ public class SeriesOfStrikes : MonoBehaviour
 
 	private void LastHit(float usedRune, float usedEnergy)
 	{
+		Debug.Log("Last hit");
 		if (_seriesCompliteCompoTalent) _rune.CmdAdd(usedRune * 2 + 1);
 		_energy.CmdAdd(usedEnergy * 0.4f);
 		_energy.ForceRegenNow();

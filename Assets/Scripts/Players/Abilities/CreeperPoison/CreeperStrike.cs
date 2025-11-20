@@ -50,6 +50,8 @@ public class CreeperStrike : Skill
     private bool _isTwoHit = false;
     private bool _isHit = false;
 
+
+
     private Character _lastTargetFirst = null;
     private Character _lastTargetSecond = null;
 
@@ -90,7 +92,7 @@ public class CreeperStrike : Skill
         {
             if (GetMouseButton)
             {
-                //_target = GetRaycastTarget();
+                _target = GetTarget().character;
                 if (_target != null)
                 {
                     _target.SelectedCircle.IsActive = true;

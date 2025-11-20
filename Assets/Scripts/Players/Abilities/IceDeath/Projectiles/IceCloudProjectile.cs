@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Mirror;
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -24,8 +25,11 @@ public class IceCloudProjectile : Projectiles
 
 	private void Update()
 	{
-        _spriteRenderer.DOFade(0, 1);
-		if(Vector2.Distance(transform.position, _startPos) > _distance * GlobalVariable.cellSize)
+		if (!_initialized) return;
+
+		_spriteRenderer.DOFade(0, 1);
+		//Debug.Log("Dist " + Vector2.Distance(transform.position, _startPos) + " Max dist " + _distance);
+		if(Vector2.Distance(transform.position, _startPos) > _distance)
 		{
 			Explode();
 		}
@@ -35,8 +39,9 @@ public class IceCloudProjectile : Projectiles
 	[Server]
 	private void OnTriggerEnter(Collider collision)
 	{
+		if (!_initialized) return;
 		if (_dad == null) return;
-		if (collision.gameObject == _dad.gameObject)
+		if (collision.gameObject == _dad.gameObject || collision.gameObject.layer == LayerMask.NameToLayer("Allies"))
 			return;
 
 		if(collision.TryGetComponent<IDamageable>(out var damageable))
@@ -52,7 +57,6 @@ public class IceCloudProjectile : Projectiles
 				if (target.CharacterState.CheckForState(States.Frozen) && _boostDmg)
 				{
 					_curDamage *= 1.4f;
-					Debug.Log("NEW DAMAGE");
 				}
 
 				TargetRpcDamgeMake(_curDamage);				
@@ -75,13 +79,14 @@ public class IceCloudProjectile : Projectiles
 						_energy = (Energy)_dad.Resources[i];
 					}
 				}
-				//_energy.TryUse(_energyDad);
 				_energy.UseAllEnergy();
 				ClientUse(_energyDad, _energy.gameObject);
-				target.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
-				//damage
+
+				StartCoroutine(CrutchDelay(target, duration));
+
+				//target.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
 				GetComponent<Collider>().enabled = false;
-				Explode();
+				//Explode();
 			}
 			else
 			{
@@ -92,8 +97,16 @@ public class IceCloudProjectile : Projectiles
 				}
 				return;
 			}
-			Explode();
+			//Explode();
 		}
+	}
+
+	private IEnumerator CrutchDelay(Character target, float duration)
+	{
+		//yield return new WaitForSecondsRealtime(0.1f);
+		yield return null;
+		target.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
+		Explode();
 	}
 
 	//[ClientRpc]

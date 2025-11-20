@@ -27,7 +27,6 @@ public class PhysicalAttack : Skill
 
 	protected Character _target;
 
-
 	private static readonly int RightKickTrigger = Animator.StringToHash("RightKick");
 	private static readonly int LeftKickTrigger = Animator.StringToHash("LeftKick");
 
@@ -36,6 +35,7 @@ public class PhysicalAttack : Skill
 	protected override int AnimTriggerCast => _animTriggerToUse = UnityEngine.Random.value > 0.5f ? RightKickTrigger : LeftKickTrigger;
 
 	protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
+	private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
 	private void Start()
 	{
@@ -72,12 +72,20 @@ public class PhysicalAttack : Skill
 		{
 			if (GetMouseButton)
 			{
-				//_target = GetRaycastTarget();
+				_target = GetTarget().character;
+
 				if (_target != null)
 				{
-					_target.SelectedCircle.IsActive = true;
-					_hero.Move.LookAtTransform(_target.transform);
-					break;
+					if (IsAllyTarget(_target) || _target == Hero)
+					{
+						_target = null;						
+					}
+					else
+					{
+						_target.SelectedCircle.IsActive = true;
+						_hero.Move.LookAtTransform(_target.transform);
+						break;
+					}
 				}
 			}
 			yield return null;
@@ -111,7 +119,10 @@ public class PhysicalAttack : Skill
 		if (_seriesPhysicalTalent) Hit(_target);
 		else SingleHit(_target);
 
-		_target = null;
+		if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
+		{
+			_target = null;
+		}
 		CmdPlayShotSound();
 	}
 
@@ -122,6 +133,7 @@ public class PhysicalAttack : Skill
 		{
 			//_energy.CmdUse(5);
 			Buff.AttackSpeed.IncreasePercentage(_multiplier);
+			Buff.CastSpeed.IncreasePercentage(_multiplier);
 			float curDamage = _damageValue + UnityEngine.Random.Range(0, 2);
 
 			if (_energy.CurrentValue >= 5)
@@ -134,6 +146,7 @@ public class PhysicalAttack : Skill
 			}
 			_multiplier = 1 + _combo.GetMultipliedSpeed() / 100;
 			Buff.AttackSpeed.ReductionPercentage(_multiplier);
+			Buff.CastSpeed.IncreasePercentage(_multiplier);
 
 			Damage damage = new Damage
 			{
@@ -189,22 +202,20 @@ public class PhysicalAttack : Skill
 			//Debug.Log(_rune.CurrentValue + " REGEN Current value");
 		}
 	}
+
 	private void LastHit()
 	{
 		if (_energy.CurrentValue >= 10)
 		{
-			//_energy.CmdUse(10);
 			Damage damage = new Damage
 			{
 				Value = _damageValue * 0.5f,
 				Type = DamageType.Physical,
 			};
 			CmdApplyDamage(damage, _curTarget.gameObject);
-			//_curTarget.Health.TryTakeDamage(_damage * .5f, DamageType.Physical, AttackRangeType.MeleeAttack);
 			float curDamage = _damageValue * .5f;
 			_energy.SumDamageMake(curDamage);
 			_rune.SumDamageMake(curDamage);
-			//_curTarget.CharacterState.CmdAddState(States.Stun, 1.5f, 0, _playerLinks.gameObject, name);
 			CmdState(_curTarget.gameObject, 1.5f);
 			PushBackEnemy(_curTarget);
 			//отбрасывание 			
@@ -222,7 +233,7 @@ public class PhysicalAttack : Skill
 			Value = curDamage,
 			Type = DamageType.Physical,
 		};
-
+		_combo.MakeHit(enemy, AbilityForm.Physical, 0, 5, curDamage);
 		CmdApplyDamage(damage, enemy.gameObject);
 	}
 
@@ -233,8 +244,6 @@ public class PhysicalAttack : Skill
 		enemyChar.CharacterState.AddState(States.Stun, time, 0, _playerLinks.gameObject, name);
 		Debug.Log("added state");
 	}
-
-
 
 	private void PushBackEnemy(Character enemy)
 	{
@@ -328,6 +337,7 @@ public class PhysicalAttack : Skill
 
     protected override void ClearData()
     {
+		_target = null;
 		_hero.Move.StopLookAt();
 	}
 }

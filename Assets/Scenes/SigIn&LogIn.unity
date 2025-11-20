@@ -13,7 +13,7 @@ OcclusionCullingSettings:
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 9
+  serializedVersion: 10
   m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
@@ -38,13 +38,12 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
-  m_GIWorkflowMode: 1
+  serializedVersion: 13
+  m_BakeOnSceneLoad: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -67,9 +66,6 @@ LightmapSettings:
     m_LightmapParameters: {fileID: 0}
     m_LightmapsBakeMode: 1
     m_TextureCompression: 1
-    m_FinalGather: 0
-    m_FinalGatherFiltering: 1
-    m_FinalGatherRayCount: 256
     m_ReflectionCompression: 2
     m_MixedBakeMode: 2
     m_BakeBackend: 1
@@ -155,7 +151,6 @@ RectTransform:
   - {fileID: 121273404}
   - {fileID: 360664924}
   m_Father: {fileID: 2147290234}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -236,13 +231,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 108471940}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &121273400
 GameObject:
@@ -326,15 +321,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 1
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -393,7 +390,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 48149851}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -432,7 +428,6 @@ RectTransform:
   - {fileID: 994958886}
   - {fileID: 789218859}
   m_Father: {fileID: 459108831}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -482,6 +477,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SerializedVersion: 0
   m_AgentTypeID: -1372625422
   m_CollectObjects: 0
   m_Size: {x: 10, y: 10, z: 10}
@@ -508,13 +504,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 135063384}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -2.841526, y: -0.7075085, z: 0.047589082}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &283462445
 GameObject:
@@ -550,7 +546,6 @@ RectTransform:
   - {fileID: 1095752548}
   - {fileID: 1576014611}
   m_Father: {fileID: 1306256321}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -658,7 +653,6 @@ RectTransform:
   m_Children:
   - {fileID: 1954327304}
   m_Father: {fileID: 1780031976}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -759,10 +753,13 @@ MonoBehaviour:
   m_GlobalFontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_OnFocusSelectAll: 1
   m_ResetOnDeActivation: 1
+  m_KeepTextSelectionVisible: 0
   m_RestoreOriginalTextOnEscape: 1
   m_isRichTextEditingAllowed: 0
   m_LineLimit: 0
+  isAlert: 0
   m_InputValidator: {fileID: 0}
+  m_ShouldActivateOnSelect: 1
 --- !u!114 &314341254
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -882,15 +879,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_TextWrappingMode: 3
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 1
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -929,7 +928,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 48149851}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -967,7 +965,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1649402809}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0.2}
@@ -1044,7 +1041,6 @@ RectTransform:
   - {fileID: 1320423518}
   - {fileID: 896857189}
   m_Father: {fileID: 1768064912}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1104,13 +1100,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 452850704}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 570.8091, y: 362.0214, z: -1.7742646}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &452850707
 MonoBehaviour:
@@ -1143,64 +1139,34 @@ MonoBehaviour:
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs:
-  - {fileID: 2070815445264939164, guid: acf0aa1d343559640b903638c293a6b1, type: 3}
-  - {fileID: 4371443321967966874, guid: ef99f40ab53221d46a27123d3e044499, type: 3}
-  - {fileID: 4371443321967966874, guid: 0fe4228580ff977419acc74a8f3e1a6f, type: 3}
-  - {fileID: 4371443321967966874, guid: a79366755ff1599429f6d57fd0be0061, type: 3}
-  - {fileID: 5197633848987564949, guid: df913d1cd3899ba4aa1830f7b738fcaa, type: 3}
   - {fileID: 5195731727944466540, guid: 13d29f15dbe0e9c40bac53fe5ff49f89, type: 3}
-  - {fileID: 1740845397034949897, guid: 6ab36b2e7d257e44ead6528ff31fec4e, type: 3}
   - {fileID: 2672404202709694877, guid: c62801e5e7752514bb8cc9b9e90e943d, type: 3}
   - {fileID: 5195731727944466540, guid: 972ffc3bac4d76048b18c6e9bbdcfb98, type: 3}
   - {fileID: 5195731727944466540, guid: 2b98bf57809a2ea488381e132571282f, type: 3}
   - {fileID: 5195731727944466540, guid: f44e1a220c732a64f9af10c37bf5aed0, type: 3}
-  - {fileID: 884365701278928767, guid: bc61883431de372488a55d10d8a02690, type: 3}
   - {fileID: 2672404202709694877, guid: 8dea5af4c60165d45af4522b1a596998, type: 3}
   - {fileID: 5195731727944466540, guid: 34a7c786c7eb01e4d8859ae87ecd6019, type: 3}
-  - {fileID: 8266765981491458884, guid: d321207ef616498478038beb68b111ea, type: 3}
-  - {fileID: 1521997633048654849, guid: 9d4231ccaf32cfb41ae4bc421009b2da, type: 3}
-  - {fileID: 1521997633048654849, guid: 6d09530764df64040ac8f29ab334cf27, type: 3}
-  - {fileID: 1240487887479263413, guid: 64886c26381f2c54c85fe43a25e0fb39, type: 3}
-  - {fileID: 8442599261096630905, guid: cbfb4777e45b41a4d9cb20bcbfe66715, type: 3}
-  - {fileID: 6623607984683778980, guid: d097441cb29bc5a42b2defb1e1f12525, type: 3}
   - {fileID: 1099707679034851779, guid: d490c899d604d2c4dbb3f72e61cacb6e, type: 3}
-  - {fileID: 1740845397034949897, guid: e16bc4ff4d2817e46838f2731c3b803a, type: 3}
-  - {fileID: 4371443321967966874, guid: d8e8dba9ab53a4743bbdb63cd7b41f6d, type: 3}
   - {fileID: 3471790990025475761, guid: efb208058a098504dba60733ca30d327, type: 3}
-  - {fileID: 4371443321967966874, guid: 5c26e995f253a6646a634242e54ca546, type: 3}
-  - {fileID: 4371443321967966874, guid: 2568a29acdeadce4db91958923f49b66, type: 3}
-  - {fileID: 6570596488840784737, guid: 2df088c1e08769144ba1fbb1cd7e00f1, type: 3}
   - {fileID: 5951033593581366366, guid: 9c3ab8f1c5352c34ea72aeec43bb21be, type: 3}
   - {fileID: 4932658458029131548, guid: 72bf53dfa1624064fa5072a77d9ba7f1, type: 3}
-  - {fileID: 4371443321967966874, guid: 8fec45e4e7a73734f926c26ecfe03de4, type: 3}
   - {fileID: 8569565319005398463, guid: 5fb5f6f37d830674cbf46c1a048e80bf, type: 3}
   - {fileID: 1770822293990221518, guid: 563ef57145301994f9242508a262ae14, type: 3}
   - {fileID: 2672404202709694877, guid: 1de4fb38053221843a7ed6af6a5a4d74, type: 3}
   - {fileID: 2672404202709694877, guid: 801f4281a5eb4d64691ad381f8016856, type: 3}
-  - {fileID: 1234535673096493662, guid: 914737841e8a0d74f87878c72e21ae32, type: 3}
-  - {fileID: 5716308091942369604, guid: f762a8d0722656c41a8de3a8e34dac11, type: 3}
-  - {fileID: 3540451634781876253, guid: 9b33d14bd9379d449ad38a13ab6ddde6, type: 3}
-  - {fileID: 1028301060578645802, guid: 5f0d2df33c41bbf479647e456d3be04d, type: 3}
-  - {fileID: 2752845838655961207, guid: 1f5dc0b5e79644948826b4eeb6ce8156, type: 3}
-  - {fileID: 7504653704119560997, guid: 3d2c250adc1c5a94a977f3812c146572, type: 3}
   - {fileID: 3765642479631805782, guid: e973d107e3652be4a8430fe523236ae6, type: 3}
   - {fileID: 3289486992178106630, guid: 94a92e558dfff4041911d68c42de01f8, type: 3}
   - {fileID: 7932399568012328523, guid: 45218b2aa635a164aae6b7da7d237666, type: 3}
   - {fileID: 2727763618182580105, guid: 1added7877e17a641bffaa74f76fc1e4, type: 3}
-  - {fileID: 8266765981491458884, guid: a65fb085861f53d49a1ba04a44eb782a, type: 3}
-  - {fileID: 4284968237982370394, guid: bbb1f1c51cf163e47ad2df269cbda868, type: 3}
   - {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
   - {fileID: 300637093874885484, guid: ff1c8ecb71d19674e8778e3d04716b40, type: 3}
   - {fileID: 2335912879836011194, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
   - {fileID: 300637093874885484, guid: 61bdf690f5f8e144aba9494df44f0657, type: 3}
-  - {fileID: 3540451634781876253, guid: f7c4989fc7d96e64e898c577137242d1, type: 3}
   - {fileID: 6574354902101684496, guid: 7b9b3846886e951459b231848c918b55, type: 3}
   - {fileID: 8693088928271248166, guid: a981efc231a79eb4abf597c61aabb12f, type: 3}
   - {fileID: 5092039644404945080, guid: 4147e16f95a99db4b9dfd4e71a529053, type: 3}
-  - {fileID: 300637093874885484, guid: 952e07a142342914da338d08e1041c34, type: 3}
   - {fileID: 5951033593581366366, guid: 2ae4dc3e896cc6040afe290737e398a9, type: 3}
   - {fileID: 8859527807384012395, guid: e444badf466360e41a896340462c6a62, type: 3}
-  - {fileID: 5195731727944466540, guid: b612f7891a9d3b140b22ae2820a11ec8, type: 3}
   - {fileID: 8842404529923409551, guid: 49b94ed23b9d6a447b459769dcbb348d, type: 3}
   - {fileID: 9178313410699022138, guid: d2460f9c7d78d8145801d5b3ad0d5d20, type: 3}
   - {fileID: 465973236533830398, guid: f7c4989fc7d96e64e898c577137242d1, type: 3}
@@ -1223,7 +1189,6 @@ MonoBehaviour:
   - {fileID: 116690888756795483, guid: 911d5f174dbe7ac4b8da163e8aaf32a1, type: 3}
   - {fileID: 300637093874885484, guid: 40044d92dc9a52a44b73b5569f957a7a, type: 3}
   - {fileID: 2335912879836011194, guid: 4db2764b76e857542a0c6ea889e2db7c, type: 3}
-  - {fileID: 8859527807384012395, guid: 1dd1e9aff4bce914b9e91277d46a71e3, type: 3}
   - {fileID: 7460133517014728669, guid: 6a81e52aeaba98147875ba1791e1e4c8, type: 3}
   - {fileID: 7460133517014728669, guid: f28d626b569e7ab419ae82e8f75c4a7c, type: 3}
   - {fileID: 2058911381882631605, guid: 82b70bdb0fc80c343859665623ea7ed8, type: 3}
@@ -1245,7 +1210,6 @@ MonoBehaviour:
   - {fileID: 3154541333273919106, guid: 4bf1bb117fbb59241955bd674f799741, type: 3}
   - {fileID: 8143091671269686944, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
   - {fileID: 5338357177018324924, guid: 9903945e1d35e3f4699a288cf83c9e9c, type: 3}
-  - {fileID: 3166524110619427554, guid: 26b16165068b4244e8a8a270a5b85899, type: 3}
   - {fileID: 8842404529923409551, guid: 846556c08d21ee240b3671a600246389, type: 3}
   - {fileID: 8493071214933416540, guid: 68a5df5d1ae4ea54486b316ec8d2a89c, type: 3}
   - {fileID: 3906734254346883187, guid: 8ff2c2f4f50e6834ebff05e5a40c88be, type: 3}
@@ -1270,14 +1234,7 @@ MonoBehaviour:
   - {fileID: 2152374494346322251, guid: f4c655cda711ee04982ae4767cff39d7, type: 3}
   - {fileID: 2152374494346322251, guid: e3f8b1d07bf91a843899c3d8b908fa40, type: 3}
   - {fileID: 3906734254346883187, guid: b4974656f43ed384e9560645ff90b572, type: 3}
-  - {fileID: 2058911381882631605, guid: 0f2f306b232c9674895cee7d74e881f8, type: 3}
-  - {fileID: 3906734254346883187, guid: efcb433fc734fc44e8abf2e45471d9b4, type: 3}
   - {fileID: 6581410618162525258, guid: a7f53fff04ebc6947aa302af5c5ecf21, type: 3}
-  - {fileID: 6581410618162525258, guid: 0988263531e4d9b49bb07f4cd478b765, type: 3}
-  - {fileID: 6581410618162525258, guid: 3076e8c7d3e16c4419ffd11e2ca182c2, type: 3}
-  - {fileID: 6581410618162525258, guid: c082d16e8662d1a4880bcf8291bdc631, type: 3}
-  - {fileID: 6581410618162525258, guid: e00aec37170bec6438f7d01f4d6310ff, type: 3}
-  - {fileID: 6581410618162525258, guid: ff5e14a5b6fb2e340baa82eb6d6a88c0, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -1447,10 +1404,13 @@ MonoBehaviour:
   m_GlobalFontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_OnFocusSelectAll: 1
   m_ResetOnDeActivation: 1
+  m_KeepTextSelectionVisible: 0
   m_RestoreOriginalTextOnEscape: 1
   m_isRichTextEditingAllowed: 0
   m_LineLimit: 0
+  isAlert: 0
   m_InputValidator: {fileID: 0}
+  m_ShouldActivateOnSelect: 1
 --- !u!224 &459108831
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1465,7 +1425,6 @@ RectTransform:
   m_Children:
   - {fileID: 125140380}
   m_Father: {fileID: 1780031976}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1541,7 +1500,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 493889668}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1611,15 +1569,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -1785,7 +1745,6 @@ RectTransform:
   m_Children:
   - {fileID: 486048806}
   m_Father: {fileID: 2096323405}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1920,10 +1879,13 @@ MonoBehaviour:
   m_GlobalFontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_OnFocusSelectAll: 1
   m_ResetOnDeActivation: 1
+  m_KeepTextSelectionVisible: 0
   m_RestoreOriginalTextOnEscape: 1
   m_isRichTextEditingAllowed: 0
   m_LineLimit: 0
+  isAlert: 0
   m_InputValidator: {fileID: 0}
+  m_ShouldActivateOnSelect: 1
 --- !u!224 &605208266
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1938,7 +1900,6 @@ RectTransform:
   m_Children:
   - {fileID: 865856016}
   m_Father: {fileID: 1791073520}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2068,13 +2029,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 732239110}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &732239114
 MonoBehaviour:
@@ -2112,14 +2073,14 @@ MonoBehaviour:
   m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
-  m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!1 &737309699
 GameObject:
   m_ObjectHideFlags: 0
@@ -2202,15 +2163,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 1
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -2269,7 +2232,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 865856016}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -2357,15 +2319,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_TextWrappingMode: 3
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 1
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -2404,7 +2368,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 125140380}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -2442,7 +2405,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1306256321}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -2520,7 +2482,6 @@ RectTransform:
   m_Children:
   - {fileID: 1642655347}
   m_Father: {fileID: 2096323405}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2665,7 +2626,6 @@ RectTransform:
   - {fileID: 737309703}
   - {fileID: 1150874534}
   m_Father: {fileID: 605208266}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -2767,15 +2727,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_TextWrappingMode: 3
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 1
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -2814,7 +2776,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 432131827}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -2854,7 +2815,6 @@ RectTransform:
   - {fileID: 1982344395}
   - {fileID: 1931898961}
   m_Father: {fileID: 1983313684}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -2991,15 +2951,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 1
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -3058,7 +3020,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 125140380}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -3098,7 +3059,6 @@ RectTransform:
   m_Children:
   - {fileID: 1983313684}
   m_Father: {fileID: 283462446}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -3237,15 +3197,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_TextWrappingMode: 3
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 1
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -3284,7 +3246,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 865856016}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -3327,7 +3288,6 @@ RectTransform:
   - {fileID: 859790630}
   - {fileID: 283462446}
   m_Father: {fileID: 1780031976}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3382,12 +3342,15 @@ MonoBehaviour:
   m_ItemText: {fileID: 1931898962}
   m_ItemImage: {fileID: 0}
   m_Value: 0
+  m_MultiSelect: 0
   m_Options:
     m_Options:
     - m_Text: localhost
       m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
     - m_Text: Server
       m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -3526,15 +3489,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 1
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -3593,7 +3558,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 432131827}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -3633,7 +3597,6 @@ RectTransform:
   m_Children:
   - {fileID: 1649402809}
   m_Father: {fileID: 283462446}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -3758,7 +3721,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1954327304}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -3828,15 +3790,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_TextWrappingMode: 3
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 1
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -3894,7 +3858,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1954327304}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -3984,15 +3947,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 1
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -4049,7 +4014,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 863302896}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -4119,15 +4083,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -4183,7 +4149,6 @@ RectTransform:
   m_Children:
   - {fileID: 369258808}
   m_Father: {fileID: 1576014611}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -4303,10 +4268,13 @@ MonoBehaviour:
   m_GlobalFontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_OnFocusSelectAll: 1
   m_ResetOnDeActivation: 1
+  m_KeepTextSelectionVisible: 0
   m_RestoreOriginalTextOnEscape: 1
   m_isRichTextEditingAllowed: 0
   m_LineLimit: 0
+  isAlert: 0
   m_InputValidator: {fileID: 0}
+  m_ShouldActivateOnSelect: 1
 --- !u!224 &1768064912
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4321,7 +4289,6 @@ RectTransform:
   m_Children:
   - {fileID: 432131827}
   m_Father: {fileID: 1791073520}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -4402,7 +4369,6 @@ RectTransform:
   - {fileID: 459108831}
   - {fileID: 1306256321}
   m_Father: {fileID: 2096323405}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -4514,7 +4480,6 @@ RectTransform:
   - {fileID: 2147290234}
   - {fileID: 1768064912}
   m_Father: {fileID: 2096323405}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -4621,7 +4586,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 911385978}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -4683,7 +4647,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1868095980
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4691,7 +4655,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1868095979}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
@@ -4747,15 +4711,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -4794,11 +4760,10 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2096323405}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2.9493, y: -410.9359}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 913.9, y: 258.2482}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1928374846
@@ -4832,7 +4797,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1306256321}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -4902,15 +4866,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -4967,7 +4933,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 911385978}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -5037,15 +5002,17 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
+  m_ActiveFontFeatures: 00000000
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
+  m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -5103,7 +5070,6 @@ RectTransform:
   - {fileID: 1639819649}
   - {fileID: 1586813243}
   m_Father: {fileID: 314341252}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -5155,7 +5121,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 911385978}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
@@ -5230,7 +5195,6 @@ RectTransform:
   m_Children:
   - {fileID: 911385978}
   m_Father: {fileID: 1095752548}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -5337,7 +5301,6 @@ RectTransform:
   - {fileID: 493889668}
   - {fileID: 863302896}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -5457,10 +5420,13 @@ MonoBehaviour:
   m_GlobalFontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_OnFocusSelectAll: 1
   m_ResetOnDeActivation: 1
+  m_KeepTextSelectionVisible: 0
   m_RestoreOriginalTextOnEscape: 1
   m_isRichTextEditingAllowed: 0
   m_LineLimit: 0
+  isAlert: 0
   m_InputValidator: {fileID: 0}
+  m_ShouldActivateOnSelect: 1
 --- !u!224 &2147290234
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5475,7 +5441,6 @@ RectTransform:
   m_Children:
   - {fileID: 48149851}
   m_Father: {fileID: 1791073520}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -5520,3 +5485,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2147290232}
   m_CullTransparentMesh: 1
+--- !u!1660057539 &9223372036854775807
+SceneRoots:
+  m_ObjectHideFlags: 0
+  m_Roots:
+  - {fileID: 452850706}
+  - {fileID: 732239113}
+  - {fileID: 2096323405}
+  - {fileID: 108471943}
+  - {fileID: 135063386}

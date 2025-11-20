@@ -16,7 +16,7 @@ public class SkillManager : MonoBehaviour
 
     private Skill[] _selectedSkills = new Skill[16];
     private List<AutoAttackSkill> _autoAttackSkills = new List<AutoAttackSkill>();
-    private List<AutoSkill> _autoSkills = new List<AutoSkill>();
+    //private List<AutoSkill> _autoSkills = new List<AutoSkill>();
     private List<Skill> _simpleSkills = new List<Skill>();
     private float _globalCooldownTime = .5f;
     private SkillQueue _skillQueue;
@@ -26,6 +26,7 @@ public class SkillManager : MonoBehaviour
     private Skill _selectedSkill;
     private Coroutine _lastCastResetCoroutine;
     private int _castWindowId = 0;
+    private int _countBonusCharges = 0;
 
     private Dictionary<Skill, Action> _castEndedHandlers = new();
 
@@ -189,8 +190,9 @@ public class SkillManager : MonoBehaviour
                 break;
             }
         }
+        TalentSkillAdd(skill);
 
-        skill.IsSkillActive = true;
+		skill.IsSkillActive = true;
         SkillAdded?.Invoke(skill);
     }
 
@@ -216,6 +218,7 @@ public class SkillManager : MonoBehaviour
         {
             if (_selectedSkills[i] == skill && _selectedSkills.Contains(skill))
             {
+                Debug.Log("Deactivate " + skill);
                 _selectedSkills[i] = null;
                 break;
             }
@@ -424,6 +427,24 @@ public class SkillManager : MonoBehaviour
         }
     }
 
+    private void TalentSkillAdd(Skill skill)
+    {
+        if (_countBonusCharges > 0)
+        {
+            if (skill.IsUseCharges)
+            {
+                Debug.Log("Add charge from talent");
+                _countBonusCharges--;
+                skill.AddMaxChargeCount();
+            }
+        }
+    }
+
+    public void TalentAddCharges(int countBonusCharges)
+    {
+        _countBonusCharges = countBonusCharges;
+    }
+
     #region legacycode
     private void OnDestroy()
     {
@@ -431,28 +452,7 @@ public class SkillManager : MonoBehaviour
         AbilitiesManager.Instance.RemovePanel(_abilityPanel);
         */
     }
-    public void AddAbility(Ability ability)
-    {
-        /*
-        _abilities.Add(ability);
-        if (AbilitiesManager.Instance == null) return;
 
-        AbilitiesManager.Instance.RemovePanel(_abilityPanel);
-        _abilityPanel = AbilitiesManager.Instance.AddPanel(this);
-        _abilityPanel.gameObject.SetActive(true);
-        */
-    }
-    public void RemoveAbility(Ability ability)
-    {
-        /*
-        _abilities.Remove(ability);
-        if (AbilitiesManager.Instance == null) return;
-
-        AbilitiesManager.Instance.RemovePanel(_abilityPanel);
-        _abilityPanel = AbilitiesManager.Instance.AddPanel(this);
-        _abilityPanel.gameObject.SetActive(true);
-        */
-    }
     public void SetAbilitiesPanelSelect(bool isSelect)
     {
         /*
