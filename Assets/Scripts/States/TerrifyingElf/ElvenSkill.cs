@@ -28,20 +28,19 @@ public class ElvenSkill : AbstractCharacterState
 
         _move.CanMoveState = true;
 
-        if (_characterState.TryGetComponent<Character>(out var ability))
+        if (_skillManager != null)
         {
             foreach (var skill in _skillManager.Abilities)
             {
-                if (skill.DamageType == DamageType.Physical)
+                if (skill.DamageType == DamageType.Physical && skill.DamageType == DamageType.Both)
                 {
                     skill.CastStarted += OnPhysCastStarted;
                 }
 
+                else skill.CastStarted += NotPhysCastStarted;
+
                 if (skill is ReconnaissanceFire reconnaissanceFire) reconnaissanceFire.TryStartElvenBoostWindow();
             }
-
-            foreach (var skillPhysics in ability.Abilities.Abilities.Where(skillPhysics => skillPhysics.DamageType != DamageType.Physical))
-                skillPhysics.CastStarted += OnMagCastStarted;
         }
 
         _aura = character.GetComponent<TerrifyingElfAura>();
@@ -56,13 +55,17 @@ public class ElvenSkill : AbstractCharacterState
     {
         if (_move) _move.CanMoveState = false;
 
-        if (_characterState.TryGetComponent<Character>(out var ability))
+        if (_skillManager != null)
         {
-            foreach (var skillPhysics in ability.Abilities.Abilities.Where(skillPhysics => skillPhysics.DamageType == DamageType.Physical))
-                skillPhysics.CastStarted -= OnPhysCastStarted;
+            foreach (var skill in _skillManager.Abilities)
+            {
+                if (skill.DamageType == DamageType.Physical && skill.DamageType == DamageType.Both)
+                {
+                    skill.CastStarted -= OnPhysCastStarted;
+                }
 
-            foreach (var skillPhysics in ability.Abilities.Abilities.Where(skillPhysics => skillPhysics.DamageType != DamageType.Physical))
-                skillPhysics.CastStarted -= OnMagCastStarted;
+                else skill.CastStarted -= NotPhysCastStarted;
+            }
         }
 
         if (_elvenSkillEffect != null) _elvenSkillEffect.SetActive(false);
@@ -88,7 +91,7 @@ public class ElvenSkill : AbstractCharacterState
         if (_move) _move.CanMoveState = true;
     }
 
-    private void OnMagCastStarted()
+    private void NotPhysCastStarted()
     {
         if (_move) _move.CanMoveState = false;
     }

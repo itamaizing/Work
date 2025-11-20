@@ -19915,9 +19915,9 @@ MonoBehaviour:
   _cooldownTime: 13
   _castDeley: 0.1
   _damageValue: 0
-  _abilitySchool: 6
-  _abilityForm: 2
-  _damageType: 1
+  _abilitySchool: 1
+  _abilityForm: 1
+  _damageType: 0
   _attackRangeType: 1
   _skillType: 2
   _moving: 0
@@ -20644,7 +20644,7 @@ MonoBehaviour:
   skillManager: {fileID: 4092227064955680494}
   hero: {fileID: 4534754468497973439}
   calmnessChance: 10
-  elvenSkillFromPhysChance: 100
+  elvenSkillFromPhysChance: 10
   calmnessOnElvenSkillChance: 30
   huntressMarkApplyChance: 5
   durationCalmess: 8

@@ -62,9 +62,6 @@ public class Shot : Skill
             _isHealthAboveThreshold = health.CurrentValue >= health.MaxValue * 0.8f;
         }
 
-        _hero.Move.StopMoveAndAnimationMove();
-        _hero.Move.CanMove = false;
-
         if (_target != null) Hero.Move.LookAtTransform(_target.transform);
         else if (_targetPoint != Vector3.positiveInfinity) Hero.Move.LookAtPosition(_targetPoint);
 
@@ -107,6 +104,7 @@ public class Shot : Skill
 
     public void ShotPreparation()
     {
+        _hero.Move.StopMoveAndAnimationMove();
         _hero.Move.CanMove = false;
     }
 
