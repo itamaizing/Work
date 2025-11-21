@@ -79,6 +79,8 @@ public class ArrowProjectile : Projectiles
             float totalMagDamage = _magDamage;
             if (inAstral) totalMagDamage *= 1.5f;
 
+            Debug.Log($"totalMagDamage: {totalMagDamage}");
+
             ApplyDamage(totalMagDamage, _skill.DamageType, collider.gameObject);
 
             if (collider.TryGetComponent<Character>(out Character character)) character.CharacterState.AddState(States.InnerDarkness, duration, 0, _skill.Hero.gameObject, _skill.name);

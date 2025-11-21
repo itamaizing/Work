@@ -115,8 +115,6 @@ public class Shot : Skill
     }
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        Hero.Animator.speed = Hero.Animator.speed / 1;
-
         ITargetable target = null;
         Vector3 targetPoint = Vector3.positiveInfinity;
 
@@ -167,7 +165,6 @@ public class Shot : Skill
         if (_hero?.Move != null)
         {
             Hero.Move.CanMove = true;
-            Hero.Animator.speed = 1;
             _target = null;
             _targetPoint = Vector3.positiveInfinity;
             Hero.Move.StopLookAt();

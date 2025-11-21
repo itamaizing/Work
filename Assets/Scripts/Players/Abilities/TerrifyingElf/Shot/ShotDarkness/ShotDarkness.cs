@@ -54,9 +54,6 @@ public class ShotDarkness : Skill
             _isHealthAboveThreshold = health.CurrentValue >= health.MaxValue * 0.8f;
         }
 
-        _hero.Move.StopMoveAndAnimationMove();
-        _hero.Move.CanMove = false;
-
         if (_target != null) Hero.Move.LookAtTransform(_target.transform);
         else if (_targetPoint != Vector3.positiveInfinity) Hero.Move.LookAtPosition(_targetPoint);
 
@@ -95,6 +92,11 @@ public class ShotDarkness : Skill
     {
         AnimCastEnded();
     }
+    public void ShotDarkPreparation()
+    {
+        _hero.Move.StopMoveAndAnimationMove();
+        _hero.Move.CanMove = false;
+    }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
@@ -102,8 +104,6 @@ public class ShotDarkness : Skill
     }
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        Hero.Animator.speed = Hero.Animator.speed / 1.4f;
-
         ITargetable target = null;
         Vector3 targetPoint = Vector3.positiveInfinity;
 
@@ -128,11 +128,12 @@ public class ShotDarkness : Skill
         if (_target == null && _targetPoint == Vector3.positiveInfinity) yield return null;
         if (_target != null && !IsTargetInRange()) yield return null;
 
+        _magicDamage = CalculateAndSpendBonusMagicDamage();
         ShotDarknessAnimationMove();
         ProcessGhostCooldownReduction();
 
-        if (_target != null) CmdCreateProjectileAtTarget(_target.transform, Damage);
-        else CmdCreateProjectileAtPosition(new Vector3(_targetPoint.x, _targetPoint.y, _targetPoint.z), Damage);
+        if (_target != null) CmdCreateProjectileAtTarget(_target.transform, Damage, _magicDamage);
+        else CmdCreateProjectileAtPosition(new Vector3(_targetPoint.x, _targetPoint.y, _targetPoint.z), Damage, _magicDamage);
 
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
@@ -142,12 +143,14 @@ public class ShotDarkness : Skill
             {
                 TryPayCost();
                 CmdUseMana(_magicDamage);
-                CmdCreateProjectileAtPosition(character.transform.position, Damage);
+                CmdCreateProjectileAtPosition(character.transform.position, Damage, _magicDamage);
             }
 
             float reduce = multiMagicSpell.RemainingCooldownTime * 0.1f;
             multiMagicSpell.DecreaseSetCooldown(reduce);
         }
+
+        else CmdUseMana(_magicDamage);
     }
 
     private void ProcessGhostCooldownReduction()
@@ -167,7 +170,6 @@ public class ShotDarkness : Skill
         if (_hero?.Move != null)
         {
             Hero.Move.CanMove = true;
-            Hero.Animator.speed = 1;
             _target = null;
             _targetPoint = Vector3.positiveInfinity;
             Hero.Move.StopLookAt();
@@ -188,9 +190,32 @@ public class ShotDarkness : Skill
             mana -= spend;
         }
     }
+    private float CalculateAndSpendBonusMagicDamage(float maxBonusMana = 6f)
+    {
+        float availableMana = playerLinks.Resources
+            .Where(r => r.Type == ResourceType.Mana)
+            .Sum(r => r.CurrentValue);
+
+        float bonusManaToUse = Mathf.Min(availableMana, maxBonusMana);
+
+        float manaSpent = 0f;
+        float manaToSpend = bonusManaToUse;
+
+        foreach (var resource in playerLinks.Resources.Where(r => r.Type == ResourceType.Mana))
+        {
+            if (manaToSpend <= 0) break;
+
+            float spend = Mathf.Min(resource.CurrentValue, manaToSpend);
+            manaSpent += spend;
+        }
+
+        _magicDamage = manaSpent;
+
+        return manaSpent;
+    }
 
     [Command]
-    protected void CmdCreateProjectileAtTarget(Transform target, float damage)
+    protected void CmdCreateProjectileAtTarget(Transform target, float damage, float magDamage)
     {
         Vector3 spawnPosition = spawnPoint != null ? spawnPoint.position : transform.position;
         Vector3 direction = (target.transform.position - spawnPosition).normalized;
@@ -198,16 +223,16 @@ public class ShotDarkness : Skill
         if (direction == Vector3.zero) return;
 
         ArrowProjectile proj = Instantiate(projectile, spawnPosition, Quaternion.LookRotation(direction));
-        proj.Init(playerLinks, _magicDamage, false, this, damage);
+        proj.Init(playerLinks, magDamage, false, this, damage);
         SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);
         proj.StartFly(target);
-        RpcInit(proj.gameObject, _magicDamage, damage);
+        RpcInit(proj.gameObject, magDamage, damage);
         RpcPlayShotSound();
     }
 
     [Command]
-    public void CmdCreateProjectileAtPosition(Vector3 position, float damage)
+    public void CmdCreateProjectileAtPosition(Vector3 position, float damage, float magDamage)
     {
         Vector3 spawnPosition = spawnPoint != null ? spawnPoint.position : transform.position;
         Vector3 direction = (position - spawnPosition).normalized;
@@ -215,27 +240,14 @@ public class ShotDarkness : Skill
         if (direction == Vector3.zero) return;
 
         ArrowProjectile proj = Instantiate(projectile, spawnPosition, Quaternion.LookRotation(direction));
-        proj.Init(playerLinks, 0, false, this, damage);
+        proj.Init(playerLinks, magDamage, false, this, damage);
         SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);
         proj.StartFly(direction);
-        RpcInit(proj.gameObject, _magicDamage, damage);
+        RpcInit(proj.gameObject, magDamage, damage);
         RpcPlayShotSound();
     }
     [Command] private void CmdUseMana(float amount) => UseMana(amount);
-    private void SpendBonusMana(float amount)
-    {
-        float mana = amount;
-        foreach (var resource in playerLinks.Resources.Where(resource => resource.Type == ResourceType.Mana))
-        {
-            if (mana <= 0) break;
-            float spend = Math.Min(resource.CurrentValue, mana);
-            resource.CurrentValue -= spend;
-            mana -= spend;
-        }
-
-        _magicDamage = amount - mana;
-    }
 
     [ClientRpc]
     protected void RpcInit(GameObject gameObject, float magicDamage, float damage)
