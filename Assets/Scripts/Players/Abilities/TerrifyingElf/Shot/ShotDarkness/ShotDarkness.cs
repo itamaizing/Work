@@ -86,6 +86,15 @@ public class ShotDarkness : Skill
             }
         }
     }
+    public void ShotDarkCastStart()
+    {
+        AnimStartCastCoroutine();
+    }
+
+    public void ShotDarkCastEnd()
+    {
+        AnimCastEnded();
+    }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
@@ -163,6 +172,8 @@ public class ShotDarkness : Skill
             _targetPoint = Vector3.positiveInfinity;
             Hero.Move.StopLookAt();
         }
+
+        AnimCastEnded();
     }
 
     private bool IsTargetInRange() { return _target != null && Vector3.Distance(transform.position, _target.transform.position) <= Radius; }
@@ -247,5 +258,6 @@ public class ShotDarkness : Skill
         _targetPoint = Vector3.positiveInfinity;
         _target = null;
         _consecutiveShots = 0;
+        AnimCastEnded();
     }
 }

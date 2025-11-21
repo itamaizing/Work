@@ -24,7 +24,7 @@ public class SkillRenderer : NetworkBehaviour
     private List<Character> _targets = new List<Character>();
     private List<LineZoneRender> _lineZoneRenders = new();
     private bool _isOverrideClosestTarget = false;
-    //private SphereArea _tempDamageZone;
+    private CircleArea _tempDamageZone;
     private CircleArea _tempArea;
     private float _lineStartLength;
    // private float _lineEndLength;
@@ -108,19 +108,19 @@ public class SkillRenderer : NetworkBehaviour
     [ClientRpc]
     public void RpcDrawDamageZone(Vector3 position, float radius, Damage damage, GameObject player)
     {
-		/* _tempDamageZone = Instantiate(_damageZonePref, position, Quaternion.identity);
+        /* _tempDamageZone = Instantiate(_damageZonePref, position, Quaternion.identity);
 		 _tempDamageZone.SetSize(radius, damage);
 
 		 Color zoneColor = player.layer == LayerMask.NameToLayer("Allies") ? _colorForAllies : _colorForEnemies;
 		 _tempDamageZone.SetColor(zoneColor);*/
 
-		_tempArea = Instantiate(_areaPref, position, Quaternion.identity);
-		_tempArea.SetSize(radius, damage);
+        _tempDamageZone = Instantiate(_areaPref, position, Quaternion.identity);
+        _tempDamageZone.SetSize(radius, damage);
 
 		Color zoneColor = player.layer == LayerMask.NameToLayer("Allies") ? _colorForAllies : _colorForEnemies;
-		_tempArea.SetColor(zoneColor);
+        _tempDamageZone.SetColor(zoneColor);
 
-        _drawnZonesQueue.Enqueue(_tempArea);
+        _drawnZonesQueue.Enqueue(_tempDamageZone);
     }
 
     [Command]

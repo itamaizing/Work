@@ -17,6 +17,7 @@ public class SkillQueue : MonoBehaviour
 
     public event Action<Skill> SkillAdded;
     public event Action<Skill> SkillDeleted;
+    public event Action<Skill> Cancell;
 
     private void Update()
     {
@@ -61,7 +62,6 @@ public class SkillQueue : MonoBehaviour
             }
         }
     }
-
     public void Add(Skill skill)
     {
         //if (_skills.Contains(skill))
@@ -77,6 +77,7 @@ public class SkillQueue : MonoBehaviour
         if (_currentSkill != null)
         {
             _currentSkill.TryCancel(isForceCancel);
+
             if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo target)) ToggleSelectCircles(target, false);
 
 
@@ -111,13 +112,13 @@ public class SkillQueue : MonoBehaviour
                 }
 
                 queuedSkill.TryCancel(isForceCancel);
+                Cancell?.Invoke(queuedSkill);
                 return true;
             }
         }
 
         return false;
     }
-
     private void Draw(Skill skill)
     {
         if (_skillRenderer == null) return;
@@ -148,8 +149,6 @@ public class SkillQueue : MonoBehaviour
 
         return temp;
     }
-
-
     private void OnCastEnded()
     {
         _currentSkill.CastEnded -= OnCastEnded;

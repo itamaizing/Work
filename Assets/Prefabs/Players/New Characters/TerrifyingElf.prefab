@@ -19751,8 +19751,8 @@ MonoBehaviour:
   ghostSkill: {fileID: 1718052129104348959}
   audioClip: {fileID: 8300000, guid: ba78f434c86f1ec4d92aa393ca60ca17, type: 3}
   terrifyingElfAura: {fileID: 6686568037796463366}
-  minDamage: 6
-  maxDamage: 10
+  minDamage: 100
+  maxDamage: 150
 --- !u!114 &6009180366675701932
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19957,6 +19957,7 @@ MonoBehaviour:
   _maxAdditionalManaUsage: 7
   ghost: {fileID: 1718052129104348959}
   damageMinoin: 60
+  skillQueue: {fileID: 4490336970382221666}
 --- !u!114 &6063604074090390129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20441,7 +20442,7 @@ MonoBehaviour:
   - resourceType: 1
     resourceCost: 15
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
+  _cooldownTime: 12
   _castDeley: 0
   _damageValue: 0
   _abilitySchool: 5
@@ -20490,6 +20491,7 @@ MonoBehaviour:
   shotIntoSky: {fileID: 6009180366675701932}
   arrowWithTreeEffect: {fileID: 2102560157480070522, guid: aedf6de1982891348890e277ff5488fa, type: 3}
   arrowIntoSkyEffect: {fileID: 215749735526849689}
+  skillQueue: {fileID: 4490336970382221666}
   groundLayer:
     serializedVersion: 2
     m_Bits: 8192

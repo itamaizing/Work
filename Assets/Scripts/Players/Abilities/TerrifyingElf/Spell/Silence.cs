@@ -13,6 +13,7 @@ public class Silence : Skill
     [SerializeField] private int _maxAdditionalManaUsage = 7;
     [SerializeField] private Ghost ghost;
     [SerializeField] private float damageMinoin = 60;
+    [SerializeField] private SkillQueue skillQueue;
 
     private float _baseDuration;
     private AudioSource audioSource;
@@ -23,8 +24,22 @@ public class Silence : Skill
     private bool _isSilenceEffectsOnMinionMagic;
     private bool _isSilenceEffectGhostCast;
     private bool _isSilenceAddAllCharacterWithDeabaffElf;
-
     public bool IsSilenceAddAllCharacterWithDeabaffElf { get => _isSilenceAddAllCharacterWithDeabaffElf; }
+
+    private void OnEnable()
+    {
+        if (skillQueue != null) skillQueue.Cancell += HandleSkillDeleted;
+    }
+
+    private void OnDisable()
+    {
+        if (skillQueue != null) skillQueue.Cancell -= HandleSkillDeleted;
+    }
+
+    private void HandleSkillDeleted(Skill skill)
+    {
+        if (skill == this) StopDamageZone();
+    }
 
     protected override bool IsCanCast
     {
@@ -43,9 +58,8 @@ public class Silence : Skill
         }
     }
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellSilence");
     protected override int AnimTriggerCast => 0;
-
     private void Start()
     {
         _baseDuration = _duration;
