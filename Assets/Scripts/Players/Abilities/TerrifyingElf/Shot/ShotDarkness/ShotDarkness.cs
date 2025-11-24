@@ -101,6 +101,7 @@ public class ShotDarkness : Skill
     {
         if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
         _targetPoint = targetInfo.Points[0];
+        Debug.Log($"_targetPoint: {_targetPoint}");
     }
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {

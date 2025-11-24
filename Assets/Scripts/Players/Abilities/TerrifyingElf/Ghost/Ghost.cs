@@ -145,8 +145,17 @@ public class Ghost : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _spawnPosition = targetInfo.Points[0];
-        _shouldSpawnGhost = true;
+        if (targetInfo.Targets.Count > 0)
+        {
+            if (_teleportGhost) _ghostToTeleport = (Character)targetInfo.Targets[0];
+            else _targetCharacter = (Character)targetInfo.Targets[0];
+        }
+
+        else if (targetInfo.Points.Count > 0)
+        {
+            _spawnPosition = targetInfo.Points[0];
+            _shouldSpawnGhost = true;
+        }
     }
 
     public void TryStartGhostBoostWindow() => _boostWindow = StartCoroutine(GhostBoostWindow());
@@ -202,7 +211,10 @@ public class Ghost : Skill
         Vector3 firstPoint = Vector3.positiveInfinity;
         Vector3 secondPoint = Vector3.positiveInfinity;
 
-        while (float.IsPositiveInfinity(secondPoint.x))
+        Character targetCharacter = null;
+        Character targetGhost = null;
+
+        while (float.IsPositiveInfinity(secondPoint.x) || targetCharacter == null || targetGhost == null)
         {
             firstPoint = GetMousePoint();
             _teleportGhost = false;
@@ -233,11 +245,11 @@ public class Ghost : Skill
                     if (_ghosts.Count > 0)
                     {
                         _ghostToMove = _ghosts.Count > 1 ? _ghosts[_ghosts.Count - 2] : _ghosts[0];
-                        _targetCharacter = character;
+                        targetCharacter = character;
                         _ghostMoveToTarget = true;
                     }
 
-                    yield break;
+                    break;
                 }
             }
 
@@ -254,12 +266,12 @@ public class Ghost : Skill
                     }
 
                     _teleportGhost = true;
-                    _ghostToTeleport = ghostPreview;
-                    TeleportToGhost(_ghostToTeleport);
+                    targetGhost = ghostPreview;
+                    TeleportToGhost(targetGhost);
                     ClearData();
                     TryCancel();
                     yield return new WaitForSeconds(0.1f);
-                    yield break;
+                    break;
                 }
             }
 
@@ -269,7 +281,7 @@ public class Ghost : Skill
                 {
                     secondPoint = GetMousePoint();
                     if (secondPoint == Vector3.zero) { yield return null; continue; }
-
+                    Debug.Log($"secondPoint: {secondPoint}");
                     bool heroCanSee = IsWithinRadius(secondPoint, _heroVisionRadius);
                     bool treeCanSee = _allGrowTrees.Any(tree => IsWithinRadius(tree.transform.position, secondPoint, _treeVisionRadius));
                     bool canSpawnHere = (_isGhostSpawnInRadiusTree && (IsNearGrowTree(secondPoint, 1f) || IsVisibleToHero(secondPoint))) || (!_isGhostSpawnInRadiusTree && IsMouseInRadius(Radius));
@@ -292,7 +304,7 @@ public class Ghost : Skill
                         {
                             _shouldSpawnGhost = true;
                             AdjustCastDelay();
-                            yield break;
+                            break;
                         }
                     }
                 }
@@ -303,8 +315,12 @@ public class Ghost : Skill
 
         if (_ghostPrefabPreview != null) Destroy(_ghostPrefabPreview);
 
+        Debug.Log($"secondPoint 2: {secondPoint}");
+
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(secondPoint);
+        if (targetCharacter != null) targetInfo.Targets.Add(targetCharacter);
+        else if (targetGhost != null) targetInfo.Targets.Add(targetGhost);
         callbackDataSaved(targetInfo);
     }
 
@@ -334,6 +350,8 @@ public class Ghost : Skill
         agent.stoppingDistance = 1.5f;
         agent.updateRotation = true;
 
+        Vector3 targetPosition = target.transform.position;
+        targetPosition.y = 1f;
         agent.SetDestination(target.transform.position);
 
         while (true)
@@ -439,6 +457,7 @@ public class Ghost : Skill
 
     private void PerformTeleport(Vector3 targetPosition)
     {
+        targetPosition.y = 0f;
         var moveComponent = GetComponent<MoveComponent>();
         moveComponent?.TeleportToPositionSmooth(targetPosition, 0.5f);
 
@@ -544,6 +563,7 @@ public class Ghost : Skill
     private IEnumerator SpawnGhostVisualEffect(Vector3 targetPosition)
     {
         _isSpawningGhostVisual = true;
+        targetPosition.y = 1f;
 
         RemoveOldestGhostIfNeeded();
         CmdAcSummoningGhost();
@@ -655,7 +675,12 @@ public class Ghost : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_shouldSpawnGhost && _spawnPosition != Vector3.zero && TryConsumeMana(12)) StartCoroutine(SpawnGhostVisualEffect(_spawnPosition));
+        if (_shouldSpawnGhost && _spawnPosition != Vector3.zero && TryConsumeMana(12))
+        {
+            Debug.Log("1");
+            StartCoroutine(SpawnGhostVisualEffect(_spawnPosition));
+        }
+
         else if (_ghostMoveToTarget && _ghostToMove != null && _targetCharacter != null) StartCoroutine(MoveGhostToCharacter(_ghostToMove, _targetCharacter));
 
         yield return null;
