@@ -752,13 +752,31 @@ public abstract class Skill : NetworkBehaviour
             Value = Damage,
             Type = DamageType,
         };
+
         _skillRender.CmdDrawDamageZone(position, Area, damage, _hero.gameObject);
     }
+
+    public void DrawDamageZoneClient(Vector3 position)
+    {
+        Damage damage = new Damage
+        {
+            Value = Damage,
+            Type = DamageType,
+        };
+
+        _skillRender.DrawDamageZone(position, Area, damage, _hero.gameObject);
+    }
+
 
     public void StopDamageZone()
     {
         _skillRender.CmdRemoveNextDamageZone();
     }
+    public void ClientStopDamageZone()
+    {
+        _skillRender.RemoveNextDamageZone();
+    }
+
 
     [ClientCallback]
     protected void AnimStartCastCoroutine()

@@ -469,7 +469,10 @@ GameObject:
   - component: {fileID: 2097685094144883168}
   - component: {fileID: 2042335225482926251}
   - component: {fileID: 5108004075575563715}
-  - component: {fileID: 5145060064481151966}
+  - component: {fileID: 3030817534043718475}
+  - component: {fileID: 1525237466600288129}
+  - component: {fileID: 232768639021521674}
+  - component: {fileID: 2241304375329347406}
   m_Layer: 8
   m_Name: GrowTree
   m_TagString: Enemies
@@ -623,9 +626,9 @@ MonoBehaviour:
   _selectedCircle: {fileID: 9115519821676638475}
   _minimapMarker: {fileID: 7500440178365392226}
   _objectData: {fileID: 11400000, guid: 7ee4128bb430f07458a639f23fc41069, type: 2}
-  _objectHealth: {fileID: 6826702645414746608}
+  _objectHealth: {fileID: 1525237466600288129}
   _resources:
-  - {fileID: 6826702645414746608}
+  - {fileID: 1525237466600288129}
   _indexTeam: 0
   uiComponent: {fileID: 2097685094144883168}
   live: 1
@@ -708,7 +711,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61223552b5399ec4cb555068de37de05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectHealth: {fileID: 6826702645414746608}
+  objectHealth: {fileID: 0}
   circleSelect: {fileID: 9115519821676638475}
   minimapMarker: {fileID: 7500440178365392226}
   damageSpawn: {fileID: 5087257125756015543}
@@ -749,7 +752,64 @@ MonoBehaviour:
   characterLayer:
     serializedVersion: 2
     m_Bits: 512
---- !u!65 &5145060064481151966
+--- !u!114 &3030817534043718475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2058911381882631605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f9c63c6a7dd64748ac13474f5a6e770, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageTracker
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+--- !u!114 &1525237466600288129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2058911381882631605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d336e9dc8383bdd4fa5d830e725255df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _resourceType: 0
+  _regenerationDelay: 0
+  _objectBar: {fileID: 7413096228921928745}
+  _objectData: {fileID: 11400000, guid: 7ee4128bb430f07458a639f23fc41069, type: 2}
+  obj: {fileID: 2058911381882631605}
+  _ignoredSchools: 
+  _ignoredForms: 
+  _ignoredSkillTypes: 
+  _regenModification: 1
+  live: 0
+  isDestroyOnDeath: 1
+  isRegenerationEnabled: 0
+--- !u!114 &232768639021521674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2058911381882631605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfb4a106016f7944db805ad0572ebf6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+--- !u!65 &2241304375329347406
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -764,12 +824,12 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 40, y: 0.5, z: 40}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1.1668752, y: 5.558297, z: 1.2225997}
+  m_Center: {x: 0.0747474, y: 2.1720905, z: 0.08538276}
 --- !u!1 &2412534617357909401
 GameObject:
   m_ObjectHideFlags: 0
@@ -1417,7 +1477,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -1895,14 +1955,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 867012621840115103}
-  - component: {fileID: 6826702645414746608}
-  - component: {fileID: 4129786086200522693}
-  - component: {fileID: 6143567429798250789}
-  - component: {fileID: 5646047847491893357}
   - component: {fileID: 4245865865593155728}
   - component: {fileID: 5644481599665937541}
   m_Layer: 8
-  m_Name: HitBox
+  m_Name: TreeCrown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1923,83 +1979,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3553033850970622170}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6826702645414746608
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6998763136272815148}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d336e9dc8383bdd4fa5d830e725255df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _resourceType: 0
-  _regenerationDelay: 0
-  _objectBar: {fileID: 7413096228921928745}
-  _objectData: {fileID: 11400000, guid: 7ee4128bb430f07458a639f23fc41069, type: 2}
-  obj: {fileID: 0}
-  _ignoredSchools: 
-  _ignoredForms: 
-  _ignoredSkillTypes: 
-  live: 0
-  isDestroyOnDeath: 1
-  isRegenerationEnabled: 0
---- !u!114 &4129786086200522693
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6998763136272815148}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfb4a106016f7944db805ad0572ebf6d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
---- !u!114 &6143567429798250789
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6998763136272815148}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f9c63c6a7dd64748ac13474f5a6e770, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
---- !u!65 &5646047847491893357
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6998763136272815148}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 5.5749884, z: 1}
-  m_Center: {x: 0, y: 2.2125082, z: 0}
 --- !u!65 &4245865865593155728
 BoxCollider:
   m_ObjectHideFlags: 0

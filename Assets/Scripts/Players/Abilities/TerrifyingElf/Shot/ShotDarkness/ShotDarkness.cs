@@ -34,8 +34,8 @@ public class ShotDarkness : Skill
 
     private bool CheckCanCast()
     {
-        if (_target == null) return Vector3.Distance(_targetPoint, transform.position) <= Radius;
-        return Vector3.Distance(_targetPoint, transform.position) <= Radius || Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+        if (_target == null) return Vector3.Distance(_targetPoint, transform.position) <= CastLength;
+        return Vector3.Distance(_targetPoint, transform.position) <= CastLength || Vector3.Distance(_target.transform.position, transform.position) <= CastLength;
     }
 
     private void OnDestroy() => OnSkillCanceled -= HandleSkillCanceled;
@@ -53,10 +53,6 @@ public class ShotDarkness : Skill
             var health = targetCurrent.Health;
             _isHealthAboveThreshold = health.CurrentValue >= health.MaxValue * 0.8f;
         }
-
-        if (_target != null) Hero.Move.LookAtTransform(_target.transform);
-        else if (_targetPoint != Vector3.positiveInfinity) Hero.Move.LookAtPosition(_targetPoint);
-
 
         if (!terrifyingElfAura) Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
         else
@@ -101,14 +97,13 @@ public class ShotDarkness : Skill
     {
         if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
         _targetPoint = targetInfo.Points[0];
-        Debug.Log($"_targetPoint: {_targetPoint}");
     }
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         ITargetable target = null;
         Vector3 targetPoint = Vector3.positiveInfinity;
 
-        while (float.IsPositiveInfinity(targetPoint.x) && target == null)
+        while (float.IsPositiveInfinity(targetPoint.x))
         {
             if (GetMouseButton)
             {
@@ -175,11 +170,9 @@ public class ShotDarkness : Skill
             _targetPoint = Vector3.positiveInfinity;
             Hero.Move.StopLookAt();
         }
-
-        AnimCastEnded();
     }
 
-    private bool IsTargetInRange() { return _target != null && Vector3.Distance(transform.position, _target.transform.position) <= Radius; }
+    private bool IsTargetInRange() { return _target != null && Vector3.Distance(transform.position, _target.transform.position) <= CastLength; }
     private void UseMana(float amount)
     {
         float mana = amount;
@@ -236,7 +229,9 @@ public class ShotDarkness : Skill
     public void CmdCreateProjectileAtPosition(Vector3 position, float damage, float magDamage)
     {
         Vector3 spawnPosition = spawnPoint != null ? spawnPoint.position : transform.position;
-        Vector3 direction = (position - spawnPosition).normalized;
+
+        Vector3 flatTargetPoint = new Vector3(position.x, spawnPosition.y, position.z);
+        Vector3 direction = (flatTargetPoint - spawnPosition).normalized;
 
         if (direction == Vector3.zero) return;
 
@@ -271,6 +266,5 @@ public class ShotDarkness : Skill
         _targetPoint = Vector3.positiveInfinity;
         _target = null;
         _consecutiveShots = 0;
-        AnimCastEnded();
     }
 }

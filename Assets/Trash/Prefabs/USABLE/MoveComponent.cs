@@ -101,6 +101,8 @@ public class MoveComponent : NetworkBehaviour
 	{
 		_isLookAtCursor = false;
 
+		if (position == transform.position || (position - transform.position).sqrMagnitude < 0.01f)	return;
+
 		if (float.IsNaN(position.x) || float.IsNaN(position.y) || float.IsNaN(position.z) ||
 	  position == Vector3.positiveInfinity || position == Vector3.negativeInfinity ||
 	  Vector3.Distance(transform.position, position) < Mathf.Epsilon) return;

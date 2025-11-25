@@ -15,7 +15,6 @@ public class Silence : Skill
     [SerializeField] private float damageMinoin = 60;
     [SerializeField] private SkillQueue skillQueue;
 
-    private float _baseDuration;
     private AudioSource audioSource;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
 
@@ -38,7 +37,7 @@ public class Silence : Skill
 
     private void HandleSkillDeleted(Skill skill)
     {
-        if (skill == this) StopDamageZone();
+        if (skill == this) ClientStopDamageZone();
     }
 
     protected override bool IsCanCast
@@ -62,7 +61,6 @@ public class Silence : Skill
     protected override int AnimTriggerCast => 0;
     private void Start()
     {
-        _baseDuration = _duration;
         _baseCooldownTime = CooldownTime;
         audioSource = GetComponent<AudioSource>();
     }
@@ -79,7 +77,7 @@ public class Silence : Skill
 
                 if (IsPointInRadius(Radius, targetPoint))
                 {
-                    DrawDamageZone(targetPoint);
+                    DrawDamageZoneClient(targetPoint);
                     break;
                 }
             }
@@ -95,10 +93,9 @@ public class Silence : Skill
     {
         if (_targetPoint == Vector3.positiveInfinity) yield return null;
 
-        CmdAdditionalMana();
         SpawnEffectAtTargetPoint(_targetPoint);
         ApplyStateToEnemiesInZone(_targetPoint);
-        StopDamageZone();
+        ClientStopDamageZone();
         yield return null;
     }
 
@@ -111,7 +108,7 @@ public class Silence : Skill
 
     private void ApplyStateToEnemiesInZone(Vector3 target)
     {
-        Collider[] hitColliders = Physics.OverlapSphere(target, Area, TargetsLayers);
+        Collider[] hitColliders = Physics.OverlapSphere(target, Area - 1.5f, TargetsLayers);
 
         int minionHitCount = 0;
         int ghostAuraMinionHitCount = 0;
@@ -196,7 +193,6 @@ public class Silence : Skill
         }
 
     }
-
     [Server] private void ServerGhostHealthCheck(MinionComponent target) => StartCoroutine(IGhostHealthCheck(target));
 
     #region Talents
@@ -217,32 +213,28 @@ public class Silence : Skill
     {
         RpcPlayShotSound();
 
+        float finalDuration = _duration;
+
         if (_effectsDarknessTalent && targetState.CheckForState(States.InnerDarkness))
         {
             int innerDarknessStacks = targetState.CheckStateStacks(States.InnerDarkness);
 
             float durationMultiplier = 1.4f + 0.1f * (innerDarknessStacks - 1);
-            _duration = durationMultiplier;
+            finalDuration = durationMultiplier;
         }
 
-        targetState.AddState(States.Silent, _duration, 0, Hero.gameObject, this.name);
-    }
-
-    [Command]
-    private void CmdAdditionalMana()
-    {
         var manaResource = Hero.TryGetResource(ResourceType.Mana);
-
         if (manaResource != null)
         {
-
             int availableMana = Mathf.Min((int)manaResource.CurrentValue - 1, _maxAdditionalManaUsage);
             if (availableMana > 1)
             {
                 manaResource.TryUse(availableMana);
-                _duration += 0.5f * availableMana;
+                finalDuration += 0.5f * availableMana;
             }
         }
+
+        targetState.AddState(States.Silent, finalDuration, 0, Hero.gameObject, this.name);
     }
 
     [ClientRpc]

@@ -60,8 +60,8 @@ public class ReconnaissanceFireAura : NetworkBehaviour
         OnStateDarkTalentChanged?.Invoke(newValue);
     }
 
-    [ServerCallback]
-    private void OnTriggerEnter(Collider other)
+    [Server]
+    public void HandleTriggerEnter(Collider other)
     {
         if (((1 << other.gameObject.layer) & characterLayer.value) == 0) return;
 
@@ -73,8 +73,8 @@ public class ReconnaissanceFireAura : NetworkBehaviour
         }
     }
 
-    [ServerCallback]
-    private void OnTriggerExit(Collider other)
+    [Server]
+    public void HandleTriggerExit(Collider other)
     {
         if (((1 << other.gameObject.layer) & characterLayer.value) == 0) return;
 

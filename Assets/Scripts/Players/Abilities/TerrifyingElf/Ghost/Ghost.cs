@@ -281,7 +281,6 @@ public class Ghost : Skill
                 {
                     secondPoint = GetMousePoint();
                     if (secondPoint == Vector3.zero) { yield return null; continue; }
-                    Debug.Log($"secondPoint: {secondPoint}");
                     bool heroCanSee = IsWithinRadius(secondPoint, _heroVisionRadius);
                     bool treeCanSee = _allGrowTrees.Any(tree => IsWithinRadius(tree.transform.position, secondPoint, _treeVisionRadius));
                     bool canSpawnHere = (_isGhostSpawnInRadiusTree && (IsNearGrowTree(secondPoint, 1f) || IsVisibleToHero(secondPoint))) || (!_isGhostSpawnInRadiusTree && IsMouseInRadius(Radius));
@@ -314,8 +313,6 @@ public class Ghost : Skill
         }
 
         if (_ghostPrefabPreview != null) Destroy(_ghostPrefabPreview);
-
-        Debug.Log($"secondPoint 2: {secondPoint}");
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(secondPoint);
@@ -675,12 +672,7 @@ public class Ghost : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_shouldSpawnGhost && _spawnPosition != Vector3.zero && TryConsumeMana(12))
-        {
-            Debug.Log("1");
-            StartCoroutine(SpawnGhostVisualEffect(_spawnPosition));
-        }
-
+        if (_shouldSpawnGhost && _spawnPosition != Vector3.zero && TryConsumeMana(12)) StartCoroutine(SpawnGhostVisualEffect(_spawnPosition));
         else if (_ghostMoveToTarget && _ghostToMove != null && _targetCharacter != null) StartCoroutine(MoveGhostToCharacter(_ghostToMove, _targetCharacter));
 
         yield return null;

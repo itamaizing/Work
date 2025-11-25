@@ -19749,7 +19749,7 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 7
+  _radius: 0
   _area: 1
   _castLength: 7
   _castWidth: 0.1
@@ -19872,7 +19872,7 @@ MonoBehaviour:
   autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 768
+    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
@@ -19884,7 +19884,7 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 7
+  _radius: 0
   _area: 1
   _castLength: 7
   _castWidth: 0.1

@@ -123,6 +123,23 @@ public class SkillRenderer : NetworkBehaviour
         _drawnZonesQueue.Enqueue(_tempDamageZone);
     }
 
+    public void DrawDamageZone(Vector3 position, float radius, Damage damage, GameObject player)
+    {
+        /* _tempDamageZone = Instantiate(_damageZonePref, position, Quaternion.identity);
+		 _tempDamageZone.SetSize(radius, damage);
+
+		 Color zoneColor = player.layer == LayerMask.NameToLayer("Allies") ? _colorForAllies : _colorForEnemies;
+		 _tempDamageZone.SetColor(zoneColor);*/
+
+        _tempDamageZone = Instantiate(_areaPref, position, Quaternion.identity);
+        _tempDamageZone.SetSize(radius, damage);
+
+        Color zoneColor = player.layer == LayerMask.NameToLayer("Allies") ? _colorForAllies : _colorForEnemies;
+        _tempDamageZone.SetColor(zoneColor);
+
+        _drawnZonesQueue.Enqueue(_tempDamageZone);
+    }
+
     [Command]
     public void CmdStopDrawDamageZone()
     {
@@ -137,6 +154,15 @@ public class SkillRenderer : NetworkBehaviour
 
     [ClientRpc]
     public void RpcRemoveNextDamageZone()
+    {
+        if (_drawnZonesQueue.Count > 0)
+        {
+            var zone = _drawnZonesQueue.Dequeue();
+            if (zone != null) Destroy(zone.gameObject);
+        }
+    }
+
+    public void RemoveNextDamageZone()
     {
         if (_drawnZonesQueue.Count > 0)
         {
