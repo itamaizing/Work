@@ -14,8 +14,8 @@ public class JumpWithChelicera : Skill
     [SerializeField] private float cooldownJump = 12f;
 
     private Animator _animator;
-    private IDamageable _target;
-    private Character _runtimeTarget;
+    //private IDamageable _target;
+    //private Character _runtimeTarget;
     private Vector3 _mousePosition = Vector3.positiveInfinity;
 
     private static readonly int jumpStart = Animator.StringToHash("JumpStart");
@@ -34,13 +34,13 @@ public class JumpWithChelicera : Skill
     protected override int AnimTriggerCast => jumpStart;
     protected override int AnimTriggerCastDelay => 0;
 
-    public Character RuntimeTarget { get => _runtimeTarget; set => _runtimeTarget = value; }
-    public IDamageable Target { get => _target; set => _target = value; }
+    //public Character RuntimeTarget { get => _runtimeTarget; set => _runtimeTarget = value; }
+    //public IDamageable Target { get => _target; set => _target = value; }
     public bool IsJumpDone { get => _isJumpDone; set => _isJumpDone = value; }
     public bool IsCheliceraStrikeCast { get => _isCheliceraStrikeCast; set => _isCheliceraStrikeCast = value; }
     public float CooldownJump { get => cooldownJump; set => cooldownJump = value; }
 
-    protected override bool IsCanCast => _target != null && cooldownEnergy.CurrentValue >= cooldownJump && CheckCanCast();
+    protected override bool IsCanCast => GetTarget() != null && cooldownEnergy.CurrentValue >= cooldownJump && CheckCanCast();
 
     private bool isJumpWithCheliceraChanceDamageCrit = false;
     public void JumpWithCheliceraChanceDamageCrit(bool value) => isJumpWithCheliceraChanceDamageCrit = value;
@@ -51,7 +51,8 @@ public class JumpWithChelicera : Skill
 
     protected override void ClearData()
     {
-        _target = null;
+        ClearTarget();
+        //_target = null;
         _mousePosition = Vector3.positiveInfinity;
         _hasDealtDamage = false;
     }
@@ -66,26 +67,27 @@ public class JumpWithChelicera : Skill
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         _castDeley = _delayBeforeJump;
-        _runtimeTarget = null;
+        //_runtimeTarget = null;
 
-        while (_target == null)
+        while (GetTarget() == null)
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget();
-                if (_target is Character characterTarget) _runtimeTarget = characterTarget;
+                FindTarget();
+                //_target = GetRaycastTarget();
+                //if (_target is Character characterTarget) _runtimeTarget = characterTarget;
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        if (_runtimeTarget != null) targetInfo.Targets.Add(_runtimeTarget);
+        if (GetTarget() != null) targetInfo.AddTarget(GetTarget());
         callbackDataSaved?.Invoke(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_target != null) ExecuteJump(_target);
+        if (GetTarget() != null) ExecuteJump(GetTarget());
         yield return null;
     }
 
@@ -197,7 +199,7 @@ public class JumpWithChelicera : Skill
     {
         _cheliceraeStrike.ChanceCritDamageEvolutionFour = isJumpWithCheliceraChanceDamageCrit ? 0.3f : 0.15f;
         _cheliceraeStrike.SetAdditionalDamage(additionalDamage);
-        _cheliceraeStrike.SetTarget((IDamageable)target);
+        _cheliceraeStrike.SetTarget(GetTarget());
         _cheliceraeStrike.CheliceraStrikeCast();
         _cheliceraeStrike.ClearDataCheliceraStrike();
     }
@@ -211,7 +213,7 @@ public class JumpWithChelicera : Skill
         {
             _cheliceraeStrike.ChanceCritDamageEvolutionFour = isJumpWithCheliceraChanceDamageCrit ? 0.3f : 0.15f;
             _cheliceraeStrike.SetAdditionalDamage(additionalDamage);
-            _cheliceraeStrike.SetTarget(target);
+            _cheliceraeStrike.SetTarget(GetTarget());
             _cheliceraeStrike.CheliceraStrikeCast();
             _cheliceraeStrike.ClearDataCheliceraStrike();
         }
@@ -219,7 +221,7 @@ public class JumpWithChelicera : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as Character;
+        if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0] as Character);
     }
 
     public void JumpWithCheliceraCast() => AnimStartCastCoroutine();
@@ -245,7 +247,7 @@ public class JumpWithChelicera : Skill
 
     private bool CheckCanCast()
     {
-        if (_target == null) return false;
-        return Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
+        if (GetTarget() == null) return false;
+        return Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius && NoObstacles(GetTarget().transform.position, transform.position, _obstacle);
     }
 }

@@ -10,7 +10,7 @@ public class TestH3 : Skill
     [SerializeField] private float _animSpeed = 1;
 
     private Vector3 _targetPoint = Vector3.positiveInfinity;
-    private Character _target;
+   // private Character _target;
 
     protected override bool IsCanCast { get => CheckCanCast(); }
 
@@ -20,11 +20,11 @@ public class TestH3 : Skill
 
     private bool CheckCanCast()
     {
-        if (_target == null)
+        if (GetTarget() == null)
             return Vector3.Distance(_targetPoint, transform.position) <= Radius;
 
         return Vector3.Distance(_targetPoint, transform.position) <= Radius ||
-               Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+               Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius;
     }
 
     public void AnimCastH3()
@@ -51,15 +51,15 @@ public class TestH3 : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _target = (Character)targetInfo.Targets[0];
+        SetTarget((Character)targetInfo.GetTargets()[0]);
         _targetPoint = targetInfo.Points[0];
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_target != null)
+        if (GetTarget() != null)
         {
-            CmdCreateProjecttile(_target.transform);
+            CmdCreateProjecttile(GetTarget().transform);
         }
         else
         {
@@ -71,7 +71,9 @@ public class TestH3 : Skill
 
     protected override void ClearData()
     {
-        _target = null;
+        //_target = null;
+
+        ClearTarget();
         _targetPoint = Vector3.positiveInfinity;
     }
 
@@ -79,12 +81,13 @@ public class TestH3 : Skill
     {
         Buff.CastSpeed.IncreasePercentage(_animSpeed);
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && _target == null)
+        while (float.IsPositiveInfinity(_targetPoint.x) && GetTarget() == null)
         {
             if (GetMouseButton)
             {
-                _target = GetTarget().character;
-                _targetPoint = GetTarget().Position;
+                FindTarget();
+                //_target = GetTarget().character;
+                //_targetPoint = GetTarget().Position;
 
 				//_target = GetRaycastTarget();
                 _targetPoint = GetMousePoint();
@@ -92,7 +95,7 @@ public class TestH3 : Skill
             yield return null;
         }
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Targets.Add(_target);
+        targetInfo.AddTarget(GetTarget());
         targetInfo.Points.Add(_targetPoint);
         callbackDataSaved(targetInfo);
     }

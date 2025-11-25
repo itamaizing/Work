@@ -8,7 +8,6 @@ public class Energy : Resource
 	[SerializeField] private float _sumDamageGiven = 0;
 
 	private float _timer = 0;
-	private bool _canRegen = true;
 	private float _regenValue = 1;
 
 	private void Update()
@@ -18,7 +17,7 @@ public class Energy : Resource
 		if (_timer > _regenerationPeriod)
 		{
 			_timer = 0;
-			_canRegen = true;
+			canRegen = true;
 		}
 
 		if (_regenCoroutine == null)
@@ -41,7 +40,7 @@ public class Energy : Resource
 		{
 			return false;
 		}
-		_canRegen = false;
+		canRegen = false;
 		_timer = 0;
 
 		_currentValue -= EnergyValue;
@@ -69,6 +68,7 @@ public class Energy : Resource
 	{
 		float usedEnergy = CurrentValue;
 		CurrentValue = 0;
+		canRegen = false;
 		return usedEnergy;
 	}
 
@@ -86,7 +86,8 @@ public class Energy : Resource
 
 	public void ForceRegenNow()
 	{
-		if (_regenCoroutine == null) Regenerate(_regenCoroutine);
+		if (_regenCoroutine == null) 
+			Regenerate();
 	}
 
 	public void TalentRegenEnergy(float value)

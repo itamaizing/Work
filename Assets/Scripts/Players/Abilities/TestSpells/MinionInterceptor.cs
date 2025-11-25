@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class MinionInterceptor : Skill
 {
-    private MinionComponent _target;
+    //private MinionComponent _target;
 
     protected override bool IsCanCast => true;
 
@@ -16,35 +16,45 @@ public class MinionInterceptor : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _target = (MinionComponent)targetInfo.Targets[0];
+
+        SetTarget((MinionComponent)targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator CastJob()
     {
-        CmdIntercept(_target.gameObject);
+        //CmdIntercept(_target.gameObject);
+        CmdIntercept(GetTarget().gameObject);
         yield return null;
     }
 
     protected override void ClearData()
     {
-        _target = null;
+        ClearTarget();
+        //_target = null;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (_target == null)
+        while (GetTarget() == null)
         {
             if (GetMouseButton)
             {
-                var temp = GetRaycastTarget();
+                FindTarget(true);
+                //var temp = GetRaycastTarget();
 
-                if(temp is MinionComponent minion)
-                    _target = minion;
+                if (GetTarget() is MinionComponent minion)
+                {
+                    //_target = minion;
+                }
+                else
+                {
+                    ClearTarget();
+                }
             }
             yield return null;
         }
         TargetInfo targetInfo = new();
-        targetInfo.Targets.Add(_target);
+        targetInfo.GetTargets().Add(GetTarget());
         callbackDataSaved?.Invoke(targetInfo);
     }
 

@@ -23,8 +23,8 @@ public class CheliceraStrike : Skill
 
     private Damage _dealDamage;
     private Animator _animator;
-    private IDamageable _target;
-    private Character _runtimeTarget;
+    //private IDamageable _target;
+    //private Character _runtimeTarget;
     private float _totalChanceApplyBleeding;
     private float _totalchanceCritDamage;
     private float _criticalDamage;
@@ -32,8 +32,8 @@ public class CheliceraStrike : Skill
     private float _additionalDamageFromSkill;
     private float _spentAttackingPsiEnergy;
     private bool _isClawStrike_Right = true;
-    private Coroutine _castDelayResetCoroutine;
-    private string _baseDescription;
+    //private Coroutine _castDelayResetCoroutine;
+    //private string _baseDescription;
 
     private static readonly int RightClawStrikeTrigger = Animator.StringToHash("CheliceraStrikeTrigger_Right");
     private static readonly int LeftClawStrikeTrigger = Animator.StringToHash("CheliceraStrikeTrigger_Left");
@@ -85,24 +85,25 @@ public class CheliceraStrike : Skill
 
     private bool CheckIsCanCast()
     {
-        return _target != null &&
-            Vector3.Distance(_target.transform.position, transform.position) <= Radius &&
-            NoObstacles(_target.transform.position, transform.position, _obstacle);
+        return GetTarget() != null &&
+            Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius &&
+            NoObstacles(GetTarget().transform.position, transform.position, _obstacle);
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        _runtimeTarget = null;
+        //_runtimeTarget = null;
 
-        while (_target == null)
+        while (GetTarget() == null)
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget();
+                FindTarget();
+                //_target = GetRaycastTarget();
 
-                if (_target != null && _target is Character characterTarget)
+                if (GetTarget() != null && GetTarget() is Character characterTarget)
                 {
-                    _runtimeTarget = characterTarget;
+                    //_runtimeTarget = characterTarget;
                     characterTarget.SelectedCircle.IsActive = true;
                 }
             }
@@ -110,13 +111,13 @@ public class CheliceraStrike : Skill
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        if (_runtimeTarget != null) targetInfo.Targets.Add(_runtimeTarget);
+        if (GetTarget() != null) targetInfo.AddTarget(GetTarget());
         callbackDataSaved?.Invoke(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_target == null) yield break;
+        if (GetTarget() == null) yield break;
 
         _baseDamage = UnityEngine.Random.Range(11f, 13f);
         Damage = _baseDamage;
@@ -124,12 +125,13 @@ public class CheliceraStrike : Skill
         if (_jumpWithChelicera.IsJumpDone)
         {
             cooldownEnergy.CastCooldownEnergySkill(_jumpWithChelicera.CooldownJump, _jumpWithChelicera);
-            _target = _jumpWithChelicera.Target;
+
+            SetTarget((Character)_jumpWithChelicera.GetTarget());
             _jumpWithChelicera.IsJumpDone = false;
         }
         else cooldownEnergy.CastCooldownEnergySkill(cooldownEnergyCost, this);
 
-        DamageDealChelicera(_target);
+        DamageDealChelicera(GetTarget());
         _isClawStrike_Right = !_isClawStrike_Right;
 
         yield return null;
@@ -137,13 +139,14 @@ public class CheliceraStrike : Skill
 
     private void HandleSkillCanceled()
     {
-        _target = null;
+        ClearTarget();
+        //_target = null;
     }
 
-    public void SetTarget(IDamageable target)
+   /* public void SetTarget(IDamageable target)
     {
         _target = target;
-    }
+    }*/
 
     public void DamageDealChelicera(IDamageable target)
     {
@@ -209,7 +212,7 @@ public class CheliceraStrike : Skill
     private bool CheckStateForBleeding()
     {
         States[] blockingStates = { States.Stun, States.Stupefaction, States.TentacleGrip };
-        return _runtimeTarget != null && blockingStates.Any(state => _runtimeTarget.CharacterState.CheckForState(state));
+        return GetTarget() != null && blockingStates.Any(state => GetTarget().CharacterState.CheckForState(state));
     }
 
     private void DamageDealWithAttackingPsionicEnergy(Character targetCharacter)
@@ -316,11 +319,12 @@ public class CheliceraStrike : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
+        if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 
     protected override void ClearData()
     {
-        _target = null;
+        ClearTarget();
+        //_target = null;
     }
 }

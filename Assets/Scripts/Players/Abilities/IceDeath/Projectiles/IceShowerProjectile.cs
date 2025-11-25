@@ -22,7 +22,7 @@ public class IceShowerProjectile : Projectiles
 		};
 	}
 
-	public override void Init(HeroComponent dad, float energy, bool lastHit, Skill skill)
+	public override void Init(Character dad, float energy, bool lastHit, Skill skill)
 	{
 		_dad = dad;
 		_energyDad = energy;

@@ -15,7 +15,7 @@ public class IcePuddleBigObject : Projectiles
     private float _angle = 0;
     private bool _playerInside = false;
 
-    public override void Init(HeroComponent dad, float timeToDestroy, bool lastHit, Skill skill)
+    public override void Init(Character dad, float timeToDestroy, bool lastHit, Skill skill)
     {
         _dad = dad;
         _skill = skill;

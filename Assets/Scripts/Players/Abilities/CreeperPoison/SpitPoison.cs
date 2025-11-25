@@ -93,7 +93,7 @@ public class SpitPoison : Skill, IAltAbility
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _currentTarget = (Character)targetInfo.Targets[0];
+        _currentTarget = (Character)targetInfo.GetTargets()[0];
         _mousePos = targetInfo.Points[0];
     }
 
@@ -121,7 +121,7 @@ public class SpitPoison : Skill, IAltAbility
             yield return null;
         }
         TargetInfo targetInfo = new();
-        targetInfo.Targets.Add(_currentTarget);
+        targetInfo.AddTarget(_currentTarget);
         targetInfo.Points.Add(_mousePos);
         callbackDataSaved(targetInfo);
     }

@@ -101,11 +101,14 @@ public class SeriesOfStrikes : MonoBehaviour
 	private void LastHit(float usedRune, float usedEnergy)
 	{
 		//Debug.Log("Last hit");
-		if (_seriesCompliteCompoTalent) _rune.CmdAdd(usedRune * 2 + 1);
-		_energy.CmdAdd(usedEnergy * 0.4f);
-		_energy.ForceRegenNow();
-
+		if (_seriesCompliteCompoTalent)
+		{
+			_rune.CmdAdd(usedRune * 2 + 1);
+			_energy.CmdAdd(usedEnergy * 0.4f);
+			_energy.ForceRegenNow();
+		}
 		for (int i = 0; i < _seriesOfStrikes.Count; i++) _seriesOfStrikes[i].Reset();
+		
 	}
 
 	private void BonusRuneForDamage(float damage)
@@ -149,6 +152,7 @@ public class SeriesOfStrikes : MonoBehaviour
 
 	private bool SeriesHit(Character target, AbilityForm form, float usedRuneValue, float usedEnergy, float damage)
 	{
+		if (!_seriesCompliteCompoTalent) return false;
 		for (int i = 0; i < _seriesOfStrikes.Count; i++)
 		{
 			if (form == _seriesOfStrikes[i].formList[_seriesOfStrikes[i].hitCount] && (target == _curTarget || target == null))

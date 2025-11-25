@@ -15,7 +15,8 @@ public class TargetSeeker : MonoBehaviour
 
 	public LayerMask TargetsLayers { get => _targetsLayers; protected set => _targetsLayers = value; }
 
-	public TargetToShot GetTarget(TypeClick click, Action<Vector3> ClickPoint, SkillType skillType, float radius, Skill skill, bool isCanTargetHimself = false)
+	/*
+	public TargetToShot GetTarget(TypeClick click, Action<Vector3> ClickPoint, SkillType skillType, float radius, Skill skill, bool isCanTargetHimself = false, bool canTargetDead = false)
 	{
 		_skillType = skillType;
 		_radius = radius;
@@ -53,13 +54,13 @@ public class TargetSeeker : MonoBehaviour
 		{
 			if (!target.isCharater) return target;
 
-			if (target.character.IsDead) return null;
+			if (target.character.IsDead && !canTargetDead) return null;
 
 			return target;
 		}
 
 		return null;
-	}
+	}*/
 
 	public Character ClosedTarget(bool isCanTargetHimself = false)
 	{
@@ -172,6 +173,7 @@ public class TargetSeeker : MonoBehaviour
 		else return null;
 	}
 
+	/*
 	private TargetToShot LeftClick()
 	{
 		TargetToShot target = new TargetToShot();
@@ -231,30 +233,6 @@ public class TargetSeeker : MonoBehaviour
 		}
 		return target;
 	}
-
-	/*public Vector3 GetMousePoint()
-	{
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		RaycastHit hit;
-		if (Physics.Raycast(ray, out hit))
-		{
-			if (autoAttack == AutoAttack.autoAttack)
-			{
-				if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed)
-				{
-					if (hit.collider.TryGetComponent<IDamageable>(out _))
-					{
-
-						IsAutoMode = true;
-						AutoModeChanged?.Invoke(true);
-					}
-				}
-			}
-
-			return hit.point;
-		}
-		return Vector3.zero;
-	}*/
 
 	private TargetToShot ShiftLeftClick()
 	{
@@ -326,6 +304,31 @@ public class TargetSeeker : MonoBehaviour
 		target.isCharater = true;
 		return target;
 	}
+	
+	 public Vector3 GetMousePoint()
+	{
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		RaycastHit hit;
+		if (Physics.Raycast(ray, out hit))
+		{
+			if (autoAttack == AutoAttack.autoAttack)
+			{
+				if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed)
+				{
+					if (hit.collider.TryGetComponent<IDamageable>(out _))
+					{
+
+						IsAutoMode = true;
+						AutoModeChanged?.Invoke(true);
+					}
+				}
+			}
+
+			return hit.point;
+		}
+		return Vector3.zero;
+	}
+	 */
 }
 
 public enum TypeClick

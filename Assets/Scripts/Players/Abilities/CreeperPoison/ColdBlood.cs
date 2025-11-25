@@ -12,10 +12,10 @@ public class ColdBlood : Skill
 
     [Header("Ability Properties")]
     [SerializeField] private CreeperStrike _creeperStrike;
-    [SerializeField] private Character _player;
+   // [SerializeField] private Character _player;
     [SerializeField] private float _reducingCooldownMultiplier = 2f;
 
-    private Character _target;
+    //private Character _target;
     private Vector3 _mousePosition = Vector3.positiveInfinity;
 
     private float _cooldownTimeWithTalent = 4f;
@@ -52,12 +52,12 @@ public class ColdBlood : Skill
     {
         Debug.Log("ColdBlood / ClearData");
         _mousePosition = Vector3.positiveInfinity;
-        _target = null;
+        //_target = null;
         _isPlayer = false;
 
-        if (_player.CharacterState.CheckForState(States.Immateriality))
+        if (Hero.CharacterState.CheckForState(States.Immateriality))
         {
-            _player.CharacterState.CmdRemoveState(States.Immateriality);
+			Hero.CharacterState.CmdRemoveState(States.Immateriality);
         }
 
         if (_waitingHitFromCreeperStrike != null)
@@ -71,28 +71,29 @@ public class ColdBlood : Skill
     {
         if (_indomitable.Data.IsOpen)
         {
-            while (_target == null && float.IsPositiveInfinity(_mousePosition.x))
+            while (GetTarget() == null && float.IsPositiveInfinity(_mousePosition.x))
             {
                 if (GetMouseButton)
                 {
-                    _target = GetTarget(true).character;
-                    Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / target == " + _target);
+                    FindTarget(true);
+					//_target = GetTarget(true).character;
+                   // Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / target == " + _target);
 
-                    if (_target != _player)
+                    if (GetTarget() != Hero)
                     {
                         _isPlayer = false;
-                        Debug.Log("Target != player / Target == " + _target);
+                       // Debug.Log("Target != player / Target == " + _target);
                     }
-                    if (_target == _player)
+                    if (GetTarget() == Hero)
                     { 
                         _isPlayer = true;
-                        Debug.Log("Target == player / Target == " + _target);
+                       // Debug.Log("Target == player / Target == " + _target);
                     }
 
                     _mousePosition = GetMousePoint();
                     Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / _mousePosition == " + _mousePosition);
 
-                    _player.CharacterState.CmdAddState(States.Immateriality, 0, 0, _player.gameObject, Name);
+					Hero.CharacterState.CmdAddState(States.Immateriality, 0, 0, Hero.gameObject, Name);
                 }
                 yield return null;
             }
@@ -151,7 +152,7 @@ public class ColdBlood : Skill
         {
             ReductionSetCooldown(_cooldownTimeWithTalent);
             Debug.Log("ColdBlood / UseAbilityWithTalent / if _isPlayer == true");
-            _player.CharacterState.DispelStates(StateType.Physical, _target.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
+			Hero.CharacterState.DispelStates(StateType.Physical, GetTarget().NetworkSettings.TeamIndex, Hero.NetworkSettings.TeamIndex, true);
         }
         else
         {

@@ -17,7 +17,7 @@ public class IceSword : Skill
 
 	private int _hitInTheRow = 0;
 	private Character _oldtarget;
-	private Character _target;
+	//private Character _target;
 	private float _duration = 3;
 	private Energy _energy;
 	private Coroutine coroutineSwordTime;
@@ -31,9 +31,9 @@ public class IceSword : Skill
 
 	private bool IsCanCastCheck()
 	{
-		if (_target == null) return false;
+		if (GetTarget() == null) return false;
 
-		if (Vector3.Distance(_target.transform.position, transform.position) > Radius)
+		if (Vector3.Distance(GetTarget().transform.position, transform.position) > Radius)
 		{
 			return false;
 		}
@@ -59,28 +59,29 @@ public class IceSword : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _target = (Character)targetInfo.Targets[0];
+        SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		while (_target == null)
+		while (GetTarget() == null)
 		{
 			if (GetMouseButton)
 			{
+				FindTarget();
 				//_target = GetRaycastTarget();
 			}
 			yield return null;
 		}
 		TargetInfo targetInfo = new TargetInfo();
-		targetInfo.Targets.Add(_target);
+		targetInfo.AddTarget(GetTarget());
 		callbackDataSaved(targetInfo);
 	}
 
 	protected override IEnumerator CastJob()
 	{
-		_seriesOfStrikes.MakeHit(_target, AbilityForm.Magic, 0, 10, 0);
-		if (_target == _oldtarget)
+		_seriesOfStrikes.MakeHit(GetTarget(), AbilityForm.Magic, 0, 10, 0);
+		if (GetTarget() == _oldtarget)
 		{
 			_hitInTheRow++;
 			Debug.Log("hit from sword in a row");
@@ -88,7 +89,7 @@ public class IceSword : Skill
 		else
 		{
 			_hitInTheRow = 1;
-			_oldtarget = _target;
+			_oldtarget = GetTarget();
 			Debug.Log("first hit from sword");
 		}
 		if (_hitInTheRow > 2)
@@ -97,13 +98,14 @@ public class IceSword : Skill
 			_hitInTheRow = 0;
 		}
 		ApplyDamage();
-		CmdAdd(_target.gameObject);
+		CmdAdd(GetTarget().gameObject);
 		yield return null;
 	}
 
 	protected override void ClearData()
 	{
-		_target = null;
+		ClearTarget();
+		//_target = null;
 	}
 
 	private void ApplyDamage()
@@ -120,12 +122,12 @@ public class IceSword : Skill
 			PhysicAttackType = AttackRangeType.RangeAttack,
 		};
 
-		if (_critDmg && _target.CharacterState.CheckForState(States.Frozen))
+		if (_critDmg && GetTarget().CharacterState.CheckForState(States.Frozen))
 		{
 			damage2.Value *= (Random.Range(0, 100) < 15) ? 1.8f : 1.1f;
 		}
 
-		CmdApplyDamage(damage2, _target.gameObject);
+		CmdApplyDamage(damage2, GetTarget().gameObject);
 
 		_energy.SumDamageMake(damage2.Value);
 		_rune.SumDamageMake(damage2.Value);

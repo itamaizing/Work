@@ -25,7 +25,7 @@ public class Kick_Scorpion : Skill
     private Character _lastTarget = null;
     private Animator _animator;
 
-    private Character _target;
+    //private Character _target;
     private Character _runtimeTarget;
 
     private static readonly int KickTrigger = Animator.StringToHash("KickAA");
@@ -33,7 +33,7 @@ public class Kick_Scorpion : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => KickTrigger;
 
-    protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
+    protected override bool IsCanCast => GetTarget() != null && Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius && NoObstacles(GetTarget().transform.position, transform.position, _obstacle);
 
     public float DamageRange => UnityEngine.Random.Range(_minDamage, _maxDamage);
 
@@ -43,7 +43,8 @@ public class Kick_Scorpion : Skill
 
     private void HandleSkillCanceled()
     {
-        _target = null;
+        ClearTarget();
+        //_target = null;
         Hero.Move.StopLookAt();
         _hero.Move.CanMove = true;
     }
@@ -52,7 +53,7 @@ public class Kick_Scorpion : Skill
     {
         if (_hero == null || _hero.Move == null) return;
 
-        var target = _target != null ? _target : _lastTarget;
+        var target = GetTarget() != null ? GetTarget() : _lastTarget;
         if (target == null)
         {
             _hero.Move.StopLookAt();
@@ -72,7 +73,7 @@ public class Kick_Scorpion : Skill
             return;
         }
 
-        _hero.Move.LookAtPosition(_target.transform.position);
+        _hero.Move.LookAtPosition(GetTarget().transform.position);
     }
 
     public void Kick_ScorpionMoveTrue()
@@ -83,38 +84,38 @@ public class Kick_Scorpion : Skill
 
     private bool IsTargetInRange()
     {
-        return Vector3.Distance(_playerLinks.transform.position, _target.transform.position) <= Radius;
+        return Vector3.Distance(_playerLinks.transform.position, GetTarget().transform.position) <= Radius;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (_target == null)
+        while (GetTarget() == null)
         {
             if (GetMouseButton)
             {
                 //_target = GetRaycastTarget();
-
-                if (_target != null)
-                    _target.SelectedCircle.IsActive = true;
+                FindTarget();
+                if (GetTarget() != null)
+					GetTarget().SelectedCircle.IsActive = true;
             }
             yield return null;
         }
 
-        _hero.Move.LookAtTransform(_target.transform);
+        _hero.Move.LookAtTransform(GetTarget().transform);
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_target.transform.position);
+        targetInfo.Points.Add(GetTarget().transform.position);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_target == null) yield return null;
+        if (GetTarget() == null) yield return null;
         if (!IsTargetInRange()) yield return null;
 
-        _runtimeTarget = _target;
+        _runtimeTarget = GetTarget();
 
-        if (_lastTarget != null && _lastTarget != _target)
+        if (_lastTarget != null && _lastTarget != GetTarget())
             _comboCounter?.ResetCounter();
 
         if (_hitsInRowCoroutine != null)
@@ -245,7 +246,7 @@ public class Kick_Scorpion : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.Targets.Count > 0) _target = (Character)targetInfo.Targets[0];
+        if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 
     protected override void ClearData()

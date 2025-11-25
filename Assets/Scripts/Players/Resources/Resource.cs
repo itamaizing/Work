@@ -26,8 +26,8 @@ public abstract class Resource : NetworkBehaviour
     protected Coroutine _regenCoroutine;
 
     private float _bonusMaxValue = 0f;
-
-    public float CurrentValue { get => _currentValue; set { _currentValue = value; } }
+	protected bool canRegen = true;
+	public float CurrentValue { get => _currentValue; set { _currentValue = value; } }
     public float MaxValue { get => _maxValue; set => _maxValue = value; }
     public float RegenerationValue { get => _regenerationValue; set { _regenerationValue = value; } }
     public float RegenerationDelay { get => _regenerationPeriod; set { _regenerationPeriod = value; } }
@@ -78,6 +78,7 @@ public abstract class Resource : NetworkBehaviour
         //TEST!!!
 		if (_regenCoroutine != null)
 		{
+            //Debug.Log("Restart regen");
 			StopCoroutine(_regenCoroutine);
 			_regenCoroutine = StartCoroutine(RegenerateJob());
 		}
@@ -163,9 +164,9 @@ public abstract class Resource : NetworkBehaviour
         _maxValue += value;
     }
 
-    public void Regenerate(Coroutine coroutine) => StartCoroutine(RegenerateJob());
+    public void Regenerate() => _regenCoroutine = StartCoroutine(RegenerateJob());
 
-    private IEnumerator RegenerateJob()
+    protected IEnumerator RegenerateJob()
     {
         while (true)
         {
@@ -175,8 +176,9 @@ public abstract class Resource : NetworkBehaviour
             {
                 yield return new WaitForSeconds(_regenerationDelay);
 
-                while (_currentValue < _maxValue)
+                while (_currentValue < _maxValue && canRegen)
                 {
+                   // Debug.Log("REGENING");
                     CmdRegen();
                     yield return new WaitForSeconds(_regenerationPeriod);
                 }

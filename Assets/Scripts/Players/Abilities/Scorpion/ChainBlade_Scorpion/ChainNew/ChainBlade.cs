@@ -18,7 +18,7 @@ public class ChainBlade : Skill
     private ChainArrow _chainArrowPrefab;
     private Vector3 _clickPoint = Vector3.positiveInfinity;
     private Animator _animator;
-    private Character _target;
+    //private Character _target;
 
     private static readonly int chainBladeStart = Animator.StringToHash("ChainStart");
     private static readonly int chainBladeEnd = Animator.StringToHash("ChainEnd");
@@ -31,7 +31,7 @@ public class ChainBlade : Skill
     {
         get
         {
-            if (_target != null) return Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+            if (GetTarget() != null) return Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius;
 
             else return true;
         }
@@ -51,20 +51,20 @@ public class ChainBlade : Skill
         {
             if (GetMouseButton)
             {
-                if (GetTarget().isCharater)
+                if (GetTarget() != null)
                 {
                     float distance = Vector3.Distance(_hero.transform.position, _clickPoint);
 
-                    if (distance <= Radius) _clickPoint = GetTarget().character.transform.position;
+                    if (distance <= Radius) _clickPoint = GetTarget().transform.position;
 
                     else
                     {
-                        _target = GetTarget().character;
-                        _clickPoint = _target.transform.position;
+                        //_target = GetTarget().character;
+                        _clickPoint = GetTarget().transform.position;
                     }
                 }
 
-                else _clickPoint = GetTarget().Position;
+                else _clickPoint = GetMousePoint();
             }
 
             yield return null;
@@ -106,7 +106,9 @@ public class ChainBlade : Skill
     protected override void ClearData()
     {
         _clickPoint = Vector3.positiveInfinity;
-        _target = null;
+
+        ClearTarget();
+        //_target = null;
     }
 
     public void ChainBladeCast()

@@ -28,10 +28,10 @@ public class Restoration : Skill
     private float _accumulatedEffectiveness = 1f;
     private float _totalHealedInInterval = 0f;
     private bool _spiritEnergyTalent;
-    private IDamageable _target;
-    private Character characterTarget;
+    //private IDamageable _target;
+    //private Character characterTarget;
 
-    public IDamageable Target => _target;
+    public IDamageable Target => GetTarget();
 
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
 
@@ -47,8 +47,8 @@ public class Restoration : Skill
 
     private bool IsCanCastCheck()
     {
-        if (_target == null) return false;
-        return Vector3.Distance(transform.position, _target.transform.position) <= Radius;
+        if (GetTarget() == null) return false;
+        return Vector3.Distance(transform.position, GetTarget().transform.position) <= Radius;
     }
 
     public event Action OnModeChange;
@@ -62,7 +62,7 @@ public class Restoration : Skill
     private void OnDisable()
     {
         OnModeChange -= UpdateMode;
-        if (_target != null && _target is Character character)
+        if (GetTarget() != null && GetTarget() is Character character)
         {
             var healthComponent = character.GetComponent<Health>();
             if (healthComponent != null)
@@ -108,19 +108,19 @@ public class Restoration : Skill
 
     private void HandleRestorationLight()
     {
-        if (characterTarget == null) return;
+        if (GetTarget() == null) return;
 
-        bool isAlly = _target.gameObject.layer == LayerMask.NameToLayer("Allies");
+        bool isAlly = GetTarget().gameObject.layer == LayerMask.NameToLayer("Allies");
 
         if (isAlly && TryPayCost())
         {
-            var healthComponent = characterTarget.GetComponent<Health>();
+            var healthComponent = GetTarget().GetComponent<Health>();
             if (healthComponent != null)
             {
                 healthComponent.HealTaked += OnHealTaken;
             }
 
-            CmdAddState(characterTarget, States.Restoration, lightDuration);
+            CmdAddState(GetTarget(), States.Restoration, lightDuration);
             //StartCoroutine(ApplyHealOverTime(characterTarget));
         }
     }
@@ -136,13 +136,13 @@ public class Restoration : Skill
 
     private void HandleRestorationDark()
     {
-        if (characterTarget == null) return;
+        if (GetTarget() == null) return;
 
-        bool isEnemy = characterTarget.gameObject.layer == LayerMask.NameToLayer("Enemy");
+        bool isEnemy = GetTarget().gameObject.layer == LayerMask.NameToLayer("Enemy");
 
         if (isEnemy && TryPayCost())
         {
-            CmdAddState(characterTarget, States.Destruction, darkDuration);
+            CmdAddState(GetTarget(), States.Destruction, darkDuration);
             //StartCoroutine(ApplyDamageOverTime(characterTarget));
         }
     }
@@ -178,7 +178,7 @@ public class Restoration : Skill
                 yield return new WaitForSeconds(healInterval);
             }
 
-            _target = null;
+            //_target = null;
             ResetAccumulatedEffectiveness();
             healthComponent.HealTaked -= OnHealTaken;
         }
@@ -210,27 +210,29 @@ public class Restoration : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        characterTarget = null;
+        
+        //characterTarget = null;
 
-        while (_target == null)
+        while (GetTarget() == null)
         {
             if (Input.GetMouseButton(0))
             {
-                _target = GetRaycastTarget();
+                FindTarget();
+                //_target = GetRaycastTarget();
 
-                if (_target is Character character) characterTarget = character;
+                //if (_target is Character character) characterTarget = character;
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new();
-        targetInfo.Targets.Add(characterTarget);
+        targetInfo.AddTarget(GetTarget());
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_target == null) yield break;
+        if (GetTarget() == null) yield break;
 
         CmdPlayShootSound();
 
@@ -248,7 +250,8 @@ public class Restoration : Skill
 
     protected override void ClearData()
     {
-        _target = null;
+        ClearTarget();
+       // _target = null;
     }
 
     private void ResetAccumulatedEffectiveness()
@@ -273,6 +276,6 @@ public class Restoration : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _target = (Character)targetInfo.Targets[0];
+        SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 } 

@@ -8,7 +8,6 @@ using UnityEngine;
 public class CircularFrosting : Skill
 {
 	//[SerializeField] private CircularFrostingObject _circle;
-	[SerializeField] private Character _playerLinks;
 	//[SerializeField] private FrostingFrozenTalant _talant;
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 
@@ -25,11 +24,11 @@ public class CircularFrosting : Skill
 
     private void Start()
 	{
-		for (int i = 0; i < _playerLinks.Resources.Count; i++)
+		for (int i = 0; i < Hero.Resources.Count; i++)
 		{
-			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
+			if (Hero.Resources[i].Type == ResourceType.Energy)
 			{
-				_energy = (Energy)_playerLinks.Resources[i];
+				_energy = (Energy)Hero.Resources[i];
 			}
 		}
 
@@ -78,7 +77,7 @@ public class CircularFrosting : Skill
 			Debug.Log(enemy);
 			if (enemy.TryGetComponent<Character>(out var enemyCharacter))
 			{
-				if (enemyCharacter != _playerLinks)
+				if (enemyCharacter != Hero)
 				{
 					_seriesOfStrikes.MakeHit(enemyCharacter, AbilityForm.Magic, 1, usedEnergy, 0);
 					CmdAdd(enemy.gameObject);
@@ -105,10 +104,10 @@ public class CircularFrosting : Skill
 		Character enemyCharacter = enemy.GetComponent<Character>();
 		if (_talentFrostingFrozen && enemyCharacter.CharacterState.CheckForState(States.Frosting))
 		{
-			enemyCharacter.CharacterState.AddState(States.Frozen, _duration, 0, _playerLinks.gameObject, name);
+			enemyCharacter.CharacterState.AddState(States.Frozen, _duration, 0, Hero.gameObject, name);
 		}
 
-		enemyCharacter.CharacterState.AddState(States.Frosting, _duration, 0, _playerLinks.gameObject, name);
+		enemyCharacter.CharacterState.AddState(States.Frosting, _duration, 0, Hero.gameObject, name);
 	}
 
 	public void SetTalentFrostingFrozen(bool value)

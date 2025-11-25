@@ -2776,6 +2776,10 @@ PrefabInstance:
       propertyPath: _layerMask.m_Bits
       value: 8208
       objectReference: {fileID: 0}
+    - target: {fileID: 6328070790821935180, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _targetsLayers.m_Bits
+      value: 2097920
+      objectReference: {fileID: 0}
     - target: {fileID: 6397899444093627911, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.1387713
@@ -3390,7 +3394,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _playerLinks: {fileID: 4374618947117916461}
   _combo: {fileID: 3083348233968490285}
   Hits:
   - {fileID: 8300000, guid: 38dd5da71cb5afd46a2d5744de079417, type: 3}
@@ -3455,7 +3458,6 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 1
   _projectile: {fileID: 3779490377558770127, guid: 911d5f174dbe7ac4b8da163e8aaf32a1, type: 3}
-  _playerLinks: {fileID: 4374618947117916461}
   _combo: {fileID: 3083348233968490285}
   audioClip: {fileID: 8300000, guid: f609f46a7f40ad84b9b010044a07b747, type: 3}
 --- !u!114 &3068634069238352843
@@ -3585,7 +3587,6 @@ MonoBehaviour:
   preViewPuddlePrefab: {fileID: 8842404529923409551, guid: c543d7786e879d14cb91ce31839db008, type: 3}
   _seriesOfStrikes: {fileID: 3083348233968490285}
   _timeToDestroy: 3
-  _playerLinks: {fileID: 4374618947117916461}
   _move: {fileID: 323327819542905198}
   _audioClip: {fileID: 0}
   _groundLayer:
@@ -4091,7 +4092,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _playerLinks: {fileID: 4374618947117916461}
   _seriesOfStrikes: {fileID: 3083348233968490285}
 --- !u!114 &2036370849879020904
 MonoBehaviour:

@@ -31,7 +31,7 @@ public class NorthernersEndurance : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _target = (Character)targetInfo.Targets[0];
+        _target = (Character)targetInfo.GetTargets()[0];
     }
 
     protected override IEnumerator CastJob()
@@ -58,7 +58,7 @@ public class NorthernersEndurance : Skill
 			yield return null;
 		}
 		TargetInfo targetInfo = new();
-		targetInfo.Targets.Add(_target);
+		targetInfo.AddTarget(_target);
 		callbackDataSaved(targetInfo);
 	}
 

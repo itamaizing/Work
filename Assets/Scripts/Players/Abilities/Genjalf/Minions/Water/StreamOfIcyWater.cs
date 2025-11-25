@@ -7,7 +7,7 @@ public class StreamOfIcyWater : Skill
 {
     [SerializeField] private GameObject _effect;
 
-    private Character _target;
+    //private Character _target;
 
     protected override int AnimTriggerCastDelay => 0;
 
@@ -25,7 +25,7 @@ public class StreamOfIcyWater : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _target = (Character)targetInfo.Targets[0];
+        SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator CastJob()
@@ -38,7 +38,7 @@ public class StreamOfIcyWater : Skill
 
         while (time < CastStreamDuration)
         {
-            _effect.transform.localScale = new Vector3(_effect.transform.localScale.x, _effect.transform.localScale.y, Vector3.Distance(transform.position, _target.Position));
+            _effect.transform.localScale = new Vector3(_effect.transform.localScale.x, _effect.transform.localScale.y, Vector3.Distance(transform.position, GetTarget().Position));
 
             yield return new WaitForSeconds(_manaCostRate);
             Damage damage = new Damage
@@ -47,8 +47,8 @@ public class StreamOfIcyWater : Skill
                 Type = DamageType,
                 PhysicAttackType = AttackRangeType,
             };
-            CmdApplyDamage(damage, _target.gameObject);
-            _target.CharacterState.CmdAddState(States.Frosting, 6, 0, Hero.gameObject, name);
+            CmdApplyDamage(damage, GetTarget().gameObject);
+			GetTarget().CharacterState.CmdAddState(States.Frosting, 6, 0, Hero.gameObject, name);
 
             time += _manaCostRate;
 
@@ -61,25 +61,27 @@ public class StreamOfIcyWater : Skill
     {
         AnimStreamOfIcyWaterEnd();
         CmdSetActiveParticle(false);
-        _target = null;
+        //_target = null;
+        ClearTarget();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
-        Character target = null;
+        //Character target = null;
 
         TargetInfo targetInfo = new();
 
-        while (target == null)
+        while (GetTarget() == null)
         {
             if (GetMouseButton)
+                FindTarget();
                // target = GetRaycastTarget();
 
             yield return null;
         }
 
-        Hero.Move.LookAtPosition(target.Position);
-        targetInfo.Targets.Add(target);
+        Hero.Move.LookAtPosition(GetTarget().Position);
+        targetInfo.AddTarget(GetTarget());
         targetDataSavedCallback.Invoke(targetInfo);
         yield return null;
     }

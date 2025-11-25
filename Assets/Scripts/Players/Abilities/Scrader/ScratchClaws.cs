@@ -10,17 +10,17 @@ public class ScratchClaws : Skill
     [SerializeField] private float _bleedingDuration = 3f;
     [SerializeField, Range(0, 1f)] private float _bleedingChance = 0.15f;
 
-    private IDamageable _target;
-    private Character _runtimeTarget;
+    //private IDamageable _target;
+    //private Character _runtimeTarget;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
-    protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
+    protected override bool IsCanCast => GetTarget() != null && Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius && NoObstacles(GetTarget().transform.position, transform.position, _obstacle);
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.Targets.Count > 0 && targetInfo.Targets[0] is Character character) _target = character;
+        if (targetInfo.GetTargets().Count > 0 && targetInfo.GetTargets()[0] is Character character) SetTarget(character);
     }
 
     private void OnEnable()
@@ -31,24 +31,25 @@ public class ScratchClaws : Skill
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
         if (Damage <= 0) Damage = UnityEngine.Random.Range(1f, 4f);
-        _runtimeTarget = null;
+        //_runtimeTarget = null;
 
-        while (_target == null && !_disactive)
+        while (GetTarget() == null && !_disactive)
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget();
+                FindTarget();
+               // _target = GetRaycastTarget();
 
-                if (_target != null)
+                /*if (_target != null)
                 {
                     if (_target is Character characterTarget) _runtimeTarget = characterTarget;
-                }
+                }*/
             }
             yield return null;
         }
 
         TargetInfo info = new();
-        info.Targets.Add(_runtimeTarget);
+        info.AddTarget(GetTarget());
         targetDataSavedCallback?.Invoke(info);
 
         animator.SetTrigger("AttackScared");
@@ -56,15 +57,16 @@ public class ScratchClaws : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_target == null) yield break;
-        CmdApplyScratch(_target.gameObject);
+        if (GetTarget() == null) yield break;
+        CmdApplyScratch(GetTarget().gameObject);
 
         yield return null;
     }
 
     protected override void ClearData()
     {
-        _target = null;
+        ClearTarget();
+        //_target = null;
         Damage = 0;
     }
 
@@ -80,6 +82,6 @@ public class ScratchClaws : Skill
         };
 
         ApplyDamage(damage, target);
-        if (_runtimeTarget != null && UnityEngine.Random.value <= _bleedingChance) _runtimeTarget.CharacterState.AddState(States.Bleeding, _bleedingDuration, Damage, _playerLinks.gameObject, name);
+        if (GetTarget() != null && UnityEngine.Random.value <= _bleedingChance) GetTarget().CharacterState.AddState(States.Bleeding, _bleedingDuration, Damage, _playerLinks.gameObject, name);
     }
 }

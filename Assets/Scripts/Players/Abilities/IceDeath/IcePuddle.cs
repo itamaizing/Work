@@ -19,7 +19,6 @@ public class IcePuddle : Skill
     [Header("Ability settings")]
     [SerializeField] private SeriesOfStrikes _seriesOfStrikes;
     [SerializeField] private float _timeToDestroy = 3f;
-    [SerializeField] private HeroComponent _playerLinks;
     [SerializeField] private MoveComponent _move;
     [SerializeField] private AudioClip _audioClip;
 
@@ -66,9 +65,9 @@ public class IcePuddle : Skill
     {
         _audioSource = GetComponent<AudioSource>();
 
-        for (int i = 0; i < _playerLinks.Resources.Count; i++)
-            if (_playerLinks.Resources[i].Type == ResourceType.Energy)
-                _energy = (Energy)_playerLinks.Resources[i];
+        for (int i = 0; i < Hero.Resources.Count; i++)
+            if (Hero.Resources[i].Type == ResourceType.Energy)
+                _energy = (Energy)Hero.Resources[i];
     }
 
     private void UpdatePreviewAtMouse()
@@ -217,7 +216,7 @@ public class IcePuddle : Skill
     {
         IcePuddleObject projectile = Instantiate(_puddleBig, position, Quaternion.Euler(-90, -angle, 0));
         SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
-        projectile.Init(_playerLinks, manaValue, lastHit, this);
+        projectile.Init(Hero, manaValue, lastHit, this);
         projectile.SetTalents(talentEvade, talentFrostingFrozen);
 
         NetworkServer.Spawn(projectile.gameObject);
@@ -231,7 +230,7 @@ public class IcePuddle : Skill
     {
         IcePuddleObject projectile = Instantiate(_puddle, position, Quaternion.Euler(-90, -angle, 0));
         SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
-        projectile.Init(_playerLinks, manaValue, lastHit, this);
+        projectile.Init(Hero, manaValue, lastHit, this);
         projectile.SetTalents(talentEvade, talentFrostingFrozen);
 
         NetworkServer.Spawn(projectile.gameObject);
@@ -246,7 +245,7 @@ public class IcePuddle : Skill
         var puddle = obj.GetComponent<IcePuddleObject>();
         if (!puddle) return;
 
-        puddle.Init(_playerLinks, manaValue, lastHit, this);
+        puddle.Init(Hero, manaValue, lastHit, this);
         puddle.IceDeathInIcePudleTalentActive(_iceDeathInIcePudleTalent);
     }
 

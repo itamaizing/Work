@@ -11,7 +11,7 @@ public abstract class AutoAttackSkill : Skill
     [SerializeField] protected float _attackDelay = 0f;
     [SerializeField] protected float _chargeAttackDelay;
     
-    protected Character _target;
+    //protected Character _target;
     private bool _isAutoattackMode = true;
     private Coroutine _autoAttackCoroutine;
     private bool _isAttacking = false;
@@ -26,7 +26,7 @@ public abstract class AutoAttackSkill : Skill
     Color endColor = new Color(0, 1, 0, 0f);
 
 	public float AttackDelay { get => Buff.AttackSpeed.GetBuffedValue(_attackDelay); }
-    public Character Target { get => _target; }
+    public Character Target { get => GetTarget(); }
     public Vector2 LastTargetPosition { get => _lastTargetPosition; }
     public override bool IsPayCostStartCooldown { get => false; }
     public bool IsAutoattackMode { get => _isAutoattackMode; set => _isAutoattackMode = value; }
@@ -48,7 +48,7 @@ public abstract class AutoAttackSkill : Skill
 
     private void Update()
     {
-        if (_target == null)
+        if (GetTarget() == null)
         {
             return;
         }
@@ -79,10 +79,10 @@ public abstract class AutoAttackSkill : Skill
 
     protected override void ClearData()
     {
-        if (_target != null)
+        if (GetTarget() != null)
         {
-            //_target.SelectedCircle.Circle.color = Color.green;
-			_target.SelectedCircle.IsActive = false;
+			//_target.SelectedCircle.Circle.color = Color.green;
+			GetTarget().SelectedCircle.IsActive = false;
 		}
 		_skillRender.SetColor(Color.green);
 
@@ -94,7 +94,8 @@ public abstract class AutoAttackSkill : Skill
         }
 
         _isAttacking = false;
-        _target = null;
+        ClearTarget();
+        //_target = null;
         if (Hero.Move.CanMove == false) Hero.Move.CanMove = true;
         _hero.Move.StopLookAt();
     }
@@ -107,8 +108,8 @@ public abstract class AutoAttackSkill : Skill
             {
              //   _target = GetRaycastTarget();
 
-                if(_target != null)
-				    _target.SelectedCircle.IsActive = true;
+                if(GetTarget() != null)
+					GetTarget().SelectedCircle.IsActive = true;
 			}
             yield return null;
         }
@@ -163,7 +164,7 @@ public abstract class AutoAttackSkill : Skill
                 if (_isAttacking && NoObstacles(Target.transform.position, _obstacle))
                 {
                     _lastTargetPosition = Target.transform.position;
-                    LastTarget = _target;
+                    LastTarget = GetTarget();
 
                     if (_chargeAttackDelay > 0)
                         yield return StartCastDeleyCoroutine(_chargeAttackDelay);

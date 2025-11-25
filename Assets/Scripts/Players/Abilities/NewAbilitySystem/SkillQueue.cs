@@ -34,7 +34,7 @@ public class SkillQueue : MonoBehaviour
                 if (skill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
                 {
                     _targetInfo = targetInfo;
-                    foreach (var item in _targetInfo.Targets)
+                    foreach (var item in _targetInfo.GetTargets())
                     {
                         if (item is Character character)
                         {
@@ -52,7 +52,7 @@ public class SkillQueue : MonoBehaviour
                 if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
                 {
                     _targetInfo = targetInfo;
-                    foreach (var item in _targetInfo.Targets)
+                    foreach (var item in _targetInfo.GetTargets())
                     {
                         if (item is Character character)
                         {
@@ -87,7 +87,7 @@ public class SkillQueue : MonoBehaviour
             if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
             {
                 _targetInfo = targetInfo;
-                foreach (var item in _targetInfo.Targets)
+                foreach (var item in _targetInfo.GetTargets())
                 {
                     if (item is Character character)
                     {
@@ -106,7 +106,7 @@ public class SkillQueue : MonoBehaviour
             {
                 var temp = queuedSkill.TargetInfoQueue.Dequeue();
 
-                foreach (var item in temp.Targets)
+                foreach (var item in temp.GetTargets())
                 {
                     if (item is Character character)
                     {
@@ -162,7 +162,7 @@ public class SkillQueue : MonoBehaviour
         if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
         {
             _targetInfo = targetInfo;
-            foreach (var item in _targetInfo.Targets) if (item is Character character) character.SelectedCircle.SwitchSelectCircle(false);
+            foreach (var item in _targetInfo.GetTargets()) if (item is Character character) character.SelectedCircle.SwitchSelectCircle(false);
         }
 
         _currentSkill = null;
@@ -170,7 +170,7 @@ public class SkillQueue : MonoBehaviour
 
     private static void ToggleSelectCircles(TargetInfo info, bool isOn)
     {
-        if (info?.Targets == null) return;
-        foreach (var target in info.Targets) if (target is Character character && character?.SelectedCircle != null) character.SelectedCircle.SwitchSelectCircle(isOn);
+        if (info?.GetTargets() == null) return;
+        foreach (var target in info.GetTargets()) if (target is Character character && character?.SelectedCircle != null) character.SelectedCircle.SwitchSelectCircle(isOn);
     }
 }

@@ -35,7 +35,7 @@ public class IceRolling : Skill
 	private float _jumpCount = 0;
 	private bool _afterJump;
 	private float _afterJumpDelay = 1;
-	private Character _target;
+	//private Character _target;
 	private Character _attachedTarget;
 	private Animator _animator;
 
@@ -43,7 +43,7 @@ public class IceRolling : Skill
 	{
 		get
 		{
-			if (_target != null) return Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+			if (GetTarget() != null) return Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius;
 			else return true;
 		}
 	}
@@ -104,7 +104,7 @@ public class IceRolling : Skill
 		{
 			if (hit.collider.TryGetComponent(out Character character) && character != _playerLinks)
 			{
-				if (!_rollingWithEnemyTalent && character != _target)
+				if (!_rollingWithEnemyTalent && character != GetTarget())
 				{
 					stopPosition = hit.point - direction;
 					characterHit = character;
@@ -168,7 +168,7 @@ public class IceRolling : Skill
 
 		float energyMy = finalRange / 5;
 
-		if (_isLastInSeries && _target == null && _rollingWithEnemyTalent) finalRange *= 1.5f;
+		if (_isLastInSeries && GetTarget() == null && _rollingWithEnemyTalent) finalRange *= 1.5f;
 
 		Vector3 jumpPos = startPosition + _lookDir * finalRange;
 
@@ -190,7 +190,7 @@ public class IceRolling : Skill
 		//else
 		CmdPush(stopPosition, actualDistance);
 
-		if (_rollingWithEnemyTalent && _target != null && hitTarget && characterHitTarget != null) CmdPushWithCharacter(stopPosition, characterHitTarget, actualDistance);
+		if (_rollingWithEnemyTalent && GetTarget() != null && hitTarget && characterHitTarget != null) CmdPushWithCharacter(stopPosition, characterHitTarget, actualDistance);
 
 		if (_rollingPhysTalent)
 		{
@@ -201,15 +201,17 @@ public class IceRolling : Skill
 
 		if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
 		{
-			_target = null;
+			ClearTarget();
+			//_target = null;
 			_mousePos = Vector3.positiveInfinity;
 			_lookDir = Vector3.zero;
 			//_jumpPos = Vector3.zero;
 		}
 		else
 		{
-			_target = GetTarget().character;
-			_mousePos = _target != null ? _target.transform.position : GetMousePoint();
+			FindTarget();
+			//_target = GetTarget().character;
+			_mousePos = GetTarget() != null ? GetTarget().transform.position : GetMousePoint();
 		}
 		
 	}
@@ -240,6 +242,7 @@ public class IceRolling : Skill
 				{
 					_energy.CmdUse(1);
 					jumpPos = jumpPos2;
+					//Debug.Log("Additional jump " + i);
 				}
 			}
 			CmdPush(stopPosition, Vector3.Distance(jumpPos, transform.position));
@@ -253,7 +256,8 @@ public class IceRolling : Skill
 
 		if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
 		{
-			_target = null;
+			ClearTarget();
+			//_target = null;
 			_mousePos = Vector3.positiveInfinity;
 			_lookDir = Vector3.zero;
 			//_jumpPos = Vector3.zero;
@@ -264,15 +268,15 @@ public class IceRolling : Skill
 				_target = GetTarget().character;
 			else*/
 			//_target = null;
-			_mousePos = _target != null ? _target.transform.position : GetMousePoint();
+			_mousePos = GetTarget() != null ? GetTarget().transform.position : GetMousePoint();
 		}
 	}
 
 	public override void LoadTargetData(TargetInfo targetInfo)
 	{
-		if (targetInfo != null && targetInfo.Targets != null && targetInfo.Targets.Count > 0) if (targetInfo.Targets[0] is Character character) 
-				_target = character;
-		else _target = ClosedTarget();
+		if (targetInfo != null && targetInfo.GetTargets() != null && targetInfo.GetTargets().Count > 0) if (targetInfo.GetTargets()[0] is Character character) 
+				SetTarget(character);
+		else SetTarget(ClosedTarget());
 	}
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -281,8 +285,9 @@ public class IceRolling : Skill
 		{
 			if (GetMouseButton)
 			{
-				_target = GetTarget().character;
-				_mousePos = _target != null ? _target.transform.position : GetMousePoint();
+				FindTarget();
+				//_target = GetTarget().character;
+				_mousePos = GetTarget() != null ? GetTarget().transform.position : GetMousePoint();
 			}
 			yield return null;
 		}
@@ -301,7 +306,7 @@ public class IceRolling : Skill
 	{
 		if (!float.IsInfinity(_mousePos.x))
         {
-			_isLastInSeries = _seriesOfStrikes.MakeHit(_target, AbilityForm.Physical, 1, 0, 0);
+			_isLastInSeries = _seriesOfStrikes.MakeHit(GetTarget(), AbilityForm.Physical, 1, 0, 0);
 			Jump();
 			yield return null;
 		}
@@ -311,7 +316,8 @@ public class IceRolling : Skill
 	{
 		if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
 		{
-			_target = null;
+			ClearTarget();
+			//_target = null;
 			_mousePos = Vector3.positiveInfinity;
 		}
 		else
@@ -422,7 +428,7 @@ public class IceRolling : Skill
 		if (target.TryGetComponent(out NavMeshAgent agent))
 		{
 			agent.enabled = true;
-			agent.Warp(_target.transform.position);
+			agent.Warp(GetTarget().transform.position);
 		}
 
 		if (target.TryGetComponent(out Rigidbody rigidbody)) rigidbody.isKinematic = false;

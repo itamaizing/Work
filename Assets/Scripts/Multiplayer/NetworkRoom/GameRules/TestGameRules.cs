@@ -53,13 +53,6 @@ public class TestGameRules : GameRules
             }
             EndGame();
         }
-        /*
-        var playerSettings = _players.Find(p => p.gameObject == player);
-        if (playerSettings == null || playerSettings.NetworkSettings.TeamIndex < 1 || playerSettings.NetworkSettings.TeamIndex > 2) return;
-
-        teamDeaths[playerSettings.NetworkSettings.TeamIndex]++;
-        CheckForRoundEnd();
-        */
     }
 
     private void AddScorePoint(int teamIndex)

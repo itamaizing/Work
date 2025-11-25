@@ -11,8 +11,8 @@ public class MultiMagicSpell : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo == null) return;
-        if (targetInfo.Targets.Contains(Hero)) return;
-        targetInfo.Targets.Add(Hero);
+        if (targetInfo.GetTargets().Contains(Hero)) return;
+        targetInfo.AddTarget(Hero);
     }
 
     protected override void ClearData() { }                
@@ -20,7 +20,7 @@ public class MultiMagicSpell : Skill
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Targets.Add(Hero);
+        targetInfo.AddTarget(Hero);
         callbackDataSaved(targetInfo);
 
         yield break;

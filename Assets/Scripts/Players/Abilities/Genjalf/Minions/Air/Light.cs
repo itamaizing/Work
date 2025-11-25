@@ -13,7 +13,7 @@ namespace Gangdollarff.AirElemental
         [SerializeField] private ParticleSystem _particlePref;
         [SerializeField, Range(0, 100)] private int _debuffChance = 15;
 
-        private Character _target;
+        //private Character _target;
 
         protected override bool IsCanCast { get => CheckCanCast(); }
 
@@ -24,7 +24,7 @@ namespace Gangdollarff.AirElemental
         private bool CheckCanCast()
         {
             return
-                   Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+                   Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius;
         }
 
         public void AnimCastLight()
@@ -39,12 +39,12 @@ namespace Gangdollarff.AirElemental
 
         public override void LoadTargetData(TargetInfo targetInfo)
         {
-            _target = (Character)targetInfo.Targets[0];
+            SetTarget((Character)targetInfo.GetTargets()[0]);
         }
 
         protected override IEnumerator CastJob()
         {
-            if (_target != null)
+            if (GetTarget() != null)
             {
                 Damage damage = new Damage
                 {
@@ -52,13 +52,13 @@ namespace Gangdollarff.AirElemental
                     Type = DamageType,
                     PhysicAttackType = AttackRangeType,
                 };
-                CmdApplyDamage(damage, _target.gameObject);
+                CmdApplyDamage(damage, GetTarget().gameObject);
 
-                CmdCreateParticle(_target.Position);
+                CmdCreateParticle(GetTarget().Position);
 
                 if (UnityEngine.Random.Range(1, 100) <= _debuffChance)
                 {
-                    _target.CharacterState.AddState(States.Discharge, 2, 0, Hero.gameObject, name);
+					GetTarget().CharacterState.AddState(States.Discharge, 2, 0, Hero.gameObject, name);
                 }
             }
             yield return null;
@@ -66,23 +66,25 @@ namespace Gangdollarff.AirElemental
 
         protected override void ClearData()
         {
-            _target = null;
+            ClearTarget();
+            //_target = null;
         }
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
         {
             TargetInfo targetInfo = new TargetInfo();
 
-            while (_target == null)
+            while (GetTarget() == null)
             {
                 if (GetMouseButton)
                 {
+                    FindTarget();
                //     _target = GetRaycastTarget();
                 }
                 yield return null;
             }
 
-            targetInfo.Targets.Add(_target);
+            targetInfo.AddTarget(GetTarget());
             callbackDataSaved(targetInfo);
         }
 
