@@ -76,7 +76,7 @@ public class GrowTree : Skill
     }
     private void HandleSkillDeleted(Skill skill)
     {
-        if (skill == this) StopDamageZone();
+        if (skill == this) ClientStopDamageZone();
     }
     private void ShowExtendedRadius()
     {
@@ -262,7 +262,7 @@ public class GrowTree : Skill
         }
         HideExtendedRadius();
 
-        DrawDamageZone(targetPoint);
+        DrawDamageZoneClient(targetPoint);
 
         if (_castFromExtendedRadius)
         {
@@ -296,7 +296,7 @@ public class GrowTree : Skill
             yield return new WaitForSeconds(CastStreamDuration / 3);
         }
 
-        StopDamageZone();
+        ClientStopDamageZone();
 
         if (_isSpawnHero) CmdSpawnTreeAndTeleport(_hero.transform.position);
         else CmdSpawnTree(spawnPos, _castFromExtendedRadius);
