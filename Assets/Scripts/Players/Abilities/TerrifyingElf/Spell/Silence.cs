@@ -93,17 +93,10 @@ public class Silence : Skill
     {
         if (_targetPoint == Vector3.positiveInfinity) yield return null;
 
-        SpawnEffectAtTargetPoint(_targetPoint);
+        CmdSpawnEffectAtTargetPoint(_targetPoint);
         ApplyStateToEnemiesInZone(_targetPoint);
         ClientStopDamageZone();
         yield return null;
-    }
-
-
-    private void SpawnEffectAtTargetPoint(Vector3 target)
-    {
-        if (effectPrefab != null) Instantiate(effectPrefab, target, Quaternion.identity);
-        if (effectPrefab != null) Instantiate(effectPrefab, target, Quaternion.identity);
     }
 
     private void ApplyStateToEnemiesInZone(Vector3 target)
@@ -207,6 +200,19 @@ public class Silence : Skill
     #endregion
     [Command] private void CmdTriggerGhostFreeWindow() => RpcTriggerGhostFreeWindow();
     [Command] private void CmdReduceGhostCharge(MinionComponent target) => ServerGhostHealthCheck(target);
+
+    [Command]
+    private void CmdSpawnEffectAtTargetPoint(Vector3 point)
+    {
+        RpcSpawnEffect(point);
+        RpcSpawnEffect(point);
+    }
+
+    [ClientRpc]
+    private void RpcSpawnEffect(Vector3 point)
+    {
+        if (effectPrefab != null) Instantiate(effectPrefab, point, Quaternion.identity);
+    }
 
     [Command]
     private void CmdApplySilenceState(CharacterState targetState)

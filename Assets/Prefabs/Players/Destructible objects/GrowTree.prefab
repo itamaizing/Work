@@ -472,7 +472,8 @@ GameObject:
   - component: {fileID: 3030817534043718475}
   - component: {fileID: 1525237466600288129}
   - component: {fileID: 232768639021521674}
-  - component: {fileID: 2241304375329347406}
+  - component: {fileID: 9104915248857393319}
+  - component: {fileID: 8613289223205190744}
   m_Layer: 8
   m_Name: GrowTree
   m_TagString: Enemies
@@ -811,8 +812,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
---- !u!65 &2241304375329347406
-BoxCollider:
+--- !u!136 &9104915248857393319
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -829,9 +830,27 @@ BoxCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1.2271026
+  m_Height: 4.968111
+  m_Direction: 1
+  m_Center: {x: 0, y: 2.3778605, z: 0}
+--- !u!208 &8613289223205190744
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2058911381882631605}
+  m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.1668752, y: 5.558297, z: 1.2225997}
-  m_Center: {x: 0.0747474, y: 2.1720905, z: 0.08538276}
+  m_Shape: 0
+  m_Extents: {x: 1.65, y: 4.309, z: 1.65}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -0.17, y: 2.95, z: -0.047000002}
+  m_TimeToStationary: 0.5
 --- !u!1 &2412534617357909401
 GameObject:
   m_ObjectHideFlags: 0

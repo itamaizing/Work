@@ -38,7 +38,7 @@ public class ChainBlade : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => chainBladeStart;
 
-    protected override bool IsCanCast => Vector3.Distance(_targetPoint, transform.position) <= Radius && NoObstacles(_targetPoint, transform.position, _obstacle);
+    protected override bool IsCanCast => Vector3.Distance(_targetPoint, transform.position) <= CastLength && NoObstacles(_targetPoint, transform.position, _obstacle);
 
     public float DamageRange => UnityEngine.Random.Range(_minDamage, _maxDamage);
     public PassiveCombo_Scorpion ComboCounter { get => _comboCounter; set => _comboCounter = value; }
@@ -58,7 +58,7 @@ public class ChainBlade : Skill
                 {
                     float distance = Vector3.Distance(_hero.transform.position, _targetPoint);
 
-                    if (distance <= Radius) _targetPoint = GetTarget().character.transform.position;
+                    if (distance <= CastLength) _targetPoint = GetTarget().character.transform.position;
 
                     else
                     {
@@ -126,7 +126,7 @@ public class ChainBlade : Skill
             pullLineRenderer.SetPosition(0, chainPoint.position);
 
             Vector3 targetPos = targetTransform.position;
-            targetPos.y += 1f;
+            targetPos.y += 1.32f;
             pullLineRenderer.SetPosition(1, targetPos);
 
             yield return null;
@@ -185,7 +185,7 @@ public class ChainBlade : Skill
 
         Vector3 direction = (clickPoint - spawnPoint.transform.position).normalized;
         Vector3 flatDirection = new Vector3(direction.x, 0, direction.z).normalized;
-        Vector3 targetPoint = spawnPoint.transform.position + flatDirection * (Radius - 0.5f);
+        Vector3 targetPoint = spawnPoint.transform.position + flatDirection * (CastLength - 0.5f);
         targetPoint.y = spawnPoint.transform.position.y;
 
         var arrow = Instantiate(chainArrowPrefab, spawnPoint.transform.position, Quaternion.identity);
@@ -198,7 +198,7 @@ public class ChainBlade : Skill
         NetworkServer.Spawn(arrow.gameObject);
         SceneManager.MoveGameObjectToScene(arrow.gameObject, _hero.NetworkSettings.MyRoom);
 
-        arrow.InitArrow(targetPoint, spawnPoint.transform, Radius, DamageRange);
+        arrow.InitArrow(targetPoint, spawnPoint.transform, CastLength, DamageRange);
         RpcInitArrow(arrow.gameObject, targetPoint);
     }
 
@@ -219,7 +219,7 @@ public class ChainBlade : Skill
 
         var arrow = arrowObj.GetComponent<ChainArrow>();
         arrow.Init(playerLinks, 0, false, this);
-        arrow.InitArrow(targetPoint, spawnPoint.transform, Radius, DamageRange);
+        arrow.InitArrow(targetPoint, spawnPoint.transform, CastLength, DamageRange);
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
