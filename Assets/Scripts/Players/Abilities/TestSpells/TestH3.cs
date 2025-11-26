@@ -18,13 +18,13 @@ public class TestH3 : Skill
 
     protected override int AnimTriggerCast => Animator.StringToHash("H3Cast");
 
-    public Character Target { get => _target; private set
+    public Character Target { get => GetTarget(); private set
         {
             if (value != null)
                 Debug.Log(value.name);
             else
                 Debug.Log(value);
-            _target = value;
+            //_target = value;
         } }
 
     private bool CheckCanCast()
@@ -98,7 +98,7 @@ public class TestH3 : Skill
                 //_target = GetTarget().character;
                 //_targetPoint = GetTarget().Position;
 
-                targetPoint = GetMousePoint();
+                _targetPoint = GetMousePoint();
             }
             yield return null;
         }
