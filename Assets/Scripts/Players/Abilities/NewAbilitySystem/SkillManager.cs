@@ -218,7 +218,6 @@ public class SkillManager : MonoBehaviour
         {
             if (_selectedSkills[i] == skill && _selectedSkills.Contains(skill))
             {
-                Debug.Log("Deactivate " + skill);
                 _selectedSkills[i] = null;
                 break;
             }
@@ -433,7 +432,6 @@ public class SkillManager : MonoBehaviour
         {
             if (skill.IsUseCharges)
             {
-                Debug.Log("Add charge from talent");
                 _countBonusCharges--;
                 skill.AddMaxChargeCount();
             }

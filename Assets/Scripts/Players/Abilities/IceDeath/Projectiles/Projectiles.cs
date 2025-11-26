@@ -11,7 +11,7 @@ public class Projectiles : NetworkBehaviour
 	[SerializeField] protected Rigidbody _rb;
 	[SerializeField] protected float _force = 0;
 	[SerializeField] protected float _distance = 5;
-	protected HeroComponent _dad;
+	protected Character _dad;
 	protected Skill _skill;
 	protected Energy _energy;
 	protected RuneComponent _rune;
@@ -21,7 +21,7 @@ public class Projectiles : NetworkBehaviour
 
 	public Rigidbody Rigidbody {get => _rb; set => _rb = value;}
 
-	public virtual void Init(HeroComponent dad, float energy, bool lastHit, Skill skill)
+	public virtual void Init(Character dad, float energy, bool lastHit, Skill skill)
 	{
 		_dad = dad;
 		_energyDad = energy;

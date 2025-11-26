@@ -58,8 +58,8 @@ public class SparkOfLight : Skill
     private int _healingBonusStacks = 0;
     private float _lastFlashOfLightCastTime = 0f;
 
-    protected IDamageable _target;
-    private Character _characterTarget;
+    //protected IDamageable _target;
+    //private Character _characterTarget;
 
     public void EnableTalentPhysicalShieldBoost(bool value) => _healthBoostActive = value;
     public void EnableLowHealthTalent(bool value) => _lowHealthTalentActive = value;
@@ -73,7 +73,7 @@ public class SparkOfLight : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("SparkOfLights");
 
-    protected override bool IsCanCast => _characterTarget != null && Vector3.Distance(_characterTarget.transform.position, transform.position) <= Radius && NoObstacles(_characterTarget.transform.position, transform.position, _obstacle);
+    protected override bool IsCanCast => GetTarget() != null && Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius && NoObstacles(GetTarget().transform.position, transform.position, _obstacle);
 
     public event Action OnModeChange;
 
@@ -117,7 +117,8 @@ public class SparkOfLight : Skill
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
 
         ClearData();
-        _characterTarget = null;
+        ClearTarget();
+        //_characterTarget = null;
     }
 
     public void HandleMode(Character target)
@@ -130,24 +131,26 @@ public class SparkOfLight : Skill
     {
         //_characterTarget = null;
 
-        while (_target == null)
+        while (GetTarget() == null)
         {
             if (GetMouseButton)
             {
-                 _target = GetRaycastTarget();
+                FindTarget();
+                // _target = GetRaycastTarget();
 
-                if (_target is Character character)
+                if (GetTarget() is Character character)
                 {
-                    _characterTarget = character;
+                    //_characterTarget = character;
 
-                    if (_target != null && (IsAllyTarget(character) || character == Hero) && !isLightMode)
+                    if (GetTarget() != null && (IsAllyTarget(character) || character == Hero) && !isLightMode)
                     {
-                        _target = null;
-                        _characterTarget = null;
+                        ClearTarget();
+                        //_target = null;
+                        //_characterTarget = null;
                         //yield break;
                     }
 
-                    if (_characterTarget != null)
+                    if (GetTarget() != null)
                     {
                         character.SelectedCircle.IsActive = true;
                     }
@@ -158,14 +161,14 @@ public class SparkOfLight : Skill
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_target.transform.position);
-        targetInfo.Targets.Add(_characterTarget);
+        targetInfo.Points.Add(GetTarget().transform.position);
+        targetInfo.AddTarget(GetTarget());
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_characterTarget == null) yield break;
+        if (GetTarget() == null) yield break;
 
         if (!IsCanCast)
         {
@@ -174,22 +177,22 @@ public class SparkOfLight : Skill
             yield break;
         }
 
-        if (IsAllyTarget(_characterTarget))
+        if (IsAllyTarget(GetTarget()))
         {
             //TryPayCost(_manaCostHeal);
 
-            if (_characterTarget == playerLinks) CmdHandleDefaultMode(playerLinks);
-            else CmdSpawnProjectile(_characterTarget);
+            if (GetTarget() == playerLinks) CmdHandleDefaultMode(playerLinks);
+            else CmdSpawnProjectile(GetTarget());
 
             yield break;
         }
 
-        if (IsEnemyTarget(_characterTarget))
+        if (IsEnemyTarget(GetTarget()))
         {
             //TryPayCost(isLightMode ? _manaCostDamage : _altManaCostDamage);
 
-            if (isLightMode) CmdSpawnProjectile(_characterTarget);
-            else CmdSpawnProjectileDark(_characterTarget);
+            if (isLightMode) CmdSpawnProjectile(GetTarget());
+            else CmdSpawnProjectileDark(GetTarget());
         }
     }
 
@@ -199,7 +202,7 @@ public class SparkOfLight : Skill
         {
             if (isLightMode)
             {
-                if (IsAllyTarget(_characterTarget))
+                if (IsAllyTarget(GetTarget()))
                 {
                     skillEnergyCosts = _manaCostHeal;
                 }
@@ -487,14 +490,15 @@ public class SparkOfLight : Skill
 
     protected override void ClearData()
     {
-        _target = null;
+        ClearTarget();
+        //_target = null;
 
         _hero.Move.StopLookAt();
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.Targets.Count > 0)
-            _target = (Character)targetInfo.Targets[0];
+        if (targetInfo.GetTargets().Count > 0)
+            SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 }

@@ -17,7 +17,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     [Tooltip("��������� ������ ������ ���� ����������, ����� � ��������� �������")]
     [SerializeField] private float _offset = 0.5f;
 
-    private Character _target;
+    //private Character _target;
     private bool isTeleportation_ScorpionMagResist;
 
     //private GameObject _tempTarget;
@@ -36,8 +36,8 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     {
         get
         {
-            if (_target != null)
-                return Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+            if (GetTarget() != null)
+                return Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius;
 
             return false;
         }
@@ -51,7 +51,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     {
         //IsCanCancle = true;
         _drawCircleSelf.Clear();
-        _target = null;
+        //_target = null;
     }
 
     private bool IsMouseInRadius()
@@ -169,7 +169,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _target = (Character)targetInfo.Targets[0];
+        SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -180,15 +180,16 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
             if (GetMouseButton)
             {
+                FindTarget();
                 //_target = GetRaycastTarget(true);
 
-                if (_target == null)
+                if (GetTarget() == null)
                 {
                     yield return null;
                     continue;
                 }
 
-                float dist = Vector3.Distance(_target.transform.position, transform.position);
+                float dist = Vector3.Distance(GetTarget().transform.position, transform.position);
 
                 if (dist > Radius)
                 {
@@ -212,16 +213,16 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
         }
 
         TargetInfo targetInfo = new();
-        targetInfo.Targets.Add(_target);
+        targetInfo.AddTarget(GetTarget());
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_target == null)
+        if (GetTarget() == null)
             yield break;
 
-        float distance = Vector3.Distance(_target.transform.position, transform.position);
+        float distance = Vector3.Distance(GetTarget().transform.position, transform.position);
         int manaToSpend = GetCurrentManaCost(distance);
 
         List<SkillEnergyCost> tempCosts = new()
@@ -239,11 +240,11 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
             yield break;
         }
 
-        Vector3 tpPos = FindPlace(_target);
+        Vector3 tpPos = FindPlace(GetTarget());
         CmdTeleport(tpPos);
 
         int extraDuration = 0;
-        var targetState = _target.GetComponent<CharacterState>();
+        var targetState = GetTarget().GetComponent<CharacterState>();
 
         if (isTeleportation_ScorpionMagResist)
         {
@@ -263,7 +264,8 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
     protected override void ClearData()
     {
-        _target = null;
+        ClearTarget();
+        //_target = null;
     }
 
     [Command]

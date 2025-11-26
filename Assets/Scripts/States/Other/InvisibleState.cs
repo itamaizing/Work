@@ -15,7 +15,7 @@ public class InvisibleState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		Debug.Log("Entering Invisible State");
+	//	Debug.Log("Entering Invisible State");
 		//effects.Add(StatusEffect.Others);
 
 		_characterState = character;
@@ -27,7 +27,7 @@ public class InvisibleState : AbstractCharacterState
 
 	public override void UpdateState()
 	{
-		Debug.Log("Updating Invisible State");
+		//Debug.Log("Updating Invisible State");
 		_duration -= Time.deltaTime;
 		if (_duration < 0 || turnOff)
 		{
@@ -37,7 +37,7 @@ public class InvisibleState : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		Debug.Log("Exiting Invisible State");
+		//Debug.Log("Exiting Invisible State");
 		_characterState.RemoveState(this);
 		if (!_characterState.Check(StatusEffect.Others))
 		{

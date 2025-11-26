@@ -77,19 +77,20 @@ public class IceShard : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		Debug.Log("MOUSE POS " + float.IsPositiveInfinity(_mousePos.x));
+		//Debug.Log("MOUSE POS " + float.IsPositiveInfinity(_mousePos.x));
 		while (float.IsPositiveInfinity(_mousePos.x))
 		{
 			if (GetMouseButton)
 			{
-				if (GetTarget().character == null)
+				_mousePos = GetMousePoint();
+				/*if (GetTarget().character == null)
 				{
 					_mousePos = GetTarget().Position;
 				}
 				else
 				{
 					_mousePos = GetTarget().character.transform.position;
-				}
+				}*/
 			}
 			yield return null;
 		}

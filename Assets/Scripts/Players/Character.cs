@@ -97,6 +97,8 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
     public Transform Transform => transform;
     public Auras Auras { get => _auras; }
 
+    public bool IsTargetable => !_isDead;
+
     public static event Action<Character> ServerOnUnitSpawned;
 	public static event Action<Character> ServerOnUnitDeleted; 
 	public static event Action<Character> AuthorityOnUnitSpawned;
@@ -108,6 +110,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
     public event Action<float, Skill, string> HealTaked;
 	public event Action<Character> Died;
 	public event Action Killed;
+
 	protected override void OnValidate()
     {
 		base.OnValidate();
@@ -279,6 +282,8 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 
 	protected virtual void OnDied()
     {
+		if(_isDead) return;
+
 		Died?.Invoke(this);
 
 		_isDead = true;
@@ -326,19 +331,6 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
     {
 		_deadsCounter++;
     }
-
-	//[Command]
-	//private void CmdOnDied()
-	//   {
-	//	OnDied();
-	//	ClientRpcOnDied();
-	//}
-
-	//[ClientRpc]
-	//private void ClientRpcOnDied()
-	//   {
-	//	OnDied();
-	//}
 
 	[ClientRpc]
 	private void RpcResetAll()

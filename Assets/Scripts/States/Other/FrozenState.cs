@@ -24,7 +24,7 @@ public class FrozenState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		Debug.Log("Entering Frozen State");
+		//Debug.Log("Entering Frozen State");
 		//MaxStacksCount = 5;
 		//CanStack = false;
 		_characterState = character;
@@ -89,7 +89,7 @@ public class FrozenState : AbstractCharacterState
 	public override void UpdateState()
 	{
 		if(!_isInited) return;
-		Debug.Log(" Diffrence" + (_damageToExit - (_characterState.Character.Health.SumDamageTaken - _damageOnStart)) + "Damage to exit " + _damageToExit + " DamageHave " + (_characterState.Character.Health.SumDamageTaken - _damageOnStart));
+		//Debug.Log(" Diffrence" + (_damageToExit - (_characterState.Character.Health.SumDamageTaken - _damageOnStart)) + "Damage to exit " + _damageToExit + " DamageHave " + (_characterState.Character.Health.SumDamageTaken - _damageOnStart));
 		_duration -= Time.deltaTime;
 		if (_characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || _duration <= 0 )//|| turnOff)
 		{
@@ -99,7 +99,7 @@ public class FrozenState : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		Debug.Log("Exiting Frozen State");
+		//Debug.Log("Exiting Frozen State");
 
 		_characterState.RemoveState(this);
 		if (!_characterState.Check(StatusEffect.Move))

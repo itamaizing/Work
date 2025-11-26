@@ -14,7 +14,7 @@ public class LightningStrikes : AutoAttackSkill
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private Character _player;
     
-    private Character _currentTarget;
+    //private Character _currentTarget;
 
     private float _animTime;
     private float _cooldownMultiplier = 2f;
@@ -50,10 +50,10 @@ public class LightningStrikes : AutoAttackSkill
         OnLightningStrikesEnd?.Invoke();
         AnimCastEnded();
     }
-    public void SetTarget(Character target)
+   /* public void SetTarget(Character target)
     {
         _target = target;
-    }
+    }*/
 
     public void ClearDataLightningStrikes()
     {
@@ -100,8 +100,8 @@ public class LightningStrikes : AutoAttackSkill
             CooldownTime = _baseCooldownTime;
         }
 
-        if (_currentTarget == null)
-            _currentTarget = _target;
+        /*if (_currentTarget == null)
+            _currentTarget = _target;*/
 
         DamageDeal();
     }
@@ -133,7 +133,7 @@ public class LightningStrikes : AutoAttackSkill
     private void DamageDeal()
     {
         Debug.Log("LightningStrikes / DamageDeal");
-        _creeperStrike.DamageDeal(_currentTarget, true);
+        _creeperStrike.DamageDeal(GetTarget(), true);
 
        _isCanDamageDeal = false;
 

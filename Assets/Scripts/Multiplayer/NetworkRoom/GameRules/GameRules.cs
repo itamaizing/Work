@@ -22,8 +22,9 @@ public abstract class GameRules : NetworkBehaviour
     protected HeroSpawnManager _spawnPoints;
     protected PreparationAreaManager _preparationAreaManager;
     protected GameManager _gameManager;
+	protected Coroutine _regenCoroutine;
 
-    [SyncVar] private bool _isStarted;
+	[SyncVar] private bool _isStarted;
     private float _disconnectDelayClient = 6f;
     private float _disconnectDelayServer = 5f;
     public bool IsStarted { get => _isStarted; set => _isStarted = value; }
@@ -199,10 +200,12 @@ public abstract class GameRules : NetworkBehaviour
     protected IEnumerator RevivalPlayerCoroutine(Character player)
     {
         float time = _baseTimeForRevival + _AddTimeForRevival * player.LVL.Value;
+        UnityEngine.Debug.Log("Try revive");
         RpcStartReviveTimer(player.gameObject, time);
         yield return new WaitForSecondsRealtime(time);
         player.ServerResetAll();
         MovePlayerInSpawn(player);
+        _regenCoroutine = null;
     }
 
     private void AddAllPlayersInList()

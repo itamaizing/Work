@@ -21,7 +21,7 @@ public class FrostingState : AbstractCharacterState
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		Debug.Log("Entering Frosting State");
+		//Debug.Log("Entering Frosting State");
 		_characterState = character;
 
 		if (damageToExit == 0)
@@ -78,7 +78,7 @@ public class FrostingState : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		Debug.Log("Exiting Frosting State");
+		//Debug.Log("Exiting Frosting State");
 		_characterState.RemoveState(this);
 
 		if (!_characterState.Check(StatusEffect.Move))

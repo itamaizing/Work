@@ -8,9 +8,9 @@ public class Blindness : Skill
 {
     [SerializeField] private Character _playerLinks;
     [SerializeField] private float duration;
-    private Character _target;
+    //private Character _target;
 
-    protected override bool IsCanCast => IsHaveCharge && _target != null;
+    protected override bool IsCanCast => IsHaveCharge && GetTarget() != null;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
 
@@ -19,33 +19,34 @@ public class Blindness : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as Character;
+        if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0] as Character);
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
-        while (_target == null && !_disactive)
+        while (GetTarget() == null && !_disactive)
         {
             if (GetMouseButton)
             {
+                FindTarget();
                 //_target = GetRaycastTarget(true);
-                if (multiMagic != null) multiMagic.LastTarget = _target;
+                if (multiMagic != null) multiMagic.LastTarget = GetTarget();
             }
             yield return null;
         }
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Targets.Add(_target);
+        targetInfo.AddTarget(GetTarget());
 
         targetDataSavedCallback(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_target != null)
+        if (GetTarget() != null)
         {
-            CmdApplyAbsorptionState(_target.gameObject);
+            CmdApplyAbsorptionState(GetTarget().gameObject);
 
             var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
@@ -66,7 +67,8 @@ public class Blindness : Skill
 
     protected override void ClearData()
     {
-        _target = null;
+        ClearTarget();
+        //_target = null;
     }
 
     [Command]

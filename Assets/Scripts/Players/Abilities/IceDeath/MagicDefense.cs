@@ -54,7 +54,7 @@ public class MagicDefense : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _target = (Character)targetInfo.Targets[0];
+        _target = (Character)targetInfo.GetTargets()[0];
 		_position = targetInfo.Points[0];
     }
 
@@ -101,7 +101,7 @@ public class MagicDefense : Skill
 			yield return null;
 		}
 		TargetInfo targetInfo = new();
-		targetInfo.Targets.Add(_target);
+		targetInfo.AddTarget(_target);
 		targetInfo.Points.Add(_position);
 		callbackDataSaved(targetInfo);
 	}

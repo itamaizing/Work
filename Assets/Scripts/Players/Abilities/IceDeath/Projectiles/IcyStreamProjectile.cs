@@ -30,7 +30,7 @@ public class IcyStreamProjectile : Projectiles
 		_rb.DOMove(transform.up * _distance * GlobalVariable.cellSize, _timer).OnComplete(Explode);
 	}*/
 
-	public override void Init(HeroComponent dad, float energy, bool lastHit, Skill skill)
+	public override void Init(Character dad, float energy, bool lastHit, Skill skill)
 	{
 		_dad = dad;
 		_energyDad = energy;

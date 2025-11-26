@@ -120,7 +120,6 @@ public class SelectManager : MonoBehaviour
     public void SelectInArea(Character character)
     {
         DeselectAll();
-        Debug.Log("Select " + character.name);
         if (!_canContollUnits.Contains(character)) return;
         
         if (!SelectedControllableUnits.Contains(character))

@@ -8,12 +8,12 @@ using UnityEngine;
 public class Absorption : Skill
 {
 	[SerializeField] private Character _playerLinks;
-	private IcyCorpse _target;
+	//private IcyCorpse _target;
 	private Energy _energy;
 
 	protected override bool IsCanCast
 	{
-		get { return _target != null; }
+		get { return GetTarget() != null; }
 	}
 
     protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
@@ -56,7 +56,7 @@ public class Absorption : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _target = (IcyCorpse)targetInfo.Targets[0];
+        SetTarget((IcyCorpse)targetInfo.GetTargets()[0]);
     }
 
     [Command]
@@ -88,30 +88,40 @@ public class Absorption : Skill
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		while (_target == null)
+		while (GetTarget() == null)
 		{
 			if (GetMouseButton)
 			{
-				_target = (IcyCorpse)GetRaycastTarget();
+				FindTarget();
+				if(GetTarget() is IcyCorpse)
+				{
+
+				}
+				else
+				{
+					ClearTarget();
+				}
+					//_target = (IcyCorpse)GetRaycastTarget();
 			}
 			yield return null;
 		}
 		TargetInfo targetInfo = new();
-		targetInfo.Targets.Add(_target);
+		targetInfo.AddTarget(GetTarget());
 		callbackDataSaved(targetInfo);
 	}
 
 	protected override IEnumerator CastJob()
 	{
 		Debug.Log("cast job");
-		CmdAction(_target.gameObject);
+		CmdAction(GetTarget().gameObject);
 
 		yield return null;
 	}
 
 	protected override void ClearData()
 	{
-		_target = null;
+		ClearTarget();
+		//_target = null;
 		return;
 	}
 }

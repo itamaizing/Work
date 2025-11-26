@@ -31237,7 +31237,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TargetSeeker
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 2097920
   _hero: {fileID: 5630810179120932799}
 --- !u!1 &8770370089772824140
 GameObject:

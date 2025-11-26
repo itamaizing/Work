@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SubjugationMind : Skill
 {
-    private Character _target;
+    //private Character _target;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
 
     protected override bool IsCanCast => true;
@@ -15,12 +15,12 @@ public class SubjugationMind : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as Character;
+        if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0] as Character);
     }
 
     protected override IEnumerator CastJob()
     {
-        CmdIntercept(_target);
+        CmdIntercept(GetTarget());
 
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
@@ -40,23 +40,25 @@ public class SubjugationMind : Skill
 
     protected override void ClearData()
     {
-        _target = null;
+        ClearTarget();
+        //_target = null;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && _target == null)
+        while (float.IsPositiveInfinity(_targetPoint.x) && GetTarget() == null)
         {
             if (GetMouseButton)
             {
-                var temp = GetRaycastTarget();
+                //var temp = GetRaycastTarget();
+                FindTarget();
                 _targetPoint = GetMousePoint();
 
-                if (temp is MinionComponent minion) _target = minion;
-                else if (temp is HeroComponent heroComponent) _target = heroComponent;
-                if (multiMagic != null) multiMagic.LastTarget = _target;
+                //if (GetTarget() is MinionComponent minion) _target = minion;
+                //else if (GetTarget() is HeroComponent heroComponent) _target = heroComponent;
+                if (multiMagic != null) multiMagic.LastTarget = GetTarget();
             }
             yield return null;
         }

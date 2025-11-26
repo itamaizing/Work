@@ -15,7 +15,7 @@ namespace Gangdollarff
         private List<float> _damageForTarget = new List<float>() { 1, .75f, .50f, .25f };
 
         private Vector3 _targetPoint = Vector3.positiveInfinity;
-        private Character _target;
+        //private Character _target;
 
         protected override int AnimTriggerCastDelay => 0;
 
@@ -30,7 +30,7 @@ namespace Gangdollarff
 
         public override void LoadTargetData(TargetInfo targetInfo)
         {
-            _target = (Character)targetInfo.Targets[0];
+            SetTarget((Character)targetInfo.GetTargets()[0]);
             _targetPoint = targetInfo.Points[0];
         }
 
@@ -82,17 +82,20 @@ namespace Gangdollarff
             EnableMove();
             _firework.gameObject.SetActive(false);
             CmdSetActiveParticle(false);
-            _target = null;
+
+            ClearTarget();
+           // _target = null;
             _targetPoint = Vector3.positiveInfinity;
         }
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
         {
-            while (float.IsPositiveInfinity(_targetPoint.x) && _target == null)
+            while (float.IsPositiveInfinity(_targetPoint.x) && GetTarget() == null)
             {
                 if (GetMouseButton)
                 {
-                    _target = GetTarget().character;
+                    FindTarget();
+                    //_target = GetTarget().character;
                     _targetPoint = GetTarget().Position;
 
                    // _target = GetRaycastTarget();
@@ -101,7 +104,7 @@ namespace Gangdollarff
                 yield return null;
             }
             TargetInfo targetInfo = new();
-            targetInfo.Targets.Add(_target);
+            targetInfo.AddTarget(GetTarget());
             targetInfo.Points.Add(_targetPoint);
             callbackDataSaved(targetInfo);
         }

@@ -5,7 +5,33 @@ using UnityEngine;
 
 public class TargetInfo
 {
-    public List<ITargetable> Targets = new();
+    private List<ITargetable> _targets = new();
     public List<Vector3> Points = new();
     public List<Quaternion> Roation = new();
+
+    public List<ITargetable> GetTargets(bool canTakeDead = false)
+    {
+        if (canTakeDead) return _targets;
+
+        List<ITargetable> targets = new List<ITargetable>();
+        foreach (ITargetable target in _targets)
+        {
+            if (target.IsTargetable)
+            {
+                targets.Add(target);
+            }
+        }
+        return targets;
+    }
+
+    public void AddTarget(ITargetable target)
+    {
+        _targets.Add(target); 
+    }
+
+    public void AddTargets(List<ITargetable> targets)
+    {
+        _targets.AddRange(targets);
+    }
+
 }

@@ -10,7 +10,7 @@ public class ChainLightning : Skill
     [SerializeField] private ParticleSystem _particlePref;
     [SerializeField, Range(0, 100)] private int _debuffChance = 15;
 
-    private Character _target;
+    //private Character _target;
 
     protected override bool IsCanCast { get => CheckCanCast(); }
 
@@ -21,7 +21,7 @@ public class ChainLightning : Skill
     private bool CheckCanCast()
     {
         return
-               Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+               Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius;
     }
 
     public void AnimCastLight()
@@ -36,16 +36,16 @@ public class ChainLightning : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _target = (Character)targetInfo.Targets[0];
+        SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_target != null)
+        if (GetTarget() != null)
         {
-            Attack(_target);
+            Attack(GetTarget());
             yield return new WaitForSecondsRealtime(0.3f);
-            var temps = Physics.OverlapSphere(_target.Position, Radius, _targetsLayers);
+            var temps = Physics.OverlapSphere(GetTarget().Position, Radius, _targetsLayers);
             
             for (int i = 0; i < temps.Length; i++)
             {
@@ -61,23 +61,25 @@ public class ChainLightning : Skill
 
     protected override void ClearData()
     {
-        _target = null;
+        ClearTarget();
+        //_target = null;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (_target == null)
+        while (GetTarget() == null)
         {
             if (GetMouseButton)
             {
+                FindTarget();
                 //_target = GetRaycastTarget();
             }
             yield return null;
         }
 
-        targetInfo.Targets.Add(_target);
+        targetInfo.AddTarget(GetTarget());
         callbackDataSaved(targetInfo);
     }
 

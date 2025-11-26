@@ -21,7 +21,7 @@ public class Cooling : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		Debug.Log("Entering cooling State");
+		//Debug.Log("Entering cooling State");
 		_characterState = character;
 
 		if (damageToExit == 0)
@@ -52,7 +52,7 @@ public class Cooling : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		Debug.Log("Exiting cooling State");
+		//Debug.Log("Exiting cooling State");
 		_characterState.RemoveState(this);
 		if (!_characterState.Check(StatusEffect.MoveSpeed))
 		{
@@ -67,7 +67,7 @@ public class Cooling : AbstractCharacterState
 
 	public override bool Stack(float time)
 	{
-		Debug.Log("stacked");
+		//Debug.Log("stacked");
 		//_characterState.Move.SetDefaultSpeed();
 		_duration = time;
 		_curSpeedDebuf += 0.05f;

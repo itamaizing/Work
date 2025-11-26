@@ -16,7 +16,6 @@ public class Plague : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		Debug.Log("Entering Plague State");
 		_characterState = character;
 		_durationToExit = durationToExit;
 		_health = _characterState.Character.Health;
@@ -79,7 +78,6 @@ public class Plague : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		Debug.Log("Exiting Plague State");
 		// return reduced damage given
 		for (int i = 0; i < _abilities.Abilities.Count; i++)
 		{
