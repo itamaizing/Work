@@ -790,6 +790,8 @@ MonoBehaviour:
   _ignoredSchools: 
   _ignoredForms: 
   _ignoredSkillTypes: 
+  _abilityBanDatabase: {fileID: 11400000, guid: 0347e9f996adc3643b0c7b091ea06255, type: 2}
+  _selectedAbilityName: PullingHealth
   _regenModification: 1
   live: 0
   isDestroyOnDeath: 1

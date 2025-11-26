@@ -76,22 +76,31 @@ public class SkillQueue : MonoBehaviour
     {
         if (_currentSkill != null)
         {
-            _currentSkill.TryCancel(isForceCancel);
-
-            if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo target)) ToggleSelectCircles(target, false);
-
-
-            if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
+            try
             {
-                _targetInfo = targetInfo;
-                foreach (var item in _targetInfo.Targets)
+                _currentSkill.TryCancel(isForceCancel);
+
+                if (_currentSkill.TargetInfoQueue != null && _currentSkill.TargetInfoQueue.TryPeek(out TargetInfo target)) ToggleSelectCircles(target, false);
+
+
+                if (_currentSkill.TargetInfoQueue != null && _currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
                 {
-                    if (item is Character character)
+                    _targetInfo = targetInfo;
+                    foreach (var item in _targetInfo.Targets)
                     {
-                        character.SelectedCircle.SwitchSelectCircle(false);
+                        if (item is Character character)
+                        {
+                            character.SelectedCircle.SwitchSelectCircle(false);
+                        }
                     }
                 }
             }
+
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[TryCancel] Ошибка отмены скилла: {ex}");
+            }
+
             return true;
         }
 

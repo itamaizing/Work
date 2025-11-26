@@ -279,6 +279,8 @@ public class GrowTree : Skill
     {
         if (_treePrefab == null) yield break;
 
+        ClientStopDamageZone();
+
         if (_rangeWatch != null)
         {
             StopCoroutine(_rangeWatch);
@@ -295,8 +297,6 @@ public class GrowTree : Skill
 
             yield return new WaitForSeconds(CastStreamDuration / 3);
         }
-
-        ClientStopDamageZone();
 
         if (_isSpawnHero) CmdSpawnTreeAndTeleport(_hero.transform.position);
         else CmdSpawnTree(spawnPos, _castFromExtendedRadius);

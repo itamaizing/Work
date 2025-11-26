@@ -217,7 +217,7 @@ public class PullingHealth : Skill
 
         Vector3 initialPosition = transform.position;
 
-        CmdPlayShotSound();
+        PlayShotSound();
 
         #region Pulling through Ghosts (Length)
         if (_pullingHealthThroughGhosts)
@@ -273,7 +273,7 @@ public class PullingHealth : Skill
                 if (_ignoreMoveTimeLeft <= 0f) _ignoreMoveCheck = false;
             }
 
-            if (_target != null && (Input.GetMouseButtonDown(1) || ( Vector3.Distance(transform.position, _target.transform.position) > Radius))           || Vector3.Distance(initialPosition, transform.position) > positionThreshold && !_ignoreMoveCheck)
+            if (_target != null && (Input.GetMouseButtonDown(1) || ( Vector3.Distance(transform.position, _target.transform.position) > Radius)) || Vector3.Distance(initialPosition, transform.position) > positionThreshold && !_ignoreMoveCheck)
             {
                 _hero.Animator.ResetTrigger(Animator.StringToHash("PullingHealthCastDelay"));
                 _hero.NetworkAnimator.ResetTrigger(Animator.StringToHash("PullingHealthCastDelay"));
@@ -353,7 +353,6 @@ public class PullingHealth : Skill
         };
 
         if (_target != null) CmdApplyDamage(damage, _target.gameObject);
-
         foreach (var damageble in _extraTargets) CmdApplyDamage(damage, damageble.gameObject);
     }
     private void HealPlayer()
@@ -387,7 +386,7 @@ public class PullingHealth : Skill
         _extraTargets.Clear();
         _extraEffects.Clear();
         AfterCastJob();
-        CmdStopShotSound();
+        StopShotSound();
     }
     [Command] private void CmdSyncGhosts(GameObject ghostObj) => ghost.Add(ghostObj);
 
@@ -498,17 +497,12 @@ public class PullingHealth : Skill
         ghost.Clear();
     }
 
-    [Command] private void CmdPlayShotSound() => RpcPlayShotSound();
-    [Command] private void CmdStopShotSound() => RpcStopShotSound();
-
-    [ClientRpc]
-    private void RpcPlayShotSound()
+    private void PlayShotSound()
     {
         if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
     }
 
-    [ClientRpc]
-    private void RpcStopShotSound()
+    private void StopShotSound()
     {
         if (_audioSource != null) _audioSource.Stop();
     }

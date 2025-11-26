@@ -85,6 +85,7 @@ public abstract class Skill : NetworkBehaviour
 
     [Header("AbilitiesInfo")]
     [SerializeField] private AbilityInfo _abilityInfo;
+
     [Header("Main Settings")]
     [NonSerialized] public float ExtraAnimationSpeedMultiplier = 1f; // test
 
@@ -896,8 +897,9 @@ public abstract class Skill : NetworkBehaviour
             {
                 if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed)
                 {
-                    if (hit.collider.TryGetComponent<IDamageable>(out _))
+                    if (hit.collider.TryGetComponent<IDamageable>(out IDamageable damageable))
                     {
+                        if (damageable is Object objectTarget && !objectTarget.ObjectHealth.CheckIngorSkill(this)) return null;
 
                         IsAutoMode = true;
                         AutoModeChanged?.Invoke(true);
@@ -910,6 +912,7 @@ public abstract class Skill : NetworkBehaviour
         {
             if (item.collider.TryGetComponent<IDamageable>(out var damageable))
             {
+                if (damageable is Object objectTarget && !objectTarget.ObjectHealth.CheckIngorSkill(this)) return null;
                 _tempForDamage = damageable;
                 _tempTargetForDamage = damageable is Component component ? component.transform : null;
                 return damageable;

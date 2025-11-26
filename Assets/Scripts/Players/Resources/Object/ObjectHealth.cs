@@ -18,6 +18,11 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
     [SerializeField] private List<AbilityForm> _ignoredForms;
     [SerializeField] private List<SkillType> _ignoredSkillTypes;
 
+    [Header("AbilityBanDatabase")]
+    [SerializeField] private AbilityBanDatabase _abilityBanDatabase;
+    [SerializeField] private string _selectedAbilityName;
+    public AbilityBanDatabase AbilityBanDatabase => _abilityBanDatabase;
+
     public event Action OnDeath;
 
     public event Action<Damage, Skill> DamageTaken;
@@ -248,10 +253,18 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
 
     #region Take Damage
 
-    public bool TryTakeDamage(ref Damage damage, Skill skill)
+    public bool CheckIngorSkill(Skill skill)
     {
         if (IsDamageIgnored(skill)) return false;
-        if (TryEvade(damage.Type)) return false;
+        if (skill != null && skill.GetType().Name == _selectedAbilityName) return false;
+
+        return true;
+    }
+
+    public bool TryTakeDamage(ref Damage damage, Skill skill)
+    {
+        if (!CheckIngorSkill(skill)) return false;
+        if (TryEvade(damage.Type)) return false;   
 
         if (_regenerationCoroutine == null) ÑmdStartCustomRegeneration();
         float damageValue = damage.Value;
