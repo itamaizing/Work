@@ -62,7 +62,7 @@ namespace Gangdollarff.EarthElemental
             while (GetTargetCharacter() == null)
             {
                 if (GetMouseButton)
-                    FindTarget();
+                    FindTargetCharacter();
                //     target = GetRaycastTarget();
 
                 yield return null;

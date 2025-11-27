@@ -16,7 +16,7 @@ public abstract class CloseCombatSkill : Skill
 			{
 				//_targetPoint = GetMousePoint();
 
-				FindTarget();
+				FindTargetCharacter();
 			}
 			yield return null;
 		}

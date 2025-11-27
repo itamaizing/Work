@@ -26,7 +26,7 @@ public class BleedingSpell : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget();
+                FindTargetCharacter();
                 //_target = GetRaycastTarget(true);
                 if (multiMagic != null) multiMagic.LastTarget = GetTargetCharacter();
             }

@@ -62,7 +62,7 @@ public class TargetSeeker : MonoBehaviour
 		return null;
 	}*/
 
-	public Character ClosedTarget(bool isCanTargetHimself = false)
+	public ITargetable ClosedTarget(bool isCanTargetHimself = false)
 	{
 		var closerTargets = GetCloserTargets(transform.position, 1000, isCanTargetHimself);
 
@@ -70,19 +70,70 @@ public class TargetSeeker : MonoBehaviour
 		{
 			for (int i = closerTargets.Count - 1; i >= 0; i--)
 			{
+				/*if (!closerTargets[i].IsTargetable)
+				{
+					closerTargets.Remove(closerTargets[i]);
+				}*/
+			}
+			if(closerTargets[0] != null)
+				return closerTargets[0];
+		}
+		return null;
+	}
+
+	public List<ITargetable> GetCloserTargets(Vector3 position, float radius, bool isCanTargetHimself = false)
+	{
+		List<ITargetable> targets = new List<ITargetable>();
+		Collider[] collider = Physics.OverlapSphere(position, radius, TargetsLayers);
+
+		foreach (var item in collider)
+		{
+			if (collider.Length > 0 && item.transform.TryGetComponent<ITargetable>(out ITargetable enemy))
+			{
+				if (isCanTargetHimself == false && enemy.Transform == _hero.transform)
+				{
+					continue;
+				}
+				targets.Add(enemy);
+			}
+		}
+		targets = targets.OrderBy(character => Vector3.Distance(character.Transform.position, gameObject.transform.position)).ToList();
+
+		if (targets.Count <= 0)
+			return null;
+
+		/*for(int i = targets.Count - 1; i >= 0; i--)
+		{
+			if (!targets[i].IsTargetable)
+			{
+				targets.Remove(targets[i]);
+			}
+		}*/
+
+		return targets;
+	}
+
+	public Character ClosedTargetCharacter(bool isCanTargetHimself = false)
+	{
+		var closerTargets = GetCloserTargetsCharacter(transform.position, 1000, isCanTargetHimself);
+
+		if (closerTargets != null && closerTargets.Count > 0)
+		{
+			/*for (int i = closerTargets.Count - 1; i >= 0; i--)
+			{
 				if (closerTargets[i].IsDead)
 				{
 					closerTargets.Remove(closerTargets[i]);
 				}
-			}
-			if(closerTargets[0] != null)
+			}*/
+			if (closerTargets[0] != null)
 				return closerTargets[0];
 		}
 
 		return null;
 	}
 
-	public List<Character> GetCloserTargets(Vector3 position, float radius, bool isCanTargetHimself = false)
+	public List<Character> GetCloserTargetsCharacter(Vector3 position, float radius, bool isCanTargetHimself = false)
 	{
 		List<Character> targets = new List<Character>();
 		Collider[] collider = Physics.OverlapSphere(position, radius, TargetsLayers);
@@ -91,26 +142,25 @@ public class TargetSeeker : MonoBehaviour
 		{
 			if (collider.Length > 0 && item.transform.TryGetComponent<Character>(out Character enemy))
 			{
-				if (isCanTargetHimself == false && enemy.transform == _hero.transform)
+				if (isCanTargetHimself == false && enemy.Transform == _hero.transform)
 				{
 					continue;
 				}
 				targets.Add(enemy);
 			}
 		}
-		targets = targets.OrderBy(character => Vector3.Distance(character.transform.position, gameObject.transform.position)).ToList();
+		targets = targets.OrderBy(character => Vector3.Distance(character.Transform.position, gameObject.transform.position)).ToList();
 
 		if (targets.Count <= 0)
 			return null;
 
-		for(int i = targets.Count - 1; i >= 0; i--)
+		/*for (int i = targets.Count - 1; i >= 0; i--)
 		{
 			if (targets[i].IsDead)
 			{
 				targets.Remove(targets[i]);
 			}
-		}
-
+		}*/
 		return targets;
 	}
 

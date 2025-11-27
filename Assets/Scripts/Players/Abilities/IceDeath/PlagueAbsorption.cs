@@ -45,7 +45,7 @@ public class PlagueAbsorption : Skill
 		{
 			if (GetMouseButton)
 			{
-				FindTarget();
+				FindTargetCharacter();
 				//Debug.Log("CHECK FOR TEst@@");
 				//_target = GetRaycastTarget();
 			}

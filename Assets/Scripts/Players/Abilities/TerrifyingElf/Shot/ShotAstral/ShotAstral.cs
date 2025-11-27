@@ -39,7 +39,7 @@ public class ShotAstral : Skill
                 if (IsPointInRadius(Radius, click) && NoObstacles(click, transform.position, _obstacle))
                 {
                     _targetPoint = click;
-                    FindTarget();
+                    FindTargetCharacter();
                     if (GetTargetCharacter() is Character player && player == _playerLinks)
                     {
                         _playerLinks.CharacterState.CmdAddState(States.Astral, _projectile.Duration, 0, gameObject, "ShotAstral");

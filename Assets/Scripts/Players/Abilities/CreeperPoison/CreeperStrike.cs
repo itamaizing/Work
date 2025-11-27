@@ -92,7 +92,7 @@ public class CreeperStrike : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget();
+                FindTargetCharacter();
               /*  if (_target != null)
                 {
                     _target.SelectedCircle.IsActive = true;

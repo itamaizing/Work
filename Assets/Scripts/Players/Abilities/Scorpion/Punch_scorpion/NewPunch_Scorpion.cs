@@ -96,7 +96,7 @@ public class NewPunch_Scorpion : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget();
+                FindTargetCharacter();
                 //_target = GetRaycastTarget();
 
                 if (GetTargetCharacter() != null) GetTargetCharacter().SelectedCircle.IsActive = true;

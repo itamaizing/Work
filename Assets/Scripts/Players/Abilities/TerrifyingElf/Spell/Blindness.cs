@@ -30,7 +30,7 @@ public class Blindness : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget();
+                FindTargetCharacter();
                 //_target = GetRaycastTarget(true);
                 if (multiMagic != null) multiMagic.LastTarget = GetTargetCharacter();
             }

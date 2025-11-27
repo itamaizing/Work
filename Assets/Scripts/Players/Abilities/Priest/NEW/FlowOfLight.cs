@@ -117,7 +117,7 @@ public class FlowOfLight : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget();
+                FindTargetCharacter();
                 //_target = GetRaycastTarget();
                 /*if (_target != null && _target is Character character)
                 {

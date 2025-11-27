@@ -73,7 +73,7 @@ public class JumpWithChelicera : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget();
+                FindTargetCharacter();
                 //_target = GetRaycastTarget();
                 //if (_target is Character characterTarget) _runtimeTarget = characterTarget;
             }

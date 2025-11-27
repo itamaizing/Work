@@ -146,7 +146,7 @@ public class PoisonSlap : Skill
             {
                 if (GetMouseButton)
                 {
-                    FindTarget();
+                    FindTargetCharacter();
                    // _currentTarget = GetTarget().character;
 
                     if (GetTargetCharacter() != null)

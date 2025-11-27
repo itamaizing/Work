@@ -98,7 +98,7 @@ public class CheliceraStrike : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget();
+                FindTargetCharacter();
                 //_target = GetRaycastTarget();
 
                 if (GetTargetCharacter() != null && GetTargetCharacter() is Character characterTarget)

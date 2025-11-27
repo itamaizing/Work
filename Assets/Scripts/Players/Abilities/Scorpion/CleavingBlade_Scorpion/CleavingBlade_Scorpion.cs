@@ -76,7 +76,7 @@ public class CleavingBlade_Scorpion : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget();
+                FindTargetCharacter();
                 //_target = GetRaycastTarget(true);
             }
             yield return null;

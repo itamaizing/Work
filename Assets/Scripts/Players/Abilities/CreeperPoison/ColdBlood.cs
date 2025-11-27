@@ -75,7 +75,7 @@ public class ColdBlood : Skill
             {
                 if (GetMouseButton)
                 {
-                    FindTarget(true);
+                    FindTargetCharacter(true);
 					//_target = GetTarget(true).character;
                    // Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / target == " + _target);
 

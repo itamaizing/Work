@@ -71,7 +71,7 @@ public class PhysicalAttack : Skill
 		{
 			if (GetMouseButton)
 			{
-				FindTarget();
+				FindTargetCharacter();
 				//_target = GetTarget().character;
 
 				if (GetTargetCharacter() != null)
@@ -226,6 +226,7 @@ public class PhysicalAttack : Skill
 
 	private void SingleHit(Character enemy)
 	{
+		Debug.Log("Single hit");
 		float curDamage = _damageValue + UnityEngine.Random.Range(0, 2);
 
 		Damage damage = new Damage

@@ -94,7 +94,7 @@ public class Kick_Scorpion : Skill
             if (GetMouseButton)
             {
                 //_target = GetRaycastTarget();
-                FindTarget();
+                FindTargetCharacter();
                 if (GetTargetCharacter() != null)
 					GetTargetCharacter().SelectedCircle.IsActive = true;
             }

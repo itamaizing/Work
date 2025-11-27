@@ -98,7 +98,7 @@ public class Tentacles : Skill
                 {
                     if (_isAttractionTentacleTalent)// && hitTarget.collider.TryGetComponent<Character>(out Character character) && ((1 << character.gameObject.layer) & TargetsLayers.value) != 0)
                     {
-                        FindTarget();
+                        FindTargetCharacter();
                         _isPlacingTentacles = true;
                         //_target = character;
                         if (GetTargetCharacter() != null)

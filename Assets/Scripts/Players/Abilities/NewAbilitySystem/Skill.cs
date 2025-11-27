@@ -415,9 +415,10 @@ public abstract class Skill : NetworkBehaviour
 
     public ITargetable GetTarget(bool canGetDead = false)
     {
-        if (_target != null)
+		Debug.Log("Try tar " + _target);
+		if (_target != null)
         {
-            if (_target.IsTargetable && !canGetDead) return null;
+            if (!_target.IsTargetable && !canGetDead) return null;
 
             return _target;
         }
@@ -426,21 +427,27 @@ public abstract class Skill : NetworkBehaviour
 
 	public Character GetTargetCharacter(bool canGetDead = false)
 	{
+        Debug.Log("Try char" + _target);
 		if (_target != null)
 		{
-			if (_target.IsTargetable && !canGetDead) return null;
+			if (!_target.IsTargetable && !canGetDead) return null;
 
 			return (Character)_target;
 		}
 		return null;
 	}
 
-	public void SetTarget(Character character)
+	public void SetTargetCharacter(Character character)
     {
         _target = character;
     }
 
-    protected void FindTarget(bool canTargetHimself = false, bool canTargetDead = false)
+	public void SetTarget(ITargetable character)
+	{
+		_target = character;
+	}
+
+	protected void FindTarget(bool canTargetHimself = false, bool canTargetDead = false)
     {
         if (canTargetDead)
         {
@@ -448,11 +455,23 @@ public abstract class Skill : NetworkBehaviour
         }
         else
         {
-            _target = GetCloserTargets(GetMousePoint(), Radius, canTargetHimself).FirstOrDefault(target => !target.IsDead);
+            _target = GetCloserTargets(GetMousePoint(), Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
 		}
-    }
+	}
 
-    public void ClearTarget()
+	protected void FindTargetCharacter(bool canTargetHimself = false, bool canTargetDead = false)
+	{
+		if (canTargetDead)
+		{
+			_target = GetCloserTargetsCharacter(GetMousePoint(), Radius, canTargetHimself)[0];
+		}
+		else
+		{
+			_target = GetCloserTargetsCharacter(GetMousePoint(), Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
+		}
+	}
+
+	public void ClearTarget()
     {
         _target = null; 
     }
@@ -762,7 +781,6 @@ public abstract class Skill : NetworkBehaviour
         _remainingCooldownTimeChargers.Add(0);
 
         _currentChargers += 1;
-        //_currentChargeCooldownJob.Add(null); ����� ��� ������? ������ ����
 
         CurrentChargeChanged?.Invoke(_currentChargers);
     }
@@ -940,12 +958,17 @@ public abstract class Skill : NetworkBehaviour
         return _hero.TargetSeeker.GetRaycastTarget(this, isCanTargetHimself);
 	}*/
 
-    public List<Character> GetCloserTargets(Vector3 position, float radius, bool isCanTargetHimself = false)
+    public List<ITargetable> GetCloserTargets(Vector3 position, float radius, bool isCanTargetHimself = false)
     {
         return _hero.TargetSeeker.GetCloserTargets(position, radius, isCanTargetHimself);
     }
 
-    protected bool IsTargetInRadius(float radius, Transform target)
+	public List<Character> GetCloserTargetsCharacter(Vector3 position, float radius, bool isCanTargetHimself = false)
+	{
+		return _hero.TargetSeeker.GetCloserTargetsCharacter(position, radius, isCanTargetHimself);
+	}
+
+	protected bool IsTargetInRadius(float radius, Transform target)
     {
         if (target == null)
             return false;
@@ -1045,9 +1068,13 @@ public abstract class Skill : NetworkBehaviour
 		return _hero.TargetSeeker.GetTarget(_click, ClickPoint, _skillType, Radius, this, isCanTargetHimself);
 	}*/
 
-	protected Character ClosedTarget(bool isCanTargetHimself = false)
+	protected ITargetable ClosedTarget(bool isCanTargetHimself = false)
 	{
 		return _hero.TargetSeeker.ClosedTarget(isCanTargetHimself);
+	}
+	protected Character ClosedTargetCharacter(bool isCanTargetHimself = false)
+	{
+		return _hero.TargetSeeker.ClosedTargetCharacter(isCanTargetHimself);
 	}
 
 	public bool TryUseCharge()

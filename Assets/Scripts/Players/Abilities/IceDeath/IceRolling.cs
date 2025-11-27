@@ -209,7 +209,7 @@ public class IceRolling : Skill
 		}
 		else
 		{
-			FindTarget();
+			FindTargetCharacter();
 			//_target = GetTarget().character;
 			_mousePos = GetTargetCharacter() != null ? GetTargetCharacter().transform.position : GetMousePoint();
 		}
@@ -285,7 +285,7 @@ public class IceRolling : Skill
 		{
 			if (GetMouseButton)
 			{
-				FindTarget();
+				FindTargetCharacter();
 				//_target = GetTarget().character;
 				_mousePos = GetTargetCharacter() != null ? GetTargetCharacter().transform.position : GetMousePoint();
 			}

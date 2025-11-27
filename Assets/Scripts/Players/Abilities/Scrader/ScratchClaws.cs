@@ -37,7 +37,7 @@ public class ScratchClaws : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget();
+                FindTargetCharacter();
                // _target = GetRaycastTarget();
 
                 /*if (_target != null)

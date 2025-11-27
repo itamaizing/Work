@@ -110,7 +110,7 @@ public class FlashOfLight : Skill
         {
             if (Input.GetMouseButton(0))
             {
-                FindTarget(true);
+                FindTargetCharacter(true);
                 //_target = GetRaycastTarget(true);
 
                 if (GetTargetCharacter() != null && GetTargetCharacter() is Character characte && IsValidTarget(characte)) SetTarget(characte);

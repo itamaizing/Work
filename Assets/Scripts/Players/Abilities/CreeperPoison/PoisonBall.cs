@@ -220,7 +220,7 @@ public class PoisonBall : Skill, IAltAbility
         {
             if (GetMouseButton)
             {
-                FindTarget(true);
+                FindTargetCharacter(true);
                // _currentTarget = GetTarget(true).character;
 
                 CheckWhoTarget();

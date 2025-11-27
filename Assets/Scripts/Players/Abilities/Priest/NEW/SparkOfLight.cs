@@ -134,7 +134,7 @@ public class SparkOfLight : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget();
+                FindTargetCharacter();
 
                 if (GetTargetCharacter() is Character character)
                 {

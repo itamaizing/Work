@@ -94,7 +94,7 @@ namespace Gangdollarff
             {
                 if (GetMouseButton)
                 {
-                    FindTarget();
+                    FindTargetCharacter();
                     //_target = GetTarget().character;
                     _targetPoint = GetTargetCharacter().Position;
 

@@ -251,7 +251,7 @@ public class PriestShield : Skill
         {
             if (Input.GetMouseButton(0))
             {
-                FindTarget(true);
+                FindTargetCharacter(true);
                 //_target = GetRaycastTarget(true);
 
                 if (GetTargetCharacter() is Character character && character == transform.GetComponentInParent<Character>())

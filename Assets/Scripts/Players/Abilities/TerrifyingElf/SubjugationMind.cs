@@ -53,7 +53,7 @@ public class SubjugationMind : Skill
             if (GetMouseButton)
             {
                 //var temp = GetRaycastTarget();
-                FindTarget();
+                FindTargetCharacter();
                 _targetPoint = GetMousePoint();
 
                 //if (GetTarget() is MinionComponent minion) _target = minion;

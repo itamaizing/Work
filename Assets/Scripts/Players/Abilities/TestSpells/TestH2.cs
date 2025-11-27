@@ -77,7 +77,7 @@ public class TestH2 : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget();
+                FindTargetCharacter();
 				_targetPoint = GetMousePoint();
 				//_target = GetRaycastTarget(true);
             }

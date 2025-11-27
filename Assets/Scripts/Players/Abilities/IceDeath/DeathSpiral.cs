@@ -61,7 +61,7 @@ public class DeathSpiral : Skill
 		{
 			if (GetMouseButton)
 			{
-				FindTarget();
+				FindTargetCharacter();
 				if (GetRaycastTargetShadow() != null)
 				{
 					//SetTarget(GetRaycastTargetShadow());

@@ -92,7 +92,7 @@ public class Absorption : Skill
 		{
 			if (GetMouseButton)
 			{
-				FindTarget();
+				FindTargetCharacter();
 				if(GetTargetCharacter() is IcyCorpse)
 				{
 

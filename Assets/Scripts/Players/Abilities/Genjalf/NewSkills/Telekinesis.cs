@@ -86,7 +86,7 @@ namespace Gangdollarff
             while (GetTargetCharacter() == null)
             {
                 if (GetMouseButton)
-                    FindTarget();
+                    FindTargetCharacter();
                     //_target = GetRaycastTarget(true);
 
                 yield return null;

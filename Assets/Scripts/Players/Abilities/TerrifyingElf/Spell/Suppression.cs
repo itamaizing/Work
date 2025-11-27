@@ -25,7 +25,7 @@ public class Suppression : Skill
             if (GetMouseButton)
             {
                 _targetPoint = GetMousePoint();
-                FindTarget();
+                FindTargetCharacter();
                 //_target = GetRaycastTarget(true);
                 if (multiMagic != null) multiMagic.LastTarget = GetTargetCharacter();
             }

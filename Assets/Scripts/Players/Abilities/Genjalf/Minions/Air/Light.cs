@@ -75,7 +75,7 @@ namespace Gangdollarff.AirElemental
             {
                 if (GetMouseButton)
                 {
-                    FindTarget();
+                    FindTargetCharacter();
                //     _target = GetRaycastTarget();
                 }
                 yield return null;

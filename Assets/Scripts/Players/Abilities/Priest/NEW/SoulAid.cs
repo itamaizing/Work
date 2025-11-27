@@ -77,7 +77,7 @@ public class SoulAid : Skill
             
             if (GetMouseButton)
             {
-                FindTarget();
+                FindTargetCharacter();
                // _target = GetRaycastTarget(_talentTiredSoulDispelActive);
             }
             yield return null;

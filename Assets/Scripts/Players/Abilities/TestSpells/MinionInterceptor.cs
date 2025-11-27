@@ -39,7 +39,7 @@ public class MinionInterceptor : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget(true);
+                FindTargetCharacter(true);
                 //var temp = GetRaycastTarget();
 
                 if (GetTargetCharacter() is MinionComponent minion)

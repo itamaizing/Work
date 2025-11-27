@@ -20,7 +20,7 @@ public class Dispel : Skill
             if (GetMouseButton)
             {
                 _targetPoint = GetMousePoint();
-                FindTarget();
+                FindTargetCharacter();
                 //_target = GetNearestTargetInRadius();
             }
             yield return null;

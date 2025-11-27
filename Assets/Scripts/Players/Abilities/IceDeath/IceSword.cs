@@ -68,7 +68,7 @@ public class IceSword : Skill
 		{
 			if (GetMouseButton)
 			{
-				FindTarget();
+				FindTargetCharacter();
 				//_target = GetRaycastTarget();
 			}
 			yield return null;

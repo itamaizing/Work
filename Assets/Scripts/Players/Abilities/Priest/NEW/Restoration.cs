@@ -158,7 +158,7 @@ public class Restoration : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget();
+                FindTargetCharacter();
             }
             yield return null;
         }

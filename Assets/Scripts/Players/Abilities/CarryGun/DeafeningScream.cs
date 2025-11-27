@@ -45,7 +45,7 @@ public class DeafeningScream : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget();
+                FindTargetCharacter();
 
                 if (GetTargetCharacter() != null) if (GetTargetCharacter() is Character characterTarget) _runtimeTarget = characterTarget;
                 _isCanCancle = false;

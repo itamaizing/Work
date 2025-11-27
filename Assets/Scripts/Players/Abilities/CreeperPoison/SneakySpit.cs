@@ -78,7 +78,7 @@ public class SneakySpit : Skill
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (Disactive && GetTargetCharacter() == null) yield return null;
-        FindTarget();
+        FindTargetCharacter();
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
