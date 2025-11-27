@@ -474,7 +474,7 @@ GameObject:
   - component: {fileID: 232768639021521674}
   - component: {fileID: 9104915248857393319}
   - component: {fileID: 8613289223205190744}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: GrowTree
   m_TagString: Enemies
   m_Icon: {fileID: 0}

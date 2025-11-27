@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class ScraderAutoAttack : MonoBehaviour
 {
-    [SerializeField] private SpellMoveTo spellMoveTo;
+    [SerializeField] private SpellMoveScraderTo spellMoveScraderTo;
 
-    public void OnAutoAttackAnimationHitScrader() => spellMoveTo.OnAutoAttackAnimationHit();
-    public void OnAutoAttackAnimationEndScrader() => spellMoveTo.OnAutoAttackAnimationEnd();
+    public void OnAutoAttackAnimationHitScrader() => spellMoveScraderTo.OnAutoAttackAnimationHit();
+    public void OnAutoAttackAnimationEndScrader() => spellMoveScraderTo.OnAutoAttackAnimationEnd();
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class BleedingState : AbstractCharacterState
 {
     private Character _target;
-
+    
     private float _baseDamage;
 
     private float _duration;

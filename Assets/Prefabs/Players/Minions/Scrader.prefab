@@ -1317,7 +1317,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37a5c11bfb1de7c4da352b19ebb053f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spellMoveTo: {fileID: 401553106488474872}
+  spellMoveScraderTo: {fileID: 2165251163273322891}
 --- !u!1 &1816582864147950907
 GameObject:
   m_ObjectHideFlags: 0
@@ -13090,9 +13090,9 @@ GameObject:
   - component: {fileID: 4677353127167607557}
   - component: {fileID: 5970206098610166088}
   - component: {fileID: 1027874424821115294}
-  - component: {fileID: 401553106488474872}
+  - component: {fileID: 2165251163273322891}
   - component: {fileID: 8741847699558006757}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Scrader
   m_TagString: Allies
   m_Icon: {fileID: 0}
@@ -13616,7 +13616,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _animator: {fileID: 1215395125402789392}
   _minionMove: {fileID: 6937205302842417626}
-  spell: {fileID: 401553106488474872}
+  spell: {fileID: 2165251163273322891}
   scratchClaws: {fileID: 8741847699558006757}
 --- !u!114 &2486038140440756892
 MonoBehaviour:
@@ -13671,7 +13671,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _skills:
-  - {fileID: 401553106488474872}
+  - {fileID: 2165251163273322891}
   - {fileID: 8741847699558006757}
   _hero: {fileID: 5830977165762126247}
   _talentSystem: {fileID: 5224625938796084017}
@@ -13798,7 +13798,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_VisionRange: 5
---- !u!114 &401553106488474872
+--- !u!114 &2165251163273322891
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -13807,16 +13807,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 4305573293433524190}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9d986a7a12a44c42adb26489cec2029, type: 3}
+  m_Script: {fileID: 11500000, guid: 899293326900fc044aa0ef3436bab629, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellMoveScraderTo
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
   _isTalentSpell: 0
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: afbef8fac9ee74141abb2a1c1443d316, type: 2}
-  _isSubjectToGlobalCooldownTime: 0
+  _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 1
@@ -13831,7 +13831,7 @@ MonoBehaviour:
   autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 768
+    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -13857,7 +13857,7 @@ MonoBehaviour:
   maxCounter: 0
   _moveDurationPerUnit: 0.2
   _damageDelay: 0.5
-  _attackDistance: 1.5
+  _attackDistance: 3
   _damage: 5
   _animator: {fileID: 1215395125402789392}
 --- !u!114 &8741847699558006757
@@ -13905,7 +13905,7 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 1.5
+  _radius: 2
   _area: 0
   _castLength: 0
   _castWidth: 0

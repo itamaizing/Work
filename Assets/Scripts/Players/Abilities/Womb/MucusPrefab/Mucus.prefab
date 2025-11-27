@@ -621,7 +621,7 @@ GameObject:
   - component: {fileID: 3497751744320429761}
   - component: {fileID: 7253454835880531690}
   - component: {fileID: 36351810140532346}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Mucus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -711,6 +711,8 @@ MonoBehaviour:
   _ignoredSchools: 02000000
   _ignoredForms: 
   _ignoredSkillTypes: 000000000100000003000000
+  _abilityBanDatabase: {fileID: 11400000, guid: 0347e9f996adc3643b0c7b091ea06255, type: 2}
+  _selectedAbilityName: Absorption
   _regenModification: 1
   live: 1
   isDestroyOnDeath: 0

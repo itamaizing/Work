@@ -205,7 +205,7 @@ public class CharacterState : NetworkBehaviour
 		[States.ScorchedSoul] = new ScorchedSoul(),
 		[States.Knockdown] = new Knockdown(),
 		[States.IdealEvade] = new IdealEvade(),
-		[States.Bleeding] = new BleedingDebuff(),
+		[States.BleedingDebuff] = new BleedingDebuff(),
 		[States.EmeraldSkin] = new EmeraldSkinState(),
 		[States.DefenseReduction] = new DefenceReductionState(),
 		[States.SparkTalentHealthBuff] = new SparkTalentHealthState(),
@@ -829,6 +829,7 @@ public enum States
 	HealingSlime,
 	BleedingScrader,
 	DischargePsi,
+	BleedingDebuff,
 }
 public enum BaffDebaff
 {

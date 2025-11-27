@@ -10970,7 +10970,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Layer
-      value: 9
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8464766807629527278, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.y
@@ -11926,7 +11926,7 @@ MonoBehaviour:
   autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 512
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -11996,7 +11996,7 @@ MonoBehaviour:
   autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 512
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -12067,7 +12067,7 @@ MonoBehaviour:
   autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 512
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -12131,7 +12131,7 @@ MonoBehaviour:
   autoAttack: 1
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 512
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -12371,7 +12371,7 @@ MonoBehaviour:
   autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 512
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -12493,7 +12493,7 @@ MonoBehaviour:
   autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 512
   _obstacle:
     serializedVersion: 2
     m_Bits: 0

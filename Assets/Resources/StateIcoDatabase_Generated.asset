@@ -277,3 +277,6 @@ MonoBehaviour:
   - State: 87
     Icon: {fileID: -2820539102237515152, guid: 9f718b688f844f442849ecdd6c9ca08f, type: 3}
     BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 88
+    Icon: {fileID: 0}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}

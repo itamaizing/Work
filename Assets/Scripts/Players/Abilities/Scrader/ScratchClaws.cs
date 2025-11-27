@@ -19,7 +19,7 @@ public class ScratchClaws : Skill
     private bool _setTarget = false;
     public Action<GameObject> DoMove;
 
-    private const string _startAnimTrigger = "AttackScared";
+    private const string _startAnimTrigger = "AttackScaredMain";
 
     protected IDamageable _target;
 
@@ -37,10 +37,13 @@ public class ScratchClaws : Skill
     {
         AnimStartCastCoroutine();
     }
-
     public void scraderClawsAnimCastEnd()
     {
         AnimCastEnded();
+    }
+    public void scraderClawsAnim()
+    {
+        animator.SetTrigger("AttackScared");
     }
 
     private void OnEnable()
@@ -101,13 +104,8 @@ public class ScratchClaws : Skill
         if (_target == null) yield return null;
 
         Hero.Move.LookAtPosition(_target.transform.position);
-
-        float distance = Vector3.Distance(transform.position, _target.transform.position);
-        if (distance <= Radius)
-        {
-            Damage = UnityEngine.Random.Range(1f, 4f);
-            CmdApplyScratch(_target.gameObject);
-        }
+        Damage = UnityEngine.Random.Range(1f, 4f);
+        CmdApplyScratch(_target.gameObject);
 
         yield return null;
     }
@@ -182,12 +180,6 @@ public class ScratchClaws : Skill
 
             yield return _activeTween.WaitForCompletion();
             if (interrupted) break;
-        }
-
-        if (target != null)
-        {
-            Damage = UnityEngine.Random.Range(1f, 4f);
-            CmdApplyScratch(target.gameObject);
         }
 
         Hero.Move.CanMove = true;

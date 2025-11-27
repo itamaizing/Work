@@ -7,7 +7,7 @@ public class BleedingDebuff : AbstractCharacterState
     private float _duration;
     private float _baseDuration;
     private float timer = 0;
-    public override States State => States.BleedingScrader;
+    public override States State => States.BleedingDebuff;
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => throw new System.NotImplementedException();
