@@ -39,7 +39,7 @@ public class SoulAid : Skill
     {
         get
         {
-            var isTargetInRadius = IsTargetInRadius(_defaultRadius, GetTarget().transform) || IsTargetHaveRestoration() && IsTargetInRadius(_largeRadius, GetTarget().transform);
+            var isTargetInRadius = IsTargetInRadius(_defaultRadius, GetTargetCharacter().transform) || IsTargetHaveRestoration() && IsTargetInRadius(_largeRadius, GetTargetCharacter().transform);
             return isTargetInRadius && IsTargetHaveTiredSoul();
         }
     }
@@ -51,14 +51,14 @@ public class SoulAid : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() == null || GetTarget() == Hero || !IsCanCast) yield break;
+        if (GetTargetCharacter() == null || GetTargetCharacter() == Hero || !IsCanCast) yield break;
         
-        while (Vector2.Distance(transform.position, GetTarget().transform.position) > 2.1f)
+        while (Vector2.Distance(transform.position, GetTargetCharacter().transform.position) > 2.1f)
         {
-            Vector2 direction = (transform.position - GetTarget().transform.position).normalized;
+            Vector2 direction = (transform.position - GetTargetCharacter().transform.position).normalized;
             Vector2 pullForce = direction * (_speed * Time.fixedTime);
 
-            CmdPull(GetTarget().gameObject, pullForce);
+            CmdPull(GetTargetCharacter().gameObject, pullForce);
             yield return new WaitForFixedUpdate();
         }
     }
@@ -71,7 +71,7 @@ public class SoulAid : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (GetTarget() == null)
+        while (GetTargetCharacter() == null)
         {
             Radius = _talentDoubleRange ? _largeRadius : _defaultRadius;
             
@@ -83,7 +83,7 @@ public class SoulAid : Skill
             yield return null;
         }
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTarget());
+        targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }
 
@@ -104,21 +104,21 @@ public class SoulAid : Skill
 
     private bool IsTargetHaveTiredSoul()
     {
-        return GetTarget() != null && GetTarget().CharacterState.CheckForState(States.TiredSoul);
+        return GetTargetCharacter() != null && GetTargetCharacter().CharacterState.CheckForState(States.TiredSoul);
     }
 
     private bool IsTargetHaveRestoration()
     {
-        if (!_talentDoubleRange || GetTarget() == null || _restoration.Target == null) return false;
+        if (!_talentDoubleRange || GetTargetCharacter() == null || _restoration.Target == null) return false;
         
-        return _restoration.Target == GetTarget();
+        return _restoration.Target == GetTargetCharacter();
     }
 
     private void DispelTiredSoul()
     {
         if(!IsTargetHaveTiredSoul()) return;
         
-        CmdRemoveBuff(States.TiredSoul, GetTarget().gameObject); 
+        CmdRemoveBuff(States.TiredSoul, GetTargetCharacter().gameObject); 
     }
 
     private void ReduceCooldown()

@@ -88,7 +88,7 @@ public class CreeperStrike : Skill
         TargetInfo info = new TargetInfo();
 
 
-        while (GetTarget() == null)
+        while (GetTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
@@ -104,17 +104,17 @@ public class CreeperStrike : Skill
         }
 
 
-        info.AddTarget(GetTarget());
-        info.Points.Add(GetTarget().transform.position);
+        info.AddTarget(GetTargetCharacter());
+        info.Points.Add(GetTargetCharacter().transform.position);
         callbackDataSaved?.Invoke(info);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() != null && Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius)
+        if (GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius)
         {
             _hero.Move.StopLookAt();
-            DamageDeal(GetTarget());
+            DamageDeal(GetTargetCharacter());
         }
         ClearTarget();
         yield return null;

@@ -71,7 +71,7 @@ public class ColdBlood : Skill
     {
         if (_indomitable.Data.IsOpen)
         {
-            while (GetTarget() == null || float.IsPositiveInfinity(_mousePosition.x))
+            while (GetTargetCharacter() == null || float.IsPositiveInfinity(_mousePosition.x))
             {
                 if (GetMouseButton)
                 {
@@ -79,12 +79,12 @@ public class ColdBlood : Skill
 					//_target = GetTarget(true).character;
                    // Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / target == " + _target);
 
-                    if (GetTarget() != Hero)
+                    if (GetTargetCharacter() != Hero)
                     {
                         _isPlayer = false;
                        // Debug.Log("Target != player / Target == " + _target);
                     }
-                    if (GetTarget() == Hero)
+                    if (GetTargetCharacter() == Hero)
                     { 
                         _isPlayer = true;
                        // Debug.Log("Target == player / Target == " + _target);
@@ -152,7 +152,7 @@ public class ColdBlood : Skill
         {
             ReductionSetCooldown(_cooldownTimeWithTalent);
             Debug.Log("ColdBlood / UseAbilityWithTalent / if _isPlayer == true");
-			Hero.CharacterState.DispelStates(StateType.Physical, GetTarget().NetworkSettings.TeamIndex, Hero.NetworkSettings.TeamIndex, true);
+			Hero.CharacterState.DispelStates(StateType.Physical, GetTargetCharacter().NetworkSettings.TeamIndex, Hero.NetworkSettings.TeamIndex, true);
         }
         else
         {

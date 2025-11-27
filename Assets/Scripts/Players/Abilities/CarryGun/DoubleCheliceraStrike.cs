@@ -36,16 +36,16 @@ public class DoubleCheliceraStrike : Skill
     {
         //_runtimeTarget = null;
 
-        while (GetTarget() == null)
+        while (GetTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
                 FindTarget();
                 //_target = GetRaycastTarget();
 
-                if (GetTarget() != null)
+                if (GetTargetCharacter() != null)
                 {
-                    if (GetTarget() is Character characterTarget)
+                    if (GetTargetCharacter() is Character characterTarget)
                     {
                         //_runtimeTarget = characterTarget;
                         characterTarget.SelectedCircle.IsActive = true;
@@ -60,15 +60,15 @@ public class DoubleCheliceraStrike : Skill
 
         _player.Move.CanMove = false;
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTarget());
+        targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() == null) yield return null;
+        if (GetTargetCharacter() == null) yield return null;
 
-        DealDoubleCheliceraStrikeDamage(GetTarget());
+        DealDoubleCheliceraStrikeDamage(GetTargetCharacter());
 
         cooldownEnergy.CastCooldownEnergySkill(cooldownEnergyCost, this);
 
@@ -77,9 +77,9 @@ public class DoubleCheliceraStrike : Skill
 
     private bool IsTargetInRange()
     {
-        return GetTarget() != null &&
-            Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius &&
-            NoObstacles(GetTarget().transform.position, transform.position, _obstacle);
+        return GetTargetCharacter() != null &&
+            Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius &&
+            NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
     }
 
     private void HandleSkillCanceled()

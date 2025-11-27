@@ -31,7 +31,7 @@ public class Restoration : Skill
     //private IDamageable _target;
     //private Character characterTarget;
 
-    public IDamageable Target => GetTarget();
+    public IDamageable Target => GetTargetCharacter();
 
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
 
@@ -47,8 +47,8 @@ public class Restoration : Skill
 
     private bool IsCanCastCheck()
     {
-        if (GetTarget() == null) return false;
-        return Vector3.Distance(transform.position, GetTarget().transform.position) <= Radius;
+        if (GetTargetCharacter() == null) return false;
+        return Vector3.Distance(transform.position, GetTargetCharacter().transform.position) <= Radius;
     }
 
     public event Action OnModeChange;
@@ -62,7 +62,7 @@ public class Restoration : Skill
     private void OnDisable()
     {
         OnModeChange -= UpdateMode;
-        if (GetTarget() != null && GetTarget() is Character character)
+        if (GetTargetCharacter() != null && GetTargetCharacter() is Character character)
         {
             var healthComponent = character.GetComponent<Health>();
             if (healthComponent != null)
@@ -108,19 +108,19 @@ public class Restoration : Skill
 
     private void HandleRestorationLight()
     {
-        if (GetTarget() == null) return;
+        if (GetTargetCharacter() == null) return;
 
-        bool isAlly = GetTarget().gameObject.layer == LayerMask.NameToLayer("Allies");
+        bool isAlly = GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Allies");
 
         if (isAlly && TryPayCost())
         {
-            var healthComponent = GetTarget().GetComponent<Health>();
+            var healthComponent = GetTargetCharacter().GetComponent<Health>();
             if (healthComponent != null)
             {
                 healthComponent.HealTaked += OnHealTaken;
             }
 
-            CmdAddState(GetTarget(), States.Restoration, lightDuration);
+            CmdAddState(GetTargetCharacter(), States.Restoration, lightDuration);
             //StartCoroutine(ApplyHealOverTime(characterTarget));
         }
     }
@@ -136,13 +136,13 @@ public class Restoration : Skill
 
     private void HandleRestorationDark()
     {
-        if (GetTarget() == null) return;
+        if (GetTargetCharacter() == null) return;
 
-        bool isEnemy = GetTarget().gameObject.layer == LayerMask.NameToLayer("Enemy");
+        bool isEnemy = GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Enemy");
 
         if (isEnemy && TryPayCost())
         {
-            CmdAddState(GetTarget(), States.Destruction, darkDuration);
+            CmdAddState(GetTargetCharacter(), States.Destruction, darkDuration);
         }
     }
 
@@ -154,7 +154,7 @@ public class Restoration : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (GetTarget() == null)
+        while (GetTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
@@ -164,13 +164,13 @@ public class Restoration : Skill
         }
 
         TargetInfo targetInfo = new();
-        targetInfo.AddTarget(GetTarget());
+        targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() == null) yield break;
+        if (GetTargetCharacter() == null) yield break;
 
         CmdPlayShootSound();
 

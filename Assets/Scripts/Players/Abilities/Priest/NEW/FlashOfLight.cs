@@ -36,11 +36,11 @@ public class FlashOfLight : Skill
 
     private bool IsCanCastCheck()
     {
-        if (GetTarget() == null) return false;
+        if (GetTargetCharacter() == null) return false;
 
-        if (isLightMode) return (GetTarget() is Character character && character == Hero) || GetTarget().gameObject.layer == LayerMask.NameToLayer("Allies");
+        if (isLightMode) return (GetTargetCharacter() is Character character && character == Hero) || GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Allies");
         else
-            return GetTarget().gameObject.layer == LayerMask.NameToLayer("Enemy");
+            return GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Enemy");
     }
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("Spell");
@@ -106,27 +106,27 @@ public class FlashOfLight : Skill
     {
        // _previousTarget = null;
 
-        while (GetTarget() == null)
+        while (GetTargetCharacter() == null)
         {
             if (Input.GetMouseButton(0))
             {
                 FindTarget(true);
                 //_target = GetRaycastTarget(true);
 
-                if (GetTarget() != null && GetTarget() is Character characte && IsValidTarget(characte)) SetTarget(characte);
+                if (GetTargetCharacter() != null && GetTargetCharacter() is Character characte && IsValidTarget(characte)) SetTarget(characte);
                 else ClearTarget();
 
             }
             yield return null;
         }
         TargetInfo targetInfo = new();
-        targetInfo.AddTarget(GetTarget());
+        targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() == null || !IsCanCast) yield break;
+        if (GetTargetCharacter() == null || !IsCanCast) yield break;
 
         if (TryPayCost())
         {
@@ -153,12 +153,12 @@ public class FlashOfLight : Skill
             _lastTalentTime = Time.time;
         }
 
-        Heal(GetTarget());
+        Heal(GetTargetCharacter());
     }
 
     private void HandleFlashOfDarkness()
     {
-        Damage(GetTarget());
+        Damage(GetTargetCharacter());
     }
 
     private void Heal(Character target)

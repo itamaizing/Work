@@ -10,7 +10,7 @@ public class Blindness : Skill
     [SerializeField] private float duration;
     //private Character _target;
 
-    protected override bool IsCanCast => IsHaveCharge && GetTarget() != null;
+    protected override bool IsCanCast => IsHaveCharge && GetTargetCharacter() != null;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
 
@@ -26,27 +26,27 @@ public class Blindness : Skill
     {
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
-        while (GetTarget() == null && !_disactive)
+        while (GetTargetCharacter() == null && !_disactive)
         {
             if (GetMouseButton)
             {
                 FindTarget();
                 //_target = GetRaycastTarget(true);
-                if (multiMagic != null) multiMagic.LastTarget = GetTarget();
+                if (multiMagic != null) multiMagic.LastTarget = GetTargetCharacter();
             }
             yield return null;
         }
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTarget());
+        targetInfo.AddTarget(GetTargetCharacter());
 
         targetDataSavedCallback(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() != null)
+        if (GetTargetCharacter() != null)
         {
-            CmdApplyAbsorptionState(GetTarget().gameObject);
+            CmdApplyAbsorptionState(GetTargetCharacter().gameObject);
 
             var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 

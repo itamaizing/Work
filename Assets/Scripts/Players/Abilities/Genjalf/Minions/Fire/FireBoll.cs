@@ -22,7 +22,7 @@ public class FireBoll : Skill
     private bool CheckCanCast()
     {
         return 
-               Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius;
+               Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
     }
 
     public void AnimCastFireboll()
@@ -42,9 +42,9 @@ public class FireBoll : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() != null)
+        if (GetTargetCharacter() != null)
         {
-            CmdCreateProjecttile(GetTarget().gameObject);
+            CmdCreateProjecttile(GetTargetCharacter().gameObject);
         }
         yield return null;
     }
@@ -60,7 +60,7 @@ public class FireBoll : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (GetTarget() == null)
+        while (GetTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
@@ -70,7 +70,7 @@ public class FireBoll : Skill
             yield return null;
         }
         
-        targetInfo.AddTarget(GetTarget());
+        targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
 
         this.CastStarted += OnCastStarted;
@@ -78,7 +78,7 @@ public class FireBoll : Skill
 
     private void OnCastStarted()
     {
-        Hero.Move.LookAtTransform(GetTarget().transform);
+        Hero.Move.LookAtTransform(GetTargetCharacter().transform);
         this.CastStarted -= OnCastStarted;
     }
 

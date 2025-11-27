@@ -36,8 +36,8 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     {
         get
         {
-            if (GetTarget() != null)
-                return Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius;
+            if (GetTargetCharacter() != null)
+                return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
 
             return false;
         }
@@ -183,13 +183,13 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
                 FindTarget();
                 //_target = GetRaycastTarget(true);
 
-                if (GetTarget() == null)
+                if (GetTargetCharacter() == null)
                 {
                     yield return null;
                     continue;
                 }
 
-                float dist = Vector3.Distance(GetTarget().transform.position, transform.position);
+                float dist = Vector3.Distance(GetTargetCharacter().transform.position, transform.position);
 
                 if (dist > Radius)
                 {
@@ -213,16 +213,16 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
         }
 
         TargetInfo targetInfo = new();
-        targetInfo.AddTarget(GetTarget());
+        targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() == null)
+        if (GetTargetCharacter() == null)
             yield break;
 
-        float distance = Vector3.Distance(GetTarget().transform.position, transform.position);
+        float distance = Vector3.Distance(GetTargetCharacter().transform.position, transform.position);
         int manaToSpend = GetCurrentManaCost(distance);
 
         List<SkillEnergyCost> tempCosts = new()
@@ -240,11 +240,11 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
             yield break;
         }
 
-        Vector3 tpPos = FindPlace(GetTarget());
+        Vector3 tpPos = FindPlace(GetTargetCharacter());
         CmdTeleport(tpPos);
 
         int extraDuration = 0;
-        var targetState = GetTarget().GetComponent<CharacterState>();
+        var targetState = GetTargetCharacter().GetComponent<CharacterState>();
 
         if (isTeleportation_ScorpionMagResist)
         {

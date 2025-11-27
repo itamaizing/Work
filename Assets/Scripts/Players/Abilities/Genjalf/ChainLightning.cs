@@ -21,7 +21,7 @@ public class ChainLightning : Skill
     private bool CheckCanCast()
     {
         return
-               Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius;
+               Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
     }
 
     public void AnimCastLight()
@@ -41,11 +41,11 @@ public class ChainLightning : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() != null)
+        if (GetTargetCharacter() != null)
         {
-            Attack(GetTarget());
+            Attack(GetTargetCharacter());
             yield return new WaitForSecondsRealtime(0.3f);
-            var temps = Physics.OverlapSphere(GetTarget().Position, Radius, _targetsLayers);
+            var temps = Physics.OverlapSphere(GetTargetCharacter().Position, Radius, _targetsLayers);
             
             for (int i = 0; i < temps.Length; i++)
             {
@@ -69,7 +69,7 @@ public class ChainLightning : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (GetTarget() == null)
+        while (GetTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
@@ -79,7 +79,7 @@ public class ChainLightning : Skill
             yield return null;
         }
 
-        targetInfo.AddTarget(GetTarget());
+        targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }
 

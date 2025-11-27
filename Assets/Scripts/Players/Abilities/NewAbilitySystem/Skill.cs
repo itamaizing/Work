@@ -182,7 +182,7 @@ public abstract class Skill : NetworkBehaviour
     private List<Coroutine> _currentChargeCooldownJob;
     private Queue<TargetInfo> _targetInfoQueue = new();
     private bool _isAutoMode;
-    private Character _target;
+    private ITargetable _target;
 
     public bool IsAutoMode
     {
@@ -413,18 +413,29 @@ public abstract class Skill : NetworkBehaviour
             _currentChargers = 1;
     }
 
-    public Character GetTarget(bool canGetDead = false)
+    public ITargetable GetTarget(bool canGetDead = false)
     {
         if (_target != null)
         {
-            if (_target.IsDead && !canGetDead) return null;
+            if (_target.IsTargetable && !canGetDead) return null;
 
             return _target;
         }
         return null;
     }
 
-    public void SetTarget(Character character)
+	public Character GetTargetCharacter(bool canGetDead = false)
+	{
+		if (_target != null)
+		{
+			if (_target.IsTargetable && !canGetDead) return null;
+
+			return (Character)_target;
+		}
+		return null;
+	}
+
+	public void SetTarget(Character character)
     {
         _target = character;
     }

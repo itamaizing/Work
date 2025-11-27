@@ -23,7 +23,7 @@ public class MinionInterceptor : Skill
     protected override IEnumerator CastJob()
     {
         //CmdIntercept(_target.gameObject);
-        CmdIntercept(GetTarget().gameObject);
+        CmdIntercept(GetTargetCharacter().gameObject);
         yield return null;
     }
 
@@ -35,14 +35,14 @@ public class MinionInterceptor : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (GetTarget() == null)
+        while (GetTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
                 FindTarget(true);
                 //var temp = GetRaycastTarget();
 
-                if (GetTarget() is MinionComponent minion)
+                if (GetTargetCharacter() is MinionComponent minion)
                 {
                     //_target = minion;
                 }
@@ -54,7 +54,7 @@ public class MinionInterceptor : Skill
             yield return null;
         }
         TargetInfo targetInfo = new();
-        targetInfo.GetTargets().Add(GetTarget());
+        targetInfo.GetTargets().Add(GetTargetCharacter());
         callbackDataSaved?.Invoke(targetInfo);
     }
 

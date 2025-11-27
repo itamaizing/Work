@@ -20,8 +20,8 @@ public class TestH2 : Skill
     {
         get
         {
-            if(GetTarget() != null)
-                return Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius;
+            if(GetTargetCharacter() != null)
+                return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
 
             return false;
         }
@@ -45,7 +45,7 @@ public class TestH2 : Skill
             Type = DamageType,
             PhysicAttackType = AttackRangeType,
         };
-        CmdApplyDamage(damage, GetTarget().gameObject);
+        CmdApplyDamage(damage, GetTargetCharacter().gameObject);
 
         var deley = new WaitForSeconds(_spawnDeley); ;
 
@@ -56,9 +56,9 @@ public class TestH2 : Skill
             float x = Mathf.Cos(angle);
             float y = Mathf.Sin(angle);
 
-            Vector3 point = new Vector3(x, y, 0) + GetTarget().transform.position;
+            Vector3 point = new Vector3(x, y, 0) + GetTargetCharacter().transform.position;
 
-            CmdCreateProjecttile(point, GetTarget().transform.position);
+            CmdCreateProjecttile(point, GetTargetCharacter().transform.position);
             yield return deley;
         }
         yield return null;
@@ -73,7 +73,7 @@ public class TestH2 : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (GetTarget() == null)
+        while (GetTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
@@ -85,7 +85,7 @@ public class TestH2 : Skill
         }
         TargetInfo targetInfo = new();
         targetInfo.Points.Add(_targetPoint);
-        targetInfo.AddTarget(GetTarget());
+        targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }
 

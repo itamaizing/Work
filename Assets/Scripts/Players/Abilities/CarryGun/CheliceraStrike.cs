@@ -85,23 +85,23 @@ public class CheliceraStrike : Skill
 
     private bool CheckIsCanCast()
     {
-        return GetTarget() != null &&
-            Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius &&
-            NoObstacles(GetTarget().transform.position, transform.position, _obstacle);
+        return GetTargetCharacter() != null &&
+            Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius &&
+            NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         //_runtimeTarget = null;
 
-        while (GetTarget() == null)
+        while (GetTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
                 FindTarget();
                 //_target = GetRaycastTarget();
 
-                if (GetTarget() != null && GetTarget() is Character characterTarget)
+                if (GetTargetCharacter() != null && GetTargetCharacter() is Character characterTarget)
                 {
                     //_runtimeTarget = characterTarget;
                     characterTarget.SelectedCircle.IsActive = true;
@@ -111,13 +111,13 @@ public class CheliceraStrike : Skill
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        if (GetTarget() != null) targetInfo.AddTarget(GetTarget());
+        if (GetTargetCharacter() != null) targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved?.Invoke(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() == null) yield break;
+        if (GetTargetCharacter() == null) yield break;
 
         _baseDamage = UnityEngine.Random.Range(11f, 13f);
         Damage = _baseDamage;
@@ -126,12 +126,12 @@ public class CheliceraStrike : Skill
         {
             cooldownEnergy.CastCooldownEnergySkill(_jumpWithChelicera.CooldownJump, _jumpWithChelicera);
 
-            SetTarget((Character)_jumpWithChelicera.GetTarget());
+            SetTarget((Character)_jumpWithChelicera.GetTargetCharacter());
             _jumpWithChelicera.IsJumpDone = false;
         }
         else cooldownEnergy.CastCooldownEnergySkill(cooldownEnergyCost, this);
 
-        DamageDealChelicera(GetTarget());
+        DamageDealChelicera(GetTargetCharacter());
         _isClawStrike_Right = !_isClawStrike_Right;
 
         yield return null;
@@ -212,7 +212,7 @@ public class CheliceraStrike : Skill
     private bool CheckStateForBleeding()
     {
         States[] blockingStates = { States.Stun, States.Stupefaction, States.TentacleGrip };
-        return GetTarget() != null && blockingStates.Any(state => GetTarget().CharacterState.CheckForState(state));
+        return GetTargetCharacter() != null && blockingStates.Any(state => GetTargetCharacter().CharacterState.CheckForState(state));
     }
 
     private void DamageDealWithAttackingPsionicEnergy(Character targetCharacter)

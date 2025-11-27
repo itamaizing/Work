@@ -36,10 +36,10 @@ public class FlowOfLight : Skill
     #endregion
 
     protected override bool IsCanCast =>
-		GetTarget() != null &&
-        Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius &&
-        NoObstacles(GetTarget().transform.position, transform.position, _obstacle) &&
-        ((isLightMode && IsAllyTarget(GetTarget())) || (!isLightMode && IsEnemyTarget(GetTarget())));
+		GetTargetCharacter() != null &&
+        Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius &&
+        NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle) &&
+        ((isLightMode && IsAllyTarget(GetTargetCharacter())) || (!isLightMode && IsEnemyTarget(GetTargetCharacter())));
 
     private void OnEnable()
     {
@@ -113,7 +113,7 @@ public class FlowOfLight : Skill
     {
         //_targetCharacter = null;
 
-        while (GetTarget() == null)
+        while (GetTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
@@ -132,21 +132,21 @@ public class FlowOfLight : Skill
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTarget());
+        targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }
 
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() == null || !IsCanCast)
+        if (GetTargetCharacter() == null || !IsCanCast)
         {
             TryCancel();
             yield break;
         }
 
         TryPayCost();
-        CmdSpawnEffect(gameObject, GetTarget().gameObject);
+        CmdSpawnEffect(gameObject, GetTargetCharacter().gameObject);
 
         float elapsed = 0f;
         float interval = 1f;
@@ -158,9 +158,9 @@ public class FlowOfLight : Skill
 
         while (elapsed < CastStreamDuration)
         {
-            if (GetTarget() == null || !GetTarget().gameObject.activeSelf ||
+            if (GetTargetCharacter() == null || !GetTargetCharacter().gameObject.activeSelf ||
                 Input.GetMouseButtonDown(1) ||
-                Vector3.Distance(transform.position, GetTarget().transform.position) > Radius ||
+                Vector3.Distance(transform.position, GetTargetCharacter().transform.position) > Radius ||
                 Vector3.Distance(transform.position, initialPosition) > maxMoveDistance ||
                 (manaResource != null && manaResource.CurrentValue < 1f))
             {
@@ -178,14 +178,14 @@ public class FlowOfLight : Skill
 
             if (elapsed % interval < Time.deltaTime)
             {
-                if (isLightMode && IsAllyTarget(GetTarget()))
+                if (isLightMode && IsAllyTarget(GetTargetCharacter()))
                 {
                     Heal heal = new Heal { Value = tickValue };
-                    CmdApplyHeal(heal, GetTarget().gameObject, this, Name);
-                    TryApplyExtraState(GetTarget());
-                    ApplySpiritBuff(GetTarget());
+                    CmdApplyHeal(heal, GetTargetCharacter().gameObject, this, Name);
+                    TryApplyExtraState(GetTargetCharacter());
+                    ApplySpiritBuff(GetTargetCharacter());
                 }
-                else if (!isLightMode && IsEnemyTarget(GetTarget()))
+                else if (!isLightMode && IsEnemyTarget(GetTargetCharacter()))
                 {
                     Damage damage = new Damage
                     {
@@ -193,9 +193,9 @@ public class FlowOfLight : Skill
                         Type = DamageType,
                         School = School
                     };
-                    CmdApplyDamage(damage, GetTarget().gameObject);
-                    TryApplyExtraState(GetTarget());
-                    ApplySpiritBuff(GetTarget());
+                    CmdApplyDamage(damage, GetTargetCharacter().gameObject);
+                    TryApplyExtraState(GetTargetCharacter());
+                    ApplySpiritBuff(GetTargetCharacter());
                 }
             }
 

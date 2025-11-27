@@ -21,7 +21,7 @@ namespace Gangdollarff.AirElemental
         private bool CheckCanCast()
         {
             return
-                   Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius;
+                   Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
         }
 
         public void AnimCastLight()
@@ -41,7 +41,7 @@ namespace Gangdollarff.AirElemental
 
         protected override IEnumerator CastJob()
         {
-            if (GetTarget() != null)
+            if (GetTargetCharacter() != null)
             {
                 Damage damage = new Damage
                 {
@@ -49,13 +49,13 @@ namespace Gangdollarff.AirElemental
                     Type = DamageType,
                     PhysicAttackType = AttackRangeType,
                 };
-                CmdApplyDamage(damage, GetTarget().gameObject);
+                CmdApplyDamage(damage, GetTargetCharacter().gameObject);
 
-                CmdCreateParticle(GetTarget().Position);
+                CmdCreateParticle(GetTargetCharacter().Position);
 
                 if (UnityEngine.Random.Range(1, 100) <= _debuffChance)
                 {
-					GetTarget().CharacterState.AddState(States.Discharge, 2, 0, Hero.gameObject, name);
+					GetTargetCharacter().CharacterState.AddState(States.Discharge, 2, 0, Hero.gameObject, name);
                 }
             }
             yield return null;
@@ -71,7 +71,7 @@ namespace Gangdollarff.AirElemental
         {
             TargetInfo targetInfo = new TargetInfo();
 
-            while (GetTarget() == null)
+            while (GetTargetCharacter() == null)
             {
                 if (GetMouseButton)
                 {
@@ -81,7 +81,7 @@ namespace Gangdollarff.AirElemental
                 yield return null;
             }
 
-            targetInfo.AddTarget(GetTarget());
+            targetInfo.AddTarget(GetTargetCharacter());
             callbackDataSaved(targetInfo);
         }
 

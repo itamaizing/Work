@@ -28,7 +28,7 @@ namespace Gangdollarff
         private bool CheckCanCast()
         {
             return Vector3.Distance(_point, transform.position) <= Radius &&
-                   Vector3.Distance(GetTarget().transform.position, _point) <= Radius;
+                   Vector3.Distance(GetTargetCharacter().transform.position, _point) <= Radius;
         }
 
         public void AnimCastTelekinesis()
@@ -68,9 +68,9 @@ namespace Gangdollarff
         {
             DisableMove();
 
-            CmdMoveTaget(GetTarget().gameObject, new Vector3(GetTarget().transform.position.x, GetTarget().transform.position.y + _amountOfLift, GetTarget().transform.position.z), _deleyTelekines);
+            CmdMoveTaget(GetTargetCharacter().gameObject, new Vector3(GetTargetCharacter().transform.position.x, GetTargetCharacter().transform.position.y + _amountOfLift, GetTargetCharacter().transform.position.z), _deleyTelekines);
             yield return new WaitForSeconds(_deleyTelekines);
-            CmdMoveTaget(GetTarget().gameObject, _point, CastStreamDuration - _deleyTelekines);
+            CmdMoveTaget(GetTargetCharacter().gameObject, _point, CastStreamDuration - _deleyTelekines);
         }
         protected override void ClearData()
         {
@@ -83,7 +83,7 @@ namespace Gangdollarff
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
         {
-            while (GetTarget() == null)
+            while (GetTargetCharacter() == null)
             {
                 if (GetMouseButton)
                     FindTarget();
@@ -94,7 +94,7 @@ namespace Gangdollarff
             yield return new WaitForSeconds(0.1f);
 
             _radiusEnemy.gameObject.SetActive(true);
-            _radiusEnemy.transform.parent = GetTarget().transform;
+            _radiusEnemy.transform.parent = GetTargetCharacter().transform;
             _radiusEnemy.transform.localPosition = Vector3.zero;
 
             while (_point == Vector3.zero)
@@ -105,7 +105,7 @@ namespace Gangdollarff
                 yield return null;
             }
             TargetInfo targetInfo = new TargetInfo();
-            targetInfo.AddTarget(GetTarget());
+            targetInfo.AddTarget(GetTargetCharacter());
             targetInfo.Points.Add( _point );
             callbackDataSaved(targetInfo);
             _radiusEnemy.gameObject.SetActive(false);

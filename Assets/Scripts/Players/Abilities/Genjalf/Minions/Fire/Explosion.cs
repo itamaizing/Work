@@ -19,7 +19,7 @@ public class Explosion : Skill
     private bool CheckCanCast()
     {
         return
-               Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius;
+               Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -29,9 +29,9 @@ public class Explosion : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() != null)
+        if (GetTargetCharacter() != null)
         {
-            int stacks = GetTarget().CharacterState.GetState(States.Burning).CurrentStacksCount;
+            int stacks = GetTargetCharacter().CharacterState.GetState(States.Burning).CurrentStacksCount;
 
             Damage damage = new Damage
             {
@@ -39,9 +39,9 @@ public class Explosion : Skill
                 Type = DamageType,
                 PhysicAttackType = AttackRangeType,
             };
-            CmdApplyDamage(damage, GetTarget().gameObject);
+            CmdApplyDamage(damage, GetTargetCharacter().gameObject);
 
-            CmdCreateParticle(GetTarget().Position);
+            CmdCreateParticle(GetTargetCharacter().Position);
         }
         yield return null;
     }
@@ -56,7 +56,7 @@ public class Explosion : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (GetTarget() == null)
+        while (GetTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
@@ -66,7 +66,7 @@ public class Explosion : Skill
             yield return null;
         }
 
-        targetInfo.GetTargets().Add(GetTarget());
+        targetInfo.GetTargets().Add(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }
 

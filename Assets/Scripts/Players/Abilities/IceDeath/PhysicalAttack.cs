@@ -33,7 +33,7 @@ public class PhysicalAttack : Skill
 
 	protected override int AnimTriggerCast => _animTriggerToUse = UnityEngine.Random.value > 0.5f ? RightKickTrigger : LeftKickTrigger;
 
-	protected override bool IsCanCast => GetTarget() != null && Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius && NoObstacles(GetTarget().transform.position, transform.position, _obstacle);
+	protected override bool IsCanCast => GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius && NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
 	private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
 	private void Start()
@@ -58,32 +58,32 @@ public class PhysicalAttack : Skill
 	{
 		TargetInfo targetInfo = new TargetInfo();
 
-		if (GetTarget() != null)
+		if (GetTargetCharacter() != null)
 		{
-			_hero.Move.LookAtTransform(GetTarget().transform);
-			targetInfo.AddTarget(GetTarget());
-			targetInfo.Points.Add(GetTarget().transform.position);
+			_hero.Move.LookAtTransform(GetTargetCharacter().transform);
+			targetInfo.AddTarget(GetTargetCharacter());
+			targetInfo.Points.Add(GetTargetCharacter().transform.position);
 			callbackDataSaved?.Invoke(targetInfo);
 			yield break;
 		}
 
-		while (GetTarget() == null)
+		while (GetTargetCharacter() == null)
 		{
 			if (GetMouseButton)
 			{
 				FindTarget();
 				//_target = GetTarget().character;
 
-				if (GetTarget() != null)
+				if (GetTargetCharacter() != null)
 				{
-					if (IsAllyTarget(GetTarget()) || GetTarget() == Hero)
+					if (IsAllyTarget(GetTargetCharacter()) || GetTargetCharacter() == Hero)
 					{
 						ClearTarget();						
 					}
 					else
 					{
-						GetTarget().SelectedCircle.IsActive = true;
-						_hero.Move.LookAtTransform(GetTarget().transform);
+						GetTargetCharacter().SelectedCircle.IsActive = true;
+						_hero.Move.LookAtTransform(GetTargetCharacter().transform);
 						break;
 					}
 				}
@@ -91,14 +91,14 @@ public class PhysicalAttack : Skill
 			yield return null;
 		}
 
-		targetInfo.AddTarget(GetTarget());
-		targetInfo.Points.Add(GetTarget().transform.position);
+		targetInfo.AddTarget(GetTargetCharacter());
+		targetInfo.Points.Add(GetTargetCharacter().transform.position);
 		callbackDataSaved?.Invoke(targetInfo);
 	}
 
 	protected override IEnumerator CastJob()
 	{
-		if (GetTarget() == null || _animator == null) yield break;
+		if (GetTargetCharacter() == null || _animator == null) yield break;
 		yield break;
 	}
 
@@ -114,10 +114,10 @@ public class PhysicalAttack : Skill
 
 	public void ApplyAttackDamage()
 	{
-		if (GetTarget() == null) return;
+		if (GetTargetCharacter() == null) return;
 
-		if (_seriesPhysicalTalent) Hit(GetTarget());
-		else SingleHit(GetTarget());
+		if (_seriesPhysicalTalent) Hit(GetTargetCharacter());
+		else SingleHit(GetTargetCharacter());
 
 		if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
 		{
@@ -247,11 +247,11 @@ public class PhysicalAttack : Skill
 
 	private void PushBackEnemy(Character enemy)
 	{
-		Vector3 lookDir = (GetTarget().transform.position - Hero.transform.position).normalized;
-		Vector3 jumpPos = lookDir * 1 + GetTarget().transform.position;
+		Vector3 lookDir = (GetTargetCharacter().transform.position - Hero.transform.position).normalized;
+		Vector3 jumpPos = lookDir * 1 + GetTargetCharacter().transform.position;
 		if (!CheckObstacleBetween(Hero.transform.position, jumpPos))
 		{
-			CmdPush(GetTarget().gameObject, jumpPos);
+			CmdPush(GetTargetCharacter().gameObject, jumpPos);
 			//прыгать до препятствия
 		}
 	}

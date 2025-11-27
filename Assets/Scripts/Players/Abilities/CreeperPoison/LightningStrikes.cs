@@ -133,7 +133,7 @@ public class LightningStrikes : AutoAttackSkill
     private void DamageDeal()
     {
         Debug.Log("LightningStrikes / DamageDeal");
-        _creeperStrike.DamageDeal(GetTarget(), true);
+        _creeperStrike.DamageDeal(GetTargetCharacter(), true);
 
        _isCanDamageDeal = false;
 
