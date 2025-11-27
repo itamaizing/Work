@@ -280,9 +280,6 @@ public class Tentacles : Skill
             }
         }
 
-        TrySpendAttackingPsi();
-        Hero.Move.CanMove = false;
-        Hero.Move.StopMoveAndAnimationMove();
         if (_previewInstance != null) Destroy(_previewInstance.gameObject);
 
         TargetInfo targetInfo = new TargetInfo();
@@ -436,6 +433,10 @@ public class Tentacles : Skill
         _spawnPoint = targetInfo.Points[0];
         if (targetInfo.Targets.Count > 0) _target = (Character)targetInfo.Targets[0];
         else _target = null;
+
+        TrySpendAttackingPsi();
+        Hero.Move.CanMove = false;
+        Hero.Move.StopMoveAndAnimationMove();
     }
 
     public void SetCurrentMinion(MinionComponent newMinion)

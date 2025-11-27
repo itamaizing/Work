@@ -194,17 +194,25 @@ public class TentacleProjectile : NetworkBehaviour
         if (tentacleLine != null)
             tentacleLine.enabled = false;
 
-        if (_target != null && isServer)
+        if (_target != null)
         {
             _target.Move.StopMoveAndAnimationMove();
 
             if (agent != null && !agent.enabled) agent.enabled = true;
 
-            Vector3 finalPosition = end;
-
-            _target.Move.CancelMoveTowards();
-            _target.Move.TargetRpcSetTransformPosition(finalPosition);
-            _target.Move.TargetRpcStopMoveAndAnimationMove();
+            if (_target.netIdentity != null && _target.netIdentity.connectionToClient != null)
+            {
+                Vector3 finalPosition = end;
+                _target.Move.CancelMoveTowards();
+                _target.Move.TargetRpcSetTransformPosition(finalPosition);
+                _target.Move.TargetRpcStopMoveAndAnimationMove();
+            }
+            else
+            {
+                _target.Move.CancelMoveTowards();
+                _target.Move.transform.position = end;
+                _target.Move.StopMoveAndAnimationMove();
+            }
         }
     }
 
