@@ -26,7 +26,7 @@ public class IceCloud : Skill
 	{
 		get
 		{
-			if (GetTarget() != null) return Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius;
+			if (GetTargetCharacter() != null) return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
 
 			else return true;
 		}
@@ -135,12 +135,12 @@ public class IceCloud : Skill
 		{
 			if (GetMouseButton)
 			{
-				if(GetTarget() == null) yield return null;
-				if (GetTarget() != null)
+				if(GetTargetCharacter() == null) yield return null;
+				if (GetTargetCharacter() != null)
 				{
 					float distance = Vector3.Distance(_hero.transform.position, _mousePos);
 
-					if (distance <= Radius) _mousePos = GetTarget().transform.position;
+					if (distance <= Radius) _mousePos = GetTargetCharacter().transform.position;
 
 					else
 					{
@@ -148,7 +148,7 @@ public class IceCloud : Skill
 
 						//_target = GetTarget().character;
 						_damageValue = 10 + _energy.CurrentValue / 5;
-						_mousePos = GetTarget().transform.position;
+						_mousePos = GetTargetCharacter().transform.position;
 					}
 				}
 
@@ -158,7 +158,7 @@ public class IceCloud : Skill
 		}
 
 		TargetInfo targetInfo = new TargetInfo();
-		if (GetTarget() != null) targetInfo.Points.Add(GetTarget().Position);
+		if (GetTargetCharacter() != null) targetInfo.Points.Add(GetTargetCharacter().Position);
 		else if (_mousePos != Vector3.positiveInfinity) targetInfo.Points.Add(_mousePos);
 		callbackDataSaved(targetInfo);
 	}

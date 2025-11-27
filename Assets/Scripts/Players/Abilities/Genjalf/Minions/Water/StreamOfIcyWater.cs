@@ -38,7 +38,7 @@ public class StreamOfIcyWater : Skill
 
         while (time < CastStreamDuration)
         {
-            _effect.transform.localScale = new Vector3(_effect.transform.localScale.x, _effect.transform.localScale.y, Vector3.Distance(transform.position, GetTarget().Position));
+            _effect.transform.localScale = new Vector3(_effect.transform.localScale.x, _effect.transform.localScale.y, Vector3.Distance(transform.position, GetTargetCharacter().Position));
 
             yield return new WaitForSeconds(_manaCostRate);
             Damage damage = new Damage
@@ -47,8 +47,8 @@ public class StreamOfIcyWater : Skill
                 Type = DamageType,
                 PhysicAttackType = AttackRangeType,
             };
-            CmdApplyDamage(damage, GetTarget().gameObject);
-			GetTarget().CharacterState.CmdAddState(States.Frosting, 6, 0, Hero.gameObject, name);
+            CmdApplyDamage(damage, GetTargetCharacter().gameObject);
+			GetTargetCharacter().CharacterState.CmdAddState(States.Frosting, 6, 0, Hero.gameObject, name);
 
             time += _manaCostRate;
 
@@ -71,7 +71,7 @@ public class StreamOfIcyWater : Skill
 
         TargetInfo targetInfo = new();
 
-        while (GetTarget() == null)
+        while (GetTargetCharacter() == null)
         {
             if (GetMouseButton)
                 FindTarget();
@@ -80,8 +80,8 @@ public class StreamOfIcyWater : Skill
             yield return null;
         }
 
-        Hero.Move.LookAtPosition(GetTarget().Position);
-        targetInfo.AddTarget(GetTarget());
+        Hero.Move.LookAtPosition(GetTargetCharacter().Position);
+        targetInfo.AddTarget(GetTargetCharacter());
         targetDataSavedCallback.Invoke(targetInfo);
         yield return null;
     }

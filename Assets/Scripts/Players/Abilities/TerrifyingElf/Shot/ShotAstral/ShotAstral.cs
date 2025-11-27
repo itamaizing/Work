@@ -40,17 +40,17 @@ public class ShotAstral : Skill
                 {
                     _targetPoint = click;
                     FindTarget();
-                    if (GetTarget() is Character player && player == _playerLinks)
+                    if (GetTargetCharacter() is Character player && player == _playerLinks)
                     {
                         _playerLinks.CharacterState.CmdAddState(States.Astral, _projectile.Duration, 0, gameObject, "ShotAstral");
                         TryCancel(true);
                         yield break;
                     }
 
-                    if (GetTarget() is Character character)
+                    if (GetTargetCharacter() is Character character)
                     {
                         //_target = character;
-                        if (multiMagic != null) multiMagic.LastTarget = GetTarget();
+                        if (multiMagic != null) multiMagic.LastTarget = GetTargetCharacter();
                         Hero.Move.LookAtTransform(character.transform);
                     }
 

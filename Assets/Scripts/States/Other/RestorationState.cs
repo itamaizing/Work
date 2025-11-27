@@ -29,7 +29,11 @@ public class RestorationState : AbstractCharacterState
         _totalHealedInInterval = 0f;
 
         _timer = _tickInterval;
-    }
+
+		float spiritBonus = GetSpiritEnergyBonus(_characterState.Character);
+		float healValue = _healPerTick * _accumulatedEffectiveness + spiritBonus;
+		CmdHeal(healValue);
+	}
 
     public override void UpdateState()
     {

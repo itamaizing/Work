@@ -43,7 +43,7 @@ public class IceRolling : Skill
 	{
 		get
 		{
-			if (GetTarget() != null) return Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius;
+			if (GetTargetCharacter() != null) return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
 			else return true;
 		}
 	}
@@ -104,7 +104,7 @@ public class IceRolling : Skill
 		{
 			if (hit.collider.TryGetComponent(out Character character) && character != _playerLinks)
 			{
-				if (!_rollingWithEnemyTalent && character != GetTarget())
+				if (!_rollingWithEnemyTalent && character != GetTargetCharacter())
 				{
 					stopPosition = hit.point - direction;
 					characterHit = character;
@@ -168,7 +168,7 @@ public class IceRolling : Skill
 
 		float energyMy = finalRange / 5;
 
-		if (_isLastInSeries && GetTarget() == null && _rollingWithEnemyTalent) finalRange *= 1.5f;
+		if (_isLastInSeries && GetTargetCharacter() == null && _rollingWithEnemyTalent) finalRange *= 1.5f;
 
 		Vector3 jumpPos = startPosition + _lookDir * finalRange;
 
@@ -190,7 +190,7 @@ public class IceRolling : Skill
 		//else
 		CmdPush(stopPosition, actualDistance);
 
-		if (_rollingWithEnemyTalent && GetTarget() != null && hitTarget && characterHitTarget != null) CmdPushWithCharacter(stopPosition, characterHitTarget, actualDistance);
+		if (_rollingWithEnemyTalent && GetTargetCharacter() != null && hitTarget && characterHitTarget != null) CmdPushWithCharacter(stopPosition, characterHitTarget, actualDistance);
 
 		if (_rollingPhysTalent)
 		{
@@ -211,7 +211,7 @@ public class IceRolling : Skill
 		{
 			FindTarget();
 			//_target = GetTarget().character;
-			_mousePos = GetTarget() != null ? GetTarget().transform.position : GetMousePoint();
+			_mousePos = GetTargetCharacter() != null ? GetTargetCharacter().transform.position : GetMousePoint();
 		}
 		
 	}
@@ -268,7 +268,7 @@ public class IceRolling : Skill
 				_target = GetTarget().character;
 			else*/
 			//_target = null;
-			_mousePos = GetTarget() != null ? GetTarget().transform.position : GetMousePoint();
+			_mousePos = GetTargetCharacter() != null ? GetTargetCharacter().transform.position : GetMousePoint();
 		}
 	}
 
@@ -287,7 +287,7 @@ public class IceRolling : Skill
 			{
 				FindTarget();
 				//_target = GetTarget().character;
-				_mousePos = GetTarget() != null ? GetTarget().transform.position : GetMousePoint();
+				_mousePos = GetTargetCharacter() != null ? GetTargetCharacter().transform.position : GetMousePoint();
 			}
 			yield return null;
 		}
@@ -306,7 +306,7 @@ public class IceRolling : Skill
 	{
 		if (!float.IsInfinity(_mousePos.x))
         {
-			_isLastInSeries = _seriesOfStrikes.MakeHit(GetTarget(), AbilityForm.Physical, 1, 0, 0);
+			_isLastInSeries = _seriesOfStrikes.MakeHit(GetTargetCharacter(), AbilityForm.Physical, 1, 0, 0);
 			Jump();
 			yield return null;
 		}
@@ -428,7 +428,7 @@ public class IceRolling : Skill
 		if (target.TryGetComponent(out NavMeshAgent agent))
 		{
 			agent.enabled = true;
-			agent.Warp(GetTarget().transform.position);
+			agent.Warp(GetTargetCharacter().transform.position);
 		}
 
 		if (target.TryGetComponent(out Rigidbody rigidbody)) rigidbody.isKinematic = false;

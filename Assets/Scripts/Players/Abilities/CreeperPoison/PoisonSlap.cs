@@ -99,7 +99,7 @@ public class PoisonSlap : Skill
     }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        Debug.LogError("TargetDataError");
+       // Debug.LogError("TargetDataError");
     }
 
     protected override void ClearData()
@@ -142,14 +142,14 @@ public class PoisonSlap : Skill
         }
         else
         {
-            while (GetTarget() == null)
+            while (GetTargetCharacter() == null)
             {
                 if (GetMouseButton)
                 {
                     FindTarget();
                    // _currentTarget = GetTarget().character;
 
-                    if (GetTarget() != null)
+                    if (GetTargetCharacter() != null)
                     {
                         _firstMousePosition = GetMousePoint();
 
@@ -176,9 +176,9 @@ public class PoisonSlap : Skill
             _poisonBall.PayCostPoisonBall();
         }
 
-        ChooseDirectionPush(GetTarget());
+        ChooseDirectionPush(GetTargetCharacter());
 
-        DamageDeal(GetTarget());
+        DamageDeal(GetTargetCharacter());
 
         yield return null;
     }
@@ -228,10 +228,10 @@ public class PoisonSlap : Skill
 
     private bool CheckCanCast()
     {
-        if (GetTarget() == null)
+        if (GetTargetCharacter() == null)
             return false;
 
-        return Vector3.Distance(_player.transform.position, GetTarget().transform.position) <= Radius;
+        return Vector3.Distance(_player.transform.position, GetTargetCharacter().transform.position) <= Radius;
     }
 
     private void ChooseDirectionPush(Character target)
@@ -245,13 +245,13 @@ public class PoisonSlap : Skill
 
     private void CreateArrowsParallelToPlayer()
     {
-        if (GetTarget() == null || _arrowPrefab == null)
+        if (GetTargetCharacter() == null || _arrowPrefab == null)
         {
             Debug.LogError("Arrow Prefab is not assigned or Target is null");
             return;
         }
 
-        Vector3 targetPosition = GetTarget().transform.position;
+        Vector3 targetPosition = GetTargetCharacter().transform.position;
         Vector3 playerPosition = _player.transform.position;
 
         targetPosition.y = playerPosition.y = 0.8f;
@@ -343,7 +343,7 @@ public class PoisonSlap : Skill
                 _secondClickDone = true;
                 _secondMousePosition = GetMousePoint();
 
-                if (GetTarget() != null)
+                if (GetTargetCharacter() != null)
                 {
                     SetArrowVisibility(0, false);
                     SetArrowVisibility(1, false);
@@ -413,7 +413,7 @@ public class PoisonSlap : Skill
             _poisonBall.PayCostPoisonBall();
         }
 
-        if (GetTarget() != null)
+        if (GetTargetCharacter() != null)
         {
             Damage damage = new Damage
             {
@@ -422,9 +422,9 @@ public class PoisonSlap : Skill
                 PhysicAttackType = AttackRangeType.MeleeAttack,
             };
 
-            CmdApplyDamage(damage, GetTarget().gameObject);
+            CmdApplyDamage(damage, GetTargetCharacter().gameObject);
 
-            if (GetTarget().CharacterState.CheckForState(States.PoisonBone) && _restorationOfGlands && _poisonBoneStack > 0)
+            if (GetTargetCharacter().CharacterState.CheckForState(States.PoisonBone) && _restorationOfGlands && _poisonBoneStack > 0)
             {
                 float baseChanceOfRestorationOfGlands = 0.1f;
                 float chanceOfRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
@@ -435,7 +435,7 @@ public class PoisonSlap : Skill
                 }
             }
 
-            PushTarget(GetTarget(), _distancePush, _durationPush, _isPushTargetAllowed);
+            PushTarget(GetTargetCharacter(), _distancePush, _durationPush, _isPushTargetAllowed);
         }
         UseRecharge();
     }

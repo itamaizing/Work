@@ -24,9 +24,9 @@ public class DeafeningScream : Skill
 
     private bool CheckCanCast()
     {
-        return GetTarget() != null && cooldownEnergy.CurrentValue >= jumpWithChelicera.ChargeCooldown &&
-        Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius &&
-        NoObstacles(GetTarget().transform.position, transform.position, _obstacle);
+        return GetTargetCharacter() != null && cooldownEnergy.CurrentValue >= jumpWithChelicera.ChargeCooldown &&
+        Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius &&
+        NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
     }
 
     public void HandleJumpEnd()
@@ -41,13 +41,13 @@ public class DeafeningScream : Skill
     {
         _runtimeTarget = null;
 
-        while (GetTarget() == null)
+        while (GetTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
                 FindTarget();
 
-                if (GetTarget() != null) if (GetTarget() is Character characterTarget) _runtimeTarget = characterTarget;
+                if (GetTargetCharacter() != null) if (GetTargetCharacter() is Character characterTarget) _runtimeTarget = characterTarget;
                 _isCanCancle = false;
             }
             yield return null;
@@ -60,7 +60,7 @@ public class DeafeningScream : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() != null) CmdApplyState(GetTarget().gameObject);
+        if (GetTargetCharacter() != null) CmdApplyState(GetTargetCharacter().gameObject);
 
         cooldownEnergy.CastCooldownEnergySkill(13, this);
         AfterCastJob();
@@ -109,7 +109,7 @@ public class DeafeningScream : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0] as Character);
-        Hero.Move.LookAtTransform(GetTarget().transform);
+        Hero.Move.LookAtTransform(GetTargetCharacter().transform);
         _isCanCancle = false;
     }
 }

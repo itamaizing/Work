@@ -25,7 +25,7 @@ public class NewPunch_Scorpion : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => _isRightKick ? RightPunchTrigger : LeftPunchTrigger;
 
-    protected override bool IsCanCast => GetTarget() != null && Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius && NoObstacles(GetTarget().transform.position, transform.position, _obstacle);
+    protected override bool IsCanCast => GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius && NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
 
     private void Start() => _animator = GetComponent<Animator>();
     private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
@@ -47,7 +47,7 @@ public class NewPunch_Scorpion : Skill
 
     private bool IsTargetInRange()
     {
-        return Vector3.Distance(_playerLinks.transform.position, GetTarget().transform.position) <= Radius;
+        return Vector3.Distance(_playerLinks.transform.position, GetTargetCharacter().transform.position) <= Radius;
     }
 
     private void HandleSkillCanceled()
@@ -62,7 +62,7 @@ public class NewPunch_Scorpion : Skill
     {
         if (_hero == null || _hero.Move == null) return;
 
-        var target = GetTarget() != null ? GetTarget() : _lastTarget;
+        var target = GetTargetCharacter() != null ? GetTargetCharacter() : _lastTarget;
         if (target == null)
         {
             _hero.Move.StopLookAt();
@@ -92,31 +92,31 @@ public class NewPunch_Scorpion : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (GetTarget() == null)
+        while (GetTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
                 FindTarget();
                 //_target = GetRaycastTarget();
 
-                if (GetTarget() != null) GetTarget().SelectedCircle.IsActive = true;
+                if (GetTargetCharacter() != null) GetTargetCharacter().SelectedCircle.IsActive = true;
             }
             yield return null;
         }
 
-        _hero.Move.LookAtTransform(GetTarget().transform);
+        _hero.Move.LookAtTransform(GetTargetCharacter().transform);
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(GetTarget().transform.position);
+        targetInfo.Points.Add(GetTargetCharacter().transform.position);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() == null) yield return null;
+        if (GetTargetCharacter() == null) yield return null;
         if (!IsTargetInRange()) yield return null;
 
-        _runtimeTarget = GetTarget();
+        _runtimeTarget = GetTargetCharacter();
 
         if (_lastTarget != null && _lastTarget != _runtimeTarget)  _comboCounter.ResetCounter();
 

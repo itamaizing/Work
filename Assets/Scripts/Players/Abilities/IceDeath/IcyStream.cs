@@ -24,9 +24,9 @@ public class IcyStream : Skill
 
     private bool IsCanCastCheck()
 	{
-		if(GetTarget() != null)
+		if(GetTargetCharacter() != null)
 		{
-			if(Vector3.Distance(GetTarget().transform.position, _playerLinks.transform.position) > Radius)
+			if(Vector3.Distance(GetTargetCharacter().transform.position, _playerLinks.transform.position) > Radius)
 			{
 				return false;
 			}

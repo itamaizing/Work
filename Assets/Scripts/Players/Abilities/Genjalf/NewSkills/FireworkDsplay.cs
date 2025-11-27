@@ -90,13 +90,13 @@ namespace Gangdollarff
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
         {
-            while (float.IsPositiveInfinity(_targetPoint.x) && GetTarget() == null)
+            while (float.IsPositiveInfinity(_targetPoint.x) && GetTargetCharacter() == null)
             {
                 if (GetMouseButton)
                 {
                     FindTarget();
                     //_target = GetTarget().character;
-                    _targetPoint = GetTarget().Position;
+                    _targetPoint = GetTargetCharacter().Position;
 
                    // _target = GetRaycastTarget();
                     _targetPoint = GetMousePoint();
@@ -104,7 +104,7 @@ namespace Gangdollarff
                 yield return null;
             }
             TargetInfo targetInfo = new();
-            targetInfo.AddTarget(GetTarget());
+            targetInfo.AddTarget(GetTargetCharacter());
             targetInfo.Points.Add(_targetPoint);
             callbackDataSaved(targetInfo);
         }

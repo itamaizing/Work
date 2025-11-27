@@ -16,7 +16,7 @@ public class ScratchClaws : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
-    protected override bool IsCanCast => GetTarget() != null && Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius && NoObstacles(GetTarget().transform.position, transform.position, _obstacle);
+    protected override bool IsCanCast => GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius && NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -33,7 +33,7 @@ public class ScratchClaws : Skill
         if (Damage <= 0) Damage = UnityEngine.Random.Range(1f, 4f);
         //_runtimeTarget = null;
 
-        while (GetTarget() == null && !_disactive)
+        while (GetTargetCharacter() == null && !_disactive)
         {
             if (GetMouseButton)
             {
@@ -49,7 +49,7 @@ public class ScratchClaws : Skill
         }
 
         TargetInfo info = new();
-        info.AddTarget(GetTarget());
+        info.AddTarget(GetTargetCharacter());
         targetDataSavedCallback?.Invoke(info);
 
         animator.SetTrigger("AttackScared");
@@ -57,8 +57,8 @@ public class ScratchClaws : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() == null) yield break;
-        CmdApplyScratch(GetTarget().gameObject);
+        if (GetTargetCharacter() == null) yield break;
+        CmdApplyScratch(GetTargetCharacter().gameObject);
 
         yield return null;
     }
@@ -82,6 +82,6 @@ public class ScratchClaws : Skill
         };
 
         ApplyDamage(damage, target);
-        if (GetTarget() != null && UnityEngine.Random.value <= _bleedingChance) GetTarget().CharacterState.AddState(States.Bleeding, _bleedingDuration, Damage, _playerLinks.gameObject, name);
+        if (GetTargetCharacter() != null && UnityEngine.Random.value <= _bleedingChance) GetTargetCharacter().CharacterState.AddState(States.Bleeding, _bleedingDuration, Damage, _playerLinks.gameObject, name);
     }
 }

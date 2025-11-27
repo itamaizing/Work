@@ -21,7 +21,7 @@ public class CleavingBlade_Scorpion : Skill
 
     public float DamageRange => Random.Range(_minDamage, _maxDamage);
 
-    protected override bool IsCanCast => GetTarget() != null && Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius;
+    protected override bool IsCanCast => GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Cast Blade");
 
@@ -72,7 +72,7 @@ public class CleavingBlade_Scorpion : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (GetTarget() == null)
+        while (GetTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
@@ -83,13 +83,13 @@ public class CleavingBlade_Scorpion : Skill
         }
 
         TargetInfo targetInfo = new();
-        targetInfo.AddTarget(GetTarget());
+        targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        _runtimeTarget = GetTarget();
+        _runtimeTarget = GetTargetCharacter();
         TryAttack(true, 1f);
         yield return null;
     }

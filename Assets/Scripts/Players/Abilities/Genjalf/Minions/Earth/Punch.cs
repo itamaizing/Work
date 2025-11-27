@@ -12,7 +12,7 @@ namespace Gangdollarff.EarthElemental
 
         protected override int AnimTriggerCastDelay => 0;
         protected override int AnimTriggerCast => Animator.StringToHash("Attack01");
-        protected override bool IsCanCast => Vector3.Distance(GetTarget().Position, transform.position) <= Radius;
+        protected override bool IsCanCast => Vector3.Distance(GetTargetCharacter().Position, transform.position) <= Radius;
 
         public void AnimCastPunch()
         {
@@ -31,7 +31,7 @@ namespace Gangdollarff.EarthElemental
 
         protected override IEnumerator CastJob()
         {
-            Hero.Move.LookAtPosition(GetTarget().Position);
+            Hero.Move.LookAtPosition(GetTargetCharacter().Position);
 
             Damage damage = new Damage
             {
@@ -42,7 +42,7 @@ namespace Gangdollarff.EarthElemental
                 Form = AbilityForm,
              };
 
-            CmdApplyDamage(damage, GetTarget().gameObject);
+            CmdApplyDamage(damage, GetTargetCharacter().gameObject);
 
             yield return null;
         }
@@ -59,7 +59,7 @@ namespace Gangdollarff.EarthElemental
 
             TargetInfo targetInfo = new();
 
-            while (GetTarget() == null)
+            while (GetTargetCharacter() == null)
             {
                 if (GetMouseButton)
                     FindTarget();

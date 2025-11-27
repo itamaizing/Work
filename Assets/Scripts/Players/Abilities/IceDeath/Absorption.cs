@@ -13,7 +13,7 @@ public class Absorption : Skill
 
 	protected override bool IsCanCast
 	{
-		get { return GetTarget() != null; }
+		get { return GetTargetCharacter() != null; }
 	}
 
     protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
@@ -88,12 +88,12 @@ public class Absorption : Skill
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		while (GetTarget() == null)
+		while (GetTargetCharacter() == null)
 		{
 			if (GetMouseButton)
 			{
 				FindTarget();
-				if(GetTarget() is IcyCorpse)
+				if(GetTargetCharacter() is IcyCorpse)
 				{
 
 				}
@@ -106,14 +106,14 @@ public class Absorption : Skill
 			yield return null;
 		}
 		TargetInfo targetInfo = new();
-		targetInfo.AddTarget(GetTarget());
+		targetInfo.AddTarget(GetTargetCharacter());
 		callbackDataSaved(targetInfo);
 	}
 
 	protected override IEnumerator CastJob()
 	{
 		Debug.Log("cast job");
-		CmdAction(GetTarget().gameObject);
+		CmdAction(GetTargetCharacter().gameObject);
 
 		yield return null;
 	}

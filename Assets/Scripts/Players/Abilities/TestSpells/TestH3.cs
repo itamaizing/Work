@@ -29,11 +29,11 @@ public class TestH3 : Skill
 
     private bool CheckCanCast()
     {
-        if (GetTarget() == null)
+        if (GetTargetCharacter() == null)
             return Vector3.Distance(_targetPoint, transform.position) <= Radius;
 
         return Vector3.Distance(_targetPoint, transform.position) <= Radius ||
-               Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius;
+               Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
     }
 
     public void AnimCastH3()
@@ -66,9 +66,9 @@ public class TestH3 : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() != null)
+        if (GetTargetCharacter() != null)
         {
-            CmdCreateProjecttile(GetTarget().transform);
+            CmdCreateProjecttile(GetTargetCharacter().transform);
         }
         else
         {
@@ -90,7 +90,7 @@ public class TestH3 : Skill
     {
         Buff.CastSpeed.IncreasePercentage(_animSpeed);
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && GetTarget() == null)
+        while (float.IsPositiveInfinity(_targetPoint.x) && GetTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
@@ -103,7 +103,7 @@ public class TestH3 : Skill
             yield return null;
         }
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTarget());
+        targetInfo.AddTarget(GetTargetCharacter());
         targetInfo.Points.Add(_targetPoint);
         callbackDataSaved(targetInfo);
     }

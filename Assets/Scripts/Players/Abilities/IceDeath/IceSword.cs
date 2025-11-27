@@ -31,9 +31,9 @@ public class IceSword : Skill
 
 	private bool IsCanCastCheck()
 	{
-		if (GetTarget() == null) return false;
+		if (GetTargetCharacter() == null) return false;
 
-		if (Vector3.Distance(GetTarget().transform.position, transform.position) > Radius)
+		if (Vector3.Distance(GetTargetCharacter().transform.position, transform.position) > Radius)
 		{
 			return false;
 		}
@@ -64,7 +64,7 @@ public class IceSword : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		while (GetTarget() == null)
+		while (GetTargetCharacter() == null)
 		{
 			if (GetMouseButton)
 			{
@@ -74,14 +74,14 @@ public class IceSword : Skill
 			yield return null;
 		}
 		TargetInfo targetInfo = new TargetInfo();
-		targetInfo.AddTarget(GetTarget());
+		targetInfo.AddTarget(GetTargetCharacter());
 		callbackDataSaved(targetInfo);
 	}
 
 	protected override IEnumerator CastJob()
 	{
-		_seriesOfStrikes.MakeHit(GetTarget(), AbilityForm.Magic, 0, 10, 0);
-		if (GetTarget() == _oldtarget)
+		_seriesOfStrikes.MakeHit(GetTargetCharacter(), AbilityForm.Magic, 0, 10, 0);
+		if (GetTargetCharacter() == _oldtarget)
 		{
 			_hitInTheRow++;
 			Debug.Log("hit from sword in a row");
@@ -89,7 +89,7 @@ public class IceSword : Skill
 		else
 		{
 			_hitInTheRow = 1;
-			_oldtarget = GetTarget();
+			_oldtarget = GetTargetCharacter();
 			Debug.Log("first hit from sword");
 		}
 		if (_hitInTheRow > 2)
@@ -98,7 +98,7 @@ public class IceSword : Skill
 			_hitInTheRow = 0;
 		}
 		ApplyDamage();
-		CmdAdd(GetTarget().gameObject);
+		CmdAdd(GetTargetCharacter().gameObject);
 		yield return null;
 	}
 
@@ -122,12 +122,12 @@ public class IceSword : Skill
 			PhysicAttackType = AttackRangeType.RangeAttack,
 		};
 
-		if (_critDmg && GetTarget().CharacterState.CheckForState(States.Frozen))
+		if (_critDmg && GetTargetCharacter().CharacterState.CheckForState(States.Frozen))
 		{
 			damage2.Value *= (Random.Range(0, 100) < 15) ? 1.8f : 1.1f;
 		}
 
-		CmdApplyDamage(damage2, GetTarget().gameObject);
+		CmdApplyDamage(damage2, GetTargetCharacter().gameObject);
 
 		_energy.SumDamageMake(damage2.Value);
 		_rune.SumDamageMake(damage2.Value);

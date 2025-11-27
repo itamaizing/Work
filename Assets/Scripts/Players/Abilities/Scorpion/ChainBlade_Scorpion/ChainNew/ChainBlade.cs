@@ -31,7 +31,7 @@ public class ChainBlade : Skill
     {
         get
         {
-            if (GetTarget() != null) return Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius;
+            if (GetTargetCharacter() != null) return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
 
             else return true;
         }
@@ -51,16 +51,16 @@ public class ChainBlade : Skill
         {
             if (GetMouseButton)
             {
-                if (GetTarget() != null)
+                if (GetTargetCharacter() != null)
                 {
                     float distance = Vector3.Distance(_hero.transform.position, _clickPoint);
 
-                    if (distance <= Radius) _clickPoint = GetTarget().transform.position;
+                    if (distance <= Radius) _clickPoint = GetTargetCharacter().transform.position;
 
                     else
                     {
                         //_target = GetTarget().character;
-                        _clickPoint = GetTarget().transform.position;
+                        _clickPoint = GetTargetCharacter().transform.position;
                     }
                 }
 

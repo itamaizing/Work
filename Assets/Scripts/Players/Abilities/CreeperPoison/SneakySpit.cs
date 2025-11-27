@@ -52,16 +52,16 @@ public class SneakySpit : Skill
         if (targetInfo?.GetTargets()?.Count > 0)
         {
             SetTarget(targetInfo.GetTargets()[0] as Character);
-            if (GetTarget() != null) Hero.Move.LookAtTransform(GetTarget().transform);
+            if (GetTargetCharacter() != null) Hero.Move.LookAtTransform(GetTargetCharacter().transform);
         }
         _isCanCancle = false;
     }
 
     private bool CheckCanCast()
     {
-        return GetTarget() != null &&
-        Vector3.Distance(GetTarget().transform.position, transform.position) <= Radius &&
-        NoObstacles(GetTarget().transform.position, transform.position, _obstacle);
+        return GetTargetCharacter() != null &&
+        Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius &&
+        NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
     }
 
     private void OnHeroEvade()
@@ -77,10 +77,10 @@ public class SneakySpit : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (Disactive && GetTarget() == null) yield return null;
+        while (Disactive && GetTargetCharacter() == null) yield return null;
         FindTarget();
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTarget());
+        targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }
 
@@ -108,9 +108,9 @@ public class SneakySpit : Skill
 
     public void ApplyStateAndDamage()
     {
-        if (GetTarget() != null)
+        if (GetTargetCharacter() != null)
         {
-            CmdAddState(GetTarget());
+            CmdAddState(GetTargetCharacter());
 
             Damage damage = new Damage
             {
@@ -119,7 +119,7 @@ public class SneakySpit : Skill
                 Type = DamageType,
             };
 
-            CmdApplyDamage(damage, GetTarget().gameObject);
+            CmdApplyDamage(damage, GetTargetCharacter().gameObject);
             ClearData();
         }
     }
