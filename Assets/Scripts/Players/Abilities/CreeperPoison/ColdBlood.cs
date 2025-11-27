@@ -71,7 +71,7 @@ public class ColdBlood : Skill
     {
         if (_indomitable.Data.IsOpen)
         {
-            while (GetTarget() == null && float.IsPositiveInfinity(_mousePosition.x))
+            while (GetTarget() == null || float.IsPositiveInfinity(_mousePosition.x))
             {
                 if (GetMouseButton)
                 {

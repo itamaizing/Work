@@ -99,7 +99,7 @@ public class PoisonSlap : Skill
     }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        Debug.LogError("TargetDataError");
+       // Debug.LogError("TargetDataError");
     }
 
     protected override void ClearData()

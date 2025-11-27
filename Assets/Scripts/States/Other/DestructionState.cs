@@ -31,8 +31,10 @@ public class DestructionState : AbstractCharacterState
 
         _timer = _tickInterval;
 
-        Debug.Log($"duration: {duration}");
-    }
+		float damageValue = _damagePerTick * _accumulatedEffectiveness;
+
+		CmdDamage(damageValue);
+	}
 
     public override void UpdateState()
     {

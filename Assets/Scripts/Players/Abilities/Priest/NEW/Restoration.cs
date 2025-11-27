@@ -143,7 +143,6 @@ public class Restoration : Skill
         if (isEnemy && TryPayCost())
         {
             CmdAddState(GetTarget(), States.Destruction, darkDuration);
-            //StartCoroutine(ApplyDamageOverTime(characterTarget));
         }
     }
 
@@ -152,75 +151,14 @@ public class Restoration : Skill
         _totalHealedInInterval += healedAmount;
     }
 
-    private IEnumerator ApplyHealOverTime(Character target)
-    {
-        var healthComponent = target.GetComponent<Health>();
-
-        if (healthComponent != null)
-        {
-            float endTime = Time.time + lightDuration;
-            while (Time.time < endTime)
-            {
-                float bonusHealFromSpiritEnergy = 0;
-                if (_spiritEnergyTalent) bonusHealFromSpiritEnergy = GetSpiritEnergyBonus(target);
-                float effectiveHeal = healPerTick * _accumulatedEffectiveness + bonusHealFromSpiritEnergy;
-
-                var heal = new Heal 
-                { 
-                    Value = effectiveHeal,
-                    DamageableSkill = this
-                };
-                CmdApplyHeal(heal, healthComponent.gameObject, this, name);
-
-                _accumulatedEffectiveness += _totalHealedInInterval * effectivenessIncreasePerHeal;
-                _totalHealedInInterval = 0f;
-
-                yield return new WaitForSeconds(healInterval);
-            }
-
-            //_target = null;
-            ResetAccumulatedEffectiveness();
-            healthComponent.HealTaked -= OnHealTaken;
-        }
-    }
-
-    private IEnumerator ApplyDamageOverTime(Character target)
-    {
-        var healthComponent = target.GetComponent<Health>();
-
-        if (healthComponent != null)
-        {
-            float endTime = Time.time + darkDuration;
-            while (Time.time < endTime)
-            {
-                Damage damage = new Damage
-                {
-                    Value = Buff.Damage.GetBuffedValue(damagePerTick),
-                    Type = DamageType.Magical,
-                    PhysicAttackType = AttackRangeType.RangeAttack,
-                    School = this.School,
-                    //DamageableSkill = this,
-                };
-
-                CmdApplyDamage(damage, target.gameObject);
-                yield return new WaitForSeconds(damageInterval);
-            }
-        }
-    }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        
-        //characterTarget = null;
-
         while (GetTarget() == null)
         {
-            if (Input.GetMouseButton(0))
+            if (GetMouseButton)
             {
                 FindTarget();
-                //_target = GetRaycastTarget();
-
-                //if (_target is Character character) characterTarget = character;
             }
             yield return null;
         }

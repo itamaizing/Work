@@ -44,7 +44,7 @@ public class ReversePolarity : Skill
     }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        Debug.LogError("DataError");
+        //Debug.LogError("DataError");
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)

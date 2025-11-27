@@ -129,14 +129,12 @@ public class SparkOfLight : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        //_characterTarget = null;
 
         while (GetTarget() == null)
         {
             if (GetMouseButton)
             {
                 FindTarget();
-                // _target = GetRaycastTarget();
 
                 if (GetTarget() is Character character)
                 {
@@ -145,9 +143,6 @@ public class SparkOfLight : Skill
                     if (GetTarget() != null && (IsAllyTarget(character) || character == Hero) && !isLightMode)
                     {
                         ClearTarget();
-                        //_target = null;
-                        //_characterTarget = null;
-                        //yield break;
                     }
 
                     if (GetTarget() != null)
