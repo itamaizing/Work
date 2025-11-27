@@ -15,18 +15,14 @@ public class JumpWithChelicera : Skill
 
     private Animator _animator;
     private IDamageable _target;
-    private Vector3 _mousePosition = Vector3.positiveInfinity;
 
     private static readonly int jumpStart = Animator.StringToHash("JumpStart");
     private static readonly int jumpEnd = Animator.StringToHash("JumpEnd");
 
-    private float _delayBeforeJump = 3f;
+    private float _delayBeforeJump = 1f;
     private float _minDistance = 0.6f;
     private float _additionalDamageInPercentage;
-
-    private bool _isTarget = false;
     private bool _isJumpDone = false;
-    private bool _hasDealtDamage = false;
     private bool _isCheliceraStrikeCast = false;
 
     public override bool IsPayCostStartCooldown => false;
@@ -49,8 +45,6 @@ public class JumpWithChelicera : Skill
     protected override void ClearData()
     {
         _target = null;
-        _mousePosition = Vector3.positiveInfinity;
-        _hasDealtDamage = false;
     }
 
     public void JumpWithCheliceraAnimationMove()
@@ -108,8 +102,8 @@ public class JumpWithChelicera : Skill
 
         _isJumpDone = true;
 
-        float distanceToTarget = Vector2.Distance(((MonoBehaviour)target).transform.position, _player.transform.position);
-        _additionalDamageInPercentage = 0.1f + Mathf.Floor(distanceToTarget / 0.1f) * 0.02f;
+        float distanceToTarget = Vector3.Distance(((MonoBehaviour)target).transform.position, _player.transform.position);
+        _additionalDamageInPercentage = Mathf.Round((0.1f + Mathf.Floor(distanceToTarget / 0.1f) * 0.02f) * 1000f) / 1000f;
         Vector3 direction = (((MonoBehaviour)target).transform.position - transform.position).normalized;
 
         _isCheliceraStrikeCast = true;
@@ -208,16 +202,6 @@ public class JumpWithChelicera : Skill
     private void RpcHandleJumpAnimEnd()
     {
         HandleJumpAnimEnd();
-    }
-
-    [ClientRpc]
-    private void RpcCheliceraeStrike(Character target, float additionalDamage)
-    {
-        _cheliceraeStrike.ChanceCritDamageEvolutionFour = isJumpWithCheliceraChanceDamageCrit ? 0.3f : 0.15f;
-        _cheliceraeStrike.SetAdditionalDamage(additionalDamage);
-        _cheliceraeStrike.SetTarget((IDamageable)target);
-        _cheliceraeStrike.CheliceraStrikeCast();
-        _cheliceraeStrike.ClearDataCheliceraStrike();
     }
 
     [ClientRpc]

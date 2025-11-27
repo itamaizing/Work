@@ -5994,6 +5994,7 @@ Transform:
   - {fileID: 5933124712542400050}
   - {fileID: 2418405700468940046}
   - {fileID: 1192713932709915082}
+  - {fileID: 64436530484543822}
   m_Father: {fileID: 4827660954718149595}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2451920320675037440
@@ -7009,6 +7010,76 @@ Transform:
   - {fileID: 5130370265317310809}
   m_Father: {fileID: 8943464466902524451}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4205860676307696738
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 64436530484543822}
+  - component: {fileID: 6900789031850676611}
+  - component: {fileID: 93637325468390172}
+  m_Layer: 0
+  m_Name: JumpChecker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &64436530484543822
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4205860676307696738}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.02006, z: 0}
+  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6721788059815258693}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &6900789031850676611
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4205860676307696738}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.25
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &93637325468390172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4205860676307696738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea9842e32f680de4f929530a0ea5cc0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JumpPassable
+  targetCollider: {fileID: 2940983708473868743}
+  passableLayer:
+    serializedVersion: 2
+    m_Bits: 2097152
 --- !u!1 &4214664305671701169
 GameObject:
   m_ObjectHideFlags: 0
@@ -10014,6 +10085,10 @@ PrefabInstance:
       value: -0.32256508
       objectReference: {fileID: 0}
     - target: {fileID: 1550066538247365834, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1550066538247365834, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Center.y
       value: 1
       objectReference: {fileID: 0}
@@ -11224,6 +11299,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 2207144099064470326}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+--- !u!136 &2940983708473868743 stripped
+CapsuleCollider:
+  m_CorrespondingSourceObject: {fileID: 1550066538247365834, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 4418744079295177997}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3838339407395912532 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 582667559171038809, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

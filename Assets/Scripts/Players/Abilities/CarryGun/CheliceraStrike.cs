@@ -118,18 +118,19 @@ public class CheliceraStrike : Skill
     {
         if (_target == null) yield break;
 
-        _baseDamage = UnityEngine.Random.Range(11f, 13f);
+        _baseDamage = UnityEngine.Random.Range(11f, 16f);
         Damage = _baseDamage;
 
         if (_jumpWithChelicera.IsJumpDone)
         {
             cooldownEnergy.CastCooldownEnergySkill(_jumpWithChelicera.CooldownJump, _jumpWithChelicera);
             _target = _jumpWithChelicera.Target;
-            _jumpWithChelicera.IsJumpDone = false;
         }
+
         else cooldownEnergy.CastCooldownEnergySkill(cooldownEnergyCost, this);
 
         DamageDealChelicera(_target);
+        _jumpWithChelicera.IsJumpDone = false;
         _isClawStrike_Right = !_isClawStrike_Right;
 
         yield return null;
