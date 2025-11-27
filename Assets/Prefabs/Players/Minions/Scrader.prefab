@@ -1135,6 +1135,7 @@ GameObject:
   m_Component:
   - component: {fileID: 964929301270209834}
   - component: {fileID: 981000284950286532}
+  - component: {fileID: 1215395125402789392}
   - component: {fileID: 4220502775996777677}
   m_Layer: 0
   m_Name: Model
@@ -1282,6 +1283,28 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.0009984653, y: -0.0015648045, z: 0.020859718}
     m_Extent: {x: 0.03732021, y: 0.07769124, z: 0.043522514}
   m_DirtyAABB: 0
+--- !u!95 &1215395125402789392
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1801549179431471552}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 20a79e021c464334cba24f66c7a6d40e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &4220502775996777677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13125,8 +13148,8 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4305573293433524190}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 20a79e021c464334cba24f66c7a6d40e, type: 2}
+  m_Avatar: {fileID: 9000000, guid: f6605568d3cd20e4db1a0b19cfe83787, type: 3}
+  m_Controller: {fileID: 9100000, guid: 7f1199f20a366d64886c00f7a2a805e1, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -13592,7 +13615,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9566eed453ace294f9630617b8f34010, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animator: {fileID: 0}
+  _animator: {fileID: 1215395125402789392}
   _minionMove: {fileID: 6937205302842417626}
   spell: {fileID: 401553106488474872}
   scratchClaws: {fileID: 8741847699558006757}
@@ -13837,7 +13860,7 @@ MonoBehaviour:
   _damageDelay: 0.5
   _attackDistance: 1.5
   _damage: 5
-  _animator: {fileID: 0}
+  _animator: {fileID: 1215395125402789392}
 --- !u!114 &8741847699558006757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13895,7 +13918,7 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 3
-  animator: {fileID: 0}
+  animator: {fileID: 1215395125402789392}
   _playerLinks: {fileID: 5830977165762126247}
   _moveDurationPerUnit: 0.2
   _stopDistance: 1.5
