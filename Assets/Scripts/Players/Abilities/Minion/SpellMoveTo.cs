@@ -76,6 +76,7 @@ public class SpellMoveTo : Skill
 
         IsCasting = false;
     }
+
     private IEnumerator MoveToPointWithNavMeshPath(Vector3 targetPoint, bool stopAtObstacle)
     {
         Hero.Move.CanMove = false;

@@ -1318,7 +1318,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spellMoveTo: {fileID: 401553106488474872}
-  scratchClaws: {fileID: 8741847699558006757}
 --- !u!1 &1816582864147950907
 GameObject:
   m_ObjectHideFlags: 0
@@ -13906,7 +13905,7 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 2
+  _radius: 1.5
   _area: 0
   _castLength: 0
   _castWidth: 0
