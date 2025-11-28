@@ -8,7 +8,7 @@ public class TalentsGroup
 {
 	[SerializeField] private int _id;
 	[SerializeField] private string _name;
-	[SerializeField] private List<Talent> _talentGroup;
+	//[SerializeField] private List<Talent> _talentGroup;
 	[SerializeField] private List<TalentRow> _talentRow;
 
 	public int ID => _id;
@@ -18,7 +18,7 @@ public class TalentsGroup
 
 	public int BonusAttributePoints(string talentName, bool isDecrease)
 	{
-		var bonus = 1;
+		/*var bonus = 1;
 		var rowLength = 3;
 
 		var talentIndex = _talentGroup.FindIndex(talent => talent.Data.Name == talentName);
@@ -45,16 +45,25 @@ public class TalentsGroup
 			1 => activeCount == 0 ? 0 : activeCount == 1 ? 1 : activeCount == 2 ? 1 : 0,
 			2 => activeCount == 0 ? 0 : activeCount == 1 ? 0 : activeCount == 2 ? 1 : 0,
 			_ => 0
-		};
-		return bonus;
+		};*/
+		return 0;
 	}
 
 	public void SetActive(TalentData data, bool isActive)
 	{
-		var talent = _talentGroup.FirstOrDefault(a => a.Data == data);
-		if (talent == null) return;
+		Talent talents = null;
+		foreach(TalentRow row in _talentRow)
+		{
+			var talent = row.Talents.FirstOrDefault(a => a.Data == data);
+			if (talent != null)
+			{
+				talents = talent;
+			}
+		}
+		//var talent2 = _talentGroup.FirstOrDefault(a => a.Data == data);
+		if (talents == null) return;
 
-		talent.SetActive(isActive);
+		talents.SetActive(isActive);
 	}
 
 	/*  [Command]

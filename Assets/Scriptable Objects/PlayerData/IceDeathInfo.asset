@@ -106,13 +106,13 @@ MonoBehaviour:
     - Id: 1015
       Name: PhysicResist
       Points: 0
-      DefaultValue: 0.5
+      DefaultValue: 6
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1016
       Name: MagicResist
       Points: 0
-      DefaultValue: 0.5
+      DefaultValue: 1
       Icon: {fileID: 0}
       IsVisible: 0
     - Id: 1017
