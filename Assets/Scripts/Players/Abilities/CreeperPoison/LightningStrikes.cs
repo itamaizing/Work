@@ -63,7 +63,7 @@ public class LightningStrikes : AutoAttackSkill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        throw new NotImplementedException();
+        
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)

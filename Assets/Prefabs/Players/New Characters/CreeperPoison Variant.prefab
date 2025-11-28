@@ -13635,7 +13635,7 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
-  _abilitySchool: 6
+  _abilitySchool: 5
   _abilityForm: 2
   _damageType: 1
   _attackRangeType: 0
@@ -13711,7 +13711,7 @@ MonoBehaviour:
   _cooldownTime: 4
   _castDeley: 0
   _damageValue: 0
-  _abilitySchool: 6
+  _abilitySchool: 5
   _abilityForm: 2
   _damageType: 1
   _attackRangeType: 0
@@ -13779,7 +13779,7 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
-  _abilitySchool: 0
+  _abilitySchool: 5
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
@@ -13845,7 +13845,7 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
-  _abilitySchool: 0
+  _abilitySchool: 5
   _abilityForm: 2
   _damageType: 0
   _attackRangeType: 1
@@ -13926,7 +13926,7 @@ MonoBehaviour:
   _cooldownTime: 8
   _castDeley: 0
   _damageValue: 0
-  _abilitySchool: 0
+  _abilitySchool: 5
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
@@ -13992,7 +13992,7 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
-  _abilitySchool: 0
+  _abilitySchool: 5
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
@@ -14063,7 +14063,7 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
-  _abilitySchool: 0
+  _abilitySchool: 5
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
@@ -14130,7 +14130,7 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
-  _abilitySchool: 0
+  _abilitySchool: 5
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
@@ -14189,7 +14189,7 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
-  _abilitySchool: 0
+  _abilitySchool: 5
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
@@ -14252,7 +14252,7 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
-  _abilitySchool: 0
+  _abilitySchool: 5
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
@@ -14310,7 +14310,7 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
-  _abilitySchool: 0
+  _abilitySchool: 5
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
@@ -14371,7 +14371,7 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
-  _abilitySchool: 0
+  _abilitySchool: 5
   _abilityForm: 0
   _damageType: 0
   _attackRangeType: 0
@@ -14435,7 +14435,7 @@ MonoBehaviour:
   _cooldownTime: 6
   _castDeley: 0
   _damageValue: 0
-  _abilitySchool: 6
+  _abilitySchool: 5
   _abilityForm: 2
   _damageType: 5
   _attackRangeType: 0
@@ -14495,7 +14495,7 @@ MonoBehaviour:
   _cooldownTime: 6
   _castDeley: 0
   _damageValue: 12
-  _abilitySchool: 6
+  _abilitySchool: 5
   _abilityForm: 2
   _damageType: 1
   _attackRangeType: 0
@@ -14555,7 +14555,7 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
-  _abilitySchool: 6
+  _abilitySchool: 5
   _abilityForm: 2
   _damageType: 0
   _attackRangeType: 0
