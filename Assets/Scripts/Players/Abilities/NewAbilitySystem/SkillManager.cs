@@ -443,6 +443,20 @@ public class SkillManager : MonoBehaviour
         _countBonusCharges = countBonusCharges;
     }
 
+    public void SwitchAvaliable(Schools school, bool value)
+    {
+        if (school == Schools.Physical)
+            return;
+        foreach (var item in _skills)
+        {
+            if (item.School == school)
+            {
+                item.Disactive = !value;
+                //item.KnockDownTimerStart(coolDown);
+            }
+        }
+    }
+
     #region legacycode
     private void OnDestroy()
     {
@@ -475,21 +489,7 @@ public class SkillManager : MonoBehaviour
         foreach (Skill skill in Abilities) if (skill.AbilityForm == AbilityForm.Physical) skill.Disactive = state;
     }
 
-    public void SwitchAvaliable(Schools school, bool value)
-    {
-        /*
-        if (school == Schools.Physical)
-            return;
-        foreach (var item in _abilities)
-        {
-            if (item.School == school)
-            {
-                item.SwitchAvailible(value);
-                //item.KnockDownTimerStart(coolDown);
-            }
-        }
-        */
-    }
+   
 
     public void SwitchAvaliable(AbilityForm form, bool value)
     {

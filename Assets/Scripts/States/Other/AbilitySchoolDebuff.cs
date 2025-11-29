@@ -19,11 +19,8 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		//Debug.Log("Entering AbilitySchoolDebuff State");
-
 		_characterState = character;
 
-		//Debug.Log("CHECK FOR SCHOOL " + canceledSchoool);
 		if (character.TryGetComponent<Character>(out var ability))
 		{
 			_abilities = ability.Abilities;
@@ -39,7 +36,6 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 
 	public override void UpdateState()
 	{
-		//Debug.Log("Updating AbilitySchoolDebuff State");
 		_duration -= Time.deltaTime;
 		if (_duration < 0 || turnOff)
 		{
@@ -49,7 +45,6 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		//Debug.Log("Exiting AbilitySchoolDebuff State");
 		_characterState.RemoveState(this);
 		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null)
 		{
@@ -59,15 +54,12 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 
 	public override bool Stack(float time)
 	{
-		//Debug.Log("STACKING TEST");
 		if (_duration > time)
 		{
-		//	Debug.Log("STACKING TEST 2 2 2");
 			return true;
 		}
 		else
 		{
-		//	Debug.Log("STACKING TEST 3 3 3");
 			_duration = time;
 			return true;
 		}
