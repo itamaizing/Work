@@ -29,7 +29,7 @@ public abstract class AbstractCharacterState
 	protected CharacterState _characterState;
 	protected SkillManager _abilities;
 	protected Health _health;
-	public Character _personWhoMadeBuff;
+	protected Character _personWhoMadeBuff;
 
 	public int CurrentStacksCount = 0;
 	public int MaxStacksCount = 0;
@@ -41,7 +41,7 @@ public abstract class AbstractCharacterState
 		get => duration;
 		set => duration = value;
 	}
-
+	public Character PersonWhoMadeBuff => _personWhoMadeBuff;
 	public abstract States State { get; }
 	public abstract StateType Type { get; }
 	public abstract BaffDebaff BaffDebaff { get; }
