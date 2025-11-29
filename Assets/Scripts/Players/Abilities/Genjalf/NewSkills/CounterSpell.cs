@@ -12,7 +12,7 @@ public class CounterSpell : Skill
 
     protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => Animator.StringToHash("AttackLight");
+    protected override int AnimTriggerCast => 0;
 
     private bool CheckCanCast()
     {

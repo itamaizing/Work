@@ -12,7 +12,7 @@ public class LightningStrike : Skill
 
     protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => Animator.StringToHash("AttackLight");
+    protected override int AnimTriggerCast => 0;
 
     private bool CheckCanCast()
     {
@@ -41,8 +41,7 @@ public class LightningStrike : Skill
             Damage damage = new Damage
             {
                 Value = Buff.Damage.GetBuffedValue(Damage),
-                Type = DamageType,
-                PhysicAttackType = AttackRangeType,
+                Type = DamageType
             };
             CmdApplyDamage(damage, GetTargetCharacter().gameObject);
 

@@ -415,7 +415,6 @@ public abstract class Skill : NetworkBehaviour
 
     public ITargetable GetTarget(bool canGetDead = false)
     {
-		Debug.Log("Try tar " + _target);
 		if (_target != null)
         {
             if (!_target.IsTargetable && !canGetDead) return null;
@@ -427,7 +426,6 @@ public abstract class Skill : NetworkBehaviour
 
 	public Character GetTargetCharacter(bool canGetDead = false)
 	{
-        Debug.Log("Try char" + _target);
 		if (_target != null)
 		{
 			if (!_target.IsTargetable && !canGetDead) return null;
