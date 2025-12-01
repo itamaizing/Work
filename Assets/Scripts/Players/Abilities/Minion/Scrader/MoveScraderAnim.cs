@@ -4,7 +4,7 @@ public class MoveScraderAnim : MonoBehaviour
 {
     [SerializeField] private Animator _animator;
     [SerializeField] private MinionMove _minionMove;
-    [SerializeField] private SpellMoveTo spell;
+    [SerializeField] private SpellMoveScraderTo spell;
 
     private void OnEnable()
     {

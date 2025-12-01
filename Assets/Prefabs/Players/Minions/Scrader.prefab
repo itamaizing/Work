@@ -1317,7 +1317,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37a5c11bfb1de7c4da352b19ebb053f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spellMoveTo: {fileID: 401553106488474872}
+  spellMoveTo: {fileID: 0}
 --- !u!1 &1816582864147950907
 GameObject:
   m_ObjectHideFlags: 0
@@ -13080,7 +13080,7 @@ GameObject:
   - component: {fileID: 1655977055310397963}
   - component: {fileID: 2075396149247580188}
   - component: {fileID: 2769373615330125278}
-  - component: {fileID: 6937205302842417626}
+  - component: {fileID: 1904555498734699369}
   - component: {fileID: 3962161804199240009}
   - component: {fileID: 2486038140440756892}
   - component: {fileID: 4316793701678651147}
@@ -13089,7 +13089,6 @@ GameObject:
   - component: {fileID: 4677353127167607557}
   - component: {fileID: 5970206098610166088}
   - component: {fileID: 1027874424821115294}
-  - component: {fileID: 401553106488474872}
   - component: {fileID: 8741847699558006757}
   m_Layer: 9
   m_Name: Scrader
@@ -13336,7 +13335,7 @@ MonoBehaviour:
   _animator: {fileID: 4853408415625794062}
   _networkAnimator: {fileID: 6676246011477726785}
   _healthComponent: {fileID: 4688992458449892271}
-  _playerMove: {fileID: 6937205302842417626}
+  _playerMove: {fileID: 1904555498734699369}
   _abilities: {fileID: 6892265620981845488}
   _characterState: {fileID: 161335861236570360}
   uiComponent: {fileID: 1655977055310397963}
@@ -13572,7 +13571,7 @@ MonoBehaviour:
   _characterPrefabs: []
   _enemyPrefabs: []
   _allyPrefabs: []
---- !u!114 &6937205302842417626
+--- !u!114 &1904555498734699369
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -13581,9 +13580,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4305573293433524190}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe64170e9d68a24408eeba3a57ca02b6, type: 3}
+  m_Script: {fileID: 11500000, guid: 3c0019237cf69df49b821845cc8edb86, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::MoveScrader
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
@@ -13613,8 +13612,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 1215395125402789392}
-  _minionMove: {fileID: 6937205302842417626}
-  spell: {fileID: 401553106488474872}
+  _minionMove: {fileID: 0}
+  spell: {fileID: 0}
 --- !u!114 &2486038140440756892
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13668,7 +13667,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _skills:
-  - {fileID: 401553106488474872}
+  - {fileID: 0}
   - {fileID: 8741847699558006757}
   _hero: {fileID: 5830977165762126247}
   _talentSystem: {fileID: 5224625938796084017}
@@ -13795,68 +13794,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_VisionRange: 5
---- !u!114 &401553106488474872
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4305573293433524190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9d986a7a12a44c42adb26489cec2029, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
-  _abilityInfo: {fileID: 11400000, guid: afbef8fac9ee74141abb2a1c1443d316, type: 2}
-  _isSubjectToGlobalCooldownTime: 0
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 1
-  _castDeley: 0
-  _damageValue: 0
-  _abilitySchool: 8
-  _abilityForm: 0
-  _damageType: 5
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 1
-  autoAttack: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 768
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
-  _radius: 6
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
-  _autoAttackDelay: 0
-  _isAutoRadiusRender: 0
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 0
-  _disactive: 0
-  _earlyCooldown: 0
-  maxCounter: 0
-  _moveDurationPerUnit: 0.2
-  _damageDelay: 0.5
-  _attackDistance: 2
-  _damage: 5
-  _animator: {fileID: 1215395125402789392}
 --- !u!114 &8741847699558006757
 MonoBehaviour:
   m_ObjectHideFlags: 0
