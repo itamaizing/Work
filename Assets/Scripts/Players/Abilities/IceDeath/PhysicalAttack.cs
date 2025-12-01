@@ -58,7 +58,7 @@ public class PhysicalAttack : Skill
 	{
 		TargetInfo targetInfo = new TargetInfo();
 
-		if (GetTargetCharacter() != null)
+		if (GetTempTargetCharacter() != null)
 		{
 			_hero.Move.LookAtTransform(GetTargetCharacter().transform);
 			targetInfo.AddTarget(GetTargetCharacter());
@@ -67,31 +67,35 @@ public class PhysicalAttack : Skill
 			yield break;
 		}
 
-		while (GetTargetCharacter() == null)
-		{
-			if (GetMouseButton)
+        while (GetTempTargetCharacter() == null)
+        {
+            if (GetMouseButton)
 			{
 				FindTargetCharacter();
 				//_target = GetTarget().character;
 
-				if (GetTargetCharacter() != null)
+				if (GetTempTargetCharacter() != null)
 				{
-					if (IsAllyTarget(GetTargetCharacter()) || GetTargetCharacter() == Hero)
+					if (IsAllyTarget(GetTempTargetCharacter()) || GetTempTargetCharacter() == Hero)
 					{
 						ClearTarget();						
 					}
 					else
 					{
-						GetTargetCharacter().SelectedCircle.IsActive = true;
-						_hero.Move.LookAtTransform(GetTargetCharacter().transform);
-						break;
+                        GetTempTargetCharacter().SelectedCircle.IsActive = true;
+						_hero.Move.LookAtTransform(GetTempTargetCharacter().transform);
+                        //SetTargetCharacter(GetTempTargetCharacter());
+                        break;
 					}
 				}
 			}
 			yield return null;
 		}
 
-		targetInfo.AddTarget(GetTargetCharacter());
+		SetTargetCharacter(GetTempTargetCharacter());
+		//ClearTempTarget();
+
+        targetInfo.AddTarget(GetTargetCharacter());
 		targetInfo.Points.Add(GetTargetCharacter().transform.position);
 		callbackDataSaved?.Invoke(targetInfo);
 	}

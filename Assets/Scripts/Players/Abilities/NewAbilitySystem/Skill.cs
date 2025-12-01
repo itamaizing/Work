@@ -183,6 +183,9 @@ public abstract class Skill : NetworkBehaviour
     private Queue<TargetInfo> _targetInfoQueue = new();
     private bool _isAutoMode;
     private ITargetable _target;
+    private ITargetable _tempTarget;
+
+
 
     public bool IsAutoMode
     {
@@ -435,7 +438,18 @@ public abstract class Skill : NetworkBehaviour
 		return null;
 	}
 
-	public void SetTargetCharacter(Character character)
+    public Character GetTempTargetCharacter(bool canGetDead = false)
+    {
+        if (_tempTarget != null)
+        {
+            if (!_tempTarget.IsTargetable && !canGetDead) return null;
+
+            return (Character)_tempTarget;
+        }
+        return null;
+    }
+
+    public void SetTargetCharacter(Character character)
     {
         _target = character;
     }
@@ -445,15 +459,20 @@ public abstract class Skill : NetworkBehaviour
 		_target = character;
 	}
 
+    public void ClearTempTarget()
+    {
+        _tempTarget = null;
+    }
+
 	protected void FindTarget(bool canTargetHimself = false, bool canTargetDead = false)
     {
         if (canTargetDead)
         {
-            _target = GetCloserTargets(GetMousePoint(), Radius, canTargetHimself)[0];
+            _tempTarget = GetCloserTargets(GetMousePoint(), Radius, canTargetHimself)[0];
         }
         else
         {
-            _target = GetCloserTargets(GetMousePoint(), Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
+            _tempTarget = GetCloserTargets(GetMousePoint(), Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
 		}
 	}
 
@@ -461,11 +480,11 @@ public abstract class Skill : NetworkBehaviour
 	{
 		if (canTargetDead)
 		{
-			_target = GetCloserTargetsCharacter(GetMousePoint(), Radius, canTargetHimself)[0];
+            _tempTarget = GetCloserTargetsCharacter(GetMousePoint(), Radius, canTargetHimself)[0];
 		}
 		else
 		{
-			_target = GetCloserTargetsCharacter(GetMousePoint(), Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
+            _tempTarget = GetCloserTargetsCharacter(GetMousePoint(), Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
 		}
 	}
 
@@ -1325,6 +1344,7 @@ public abstract class Skill : NetworkBehaviour
         }
 
         PreparingSuccess?.Invoke(this);
+        ClearTempTarget();
         _isPreparing = false;
         StopAutoDraw();
 
