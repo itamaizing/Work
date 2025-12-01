@@ -12470,6 +12470,8 @@ MonoBehaviour:
   CanMoveState: 0
   IsMoving: 0
   IsSelect: 0
+  IsNoRotateAtCursor: 1
+  _agent: {fileID: 0}
 --- !u!114 &7790970521576675334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12707,6 +12709,7 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   spawnComponent: {fileID: 7099943676139532891}
+  cocoonSpawn: {fileID: 0}
   minionMove: {fileID: 321651727084008340}
   minion: {fileID: 6271332717105215193}
   tentacle: {fileID: 0}

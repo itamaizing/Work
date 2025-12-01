@@ -138,7 +138,7 @@ public class SpellMoveScraderTo : Skill
     {
         while (true)
         {
-            Collider[] hits = Physics.OverlapSphere(transform.position, Radius, LayerMask.GetMask("Enemy"));
+            Collider[] hits = Physics.OverlapSphere(transform.position, Radius, TargetsLayers);
 
             Character nearest = null;
             float minDist = float.MaxValue;
@@ -164,14 +164,21 @@ public class SpellMoveScraderTo : Skill
 
             while (nearest != null && !nearest.IsDead && Vector3.Distance(transform.position, nearest.transform.position) <= Radius)
             {
+                Debug.Log($"nearest: {nearest}");
                 float distance = Vector3.Distance(transform.position, nearest.transform.position);
 
                 Vector3 dir = (nearest.transform.position - transform.position).normalized;
-                if (dir != Vector3.zero)
-                    transform.rotation = Quaternion.LookRotation(dir);
+                if (dir != Vector3.zero) transform.rotation = Quaternion.LookRotation(dir);
+
+                Debug.Log("1");
+
+
+                Debug.Log($"distance: {distance}");
+                Debug.Log($"_attackDistance: {_attackDistance}");
 
                 if (distance > _attackDistance)
                 {
+                    Debug.Log("2");
                     Vector3 safeTarget = GetApproachPointNearEnemy(nearest);
                     yield return MoveToPointWithNavMeshPath(safeTarget, true);
                     continue;
@@ -179,8 +186,9 @@ public class SpellMoveScraderTo : Skill
 
                 if (Time.time - _lastAttackTime > _damageDelay)
                 {
+                    Debug.Log("3");
                     _currentEnemyTarget = nearest;
-                    _animator.SetTrigger("AutoAttackScared");
+                    _animator.SetTrigger("AutoAttackScrader");
                     _lastAttackTime = Time.time;
                     yield return new WaitForSeconds(_damageDelay);
                 }

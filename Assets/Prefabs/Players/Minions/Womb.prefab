@@ -17396,6 +17396,8 @@ MonoBehaviour:
   CanMoveState: 0
   IsMoving: 0
   IsSelect: 0
+  IsNoRotateAtCursor: 1
+  _agent: {fileID: 0}
 --- !u!114 &7790970521576675334
 MonoBehaviour:
   m_ObjectHideFlags: 0

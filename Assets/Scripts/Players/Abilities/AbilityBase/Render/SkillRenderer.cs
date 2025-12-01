@@ -271,7 +271,7 @@ public class SkillRenderer : NetworkBehaviour
 
     public void DrawRadius(float radius)
     {
-        _circle.Draw(GetModifiedRadius(radius));
+        if (_circle != null) _circle.Draw(GetModifiedRadius(radius));
     }
 
     public void StopDrawRadius()

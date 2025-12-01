@@ -25,6 +25,7 @@ public class MoveComponent : NetworkBehaviour
 	public bool CanMoveState = false;
 	public bool IsMoving = false;
 	public bool IsSelect = false;
+	public bool IsNoRotateAtCursor = false;
 
 	private Rigidbody _rigidbody;
 	private Vector3 _offset = Vector3.zero;
@@ -239,7 +240,7 @@ public class MoveComponent : NetworkBehaviour
 
 	protected virtual void RotateAtCursor()
     {
-		if (GetComponent<MinionMove>()) return;
+		if (IsNoRotateAtCursor) return;
 
 		if (IsSelect == true && _isLookAtCursor == true)
 		{

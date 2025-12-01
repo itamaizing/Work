@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class MoveScraderAnim : MonoBehaviour
 {
-    [SerializeField] private Animator _animator;
-    [SerializeField] private MinionMove _minionMove;
+    [SerializeField] private Animator animator;
+    [SerializeField] private MoveScrader moveScrader;
     [SerializeField] private SpellMoveScraderTo spell;
     [SerializeField] private ScratchClaws scratchClaws;
 
@@ -19,5 +19,5 @@ public class MoveScraderAnim : MonoBehaviour
         scratchClaws.DoMove -= HandleDoMove;
     }
 
-    private void HandleDoMove(GameObject gameObject) => _animator?.SetTrigger("MoveScared");
+    private void HandleDoMove(GameObject gameObject) => animator?.SetTrigger("MoveScared");
 }
