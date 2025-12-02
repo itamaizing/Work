@@ -34,7 +34,7 @@ public class DoubleCheliceraStrike : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
-        if (_target is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = true;
+        if (_target is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
         _player.Move.CanMove = false;
         _isCanCancle = false;
     }

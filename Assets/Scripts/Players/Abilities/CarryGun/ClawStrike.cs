@@ -79,7 +79,7 @@ public class ClawStrike : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
-        if (_target is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = true;
+        if (_target is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)

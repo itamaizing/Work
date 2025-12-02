@@ -4451,6 +4451,7 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: 056dec7639a920649bcddbf484dd066b, type: 3}
   character: {fileID: 5458554383432203635}
   consume: {fileID: 8732005787551451527}
+  passiveCombo_Scorpion: {fileID: 5883639770937801120}
   manager: {fileID: 5612755856390318882}
 --- !u!114 &7893984956880296540
 MonoBehaviour:
@@ -4850,8 +4851,8 @@ MonoBehaviour:
   _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -4915,8 +4916,8 @@ MonoBehaviour:
   _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -4981,8 +4982,8 @@ MonoBehaviour:
   _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -5043,8 +5044,8 @@ MonoBehaviour:
   _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -5111,8 +5112,8 @@ MonoBehaviour:
   _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -5254,13 +5255,13 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 3
   _chargeCooldown: 6
-  _radius: 4
-  _area: 0.2
+  _radius: 0
+  _area: 0
   _castLength: 3.5
   _castWidth: 0.2
   _autoAttackDelay: 0
   _isAutoRadiusRender: 0
-  _isAutoAreaRender: 0
+  _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 1
   _disactive: 0
@@ -5324,9 +5325,9 @@ MonoBehaviour:
   _castLength: 0
   _castWidth: 0
   _autoAttackDelay: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
+  _isAutoRadiusRender: 0
+  _isAutoAreaRender: 0
+  _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0

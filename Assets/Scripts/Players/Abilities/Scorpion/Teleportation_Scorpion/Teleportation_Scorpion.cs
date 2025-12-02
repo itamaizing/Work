@@ -36,10 +36,20 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     {
         get
         {
-            if (_target != null)
-                return Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+            var mana = _hero.Resources.FirstOrDefault(r => r.Type == ResourceType.Mana);
+            if (mana == null)
+                return false;
 
-            return false;
+            if (_target != null)
+            {
+                float distance = Vector3.Distance(_target.transform.position, transform.position);
+                int manaCost = GetCurrentManaCost(distance);
+                _skillEnergyCosts[0].resourceCost = manaCost;
+                return distance <= Radius && mana.CurrentValue >= manaCost;
+
+            }
+
+            return mana.CurrentValue >= _baseManaCost;
         }
     }
 
@@ -169,50 +179,22 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _target = (Character)targetInfo.Targets[0];
+        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as Character;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (true)
+        ITargetable target = null;
+
+        while (target == null)
         {
-            _drawCircleSelf.Draw(Radius);
-
-            if (GetMouseButton)
-            {
-                //_target = GetRaycastTarget(true);
-
-                if (_target == null)
-                {
-                    yield return null;
-                    continue;
-                }
-
-                float dist = Vector3.Distance(_target.transform.position, transform.position);
-
-                if (dist > Radius)
-                {
-                    Debug.Log("[Teleportation] Цель вне зоны действия");
-                    yield break;
-                }
-
-                int manaCost = GetCurrentManaCost(dist);
-                var mana = _hero.Resources.FirstOrDefault(r => r.Type == ResourceType.Mana);
-                if (mana == null || mana.CurrentValue < manaCost)
-                {
-                    Debug.Log("[Teleportation] Недостаточно маны");
-                    yield break;
-                }
-
-                _skillEnergyCosts[0].resourceCost = manaCost;
-                break;
-            }
+            if (GetMouseButton) if (GetRaycastTarget() is ITargetable targetable) target = targetable;
 
             yield return null;
         }
 
         TargetInfo targetInfo = new();
-        targetInfo.Targets.Add(_target);
+        targetInfo.Targets.Add(target);
         callbackDataSaved(targetInfo);
     }
 

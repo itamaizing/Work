@@ -11945,8 +11945,8 @@ MonoBehaviour:
   _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -12015,8 +12015,8 @@ MonoBehaviour:
   _autoAttackDelay: 0.2
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -12086,8 +12086,8 @@ MonoBehaviour:
   _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 1
   maxCounter: 0
@@ -12216,8 +12216,8 @@ MonoBehaviour:
   _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -12391,7 +12391,7 @@ MonoBehaviour:
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
-  _isDynamicRenderer: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -12512,8 +12512,8 @@ MonoBehaviour:
   _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0

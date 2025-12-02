@@ -103,6 +103,7 @@ public class DeafeningScream : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as Character;
+        if (_target is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
         Hero.Move.LookAtTransform(_target.transform);
     }
 }

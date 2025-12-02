@@ -13,7 +13,7 @@ public class HuntressTalent_1 : Talent
 		ghost.MovingToGhostWithZeroMana(true);
 		visionComponent.VisionRange += 3;
 		skill.Radius += 1.5f;
-		skill.SkillRender?.SetRadiusModifier(1.5f);
+		skill.Buff.Radius.AddValue(1.5f);
 	}
 
 	public override void Exit()
@@ -21,6 +21,6 @@ public class HuntressTalent_1 : Talent
 		ghost.MovingToGhostWithZeroMana(false);
 		visionComponent.VisionRange -= 3;
 		skill.Radius -= 1.5f;
-		skill.SkillRender?.SetRadiusModifier(0);
+		skill.Buff.Radius.RemoveValue(1.5f);
 	}
 }

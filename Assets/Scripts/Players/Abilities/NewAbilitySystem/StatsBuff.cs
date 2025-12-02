@@ -48,4 +48,8 @@ public class StatBuff
     {
         _additional += value;
     }
+    public void RemoveValue(float value)
+    {
+        _additional -= value;
+    }
 }

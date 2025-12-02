@@ -29,7 +29,6 @@ public class ChainBlade : Skill
     private ChainArrow _chainArrowPrefab;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private Animator _animator;
-    private Character _target;
 
     private static readonly int chainBladeStart = Animator.StringToHash("ChainStart");
     private static readonly int chainBladeEnd = Animator.StringToHash("ChainEnd");
@@ -47,34 +46,27 @@ public class ChainBlade : Skill
     {
         _animator = GetComponent<Animator>();
     }
-
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _targetPoint = targetInfo.Points[0];
+    }
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (float.IsPositiveInfinity(_targetPoint.x))
+        Vector3 targetPoint = Vector3.positiveInfinity;
+
+        while (float.IsPositiveInfinity(targetPoint.x))
         {
             if (GetMouseButton)
             {
-                if (GetTarget().isCharater)
-                {
-                    float distance = Vector3.Distance(_hero.transform.position, _targetPoint);
-
-                    if (distance <= CastLength) _targetPoint = GetTarget().character.transform.position;
-
-                    else
-                    {
-                        _target = GetTarget().character;
-                        _targetPoint = _target.transform.position;
-                    }
-                }
-
-                else _targetPoint = GetTarget().Position;
+                if (GetRaycastTarget() is Character character) targetPoint = character.transform.position;
+                else targetPoint = GetMousePoint();
             }
 
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_targetPoint);
+        targetInfo.Points.Add(targetPoint);
         callbackDataSaved(targetInfo);
     }
 
@@ -141,7 +133,6 @@ public class ChainBlade : Skill
     protected override void ClearData()
     {
         _targetPoint = Vector3.positiveInfinity;
-        _target = null;
     }
 
     public void ChainBladeCast()
@@ -220,10 +211,5 @@ public class ChainBlade : Skill
         var arrow = arrowObj.GetComponent<ChainArrow>();
         arrow.Init(playerLinks, 0, false, this);
         arrow.InitArrow(targetPoint, spawnPoint.transform, CastLength, DamageRange);
-    }
-
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        _targetPoint = targetInfo.Points[0];
     }
 }

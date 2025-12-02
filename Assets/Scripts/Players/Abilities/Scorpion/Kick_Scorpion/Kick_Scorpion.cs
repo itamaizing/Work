@@ -22,9 +22,9 @@ public class Kick_Scorpion : Skill
     [SerializeField] [ReadOnly] private byte _hitsInRow = 1;
 
     private Coroutine _hitsInRowCoroutine;
-    private IDamageable _lastTarget = null;
     private Animator _animator;
 
+    private IDamageable _lastTarget = null;
     private IDamageable _target;
 
     private static readonly int KickTrigger = Animator.StringToHash("KickAA");
@@ -84,28 +84,30 @@ public class Kick_Scorpion : Skill
     {
         return Vector3.Distance(_playerLinks.transform.position, _target.transform.position) <= Radius;
     }
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
+        if (_target is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+        _hero.Move.LookAtTransform(_target.transform);
+    }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (_target == null)
+        ITargetable target = null;
+
+        while (target == null)
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget();
-
-                if (_target != null)
-                {
-                    if (_target is Character characterTarget && characterTarget != this) characterTarget.SelectedCircle.IsActive = true;
-                }
+                if (GetRaycastTarget() is ITargetable targetable) target = targetable;
             }
+
             yield return null;
         }
 
-        _hero.Move.LookAtTransform(_target.transform);
-
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_target.transform.position);
-        callbackDataSaved(targetInfo);
+        targetInfo.Targets.Add(target);
+        callbackDataSaved.Invoke(targetInfo);
     }
 
     protected override IEnumerator CastJob()
@@ -240,12 +242,6 @@ public class Kick_Scorpion : Skill
     {
         AnimCastEnded();
     }
-
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        if (targetInfo.Targets.Count > 0) _target = (Character)targetInfo.Targets[0];
-    }
-
     protected override void ClearData()
     {
         _target = null;

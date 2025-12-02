@@ -15,7 +15,6 @@ public class CleavingBlade_Scorpion : Skill
 
     [SyncVar] private int _counter = 1;
     private IDamageable _target;
-    private Character _runtimeTarget;
 
     private bool isCleavingBlade_ScorpionSecondTalent;
 
@@ -29,12 +28,6 @@ public class CleavingBlade_Scorpion : Skill
     private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
 
     private void HandleSkillCanceled() => _target = null;
-
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        _target = (Character)targetInfo.Targets[0];
-    }
-
     private void AttackPassed(Character target, bool shouldIncreaseCounter)
     {
         _comboCounter.AddSkill(target, this);
@@ -69,24 +62,29 @@ public class CleavingBlade_Scorpion : Skill
 
         _target = null;
     }
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
+        if (_target is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+    }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        _runtimeTarget = null;
+        ITargetable target = null;
 
-        while (_target == null)
+        while (target == null)
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget(true);
-                if (_target != null && _target is Character character) _runtimeTarget = character;
+                if (GetRaycastTarget() is ITargetable targetable) target = targetable;
             }
+
             yield return null;
         }
 
-        TargetInfo targetInfo = new();
-        targetInfo.Targets.Add(_runtimeTarget);
-        callbackDataSaved(targetInfo);
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Targets.Add(target);
+        callbackDataSaved.Invoke(targetInfo);
     }
 
     protected override IEnumerator CastJob()
@@ -115,8 +113,6 @@ public class CleavingBlade_Scorpion : Skill
             };
 
             CmdAttack(damage, _target.gameObject, shouldIncreaseCounter);
-
-            _runtimeTarget = null;
         }
     }
 
@@ -135,7 +131,7 @@ public class CleavingBlade_Scorpion : Skill
 
     protected override void ClearData()
     {
-
+        _target = null;
     }
 
     public void BladeActive()

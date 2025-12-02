@@ -12,11 +12,13 @@ public class NewPunch_Scorpion : Skill
     [SerializeField] private byte _hitsInRow = 1;
 
     private Coroutine _hitsInRowCoroutine;
-    private IDamageable _lastTarget = null;
     private Animator _animator;
     private bool _isRightKick = true;
 
+    private IDamageable _lastTarget = null;
+    private IDamageable _currentTarget = null;
     private IDamageable _target;
+
 
     private static readonly int RightPunchTrigger = Animator.StringToHash("RightPunch");
     private static readonly int LeftPunchTrigger = Animator.StringToHash("LeftPunch");
@@ -43,11 +45,6 @@ public class NewPunch_Scorpion : Skill
 
     public void WarningUpAddState(bool value) => _isWarningUpAddState = value;
     #endregion
-
-    private bool IsTargetInRange()
-    {
-        return Vector3.Distance(_playerLinks.transform.position, _target.transform.position) <= Radius;
-    }
 
     private void HandleSkillCanceled()
     {
@@ -86,35 +83,35 @@ public class NewPunch_Scorpion : Skill
         _hero.Move.CanMove = true;
         Hero.Move.StopLookAt();
     }
-
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
+        if (_target is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+        _hero.Move.LookAtTransform(_target.transform);
+    }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        _lastTarget = null;
+        ITargetable target = null;
 
-        while (_target == null)
+        while (target == null)
         {
             if (GetMouseButton)
             {
-                _target = GetRaycastTarget();
-
-                if (_target != null && _target is Character character) character.SelectedCircle.IsActive = true;
+                if (GetRaycastTarget() is ITargetable targetable) target = targetable;
             }
 
             yield return null;
         }
 
-        _hero.Move.LookAtTransform(_target.transform);
-
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_target.transform.position);
-        callbackDataSaved(targetInfo);
+        targetInfo.Targets.Add(target);
+        callbackDataSaved.Invoke(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
         if (_target == null) yield return null;
-        if (!IsTargetInRange()) yield return null;
 
         if (_lastTarget != null && _lastTarget != _target)  _comboCounter.ResetCounter();
 
@@ -135,7 +132,7 @@ public class NewPunch_Scorpion : Skill
             Type = DamageType,
         };
 
-        CmdApplyDamage(_lastTarget.gameObject, damage);
+        CmdApplyDamage(_target.gameObject, damage);
 
         _target = null;
     }
@@ -195,7 +192,12 @@ public class NewPunch_Scorpion : Skill
             StopCoroutine(_hitsInRowCoroutine);
         _hitsInRowCoroutine = StartCoroutine(HitsInRowTimer());
 
-        if (_lastTarget != null && _lastTarget == _target) _hitsInRow++;
+        Debug.Log($"_currentTarget: {_currentTarget}");
+        Debug.Log($"_lastTarget: {_lastTarget}");
+
+        _currentTarget = target as Character;
+
+        if (_lastTarget != null && _lastTarget == _currentTarget) _hitsInRow++;
         else _hitsInRow = 1;
 
         _lastTarget = target as Character;
@@ -232,12 +234,6 @@ public class NewPunch_Scorpion : Skill
     {
         AnimCastEnded();
     }
-
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        if (targetInfo.Targets.Count > 0) _target = (Character)targetInfo.Targets[0];
-    }
-
     protected override void ClearData()
     {
         _target = null;

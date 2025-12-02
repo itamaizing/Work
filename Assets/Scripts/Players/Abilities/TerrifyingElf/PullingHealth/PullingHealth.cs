@@ -95,6 +95,7 @@ public class PullingHealth : Skill
 
         if (_target is Character character)
         {
+            character.SelectedCircle.IsActive = false;
             var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
             if (multiMagic != null) multiMagic.LastTarget = character;
         }

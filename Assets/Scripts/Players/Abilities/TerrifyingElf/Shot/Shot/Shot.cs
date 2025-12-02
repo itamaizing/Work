@@ -112,6 +112,7 @@ public class Shot : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
+        if (_target is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
         _targetPoint = targetInfo.Points[0];
     }
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
