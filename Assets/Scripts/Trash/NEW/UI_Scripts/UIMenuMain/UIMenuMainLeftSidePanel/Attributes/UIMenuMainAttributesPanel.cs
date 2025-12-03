@@ -8,6 +8,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     [SerializeField] private UIMenuMainAttributesPanelItem _attributeItem;
     [SerializeField] private RectTransform _itemsParent;
     [SerializeField] private TMProLocalizer _attributesText;
+    [SerializeField] private AttributeDescriptionPanel _descriptionPanel;
 
     private AttributeGroup _attributeGroup;
     
@@ -24,6 +25,9 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
             var attribute = Instantiate(_attributeItem, _itemsParent);
             attribute.Fill(item);
             attribute.OnValueChange += UpdateAttributesPoints;
+            attribute.OnPointerEntered += ShowDescription;
+            attribute.OnPointerExited += HideDescription;
+
             _attributes.Add(attribute);
         }
         
@@ -35,6 +39,8 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
         foreach (var attribute in _attributes)
         {
             attribute.OnValueChange -= UpdateAttributesPoints;
+            attribute.OnPointerEntered -= ShowDescription;
+            attribute.OnPointerExited -= HideDescription;
         }
     }
 
@@ -68,4 +74,17 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
         _attributesText.ChangeKey(_attributeGroup.FreeAttributePointsCount);
     }
     
+    private void ShowDescription(Attribute attribute)
+    {
+        if(attribute.Description.Length > 2)
+        {
+            Debug.Log(attribute.Description);
+            _descriptionPanel.ShowDesciption(attribute);
+        }
+    }
+
+    private void HideDescription()
+    {
+        _descriptionPanel.HideDescription();
+    }
 }

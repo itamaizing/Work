@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UIMenuMainAttributesPanelItem : MonoBehaviour
+public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private Image _icon;
     [SerializeField] private TMProLocalizer _attributeValue;
@@ -10,6 +11,8 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour
     private Attribute _currentAttribute;
     
     public event UnityAction OnValueChange;
+    public event UnityAction<Attribute> OnPointerEntered;
+    public event UnityAction OnPointerExited;
 
     public void Fill(Attribute attribute)
     {
@@ -49,6 +52,16 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour
     public void Destroy()
     {
         Destroy(gameObject);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        OnPointerEntered?.Invoke(_currentAttribute);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        OnPointerExited?.Invoke();   
     }
 
 }
