@@ -5055,7 +5055,7 @@ MonoBehaviour:
   _damage: 1
   _damageRate: 0.3
   _damageScalePerTick: 2
-  _maxDistance: 4
+  _maxDistance: 5
   _minDistance: 1
   _coneAngle: 45
 --- !u!114 &3741212121368607163

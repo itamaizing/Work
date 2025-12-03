@@ -99,17 +99,16 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
         }
     }
 
-    private void ApplyDamageAndDebuff(float elapsedTime, int currentTickDamage)
+    private void ApplyDamageAndDebuff(float elapsedTime, int dummyTickIndex)
     {
         Collider[] hitColliders = Physics.OverlapCapsule(
             transform.position,
             transform.position + transform.forward * _maxDistance,
             _coneAngle,
-            _targetsLayers); // ��� ��� �� �����, ��!
+            _targetsLayers);
 
         foreach (Collider collider in hitColliders)
         {
-            // �������� �� ���� ������ CompareTag
             if ((_targetsLayers.value & (1 << collider.gameObject.layer)) == 0)
                 continue;
 
@@ -117,7 +116,6 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
             {
                 Vector3 dirToEnemy = (enemy.transform.position - transform.position).normalized;
                 float distance = Vector3.Distance(transform.position, enemy.transform.position);
-
                 if (distance > _maxDistance)
                     continue;
 
@@ -126,8 +124,9 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
                     continue;
 
                 float distanceMultiplier = Mathf.Lerp(1f, 0.7f, (distance / _maxDistance));
+                int damageScale = _enemiesDict.ContainsKey(enemy) ? _enemiesDict[enemy] : 1;
 
-                float finalDamageValue = Buff.Damage.GetBuffedValue(currentTickDamage * distanceMultiplier);
+                float finalDamageValue = Buff.Damage.GetBuffedValue(_damage * damageScale * distanceMultiplier);
 
                 Damage damage = new Damage
                 {
@@ -137,7 +136,12 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
 
                 CmdApplyDamage(damage, enemy.gameObject);
 
-                TryApplyScorchedSoulDebuff(enemy, duration);
+                if (_enemiesDict.ContainsKey(enemy))
+                    _enemiesDict[enemy] *= (int)_damageScalePerTick;
+                else
+                    _enemiesDict[enemy] = 1;
+
+                TryApplyScorchedSoulDebuff(enemy, elapsedTime);
             }
         }
     }
@@ -193,14 +197,14 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
     }
 
     [Command]
-private void CmdApplyScorchedSoulDebuff(NetworkIdentity targetIdentity)
-{
-    if (targetIdentity.TryGetComponent<CharacterState>(out var stateManager))
+    private void CmdApplyScorchedSoulDebuff(NetworkIdentity targetIdentity)
     {
-        float duration = 3f;
-        stateManager.AddState(States.ScorchedSoul, duration, 0, _hero.gameObject, Name);
+        if (targetIdentity.TryGetComponent<CharacterState>(out var stateManager))
+        {
+            float duration = 3f;
+            stateManager.AddState(States.ScorchedSoul, duration, 0, _hero.gameObject, Name);
+        }
     }
-}
 
     [Command]
     private void CmdRotateFireBreath(Quaternion rotation)
@@ -259,8 +263,8 @@ private void CmdApplyScorchedSoulDebuff(NetworkIdentity targetIdentity)
     protected override void ClearData()
     {
         _enemiesDict.Clear();
-        if (_fireBreathInstance != null)
-            Destroy(_fireBreathInstance.gameObject);
+
+        if (_fireBreathInstance != null) Destroy(_fireBreathInstance.gameObject);
     }
 
     private Vector3 GetMouseWorldPosition()
