@@ -9898,3 +9898,5 @@ MonoBehaviour:
   _arrowDark: 1
   duration: 13
   damageTypePhysics: 0
+  arrow: {fileID: 8717675361944784329}
+  sphereCollider: {fileID: 5610861388043864991}

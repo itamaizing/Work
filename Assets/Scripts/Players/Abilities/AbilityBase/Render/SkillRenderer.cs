@@ -31,6 +31,7 @@ public class SkillRenderer : NetworkBehaviour
     private float _boxLength;
     private float _boxWidth;
     private float _circleRadius;
+    private float _modRadis;
     private BoxArea _lineStartImage;
     //private BoxArea _lineEndImage;
     private SkillCircleRanderer _drawAutoAttackRadius;
@@ -69,6 +70,18 @@ public class SkillRenderer : NetworkBehaviour
     public void SetPrepareCursorLight() => UnityEngine.Cursor.SetCursor(_cursorPrepareLightTexture, _cursorPrepareHotspot, CursorMode.Auto);
     public void SetPrepareCursor() => UnityEngine.Cursor.SetCursor(_cursorPrepareTexture, _cursorPrepareHotspot, CursorMode.Auto);
     public void ResetCursor() => UnityEngine.Cursor.SetCursor(_cursorDefaultTexture, _cursorDefaultHotspot, CursorMode.Auto);
+
+    public void MultiplyCastVisuals(float mod)
+    {
+        _boxLength *= mod;
+        _modRadis += mod;
+    }
+
+    public void DivideCastVisuals(float mod)
+    {
+        _boxLength /= mod;
+        _modRadis -= mod;
+    }
 
     public bool IsOverrideClosestTarget
     {
@@ -263,7 +276,7 @@ public class SkillRenderer : NetworkBehaviour
 
     public void DrawRadius(float radius)
     {
-        if (_circle != null) _circle.Draw(radius);
+        if (_circle != null) _circle.Draw(radius + _modRadis);
     }
 
     public void StopDrawRadius()
@@ -292,7 +305,7 @@ public class SkillRenderer : NetworkBehaviour
         if (area == null)
             area = _areaPref;
 
-        _circle.Draw(radius);
+        _circleRadius = radius;
         _drawAreaCoroutine = StartCoroutine(DrawAreaJob(radius, damage, layerMask, area));
     }
 
@@ -379,7 +392,7 @@ public class SkillRenderer : NetworkBehaviour
         if (_dynamicRadiusColorCoroutine != null)
             StopCoroutine(_dynamicRadiusColorCoroutine);
 
-        _dynamicRadiusColorCoroutine = StartCoroutine(DynamicRadiusColorJob(radius));
+        if (radius > 0) _dynamicRadiusColorCoroutine = StartCoroutine(DynamicRadiusColorJob(radius + _modRadis));
     }
 
     public void StopDynamicRadiusColor()
@@ -715,7 +728,9 @@ public class SkillRenderer : NetworkBehaviour
 
     private IEnumerator DynamicRadiusColorJob(float baseRadius)
     {
-        float radius = baseRadius;
+        float radius = 0f;
+
+        if (baseRadius > 0) radius = baseRadius + _modRadis;
         float buffer = Mathf.Clamp(1f / radius, 0.1f, 0.4f);
 
         while (true)

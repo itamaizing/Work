@@ -10,6 +10,8 @@ public class ArrowProjectile : Projectiles
     [SerializeField] private bool _arrowDark;
     [SerializeField] private float duration;
     [SerializeField] private DamageType damageTypePhysics;
+    [SerializeField] private GameObject arrow;
+    [SerializeField] private SphereCollider sphereCollider;
 
     private Transform _followTarget;
     private bool _isFollowingTarget = false;
@@ -19,19 +21,27 @@ public class ArrowProjectile : Projectiles
 
     public bool ArrowDark { get => _arrowDark; set => _arrowDark = value; }
 
+    private void OnEnable()
+    {
+        arrow.SetActive(false);
+        sphereCollider.enabled = false;
+        Destroy(gameObject, _lifeTime);
+    }
+
     public void StartFly(Vector3 direction)
     {
         if (direction == Vector3.zero || float.IsNaN(direction.x) || float.IsNaN(direction.y) || float.IsNaN(direction.z)) return;
         if (_rb != null) _rb.linearVelocity = direction * _speed;
-
-        Destroy(gameObject, _lifeTime);
+        arrow.SetActive(true);
+        sphereCollider.enabled = true;
     }
     public void StartFly(Transform target)
     {
         _followTarget = target;
         _isFollowingTarget = true;
+        sphereCollider.enabled = true;
+        RpcArrowTrue();
         StartCoroutine(FollowTargetCoroutine());
-        Destroy(gameObject, _lifeTime);
     }
 
     public void Init(HeroComponent dad, float energy, bool lastHit, Skill skill, float damage)
@@ -113,5 +123,11 @@ public class ArrowProjectile : Projectiles
 
             yield return null;
         }
+    }
+
+    [ClientRpc]
+    private void RpcArrowTrue()
+    {
+        arrow.SetActive(true);
     }
 }
