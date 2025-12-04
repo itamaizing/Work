@@ -11182,7 +11182,7 @@ MonoBehaviour:
   flameLightPulse: {fileID: 8635874584311858127}
   characterLayer:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 768
 --- !u!114 &732501578659559874
 MonoBehaviour:
   m_ObjectHideFlags: 0

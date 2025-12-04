@@ -47,7 +47,16 @@ public class GrowTree : Skill
     private bool _isSpawnHero;
     private bool _castFromExtendedRadius;
 
-    protected override bool IsCanCast => !float.IsPositiveInfinity(_targetPoint.x) && IsPointInRadius(extendedRadius, _targetPoint);
+    protected override bool IsCanCast
+    {
+        get
+        {
+            if (float.IsPositiveInfinity(_targetPoint.x)) return false;
+
+            float allowedRadius = _isGrowTreeArrowIntoSkyRadiusTalent ? extendedRadius : Radius;
+            return IsPointInRadius(allowedRadius, _targetPoint);
+        }
+    }
 
     private int _growHash = Animator.StringToHash("GrowTreeCastDelay");
     private int _shotHash = Animator.StringToHash("ShotSkyWithTreeCastDelay");
@@ -229,21 +238,21 @@ public class GrowTree : Skill
                     float dist = Vector3.Distance(transform.position, targetPoint);
                     if (dist <= Radius) _castFromExtendedRadius = false;
 
-                    else if (dist <= extendedRadius && _isGrowTreeArrowIntoSkyRadiusTalent)
-                    {
-                        if (shotIntoSky != null && !shotIntoSky.IsCooldowned && !shotIntoSky.Disactive)
-                        {
-                            yield return null;
-                            continue;
-                        }
+                    //else if (dist <= extendedRadius && _isGrowTreeArrowIntoSkyRadiusTalent)
+                    //{
+                    //    if (shotIntoSky != null && !shotIntoSky.IsCooldowned && !shotIntoSky.Disactive)
+                    //    {
+                    //        yield return null;
+                    //        continue;
+                    //    }
 
-                        _castFromExtendedRadius = true;
-                        CastDeley += arrowEffectLifetime;
-                        SpawnArrowWithTreeEffect(targetPoint);
+                    //    _castFromExtendedRadius = true;
+                    //    CastDeley += arrowEffectLifetime;
+                    //    SpawnArrowWithTreeEffect(targetPoint);
 
-                        if (shotIntoSky != null && shotIntoSky.IsUseCharges) shotIntoSky.TryUseCharge();
-                        else if (shotIntoSky != null) shotIntoSky.IncreaseSetCooldown(shotIntoSky.CooldownTime);
-                    }
+                    //    if (shotIntoSky != null && shotIntoSky.IsUseCharges) shotIntoSky.TryUseCharge();
+                    //    else if (shotIntoSky != null) shotIntoSky.IncreaseSetCooldown(shotIntoSky.CooldownTime);
+                    //}
                 }
             }
 
