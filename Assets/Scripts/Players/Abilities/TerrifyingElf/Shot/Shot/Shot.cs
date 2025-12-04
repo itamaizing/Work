@@ -129,6 +129,7 @@ public class Shot : Skill
             }
             yield return null;
         }
+
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Targets.Add(target);
         targetInfo.Points.Add(targetPoint);
