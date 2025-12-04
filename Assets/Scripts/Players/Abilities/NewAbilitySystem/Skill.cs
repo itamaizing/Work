@@ -468,11 +468,14 @@ public abstract class Skill : NetworkBehaviour
     {
         if (canTargetDead)
         {
-            _tempTarget = GetCloserTargets(GetMousePoint(), Radius, canTargetHimself)[0];
+            if (GetCloserTargets(GetMousePoint(), Radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargets(GetMousePoint(), Radius, canTargetHimself)[0];
         }
         else
         {
-            _tempTarget = GetCloserTargets(GetMousePoint(), Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
+            //Debug.Log()
+            if (GetCloserTargets(GetMousePoint(), Radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargets(GetMousePoint(), Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
 		}
 	}
 
@@ -480,11 +483,13 @@ public abstract class Skill : NetworkBehaviour
 	{
 		if (canTargetDead)
 		{
-            _tempTarget = GetCloserTargetsCharacter(GetMousePoint(), Radius, canTargetHimself)[0];
+            if (GetCloserTargets(GetMousePoint(), Radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargetsCharacter(GetMousePoint(), Radius, canTargetHimself)[0];
 		}
 		else
 		{
-            _tempTarget = GetCloserTargetsCharacter(GetMousePoint(), Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
+            if (GetCloserTargets(GetMousePoint(), Radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargetsCharacter(GetMousePoint(), Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
 		}
 	}
 

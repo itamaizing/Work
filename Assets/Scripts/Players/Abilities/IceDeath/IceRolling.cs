@@ -285,9 +285,9 @@ public class IceRolling : Skill
 		{
 			if (GetMouseButton)
 			{
-				FindTargetCharacter();
+				FindTarget();
 				//_target = GetTarget().character;
-				_mousePos = GetTargetCharacter() != null ? GetTargetCharacter().transform.position : GetMousePoint();
+				_mousePos = GetTarget() != null ? GetTarget().Transform.position : GetMousePoint();
 			}
 			yield return null;
 		}
