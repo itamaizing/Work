@@ -6,17 +6,17 @@ using UnityEngine;
 
 public class Silence : Skill
 {
-    [SerializeField] private float _duration;
     [SerializeField] private GameObject effectPrefab;
     [SerializeField] private bool _reducedCooldown;
     [SerializeField] private AudioClip audioClip;
-    [SerializeField] private int _maxAdditionalManaUsage = 7;
+    [SerializeField] private int _maxAdditionalManaUsage = 8;
     [SerializeField] private Ghost ghost;
     [SerializeField] private float damageMinoin = 60;
     [SerializeField] private SkillQueue skillQueue;
 
     private AudioSource audioSource;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
+    private float _finalDuration;
 
     private bool _effectsDarknessTalent;
     private bool _canAttackMinions;
@@ -64,7 +64,10 @@ public class Silence : Skill
         _baseCooldownTime = CooldownTime;
         audioSource = GetComponent<AudioSource>();
     }
-    public override void LoadTargetData(TargetInfo targetInfo) => _targetPoint = targetInfo.Points[0];
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _targetPoint = targetInfo.Points[0];
+    }
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         Vector3 targetPoint = Vector3.positiveInfinity;
@@ -93,6 +96,8 @@ public class Silence : Skill
     {
         if (_targetPoint == Vector3.positiveInfinity) yield return null;
 
+        CalculateFinalDurationAndSpendMana();
+
         CmdSpawnEffectAtTargetPoint(_targetPoint);
         ApplyStateToEnemiesInZone(_targetPoint);
         ClientStopDamageZone();
@@ -113,6 +118,26 @@ public class Silence : Skill
 
         if (minionHitCount > 0 && _isSilenceEffectsOnMinionMagic) DecreaseSetCooldown(4f * minionHitCount);
         if (ghostAuraMinionHitCount >= 2 && _isSilenceEffectGhostCast) CmdTriggerGhostFreeWindow();
+    }
+
+    [Command]
+    private void CalculateFinalDurationAndSpendMana()
+    {
+        _finalDuration = 0;
+
+        var manaRes = Hero.TryGetResource(ResourceType.Mana);
+        if (manaRes != null)
+        {
+            int availableMana = Mathf.Min((int)manaRes.CurrentValue - 1, _maxAdditionalManaUsage);
+
+            if (availableMana > 1)
+            {
+                manaRes.TryUse(availableMana);
+                _finalDuration += 0.5f * availableMana;
+            }
+
+            Debug.Log("1");
+        }
     }
 
     private void ApplyEnemiesZone(Collider hitCollider, ref int minionHitCount, ref int ghostAuraMinionHitCount)
@@ -219,28 +244,16 @@ public class Silence : Skill
     {
         RpcPlayShotSound();
 
-        float finalDuration = _duration;
+        float duration = _finalDuration;
 
         if (_effectsDarknessTalent && targetState.CheckForState(States.InnerDarkness))
         {
-            int innerDarknessStacks = targetState.CheckStateStacks(States.InnerDarkness);
-
-            float durationMultiplier = 1.4f + 0.1f * (innerDarknessStacks - 1);
-            finalDuration = durationMultiplier;
+            int stacks = targetState.CheckStateStacks(States.InnerDarkness);
+            float durationMultiplier = 1.4f + 0.1f * (stacks - 1);
+            duration += durationMultiplier;
         }
 
-        var manaResource = Hero.TryGetResource(ResourceType.Mana);
-        if (manaResource != null)
-        {
-            int availableMana = Mathf.Min((int)manaResource.CurrentValue - 1, _maxAdditionalManaUsage);
-            if (availableMana > 1)
-            {
-                manaResource.TryUse(availableMana);
-                finalDuration += 0.5f * availableMana;
-            }
-        }
-
-        targetState.AddState(States.Silent, finalDuration, 0, Hero.gameObject, this.name);
+        targetState.AddState(States.Silent, duration, 0, Hero.gameObject, this.name);
     }
 
     [ClientRpc]

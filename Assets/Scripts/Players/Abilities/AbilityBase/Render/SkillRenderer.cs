@@ -24,6 +24,7 @@ public class SkillRenderer : NetworkBehaviour
     private List<Character> _targets = new List<Character>();
     private List<LineZoneRender> _lineZoneRenders = new();
     private bool _isOverrideClosestTarget = false;
+    private bool _lineZoneRenderManuallyStarted = false;
     private CircleArea _tempDamageZone;
     private CircleArea _tempArea;
     private float _lineStartLength;
@@ -256,6 +257,7 @@ public class SkillRenderer : NetworkBehaviour
 
     public void StartDrawLineForZone(Skill skill)
     {
+        _lineZoneRenderManuallyStarted = true;
         _lineZoneRender.StartDraw(skill);
     }
 
@@ -266,6 +268,7 @@ public class SkillRenderer : NetworkBehaviour
 
     public void StopDrawLineForZone()
     {
+        _lineZoneRenderManuallyStarted = false;
         _lineZoneRender.StopDraw();
     }
 

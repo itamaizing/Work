@@ -141,7 +141,7 @@ public class MoveComponent : NetworkBehaviour
 
 		_rigidbody.linearVelocity = Vector3.zero;
 		_rigidbody.angularVelocity = Vector3.zero;
-
+		
 		var agent = GetComponent<NavMeshAgent>();
 		if (agent && agent.enabled) agent.ResetPath();
 

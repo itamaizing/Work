@@ -791,6 +791,11 @@ public abstract class Skill : NetworkBehaviour
         _isPlayCastAnim = false;
     }
 
+    protected virtual void PlayCastAnim(bool value)
+    {
+        _isPlayCastAnim = value;
+    }
+
     protected virtual IEnumerator DynamicRendererJob(float time = 0.2f)
     {
         yield return null; //new WaitForSeconds(time);

@@ -38,8 +38,8 @@ public class PullingHealth : Skill
     private bool _pullingHealthSpeedWithFearTalent;
     #endregion
 
-    protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerCast => Animator.StringToHash("PullingHealthCastDelay");
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("PullingHealthCastDelay");
+    protected override int AnimTriggerCast => 0;
 
     protected override bool IsCanCast
     {
@@ -52,13 +52,12 @@ public class PullingHealth : Skill
 
     public event Action<Transform, IDamageable, int> OnInnerDarknessTriggered;
 
-    public void PullingHealthCast() => AnimStartCastCoroutine();
-    public void PullingHealthEnd() => AnimCastEnded();
-
     public void MovePullingHealth()
     {
-        _hero.Move.CanMove = false;
+        _hero.Move.IsMoveBlocked = true; //test
         _hero.Move.StopMoveAndAnimationMove();
+
+        Debug.Log("1");
     }
 
     private void Start()
@@ -131,6 +130,9 @@ public class PullingHealth : Skill
     {
         if (_target == null) yield return null;
 
+        _hero.Animator.SetTrigger(Animator.StringToHash("PullingHealthMidTrigger"));
+        _hero.NetworkAnimator.SetTrigger(Animator.StringToHash("PullingHealthMidTrigger"));
+
         int innerDarknessStacks;
 
         #region Work with InnerDarkness
@@ -179,9 +181,6 @@ public class PullingHealth : Skill
         }
         #endregion
 
-        _hero.Animator.SetTrigger(AnimTriggerCastDelay);
-        _hero.NetworkAnimator.SetTrigger(AnimTriggerCastDelay);
-
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
         if (multiMagic != null)
         {
@@ -198,7 +197,7 @@ public class PullingHealth : Skill
         }
 
         AfterCastJob();
-        yield return StartCoroutine(StreamDuration());
+        StartCoroutine(StreamDuration());
     }
 
 
@@ -276,8 +275,8 @@ public class PullingHealth : Skill
 
             if (_target != null && (Input.GetMouseButtonDown(1) || ( Vector3.Distance(transform.position, _target.transform.position) > Radius)) || Vector3.Distance(initialPosition, transform.position) > positionThreshold && !_ignoreMoveCheck)
             {
-                _hero.Animator.ResetTrigger(Animator.StringToHash("PullingHealthCastDelay"));
-                _hero.NetworkAnimator.ResetTrigger(Animator.StringToHash("PullingHealthCastDelay"));
+                _hero.Animator.ResetTrigger(Animator.StringToHash("PullingHealthMidTrigger"));
+                _hero.NetworkAnimator.ResetTrigger(Animator.StringToHash("PullingHealthMidTrigger"));
 
                 CmdCrossFade();
                 _hero.Animator.CrossFade("PullingHealthCastDelayExit", 0.1f);
@@ -378,7 +377,7 @@ public class PullingHealth : Skill
     {
         if (_hero != null && _hero.Move != null)
         {
-            Hero.Move.CanMove = true;
+            Hero.Move.IsMoveBlocked = false; 
             Hero.Move.StopLookAt();
            Hero.Animator.speed = 1;
         }
@@ -386,6 +385,7 @@ public class PullingHealth : Skill
         _target = null;
         _extraTargets.Clear();
         _extraEffects.Clear();
+        StopCoroutine(StreamDuration());
         AfterCastJob();
         StopShotSound();
     }

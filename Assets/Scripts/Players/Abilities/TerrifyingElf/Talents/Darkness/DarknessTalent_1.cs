@@ -14,6 +14,6 @@ public class DarknessTalent_1 : Talent
 
     public override void Exit()
     {
-        ability.ActivateSkill(shotDarkness);
+        ability.DeactivateSkill(shotDarkness);
     }
 }
