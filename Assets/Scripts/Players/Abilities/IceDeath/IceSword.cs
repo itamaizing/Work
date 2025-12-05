@@ -64,16 +64,17 @@ public class IceSword : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		while (GetTargetCharacter() == null)
+		while (GetTempTargetCharacter() == null)
 		{
 			if (GetMouseButton)
 			{
-				FindTargetCharacter();
+				FindTarget();
 				//_target = GetRaycastTarget();
 			}
 			yield return null;
 		}
-		TargetInfo targetInfo = new TargetInfo();
+        SetTargetCharacter(GetTempTargetCharacter());
+        TargetInfo targetInfo = new TargetInfo();
 		targetInfo.AddTarget(GetTargetCharacter());
 		callbackDataSaved(targetInfo);
 	}
@@ -84,13 +85,11 @@ public class IceSword : Skill
 		if (GetTargetCharacter() == _oldtarget)
 		{
 			_hitInTheRow++;
-			Debug.Log("hit from sword in a row");
 		}
 		else
 		{
 			_hitInTheRow = 1;
 			_oldtarget = GetTargetCharacter();
-			Debug.Log("first hit from sword");
 		}
 		if (_hitInTheRow > 2)
 		{
@@ -105,12 +104,17 @@ public class IceSword : Skill
 	protected override void ClearData()
 	{
 		ClearTarget();
+		ClearTempTarget();
 		//_target = null;
 	}
 
 	private void ApplyDamage()
 	{
-		float energyBonus = Mathf.Min(_energy.CurrentValue, 10);
+		float energyBonus = 0;
+
+        if (_energy.CurrentValue > 40)
+			energyBonus = Mathf.Min(_energy.CurrentValue, 11);
+		
 		_energy.CmdUse(energyBonus);
 
 		float totalDamage = _damage + energyBonus;
@@ -121,6 +125,7 @@ public class IceSword : Skill
 			Type = DamageType.Physical,
 			PhysicAttackType = AttackRangeType.RangeAttack,
 		};
+		Debug.Log("Damage " + totalDamage);
 
 		if (_critDmg && GetTargetCharacter().CharacterState.CheckForState(States.Frozen))
 		{

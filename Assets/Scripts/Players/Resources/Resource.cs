@@ -202,7 +202,7 @@ public abstract class Resource : NetworkBehaviour
     [Command]
     public void CmdUse(float value)
     {
-        //Debug.Log(value + " try " + _currentValue);
+        Debug.Log(value + " try " + _currentValue);
         TryUse(value);
     }
 
