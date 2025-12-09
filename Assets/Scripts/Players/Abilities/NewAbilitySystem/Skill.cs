@@ -188,6 +188,9 @@ public abstract class Skill : NetworkBehaviour
             }
         }
     }
+
+    public bool IsCanCancle { get => _isCanCancle; set => _isCanCancle = value; }
+    public bool IsAutoRadiusRender => _isAutoRadiusRender;
     public bool IsTalentSpell => _isTalentSpell;
     public bool IsSkillActive
     {
@@ -523,7 +526,7 @@ public abstract class Skill : NetworkBehaviour
         if (foceCancel || _isCanCancle)
         {
             Canceled?.Invoke();
-            if (_isAutoMode) _hero.Move.CanMove = true;
+            _hero.Move.CanMove = true;
             ClearData();
             _isPlayCastAnim = false;
 
@@ -815,7 +818,7 @@ public abstract class Skill : NetworkBehaviour
         if (_isAutoAreaRender)
         {
             _skillRender.DrawArea(Area, damage, TargetsLayers);
-            _skillRender.StartDynamicRadiusColor(Radius);
+            _skillRender.StartDynamicRadiusColor(Radius, this);
         }
 
         _skillRender.StartPreview(Area, damage, TargetsLayers);
@@ -1660,6 +1663,9 @@ public abstract class Skill : NetworkBehaviour
             TryCancel(true);
         }
     }
+
+    [Command]
+    public void CmdCancelActiveSkill() => RpcCancelActiveSkill();
 
     public void ResetSkillState()
     {

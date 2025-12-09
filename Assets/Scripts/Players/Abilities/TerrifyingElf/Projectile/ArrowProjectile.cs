@@ -34,6 +34,7 @@ public class ArrowProjectile : Projectiles
         if (_rb != null) _rb.linearVelocity = direction * _speed;
         arrow.SetActive(true);
         sphereCollider.enabled = true;
+        RpcArrowTrue();
     }
     public void StartFly(Transform target)
     {

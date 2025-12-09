@@ -279,7 +279,7 @@ public class SkillRenderer : NetworkBehaviour
 
     public void DrawRadius(float radius)
     {
-        if (_circle != null) _circle.Draw(radius + _modRadis);
+        if (_circle != null && radius > 0) _circle.Draw(radius + _modRadis);
     }
 
     public void StopDrawRadius()
@@ -390,12 +390,12 @@ public class SkillRenderer : NetworkBehaviour
         _circleRadius = radiusArea;
     }
 
-    public void StartDynamicRadiusColor(float radius)
+    public void StartDynamicRadiusColor(float radius, Skill skill)
     {
         if (_dynamicRadiusColorCoroutine != null)
             StopCoroutine(_dynamicRadiusColorCoroutine);
 
-        if (radius > 0) _dynamicRadiusColorCoroutine = StartCoroutine(DynamicRadiusColorJob(radius + _modRadis));
+        if (skill.IsAutoRadiusRender) _dynamicRadiusColorCoroutine = StartCoroutine(DynamicRadiusColorJob(radius + _modRadis));
     }
 
     public void StopDynamicRadiusColor()
@@ -731,10 +731,7 @@ public class SkillRenderer : NetworkBehaviour
 
     private IEnumerator DynamicRadiusColorJob(float baseRadius)
     {
-        float radius = 0f;
-
-        if (baseRadius > 0) radius = baseRadius + _modRadis;
-        float buffer = Mathf.Clamp(1f / radius, 0.1f, 0.4f);
+        float buffer = Mathf.Clamp(1f / baseRadius, 0.1f, 0.4f);
 
         while (true)
         {
@@ -742,10 +739,10 @@ public class SkillRenderer : NetworkBehaviour
             {
                 float distance = Vector3.Distance(_tempArea.transform.position, transform.position);
 
-                if (distance <= radius + buffer) _circle.SetColor(_colorForAllies);
+                if (distance <= baseRadius + buffer) _circle.SetColor(_colorForAllies);
                 else _circle.SetColor(_colorForEnemies);
 
-                _circle.Draw(radius);
+                _circle.Draw(baseRadius);
             }
 
             yield return new WaitForSeconds(0.1f);

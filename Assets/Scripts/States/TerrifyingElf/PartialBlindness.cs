@@ -14,6 +14,7 @@ public class PartialBlindness : AbstractCharacterState
     private const float _cancelChancePerStack = 0.10f;
 
     private Character _character;
+    private SkillQueue _skillQueue;
 
     private string _talentPartialBlindnessActive;
     private List<StatusEffect> _effects = new() { StatusEffect.Ability };
@@ -37,6 +38,7 @@ public class PartialBlindness : AbstractCharacterState
         MaxStacksCount = _maxStack;
 
         _character = character.GetComponent<Character>();
+        _skillQueue = _character.GetComponent<SkillQueue>();
 
         _character.Abilities.OnSkillPreparedSuccessfully += HandleSkillPrepared;
     }
@@ -107,8 +109,7 @@ public class PartialBlindness : AbstractCharacterState
 
         if (UnityEngine.Random.value < 100)
         {
-            Debug.Log($"PartialBlindness отменяет скилл: {skill.name}");
-            skill.TryCancel();
+            skill.CmdCancelActiveSkill();
         }
     }
 }
