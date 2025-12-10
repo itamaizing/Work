@@ -20,6 +20,14 @@ PrefabInstance:
       propertyPath: _hero
       value: 
       objectReference: {fileID: 1871163040516354185}
+    - target: {fileID: 680587800667431627, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 680587800667431627, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 891583693850145175, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -80,6 +88,14 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3540905251162376194, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3540905251162376194, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4387103593278668548, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -97,7 +113,7 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: _skills.Array.data[0]
+      propertyPath: '_skills.Array.data[0]'
       value: 
       objectReference: {fileID: 3939151455996886053}
     - target: {fileID: 5653443088679015109, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -290,6 +306,7 @@ MonoBehaviour:
   _spawnComponent: {fileID: 5963193180723515438}
   _visionComponent: {fileID: 0}
   _auras: {fileID: 0}
+  _characterParent: {fileID: 0}
   _expForDieKill: 5
   _navMeshAgent: {fileID: 1780925315992858912}
 --- !u!195 &1780925315992858912
@@ -342,6 +359,7 @@ MonoBehaviour:
   CanMoveState: 0
   IsMoving: 0
   IsSelect: 0
+  IsNoRotateAtCursor: 0
   _agent: {fileID: 1780925315992858912}
 --- !u!114 &3939151455996886053
 MonoBehaviour:
@@ -363,6 +381,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: afbef8fac9ee74141abb2a1c1443d316, type: 2}
   _isSubjectToGlobalCooldownTime: 0
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 1
   _castDeley: 0
   _damageValue: 5
@@ -372,6 +391,7 @@ MonoBehaviour:
   _attackRangeType: 0
   _skillType: 2
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -390,12 +410,14 @@ MonoBehaviour:
   _area: 0
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 0
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   _agent: {fileID: 1780925315992858912}
   _enemyCheckRadius: 6
   _enemyLayerMask:

@@ -20226,7 +20226,7 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  extendedRadius: 5
+  extendedRadius: 2
   baseRadius: 3
   teleportManaUse: 6
   maxGhosts: 2

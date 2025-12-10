@@ -141,7 +141,7 @@ public class GhostAura : Skill
     {
         if (UnityEngine.Random.value <= chance)
         {
-            characterState.AddState(GhostState, duration, 0f, gameObject, Name);
+            characterState.AddState(GhostState, duration, 0f, gameObject, "GhostAura");
         }
     }
 

@@ -8,10 +8,12 @@ public class HuntressTalent_1 : Talent
 
     private const float Buff = 1.5f;
     private bool visualsApplied = false;
+    private bool isActiveHuntreesTalent = false;
 
     public override void Enter()
     {
         ghost.MovingToGhostWithZeroMana(true);
+        isActiveHuntreesTalent = true;
         visionComponent.VisionRange += 3;
 
         foreach (Skill skill in skillManager.Abilities)
@@ -32,22 +34,27 @@ public class HuntressTalent_1 : Talent
 
     public override void Exit()
     {
-        ghost.MovingToGhostWithZeroMana(false);
-        visionComponent.VisionRange -= 3;
-
-        foreach (Skill skill in skillManager.Abilities)
+        if (isActiveHuntreesTalent)
         {
-            skill.Buff.Length.RemoveValue(Buff);
-            skill.Buff.Radius.RemoveValue(Buff);
-        }
+            ghost.MovingToGhostWithZeroMana(false);
+            visionComponent.VisionRange -= 3;
 
-        if (visualsApplied && skillManager.Abilities.Count > 0)
-        {
-            if (skillManager.Abilities[0].TryGetComponent(out SkillRenderer renderer))
+            foreach (Skill skill in skillManager.Abilities)
             {
-                renderer.DivideCastVisuals(Buff);
-                visualsApplied = false;
+                skill.Buff.Length.RemoveValue(Buff);
+                skill.Buff.Radius.RemoveValue(Buff);
             }
+
+            if (visualsApplied && skillManager.Abilities.Count > 0)
+            {
+                if (skillManager.Abilities[0].TryGetComponent(out SkillRenderer renderer))
+                {
+                    renderer.DivideCastVisuals(Buff);
+                    visualsApplied = false;
+                }
+            }
+
+            isActiveHuntreesTalent = false;
         }
     }
 }

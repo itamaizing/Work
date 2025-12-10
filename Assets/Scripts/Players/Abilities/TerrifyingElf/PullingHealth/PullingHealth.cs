@@ -54,8 +54,8 @@ public class PullingHealth : Skill
 
     public void MovePullingHealth()
     {
-        _hero.Move.IsMoveBlocked = true; //test
         _hero.Move.StopMoveAndAnimationMove();
+        _hero.Move.IsMoveBlocked = true; //test
 
         Debug.Log("1");
     }
@@ -318,6 +318,7 @@ public class PullingHealth : Skill
         tickInterval = _baseTickInterval;
         TryCancel();
 
+        HandleSkillCanceled();
         CmdDestroyEffect();
     }
 
