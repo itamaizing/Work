@@ -59,6 +59,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
         Vector3 spawnPosition = transform.position;
 
         var fireObj = Instantiate(_prefab, spawnPosition, Quaternion.identity);
+        _fireBreathInstance = fireObj.GetComponent<FireBreath_Prefab>();
         SceneManager.MoveGameObjectToScene(fireObj, _hero.NetworkSettings.MyRoom);
         fireObj.transform.SetParent(transform);
 
