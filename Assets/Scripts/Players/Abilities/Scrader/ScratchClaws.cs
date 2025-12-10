@@ -27,6 +27,12 @@ public class ScratchClaws : Skill
     protected override int AnimTriggerCast => Animator.StringToHash(_startAnimTrigger);
 
     protected override bool IsCanCast => _target != null;
+    private bool CheckIsCanCast()
+    {
+        return _target != null &&
+            Vector3.Distance(_target.transform.position, transform.position) <= Radius &&
+            NoObstacles(_target.transform.position, transform.position, _obstacle);
+    }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -101,7 +107,7 @@ public class ScratchClaws : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_target == null) yield return null;
+        if (!CheckIsCanCast() && _moveToTarget) yield return null;
 
         Hero.Move.LookAtPosition(_target.transform.position);
         Damage = UnityEngine.Random.Range(1f, 4f);
