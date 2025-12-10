@@ -26,6 +26,14 @@ public class ChainArrow : Projectiles
 
     private Character _hookedTarget;
     private MoveComponent _hookedMove;
+    private void OnDestroy()
+    {
+        if (_skill is ChainBlade chain)
+        {
+            chain.ChainBladeCastEnd(false);
+            chain.Hero.Move.CanMove = true;
+        }
+    }
 
     public void Cleanup()
     {
@@ -35,7 +43,7 @@ public class ChainArrow : Projectiles
             transform.SetParent(null);
 
             if (_hookedMove != null)
-                _hookedMove.CanMove = true;
+                _hookedMove.IsMoveBlocked = false;
 
             _hookedMove = null;
             _hookedTarget = null;
@@ -57,7 +65,7 @@ public class ChainArrow : Projectiles
 
     public void InitArrow(Vector3 targetPoint, Transform playerTransform, float maxDistance, float damage)
     {
-        _targetPoint = targetPoint;
+        _targetPoint = targetPoint + Vector3.up * 1.5f;
         _playerTransform = playerTransform;
         _maxDistance = maxDistance;
         _damage = damage;
@@ -134,7 +142,7 @@ public class ChainArrow : Projectiles
         _hookedMove = character.GetComponent<MoveComponent>();
 
         if (_hookedMove != null)
-            _hookedMove.CanMove = false;
+            _hookedMove.IsMoveBlocked = true;
 
         transform.SetParent(character.transform);
         transform.localPosition = new Vector3(0f, 0.5f, 0f);
@@ -150,19 +158,13 @@ public class ChainArrow : Projectiles
         _rb.isKinematic = false;
         _rb.AddForce(dir * speed, ForceMode.VelocityChange);
 
-        while (Vector3.Distance(transform.position, _playerTransform.position) > stopDistance)
+        while (Vector3.Distance(transform.position, _playerTransform.position + Vector3.up * 1.5f) > stopDistance)
         {
             UpdateLine();
             yield return null;
         }
 
         UpdateLine();
-
-        if (_skill is ChainBlade chain)
-        {
-            chain.ChainBladeCastEnd();
-            chain.Hero.Move.CanMove = false;
-        }
 
         if (isServer) NetworkServer.Destroy(gameObject);
     }
@@ -177,7 +179,7 @@ public class ChainArrow : Projectiles
 
         if (_skill is ChainBlade chain)
         {
-            chain.ChainBladeCastEnd();
+            chain.Hero.Move.IsMoveBlocked = false;
             chain.Hero.Move.CanMove = false;
         }
 
@@ -189,7 +191,7 @@ public class ChainArrow : Projectiles
     {
         if (_playerTransform == null || chainPoint == null || lineRenderer == null) return;
 
-        lineRenderer.SetPosition(0, _playerTransform.position);
+        lineRenderer.SetPosition(0, _playerTransform.position + Vector3.up * 1.5f);
         lineRenderer.SetPosition(1, chainPoint.position);
     }
 

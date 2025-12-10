@@ -39,10 +39,29 @@ public class ChainBlade : Skill
 
     public float DamageRange => UnityEngine.Random.Range(_minDamage, _maxDamage);
     public PassiveCombo_Scorpion ComboCounter { get => _comboCounter; set => _comboCounter = value; }
+    private void OnDestroy()
+    {
+        OnSkillCanceled -= HandleSkillCanceled;
+    }
+
+    private void OnEnable()
+    {
+        OnSkillCanceled += HandleSkillCanceled;
+    }
 
     private void Start()
     {
         _animator = GetComponent<Animator>();
+    }
+
+    private void HandleSkillCanceled()
+    {
+        if (_hero?.Move != null)
+        {
+            Hero.Move.IsMoveBlocked = false;
+            _targetPoint = Vector3.positiveInfinity;
+            Hero.Move.StopLookAt();
+        }
     }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -113,7 +132,7 @@ public class ChainBlade : Skill
             float t = timer / duration;
             targetTransform.position = Vector3.Lerp(start, end, t);
 
-            pullLineRenderer.SetPosition(0, transform.position);
+            pullLineRenderer.SetPosition(0, transform.position + Vector3.up * 1.5f);
 
             Vector3 targetPos = targetTransform.position;
             targetPos.y += 1.32f;
@@ -125,7 +144,7 @@ public class ChainBlade : Skill
         pullLineRenderer.enabled = false;
         if (agent != null && !agent.enabled) agent.enabled = true;
 
-        ChainBladeCastEnd();
+        ChainBladeCastEnd(true);
     }
 
     protected override void ClearData()
@@ -141,11 +160,12 @@ public class ChainBlade : Skill
 
         if (direction.sqrMagnitude > 0.01f && direction.IsFinite())
             Hero.Move.LookAtPosition(_targetPoint);
-        Hero.Move.CanMove = false;
+        Hero.Move.IsMoveBlocked = true;
     }
 
-    public void ChainBladeCastEnd()
+    public void ChainBladeCastEnd(bool handleArrowHit)
     {
+        if (handleArrowHit) Hero.Move.IsMoveBlocked = false;
         AnimCastEnded();
         ChainBladeDestroy();
     }
@@ -176,8 +196,8 @@ public class ChainBlade : Skill
         Vector3 flatDirection = new Vector3(direction.x, 0, direction.z).normalized;
         Vector3 targetPoint = transform.position + flatDirection * (CastLength - 0.5f);
         targetPoint.y = transform.position.y;
-
-        var arrow = Instantiate(chainArrowPrefab, transform.position, Quaternion.identity);
+        Vector3 spawnPosition = transform.position + Vector3.up * 1.5f;
+        var arrow = Instantiate(chainArrowPrefab, spawnPosition, Quaternion.identity);
         if (_chainArrowPrefab != null) Destroy(_chainArrowPrefab.gameObject);
         _chainArrowPrefab = arrow;
         arrow.Init(playerLinks, 0, false, this);

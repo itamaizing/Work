@@ -155,20 +155,11 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
 
         Hero.Move.CanMove = false;
 
-        float energyRestoreInterval = CastStreamDuration / 10f;
-        float nextEnergyRestoreTime = energyRestoreInterval;
-
         while (elapsed < CastStreamDuration)
         {
             ApplyDamageAndDebuff(elapsed, baseDamage);
 
             elapsed += tickInterval;
-
-            if (elapsed >= nextEnergyRestoreTime)
-            {
-                Hero.Resources.First(r => r.Type == ResourceType.Mana).CmdAdd(1);
-                nextEnergyRestoreTime += energyRestoreInterval;
-            }
 
             yield return new WaitForSeconds(tickInterval);
 

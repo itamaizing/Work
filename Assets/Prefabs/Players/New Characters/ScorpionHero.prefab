@@ -5032,9 +5032,11 @@ MonoBehaviour:
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
-  _castDuration: 1.55
-  _manaCostRate: 1
-  _manaCostPerTick: []
+  _castDuration: 1.5
+  _manaCostRate: 0.15
+  _manaCostPerTick:
+  - resourceType: 1
+    resourceCost: 1
   _isUseCharges: 0
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
