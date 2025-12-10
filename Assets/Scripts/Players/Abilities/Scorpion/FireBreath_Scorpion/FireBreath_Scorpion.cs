@@ -140,7 +140,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
                 if (_enemiesDict.ContainsKey(enemy))
                     _enemiesDict[enemy] *= (int)_damageScalePerTick;
                 else
-                    _enemiesDict[enemy] = 1;
+                    _enemiesDict[enemy] = 2;
 
                 TryApplyScorchedSoulDebuff(enemy, elapsedTime);
             }
