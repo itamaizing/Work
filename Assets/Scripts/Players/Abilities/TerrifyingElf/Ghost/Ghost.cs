@@ -299,7 +299,11 @@ public class Ghost : Skill
                         if (_isSpawningGhostVisual) _pendingSpawn.Enqueue(secondPoint);
                         else
                         {
+                            if (_ghostCount < maxGhosts + 1) _ghostCount++;
                             AdjustCastDelay();
+
+                            Debug.Log($"_ghostCount: {_ghostCount}\n" +
+                                $"_castDeley: {_castDeley}");
                             break;
                         }
                     }
@@ -410,9 +414,8 @@ public class Ghost : Skill
 
     private void AdjustCastDelay()
     {
-        if (_ghostCount <= 0) _castDeley = _baseCastDelay;
-        else if (_ghostCount == 1) _castDeley = _baseCastDelay * 2;
-        else if (_ghostCount >= maxGhosts) _castDeley = _baseCastDelay * _ghostCount;
+        if (_ghostCount <= 1) _castDeley = _baseCastDelay;
+        else _castDeley = _baseCastDelay * Mathf.Pow(2, _ghostCount - 1);
     }
 
     private void TeleportToGhost(Character ghost)
@@ -426,6 +429,7 @@ public class Ghost : Skill
         if (ghost.TryGetComponent<GhostAura>(out GhostAura ghostAura)) PerformTeleport(ghost.transform.position);
         if (manaTeleportToGhost() || !_movingToGhostWithZeroMana) RemoveGhost(ghost);
         RestoreSkillCosts();
+        //_ghostCount = _ghosts.Count;
     }
 
     private void ReduceSkillCosts()
@@ -469,6 +473,7 @@ public class Ghost : Skill
 
         _spawnComponent.CmdRemoveUnit(minion);
         _ghosts.Remove(ghost);
+        _ghostCount = _ghosts.Count;
     }
 
     private IEnumerator DisableWayAfterTeleport(MoveComponent moveComponent, Vector3 targetPosition)
@@ -495,6 +500,7 @@ public class Ghost : Skill
         if (_ghosts.Count >= maxGhosts) return;
         Vector3 spawnPosition = position + Vector3.up * 1f;
         _spawnComponent.CmdSpawnAliesPoint(spawnPosition, LookRotation, null,  0, false, Hero);
+        //_ghostCount = _ghosts.Count;
     }
 
     private void RemoveOldestGhostIfNeeded()
