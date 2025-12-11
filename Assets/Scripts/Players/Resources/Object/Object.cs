@@ -39,7 +39,7 @@ public class Object : NetworkBehaviour, ITargetable
     public int IndexTeam { get => _indexTeam; set => _indexTeam = value; }
 
     public Vector3 Position => Transform.position;
-    public Transform Transform => Transform;
+    public Transform Transform => transform;
 
     public bool IsTargetable => !_isDeath;
 

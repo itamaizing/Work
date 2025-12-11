@@ -1,34 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class Energy : Resource
 {
 	[SerializeField] private float _sumDamageGiven = 0;
 
-	private float _timer = 0;
 	private float _regenValue = 1;
 
-	private void Update()
+/*	public override void Add(float EnergyValue)
 	{
-		_timer += Time.deltaTime;
-
-		if (_timer > _regenerationPeriod)
-		{
-			_timer = 0;
-			canRegen = true;
-		}
-
-		if (_regenCoroutine == null)
-		{
-			ClientStartRegenirateJob();
-		}
-	}
-
-	public override void Add(float EnergyValue)
-	{
-		CurrentValue += EnergyValue;
+        Debug.Log("Regen " + EnergyValue, this);
+        CurrentValue += EnergyValue;
 		if (CurrentValue >= _maxValue)
 		{
 			CurrentValue = _maxValue;
@@ -40,8 +21,6 @@ public class Energy : Resource
 		{
 			return false;
 		}
-		canRegen = false;
-		_timer = 0;
 
 		_currentValue -= EnergyValue;
 
@@ -52,7 +31,7 @@ public class Energy : Resource
 		return true;
 	}
 
-	/*private IEnumerator RegenirateEnergy()
+	private IEnumerator RegenirateEnergy()
 	{
 		while (true)
 		{
@@ -67,9 +46,12 @@ public class Energy : Resource
 	public float UseAllEnergy()
 	{
 		float usedEnergy = CurrentValue;
-		CurrentValue = 0;
-		canRegen = false;
-		return usedEnergy;
+		TryUse(CurrentValue);
+
+        ClientStopRegenerateJob();
+        ClientStartRegenirateJob();
+        //CurrentValue = 0;
+        return usedEnergy;
 	}
 
 	public void SumDamageMake(float damage)

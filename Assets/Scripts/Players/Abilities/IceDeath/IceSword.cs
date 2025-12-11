@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class IceSword : Skill
+public class IceSword : CloseCombatSkill
 {
 	[SerializeField] private float _damage = 15f;
 	//[SerializeField] private GameObject _basePlayer;
@@ -64,23 +64,6 @@ public class IceSword : Skill
     {
         SetTarget((Character)targetInfo.GetTargets()[0]);
     }
-
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-	{
-		while (GetTempTargetCharacter() == null)
-		{
-			if (GetMouseButton)
-			{
-				FindTarget();
-				//_target = GetRaycastTarget();
-			}
-			yield return null;
-		}
-        SetTargetCharacter(GetTempTargetCharacter());
-        TargetInfo targetInfo = new TargetInfo();
-		targetInfo.AddTarget(GetTargetCharacter());
-		callbackDataSaved(targetInfo);
-	}
 
 	protected override IEnumerator CastJob()
 	{

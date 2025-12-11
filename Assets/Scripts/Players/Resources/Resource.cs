@@ -26,7 +26,6 @@ public abstract class Resource : NetworkBehaviour
     protected Coroutine _regenCoroutine;
 
     private float _bonusMaxValue = 0f;
-	protected bool canRegen = true;
 	public float CurrentValue { get => _currentValue; set { _currentValue = value; } }
     public float MaxValue { get => _maxValue; set => _maxValue = value; }
     public float RegenerationValue { get => _regenerationValue; set { _regenerationValue = value; } }
@@ -76,9 +75,12 @@ public abstract class Resource : NetworkBehaviour
     public virtual bool TryUse(float value)
     {
         //TEST!!!
-		if (_regenCoroutine != null)
+        ClientStopRegenerateJob();
+        ClientStartRegenirateJob();
+        if (_regenCoroutine != null)
 		{
-            //Debug.Log("Restart regen");
+            CmdResetRegen();
+            Debug.Log("Restart regen");
 			StopCoroutine(_regenCoroutine);
 			_regenCoroutine = StartCoroutine(RegenerateJob());
 		}
@@ -146,6 +148,11 @@ public abstract class Resource : NetworkBehaviour
     protected virtual void HookValueChanged(float oldValue, float newValue)
     {
         ValueChanged?.Invoke(oldValue, newValue);
+
+        //ClientStopRegenerateJob();
+        //ClientStartRegenirateJob();
+        if(oldValue > newValue)
+            ResetRegen();
     }
 
     protected virtual void HookMaxValueChanged(float oldValue, float newValue)
@@ -176,9 +183,9 @@ public abstract class Resource : NetworkBehaviour
             {
                 yield return new WaitForSeconds(_regenerationDelay);
 
-                while (_currentValue < _maxValue && canRegen)
+                while (_currentValue < _maxValue)
                 {
-                   // Debug.Log("REGENING");
+                    Debug.Log("Regens");
                     CmdRegen();
                     yield return new WaitForSeconds(_regenerationPeriod);
                 }
@@ -202,7 +209,7 @@ public abstract class Resource : NetworkBehaviour
     [Command]
     public void CmdUse(float value)
     {
-        Debug.Log(value + " try " + _currentValue);
+        //Debug.Log(value + " try " + _currentValue);
         TryUse(value);
     }
 
@@ -238,5 +245,22 @@ public abstract class Resource : NetworkBehaviour
     private void RpcResetValueUpdate()
     {
         HookValueChanged(0, _currentValue);
+    }
+
+    protected void ResetRegen()
+    {
+        Debug.Log(_regenCoroutine);
+        if (_regenCoroutine != null)
+        {
+            Debug.Log("Restart regen");
+            StopCoroutine(_regenCoroutine);
+            _regenCoroutine = StartCoroutine(RegenerateJob());
+        }
+    }
+
+    [ClientRpc]
+    protected void CmdResetRegen()
+    {
+        ResetRegen();
     }
 }

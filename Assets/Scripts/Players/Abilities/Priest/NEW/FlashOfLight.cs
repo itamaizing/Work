@@ -106,20 +106,21 @@ public class FlashOfLight : Skill
     {
        // _previousTarget = null;
 
-        while (GetTargetCharacter() == null)
+        while (GetTempTargetCharacter() == null)
         {
             if (Input.GetMouseButton(0))
             {
                 FindTargetCharacter(true);
                 //_target = GetRaycastTarget(true);
 
-                if (GetTargetCharacter() != null && GetTargetCharacter() is Character characte && IsValidTarget(characte)) SetTarget(characte);
+                if (GetTempTargetCharacter() != null && GetTempTargetCharacter() is Character characte && IsValidTarget(characte)) SetTarget(characte);
                 else ClearTarget();
 
             }
             yield return null;
         }
-        TargetInfo targetInfo = new();
+        SetTargetCharacter(GetTempTargetCharacter());
+        TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }

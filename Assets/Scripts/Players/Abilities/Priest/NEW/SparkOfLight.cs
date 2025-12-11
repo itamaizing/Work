@@ -130,22 +130,22 @@ public class SparkOfLight : Skill
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
 
-        while (GetTargetCharacter() == null)
+        while (GetTempTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
                 FindTargetCharacter();
 
-                if (GetTargetCharacter() is Character character)
+                if (GetTempTargetCharacter() is Character character)
                 {
                     //_characterTarget = character;
 
-                    if (GetTargetCharacter() != null && (IsAllyTarget(character) || character == Hero) && !isLightMode)
+                    if (GetTempTargetCharacter() != null && (IsAllyTarget(character) || character == Hero) && !isLightMode)
                     {
                         ClearTarget();
                     }
 
-                    if (GetTargetCharacter() != null)
+                    if (GetTempTargetCharacter() != null)
                     {
                         character.SelectedCircle.IsActive = true;
                     }
@@ -155,8 +155,9 @@ public class SparkOfLight : Skill
             yield return null;
         }
 
+        SetTargetCharacter(GetTempTargetCharacter());
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(GetTargetCharacter().transform.position);
+        targetInfo.AddTarget(GetTargetCharacter());
         targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }

@@ -3,7 +3,7 @@ using System.Collections;
 using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-public class FlowOfLight : Skill
+public class FlowOfLight : CloseCombatSkill
 {
     [Header("Flow Light Settings")]
     [SerializeField] private float buffDuration = 18f;
@@ -109,34 +109,6 @@ public class FlowOfLight : Skill
         if (!isLightMode && UnityEngine.Random.value <= 0.2f) CmdStateRestorationOrDestruction(stateComponent, States.Destruction, 12f);
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-    {
-        //_targetCharacter = null;
-
-        while (GetTargetCharacter() == null)
-        {
-            if (GetMouseButton)
-            {
-                FindTargetCharacter();
-                //_target = GetRaycastTarget();
-                /*if (_target != null && _target is Character character)
-                {
-                    if ((isLightMode && IsAllyTarget(character)) || (!isLightMode && IsEnemyTarget(character)))
-                    {
-                        _targetCharacter = character;
-                        _targetCharacter.SelectedCircle.IsActive = true;
-                    }
-                }*/
-            }
-            yield return null;
-        }
-
-        TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTargetCharacter());
-        callbackDataSaved(targetInfo);
-    }
-
-
     protected override IEnumerator CastJob()
     {
         if (GetTargetCharacter() == null || !IsCanCast)
@@ -214,7 +186,6 @@ public class FlowOfLight : Skill
     protected override void ClearData()
     {
         ClearTarget();
-        //_target = null;
         _hero.Move.StopLookAt();
         CmdDestroyEffect();
     }

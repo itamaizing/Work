@@ -272,6 +272,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 
     public void Heal(ref Heal value, string sourceName, Skill skill)
     {
+		Debug.Log("Healed " + value.Value);
 		Health.Heal(ref value, sourceName, skill);
 	}
 

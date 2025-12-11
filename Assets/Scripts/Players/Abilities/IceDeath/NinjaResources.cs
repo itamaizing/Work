@@ -19,13 +19,13 @@ public class NinjaResources : Skill, IPassiveSkill
     private bool _isIceRuneTalent;
     private bool _isHardenedFleshTalent;
 
-    private void Update()
+  /*  private void Update()
     {
         if(Input.GetKeyDown(KeyCode.T))
         {
 			Hero.CharacterState.CmdAddState(States.HardenedFlesh, 9f, 0, Hero.gameObject, this.Name);
 		}
-    }
+    }*/
 
     public void EnergyToRestore(bool value, string text)
     {
