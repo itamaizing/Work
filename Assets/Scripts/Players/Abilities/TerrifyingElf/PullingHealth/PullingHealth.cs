@@ -27,6 +27,7 @@ public class PullingHealth : Skill
     private float _ignoreMoveTimeLeft;
     private bool _ignoreMoveCheck;
     private bool _isStreaming;
+    private bool _streamFinished;
 
     private const float _teleportTime = 0.3f;
 
@@ -200,12 +201,14 @@ public class PullingHealth : Skill
 
         AfterCastJob();
         StartCoroutine(StreamDuration());
+        while (!_streamFinished)  yield return null;
     }
 
 
     private IEnumerator StreamDuration()
     {
         _isStreaming = true;
+        _streamFinished = false;
         float elapsed = 0f;
         float damageTickElapsed = 0f;
         float positionThreshold = 1f;
@@ -214,7 +217,6 @@ public class PullingHealth : Skill
         if (manaResource == null || manaResource.CurrentValue < 2)
         {
             CmdDestroyEffect();
-            TryCancel();
             _isStreaming = false;
             yield break;
         }
@@ -265,7 +267,6 @@ public class PullingHealth : Skill
         {
             if (_target == null)
             {
-                TryCancel();
                 CmdDestroyEffect();
                 _isStreaming = false;
                 yield break;
@@ -286,7 +287,6 @@ public class PullingHealth : Skill
                 CmdCrossFade();
                 _hero.Animator.CrossFade("PullingHealthCastDelayExit", 0.1f);
 
-                TryCancel();
                 CmdDestroyEffect();
                 _isStreaming = false;
                 yield break;
@@ -311,7 +311,6 @@ public class PullingHealth : Skill
             if (manaResource.CurrentValue < 2)
             {
                 CmdDestroyEffect();
-                TryCancel();
                 _isStreaming = false;
                 yield break;
             }
@@ -321,13 +320,16 @@ public class PullingHealth : Skill
             yield return null;
         }
 
+        FinishStream();
+    }
+    private void FinishStream()
+    {
         CastStreamDuration = _baseCastStreamDuration;
         tickInterval = _baseTickInterval;
-        TryCancel();
-
-        HandleSkillCanceled();
-        CmdDestroyEffect();
         _isStreaming = false;
+        _streamFinished = true;
+
+        CmdDestroyEffect();
     }
 
     private void ApplyDamageThroughGhost(GameObject ghost)

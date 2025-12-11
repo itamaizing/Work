@@ -73,6 +73,7 @@ public class ChainBlade : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         _targetPoint = targetInfo.Points[0];
+        Hero.Move.IsMoveBlocked = true;
     }
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
@@ -167,7 +168,6 @@ public class ChainBlade : Skill
 
         if (direction.sqrMagnitude > 0.01f && direction.IsFinite())
             Hero.Move.LookAtPosition(_targetPoint);
-        Hero.Move.IsMoveBlocked = true;
     }
 
     public void ChainBladeCastEnd(bool handleArrowHit)
