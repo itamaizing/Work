@@ -10,6 +10,7 @@ public class ChainArrow : Projectiles
     [SerializeField] private float speedModifier = 1.2f;
     [SerializeField] private float speedWithTarget = 4f;
     [SerializeField] private float stopDistance = 1.5f;
+    [SerializeField] private float arrowYOffset = 1.5f;
     [SerializeField] private LayerMask targetsLayer;
     [SerializeField] private Transform chainPoint;
 
@@ -65,7 +66,7 @@ public class ChainArrow : Projectiles
 
     public void InitArrow(Vector3 targetPoint, Transform playerTransform, float maxDistance, float damage)
     {
-        _targetPoint = targetPoint + Vector3.up * 1.5f;
+        _targetPoint = targetPoint + Vector3.up * arrowYOffset;
         _playerTransform = playerTransform;
         _maxDistance = maxDistance;
         _damage = damage;
@@ -158,7 +159,7 @@ public class ChainArrow : Projectiles
         _rb.isKinematic = false;
         _rb.AddForce(dir * speed, ForceMode.VelocityChange);
 
-        while (Vector3.Distance(transform.position, _playerTransform.position + Vector3.up * 1.5f) > stopDistance)
+        while (Vector3.Distance(transform.position, _playerTransform.position + Vector3.up * arrowYOffset) > stopDistance)
         {
             UpdateLine();
             yield return null;
@@ -191,7 +192,7 @@ public class ChainArrow : Projectiles
     {
         if (_playerTransform == null || chainPoint == null || lineRenderer == null) return;
 
-        lineRenderer.SetPosition(0, _playerTransform.position + Vector3.up * 1.5f);
+        lineRenderer.SetPosition(0, _playerTransform.position + Vector3.up * arrowYOffset);
         lineRenderer.SetPosition(1, chainPoint.position);
     }
 

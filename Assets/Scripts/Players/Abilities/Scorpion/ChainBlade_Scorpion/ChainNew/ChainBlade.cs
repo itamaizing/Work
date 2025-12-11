@@ -17,6 +17,7 @@ public class ChainBlade : Skill
 {
     [SerializeField] [Range(0, 100)] private float _minDamage = 3f;
     [SerializeField] [Range(0, 100)] private float _maxDamage = 5f;
+    [SerializeField] private float arrowYOffset = 1.5f;
     [SerializeField] private PassiveCombo_Scorpion _comboCounter;
 
     [SerializeField] private ChainArrow chainArrowPrefab;
@@ -27,6 +28,8 @@ public class ChainBlade : Skill
     private ChainArrow _chainArrowPrefab;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private Animator _animator;
+
+    private bool _needDestroyArrowAfterSpawn = false;
 
     private static readonly int chainBladeStart = Animator.StringToHash("ChainStart");
     private static readonly int chainBladeEnd = Animator.StringToHash("ChainEnd");
@@ -62,6 +65,10 @@ public class ChainBlade : Skill
             _targetPoint = Vector3.positiveInfinity;
             Hero.Move.StopLookAt();
         }
+
+        _needDestroyArrowAfterSpawn = false;
+        ChainBladeCastEnd(false);
+        CmdDestroyChain();
     }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -119,7 +126,7 @@ public class ChainBlade : Skill
     {
         Transform targetTransform = target.transform;
         Vector3 start = targetTransform.position;
-        Vector3 end = Hero.transform.position + Hero.transform.forward * 1.5f;
+        Vector3 end = Hero.transform.position + Hero.transform.forward * arrowYOffset;
         var agent = target.GetComponent<NavMeshAgent>();
         if (agent != null && agent.enabled) agent.enabled = false;
 
@@ -132,7 +139,7 @@ public class ChainBlade : Skill
             float t = timer / duration;
             targetTransform.position = Vector3.Lerp(start, end, t);
 
-            pullLineRenderer.SetPosition(0, transform.position + Vector3.up * 1.5f);
+            pullLineRenderer.SetPosition(0, transform.position + Vector3.up * arrowYOffset);
 
             Vector3 targetPos = targetTransform.position;
             targetPos.y += 1.32f;
@@ -166,6 +173,7 @@ public class ChainBlade : Skill
     public void ChainBladeCastEnd(bool handleArrowHit)
     {
         if (handleArrowHit) Hero.Move.IsMoveBlocked = false;
+        if (_chainArrowPrefab != null) _chainArrowPrefab.OnHitTarget -= HandleArrowHit;
         AnimCastEnded();
         ChainBladeDestroy();
     }
@@ -189,6 +197,18 @@ public class ChainBlade : Skill
     }
 
     [Command]
+    private void CmdDestroyChain()
+    {
+        if (_chainArrowPrefab != null)
+        {
+            RpcDestroyChain(_chainArrowPrefab.gameObject);
+            NetworkServer.Destroy(_chainArrowPrefab.gameObject);
+            _chainArrowPrefab = null;
+        }
+        else _needDestroyArrowAfterSpawn = true;
+    }
+
+    [Command]
     private void CmdSpawnChainArrow(Vector3 clickPoint)
     {
 
@@ -196,10 +216,22 @@ public class ChainBlade : Skill
         Vector3 flatDirection = new Vector3(direction.x, 0, direction.z).normalized;
         Vector3 targetPoint = transform.position + flatDirection * (CastLength - 0.5f);
         targetPoint.y = transform.position.y;
-        Vector3 spawnPosition = transform.position + Vector3.up * 1.5f;
+        Vector3 spawnPosition = transform.position + Vector3.up * arrowYOffset;
         var arrow = Instantiate(chainArrowPrefab, spawnPosition, Quaternion.identity);
         if (_chainArrowPrefab != null) Destroy(_chainArrowPrefab.gameObject);
         _chainArrowPrefab = arrow;
+
+        _chainArrowPrefab = arrow;
+
+        if (_needDestroyArrowAfterSpawn)
+        {
+            ChainBladeCastEnd(true);
+            RpcDestroyChain(_chainArrowPrefab.gameObject);
+            NetworkServer.Destroy(_chainArrowPrefab.gameObject);
+            _chainArrowPrefab = null;
+            _needDestroyArrowAfterSpawn = false;
+            return;
+        }
         arrow.Init(playerLinks, 0, false, this);
 
         arrow.OnHitTarget += HandleArrowHit;
@@ -222,6 +254,12 @@ public class ChainBlade : Skill
     }
 
     [ClientRpc]
+    private void RpcDestroyChain(GameObject arrowObj)
+    {
+        if (arrowObj != null) Destroy(arrowObj);
+    }
+
+    [ClientRpc]
     private void RpcInitArrow(GameObject arrowObj, Vector3 targetPoint)
     {
         if (arrowObj == null) return;
@@ -229,5 +267,6 @@ public class ChainBlade : Skill
         var arrow = arrowObj.GetComponent<ChainArrow>();
         arrow.Init(playerLinks, 0, false, this);
         arrow.InitArrow(targetPoint, transform, CastLength, DamageRange);
+        _chainArrowPrefab = arrow;
     }
 }
