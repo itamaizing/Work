@@ -39,7 +39,7 @@ public class ChainBlade : Skill
 
     public float DamageRange => UnityEngine.Random.Range(_minDamage, _maxDamage);
     public PassiveCombo_Scorpion ComboCounter { get => _comboCounter; set => _comboCounter = value; }
-    private void OnDestroy()
+    private void OnDisable()
     {
         OnSkillCanceled -= HandleSkillCanceled;
     }

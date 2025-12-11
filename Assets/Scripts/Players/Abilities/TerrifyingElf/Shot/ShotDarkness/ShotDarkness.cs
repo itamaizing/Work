@@ -38,7 +38,7 @@ public class ShotDarkness : Skill
         return Vector3.Distance(_targetPoint, transform.position) <= CastLength || Vector3.Distance(_target.transform.position, transform.position) <= CastLength;
     }
 
-    private void OnDestroy() => OnSkillCanceled -= HandleSkillCanceled;
+    private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
     private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
     private void Start() => _audioSource = GetComponent<AudioSource>();
 

@@ -26,6 +26,7 @@ public class PullingHealth : Skill
     private float _baseCastStreamDuration;
     private float _ignoreMoveTimeLeft;
     private bool _ignoreMoveCheck;
+    private bool _isStreaming;
 
     private const float _teleportTime = 0.3f;
 
@@ -45,6 +46,7 @@ public class PullingHealth : Skill
     {
         get
         {
+            if (_isStreaming) return false;
             if (_target != null) return Vector3.Distance(_target.transform.position, transform.position) <= Radius;
             return false;
         }
@@ -203,6 +205,7 @@ public class PullingHealth : Skill
 
     private IEnumerator StreamDuration()
     {
+        _isStreaming = true;
         float elapsed = 0f;
         float damageTickElapsed = 0f;
         float positionThreshold = 1f;
@@ -212,6 +215,7 @@ public class PullingHealth : Skill
         {
             CmdDestroyEffect();
             TryCancel();
+            _isStreaming = false;
             yield break;
         }
 
@@ -263,6 +267,7 @@ public class PullingHealth : Skill
             {
                 TryCancel();
                 CmdDestroyEffect();
+                _isStreaming = false;
                 yield break;
             }
 
@@ -283,6 +288,7 @@ public class PullingHealth : Skill
 
                 TryCancel();
                 CmdDestroyEffect();
+                _isStreaming = false;
                 yield break;
             }
 
@@ -306,6 +312,7 @@ public class PullingHealth : Skill
             {
                 CmdDestroyEffect();
                 TryCancel();
+                _isStreaming = false;
                 yield break;
             }
 
@@ -320,6 +327,7 @@ public class PullingHealth : Skill
 
         HandleSkillCanceled();
         CmdDestroyEffect();
+        _isStreaming = false;
     }
 
     private void ApplyDamageThroughGhost(GameObject ghost)

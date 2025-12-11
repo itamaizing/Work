@@ -40,7 +40,7 @@ public class Shot : Skill
         return false;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         OnSkillCanceled -= HandleSkillCanceled;
     }

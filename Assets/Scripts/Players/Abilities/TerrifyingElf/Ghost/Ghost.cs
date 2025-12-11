@@ -299,7 +299,7 @@ public class Ghost : Skill
                         if (_isSpawningGhostVisual) _pendingSpawn.Enqueue(secondPoint);
                         else
                         {
-                            if (_ghostCount < maxGhosts + 1) _ghostCount++;
+                            if (_ghostCount <= maxGhosts) _ghostCount++;
                             AdjustCastDelay();
 
                             Debug.Log($"_ghostCount: {_ghostCount}\n" +

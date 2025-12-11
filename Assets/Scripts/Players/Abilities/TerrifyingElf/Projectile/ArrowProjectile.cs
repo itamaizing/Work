@@ -14,6 +14,7 @@ public class ArrowProjectile : Projectiles
     [SerializeField] private SphereCollider sphereCollider;
 
     private Transform _followTarget;
+    private Vector3 _startPosition;
     private bool _isFollowingTarget = false;
 
     private float _magDamage;
@@ -27,17 +28,30 @@ public class ArrowProjectile : Projectiles
         sphereCollider.enabled = false;
         Destroy(gameObject, _lifeTime);
     }
+    private void Update()
+    {
+        if (_startPosition != Vector3.zero)
+        {
+            float distanceTravelled = Vector3.Distance(_startPosition, transform.position);
+            if (distanceTravelled > _skill.CastLength)
+            {
+                Destroy(gameObject);
+            }
+        }
+    }
 
     public void StartFly(Vector3 direction)
     {
         if (direction == Vector3.zero || float.IsNaN(direction.x) || float.IsNaN(direction.y) || float.IsNaN(direction.z)) return;
         if (_rb != null) _rb.linearVelocity = direction * _speed;
+        _startPosition = transform.position;
         arrow.SetActive(true);
         sphereCollider.enabled = true;
         RpcArrowTrue();
     }
     public void StartFly(Transform target)
     {
+        _startPosition = transform.position;
         _followTarget = target;
         _isFollowingTarget = true;
         sphereCollider.enabled = true;
