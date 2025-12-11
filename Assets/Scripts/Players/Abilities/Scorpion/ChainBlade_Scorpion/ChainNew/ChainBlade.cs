@@ -17,7 +17,7 @@ public class ChainBlade : Skill
 {
     [SerializeField] [Range(0, 100)] private float _minDamage = 3f;
     [SerializeField] [Range(0, 100)] private float _maxDamage = 5f;
-    [SerializeField] private float arrowYOffset = 1.5f;
+    [SerializeField] private float _arrowYOffset = 1.5f;
     [SerializeField] private PassiveCombo_Scorpion _comboCounter;
 
     [SerializeField] private ChainArrow chainArrowPrefab;
@@ -126,7 +126,7 @@ public class ChainBlade : Skill
     {
         Transform targetTransform = target.transform;
         Vector3 start = targetTransform.position;
-        Vector3 end = Hero.transform.position + Hero.transform.forward * arrowYOffset;
+        Vector3 end = Hero.transform.position + Hero.transform.forward * _arrowYOffset;
         var agent = target.GetComponent<NavMeshAgent>();
         if (agent != null && agent.enabled) agent.enabled = false;
 
@@ -139,7 +139,7 @@ public class ChainBlade : Skill
             float t = timer / duration;
             targetTransform.position = Vector3.Lerp(start, end, t);
 
-            pullLineRenderer.SetPosition(0, transform.position + Vector3.up * arrowYOffset);
+            pullLineRenderer.SetPosition(0, transform.position + Vector3.up * _arrowYOffset);
 
             Vector3 targetPos = targetTransform.position;
             targetPos.y += 1.32f;
@@ -216,7 +216,7 @@ public class ChainBlade : Skill
         Vector3 flatDirection = new Vector3(direction.x, 0, direction.z).normalized;
         Vector3 targetPoint = transform.position + flatDirection * (CastLength - 0.5f);
         targetPoint.y = transform.position.y;
-        Vector3 spawnPosition = transform.position + Vector3.up * arrowYOffset;
+        Vector3 spawnPosition = transform.position + Vector3.up * _arrowYOffset;
         var arrow = Instantiate(chainArrowPrefab, spawnPosition, Quaternion.identity);
         if (_chainArrowPrefab != null) Destroy(_chainArrowPrefab.gameObject);
         _chainArrowPrefab = arrow;

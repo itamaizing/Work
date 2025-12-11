@@ -78,7 +78,7 @@ public class GrowTree : Skill
         OnSkillCanceled += HandleSkillCanceled;
         skillQueue.Cancell += HandleSkillDeleted;
     }
-    private void OnDestroy()
+    private void OnDisable ()
     {
         OnSkillCanceled -= HandleSkillCanceled;
         skillQueue.Cancell -= HandleSkillDeleted;

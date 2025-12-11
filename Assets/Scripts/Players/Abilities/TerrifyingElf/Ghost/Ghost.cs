@@ -29,7 +29,7 @@ public class Ghost : Skill
     private GameObject _ghostPrefabPreview;
     private AudioSource _audioSource;
     private SpawnComponent _spawnComponent;
-    private float _ghostCount;
+    private float _ghostPrepearCount;
     private float _baseCastDelay;
     private float _treeVisionRadius;
     private float _heroVisionRadius;
@@ -132,7 +132,7 @@ public class Ghost : Skill
         isSkillEnableBoostLogic = false;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         UnregisterSpawnEvents();
         if (_checkExtendedRadiusCoroutine != null)
@@ -299,10 +299,10 @@ public class Ghost : Skill
                         if (_isSpawningGhostVisual) _pendingSpawn.Enqueue(secondPoint);
                         else
                         {
-                            if (_ghostCount <= maxGhosts) _ghostCount++;
+                            if (_ghostPrepearCount <= maxGhosts) _ghostPrepearCount++;
                             AdjustCastDelay();
 
-                            Debug.Log($"_ghostCount: {_ghostCount}\n" +
+                            Debug.Log($"_ghostCount: {_ghostPrepearCount}\n" +
                                 $"_castDeley: {_castDeley}");
                             break;
                         }
@@ -414,8 +414,8 @@ public class Ghost : Skill
 
     private void AdjustCastDelay()
     {
-        if (_ghostCount <= 1) _castDeley = _baseCastDelay;
-        else _castDeley = _baseCastDelay * Mathf.Pow(2, _ghostCount - 1);
+        if (_ghostPrepearCount <= 1) _castDeley = _baseCastDelay;
+        else _castDeley = _baseCastDelay * Mathf.Pow(2, _ghostPrepearCount - 1);
     }
 
     private void TeleportToGhost(Character ghost)
@@ -473,7 +473,7 @@ public class Ghost : Skill
 
         _spawnComponent.CmdRemoveUnit(minion);
         _ghosts.Remove(ghost);
-        _ghostCount = _ghosts.Count;
+        _ghostPrepearCount = _ghosts.Count;
     }
 
     private IEnumerator DisableWayAfterTeleport(MoveComponent moveComponent, Vector3 targetPosition)

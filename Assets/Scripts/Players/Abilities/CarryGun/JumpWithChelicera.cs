@@ -39,7 +39,7 @@ public class JumpWithChelicera : Skill
     public void JumpWithCheliceraChanceDamageCrit(bool value) => isJumpWithCheliceraChanceDamageCrit = value;
 
     private void Start() => _animator = GetComponent<Animator>();
-    private void OnDestroy() => Canceled -= HandleJumpWithCheliceraEnd;
+    private void OnDisable() => Canceled -= HandleJumpWithCheliceraEnd;
     private void OnEnable() => Canceled += HandleJumpWithCheliceraEnd;
 
     protected override void ClearData()

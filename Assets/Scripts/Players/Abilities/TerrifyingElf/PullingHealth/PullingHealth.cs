@@ -70,7 +70,7 @@ public class PullingHealth : Skill
         _baseTickInterval = tickInterval;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         ghostSkill.Teleported -= OnGhostTeleport;
         OnSkillCanceled -= HandleSkillCanceled;

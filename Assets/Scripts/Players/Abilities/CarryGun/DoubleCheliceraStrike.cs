@@ -29,7 +29,7 @@ public class DoubleCheliceraStrike : Skill
         OnSkillCanceled += HandleSkillCanceled;
     }
 
-    private void OnDestroy() => OnSkillCanceled -= HandleSkillCanceled;
+    private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {

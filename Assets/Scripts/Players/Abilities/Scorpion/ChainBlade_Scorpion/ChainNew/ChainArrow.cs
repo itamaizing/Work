@@ -5,14 +5,14 @@ using System;
 
 public class ChainArrow : Projectiles
 {
-    [SerializeField] private LineRenderer lineRenderer;
-    [SerializeField] private float speed = 20f;
-    [SerializeField] private float speedModifier = 1.2f;
-    [SerializeField] private float speedWithTarget = 4f;
-    [SerializeField] private float stopDistance = 1.5f;
-    [SerializeField] private float arrowYOffset = 1.5f;
-    [SerializeField] private LayerMask targetsLayer;
-    [SerializeField] private Transform chainPoint;
+    [SerializeField] private LineRenderer _lineRenderer;
+    [SerializeField] private float _speed = 20f;
+    [SerializeField] private float _speedModifier = 1.2f;
+    [SerializeField] private float _speedWithTarget = 4f;
+    [SerializeField] private float _stopDistance = 1.5f;
+    [SerializeField] private float _arrowYOffset = 1.5f;
+    [SerializeField] private LayerMask _targetsLayer;
+    [SerializeField] private Transform _chainPoint;
 
     private Transform _playerTransform;
     private Vector3 _targetPoint;
@@ -57,8 +57,8 @@ public class ChainArrow : Projectiles
                 _rb.linearVelocity = Vector3.zero;
             }
 
-            if (lineRenderer != null)
-                lineRenderer.enabled = false;
+            if (_lineRenderer != null)
+                _lineRenderer.enabled = false;
         }
         catch { }
     }
@@ -66,12 +66,12 @@ public class ChainArrow : Projectiles
 
     public void InitArrow(Vector3 targetPoint, Transform playerTransform, float maxDistance, float damage)
     {
-        _targetPoint = targetPoint + Vector3.up * arrowYOffset;
+        _targetPoint = targetPoint + Vector3.up * _arrowYOffset;
         _playerTransform = playerTransform;
         _maxDistance = maxDistance;
         _damage = damage;
 
-        lineRenderer.positionCount = 2;
+        _lineRenderer.positionCount = 2;
         _startPoint = transform.position;
 
         _flyCoroutine = StartCoroutine(FlyCoroutine());
@@ -99,7 +99,7 @@ public class ChainArrow : Projectiles
     {
         Vector3 direction = (_targetPoint - transform.position).normalized;
         _rb.linearVelocity = Vector3.zero;
-        _rb.AddForce(direction * speed, ForceMode.VelocityChange);
+        _rb.AddForce(direction * _speed, ForceMode.VelocityChange);
 
         _flightTime = 0f;
         UpdateLine();
@@ -159,7 +159,7 @@ public class ChainArrow : Projectiles
         _rb.isKinematic = false;
         _rb.AddForce(dir * speed, ForceMode.VelocityChange);
 
-        while (Vector3.Distance(transform.position, _playerTransform.position + Vector3.up * arrowYOffset) > stopDistance)
+        while (Vector3.Distance(transform.position, _playerTransform.position + Vector3.up * _arrowYOffset) > _stopDistance)
         {
             UpdateLine();
             yield return null;
@@ -184,16 +184,16 @@ public class ChainArrow : Projectiles
             chain.Hero.Move.CanMove = false;
         }
 
-        Debug.Log($"StartReturn Speed: {speed}");
-        _returnCoroutine = StartCoroutine(ReturnCoroutine(speed));
+        Debug.Log($"StartReturn Speed: {_speed}");
+        _returnCoroutine = StartCoroutine(ReturnCoroutine(_speed));
     }
 
     private void UpdateLine()
     {
-        if (_playerTransform == null || chainPoint == null || lineRenderer == null) return;
+        if (_playerTransform == null || _chainPoint == null || _lineRenderer == null) return;
 
-        lineRenderer.SetPosition(0, _playerTransform.position + Vector3.up * arrowYOffset);
-        lineRenderer.SetPosition(1, chainPoint.position);
+        _lineRenderer.SetPosition(0, _playerTransform.position + Vector3.up * _arrowYOffset);
+        _lineRenderer.SetPosition(1, _chainPoint.position);
     }
 
     private void RotateArrow(Vector3 direction)

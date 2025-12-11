@@ -79,6 +79,8 @@ public class ScratchClaws : Skill
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
         ITargetable target = null;
+        _moveToTarget = true;
+        Damage = UnityEngine.Random.Range(1f, 4f);
 
         while (target == null && _moveToTarget)
         {
@@ -107,11 +109,10 @@ public class ScratchClaws : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (!CheckIsCanCast() && _moveToTarget) yield return null;
-
-        Hero.Move.LookAtPosition(_target.transform.position);
+        if (!CheckIsCanCast()) yield return null;
         Damage = UnityEngine.Random.Range(1f, 4f);
-        CmdApplyScratch(_target.gameObject);
+        Hero.Move.LookAtPosition(_target.transform.position);
+        if (!_moveToTarget) CmdApplyScratch(_target.gameObject);
 
         yield return null;
     }
@@ -121,7 +122,6 @@ public class ScratchClaws : Skill
     {
         _target = null;
         Damage = 0;
-        _moveToTarget = true;
         _setTarget = false;
     }
 
@@ -190,6 +190,11 @@ public class ScratchClaws : Skill
 
         Hero.Move.CanMove = true;
         _moveToTarget = false;
+
+        if (_target != null && Vector3.Distance(transform.position, target.transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle));
+        {
+            CmdApplyScratch(target.gameObject);
+        }
     }
     private Vector3 GetApproachPointNearEnemy(IDamageable enemy)
     {

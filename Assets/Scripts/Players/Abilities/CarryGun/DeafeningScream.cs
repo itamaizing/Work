@@ -18,7 +18,7 @@ public class DeafeningScream : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("DeafeningScreamAnimation");
 
-    private void OnDestroy() => Canceled -= HandleJumpEnd;
+    private void OnDisable() => Canceled -= HandleJumpEnd;
     private void OnEnable() => Canceled += HandleJumpEnd;
 
     private bool CheckCanCast()

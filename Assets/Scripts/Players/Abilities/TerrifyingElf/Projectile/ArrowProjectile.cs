@@ -30,6 +30,11 @@ public class ArrowProjectile : Projectiles
     }
     private void Update()
     {
+        ArrowStart();
+    }
+
+    private void ArrowStart()
+    {
         if (_startPosition != Vector3.zero)
         {
             float distanceTravelled = Vector3.Distance(_startPosition, transform.position);
