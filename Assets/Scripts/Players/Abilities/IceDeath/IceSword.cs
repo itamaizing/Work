@@ -19,6 +19,7 @@ public class IceSword : CloseCombatSkill
 
 	private int _hitInTheRow = 0;
 	private float _additionalDamage = 0;
+    [SerializeField] private float _maxAdditionalCost = 10f;
 	private Character _oldtarget;
 	//private Character _target;
 	private float _duration = 3;
@@ -174,30 +175,30 @@ public class IceSword : CloseCombatSkill
 	}
     protected override bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
     {
-        if (IsHaveResourceOnSkill)
+		if (!IsHaveResourceOnSkill)
+		{
+			return false;			// паттерн Guard Clause - избавляемся от лишней вложенности
+		}
+
+        _additionalDamage = 0;      // без этого, если способность тратит ровно 40 ресурса - используется доп урон, рассчитаный в прошлый раз
+
+        foreach (var skillCost in skillEnergyCosts)
         {
-            foreach (var skillCost in skillEnergyCosts)
-            {
-                var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
-                if (_energy.CurrentValue > 40)
-                {
-                    _additionalDamage = Mathf.Min(_energy.CurrentValue-40, 10);
-                    Debug.Log("Add damage" + _additionalDamage + " " + _energy.CurrentValue);
-                    resource.CmdUse(_additionalDamage);
-                }
-                resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
-				
+			var baseCost = skillCost.resourceCost;  // уже взяли skillCost, почему ниже маг. числа?
+
+            if (_energy.CurrentValue > baseCost)
+			{
+                _additionalDamage = Mathf.Min(_energy.CurrentValue-baseCost, _maxAdditionalCost);
+                //Debug.Log($"Add damage {_additionalDamage}, | currEnergy {_energy.CurrentValue} ");
+                _energy.CmdUse(_additionalDamage);
             }
-
-            if (startCooldown)
-                IncreaseSetCooldown(CooldownTime);
-
-            if (!_useChargesAsComboPart) TryUseCharge();
-            return true;
+            _energy.CmdUse(Buff.ManaCost.GetBuffedValue(baseCost));
         }
-        else
-        {
-            return false;
-        }
+
+        if (startCooldown)
+            IncreaseSetCooldown(CooldownTime);
+
+        if (!_useChargesAsComboPart) TryUseCharge();
+        return true;
     }
 }
