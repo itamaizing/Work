@@ -42,15 +42,15 @@ public class ChainBlade : Skill
 
     public float DamageRange => UnityEngine.Random.Range(_minDamage, _maxDamage);
     public PassiveCombo_Scorpion ComboCounter { get => _comboCounter; set => _comboCounter = value; }
-    private void OnDisable()
-    {
-        OnSkillCanceled -= HandleSkillCanceled;
-    }
+    //private void OnDisable()
+    //{
+    //    OnSkillCanceled -= HandleSkillCanceled;
+    //}
 
-    private void OnEnable()
-    {
-        OnSkillCanceled += HandleSkillCanceled;
-    }
+    //private void OnEnable()
+    //{
+    //    OnSkillCanceled += HandleSkillCanceled;
+    //}
 
     private void Start()
     {
@@ -73,7 +73,6 @@ public class ChainBlade : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         _targetPoint = targetInfo.Points[0];
-        Hero.Move.IsMoveBlocked = true;
     }
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
@@ -118,7 +117,6 @@ public class ChainBlade : Skill
 
     protected override IEnumerator CastJob()
     {
-        Hero.Move.StopMoveAndAnimationMove();
         CmdSpawnChainArrow(_targetPoint);
         yield return null;
     }
@@ -162,6 +160,7 @@ public class ChainBlade : Skill
 
     public void ChainBladeCast()
     {
+        Hero.Move.StopMoveAndAnimationMove();
         AnimStartCastCoroutine();
         Vector3 direction = _targetPoint - Hero.transform.position;
         direction.y = 0;
@@ -170,10 +169,14 @@ public class ChainBlade : Skill
             Hero.Move.LookAtPosition(_targetPoint);
     }
 
+    public void ChainBladeMoveBlock()
+    {
+        Hero.Move.IsMoveBlocked = true;
+    }
+
     public void ChainBladeCastEnd(bool handleArrowHit)
     {
         if (handleArrowHit) Hero.Move.IsMoveBlocked = false;
-        if (_chainArrowPrefab != null) _chainArrowPrefab.OnHitTarget -= HandleArrowHit;
         AnimCastEnded();
         ChainBladeDestroy();
     }
