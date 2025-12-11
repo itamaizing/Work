@@ -3,7 +3,7 @@ using System.Collections;
 using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-public class FlowOfLight : CloseCombatSkill
+public class FlowOfLight : Skill
 {
     [Header("Flow Light Settings")]
     [SerializeField] private float buffDuration = 18f;
@@ -21,8 +21,6 @@ public class FlowOfLight : CloseCombatSkill
     public event Action OnModeChange;
 
     private GameObject _activeEffect;
-    //private IDamageable _target;
-   // private Character _targetCharacter;
 
     private bool IsAllyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Allies");
     private bool IsEnemyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Enemy");
@@ -107,6 +105,22 @@ public class FlowOfLight : CloseCombatSkill
         if (stateComponent == null) return;
 
         if (!isLightMode && UnityEngine.Random.value <= 0.2f) CmdStateRestorationOrDestruction(stateComponent, States.Destruction, 12f);
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    {
+        while (GetTempTargetCharacter() == null)
+        {
+            if (GetMouseButton)
+            {
+                FindTarget();
+            }
+            yield return null;
+        }
+        SetTargetCharacter(GetTempTargetCharacter());
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.AddTarget(GetTargetCharacter());
+        targetDataSavedCallback(targetInfo);
     }
 
     protected override IEnumerator CastJob()
