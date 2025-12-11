@@ -461,52 +461,6 @@ public class CharacterState : NetworkBehaviour
 		RemoveStateLogic(stateName);
 	}
 
-	/*private void AddStateLogic(States state, float duration, float damageToExit, Schools school,
-		GameObject personWhoShooted, string skillName)
-	{
-		if (invinsible) return;
-
-		//Debug.Log(state);
-
-		if (CheckForState(state))
-		{
-			for (int i = 0; i < currentStates.Count; i++)
-			{
-				if (currentStates[i].State == state)
-				{
-					if (currentStates[i].CurrentStacksCount < currentStates[i].MaxStacksCount)
-					{
-						var canStack = currentStates[i].Stack(duration);
-						_stateIcons.ActivateIco(state, duration, 1, canStack);
-					}
-					else if (currentStates[i].MaxStacksCount == 0 || currentStates[i].CurrentStacksCount == currentStates[i].MaxStacksCount)
-					{
-						var canStack = currentStates[i].Stack(duration);
-						_stateIcons.ActivateIco(state, duration, 0, canStack);
-					}
-
-					break;
-				}
-			}
-		}
-		else
-		{
-			CreateState(enumToState[state], state, duration, damageToExit, personWhoShooted, skillName, false);
-
-			if (enumToState[state] is IDamageable damageableShield)
-			{
-				AddShield(damageableShield);
-			}
-
-			if (school != Schools.None)
-			{
-				var counterSpell = (AbilitySchoolDebuff)enumToState[state];
-				counterSpell.canceledSchoool = school;
-			}
-		}
-	}*/
-
-
 	public void AddStateLogic(States state, float duration, float damageToExit, Schools school, GameObject personWhoShooted, string skillName, bool isCanDodgeMagState = false)
 	{
 		if (invinsible) return;

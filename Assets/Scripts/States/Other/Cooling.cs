@@ -23,7 +23,8 @@ public class Cooling : AbstractCharacterState
 	{
 		//Debug.Log("Entering cooling State");
 		_characterState = character;
-
+		MaxStacksCount = 5;
+		CanStack = true;
 		if (damageToExit == 0)
 		{
 			_damageToExit = 10000;
@@ -72,6 +73,7 @@ public class Cooling : AbstractCharacterState
 		_duration = time;
 		_curSpeedDebuf += 0.05f;
 		_curAbilityDebuf += 0.1f;
+		CurrentStacksCount++;
 		//ability speed decrease
 		_characterState.Character.Move.ChangeMoveSpeed(1 - _curSpeedDebuf);
 		//_duration = _baseDuration;

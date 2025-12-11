@@ -451,12 +451,14 @@ public abstract class Skill : NetworkBehaviour
 
     public void SetTargetCharacter(Character character)
     {
-        _target = character;
+        if(character != null)
+            _target = character;
     }
 
 	public void SetTarget(ITargetable character)
 	{
-		_target = character;
+        if (character != null)
+            _target = character;
 	}
 
     public void ClearTempTarget()
@@ -904,7 +906,10 @@ public abstract class Skill : NetworkBehaviour
         _skillRender.StartPreview(Area, damage, TargetsLayers);
 
         if (_isAutoLineRender)
+        {
+            Debug.Log("Auto line " + this, this);
             _skillRender.DrawLine(CastLength, CastWidth, damage, TargetsLayers);
+        }
 
         if (_skillType == SkillType.Target)
         {
@@ -933,6 +938,8 @@ public abstract class Skill : NetworkBehaviour
         _skillRender.StopDynamicRadiusColor();
 
         _skillRender.StopPreview();
+        if(_dynamicRendererJob != null)
+            StopCoroutine(_dynamicRendererJob);
 
         if (_skillType == SkillType.Zone)
         {

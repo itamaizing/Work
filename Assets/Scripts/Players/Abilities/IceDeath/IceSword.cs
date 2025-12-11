@@ -1,6 +1,8 @@
 using Mirror;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -16,6 +18,7 @@ public class IceSword : Skill
 
 
 	private int _hitInTheRow = 0;
+	private float _additionalDamage = 0;
 	private Character _oldtarget;
 	//private Character _target;
 	private float _duration = 3;
@@ -110,14 +113,16 @@ public class IceSword : Skill
 
 	private void ApplyDamage()
 	{
-		float energyBonus = 0;
+		//Debug.Log("111111111111");
+		/*float energyBonus = 0;
 
-        if (_energy.CurrentValue > 40)
-			energyBonus = Mathf.Min(_energy.CurrentValue, 11);
+        if (_energy.CurrentValue >= 10)
+			energyBonus = Mathf.Min(_energy.CurrentValue, 10);*/
 		
-		_energy.CmdUse(energyBonus);
+		//_energy.CmdUse(energyBonus);
 
-		float totalDamage = _damage + energyBonus;
+		//float totalDamage = _damage + energyBonus;
+		float totalDamage = _damage + _additionalDamage;
 
 		Damage damage2 = new Damage
 		{
@@ -184,4 +189,32 @@ public class IceSword : Skill
 	{
 		AnimCastEnded();
 	}
+    protected override bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
+    {
+        if (IsHaveResourceOnSkill)
+        {
+            foreach (var skillCost in skillEnergyCosts)
+            {
+                var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+                if (_energy.CurrentValue > 40)
+                {
+                    _additionalDamage = Mathf.Min(_energy.CurrentValue-40, 10);
+                    Debug.Log("Add damage" + _additionalDamage + " " + _energy.CurrentValue);
+                    resource.CmdUse(_additionalDamage);
+                }
+                resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
+				
+            }
+
+            if (startCooldown)
+                IncreaseSetCooldown(CooldownTime);
+
+            if (!_useChargesAsComboPart) TryUseCharge();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

@@ -110,7 +110,7 @@ public class IceShadowObject : Projectiles
 		{
 			float duration = 2 + _energyDad / 20;
 
-			target.CharacterState.AddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
+			target.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
 			//GetComponent<Collider2D>().enabled = false;
 			//Destroy(gameObject);
 			if(_lastHit)
@@ -120,7 +120,7 @@ public class IceShadowObject : Projectiles
 				{
 					if (enemy.TryGetComponent<Character>(out var newTatget) && collision.gameObject != _dad.gameObject)
 					{
-						newTatget.CharacterState.AddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
+						newTatget.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
 					}
 				}
 			}

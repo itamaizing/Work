@@ -13,7 +13,8 @@ public class IcePuddleObject : Projectiles
 
 	[SerializeField] private DecalProjector decalProjector;
 	private float _timeToDestroy = 0;
-	private float _curEvade = 0;
+    private float _damageToExit = 30;
+    private float _curEvade = 0;
 	private bool _talentEvadeDadBoost = false;
 	private bool _talentFrostingFrozen = false;
 	private bool _iceDeathInIcePudleTalent = false;
@@ -62,7 +63,7 @@ public class IcePuddleObject : Projectiles
 			_targets[i].time -= Time.deltaTime;
 			if (_targets[i].time < 0 )
 			{
-				_targets[i].enemy.CharacterState.AddState(States.Frosting, _timeToDestroy, 0, _dad.gameObject, _skill.name);
+				_targets[i].enemy.CharacterState.AddState(States.Frosting, _timeToDestroy, _targets[i].enemy.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
 				_targets.Remove(_targets[i]);
 			}
 		}

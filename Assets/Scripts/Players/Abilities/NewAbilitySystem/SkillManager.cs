@@ -97,8 +97,8 @@ public class SkillManager : MonoBehaviour
             if (_lastCastResetCoroutine != null) StopCoroutine(_lastCastResetCoroutine);
             _lastCastResetCoroutine = StartCoroutine(CastWindowResetCoroutine(_castWindowId));
 
-            Debug.Log($"PreviewCastedSkill: {PreviewCastedSkill}");
-            Debug.Log($"LastCastedSkill: {LastCastedSkill}");
+            //Debug.Log($"PreviewCastedSkill: {PreviewCastedSkill}");
+            //Debug.Log($"LastCastedSkill: {LastCastedSkill}");
         }
     }
 

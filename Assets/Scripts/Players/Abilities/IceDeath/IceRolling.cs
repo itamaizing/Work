@@ -11,7 +11,7 @@ public class IceRolling : Skill
 	[SerializeField] private Character _playerLinks;
 	[SerializeField] private PhysicalAttack _physicalAttack;
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
-	[SerializeField] private float _jumprange = 5f;
+	[SerializeField] private float _jumprange = 2f;
 	[SerializeField] private float _durationOfJumpPerCell = 0.3f;
 	[SerializeField] private AudioClip _audioClip;
 	//[SerializeField] private LayerMask _groundLayer;
@@ -21,6 +21,8 @@ public class IceRolling : Skill
 
 	private AudioSource _audioSource;
 	private Vector3 _mousePos = Vector2.positiveInfinity;
+	private Vector3 _mousePos2 = Vector2.positiveInfinity;
+
 	//private Vector3 _jumpPos;
 	private Vector3 _lookDir;
 	private Energy _energy;
@@ -78,12 +80,12 @@ public class IceRolling : Skill
 	{
 		float range = _jumprange;
 		float energyCost = 1;
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 2; i++)
 		{
 			if (_energy.CurrentValue >= energyCost)
 			{
-				range += 0.2F;
-				energyCost += 1;
+				range += 1;
+				energyCost += 5;
 			}
 		}
 
@@ -233,14 +235,16 @@ public class IceRolling : Skill
 		}
 		else
 		{
-			for (int i = 0; i < 10; i++)
+			Debug.Log(Vector2.Distance(jumpPos, transform.position) + " Jump " + actualJumpRange);
+			//if(actualJumpRange)
+			for (int i = 0; i < 2; i++)
 			{
 				_jumpCount += 1f;
-				actualJumpRange += .2f;
+				actualJumpRange += 1;
 				Vector3 jumpPos2 = _lookDir * actualJumpRange + _playerLinks.transform.position;
 				if (_energy.CurrentValue >= 5 && !CheckObstacleBetween(_playerLinks.transform.position, jumpPos2, out stopPosition, out characterHit))
 				{
-					_energy.CmdUse(1);
+					_energy.CmdUse(5);
 					jumpPos = jumpPos2;
 					//Debug.Log("Additional jump " + i);
 				}
@@ -257,48 +261,56 @@ public class IceRolling : Skill
 		if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
 		{
 			ClearTarget();
-			//_target = null;
 			_mousePos = Vector3.positiveInfinity;
 			_lookDir = Vector3.zero;
-			//_jumpPos = Vector3.zero;
-		}
-		else
-		{
-			/*if(GetTarget().isCharater)
-				_target = GetTarget().character;
-			else*/
-			//_target = null;
-			_mousePos = GetTargetCharacter() != null ? GetTargetCharacter().transform.position : GetMousePoint();
 		}
 	}
 
 	public override void LoadTargetData(TargetInfo targetInfo)
 	{
-		if (targetInfo != null && targetInfo.GetTargets() != null && targetInfo.GetTargets().Count > 0) if (targetInfo.GetTargets()[0] is Character character) 
-				SetTarget(character);
-		else SetTarget(ClosedTarget());
+		if (targetInfo != null)
+		{
+			/*if (targetInfo.GetTargets() != null && targetInfo.GetTargets().Count > 0)
+			{
+				if (targetInfo.GetTargets()[0] is Character character)
+					SetTarget(character);
+				else SetTarget(ClosedTarget());
+			}*/
+			if(targetInfo.Points.Count > 0)
+			{
+				_mousePos = targetInfo.Points[0];
+				//targetInfo.Points.RemoveAt(0);
+			}
+		}
+		
 	}
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		while (float.IsPositiveInfinity(_mousePos.x))
+		while (float.IsPositiveInfinity(_mousePos2.x))
 		{
 			if (GetMouseButton)
 			{
 				FindTarget();
 				//_target = GetTarget().character;
-				_mousePos = GetTarget() != null ? GetTarget().Transform.position : GetMousePoint();
-			}
+				_mousePos2 = GetTarget() != null ? GetTarget().Transform.position : GetMousePoint();
+                
+            }
 			yield return null;
 		}
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(_mousePos2);
+        callbackDataSaved(targetInfo);
+		_mousePos = _mousePos2;
+		_mousePos2 = Vector3.positiveInfinity;
     }
 
 	protected override IEnumerator DynamicRendererJob(float time = 0.2f)
 	{
-		while (true)
+		while (IsPreparing)
 		{
-			yield return new WaitForSeconds(time);
 			_skillRender.SetSizeBox(1, GetJumpRange());
+			yield return new WaitForSeconds(time);
 		}
 	}
 
@@ -320,10 +332,10 @@ public class IceRolling : Skill
 			//_target = null;
 			_mousePos = Vector3.positiveInfinity;
 		}
-		else
+		/*else
 		{
 			_mousePos = GetMousePoint();
-		}
+		}*/
 		_isJump = false;
 		Hero.Move.StopLookAt();
 	}
