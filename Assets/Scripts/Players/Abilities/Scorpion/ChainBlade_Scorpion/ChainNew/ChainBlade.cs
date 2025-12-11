@@ -225,7 +225,7 @@ public class ChainBlade : Skill
 
         if (_needDestroyArrowAfterSpawn)
         {
-            ChainBladeCastEnd(true);
+            RpcResetChain();
             RpcDestroyChain(_chainArrowPrefab.gameObject);
             NetworkServer.Destroy(_chainArrowPrefab.gameObject);
             _chainArrowPrefab = null;
@@ -258,6 +258,15 @@ public class ChainBlade : Skill
     {
         if (arrowObj != null) Destroy(arrowObj);
     }
+
+    [ClientRpc]
+    private void RpcResetChain()
+    {
+        AnimCastEnded();
+        ChainBladeDestroy();
+        Hero.Move.IsMoveBlocked = false;
+    }
+
 
     [ClientRpc]
     private void RpcInitArrow(GameObject arrowObj, Vector3 targetPoint)
