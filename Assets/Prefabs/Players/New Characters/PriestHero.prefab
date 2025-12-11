@@ -5922,6 +5922,9 @@ PrefabInstance:
       addedObject: {fileID: 8152457869126807641}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 3668600976587566528}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 6520106245208843862}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
@@ -5971,9 +5974,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6447189447351944320}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3668600976587566528}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!1 &300637093874885484 stripped
 GameObject:
@@ -6873,6 +6873,30 @@ MonoBehaviour:
   character: {fileID: 4534754468497973439}
   stunMagicPassiveSkill: {fileID: 3842746931648952249}
   manager: {fileID: 4092227064955680494}
+--- !u!114 &3668600976587566528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d184fd576acf0641987b632b09189d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DarkTalent_11
+  _data:
+    _descriptionsForInfoPanel:
+    - Dark talent 1
+    _stateInfos: []
+    IsOpen: 0
+    Description: Dark Talent 1
+    Icon: {fileID: 21300000, guid: b0e188c000d602d4fb9e4faef638d8bc, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 4534754468497973439}
+  _darkPassiveSkill: {fileID: 7714812283473049481}
+  _manager: {fileID: 4092227064955680494}
 --- !u!114 &6520106245208843862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7415,27 +7439,3 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
---- !u!114 &3668600976587566528
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d184fd576acf0641987b632b09189d6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DarkTalent_11
-  _data:
-    _descriptionsForInfoPanel:
-    - Dark talent 1
-    _stateInfos: []
-    IsOpen: 0
-    Description: Dark Talent 1
-    Icon: {fileID: 21300000, guid: b0e188c000d602d4fb9e4faef638d8bc, type: 3}
-    Group: 0
-    Row: 0
-  character: {fileID: 4534754468497973439}
-  _darkPassiveSkill: {fileID: 7714812283473049481}
-  _manager: {fileID: 4092227064955680494}

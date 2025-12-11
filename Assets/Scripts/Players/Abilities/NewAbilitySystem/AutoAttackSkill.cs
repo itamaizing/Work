@@ -102,18 +102,21 @@ public abstract class AutoAttackSkill : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
-        while (Target == null)
+        while (GetTempTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
-             //   _target = GetRaycastTarget();
-
+                //   _target = GetRaycastTarget();
+                FindTarget();
                 if(GetTargetCharacter() != null)
 					GetTargetCharacter().SelectedCircle.IsActive = true;
 			}
             yield return null;
         }
-
+        SetTargetCharacter(GetTempTargetCharacter());
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.AddTarget(GetTargetCharacter());
+        targetDataSavedCallback(targetInfo);
 
         _hero.Move.LookAtTransform(Target.transform);
     }

@@ -10,12 +10,12 @@ public class DarkTalent_1 : Talent
     public override void Enter()
     {
         manager.ActivateSkill(stunMagicPassiveSkill);
-        stunMagicPassiveSkill.DamageDarkHealLightAddHealth(true, Data.DescriptionsForInfoPanel[0]);
+        //stunMagicPassiveSkill.DamageDarkHealLightAddHealth(true, Data.DescriptionsForInfoPanel[0]);
     }
 
     public override void Exit()
     {
         manager.DeactivateSkill(stunMagicPassiveSkill);
-        stunMagicPassiveSkill.DamageDarkHealLightAddHealth(false, Data.DescriptionsForInfoPanel[0]);
+        //stunMagicPassiveSkill.DamageDarkHealLightAddHealth(false, Data.DescriptionsForInfoPanel[0]);
     }
 }
