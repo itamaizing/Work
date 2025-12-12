@@ -9,6 +9,7 @@ public class FillAmountOverTime : MonoBehaviour
 {
     [SerializeField] private Image _image;
 
+    private ISkillForFillAmount _skill;
     private int _defaultFillOrigin;
     private float _currentTime;
     private float _duration;
@@ -20,7 +21,10 @@ public class FillAmountOverTime : MonoBehaviour
     {
         _defaultFillOrigin = _image.fillOrigin;
     }
-
+    public void Init(ISkillForFillAmount skill)
+    {
+        _skill = skill;
+    }
     public void Stop()
     {
         if(_fillJob != null)
@@ -31,7 +35,7 @@ public class FillAmountOverTime : MonoBehaviour
         }
     }
 
-    public void StartFill(float duration, float startValue = 0, float endValue = 1, bool addTime = true, Skill skill = null, float curretTime = 0, int type = -1)
+    public void StartFill(float duration, float startValue = 0, float endValue = 1, bool addTime = true, float curretTime = 0, int type = -1)
     {
         gameObject.SetActive(true);
 
@@ -64,20 +68,20 @@ public class FillAmountOverTime : MonoBehaviour
         {
             _duration = duration;
             gameObject.SetActive(true);
-            _fillJob = StartCoroutine(ChangeFillAmountOverTimeCoroutine(_duration, curretTime, startValue, endValue, skill));
+            _fillJob = StartCoroutine(ChangeFillAmountOverTimeCoroutine(_duration, curretTime, startValue, endValue));
         }
     }
 
-    IEnumerator ChangeFillAmountOverTimeCoroutine(float duration, float curretTime = 0, float startValue = 0, float endValue = 1, Skill skill = null)
+    IEnumerator ChangeFillAmountOverTimeCoroutine(float duration, float curretTime = 0, float startValue = 0, float endValue = 1)
     {
         float time = 0f;
-        bool isActiveSkill = skill != null && skill.RemainingCooldownTime > 0.01f;
+        bool isActiveSkill = _skill != null && _skill.RemainingCooldownTime > 0.01f;
 
         while (curretTime < duration)
         {
             if (isActiveSkill)
             {
-                time = startValue - duration / skill.CooldownTime;
+                time = startValue - duration / _skill.CooldownTime;
                 _image.fillAmount = Mathf.Lerp(startValue - time, endValue, curretTime / duration);
             }
 

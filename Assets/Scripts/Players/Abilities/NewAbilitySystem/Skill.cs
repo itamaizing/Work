@@ -77,7 +77,7 @@ public enum AutoAttack
     nonAutoAttack
 }
 
-public abstract class Skill : NetworkBehaviour
+public abstract class Skill : NetworkBehaviour, ISkillForFillAmount
 {
     [Header("Talent State")]
     [SerializeField] protected bool _isTalentSpell = false;
@@ -172,7 +172,7 @@ public abstract class Skill : NetworkBehaviour
     private Coroutine _assistCoroutine;
     private Queue<TargetInfo> _targetInfoQueue = new();
     private bool _isAutoMode;
-
+    public bool IsInCooldown => RemainingCooldownTime > 0f;
     public bool IsAutoMode
     {
         get
