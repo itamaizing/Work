@@ -32,7 +32,7 @@ public class ChainArrow : Projectiles
         if (_skill is ChainBlade chain)
         {
             chain.ChainBladeCastEnd(false);
-            //chain.Hero.Move.CanMove = true;
+            chain.Hero.Move.CanMove = true;
         }
     }
 
