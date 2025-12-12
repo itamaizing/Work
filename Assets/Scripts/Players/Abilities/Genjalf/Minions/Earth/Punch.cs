@@ -8,11 +8,11 @@ namespace Gangdollarff.EarthElemental
     public class Punch : Skill
     {
 
-        private Character _target;
+        //private Character _target;
 
         protected override int AnimTriggerCastDelay => 0;
         protected override int AnimTriggerCast => Animator.StringToHash("Attack01");
-        protected override bool IsCanCast => Vector3.Distance(_target.Position, transform.position) <= Radius;
+        protected override bool IsCanCast => Vector3.Distance(GetTargetCharacter().Position, transform.position) <= Radius;
 
         public void AnimCastPunch()
         {
@@ -26,12 +26,12 @@ namespace Gangdollarff.EarthElemental
 
         public override void LoadTargetData(TargetInfo targetInfo)
         {
-            _target = (Character)targetInfo.Targets[0];
+            SetTarget((Character)targetInfo.GetTargets()[0]);
         }
 
         protected override IEnumerator CastJob()
         {
-            Hero.Move.LookAtPosition(_target.Position);
+            Hero.Move.LookAtPosition(GetTargetCharacter().Position);
 
             Damage damage = new Damage
             {
@@ -42,14 +42,15 @@ namespace Gangdollarff.EarthElemental
                 Form = AbilityForm,
              };
 
-            CmdApplyDamage(damage, _target.gameObject);
+            CmdApplyDamage(damage, GetTargetCharacter().gameObject);
 
             yield return null;
         }
 
         protected override void ClearData()
         {
-            _target = null;
+            ClearTarget();
+            //_target = null;
         }
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
@@ -58,16 +59,17 @@ namespace Gangdollarff.EarthElemental
 
             TargetInfo targetInfo = new();
 
-            while (target == null)
+            while (GetTargetCharacter() == null)
             {
                 if (GetMouseButton)
+                    FindTargetCharacter();
                //     target = GetRaycastTarget();
 
                 yield return null;
             }
 
             Hero.Move.LookAtPosition(target.Position);
-            targetInfo.Targets.Add(target);
+            targetInfo.AddTarget(target);
             targetDataSavedCallback.Invoke(targetInfo);
             yield return null;
         }

@@ -13,7 +13,7 @@ public class IcyStream : Skill
 
 	private Vector3 _mousePos = Vector3.positiveInfinity;
 	private Energy _energy;
-	private Character _target = null;
+	//private Character _target = null;
 	//private RuneComponent _rune;
 
 	protected override bool IsCanCast => IsCanCastCheck();
@@ -24,9 +24,9 @@ public class IcyStream : Skill
 
     private bool IsCanCastCheck()
 	{
-		if(_target != null)
+		if(GetTargetCharacter() != null)
 		{
-			if(Vector3.Distance(_target.transform.position, _playerLinks.transform.position) > Radius)
+			if(Vector3.Distance(GetTargetCharacter().transform.position, _playerLinks.transform.position) > Radius)
 			{
 				return false;
 			}
@@ -128,7 +128,8 @@ public class IcyStream : Skill
 
 	protected override void ClearData()
 	{
-		_target = null;
+		ClearTarget();
+		//_target = null;
 		StartCoroutine(TurnOff());
 		//_projectile.gameObject.SetActive(false);
 		//_projectile.Init(_playerLinks, _energy.CurrentValue, _talent, this);

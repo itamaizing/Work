@@ -13,15 +13,15 @@ public class TestH2 : Skill
     [SerializeField] private int _projectileCount;
     [SerializeField] private float _spawnDeley;
 
-    private Character _target;
+    //private Character _target;
 	private Vector3 _targetPoint;
 
 	protected override bool IsCanCast
     {
         get
         {
-            if(_target != null)
-                return Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+            if(GetTargetCharacter() != null)
+                return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
 
             return false;
         }
@@ -34,7 +34,7 @@ public class TestH2 : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         _targetPoint = targetInfo.Points[0];
-        _target = (Character)targetInfo.Targets[0];
+        SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator CastJob()
@@ -45,7 +45,7 @@ public class TestH2 : Skill
             Type = DamageType,
             PhysicAttackType = AttackRangeType,
         };
-        CmdApplyDamage(damage, _target.gameObject);
+        CmdApplyDamage(damage, GetTargetCharacter().gameObject);
 
         var deley = new WaitForSeconds(_spawnDeley); ;
 
@@ -56,9 +56,9 @@ public class TestH2 : Skill
             float x = Mathf.Cos(angle);
             float y = Mathf.Sin(angle);
 
-            Vector3 point = new Vector3(x, y, 0) + _target.transform.position;
+            Vector3 point = new Vector3(x, y, 0) + GetTargetCharacter().transform.position;
 
-            CmdCreateProjecttile(point, _target.transform.position);
+            CmdCreateProjecttile(point, GetTargetCharacter().transform.position);
             yield return deley;
         }
         yield return null;
@@ -66,23 +66,26 @@ public class TestH2 : Skill
 
     protected override void ClearData()
     {
-        _target = null;
+        ClearTarget();
+        //_targetPoint = 
+        //_target = null;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (_target == null)
+        while (GetTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
-				_targetPoint = GetTarget().Position;
+                FindTargetCharacter();
+				_targetPoint = GetMousePoint();
 				//_target = GetRaycastTarget(true);
             }
             yield return null;
         }
         TargetInfo targetInfo = new();
         targetInfo.Points.Add(_targetPoint);
-        targetInfo.Targets.Add(_target);
+        targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }
 

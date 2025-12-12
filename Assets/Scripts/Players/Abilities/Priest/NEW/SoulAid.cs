@@ -12,7 +12,7 @@ public class SoulAid : Skill
     [SerializeField] private PriestShield _priestShield;
     [SerializeField] private Restoration _restoration;
     
-    private Character _target;
+    //private Character _target;
     private GameObject _tempTarget;
     private MoveComponent _tempTargetMove;
     
@@ -39,49 +39,51 @@ public class SoulAid : Skill
     {
         get
         {
-            var isTargetInRadius = IsTargetInRadius(_defaultRadius, _target.transform) || IsTargetHaveRestoration() && IsTargetInRadius(_largeRadius, _target.transform);
+            var isTargetInRadius = IsTargetInRadius(_defaultRadius, GetTargetCharacter().transform) || IsTargetHaveRestoration() && IsTargetInRadius(_largeRadius, GetTargetCharacter().transform);
             return isTargetInRadius && IsTargetHaveTiredSoul();
         }
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _target = (Character)targetInfo.Targets[0];
+        SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_target == null || _target == Hero || !IsCanCast) yield break;
+        if (GetTargetCharacter() == null || GetTargetCharacter() == Hero || !IsCanCast) yield break;
         
-        while (Vector2.Distance(transform.position, _target.transform.position) > 2.1f)
+        while (Vector2.Distance(transform.position, GetTargetCharacter().transform.position) > 2.1f)
         {
-            Vector2 direction = (transform.position - _target.transform.position).normalized;
+            Vector2 direction = (transform.position - GetTargetCharacter().transform.position).normalized;
             Vector2 pullForce = direction * (_speed * Time.fixedTime);
 
-            CmdPull(_target.gameObject, pullForce);
+            CmdPull(GetTargetCharacter().gameObject, pullForce);
             yield return new WaitForFixedUpdate();
         }
     }
 
     protected override void ClearData()
     {
-        _target = null;
+        ClearTarget();
+        //_target = null;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (_target == null)
+        while (GetTargetCharacter() == null)
         {
             Radius = _talentDoubleRange ? _largeRadius : _defaultRadius;
             
             if (GetMouseButton)
             {
+                FindTargetCharacter();
                // _target = GetRaycastTarget(_talentTiredSoulDispelActive);
             }
             yield return null;
         }
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Targets.Add(_target);
+        targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }
 
@@ -102,21 +104,21 @@ public class SoulAid : Skill
 
     private bool IsTargetHaveTiredSoul()
     {
-        return _target != null && _target.CharacterState.CheckForState(States.TiredSoul);
+        return GetTargetCharacter() != null && GetTargetCharacter().CharacterState.CheckForState(States.TiredSoul);
     }
 
     private bool IsTargetHaveRestoration()
     {
-        if (!_talentDoubleRange || _target == null || _restoration.Target == null) return false;
+        if (!_talentDoubleRange || GetTargetCharacter() == null || _restoration.Target == null) return false;
         
-        return _restoration.Target == _target;
+        return _restoration.Target == GetTargetCharacter();
     }
 
     private void DispelTiredSoul()
     {
         if(!IsTargetHaveTiredSoul()) return;
         
-        CmdRemoveBuff(States.TiredSoul, _target.gameObject); 
+        CmdRemoveBuff(States.TiredSoul, GetTargetCharacter().gameObject); 
     }
 
     private void ReduceCooldown()

@@ -2,6 +2,7 @@ using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -27,7 +28,7 @@ public class ExplosionPoisonCloud : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        foreach (var item in targetInfo.Targets)
+        foreach (var item in targetInfo.GetTargets())
         {
             _enemies.Add((Character)item);
         }
@@ -46,7 +47,9 @@ public class ExplosionPoisonCloud : Skill
             yield return null;
         }
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Targets.AddRange(_enemies);
+		List<ITargetable> listOfInterfaces = _enemies.Cast<ITargetable>().ToList();
+
+		targetInfo.AddTargets(listOfInterfaces);
         callbackDataSaved(targetInfo);
     }
 

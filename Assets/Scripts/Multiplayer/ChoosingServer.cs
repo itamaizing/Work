@@ -15,6 +15,7 @@ public class ChoosingServer : MonoBehaviour
         SetServer(0);
     }
 
+
     private void SetServer(int i)
     {
         switch (i)

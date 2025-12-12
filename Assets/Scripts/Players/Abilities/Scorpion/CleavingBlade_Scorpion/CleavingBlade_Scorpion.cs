@@ -14,21 +14,29 @@ public class CleavingBlade_Scorpion : Skill
     [SerializeField] private GameObject blade;
 
     [SyncVar] private int _counter = 1;
-    private IDamageable _target;
+    //private Character _target;
+    private Character _runtimeTarget;
 
     private bool isCleavingBlade_ScorpionSecondTalent;
 
     public float DamageRange => Random.Range(_minDamage, _maxDamage);
 
-    protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+    protected override bool IsCanCast => GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Cast Blade");
 
     private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
     private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
 
-    private void HandleSkillCanceled() => _target = null;
-    private void AttackPassed(Character target, bool shouldIncreaseCounter)
+    private void HandleSkillCanceled() => ClearTarget();
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        SetTarget((Character)targetInfo.GetTargets()[0]);
+        //if (_target is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+    }
+
+    private void AttackPassed(bool shouldIncreaseCounter, Character target)
     {
         _comboCounter.AddSkill(target, this);
 
@@ -50,8 +58,8 @@ public class CleavingBlade_Scorpion : Skill
         {
             _counter = _counter == 3 ? 1 : _counter + 1;
         }
-
-        _target = null;
+        ClearTarget();
+        //_target = null;
     }
 
     private void AttackMissed()
@@ -60,35 +68,30 @@ public class CleavingBlade_Scorpion : Skill
         _counter = 1;
         _comboCounter.ResetCounter();
 
-        _target = null;
-    }
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
-        if (_target is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+        //_target = null;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        ITargetable target = null;
-
-        while (target == null)
+        while (GetTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
-                if (GetRaycastTarget() is ITargetable targetable) target = targetable;
+                FindTargetCharacter();
+                //_target = GetRaycastTarget(true);
             }
 
             yield return null;
         }
 
-        TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Targets.Add(target);
-        callbackDataSaved.Invoke(targetInfo);
+        TargetInfo targetInfo = new();
+        targetInfo.AddTarget(GetTargetCharacter());
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
+        _runtimeTarget = GetTargetCharacter();
         TryAttack(true, 1f);
         yield return null;
     }

@@ -38,7 +38,7 @@ public class Silent : AbstractCharacterState
             HashSet<States> targetDebuffsFromCaster = new();
 
             foreach (var state in _characterState.CurrentStates) 
-                if (state.BaffDebaff == BaffDebaff.Debaff && state._personWhoMadeBuff == _personWhoMadeBuff) targetDebuffsFromCaster.Add(state.State);
+                if (state.BaffDebaff == BaffDebaff.Debaff && state.PersonWhoMadeBuff == _personWhoMadeBuff) targetDebuffsFromCaster.Add(state.State);
 
             if (targetDebuffsFromCaster.Count == 0) return;
 
@@ -52,7 +52,7 @@ public class Silent : AbstractCharacterState
 
                 foreach (var targetState in state.CurrentStates)
                 {
-                    if (targetState.BaffDebaff == BaffDebaff.Debaff && targetState._personWhoMadeBuff == _personWhoMadeBuff && targetDebuffsFromCaster.Contains(targetState.State))
+                    if (targetState.BaffDebaff == BaffDebaff.Debaff && targetState.PersonWhoMadeBuff == _personWhoMadeBuff && targetDebuffsFromCaster.Contains(targetState.State))
                     {
                         CmdStateSilent(target);
                         break;

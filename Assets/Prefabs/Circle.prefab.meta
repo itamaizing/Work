@@ -1,6 +1,12 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Prefabs/Circle.prefab.meta
 guid: 1cdb5e076f52f014a9f8a55d7c3ad8e4
 PrefabImporter:
+========
+guid: 8ac369e58354df046bbde1c6bd550644
+folderAsset: yes
+DefaultImporter:
+>>>>>>>> NokmanClearingProject:Assets/Prefabs/Attack/IceDeath.meta
   externalObjects: {}
   userData: 
   assetBundleName: 

@@ -41,8 +41,10 @@ public class Object : NetworkBehaviour, IDamageable, ITargetable
 
     public int IndexTeam { get => _indexTeam; set => _indexTeam = value; }
 
-    public Vector3 Position => throw new System.NotImplementedException();
-    public Transform Transform => throw new System.NotImplementedException();
+    public Vector3 Position => Transform.position;
+    public Transform Transform => transform;
+
+    public bool IsTargetable => !_isDeath;
 
     private void OnDestroy() => _objectHealth.OnDeath -= ServerOnDeath;
 

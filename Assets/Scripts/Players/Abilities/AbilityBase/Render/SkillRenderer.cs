@@ -190,7 +190,7 @@ public class SkillRenderer : NetworkBehaviour
 		}
 	}
 
-    #region ������ ��� ������������ ����� �� �����
+    #region preview 
     public void StopPreview()
     {
         if (_previewDamageCoroutine != null)
@@ -219,7 +219,7 @@ public class SkillRenderer : NetworkBehaviour
 
             foreach (var collider in colliders)
             {
-                if (collider.TryGetComponent(out Health hp))
+                if (collider.TryGetComponent(out Health hp) && collider.transform != transform.parent)
                 {
                     current.Add(hp);
                     hp.ShowPhantomValue(damage);
@@ -534,6 +534,7 @@ public class SkillRenderer : NetworkBehaviour
     {
         _boxLength = length;
         _boxWidth = width;
+        //Debug.Log(_boxLength + " Test");
         _lineStartImage = Instantiate(line.Start, transform);
 		_lineStartImage.SetSize(_boxWidth, _boxLength, damage);
 		//  _lineEndImage = Instantiate(line.End, transform);
@@ -543,10 +544,8 @@ public class SkillRenderer : NetworkBehaviour
 
         while (true)
         {
+            //Debug.Log(_boxLength + " Test");
             RotateAtMouse(_lineStartImage.transform);
-            //RotateAtMouse(_lineEndImage.transform);
-
-			//_lineStartImage.SetSize(width, length, damage);
 			_lineStartImage.SetSize(_boxWidth, _boxLength, damage);
 			//_lineEndImage.SetSize(width, length, damage);
 		//	_lineEndImage.SetSize(_boxWidth, _boxLength, damage);

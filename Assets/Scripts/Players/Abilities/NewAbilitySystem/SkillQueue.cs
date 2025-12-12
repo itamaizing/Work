@@ -14,6 +14,7 @@ public class SkillQueue : MonoBehaviour
     public bool IsBusy { get => _currentSkill != null; }
     public bool IsEmpty { get => _skills.Count == 0; }
     public Skill CurrentSkill { get => _currentSkill; }
+    public Queue<Skill> Skills => _skills;
 
     public event Action<Skill> SkillAdded;
     public event Action<Skill> SkillDeleted;
@@ -23,7 +24,7 @@ public class SkillQueue : MonoBehaviour
     {
         if (IsBusy)
             return;
-
+        
         if (_skills.TryPeek(out Skill skill))
         {
             if (skill.SkillType == SkillType.Zone)
@@ -32,7 +33,7 @@ public class SkillQueue : MonoBehaviour
             if (skill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
                 {
                     _targetInfo = targetInfo;
-                    foreach (var item in _targetInfo.Targets)
+                    foreach (var item in _targetInfo.GetTargets())
                     {
                         if (item is Character character)
                         {
@@ -48,8 +49,8 @@ public class SkillQueue : MonoBehaviour
 
                 if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo infoTarget))
                 {
-                    _targetInfo = infoTarget;
-                    foreach (var item in _targetInfo.Targets)
+                    _targetInfo = targetInfo;
+                    foreach (var item in _targetInfo.GetTargets())
                     {
                         if (item is Character character)
                         {
@@ -84,6 +85,9 @@ public class SkillQueue : MonoBehaviour
 
 
                 if (_currentSkill.TargetInfoQueue != null && _currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
+
+                _targetInfo = targetInfo;
+                foreach (var item in _targetInfo.GetTargets())
                 {
                     _targetInfo = targetInfo;
                     foreach (var item in _targetInfo.Targets)
@@ -98,7 +102,7 @@ public class SkillQueue : MonoBehaviour
 
             catch (Exception ex)
             {
-                Debug.LogWarning($"[TryCancel] Ошибка отмены скилла: {ex}");
+                Debug.LogWarning($"[TryCancel] пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ: {ex}");
             }
 
             return true;
@@ -112,7 +116,7 @@ public class SkillQueue : MonoBehaviour
             {
                 var temp = queuedSkill.TargetInfoQueue.Dequeue();
 
-                foreach (var item in temp.Targets)
+                foreach (var item in temp.GetTargets())
                 {
                     if (item is Character character)
                     {
@@ -166,7 +170,7 @@ public class SkillQueue : MonoBehaviour
         if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
         {
             _targetInfo = targetInfo;
-            foreach (var item in _targetInfo.Targets) if (item is Character character) character.SelectedCircle.SwitchSelectCircle(false);
+            foreach (var item in _targetInfo.GetTargets()) if (item is Character character) character.SelectedCircle.SwitchSelectCircle(false);
         }
 
         _currentSkill = null;
@@ -174,7 +178,7 @@ public class SkillQueue : MonoBehaviour
 
     private static void ToggleSelectCircles(TargetInfo info, bool isOn)
     {
-        if (info?.Targets == null) return;
-        foreach (var target in info.Targets) if (target is Character character && character?.SelectedCircle != null) character.SelectedCircle.SwitchSelectCircle(isOn);
+        if (info?.GetTargets() == null) return;
+        foreach (var target in info.GetTargets()) if (target is Character character && character?.SelectedCircle != null) character.SelectedCircle.SwitchSelectCircle(isOn);
     }
 }

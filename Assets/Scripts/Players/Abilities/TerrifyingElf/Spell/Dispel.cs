@@ -5,22 +5,23 @@ using UnityEngine;
 
 public class Dispel : Skill
 {
-    private Character _target;
-        private Vector3 _targetPoint = Vector3.positiveInfinity;
+    //private Character _target;
+    private Vector3 _targetPoint = Vector3.positiveInfinity;
 
-    protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+    protected override bool IsCanCast => GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("Dispel");
     protected override int AnimTriggerCast => 0;
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (float.IsPositiveInfinity(_targetPoint.x) && _target == null)
+        while (float.IsPositiveInfinity(_targetPoint.x) && GetTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
                 _targetPoint = GetMousePoint();
-                _target = GetNearestTargetInRadius();
+                FindTargetCharacter();
+                //_target = GetNearestTargetInRadius();
             }
             yield return null;
         }
@@ -32,11 +33,11 @@ public class Dispel : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_target == null) yield break;
+        if (GetTargetCharacter() == null) yield break;
 
-        if (_target is MinionComponent minionTarget) ApplyDamageToMinion(minionTarget);
+        if (GetTargetCharacter() is MinionComponent minionTarget) ApplyDamageToMinion(minionTarget);
 
-        var targetCharacter = _target.GetComponent<CharacterState>();
+        var targetCharacter = GetTargetCharacter().GetComponent<CharacterState>();
         if (targetCharacter != null)
         {
             //CmdDispelState(targetCharacter, _target.NetworkSettings.TeamIndex, Hero.NetworkSettings.TeamIndex);
@@ -48,7 +49,8 @@ public class Dispel : Skill
 
     protected override void ClearData()
     {
-        _target = null;
+        ClearTarget();
+        //_target = null;
     }
 
     private void ApplyDamageToMinion(MinionComponent minionTarget)

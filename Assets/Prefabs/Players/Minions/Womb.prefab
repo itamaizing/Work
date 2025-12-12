@@ -6691,7 +6691,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 957029788643859764}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0dd0cb78ed16a4748be0e767e28e738c, type: 3}
+  m_Script: {fileID: 11500000, guid: 498f77212bffb6c45a575c0894f1e85d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncDirection: 0
@@ -16895,6 +16895,7 @@ GameObject:
   - component: {fileID: 8756364439207115647}
   - component: {fileID: 3543592199279037076}
   - component: {fileID: 7099943676139532891}
+  - component: {fileID: 4697272463135853912}
   - component: {fileID: 321651727084008340}
   - component: {fileID: 7790970521576675334}
   - component: {fileID: 102178938915016677}
@@ -16907,12 +16908,12 @@ GameObject:
   - component: {fileID: 7046688650934260390}
   - component: {fileID: 2786580149324115967}
   - component: {fileID: 2267743082958508268}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Womb
   m_TagString: Allies
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &2707143735750808927
 Transform:
@@ -16998,11 +16999,11 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 1
-  m_Interpolate: 1
-  m_Constraints: 126
-  m_CollisionDetection: 1
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
 --- !u!114 &3314035097489473229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17143,9 +17144,10 @@ MonoBehaviour:
   _spawnComponent: {fileID: 7099943676139532891}
   _visionComponent: {fileID: 430165030280571863}
   _auras: {fileID: 0}
+  _targetSeeker: {fileID: 0}
   _characterParent: {fileID: 0}
   _expForDieKill: 5
-  _navMeshAgent: {fileID: 0}
+  _navMeshAgent: {fileID: 4697272463135853912}
 --- !u!114 &8102436864039870552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17208,7 +17210,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _stateIcons: {fileID: 848616324900679658}
-  stateEffects: {fileID: 3186035349475421007}
+  _stateEffects: {fileID: 0}
   invinsible: 0
 --- !u!114 &3186035349475421007
 MonoBehaviour:
@@ -17234,8 +17236,6 @@ MonoBehaviour:
   manaRegen: {fileID: 0}
   ropeTrap: {fileID: 0}
   trapPrefab: {fileID: 0}
-  spiritHealthEffect: {fileID: 0}
-  spiritEnergyEffect: {fileID: 0}
   materialsCharacter:
   - {fileID: 2100000, guid: acfa2dc1ef192cb4391aecaaff8e192f, type: 2}
   weapon: {fileID: 0}
@@ -17368,6 +17368,28 @@ MonoBehaviour:
   - {fileID: 6271332717105215193, guid: 8ff2c2f4f50e6834ebff05e5a40c88be, type: 3}
   _enemyPrefabs: []
   _allyPrefabs: []
+--- !u!195 &4697272463135853912
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3906734254346883187}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.35
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 300
+  m_StoppingDistance: 1
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!114 &321651727084008340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17396,8 +17418,6 @@ MonoBehaviour:
   CanMoveState: 0
   IsMoving: 0
   IsSelect: 0
-  IsNoRotateAtCursor: 1
-  _agent: {fileID: 0}
 --- !u!114 &7790970521576675334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17639,7 +17659,6 @@ MonoBehaviour:
   minionMove: {fileID: 321651727084008340}
   minion: {fileID: 6271332717105215193}
   tentacle: {fileID: 0}
-  maxSpawn: 4
 --- !u!65 &7046688650934260390
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -38841,7 +38860,6 @@ MonoBehaviour:
   _shieldBar: {fileID: 4788200924867193125}
   _bar: {fileID: 5787471954614534251}
   _barMinus: {fileID: 1786516621749211883}
-  _barMinusPrewiew: {fileID: 0}
   _barPlus: {fileID: 1293073687236213584}
   _timeToDisapear: 0.2
   _disapearSpeed: 0.5
@@ -44018,7 +44036,6 @@ MonoBehaviour:
   _shieldBar: {fileID: 0}
   _bar: {fileID: 3980644699831919488}
   _barMinus: {fileID: 4252179331609357489}
-  _barMinusPrewiew: {fileID: 0}
   _barPlus: {fileID: 0}
   _timeToDisapear: 0.2
   _disapearSpeed: 0.5
@@ -45969,7 +45986,6 @@ MonoBehaviour:
   _shieldBar: {fileID: 0}
   _bar: {fileID: 9144032259530104016}
   _barMinus: {fileID: 1190094139937472337}
-  _barMinusPrewiew: {fileID: 0}
   _barPlus: {fileID: 4807780307234132665}
   _timeToDisapear: 0.2
   _disapearSpeed: 0.5

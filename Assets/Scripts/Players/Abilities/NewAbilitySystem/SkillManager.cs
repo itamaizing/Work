@@ -16,7 +16,7 @@ public class SkillManager : MonoBehaviour
 
     private Skill[] _selectedSkills = new Skill[16];
     private List<AutoAttackSkill> _autoAttackSkills = new List<AutoAttackSkill>();
-    private List<AutoSkill> _autoSkills = new List<AutoSkill>();
+    //private List<AutoSkill> _autoSkills = new List<AutoSkill>();
     private List<Skill> _simpleSkills = new List<Skill>();
     private float _globalCooldownTime = .5f;
     private SkillQueue _skillQueue;
@@ -26,6 +26,7 @@ public class SkillManager : MonoBehaviour
     private Skill _selectedSkill;
     private Coroutine _lastCastResetCoroutine;
     private int _castWindowId = 0;
+    private int _countBonusCharges = 0;
 
     private Dictionary<Skill, Action> _castEndedHandlers = new();
 
@@ -97,8 +98,8 @@ public class SkillManager : MonoBehaviour
             if (_lastCastResetCoroutine != null) StopCoroutine(_lastCastResetCoroutine);
             _lastCastResetCoroutine = StartCoroutine(CastWindowResetCoroutine(_castWindowId));
 
-            Debug.Log($"PreviewCastedSkill: {PreviewCastedSkill}");
-            Debug.Log($"LastCastedSkill: {LastCastedSkill}");
+            //Debug.Log($"PreviewCastedSkill: {PreviewCastedSkill}");
+            //Debug.Log($"LastCastedSkill: {LastCastedSkill}");
         }
     }
 
@@ -193,8 +194,9 @@ public class SkillManager : MonoBehaviour
                 break;
             }
         }
+        TalentSkillAdd(skill);
 
-        skill.IsSkillActive = true;
+		skill.IsSkillActive = true;
         SkillAdded?.Invoke(skill);
     }
 
@@ -431,6 +433,37 @@ public class SkillManager : MonoBehaviour
         }
     }
 
+    private void TalentSkillAdd(Skill skill)
+    {
+        if (_countBonusCharges > 0)
+        {
+            if (skill.IsUseCharges)
+            {
+                _countBonusCharges--;
+                skill.AddMaxChargeCount();
+            }
+        }
+    }
+
+    public void TalentAddCharges(int countBonusCharges)
+    {
+        _countBonusCharges = countBonusCharges;
+    }
+
+    public void SwitchAvaliable(Schools school, bool value)
+    {
+        if (school == Schools.Physical)
+            return;
+        foreach (var item in _skills)
+        {
+            if (item.School == school)
+            {
+                item.Disactive = !value;
+                //item.KnockDownTimerStart(coolDown);
+            }
+        }
+    }
+
     #region legacycode
     private void OnDestroy()
     {
@@ -438,28 +471,7 @@ public class SkillManager : MonoBehaviour
         AbilitiesManager.Instance.RemovePanel(_abilityPanel);
         */
     }
-    public void AddAbility(Ability ability)
-    {
-        /*
-        _abilities.Add(ability);
-        if (AbilitiesManager.Instance == null) return;
 
-        AbilitiesManager.Instance.RemovePanel(_abilityPanel);
-        _abilityPanel = AbilitiesManager.Instance.AddPanel(this);
-        _abilityPanel.gameObject.SetActive(true);
-        */
-    }
-    public void RemoveAbility(Ability ability)
-    {
-        /*
-        _abilities.Remove(ability);
-        if (AbilitiesManager.Instance == null) return;
-
-        AbilitiesManager.Instance.RemovePanel(_abilityPanel);
-        _abilityPanel = AbilitiesManager.Instance.AddPanel(this);
-        _abilityPanel.gameObject.SetActive(true);
-        */
-    }
     public void SetAbilitiesPanelSelect(bool isSelect)
     {
         /*
@@ -484,21 +496,7 @@ public class SkillManager : MonoBehaviour
         foreach (Skill skill in Abilities) if (skill.AbilityForm == AbilityForm.Physical) skill.Disactive = state;
     }
 
-    public void SwitchAvaliable(Schools school, bool value)
-    {
-        /*
-        if (school == Schools.Physical)
-            return;
-        foreach (var item in _abilities)
-        {
-            if (item.School == school)
-            {
-                item.SwitchAvailible(value);
-                //item.KnockDownTimerStart(coolDown);
-            }
-        }
-        */
-    }
+   
 
     public void SwitchAvaliable(AbilityForm form, bool value)
     {

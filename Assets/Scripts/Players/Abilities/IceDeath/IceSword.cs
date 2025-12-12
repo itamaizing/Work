@@ -1,10 +1,12 @@
 using Mirror;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class IceSword : Skill
+public class IceSword : CloseCombatSkill
 {
 	[SerializeField] private float _damage = 15f;
 	//[SerializeField] private GameObject _basePlayer;
@@ -16,8 +18,10 @@ public class IceSword : Skill
 
 
 	private int _hitInTheRow = 0;
+	private float _additionalDamage = 0;
+    [SerializeField] private float _maxAdditionalCost = 10f;
 	private Character _oldtarget;
-	private Character _target;
+	//private Character _target;
 	private float _duration = 3;
 	private Energy _energy;
 	private Coroutine coroutineSwordTime;
@@ -31,9 +35,9 @@ public class IceSword : Skill
 
 	private bool IsCanCastCheck()
 	{
-		if (_target == null) return false;
+		if (GetTargetCharacter() == null) return false;
 
-		if (Vector3.Distance(_target.transform.position, transform.position) > Radius)
+		if (Vector3.Distance(GetTargetCharacter().transform.position, transform.position) > Radius)
 		{
 			return false;
 		}
@@ -59,37 +63,20 @@ public class IceSword : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _target = (Character)targetInfo.Targets[0];
+        SetTarget((Character)targetInfo.GetTargets()[0]);
     }
-
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-	{
-		while (_target == null)
-		{
-			if (GetMouseButton)
-			{
-				//_target = GetRaycastTarget();
-			}
-			yield return null;
-		}
-		TargetInfo targetInfo = new TargetInfo();
-		targetInfo.Targets.Add(_target);
-		callbackDataSaved(targetInfo);
-	}
 
 	protected override IEnumerator CastJob()
 	{
-		_seriesOfStrikes.MakeHit(_target, AbilityForm.Magic, 0, 10, 0);
-		if (_target == _oldtarget)
+		_seriesOfStrikes.MakeHit(GetTargetCharacter(), AbilityForm.Magic, 0, 10, 0);
+		if (GetTargetCharacter() == _oldtarget)
 		{
 			_hitInTheRow++;
-			Debug.Log("hit from sword in a row");
 		}
 		else
 		{
 			_hitInTheRow = 1;
-			_oldtarget = _target;
-			Debug.Log("first hit from sword");
+			_oldtarget = GetTargetCharacter();
 		}
 		if (_hitInTheRow > 2)
 		{
@@ -97,21 +84,29 @@ public class IceSword : Skill
 			_hitInTheRow = 0;
 		}
 		ApplyDamage();
-		CmdAdd(_target.gameObject);
+		CmdAdd(GetTargetCharacter().gameObject);
 		yield return null;
 	}
 
 	protected override void ClearData()
 	{
-		_target = null;
+		ClearTarget();
+		ClearTempTarget();
+		//_target = null;
 	}
 
 	private void ApplyDamage()
 	{
-		float energyBonus = Mathf.Min(_energy.CurrentValue, 10);
-		_energy.CmdUse(energyBonus);
+		//Debug.Log("111111111111");
+		/*float energyBonus = 0;
 
-		float totalDamage = _damage + energyBonus;
+        if (_energy.CurrentValue >= 10)
+			energyBonus = Mathf.Min(_energy.CurrentValue, 10);*/
+		
+		//_energy.CmdUse(energyBonus);
+
+		//float totalDamage = _damage + energyBonus;
+		float totalDamage = _damage + _additionalDamage;
 
 		Damage damage2 = new Damage
 		{
@@ -119,13 +114,14 @@ public class IceSword : Skill
 			Type = DamageType.Physical,
 			PhysicAttackType = AttackRangeType.RangeAttack,
 		};
+		Debug.Log("Damage " + totalDamage);
 
-		if (_critDmg && _target.CharacterState.CheckForState(States.Frozen))
+		if (_critDmg && GetTargetCharacter().CharacterState.CheckForState(States.Frozen))
 		{
 			damage2.Value *= (Random.Range(0, 100) < 15) ? 1.8f : 1.1f;
 		}
 
-		CmdApplyDamage(damage2, _target.gameObject);
+		CmdApplyDamage(damage2, GetTargetCharacter().gameObject);
 
 		_energy.SumDamageMake(damage2.Value);
 		_rune.SumDamageMake(damage2.Value);
@@ -177,4 +173,32 @@ public class IceSword : Skill
 	{
 		AnimCastEnded();
 	}
+    protected override bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
+    {
+		if (!IsHaveResourceOnSkill)
+		{
+			return false;			// паттерн Guard Clause - избавляемся от лишней вложенности
+		}
+
+        _additionalDamage = 0;      // без этого, если способность тратит ровно 40 ресурса - используется доп урон, рассчитаный в прошлый раз
+
+        foreach (var skillCost in skillEnergyCosts)
+        {
+			var baseCost = skillCost.resourceCost;  // уже взяли skillCost, почему ниже маг. числа?
+
+            if (_energy.CurrentValue > baseCost)
+			{
+                _additionalDamage = Mathf.Min(_energy.CurrentValue-baseCost, _maxAdditionalCost);
+                //Debug.Log($"Add damage {_additionalDamage}, | currEnergy {_energy.CurrentValue} ");
+                _energy.CmdUse(_additionalDamage);
+            }
+            _energy.CmdUse(Buff.ManaCost.GetBuffedValue(baseCost));
+        }
+
+        if (startCooldown)
+            IncreaseSetCooldown(CooldownTime);
+
+        if (!_useChargesAsComboPart) TryUseCharge();
+        return true;
+    }
 }

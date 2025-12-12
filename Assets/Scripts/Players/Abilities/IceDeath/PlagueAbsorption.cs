@@ -11,7 +11,7 @@ public class PlagueAbsorption : Skill
 	[SerializeField] private HeroComponent _playerLinks;
 
 	private Plague _plagueEnemy;
-	private Character _target;
+	//private Character _target;
 	private int _charges = 0;
 	//private Energy _energy;
 	//private RuneComponent _rune;
@@ -25,33 +25,11 @@ public class PlagueAbsorption : Skill
 
     private bool IsCanCastCheck()
 	{
-		if(_target == null) return false;
+		if(GetTargetCharacter() == null) return false;
 		return true;
-		/*if (_rune.CurrentValue >= 1)
-		{
-			_rune.CmdUse(1);
-			return true;
-		}
-		else
-		{
-			return false;
-		}*/
-	}
-	/*private void Start()
-	{
-		for (int i = 0; i < _playerLinks.Resources.Count; i++)
-		{
-			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)_playerLinks.Resources[i];
-			}
-			if (_playerLinks.Resources[i].Type == ResourceType.Rune)
-			{
-				_rune = (RuneComponent)_playerLinks.Resources[i];
-			}
-		}
 
-	}*/
+	}
+
 	[Command]
 	public void CmdUseCharge(int value)
 	{
@@ -63,10 +41,11 @@ public class PlagueAbsorption : Skill
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		while (_target == null && _charges <= 0)
+		while (GetTargetCharacter() == null && _charges <= 0)
 		{
 			if (GetMouseButton)
 			{
+				FindTargetCharacter();
 				//Debug.Log("CHECK FOR TEst@@");
 				//_target = GetRaycastTarget();
 			}
@@ -77,13 +56,14 @@ public class PlagueAbsorption : Skill
 
 	protected override IEnumerator CastJob()
 	{
-		Absorption(_target.gameObject);
+		Absorption(GetTargetCharacter().gameObject);
 		yield return null;
 	}
 
 	protected override void ClearData()
 	{
-		_target = null;
+		ClearTarget();
+		//_target = null;
 	}
 
 	[Command]

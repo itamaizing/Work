@@ -36,16 +36,8 @@ public class IceShadow : Skill
     private bool IsCanCastCheck()
 	{
 		return true;
-		/*if (_rune.CurrentValue >= 1)
-		{
-			_rune.CmdUse(1);
-			return true;
-		}
-		else
-		{
-			return false;
-		}*/
 	}
+
 	private void Start()
 	{
 		_audioSource = GetComponent<AudioSource>();
@@ -56,10 +48,6 @@ public class IceShadow : Skill
 			{
 				_energy = (Energy)_playerLinks.Resources[i];
 			}
-			/*if (_playerLinks.Resources[i].Type == ResourceType.Rune)
-			{
-				_rune = (RuneComponent)_playerLinks.Resources[i];
-			}*/
 		}
 
 	}
@@ -76,14 +64,14 @@ public class IceShadow : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
 		if (targetInfo == null) return;
-		if (targetInfo.Targets.Contains(Hero)) return;
-		targetInfo.Targets.Add(Hero);
+		if (targetInfo.GetTargets().Contains(Hero)) return;
+		targetInfo.AddTarget(Hero);
 	}
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
 		TargetInfo targetInfo = new TargetInfo();
-		targetInfo.Targets.Add(Hero);
+		targetInfo.AddTarget(Hero);
 		callbackDataSaved(targetInfo);
 		yield return null;
 	}

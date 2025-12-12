@@ -34,7 +34,7 @@ public class CreeperStrike : Skill
     [SerializeField] private float _multiplyCritDamage = 1.5f;
     [SerializeField ]private float _chanceOfCriticalStrike = 0.05f;
 
-    private Character _target;
+    //private Character _target;
     private Character _lastTarget;
 
     private int _currentCountHit = 0;
@@ -49,6 +49,8 @@ public class CreeperStrike : Skill
 
     private bool _isTwoHit = false;
     private bool _isHit = false;
+
+
 
     private Character _lastTargetFirst = null;
     private Character _lastTargetSecond = null;
@@ -86,42 +88,42 @@ public class CreeperStrike : Skill
         TargetInfo info = new TargetInfo();
 
 
-        while (_target == null)
+        while (GetTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
-                //_target = GetRaycastTarget();
-                if (_target != null)
+                FindTargetCharacter();
+              /*  if (_target != null)
                 {
                     _target.SelectedCircle.IsActive = true;
                     _hero.Move.LookAtTransform(_target.transform);
                     break;
-                }
+                }*/
             }
             yield return null;
         }
 
 
-        info.Targets.Add(_target);
-        info.Points.Add(_target.transform.position);
+        info.AddTarget(GetTargetCharacter());
+        info.Points.Add(GetTargetCharacter().transform.position);
         callbackDataSaved?.Invoke(info);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius)
+        if (GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius)
         {
             _hero.Move.StopLookAt();
-            DamageDeal(_target);
+            DamageDeal(GetTargetCharacter());
         }
-        _target = null;
+        ClearTarget();
         yield return null;
     }
 
-    public void SetTarget(Character target)
+    /*public void SetTarget(Character target)
     {
-        _target = target;
-    }
+       // _target = target;
+    }*/
 
     public void ClearDataCreeperStrike()
     {
@@ -436,7 +438,7 @@ public class CreeperStrike : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo?.Targets?.Count > 0) _target = targetInfo.Targets[0] as Character;
+        if (targetInfo?.GetTargets()?.Count > 0) SetTarget(targetInfo.GetTargets()[0] as Character);
     }
 
     #region Talents
@@ -448,7 +450,7 @@ public class CreeperStrike : Skill
 
     protected override void ClearData()
     {
-        _target = null;
+        ClearTarget();
         _hero.Move.StopLookAt();
     }
 

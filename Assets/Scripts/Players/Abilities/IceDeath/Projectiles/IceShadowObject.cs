@@ -9,7 +9,7 @@ public class IceShadowObject : Projectiles
 	//[HideInInspector] public EnergyPlayer energyPlayer;
 	[HideInInspector] public float timeToDestroy = 2;
 
-	[SerializeField] private bool enemyShadow;
+	[SerializeField] private bool enemyShadow = true;
 	[SerializeField] private Animator anim;
 
 	private Health _healthPlayer;
@@ -22,7 +22,7 @@ public class IceShadowObject : Projectiles
 	 * timer to destroy
 	 * buff player
 	 * */
-	public override void Init(HeroComponent dad, float energy, bool lastHit, Skill skill)
+	public override void Init(Character dad, float energy, bool lastHit, Skill skill)
 	{
 		_skill = skill;
 		_dad = dad;
@@ -105,11 +105,12 @@ public class IceShadowObject : Projectiles
 		{
 			//attact speed increase
 		}*/
-		if (collision.TryGetComponent<Character>(out var target) && enemyShadow)
+		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
+			//&& enemyShadow)
 		{
 			float duration = 2 + _energyDad / 20;
 
-			target.CharacterState.AddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
+			target.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
 			//GetComponent<Collider2D>().enabled = false;
 			//Destroy(gameObject);
 			if(_lastHit)
@@ -119,7 +120,7 @@ public class IceShadowObject : Projectiles
 				{
 					if (enemy.TryGetComponent<Character>(out var newTatget) && collision.gameObject != _dad.gameObject)
 					{
-						newTatget.CharacterState.AddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
+						newTatget.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
 					}
 				}
 			}

@@ -20,8 +20,8 @@ public class FlashOfLight : Skill
 
     private bool _spiritEnergyTalent;
 
-    private IDamageable _target;
-    private Character _previousTarget;
+    //private IDamageable _target;
+    //private Character _previousTarget;
 
     private AudioSource _audioSource;
     private bool _isCooldownTalentActive = false;
@@ -36,11 +36,11 @@ public class FlashOfLight : Skill
 
     private bool IsCanCastCheck()
     {
-        if (_target == null) return false;
+        if (GetTargetCharacter() == null) return false;
 
-        if (isLightMode) return (_target is Character character && character == Hero) || _target.gameObject.layer == LayerMask.NameToLayer("Allies");
+        if (isLightMode) return (GetTargetCharacter() is Character character && character == Hero) || GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Allies");
         else
-            return _target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+            return GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Enemy");
     }
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("Spell");
@@ -56,7 +56,7 @@ public class FlashOfLight : Skill
     }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _target = (Character)targetInfo.Targets[0];
+        SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 
     private void OnEnable()
@@ -104,28 +104,30 @@ public class FlashOfLight : Skill
     }
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        _previousTarget = null;
+       // _previousTarget = null;
 
-        while (_target == null)
+        while (GetTempTargetCharacter() == null)
         {
             if (Input.GetMouseButton(0))
             {
-                _target = GetRaycastTarget(true);
+                FindTargetCharacter(true);
+                //_target = GetRaycastTarget(true);
 
-                if (_target != null && _target is Character characte && IsValidTarget(characte)) _previousTarget = characte;
-                else _target = null;
+                if (GetTempTargetCharacter() != null && GetTempTargetCharacter() is Character characte && IsValidTarget(characte)) SetTarget(characte);
+                else ClearTarget();
 
             }
             yield return null;
         }
-        TargetInfo targetInfo = new();
-        targetInfo.Targets.Add(_previousTarget);
+        SetTargetCharacter(GetTempTargetCharacter());
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_previousTarget == null || !IsCanCast) yield break;
+        if (GetTargetCharacter() == null || !IsCanCast) yield break;
 
         if (TryPayCost())
         {
@@ -152,12 +154,12 @@ public class FlashOfLight : Skill
             _lastTalentTime = Time.time;
         }
 
-        Heal(_previousTarget);
+        Heal(GetTargetCharacter());
     }
 
     private void HandleFlashOfDarkness()
     {
-        Damage(_previousTarget);
+        Damage(GetTargetCharacter());
     }
 
     private void Heal(Character target)
@@ -231,6 +233,7 @@ public class FlashOfLight : Skill
 
     protected override void ClearData()
     {
-        _target = null;
+        ClearTarget();
+        //_target = null;
     }
 }

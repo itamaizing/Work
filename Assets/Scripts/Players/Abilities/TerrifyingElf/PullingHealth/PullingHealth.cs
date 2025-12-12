@@ -93,7 +93,7 @@ public class PullingHealth : Skill
     }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
+        if (targetInfo.GetTargets().Count > 0) _target = targetInfo.GetTargets()[0] as IDamageable;
 
         if (_target is Character character)
         {
@@ -110,12 +110,12 @@ public class PullingHealth : Skill
 
         while (target == null)
         {
-            if (GetMouseButton) if (GetRaycastTarget() is ITargetable targetable) target = targetable;
+            //if (GetMouseButton) if (GetRaycastTarget() is ITargetable targetable) target = targetable;
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Targets.Add(target);
+        targetInfo.AddTarget(target);
         callbackDataSaved(targetInfo);
     }
 

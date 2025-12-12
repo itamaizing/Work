@@ -10,9 +10,9 @@ public class SneakySpit : Skill
     [SerializeField] private float duration = 2f;
     [SerializeField] private float durationWindowsBoost = 2f;
 
-    private Character _target;
+    //private Character _target;
+   // private Character _runtimeTarget;
     private Character _attacker;
-    private Character _runtimeTarget;
     private Coroutine _boostWindow;
     private NetworkIdentity identity;
 
@@ -23,12 +23,13 @@ public class SneakySpit : Skill
 
     protected override void SkillEnableBoostLogic()
     {
-        _runtimeTarget = _target;
+        //_runtimeTarget = _target;
         Disactive = false;
     }
     protected override void SkillDisableBoostLogic()
     {
-        _runtimeTarget = null;
+        ClearTarget();
+        //_runtimeTarget = null;
         Disactive = true;
     }
 
@@ -48,19 +49,19 @@ public class SneakySpit : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo?.Targets?.Count > 0)
+        if (targetInfo?.GetTargets()?.Count > 0)
         {
-            _target = targetInfo.Targets[0] as Character;
-            if (_target != null) Hero.Move.LookAtTransform(_target.transform);
+            SetTarget(targetInfo.GetTargets()[0] as Character);
+            if (GetTargetCharacter() != null) Hero.Move.LookAtTransform(GetTargetCharacter().transform);
         }
         _isCanCancle = false;
     }
 
     private bool CheckCanCast()
     {
-        return _target != null &&
-        Vector3.Distance(_target.transform.position, transform.position) <= Radius &&
-        NoObstacles(_target.transform.position, transform.position, _obstacle);
+        return GetTargetCharacter() != null &&
+        Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius &&
+        NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
     }
 
     private void OnHeroEvade()
@@ -76,10 +77,10 @@ public class SneakySpit : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (Disactive && _target == null) yield return null;
-
+        while (Disactive && GetTargetCharacter() == null) yield return null;
+        FindTargetCharacter();
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Targets.Add(_runtimeTarget);
+        targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }
 
@@ -91,7 +92,7 @@ public class SneakySpit : Skill
 
     private IEnumerator SneakySpitBoostWindow(Character target)
     {
-        _target = target;
+        SetTarget(target);
         if (_boostWindow != null) StopCoroutine(_boostWindow);
         EnableSkillBoost();
         yield return new WaitForSeconds(durationWindowsBoost);
@@ -101,14 +102,15 @@ public class SneakySpit : Skill
 
     protected override void ClearData()
     {
-        _target = null;
+        ClearTarget();
+        //_target = null;
     }
 
     public void ApplyStateAndDamage()
     {
-        if (_runtimeTarget != null)
+        if (GetTargetCharacter() != null)
         {
-            CmdAddState(_runtimeTarget);
+            CmdAddState(GetTargetCharacter());
 
             Damage damage = new Damage
             {
@@ -117,7 +119,7 @@ public class SneakySpit : Skill
                 Type = DamageType,
             };
 
-            CmdApplyDamage(damage, _runtimeTarget.gameObject);
+            CmdApplyDamage(damage, GetTargetCharacter().gameObject);
             ClearData();
         }
     }

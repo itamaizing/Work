@@ -17,18 +17,18 @@ public class Punch_Scorpion : AutoAttackSkill
 
     protected override void CastAction()
     {
-        if (_lastTarget != null && _lastTarget != _target) //�����
+        if (_lastTarget != null && _lastTarget != GetTargetCharacter()) //�����
         {
             _comboCounter.ResetCounter();
         }
         Debug.Log(transform.position);
-        Debug.Log(_target.transform.position);
+        Debug.Log(GetTargetCharacter().transform.position);
 
         //Vector3 closestEnemyPoint = _target.gameObject.GetComponent<CircleCollider2D>().ClosestPoint(transform.position);
         //Vector3 closestMyPoint = transform.parent.parent.GetComponent<CircleCollider2D>().ClosestPoint(_target.transform.position);
 
 
-        if (Vector2.Distance(LastTargetPosition, _target.transform.position) <= 2f)
+        if (Vector2.Distance(LastTargetPosition, GetTargetCharacter().transform.position) <= 2f)
         {
             Debug.Log("����������� ����������");
 
@@ -38,10 +38,10 @@ public class Punch_Scorpion : AutoAttackSkill
                 Type = DamageType,
             };
 
-            CmdAttack(damage, _target.gameObject);
+            CmdAttack(damage, GetTargetCharacter().gameObject);
         }
         else Debug.LogWarning("������� ������");
-        _lastTarget = _target;
+        _lastTarget = GetTargetCharacter();
 
     }
     private void AttackPassed(Character target)

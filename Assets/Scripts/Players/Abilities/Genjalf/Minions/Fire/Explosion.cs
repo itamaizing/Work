@@ -8,7 +8,7 @@ public class Explosion : Skill
 {
     [SerializeField] private ParticleSystem _particlePref;
 
-    private Character _target;
+    //private Character _target;
 
     protected override bool IsCanCast { get => CheckCanCast(); }
 
@@ -19,19 +19,19 @@ public class Explosion : Skill
     private bool CheckCanCast()
     {
         return
-               Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+               Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _target = (Character)targetInfo.Targets[0];
+        SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_target != null)
+        if (GetTargetCharacter() != null)
         {
-            int stacks = _target.CharacterState.GetState(States.Burning).CurrentStacksCount;
+            int stacks = GetTargetCharacter().CharacterState.GetState(States.Burning).CurrentStacksCount;
 
             Damage damage = new Damage
             {
@@ -39,32 +39,34 @@ public class Explosion : Skill
                 Type = DamageType,
                 PhysicAttackType = AttackRangeType,
             };
-            CmdApplyDamage(damage, _target.gameObject);
+            CmdApplyDamage(damage, GetTargetCharacter().gameObject);
 
-            CmdCreateParticle(_target.Position);
+            CmdCreateParticle(GetTargetCharacter().Position);
         }
         yield return null;
     }
 
     protected override void ClearData()
     {
-        _target = null;
+        ClearTarget();
+        //_target = null;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (_target == null)
+        while (GetTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
+                FindTargetCharacter();
                 //_target = GetRaycastTarget();
             }
             yield return null;
         }
 
-        targetInfo.Targets.Add(_target);
+        targetInfo.GetTargets().Add(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }
 

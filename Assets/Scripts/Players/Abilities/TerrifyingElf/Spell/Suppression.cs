@@ -7,10 +7,10 @@ public class Suppression : Skill
 {
     [SerializeField] private Character _playerLinks;
     [SerializeField] private float duration;
-    private Character _target;
+    //private Character _target;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
 
-    protected override bool IsCanCast => IsHaveCharge && _target != null;
+    protected override bool IsCanCast => IsHaveCharge && GetTargetCharacter() != null;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
 
@@ -20,27 +20,28 @@ public class Suppression : Skill
     {
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && _target == null && !_disactive)
+        while (float.IsPositiveInfinity(_targetPoint.x) && GetTargetCharacter() == null && !_disactive)
         {
             if (GetMouseButton)
             {
                 _targetPoint = GetMousePoint();
+                FindTargetCharacter();
                 //_target = GetRaycastTarget(true);
-                if (multiMagic != null) multiMagic.LastTarget = _target;
+                if (multiMagic != null) multiMagic.LastTarget = GetTargetCharacter();
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Targets.Add(_target);
+        targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_target != null)
+        if (GetTargetCharacter() != null)
         {
-            CmdApplyAbsorptionState(_target.gameObject);
+            CmdApplyAbsorptionState(GetTargetCharacter().gameObject);
 
             var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
@@ -62,7 +63,8 @@ public class Suppression : Skill
     protected override void ClearData()
     {
         _targetPoint = Vector3.positiveInfinity;
-        _target = null;
+        ClearTarget();
+        //_target = null;
     }
 
     [Command]
@@ -77,6 +79,6 @@ public class Suppression : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as Character;
+        if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0] as Character);
     }
 }

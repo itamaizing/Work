@@ -24,15 +24,15 @@ public class Kick_Scorpion : Skill
     private Coroutine _hitsInRowCoroutine;
     private Animator _animator;
 
-    private IDamageable _lastTarget = null;
-    private IDamageable _target;
+    //private Character _target;
+    private Character _runtimeTarget;
 
     private static readonly int KickTrigger = Animator.StringToHash("KickAA");
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => KickTrigger;
 
-    protected override bool IsCanCast => _target != null && Vector3.Distance(_target.transform.position, transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle);
+    protected override bool IsCanCast => GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius && NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
 
     public float DamageRange => UnityEngine.Random.Range(_minDamage, _maxDamage);
 
@@ -42,7 +42,8 @@ public class Kick_Scorpion : Skill
 
     private void HandleSkillCanceled()
     {
-        _target = null;
+        ClearTarget();
+        //_target = null;
         Hero.Move.StopLookAt();
         _hero.Move.CanMove = true;
     }
@@ -51,7 +52,7 @@ public class Kick_Scorpion : Skill
     {
         if (_hero == null || _hero.Move == null) return;
 
-        var target = _target != null ? _target : _lastTarget;
+        var target = GetTargetCharacter() != null ? GetTargetCharacter() : _lastTarget;
         if (target == null)
         {
             _hero.Move.StopLookAt();
@@ -71,7 +72,7 @@ public class Kick_Scorpion : Skill
             return;
         }
 
-        _hero.Move.LookAtPosition(_target.transform.position);
+        _hero.Move.LookAtPosition(GetTargetCharacter().transform.position);
     }
 
     public void Kick_ScorpionMoveTrue()
@@ -82,7 +83,7 @@ public class Kick_Scorpion : Skill
 
     private bool IsTargetInRange()
     {
-        return Vector3.Distance(_playerLinks.transform.position, _target.transform.position) <= Radius;
+        return Vector3.Distance(_playerLinks.transform.position, GetTargetCharacter().transform.position) <= Radius;
     }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -93,29 +94,35 @@ public class Kick_Scorpion : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        ITargetable target = null;
 
-        while (target == null)
+        while (GetTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
-                if (GetRaycastTarget() is ITargetable targetable) target = targetable;
+                //_target = GetRaycastTarget();
+                FindTargetCharacter();
+                if (GetTargetCharacter() != null)
+					GetTargetCharacter().SelectedCircle.IsActive = true;
             }
 
             yield return null;
         }
 
+        _hero.Move.LookAtTransform(GetTargetCharacter().transform);
+
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Targets.Add(target);
-        callbackDataSaved.Invoke(targetInfo);
+        targetInfo.Points.Add(GetTargetCharacter().transform.position);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_target == null) yield return null;
+        if (GetTargetCharacter() == null) yield return null;
         if (!IsTargetInRange()) yield return null;
 
-        if (_lastTarget != null && _lastTarget != _target)
+        _runtimeTarget = GetTargetCharacter();
+
+        if (_lastTarget != null && _lastTarget != GetTargetCharacter())
             _comboCounter?.ResetCounter();
 
         if (_hitsInRowCoroutine != null)
@@ -242,6 +249,12 @@ public class Kick_Scorpion : Skill
     {
         AnimCastEnded();
     }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
+    }
+
     protected override void ClearData()
     {
         _target = null;

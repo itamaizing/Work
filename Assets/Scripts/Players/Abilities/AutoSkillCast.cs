@@ -20,7 +20,8 @@ public class AutoSkillCast
     {
         _currentSkill = skill;
         _targetInfo = new();
-        _targetInfo.Targets = new(targetInfo.Targets);
+     //   _targetInfo._targets = new(targetInfo._targets);
+        _targetInfo.AddTargets(targetInfo.GetTargets());
         _targetInfo.Points = new(targetInfo.Points);
         _tryCastCoroutine = _parentForCoroutine.StartCoroutine(TryCastJob());
 
@@ -75,9 +76,9 @@ public class AutoSkillCast
             _currentSkill.SkillRender.StopDrawAutoAttackRadius();
         }
 
-        if (_targetInfo?.Targets != null)
+        if (_targetInfo?.GetTargets() != null)
         {
-            foreach (var item in _targetInfo.Targets)
+            foreach (var item in _targetInfo.GetTargets())
             {
                 if (item is Character character && character?.SelectedCircle != null)
                 {
@@ -90,7 +91,7 @@ public class AutoSkillCast
 
     private IEnumerator TryCastJob()
     {
-        foreach (var item in _targetInfo.Targets)
+        foreach (var item in _targetInfo.GetTargets())
         {
             if (item is Character character)
             {
@@ -100,10 +101,13 @@ public class AutoSkillCast
 
         while (true)
         {
-            if (_targetInfo.Targets.Count > 0 && _targetInfo.Targets[0] is Character character)
+            if (_targetInfo.GetTargets().Count > 0 )
             {
-                _currentSkill.Hero.Move.LookAtTransform(character.transform);
-                _currentSkill.Hero.Move.IsLookAtCursor = false;
+                if (_targetInfo.GetTargets()[0] is Character character)
+                {
+                    _currentSkill.Hero.Move.LookAtTransform(character.transform);
+                    _currentSkill.Hero.Move.IsLookAtCursor = false;
+                }
             }
             else if (_targetInfo.Points.Count > 0)
             {

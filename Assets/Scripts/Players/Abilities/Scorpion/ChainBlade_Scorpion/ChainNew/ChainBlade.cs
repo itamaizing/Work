@@ -74,6 +74,7 @@ public class ChainBlade : Skill
     {
         _targetPoint = targetInfo.Points[0];
     }
+    
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         Vector3 targetPoint = Vector3.positiveInfinity;
@@ -82,8 +83,20 @@ public class ChainBlade : Skill
         {
             if (GetMouseButton)
             {
-                if (GetRaycastTarget() is Character character) targetPoint = character.transform.position;
-                else targetPoint = GetMousePoint();
+                if (GetTargetCharacter() != null)
+                {
+                    float distance = Vector3.Distance(_hero.transform.position, _clickPoint);
+
+                    if (distance <= Radius) _clickPoint = GetTargetCharacter().transform.position;
+
+                    else
+                    {
+                        //_target = GetTarget().character;
+                        _clickPoint = GetTargetCharacter().transform.position;
+                    }
+                }
+
+                else _clickPoint = GetMousePoint();
             }
 
             yield return null;
@@ -155,7 +168,10 @@ public class ChainBlade : Skill
 
     protected override void ClearData()
     {
-        _targetPoint = Vector3.positiveInfinity;
+        _clickPoint = Vector3.positiveInfinity;
+
+        ClearTarget();
+        //_target = null;
     }
 
     public void ChainBladeCast()

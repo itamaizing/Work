@@ -40,11 +40,11 @@ public class ReversePolarity : Skill
 
     private void OnDisable()
     {
-        
+
     }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        Debug.LogError("DataError");
+        //Debug.LogError("DataError");
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -54,48 +54,48 @@ public class ReversePolarity : Skill
 
     protected override IEnumerator CastJob()
     {
-    if (Hero == null || Hero.CharacterState == null || !IsCanCast) yield break;
+        if (Hero == null || Hero.CharacterState == null || !IsCanCast) yield break;
 
-    if (!TryPayCost()) yield break;
+        //if (!TryPayCost()) yield break;
 
-    CmdPlayShootSound();
+        CmdPlayShootSound();
 
-    //yield return new WaitForSeconds(CastDeley);
+        //yield return new WaitForSeconds(CastDeley);
 
-    SwitchSpells();
+        SwitchSpells();
 
-    if (Hero.CharacterState.CheckForState(States.ReversePolarity))
-    {
-        RemoveReversePolarityEffect();
-    }
-    else
-    {
-       ApplyReversePolarityEffect();
-    }
+        if (Hero.CharacterState.CheckForState(States.ReversePolarity))
+        {
+            RemoveReversePolarityEffect();
+        }
+        else
+        {
+            ApplyReversePolarityEffect();
+        }
     }
 
     private void ApplyReversePolarityEffect()
     {
-    CmdAddBaff(States.ReversePolarity, -1f, 0, transform.gameObject, Name);
+        CmdAddBaff(States.ReversePolarity, -1f, 0, transform.gameObject, Name);
     }
 
     public void RemoveReversePolarityEffect()
     {
-    CmdRemoveBuff(States.ReversePolarity, Hero.gameObject);
+        CmdRemoveBuff(States.ReversePolarity, Hero.gameObject);
     }
 
     [Command]
     private void CmdAddBaff(States darkState, float duration, float damagePerTick, GameObject target, string skillName)
     {
-    var characterState = target.GetComponent<CharacterState>();
-    characterState.AddState(darkState, duration, damagePerTick, target, skillName);
+        var characterState = target.GetComponent<CharacterState>();
+        characterState.AddState(darkState, duration, damagePerTick, target, skillName);
     }
 
     [Command]
     private void CmdRemoveBuff(States state, GameObject target)
     {
-    var characterState = target.GetComponent<CharacterState>();
-    characterState.RemoveState(state);
+        var characterState = target.GetComponent<CharacterState>();
+        characterState.RemoveState(state);
     }
 
     [Command]
@@ -112,11 +112,11 @@ public class ReversePolarity : Skill
 
     public void SwitchSpells()
     {
-    sparkOfLight.SwitchMode();
-    flashOfLight.SwitchMode();
-    restoration.SwitchMode();
-    flowOfLight.SwitchMode();
-    //priestShield.SwitchMode();
+        sparkOfLight.SwitchMode();
+        flashOfLight.SwitchMode();
+        restoration.SwitchMode();
+        flowOfLight.SwitchMode();
+        //priestShield.SwitchMode();
     }
 
     protected override void ClearData()

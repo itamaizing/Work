@@ -46,10 +46,12 @@ public class SeriesOfStrikes : MonoBehaviour
 		}
 
 	}
+
 	private void Update()
 	{
 		Timer();
 	}
+
 	public float GetMultipliedSpeed()
 	{
 		if (!_seriesCompliteCompoTalent) return 1f;
@@ -64,107 +66,16 @@ public class SeriesOfStrikes : MonoBehaviour
 		}
 		return _speedMultiplier * Mathf.Pow(2, maxCount);
 	}
+
 	public bool MakeHit(Character target, AbilityForm form, float usedRuneValue, float usedEnergy, float damage)
 	{
+		if (_iceRuneTalent) BonusRuneForDamage(damage);
+		CheckCurse(target, damage);
+
 		if (!_seriesCompliteCompoTalent) return false;
 		_energy.ChangeBarColor(new Color(255, 165, 0));
 
-		if (target != null)
-		{
-			//target.CharacterState.personWhoShoted = _player;
-		}
-		CheckCurse(target, damage);
-		if (_iceRuneTalent) BonusRuneForDamage(damage);
-		//float usedEnergy = 0;
-		for(int i=0; i< _seriesOfStrikes.Count; i++)
-		{
-			if(form == _seriesOfStrikes[i].formList[_seriesOfStrikes[i].hitCount] && (target == _curTarget || target == null))
-			{
-				_isInTheRow = true;
-				_curTarget = target;
-				_seriesOfStrikes[i].usedRune += usedRuneValue;
-				_seriesOfStrikes[i].usedEnergy += usedEnergy;
-				_seriesOfStrikes[i].hitCount++;
-				_timer = _baseTimer;
-
-				Debug.Log("Hit from " + _seriesOfStrikes[i] + " #" + _seriesOfStrikes[i].hitCount + usedEnergy);
-
-				if (_seriesOfStrikes[i].hitCount >= _seriesOfStrikes[i].formList.Count)
-				{
-					LastHit(_seriesOfStrikes[i].usedRune, _seriesOfStrikes[i].usedEnergy);
-					return true;
-				}
-			}
-			else
-			{
-				_isInTheRow = true;
-				_seriesOfStrikes[i].Reset(usedRuneValue);
-				_timer = _baseTimer;
-				_curTarget = target;
-			}
-		}
-		return false;
-		/*if (_hitCount1 < _formList.Count) 
-		{ 
-			if (form == _formList[_hitCount1] && (target == _curTarget || target == null))
-			{
-				//Debug.Log("HIT COUNT1 " + _hitCount1);
-				//_list1 = true;
-				_isInTheRow = true;
-				_curTarget = target;
-				_usedRunesValue1 += usedRuneValue;
-				_usedEnergy1 += usedEnergy;
-				_hitCount1++;
-				_timer = _baseTimer;
-
-			}
-			else
-			{
-				_energy.ResetUsedEnergy();
-				_isInTheRow = true;
-				_hitCount1 = 0;
-				_usedRunesValue1 = usedRuneValue;
-				_usedEnergy1 = usedEnergy;
-				_curTarget = target;
-				_timer = _baseTimer;
-			}
-		}
-		if (_hitCount2 < _formList2.Count)
-		{
-			if (form == _formList2[_hitCount2] && ( target == _curTarget || target == null))
-			{
-				//_list2 = true;
-				_isInTheRow = true;
-				_curTarget = target;
-				_usedRunesValue2 += usedRuneValue;
-				_usedEnergy2 += usedEnergy;
-				_hitCount2++;
-				Debug.Log("HIT COUNT2 " + _hitCount2);
-				_timer = _baseTimer;
-			}
-			else
-			{
-				_energy.ResetUsedEnergy();
-				_isInTheRow = true;
-				_hitCount2 = 0;
-				_usedRunesValue2 = usedRuneValue;
-				_usedEnergy2 = usedEnergy;
-				_curTarget = target;
-				_timer = _baseTimer;
-			}
-		}
-		if(_hitCount1 >=6)
-		{
-			LastHit(_usedRunesValue1, _usedEnergy1);
-			return true;
-		}
-		if(_hitCount2 >= 6)
-		{
-			
-			LastHit(_usedRunesValue2, _usedEnergy2);
-			return true;
-		}
-		return false;*/
+		return SeriesHit(target, form, usedRuneValue, usedEnergy, damage);
 	}
 
 	public void Timer()
@@ -178,7 +89,7 @@ public class SeriesOfStrikes : MonoBehaviour
 			{
 				_energy.ChangeBarColor(Color.cyan);
 				_curTarget = null;
-				Debug.Log("lose streak");
+				//Debug.Log("lose streak");
 				_timer = _baseTimer;
 				_isInTheRow = false;
 
@@ -189,11 +100,15 @@ public class SeriesOfStrikes : MonoBehaviour
 
 	private void LastHit(float usedRune, float usedEnergy)
 	{
-		if (_seriesCompliteCompoTalent) _rune.CmdAdd(usedRune * 2 + 1);
-		_energy.CmdAdd(usedEnergy * 0.4f);
-		_energy.ForceRegenNow();
-
+		//Debug.Log("Last hit");
+		if (_seriesCompliteCompoTalent)
+		{
+			_rune.CmdAdd(usedRune * 2 + 1);
+			_energy.CmdAdd(usedEnergy * 0.4f);
+			_energy.ForceRegenNow();
+		}
 		for (int i = 0; i < _seriesOfStrikes.Count; i++) _seriesOfStrikes[i].Reset();
+		
 	}
 
 	private void BonusRuneForDamage(float damage)
@@ -233,6 +148,39 @@ public class SeriesOfStrikes : MonoBehaviour
 			var heal = new Heal { Value = damage * 0.2f };
 			_playerLinks.Health.Heal(ref heal,name);
 		}
+	}
+
+	private bool SeriesHit(Character target, AbilityForm form, float usedRuneValue, float usedEnergy, float damage)
+	{
+		if (!_seriesCompliteCompoTalent) return false;
+		for (int i = 0; i < _seriesOfStrikes.Count; i++)
+		{
+			if (form == _seriesOfStrikes[i].formList[_seriesOfStrikes[i].hitCount] && (target == _curTarget || target == null))
+			{
+				_isInTheRow = true;
+				_curTarget = target;
+				_seriesOfStrikes[i].usedRune += usedRuneValue;
+				_seriesOfStrikes[i].usedEnergy += usedEnergy;
+				_seriesOfStrikes[i].hitCount++;
+				_timer = _baseTimer;
+
+				//Debug.Log("Hit from " + _seriesOfStrikes[i] + " #" + _seriesOfStrikes[i].hitCount);
+
+				if (_seriesOfStrikes[i].hitCount >= _seriesOfStrikes[i].formList.Count)
+				{
+					LastHit(_seriesOfStrikes[i].usedRune, _seriesOfStrikes[i].usedEnergy);
+					return true;
+				}
+			}
+			else
+			{
+				_isInTheRow = true;
+				_seriesOfStrikes[i].Reset(usedRuneValue);
+				_timer = _baseTimer;
+				_curTarget = target;
+			}
+		}
+		return false;
 	}
 }
 

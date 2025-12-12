@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class DeathTalent_1 : Talent
 {
-    [SerializeField] private SeriesOfStrikes runeComponent;
-    [SerializeField] private NinjaResources ninjaResources;
+    [SerializeField] private SeriesOfStrikes _seriesOfStrikes;
+    [SerializeField] private NinjaResources _ninjaResources;
 
     public override void Enter()
     {
-        runeComponent.IceRuneTalentActive(true);
-        ninjaResources.EnergyToRestore(true, Data.DescriptionsForInfoPanel[0]);
+        _seriesOfStrikes.IceRuneTalentActive(true);
+        _ninjaResources.EnergyToRestore(true, Data.DescriptionsForInfoPanel[0]);
     }
 
     public override void Exit()
     {
-        runeComponent.IceRuneTalentActive(false);
-        ninjaResources.EnergyToRestore(false, Data.DescriptionsForInfoPanel[0]);
+        _seriesOfStrikes.IceRuneTalentActive(false);
+        _ninjaResources.EnergyToRestore(false, Data.DescriptionsForInfoPanel[0]);
     }
 }

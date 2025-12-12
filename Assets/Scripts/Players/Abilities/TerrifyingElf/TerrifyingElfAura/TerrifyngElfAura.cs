@@ -171,7 +171,7 @@ public class TerrifyingElfAura : NetworkBehaviour
             return;
 
         var character = currentSkill.Hero;
-        var targets = currentSkill.GetCloserTargets(currentSkill.transform.position, currentSkill.Radius);
+        var targets = currentSkill.GetCloserTargetsCharacter(currentSkill.transform.position, currentSkill.Radius);
         if (targets == null || targets.Count == 0) return;
 
         foreach (var target in targets)

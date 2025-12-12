@@ -13,7 +13,6 @@ public class BlockOfIce : Skill
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 	private Vector3 _mousePos;
 	private Energy _energy;
-	//private RuneComponent _rune;
 
 	protected override bool IsCanCast => IsCanCastCheck();
 
@@ -76,9 +75,8 @@ public class BlockOfIce : Skill
 		{			
 			if (GetMouseButton)
 			{
-				//if (GetTarget() == null) yield return null;
-
-				if (GetTarget().isCharater)
+				_mousePos = GetMousePoint();
+				/*if (GetTarget().isCharater)
 				{
 					Debug.Log("Character try");
 					if (GetTarget().character != null)
@@ -96,7 +94,7 @@ public class BlockOfIce : Skill
 				{
 					Debug.Log("Position");
 					_mousePos = GetMousePoint();
-				}
+				}*/
 			}
 			yield return null;
 		}

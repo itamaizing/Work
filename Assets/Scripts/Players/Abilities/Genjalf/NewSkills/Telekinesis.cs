@@ -13,7 +13,7 @@ namespace Gangdollarff
         [SerializeField] private float _amountOfLift = 1.5f;
         [SerializeField] private DecalProjector _radiusEnemy;
 
-        private Character _target;
+        //private Character _target;
         private Vector3 _point = Vector3.zero;
         private float _tempCastDeley = 1;
 
@@ -28,7 +28,7 @@ namespace Gangdollarff
         private bool CheckCanCast()
         {
             return Vector3.Distance(_point, transform.position) <= Radius &&
-                   Vector3.Distance(_target.transform.position, _point) <= Radius;
+                   Vector3.Distance(GetTargetCharacter().transform.position, _point) <= Radius;
         }
 
         public void AnimCastTelekinesis()
@@ -61,39 +61,40 @@ namespace Gangdollarff
         public override void LoadTargetData(TargetInfo targetInfo)
         {
             _point = targetInfo.Points[0];
-            _target = (Character)targetInfo.Targets[0];
+            SetTarget((Character)targetInfo.GetTargets()[0]);
         }
 
         protected override IEnumerator CastJob()
         {
             DisableMove();
 
-            CmdMoveTaget(_target.gameObject, new Vector3(_target.transform.position.x, _target.transform.position.y + _amountOfLift, _target.transform.position.z), _deleyTelekines);
+            CmdMoveTaget(GetTargetCharacter().gameObject, new Vector3(GetTargetCharacter().transform.position.x, GetTargetCharacter().transform.position.y + _amountOfLift, GetTargetCharacter().transform.position.z), _deleyTelekines);
             yield return new WaitForSeconds(_deleyTelekines);
-            CmdMoveTaget(_target.gameObject, _point, CastStreamDuration - _deleyTelekines);
+            CmdMoveTaget(GetTargetCharacter().gameObject, _point, CastStreamDuration - _deleyTelekines);
         }
         protected override void ClearData()
         {
             EnableMove();
-            _target = null;
+            ClearTarget();
+            //_target = null;
             _point = Vector3.zero;
             _radiusEnemy.gameObject.SetActive(false);
         }
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
         {
-            while (_target == null)
+            while (GetTargetCharacter() == null)
             {
                 if (GetMouseButton)
-                    if(GetTarget().character != null)
-                    _target = GetTarget().character;
+                    FindTargetCharacter();
+                    //_target = GetRaycastTarget(true);
 
                 yield return null;
             }
             yield return new WaitForSeconds(0.1f);
 
             _radiusEnemy.gameObject.SetActive(true);
-            _radiusEnemy.transform.parent = _target.transform;
+            _radiusEnemy.transform.parent = GetTargetCharacter().transform;
             _radiusEnemy.transform.localPosition = Vector3.zero;
 
             while (_point == Vector3.zero)
@@ -104,7 +105,7 @@ namespace Gangdollarff
                 yield return null;
             }
             TargetInfo targetInfo = new TargetInfo();
-            targetInfo.Targets.Add( _target );
+            targetInfo.AddTarget(GetTargetCharacter());
             targetInfo.Points.Add( _point );
             callbackDataSaved(targetInfo);
             _radiusEnemy.gameObject.SetActive(false);

@@ -14,7 +14,7 @@ public class ShotAstral : Skill
     private const string _endAnimTrigger = "ShotCastDelayEndAnimTrigger";
 
     private Vector3 _targetPoint = Vector3.positiveInfinity;
-    private Character _target;
+    //private Character _target;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash(_startAnimTrigger);
     protected override int AnimTriggerCast => 0;
@@ -36,21 +36,21 @@ public class ShotAstral : Skill
             {
                 Vector3 click = GetMousePoint();
 
-                if (IsPointInRadius(Radius, click) && NoObstacles(click, transform.position, _obstacle) && TryGetDamageableAtPoint(click, out var damageable))
+                if (IsPointInRadius(Radius, click) && NoObstacles(click, transform.position, _obstacle))
                 {
                     _targetPoint = click;
-
-                    if (damageable is Character player && player == _playerLinks)
+                    FindTargetCharacter();
+                    if (GetTargetCharacter() is Character player && player == _playerLinks)
                     {
                         _playerLinks.CharacterState.CmdAddState(States.Astral, _projectile.Duration, 0, gameObject, "ShotAstral");
                         TryCancel(true);
                         yield break;
                     }
 
-                    if (damageable is Character character)
+                    if (GetTargetCharacter() is Character character)
                     {
-                        _target = character;
-                        if (multiMagic != null) multiMagic.LastTarget = _target;
+                        //_target = character;
+                        if (multiMagic != null) multiMagic.LastTarget = GetTargetCharacter();
                         Hero.Move.LookAtTransform(character.transform);
                     }
 
@@ -113,14 +113,6 @@ public class ShotAstral : Skill
         CmdCrossFade(newTrigger);
     }
 
-    private bool TryGetDamageableAtPoint(Vector3 point, out IDamageable damageable)
-    {
-        damageable = null;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out var hit, Mathf.Infinity, _targetsLayers)) return hit.collider.TryGetComponent(out damageable);
-        return false;
-    }
-
     [Command]
     private void CmdCreateProjectileAtPosition(Vector3 position)
     {
@@ -146,7 +138,8 @@ public class ShotAstral : Skill
 
     protected override void ClearData()
     {
-        _target = null;
+        ClearTarget();
+       // _target = null;
         _targetPoint = Vector3.positiveInfinity;
     }
 

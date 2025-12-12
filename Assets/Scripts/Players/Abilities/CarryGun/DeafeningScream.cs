@@ -11,8 +11,6 @@ public class DeafeningScream : Skill
     [SerializeField] private CooldownEnergy cooldownEnergy;
     [SerializeField] private float duration = 2f;
 
-    private IDamageable _target;
-
     protected override bool IsCanCast => CheckCanCast();
 
     protected override int AnimTriggerCastDelay => 0;
@@ -23,9 +21,9 @@ public class DeafeningScream : Skill
 
     private bool CheckCanCast()
     {
-        return _target != null && cooldownEnergy.CurrentValue >= jumpWithChelicera.ChargeCooldown &&
-        Vector3.Distance(_target.transform.position, transform.position) <= Radius &&
-        NoObstacles(_target.transform.position, transform.position, _obstacle);
+        return GetTargetCharacter() != null && cooldownEnergy.CurrentValue >= jumpWithChelicera.ChargeCooldown &&
+        Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius &&
+        NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
     }
 
     public void HandleJumpEnd()
@@ -39,23 +37,26 @@ public class DeafeningScream : Skill
     {
         ITargetable target = null;
 
-        while (target == null)
+        while (GetTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
-                if (GetRaycastTarget() is ITargetable targetable) target = targetable;
+                FindTargetCharacter();
+
+                if (GetTargetCharacter() != null) if (GetTargetCharacter() is Character characterTarget) _runtimeTarget = characterTarget;
+                _isCanCancle = false;
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Targets.Add(target);
-        callbackDataSaved.Invoke(targetInfo);
+        targetInfo.AddTarget(_runtimeTarget);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_target != null) CmdApplyState(_target.gameObject);
+        if (GetTargetCharacter() != null) CmdApplyState(GetTargetCharacter().gameObject);
 
         cooldownEnergy.CastCooldownEnergySkill(13, this);
         AfterCastJob();
@@ -65,7 +66,8 @@ public class DeafeningScream : Skill
 
     protected override void ClearData()
     {
-        _target = null;
+        ClearTarget();
+        //_target = null;
     }
 
     [Command]
@@ -102,8 +104,8 @@ public class DeafeningScream : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as Character;
-        if (_target is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
-        Hero.Move.LookAtTransform(_target.transform);
+        if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0] as Character);
+        Hero.Move.LookAtTransform(GetTargetCharacter().transform);
+        _isCanCancle = false;
     }
 }

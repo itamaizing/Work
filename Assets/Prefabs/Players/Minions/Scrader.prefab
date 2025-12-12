@@ -1824,7 +1824,6 @@ MonoBehaviour:
   _shieldBar: {fileID: 0}
   _bar: {fileID: 4870465272962357970}
   _barMinus: {fileID: 5351479044800936432}
-  _barMinusPrewiew: {fileID: 0}
   _barPlus: {fileID: 2993498463815414414}
   _timeToDisapear: 0.2
   _disapearSpeed: 0.5
@@ -13350,6 +13349,7 @@ MonoBehaviour:
   _spawnComponent: {fileID: 2769373615330125278}
   _visionComponent: {fileID: 0}
   _auras: {fileID: 0}
+  _targetSeeker: {fileID: 0}
   _characterParent: {fileID: 0}
   _expForDieKill: 5
   _navMeshAgent: {fileID: 0}
@@ -13415,7 +13415,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _stateIcons: {fileID: 447597257756715632}
-  stateEffects: {fileID: 6170053914584293193}
+  _stateEffects: {fileID: 0}
   invinsible: 0
 --- !u!114 &6170053914584293193
 MonoBehaviour:
@@ -19453,7 +19453,6 @@ MonoBehaviour:
   _shieldBar: {fileID: 633562923116390951}
   _bar: {fileID: 5111548517481305401}
   _barMinus: {fileID: 4491317835460633429}
-  _barMinusPrewiew: {fileID: 0}
   _barPlus: {fileID: 7587915618729910684}
   _timeToDisapear: 0.2
   _disapearSpeed: 0.5
@@ -20836,7 +20835,6 @@ MonoBehaviour:
   _shieldBar: {fileID: 0}
   _bar: {fileID: 2927658482295125885}
   _barMinus: {fileID: 2247513721277296509}
-  _barMinusPrewiew: {fileID: 0}
   _barPlus: {fileID: 0}
   _timeToDisapear: 0.2
   _disapearSpeed: 0.5
@@ -21539,7 +21537,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7134219369208616440}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0dd0cb78ed16a4748be0e767e28e738c, type: 3}
+  m_Script: {fileID: 11500000, guid: 498f77212bffb6c45a575c0894f1e85d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncDirection: 0

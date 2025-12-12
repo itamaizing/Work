@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class FrostTalent_4 : Talent
 {
-    [SerializeField] private IcePuddle icePuddle;
+    [SerializeField] private IcePuddle _icePuddle;
 
     public override void Enter()
     {
-        icePuddle.IceDeathInIcePudleTalentActive(true, Data.DescriptionsForInfoPanel[1]);
+        _icePuddle.IceDeathInIcePudleTalentActive(true, Data.DescriptionsForInfoPanel[0]);
     }
 
     public override void Exit()
     {
-        icePuddle.IceDeathInIcePudleTalentActive(false, Data.DescriptionsForInfoPanel[1]);
+        _icePuddle.IceDeathInIcePudleTalentActive(false, Data.DescriptionsForInfoPanel[0]);
     }
 }

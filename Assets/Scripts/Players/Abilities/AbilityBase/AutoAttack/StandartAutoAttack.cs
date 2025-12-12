@@ -26,7 +26,7 @@ public class StandartAutoAttack : AutoAttackSkill
 
     protected override void CastAction()
     {
-        if (_target == null)
+        if (GetTargetCharacter() == null)
             return;
 
         Buff.AttackSpeed.IncreasePercentage(_animSpeed);
@@ -40,6 +40,6 @@ public class StandartAutoAttack : AutoAttackSkill
             PhysicAttackType = AttackRangeType,
 
         };
-        CmdApplyDamage(damage, _target.gameObject);
+        CmdApplyDamage(damage, GetTargetCharacter().Transform.gameObject);
     }
 }

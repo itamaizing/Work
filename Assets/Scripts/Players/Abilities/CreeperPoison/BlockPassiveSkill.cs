@@ -12,7 +12,7 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
     private Coroutine _boostWindow;
     private bool _isCooldownActive = false;
     private Character _attacker;
-    private Character _target;
+    //private Character _target;
     private List<Character> _validAttackers = new();
 
     #region Skill
@@ -86,7 +86,8 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
     private void ResetDisactive()
     {
         _attacker = null;
-        _target = null;
+        ClearTarget();
+        //_target = null;
         Disactive = true;
         _boostWindow = null;
     }
