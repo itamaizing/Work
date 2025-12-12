@@ -95,7 +95,7 @@ public class ShotDarkness : Skill
     }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.Targets.Count > 0) _target = targetInfo.Targets[0] as IDamageable;
+        _target = (Character)targetInfo.GetTargets()[0];
         if (_target is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
         _targetPoint = targetInfo.Points[0];
     }
@@ -108,13 +108,25 @@ public class ShotDarkness : Skill
         {
             if (GetMouseButton)
             {
-                if (GetRaycastTarget() is ITargetable targetable) target = targetable;
-                targetPoint = GetMousePoint();
+                FindTargetCharacter();
+                var tempTarget = GetTempTargetCharacter();
+
+                if (tempTarget != null)
+                {
+                    target = tempTarget;
+                    targetPoint = tempTarget.transform.position;
+                }
+                else
+                {
+                    targetPoint = GetMousePoint();
+                }
             }
             yield return null;
         }
+
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Targets.Add(target);
+
+        if (target != null) targetInfo.AddTarget(target);
         targetInfo.Points.Add(targetPoint);
         callbackDataSaved(targetInfo);
     }

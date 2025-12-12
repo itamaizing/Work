@@ -11,12 +11,15 @@ public class DeafeningScream : Skill
     [SerializeField] private CooldownEnergy cooldownEnergy;
     [SerializeField] private float duration = 2f;
 
+    //private IDamageable _target;
+    private Character _runtimeTarget;
+
     protected override bool IsCanCast => CheckCanCast();
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("DeafeningScreamAnimation");
 
-    private void OnDisable() => Canceled -= HandleJumpEnd;
+    private void OnDestroy() => Canceled -= HandleJumpEnd;
     private void OnEnable() => Canceled += HandleJumpEnd;
 
     private bool CheckCanCast()
@@ -31,11 +34,12 @@ public class DeafeningScream : Skill
         Hero.Animator.applyRootMotion = false;
         _playerLinks.Move.StopLookAt();
         Hero.Move.CanMove = true;
+        _isCanCancle = true;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        ITargetable target = null;
+        _runtimeTarget = null;
 
         while (GetTargetCharacter() == null)
         {

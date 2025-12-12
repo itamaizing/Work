@@ -218,13 +218,14 @@ public class GrowTree : Skill
         CastStreamDuration = treeCount == 0 ? baseCastStreamDuration : baseCastStreamDuration * Mathf.Pow(2, treeCount);
 
         Vector3 targetPoint = Vector3.positiveInfinity;
-        ITargetable target = null;
+        Character target = null;
 
         while (float.IsPositiveInfinity(targetPoint.x))
         {
             if (GetMouseButton)
             {
-                if (GetRaycastTarget() is ITargetable targetable) target = targetable;
+                FindTargetCharacter();
+                target = GetTargetCharacter();
                 targetPoint = GetMousePoint();
 
                 if (target != null && target as Character == _hero)

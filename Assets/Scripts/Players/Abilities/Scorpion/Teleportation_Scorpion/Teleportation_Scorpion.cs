@@ -36,12 +36,16 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     {
         get
         {
-            if (GetTargetCharacter() != null)
-                return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+            if (GetTargetCharacter() != null) return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
 
-            if (_target != null)
+            var mana = _hero.Resources.FirstOrDefault(r => r.Type == ResourceType.Mana);
+            if (mana == null) return false;
+
+            var target = GetTargetCharacter();
+
+            if (target != null)
             {
-                float distance = Vector3.Distance(_target.transform.position, transform.position);
+                float distance = Vector3.Distance(target.transform.position, transform.position);
                 int manaCost = GetCurrentManaCost(distance);
                 _skillEnergyCosts[0].resourceCost = manaCost;
                 return distance <= Radius && mana.CurrentValue >= manaCost;

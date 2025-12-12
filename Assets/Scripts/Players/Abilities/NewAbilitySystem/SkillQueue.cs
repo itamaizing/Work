@@ -89,13 +89,9 @@ public class SkillQueue : MonoBehaviour
                 _targetInfo = targetInfo;
                 foreach (var item in _targetInfo.GetTargets())
                 {
-                    _targetInfo = targetInfo;
-                    foreach (var item in _targetInfo.Targets)
+                    if (item is Character character)
                     {
-                        if (item is Character character)
-                        {
-                            character.SelectedCircle.SwitchSelectCircle(false);
-                        }
+                        character.SelectedCircle.SwitchSelectCircle(false);
                     }
                 }
             }

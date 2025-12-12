@@ -26,7 +26,7 @@ public class ChainBlade : Skill
 
     private Coroutine _pullCoroutine;
     private ChainArrow _chainArrowPrefab;
-    private Vector3 _targetPoint = Vector3.positiveInfinity;
+    private Vector3 _clickPoint = Vector3.positiveInfinity;
     private Animator _animator;
 
     private bool _needDestroyArrowAfterSpawn = false;
@@ -38,7 +38,7 @@ public class ChainBlade : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => chainBladeStart;
 
-    protected override bool IsCanCast => Vector3.Distance(_targetPoint, transform.position) <= CastLength && NoObstacles(_targetPoint, transform.position, _obstacle);
+    protected override bool IsCanCast => Vector3.Distance(_clickPoint, transform.position) <= CastLength && NoObstacles(_clickPoint, transform.position, _obstacle);
 
     public float DamageRange => UnityEngine.Random.Range(_minDamage, _maxDamage);
     public PassiveCombo_Scorpion ComboCounter { get => _comboCounter; set => _comboCounter = value; }
@@ -62,7 +62,7 @@ public class ChainBlade : Skill
         if (_hero?.Move != null)
         {
             Hero.Move.IsMoveBlocked = false;
-            _targetPoint = Vector3.positiveInfinity;
+            _clickPoint = Vector3.positiveInfinity;
             Hero.Move.StopLookAt();
         }
 
@@ -72,7 +72,7 @@ public class ChainBlade : Skill
     }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _targetPoint = targetInfo.Points[0];
+        _clickPoint = targetInfo.Points[0];
     }
     
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -130,7 +130,7 @@ public class ChainBlade : Skill
 
     protected override IEnumerator CastJob()
     {
-        CmdSpawnChainArrow(_targetPoint);
+        CmdSpawnChainArrow(_clickPoint);
         yield return null;
     }
 
@@ -178,11 +178,11 @@ public class ChainBlade : Skill
     {
         Hero.Move.StopMoveAndAnimationMove();
         AnimStartCastCoroutine();
-        Vector3 direction = _targetPoint - Hero.transform.position;
+        Vector3 direction = _clickPoint - Hero.transform.position;
         direction.y = 0;
 
         if (direction.sqrMagnitude > 0.01f && direction.IsFinite())
-            Hero.Move.LookAtPosition(_targetPoint);
+            Hero.Move.LookAtPosition(_clickPoint);
     }
 
     public void ChainBladeMoveBlock()

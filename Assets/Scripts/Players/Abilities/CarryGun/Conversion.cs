@@ -8,15 +8,13 @@ public class Conversion : Skill
     [SerializeField] private BasePsionicEnergy _psionicEnergy;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
 
-    private Character target;
-
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
-    protected override bool IsCanCast => true;
+    protected override bool IsCanCast => _psionicEnergy.CurrentValue > 0;
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        target = (Character)targetInfo.Targets[0];
+        throw new NotImplementedException();
     }
 
     protected override void ClearData()
@@ -25,11 +23,7 @@ public class Conversion : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
-        while (_psionicEnergy.CurrentValue <= 0) yield return null;
-
-        TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Targets.Add(Hero);
-        targetDataSavedCallback(targetInfo);
+        yield break;
     }
 
     protected override IEnumerator CastJob()
@@ -42,11 +36,8 @@ public class Conversion : Skill
             }
         }
 
-        var lastSkill = Hero?.Abilities?.LastCastedSkill;
-        if (lastSkill != null && lastSkill.AutoAttack == AutoAttack.autoAttack)
-        {
-            lastSkill.TryPreparing();
-        }
+        var lastSkill = Hero.Abilities.LastCastedSkill;
+        if (lastSkill.AutoAttack == AutoAttack.autoAttack) lastSkill.TryPreparing();
 
         yield break;
     }

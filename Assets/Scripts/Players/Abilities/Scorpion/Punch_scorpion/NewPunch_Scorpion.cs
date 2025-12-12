@@ -16,6 +16,8 @@ public class NewPunch_Scorpion : Skill
     private bool _isRightKick = true;
 
     //private Character _target;
+    private Character _lastTarget;
+    private Character _currentTarget;
     private Character _runtimeTarget;
 
     private static readonly int RightPunchTrigger = Animator.StringToHash("RightPunch");
@@ -116,19 +118,21 @@ public class NewPunch_Scorpion : Skill
         if (!IsTargetInRange()) yield return null;
 
         _runtimeTarget = GetTargetCharacter();
+        var target = GetTargetCharacter();
 
         if (_lastTarget != null && _lastTarget != _runtimeTarget)  _comboCounter.ResetCounter();
 
         _isRightKick = !_isRightKick;
-        _lastTarget = _target;
+        _lastTarget = target;
 
         ApplyAttackDamage();
     }
 
     private void ApplyAttackDamage()
     {
-        if (_target == null) return;
-        if (Vector2.Distance(_lastTarget.transform.position, _target.transform.position) > Radius) return;
+        var target = GetTargetCharacter();
+        if (target == null) return;
+        if (Vector2.Distance(_lastTarget.transform.position, target.transform.position) > Radius) return;
 
         Damage damage = new Damage
         {
@@ -136,9 +140,9 @@ public class NewPunch_Scorpion : Skill
             Type = DamageType,
         };
 
-        CmdApplyDamage(_target.gameObject, damage);
+        CmdApplyDamage(target.gameObject, damage);
 
-        _target = null;
+        ClearTarget();
     }
 
     [Command]
@@ -241,14 +245,15 @@ public class NewPunch_Scorpion : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
+        var target = GetTargetCharacter();
         if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
-         if (_target is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
-        _hero.Move.LookAtTransform(_target.transform);
+        if (target is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+        _hero.Move.LookAtTransform(target.transform);
     }
 
     protected override void ClearData()
     {
-        _target = null;
+        ClearTarget();
         _hero.Move.StopLookAt();
     }
 

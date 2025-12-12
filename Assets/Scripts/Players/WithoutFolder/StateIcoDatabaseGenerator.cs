@@ -3,7 +3,6 @@ using UnityEditor;
 using UnityEngine;
 using System;
 using System.Linq;
-#if UNITY_EDITOR
 
 public static class StateIcoDatabaseGenerator
 {

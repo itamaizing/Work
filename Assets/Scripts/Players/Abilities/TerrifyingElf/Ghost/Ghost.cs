@@ -144,10 +144,10 @@ public class Ghost : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.Targets.Count > 0)
+        if (targetInfo.GetTargets().Count > 0)
         {
-            if (_teleportGhost) _ghostToTeleport = (Character)targetInfo.Targets[0];
-            else _targetCharacter = (Character)targetInfo.Targets[0];
+            if (_teleportGhost) _ghostToTeleport = (Character)targetInfo.GetTargets()[0];
+            else _targetCharacter = (Character)targetInfo.GetTargets()[0];
         }
 
         else if (targetInfo.Points.Count > 0)
@@ -317,8 +317,8 @@ public class Ghost : Skill
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(secondPoint);
-        if (targetCharacter != null) targetInfo.Targets.Add(targetCharacter);
-        else if (targetGhost != null) targetInfo.Targets.Add(targetGhost);
+        if (targetCharacter != null) targetInfo.AddTarget(targetCharacter);
+        else if (targetGhost != null) targetInfo.AddTarget(targetGhost);
         callbackDataSaved(targetInfo);
     }
 

@@ -21,16 +21,21 @@ public class JumpWithChelicera : Skill
     private static readonly int jumpStart = Animator.StringToHash("JumpStart");
     private static readonly int jumpEnd = Animator.StringToHash("JumpEnd");
 
-    private float _delayBeforeJump = 1f;
+    private float _delayBeforeJump = 0.3f;
     private float _minDistance = 0.6f;
     private float _additionalDamageInPercentage;
+
+    private bool _isTarget = false;
     private bool _isJumpDone = false;
+    private bool _hasDealtDamage = false;
     private bool _isCheliceraStrikeCast = false;
 
     public override bool IsPayCostStartCooldown => false;
     protected override int AnimTriggerCast => jumpStart;
     protected override int AnimTriggerCastDelay => 0;
 
+    //public Character RuntimeTarget { get => _runtimeTarget; set => _runtimeTarget = value; }
+    //public IDamageable Target { get => _target; set => _target = value; }
     public bool IsJumpDone { get => _isJumpDone; set => _isJumpDone = value; }
     public bool IsCheliceraStrikeCast { get => _isCheliceraStrikeCast; set => _isCheliceraStrikeCast = value; }
     public float CooldownJump { get => cooldownJump; set => cooldownJump = value; }
@@ -41,7 +46,7 @@ public class JumpWithChelicera : Skill
     public void JumpWithCheliceraChanceDamageCrit(bool value) => isJumpWithCheliceraChanceDamageCrit = value;
 
     private void Start() => _animator = GetComponent<Animator>();
-    private void OnDisable() => Canceled -= HandleJumpWithCheliceraEnd;
+    private void OnDestroy() => Canceled -= HandleJumpWithCheliceraEnd;
     private void OnEnable() => Canceled += HandleJumpWithCheliceraEnd;
 
     protected override void ClearData()
@@ -59,27 +64,26 @@ public class JumpWithChelicera : Skill
         _hero.Move.CanMove = false;
     }
 
-    // public override void LoadTargetData(TargetInfo targetInfo)
-    // {
-    //     _castDeley = _delayBeforeJump;
-    //     //_runtimeTarget = null;
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    {
+        _castDeley = _delayBeforeJump;
+        //_runtimeTarget = null;
 
-    //     while (GetTargetCharacter() == null)
-    //     {
-    //         if (GetMouseButton)
-    //         {
-    //             FindTargetCharacter();
-    //             //_target = GetRaycastTarget();
-    //             //if (_target is Character characterTarget) _runtimeTarget = characterTarget;
-    //         }
+        while (GetTargetCharacter() == null)
+        {
+            if (GetMouseButton)
+            {
+                FindTargetCharacter();
+                //_target = GetRaycastTarget();
+                //if (_target is Character characterTarget) _runtimeTarget = characterTarget;
+            }
+            yield return null;
+        }
 
-    //         yield return null;
-    //     }
-
-    //     TargetInfo targetInfo = new TargetInfo();
-    //     if (GetTargetCharacter() != null) targetInfo.AddTarget(GetTargetCharacter());
-    //     callbackDataSaved?.Invoke(targetInfo);
-    // }
+        TargetInfo targetInfo = new TargetInfo();
+        if (GetTargetCharacter() != null) targetInfo.AddTarget(GetTargetCharacter());
+        callbackDataSaved?.Invoke(targetInfo);
+    }
 
     protected override IEnumerator CastJob()
     {
@@ -92,24 +96,19 @@ public class JumpWithChelicera : Skill
         if (target == null) return;
 
         _isJumpDone = true;
+        float distanceToTarget = Vector2.Distance(((MonoBehaviour)target).transform.position, _player.transform.position);
 
-        float distanceToTarget = Vector3.Distance(((MonoBehaviour)target).transform.position, _player.transform.position);
-        _additionalDamageInPercentage = Mathf.Round((0.1f + Mathf.Floor(distanceToTarget / 0.1f) * 0.02f) * 1000f) / 1000f;
+        _additionalDamageInPercentage = distanceToTarget < 1 ? 0.1f : 0.2f + Mathf.Floor((distanceToTarget - 1f)) * 0.2f;
+
         Vector3 direction = (((MonoBehaviour)target).transform.position - transform.position).normalized;
-
         _isCheliceraStrikeCast = true;
         clawStrike.DurationChanceApplyBleedingWithJump();
 
         if (target is Character character)
-        {
             CmdExecuteJump(_player.gameObject, character.netId, direction, _additionalDamageInPercentage);
-        }
         else if (target is NetworkBehaviour nb)
-        {
             CmdExecuteJumpToPosition(_player.gameObject, ((MonoBehaviour)target).transform.position, nb.netId, _additionalDamageInPercentage);
-        }
     }
-
 
     private void HandleJumpAnimEnd()
     {

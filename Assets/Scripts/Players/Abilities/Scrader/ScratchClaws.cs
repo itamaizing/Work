@@ -64,7 +64,7 @@ public class ScratchClaws : Skill
         if (_hero?.Move != null)
         {
             Hero.Move.CanMove = true;
-            _target = null;
+            ClearTarget();
             Hero.Move.StopLookAt();
         }
 
@@ -84,14 +84,15 @@ protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCall
         if (GetMouseButton && !_setTarget)
         {
             FindTargetCharacter();
+            var target = GetTargetCharacter();
 
-            if (_tempTarget is Character character)
+            if (target != null)
             {
-                SetTarget(character);
+                SetTarget(target);
                 _setTarget = true;
 
-                if (Vector3.Distance(transform.position, character.transform.position) > _stopDistance + 0.05f)
-                    StartCoroutine(MoveToTargetCharacter(character));
+                if (Vector3.Distance(transform.position, target.transform.position) > _stopDistance + 0.05f)
+                    StartCoroutine(MoveToTargetCharacter(target));
                 else
                     _moveToTarget = false;
             }
@@ -109,7 +110,6 @@ protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCall
 
     protected override IEnumerator CastJob()
     {
-        if (!CheckIsCanCast()) yield return null;
         if (GetTargetCharacter() == null) yield break;
         CmdApplyScratch(GetTargetCharacter().gameObject);
 
@@ -191,7 +191,9 @@ protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCall
         Hero.Move.CanMove = true;
         _moveToTarget = false;
 
-        if (_target != null && Vector3.Distance(transform.position, target.transform.position) <= Radius && NoObstacles(_target.transform.position, transform.position, _obstacle));
+        var character = GetTargetCharacter();
+
+        if (character != null && Vector3.Distance(transform.position, character.transform.position) <= Radius && NoObstacles(character.transform.position, transform.position, _obstacle));
         {
             CmdApplyScratch(target.gameObject);
         }

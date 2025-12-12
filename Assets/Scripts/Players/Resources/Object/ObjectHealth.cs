@@ -71,6 +71,8 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
 
     public Transform Transform => throw new NotImplementedException();
 
+    public bool IsTargetable => throw new NotImplementedException();
+
     #region regeneration
 
     private Coroutine _fillCoroutine;

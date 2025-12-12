@@ -107,7 +107,8 @@ public class CleavingBlade_Scorpion : Skill
 
     private void TryAttack(bool shouldIncreaseCounter, float damageMultiplier)
     {
-        if (_target != null && Vector2.Distance(transform.position, _target.transform.position) <= Radius)
+        Character target = GetTargetCharacter();
+        if (target != null && Vector2.Distance(transform.position, target.transform.position) <= Radius)
         {
             Damage damage = new Damage
             {
@@ -115,7 +116,7 @@ public class CleavingBlade_Scorpion : Skill
                 Type = DamageType,
             };
 
-            CmdAttack(damage, _target.gameObject, shouldIncreaseCounter);
+            CmdAttack(damage, target.gameObject, shouldIncreaseCounter);
         }
     }
 
@@ -129,12 +130,12 @@ public class CleavingBlade_Scorpion : Skill
         }
 
         bool result = _tempForDamage.TryTakeDamage(ref damage, this);
-        if (result && _tempForDamage is Character character) AttackPassed(character, shouldIncreaseCounter);
+        if (result && _tempForDamage is Character character) AttackPassed(shouldIncreaseCounter, character);
     }
 
     protected override void ClearData()
     {
-        _target = null;
+        ClearTarget();
     }
 
     public void BladeActive()

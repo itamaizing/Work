@@ -1,5 +1,4 @@
 using Mirror;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,92 +12,62 @@ public class CocoonSpawn : Skill
     [SerializeField] private MinionMove minionMove;
     [SerializeField] private MinionComponent minion;
     [SerializeField] private Tentacles tentacle;
-    [SerializeField] private int maxSpawn = 5;
-
-    private int _currentSpawnCount;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
-    protected override bool IsCanCast => true;
+    protected override bool IsCanCast => _spawnPoint != Vector3.positiveInfinity;
 
     public Tentacles Tentacle { get => tentacle; set => tentacle = value; }
-    public int CurrentSpawnCount
+
+    protected override void Awake()
     {
-        get => _currentSpawnCount;
-        set => _currentSpawnCount = Mathf.Max(0, value);
+        base.Awake();
+        minionMove.CanMove = false;
     }
 
-    private void OnEnable()
+    protected override IEnumerator PrepareJob(System.Action<TargetInfo> callback)
     {
-        Hero.Move.CanMove = false;
+        TargetInfo info = new TargetInfo();
+        info.Points.Add(transform.position);
+        callback?.Invoke(info);
+
+        yield break;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-    {
-        TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Targets.Add(Hero);
-        callbackDataSaved(targetInfo);
-        yield return null;
-    }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo == null) return;
-        if (targetInfo.Targets.Contains(Hero)) return;
-        targetInfo.Targets.Add(Hero);
+        if (targetInfo.Points.Count > 0)
+            _spawnPoint = targetInfo.Points[0];
     }
 
     protected override IEnumerator CastJob()
     {
-        if (tentacle.TryGetComponent<SpawnComponent>(out var spawnComponent))
+        if (minion.TryGetComponent<Character>(out var character))
         {
-            if (_currentSpawnCount >= maxSpawn) yield break;
+            character.SelectComponent?.Deselect();
+            character.SelectedCircle?.SwitchClostestTarget(false);
+            character.SelectedCircle.gameObject.SetActive(false);
 
-            if (TryGetValidSpawnPoint(out Vector3 spawnPos))
-            {
-                Debug.Log($" _currentSpawnCount {_currentSpawnCount}");
-                spawnComponent.CmdSpawnEnemyPoint(spawnPos, Quaternion.identity, minion, 1, false, Hero);
-            }
+            if (character.TryGetComponent<MinimapMarker>(out var minimap)) minimap.IsActive = false;
 
-            CmdTentacleCocoon(spawnComponent);
+            var states = new List<AbstractCharacterState>(character.CharacterState.CurrentStates);
+            foreach (var state in states) character.CharacterState.RemoveState(state.State);
         }
 
-         yield return null;
+        if (tentacle.TryGetComponent<SpawnComponent>(out var spawnComponent))
+        {
+            Vector3 spawnPos = GetRandomOffsetPosition(transform.position, 1.6f);
+            spawnComponent.CmdSpawnEnemyPoint(spawnPos, Quaternion.identity, minion, 1, false, Hero);
+        }
+
+        CmdTentacleCocoon(spawnComponent);
+        yield return null;
     }
     private Vector3 GetRandomOffsetPosition(Vector3 center, float radius)
     {
-        float angle = UnityEngine.Random.Range(0f, Mathf.PI * 2);
+        float angle = Random.Range(0f, Mathf.PI * 2);
         Vector3 offset = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * radius;
         return center + offset;
-    }
-
-    private bool TryGetValidSpawnPoint(out Vector3 result)
-    {
-        for (int i = 0; i < 10; i++)
-        {
-            Vector3 testPos = GetRandomOffsetPosition(transform.position, 1.6f);
-            if (!IsOccupied(testPos))
-            {
-                result = testPos;
-                return true;
-            }
-        }
-
-        result = Vector3.zero;
-        return false;
-    }
-
-    private bool IsOccupied(Vector3 point)
-    {
-        Collider[] colliders = Physics.OverlapSphere(point, 1);
-        foreach (var collider in colliders)
-        {
-            if (collider.TryGetComponent<MinionComponent>(out var minion))
-            {
-                if (minion.GetComponent<ScraderSpawn>() != null) return true;
-            }
-        }
-
-        return false;
     }
 
     [Command]
@@ -111,14 +80,7 @@ public class CocoonSpawn : Skill
     [ClientRpc]
     private void RpcTentacleCocoon(SpawnComponent spawnComponent)
     {
-        foreach (var cocoon in spawnComponent.Units)
-        {
-            if (cocoon.TryGetComponent<ScraderSpawn>(out ScraderSpawn scraderSpawn))
-            {
-                scraderSpawn.Tentacle = tentacle;
-                scraderSpawn.CocoonSpawn = this;
-            }
-        }
+        foreach (var cocoon in spawnComponent.Units) if (cocoon.TryGetComponent<ScraderSpawn>(out ScraderSpawn scraderSpawn)) scraderSpawn.Tentacle = tentacle;
     }
 
     protected override void ClearData() { }
