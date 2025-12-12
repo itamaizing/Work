@@ -77,7 +77,7 @@ public class TentacleProjectile : NetworkBehaviour
         _isAttackingPsiEnergyActive = isAttackingPsiEnergyActive;
         _isAttractionTentacleActive = isAttractionTentacleTalent;
         _spentAttackingPsiEnergy = currentDamage;
-        _isPsionicsTalentThree = 
+        _isPsionicsTalentThree =
         _skill = skill;
 
         transform.position = startPosition;
@@ -223,7 +223,7 @@ public class TentacleProjectile : NetworkBehaviour
     }
 
     private void ReleaseTarget()
-    { 
+    {
         if (_target != null) _target.Move.IsMoveBlocked = false;
 
         if (tentacleLine != null && _lineCoroutine != null) StopCoroutine(_lineCoroutine);

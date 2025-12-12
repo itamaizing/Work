@@ -213,6 +213,8 @@ public abstract class Skill : NetworkBehaviour, ISkillForFillAmount
         get => _isSkillActive;
         set => _isSkillActive = value;
     }
+
+    public ITargetable TempTarget => _tempTarget;
     public Transform TempTargetForDamage => _tempTargetForDamage;
     public bool GetMouseButton { get => _click != TypeClick.None; }
     public bool IsSubjectToGlobalCooldownTime { get => _isSubjectToGlobalCooldownTime; }
