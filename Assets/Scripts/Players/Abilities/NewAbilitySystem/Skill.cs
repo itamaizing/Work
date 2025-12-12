@@ -562,8 +562,8 @@ public abstract class Skill : NetworkBehaviour, ISkillForFillAmount
 
                 if (targetInfo.GetTargets().Count > 0)
                 {
-                    var target = (Character)targetInfo.GetTargets()[0];
-                    _hero.Move.LookAtTransform(target.transform);
+                    if (targetInfo.GetTargets()[0] is Character target)
+                        _hero.Move.LookAtTransform(target.transform);
                 }
 
                 if (targetInfo.Points.Count > 0)
