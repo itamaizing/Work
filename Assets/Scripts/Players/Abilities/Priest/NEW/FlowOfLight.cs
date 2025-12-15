@@ -21,8 +21,6 @@ public class FlowOfLight : Skill
     public event Action OnModeChange;
 
     private GameObject _activeEffect;
-    //private IDamageable _target;
-   // private Character _targetCharacter;
 
     private bool IsAllyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Allies");
     private bool IsEnemyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Enemy");
@@ -109,33 +107,21 @@ public class FlowOfLight : Skill
         if (!isLightMode && UnityEngine.Random.value <= 0.2f) CmdStateRestorationOrDestruction(stateComponent, States.Destruction, 12f);
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
-        //_targetCharacter = null;
-
-        while (GetTargetCharacter() == null)
+        while (GetTempTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter();
-                //_target = GetRaycastTarget();
-                /*if (_target != null && _target is Character character)
-                {
-                    if ((isLightMode && IsAllyTarget(character)) || (!isLightMode && IsEnemyTarget(character)))
-                    {
-                        _targetCharacter = character;
-                        _targetCharacter.SelectedCircle.IsActive = true;
-                    }
-                }*/
+                FindTarget();
             }
             yield return null;
         }
-
+        SetTarget(GetTempTargetCharacter());
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(GetTargetCharacter());
-        callbackDataSaved(targetInfo);
+        targetDataSavedCallback(targetInfo);
     }
-
 
     protected override IEnumerator CastJob()
     {
@@ -214,7 +200,6 @@ public class FlowOfLight : Skill
     protected override void ClearData()
     {
         ClearTarget();
-        //_target = null;
         _hero.Move.StopLookAt();
         CmdDestroyEffect();
     }
@@ -222,7 +207,7 @@ public class FlowOfLight : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0)
-            SetTarget((Character)targetInfo.GetTargets()[0]);
+            SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 
     [Command] private void CmdCrossFade() => _hero.Animator.CrossFade("FlowSpellEnd", 0.1f);

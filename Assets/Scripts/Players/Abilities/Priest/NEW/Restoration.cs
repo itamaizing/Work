@@ -214,6 +214,6 @@ public class Restoration : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((Character)targetInfo.GetTargets()[0]);
+        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 } 

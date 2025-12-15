@@ -58,7 +58,7 @@ public class PhysicalAttack : Skill
 	{
 		TargetInfo targetInfo = new TargetInfo();
 
-		if (GetTargetCharacter() != null)
+		if (GetTempTargetCharacter() != null)
 		{
 			_hero.Move.LookAtTransform(GetTargetCharacter().transform);
 			targetInfo.AddTarget(GetTargetCharacter());
@@ -67,31 +67,35 @@ public class PhysicalAttack : Skill
 			yield break;
 		}
 
-		while (GetTargetCharacter() == null)
-		{
-			if (GetMouseButton)
+        while (GetTempTargetCharacter() == null)
+        {
+            if (GetMouseButton)
 			{
 				FindTargetCharacter();
 				//_target = GetTarget().character;
 
-				if (GetTargetCharacter() != null)
+				if (GetTempTargetCharacter() != null)
 				{
-					if (IsAllyTarget(GetTargetCharacter()) || GetTargetCharacter() == Hero)
+					if (IsAllyTarget(GetTempTargetCharacter()) || GetTempTargetCharacter() == Hero)
 					{
 						ClearTarget();						
 					}
 					else
 					{
-						GetTargetCharacter().SelectedCircle.IsActive = true;
-						_hero.Move.LookAtTransform(GetTargetCharacter().transform);
-						break;
+                        GetTempTargetCharacter().SelectedCircle.IsActive = true;
+						_hero.Move.LookAtTransform(GetTempTargetCharacter().transform);
+                        //SetTargetCharacter(GetTempTargetCharacter());
+                        break;
 					}
 				}
 			}
 			yield return null;
 		}
 
-		targetInfo.AddTarget(GetTargetCharacter());
+		SetTarget(GetTempTargetCharacter());
+		//ClearTempTarget();
+
+        targetInfo.AddTarget(GetTargetCharacter());
 		targetInfo.Points.Add(GetTargetCharacter().transform.position);
 		callbackDataSaved?.Invoke(targetInfo);
 	}
@@ -128,7 +132,6 @@ public class PhysicalAttack : Skill
 
 	private void Hit(Character enemy)
 	{
-		Debug.Log(_energy.CurrentValue + " Current value");
 		if (_curTarget == enemy && _energy.CurrentValue >= 5)
 		{
 			//_energy.CmdUse(5);
@@ -173,7 +176,6 @@ public class PhysicalAttack : Skill
 		{
 			Buff.AttackSpeed.IncreasePercentage(_multiplier);
 			_multiplier = 1;
-			Debug.Log("lose streak to another enemy or no energy");
 			_curTarget = enemy;
 
 			float curDamage = _damageValue + UnityEngine.Random.Range(0, 2);
@@ -199,7 +201,6 @@ public class PhysicalAttack : Skill
 		if (UnityEngine.Random.Range(0, 100) < 2 && _talentActive)
 		{
 			_rune.CmdAdd(1);
-			//Debug.Log(_rune.CurrentValue + " REGEN Current value");
 		}
 	}
 
@@ -217,10 +218,8 @@ public class PhysicalAttack : Skill
 			_energy.SumDamageMake(curDamage);
 			_rune.SumDamageMake(curDamage);
 			CmdState(_curTarget.gameObject, 1.5f);
-			PushBackEnemy(_curTarget);
-			//отбрасывание 			
+			PushBackEnemy(_curTarget); 			
 		}
-		//_energy.Add(_energy.MaxValue*0.4f);
 		_curTarget = null;
 	}
 
@@ -243,7 +242,6 @@ public class PhysicalAttack : Skill
 	{
 		Character enemyChar = enemy.GetComponent<Character>();
 		enemyChar.CharacterState.AddState(States.Stun, time, 0, Hero.gameObject, name);
-		Debug.Log("added state");
 	}
 
 	private void PushBackEnemy(Character enemy)
@@ -253,7 +251,6 @@ public class PhysicalAttack : Skill
 		if (!CheckObstacleBetween(Hero.transform.position, jumpPos))
 		{
 			CmdPush(GetTargetCharacter().gameObject, jumpPos);
-			//прыгать до препятствия
 		}
 	}
 
@@ -333,13 +330,12 @@ public class PhysicalAttack : Skill
 
 	public override void LoadTargetData(TargetInfo targetInfo)
 	{
-		if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
+		if (targetInfo.GetTargets().Count > 0) SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
 	}
 
     protected override void ClearData()
     {
 		ClearTarget();
-		//_target = null;
 		_hero.Move.StopLookAt();
 	}
 }

@@ -1,10 +1,12 @@
 using Mirror;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class IceSword : Skill
+public class IceSword : CloseCombatSkill
 {
 	[SerializeField] private float _damage = 15f;
 	//[SerializeField] private GameObject _basePlayer;
@@ -16,6 +18,8 @@ public class IceSword : Skill
 
 
 	private int _hitInTheRow = 0;
+	private float _additionalDamage = 0;
+    [SerializeField] private float _maxAdditionalCost = 10f;
 	private Character _oldtarget;
 	//private Character _target;
 	private float _duration = 3;
@@ -59,24 +63,8 @@ public class IceSword : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((Character)targetInfo.GetTargets()[0]);
+        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
-
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-	{
-		while (GetTargetCharacter() == null)
-		{
-			if (GetMouseButton)
-			{
-				FindTargetCharacter();
-				//_target = GetRaycastTarget();
-			}
-			yield return null;
-		}
-		TargetInfo targetInfo = new TargetInfo();
-		targetInfo.AddTarget(GetTargetCharacter());
-		callbackDataSaved(targetInfo);
-	}
 
 	protected override IEnumerator CastJob()
 	{
@@ -84,13 +72,11 @@ public class IceSword : Skill
 		if (GetTargetCharacter() == _oldtarget)
 		{
 			_hitInTheRow++;
-			Debug.Log("hit from sword in a row");
 		}
 		else
 		{
 			_hitInTheRow = 1;
 			_oldtarget = GetTargetCharacter();
-			Debug.Log("first hit from sword");
 		}
 		if (_hitInTheRow > 2)
 		{
@@ -105,15 +91,22 @@ public class IceSword : Skill
 	protected override void ClearData()
 	{
 		ClearTarget();
+		ClearTempTarget();
 		//_target = null;
 	}
 
 	private void ApplyDamage()
 	{
-		float energyBonus = Mathf.Min(_energy.CurrentValue, 10);
-		_energy.CmdUse(energyBonus);
+		//Debug.Log("111111111111");
+		/*float energyBonus = 0;
 
-		float totalDamage = _damage + energyBonus;
+        if (_energy.CurrentValue >= 10)
+			energyBonus = Mathf.Min(_energy.CurrentValue, 10);*/
+		
+		//_energy.CmdUse(energyBonus);
+
+		//float totalDamage = _damage + energyBonus;
+		float totalDamage = _damage + _additionalDamage;
 
 		Damage damage2 = new Damage
 		{
@@ -121,6 +114,7 @@ public class IceSword : Skill
 			Type = DamageType.Physical,
 			PhysicAttackType = AttackRangeType.RangeAttack,
 		};
+		Debug.Log("Damage " + totalDamage);
 
 		if (_critDmg && GetTargetCharacter().CharacterState.CheckForState(States.Frozen))
 		{
@@ -179,4 +173,32 @@ public class IceSword : Skill
 	{
 		AnimCastEnded();
 	}
+    protected override bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
+    {
+		if (!IsHaveResourceOnSkill)
+		{
+			return false;			// паттерн Guard Clause - избавляемся от лишней вложенности
+		}
+
+        _additionalDamage = 0;      // без этого, если способность тратит ровно 40 ресурса - используется доп урон, рассчитаный в прошлый раз
+
+        foreach (var skillCost in skillEnergyCosts)
+        {
+			var baseCost = skillCost.resourceCost;  // уже взяли skillCost, почему ниже маг. числа?
+
+            if (_energy.CurrentValue > baseCost)
+			{
+                _additionalDamage = Mathf.Min(_energy.CurrentValue-baseCost, _maxAdditionalCost);
+                //Debug.Log($"Add damage {_additionalDamage}, | currEnergy {_energy.CurrentValue} ");
+                _energy.CmdUse(_additionalDamage);
+            }
+            _energy.CmdUse(Buff.ManaCost.GetBuffedValue(baseCost));
+        }
+
+        if (startCooldown)
+            IncreaseSetCooldown(CooldownTime);
+
+        if (!_useChargesAsComboPart) TryUseCharge();
+        return true;
+    }
 }

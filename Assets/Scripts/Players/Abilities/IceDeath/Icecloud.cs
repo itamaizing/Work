@@ -11,9 +11,9 @@ public class IceCloud : Skill
 	[SerializeField] private AudioClip audioClip;
 
 	private Vector3 _mousePos = Vector3.positiveInfinity;
-
-	//private bool _enabled;
-	private AudioSource _audioSource;
+    private Vector3 _mousePos2 = Vector2.positiveInfinity;
+    //private bool _enabled;
+    private AudioSource _audioSource;
 	private bool _boostDmg;
 	private bool _lastHit;
 	private Energy _energy;
@@ -81,16 +81,16 @@ public class IceCloud : Skill
 
 		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
-		CmdCreateProjecttile(angle, _energy.CurrentValue);
+		CmdCreateProjecttile(angle, _energy.CurrentValue, lookDir.normalized);
 		ClearTarget();
 		_mousePos = Vector2.positiveInfinity;
 		ClearData();
 	}
 
 	[Command]
-	private void CmdCreateProjecttile(float angle, float manaValue)
-	{
-		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, -angle, 0));
+	private void CmdCreateProjecttile(float angle, float manaValue, Vector3 lookDir)
+    {
+		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position + lookDir * .2f, Quaternion.Euler(0, -angle, 0));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(Hero, manaValue, false, this);
 		projectile.Talent(_boostDmg, _frozwenTalent, _lastHit);
@@ -126,12 +126,12 @@ public class IceCloud : Skill
 	public override void LoadTargetData(TargetInfo targetInfo)
 	{
 		if (targetInfo.Points.Count > 0) _mousePos = targetInfo.Points[0];
-		if (targetInfo.GetTargets().Count > 0 && targetInfo.GetTargets()[0] is Character character) SetTarget(character);
+		if (targetInfo.GetTargets().Count > 0 && targetInfo.GetTargets()[0] is Character character) SetTarget((ITargetable)character);
 	}
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		while (float.IsPositiveInfinity(_mousePos.x))
+		while (float.IsPositiveInfinity(_mousePos2.x))
 		{
 			if (GetMouseButton)
 			{
@@ -140,7 +140,7 @@ public class IceCloud : Skill
 				{
 					float distance = Vector3.Distance(_hero.transform.position, _mousePos);
 
-					if (distance <= Radius) _mousePos = GetTargetCharacter().transform.position;
+					if (distance <= Radius) _mousePos2 = GetTargetCharacter().transform.position;
 
 					else
 					{
@@ -148,20 +148,23 @@ public class IceCloud : Skill
 
 						//_target = GetTarget().character;
 						_damageValue = 10 + _energy.CurrentValue / 5;
-						_mousePos = GetTargetCharacter().transform.position;
+						_mousePos2 = GetTargetCharacter().transform.position;
 					}
 				}
 
-				else _mousePos = GetMousePoint();
+				else _mousePos2 = GetMousePoint();
 			}
 			yield return null;
-		}
+		}        
 
-		TargetInfo targetInfo = new TargetInfo();
+        TargetInfo targetInfo = new TargetInfo();
 		if (GetTargetCharacter() != null) targetInfo.Points.Add(GetTargetCharacter().Position);
-		else if (_mousePos != Vector3.positiveInfinity) targetInfo.Points.Add(_mousePos);
+		else if (_mousePos2 != Vector3.positiveInfinity) targetInfo.Points.Add(_mousePos2);
 		callbackDataSaved(targetInfo);
-	}
+
+        _mousePos = _mousePos2;
+        _mousePos2 = Vector3.positiveInfinity;
+    }
 
 	protected override IEnumerator CastJob()
 	{

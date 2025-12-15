@@ -161,7 +161,7 @@ public class DeathSpiral : Skill
 	[Command]
 	private void Shoot(float angle, bool inTheRow, GameObject target, bool talentBoostHpBody, bool talentHitState, bool talentPlague, bool talentChargesPlague, bool superCharge, bool corpseDeath, bool corpseBoostExplode)
 	{
-		Debug.Log(target + " target name ");
+		//Debug.Log(target + " target name ");
 		DeathSpiralProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, -angle, 0));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(_playerLinks, 0, false, this);
@@ -178,7 +178,7 @@ public class DeathSpiral : Skill
 	[ClientRpc]
 	private void RpcInit(GameObject obj, GameObject target, bool talentBoostHpBody, bool talentHitState, bool inTheRow, bool talentPlague, bool talentChargesPlague, bool superCharge, bool corpseDeath, bool corpseBoostExplode)
 	{
-		Debug.Log(target + " target name ");
+		//Debug.Log(target + " target name ");
 		DeathSpiralProjectile projectile = obj.GetComponent<DeathSpiralProjectile>();
 		projectile.Init(_playerLinks, 0, false, this);
 		projectile.SetTarget(target);
@@ -221,7 +221,7 @@ public class DeathSpiral : Skill
 
 	private void PlagueAbsorptionCharge()
 	{
-		Debug.Log("PLAGUE Absorption ATTACK");
+		//Debug.Log("PLAGUE Absorption ATTACK");
 		_superCharge = true;
 		_inTheRow = true;
 
@@ -258,7 +258,7 @@ public class DeathSpiral : Skill
 
 	private void BasicShoot()
 	{
-		Debug.Log("FIRST ATTACK");
+		//Debug.Log("FIRST ATTACK");
 		_firstShot = false;
 		_superCharge = false;
 		_inTheRow = true;
@@ -270,7 +270,7 @@ public class DeathSpiral : Skill
 
 	private void SecondAttact()
 	{
-		Debug.Log("SECOND ATTACK");
+		//Debug.Log("SECOND ATTACK");
 		_superCharge = false;
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
@@ -284,7 +284,7 @@ public class DeathSpiral : Skill
 		{
 			Chargers = Chargers + 1;
 		}
-		Debug.Log(Chargers + " curNum " + _maxCharges + " Max");
+		//Debug.Log(Chargers + " curNum " + _maxCharges + " Max");
 	}
 
 	private void Timer()

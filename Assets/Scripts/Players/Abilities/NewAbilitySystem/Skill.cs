@@ -183,6 +183,9 @@ public abstract class Skill : NetworkBehaviour
     private Queue<TargetInfo> _targetInfoQueue = new();
     private bool _isAutoMode;
     private ITargetable _target;
+    private ITargetable _tempTarget;
+
+
 
     public bool IsAutoMode
     {
@@ -415,7 +418,6 @@ public abstract class Skill : NetworkBehaviour
 
     public ITargetable GetTarget(bool canGetDead = false)
     {
-		Debug.Log("Try tar " + _target);
 		if (_target != null)
         {
             if (!_target.IsTargetable && !canGetDead) return null;
@@ -427,7 +429,6 @@ public abstract class Skill : NetworkBehaviour
 
 	public Character GetTargetCharacter(bool canGetDead = false)
 	{
-        Debug.Log("Try char" + _target);
 		if (_target != null)
 		{
 			if (!_target.IsTargetable && !canGetDead) return null;
@@ -437,37 +438,68 @@ public abstract class Skill : NetworkBehaviour
 		return null;
 	}
 
-	public void SetTargetCharacter(Character character)
+    public Character GetTempTargetCharacter(bool canGetDead = false)
     {
-        _target = character;
+        if (_tempTarget != null)
+        {
+            if (!_tempTarget.IsTargetable && !canGetDead) return null;
+
+            return (Character)_tempTarget;
+        }
+        return null;
     }
 
 	public void SetTarget(ITargetable character)
 	{
-		_target = character;
+        if (character != null)
+            _target = character;
 	}
+
+    public void ClearTempTarget()
+    {
+        _tempTarget = null;
+    }
 
 	protected void FindTarget(bool canTargetHimself = false, bool canTargetDead = false)
     {
         if (canTargetDead)
         {
-            _target = GetCloserTargets(GetMousePoint(), Radius, canTargetHimself)[0];
+            if (GetCloserTargets(GetMousePoint(), Radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargets(GetMousePoint(), Radius, canTargetHimself)[0];
         }
         else
         {
-            _target = GetCloserTargets(GetMousePoint(), Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
-		}
-	}
+            //Debug.Log()
+            if (GetCloserTargets(GetMousePoint(), Radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargets(GetMousePoint(), Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
+        }
+    }
 
-	protected void FindTargetCharacter(bool canTargetHimself = false, bool canTargetDead = false)
+    protected void FindTarget(float radius, Vector3 point, bool canTargetHimself = false, bool canTargetDead = false)
+    {
+        if (canTargetDead)
+        {
+            if (GetCloserTargets(point, radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargets(point, radius, canTargetHimself)[0];
+        }
+        else
+        {
+            if (GetCloserTargets(point, radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargets(point, radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
+        }
+    }
+
+    protected void FindTargetCharacter(bool canTargetHimself = false, bool canTargetDead = false)
 	{
 		if (canTargetDead)
 		{
-			_target = GetCloserTargetsCharacter(GetMousePoint(), Radius, canTargetHimself)[0];
+            if (GetCloserTargets(GetMousePoint(), Radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargetsCharacter(GetMousePoint(), Radius, canTargetHimself)[0];
 		}
 		else
 		{
-			_target = GetCloserTargetsCharacter(GetMousePoint(), Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
+            if (GetCloserTargets(GetMousePoint(), Radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargetsCharacter(GetMousePoint(), Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
 		}
 	}
 
@@ -882,7 +914,10 @@ public abstract class Skill : NetworkBehaviour
         _skillRender.StartPreview(Area, damage, TargetsLayers);
 
         if (_isAutoLineRender)
+        {
+            Debug.Log("Auto line " + this, this);
             _skillRender.DrawLine(CastLength, CastWidth, damage, TargetsLayers);
+        }
 
         if (_skillType == SkillType.Target)
         {
@@ -911,6 +946,8 @@ public abstract class Skill : NetworkBehaviour
         _skillRender.StopDynamicRadiusColor();
 
         _skillRender.StopPreview();
+        if(_dynamicRendererJob != null)
+            StopCoroutine(_dynamicRendererJob);
 
         if (_skillType == SkillType.Zone)
         {
@@ -1327,6 +1364,7 @@ public abstract class Skill : NetworkBehaviour
         }
 
         PreparingSuccess?.Invoke(this);
+        ClearTempTarget();
         _isPreparing = false;
         StopAutoDraw();
 

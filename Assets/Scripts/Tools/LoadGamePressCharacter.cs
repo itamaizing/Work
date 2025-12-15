@@ -8,7 +8,7 @@ public class LoadGamePressCharacter : MonoBehaviour
 
     void Start()
     {
-        _uiMenuMainWindow = FindObjectOfType<UIMenuMainWindow>();
+        _uiMenuMainWindow = FindFirstObjectByType<UIMenuMainWindow>();
 
         if (_uiMenuMainWindow == null)
             Debug.LogError("UIMenuMainWindow не найден на сцене!");
@@ -18,6 +18,6 @@ public class LoadGamePressCharacter : MonoBehaviour
     {
         if (_uiMenuMainWindow == null) return;
         uIMenuMainCharactersPanelItem.Select();
-        _uiMenuMainWindow.UI_StartClient();
+        //_uiMenuMainWindow.UI_StartClient();
     }
 }

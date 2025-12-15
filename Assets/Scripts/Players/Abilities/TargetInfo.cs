@@ -26,12 +26,14 @@ public class TargetInfo
 
     public void AddTarget(ITargetable target)
     {
-        _targets.Add(target); 
+        if(target != null)
+         _targets.Add(target); 
     }
 
     public void AddTargets(List<ITargetable> targets)
     {
-        _targets.AddRange(targets);
+        if(targets != null)
+            _targets.AddRange(targets);
     }
 
 }

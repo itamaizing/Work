@@ -11,7 +11,7 @@ public class HardenedFlesh : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    private float _buffPercent = 0.2f;
+    private float _buffPercent = 5;
     private int _currentStacks = 0;
     private const int _maxStacks = 5;
 
@@ -29,6 +29,8 @@ public class HardenedFlesh : AbstractCharacterState
         duration = durationToExit;
 
         _health.DefPhysDamage = _originalDefPhysDamage + _originalDefPhysDamage * _buffPercent;
+
+        Debug.Log("Def " + _health.DefPhysDamage);
     }
 
     public override void ExitState()
@@ -39,7 +41,15 @@ public class HardenedFlesh : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        duration = time;
+        if (_currentStacks < _maxStacks)
+        {
+            duration = time;
+            _currentStacks++;
+			_health.DefPhysDamage = _health.DefPhysDamage + _buffPercent;
+
+			Debug.Log("Def " + _health.DefPhysDamage);
+			return false;
+        }
         return false;
     }
 

@@ -32,7 +32,7 @@ public class CleavingBlade_Scorpion : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((Character)targetInfo.GetTargets()[0]);
+        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 
     private void AttackPassed(bool shouldIncreaseCounter, Character target)

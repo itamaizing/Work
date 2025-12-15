@@ -1,7 +1,6 @@
 using DG.Tweening;
 using Mirror;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class IceCloudProjectile : Projectiles
@@ -47,12 +46,8 @@ public class IceCloudProjectile : Projectiles
 		if(collision.TryGetComponent<IDamageable>(out var damageable))
 		{
 			if (collision.TryGetComponent<Character>(out var target) && target != _dad)
-			//if (damageable is HeroComponent target)
-			{
-				
-				//target.CharacterState.AddState(States.Plague, 40, 0, _dad.gameObject, _skill.Name);
-
-				float duration = 100+ _energyDad / 20;
+			{				
+				float duration = 1 + _energyDad / 20;
 
 				if (target.CharacterState.CheckForState(States.Frozen) && _boostDmg)
 				{

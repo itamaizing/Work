@@ -51,17 +51,19 @@ public class Attribute
     public int Id;
     public string Name;
     public int Points;
+    public string Description;
 
     public float DefaultValue;
     public Sprite Icon;
 
     public bool IsVisible = false;
 
-    public Attribute(int id, string name, int points)
+    public Attribute(int id, string name, int points, string description = null)
     {
         Id = id;
         Name = name;
         Points = points;
+        Description = description;
     }
 }
 
@@ -96,7 +98,7 @@ public class AttributeGroup
     [SerializeField]
     private List<Attribute> attributesGroup = new()
     {
-        new Attribute(1001, AttributeNames.Health, 0),
+        new Attribute(1001, AttributeNames.Health, 0, "Health"),
         new Attribute(1002, AttributeNames.Mana, 0),
         new Attribute(1003, AttributeNames.Energy, 0),
         new Attribute(1004, AttributeNames.Rune, 0),

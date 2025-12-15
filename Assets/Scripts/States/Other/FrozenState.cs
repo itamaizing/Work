@@ -30,6 +30,7 @@ public class FrozenState : AbstractCharacterState
 		_characterState = character;
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
+		MaxStacksCount = 1;
 		if (damageToExit == 0)
 		{
 			_damageToExit = 10000;
@@ -88,6 +89,7 @@ public class FrozenState : AbstractCharacterState
 
 	public override void UpdateState()
 	{
+		//Debug.Log("Time " + _duration);
 		if(!_isInited) return;
 		//Debug.Log(" Diffrence" + (_damageToExit - (_characterState.Character.Health.SumDamageTaken - _damageOnStart)) + "Damage to exit " + _damageToExit + " DamageHave " + (_characterState.Character.Health.SumDamageTaken - _damageOnStart));
 		_duration -= Time.deltaTime;
@@ -128,7 +130,7 @@ public class FrozenState : AbstractCharacterState
 
 	public override bool Stack(float time)
 	{
-		//Debug.Log("Try stack");
+		Debug.Log("Try stack");
 		//_damageOnStart = _characterState.Character.Health.SumDamageTaken;
 		//_damageToExit = 1;
 		_duration = _baseDuration;

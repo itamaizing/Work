@@ -142,14 +142,14 @@ public class PoisonSlap : Skill
         }
         else
         {
-            while (GetTargetCharacter() == null)
+            while (GetTempTargetCharacter() == null)
             {
                 if (GetMouseButton)
                 {
                     FindTargetCharacter();
                    // _currentTarget = GetTarget().character;
 
-                    if (GetTargetCharacter() != null)
+                    if (GetTempTargetCharacter() != null)
                     {
                         _firstMousePosition = GetMousePoint();
 
@@ -166,7 +166,11 @@ public class PoisonSlap : Skill
 
             yield return _secondMouseClickCoroutine = StartCoroutine(SecondClick());
         }
-        Debug.LogError("TargetDataError");
+
+        SetTarget(GetTempTargetCharacter());
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.AddTarget(GetTargetCharacter());
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
