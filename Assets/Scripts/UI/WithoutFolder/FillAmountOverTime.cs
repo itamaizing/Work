@@ -9,7 +9,6 @@ public class FillAmountOverTime : MonoBehaviour
 {
     [SerializeField] private Image _image;
 
-    private ISkillForFillAmount _skill;
     private int _defaultFillOrigin;
     private float _currentTime;
     private float _duration;
@@ -21,13 +20,10 @@ public class FillAmountOverTime : MonoBehaviour
     {
         _defaultFillOrigin = _image.fillOrigin;
     }
-    public void Init(ISkillForFillAmount skill)
-    {
-        _skill = skill;
-    }
+
     public void Stop()
     {
-        if(_fillJob != null)
+        if (_fillJob != null)
         {
             StopCoroutine(_fillJob);
             _fillJob = null;
@@ -63,7 +59,6 @@ public class FillAmountOverTime : MonoBehaviour
                 _fillJob = StartCoroutine(ChangeFillAmountOverTimeCoroutine(_duration, curretTime, startValue, endValue));
             }
         }
-
         else
         {
             _duration = duration;
@@ -74,26 +69,13 @@ public class FillAmountOverTime : MonoBehaviour
 
     IEnumerator ChangeFillAmountOverTimeCoroutine(float duration, float curretTime = 0, float startValue = 0, float endValue = 1)
     {
-        float time = 0f;
-        bool isActiveSkill = _skill != null && _skill.RemainingCooldownTime > 0.01f;
-
         while (curretTime < duration)
         {
-            if (isActiveSkill)
-            {
-                time = startValue - duration / _skill.CooldownTime;
-                _image.fillAmount = Mathf.Lerp(startValue - time, endValue, curretTime / duration);
-            }
-
-            else
-            {
-                _image.fillAmount = Mathf.Lerp(startValue, endValue, curretTime / duration);
-            }
+            _image.fillAmount = Mathf.Lerp(startValue, endValue, curretTime / duration);
             curretTime += Time.deltaTime;
             _currentTime = curretTime;
             yield return null;
         }
-
         _fillJob = null;
         _image.fillAmount = endValue;
         Ended?.Invoke(this);
