@@ -432,7 +432,18 @@ public abstract class Skill : NetworkBehaviour
         return null;
     }
 
-	public Character GetTargetCharacter(bool canGetDead = false)
+    public ITargetable GetTempTarget(bool canGetDead = false)
+    {
+        if (_tempTarget != null)
+        {
+            if (!_tempTarget.IsTargetable && !canGetDead) return null;
+
+            return _tempTarget;
+        }
+        return null;
+    }
+
+    public Character GetTargetCharacter(bool canGetDead = false)
 	{
 		if (_target != null)
 		{
@@ -471,7 +482,21 @@ public abstract class Skill : NetworkBehaviour
         _tempTarget = null;
     }
 
-	protected void FindTarget(bool canTargetHimself = false, bool canTargetDead = false)
+    protected void FindTarget(float radius, Vector3 point, bool canTargetHimself = false, bool canTargetDead = false)
+    {
+        if (canTargetDead)
+        {
+            if (GetCloserTargets(point, radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargets(point, radius, canTargetHimself)[0];
+        }
+        else
+        {
+            if (GetCloserTargets(point, radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargets(point, radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
+        }
+    }
+
+    protected void FindTarget(bool canTargetHimself = false, bool canTargetDead = false)
     {
         if (canTargetDead)
         {

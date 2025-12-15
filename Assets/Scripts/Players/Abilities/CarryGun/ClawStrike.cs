@@ -9,18 +9,18 @@ public class ClawStrike : Skill
     [SerializeField] private Character _player;
     [SerializeField] private BasePsionicEnergy _basePsionicEnergy;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
-    [SerializeField] private JumpWithChelicera jumpWithChelicera;
-    [SerializeField] private JumpBack jumpBack;
-    [SerializeField] private float animSpeed = 0.8f;
-    [SerializeField] private float chanceApplyBleeding = 0.15f;
-    [SerializeField] private float chanceApplyBleedingWithJump = 0.4f;
-    [SerializeField] private float durationBleeding = 7f;
-    [SerializeField] private float buffDurationAfterJump = 1f;
-    [SerializeField] private float chanceApplyBleedingIncrease = 0.4f;
+    [SerializeField] private JumpWithChelicera _jumpWithChelicera;
+    [SerializeField] private JumpBack _jumpBack;
+    [SerializeField] private float _animSpeed = 0.8f;
+    [SerializeField] private float _chanceApplyBleeding = 0.15f;
+    [SerializeField] private float _chanceApplyBleedingWithJump = 0.4f;
+    [SerializeField] private float _durationBleeding = 7f;
+    [SerializeField] private float _buffDurationAfterJump = 1f;
+    [SerializeField] private float _chanceApplyBleedingIncrease = 0.4f;
 
     [Header("Damage")]
-    [SerializeField] private float minDamage = 10f;
-    [SerializeField] private float maxDamage = 11f;
+    [SerializeField] private float _minDamage = 10f;
+    [SerializeField] private float _maxDamage = 11f;
 
     #region Constants
 
@@ -48,6 +48,7 @@ public class ClawStrike : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("ClawStrikeTrigger");
     protected override bool IsCanCast => CheckIsCanCast();
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == TargetsLayers;
 
     public float CastWindowDuration { get => _castWindowDuration; set => _castWindowDuration = value; }
 
@@ -83,25 +84,36 @@ public class ClawStrike : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0]);
-        if (GetTarget() is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        ITargetable target = null;
+        TargetInfo targetInfo = new TargetInfo();
 
-        while (target == null)
+        while (GetTempTarget() == null)
         {
             if (GetMouseButton)
             {
                 FindTarget();
-                target = TempTarget;
+
+                if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
+                {
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
+
+                    else
+                    {
+                        if (GetTempTarget() is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        break;
+                    }
+                }
             }
             yield return null;
         }
 
-        TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(target);
+        SetTarget(GetTempTarget());
+
+        targetInfo.Points.Add(GetTarget().Transform.position);
+        targetInfo.AddTarget(GetTarget());
         callbackDataSaved.Invoke(targetInfo);
     }
 
@@ -125,7 +137,7 @@ public class ClawStrike : Skill
 
         IDamageable damageable = target as IDamageable;
         float attackingPsiValue = _spentAttackingPsiEnergy;
-        _baseDamage = UnityEngine.Random.Range(minDamage, maxDamage);
+        _baseDamage = UnityEngine.Random.Range(_minDamage, _maxDamage);
         Damage = _baseDamage;
 
         var damage = new Damage
@@ -168,24 +180,24 @@ public class ClawStrike : Skill
     private void JumpBackClawStrike()
     {
         var lastSkill = _player.Abilities.LastCastedSkill;
-        if (jumpBack != null && (lastSkill is CheliceraStrike || lastSkill is ClawStrike)) jumpBack.EnableJumpBack();
+        if (_jumpBack != null && (lastSkill is CheliceraStrike || lastSkill is ClawStrike)) _jumpBack.EnableJumpBack();
     }
 
     private void TryApplyBleeding(Character target)
     {
         if (!_isBleedingClawStrike) return;
 
-        _totalChanceApplyBleeding = chanceApplyBleeding;
+        _totalChanceApplyBleeding = _chanceApplyBleeding;
         var lastSkill = _player.Abilities.LastCastedSkill;
 
-        if (_isDurationChanceApplyBleedingWithJump && jumpWithChelicera.IsCheliceraStrikeCast && lastSkill is CheliceraStrike) _totalChanceApplyBleeding = chanceApplyBleedingWithJump;
+        if (_isDurationChanceApplyBleedingWithJump && _jumpWithChelicera.IsCheliceraStrikeCast && lastSkill is CheliceraStrike) _totalChanceApplyBleeding = _chanceApplyBleedingWithJump;
 
-        if (_isChanceApplyBleedingIncrease && CheckStateForBleeding(target)) _totalChanceApplyBleeding += chanceApplyBleedingIncrease;
+        if (_isChanceApplyBleedingIncrease && CheckStateForBleeding(target)) _totalChanceApplyBleeding += _chanceApplyBleedingIncrease;
 
         float rand = UnityEngine.Random.Range(RandomChanceMin, RandomChanceMax);
         if (rand <= _totalChanceApplyBleeding) CmdAddBleeding(target);
 
-        jumpWithChelicera.IsCheliceraStrikeCast = false;
+        _jumpWithChelicera.IsCheliceraStrikeCast = false;
         _isDurationChanceApplyBleedingWithJump = false;
         if (coroutineDurationChanceApplyBleedingWithJump != null) StopCoroutine(IDurationChanceApplyBleedingWithJump());
     }
@@ -249,7 +261,7 @@ public class ClawStrike : Skill
     private IEnumerator IDurationChanceApplyBleedingWithJump()
     {
         _isDurationChanceApplyBleedingWithJump = true;
-        yield return new WaitForSeconds(buffDurationAfterJump);
+        yield return new WaitForSeconds(_buffDurationAfterJump);
         _isDurationChanceApplyBleedingWithJump = false;
     }
 
@@ -263,7 +275,7 @@ public class ClawStrike : Skill
     [Command]
     private void CmdAddBleeding(Character target)
     {
-        target.CharacterState.AddState(States.Bleeding, durationBleeding, 0, _player.gameObject, null);
+        target.CharacterState.AddState(States.Bleeding, _durationBleeding, 0, _player.gameObject, null);
     }
 
     [Command]

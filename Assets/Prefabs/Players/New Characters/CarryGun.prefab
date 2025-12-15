@@ -12161,16 +12161,16 @@ MonoBehaviour:
   _player: {fileID: 8319872899575431858}
   _basePsionicEnergy: {fileID: 369466722820063190}
   _attackingPsionicEnergy: {fileID: 1487487552333656207}
-  jumpWithChelicera: {fileID: 7634851756353439263}
-  jumpBack: {fileID: 5778966895328886112}
-  animSpeed: 1.2
-  chanceApplyBleeding: 0.15
-  chanceApplyBleedingWithJump: 0.4
-  durationBleeding: 7
-  buffDurationAfterJump: 10
-  chanceApplyBleedingIncrease: 0.4
-  minDamage: 10
-  maxDamage: 11
+  _jumpWithChelicera: {fileID: 7634851756353439263}
+  _jumpBack: {fileID: 5778966895328886112}
+  _animSpeed: 0.8
+  _chanceApplyBleeding: 0.15
+  _chanceApplyBleedingWithJump: 0.4
+  _durationBleeding: 7
+  _buffDurationAfterJump: 1
+  _chanceApplyBleedingIncrease: 0.4
+  _minDamage: 10
+  _maxDamage: 11
 --- !u!114 &640134254429411212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12232,16 +12232,18 @@ MonoBehaviour:
   _basePsionicEnergy: {fileID: 369466722820063190}
   _attackingPsionicEnergy: {fileID: 1487487552333656207}
   _jumpWithChelicera: {fileID: 7634851756353439263}
-  clawStrike: {fileID: 1846342972592633463}
-  cooldownEnergy: {fileID: 5998867522025010555}
-  animSpeed: 1.4
-  chanceCritDamageEvolutionTwo: 0.05
-  chanceCritDamageEvolutionFour: 0.15
-  chanceApplyBleeding: 0.15
-  durationBleeding: 3
-  chanceApplyBleedingIncrease: 0.4
-  chanceCritDamageIncrease: 0.3
-  cooldownEnergyCost: 2
+  _clawStrike: {fileID: 1846342972592633463}
+  _cooldownEnergy: {fileID: 5998867522025010555}
+  _animSpeed: 1.4
+  _chanceCritDamageEvolutionTwo: 0.05
+  _chanceCritDamageEvolutionFour: 0.15
+  _chanceApplyBleeding: 0.15
+  _durationBleeding: 3
+  _chanceApplyBleedingIncrease: 0.4
+  _chanceCritDamageIncrease: 0.3
+  _cooldownEnergyCost: 2
+  _minDamage: 11
+  _maxDamage: 16
 --- !u!114 &7634851756353439263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12301,11 +12303,11 @@ MonoBehaviour:
   maxCounter: 0
   _player: {fileID: 8319872899575431858}
   _cheliceraeStrike: {fileID: 640134254429411212}
-  clawStrike: {fileID: 1846342972592633463}
-  cooldownEnergy: {fileID: 5998867522025010555}
-  basePsi: 0.1
-  distanceJump: 4
-  cooldownJump: 12
+  _clawStrike: {fileID: 1846342972592633463}
+  _cooldownEnergy: {fileID: 5998867522025010555}
+  _basePsi: 1
+  _distanceJump: 4
+  _cooldownJump: 12
 --- !u!114 &431818094498011482
 MonoBehaviour:
   m_ObjectHideFlags: 0
