@@ -1,6 +1,7 @@
-using System;
 using Mirror;
+using System;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class Level : NetworkBehaviour
 {
@@ -48,6 +49,7 @@ public class Level : NetworkBehaviour
     {
         if(_value + 1 <= _maxValue)
         {
+            Debug.Log("Test lvl + up ");
             _value++;
             LVLUped?.Invoke(_value);
             RpcUpdateInfo(_value, _experience, _experienceForNextLVL);
@@ -64,6 +66,7 @@ public class Level : NetworkBehaviour
     [Command]
     public void CMDAddEXP(int value)
     {
+        Debug.Log("Test lvl + exp on lcient" + value);
         AddEXP(value);
     }
 

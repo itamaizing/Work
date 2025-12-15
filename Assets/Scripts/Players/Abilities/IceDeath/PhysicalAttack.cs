@@ -58,14 +58,14 @@ public class PhysicalAttack : Skill
 	{
 		TargetInfo targetInfo = new TargetInfo();
 
-		if (GetTempTargetCharacter() != null)
+		/*if (GetTempTargetCharacter() != null)
 		{
 			_hero.Move.LookAtTransform(GetTargetCharacter().transform);
 			targetInfo.AddTarget(GetTargetCharacter());
 			targetInfo.Points.Add(GetTargetCharacter().transform.position);
 			callbackDataSaved?.Invoke(targetInfo);
 			yield break;
-		}
+		}*/
 
         while (GetTempTargetCharacter() == null)
         {
@@ -78,7 +78,7 @@ public class PhysicalAttack : Skill
 				{
 					if (IsAllyTarget(GetTempTargetCharacter()) || GetTempTargetCharacter() == Hero)
 					{
-						ClearTarget();						
+						ClearTempTarget();						
 					}
 					else
 					{

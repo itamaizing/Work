@@ -469,7 +469,6 @@ public abstract class Skill : NetworkBehaviour
         }
         else
         {
-            //Debug.Log()
             if (GetCloserTargets(GetMousePoint(), Radius, canTargetHimself) != null)
                 _tempTarget = GetCloserTargets(GetMousePoint(), Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
         }
