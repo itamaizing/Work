@@ -400,7 +400,7 @@ public class Tentacles : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.Points.Count > 0) _spawnPoint = targetInfo.Points[0];
-        if (targetInfo.GetTargets().Count > 0 && targetInfo.GetTargets()[0] is Character character) SetTarget(character);
+        if (targetInfo.GetTargets().Count > 0 && targetInfo.GetTargets()[0] is Character character) SetTarget((ITargetable)character);
     }
 
     public void SetCurrentMinion(MinionComponent newMinion)

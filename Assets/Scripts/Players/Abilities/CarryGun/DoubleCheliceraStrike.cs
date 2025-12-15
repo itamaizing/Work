@@ -126,7 +126,7 @@ public class DoubleCheliceraStrike : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
+        if (targetInfo.GetTargets().Count > 0) SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
         _isCanCancle = false;
     }
 

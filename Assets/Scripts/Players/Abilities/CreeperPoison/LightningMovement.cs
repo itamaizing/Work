@@ -179,7 +179,7 @@ public class LightningMovement : Skill
                     if (_player.Abilities.SelectedSkills.Contains(_lightningStrikes) && _lightningStrikes.IsPreparing)
                     {
                         _lightningStrikes.OnLightningStrikesEnd += HandleLightningStrikesEnd;
-                        _lightningStrikes.SetTarget(character);
+                        _lightningStrikes.SetTarget((ITargetable)character);
                         _lightningStrikes.TryCast();
                         _creeperStrike.DamageDeal(character);
                         _damagedCharacter = character;
@@ -189,7 +189,7 @@ public class LightningMovement : Skill
                     if (_player.Abilities.SelectedSkills.Contains(_poisonSlap) && _poisonSlap.IsPreparing)
                     {
                         _poisonSlap.OnPoisonSlapEnd += HandlePoisonSlapEnd;
-                        _poisonSlap.SetTarget(character);
+                        _poisonSlap.SetTarget((ITargetable)character);
                         _poisonSlap.TryCast();
                         _creeperStrike.DamageDeal(character);
                         _damagedCharacter = character;
@@ -197,7 +197,7 @@ public class LightningMovement : Skill
                     }
 
                     _creeperStrike.OnCreeperStrikeEnd += HandleCreeperStrikeEnd;
-                    _creeperStrike.SetTarget(character);
+                    _creeperStrike.SetTarget((ITargetable)character);
                     _creeperStrike.TryCast();
                     _damagedCharacter = character;
                 }

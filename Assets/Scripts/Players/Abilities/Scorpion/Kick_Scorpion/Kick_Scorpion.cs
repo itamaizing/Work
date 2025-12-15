@@ -246,7 +246,7 @@ public class Kick_Scorpion : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
+        if (targetInfo.GetTargets().Count > 0) SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 
     protected override void ClearData()

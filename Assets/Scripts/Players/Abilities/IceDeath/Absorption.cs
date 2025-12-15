@@ -56,7 +56,7 @@ public class Absorption : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((IcyCorpse)targetInfo.GetTargets()[0]);
+        SetTarget((ITargetable)(IcyCorpse)targetInfo.GetTargets()[0]);
     }
 
     [Command]

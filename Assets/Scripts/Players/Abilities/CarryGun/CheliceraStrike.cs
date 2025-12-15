@@ -126,7 +126,7 @@ public class CheliceraStrike : Skill
         {
             cooldownEnergy.CastCooldownEnergySkill(_jumpWithChelicera.CooldownJump, _jumpWithChelicera);
 
-            SetTarget((Character)_jumpWithChelicera.GetTargetCharacter());
+            SetTarget((ITargetable)(Character)_jumpWithChelicera.GetTargetCharacter());
             _jumpWithChelicera.IsJumpDone = false;
         }
         else cooldownEnergy.CastCooldownEnergySkill(cooldownEnergyCost, this);
@@ -319,7 +319,7 @@ public class CheliceraStrike : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
+        if (targetInfo.GetTargets().Count > 0) SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 
     protected override void ClearData()

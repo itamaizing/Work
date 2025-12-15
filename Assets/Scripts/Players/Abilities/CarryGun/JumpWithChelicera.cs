@@ -199,7 +199,7 @@ public class JumpWithChelicera : Skill
     {
         _cheliceraeStrike.ChanceCritDamageEvolutionFour = isJumpWithCheliceraChanceDamageCrit ? 0.3f : 0.15f;
         _cheliceraeStrike.SetAdditionalDamage(additionalDamage);
-        _cheliceraeStrike.SetTarget(GetTargetCharacter());
+        _cheliceraeStrike.SetTarget((ITargetable)GetTargetCharacter());
         _cheliceraeStrike.CheliceraStrikeCast();
         _cheliceraeStrike.ClearDataCheliceraStrike();
     }
@@ -213,7 +213,7 @@ public class JumpWithChelicera : Skill
         {
             _cheliceraeStrike.ChanceCritDamageEvolutionFour = isJumpWithCheliceraChanceDamageCrit ? 0.3f : 0.15f;
             _cheliceraeStrike.SetAdditionalDamage(additionalDamage);
-            _cheliceraeStrike.SetTarget(GetTargetCharacter());
+            _cheliceraeStrike.SetTarget((ITargetable)GetTargetCharacter());
             _cheliceraeStrike.CheliceraStrikeCast();
             _cheliceraeStrike.ClearDataCheliceraStrike();
         }
@@ -221,7 +221,7 @@ public class JumpWithChelicera : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0] as Character);
+        if (targetInfo.GetTargets().Count > 0) SetTarget((ITargetable)(targetInfo.GetTargets()[0] as Character));
     }
 
     public void JumpWithCheliceraCast() => AnimStartCastCoroutine();

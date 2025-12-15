@@ -78,7 +78,7 @@ public class SleepSpell : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0] as Character);
+        if (targetInfo.GetTargets().Count > 0) SetTarget((ITargetable)(targetInfo.GetTargets()[0] as Character));
     }
 
     #region Talent

@@ -81,7 +81,7 @@ public abstract class GameRules : NetworkBehaviour
 
     protected void FindGameManager()
     {
-        _gameManager = FindObjectOfType<GameManager>();
+        _gameManager = FindAnyObjectByType<GameManager>();
 
         if (_gameManager == null) return;
 

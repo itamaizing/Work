@@ -1,5 +1,6 @@
 using System;
 using Mirror;
+using UnityEngine;
 
 public class Level : NetworkBehaviour
 {
@@ -26,7 +27,7 @@ public class Level : NetworkBehaviour
             return;
 
         value = (int)(value * _multiplierToExperience);
-
+        Debug.Log("Test lvl + exp " + value);
         _experience += value;
         EXPAdded?.Invoke(value);
         RpcUpdateInfo(_value, _experience, _experienceForNextLVL);
