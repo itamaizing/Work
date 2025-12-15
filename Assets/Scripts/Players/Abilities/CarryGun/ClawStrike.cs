@@ -22,6 +22,20 @@ public class ClawStrike : Skill
     [SerializeField] private float minDamage = 10f;
     [SerializeField] private float maxDamage = 11f;
 
+    #region Constants
+
+    private const float AnimationSpeedDefault = 1f;
+    private const float AnimationSpeedFast = 1.4f;
+
+    private const float RandomChanceMin = 0f;
+    private const float RandomChanceMax = 1f;
+
+    private const float PsiDispel_3 = 30f;
+    private const float PsiDispel_2 = 20f;
+    private const float PsiDispel_1 = 10f;
+
+    #endregion
+
     private bool _isDurationChanceApplyBleedingWithJump = false;
     private bool _isAnimationAcceleration = false;
     private bool _isLastClawStrike;
@@ -133,9 +147,9 @@ public class ClawStrike : Skill
 
             int dispelCount = 0;
 
-            if (attackingPsiValue >= 30) dispelCount = 3;
-            else if (attackingPsiValue >= 20) dispelCount = 2;
-            else if (attackingPsiValue >= 10) dispelCount = 1;
+            if (attackingPsiValue >= PsiDispel_3) dispelCount = 3;
+            else if (attackingPsiValue >= PsiDispel_2) dispelCount = 2;
+            else if (attackingPsiValue >= PsiDispel_1) dispelCount = 1;
 
             if (dispelCount > 0 && targetCharacter != null) for (int i = 0; i < dispelCount; i++) CmdDispel(targetCharacter, dispelCount);
 
@@ -168,7 +182,7 @@ public class ClawStrike : Skill
 
         if (_isChanceApplyBleedingIncrease && CheckStateForBleeding(target)) _totalChanceApplyBleeding += chanceApplyBleedingIncrease;
 
-        float rand = UnityEngine.Random.Range(0f, 1f);
+        float rand = UnityEngine.Random.Range(RandomChanceMin, RandomChanceMax);
         if (rand <= _totalChanceApplyBleeding) CmdAddBleeding(target);
 
         jumpWithChelicera.IsCheliceraStrikeCast = false;
@@ -179,24 +193,24 @@ public class ClawStrike : Skill
     public void ClawStrikePreparingForAnim()
     {
         var lastSkill = _player.Abilities.LastCastedSkill;
-        float multiplier = 0;
+        float multiplier;
 
         if (_isAnimationAcceleration)
         {
             if ((lastSkill is ClawStrike && _isLastClawStrike) || lastSkill is CheliceraStrike)
             {
-                multiplier = 1.4f;
+                multiplier = AnimationSpeedFast;
                 _isLastClawStrike = false;
             }
 
             else
             {
-                multiplier = 1f;
+                multiplier = AnimationSpeedDefault;
                 _isLastClawStrike = lastSkill is ClawStrike;
             }
         }
 
-        else multiplier = 1f;
+        else multiplier = AnimationSpeedDefault;
 
         Hero.Animator.SetFloat("ClawStrikeSpeed", multiplier);
 

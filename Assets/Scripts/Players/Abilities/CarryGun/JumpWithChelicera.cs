@@ -215,7 +215,6 @@ public class JumpWithChelicera : Skill
         {
             _cheliceraeStrike.ChanceCritDamageEvolutionFour = isJumpWithCheliceraChanceDamageCrit ? 0.3f : 0.15f;
             _cheliceraeStrike.SetAdditionalDamage(additionalDamage);
-            _cheliceraeStrike.SetTarget(target);
             _cheliceraeStrike.CheliceraStrikeCast();
             _cheliceraeStrike.ClearDataCheliceraStrike();
         }
