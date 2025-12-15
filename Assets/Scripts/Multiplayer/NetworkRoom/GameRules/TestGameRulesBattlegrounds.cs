@@ -35,7 +35,7 @@ public class TestGameRulesBattlegrounds : GameRules
 
     protected override void OnPlayerDied(Character player)
     {
-		//AddExpForAllEnemy(player);
+		AddExpForAllEnemy(player);
 		if (_regenCoroutine != null) return;
 		//AddExpForAllEnemy(player);
 		_regenCoroutine = StartCoroutine(RevivalPlayerCoroutine(player));

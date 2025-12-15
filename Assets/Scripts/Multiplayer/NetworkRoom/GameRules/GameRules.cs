@@ -200,7 +200,7 @@ public abstract class GameRules : NetworkBehaviour
     protected IEnumerator RevivalPlayerCoroutine(Character player)
     {
         float time = _baseTimeForRevival + _AddTimeForRevival * player.LVL.Value;
-        UnityEngine.Debug.Log("Try revive");
+        //UnityEngine.Debug.Log("Try revive");
         RpcStartReviveTimer(player.gameObject, time);
         yield return new WaitForSecondsRealtime(time);
         player.ServerResetAll();
