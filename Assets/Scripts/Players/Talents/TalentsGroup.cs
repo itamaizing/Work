@@ -60,7 +60,6 @@ public class TalentsGroup
 				talents = talent;
 			}
 		}
-		//var talent2 = _talentGroup.FirstOrDefault(a => a.Data == data);
 		if (talents == null) return;
 
 		talents.SetActive(isActive);

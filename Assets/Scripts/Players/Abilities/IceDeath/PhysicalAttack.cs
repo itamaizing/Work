@@ -225,7 +225,6 @@ public class PhysicalAttack : Skill
 
 	private void SingleHit(Character enemy)
 	{
-		Debug.Log("Single hit");
 		float curDamage = _damageValue + UnityEngine.Random.Range(0, 2);
 
 		Damage damage = new Damage
@@ -330,12 +329,13 @@ public class PhysicalAttack : Skill
 
 	public override void LoadTargetData(TargetInfo targetInfo)
 	{
-		if (targetInfo.GetTargets().Count > 0) SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+		if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0]);
 	}
 
     protected override void ClearData()
     {
 		ClearTarget();
+		ClearTempTarget();
 		_hero.Move.StopLookAt();
 	}
 }

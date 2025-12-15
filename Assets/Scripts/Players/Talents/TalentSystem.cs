@@ -41,6 +41,8 @@ public class TalentSystem : NetworkBehaviour
         return activeTalents;
 	}
     
+    public int Points => _points;
+    public bool CanOpenTalent => _points > 0;
 
    // [Command]
     public void Initialize()
@@ -90,6 +92,11 @@ public class TalentSystem : NetworkBehaviour
         _points += value;
     }
 
+    public void SetPoints(int value)
+    {
+        _points = value;
+    }
+
    /* public void SetActive(int row, int id, bool value)
     {
         _talents[row].TalentsData[id].SetActive(value);
@@ -98,10 +105,19 @@ public class TalentSystem : NetworkBehaviour
 	public void SetActive(int group, int row ,int id, bool value)
 	{
         _talents[group].TalentRows[row].Talents[id].SetActive(value);
+        if(value)
+            _points--;
 	}
+    public void SetActive(int group, int row, string name, bool value)
+    {
+        var talent = _talents[group].TalentRows[row].Talents?.FirstOrDefault(o => o.Data.Name == name);
+        talent.SetActive(value);
+        if (value)
+            _points--;
+        //_talents[group].TalentRows[row].Talents[id].SetActive(value);
+    }
 
-
-	public void SwitchTalent(int id, int row, string talentName, bool isActive)
+    public void SwitchTalent(int id, int row, string talentName, bool isActive)
 	{
 		var talentGroup = TalentsGroups.FirstOrDefault(o => o.ID == id);
         var talentRow = talentGroup.TalentRows[row];

@@ -1087,7 +1087,6 @@ public abstract class Skill : NetworkBehaviour
                 {
                     if (hit.collider.TryGetComponent<IDamageable>(out _))
                     {
-
                         IsAutoMode = true;
                         AutoModeChanged?.Invoke(true);
                     }
