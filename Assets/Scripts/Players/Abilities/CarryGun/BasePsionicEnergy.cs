@@ -99,8 +99,6 @@ public class BasePsionicEnergy : Resource, IDamageable
         if (damage.Type != DamageType.Physical) return;
         if (psionicEnergySkill == null || !psionicEnergySkill.IsPsiEnergyActive) return;
 
-        Debug.Log("1");
-
         float energyGain = damage.Value * DamageToPsiConversionRate;
         CurrentValue = Mathf.Min(CurrentValue + energyGain, MaxValue);
 

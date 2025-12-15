@@ -29,7 +29,7 @@ public class JumpWithChelicera : Skill
     private const float JumpCritChanceEnabled = 0.3f;
     private const float JumpCritChanceDisabled = 0.15f;
 
-    private const float RadiusTargetClick = 1f;
+    private const float TargetSearchRadius = 1f;
     #endregion
 
     private Animator _animator;
@@ -91,7 +91,7 @@ public class JumpWithChelicera : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget(RadiusTargetClick, GetMousePoint());
+                FindTarget(TargetSearchRadius, GetMousePoint());
 
                 if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
                 {

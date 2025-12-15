@@ -13349,7 +13349,7 @@ MonoBehaviour:
   _spawnComponent: {fileID: 2769373615330125278}
   _visionComponent: {fileID: 0}
   _auras: {fileID: 0}
-  _targetSeeker: {fileID: 0}
+  _targetSeeker: {fileID: 5247455161781399062}
   _characterParent: {fileID: 0}
   _expForDieKill: 5
   _navMeshAgent: {fileID: 0}
@@ -13918,7 +13918,7 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 3
-  animator: {fileID: 1215395125402789392}
+  _animator: {fileID: 1215395125402789392}
   _playerLinks: {fileID: 5830977165762126247}
   _moveDurationPerUnit: 0.2
   _stopDistance: 1.5
@@ -19189,6 +19189,7 @@ GameObject:
   - component: {fileID: 1351873239130007038}
   - component: {fileID: 7156643955012966110}
   - component: {fileID: 5133789345881183399}
+  - component: {fileID: 5247455161781399062}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -19395,6 +19396,22 @@ MonoBehaviour:
   _cursorPrepareTexture: {fileID: 2800000, guid: 096e465ecc8d8e144966847b23995ccc, type: 3}
   _cursorPrepareLightTexture: {fileID: 2800000, guid: 096e465ecc8d8e144966847b23995ccc, type: 3}
   _cursorDefaultTexture: {fileID: 2800000, guid: 177e9214fe839c641b100e52e7032b0c, type: 3}
+--- !u!114 &5247455161781399062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5088517133009842604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0eaa338de0c76e4fbe06fa8331fcfa7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TargetSeeker
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 2097920
+  _hero: {fileID: 5830977165762126247}
 --- !u!1 &5212089423994370004
 GameObject:
   m_ObjectHideFlags: 0

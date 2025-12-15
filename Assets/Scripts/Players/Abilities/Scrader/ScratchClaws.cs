@@ -7,22 +7,29 @@ using UnityEngine.AI;
 
 public class ScratchClaws : Skill
 {
-    [SerializeField] private Animator animator;
+    [SerializeField] private Animator _animator;
     [SerializeField] private Character _playerLinks;
     [SerializeField] private float _moveDurationPerUnit = 0.2f;
     [SerializeField] private float _stopDistance = 1.5f;
     [SerializeField] private float _bleedingDuration = 3f;
     [SerializeField, Range(0, 1f)] private float _bleedingChance = 1f;
+    [SerializeField] private float minDamage = 1f;
+    [SerializeField] private float maxDamage = 4f;
 
+    #region Const
+    private const float StopDistanceThreshold = 0.05f;
+    private const float MoveEventThreshold = 1f;
+    private const float SegmentMinDistance = 0.01f;
+    private const float RaycastCheckDistance = 1f;
+    #endregion
     private Tween _activeTween;
     private bool _moveToTarget = true;
     private bool _setTarget = false;
+
     public Action<GameObject> DoMove;
 
     private const string _startAnimTrigger = "AttackScaredMain";
-
-    //private IDamageable _target;
-    //private Character _runtimeTarget;
+    private const float TargetSearchRadius = 1f;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash(_startAnimTrigger);
@@ -38,20 +45,26 @@ public class ScratchClaws : Skill
 
     public void scraderClawsAnim()
     {
-        animator.SetTrigger("AttackScared");
+        _animator.SetTrigger("AttackScared");
     }
 
-    protected override bool IsCanCast => GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius && NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
+    protected override bool IsCanCast => GetTarget() != null;
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == TargetsLayers;
+
+    private bool CheckIsCanCast()
+    {
+        if (GetTarget() == null) return false;
+        return Vector3.Distance(GetTarget().Transform.position, transform.position) <= Radius && NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
+    }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0 && targetInfo.GetTargets()[0] is Character character) SetTarget(character);
-
+        if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0]);
     }
 
     private void OnEnable()
     {
-        Damage = UnityEngine.Random.Range(1f, 4f);
+        Damage = UnityEngine.Random.Range(minDamage, maxDamage);
         OnSkillCanceled += HandleSkillCanceled;
     }
 
@@ -73,45 +86,45 @@ public class ScratchClaws : Skill
         AnimCastEnded();
     }
 
-protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
-{
-    _moveToTarget = true;
-
-    while (GetTargetCharacter() == null && _moveToTarget)
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
+        _moveToTarget = true;
         if (Damage <= 0) Damage = UnityEngine.Random.Range(1f, 4f);
 
-        if (GetMouseButton && !_setTarget)
+        while (GetTempTarget() == null && _moveToTarget)
         {
-            FindTargetCharacter();
-            var target = GetTargetCharacter();
-
-            if (target != null)
+            if (GetMouseButton && !_setTarget)
             {
-                SetTarget(target);
-                _setTarget = true;
+                FindTarget(TargetSearchRadius, GetMousePoint());
 
-                if (Vector3.Distance(transform.position, target.transform.position) > _stopDistance + 0.05f)
-                    StartCoroutine(MoveToTargetCharacter(target));
-                else
-                    _moveToTarget = false;
+                if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
+                {
+                    _setTarget = true;
+
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
+                    else break;
+                }
             }
+
+            yield return null;
         }
 
-        yield return null;
+        SetTarget(GetTempTarget());
+
+        float distanceToTarget = Vector3.Distance(transform.position, GetTempTarget().Transform.position);
+        if (distanceToTarget > _stopDistance + StopDistanceThreshold) StartCoroutine(MoveToTargetCharacter(GetTempTarget() as IDamageable));
+        else _moveToTarget = false;
+
+        TargetInfo info = new();
+        info.AddTarget(GetTarget());
+        targetDataSavedCallback?.Invoke(info);
     }
-
-    TargetInfo info = new();
-    info.AddTarget(GetTargetCharacter());
-    targetDataSavedCallback?.Invoke(info);
-
-    animator.SetTrigger("AttackScared");
-}
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() == null) yield break;
-        CmdApplyScratch(GetTargetCharacter().gameObject);
+        if (!CheckIsCanCast()) yield return null;
+        IDamageable damageable = GetTarget() as IDamageable;
+        if (!_moveToTarget) CmdApplyScratch(damageable.gameObject);
 
         yield return null;
     }
@@ -153,7 +166,7 @@ protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCall
             float distance = Vector3.Distance(transform.position, segmentTarget);
             float duration = distance * _moveDurationPerUnit;
 
-            if (distance < 0.01f) continue;
+            if (distance < SegmentMinDistance) continue;
 
             bool interrupted = false;
 
@@ -170,13 +183,13 @@ protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCall
                     if (!gameObject.activeInHierarchy) return;
 
                     float movedDist = Vector3.Distance(lastDoMovePoint, transform.position);
-                    if (movedDist >= 1f)
+                    if (movedDist >= MoveEventThreshold)
                     {
                         DoMove?.Invoke(gameObject);
                         lastDoMovePoint = transform.position;
                     }
 
-                    if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, 1f, _obstacle)) interrupted = true;
+                    if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, RaycastCheckDistance, _obstacle)) interrupted = true;
 
                     if (interrupted)
                     {
@@ -191,12 +204,8 @@ protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCall
         Hero.Move.CanMove = true;
         _moveToTarget = false;
 
-        var character = GetTargetCharacter();
-
-        if (character != null && Vector3.Distance(transform.position, character.transform.position) <= Radius && NoObstacles(character.transform.position, transform.position, _obstacle));
-        {
-            CmdApplyScratch(target.gameObject);
-        }
+        _animator.SetTrigger("AttackScared");
+        CmdApplyScratch(target.gameObject);
     }
     private Vector3 GetApproachPointNearEnemy(IDamageable enemy)
     {
@@ -218,7 +227,8 @@ protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCall
         };
 
         ApplyDamage(damage, target);
+        Debug.Log("1");
         
-        if (GetTargetCharacter() != null && UnityEngine.Random.value <= _bleedingChance) GetTargetCharacter().CharacterState.AddState(States.Bleeding, _bleedingDuration, Damage, _playerLinks.gameObject, name);
+        if (targetCurrent != null && UnityEngine.Random.value <= _bleedingChance) targetCurrent.CharacterState.AddState(States.Bleeding, _bleedingDuration, Damage, _playerLinks.gameObject, name);
     }
 }

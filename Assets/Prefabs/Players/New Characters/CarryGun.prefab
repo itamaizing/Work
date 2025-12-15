@@ -12371,7 +12371,7 @@ MonoBehaviour:
   _attackingPsionicEnergy: {fileID: 1487487552333656207}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 8192
+    m_Bits: 0
   _spawnComponent: {fileID: 4260348460032838645}
   _radiusTarget: 0.5
 --- !u!114 &1791349742383392303
