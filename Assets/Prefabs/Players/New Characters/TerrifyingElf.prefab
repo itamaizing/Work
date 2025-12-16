@@ -20224,11 +20224,11 @@ MonoBehaviour:
   maxCounter: 0
   _pullingHealthPrefab: {fileID: 7744228389031826322, guid: 01d3359ced6c7904e8d18b398f189893, type: 3}
   _spawnPoint: {fileID: 1110070738435946966}
-  health: {fileID: 2320460443592093226}
-  ghost: []
-  tickInterval: 1
-  audioClip: {fileID: 8300000, guid: 409e6a4f7b85bff4dacaacb82d4640b7, type: 3}
-  ghostSkill: {fileID: 1718052129104348959}
+  _health: {fileID: 2320460443592093226}
+  _ghost: []
+  _tickInterval: 1
+  _audioClip: {fileID: 8300000, guid: 409e6a4f7b85bff4dacaacb82d4640b7, type: 3}
+  _ghostSkill: {fileID: 1718052129104348959}
 --- !u!114 &1718052129104348959
 MonoBehaviour:
   m_ObjectHideFlags: 0
