@@ -53,13 +53,14 @@ public class GrowTree : Skill
 
     #region Const
     private const float MaxMouseRaycastDistance = 1000f;
-    private const float ArrowLookMinThresholdSqr = 0.0001f;
     private const float ExtendedRadiusCheckInterval = 0.1f;
     private const float AnimatorCrossFadeDuration = 0.1f;
     private const float TreeTeleportYOffset = 5f;
     private const float CastStreamDurationFirst = 3f;
     private const float CastStreamDurationSecond = 1.5f;
     private const float SearchRadiusTarget = 1f;
+    private const float SearchMousClickTarget = 1f;
+    private const float MagicEvade = 100f;
     #endregion
 
     protected override bool IsCanCast
@@ -243,15 +244,25 @@ public class GrowTree : Skill
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter(SearchRadiusTarget, GetMousePoint(), true);
-                targetPoint = GetMousePoint();
+                Vector3 mousePoint = GetMousePoint();
+                bool clickedOnHero = false;
 
-                if (GetTempTargetCharacter() != null && GetTempTargetCharacter() == _hero)
+                Collider[] colliders = Physics.OverlapSphere(mousePoint, SearchMousClickTarget);
+                foreach (var collider in colliders)
                 {
-                    Debug.Log("1");
+                    if (collider.TryGetComponent<Character>(out Character hitCharacter) && hitCharacter == _hero)
+                    {
+                        clickedOnHero = true;
+                        break;
+                    }
+                }
+
+                targetPoint = mousePoint;
+
+                if (clickedOnHero)
+                {
                     targetPoint = _hero.transform.position;
                     _isSpawnHero = true;
-                    ClearTempTarget();
                 }
 
                 else
@@ -330,6 +341,7 @@ public class GrowTree : Skill
 
         if (_isSpawnHero) CmdSpawnTreeAndTeleport(_hero.transform.position);
         else CmdSpawnTree(spawnPos, _castFromExtendedRadius);
+
 
         if (!_castFromExtendedRadius) yield return _waitForCastStreamDurationSecond;
         else yield return _waitForCastStreamDurationThird;
@@ -410,7 +422,7 @@ public class GrowTree : Skill
             _healthTree.InitializeObject(_treeData);
             if (_treeData.MinEndurance) _healthTree.ServerStartFillHP(_healthTree.ObjectData.MaxHealth, regenDuration);
 
-            if (_treeMagicEvadeTalent) _healthTree.SetMagicEvade(100);
+            if (_treeMagicEvadeTalent) _healthTree.SetMagicEvade(MagicEvade);
 
         }
         ResetShotCooldowns();
@@ -438,11 +450,11 @@ public class GrowTree : Skill
         {
             _healthTree.InitializeObject(_treeData);
 
-            float regenDuration = CastStreamDuration - CastStreamDuration / 3f;
+            float regenDuration = CastStreamDuration - CastStreamDuration / CastStreamDurationFirst;
 
             if (_treeData.MinEndurance) _healthTree.ServerStartFillHP(_healthTree.ObjectData.MaxHealth, regenDuration);
 
-            if (_treeMagicEvadeTalent) _healthTree.SetMagicEvade(100);
+            if (_treeMagicEvadeTalent) _healthTree.SetMagicEvade(MagicEvade);
         }
         ResetShotCooldowns();
 
