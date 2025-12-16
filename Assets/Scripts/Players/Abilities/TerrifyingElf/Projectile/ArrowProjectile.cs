@@ -7,6 +7,7 @@ public class ArrowProjectile : Projectiles
 {
     [SerializeField] private float _speed = 10f;
     [SerializeField] private float _lifeTime = 5f;
+    [SerializeField] private float _arrowYOffset = 1.5f;
     [SerializeField] private bool _arrowDark;
     [SerializeField] private float duration;
     [SerializeField] private DamageType damageTypePhysics;
@@ -58,7 +59,6 @@ public class ArrowProjectile : Projectiles
     {
         _startPosition = transform.position;
         _followTarget = target;
-        _followTarget.position = _followTarget.position + Vector3.up;
         _isFollowingTarget = true;
         sphereCollider.enabled = true;
         RpcArrowTrue();
@@ -138,7 +138,8 @@ public class ArrowProjectile : Projectiles
     {
         while (_isFollowingTarget && _followTarget != null)
         {
-            Vector3 dir = (_followTarget.position - transform.position).normalized;
+            Vector3 targetPos = _followTarget.position + Vector3.up * _arrowYOffset;
+            Vector3 dir = (targetPos - transform.position).normalized;
             if (_rb != null)
                 _rb.linearVelocity = dir * _speed;
 

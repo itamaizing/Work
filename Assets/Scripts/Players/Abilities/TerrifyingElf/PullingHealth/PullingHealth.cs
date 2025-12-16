@@ -303,8 +303,9 @@ public class PullingHealth : Skill
             var target = GetTarget() as Character;
             if (target == null || target.IsDead)
             {
-                CmdDestroyEffect();
+                EndAnimDestroyEffect();
                 _isStreaming = false;
+                TryCancel();
                 yield break;
             }
 
@@ -317,13 +318,7 @@ public class PullingHealth : Skill
 
             if (damageable != null && (Input.GetMouseButtonDown(1) || ( Vector3.Distance(transform.position, damageable.transform.position) > Radius)) || Vector3.Distance(initialPosition, transform.position) > MaxPositionShift && !_ignoreMoveCheck)
             {
-                _hero.Animator.ResetTrigger(Animator.StringToHash("PullingHealthMidTrigger"));
-                _hero.NetworkAnimator.ResetTrigger(Animator.StringToHash("PullingHealthMidTrigger"));
-
-                CmdCrossFade();
-                _hero.Animator.CrossFade("PullingHealthCastDelayExit", PullingHealthExitCrossFadeDuration);
-
-                CmdDestroyEffect();
+                EndAnimDestroyEffect();
                 _isStreaming = false;
                 yield break;
             }
@@ -358,6 +353,7 @@ public class PullingHealth : Skill
 
         FinishStream();
     }
+
     private void FinishStream()
     {
         CastStreamDuration = _baseCastStreamDuration;
@@ -365,6 +361,16 @@ public class PullingHealth : Skill
         _isStreaming = false;
         _streamFinished = true;
 
+        CmdDestroyEffect();
+    }
+
+    private void EndAnimDestroyEffect()
+    {
+        _hero.Animator.ResetTrigger(Animator.StringToHash("PullingHealthMidTrigger"));
+        _hero.NetworkAnimator.ResetTrigger(Animator.StringToHash("PullingHealthMidTrigger"));
+
+        CmdCrossFade();
+        _hero.Animator.CrossFade("PullingHealthCastDelayExit", PullingHealthExitCrossFadeDuration);
         CmdDestroyEffect();
     }
 
