@@ -6,17 +6,29 @@ using UnityEngine;
 
 public class Silence : Skill
 {
-    [SerializeField] private GameObject effectPrefab;
+    [SerializeField] private GameObject _effectPrefab;
     [SerializeField] private bool _reducedCooldown;
-    [SerializeField] private AudioClip audioClip;
+    [SerializeField] private AudioClip _audioClip;
     [SerializeField] private int _maxAdditionalManaUsage = 8;
-    [SerializeField] private Ghost ghost;
-    [SerializeField] private float damageMinoin = 60;
-    [SerializeField] private SkillQueue skillQueue;
+    [SerializeField] private Ghost _ghost;
+    [SerializeField] private float _damageMinoin = 60;
+    [SerializeField] private SkillQueue _skillQueue;
 
-    private AudioSource audioSource;
+    #region const
+    private const float SilenceAreaRadiusOffset = 1.5f;
+    private const float GhostCooldownPerMinion = 4f;
+    private const float DurationPerMana = 0.5f;
+    private const int MinManaReserve = 1;
+    private const int ManaThreshold = 1;
+    private const float GhostHealthCheckDelay = 0.1f;
+    private const float BaseDarknessMultiplier = 1.4f;
+    private const float StackMultiplierBonus = 0.1f;
+    #endregion
+
+    private AudioSource _audioSource;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private float _finalDuration;
+    private WaitForSeconds _waitForGhostHealthCheckDelay;
 
     private bool _effectsDarknessTalent;
     private bool _canAttackMinions;
@@ -27,12 +39,12 @@ public class Silence : Skill
 
     private void OnEnable()
     {
-        if (skillQueue != null) skillQueue.Cancell += HandleSkillDeleted;
+        if (_skillQueue != null) _skillQueue.Cancell += HandleSkillDeleted;
     }
 
     private void OnDisable()
     {
-        if (skillQueue != null) skillQueue.Cancell -= HandleSkillDeleted;
+        if (_skillQueue != null) _skillQueue.Cancell -= HandleSkillDeleted;
     }
 
     private void HandleSkillDeleted(Skill skill)
@@ -62,7 +74,8 @@ public class Silence : Skill
     private void Start()
     {
         _baseCooldownTime = CooldownTime;
-        audioSource = GetComponent<AudioSource>();
+        _audioSource = GetComponent<AudioSource>();
+        _waitForGhostHealthCheckDelay = new WaitForSeconds(GhostHealthCheckDelay);
     }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -106,7 +119,7 @@ public class Silence : Skill
 
     private void ApplyStateToEnemiesInZone(Vector3 target)
     {
-        Collider[] hitColliders = Physics.OverlapSphere(target, Area - 1.5f, TargetsLayers);
+        Collider[] hitColliders = Physics.OverlapSphere(target, Area - SilenceAreaRadiusOffset, TargetsLayers);
 
         int minionHitCount = 0;
         int ghostAuraMinionHitCount = 0;
@@ -116,7 +129,7 @@ public class Silence : Skill
             if (hitCollider.gameObject != Hero.gameObject)  ApplyEnemiesZone(hitCollider, ref minionHitCount, ref ghostAuraMinionHitCount);
         }
 
-        if (minionHitCount > 0 && _isSilenceEffectsOnMinionMagic) DecreaseSetCooldown(4f * minionHitCount);
+        if (minionHitCount > 0 && _isSilenceEffectsOnMinionMagic) DecreaseSetCooldown(GhostCooldownPerMinion * minionHitCount);
         if (ghostAuraMinionHitCount >= 2 && _isSilenceEffectGhostCast) CmdTriggerGhostFreeWindow();
     }
 
@@ -128,15 +141,13 @@ public class Silence : Skill
         var manaRes = Hero.TryGetResource(ResourceType.Mana);
         if (manaRes != null)
         {
-            int availableMana = Mathf.Min((int)manaRes.CurrentValue - 1, _maxAdditionalManaUsage);
+            int availableMana = Mathf.Min((int)manaRes.CurrentValue - MinManaReserve, _maxAdditionalManaUsage);
 
-            if (availableMana > 1)
+            if (availableMana > ManaThreshold)
             {
                 manaRes.TryUse(availableMana);
-                _finalDuration += 0.5f * availableMana;
+                _finalDuration += DurationPerMana * availableMana;
             }
-
-            Debug.Log("1");
         }
     }
 
@@ -169,7 +180,7 @@ public class Silence : Skill
 
     private void MinionDamage(MinionComponent minion)
     {
-        ApplyDamage(damageMinoin, DamageType.Magical, minion);
+        ApplyDamage(_damageMinoin, DamageType.Magical, minion);
         RewardMana();
     }
 
@@ -177,7 +188,7 @@ public class Silence : Skill
     {
         if (Hero.TryGetResource(ResourceType.Mana) is Mana manaResource)
         {
-            manaResource.CmdAdd(damageMinoin);
+            manaResource.CmdAdd(_damageMinoin);
             Debug.Log("Restored mana for hitting a magical creature.");
         }
     }
@@ -201,12 +212,12 @@ public class Silence : Skill
 
     private IEnumerator IGhostHealthCheck(MinionComponent target)
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return _waitForGhostHealthCheckDelay;
         if (target.TryGetComponent<GhostAura>(out var ghostAura))
         {
             if (ghostAura.TryGetComponent<Health>(out var health))
             {
-                if (health.CurrentValue <= 0) ghost.ResetCurrentChargeCooldown(0);
+                if (health.CurrentValue <= 0) _ghost.ResetCurrentChargeCooldown(0);
             }
         }
 
@@ -236,7 +247,7 @@ public class Silence : Skill
     [ClientRpc]
     private void RpcSpawnEffect(Vector3 point)
     {
-        if (effectPrefab != null) Instantiate(effectPrefab, point, Quaternion.identity);
+        if (_effectPrefab != null) Instantiate(_effectPrefab, point, Quaternion.identity);
     }
 
     [Command]
@@ -249,7 +260,7 @@ public class Silence : Skill
         if (_effectsDarknessTalent && targetState.CheckForState(States.InnerDarkness))
         {
             int stacks = targetState.CheckStateStacks(States.InnerDarkness);
-            float durationMultiplier = 1.4f + 0.1f * (stacks - 1);
+            float durationMultiplier = BaseDarknessMultiplier + StackMultiplierBonus * (stacks - 1);
             duration += durationMultiplier;
         }
 
@@ -259,13 +270,13 @@ public class Silence : Skill
     [ClientRpc]
     private void RpcPlayShotSound()
     {
-        if (audioSource != null && audioClip != null) audioSource.PlayOneShot(audioClip);
+        if (_audioSource != null && _audioClip != null) _audioSource.PlayOneShot(_audioClip);
     }
 
     [ClientRpc]
     private void RpcTriggerGhostFreeWindow()
     {
-        if (ghost != null) ghost.TryStartGhostBoostWindow();
+        if (_ghost != null) _ghost.TryStartGhostBoostWindow();
     }
 
     protected override void ClearData()

@@ -20024,13 +20024,13 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  effectPrefab: {fileID: 4195082103051815756, guid: 2d76beef07956e948946e409a372473d, type: 3}
+  _effectPrefab: {fileID: 4195082103051815756, guid: 2d76beef07956e948946e409a372473d, type: 3}
   _reducedCooldown: 0
-  audioClip: {fileID: 8300000, guid: 0e697ad5442a11a4990c66e9b6fb2e18, type: 3}
+  _audioClip: {fileID: 8300000, guid: 0e697ad5442a11a4990c66e9b6fb2e18, type: 3}
   _maxAdditionalManaUsage: 8
-  ghost: {fileID: 1718052129104348959}
-  damageMinoin: 60
-  skillQueue: {fileID: 4490336970382221666}
+  _ghost: {fileID: 1718052129104348959}
+  _damageMinoin: 60
+  _skillQueue: {fileID: 4490336970382221666}
 --- !u!114 &6063604074090390129
 MonoBehaviour:
   m_ObjectHideFlags: 0
