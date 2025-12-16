@@ -31,7 +31,6 @@ public class Shot : Skill
 
     #endregion
 
-    private Vector3 _shotPosition;
     private AudioSource _audioSource;
     private int _consecutiveShots;
 
@@ -68,7 +67,6 @@ public class Shot : Skill
     private void Start()
     {
         _audioSource = GetComponent<AudioSource>();
-        _shotPosition = transform.position + Vector3.up * _arrowYOffset;
     }
 
     private void ShotAnimationMove()
@@ -207,11 +205,11 @@ public class Shot : Skill
 
         Transform target = targetObject.transform;
 
-        Vector3 direction = (target.transform.position - _shotPosition).normalized;
+        Vector3 direction = (target.transform.position - transform.position + Vector3.up * _arrowYOffset).normalized;
 
         if (direction == Vector3.zero) return;
 
-        ArrowProjectile proj = Instantiate(_projectile, _shotPosition, Quaternion.LookRotation(direction));
+        ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffset, Quaternion.LookRotation(direction));
         proj.Init(_playerLinks, 0, false, this, damage);
         SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);
@@ -224,12 +222,12 @@ public class Shot : Skill
     public void CmdCreateProjectileAtPosition(Vector3 position, float damage)
     {
 
-        Vector3 flatTargetPoint = new Vector3(position.x, _shotPosition.y, _shotPosition.z);
-        Vector3 direction = (flatTargetPoint - _shotPosition).normalized;
+        Vector3 flatTargetPoint = new Vector3(position.x, position.y, position.z);
+        Vector3 direction = (flatTargetPoint - transform.position).normalized;
 
         if (direction == Vector3.zero) return;
 
-        ArrowProjectile proj = Instantiate(_projectile, _shotPosition, Quaternion.LookRotation(direction));
+        ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffset, Quaternion.LookRotation(direction));
         proj.Init(_playerLinks, 0, false, this, damage);
         SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);
