@@ -525,7 +525,21 @@ public abstract class Skill : NetworkBehaviour
 		}
 	}
 
-	public void ClearTarget()
+    protected void FindTargetCharacter(float radius, Vector3 point, bool canTargetHimself = false, bool canTargetDead = false)
+    {
+        if (canTargetDead)
+        {
+            if (GetCloserTargets(GetMousePoint(), Radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargetsCharacter(GetMousePoint(), Radius, canTargetHimself)[0];
+        }
+        else
+        {
+            if (GetCloserTargets(GetMousePoint(), Radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargetsCharacter(GetMousePoint(), Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
+        }
+    }
+
+    public void ClearTarget()
     {
         _target = null; 
     }

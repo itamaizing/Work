@@ -13,8 +13,8 @@ public class ScratchClaws : Skill
     [SerializeField] private float _stopDistance = 1.5f;
     [SerializeField] private float _bleedingDuration = 3f;
     [SerializeField, Range(0, 1f)] private float _bleedingChance = 1f;
-    [SerializeField] private float minDamage = 1f;
-    [SerializeField] private float maxDamage = 4f;
+    [SerializeField] private float _minDamage = 1f;
+    [SerializeField] private float _maxDamage = 4f;
 
     #region Const
     private const float StopDistanceThreshold = 0.05f;
@@ -64,7 +64,7 @@ public class ScratchClaws : Skill
 
     private void OnEnable()
     {
-        Damage = UnityEngine.Random.Range(minDamage, maxDamage);
+        Damage = UnityEngine.Random.Range(_minDamage, _maxDamage);
         OnSkillCanceled += HandleSkillCanceled;
     }
 

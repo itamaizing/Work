@@ -44,6 +44,7 @@ public class ClawStrike : Skill
     private float _castWindowDuration = 1f;
     private float _totalChanceApplyBleeding;
     private Coroutine coroutineDurationChanceApplyBleedingWithJump;
+    private WaitForSeconds _waitForBuffDuration;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("ClawStrikeTrigger");
@@ -67,6 +68,11 @@ public class ClawStrike : Skill
     private void OnEnable()
     {
         OnSkillCanceled += HandleSkillCanceled;
+    }
+
+    private void Start()
+    {
+        _waitForBuffDuration = new WaitForSeconds(_buffDurationAfterJump);
     }
 
     #region Talent
@@ -261,7 +267,7 @@ public class ClawStrike : Skill
     private IEnumerator IDurationChanceApplyBleedingWithJump()
     {
         _isDurationChanceApplyBleedingWithJump = true;
-        yield return new WaitForSeconds(_buffDurationAfterJump);
+        yield return _waitForBuffDuration;
         _isDurationChanceApplyBleedingWithJump = false;
     }
 
