@@ -7,23 +7,36 @@ using UnityEngine.SceneManagement;
 
 public class ShotDarkness : Skill
 {
-    [SerializeField] private ArrowProjectile projectile;
-    [SerializeField] private HeroComponent playerLinks;
-    [SerializeField] private Transform spawnPoint;
-    [SerializeField] private Ghost ghostSkill;
-    [SerializeField] private MultiMagicSpell multiMagicSpell;
-    [SerializeField] private TerrifyingElfAura terrifyingElfAura;
-    [SerializeField] private AudioClip audioClip;
-    [SerializeField] private float minDamage;
-    [SerializeField] private float maxDamage;
+    [SerializeField] private ArrowProjectile _projectile;
+    [SerializeField] private HeroComponent _playerLinks;
+    [SerializeField] private Ghost _ghostSkill;
+    [SerializeField] private MultiMagicSpell _multiMagicSpell;
+    [SerializeField] private TerrifyingElfAura _terrifyingElfAura;
+    [SerializeField] private AudioClip _audioClip;
+    [SerializeField] private float _minDamage;
+    [SerializeField] private float _maxDamage;
+    [SerializeField] private float _arrowYOffset = 1.5f;
 
     private const string _startAnimTrigger = "ShotDarkCastDelayTrigger";
+
+    #region Constants
+
+    private const float HealthThresholdPercent = 0.8f;
+    private const float ExtraDamageMultiplier = 0.3f;
+    private const float CritChance = 0.20f;
+    private const float CritMultiplier = 3.2f;
+
+    private const int GhostShotsForCooldownReduction = 3;
+    private const int GhostCooldownReductionValue = 1;
+
+    private const float RandomRangeInclusiveOffset = 1f;
+
+    #endregion
 
     private AudioSource _audioSource;
     private int _consecutiveShots;
     private float _magicDamage;
 
-    private IDamageable _target;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
 
     private bool _isHealthAboveThreshold;
@@ -31,11 +44,12 @@ public class ShotDarkness : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash(_startAnimTrigger);
     protected override bool IsCanCast { get => CheckCanCast(); }
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == TargetsLayers;
 
     private bool CheckCanCast()
     {
-        if (_target == null) return Vector3.Distance(_targetPoint, transform.position) <= CastLength;
-        return Vector3.Distance(_targetPoint, transform.position) <= CastLength || Vector3.Distance(_target.transform.position, transform.position) <= CastLength;
+        if (GetTarget() == null) return Vector3.Distance(_targetPoint, transform.position) <= CastLength;
+        return Vector3.Distance(_targetPoint, transform.position) <= CastLength || Vector3.Distance(GetTarget().Transform.position, transform.position) <= CastLength;
     }
 
     private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
@@ -48,31 +62,31 @@ public class ShotDarkness : Skill
 
         _isHealthAboveThreshold = false;
 
-        if (_target != null && _target is Character targetCurrent)
+        if (GetTarget() != null && GetTarget() is Character targetCurrent)
         {
             var health = targetCurrent.Health;
-            _isHealthAboveThreshold = health.CurrentValue >= health.MaxValue * 0.8f;
+            _isHealthAboveThreshold = health.CurrentValue >= health.MaxValue * HealthThresholdPercent;
         }
 
-        if (!terrifyingElfAura) Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
+        if (!_terrifyingElfAura) Damage = UnityEngine.Random.Range(_minDamage, _maxDamage + RandomRangeInclusiveOffset);
         else
         {
-            if (!_isHealthAboveThreshold) Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
+            if (!_isHealthAboveThreshold) Damage = UnityEngine.Random.Range(_minDamage, _maxDamage + RandomRangeInclusiveOffset);
 
             else
             {
-                var elvenSkill = playerLinks.CharacterState.GetState(States.ElvenSkill) as ElvenSkill;
+                var elvenSkill = _playerLinks.CharacterState.GetState(States.ElvenSkill) as ElvenSkill;
 
-                if (elvenSkill == null) Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
+                if (elvenSkill == null) Damage = UnityEngine.Random.Range(_minDamage, _maxDamage + RandomRangeInclusiveOffset);
 
                 else
                 {
-                    float baseDamage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
-                    float extraDamage = UnityEngine.Random.Range(minDamage, maxDamage + 1) * 0.3f;
+                    float baseDamage = UnityEngine.Random.Range(_minDamage, _maxDamage + RandomRangeInclusiveOffset);
+                    float extraDamage = UnityEngine.Random.Range(_minDamage, _maxDamage + RandomRangeInclusiveOffset) * ExtraDamageMultiplier;
                     float total = baseDamage + extraDamage;
 
-                    bool isCrit = UnityEngine.Random.value < 0.20f;
-                    if (isCrit) total *= 3.2f;
+                    bool isCrit = UnityEngine.Random.value < CritChance;
+                    if (isCrit) total *= CritMultiplier;
 
                     Damage = total;
                 }
@@ -95,53 +109,52 @@ public class ShotDarkness : Skill
     }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _target = (Character)targetInfo.GetTargets()[0];
-        if (_target is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+        if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0]);
         _targetPoint = targetInfo.Points[0];
     }
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        ITargetable target = null;
         Vector3 targetPoint = Vector3.positiveInfinity;
 
         while (float.IsPositiveInfinity(targetPoint.x))
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter();
-                var tempTarget = GetTempTargetCharacter();
+                FindTarget();
+                targetPoint = GetMousePoint();
 
-                if (tempTarget != null)
+                if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
                 {
-                    target = tempTarget;
-                    targetPoint = tempTarget.transform.position;
-                }
-                else
-                {
-                    targetPoint = GetMousePoint();
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
+
+                    else
+                    {
+                        if (GetTempTarget() is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        break;
+                    }
                 }
             }
             yield return null;
         }
 
-        TargetInfo targetInfo = new TargetInfo();
+        SetTarget(GetTempTarget());
 
-        if (target != null) targetInfo.AddTarget(target);
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.AddTarget(GetTarget());
         targetInfo.Points.Add(targetPoint);
         callbackDataSaved(targetInfo);
     }
 
-
     protected override IEnumerator CastJob()
     {
-        if (_target == null && _targetPoint == Vector3.positiveInfinity) yield return null;
-        if (_target != null && !IsTargetInRange()) yield return null;
+        if (GetTarget() == null && _targetPoint == Vector3.positiveInfinity) yield return null;
+        if (GetTarget() != null && !IsTargetInRange()) yield return null;
 
         _magicDamage = CalculateAndSpendBonusMagicDamage();
         ShotDarknessAnimationMove();
         ProcessGhostCooldownReduction();
 
-        if (_target != null) CmdCreateProjectileAtTarget(_target.transform, Damage, _magicDamage);
+        if (GetTarget() != null) CmdCreateProjectileAtTarget(GetTarget().Transform, Damage, _magicDamage);
         else CmdCreateProjectileAtPosition(new Vector3(_targetPoint.x, _targetPoint.y, _targetPoint.z), Damage, _magicDamage);
 
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
@@ -155,8 +168,8 @@ public class ShotDarkness : Skill
                 CmdCreateProjectileAtPosition(character.transform.position, Damage, _magicDamage);
             }
 
-            float reduce = multiMagicSpell.RemainingCooldownTime * 0.1f;
-            multiMagicSpell.DecreaseSetCooldown(reduce);
+            float reduce = _multiMagicSpell.RemainingCooldownTime * 0.1f;
+            _multiMagicSpell.DecreaseSetCooldown(reduce);
         }
 
         else CmdUseMana(_magicDamage);
@@ -164,12 +177,12 @@ public class ShotDarkness : Skill
 
     private void ProcessGhostCooldownReduction()
     {
-        if (!ghostSkill || !ghostSkill.CooldownGhostShotActive) return;
+        if (!_ghostSkill || !_ghostSkill.CooldownGhostShotActive) return;
 
         _consecutiveShots++;
-        if (_consecutiveShots >= 3)
+        if (_consecutiveShots >= GhostShotsForCooldownReduction)
         {
-            ghostSkill.ReductionCooldownCharges(1);
+            _ghostSkill.ReductionCooldownCharges(GhostCooldownReductionValue);
             _consecutiveShots = 0;
         }
     }
@@ -179,17 +192,17 @@ public class ShotDarkness : Skill
         if (_hero?.Move != null)
         {
             Hero.Move.CanMove = true;
-            _target = null;
+            ClearTarget();
             _targetPoint = Vector3.positiveInfinity;
             Hero.Move.StopLookAt();
         }
     }
 
-    private bool IsTargetInRange() { return _target != null && Vector3.Distance(transform.position, _target.transform.position) <= CastLength; }
+    private bool IsTargetInRange() { return GetTarget() != null && Vector3.Distance(transform.position, GetTarget().Transform.position) <= CastLength; }
     private void UseMana(float amount)
     {
         float mana = amount;
-        foreach (var resource in playerLinks.Resources.Where(resource => resource.Type == ResourceType.Mana))
+        foreach (var resource in _playerLinks.Resources.Where(resource => resource.Type == ResourceType.Mana))
         {
             if (mana <= 0) break;
             float spend = Math.Min(resource.CurrentValue, mana);
@@ -199,7 +212,7 @@ public class ShotDarkness : Skill
     }
     private float CalculateAndSpendBonusMagicDamage(float maxBonusMana = 6f)
     {
-        float availableMana = playerLinks.Resources
+        float availableMana = _playerLinks.Resources
             .Where(r => r.Type == ResourceType.Mana)
             .Sum(r => r.CurrentValue);
 
@@ -208,7 +221,7 @@ public class ShotDarkness : Skill
         float manaSpent = 0f;
         float manaToSpend = bonusManaToUse;
 
-        foreach (var resource in playerLinks.Resources.Where(r => r.Type == ResourceType.Mana))
+        foreach (var resource in _playerLinks.Resources.Where(r => r.Type == ResourceType.Mana))
         {
             if (manaToSpend <= 0) break;
 
@@ -224,13 +237,12 @@ public class ShotDarkness : Skill
     [Command]
     protected void CmdCreateProjectileAtTarget(Transform target, float damage, float magDamage)
     {
-        Vector3 spawnPosition = spawnPoint != null ? spawnPoint.position : transform.position;
-        Vector3 direction = (target.transform.position - spawnPosition).normalized;
+        Vector3 direction = (target.transform.position - transform.position).normalized;
 
         if (direction == Vector3.zero) return;
 
-        ArrowProjectile proj = Instantiate(projectile, spawnPosition, Quaternion.LookRotation(direction));
-        proj.Init(playerLinks, magDamage, false, this, damage);
+        ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffset, Quaternion.LookRotation(direction));
+        proj.Init(_playerLinks, magDamage, false, this, damage);
         SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);
         proj.StartFly(target);
@@ -241,15 +253,13 @@ public class ShotDarkness : Skill
     [Command]
     public void CmdCreateProjectileAtPosition(Vector3 position, float damage, float magDamage)
     {
-        Vector3 spawnPosition = spawnPoint != null ? spawnPoint.position : transform.position;
-
-        Vector3 flatTargetPoint = new Vector3(position.x, spawnPosition.y, position.z);
-        Vector3 direction = (flatTargetPoint - spawnPosition).normalized;
+        Vector3 flatTargetPoint = new Vector3(position.x, position.y, position.z);
+        Vector3 direction = (flatTargetPoint - transform.position).normalized;
 
         if (direction == Vector3.zero) return;
 
-        ArrowProjectile proj = Instantiate(projectile, spawnPosition, Quaternion.LookRotation(direction));
-        proj.Init(playerLinks, magDamage, false, this, damage);
+        ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up, Quaternion.LookRotation(direction));
+        proj.Init(_playerLinks, magDamage, false, this, damage);
         SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);
         proj.StartFly(direction);
@@ -264,20 +274,20 @@ public class ShotDarkness : Skill
         if (gameObject == null) return;
 
         ArrowProjectile proj = gameObject.GetComponent<ArrowProjectile>();
-        if (proj != null) proj.Init(playerLinks, magicDamage, false, this, damage);
+        if (proj != null) proj.Init(_playerLinks, magicDamage, false, this, damage);
     }
 
     [ClientRpc]
     private void RpcPlayShotSound()
     {
-        if (_audioSource != null && audioClip != null)
-            _audioSource.PlayOneShot(audioClip);
+        if (_audioSource != null && _audioClip != null)
+            _audioSource.PlayOneShot(_audioClip);
     }
 
     protected override void ClearData()
     {
         _targetPoint = Vector3.positiveInfinity;
-        _target = null;
+        ClearTarget();
         _consecutiveShots = 0;
     }
 }

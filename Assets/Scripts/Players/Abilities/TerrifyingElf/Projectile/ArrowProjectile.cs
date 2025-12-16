@@ -58,6 +58,7 @@ public class ArrowProjectile : Projectiles
     {
         _startPosition = transform.position;
         _followTarget = target;
+        _followTarget.position = _followTarget.position + Vector3.up;
         _isFollowingTarget = true;
         sphereCollider.enabled = true;
         RpcArrowTrue();

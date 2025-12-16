@@ -128,6 +128,7 @@ public class Shot : Skill
         if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0]);
         _targetPoint = targetInfo.Points[0];
     }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         Vector3 targetPoint = Vector3.positiveInfinity;
@@ -205,7 +206,7 @@ public class Shot : Skill
 
         Transform target = targetObject.transform;
 
-        Vector3 direction = (target.transform.position - transform.position + Vector3.up * _arrowYOffset).normalized;
+        Vector3 direction = (target.transform.position - transform.position).normalized;
 
         if (direction == Vector3.zero) return;
 
@@ -221,13 +222,12 @@ public class Shot : Skill
     [Command]
     public void CmdCreateProjectileAtPosition(Vector3 position, float damage)
     {
-
         Vector3 flatTargetPoint = new Vector3(position.x, position.y, position.z);
         Vector3 direction = (flatTargetPoint - transform.position).normalized;
 
         if (direction == Vector3.zero) return;
 
-        ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffset, Quaternion.LookRotation(direction));
+        ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up, Quaternion.LookRotation(direction));
         proj.Init(_playerLinks, 0, false, this, damage);
         SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);

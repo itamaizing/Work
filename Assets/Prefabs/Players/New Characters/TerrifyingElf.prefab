@@ -19956,15 +19956,15 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  projectile: {fileID: 7795660894077134963, guid: 8e56a73e4e78d7841ac2f37176fe2356, type: 3}
-  playerLinks: {fileID: 4534754468497973439}
-  spawnPoint: {fileID: 7608591018717630632}
-  ghostSkill: {fileID: 1718052129104348959}
-  multiMagicSpell: {fileID: 1094805825435644166}
-  terrifyingElfAura: {fileID: 6686568037796463366}
-  audioClip: {fileID: 8300000, guid: 96717b50b5c475d459267db8e67203c5, type: 3}
-  minDamage: 6
-  maxDamage: 10
+  _projectile: {fileID: 7795660894077134963, guid: 8e56a73e4e78d7841ac2f37176fe2356, type: 3}
+  _playerLinks: {fileID: 4534754468497973439}
+  _ghostSkill: {fileID: 1718052129104348959}
+  _multiMagicSpell: {fileID: 1094805825435644166}
+  _terrifyingElfAura: {fileID: 6686568037796463366}
+  _audioClip: {fileID: 8300000, guid: ba78f434c86f1ec4d92aa393ca60ca17, type: 3}
+  _minDamage: 6
+  _maxDamage: 10
+  _arrowYOffset: 1.5
 --- !u!114 &4161291845396503115
 MonoBehaviour:
   m_ObjectHideFlags: 0
