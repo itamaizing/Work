@@ -19821,14 +19821,14 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  projectile: {fileID: 727437498118149735, guid: e444badf466360e41a896340462c6a62, type: 3}
-  playerLinks: {fileID: 4534754468497973439}
-  spawnPoint: {fileID: 7608591018717630632}
-  ghostSkill: {fileID: 1718052129104348959}
-  audioClip: {fileID: 8300000, guid: ba78f434c86f1ec4d92aa393ca60ca17, type: 3}
-  terrifyingElfAura: {fileID: 6686568037796463366}
-  minDamage: 6
-  maxDamage: 10
+  _projectile: {fileID: 727437498118149735, guid: e444badf466360e41a896340462c6a62, type: 3}
+  _playerLinks: {fileID: 4534754468497973439}
+  _ghostSkill: {fileID: 1718052129104348959}
+  _audioClip: {fileID: 8300000, guid: ba78f434c86f1ec4d92aa393ca60ca17, type: 3}
+  _terrifyingElfAura: {fileID: 6686568037796463366}
+  _minDamage: 6
+  _maxDamage: 10
+  _arrowYOffset: 1.5
 --- !u!114 &6009180366675701932
 MonoBehaviour:
   m_ObjectHideFlags: 0
