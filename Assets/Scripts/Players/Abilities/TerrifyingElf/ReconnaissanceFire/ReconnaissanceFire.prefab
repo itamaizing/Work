@@ -11173,16 +11173,16 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  partialBlindnessDuration: 5
-  innerDarknessDuration: 13
-  fireEffect: {fileID: 1290869412159680966}
-  fireEffectDark: {fileID: 582552535353679993}
-  fireDarkTalent: 0
-  partialBlindnessTalent: 0
-  flameLightPulse: {fileID: 8635874584311858127}
-  characterLayer:
+  _partialBlindnessDuration: 5
+  _innerDarknessDuration: 13
+  _fireEffect: {fileID: 1290869412159680966}
+  _fireEffectDark: {fileID: 582552535353679993}
+  _fireDarkTalent: 0
+  _partialBlindnessTalent: 0
+  _flameLightPulse: {fileID: 8635874584311858127}
+  _characterLayer:
     serializedVersion: 2
-    m_Bits: 768
+    m_Bits: 256
 --- !u!114 &732501578659559874
 MonoBehaviour:
   m_ObjectHideFlags: 0

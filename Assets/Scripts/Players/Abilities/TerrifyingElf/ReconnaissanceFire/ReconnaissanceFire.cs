@@ -233,6 +233,7 @@ public class ReconnaissanceFire : Skill
 
         position.y += AuraSpawnYOffset;
         var aura = Instantiate(_fireAura, position, Quaternion.identity);
+        aura.Init(Hero);
         SceneManager.MoveGameObjectToScene(aura.gameObject, Hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(aura.gameObject, connectionToClient);
 
