@@ -5383,9 +5383,9 @@ MonoBehaviour:
   _maxDamage: 5
   _arrowYOffset: 1.5
   _comboCounter: {fileID: 5883639770937801120}
-  chainArrowPrefab: {fileID: 7293680978615570491, guid: 9903945e1d35e3f4699a288cf83c9e9c, type: 3}
-  playerLinks: {fileID: 5458554383432203635}
-  pullLineRenderer: {fileID: 6883317968976862022}
+  _chainArrowPrefab: {fileID: 7293680978615570491, guid: 9903945e1d35e3f4699a288cf83c9e9c, type: 3}
+  _playerLinks: {fileID: 5458554383432203635}
+  _pullLineRenderer: {fileID: 6883317968976862022}
 --- !u!114 &1595654106541851295
 MonoBehaviour:
   m_ObjectHideFlags: 0
