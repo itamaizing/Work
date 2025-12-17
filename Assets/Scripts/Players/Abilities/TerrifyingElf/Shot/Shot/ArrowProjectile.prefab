@@ -5102,8 +5102,9 @@ MonoBehaviour:
   _distance: 24
   _speed: 15
   _lifeTime: 2
+  _arrowYOffset: 1.5
   _arrowDark: 0
-  duration: 0.7
-  damageTypePhysics: 1
-  arrow: {fileID: 6378327368761833748}
-  sphereCollider: {fileID: 5610861388043864991}
+  _duration: 0.7
+  _damageTypePhysics: 1
+  _arrow: {fileID: 6378327368761833748}
+  _sphereCollider: {fileID: 5610861388043864991}

@@ -9895,8 +9895,9 @@ MonoBehaviour:
   _distance: 24
   _speed: 15
   _lifeTime: 2
+  _arrowYOffset: 1.5
   _arrowDark: 1
-  duration: 13
-  damageTypePhysics: 0
-  arrow: {fileID: 8717675361944784329}
-  sphereCollider: {fileID: 5610861388043864991}
+  _duration: 13
+  _damageTypePhysics: 0
+  _arrow: {fileID: 8717675361944784329}
+  _sphereCollider: {fileID: 5610861388043864991}

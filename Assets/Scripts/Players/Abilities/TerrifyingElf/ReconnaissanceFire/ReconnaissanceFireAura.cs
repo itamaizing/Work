@@ -22,12 +22,19 @@ public class ReconnaissanceFireAura : NetworkBehaviour
     private readonly List<Character> _charactersInZone = new();
     private readonly HashSet<uint> _clientIds = new();
     private Coroutine _effectCoroutine;
+    private WaitForSeconds _waitForSecond;
+
+    #region Const
+    private const float FireFlashDuration = 9999f;
+    private const int MaxChanceValue = 100;
+    private const int MinChanceValue = 0;
+    #endregion
 
     [SyncVar(hook = nameof(OnStateDarkChanged))]
     private bool stateDark;
 
     public bool FireDarkTalent { get => _fireDarkTalent; set => _fireDarkTalent = value; }
-    public bool PartialBlindnessTalent { get => _partialBlindnessTalent; set => _partialBlindnessTalent = value; }
+    //public bool PartialBlindnessTalent { get => _partialBlindnessTalent; set => _partialBlindnessTalent = value; }
     public bool StateDark { get => stateDark; set => stateDark = value; }
 
     private bool IsEnemy(Character characterTarget, GameObject target)
@@ -47,6 +54,11 @@ public class ReconnaissanceFireAura : NetworkBehaviour
     private bool IsEnemyByLayer(GameObject target)
     {
         return ((1 << target.layer) & _characterLayer.value) != 0;
+    }
+
+    private void Start()
+    {
+        _waitForSecond = new WaitForSeconds(1);
     }
 
     public void Init(Character hero)
@@ -120,8 +132,6 @@ public class ReconnaissanceFireAura : NetworkBehaviour
 
     private IEnumerator ApplyPartialBlindnessPeriodically()
     {
-        var wait = new WaitForSeconds(1f);
-
         while (_charactersInZone.Count > 0)
         {
             foreach (Character character in _charactersInZone)
@@ -130,10 +140,10 @@ public class ReconnaissanceFireAura : NetworkBehaviour
 
                 if (stateDark && _fireDarkTalent)
                 {
-                    state.AddState(States.FireFlash, 9999, 0f, gameObject, name);
+                    state.AddState(States.FireFlash, FireFlashDuration, 0f, gameObject, name);
                     var flash = state.GetState(States.FireFlash) as FireFlash;
 
-                    if (UnityEngine.Random.Range(0, 100) < flash.Chance)
+                    if (UnityEngine.Random.Range(MinChanceValue, MaxChanceValue) < flash.Chance)
                     {
                         Debug.Log($"Chance: {flash.Chance}");
                         state.AddState(States.InnerDarkness, _innerDarknessDuration, 0f, gameObject, "ReconnaissanceFireAuraDark");
@@ -145,7 +155,7 @@ public class ReconnaissanceFireAura : NetworkBehaviour
                 else state.AddState(States.PartialBlindness, _partialBlindnessDuration, 0f, gameObject, "ReconnaissanceFireAura");
             }
 
-            yield return wait;
+            yield return _waitForSecond;
         }
 
         _effectCoroutine = null;
