@@ -18,7 +18,7 @@ public class TalentSystem : NetworkBehaviour
 
     private Level _lvl;
     private int _points = 10;
-    private int _prevValue = 0;
+    private int _prevValue = 1;
 
     public List<TalentsGroup> TalentsGroups => _talents;
     public List<Talent> ActiveTalents => GetActiveTalents();
