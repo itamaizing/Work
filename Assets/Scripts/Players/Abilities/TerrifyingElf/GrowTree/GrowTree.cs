@@ -44,8 +44,10 @@ public class GrowTree : Skill
     private Coroutine _rangeWatch;
     private Coroutine _checkExtendedRadiusCoroutine;
     private Coroutine _arrowFxRoutine;
+    private Coroutine _streamCoroutine;
     private bool _isSpawnHero;
     private bool _castFromExtendedRadius;
+    private bool _streamFinished;
     private WaitForSeconds _waitForExtendedRadiusInterval;
     private WaitForSeconds _waitForCastStreamDurationFirst;
     private WaitForSeconds _waitForCastStreamDurationSecond;
@@ -107,13 +109,11 @@ public class GrowTree : Skill
     private void OnEnable()
     {
         OnSkillCanceled += HandleSkillCanceled;
-        CastStreamEnded += HandleCastStreamEnded;
         _skillQueue.Cancell += HandleSkillDeleted;
     }
     private void OnDisable ()
     {
         OnSkillCanceled -= HandleSkillCanceled;
-        CastStreamEnded -= HandleCastStreamEnded;
         _skillQueue.Cancell -= HandleSkillDeleted;
     }
 
@@ -333,6 +333,10 @@ public class GrowTree : Skill
     {
         if (_treePrefab == null) yield break;
 
+        GrowTreeStopMove();
+        if (_streamCoroutine != null) StopCoroutine(_streamCoroutine);
+
+        _streamCoroutine = StartCoroutine(StreamDuration());
         ClientStopDamageZone();
 
         if (_rangeWatch != null)
@@ -358,6 +362,34 @@ public class GrowTree : Skill
 
         if (!_castFromExtendedRadius) yield return _waitForCastStreamDurationSecond;
         else yield return _waitForCastStreamDurationThird;
+
+        while (!_streamFinished) yield return null;
+    }
+
+    private IEnumerator StreamDuration()
+    {
+        _streamFinished = false;
+        yield return new WaitForSeconds(CastStreamDuration);
+
+        if (_castFromExtendedRadius)
+        {
+            _hero.Animator.ResetTrigger(_shotHash);
+            _hero.NetworkAnimator.ResetTrigger(_shotHash);
+        }
+        else
+        {
+            _hero.Animator.ResetTrigger(_growHash);
+            _hero.NetworkAnimator.ResetTrigger(_growHash);
+            CmdCrossFade();
+            _hero.Animator.CrossFade("GrowTreeCastDelayExit", AnimatorCrossFadeDuration);
+        }
+
+        GrowTreeStartMove();
+        ResetData();
+        StopRangeWatch();
+
+        _streamFinished = true;
+        _streamCoroutine = null;
     }
 
     protected Vector3 GetMousePointOnLayer(LayerMask layer, float y = 0f)
@@ -389,24 +421,10 @@ public class GrowTree : Skill
 
         if (_currentTree != null) CmdRequestInterruptTree(_currentTree.netId);
 
-        GrowTreeStartMove();
-        ResetData();
-        StopRangeWatch();
-    }
-
-    private void HandleCastStreamEnded()
-    {
-        if (_castFromExtendedRadius)
+        if (_streamCoroutine != null)
         {
-            _hero.Animator.ResetTrigger(_shotHash);
-            _hero.NetworkAnimator.ResetTrigger(_shotHash);
-        }
-        else
-        {
-            _hero.Animator.ResetTrigger(_growHash);
-            _hero.NetworkAnimator.ResetTrigger(_growHash);
-            CmdCrossFade();
-            _hero.Animator.CrossFade("GrowTreeCastDelayExit", AnimatorCrossFadeDuration);
+            StopCoroutine(_streamCoroutine);
+            _streamCoroutine = null;
         }
 
         GrowTreeStartMove();

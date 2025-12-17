@@ -19828,7 +19828,8 @@ MonoBehaviour:
   _terrifyingElfAura: {fileID: 6686568037796463366}
   _minDamage: 6
   _maxDamage: 10
-  _arrowYOffset: 1.5
+  _arrowYOffsetUp: 1.5
+  _arrowYOffsetDown: 0.5
 --- !u!114 &6009180366675701932
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19965,6 +19966,7 @@ MonoBehaviour:
   _minDamage: 6
   _maxDamage: 10
   _arrowYOffset: 1.5
+  _arrowYOffsetDown: 0.5
 --- !u!114 &4161291845396503115
 MonoBehaviour:
   m_ObjectHideFlags: 0
