@@ -5164,7 +5164,7 @@ MonoBehaviour:
   maxCounter: 0
   _conePrefab: {fileID: 6453211931130663927, guid: 45218b2aa635a164aae6b7da7d237666, type: 3}
   _prefab: {fileID: 7932399568012328523, guid: 45218b2aa635a164aae6b7da7d237666, type: 3}
-  duration: 3
+  _duration: 3
   _damage: 1
   _damageRate: 0.3
   _damageScalePerTick: 2
@@ -5238,8 +5238,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 896
   _offset: 0.5
-  consumeCombo_Scorpion: {fileID: 8732005787551451527}
-  scorpionPassive: {fileID: 1595654106541851295}
+  _consumeCombo_Scorpion: {fileID: 8732005787551451527}
+  _scorpionPassive: {fileID: 1595654106541851295}
   <Notifier>k__BackingField: {fileID: 8732005787551451527}
 --- !u!114 &8732005787551451527
 MonoBehaviour:
