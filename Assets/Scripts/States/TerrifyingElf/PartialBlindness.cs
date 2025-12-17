@@ -6,17 +6,20 @@ public class PartialBlindness : AbstractCharacterState
 {
     private float _baseDuration;
     private float _duration;
-    private int _maxStack = 3;
-    private float _currentMissChance = 10f;
+
+    #region Const
+    private const int MaxStacks = 3;
+    private const float BaseMissChancePerStack = 10f;
+    private const float EffectivenessDecayPerSecond = 0.02f;
+    private const float MaxEffectiveness = 1f;
+    private const float MinEffectiveness = 0f;
+    #endregion
+
     private float _currentEffectiveness = 1f;
-    private const float _missChanceReductionPerSecond = 0.04f;
-    private const float _stackEffectivenessIncrease = 0.2f;
-    private const float _cancelChancePerStack = 0.10f;
 
     private Character _character;
-
-    private string _talentPartialBlindnessActive;
-    private List<StatusEffect> _effects = new() { StatusEffect.Ability };
+    //private string _talentPartialBlindnessActive;
+    private readonly List<StatusEffect> _effects = new() { StatusEffect.Ability };
 
     public override States State => States.PartialBlindness;
     public override StateType Type => StateType.Physical;
@@ -25,28 +28,26 @@ public class PartialBlindness : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log("Entering PartialBlindness");
-
         _characterState = character;
         _personWhoMadeBuff = personWhoMadeBuff;
+
         _baseDuration = durationToExit;
         _duration = _baseDuration;
-        _currentEffectiveness = 1f;
-        _currentMissChance = 10f;
-        _talentPartialBlindnessActive = skillName;
-        MaxStacksCount = _maxStack;
+
+        //_talentPartialBlindnessActive = skillName;
+
+        MaxStacksCount = MaxStacks;
+        CurrentStacksCount = 1;
+
+        _currentEffectiveness = MaxEffectiveness;
 
         _character = character.GetComponent<Character>();
-
         _character.Abilities.OnSkillPreparedSuccessfully += HandleSkillPrepared;
     }
 
     public override void ExitState()
     {
-        Debug.Log("Exiting PartialBlindness");
-
         _character.Abilities.OnSkillPreparedSuccessfully -= HandleSkillPrepared;
-
         _characterState.RemoveState(this);
         CurrentStacksCount = 0;
     }
@@ -54,42 +55,25 @@ public class PartialBlindness : AbstractCharacterState
     public override void UpdateState()
     {
         _duration -= Time.deltaTime;
-        if (_duration <= 0)
+        if (_duration <= 0f)
         {
             ExitState();
             return;
         }
 
-        if (_talentPartialBlindnessActive == "partialBlindnessTalent")
-        {
-            _currentEffectiveness -= _missChanceReductionPerSecond * Time.deltaTime;
-            _currentEffectiveness = Mathf.Max(0f, _currentEffectiveness);
-            _currentMissChance = 10f * _currentEffectiveness;
-        }
+        _currentEffectiveness -= EffectivenessDecayPerSecond * Time.deltaTime;
+        _currentEffectiveness = Mathf.Clamp(_currentEffectiveness, MinEffectiveness, MaxEffectiveness);
     }
 
     public override bool Stack(float time)
     {
-        if (CurrentStacksCount < MaxStacksCount)
-        {
-            CurrentStacksCount++;
-            _duration = _baseDuration;
+        _duration = _baseDuration;
 
-            if (_talentPartialBlindnessActive == "partialBlindnessTalent")
-            {
-                _currentEffectiveness += _stackEffectivenessIncrease;
-                _currentEffectiveness = Mathf.Clamp(_currentEffectiveness, 0f, 1f);
-            }
+        _currentEffectiveness = MaxEffectiveness;
 
-            _currentMissChance = 10f * _currentEffectiveness;
-            return true;
-        }
-        else
-        {
-            _duration = _baseDuration;
-            _currentMissChance = 10f * _currentEffectiveness;
-            return false;
-        }
+        if (CurrentStacksCount < MaxStacksCount) CurrentStacksCount++;
+
+        return true;
     }
 
     private void HandleSkillPrepared(Skill skill)
@@ -98,14 +82,9 @@ public class PartialBlindness : AbstractCharacterState
         if (skill.AbilityForm != AbilityForm.Physical) return;
         if (skill.Hero != _characterState.Character) return;
 
-        float totalChance = _cancelChancePerStack * CurrentStacksCount;
+        float totalMissChance = CurrentStacksCount * BaseMissChancePerStack * _currentEffectiveness;
 
-        if (_talentPartialBlindnessActive == "partialBlindnessTalent")
-        {
-            totalChance *= _currentEffectiveness;
-        }
-
-        if (UnityEngine.Random.value < 1)
+        if (UnityEngine.Random.Range(0f, 100f) < totalMissChance)
         {
             skill.CmdCancelActiveSkill();
         }
