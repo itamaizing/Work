@@ -5034,7 +5034,7 @@ MonoBehaviour:
   maxCounter: 0
   _playerLinks: {fileID: 5458554383432203635}
   _comboCounter: {fileID: 5883639770937801120}
-  scorpionPassive: {fileID: 1595654106541851295}
+  _scorpionPassive: {fileID: 1595654106541851295}
   _minDamage: 10
   _maxDamage: 15
   _baseDebuffChance: 0.2

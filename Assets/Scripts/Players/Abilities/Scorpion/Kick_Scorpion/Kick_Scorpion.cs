@@ -8,14 +8,14 @@ public class Kick_Scorpion : Skill
     [Header("Ability settings")]
     [SerializeField] private Character _playerLinks;
     [SerializeField] private PassiveCombo_Scorpion _comboCounter;
-    [SerializeField] private ScorpionPassive scorpionPassive;
+    [SerializeField] private ScorpionPassive _scorpionPassive;
     [SerializeField] [Range(0, 100)] private float _minDamage = 10f;
     [SerializeField] [Range(0, 100)] private float _maxDamage = 15f;
 
     [Header("Talent Flags")]
-    private bool isKick_ScorpionRowTalent;
-    private bool isKick_ScorpionComboTalent;
-    private bool isKick_ScorpionRowBonusTalent;
+    private bool _isKick_ScorpionRowTalent;
+    private bool _isKick_ScorpionComboTalent;
+    private bool _isKick_ScorpionRowBonusTalent;
 
     [Header("Internal State")]
     [SerializeField] [Range(0f, 1f)] private float _baseDebuffChance = 0.3f;
@@ -24,25 +24,40 @@ public class Kick_Scorpion : Skill
     private Coroutine _hitsInRowCoroutine;
     private Character _lastTarget = null;
     private Animator _animator;
+    private bool _wasDamageApplied = false;
+    private WaitForSeconds _waitForHitsInRowTimer;
 
-    //private Character _target;
-    private Character _runtimeTarget;
+    #region Ñonst
+    private const float HitsInRowResetDelay = 2f;
+    private const float MinDirectionSqrMagnitude = 0.0001f;
+    private const float KnockdownDurationDefault = 13f;
+    private const float KnockdownDurationCombo = 6f;
+    private const float MaxHitsInRow = 4f;
+    private const float SearchTargetInRadius = 1f;
+    #endregion
 
     private static readonly int KickTrigger = Animator.StringToHash("KickAA");
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => KickTrigger;
 
-    protected override bool IsCanCast => GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius && NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
+    protected override bool IsCanCast => GetTarget() != null && Vector3.Distance(GetTarget().Transform.position, transform.position) <= Radius && NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == TargetsLayers;
 
     public float DamageRange => UnityEngine.Random.Range(_minDamage, _maxDamage);
 
-    private void Start() => _animator = GetComponent<Animator>();
+    private void Start()
+    {
+        _animator = GetComponent<Animator>();
+        _waitForHitsInRowTimer = new WaitForSeconds(HitsInRowResetDelay);
+    }
+
     private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
     private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
 
     private void HandleSkillCanceled()
     {
+        _wasDamageApplied = false;
         ClearTarget();
         //_target = null;
         Hero.Move.StopLookAt();
@@ -65,7 +80,7 @@ public class Kick_Scorpion : Skill
         _hero.Move.CanMove = false;
 
         Vector3 direction = target.transform.position - _hero.transform.position;
-        bool badDirection = float.IsInfinity(target.transform.position.x) || direction.sqrMagnitude < 0.0001f;
+        bool badDirection = float.IsInfinity(target.transform.position.x) || direction.sqrMagnitude < MinDirectionSqrMagnitude;
 
         if (badDirection)
         {
@@ -89,49 +104,55 @@ public class Kick_Scorpion : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (GetTargetCharacter() == null)
+        _wasDamageApplied = false;
+
+        while (GetTempTarget() == null)
         {
             if (GetMouseButton)
             {
-                //_target = GetRaycastTarget();
-                FindTargetCharacter();
-                if (GetTargetCharacter() != null)
-                    GetTargetCharacter().SelectedCircle.IsActive = true;
+                FindTarget(SearchTargetInRadius, GetMousePoint());
+
+                if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
+                {
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
+
+                    else
+                    {
+                        _hero.Move.LookAtTransform(GetTempTarget().Transform);
+                        if (GetTempTarget() is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        break;
+                    }
+                }
             }
             yield return null;
         }
 
-        _hero.Move.LookAtTransform(GetTargetCharacter().transform);
+        SetTarget(GetTempTarget());
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(GetTargetCharacter().transform.position);
+        targetInfo.AddTarget(GetTarget());
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() == null) yield return null;
+        if (GetTarget() == null) yield return null;
         if (!IsTargetInRange()) yield return null;
 
-        _runtimeTarget = GetTargetCharacter();
+        if (_lastTarget != null && _lastTarget != GetTarget() as Character) _comboCounter.ResetCounter();
 
-        if (_lastTarget != null && _lastTarget != GetTargetCharacter())
-            _comboCounter?.ResetCounter();
+        if (_hitsInRowCoroutine != null) StopCoroutine(_hitsInRowCoroutine);
 
-        if (_hitsInRowCoroutine != null)
-            StopCoroutine(_hitsInRowCoroutine);
-
-        _lastTarget = _runtimeTarget;
+        _lastTarget = GetTarget() as Character;
 
         ApplyAttackDamageKick();
     }
 
     private void ApplyAttackDamageKick()
     {
-        if (_runtimeTarget == null) return;
-
-        if (Vector2.Distance(_lastTarget.transform.position, _runtimeTarget.transform.position) > Radius)
-            return;
+        if (_wasDamageApplied) return;
+        if (GetTarget() == null) return;
+        if (Vector2.Distance(_lastTarget.transform.position, GetTarget().Transform.position) > Radius) return;
 
         Damage damage = new Damage
         {
@@ -139,14 +160,14 @@ public class Kick_Scorpion : Skill
             Type = DamageType,
         };
 
-        CmdApplyDamage(_runtimeTarget, damage);
+        _wasDamageApplied = true;
 
-        _runtimeTarget = null;
+        if (GetTarget() is IDamageable damageable) CmdApplyDamage(damageable.gameObject, damage);
     }
 
     private IEnumerator HitsInRowTimer()
     {
-        yield return new WaitForSeconds(2f);
+        yield return _waitForHitsInRowTimer;
         _hitsInRow = 1;
         _hitsInRowCoroutine = null;
     }
@@ -163,75 +184,75 @@ public class Kick_Scorpion : Skill
         var state = target.GetComponent<CharacterState>();
         float chance = 0f;
 
-        if (isKick_ScorpionRowTalent)
+        if (_isKick_ScorpionRowTalent)
         {
-            if (scorpionPassive.IsAddStateUpdateChance)
+            if (_scorpionPassive.IsAddStateUpdateChance)
             {
-                if (state.CheckForState(States.DisappointmentState)) state?.AddState(States.Knockdown, 13f, 0, _hero.gameObject, name);
+                if (state.CheckForState(States.DisappointmentState)) state?.AddState(States.Knockdown, KnockdownDurationDefault, 0, _hero.gameObject, name);
             }
 
             else
             {
-                if (isKick_ScorpionRowBonusTalent)
+                if (_isKick_ScorpionRowBonusTalent)
                 {
                     chance = _baseDebuffChance * Mathf.Pow(2, _hitsInRow - 1);
 
                     if (UnityEngine.Random.value <= Mathf.Clamp01(chance))
                     {
-                        state?.AddState(States.Knockdown, 13f, 0, _hero.gameObject, name);
+                        state?.AddState(States.Knockdown, KnockdownDurationDefault, 0, _hero.gameObject, name);
                         _hitsInRow = 1;
                     }
 
-                    else _hitsInRow = (byte)Mathf.Min(_hitsInRow + 1, 4);
+                    else _hitsInRow = (byte)Mathf.Min(_hitsInRow + 1, MaxHitsInRow);
                 }
 
                 else
                 {
                     chance = _baseDebuffChance;
-                    if (UnityEngine.Random.value <= Mathf.Clamp01(chance)) state?.AddState(States.Knockdown, 13f, 0, _hero.gameObject, name);
+                    if (UnityEngine.Random.value <= Mathf.Clamp01(chance)) state?.AddState(States.Knockdown, KnockdownDurationDefault, 0, _hero.gameObject, name);
                 }
             }
         }
 
         else _hitsInRow = 1;
 
-        if (isKick_ScorpionComboTalent && state != null)
+        if (_isKick_ScorpionComboTalent && state != null)
         {
             int comboStacks = state.CheckStateStacks(States.ComboState);
             for (int i = 0; i < comboStacks; i++)
             {
-                state.AddState(States.Knockdown, 6f, 0, _hero.gameObject, name);
+                state.AddState(States.Knockdown, KnockdownDurationCombo, 0, _hero.gameObject, name);
             }
         }
     }
 
     [Command]
-    private void CmdApplyDamage(Character targetObject, Damage damage)
+    private void CmdApplyDamage(GameObject target, Damage damage)
     {
-        if (targetObject == null) return;
+        if (target == null) return;
 
-        IDamageable targetHealth = targetObject.GetComponent<IDamageable>();
+        IDamageable targetHealth = target.GetComponent<IDamageable>();
         if (targetHealth == null) return;
 
         bool isHit = targetHealth.TryTakeDamage(ref damage, this);
-        Hero.DamageTracker.AddDamage(damage, targetObject.gameObject, isServerRequest: true);
+        Hero.DamageTracker.AddDamage(damage, target, isServerRequest: true);
 
-        if (isHit) AttackPassed(targetObject);
+        if (isHit && targetHealth is Character character) AttackPassed(character);
     }
 
     public void Kick_ScorpionRowTalent(bool value)
     {
-        isKick_ScorpionRowTalent = value;
+        _isKick_ScorpionRowTalent = value;
     }
 
     public void Kick_ScorpionRowBonusTalent(bool value)
     {
-        isKick_ScorpionRowBonusTalent = value;
+        _isKick_ScorpionRowBonusTalent = value;
     }
 
     public void Kick_ScorpionComboTalent(bool value)
     {
-        isKick_ScorpionComboTalent = value;
+        _isKick_ScorpionComboTalent = value;
     }
 
     public void Kick_ScorpionCast()
@@ -251,6 +272,8 @@ public class Kick_Scorpion : Skill
 
     protected override void ClearData()
     {
-
+        _wasDamageApplied = false;
+        ClearTarget();
+        _hero.Move.StopLookAt();
     }
 }

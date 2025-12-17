@@ -25,6 +25,7 @@ public class NewPunch_Scorpion : Skill
     private const float HitsInRowResetDelay = 2f;
     private const int MinHitsForWarmingUp = 2;
     private const float StunDuration = 1f;
+    private const float SearchTargetInRadius = 1f;
     #endregion
 
     private static readonly int RightPunchTrigger = Animator.StringToHash("RightPunch");
@@ -113,7 +114,7 @@ public class NewPunch_Scorpion : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget();
+                FindTarget(SearchTargetInRadius, GetMousePoint());
 
                 if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
                 {
