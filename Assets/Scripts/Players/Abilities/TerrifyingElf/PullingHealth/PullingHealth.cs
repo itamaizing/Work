@@ -361,6 +361,10 @@ public class PullingHealth : Skill
         _isStreaming = false;
         _streamFinished = true;
 
+        Hero.Move.IsMoveBlocked = false;
+        Hero.Move.StopLookAt();
+        Hero.Animator.speed = 1;
+
         CmdDestroyEffect();
     }
 
@@ -371,6 +375,10 @@ public class PullingHealth : Skill
 
         CmdCrossFade();
         _hero.Animator.CrossFade("PullingHealthCastDelayExit", PullingHealthExitCrossFadeDuration);
+
+        Hero.Move.IsMoveBlocked = false;
+        Hero.Move.StopLookAt();
+        Hero.Animator.speed = 1;
         CmdDestroyEffect();
     }
 

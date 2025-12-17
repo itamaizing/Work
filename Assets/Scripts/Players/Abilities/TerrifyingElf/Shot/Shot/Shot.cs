@@ -259,4 +259,3 @@ public class Shot : Skill
         _consecutiveShots = 0;
     }
 }
-
