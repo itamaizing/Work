@@ -5099,10 +5099,10 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   _comboCounter: {fileID: 5883639770937801120}
-  scorpionPassive: {fileID: 1595654106541851295}
+  _scorpionPassive: {fileID: 1595654106541851295}
   _minDamage: 18
   _maxDamage: 26
-  blade: {fileID: 3194135442258839960}
+  _blade: {fileID: 3194135442258839960}
 --- !u!114 &6267367289068038631
 MonoBehaviour:
   m_ObjectHideFlags: 0

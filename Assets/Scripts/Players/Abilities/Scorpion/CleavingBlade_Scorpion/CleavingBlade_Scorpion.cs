@@ -8,32 +8,46 @@ public class CleavingBlade_Scorpion : Skill
 {
     [Header("Ability settings")]
     [SerializeField] private PassiveCombo_Scorpion _comboCounter;
-    [SerializeField] private ScorpionPassive scorpionPassive;
+    [SerializeField] private ScorpionPassive _scorpionPassive;
     [SerializeField] [Range(0, 100)] private float _minDamage = 18f;
     [SerializeField] [Range(0, 100)] private float _maxDamage = 26f;
-    [SerializeField] private GameObject blade;
+    [SerializeField] private GameObject _blade;
 
     [SyncVar] private int _counter = 1;
-    //private Character _target;
-    private Character _runtimeTarget;
+
+    #region Const
+    private const float BleedingDuration = 6f;
+    private const int MaxComboCounter = 3;
+    private const float DefaultAnimSpeed = 1f;
+    private const float ReducedAnimSpeed = 0.8f;
+    private const float DefaultDamageMultiplier = 1f;
+    private const float SearchTargetInRadius = 1f;
+    private const float ShouldIncreaseCounter = 2f;
+    #endregion
 
     private bool isCleavingBlade_ScorpionSecondTalent;
+    private bool _wasDamageApplied = false;
 
     public float DamageRange => Random.Range(_minDamage, _maxDamage);
 
-    protected override bool IsCanCast => GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+    protected override bool IsCanCast => GetTarget() != null && Vector3.Distance(GetTarget().Transform.position, transform.position) <= Radius;
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == TargetsLayers;
+
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Cast Blade");
 
     private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
     private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
 
-    private void HandleSkillCanceled() => ClearTarget();
+    private void HandleSkillCanceled()
+    {
+        _wasDamageApplied = false;
+        ClearTarget();
+    }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((Character)targetInfo.GetTargets()[0]);
-        //if (_target is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+        SetTarget(targetInfo.GetTargets()[0]);
     }
 
     private void AttackPassed(bool shouldIncreaseCounter, Character target)
@@ -46,69 +60,72 @@ public class CleavingBlade_Scorpion : Skill
 
             if (state != null)
             {
-                state.AddState(States.Bleeding, 6f, 0, _hero.gameObject, name);
+                state.AddState(States.Bleeding, BleedingDuration, 0, _hero.gameObject, name);
 
                 int comboStacks = state.CheckStateStacks(States.ComboState);
 
-                for (int i = 0; i < comboStacks; i++) state.AddState(States.Bleeding, 6f, 0, _hero.gameObject, name);
+                for (int i = 0; i < comboStacks; i++) state.AddState(States.Bleeding, BleedingDuration, 0, _hero.gameObject, name);
             }
         }
 
         if (shouldIncreaseCounter)
         {
-            _counter = _counter == 3 ? 1 : _counter + 1;
+            _counter = _counter == MaxComboCounter ? 1 : _counter + 1;
         }
-        ClearTarget();
-        //_target = null;
-    }
-
-    private void AttackMissed()
-    {
-        Debug.LogWarning("CleavingBlade_Scorpion .AttackMissed - Промах");
-        _counter = 1;
-        _comboCounter.ResetCounter();
-
-        //_target = null;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (GetTargetCharacter() == null)
+        _wasDamageApplied = false;
+
+        while (GetTempTarget() == null)
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter();
-                //_target = GetRaycastTarget(true);
-            }
+                FindTarget(SearchTargetInRadius, GetMousePoint());
 
+                if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
+                {
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
+
+                    else
+                    {
+                        _hero.Move.LookAtTransform(GetTempTarget().Transform);
+                        if (GetTempTarget() is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        break;
+                    }
+                }
+            }
             yield return null;
         }
 
-        TargetInfo targetInfo = new();
-        targetInfo.AddTarget(GetTargetCharacter());
+        SetTarget(GetTempTarget());
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.AddTarget(GetTarget());
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        _runtimeTarget = GetTargetCharacter();
-        TryAttack(true, 1f);
+        TryAttack(true, DefaultDamageMultiplier);
         yield return null;
     }
 
     private void SpeedAnimBlade_Scorpion()
     {
-        float speed = 1f;
+        float speed = DefaultAnimSpeed;
 
-        if (isCleavingBlade_ScorpionSecondTalent && _counter == 2) speed = 0.8f;
+        if (isCleavingBlade_ScorpionSecondTalent && _counter == ShouldIncreaseCounter) speed = ReducedAnimSpeed;
 
         _hero.Animator.SetFloat("CastChainBladeSpeed", speed);
     }
 
     private void TryAttack(bool shouldIncreaseCounter, float damageMultiplier)
     {
-        Character target = GetTargetCharacter();
-        if (target != null && Vector2.Distance(transform.position, target.transform.position) <= Radius)
+        if(_wasDamageApplied) return;
+
+        if (GetTarget() != null && Vector2.Distance(transform.position, GetTarget().Transform.position) <= Radius)
         {
             Damage damage = new Damage
             {
@@ -116,7 +133,9 @@ public class CleavingBlade_Scorpion : Skill
                 Type = DamageType,
             };
 
-            CmdAttack(damage, target.gameObject, shouldIncreaseCounter);
+            _wasDamageApplied = true;
+
+            if (GetTarget() is IDamageable damageable) CmdAttack(damage, damageable.gameObject, shouldIncreaseCounter);
         }
     }
 
@@ -135,12 +154,13 @@ public class CleavingBlade_Scorpion : Skill
 
     protected override void ClearData()
     {
+        _wasDamageApplied = false;
         ClearTarget();
     }
 
     public void BladeActive()
     {
-        blade.SetActive(true);
+        _blade.SetActive(true);
         SpeedAnimBlade_Scorpion();
     }
 
@@ -152,7 +172,7 @@ public class CleavingBlade_Scorpion : Skill
     public void CleavingBlade_ScorpionEnd()
     {
         AnimCastEnded();
-        blade.SetActive(false);
+        _blade.SetActive(false);
     }
 
     public void CleavingBlade_ScorpionSecondTalent(bool value)
