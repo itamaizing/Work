@@ -3971,6 +3971,7 @@ MonoBehaviour:
   _seriesOfStrikes: {fileID: 3083348233968490285}
   _sword: {fileID: 1545470976515082280}
   audioClip: {fileID: 8300000, guid: 7b90008d29cc7d14db8ede5bfe287bf1, type: 3}
+  _maxAdditionalCost: 10
 --- !u!114 &8854865153303019716
 MonoBehaviour:
   m_ObjectHideFlags: 0

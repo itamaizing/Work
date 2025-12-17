@@ -134,7 +134,6 @@ public abstract class GameRules : NetworkBehaviour
                 item.NetworkSettings.TargetUpdateLayers(item.connectionToClient);
             }
         }
-
         yield return null;
     }
 

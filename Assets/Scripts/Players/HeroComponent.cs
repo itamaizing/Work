@@ -10,7 +10,7 @@ public class HeroComponent : Character
     public override void Initialize()
     {
 		base.Initialize();
-        TalentManager.Initialize();
+        TalentManager.Initialize(LVL);
     }
 
     public void DestroySelf()

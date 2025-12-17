@@ -28,7 +28,6 @@ public class Level : NetworkBehaviour
             return;
 
         value = (int)(value * _multiplierToExperience);
-        Debug.Log("Test lvl + exp " + value);
         _experience += value;
         EXPAdded?.Invoke(value);
         RpcUpdateInfo(_value, _experience, _experienceForNextLVL);
@@ -49,7 +48,6 @@ public class Level : NetworkBehaviour
     {
         if(_value + 1 <= _maxValue)
         {
-            Debug.Log("Test lvl + up ");
             _value++;
             LVLUped?.Invoke(_value);
             RpcUpdateInfo(_value, _experience, _experienceForNextLVL);
@@ -66,7 +64,6 @@ public class Level : NetworkBehaviour
     [Command]
     public void CMDAddEXP(int value)
     {
-        Debug.Log("Test lvl + exp on lcient" + value);
         AddEXP(value);
     }
 
