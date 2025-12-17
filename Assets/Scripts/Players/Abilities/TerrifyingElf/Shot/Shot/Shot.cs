@@ -13,7 +13,8 @@ public class Shot : Skill
     [SerializeField] private TerrifyingElfAura _terrifyingElfAura;
     [SerializeField] private float _minDamage = 6f;
     [SerializeField] private float _maxDamage = 10f;
-    [SerializeField] private float _arrowYOffset = 1.5f;
+    [SerializeField] private float _arrowYOffsetUp = 1.5f;
+    [SerializeField] private float _arrowYOffsetDown = 0.5f;
 
     private const string _startAnimTrigger = "ShotCastDelayTrigger";
 
@@ -210,7 +211,7 @@ public class Shot : Skill
 
         if (direction == Vector3.zero) return;
 
-        ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffset, Quaternion.LookRotation(direction));
+        ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffsetUp, Quaternion.LookRotation(direction));
         proj.Init(_playerLinks, 0, false, this, damage);
         SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);
@@ -227,7 +228,7 @@ public class Shot : Skill
 
         if (direction == Vector3.zero) return;
 
-        ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up, Quaternion.LookRotation(direction));
+        ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffsetDown, Quaternion.LookRotation(direction));
         proj.Init(_playerLinks, 0, false, this, damage);
         SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);

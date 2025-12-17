@@ -16,6 +16,7 @@ public class ShotDarkness : Skill
     [SerializeField] private float _minDamage;
     [SerializeField] private float _maxDamage;
     [SerializeField] private float _arrowYOffset = 1.5f;
+    [SerializeField] private float _arrowYOffsetDown = 0.5f;
 
     private const string _startAnimTrigger = "ShotDarkCastDelayTrigger";
 
@@ -258,7 +259,7 @@ public class ShotDarkness : Skill
 
         if (direction == Vector3.zero) return;
 
-        ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up, Quaternion.LookRotation(direction));
+        ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffsetDown, Quaternion.LookRotation(direction));
         proj.Init(_playerLinks, magDamage, false, this, damage);
         SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);
