@@ -17,11 +17,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     [Tooltip("��������� ������ ������ ���� ����������, ����� � ��������� �������")]
     [SerializeField] private float _offset = 0.5f;
 
-    //private Character _target;
     private bool isTeleportation_ScorpionMagResist;
-
-    //private GameObject _tempTarget;
-    //private MoveComponent _tempTargetMove;
 
     [SerializeField] private ConsumeCombo_Scorpion consumeCombo_Scorpion;
     [SerializeField] private ScorpionPassive scorpionPassive;
