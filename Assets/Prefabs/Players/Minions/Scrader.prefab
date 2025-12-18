@@ -13927,6 +13927,7 @@ MonoBehaviour:
   _attackDistance: 3
   _damage: 5
   _animator: {fileID: 1215395125402789392}
+  scratchClaws: {fileID: 8741847699558006757}
 --- !u!1 &4348563488435226753
 GameObject:
   m_ObjectHideFlags: 0

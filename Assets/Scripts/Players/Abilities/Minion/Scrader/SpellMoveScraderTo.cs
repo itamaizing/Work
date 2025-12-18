@@ -12,6 +12,7 @@ public class SpellMoveScraderTo : Skill
     [SerializeField] private float _attackDistance = 3f;
     [SerializeField] private float _damage = 5f;
     [SerializeField] private Animator _animator;
+    [SerializeField] private ScratchClaws scratchClaws;
 
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private Coroutine _attackCoroutine;
@@ -63,6 +64,12 @@ public class SpellMoveScraderTo : Skill
     protected override IEnumerator CastJob()
     {
         IsCasting = true;
+
+        if (scratchClaws != null && scratchClaws.IsCasting && scratchClaws.IsAutoMode)
+        {
+            Debug.Log("1");
+            scratchClaws.CmdCancelActiveSkill();
+        }
 
         if (_attackCoroutine != null)
         {

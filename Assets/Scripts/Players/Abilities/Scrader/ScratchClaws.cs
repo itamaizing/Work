@@ -38,7 +38,7 @@ public class ScratchClaws : Skill
 
     private void scraderClawsAnimCast()
     {
-         _animator.SetTrigger(AttackScaredTrigger);
+        _animator.SetTrigger(AttackScaredTrigger);
     }
 
     public void AttackAnimationHit()
@@ -47,7 +47,7 @@ public class ScratchClaws : Skill
         IsCasting = false;
     }
 
-    protected override bool IsCanCast => !IsCasting;
+    protected override bool IsCanCast => GetTarget() != null;
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == TargetsLayers;
 
     private bool CheckIsCanCast()
@@ -96,7 +96,6 @@ public class ScratchClaws : Skill
                 if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
                 {
                     _setTarget = true;
-                    _currentTarget = damageable;
 
                     if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
                     else 
@@ -147,7 +146,6 @@ public class ScratchClaws : Skill
 
         IsCasting = false;
         _setTarget = false;
-        AnimCastEnded();
     }
 
     private IEnumerator MoveToTargetCharacter(IDamageable target)
