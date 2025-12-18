@@ -44,6 +44,7 @@ public class ScratchClaws : Skill
     public void AttackAnimationHit()
     {
         ApplyScratchDamage();
+        IsCasting = false;
     }
 
     protected override bool IsCanCast => !IsCasting;
@@ -78,6 +79,7 @@ public class ScratchClaws : Skill
             Hero.Move.StopLookAt();
         }
 
+        IsCasting = false;
         ClearTarget();
         _setTarget = false;
     }
@@ -122,15 +124,14 @@ public class ScratchClaws : Skill
         if (distanceToTarget > _stopDistance + StopDistanceThreshold)
         {
             yield return MoveToTargetCharacter(GetTarget() as IDamageable);
+            while (IsCasting) yield return null;
         }
 
         else
         {
             if (!CheckIsCanCast()) scraderClawsAnimCast();
-            yield return null;
+            while (IsCasting) yield return null;
         }
-
-        IsCasting = false;
     }
 
     protected override void ClearData()
