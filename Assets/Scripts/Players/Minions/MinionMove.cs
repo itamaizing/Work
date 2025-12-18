@@ -9,11 +9,14 @@ public class MinionMove : MoveComponent
 
     protected override void Move()
     {
-        _agent.speed = _currentSpeed;
+        if (_agent != null)
+        {
+            _agent.speed = _currentSpeed;
 
-        var animDir = transform.InverseTransformPoint(_agent.velocity + transform.position);
-        _anim.SetFloat(HashAnimPlayer.VelocityZ, animDir.z);
-        _anim.SetFloat(HashAnimPlayer.VelocityX, animDir.x);
+            var animDir = transform.InverseTransformPoint(_agent.velocity + transform.position);
+            _anim.SetFloat(HashAnimPlayer.VelocityZ, animDir.z);
+            _anim.SetFloat(HashAnimPlayer.VelocityX, animDir.x);
+        }
     }
 
     protected override void RotateAtCursor()

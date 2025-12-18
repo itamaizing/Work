@@ -13091,6 +13091,7 @@ GameObject:
   - component: {fileID: 5970206098610166088}
   - component: {fileID: 1027874424821115294}
   - component: {fileID: 8741847699558006757}
+  - component: {fileID: 8331210179348555134}
   m_Layer: 9
   m_Name: Scrader
   m_TagString: Allies
@@ -13617,7 +13618,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 1215395125402789392}
   moveScrader: {fileID: 1734545154344040367}
-  spell: {fileID: 0}
+  spell: {fileID: 8331210179348555134}
   scratchClaws: {fileID: 8741847699558006757}
 --- !u!114 &2486038140440756892
 MonoBehaviour:
@@ -13672,7 +13673,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _skills:
-  - {fileID: 0}
+  - {fileID: 8331210179348555134}
   - {fileID: 8741847699558006757}
   _hero: {fileID: 5830977165762126247}
   _talentSystem: {fileID: 5224625938796084017}
@@ -13864,6 +13865,68 @@ MonoBehaviour:
   _bleedingChance: 1
   _minDamage: 1
   _maxDamage: 4
+--- !u!114 &8331210179348555134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305573293433524190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9304b59bc4e9f1a40943ec59c2a591a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellMoveScraderTo
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
+  _abilityInfo: {fileID: 11400000, guid: afbef8fac9ee74141abb2a1c1443d316, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
+  _castDeley: 0
+  _damageValue: 0
+  _abilitySchool: 6
+  _abilityForm: 0
+  _damageType: 1
+  _attackRangeType: 0
+  _skillType: 0
+  _moving: 0
+  autoAttack: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 6
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _autoAttackDelay: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
+  _moveDurationPerUnit: 0.2
+  _damageDelay: 0.5
+  _attackDistance: 3
+  _damage: 5
+  _animator: {fileID: 1215395125402789392}
 --- !u!1 &4348563488435226753
 GameObject:
   m_ObjectHideFlags: 0

@@ -38,7 +38,7 @@ public class ScratchClaws : Skill
 
     private void scraderClawsAnimCast()
     {
-        _animator.SetTrigger(AttackScaredTrigger);
+         _animator.SetTrigger(AttackScaredTrigger);
     }
 
     public void AttackAnimationHit()
@@ -79,6 +79,7 @@ public class ScratchClaws : Skill
             Hero.Move.StopLookAt();
         }
 
+        StopCoroutine(MoveToTargetCharacter(_currentTarget));
         IsCasting = false;
         ClearTarget();
         _setTarget = false;
@@ -213,6 +214,8 @@ public class ScratchClaws : Skill
         }
 
         Hero.Move.CanMove = true;
+
+        if (!IsCasting) yield break;
 
         scraderClawsAnimCast();
     }
