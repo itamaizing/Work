@@ -50,7 +50,14 @@ public class PullingHealth : Skill
     private const int GhostsToAddDefault = 0;
     private const float RadiusIncreasePerGhost = 2f;
     private const float SearchTargetRadius = 1f;
+
+    private const string _pullingHealthCastDelay = "PullingHealthCastDelay";
+    private const string _pullingHealthMidTrigger = "PullingHealthMidTrigger";
+    private const string _pullingHealthCastDelayExit = "PullingHealthCastDelayExit";
     #endregion
+
+    private int _pullingHealthMidTriggerHash = Animator.StringToHash(_pullingHealthMidTrigger);
+    private int _pullingHealthCastDelayHash = Animator.StringToHash(_pullingHealthCastDelay);
 
     private readonly List<IDamageable> _extraTargets = new();
     private readonly List<GameObject> _extraEffects = new();
@@ -61,7 +68,7 @@ public class PullingHealth : Skill
     private bool _pullingHealthSpeedWithFearTalent;
     #endregion
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("PullingHealthCastDelay");
+    protected override int AnimTriggerCastDelay => _pullingHealthCastDelayHash;
     protected override int AnimTriggerCast => 0;
 
     protected override bool IsCanCast
@@ -169,8 +176,8 @@ public class PullingHealth : Skill
     {
         if (GetTarget() == null) yield return null;
 
-        _hero.Animator.SetTrigger(Animator.StringToHash("PullingHealthMidTrigger"));
-        _hero.NetworkAnimator.SetTrigger(Animator.StringToHash("PullingHealthMidTrigger"));
+        _hero.Animator.SetTrigger(_pullingHealthMidTriggerHash);
+        _hero.NetworkAnimator.SetTrigger(_pullingHealthMidTriggerHash);
 
         int innerDarknessStacks;
 
@@ -370,11 +377,11 @@ public class PullingHealth : Skill
 
     private void EndAnimDestroyEffect()
     {
-        _hero.Animator.ResetTrigger(Animator.StringToHash("PullingHealthMidTrigger"));
-        _hero.NetworkAnimator.ResetTrigger(Animator.StringToHash("PullingHealthMidTrigger"));
+        _hero.Animator.ResetTrigger(_pullingHealthMidTriggerHash);
+        _hero.NetworkAnimator.ResetTrigger(_pullingHealthMidTriggerHash);
 
         CmdCrossFade();
-        _hero.Animator.CrossFade("PullingHealthCastDelayExit", PullingHealthExitCrossFadeDuration);
+        _hero.Animator.CrossFade(_pullingHealthCastDelayExit, PullingHealthExitCrossFadeDuration);
 
         Hero.Move.IsMoveBlocked = false;
         Hero.Move.StopLookAt();
@@ -530,7 +537,7 @@ public class PullingHealth : Skill
         }
         _allActiveEffects.Clear();
     }
-    [Command] private void CmdCrossFade() => _hero.Animator.CrossFade("PullingHealthCastDelayExit", 0.1f);
+    [Command] private void CmdCrossFade() => _hero.Animator.CrossFade(_pullingHealthCastDelayExit, 0.1f);
 
     [ClientRpc]
     private void RpcInitEffects(GameObject effectGameObject, GameObject startPoint, GameObject targetPoint)
