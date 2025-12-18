@@ -1317,7 +1317,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37a5c11bfb1de7c4da352b19ebb053f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spellMoveScraderTo: {fileID: 2165251163273322891}
+  spellMoveScraderTo: {fileID: 0}
   scratchClaws: {fileID: 8741847699558006757}
 --- !u!1 &1816582864147950907
 GameObject:
@@ -13090,7 +13090,6 @@ GameObject:
   - component: {fileID: 4677353127167607557}
   - component: {fileID: 5970206098610166088}
   - component: {fileID: 1027874424821115294}
-  - component: {fileID: 2165251163273322891}
   - component: {fileID: 8741847699558006757}
   m_Layer: 9
   m_Name: Scrader
@@ -13618,7 +13617,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 1215395125402789392}
   moveScrader: {fileID: 1734545154344040367}
-  spell: {fileID: 2165251163273322891}
+  spell: {fileID: 0}
   scratchClaws: {fileID: 8741847699558006757}
 --- !u!114 &2486038140440756892
 MonoBehaviour:
@@ -13673,7 +13672,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _skills:
-  - {fileID: 2165251163273322891}
+  - {fileID: 0}
   - {fileID: 8741847699558006757}
   _hero: {fileID: 5830977165762126247}
   _talentSystem: {fileID: 5224625938796084017}
@@ -13800,68 +13799,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_VisionRange: 5
---- !u!114 &2165251163273322891
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4305573293433524190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 899293326900fc044aa0ef3436bab629, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SpellMoveScraderTo
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
-  _abilityInfo: {fileID: 11400000, guid: afbef8fac9ee74141abb2a1c1443d316, type: 2}
-  _isSubjectToGlobalCooldownTime: 1
-  _skillEnergyCosts: []
-  _additionalSkillEnergyCosts: []
-  _cooldownTime: 1
-  _castDeley: 0
-  _damageValue: 0
-  _abilitySchool: 6
-  _abilityForm: 2
-  _damageType: 1
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 1
-  autoAttack: 0
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 256
-  _obstacle:
-    serializedVersion: 2
-    m_Bits: 0
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
-  _radius: 6
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
-  _autoAttackDelay: 0
-  _isAutoRadiusRender: 0
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 0
-  _disactive: 0
-  _earlyCooldown: 0
-  maxCounter: 0
-  _moveDurationPerUnit: 0.2
-  _damageDelay: 0.5
-  _attackDistance: 2
-  _damage: 5
-  _animator: {fileID: 1215395125402789392}
 --- !u!114 &8741847699558006757
 MonoBehaviour:
   m_ObjectHideFlags: 0

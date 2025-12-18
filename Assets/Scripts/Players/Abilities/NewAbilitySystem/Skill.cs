@@ -465,7 +465,13 @@ public abstract class Skill : NetworkBehaviour
         return null;
     }
 
-	public void SetTarget(ITargetable character)
+    public void SetTargetCharacter(Character character)
+    {
+        if (character != null)
+            _target = character;
+    }
+
+    public void SetTarget(ITargetable character)
 	{
         if (character != null)
             _target = character;
@@ -502,20 +508,6 @@ public abstract class Skill : NetworkBehaviour
             //Debug.Log()
             if (GetCloserTargets(GetMousePoint(), Radius, canTargetHimself) != null)
                 _tempTarget = GetCloserTargets(GetMousePoint(), Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
-        }
-    }
-
-    protected void FindTarget(float radius, Vector3 point, bool canTargetHimself = false, bool canTargetDead = false)
-    {
-        if (canTargetDead)
-        {
-            if (GetCloserTargets(point, radius, canTargetHimself) != null)
-                _tempTarget = GetCloserTargets(point, radius, canTargetHimself)[0];
-        }
-        else
-        {
-            if (GetCloserTargets(point, radius, canTargetHimself) != null)
-                _tempTarget = GetCloserTargets(point, radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
         }
     }
 
