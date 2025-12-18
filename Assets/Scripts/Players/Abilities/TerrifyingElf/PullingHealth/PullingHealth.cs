@@ -51,13 +51,13 @@ public class PullingHealth : Skill
     private const float RadiusIncreasePerGhost = 2f;
     private const float SearchTargetRadius = 1f;
 
-    private const string _pullingHealthCastDelay = "PullingHealthCastDelay";
-    private const string _pullingHealthMidTrigger = "PullingHealthMidTrigger";
-    private const string _pullingHealthCastDelayExit = "PullingHealthCastDelayExit";
+    private const string PullingHealthCastDelay = "PullingHealthCastDelay";
+    private const string PullingHealthMidTrigger = "PullingHealthMidTrigger";
+    private const string PullingHealthCastDelayExit = "PullingHealthCastDelayExit";
     #endregion
 
-    private int _pullingHealthMidTriggerHash = Animator.StringToHash(_pullingHealthMidTrigger);
-    private int _pullingHealthCastDelayHash = Animator.StringToHash(_pullingHealthCastDelay);
+    private int _pullingHealthMidTriggerHash = Animator.StringToHash(PullingHealthMidTrigger);
+    private int _pullingHealthCastDelayHash = Animator.StringToHash(PullingHealthCastDelay);
 
     private readonly List<IDamageable> _extraTargets = new();
     private readonly List<GameObject> _extraEffects = new();
@@ -381,7 +381,7 @@ public class PullingHealth : Skill
         _hero.NetworkAnimator.ResetTrigger(_pullingHealthMidTriggerHash);
 
         CmdCrossFade();
-        _hero.Animator.CrossFade(_pullingHealthCastDelayExit, PullingHealthExitCrossFadeDuration);
+        _hero.Animator.CrossFade(PullingHealthCastDelayExit, PullingHealthExitCrossFadeDuration);
 
         Hero.Move.IsMoveBlocked = false;
         Hero.Move.StopLookAt();
@@ -537,7 +537,7 @@ public class PullingHealth : Skill
         }
         _allActiveEffects.Clear();
     }
-    [Command] private void CmdCrossFade() => _hero.Animator.CrossFade(_pullingHealthCastDelayExit, 0.1f);
+    [Command] private void CmdCrossFade() => _hero.Animator.CrossFade(PullingHealthCastDelayExit, 0.1f);
 
     [ClientRpc]
     private void RpcInitEffects(GameObject effectGameObject, GameObject startPoint, GameObject targetPoint)

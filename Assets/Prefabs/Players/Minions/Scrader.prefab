@@ -1318,6 +1318,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spellMoveScraderTo: {fileID: 2165251163273322891}
+  scratchClaws: {fileID: 8741847699558006757}
 --- !u!1 &1816582864147950907
 GameObject:
   m_ObjectHideFlags: 0
@@ -13924,6 +13925,8 @@ MonoBehaviour:
   _stopDistance: 1.5
   _bleedingDuration: 5
   _bleedingChance: 1
+  _minDamage: 1
+  _maxDamage: 4
 --- !u!1 &4348563488435226753
 GameObject:
   m_ObjectHideFlags: 0

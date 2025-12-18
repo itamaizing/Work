@@ -64,7 +64,9 @@ public class GrowTree : Skill
     private const float SearchMousClickTarget = 1f;
     private const float MagicEvade = 100f;
 
-    private const string _growTreeCastDelayExit = "GrowTreeCastDelayExit";
+    private const string GrowTreeCastDelayExit = "GrowTreeCastDelayExit";
+    private const string GrowTreeCastDelay = "GrowTreeCastDelay";
+    private const string ShotSkyWithTreeCastDelay = "ShotSkyWithTreeCastDelay";
     #endregion
 
     protected override bool IsCanCast
@@ -78,8 +80,8 @@ public class GrowTree : Skill
         }
     }
 
-    private int _growHash = Animator.StringToHash("GrowTreeCastDelay");
-    private int _shotHash = Animator.StringToHash("ShotSkyWithTreeCastDelay");
+    private int _growHash = Animator.StringToHash(GrowTreeCastDelay);
+    private int _shotHash = Animator.StringToHash(ShotSkyWithTreeCastDelay);
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
@@ -383,7 +385,7 @@ public class GrowTree : Skill
             _hero.Animator.ResetTrigger(_growHash);
             _hero.NetworkAnimator.ResetTrigger(_growHash);
             CmdCrossFade();
-            _hero.Animator.CrossFade(_growTreeCastDelayExit, AnimatorCrossFadeDuration);
+            _hero.Animator.CrossFade(GrowTreeCastDelayExit, AnimatorCrossFadeDuration);
         }
 
         GrowTreeStartMove();
@@ -512,7 +514,7 @@ public class GrowTree : Skill
     [Command]
     private void CmdCrossFade()
     {
-        _hero.Animator.CrossFade(_growTreeCastDelayExit, AnimatorCrossFadeDuration);
+        _hero.Animator.CrossFade(GrowTreeCastDelayExit, AnimatorCrossFadeDuration);
     }
 
     [Command]

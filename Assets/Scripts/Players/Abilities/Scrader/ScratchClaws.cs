@@ -21,18 +21,24 @@ public class ScratchClaws : Skill
     private const float MoveEventThreshold = 1f;
     private const float SegmentMinDistance = 0.01f;
     private const float RaycastCheckDistance = 1f;
+    private const float TargetSearchRadius = 1f;
+    private const float DamagePerTick = 1f;
+
+    private const string AttackScaredMainTrigger = "AttackScaredMain";
+    private const string AttackScaredTrigger = "AttackScared";
+
     #endregion
+
+    private int _attackScaredMainHash = Animator.StringToHash(AttackScaredMainTrigger);
     private Tween _activeTween;
     private bool _moveToTarget = true;
     private bool _setTarget = false;
+    private bool _animAttackEnd = false;
 
     public Action<GameObject> DoMove;
 
-    private const string _startAnimTrigger = "AttackScaredMain";
-    private const float TargetSearchRadius = 1f;
-
     protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerCast => Animator.StringToHash(_startAnimTrigger);
+    protected override int AnimTriggerCast => _attackScaredMainHash;
 
     public void scraderClawsAnimCast()
     {
@@ -45,7 +51,12 @@ public class ScratchClaws : Skill
 
     public void scraderClawsAnim()
     {
-        _animator.SetTrigger("AttackScared");
+        _animator.SetTrigger(AttackScaredTrigger);
+    }
+
+    public void AnimAttackEnd()
+    {
+        _animAttackEnd = true;
     }
 
     protected override bool IsCanCast => GetTarget() != null;
@@ -77,10 +88,10 @@ public class ScratchClaws : Skill
         if (_hero?.Move != null)
         {
             Hero.Move.CanMove = true;
-            ClearTarget();
             Hero.Move.StopLookAt();
         }
 
+        ClearTarget();
         _moveToTarget = true;
         _setTarget = false;
         AnimCastEnded();
@@ -89,7 +100,7 @@ public class ScratchClaws : Skill
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
         _moveToTarget = true;
-        if (Damage <= 0) Damage = UnityEngine.Random.Range(1f, 4f);
+        Damage = UnityEngine.Random.Range(1f, 4f);
 
         while (GetTempTarget() == null && _moveToTarget)
         {
@@ -123,7 +134,14 @@ public class ScratchClaws : Skill
     protected override IEnumerator CastJob()
     {
         if (!CheckIsCanCast()) yield return null;
+        _animAttackEnd = false;
+
+        Damage = UnityEngine.Random.Range(1f, 4f);
+
         IDamageable damageable = GetTarget() as IDamageable;
+
+        while (!_animAttackEnd) yield return null;
+
         if (!_moveToTarget) CmdApplyScratch(damageable.gameObject);
 
         yield return null;
@@ -133,14 +151,24 @@ public class ScratchClaws : Skill
     protected override void ClearData()
     {
         ClearTarget();
-        //_target = null;
-        Damage = 0;
         _setTarget = false;
+
+        if (_hero?.Move != null)
+        {
+            Hero.Move.CanMove = true;
+            Hero.Move.StopLookAt();
+        }
+
+        _moveToTarget = true;
+        _setTarget = false;
+        AnimCastEnded();
     }
 
     private IEnumerator MoveToTargetCharacter(IDamageable target)
     {
         if (target == null) yield break;
+
+        _animAttackEnd = false;
 
         Hero.Move.LookAtPosition(target.transform.position);
 
@@ -204,7 +232,10 @@ public class ScratchClaws : Skill
         Hero.Move.CanMove = true;
         _moveToTarget = false;
 
-        _animator.SetTrigger("AttackScared");
+        _animator.SetTrigger(AttackScaredTrigger);
+
+        while (!_animAttackEnd) yield return null;
+
         CmdApplyScratch(target.gameObject);
     }
     private Vector3 GetApproachPointNearEnemy(IDamageable enemy)
@@ -227,8 +258,7 @@ public class ScratchClaws : Skill
         };
 
         ApplyDamage(damage, target);
-        Debug.Log("1");
         
-        if (targetCurrent != null && UnityEngine.Random.value <= _bleedingChance) targetCurrent.CharacterState.AddState(States.Bleeding, _bleedingDuration, Damage, _playerLinks.gameObject, name);
+        if (targetCurrent != null && UnityEngine.Random.value <= _bleedingChance) targetCurrent.CharacterState.AddState(States.Bleeding, _bleedingDuration, DamagePerTick, _playerLinks.gameObject, name);
     }
 }

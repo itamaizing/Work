@@ -10,6 +10,7 @@ public class BleedingScraderDebuff : AbstractCharacterState
     private float _duration;
     private float _baseDuration;
     private float _damage;
+    private float _baseDamage;
     private float timerTick = 0;
 
     public override States State => States.BleedingScrader;
@@ -28,6 +29,7 @@ public class BleedingScraderDebuff : AbstractCharacterState
         _characterState = character;
         _target = _characterState.Character;
         _damage = damageToExit;
+        _baseDamage = damageToExit;
 
         _baseDuration = durationToExit;
         _duration = durationToExit;
@@ -43,7 +45,7 @@ public class BleedingScraderDebuff : AbstractCharacterState
         if (CurrentStacksCount < MaxStacksCount)
         {
             CurrentStacksCount++;
-            _damage++;
+            _baseDamage += _damage;
         }
 
         return true;
@@ -65,7 +67,7 @@ public class BleedingScraderDebuff : AbstractCharacterState
             if (CurrentStacksCount > 0)
             {
                 CurrentStacksCount--;
-                _damage--;
+                _baseDamage -= _damage;
                 _duration = _baseDuration;
             }
 
