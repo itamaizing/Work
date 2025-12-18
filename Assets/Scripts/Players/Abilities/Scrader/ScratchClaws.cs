@@ -27,7 +27,6 @@ public class ScratchClaws : Skill
     private const string AttackScaredTrigger = "AttackScared";
 
     #endregion
-
     private IDamageable _currentTarget;
     private Tween _activeTween;
     private bool _setTarget = false;
@@ -47,7 +46,7 @@ public class ScratchClaws : Skill
         ApplyScratchDamage();
     }
 
-    protected override bool IsCanCast => GetTarget() != null;
+    protected override bool IsCanCast => !IsCasting;
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == TargetsLayers;
 
     private bool CheckIsCanCast()
@@ -110,9 +109,6 @@ public class ScratchClaws : Skill
 
         SetTarget(GetTempTarget());
 
-        float distanceToTarget = Vector3.Distance(transform.position, GetTempTarget().Transform.position);
-        if (distanceToTarget > _stopDistance + StopDistanceThreshold) StartCoroutine(MoveToTargetCharacter(GetTempTarget() as IDamageable));
-
         TargetInfo info = new();
         info.AddTarget(GetTarget());
         targetDataSavedCallback?.Invoke(info);
@@ -120,17 +116,26 @@ public class ScratchClaws : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (!CheckIsCanCast()) yield return null;
+        IsCasting = true;
 
-        scraderClawsAnimCast();
+        float distanceToTarget = Vector3.Distance(transform.position, GetTarget().Transform.position);
+        if (distanceToTarget > _stopDistance + StopDistanceThreshold)
+        {
+            yield return MoveToTargetCharacter(GetTarget() as IDamageable);
+        }
 
-        yield return null;
+        else
+        {
+            if (!CheckIsCanCast()) scraderClawsAnimCast();
+            yield return null;
+        }
+
+        IsCasting = false;
     }
 
     protected override void ClearData()
     {
         ClearTarget();
-        _setTarget = false;
 
         if (_hero?.Move != null)
         {
@@ -138,6 +143,7 @@ public class ScratchClaws : Skill
             Hero.Move.StopLookAt();
         }
 
+        IsCasting = false;
         _setTarget = false;
         AnimCastEnded();
     }
@@ -217,9 +223,7 @@ public class ScratchClaws : Skill
 
     private void ApplyScratchDamage()
     {
-        Debug.Log("1");
         if (_currentTarget == null) return;
-        Debug.Log("2");
         Damage = UnityEngine.Random.Range(_minDamage, _maxDamage);
 
         var targetCurrent = _currentTarget as Character;
