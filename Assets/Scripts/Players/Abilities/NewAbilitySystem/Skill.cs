@@ -1548,6 +1548,7 @@ public abstract class Skill : NetworkBehaviour
 
         _isPreparing = false;
         _isCasting = false;
+        _isAutoMode = false;
 
         if (_isUseCharges)
         {

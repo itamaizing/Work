@@ -12,7 +12,7 @@ public class SpellMoveScraderTo : Skill
     [SerializeField] private float _attackDistance = 3f;
     [SerializeField] private float _damage = 5f;
     [SerializeField] private Animator _animator;
-    [SerializeField] private ScratchClaws scratchClaws;
+    [SerializeField] private SkillManager _skillManager;
 
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private Coroutine _attackCoroutine;
@@ -65,11 +65,7 @@ public class SpellMoveScraderTo : Skill
     {
         IsCasting = true;
 
-        if (scratchClaws != null && scratchClaws.IsCasting && scratchClaws.IsAutoMode)
-        {
-            Debug.Log("1");
-            scratchClaws.CmdCancelActiveSkill();
-        }
+        AutoAtackSkillCastWork();
 
         if (_attackCoroutine != null)
         {
@@ -218,6 +214,14 @@ public class SpellMoveScraderTo : Skill
         };
 
         CmdApplyDamage(damage, _currentEnemyTarget.gameObject);
+    }
+
+    private void AutoAtackSkillCastWork()
+    {
+        if (_skillManager != null)
+        {
+            if (_skillManager.AutoSkillCasts != null) _skillManager.AutoSkillCasts.DeleteSkill();
+        }
     }
 
     public void OnAutoAttackAnimationHit()
