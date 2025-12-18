@@ -220,7 +220,7 @@ public class SpellMoveScraderTo : Skill
     {
         if (_skillManager != null)
         {
-            if (_skillManager.AutoSkillCasts != null) _skillManager.AutoSkillCasts.DeleteSkill();
+            if (_skillManager.AutoSkillCast != null) _skillManager.AutoSkillCast.DeleteSkill();
         }
     }
 

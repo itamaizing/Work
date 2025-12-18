@@ -144,6 +144,7 @@ public class ScratchClaws : Skill
             Hero.Move.StopLookAt();
         }
 
+        StopCoroutine(MoveToTargetCharacter(_currentTarget));
         IsCasting = false;
         _setTarget = false;
     }
