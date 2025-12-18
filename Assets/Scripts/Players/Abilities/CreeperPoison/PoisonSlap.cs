@@ -167,7 +167,7 @@ public class PoisonSlap : Skill
             yield return _secondMouseClickCoroutine = StartCoroutine(SecondClick());
         }
 
-        SetTargetCharacter(GetTempTargetCharacter());
+        SetTarget(GetTempTargetCharacter());
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);

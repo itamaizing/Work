@@ -16,7 +16,7 @@ public abstract class CloseCombatSkill : Skill
             }
             yield return null;
         }
-        SetTargetCharacter(GetTempTargetCharacter());
+        SetTarget(GetTempTargetCharacter());
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(GetTargetCharacter());
         targetDataSavedCallback(targetInfo);

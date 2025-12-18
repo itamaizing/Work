@@ -92,7 +92,7 @@ public class PhysicalAttack : Skill
 			yield return null;
 		}
 
-		SetTargetCharacter(GetTempTargetCharacter());
+		SetTarget(GetTempTargetCharacter());
 		//ClearTempTarget();
 
         targetInfo.AddTarget(GetTargetCharacter());
@@ -330,7 +330,7 @@ public class PhysicalAttack : Skill
 
 	public override void LoadTargetData(TargetInfo targetInfo)
 	{
-		if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
+		if (targetInfo.GetTargets().Count > 0) SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
 	}
 
     protected override void ClearData()

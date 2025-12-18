@@ -80,7 +80,7 @@ public abstract class Resource : NetworkBehaviour
         if (_regenCoroutine != null)
 		{
             CmdResetRegen();
-            Debug.Log("Restart regen");
+            //Debug.Log("Restart regen");
 			StopCoroutine(_regenCoroutine);
 			_regenCoroutine = StartCoroutine(RegenerateJob());
 		}
@@ -185,7 +185,7 @@ public abstract class Resource : NetworkBehaviour
 
                 while (_currentValue < _maxValue)
                 {
-                    Debug.Log("Regens");
+                    //Debug.Log("Regens");
                     CmdRegen();
                     yield return new WaitForSeconds(_regenerationPeriod);
                 }
@@ -249,10 +249,10 @@ public abstract class Resource : NetworkBehaviour
 
     protected void ResetRegen()
     {
-        Debug.Log(_regenCoroutine);
+        //Debug.Log(_regenCoroutine);
         if (_regenCoroutine != null)
         {
-            Debug.Log("Restart regen");
+            //Debug.Log("Restart regen");
             StopCoroutine(_regenCoroutine);
             _regenCoroutine = StartCoroutine(RegenerateJob());
         }

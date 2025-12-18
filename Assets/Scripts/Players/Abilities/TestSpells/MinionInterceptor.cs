@@ -17,7 +17,7 @@ public class MinionInterceptor : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
 
-        SetTarget((MinionComponent)targetInfo.GetTargets()[0]);
+        SetTarget((ITargetable)(MinionComponent)targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator CastJob()

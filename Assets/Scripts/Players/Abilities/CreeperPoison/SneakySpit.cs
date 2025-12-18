@@ -51,7 +51,7 @@ public class SneakySpit : Skill
     {
         if (targetInfo?.GetTargets()?.Count > 0)
         {
-            SetTarget(targetInfo.GetTargets()[0] as Character);
+            SetTarget((ITargetable)(targetInfo.GetTargets()[0] as Character));
             if (GetTargetCharacter() != null) Hero.Move.LookAtTransform(GetTargetCharacter().transform);
         }
         _isCanCancle = false;
@@ -92,7 +92,7 @@ public class SneakySpit : Skill
 
     private IEnumerator SneakySpitBoostWindow(Character target)
     {
-        SetTarget(target);
+        SetTarget((ITargetable)target);
         if (_boostWindow != null) StopCoroutine(_boostWindow);
         EnableSkillBoost();
         yield return new WaitForSeconds(durationWindowsBoost);

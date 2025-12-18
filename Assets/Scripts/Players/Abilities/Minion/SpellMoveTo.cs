@@ -26,7 +26,7 @@ public class SpellMoveTo : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) _target = (Character)targetInfo.GetTargets()[0];
+        if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0] as Character);
         _targetPoint = targetInfo.Points[0];
     }
 
@@ -97,16 +97,15 @@ public class SpellMoveTo : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && _target == null)
+        while (float.IsPositiveInfinity(_targetPoint.x) && GetTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
                 FindTargetCharacter();
-                _target = GetTempTargetCharacter();
 
-                if (_target != null) targetInfo.AddTarget(_target);
+                if (GetTargetCharacter() is Character character) targetInfo.AddTarget(character);
 
-                if (_target == null)
+                if (GetTargetCharacter() == null)
                 {
                     _targetPoint = GetMousePoint();
 
@@ -144,10 +143,9 @@ public class SpellMoveTo : Skill
         {
             if (Input.GetMouseButton(0))
             {
-                FindTargetCharacter();
-                _target = GetTempTargetCharacter();
+                GetTargetCharacter();
 
-                if (_target == null)
+                if (GetTargetCharacter() == null)
                 {
                     _targetPoint = GetMousePoint();
                 }

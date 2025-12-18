@@ -56,7 +56,7 @@ public class FlashOfLight : Skill
     }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((Character)targetInfo.GetTargets()[0]);
+        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 
     private void OnEnable()
@@ -113,13 +113,13 @@ public class FlashOfLight : Skill
                 FindTargetCharacter(true);
                 //_target = GetRaycastTarget(true);
 
-                if (GetTempTargetCharacter() != null && GetTempTargetCharacter() is Character characte && IsValidTarget(characte)) SetTarget(characte);
+                if (GetTempTargetCharacter() != null && GetTempTargetCharacter() is Character characte && IsValidTarget(characte)) SetTarget((ITargetable)characte);
                 else ClearTarget();
 
             }
             yield return null;
         }
-        SetTargetCharacter(GetTempTargetCharacter());
+        SetTarget(GetTempTargetCharacter());
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);

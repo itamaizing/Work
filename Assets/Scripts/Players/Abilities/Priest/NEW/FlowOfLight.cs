@@ -117,7 +117,7 @@ public class FlowOfLight : Skill
             }
             yield return null;
         }
-        SetTargetCharacter(GetTempTargetCharacter());
+        SetTarget(GetTempTargetCharacter());
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(GetTargetCharacter());
         targetDataSavedCallback(targetInfo);
@@ -207,7 +207,7 @@ public class FlowOfLight : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0)
-            SetTarget((Character)targetInfo.GetTargets()[0]);
+            SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 
     [Command] private void CmdCrossFade() => _hero.Animator.CrossFade("FlowSpellEnd", 0.1f);

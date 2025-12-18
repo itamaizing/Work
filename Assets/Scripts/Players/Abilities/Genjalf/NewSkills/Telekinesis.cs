@@ -61,7 +61,7 @@ namespace Gangdollarff
         public override void LoadTargetData(TargetInfo targetInfo)
         {
             _point = targetInfo.Points[0];
-            SetTarget((Character)targetInfo.GetTargets()[0]);
+            SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
         }
 
         protected override IEnumerator CastJob()
