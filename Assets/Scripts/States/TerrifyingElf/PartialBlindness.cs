@@ -10,12 +10,11 @@ public class PartialBlindness : AbstractCharacterState
     #region Const
     private const int MaxStacks = 3;
     private const float BaseMissChancePerStack = 10f;
-    private const float EffectivenessDecayPerSecond = 0.02f;
-    private const float MaxEffectiveness = 1f;
+    private const float EffectivenessDecayPerSecond = 2f;
     private const float MinEffectiveness = 0f;
     #endregion
 
-    private float _currentEffectiveness = 1f;
+    private float _effectivenessLoss = 0f;
 
     private Character _character;
     //private string _talentPartialBlindnessActive;
@@ -39,8 +38,6 @@ public class PartialBlindness : AbstractCharacterState
         MaxStacksCount = MaxStacks;
         CurrentStacksCount = 1;
 
-        _currentEffectiveness = MaxEffectiveness;
-
         _character = character.GetComponent<Character>();
         _character.Abilities.OnSkillPreparedSuccessfully += HandleSkillPrepared;
     }
@@ -61,15 +58,11 @@ public class PartialBlindness : AbstractCharacterState
             return;
         }
 
-        _currentEffectiveness -= EffectivenessDecayPerSecond * Time.deltaTime;
-        _currentEffectiveness = Mathf.Clamp(_currentEffectiveness, MinEffectiveness, MaxEffectiveness);
     }
 
     public override bool Stack(float time)
     {
         _duration = _baseDuration;
-
-        _currentEffectiveness = MaxEffectiveness;
 
         if (CurrentStacksCount < MaxStacksCount) CurrentStacksCount++;
 
@@ -82,7 +75,8 @@ public class PartialBlindness : AbstractCharacterState
         if (skill.AbilityForm != AbilityForm.Physical) return;
         if (skill.Hero != _characterState.Character) return;
 
-        float totalMissChance = CurrentStacksCount * BaseMissChancePerStack * _currentEffectiveness;
+        _effectivenessLoss = Mathf.Max(MinEffectiveness, (_baseDuration - _duration) * EffectivenessDecayPerSecond); //* CurrentStacksCount)?
+        float totalMissChance = CurrentStacksCount * BaseMissChancePerStack - _effectivenessLoss;
 
         if (UnityEngine.Random.Range(0f, 100f) < totalMissChance)
         {
