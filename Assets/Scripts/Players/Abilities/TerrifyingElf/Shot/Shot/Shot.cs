@@ -45,7 +45,7 @@ public class Shot : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash(_startAnimTrigger);
     protected override bool IsCanCast { get => CheckCanCast(); }
-    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == TargetsLayers;
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     private bool CheckCanCast()
     {
@@ -200,6 +200,7 @@ public class Shot : Skill
             ClearTarget();
             _targetPoint = Vector3.positiveInfinity;
             Hero.Move.StopLookAt();
+            AnimCastEnded();
         }
     }
 
@@ -267,6 +268,7 @@ public class Shot : Skill
     {
         _targetPoint = Vector3.positiveInfinity;
         ClearTarget();
+        AnimCastEnded();
         _consecutiveShots = 0;
     }
 }

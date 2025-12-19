@@ -49,7 +49,7 @@ public class ShotDarkness : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash(_startAnimTrigger);
     protected override bool IsCanCast { get => CheckCanCast(); }
-    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == TargetsLayers;
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     private bool CheckCanCast()
     {
@@ -135,7 +135,7 @@ public class ShotDarkness : Skill
             if (GetMouseButton)
             {
                 FindTarget(RadiusTargetCheck, GetMousePoint());
-                targetPoint = GetMousePoint();
+                targetPoint = GetMousePoint(_groundLayerMask);
 
                 if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
                 {
@@ -210,6 +210,8 @@ public class ShotDarkness : Skill
             _targetPoint = Vector3.positiveInfinity;
             Hero.Move.StopLookAt();
         }
+
+        AnimCastEnded();
     }
 
     private bool IsTargetInRange() { return GetTarget() != null && Vector3.Distance(transform.position, GetTarget().Transform.position) <= CastLength; }
@@ -303,5 +305,6 @@ public class ShotDarkness : Skill
         _targetPoint = Vector3.positiveInfinity;
         ClearTarget();
         _consecutiveShots = 0;
+        AnimCastEnded();
     }
 }

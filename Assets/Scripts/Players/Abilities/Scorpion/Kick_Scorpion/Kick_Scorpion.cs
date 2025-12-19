@@ -42,7 +42,7 @@ public class Kick_Scorpion : Skill
     protected override int AnimTriggerCast => KickTrigger;
 
     protected override bool IsCanCast => GetTarget() != null && Vector3.Distance(GetTarget().Transform.position, transform.position) <= Radius && NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
-    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == TargetsLayers;
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     public float DamageRange => UnityEngine.Random.Range(_minDamage, _maxDamage);
 
@@ -62,6 +62,8 @@ public class Kick_Scorpion : Skill
         //_target = null;
         Hero.Move.StopLookAt();
         _hero.Move.CanMove = true;
+        AnimCastEnded();
+        if (_hitsInRowCoroutine != null) StopCoroutine(_hitsInRowCoroutine);
     }
 
     public void Kick_ScorpionMoveFalse()
@@ -275,5 +277,7 @@ public class Kick_Scorpion : Skill
         _wasDamageApplied = false;
         ClearTarget();
         _hero.Move.StopLookAt();
+        AnimCastEnded();
+        if (_hitsInRowCoroutine != null) StopCoroutine(_hitsInRowCoroutine);
     }
 }

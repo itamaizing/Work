@@ -49,7 +49,7 @@ public class ClawStrike : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("ClawStrikeTrigger");
     protected override bool IsCanCast => CheckIsCanCast();
-    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == TargetsLayers;
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     public float CastWindowDuration { get => _castWindowDuration; set => _castWindowDuration = value; }
 
@@ -250,6 +250,8 @@ public class ClawStrike : Skill
     {
         _player.Move.StopLookAt();
         ClearTarget();
+        if (coroutineDurationChanceApplyBleedingWithJump != null) StopCoroutine(IDurationChanceApplyBleedingWithJump());
+        AnimCastEnded();
     }
 
     public void TrySpendAttackingPsi()
@@ -299,5 +301,7 @@ public class ClawStrike : Skill
     protected override void ClearData()
     {
         ClearTarget();
+        if (coroutineDurationChanceApplyBleedingWithJump != null) StopCoroutine(IDurationChanceApplyBleedingWithJump());
+        AnimCastEnded();
     }
 }

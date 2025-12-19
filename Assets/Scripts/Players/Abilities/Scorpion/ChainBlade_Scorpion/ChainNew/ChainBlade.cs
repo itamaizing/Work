@@ -46,7 +46,7 @@ public class ChainBlade : Skill
     protected override int AnimTriggerCast => chainBladeStart;
 
     protected override bool IsCanCast => Vector3.Distance(_clickPoint, transform.position) <= CastLength && NoObstacles(_clickPoint, transform.position, _obstacle);
-    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == TargetsLayers;
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     public float DamageRange => UnityEngine.Random.Range(_minDamage, _maxDamage);
     public PassiveCombo_Scorpion ComboCounter { get => _comboCounter; set => _comboCounter = value; }
@@ -185,6 +185,8 @@ public class ChainBlade : Skill
     {
         _clickPoint = Vector3.positiveInfinity;
         ClearTarget();
+        AnimCastEnded();
+        if (_pullCoroutine != null) StopCoroutine(_pullCoroutine);
     }
 
     public void ChainBladeCast()
@@ -223,22 +225,23 @@ public class ChainBlade : Skill
             _currentChainArrowPrefab = null;
         }
 
+        if (_pullCoroutine != null) StopCoroutine(_pullCoroutine);
         _pullCoroutine = StartCoroutine(PullTargetToPlayer(target, pullDuration));
 
         RpcHandleHitClient(target.netId, pullDuration);
     }
 
-    [Command]
-    private void CmdDestroyChain()
-    {
-        if (_currentChainArrowPrefab != null)
-        {
-            RpcDestroyChain(_currentChainArrowPrefab.gameObject);
-            NetworkServer.Destroy(_currentChainArrowPrefab.gameObject);
-            _currentChainArrowPrefab = null;
-        }
-        else _needDestroyArrowAfterSpawn = true;
-    }
+    //[Command]
+    //private void CmdDestroyChain()
+    //{
+    //    if (_currentChainArrowPrefab != null)
+    //    {
+    //        RpcDestroyChain(_currentChainArrowPrefab.gameObject);
+    //        NetworkServer.Destroy(_currentChainArrowPrefab.gameObject);
+    //        _currentChainArrowPrefab = null;
+    //    }
+    //    else _needDestroyArrowAfterSpawn = true;
+    //}
 
     [Command]
     private void CmdSpawnChainArrow(Vector3 clickPoint)

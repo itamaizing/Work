@@ -42,6 +42,7 @@ public class JumpWithChelicera : Skill
     private float _additionalDamageInPercentage;
     private bool _isJumpDone = false;
     private bool _isCheliceraStrikeCast = false;
+    private Coroutine _trackMovementDuringJumpCoroutine;
 
     public override bool IsPayCostStartCooldown => false;
     protected override int AnimTriggerCast => jumpStart;
@@ -51,7 +52,7 @@ public class JumpWithChelicera : Skill
     public float CooldownJump { get => _cooldownJump; set => _cooldownJump = value; }
 
     protected override bool IsCanCast => CheckCanCast() && _cooldownEnergy.CurrentValue >= _cooldownJump;
-    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == TargetsLayers;
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     private bool isJumpWithCheliceraChanceDamageCrit = false;
     public void JumpWithCheliceraChanceDamageCrit(bool value) => isJumpWithCheliceraChanceDamageCrit = value;
@@ -63,6 +64,8 @@ public class JumpWithChelicera : Skill
     protected override void ClearData()
     {
         ClearTarget();
+        if (_trackMovementDuringJumpCoroutine != null) StopCoroutine(_trackMovementDuringJumpCoroutine);
+        AnimCastEnded();
     }
 
     public void JumpWithCheliceraAnimationMove()
@@ -166,6 +169,8 @@ public class JumpWithChelicera : Skill
         _animator.applyRootMotion = false;
         _player.Move.StopLookAt();
         Hero.Move.CanMove = true;
+        if (_trackMovementDuringJumpCoroutine != null) StopCoroutine(_trackMovementDuringJumpCoroutine);
+        AnimCastEnded();
     }
 
     [Command]
@@ -188,7 +193,8 @@ public class JumpWithChelicera : Skill
         Vector3 jumpPosition = Vector3.MoveTowards(targetPosition, player.transform.position, _minDistance);
         playerMove.TargetRpcDoMove(jumpPosition, _distanceJump / 10);
 
-        StartCoroutine(TrackMovementDuringJumpCoroutine(playerMove, targetNetId, additionalDamage));
+        if (_trackMovementDuringJumpCoroutine != null) StopCoroutine(TrackMovementDuringJumpCoroutine(playerMove, targetNetId, additionalDamage));
+        _trackMovementDuringJumpCoroutine = StartCoroutine(TrackMovementDuringJumpCoroutine(playerMove, targetNetId, additionalDamage));
     }
 
     private IEnumerator TrackMovementDuringJumpCoroutine(MoveComponent playerMove, uint targetNetId, float additionalDamage)

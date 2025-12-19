@@ -81,7 +81,7 @@ public class PullingHealth : Skill
         }
     }
 
-    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == TargetsLayers;
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     public event Action<Transform, IDamageable, int> OnInnerDarknessTriggered;
 

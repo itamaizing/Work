@@ -35,7 +35,7 @@ public class NewPunch_Scorpion : Skill
     protected override int AnimTriggerCast => _isRightKick ? RightPunchTrigger : LeftPunchTrigger;
 
     protected override bool IsCanCast => GetTarget() != null && Vector3.Distance(GetTarget().Transform.position, transform.position) <= Radius && NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
-    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == TargetsLayers;
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     private void Start()
     {
@@ -69,6 +69,8 @@ public class NewPunch_Scorpion : Skill
         //_target = null;
         Hero.Move.StopLookAt();
         _hero.Move.CanMove = true;
+        if (_hitsInRowCoroutine != null) StopCoroutine(_hitsInRowCoroutine);
+        AnimCastEnded();
     }
 
     public void NewPunch_ScorpionMoveFalse()
@@ -278,6 +280,8 @@ public class NewPunch_Scorpion : Skill
         _wasDamageApplied = false;
         ClearTarget();
         _hero.Move.StopLookAt();
+        if (_hitsInRowCoroutine != null) StopCoroutine(_hitsInRowCoroutine);
+        AnimCastEnded();
     }
 
     private IEnumerator HitsInRowTimer()

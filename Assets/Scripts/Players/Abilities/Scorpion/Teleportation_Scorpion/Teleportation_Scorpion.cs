@@ -59,7 +59,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
         }
     }
 
-    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == TargetsLayers;
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     protected override int AnimTriggerCastDelay => 0;
 

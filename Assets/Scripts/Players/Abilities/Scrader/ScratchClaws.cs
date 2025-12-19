@@ -48,7 +48,7 @@ public class ScratchClaws : Skill
     }
 
     protected override bool IsCanCast => GetTarget() != null;
-    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == TargetsLayers;
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     private bool CheckIsCanCast()
     {

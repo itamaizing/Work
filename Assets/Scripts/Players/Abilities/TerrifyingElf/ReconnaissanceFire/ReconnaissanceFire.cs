@@ -68,7 +68,6 @@ public class ReconnaissanceFire : Skill
     {
         CastDeley = 0;
         _isSkillEnableBoostLogic = true;
-        Debug.Log("SkillEnableBoostLogic");
     }
     protected override void SkillDisableBoostLogic()
     {
@@ -130,9 +129,9 @@ public class ReconnaissanceFire : Skill
     public void TryStartElvenBoostWindow()
     {
         if (!_isSkillEnableBoostLogicActiveTalent) return;
-        if (_boostWindow != null) return;
         if (UnityEngine.Random.value > ElvenBoostWindowChance) return;
 
+        if (_boostWindow != null) StopCoroutine(_boostWindow);
         _boostWindow = StartCoroutine(ElvenBoostWindow());
     }
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -190,7 +189,6 @@ public class ReconnaissanceFire : Skill
         EnableSkillBoost();
         yield return _waitForElvenBoostDuration;
         DisableSkillBoost();
-        _boostWindow = null;
     }
 
     private void HandleProjectilePathEnd(Vector3 position) => CmdSpawnFireAura(_endPoint);
@@ -212,6 +210,9 @@ public class ReconnaissanceFire : Skill
         Hero.Move.CanMove = true;
         Hero.Move.StopLookAt();
         _targetPoint = Vector3.positiveInfinity;
+        AnimCastEnded();
+        if (_auraLifeCoroutine != null) StopCoroutine(_auraLifeCoroutine);
+        if (_boostWindow != null) StopCoroutine(_boostWindow);
     }
 
     [Command]
@@ -265,6 +266,9 @@ public class ReconnaissanceFire : Skill
     {
         if (_emitterObject != null) _emitterObject.SetActive(false);
         _targetPoint = Vector3.positiveInfinity;
+        AnimCastEnded();
+        if (_auraLifeCoroutine != null) StopCoroutine(_auraLifeCoroutine);
+        if (_boostWindow != null) StopCoroutine(_boostWindow);
     }
 
     #region ReconnaissanceFireAuraDarknesTalent

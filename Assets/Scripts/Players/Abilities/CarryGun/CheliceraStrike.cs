@@ -61,7 +61,7 @@ public class CheliceraStrike : Skill
     protected override int AnimTriggerCastDelay => 0;
 
     protected override bool IsCanCast => CheckIsCanCast() && _cooldownEnergy.CurrentValue >= _cooldownEnergyCost;
-    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == TargetsLayers;
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     public float ChanceCritDamageEvolutionFour { get => _chanceCritDamageEvolutionFour; set => _chanceCritDamageEvolutionFour = value; }
 
@@ -173,6 +173,7 @@ public class CheliceraStrike : Skill
         CheliceraStrikeEnded();
         _isPlayCastAnim = false;
         ClearTarget();
+        AnimCastEnded();
     }
 
     public void DamageDealChelicera(IDamageable target)
@@ -345,5 +346,6 @@ public class CheliceraStrike : Skill
     protected override void ClearData()
     {
         ClearTarget();
+        AnimCastEnded();
     }
 }
