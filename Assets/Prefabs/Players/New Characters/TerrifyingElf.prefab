@@ -19830,6 +19830,9 @@ MonoBehaviour:
   _maxDamage: 10
   _arrowYOffsetUp: 1.5
   _arrowYOffsetDown: 0.5
+  _groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 8192
 --- !u!114 &6009180366675701932
 MonoBehaviour:
   m_ObjectHideFlags: 0

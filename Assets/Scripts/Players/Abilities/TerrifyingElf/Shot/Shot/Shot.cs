@@ -15,6 +15,7 @@ public class Shot : Skill
     [SerializeField] private float _maxDamage = 10f;
     [SerializeField] private float _arrowYOffsetUp = 1.5f;
     [SerializeField] private float _arrowYOffsetDown = 0.5f;
+    [SerializeField] private LayerMask _groundLayerMask;
 
     private const string _startAnimTrigger = "ShotCastDelayTrigger";
 
@@ -24,11 +25,13 @@ public class Shot : Skill
     private const float ExtraDamageMultiplier = 0.3f;
     private const float CritChance = 0.20f;
     private const float CritMultiplier = 3.2f;
+    private const float RayCastDistance = 1000f;
 
     private const int GhostShotsForCooldownReduction = 3;
     private const int GhostCooldownReductionValue = 1;
 
     private const float RandomRangeInclusiveOffset = 1f;
+    private const float RadiusTargetCheck = 0.3f;
 
     #endregion
 
@@ -138,8 +141,8 @@ public class Shot : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget();
-                targetPoint = GetMousePoint();
+                FindTarget(RadiusTargetCheck, GetMousePoint());
+                targetPoint = GetMousePoint(_groundLayerMask);
 
                 if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
                 {
@@ -198,6 +201,14 @@ public class Shot : Skill
             _targetPoint = Vector3.positiveInfinity;
             Hero.Move.StopLookAt();
         }
+    }
+
+    private Vector3 GetMousePoint(LayerMask mask)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, RayCastDistance, mask)) return hit.point;
+
+        return Vector3.positiveInfinity;
     }
 
     [Command]
