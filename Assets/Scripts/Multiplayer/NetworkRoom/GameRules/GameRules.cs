@@ -17,7 +17,7 @@ public abstract class GameRules : NetworkBehaviour
 
     protected NetworkRoom _room;
 
-    [SyncVar]protected string _roomName;
+    [SyncVar] protected string _roomName;
 
     protected HeroSpawnManager _spawnPoints;
     protected PreparationAreaManager _preparationAreaManager;
@@ -134,7 +134,6 @@ public abstract class GameRules : NetworkBehaviour
                 item.NetworkSettings.TargetUpdateLayers(item.connectionToClient);
             }
         }
-
         yield return null;
     }
 
@@ -249,7 +248,7 @@ public abstract class GameRules : NetworkBehaviour
 
     private IEnumerator FoundGameManagerCorounite()
     {
-        UnityEngine.Debug.Log("FoundGameManagerCorounite");
+        //UnityEngine.Debug.Log("FoundGameManagerCorounite");
         while (_gameManager == null || _gameManager.TeamsPanel == null || _gameManager.Source == null)
         {
             yield return new WaitForSecondsRealtime(0.5f);

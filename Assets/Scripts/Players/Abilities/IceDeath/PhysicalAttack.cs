@@ -58,14 +58,14 @@ public class PhysicalAttack : Skill
 	{
 		TargetInfo targetInfo = new TargetInfo();
 
-		if (GetTempTargetCharacter() != null)
+		/*if (GetTempTargetCharacter() != null)
 		{
 			_hero.Move.LookAtTransform(GetTargetCharacter().transform);
 			targetInfo.AddTarget(GetTargetCharacter());
 			targetInfo.Points.Add(GetTargetCharacter().transform.position);
 			callbackDataSaved?.Invoke(targetInfo);
 			yield break;
-		}
+		}*/
 
         while (GetTempTargetCharacter() == null)
         {
@@ -78,7 +78,7 @@ public class PhysicalAttack : Skill
 				{
 					if (IsAllyTarget(GetTempTargetCharacter()) || GetTempTargetCharacter() == Hero)
 					{
-						ClearTarget();						
+						ClearTempTarget();						
 					}
 					else
 					{
@@ -225,7 +225,6 @@ public class PhysicalAttack : Skill
 
 	private void SingleHit(Character enemy)
 	{
-		Debug.Log("Single hit");
 		float curDamage = _damageValue + UnityEngine.Random.Range(0, 2);
 
 		Damage damage = new Damage
@@ -330,12 +329,13 @@ public class PhysicalAttack : Skill
 
 	public override void LoadTargetData(TargetInfo targetInfo)
 	{
-		if (targetInfo.GetTargets().Count > 0) SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+		if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0]);
 	}
 
     protected override void ClearData()
     {
 		ClearTarget();
+		ClearTempTarget();
 		_hero.Move.StopLookAt();
 	}
 }

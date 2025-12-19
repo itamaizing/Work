@@ -3,7 +3,6 @@ using Mirror;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 
 [Serializable]
@@ -17,7 +16,10 @@ public class TalentSystem : NetworkBehaviour
 {
     [SerializeField] private List<TalentsGroup> _talents;
 
+    private Level _lvl;
     private int _points = 10;
+    private int _prevValue = 1;
+
     public List<TalentsGroup> TalentsGroups => _talents;
     public List<Talent> ActiveTalents => GetActiveTalents();
 
@@ -41,10 +43,27 @@ public class TalentSystem : NetworkBehaviour
         return activeTalents;
 	}
     
+    public int Points => _points;
+    public bool CanOpenTalent => _points > 0;
 
-   // [Command]
-    public void Initialize()
+
+    private void OnDisable()
     {
+        if (_lvl != null)
+        {
+            _lvl.LVLUped -= AddPoint;
+        }
+    }
+
+    // [Command]
+    public void Initialize(Level level)
+    {
+        if(level != null)
+        {
+            _lvl = level;
+            _lvl.LVLUped += AddPoint;
+        }
+
         foreach (var talentRow in _talents.SelectMany(talentsGroup => talentsGroup.TalentRows))
         {
             foreach (var talent in talentRow.Talents)
@@ -85,8 +104,24 @@ public class TalentSystem : NetworkBehaviour
 		}
 	}
 
+    public void AddPoint(int value)
+    {
+        if (_prevValue != value)
+        {
+            Debug.Log("Add" + value);
+            _points++;
+            _prevValue = value;
+        }
+    }
+
 	public void AddPoints(int value)
     {
+        _points += value;
+    }
+
+    public void SetPoints(int value)
+    {
+        _points = value;
     }
 
    /* public void SetActive(int row, int id, bool value)
@@ -97,11 +132,23 @@ public class TalentSystem : NetworkBehaviour
 	public void SetActive(int group, int row ,int id, bool value)
 	{
         _talents[group].TalentRows[row].Talents[id].SetActive(value);
+        if(value)
+            _points--;
 	}
+    public void SetActive(int group, int row, string name, bool value)
+    {
+        //Debug.Log(" Try group" + group + " row " + row + " " + name);
+        //Debug.Log(" Has group" + _talents.Count + " row " + _talents[0].TalentRows.Count + " " + _talents[0].TalentRows[0].Talents.Count);
+        var talentGroup = _talents?.FirstOrDefault(id => id.ID == group);
 
+        var talent = talentGroup.TalentRows[row].Talents?.FirstOrDefault(o => o.Data.Name == name);
+        talent.SetActive(value);
+        if (value)
+            _points--;
+        //_talents[group].TalentRows[row].Talents[id].SetActive(value);
+    }
 
-
-	public void SwitchTalent(int id, int row, string talentName, bool isActive)
+    public void SwitchTalent(int id, int row, string talentName, bool isActive)
 	{
 		var talentGroup = TalentsGroups.FirstOrDefault(o => o.ID == id);
         var talentRow = talentGroup.TalentRows[row];
@@ -117,19 +164,6 @@ public class TalentSystem : NetworkBehaviour
 		}
 	}
 
-	/*[Command]
-    public void CmdSwitchTalent(int id, string talentName, bool isActive)
-    {
-		SwitchTalent(id, talentName, isActive);
-		ClientSwitchTalent(id, talentName, isActive);
-	}
-
-    [ClientRpc]
-	public void ClientSwitchTalent(int id, string talentName, bool isActive)
-	{
-		SwitchTalent(id, talentName, isActive);
-	}*/
-
 	[Command]
 	public void CmdSwitchTalent(int id, int row, string talentName, bool isActive)
 	{
@@ -142,20 +176,6 @@ public class TalentSystem : NetworkBehaviour
 	{
 		SwitchTalent(id, row, talentName, isActive);
 	}
-
-	[Command]
-    public void CmdEnterAll()
-    {
-        EnterAll();
-        RpcAddAll();
-    }
-
-    [Command]
-    public void CmdExitAll()
-    {
-        ExitAll();
-        RpcRemoveAll();
-    }
 
     [Command]
     public void CmdAdd(int id, int row)
@@ -180,46 +200,6 @@ public class TalentSystem : NetworkBehaviour
     {
 
     }
-
-    [ClientRpc]
-    private void RpcAddAll()
-    {
-        EnterAll();
-    }
-
-    [ClientRpc]
-    private void RpcRemoveAll()
-    {
-        ExitAll();
-    }
-
-
-    public void EnterAll()
-    {
-        foreach (TalentsGroup talentGroup in _talents)
-        {
-           /* foreach (var talent in talentGroup.TalentsData)
-            {
-                talent.Enter();
-                talent.SetActive(true);
-                _points--;
-            }*/
-        }
-    }
-
-    public void ExitAll()
-    {
-        foreach (TalentsGroup talentGroup in _talents)
-        {
-            /*foreach (var talent in talentGroup.TalentsData)
-            {
-                talent.Exit();
-                talent.SetActive(false);
-                _points++;
-            }*/
-        }
-    }
-
     public void Add(Talent talent)
     {
         talent.Enter();
@@ -236,4 +216,5 @@ public class TalentSystem : NetworkBehaviour
     {
         return ActiveTalents.Count;
     }
+
 }
