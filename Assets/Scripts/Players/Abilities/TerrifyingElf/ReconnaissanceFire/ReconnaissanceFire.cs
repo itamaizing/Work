@@ -11,9 +11,8 @@ using System;
 public class ReconnaissanceFire : Skill
 {
     [Header("Reconnaissance Fire Settings")]
-    [SerializeField] private TrickShot _trickShot;
     [SerializeField] private ReconnaissanceFireAura _fireAura;
-    [SerializeField] private GameObject _emitterObject;
+    [SerializeField] private ArrowFireProjectile _arrowFireProjectile;
     [SerializeField] private ObjectData _fireData;
     [SerializeField] private float _duration = 10;
     [SerializeField] private float _baseArea = 3f;
@@ -78,7 +77,6 @@ public class ReconnaissanceFire : Skill
     private void Start()
     {
         _baseAnimSpeed = Hero.Animator.speed;
-        _trickShot.speed = _speed;
         _baseDuration = _duration;
         _waitForElvenBoostDuration = new WaitForSeconds(ElvenBoostDuration);
     }
@@ -144,7 +142,6 @@ public class ReconnaissanceFire : Skill
         Hero.Animator.speed = Hero.Animator.speed/ AnimSlowdownFactor;
         _endPoint = Vector3.positiveInfinity;
 
-        if (_emitterObject) _emitterObject.SetActive(true);
         ReconnaissanceFireHealthTalentEnter();
 
         Vector3 targetPoint = Vector3.positiveInfinity;
@@ -160,12 +157,8 @@ public class ReconnaissanceFire : Skill
                     Hero.Move.LookAtPosition(targetPoint);
                 }
             }
-
-            UpdateTrickShotTrajectory();
             yield return null;
         }
-
-        if (_emitterObject) _emitterObject.SetActive(false);
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(targetPoint);
@@ -174,14 +167,16 @@ public class ReconnaissanceFire : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_targetPoint == Vector3.positiveInfinity && (_trickShot == null || _fireAura == null)) yield break;
-
-        _trickShot.Shoot();
+        if (_targetPoint == Vector3.positiveInfinity && (_fireAura == null)) yield break;
 
         Hero.Animator.speed = _baseAnimSpeed;
         Hero.Move.StopLookAt();
         Hero.Animator.speed = _baseAnimSpeed;
         Hero.Move.CanMove = true;
+
+        CmdSpawnProjectile(_targetPoint);
+
+        yield return null;
     }
 
     private IEnumerator ElvenBoostWindow()
@@ -193,16 +188,6 @@ public class ReconnaissanceFire : Skill
 
     private void HandleProjectilePathEnd(Vector3 position) => CmdSpawnFireAura(_endPoint);
 
-    void UpdateTrickShotTrajectory()
-    {
-         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out var hit, MaxRaycastDistance, _groundLayer))
-        {
-            float s = Vector3.Distance(_trickShot.transform.position, hit.point); _trickShot.distance = s + TrickShotDistanceOffset;
-
-            if (Ballistics.Solution(_trickShot.transform.position, _trickShot.speed, hit.point, _trickShot.constantAcceleration, out Quaternion low, out _) > 0) _trickShot.transform.rotation = low;
-        }
-    }
-
     private void HandleSkillCanceled()
     {
         if (_hero != null && _hero.Move != null) ReconnaissanceFireHealthTalentExit();
@@ -213,6 +198,22 @@ public class ReconnaissanceFire : Skill
         AnimCastEnded();
         if (_auraLifeCoroutine != null) StopCoroutine(_auraLifeCoroutine);
         if (_boostWindow != null) StopCoroutine(_boostWindow);
+    }
+
+    [Command]
+    private void CmdSpawnProjectile(Vector3 targetPoint)
+    {
+        if (float.IsInfinity(targetPoint.x) || float.IsNaN(targetPoint.x)) return;
+
+        Vector3 start = transform.position;
+
+        var projectile = Instantiate(_arrowFireProjectile, start, Quaternion.identity);
+        projectile.Launch(targetPoint);
+
+        SceneManager.MoveGameObjectToScene(projectile.gameObject, Hero.NetworkSettings.MyRoom);
+        NetworkServer.Spawn(projectile.gameObject);
+
+        RpcLaunchProjectile(projectile.gameObject, targetPoint);
     }
 
     [Command]
@@ -246,6 +247,15 @@ public class ReconnaissanceFire : Skill
         _auraLifeCoroutine = StartCoroutine(DestroyAuraAfter(life, aura));
     }
 
+    [ClientRpc]
+    private void RpcLaunchProjectile(GameObject projectileObj, Vector3 targetPoint)
+    {
+        if (projectileObj != null && projectileObj.TryGetComponent(out ArrowFireProjectile projectile))
+        {
+            projectile.Launch(targetPoint);
+        }
+    }
+
     [Server]
     private IEnumerator DestroyAuraAfter(float seconds, ReconnaissanceFireAura aura)
     {
@@ -264,7 +274,6 @@ public class ReconnaissanceFire : Skill
 
     protected override void ClearData()
     {
-        if (_emitterObject != null) _emitterObject.SetActive(false);
         _targetPoint = Vector3.positiveInfinity;
         AnimCastEnded();
         if (_auraLifeCoroutine != null) StopCoroutine(_auraLifeCoroutine);

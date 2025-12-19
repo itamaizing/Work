@@ -15,7 +15,7 @@ public class ReconnaissanceFireAura : NetworkBehaviour
     [SerializeField] private bool _partialBlindnessTalent;
     [SerializeField] private FlameLightPulse _flameLightPulse;
     [SerializeField] private LayerMask _characterLayer;
-
+    
     public event Action<bool> OnStateDarkTalentChanged;
     private Character _ownerHero;
 

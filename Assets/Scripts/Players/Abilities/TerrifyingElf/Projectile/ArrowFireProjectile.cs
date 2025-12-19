@@ -1,28 +1,31 @@
-using Unity.Mathematics;
+using DG.Tweening;
 using UnityEngine;
 using System;
 
 public class ArrowFireProjectile : MonoBehaviour
 {
-    [SerializeField] private float _speed;
-    private Rigidbody selfBody;
+    [SerializeField] private float _flightDuration = 1f;
+    [SerializeField] private float _arcHeight = 2f;
 
     public static event Action<Vector3> OnProjectilePathEnd;
 
-    private void Start()
+    public void Launch(Vector3 targetPoint)
     {
-        selfBody = GetComponent<Rigidbody>();
-        selfBody.linearDamping = 0;
-        selfBody.angularDamping = 0;
-        selfBody.isKinematic = true;
-    }
+        Vector3 startPoint = transform.position;
+        float midHeight = Mathf.Max(startPoint.y, targetPoint.y) + _arcHeight;
+        Sequence seq = DOTween.Sequence();
 
-    public void OnPathEnd(float3 velocity)
-    {
-        Vector3 endPoint = transform.position;
+        Vector3 midPoint = Vector3.Lerp(startPoint, targetPoint, 0.5f);
+        midPoint.y = midHeight;
 
-        OnProjectilePathEnd?.Invoke(endPoint);
+        seq.Append(transform.DOMove(midPoint, _flightDuration / 2f).SetEase(Ease.OutQuad));
 
-        Destroy(gameObject);
+        seq.Append(transform.DOMove(targetPoint, _flightDuration / 2f).SetEase(Ease.InQuad));
+
+        seq.OnComplete(() =>
+        {
+            OnProjectilePathEnd?.Invoke(targetPoint);
+            Destroy(gameObject);
+        });
     }
 }
