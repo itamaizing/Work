@@ -60,8 +60,8 @@ public class ReconnaissanceFire : Skill
     public float BaseArea { get => _baseArea; set => _baseArea = value; }
 
     protected override bool IsCanCast => Vector3.Distance(_targetPoint, transform.position) <= Radius;
-    protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerCast => Animator.StringToHash("ThrowCastDelay");
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("ThrowCastDelay");
+    protected override int AnimTriggerCast => 0;
 
     protected override void SkillEnableBoostLogic()
     {
@@ -114,16 +114,6 @@ public class ReconnaissanceFire : Skill
         return u * u * p0 + 2 * u * t * p1 + t * t * p2;
     }
     #endregion
-
-    public void FireCastStart()
-    {
-        AnimStartCastCoroutine();
-    }
-
-    public void FireCastEnd()
-    {
-        AnimCastEnded();
-    }
 
     public void AnimationFireMove()
     {
@@ -236,6 +226,12 @@ public class ReconnaissanceFire : Skill
         if (_boostWindow != null) StopCoroutine(_boostWindow);
     }
 
+    private void HandleProjectilePathEnd(Vector3 point)
+    {
+        CmdSpawnFireAura(point);
+        ArrowFireProjectile.OnProjectilePathEnd -= HandleProjectilePathEnd;
+    }
+
     [Command]
     private void CmdSpawnProjectile(Vector3 targetPoint)
     {
@@ -289,7 +285,7 @@ public class ReconnaissanceFire : Skill
         if (projectileObj != null && projectileObj.TryGetComponent(out ArrowFireProjectile projectile))
         {
             projectile.Init(targetPoint, this, _arcHeight);
-           //ArrowFireProjectile.OnProjectilePathEnd += HandleProjectilePathEnd;
+            ArrowFireProjectile.OnProjectilePathEnd += HandleProjectilePathEnd;
         }
     }
 

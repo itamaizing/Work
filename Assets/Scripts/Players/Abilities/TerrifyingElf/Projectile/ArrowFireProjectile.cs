@@ -34,7 +34,7 @@ public class ArrowFireProjectile : MonoBehaviour
 
         seq.OnComplete(() =>
         {
-            if (_skillOwner != null) _skillOwner.NotifyProjectileEnded(targetPoint);
+            OnProjectilePathEnd?.Invoke(targetPoint);
             Destroy(gameObject);
         });
     }
