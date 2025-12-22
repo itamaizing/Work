@@ -23,9 +23,6 @@ public class ReconnaissanceFire : Skill
     [Header("Arc Fire Arrow Settings")]
     [SerializeField] private LineRenderer _arcRenderer;
     [SerializeField] private float _arcHeight = 6f;
-    [SerializeField] private float _dashSize = 0.3f;
-    [SerializeField] private float _gapSize = 0.2f;
-    [SerializeField] private int _arcResolution = 30;
 
     private ReconnaissanceFireAura _currentFireAura;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
@@ -96,47 +93,19 @@ public class ReconnaissanceFire : Skill
     }
 
     #region ArcDraw
-    private void DrawDashedArc(Vector3 start, Vector3 mid, Vector3 end)
+    private void DrawArc(Vector3 start, Vector3 mid, Vector3 end)
     {
-        List<Vector3> arcPoints = new List<Vector3>();
-        for (int i = 0; i <= _arcResolution; i++)
+        const int arcResolution = 30;
+        Vector3[] arcPoints = new Vector3[arcResolution + 1];
+
+        for (int i = 0; i <= arcResolution; i++)
         {
-            float t = i / (float)_arcResolution;
-            arcPoints.Add(QuadraticBezierPoint(t, start, mid, end));
+            float t = i / (float)arcResolution;
+            arcPoints[i] = QuadraticBezierPoint(t, start, mid, end);
         }
 
-        List<Vector3> dashedPoints = new List<Vector3>();
-        float dist = 0f;
-        bool drawing = true;
-
-        for (int i = 0; i < arcPoints.Count - 1; i++)
-        {
-            Vector3 a = arcPoints[i];
-            Vector3 b = arcPoints[i + 1];
-            float seg = Vector3.Distance(a, b);
-
-            if (drawing)
-            {
-                dashedPoints.Add(a);
-                dashedPoints.Add(b);
-            }
-
-            dist += seg;
-
-            if (drawing && dist >= _dashSize)
-            {
-                drawing = false;
-                dist = 0f;
-            }
-            else if (!drawing && dist >= _gapSize)
-            {
-                drawing = true;
-                dist = 0f;
-            }
-        }
-
-        _arcRenderer.positionCount = dashedPoints.Count;
-        _arcRenderer.SetPositions(dashedPoints.ToArray());
+        _arcRenderer.positionCount = arcPoints.Length;
+        _arcRenderer.SetPositions(arcPoints);
     }
 
     private Vector3 QuadraticBezierPoint(float t, Vector3 p0, Vector3 p1, Vector3 p2)
@@ -211,12 +180,13 @@ public class ReconnaissanceFire : Skill
                 Vector3 mid = Vector3.Lerp(start, hoverPoint, 0.5f);
                 mid.y = Mathf.Max(start.y, hoverPoint.y) + _arcHeight;
 
-                DrawDashedArc(start, mid, hoverPoint);
+                DrawArc(start, mid, hoverPoint);
             }
 
             if (GetMouseButton)
             {
                 targetPoint = GetMousePoint();
+                if (_arcRenderer != null) _arcRenderer.positionCount = 0;
 
                 if (IsPointInRadius(Radius, targetPoint) && NoObstacles(targetPoint, transform.position, _obstacle))
                 {
@@ -319,6 +289,7 @@ public class ReconnaissanceFire : Skill
         if (projectileObj != null && projectileObj.TryGetComponent(out ArrowFireProjectile projectile))
         {
             projectile.Init(targetPoint, this, _arcHeight);
+           //ArrowFireProjectile.OnProjectilePathEnd += HandleProjectilePathEnd;
         }
     }
 
