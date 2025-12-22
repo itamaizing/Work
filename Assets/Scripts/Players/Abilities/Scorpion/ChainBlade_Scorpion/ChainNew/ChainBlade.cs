@@ -185,8 +185,6 @@ public class ChainBlade : Skill
     {
         _clickPoint = Vector3.positiveInfinity;
         ClearTarget();
-        AnimCastEnded();
-        if (_pullCoroutine != null) StopCoroutine(_pullCoroutine);
     }
 
     public void ChainBladeCast()
