@@ -240,7 +240,7 @@ public class ReconnaissanceFire : Skill
         Vector3 start = transform.position;
 
         var projectile = Instantiate(_arrowFireProjectile, start, Quaternion.identity);
-        projectile.Init(targetPoint, this, _arcHeight);
+        projectile.Init(targetPoint, _arcHeight);
 
         SceneManager.MoveGameObjectToScene(projectile.gameObject, Hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(projectile.gameObject);
@@ -284,7 +284,7 @@ public class ReconnaissanceFire : Skill
     {
         if (projectileObj != null && projectileObj.TryGetComponent(out ArrowFireProjectile projectile))
         {
-            projectile.Init(targetPoint, this, _arcHeight);
+            projectile.Init(targetPoint, _arcHeight);
             ArrowFireProjectile.OnProjectilePathEnd += HandleProjectilePathEnd;
         }
     }

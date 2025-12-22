@@ -6,15 +6,16 @@ public class ArrowFireProjectile : MonoBehaviour
 {
     [SerializeField] private float _flightDuration = 1f;
 
-    private ReconnaissanceFire _skillOwner;
+    #region Const
+    private const float _midPointDuration = 0.5f;
+    #endregion
     private float _arcHeight;
 
     public static event Action<Vector3> OnProjectilePathEnd;
 
-    public void Init(Vector3 targetPoint, ReconnaissanceFire owner, float arcHeight)
+    public void Init(Vector3 targetPoint, float arcHeight)
     {
         _arcHeight = arcHeight;
-        _skillOwner = owner;
         Launch(targetPoint);
     }
 
@@ -25,12 +26,11 @@ public class ArrowFireProjectile : MonoBehaviour
         float midHeight = Mathf.Max(startPoint.y, targetPoint.y) + _arcHeight;
         Sequence seq = DOTween.Sequence();
 
-        Vector3 midPoint = Vector3.Lerp(startPoint, targetPoint, 0.5f);
+        Vector3 midPoint = Vector3.Lerp(startPoint, targetPoint, _midPointDuration);
         midPoint.y = midHeight;
 
-        seq.Append(transform.DOMove(midPoint, _flightDuration / 2f).SetEase(Ease.OutQuad));
-
-        seq.Append(transform.DOMove(targetPoint, _flightDuration / 2f).SetEase(Ease.InQuad));
+        seq.Append(transform.DOMove(midPoint, _flightDuration).SetEase(Ease.OutQuad));
+        seq.Append(transform.DOMove(targetPoint, _flightDuration).SetEase(Ease.InQuad));
 
         seq.OnComplete(() =>
         {

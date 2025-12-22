@@ -5105,7 +5105,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _flightDuration: 1
-  _arcHeight: 6
+  _timeUntilEndFlight: 0.1
 --- !u!114 &1023382893908356152
 MonoBehaviour:
   m_ObjectHideFlags: 0
