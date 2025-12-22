@@ -5,9 +5,19 @@ using System;
 public class ArrowFireProjectile : MonoBehaviour
 {
     [SerializeField] private float _flightDuration = 1f;
-    [SerializeField] private float _arcHeight = 2f;
+
+    private ReconnaissanceFire _skillOwner;
+    private float _arcHeight;
 
     public static event Action<Vector3> OnProjectilePathEnd;
+
+    public void Init(Vector3 targetPoint, ReconnaissanceFire owner, float arcHeight)
+    {
+        _arcHeight = arcHeight;
+        _skillOwner = owner;
+        Launch(targetPoint);
+    }
+
 
     public void Launch(Vector3 targetPoint)
     {
@@ -24,7 +34,7 @@ public class ArrowFireProjectile : MonoBehaviour
 
         seq.OnComplete(() =>
         {
-            OnProjectilePathEnd?.Invoke(targetPoint);
+            if (_skillOwner != null) _skillOwner.NotifyProjectileEnded(targetPoint);
             Destroy(gameObject);
         });
     }

@@ -5104,7 +5104,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dd34cfb34136b94cbc09cba35c22967, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 4
+  _flightDuration: 1
+  _arcHeight: 6
 --- !u!114 &1023382893908356152
 MonoBehaviour:
   m_ObjectHideFlags: 0

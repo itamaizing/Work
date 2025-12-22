@@ -17,15 +17,18 @@ public class ReconnaissanceFire : Skill
     [SerializeField] private float _duration = 10;
     [SerializeField] private float _baseArea = 3f;
 
-    [Header("TrickShot Settings")]
-    [SerializeField] private float _speed;
-
     [Header("Raycast settings")]
     [SerializeField] private LayerMask _groundLayer;
 
+    [Header("Arc Fire Arrow Settings")]
+    [SerializeField] private LineRenderer _arcRenderer;
+    [SerializeField] private float _arcHeight = 6f;
+    [SerializeField] private float _dashSize = 0.3f;
+    [SerializeField] private float _gapSize = 0.2f;
+    [SerializeField] private int _arcResolution = 30;
+
     private ReconnaissanceFireAura _currentFireAura;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
-    private Vector3 _endPoint = Vector3.positiveInfinity;
     private float _baseDuration;
     private float _baseAnimSpeed;
     private float _baseCastDelay;
@@ -83,17 +86,65 @@ public class ReconnaissanceFire : Skill
 
     private void OnEnable()
     {
-        ArrowFireProjectile.OnProjectilePathEnd += HandleProjectilePathEnd;
         OnSkillCanceled += HandleSkillCanceled;
-
         _baseCastDelay = CastDeley;
     }
 
     private void OnDisable()
     {
-        ArrowFireProjectile.OnProjectilePathEnd -= HandleProjectilePathEnd;
         OnSkillCanceled -= HandleSkillCanceled;
     }
+
+    #region ArcDraw
+    private void DrawDashedArc(Vector3 start, Vector3 mid, Vector3 end)
+    {
+        List<Vector3> arcPoints = new List<Vector3>();
+        for (int i = 0; i <= _arcResolution; i++)
+        {
+            float t = i / (float)_arcResolution;
+            arcPoints.Add(QuadraticBezierPoint(t, start, mid, end));
+        }
+
+        List<Vector3> dashedPoints = new List<Vector3>();
+        float dist = 0f;
+        bool drawing = true;
+
+        for (int i = 0; i < arcPoints.Count - 1; i++)
+        {
+            Vector3 a = arcPoints[i];
+            Vector3 b = arcPoints[i + 1];
+            float seg = Vector3.Distance(a, b);
+
+            if (drawing)
+            {
+                dashedPoints.Add(a);
+                dashedPoints.Add(b);
+            }
+
+            dist += seg;
+
+            if (drawing && dist >= _dashSize)
+            {
+                drawing = false;
+                dist = 0f;
+            }
+            else if (!drawing && dist >= _gapSize)
+            {
+                drawing = true;
+                dist = 0f;
+            }
+        }
+
+        _arcRenderer.positionCount = dashedPoints.Count;
+        _arcRenderer.SetPositions(dashedPoints.ToArray());
+    }
+
+    private Vector3 QuadraticBezierPoint(float t, Vector3 p0, Vector3 p1, Vector3 p2)
+    {
+        float u = 1 - t;
+        return u * u * p0 + 2 * u * t * p1 + t * t * p2;
+    }
+    #endregion
 
     public void FireCastStart()
     {
@@ -124,6 +175,11 @@ public class ReconnaissanceFire : Skill
         _hero.Move.LookAtPosition(_targetPoint);
     }
 
+    public void NotifyProjectileEnded(Vector3 point)
+    {
+        CmdSpawnFireAura(point);
+    }
+
     public void TryStartElvenBoostWindow()
     {
         if (!_isSkillEnableBoostLogicActiveTalent) return;
@@ -132,15 +188,14 @@ public class ReconnaissanceFire : Skill
         if (_boostWindow != null) StopCoroutine(_boostWindow);
         _boostWindow = StartCoroutine(ElvenBoostWindow());
     }
+
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         _targetPoint = targetInfo.Points[0];
-        _endPoint = _targetPoint;
     }
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         Hero.Animator.speed = Hero.Animator.speed/ AnimSlowdownFactor;
-        _endPoint = Vector3.positiveInfinity;
 
         ReconnaissanceFireHealthTalentEnter();
 
@@ -148,6 +203,17 @@ public class ReconnaissanceFire : Skill
 
         while (float.IsPositiveInfinity(targetPoint.x))
         {
+            Vector3 hoverPoint = GetMousePoint();
+
+            if (_arcRenderer != null && hoverPoint.IsFinite())
+            {
+                Vector3 start = transform.position;
+                Vector3 mid = Vector3.Lerp(start, hoverPoint, 0.5f);
+                mid.y = Mathf.Max(start.y, hoverPoint.y) + _arcHeight;
+
+                DrawDashedArc(start, mid, hoverPoint);
+            }
+
             if (GetMouseButton)
             {
                 targetPoint = GetMousePoint();
@@ -157,6 +223,7 @@ public class ReconnaissanceFire : Skill
                     Hero.Move.LookAtPosition(targetPoint);
                 }
             }
+
             yield return null;
         }
 
@@ -186,11 +253,10 @@ public class ReconnaissanceFire : Skill
         DisableSkillBoost();
     }
 
-    private void HandleProjectilePathEnd(Vector3 position) => CmdSpawnFireAura(_endPoint);
-
     private void HandleSkillCanceled()
     {
         if (_hero != null && _hero.Move != null) ReconnaissanceFireHealthTalentExit();
+        if (_arcRenderer != null) _arcRenderer.positionCount = 0;
         Hero.Animator.speed = _baseAnimSpeed;
         Hero.Move.CanMove = true;
         Hero.Move.StopLookAt();
@@ -208,7 +274,7 @@ public class ReconnaissanceFire : Skill
         Vector3 start = transform.position;
 
         var projectile = Instantiate(_arrowFireProjectile, start, Quaternion.identity);
-        projectile.Launch(targetPoint);
+        projectile.Init(targetPoint, this, _arcHeight);
 
         SceneManager.MoveGameObjectToScene(projectile.gameObject, Hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(projectile.gameObject);
@@ -252,7 +318,7 @@ public class ReconnaissanceFire : Skill
     {
         if (projectileObj != null && projectileObj.TryGetComponent(out ArrowFireProjectile projectile))
         {
-            projectile.Launch(targetPoint);
+            projectile.Init(targetPoint, this, _arcHeight);
         }
     }
 
@@ -275,6 +341,7 @@ public class ReconnaissanceFire : Skill
     protected override void ClearData()
     {
         _targetPoint = Vector3.positiveInfinity;
+        if (_arcRenderer != null) _arcRenderer.positionCount = 0;
         AnimCastEnded();
         if (_auraLifeCoroutine != null) StopCoroutine(_auraLifeCoroutine);
         if (_boostWindow != null) StopCoroutine(_boostWindow);
