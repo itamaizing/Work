@@ -12,10 +12,12 @@ public class ArrowFireProjectile : MonoBehaviour
     #region Const
     private const float _midPointDuration = 0.5f;
     private const float _halfDuration = 2f;
+    private const int BezierApproxSteps = 10;
     #endregion
+
     private float _arcHeight;
 
-    public static event Action<Vector3> OnProjectilePathEnd;
+    public event Action<Vector3> OnProjectilePathEnd;
 
     public void Init(Vector3 targetPoint, float arcHeight)
     {
@@ -47,7 +49,7 @@ public class ArrowFireProjectile : MonoBehaviour
         });
     }
 
-    private float ApproximateQuadraticBezierLength(Vector3 p0, Vector3 p1, Vector3 p2, int steps = 10)
+    private float ApproximateQuadraticBezierLength(Vector3 p0, Vector3 p1, Vector3 p2, int steps = BezierApproxSteps)
     {
         float length = 0f;
         Vector3 prevPoint = p0;

@@ -25,6 +25,7 @@ public class ReconnaissanceFire : Skill
     [SerializeField] private float _arcHeight = 6f;
 
     private ReconnaissanceFireAura _currentFireAura;
+    private ArrowFireProjectile _currentArrowFireAura;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private float _baseDuration;
     private float _baseAnimSpeed;
@@ -36,14 +37,18 @@ public class ReconnaissanceFire : Skill
 
     #region Const
     private const float AnimSlowdownFactor = 1.8f;
-    private const float MaxRaycastDistance = 200f;
-    private const float TrickShotDistanceOffset = 1f;
     private const float ElvenBoostDuration = 2f;
     private const float FireAuraBoostedHealth = 65f;
     private const float FireAuraWorshipperBonusDuration = 6f;
     private const float AuraSpawnYOffset = 0.1f;
     private const float ElvenBoostWindowChance = 0.30f;
     private const float AnimationFireMoveMagnitude = 0.0001f;
+
+    private const int ArcResolution = 30;
+    private const float ArcMidPointT = 0.5f;
+    private const float BezierMidPointMultiplier = 2f;
+
+    private const float DefaultFireAuraHealth = 6f;
     #endregion
 
     #region Talent
@@ -95,7 +100,7 @@ public class ReconnaissanceFire : Skill
     #region ArcDraw
     private void DrawArc(Vector3 start, Vector3 mid, Vector3 end)
     {
-        const int arcResolution = 30;
+        const int arcResolution = ArcResolution;
         Vector3[] arcPoints = new Vector3[arcResolution + 1];
 
         for (int i = 0; i <= arcResolution; i++)
@@ -111,7 +116,7 @@ public class ReconnaissanceFire : Skill
     private Vector3 QuadraticBezierPoint(float t, Vector3 p0, Vector3 p1, Vector3 p2)
     {
         float u = 1 - t;
-        return u * u * p0 + 2 * u * t * p1 + t * t * p2;
+        return u * u * p0 + BezierMidPointMultiplier * u * t * p1 + t * t * p2;
     }
     #endregion
 
@@ -167,7 +172,7 @@ public class ReconnaissanceFire : Skill
             if (_arcRenderer != null && hoverPoint.IsFinite())
             {
                 Vector3 start = transform.position;
-                Vector3 mid = Vector3.Lerp(start, hoverPoint, 0.5f);
+                Vector3 mid = Vector3.Lerp(start, hoverPoint, ArcMidPointT);
                 mid.y = Mathf.Max(start.y, hoverPoint.y) + _arcHeight;
 
                 DrawArc(start, mid, hoverPoint);
@@ -229,7 +234,7 @@ public class ReconnaissanceFire : Skill
     private void HandleProjectilePathEnd(Vector3 point)
     {
         CmdSpawnFireAura(point);
-        ArrowFireProjectile.OnProjectilePathEnd -= HandleProjectilePathEnd;
+        _currentArrowFireAura.OnProjectilePathEnd -= HandleProjectilePathEnd;
     }
 
     [Command]
@@ -244,6 +249,8 @@ public class ReconnaissanceFire : Skill
 
         SceneManager.MoveGameObjectToScene(projectile.gameObject, Hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(projectile.gameObject);
+
+        _currentArrowFireAura = projectile;
 
         RpcLaunchProjectile(projectile.gameObject, targetPoint);
     }
@@ -285,7 +292,8 @@ public class ReconnaissanceFire : Skill
         if (projectileObj != null && projectileObj.TryGetComponent(out ArrowFireProjectile projectile))
         {
             projectile.Init(targetPoint, _arcHeight);
-            ArrowFireProjectile.OnProjectilePathEnd += HandleProjectilePathEnd;
+            _currentArrowFireAura = projectile;
+            _currentArrowFireAura.OnProjectilePathEnd += HandleProjectilePathEnd;
         }
     }
 
@@ -340,8 +348,8 @@ public class ReconnaissanceFire : Skill
 
     private void ReconnaissanceFireHealthTalentExit()
     {
-        CmdSetMaxHealth(6);
-        _fireData.MaxHealth = 6;
+        CmdSetMaxHealth(DefaultFireAuraHealth);
+        _fireData.MaxHealth = DefaultFireAuraHealth;
     }
     #endregion
 
