@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 8635874584311858127}
   - component: {fileID: 2545325199570042187}
   - component: {fileID: 1023382893908356152}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: ArrowReconnaissanceFire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
