@@ -32,16 +32,9 @@ public class FlashOfLight : Skill
     public event Action OnModeChange;
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
 
-    protected override bool IsCanCast => IsCanCastCheck();
-
-    private bool IsCanCastCheck()
-    {
-        if (GetTargetCharacter() == null) return false;
-
-        if (isLightMode) return (GetTargetCharacter() is Character character && character == Hero) || GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Allies");
-        else
-            return GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Enemy");
-    }
+    private bool IsAllyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Allies");
+    private bool IsEnemyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+    
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("Spell");
     protected override int AnimTriggerCast => 0;
@@ -108,19 +101,31 @@ public class FlashOfLight : Skill
 
         while (GetTempTargetCharacter() == null)
         {
-            if (Input.GetMouseButton(0))
+            if (GetMouseButton)
             {
-                FindTargetCharacter(true);
+                Vector3 clickPoint = GetMousePoint();
+
+                FindTarget(Radius, clickPoint, canTargetHimself: true);
                 //_target = GetRaycastTarget(true);
 
-                if (GetTempTargetCharacter() != null && GetTempTargetCharacter() is Character characte && IsValidTarget(characte)) SetTarget((ITargetable)characte);
-                else ClearTarget();
+                if (GetTempTargetCharacter() is Character character)
+                {
+                    if (GetTempTargetCharacter() != null && (IsEnemyTarget(character) && isLightMode) || (IsAllyTarget(character) && !isLightMode))
+                    {
+                        ClearTempTarget();
+                    }
+                    else
+                    {
+                        GetTempTargetCharacter().SelectedCircle.IsActive = true;
+                        _hero.Move.LookAtTransform(GetTempTargetCharacter().transform);
+                    }
+                }
 
             }
             yield return null;
         }
-        SetTarget(GetTempTargetCharacter());
         TargetInfo targetInfo = new TargetInfo();
+        SetTarget(GetTempTargetCharacter());
         targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }

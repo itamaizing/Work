@@ -134,15 +134,15 @@ public class SparkOfLight : Skill
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter();
+                Vector3 clickPoint = GetMousePoint();
+
+                FindTarget(Radius, clickPoint, canTargetHimself: false);
 
                 if (GetTempTargetCharacter() is Character character)
                 {
-                    //_characterTarget = character;
-
                     if (GetTempTargetCharacter() != null && (IsAllyTarget(character) || character == Hero) && !isLightMode)
                     {
-                        ClearTarget();
+                        ClearTempTarget();
                     }
 
                     if (GetTempTargetCharacter() != null)

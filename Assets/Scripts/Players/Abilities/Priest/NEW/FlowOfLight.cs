@@ -113,7 +113,24 @@ public class FlowOfLight : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget();
+                Vector3 clickPoint = GetMousePoint();
+
+                FindTarget(Radius, clickPoint, canTargetHimself: true);
+                //_target = GetRaycastTarget(true);
+
+                if (GetTempTargetCharacter() != null)
+                {
+                    if (isLightMode && IsEnemyTarget(GetTempTargetCharacter()) || !isLightMode && !IsEnemyTarget(GetTempTargetCharacter()))
+                    {
+                        ClearTempTarget();
+                    }
+                    else
+                    {
+                        GetTempTargetCharacter().SelectedCircle.IsActive = true;
+                        _hero.Move.LookAtTransform(GetTempTargetCharacter().transform);
+                    }
+                }
+
             }
             yield return null;
         }
@@ -278,7 +295,7 @@ private void CmdStateRestorationOrDestruction(NetworkIdentity targetNetIdentity,
 
         if (flows.Length == 0)
         {
-            Debug.LogWarning("FlowLightEffect не найден ни на одном дочернем объекте эффекта: " + effect.name);
+            Debug.LogWarning("FlowLightEffect пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ: " + effect.name);
         }
     }
 }

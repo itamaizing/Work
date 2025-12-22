@@ -72,16 +72,12 @@ public class PriestShield : Skill
     private float _nextAvailableTime;
     public bool isLightMode = true;
 
-    protected override bool IsCanCast => IsCanCastCheck();
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("PriestShield");
     protected override int AnimTriggerCast => 0;
-
-    private bool IsCanCastCheck()
-    {
-        if (GetTargetCharacter() == null || Time.time < _nextAvailableTime) return false;
-        return Vector3.Distance(transform.position, GetTargetCharacter().transform.position) <= Radius;
-    }
+    
+    private bool IsAllyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Allies");
+    private bool IsEnemyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
     public event Action OnModeChange;
 
@@ -245,26 +241,35 @@ public class PriestShield : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-       // _targetCharacter = null;
+        // _targetCharacter = null;
+        TargetInfo targetInfo = new();
 
-        while (GetTargetCharacter() == null)
+        while (GetTempTargetCharacter() == null)
         {
-            if (Input.GetMouseButton(0))
+            if (GetMouseButton)
             {
-                FindTargetCharacter(true);
-                //_target = GetRaycastTarget(true);
+                Vector3 clickPoint = GetMousePoint();
 
-                if (GetTargetCharacter() is Character character && character == transform.GetComponentInParent<Character>())
+                FindTarget(Radius, clickPoint, canTargetHimself: true);
+
+                if (GetTempTargetCharacter() is Character character)
                 {
-                   // _targetCharacter = character;
-                    _absorbBonus = 0;
-                    CastDeley = selfCastTime;
+                    if (GetTempTargetCharacter() != null && (IsEnemyTarget(character) && isLightMode) || (IsAllyTarget(character) && !isLightMode))
+                    {
+                        ClearTempTarget();
+                    }
+                    else
+                    {
+                        GetTempTargetCharacter().SelectedCircle.IsActive = true;
+                        _hero.Move.LookAtTransform(GetTempTargetCharacter().transform);
+                    }
                 }
             }
+
             yield return null;
         }
-
-        TargetInfo targetInfo = new();
+        
+        SetTarget(GetTempTargetCharacter());
         targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }

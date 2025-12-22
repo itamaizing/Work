@@ -31,11 +31,12 @@ public class Restoration : Skill
     //private IDamageable _target;
     //private Character characterTarget;
 
-    public IDamageable Target => GetTargetCharacter();
+    public IDamageable Target => GetTempTargetCharacter();
 
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
 
-    protected override bool IsCanCast => IsCanCastCheck();
+    private bool IsAllyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Allies");
+    private bool IsEnemyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("Cast");
     protected override int AnimTriggerCast => 0;
@@ -43,12 +44,6 @@ public class Restoration : Skill
     private void Start()
     {
         _audioSource = GetComponent<AudioSource>();
-    }
-
-    private bool IsCanCastCheck()
-    {
-        if (GetTargetCharacter() == null) return false;
-        return Vector3.Distance(transform.position, GetTargetCharacter().transform.position) <= Radius;
     }
 
     public event Action OnModeChange;
@@ -154,16 +149,32 @@ public class Restoration : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (GetTargetCharacter() == null)
+        while (GetTempTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter();
+                Vector3 clickPoint = GetMousePoint();
+
+                FindTarget(Radius, clickPoint, canTargetHimself: true);
+                
+                if (GetTempTargetCharacter() is Character character)
+                {
+                    if (GetTempTargetCharacter() != null && (IsEnemyTarget(character) && isLightMode) || (IsAllyTarget(character) && !isLightMode))
+                    {
+                        ClearTempTarget();
+                    }
+                    else
+                    {
+                        GetTempTargetCharacter().SelectedCircle.IsActive = true;
+                        _hero.Move.LookAtTransform(GetTempTargetCharacter().transform);
+                    }
+                }
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new();
+        SetTarget(GetTempTargetCharacter());
         targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }
