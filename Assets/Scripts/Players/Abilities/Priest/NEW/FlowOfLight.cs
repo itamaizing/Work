@@ -24,6 +24,8 @@ public class FlowOfLight : Skill
 
     private bool IsAllyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Allies");
     private bool IsEnemyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+    
+    private float _clickRadius = 0.5f;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("FlowSpellStart");
@@ -115,7 +117,7 @@ public class FlowOfLight : Skill
             {
                 Vector3 clickPoint = GetMousePoint();
 
-                FindTarget(Radius, clickPoint, canTargetHimself: true);
+                FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
                 //_target = GetRaycastTarget(true);
 
                 if (GetTempTargetCharacter() != null)

@@ -97,9 +97,7 @@ public class TargetSeeker : MonoBehaviour
 				targets.Add(enemy);
 			}
 		}
-		targets = targets.Where(character => Vector3.Distance(character.Transform.position, _hero.transform.position) <= radius).ToList();
-
-		targets = targets.OrderBy(character => Vector3.Distance(character.Transform.position, position)).ToList();
+		targets = targets.OrderBy(character => Vector3.Distance(character.Transform.position, gameObject.transform.position)).ToList();
 
 		if (targets.Count <= 0)
 			return null;

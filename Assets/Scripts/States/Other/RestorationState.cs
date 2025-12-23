@@ -12,11 +12,11 @@ public class RestorationState : AbstractCharacterState
 
     private float _tickInterval = 4f;
     private float _healPerTick = 6f;
-    private float _effectivenessIncreasePerHeal = 0.1f;
+    //private float _effectivenessIncreasePerHeal = 0.1f;
 
     private float _timer;
-    private float _accumulatedEffectiveness = 1f;
-    private float _totalHealedInInterval = 0f;
+    //private float _accumulatedEffectiveness = 1f;
+    //private float _totalHealedInInterval = 0f;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
@@ -25,13 +25,13 @@ public class RestorationState : AbstractCharacterState
         duration = durationToExit;
 
         _health = character.Character.Health;
-        _accumulatedEffectiveness = 1f;
-        _totalHealedInInterval = 0f;
+        //_accumulatedEffectiveness = 1f;
+        //_totalHealedInInterval = 0f;
 
         _timer = _tickInterval;
 
 		float spiritBonus = GetSpiritEnergyBonus(_characterState.Character);
-		float healValue = _healPerTick * _accumulatedEffectiveness + spiritBonus;
+		float healValue = _healPerTick /*_accumulatedEffectiveness */ + spiritBonus;
 		CmdHeal(healValue);
 	}
 
@@ -45,12 +45,12 @@ public class RestorationState : AbstractCharacterState
         if (_timer <= 0f)
         {
             float spiritBonus = GetSpiritEnergyBonus(_characterState.Character);
-            float healValue = _healPerTick * _accumulatedEffectiveness + spiritBonus;
+            float healValue = _healPerTick /*_accumulatedEffectiveness*/ + spiritBonus;
 
             CmdHeal(healValue);
 
-             _accumulatedEffectiveness += _totalHealedInInterval * _effectivenessIncreasePerHeal;
-            _totalHealedInInterval = healValue;
+             /* _accumulatedEffectiveness += _totalHealedInInterval * _effectivenessIncreasePerHeal;
+            _totalHealedInInterval = healValue; */
 
             _timer = _tickInterval;
         }

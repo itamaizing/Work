@@ -71,7 +71,7 @@ public class PriestShield : Skill
     //private Character _targetCharacter;
     private float _nextAvailableTime;
     public bool isLightMode = true;
-
+    private float _clickRadius = 0.5f;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("PriestShield");
     protected override int AnimTriggerCast => 0;
@@ -250,7 +250,7 @@ public class PriestShield : Skill
             {
                 Vector3 clickPoint = GetMousePoint();
 
-                FindTarget(Radius, clickPoint, canTargetHimself: true);
+                FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
 
                 if (GetTempTargetCharacter() is Character character)
                 {

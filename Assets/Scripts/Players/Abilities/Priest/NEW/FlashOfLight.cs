@@ -18,6 +18,8 @@ public class FlashOfLight : Skill
     [SerializeField] private AudioClip audioClip;
     [SerializeField] private ReversePolarity reversePolarity;
 
+    private float _clickRadius = 0.5f;
+
     private bool _spiritEnergyTalent;
 
     //private IDamageable _target;
@@ -105,7 +107,7 @@ public class FlashOfLight : Skill
             {
                 Vector3 clickPoint = GetMousePoint();
 
-                FindTarget(Radius, clickPoint, canTargetHimself: true);
+                FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
                 //_target = GetRaycastTarget(true);
 
                 if (GetTempTargetCharacter() is Character character)

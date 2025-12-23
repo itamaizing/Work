@@ -23,7 +23,8 @@ public class Restoration : Skill
     [SerializeField] private AbilityInfo darkInfo;
 
     [SerializeField] private AudioClip audioClip;
-
+    
+    private float _clickRadius = 0.5f;
     private AudioSource _audioSource;
     private float _accumulatedEffectiveness = 1f;
     private float _totalHealedInInterval = 0f;
@@ -57,14 +58,6 @@ public class Restoration : Skill
     private void OnDisable()
     {
         OnModeChange -= UpdateMode;
-        if (GetTargetCharacter() != null && GetTargetCharacter() is Character character)
-        {
-            var healthComponent = character.GetComponent<Health>();
-            if (healthComponent != null)
-            {
-                healthComponent.HealTaked -= OnHealTaken;
-            }
-        }
     }
 
 
@@ -104,19 +97,10 @@ public class Restoration : Skill
     private void HandleRestorationLight()
     {
         if (GetTargetCharacter() == null) return;
-
         bool isAlly = GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Allies");
-
         if (isAlly && TryPayCost())
         {
-            var healthComponent = GetTargetCharacter().GetComponent<Health>();
-            if (healthComponent != null)
-            {
-                healthComponent.HealTaked += OnHealTaken;
-            }
-
             CmdAddState(GetTargetCharacter(), States.Restoration, lightDuration);
-            //StartCoroutine(ApplyHealOverTime(characterTarget));
         }
     }
 
@@ -132,9 +116,7 @@ public class Restoration : Skill
     private void HandleRestorationDark()
     {
         if (GetTargetCharacter() == null) return;
-
         bool isEnemy = GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Enemy");
-
         if (isEnemy && TryPayCost())
         {
             CmdAddState(GetTargetCharacter(), States.Destruction, darkDuration);
@@ -155,7 +137,7 @@ public class Restoration : Skill
             {
                 Vector3 clickPoint = GetMousePoint();
 
-                FindTarget(Radius, clickPoint, canTargetHimself: true);
+                FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
                 
                 if (GetTempTargetCharacter() is Character character)
                 {
@@ -201,11 +183,6 @@ public class Restoration : Skill
     {
         ClearTarget();
        // _target = null;
-    }
-
-    private void ResetAccumulatedEffectiveness()
-    {
-        _accumulatedEffectiveness = 1f;
     }
 
     [Command]

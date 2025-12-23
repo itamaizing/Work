@@ -57,6 +57,8 @@ public class SparkOfLight : Skill
     private float _tickHealingBonus = 2f;
     private int _healingBonusStacks = 0;
     private float _lastFlashOfLightCastTime = 0f;
+    
+    private float _clickRadius = 0.5f;
 
     //protected IDamageable _target;
     //private Character _characterTarget;
@@ -136,7 +138,7 @@ public class SparkOfLight : Skill
             {
                 Vector3 clickPoint = GetMousePoint();
 
-                FindTarget(Radius, clickPoint, canTargetHimself: false);
+                FindTarget(_clickRadius, clickPoint, canTargetHimself: false);
 
                 if (GetTempTargetCharacter() is Character character)
                 {
