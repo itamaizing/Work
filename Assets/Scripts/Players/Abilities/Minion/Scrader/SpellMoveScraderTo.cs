@@ -152,12 +152,14 @@ public class SpellMoveScraderTo : Skill
 
             if (interruptedByObstacle)
             {
-                EndMoveToPointWithNavMeshPath();
+                _moveActive = false;
+                //EndMoveToPointWithNavMeshPath();
                 yield break;
             }    
         }
 
-        EndMoveToPointWithNavMeshPath();
+        //EndMoveToPointWithNavMeshPath();
+        _moveActive = false;
     }
 
     private IEnumerator AttackNearbyEnemiesJob()
@@ -256,8 +258,6 @@ public class SpellMoveScraderTo : Skill
             StopCoroutine(_attackCoroutine);
             _attackCoroutine = null;
         }
-
-        if (_skillManager.SkillQueue.IsBusy || _skillManager.AutoSkillCast.IsBusy || _skillManager.SkillQueue.IsEmpty == false) return;
 
         Collider[] hits = Physics.OverlapSphere(transform.position, Radius, TargetsLayers);
 
