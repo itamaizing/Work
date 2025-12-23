@@ -290,6 +290,8 @@ public class SpawnComponent : NetworkBehaviour
             return;
         }
 
+        characterObject.layer = gameObject.layer;
+
         _units.Add(character);
         _units.RemoveAll(unit => unit == null);
         UnitAdded?.Invoke(character);
