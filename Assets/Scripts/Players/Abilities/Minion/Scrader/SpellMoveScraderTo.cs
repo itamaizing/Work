@@ -25,21 +25,31 @@ public class SpellMoveScraderTo : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => !IsCasting;
+
+    private void OnEnable()
+    {
+        OnSkillCanceled += HandleSkillCanceled;
+    }
+
     private void OnDisable()
     {
-        if (_activeTween != null && _activeTween.IsActive())
-        {
-            _activeTween.Kill();
-            _activeTween = null;
-        }
-
-        if (_attackCoroutine != null)
-        {
-            StopCoroutine(_attackCoroutine);
-            _attackCoroutine = null;
-        }
-
+        OnSkillCanceled -= HandleSkillCanceled;
+        CancelWork();
         Hero.Move.CanMove = true;
+    }
+
+    private void HandleSkillCanceled()
+    {
+        if (_hero?.Move != null)
+        {
+            Hero.Move.CanMove = true;
+            Hero.Move.StopLookAt();
+        }
+
+        CancelWork();
+
+        IsCasting = false;
+        ClearTarget();
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -65,7 +75,7 @@ public class SpellMoveScraderTo : Skill
     {
         IsCasting = true;
 
-        AutoAtackSkillCastWork();
+        //AutoAtackSkillCastWork();
 
         if (_attackCoroutine != null)
         {
@@ -216,11 +226,26 @@ public class SpellMoveScraderTo : Skill
         CmdApplyDamage(damage, _currentEnemyTarget.gameObject);
     }
 
-    private void AutoAtackSkillCastWork()
+    //private void AutoAtackSkillCastWork()
+    //{
+    //    if (_skillManager != null)
+    //    {
+    //        if (_skillManager.AutoSkillCast != null) _skillManager.AutoSkillCast.DeleteSkill();
+    //    }
+    //}
+
+    private void CancelWork()
     {
-        if (_skillManager != null)
+        if (_activeTween != null && _activeTween.IsActive())
         {
-            if (_skillManager.AutoSkillCast != null) _skillManager.AutoSkillCast.DeleteSkill();
+            _activeTween.Kill();
+            _activeTween = null;
+        }
+
+        if (_attackCoroutine != null)
+        {
+            StopCoroutine(_attackCoroutine);
+            _attackCoroutine = null;
         }
     }
 
@@ -240,5 +265,7 @@ public class SpellMoveScraderTo : Skill
         _targetPoint = Vector3.positiveInfinity;
         _currentEnemyTarget = null;
         IsCasting = false;
+
+        CancelWork();
     }
 }

@@ -27,8 +27,10 @@ public class ScratchClaws : Skill
     private const string AttackScaredTrigger = "AttackScared";
 
     #endregion
+
     private IDamageable _currentTarget;
     private Tween _activeTween;
+    private Coroutine _moveCoroutine;
     private bool _setTarget = false;
 
     public Action<GameObject> DoMove;
@@ -70,7 +72,9 @@ public class ScratchClaws : Skill
     private void OnDisable()
     {
         OnSkillCanceled -= HandleSkillCanceled;
+        CancelWork();
     }
+
     private void HandleSkillCanceled()
     {
         if (_hero?.Move != null)
@@ -79,7 +83,8 @@ public class ScratchClaws : Skill
             Hero.Move.StopLookAt();
         }
 
-        StopCoroutine(MoveToTargetCharacter(_currentTarget));
+        CancelWork();
+
         IsCasting = false;
         ClearTarget();
         _setTarget = false;
@@ -123,7 +128,13 @@ public class ScratchClaws : Skill
         float distanceToTarget = Vector3.Distance(transform.position, GetTarget().Transform.position);
         if (distanceToTarget > _stopDistance + StopDistanceThreshold)
         {
-            yield return MoveToTargetCharacter(GetTarget() as IDamageable);
+            if (_moveCoroutine != null)
+            {
+                StopCoroutine(_moveCoroutine);
+                _moveCoroutine = null;
+            }
+
+            _moveCoroutine = StartCoroutine(MoveToTargetCharacter(GetTarget() as IDamageable));
             while (IsCasting) yield return null;
         }
 
@@ -144,9 +155,10 @@ public class ScratchClaws : Skill
             Hero.Move.StopLookAt();
         }
 
-        StopCoroutine(MoveToTargetCharacter(_currentTarget));
         IsCasting = false;
         _setTarget = false;
+
+        CancelWork();
     }
 
     private IEnumerator MoveToTargetCharacter(IDamageable target)
@@ -218,6 +230,7 @@ public class ScratchClaws : Skill
 
         scraderClawsAnimCast();
     }
+
     private Vector3 GetApproachPointNearEnemy(IDamageable enemy)
     {
         Vector3 toEnemy = (enemy.transform.position - transform.position).normalized;
@@ -240,5 +253,20 @@ public class ScratchClaws : Skill
 
         if (targetCurrent != null && UnityEngine.Random.value <= _bleedingChance) targetCurrent.CharacterState.CmdAddState(States.Bleeding, _bleedingDuration, DamagePerTick, _playerLinks.gameObject, name);
         CmdApplyDamage(damage, targetCurrent.gameObject);
+    }
+
+    private void CancelWork()
+    {
+        if (_activeTween != null && _activeTween.IsActive())
+        {
+            _activeTween.Kill();
+            _activeTween = null;
+        }
+
+        if (_moveCoroutine != null)
+        {
+            StopCoroutine(_moveCoroutine);
+            _moveCoroutine = null;
+        }
     }
 }
