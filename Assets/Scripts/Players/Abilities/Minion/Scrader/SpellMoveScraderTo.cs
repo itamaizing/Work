@@ -22,6 +22,8 @@ public class SpellMoveScraderTo : Skill
     private Tween _activeTween;
     private bool _moveActive = false;
 
+    private const string _autoAnim = "AutoAttackScrader";
+
     public Action<GameObject> DoMove;
 
     protected override int AnimTriggerCastDelay => 0;
@@ -134,7 +136,7 @@ public class SpellMoveScraderTo : Skill
                         lastDoMovePoint = transform.position;
                     }
 
-                    if (stopAtObstacle && Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, 1f, LayerMask.GetMask("Obstacle"))) interruptedByObstacle = true;
+                    if (stopAtObstacle && Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, 1f, _obstacle)) interruptedByObstacle = true;
                     if (interruptedByObstacle && _activeTween != null && _activeTween.IsActive())
                     {
                         _activeTween.Kill();
@@ -152,14 +154,12 @@ public class SpellMoveScraderTo : Skill
 
             if (interruptedByObstacle)
             {
-                _moveActive = false;
-                //EndMoveToPointWithNavMeshPath();
+                EndMoveToPointWithNavMeshPath();
                 yield break;
             }    
         }
 
-        //EndMoveToPointWithNavMeshPath();
-        _moveActive = false;
+        EndMoveToPointWithNavMeshPath();
     }
 
     private IEnumerator AttackNearbyEnemiesJob()
@@ -195,22 +195,27 @@ public class SpellMoveScraderTo : Skill
                 float distance = Vector3.Distance(transform.position, nearest.transform.position);
 
                 Vector3 dir = (nearest.transform.position - transform.position).normalized;
-                if (dir != Vector3.zero)
-                    transform.rotation = Quaternion.LookRotation(dir);
+                if (dir != Vector3.zero) transform.rotation = Quaternion.LookRotation(dir);
 
                 if (distance > _attackDistance)
                 {
                     Vector3 safeTarget = GetApproachPointNearEnemy(nearest);
-                    yield return MoveToPointWithNavMeshPath(safeTarget, true);
+                    yield return MoveToPointWithNavMeshPath(safeTarget, false);
                     continue;
                 }
 
                 if (Time.time - _lastAttackTime > _damageDelay)
                 {
                     _currentEnemyTarget = nearest;
-                    _animator.SetTrigger("AutoAttackScared");
+                    _animator.SetTrigger(_autoAnim);
                     _lastAttackTime = Time.time;
                     yield return new WaitForSeconds(_damageDelay);
+                }
+
+                if (GetMouseButton)
+                {
+                    _moveActive = false;
+                    break;
                 }
 
                 yield return null;
@@ -251,6 +256,7 @@ public class SpellMoveScraderTo : Skill
 
     private void EndMoveToPointWithNavMeshPath()
     {
+
         Hero.Move.CanMove = true;
 
         if (_attackCoroutine != null)
@@ -259,11 +265,18 @@ public class SpellMoveScraderTo : Skill
             _attackCoroutine = null;
         }
 
+        if (_skillManager.SkillQueue.CurrentSkill.GetType() != typeof(SpellMoveScraderTo) || _skillManager.AutoSkillCast.IsBusy || _skillManager.SkillQueue.IsEmpty == false)
+        {
+            CancelWork();
+            _moveActive = false;
+            ClearTarget();
+            return;
+        }
+
         Collider[] hits = Physics.OverlapSphere(transform.position, Radius, TargetsLayers);
 
         Character nearest = null;
         float minDist = float.MaxValue;
-
         foreach (var hit in hits)
         {
             Character enemy = hit.GetComponent<Character>();
@@ -279,9 +292,13 @@ public class SpellMoveScraderTo : Skill
         }
 
         if (nearest != null) _attackCoroutine = StartCoroutine(AttackNearbyEnemiesJob());
-        else _moveActive = false;
+        else
+        {
+            CancelWork();
+            _moveActive = false;
+            ClearTarget();
+        }
     }
-
 
     private void CancelWork()
     {
@@ -318,7 +335,6 @@ public class SpellMoveScraderTo : Skill
     protected override void ClearData()
     {
         _targetPoint = Vector3.positiveInfinity;
-        _currentEnemyTarget = null;
         _moveActive = false;
 
         CancelWork();

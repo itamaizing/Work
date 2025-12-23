@@ -72,7 +72,6 @@ public class ScratchClaws : Skill
     private void OnDisable()
     {
         OnSkillCanceled -= HandleSkillCanceled;
-        CancelWork();
     }
 
     private void HandleSkillCanceled()
@@ -83,6 +82,7 @@ public class ScratchClaws : Skill
             Hero.Move.StopLookAt();
         }
 
+        _currentTarget = null;
         CancelWork();
 
         _moveActive = false;
@@ -100,11 +100,7 @@ public class ScratchClaws : Skill
                 if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
                 {
                     if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
-                    else 
-                    {
-                        _currentTarget = damageable;
-                        break;
-                    }
+                    else break;
                 }
             }
 
@@ -121,8 +117,9 @@ public class ScratchClaws : Skill
     protected override IEnumerator CastJob()
     {
         _moveActive = true;
+        _currentTarget = GetTarget() as Character;
 
-        float distanceToTarget = Vector3.Distance(transform.position, GetTarget().Transform.position);
+        float distanceToTarget = Vector3.Distance(transform.position, _currentTarget.transform.position);
         if (distanceToTarget > _stopDistance + StopDistanceThreshold)
         {
             if (_moveCoroutine != null)
@@ -131,7 +128,7 @@ public class ScratchClaws : Skill
                 _moveCoroutine = null;
             }
 
-            _moveCoroutine = StartCoroutine(MoveToTargetCharacter(GetTarget() as IDamageable));
+            _moveCoroutine = StartCoroutine(MoveToTargetCharacter(_currentTarget));
             while (_moveActive) yield return null;
         }
 
@@ -145,6 +142,7 @@ public class ScratchClaws : Skill
     protected override void ClearData()
     {
         ClearTarget();
+        _currentTarget = null;
 
         if (_hero?.Move != null)
         {
@@ -247,8 +245,13 @@ public class ScratchClaws : Skill
             PhysicAttackType = AttackRangeType
         };
 
-        if (targetCurrent != null && UnityEngine.Random.value <= _bleedingChance) targetCurrent.CharacterState.CmdAddState(States.Bleeding, _bleedingDuration, DamagePerTick, _playerLinks.gameObject, name);
+        CmdAddState(targetCurrent);
         CmdApplyDamage(damage, targetCurrent.gameObject);
+    }
+
+    private void CmdAddState(Character targetCurrent)
+    {
+        if (targetCurrent != null && UnityEngine.Random.value <= _bleedingChance) targetCurrent.CharacterState.CmdAddState(States.Bleeding, _bleedingDuration, DamagePerTick, _playerLinks.gameObject, name);
     }
 
     private void CancelWork()

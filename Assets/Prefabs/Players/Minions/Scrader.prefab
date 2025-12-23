@@ -1317,7 +1317,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37a5c11bfb1de7c4da352b19ebb053f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spellMoveScraderTo: {fileID: 0}
+  spellMoveScraderTo: {fileID: 8331210179348555134}
   scratchClaws: {fileID: 8741847699558006757}
 --- !u!1 &1816582864147950907
 GameObject:
@@ -13924,7 +13924,7 @@ MonoBehaviour:
   maxCounter: 0
   _moveDurationPerUnit: 0.2
   _damageDelay: 0.5
-  _attackDistance: 3
+  _attackDistance: 2
   _damage: 5
   _animator: {fileID: 1215395125402789392}
   _skillManager: {fileID: 6892265620981845488}
