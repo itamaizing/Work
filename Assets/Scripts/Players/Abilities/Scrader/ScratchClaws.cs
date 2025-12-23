@@ -21,7 +21,7 @@ public class ScratchClaws : Skill
     private const float MoveEventThreshold = 1f;
     private const float SegmentMinDistance = 0.01f;
     private const float RaycastCheckDistance = 1f;
-    private const float TargetSearchRadius = 1f;
+    private const float TargetSearchRadius = 0.5f;
     private const float DamagePerTick = 1f;
 
     private const string AttackScaredTrigger = "AttackScared";

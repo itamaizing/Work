@@ -34,6 +34,8 @@ public class ClawStrike : Skill
     private const float PsiDispel_2 = 20f;
     private const float PsiDispel_1 = 10f;
 
+    private const float TargetSearchRadius = 0.5f;
+
     #endregion
 
     private bool _isDurationChanceApplyBleedingWithJump = false;
@@ -100,7 +102,7 @@ public class ClawStrike : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget();
+                FindTarget(TargetSearchRadius, GetMousePoint());
 
                 if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
                 {

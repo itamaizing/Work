@@ -150,26 +150,21 @@ public class SpellMoveScraderTo : Skill
                 _activeTween = null;
             }
 
-            if (interruptedByObstacle) break;
+            if (interruptedByObstacle)
+            {
+                EndMoveToPointWithNavMeshPath();
+                yield break;
+            }    
         }
 
-        Hero.Move.CanMove = true;
-        _moveActive = false;
-
-        if (_attackCoroutine != null)
-        {
-            StopCoroutine(_attackCoroutine);
-            _attackCoroutine = null;
-        }
-
-        _attackCoroutine = StartCoroutine(AttackNearbyEnemiesJob());
+        EndMoveToPointWithNavMeshPath();
     }
 
     private IEnumerator AttackNearbyEnemiesJob()
     {
         while (true)
         {
-            Collider[] hits = Physics.OverlapSphere(transform.position, Radius, LayerMask.GetMask("Enemy"));
+            Collider[] hits = Physics.OverlapSphere(transform.position, Radius, TargetsLayers);
 
             Character nearest = null;
             float minDist = float.MaxValue;
@@ -251,6 +246,42 @@ public class SpellMoveScraderTo : Skill
             if (_skillManager.AutoSkillCast != null) _skillManager.AutoSkillCast.DeleteSkill();
         }
     }
+
+    private void EndMoveToPointWithNavMeshPath()
+    {
+        Hero.Move.CanMove = true;
+
+        if (_attackCoroutine != null)
+        {
+            StopCoroutine(_attackCoroutine);
+            _attackCoroutine = null;
+        }
+
+        if (_skillManager.SkillQueue.IsBusy || _skillManager.AutoSkillCast.IsBusy || _skillManager.SkillQueue.IsEmpty == false) return;
+
+        Collider[] hits = Physics.OverlapSphere(transform.position, Radius, TargetsLayers);
+
+        Character nearest = null;
+        float minDist = float.MaxValue;
+
+        foreach (var hit in hits)
+        {
+            Character enemy = hit.GetComponent<Character>();
+            if (enemy != null && !enemy.IsDead)
+            {
+                float dist = Vector3.Distance(transform.position, enemy.transform.position);
+                if (dist < minDist)
+                {
+                    minDist = dist;
+                    nearest = enemy;
+                }
+            }
+        }
+
+        if (nearest != null) _attackCoroutine = StartCoroutine(AttackNearbyEnemiesJob());
+        else _moveActive = false;
+    }
+
 
     private void CancelWork()
     {

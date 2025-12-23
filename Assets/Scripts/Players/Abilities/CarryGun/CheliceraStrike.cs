@@ -42,6 +42,8 @@ public class CheliceraStrike : Skill
     private const float AttackingPsiThresholdMid = 20f;
     private const float AttackingPsiThresholdHigh = 30f;
 
+    private const float TargetSearchRadius = 0.5f;
+
     #endregion
 
     private Damage _dealDamage;
@@ -65,7 +67,7 @@ public class CheliceraStrike : Skill
 
     public float ChanceCritDamageEvolutionFour { get => _chanceCritDamageEvolutionFour; set => _chanceCritDamageEvolutionFour = value; }
 
-    public event System.Action OnCheliceraStrikeEnd;
+    public event Action OnCheliceraStrikeEnd;
 
     private void Start()
     {
@@ -122,7 +124,7 @@ public class CheliceraStrike : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget();
+                FindTarget(TargetSearchRadius, GetMousePoint());
 
                 if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
                 {

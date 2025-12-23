@@ -29,7 +29,7 @@ public class JumpWithChelicera : Skill
     private const float JumpCritChanceEnabled = 0.3f;
     private const float JumpCritChanceDisabled = 0.15f;
 
-    private const float TargetSearchRadius = 1f;
+    private const float TargetSearchRadius = 0.5f;
     #endregion
 
     private Animator _animator;

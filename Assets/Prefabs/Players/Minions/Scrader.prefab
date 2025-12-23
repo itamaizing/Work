@@ -13915,7 +13915,7 @@ MonoBehaviour:
   _castLength: 0
   _castWidth: 0
   _autoAttackDelay: 0
-  _isAutoRadiusRender: 1
+  _isAutoRadiusRender: 0
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
