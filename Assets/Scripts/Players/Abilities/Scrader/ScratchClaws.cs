@@ -116,6 +116,7 @@ public class ScratchClaws : Skill
 
     protected override IEnumerator CastJob()
     {
+        CancelWork();
         _moveActive = true;
         _currentTarget = GetTarget() as Character;
 
@@ -134,7 +135,7 @@ public class ScratchClaws : Skill
 
         else
         {
-            if (!CheckIsCanCast()) scraderClawsAnimCast();
+            if (CheckIsCanCast()) scraderClawsAnimCast();
             while (_moveActive) yield return null;
         }
     }
@@ -245,13 +246,8 @@ public class ScratchClaws : Skill
             PhysicAttackType = AttackRangeType
         };
 
-        CmdAddState(targetCurrent);
+        if (targetCurrent != null && UnityEngine.Random.value <= _bleedingChance) targetCurrent.CharacterState.AddState(States.Bleeding, _bleedingDuration, DamagePerTick, _playerLinks.gameObject, name);
         CmdApplyDamage(damage, targetCurrent.gameObject);
-    }
-
-    private void CmdAddState(Character targetCurrent)
-    {
-        if (targetCurrent != null && UnityEngine.Random.value <= _bleedingChance) targetCurrent.CharacterState.CmdAddState(States.Bleeding, _bleedingDuration, DamagePerTick, _playerLinks.gameObject, name);
     }
 
     private void CancelWork()
