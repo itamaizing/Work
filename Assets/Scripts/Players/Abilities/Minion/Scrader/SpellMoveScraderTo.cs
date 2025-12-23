@@ -20,12 +20,13 @@ public class SpellMoveScraderTo : Skill
     private Character _currentEnemyTarget;
     private float _lastAttackTime;
     private Tween _activeTween;
+    private bool _moveActive = false;
 
     public Action<GameObject> DoMove;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
-    protected override bool IsCanCast => !IsCasting;
+    protected override bool IsCanCast => !_moveActive;
 
     private void OnEnable()
     {
@@ -49,7 +50,7 @@ public class SpellMoveScraderTo : Skill
 
         CancelWork();
 
-        IsCasting = false;
+        _moveActive = false;
         ClearTarget();
     }
 
@@ -74,7 +75,7 @@ public class SpellMoveScraderTo : Skill
     }
     protected override IEnumerator CastJob()
     {
-        IsCasting = true;
+        _moveActive = true;
 
         AutoAtackSkillCastWork();
 
@@ -85,7 +86,7 @@ public class SpellMoveScraderTo : Skill
         }
 
         _moveWithPathCoroutine = StartCoroutine(MoveToPointWithNavMeshPath(_targetPoint, false));
-        while (IsCasting) yield return null;
+        while (_moveActive) yield return null;
     }
 
     private IEnumerator MoveToPointWithNavMeshPath(Vector3 targetPoint, bool stopAtObstacle)
@@ -153,8 +154,7 @@ public class SpellMoveScraderTo : Skill
         }
 
         Hero.Move.CanMove = true;
-
-        if (!IsCasting) yield break;
+        _moveActive = false;
 
         if (_attackCoroutine != null)
         {
@@ -288,7 +288,7 @@ public class SpellMoveScraderTo : Skill
     {
         _targetPoint = Vector3.positiveInfinity;
         _currentEnemyTarget = null;
-        IsCasting = false;
+        _moveActive = false;
 
         CancelWork();
     }

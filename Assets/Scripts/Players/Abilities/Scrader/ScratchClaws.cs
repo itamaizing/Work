@@ -31,7 +31,7 @@ public class ScratchClaws : Skill
     private IDamageable _currentTarget;
     private Tween _activeTween;
     private Coroutine _moveCoroutine;
-    private bool _setTarget = false;
+    private bool _moveActive = false;
 
     public Action<GameObject> DoMove;
 
@@ -46,7 +46,7 @@ public class ScratchClaws : Skill
     public void AttackAnimationHit()
     {
         ApplyScratchDamage();
-        IsCasting = false;
+        _moveActive = false;
     }
 
     protected override bool IsCanCast => GetTarget() != null;
@@ -85,23 +85,20 @@ public class ScratchClaws : Skill
 
         CancelWork();
 
-        IsCasting = false;
+        _moveActive = false;
         ClearTarget();
-        _setTarget = false;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
         while (GetTempTarget() == null)
         {
-            if (GetMouseButton && !_setTarget)
+            if (GetMouseButton)
             {
                 FindTarget(TargetSearchRadius, GetMousePoint());
 
                 if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
                 {
-                    _setTarget = true;
-
                     if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
                     else 
                     {
@@ -123,7 +120,7 @@ public class ScratchClaws : Skill
 
     protected override IEnumerator CastJob()
     {
-        IsCasting = true;
+        _moveActive = true;
 
         float distanceToTarget = Vector3.Distance(transform.position, GetTarget().Transform.position);
         if (distanceToTarget > _stopDistance + StopDistanceThreshold)
@@ -135,13 +132,13 @@ public class ScratchClaws : Skill
             }
 
             _moveCoroutine = StartCoroutine(MoveToTargetCharacter(GetTarget() as IDamageable));
-            while (IsCasting) yield return null;
+            while (_moveActive) yield return null;
         }
 
         else
         {
             if (!CheckIsCanCast()) scraderClawsAnimCast();
-            while (IsCasting) yield return null;
+            while (_moveActive) yield return null;
         }
     }
 
@@ -155,8 +152,7 @@ public class ScratchClaws : Skill
             Hero.Move.StopLookAt();
         }
 
-        IsCasting = false;
-        _setTarget = false;
+        _moveActive = false;
 
         CancelWork();
     }
@@ -226,7 +222,7 @@ public class ScratchClaws : Skill
 
         Hero.Move.CanMove = true;
 
-        if (!IsCasting) yield break;
+        if (!_moveActive) yield break;
 
         scraderClawsAnimCast();
     }
