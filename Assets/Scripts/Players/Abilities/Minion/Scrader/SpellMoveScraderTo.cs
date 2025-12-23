@@ -16,6 +16,7 @@ public class SpellMoveScraderTo : Skill
 
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private Coroutine _attackCoroutine;
+    private Coroutine _moveWithPathCoroutine;
     private Character _currentEnemyTarget;
     private float _lastAttackTime;
     private Tween _activeTween;
@@ -75,19 +76,16 @@ public class SpellMoveScraderTo : Skill
     {
         IsCasting = true;
 
-        //AutoAtackSkillCastWork();
+        AutoAtackSkillCastWork();
 
-        if (_attackCoroutine != null)
+        if (_moveWithPathCoroutine != null)
         {
-            StopCoroutine(_attackCoroutine);
-            _attackCoroutine = null;
+            StopCoroutine(_moveWithPathCoroutine);
+            _moveWithPathCoroutine = null;
         }
 
-        yield return MoveToPointWithNavMeshPath(_targetPoint, false);
-
-        _attackCoroutine = StartCoroutine(AttackNearbyEnemiesJob());
-
-        IsCasting = false;
+        _moveWithPathCoroutine = StartCoroutine(MoveToPointWithNavMeshPath(_targetPoint, false));
+        while (IsCasting) yield return null;
     }
 
     private IEnumerator MoveToPointWithNavMeshPath(Vector3 targetPoint, bool stopAtObstacle)
@@ -136,15 +134,35 @@ public class SpellMoveScraderTo : Skill
                     }
 
                     if (stopAtObstacle && Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, 1f, LayerMask.GetMask("Obstacle"))) interruptedByObstacle = true;
-                    if (interruptedByObstacle && _activeTween != null && _activeTween.IsActive()) _activeTween.Kill();
+                    if (interruptedByObstacle && _activeTween != null && _activeTween.IsActive())
+                    {
+                        _activeTween.Kill();
+                        _activeTween = null;
+                    }
                 });
 
             yield return _activeTween.WaitForCompletion();
+
+            if (_activeTween != null && !_activeTween.IsPlaying())
+            {
+                _activeTween.Kill();
+                _activeTween = null;
+            }
 
             if (interruptedByObstacle) break;
         }
 
         Hero.Move.CanMove = true;
+
+        if (!IsCasting) yield break;
+
+        if (_attackCoroutine != null)
+        {
+            StopCoroutine(_attackCoroutine);
+            _attackCoroutine = null;
+        }
+
+        _attackCoroutine = StartCoroutine(AttackNearbyEnemiesJob());
     }
 
     private IEnumerator AttackNearbyEnemiesJob()
@@ -226,13 +244,13 @@ public class SpellMoveScraderTo : Skill
         CmdApplyDamage(damage, _currentEnemyTarget.gameObject);
     }
 
-    //private void AutoAtackSkillCastWork()
-    //{
-    //    if (_skillManager != null)
-    //    {
-    //        if (_skillManager.AutoSkillCast != null) _skillManager.AutoSkillCast.DeleteSkill();
-    //    }
-    //}
+    private void AutoAtackSkillCastWork()
+    {
+        if (_skillManager != null)
+        {
+            if (_skillManager.AutoSkillCast != null) _skillManager.AutoSkillCast.DeleteSkill();
+        }
+    }
 
     private void CancelWork()
     {
@@ -246,6 +264,12 @@ public class SpellMoveScraderTo : Skill
         {
             StopCoroutine(_attackCoroutine);
             _attackCoroutine = null;
+        }
+
+        if (_moveWithPathCoroutine != null)
+        {
+            StopCoroutine(_moveWithPathCoroutine);
+            _moveWithPathCoroutine = null;
         }
     }
 
