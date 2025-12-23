@@ -78,6 +78,8 @@ public class PriestShield : Skill
     
     private bool IsAllyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Allies");
     private bool IsEnemyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+    
+    public override bool IsPayCostStartCooldown => false;
 
     public event Action OnModeChange;
 
@@ -284,7 +286,7 @@ public class PriestShield : Skill
 
     private void Cast()
     {
-        _nextAvailableTime = Time.time + CooldownTime;
+        //_nextAvailableTime = Time.time + CooldownTime;
 
         CmdPlayShootSound();
 
@@ -300,23 +302,20 @@ public class PriestShield : Skill
 
     private void HandleLightShield()
     {
-        if (GetTargetCharacter() == null) return;
-        if (!TryPayCost(manaCostLight)) return;
+        var target = GetTargetCharacter();
+        if (target == null) return;
 
-        _absorbBonus = CalculateTotalAbsorbBonus();
+        var state = target.GetComponent<CharacterState>();
+        if (state.CheckForState(States.TiredSoul))
+        {
+            return;
+        }
 
-        var characterState = GetTargetCharacter().GetComponent<CharacterState>();
-        var duration = _talentTiredSoulActive && characterState.CheckForState(States.TiredSoul)
-            ? lightShieldDuration * TiredSoulEffectPercentage
-            : lightShieldDuration;
+        if (!TryPayCost(manaCostLight, startCooldown: false)) return;
 
-        var absorbDamage = _talentTiredSoulActive && characterState.CheckForState(States.TiredSoul)
-            ? (absorbAmount + _absorbBonus) * TiredSoulEffectPercentage
-            : absorbAmount + _absorbBonus;
+        IncreaseSetCooldown(CooldownTime);
 
-        CmdAddDebaff(States.LightShield, States.TiredSoul, duration, tiredSoulDuration, absorbDamage, GetTargetCharacter().gameObject, Name);
-
-        Debug.Log($"[PriestShield] Final Absorb = {absorbDamage} (Base: {absorbAmount}, Bonus: {_absorbBonus})");
+        CmdAddDebaff(States.LightShield, States.TiredSoul, lightShieldDuration, tiredSoulDuration, absorbAmount, target.gameObject, Name);
     }
 
     private void HandleDarkShield()
