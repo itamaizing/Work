@@ -174,7 +174,7 @@ public class SpellMoveScraderTo : Skill
             foreach (var hit in hits)
             {
                 Character enemy = hit.GetComponent<Character>();
-                if (enemy != null && !enemy.IsDead)
+                if (enemy != null && !enemy.IsDead && enemy != Hero)
                 {
                     float dist = Vector3.Distance(transform.position, enemy.transform.position);
                     if (dist < minDist)
@@ -212,7 +212,7 @@ public class SpellMoveScraderTo : Skill
                     yield return new WaitForSeconds(_damageDelay);
                 }
 
-                if (GetMouseButton)
+                if (Input.GetMouseButtonDown(0))
                 {
                     _moveActive = false;
                     break;

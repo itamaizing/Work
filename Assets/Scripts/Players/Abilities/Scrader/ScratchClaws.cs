@@ -246,7 +246,7 @@ public class ScratchClaws : Skill
             PhysicAttackType = AttackRangeType
         };
 
-        if (targetCurrent != null && UnityEngine.Random.value <= _bleedingChance) targetCurrent.CharacterState.AddState(States.Bleeding, _bleedingDuration, DamagePerTick, _playerLinks.gameObject, name);
+        if (targetCurrent != null && UnityEngine.Random.value <= _bleedingChance) targetCurrent.CharacterState.CmdAddState(States.Bleeding, _bleedingDuration, DamagePerTick, _playerLinks.gameObject, name);
         CmdApplyDamage(damage, targetCurrent.gameObject);
     }
 
