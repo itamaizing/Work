@@ -212,10 +212,12 @@ public class SpellMoveScraderTo : Skill
                     yield return new WaitForSeconds(_damageDelay);
                 }
 
-                if (Input.GetMouseButtonDown(0))
+                if (_skillManager.SkillQueue.IsEmpty == false)
                 {
+                    CancelWork();
                     _moveActive = false;
-                    break;
+                    ClearTarget();
+                    yield break;
                 }
 
                 yield return null;
@@ -277,10 +279,11 @@ public class SpellMoveScraderTo : Skill
 
         Character nearest = null;
         float minDist = float.MaxValue;
+
         foreach (var hit in hits)
         {
             Character enemy = hit.GetComponent<Character>();
-            if (enemy != null && !enemy.IsDead)
+            if (enemy != null && !enemy.IsDead && enemy != Hero && enemy.gameObject != gameObject)
             {
                 float dist = Vector3.Distance(transform.position, enemy.transform.position);
                 if (dist < minDist)

@@ -52,12 +52,6 @@ public class ScratchClaws : Skill
     protected override bool IsCanCast => GetTarget() != null;
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
-    private bool CheckIsCanCast()
-    {
-        if (GetTarget() == null) return false;
-        return Vector3.Distance(GetTarget().Transform.position, transform.position) <= Radius && NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
-    }
-
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0]);
@@ -135,7 +129,7 @@ public class ScratchClaws : Skill
 
         else
         {
-            if (CheckIsCanCast()) scraderClawsAnimCast();
+            scraderClawsAnimCast();
             while (_moveActive) yield return null;
         }
     }
@@ -220,8 +214,7 @@ public class ScratchClaws : Skill
         }
 
         Hero.Move.CanMove = true;
-
-        if (!_moveActive) yield break;
+        _moveActive = false;
 
         scraderClawsAnimCast();
     }
