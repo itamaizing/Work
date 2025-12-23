@@ -39,10 +39,14 @@ public class Dark1PassiveSkill : Skill, IPassiveSkill
 
     private void OnHealMade(Heal healed)
     {
-        if (healed.Value > 0 && healed.DamageableSkill.School == Schools.Light)
+        if (healed.Value <= 0) return;
+
+        if (healed.DamageableSkill != null && healed.DamageableSkill.School == Schools.Light)
         {
-            Heal heal = new Heal();
-            heal.Value = healed.Value * .1f;
+            Heal heal = new Heal
+            {
+                Value = healed.Value * 0.1f
+            };
 
             Hero.Heal(ref heal, this.Name, this);
         }

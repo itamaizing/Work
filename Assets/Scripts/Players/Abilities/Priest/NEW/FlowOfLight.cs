@@ -78,7 +78,7 @@ public class FlowOfLight : Skill
 
     private void OnModeChanged(bool oldValue, bool newValue)
     {
-        //UpdateMode();
+        UpdateMode();
         OnModeChange?.Invoke();
     }
 
@@ -86,6 +86,7 @@ public class FlowOfLight : Skill
     {
         School = isLightMode ? Schools.Light : Schools.Dark;
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
+        Hero.Abilities.SkillPanelUpdate();
     }
 
     private void ApplySpiritBuff(Character target)
