@@ -153,12 +153,14 @@ public class InputHandler : MonoBehaviour
 
 	private void OnEnable()
 	{
+		if(_inputActions != null)
 		_inputActions.Enable();
 	}
 
 	private void OnDisable()
 	{
-		_inputActions.Disable();
+        if (_inputActions != null)
+            _inputActions.Disable();
 	}
 
 	private void SetClickTrue()
