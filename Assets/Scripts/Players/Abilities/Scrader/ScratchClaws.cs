@@ -214,7 +214,6 @@ public class ScratchClaws : Skill
         }
 
         Hero.Move.CanMove = true;
-        _moveActive = false;
 
         scraderClawsAnimCast();
     }

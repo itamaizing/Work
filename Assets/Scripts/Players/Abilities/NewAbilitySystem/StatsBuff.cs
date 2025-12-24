@@ -48,6 +48,12 @@ public class StatBuff
         _multiplier /= value;
     }
 
+    public void InstallationPercentage(float value)
+    {
+        _multiplier = value;
+    }
+
+
     public void AddValue(float value)
     {
         _additional += value;

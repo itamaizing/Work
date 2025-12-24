@@ -32,6 +32,8 @@ public class SeriesOfStrikes : MonoBehaviour
 		new Series(_formList3),
 	};
 
+	public bool SeriesCompliteCompo { get => _seriesCompliteCompo; set => _seriesCompliteCompo = value; }
+
 	private void Start()
 	{
 		for (int i = 0; i < _playerLinks.Resources.Count; i++)
@@ -166,7 +168,7 @@ public class SeriesOfStrikes : MonoBehaviour
 				_seriesOfStrikes[i].usedEnergy += usedEnergy;
 				_seriesOfStrikes[i].hitCount++;
 				_timer = _baseTimer;
-				//_seriesCompliteCompo = false;
+				_seriesCompliteCompo = false;
 
 				//Debug.Log("Hit from " + _seriesOfStrikes[i] + " #" + _seriesOfStrikes[i].hitCount);
 
@@ -179,7 +181,7 @@ public class SeriesOfStrikes : MonoBehaviour
 			else
 			{
 				_isInTheRow = true;
-				//_seriesCompliteCompo = false;
+				_seriesCompliteCompo = false;
 				_seriesOfStrikes[i].Reset(usedRuneValue);
 				_timer = _baseTimer;
 				_curTarget = target;
