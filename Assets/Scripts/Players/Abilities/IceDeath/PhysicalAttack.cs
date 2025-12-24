@@ -7,7 +7,7 @@ using UnityEngine;
 public class PhysicalAttack : Skill
 {
 	[SerializeField] private SeriesOfStrikes _combo;
-	[SerializeField] private AudioClip[] Hits;
+	[SerializeField] private AudioClip[] _hits;
 
 	private AudioSource _audioSource;
 	private Character _curTarget;
@@ -273,10 +273,10 @@ public class PhysicalAttack : Skill
 	[ClientRpc]
 	private void RpcPlayShotSound()
 	{
-		if (_audioSource != null && Hits != null)
+		if (_audioSource != null && _hits != null)
 		{
-			int index = UnityEngine.Random.Range(0, Hits.Length);
-			_audioSource.PlayOneShot(Hits[index]);
+			int index = UnityEngine.Random.Range(0, _hits.Length);
+			_audioSource.PlayOneShot(_hits[index]);
 		}
 	}
 

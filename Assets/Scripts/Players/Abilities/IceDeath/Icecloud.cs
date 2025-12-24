@@ -8,19 +8,15 @@ public class IceCloud : Skill
 {
 	[SerializeField] private IceCloudProjectile _projectile;
 	[SerializeField] private SeriesOfStrikes _combo;
-	[SerializeField] private AudioClip audioClip;
+	[SerializeField] private AudioClip _audioClip;
 
 	private Vector3 _mousePos = Vector3.positiveInfinity;
     private Vector3 _mousePos2 = Vector2.positiveInfinity;
-    //private bool _enabled;
     private AudioSource _audioSource;
 	private bool _boostDmg;
 	private bool _lastHit;
 	private Energy _energy;
 	private bool _frozwenTalent;
-	//private Character _target;
-
-	//private RuneComponent _rune;
 
 	protected override bool IsCanCast
 	{
@@ -50,7 +46,6 @@ public class IceCloud : Skill
     {
 		CanMoveIceCloud();
 		ClearTarget();
-		//_target = null;
 		_mousePos = Vector3.positiveInfinity;
 	}
 
@@ -110,7 +105,7 @@ public class IceCloud : Skill
 	[ClientRpc]
 	private void RpcPlayShotSound()
 	{
-		if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
+		if (_audioSource != null && _audioClip != null) _audioSource.PlayOneShot(_audioClip);
 	}
 
 	public void TalentBoostDmg(bool value)

@@ -3395,9 +3395,7 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   _combo: {fileID: 3083348233968490285}
-  Hits:
-  - {fileID: 8300000, guid: 38dd5da71cb5afd46a2d5744de079417, type: 3}
-  - {fileID: 8300000, guid: 8ef68e5faeaffc54da9fe368168308ba, type: 3}
+  _hits: []
 --- !u!114 &752221787785051408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3459,7 +3457,7 @@ MonoBehaviour:
   maxCounter: 1
   _projectile: {fileID: 3779490377558770127, guid: 911d5f174dbe7ac4b8da163e8aaf32a1, type: 3}
   _combo: {fileID: 3083348233968490285}
-  audioClip: {fileID: 8300000, guid: f609f46a7f40ad84b9b010044a07b747, type: 3}
+  _audioClip: {fileID: 0}
 --- !u!114 &3068634069238352843
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3971,6 +3969,7 @@ MonoBehaviour:
   _seriesOfStrikes: {fileID: 3083348233968490285}
   _sword: {fileID: 1545470976515082280}
   audioClip: {fileID: 8300000, guid: 7b90008d29cc7d14db8ede5bfe287bf1, type: 3}
+  _maxAdditionalCost: 10
 --- !u!114 &8854865153303019716
 MonoBehaviour:
   m_ObjectHideFlags: 0
