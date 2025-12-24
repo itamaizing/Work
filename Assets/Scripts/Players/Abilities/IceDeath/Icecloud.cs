@@ -76,7 +76,12 @@ public class IceCloud : Skill
 
 		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
 
-		CmdCreateProjecttile(angle, _energy.CurrentValue, lookDir.normalized);
+
+		float energyToUse = _energy.CurrentValue;
+		_energy.CmdUse(energyToUse);
+
+		CmdCreateProjecttile(angle, energyToUse, lookDir.normalized);
+
 		ClearTarget();
 		_mousePos = Vector2.positiveInfinity;
 		ClearData();
@@ -88,6 +93,7 @@ public class IceCloud : Skill
 		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position + lookDir * .2f, Quaternion.Euler(0, -angle, 0));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(Hero, manaValue, false, this);
+		projectile.InitIceCloud(manaValue, Damage);
 		projectile.Talent(_boostDmg, _frozwenTalent, _lastHit);
 
 		NetworkServer.Spawn(projectile.gameObject);
@@ -99,7 +105,11 @@ public class IceCloud : Skill
 	[ClientRpc]
 	private void RpcInit(GameObject obj, float manaValue)
 	{
-		obj.GetComponent<IceCloudProjectile>().Init(Hero, manaValue, false, this);
+		if (obj.TryGetComponent<IceCloudProjectile>(out IceCloudProjectile ice))
+        {
+			ice.Init(Hero, manaValue, false, this);
+			ice.InitIceCloud(manaValue, Damage);
+		}
 	}
 
 	[ClientRpc]
