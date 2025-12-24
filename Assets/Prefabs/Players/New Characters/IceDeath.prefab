@@ -3628,7 +3628,7 @@ MonoBehaviour:
     m_Bits: 256
   _obstacle:
     serializedVersion: 2
-    m_Bits: 2098048
+    m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
@@ -3639,8 +3639,8 @@ MonoBehaviour:
   _chargeCooldown: 0
   _radius: 0
   _area: 0
-  _castLength: 2
-  _castWidth: 1
+  _castLength: 0
+  _castWidth: 0
   _autoAttackDelay: 0
   _isAutoRadiusRender: 0
   _isAutoAreaRender: 0

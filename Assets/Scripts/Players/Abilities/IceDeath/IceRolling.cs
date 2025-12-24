@@ -41,6 +41,18 @@ public class IceRolling : Skill
 	private Character _attachedTarget;
 	private Animator _animator;
 
+	#region Constants
+	private const float BoxCastSize = 0.05f;
+	private const float ObstaclePushBackMultiplier = 1.2f;
+	private const float RollingWithEnemyTalentBaseRange = 4f;
+	private const float RollingWithoutEnemyTalentBaseRange = 2f;
+	private const float EnergyChunkValue = 5f;
+	private const float KnockbackDistance = 2f;
+	private const float KnockbackDuration = 0.05f;
+	private const float AttachedFrozenDuration = 2f;
+	private const float DynamicRendererJobTime = 0.2f;
+	#endregion
+
 	protected override bool IsCanCast
 	{
 		get
@@ -85,7 +97,7 @@ public class IceRolling : Skill
 			if (_energy.CurrentValue >= energyCost)
 			{
 				range += 1;
-				energyCost += 5;
+				energyCost += EnergyChunkValue;
 			}
 		}
 
@@ -97,7 +109,7 @@ public class IceRolling : Skill
 		Vector3 direction = (end - start).normalized;
 		float distance = Vector3.Distance(start, end);
 
-		RaycastHit[] hits = Physics.BoxCastAll(start, new Vector3(0.05f, 0.05f, 0.05f), direction, Quaternion.identity, distance, _obstacle);
+		RaycastHit[] hits = Physics.BoxCastAll(start, new Vector3(BoxCastSize, BoxCastSize, BoxCastSize), direction, Quaternion.identity, distance, _obstacle);
 
 		stopPosition = end;
 		characterHit = null;
@@ -124,7 +136,7 @@ public class IceRolling : Skill
 			if (hit.collider.transform.root != transform.root)
 			{
 				Debug.Log(hit.collider.gameObject.name + " Stop point " + stopPosition);
-				stopPosition = hit.point - direction * 1.2f;
+				stopPosition = hit.point - direction * ObstaclePushBackMultiplier;
 				return true;
 			}
 		}
@@ -151,72 +163,72 @@ public class IceRolling : Skill
 		return false;
 	}
 
-	private void Jump2()
-	{
-		Hero.Move.CanMove = false;
-		_isJump = true;
+	//private void Jump2()
+	//{
+	//	Hero.Move.CanMove = false;
+	//	_isJump = true;
 
-		_lookDir = (_mousePos - _playerLinks.transform.position).normalized;
-		float baseRange = _rollingWithEnemyTalent ? 4f : 2f;
-		float maxEnergy = Mathf.Min(_energy.CurrentValue, 10f);
-		int energyBlocks = Mathf.FloorToInt(maxEnergy / 5f);
-		float bonusRange = _rollingWithEnemyTalent ? energyBlocks * 2f : energyBlocks * 1f;
+	//	_lookDir = (_mousePos - _playerLinks.transform.position).normalized;
+	//	float baseRange = _rollingWithEnemyTalent ? RollingWithEnemyTalentBaseRange : RollingWithoutEnemyTalentBaseRange;
+	//	float maxEnergy = Mathf.Min(_energy.CurrentValue, 10f);
+	//	int energyBlocks = Mathf.FloorToInt(maxEnergy / EnergyChunkValue);
+	//	float bonusRange = _rollingWithEnemyTalent ? energyBlocks * RollingWithoutEnemyTalentBaseRange : energyBlocks * 1f;
 
-		Vector3 startPosition = _playerLinks.transform.position;
-		Vector3 rawTargetPos = _mousePos;
+	//	Vector3 startPosition = _playerLinks.transform.position;
+	//	Vector3 rawTargetPos = _mousePos;
 
-		float distanceToClick = Vector3.Distance(startPosition, rawTargetPos);
-		float finalRange = Mathf.Min(distanceToClick, GetJumpRange());
+	//	float distanceToClick = Vector3.Distance(startPosition, rawTargetPos);
+	//	float finalRange = Mathf.Min(distanceToClick, GetJumpRange());
 
-		float energyMy = finalRange / 5;
+	//	float energyMy = finalRange / 5;
 
-		if (_isLastInSeries && GetTargetCharacter() == null && _rollingWithEnemyTalent) finalRange *= 1.5f;
+	//	if (_isLastInSeries && GetTargetCharacter() == null && _rollingWithEnemyTalent) finalRange *= 1.5f;
 
-		Vector3 jumpPos = startPosition + _lookDir * finalRange;
+	//	Vector3 jumpPos = startPosition + _lookDir * finalRange;
 
-		//float energyUsed = energyBlocks * 5f;
-		//if (energyUsed > 0) _energy.CmdUse(energyUsed);
-		_energy.CmdUse(energyMy);
+	//	//float energyUsed = energyBlocks * 5f;
+	//	//if (energyUsed > 0) _energy.CmdUse(energyUsed);
+	//	_energy.CmdUse(energyMy);
 
-		Vector3 stopPosition;
-		Character characterHit;
-		Character characterHitTarget;
+	//	Vector3 stopPosition;
+	//	Character characterHit;
+	//	Character characterHitTarget;
 
-		bool hit = CheckObstacleBetween(_playerLinks.transform.position, jumpPos, out stopPosition, out characterHit);
-		bool hitTarget = IsTargetInCloseProximity(_playerLinks.transform.position, _lookDir, out characterHitTarget);
+	//	bool hit = CheckObstacleBetween(_playerLinks.transform.position, jumpPos, out stopPosition, out characterHit);
+	//	bool hitTarget = IsTargetInCloseProximity(_playerLinks.transform.position, _lookDir, out characterHitTarget);
 
-		Hero.Move.LookAtPosition(jumpPos);
-		float actualDistance = Vector3.Distance(startPosition, stopPosition);
+	//	Hero.Move.LookAtPosition(jumpPos);
+	//	float actualDistance = Vector3.Distance(startPosition, stopPosition);
 
-		//if (hit && characterHit != null) CmdPush(stopPosition, actualDistance);
-		//else
-		CmdPush(stopPosition, actualDistance);
+	//	//if (hit && characterHit != null) CmdPush(stopPosition, actualDistance);
+	//	//else
+	//	CmdPush(stopPosition, actualDistance);
 
-		if (_rollingWithEnemyTalent && GetTargetCharacter() != null && hitTarget && characterHitTarget != null) CmdPushWithCharacter(stopPosition, characterHitTarget, actualDistance);
+	//	if (_rollingWithEnemyTalent && GetTargetCharacter() != null && hitTarget && characterHitTarget != null) CmdPushWithCharacter(stopPosition, characterHitTarget, actualDistance);
 
-		if (_rollingPhysTalent)
-		{
-			_physicalAttack.TalentRollingPhys(_afterJump, finalRange);
-			_afterJump = true;
-		}
+	//	if (_rollingPhysTalent)
+	//	{
+	//		_physicalAttack.TalentRollingPhys(_afterJump, finalRange);
+	//		_afterJump = true;
+	//	}
 
 
-		if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
-		{
-			ClearTarget();
-			//_target = null;
-			_mousePos = Vector3.positiveInfinity;
-			_lookDir = Vector3.zero;
-			//_jumpPos = Vector3.zero;
-		}
-		else
-		{
-			FindTargetCharacter();
-			//_target = GetTarget().character;
-			_mousePos = GetTargetCharacter() != null ? GetTargetCharacter().transform.position : GetMousePoint();
-		}
+	//	if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
+	//	{
+	//		ClearTarget();
+	//		//_target = null;
+	//		_mousePos = Vector3.positiveInfinity;
+	//		_lookDir = Vector3.zero;
+	//		//_jumpPos = Vector3.zero;
+	//	}
+	//	else
+	//	{
+	//		FindTargetCharacter();
+	//		//_target = GetTarget().character;
+	//		_mousePos = GetTargetCharacter() != null ? GetTargetCharacter().transform.position : GetMousePoint();
+	//	}
 		
-	}
+	//}
 
 	private void Jump()
 	{
@@ -305,7 +317,7 @@ public class IceRolling : Skill
 		_mousePos2 = Vector3.positiveInfinity;
     }
 
-	protected override IEnumerator DynamicRendererJob(float time = 0.2f)
+	protected override IEnumerator DynamicRendererJob(float time = DynamicRendererJobTime)
 	{
 		while (IsPreparing)
 		{
@@ -372,7 +384,7 @@ public class IceRolling : Skill
 
 		if (_attachedTarget)
         {
-			_attachedTarget.CharacterState.AddState(States.Frozen, 2f, 0f, _playerLinks.gameObject, Name);
+			_attachedTarget.CharacterState.AddState(States.Frozen, AttachedFrozenDuration, 0f, _playerLinks.gameObject, Name);
 			_attachedTarget.transform.SetParent(null);
 			RpcReleaseTarget(_attachedTarget);
 			_attachedTarget = null;
@@ -385,7 +397,7 @@ public class IceRolling : Skill
 		{
 			Vector3 pushDir = (character.transform.position - _playerLinks.transform.position).normalized;
 			pushDir.y = 0;
-			Vector3 pushTarget = character.transform.position + pushDir * 2f;
+			Vector3 pushTarget = character.transform.position + pushDir * KnockbackDistance;
 			CmdKnockback(character, pushTarget);
 		}
 	}
@@ -426,8 +438,8 @@ public class IceRolling : Skill
 		if (target.TryGetComponent(out MoveComponent move))
 		{
 			
-			if (target.connectionToClient != null) move.TargetRpcDoMove(force, 0.05f);
-			else move.RpcDoMove(force, 0.05f);
+			if (target.connectionToClient != null) move.TargetRpcDoMove(force, KnockbackDuration);
+			else move.RpcDoMove(force, KnockbackDuration);
 		}
 	}
 
