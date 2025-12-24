@@ -17,6 +17,14 @@ public class IceCloud : Skill
 	private bool _lastHit;
 	private Energy _energy;
 	private bool _frozwenTalent;
+	private float _baseDamage = 10f;
+
+	#region Constants
+	private const float ProjectileSpawnOffset = 0.2f;
+	private const float AngleOffset = 90f;
+	private const float ComboSpeedDivider = 100f;
+	private const float EnergyPerDamageUnit = 5f;
+	#endregion
 
 	protected override bool IsCanCast
 	{
@@ -68,13 +76,13 @@ public class IceCloud : Skill
 
 	private void Shoot()
 	{
-		Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
+		Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / ComboSpeedDivider);
 
 		Vector3 lookDir = _mousePos - Hero.transform.position;
-		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
+		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - AngleOffset;
 		if (_combo.MakeHit(null, AbilityForm.Magic, 1, 0, 0)) _lastHit = true;
 
-		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
+		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / ComboSpeedDivider);
 
 
 		float energyToUse = _energy.CurrentValue;
@@ -90,7 +98,7 @@ public class IceCloud : Skill
 	[Command]
 	private void CmdCreateProjecttile(float angle, float manaValue, Vector3 lookDir)
     {
-		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position + lookDir * .2f, Quaternion.Euler(0, -angle, 0));
+		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position + lookDir * ProjectileSpawnOffset, Quaternion.Euler(0, -angle, 0));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(Hero, manaValue, false, this);
 		projectile.InitIceCloud(manaValue, Damage);
@@ -152,7 +160,7 @@ public class IceCloud : Skill
 						//FindTarget();
 
 						//_target = GetTarget().character;
-						_damageValue = 10 + _energy.CurrentValue / 5;
+						Damage = _baseDamage + _energy.CurrentValue / EnergyPerDamageUnit;
 						_mousePos2 = GetTargetCharacter().transform.position;
 					}
 				}

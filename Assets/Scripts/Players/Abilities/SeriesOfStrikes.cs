@@ -18,6 +18,7 @@ public class SeriesOfStrikes : MonoBehaviour
 
 	private bool _seriesCompliteCompoTalent;
 	private bool _iceRuneTalent;
+	private bool _seriesCompliteCompo = false;
 
 	private static List<AbilityForm> _formList = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical };
 	private static List<AbilityForm> _formList2 = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Magic };
@@ -55,15 +56,15 @@ public class SeriesOfStrikes : MonoBehaviour
 	public float GetMultipliedSpeed()
 	{
 		if (!_seriesCompliteCompoTalent) return 1f;
+		if (_seriesCompliteCompo) return 1f;
 
 		int maxCount = 0;
+
 		for(int i = 0; i< _seriesOfStrikes.Count; i++)
 		{
-			if (_seriesOfStrikes[i].hitCount > maxCount)
-			{
-				maxCount = _seriesOfStrikes[i].hitCount;
-			}
+			if (_seriesOfStrikes[i].hitCount > maxCount) maxCount = _seriesOfStrikes[i].hitCount;
 		}
+
 		return _speedMultiplier * Mathf.Pow(2, maxCount);
 	}
 
@@ -92,8 +93,9 @@ public class SeriesOfStrikes : MonoBehaviour
 				//Debug.Log("lose streak");
 				_timer = _baseTimer;
 				_isInTheRow = false;
+				_seriesCompliteCompo = true;
 
-				for(int i = 0; i < _seriesOfStrikes.Count; i++) _seriesOfStrikes[i].Reset();
+				for (int i = 0; i < _seriesOfStrikes.Count; i++) _seriesOfStrikes[i].Reset();
 			}
 		}
 	}
@@ -107,8 +109,9 @@ public class SeriesOfStrikes : MonoBehaviour
 			_energy.CmdAdd(usedEnergy * 0.4f);
 			_energy.ForceRegenNow();
 		}
+
+		_seriesCompliteCompo = true;
 		for (int i = 0; i < _seriesOfStrikes.Count; i++) _seriesOfStrikes[i].Reset();
-		
 	}
 
 	private void BonusRuneForDamage(float damage)
@@ -163,6 +166,7 @@ public class SeriesOfStrikes : MonoBehaviour
 				_seriesOfStrikes[i].usedEnergy += usedEnergy;
 				_seriesOfStrikes[i].hitCount++;
 				_timer = _baseTimer;
+				//_seriesCompliteCompo = false;
 
 				//Debug.Log("Hit from " + _seriesOfStrikes[i] + " #" + _seriesOfStrikes[i].hitCount);
 
@@ -175,6 +179,7 @@ public class SeriesOfStrikes : MonoBehaviour
 			else
 			{
 				_isInTheRow = true;
+				//_seriesCompliteCompo = false;
 				_seriesOfStrikes[i].Reset(usedRuneValue);
 				_timer = _baseTimer;
 				_curTarget = target;

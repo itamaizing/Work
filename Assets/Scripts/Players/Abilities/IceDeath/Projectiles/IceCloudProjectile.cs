@@ -71,6 +71,7 @@ public class IceCloudProjectile : Projectiles
 			target.Health.TryTakeDamage(ref _damage, _skill);
 
 			target.CharacterState.AddState(States.Frozen, _curFreezeDuration, target.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
+			Explode();
 			GetComponent<Collider>().enabled = false;
 		}
 		else
@@ -78,14 +79,6 @@ public class IceCloudProjectile : Projectiles
 			damageable.TryTakeDamage(ref _damage, _skill);
 			Explode();
 		}
-	}
-
-	private IEnumerator CrutchDelay(Character target, float duration)
-	{
-		//yield return new WaitForSecondsRealtime(0.1f);
-		yield return null;
-		target.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
-		Explode();
 	}
 
 	private void Explode()

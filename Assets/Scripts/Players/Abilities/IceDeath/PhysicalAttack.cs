@@ -151,6 +151,7 @@ public class PhysicalAttack : Skill
 					LastHit();
 				}
 			}
+
 			_multiplier = DefaultMultiplier + _combo.GetMultipliedSpeed() / 100;
 			Buff.AttackSpeed.ReductionPercentage(_multiplier);
 			Buff.CastSpeed.IncreasePercentage(_multiplier);
