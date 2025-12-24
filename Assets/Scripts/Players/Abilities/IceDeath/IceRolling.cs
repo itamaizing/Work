@@ -174,24 +174,25 @@ public class IceRolling : Skill
 
 		float distanceToClick = Vector3.Distance(startPosition, rawTargetPos);
 		float finalRange;
-		float additionalCost = 0f;
+		int extraCells = 0;
 
 		if (distanceToClick <= 2f)
 		{
 			finalRange = 2f;
-			additionalCost = 0f;
+			extraCells = 0;
 		}
-		else if (distanceToClick <= 4f)
+		else if (distanceToClick < 4f)
 		{
 			finalRange = distanceToClick;
-			additionalCost = Mathf.Ceil((finalRange - 2f)) * 5f;
+			extraCells = Mathf.CeilToInt(finalRange) - 2;
 		}
 		else
 		{
 			finalRange = 4f;
-			additionalCost = 10f;
+			extraCells = 2;
 		}
 
+		float additionalCost = extraCells * 5f;
 		float totalCost = 10f + additionalCost;
 
 		if (_energy.CurrentValue < totalCost)
@@ -314,11 +315,18 @@ public class IceRolling : Skill
 		{
 			if (GetMouseButton)
 			{
-				FindTarget();
-				//_target = GetTarget().character;
-				_mousePos2 = GetTarget() != null ? GetTarget().Transform.position : GetMousePoint();
-                
-            }
+				Vector3 candidatePoint = GetTarget() != null ? GetTarget().Transform.position : GetMousePoint();
+				float distance = Vector3.Distance(_playerLinks.transform.position, candidatePoint);
+
+				if (distance < 0.5f)
+				{
+					yield return null;
+					continue;
+				}
+
+				_mousePos2 = candidatePoint;
+
+			}
 			yield return null;
 		}
         TargetInfo targetInfo = new TargetInfo();

@@ -3008,6 +3008,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: IceDeath
       objectReference: {fileID: 0}
+    - target: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 8464766807629527278, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.0000071525565
@@ -3646,8 +3650,6 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 3
     resourceCost: 1
-  - resourceType: 2
-    resourceCost: 10
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
