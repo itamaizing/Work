@@ -56,7 +56,6 @@ public class SeriesOfStrikes : MonoBehaviour
 	public float GetMultipliedSpeed()
 	{
 		if (!_seriesCompliteCompoTalent) return 1f;
-		if (_seriesCompliteCompo) return 1f;
 
 		int maxCount = 0;
 
@@ -65,7 +64,8 @@ public class SeriesOfStrikes : MonoBehaviour
 			if (_seriesOfStrikes[i].hitCount > maxCount) maxCount = _seriesOfStrikes[i].hitCount;
 		}
 
-		return _speedMultiplier * Mathf.Pow(2, maxCount);
+		if (!_seriesCompliteCompo) return _speedMultiplier * Mathf.Pow(2, maxCount);
+		else return 1f;
 	}
 
 	public bool MakeHit(Character target, AbilityForm form, float usedRuneValue, float usedEnergy, float damage)

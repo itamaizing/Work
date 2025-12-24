@@ -153,6 +153,7 @@ public class PhysicalAttack : Skill
 			}
 
 			_multiplier = DefaultMultiplier + _combo.GetMultipliedSpeed() / 100;
+			Debug.Log($"_multiplier: {_multiplier}");
 			Buff.AttackSpeed.ReductionPercentage(_multiplier);
 			Buff.CastSpeed.IncreasePercentage(_multiplier);
 
