@@ -32,7 +32,24 @@ public class FlowOfLight : Skill
 
     #region Talent
     private bool _spiritEnergyAddTalent;
+    private bool _destructionFillingTalent;
+    
+    public bool IsDestructionFillingTalent { get => _destructionFillingTalent; set => _destructionFillingTalent = value; }
+    
+    private float _destructionFillingExtensionTime;
+    private float _destructionFillingDuration;
+    private float _destructionFillingChance;
+    
     public void SpiritEnergyAddTalent(bool value) => _spiritEnergyAddTalent = value;
+
+    public void DestructionFillingTalent(bool value, float duration, float additionalTime,float chance)
+    {
+        _destructionFillingTalent = value;
+        _destructionFillingExtensionTime = additionalTime;
+        _destructionFillingDuration = duration;
+        _destructionFillingChance = chance;
+    }
+
     #endregion
 
     protected override bool IsCanCast =>
@@ -107,7 +124,24 @@ public class FlowOfLight : Skill
         var stateComponent = target.GetComponent<CharacterState>();
         if (stateComponent == null) return;
 
-        if (!isLightMode && UnityEngine.Random.value <= 0.2f) CmdStateRestorationOrDestruction(stateComponent, States.Destruction, 12f);
+        //if (!isLightMode && UnityEngine.Random.value <= 0.2f) CmdStateRestorationOrDestruction(stateComponent, States.Destruction, 12f);
+    }
+
+    private void TryApplyDestructionFilling(CharacterState target)
+    {
+        if (target == null) return;
+        
+        if (!isLightMode && (UnityEngine.Random.value <= _destructionFillingChance))
+        {
+            float durationToApply = target.CheckForState(States.Destruction) ? _destructionFillingExtensionTime : _destructionFillingDuration;
+            CmdStateRestorationOrDestruction(target, States.Destruction, durationToApply);
+        }
+        
+        if (isLightMode && UnityEngine.Random.value <= _destructionFillingChance)
+        {
+            float durationToApply = target.CheckForState(States.Restoration) ? _destructionFillingExtensionTime : _destructionFillingDuration;
+            CmdStateRestorationOrDestruction(target, States.Restoration, durationToApply);
+        }
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
@@ -189,6 +223,11 @@ public class FlowOfLight : Skill
                     Heal heal = new Heal { Value = tickValue };
                     CmdApplyHeal(heal, GetTargetCharacter().gameObject, this, Name);
                     TryApplyExtraState(GetTargetCharacter());
+                    if (_destructionFillingTalent)
+                    {
+                        var stateComponent = GetTargetCharacter().GetComponent<CharacterState>();
+                        TryApplyDestructionFilling(stateComponent);
+                    }
                     ApplySpiritBuff(GetTargetCharacter());
                 }
                 else if (!isLightMode && IsEnemyTarget(GetTargetCharacter()))
@@ -201,6 +240,11 @@ public class FlowOfLight : Skill
                     };
                     CmdApplyDamage(damage, GetTargetCharacter().gameObject);
                     TryApplyExtraState(GetTargetCharacter());
+                    if (_destructionFillingTalent)
+                    {
+                        var stateComponent = GetTargetCharacter().GetComponent<CharacterState>();
+                        TryApplyDestructionFilling(stateComponent);
+                    }
                     ApplySpiritBuff(GetTargetCharacter());
                 }
             }
@@ -267,21 +311,16 @@ public class FlowOfLight : Skill
         }
     }
 
-    [Command]
-private void CmdStateRestorationOrDestruction(NetworkIdentity targetNetIdentity, States states, float duration)
-{
-    if (targetNetIdentity == null) return;
 
-    var stateComponent = targetNetIdentity.GetComponent<CharacterState>();
-    if (stateComponent == null) return;
-
-    stateComponent.AddState(states, duration, 0, gameObject, Name);
-}
     [Command] private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) => ClientRpcStateRestorationOrDestruction(stateComponent, states, duration);
     [Command] private void CmdStateSpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration) => ClientRpcSpiritEnergyOrHealth(stateComponent, states, duration);
 
     [ClientRpc] private void ClientRpcSpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration) { stateComponent.AddStateLogic(states, duration, 1f, Schools.None, gameObject, Name); }
-    [ClientRpc] private void ClientRpcStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) { stateComponent.AddStateLogic(states, duration, 0, Schools.None, gameObject, "FlowOfLight"); }
+
+    private void ClientRpcStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration)
+    {
+        stateComponent.AddState(states, duration, 0, gameObject, Name);
+    }
 
 
         [ClientRpc]

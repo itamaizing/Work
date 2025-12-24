@@ -75,7 +75,16 @@ public class RestorationState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        duration = time;
+        if ((_personWhoMadeBuff.TryGetComponent(out SparkOfLight sparkOfLightSkill) &&
+             sparkOfLightSkill.IsDestructionFillingTalent)
+            || (_personWhoMadeBuff.TryGetComponent(out FlowOfLight flowOfLightSkill) &&
+                flowOfLightSkill.IsDestructionFillingTalent))
+        {
+            duration += time;
+            _timer = Mathf.Min(_timer, _tickInterval);
+        }
+        else duration = time;
+        Debug.Log(duration);
         return false;
     }
     [Server] private void CmdHeal(float healValue) => ClientRpcHeal(healValue);

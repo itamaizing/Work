@@ -160,7 +160,6 @@ public class SparkOfLight : Skill
         SetTarget(GetTempTargetCharacter());
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(GetTargetCharacter());
-        targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }
 
@@ -248,6 +247,23 @@ public class SparkOfLight : Skill
 
         if (!isLightMode && (UnityEngine.Random.value <= 0.2f)) stateComponent.AddState(States.Destruction, 12f, 0, gameObject, Name);
     }
+    
+    private void TryApplyDestructionFilling(CharacterState target)
+    {
+        if (target == null) return;
+        
+        if (!isLightMode && (UnityEngine.Random.value <= _destructionFillingChance))
+        {
+            float durationToApply = target.CheckForState(States.Destruction) ? _destructionFillingExtensionTime : _destructionFillingDuration;
+            target.AddState(States.Destruction, durationToApply, 0f, gameObject, Name);
+        }
+        
+        if (isLightMode && UnityEngine.Random.value <= _destructionFillingChance)
+        {
+            float durationToApply = target.CheckForState(States.Restoration) ? _destructionFillingExtensionTime : _destructionFillingDuration;
+            target.AddState(States.Restoration, durationToApply, 0f, gameObject, Name);
+        }
+    }
 
     private void HandleDefaultMode(Character target)
     {
@@ -298,7 +314,15 @@ public class SparkOfLight : Skill
         };
 
         ApplyHeal(heal, target.gameObject, this, Name);
+
         TryApplyExtraState(target);
+        
+                
+        if (_destructionFillingTalent)
+        {
+            var stateComponent = target.GetComponent<CharacterState>();
+            TryApplyDestructionFilling(stateComponent);
+        }
     }
 
     private float GetSpiritEnergyBonus(Character target)
@@ -327,6 +351,12 @@ public class SparkOfLight : Skill
         Damage damage = CreateDamage(damageAmount);
         ApplyDamage(damage, target.gameObject);
         TryApplyExtraState(target);
+        
+        if (_destructionFillingTalent)
+        {
+            var stateComponent = target.GetComponent<CharacterState>();
+            TryApplyDestructionFilling(stateComponent);
+        }
     }
 
     private Damage CreateDamage(float amount)
@@ -377,16 +407,26 @@ public class SparkOfLight : Skill
 
     #region Talents
 
-    public void SpiritEnergyTalentActive(bool value)
-    {
-        _spiritEnergyTalent = value;
-    }
+    private bool _destructionFillingTalent;
+    
+    public bool IsDestructionFillingTalent { get => _destructionFillingTalent; set => _destructionFillingTalent = value; }
+    
+    private float _destructionFillingExtensionTime;
+    private float _destructionFillingDuration;
+    private float _destructionFillingChance;
+    
+    public void SpiritEnergyTalentActive(bool value) => _spiritEnergyTalent = value;
 
-    public void SpiritEnergyAddTalent(bool value)
-    {
-        _spiritEnergyAddTalent = value;
-    }
+    public void SpiritEnergyAddTalent(bool value) => _spiritEnergyAddTalent = value;
 
+    public void DestructionFillingTalent(bool value, float duration, float additionalTime,float chance)
+    {
+        _destructionFillingTalent = value;
+        _destructionFillingExtensionTime = additionalTime;
+        _destructionFillingDuration = duration;
+        _destructionFillingChance = chance;
+    }
+    
     #endregion
 
     private void AddBuff(States state, float duration, float modifier, GameObject target, string skillName)
