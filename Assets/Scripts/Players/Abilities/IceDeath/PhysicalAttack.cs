@@ -139,17 +139,8 @@ public class PhysicalAttack : Skill
 	{
 		if (_curTarget == enemy && _energy.CurrentValue >= EnergyPerAttack)
 		{
-			if (_combo.SeriesCompliteCompo)
-            {
-				Buff.AttackSpeed.InstallationPercentage(_multiplier);
-				Buff.CastSpeed.InstallationPercentage(_multiplier);
-			}
-
-			else
-            {
-				Buff.AttackSpeed.IncreasePercentage(_multiplier);
-				Buff.CastSpeed.IncreasePercentage(_multiplier);
-			}
+			Buff.AttackSpeed.IncreasePercentage(_multiplier);
+			Buff.CastSpeed.IncreasePercentage(_multiplier);
 
 			float curDamage = _damageValue + UnityEngine.Random.Range(0, HitVariationMax);
 
@@ -162,10 +153,21 @@ public class PhysicalAttack : Skill
 				}
 			}
 
-			_multiplier = DefaultMultiplier + _combo.GetMultipliedSpeed() / 100;
+			_combo.GetMultipliedSpeed();
+			_multiplier = DefaultMultiplier + _combo.LastKnownSpeedMultiplier / 100;
 			Debug.Log($"_multiplier: {_multiplier}");
-			Buff.AttackSpeed.ReductionPercentage(_multiplier);
-			Buff.CastSpeed.IncreasePercentage(_multiplier);
+
+			if (_combo.SeriesCompliteCompo)
+			{
+				Buff.AttackSpeed.Reset();
+				Buff.CastSpeed.Reset();
+			}
+
+			else
+			{
+				Buff.AttackSpeed.ReductionPercentage(_multiplier);
+				Buff.CastSpeed.IncreasePercentage(_multiplier);
+			}
 
 			Damage damage = new Damage
 			{

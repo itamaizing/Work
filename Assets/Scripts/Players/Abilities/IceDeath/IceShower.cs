@@ -78,8 +78,6 @@ public class IceShower : Skill
 
 	private void Shoot()
 	{
-		Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
-
 		//Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		//float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 		if (_combo.MakeHit(null, AbilityForm.Magic, 1, 0, 0))
@@ -88,7 +86,18 @@ public class IceShower : Skill
 			//_playerLinks.RuneComponent.IceCloudBonus();
 		}
 
-		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
+		if (_combo.SeriesCompliteCompo)
+		{
+			Buff.AttackSpeed.Reset();
+			Buff.CastSpeed.Reset();
+		}
+
+		else
+		{
+			Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
+			Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
+		}
+
 		_targetPoint.y += 5;
 		CmdCreateProjecttile(_targetPoint, _energy.CurrentValue);
 		ClearData();

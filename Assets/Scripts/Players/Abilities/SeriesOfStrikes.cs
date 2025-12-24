@@ -15,6 +15,7 @@ public class SeriesOfStrikes : MonoBehaviour
 	private RuneComponent _rune;
 	private float _sumPhisDamage = 0;
 	private float _speedMultiplier = 5;
+	private float _lastKnownSpeedMultiplier = 1f;
 
 	private bool _seriesCompliteCompoTalent;
 	private bool _iceRuneTalent;
@@ -33,6 +34,7 @@ public class SeriesOfStrikes : MonoBehaviour
 	};
 
 	public bool SeriesCompliteCompo { get => _seriesCompliteCompo; set => _seriesCompliteCompo = value; }
+	public float LastKnownSpeedMultiplier => _lastKnownSpeedMultiplier;
 
 	private void Start()
 	{
@@ -61,12 +63,17 @@ public class SeriesOfStrikes : MonoBehaviour
 
 		int maxCount = 0;
 
-		for(int i = 0; i< _seriesOfStrikes.Count; i++)
+		for (int i = 0; i< _seriesOfStrikes.Count; i++)
 		{
 			if (_seriesOfStrikes[i].hitCount > maxCount) maxCount = _seriesOfStrikes[i].hitCount;
 		}
 
-		if (!_seriesCompliteCompo) return _speedMultiplier * Mathf.Pow(2, maxCount);
+		if (!_seriesCompliteCompo)
+		{
+			_lastKnownSpeedMultiplier = _speedMultiplier * Mathf.Pow(2, maxCount);
+			return _lastKnownSpeedMultiplier;
+		}
+
 		else return 1f;
 	}
 
