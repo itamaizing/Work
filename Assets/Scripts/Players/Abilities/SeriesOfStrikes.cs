@@ -57,27 +57,27 @@ public class SeriesOfStrikes : MonoBehaviour
 		Timer();
 	}
 
-	public float GetMultipliedSpeed()
-	{
-		if (!_seriesCompliteCompoTalent) return 1f;
+    public float GetMultipliedSpeed()
+    {
+        if (!_seriesCompliteCompoTalent) return 1f;
 
-		int maxCount = 0;
+        int maxCount = 0;
 
-		for (int i = 0; i< _seriesOfStrikes.Count; i++)
-		{
-			if (_seriesOfStrikes[i].hitCount > maxCount) maxCount = _seriesOfStrikes[i].hitCount;
-		}
+        for (int i = 0; i < _seriesOfStrikes.Count; i++)
+        {
+            if (_seriesOfStrikes[i].hitCount > maxCount) maxCount = _seriesOfStrikes[i].hitCount;
+        }
 
-		if (!_seriesCompliteCompo)
-		{
-			_lastKnownSpeedMultiplier = _speedMultiplier * Mathf.Pow(2, maxCount);
-			return _lastKnownSpeedMultiplier;
-		}
+        if (!_seriesCompliteCompo)
+        {
+            _lastKnownSpeedMultiplier = _speedMultiplier * Mathf.Pow(2, maxCount);
+            return _lastKnownSpeedMultiplier;
+        }
 
-		else return 1f;
-	}
+        else return 1f;
+    }
 
-	public bool MakeHit(Character target, AbilityForm form, float usedRuneValue, float usedEnergy, float damage)
+    public bool MakeHit(Character target, AbilityForm form, float usedRuneValue, float usedEnergy, float damage)
 	{
 		if (_iceRuneTalent) BonusRuneForDamage(damage);
 		CheckCurse(target, damage);
@@ -86,6 +86,15 @@ public class SeriesOfStrikes : MonoBehaviour
 		_energy.ChangeBarColor(new Color(255, 165, 0));
 
 		return SeriesHit(target, form, usedRuneValue, usedEnergy, damage);
+	}
+
+	public void ResetOrIncreaseAttackAnimSpeed()
+    {
+		foreach (var skill in _playerLinks.Abilities.Abilities)
+		{
+			skill.Buff.CastSpeed.Reset();
+			skill.Buff.AttackSpeed.Reset();
+		}
 	}
 
 	public void Timer()
@@ -104,6 +113,8 @@ public class SeriesOfStrikes : MonoBehaviour
 				_isInTheRow = false;
 				_seriesCompliteCompo = true;
 
+				ResetOrIncreaseAttackAnimSpeed();
+
 				for (int i = 0; i < _seriesOfStrikes.Count; i++) _seriesOfStrikes[i].Reset();
 			}
 		}
@@ -120,6 +131,9 @@ public class SeriesOfStrikes : MonoBehaviour
 		}
 
 		_seriesCompliteCompo = true;
+
+		ResetOrIncreaseAttackAnimSpeed();
+
 		for (int i = 0; i < _seriesOfStrikes.Count; i++) _seriesOfStrikes[i].Reset();
 	}
 

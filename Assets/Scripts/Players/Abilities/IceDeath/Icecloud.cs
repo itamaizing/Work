@@ -80,17 +80,8 @@ public class IceCloud : Skill
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - AngleOffset;
 		if (_combo.MakeHit(null, AbilityForm.Magic, 1, 0, 0)) _lastHit = true;
 
-		if (_combo.SeriesCompliteCompo)
-		{
-			Buff.AttackSpeed.Reset();
-			Buff.CastSpeed.Reset();
-		}
-
-		else
-		{
-			Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / ComboSpeedDivider);
-			Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / ComboSpeedDivider);
-		}
+		Buff.AttackSpeed.ReductionPercentage(_combo.GetMultipliedSpeed() / ComboSpeedDivider);
+		Buff.CastSpeed.IncreasePercentage(_combo.GetMultipliedSpeed() / ComboSpeedDivider);
 
 		float energyToUse = _energy.CurrentValue;
 		_energy.CmdUse(energyToUse);

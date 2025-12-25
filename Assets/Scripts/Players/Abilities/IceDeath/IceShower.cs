@@ -88,14 +88,8 @@ public class IceShower : Skill
 
 		if (_combo.SeriesCompliteCompo)
 		{
-			Buff.AttackSpeed.Reset();
-			Buff.CastSpeed.Reset();
-		}
-
-		else
-		{
-			Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
-			Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
+			Buff.AttackSpeed.ReductionPercentage(_combo.GetMultipliedSpeed() / 100);
+			Buff.CastSpeed.IncreasePercentage(_combo.GetMultipliedSpeed() / 100);
 		}
 
 		_targetPoint.y += 5;

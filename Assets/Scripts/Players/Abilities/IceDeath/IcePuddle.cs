@@ -206,14 +206,8 @@ public class IcePuddle : Skill
 
         if (_seriesOfStrikes.SeriesCompliteCompo)
         {
-            Buff.AttackSpeed.Reset();
-            Buff.CastSpeed.Reset();
-        }
-
-        else
-        {
-            Buff.AttackSpeed.ReductionPercentage(1 + _seriesOfStrikes.GetMultipliedSpeed() / 100);
-            Buff.AttackSpeed.IncreasePercentage(1 + _seriesOfStrikes.GetMultipliedSpeed() / 100);
+            Buff.AttackSpeed.ReductionPercentage(_seriesOfStrikes.GetMultipliedSpeed() / 100);
+            Buff.CastSpeed.IncreasePercentage(_seriesOfStrikes.GetMultipliedSpeed() / 100);
         }
 
         if (_lastHit) CmdCreateProjecttileBig(_placedAngleDeg, _timeToDestroy, _placedPosition, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);

@@ -139,9 +139,6 @@ public class PhysicalAttack : Skill
 	{
 		if (_curTarget == enemy && _energy.CurrentValue >= EnergyPerAttack)
 		{
-			Buff.AttackSpeed.IncreasePercentage(_multiplier);
-			Buff.CastSpeed.IncreasePercentage(_multiplier);
-
 			float curDamage = _damageValue + UnityEngine.Random.Range(0, HitVariationMax);
 
 			if (_energy.CurrentValue >= EnergyPerAttack)
@@ -158,13 +155,7 @@ public class PhysicalAttack : Skill
 			Debug.Log($"_multiplier: {_multiplier}");
 
 			if (_combo.SeriesCompliteCompo)
-			{
-				Buff.AttackSpeed.Reset();
-				Buff.CastSpeed.Reset();
-			}
-
-			else
-			{
+            {
 				Buff.AttackSpeed.ReductionPercentage(_multiplier);
 				Buff.CastSpeed.IncreasePercentage(_multiplier);
 			}

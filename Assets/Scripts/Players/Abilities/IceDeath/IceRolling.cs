@@ -316,13 +316,8 @@ public class IceRolling : Skill
 			if (GetMouseButton)
 			{
 				Vector3 candidatePoint = GetTarget() != null ? GetTarget().Transform.position : GetMousePoint();
-				float distance = Vector3.Distance(_playerLinks.transform.position, candidatePoint);
 
-				if (distance < 0.5f)
-				{
-					yield return null;
-					continue;
-				}
+				Debug.Log($"target: {GetTarget()}");
 
 				_mousePos2 = candidatePoint;
 
