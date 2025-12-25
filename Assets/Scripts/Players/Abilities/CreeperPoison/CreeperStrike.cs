@@ -61,11 +61,19 @@ public class CreeperStrike : Skill
     protected override int AnimTriggerCast => Animator.StringToHash("CreeperStrikeAttacking");
     protected override int AnimTriggerCastDelay => 0;
 
+    protected override bool IsCanCast => CheckIsCanCast();
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
-    public event System.Action OnCreeperStrikeEnd;
+    public event Action OnCreeperStrikeEnd;
 
     #endregion
+
+    private bool CheckIsCanCast()
+    {
+        return GetTarget() != null &&
+            Vector3.Distance(GetTarget().Transform.position, transform.position) <= Radius &&
+            NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
+    }
 
     #region CastAbility
 
@@ -108,11 +116,9 @@ public class CreeperStrike : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius)
-        {
-            _hero.Move.StopLookAt();
-            DamageDeal(GetTarget() as IDamageable);
-        }
+        if (GetTarget() == null) yield return null;
+        _hero.Move.StopLookAt();
+        DamageDeal(GetTarget() as IDamageable);
 
         yield return null;
     }
@@ -126,7 +132,6 @@ public class CreeperStrike : Skill
     {
         TryCancel();
         StopAutoDraw();
-        ClearTarget();
     }
 
     private void IncreaseAnimSpeed()
@@ -436,7 +441,7 @@ public class CreeperStrike : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo?.GetTargets()?.Count > 0) SetTarget((ITargetable)(targetInfo.GetTargets()[0] as Character));
+        if (targetInfo?.GetTargets()?.Count > 0) SetTarget(targetInfo.GetTargets()[0]);
     }
 
     #region Talents
