@@ -154,7 +154,7 @@ public class PhysicalAttack : Skill
 			_multiplier = DefaultMultiplier + _combo.LastKnownSpeedMultiplier / 100;
 			Debug.Log($"_multiplier: {_multiplier}");
 
-			if (_combo.SeriesCompliteCompo)
+			if (!_combo.SeriesCompliteCompo)
             {
 				Buff.AttackSpeed.ReductionPercentage(_multiplier);
 				Buff.CastSpeed.IncreasePercentage(_multiplier);

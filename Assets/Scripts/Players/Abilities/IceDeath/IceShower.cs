@@ -86,7 +86,7 @@ public class IceShower : Skill
 			//_playerLinks.RuneComponent.IceCloudBonus();
 		}
 
-		if (_combo.SeriesCompliteCompo)
+		if (!_combo.SeriesCompliteCompo)
 		{
 			Buff.AttackSpeed.ReductionPercentage(_combo.GetMultipliedSpeed() / 100);
 			Buff.CastSpeed.IncreasePercentage(_combo.GetMultipliedSpeed() / 100);

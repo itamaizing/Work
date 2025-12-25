@@ -204,7 +204,7 @@ public class IcePuddle : Skill
         _timeToDestroy += timeToAdd;
         _energy.CmdUse(timeToAdd * 5);
 
-        if (_seriesOfStrikes.SeriesCompliteCompo)
+        if (!_seriesOfStrikes.SeriesCompliteCompo)
         {
             Buff.AttackSpeed.ReductionPercentage(_seriesOfStrikes.GetMultipliedSpeed() / 100);
             Buff.CastSpeed.IncreasePercentage(_seriesOfStrikes.GetMultipliedSpeed() / 100);
