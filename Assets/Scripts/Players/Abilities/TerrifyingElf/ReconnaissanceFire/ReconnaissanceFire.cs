@@ -11,79 +11,114 @@ using System;
 public class ReconnaissanceFire : Skill
 {
     [Header("Reconnaissance Fire Settings")]
-    [SerializeField] private TrickShot trickShot;
-    [SerializeField] private ReconnaissanceFireAura fireAura;
-    [SerializeField] private GameObject emitterObject;
-    [SerializeField] private ObjectData fireData;
-    [SerializeField] private float duration = 10;
-    [SerializeField] private float baseArea = 3f;
-
-    [Header("TrickShot Settings")]
-    [SerializeField] private List<Vector3> globalConstants = new(new Vector3[] { new(0, -9.81f, 0) });
-    [SerializeField] private List<Vector3> localConstants = new();
-    [SerializeField] private float speed;
+    [SerializeField] private ReconnaissanceFireAura _fireAura;
+    [SerializeField] private ArrowFireProjectile _arrowFireProjectile;
+    [SerializeField] private ObjectData _fireData;
+    [SerializeField] private float _duration = 10;
+    [SerializeField] private float _baseArea = 3f;
 
     [Header("Raycast settings")]
-    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private LayerMask _groundLayer;
 
-    private ReconnaissanceFireAura currentFireAura;
+    [Header("Arc Fire Arrow Settings")]
+    [SerializeField] private LineRenderer _arcRenderer;
+    [SerializeField] private float _arcHeight = 6f;
+
+    private ReconnaissanceFireAura _currentFireAura;
+    private ArrowFireProjectile _currentArrowFireAura;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private float _baseDuration;
     private float _baseAnimSpeed;
     private float _baseCastDelay;
     private Coroutine _auraLifeCoroutine;
     private Coroutine _boostWindow;
-    private bool isSkillEnableBoostLogic;
+    private bool _isSkillEnableBoostLogic;
+    private WaitForSeconds _waitForElvenBoostDuration;
+
+    #region Const
+    private const float AnimSlowdownFactor = 1.8f;
+    private const float ElvenBoostDuration = 2f;
+    private const float FireAuraBoostedHealth = 65f;
+    private const float FireAuraWorshipperBonusDuration = 6f;
+    private const float AuraSpawnYOffset = 0.1f;
+    private const float ElvenBoostWindowChance = 0.30f;
+    private const float AnimationFireMoveMagnitude = 0.0001f;
+
+    private const int ArcResolution = 30;
+    private const float ArcMidPointT = 0.5f;
+    private const float BezierMidPointMultiplier = 2f;
+
+    private const float DefaultFireAuraHealth = 6f;
+    #endregion
 
     #region Talent
 
-    private bool fireDarkTalent;
-    private bool fireHealthTalent;
-    private bool partialBlindnessTalent;
-    private bool fireWorshipperTalent;
-    private bool isSkillEnableBoostLogicActiveTalent;
+    private bool _fireDarkTalent;
+    private bool _fireHealthTalent;
+    private bool _partialBlindnessTalent;
+    private bool _fireWorshipperTalent;
+    private bool _isSkillEnableBoostLogicActiveTalent;
 
     #endregion
 
-    public ReconnaissanceFireAura CurrentFireAura => currentFireAura;
-    public float BaseArea { get => baseArea; set => baseArea = value; }
+    public ReconnaissanceFireAura CurrentFireAura => _currentFireAura;
+    public float BaseArea { get => _baseArea; set => _baseArea = value; }
 
-    protected override bool IsCanCast => !float.IsPositiveInfinity(_targetPoint.x) && IsPointInRadius(Radius, _targetPoint);
+    protected override bool IsCanCast => Vector3.Distance(_targetPoint, transform.position) <= Radius;
     protected override int AnimTriggerCastDelay => Animator.StringToHash("ThrowCastDelay");
     protected override int AnimTriggerCast => 0;
 
     protected override void SkillEnableBoostLogic()
     {
         CastDeley = 0;
-        isSkillEnableBoostLogic = true;
-        Debug.Log("SkillEnableBoostLogic");
+        _isSkillEnableBoostLogic = true;
     }
     protected override void SkillDisableBoostLogic()
     {
         CastDeley = _baseCastDelay;
-        isSkillEnableBoostLogic = false;
+        _isSkillEnableBoostLogic = false;
     }
 
     private void Start()
     {
         _baseAnimSpeed = Hero.Animator.speed;
-        trickShot.speed = speed;
-        _baseDuration = duration;
+        _baseDuration = _duration;
+        _waitForElvenBoostDuration = new WaitForSeconds(ElvenBoostDuration);
     }
 
     private void OnEnable()
     {
-        ArrowFireProjectile.OnProjectilePathEnd += HandleProjectilePathEnd;
         OnSkillCanceled += HandleSkillCanceled;
-
         _baseCastDelay = CastDeley;
     }
 
     private void OnDisable()
     {
-        ArrowFireProjectile.OnProjectilePathEnd -= HandleProjectilePathEnd;
         OnSkillCanceled -= HandleSkillCanceled;
     }
+
+    #region ArcDraw
+    private void DrawArc(Vector3 start, Vector3 mid, Vector3 end)
+    {
+        const int arcResolution = ArcResolution;
+        Vector3[] arcPoints = new Vector3[arcResolution + 1];
+
+        for (int i = 0; i <= arcResolution; i++)
+        {
+            float t = i / (float)arcResolution;
+            arcPoints[i] = QuadraticBezierPoint(t, start, mid, end);
+        }
+
+        _arcRenderer.positionCount = arcPoints.Length;
+        _arcRenderer.SetPositions(arcPoints);
+    }
+
+    private Vector3 QuadraticBezierPoint(float t, Vector3 p0, Vector3 p1, Vector3 p2)
+    {
+        float u = 1 - t;
+        return u * u * p0 + BezierMidPointMultiplier * u * t * p1 + t * t * p2;
+    }
+    #endregion
 
     public void AnimationFireMove()
     {
@@ -93,7 +128,7 @@ public class ReconnaissanceFire : Skill
         _hero.Move.CanMove = false;
 
         Vector3 direction = _targetPoint - _hero.transform.position;
-        bool badDirection = float.IsInfinity(_targetPoint.x) || direction.sqrMagnitude < 0.0001f;
+        bool badDirection = float.IsInfinity(_targetPoint.x) || direction.sqrMagnitude < AnimationFireMoveMagnitude;
 
         if (badDirection)
         {
@@ -104,89 +139,126 @@ public class ReconnaissanceFire : Skill
         _hero.Move.LookAtPosition(_targetPoint);
     }
 
+    public void NotifyProjectileEnded(Vector3 point)
+    {
+        CmdSpawnFireAura(point);
+    }
+
     public void TryStartElvenBoostWindow()
     {
-        if (!isSkillEnableBoostLogicActiveTalent) return;
-        if (_boostWindow != null) return;
-        if (UnityEngine.Random.value > 0.30f) return;
+        if (!_isSkillEnableBoostLogicActiveTalent) return;
+        if (UnityEngine.Random.value > ElvenBoostWindowChance) return;
 
+        if (_boostWindow != null) StopCoroutine(_boostWindow);
         _boostWindow = StartCoroutine(ElvenBoostWindow());
     }
 
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _targetPoint = targetInfo.Points[0];
+    }
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        Hero.Animator.speed = Hero.Animator.speed/CastDeley;
+        Hero.Animator.speed = Hero.Animator.speed/ AnimSlowdownFactor;
 
-        if (emitterObject) emitterObject.SetActive(true);
         ReconnaissanceFireHealthTalentEnter();
 
-        while (float.IsPositiveInfinity(_targetPoint.x))
+        Vector3 targetPoint = Vector3.positiveInfinity;
+
+        while (float.IsPositiveInfinity(targetPoint.x))
         {
+            Vector3 hoverPoint = GetMousePoint();
+
+            if (_arcRenderer != null && hoverPoint.IsFinite())
+            {
+                Vector3 start = transform.position;
+                Vector3 mid = Vector3.Lerp(start, hoverPoint, ArcMidPointT);
+                mid.y = Mathf.Max(start.y, hoverPoint.y) + _arcHeight;
+
+                DrawArc(start, mid, hoverPoint);
+            }
+
             if (GetMouseButton)
             {
-                Vector3 clickedPoint = GetMousePoint();
+                targetPoint = GetMousePoint();
+                if (_arcRenderer != null) _arcRenderer.positionCount = 0;
 
-                if (IsPointInRadius(Radius, clickedPoint) && NoObstacles(clickedPoint, transform.position, _obstacle))
+                if (IsPointInRadius(Radius, targetPoint) && NoObstacles(targetPoint, transform.position, _obstacle))
                 {
-                    _targetPoint = clickedPoint;
-                    Hero.Move.LookAtPosition(_targetPoint);
+                    Hero.Move.LookAtPosition(targetPoint);
                 }
             }
 
-            UpdateTrickShotTrajectory();
             yield return null;
         }
 
-        if (emitterObject) emitterObject.SetActive(false);
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(targetPoint);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (trickShot == null || fireAura == null) yield break;
-
-        trickShot.Shoot();
-
-        _targetPoint = Vector3.positiveInfinity;
+        if (_targetPoint == Vector3.positiveInfinity && (_fireAura == null)) yield break;
 
         Hero.Animator.speed = _baseAnimSpeed;
         Hero.Move.StopLookAt();
         Hero.Animator.speed = _baseAnimSpeed;
         Hero.Move.CanMove = true;
+
+        CmdSpawnProjectile(_targetPoint);
+
+        yield return null;
     }
 
     private IEnumerator ElvenBoostWindow()
     {
         EnableSkillBoost();
-        yield return new WaitForSeconds(2f);
+        yield return _waitForElvenBoostDuration;
         DisableSkillBoost();
-        _boostWindow = null;
-    }
-
-    private void HandleProjectilePathEnd(Vector3 position) => CmdSpawnFireAura(position);
-
-    void UpdateTrickShotTrajectory()
-    {
-         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out var hit, 200f, groundLayer))
-        {
-            float s = Vector3.Distance(trickShot.transform.position, hit.point); trickShot.distance = s + 1f;
-
-            if (Ballistics.Solution(trickShot.transform.position, trickShot.speed, hit.point, trickShot.constantAcceleration, out Quaternion low, out _) > 0) trickShot.transform.rotation = low;
-        }
     }
 
     private void HandleSkillCanceled()
     {
         if (_hero != null && _hero.Move != null) ReconnaissanceFireHealthTalentExit();
+        if (_arcRenderer != null) _arcRenderer.positionCount = 0;
         Hero.Animator.speed = _baseAnimSpeed;
         Hero.Move.CanMove = true;
         Hero.Move.StopLookAt();
         _targetPoint = Vector3.positiveInfinity;
+        AnimCastEnded();
+        if (_auraLifeCoroutine != null) StopCoroutine(_auraLifeCoroutine);
+        if (_boostWindow != null) StopCoroutine(_boostWindow);
+    }
+
+    private void HandleProjectilePathEnd(Vector3 point)
+    {
+        CmdSpawnFireAura(point);
+        _currentArrowFireAura.OnProjectilePathEnd -= HandleProjectilePathEnd;
+    }
+
+    [Command]
+    private void CmdSpawnProjectile(Vector3 targetPoint)
+    {
+        if (float.IsInfinity(targetPoint.x) || float.IsNaN(targetPoint.x)) return;
+
+        Vector3 start = transform.position;
+
+        var projectile = Instantiate(_arrowFireProjectile, start, Quaternion.identity);
+        projectile.Init(targetPoint, _arcHeight);
+
+        SceneManager.MoveGameObjectToScene(projectile.gameObject, Hero.NetworkSettings.MyRoom);
+        NetworkServer.Spawn(projectile.gameObject);
+
+        _currentArrowFireAura = projectile;
+
+        RpcLaunchProjectile(projectile.gameObject, targetPoint);
     }
 
     [Command]
     private void CmdSetMaxHealth(float maxHealth)
     {
-        fireData.MaxHealth = maxHealth;
+        _fireData.MaxHealth = maxHealth;
     }
 
     [Command]
@@ -194,23 +266,35 @@ public class ReconnaissanceFire : Skill
     {
         if (float.IsInfinity(position.x) || float.IsNaN(position.x)) return;
 
-        if (!isSkillEnableBoostLogic)
+        if (!_isSkillEnableBoostLogic)
         {
             if (_auraLifeCoroutine != null) StopCoroutine(_auraLifeCoroutine);
-            if (currentFireAura != null) NetworkServer.Destroy(currentFireAura.gameObject);
+            if (_currentFireAura != null) NetworkServer.Destroy(_currentFireAura.gameObject);
         }
 
-        position.y += 0.1f;
-        var aura = Instantiate(fireAura, position, Quaternion.identity);
+        position.y += AuraSpawnYOffset;
+        var aura = Instantiate(_fireAura, position, Quaternion.identity);
+        aura.Init(Hero);
         SceneManager.MoveGameObjectToScene(aura.gameObject, Hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(aura.gameObject, connectionToClient);
 
-        currentFireAura = aura;
-        currentFireAura.FireDarkTalent = fireDarkTalent;
+        _currentFireAura = aura;
+        _currentFireAura.FireDarkTalent = _fireDarkTalent;
         RpcSetCurrentFireAura(aura);
 
-        float life = _baseDuration + (fireWorshipperTalent ? 6f : 0f);
+        float life = _baseDuration + (_fireWorshipperTalent ? FireAuraWorshipperBonusDuration : 0f);
         _auraLifeCoroutine = StartCoroutine(DestroyAuraAfter(life, aura));
+    }
+
+    [ClientRpc]
+    private void RpcLaunchProjectile(GameObject projectileObj, Vector3 targetPoint)
+    {
+        if (projectileObj != null && projectileObj.TryGetComponent(out ArrowFireProjectile projectile))
+        {
+            projectile.Init(targetPoint, _arcHeight);
+            _currentArrowFireAura = projectile;
+            _currentArrowFireAura.OnProjectilePathEnd += HandleProjectilePathEnd;
+        }
     }
 
     [Server]
@@ -223,72 +307,71 @@ public class ReconnaissanceFire : Skill
     [ClientRpc]
     private void RpcSetCurrentFireAura(ReconnaissanceFireAura fireAura)
     {
-        currentFireAura = fireAura;
-        currentFireAura.FireDarkTalent = fireDarkTalent;
+        _currentFireAura = fireAura;
+        _currentFireAura.FireDarkTalent = _fireDarkTalent;
 
-        if (fireWorshipperTalent) currentFireAura.ApplyFireWorshipperTalentEffect(true);
+        if (_fireWorshipperTalent) _currentFireAura.ApplyFireWorshipperTalentEffect(true);
     }
 
     protected override void ClearData()
     {
-        if (emitterObject != null) emitterObject.SetActive(false);
+        _targetPoint = Vector3.positiveInfinity;
+        if (_arcRenderer != null) _arcRenderer.positionCount = 0;
+        AnimCastEnded();
+        if (_auraLifeCoroutine != null) StopCoroutine(_auraLifeCoroutine);
+        if (_boostWindow != null) StopCoroutine(_boostWindow);
     }
 
     #region ReconnaissanceFireAuraDarknesTalent
     public void ReconnaissanceFireAuraDarknesActive(bool value)
     {
-        fireDarkTalent = value;
+        _fireDarkTalent = value;
 
-        if (currentFireAura != null) currentFireAura.FireDarkTalent = fireDarkTalent;
+        if (_currentFireAura != null) _currentFireAura.FireDarkTalent = _fireDarkTalent;
     }
     #endregion
 
     #region ReconnaissanceFireHealthTalent
     public void ReconnaissanceFireHealthTalentActive(bool value)
     {
-        fireHealthTalent = value;
+        _fireHealthTalent = value;
     }
 
     private void ReconnaissanceFireHealthTalentEnter()
     {
-        if (fireHealthTalent)
+        if (_fireHealthTalent)
         {
-            CmdSetMaxHealth(65);
-            fireData.MaxHealth = 65;
+            CmdSetMaxHealth(FireAuraBoostedHealth);
+            _fireData.MaxHealth = FireAuraBoostedHealth;
         }
     }
 
     private void ReconnaissanceFireHealthTalentExit()
     {
-        CmdSetMaxHealth(6);
-        fireData.MaxHealth = 6;
+        CmdSetMaxHealth(DefaultFireAuraHealth);
+        _fireData.MaxHealth = DefaultFireAuraHealth;
     }
     #endregion
 
     #region partialBlindnessTalent
     public void partialBlindnessTalentActive(bool value)
     {
-        partialBlindnessTalent = value;
-        if (currentFireAura != null) currentFireAura.FireDarkTalent = partialBlindnessTalent;
+        _partialBlindnessTalent = value;
+        if (_currentFireAura != null) _currentFireAura.FireDarkTalent = _partialBlindnessTalent;
     }
     #endregion
 
     #region FireWorshipperTalent
     public void FireWorshipperTalentActive(bool value)
     {
-        fireWorshipperTalent = value;
+        _fireWorshipperTalent = value;
     }
 
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        _targetPoint = targetInfo.Points[0];
-        _targetPoint = Vector3.positiveInfinity;
-    }
     #endregion
 
     #region SkillEnableBoostLogicActiveTalent
 
-    public void SkillEnableBoostLogicActiveTalent(bool value) => isSkillEnableBoostLogicActiveTalent = value;
+    public void SkillEnableBoostLogicActiveTalent(bool value) => _isSkillEnableBoostLogicActiveTalent = value;
 
     #endregion
 }

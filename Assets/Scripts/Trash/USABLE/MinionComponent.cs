@@ -36,7 +36,7 @@ public class MinionComponent : Character
     protected override void OnDied()
     {
         base.OnDied();
-        _navMeshAgent.enabled = false;
+        if (_navMeshAgent != null) _navMeshAgent.enabled = false;
 
         if (isServer) Destroyed?.Invoke(this);
     }
@@ -44,6 +44,6 @@ public class MinionComponent : Character
     protected override void ResetAll()
     {
         base.ResetAll();
-        _navMeshAgent.enabled = true;
+        if (_navMeshAgent != null) _navMeshAgent.enabled = true;
     }
 }

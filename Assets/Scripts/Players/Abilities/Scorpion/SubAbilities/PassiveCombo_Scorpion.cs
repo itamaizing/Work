@@ -28,6 +28,12 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
     [SerializeField] private ParticleSystem _particlesFullCombo;
     [SerializeField] private ParticleSystem _particlesCancelCombo;
 
+    private bool _consumeComboTalent = false;
+
+    #region Talent
+    public void ConsumeComboTalent(bool value) => _consumeComboTalent = value;
+    #endregion
+
     #region Add Skill (Комбо механика)
 
     [Command]
@@ -38,6 +44,7 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
 
     public void AddSkill(Character enemy, Skill skill)
     {
+        if (!_consumeComboTalent) return;
         if (enemy == null || skill == null) return;
 
         int currentStacks = enemy.CharacterState.CheckStateStacks(States.ComboState);

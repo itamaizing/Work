@@ -1,8 +1,14 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Animations/Animations/Scrader/AttackScraderMain.anim.meta
+guid: a6a04b32c36b6bc448e229c4d65ec531
+NativeFormatImporter:
+========
 guid: db9be934a81a99a4b90636de671a29bb
 folderAsset: yes
 DefaultImporter:
+>>>>>>>> NokmanClearingProject:Assets/Scriptable Objects/Ability/Gangdollarff.meta
   externalObjects: {}
+  mainObjectFileID: 7400000
   userData: 
   assetBundleName: 
   assetBundleVariant: 

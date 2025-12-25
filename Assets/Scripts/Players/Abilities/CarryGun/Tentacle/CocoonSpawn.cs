@@ -61,7 +61,7 @@ public class CocoonSpawn : Skill
         }
 
         CmdTentacleCocoon(spawnComponent);
-         yield return null;
+        yield return null;
     }
     private Vector3 GetRandomOffsetPosition(Vector3 center, float radius)
     {

@@ -26,16 +26,18 @@ public class ElvenSkill : AbstractCharacterState
         _move = character.GetComponent<MoveComponent>();
         _skillManager = _characterState.Character.Abilities;
 
-        if (_characterState.TryGetComponent<Character>(out var ability))
+        _move.CanMoveState = true;
+
+        if (_skillManager != null)
         {
             foreach (var skill in _skillManager.Abilities)
             {
-                if (skill.DamageType == DamageType.Physical)
+                if (skill.DamageType == DamageType.Physical || skill.DamageType == DamageType.Both)
                 {
                     skill.CastStarted += OnPhysCastStarted;
-                    skill.CastEnded += OnPhysCastFinished;
-                    skill.Canceled += OnPhysCastFinished;
                 }
+
+                else skill.CastStarted += NotPhysCastStarted;
 
                 if (skill is ReconnaissanceFire reconnaissanceFire) reconnaissanceFire.TryStartElvenBoostWindow();
             }
@@ -53,13 +55,16 @@ public class ElvenSkill : AbstractCharacterState
     {
         if (_move) _move.CanMoveState = false;
 
-        if (_characterState.TryGetComponent<Character>(out var ability))
+        if (_skillManager != null)
         {
-            foreach (var skillPhysics in ability.Abilities.Abilities.Where(skillPhysics => skillPhysics.DamageType == DamageType.Physical))
+            foreach (var skill in _skillManager.Abilities)
             {
-                skillPhysics.CastStarted -= OnPhysCastStarted;
-                skillPhysics.CastEnded -= OnPhysCastFinished;
-                skillPhysics.Canceled -= OnPhysCastFinished;
+                if (skill.DamageType == DamageType.Physical || skill.DamageType == DamageType.Both)
+                {
+                    skill.CastStarted -= OnPhysCastStarted;
+                }
+
+                else skill.CastStarted -= NotPhysCastStarted;
             }
         }
 
@@ -86,7 +91,7 @@ public class ElvenSkill : AbstractCharacterState
         if (_move) _move.CanMoveState = true;
     }
 
-    private void OnPhysCastFinished()
+    private void NotPhysCastStarted()
     {
         if (_move) _move.CanMoveState = false;
     }

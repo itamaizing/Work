@@ -11,6 +11,7 @@ public class SpiritHealthState : AbstractCharacterState
     private float _duration;
     private float _regenAmount;
 
+    private GameObject _spiritHealthStateEffectInstance;
     private Health _healthComponent;
     private Resource _manaResource;
     private Character _character;
@@ -35,6 +36,12 @@ public class SpiritHealthState : AbstractCharacterState
         if (_healthComponent != null)
         {
             _healthComponent.DamageTaken += OnDamageTaken;
+        }
+
+        if (_characterState.StateEffects.SpiritHealthEffect != null)
+        {
+            _spiritHealthStateEffectInstance = _characterState.StateEffects.SpiritHealthEffect;
+            _spiritHealthStateEffectInstance.SetActive(true);
         }
 
         RecalcRegenAmount();
@@ -70,6 +77,7 @@ public class SpiritHealthState : AbstractCharacterState
             _healthComponent.DamageTaken -= OnDamageTaken;
         }
 
+        if (_characterState.StateEffects.SpiritHealthEffect != null) _spiritHealthStateEffectInstance.SetActive(false);
         _characterState.RemoveState(this);
     }
 

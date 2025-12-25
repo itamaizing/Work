@@ -104,6 +104,7 @@ public abstract class Skill : NetworkBehaviour
 
     [Header("AbilitiesInfo")]
     [SerializeField] private AbilityInfo _abilityInfo;
+
     [Header("Main Settings")]
     [NonSerialized] public float ExtraAnimationSpeedMultiplier = 1f; // test
     [SerializeField] protected bool _isSubjectToGlobalCooldownTime = true;
@@ -182,10 +183,9 @@ public abstract class Skill : NetworkBehaviour
     private List<Coroutine> _currentChargeCooldownJob;
     private Queue<TargetInfo> _targetInfoQueue = new();
     private bool _isAutoMode;
+
     private ITargetable _target;
     private ITargetable _tempTarget;
-
-
 
     public bool IsAutoMode
     {
@@ -202,12 +202,17 @@ public abstract class Skill : NetworkBehaviour
             }
         }
     }
+
+    public bool IsCanCancle { get => _isCanCancle; set => _isCanCancle = value; }
+    public bool IsAutoRadiusRender => _isAutoRadiusRender;
     public bool IsTalentSpell => _isTalentSpell;
     public bool IsSkillActive
     {
         get => _isSkillActive;
         set => _isSkillActive = value;
     }
+
+    public ITargetable TempTarget => _tempTarget;
     public Transform TempTargetForDamage => _tempTargetForDamage;
     public bool GetMouseButton { get => _click != TypeClick.None; }
     public bool IsSubjectToGlobalCooldownTime { get => _isSubjectToGlobalCooldownTime; }
@@ -238,8 +243,8 @@ public abstract class Skill : NetworkBehaviour
     public float CastStreamDuration { get => _castDuration; set => _castDuration = value; }
     public float Radius { get => Buff.Radius.GetBuffedValue(_radius); set => _radius = value; }
     public float Area { get => Buff.Area.GetBuffedValue(_area); set => _area = value; }
-    public float CastLength { get => Buff.Area.GetBuffedValue(_castLength); protected set => _castLength = value; }
-    public float CastWidth { get => Buff.Area.GetBuffedValue(_castWidth); protected set => _castWidth = value; }
+    public float CastLength { get => Buff.Length.GetBuffedValue(_castLength); protected set => _castLength = value; }
+    public float CastWidth { get => Buff.Width.GetBuffedValue(_castWidth); protected set => _castWidth = value; }
     public float MaxCounter { get => maxCounter; set => maxCounter = value; }
     public float CurrentCounter { get => _currentCounter; set => _currentCounter = value; }
     public virtual float Damage { get => _damageValue; set => _damageValue = value; }
@@ -427,7 +432,18 @@ public abstract class Skill : NetworkBehaviour
         return null;
     }
 
-	public Character GetTargetCharacter(bool canGetDead = false)
+    public ITargetable GetTempTarget(bool canGetDead = false)
+    {
+        if (_tempTarget != null)
+        {
+            if (!_tempTarget.IsTargetable && !canGetDead) return null;
+
+            return _tempTarget;
+        }
+        return null;
+    }
+
+    public Character GetTargetCharacter(bool canGetDead = false)
 	{
 		if (_target != null)
 		{
@@ -449,7 +465,13 @@ public abstract class Skill : NetworkBehaviour
         return null;
     }
 
-	public void SetTarget(ITargetable character)
+    public void SetTargetCharacter(Character character)
+    {
+        if (character != null)
+            _target = character;
+    }
+
+    public void SetTarget(ITargetable character)
 	{
         if (character != null)
             _target = character;
@@ -458,20 +480,6 @@ public abstract class Skill : NetworkBehaviour
     public void ClearTempTarget()
     {
         _tempTarget = null;
-    }
-
-	protected void FindTarget(bool canTargetHimself = false, bool canTargetDead = false)
-    {
-        if (canTargetDead)
-        {
-            if (GetCloserTargets(GetMousePoint(), Radius, canTargetHimself) != null)
-                _tempTarget = GetCloserTargets(GetMousePoint(), Radius, canTargetHimself)[0];
-        }
-        else
-        {
-            if (GetCloserTargets(GetMousePoint(), Radius, canTargetHimself) != null)
-                _tempTarget = GetCloserTargets(GetMousePoint(), Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
-        }
     }
 
     protected void FindTarget(float radius, Vector3 point, bool canTargetHimself = false, bool canTargetDead = false)
@@ -485,6 +493,21 @@ public abstract class Skill : NetworkBehaviour
         {
             if (GetCloserTargets(point, radius, canTargetHimself) != null)
                 _tempTarget = GetCloserTargets(point, radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
+        }
+    }
+
+    protected void FindTarget(bool canTargetHimself = false, bool canTargetDead = false)
+    {
+        if (canTargetDead)
+        {
+            if (GetCloserTargets(GetMousePoint(), Radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargets(GetMousePoint(), Radius, canTargetHimself)[0];
+        }
+        else
+        {
+            //Debug.Log()
+            if (GetCloserTargets(GetMousePoint(), Radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargets(GetMousePoint(), Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
         }
     }
 
@@ -502,7 +525,21 @@ public abstract class Skill : NetworkBehaviour
 		}
 	}
 
-	public void ClearTarget()
+    protected void FindTargetCharacter(float radius, Vector3 point, bool canTargetHimself = false, bool canTargetDead = false)
+    {
+        if (canTargetDead)
+        {
+            if (GetCloserTargets(point, radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargetsCharacter(GetMousePoint(), radius, canTargetHimself)[0];
+        }
+        else
+        {
+            if (GetCloserTargets(point, radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargetsCharacter(point, radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
+        }
+    }
+
+    public void ClearTarget()
     {
         _target = null; 
     }
@@ -562,8 +599,8 @@ public abstract class Skill : NetworkBehaviour
 
                 if (targetInfo.GetTargets().Count > 0)
                 {
-                    var target = (Character)targetInfo.GetTargets()[0];
-                    _hero.Move.LookAtTransform(target.transform);
+                    if (targetInfo.GetTargets()[0] is Character target)
+                        _hero.Move.LookAtTransform(target.transform);
                 }
 
                 if (targetInfo.Points.Count > 0)
@@ -640,7 +677,7 @@ public abstract class Skill : NetworkBehaviour
 		if (foceCancel || _isCanCancle)
         {
             Canceled?.Invoke();
-            if (_isAutoMode) _hero.Move.CanMove = true;
+            _hero.Move.CanMove = true;
             ClearData();
             _isPlayCastAnim = false;
 
@@ -868,13 +905,31 @@ public abstract class Skill : NetworkBehaviour
             Value = Damage,
             Type = DamageType,
         };
+
         _skillRender.CmdDrawDamageZone(position, Area, damage, _hero.gameObject);
     }
+
+    public void DrawDamageZoneClient(Vector3 position)
+    {
+        Damage damage = new Damage
+        {
+            Value = Damage,
+            Type = DamageType,
+        };
+
+        _skillRender.DrawDamageZone(position, Area, damage, _hero.gameObject);
+    }
+
 
     public void StopDamageZone()
     {
         _skillRender.CmdRemoveNextDamageZone();
     }
+    public void ClientStopDamageZone()
+    {
+        _skillRender.RemoveNextDamageZone();
+    }
+
 
     [ClientCallback]
     protected void AnimStartCastCoroutine()
@@ -886,6 +941,11 @@ public abstract class Skill : NetworkBehaviour
     protected virtual void AnimCastEnded()
     {
         _isPlayCastAnim = false;
+    }
+
+    protected virtual void PlayCastAnim(bool value)
+    {
+        _isPlayCastAnim = value;
     }
 
     protected virtual IEnumerator DynamicRendererJob(float time = 0.2f)
@@ -907,7 +967,7 @@ public abstract class Skill : NetworkBehaviour
         if (_isAutoAreaRender)
         {
             _skillRender.DrawArea(Area, damage, TargetsLayers);
-            _skillRender.StartDynamicRadiusColor(Radius);
+            _skillRender.StartDynamicRadiusColor(Radius, this);
         }
 
         _skillRender.StartPreview(Area, damage, TargetsLayers);
@@ -1087,6 +1147,7 @@ public abstract class Skill : NetworkBehaviour
                 {
                     if (hit.collider.TryGetComponent<IDamageable>(out _))
                     {
+
                         IsAutoMode = true;
                         AutoModeChanged?.Invoke(true);
                     }
@@ -1371,6 +1432,7 @@ public abstract class Skill : NetworkBehaviour
 
     private IEnumerator ActionWrapperForCastingJob()
     {
+        Hero.Abilities.NotifySkillPrepared(this);
         CastStarted?.Invoke();
         _isCasting = true;
 
@@ -1463,6 +1525,9 @@ public abstract class Skill : NetworkBehaviour
         }
     }
 
+    [Command]
+    public void CmdCancelActiveSkill() => RpcCancelActiveSkill();
+
     public void ResetSkillState()
     {
         _remainingCooldownTime = 0;
@@ -1483,6 +1548,7 @@ public abstract class Skill : NetworkBehaviour
 
         _isPreparing = false;
         _isCasting = false;
+        _isAutoMode = false;
 
         if (_isUseCharges)
         {
@@ -1532,6 +1598,8 @@ public abstract class Skill : NetworkBehaviour
     [Command]
     private void CmdApplyDamageLogic(Damage damage, GameObject target)
     {
+        if (target == null) return;
+
         if (_tempTargetForDamage != target.transform)
         {
             _tempTargetForDamage = target.transform;

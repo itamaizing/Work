@@ -206,7 +206,7 @@ public class CharacterState : NetworkBehaviour
 		[States.ScorchedSoul] = new ScorchedSoul(),
 		[States.Knockdown] = new Knockdown(),
 		[States.IdealEvade] = new IdealEvade(),
-		[States.Bleeding] = new BleedingDebuff(),
+		[States.BleedingDebuff] = new BleedingDebuff(),
 		[States.EmeraldSkin] = new EmeraldSkinState(),
 		[States.DefenseReduction] = new DefenceReductionState(),
 		[States.SparkTalentHealthBuff] = new SparkTalentHealthState(),
@@ -226,6 +226,7 @@ public class CharacterState : NetworkBehaviour
 		[States.HeatedGlands] = new HeatedGlandsState(),
 		[States.AbsorptionOfPoison] = new AbsorptionOfPoisonsState(),
 		[States.Bleeding] = new BleedingState(),
+		[States.BleedingScrader] = new BleedingScraderDebuff(),
 		[States.ReducingHealing] = new ReducingHealingState(),
 		[States.LowVoltage] = new LowVoltage(),
 		[States.ComboState] = new ComboState(),
@@ -238,6 +239,7 @@ public class CharacterState : NetworkBehaviour
 		[States.HardenedFlesh] = new HardenedFlesh(),
 		[States.FocusingOnReflexesState] = new FocusingOnReflexesState(),
 		[States.DivineEnhancement] = new DivineEnhancementState(),
+		[States.DischargePsi] = new DischargePsiState(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -771,6 +773,9 @@ public enum States
 	WarmingUpState,
 	DivineEnhancement,
 	HealingSlime,
+	BleedingScrader,
+	DischargePsi,
+	BleedingDebuff,
 }
 public enum BaffDebaff
 {

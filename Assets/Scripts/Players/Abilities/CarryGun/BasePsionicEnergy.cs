@@ -14,7 +14,7 @@ public class BasePsionicEnergy : Resource, IDamageable
     private const float BasePsionicaThreshold = 30f;
     private const float BaseSliderFillPercent = 0.3f;
     private const float RemainingSliderFillPercent = 0.7f;
-    private const float DamageToPsiConversionRate = 0.2f;
+    private const float DamageToPsiConversionRate = 0.1f;
 
     private float _psionicaDecayTime;
     private bool _isInternalPsiEnergy = false;
@@ -45,43 +45,78 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     private void OnEnable()
     {
-        if (_player.DamageTracker != null) _player.DamageTracker.OnDamageTracked += OnDamageDealt;
-        if (_player.Health != null) _player.Health.OnBeforeDamage += psionicEnergySkill.HandleIncomingDamage;
-    }
+        if (_player.DamageTracker != null)
+        {
+            _player.DamageTracker.OnDamageTracked -= OnDamageDealt;
+            _player.DamageTracker.OnDamageTracked += OnDamageDealt;
+        }
+        if (_player.Health != null)
+        {
+            _player.Health.OnBeforeDamage -= psionicEnergySkill.HandleIncomingDamage;
+            _player.Health.OnBeforeDamage += psionicEnergySkill.HandleIncomingDamage;
 
-    private void OnDestroy()
+        }
+        if (_player.SpawnComponent != null)
+        {
+            _player.SpawnComponent.UnitAdded -= OnMinionSpawned;
+            _player.SpawnComponent.UnitRemoved -= OnMinionRemoved;
+            _player.SpawnComponent.UnitAdded += OnMinionSpawned;
+            _player.SpawnComponent.UnitRemoved += OnMinionRemoved;
+        }
+    }
+    private void OnDisable()
     {
         if (_player != null && _player.DamageTracker != null) _player.DamageTracker.OnDamageTracked -= OnDamageDealt;
         if (_player.Health != null) _player.Health.OnBeforeDamage -= psionicEnergySkill.HandleIncomingDamage;
+
+        if (_player.SpawnComponent != null)
+        {
+            _player.SpawnComponent.UnitAdded -= OnMinionSpawned;
+            _player.SpawnComponent.UnitRemoved -= OnMinionRemoved;
+
+            foreach (var unit in _player.SpawnComponent.Units)
+            {
+                if (unit != null && unit.DamageTracker != null) unit.DamageTracker.OnDamageTracked -= OnDamageDealt;
+            }
+        }
+    }
+
+    private void OnMinionSpawned(Character minion)
+    {
+        if (minion == null || minion.DamageTracker == null) return;
+
+        minion.DamageTracker.OnDamageTracked += OnDamageDealt;
+    }
+    private void OnMinionRemoved(Character minion)
+    {
+        if (minion == null || minion.DamageTracker == null) return;
+
+        minion.DamageTracker.OnDamageTracked -= OnDamageDealt;
     }
 
     private void OnDamageDealt(Damage damage, GameObject target)
     {
-        if (damage.Type == DamageType.Physical)
-        {
-            float energyGain = damage.Value * DamageToPsiConversionRate;
-            Add(energyGain);
-            CurrentValue = Mathf.Min(CurrentValue, MaxValue);
-            RpcCoolDownPsionicEnegry();
+        if (damage.Type != DamageType.Physical) return;
+        if (psionicEnergySkill == null || !psionicEnergySkill.IsPsiEnergyActive) return;
 
-            RpcOnEnergyChanged(CurrentValue);
+        float energyGain = damage.Value * DamageToPsiConversionRate;
+        CurrentValue = Mathf.Min(CurrentValue + energyGain, MaxValue);
 
-            bool wasInternalEnergy = _isInternalPsiEnergy;
-            _isInternalPsiEnergy = CurrentValue > 0;
+        RpcCoolDownPsionicEnegry();
+        RpcOnEnergyChanged(CurrentValue);
 
-            if (wasInternalEnergy != _isInternalPsiEnergy)
-            {
-                RpcInternalPsiEnergyChanged(_isInternalPsiEnergy);
-            }
+        bool wasInternalEnergy = _isInternalPsiEnergy;
+        _isInternalPsiEnergy = CurrentValue > 0;
 
-            if (_energyDecayCoroutine != null)
-            {
-                StopCoroutine(_energyDecayCoroutine);
-            }
-            _energyDecayCoroutine = StartCoroutine(EnergyDecayCoroutine());
+        if (wasInternalEnergy != _isInternalPsiEnergy)
+            RpcInternalPsiEnergyChanged(_isInternalPsiEnergy);
 
-            UpdatePsionicaBar();
-        }
+        if (_energyDecayCoroutine != null)
+            StopCoroutine(_energyDecayCoroutine);
+
+        _energyDecayCoroutine = StartCoroutine(EnergyDecayCoroutine());
+
+        UpdatePsionicaBar();
     }
 
     #region Test

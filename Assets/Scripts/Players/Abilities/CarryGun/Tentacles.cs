@@ -8,26 +8,35 @@ using System;
 public class Tentacles : Skill
 {
     [SerializeField] private Character _player;
-    [SerializeField] private TentacleProjectile tentaclesPrefab;
-    [SerializeField] private TentacleProjectile tentaclesPreview;
+    [SerializeField] private TentacleProjectile _tentaclesPrefab;
+    [SerializeField] private TentacleProjectile _tentaclesPreview;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
-    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private SpawnComponent _spawnComponent;
     [SerializeField] private float _radiusTarget = 0.5f;
 
     private bool _isPlacingTentacles = false;
     private bool _isClickedOnGround = false;
+    private bool _isSpawnCocoonOnGround = false;
 
     private Vector3 _spawnPoint = Vector3.positiveInfinity;
     private HashSet<Character> _charactersInPreview = new HashSet<Character>();
 
-    //private Character _target;
+    private Character _lockedTarget;
     private TentacleProjectile _previewInstance;
     private TentacleProjectile _previewInstancePrefab;
     private TentacleProjectile _currentTentacle;
     private Coroutine _radiusUpdateCoroutine;
     private MinionComponent _currentMinion;
     private float _spentAttackingPsiEnergy;
+    private WaitForSeconds _waitForSeconds;
+
+    #region Const
+    private const float AttractionSphereCastRadius = 0.1f;
+    private const float UpdateRadiusColorSphereCastRadius = 500f;
+    private const float AttractionMaxCastDistance = 100f;
+    private const float WaitForSecondsTick = 0.1f;
+    #endregion
 
     #region Talent
     private bool _isPsionicsTalentThree = false;
@@ -43,7 +52,16 @@ public class Tentacles : Skill
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("Spell");
     protected override int AnimTriggerCast => 0;
-    protected override bool IsCanCast => (GetTargetCharacter() != null || _isClickedOnGround) && _spawnPoint != Vector3.positiveInfinity;
+    protected override bool IsCanCast => (GetTargetCharacter() != null || _isClickedOnGround) && _spawnPoint != Vector3.positiveInfinity && IsCanRadius();
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == TargetsLayers;
+
+    private bool IsCanRadius()
+    {
+        if (!IsValidVector(_spawnPoint)) return false;
+
+        float distance = Vector3.Distance(Hero.transform.position, _spawnPoint);
+        return distance <= Radius;
+    }
 
     private bool IsValidVector(Vector3 vector)
     {
@@ -51,15 +69,37 @@ public class Tentacles : Skill
                  float.IsInfinity(vector.x) || float.IsInfinity(vector.y) || float.IsInfinity(vector.z));
     }
 
+    private void OnDisable()
+    {
+        OnSkillCanceled -= HandleSkillCanceled;
+    }
+    private void OnEnable()
+    {
+        OnSkillCanceled += HandleSkillCanceled;
+    }
+
+    private void Start()
+    {
+        _waitForSeconds = new WaitForSeconds(WaitForSecondsTick);
+    }
+
+    private void HandleSkillCanceled()
+    {
+        ClearTarget();
+        _skillRender.StopDrawRadius();
+    }
+
+
     protected override void ClearData()
     {
         _skillRender.IsOverrideClosestTarget = false;
         _isClickedOnGround = false;
+        _skillRender.StopDrawRadius();
 
+        _isSpawnCocoonOnGround = false;
         _isPlacingTentacles = false;
         _spawnPoint = Vector3.positiveInfinity;
         ClearTarget();
-        //_target = null;
         _spentAttackingPsiEnergy = 0f;
         Hero.Move.CanMove = true;
         _player.Move.StopLookAt();
@@ -77,77 +117,99 @@ public class Tentacles : Skill
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         _skillRender.IsOverrideClosestTarget = true;
+        _lockedTarget = null;
 
         Vector3 mousePositionStart = GetMousePoint();
+        Vector3 targetPoint = Vector3.positiveInfinity;
 
-        _previewInstance = Instantiate(tentaclesPreview, mousePositionStart, Quaternion.identity);
-        _previewInstance.IsAttractionTentacle = _isAttractionTentacleTalent;
-        _skillRender.DrawRadius(_radius);
-        _radiusUpdateCoroutine = StartCoroutine(UpdateRadiusColor());
-
-        while (GetTargetCharacter() == null)
+        if (!_isPlacingTentacles)
         {
-            Vector3 mousePosition = GetMousePoint();
+            _previewInstance = Instantiate(_tentaclesPreview, mousePositionStart, Quaternion.identity);
+            _previewInstance.IsAttractionTentacle = _isAttractionTentacleTalent;
+            _skillRender.DrawRadius(_radius);
+            _radiusUpdateCoroutine = StartCoroutine(UpdateRadiusColor());
+        }
+
+        while (float.IsPositiveInfinity(targetPoint.x))
+        {
+            Vector3 mousePoint = GetMousePoint();
             //float distance = Vector3.Distance(mousePosition, transform.position);
 
-            _previewInstance.transform.position = mousePosition;
+            if (_previewInstance != null) _previewInstance.transform.position = mousePoint;
 
             if (GetMouseButton && !_isPlacingTentacles)
             {
-                //if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hitTarget))
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hitTarget))
                 {
-                    if (_isAttractionTentacleTalent)// && hitTarget.collider.TryGetComponent<Character>(out Character character) && ((1 << character.gameObject.layer) & TargetsLayers.value) != 0)
+                    if (_isAttractionTentacleTalent && hitTarget.collider.TryGetComponent<Character>(out Character character) && ((1 << character.gameObject.layer) & TargetsLayers.value) != 0)
                     {
-                        FindTargetCharacter();
+                        //if (IsAllyTarget(GetTempTargetCharacter()) || GetTempTargetCharacter() == Hero) ClearTarget();
                         _isPlacingTentacles = true;
-                        //_target = character;
-                        if (GetTargetCharacter() != null)
-                        {
-                            _previewInstance.transform.SetParent(GetTargetCharacter().transform);
+                        _lockedTarget = character;
 
-                            _previewInstancePrefab = Instantiate(tentaclesPreview, _previewInstance.transform.position, Quaternion.identity);
-                            _previewInstancePrefab.Tentacle.SetActive(true);
-                            _previewInstancePrefab.IsPreview = false;
+                        if (_previewInstance != null) _previewInstance.transform.SetParent(_lockedTarget.transform);
 
-                            yield return new WaitForSeconds(0.1f);
-                            break;
-                        }
+                        _previewInstancePrefab = Instantiate(_tentaclesPreview, _previewInstance.transform.position, Quaternion.identity);
+                        _previewInstancePrefab.Tentacle.SetActive(true);
+                        _previewInstancePrefab.IsPreview = false;
+                        targetPoint = character.transform.position;
+
+                        yield return _waitForSeconds;
+                        break;
                     }
 
                     else
                     {
-                        //_spawnPoint = hitTarget.point;
-                        _spawnPoint = GetMousePoint();
-                        float distance = Vector3.Distance(transform.position, _spawnPoint);
+                        float distance = Vector3.Distance(transform.position, mousePoint);
+                        bool foundEnemy = false;
 
-                        Collider[] colliders = Physics.OverlapSphere(_spawnPoint, _radiusTarget);
+                        Collider[] colliders = Physics.OverlapSphere(mousePoint, _radiusTarget);
                         foreach (var collider in colliders)
                         {
-                            if (collider.TryGetComponent<Character>(out Character target))
+                            if (!collider.TryGetComponent<Character>(out Character targetHit)) continue;
+
+                            if (((1 << targetHit.gameObject.layer) & TargetsLayers.value) != 0)
                             {
                                 _isPlacingTentacles = true;
-                                //_target = target;
-                                if(GetTargetCharacter() != null)
-                                    _previewInstance.transform.SetParent(GetTargetCharacter().transform);
+                                _lockedTarget = targetHit;
+                                _previewInstance.transform.SetParent(_lockedTarget.transform);
 
                                 if (_isAttractionTentacleTalent)
                                 {
-                                    _previewInstancePrefab = Instantiate(tentaclesPreview, _previewInstance.transform.position, Quaternion.identity);
+                                    _previewInstancePrefab = Instantiate(_tentaclesPreview, _previewInstance.transform.position, Quaternion.identity);
                                     _previewInstancePrefab.Tentacle.SetActive(true);
                                     _previewInstancePrefab.IsPreview = false;
                                 }
 
-                                yield return new WaitForSeconds(0.1f);
+                                targetPoint = targetHit.transform.position;
+                                yield return _waitForSeconds;
+                                foundEnemy = true;
                                 break;
                             }
                         }
 
-                        if (GetTargetCharacter() == null && distance <= Radius && _isCocoonSpawnTalent)
+                        if (!foundEnemy && distance <= Radius && _isCocoonSpawnTalent)
                         {
-                            if (!IsValidVector(_spawnPoint)) yield break;
+                            if (!IsValidVector(mousePoint)) yield break;
 
+                            _skillRender.StopDrawRadius();
+                            _isSpawnCocoonOnGround = true;
                             _isClickedOnGround = true;
-                            yield break;
+
+                            if (_radiusUpdateCoroutine != null)
+                            {
+                                StopCoroutine(_radiusUpdateCoroutine);
+                                _radiusUpdateCoroutine = null;
+                            }
+
+                            if (_previewInstance != null)
+                                Destroy(_previewInstance.gameObject);
+
+                            if (_previewInstancePrefab != null)
+                                Destroy(_previewInstancePrefab.gameObject);
+
+                            targetPoint = mousePoint;
+                            break;
                         }
                     }
                 }
@@ -156,100 +218,84 @@ public class Tentacles : Skill
             yield return null;
         }
 
-        if (!_isAttractionTentacleTalent) _spawnPoint = GetTargetCharacter().transform.position;
-
-        if (_isAttractionTentacleTalent)
+        if (!_isSpawnCocoonOnGround)
         {
-            while (true)
+            if (!_isAttractionTentacleTalent) targetPoint = _lockedTarget.transform.position;
+
+            if (_isAttractionTentacleTalent)
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
-                float sphereRadius = 0.1f;
-                float maxDistance = 100f;
-
-                if (GetMouseButton)
+                while (true)
                 {
-                    if (!IsCooldowned)
-                    {
-                        yield return null;
-                        continue;
-                    }
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    RaycastHit hit;
 
-                    if (Physics.SphereCast(ray, sphereRadius, out hit, maxDistance, _obstacle))
+                    if (GetMouseButton)
                     {
-                        yield return null;
-                        continue;
-                    }
-
-                    if (Physics.Raycast(ray, out hit, Mathf.Infinity, TargetsLayers))
-                    {
-                        if (hit.collider.TryGetComponent<Character>(out Character clickedCharacter))
+                        if (!IsCooldowned)
                         {
-                            Vector3 targetPosition = clickedCharacter.transform.position;
+                            yield return null;
+                            continue;
+                        }
 
-                            if (!IsValidVector(targetPosition))
+                        if (Physics.SphereCast(ray, AttractionSphereCastRadius, out hit, AttractionMaxCastDistance, _obstacle))
+                        {
+                            yield return null;
+                            continue;
+                        }
+
+                        if (Physics.Raycast(ray, out hit, Mathf.Infinity, _groundLayer))
+                        {
+                            Vector3 groundPoint = hit.point;
+
+                            Vector3 direction = groundPoint - _previewInstance.transform.position;
+                            float distanceToCaster = direction.magnitude;
+
+                            if (distanceToCaster > _previewInstance.Radius)
+                                direction = direction.normalized * _previewInstance.Radius;
+
+                            if (_previewInstancePrefab != null)
+                                _previewInstancePrefab.transform.position = _previewInstance.transform.position + direction;
+
+                            float distanceToTarget = Vector3.Distance(_previewInstancePrefab.transform.position, transform.position);
+
+                            if (distanceToTarget <= Radius)
                             {
-                                yield return null;
-                                continue;
-                            }
+                                Vector3 potentialSpawnPoint = _previewInstancePrefab.transform.position;
 
-                            _spawnPoint = targetPosition;
-                            _player.Move.LookAtTransform(GetTargetCharacter().transform);
-                            break;
+                                if (!IsValidVector(potentialSpawnPoint))
+                                {
+                                    yield return null;
+                                    continue;
+                                }
+
+                                targetPoint = potentialSpawnPoint;
+                                _player.Move.LookAtPosition(targetPoint);
+                                break;
+                            }
                         }
                     }
 
-                    if (Physics.Raycast(ray, out hit, Mathf.Infinity, groundLayer))
+                    if (_previewInstancePrefab != null)
                     {
-                        Vector3 groundPoint = hit.point;
-
-                        Vector3 direction = groundPoint - _previewInstance.transform.position;
-                        float distanceToCaster = direction.magnitude;
-
-                        if (distanceToCaster > _previewInstance.Radius)
-                            direction = direction.normalized * _previewInstance.Radius;
-
-                        if (_previewInstancePrefab != null)
-                            _previewInstancePrefab.transform.position = _previewInstance.transform.position + direction;
-
-                        float distanceToTarget = Vector3.Distance(_previewInstancePrefab.transform.position, transform.position);
-
-                        if (distanceToTarget <= Radius)
+                        if (Physics.Raycast(ray, out hit, Mathf.Infinity, _groundLayer))
                         {
-                            Vector3 potentialSpawnPoint = _previewInstancePrefab.transform.position;
+                            Vector3 hoverPoint = hit.point;
 
-                            if (!IsValidVector(potentialSpawnPoint))
-                            {
-                                yield return null;
-                                continue;
-                            }
+                            Vector3 dir = hoverPoint - _previewInstance.transform.position;
+                            float distance = dir.magnitude;
 
-                            _spawnPoint = potentialSpawnPoint;
-                            _player.Move.LookAtTransform(GetTargetCharacter().transform);
-                            break;
+                            if (distance > _previewInstance.Radius) dir = dir.normalized * _previewInstance.Radius;
+
+                            _previewInstancePrefab.transform.position = _previewInstance.transform.position + dir;
                         }
                     }
+
+                    yield return null;
                 }
-
-                if (_previewInstancePrefab != null)
-                {
-                    if (Physics.Raycast(ray, out hit, Mathf.Infinity, groundLayer))
-                    {
-                        Vector3 hoverPoint = hit.point;
-
-                        Vector3 dir = hoverPoint - _previewInstance.transform.position;
-                        float distance = dir.magnitude;
-
-                        if (distance > _previewInstance.Radius)
-                            dir = dir.normalized * _previewInstance.Radius;
-
-                        _previewInstancePrefab.transform.position = _previewInstance.transform.position + dir;
-                    }
-                }
-
-                yield return null;
             }
         }
+
+        SetTarget(_lockedTarget);
 
         TrySpendAttackingPsi();
         Hero.Move.CanMove = false;
@@ -257,7 +303,8 @@ public class Tentacles : Skill
         if (_previewInstance != null) Destroy(_previewInstance.gameObject);
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_spawnPoint);
+        targetInfo.Points.Add(targetPoint);
+        targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }
 
@@ -288,7 +335,7 @@ public class Tentacles : Skill
 
             if (_previewInstance != null)
             {
-                Collider[] hitColliders = Physics.OverlapSphere(_previewInstance.transform.position, Area + 500);
+                Collider[] hitColliders = Physics.OverlapSphere(_previewInstance.transform.position, Area + UpdateRadiusColorSphereCastRadius);
 
                 foreach (var hitCollider in hitColliders)
                 {
@@ -310,25 +357,30 @@ public class Tentacles : Skill
                     }
                 }
 
-                if (GetTargetCharacter() == null)
+                if (_lockedTarget == null)
                 {
+                    Debug.Log("1");
                     float distanceToPreview = Vector3.Distance(transform.position, _previewInstance.transform.position);
                     isPreviewInsideRadius = distanceToPreview <= (_radius + _previewInstance.Radius);
                 }
             }
 
-            if (_previewInstancePrefab != null && GetTargetCharacter() != null)
+            if (_previewInstancePrefab != null && _lockedTarget != null)
             {
+                Debug.Log("2");
                 float distanceToPrefab = Vector3.Distance(transform.position, _previewInstancePrefab.transform.position);
                 isPreviewInsideRadius = distanceToPrefab <= _radius;
             }
 
-            _previewInstance.SetRadiusColor(isCharacterInsidePreview ? Color.green : Color.red);
-            _skillRender.DrawRadiusColor(_radius, isPreviewInsideRadius ? Color.green : Color.red);
+            if (!_isSpawnCocoonOnGround)
+            {
+                _previewInstance.SetRadiusColor(isCharacterInsidePreview ? Color.green : Color.red);
+                _skillRender.DrawRadiusColor(_radius, isPreviewInsideRadius ? Color.green : Color.red);
+            }
 
             _charactersInPreview = newCharactersInPreview;
 
-            yield return new WaitForSeconds(0.1f);
+            yield return _waitForSeconds;
         }
     }
 
@@ -355,7 +407,7 @@ public class Tentacles : Skill
         if (!IsValidVector(position)) return;
         if (target == null) return;
 
-        _currentTentacle = Instantiate(tentaclesPrefab, position, Quaternion.identity);
+        _currentTentacle = Instantiate(_tentaclesPrefab, position, Quaternion.identity);
         SceneManager.MoveGameObjectToScene(_currentTentacle.gameObject, _hero.NetworkSettings.MyRoom);
 
         _currentTentacle.Init(_player, target, position, target.transform.position, true, _isPsionicsTalentThree, _isAttractionTentacleTalent, _spentAttackingPsiEnergy, this);
@@ -380,6 +432,7 @@ public class Tentacles : Skill
     private void CmdTentacleWomb()
     {
         RpcTentacleWomb();
+        _skillRender.StopDrawRadius();
     }
 
     [ClientRpc]
@@ -399,8 +452,8 @@ public class Tentacles : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.Points.Count > 0) _spawnPoint = targetInfo.Points[0];
-        if (targetInfo.GetTargets().Count > 0 && targetInfo.GetTargets()[0] is Character character) SetTarget((ITargetable)character);
+        _spawnPoint = targetInfo.Points[0];
+        if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 
     public void SetCurrentMinion(MinionComponent newMinion)

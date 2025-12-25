@@ -14,9 +14,6 @@ public class DoubleCheliceraStrike : Skill
     [SerializeField] private float _stunDurationWithJumpBack = 2f;
     [SerializeField] private float cooldownEnergyCost = 5;
 
-    //private IDamageable _target;
-    //private Character _runtimeTarget;
-
     private static readonly int DoubleCheliceraStrikeAnimTrigger = Animator.StringToHash("DoubleCheliceraStrikeAnimation");
 
     protected override int AnimTriggerCast => DoubleCheliceraStrikeAnimTrigger;
@@ -30,7 +27,7 @@ public class DoubleCheliceraStrike : Skill
         OnSkillCanceled += HandleSkillCanceled;
     }
 
-    private void OnDestroy() => OnSkillCanceled -= HandleSkillCanceled;
+    private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
@@ -52,13 +49,9 @@ public class DoubleCheliceraStrike : Skill
                     }
                 }
             }
-
-            _isCanCancle = false;
-
             yield return null;
         }
 
-        _player.Move.CanMove = false;
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);

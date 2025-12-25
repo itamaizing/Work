@@ -25,6 +25,7 @@ public class MoveComponent : NetworkBehaviour
 	public bool CanMoveState = false;
 	public bool IsMoving = false;
 	public bool IsSelect = false;
+	public bool IsNoRotateAtCursor = false;
 
 	private Rigidbody _rigidbody;
 	private Vector3 _offset = Vector3.zero;
@@ -40,6 +41,7 @@ public class MoveComponent : NetworkBehaviour
 	private Vector3 _currentVelocity;
 	private Vector3 _currentVelocityTemp;
 	private Coroutine _lookAtTransformJob;
+	private Coroutine _moveTowardsRoutine;
 
 	private bool _isFly;
 
@@ -100,6 +102,8 @@ public class MoveComponent : NetworkBehaviour
 	{
 		_isLookAtCursor = false;
 
+		if (position == transform.position || (position - transform.position).sqrMagnitude < 0.01f)	return;
+
 		if (float.IsNaN(position.x) || float.IsNaN(position.y) || float.IsNaN(position.z) ||
 	  position == Vector3.positiveInfinity || position == Vector3.negativeInfinity ||
 	  Vector3.Distance(transform.position, position) < Mathf.Epsilon) return;
@@ -137,7 +141,7 @@ public class MoveComponent : NetworkBehaviour
 
 		_rigidbody.linearVelocity = Vector3.zero;
 		_rigidbody.angularVelocity = Vector3.zero;
-
+		
 		var agent = GetComponent<NavMeshAgent>();
 		if (agent && agent.enabled) agent.ResetPath();
 
@@ -197,7 +201,6 @@ public class MoveComponent : NetworkBehaviour
     {
 		if ((!CanMove && !CanMoveState) || _rigidbody == null || IsMoveBlocked == true)
 		{
-
 			if (_rigidbody != null)
 			{
                 _rigidbody.linearVelocity = Vector3.zero;
@@ -208,7 +211,7 @@ public class MoveComponent : NetworkBehaviour
 			return;
 		}
 
-		if (IsSelect == false)
+		if(!IsSelect && !CanMoveState)
 		{
 			_dir = Vector2.zero;
 		}
@@ -226,7 +229,7 @@ public class MoveComponent : NetworkBehaviour
 
 		if (_rigidbody.linearVelocity.magnitude > 0.5f && moveAudioSource != null && !moveAudioSource.isPlaying) PlayMove();
 
-		if (_anim != null && CanMove)
+		if (_anim != null && (CanMove || CanMoveState))
 		{
 			var animDir = transform.InverseTransformPoint(transform.position + camDir);
 			_animMultiplier = 0.1f * _rigidbody.linearVelocity.magnitude + 0.5f;
@@ -237,7 +240,7 @@ public class MoveComponent : NetworkBehaviour
 
 	protected virtual void RotateAtCursor()
     {
-		if (GetComponent<MinionMove>()) return;
+		if (IsNoRotateAtCursor) return;
 
 		if (IsSelect == true && _isLookAtCursor == true)
 		{
@@ -281,7 +284,7 @@ public class MoveComponent : NetworkBehaviour
 
     private void OnMove(Vector2 dir)
     {
-		if (IsSelect)
+		if (IsSelect || CanMoveState)
 			_dir = new Vector3(dir.x, 0, dir.y);
 	}
 
@@ -347,7 +350,7 @@ public class MoveComponent : NetworkBehaviour
 	{
 		if (!isServer) return;
 
-		TargetRpcMoveTowards(connectionToClient, targetPosition, speed);
+	    TargetRpcMoveTowards(connectionToClient, targetPosition, speed);
 	}
 
 	public void PlayMove()
@@ -364,6 +367,7 @@ public class MoveComponent : NetworkBehaviour
 		int index = UnityEngine.Random.Range(0, moveClips.Length);
 		moveAudioSource.PlayOneShot(moveClips[index]);
 	}
+	[TargetRpc] public void TargetRpcStopMoveAndAnimationMove() { StopMoveAndAnimationMove(); }
 
 	[TargetRpc]
 	public void TargetRpcAddForce(Vector3 vector3)
@@ -406,6 +410,23 @@ public class MoveComponent : NetworkBehaviour
 			agent.enabled = true;
 		});
 	}
+	public void CancelMoveTowards()
+	{
+		if (_moveTowardsRoutine != null)
+		{
+			StopCoroutine(_moveTowardsRoutine);
+			_moveTowardsRoutine = null;
+		}
+
+		_rigidbody.linearVelocity = Vector3.zero;
+		_rigidbody.angularVelocity = Vector3.zero;
+
+		var agent = GetComponent<NavMeshAgent>();
+		if (agent != null && !agent.enabled)
+			agent.enabled = true;
+
+		CanMove = true;
+	}
 
 	[TargetRpc]
 	private void TargetRpcTeleportToPositionSmooth(NetworkConnection target, Vector3 position, float duration)
@@ -420,7 +441,7 @@ public class MoveComponent : NetworkBehaviour
 	[TargetRpc]
 	private void TargetRpcMoveTowards(NetworkConnection target, Vector3 targetPosition, float speed)
 	{
-		StartCoroutine(MoveTowardsCoroutine(targetPosition, speed));
+		_moveTowardsRoutine = StartCoroutine(MoveTowardsCoroutine(targetPosition, speed));
 	}
 
 	[TargetRpc]
@@ -455,25 +476,26 @@ public class MoveComponent : NetworkBehaviour
 		transform.position += vector3;
 	}
 
-	public void TestDoMove(Vector3 targetPosition, float maxDistance)
+	[TargetRpc]
+	public void TargetRpcTestDoMove(Vector3 targetPosition, float speed)
+	{
+		TestDoMove(targetPosition, speed);
+	}
+	public void TestDoMove(Vector3 targetPosition, float speed)
 	{
 		CanMove = false;
 
+		float distance = Vector3.Distance(transform.position, targetPosition);
+		float duration = distance / speed;
+
 		Tween moveTween = null;
 
-	     moveTween = _rigidbody.DOMove(targetPosition, 1f)
-			.SetEase(Ease.Linear)
-			.OnUpdate(() =>
-			{
-				if (Vector3.Distance(transform.position, targetPosition) <= maxDistance)
-				{
-					moveTween.Kill();
-			}
-			})
-			.OnKill(() =>
-			{
-				CanMove = true;
-			});
+		moveTween = _rigidbody.DOMove(targetPosition, duration)
+		.SetEase(Ease.Linear)
+		.OnKill(() =>
+		{
+			CanMove = true;
+		});
 	}
 
 	[ClientRpc]

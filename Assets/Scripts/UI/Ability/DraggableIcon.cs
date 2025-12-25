@@ -246,22 +246,23 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         _chargeCounter.text = value.ToString();
     }
 
-    private void OnStartCooldown(float dutarion)
+    private void OnStartCooldown(float duration)
     {
         if (!gameObject.activeInHierarchy)
         {
-            _pendingCooldown = dutarion;
+            _pendingCooldown = duration;
             return;
         }
 
         if (_cooldownCoroutine != null) StopCoroutine(_cooldownCoroutine);
 
         _cooldown.gameObject.SetActive(true);
-        _cooldown.StartFill(dutarion, 1, 0, false);
+
+        CheckingForCurrentRecharge(duration);
 
         _cooldownNum.color = (_skill is IPassiveSkill) ? Color.green : Color.red;
 
-        _cooldownCoroutine = StartCoroutine(CooldownCounterJob(dutarion));
+        _cooldownCoroutine = StartCoroutine(CooldownCounterJob(duration));
     }
 
     private void OnStopCooldown()
@@ -278,6 +279,22 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private void OnChargeStartCooldown(float value)
     {
         _chargeCD.AddChargeCD(value);
+    }
+
+    private void CheckingForCurrentRecharge(float duration)
+    {
+        float time;
+        float startValue = 1f;
+
+        bool isActiveSkill = _skill != null && _skill.RemainingCooldownTime > 0.01f;
+
+        if (isActiveSkill)
+        {
+            time = startValue - duration / _skill.CooldownTime;
+            _cooldown.StartFill(duration, startValue - time, 0, false);
+        }
+
+        else _cooldown.StartFill(duration, 1, 0, false);
     }
 
     private IEnumerator CooldownCounterJob(float dutarion)

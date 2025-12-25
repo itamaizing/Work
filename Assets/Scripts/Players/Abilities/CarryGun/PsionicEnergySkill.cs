@@ -55,7 +55,11 @@ public class PsionicEnergySkill : Skill, IPassiveSkill
                 Form = AbilityForm.Magic,
             };
 
+
             ApplyDamage(retaliationDamage, skill.Hero.gameObject);
+
+            var targetCharacterState = skill.Hero.CharacterState;
+            //if (targetCharacterState != null) targetCharacterState.AddState(States.DischargePsi, 6f, 0f, Hero.gameObject, nameof(PsionicEnergySkill));
         }
     }
 }

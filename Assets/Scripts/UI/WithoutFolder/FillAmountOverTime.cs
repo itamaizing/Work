@@ -23,7 +23,7 @@ public class FillAmountOverTime : MonoBehaviour
 
     public void Stop()
     {
-        if(_fillJob != null)
+        if (_fillJob != null)
         {
             StopCoroutine(_fillJob);
             _fillJob = null;

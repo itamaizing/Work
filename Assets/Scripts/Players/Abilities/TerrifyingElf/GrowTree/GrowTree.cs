@@ -11,63 +11,120 @@ public class GrowTree : Skill
     [Header("GrowTree Settings")]
     [SerializeField] private float extendedRadius = 8f;
     [SerializeField] private float _moveDuration = 0.5f;
-    [SerializeField] private float arrowEffectLifetime = 2;
+    [SerializeField] private float _arrowEffectLifetime = 2;
     [SerializeField] private GrowTreeAura _treePrefab;
-    [SerializeField] private MoveComponent moveComponent;
+    [SerializeField] private MoveComponent _moveComponent;
     [SerializeField] private List<GrowTreeAura> _activeTrees;
-    [SerializeField] private ObjectData treeData;
+    [SerializeField] private ObjectData _treeData;
     [SerializeField] private DrawCircle _extendedRadiusCircle;
-    [SerializeField] private Color extendedRadiusColor = new Color(0.8f, 0.3f, 0f);
-    [SerializeField] private ShotsIntoSky shotsIntoSky;
-    [SerializeField] private ShotIntoSky shotIntoSky;
-    [SerializeField] private GameObject arrowWithTreeEffect;
-    [SerializeField] private ParticleSystem arrowIntoSkyEffect;
+    [SerializeField] private Color _extendedRadiusColor = new Color(0.8f, 0.3f, 0f);
+    [SerializeField] private ShotsIntoSky _shotsIntoSky;
+    [SerializeField] private ShotIntoSky _shotIntoSky;
+    [SerializeField] private GameObject _arrowWithTreeEffect;
+    [SerializeField] private ParticleSystem _arrowIntoSkyEffect;
+    [SerializeField] private SkillQueue _skillQueue;
 
     [Header("Talents")]
     //[SerializeField] private bool treeHealthTalent; // Созданное дерево каждые 0,3 сек увеличивает максималньый запас здоровья на 1 ед. Вплоть до 60 сек.
-    private bool growTreeIncreasesMaxHealth;
-    private bool treeMagicEvadeTalent;
-    private bool treeShotCooldownTalent;
+    private bool _growTreeIncreasesMaxHealth;
+    private bool _treeMagicEvadeTalent;
+    private bool _treeShotCooldownTalent;
     private bool _isGrowTreeArrowIntoSkyRadiusTalent;
 
     [Header("Raycast masks")]
     [SerializeField] private LayerMask groundLayer;
 
     private Vector3 _targetPoint = Vector3.positiveInfinity;
-    private Vector3 point = Vector3.positiveInfinity;
     private GrowTreeAura _currentTree;
     private ObjectHealth _healthTree;
-    private float baseHealth;
-    private float baseCastStreamDuration;
+    private float _baseHealth;
+    private float _baseCastStreamDuration;
     private float _baseCastDelay;
     private Coroutine _treeHealthCoroutine;
     private Coroutine _rangeWatch;
     private Coroutine _checkExtendedRadiusCoroutine;
     private Coroutine _arrowFxRoutine;
+    private Coroutine _streamCoroutine;
     private bool _isSpawnHero;
-    private bool _arrowFxPressLatch;
     private bool _castFromExtendedRadius;
+    private bool _streamFinished;
+    private WaitForSeconds _waitForExtendedRadiusInterval;
+    private WaitForSeconds _waitForCastStreamDurationFirst;
+    private WaitForSeconds _waitForCastStreamDurationSecond;
+    private WaitForSeconds _waitForCastStreamDurationThird;
 
-    protected override bool IsCanCast => !float.IsPositiveInfinity(_targetPoint.x) && IsPointInRadius(extendedRadius, _targetPoint);
+    #region Const
+    private const float MaxMouseRaycastDistance = 1000f;
+    private const float ExtendedRadiusCheckInterval = 0.1f;
+    private const float AnimatorCrossFadeDuration = 0.1f;
+    private const float TreeTeleportYOffset = 5f;
+    private const float CastStreamDurationFirst = 3f;
+    private const float CastStreamDurationSecond = 1.5f;
+    private const float SearchRadiusTarget = 1f;
+    private const float SearchMousClickTarget = 1f;
+    private const float MagicEvade = 100f;
 
-    private int _growHash = Animator.StringToHash("GrowTreeCastDelay");
-    private int _shotHash = Animator.StringToHash("ShotSkyWithTreeCastDelay");
+    private const string GrowTreeCastDelayExit = "GrowTreeCastDelayExit";
+    private const string GrowTreeCastDelay = "GrowTreeCastDelay";
+    private const string ShotSkyWithTreeCastDelay = "ShotSkyWithTreeCastDelay";
+    #endregion
+
+    protected override bool IsCanCast
+    {
+        get
+        {
+            if (float.IsPositiveInfinity(_targetPoint.x)) return false;
+
+            float allowedRadius = _isGrowTreeArrowIntoSkyRadiusTalent ? extendedRadius : Radius;
+            return IsPointInRadius(allowedRadius, _targetPoint);
+        }
+    }
+
+    private int _growHash = Animator.StringToHash(GrowTreeCastDelay);
+    private int _shotHash = Animator.StringToHash(ShotSkyWithTreeCastDelay);
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
-    public void ArrowIntoSkyWithTreeEffectPlay() => arrowIntoSkyEffect.Play();
+    public void ArrowIntoSkyWithTreeEffectPlay() => _arrowIntoSkyEffect.Play();
+
+    public void GrowTreeStopMove()
+    {
+        _hero.Move.StopMoveAndAnimationMove();
+        _hero.Move.IsMoveBlocked = true;
+    }
+
+    public void GrowTreeStartMove()
+    {
+        _hero.Move.IsMoveBlocked = false;
+    }
 
     private void Start()
     {
         _baseCastDelay = CastDeley;
-        baseHealth = treeData.MaxHealth;
-        baseCastStreamDuration = CastStreamDuration;
+        _baseHealth = _treeData.MaxHealth;
+        _baseCastStreamDuration = CastStreamDuration;
+        _waitForExtendedRadiusInterval = new WaitForSeconds(ExtendedRadiusCheckInterval);
+        _waitForCastStreamDurationFirst = new WaitForSeconds(CastStreamDuration / CastStreamDurationFirst);
+        _waitForCastStreamDurationSecond = new WaitForSeconds(CastStreamDuration / CastStreamDurationSecond);
+        _waitForCastStreamDurationThird = new WaitForSeconds(CastStreamDuration);
     }
 
-    private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
-    private void OnDestroy() => OnSkillCanceled -= HandleSkillCanceled;
+    private void OnEnable()
+    {
+        OnSkillCanceled += HandleSkillCanceled;
+        _skillQueue.Cancell += HandleSkillDeleted;
+    }
+    private void OnDisable ()
+    {
+        OnSkillCanceled -= HandleSkillCanceled;
+        _skillQueue.Cancell -= HandleSkillDeleted;
+    }
 
+    private void HandleSkillDeleted(Skill skill)
+    {
+        if (skill == this) ClientStopDamageZone();
+    }
     private void ShowExtendedRadius()
     {
         if (_extendedRadiusCircle == null) _extendedRadiusCircle = GetComponentInChildren<DrawCircle>(true);
@@ -87,18 +144,18 @@ public class GrowTree : Skill
         }
     }
 
-    private void SpawnArrowWithTreeEffect(Vector3 point)
-    {
-        if (!arrowWithTreeEffect) return;
+    //private void SpawnArrowWithTreeEffect(Vector3 point)
+    //{
+    //    if (!_arrowWithTreeEffect) return;
 
-        Vector3 direction = point - transform.position;
-        direction.y = 0f;
-        Quaternion rotation = direction.sqrMagnitude > 0.0001f ? Quaternion.LookRotation(direction) : Quaternion.identity;
+    //    Vector3 direction = point - transform.position;
+    //    direction.y = 0f;
+    //    Quaternion rotation = direction.sqrMagnitude > ArrowLookMinThresholdSqr ? Quaternion.LookRotation(direction) : Quaternion.identity;
 
-        var effect = Instantiate(arrowWithTreeEffect, point, rotation);
-        SceneManager.MoveGameObjectToScene(effect, gameObject.scene);
-        Destroy(effect, arrowEffectLifetime);
-    }
+    //    var effect = Instantiate(_arrowWithTreeEffect, point, rotation);
+    //    SceneManager.MoveGameObjectToScene(effect, gameObject.scene);
+    //    Destroy(effect, _arrowEffectLifetime);
+    //}
 
     private void ResetData()
     {
@@ -106,7 +163,6 @@ public class GrowTree : Skill
         _currentTree = null;
         _castFromExtendedRadius = false;
         CastDeley = _baseCastDelay;
-        point = Vector3.positiveInfinity;
 
         if (_arrowFxRoutine != null)
         {
@@ -115,11 +171,11 @@ public class GrowTree : Skill
         }
     }
 
-    private IEnumerator ISpawnArrowWithTreeEffect()
-    {
-        yield return new WaitForSeconds(CastStreamDuration / 5);
-        if (_castFromExtendedRadius) SpawnArrowWithTreeEffect(point);
-    }
+    //private IEnumerator ISpawnArrowWithTreeEffect()
+    //{
+    //    yield return new WaitForSeconds(CastStreamDuration / 5);
+    //    if (_castFromExtendedRadius) SpawnArrowWithTreeEffect(_targetPoint);
+    //}
 
     private IEnumerator CheckExtendedRadiusJob()
     {
@@ -143,52 +199,50 @@ public class GrowTree : Skill
             Vector3 mousePoint = GetMousePointOnLayer(groundLayer);
             bool cursorInside = !float.IsPositiveInfinity(mousePoint.x) && Vector3.Distance(mousePoint, transform.position) <= extendedRadius;
 
-            _extendedRadiusCircle.SetColor(cursorInside ? Color.green : extendedRadiusColor);
+            _extendedRadiusCircle.SetColor(cursorInside ? Color.green : _extendedRadiusColor);
             _extendedRadiusCircle.Draw(extendedRadius);
 
-            yield return new WaitForSeconds(0.1f);
+            yield return _waitForExtendedRadiusInterval;
         }
     }
 
-    private IEnumerator CastDistanceWatcher()
-    {
-        const float checkInterval = 0.1f;
-        var wait = new WaitForSeconds(checkInterval);
+    //private IEnumerator CastDistanceWatcher()
+    //{
+    //    const float checkInterval = 0.1f;
+    //    var wait = new WaitForSeconds(checkInterval);
 
-        try
-        {
-            while (true)
-            {
-                if (_hero == null) yield break;
+    //    try
+    //    {
+    //        while (true)
+    //        {
+    //            if (_hero == null) yield break;
 
-                float allowed = _castFromExtendedRadius ? extendedRadius : Radius;
-                float allowedSqr = allowed * allowed;
+    //            float allowed = _castFromExtendedRadius ? extendedRadius : Radius;
+    //            float allowedSqr = allowed * allowed;
 
-                Vector3 heroPos = _hero.transform.position;
-                Vector3 anchor = _currentTree != null ? _currentTree.transform.position : _targetPoint;
+    //            Vector3 heroPos = _hero.transform.position;
+    //            Vector3 anchor = _currentTree != null ? _currentTree.transform.position : _targetPoint;
 
-                if ((heroPos - anchor).sqrMagnitude > allowedSqr)
-                {
-                    TryCancel();
-                    ResetData();
-                    break;
-                }
+    //            if ((heroPos - anchor).sqrMagnitude > allowedSqr)
+    //            {
+    //                TryCancel();
+    //                ResetData();
+    //                break;
+    //            }
 
-                yield return wait;
-            }
-        }
-        finally
-        {
-            _rangeWatch = null;
-        }
-    }
-
-
+    //            yield return wait;
+    //        }
+    //    }
+    //    finally
+    //    {
+    //        _rangeWatch = null;
+    //    }
+    //}
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         TreeHealthTalentEnter();
-
         _activeTrees.RemoveAll(tree => tree == null);
+
         CmdRemoveTree();
 
         if (_isGrowTreeArrowIntoSkyRadiusTalent)
@@ -199,64 +253,65 @@ public class GrowTree : Skill
         }
 
         int treeCount = _activeTrees.Count;
-        CastStreamDuration = treeCount == 0 ? baseCastStreamDuration : baseCastStreamDuration * Mathf.Pow(2, treeCount);
+        CastStreamDuration = treeCount == 0 ? _baseCastStreamDuration : _baseCastStreamDuration * Mathf.Pow(2, treeCount);
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
+        Vector3 targetPoint = Vector3.positiveInfinity;
+
+        while (float.IsPositiveInfinity(targetPoint.x))
         {
-            if (!GetMouseButton) _arrowFxPressLatch = false;
-
-            if (GetMouseButton && !_arrowFxPressLatch)
+            if (GetMouseButton)
             {
-                _arrowFxPressLatch = true;
+                Vector3 mousePoint = GetMousePoint();
+                bool clickedOnHero = false;
 
-                var clickedCharacter = GetClickedCharacter(Hero);
-
-                if (clickedCharacter != null && clickedCharacter == _hero)
+                Collider[] colliders = Physics.OverlapSphere(mousePoint, SearchMousClickTarget);
+                foreach (var collider in colliders)
                 {
-                    _targetPoint = _hero.transform.position;
+                    if (collider.TryGetComponent<Character>(out Character hitCharacter) && hitCharacter == _hero)
+                    {
+                        clickedOnHero = true;
+                        break;
+                    }
+                }
+
+                targetPoint = mousePoint;
+
+                if (clickedOnHero)
+                {
+                    targetPoint = _hero.transform.position;
                     _isSpawnHero = true;
                 }
+
                 else
                 {
-                    point = GetMousePointOnLayer(groundLayer);
+                    float dist = Vector3.Distance(transform.position, targetPoint);
+                    if (dist <= Radius) _castFromExtendedRadius = false;
 
-                    if (!float.IsPositiveInfinity(point.x))
-                    {
-                        float dist = Vector3.Distance(transform.position, point);
+                    //else if (dist <= extendedRadius && _isGrowTreeArrowIntoSkyRadiusTalent)
+                    //{
+                    //    if (shotIntoSky != null && !shotIntoSky.IsCooldowned && !shotIntoSky.Disactive)
+                    //    {
+                    //        yield return null;
+                    //        continue;
+                    //    }
 
-                        if (dist <= Radius)
-                        {
-                            _targetPoint = point;
-                            _castFromExtendedRadius = false;
-                        }        
+                    //    _castFromExtendedRadius = true;
+                    //    CastDeley += arrowEffectLifetime;
+                    //    SpawnArrowWithTreeEffect(targetPoint);
 
-                        else if (dist <= extendedRadius && _isGrowTreeArrowIntoSkyRadiusTalent)
-                        {
-                            if (shotIntoSky != null && !shotIntoSky.IsCooldowned && !shotIntoSky.Disactive)
-                            {
-                                yield return null;
-                                continue;
-                            }
-
-                            _targetPoint = point;
-                            _castFromExtendedRadius = true;
-                            CastDeley += arrowEffectLifetime;
-                            SpawnArrowWithTreeEffect(point);
-
-                            if (shotIntoSky != null && shotIntoSky.IsUseCharges) shotIntoSky.TryUseCharge();
-                            else if (shotIntoSky != null) shotIntoSky.IncreaseSetCooldown(shotIntoSky.CooldownTime);
-                        }
-                    }
+                    //    if (shotIntoSky != null && shotIntoSky.IsUseCharges) shotIntoSky.TryUseCharge();
+                    //    else if (shotIntoSky != null) shotIntoSky.IncreaseSetCooldown(shotIntoSky.CooldownTime);
+                    //}
                 }
             }
 
             yield return null;
         }
 
-        int nearCount = _activeTrees.Count(tree => tree != null && Vector3.Distance(tree.transform.position, _targetPoint) <= Radius);
-        CastStreamDuration = nearCount == 0 ? baseCastStreamDuration : baseCastStreamDuration * Mathf.Pow(2, nearCount);
+        int nearCount = _activeTrees.Count(tree => tree != null && Vector3.Distance(tree.transform.position, targetPoint) <= Radius);
+        CastStreamDuration = nearCount == 0 ? _baseCastStreamDuration : _baseCastStreamDuration * Mathf.Pow(2, nearCount);
 
-        CmdSetCastStreamDurationByProximity(_targetPoint, Radius);
+        CmdSetCastStreamDurationByProximity(targetPoint, Radius);
 
         if (_checkExtendedRadiusCoroutine != null)
         {
@@ -265,7 +320,7 @@ public class GrowTree : Skill
         }
         HideExtendedRadius();
 
-        DrawDamageZone(_targetPoint);
+        DrawDamageZoneClient(targetPoint);
 
         if (_castFromExtendedRadius)
         {
@@ -274,13 +329,19 @@ public class GrowTree : Skill
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_targetPoint);
+        targetInfo.Points.Add(targetPoint);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
         if (_treePrefab == null) yield break;
+
+        GrowTreeStopMove();
+        if (_streamCoroutine != null) StopCoroutine(_streamCoroutine);
+
+        _streamCoroutine = StartCoroutine(StreamDuration());
+        ClientStopDamageZone();
 
         if (_rangeWatch != null)
         {
@@ -296,16 +357,23 @@ public class GrowTree : Skill
             _hero.Animator.SetTrigger(_growHash);
             _hero.NetworkAnimator.SetTrigger(_growHash);
 
-            yield return new WaitForSeconds(CastStreamDuration / 3);
+            yield return _waitForCastStreamDurationFirst;
         }
-
-        StopDamageZone();
 
         if (_isSpawnHero) CmdSpawnTreeAndTeleport(_hero.transform.position);
         else CmdSpawnTree(spawnPos, _castFromExtendedRadius);
 
-        if (!_castFromExtendedRadius) yield return new WaitForSeconds(CastStreamDuration / 1.5f);
-        else yield return new WaitForSeconds(CastStreamDuration);
+
+        if (!_castFromExtendedRadius) yield return _waitForCastStreamDurationSecond;
+        else yield return _waitForCastStreamDurationThird;
+
+        while (!_streamFinished) yield return null;
+    }
+
+    private IEnumerator StreamDuration()
+    {
+        _streamFinished = false;
+        yield return new WaitForSeconds(CastStreamDuration);
 
         if (_castFromExtendedRadius)
         {
@@ -316,20 +384,23 @@ public class GrowTree : Skill
         {
             _hero.Animator.ResetTrigger(_growHash);
             _hero.NetworkAnimator.ResetTrigger(_growHash);
-
             CmdCrossFade();
-            _hero.Animator.CrossFade("GrowTreeCastDelayExit", 0.1f);
+            _hero.Animator.CrossFade(GrowTreeCastDelayExit, AnimatorCrossFadeDuration);
         }
 
+        GrowTreeStartMove();
         ResetData();
-        StopRangeWatch();   
+        StopRangeWatch();
+
+        _streamFinished = true;
+        _streamCoroutine = null;
     }
 
     protected Vector3 GetMousePointOnLayer(LayerMask layer, float y = 0f)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, 1000f, layer))
+        if (Physics.Raycast(ray, out RaycastHit hit, MaxMouseRaycastDistance, layer))
         {
             Vector3 point = hit.point;
             point.y = y;
@@ -342,9 +413,6 @@ public class GrowTree : Skill
     #region Canceling a skill
     private void HandleSkillCanceled()
     {
-        StopDamageZone();
-        StopRangeWatch();
-
         if (_checkExtendedRadiusCoroutine != null)
         {
             StopCoroutine(_checkExtendedRadiusCoroutine);
@@ -357,29 +425,20 @@ public class GrowTree : Skill
 
         if (_currentTree != null) CmdRequestInterruptTree(_currentTree.netId);
 
-        ResetData();
-    }
-    #endregion
-
-    #region Auxiliary methods
-    private Character GetClickedCharacter(Character hero)
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, 1000f))
+        if (_streamCoroutine != null)
         {
-            Vector3 clickPoint = hit.point;
-            Collider[] hits = Physics.OverlapSphere(clickPoint, Area, TargetsLayers);
-            if (hits.Length == 0) return null;
-            foreach (Collider target in hits) if (target.TryGetComponent(out Character character) && character == hero) return character;
+            StopCoroutine(_streamCoroutine);
+            _streamCoroutine = null;
         }
 
-        return null;
+        GrowTreeStartMove();
+        ResetData();
+        StopRangeWatch();
     }
     #endregion
 
     #region [Command] / Spawn
-    [Command] private void CmdSetMaxHealth(float maxHealth) => treeData.MaxHealth = maxHealth;
+    [Command] private void CmdSetMaxHealth(float maxHealth) => _treeData.MaxHealth = maxHealth;
     [Command] private void CmdRemoveTree() => _activeTrees.RemoveAll(tree => tree == null);
 
     [Command]
@@ -395,19 +454,19 @@ public class GrowTree : Skill
         if (_healthTree != null)
         {
             float regenDuration = 0;
-            if (!castFromExtendedRadius) regenDuration = CastStreamDuration - CastStreamDuration / 3f;
+            if (!castFromExtendedRadius) regenDuration = CastStreamDuration - CastStreamDuration / CastStreamDurationFirst;
             else regenDuration = CastStreamDuration;
 
-            _healthTree.InitializeObject(treeData);
-            if (treeData.MinEndurance) _healthTree.ServerStartFillHP(_healthTree.ObjectData.MaxHealth, regenDuration);
+            _healthTree.InitializeObject(_treeData);
+            if (_treeData.MinEndurance) _healthTree.ServerStartFillHP(_healthTree.ObjectData.MaxHealth, regenDuration);
 
-            if (treeMagicEvadeTalent) _healthTree.SetMagicEvade(100);
+            if (_treeMagicEvadeTalent) _healthTree.SetMagicEvade(MagicEvade);
 
         }
         ResetShotCooldowns();
 
         _activeTrees.Add(tree);
-        _currentTree.GrowTreeIncreasesMaxHealth = growTreeIncreasesMaxHealth;
+        _currentTree.GrowTreeIncreasesMaxHealth = _growTreeIncreasesMaxHealth;
         RpcClientAddTree(tree.GetComponent<NetworkIdentity>().netId, _currentTree);
     }
 
@@ -415,7 +474,7 @@ public class GrowTree : Skill
     private void CmdSpawnTreeAndTeleport(Vector3 position)
     {
         Debug.Log($"TargetPoint: {_targetPoint.x}");
-        Vector3 spawnPosition = position + Vector3.down;
+        Vector3 spawnPosition = position;
 
         var tree = Instantiate(_treePrefab, spawnPosition, Quaternion.identity);
         _currentTree = tree;
@@ -427,18 +486,18 @@ public class GrowTree : Skill
         _healthTree = _currentTree.GetComponentInChildren<ObjectHealth>();
         if (_healthTree != null)
         {
-            _healthTree.InitializeObject(treeData);
+            _healthTree.InitializeObject(_treeData);
 
-            float regenDuration = CastStreamDuration - CastStreamDuration / 3f;
+            float regenDuration = CastStreamDuration - CastStreamDuration / CastStreamDurationFirst;
 
-            if (treeData.MinEndurance) _healthTree.ServerStartFillHP(_healthTree.ObjectData.MaxHealth, regenDuration);
+            if (_treeData.MinEndurance) _healthTree.ServerStartFillHP(_healthTree.ObjectData.MaxHealth, regenDuration);
 
-            if (treeMagicEvadeTalent) _healthTree.SetMagicEvade(100);
+            if (_treeMagicEvadeTalent) _healthTree.SetMagicEvade(MagicEvade);
         }
         ResetShotCooldowns();
 
         _activeTrees.Add(tree);
-        _currentTree.GrowTreeIncreasesMaxHealth = growTreeIncreasesMaxHealth;
+        _currentTree.GrowTreeIncreasesMaxHealth = _growTreeIncreasesMaxHealth;
         RpcClientAddTree(tree.GetComponent<NetworkIdentity>().netId, _currentTree);
     }
 
@@ -455,7 +514,7 @@ public class GrowTree : Skill
     [Command]
     private void CmdCrossFade()
     {
-        _hero.Animator.CrossFade("GrowTreeCastDelayExit", 0.1f);
+        _hero.Animator.CrossFade(GrowTreeCastDelayExit, AnimatorCrossFadeDuration);
     }
 
     [Command]
@@ -465,14 +524,14 @@ public class GrowTree : Skill
 
         int nearCount = 0;
         foreach (var tree in _activeTrees) if (tree != null && Vector3.Distance(tree.transform.position, plannedPos) <= checkRadius) nearCount++;
-        CastStreamDuration = nearCount == 0 ? baseCastStreamDuration : baseCastStreamDuration * Mathf.Pow(2, nearCount);
+        CastStreamDuration = nearCount == 0 ? _baseCastStreamDuration : _baseCastStreamDuration * Mathf.Pow(2, nearCount);
     }
 
     [ClientRpc]
     private void RpcClientAddTree(uint netId, GrowTreeAura currentTree)
     {
         _currentTree = currentTree;
-        _currentTree.GrowTreeIncreasesMaxHealth = growTreeIncreasesMaxHealth;
+        _currentTree.GrowTreeIncreasesMaxHealth = _growTreeIncreasesMaxHealth;
         if (NetworkClient.spawned.TryGetValue(netId, out var networkIdentity)) _activeTrees.Add(networkIdentity.GetComponent<GrowTreeAura>());
     }
 
@@ -481,23 +540,23 @@ public class GrowTree : Skill
     {
         if (tree != null)
         {
-            Vector3 topOfTree = tree.transform.position + Vector3.up * 5f;
-            moveComponent.TeleportToPositionSmooth(topOfTree, _moveDuration);
+            Vector3 topOfTree = tree.transform.position + Vector3.up * TreeTeleportYOffset;
+            _moveComponent.TeleportToPositionSmooth(topOfTree, _moveDuration);
         }
     }
 
     [ClientRpc]
     private void ResetShotCooldowns()
     {
-        if (!treeShotCooldownTalent) return;
+        if (!_treeShotCooldownTalent) return;
 
-        if (shotsIntoSky != null && !shotsIntoSky.IsCooldowned) shotsIntoSky.ForceCooldownEnd();
-        if (shotIntoSky != null && !shotIntoSky.IsCooldowned) shotsIntoSky.ForceCooldownEnd();
+        if (_shotsIntoSky != null && !_shotsIntoSky.IsCooldowned) _shotsIntoSky.ForceCooldownEnd();
+        if (_shotIntoSky != null && !_shotIntoSky.IsCooldowned) _shotsIntoSky.ForceCooldownEnd();
     }
     #endregion
 
     #region Talent
-    public void ShotTreeCooldownTalent(bool value) => treeShotCooldownTalent = value;
+    public void ShotTreeCooldownTalent(bool value) => _treeShotCooldownTalent = value;
     public void GrowTreeArrowIntoSkyRadius(bool value) => _isGrowTreeArrowIntoSkyRadiusTalent = value;
     #endregion
 
@@ -505,7 +564,7 @@ public class GrowTree : Skill
     public void treeHealthTalentActive(bool value)
     {
         //treeHealthTalent = value;
-        growTreeIncreasesMaxHealth = value;
+        _growTreeIncreasesMaxHealth = value;
     }
 
     private void TreeHealthTalentEnter()
@@ -521,27 +580,10 @@ public class GrowTree : Skill
             _treeHealthCoroutine = null;
         }
 
-        treeData.MaxHealth = baseHealth;
-        CastStreamDuration = baseCastStreamDuration;
+        _treeData.MaxHealth = _baseHealth;
+        CastStreamDuration = _baseCastStreamDuration;
 
-        CmdSetMaxHealth(treeData.MaxHealth);
-    }
-
-    private IEnumerator IncreaseTreeMaxHealthOverTime()
-    {
-        float increaseDuration = 60f;
-        float interval = 0.3f;
-        int steps = Mathf.FloorToInt(increaseDuration / interval);
-
-        for (int i = 0; i < steps; i++)
-        {
-            treeData.MaxHealth += 1;
-            CmdSetMaxHealth(treeData.MaxHealth);
-
-            if (_healthTree != null) _healthTree.ObjectData.MaxHealth = treeData.MaxHealth;
-
-            yield return new WaitForSeconds(interval);
-        }
+        CmdSetMaxHealth(_treeData.MaxHealth);
     }
     #endregion
 
@@ -549,7 +591,7 @@ public class GrowTree : Skill
 
     public void treeMagicEvadeTalentActive(bool value)
     {
-        treeMagicEvadeTalent = value;
+        _treeMagicEvadeTalent = value;
     }
 
     #endregion

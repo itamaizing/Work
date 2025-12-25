@@ -35,7 +35,7 @@ public class Projectile : MonoBehaviour, IProjectile
         if (_trailParticle != null)
             _trailParticle.transform.position = transform.position;
     }
-
+    
     protected virtual void OnDestroy()
     {
         if (_destroyParticle != null)

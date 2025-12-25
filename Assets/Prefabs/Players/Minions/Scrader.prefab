@@ -1317,7 +1317,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37a5c11bfb1de7c4da352b19ebb053f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spellMoveTo: {fileID: 0}
+  spellMoveScraderTo: {fileID: 8331210179348555134}
+  scratchClaws: {fileID: 8741847699558006757}
 --- !u!1 &1816582864147950907
 GameObject:
   m_ObjectHideFlags: 0
@@ -13080,7 +13081,7 @@ GameObject:
   - component: {fileID: 1655977055310397963}
   - component: {fileID: 2075396149247580188}
   - component: {fileID: 2769373615330125278}
-  - component: {fileID: 1904555498734699369}
+  - component: {fileID: 1734545154344040367}
   - component: {fileID: 3962161804199240009}
   - component: {fileID: 2486038140440756892}
   - component: {fileID: 4316793701678651147}
@@ -13090,6 +13091,7 @@ GameObject:
   - component: {fileID: 5970206098610166088}
   - component: {fileID: 1027874424821115294}
   - component: {fileID: 8741847699558006757}
+  - component: {fileID: 8331210179348555134}
   m_Layer: 9
   m_Name: Scrader
   m_TagString: Allies
@@ -13335,7 +13337,7 @@ MonoBehaviour:
   _animator: {fileID: 4853408415625794062}
   _networkAnimator: {fileID: 6676246011477726785}
   _healthComponent: {fileID: 4688992458449892271}
-  _playerMove: {fileID: 1904555498734699369}
+  _playerMove: {fileID: 1734545154344040367}
   _abilities: {fileID: 6892265620981845488}
   _characterState: {fileID: 161335861236570360}
   uiComponent: {fileID: 1655977055310397963}
@@ -13348,7 +13350,7 @@ MonoBehaviour:
   _spawnComponent: {fileID: 2769373615330125278}
   _visionComponent: {fileID: 0}
   _auras: {fileID: 0}
-  _targetSeeker: {fileID: 0}
+  _targetSeeker: {fileID: 5247455161781399062}
   _characterParent: {fileID: 0}
   _expForDieKill: 5
   _navMeshAgent: {fileID: 0}
@@ -13440,6 +13442,8 @@ MonoBehaviour:
   manaRegen: {fileID: 0}
   ropeTrap: {fileID: 0}
   trapPrefab: {fileID: 0}
+  spiritHealthEffect: {fileID: 0}
+  spiritEnergyEffect: {fileID: 0}
   materialsCharacter:
   - {fileID: 2100000, guid: acfa2dc1ef192cb4391aecaaff8e192f, type: 2}
   weapon: {fileID: 0}
@@ -13571,7 +13575,7 @@ MonoBehaviour:
   _characterPrefabs: []
   _enemyPrefabs: []
   _allyPrefabs: []
---- !u!114 &1904555498734699369
+--- !u!114 &1734545154344040367
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -13599,6 +13603,7 @@ MonoBehaviour:
   CanMoveState: 0
   IsMoving: 0
   IsSelect: 0
+  IsNoRotateAtCursor: 1
 --- !u!114 &3962161804199240009
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13611,9 +13616,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9566eed453ace294f9630617b8f34010, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animator: {fileID: 1215395125402789392}
-  _minionMove: {fileID: 0}
-  spell: {fileID: 0}
+  animator: {fileID: 1215395125402789392}
+  moveScrader: {fileID: 1734545154344040367}
+  spell: {fileID: 8331210179348555134}
+  scratchClaws: {fileID: 8741847699558006757}
 --- !u!114 &2486038140440756892
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13667,7 +13673,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _skills:
-  - {fileID: 0}
+  - {fileID: 8331210179348555134}
   - {fileID: 8741847699558006757}
   _hero: {fileID: 5830977165762126247}
   _talentSystem: {fileID: 5224625938796084017}
@@ -13851,10 +13857,77 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 3
-  animator: {fileID: 1215395125402789392}
+  _animator: {fileID: 1215395125402789392}
   _playerLinks: {fileID: 5830977165762126247}
-  _bleedingDuration: 3
-  _bleedingChance: 0.15
+  _moveDurationPerUnit: 0.2
+  _stopDistance: 1.5
+  _bleedingDuration: 5
+  _bleedingChance: 1
+  _minDamage: 1
+  _maxDamage: 4
+--- !u!114 &8331210179348555134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305573293433524190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9304b59bc4e9f1a40943ec59c2a591a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellMoveScraderTo
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
+  _abilityInfo: {fileID: 11400000, guid: afbef8fac9ee74141abb2a1c1443d316, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
+  _castDeley: 0
+  _damageValue: 0
+  _abilitySchool: 6
+  _abilityForm: 0
+  _damageType: 1
+  _attackRangeType: 0
+  _skillType: 0
+  _moving: 0
+  autoAttack: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 6
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _autoAttackDelay: 0
+  _isAutoRadiusRender: 0
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
+  _moveDurationPerUnit: 0.2
+  _damageDelay: 0.5
+  _attackDistance: 2
+  _damage: 5
+  _animator: {fileID: 1215395125402789392}
+  _skillManager: {fileID: 6892265620981845488}
 --- !u!1 &4348563488435226753
 GameObject:
   m_ObjectHideFlags: 0
@@ -19120,6 +19193,7 @@ GameObject:
   - component: {fileID: 1351873239130007038}
   - component: {fileID: 7156643955012966110}
   - component: {fileID: 5133789345881183399}
+  - component: {fileID: 5247455161781399062}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -19326,6 +19400,22 @@ MonoBehaviour:
   _cursorPrepareTexture: {fileID: 2800000, guid: 096e465ecc8d8e144966847b23995ccc, type: 3}
   _cursorPrepareLightTexture: {fileID: 2800000, guid: 096e465ecc8d8e144966847b23995ccc, type: 3}
   _cursorDefaultTexture: {fileID: 2800000, guid: 177e9214fe839c641b100e52e7032b0c, type: 3}
+--- !u!114 &5247455161781399062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5088517133009842604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0eaa338de0c76e4fbe06fa8331fcfa7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TargetSeeker
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 2097920
+  _hero: {fileID: 5830977165762126247}
 --- !u!1 &5212089423994370004
 GameObject:
   m_ObjectHideFlags: 0

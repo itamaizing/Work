@@ -42,7 +42,7 @@ public class MinionPanel : MonoBehaviour
         UpdatePanel();
     }
 
-    private void OnUnitRemoved()
+    private void OnUnitRemoved(Character minion)
     {
         UpdatePanel();
     }

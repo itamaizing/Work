@@ -11951,7 +11951,6 @@ GameObject:
   - component: {fileID: 8756364439207115647}
   - component: {fileID: 3543592199279037076}
   - component: {fileID: 7099943676139532891}
-  - component: {fileID: 4697272463135853912}
   - component: {fileID: 321651727084008340}
   - component: {fileID: 7790970521576675334}
   - component: {fileID: 102178938915016677}
@@ -11966,7 +11965,7 @@ GameObject:
   m_TagString: Allies
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &2707143735750808927
 Transform:
@@ -12051,11 +12050,11 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 112
-  m_CollisionDetection: 0
+  m_Interpolate: 1
+  m_Constraints: 126
+  m_CollisionDetection: 1
 --- !u!136 &3666356079801673500
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -12222,7 +12221,7 @@ MonoBehaviour:
   _targetSeeker: {fileID: 0}
   _characterParent: {fileID: 0}
   _expForDieKill: 5
-  _navMeshAgent: {fileID: 4697272463135853912}
+  _navMeshAgent: {fileID: 0}
 --- !u!114 &8102436864039870552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12311,6 +12310,8 @@ MonoBehaviour:
   manaRegen: {fileID: 0}
   ropeTrap: {fileID: 0}
   trapPrefab: {fileID: 0}
+  spiritHealthEffect: {fileID: 0}
+  spiritEnergyEffect: {fileID: 0}
   materialsCharacter:
   - {fileID: 2100000, guid: acfa2dc1ef192cb4391aecaaff8e192f, type: 2}
   weapon: {fileID: 0}
@@ -12442,28 +12443,6 @@ MonoBehaviour:
   _characterPrefabs: []
   _enemyPrefabs: []
   _allyPrefabs: []
---- !u!195 &4697272463135853912
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3906734254346883187}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.35
-  m_Speed: 3.5
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 300
-  m_StoppingDistance: 1
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
 --- !u!114 &321651727084008340
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12492,6 +12471,8 @@ MonoBehaviour:
   CanMoveState: 0
   IsMoving: 0
   IsSelect: 0
+  IsNoRotateAtCursor: 1
+  _agent: {fileID: 0}
 --- !u!114 &7790970521576675334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12729,6 +12710,7 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   spawnComponent: {fileID: 7099943676139532891}
+  cocoonSpawn: {fileID: 0}
   minionMove: {fileID: 321651727084008340}
   minion: {fileID: 6271332717105215193}
   tentacle: {fileID: 0}

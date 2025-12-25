@@ -78,12 +78,12 @@ public class JumpBack : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (Disactive && float.IsPositiveInfinity(_mousePosition.x))
+        Vector3 targetPoint = Vector3.positiveInfinity;
+        while (Disactive && float.IsPositiveInfinity(targetPoint.x))
         {
-            if (GetMouseButton) _mousePosition = GetMousePoint();
+            if (GetMouseButton) targetPoint = GetMousePoint();
             yield return null;
         }
-
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(Hero);

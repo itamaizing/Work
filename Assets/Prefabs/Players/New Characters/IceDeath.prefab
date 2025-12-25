@@ -3008,6 +3008,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: IceDeath
       objectReference: {fileID: 0}
+    - target: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 8464766807629527278, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.0000071525565
@@ -3427,7 +3431,7 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   _combo: {fileID: 3083348233968490285}
-  Hits:
+  _hits:
   - {fileID: 8300000, guid: 38dd5da71cb5afd46a2d5744de079417, type: 3}
   - {fileID: 8300000, guid: 8ef68e5faeaffc54da9fe368168308ba, type: 3}
 --- !u!114 &752221787785051408
@@ -3491,7 +3495,7 @@ MonoBehaviour:
   maxCounter: 1
   _projectile: {fileID: 3779490377558770127, guid: 911d5f174dbe7ac4b8da163e8aaf32a1, type: 3}
   _combo: {fileID: 3083348233968490285}
-  audioClip: {fileID: 8300000, guid: f609f46a7f40ad84b9b010044a07b747, type: 3}
+  _audioClip: {fileID: 8300000, guid: f609f46a7f40ad84b9b010044a07b747, type: 3}
 --- !u!114 &3068634069238352843
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3662,7 +3666,7 @@ MonoBehaviour:
     m_Bits: 256
   _obstacle:
     serializedVersion: 2
-    m_Bits: 2098048
+    m_Bits: 0
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
@@ -3673,8 +3677,8 @@ MonoBehaviour:
   _chargeCooldown: 0
   _radius: 0
   _area: 0
-  _castLength: 2
-  _castWidth: 1
+  _castLength: 0
+  _castWidth: 0
   _autoAttackDelay: 0
   _isAutoRadiusRender: 0
   _isAutoAreaRender: 0

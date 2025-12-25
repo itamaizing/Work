@@ -6680,14 +6680,18 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  projectile: {fileID: 7795660894077134963, guid: 8e56a73e4e78d7841ac2f37176fe2356, type: 3}
-  playerLinks: {fileID: 4534754468497973439}
-  spawnPoint: {fileID: 7912234591130548331}
-  ghostSkill: {fileID: 0}
-  audioClip: {fileID: 8300000, guid: ba78f434c86f1ec4d92aa393ca60ca17, type: 3}
-  terrifyingElfAura: {fileID: 0}
-  minDamage: 0
-  maxDamage: 0
+  _projectile: {fileID: 0}
+  _playerLinks: {fileID: 0}
+  _ghostSkill: {fileID: 0}
+  _audioClip: {fileID: 0}
+  _terrifyingElfAura: {fileID: 0}
+  _minDamage: 6
+  _maxDamage: 10
+  _arrowYOffsetUp: 1.5
+  _arrowYOffsetDown: 0.5
+  _groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &3842746931648952249
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6703,8 +6707,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 1
-  _isSkillActive: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 841bdc7bd09965940af4259c7b728b56, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []

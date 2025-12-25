@@ -39,11 +39,13 @@ public class SkillManager : MonoBehaviour
     public IEnumerable<Skill> DefaultSkills => _skills.Where(o => o.IsTalentSpell == false);
     public IEnumerable<Skill> TalentsSkills => _skills.Where(o => o.IsTalentSpell);
 
+    public AutoSkillCast AutoSkillCast => _autoSkillCast;
     public List<Skill> Abilities => _skills;
     public event Action<int> SkillSelected;
     public event Action<int> SkillDeselected;
     public event Action<Skill> SkillAdded;
     public event Action<Skill> SkillRemoved;
+    public event Action<Skill> OnSkillPreparedSuccessfully;
 
     private void OnEnable()
     {
@@ -113,7 +115,10 @@ public class SkillManager : MonoBehaviour
 
     }
     #endregion
-
+    public void NotifySkillPrepared(Skill skill)
+    {
+        OnSkillPreparedSuccessfully?.Invoke(skill);
+    }
     public void CancleAllSkills()
     {
         while (_selectedSkill != null && _selectedSkill.IsPreparing)
@@ -251,6 +256,7 @@ public class SkillManager : MonoBehaviour
     {
         if (value)
         {
+            //InputHandler.OnClick += PrepereSkill;
             InputHandler.OnShiftLeftMouse += PrepereSkill;
             InputHandler.OnAltClick += CancelSkillCast;
 
@@ -258,6 +264,7 @@ public class SkillManager : MonoBehaviour
         }
         else
         {
+            //InputHandler.OnClick -= PrepereSkill;
             InputHandler.OnShiftLeftMouse -= PrepereSkill;
             InputHandler.OnAltClick -= CancelSkillCast;
 
@@ -319,6 +326,7 @@ public class SkillManager : MonoBehaviour
     {
         if (_selectedSkills[index] == null) return false;
         if (_selectedSkills[index] is IPassiveSkill) return false;
+        if (_selectedSkills[index].Disactive) return false;
 
         if (_selectedSkill != null && _selectedSkill.IsPreparing == true)
         {

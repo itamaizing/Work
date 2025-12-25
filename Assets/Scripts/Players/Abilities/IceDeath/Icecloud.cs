@@ -8,19 +8,23 @@ public class IceCloud : Skill
 {
 	[SerializeField] private IceCloudProjectile _projectile;
 	[SerializeField] private SeriesOfStrikes _combo;
-	[SerializeField] private AudioClip audioClip;
+	[SerializeField] private AudioClip _audioClip;
 
 	private Vector3 _mousePos = Vector3.positiveInfinity;
     private Vector3 _mousePos2 = Vector2.positiveInfinity;
-    //private bool _enabled;
     private AudioSource _audioSource;
 	private bool _boostDmg;
 	private bool _lastHit;
 	private Energy _energy;
 	private bool _frozwenTalent;
-	//private Character _target;
+	private float _baseDamage = 10f;
 
-	//private RuneComponent _rune;
+	#region Constants
+	private const float ProjectileSpawnOffset = 0.2f;
+	private const float AngleOffset = 90f;
+	private const float ComboSpeedDivider = 100f;
+	private const float EnergyPerDamageUnit = 5f;
+	#endregion
 
 	protected override bool IsCanCast
 	{
@@ -50,7 +54,6 @@ public class IceCloud : Skill
     {
 		CanMoveIceCloud();
 		ClearTarget();
-		//_target = null;
 		_mousePos = Vector3.positiveInfinity;
 	}
 
@@ -73,15 +76,21 @@ public class IceCloud : Skill
 
 	private void Shoot()
 	{
-		Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
-
 		Vector3 lookDir = _mousePos - Hero.transform.position;
-		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
+		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - AngleOffset;
 		if (_combo.MakeHit(null, AbilityForm.Magic, 1, 0, 0)) _lastHit = true;
 
-		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
+		if (!_combo.SeriesCompliteCompo)
+		{
+			Buff.AttackSpeed.ReductionPercentage(_combo.GetMultipliedSpeed() / ComboSpeedDivider);
+			Buff.CastSpeed.IncreasePercentage(_combo.GetMultipliedSpeed() / ComboSpeedDivider);
+		}
 
-		CmdCreateProjecttile(angle, _energy.CurrentValue, lookDir.normalized);
+		float energyToUse = _energy.CurrentValue;
+		_energy.CmdUse(energyToUse);
+
+		CmdCreateProjecttile(angle, energyToUse, lookDir.normalized);
+
 		ClearTarget();
 		_mousePos = Vector2.positiveInfinity;
 		ClearData();
@@ -90,9 +99,10 @@ public class IceCloud : Skill
 	[Command]
 	private void CmdCreateProjecttile(float angle, float manaValue, Vector3 lookDir)
     {
-		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position + lookDir * .2f, Quaternion.Euler(0, -angle, 0));
+		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position + lookDir * ProjectileSpawnOffset, Quaternion.Euler(0, -angle, 0));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(Hero, manaValue, false, this);
+		projectile.InitIceCloud(manaValue, Damage);
 		projectile.Talent(_boostDmg, _frozwenTalent, _lastHit);
 
 		NetworkServer.Spawn(projectile.gameObject);
@@ -104,13 +114,17 @@ public class IceCloud : Skill
 	[ClientRpc]
 	private void RpcInit(GameObject obj, float manaValue)
 	{
-		obj.GetComponent<IceCloudProjectile>().Init(Hero, manaValue, false, this);
+		if (obj.TryGetComponent<IceCloudProjectile>(out IceCloudProjectile ice))
+        {
+			ice.Init(Hero, manaValue, false, this);
+			ice.InitIceCloud(manaValue, Damage);
+		}
 	}
 
 	[ClientRpc]
 	private void RpcPlayShotSound()
 	{
-		if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
+		if (_audioSource != null && _audioClip != null) _audioSource.PlayOneShot(_audioClip);
 	}
 
 	public void TalentBoostDmg(bool value)
@@ -147,7 +161,7 @@ public class IceCloud : Skill
 						//FindTarget();
 
 						//_target = GetTarget().character;
-						_damageValue = 10 + _energy.CurrentValue / 5;
+						Damage = _baseDamage + _energy.CurrentValue / EnergyPerDamageUnit;
 						_mousePos2 = GetTargetCharacter().transform.position;
 					}
 				}

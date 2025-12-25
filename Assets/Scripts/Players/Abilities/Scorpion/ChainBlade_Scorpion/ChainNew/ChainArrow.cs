@@ -5,40 +5,73 @@ using System;
 
 public class ChainArrow : Projectiles
 {
-    [SerializeField] private LineRenderer lineRenderer;
-    [SerializeField] private float speed = 20f;
-    [SerializeField] private float speedModifier = 1.2f;
-    [SerializeField] private float speedWithTarget = 4f;
-    [SerializeField] private float stopDistance = 1.5f;
-    [SerializeField] private LayerMask targetsLayer;
-    [SerializeField] private Transform chainPoint;
+    [SerializeField] private LineRenderer _lineRenderer;
+    [SerializeField] private float _speed = 20f;
+    [SerializeField] private float _speedModifier = 1.2f;
+    [SerializeField] private float _speedWithTarget = 4f;
+    [SerializeField] private float _stopDistance = 1.5f;
+    [SerializeField] private float _arrowYOffset = 1.5f;
+    [SerializeField] private LayerMask _targetsLayer;
+    [SerializeField] private Transform _chainPoint;
 
     private Transform _playerTransform;
     private Vector3 _targetPoint;
     private float _maxDistance;
     private float _damage;
+    private float _flightTime = 0f;
 
+    public Action<Character, float> OnHitTarget;
     private Coroutine _flyCoroutine;
     private Coroutine _returnCoroutine;
     private bool _isReturning = false;
 
     private Character _hookedTarget;
     private MoveComponent _hookedMove;
-
     private void OnDestroy()
     {
-        if (_skill is ChainBlade chain) chain.ChainBladeCastEnd();
-        MoveReset();
+        if (_skill is ChainBlade chain)
+        {
+            chain.ChainBladeCastEnd(false);
+            chain.Hero.Move.CanMove = true;
+        }
     }
+
+    public void Cleanup()
+    {
+        try
+        {
+            OnHitTarget = null;
+            transform.SetParent(null);
+
+            if (_hookedMove != null)
+                _hookedMove.IsMoveBlocked = false;
+
+            _hookedMove = null;
+            _hookedTarget = null;
+
+            _isReturning = false;
+
+            if (_rb != null)
+            {
+                _rb.isKinematic = false;
+                _rb.linearVelocity = Vector3.zero;
+            }
+
+            if (_lineRenderer != null)
+                _lineRenderer.enabled = false;
+        }
+        catch { }
+    }
+
 
     public void InitArrow(Vector3 targetPoint, Transform playerTransform, float maxDistance, float damage)
     {
-        _targetPoint = targetPoint;
+        _targetPoint = targetPoint + Vector3.up * _arrowYOffset;
         _playerTransform = playerTransform;
         _maxDistance = maxDistance;
         _damage = damage;
 
-        lineRenderer.positionCount = 2;
+        _lineRenderer.positionCount = 2;
         _startPoint = transform.position;
 
         _flyCoroutine = StartCoroutine(FlyCoroutine());
@@ -58,34 +91,34 @@ public class ChainArrow : Projectiles
             AddSkillCombo(character);
             AddState(character);
             ApplyDamage(_damage, DamageType.Physical, character.gameObject);
+
+            OnHitTarget?.Invoke(character, _flightTime);
         }
     }
-
-
     private IEnumerator FlyCoroutine()
     {
         Vector3 direction = (_targetPoint - transform.position).normalized;
         _rb.linearVelocity = Vector3.zero;
-        _rb.AddForce(direction * speed, ForceMode.VelocityChange);
+        _rb.AddForce(direction * _speed, ForceMode.VelocityChange);
 
-        float speedReturn = 0;
+        _flightTime = 0f;
+        UpdateLine();
 
         while (!_isReturning)
         {
+            _flightTime += Time.deltaTime;
             UpdateLine();
             RotateArrow(direction);
 
-            if (Vector3.Distance(_startPoint, transform.position) >= _maxDistance || _hookedTarget != null)
+            if (Vector3.Distance(_startPoint, transform.position) >= _maxDistance)
             {
-                if (_hookedTarget == null) speedReturn = speed * speedModifier;
-                else speedReturn = speedWithTarget;
                 break;
             }
 
             yield return null;
         }
 
-        StartReturn(speedReturn);
+        StartReturn();
     }
 
     private void AttachToTarget(Character character)
@@ -93,9 +126,8 @@ public class ChainArrow : Projectiles
         _hookedTarget = character;
         _hookedMove = character.GetComponent<MoveComponent>();
 
-        if (_hookedMove != null)
-            _hookedMove.CanMove = false;
-
+        if (_hookedMove != null) _hookedMove.IsMoveBlocked = true;
+        if (_hookedTarget != null) _hookedTarget.Abilities.SetAbilitiesDisactive(true);
         transform.SetParent(character.transform);
         transform.localPosition = new Vector3(0f, 0.5f, 0f);
         _rb.linearVelocity = Vector3.zero;
@@ -111,7 +143,7 @@ public class ChainArrow : Projectiles
         _hookedMove = character.GetComponent<MoveComponent>();
 
         if (_hookedMove != null)
-            _hookedMove.CanMove = false;
+            _hookedMove.IsMoveBlocked = true;
 
         transform.SetParent(character.transform);
         transform.localPosition = new Vector3(0f, 0.5f, 0f);
@@ -123,45 +155,22 @@ public class ChainArrow : Projectiles
     {
         _rb.linearVelocity = Vector3.zero;
 
-        if (_hookedTarget != null)
+        Vector3 dir = (_playerTransform.position - transform.position).normalized;
+        _rb.isKinematic = false;
+        _rb.AddForce(dir * speed, ForceMode.VelocityChange);
+
+        while (Vector3.Distance(transform.position, _playerTransform.position + Vector3.up * _arrowYOffset) > _stopDistance)
         {
-            while (Vector3.Distance(_hookedTarget.transform.position, _playerTransform.position) > stopDistance)
-            {
-                if (_hookedMove != null)
-                {
-                    Vector3 targetPosition = _playerTransform.position;
-                    targetPosition.y = 1.0f;
-
-                    if (_hookedMove.connectionToClient != null)
-                        _hookedMove.TargetRpcDoMove(targetPosition, stopDistance);
-                    else
-                        _hookedMove.TestDoMove(targetPosition, stopDistance); // �����, ��� �������� �� ����� ������� � Character, �� ������������������ �� ����
-                }
-
-                UpdateLine();
-                yield return null;
-            }
-
-            ReleaseTarget();
+            UpdateLine();
+            yield return null;
         }
 
-        else
-        {
-            Vector3 dir = (_playerTransform.position - transform.position).normalized;
-            _rb.isKinematic = false;
-            _rb.AddForce(dir * speed, ForceMode.VelocityChange);
-
-            while (Vector3.Distance(transform.position, _playerTransform.position) > stopDistance)
-            {
-                UpdateLine();
-                yield return null;
-            }
-        }
+        UpdateLine();
 
         if (isServer) NetworkServer.Destroy(gameObject);
     }
 
-    private void StartReturn(float speed)
+    private void StartReturn()
     {
         if (_isReturning) return;
         _isReturning = true;
@@ -169,18 +178,22 @@ public class ChainArrow : Projectiles
         if (_flyCoroutine != null)
             StopCoroutine(_flyCoroutine);
 
-        if (_skill is ChainBlade chain) chain.ChainBladeEnd();
+        if (_skill is ChainBlade chain)
+        {
+            chain.Hero.Move.IsMoveBlocked = false;
+            chain.Hero.Move.CanMove = false;
+        }
 
-        Debug.Log($"StartReturn Speed: {speed}");
-        _returnCoroutine = StartCoroutine(ReturnCoroutine(speed));
+        Debug.Log($"StartReturn Speed: {_speed}");
+        _returnCoroutine = StartCoroutine(ReturnCoroutine(_speed));
     }
 
     private void UpdateLine()
     {
-        if (_playerTransform == null || chainPoint == null || lineRenderer == null) return;
+        if (_playerTransform == null || _chainPoint == null || _lineRenderer == null) return;
 
-        lineRenderer.SetPosition(0, _playerTransform.position);
-        lineRenderer.SetPosition(1, chainPoint.position);
+        _lineRenderer.SetPosition(0, _playerTransform.position + Vector3.up * _arrowYOffset);
+        _lineRenderer.SetPosition(1, _chainPoint.position);
     }
 
     private void RotateArrow(Vector3 direction)
@@ -200,16 +213,11 @@ public class ChainArrow : Projectiles
         _skill.ApplyDamage(_damage, target);
     }
 
-    private void MoveReset()
-    {
-        _dad.Move.CanMove = true;
-    }
-
     private void AddSkillCombo(Character character)
     {
         if (character == null) return;
-         
-        if (_skill is ChainBlade skill) 
+
+        if (_skill is ChainBlade skill)
         {
             skill.ComboCounter.AddSkill(character, skill);
         }
@@ -232,35 +240,6 @@ public class ChainArrow : Projectiles
 
             character.CharacterState.AddState(States.DisappointmentState, duration, 0f, _dad.gameObject, _skill.name);
         }
-    }
-
-    private void ReleaseTarget()
-    {
-        if (_hookedMove != null)
-            _hookedMove.CanMove = true;
-
-        _hookedTarget = null;
-        _hookedMove = null;
-        _isReturning = false;
-
-        transform.SetParent(null);
-        _rb.isKinematic = false;
-
-        if (isServer) RpcReleaseTarget();
-    }
-
-    [ClientRpc]
-    private void RpcReleaseTarget()
-    {
-        if (_hookedMove != null)
-            _hookedMove.CanMove = true;
-
-        _hookedTarget = null;
-        _hookedMove = null;
-        _isReturning = false;
-
-        transform.SetParent(null);
-        _rb.isKinematic = false;
     }
 
     private Vector3 _startPoint;

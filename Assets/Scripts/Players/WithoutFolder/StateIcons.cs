@@ -9,7 +9,7 @@ public class StateIcons : MonoBehaviour
 
     [SerializeField] private GameObject _spawnPos;
     [SerializeField] private StateIcoItem _template;
-
+    
     [Header("Data")]
     [SerializeField] private StateIcoDatabase _icoDatabase;
 

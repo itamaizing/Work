@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectHealth : Resource, IDamageable
+public class ObjectHealth : Resource, IDamageable, ITargetable
 {
     [Header("UI / Visual")]
     [SerializeField] private ObjectBar _objectBar;
@@ -17,6 +17,11 @@ public class ObjectHealth : Resource, IDamageable
     [SerializeField] private List<Schools> _ignoredSchools;
     [SerializeField] private List<AbilityForm> _ignoredForms;
     [SerializeField] private List<SkillType> _ignoredSkillTypes;
+
+    [Header("AbilityBanDatabase")]
+    [SerializeField] private AbilityBanDatabase _abilityBanDatabase;
+    [SerializeField] private string _selectedAbilityName;
+    public AbilityBanDatabase AbilityBanDatabase => _abilityBanDatabase;
 
     public event Action OnDeath;
 
@@ -32,10 +37,12 @@ public class ObjectHealth : Resource, IDamageable
     private Coroutine _hideBarCoroutine;
     private Coroutine _regenerationCoroutine;
 
+    [SyncVar][SerializeField] private float _regenModification = 1;
+
     [SerializeField] private bool live = false;
     [SerializeField] private bool isDestroyOnDeath = true;
     [SerializeField] private bool isRegenerationEnabled = false;
-
+    public float RegenMod { get => _regenModification; set => _regenModification = value; }
     public bool IsDestroyOnDeath { get => isDestroyOnDeath; set => isDestroyOnDeath = value; }
     public ObjectData ObjectData => _objectData;
     public float ResistMagicDamage => _resistMagicDamage;
@@ -59,6 +66,12 @@ public class ObjectHealth : Resource, IDamageable
             else ÑmdStopCustomRegeneration();
         }
     }
+
+    public Vector3 Position => throw new NotImplementedException();
+
+    public Transform Transform => throw new NotImplementedException();
+
+    public bool IsTargetable => throw new NotImplementedException();
 
     #region regeneration
 
@@ -152,7 +165,7 @@ public class ObjectHealth : Resource, IDamageable
 
             if (_currentHealth < MaxValue)
             {
-                _currentHealth = Mathf.Min(MaxValue, _currentHealth + _objectData.RegenerationAmount);
+                _currentHealth = Mathf.Min(MaxValue, _currentHealth + _objectData.RegenerationAmount * _regenModification);
                 OnHealthChanged(0, _currentHealth);
             }
         }
@@ -242,10 +255,18 @@ public class ObjectHealth : Resource, IDamageable
 
     #region Take Damage
 
-    public bool TryTakeDamage(ref Damage damage, Skill skill)
+    public bool CheckIngorSkill(Skill skill)
     {
         if (IsDamageIgnored(skill)) return false;
-        if (TryEvade(damage.Type)) return false;
+        if (skill != null && skill.GetType().Name == _selectedAbilityName) return false;
+
+        return true;
+    }
+
+    public bool TryTakeDamage(ref Damage damage, Skill skill)
+    {
+        if (!CheckIngorSkill(skill)) return false;
+        if (TryEvade(damage.Type)) return false;   
 
         if (_regenerationCoroutine == null) ÑmdStartCustomRegeneration();
         float damageValue = damage.Value;

@@ -22,7 +22,7 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
 
     private int _currentCircleIndex = 0;
 
-    public event Action OnAnyMucusAutoGrowthDestroyed;
+    public static event Action OnAnyMucusAutoGrowthDestroyed;
 
     private void OnEnable()
     {
@@ -38,7 +38,15 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
     private void OnDestroy()
     {
         if (_spawnRoutine != null) StopCoroutine(_spawnRoutine);
+        CleanupAllMucus();
         OnAnyMucusAutoGrowthDestroyed?.Invoke();
+    }
+    private void OnDisable()
+    {
+        if (!gameObject.scene.isLoaded)
+        {
+            CleanupAllMucus();
+        }
     }
 
     public void SwitchToFinite()
@@ -126,7 +134,7 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
                 var allMucus = FindObjectsOfType<Mucus>();
                 foreach (var mucus in allMucus)
                 {
-                    if (mucus == null || mucus.MucusAutoGrowth == this) continue;
+                    if (mucus == null || mucus.MucusAutoGrowths.Contains(this)) continue;
 
                     float distance = Vector3.Distance(transform.position, mucus.transform.position);
                     if (distance > Radius) continue;
@@ -135,7 +143,7 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
                     if (health == null) continue;
 
                     health.ÑmdStartCustomRegeneration();
-                    mucus.MucusAutoGrowth = this;
+                    mucus.AddMucusAutoGrowth(this);
 
                     int circleIndex = Mathf.Clamp(_currentCircleIndex - 1, 0, _mucusByCircle.Count - 1);
                     if (!_mucusByCircle[circleIndex].Contains(mucus.gameObject)) _mucusByCircle[circleIndex].Add(mucus.gameObject);
@@ -161,7 +169,10 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
         if (instance.TryGetComponent<ObjectHealth>(out var objectHealth)) objectHealth.IsRegenerationEnabled = true;
 
         RpcSetMucusAutoGrowth(instance);
-        if (instance.TryGetComponent<Mucus>(out var mucus)) mucus.MucusAutoGrowth = this;
+        if (instance.TryGetComponent<Mucus>(out var mucus))
+        {
+            mucus.AddMucusAutoGrowth(this);
+        }
 
         uint netId = instance.GetComponent<NetworkIdentity>().netId;
         RpcAddMucus(netId, circleIndex);
@@ -186,11 +197,12 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
     [ClientRpc]
     private void RpcSetMucusAutoGrowth(GameObject instance)
     {
-        if (instance.TryGetComponent<Mucus>(out var mucus)) mucus.MucusAutoGrowth = this;
+        if (instance.TryGetComponent<Mucus>(out var mucus)) mucus.AddMucusAutoGrowth(this);
     }
 
     [Command] private void CmdSetCurrentHealth(ObjectHealth objectHealth) => objectHealth.ServerSetCurrentHealth(5);
     [Command] private void CmdStartCustomRegeneration(ObjectHealth objectHealth) => objectHealth.ClientRpcStartCustomRegeneration();
+
     private void CleanupAllMucus()
     {
         foreach (var list in _mucusByCircle) list.Clear();

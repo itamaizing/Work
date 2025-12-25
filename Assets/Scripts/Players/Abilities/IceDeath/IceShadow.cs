@@ -89,12 +89,15 @@ public class IceShadow : Skill
 
 	private void Shoot()
 	{
-		Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
 		/*IceShadowObject projectileGm = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
 		projectileGm.Init(_playerLinks.gameObject ,Mana.Value);*/
 		_lastHit = _combo.MakeHit(null, AbilityForm.Magic, 1, _manaUsed, 0);
 
-		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
+		if (!_combo.SeriesCompliteCompo)
+		{
+			Buff.AttackSpeed.ReductionPercentage(_combo.GetMultipliedSpeed() / 100);
+			Buff.CastSpeed.IncreasePercentage(_combo.GetMultipliedSpeed() / 100);
+		}
 
 		_manaUsed = _energy.CurrentValue;
 		_energy.CmdUse(_manaUsed);

@@ -18,6 +18,7 @@ public class SkillQueue : MonoBehaviour
 
     public event Action<Skill> SkillAdded;
     public event Action<Skill> SkillDeleted;
+    public event Action<Skill> Cancell;
 
     private void Update()
     {
@@ -29,9 +30,7 @@ public class SkillQueue : MonoBehaviour
             if (skill.SkillType == SkillType.Zone)
                 Draw(skill);
 
-            if (!skill.Disactive)
-            {
-                if (skill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
+            if (skill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
                 {
                     _targetInfo = targetInfo;
                     foreach (var item in _targetInfo.GetTargets())
@@ -42,14 +41,13 @@ public class SkillQueue : MonoBehaviour
                         }
                     }
                 }
-            }
 
-            if (!skill.Disactive && skill.TryCast())
+            if (skill.TryCast())
             {
                 RemoveFromQueue();
                 _currentSkill = skill;
 
-                if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
+                if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo infoTarget))
                 {
                     _targetInfo = targetInfo;
                     foreach (var item in _targetInfo.GetTargets())
@@ -65,7 +63,6 @@ public class SkillQueue : MonoBehaviour
             }
         }
     }
-
     public void Add(Skill skill)
     {
         //if (_skills.Contains(skill))
@@ -80,12 +77,15 @@ public class SkillQueue : MonoBehaviour
     {
         if (_currentSkill != null)
         {
-            _currentSkill.TryCancel(isForceCancel);
-            if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo target)) ToggleSelectCircles(target, false);
-
-
-            if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
+            try
             {
+                _currentSkill.TryCancel(isForceCancel);
+
+                if (_currentSkill.TargetInfoQueue != null && _currentSkill.TargetInfoQueue.TryPeek(out TargetInfo target)) ToggleSelectCircles(target, false);
+
+
+                if (_currentSkill.TargetInfoQueue != null && _currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
+
                 _targetInfo = targetInfo;
                 foreach (var item in _targetInfo.GetTargets())
                 {
@@ -95,6 +95,12 @@ public class SkillQueue : MonoBehaviour
                     }
                 }
             }
+
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[TryCancel] ������ ������ ������: {ex}");
+            }
+
             return true;
         }
 
@@ -115,13 +121,13 @@ public class SkillQueue : MonoBehaviour
                 }
 
                 queuedSkill.TryCancel(isForceCancel);
+                Cancell?.Invoke(queuedSkill);
                 return true;
             }
         }
 
         return false;
     }
-
     private void Draw(Skill skill)
     {
         if (_skillRenderer == null) return;
@@ -152,8 +158,6 @@ public class SkillQueue : MonoBehaviour
 
         return temp;
     }
-
-
     private void OnCastEnded()
     {
         _currentSkill.CastEnded -= OnCastEnded;

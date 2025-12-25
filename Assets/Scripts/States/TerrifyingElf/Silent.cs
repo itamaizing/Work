@@ -25,6 +25,8 @@ public class Silent : AbstractCharacterState
         _baseDuration = durationToExit;
         _duration = _baseDuration;
 
+        Debug.Log($"_duration: {_duration}");
+
         if (_personWhoMadeBuff.TryGetComponent<Silence>(out var silence))
         {
             _isSilenceAddAllCharacterWithDeabaffElf = silence.IsSilenceAddAllCharacterWithDeabaffElf;
@@ -75,6 +77,7 @@ public class Silent : AbstractCharacterState
     public override void ExitState()
     {
         Debug.Log("Exiting Silent State");
+        _characterState.StateIcons.RemoveItemByState(State);
         _characterState.RemoveState(this);
 
         UnblockMagicAbilities();
