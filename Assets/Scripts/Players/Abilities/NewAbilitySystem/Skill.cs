@@ -627,11 +627,11 @@ public abstract class Skill : NetworkBehaviour
         LoadTargetDataForCheckCast();
         if (IsHaveResources && _isCasting == false && NoObstacles() && Hero.IsDead == false)
         {
-            _isCasting = true;
             LoadTargetData(targetInfo);
 
             if (IsCanCast)
             {
+                _isCasting = true;
                 TryPayCost(IsPayCostStartCooldown);
 
                 _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
