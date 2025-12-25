@@ -6226,6 +6226,7 @@ MonoBehaviour:
   spawnPoint: {fileID: 3812818705873013830}
   audioClip: {fileID: 8300000, guid: 8a1e601722ba8fa4c9d5091b783ebe71, type: 3}
   stunMagicPassiveSkill: {fileID: 3842746931648952249}
+  _reversePolarity: {fileID: 4397321495794393293}
   isLightMode: 1
 --- !u!114 &2650038749754245899
 MonoBehaviour:
@@ -6819,6 +6820,7 @@ MonoBehaviour:
   effectPrefabDark: {fileID: 2152374494346322251, guid: f4c655cda711ee04982ae4767cff39d7, type: 3}
   darkInfo: {fileID: 11400000, guid: c626ed317560d3f4bb5f06fb98c74135, type: 2}
   stunMagicPassiveSkill: {fileID: 3842746931648952249}
+  _reversePolarity: {fileID: 4397321495794393293}
   isLightMode: 1
 --- !u!114 &7714812283473049481
 MonoBehaviour:

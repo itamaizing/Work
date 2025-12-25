@@ -3,6 +3,7 @@ using System.Collections;
 using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
 public class FlowOfLight : Skill
 {
     [Header("Flow Light Settings")]
@@ -16,6 +17,7 @@ public class FlowOfLight : Skill
     [SerializeField] private AbilityInfo darkInfo;
 
     [SerializeField] private StunMagicPassiveSkill stunMagicPassiveSkill;
+    [SerializeField] private ReversePolarity _reversePolarity;
 
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
     public event Action OnModeChange;
@@ -239,6 +241,12 @@ public class FlowOfLight : Skill
             elapsed += Time.deltaTime;
             yield return null;
         }
+        
+        if (_reversePolarity != null && Hero.CharacterState.CheckForState(States.ReversePolarity))
+        {
+            _reversePolarity.SwitchSpells();
+            _reversePolarity.RemoveReversePolarityEffect();
+        }
 
         _hero.Animator.ResetTrigger(AnimTriggerCast);
         _hero.NetworkAnimator.ResetTrigger(AnimTriggerCast);
@@ -302,7 +310,10 @@ public class FlowOfLight : Skill
     [Command] private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) => ClientRpcStateRestorationOrDestruction(stateComponent, states, duration);
     [Command] private void CmdStateSpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration) => ClientRpcSpiritEnergyOrHealth(stateComponent, states, duration);
 
-    [ClientRpc] private void ClientRpcSpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration) { stateComponent.AddStateLogic(states, duration, 1f, Schools.None, gameObject, Name); }
+    private void ClientRpcSpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration)
+    {
+        stateComponent.AddState(states, duration, 1f, gameObject, Name);
+    }
 
     private void ClientRpcStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration)
     {

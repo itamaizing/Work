@@ -34,6 +34,7 @@ public class SparkOfLight : Skill
     [SerializeField] private GameObject spawnPoint;
     [SerializeField] private AudioClip audioClip;
     [SerializeField] private StunMagicPassiveSkill stunMagicPassiveSkill;
+    [SerializeField] private ReversePolarity _reversePolarity;
 
     private AudioSource _audioSource;
     private bool _spiritEnergyAddTalent;
@@ -138,11 +139,11 @@ public class SparkOfLight : Skill
             {
                 Vector3 clickPoint = GetMousePoint();
 
-                FindTarget(_clickRadius, clickPoint, canTargetHimself: false);
+                FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
 
                 if (GetTempTargetCharacter() is Character character)
                 {
-                    if (GetTempTargetCharacter() != null && (IsAllyTarget(character) || character == Hero) && !isLightMode)
+                    if (GetTempTargetCharacter() != null && (IsAllyTarget(character)) && !isLightMode)
                     {
                         ClearTempTarget();
                     }
@@ -167,6 +168,13 @@ public class SparkOfLight : Skill
     {
         if (GetTargetCharacter() == null) yield break;
 
+        if (_reversePolarity != null && Hero.CharacterState.CheckForState(States.ReversePolarity))
+        {
+            IsAutoMode = false;
+            _hero.Abilities.CancleAllSkills();
+            yield break;
+        }
+
         if (!IsCanCast)
         {
             //TryPayCost(_manaCostHeal);
@@ -177,7 +185,6 @@ public class SparkOfLight : Skill
         if (IsAllyTarget(GetTargetCharacter()))
         {
             //TryPayCost(_manaCostHeal);
-
             if (GetTargetCharacter() == playerLinks) CmdHandleDefaultMode(playerLinks);
             else CmdSpawnProjectile(GetTargetCharacter());
 
@@ -187,7 +194,6 @@ public class SparkOfLight : Skill
         if (IsEnemyTarget(GetTargetCharacter()))
         {
             //TryPayCost(isLightMode ? _manaCostDamage : _altManaCostDamage);
-
             if (isLightMode) CmdSpawnProjectile(GetTargetCharacter());
             else CmdSpawnProjectileDark(GetTargetCharacter());
         }
@@ -261,13 +267,13 @@ public class SparkOfLight : Skill
 
     private void HandleDefaultMode(Character target)
     {
-        if (IsAllyTarget(target))
+        if (target.NetworkSettings.TeamIndex == _hero.NetworkSettings.TeamIndex)
         {
             Heal(target);
             ApplySpiritEnergyBuff(target);
             //ApplyHealthBuff(_target);
         }
-        else if (IsEnemyTarget(target))
+        else if (target.NetworkSettings.TeamIndex != _hero.NetworkSettings.TeamIndex)
         {
             DamageCast(target);
         }
@@ -275,7 +281,7 @@ public class SparkOfLight : Skill
 
     private void HandleAlternativeMode(Character target)
     {
-        if (IsEnemyTarget(target))
+        if (target.NetworkSettings.TeamIndex != _hero.NetworkSettings.TeamIndex)
         {
             ApplyDamageInAltMode(target);
             ApplySpiritHealthBuff(target);
@@ -284,7 +290,7 @@ public class SparkOfLight : Skill
                 ApplyDefenseDebuff(target);
         }
 
-        else if (IsAllyTarget(target)) return;
+        else if (target.NetworkSettings.TeamIndex == _hero.NetworkSettings.TeamIndex) return;
 
         Debug.Log("HandleAlternativeMode");
     }
