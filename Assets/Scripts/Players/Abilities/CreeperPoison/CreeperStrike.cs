@@ -17,7 +17,7 @@ public class CreeperStrike : Skill
     [SerializeField] private FirstStrike _firstStrike;
     [SerializeField] private FeelingOfContinuation _feelingOfContinuation;
     [SerializeField] private PreparingForFight _preparingForFight;
-    [SerializeField] private bool isGeneticsTalentOne; 
+    [SerializeField] private bool _isGeneticsTalentOne; 
 
     [Header("Abilities")]
     [SerializeField] private LightningStrikes _lightningStrikes;
@@ -27,21 +27,18 @@ public class CreeperStrike : Skill
     [SerializeField] private ColdBlood _coldBlood;
     [SerializeField] private SneakySpit sneakySpit;
     [SerializeField] private BlockPassiveSkill blockPassiveSkill;
-    //[SerializeField] private AbsorptionOfPoisons _absorptionOfPoisons;
 
     [Header("Ability properties")]
     [SerializeField] private Character _player;
     [SerializeField] private float _multiplyCritDamage = 1.5f;
     [SerializeField ]private float _chanceOfCriticalStrike = 0.05f;
 
-    //private Character _target;
-    private Character _lastTarget;
-
     private int _currentCountHit = 0;
     private int _currentHitForStrokesOfAspiration = 0;
     private int _countHitForDesireToHideTalent = 0;
     private int _countCurrentHitForPreparingForFight = 0;
     private int _poisonBoneStack = 0;
+    private float _radiusSearchTarget = 0.5f;
 
     private float _animTime;
     private float _currentDamage;
@@ -49,8 +46,6 @@ public class CreeperStrike : Skill
 
     private bool _isTwoHit = false;
     private bool _isHit = false;
-
-
 
     private Character _lastTargetFirst = null;
     private Character _lastTargetSecond = null;
@@ -65,6 +60,8 @@ public class CreeperStrike : Skill
 
     protected override int AnimTriggerCast => Animator.StringToHash("CreeperStrikeAttacking");
     protected override int AnimTriggerCastDelay => 0;
+
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     public event System.Action OnCreeperStrikeEnd;
 
@@ -85,28 +82,28 @@ public class CreeperStrike : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        TargetInfo info = new TargetInfo();
+        TargetInfo targetInfo = new TargetInfo();
 
-
-        while (GetTargetCharacter() == null)
+        while (GetTempTarget() == null)
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter();
-              /*  if (_target != null)
+                FindTarget(_radiusSearchTarget, GetMousePoint());
+
+                if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
                 {
-                    _target.SelectedCircle.IsActive = true;
-                    _hero.Move.LookAtTransform(_target.transform);
-                    break;
-                }*/
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
+                    else break;
+                }
             }
             yield return null;
         }
 
+        SetTarget(GetTempTarget());
 
-        info.AddTarget(GetTargetCharacter());
-        info.Points.Add(GetTargetCharacter().transform.position);
-        callbackDataSaved?.Invoke(info);
+        targetInfo.Points.Add(GetTarget().Transform.position);
+        targetInfo.AddTarget(GetTarget());
+        callbackDataSaved.Invoke(targetInfo);
     }
 
     protected override IEnumerator CastJob()
@@ -114,9 +111,9 @@ public class CreeperStrike : Skill
         if (GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius)
         {
             _hero.Move.StopLookAt();
-            DamageDeal(GetTargetCharacter());
+            DamageDeal(GetTarget() as IDamageable);
         }
-        ClearTarget();
+
         yield return null;
     }
 
@@ -129,6 +126,7 @@ public class CreeperStrike : Skill
     {
         TryCancel();
         StopAutoDraw();
+        ClearTarget();
     }
 
     private void IncreaseAnimSpeed()
@@ -154,10 +152,12 @@ public class CreeperStrike : Skill
         return -1f;
     }
 
-    public void DamageDeal(Character target, bool isUsingLightningStrikes = false)
+    public void DamageDeal(IDamageable target, bool isUsingLightningStrikes = false)
     {
         var lastÑast = _player.Abilities.LastCastedSkill;
         var previewCast = _player.Abilities.PreviewCastedSkill;
+
+        Character character = target as Character;
 
         if (target != null)
         {
@@ -179,18 +179,16 @@ public class CreeperStrike : Skill
 
                 if (_currentHitForStrokesOfAspiration == 2)
                 {
-                    if (_lastTarget == target)
+                    if (GetTarget() != null)
                     {
                         _strokesOfAspiration.UseTalentStrokesOfAspiration();
                     }
 
                     _currentHitForStrokesOfAspiration = 0;
                 }
-
-                _lastTarget = target;
             }
 
-            if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0 && target.CharacterState.CheckForState(States.PoisonBone))
+            if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0 && character.CharacterState.CheckForState(States.PoisonBone))
             {
                 Debug.Log("CreeperStrike / if == true");
                 float baseChanceOfRestorationOfGlands = 0.9f;
@@ -221,7 +219,7 @@ public class CreeperStrike : Skill
 
             if (_assasinPoison.Data.IsOpen)
             {
-                _assasinPoison.SpendCharge(target, _lifeTimePoisonBoneStacks);
+                _assasinPoison.SpendCharge(character, _lifeTimePoisonBoneStacks);
             }
 
             if (_preparingForFight.Data.IsOpen && _creeperInvisible.IsReadyToThreeHitForPreparingForFightTalent)
@@ -242,11 +240,11 @@ public class CreeperStrike : Skill
                 if (_player.IsInvisible)
                     _creeperInvisible.ExitingInvisible();
 
-                DealCriticalDamage(target, _currentDamage, true);
+                DealCriticalDamage(character, _currentDamage, true);
             }
             else if (_currentChanceOfCriticalStrike <= _chanceOfCriticalStrike)
             {
-                DealCriticalDamage(target, _currentDamage);
+                DealCriticalDamage(character, _currentDamage);
             }
             else
             {
@@ -288,7 +286,7 @@ public class CreeperStrike : Skill
             _isHit = false;
         }
 
-        TryTriggerSneakySpitWindow(target);
+        TryTriggerSneakySpitWindow(character);
     }
 
     private void TryTriggerSneakySpitWindow(Character target)
@@ -381,7 +379,7 @@ public class CreeperStrike : Skill
         {
             criticalDamage = CalculateCriticalDamage(currentTarget, criticalDamage);
         }
-        else if (isGeneticsTalentOne && currentTarget.CharacterState.CheckForState(States.PoisonBone))
+        else if (_isGeneticsTalentOne && currentTarget.CharacterState.CheckForState(States.PoisonBone))
         {
             criticalDamage = CalculateCriticalDamage(currentTarget, criticalDamage);
         }
@@ -445,7 +443,7 @@ public class CreeperStrike : Skill
 
     public void GeneticsTalentOne(bool value)
     {
-        isGeneticsTalentOne = value;
+        _isGeneticsTalentOne = value;
     }
 
     protected override void ClearData()
