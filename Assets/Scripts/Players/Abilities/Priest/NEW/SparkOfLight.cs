@@ -252,16 +252,10 @@ public class SparkOfLight : Skill
     {
         if (target == null) return;
         
-        if (!isLightMode && (UnityEngine.Random.value <= _destructionFillingChance))
+        if (UnityEngine.Random.value <= _destructionFillingChance)
         {
-            float durationToApply = target.CheckForState(States.Destruction) ? _destructionFillingExtensionTime : _destructionFillingDuration;
-            target.AddState(States.Destruction, durationToApply, 0f, gameObject, Name);
-        }
-        
-        if (isLightMode && UnityEngine.Random.value <= _destructionFillingChance)
-        {
-            float durationToApply = target.CheckForState(States.Restoration) ? _destructionFillingExtensionTime : _destructionFillingDuration;
-            target.AddState(States.Restoration, durationToApply, 0f, gameObject, Name);
+            float durationToApply = target.CheckForState(isLightMode ? States.Restoration : States.Destruction) ? _destructionFillingExtensionTime : _destructionFillingDuration;
+            target.AddState(isLightMode ? States.Restoration : States.Destruction, durationToApply, 0f, gameObject, Name);
         }
     }
 
@@ -312,16 +306,13 @@ public class SparkOfLight : Skill
             Value = _healAmount + doublingBonus + bonusHealFromSpiritEnergy,
             DamageableSkill = this
         };
-
         ApplyHeal(heal, target.gameObject, this, Name);
 
         TryApplyExtraState(target);
-        
-                
-        if (_destructionFillingTalent)
+
+        if (_isDestructionFillingTalent)
         {
-            var stateComponent = target.GetComponent<CharacterState>();
-            TryApplyDestructionFilling(stateComponent);
+            TryApplyDestructionFilling(target.CharacterState);
         }
     }
 
@@ -352,10 +343,9 @@ public class SparkOfLight : Skill
         ApplyDamage(damage, target.gameObject);
         TryApplyExtraState(target);
         
-        if (_destructionFillingTalent)
+        if (_isDestructionFillingTalent)
         {
-            var stateComponent = target.GetComponent<CharacterState>();
-            TryApplyDestructionFilling(stateComponent);
+            TryApplyDestructionFilling(target.CharacterState);
         }
     }
 
@@ -406,26 +396,32 @@ public class SparkOfLight : Skill
     }
 
     #region Talents
-
-    private bool _destructionFillingTalent;
-    
-    public bool IsDestructionFillingTalent { get => _destructionFillingTalent; set => _destructionFillingTalent = value; }
     
     private float _destructionFillingExtensionTime;
     private float _destructionFillingDuration;
     private float _destructionFillingChance;
     
+    private bool _isDestructionFillingTalent;
+    public bool IsDestructionFillingTalent { get => _isDestructionFillingTalent;private set => _isDestructionFillingTalent = value; }
+    
     public void SpiritEnergyTalentActive(bool value) => _spiritEnergyTalent = value;
 
     public void SpiritEnergyAddTalent(bool value) => _spiritEnergyAddTalent = value;
 
+    [Command]
+    public void CmdSetDestructionFillingTalent(bool value, float duration, float additionalTime, float chance)
+    {
+        DestructionFillingTalent(value, duration, additionalTime, chance);
+    }
+    
     public void DestructionFillingTalent(bool value, float duration, float additionalTime,float chance)
     {
-        _destructionFillingTalent = value;
+        _isDestructionFillingTalent = value;
         _destructionFillingExtensionTime = additionalTime;
         _destructionFillingDuration = duration;
         _destructionFillingChance = chance;
     }
+    
     
     #endregion
 

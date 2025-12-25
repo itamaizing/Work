@@ -84,7 +84,6 @@ public class RestorationState : AbstractCharacterState
             _timer = Mathf.Min(_timer, _tickInterval);
         }
         else duration = time;
-        Debug.Log(duration);
         return false;
     }
     [Server] private void CmdHeal(float healValue) => ClientRpcHeal(healValue);

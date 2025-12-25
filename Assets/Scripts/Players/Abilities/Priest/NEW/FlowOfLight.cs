@@ -31,20 +31,19 @@ public class FlowOfLight : Skill
     protected override int AnimTriggerCast => Animator.StringToHash("FlowSpellStart");
 
     #region Talent
-    private bool _spiritEnergyAddTalent;
-    private bool _destructionFillingTalent;
-    
-    public bool IsDestructionFillingTalent { get => _destructionFillingTalent; set => _destructionFillingTalent = value; }
-    
     private float _destructionFillingExtensionTime;
     private float _destructionFillingDuration;
     private float _destructionFillingChance;
+
+    private bool _spiritEnergyAddTalent;
+    private bool _isDestructionFillingTalent;
+    public bool IsDestructionFillingTalent { get => _isDestructionFillingTalent; private set => _isDestructionFillingTalent = value; }
     
     public void SpiritEnergyAddTalent(bool value) => _spiritEnergyAddTalent = value;
 
     public void DestructionFillingTalent(bool value, float duration, float additionalTime,float chance)
     {
-        _destructionFillingTalent = value;
+        _isDestructionFillingTalent = value;
         _destructionFillingExtensionTime = additionalTime;
         _destructionFillingDuration = duration;
         _destructionFillingChance = chance;
@@ -131,16 +130,10 @@ public class FlowOfLight : Skill
     {
         if (target == null) return;
         
-        if (!isLightMode && (UnityEngine.Random.value <= _destructionFillingChance))
+        if (UnityEngine.Random.value <= _destructionFillingChance)
         {
-            float durationToApply = target.CheckForState(States.Destruction) ? _destructionFillingExtensionTime : _destructionFillingDuration;
-            CmdStateRestorationOrDestruction(target, States.Destruction, durationToApply);
-        }
-        
-        if (isLightMode && UnityEngine.Random.value <= _destructionFillingChance)
-        {
-            float durationToApply = target.CheckForState(States.Restoration) ? _destructionFillingExtensionTime : _destructionFillingDuration;
-            CmdStateRestorationOrDestruction(target, States.Restoration, durationToApply);
+            float durationToApply = target.CheckForState(isLightMode ? States.Restoration : States.Destruction) ? _destructionFillingExtensionTime : _destructionFillingDuration;
+            CmdStateRestorationOrDestruction(target, isLightMode ? States.Restoration : States.Destruction, durationToApply);
         }
     }
 
@@ -223,11 +216,6 @@ public class FlowOfLight : Skill
                     Heal heal = new Heal { Value = tickValue };
                     CmdApplyHeal(heal, GetTargetCharacter().gameObject, this, Name);
                     TryApplyExtraState(GetTargetCharacter());
-                    if (_destructionFillingTalent)
-                    {
-                        var stateComponent = GetTargetCharacter().GetComponent<CharacterState>();
-                        TryApplyDestructionFilling(stateComponent);
-                    }
                     ApplySpiritBuff(GetTargetCharacter());
                 }
                 else if (!isLightMode && IsEnemyTarget(GetTargetCharacter()))
@@ -240,12 +228,11 @@ public class FlowOfLight : Skill
                     };
                     CmdApplyDamage(damage, GetTargetCharacter().gameObject);
                     TryApplyExtraState(GetTargetCharacter());
-                    if (_destructionFillingTalent)
-                    {
-                        var stateComponent = GetTargetCharacter().GetComponent<CharacterState>();
-                        TryApplyDestructionFilling(stateComponent);
-                    }
                     ApplySpiritBuff(GetTargetCharacter());
+                }
+                if (_isDestructionFillingTalent)
+                {
+                    TryApplyDestructionFilling(GetTargetCharacter().CharacterState);
                 }
             }
 

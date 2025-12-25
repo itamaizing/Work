@@ -7180,11 +7180,11 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  spark: {fileID: 683463177557245195}
-  flowOfLight: {fileID: 744928704386096395}
-  baffDuration: 12
-  baffAdditionalTime: 3
-  baffChance: 0.872
+  _spark: {fileID: 683463177557245195}
+  _flowOfLight: {fileID: 744928704386096395}
+  _baffDuration: 12
+  _baffAdditionalTime: 3
+  _baffChance: 0.2
 --- !u!114 &2455704407503805337
 MonoBehaviour:
   m_ObjectHideFlags: 0
