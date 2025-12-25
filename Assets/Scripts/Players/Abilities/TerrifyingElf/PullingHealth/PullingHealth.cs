@@ -579,6 +579,7 @@ public class PullingHealth : Skill
     {
         _extraTargets.Clear();
         _extraEffects.Clear();
+        ClearTempTarget();
         ClearTarget();
         Radius = _baseRadius;
     }

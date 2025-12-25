@@ -20869,15 +20869,15 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 1
-  _isSkillActive: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 0dadb43cae00bf64ea1fe2c0dfd800c8, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 80
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 36
+  _cooldownTime: 2
   _castDeley: 0
   _damageValue: 0
   _abilitySchool: 3

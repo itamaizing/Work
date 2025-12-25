@@ -268,6 +268,7 @@ public class Shot : Skill
     {
         _targetPoint = Vector3.positiveInfinity;
         ClearTarget();
+        ClearTempTarget();
         AnimCastEnded();
         _consecutiveShots = 0;
     }

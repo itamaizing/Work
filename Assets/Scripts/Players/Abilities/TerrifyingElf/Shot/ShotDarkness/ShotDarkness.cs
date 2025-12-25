@@ -304,6 +304,7 @@ public class ShotDarkness : Skill
     {
         _targetPoint = Vector3.positiveInfinity;
         ClearTarget();
+        ClearTempTarget();
         _consecutiveShots = 0;
         AnimCastEnded();
     }

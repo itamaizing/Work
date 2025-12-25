@@ -85,7 +85,7 @@ public class PhysicalAttack : Skill
 				{
 					if (IsAllyTarget(GetTempTargetCharacter()) || GetTempTargetCharacter() == Hero)
 					{
-						ClearTarget();						
+						ClearTempTarget();						
 					}
 					else
 					{
@@ -342,6 +342,7 @@ public class PhysicalAttack : Skill
     protected override void ClearData()
     {
 		ClearTarget();
+		ClearTempTarget();
 		_hero.Move.StopLookAt();
 	}
 }

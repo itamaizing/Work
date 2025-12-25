@@ -303,6 +303,7 @@ public class ClawStrike : Skill
     protected override void ClearData()
     {
         ClearTarget();
+        ClearTempTarget();
         if (coroutineDurationChanceApplyBleedingWithJump != null) StopCoroutine(IDurationChanceApplyBleedingWithJump());
         AnimCastEnded();
     }

@@ -454,6 +454,7 @@ public class CreeperStrike : Skill
     protected override void ClearData()
     {
         ClearTarget();
+        ClearTempTarget();
         _hero.Move.StopLookAt();
     }
 
