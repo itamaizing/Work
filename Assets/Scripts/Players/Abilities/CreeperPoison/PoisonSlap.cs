@@ -33,8 +33,6 @@ public class PoisonSlap : Skill
 
     #endregion
 
-    //private Character _currentTarget;
-
     private Vector3 _firstMousePosition = Vector3.positiveInfinity;
     private Vector3 _secondMousePosition;
 
@@ -53,6 +51,7 @@ public class PoisonSlap : Skill
     private bool _firstClickDone = false;
     private bool _secondClickDone;
     private bool _isUsedPoisonBallCharger = true;
+    private float _radiusTargetSearch = 0.5f; 
 
     private static readonly int poisonSlapTrigger = Animator.StringToHash("PoisonSlapCastAnimTrigger");
 
@@ -63,6 +62,7 @@ public class PoisonSlap : Skill
     public bool IsCanDamageDeal { get => _isCanDamageDeal; set => _isCanDamageDeal = value; }
 
     protected override bool IsCanCast => CheckCanCast();
+    private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     public event System.Action OnPoisonSlapEnd;
 
@@ -99,7 +99,7 @@ public class PoisonSlap : Skill
     }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-       // Debug.LogError("TargetDataError");
+        if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 
     protected override void ClearData()
@@ -115,7 +115,8 @@ public class PoisonSlap : Skill
         _isUsedPoisonBallCharger = true;
 
         ClearTarget();
-        //_currentTarget = null;
+        ClearTempTarget();
+
         _castDeley = 0;
 
         if (_secondMouseClickCoroutine != null)
@@ -146,14 +147,18 @@ public class PoisonSlap : Skill
             {
                 if (GetMouseButton)
                 {
-                    FindTargetCharacter();
-                   // _currentTarget = GetTarget().character;
+                    FindTargetCharacter(_radiusTargetSearch, GetMousePoint());
 
                     if (GetTempTargetCharacter() != null)
                     {
+                        if (IsAllyTarget(GetTempTargetCharacter()) || GetTempTargetCharacter() == Hero)
+                        {
+                            ClearTempTarget();
+                        }
+
                         _firstMousePosition = GetMousePoint();
 
-                        CreateArrowsParallelToPlayer();
+                        CreateArrowsParallelToPlayer(GetTempTargetCharacter());
 
                         StopAutoDraw();
 
@@ -247,18 +252,18 @@ public class PoisonSlap : Skill
 
     #region ArrowManagement
 
-    private void CreateArrowsParallelToPlayer()
+    private void CreateArrowsParallelToPlayer(Character target)
     {
-        if (GetTargetCharacter() == null || _arrowPrefab == null)
+        if (target == null || _arrowPrefab == null)
         {
             Debug.LogError("Arrow Prefab is not assigned or Target is null");
             return;
         }
 
-        Vector3 targetPosition = GetTargetCharacter().transform.position;
+        Vector3 targetPosition = target.transform.position;
         Vector3 playerPosition = _player.transform.position;
 
-        targetPosition.y = playerPosition.y = 0.8f;
+        targetPosition.y = playerPosition.y = 1.1f;
 
         Vector3 directionToTarget = (targetPosition - playerPosition).normalized;
 
