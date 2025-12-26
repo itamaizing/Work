@@ -451,6 +451,7 @@ public class PullingHealth : Skill
         }
 
         ClearTarget();
+        ClearTempTarget();
         _extraTargets.Clear();
         _extraEffects.Clear();
         StopCoroutine(StreamDuration());

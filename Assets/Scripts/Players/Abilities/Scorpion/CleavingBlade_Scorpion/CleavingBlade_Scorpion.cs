@@ -43,6 +43,7 @@ public class CleavingBlade_Scorpion : Skill
     {
         _wasDamageApplied = false;
         ClearTarget();
+        ClearTempTarget();
         AnimCastEnded();
     }
 
@@ -157,6 +158,7 @@ public class CleavingBlade_Scorpion : Skill
     {
         _wasDamageApplied = false;
         ClearTarget();
+        ClearTempTarget();
         AnimCastEnded();
     }
 

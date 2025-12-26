@@ -175,6 +175,7 @@ public class CheliceraStrike : Skill
         CheliceraStrikeEnded();
         _isPlayCastAnim = false;
         ClearTarget();
+        ClearTempTarget();
         AnimCastEnded();
     }
 

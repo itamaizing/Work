@@ -63,7 +63,7 @@ public class IceSword : CloseCombatSkill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 
 	protected override IEnumerator CastJob()

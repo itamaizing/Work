@@ -184,7 +184,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -199,7 +199,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
                 if (GetTempTargetCharacter() != null)
                 {
-                    if (IsAllyTarget(GetTempTargetCharacter()) || GetTempTargetCharacter() == Hero) ClearTarget();
+                    if (IsAllyTarget(GetTempTargetCharacter()) || GetTempTargetCharacter() == Hero) ClearTempTarget();
 
                     else
                     {
@@ -282,6 +282,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     protected override void ClearData()
     {
         ClearTarget();
+        ClearTempTarget();
     }
 
     [Command]

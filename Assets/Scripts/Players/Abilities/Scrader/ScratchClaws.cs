@@ -81,6 +81,7 @@ public class ScratchClaws : Skill
 
         _moveActive = false;
         ClearTarget();
+        ClearTempTarget();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
@@ -137,6 +138,7 @@ public class ScratchClaws : Skill
     protected override void ClearData()
     {
         ClearTarget();
+        ClearTempTarget();
         _currentTarget = null;
 
         if (_hero?.Move != null)

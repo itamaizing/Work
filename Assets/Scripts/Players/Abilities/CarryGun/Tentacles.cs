@@ -53,7 +53,6 @@ public class Tentacles : Skill
     protected override int AnimTriggerCastDelay => Animator.StringToHash("Spell");
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => (GetTargetCharacter() != null || _isClickedOnGround) && _spawnPoint != Vector3.positiveInfinity && IsCanRadius();
-    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == TargetsLayers;
 
     private bool IsCanRadius()
     {
@@ -133,7 +132,6 @@ public class Tentacles : Skill
         while (float.IsPositiveInfinity(targetPoint.x))
         {
             Vector3 mousePoint = GetMousePoint();
-            //float distance = Vector3.Distance(mousePosition, transform.position);
 
             if (_previewInstance != null) _previewInstance.transform.position = mousePoint;
 
@@ -143,7 +141,6 @@ public class Tentacles : Skill
                 {
                     if (_isAttractionTentacleTalent && hitTarget.collider.TryGetComponent<Character>(out Character character) && ((1 << character.gameObject.layer) & TargetsLayers.value) != 0)
                     {
-                        //if (IsAllyTarget(GetTempTargetCharacter()) || GetTempTargetCharacter() == Hero) ClearTarget();
                         _isPlacingTentacles = true;
                         _lockedTarget = character;
 
