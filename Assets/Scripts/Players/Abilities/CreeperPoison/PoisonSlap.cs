@@ -18,6 +18,8 @@ public class PoisonSlap : Skill
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private LightningStrikes _lightningStrikes;
     [SerializeField] private LightningMovement _lightningMovement;
+    [SerializeField] private GameObject _poisonBallObject;
+    [SerializeField] private SkillManager _skillManager;
 
     [Header("Talents")]
     [SerializeField] private RestorationOfGlands _restorationOfGlands;
@@ -38,8 +40,8 @@ public class PoisonSlap : Skill
 
     private int _poisonBoneStack;
 
-    private float _creeperStrikeCastSpeedMultiplier = 0.5f;
-    private float _lightningStrikesCastSpeedMultiplier = 0.0f;
+    private float _creeperStrikeCastSpeedMultiplier = 1.5f;
+    private float _lightningStrikesCastSpeedMultiplier = 2f;
     private float _baseDamage = 30f;
     private float _distancePush = 3.0f;
     private float _durationPush = 1.0f;
@@ -76,11 +78,13 @@ public class PoisonSlap : Skill
 
     public void AnimPoisonSlapCast()
     {
+        _poisonBallObject.SetActive(true);
         AnimStartCastCoroutine();
     }
 
     public void AnimPoisonSlapCastEnded()
     {
+        _poisonBallObject.SetActive(false);
         AnimCastEnded();
     }
 
@@ -112,6 +116,7 @@ public class PoisonSlap : Skill
         _secondClickDone = false;
         _isPushTargetAllowed = false;
         _isUsedPoisonBallCharger = true;
+        _poisonBallObject.SetActive(false);
 
         ClearTarget();
         ClearTempTarget();
@@ -193,10 +198,16 @@ public class PoisonSlap : Skill
 
     private void SwitchPayCost()
     {
+        var last = _skillManager?.LastCastedSkill;
+        var preview = _skillManager?.PreviewCastedSkill;
+
+        bool isDoubleCreeper = last == _creeperStrike && preview == _creeperStrike;
+        bool isDoubleLightning = last == _lightningStrikes && preview == _lightningStrikes;
+
         switch (_poisonSlapTalent.Data.IsOpen)
         {
             case true:
-                if (_creeperStrike.IsTwoHit)
+                if (isDoubleCreeper)
                 {
                     Debug.Log("1");
                     CastSpeedFromCreeperStrike();
@@ -215,7 +226,7 @@ public class PoisonSlap : Skill
                 break;
 
             case false:
-                if (_creeperStrike.IsTwoHit)
+                if (isDoubleLightning)
                 {
                     CastSpeedFromCreeperStrike();
                 }
@@ -364,7 +375,6 @@ public class PoisonSlap : Skill
 
     private void CastSpeedFromCreeperStrike()
     {
-        _creeperStrike.IsTwoHit = false;
         Buff.AttackSpeed.ReductionPercentage(_creeperStrikeCastSpeedMultiplier);
         Buff.CastSpeed.IncreasePercentage(_creeperStrikeCastSpeedMultiplier);
     }
@@ -478,8 +488,8 @@ public class PoisonSlap : Skill
     private void CmdPushEnemy(Character target, float distancePush, float durationPush, bool isCanPushTarget)
     {
         MoveComponent targetMoveComponent = target.GetComponent<MoveComponent>();
-
         Vector2 directionPush = (target.transform.position - transform.position);
+        directionPush.y = 0f;
 
         if (targetMoveComponent.connectionToClient != null)
         {
