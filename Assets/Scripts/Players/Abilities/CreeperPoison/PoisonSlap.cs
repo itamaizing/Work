@@ -40,7 +40,6 @@ public class PoisonSlap : Skill
 
     private float _creeperStrikeCastSpeedMultiplier = 0.5f;
     private float _lightningStrikesCastSpeedMultiplier = 0.0f;
-    private float _baseTimeCast = 1.6f;
     private float _baseDamage = 30f;
     private float _distancePush = 3.0f;
     private float _durationPush = 1.0f;
@@ -199,6 +198,7 @@ public class PoisonSlap : Skill
             case true:
                 if (_creeperStrike.IsTwoHit)
                 {
+                    Debug.Log("1");
                     CastSpeedFromCreeperStrike();
                     _isUsedPoisonBallCharger = false;
                 }
@@ -210,7 +210,7 @@ public class PoisonSlap : Skill
                 else
                 {
                     _isUsedPoisonBallCharger = true;
-                    //_castDeley = _baseTimeCast;
+                    Buff.CastSpeed.Reset();
                 }
                 break;
 
@@ -226,7 +226,7 @@ public class PoisonSlap : Skill
                 else
                 {
                     _isUsedPoisonBallCharger = true;
-                    //_castDeley = _baseTimeCast;
+                    Buff.CastSpeed.Reset();
                 }
                 break;
         }
@@ -365,20 +365,14 @@ public class PoisonSlap : Skill
     private void CastSpeedFromCreeperStrike()
     {
         _creeperStrike.IsTwoHit = false;
-        Debug.Log("PoisonSlap / CastSpeedFromCreeperStrike / IsTwoHit = " + _creeperStrike.IsTwoHit);
-
-        float _timeCastFromCreeperStrike = _baseTimeCast * _creeperStrikeCastSpeedMultiplier;
-
-        //_castDeley = _timeCastFromCreeperStrike;
-        Debug.Log("PoisonSlap / CastSpeedFromCreeperStrike / castDeley = " + _castDeley);
+        Buff.AttackSpeed.ReductionPercentage(_creeperStrikeCastSpeedMultiplier);
+        Buff.CastSpeed.IncreasePercentage(_creeperStrikeCastSpeedMultiplier);
     }
 
     private void CastSpeedFromLightningStrikes()
     {
-        float _timeCastFromLightningStrikes = _baseTimeCast * _lightningStrikesCastSpeedMultiplier;
-
-        //_castDeley = _timeCastFromLightningStrikes;
-        Debug.Log("PoisonSlap / CastSpeedFromLightningStrikes / castDeley = " + _castDeley);
+        Buff.AttackSpeed.ReductionPercentage(_lightningStrikesCastSpeedMultiplier);
+        Buff.CastSpeed.IncreasePercentage(_lightningStrikesCastSpeedMultiplier);
     }
 
     #endregion
@@ -487,8 +481,6 @@ public class PoisonSlap : Skill
 
         Vector2 directionPush = (target.transform.position - transform.position);
 
-        distancePush = ((distancePush * GlobalVariable.cellSize) * durationPush) / GlobalVariable.cellSize;
-
         if (targetMoveComponent.connectionToClient != null)
         {
             if (isCanPushTarget) targetMoveComponent.TargetRpcDoMove((Vector2)target.transform.position + directionPush * distancePush, durationPush);
@@ -519,8 +511,6 @@ public class PoisonSlap : Skill
         {
             perpendicularDirection = new Vector3(-directionPush.y, directionPush.x, 0).normalized;
         }
-
-        distancePush = ((distancePush * GlobalVariable.cellSize) * durationPush) / GlobalVariable.cellSize;
 
         if (targetMoveComponent.connectionToClient != null) targetMoveComponent.TargetRpcDoMove(target.transform.position + perpendicularDirection * distancePush, durationPush);
         else targetMoveComponent.RpcDoMove(target.transform.position + perpendicularDirection * distancePush, durationPush);
