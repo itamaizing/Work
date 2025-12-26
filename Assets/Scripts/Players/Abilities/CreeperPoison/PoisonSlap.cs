@@ -18,7 +18,7 @@ public class PoisonSlap : Skill
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private LightningStrikes _lightningStrikes;
     [SerializeField] private LightningMovement _lightningMovement;
-    [SerializeField] private GameObject _poisonBallObject;
+    //[SerializeField] private GameObject _poisonBallObject;
     [SerializeField] private SkillManager _skillManager;
 
     [Header("Talents")]
@@ -76,15 +76,22 @@ public class PoisonSlap : Skill
         UpdateMouseDetection();
     }
 
+
+    public void PoisonSlapPreparation()
+    {
+        _hero.Move.StopMoveAndAnimationMove();
+        _hero.Move.CanMove = false;
+    }
+
     public void AnimPoisonSlapCast()
     {
-        _poisonBallObject.SetActive(true);
+        //_poisonBallObject.SetActive(true);
         AnimStartCastCoroutine();
     }
 
     public void AnimPoisonSlapCastEnded()
     {
-        _poisonBallObject.SetActive(false);
+        //_poisonBallObject.SetActive(false);
         AnimCastEnded();
     }
 
@@ -116,7 +123,9 @@ public class PoisonSlap : Skill
         _secondClickDone = false;
         _isPushTargetAllowed = false;
         _isUsedPoisonBallCharger = true;
-        _poisonBallObject.SetActive(false);
+        Hero.Move.StopLookAt();
+        Hero.Move.CanMove = true;
+        //_poisonBallObject.SetActive(false);
 
         ClearTarget();
         ClearTempTarget();
