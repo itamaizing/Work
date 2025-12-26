@@ -307,15 +307,15 @@ public class FlowOfLight : Skill
     }
 
 
-    [Command] private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) => ClientRpcStateRestorationOrDestruction(stateComponent, states, duration);
-    [Command] private void CmdStateSpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration) => ClientRpcSpiritEnergyOrHealth(stateComponent, states, duration);
+    [Command] private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) => StateRestorationOrDestruction(stateComponent, states, duration);
+    [Command] private void CmdStateSpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration) => SpiritEnergyOrHealth(stateComponent, states, duration);
 
-    private void ClientRpcSpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration)
+    private void SpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration)
     {
         stateComponent.AddState(states, duration, 1f, gameObject, Name);
     }
 
-    private void ClientRpcStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration)
+    private void StateRestorationOrDestruction(CharacterState stateComponent, States states, float duration)
     {
         stateComponent.AddState(states, duration, 0, gameObject, Name);
     }

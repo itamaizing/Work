@@ -116,6 +116,8 @@ public class ReversePolarity : Skill
         flashOfLight.SwitchMode();
         restoration.SwitchMode();
         flowOfLight.SwitchMode();
+        
+        _hero.Abilities.AutoSkillCast.DeleteSkill();
         //priestShield.SwitchMode();
     }
 

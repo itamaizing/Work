@@ -34,7 +34,6 @@ public class SparkOfLight : Skill
     [SerializeField] private GameObject spawnPoint;
     [SerializeField] private AudioClip audioClip;
     [SerializeField] private StunMagicPassiveSkill stunMagicPassiveSkill;
-    [SerializeField] private ReversePolarity _reversePolarity;
 
     private AudioSource _audioSource;
     private bool _spiritEnergyAddTalent;
@@ -168,12 +167,6 @@ public class SparkOfLight : Skill
     {
         if (GetTargetCharacter() == null) yield break;
 
-        if (_reversePolarity != null && Hero.CharacterState.CheckForState(States.ReversePolarity))
-        {
-            IsAutoMode = false;
-            _hero.Abilities.CancleAllSkills();
-            yield break;
-        }
 
         if (!IsCanCast)
         {
@@ -273,7 +266,7 @@ public class SparkOfLight : Skill
             ApplySpiritEnergyBuff(target);
             //ApplyHealthBuff(_target);
         }
-        else if (target.NetworkSettings.TeamIndex != _hero.NetworkSettings.TeamIndex)
+        else
         {
             DamageCast(target);
         }
@@ -290,7 +283,7 @@ public class SparkOfLight : Skill
                 ApplyDefenseDebuff(target);
         }
 
-        else if (target.NetworkSettings.TeamIndex == _hero.NetworkSettings.TeamIndex) return;
+        else return;
 
         Debug.Log("HandleAlternativeMode");
     }
