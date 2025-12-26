@@ -49,7 +49,11 @@ public class ReversePolarity : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        yield break;
+        if (_hero == null) yield break;
+        SetTarget(_hero);
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.AddTarget(_hero);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
@@ -117,7 +121,8 @@ public class ReversePolarity : Skill
         restoration.SwitchMode();
         flowOfLight.SwitchMode();
         
-        _hero.Abilities.AutoSkillCast.DeleteSkill();
+        if(!IsAutoMode)
+            _hero.Abilities.AutoSkillCast.DeleteSkill();
         //priestShield.SwitchMode();
     }
 

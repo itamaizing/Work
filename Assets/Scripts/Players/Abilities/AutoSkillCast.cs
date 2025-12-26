@@ -103,7 +103,7 @@ public class AutoSkillCast
         {
             if (_targetInfo.GetTargets().Count > 0 )
             {
-                if (_targetInfo.GetTargets()[0] is Character character)
+                if (_targetInfo.GetTargets()[0] is Character character && _targetInfo.GetTargets()[0] != null)
                 {
                     _currentSkill.Hero.Move.LookAtTransform(character.transform);
                     _currentSkill.Hero.Move.IsLookAtCursor = false;

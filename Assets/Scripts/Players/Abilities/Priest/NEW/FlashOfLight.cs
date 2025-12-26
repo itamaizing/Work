@@ -140,14 +140,14 @@ public class FlashOfLight : Skill
         {
             CmdPlayShootSound();
 
+            if (isLightMode) HandleFlashOfLight();
+                else HandleFlashOfDarkness();
+            
             if (reversePolarity != null && Hero.CharacterState.CheckForState(States.ReversePolarity))
             {
                 reversePolarity.SwitchSpells();
                 reversePolarity.RemoveReversePolarityEffect();
             }
-
-                if (isLightMode) HandleFlashOfLight();
-                else HandleFlashOfDarkness();
         }
 
         yield return null;
