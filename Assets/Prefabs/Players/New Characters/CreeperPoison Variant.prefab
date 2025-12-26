@@ -13009,6 +13009,22 @@ PrefabInstance:
       propertyPath: _enemyPrefab
       value: 
       objectReference: {fileID: 1369531615380711236, guid: 2a26b6e6797f5a84c88bae170eb080b3, type: 3}
+    - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _allyPrefabs.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _enemyPrefabs.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_allyPrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1369531615380711236, guid: 2a26b6e6797f5a84c88bae170eb080b3, type: 3}
+    - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_enemyPrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1369531615380711236, guid: 2a26b6e6797f5a84c88bae170eb080b3, type: 3}
     - target: {fileID: 516031481423003102, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Color.a
       value: 1

@@ -76,7 +76,6 @@ public class PoisonSlap : Skill
         UpdateMouseDetection();
     }
 
-
     public void PoisonSlapPreparation()
     {
         _hero.Move.StopMoveAndAnimationMove();
@@ -213,42 +212,22 @@ public class PoisonSlap : Skill
         bool isDoubleCreeper = last == _creeperStrike && preview == _creeperStrike;
         bool isDoubleLightning = last == _lightningStrikes && preview == _lightningStrikes;
 
-        switch (_poisonSlapTalent.Data.IsOpen)
+        if (isDoubleCreeper)
         {
-            case true:
-                if (isDoubleCreeper)
-                {
-                    Debug.Log("1");
-                    CastSpeedFromCreeperStrike();
-                    _isUsedPoisonBallCharger = false;
-                }
-                else if (_lightningStrikes.IsUsedLightningStrikes)
-                {
-                    CastSpeedFromLightningStrikes();
-                    _isUsedPoisonBallCharger = false;
-                }
-                else
-                {
-                    _isUsedPoisonBallCharger = true;
-                    Buff.CastSpeed.Reset();
-                }
-                break;
+            Debug.Log("1");
+            CastSpeedFromCreeperStrike();
+            _isUsedPoisonBallCharger = false;
+        }
+        else if (isDoubleLightning)
+        {
+            CastSpeedFromLightningStrikes();
+            _isUsedPoisonBallCharger = false;
+        }
 
-            case false:
-                if (isDoubleLightning)
-                {
-                    CastSpeedFromCreeperStrike();
-                }
-                else if (_lightningStrikes.IsUsedLightningStrikes)
-                {
-                    CastSpeedFromLightningStrikes();
-                }
-                else
-                {
-                    _isUsedPoisonBallCharger = true;
-                    Buff.CastSpeed.Reset();
-                }
-                break;
+        else
+        {
+            _isUsedPoisonBallCharger = true;
+            Buff.CastSpeed.Reset();
         }
     }
     #endregion
