@@ -208,6 +208,7 @@ public class FlowOfLight : Skill
 
                 TryCancel();
                 CmdDestroyEffect();
+                TrySwitchSpellsOnDarkMode();
                 yield break;
             }
 
@@ -241,19 +242,23 @@ public class FlowOfLight : Skill
             elapsed += Time.deltaTime;
             yield return null;
         }
-        
+
+        TrySwitchSpellsOnDarkMode();
+        _hero.Animator.ResetTrigger(AnimTriggerCast);
+        _hero.NetworkAnimator.ResetTrigger(AnimTriggerCast);
+        CmdCrossFade();
+        _hero.Animator.CrossFade("FlowSpellEnd", 0.1f);
+        CmdDestroyEffect();
+    }
+
+    private void TrySwitchSpellsOnDarkMode()
+    {
         if (_reversePolarity != null && Hero.CharacterState.CheckForState(States.ReversePolarity))
         {
             _reversePolarity.SwitchSpells();
             _reversePolarity.RemoveReversePolarityEffect();
+            _reversePolarity.SetCooldownFromSpell();
         }
-
-        _hero.Animator.ResetTrigger(AnimTriggerCast);
-        _hero.NetworkAnimator.ResetTrigger(AnimTriggerCast);
-
-        CmdCrossFade();
-        _hero.Animator.CrossFade("FlowSpellEnd", 0.1f);
-        CmdDestroyEffect();
     }
 
     protected override void ClearData()

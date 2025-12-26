@@ -19,6 +19,8 @@ public class ReversePolarity : Skill
 
     private AudioSource _audioSource;
 
+    private float _cooldownAfterDarkMode = 6f;
+
     private void Start()
     {
         _audioSource = GetComponent<AudioSource>();
@@ -124,6 +126,11 @@ public class ReversePolarity : Skill
         if(!IsAutoMode)
             _hero.Abilities.AutoSkillCast.DeleteSkill();
         //priestShield.SwitchMode();
+    }
+
+    public void SetCooldownFromSpell()
+    {
+        IncreaseSetCooldown(_cooldownAfterDarkMode);
     }
 
     protected override void ClearData()

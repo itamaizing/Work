@@ -16,7 +16,7 @@ public class FlashOfLight : Skill
     [SerializeField] private AbilityInfo darkInfo;
 
     [SerializeField] private AudioClip audioClip;
-    [SerializeField] private ReversePolarity reversePolarity;
+    [SerializeField] private ReversePolarity _reversePolarity;
 
     private float _clickRadius = 0.5f;
 
@@ -136,19 +136,20 @@ public class FlashOfLight : Skill
     {
         if (GetTargetCharacter() == null || !IsCanCast) yield break;
 
-        if (TryPayCost())
-        {
+        /*if (TryPayCost())
+        {*/
             CmdPlayShootSound();
 
             if (isLightMode) HandleFlashOfLight();
                 else HandleFlashOfDarkness();
             
-            if (reversePolarity != null && Hero.CharacterState.CheckForState(States.ReversePolarity))
+            if (_reversePolarity != null && Hero.CharacterState.CheckForState(States.ReversePolarity))
             {
-                reversePolarity.SwitchSpells();
-                reversePolarity.RemoveReversePolarityEffect();
+                _reversePolarity.SwitchSpells();
+                _reversePolarity.RemoveReversePolarityEffect();
+                _reversePolarity.SetCooldownFromSpell();
             }
-        }
+        //}
 
         yield return null;
     }

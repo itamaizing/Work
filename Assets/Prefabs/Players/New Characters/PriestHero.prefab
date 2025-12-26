@@ -6293,7 +6293,7 @@ MonoBehaviour:
   _darkRange: 6
   darkInfo: {fileID: 11400000, guid: 4469c20cf324553438b48ddbcab1541f, type: 2}
   audioClip: {fileID: 8300000, guid: 5531a0cd7bf154f4b9803db442a17de9, type: 3}
-  reversePolarity: {fileID: 4397321495794393293}
+  _reversePolarity: {fileID: 4397321495794393293}
   isLightMode: 1
 --- !u!114 &4087625883292875692
 MonoBehaviour:
