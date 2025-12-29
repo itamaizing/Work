@@ -135,44 +135,41 @@ public class PoisonSlap : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        if (_lightningMovement.IsInMovement)
-        {
-            _isCanDamageDeal = true;
-            yield break;
-        }
+        //if (_lightningMovement.IsInMovement)
+        //{
+        //    _isCanDamageDeal = true;
+        //    yield break;
+        //}
 
-        if (_poisonBall.IsHaveCharge == false && _isUsedPoisonBallCharger)
-        {
-            yield break;
-        }
+        //if (_poisonBall.IsHaveCharge == false && _isUsedPoisonBallCharger)
+        //{
+        //    yield break;
+        //}
 
-        else
+        while (GetTempTargetCharacter() == null)
         {
-            while (GetTempTargetCharacter() == null)
+            if (GetMouseButton)
             {
-                if (GetMouseButton)
+                FindTargetCharacter(_radiusTargetSearch, GetMousePoint());
+
+                if (GetTempTargetCharacter() != null)
                 {
-                    FindTargetCharacter(_radiusTargetSearch, GetMousePoint());
+                    if (IsAllyTarget(GetTempTargetCharacter()) || GetTempTargetCharacter() == Hero) ClearTempTarget();
 
-                    if (GetTempTargetCharacter() != null)
-                    {
-                        if (IsAllyTarget(GetTempTargetCharacter()) || GetTempTargetCharacter() == Hero) ClearTempTarget();
+                    _firstMousePosition = GetMousePoint();
+                    CreateArrowsParallelToPlayer(GetTempTargetCharacter());
+                    StopAutoDraw();
+                    _firstClickDone = true;
 
-                        _firstMousePosition = GetMousePoint();
-                        CreateArrowsParallelToPlayer(GetTempTargetCharacter());
-                        StopAutoDraw();
-                        _firstClickDone = true;
-
-                    }
                 }
-
-                yield return null;
             }
 
-            yield return _secondMouseClickCoroutine = StartCoroutine(SecondClick());
+            yield return null;
         }
 
+        yield return _secondMouseClickCoroutine = StartCoroutine(SecondClick());
         SetTarget(GetTempTargetCharacter());
+
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
@@ -202,7 +199,6 @@ public class PoisonSlap : Skill
 
         if (isDoubleCreeper)
         {
-            Debug.Log("1");
             CastSpeedFromCreeperStrike();
             _isUsedPoisonBallCharger = false;
         }
@@ -465,19 +461,19 @@ public class PoisonSlap : Skill
     private void CmdPushEnemy(Character target, float distancePush, float durationPush, bool isCanPushTarget)
     {
         MoveComponent targetMoveComponent = target.GetComponent<MoveComponent>();
-        Vector2 directionPush = (target.transform.position - transform.position);
+        Vector3 directionPush = (target.transform.position - transform.position);
         directionPush.y = 0f;
 
         if (targetMoveComponent.connectionToClient != null)
         {
-            if (isCanPushTarget) targetMoveComponent.TargetRpcDoMove((Vector2)target.transform.position + directionPush * distancePush, durationPush);
-            else targetMoveComponent.TargetRpcDoMove((Vector2)target.transform.position - directionPush * distancePush, durationPush);
+            if (isCanPushTarget) targetMoveComponent.TargetRpcDoMove(target.transform.position + directionPush * distancePush, durationPush);
+            else targetMoveComponent.TargetRpcDoMove(target.transform.position - directionPush * distancePush, durationPush);
         }
 
         else
         {
-            if (isCanPushTarget) targetMoveComponent.RpcDoMove((Vector2)target.transform.position + directionPush * distancePush, durationPush);
-            else targetMoveComponent.RpcDoMove((Vector2)target.transform.position - directionPush * distancePush, durationPush);
+            if (isCanPushTarget) targetMoveComponent.RpcDoMove(target.transform.position + directionPush * distancePush, durationPush);
+            else targetMoveComponent.RpcDoMove(target.transform.position - directionPush * distancePush, durationPush);
         }
 
     }
