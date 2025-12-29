@@ -71,6 +71,16 @@ public class PoisonSlap : Skill
 
     #region PrepareAndStartJob
 
+    private void OnDisable()
+    {
+        OnSkillCanceled -= ClearData;
+    }
+
+    private void OnEnable()
+    {
+        OnSkillCanceled += ClearData;
+    }
+
     private void Update()
     {
         UpdateMouseDetection();
@@ -228,7 +238,13 @@ public class PoisonSlap : Skill
 
     private void ChooseDirectionPush(Character target)
     {
-        _isPushTargetAllowed = Vector3.Distance(_player.transform.position, _secondMousePosition) > Vector3.Distance(_player.transform.position, target.transform.position);
+        float distanceFromPlayerToClick = Vector3.Distance(_player.transform.position, _secondMousePosition);
+        float distanceFromTargetToClick = Vector3.Distance(target.transform.position, _secondMousePosition);
+        float playerToTarget = Vector3.Distance(_player.transform.position, target.transform.position);
+
+        _isPushTargetAllowed = distanceFromPlayerToClick > distanceFromTargetToClick;
+
+        if (playerToTarget > distanceFromPlayerToClick && playerToTarget > distanceFromTargetToClick) _isPushTargetAllowed = false;
     }
 
     #endregion
@@ -305,20 +321,22 @@ public class PoisonSlap : Skill
 
     private void UpdateMouseDetection()
     {
-        if (_firstClickDone && !_secondClickDone)
+        if (_firstClickDone && !_secondClickDone && GetTempTargetCharacter() != null)
         {
-            Vector3 currentMousePosition = GetMousePoint();
+            Vector3 playerPos = _player.transform.position;
+            Vector3 targetPos = GetTempTargetCharacter().transform.position;
+            Vector3 mousePos = GetMousePoint();
 
-            if (currentMousePosition.x < _firstMousePosition.x && currentMousePosition.z < _firstMousePosition.z)
-            {
-                SetArrowVisibility(0, true);
-                SetArrowVisibility(1, false);
-            }
-            else
-            {
-                SetArrowVisibility(1, true);
-                SetArrowVisibility(0, false);
-            }
+            float playerToClick = Vector3.Distance(playerPos, mousePos);
+            float targetToClick = Vector3.Distance(targetPos, mousePos);
+            float playerToTarget = Vector3.Distance(playerPos, targetPos);
+
+            bool showPushAway = playerToClick > targetToClick;
+
+            if (playerToTarget > playerToClick && playerToTarget > targetToClick) showPushAway = false;
+
+            SetArrowVisibility(0, showPushAway);
+            SetArrowVisibility(1, !showPushAway);
         }
     }
 
@@ -328,6 +346,8 @@ public class PoisonSlap : Skill
 
     private IEnumerator SecondClick()
     {
+        PoisonSlapPreparation();
+
         while (!_secondClickDone)
         {
             if (Input.GetMouseButtonDown(0))
@@ -461,7 +481,7 @@ public class PoisonSlap : Skill
     private void CmdPushEnemy(Character target, float distancePush, float durationPush, bool isCanPushTarget)
     {
         MoveComponent targetMoveComponent = target.GetComponent<MoveComponent>();
-        Vector3 directionPush = (target.transform.position - transform.position);
+        Vector3 directionPush = (target.transform.position - transform.position).normalized;
         directionPush.y = 0f;
 
         if (targetMoveComponent.connectionToClient != null)
