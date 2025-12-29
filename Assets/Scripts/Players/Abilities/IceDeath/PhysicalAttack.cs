@@ -99,7 +99,7 @@ public class PhysicalAttack : Skill
 		}
 
 		SetTarget(GetTempTargetCharacter());
-
+        ClearTempTarget();
         targetInfo.AddTarget(GetTargetCharacter());
 		targetInfo.Points.Add(GetTargetCharacter().transform.position);
 		callbackDataSaved?.Invoke(targetInfo);

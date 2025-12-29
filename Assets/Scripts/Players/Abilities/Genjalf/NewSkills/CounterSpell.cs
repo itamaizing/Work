@@ -31,7 +31,8 @@ public class CounterSpell : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        if(targetInfo.GetTargets().Count > 0 && targetInfo.GetTargets()[0] != null)
+            SetTarget(targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator CastJob()
@@ -56,14 +57,16 @@ public class CounterSpell : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (GetTargetCharacter() == null)
+        while (GetTempTarget() == null)
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter();
+                FindTarget();
             }
             yield return null;
         }
+        SetTarget(GetTempTarget());
+        ClearTempTarget();
 
         targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
