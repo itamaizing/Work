@@ -40,8 +40,8 @@ public class PoisonSlap : Skill
 
     private int _poisonBoneStack;
 
-    private float _creeperStrikeCastSpeedMultiplier = 1.5f;
-    private float _lightningStrikesCastSpeedMultiplier = 2f;
+    private float _creeperStrikeCastSpeedMultiplier = 100f; // 1.5
+    private float _lightningStrikesCastSpeedMultiplier = 100f; // 2
     private float _baseDamage = 30f;
     private float _distancePush = 3.0f;
     private float _durationPush = 1.0f;
@@ -84,20 +84,16 @@ public class PoisonSlap : Skill
 
     public void AnimPoisonSlapCast()
     {
-        //_poisonBallObject.SetActive(true);
         AnimStartCastCoroutine();
     }
 
     public void AnimPoisonSlapCastEnded()
     {
-        //_poisonBallObject.SetActive(false);
         AnimCastEnded();
     }
 
     public void UsePoisonSlapOfLightningMovement()
     {
-        //_currentTarget = _lightningMovement.Target;
-        //Debug.Log("PoisonSlap / UsePoisonSlapLightning / _currentTarget = " + _currentTarget);
         DamageDealOfLightningMovement();
     }
 
@@ -124,7 +120,6 @@ public class PoisonSlap : Skill
         _isUsedPoisonBallCharger = true;
         Hero.Move.StopLookAt();
         Hero.Move.CanMove = true;
-        //_poisonBallObject.SetActive(false);
 
         ClearTarget();
         ClearTempTarget();
@@ -143,16 +138,14 @@ public class PoisonSlap : Skill
         if (_lightningMovement.IsInMovement)
         {
             _isCanDamageDeal = true;
-            SwitchPayCost();
             yield break;
         }
-
-        SwitchPayCost();
 
         if (_poisonBall.IsHaveCharge == false && _isUsedPoisonBallCharger)
         {
             yield break;
         }
+
         else
         {
             while (GetTempTargetCharacter() == null)
@@ -163,21 +156,16 @@ public class PoisonSlap : Skill
 
                     if (GetTempTargetCharacter() != null)
                     {
-                        if (IsAllyTarget(GetTempTargetCharacter()) || GetTempTargetCharacter() == Hero)
-                        {
-                            ClearTempTarget();
-                        }
+                        if (IsAllyTarget(GetTempTargetCharacter()) || GetTempTargetCharacter() == Hero) ClearTempTarget();
 
                         _firstMousePosition = GetMousePoint();
-
                         CreateArrowsParallelToPlayer(GetTempTargetCharacter());
-
                         StopAutoDraw();
-
                         _firstClickDone = true;
 
                     }
                 }
+
                 yield return null;
             }
 
@@ -351,10 +339,11 @@ public class PoisonSlap : Skill
                 _secondClickDone = true;
                 _secondMousePosition = GetMousePoint();
 
-                if (GetTargetCharacter() != null)
+                if (GetTempTargetCharacter() != null)
                 {
                     SetArrowVisibility(0, false);
                     SetArrowVisibility(1, false);
+                    SwitchPayCost();
                 }
             }
             yield return null;
