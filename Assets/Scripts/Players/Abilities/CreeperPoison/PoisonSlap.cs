@@ -29,9 +29,11 @@ public class PoisonSlap : Skill
 
     #region DisplayArrow
 
-    [SerializeField] private GameObject _arrowPrefab;
+    [SerializeField] private ArrowRender _arrowPrefab;
 
-    private GameObject[] _arrowRenderers = new GameObject[2];
+    private GameObject _pointArrowInstance;
+
+    private ArrowRender[] _arrowRenderers = new ArrowRender[2];
 
     #endregion
 
@@ -253,38 +255,43 @@ public class PoisonSlap : Skill
 
     private void CreateArrowsParallelToPlayer(Character target)
     {
-        if (target == null || _arrowPrefab == null)
-        {
-            Debug.LogError("Arrow Prefab is not assigned or Target is null");
-            return;
-        }
+        if (target == null || _arrowPrefab == null) return;
 
-        Vector3 targetPosition = target.transform.position;
-        Vector3 playerPosition = _player.transform.position;
+        Vector3 center = target.transform.position;
+        Vector3 playerPos = _player.transform.position;
 
-        targetPosition.y = playerPosition.y = 1.1f;
+        center.y = 1.1f;
+        playerPos.y = 1.1f;
 
-        Vector3 directionToTarget = (targetPosition - playerPosition).normalized;
+        Vector3 direction = (playerPos - center).normalized;
+
+        _pointArrowInstance = new GameObject("ArrowCenter");
+        _pointArrowInstance.transform.position = center;
+        _pointArrowInstance.transform.rotation = Quaternion.LookRotation(direction);
+
+        Vector3 offset = direction * 0.6f;
 
         Vector3[] spawnPositions = new Vector3[2]
-       {
-        targetPosition + directionToTarget * 0.5f,
-        targetPosition - directionToTarget * 0.5f
-       };
+        {
+        center + offset,
+        center - offset
+        };
 
         Quaternion[] rotations = new Quaternion[2]
-      {
-        Quaternion.LookRotation(playerPosition - spawnPositions[0]),
-        Quaternion.LookRotation(spawnPositions[1] - playerPosition),
-      };
+        {
+        Quaternion.LookRotation(playerPos - spawnPositions[0]),
+        Quaternion.LookRotation(spawnPositions[1] - playerPos)
+        };
 
         for (int i = 0; i < _arrowRenderers.Length; i++)
         {
-            _arrowRenderers[i] = Instantiate(_arrowPrefab, spawnPositions[i], rotations[i]);
-            RotateArrowChild(_arrowRenderers[i], -90);
-            _arrowRenderers[i]?.SetActive(false);
+            Quaternion flippedRotation = rotations[i] * Quaternion.Euler(0, 180f, 0);
+            _arrowRenderers[i] = Instantiate(_arrowPrefab, spawnPositions[i], flippedRotation, _pointArrowInstance.transform);
+            RotateArrowChild(_arrowRenderers[i].gameObject, -90);
+            _arrowRenderers[i].gameObject?.SetActive(true);
         }
     }
+
 
     private void RotateArrowChild(GameObject arrow, float zRotation)
     {
@@ -305,13 +312,19 @@ public class PoisonSlap : Skill
                 Destroy(arrow);
             }
         }
+
+        if (_pointArrowInstance != null)
+        {
+            Destroy(_pointArrowInstance);
+            _pointArrowInstance = null;
+        }
     }
 
     private void SetArrowVisibility(int arrowIndex, bool isVisible)
     {
         if (arrowIndex >= 0 && arrowIndex < _arrowRenderers.Length && _arrowRenderers[arrowIndex] != null)
         {
-            _arrowRenderers[arrowIndex].SetActive(isVisible);
+            _arrowRenderers[arrowIndex].gameObject.SetActive(isVisible);
         }
     }
 
@@ -321,22 +334,46 @@ public class PoisonSlap : Skill
 
     private void UpdateMouseDetection()
     {
+        Vector3 playerPos = _player.transform.position;
+        Vector3 targetPos = GetTempTargetCharacter().transform.position;
+        Vector3 mousePos = GetMousePoint();
+
+        float playerToClick = Vector3.Distance(playerPos, mousePos);
+        float targetToClick = Vector3.Distance(targetPos, mousePos);
+        float playerToTarget = Vector3.Distance(playerPos, targetPos);
+
         if (_firstClickDone && !_secondClickDone && GetTempTargetCharacter() != null)
         {
-            Vector3 playerPos = _player.transform.position;
-            Vector3 targetPos = GetTempTargetCharacter().transform.position;
-            Vector3 mousePos = GetMousePoint();
-
-            float playerToClick = Vector3.Distance(playerPos, mousePos);
-            float targetToClick = Vector3.Distance(targetPos, mousePos);
-            float playerToTarget = Vector3.Distance(playerPos, targetPos);
-
             bool showPushAway = playerToClick > targetToClick;
 
             if (playerToTarget > playerToClick && playerToTarget > targetToClick) showPushAway = false;
 
-            SetArrowVisibility(0, showPushAway);
-            SetArrowVisibility(1, !showPushAway);
+            if (_arrowRenderers[0] != null)
+            {
+                var arrowComp = _arrowRenderers[0].GetComponent<ArrowRender>();
+                if (arrowComp != null)
+                {
+                    if (showPushAway) arrowComp.SetDeafaultMaterail();
+                    else arrowComp.SetTransparentMaterial();
+                }
+            }
+
+            if (_arrowRenderers[1] != null)
+            {
+                var arrowComp = _arrowRenderers[1].GetComponent<ArrowRender>();
+                if (arrowComp != null)
+                {
+                    if (showPushAway) arrowComp.SetTransparentMaterial();
+                    else arrowComp.SetDeafaultMaterail();
+                }
+            }
+        }
+
+        if (_pointArrowInstance != null)
+        {
+            Vector3 direction = playerPos - _pointArrowInstance.transform.position;
+            direction.y = 0;
+            if (direction != Vector3.zero) _pointArrowInstance.transform.rotation = Quaternion.LookRotation(direction);
         }
     }
 
@@ -346,8 +383,6 @@ public class PoisonSlap : Skill
 
     private IEnumerator SecondClick()
     {
-        PoisonSlapPreparation();
-
         while (!_secondClickDone)
         {
             if (Input.GetMouseButtonDown(0))

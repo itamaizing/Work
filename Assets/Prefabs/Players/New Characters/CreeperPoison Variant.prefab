@@ -14158,7 +14158,7 @@ MonoBehaviour:
   _lightningFastPoisonSlap: {fileID: 3604206469399420121}
   _lightweightSlap: {fileID: 5384305835097893539}
   _poisonSlapTalent: {fileID: 1400299693459156829}
-  _arrowPrefab: {fileID: 7504653704119560997, guid: bc01ef0a119629945958526e596df4ec, type: 3}
+  _arrowPrefab: {fileID: 9064051009418913030, guid: bc01ef0a119629945958526e596df4ec, type: 3}
 --- !u!114 &7910504212405209002
 MonoBehaviour:
   m_ObjectHideFlags: 0
