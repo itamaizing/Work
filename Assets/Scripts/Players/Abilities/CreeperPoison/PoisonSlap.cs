@@ -334,6 +334,8 @@ public class PoisonSlap : Skill
 
     private void UpdateMouseDetection()
     {
+        if (!_firstClickDone || GetTempTargetCharacter() == null) return;
+
         Vector3 playerPos = _player.transform.position;
         Vector3 targetPos = GetTempTargetCharacter().transform.position;
         Vector3 mousePos = GetMousePoint();
@@ -342,32 +344,9 @@ public class PoisonSlap : Skill
         float targetToClick = Vector3.Distance(targetPos, mousePos);
         float playerToTarget = Vector3.Distance(playerPos, targetPos);
 
-        if (_firstClickDone && !_secondClickDone && GetTempTargetCharacter() != null)
-        {
-            bool showPushAway = playerToClick > targetToClick;
+        bool showPushAway = playerToClick > targetToClick;
 
-            if (playerToTarget > playerToClick && playerToTarget > targetToClick) showPushAway = false;
-
-            if (_arrowRenderers[0] != null)
-            {
-                var arrowComp = _arrowRenderers[0].GetComponent<ArrowRender>();
-                if (arrowComp != null)
-                {
-                    if (showPushAway) arrowComp.SetDeafaultMaterail();
-                    else arrowComp.SetTransparentMaterial();
-                }
-            }
-
-            if (_arrowRenderers[1] != null)
-            {
-                var arrowComp = _arrowRenderers[1].GetComponent<ArrowRender>();
-                if (arrowComp != null)
-                {
-                    if (showPushAway) arrowComp.SetTransparentMaterial();
-                    else arrowComp.SetDeafaultMaterail();
-                }
-            }
-        }
+        if (!_secondClickDone) if (playerToTarget > playerToClick && playerToTarget > targetToClick) showPushAway = false;
 
         if (_pointArrowInstance != null)
         {
@@ -375,6 +354,17 @@ public class PoisonSlap : Skill
             direction.y = 0;
             if (direction != Vector3.zero) _pointArrowInstance.transform.rotation = Quaternion.LookRotation(direction);
         }
+
+        SetArrowMaterial(_arrowRenderers[0], !showPushAway);
+        SetArrowMaterial(_arrowRenderers[1], showPushAway);
+    }
+
+    private void SetArrowMaterial(ArrowRender arrow, bool isActive)
+    {
+        if (arrow == null) return;
+
+        if (isActive) arrow.SetDeafaultMaterail();
+        else arrow.SetTransparentMaterial();
     }
 
     #endregion
