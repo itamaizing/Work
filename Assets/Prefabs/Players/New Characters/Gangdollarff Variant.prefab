@@ -7352,11 +7352,11 @@ PrefabInstance:
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[2]'
       value: 
-      objectReference: {fileID: 8856192836074503412}
+      objectReference: {fileID: 4402813572123645427}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[3]'
       value: 
-      objectReference: {fileID: 4402813572123645427}
+      objectReference: {fileID: 8856192836074503412}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[4]'
       value: 
@@ -7431,7 +7431,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._name
-      value: "\u042D\u043B\u0435\u043C\u0435\u043D\u0442\u044B"
+      value: "\u0421\u0442\u0438\u0445\u0438\u0438"
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._name
@@ -7439,6 +7439,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentRow.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentRow.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -7511,20 +7515,48 @@ PrefabInstance:
       objectReference: {fileID: 4967712319262753113}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentRow.Array.data[0].Talents.Array.size
-      value: 1
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentRow.Array.data[0].Talents.Array.size
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.size
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRow.Array.data[0].Talents.Array.data[0]'
       value: 
       objectReference: {fileID: 5031629748469295442}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRow.Array.data[0].Talents.Array.data[1]'
+      value: 
+      objectReference: {fileID: 3396465724686444970}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRow.Array.data[0].Talents.Array.data[0]'
+      value: 
+      objectReference: {fileID: 916624143046240507}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRow.Array.data[0].Talents.Array.data[1]'
+      value: 
+      objectReference: {fileID: 4710988972543738372}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.data[0]'
       value: 
       objectReference: {fileID: 8944577713485279746}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.data[1]'
+      value: 
+      objectReference: {fileID: 6565566035012974792}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.data[2]'
+      value: 
+      objectReference: {fileID: 2261566965996094557}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.data[3]'
+      value: 
+      objectReference: {fileID: 3551611631032480463}
     - target: {fileID: 7849522353126173969, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
@@ -7683,7 +7715,13 @@ PrefabInstance:
       addedObject: {fileID: 2311228646035138989}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 6565566035012974792}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 4710988972543738372}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2261566965996094557}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 916624143046240507}
@@ -7758,6 +7796,37 @@ MonoBehaviour:
   character: {fileID: 8782633265950416607}
   _telekinesis: {fileID: 7914139750777672279}
   _ability: {fileID: 9207050407313082510}
+--- !u!114 &6565566035012974792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4372299641285588602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83d5c0b1c759e02418cd990896fbefd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AbsorptionBallTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0421\u043E \u0441\u0432\u0435\u0440\u0445 \u0432\u044B\u0441\u043E\u043A\u043E\u0447\u0430\u0441\u0442\u043D\u044B\u043C\_\u043A\u043E\u043B\u0435\u0431\u0430\u043D\u0438\u0435\u043C
+      \_\u0432\u043E\u043A\u0440\u0443\u0433 \u0441\u0435\u0431\u044F \_\u043F\u0440\u0435\u043E\u0431\u0440\u0430\u0437\u0443\u0435\u0442
+      \u044D\u043D\u0435\u0440\u0433\u0438\u044E \u0441\u0432\u0435\u0442\u0430 \u0432
+      \u0437\u0430\u0449\u0438\u0442\u043D\u044B\u0439 \u043A\u0443\u043F\u043E\u043B,
+      \u043A\u043E\u0442\u043E\u0440\u044B\u0439 \u043F\u043E\u0433\u043B\u043E\u0449\u0430\u0435\u0442
+      \u0432\u0435\u0441\u044C \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u043C\u044B\u0439
+      \u0443\u0440\u043E\u043D \u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435
+      2 \u0441\u0435\u043A\u0443\u043D\u0434"
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u0428\u0430\u0440 \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F"
+    Icon: {fileID: 21300000, guid: 3c709b466f53c0141944292653b6dff8, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 8782633265950416607}
+  _absorbationBall: {fileID: 4402813572123645427}
+  _ability: {fileID: 9207050407313082510}
 --- !u!114 &4710988972543738372
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7772,16 +7841,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u0418\u0437\u0443\u0447\u0438\u0442\u044C \u0440\u0430\u0441\u043A\u043E\u043B
-      \u0437\u0435\u043C\u043B\u0438"
-    - "\u0418\u0437\u0443\u0447\u0438\u0442\u044C \u0440\u0430\u0441\u043A\u043E\u043B
-      \u0437\u0435\u043C\u043B\u0438"
-    - "\u0418\u0437\u0443\u0447\u0438\u0442\u044C \u0440\u0430\u0441\u043A\u043E\u043B
-      \u0437\u0435\u043C\u043B\u0438"
-    - "\u0418\u0437\u0443\u0447\u0438\u0442\u044C \u0440\u0430\u0441\u043A\u043E\u043B
-      \u0437\u0435\u043C\u043B\u0438"
-    - "\u0418\u0437\u0443\u0447\u0438\u0442\u044C \u0440\u0430\u0441\u043A\u043E\u043B
-      \u0437\u0435\u043C\u043B\u0438"
+    - "\u0420\u0430\u0437\u0440\u044B\u0432\u0430\u0435\u0442 \u0437\u0435\u043C\u043B\u044E
+      \u043D\u0430 \u0434\u0432\u0435 \u0447\u0430\u0441\u0442\u0438 \u0438 \u0441\u043E\u0437\u0434\u0430\u0451\u0442
+      \u0433\u043B\u0443\u0431\u043E\u043A\u0443\u044E \u0442\u0440\u0435\u0449\u0438\u043D\u0443,
+      \u0447\u0435\u0440\u0435\u0437 \u043A\u043E\u0442\u043E\u0440\u0443\u044E \u043D\u0435
+      \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E \u043F\u0440\u043E\u0439\u0442\u0438."
     _stateInfos: []
     IsOpen: 0
     Description: "\u0420\u0430\u0441\u043A\u043E\u043B \u0437\u0435\u043C\u043B\u0438"
@@ -7790,6 +7854,33 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 8782633265950416607}
   _fisura: {fileID: 4513784415459898283}
+  _ability: {fileID: 9207050407313082510}
+--- !u!114 &2261566965996094557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4372299641285588602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 644ea06cd9138bf4ba5dca829c31c24c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DivineEnhancementTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u043D\u0430\u043D\u043E\u0441\u0438\u043C
+      \u0443\u0440\u043E\u043D \u0413\u0430\u043D\u0433\u0434\u043E\u043B\u043B\u0430\u0440\u0444\u0444\u043E\u043C
+      \u0432 2 \u0440\u0430\u0437\u0430 \u043D\u0430 2 \u0441\u0435\u043A\u0443\u043D\u0434\u044B."
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u0411\u043E\u0436\u0435\u0441\u0442\u0432\u0435\u043D\u043D\u043E\u0435
+      \u0443\u0441\u0438\u043B\u0435\u043D\u0438\u0435"
+    Icon: {fileID: 21300000, guid: 765b5465876568f4e8e23fcd242b4b24, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 8782633265950416607}
+  _divineEnhancement: {fileID: 483165492512868837}
   _ability: {fileID: 9207050407313082510}
 --- !u!114 &916624143046240507
 MonoBehaviour:
@@ -7805,8 +7896,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u0418\u0437\u0443\u0447\u0438\u0442\u044C \u0445\u043B\u043E\u043F\u043E\u043A
-      \u0432\u043E\u0434\u044B"
+    - "\u0413\u0435\u043D\u0435\u0440\u0438\u0440\u0443\u0435\u0442 \u0448\u0430\u0440
+      \u0438\u0437 \u0432\u043E\u0434\u044B \u0438 \u0432\u0437\u0440\u044B\u0432\u0430\u0435\u0442
+      \u0435\u0433\u043E, \u043D\u0430\u043D\u043E\u0441\u044F \u0443\u0440\u043E\u043D
+      \u0438 \u043E\u0442\u0431\u0440\u0430\u0441\u044B\u0432\u0430\u044F \u0432\u0440\u0430\u0433\u043E\u0432
+      \u043D\u0430 1 \u043C\u0435\u0442\u0440, \u0443\u0440\u043E\u043D \u0438 \u0434\u0430\u043B\u044C\u043D\u043E\u0441\u0442\u044C
+      \u043E\u0442\u0431\u0440\u043E\u0441\u0430 \u043C\u0430\u043A\u0441\u0438\u043C\u0430\u043B\u044C\u043D\u044B\u0439
+      \u043F\u043E \u0431\u043B\u0438\u0436\u0430\u0439\u0448\u0438\u043C \u0446\u0435\u043B\u044F\u043C."
     _stateInfos: []
     IsOpen: 0
     Description: "\u0425\u043B\u043E\u043F\u043E\u043A \u0432\u043E\u0434\u044B"
@@ -7879,7 +7975,7 @@ MonoBehaviour:
     _stateInfos: []
     IsOpen: 0
     Description: "\u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0430\u0437\u0430\u0440\u0442"
-    Icon: {fileID: 0}
+    Icon: {fileID: 21300000, guid: ba33a9f74e760af40acd84c6b94a4ea3, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 8782633265950416607}
@@ -7988,10 +8084,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _data:
-    _descriptionsForInfoPanel: []
+    _descriptionsForInfoPanel:
+    - "\u0420\u0430\u0437 \u0432 12 \u0441\u0435\u043A\u0443\u043D\u0434 \xAB\u0448\u0430\u0440
+      \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F\xBB \u043F\u0440\u0438 
+      \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u0438 \u0438\u043C\u0435\u0435\u0442
+      \u0434\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u0432
+      2 \u0440\u0430\u0437\u0430 \u0434\u043E\u043B\u044C\u0448\u0435"
     _stateInfos: []
     IsOpen: 0
-    Description: Up Absorption ball
+    Description: "\u0414\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u044B\u0439 \u0448\u0430\u0440"
     Icon: {fileID: 21300000, guid: 09e359aa32a9ff04ea7bbdf596fa2faa, type: 3}
     Group: 0
     Row: 0
@@ -8189,15 +8290,15 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 6d79d5ad27a130248b2172b0a53f285c, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 30
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
+  _cooldownTime: 12
   _castDeley: 0
   _damageValue: 0
   _abilitySchool: 0
@@ -8216,11 +8317,11 @@ MonoBehaviour:
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
-  _isUseCharges: 1
+  _isUseCharges: 0
   _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 1
-  _maxCharges: 2
-  _chargeCooldown: 24
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 1
+  _chargeCooldown: 12
   _radius: 0
   _area: 0
   _castLength: 0
@@ -8612,8 +8713,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 414706fd3e1f2bb4b920984bcdad76ac, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:

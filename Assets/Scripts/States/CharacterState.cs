@@ -271,6 +271,7 @@ public class CharacterState : NetworkBehaviour
         [States.Burn] = new Burn(),
 		[States.Discharge] = new Gangdollarff.AirElemental.Discharge(),
 		[States.CoolingAura] = new CoolingAura(),
+		[States.MagicalExcitement] = new MagicalExcitement(),
         #endregion
 
         #region Test Baff and Debaff
@@ -776,6 +777,7 @@ public enum States
 	BleedingScrader,
 	DischargePsi,
 	BleedingDebuff,
+	MagicalExcitement,
 }
 public enum BaffDebaff
 {

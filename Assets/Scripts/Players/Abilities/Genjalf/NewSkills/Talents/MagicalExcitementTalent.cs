@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 public class MagicalExcitementTalent : Talent
@@ -26,6 +26,7 @@ public class MagicalExcitementTalent : Talent
 
     private void OnDamageTaked(Damage damage, GameObject target)
     {
+        character.CharacterState.CmdAddState(States.MagicalExcitement, _increaseManaRegenerationDuration,0,character.gameObject,name);
         StartCoroutine(IncreaseManaRegeneration());
     }
 

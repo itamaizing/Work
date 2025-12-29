@@ -14,6 +14,10 @@ public class LightningStrike : Skill
 
     protected override int AnimTriggerCast => 0;
 
+    private float _clickRadius = 0.5f;
+    
+    private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+
     private bool CheckCanCast()
     {
         return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius && GetTargetCharacter() != null;
@@ -49,7 +53,7 @@ public class LightningStrike : Skill
 
             if (UnityEngine.Random.Range(1, 100) <= _debuffChance)
             {
-                GetTargetCharacter().CharacterState.AddState(States.Discharge, 2, 0, Hero.gameObject, name);
+                GetTargetCharacter().CharacterState.CmdAddState(States.Discharge, 2, 0, Hero.gameObject, name);
             }
             ClearTarget();
         }
@@ -66,15 +70,31 @@ public class LightningStrike : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (GetTargetCharacter() == null)
+        while (GetTempTargetCharacter() == null)
         {
+        
             if (GetMouseButton)
             {
-                FindTargetCharacter();
+                Vector3 clickPoint = GetMousePoint();
+                
+                FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
+                
+                if (GetTempTargetCharacter() is Character character)
+                {
+                    if (GetTempTargetCharacter() != null && !IsEnemyTarget(character))
+                    {
+                        ClearTempTarget();
+                    }
+                    else
+                    {
+                        if (character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        break;
+                    }
+                }
             }
             yield return null;
         }
-
+        SetTarget(GetTempTargetCharacter());
         targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }
