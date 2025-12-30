@@ -143,7 +143,7 @@ public class PhysicalAttack : Skill
 
 			if (_energy.CurrentValue >= EnergyPerAttack)
 			{
-				if (_combo.MakeHit(enemy, AbilityForm.Physical, 0, EnergyPerAttack, curDamage))
+				if (_combo.MakeHit(enemy, AbilityForm, 0, EnergyPerAttack, curDamage))
 				{
 					Debug.Log("Last hit");
 					LastHit();
@@ -191,7 +191,7 @@ public class PhysicalAttack : Skill
 			_energy.SumDamageMake(curDamage);
 			_rune.SumDamageMake(curDamage);
 
-			_combo.MakeHit(enemy, AbilityForm.Physical, 0, 0, curDamage);
+			_combo.MakeHit(enemy, AbilityForm, 0, 0, curDamage);
 
 			if (_energy.CurrentValue >= 5)
 			{
@@ -242,7 +242,7 @@ public class PhysicalAttack : Skill
 			Value = curDamage,
 			Type = DamageType.Physical,
 		};
-		_combo.MakeHit(enemy, AbilityForm.Physical, 0, EnergyPerAttack, curDamage);
+		_combo.MakeHit(enemy, AbilityForm, 0, EnergyPerAttack, curDamage);
 		CmdApplyDamage(damage, enemy.gameObject);
 	}
 

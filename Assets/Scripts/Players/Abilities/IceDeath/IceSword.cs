@@ -68,7 +68,7 @@ public class IceSword : CloseCombatSkill
 
 	protected override IEnumerator CastJob()
 	{
-		_seriesOfStrikes.MakeHit(GetTargetCharacter(), AbilityForm.Magic, 0, 10, 0);
+		_seriesOfStrikes.MakeHit(GetTargetCharacter(), AbilityForm, 0, 10, 0);
 		if (GetTargetCharacter() == _oldtarget)
 		{
 			_hitInTheRow++;

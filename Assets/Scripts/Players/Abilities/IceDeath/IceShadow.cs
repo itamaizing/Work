@@ -91,7 +91,7 @@ public class IceShadow : Skill
 	{
 		/*IceShadowObject projectileGm = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
 		projectileGm.Init(_playerLinks.gameObject ,Mana.Value);*/
-		_lastHit = _combo.MakeHit(null, AbilityForm.Magic, 1, _manaUsed, 0);
+		_lastHit = _combo.MakeHit(null, AbilityForm, 1, _manaUsed, 0);
 
 		if (!_combo.SeriesCompliteCompo)
 		{

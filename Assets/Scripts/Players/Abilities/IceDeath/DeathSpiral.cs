@@ -250,7 +250,7 @@ public class DeathSpiral : Skill
 		}
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
-		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0, 0);
+		_seriesOfStrikes.MakeHit(null, AbilityForm, 1, 0, 0);
 
 
 		Shoot(angle, _inTheRow, GetTargetCharacter().gameObject, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
@@ -264,7 +264,7 @@ public class DeathSpiral : Skill
 		_inTheRow = true;
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
-		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0, 0);
+		_seriesOfStrikes.MakeHit(null, AbilityForm, 1, 0, 0);
 		Shoot(angle, _inTheRow, GetTargetCharacter().gameObject, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
 	}
 
@@ -274,7 +274,7 @@ public class DeathSpiral : Skill
 		_superCharge = false;
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
-		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0, 0);
+		_seriesOfStrikes.MakeHit(null, AbilityForm, 1, 0, 0);
 		Shoot(angle, _inTheRow, GetTargetCharacter().gameObject, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
 	}
 

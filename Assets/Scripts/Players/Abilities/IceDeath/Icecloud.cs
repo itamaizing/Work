@@ -78,7 +78,7 @@ public class IceCloud : Skill
 	{
 		Vector3 lookDir = _mousePos - Hero.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - AngleOffset;
-		if (_combo.MakeHit(null, AbilityForm.Magic, 1, 0, 0)) _lastHit = true;
+		if (_combo.MakeHit(null, AbilityForm, 1, 0, 0)) _lastHit = true;
 
 		if (!_combo.SeriesCompliteCompo)
 		{

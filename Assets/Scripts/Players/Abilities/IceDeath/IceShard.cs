@@ -38,7 +38,7 @@ public class IceShard : Skill
 	{
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
-		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 5, 3);
+		_seriesOfStrikes.MakeHit(null, AbilityForm, 1, 5, 3);
 
 		CmdCreateProjecttile(angle, _energy.CurrentValue, _talentPlague, _talentChragesPlague);
 	}

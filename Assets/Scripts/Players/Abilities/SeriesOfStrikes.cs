@@ -81,7 +81,7 @@ public class SeriesOfStrikes : MonoBehaviour
 	{
 		if (_iceRuneTalent) BonusRuneForDamage(damage);
 		CheckCurse(target, damage);
-
+		
 		if (!_seriesCompliteCompoTalent) return false;
 		_energy.ChangeBarColor(new Color(255, 165, 0));
 
