@@ -13,6 +13,10 @@ public class CounterSpell : Skill
     protected override int AnimTriggerCastDelay => 0;
 
     protected override int AnimTriggerCast => 0;
+    
+    private float _clickRadius = 0.5f;
+    
+    private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
     private bool CheckCanCast()
     {
@@ -39,10 +43,9 @@ public class CounterSpell : Skill
     {
         if (GetTargetCharacter() != null)
         {
-            CmdState(GetTargetCharacter().gameObject, 5);
-            GetTargetCharacter().Abilities.CancleAllSkills();
-
-            //ClearTarget();
+            var targetGO = GetTargetCharacter().gameObject;
+            
+            CmdState(targetGO, 5);
         }
         yield return null;
     }
@@ -61,7 +64,22 @@ public class CounterSpell : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget();
+                Vector3 clickPoint = GetMousePoint();
+                
+                FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
+
+                if (GetTempTargetCharacter() is Character character)
+                {
+                    if (GetTempTargetCharacter() != null && !IsEnemyTarget(character))
+                    {
+                        ClearTempTarget();
+                    }
+                    else
+                    {
+                        if (character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        break;
+                    }
+                }
             }
             yield return null;
         }

@@ -676,6 +676,7 @@ public abstract class Skill : NetworkBehaviour
 
 		if (foceCancel || _isCanCancle)
         {
+            Hero.Abilities.NotifySkillIsPreparing(this,false);
             Canceled?.Invoke();
             _hero.Move.CanMove = true;
             ClearData();
@@ -725,6 +726,7 @@ public abstract class Skill : NetworkBehaviour
         }
         else
         {
+            Hero.Abilities.NotifySkillIsPreparing(this,false);
             return false;
         }
     }
@@ -1433,6 +1435,7 @@ public abstract class Skill : NetworkBehaviour
     private IEnumerator ActionWrapperForCastingJob()
     {
         Hero.Abilities.NotifySkillPrepared(this);
+        Hero.Abilities.NotifySkillIsPreparing(this,true);
         CastStarted?.Invoke();
         _isCasting = true;
 
@@ -1488,6 +1491,7 @@ public abstract class Skill : NetworkBehaviour
 
         CastSuccess?.Invoke();
         CastEnded?.Invoke();
+        Hero.Abilities.NotifySkillIsPreparing(this,false);
         _isCasting = false;
 
         ClearData();
