@@ -15,6 +15,8 @@ public class IcePuddleObject : Projectiles
 	private float _timeToDestroy = 0;
     private float _damageToExit = 30;
     private float _curEvade = 0;
+	private float _maxLifeTime = 10f;
+	private float _spawnTime;
 	private bool _talentEvadeDadBoost = false;
 	private bool _talentFrostingFrozen = false;
 	private bool _iceDeathInIcePudleTalent = false;
@@ -49,11 +51,7 @@ public class IcePuddleObject : Projectiles
 		_initialized = true;
 		_lastHit = lastHit;
 		_healthComponent = _dad.Health;
-		_timeToDestroy += timeToDestroy;
-		if(_lastHit)
-		{
-			transform.localScale = Vector3.one * 1.7f;
-		}
+
 		for (int i = 0; i < _dad.Resources.Count; i++)
 		{
 			if (_dad.Resources[i].Type == ResourceType.Energy)
@@ -61,11 +59,16 @@ public class IcePuddleObject : Projectiles
 				_energy = (Energy)_dad.Resources[i];
 			}
 		}
-		//StartCoroutine(DestroyPuddle());
-		StartCoroutine(StartFade());
+
+		float extraDuration = _energy != null ? _energy.CurrentValue / 5f : 0f;
+		_timeToDestroy = Mathf.Min(_maxLifeTime, timeToDestroy + extraDuration);
+		_spawnTime = Time.time;
+
+		Debug.Log($"_timeToDestroy: {_timeToDestroy}");
+		 
+		if (_lastHit) transform.localScale = Vector3.one * 1.7f;
+		StartCoroutine(DestroyPuddle());
 	}
-
-
 
 	public void SetTalents(bool talentEvadeDadBoost, bool talentFrostingFrozen)
 	{
@@ -131,7 +134,11 @@ public class IcePuddleObject : Projectiles
 			{
 				if (enemy == null) continue;
 				if (enemy.CharacterState == null) continue;
-				if (!enemy.CharacterState.CheckForState(States.Frosting)) enemy.CharacterState.AddState(States.Frosting, _timeToDestroy, enemy.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
+				if (!enemy.CharacterState.CheckForState(States.Frosting))
+                {
+					float remainingLife = Mathf.Max(0.1f, _timeToDestroy - (Time.time - _spawnTime));
+					enemy.CharacterState.AddState(States.Frosting, remainingLife, enemy.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
+				}
 			}
 
 			yield return _waitApplyDelay;

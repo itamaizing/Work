@@ -18,7 +18,7 @@ public class IcePuddle : Skill
 
     [Header("Ability settings")]
     [SerializeField] private SeriesOfStrikes _seriesOfStrikes;
-    [SerializeField] private float _timeToDestroy = 3f;
+    [SerializeField] private int _timeToDestroy = 3;
     [SerializeField] private MoveComponent _move;
     [SerializeField] private AudioClip _audioClip;
 
@@ -179,7 +179,7 @@ public class IcePuddle : Skill
 
     protected override IEnumerator CastJob()
     {
-        _lastHit = _seriesOfStrikes.MakeHit(null, AbilityForm, 1, 0, 0);
+        _lastHit = _seriesOfStrikes.MakeHit(null, AbilityForm, 1, 0, 0, _seriesOfStrikes.GetMultipliedSpeed() / 100);
 
         Shoot();
         yield return null;
@@ -217,14 +217,7 @@ public class IcePuddle : Skill
         int timeToAdd = (int)_energy.CurrentValue / 5;
         if (timeToAdd > 4) timeToAdd = 4;
 
-        _timeToDestroy += timeToAdd;
         _energy.CmdUse(timeToAdd * 5);
-
-        if (!_seriesOfStrikes.SeriesCompliteCompo)
-        {
-            Buff.AttackSpeed.ReductionPercentage(_seriesOfStrikes.GetMultipliedSpeed() / 100);
-            Buff.CastSpeed.IncreasePercentage(_seriesOfStrikes.GetMultipliedSpeed() / 100);
-        }
 
         if (_lastHit) CmdCreateProjecttileBig(_placedAngleDeg, _timeToDestroy, _placedPosition, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);
         else CmdCreateProjecttile(_placedAngleDeg, _timeToDestroy, _placedPosition, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);
