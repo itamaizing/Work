@@ -134,7 +134,7 @@ public class IceShadowObject : Projectiles
 		{
 			//attact speed increase
 		}*/
-		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
+		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject && collision.gameObject.layer != LayerMask.NameToLayer("Enemy"))
 			//&& enemyShadow)
 		{
 			float timeElapsed = Time.time - _lifeTimer;
