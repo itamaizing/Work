@@ -18,6 +18,7 @@ public class IceShadowObject : Projectiles
 	private bool _iceDeathInShadowTalent = false;
 	private float _damageTimer = 1f;
 	private float _modifierRegen;
+	private float _lifeTimer;
 	/*
 	 * timer to destroy
 	 * buff player
@@ -26,14 +27,18 @@ public class IceShadowObject : Projectiles
 	{
 		_skill = skill;
 		_dad = dad;
-		_energyDad = energy;
+
+		_energyDad = Mathf.Min(energy, 30f);
+
 		_healthPlayer = _dad.Health;
 		_initialized = true;
 		_lastHit = lastHit;
+		timeToDestroy = 2f;
+		int bonusSeconds = Mathf.FloorToInt(_energyDad / 10f);
+		timeToDestroy += bonusSeconds;
+		timeToDestroy = Mathf.Clamp(timeToDestroy, 2f, 5f);
 
-		float extraTime = Mathf.Min(energy / 10f, 3f);
-
-		timeToDestroy += extraTime;
+		_lifeTimer = Time.time;
 
 		_damage = new Damage
 		{
@@ -43,6 +48,7 @@ public class IceShadowObject : Projectiles
 
 		StartCoroutine(DestroyShadow());
 	}
+
 
 	public void SetAnimationState(int animationHash, float normalizedTime, float velocityX, float velocityZ, Quaternion rotation)
 	{
@@ -108,9 +114,11 @@ public class IceShadowObject : Projectiles
 		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
 			//&& enemyShadow)
 		{
-			float duration = 2 + _energyDad / 20;
+			float timeElapsed = Time.time - _lifeTimer;
+			float remainingLifetime = Mathf.Max(0f, timeToDestroy - timeElapsed);
+			float freezeDuration = Mathf.Clamp(remainingLifetime, 2f, 5f);
 
-			target.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
+			target.CharacterState.AddState(States.Frozen, freezeDuration, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
 			//GetComponent<Collider2D>().enabled = false;
 			//Destroy(gameObject);
 			if(_lastHit)
@@ -120,7 +128,7 @@ public class IceShadowObject : Projectiles
 				{
 					if (enemy.TryGetComponent<Character>(out var newTatget) && collision.gameObject != _dad.gameObject)
 					{
-						newTatget.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
+						newTatget.CharacterState.AddState(States.Frozen, freezeDuration, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
 					}
 				}
 			}
