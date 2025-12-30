@@ -19,6 +19,29 @@ public class IceShadowObject : Projectiles
 	private float _damageTimer = 1f;
 	private float _modifierRegen;
 	private float _lifeTimer;
+
+	#region Const
+	private const float MaxEnergyForShadow = 30f;
+
+	private const float BaseShadowLifetime = 2f;
+	private const float EnergyPerBonusSecond = 10f;
+	private const float MinShadowLifetime = 2f;
+	private const float MaxShadowLifetime = 5f;
+
+	private const float MinFreezeDuration = 2f;
+	private const float MaxFreezeDuration = 5f;
+
+	private const float ChainFreezeRadius = 3f;
+
+	private const float BaseRegenMultiplier = 1.01f;
+	private const float IceDeathRegenBonus = 0.03f;
+
+	private const float ShadowBaseDamage = 2f;
+
+	private const float DamageRadius = 4f;
+
+	private const float HitEffectLifetime = 5f;
+	#endregion
 	/*
 	 * timer to destroy
 	 * buff player
@@ -28,21 +51,21 @@ public class IceShadowObject : Projectiles
 		_skill = skill;
 		_dad = dad;
 
-		_energyDad = Mathf.Min(energy, 30f);
+		_energyDad = Mathf.Min(energy, MaxEnergyForShadow);
 
 		_healthPlayer = _dad.Health;
 		_initialized = true;
 		_lastHit = lastHit;
-		timeToDestroy = 2f;
-		int bonusSeconds = Mathf.FloorToInt(_energyDad / 10f);
+		timeToDestroy = BaseShadowLifetime;
+		int bonusSeconds = Mathf.FloorToInt(_energyDad / EnergyPerBonusSecond);
 		timeToDestroy += bonusSeconds;
-		timeToDestroy = Mathf.Clamp(timeToDestroy, 2f, 5f);
+		timeToDestroy = Mathf.Clamp(timeToDestroy, MinShadowLifetime, MaxShadowLifetime);
 
 		_lifeTimer = Time.time;
 
 		_damage = new Damage
 		{
-			Value = 2,
+			Value = ShadowBaseDamage,
 			Type = DamageType.Magical,
 		};
 
@@ -99,11 +122,11 @@ public class IceShadowObject : Projectiles
 	{
 		if(_dad == null) return;
 
-		if (_iceDeathInShadowTalent && collision.gameObject.TryGetComponent<IcePuddleObject>(out IcePuddleObject icePuddleObject)) _modifierRegen = 0.03f;
+		if (_iceDeathInShadowTalent && collision.gameObject.TryGetComponent<IcePuddleObject>(out IcePuddleObject icePuddleObject)) _modifierRegen = IceDeathRegenBonus;
 
 		if (collision.gameObject == _dad.gameObject)
 		{
-			if (_iceDeathInShadowTalent) _dad.Health.IncreaseRegen(1.01f + _modifierRegen);
+			if (_iceDeathInShadowTalent) _dad.Health.IncreaseRegen(BaseRegenMultiplier + _modifierRegen);
 			//_healthPlayer.SetBoostRegen(0.01f);
 			//Debug.LogError("setboost in hp has been deleted");
 		}
@@ -116,14 +139,14 @@ public class IceShadowObject : Projectiles
 		{
 			float timeElapsed = Time.time - _lifeTimer;
 			float remainingLifetime = Mathf.Max(0f, timeToDestroy - timeElapsed);
-			float freezeDuration = Mathf.Clamp(remainingLifetime, 2f, 5f);
+			float freezeDuration = Mathf.Clamp(remainingLifetime, MinFreezeDuration, MaxFreezeDuration);
 
 			target.CharacterState.AddState(States.Frozen, freezeDuration, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
 			//GetComponent<Collider2D>().enabled = false;
 			//Destroy(gameObject);
 			if(_lastHit)
 			{
-				Collider[] enemyDetected = Physics.OverlapSphere(transform.position, 3);
+				Collider[] enemyDetected = Physics.OverlapSphere(transform.position, ChainFreezeRadius);
 				foreach (var enemy in enemyDetected) 
 				{
 					if (enemy.TryGetComponent<Character>(out var newTatget) && collision.gameObject != _dad.gameObject)
@@ -142,7 +165,7 @@ public class IceShadowObject : Projectiles
 		if (_hitEffect != null)
 		{
 			GameObject hitEffect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
-			Destroy(hitEffect, 5f);
+			Destroy(hitEffect, HitEffectLifetime);
 		}
 
 		//_healthPlayer.SetBoostRegen(0);
@@ -179,7 +202,7 @@ public class IceShadowObject : Projectiles
 		if(_damageTimer < 0 )
 		{
 			List<Character> _listToDamage;
-			_listToDamage = GetCloserTargets(transform.position, 4);
+			_listToDamage = GetCloserTargets(transform.position, DamageRadius);
 			if(_listToDamage !=  null)
 			for (int i = 0; i < _listToDamage.Count; i++) 
 			{
