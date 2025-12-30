@@ -50,6 +50,16 @@ public class IcePuddle : Skill
     // private float _timer = 2;
     // private float _time = 0;
 
+    private void OnEnable()
+    {
+        OnSkillCanceled += ClearData;
+    }
+
+    private void OnDisable()
+    {
+        OnSkillCanceled -= ClearData;
+    }
+
     protected override bool IsCanCast
     {
         get
@@ -183,7 +193,13 @@ public class IcePuddle : Skill
         _placedPosition = Vector3.positiveInfinity;
         _placedAngleDeg = 0f;
 
-        if (_preViewPuddle) _preViewPuddle.SetActive(false);
+        //if (_preViewPuddle) _preViewPuddle.SetActive(false); ?
+
+        if (_preViewPuddle)
+        {
+            Destroy(_preViewPuddle);
+            _preViewPuddle = null;
+        }
 
         // _enabled = false;
         // _secondPoind = false;
