@@ -192,7 +192,7 @@ public class Restoration : Skill
     }
 
     [Command]
-    private void CmdAddState(Character character, States states, float duration) => character.CharacterState.AddState(states, duration, 0, Hero.gameObject, name);
+    private void CmdAddState(Character character, States states, float duration) => character.CharacterState.AddState(states, duration, 0, Hero.gameObject, nameof(Restoration));
 
     [ClientRpc]
     private void RpcPlayShotSound()

@@ -16,6 +16,8 @@ public class DestructionState : AbstractCharacterState
     //private float _effectivenessIncreasePerTick = 0.1f;
 
     private float _timer;
+
+    private string _skillName;
     //private float _accumulatedEffectiveness = 1f;
     //private float _totalDamageInInterval = 0f;
 
@@ -25,6 +27,7 @@ public class DestructionState : AbstractCharacterState
         _personWhoMadeBuff = personWhoMadeBuff;
         duration = durationToExit;
 
+        _skillName = skillName;
         _health = character.Character.Health;
         //_accumulatedEffectiveness = 1f;
         //_totalDamageInInterval = 0f;
@@ -69,10 +72,10 @@ public class DestructionState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        if ((_personWhoMadeBuff.TryGetComponent(out SparkOfLight sparkOfLightSkill) &&
+        if (((_personWhoMadeBuff.TryGetComponent(out SparkOfLight sparkOfLightSkill) &&
              sparkOfLightSkill.IsDestructionFillingTalent)
             || (_personWhoMadeBuff.TryGetComponent(out FlowOfLight flowOfLightSkill) &&
-                flowOfLightSkill.IsDestructionFillingTalent))
+                flowOfLightSkill.IsDestructionFillingTalent)) && _skillName != nameof(Restoration))
         {
             duration += time;
             _timer = Mathf.Min(_timer, _tickInterval);
