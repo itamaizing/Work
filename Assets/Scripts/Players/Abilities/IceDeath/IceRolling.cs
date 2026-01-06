@@ -199,7 +199,8 @@ public class IceRolling : Skill
 		}
 
 		float additionalCost = extraCells * 5f;
-		float totalCost = ManaCostRate + additionalCost;
+
+		//float totalCost = ManaCostRate + additionalCost;
 
 		//if (_energy.CurrentValue < totalCost)
 		//{

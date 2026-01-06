@@ -137,7 +137,7 @@ public class IcePuddleObject : Projectiles
 				if (!enemy.CharacterState.CheckForState(States.Frosting))
                 {
 					float remainingLife = Mathf.Max(0.1f, _timeToDestroy - (Time.time - _spawnTime));
-					enemy.CharacterState.AddState(States.Frosting, remainingLife, enemy.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
+					enemy.CharacterState.AddState(States.Frosting, remainingLife, _damageToExit, _dad.gameObject, _skill.name);
 				}
 			}
 
