@@ -43,8 +43,6 @@ public class IceRolling : Skill
 	#region Constants
 	private const float BoxCastSize = 0.05f;
 	private const float ObstaclePushBackMultiplier = 1.2f;
-	private const float RollingWithEnemyTalentBaseRange = 4f;
-	private const float RollingWithoutEnemyTalentBaseRange = 2f;
 	private const float EnergyChunkValue = 5f;
 	private const float KnockbackDistance = 2f;
 	private const float KnockbackDuration = 0.05f;
@@ -201,15 +199,15 @@ public class IceRolling : Skill
 		}
 
 		float additionalCost = extraCells * 5f;
-		float totalCost = 10f + additionalCost;
+		float totalCost = ManaCostRate + additionalCost;
 
-		if (_energy.CurrentValue < totalCost)
-		{
-			Debug.Log("Недостаточно энергии для прыжка.");
-			return;
-		}
+		//if (_energy.CurrentValue < totalCost)
+		//{
+		//	Debug.Log("Недостаточно энергии для прыжка.");
+		//	return;
+		//}
 
-		_energy.CmdUse(totalCost);
+		_energy.CmdUse(additionalCost);
 
 		if (_isLastInSeries && GetTargetCharacter() == null && _rollingWithEnemyTalent)
 			finalRange *= 1.5f;
@@ -250,55 +248,57 @@ public class IceRolling : Skill
 		}
 	}
 
-	private void Jump()
-	{
-		Hero.Move.CanMove = false;
-		_isJump = true;
-		float actualJumpRange = _jumprange;
+    #region old
+ //   private void Jump()
+	//{
+	//	Hero.Move.CanMove = false;
+	//	_isJump = true;
+	//	float actualJumpRange = _jumprange;
 
-		_lookDir = (_mousePos - _playerLinks.transform.position).normalized;
-		Vector3 jumpPos = _lookDir * actualJumpRange + _playerLinks.transform.position;
-		Vector3 stopPosition;
-		Character characterHit;
-		if (CheckObstacleBetween(_playerLinks.transform.position, jumpPos, out stopPosition, out characterHit))
-		{
-			_jumpCount = 5;
-			CmdPush(stopPosition, Vector3.Distance(stopPosition, transform.position));
-		}
-		else
-		{
-			Debug.Log(Vector2.Distance(jumpPos, transform.position) + " Jump " + actualJumpRange);
-			//if(actualJumpRange)
-			for (int i = 0; i < 2; i++)
-			{
-				_jumpCount += 1f;
-				actualJumpRange += 1;
-				Vector3 jumpPos2 = _lookDir * actualJumpRange + _playerLinks.transform.position;
-				if (_energy.CurrentValue >= 5 && !CheckObstacleBetween(_playerLinks.transform.position, jumpPos2, out stopPosition, out characterHit))
-				{
-					_energy.CmdUse(5);
-					jumpPos = jumpPos2;
-					//Debug.Log("Additional jump " + i);
-				}
-			}
-			CmdPush(stopPosition, Vector3.Distance(jumpPos, transform.position));
+	//	_lookDir = (_mousePos - _playerLinks.transform.position).normalized;
+	//	Vector3 jumpPos = _lookDir * actualJumpRange + _playerLinks.transform.position;
+	//	Vector3 stopPosition;
+	//	Character characterHit;
+	//	if (CheckObstacleBetween(_playerLinks.transform.position, jumpPos, out stopPosition, out characterHit))
+	//	{
+	//		_jumpCount = 5;
+	//		CmdPush(stopPosition, Vector3.Distance(stopPosition, transform.position));
+	//	}
+	//	else
+	//	{
+	//		Debug.Log(Vector2.Distance(jumpPos, transform.position) + " Jump " + actualJumpRange);
+	//		//if(actualJumpRange)
+	//		for (int i = 0; i < 2; i++)
+	//		{
+	//			_jumpCount += 1f;
+	//			actualJumpRange += 1;
+	//			Vector3 jumpPos2 = _lookDir * actualJumpRange + _playerLinks.transform.position;
+	//			if (_energy.CurrentValue >= 5 && !CheckObstacleBetween(_playerLinks.transform.position, jumpPos2, out stopPosition, out characterHit))
+	//			{
+	//				_energy.CmdUse(5);
+	//				jumpPos = jumpPos2;
+	//				//Debug.Log("Additional jump " + i);
+	//			}
+	//		}
+	//		CmdPush(stopPosition, Vector3.Distance(jumpPos, transform.position));
 
-			if (_rollingPhysTalent)
-			{
-				_physicalAttack.TalentRollingPhys(_afterJump, _jumpCount);
-				_afterJump = true;
-			}
-		}
+	//		if (_rollingPhysTalent)
+	//		{
+	//			_physicalAttack.TalentRollingPhys(_afterJump, _jumpCount);
+	//			_afterJump = true;
+	//		}
+	//	}
 
-		if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
-		{
-			ClearTarget();
-			_mousePos = Vector3.positiveInfinity;
-			_lookDir = Vector3.zero;
-		}
-	}
+	//	if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
+	//	{
+	//		ClearTarget();
+	//		_mousePos = Vector3.positiveInfinity;
+	//		_lookDir = Vector3.zero;
+	//	}
+	//}
+    #endregion
 
-	public override void LoadTargetData(TargetInfo targetInfo)
+    public override void LoadTargetData(TargetInfo targetInfo)
 	{
 		if (targetInfo != null)
 		{

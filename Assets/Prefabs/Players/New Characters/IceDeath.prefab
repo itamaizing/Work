@@ -3659,6 +3659,8 @@ MonoBehaviour:
   _skillEnergyCosts:
   - resourceType: 3
     resourceCost: 1
+  - resourceType: 2
+    resourceCost: 10
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
