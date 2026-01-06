@@ -145,11 +145,17 @@ public class SeriesOfStrikes : MonoBehaviour
 
 	private void BonusRuneForDamage(float damage)
 	{
-		_sumPhisDamage += damage;
-		while( _sumPhisDamage >= 100 ) 
+		var selectedSkill = _playerLinks.Abilities.SelectedSkill;
+
+		if (selectedSkill != null && selectedSkill.DamageType == DamageType.Physical)
 		{
-			_rune.CmdAdd(1f);
-			_sumPhisDamage -= 100;
+			_sumPhisDamage += damage;
+
+			while (_sumPhisDamage >= 100)
+			{
+				_rune.CmdAdd(1f);
+				_sumPhisDamage -= 100;
+			}
 		}
 	}
 
