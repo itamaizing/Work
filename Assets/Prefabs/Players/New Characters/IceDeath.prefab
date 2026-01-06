@@ -3702,9 +3702,9 @@ MonoBehaviour:
   _jumprange: 2
   _durationOfJumpPerCell: 0.3
   _audioClip: {fileID: 0}
-  _alliesLayer:
+  _groundLayerMask:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 8192
 --- !u!114 &5605713643324713456
 MonoBehaviour:
   m_ObjectHideFlags: 0

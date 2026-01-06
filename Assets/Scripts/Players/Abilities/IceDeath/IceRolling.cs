@@ -14,7 +14,7 @@ public class IceRolling : Skill
 	[SerializeField] private float _jumprange = 2f;
 	[SerializeField] private float _durationOfJumpPerCell = 0.3f;
 	[SerializeField] private AudioClip _audioClip;
-	//[SerializeField] private LayerMask _groundLayer;
+	[SerializeField] private LayerMask _groundLayerMask;
 
 	private static readonly int iceRollingStart = Animator.StringToHash("IceRollingStart");
 	private static readonly int iceRollingEnd = Animator.StringToHash("IceRollingEnd");
@@ -51,6 +51,7 @@ public class IceRolling : Skill
 	private const float AttachedFrozenDuration = 2f;
 	private const float DynamicRendererJobTime = 0.2f;
 	private const float TargetSearchRadius = 0.5f;
+	private const float RayCastDistance = 1000f;
 	#endregion
 
 	protected override bool IsCanCast
@@ -118,13 +119,18 @@ public class IceRolling : Skill
 
 		foreach (RaycastHit hit in hits)
 		{
-			if (hit.collider.TryGetComponent(out Character character) && character != _playerLinks)
+			if (hit.collider.TryGetComponent(out Character character))
 			{
-				if (!_rollingWithEnemyTalent && character != GetTargetCharacter())
-				{
-					stopPosition = hit.point - direction;
-					characterHit = character;
-					return true;
+				if (character != _playerLinks)
+                {
+					if (!_rollingWithEnemyTalent && character != GetTargetCharacter())
+					{
+						stopPosition = hit.point - direction;
+						characterHit = character;
+
+						Debug.Log("1");
+						return true;
+					}
 				}
 			}
 			/*int objectLayer = hit.collider.gameObject.layer;
@@ -327,7 +333,7 @@ public class IceRolling : Skill
 					else candidatePoint = GetTempTarget().Transform.position;
 				}
 
-				else candidatePoint = GetMousePoint();
+				else candidatePoint = GetMousePoint(_groundLayerMask);
 
 			}
 
@@ -423,6 +429,14 @@ public class IceRolling : Skill
 		}
 	}
 
+	private Vector3 GetMousePoint(LayerMask mask)
+	{
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		if (Physics.Raycast(ray, out RaycastHit hit, RayCastDistance, mask)) return hit.point;
+
+		return Vector3.positiveInfinity;
+	}
+
 	[Command]
 	private void CmdPush(Vector3 force, float finalRange)
 	{
@@ -451,8 +465,6 @@ public class IceRolling : Skill
 		_playerLinks.Move.TargetRpcDoMove(force, _durationOfJump);
 
 		StartCoroutine(WaitForJumpEnd());
-
-		Debug.Log("1");
 	}
 
 	[Command]
