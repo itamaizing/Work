@@ -45,7 +45,7 @@ public class IceRolling : Skill
 	private const float ObstaclePushBackMultiplier = 1.2f;
 	private const float EnergyChunkValue = 5f;
 	private const float KnockbackDistance = 2f;
-	private const float KnockbackDuration = 0.05f;
+	private const float KnockbackDuration = 0.5f;
 	private const float AttachedFrozenDuration = 2f;
 	private const float DynamicRendererJobTime = 0.2f;
 	private const float TargetSearchRadius = 0.5f;
@@ -454,16 +454,18 @@ public class IceRolling : Skill
 		RpcPlayShotSound();
 		_durationOfJump = finalRange * _durationOfJumpPerCell;
 
-		if (target.TryGetComponent(out MoveComponent move))
-		{
-			move.CanMove = false;
-			_attachedTarget = target;
-			_attachedTarget.transform.SetParent(_playerLinks.transform);
-			RpcAttachTarget(_attachedTarget);
-		}
+		Vector3 startPosPlayer = _playerLinks.transform.position;
+		Vector3 startPosTarget = target.transform.position;
 
-		force.y = 1;
-		_playerLinks.Move.TargetRpcDoMove(force, _durationOfJump);
+		Vector3 direction = (force - startPosPlayer).normalized;
+		float distanceBetween = Vector3.Distance(startPosPlayer, startPosTarget);
+		Vector3 finalTargetPos = startPosTarget + direction * distanceBetween;
+
+		if (target.TryGetComponent(out MoveComponent moveTarget))
+			moveTarget.TargetRpcDoPush(finalTargetPos, _durationOfJump);
+
+		if (_playerLinks.TryGetComponent(out MoveComponent movePlayer))
+			movePlayer.TargetRpcDoPush(force, _durationOfJump);
 
 		StartCoroutine(WaitForJumpEnd());
 	}
