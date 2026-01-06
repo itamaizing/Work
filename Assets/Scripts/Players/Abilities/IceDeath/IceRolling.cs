@@ -21,7 +21,6 @@ public class IceRolling : Skill
 
 	private AudioSource _audioSource;
 	private Vector3 _mousePos = Vector2.positiveInfinity;
-	private Vector3 _mousePos2 = Vector2.positiveInfinity;
 
 	//private Vector3 _jumpPos;
 	private Vector3 _lookDir;
@@ -51,6 +50,7 @@ public class IceRolling : Skill
 	private const float KnockbackDuration = 0.05f;
 	private const float AttachedFrozenDuration = 2f;
 	private const float DynamicRendererJobTime = 0.2f;
+	private const float TargetSearchRadius = 0.5f;
 	#endregion
 
 	protected override bool IsCanCast
@@ -61,6 +61,8 @@ public class IceRolling : Skill
 			else return true;
 		}
 	}
+
+	private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
 	protected override int AnimTriggerCastDelay => 0;
 	protected override int AnimTriggerCast => iceRollingStart;
@@ -311,24 +313,29 @@ public class IceRolling : Skill
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		while (float.IsPositiveInfinity(_mousePos2.x))
+		Vector3 candidatePoint = Vector3.positiveInfinity;
+
+		while (float.IsPositiveInfinity(candidatePoint.x))
 		{
 			if (GetMouseButton)
 			{
-				Vector3 candidatePoint = GetTarget() != null ? GetTarget().Transform.position : GetMousePoint();
+				FindTarget(TargetSearchRadius, GetMousePoint());
 
-				Debug.Log($"target: {GetTarget()}");
+				if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
+				{
+					if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
+					else candidatePoint = GetTempTarget().Transform.position;
+				}
 
-				_mousePos2 = candidatePoint;
+				else candidatePoint = GetMousePoint();
 
 			}
+
 			yield return null;
 		}
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_mousePos2);
+        targetInfo.Points.Add(candidatePoint);
         callbackDataSaved(targetInfo);
-		_mousePos = _mousePos2;
-		_mousePos2 = Vector3.positiveInfinity;
     }
 
 	protected override IEnumerator DynamicRendererJob(float time = DynamicRendererJobTime)
@@ -444,6 +451,8 @@ public class IceRolling : Skill
 		_playerLinks.Move.TargetRpcDoMove(force, _durationOfJump);
 
 		StartCoroutine(WaitForJumpEnd());
+
+		Debug.Log("1");
 	}
 
 	[Command]
