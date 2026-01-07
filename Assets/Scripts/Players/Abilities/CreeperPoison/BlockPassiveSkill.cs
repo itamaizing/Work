@@ -12,7 +12,7 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
     private Coroutine _boostWindow;
     private bool _isCooldownActive = false;
     private Character _attacker;
-    private Character _lastAttacker;
+    //private Character _target;
     private List<Character> _validAttackers = new();
 
     #region Skill
@@ -48,17 +48,7 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
     {
         if (skill == null || skill.Hero == null) return;
 
-        var incomingAttacker = skill.Hero;
-
-        if (_lastAttacker != null && _lastAttacker != incomingAttacker)
-        {
-            ResetDisactive();
-            _validAttackers.Clear();
-        }
-
-        _attacker = incomingAttacker;
-        _lastAttacker = incomingAttacker;
-
+        _attacker = skill.Hero;
         if (!_validAttackers.Contains(_attacker)) Hero.Health.BlockChance = 0f;
     }
 

@@ -1,6 +1,7 @@
 using Mirror;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -47,8 +48,9 @@ public class CreeperStrike : Skill
     private bool _isTwoHit = false;
     private bool _isHit = false;
 
-    private Character _lastTargetFirst = null;
-    private Character _lastTargetSecond = null;
+    private List<Character> _recentTargets = new();
+    private Coroutine _clearTargetsCoroutine;
+    private float _targetMemoryTime = 1f;
 
     private Coroutine _timerForTwoHitVariableCoroutine;
 
@@ -291,19 +293,31 @@ public class CreeperStrike : Skill
             _isHit = false;
         }
 
-        TryTriggerSneakySpitWindow(character);
+        TryTriggerWindow(character);
     }
 
-    private void TryTriggerSneakySpitWindow(Character target)
+    private void TryTriggerWindow(Character target)
     {
-        _lastTargetSecond = _lastTargetFirst;
-        _lastTargetFirst = target;
+        if (target == null) return;
 
         var lastCast = _player.Abilities.LastCastedSkill;
         var previewCast = _player.Abilities.PreviewCastedSkill;
 
-        if (_lastTargetFirst == target && _lastTargetSecond == target && lastCast is CreeperStrike && previewCast is CreeperStrike) ÑmdTriggerSneakySpitFreeWindow(target);
-        if (_lastTargetFirst == target && lastCast is CreeperStrike) ÑmdBlockPassiveSkillFreeWindow(target);
+        _recentTargets.Insert(0, target);
+
+        if (_recentTargets.Count > 3) _recentTargets.RemoveAt(_recentTargets.Count - 1);
+
+        if (_clearTargetsCoroutine != null) StopCoroutine(_clearTargetsCoroutine);
+        _clearTargetsCoroutine = StartCoroutine(ClearRecentTargetsAfterDelay());
+
+        if (_recentTargets.Count >= 3 && _recentTargets[1] == _recentTargets[0] && _recentTargets[2] == _recentTargets[0] && lastCast is CreeperStrike && previewCast is CreeperStrike) ÑmdTriggerSneakySpitFreeWindow(target);
+        if (_recentTargets.Count >= 2 && _recentTargets[1] == _recentTargets[0] && lastCast is CreeperStrike) ÑmdBlockPassiveSkillFreeWindow(target);
+    }
+
+    private IEnumerator ClearRecentTargetsAfterDelay()
+    {
+        yield return new WaitForSeconds(_targetMemoryTime);
+        _recentTargets.Clear();
     }
 
     private IEnumerator TimerForTwoHit(float duration, bool isUsingLightningStrikes)
@@ -455,6 +469,7 @@ public class CreeperStrike : Skill
     {
         ClearTarget();
         ClearTempTarget();
+        if (_clearTargetsCoroutine != null) StopCoroutine(_clearTargetsCoroutine);
         _hero.Move.StopLookAt();
     }
 
