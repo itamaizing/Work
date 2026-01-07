@@ -50,7 +50,7 @@ public class CreeperStrike : Skill
 
     private List<Character> _recentTargets = new();
     private Coroutine _clearTargetsCoroutine;
-    private float _targetMemoryTime = 1f;
+    private float _targetMemoryTime = 0.5f;
 
     private Coroutine _timerForTwoHitVariableCoroutine;
 
