@@ -59,6 +59,7 @@ public class Kick_Scorpion : Skill
     {
         _wasDamageApplied = false;
         ClearTarget();
+        ClearTempTarget();
         //_target = null;
         Hero.Move.StopLookAt();
         _hero.Move.CanMove = true;
@@ -276,6 +277,7 @@ public class Kick_Scorpion : Skill
     {
         _wasDamageApplied = false;
         ClearTarget();
+        ClearTempTarget();
         _hero.Move.StopLookAt();
         AnimCastEnded();
         if (_hitsInRowCoroutine != null) StopCoroutine(_hitsInRowCoroutine);

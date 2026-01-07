@@ -175,6 +175,7 @@ public class CheliceraStrike : Skill
         CheliceraStrikeEnded();
         _isPlayCastAnim = false;
         ClearTarget();
+        ClearTempTarget();
         AnimCastEnded();
     }
 
@@ -347,6 +348,7 @@ public class CheliceraStrike : Skill
     }
     protected override void ClearData()
     {
+        ClearTempTarget();
         ClearTarget();
         AnimCastEnded();
     }

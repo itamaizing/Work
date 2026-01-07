@@ -80,16 +80,10 @@ public class IceShower : Skill
 	{
 		//Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		//float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
-		if (_combo.MakeHit(null, AbilityForm.Magic, 1, 0, 0))
+		if (_combo.MakeHit(null, AbilityForm, 1, 0, 0, _combo.GetMultipliedSpeed() / 100))
 		{
 			Debug.LogError("some talents i guess in ice cloud");
 			//_playerLinks.RuneComponent.IceCloudBonus();
-		}
-
-		if (!_combo.SeriesCompliteCompo)
-		{
-			Buff.AttackSpeed.ReductionPercentage(_combo.GetMultipliedSpeed() / 100);
-			Buff.CastSpeed.IncreasePercentage(_combo.GetMultipliedSpeed() / 100);
 		}
 
 		_targetPoint.y += 5;

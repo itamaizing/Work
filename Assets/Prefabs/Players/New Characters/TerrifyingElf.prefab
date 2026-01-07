@@ -20877,7 +20877,7 @@ MonoBehaviour:
   - resourceType: 1
     resourceCost: 80
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 36
+  _cooldownTime: 2
   _castDeley: 0
   _damageValue: 0
   _abilitySchool: 3

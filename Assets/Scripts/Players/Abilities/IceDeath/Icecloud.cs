@@ -78,13 +78,7 @@ public class IceCloud : Skill
 	{
 		Vector3 lookDir = _mousePos - Hero.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - AngleOffset;
-		if (_combo.MakeHit(null, AbilityForm.Magic, 1, 0, 0)) _lastHit = true;
-
-		if (!_combo.SeriesCompliteCompo)
-		{
-			Buff.AttackSpeed.ReductionPercentage(_combo.GetMultipliedSpeed() / ComboSpeedDivider);
-			Buff.CastSpeed.IncreasePercentage(_combo.GetMultipliedSpeed() / ComboSpeedDivider);
-		}
+		if (_combo.MakeHit(null, AbilityForm, 1, 0, 0, _combo.GetMultipliedSpeed() / ComboSpeedDivider)) _lastHit = true;
 
 		float energyToUse = _energy.CurrentValue;
 		_energy.CmdUse(energyToUse);
@@ -140,7 +134,7 @@ public class IceCloud : Skill
 	public override void LoadTargetData(TargetInfo targetInfo)
 	{
 		if (targetInfo.Points.Count > 0) _mousePos = targetInfo.Points[0];
-		if (targetInfo.GetTargets().Count > 0 && targetInfo.GetTargets()[0] is Character character) SetTarget((ITargetable)character);
+		if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
 	}
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)

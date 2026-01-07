@@ -77,24 +77,30 @@ public class SeriesOfStrikes : MonoBehaviour
         else return 1f;
     }
 
-    public bool MakeHit(Character target, AbilityForm form, float usedRuneValue, float usedEnergy, float damage)
+    public bool MakeHit(Character target, AbilityForm form, float usedRuneValue, float usedEnergy, float damage, float multiplier = 0f)
 	{
 		if (_iceRuneTalent) BonusRuneForDamage(damage);
 		CheckCurse(target, damage);
-
+		
 		if (!_seriesCompliteCompoTalent) return false;
 		_energy.ChangeBarColor(new Color(255, 165, 0));
 
-		return SeriesHit(target, form, usedRuneValue, usedEnergy, damage);
+		return SeriesHit(target, form, usedRuneValue, usedEnergy, damage, multiplier);
 	}
 
-	public void ResetOrIncreaseAttackAnimSpeed()
+	public void ResetAttackAnimSpeed()
     {
 		foreach (var skill in _playerLinks.Abilities.Abilities)
 		{
 			skill.Buff.CastSpeed.Reset();
 			skill.Buff.AttackSpeed.Reset();
 		}
+	}
+
+	public void BoostAttackAnimSpeed(float multiplier)
+	{
+		_playerLinks.Abilities.SelectedSkill.Buff.AttackSpeed.ReductionPercentage(multiplier);
+		_playerLinks.Abilities.SelectedSkill.Buff.CastSpeed.IncreasePercentage(multiplier);
 	}
 
 	public void Timer()
@@ -113,7 +119,7 @@ public class SeriesOfStrikes : MonoBehaviour
 				_isInTheRow = false;
 				_seriesCompliteCompo = true;
 
-				ResetOrIncreaseAttackAnimSpeed();
+				ResetAttackAnimSpeed();
 
 				for (int i = 0; i < _seriesOfStrikes.Count; i++) _seriesOfStrikes[i].Reset();
 			}
@@ -132,18 +138,24 @@ public class SeriesOfStrikes : MonoBehaviour
 
 		_seriesCompliteCompo = true;
 
-		ResetOrIncreaseAttackAnimSpeed();
+		ResetAttackAnimSpeed();
 
 		for (int i = 0; i < _seriesOfStrikes.Count; i++) _seriesOfStrikes[i].Reset();
 	}
 
 	private void BonusRuneForDamage(float damage)
 	{
-		_sumPhisDamage += damage;
-		while( _sumPhisDamage >= 100 ) 
+		var selectedSkill = _playerLinks.Abilities.SelectedSkill;
+
+		if (selectedSkill != null && selectedSkill.DamageType == DamageType.Physical)
 		{
-			_rune.CmdAdd(1f);
-			_sumPhisDamage -= 100;
+			_sumPhisDamage += damage;
+
+			while (_sumPhisDamage >= 100)
+			{
+				_rune.CmdAdd(1f);
+				_sumPhisDamage -= 100;
+			}
 		}
 	}
 
@@ -176,7 +188,7 @@ public class SeriesOfStrikes : MonoBehaviour
 		}
 	}
 
-	private bool SeriesHit(Character target, AbilityForm form, float usedRuneValue, float usedEnergy, float damage)
+	private bool SeriesHit(Character target, AbilityForm form, float usedRuneValue, float usedEnergy, float damage, float multiplier)
 	{
 		if (!_seriesCompliteCompoTalent) return false;
 		for (int i = 0; i < _seriesOfStrikes.Count; i++)
@@ -198,6 +210,8 @@ public class SeriesOfStrikes : MonoBehaviour
 					LastHit(_seriesOfStrikes[i].usedRune, _seriesOfStrikes[i].usedEnergy);
 					return true;
 				}
+
+				if (!_seriesCompliteCompo) BoostAttackAnimSpeed(multiplier);
 			}
 			else
 			{
@@ -206,6 +220,8 @@ public class SeriesOfStrikes : MonoBehaviour
 				_seriesOfStrikes[i].Reset(usedRuneValue);
 				_timer = _baseTimer;
 				_curTarget = target;
+
+				if (!_seriesCompliteCompo) BoostAttackAnimSpeed(multiplier);
 			}
 		}
 		return false;

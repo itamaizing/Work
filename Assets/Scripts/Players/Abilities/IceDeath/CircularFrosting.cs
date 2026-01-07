@@ -79,7 +79,7 @@ public class CircularFrosting : Skill
 			{
 				if (enemyCharacter != Hero)
 				{
-					_seriesOfStrikes.MakeHit(enemyCharacter, AbilityForm.Magic, 1, usedEnergy, 0);
+					_seriesOfStrikes.MakeHit(enemyCharacter, AbilityForm, 1, usedEnergy, 0);
 					CmdAdd(enemy.gameObject);
 					//enemyCharacter.CharacterState.CmdAddState(States.Frosting, _duration, 0, _playerLinks.gameObject, name);
 				}

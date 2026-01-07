@@ -18,6 +18,8 @@ public class PoisonSlap : Skill
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private LightningStrikes _lightningStrikes;
     [SerializeField] private LightningMovement _lightningMovement;
+    //[SerializeField] private GameObject _poisonBallObject;
+    [SerializeField] private SkillManager _skillManager;
 
     [Header("Talents")]
     [SerializeField] private RestorationOfGlands _restorationOfGlands;
@@ -27,22 +29,21 @@ public class PoisonSlap : Skill
 
     #region DisplayArrow
 
-    [SerializeField] private GameObject _arrowPrefab;
+    [SerializeField] private ArrowRender _arrowPrefab;
 
-    private GameObject[] _arrowRenderers = new GameObject[2];
+    private GameObject _pointArrowInstance;
+
+    private ArrowRender[] _arrowRenderers = new ArrowRender[2];
 
     #endregion
-
-    //private Character _currentTarget;
 
     private Vector3 _firstMousePosition = Vector3.positiveInfinity;
     private Vector3 _secondMousePosition;
 
     private int _poisonBoneStack;
 
-    private float _creeperStrikeCastSpeedMultiplier = 0.5f;
-    private float _lightningStrikesCastSpeedMultiplier = 0.0f;
-    private float _baseTimeCast = 1.6f;
+    private float _creeperStrikeCastSpeedMultiplier = 1.5f;
+    private float _lightningStrikesCastSpeedMultiplier = 2f;
     private float _baseDamage = 30f;
     private float _distancePush = 3.0f;
     private float _durationPush = 1.0f;
@@ -53,6 +54,7 @@ public class PoisonSlap : Skill
     private bool _firstClickDone = false;
     private bool _secondClickDone;
     private bool _isUsedPoisonBallCharger = true;
+    private float _radiusTargetSearch = 0.5f; 
 
     private static readonly int poisonSlapTrigger = Animator.StringToHash("PoisonSlapCastAnimTrigger");
 
@@ -63,6 +65,7 @@ public class PoisonSlap : Skill
     public bool IsCanDamageDeal { get => _isCanDamageDeal; set => _isCanDamageDeal = value; }
 
     protected override bool IsCanCast => CheckCanCast();
+    private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     public event System.Action OnPoisonSlapEnd;
 
@@ -70,9 +73,25 @@ public class PoisonSlap : Skill
 
     #region PrepareAndStartJob
 
+    private void OnDisable()
+    {
+        OnSkillCanceled -= ClearData;
+    }
+
+    private void OnEnable()
+    {
+        OnSkillCanceled += ClearData;
+    }
+
     private void Update()
     {
         UpdateMouseDetection();
+    }
+
+    public void PoisonSlapPreparation()
+    {
+        _hero.Move.StopMoveAndAnimationMove();
+        _hero.Move.CanMove = false;
     }
 
     public void AnimPoisonSlapCast()
@@ -87,8 +106,6 @@ public class PoisonSlap : Skill
 
     public void UsePoisonSlapOfLightningMovement()
     {
-        //_currentTarget = _lightningMovement.Target;
-        //Debug.Log("PoisonSlap / UsePoisonSlapLightning / _currentTarget = " + _currentTarget);
         DamageDealOfLightningMovement();
     }
 
@@ -99,7 +116,7 @@ public class PoisonSlap : Skill
     }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-       // Debug.LogError("TargetDataError");
+        if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 
     protected override void ClearData()
@@ -113,9 +130,12 @@ public class PoisonSlap : Skill
         _secondClickDone = false;
         _isPushTargetAllowed = false;
         _isUsedPoisonBallCharger = true;
+        Hero.Move.StopLookAt();
+        Hero.Move.CanMove = true;
 
         ClearTarget();
-        //_currentTarget = null;
+        ClearTempTarget();
+
         _castDeley = 0;
 
         if (_secondMouseClickCoroutine != null)
@@ -127,47 +147,41 @@ public class PoisonSlap : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        if (_lightningMovement.IsInMovement)
-        {
-            _isCanDamageDeal = true;
-            SwitchPayCost();
-            yield break;
-        }
+        //if (_lightningMovement.IsInMovement)
+        //{
+        //    _isCanDamageDeal = true;
+        //    yield break;
+        //}
 
-        SwitchPayCost();
+        //if (_poisonBall.IsHaveCharge == false && _isUsedPoisonBallCharger)
+        //{
+        //    yield break;
+        //}
 
-        if (_poisonBall.IsHaveCharge == false && _isUsedPoisonBallCharger)
+        while (GetTempTargetCharacter() == null)
         {
-            yield break;
-        }
-        else
-        {
-            while (GetTempTargetCharacter() == null)
+            if (GetMouseButton)
             {
-                if (GetMouseButton)
+                FindTargetCharacter(_radiusTargetSearch, GetMousePoint());
+
+                if (GetTempTargetCharacter() != null)
                 {
-                    FindTargetCharacter();
-                   // _currentTarget = GetTarget().character;
+                    if (IsAllyTarget(GetTempTargetCharacter()) || GetTempTargetCharacter() == Hero) ClearTempTarget();
 
-                    if (GetTempTargetCharacter() != null)
-                    {
-                        _firstMousePosition = GetMousePoint();
+                    _firstMousePosition = GetMousePoint();
+                    CreateArrowsParallelToPlayer(GetTempTargetCharacter());
+                    StopAutoDraw();
+                    _firstClickDone = true;
 
-                        CreateArrowsParallelToPlayer();
-
-                        StopAutoDraw();
-
-                        _firstClickDone = true;
-
-                    }
                 }
-                yield return null;
             }
 
-            yield return _secondMouseClickCoroutine = StartCoroutine(SecondClick());
+            yield return null;
         }
 
+        yield return _secondMouseClickCoroutine = StartCoroutine(SecondClick());
         SetTarget(GetTempTargetCharacter());
+
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
@@ -189,41 +203,27 @@ public class PoisonSlap : Skill
 
     private void SwitchPayCost()
     {
-        switch (_poisonSlapTalent.Data.IsOpen)
-        {
-            case true:
-                if (_creeperStrike.IsTwoHit)
-                {
-                    CastSpeedFromCreeperStrike();
-                    _isUsedPoisonBallCharger = false;
-                }
-                else if (_lightningStrikes.IsUsedLightningStrikes)
-                {
-                    CastSpeedFromLightningStrikes();
-                    _isUsedPoisonBallCharger = false;
-                }
-                else
-                {
-                    _isUsedPoisonBallCharger = true;
-                    //_castDeley = _baseTimeCast;
-                }
-                break;
+        var last = _skillManager?.LastCastedSkill;
+        var preview = _skillManager?.PreviewCastedSkill;
 
-            case false:
-                if (_creeperStrike.IsTwoHit)
-                {
-                    CastSpeedFromCreeperStrike();
-                }
-                else if (_lightningStrikes.IsUsedLightningStrikes)
-                {
-                    CastSpeedFromLightningStrikes();
-                }
-                else
-                {
-                    _isUsedPoisonBallCharger = true;
-                    //_castDeley = _baseTimeCast;
-                }
-                break;
+        bool isDoubleCreeper = last == _creeperStrike && preview == _creeperStrike;
+        bool isDoubleLightning = last == _lightningStrikes && preview == _lightningStrikes;
+
+        if (isDoubleCreeper)
+        {
+            CastSpeedFromCreeperStrike();
+            _isUsedPoisonBallCharger = false;
+        }
+        else if (isDoubleLightning)
+        {
+            CastSpeedFromLightningStrikes();
+            _isUsedPoisonBallCharger = false;
+        }
+
+        else
+        {
+            _isUsedPoisonBallCharger = true;
+            Buff.CastSpeed.Reset();
         }
     }
     #endregion
@@ -240,47 +240,58 @@ public class PoisonSlap : Skill
 
     private void ChooseDirectionPush(Character target)
     {
-        _isPushTargetAllowed = Vector3.Distance(_player.transform.position, _secondMousePosition) > Vector3.Distance(_player.transform.position, target.transform.position);
+        float distanceFromPlayerToClick = Vector3.Distance(_player.transform.position, _secondMousePosition);
+        float distanceFromTargetToClick = Vector3.Distance(target.transform.position, _secondMousePosition);
+        float playerToTarget = Vector3.Distance(_player.transform.position, target.transform.position);
+
+        _isPushTargetAllowed = distanceFromPlayerToClick > distanceFromTargetToClick;
+
+        if (playerToTarget > distanceFromPlayerToClick && playerToTarget > distanceFromTargetToClick) _isPushTargetAllowed = false;
     }
 
     #endregion
 
     #region ArrowManagement
 
-    private void CreateArrowsParallelToPlayer()
+    private void CreateArrowsParallelToPlayer(Character target)
     {
-        if (GetTargetCharacter() == null || _arrowPrefab == null)
-        {
-            Debug.LogError("Arrow Prefab is not assigned or Target is null");
-            return;
-        }
+        if (target == null || _arrowPrefab == null) return;
 
-        Vector3 targetPosition = GetTargetCharacter().transform.position;
-        Vector3 playerPosition = _player.transform.position;
+        Vector3 center = target.transform.position;
+        Vector3 playerPos = _player.transform.position;
 
-        targetPosition.y = playerPosition.y = 0.8f;
+        center.y = 1.1f;
+        playerPos.y = 1.1f;
 
-        Vector3 directionToTarget = (targetPosition - playerPosition).normalized;
+        Vector3 direction = (playerPos - center).normalized;
+
+        _pointArrowInstance = new GameObject("ArrowCenter");
+        _pointArrowInstance.transform.position = center;
+        _pointArrowInstance.transform.rotation = Quaternion.LookRotation(direction);
+
+        Vector3 offset = direction * 0.6f;
 
         Vector3[] spawnPositions = new Vector3[2]
-       {
-        targetPosition + directionToTarget * 0.5f,
-        targetPosition - directionToTarget * 0.5f
-       };
+        {
+        center + offset,
+        center - offset
+        };
 
         Quaternion[] rotations = new Quaternion[2]
-      {
-        Quaternion.LookRotation(playerPosition - spawnPositions[0]),
-        Quaternion.LookRotation(spawnPositions[1] - playerPosition),
-      };
+        {
+        Quaternion.LookRotation(playerPos - spawnPositions[0]),
+        Quaternion.LookRotation(spawnPositions[1] - playerPos)
+        };
 
         for (int i = 0; i < _arrowRenderers.Length; i++)
         {
-            _arrowRenderers[i] = Instantiate(_arrowPrefab, spawnPositions[i], rotations[i]);
-            RotateArrowChild(_arrowRenderers[i], -90);
-            _arrowRenderers[i]?.SetActive(false);
+            Quaternion flippedRotation = rotations[i] * Quaternion.Euler(0, 180f, 0);
+            _arrowRenderers[i] = Instantiate(_arrowPrefab, spawnPositions[i], flippedRotation, _pointArrowInstance.transform);
+            RotateArrowChild(_arrowRenderers[i].gameObject, -90);
+            _arrowRenderers[i].gameObject?.SetActive(true);
         }
     }
+
 
     private void RotateArrowChild(GameObject arrow, float zRotation)
     {
@@ -301,13 +312,19 @@ public class PoisonSlap : Skill
                 Destroy(arrow);
             }
         }
+
+        if (_pointArrowInstance != null)
+        {
+            Destroy(_pointArrowInstance);
+            _pointArrowInstance = null;
+        }
     }
 
     private void SetArrowVisibility(int arrowIndex, bool isVisible)
     {
         if (arrowIndex >= 0 && arrowIndex < _arrowRenderers.Length && _arrowRenderers[arrowIndex] != null)
         {
-            _arrowRenderers[arrowIndex].SetActive(isVisible);
+            _arrowRenderers[arrowIndex].gameObject.SetActive(isVisible);
         }
     }
 
@@ -317,21 +334,37 @@ public class PoisonSlap : Skill
 
     private void UpdateMouseDetection()
     {
-        if (_firstClickDone && !_secondClickDone)
-        {
-            Vector3 currentMousePosition = GetMousePoint();
+        if (!_firstClickDone || GetTempTargetCharacter() == null) return;
 
-            if (currentMousePosition.x < _firstMousePosition.x && currentMousePosition.z < _firstMousePosition.z)
-            {
-                SetArrowVisibility(0, true);
-                SetArrowVisibility(1, false);
-            }
-            else
-            {
-                SetArrowVisibility(1, true);
-                SetArrowVisibility(0, false);
-            }
+        Vector3 playerPos = _player.transform.position;
+        Vector3 targetPos = GetTempTargetCharacter().transform.position;
+        Vector3 mousePos = GetMousePoint();
+
+        float playerToClick = Vector3.Distance(playerPos, mousePos);
+        float targetToClick = Vector3.Distance(targetPos, mousePos);
+        float playerToTarget = Vector3.Distance(playerPos, targetPos);
+
+        bool showPushAway = playerToClick > targetToClick;
+
+        if (!_secondClickDone) if (playerToTarget > playerToClick && playerToTarget > targetToClick) showPushAway = false;
+
+        if (_pointArrowInstance != null)
+        {
+            Vector3 direction = playerPos - _pointArrowInstance.transform.position;
+            direction.y = 0;
+            if (direction != Vector3.zero) _pointArrowInstance.transform.rotation = Quaternion.LookRotation(direction);
         }
+
+        SetArrowMaterial(_arrowRenderers[0], !showPushAway);
+        SetArrowMaterial(_arrowRenderers[1], showPushAway);
+    }
+
+    private void SetArrowMaterial(ArrowRender arrow, bool isActive)
+    {
+        if (arrow == null) return;
+
+        if (isActive) arrow.SetDeafaultMaterail();
+        else arrow.SetTransparentMaterial();
     }
 
     #endregion
@@ -347,10 +380,11 @@ public class PoisonSlap : Skill
                 _secondClickDone = true;
                 _secondMousePosition = GetMousePoint();
 
-                if (GetTargetCharacter() != null)
+                if (GetTempTargetCharacter() != null)
                 {
                     SetArrowVisibility(0, false);
                     SetArrowVisibility(1, false);
+                    SwitchPayCost();
                 }
             }
             yield return null;
@@ -359,21 +393,14 @@ public class PoisonSlap : Skill
 
     private void CastSpeedFromCreeperStrike()
     {
-        _creeperStrike.IsTwoHit = false;
-        Debug.Log("PoisonSlap / CastSpeedFromCreeperStrike / IsTwoHit = " + _creeperStrike.IsTwoHit);
-
-        float _timeCastFromCreeperStrike = _baseTimeCast * _creeperStrikeCastSpeedMultiplier;
-
-        //_castDeley = _timeCastFromCreeperStrike;
-        Debug.Log("PoisonSlap / CastSpeedFromCreeperStrike / castDeley = " + _castDeley);
+        Buff.AttackSpeed.ReductionPercentage(_creeperStrikeCastSpeedMultiplier);
+        Buff.CastSpeed.IncreasePercentage(_creeperStrikeCastSpeedMultiplier);
     }
 
     private void CastSpeedFromLightningStrikes()
     {
-        float _timeCastFromLightningStrikes = _baseTimeCast * _lightningStrikesCastSpeedMultiplier;
-
-        //_castDeley = _timeCastFromLightningStrikes;
-        Debug.Log("PoisonSlap / CastSpeedFromLightningStrikes / castDeley = " + _castDeley);
+        Buff.AttackSpeed.ReductionPercentage(_lightningStrikesCastSpeedMultiplier);
+        Buff.CastSpeed.IncreasePercentage(_lightningStrikesCastSpeedMultiplier);
     }
 
     #endregion
@@ -479,21 +506,19 @@ public class PoisonSlap : Skill
     private void CmdPushEnemy(Character target, float distancePush, float durationPush, bool isCanPushTarget)
     {
         MoveComponent targetMoveComponent = target.GetComponent<MoveComponent>();
-
-        Vector2 directionPush = (target.transform.position - transform.position);
-
-        distancePush = ((distancePush * GlobalVariable.cellSize) * durationPush) / GlobalVariable.cellSize;
+        Vector3 directionPush = (target.transform.position - transform.position).normalized;
+        directionPush.y = 0f;
 
         if (targetMoveComponent.connectionToClient != null)
         {
-            if (isCanPushTarget) targetMoveComponent.TargetRpcDoMove((Vector2)target.transform.position + directionPush * distancePush, durationPush);
-            else targetMoveComponent.TargetRpcDoMove((Vector2)target.transform.position - directionPush * distancePush, durationPush);
+            if (isCanPushTarget) targetMoveComponent.TargetRpcDoMove(target.transform.position + directionPush * distancePush, durationPush);
+            else targetMoveComponent.TargetRpcDoMove(target.transform.position - directionPush * distancePush, durationPush);
         }
 
         else
         {
-            if (isCanPushTarget) targetMoveComponent.RpcDoMove((Vector2)target.transform.position + directionPush * distancePush, durationPush);
-            else targetMoveComponent.RpcDoMove((Vector2)target.transform.position - directionPush * distancePush, durationPush);
+            if (isCanPushTarget) targetMoveComponent.RpcDoMove(target.transform.position + directionPush * distancePush, durationPush);
+            else targetMoveComponent.RpcDoMove(target.transform.position - directionPush * distancePush, durationPush);
         }
 
     }
@@ -514,8 +539,6 @@ public class PoisonSlap : Skill
         {
             perpendicularDirection = new Vector3(-directionPush.y, directionPush.x, 0).normalized;
         }
-
-        distancePush = ((distancePush * GlobalVariable.cellSize) * durationPush) / GlobalVariable.cellSize;
 
         if (targetMoveComponent.connectionToClient != null) targetMoveComponent.TargetRpcDoMove(target.transform.position + perpendicularDirection * distancePush, durationPush);
         else targetMoveComponent.RpcDoMove(target.transform.position + perpendicularDirection * distancePush, durationPush);

@@ -10,8 +10,6 @@ public class SneakySpit : Skill
     [SerializeField] private float duration = 2f;
     [SerializeField] private float durationWindowsBoost = 2f;
 
-    //private Character _target;
-   // private Character _runtimeTarget;
     private Character _attacker;
     private Coroutine _boostWindow;
     private NetworkIdentity identity;
@@ -23,13 +21,11 @@ public class SneakySpit : Skill
 
     protected override void SkillEnableBoostLogic()
     {
-        //_runtimeTarget = _target;
         Disactive = false;
     }
     protected override void SkillDisableBoostLogic()
     {
         ClearTarget();
-        //_runtimeTarget = null;
         Disactive = true;
     }
 
@@ -51,7 +47,7 @@ public class SneakySpit : Skill
     {
         if (targetInfo?.GetTargets()?.Count > 0)
         {
-            SetTarget((ITargetable)(targetInfo.GetTargets()[0] as Character));
+            if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
             if (GetTargetCharacter() != null) Hero.Move.LookAtTransform(GetTargetCharacter().transform);
         }
         _isCanCancle = false;
@@ -67,6 +63,8 @@ public class SneakySpit : Skill
     private void OnHeroEvade()
     {
         if (_attacker == null || _boostWindow != null) return;
+
+        Debug.Log("1");
         TargetRpcStartSneakySpitBoostWindow(connectionToClient, _attacker.netId);
     }
 

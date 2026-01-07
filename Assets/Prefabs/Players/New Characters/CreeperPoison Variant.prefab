@@ -13009,6 +13009,22 @@ PrefabInstance:
       propertyPath: _enemyPrefab
       value: 
       objectReference: {fileID: 1369531615380711236, guid: 2a26b6e6797f5a84c88bae170eb080b3, type: 3}
+    - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _allyPrefabs.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _enemyPrefabs.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_allyPrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1369531615380711236, guid: 2a26b6e6797f5a84c88bae170eb080b3, type: 3}
+    - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_enemyPrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1369531615380711236, guid: 2a26b6e6797f5a84c88bae170eb080b3, type: 3}
     - target: {fileID: 516031481423003102, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Color.a
       value: 1
@@ -13099,6 +13115,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3911317722819316263, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -13210,6 +13230,14 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentRow.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._talentRow.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.size
       value: 3
       objectReference: {fileID: 0}
@@ -13250,17 +13278,37 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentRow.Array.data[0].Talents.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRow.Array.data[0].Talents.Array.data[0]'
       value: 
-      objectReference: {fileID: 1642371375121005174}
+      objectReference: {fileID: 1734068584079679132}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRow.Array.data[0].Talents.Array.data[1]'
       value: 
-      objectReference: {fileID: 3640861181852123848}
+      objectReference: {fileID: 6689918021131749657}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRow.Array.data[0].Talents.Array.data[2]'
       value: 
-      objectReference: {fileID: 6689918021131749657}
+      objectReference: {fileID: 6456863432087837353}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRow.Array.data[0].Talents.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1642371375121005174}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1774296685369443077}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.data[1]'
+      value: 
+      objectReference: {fileID: 3640861181852123848}
     - target: {fileID: 6226204041481316500, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -13292,6 +13340,10 @@ PrefabInstance:
     - target: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Name
       value: CreeperPoison Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8492809262968261936, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_SizeDelta.x
@@ -13676,7 +13728,7 @@ MonoBehaviour:
   _firstStrike: {fileID: 3980160588782160003}
   _feelingOfContinuation: {fileID: 233453096825435517}
   _preparingForFight: {fileID: 6757583794360340372}
-  isGeneticsTalentOne: 0
+  _isGeneticsTalentOne: 0
   _lightningStrikes: {fileID: 734640227586387152}
   _lightningMovement: {fileID: 7013613396998518356}
   _poisonBall: {fileID: 4719927588574066064}
@@ -13812,10 +13864,10 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _restorationOfGlands: {fileID: 5652995459541871454}
-  _healingSpitPoison: {fileID: 6898939406020154957}
-  _healPoisonCloud: {fileID: 5306688219756781772}
-  _transparentPoisons: {fileID: 6707193300562894020}
+  _restorationOfGlands: {fileID: 0}
+  _healingSpitPoison: {fileID: 0}
+  _healPoisonCloud: {fileID: 0}
+  _transparentPoisons: {fileID: 0}
   _projectile: {fileID: 6538247731923965443, guid: 482b668adc1f199488e67f043ae88aa9, type: 3}
   _player: {fileID: 2483674839823445686}
   _spawnPoint: {fileID: 6943497228995655184}
@@ -14101,11 +14153,12 @@ MonoBehaviour:
   _creeperStrike: {fileID: 6745892867125186241}
   _lightningStrikes: {fileID: 734640227586387152}
   _lightningMovement: {fileID: 7013613396998518356}
+  _skillManager: {fileID: 2617687491934927079}
   _restorationOfGlands: {fileID: 5652995459541871454}
   _lightningFastPoisonSlap: {fileID: 3604206469399420121}
   _lightweightSlap: {fileID: 5384305835097893539}
   _poisonSlapTalent: {fileID: 1400299693459156829}
-  _arrowPrefab: {fileID: 7504653704119560997, guid: bc01ef0a119629945958526e596df4ec, type: 3}
+  _arrowPrefab: {fileID: 9064051009418913030, guid: bc01ef0a119629945958526e596df4ec, type: 3}
 --- !u!114 &7910504212405209002
 MonoBehaviour:
   m_ObjectHideFlags: 0

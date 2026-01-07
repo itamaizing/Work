@@ -140,24 +140,17 @@ public class PhysicalAttack : Skill
 		if (_curTarget == enemy && _energy.CurrentValue >= EnergyPerAttack)
 		{
 			float curDamage = _damageValue + UnityEngine.Random.Range(0, HitVariationMax);
-
-			if (_energy.CurrentValue >= EnergyPerAttack)
-			{
-				if (_combo.MakeHit(enemy, AbilityForm.Physical, 0, EnergyPerAttack, curDamage))
-				{
-					Debug.Log("Last hit");
-					LastHit();
-				}
-			}
-
 			_combo.GetMultipliedSpeed();
 			_multiplier = DefaultMultiplier + _combo.LastKnownSpeedMultiplier / 100;
 			Debug.Log($"_multiplier: {_multiplier}");
 
-			if (!_combo.SeriesCompliteCompo)
-            {
-				Buff.AttackSpeed.ReductionPercentage(_multiplier);
-				Buff.CastSpeed.IncreasePercentage(_multiplier);
+			if (_energy.CurrentValue >= EnergyPerAttack)
+			{
+				if (_combo.MakeHit(enemy, AbilityForm, 0, EnergyPerAttack, curDamage, _multiplier))
+				{
+					Debug.Log("Last hit");
+					LastHit();
+				}
 			}
 
 			Damage damage = new Damage
@@ -191,7 +184,7 @@ public class PhysicalAttack : Skill
 			_energy.SumDamageMake(curDamage);
 			_rune.SumDamageMake(curDamage);
 
-			_combo.MakeHit(enemy, AbilityForm.Physical, 0, 0, curDamage);
+			_combo.MakeHit(enemy, AbilityForm, 0, 0, curDamage, _multiplier);
 
 			if (_energy.CurrentValue >= 5)
 			{
@@ -242,7 +235,7 @@ public class PhysicalAttack : Skill
 			Value = curDamage,
 			Type = DamageType.Physical,
 		};
-		_combo.MakeHit(enemy, AbilityForm.Physical, 0, EnergyPerAttack, curDamage);
+		_combo.MakeHit(enemy, AbilityForm, 0, EnergyPerAttack, curDamage, _multiplier);
 		CmdApplyDamage(damage, enemy.gameObject);
 	}
 
@@ -336,12 +329,13 @@ public class PhysicalAttack : Skill
 
 	public override void LoadTargetData(TargetInfo targetInfo)
 	{
-		if (targetInfo.GetTargets().Count > 0) SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+		if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
 	}
 
     protected override void ClearData()
     {
 		ClearTarget();
+		ClearTempTarget();
 		_hero.Move.StopLookAt();
 	}
 }

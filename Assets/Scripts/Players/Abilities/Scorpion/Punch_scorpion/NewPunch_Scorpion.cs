@@ -66,6 +66,7 @@ public class NewPunch_Scorpion : Skill
     {
         _wasDamageApplied = false;
         ClearTarget();
+        ClearTempTarget();
         //_target = null;
         Hero.Move.StopLookAt();
         _hero.Move.CanMove = true;
@@ -279,6 +280,7 @@ public class NewPunch_Scorpion : Skill
     {
         _wasDamageApplied = false;
         ClearTarget();
+        ClearTempTarget();
         _hero.Move.StopLookAt();
         if (_hitsInRowCoroutine != null) StopCoroutine(_hitsInRowCoroutine);
         AnimCastEnded();

@@ -63,12 +63,12 @@ public class IceSword : CloseCombatSkill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 
 	protected override IEnumerator CastJob()
 	{
-		_seriesOfStrikes.MakeHit(GetTargetCharacter(), AbilityForm.Magic, 0, 10, 0);
+		_seriesOfStrikes.MakeHit(GetTargetCharacter(), AbilityForm, 0, 10, 0);
 		if (GetTargetCharacter() == _oldtarget)
 		{
 			_hitInTheRow++;

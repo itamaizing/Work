@@ -96,7 +96,7 @@ public class ChainBlade : Skill
 
                 if (GetTempTargetCharacter() != null)
                 {
-                    if (IsAllyTarget(GetTempTargetCharacter()) || GetTempTargetCharacter() == Hero) ClearTarget();
+                    if (IsAllyTarget(GetTempTargetCharacter()) || GetTempTargetCharacter() == Hero) ClearTempTarget();
 
                     else
                     {
@@ -185,6 +185,7 @@ public class ChainBlade : Skill
     {
         _clickPoint = Vector3.positiveInfinity;
         ClearTarget();
+        ClearTempTarget();
     }
 
     public void ChainBladeCast()

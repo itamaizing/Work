@@ -27,6 +27,11 @@ public class IceShadow : Skill
 	private float _evadedTimer = 2f;
 	private float _manaUsed = 0;
 
+	#region Const
+	private const float MaxManaPerCast = 30f;
+	private const float SpeedScaleDivisor = 100f;
+	#endregion
+
 	protected override bool IsCanCast => IsCanCastCheck();
 
     protected override int AnimTriggerCastDelay => 0;
@@ -91,16 +96,11 @@ public class IceShadow : Skill
 	{
 		/*IceShadowObject projectileGm = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
 		projectileGm.Init(_playerLinks.gameObject ,Mana.Value);*/
-		_lastHit = _combo.MakeHit(null, AbilityForm.Magic, 1, _manaUsed, 0);
+		_lastHit = _combo.MakeHit(null, AbilityForm.Magic, 1, _manaUsed, 0, _combo.GetMultipliedSpeed() / SpeedScaleDivisor);
 
-		if (!_combo.SeriesCompliteCompo)
-		{
-			Buff.AttackSpeed.ReductionPercentage(_combo.GetMultipliedSpeed() / 100);
-			Buff.CastSpeed.IncreasePercentage(_combo.GetMultipliedSpeed() / 100);
-		}
-
-		_manaUsed = _energy.CurrentValue;
+		_manaUsed = Mathf.Min(_energy.CurrentValue, MaxManaPerCast);
 		_energy.CmdUse(_manaUsed);
+
 		CmdCreateProjecttile(0, _manaUsed, _lastHit, _talentDamage, _iceDeathInShadowTalent);
 	}
 

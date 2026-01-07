@@ -64,6 +64,7 @@ public class JumpWithChelicera : Skill
     protected override void ClearData()
     {
         ClearTarget();
+        ClearTempTarget();
         if (_trackMovementDuringJumpCoroutine != null) StopCoroutine(_trackMovementDuringJumpCoroutine);
         AnimCastEnded();
     }

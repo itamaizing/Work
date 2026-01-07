@@ -207,6 +207,7 @@ public class ShotDarkness : Skill
         {
             Hero.Move.CanMove = true;
             ClearTarget();
+            ClearTempTarget();
             _targetPoint = Vector3.positiveInfinity;
             Hero.Move.StopLookAt();
         }
@@ -304,6 +305,7 @@ public class ShotDarkness : Skill
     {
         _targetPoint = Vector3.positiveInfinity;
         ClearTarget();
+        ClearTempTarget();
         _consecutiveShots = 0;
         AnimCastEnded();
     }

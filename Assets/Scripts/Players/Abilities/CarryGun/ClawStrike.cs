@@ -252,6 +252,7 @@ public class ClawStrike : Skill
     {
         _player.Move.StopLookAt();
         ClearTarget();
+        ClearTempTarget();
         if (coroutineDurationChanceApplyBleedingWithJump != null) StopCoroutine(IDurationChanceApplyBleedingWithJump());
         AnimCastEnded();
     }
@@ -303,6 +304,7 @@ public class ClawStrike : Skill
     protected override void ClearData()
     {
         ClearTarget();
+        ClearTempTarget();
         if (coroutineDurationChanceApplyBleedingWithJump != null) StopCoroutine(IDurationChanceApplyBleedingWithJump());
         AnimCastEnded();
     }

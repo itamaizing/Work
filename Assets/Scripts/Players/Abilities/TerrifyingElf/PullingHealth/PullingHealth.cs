@@ -451,6 +451,7 @@ public class PullingHealth : Skill
         }
 
         ClearTarget();
+        ClearTempTarget();
         _extraTargets.Clear();
         _extraEffects.Clear();
         StopCoroutine(StreamDuration());
@@ -579,6 +580,7 @@ public class PullingHealth : Skill
     {
         _extraTargets.Clear();
         _extraEffects.Clear();
+        ClearTempTarget();
         ClearTarget();
         Radius = _baseRadius;
     }

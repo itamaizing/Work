@@ -35,6 +35,7 @@ public class SkillManager : MonoBehaviour
     public Skill PreviewCastedSkill { get; private set; }
     public SkillQueue SkillQueue { get => _skillQueue; }
     public Skill[] SelectedSkills { get => _selectedSkills; }
+    public Skill SelectedSkill { get => _selectedSkill; }
     public bool IsNextSkillFree { get; private set; }
     public IEnumerable<Skill> DefaultSkills => _skills.Where(o => o.IsTalentSpell == false);
     public IEnumerable<Skill> TalentsSkills => _skills.Where(o => o.IsTalentSpell);

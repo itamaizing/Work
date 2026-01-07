@@ -198,6 +198,7 @@ public class Shot : Skill
         {
             Hero.Move.CanMove = true;
             ClearTarget();
+            ClearTempTarget();
             _targetPoint = Vector3.positiveInfinity;
             Hero.Move.StopLookAt();
             AnimCastEnded();
@@ -268,6 +269,7 @@ public class Shot : Skill
     {
         _targetPoint = Vector3.positiveInfinity;
         ClearTarget();
+        ClearTempTarget();
         AnimCastEnded();
         _consecutiveShots = 0;
     }
