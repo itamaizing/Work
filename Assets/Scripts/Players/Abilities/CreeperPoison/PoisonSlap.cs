@@ -40,8 +40,8 @@ public class PoisonSlap : Skill
 
     private int _poisonBoneStack;
 
-    private float _creeperStrikeCastSpeedMultiplier = 150f;
-    private float _lightningStrikesCastSpeedMultiplier = 200f;
+    private float _creeperStrikeCastSpeedMultiplier = 1.5f;
+    private float _lightningStrikesCastSpeedMultiplier = 2f;
     private float _baseDamage = 30f;
     private float _distancePush = 3.0f;
     private float _durationPush = 1.0f;

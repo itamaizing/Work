@@ -9,6 +9,8 @@ public class FocusingOnReflexesState : AbstractCharacterState
 
     private Character _character;
 
+    private int _damageTakenCount = 0;
+
     private List<StatusEffect> _effects = new() { StatusEffect.Evade };
 
     public override States State => States.FocusingOnReflexesState;
@@ -27,8 +29,10 @@ public class FocusingOnReflexesState : AbstractCharacterState
         _originalEvadeMelee = health.EvadeMeleeDamage;
         _originalEvadeRange = health.EvadeRangeDamage;
 
-        health.EvadeMeleeDamage = 100f;
-        health.EvadeRangeDamage = 60f;
+        health.EvadeMeleeDamage = 60f;
+        health.EvadeRangeDamage = 100f;
+
+        _damageTakenCount = 0;
         health.DamageTaken += OnDamageTaken;
     }
 
@@ -64,6 +68,11 @@ public class FocusingOnReflexesState : AbstractCharacterState
 
     private void OnDamageTaken(Damage damage, Skill skill)
     {
-        ExitState();
+        _damageTakenCount++;
+
+        if (_damageTakenCount >= 2)
+        {
+            ExitState();
+        }
     }
 }

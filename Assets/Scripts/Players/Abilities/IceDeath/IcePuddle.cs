@@ -18,7 +18,7 @@ public class IcePuddle : Skill
 
     [Header("Ability settings")]
     [SerializeField] private SeriesOfStrikes _seriesOfStrikes;
-    [SerializeField] private int _timeToDestroy = 3;
+    [SerializeField] private float _timeToDestroy = 3f;
     [SerializeField] private MoveComponent _move;
     [SerializeField] private AudioClip _audioClip;
 
