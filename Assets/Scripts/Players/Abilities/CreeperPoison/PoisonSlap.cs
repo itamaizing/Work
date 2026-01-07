@@ -42,8 +42,8 @@ public class PoisonSlap : Skill
 
     private int _poisonBoneStack;
 
-    private float _creeperStrikeCastSpeedMultiplier = 1.5f;
-    private float _lightningStrikesCastSpeedMultiplier = 2f;
+    private float _creeperStrikeCastSpeedMultiplier = 150f;
+    private float _lightningStrikesCastSpeedMultiplier = 200f;
     private float _baseDamage = 30f;
     private float _distancePush = 3.0f;
     private float _durationPush = 1.0f;
@@ -101,6 +101,8 @@ public class PoisonSlap : Skill
 
     public void AnimPoisonSlapCastEnded()
     {
+        Buff.CastSpeed.Reset();
+        Buff.AttackSpeed.Reset();
         AnimCastEnded();
     }
 
@@ -189,13 +191,14 @@ public class PoisonSlap : Skill
 
     protected override IEnumerator CastJob()
     {
+        SwitchPayCost();
+
         if (_isUsedPoisonBallCharger)
         {
             _poisonBall.PayCostPoisonBall();
         }
 
         ChooseDirectionPush(GetTargetCharacter());
-
         DamageDeal(GetTargetCharacter());
 
         yield return null;
@@ -223,7 +226,6 @@ public class PoisonSlap : Skill
         else
         {
             _isUsedPoisonBallCharger = true;
-            Buff.CastSpeed.Reset();
         }
     }
     #endregion
@@ -384,7 +386,6 @@ public class PoisonSlap : Skill
                 {
                     SetArrowVisibility(0, false);
                     SetArrowVisibility(1, false);
-                    SwitchPayCost();
                 }
             }
             yield return null;
