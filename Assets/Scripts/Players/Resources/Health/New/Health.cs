@@ -77,6 +77,7 @@ public class Health : Resource, IDamageable, IHealingable
 
         if (TryEvade(damage.Type, damage.PhysicAttackType))
         {
+            Evaded?.Invoke();
             ClientRpcEvade();
             return false;
         }

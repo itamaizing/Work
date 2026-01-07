@@ -62,14 +62,15 @@ public class SneakySpit : Skill
 
     private void OnHeroEvade()
     {
+        Debug.Log($"_attacker: {_attacker}");
         if (_attacker == null || _boostWindow != null) return;
 
-        Debug.Log("1");
         TargetRpcStartSneakySpitBoostWindow(connectionToClient, _attacker.netId);
     }
 
     private void HandleBeforeTakeDamage(Damage damage, Skill skill)
     {
+        Debug.Log("1");
         if (skill != null && skill.Hero != null) _attacker = skill.Hero;
     }
 
