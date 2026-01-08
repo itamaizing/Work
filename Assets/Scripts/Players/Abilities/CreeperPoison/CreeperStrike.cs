@@ -299,7 +299,6 @@ public class CreeperStrike : Skill
     private void TryTriggerWindow(Character target)
     {
         if (target == null) return;
-
         if (_recentTargets.Exists(character => character == null || character.IsDead)) _recentTargets.Clear();
 
         RegisterRecentTarget(target);
@@ -312,6 +311,8 @@ public class CreeperStrike : Skill
 
         bool sameTargetTwice = SameTargetCastCounter(2);
         bool sameTargetThreeTimes = SameTargetCastCounter(3);
+
+        if (_recentTargets.Count >= 4 && _recentTargets[3] != _recentTargets[0]) CmdTriggerSneakySpitWindowCancel();
 
         if (sameTargetThreeTimes && isDoubleCreeperChain) CmdTriggerSneakySpitFreeWindow(target);
         if (sameTargetTwice && isCreeperChain) CmdBlockPassiveSkillFreeWindow(target);
@@ -460,12 +461,20 @@ public class CreeperStrike : Skill
 
     [Command] private void CmdTriggerSneakySpitFreeWindow(Character target) => RpcTriggerSneakySpitWindow(target);
 
+    [Command] private void CmdTriggerSneakySpitWindowCancel() => RpcTriggerSneakySpitWindowCancel();
+
     [Command] private void CmdBlockPassiveSkillFreeWindow(Character target) => RpcBlockPassiveSkillFreeWindow(target);
 
     [ClientRpc]
     private void RpcTriggerSneakySpitWindow(Character target)
     {
         if (sneakySpit != null) sneakySpit.TryStartSneakySpitBoostWindow(target);
+    }
+
+    [ClientRpc]
+    private void RpcTriggerSneakySpitWindowCancel()
+    {
+        if (sneakySpit != null) sneakySpit.CancelBoostWindow();
     }
 
     [ClientRpc]

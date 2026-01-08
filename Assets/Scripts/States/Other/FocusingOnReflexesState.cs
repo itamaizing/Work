@@ -4,11 +4,8 @@ using UnityEngine;
 public class FocusingOnReflexesState : AbstractCharacterState
 {
     private float _duration;
-    private float _durationOnDamageExit = 0.1f;
     private float _originalEvadeMelee;
     private float _originalEvadeRange;
-
-    private bool _isOnDamageExit;
 
     private Character _character;
 
@@ -33,17 +30,14 @@ public class FocusingOnReflexesState : AbstractCharacterState
         health.EvadeMeleeDamage = 60f;
         health.EvadeRangeDamage = 100f;
 
-        _isOnDamageExit = false;
-
-        health.DamageTaken += OnDamageTaken;
+        health.Evaded += OnEvaded;
     }
 
     public override void UpdateState()
     {
         _duration -= Time.deltaTime;
-        if (_isOnDamageExit) _durationOnDamageExit -= Time.deltaTime;
 
-        if (_duration <= 0f || _durationOnDamageExit <= 0f)
+        if (_duration <= 0f)
         {
             ExitState();
         }
@@ -63,12 +57,15 @@ public class FocusingOnReflexesState : AbstractCharacterState
 
             health.EvadeMeleeDamage = _originalEvadeMelee;
             health.EvadeRangeDamage = _originalEvadeRange;
-            health.DamageTaken -= OnDamageTaken;
+            health.Evaded -= OnEvaded;
         }
 
-        Debug.Log($"Exit from FocusingOnReflexesState");
         _characterState.RemoveState(this);
     }
 
-    private void OnDamageTaken(Damage damage, Skill skill) => _isOnDamageExit = true;
+    private void OnEvaded()
+    {
+        ExitState();
+        Debug.Log("Exit for FocusingOnReflexesState");
+    }
 }

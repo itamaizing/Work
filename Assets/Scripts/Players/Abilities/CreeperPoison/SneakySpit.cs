@@ -70,7 +70,6 @@ public class SneakySpit : Skill
 
     private void HandleBeforeTakeDamage(Damage damage, Skill skill)
     {
-        Debug.Log("1");
         if (skill != null && skill.Hero != null) _attacker = skill.Hero;
     }
 
@@ -103,6 +102,17 @@ public class SneakySpit : Skill
     {
         ClearTarget();
         //_target = null;
+    }
+
+    public void CancelBoostWindow()
+    {
+        if (_boostWindow != null)
+        {
+            Debug.Log("1");
+            StopCoroutine(_boostWindow);
+            _boostWindow = null;
+            DisableSkillBoost();
+        }
     }
 
     public void ApplyStateAndDamage()
