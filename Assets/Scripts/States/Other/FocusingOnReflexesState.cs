@@ -8,6 +8,8 @@ public class FocusingOnReflexesState : AbstractCharacterState
     private float _originalEvadeMelee;
     private float _originalEvadeRange;
 
+    private bool _isOnDamageExit;
+
     private Character _character;
 
     private List<StatusEffect> _effects = new() { StatusEffect.Evade };
@@ -31,14 +33,17 @@ public class FocusingOnReflexesState : AbstractCharacterState
         health.EvadeMeleeDamage = 60f;
         health.EvadeRangeDamage = 100f;
 
+        _isOnDamageExit = false;
+
         health.DamageTaken += OnDamageTaken;
     }
 
     public override void UpdateState()
     {
         _duration -= Time.deltaTime;
+        if (_isOnDamageExit) _durationOnDamageExit -= Time.deltaTime;
 
-        if (_duration <= 0f)
+        if (_duration <= 0f || _durationOnDamageExit <= 0f)
         {
             ExitState();
         }
@@ -61,12 +66,9 @@ public class FocusingOnReflexesState : AbstractCharacterState
             health.DamageTaken -= OnDamageTaken;
         }
 
+        Debug.Log($"Exit from FocusingOnReflexesState");
         _characterState.RemoveState(this);
     }
 
-    private void OnDamageTaken(Damage damage, Skill skill)
-    {
-        _durationOnDamageExit -= Time.deltaTime;
-        if (_durationOnDamageExit <= 0f) ExitState();
-    }
+    private void OnDamageTaken(Damage damage, Skill skill) => _isOnDamageExit = true;
 }
