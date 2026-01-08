@@ -14640,7 +14640,7 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   durationWindowsBoost: 5
-  blockChance: 100
+  blockChance: 50
 --- !u!114 &2483674839823445686 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

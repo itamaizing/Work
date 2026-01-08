@@ -73,17 +73,19 @@ public class Health : Resource, IDamageable, IHealingable
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
         OnBeforeTakeDamage?.Invoke(damage, skill);
-        OnBeforeDamage?.Invoke(ref damage, skill); //Test: we transmit incoming damage before it is inflicted by the enem
+        OnBeforeDamage?.Invoke(ref damage, skill);
 
         if (TryEvade(damage.Type, damage.PhysicAttackType))
         {
+            Debug.Log($"Evade");
             Evaded?.Invoke();
             ClientRpcEvade();
             return false;
         }
 
-        if (UnityEngine.Random.Range(0f, 100f) <= _blockChance)
+        else if (UnityEngine.Random.Range(0f, 100f) <= _blockChance)
         {
+            Debug.Log($"Block");
             Block?.Invoke();
             return false;
         }
@@ -327,11 +329,7 @@ public class Health : Resource, IDamageable, IHealingable
 
 
     [ClientRpc]
-    private void ClientRpcEvade()
-    {
-        Evaded?.Invoke();
-        _animator.SetTrigger(HashAnimPlayer.Evade);
-    }
+    private void ClientRpcEvade() => _animator.SetTrigger(HashAnimPlayer.Evade);
 
     [ClientRpc]
     private void ClientRpcHealTaked(float healTaken, Skill skill, string sourceName)

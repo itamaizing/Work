@@ -4,12 +4,11 @@ using UnityEngine;
 public class FocusingOnReflexesState : AbstractCharacterState
 {
     private float _duration;
+    private float _durationOnDamageExit = 0.1f;
     private float _originalEvadeMelee;
     private float _originalEvadeRange;
 
     private Character _character;
-
-    private int _damageTakenCount = 0;
 
     private List<StatusEffect> _effects = new() { StatusEffect.Evade };
 
@@ -32,7 +31,6 @@ public class FocusingOnReflexesState : AbstractCharacterState
         health.EvadeMeleeDamage = 60f;
         health.EvadeRangeDamage = 100f;
 
-        _damageTakenCount = 0;
         health.DamageTaken += OnDamageTaken;
     }
 
@@ -68,11 +66,7 @@ public class FocusingOnReflexesState : AbstractCharacterState
 
     private void OnDamageTaken(Damage damage, Skill skill)
     {
-        _damageTakenCount++;
-
-        if (_damageTakenCount >= 2)
-        {
-            ExitState();
-        }
+        _durationOnDamageExit -= Time.deltaTime;
+        if (_durationOnDamageExit <= 0f) ExitState();
     }
 }
