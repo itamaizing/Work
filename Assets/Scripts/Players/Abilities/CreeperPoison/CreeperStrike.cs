@@ -322,7 +322,7 @@ public class CreeperStrike : Skill
     {
         _recentTargets.Insert(0, target);
 
-        if (_recentTargets.Count > 3) _recentTargets.RemoveAt(_recentTargets.Count - 1);
+        if (_recentTargets.Count > 4) _recentTargets.RemoveAt(_recentTargets.Count - 1);
         if (_clearTargetsCoroutine != null) StopCoroutine(_clearTargetsCoroutine);
 
         _clearTargetsCoroutine = StartCoroutine(ClearRecentTargetsAfterDelay());

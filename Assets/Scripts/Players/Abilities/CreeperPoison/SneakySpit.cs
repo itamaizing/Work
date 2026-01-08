@@ -13,6 +13,7 @@ public class SneakySpit : Skill
     private Character _attacker;
     private Coroutine _boostWindow;
     private NetworkIdentity identity;
+    private bool isAbilityQueue = false;
 
     protected override bool IsCanCast => CheckCanCast();
 
@@ -57,7 +58,7 @@ public class SneakySpit : Skill
     {
         return GetTargetCharacter() != null &&
         Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius &&
-        NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
+        NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle) && !Disactive;
     }
 
     private void OnHeroEvade()
@@ -75,8 +76,14 @@ public class SneakySpit : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (Disactive && GetTargetCharacter() == null) yield return null;
+        while (!isAbilityQueue && (Disactive || GetTargetCharacter() == null))
+        {
+            isAbilityQueue = true;
+            yield return null;
+        }
+
         FindTargetCharacter();
+
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
@@ -101,6 +108,8 @@ public class SneakySpit : Skill
     protected override void ClearData()
     {
         ClearTarget();
+        CancelBoostWindow();
+        isAbilityQueue = false;
         //_target = null;
     }
 
@@ -108,7 +117,6 @@ public class SneakySpit : Skill
     {
         if (_boostWindow != null)
         {
-            Debug.Log("1");
             StopCoroutine(_boostWindow);
             _boostWindow = null;
             DisableSkillBoost();
