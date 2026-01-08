@@ -300,18 +300,41 @@ public class CreeperStrike : Skill
     {
         if (target == null) return;
 
+        if (_recentTargets.Exists(character => character == null || character.IsDead)) _recentTargets.Clear();
+
+        RegisterRecentTarget(target);
+
         var lastCast = _player.Abilities.LastCastedSkill;
         var previewCast = _player.Abilities.PreviewCastedSkill;
 
+        bool isCreeperChain = lastCast is CreeperStrike;
+        bool isDoubleCreeperChain = isCreeperChain && previewCast is CreeperStrike;
+
+        bool sameTargetTwice = SameTargetCastCounter(2);
+        bool sameTargetThreeTimes = SameTargetCastCounter(3);
+
+        if (sameTargetThreeTimes && isDoubleCreeperChain) CmdTriggerSneakySpitFreeWindow(target);
+        if (sameTargetTwice && isCreeperChain) CmdBlockPassiveSkillFreeWindow(target);
+    }
+
+    private void RegisterRecentTarget(Character target)
+    {
         _recentTargets.Insert(0, target);
 
         if (_recentTargets.Count > 3) _recentTargets.RemoveAt(_recentTargets.Count - 1);
-
         if (_clearTargetsCoroutine != null) StopCoroutine(_clearTargetsCoroutine);
-        _clearTargetsCoroutine = StartCoroutine(ClearRecentTargetsAfterDelay());
 
-        if (_recentTargets.Count >= 3 && _recentTargets[1] == _recentTargets[0] && _recentTargets[2] == _recentTargets[0] && lastCast is CreeperStrike && previewCast is CreeperStrike) ÑmdTriggerSneakySpitFreeWindow(target);
-        if (_recentTargets.Count >= 2 && _recentTargets[1] == _recentTargets[0] && lastCast is CreeperStrike) ÑmdBlockPassiveSkillFreeWindow(target);
+        _clearTargetsCoroutine = StartCoroutine(ClearRecentTargetsAfterDelay());
+    }
+
+    private bool SameTargetCastCounter(int count)
+    {
+        if (_recentTargets.Count < count) return false;
+
+        Character first = _recentTargets[0];
+
+        for (int i = 1; i < count; i++) if (_recentTargets[i] != first) return false;
+        return true;
     }
 
     private IEnumerator ClearRecentTargetsAfterDelay()
@@ -435,9 +458,9 @@ public class CreeperStrike : Skill
 
     [Command] private void CmdDamageDeal(Damage damage, GameObject target) => ApplyDamage(damage, target);
 
-    [Command] private void ÑmdTriggerSneakySpitFreeWindow(Character target) => RpcTriggerSneakySpitWindow(target);
+    [Command] private void CmdTriggerSneakySpitFreeWindow(Character target) => RpcTriggerSneakySpitWindow(target);
 
-    [Command] private void ÑmdBlockPassiveSkillFreeWindow(Character target) => RpcBlockPassiveSkillFreeWindow(target);
+    [Command] private void CmdBlockPassiveSkillFreeWindow(Character target) => RpcBlockPassiveSkillFreeWindow(target);
 
     [ClientRpc]
     private void RpcTriggerSneakySpitWindow(Character target)
