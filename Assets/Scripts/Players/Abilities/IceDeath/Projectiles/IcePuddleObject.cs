@@ -51,17 +51,7 @@ public class IcePuddleObject : Projectiles
 		_initialized = true;
 		_lastHit = lastHit;
 		_healthComponent = _dad.Health;
-
-		for (int i = 0; i < _dad.Resources.Count; i++)
-		{
-			if (_dad.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)_dad.Resources[i];
-			}
-		}
-
-		float extraDuration = _energy != null ? _energy.CurrentValue / 5f : 0f;
-		_timeToDestroy = Mathf.Min(_maxLifeTime, timeToDestroy + extraDuration);
+		_timeToDestroy = timeToDestroy;
 		_spawnTime = Time.time;
 
 		Debug.Log($"_timeToDestroy: {_timeToDestroy}");

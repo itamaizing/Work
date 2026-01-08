@@ -3632,6 +3632,7 @@ MonoBehaviour:
   preViewPuddlePrefab: {fileID: 8842404529923409551, guid: c543d7786e879d14cb91ce31839db008, type: 3}
   _seriesOfStrikes: {fileID: 3083348233968490285}
   _timeToDestroy: 3
+  _maxLifePuddleTime: 7
   _move: {fileID: 323327819542905198}
   _audioClip: {fileID: 0}
   _groundLayer:

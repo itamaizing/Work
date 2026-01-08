@@ -19,6 +19,7 @@ public class IcePuddle : Skill
     [Header("Ability settings")]
     [SerializeField] private SeriesOfStrikes _seriesOfStrikes;
     [SerializeField] private float _timeToDestroy = 3f;
+    [SerializeField] private float _maxLifePuddleTime = 7f;
     [SerializeField] private MoveComponent _move;
     [SerializeField] private AudioClip _audioClip;
 
@@ -219,36 +220,41 @@ public class IcePuddle : Skill
 
         _energy.CmdUse(timeToAdd * 5);
 
-        if (_lastHit) CmdCreateProjecttileBig(_placedAngleDeg, _timeToDestroy, _placedPosition, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);
-        else CmdCreateProjecttile(_placedAngleDeg, _timeToDestroy, _placedPosition, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);
+        if (_lastHit) CmdCreateProjecttileBig(_placedAngleDeg, LifeTimePuddle(timeToAdd), _placedPosition, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);
+        else CmdCreateProjecttile(_placedAngleDeg, LifeTimePuddle(timeToAdd), _placedPosition, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);
+    }
+
+    private float LifeTimePuddle(float timeToAdd)
+    {
+       return Mathf.Min(_maxLifePuddleTime, _timeToDestroy + timeToAdd);
     }
 
     [Command]
-    private void CmdCreateProjecttileBig(float angle, float manaValue, Vector3 position, bool lastHit, bool talentEvade, bool talentFrostingFrozen)
+    private void CmdCreateProjecttileBig(float angle, float timeToDestroy, Vector3 position, bool lastHit, bool talentEvade, bool talentFrostingFrozen)
     {
         IcePuddleObject projectile = Instantiate(_puddleBig, position, Quaternion.Euler(-90, -angle, 0));
         SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
-        projectile.Init(Hero, manaValue, lastHit, this);
+        projectile.Init(Hero, timeToDestroy, lastHit, this);
         projectile.SetTalents(talentEvade, talentFrostingFrozen);
 
         NetworkServer.Spawn(projectile.gameObject);
 
         RpcPlayShotSound();
-        RpcInit(projectile.gameObject, manaValue, lastHit);
+        RpcInit(projectile.gameObject, timeToDestroy, lastHit);
     }
 
     [Command]
-    private void CmdCreateProjecttile(float angle, float manaValue, Vector3 position, bool lastHit, bool talentEvade, bool talentFrostingFrozen)
+    private void CmdCreateProjecttile(float angle, float timeToDestroy, Vector3 position, bool lastHit, bool talentEvade, bool talentFrostingFrozen)
     {
         IcePuddleObject projectile = Instantiate(_puddle, position, Quaternion.Euler(-90, -angle, 0));
         SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
-        projectile.Init(Hero, manaValue, lastHit, this);
+        projectile.Init(Hero, timeToDestroy, lastHit, this);
         projectile.SetTalents(talentEvade, talentFrostingFrozen);
 
         NetworkServer.Spawn(projectile.gameObject);
 
         RpcPlayShotSound();
-        RpcInit(projectile.gameObject, manaValue, lastHit);
+        RpcInit(projectile.gameObject, timeToDestroy, lastHit);
     }
 
     [ClientRpc]
