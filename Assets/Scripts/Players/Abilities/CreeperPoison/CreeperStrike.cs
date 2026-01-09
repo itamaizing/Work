@@ -306,8 +306,8 @@ public class CreeperStrike : Skill
         var lastCast = _player.Abilities.LastCastedSkill;
         var previewCast = _player.Abilities.PreviewCastedSkill;
 
-        bool isCreeperChain = lastCast is CreeperStrike;
-        bool isDoubleCreeperChain = isCreeperChain && previewCast is CreeperStrike;
+        bool isCreeperChain = lastCast is CreeperStrike || lastCast is LightningStrikes;
+        bool isDoubleCreeperChain = isCreeperChain && previewCast is CreeperStrike || previewCast is LightningStrikes;
 
         bool sameTargetTwice = SameTargetCastCounter(2);
         bool sameTargetThreeTimes = SameTargetCastCounter(3);
