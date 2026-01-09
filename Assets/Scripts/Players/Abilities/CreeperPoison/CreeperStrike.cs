@@ -281,7 +281,7 @@ public class CreeperStrike : Skill
                 }
 
                 _timerForTwoHitVariableCoroutine = StartCoroutine(TimerForTwoHit(time, isUsingLightningStrikes));
-                
+
                 _currentCountHit = 0;
 
                 if (_coldBlood.IsCanCritLightningStrikes)
@@ -295,6 +295,8 @@ public class CreeperStrike : Skill
 
         TryTriggerWindow(character);
     }
+
+    #region Combo Creeper
 
     private void TryTriggerWindow(Character target)
     {
@@ -343,6 +345,8 @@ public class CreeperStrike : Skill
         yield return new WaitForSeconds(_targetMemoryTime);
         _recentTargets.Clear();
     }
+
+    #endregion
 
     private IEnumerator TimerForTwoHit(float duration, bool isUsingLightningStrikes)
     {

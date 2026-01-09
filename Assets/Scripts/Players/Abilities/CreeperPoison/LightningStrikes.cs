@@ -109,6 +109,12 @@ public class LightningStrikes : Skill
 
     protected override IEnumerator CastJob()
     {
+        if (GetTarget() == null || !IsTargetInRange())
+        {
+            AnimCastEnded();
+            yield break;
+        }
+
         if (_lightningMovement.IsInMovement)
         {
             _animTime = GetClipLength();
@@ -135,6 +141,11 @@ public class LightningStrikes : Skill
         DamageDeal();
 
         yield return null;
+    }
+
+    private bool IsTargetInRange()
+    {
+        return GetTarget() != null && Vector3.Distance(_player.transform.position, GetTarget().Transform.position) <= Radius;
     }
 
     private float GetClipLength()
