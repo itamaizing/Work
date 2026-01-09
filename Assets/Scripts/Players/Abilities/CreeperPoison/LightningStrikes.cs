@@ -134,8 +134,6 @@ public class LightningStrikes : AutoAttackSkill
     {
         Debug.Log("LightningStrikes / DamageDeal");
         _creeperStrike.DamageDeal(GetTargetCharacter(), true);
-        _player.Abilities.LastCastedSkill = _creeperStrike;
-
        _isCanDamageDeal = false;
 
         //if (_heatedGlands.Data.IsOpen)

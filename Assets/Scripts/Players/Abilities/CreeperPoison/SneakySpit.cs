@@ -76,13 +76,11 @@ public class SneakySpit : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (!isAbilityQueue && (Disactive || GetTargetCharacter() == null))
-        {
-            isAbilityQueue = true;
-            yield return null;
-        }
+        while (isAbilityQueue) yield return null;
+        while (Disactive || GetTargetCharacter() == null) yield return null;
 
         FindTargetCharacter();
+        isAbilityQueue = true;
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(GetTargetCharacter());
@@ -109,6 +107,7 @@ public class SneakySpit : Skill
     {
         ClearTarget();
         CancelBoostWindow();
+        Hero.Move.StopLookAt();
         isAbilityQueue = false;
         //_target = null;
     }
