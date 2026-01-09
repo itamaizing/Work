@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class LightningStrikes : AutoAttackSkill
+public class LightningStrikes : Skill
 {
     [Header("Talents")]
     [SerializeField] private HeatedGlands _heatedGlands;
@@ -19,6 +19,7 @@ public class LightningStrikes : AutoAttackSkill
     private float _animTime;
     private float _cooldownMultiplier = 2f;
     private float _heatedGlandsDuration = 4f;
+    private float _radiusSearchTarget = 0.5f;
 
     private bool _isUsedLightningStrikes = false;
     private bool _isIncreaseCooldownTime = false;
@@ -29,9 +30,20 @@ public class LightningStrikes : AutoAttackSkill
     public bool IsCanDamageDeal { get => _isCanDamageDeal; set => _isCanDamageDeal = value; }
 
     protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerAutoAttack => Animator.StringToHash("LightningStrikesAttacking");
+    protected override int AnimTriggerCast => Animator.StringToHash("LightningStrikesAttacking");
 
-    public event System.Action OnLightningStrikesEnd;
+    protected override bool IsCanCast
+    {
+        get
+        {
+            if (GetTarget() == null)return false;
+            return NoObstacles(GetTarget().Transform.position, _obstacle) && IsTargetInRadius(Radius, GetTarget().Transform);
+        }
+    }
+
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
+
+    public event Action OnLightningStrikesEnd;
 
     protected override void Awake()
     {
@@ -42,7 +54,7 @@ public class LightningStrikes : AutoAttackSkill
 
     public void AnimLightningStrikesCast()
     {
-        AnimCastAction();
+        AnimStartCastCoroutine();
     }
 
     public void AnimLightningStrikesEnd()
@@ -50,35 +62,52 @@ public class LightningStrikes : AutoAttackSkill
         OnLightningStrikesEnd?.Invoke();
         AnimCastEnded();
     }
-   /* public void SetTarget(Character target)
-    {
-        _target = target;
-    }*/
+    /* public void SetTarget(Character target)
+     {
+         _target = target;
+     }*/
 
-    public void ClearDataLightningStrikes()
+    protected override void ClearData()
     {
-        TryCancel();
-        StopAutoDraw();
+        ClearTarget();
+        ClearTempTarget();
+        _hero.Move.StopLookAt();
     }
+
+    public void ClearDataLightningStrikes() => ClearData();
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        
+        if (targetInfo?.GetTargets()?.Count > 0) SetTarget(targetInfo.GetTargets()[0]);
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        if (_lightningMovement.IsInMovement)
-        {
-            _animTime = GetClipLength();
-            IncreaseAnimSpeed();
+        TargetInfo targetInfo = new TargetInfo();
 
-            Debug.Log("LightningStrikes / PrepareJob");
+        while (GetTempTarget() == null)
+        {
+            if (GetMouseButton)
+            {
+                FindTarget(_radiusSearchTarget, GetMousePoint());
+
+                if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
+                {
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
+                    else break;
+                }
+            }
+            yield return null;
         }
-        return base.PrepareJob(targetDataSavedCallback);
+
+        SetTarget(GetTempTarget());
+
+        targetInfo.Points.Add(GetTarget().Transform.position);
+        targetInfo.AddTarget(GetTarget());
+        callbackDataSaved.Invoke(targetInfo);
     }
 
-    protected override void CastAction()
+    protected override IEnumerator CastJob()
     {
         if (_lightningMovement.IsInMovement)
         {
@@ -104,6 +133,8 @@ public class LightningStrikes : AutoAttackSkill
             _currentTarget = _target;*/
 
         DamageDeal();
+
+        yield return null;
     }
 
     private float GetClipLength()
@@ -134,6 +165,8 @@ public class LightningStrikes : AutoAttackSkill
     {
         Debug.Log("LightningStrikes / DamageDeal");
         _creeperStrike.DamageDeal(GetTargetCharacter(), true);
+        _player.Abilities.LastCastedSkill = _creeperStrike;
+
        _isCanDamageDeal = false;
 
         //if (_heatedGlands.Data.IsOpen)
