@@ -19,14 +19,14 @@ public class ScorchedSoul : AbstractCharacterState
     {
         Debug.Log("Entering ScorchedSoulDebuff State");
 
-        _characterState = character;
+        characterState = character;
         _duration = durationToExit;
 
         //effects.Add(StatusEffect.AbilitySpeed);
         //effects.Add(StatusEffect.AbilityCooldownSpeed);
 
         //Cmd111();
-        var abilities = _characterState.GetComponentInChildren<SkillManager>();
+        var abilities = characterState.GetComponentInChildren<SkillManager>();
 
         foreach (var ability in abilities.Abilities)
         {
@@ -42,10 +42,10 @@ public class ScorchedSoul : AbstractCharacterState
     {
         Debug.Log("Exiting ScorchedSoulDebuff State");
 
-        if (!_characterState.Check(StatusEffect.AbilitySpeed))
+        if (!characterState.Check(StatusEffect.AbilitySpeed))
         {
             //return cast speed
-            if (_characterState.TryGetComponent<SkillManager>(out SkillManager abilities))
+            if (characterState.TryGetComponent<SkillManager>(out SkillManager abilities))
             {
                 foreach (var ability in abilities.Abilities)
                 {
@@ -57,7 +57,7 @@ public class ScorchedSoul : AbstractCharacterState
         //{
         //    //return abilitys' CD speed
         //}
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

@@ -17,11 +17,11 @@ public class SelfHarmState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
+        characterState = character;
         
-        _healthComponent = _characterState.GetComponent<Health>();
+        _healthComponent = characterState.GetComponent<Health>();
 
-        foreach (var skill in _characterState.Character.Abilities.Abilities)
+        foreach (var skill in characterState.Character.Abilities.Abilities)
         {
             if (skill.AbilityForm == AbilityForm.Magic)
             {
@@ -44,7 +44,7 @@ public class SelfHarmState : AbstractCharacterState
 
     public override void ExitState()
     {
-        foreach (var skill in _characterState.Character.Abilities.Abilities)
+        foreach (var skill in characterState.Character.Abilities.Abilities)
         {
             if (skill.AbilityForm == AbilityForm.Magic)
             {
@@ -58,7 +58,7 @@ public class SelfHarmState : AbstractCharacterState
             _healthComponent.DamageTaken -= OnDamageTaken;
         }
         
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
         
         Debug.Log("SelfHarm exit");
     }

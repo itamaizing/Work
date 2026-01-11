@@ -18,10 +18,10 @@ public class ImmaterialityState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
-        _player = _characterState.Character;
+        characterState = character;
+        _player = characterState.Character;
         _duration = durationToExit;
-        _defualtPlayerLayer = _characterState.gameObject.layer;
+        _defualtPlayerLayer = characterState.gameObject.layer;
 
         _newPlayerLayer = LayerMask.NameToLayer("LightningMovement");
 
@@ -41,7 +41,7 @@ public class ImmaterialityState : AbstractCharacterState
     {
         TargetRpcResetPlayerComponents();
         _duration = 0;
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

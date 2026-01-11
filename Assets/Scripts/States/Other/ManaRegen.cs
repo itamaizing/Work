@@ -17,9 +17,9 @@ public class ManaRegen : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _duration = durationToExit;
-        _characterState = character;
-        _personWhoMadeBuff = personWhoMadeBuff;
-        _manaRegen = _characterState.StateEffects.ManaRegen;
+        characterState = character;
+        base.personWhoMadeBuff = personWhoMadeBuff;
+        _manaRegen = characterState.StateEffects.ManaRegen;
 
         if (_manaRegen) _manaRegen.SetActive(true);
     }
@@ -28,8 +28,8 @@ public class ManaRegen : AbstractCharacterState
     {
         if (_manaRegen) _manaRegen.SetActive(false);
 
-        _characterState.StateIcons.RemoveItemByState(State);
-        _characterState.RemoveState(this);
+        characterState.StateIcons.RemoveItemByState(State);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

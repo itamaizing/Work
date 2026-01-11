@@ -31,7 +31,7 @@ public class InstantHealingPoisonState : AbstractCharacterState
     {
         MaxStacksCount = _maxStacks;
 
-        _characterState = character;
+        characterState = character;
 
         _duration = durationToExit;
         _baseDuration = durationToExit;
@@ -45,7 +45,7 @@ public class InstantHealingPoisonState : AbstractCharacterState
 
     public override void ExitState()
     {
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -56,9 +56,9 @@ public class InstantHealingPoisonState : AbstractCharacterState
     [Server]
     private void MakeHeal()
     {
-        if (_characterState.CheckForState(States.HealingPoisonPerSecond))
+        if (characterState.CheckForState(States.HealingPoisonPerSecond))
         {
-            _healingPoisonPerSecondState = (HealingPoisonPerSecondState)_characterState.GetState(States.HealingPoisonPerSecond);
+            _healingPoisonPerSecondState = (HealingPoisonPerSecondState)characterState.GetState(States.HealingPoisonPerSecond);
             float multiplierHealValue = _healingPoisonPerSecondState.TotalHealValue;
             _totalHealed = _baseHealingValue + multiplierHealValue;
         }
@@ -73,7 +73,7 @@ public class InstantHealingPoisonState : AbstractCharacterState
             DamageableSkill = null,
         };
 
-        _characterState.Character.Health.Heal(ref heal, null);
+        characterState.Character.Health.Heal(ref heal, null);
 
         ExitState();
     }

@@ -26,32 +26,107 @@ public class StateInfo
 
 public abstract class AbstractCharacterState
 {
-	protected CharacterState _characterState;
-	protected SkillManager _abilities;
-	protected Health _health;
-	protected Character _personWhoMadeBuff;
+	protected CharacterState characterState;
+	protected SkillManager abilities;
+	protected Health health;
+	protected Character personWhoMadeBuff;
 
-	public int CurrentStacksCount = 0;
-	public int MaxStacksCount = 0;
-	public float duration;
-	public bool CanStack = true;
+	protected int currentStacksCount = 0;
+	public int CurrentStacksCount => currentStacksCount;
+
+    public int MaxStacksCount = 0;
+	protected float duration = -1;
+	protected float damageToExit = 0;
+	//protected float _duration;
+	//public bool CanStack = true;
 
 	public virtual float RemainingDuration
 	{
 		get => duration;
 		set => duration = value;
 	}
-	public Character PersonWhoMadeBuff => _personWhoMadeBuff;
+	public Character PersonWhoMadeBuff => personWhoMadeBuff;
 	public abstract States State { get; }
 	public abstract StateType Type { get; }
 	public abstract BaffDebaff BaffDebaff { get; }
 	public abstract List<StatusEffect> Effects { get; }
 	
+	public virtual void GlobalEnter(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	{
+		characterState = character;
+		duration = durationToExit;
+        if (this.damageToExit == 0)
+        {
+            this.damageToExit = 10000;
+        }
+        else
+        {
+            this.damageToExit = damageToExit;
+        }
+		this.personWhoMadeBuff = personWhoMadeBuff;
+
+        EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);    }
 
 	public abstract void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName);
+
+	public virtual void GloabalUpdate()
+	{
+		UpdateState();
+		if(duration >= 0 && duration != -1)
+		{
+			duration -= Time.deltaTime;
+			if(duration <= 0)
+			{
+				ExitState();
+			}
+		}
+    }
+
 	public abstract void UpdateState();
+	protected virtual void GloabalExit()
+	{
+		ExitState();
+	}
+
 	public abstract void ExitState();
 	public abstract bool Stack(float time);
+}
+
+public abstract class StackableState : AbstractCharacterState
+{
+	public override bool Stack(float time)
+	{
+		return true; 
+	}
+}
+
+public abstract class RefreshingState : StackableState
+{
+    public override bool Stack(float time)
+    {
+        duration += time;
+        return true;
+    }
+}
+
+
+public abstract class IndependentState: StackableState
+{
+	private List<float> _timers = new();
+
+    public override bool Stack(float time)
+    {
+		if(currentStacksCount >= MaxStacksCount)
+		{
+			//_timers
+		}
+		else
+		{
+			_timers.Add(time);
+			currentStacksCount++;
+		}
+		return false;
+    }
 }
 
 public abstract class AuraState : AbstractCharacterState
@@ -75,7 +150,7 @@ public abstract class AuraState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
+        characterState = character;
 		_auraCentre = character.transform;
 		_self = personWhoMadeBuff;
 	}
@@ -124,7 +199,7 @@ public abstract class AuraState : AbstractCharacterState
 
     public override void ExitState()
     {
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -286,9 +361,6 @@ public class CharacterState : NetworkBehaviour
 	public void Initialize(Character hero)
 	{
 		_hero = hero;
-		/*_health = health;
-		_move = move;
-		_stamina = stamina;*/
 		if (_hero == null)
 		{
 			Debug.LogError("No required component in " + name + " " + gameObject.name);
@@ -301,7 +373,7 @@ public class CharacterState : NetworkBehaviour
 		{
 			for (int i = 0; i < _currentStates.Count; i++)
 			{
-				_currentStates[i].UpdateState();
+				_currentStates[i].GloabalUpdate();
 			}
 		}
 	}
@@ -413,7 +485,7 @@ public class CharacterState : NetworkBehaviour
 	{
 		if (!_currentStates.Contains(newState)) return;
 
-		newState.CurrentStacksCount = 0;
+		//newState.CurrentStacksCount = 0;
 
 		if (newState is IDamageable damageableShield)
 		{
@@ -471,7 +543,7 @@ public class CharacterState : NetworkBehaviour
 		{
 			if (_currentStates[i].State == state)
 			{
-				if (!_currentStates[i].CanStack) break;
+				if ((_currentStates[i] is RefreshingState) == false) break;
 				if (_currentStates[i].MaxStacksCount == 0)
                 {
 					bool canStack = _currentStates[i].Stack(duration);
@@ -485,7 +557,7 @@ public class CharacterState : NetworkBehaviour
 				else
                 {
 					_currentStates[i].Stack(duration);
-					_currentStates[i].duration = Mathf.Max(_currentStates[i].RemainingDuration, duration);
+					//_currentStates[i].duration = Mathf.Max(_currentStates[i].RemainingDuration, duration);
 					float remaining = _currentStates[i].RemainingDuration > 0f ? _currentStates[i].RemainingDuration : duration;
 					int newMaxStack = _currentStates[i].MaxStacksCount;
 
@@ -531,7 +603,7 @@ public class CharacterState : NetworkBehaviour
 	{
 		_currentStates.Add(state);
 
-		state.duration = duration;
+		//state.duration = duration;
 
 		if (personWhoShooted.TryGetComponent<Character>(out var character))
 		{
@@ -581,7 +653,7 @@ public class CharacterState : NetworkBehaviour
 			{
 				if (state.CurrentStacksCount > 1)
 				{
-					state.CurrentStacksCount--;
+					//state.currentStacksCount--;
 					ClientRpcRemoveIconCount();
 				}
 				else
@@ -615,7 +687,7 @@ public class CharacterState : NetworkBehaviour
 			{
 				if (state.CurrentStacksCount > 1)
 				{
-					state.CurrentStacksCount--;
+					//state.currentStacksCount--;
 					ClientRpcRemoveIconCount();
 				}
 				else

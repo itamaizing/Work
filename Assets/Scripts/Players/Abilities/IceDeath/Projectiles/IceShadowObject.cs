@@ -98,13 +98,7 @@ public class IceShadowObject : Projectiles
 		if (collision.gameObject == _dad.gameObject)
 		{
 			if (_iceDeathInShadowTalent) _dad.Health.IncreaseRegen(1.01f + _modifierRegen);
-			//_healthPlayer.SetBoostRegen(0.01f);
-			//Debug.LogError("setboost in hp has been deleted");
 		}
-		/*if(collision.TryGetComponent<IcePuddleObject>(out var obj)) 
-		{
-			//attact speed increase
-		}*/
 		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
 			//&& enemyShadow)
 		{
@@ -120,16 +114,24 @@ public class IceShadowObject : Projectiles
 				{
 					if (enemy.TryGetComponent<Character>(out var newTatget) && collision.gameObject != _dad.gameObject)
 					{
-						newTatget.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
+                        StartCoroutine(CrutchDelay(newTatget, duration));
+                        //newTatget.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
 					}
 				}
 			}
+
 			Explode();
 		}
 		//Explode();
 	}
-
-	public void Explode()
+    private IEnumerator CrutchDelay(Character target, float duration)
+    {
+        //yield return new WaitForSecondsRealtime(0.1f);
+        yield return null;
+        target.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
+        Explode();
+    }
+    public void Explode()
 	{
 		if (_hitEffect != null)
 		{

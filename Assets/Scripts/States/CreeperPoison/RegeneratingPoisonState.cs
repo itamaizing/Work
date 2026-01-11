@@ -31,15 +31,15 @@ public class RegeneratingPoisonState : AbstractCharacterState
     {
         MaxStacksCount = _maxStacks;
 
-        _characterState = character;
+        characterState = character;
         _playerWithTalent = personWhoMadeBuff;
 
         _duration = durationToExit;
         _baseDuration = durationToExit;
 
-        if (CurrentStacksCount < MaxStacksCount)
+        if (currentStacksCount < MaxStacksCount)
         {
-            CurrentStacksCount++;
+            currentStacksCount++;
         }
     }
 
@@ -63,14 +63,14 @@ public class RegeneratingPoisonState : AbstractCharacterState
     {
         ResetValues();
 
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        if (CurrentStacksCount < MaxStacksCount)
+        if (currentStacksCount < MaxStacksCount)
         {
-            CurrentStacksCount++;
+            currentStacksCount++;
             _duration = _baseDuration;
             return true;
         }
@@ -84,7 +84,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
     [Server]
     private void MakeHeal()
     {
-        _endHealingValue = CurrentStacksCount * _baseHealingValue;
+        _endHealingValue = currentStacksCount * _baseHealingValue;
 
         Heal heal = new Heal
         {
@@ -92,13 +92,13 @@ public class RegeneratingPoisonState : AbstractCharacterState
             DamageableSkill = null,
         };
 
-        _characterState.Character.Health.Heal(ref heal, null);
+        characterState.Character.Health.Heal(ref heal, null);
         //_characterState.Character.DamageTracker.AddHeal(heal);
     }
 
     private void ResetValues()
     {
-        CurrentStacksCount = 0;
+        currentStacksCount = 0;
         _endHealingValue = 0;
         _baseDuration = 0;
         _duration = 0;

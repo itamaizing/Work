@@ -24,11 +24,11 @@ public class SpiritEnergyState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
+        characterState = character;
         _character = character.Character;
         _duration = durationToExit;
         _baseDuration = durationToExit;
-        CurrentStacksCount = 1;
+        currentStacksCount = 1;
         MaxStacksCount = _baseMaxStacks;
 
         _healthComponent = _character.GetComponent<Health>();
@@ -39,9 +39,9 @@ public class SpiritEnergyState : AbstractCharacterState
             _healthComponent.DamageTaken += OnDamageTaken;
         }
 
-        if (_characterState.StateEffects.SpiritEnergyEffect != null)
+        if (characterState.StateEffects.SpiritEnergyEffect != null)
         {
-            _spiritEnergyStateEffectInstance = _characterState.StateEffects.SpiritEnergyEffect;
+            _spiritEnergyStateEffectInstance = characterState.StateEffects.SpiritEnergyEffect;
             _spiritEnergyStateEffectInstance.SetActive(true);
         }
 
@@ -62,9 +62,9 @@ public class SpiritEnergyState : AbstractCharacterState
     {
         _duration = Mathf.Max(_duration, time);
 
-        if (CurrentStacksCount < MaxStacksCount)
+        if (currentStacksCount < MaxStacksCount)
         {
-            CurrentStacksCount++;
+            currentStacksCount++;
         }
 
         RecalcRegenAmount();
@@ -78,22 +78,22 @@ public class SpiritEnergyState : AbstractCharacterState
             _healthComponent.DamageTaken -= OnDamageTaken;
         }
 
-        if (_characterState.StateEffects.SpiritEnergyEffect != null) _spiritEnergyStateEffectInstance.SetActive(false);
-        _characterState.RemoveState(this);
+        if (characterState.StateEffects.SpiritEnergyEffect != null) _spiritEnergyStateEffectInstance.SetActive(false);
+        characterState.RemoveState(this);
     }
 
     private void OnDamageTaken(Damage damage, Skill skill)
     {
         if (_character == null) return;
 
-        float manaRestoreValue = damage.Value * DamageManaRestorePercent * CurrentStacksCount;
+        float manaRestoreValue = damage.Value * DamageManaRestorePercent * currentStacksCount;
 
         ApplyRegen(manaRestoreValue);
     }
 
     public float GetHealBonus()
     {
-        return CurrentStacksCount * 1f;
+        return currentStacksCount * 1f;
     }
 
     public void ApplyRegen(float manaRestoreValue)
@@ -105,7 +105,7 @@ public class SpiritEnergyState : AbstractCharacterState
     {
         if (_manaResource != null)
         {
-            _regenAmount = _manaResource.MaxValue * DamageManaRestorePercent * CurrentStacksCount;
+            _regenAmount = _manaResource.MaxValue * DamageManaRestorePercent * currentStacksCount;
         }
     }
 }

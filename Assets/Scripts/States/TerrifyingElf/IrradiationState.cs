@@ -18,14 +18,14 @@ public class IrradiationState : AbstractCharacterState
     {
 
         Debug.Log("Entering Irradiation State");
-        _characterState = character;
-        _personWhoMadeBuff = personWhoMadeBuff;
+        characterState = character;
+        base.personWhoMadeBuff = personWhoMadeBuff;
         _baseDuration = durationToExit;
         duration = _baseDuration;
 
         MaxStacksCount = 3;
 
-        _characterState.OnStateAdded += OnNewStateAdded;
+        characterState.OnStateAdded += OnNewStateAdded;
 
         ExtendExistingNegativeMagic();
         ApplyMagicDefenseReduction();
@@ -40,19 +40,19 @@ public class IrradiationState : AbstractCharacterState
     public override void ExitState()
     {
         RestoreMagicDefense();
-        _characterState.RemoveState(this);
-        _characterState.OnStateAdded -= OnNewStateAdded;
+        characterState.RemoveState(this);
+        characterState.OnStateAdded -= OnNewStateAdded;
     }
 
     public override bool Stack(float time)
     {
-        if (CurrentStacksCount < MaxStacksCount)
+        if (currentStacksCount < MaxStacksCount)
         {
-            CurrentStacksCount++;
+            currentStacksCount++;
             duration = _baseDuration;
             ApplyMagicDefenseReduction();
 
-            Debug.Log($"Stacking Irradiation. Current stacks: {CurrentStacksCount}, New duration: {duration}s");
+            Debug.Log($"Stacking Irradiation. Current stacks: {currentStacksCount}, New duration: {duration}s");
             return true;
         }
         else
@@ -65,13 +65,13 @@ public class IrradiationState : AbstractCharacterState
 
     private void ApplyMagicDefenseReduction()
     {
-        _characterState.Character.Health.DefMagDamage -= _magicDefenseReduction;
+        characterState.Character.Health.DefMagDamage -= _magicDefenseReduction;
         _totalAppliedReduction += _magicDefenseReduction;
     }
 
     private void RestoreMagicDefense()
     {
-        _characterState.Character.Health.DefMagDamage += _totalAppliedReduction;
+        characterState.Character.Health.DefMagDamage += _totalAppliedReduction;
         _totalAppliedReduction = 0f;
     }
 
@@ -82,13 +82,13 @@ public class IrradiationState : AbstractCharacterState
 
     private void ExtendExistingNegativeMagic()
     {
-        foreach (var state in _characterState.CurrentStates) if (state != this && state.Type == StateType.Magic && state.BaffDebaff == BaffDebaff.Debaff) ExtendState(state);
+        foreach (var state in characterState.CurrentStates) if (state != this && state.Type == StateType.Magic && state.BaffDebaff == BaffDebaff.Debaff) ExtendState(state);
     }
 
     private void ExtendState(AbstractCharacterState state)
     {
-        state.duration += _durationIncrease;
+        //state.duration += _durationIncrease;
         state.RemainingDuration += _durationIncrease;
-        _characterState.StateIcons?.ActivateIco(state.State, state.RemainingDuration, 0, false, state.MaxStacksCount);
+        characterState.StateIcons?.ActivateIco(state.State, state.RemainingDuration, 0, false, state.MaxStacksCount);
     }
 }

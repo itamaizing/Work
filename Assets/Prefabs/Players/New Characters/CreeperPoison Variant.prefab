@@ -13161,6 +13161,10 @@ PrefabInstance:
       propertyPath: '_skills.Array.data[13]'
       value: 
       objectReference: {fileID: 2446571645698719713}
+    - target: {fileID: 5263749372223534569, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _collider
       value: 
@@ -13169,6 +13173,10 @@ PrefabInstance:
       propertyPath: _playerData
       value: 
       objectReference: {fileID: 11400000, guid: 47cac5ab51e8b334aafb537b893ada29, type: 2}
+    - target: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _menuPreview
+      value: 
+      objectReference: {fileID: 3823157750646750641, guid: 97031eb22819a18439efc44177e4eb95, type: 3}
     - target: {fileID: 5653443088679015109, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -13676,7 +13684,7 @@ MonoBehaviour:
   _firstStrike: {fileID: 3980160588782160003}
   _feelingOfContinuation: {fileID: 233453096825435517}
   _preparingForFight: {fileID: 6757583794360340372}
-  isGeneticsTalentOne: 0
+  _isGeneticsTalentOne: 0
   _lightningStrikes: {fileID: 734640227586387152}
   _lightningMovement: {fileID: 7013613396998518356}
   _poisonBall: {fileID: 4719927588574066064}

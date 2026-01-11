@@ -18,21 +18,21 @@ public class Stupefaction : AbstractCharacterState
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		_characterState = character;
+		characterState = character;
 
 		if (character.TryGetComponent<Character>(out var ability))
 		{
-			_abilities = ability.Abilities;
-			_abilities.SetAbilitiesDisactive(true);
+			abilities = ability.Abilities;
+			abilities.SetAbilitiesDisactive(true);
 		}
 
-		_characterState.Character.Move.IsMoveBlocked = true;
-		_characterState.Character.Move.StopMoveAndAnimationMove();
+		characterState.Character.Move.IsMoveBlocked = true;
+		characterState.Character.Move.StopMoveAndAnimationMove();
 
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
 
-		_characterState.Character.Health.DamageTaken += OnAnyDamage;
+		characterState.Character.Health.DamageTaken += OnAnyDamage;
 	}
 
 	public override void UpdateState()
@@ -46,10 +46,10 @@ public class Stupefaction : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		_characterState.Character.Health.DamageTaken -= OnAnyDamage;
-		_characterState.RemoveState(this);
-		if (!_characterState.Check(StatusEffect.Move)) _characterState.Character.Move.IsMoveBlocked = false;
-		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null) _abilities.SetAbilitiesDisactive(false);
+		characterState.Character.Health.DamageTaken -= OnAnyDamage;
+		characterState.RemoveState(this);
+		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.IsMoveBlocked = false;
+		if (!characterState.Check(StatusEffect.Ability) && abilities != null) abilities.SetAbilitiesDisactive(false);
 		turnOff = false;
 	}
 

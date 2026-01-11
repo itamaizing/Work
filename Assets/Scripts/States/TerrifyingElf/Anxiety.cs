@@ -16,16 +16,16 @@ public class Anxiety : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
-        _abilities = character.Character.Abilities;
-        _health = character.Character.Health;
-        _personWhoMadeBuff = personWhoMadeBuff;
+        characterState = character;
+        abilities = character.Character.Abilities;
+        health = character.Character.Health;
+        base.personWhoMadeBuff = personWhoMadeBuff;
         MaxStacksCount = maxStacks;
 
         duration = durationToExit;
 
         ApplyEffects();
-        Debug.Log($"Anxiety state applied: {CurrentStacksCount}/{MaxStacksCount} stacks, duration {duration}s");
+        Debug.Log($"Anxiety state applied: {currentStacksCount}/{MaxStacksCount} stacks, duration {duration}s");
     }
 
     public override void UpdateState()
@@ -40,14 +40,14 @@ public class Anxiety : AbstractCharacterState
     public override void ExitState()
     {
         RemoveEffects();
-        Debug.Log($"Anxiety state removed: {CurrentStacksCount}/{MaxStacksCount} stacks");
+        Debug.Log($"Anxiety state removed: {currentStacksCount}/{MaxStacksCount} stacks");
     }
 
     public override bool Stack(float newDuration)
     {
-        if (CurrentStacksCount < MaxStacksCount)
+        if (currentStacksCount < MaxStacksCount)
         {
-            CurrentStacksCount++;
+            currentStacksCount++;
         }
         duration = Mathf.Max(duration, newDuration);
         ApplyEffects();
@@ -56,15 +56,15 @@ public class Anxiety : AbstractCharacterState
 
     private void ApplyEffects()
     {
-        if (_abilities != null)
+        if (abilities != null)
         {
-            foreach (var skill in _abilities.Abilities)
+            foreach (var skill in abilities.Abilities)
             {
-                skill.CastDeley *= 1f + (spellSpeedReduction * CurrentStacksCount);
+                skill.CastDeley *= 1f + (spellSpeedReduction * currentStacksCount);
 
                 foreach (var cost in skill.SkillEnergyCosts)
                 {
-                    cost.ModifyResourceCost(1f + (manaCostIncrease * CurrentStacksCount));
+                    cost.ModifyResourceCost(1f + (manaCostIncrease * currentStacksCount));
                 }
             }
         }
@@ -72,15 +72,15 @@ public class Anxiety : AbstractCharacterState
 
     private void RemoveEffects()
     {
-        if (_abilities != null)
+        if (abilities != null)
         {
-            foreach (var skill in _abilities.Abilities)
+            foreach (var skill in abilities.Abilities)
             {
-                skill.CastDeley /= 1f + (spellSpeedReduction * CurrentStacksCount);
+                skill.CastDeley /= 1f + (spellSpeedReduction * currentStacksCount);
 
                 foreach (var cost in skill.SkillEnergyCosts)
                 {
-                    cost.ModifyResourceCost(1f / (1f + (manaCostIncrease * CurrentStacksCount)));
+                    cost.ModifyResourceCost(1f / (1f + (manaCostIncrease * currentStacksCount)));
                 }
             }
         }

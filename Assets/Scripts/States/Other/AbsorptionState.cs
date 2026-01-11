@@ -21,13 +21,13 @@ public class AbsorptionState : AbstractCharacterState, IDamageable
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
+        characterState = character;
         _duration = durationToExit;
         _maxAbsorption = damageToExit;
         _curentAbsorption = _maxAbsorption;
         _damageAbsorbed = 0;
-        _characterState.Character.Health.TotalMaxAbsorption += _maxAbsorption;
-        _characterState.Character.Health.AddShieldValues(_maxAbsorption);
+        characterState.Character.Health.TotalMaxAbsorption += _maxAbsorption;
+        characterState.Character.Health.AddShieldValues(_maxAbsorption);
 
         UpdateShieldValues();
     }
@@ -44,7 +44,7 @@ public class AbsorptionState : AbstractCharacterState, IDamageable
     public override void ExitState()
     {
         Debug.Log("Absorption state exited.");
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
         ResetCharacterShieldValues();
     }
 
@@ -52,14 +52,14 @@ public class AbsorptionState : AbstractCharacterState, IDamageable
     {
         //_duration = time;
         //_damageAbsorbed = 0;
-        CurrentStacksCount += 1;
+        currentStacksCount += 1;
         return false;
     }
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
         Debug.Log($"Урон по стостоянию: {_damageAbsorbed}");
-        float damageToAbsorb = Mathf.Min(_characterState.Character.Health.TotalMaxAbsorption - _damageAbsorbed, damage.Value);
+        float damageToAbsorb = Mathf.Min(characterState.Character.Health.TotalMaxAbsorption - _damageAbsorbed, damage.Value);
         _damageAbsorbed += damageToAbsorb;
         damage.Value -= damageToAbsorb;
         _curentAbsorption = _maxAbsorption - _damageAbsorbed;
@@ -73,10 +73,10 @@ public class AbsorptionState : AbstractCharacterState, IDamageable
             Value = damageToAbsorb,
         };
 
-        _characterState.GetComponent<Character>().DamageTracker.AddDamage(damage, null);
+        characterState.GetComponent<Character>().DamageTracker.AddDamage(damage, null);
         DamageTaken?.Invoke(tempDamage, skill);
 
-        _characterState.Character.Health.ClientRpcInvokeShieldDamageTaken(damageToAbsorb, damage.Type, skill);
+        characterState.Character.Health.ClientRpcInvokeShieldDamageTaken(damageToAbsorb, damage.Type, skill);
 
         UpdateShieldValues();
 
@@ -91,18 +91,18 @@ public class AbsorptionState : AbstractCharacterState, IDamageable
 
     public void UpdateShieldValues()
     {
-        if (_characterState.Character.Health != null)
+        if (characterState.Character.Health != null)
         {
-            _characterState.Character.Health.UpdateShieldValues(_damageAbsorbed, _characterState.Character.Health.TotalMaxAbsorption);
+            characterState.Character.Health.UpdateShieldValues(_damageAbsorbed, characterState.Character.Health.TotalMaxAbsorption);
         }
     }
 
     private void ResetCharacterShieldValues()
     {
-        _characterState.Character.Health.TotalMaxAbsorption -= _curentAbsorption + _damageAbsorbed;
-        _characterState.Character.Health.UpdateShieldValues(0, _characterState.Character.Health.TotalMaxAbsorption);
-        if (_characterState.Character.Health.TotalMaxAbsorption <= 0) _characterState.Character.Health.ResetShieldValues();
-        _characterState.Character.Health.AddShieldValues(-_curentAbsorption);
+        characterState.Character.Health.TotalMaxAbsorption -= _curentAbsorption + _damageAbsorbed;
+        characterState.Character.Health.UpdateShieldValues(0, characterState.Character.Health.TotalMaxAbsorption);
+        if (characterState.Character.Health.TotalMaxAbsorption <= 0) characterState.Character.Health.ResetShieldValues();
+        characterState.Character.Health.AddShieldValues(-_curentAbsorption);
     }
 
     public void ShowPhantomValue(Damage phantomValue)

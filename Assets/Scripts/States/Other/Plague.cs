@@ -16,14 +16,14 @@ public class Plague : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		_characterState = character;
+		characterState = character;
 		_durationToExit = durationToExit;
-		_health = _characterState.Character.Health;
-		_abilities = character.Character.Abilities;
+		health = characterState.Character.Health;
+		abilities = character.Character.Abilities;
 
-		for (int i = 0; i < _abilities.Abilities.Count; i++)
+		for (int i = 0; i < abilities.Abilities.Count; i++)
 		{
-			_abilities.Abilities[i].Buff.Damage.ReductionPercentage(0.05f);
+			abilities.Abilities[i].Buff.Damage.ReductionPercentage(0.05f);
 		}
 		// reduce damage given
 	}
@@ -39,10 +39,10 @@ public class Plague : AbstractCharacterState
 
 			//MakeDamage(damage, _characterState.gameObject);
 
-			Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(_characterState.transform.position, 5);
+			Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(characterState.transform.position, 5);
 			foreach (var enemy in enemyDetected)
 			{
-				if (enemy.TryGetComponent<Character>(out var enemyCharacter) && enemy != _characterState.gameObject)
+				if (enemy.TryGetComponent<Character>(out var enemyCharacter) && enemy != characterState.gameObject)
 				{
 					obj = enemy.gameObject;
 					Debug.Log(enemy);
@@ -79,11 +79,11 @@ public class Plague : AbstractCharacterState
 	public override void ExitState()
 	{
 		// return reduced damage given
-		for (int i = 0; i < _abilities.Abilities.Count; i++)
+		for (int i = 0; i < abilities.Abilities.Count; i++)
 		{
-			_abilities.Abilities[i].Buff.Damage.IncreasePercentage(0.05f);
+			abilities.Abilities[i].Buff.Damage.IncreasePercentage(0.05f);
 		}
-		_characterState.RemoveState(this);
+		characterState.RemoveState(this);
 	}
 
 	public override bool Stack(float time)
@@ -118,11 +118,11 @@ public class Plague : AbstractCharacterState
 	[Server]
 	private void AddState()
 	{
-		Collider2D[] colliders = Physics2D.OverlapCircleAll(_characterState.gameObject.transform.position, 3);
+		Collider2D[] colliders = Physics2D.OverlapCircleAll(characterState.gameObject.transform.position, 3);
 
 		foreach (Collider2D collider in colliders)
 		{
-			if (collider.TryGetComponent<Character>(out var enemy) && collider.gameObject != _characterState.gameObject)
+			if (collider.TryGetComponent<Character>(out var enemy) && collider.gameObject != characterState.gameObject)
 			{
 				//enemy.Health.TryTakeDamage(damage / 2, DamageType.Magical, AttackRangeType.RangeAttack);
 				enemy.CharacterState.CmdAddState(States.Plague, 4, 0, null, null);

@@ -21,27 +21,27 @@ public class WeakeningSilence : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
-        _health = character.Character.Health;
+        characterState = character;
+        health = character.Character.Health;
         _damagePerTick = damageToExit;
         damageTick = true;
         _currentDamage = _damagePerTick;
         _duration = durationToExit;
 
-        if (_health == null)
+        if (health == null)
         {
             Debug.LogWarning($"Health component is missing on {character.name}. WeakeningSilence will not deal damage.");
             return;
         }
 
-        _characterState.StartCoroutine(PeriodicDamageRoutine());
+        characterState.StartCoroutine(PeriodicDamageRoutine());
     }
 
     public override void ExitState()
     {
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
         damageTick = false;
-        _characterState.StopCoroutine(PeriodicDamageRoutine());
+        characterState.StopCoroutine(PeriodicDamageRoutine());
     }
 
     public override void UpdateState()
@@ -52,11 +52,11 @@ public class WeakeningSilence : AbstractCharacterState
 
     public override bool Stack(float addDuration)
     {
-        if (CurrentStacksCount >= MaxStacksCount) return false;
+        if (currentStacksCount >= MaxStacksCount) return false;
 
-        CurrentStacksCount++;
+        currentStacksCount++;
         _currentDamage += _damagePerTick;
-        duration = Mathf.Max(duration, addDuration);
+        base.duration = Mathf.Max(base.duration, addDuration);
 
         return true;
     }
@@ -73,16 +73,16 @@ public class WeakeningSilence : AbstractCharacterState
     [Server]
     private void ApplyDamage()
     {
-        if (_health != null)
+        if (health != null)
         {
             Damage damage = new Damage
             {
                 Value = _currentDamage,
                 Type = DamageType.Magical
             };
-            if (_health != null)
+            if (health != null)
             {
-                _health.TryTakeDamage(ref damage, null);
+                health.TryTakeDamage(ref damage, null);
             }
         }
         else

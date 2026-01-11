@@ -14,9 +14,9 @@ public class Knockdown : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
+        characterState = character;
 
-        float resistance = _characterState.Character.Health.DefPhysDamage;
+        float resistance = characterState.Character.Health.DefPhysDamage;
         float chanceToApply = 100f - resistance;
 
         if (Random.Range(0f, 100f) > chanceToApply)
@@ -31,7 +31,7 @@ public class Knockdown : AbstractCharacterState
         _duration = durationToExit;
         _baseDuration = durationToExit;
         MaxStacksCount = 3;
-        CurrentStacksCount = 1;
+        currentStacksCount = 1;
 
         ApplyDebuff();
     }
@@ -41,14 +41,14 @@ public class Knockdown : AbstractCharacterState
         Debug.Log("Exiting Knockdown State");
 
         RemoveDebuff();
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        if (CurrentStacksCount < MaxStacksCount)
+        if (currentStacksCount < MaxStacksCount)
         {
-            CurrentStacksCount++;
+            currentStacksCount++;
             _duration = _baseDuration;
             ApplyDebuff();
             return true;
@@ -69,20 +69,20 @@ public class Knockdown : AbstractCharacterState
 
     private void ApplyDebuff()
     {
-        var abilities = _characterState.GetComponentInChildren<SkillManager>();
+        var abilities = characterState.GetComponentInChildren<SkillManager>();
         foreach (var ability in abilities.Abilities)
         {
-            float reduction = 1f + (0.01f * CurrentStacksCount);
+            float reduction = 1f + (0.01f * currentStacksCount);
             ability.Buff.Damage.ReductionPercentage(reduction);
         }
     }
 
     private void RemoveDebuff()
     {
-        var abilities = _characterState.GetComponentInChildren<SkillManager>();
+        var abilities = characterState.GetComponentInChildren<SkillManager>();
         foreach (var ability in abilities.Abilities)
         {
-            float reduction = 1f + (0.01f * CurrentStacksCount);
+            float reduction = 1f + (0.01f * currentStacksCount);
             ability.Buff.Damage.IncreasePercentage(reduction);
         }
     }

@@ -23,23 +23,23 @@ public class Bound : AbstractCharacterState
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		_characterState = character;
+		characterState = character;
 		_stateClosing = false;
 		turnOff = false;
 		_spawnedTrap = null;
 
 		if (character.TryGetComponent<Character>(out var ability))
 		{
-			_abilities = ability.Abilities;
+			abilities = ability.Abilities;
 
-			foreach (var skill in _abilities.Abilities) if (skill.Moving == Moving.NonStatic) skill.Disactive = true;
+			foreach (var skill in abilities.Abilities) if (skill.Moving == Moving.NonStatic) skill.Disactive = true;
 		}
 
-		_characterState.Character.Move.IsMoveBlocked = true;
-		_characterState.Character.Move.StopMoveAndAnimationMove();
+		characterState.Character.Move.IsMoveBlocked = true;
+		characterState.Character.Move.StopMoveAndAnimationMove();
 
-		var animation = _characterState.Character.Animator;
-		var networkAnimation = _characterState.Character.NetworkAnimator;
+		var animation = characterState.Character.Animator;
+		var networkAnimation = characterState.Character.NetworkAnimator;
 		animation.ResetTrigger(_stunTriggerExit);
 		animation.SetTrigger(_stunTrigger);
 
@@ -51,11 +51,11 @@ public class Bound : AbstractCharacterState
 
 		if (character.isServer && character.StateEffects.TrapPrefab)
 		{
-			_characterState = character;
+			characterState = character;
 			character.StartCoroutine(ServerSpawnTrapNextFrame());
 		}
 
-		if (_characterState.TryGetComponent<StateEffects>(out StateEffects stateEffects)) stateEffects.RopeTrap.SetActive(true);
+		if (characterState.TryGetComponent<StateEffects>(out StateEffects stateEffects)) stateEffects.RopeTrap.SetActive(true);
 
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
@@ -79,23 +79,23 @@ public class Bound : AbstractCharacterState
 	{
 		_stateClosing = true;
 		if (_spawnedTrap) NetworkServer.Destroy(_spawnedTrap);
-		_characterState.RemoveState(this);
-		if (!_characterState.Check(StatusEffect.Move)) _characterState.Character.Move.IsMoveBlocked = false;
-		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null) foreach (var skill in _abilities.Abilities) if (skill.Moving == Moving.NonStatic) skill.Disactive = false;
-		if (_characterState.TryGetComponent<StateEffects>(out StateEffects stateEffects)) stateEffects.RopeTrap.SetActive(false);
+		characterState.RemoveState(this);
+		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.IsMoveBlocked = false;
+		if (!characterState.Check(StatusEffect.Ability) && abilities != null) foreach (var skill in abilities.Abilities) if (skill.Moving == Moving.NonStatic) skill.Disactive = false;
+		if (characterState.TryGetComponent<StateEffects>(out StateEffects stateEffects)) stateEffects.RopeTrap.SetActive(false);
 
-		var animator = _characterState.Character.Animator;
-		var netAnimator = _characterState.Character.NetworkAnimator;
+		var animator = characterState.Character.Animator;
+		var netAnimator = characterState.Character.NetworkAnimator;
 
 		animator.ResetTrigger(_stunTrigger);
 		animator.SetTrigger(_stunTriggerExit);
 		if (netAnimator && netAnimator.isOwned)
         {
-			_characterState.Character.Animator.SetTrigger(_stunTriggerExit);
-			_characterState.Character.NetworkAnimator.SetTrigger(_stunTriggerExit);
+			characterState.Character.Animator.SetTrigger(_stunTriggerExit);
+			characterState.Character.NetworkAnimator.SetTrigger(_stunTriggerExit);
 		}
 
-		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null) foreach (var skill in _abilities.Abilities) skill.Disactive = false;
+		if (!characterState.Check(StatusEffect.Ability) && abilities != null) foreach (var skill in abilities.Abilities) skill.Disactive = false;
 	}
 
 	public override bool Stack(float time)
@@ -113,7 +113,7 @@ public class Bound : AbstractCharacterState
 	{
 		yield return null;
 
-		var character = _characterState.Character;
+		var character = characterState.Character;
 
 		Vector3 position = character.transform.position;
 
@@ -122,7 +122,7 @@ public class Bound : AbstractCharacterState
 
 		Quaternion rot = Quaternion.LookRotation(character.transform.forward, Vector3.up);
 
-		_spawnedTrap = GameObject.Instantiate(_characterState.StateEffects.TrapPrefab, position, rot);
+		_spawnedTrap = GameObject.Instantiate(characterState.StateEffects.TrapPrefab, position, rot);
 
 		var life = _spawnedTrap.GetComponent<TrapStateLife>();
 		life.Init(character.gameObject);

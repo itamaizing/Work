@@ -31,7 +31,7 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
     {
         MaxStacksCount = _maxStack;
 
-        _characterState = character;
+        characterState = character;
         _player = personWhoMadeBuff;
 
         _currentHealingValue = 0.0f;
@@ -46,7 +46,7 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
         _timeBetweenHeal -= Time.deltaTime;
         if (_timeBetweenHeal <= 0)
         {
-            if (CurrentStacksCount < _maxStack)
+            if (currentStacksCount < _maxStack)
             {
                 MakeHeal();
             }
@@ -63,7 +63,7 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
 
     public override void ExitState()
     {
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -82,7 +82,7 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
             DamageableSkill = null,
         };
 
-        _characterState.Character.Health.Heal(ref heal, null);
+        characterState.Character.Health.Heal(ref heal, null);
         //_characterState.Character.DamageTracker.AddHeal(heal, true);
     }
 }

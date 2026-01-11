@@ -19,12 +19,12 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		_characterState = character;
+		characterState = character;
 
 		if (character.TryGetComponent<Character>(out var ability))
 		{
-			_abilities = ability.Abilities;
-			_abilities.SwitchAvaliable(canceledSchoool, false);
+			abilities = ability.Abilities;
+			abilities.SwitchAvaliable(canceledSchoool, false);
 		}
 		else
 		{
@@ -45,10 +45,10 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		_characterState.RemoveState(this);
-		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null)
+		characterState.RemoveState(this);
+		if (!characterState.Check(StatusEffect.Ability) && abilities != null)
 		{
-			_abilities.SwitchAvaliable(canceledSchoool, true);
+			abilities.SwitchAvaliable(canceledSchoool, true);
 		}
 	}
 

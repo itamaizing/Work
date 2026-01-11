@@ -2,12 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FrozenState : AbstractCharacterState
+public class FrozenState : IndependentState
 {
 	//public bool turnOff = false;
 	private GameObject _frozenEffectInstance;
 	private AudioSource _audioSource;
-	private float _duration;
 	private float _baseDuration;
 	private float _damageToExit;
 	private float _damageOnStart = 0;
@@ -24,13 +23,11 @@ public class FrozenState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		//Debug.Log("Entering Frozen State");
-		//MaxStacksCount = 5;
-		//CanStack = false;
-		_characterState = character;
-		_duration = durationToExit;
+		Debug.Log("Enter state");
+		characterState = character;
+		duration = durationToExit;
 		_baseDuration = durationToExit;
-		MaxStacksCount = 1;
+		MaxStacksCount = 3;
 		if (damageToExit == 0)
 		{
 			_damageToExit = 10000;
@@ -40,18 +37,18 @@ public class FrozenState : AbstractCharacterState
 			_damageToExit = damageToExit;
 		}
 
-		_damageOnStart = _characterState.Character.Health.SumDamageTaken;
+		//_damageOnStart = _characterState.Character.Health.SumDamageTaken;
 		_damageOnStart = 0;
-		_characterState.Character.Move.CanMove = false;
-		_characterState.Character.Move.Rigidbody.isKinematic = true;
-		_characterState.Character.Move.LookAtTransform(_characterState.gameObject.transform);
+		characterState.Character.Move.CanMove = false;
+		characterState.Character.Move.Rigidbody.isKinematic = true;
+		characterState.Character.Move.LookAtTransform(characterState.gameObject.transform);
 		_audioSource = character.GetComponent<AudioSource>();
 
 		if (character.TryGetComponent<Character>(out var ability))
 		{
-			_abilities = ability.Abilities;
+			abilities = ability.Abilities;
 
-			foreach (var abil in _abilities.Abilities)
+			foreach (var abil in abilities.Abilities)
 			{
 				abil.Disactive = true;
 				if (abil.AbilityForm == AbilityForm.Physical)
@@ -64,16 +61,16 @@ public class FrozenState : AbstractCharacterState
 		{
 			Debug.Log("no ability at " + character.gameObject.name);
 		}
-		if (_characterState.StateEffects.FrozenStateEffect != null)
+		if (characterState.StateEffects.FrozenStateEffect != null)
 		{
-			_frozenEffectInstance = _characterState.StateEffects.FrozenStateEffect;
+			_frozenEffectInstance = characterState.StateEffects.FrozenStateEffect;
 			_frozenEffectInstance.SetActive(true);
 		}
 
-		foreach (var mat in _characterState.StateEffects.MaterialsCharacter) mat.color = Color.cyan;
-		if (_characterState.StateEffects.FrostingAudio != null) _audioSource.PlayOneShot(_characterState.StateEffects.FrozenAudio);
+		foreach (var mat in characterState.StateEffects.MaterialsCharacter) mat.color = Color.cyan;
+		if (characterState.StateEffects.FrostingAudio != null) _audioSource.PlayOneShot(characterState.StateEffects.FrozenAudio);
 
-		_animator = _characterState.GetComponent<Animator>();
+		_animator = characterState.GetComponent<Animator>();
 
 		if (_animator != null)
 		{
@@ -84,16 +81,13 @@ public class FrozenState : AbstractCharacterState
 			_animator.enabled = false;
 		}
 		_isInited = true;
-		//_characterState.Health.sumDamageTaken = 0;
 	}
 
 	public override void UpdateState()
 	{
-		//Debug.Log("Time " + _duration);
+		
 		if(!_isInited) return;
-		//Debug.Log(" Diffrence" + (_damageToExit - (_characterState.Character.Health.SumDamageTaken - _damageOnStart)) + "Damage to exit " + _damageToExit + " DamageHave " + (_characterState.Character.Health.SumDamageTaken - _damageOnStart));
-		_duration -= Time.deltaTime;
-		if (_characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || _duration <= 0 )//|| turnOff)
+		if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit )//|| turnOff)
 		{
 			ExitState();
 		}
@@ -103,37 +97,28 @@ public class FrozenState : AbstractCharacterState
 	{
 		//Debug.Log("Exiting Frozen State");
 
-		_characterState.RemoveState(this);
-		if (!_characterState.Check(StatusEffect.Move))
+		characterState.RemoveState(this);
+		if (!characterState.Check(StatusEffect.Move))
 		{
-			_characterState.Character.Move.CanMove = true;
-			_characterState.Character.Move.Rigidbody.isKinematic = false;
-			_characterState.Character.Move.StopLookAt();
+			characterState.Character.Move.CanMove = true;
+			characterState.Character.Move.Rigidbody.isKinematic = false;
+			characterState.Character.Move.StopLookAt();
 		}
-		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null)
+		if (!characterState.Check(StatusEffect.Ability) && abilities != null)
 		{
-			foreach (var abil in _abilities.Abilities)
+			foreach (var abil in abilities.Abilities)
 			{
 				abil.Disactive = false;
 			}
 		}
 
 		if (_frozenEffectInstance != null) _frozenEffectInstance.SetActive(false);
-		foreach (var mat in _characterState.StateEffects.MaterialsCharacter) mat.color = Color.white;
+		foreach (var mat in characterState.StateEffects.MaterialsCharacter) mat.color = Color.white;
 
 		if (_animator != null)
 		{
 			_animator.enabled = true;
 			_animator.speed = 1;
 		}
-	}
-
-	public override bool Stack(float time)
-	{
-		Debug.Log("Try stack");
-		//_damageOnStart = _characterState.Character.Health.SumDamageTaken;
-		//_damageToExit = 1;
-		_duration = _baseDuration;
-		return true;
 	}
 }

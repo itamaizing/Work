@@ -27,14 +27,14 @@ public class BlindnessState : AbstractCharacterState
 
         _duration = durationToExit;
         _baseDuration = durationToExit;
-        _characterState = character;
+        characterState = character;
 
-        if (_characterState.isOwned) ApplyEffectToLocalCamera();
+        if (characterState.isOwned) ApplyEffectToLocalCamera();
 
         if (character.TryGetComponent<Character>(out var ability))
         {
-            _abilities = ability.Abilities;
-            foreach (var abil in _abilities.Abilities) if (abil.SkillType == SkillType.Target) abil.Disactive = true;
+            abilities = ability.Abilities;
+            foreach (var abil in abilities.Abilities) if (abil.SkillType == SkillType.Target) abil.Disactive = true;
         }
     }
 
@@ -47,15 +47,15 @@ public class BlindnessState : AbstractCharacterState
 
     public override void ExitState()
     {
-        if (_characterState.isOwned) RemoveEffectFromLocalCamera();
+        if (characterState.isOwned) RemoveEffectFromLocalCamera();
 
-        if (_characterState.TryGetComponent<Character>(out var ability))
+        if (characterState.TryGetComponent<Character>(out var ability))
         {
-            _abilities = ability.Abilities;
-            foreach (var abil in _abilities.Abilities) if (abil.SkillType == SkillType.Target) abil.Disactive = false;
+            abilities = ability.Abilities;
+            foreach (var abil in abilities.Abilities) if (abil.SkillType == SkillType.Target) abil.Disactive = false;
         }
 
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

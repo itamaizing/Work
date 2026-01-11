@@ -21,10 +21,10 @@ public class ElvenSkill : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _duration = durationToExit;
-        _characterState = character;
-        _personWhoMadeBuff = personWhoMadeBuff;
+        characterState = character;
+        base.personWhoMadeBuff = personWhoMadeBuff;
         _move = character.GetComponent<MoveComponent>();
-        _skillManager = _characterState.Character.Abilities;
+        _skillManager = characterState.Character.Abilities;
 
         _move.CanMoveState = true;
 
@@ -70,8 +70,8 @@ public class ElvenSkill : AbstractCharacterState
 
         if (_elvenSkillEffect != null) _elvenSkillEffect.SetActive(false);
 
-        _characterState.StateIcons.RemoveItemByState(State);
-        _characterState.RemoveState(this);
+        characterState.StateIcons.RemoveItemByState(State);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

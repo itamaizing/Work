@@ -22,8 +22,8 @@ public class BleedingState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
-        _target = _characterState.Character;
+        characterState = character;
+        _target = characterState.Character;
 
         _duration = durationToExit;
         _baseDuration = durationToExit;
@@ -46,7 +46,7 @@ public class BleedingState : AbstractCharacterState
         if (_timeBetweenAttack <= 0)
         {
             BleedingDamage();
-            _characterState.Character.Health.barCharacter.PreviewDoTTick(_baseDamage);
+            characterState.Character.Health.barCharacter.PreviewDoTTick(_baseDamage);
             _timeBetweenAttack = _startTimeBetweenAttack;
         }
     }
@@ -54,7 +54,7 @@ public class BleedingState : AbstractCharacterState
     public override void ExitState()
     {
         _target.Health.IsDot = false;
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

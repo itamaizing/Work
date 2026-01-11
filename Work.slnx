@@ -16,7 +16,6 @@
   <Project Path="DOTween.Modules.csproj" />
   <Project Path="Unity.InputSystem.RebindingUI.csproj" />
   <Project Path="Unity.PlayerPrefsEditor.Editor.csproj" />
-  <Project Path="Assembly-CSharp-firstpass.csproj" />
   <Project Path="Mirror.Authenticators.csproj" />
   <Project Path="EncryptionTransportEditor.csproj" />
   <Project Path="Mirror.CompilerSymbols.csproj" />

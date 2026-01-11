@@ -20,7 +20,7 @@ public class MagicBuff : AbstractCharacterState, IDamageable
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		_characterState = character;
+		characterState = character;
 		_character = character.Character;
 		_durationToExit = durationToExit;
 		_shieldCapacity = damageToExit;
@@ -40,7 +40,7 @@ public class MagicBuff : AbstractCharacterState, IDamageable
 	public override void ExitState()
 	{
 		_character.Health.Shields.Remove(this);
-		_characterState.RemoveState(this);
+		characterState.RemoveState(this);
 		//_character.Health.SetMagAbsorb(0);
 	}
 

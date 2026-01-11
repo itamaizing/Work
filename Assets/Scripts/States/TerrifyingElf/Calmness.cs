@@ -21,12 +21,12 @@ public class Calmness : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
-        _health = character.Character.Health;
+        characterState = character;
+        health = character.Character.Health;
         manaResource = character.Character.TryGetResource(ResourceType.Mana);
-        _personWhoMadeBuff = personWhoMadeBuff;
+        base.personWhoMadeBuff = personWhoMadeBuff;
         MaxStacksCount = _baseMaxStacks;
-        CurrentStacksCount = 1;
+        currentStacksCount = 1;
         _duration = durationToExit;
 
         RecalcRegenAmount();
@@ -44,10 +44,10 @@ public class Calmness : AbstractCharacterState
 
     public override void ExitState()
     {
-        CurrentStacksCount = 0;
-        if (_regenRoutine != null) _characterState.StopCoroutine(_regenRoutine);
-        _characterState.StateIcons.RemoveItemByState(State);
-        _characterState.RemoveState(this);
+        currentStacksCount = 0;
+        if (_regenRoutine != null) characterState.StopCoroutine(_regenRoutine);
+        characterState.StateIcons.RemoveItemByState(State);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float newDuration)
@@ -55,7 +55,7 @@ public class Calmness : AbstractCharacterState
         _duration = Mathf.Max(_duration, newDuration);
         Debug.Log(MaxStacksCount);
 
-        if (CurrentStacksCount < MaxStacksCount) CurrentStacksCount++;
+        if (currentStacksCount < MaxStacksCount) currentStacksCount++;
 
         RecalcRegenAmount();
 
@@ -67,7 +67,7 @@ public class Calmness : AbstractCharacterState
         _lastTreesCount = newTreesCount;
         MaxStacksCount = _baseMaxStacks + _lastTreesCount;
 
-        if (CurrentStacksCount > MaxStacksCount) CurrentStacksCount = MaxStacksCount;
+        if (currentStacksCount > MaxStacksCount) currentStacksCount = MaxStacksCount;
 
         RecalcRegenAmount();
     }
@@ -79,7 +79,7 @@ public class Calmness : AbstractCharacterState
 
     private void RecalcRegenAmount()
     {
-        if (manaResource != null) _regenAmount = manaResource.MaxValue * _manaRegenPercent * CurrentStacksCount;
+        if (manaResource != null) _regenAmount = manaResource.MaxValue * _manaRegenPercent * currentStacksCount;
     }
 
     private IEnumerator RegenTick()
@@ -91,7 +91,7 @@ public class Calmness : AbstractCharacterState
             yield return wait;
 
             if (manaResource == null) continue;
-            if (!_characterState.isServer) continue;
+            if (!characterState.isServer) continue;
 
             float missing = manaResource.MaxValue - manaResource.CurrentValue;
             if (missing <= 0f) continue;

@@ -21,13 +21,13 @@ public class BleedingScraderDebuff : AbstractCharacterState
     public BleedingScraderDebuff()
     {
         MaxStacksCount = 3;
-        CurrentStacksCount = 1;
+        currentStacksCount = 1;
     }
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
-        _target = _characterState.Character;
+        characterState = character;
+        _target = characterState.Character;
         _damage = damageToExit;
         _baseDamage = damageToExit;
 
@@ -37,14 +37,14 @@ public class BleedingScraderDebuff : AbstractCharacterState
 
     public override void ExitState()
     {
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        if (CurrentStacksCount < MaxStacksCount)
+        if (currentStacksCount < MaxStacksCount)
         {
-            CurrentStacksCount++;
+            currentStacksCount++;
             _baseDamage += _damage;
         }
 
@@ -64,9 +64,9 @@ public class BleedingScraderDebuff : AbstractCharacterState
 
         if (_duration < 0)
         {
-            if (CurrentStacksCount > 0)
+            if (currentStacksCount > 0)
             {
-                CurrentStacksCount--;
+                currentStacksCount--;
                 _baseDamage -= _damage;
                 _duration = _baseDuration;
             }

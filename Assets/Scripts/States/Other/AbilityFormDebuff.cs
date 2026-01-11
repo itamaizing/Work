@@ -20,14 +20,14 @@ public class AbilityFormDebuff : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		Debug.Log("Entering AbilityFormDebuff State");
-		_characterState = character;
+		characterState = character;
 
 		Debug.Log("CHECK FOR FORM " + canceledForm);
 
 		if (character.TryGetComponent<Character>(out var ability))
 		{
-			_abilities = ability.Abilities;
-			_abilities.SwitchAvaliable(canceledForm, false);
+			abilities = ability.Abilities;
+			abilities.SwitchAvaliable(canceledForm, false);
 		}
 		else
 		{
@@ -50,10 +50,10 @@ public class AbilityFormDebuff : AbstractCharacterState
 	public override void ExitState()
 	{
 		Debug.Log("Exiting AbilityFormDebuff State");
-		_characterState.RemoveState(this);
-		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null)
+		characterState.RemoveState(this);
+		if (!characterState.Check(StatusEffect.Ability) && abilities != null)
 		{
-			_abilities.SwitchAvaliable(canceledForm, true);
+			abilities.SwitchAvaliable(canceledForm, true);
 		}
 	}
 

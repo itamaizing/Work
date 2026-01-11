@@ -17,8 +17,8 @@ public class InAirState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
-        _characterState.Character.Move.CanMove = false;
+        characterState = character;
+        characterState.Character.Move.CanMove = false;
         _duration = durationToExit;
         _baseDuration = _duration;
         _baseDuration = durationToExit;
@@ -36,9 +36,9 @@ public class InAirState : AbstractCharacterState
 
     public override void ExitState()
     {
-        _characterState.Character.Move.CanMove = true;
+        characterState.Character.Move.CanMove = true;
         
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

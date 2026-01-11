@@ -19,7 +19,7 @@ public class DarkShield : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
+        characterState = character;
         _duration = durationToExit;
         _maxDamagePerTick = damageToExit;
 
@@ -29,9 +29,9 @@ public class DarkShield : AbstractCharacterState
             _healthComponent.DamageTaken += HandleDamageTaken;
         }
 
-        if (_characterState.StateEffects.DarkShield != null)
+        if (characterState.StateEffects.DarkShield != null)
         {
-            _darkShield = _characterState.StateEffects.DarkShield;
+            _darkShield = characterState.StateEffects.DarkShield;
             _darkShield.SetActive(true);
         }
     }
@@ -50,7 +50,7 @@ public class DarkShield : AbstractCharacterState
         }
 
         if (_darkShield != null) _darkShield.SetActive(false);
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     private void HandleDamageTaken(Damage damage, Skill skill)

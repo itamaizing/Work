@@ -14,8 +14,8 @@ public class NorthernerEndurance : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		_characterState = character;	
-		_health = character.Character.Health;
+		characterState = character;	
+		health = character.Character.Health;
 		//_health.BoostHpBonus(damageToExit);
 		_durationToExit = durationToExit;
 		_damageToExit = damageToExit;
@@ -32,7 +32,7 @@ public class NorthernerEndurance : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		_characterState.RemoveState(this);
+		characterState.RemoveState(this);
 		
 		//_health.BoostHpReverse(_damageToExit);
 	}

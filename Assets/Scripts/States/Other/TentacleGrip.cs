@@ -18,17 +18,17 @@ public class TentacleGrip : AbstractCharacterState
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		_characterState = character;
+		characterState = character;
 
 		if (character.TryGetComponent<Character>(out var ability))
 		{
-			_abilities = ability.Abilities;
-			_abilities.SetPhysicalAbilitiesDisactive(true);
+			abilities = ability.Abilities;
+			abilities.SetPhysicalAbilitiesDisactive(true);
 		}
 		else Debug.Log("no ability at " + character.gameObject.name);
 
-		_characterState.Character.Move.IsMoveBlocked = true;
-		_characterState.Character.Move.StopMoveAndAnimationMove();
+		characterState.Character.Move.IsMoveBlocked = true;
+		characterState.Character.Move.StopMoveAndAnimationMove();
 
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
@@ -41,9 +41,9 @@ public class TentacleGrip : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		_characterState.RemoveState(this);
-		if (!_characterState.Check(StatusEffect.Move)) _characterState.Character.Move.IsMoveBlocked = false;
-		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null) _abilities.SetPhysicalAbilitiesDisactive(false);
+		characterState.RemoveState(this);
+		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.IsMoveBlocked = false;
+		if (!characterState.Check(StatusEffect.Ability) && abilities != null) abilities.SetPhysicalAbilitiesDisactive(false);
 	}
 
 	public override bool Stack(float time)
