@@ -15,8 +15,6 @@ public class PoisonSlap : Skill
     [Header("Abilities")]
 
     [SerializeField] private PoisonBall _poisonBall;
-    [SerializeField] private CreeperStrike _creeperStrike;
-    [SerializeField] private LightningStrikes _lightningStrikes;
     [SerializeField] private LightningMovement _lightningMovement;
     //[SerializeField] private GameObject _poisonBallObject;
     [SerializeField] private SkillManager _skillManager;
@@ -117,11 +115,14 @@ public class PoisonSlap : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
+        SwitchPayCost();
     }
 
     protected override void ClearData()
     {
         ClearArrows();
+        Buff.CastSpeed.Reset();
+        Buff.AttackSpeed.Reset();
 
         _firstMousePosition = Vector3.positiveInfinity;
         _secondMousePosition = Vector3.zero;
@@ -195,7 +196,6 @@ public class PoisonSlap : Skill
         }
 
         ChooseDirectionPush(GetTargetCharacter());
-
         DamageDeal(GetTargetCharacter());
 
         yield return null;
@@ -206,15 +206,15 @@ public class PoisonSlap : Skill
         var last = _skillManager?.LastCastedSkill;
         var preview = _skillManager?.PreviewCastedSkill;
 
-        bool isDoubleCreeper = last == _creeperStrike && preview == _creeperStrike;
-        bool isDoubleLightning = last == _lightningStrikes && preview == _lightningStrikes;
+        bool isDoubleCreeper = last is CreeperStrike && preview is CreeperStrike;
+        bool isLightning = last is LightningStrikes;
 
         if (isDoubleCreeper)
         {
             CastSpeedFromCreeperStrike();
             _isUsedPoisonBallCharger = false;
         }
-        else if (isDoubleLightning)
+        else if (isLightning)
         {
             CastSpeedFromLightningStrikes();
             _isUsedPoisonBallCharger = false;
@@ -223,7 +223,6 @@ public class PoisonSlap : Skill
         else
         {
             _isUsedPoisonBallCharger = true;
-            Buff.CastSpeed.Reset();
         }
     }
     #endregion
@@ -384,7 +383,6 @@ public class PoisonSlap : Skill
                 {
                     SetArrowVisibility(0, false);
                     SetArrowVisibility(1, false);
-                    SwitchPayCost();
                 }
             }
             yield return null;

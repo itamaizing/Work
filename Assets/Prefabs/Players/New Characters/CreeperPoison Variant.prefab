@@ -13279,7 +13279,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRow.Array.data[0].Talents.Array.size
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.size
@@ -13301,6 +13301,14 @@ PrefabInstance:
       propertyPath: '_talents.Array.data[1]._talentRow.Array.data[0].Talents.Array.data[0]'
       value: 
       objectReference: {fileID: 1642371375121005174}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRow.Array.data[0].Talents.Array.data[1]'
+      value: 
+      objectReference: {fileID: 5042264585882244307}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRow.Array.data[0].Talents.Array.data[2]'
+      value: 
+      objectReference: {fileID: 8303087721396363938}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.data[0]'
       value: 
@@ -13372,6 +13380,10 @@ PrefabInstance:
     - target: {fileID: 8658026411023210807, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_ApplyRootMotion
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _icoDatabase
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 9112855932003537409, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_IsActive
@@ -13481,6 +13493,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1642371375121005174}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5042264585882244307}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8303087721396363938}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1774296685369443077}
@@ -13796,9 +13814,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _attackZoneSize: 2
-  _attackDelay: 0
-  _chargeAttackDelay: 0
   _heatedGlands: {fileID: 1055448599397857776}
   _killersStamina: {fileID: 2192867466568905156}
   _coldBlood: {fileID: 4616268591970552908}
@@ -14150,8 +14165,6 @@ MonoBehaviour:
   maxCounter: 0
   _player: {fileID: 2483674839823445686}
   _poisonBall: {fileID: 4719927588574066064}
-  _creeperStrike: {fileID: 6745892867125186241}
-  _lightningStrikes: {fileID: 734640227586387152}
   _lightningMovement: {fileID: 7013613396998518356}
   _skillManager: {fileID: 2617687491934927079}
   _restorationOfGlands: {fileID: 5652995459541871454}
@@ -14605,7 +14618,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
+  _cooldownTime: 6
   _castDeley: 0
   _damageValue: 0
   _abilitySchool: 5
@@ -14642,7 +14655,7 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   durationWindowsBoost: 5
-  blockChance: 100
+  blockChance: 50
 --- !u!114 &2483674839823445686 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -14711,6 +14724,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
+    - " \xAB\u041C\u043E\u043B\u043D\u0438\u0435\u043D\u043E\u0441\u043D\u044B\u0435
+      \u0443\u0434\u0430\u0440\u044B\xBB - \u043D\u0430\u043D\u043E\u0441\u0438\u0442
+      2 \xAB\u0443\u0434\u0430\u0440 \u0441 \u0440\u0443\u043A\u0438\xBB \u0441\u043E
+      \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C + 1000% \u043D\u0430 \u043A\u0430\u0436\u0434\u044B\u0439
+      \u0443\u0434\u0430\u0440"
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u041C\u043E\u043B\u043D\u0438\u0435\u043D\u043E\u0441\u043D\u044B\u0435
+      \u0443\u0434\u0430\u0440\u044B"
+    Icon: {fileID: 21300000, guid: 15a6d004456bc1c47897f234d7bc77ac, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 2483674839823445686}
+  skillManager: {fileID: 2617687491934927079}
+  lightningStrikes: {fileID: 734640227586387152}
+--- !u!114 &5042264585882244307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7437800528419325459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 301d527d38284084ba4a8aa9d730a3c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ReptileTalent_2
+  _data:
+    _descriptionsForInfoPanel:
     - "\xAB\u043C\u043E\u043B\u043D\u0438\u0435\u043D\u043E\u0441\u043D\u043E\u0435
       \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0436\u0435\u043D\u0438\u0435\xBB
       - \u041A\u0440\u0438\u043F\u0435 \u0431\u0435\u0436\u0438\u0442 \u0432 \u0443\u043A\u0430\u0437\u0430\u043D\u043D\u0443\u044E
@@ -14724,11 +14766,30 @@ MonoBehaviour:
       \u043D\u0430 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u043C \u043F\u0443\u0442\u0438
       \u043A\u0440\u0438\u043F\u0435\u0440 \u0442\u0430\u043A \u0436\u0435 \u043D\u0430\u043D\u043E\u0441\u0438\u0442
       \u0443\u0434\u0430\u0440\u044B \u0441 \u0440\u0443\u043A\u0438. "
-    - " \xAB\u041C\u043E\u043B\u043D\u0438\u0435\u043D\u043E\u0441\u043D\u044B\u0435
-      \u0443\u0434\u0430\u0440\u044B\xBB - \u043D\u0430\u043D\u043E\u0441\u0438\u0442
-      2 \xAB\u0443\u0434\u0430\u0440 \u0441 \u0440\u0443\u043A\u0438\xBB \u0441\u043E
-      \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C + 1000% \u043D\u0430 \u043A\u0430\u0436\u0434\u044B\u0439
-      \u0443\u0434\u0430\u0440"
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u041C\u043E\u043B\u043D\u0438\u0435\u043D\u043E\u0441\u043D\u043E\u0435
+      \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0436\u0435\u043D\u0438\u0435"
+    Icon: {fileID: -2889036831652375965, guid: 0ecb6aa3d380cce48bb2d427267b10be, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 2483674839823445686}
+  skillManager: {fileID: 2617687491934927079}
+  lightningMovement: {fileID: 7013613396998518356}
+--- !u!114 &8303087721396363938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7437800528419325459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b2f4a8fbf25c53469ae6daddff74806, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ReptileTalent_3
+  _data:
+    _descriptionsForInfoPanel:
     - "\xAB\u041D\u0435\u0437\u0430\u043C\u0435\u0442\u043D\u043E\u0441\u0442\u044C\xBB
       \u2013 \u0435\u0441\u043B\u0438 \u0440\u044F\u0434\u043E\u043C \u043D\u0435
       \u043D\u0430\u0445\u043E\u0434\u044F\u0442\u0441\u044F \u0432\u0440\u0430\u0436\u0435\u0441\u043A\u0438\u0435
@@ -14753,15 +14814,12 @@ MonoBehaviour:
       \u043D\u0430 30% "
     _stateInfos: []
     IsOpen: 0
-    Description: "\u043C\u043E\u043B\u043D\u0438\u0435\u043D\u043E\u0441\u043D\u043E\u0435
-      \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0436\u0435\u043D\u0438\u0435"
-    Icon: {fileID: 21300000, guid: 15a6d004456bc1c47897f234d7bc77ac, type: 3}
+    Description: "\u041D\u0435\u0437\u0430\u043C\u0435\u0442\u043D\u043E\u0441\u0442\u044C"
+    Icon: {fileID: 7595241771238511587, guid: eb1e53bce0abfd940816bf6d5da4ce56, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 2483674839823445686}
   skillManager: {fileID: 2617687491934927079}
-  lightningMovement: {fileID: 7013613396998518356}
-  lightningStrikes: {fileID: 734640227586387152}
   creeperInvisible: {fileID: 6857802422684928800}
 --- !u!114 &1774296685369443077
 MonoBehaviour:

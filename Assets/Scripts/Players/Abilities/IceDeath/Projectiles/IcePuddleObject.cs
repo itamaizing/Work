@@ -15,7 +15,6 @@ public class IcePuddleObject : Projectiles
 	private float _timeToDestroy = 0;
     private float _damageToExit = 30;
     private float _curEvade = 0;
-	private float _maxLifeTime = 10f;
 	private float _spawnTime;
 	private bool _talentEvadeDadBoost = false;
 	private bool _talentFrostingFrozen = false;
@@ -51,17 +50,7 @@ public class IcePuddleObject : Projectiles
 		_initialized = true;
 		_lastHit = lastHit;
 		_healthComponent = _dad.Health;
-
-		for (int i = 0; i < _dad.Resources.Count; i++)
-		{
-			if (_dad.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)_dad.Resources[i];
-			}
-		}
-
-		float extraDuration = _energy != null ? _energy.CurrentValue / 5f : 0f;
-		_timeToDestroy = Mathf.Min(_maxLifeTime, timeToDestroy + extraDuration);
+		_timeToDestroy = timeToDestroy;
 		_spawnTime = Time.time;
 
 		Debug.Log($"_timeToDestroy: {_timeToDestroy}");
@@ -114,7 +103,7 @@ public class IcePuddleObject : Projectiles
 
 		if (_talentFrostingFrozen && target.CharacterState.CheckForState(States.Frosting))
 		{
-			target.CharacterState.AddState(States.Frozen, _timeToDestroy, 30 + target.Health.SumDamageTaken, _dad.gameObject, _skill.name);
+			target.CharacterState.AddState(States.Frozen, _timeToDestroy, _damageToExit, _dad.gameObject, _skill.name);
 		}
 
 		if (_talentEvadeDadBoost && _curEvade == 0)
@@ -130,6 +119,8 @@ public class IcePuddleObject : Projectiles
 	{
 		while (_enemiesInZone.Count > 0)
 		{
+			yield return _waitApplyDelay;
+
 			foreach (var enemy in _enemiesInZone.ToList())
 			{
 				if (enemy == null) continue;
@@ -139,9 +130,7 @@ public class IcePuddleObject : Projectiles
 					float remainingLife = Mathf.Max(0.1f, _timeToDestroy - (Time.time - _spawnTime));
 					enemy.CharacterState.AddState(States.Frosting, remainingLife, _damageToExit, _dad.gameObject, _skill.name);
 				}
-			}
-
-			yield return _waitApplyDelay;
+			}	
 		}
 
 		_applyCoroutine = null;
