@@ -16,9 +16,13 @@ public class SoulAid : Skill
     private GameObject _tempTarget;
     private MoveComponent _tempTargetMove;
     
+    private bool IsAllyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Allies");
+    
     private bool _talentTiredSoulDispelActive = false;
     private bool _talentCooldownReduce = false;
     private bool _talentDoubleRange = false;
+    
+    private float _clickRadius = 0.5f;
 
     private void OnEnable()
     {
@@ -51,7 +55,7 @@ public class SoulAid : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() == null || GetTargetCharacter() == Hero || !IsCanCast) yield break;
+        if (GetTargetCharacter() == null && !IsCanCast) yield break;
         
         while (Vector2.Distance(transform.position, GetTargetCharacter().transform.position) > 2.1f)
         {
@@ -71,18 +75,33 @@ public class SoulAid : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (GetTargetCharacter() == null)
+        while (GetTempTargetCharacter() == null)
         {
             Radius = _talentDoubleRange ? _largeRadius : _defaultRadius;
             
             if (GetMouseButton)
             {
-                FindTargetCharacter();
-               // _target = GetRaycastTarget(_talentTiredSoulDispelActive);
+                Vector3 clickPoint = GetMousePoint();
+                
+                FindTarget(_clickRadius, clickPoint, canTargetHimself: false);
+                
+                if (GetTempTargetCharacter() is Character character)
+                {
+                    if (GetTempTargetCharacter() != null && !IsAllyTarget(character))
+                    {
+                        ClearTempTarget();
+                    }
+                    else
+                    {
+                        GetTempTargetCharacter().SelectedCircle.IsActive = true;
+                        _hero.Move.LookAtTransform(GetTempTargetCharacter().transform);
+                    }
+                }
             }
             yield return null;
         }
         TargetInfo targetInfo = new TargetInfo();
+        SetTarget(GetTempTargetCharacter());
         targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
     }

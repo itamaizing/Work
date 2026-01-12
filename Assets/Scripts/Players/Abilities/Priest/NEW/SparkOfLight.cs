@@ -69,8 +69,10 @@ public class SparkOfLight : Skill
     public void EnableHealingBuffTalent(bool value) => _healingBuffTalentActive = value;
 
 
-    private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
-    private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+    //private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
+    //private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+    private bool IsAllyTarget(Character target) => target.NetworkSettings.TeamIndex == _hero.NetworkSettings.TeamIndex;
+    //private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("SparkOfLights");
@@ -184,7 +186,7 @@ public class SparkOfLight : Skill
             yield break;
         }
 
-        if (IsEnemyTarget(GetTargetCharacter()))
+        if (!IsAllyTarget(GetTargetCharacter()))
         {
             //TryPayCost(isLightMode ? _manaCostDamage : _altManaCostDamage);
             if (isLightMode) CmdSpawnProjectile(GetTargetCharacter());
