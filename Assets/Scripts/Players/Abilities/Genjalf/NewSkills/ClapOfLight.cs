@@ -50,26 +50,38 @@ namespace Gangdollarff
 
             foreach (var item in colliders)
             {
-                if(item.TryGetComponent(out Character enemy))
+                if (item.TryGetComponent(out Character enemy))
                 {
                     if (IsBaffed)
                         CooldownTime = CooldownTime - 2;
 
-                    CmdApplyDamage(damage, enemy.gameObject);
+                    float R = Radius;
 
-                    Vector3 dirForPush;
-                    Vector3 pointForPush;
+                    float centerDist = Vector3.Distance(transform.position, enemy.transform.position);
+                    
+                    float casterRadius =  ((CapsuleCollider)_hero.Collider).radius;
+                    float enemyRadius = ((CapsuleCollider)enemy.Collider).radius;
 
-                    if (IsEnabled)
+                    float effectiveDist = Mathf.Max(centerDist - (casterRadius + enemyRadius), 0f);
+
+                    if (effectiveDist > R)
+                        continue;
+
+                    float damageMul = Mathf.Clamp01(1f - effectiveDist / R);
+                    
+                    float pushDist = Mathf.Clamp01(R - effectiveDist);
+
+                    Damage scaledDamage = new Damage
                     {
-                        dirForPush = (transform.position - enemy.transform.position).normalized;
-                        pointForPush = enemy.transform.position + (dirForPush * _pushRange);
-                    }
-                    else
-                    {
-                        dirForPush = (enemy.transform.position - transform.position).normalized;
-                        pointForPush = enemy.transform.position + (dirForPush * _pushRange);
-                    }
+                        Value = Buff.Damage.GetBuffedValue(Damage) * damageMul,
+                        Type = DamageType,
+                        PhysicAttackType = AttackRangeType,
+                    };
+
+                    CmdApplyDamage(scaledDamage, enemy.gameObject);
+
+                    Vector3 pushDir = (enemy.transform.position - transform.position).normalized;
+                    Vector3 pointForPush = enemy.transform.position + pushDir * pushDist;
 
                     CmdMoveTaget(enemy.gameObject, pointForPush, _pushDuration);
                 }
