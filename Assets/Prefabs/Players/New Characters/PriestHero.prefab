@@ -4560,7 +4560,7 @@ PrefabInstance:
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_allyPrefabs.Array.data[0]'
       value: 
-      objectReference: {fileID: 5458554383432203635, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      objectReference: {fileID: 1369531615380711236, guid: 2a26b6e6797f5a84c88bae170eb080b3, type: 3}
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_minionPrefs.Array.data[0]'
       value: 
@@ -4568,7 +4568,7 @@ PrefabInstance:
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_enemyPrefabs.Array.data[0]'
       value: 
-      objectReference: {fileID: 5458554383432203635, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      objectReference: {fileID: 1369531615380711236, guid: 2a26b6e6797f5a84c88bae170eb080b3, type: 3}
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _characterPrefabs.Array.size
       value: 1

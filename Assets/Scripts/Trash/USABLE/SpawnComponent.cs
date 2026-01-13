@@ -34,21 +34,24 @@ public class SpawnComponent : NetworkBehaviour
             Debug.LogError($"Invalid prefab index {prefabIndex}");
             return;
         }
-
         var prefab = _enemyPrefabs[prefabIndex];
         var spawned = Instantiate(prefab, position, rotation);
-
         spawned.Initialize();
         
-        spawned.NetworkSettings.TeamIndex = teamId;
-
-        spawned.NetworkSettings.MarkUpEnemiesOrAllies();
+        var unitLayer = spawned.GetComponent<UnitLayerSync>();
+        if (unitLayer == null)
+        {
+            Debug.LogError("Spawned character missing UnitLayerSync component.");
+            Destroy(spawned.gameObject);
+            return;
+        }
+        unitLayer.TeamIndex = teamId;
 
         spawned.NetworkSettings.MyRoom = _hero.NetworkSettings.MyRoom;
 
         SceneManager.MoveGameObjectToScene(spawned.gameObject, _hero.NetworkSettings.MyRoom);
-
         NetworkServer.Spawn(spawned.gameObject);
+        ClientRpcUnitAdded(spawned.gameObject);
     }
 
     [Command]
