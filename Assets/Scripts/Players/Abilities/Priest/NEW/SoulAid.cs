@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SoulAid : Skill
 {
-    [SerializeField] private float _speed = 0.0025f;
+    [SerializeField] private float _speed = 2f;
     [SerializeField] private float _cooldownReduceValue = 5f;
     [SerializeField] private float _defaultRadius = 4f;
     [SerializeField] private float _largeRadius = 8f;
@@ -55,16 +55,10 @@ public class SoulAid : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() == null && !IsCanCast) yield break;
-        
-        while (Vector2.Distance(transform.position, GetTargetCharacter().transform.position) > 2.1f)
-        {
-            Vector2 direction = (transform.position - GetTargetCharacter().transform.position).normalized;
-            Vector2 pullForce = direction * (_speed * Time.fixedTime);
+        if (GetTargetCharacter() == null || !IsCanCast) yield break;
 
-            CmdPull(GetTargetCharacter().gameObject, pullForce);
-            yield return new WaitForFixedUpdate();
-        }
+        var target = GetTargetCharacter().gameObject;
+        CmdStartPull(target);
     }
 
     protected override void ClearData()
@@ -148,15 +142,70 @@ public class SoulAid : Skill
         DecreaseSetCooldown(_cooldownReduceValue);
     }
 
-    [Command]
+    /*[Command]
     private void CmdPull(GameObject gameObject, Vector2 force)
     {
+
         if (_tempTarget != gameObject)
         {
             _tempTarget = gameObject;
             _tempTargetMove = gameObject.GetComponent<MoveComponent>();
         }
         _tempTargetMove.TargetRpcAddTransformPosition(force);
+    }*/
+    
+    [Command]
+    private void CmdStartPull(GameObject targetObj)
+    {
+        StartCoroutine(ServerPullCoroutine(targetObj));
+    }
+    
+    private IEnumerator ServerPullCoroutine(GameObject targetObj)
+    {
+        var targetTransform = targetObj.transform;
+        var targetMove = targetObj.GetComponent<MoveComponent>();
+        if (targetMove == null) yield break;
+
+        bool originalCanMove = targetMove.CanMove;
+        targetMove.CanMove = false;
+
+        while (Vector2.Distance(transform.position, targetTransform.position) > 0.01f)
+        {
+            Vector3 direction = (transform.position - targetTransform.position).normalized;
+            Vector3 pullForce = direction * (2 * Time.fixedDeltaTime);
+
+            if (targetMove.Rigidbody != null)
+            {
+                targetMove.Rigidbody.MovePosition(targetTransform.position + pullForce);
+            }
+            else
+            {
+                targetTransform.position += pullForce;
+            }
+
+            RpcApplyPullForce(targetObj, pullForce);
+
+            yield return new WaitForFixedUpdate();
+        }
+
+        targetMove.CanMove = originalCanMove;
+    }
+
+    [ClientRpc]
+    private void RpcApplyPullForce(GameObject targetObj, Vector3 force)
+    {
+        var targetTransform = targetObj.transform;
+        var targetMove = targetObj.GetComponent<MoveComponent>();
+        if (targetMove == null) return;
+
+        if (targetMove.Rigidbody != null)
+        {
+            targetMove.Rigidbody.MovePosition(targetTransform.position + force);
+        }
+        else
+        {
+            targetTransform.position += force;
+        }
     }
     
     [Command]
