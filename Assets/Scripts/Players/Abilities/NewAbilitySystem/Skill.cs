@@ -543,7 +543,7 @@ public abstract class Skill : NetworkBehaviour
         }
     }
 
-    public bool TryCast()
+    public virtual bool TryCast()
     {
         if (_isCasting || _isPreparing)
             return false;

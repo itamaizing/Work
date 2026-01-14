@@ -191,8 +191,9 @@ public class PriestShield : Skill
     public void EnableTalentPhysicalShieldBoost(bool value)
     {
         _talentPhysicalShieldBoostActive = value;
-        EnableSkillBoost();
-        if (!value)
+    
+        if (value) EnableSkillBoost();
+        else
         {
             DisableSkillBoost();
             _physDamageAccumulator = 0;

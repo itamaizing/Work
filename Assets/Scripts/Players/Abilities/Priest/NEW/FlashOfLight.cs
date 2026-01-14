@@ -136,19 +136,28 @@ public class FlashOfLight : Skill
     {
         if (GetTargetCharacter() == null || !IsCanCast) yield break;
 
+        var target = GetTargetCharacter();
+        
+        if (isLightMode && IsEnemyTarget(target) || !isLightMode && !IsEnemyTarget(target))
+        {
+            ResetCooldown();
+            yield break;
+        }
+
         /*if (TryPayCost())
         {*/
-            CmdPlayShootSound();
 
-            if (isLightMode) HandleFlashOfLight();
-                else HandleFlashOfDarkness();
-            
-            if (_reversePolarity != null && Hero.CharacterState.CheckForState(States.ReversePolarity))
-            {
-                _reversePolarity.SwitchSpells();
-                _reversePolarity.RemoveReversePolarityEffect();
-                _reversePolarity.SetCooldownFromSpell();
-            }
+        CmdPlayShootSound();
+
+        if (isLightMode) HandleFlashOfLight();
+        else HandleFlashOfDarkness();
+
+        if (_reversePolarity != null && Hero.CharacterState.CheckForState(States.ReversePolarity))
+        {
+            _reversePolarity.SwitchSpells();
+            _reversePolarity.RemoveReversePolarityEffect();
+            _reversePolarity.SetCooldownFromSpell();
+        }
         //}
 
         yield return null;

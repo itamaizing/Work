@@ -7,6 +7,9 @@ public class UnitLayerSync : NetworkBehaviour
     [SyncVar(hook = nameof(OnTeamIndexChanged))]
     public byte TeamIndex;
 
+    private int _retries;
+    private float _updateLayerDelay;
+
     private void OnTeamIndexChanged(byte oldTeam, byte newTeam)
     {
         if (isClient)
@@ -48,19 +51,19 @@ public class UnitLayerSync : NetworkBehaviour
 
     private IEnumerator DelayedUpdateLayer()
     {
-        int retries = 5;
-        float delay = 0.5f;
-        while (retries > 0)
+        _retries = 5;
+        _updateLayerDelay = 0.5f;
+        while (_retries > 0)
         {
-            yield return new WaitForSeconds(delay);
+            yield return new WaitForSeconds(_updateLayerDelay);
             if (NetworkClient.localPlayer != null && NetworkClient.localPlayer.GetComponent<UserNetworkSettings>() != null)
             {
                 UpdateLayer();
                 yield break;
             }
-            retries--;
-            delay += 0.5f;
-            Debug.LogWarning($"[{gameObject.name}] Retry layer update ({retries} left)...");
+            _retries--;
+            _updateLayerDelay += 0.5f;
+            Debug.LogWarning($"[{gameObject.name}] Retry layer update ({_retries} left)...");
         }
         Debug.LogError($"[{gameObject.name}] Failed to update layer after retries. Local player or settings missing.");
     }
