@@ -29,6 +29,8 @@ public class Restoration : Skill
     private float _accumulatedEffectiveness = 1f;
     private float _totalHealedInInterval = 0f;
     private bool _spiritEnergyTalent;
+
+    private string _initialRestorationName = "Restoration";
     //private IDamageable _target;
     //private Character characterTarget;
 
@@ -100,6 +102,7 @@ public class Restoration : Skill
         bool isAlly = GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Allies");
         if (isAlly && TryPayCost())
         {
+            CmdRemoveState(GetTargetCharacter(), States.Restoration);
             CmdAddState(GetTargetCharacter(), States.Restoration, lightDuration);
         }
     }
@@ -119,6 +122,7 @@ public class Restoration : Skill
         bool isEnemy = GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Enemy");
         if (isEnemy && TryPayCost())
         {
+            CmdRemoveState(GetTargetCharacter(), States.Restoration);
             CmdAddState(GetTargetCharacter(), States.Destruction, darkDuration);
         }
     }
@@ -192,7 +196,11 @@ public class Restoration : Skill
     }
 
     [Command]
-    private void CmdAddState(Character character, States states, float duration) => character.CharacterState.AddState(states, duration, 0, Hero.gameObject, nameof(Restoration));
+    private void CmdRemoveState(Character character, States states) => character.CharacterState.RemoveState(states);
+
+    
+    [Command]
+    private void CmdAddState(Character character, States states, float duration) => character.CharacterState.AddState(states, duration, 0, Hero.gameObject, _initialRestorationName);
 
     [ClientRpc]
     private void RpcPlayShotSound()

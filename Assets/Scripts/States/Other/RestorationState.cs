@@ -15,8 +15,7 @@ public class RestorationState : AbstractCharacterState
     //private float _effectivenessIncreasePerHeal = 0.1f;
 
     private float _timer;
-
-    private string _skillName;
+    
     //private float _accumulatedEffectiveness = 1f;
     //private float _totalHealedInInterval = 0f;
 
@@ -25,8 +24,6 @@ public class RestorationState : AbstractCharacterState
         _characterState = character;
         _personWhoMadeBuff = personWhoMadeBuff;
         duration = durationToExit;
-
-        _skillName = skillName;
         _health = character.Character.Health;
         //_accumulatedEffectiveness = 1f;
         //_totalHealedInInterval = 0f;
@@ -78,15 +75,8 @@ public class RestorationState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        if (((_personWhoMadeBuff.TryGetComponent(out SparkOfLight sparkOfLightSkill) &&
-             sparkOfLightSkill.IsDestructionFillingTalent)
-            || (_personWhoMadeBuff.TryGetComponent(out FlowOfLight flowOfLightSkill) &&
-                flowOfLightSkill.IsDestructionFillingTalent)) && _skillName != nameof(Restoration))
-        {
-            duration += time;
-            _timer = Mathf.Min(_timer, _tickInterval);
-        }
-        else duration = time;
+        duration += time;
+        _timer = Mathf.Min(_timer, _tickInterval);
         return false;
     }
     [Server] private void CmdHeal(float healValue) => ClientRpcHeal(healValue);
