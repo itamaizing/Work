@@ -12,6 +12,10 @@ public class StreamOfIcyWater : Skill
     protected override int AnimTriggerCastDelay => 0;
 
     protected override int AnimTriggerCast => 0;
+    
+    private float _clickRadius = 0.5f;
+    
+    private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
     public void AnimCastStreamOfIcyWater()
     {
@@ -67,23 +71,34 @@ public class StreamOfIcyWater : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
-        //Character target = null;
-
-        TargetInfo targetInfo = new();
-
-        while (GetTargetCharacter() == null)
+        TargetInfo targetInfo = new TargetInfo();
+        while (GetTempTarget() == null)
         {
             if (GetMouseButton)
-                FindTargetCharacter();
-               // target = GetRaycastTarget();
+            {
+                Vector3 clickPoint = GetMousePoint();
+                
+                FindTarget(_clickRadius, clickPoint, canTargetHimself: false);
 
+                if (GetTempTargetCharacter() is Character character)
+                {
+                    if (GetTempTargetCharacter() != null && !IsEnemyTarget(character))
+                    {
+                        ClearTempTarget();
+                    }
+                    else
+                    {
+                        if (character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        break;
+                    }
+                }
+            }
             yield return null;
         }
-
-        Hero.Move.LookAtPosition(GetTargetCharacter().Position);
+        SetTarget(GetTempTarget());
+        ClearTempTarget();
         targetInfo.AddTarget(GetTargetCharacter());
-        targetDataSavedCallback.Invoke(targetInfo);
-        yield return null;
+        targetDataSavedCallback(targetInfo);
     }
 
 

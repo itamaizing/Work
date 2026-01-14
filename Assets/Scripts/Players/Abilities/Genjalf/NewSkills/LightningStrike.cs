@@ -53,12 +53,14 @@ public class LightningStrike : Skill
 
             if (UnityEngine.Random.Range(1, 100) <= _debuffChance)
             {
-                GetTargetCharacter().CharacterState.CmdAddState(States.Discharge, 2, 0, Hero.gameObject, name);
+                CmdAddState(GetTargetCharacter());
             }
             ClearTarget();
         }
         yield return null;
     }
+    
+    [Command] private void CmdAddState(Character target) => target.CharacterState.AddState(States.Blind, 2, 0,Hero.gameObject, name);
 
     protected override void ClearData()
     {

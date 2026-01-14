@@ -14,10 +14,13 @@ public class FireBoll : Skill
     //private Character _target;
 
     protected override bool IsCanCast { get => CheckCanCast(); }
+    private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellDaley");
 
     protected override int AnimTriggerCast => Animator.StringToHash("Attack04");
+    
+    private float _clickRadius = 0.5f;
 
     private bool CheckCanCast()
     {
@@ -59,17 +62,31 @@ public class FireBoll : Skill
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
-
-        while (GetTargetCharacter() == null)
+        while (GetTempTarget() == null)
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter();
-              //  _target = GetRaycastTarget();
+                Vector3 clickPoint = GetMousePoint();
+                
+                FindTarget(_clickRadius, clickPoint, canTargetHimself: false);
+
+                if (GetTempTargetCharacter() is Character character)
+                {
+                    if (GetTempTargetCharacter() != null && !IsEnemyTarget(character))
+                    {
+                        ClearTempTarget();
+                    }
+                    else
+                    {
+                        if (character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        break;
+                    }
+                }
             }
             yield return null;
         }
-        
+        SetTarget(GetTempTarget());
+        ClearTempTarget();
         targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
 

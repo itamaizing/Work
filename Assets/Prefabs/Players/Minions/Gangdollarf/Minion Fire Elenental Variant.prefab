@@ -153,6 +153,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 242370089425684122, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      propertyPath: _hero
+      value: 
+      objectReference: {fileID: 8575489330000523180}
     - target: {fileID: 1021000915379606889, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.5
@@ -169,6 +173,10 @@ PrefabInstance:
       propertyPath: _playerData
       value: 
       objectReference: {fileID: 11400000, guid: 67e08eb9ae9db104eb1fce4595f6f786, type: 2}
+    - target: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      propertyPath: _targetSeeker
+      value: 
+      objectReference: {fileID: 7901816839110498751}
     - target: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: _damageTracker
       value: 
@@ -190,11 +198,11 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2057095471850671928, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
-      propertyPath: _skills.Array.data[1]
+      propertyPath: '_skills.Array.data[1]'
       value: 
       objectReference: {fileID: 7931099565418597347}
     - target: {fileID: 2057095471850671928, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
-      propertyPath: _skills.Array.data[2]
+      propertyPath: '_skills.Array.data[2]'
       value: 
       objectReference: {fileID: 7060476872833593553}
     - target: {fileID: 2335912879836011194, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
@@ -401,6 +409,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 83e21c29a8358a84c98e9e3409e72dce, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 1.5
   _damageValue: 12
@@ -410,6 +419,7 @@ MonoBehaviour:
   _attackRangeType: 1
   _skillType: 0
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -428,12 +438,14 @@ MonoBehaviour:
   _area: 0
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   _projectile: {fileID: -7871612326811465604, guid: 3f48633abc1849a49a5ed18cb8f65a33, type: 3}
 --- !u!114 &217267245241133449
 MonoBehaviour:
@@ -479,6 +491,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 83e21c29a8358a84c98e9e3409e72dce, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 5
   _castDeley: 0
   _damageValue: 3
@@ -488,6 +501,7 @@ MonoBehaviour:
   _attackRangeType: 0
   _skillType: 0
   _moving: 0
+  autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -506,15 +520,39 @@ MonoBehaviour:
   _area: 0
   _castLength: 0
   _castWidth: 0
+  _autoAttackDelay: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
+  maxCounter: 0
   _particlePref: {fileID: 2607017853375542456, guid: ac2586615ed6e5948983d73649d16e00, type: 3}
 --- !u!4 &6980196994501872204 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1021000915379606889, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
   m_PrefabInstance: {fileID: 7995568031969599269}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7901816839110498751 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 242370089425684122, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+  m_PrefabInstance: {fileID: 7995568031969599269}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0eaa338de0c76e4fbe06fa8331fcfa7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TargetSeeker
+--- !u!114 &8575489330000523180 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+  m_PrefabInstance: {fileID: 7995568031969599269}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5665284927246484895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a13cc13c691cf48b313c3aceaea208, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

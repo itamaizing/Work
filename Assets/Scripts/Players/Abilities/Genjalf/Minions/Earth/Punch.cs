@@ -12,7 +12,10 @@ namespace Gangdollarff.EarthElemental
 
         protected override int AnimTriggerCastDelay => 0;
         protected override int AnimTriggerCast => Animator.StringToHash("Attack01");
+        
+        private float _clickRadius = 0.5f;
         protected override bool IsCanCast => Vector3.Distance(GetTargetCharacter().Position, transform.position) <= Radius;
+        private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
         public void AnimCastPunch()
         {
@@ -55,23 +58,34 @@ namespace Gangdollarff.EarthElemental
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
         {
-            Character target = null;
-
-            TargetInfo targetInfo = new();
-
-            while (GetTargetCharacter() == null)
+            TargetInfo targetInfo = new TargetInfo();
+            while (GetTempTarget() == null)
             {
                 if (GetMouseButton)
-                    FindTargetCharacter();
-               //     target = GetRaycastTarget();
+                {
+                    Vector3 clickPoint = GetMousePoint();
+                
+                    FindTarget(_clickRadius, clickPoint, canTargetHimself: false);
 
+                    if (GetTempTargetCharacter() is Character character)
+                    {
+                        if (GetTempTargetCharacter() != null && !IsEnemyTarget(character))
+                        {
+                            ClearTempTarget();
+                        }
+                        else
+                        {
+                            if (character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                            break;
+                        }
+                    }
+                }
                 yield return null;
             }
-
-            Hero.Move.LookAtPosition(target.Position);
-            targetInfo.AddTarget(target);
-            targetDataSavedCallback.Invoke(targetInfo);
-            yield return null;
+            SetTarget(GetTempTarget());
+            ClearTempTarget();
+            targetInfo.AddTarget(GetTargetCharacter());
+            targetDataSavedCallback(targetInfo);
         }
     }
 }

@@ -8865,7 +8865,7 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   _particlePref: {fileID: 0}
-  _debuffChance: 15
+  _debuffChance: 100
 --- !u!114 &8856192836074503412
 MonoBehaviour:
   m_ObjectHideFlags: 0
