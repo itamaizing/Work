@@ -1,5 +1,6 @@
 using Mirror;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class LightSparkProjectile : Projectiles
 {
@@ -12,30 +13,24 @@ public class LightSparkProjectile : Projectiles
 
     [SerializeField] public ParticleSystem particleSystem;
 
-    private SparkOfLight _skillReference;
-    private float _attackDelay;
-    private Vector3 _direction;
     private float _waveAmplitude;
     private float _waveFrequency;
     private float _startTime;
 
-    private Character _target;
+    private GameObject _target;
+    
+    public event UnityAction<LightSparkProjectile, GameObject> EndPointReached;
 
     private void Awake()
     {
         if (_rb != null)
         {
-            _rb.isKinematic = true; // Disable physics interference; still allows triggers/collisions.
+            _rb.isKinematic = true;
         }
     }
     
-    public void Init(HeroComponent dad, bool isLightMode, SparkOfLight skill, float distance, float attackDelay, Character target)
+    public void Init(GameObject target)
     {
-        _dad = dad;
-        _skillReference = skill;
-        _distance = distance;
-        _attackDelay = attackDelay;
-
         _waveAmplitude = Random.Range(waveAmplitudeMin, waveAmplitudeMax);
         _waveFrequency = Random.Range(waveFrequencyMin, waveFrequencyMax);
 
@@ -44,9 +39,8 @@ public class LightSparkProjectile : Projectiles
         _target = target;
     }
 
-    public void StartFly(Vector3 direction)
+    public void StartFly()
     {
-        _direction = direction.normalized;
         if (particleSystem != null) particleSystem.Play();
         Destroy(gameObject, lifeTime);
     }
@@ -74,19 +68,13 @@ public class LightSparkProjectile : Projectiles
             particleSystem.transform.position = transform.position;
         }
     }
-
-    [Server]
+    
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject != _dad.gameObject)
+        if (other.gameObject.TryGetComponent(out Character character))
         {
-            if (other.gameObject.TryGetComponent<Character>(out Character character) && character == _target)
-            {
-                _skillReference.HandleMode(character);
-                if (particleSystem != null) particleSystem.Stop();
-
-                Destroy(gameObject, 0.1f);
-            }
+            EndPointReached?.Invoke(this, _target.gameObject);
+            Destroy(gameObject, 0.1f);
         }
     }
 }

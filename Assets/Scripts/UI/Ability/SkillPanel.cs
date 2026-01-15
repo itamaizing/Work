@@ -20,6 +20,8 @@ public class SkillPanel : MonoBehaviour
     private SkillManager _playerAbilities;
     private bool _isActive;
     private bool _isSelect;
+    
+    private DraggableIcon _draggingIcon;
 
     private void Start()
     {
@@ -39,6 +41,11 @@ public class SkillPanel : MonoBehaviour
 
     public void Fill(SkillManager abilities)
     {
+        if (_draggingIcon != null)
+        {
+            ForceEndDrag(_draggingIcon);
+        }
+        
         ClearPanel();
 
         if (_playerAbilities != null)
@@ -70,6 +77,8 @@ public class SkillPanel : MonoBehaviour
             icon.EndDrag += OnEndDrag;
             icon.PointerEnter += OnPointerEnterIcon;
             icon.PointerExit += OnPointerExitIcon;
+            icon.BeginDrag += () => { _draggingIcon = icon; };
+            icon.EndDrag += () => { if (_draggingIcon == icon) _draggingIcon = null; };
         }
 
         _playerAbilities.SkillSelected += OnAbilitySelected;
@@ -134,6 +143,18 @@ public class SkillPanel : MonoBehaviour
                 }
             }
         }
+    }
+    
+    private void ForceEndDrag(DraggableIcon icon)
+    {
+        icon.transform.SetParent(icon.PatentAfterDrag);
+        icon.transform.SetAsFirstSibling();
+
+        var slot = icon.PatentAfterDrag.GetComponent<SkillIcon>();
+        if (slot != null)
+            slot.CurrentIcon = icon;
+
+        _draggingIcon = null;
     }
 
     private void SkillChenged(int index, Skill skill)

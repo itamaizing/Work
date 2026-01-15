@@ -506,6 +506,8 @@ public abstract class Skill : NetworkBehaviour
     {
         _target = null; 
     }
+    
+    public void ClearQueueTarget() => _targetInfoQueue.Clear();
 
     public void EnableSkillBoost()
     {

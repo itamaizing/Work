@@ -78,13 +78,18 @@ public class SkillQueue : MonoBehaviour
 
     public bool TryCancel(bool isForceCancel = false)
     {
-        if (_currentSkill != null)
+        return TryCancel(_currentSkill, isForceCancel);
+    }
+    
+    public bool TryCancel(Skill skillForCancelling,bool isForceCancel = false)
+    {
+        if (skillForCancelling != null)
         {
-            _currentSkill.TryCancel(isForceCancel);
-            if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo target)) ToggleSelectCircles(target, false);
+            skillForCancelling.TryCancel(isForceCancel);
+            if (skillForCancelling.TargetInfoQueue.TryPeek(out TargetInfo target)) ToggleSelectCircles(target, false);
 
 
-            if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
+            if (skillForCancelling.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
             {
                 _targetInfo = targetInfo;
                 foreach (var item in _targetInfo.GetTargets())
@@ -151,6 +156,41 @@ public class SkillQueue : MonoBehaviour
         }
 
         return temp;
+    }
+
+    public void RemoveNeededSkillFromQueue(Skill neededSkill)
+    {
+        if (_skills.Count == 0) return;
+
+        Queue<Skill> tempQueue = new Queue<Skill>();
+        
+        while (_skills.Count > 0)
+        {
+            Skill skill = _skills.Dequeue();
+            
+            if (ShouldRemoveSkill(skill, neededSkill))
+            {
+                TryCancel(skill,true);
+                
+                SkillDeleted?.Invoke(skill);
+
+                skill.ClearQueueTarget();
+            }
+            else
+            {
+                tempQueue.Enqueue(skill);
+            }
+        }
+        
+        _skills = tempQueue;
+    }
+    
+    private bool ShouldRemoveSkill(Skill skill, Skill neededSkill)
+    {
+        if (skill.GetType() == neededSkill.GetType())
+            return true;
+
+        return false;
     }
 
 

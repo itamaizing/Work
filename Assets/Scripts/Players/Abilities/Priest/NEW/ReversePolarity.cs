@@ -118,13 +118,19 @@ public class ReversePolarity : Skill
 
     public void SwitchSpells()
     {
+        if (!IsAutoMode)
+        {
+            _hero.Abilities.AutoSkillCast.DeleteSkill();
+            _hero.Abilities.SkillQueue.RemoveNeededSkillFromQueue(sparkOfLight);
+            _hero.Abilities.SkillQueue.RemoveNeededSkillFromQueue(flowOfLight);
+            _hero.Abilities.SkillQueue.RemoveNeededSkillFromQueue(restoration);
+            _hero.Abilities.SkillQueue.RemoveNeededSkillFromQueue(flashOfLight);
+        }
+        
         sparkOfLight.SwitchMode();
         flashOfLight.SwitchMode();
         restoration.SwitchMode();
         flowOfLight.SwitchMode();
-        
-        if(!IsAutoMode)
-            _hero.Abilities.AutoSkillCast.DeleteSkill();
         //priestShield.SwitchMode();
     }
 
