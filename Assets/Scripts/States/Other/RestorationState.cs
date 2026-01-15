@@ -20,10 +20,6 @@ public class RestorationState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        characterState = character;
-        base.personWhoMadeBuff = personWhoMadeBuff;
-        duration = durationToExit;
-
         health = character.Character.Health;
         _accumulatedEffectiveness = 1f;
         _totalHealedInInterval = 0f;
@@ -39,7 +35,6 @@ public class RestorationState : AbstractCharacterState
     {
         if (health == null) return;
 
-        duration -= Time.deltaTime;
         _timer -= Time.deltaTime;
 
         if (_timer <= 0f)
@@ -53,12 +48,6 @@ public class RestorationState : AbstractCharacterState
             _totalHealedInInterval = healValue;
 
             _timer = _tickInterval;
-        }
-
-        if (duration <= 0)
-        {
-            ExitState();
-            return;
         }
     }
 

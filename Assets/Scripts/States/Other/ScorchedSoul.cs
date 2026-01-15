@@ -1,11 +1,8 @@
-using Mirror;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ScorchedSoul : AbstractCharacterState
 {
-    private float _duration;
     private int _currentStacks = 1;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
@@ -18,9 +15,6 @@ public class ScorchedSoul : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Debug.Log("Entering ScorchedSoulDebuff State");
-
-        characterState = character;
-        _duration = durationToExit;
 
         //effects.Add(StatusEffect.AbilitySpeed);
         //effects.Add(StatusEffect.AbilityCooldownSpeed);
@@ -64,7 +58,7 @@ public class ScorchedSoul : AbstractCharacterState
     {
         Debug.LogWarning($"Stacks ScorchedSoul: {_currentStacks}");
 
-        _duration = time;
+        duration = time;
 
         if (_currentStacks >= 3)
             return false;
@@ -76,12 +70,5 @@ public class ScorchedSoul : AbstractCharacterState
     public override void UpdateState()
     {
         Debug.Log("Updating ScorchedSoulDebuff State");
-
-        _duration -= Time.deltaTime;
-
-        if (_duration < 0)
-        {
-            ExitState();
-        }
     }
 }

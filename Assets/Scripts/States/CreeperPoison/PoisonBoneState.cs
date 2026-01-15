@@ -17,7 +17,6 @@ public class PoisonBoneState : AbstractCharacterState
     private float _timeBetweenAttack;
     private float _startTimeBetweenAttack = 1f;
 
-    private float _duration;
     private float _baseDuration;
 
     private float _baseDamage = 1f;
@@ -26,7 +25,7 @@ public class PoisonBoneState : AbstractCharacterState
     private Character _player;
 
     public int CurrentStacks { get => currentStacksCount; set => currentStacksCount = value; }
-    public float StacksDuration { get => _duration; }
+    public float StacksDuration { get => duration; }
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
     public override States State => States.PoisonBone;
@@ -37,10 +36,8 @@ public class PoisonBoneState : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         MaxStacksCount = _maxStacks;
-        characterState = character;
         _player = personWhoMadeBuff;
 
-        _duration = durationToExit;
         _baseDuration = durationToExit;
 
         if (currentStacksCount < MaxStacksCount)
@@ -114,12 +111,6 @@ public class PoisonBoneState : AbstractCharacterState
         {
             ExitState();
         }
-
-        _duration -= Time.deltaTime;
-        if (_duration < 0 || turnOff)
-        {
-            ExitState();
-        }
     }
 
     public override void ExitState()
@@ -139,7 +130,7 @@ public class PoisonBoneState : AbstractCharacterState
         }
         else
         {
-            _duration = _baseDuration;
+            duration = _baseDuration;
             UpdatePoisonBoneStackAtSkills();
             return true;
         }
@@ -148,7 +139,7 @@ public class PoisonBoneState : AbstractCharacterState
     private void AddStacks()
     {
         currentStacksCount++;
-        _duration = _baseDuration;
+        duration = _baseDuration;
     }
 
     [Server]
@@ -170,7 +161,7 @@ public class PoisonBoneState : AbstractCharacterState
     {
         currentStacksCount = 0;
         _baseDuration = 0;
-        _duration = 0;
+        duration = 0;
         _endDamage = 0;
         _baseDamage = 1f;
         _timeBetweenAttack = _startTimeBetweenAttack;

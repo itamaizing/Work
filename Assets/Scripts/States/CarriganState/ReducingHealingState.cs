@@ -6,7 +6,6 @@ public class ReducingHealingState : AbstractCharacterState
     private AbstractCharacterState _state;
 
     private float _baseReductionHealingValues;
-    private float _duration;
     private float _baseDuration;
 
     private float _startDelayBeforeChecking = 0.5f;
@@ -27,9 +26,6 @@ public class ReducingHealingState : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Debug.Log("ReducingHealingState / EnterState");
-        characterState = character;
-
-        _duration = durationToExit;
         _baseDuration = durationToExit;
 
         _delayBeforeChecking = _startDelayBeforeChecking;

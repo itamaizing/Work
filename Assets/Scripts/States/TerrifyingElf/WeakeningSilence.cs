@@ -8,7 +8,6 @@ public class WeakeningSilence : AbstractCharacterState
     private float _damagePerTick;
     private float _currentDamage;
     private float _tickInterval = 1f;
-    private float _duration;
 
     private bool damageTick;
 
@@ -21,12 +20,10 @@ public class WeakeningSilence : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        characterState = character;
         health = character.Character.Health;
         _damagePerTick = damageToExit;
         damageTick = true;
         _currentDamage = _damagePerTick;
-        _duration = durationToExit;
 
         if (health == null)
         {
@@ -46,8 +43,6 @@ public class WeakeningSilence : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0) ExitState();
     }
 
     public override bool Stack(float addDuration)

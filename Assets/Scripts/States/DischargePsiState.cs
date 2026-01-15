@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class DischargePsiState : AbstractCharacterState
 {
-    private float _duration;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.DischargePsi;
     public override StateType Type => StateType.Magic;
@@ -14,9 +13,6 @@ public class DischargePsiState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _duration = durationToExit;
-        characterState = character;
-        base.personWhoMadeBuff = personWhoMadeBuff;
     }
 
     public override void ExitState()
@@ -32,8 +28,5 @@ public class DischargePsiState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-
-        if (_duration <= 0) ExitState();
     }
 }

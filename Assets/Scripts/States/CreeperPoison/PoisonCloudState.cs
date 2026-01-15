@@ -28,7 +28,6 @@ public class PoisonCloudState : AbstractCharacterState
     private float _timeBetweenApplyEmpathicPoisons;
     private float _startTimeBetweenApplyEmpathicPoisons = 2f;
 
-    private float _duration;
     private float _baseDuration;
     private float _durationEmpathicPoisons = 5f;
 
@@ -43,10 +42,8 @@ public class PoisonCloudState : AbstractCharacterState
     {
         MaxStacksCount = _maxStacks;
 
-        characterState = character;
         _player = personWhoMadeBuff;
 
-        _duration = durationToExit;
         _baseDuration = durationToExit;
 
         _timeBetweenAttack = _startTimeBetweenAttack;
@@ -80,13 +77,6 @@ public class PoisonCloudState : AbstractCharacterState
 
             _timeBetweenAttack = _startTimeBetweenAttack;
         }
-
-        _duration -= Time.deltaTime;
-
-        if (_duration < 0)
-        {
-            ExitState();
-        }
     }
 
     public override void ExitState()
@@ -105,7 +95,7 @@ public class PoisonCloudState : AbstractCharacterState
         }
         else
         {
-            _duration = _baseDuration;
+            duration = _baseDuration;
             if (_cloudExplosion != null)
             {
                 _cloudExplosion.CurrentStacksPoisonCloud(currentStacksCount, _radiusCloud);
@@ -119,7 +109,7 @@ public class PoisonCloudState : AbstractCharacterState
         if (currentStacksCount < MaxStacksCount)
         {
             currentStacksCount++;
-            _duration = _baseDuration;
+            duration = _baseDuration;
             if (_cloudExplosion != null)
             {
                 _cloudExplosion.CurrentStacksPoisonCloud(currentStacksCount, _radiusCloud);
@@ -223,7 +213,7 @@ public class PoisonCloudState : AbstractCharacterState
     {
         currentStacksCount = 0;
         _baseDuration = 0;
-        _duration = 0;
+        duration = 0;
         _endDamage = 0;
         _increasedDamage = 0;
         _baseDamage = 0.005f;

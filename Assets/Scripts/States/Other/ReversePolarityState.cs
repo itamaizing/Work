@@ -9,14 +9,9 @@ public class ReversePolarityState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        characterState = character;
     }
 
     public override void UpdateState()
-    {
-    }
-
-    public override void ExitState()
     {
     }
 

@@ -17,7 +17,6 @@ public class RegeneratingPoisonState : AbstractCharacterState
     private float _timeBetweenHeal;
     private float _startTimeBetweenHeal = 1.0f;
 
-    private float _duration;
     private float _baseDuration;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing };
@@ -31,10 +30,8 @@ public class RegeneratingPoisonState : AbstractCharacterState
     {
         MaxStacksCount = _maxStacks;
 
-        characterState = character;
         _playerWithTalent = personWhoMadeBuff;
 
-        _duration = durationToExit;
         _baseDuration = durationToExit;
 
         if (currentStacksCount < MaxStacksCount)
@@ -51,12 +48,6 @@ public class RegeneratingPoisonState : AbstractCharacterState
             MakeHeal();
             _timeBetweenHeal = _startTimeBetweenHeal;
         }
-
-        _duration -= Time.deltaTime;
-        if (_duration < 0)
-        {
-            ExitState();
-        }
     }
 
     public override void ExitState()
@@ -71,12 +62,12 @@ public class RegeneratingPoisonState : AbstractCharacterState
         if (currentStacksCount < MaxStacksCount)
         {
             currentStacksCount++;
-            _duration = _baseDuration;
+            duration = _baseDuration;
             return true;
         }
         else
         {
-            _duration = _baseDuration;
+            duration = _baseDuration;
             return true;
         }
     }
@@ -101,6 +92,6 @@ public class RegeneratingPoisonState : AbstractCharacterState
         currentStacksCount = 0;
         _endHealingValue = 0;
         _baseDuration = 0;
-        _duration = 0;
+        duration = 0;
     }
 }

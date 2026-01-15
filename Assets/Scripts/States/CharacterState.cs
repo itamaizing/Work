@@ -75,21 +75,30 @@ public abstract class AbstractCharacterState
 		if(duration >= 0 && duration != -1)
 		{
 			duration -= Time.deltaTime;
+
 			if(duration <= 0)
 			{
-				ExitState();
+				if(currentStacksCount > 0)
+				{
+					ReduceStack();
+                }
+				else
+					ExitState();
 			}
 		}
     }
 
-	public abstract void UpdateState();
-	protected virtual void GloabalExit()
+	public virtual void ExitState()
 	{
-		ExitState();
-	}
+        characterState.RemoveState(this);
+    }
 
-	public abstract void ExitState();
+	public abstract void UpdateState();
 	public abstract bool Stack(float time);
+	public virtual void ReduceStack()
+	{
+        ExitState();
+    }
 }
 
 public abstract class StackableState : AbstractCharacterState
@@ -104,8 +113,13 @@ public abstract class RefreshingState : StackableState
 {
     public override bool Stack(float time)
     {
-        duration += time;
+        duration = time;
         return true;
+    }
+
+    public override void ReduceStack()
+    {
+		ExitState();
     }
 }
 
@@ -126,6 +140,11 @@ public abstract class IndependentState: StackableState
 			currentStacksCount++;
 		}
 		return false;
+    }
+
+    public override void ReduceStack()
+    {
+        currentStacksCount--;
     }
 }
 
@@ -208,34 +227,6 @@ public abstract class AuraState : AbstractCharacterState
     }
 }
 
-public class DefaultState : AbstractCharacterState
-{
-	private List<StatusEffect> _effects = new List<StatusEffect>();
-	public override States State => States.Default;
-	public override StateType Type => StateType.Physical;
-	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
-	public override List<StatusEffect> Effects => _effects;
-
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-	{
-
-	}
-
-	public override void UpdateState()
-	{
-
-	}
-
-	public override void ExitState()
-	{
-
-	}
-
-	public override bool Stack(float time)
-	{
-		return false;
-	}
-}
 
 public abstract class HealStates : AbstractCharacterState
 {

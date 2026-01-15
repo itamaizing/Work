@@ -5,7 +5,6 @@ public class InAirState : AbstractCharacterState
 {
     public bool turnOff = false;
 
-    private float _duration;
     private float _baseDuration;
     private float _damageToExit;
 
@@ -17,20 +16,12 @@ public class InAirState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        characterState = character;
         characterState.Character.Move.CanMove = false;
-        _duration = durationToExit;
-        _baseDuration = _duration;
         _baseDuration = durationToExit;
     }
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_duration < 0 || turnOff)
-        {
-            ExitState();
-        }
     }
 
 

@@ -7,7 +7,6 @@ public class TentacleGrip : AbstractCharacterState
 	public bool turnOff = false;
 	//private PlayerAbilities _abilities;
 	private float _baseDuration;
-	private float _duration;
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability };
 	public override BaffDebaff BaffDebaff => BaffDebaff.Null;
@@ -18,8 +17,6 @@ public class TentacleGrip : AbstractCharacterState
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		characterState = character;
-
 		if (character.TryGetComponent<Character>(out var ability))
 		{
 			abilities = ability.Abilities;
@@ -30,7 +27,6 @@ public class TentacleGrip : AbstractCharacterState
 		characterState.Character.Move.IsMoveBlocked = true;
 		characterState.Character.Move.StopMoveAndAnimationMove();
 
-		_duration = durationToExit;
 		_baseDuration = durationToExit;
 	}
 
@@ -52,7 +48,7 @@ public class TentacleGrip : AbstractCharacterState
 
 		else
 		{
-			_duration = time;
+			duration = time;
 			return true;
 		}
 	}

@@ -3,10 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Plague : AbstractCharacterState
+public class Plague : RefreshingState
 {
 	private int _stack = 0;
-	private float _durationToExit = 0f;
 	private float _damageTimer = 1f;
 	public int GetStack => _stack;
 	public override States State => States.Plague;
@@ -16,8 +15,6 @@ public class Plague : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		characterState = character;
-		_durationToExit = durationToExit;
 		health = characterState.Character.Health;
 		abilities = character.Character.Abilities;
 
@@ -30,7 +27,6 @@ public class Plague : AbstractCharacterState
 
 	public override void UpdateState()
 	{
-		_durationToExit -= Time.deltaTime;
 		_damageTimer -= Time.deltaTime;
 		GameObject obj = null;
 		if (_damageTimer <= 0)
@@ -70,10 +66,6 @@ public class Plague : AbstractCharacterState
 			_damageTimer = 10;
 			//20% chance of inflicting close enemy
 		}
-		if (_durationToExit <= 0)
-		{
-			ExitState();
-		}
 	}
 
 	public override void ExitState()
@@ -90,13 +82,13 @@ public class Plague : AbstractCharacterState
 	{
 		if (_stack <= 4)
 		{
-			_durationToExit = time;
+			duration = time;
 			_stack++;
 			return true;
 		}
 		else
 		{
-			_durationToExit = time;
+			duration = time;
 			return true;
 		}
 	}

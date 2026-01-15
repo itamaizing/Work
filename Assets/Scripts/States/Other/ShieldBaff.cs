@@ -7,7 +7,6 @@ public class ShieldBaff : AbstractCharacterState, IDamageable
     private float _damageAbsorbed;
     private float _maxAbsorption;
     private float _curentAbsorption;
-    private float _duration;
 
     public event Action<Damage, Skill> DamageTaken;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
@@ -20,8 +19,6 @@ public class ShieldBaff : AbstractCharacterState, IDamageable
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        characterState = character;
-        _duration = durationToExit;
         _maxAbsorption = damageToExit;
         _curentAbsorption = _maxAbsorption;
         _damageAbsorbed = 0;
@@ -33,11 +30,6 @@ public class ShieldBaff : AbstractCharacterState, IDamageable
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0)
-        {
-            ExitState();
-        }
     }
 
     public override void ExitState()

@@ -5,7 +5,6 @@ public class InstantHealingPoisonState : AbstractCharacterState
 {
     /* For PoisonBall Ability */
 
-    private Character _player;
     private HealingPoisonPerSecondState _healingPoisonPerSecondState;
 
     private int _maxStacks = 1;
@@ -17,7 +16,6 @@ public class InstantHealingPoisonState : AbstractCharacterState
     private float _timeBetweenHeal;
     private float _startTimeBetweenHeal = 1.0f;
 
-    private float _duration;
     private float _baseDuration;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing };
@@ -33,9 +31,7 @@ public class InstantHealingPoisonState : AbstractCharacterState
 
         characterState = character;
 
-        _duration = durationToExit;
         _baseDuration = durationToExit;
-        _player = personWhoMadeBuff;
     }
 
     public override void UpdateState()
@@ -77,5 +73,4 @@ public class InstantHealingPoisonState : AbstractCharacterState
 
         ExitState();
     }
-
 }

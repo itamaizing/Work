@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class TiredSoul : AbstractCharacterState
 {
-    private float _duration;
     private float _baseDuration;
 
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
@@ -14,20 +13,17 @@ public class TiredSoul : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        _duration = durationToExit;
         _baseDuration = durationToExit;
         currentStacksCount++;
         MaxStacksCount = 2;
     }
 
     public override void UpdateState()
-    {
-        _duration -= Time.deltaTime;
-        
-        if (_duration <= _baseDuration * (currentStacksCount - 1) && currentStacksCount > 0)
+    { 
+        if (duration <= _baseDuration * (currentStacksCount - 1) && currentStacksCount > 0)
         {
             currentStacksCount--;
-            _duration = _baseDuration * currentStacksCount;
+            duration = _baseDuration * currentStacksCount;
 
             if (currentStacksCount == 0)
             {
@@ -49,8 +45,8 @@ public class TiredSoul : AbstractCharacterState
         if (currentStacksCount < MaxStacksCount)
         {
             currentStacksCount++;
-            _duration += time;
-            _duration = Mathf.Min(_duration, _baseDuration * currentStacksCount);
+            duration += time;
+            duration = Mathf.Min(duration, _baseDuration * currentStacksCount);
         }
         return true;
     }

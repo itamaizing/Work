@@ -17,7 +17,6 @@ public class StunnedState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		characterState = character;
 
 		if (character.TryGetComponent<Character>(out var ability))
 		{
@@ -29,7 +28,6 @@ public class StunnedState : AbstractCharacterState
 		characterState.Character.Move.IsMoveBlocked = true;
 		characterState.Character.Move.StopMoveAndAnimationMove();
 
-		duration = durationToExit;
 		_baseDuration = durationToExit;
 	}
 

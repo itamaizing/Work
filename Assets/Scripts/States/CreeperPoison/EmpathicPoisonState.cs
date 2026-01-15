@@ -25,7 +25,6 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
     private float _timeBeforeReductionDebuff;
     private float _startTimeBeforeReductionDebuff = 1.0f;
 
-    private float _duration;
     private float _baseDuration;
     private float _damageToExit;
 
@@ -37,7 +36,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
 
     public int CurrentStacks { get => currentStacksCount; set => currentStacksCount = value; }
-    public float StacksDuration { get => _duration; }
+    public float StacksDuration { get => duration; }
 
     public event Action<Damage, Skill> DamageTaken;
     public override States State => States.EmpathicPoisons;
@@ -51,9 +50,6 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        characterState = character;
-        _player = personWhoMadeBuff;
-
         MaxStacksCount = _maxStacks;
 
         _timeBeforeReductionDebuff = _startTimeBeforeReductionDebuff;
@@ -68,7 +64,6 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
         _poisonCloud = (PoisonCloudState)_player.CharacterState.GetState(States.PoisonCloud);
         _radiusCloud = _poisonCloud.RadiusCloud;
 
-        _duration = durationToExit;
         _baseDuration = durationToExit;
 
         if (currentStacksCount < MaxStacksCount)
@@ -140,12 +135,6 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
         _playerPosition = _player.transform.position;
         _characterPosition = characterState.transform.position;
 
-        _duration -= Time.deltaTime;
-        if (_duration < 0)
-        {
-            ExitState();
-        }
-
         if (currentStacksCount <= 0)
         {
             ExitState();
@@ -179,12 +168,12 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
         if (currentStacksCount < MaxStacksCount)
         {
             currentStacksCount++;
-            _duration = _baseDuration;
+            duration = _baseDuration;
             return true;
         }
         else
         {
-            _duration = _baseDuration;
+            duration = _baseDuration;
             return true;
         }
     }
@@ -216,7 +205,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
     {
         currentStacksCount = 0;
         _baseDuration = 0;
-        _duration = 0;
+        duration = 0;
 
         _baseEvasionValue = 0.03f;
         _increasedEvasionValue = 0;

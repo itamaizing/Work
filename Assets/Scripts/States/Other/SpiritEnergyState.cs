@@ -8,13 +8,11 @@ public class SpiritEnergyState : AbstractCharacterState
     private const int _baseMaxStacks = 3;
 
     private float _baseDuration;
-    private float _duration;
     private float _regenAmount;
 
     private GameObject _spiritEnergyStateEffectInstance;
     private Health _healthComponent;
     private Resource _manaResource;
-    private Character _character;
 
     private List<StatusEffect> _effects = new() { StatusEffect.Healing };
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
@@ -24,15 +22,12 @@ public class SpiritEnergyState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        characterState = character;
-        _character = character.Character;
-        _duration = durationToExit;
         _baseDuration = durationToExit;
         currentStacksCount = 1;
         MaxStacksCount = _baseMaxStacks;
 
-        _healthComponent = _character.GetComponent<Health>();
-        _manaResource = _character.TryGetResource(ResourceType.Mana);
+        _healthComponent = characterState.Character.Health;
+        _manaResource = characterState.Character.TryGetResource(ResourceType.Mana);
 
         if (_healthComponent != null)
         {
@@ -50,17 +45,11 @@ public class SpiritEnergyState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-
-        if (_duration <= 0)
-        {
-            ExitState();
-        }
     }
 
     public override bool Stack(float time)
     {
-        _duration = Mathf.Max(_duration, time);
+        duration = Mathf.Max(duration, time);
 
         if (currentStacksCount < MaxStacksCount)
         {
@@ -84,7 +73,7 @@ public class SpiritEnergyState : AbstractCharacterState
 
     private void OnDamageTaken(Damage damage, Skill skill)
     {
-        if (_character == null) return;
+        if (characterState.Character == null) return;
 
         float manaRestoreValue = damage.Value * DamageManaRestorePercent * currentStacksCount;
 

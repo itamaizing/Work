@@ -6,7 +6,6 @@ using UnityEngine;
 public class MagicBuff : AbstractCharacterState, IDamageable
 {
 	private Character _character;
-	private float _durationToExit;
 	private float _shieldCapacity;
 
 	public event Action<Damage, Skill> DamageTaken;
@@ -20,9 +19,7 @@ public class MagicBuff : AbstractCharacterState, IDamageable
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		characterState = character;
 		_character = character.Character;
-		_durationToExit = durationToExit;
 		_shieldCapacity = damageToExit;
 		_character.Health.Shields.Add(this);
 		//_character.Health.SetMagAbsorb(_shieldCapacity);
@@ -30,8 +27,7 @@ public class MagicBuff : AbstractCharacterState, IDamageable
 
 	public override void UpdateState()
 	{
-		_durationToExit -= Time.deltaTime;
-		if (_durationToExit < 0 || _shieldCapacity <= 0)
+		if (_shieldCapacity <= 0)
 		{
 			ExitState();
 		}
@@ -46,7 +42,7 @@ public class MagicBuff : AbstractCharacterState, IDamageable
 
 	public override bool Stack(float time)
 	{
-		_durationToExit = time;
+		duration = time;
 		return true;
 	}
 

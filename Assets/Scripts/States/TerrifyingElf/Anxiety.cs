@@ -6,7 +6,6 @@ public class Anxiety : AbstractCharacterState
     private float spellSpeedReduction = 0.1f;
     private float manaCostIncrease = 0.1f;
     private const int maxStacks = 3;
-    private float duration;
 
     private List<StatusEffect> _effects = new List<StatusEffect> { StatusEffect.Ability, StatusEffect.Strengthening };
     public override States State => States.Anxiety;
@@ -16,13 +15,9 @@ public class Anxiety : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        characterState = character;
         abilities = character.Character.Abilities;
         health = character.Character.Health;
-        base.personWhoMadeBuff = personWhoMadeBuff;
         MaxStacksCount = maxStacks;
-
-        duration = durationToExit;
 
         ApplyEffects();
         Debug.Log($"Anxiety state applied: {currentStacksCount}/{MaxStacksCount} stacks, duration {duration}s");
@@ -30,11 +25,6 @@ public class Anxiety : AbstractCharacterState
 
     public override void UpdateState()
     {
-        duration -= Time.deltaTime;
-        if (duration <= 0)
-        {
-            ExitState();
-        }
     }
 
     public override void ExitState()

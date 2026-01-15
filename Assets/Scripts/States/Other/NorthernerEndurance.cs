@@ -1,11 +1,7 @@
-using Mirror;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class NorthernerEndurance : AbstractCharacterState
 {
-	private float _durationToExit;
 	private float _damageToExit;
 	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override States State => States.NorthernerEndurance;
@@ -14,20 +10,13 @@ public class NorthernerEndurance : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		characterState = character;	
 		health = character.Character.Health;
 		//_health.BoostHpBonus(damageToExit);
-		_durationToExit = durationToExit;
 		_damageToExit = damageToExit;
 	}
 
 	public override void UpdateState()
 	{
-		_durationToExit -= Time.deltaTime;
-		if (_durationToExit < 0)
-		{
-			ExitState();
-		}
 	}
 
 	public override void ExitState()
@@ -39,7 +28,7 @@ public class NorthernerEndurance : AbstractCharacterState
 
 	public override bool Stack(float time)
 	{
-		_durationToExit = time;
+		duration = time;
 		return true;
 	}
 }

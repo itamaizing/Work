@@ -6,7 +6,6 @@ using UnityEngine;
 public class AstralState : AbstractCharacterState
 {
     private float _baseDuration;
-    private float _duration;
     private int _currentStacks = 1;
     private const int _maxStacks = 1;
 
@@ -34,11 +33,7 @@ public class AstralState : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Debug.Log("Entering Astral State");
-
-        characterState = character;
-        base.personWhoMadeBuff = personWhoMadeBuff;
         _baseDuration = durationToExit;
-        _duration = _baseDuration;
 
         _stateEffects = characterState.GetComponent<StateEffects>();
         if (_stateEffects == null)
@@ -93,11 +88,6 @@ public class AstralState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0)
-        {
-            ExitState();
-        }
     }
 
     public override void ExitState()
@@ -141,7 +131,7 @@ public class AstralState : AbstractCharacterState
     {
         if (_currentStacks < _maxStacks) _currentStacks++;
 
-        _duration = _baseDuration;
+        duration = _baseDuration;
         return true;
     }
 

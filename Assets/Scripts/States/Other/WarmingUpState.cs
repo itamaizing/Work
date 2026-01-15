@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class WarmingUpState : AbstractCharacterState
 {
-	private float _duration;
 	private const float BonusPerStack = 1f;
 
 	public AbilityForm canceledForm;
@@ -28,9 +27,6 @@ public class WarmingUpState : AbstractCharacterState
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		characterState = character;
-		_duration = durationToExit;
-
 		if (character.TryGetComponent<Character>(out var ability))
 		{
 			abilities = ability.Abilities;
@@ -55,9 +51,7 @@ public class WarmingUpState : AbstractCharacterState
 
 	public override void UpdateState()
 	{
-		_duration -= Time.deltaTime;
-
-		if (_duration <= 0f || turnOff)
+		if (turnOff)
 		{
 			ExitState();
 		}
@@ -85,7 +79,7 @@ public class WarmingUpState : AbstractCharacterState
 
 	public override bool Stack(float time)
 	{
-		_duration = time;
+		duration = time;
 
 		if (currentStacksCount < MaxStacksCount)
 		{

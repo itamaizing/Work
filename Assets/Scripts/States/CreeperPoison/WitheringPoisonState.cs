@@ -15,7 +15,6 @@ public class WitheringPoisonState : AbstractCharacterState
     private float _timeBetweenTakeAwayMana;
     private float _startTimeBetweenTakeAwayMana = 1f;
 
-    private float _duration;
     private float _baseDuration;
 
     private float _baseValueTakeAwayMana = 0.003f;
@@ -26,7 +25,7 @@ public class WitheringPoisonState : AbstractCharacterState
     private bool _isActiveTalentBindingPoison = false;
 
     public int CurrentStacks { get => currentStacksCount; set => currentStacksCount = value; }
-    public float StacksDuration { get => _duration; }
+    public float StacksDuration { get => duration; }
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
     public override States State => States.WitheringPoison;
@@ -37,10 +36,6 @@ public class WitheringPoisonState : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         MaxStacksCount = _maxStacks;
-
-        characterState = character;
-
-        _duration = durationToExit;
         _baseDuration = durationToExit;
 
         _player = personWhoMadeBuff;
@@ -81,12 +76,6 @@ public class WitheringPoisonState : AbstractCharacterState
         {
             ExitState();
         }
-
-        _duration -= Time.deltaTime;
-        if (_duration < 0)
-        {
-            ExitState();
-        }
     }
 
     public override void ExitState()
@@ -105,7 +94,7 @@ public class WitheringPoisonState : AbstractCharacterState
         }
         else
         {
-            _duration = _baseDuration;
+            duration = _baseDuration;
             return true;
         }
     }
@@ -115,11 +104,11 @@ public class WitheringPoisonState : AbstractCharacterState
         if (currentStacksCount < MaxStacksCount)
         {
             currentStacksCount++;
-            _duration = _baseDuration;
+            duration = _baseDuration;
         }
         else
         {
-            _duration = _baseDuration;
+            duration = _baseDuration;
         }
     }
 
@@ -147,7 +136,7 @@ public class WitheringPoisonState : AbstractCharacterState
     {
         currentStacksCount = 0;
         _baseDuration = 0;
-        _duration = 0;
+        duration = 0;
         _endValueTakeAwayMana = 0;
         _baseValueTakeAwayMana = 1f;
         _chanceOfApplyBindingPoison = 0f;

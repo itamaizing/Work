@@ -7,7 +7,6 @@ public class FrozenState : IndependentState
 	//public bool turnOff = false;
 	private GameObject _frozenEffectInstance;
 	private AudioSource _audioSource;
-	private float _baseDuration;
 	private float _damageToExit;
 	private float _damageOnStart = 0;
 	private bool _isInited = false;
@@ -23,10 +22,6 @@ public class FrozenState : IndependentState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		Debug.Log("Enter state");
-		characterState = character;
-		duration = durationToExit;
-		_baseDuration = durationToExit;
 		MaxStacksCount = 3;
 		if (damageToExit == 0)
 		{
@@ -84,8 +79,7 @@ public class FrozenState : IndependentState
 	}
 
 	public override void UpdateState()
-	{
-		
+	{		
 		if(!_isInited) return;
 		if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit )//|| turnOff)
 		{

@@ -8,7 +8,6 @@ public class FrostingState : AbstractCharacterState
 
 	private GameObject _ice;
 	private AudioSource _audioSource;
-	//private float _duration;
 	private float _baseDuration;
 	private float _damageOnStart;
 	private float _damageToExit;
@@ -21,9 +20,6 @@ public class FrostingState : AbstractCharacterState
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		//Debug.Log("Entering Frosting State");
-		characterState = character;
-
 		if (damageToExit == 0)
 		{
 			_damageToExit = 10000;
@@ -32,7 +28,6 @@ public class FrostingState : AbstractCharacterState
 		{
 			_damageToExit = damageToExit;
 		}
-		duration = durationToExit;
 		_baseDuration = durationToExit;
 		_audioSource = character.GetComponent<AudioSource>();
 
@@ -69,8 +64,7 @@ public class FrostingState : AbstractCharacterState
 
 	public override void UpdateState()
 	{
-		duration -= Time.deltaTime;
-		if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || duration < 0 || turnOff)
+		if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || turnOff)
 		{
 			ExitState();
 		}

@@ -15,11 +15,9 @@ public class HealingPoisonCloudState : AbstractCharacterState
     private float _timeBetweenHeal;
     private float _startTimeBetweenHeal = 1f;
 
-    private static float _duration;
     private static float _baseDuration;
 
     private LayerMask _alliesLayer;
-    private Character _player;
 
     private List<Skill> _skills = new();
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing };
@@ -31,17 +29,13 @@ public class HealingPoisonCloudState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        characterState = character;
-        _player = characterState.Character;
-
-        _duration = durationToExit;
         _baseDuration = durationToExit;
 
         MaxStacksCount = _maxStacks;
         
-        if (_player != null)
+        if (characterState != null)
         {
-            _skills = _player.CharacterState.Character.Abilities.Abilities;
+            _skills = characterState.Character.Abilities.Abilities;
 
             SearchAbilities();
         }
@@ -58,16 +52,9 @@ public class HealingPoisonCloudState : AbstractCharacterState
         _timeBetweenHeal -= Time.deltaTime;
         if (_timeBetweenHeal <= 0)
         {
-            RpcSearchingEnemies(_alliesLayer, _player.gameObject);
+            RpcSearchingEnemies(_alliesLayer, characterState.gameObject);
             _timeBetweenHeal = _startTimeBetweenHeal;
         }
-
-        _duration -= Time.deltaTime;
-        if (_duration < 0)
-        {
-            ExitState();
-        }
-
     }
 
     public override void ExitState()
@@ -86,7 +73,7 @@ public class HealingPoisonCloudState : AbstractCharacterState
         }
         else
         {
-            _duration = _baseDuration;
+            duration = _baseDuration;
             return true;
         }
     }
@@ -96,11 +83,11 @@ public class HealingPoisonCloudState : AbstractCharacterState
         if (currentStacksCount < MaxStacksCount)
         {
             currentStacksCount++;
-            _duration = _baseDuration;
+            duration = _baseDuration;
         }
         else
         {
-            _duration = _baseDuration;
+            duration = _baseDuration;
         }
     }
 
@@ -160,7 +147,7 @@ public class HealingPoisonCloudState : AbstractCharacterState
     {
         currentStacksCount = 0;
         _baseDuration = 0;
-        _duration = 0;
+        duration = 0;
         _endHeal = 0;
         _increasedHeal = 0;
         _baseHeal = 0.005f;

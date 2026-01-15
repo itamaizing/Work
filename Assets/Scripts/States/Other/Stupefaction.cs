@@ -7,7 +7,6 @@ public class Stupefaction : AbstractCharacterState
 	public bool turnOff = false;
 	//private PlayerAbilities _abilities;
 	private float _baseDuration;
-	private float _duration;
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability };
 	public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
@@ -29,7 +28,6 @@ public class Stupefaction : AbstractCharacterState
 		characterState.Character.Move.IsMoveBlocked = true;
 		characterState.Character.Move.StopMoveAndAnimationMove();
 
-		_duration = durationToExit;
 		_baseDuration = durationToExit;
 
 		characterState.Character.Health.DamageTaken += OnAnyDamage;
@@ -37,8 +35,7 @@ public class Stupefaction : AbstractCharacterState
 
 	public override void UpdateState()
 	{
-		_duration -= Time.deltaTime;
-		if (_duration < 0 || turnOff)
+		if (turnOff)
 		{
 			ExitState();
 		}
@@ -61,10 +58,11 @@ public class Stupefaction : AbstractCharacterState
 		}
 		else
 		{
-			_duration = time;
+			duration = time;
 			return true;
 		}
 	}
 
 	private void OnAnyDamage(Damage damage, Skill fromSkill) => turnOff = true;
+
 }

@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class DisappointmentState : AbstractCharacterState
 {
-    private float _duration;
     private float _baseDuration;
     private float _damageToExit;
     private float _damageOnStart = 0;
@@ -18,8 +17,6 @@ public class DisappointmentState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        characterState = character;
-        _duration = durationToExit;
         _baseDuration = durationToExit;
         _damageToExit = damageToExit == 0 ? 10000 : damageToExit;
         _damageOnStart = characterState.Character.Health.SumDamageTaken;
@@ -39,8 +36,7 @@ public class DisappointmentState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || _duration <= 0)
+        if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit)
         {
             ExitState();
         }
@@ -67,7 +63,7 @@ public class DisappointmentState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        _duration = _baseDuration;
+        duration = _baseDuration;
         return true;
     }
 }

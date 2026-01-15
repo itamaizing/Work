@@ -8,7 +8,6 @@ public class SpiritHealthState : AbstractCharacterState
     private const int _baseMaxStacks = 3;
 
     private float _baseDuration;
-    private float _duration;
     private float _regenAmount;
 
     private GameObject _spiritHealthStateEffectInstance;
@@ -26,7 +25,6 @@ public class SpiritHealthState : AbstractCharacterState
     {
         characterState = character;
         _character = character.Character;
-        _duration = durationToExit;
         _baseDuration = durationToExit;
         currentStacksCount = 1;
         MaxStacksCount = _baseMaxStacks;
@@ -49,17 +47,11 @@ public class SpiritHealthState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-
-        if (_duration <= 0)
-        {
-            ExitState();
-        }
     }
 
     public override bool Stack(float time)
     {
-        _duration = Mathf.Max(_duration, time);
+        duration = Mathf.Max(duration, time);
 
         if (currentStacksCount < MaxStacksCount)
         {

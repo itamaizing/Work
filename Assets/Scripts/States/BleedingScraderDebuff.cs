@@ -7,7 +7,6 @@ public class BleedingScraderDebuff : AbstractCharacterState
 {
     private Character _target;
 
-    private float _duration;
     private float _baseDuration;
     private float _damage;
     private float _baseDamage;
@@ -26,13 +25,11 @@ public class BleedingScraderDebuff : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        characterState = character;
         _target = characterState.Character;
         _damage = damageToExit;
         _baseDamage = damageToExit;
 
         _baseDuration = durationToExit;
-        _duration = durationToExit;
     }
 
     public override void ExitState()
@@ -53,25 +50,12 @@ public class BleedingScraderDebuff : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
         timerTick += Time.deltaTime;
 
         if (timerTick >= 1f)
         {
             BleedingDamage();
             timerTick = 0f;
-        }
-
-        if (_duration < 0)
-        {
-            if (currentStacksCount > 0)
-            {
-                currentStacksCount--;
-                _baseDamage -= _damage;
-                _duration = _baseDuration;
-            }
-
-            else ExitState();
         }
     }
 
@@ -85,5 +69,20 @@ public class BleedingScraderDebuff : AbstractCharacterState
         };
 
         _target.Health.TryTakeDamage(ref damage, null);
+    }
+
+    public override void ReduceStack()
+    {
+        if (duration < 0)
+        {
+            if (currentStacksCount > 0)
+            {
+                currentStacksCount--;
+                _baseDamage -= _damage;
+                duration = _baseDuration;
+            }
+
+            else ExitState();
+        }
     }
 }

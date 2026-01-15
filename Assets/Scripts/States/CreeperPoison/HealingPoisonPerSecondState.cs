@@ -13,10 +13,7 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
     private float _timeBetweenHeal;
     private float _startTimeBetweenHeal = 1.0f;
 
-    private float _duration;
     private float _baseDuration;
-
-    private Character _player;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing };
 
@@ -32,11 +29,9 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
         MaxStacksCount = _maxStack;
 
         characterState = character;
-        _player = personWhoMadeBuff;
 
         _currentHealingValue = 0.0f;
 
-        _duration = durationToExit;
         _baseDuration = durationToExit;
         _timeBetweenHeal = _startTimeBetweenHeal;
     }
@@ -52,12 +47,6 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
             }
 
             _timeBetweenHeal = _startTimeBetweenHeal;
-        }
-
-        _duration -= Time.deltaTime;
-        if (_duration < 0)
-        {
-            ExitState();
         }
     }
 

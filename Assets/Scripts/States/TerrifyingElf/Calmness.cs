@@ -7,7 +7,6 @@ public class Calmness : AbstractCharacterState
     private const float _manaRegenPercent = 0.005f;
     private const int _baseMaxStacks = 2;
     private int _lastTreesCount;
-    private float _duration;
     private float _regenAmount;
 
     private Resource manaResource;
@@ -21,13 +20,11 @@ public class Calmness : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        characterState = character;
         health = character.Character.Health;
         manaResource = character.Character.TryGetResource(ResourceType.Mana);
         base.personWhoMadeBuff = personWhoMadeBuff;
         MaxStacksCount = _baseMaxStacks;
         currentStacksCount = 1;
-        _duration = durationToExit;
 
         RecalcRegenAmount();
         if (character.isServer) _regenRoutine = character.StartCoroutine(RegenTick());
@@ -35,11 +32,6 @@ public class Calmness : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0)
-        {
-            ExitState();
-        }
     }
 
     public override void ExitState()
@@ -52,7 +44,7 @@ public class Calmness : AbstractCharacterState
 
     public override bool Stack(float newDuration)
     {
-        _duration = Mathf.Max(_duration, newDuration);
+        duration = Mathf.Max(duration, newDuration);
         Debug.Log(MaxStacksCount);
 
         if (currentStacksCount < MaxStacksCount) currentStacksCount++;
@@ -86,7 +78,7 @@ public class Calmness : AbstractCharacterState
     {
         var wait = new WaitForSeconds(1f);
 
-        while (_duration > 0)
+        while (duration > 0)
         {
             yield return wait;
 

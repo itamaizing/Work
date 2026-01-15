@@ -7,7 +7,6 @@ public class AbilityFormDebuff : AbstractCharacterState
 	public bool turnOff = false;
 	//private PlayerAbilities _abilities;
 	private float _baseDuration;
-	private float _duration;
 	public AbilityForm canceledForm;
 	public bool canCancel = false;
 
@@ -33,15 +32,13 @@ public class AbilityFormDebuff : AbstractCharacterState
 		{
 			Debug.Log("no ability at " + character.gameObject.name);
 		}
-		_duration = durationToExit;
 		_baseDuration = durationToExit;
 	}
 
 	public override void UpdateState()
 	{
 		Debug.Log("Updating AbilityFormDebuff State");
-		_duration -= Time.deltaTime;
-		if (_duration < 0 || turnOff)
+		if (turnOff)
 		{
 			ExitState();
 		}
@@ -60,13 +57,13 @@ public class AbilityFormDebuff : AbstractCharacterState
 	public override bool Stack(float time)
 	{
 
-		if (_duration > time)
+		if (duration > time)
 		{
 			return true;
 		}
 		else
 		{
-			_duration = time;
+			duration = time;
 			return true;
 		}
 	}
