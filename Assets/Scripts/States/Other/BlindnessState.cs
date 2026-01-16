@@ -58,14 +58,6 @@ public class BlindnessState : AbstractCharacterState
         characterState.RemoveState(this);
     }
 
-    public override bool Stack(float time)
-    {
-        if (_baseDuration > time) return false;
-
-        _duration = time;
-        return true;
-    }
-
     private void ApplyEffectToLocalCamera()
     {
        // Debug.Log("Applying Blindness effect to local camera...");

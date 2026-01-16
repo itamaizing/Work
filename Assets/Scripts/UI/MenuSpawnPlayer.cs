@@ -24,7 +24,6 @@ public class MenuSpawnPlayer : MonoBehaviour
         _characterPanel.OnHeroChanged -= SpawnPlayer;
         if(_currentHero != null)
         {
-            Debug.Log("Destroyed");
             Destroy(_currentHero.gameObject);
         }
     }

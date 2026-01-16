@@ -83,7 +83,7 @@ public class Silent : AbstractCharacterState
         UnblockMagicAbilities();
     }
 
-    public override bool Stack(float time)
+   /* public override bool Stack(float time)
     {
         if (_currentStacks < _maxStacks)
         {
@@ -98,7 +98,7 @@ public class Silent : AbstractCharacterState
             Debug.Log($"Max stacks reached. Refreshing Silent duration: {_duration}s");
             return false;
         }
-    }
+    }*/
 
     private void BlockMagicAbilities()
     {

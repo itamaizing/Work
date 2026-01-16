@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FrozenState : IndependentState
+public class FrozenState : AbstractCharacterState
 {
 	//public bool turnOff = false;
 	private GameObject _frozenEffectInstance;

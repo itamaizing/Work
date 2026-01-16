@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public class UIMenuMainTalentsPanel : MonoBehaviour
 {
@@ -18,11 +17,9 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
         ResetPanel();
         
         _talentSystem = talentSystem;
-
         foreach (var data in _talentSystem.TalentsGroups)
         {
             var panel = Instantiate(_talentsPanelGroup, _itemsParent);
-            
             panel.SetPanel(data, _attributesPanel, isGameUI, isInteractable);
 
             panel.OnShowPanelGroup += HidePanels;

@@ -45,17 +45,4 @@ public class StunnedState : AbstractCharacterState
 		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.IsMoveBlocked = false;
 		if (!characterState.Check(StatusEffect.Ability) && abilities != null) abilities.SetAbilitiesDisactive(false);
 	}
-
-	public override bool Stack(float time)
-	{
-		if (_baseDuration > time)
-		{
-			return false;
-		}
-		else
-		{
-			duration = time;
-			return true;
-		}
-	}
 }

@@ -62,11 +62,6 @@ public class RestorationState : AbstractCharacterState
         characterState.RemoveState(this);
     }
 
-    public override bool Stack(float time)
-    {
-        duration = time;
-        return false;
-    }
     [Server] private void CmdHeal(float healValue) => ClientRpcHeal(healValue);
 
     [ClientRpc]

@@ -94,7 +94,13 @@ public abstract class AbstractCharacterState
     }
 
 	public abstract void UpdateState();
-	public abstract bool Stack(float time);
+
+	public virtual bool Stack(float time)
+	{
+		duration = time;
+		return false; 
+	}
+
 	public virtual void ReduceStack()
 	{
         ExitState();
@@ -105,17 +111,14 @@ public abstract class StackableState : AbstractCharacterState
 {
 	public override bool Stack(float time)
 	{
+		duration = time;
 		return true; 
 	}
 }
 
 public abstract class RefreshingState : StackableState
 {
-    public override bool Stack(float time)
-    {
-        duration = time;
-        return true;
-    }
+	public new abstract bool Stack(float time);
 
     public override void ReduceStack()
     {
@@ -126,8 +129,6 @@ public abstract class RefreshingState : StackableState
 
 public abstract class IndependentState: StackableState
 {
-	private List<float> _timers = new();
-
     public override bool Stack(float time)
     {
 		if(currentStacksCount >= MaxStacksCount)
@@ -136,7 +137,6 @@ public abstract class IndependentState: StackableState
 		}
 		else
 		{
-			_timers.Add(time);
 			currentStacksCount++;
 		}
 		return false;
@@ -250,12 +250,22 @@ public class CharacterState : NetworkBehaviour
 
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
 	{
-		[States.Stun] = new StunnedState(),
-		[States.Frozen] = new FrozenState(),
-		[States.Frosting] = new FrostingState(),
-		[States.Cooling] = new Cooling(),
-		[States.Blind] = new BlindnessState(),
-		[States.Invisible] = new InvisibleState(),
+        #region UpdatedStates
+        [States.Frozen] = new FrozenState(),
+        [States.Frosting] = new FrostingState(),
+        [States.Cooling] = new Cooling(),
+        [States.Restoration] = new RestorationState(),
+        [States.Stun] = new StunnedState(),
+        [States.Silent] = new Silent(),
+        [States.Calmness] = new Calmness(),
+        [States.PartialBlindness] = new PartialBlindness(),
+        [States.ScorchedSoul] = new ScorchedSoul(),
+        [States.Blind] = new BlindnessState(),
+        [States.HealingSlime] = new HealingSlime(),
+        #endregion
+
+
+        [States.Invisible] = new InvisibleState(),
 		[States.SchoolDebuff] = new AbilitySchoolDebuff(),
 		[States.Desiccuration] = new Desiccuration(),
 		[States.Plague] = new Plague(),
@@ -269,7 +279,7 @@ public class CharacterState : NetworkBehaviour
 		[States.ReversePolarity] = new ReversePolarityState(),
 		[States.SpiritEnergy] = new SpiritEnergyState(),
 		[States.SpiritHealth] = new SpiritHealthState(),
-		[States.ScorchedSoul] = new ScorchedSoul(),
+		
 		[States.Knockdown] = new Knockdown(),
 		[States.IdealEvade] = new IdealEvade(),
 		[States.BleedingDebuff] = new BleedingDebuff(),
@@ -300,7 +310,6 @@ public class CharacterState : NetworkBehaviour
 		[States.ManaRegen] = new ManaRegen(),
 		[States.Stupefaction] = new Stupefaction(),
 		[States.TentacleGrip] = new TentacleGrip(),
-		[States.Restoration] = new RestorationState(),
 		[States.Destruction] = new DestructionState(),
 		[States.HardenedFlesh] = new HardenedFlesh(),
 		[States.FocusingOnReflexesState] = new FocusingOnReflexesState(),
@@ -311,14 +320,11 @@ public class CharacterState : NetworkBehaviour
 		[States.InnerDarkness] = new InnerDarkness(),
 		[States.Fear] = new Fear(),
 		[States.Astral] = new AstralState(),
-		[States.Silent] = new Silent(),
 		[States.Irradiation] = new IrradiationState(),
 		[States.Suppression] = new SuppressionState(),
 		[States.WeakeningSilence] = new WeakeningSilence(),
-		[States.PartialBlindness] = new PartialBlindness(),
 		[States.Anxiety] = new Anxiety(),
 		[States.HuntressMark] = new HuntressMark(),
-		[States.Calmness] = new Calmness(),
 		[States.Sleep] = new Sleep(),
 		[States.ElvenSkill] = new ElvenSkill(),
 		[States.Bound] = new Bound(),
@@ -326,7 +332,7 @@ public class CharacterState : NetworkBehaviour
 		[States.MultiMagic] = new MultiMagic(),
 		[States.FireFlash] = new FireFlash(),
 		[States.WarmingUpState] = new WarmingUpState(),
-		[States.HealingSlime] = new HealingSlime(),
+		
 		#endregion
 
 		#region Gandollarf	

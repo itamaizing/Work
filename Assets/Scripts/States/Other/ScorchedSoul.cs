@@ -1,11 +1,11 @@
 using System.Collections.Generic;
+using UnityEditor.Playables;
 using UnityEngine;
 
-public class ScorchedSoul : AbstractCharacterState
+public class ScorchedSoul : RefreshingState
 {
-    private int _currentStacks = 1;
-
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
+    private float _reducePercentage = .5f;
 
     public override States State => States.ScorchedSoul;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
@@ -16,16 +16,12 @@ public class ScorchedSoul : AbstractCharacterState
     {
         Debug.Log("Entering ScorchedSoulDebuff State");
 
-        //effects.Add(StatusEffect.AbilitySpeed);
-        //effects.Add(StatusEffect.AbilityCooldownSpeed);
-
-        //Cmd111();
         var abilities = characterState.GetComponentInChildren<SkillManager>();
 
         foreach (var ability in abilities.Abilities)
         {
             Debug.LogWarning($"Cast speed before: {ability.Buff.CastSpeed.Multiplier}");
-            ability.Buff.CastSpeed.ReductionPercentage(.5f);
+            ability.Buff.CastSpeed.ReductionPercentage(_reducePercentage);
             Debug.LogWarning("Cast speed reduced!!!! - CharacterState.EnterState()");
             Debug.LogWarning($"Cast speed after: {ability.Buff.CastSpeed.Multiplier}");
             Debug.LogWarning($"Cast speed after: {ability.Buff.CastSpeed.GetBuffedValue(1f)}");
@@ -34,8 +30,6 @@ public class ScorchedSoul : AbstractCharacterState
 
     public override void ExitState()
     {
-        Debug.Log("Exiting ScorchedSoulDebuff State");
-
         if (!characterState.Check(StatusEffect.AbilitySpeed))
         {
             //return cast speed
@@ -43,7 +37,8 @@ public class ScorchedSoul : AbstractCharacterState
             {
                 foreach (var ability in abilities.Abilities)
                 {
-                    //ability.Buff.CastSpeed.IncreasePercentage(10f);
+
+                    ability.Buff.CastSpeed.Reset();
                 }
             }
         }
@@ -56,19 +51,25 @@ public class ScorchedSoul : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        Debug.LogWarning($"Stacks ScorchedSoul: {_currentStacks}");
-
         duration = time;
 
-        if (_currentStacks >= 3)
-            return false;
+        if (currentStacksCount < 3)
+        {
+            currentStacksCount++;
+            foreach (var ability in abilities.Abilities)
+            {
+                Debug.LogWarning($"Cast speed before: {ability.Buff.CastSpeed.Multiplier}");
+                ability.Buff.CastSpeed.ReductionPercentage(_reducePercentage * currentStacksCount);
+                Debug.LogWarning("Cast speed reduced!!!! - CharacterState.EnterState()");
+                Debug.LogWarning($"Cast speed after: {ability.Buff.CastSpeed.Multiplier}");
+                Debug.LogWarning($"Cast speed after: {ability.Buff.CastSpeed.GetBuffedValue(1f)}");
+            }
+        }
 
-        _currentStacks++;
         return true;
     }
 
     public override void UpdateState()
     {
-        Debug.Log("Updating ScorchedSoulDebuff State");
     }
 }

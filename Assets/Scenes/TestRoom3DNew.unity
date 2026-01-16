@@ -292240,6 +292240,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dc7d74e934f28f46ba9a2c6025e9ac7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_MoveSpeed: 20
+  m_BorderDistance: 5
+  m_MinX: -64
+  m_MaxX: 64
+  m_MinY: -64
+  m_MaxY: 64
   Target: {fileID: 0}
   moveSpeed: 10
   fastMoveSpeed: 30
@@ -292248,6 +292254,9 @@ MonoBehaviour:
   offset: {x: 0, y: 0, z: 0}
   smoothSpeed: 0.125
   minDistance: 2
+  sensitivity: 10
+  minY: 5
+  maxY: 30
 --- !u!1 &1933673935
 GameObject:
   m_ObjectHideFlags: 0

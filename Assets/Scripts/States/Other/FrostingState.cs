@@ -95,11 +95,4 @@ public class FrostingState : AbstractCharacterState
 
 		if (characterState.StateEffects.Ice != null) _ice.SetActive(false);
 	}
-
-	public override bool Stack(float time)
-	{
-		duration = _baseDuration;
-		return true;
-	}
-
 }

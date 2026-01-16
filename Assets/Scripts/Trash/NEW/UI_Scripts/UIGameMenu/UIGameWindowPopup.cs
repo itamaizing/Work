@@ -1,7 +1,8 @@
+using Mirror;
 using System;
 using UnityEngine;
 
-public class UIGameWindowPopup : MonoBehaviour
+public class UIGameWindowPopup : NetworkBehaviour
 {
     [SerializeField] private UIMenuMainAttributesPanel _attributesPanel;
     [SerializeField] private UIMenuMainTalentsPanel _talentsPanel;
@@ -93,7 +94,7 @@ public class UIGameWindowPopup : MonoBehaviour
         _attributesPanel.Show(_currentHero.Data.Attributes);
         
         _talentsPanel.gameObject.SetActive(true);
-        _talentsPanel.Show(_currentHero.TalentManager, true);
+        _talentsPanel.Show(_currentHero.TalentManager, true, _currentHero.isOwned);
 
     }
 }

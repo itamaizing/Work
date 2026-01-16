@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealingSlime : AbstractCharacterState
+public class HealingSlime :  AbstractCharacterState
 {
     public override States State => States.HealingSlime;
     public override StateType Type => StateType.Magic;
@@ -39,8 +39,6 @@ public class HealingSlime : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
-        characterState = character;
-        personWhoMadeBuff = caster;
         health = character.Character.Health;
 
         currentStacksCount = 0;

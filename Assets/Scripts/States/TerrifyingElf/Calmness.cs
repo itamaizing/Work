@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Calmness : AbstractCharacterState
+public class Calmness : RefreshingState
 {
     private const float _manaRegenPercent = 0.005f;
     private const int _baseMaxStacks = 2;
@@ -45,12 +45,13 @@ public class Calmness : AbstractCharacterState
     public override bool Stack(float newDuration)
     {
         duration = Mathf.Max(duration, newDuration);
-        Debug.Log(MaxStacksCount);
 
-        if (currentStacksCount < MaxStacksCount) currentStacksCount++;
+        if (currentStacksCount < MaxStacksCount)
+        {
+            currentStacksCount++;
 
-        RecalcRegenAmount();
-
+            RecalcRegenAmount();
+        }
         return true;
     }
 
