@@ -169,6 +169,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 1780925315992858912, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      propertyPath: m_StoppingDistance
+      value: 0.4
+      objectReference: {fileID: 0}
     - target: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: _playerData
       value: 
