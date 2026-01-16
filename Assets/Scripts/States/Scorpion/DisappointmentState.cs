@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class DisappointmentState : AbstractCharacterState
 {
-    private float _duration;
     private float _baseDuration;
     private float _damageToExit;
     private float _damageOnStart = 0;
@@ -18,19 +17,17 @@ public class DisappointmentState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
-        _duration = durationToExit;
         _baseDuration = durationToExit;
         _damageToExit = damageToExit == 0 ? 10000 : damageToExit;
-        _damageOnStart = _characterState.Character.Health.SumDamageTaken;
+        _damageOnStart = characterState.Character.Health.SumDamageTaken;
 
-        _characterState.Character.Move.CanMove = false;
-        _characterState.Character.Move.LookAtTransform(_characterState.transform);
+        characterState.Character.Move.CanMove = false;
+        characterState.Character.Move.LookAtTransform(characterState.transform);
 
-        if (_characterState.Character.TryGetComponent(out SkillManager abilities))
+        if (characterState.Character.TryGetComponent(out SkillManager abilities))
         {
-            _abilities = abilities;
-            foreach (var skill in _abilities.Abilities)
+            base.abilities = abilities;
+            foreach (var skill in base.abilities.Abilities)
             {
                 skill.Disactive = true;
             }
@@ -39,8 +36,7 @@ public class DisappointmentState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || _duration <= 0)
+        if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit)
         {
             ExitState();
         }
@@ -48,17 +44,17 @@ public class DisappointmentState : AbstractCharacterState
 
     public override void ExitState()
     {
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
 
-        if (!_characterState.Check(StatusEffect.Move))
+        if (!characterState.Check(StatusEffect.Move))
         {
-            _characterState.Character.Move.CanMove = true;
-            _characterState.Character.Move.StopLookAt();
+            characterState.Character.Move.CanMove = true;
+            characterState.Character.Move.StopLookAt();
         }
 
-        if (!_characterState.Check(StatusEffect.Ability) && _abilities != null)
+        if (!characterState.Check(StatusEffect.Ability) && abilities != null)
         {
-            foreach (var skill in _abilities.Abilities)
+            foreach (var skill in abilities.Abilities)
             {
                 skill.Disactive = false;
             }
@@ -67,7 +63,7 @@ public class DisappointmentState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        _duration = _baseDuration;
+        duration = _baseDuration;
         return true;
     }
 }

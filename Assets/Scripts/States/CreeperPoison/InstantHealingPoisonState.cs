@@ -5,7 +5,6 @@ public class InstantHealingPoisonState : AbstractCharacterState
 {
     /* For PoisonBall Ability */
 
-    private Character _player;
     private HealingPoisonPerSecondState _healingPoisonPerSecondState;
 
     private int _maxStacks = 1;
@@ -17,7 +16,6 @@ public class InstantHealingPoisonState : AbstractCharacterState
     private float _timeBetweenHeal;
     private float _startTimeBetweenHeal = 1.0f;
 
-    private float _duration;
     private float _baseDuration;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing };
@@ -31,11 +29,9 @@ public class InstantHealingPoisonState : AbstractCharacterState
     {
         MaxStacksCount = _maxStacks;
 
-        _characterState = character;
+        characterState = character;
 
-        _duration = durationToExit;
         _baseDuration = durationToExit;
-        _player = personWhoMadeBuff;
     }
 
     public override void UpdateState()
@@ -45,7 +41,7 @@ public class InstantHealingPoisonState : AbstractCharacterState
 
     public override void ExitState()
     {
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -56,9 +52,9 @@ public class InstantHealingPoisonState : AbstractCharacterState
     [Server]
     private void MakeHeal()
     {
-        if (_characterState.CheckForState(States.HealingPoisonPerSecond))
+        if (characterState.CheckForState(States.HealingPoisonPerSecond))
         {
-            _healingPoisonPerSecondState = (HealingPoisonPerSecondState)_characterState.GetState(States.HealingPoisonPerSecond);
+            _healingPoisonPerSecondState = (HealingPoisonPerSecondState)characterState.GetState(States.HealingPoisonPerSecond);
             float multiplierHealValue = _healingPoisonPerSecondState.TotalHealValue;
             _totalHealed = _baseHealingValue + multiplierHealValue;
         }
@@ -73,9 +69,8 @@ public class InstantHealingPoisonState : AbstractCharacterState
             DamageableSkill = null,
         };
 
-        _characterState.Character.Health.Heal(ref heal, null);
+        characterState.Character.Health.Heal(ref heal, null);
 
         ExitState();
     }
-
 }

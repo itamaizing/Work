@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class TiredSoul : AbstractCharacterState
 {
-    private float _duration;
     private float _baseDuration;
 
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
@@ -13,23 +12,20 @@ public class TiredSoul : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
-        _duration = durationToExit;
+        characterState = character;
         _baseDuration = durationToExit;
-        CurrentStacksCount++;
+        currentStacksCount++;
         MaxStacksCount = 2;
     }
 
     public override void UpdateState()
-    {
-        _duration -= Time.deltaTime;
-        
-        if (_duration <= _baseDuration * (CurrentStacksCount - 1) && CurrentStacksCount > 0)
+    { 
+        if (duration <= _baseDuration * (currentStacksCount - 1) && currentStacksCount > 0)
         {
-            CurrentStacksCount--;
-            _duration = _baseDuration * CurrentStacksCount;
+            currentStacksCount--;
+            duration = _baseDuration * currentStacksCount;
 
-            if (CurrentStacksCount == 0)
+            if (currentStacksCount == 0)
             {
                 ExitState();
             }
@@ -38,19 +34,19 @@ public class TiredSoul : AbstractCharacterState
 
     public override void ExitState()
     {
-       if(!_characterState.CheckForState(States.TiredSoul)) 
+       if(!characterState.CheckForState(States.TiredSoul)) 
            return;
        
-       _characterState.RemoveState(this);
+       characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        if (CurrentStacksCount < MaxStacksCount)
+        if (currentStacksCount < MaxStacksCount)
         {
-            CurrentStacksCount++;
-            _duration += time;
-            _duration = Mathf.Min(_duration, _baseDuration * CurrentStacksCount);
+            currentStacksCount++;
+            duration += time;
+            duration = Mathf.Min(duration, _baseDuration * currentStacksCount);
         }
         return true;
     }

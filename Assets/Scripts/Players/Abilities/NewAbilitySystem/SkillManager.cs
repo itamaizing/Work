@@ -72,7 +72,7 @@ public class SkillManager : MonoBehaviour
 
     private void Awake()
     {
-        InputHandler.ScrollMouse += ScrollMouse;
+        //InputHandler.ScrollMouse += ScrollMouse;
 
         _skillQueue = GetComponent<SkillQueue>();
         _autoSkillCast = new(this);

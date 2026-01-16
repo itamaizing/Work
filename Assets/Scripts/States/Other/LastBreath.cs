@@ -15,16 +15,16 @@ public class LastBreath : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		_character = character.Character;
-		_abilities = _character.Abilities;
+		abilities = _character.Abilities;
 		_durationToExit = durationToExit;
-		_health = _character.Health;
+		health = _character.Health;
 
 		_character.Move.ChangeMoveSpeed(1.2f);
-		for (int i = 0; i < _abilities.Abilities.Count; i++)
+		for (int i = 0; i < abilities.Abilities.Count; i++)
 		{
-			_abilities.Abilities[i].Buff.AttackSpeed.IncreasePercentage(1.4f);
+			abilities.Abilities[i].Buff.AttackSpeed.IncreasePercentage(1.4f);
 		}
-		_health.RegenerationValue *= 4;
+		health.RegenerationValue *= 4;
 		//increase -regen
 	}
 
@@ -41,11 +41,11 @@ public class LastBreath : AbstractCharacterState
 	{
 		//decrease -regen
 		//_character.Move.ChangeMoveSpeedBack(1.2f);
-		for (int i = 0; i < _abilities.Abilities.Count; i++)
+		for (int i = 0; i < abilities.Abilities.Count; i++)
 		{
-			_abilities.Abilities[i].Buff.AttackSpeed.ReductionPercentage(1.4f);
+			abilities.Abilities[i].Buff.AttackSpeed.ReductionPercentage(1.4f);
 		}
-		_health.RegenerationValue /= 4;
+		health.RegenerationValue /= 4;
 	}
 
 	public override bool Stack(float time)

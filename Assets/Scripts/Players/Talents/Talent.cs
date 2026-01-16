@@ -21,5 +21,14 @@ public abstract class Talent : MonoBehaviour
 	public void SetActive(bool isActive)
 	{
 		_data.IsOpen = isActive;
+
+		if (isActive)
+		{
+			Enter();
+		}
+		else
+		{
+			Exit();
+		}
 	}
 }

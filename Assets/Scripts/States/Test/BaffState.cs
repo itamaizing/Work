@@ -17,13 +17,13 @@ public class BaffState : AbstractCharacterState
     public BaffState()
     {
         MaxStacksCount = 20;
-        CurrentStacksCount = 1;
+        currentStacksCount = 1;
     }
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
-        _personWhoMadeBuff = personWhoMadeBuff;
+        characterState = character;
+        base.personWhoMadeBuff = personWhoMadeBuff;
         _durationRemaining = durationToExit;
         _skillName = skillName;
     }
@@ -41,14 +41,14 @@ public class BaffState : AbstractCharacterState
 
     public override void ExitState()
     {
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        if (CurrentStacksCount < MaxStacksCount)
+        if (currentStacksCount < MaxStacksCount)
         {
-            CurrentStacksCount++;
+            currentStacksCount++;
             _durationRemaining = time;
 
             return true;

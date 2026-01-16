@@ -37,7 +37,7 @@ public class StateIcons : MonoBehaviour
     {
         foreach (var ico in _activeEffects)
         {
-            if (ico.State == state)
+            if (ico.State == state && canStack)
             {
                 ico.FadeFront.DOKill();
                 ico.count = canStack ? Mathf.Min(ico.count + stack, maxStackValue) : 1;
@@ -156,6 +156,7 @@ public class StateIcons : MonoBehaviour
             {
                 Destroy(_activeEffects[i].gameObject);
                 _activeEffects.RemoveAt(i);
+                break;
             }
         }
     }

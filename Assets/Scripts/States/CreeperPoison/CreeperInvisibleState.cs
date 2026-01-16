@@ -25,8 +25,8 @@ public class CreeperInvisibleState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
-        _player = _characterState.Character;
+        characterState = character;
+        _player = characterState.Character;
 
         _originalMoveSpeed = _player.Move.DefaultSpeed;
         _originalStaminaRegen = _player.TryGetResource(ResourceType.Mana).RegenerationDelay;
@@ -68,7 +68,7 @@ public class CreeperInvisibleState : AbstractCharacterState
     {
         _playerInInvisible = false;
         ResetValues();
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

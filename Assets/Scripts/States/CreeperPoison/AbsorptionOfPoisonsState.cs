@@ -21,7 +21,7 @@ public class AbsorptionOfPoisonsState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
+        characterState = character;
         _player = personWhoMadeBuff;
 
         _duration = durationToExit;
@@ -44,7 +44,7 @@ public class AbsorptionOfPoisonsState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        CurrentStacksCount++;
+        currentStacksCount++;
 
         _duration = _baseDuration;
 
@@ -59,12 +59,12 @@ public class AbsorptionOfPoisonsState : AbstractCharacterState
 
         ResetValues();
 
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     private void IncreaseHealth()
     {
-        float increasingValue = CurrentStacksCount * _baseHealthIncrease;
+        float increasingValue = currentStacksCount * _baseHealthIncrease;
 
         _increasedHealth = _maxHealth * increasingValue;
 
@@ -77,7 +77,7 @@ public class AbsorptionOfPoisonsState : AbstractCharacterState
     {
         _allIncreasedHealth = 0;
 
-        CurrentStacksCount = 0;
+        currentStacksCount = 0;
 
         _duration = 0;
 

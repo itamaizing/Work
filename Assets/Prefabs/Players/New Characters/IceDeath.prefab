@@ -2521,6 +2521,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 1382b47eecc788c46b35297311c129c3, type: 2}
     - target: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _menuPreview
+      value: 
+      objectReference: {fileID: 1951599856593829608, guid: dc020ea55e813d741b57af6e98c3e174, type: 3}
+    - target: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_resources.Array.data[2]'
       value: 
       objectReference: {fileID: 2964606747735547343}

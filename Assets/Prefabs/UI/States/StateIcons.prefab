@@ -33,7 +33,6 @@ RectTransform:
   m_Children:
   - {fileID: 3830031760113648994}
   m_Father: {fileID: 704795987884427103}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -133,7 +132,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2788831945022719616}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -190,6 +188,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7703766091663909860}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -197,7 +196,6 @@ Transform:
   m_Children:
   - {fileID: 2788831945022719616}
   m_Father: {fileID: 0}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7875684509955136938
 MonoBehaviour:
@@ -213,7 +211,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _spawnPos: {fileID: 6049582075187755511}
   _template: {fileID: 7378013951281155230, guid: e2e0fde8cffd89f49ba789c80aaf293b, type: 3}
-  _icoDatabase: {fileID: 11400000, guid: 8c7bae4641e023c45b600d85a1735532, type: 2}
+  _icoDatabase: {fileID: 11400000, guid: 1576c3a74a8fb0840aaea86b8863413f, type: 2}
   _baffColor: {r: 0.23, g: 0.9, b: 0.23, a: 1}
   _debaffColor: {r: 0.9, g: 0.15, b: 0.15, a: 1}
   _neutralColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}

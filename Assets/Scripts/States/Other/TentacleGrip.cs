@@ -7,7 +7,6 @@ public class TentacleGrip : AbstractCharacterState
 	public bool turnOff = false;
 	//private PlayerAbilities _abilities;
 	private float _baseDuration;
-	private float _duration;
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability };
 	public override BaffDebaff BaffDebaff => BaffDebaff.Null;
@@ -18,19 +17,16 @@ public class TentacleGrip : AbstractCharacterState
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		_characterState = character;
-
 		if (character.TryGetComponent<Character>(out var ability))
 		{
-			_abilities = ability.Abilities;
-			_abilities.SetPhysicalAbilitiesDisactive(true);
+			abilities = ability.Abilities;
+			abilities.SetPhysicalAbilitiesDisactive(true);
 		}
 		else Debug.Log("no ability at " + character.gameObject.name);
 
-		_characterState.Character.Move.IsMoveBlocked = true;
-		_characterState.Character.Move.StopMoveAndAnimationMove();
+		characterState.Character.Move.IsMoveBlocked = true;
+		characterState.Character.Move.StopMoveAndAnimationMove();
 
-		_duration = durationToExit;
 		_baseDuration = durationToExit;
 	}
 
@@ -41,9 +37,9 @@ public class TentacleGrip : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		_characterState.RemoveState(this);
-		if (!_characterState.Check(StatusEffect.Move)) _characterState.Character.Move.IsMoveBlocked = false;
-		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null) _abilities.SetPhysicalAbilitiesDisactive(false);
+		characterState.RemoveState(this);
+		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.IsMoveBlocked = false;
+		if (!characterState.Check(StatusEffect.Ability) && abilities != null) abilities.SetPhysicalAbilitiesDisactive(false);
 	}
 
 	public override bool Stack(float time)
@@ -52,7 +48,7 @@ public class TentacleGrip : AbstractCharacterState
 
 		else
 		{
-			_duration = time;
+			duration = time;
 			return true;
 		}
 	}

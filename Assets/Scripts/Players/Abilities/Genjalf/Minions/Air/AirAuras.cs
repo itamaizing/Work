@@ -13,10 +13,8 @@ namespace Gangdollarff.AirElemental
     public class Discharge : AbstractCharacterState
     {
         private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
-        private Character _character;
         private float _timeAfterLastEffect = 0;
         private float _effectRate = 1;
-        private float _time;
 
         private int _chance = 50;
 
@@ -30,13 +28,11 @@ namespace Gangdollarff.AirElemental
 
         public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
         {
-            _time = durationToExit;
-            _character = character.Character;
         }
 
         public override void ExitState()
         {
-            _character.CharacterState.RemoveState(this);
+            characterState.RemoveState(this);
         }
 
         public override bool Stack(float time)
@@ -46,11 +42,6 @@ namespace Gangdollarff.AirElemental
 
         public override void UpdateState()
         {
-            _time -= Time.deltaTime;
-            if (_time <= 0)
-            {
-                ExitState();
-            }
 
             _timeAfterLastEffect += Time.deltaTime;
 
@@ -58,11 +49,14 @@ namespace Gangdollarff.AirElemental
                 return;
 
             //
-            _character.CharacterState.RemoveState(_character.CharacterState.CurrentStates.FirstOrDefault(item => item.BaffDebaff == BaffDebaff.Baff));
+            characterState.RemoveState(characterState.CurrentStates.FirstOrDefault(item => item.BaffDebaff == BaffDebaff.Baff));
 
             _timeAfterLastEffect = 0;
         }
-
+        public override void ReduceStack()
+        {
+            ExitState();
+        }
     }
 
     public class RisingWind : AuraState

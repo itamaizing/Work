@@ -16,7 +16,7 @@ public class BleedingDebuff : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Debug.Log("Entering KnockdownDebuff State");
-        _characterState = character;
+        characterState = character;
 
         //effects.Add(StatusEffect.Others);
 
@@ -28,7 +28,7 @@ public class BleedingDebuff : AbstractCharacterState
     {
         Debug.Log("Exiting KnockdownDebuff State");
 
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
