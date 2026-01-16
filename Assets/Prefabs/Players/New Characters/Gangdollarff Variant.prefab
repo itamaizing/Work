@@ -8828,9 +8828,9 @@ MonoBehaviour:
   - resourceType: 1
     resourceCost: 8
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 1
+  _cooldownTime: 12
   _castDeley: 0
-  _damageValue: 117
+  _damageValue: 17
   _abilitySchool: 4
   _abilityForm: 0
   _damageType: 0

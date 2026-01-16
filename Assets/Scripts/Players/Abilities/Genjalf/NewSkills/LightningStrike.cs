@@ -60,7 +60,7 @@ public class LightningStrike : Skill
         yield return null;
     }
     
-    [Command] private void CmdAddState(Character target) => target.CharacterState.AddState(States.Blind, 2, 0,Hero.gameObject, name);
+    [Command] private void CmdAddState(Character target) => target.CharacterState.AddState(States.Discharge, 2, 0,Hero.gameObject, name);
 
     protected override void ClearData()
     {
