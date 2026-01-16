@@ -2,7 +2,7 @@ using Mirror;
 using System;
 using UnityEngine;
 
-public class UIGameWindowPopup : NetworkBehaviour
+public class UIGameWindowPopup : MonoBehaviour
 {
     [SerializeField] private UIMenuMainAttributesPanel _attributesPanel;
     [SerializeField] private UIMenuMainTalentsPanel _talentsPanel;

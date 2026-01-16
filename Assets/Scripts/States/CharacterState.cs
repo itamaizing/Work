@@ -54,6 +54,9 @@ public abstract class AbstractCharacterState
 	public virtual void GlobalEnter(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		characterState = character;
+		health = character.Character.Health;
+        abilities = character.Character.Abilities;
+        this.personWhoMadeBuff = personWhoMadeBuff;
 		duration = durationToExit;
         if (this.damageToExit == 0)
         {
@@ -98,7 +101,7 @@ public abstract class AbstractCharacterState
 	public virtual bool Stack(float time)
 	{
 		duration = time;
-		return false; 
+		return true; 
 	}
 
 	public virtual void ReduceStack()
@@ -169,7 +172,6 @@ public abstract class AuraState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        characterState = character;
 		_auraCentre = character.transform;
 		_self = personWhoMadeBuff;
 	}
