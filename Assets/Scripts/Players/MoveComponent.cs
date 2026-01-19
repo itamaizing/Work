@@ -53,7 +53,10 @@ public class MoveComponent : NetworkBehaviour
 	public Rigidbody Rigidbody => _rigidbody;
 
 	public bool IsMoveBlocked { get => _isMoveBlocked; set => _isMoveBlocked = value; }
-    public float CurrentRotationSpeed { get => _rotationDefaultSpeed + RotateModifier; }
+    public float CurrentRotationSpeed
+    {
+	    get => _rotationDefaultSpeed * RotateModifier;
+    }
     public float RotateModifier { get; set; }
 
     protected override void OnValidate()

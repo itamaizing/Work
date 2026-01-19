@@ -11,12 +11,15 @@ namespace Gangdollarff
         [SerializeField] private Firework _firework;
         [SerializeField] private float _damageRangeMin = -2;
         [SerializeField] private float _damageRangeMax = 1;
+        [SerializeField] private float _rotationSpeed = 10f;
+
 
         private List<float> _damageForTarget = new List<float>() { 1, .75f, .50f, .25f };
 
         private Vector3 _targetPoint = Vector3.positiveInfinity;
         //private Character _target;
 
+        private float _clickRadius = 0.5f;
         protected override int AnimTriggerCastDelay => 0;
 
         protected override int AnimTriggerCast => 0;
@@ -36,74 +39,78 @@ namespace Gangdollarff
 
         protected override IEnumerator CastJob()
         {
-            DisableMove();
-
-            float time = 0;
-            //_firework.gameObject.SetActive(true);
             CmdSetActiveParticle(true);
-            Hero.Move.RotateModifier = -700;
-
-            while (time < CastStreamDuration)
+            float elapsedTime = 0f;
+            float manaTimer = 0f;
+            Hero.Move.RotateModifier = 0.05f;
+            DisableMove();
+            while (elapsedTime < CastStreamDuration)
             {
-                yield return new WaitForSeconds(_manaCostRate);
-
-                int count = 0;
-                _firework.SortDamageablesByDistance(transform.position);
-
-                foreach (var item in _firework.Damageables)
+                float delta = Time.deltaTime;
+                elapsedTime += delta;
+                manaTimer += delta;
+                if (manaTimer >= _manaCostRate)
                 {
-                    if (((1 << item.gameObject.layer) & TargetsLayers) != 0)
+                    manaTimer -= _manaCostRate;
+                    _firework.SortDamageablesByDistance(transform.position);
+                    int index = 0;
+                    foreach (var item in _firework.Damageables)
                     {
-                        if (item.TryGetComponent<IDamageable>(out IDamageable enemy) && count < 4)
+                        if (((1 << item.gameObject.layer) & TargetsLayers) == 0)
+                            continue;
+                        if (!item.TryGetComponent<IDamageable>(out var enemy))
+                            continue;
+                        float modifier = 1f - (0.25f * index);
+                        if (modifier <= 0f)
+                            break;
+                        float currentDamage =
+                            UnityEngine.Random.Range(Damage + _damageRangeMin, Damage + _damageRangeMax);
+                        currentDamage *= modifier;
+                        Damage damage = new Damage
                         {
-                            float currentDamage = UnityEngine.Random.Range(Damage + _damageRangeMin, Damage + _damageRangeMax) * _damageForTarget[count];
-                            count++;
-
-                            Damage damage = new Damage
-                            {
-                                Value = Buff.Damage.GetBuffedValue(currentDamage),
-                                Type = DamageType,
-                                PhysicAttackType = AttackRangeType,
-                            };
-
-                            CmdApplyDamage(damage, item.gameObject);
-                        }
+                            Value = Buff.Damage.GetBuffedValue(currentDamage),
+                            Type = DamageType,
+                            PhysicAttackType = AttackRangeType,
+                        };
+                        CmdApplyDamage(damage, item.gameObject);
+                        index++;
                     }
                 }
-                time += _manaCostRate;
+
                 yield return null;
             }
+
             ClearData();
         }
 
+
         protected override void ClearData()
         {
-            Hero.Move.RotateModifier = 0;
+            //Hero.Move.RotateModifier = 0;
             EnableMove();
             _firework.gameObject.SetActive(false);
             CmdSetActiveParticle(false);
 
             ClearTarget();
+            ClearTempTarget();
            // _target = null;
             _targetPoint = Vector3.positiveInfinity;
         }
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
         {
-            while (float.IsPositiveInfinity(_targetPoint.x) && GetTargetCharacter() == null)
+            while (GetTempTargetCharacter() == null)
             {
                 if (GetMouseButton)
                 {
-                    FindTargetCharacter();
-                    //_target = GetTarget().character;
-                    _targetPoint = GetTargetCharacter().Position;
+                    Vector3 clickPoint = GetMousePoint();
 
-                   // _target = GetRaycastTarget();
-                    _targetPoint = GetMousePoint();
+                    FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
                 }
                 yield return null;
             }
             TargetInfo targetInfo = new();
+            SetTarget(GetTempTargetCharacter());
             targetInfo.AddTarget(GetTargetCharacter());
             targetInfo.Points.Add(_targetPoint);
             callbackDataSaved(targetInfo);
@@ -113,12 +120,14 @@ namespace Gangdollarff
         {
             Hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
             Hero.Move.IsMoveBlocked = false;
+            Hero.Move.RotateModifier = 1f;
         }
 
         private void DisableMove()
         {
             Hero.Animator.SetTrigger("Fire");
             Hero.Move.IsMoveBlocked = true;
+            Hero.Move.StopLookAt();
         }
 
         [Command]

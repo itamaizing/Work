@@ -93,10 +93,6 @@ namespace Gangdollarff
                     Vector3 clickPoint = GetMousePoint();
 
                     FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
-                    
-                    Debug.LogError("1");
-                    Debug.LogError(GetTempTargetCharacter() == null);
-                    
                 }
                 yield return null;
             }
