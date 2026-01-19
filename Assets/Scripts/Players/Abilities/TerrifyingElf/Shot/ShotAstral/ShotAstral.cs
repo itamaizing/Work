@@ -55,7 +55,7 @@ public class ShotAstral : Skill
                     }
 
                     else Hero.Move.LookAtPosition(_targetPoint);
-                    Hero.Move.CanMove = false;
+                    Hero.Move.SetCanMove(false);
                 }
             }
             yield return null;
@@ -98,7 +98,7 @@ public class ShotAstral : Skill
     {
         if (Hero?.Move != null)
         {
-            Hero.Move.CanMove = true;
+            Hero.Move.SetCanMove(true);
             Hero.Animator.speed = 1;
             AfterCastJob();
             Hero.Move.StopLookAt();

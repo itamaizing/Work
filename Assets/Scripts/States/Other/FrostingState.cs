@@ -32,7 +32,7 @@ public class FrostingState : AbstractCharacterState
 		_audioSource = character.GetComponent<AudioSource>();
 
 		_damageOnStart = characterState.Character.Health.SumDamageTaken;
-		characterState.Character.Move.CanMove = false;
+		characterState.Character.Move.SetCanMove(false);
 		characterState.Character.Move.LookAtTransform(characterState.gameObject.transform);
 
 		if (character.TryGetComponent<Character>(out var ability))
@@ -77,7 +77,7 @@ public class FrostingState : AbstractCharacterState
 
 		if (!characterState.Check(StatusEffect.Move))
 		{
-			characterState.Character.Move.CanMove = true;
+			characterState.Character.Move.SetCanMove(true);
 		}
 
 		characterState.Character.Move.StopLookAt();

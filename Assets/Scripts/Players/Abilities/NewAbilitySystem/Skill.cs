@@ -677,7 +677,7 @@ public abstract class Skill : NetworkBehaviour
 		if (foceCancel || _isCanCancle)
         {
             Canceled?.Invoke();
-            _hero.Move.CanMove = true;
+            _hero.Move.SetCanMove(true);
             ClearData();
             _isPlayCastAnim = false;
 
@@ -1455,7 +1455,7 @@ public abstract class Skill : NetworkBehaviour
                 if (_tempForDamage != null && !IsValidTarget(_tempForDamage))
                 {
                     _isCanCancle = true;
-                    _hero.Move.CanMove = true;
+                    _hero.Move.SetCanMove(true);
 
                     TryCancel(true);
                     yield break;
@@ -1500,7 +1500,7 @@ public abstract class Skill : NetworkBehaviour
         }
 
         _hero.Move.StopLookAt();
-        if (!_isAutoMode) _hero.Move.CanMove = true;
+        if (!_isAutoMode) _hero.Move.SetCanMove(true);
 
         _castCoroutine = null;
     }

@@ -96,7 +96,7 @@ public abstract class AutoAttackSkill : Skill
         _isAttacking = false;
         ClearTarget();
         //_target = null;
-        if (Hero.Move.CanMove == false) Hero.Move.CanMove = true;
+        if (Hero.Move.CanMove == false) Hero.Move.SetCanMove(true);
         _hero.Move.StopLookAt();
     }
 

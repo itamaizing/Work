@@ -54,7 +54,7 @@ public class LightningMovement : Skill
     protected override void ClearData()
     {
         IsInMovement = false;
-        _player.Move.CanMove = true;
+        _player.Move.SetCanMove(true);
         Target = null;
         _hasSecondLeap = false;
         _secondLeapPoint = Vector3.positiveInfinity;
@@ -82,7 +82,7 @@ public class LightningMovement : Skill
     protected override IEnumerator CastJob()
     {
         IsInMovement = true;
-        _player.Move.CanMove = false;
+        _player.Move.SetCanMove(false);
         _damagedCharacter = null;
 
         if (_superFastScales.Data.IsOpen)

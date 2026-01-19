@@ -279,7 +279,7 @@ public class SpitPoison : Skill, IAltAbility
             //CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
         }
 
-        _player.Move.CanMove = true;
+        _player.Move.SetCanMove(true);
     }
 
     #region Command Methods

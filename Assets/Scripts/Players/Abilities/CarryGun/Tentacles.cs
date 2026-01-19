@@ -100,7 +100,7 @@ public class Tentacles : Skill
         _spawnPoint = Vector3.positiveInfinity;
         ClearTarget();
         _spentAttackingPsiEnergy = 0f;
-        Hero.Move.CanMove = true;
+        Hero.Move.SetCanMove(true);
         _player.Move.StopLookAt();
 
         if (_previewInstance != null) Destroy(_previewInstance.gameObject);
@@ -295,7 +295,7 @@ public class Tentacles : Skill
         SetTarget(_lockedTarget);
 
         TrySpendAttackingPsi();
-        Hero.Move.CanMove = false;
+        Hero.Move.SetCanMove(false);
         Hero.Move.StopMoveAndAnimationMove();
         if (_previewInstance != null) Destroy(_previewInstance.gameObject);
 

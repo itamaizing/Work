@@ -21,8 +21,8 @@ public class MoveComponent : NetworkBehaviour
 	public Vector3 MoveDirection = Vector3.zero;
 	public Vector3 ExternalMoveDirection = Vector3.zero;
 
-	public bool CanMove = false;
-	public bool CanMoveState = false;
+	private bool _canMove = false;
+	private bool _canMoveState = false;
 	public bool IsMoving = false;
 	public bool IsSelect = false;
 	public bool IsNoRotateAtCursor = false;
@@ -52,6 +52,7 @@ public class MoveComponent : NetworkBehaviour
 
 	public Rigidbody Rigidbody => _rigidbody;
 
+	public bool CanMove => _canMove;
 	public bool IsMoveBlocked { get => _isMoveBlocked; set => _isMoveBlocked = value; }
     public float CurrentRotationSpeed { get => _rotationDefaultSpeed + RotateModifier; }
     public float RotateModifier { get; set; }
@@ -69,7 +70,17 @@ public class MoveComponent : NetworkBehaviour
 		_offset = offset;
 	}
 
-	public void Initialize(float speed, Rigidbody rb , bool isHero = false)
+	public void SetCanMove(bool canMove)
+	{
+		_canMove = canMove;
+	}
+
+    public void SetCanMoveState(bool canMove)
+    {
+        _canMoveState = canMove;
+    }
+
+    public void Initialize(float speed, Rigidbody rb , bool isHero = false)
 	{
 		_defaultSpeed = speed;
 
@@ -79,7 +90,7 @@ public class MoveComponent : NetworkBehaviour
 
 		MoveDirection = Vector2.zero;
 
-		CanMove = true;
+		_canMove = true;
 		_isHero = isHero;
 
 		InputHandler.OnPlayerMove += OnMove;
@@ -156,10 +167,12 @@ public class MoveComponent : NetworkBehaviour
 	{
 		_currentSpeed *= value;
 	}
+
 	public void SetMoveSpeed(float speed)
 	{
 		_currentSpeed = speed;
 	}
+
 	public void SetDefaultSpeed()
 	{
 		_currentSpeed = _defaultSpeed;
@@ -167,10 +180,10 @@ public class MoveComponent : NetworkBehaviour
 
 	public void DoMove(Vector3 vector3, float duration)
 	{
-		CanMove = false;
+        _canMove = false;
 		_rigidbody.DOMove(vector3, duration).OnComplete(() =>
 		{
-			CanMove = true;
+            _canMove = true;
 		});
 	}
 
@@ -199,7 +212,7 @@ public class MoveComponent : NetworkBehaviour
 
 	protected virtual void Move()
     {
-		if ((!CanMove && !CanMoveState) || _rigidbody == null || IsMoveBlocked == true)
+		if ((!CanMove && !_canMoveState) || _rigidbody == null || IsMoveBlocked == true)
 		{
 			if (_rigidbody != null)
 			{
@@ -211,7 +224,7 @@ public class MoveComponent : NetworkBehaviour
 			return;
 		}
 
-		if(!IsSelect && !CanMoveState)
+		if(!IsSelect && !_canMoveState)
 		{
 			_dir = Vector2.zero;
 		}
@@ -229,7 +242,7 @@ public class MoveComponent : NetworkBehaviour
 
 		if (_rigidbody.linearVelocity.magnitude > 0.5f && moveAudioSource != null && !moveAudioSource.isPlaying) PlayMove();
 
-		if (_anim != null && (CanMove || CanMoveState))
+		if (_anim != null && (CanMove || _canMoveState))
 		{
 			var animDir = transform.InverseTransformPoint(transform.position + camDir);
 			_animMultiplier = 0.1f * _rigidbody.linearVelocity.magnitude + 0.5f;
@@ -284,7 +297,7 @@ public class MoveComponent : NetworkBehaviour
 
     private void OnMove(Vector2 dir)
     {
-		if (IsSelect || CanMoveState)
+		if (IsSelect || _canMoveState)
 			_dir = new Vector3(dir.x, 0, dir.y);
 	}
 
@@ -292,10 +305,10 @@ public class MoveComponent : NetworkBehaviour
 	{
 		if (isOwned)
 		{
-			CanMove = false;
+            _canMove = false;
 			_rigidbody.DOMove(position, duration).OnComplete(() =>
 			{
-				CanMove = true;
+                _canMove = true;
 			});
 		}
 		else if (isServer)
@@ -333,7 +346,7 @@ public class MoveComponent : NetworkBehaviour
 		if (agent != null && agent.enabled)
 			agent.enabled = false;
 
-		CanMove = false;
+        _canMove = false;
 		_rigidbody.DOKill();
 
 		yield return _rigidbody.DOMove(targetPos, duration)
@@ -343,7 +356,7 @@ public class MoveComponent : NetworkBehaviour
 		if (agent != null)
 			agent.enabled = true;
 
-		CanMove = true;
+        _canMove = true;
 	}
 
 	public void MoveTowards(Vector3 targetPosition, float speed, Action onComplete = null)
@@ -390,11 +403,11 @@ public class MoveComponent : NetworkBehaviour
 	[TargetRpc]
 	public void TargetRpcDoMove(Vector3 vector3, float duration)
 	{
-		//Debug.Log("DoMove " + vector3, this);
-		CanMove = false;
+        //Debug.Log("DoMove " + vector3, this);
+        _canMove = false;
 		_rigidbody.DOMove(vector3, duration).OnComplete(() =>
 		{
-			CanMove = true;
+            _canMove = true;
 		});
 	}
 
@@ -403,10 +416,10 @@ public class MoveComponent : NetworkBehaviour
 		var agent = GetComponent<NavMeshAgent>();
 		agent.enabled = false;
 
-		CanMove = false;
+        _canMove = false;
 		Rigidbody.DOMove(postion, 0.5f).OnComplete(() =>
 		{
-			CanMove = true;
+            _canMove = true;
 			agent.enabled = true;
 		});
 	}
@@ -425,16 +438,16 @@ public class MoveComponent : NetworkBehaviour
 		if (agent != null && !agent.enabled)
 			agent.enabled = true;
 
-		CanMove = true;
+        _canMove = true;
 	}
 
 	[TargetRpc]
 	private void TargetRpcTeleportToPositionSmooth(NetworkConnection target, Vector3 position, float duration)
 	{
-		CanMove = false;
+        _canMove = false;
 		_rigidbody.DOMove(position, duration).OnComplete(() =>
 		{
-			CanMove = true;
+            _canMove = true;
 		});
 	}
 
@@ -483,7 +496,7 @@ public class MoveComponent : NetworkBehaviour
 	}
 	public void TestDoMove(Vector3 targetPosition, float speed)
 	{
-		CanMove = false;
+        _canMove = false;
 
 		float distance = Vector3.Distance(transform.position, targetPosition);
 		float duration = distance / speed;
@@ -494,7 +507,7 @@ public class MoveComponent : NetworkBehaviour
 		.SetEase(Ease.Linear)
 		.OnKill(() =>
 		{
-			CanMove = true;
+            _canMove = true;
 		});
 	}
 
