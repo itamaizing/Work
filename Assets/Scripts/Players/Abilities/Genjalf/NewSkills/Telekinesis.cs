@@ -16,6 +16,7 @@ namespace Gangdollarff
         //private Character _target;
         private Vector3 _point = Vector3.zero;
         private float _tempCastDeley = 1;
+        private float _clickRadius = 0.5f;
 
         protected override int AnimTriggerCastDelay => 0;
 
@@ -76,6 +77,7 @@ namespace Gangdollarff
         {
             EnableMove();
             ClearTarget();
+            ClearTempTarget();
             //_target = null;
             _point = Vector3.zero;
             _radiusEnemy.gameObject.SetActive(false);
@@ -83,16 +85,27 @@ namespace Gangdollarff
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
         {
-            while (GetTargetCharacter() == null)
+            _skillRender.DrawRadius(Radius);
+            while (GetTempTargetCharacter() == null)
             {
                 if (GetMouseButton)
-                    FindTargetCharacter();
-                    //_target = GetRaycastTarget(true);
+                {
+                    Vector3 clickPoint = GetMousePoint();
 
+                    FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
+                    
+                    Debug.LogError("1");
+                    Debug.LogError(GetTempTargetCharacter() == null);
+                    
+                }
                 yield return null;
             }
             yield return new WaitForSeconds(0.1f);
 
+            _skillRender.StopDrawRadius();
+
+            SetTarget(GetTempTargetCharacter());
+            
             _radiusEnemy.gameObject.SetActive(true);
             _radiusEnemy.transform.parent = GetTargetCharacter().transform;
             _radiusEnemy.transform.localPosition = Vector3.zero;
