@@ -86,39 +86,37 @@ public class CreeperInvisible : Skill
     {
         ResetAltAbility();
 
-        bool hasEnemies = false;
-
-        Collider[] hitEnemies = Physics.OverlapSphere(_player.transform.position, Radius, _targetsLayers);
-
-        foreach (Collider enemy in hitEnemies)
+        while (true)
         {
-            if (enemy.TryGetComponent(out Character character) && (_targetsLayers.value & (1 << character.gameObject.layer)) != 0)
+            bool hasEnemies = false;
+
+            Collider[] hitEnemies = Physics.OverlapSphere(_player.transform.position, Radius, _targetsLayers);
+
+            foreach (Collider enemy in hitEnemies)
             {
-                hasEnemies = true;
-                break;
+                if (enemy.TryGetComponent(out Character character) && (_targetsLayers.value & (1 << character.gameObject.layer)) != 0)
+                {
+                    hasEnemies = true;
+                    break;
+                }
             }
-        }
 
-        while (hasEnemies) yield return null;
-
-        if (!hasEnemies)
-        {
-            if (!_player.CharacterState.CheckForState(States.CreeperInvisible))
+            if (!hasEnemies && !_player.CharacterState.CheckForState(States.CreeperInvisible))
             {
                 CmdApplyInvis(_player.gameObject);
+                yield break;
             }
-            else
-            {
-                while (!GetMouseButton) yield return null;
 
+            if (_player.CharacterState.CheckForState(States.CreeperInvisible) && GetMouseButton)
+            {
                 _isCreeperStrikeIsHit = _creeperStrike.IsHit;
                 CmdRemoveInvisible(_player.gameObject, _isCreeperStrikeIsHit);
+                yield break;
             }
+
+            yield return new WaitForSeconds(0.1f);
         }
-
-        yield break;
     }
-
 
     protected override IEnumerator CastJob()
     {
@@ -224,7 +222,7 @@ public class CreeperInvisible : Skill
 
         RpcMakeTransparentMaterialsPlayer(player);
 
-        _player.CharacterState.AddState(States.CreeperInvisible, 1, 0, _player.gameObject, Name);
+        _player.CharacterState.AddState(States.CreeperInvisible, 999, 0, _player.gameObject, Name);
     }
 
     [Command]
