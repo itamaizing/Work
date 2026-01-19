@@ -461,9 +461,22 @@ public class SkillManager : MonoBehaviour
         }
     }
 
-    public void TalentAddCharges(int countBonusCharges)
+    public void TalentAddCharges(bool isAdditionalCharge)
     {
-        _countBonusCharges = countBonusCharges;
+        foreach (var skill in _skills)
+        {
+            if (skill.IsUseCharges)
+            {
+                if (isAdditionalCharge)
+                {
+                    skill.AddMaxChargeCount();
+                }
+                else
+                {
+                    skill.DeductMaxChargeCount();
+                }
+            }
+        }
     }
 
     public void SwitchAvaliable(Schools school, bool value)
