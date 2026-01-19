@@ -41,10 +41,7 @@ public class CreeperInvisible : Skill
     private bool _isReadyToThreeHitForPreparingForFightTalent = false;
     private bool _isCanExitInvisible = false;
     private bool _isCreeperStrikeIsHit;
-    private bool _isEnemy;
 
-    private Coroutine _checkEnemiesCoroutine;
-    private Coroutine _exitFromInvisibleCoroutine;
     public bool IsReadyToThreeHitForPreparingForFightTalent 
     { 
         get => _isReadyToThreeHitForPreparingForFightTalent; 
@@ -55,7 +52,7 @@ public class CreeperInvisible : Skill
 
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
-    protected override bool IsCanCast => _isPlayerSeen == false && _isDamagedPlayer == false;
+    protected override bool IsCanCast => true;
 
     #endregion
 
@@ -109,7 +106,7 @@ public class CreeperInvisible : Skill
             }
             else
             {
-                while (!Input.GetMouseButtonDown(0)) yield return null;
+                while (!GetMouseButton) yield return null;
 
                 _isCreeperStrikeIsHit = _creeperStrike.IsHit;
                 CmdRemoveInvisible(_player.gameObject, _isCreeperStrikeIsHit);
@@ -122,6 +119,8 @@ public class CreeperInvisible : Skill
 
     protected override IEnumerator CastJob()
     {
+        ResetCooldown();
+
         if (_isInvisible && _transparentPoisons.Data.IsOpen)
         {
             if (_altAbilities != null)
@@ -209,67 +208,14 @@ public class CreeperInvisible : Skill
         }
     }
 
-    #region Coroutines
-
-    private IEnumerator CheckEnemiesAround()
-    {
-        while (_isPlayerSeen)
-        {
-            _isEnemy = false;
-
-            Collider[] hitEnemies = Physics.OverlapSphere(_player.transform.position, _distanceWithoutEnemies, _targetsLayers);
-
-            foreach (Collider enemy in hitEnemies)
-            {
-                if (enemy != null)
-                {
-                    _isEnemy = true;
-                    break;
-                }
-            }
-
-            if (!_isEnemy)
-            {
-                _isPlayerSeen = false;
-            }
-            else
-            {
-                _isPlayerSeen = true;
-            }
-
-            hitEnemies = null;
-
-            yield return new WaitForSeconds(0.1f);
-        }
-    }
-
-    private IEnumerator ExitFromInvisible()
-    {
-        while (_isCanExitInvisible == false)
-        {
-            if (Input.GetMouseButton(2))
-            {
-                _isCanExitInvisible = true;
-
-                if (_isInvisible && _isCanExitInvisible)
-                {
-                    CmdRemoveInvisible(_player.gameObject, _isCreeperStrikeIsHit);
-                }
-
-                yield break;
-            }
-            yield return null;
-        }
-    }
-
-    #endregion
-
     #region CommandMethods
 
     [Command]
     private void CmdApplyInvis(GameObject player)
     {
         _isInvisible = true;
+        _isPlayerSeen = false;
+        _isDamagedPlayer = false;
 
         RpcApplyInvis();
 
@@ -397,6 +343,8 @@ public class CreeperInvisible : Skill
     private void RpcApplyInvis()
     {
         _isInvisible = true;
+        _isPlayerSeen = false;
+        _isDamagedPlayer = false;
     }
 
     [ClientRpc]
@@ -422,22 +370,6 @@ public class CreeperInvisible : Skill
 
         if (_coldBlood.ColdBloodTalent != null && _coldBlood.ColdBloodTalent.Data.IsOpen)
             _coldBlood.ReducingAbilityCooldown();
-        
-        
-        #region CancleCoroutines
-
-        if (_checkEnemiesCoroutine != null)
-        {
-            StopCoroutine(CheckEnemiesAround());
-            _checkEnemiesCoroutine = null;
-        }
-        if (_exitFromInvisibleCoroutine != null)
-        {
-            StopCoroutine(ExitFromInvisible());
-            _exitFromInvisibleCoroutine = null;
-        }
-
-        #endregion
 
         _isPlayerSeen = true;
         _isDamagedPlayer = false;
