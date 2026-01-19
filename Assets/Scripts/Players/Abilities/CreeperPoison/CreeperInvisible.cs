@@ -83,31 +83,42 @@ public class CreeperInvisible : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         ResetAltAbility();
 
-        switch (_isInvisible)
+        bool hasEnemies = false;
+
+        Collider[] hitEnemies = Physics.OverlapSphere(_player.transform.position, Radius, _targetsLayers);
+        foreach (Collider enemy in hitEnemies)
         {
-            case false:
-                if (_checkEnemiesCoroutine == null)
-                {
-                    yield return _checkEnemiesCoroutine = StartCoroutine(CheckEnemiesAround());
-                }
+            if (enemy.TryGetComponent(out Character character) && character.gameObject.layer == _targetsLayers)
+            {
+                hasEnemies = true;
                 break;
-
-            case true:
-
-                _exitFromInvisibleCoroutine = StartCoroutine(ExitFromInvisible());
-
-                break;
-
-            default:
+            }
         }
+
+        if (!hasEnemies)
+        {
+            if (!_player.CharacterState.CheckForState(States.CreeperInvisible))
+            {
+                CmdApplyInvis(_player.gameObject);
+            }
+            else
+            {
+                while (!Input.GetMouseButtonDown(0)) yield return null;
+
+                _isCreeperStrikeIsHit = _creeperStrike.IsHit;
+                CmdRemoveInvisible(_player.gameObject, _isCreeperStrikeIsHit);
+            }
+        }
+
+        yield break;
     }
+
 
     protected override IEnumerator CastJob()
     {
