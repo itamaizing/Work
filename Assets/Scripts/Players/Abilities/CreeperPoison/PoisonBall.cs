@@ -639,37 +639,42 @@ public class PoisonBall : Skill, IAltAbility
     private void CreateArrowsParallelToPlayer()
     {
         if (_arrowPrefab == null || pointArrowRender == null) return;
-        Quaternion rotation = Quaternion.identity;
+
         Vector3 center = GetTargetCharacter() != null ? GetTargetCharacter().transform.position : _firstMousePosition;
-        center.y = 0.8f;
+        Vector3 playerPos = _player.transform.position;
 
-        _pointArrowInstance = Instantiate(pointArrowRender, center, Quaternion.identity);
+        center.y = 1.1f;
+        playerPos.y = 1.1f;
 
-        Vector3 playerPosition = _player.transform.position;
-        playerPosition.y = 0.8f;
+        Vector3 direction = (playerPos - center).normalized;
 
-        Vector3 directionPoint = _player.transform.position - _pointArrowInstance.transform.position;
-        directionPoint.y = 0f;
-        if (directionPoint != Vector3.zero) _pointArrowInstance.transform.rotation = Quaternion.LookRotation(directionPoint);
+        _pointArrowInstance = new GameObject("PoisonBallArrowCenter");
+        _pointArrowInstance.transform.position = center;
+        _pointArrowInstance.transform.rotation = Quaternion.LookRotation(direction);
 
-        Vector3 directionToTarget = (center - playerPosition).normalized;
+        Vector3 offset = direction * 0.6f;
+        Vector3 fartherOffset = direction * 1.2f;
 
-        Vector3[] spawnOffsets = new Vector3[4]
+        Vector3[] spawnPositions = new Vector3[4]
         {
-        directionToTarget,
-        -directionToTarget,
-        directionToTarget * 1.5f,
-        -directionToTarget * 1.5f
+        center + offset,
+        center - offset,
+        center + fartherOffset,
+        center - fartherOffset
+        };
+
+        Quaternion[] rotations = new Quaternion[4]
+        {
+        Quaternion.LookRotation(playerPos - spawnPositions[0]),
+        Quaternion.LookRotation(spawnPositions[1] - playerPos),
+        Quaternion.LookRotation(playerPos - spawnPositions[2]),
+        Quaternion.LookRotation(spawnPositions[3] - playerPos),
         };
 
         for (int i = 0; i < _arrowRenderers.Length; i++)
         {
-            Vector3 spawnPos = center + spawnOffsets[i];
-
-            if (i % 2 != 0) rotation = Quaternion.LookRotation(spawnPos - playerPosition);
-            else rotation = Quaternion.LookRotation(playerPosition - spawnPos);
-
-            _arrowRenderers[i] = Instantiate(_arrowPrefab, spawnPos, rotation, _pointArrowInstance.transform);
+            Quaternion flippedRotation = rotations[i] * Quaternion.Euler(0, 180f, 0);
+            _arrowRenderers[i] = Instantiate(_arrowPrefab, spawnPositions[i], flippedRotation, _pointArrowInstance.transform);
             RotateArrowChild(_arrowRenderers[i].gameObject, -90);
             _arrowRenderers[i].gameObject.SetActive(false);
         }
@@ -786,7 +791,7 @@ public class PoisonBall : Skill, IAltAbility
                 UpdateArrowHighlight(0, 1, currentMousePosition);
             }
 
-            if (_secondClickDone)
+            else if (_secondClickDone && !_thirdClickDone)
             {
                 UpdateArrowHighlight(2, 3, currentMousePosition);
             }
@@ -829,7 +834,11 @@ public class PoisonBall : Skill, IAltAbility
                 SetArrowVisibility(index1, false);
             }
         }
+
+        _arrowRenderers[index1].SetDeafaultMaterail();
+        _arrowRenderers[index2].SetTransparentMaterial();
     }
+
 
     #endregion
 
