@@ -13879,10 +13879,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _restorationOfGlands: {fileID: 0}
-  _healingSpitPoison: {fileID: 0}
-  _healPoisonCloud: {fileID: 0}
-  _transparentPoisons: {fileID: 0}
   _projectile: {fileID: 6538247731923965443, guid: 482b668adc1f199488e67f043ae88aa9, type: 3}
   _player: {fileID: 2483674839823445686}
   _spawnPoint: {fileID: 6943497228995655184}

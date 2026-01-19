@@ -15,10 +15,10 @@ public struct SpitPoisonSpawnPointInfo : NetworkMessage
 public class SpitPoison : Skill, IAltAbility
 {
     [Header("Talents")]
-    [SerializeField] private RestorationOfGlands _restorationOfGlands;
-    [SerializeField] private HealingSpitPoison _healingSpitPoison;
-    [SerializeField] private HealingPoisonCloud _healPoisonCloud;
-    [SerializeField] private TransparentPoisons _transparentPoisons;
+    //[SerializeField] private RestorationOfGlands _restorationOfGlands;
+    //[SerializeField] private HealingSpitPoison _healingSpitPoison;
+    //[SerializeField] private HealingPoisonCloud _healPoisonCloud;
+    //[SerializeField] private TransparentPoisons _transparentPoisons;
     //[SerializeField] private EatingAcid _eatingAcid;
 
     [Header("Ability Properties")]
@@ -93,7 +93,7 @@ public class SpitPoison : Skill, IAltAbility
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0]);
         _mousePos = targetInfo.Points[0];
     }
 
@@ -101,12 +101,11 @@ public class SpitPoison : Skill, IAltAbility
     {
         _isAbilityActive = true;
 
-        if (_setSpawnPointCoroutine == null)
-            _setSpawnPointCoroutine = StartCoroutine(SetSpawnPointJob());
+        if (_setSpawnPointCoroutine == null) _setSpawnPointCoroutine = StartCoroutine(SetSpawnPointJob());
 
         CooldownChange();
 
-        CheckActiveTalents();
+        //CheckActiveTalents();
 
         while (float.IsPositiveInfinity(_mousePos.x))
         {
@@ -202,12 +201,12 @@ public class SpitPoison : Skill, IAltAbility
         }
     }
 
-    private void CheckActiveTalents()
-    {
-        //_isActiveEatingAcid = _eatingAcid.Data.IsOpen;
-        _isActiveHealingSpitPoison = _healingSpitPoison.Data.IsOpen;
-        _isActiveRestorationOfGlands = _restorationOfGlands.Data.IsOpen;
-    }
+    //private void CheckActiveTalents()
+    //{
+    //    //_isActiveEatingAcid = _eatingAcid.Data.IsOpen;
+    //    _isActiveHealingSpitPoison = _healingSpitPoison.Data.IsOpen;
+    //    _isActiveRestorationOfGlands = _restorationOfGlands.Data.IsOpen;
+    //}
 
     private void ChooseTarget(IDamageable damageable)
     {
@@ -218,33 +217,34 @@ public class SpitPoison : Skill, IAltAbility
                 _isOriginalTargetPlayer = true;
                 _isOriginalTargetAllies = false;
                 _isOriginalTargetEnemy = false;
-                if (_healPoisonCloud.Data.IsOpen && _isActiveHealingSpitPoison)
-                {
-                    _isHealingPoisonCloud = true;
-                }
+                //if (_healPoisonCloud.Data.IsOpen && _isActiveHealingSpitPoison)
+                //{
+                //    _isHealingPoisonCloud = true;
+                //}
             }
             else if (damageable.gameObject.layer == LayerMask.NameToLayer("Allies"))
             {
                 _isOriginalTargetPlayer = false;
                 _isOriginalTargetAllies = true;
                 _isOriginalTargetEnemy = false;
-                if (_isActiveHealingSpitPoison && _healPoisonCloud.Data.IsOpen)
-                {
-                    if (_healPoisonCloud.Data.IsOpen)
-                    {
-                        _isHealingPoisonCloud = true;
-                    }
-                }
+
+                //if (_isActiveHealingSpitPoison && _healPoisonCloud.Data.IsOpen)
+                //{
+                //    if (_healPoisonCloud.Data.IsOpen)
+                //    {
+                //        _isHealingPoisonCloud = true;
+                //    }
+                //}
             }
             else if (damageable.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
                 _isOriginalTargetPlayer = false;
                 _isOriginalTargetAllies = false;
                 _isOriginalTargetEnemy = true;
-                if (_healPoisonCloud.Data.IsOpen && _isActiveHealingSpitPoison)
-                {
-                    _isHealingPoisonCloud = false;
-                }
+                //if (_healPoisonCloud.Data.IsOpen && _isActiveHealingSpitPoison)
+                //{
+                //    _isHealingPoisonCloud = false;
+                //}
             }
         }
         else
