@@ -729,9 +729,6 @@ public class PoisonBall : Skill, IAltAbility
             {
                 _secondClickDone = true;
 
-                _arrowRenderers[0].SetTransparentMaterial();
-                _arrowRenderers[1].SetTransparentMaterial();
-
                 _secondMousePosition = GetMousePoint();
 
                 if (GetTargetCharacter() != null)
@@ -802,43 +799,33 @@ public class PoisonBall : Skill, IAltAbility
 
     private void UpdateArrowHighlight(int index1, int index2, Vector3 currentMousePosition)
     {
-        Vector3 arrowPosition = _arrowRenderers[index1].transform.position;
+        if (_arrowRenderers[index1] == null || _arrowRenderers[index2] == null)
+            return;
 
-        Vector3 direction = (arrowPosition - currentMousePosition).normalized;
+        Vector3 playerPos = _player.transform.position;
+        Vector3 arrowPos1 = _arrowRenderers[index1].transform.position;
+        Vector3 arrowPos2 = _arrowRenderers[index2].transform.position;
 
-        bool isHorizontal = Mathf.Abs(direction.x) > Mathf.Abs(direction.z);
+        float dist1 = Vector3.Distance(currentMousePosition, arrowPos1);
+        float dist2 = Vector3.Distance(currentMousePosition, arrowPos2);
 
-        if (isHorizontal)
+        if (dist1 < dist2)
         {
-            if (Input.GetAxis("Mouse X") > 0)
-            {
-                SetArrowVisibility(index1, true);
-                SetArrowVisibility(index2, false);
-            }
-            else if (Input.GetAxis("Mouse X") < 0)
-            {
-                SetArrowVisibility(index2, true);
-                SetArrowVisibility(index1, false);
-            }
+            SetArrowVisibility(index1, true);
+            SetArrowVisibility(index2, false);
+
+            _arrowRenderers[index1].SetDeafaultMaterail();
+            _arrowRenderers[index2].SetTransparentMaterial();
         }
         else
         {
-            if (Input.GetAxis("Mouse Y") > 0)
-            {
-                SetArrowVisibility(index1, true);
-                SetArrowVisibility(index2, false);
-            }
-            else if (Input.GetAxis("Mouse Y") < 0)
-            {
-                SetArrowVisibility(index2, true);
-                SetArrowVisibility(index1, false);
-            }
+            SetArrowVisibility(index1, false);
+            SetArrowVisibility(index2, true);
+
+            _arrowRenderers[index1].SetTransparentMaterial();
+            _arrowRenderers[index2].SetDeafaultMaterail();
         }
-
-        _arrowRenderers[index1].SetDeafaultMaterail();
-        _arrowRenderers[index2].SetTransparentMaterial();
     }
-
 
     #endregion
 
@@ -930,7 +917,7 @@ public class PoisonBall : Skill, IAltAbility
         bool isActiveInertialGlands, bool isActiveContinuationAmbush,
         bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies)
     {
-        _player.Health.Add(-100f);
+        //_player.Health.Add(-100f);
 
         RestorationOfGlandsTalent = _restorationOfGlands;
         FootInstinctsTalent = _footInstincts;

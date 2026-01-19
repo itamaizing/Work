@@ -233,27 +233,23 @@ public class PoisonBallProjectile : Test_Projectile
             _newDistancePush = _baseDistancePush;
         }
 
-        PushEnemy(target, durationPush, _newDistancePush);
+        PushEnemy(target.gameObject, _newDistancePush, durationPush, _isPushTarget);
     }
 
-    private void PushEnemy(Character target, float durationPush, float newDistancePush)
+    public void PushEnemy(GameObject targetObj, float distancePush, float durationPush, bool isPushAway)
     {
-        MoveComponent targetMove = target.GetComponent<MoveComponent>();
-        Vector3 directionPush = (_transformBall.transform.position - targetMove.transform.position);
-
-        newDistancePush = (newDistancePush * durationPush) / GlobalVariable.cellSize;
-
-        Vector3 finalPoint = targetMove.transform.position + (_isPushTarget ? -directionPush : directionPush) * newDistancePush;
-        finalPoint.y = 0;
-
-        if (targetMove.connectionToClient != null) targetMove.TargetRpcDoMove(finalPoint, durationPush);
-
-        else
+        if (targetObj.TryGetComponent(out Character target))
         {
-            StartCoroutine(ServerMove(targetMove, finalPoint, durationPush));
-        }
+            MoveComponent targetMove = target.GetComponent<MoveComponent>();
+            Vector3 direction = (target.transform.position - _player.transform.position).normalized;
+            direction.y = 0;
 
-        target.Move.CanMove = true;
+            Vector3 finalPoint = target.transform.position + (isPushAway ? direction : -direction) * distancePush;
+            finalPoint.y = target.transform.position.y;
+
+            if (targetMove.connectionToClient != null) targetMove.TargetRpcDoMove(finalPoint, durationPush);
+            else targetMove.RpcDoMove(finalPoint, durationPush);
+        }
     }
 
     private void ReductionCooldownFromRestorationOfGlands()
