@@ -59,6 +59,22 @@ public class CreeperInvisible : Skill
 
     #endregion
 
+    private void OnEnable()
+    {
+        if (_player != null && _player.Health != null)
+        {
+            _player.Health.DamageTaken += OnPlayerDamaged;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (_player != null && _player.Health != null)
+        {
+            _player.Health.DamageTaken -= OnPlayerDamaged;
+        }
+    }
+
     #region PrepareAndCastJob
 
     protected override void ClearData()
@@ -67,7 +83,7 @@ public class CreeperInvisible : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        Debug.LogError("DataError");
+
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -91,7 +107,6 @@ public class CreeperInvisible : Skill
 
             default:
         }
-        Debug.LogError("DataError");
     }
 
     protected override IEnumerator CastJob()
@@ -166,25 +181,13 @@ public class CreeperInvisible : Skill
         CmdRemoveInvisible(_player.gameObject, _isCreeperStrikeIsHit);
     }
 
+    private void OnPlayerDamaged(Damage damage, Skill skill)
+    {
+        if (!_isInvisible) return;
+        IncreaseSetCooldown(CooldownTime);
+    }
+
     #endregion
-
-    private void Update()
-    {
-        CheckCurrentHealthPlayer();
-    }
-
-    private void CheckCurrentHealthPlayer()
-    {
-        _currentHealth = _player.Health.CurrentValue;
-
-        if (_currentHealth < _previousHealth)
-        {
-            if (isServer == false)
-                ExitingInvisible();
-        }
-
-        _previousHealth = _currentHealth;
-    }
 
     private void ResetAltAbility()
     {
