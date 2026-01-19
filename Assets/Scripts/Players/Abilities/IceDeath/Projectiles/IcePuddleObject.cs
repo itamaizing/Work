@@ -20,8 +20,9 @@ public class IcePuddleObject : Projectiles
 	private bool _talentFrostingFrozen = false;
 	private bool _iceDeathInIcePudleTalent = false;
 	private readonly List<Character> _enemiesInZone = new();
-	private Coroutine _applyCoroutine;
+	private readonly Dictionary<Character, Coroutine> _frostingCoroutines = new();
 	private readonly WaitForSeconds _waitApplyDelay = new WaitForSeconds(0.7f);
+	private readonly WaitForSeconds _waitShort = new(0.1f);
 
 	//private List<CharacterState> _enemies = new List<CharacterState>();
 	private List<EnemyToState> _targets = new List<EnemyToState>();
@@ -30,16 +31,17 @@ public class IcePuddleObject : Projectiles
 	/*
 	 * buff player
 	 * */
+
 	private void OnDisable()
 	{
 		if (!isServer) return;
 
-		if (_applyCoroutine != null)
+		foreach (var coroutine in _frostingCoroutines.Values)
 		{
-			StopCoroutine(_applyCoroutine);
-			_applyCoroutine = null;
+			if (coroutine != null) StopCoroutine(coroutine);
 		}
 
+		_frostingCoroutines.Clear();
 		_enemiesInZone.Clear();
 	}
 
@@ -84,10 +86,10 @@ public class IcePuddleObject : Projectiles
 			_curEvade = 0;
 		}
 
-		if (_enemiesInZone.Count == 0 && _applyCoroutine != null)
+		if (_frostingCoroutines.TryGetValue(target, out var routine))
 		{
-			StopCoroutine(_applyCoroutine);
-			_applyCoroutine = null;
+			StopCoroutine(routine);
+			_frostingCoroutines.Remove(target);
 		}
 	}
 
@@ -112,28 +114,35 @@ public class IcePuddleObject : Projectiles
 			SetEvade(_dad.gameObject, _curEvade);
 		}
 
-		if (_applyCoroutine == null) _applyCoroutine = StartCoroutine(ApplyFrostingPeriodically());
+		if (!_frostingCoroutines.ContainsKey(target))
+		{
+			Coroutine routine = StartCoroutine(CheckAndApplyFrosting(target));
+			_frostingCoroutines[target] = routine;
+		}
 	}
 
-	private IEnumerator ApplyFrostingPeriodically()
+	private IEnumerator CheckAndApplyFrosting(Character enemy)
 	{
-		while (_enemiesInZone.Count > 0)
+		while (_enemiesInZone.Contains(enemy))
 		{
-			yield return _waitApplyDelay;
+			yield return _waitShort;
 
-			foreach (var enemy in _enemiesInZone.ToList())
+			if (enemy == null || enemy.CharacterState == null) continue;
+
+			if (!enemy.CharacterState.CheckForState(States.Frosting))
 			{
-				if (enemy == null) continue;
-				if (enemy.CharacterState == null) continue;
-				if (!enemy.CharacterState.CheckForState(States.Frosting))
-                {
-					float remainingLife = Mathf.Max(0.1f, _timeToDestroy - (Time.time - _spawnTime));
+				float remainingLife = Mathf.Max(0.1f, _timeToDestroy - (Time.time - _spawnTime));
+
+				yield return _waitApplyDelay;
+
+				if (enemy != null && enemy.CharacterState != null && !enemy.CharacterState.CheckForState(States.Frosting))
+				{
 					enemy.CharacterState.AddState(States.Frosting, remainingLife, _damageToExit, _dad.gameObject, _skill.name);
 				}
-			}	
+			}
 		}
 
-		_applyCoroutine = null;
+		_frostingCoroutines.Remove(enemy);
 	}
 
 	private void Explode()
