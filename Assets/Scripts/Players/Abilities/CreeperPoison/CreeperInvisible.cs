@@ -114,7 +114,7 @@ public class CreeperInvisible : Skill
                 yield break;
             }
 
-            yield return new WaitForSeconds(0.1f);
+            yield return null;
         }
     }
 
@@ -219,8 +219,6 @@ public class CreeperInvisible : Skill
         _isPlayerSeen = false;
         _isDamagedPlayer = false;
 
-        _player.SelectedCircle?.SetAllProjectorsEnabled(false);
-
         RpcApplyInvis();
 
         RpcMakeTransparentMaterialsPlayer(player);
@@ -234,8 +232,6 @@ public class CreeperInvisible : Skill
         _isInvisible = false;
         _isPlayerSeen = true;
         _isDamagedPlayer = false;
-
-        _player.SelectedCircle?.SetAllProjectorsEnabled(true);
 
         RpcReturnTransparencyMaterialsPlayer(player);
 
@@ -351,12 +347,15 @@ public class CreeperInvisible : Skill
         _isInvisible = true;
         _isPlayerSeen = false;
         _isDamagedPlayer = false;
+
+        _player.SelectedCircle?.SetAllProjectorsEnabled(false);
     }
 
     [ClientRpc]
     private void RpcRemoveInvisible(bool creeperStrikeIsHit)
     {
         _isInvisible = false;
+        _player.SelectedCircle?.SetAllProjectorsEnabled(true);
 
         if (_assasinPoison != null && _assasinPoison.Data.IsOpen)
             _assasinPoison.RemoveAllCharges();
