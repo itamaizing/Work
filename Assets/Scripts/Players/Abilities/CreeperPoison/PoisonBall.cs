@@ -104,6 +104,7 @@ public class PoisonBall : Skill, IAltAbility
     private float _multiplierForPushDistance;
     private float _animTime;
     private float _baseMultiplierAnimationSpeed = 1f;
+    private float _radiusFindTarget = 0.5f;
 
     #region BoolVariables
 
@@ -152,6 +153,16 @@ public class PoisonBall : Skill, IAltAbility
     public void PayCostPoisonBall()
     {
         TryPayCost(true);
+    }
+
+    private void OnDisable()
+    {
+        OnSkillCanceled -= ClearData;
+    }
+
+    private void OnEnable()
+    {
+        OnSkillCanceled += ClearData;
     }
 
     private void Start()
@@ -218,7 +229,7 @@ public class PoisonBall : Skill, IAltAbility
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter(true);
+                FindTargetCharacter(_radiusFindTarget, GetMousePoint(), true);
                 CheckWhoTarget();
 
                 Vector3 click = GetMousePoint();
@@ -280,6 +291,8 @@ public class PoisonBall : Skill, IAltAbility
                             SetArrowVisibility(1, false);
                         }
                     }
+
+                    ClearArrows();
                 }
             }
             yield return null;
@@ -308,8 +321,6 @@ public class PoisonBall : Skill, IAltAbility
     protected override IEnumerator CastJob()
     {
         ChooseWhichProjectileCreate();
-
-        ClearArrows();
 
         ResetAbilityParameters?.Invoke();
 
@@ -742,6 +753,8 @@ public class PoisonBall : Skill, IAltAbility
                 Destroy(_pointArrowInstance);
                 _pointArrowInstance = null;
             }
+             
+            for (int i = 0; i < _arrowRenderers.Length; i++) _arrowRenderers[i] = null;
         }
         Debug.Log("Arrows cleared.");
     }
