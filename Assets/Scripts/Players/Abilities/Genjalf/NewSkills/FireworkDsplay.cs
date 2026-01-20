@@ -11,12 +11,13 @@ namespace Gangdollarff
         [SerializeField] private Firework _firework;
         [SerializeField] private float _damageRangeMin = -2;
         [SerializeField] private float _damageRangeMax = 1;
-        [SerializeField] private float _rotationSpeed = 10f;
+
+        private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
 
         private List<float> _damageForTarget = new List<float>() { 1, .75f, .50f, .25f };
 
-        private Vector3 _targetPoint = Vector3.positiveInfinity;
+        private Vector3 _targetPoint;
         //private Character _target;
 
         private float _clickRadius = 0.5f;
@@ -33,7 +34,6 @@ namespace Gangdollarff
 
         public override void LoadTargetData(TargetInfo targetInfo)
         {
-            SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
             _targetPoint = targetInfo.Points[0];
         }
 
@@ -56,10 +56,12 @@ namespace Gangdollarff
                     int index = 0;
                     foreach (var item in _firework.Damageables)
                     {
-                        if (((1 << item.gameObject.layer) & TargetsLayers) == 0)
-                            continue;
                         if (!item.TryGetComponent<IDamageable>(out var enemy))
                             continue;
+                        
+                        if (!item.TryGetComponent<Character>(out var character) || !IsEnemyTarget(character))
+                            continue;
+                        
                         float modifier = 1f - (0.25f * index);
                         if (modifier <= 0f)
                             break;
@@ -99,19 +101,11 @@ namespace Gangdollarff
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
         {
-            while (GetTempTargetCharacter() == null)
-            {
-                if (GetMouseButton)
-                {
-                    Vector3 clickPoint = GetMousePoint();
-
-                    FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
-                }
-                yield return null;
-            }
             TargetInfo targetInfo = new();
-            SetTarget(GetTempTargetCharacter());
-            targetInfo.AddTarget(GetTargetCharacter());
+            while (!Input.GetMouseButtonDown(0))
+                yield return null;
+
+            _targetPoint = GetMousePoint();
             targetInfo.Points.Add(_targetPoint);
             callbackDataSaved(targetInfo);
         }
@@ -119,6 +113,9 @@ namespace Gangdollarff
         private void EnableMove()
         {
             Hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
+            Hero.Move.StopLookAt();
+            Hero.Move.IsLookAtCursor = true;
+            
             Hero.Move.IsMoveBlocked = false;
             Hero.Move.RotateModifier = 1f;
         }

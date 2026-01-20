@@ -88,6 +88,8 @@ public class MoveComponent : NetworkBehaviour
 		InputHandler.OnPlayerMove += OnMove;
 		_flyChecker.OffedGround += OnOffedGround;
 		_flyChecker.ReachGround += OnReachGround;
+
+		RotateModifier = 1;
 	}
 
     private void OnDestroy()

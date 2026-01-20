@@ -8326,6 +8326,7 @@ MonoBehaviour:
   _firework: {fileID: 3150633468305956490}
   _damageRangeMin: -2
   _damageRangeMax: 1
+  _rotationSpeed: 5
 --- !u!114 &4402813572123645427
 MonoBehaviour:
   m_ObjectHideFlags: 0
