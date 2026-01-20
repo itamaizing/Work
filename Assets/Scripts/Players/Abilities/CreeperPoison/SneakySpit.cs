@@ -27,8 +27,9 @@ public class SneakySpit : Skill
     }
     protected override void SkillDisableBoostLogic()
     {
+        if (!isAnimStart) return;
         ClearTarget();
-        if (isAnimStart) Disactive = true;
+        Disactive = true;
     }
 
     private void OnEnable() 
@@ -106,9 +107,7 @@ public class SneakySpit : Skill
 
     protected override void ClearData()
     {
-        isAnimStart = false;
         ClearTarget();
-        CancelBoostWindow();
         Hero.Move.StopLookAt();
         isAbilityQueue = false;
         //_target = null;
@@ -143,7 +142,14 @@ public class SneakySpit : Skill
     }
 
     public void SneakySpitCast() => AnimStartCastCoroutine();
-    public void SneakySpitEnd() => AnimCastEnded();
+
+    public void SneakySpitEnd()
+    {
+        AnimCastEnded();
+        isAnimStart = false;
+        CancelBoostWindow();
+    }
+
     public void SneakySpitPrepaer() => isAnimStart = true;
 
     [Command] private void CmdAddState(Character target) => target.CharacterState.AddState(States.Blind, duration, 0, _playerLinks.gameObject, name);
