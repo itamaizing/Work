@@ -23,6 +23,7 @@ public class PoisonBallProjectile : Test_Projectile
     private int _currentCountBall;
     private int _poisonBoneStack;
     private int _playerLayer;
+    private Vector3 _directionOfFlight;
 
     #region FloatVariables
     private float _newDistancePush;
@@ -171,6 +172,7 @@ public class PoisonBallProjectile : Test_Projectile
         _isFast = isFast;
 
         float speed = isFast ? _fastMovementSpeed : _slowMovementSpeed;
+        _directionOfFlight = (target - transform.position).normalized;
 
         MoveToTarget(target, speed);
     }
@@ -179,6 +181,7 @@ public class PoisonBallProjectile : Test_Projectile
     {
         Debug.Log("PoisonBallProjectile / MoveBallOnMaxDistance");
         _isFast = isFast;
+        _directionOfFlight = (point - transform.position).normalized;
 
         float speed = isFast ? _fastMovementSpeed : _slowMovementSpeed;
         Debug.Log("PoisonBallProjectile / MoveBallOnMaxDistance / speed = " + speed);
@@ -241,7 +244,7 @@ public class PoisonBallProjectile : Test_Projectile
         if (targetObj.TryGetComponent(out Character target))
         {
             MoveComponent targetMove = target.GetComponent<MoveComponent>();
-            Vector3 direction = (target.transform.position - _player.transform.position).normalized;
+            Vector3 direction = _directionOfFlight;
             direction.y = 0;
 
             Vector3 finalPoint = target.transform.position + (isPushAway ? direction : -direction) * distancePush;

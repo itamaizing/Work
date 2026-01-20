@@ -195,6 +195,7 @@ public class PoisonCloudState : AbstractCharacterState
         if (target != null)
         {
             var targetHealth = target.GetComponent<Character>();
+            if (targetHealth == null || targetHealth.Health == null) return;
 
             _increasedDamage = _baseDamage * CurrentStacksCount;
             _endDamage = targetHealth.Health.MaxValue * _increasedDamage;
