@@ -12,11 +12,13 @@ namespace Gangdollarff
         [SerializeField] private float _deleyTelekines = 0.5f;
         [SerializeField] private float _amountOfLift = 1.5f;
         [SerializeField] private DecalProjector _radiusEnemy;
-
-        //private Character _target;
+        
         private Vector3 _point = Vector3.zero;
+        private Vector3 _originalGroundPosition;
+        
         private float _tempCastDeley = 1;
         private float _clickRadius = 0.5f;
+        private float _secPerMeter = 0.4f;
 
         protected override int AnimTriggerCastDelay => 0;
 
@@ -28,8 +30,17 @@ namespace Gangdollarff
 
         private bool CheckCanCast()
         {
-            return Vector3.Distance(_point, transform.position) <= Radius &&
-                   Vector3.Distance(GetTargetCharacter().transform.position, _point) <= Radius;
+            return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+        }
+
+        private void OnEnable()
+        {
+            Canceled += ForceDropTarget;
+        }
+
+        private void OnDisable()
+        {
+            Canceled -= ForceDropTarget;
         }
 
         public void AnimCastTelekinesis()
@@ -61,25 +72,89 @@ namespace Gangdollarff
 
         public override void LoadTargetData(TargetInfo targetInfo)
         {
-            _point = targetInfo.Points[0];
             SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
         }
 
         protected override IEnumerator CastJob()
         {
             DisableMove();
+            float hangStartTime = Time.time;
+            var targetChar = GetTargetCharacter();
+            var targetGO = targetChar.gameObject;
+            Vector3 currentPos = targetChar.transform.position;
+            Vector3 liftPos = new Vector3(currentPos.x, currentPos.y + _amountOfLift, currentPos.z);
+            float liftTime = _deleyTelekines;
+            _originalGroundPosition = new Vector3(currentPos.x, currentPos.y, currentPos.z);
 
-            CmdMoveTaget(GetTargetCharacter().gameObject, new Vector3(GetTargetCharacter().transform.position.x, GetTargetCharacter().transform.position.y + _amountOfLift, GetTargetCharacter().transform.position.z), _deleyTelekines);
-            yield return new WaitForSeconds(_deleyTelekines);
-            CmdMoveTaget(GetTargetCharacter().gameObject, _point, CastStreamDuration - _deleyTelekines);
+            CmdMoveTaget(targetGO, liftPos, liftTime);
+            yield return new WaitForSeconds(liftTime);
+
+            _point = Vector3.zero;
+            bool destinationSet = false;
+
+            while (Time.time - hangStartTime < (_castDuration - liftTime))
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    _point = GetMousePoint();
+                    if (_point != Vector3.zero &&
+                        Vector3.Distance(_point, transform.position) <= Radius &&
+                        Vector3.Distance(_point, targetChar.transform.position) <= Radius)
+                    {
+                        destinationSet = true;
+                        break;
+                    }
+                }
+                yield return null;
+            }
+
+            if (destinationSet)
+            {
+                Vector3 aboveSecond = new Vector3(_point.x, _point.y + _amountOfLift, _point.z);
+                float distance = Vector3.Distance(targetChar.transform.position, aboveSecond);
+                float moveTime = distance * _secPerMeter;
+
+                CmdMoveTaget(targetGO, aboveSecond, moveTime);
+                yield return new WaitForSeconds(moveTime);
+
+                CmdMoveTaget(targetGO, new Vector3(_point.x, currentPos.y, _point.z), liftTime);
+                yield return new WaitForSeconds(liftTime);
+            }
+            else
+            {
+                Vector3 dropPos = new Vector3(targetChar.transform.position.x, currentPos.y, targetChar.transform.position.z);
+                CmdMoveTaget(targetGO, dropPos, liftTime);
+                yield return new WaitForSeconds(liftTime);
+            }
+
+            float elapsedTime = Time.time - hangStartTime;
+            if (elapsedTime < _castDuration)
+            {
+                yield return new WaitForSeconds(_castDuration - elapsedTime);
+            }
+            EnableMove();
         }
+
+        private void ForceDropTarget()
+        {
+            StopCoroutine(CastJob());
+            Character _targetChar = GetTargetCharacter();
+            if (_targetChar != null)
+            {
+                Debug.LogError("This");
+                Vector3 currentPos = _targetChar.transform.position;
+                Vector3 dropPos = new Vector3(currentPos.x, _originalGroundPosition.y, currentPos.z);
+
+                CmdForceDrop(_targetChar.gameObject, dropPos, _deleyTelekines);
+            }
+            EnableMove();
+        }
+        
         protected override void ClearData()
         {
-            EnableMove();
             ClearTarget();
             ClearTempTarget();
             //_target = null;
-            _point = Vector3.zero;
             _radiusEnemy.gameObject.SetActive(false);
         }
 
@@ -96,33 +171,24 @@ namespace Gangdollarff
                 }
                 yield return null;
             }
+            TargetInfo targetInfo = new TargetInfo();
+            SetTarget(GetTempTargetCharacter());
+            targetInfo.AddTarget(GetTargetCharacter());
+            callbackDataSaved(targetInfo);
+           
             yield return new WaitForSeconds(0.1f);
 
             _skillRender.StopDrawRadius();
 
-            SetTarget(GetTempTargetCharacter());
-            
             _radiusEnemy.gameObject.SetActive(true);
             _radiusEnemy.transform.parent = GetTargetCharacter().transform;
             _radiusEnemy.transform.localPosition = Vector3.zero;
-
-            while (_point == Vector3.zero)
-            {
-                if (Input.GetMouseButton(0))
-                    _point = GetMousePoint();
-
-                yield return null;
-            }
-            TargetInfo targetInfo = new TargetInfo();
-            targetInfo.AddTarget(GetTargetCharacter());
-            targetInfo.Points.Add( _point );
-            callbackDataSaved(targetInfo);
-            _radiusEnemy.gameObject.SetActive(false);
         }
 
         private void EnableMove()
         {
             Hero.Move.IsMoveBlocked = false;
+            Hero.Move.StopLookAt();
         }
 
         private void DisableMove()
@@ -131,14 +197,29 @@ namespace Gangdollarff
         }
 
         [Command]
-        private void CmdMoveTaget(GameObject target, Vector3 point, float time)
+        private void CmdMoveTaget(GameObject target, Vector3 point, float duration)
         {
             var enemyMove = target.GetComponent<MoveComponent>();
             var targetCharacter = target.GetComponent<Character>();
-			//enemyMove.DoMove(point, time - _deleyTelekines);
-			if (targetCharacter.connectionToClient != null) enemyMove.TargetRpcDoMove(point, 0.05f);
-			else enemyMove.RpcDoMove(point, 0.05f);
-			//enemyMove.TargetRpcDoMove(point, time);
+
+            float moveDuration = duration;
+
+            if (targetCharacter.connectionToClient != null)
+                enemyMove.TargetRpcDoMove(point, moveDuration);
+            else
+                enemyMove.RpcDoMove(point, moveDuration);
+        }
+
+        [Command]
+        private void CmdForceDrop(GameObject target, Vector3 dropPos, float duration)
+        {
+            var enemyMove = target.GetComponent<MoveComponent>();
+            var targetCharacter = target.GetComponent<Character>();
+
+            if (targetCharacter.connectionToClient != null)
+                enemyMove.TargetRpcForceDrop(targetCharacter.connectionToClient, dropPos, duration);
+            else
+                enemyMove.RpcForceDrop(dropPos, duration);
         }
     }
 }

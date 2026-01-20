@@ -179,6 +179,12 @@ public class MoveComponent : NetworkBehaviour
 		});
 	}
 
+	public void DoKillMoves()
+	{
+		_rigidbody.DOKill();
+		CancelMoveTowards();
+	}
+
 	private void OnReachGround()
 	{
 		_isFly = false;
@@ -402,6 +408,13 @@ public class MoveComponent : NetworkBehaviour
 			CanMove = true;
 		});
 	}
+	
+	[TargetRpc]
+	public void TargetRpcForceDrop(NetworkConnection conn, Vector3 dropPos, float duration)
+	{
+		DoKillMoves();
+		DoMove(dropPos, duration);
+	}
 
 	public void TargetRpcDoMoveNavMeshAgent(Vector3 postion)
     {
@@ -508,6 +521,13 @@ public class MoveComponent : NetworkBehaviour
 	{
 		Debug.Log("DoMove " + vector3, this);
 		DoMove(vector3, duration);
+	}
+	
+	[ClientRpc]
+	public void RpcForceDrop(Vector3 dropPos, float duration)
+	{
+		DoKillMoves();
+		DoMove(dropPos, duration);
 	}
 	#endregion
 }
