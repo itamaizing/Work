@@ -127,8 +127,6 @@ public class PoisonBall : Skill, IAltAbility
 
     #endregion
 
-    private Coroutine _secondClickCoroutine;
-    private Coroutine _thirdClickCoroutine;
     private Coroutine _mouseDetectionCoroutine;
     private Coroutine _checkingTalentsCoroutine;
     private Coroutine _setSpawnPointCoroutine;
@@ -221,32 +219,34 @@ public class PoisonBall : Skill, IAltAbility
             if (GetMouseButton)
             {
                 FindTargetCharacter(true);
-               // _currentTarget = GetTarget(true).character;
-
                 CheckWhoTarget();
-                _firstMousePosition = GetMousePoint();
 
-                if (GetTargetCharacter() != null)
+                Vector3 click = GetMousePoint();
+                if (Vector3.Distance(_player.transform.position, click) <= CastLength)
                 {
-                    //_player.Move.LookAtTransform(_currentTarget.transform);
-                    _isTarget = true;
-                }
-                else
-                {
-                    _isTarget = false;
-                }
+                    _firstMousePosition = click;
 
-                if (_arrowRenderers[0] == null)
-                {
-                    CreateArrowsParallelToPlayer();
+                    if (GetTargetCharacter() != null)
+                    {
+                        _isTarget = true;
+                    }
+                    else
+                    {
+                        _isTarget = false;
+                    }
+
+                    if (_arrowRenderers[0] == null)
+                    {
+                        CreateArrowsParallelToPlayer();
+                    }
+
+                    _arrowRenderers[0]?.gameObject.SetActive(true);
+                    _arrowRenderers[1]?.gameObject.SetActive(true);
+                    _arrowRenderers[2]?.gameObject.SetActive(false);
+                    _arrowRenderers[3]?.gameObject.SetActive(false);
+
+                    _firstClickDone = true;
                 }
-
-                _arrowRenderers[0]?.gameObject.SetActive(true);
-                _arrowRenderers[1]?.gameObject.SetActive(true);
-                _arrowRenderers[2]?.gameObject.SetActive(false);
-                _arrowRenderers[3]?.gameObject.SetActive(false);
-
-                _firstClickDone = true;
             }
 
             CooldownChange();
@@ -255,13 +255,54 @@ public class PoisonBall : Skill, IAltAbility
 
         _animTime = GetAnimationClipLength();
 
-        yield return _secondClickCoroutine = StartCoroutine(SecondClick());
+        while (!_secondClickDone)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Vector3 click = GetMousePoint();
+                if (Vector3.Distance(_player.transform.position, click) <= CastLength)
+                {
+                    _secondMousePosition = click;
+                    _secondClickDone = true;
 
-        yield return _thirdClickCoroutine = StartCoroutine(ThirdClick());
+
+                    if (GetTargetCharacter() != null)
+                    {
+                        Vector3 currentMousePosition = GetMousePoint();
+                        if (currentMousePosition.x < _secondMousePosition.x && currentMousePosition.z < _secondMousePosition.z)
+                        {
+                            SetArrowVisibility(1, true);
+                            SetArrowVisibility(3, false);
+                        }
+                        else
+                        {
+                            SetArrowVisibility(3, true);
+                            SetArrowVisibility(1, false);
+                        }
+                    }
+                }
+            }
+            yield return null;
+        }
+
+        while (!_thirdClickDone)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                _arrowRenderers[0].SetDeafaultMaterail();
+                _arrowRenderers[1].SetDeafaultMaterail();
+
+                Vector3 click = GetMousePoint();
+                if (Vector3.Distance(_player.transform.position, click) <= CastLength)
+                {
+                    _thirdClickDone = true;
+                    _thirdMousePosition = click;
+                }
+            }
+            yield return null;
+        }
 
         UseAbility();
-
-        // страшна, очень страшна
     }
 
     protected override IEnumerator CastJob()
@@ -320,18 +361,6 @@ public class PoisonBall : Skill, IAltAbility
         {
             StopCoroutine(_mouseDetectionCoroutine);
             _mouseDetectionCoroutine = null;
-        }
-
-        if (_secondClickCoroutine != null)
-        {
-            StopCoroutine(_secondClickCoroutine);
-            _secondClickCoroutine = null;
-        }
-
-        if (_thirdClickCoroutine != null)
-        {
-            StopCoroutine(_thirdClickCoroutine);
-            _thirdClickCoroutine = null;
         }
     }
 
@@ -715,58 +744,6 @@ public class PoisonBall : Skill, IAltAbility
             }
         }
         Debug.Log("Arrows cleared.");
-    }
-
-    #endregion
-
-    #region MouseClick
-
-    private IEnumerator SecondClick()
-    {
-        while (!_secondClickDone)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {        
-                Vector3 click = GetMousePoint();
-                if (Vector3.Distance(_player.transform.position, click) > CastLength) continue;
-
-                _secondMousePosition = click;
-                _secondClickDone = true;
-
-
-                if (GetTargetCharacter() != null)
-                {
-                    Vector3 currentMousePosition = GetMousePoint();
-                    if (currentMousePosition.x < _secondMousePosition.x && currentMousePosition.z < _secondMousePosition.z)
-                    {
-                        SetArrowVisibility(1, true);
-                        SetArrowVisibility(3, false);
-                    }
-                    else
-                    {
-                        SetArrowVisibility(3, true);
-                        SetArrowVisibility(1, false);
-                    }
-                }
-            }
-            yield return null;
-        }
-    }
-
-    private IEnumerator ThirdClick()
-    {
-        while (!_thirdClickDone)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                _arrowRenderers[0].SetDeafaultMaterail();
-                _arrowRenderers[1].SetDeafaultMaterail();
-
-                _thirdClickDone = true;
-                _thirdMousePosition = GetMousePoint();
-            }
-            yield return null;
-        }
     }
 
     #endregion
