@@ -54,11 +54,27 @@ public class PoisonBallProjectile : Test_Projectile
 
     #endregion
 
+    private bool IsEnemy(GameObject target)
+    {
+        if (_player == null) return true;
+        if (!_player.TryGetComponent(out UserNetworkSettings ownerSettings) || !target.TryGetComponent(out UserNetworkSettings targetSettings)) return true;
+        if (!IsTeamAssigned(ownerSettings) || !IsTeamAssigned(targetSettings)) return true;
+
+        return ownerSettings.TeamIndex != targetSettings.TeamIndex;
+    }
+
+    private bool IsTeamAssigned(UserNetworkSettings settings)
+    {
+        return settings.TeamIndex != 0;
+    }
+
     #region OnTriggerEnter
 
     [Server]
     private void OnTriggerEnter(Collider collision)
     {
+        if (!IsEnemy(collision.gameObject)) return;
+
         if (_isActiveHealingPoisonBall)
         {
             if (_isPlayer)
@@ -122,26 +138,27 @@ public class PoisonBallProjectile : Test_Projectile
                     return;
                 }
             }
-            else
-            {
-                if (collision.gameObject != _player.gameObject && _playerLayer != LayerMask.NameToLayer("Enemy"))
-                {
-                    if (collision.TryGetComponent<Character>(out var targetHealth))
-                    {
-                        _target = targetHealth;
+            //else
+            //{
+            //    if (collision.gameObject != _player.gameObject && _playerLayer != LayerMask.NameToLayer("Enemy"))
+            //    {
+            //        if (collision.TryGetComponent<Character>(out var targetHealth))
+            //        {
+            //            _target = targetHealth;
 
-                        DamageDeal();
+            //            DamageDeal();
 
-                        if (_isActiveFootInstincts)
-                        {
-                            RpcReductionCooldownAtFootInstincts(_player.gameObject);
-                        }
+            //            if (_isActiveFootInstincts)
+            //            {
+            //                RpcReductionCooldownAtFootInstincts(_player.gameObject);
+            //            }
 
-                        _poisonBall.LastTarget = targetHealth.gameObject;
-                    }
-                }
-            }
+            //            _poisonBall.LastTarget = targetHealth.gameObject;
+            //        }
+            //    }
+            //}
         }
+
         else
         {
             if (collision.gameObject != _player.gameObject && _playerLayer != LayerMask.NameToLayer("Enemy"))
