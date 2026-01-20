@@ -13917,7 +13917,7 @@ MonoBehaviour:
   autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 768
+    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 128

@@ -537,11 +537,11 @@ public class PoisonBall : Skill, IAltAbility
         //Debug.Log("CheckCanCast PoisonBall");
 
         if (GetTargetCharacter() == null)
-            return Vector3.Distance(_firstMousePosition, transform.position) <= Radius && NoObstacles(_firstMousePosition, _obstacle);
+            return Vector3.Distance(_firstMousePosition, transform.position) <= CastLength && NoObstacles(_firstMousePosition, _obstacle);
 
-        return Vector3.Distance(_firstMousePosition, transform.position) <= Radius &&
+        return Vector3.Distance(_firstMousePosition, transform.position) <= CastLength &&
             NoObstacles(_firstMousePosition, _obstacle) ||
-            Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius &&
+            Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= CastLength &&
             NoObstacles(GetTargetCharacter().transform.position, _obstacle);
 
     }
@@ -726,10 +726,13 @@ public class PoisonBall : Skill, IAltAbility
         while (!_secondClickDone)
         {
             if (Input.GetMouseButtonDown(0))
-            {
+            {        
+                Vector3 click = GetMousePoint();
+                if (Vector3.Distance(_player.transform.position, click) > CastLength) continue;
+
+                _secondMousePosition = click;
                 _secondClickDone = true;
 
-                _secondMousePosition = GetMousePoint();
 
                 if (GetTargetCharacter() != null)
                 {
