@@ -194,8 +194,9 @@ public class CreeperInvisible : Skill
 
     private void OnPlayerDamaged(Damage damage, Skill skill)
     {
-        if (!_isInvisible) return;
         IncreaseSetCooldown(CooldownTime);
+        if (!_isInvisible) return;
+        CmdRemoveInvisible(_player.gameObject, _isCreeperStrikeIsHit);
     }
 
     #endregion
@@ -218,6 +219,8 @@ public class CreeperInvisible : Skill
         _isPlayerSeen = false;
         _isDamagedPlayer = false;
 
+        _player.SelectedCircle?.SetAllProjectorsEnabled(false);
+
         RpcApplyInvis();
 
         RpcMakeTransparentMaterialsPlayer(player);
@@ -231,6 +234,8 @@ public class CreeperInvisible : Skill
         _isInvisible = false;
         _isPlayerSeen = true;
         _isDamagedPlayer = false;
+
+        _player.SelectedCircle?.SetAllProjectorsEnabled(true);
 
         RpcReturnTransparencyMaterialsPlayer(player);
 
