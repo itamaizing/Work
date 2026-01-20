@@ -56,9 +56,9 @@ public class PoisonBallProjectile : Test_Projectile
 
     private bool IsEnemy(GameObject target)
     {
-        if (_player == null) return true;
-        if (!_player.TryGetComponent(out UserNetworkSettings ownerSettings) || !target.TryGetComponent(out UserNetworkSettings targetSettings)) return true;
-        if (!IsTeamAssigned(ownerSettings) || !IsTeamAssigned(targetSettings)) return true;
+        if (_player == null) return IsEnemyByLayer(target);
+        if (!_player.TryGetComponent(out UserNetworkSettings ownerSettings) || !target.TryGetComponent(out UserNetworkSettings targetSettings)) return IsEnemyByLayer(target);
+        if (!IsTeamAssigned(ownerSettings) || !IsTeamAssigned(targetSettings)) return IsEnemyByLayer(target);
 
         return ownerSettings.TeamIndex != targetSettings.TeamIndex;
     }
@@ -66,6 +66,11 @@ public class PoisonBallProjectile : Test_Projectile
     private bool IsTeamAssigned(UserNetworkSettings settings)
     {
         return settings.TeamIndex != 0;
+    }
+
+    private bool IsEnemyByLayer(GameObject target)
+    {
+        return ((1 << target.layer) & _skill.TargetsLayers.value) != 0;
     }
 
     #region OnTriggerEnter

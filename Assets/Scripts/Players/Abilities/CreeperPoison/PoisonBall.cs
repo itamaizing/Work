@@ -220,12 +220,13 @@ public class PoisonBall : Skill, IAltAbility
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         _isAbilityActive = true;
+        Vector3 targetPoint = Vector3.positiveInfinity;
 
         StartCoroutine();
 
         CheckingActiveTalents();
 
-        while (GetTargetCharacter() == null && float.IsPositiveInfinity(_firstMousePosition.x))
+        while (GetTargetCharacter() == null && float.IsPositiveInfinity(targetPoint.x))
         {
             if (GetMouseButton)
             {
@@ -235,7 +236,7 @@ public class PoisonBall : Skill, IAltAbility
                 Vector3 click = GetMousePoint();
                 if (Vector3.Distance(_player.transform.position, click) <= CastLength)
                 {
-                    _firstMousePosition = click;
+                    targetPoint = click;
 
                     if (GetTargetCharacter() != null)
                     {
@@ -248,7 +249,7 @@ public class PoisonBall : Skill, IAltAbility
 
                     if (_arrowRenderers[0] == null)
                     {
-                        CreateArrowsParallelToPlayer();
+                        CreateArrowsParallelToPlayer(targetPoint);
                     }
 
                     _arrowRenderers[0]?.gameObject.SetActive(true);
@@ -291,8 +292,6 @@ public class PoisonBall : Skill, IAltAbility
                             SetArrowVisibility(1, false);
                         }
                     }
-
-                    ClearArrows();
                 }
             }
             yield return null;
@@ -311,11 +310,17 @@ public class PoisonBall : Skill, IAltAbility
                     _thirdClickDone = true;
                     _thirdMousePosition = click;
                 }
+
+                ClearArrows();
             }
             yield return null;
         }
 
         UseAbility();
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(targetPoint);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
@@ -676,11 +681,11 @@ public class PoisonBall : Skill, IAltAbility
 
     #region ArrowManagement
 
-    private void CreateArrowsParallelToPlayer()
+    private void CreateArrowsParallelToPlayer(Vector3 point)
     {
         if (_arrowPrefab == null || pointArrowRender == null) return;
 
-        Vector3 center = GetTargetCharacter() != null ? GetTargetCharacter().transform.position : _firstMousePosition;
+        Vector3 center = GetTargetCharacter() != null ? GetTargetCharacter().transform.position : point;
         Vector3 playerPos = _player.transform.position;
 
         center.y = 1.1f;
@@ -1072,6 +1077,6 @@ public class PoisonBall : Skill, IAltAbility
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        throw new NotImplementedException();
+        _firstMousePosition = targetInfo.Points[0];
     }
 }
