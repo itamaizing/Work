@@ -86,36 +86,30 @@ public class CreeperInvisible : Skill
     {
         ResetAltAbility();
 
-        while (true)
+        bool hasEnemies = false;
+
+        Collider[] hitEnemies = Physics.OverlapSphere(_player.transform.position, Radius, _targetsLayers);
+
+        foreach (Collider enemy in hitEnemies)
         {
-            bool hasEnemies = false;
-
-            Collider[] hitEnemies = Physics.OverlapSphere(_player.transform.position, Radius, _targetsLayers);
-
-            foreach (Collider enemy in hitEnemies)
+            if (enemy.TryGetComponent(out Character character) && (_targetsLayers.value & (1 << character.gameObject.layer)) != 0)
             {
-                if (enemy.TryGetComponent(out Character character) && (_targetsLayers.value & (1 << character.gameObject.layer)) != 0)
-                {
-                    hasEnemies = true;
-                    break;
-                }
+                hasEnemies = true;
+                break;
             }
-
-            if (!hasEnemies && !_player.CharacterState.CheckForState(States.CreeperInvisible))
-            {
-                CmdApplyInvis(_player.gameObject);
-                yield break;
-            }
-
-            if (_player.CharacterState.CheckForState(States.CreeperInvisible) && GetMouseButton)
-            {
-                _isCreeperStrikeIsHit = _creeperStrike.IsHit;
-                CmdRemoveInvisible(_player.gameObject, _isCreeperStrikeIsHit);
-                yield break;
-            }
-
-            yield return null;
         }
+
+        if (_player.CharacterState.CheckForState(States.CreeperInvisible))
+        {
+            _isCreeperStrikeIsHit = _creeperStrike.IsHit;
+            CmdRemoveInvisible(_player.gameObject, _isCreeperStrikeIsHit);
+
+            yield break;
+        }
+
+        if (!hasEnemies) CmdApplyInvis(_player.gameObject);
+
+        yield break;
     }
 
     protected override IEnumerator CastJob()
