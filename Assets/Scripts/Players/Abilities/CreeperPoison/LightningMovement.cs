@@ -46,6 +46,11 @@ public class LightningMovement : Skill
 
     }
 
+    private bool IsValidLeapPoint(Vector3 point)
+    {
+        return !float.IsNaN(point.x) && !float.IsInfinity(point.x) && !float.IsNaN(point.y) && !float.IsInfinity(point.y) && !float.IsNaN(point.z) && !float.IsInfinity(point.z);
+    }
+
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         Debug.LogError("DataError");
@@ -107,6 +112,13 @@ public class LightningMovement : Skill
 
         _player.Move.SetAnimationMovement((_leapPoint - _player.transform.position).normalized * _player.Move.CurrentSpeed);
 
+        _leapPoint = CalculateLeapPoint(_leapPoint);
+        if (Vector3.Distance(_player.transform.position, _leapPoint) < 0.1f)
+        {
+            ClearData();
+            yield break;
+        }
+
         _player.Rigidbody.DOMove(_leapPoint, _durationLeap)
             .SetEase(Ease.InSine)
             .OnUpdate(() =>
@@ -147,6 +159,13 @@ public class LightningMovement : Skill
         if (!float.IsPositiveInfinity(pointSecond.x))
         {
             _player.Move.SetAnimationMovement((pointSecond - _player.transform.position).normalized * (_player.Move.CurrentSpeed / 3)); // �������� ���������� �������� �� 3 
+
+            _leapPoint = CalculateLeapPoint(_leapPoint);
+            if (Vector3.Distance(_player.transform.position, _leapPoint) < 0.1f)
+            {
+                ClearData();
+                yield break;
+            }
 
             _player.Rigidbody.DOMove(pointSecond, _durationLeap)
               .SetEase(Ease.OutSine)
