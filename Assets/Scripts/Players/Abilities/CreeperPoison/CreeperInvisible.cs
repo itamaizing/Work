@@ -64,6 +64,8 @@ public class CreeperInvisible : Skill
         {
             _player.Health.DamageTaken += OnPlayerDamaged;
         }
+
+        InputHandler.OnCast += OnCastKeyPressed;
     }
 
     private void OnDisable()
@@ -79,9 +81,10 @@ public class CreeperInvisible : Skill
             _checkEnemiesRoutine = null;
         }
 
-        }
+        InputHandler.OnCast += OnCastKeyPressed;
+    }
 
-        private void Start()
+     private void Start()
     {
         if (_checkEnemiesRoutine == null) _checkEnemiesRoutine = StartCoroutine(CheckEnemiesInRadiusRoutine());
     }
@@ -94,6 +97,32 @@ public class CreeperInvisible : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
+    }
+
+    private void OnCastKeyPressed(int index)
+    {
+        if (!IsSkillSelected(index)) return;
+
+        if (Disactive)
+        {
+            SkillRender.DrawRadius(Radius);
+            StartCoroutine(StopDrawRadiusAfterDelay());
+        }
+    }
+
+    private bool IsSkillSelected(int index)
+    {
+        SkillManager manager = _player.GetComponent<SkillManager>();
+        if (manager == null) return false;
+
+        var selected = manager.SelectedSkills;
+        return selected.Length > index && selected[index] == this;
+    }
+
+    private IEnumerator StopDrawRadiusAfterDelay()
+    {
+        yield return new WaitForSeconds(0.2f);
+        SkillRender.StopDrawRadius();
     }
 
     private IEnumerator CheckEnemiesInRadiusRoutine()
@@ -125,14 +154,6 @@ public class CreeperInvisible : Skill
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         ResetAltAbility();
-
-        if (Disactive)
-        {
-            SkillRender.DrawRadius(Radius);
-            yield return new WaitForSeconds(0.2f);
-            SkillRender.StopDrawRadius();
-            yield break;
-        }
 
         if (_player.CharacterState.CheckForState(States.CreeperInvisible))
         {
