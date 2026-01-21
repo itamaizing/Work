@@ -31,6 +31,8 @@ public class CreeperInvisible : Skill
     private SpitPoison _spitPoison;
     private PoisonBall _poisonBall;
 
+    private Coroutine _checkEnemiesRoutine;
+
     private float _previousHealth;
     private float _currentHealth;
     private float _distanceWithoutEnemies = 6f;
@@ -70,6 +72,18 @@ public class CreeperInvisible : Skill
         {
             _player.Health.DamageTaken -= OnPlayerDamaged;
         }
+
+        if (_checkEnemiesRoutine != null)
+        {
+            StopCoroutine(CheckEnemiesInRadiusRoutine());
+            _checkEnemiesRoutine = null;
+        }
+
+        }
+
+        private void Start()
+    {
+        if (_checkEnemiesRoutine == null) _checkEnemiesRoutine = StartCoroutine(CheckEnemiesInRadiusRoutine());
     }
 
     #region PrepareAndCastJob
@@ -82,33 +96,52 @@ public class CreeperInvisible : Skill
     {
     }
 
+    private IEnumerator CheckEnemiesInRadiusRoutine()
+    {
+        WaitForSeconds delay = new WaitForSeconds(0.1f);
+
+        while (true)
+        {
+            bool hasEnemies = false;
+
+            Collider[] hitEnemies = Physics.OverlapSphere(_player.transform.position, Radius, _targetsLayers);
+
+            foreach (Collider enemy in hitEnemies)
+            {
+                if (enemy.TryGetComponent(out Character character) &&
+                    (_targetsLayers.value & (1 << character.gameObject.layer)) != 0)
+                {
+                    hasEnemies = true;
+                    break;
+                }
+            }
+
+            Disactive = hasEnemies;
+
+            yield return delay;
+        }
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         ResetAltAbility();
 
-        bool hasEnemies = false;
-
-        Collider[] hitEnemies = Physics.OverlapSphere(_player.transform.position, Radius, _targetsLayers);
-
-        foreach (Collider enemy in hitEnemies)
+        if (Disactive)
         {
-            if (enemy.TryGetComponent(out Character character) && (_targetsLayers.value & (1 << character.gameObject.layer)) != 0)
-            {
-                hasEnemies = true;
-                break;
-            }
+            SkillRender.DrawRadius(Radius);
+            yield return new WaitForSeconds(0.2f);
+            SkillRender.StopDrawRadius();
+            yield break;
         }
 
         if (_player.CharacterState.CheckForState(States.CreeperInvisible))
         {
             _isCreeperStrikeIsHit = _creeperStrike.IsHit;
             CmdRemoveInvisible(_player.gameObject, _isCreeperStrikeIsHit);
-
             yield break;
         }
 
-        if (!hasEnemies) CmdApplyInvis(_player.gameObject);
-
+        CmdApplyInvis(_player.gameObject);
         yield break;
     }
 
