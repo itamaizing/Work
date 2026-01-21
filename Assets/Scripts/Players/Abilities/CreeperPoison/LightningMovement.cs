@@ -36,6 +36,33 @@ public class LightningMovement : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override bool IsCanCast => !HasObstaclesBetween(_player.transform.position, _leapPoint);
 
+    private void OnEnable()
+    {
+        OnSkillCanceled += HandleSkillCanceled;
+    }
+
+    private void OnDisable()
+    {
+        OnSkillCanceled -= HandleSkillCanceled;
+    }
+
+    private void HandleSkillCanceled()
+    {
+        if (_player?.Move != null)
+        {
+            _player.Move.CanMove = true;
+            _player.Move.StopMoveAndAnimationMove();
+        }
+
+        if (_player?.Rigidbody != null)
+        {
+            DOTween.Kill(_player.Rigidbody);
+        }
+
+        StopAllCoroutines();
+        ClearData();
+    }
+
     private bool HasObstaclesBetween(Vector3 start, Vector3 end)
     {
         var direction = (end - start).normalized;
@@ -60,6 +87,7 @@ public class LightningMovement : Skill
     {
         IsInMovement = false;
         _player.Move.CanMove = true;
+        _player.Move.StopMoveAndAnimationMove();
         Target = null;
         _hasSecondLeap = false;
         _secondLeapPoint = Vector3.positiveInfinity;
@@ -152,16 +180,22 @@ public class LightningMovement : Skill
 
         float elapsed = 0;
 
+        //while (elapsed < _durationLeap)
+        //{
+        //    elapsed += Time.deltaTime;
+        //    if (Input.GetMouseButtonDown(0) && !_hasSecondLeap)
+        //    {
+        //        _secondLeapPoint = CalculateLeapPoint(GetMousePoint());
+
+        //        if (!HasObstaclesBetween(_player.transform.position, _secondLeapPoint)) secondLeapRequested = true;
+        //        else _secondLeapPoint = Vector3.positiveInfinity;
+        //    }
+        //    yield return null;
+        //}
+
         while (elapsed < _durationLeap)
         {
             elapsed += Time.deltaTime;
-            if (Input.GetMouseButtonDown(0) && !_hasSecondLeap)
-            {
-                _secondLeapPoint = CalculateLeapPoint(GetMousePoint());
-                 
-                if (!HasObstaclesBetween(_player.transform.position, _secondLeapPoint)) secondLeapRequested = true;
-                else _secondLeapPoint = Vector3.positiveInfinity;
-            }
             yield return null;
         }
 
