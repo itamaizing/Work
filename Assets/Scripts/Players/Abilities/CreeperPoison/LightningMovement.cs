@@ -53,7 +53,7 @@ public class LightningMovement : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        Debug.LogError("DataError");
+        _leapPoint = targetInfo.Points[0];
     }
 
     protected override void ClearData()
@@ -68,7 +68,9 @@ public class LightningMovement : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (float.IsPositiveInfinity(_leapPoint.x) && !Disactive)
+        Vector3 targetPoint = Vector3.positiveInfinity;
+
+        while (float.IsPositiveInfinity(targetPoint.x) && !Disactive)
         {
             if (GetMouseButton)
             {
@@ -76,12 +78,16 @@ public class LightningMovement : Skill
 
                 if (IsPointInRadius(Radius, clickedPoint))
                 {
-                    _leapPoint = CalculateLeapPoint(GetMousePoint());
+                    targetPoint = CalculateLeapPoint(GetMousePoint());
                 }
             }
 
             yield return null;
         }
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(targetPoint);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
@@ -101,6 +107,15 @@ public class LightningMovement : Skill
         _leapPoint = CalculateLeapPoint(_leapPoint); //To check distance
 
         Vector3 direction = (_leapPoint - _player.transform.position).normalized;
+
+        _leapPoint = CalculateLeapPoint(_leapPoint);
+
+        if (!IsValidLeapPoint(_leapPoint))
+        {
+            ClearData();
+            yield break;
+        }
+
         if (direction.sqrMagnitude > 0.001f) _player.transform.rotation = Quaternion.LookRotation(direction);
 
         _lightningStrikes.IsUsedLightningStrikes = true;
@@ -150,6 +165,14 @@ public class LightningMovement : Skill
             yield return null;
         }
 
+        _leapPoint = CalculateLeapPoint(_leapPoint);
+
+        if (!IsValidLeapPoint(_leapPoint))
+        {
+            ClearData();
+            yield break;
+        }
+
         if (secondLeapRequested && _damagedCharacter != null) ExecuteLeapSecond(_secondLeapPoint);
         else ClearData();
     }
@@ -159,13 +182,6 @@ public class LightningMovement : Skill
         if (!float.IsPositiveInfinity(pointSecond.x))
         {
             _player.Move.SetAnimationMovement((pointSecond - _player.transform.position).normalized * (_player.Move.CurrentSpeed / 3)); // �������� ���������� �������� �� 3 
-
-            _leapPoint = CalculateLeapPoint(_leapPoint);
-            if (Vector3.Distance(_player.transform.position, _leapPoint) < 0.1f)
-            {
-                ClearData();
-                yield break;
-            }
 
             _player.Rigidbody.DOMove(pointSecond, _durationLeap)
               .SetEase(Ease.OutSine)
