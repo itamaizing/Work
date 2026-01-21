@@ -26,8 +26,8 @@ public abstract class Resource : NetworkBehaviour
     protected Coroutine _regenCoroutine;
 
     private float _bonusMaxValue = 0f;
-	public float CurrentValue { get => _currentValue; set { _currentValue = value; } }
-    public float MaxValue { get => _maxValue; set => _maxValue = value; }
+	public float CurrentValue { get => _currentValue; set { ValueChanged?.Invoke(_currentValue, value); _currentValue = value; } }
+    public float MaxValue { get => _maxValue; set { MaxValueChanged?.Invoke(_maxValue, value); _maxValue = value; } }
     public float RegenerationValue { get => _regenerationValue; set { _regenerationValue = value; } }
     public float RegenerationDelay { get => _regenerationPeriod; set { _regenerationPeriod = value; } }
 
@@ -53,6 +53,22 @@ public abstract class Resource : NetworkBehaviour
         ClientStopRegenerateJob();
     }
 
+    /*private void Update()
+	{
+        
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            Debug.Log("MaxValue" + MaxValue);
+            TEST();
+        }
+	}
+
+    [Command]
+    private void UpdateValue(float value)
+    {
+        MaxValue = value;
+    }*/
+    
     public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data)
     {
         _currentValue = maxValue / 2;
@@ -74,7 +90,6 @@ public abstract class Resource : NetworkBehaviour
 
     public virtual bool TryUse(float value)
     {
-        //TEST!!!
         ClientStopRegenerateJob();
         ClientStartRegenirateJob();
         if (_regenCoroutine != null)

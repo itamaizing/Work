@@ -93,10 +93,10 @@ public class Bar : MonoBehaviour
 		}
 	}
 
-	private void Update()
+	/*private void Update()
 	{
 		if(Input.GetKeyDown(KeyCode.O)) OnChangeBarColor(Color.red);
-	}
+	}*/
 
 	public virtual void UpdateBarWithShield(float healthBarTarget)
 	{

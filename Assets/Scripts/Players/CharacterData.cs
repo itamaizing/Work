@@ -121,6 +121,12 @@ public class AttributeGroup
         new Attribute(1021, AttributeNames.MagicAbsorb, 0)
     };
 
+    [SerializeField]
+    private List<Attributes> _attributeGroup2 = new()
+    {
+        //new Attributes()
+    };
+
     public List<Attribute> AttributeData => attributesGroup;
     public int FreeAttributePointsCount { get; set; }
     public int UsedAttributePointsCount => attributesGroup.Sum(o => o.Points);
