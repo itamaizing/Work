@@ -311,10 +311,22 @@ public class CreeperStrike : Skill
 
         if (_recentTargets.Count >= 4 && _recentTargets[3] != _recentTargets[0]) CmdTriggerSneakySpitWindowCancel();
 
-        if (sameTargetThreeTimes && IsDoubleCreeperChain()) CmdTriggerSneakySpitFreeWindow(target);
-        else if (sameTargetTwoTimes && IsStrikeCombo()) CmdTriggerSneakySpitFreeWindow(target);
+        if (sameTargetThreeTimes && IsDoubleCreeperChain())
+        {
+            CmdTriggerSneakySpitFreeWindow(target);
+            ClearRecentTargetsNow();
+        }
+        else if (sameTargetTwoTimes && IsStrikeCombo())
+        {
+            CmdTriggerSneakySpitFreeWindow(target);
+            ClearRecentTargetsNow();
+        }
 
-        if (sameTargetTwoTimes && IsCreeperChain()) CmdBlockPassiveSkillFreeWindow(target);
+        if (sameTargetTwoTimes && IsCreeperChain())
+        {
+            CmdBlockPassiveSkillFreeWindow(target);
+            ClearRecentTargetsNow();
+        }
     }
 
     private bool IsCreeperChain()
@@ -366,6 +378,17 @@ public class CreeperStrike : Skill
     {
         yield return new WaitForSeconds(_targetMemoryTime);
         _recentTargets.Clear();
+    }
+
+    private void ClearRecentTargetsNow()
+    {
+        _recentTargets.Clear();
+
+        if (_clearTargetsCoroutine != null)
+        {
+            StopCoroutine(_clearTargetsCoroutine);
+            _clearTargetsCoroutine = null;
+        }
     }
 
     #endregion
