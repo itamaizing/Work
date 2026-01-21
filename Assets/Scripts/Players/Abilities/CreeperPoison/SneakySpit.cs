@@ -27,9 +27,9 @@ public class SneakySpit : Skill
     }
     protected override void SkillDisableBoostLogic()
     {
-        if (!isAnimStart) return;
-        ClearTarget();
         Disactive = true;
+        if (isAnimStart) return;
+        ClearTarget();
     }
 
     private void OnEnable() 
@@ -60,7 +60,7 @@ public class SneakySpit : Skill
     {
         return GetTargetCharacter() != null &&
         Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius &&
-        NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle) && !Disactive;
+        NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
     }
 
     private void OnHeroEvade()
@@ -83,6 +83,7 @@ public class SneakySpit : Skill
 
         FindTargetCharacter();
         isAbilityQueue = true;
+        isAnimStart = true;
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(GetTargetCharacter());
@@ -112,7 +113,7 @@ public class SneakySpit : Skill
         isAbilityQueue = false;
         //_target = null;
     }
-
+    
     public void CancelBoostWindow()
     {
         if (_boostWindow != null)
@@ -149,8 +150,6 @@ public class SneakySpit : Skill
         isAnimStart = false;
         CancelBoostWindow();
     }
-
-    public void SneakySpitPrepaer() => isAnimStart = true;
 
     [Command] private void CmdAddState(Character target) => target.CharacterState.AddState(States.Blind, duration, 0, _playerLinks.gameObject, name);
 
