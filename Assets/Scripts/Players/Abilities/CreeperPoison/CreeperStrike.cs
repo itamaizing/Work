@@ -293,38 +293,60 @@ public class CreeperStrike : Skill
             _isHit = false;
         }
 
-        TryTriggerWindow(character);
+        int countToRegister = (isUsingLightningStrikes ? 2 : 1);
+        TryTriggerWindow(character, countToRegister);
     }
 
     #region Combo Creeper
 
-    private void TryTriggerWindow(Character target)
+    private void TryTriggerWindow(Character target, int repeatCount = 1)
     {
         if (target == null) return;
         if (_recentTargets.Exists(character => character == null || character.IsDead)) _recentTargets.Clear();
 
-        RegisterRecentTarget(target);
+        RegisterRecentTarget(target, repeatCount);
 
-        var lastCast = _player.Abilities.LastCastedSkill;
-        var previewCast = _player.Abilities.PreviewCastedSkill;
-
-        bool isCreeperChain = lastCast is CreeperStrike || lastCast is LightningStrikes;
-        bool isDoubleCreeperChain = isCreeperChain && previewCast is CreeperStrike || previewCast is LightningStrikes;
-
-        bool sameTargetTwice = SameTargetCastCounter(2);
+        bool sameTargetTwoTimes = _recentTargets.Count >= 2 && _recentTargets[0] == _recentTargets[1];
         bool sameTargetThreeTimes = SameTargetCastCounter(3);
 
         if (_recentTargets.Count >= 4 && _recentTargets[3] != _recentTargets[0]) CmdTriggerSneakySpitWindowCancel();
 
-        if (sameTargetThreeTimes && isDoubleCreeperChain) CmdTriggerSneakySpitFreeWindow(target);
-        if (sameTargetTwice && isCreeperChain) CmdBlockPassiveSkillFreeWindow(target);
+        if (sameTargetThreeTimes && IsDoubleCreeperChain()) CmdTriggerSneakySpitFreeWindow(target);
+        else if (sameTargetTwoTimes && IsStrikeCombo()) CmdTriggerSneakySpitFreeWindow(target);
+
+        if (sameTargetTwoTimes && IsCreeperChain()) CmdBlockPassiveSkillFreeWindow(target);
     }
 
-    private void RegisterRecentTarget(Character target)
+    private bool IsCreeperChain()
     {
-        _recentTargets.Insert(0, target);
+        var last = _player.Abilities.LastCastedSkill;
+        return last is CreeperStrike || last is LightningStrikes;
+    }
 
-        if (_recentTargets.Count > 4) _recentTargets.RemoveAt(_recentTargets.Count - 1);
+    private bool IsDoubleCreeperChain()
+    {
+        var last = _player.Abilities.LastCastedSkill;
+        var prev = _player.Abilities.PreviewCastedSkill;
+        return (last is CreeperStrike || last is LightningStrikes) && (prev is CreeperStrike || prev is LightningStrikes);
+    }
+
+    private bool IsStrikeCombo()
+    {
+        var last = _player.Abilities.LastCastedSkill;
+        var prev = _player.Abilities.PreviewCastedSkill;
+
+        return (last is CreeperStrike && prev is LightningStrikes) || (last is LightningStrikes && prev is CreeperStrike) || (last is LightningStrikes && prev is LightningStrikes);
+    }
+
+    private void RegisterRecentTarget(Character target, int repeatCount = 1)
+    {
+        for (int i = 0; i < repeatCount; i++)
+        {
+            _recentTargets.Insert(0, target);
+        }
+
+        if (_recentTargets.Count > 4) _recentTargets.RemoveRange(4, _recentTargets.Count - 4);
+
         if (_clearTargetsCoroutine != null) StopCoroutine(_clearTargetsCoroutine);
 
         _clearTargetsCoroutine = StartCoroutine(ClearRecentTargetsAfterDelay());

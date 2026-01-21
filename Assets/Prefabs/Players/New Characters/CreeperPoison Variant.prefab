@@ -13778,7 +13778,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 4
+  _cooldownTime: 1
   _castDeley: 0
   _damageValue: 0
   _abilitySchool: 5
