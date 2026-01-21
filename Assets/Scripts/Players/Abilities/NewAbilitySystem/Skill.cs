@@ -846,11 +846,13 @@ public abstract class Skill : NetworkBehaviour
 
     public void AddMaxChargeCount()
     {
+        bool isRecharging = (_currentChargers < _maxCharges);
+        
         _maxCharges += 1;
 
         _remainingCooldownTimeChargers.Add(0);
-
-        _currentChargers += 1;
+        if(!isRecharging)
+            _currentChargers += 1;
 
         CurrentChargeChanged?.Invoke(_currentChargers);
     }
@@ -888,10 +890,11 @@ public abstract class Skill : NetworkBehaviour
     {
         if (_maxCharges - 1 > 0)
         {
+            int lastIndex = _maxCharges - 1;
+
+            _remainingCooldownTimeChargers.RemoveAt(lastIndex);
+            
             _maxCharges -= 1;
-
-            _remainingCooldownTimeChargers.RemoveAt(_remainingCooldownTimeChargers.Count - 1);
-
             if (_currentChargers > _maxCharges)
             {
                 _currentChargers -= 1;
