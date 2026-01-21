@@ -54,12 +54,6 @@ public class LightningMovement : Skill
             _player.Move.StopMoveAndAnimationMove();
         }
 
-        if (_player?.Rigidbody != null)
-        {
-            DOTween.Kill(_player.Rigidbody);
-        }
-
-        StopAllCoroutines();
         ClearData();
     }
 
@@ -85,9 +79,16 @@ public class LightningMovement : Skill
 
     protected override void ClearData()
     {
+
+        if (_player?.Rigidbody != null)
+        {
+            DOTween.Kill(_player.Rigidbody);
+        }
+
         IsInMovement = false;
         _player.Move.CanMove = true;
         _player.Move.StopMoveAndAnimationMove();
+        _player.Move.StopLookAt();
         Target = null;
         _hasSecondLeap = false;
         _secondLeapPoint = Vector3.positiveInfinity;
