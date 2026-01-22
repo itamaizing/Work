@@ -21,7 +21,7 @@ public class DisappointmentState : AbstractCharacterState
         _damageToExit = damageToExit == 0 ? 10000 : damageToExit;
         _damageOnStart = characterState.Character.Health.SumDamageTaken;
 
-        characterState.Character.Move.CanMove = false;
+        characterState.Character.Move.SetCanMove(false);
         characterState.Character.Move.LookAtTransform(characterState.transform);
 
         if (characterState.Character.TryGetComponent(out SkillManager abilities))
@@ -48,7 +48,7 @@ public class DisappointmentState : AbstractCharacterState
 
         if (!characterState.Check(StatusEffect.Move))
         {
-            characterState.Character.Move.CanMove = true;
+            characterState.Character.Move.SetCanMove(true);
             characterState.Character.Move.StopLookAt();
         }
 

@@ -253,7 +253,7 @@ public class PoisonBallProjectile : Test_Projectile
             StartCoroutine(ServerMove(targetMove, finalPoint, durationPush));
         }
 
-        target.Move.CanMove = true;
+        target.Move.SetCanMove(true);
     }
 
     private void ReductionCooldownFromRestorationOfGlands()

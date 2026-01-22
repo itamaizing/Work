@@ -26,7 +26,7 @@ public class ElvenSkill : AbstractCharacterState
         _move = character.GetComponent<MoveComponent>();
         _skillManager = characterState.Character.Abilities;
 
-        _move.CanMoveState = true;
+        _move.SetCanMoveState(true);
 
         if (_skillManager != null)
         {
@@ -53,7 +53,7 @@ public class ElvenSkill : AbstractCharacterState
 
     public override void ExitState()
     {
-        if (_move) _move.CanMoveState = false;
+        if (_move) _move.SetCanMoveState(false);
 
         if (_skillManager != null)
         {
@@ -88,12 +88,12 @@ public class ElvenSkill : AbstractCharacterState
 
     private void OnPhysCastStarted()  
     {
-        if (_move) _move.CanMoveState = true;
+        if (_move) _move.SetCanMoveState(true);
     }
 
     private void NotPhysCastStarted()
     {
-        if (_move) _move.CanMoveState = false;
+        if (_move) _move.SetCanMoveState(false);
     }
 }
 

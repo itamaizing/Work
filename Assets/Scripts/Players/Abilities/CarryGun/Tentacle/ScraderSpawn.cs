@@ -24,7 +24,7 @@ public class ScraderSpawn : Skill
 
     private void OnEnable()
     {
-        Hero.Move.CanMove = false;
+        Hero.Move.SetCanMove(false);
     }
 
     private void OnDestroy()

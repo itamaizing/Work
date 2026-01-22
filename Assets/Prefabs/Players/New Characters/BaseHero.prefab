@@ -30715,8 +30715,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 7672f560c9603a94f8985ebe5157f8f2, type: 3}
   MoveDirection: {x: 0, y: 0, z: 0}
   ExternalMoveDirection: {x: 0, y: 0, z: 0}
-  CanMove: 1
-  CanMoveState: 0
   IsMoving: 0
   IsSelect: 0
   IsNoRotateAtCursor: 0

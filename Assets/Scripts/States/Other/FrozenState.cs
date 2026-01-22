@@ -34,7 +34,7 @@ public class FrozenState : AbstractCharacterState
 
 		//_damageOnStart = _characterState.Character.Health.SumDamageTaken;
 		_damageOnStart = 0;
-		characterState.Character.Move.CanMove = false;
+		characterState.Character.Move.SetCanMove(false);
 		characterState.Character.Move.Rigidbody.isKinematic = true;
 		characterState.Character.Move.LookAtTransform(characterState.gameObject.transform);
 		_audioSource = character.GetComponent<AudioSource>();
@@ -94,7 +94,7 @@ public class FrozenState : AbstractCharacterState
 		characterState.RemoveState(this);
 		if (!characterState.Check(StatusEffect.Move))
 		{
-			characterState.Character.Move.CanMove = true;
+			characterState.Character.Move.SetCanMove(true);
 			characterState.Character.Move.Rigidbody.isKinematic = false;
 			characterState.Character.Move.StopLookAt();
 		}

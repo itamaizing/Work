@@ -287,12 +287,12 @@ public class IcePuddle : Skill
     public void IcePuddleEnd()
     {
         AnimCastEnded();
-        if (_move) _move.CanMove = true;
+        if (_move) _move.SetCanMove(true);
     }
 
     public void StopMoveIcePuddle()
     {
-        if (_move) _move.CanMove = false;
+        if (_move) _move.SetCanMove(false);
     }
 
     /*

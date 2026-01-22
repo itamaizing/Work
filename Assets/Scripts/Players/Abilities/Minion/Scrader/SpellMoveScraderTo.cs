@@ -39,14 +39,14 @@ public class SpellMoveScraderTo : Skill
     {
         OnSkillCanceled -= HandleSkillCanceled;
         CancelWork();
-        Hero.Move.CanMove = true;
+        Hero.Move.SetCanMove(true);
     }
 
     private void HandleSkillCanceled()
     {
         if (_hero?.Move != null)
         {
-            Hero.Move.CanMove = true;
+            Hero.Move.SetCanMove(true);
             Hero.Move.StopLookAt();
         }
 
@@ -93,14 +93,14 @@ public class SpellMoveScraderTo : Skill
 
     private IEnumerator MoveToPointWithNavMeshPath(Vector3 targetPoint, bool stopAtObstacle)
     {
-        Hero.Move.CanMove = false;
+        Hero.Move.SetCanMove(false);
 
         NavMeshPath path = new NavMeshPath();
         bool hasPath = NavMesh.CalculatePath(transform.position, targetPoint, NavMesh.AllAreas, path);
 
         if (!hasPath || path.status != NavMeshPathStatus.PathComplete)
         {
-            Hero.Move.CanMove = true;
+            Hero.Move.SetCanMove(true);
             yield break;
         }
 
@@ -259,7 +259,7 @@ public class SpellMoveScraderTo : Skill
     private void EndMoveToPointWithNavMeshPath()
     {
 
-        Hero.Move.CanMove = true;
+        Hero.Move.SetCanMove(true);
 
         if (_attackCoroutine != null)
         {

@@ -318,7 +318,7 @@ public class PhysicalAttack : Skill
 
 	public void ApplyRootTrue()
 	{
-		Hero.Move.CanMove = false;
+		Hero.Move.SetCanMove(false);
 		_animator.applyRootMotion = true;
 	}
 

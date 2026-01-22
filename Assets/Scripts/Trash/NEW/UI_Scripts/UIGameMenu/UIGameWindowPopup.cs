@@ -6,18 +6,23 @@ public class UIGameWindowPopup : MonoBehaviour
 {
     [SerializeField] private UIMenuMainAttributesPanel _attributesPanel;
     [SerializeField] private UIMenuMainTalentsPanel _talentsPanel;
+    [SerializeField] private UIMenuMainTalentsPanel _talentsPanel2;
     [SerializeField] private PlayerIcon _playerIcon;
     [SerializeField] private MinionPanel _minionPanel;
     [SerializeField] private SkillPanel _skillPanel;
     [SerializeField] private SelectManager _selectManager;
     [SerializeField] private GameObject _settings;
     [SerializeField] private GameObject[] _forHide;
+    [SerializeField] private GameObject _rightSide;
 
     private HeroComponent _currentHero;
     private Character _currentCharacter;
+    private HeroComponent _tempChar;
 
     private void Awake()
     {
+        if(_rightSide != null)
+            _rightSide.gameObject.SetActive(false);
         InputHandler.ShowMenu += ShowSettings;
     }
 
@@ -66,7 +71,11 @@ public class UIGameWindowPopup : MonoBehaviour
         }
         
         _currentHero = hero;
-        SaveManager.Instance.SetHero(_currentHero);
+        if(_currentHero.isOwned)
+        {
+            _tempChar = _currentHero;
+            SaveManager.Instance.SetHero(_currentHero);
+        }        
         UpdateCharacterPanels();
     }
 
@@ -85,16 +94,35 @@ public class UIGameWindowPopup : MonoBehaviour
     {
         if(_currentHero == null)
             return;
-        
-        _playerIcon.OnCharacterSelected(_currentHero);
-        _minionPanel.OnCharacterSelected(_currentHero);
-        _skillPanel.OnCharacterSelected(_currentCharacter);
+        if (_currentHero.isOwned)
+        {
+            _playerIcon.OnCharacterSelected(_currentHero);
+            _minionPanel.OnCharacterSelected(_currentHero);
+            _skillPanel.OnCharacterSelected(_currentCharacter);
 
-        _attributesPanel.gameObject.SetActive(true);
-        _attributesPanel.Show(_currentHero.Data.Attributes);
-        
-        _talentsPanel.gameObject.SetActive(true);
-        _talentsPanel.Show(_currentHero.TalentManager, true, _currentHero.isOwned);
+            _attributesPanel.gameObject.SetActive(true);
+            _attributesPanel.Show(_currentHero.Data.Attributes);
 
+            _talentsPanel.gameObject.SetActive(true);
+
+            _talentsPanel.Show(_currentHero.TalentManager, true, _currentHero.isOwned);
+            _rightSide.gameObject.SetActive(false);
+        }
+        else
+        {
+            _rightSide.gameObject.SetActive(true);
+            _talentsPanel2.Show(_currentHero.TalentManager, true, _currentHero.isOwned);
+
+            _playerIcon.OnCharacterSelected(_tempChar);
+            _minionPanel.OnCharacterSelected(_tempChar);
+            _skillPanel.OnCharacterSelected(_tempChar);
+
+            _attributesPanel.gameObject.SetActive(true);
+            _attributesPanel.Show(_tempChar.Data.Attributes);
+
+            _talentsPanel.gameObject.SetActive(true);
+
+            _talentsPanel.Show(_tempChar.TalentManager, true, _tempChar.isOwned);
+        }
     }
 }

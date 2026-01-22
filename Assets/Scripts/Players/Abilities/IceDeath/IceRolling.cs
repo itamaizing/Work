@@ -171,7 +171,7 @@ public class IceRolling : Skill
 
 	private void Jump2()
 	{
-		Hero.Move.CanMove = false;
+		Hero.Move.SetCanMove(false);
 		_isJump = true;
 
 		_lookDir = (_mousePos - _playerLinks.transform.position).normalized;
@@ -484,7 +484,7 @@ public class IceRolling : Skill
 	[ClientRpc]
 	private void RpcReleaseTarget(Character target)
 	{
-		target.Move.CanMove = true;
+		target.Move.SetCanMove(true);
 		target.transform.SetParent(null);
 
 		if (target.TryGetComponent(out NavMeshAgent agent))
@@ -502,7 +502,7 @@ public class IceRolling : Skill
 	[ClientRpc]
 	private void RpcAttachTarget(Character target)
 	{
-		if (target.TryGetComponent(out MoveComponent move)) move.CanMove = false;
+		if (target.TryGetComponent(out MoveComponent move)) move.SetCanMove(false);
 		if (target.TryGetComponent(out NavMeshAgent agent)) agent.enabled = false;
 
 		if (target.TryGetComponent(out Rigidbody rb))
