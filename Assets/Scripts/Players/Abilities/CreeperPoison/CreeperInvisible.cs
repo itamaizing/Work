@@ -20,6 +20,7 @@ public class CreeperInvisible : Skill
     [Header("Ability")]
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private ColdBlood _coldBlood;
+    [SerializeField] private float _cooldown = 6f;
 
     [Header("Invisible Abilities")]
     [SerializeField] private List<Skill> _altAbilities = new();
@@ -131,9 +132,16 @@ public class CreeperInvisible : Skill
 
         while (true)
         {
-            if (_isInvisible)
+            if (!IsCooldowned)
             {
                 Disactive = true;
+                yield return delay;
+                continue;
+            }
+
+            if (_isInvisible)
+            {
+                Disactive = false;
                 yield return delay;
                 continue;
             }
@@ -166,15 +174,13 @@ public class CreeperInvisible : Skill
 
     protected override IEnumerator CastJob()
     {
-        ResetCooldown();
-
         if (_player.CharacterState.CheckForState(States.CreeperInvisible))
         {
             _isCreeperStrikeIsHit = _creeperStrike.IsHit;
             CmdRemoveInvisible(_player.gameObject, _isCreeperStrikeIsHit);
         }
 
-        else CmdApplyInvis(_player.gameObject);
+        CmdApplyInvis(_player.gameObject);
 
         if (_isInvisible && _transparentPoisons.Data.IsOpen)
         {
@@ -248,7 +254,7 @@ public class CreeperInvisible : Skill
 
     private void OnPlayerDamaged(Damage damage, Skill skill)
     {
-        IncreaseSetCooldown(CooldownTime);
+        IncreaseSetCooldown(_cooldown);
         if (!_isInvisible) return;
         CmdRemoveInvisible(_player.gameObject, _isCreeperStrikeIsHit);
     }
