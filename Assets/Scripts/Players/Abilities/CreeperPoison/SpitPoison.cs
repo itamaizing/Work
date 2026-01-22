@@ -331,8 +331,9 @@ public class SpitPoison : Skill, IAltAbility
             isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
             isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack);
 
-        Vector3 direction = (point - spawnPosition).normalized;
-        float distance = Vector3.Distance(spawnPosition, point);
+        Vector3 direction = point - spawnPosition;
+        direction.y = 0;
+        direction = direction.normalized;
 
         point = spawnPosition + direction * CastLength;
         point.y = spawnPosition.y;

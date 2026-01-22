@@ -955,7 +955,10 @@ public class PoisonBall : Skill, IAltAbility
 
         Vector3 spawnPosition = new Vector3(_spawnPointInfo.SpawnPointX, _spawnPointInfo.SpawnPointY, _spawnPointInfo.SpawnPointZ);
 
-        Vector3 direction = (point - spawnPosition).normalized;
+        Vector3 direction = point - spawnPosition;
+        direction.y = 0;
+        direction = direction.normalized;
+
         Vector3 finalPoint = spawnPosition + direction * CastLength;
         finalPoint.y = spawnPosition.y;
 

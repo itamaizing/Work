@@ -24,6 +24,7 @@ public class PoisonBallProjectile : Test_Projectile
     private int _poisonBoneStack;
     private int _playerLayer;
     private Vector3 _directionOfFlight;
+    private float _buffer = 0.1f;
 
     #region FloatVariables
     private float _newDistancePush;
@@ -382,7 +383,7 @@ public class PoisonBallProjectile : Test_Projectile
         float distance = Vector3.Distance(transform.position, targetPoint);
         float flightTime = distance / speed;
 
-        Invoke(nameof(DestroyProjectile), flightTime);
+        Invoke(nameof(DestroyProjectile), flightTime + _buffer);
     }
     #endregion
 

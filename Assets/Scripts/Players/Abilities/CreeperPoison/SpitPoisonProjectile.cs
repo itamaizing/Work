@@ -14,6 +14,7 @@ public class SpitPoisonProjectile : Test_Projectile
     private float _energyDad;
     private float _damage;
     private float _lifeTimePoisonBoneStacks = 60.0f;
+    private float _buffer = 0.1f;
 
     private bool _isPlayer;
     private bool _isAllies;
@@ -213,7 +214,7 @@ public class SpitPoisonProjectile : Test_Projectile
         float distance = Vector3.Distance(transform.position, targetPoint);
         float flightTime = distance / speed;
 
-        Invoke(nameof(DestroyProjectile), flightTime);
+        Invoke(nameof(DestroyProjectile), flightTime + _buffer);
     }
 
     #endregion
