@@ -955,6 +955,10 @@ public class PoisonBall : Skill, IAltAbility
 
         Vector3 spawnPosition = new Vector3(_spawnPointInfo.SpawnPointX, _spawnPointInfo.SpawnPointY, _spawnPointInfo.SpawnPointZ);
 
+        Vector3 direction = (point - spawnPosition).normalized;
+        Vector3 finalPoint = spawnPosition + direction * CastLength;
+        finalPoint.y = spawnPosition.y;
+
         GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
         PoisonBallProjectile poisonBallProjectile = item.GetComponent<PoisonBallProjectile>();
 
@@ -968,7 +972,7 @@ public class PoisonBall : Skill, IAltAbility
             isPushTarget, isPlayerInvisible
             );
 
-        poisonBallProjectile.MoveBallOnMaxDistance(point, isFast);
+        poisonBallProjectile.MoveBallOnMaxDistance(finalPoint, isFast);
 
         NetworkServer.Spawn(item);
 

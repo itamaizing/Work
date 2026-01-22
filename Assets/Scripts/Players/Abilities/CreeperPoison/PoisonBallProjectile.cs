@@ -209,6 +209,8 @@ public class PoisonBallProjectile : Test_Projectile
         Debug.Log("PoisonBallProjectile / MoveBallOnMaxDistance / speed = " + speed);
         Debug.Log("PoisonBallProjectile / MoveBallOnMaxDistance / point = " + point);
 
+        Vector3 finalPoint = transform.position + _directionOfFlight * Mathf.Min(Vector3.Distance(transform.position, point), _skill.CastLength);
+        ScheduleAutoDestroy(finalPoint, speed);
         MoveToPoint(point, speed);
     }
 
@@ -375,6 +377,13 @@ public class PoisonBallProjectile : Test_Projectile
         _currentCountBall = _poisonBall.CurrentCountBall;
     }
 
+    public void ScheduleAutoDestroy(Vector3 targetPoint, float speed)
+    {
+        float distance = Vector3.Distance(transform.position, targetPoint);
+        float flightTime = distance / speed;
+
+        Invoke(nameof(DestroyProjectile), flightTime);
+    }
     #endregion
 
     #region ServerMethods

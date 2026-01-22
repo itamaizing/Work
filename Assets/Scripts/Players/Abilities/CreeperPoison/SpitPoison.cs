@@ -334,7 +334,8 @@ public class SpitPoison : Skill, IAltAbility
         Vector3 direction = (point - spawnPosition).normalized;
         float distance = Vector3.Distance(spawnPosition, point);
 
-        if (distance > CastLength) point = spawnPosition + direction * CastLength;
+        point = spawnPosition + direction * CastLength;
+        point.y = spawnPosition.y;
 
         projectile.ScheduleAutoDestroy(point, _projectile.Speed);
         projectile.MoveBallOnMaxDistance(point);
