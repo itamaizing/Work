@@ -59,9 +59,9 @@ public class Health : Resource, IDamageable, IHealingable
 
     public bool IsDot { get => _isDot; set => _isDot = value; }
 
-    public override void Initialize(float health, float hpRegen, float hpRegenDelay, CharacterData data)
+    public override void Initialize(float health, float hpRegen, float hpRegenDelay, CharacterData data, Attributes attribute)
     {
-        base.Initialize(health, hpRegen, hpRegenDelay, data);
+        base.Initialize(health, hpRegen, hpRegenDelay, data, attribute);
 
         _defPhysDamage = data.GetAttributeValue(AttributeNames.PhysicResist);
         _defMagDamage = data.GetAttributeValue(AttributeNames.MagicResist);

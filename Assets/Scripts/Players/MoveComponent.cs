@@ -21,6 +21,7 @@ public class MoveComponent : NetworkBehaviour
 	public Vector3 MoveDirection = Vector3.zero;
 	public Vector3 ExternalMoveDirection = Vector3.zero;
 
+	private Attributes _attribute;
 	private bool _canMove = false;
 	private bool _canMoveState = false;
 	public bool IsMoving = false;
@@ -80,8 +81,9 @@ public class MoveComponent : NetworkBehaviour
         _canMoveState = canMove;
     }
 
-    public void Initialize(float speed, Rigidbody rb , bool isHero = false)
+    public void Initialize(float speed, Rigidbody rb , Attributes attributes, bool isHero = false)
 	{
+		_attribute = attributes;
 		_defaultSpeed = speed;
 
 		_rigidbody = rb;

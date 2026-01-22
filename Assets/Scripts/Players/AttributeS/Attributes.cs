@@ -1,14 +1,20 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public class Attributes : MonoBehaviour
 {
-    private List<AttributeModifiers> _modifiers;
-    private float _value;
+    public string Name;
 
-    public Attributes(float value)
+    [SerializeField]private float _value;
+    private List<AttributeModifiers> _modifiers;
+    
+
+    public Attributes(string name)
     {
-        _value = value; 
+        Name = name;
+        //_value = value; 
     }
 
     public void AddModifier(AttributeModifiers modifier)

@@ -27,6 +27,18 @@ public class CharacterData : ScriptableObject
         var attribute = _attributes.AttributeData.FirstOrDefault(o => o.Name == attributeName);
         return attribute?.DefaultValue ?? 0f;
     }
+
+    public Attributes GetAttribute(string attributeName)
+    {
+        var attribute = _attributes.AttributeData2.FirstOrDefault(o => o.Name == attributeName);
+        if (attribute != null)
+            return attribute;
+        else
+        {
+            Debug.LogError("No attribute data");
+            return null;
+        }
+    }
 }
 
 public static class Positions
@@ -72,6 +84,8 @@ public static class AttributeNames
     public const string Health = "Health";
     public const string Mana = "Mana";
     public const string Energy = "Energy";
+    public const string Resourse = "Resourse";
+    public const string ResourseRegen = "ResourseRegen";
     public const string Rune = "Rune";
     public const string Speed = "Speed";
     public const string HpRegen = "HPRegen";
@@ -90,6 +104,7 @@ public static class AttributeNames
     public const string MagicEvade = "MagicEvade";
     public const string PhysicAbsorb = "PhysicAbsorb";
     public const string MagicAbsorb = "MagicAbsorb";
+    public const string EvasionPhysical = "EvasionPhysical";
 }
 
 [Serializable]
@@ -124,10 +139,19 @@ public class AttributeGroup
     [SerializeField]
     private List<Attributes> _attributeGroup2 = new()
     {
-        //new Attributes()
+        new Attributes(AttributeNames.Health),
+        new Attributes(AttributeNames.HpRegen),
+        new Attributes(AttributeNames.Resourse),
+        new Attributes(AttributeNames.ResourseRegen),
+        new Attributes(AttributeNames.Speed),
+        new Attributes(AttributeNames.MagicResist),
+        new Attributes(AttributeNames.PhysicResist),
+        new Attributes(AttributeNames.MagicEvade),
+        new Attributes(AttributeNames.EvasionPhysical),
     };
 
     public List<Attribute> AttributeData => attributesGroup;
+    public List<Attributes> AttributeData2 => _attributeGroup2;
     public int FreeAttributePointsCount { get; set; }
     public int UsedAttributePointsCount => attributesGroup.Sum(o => o.Points);
 }

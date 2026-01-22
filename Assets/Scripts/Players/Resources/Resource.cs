@@ -24,6 +24,7 @@ public abstract class Resource : NetworkBehaviour
     [SyncVar] protected float _regenerationPeriod;
 
     protected Coroutine _regenCoroutine;
+    protected Attributes _attribute;
 
     private float _bonusMaxValue = 0f;
 	public float CurrentValue { get => _currentValue; set { ValueChanged?.Invoke(_currentValue, value); _currentValue = value; } }
@@ -69,8 +70,9 @@ public abstract class Resource : NetworkBehaviour
         MaxValue = value;
     }*/
     
-    public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data)
+    public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data, Attributes attribute)
     {
+        _attribute = attribute;
         _currentValue = maxValue / 2;
         _maxValue = maxValue;
         _regenerationValue = regenValue;
