@@ -19,8 +19,12 @@ public abstract class Test_Projectile : NetworkBehaviour
     protected Character _player;
     protected Character _target;
 
+    private Tween _moveTween;
+
+    public float Speed { get => _speed; set => _speed = value; }
+
     public abstract void DamageDeal();
-    
+
     public void MoveToPoint(Vector3 point, float speed)
     {
         _maxDistanceFlying *= GlobalVariable.cellSize;
@@ -30,9 +34,10 @@ public abstract class Test_Projectile : NetworkBehaviour
         Vector3 finalPoint = _player.transform.position + (direction * _maxDistanceFlying);
         finalPoint.y = _player.transform.position.y;
 
-        float duration = speed / _maxDistanceFlying;
+        float distance = Vector3.Distance(transform.position, finalPoint);
+        float duration = distance / speed;
 
-        transform.DOMove(finalPoint, duration).SetEase(Ease.Linear).OnComplete(DestroyProjectile);
+        _moveTween = transform.DOMove(finalPoint, duration).SetEase(Ease.Linear).OnComplete(DestroyProjectile);
     }
 
     public void MoveToTarget(Vector3 targetPos, float speed)
@@ -42,13 +47,16 @@ public abstract class Test_Projectile : NetworkBehaviour
         Vector3 finalPoint = targetPos;
         finalPoint.y = _player.transform.position.y;
 
-        float duration = speed / _maxDistanceFlying;
+        float distance = Vector3.Distance(transform.position, finalPoint);
+        float duration = distance / speed;
 
-        transform.DOMove(finalPoint, duration).SetEase(Ease.Linear).OnComplete(DestroyProjectile);
+        _moveTween = transform.DOMove(finalPoint, duration).SetEase(Ease.Linear).OnComplete(DestroyProjectile);
     }
 
     public void DestroyProjectile()
     {
+        if (_moveTween != null && _moveTween.IsActive()) _moveTween.Kill();
+
         Destroy(gameObject);
         _target = null;
     }

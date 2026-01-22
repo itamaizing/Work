@@ -336,6 +336,7 @@ public class SpitPoison : Skill, IAltAbility
 
         if (distance > CastLength) point = spawnPosition + direction * CastLength;
 
+        projectile.ScheduleAutoDestroy(point, _projectile.Speed);
         projectile.MoveBallOnMaxDistance(point);
 
         NetworkServer.Spawn(item);

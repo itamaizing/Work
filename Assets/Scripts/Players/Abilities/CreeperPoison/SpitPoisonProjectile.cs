@@ -208,6 +208,14 @@ public class SpitPoisonProjectile : Test_Projectile
         _spitPoison = _player.GetComponentInChildren<SpitPoison>();
     }
 
+    public void ScheduleAutoDestroy(Vector3 targetPoint, float speed)
+    {
+        float distance = Vector3.Distance(transform.position, targetPoint);
+        float flightTime = distance / speed;
+
+        Invoke(nameof(DestroyProjectile), flightTime);
+    }
+
     #endregion
 
     #region ServerMethods
