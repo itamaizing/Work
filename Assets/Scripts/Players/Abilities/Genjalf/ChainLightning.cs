@@ -5,7 +5,7 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ChainLightning : Skill
+public class ChainLightning : MoveSkill
 {
     [SerializeField] private ParticleSystem _particlePref;
     [SerializeField, Range(0, 100)] private int _debuffChance = 15;
@@ -22,10 +22,20 @@ public class ChainLightning : Skill
     
     private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
+    private void OnEnable()
+    {
+        Canceled += CancelMove;
+    }
+
+    private void OnDisable()
+    {
+        Canceled -= CancelMove;
+    }
+
     private bool CheckCanCast()
     {
         return
-               Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+            Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
     }
 
     public void AnimCastLight()
@@ -41,6 +51,11 @@ public class ChainLightning : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        
+        if (!IsCanCast)
+        {
+            MoveTo();
+        }
     }
 
     protected override IEnumerator CastJob()
@@ -110,6 +125,11 @@ public class ChainLightning : Skill
             PhysicAttackType = AttackRangeType,
         };
         CmdApplyDamage(damage, target.gameObject);
+        
+        if (UnityEngine.Random.Range(1, 100) <= _debuffChance)
+        {
+            CmdAddState(GetTargetCharacter());
+        }
 
         CmdCreateParticle(target.Position);
     }
@@ -118,6 +138,8 @@ public class ChainLightning : Skill
     {
         GameObject item = Instantiate(_particlePref.gameObject, position, Quaternion.identity);
     }
+    
+    [Command] private void CmdAddState(Character target) => target.CharacterState.AddState(States.Discharge, 2, 0,Hero.gameObject, name);
 
     [Command]
     protected void CmdCreateParticle(Vector3 position)

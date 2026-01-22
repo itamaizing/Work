@@ -5,11 +5,8 @@ using UnityEngine;
 
 namespace Gangdollarff.EarthElemental
 {
-    public class Punch : Skill
+    public class Punch : MoveSkill
     {
-
-        //private Character _target;
-
         protected override int AnimTriggerCastDelay => 0;
         protected override int AnimTriggerCast => Animator.StringToHash("Attack01");
         
@@ -19,6 +16,7 @@ namespace Gangdollarff.EarthElemental
 
         public void AnimCastPunch()
         {
+            
             AnimStartCastCoroutine();
         }
 
@@ -26,15 +24,33 @@ namespace Gangdollarff.EarthElemental
         {
             AnimCastEnded();
         }   
+        
+        private void OnEnable()
+        {
+            Canceled += CancelMove;
+        }
+
+        private void OnDisable()
+        {
+            Canceled -= CancelMove;
+        }
 
         public override void LoadTargetData(TargetInfo targetInfo)
         {
             SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        
+            if (!IsCanCast)
+            {
+                MoveTo();
+            }
         }
 
         protected override IEnumerator CastJob()
         {
-            Hero.Move.LookAtPosition(GetTargetCharacter().Position);
+            Character originalTarget = GetTargetCharacter();
+            if (originalTarget == null) yield break;
+    
+            Hero.Move.LookAtPosition(originalTarget.Position);
 
             Damage damage = new Damage
             {
@@ -43,9 +59,8 @@ namespace Gangdollarff.EarthElemental
                 PhysicAttackType = AttackRangeType,
                 School = School,
                 Form = AbilityForm,
-             };
-
-            CmdApplyDamage(damage, GetTargetCharacter().gameObject);
+            };
+            CmdApplyDamage(damage, originalTarget.gameObject);
 
             yield return null;
         }
@@ -53,6 +68,7 @@ namespace Gangdollarff.EarthElemental
         protected override void ClearData()
         {
             ClearTarget();
+            ClearTempTarget();
             //_target = null;
         }
 
@@ -64,9 +80,8 @@ namespace Gangdollarff.EarthElemental
                 if (GetMouseButton)
                 {
                     Vector3 clickPoint = GetMousePoint();
-                
+        
                     FindTarget(_clickRadius, clickPoint, canTargetHimself: false);
-
                     if (GetTempTargetCharacter() is Character character)
                     {
                         if (GetTempTargetCharacter() != null && !IsEnemyTarget(character))
@@ -82,9 +97,8 @@ namespace Gangdollarff.EarthElemental
                 }
                 yield return null;
             }
-            SetTarget(GetTempTarget());
+            targetInfo.AddTarget(GetTempTargetCharacter());
             ClearTempTarget();
-            targetInfo.AddTarget(GetTargetCharacter());
             targetDataSavedCallback(targetInfo);
         }
     }

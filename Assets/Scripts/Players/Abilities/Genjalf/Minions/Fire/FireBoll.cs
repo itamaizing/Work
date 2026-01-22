@@ -7,12 +7,10 @@ using UnityEngine.SceneManagement;
 
 
 
-public class FireBoll : Skill
+public class FireBoll : MoveSkill
 {
     [SerializeField] private Projectile _projectile;
-
-    //private Character _target;
-
+    
     protected override bool IsCanCast { get => CheckCanCast(); }
     private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
@@ -21,11 +19,9 @@ public class FireBoll : Skill
     protected override int AnimTriggerCast => Animator.StringToHash("Attack04");
     
     private float _clickRadius = 0.5f;
-
     private bool CheckCanCast()
     {
-        return 
-               Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+        return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
     }
 
     public void AnimCastFireboll()
@@ -37,10 +33,25 @@ public class FireBoll : Skill
     {
         AnimCastEnded();
     }
+    
+    private void OnEnable()
+    {
+        Canceled += CancelMove;
+    }
+
+    private void OnDisable()
+    {
+        Canceled -= CancelMove;
+    }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        
+        if (!IsCanCast)
+        {
+            MoveTo();
+        }
     }
 
     protected override IEnumerator CastJob()
@@ -67,9 +78,8 @@ public class FireBoll : Skill
             if (GetMouseButton)
             {
                 Vector3 clickPoint = GetMousePoint();
-                
+        
                 FindTarget(_clickRadius, clickPoint, canTargetHimself: false);
-
                 if (GetTempTargetCharacter() is Character character)
                 {
                     if (GetTempTargetCharacter() != null && !IsEnemyTarget(character))
@@ -85,18 +95,17 @@ public class FireBoll : Skill
             }
             yield return null;
         }
-        SetTarget(GetTempTarget());
+        targetInfo.AddTarget(GetTempTargetCharacter());
         ClearTempTarget();
-        targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
-
-        this.CastStarted += OnCastStarted;
+        
+        CastStarted += OnCastStarted;
     }
 
     private void OnCastStarted()
     {
         Hero.Move.LookAtTransform(GetTargetCharacter().transform);
-        this.CastStarted -= OnCastStarted;
+        CastStarted -= OnCastStarted;
     }
 
     [Command]

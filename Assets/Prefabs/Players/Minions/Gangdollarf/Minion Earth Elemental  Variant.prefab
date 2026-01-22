@@ -494,6 +494,7 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _agent: {fileID: 3136982779875862714}
 --- !u!114 &4104682820791546066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -534,6 +535,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4a13cc13c691cf48b313c3aceaea208, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!195 &3136982779875862714 stripped
+NavMeshAgent:
+  m_CorrespondingSourceObject: {fileID: 1780925315992858912, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+  m_PrefabInstance: {fileID: 3692902303834413466}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3486561661179944704 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 242370089425684122, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}

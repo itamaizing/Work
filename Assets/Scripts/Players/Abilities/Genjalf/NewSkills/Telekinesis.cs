@@ -27,6 +27,7 @@ namespace Gangdollarff
         protected override int AnimTriggerCast => Animator.StringToHash("Telekinesis");
 
         private bool _isSecondClick;
+        private bool _isLifted;
 
         protected override bool IsCanCast => CheckCanCast();
 
@@ -36,8 +37,10 @@ namespace Gangdollarff
         {
             if (GetTargetCharacter() != null)
             {
-                if (!_isSecondClick)
+                if (!_isSecondClick && !_isLifted)
                     return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+                else if(_isLifted)
+                    return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius + _amountOfLift;
                 else
                     return Vector3.Distance(GetTargetCharacter().transform.position, _secondClickPoint) <= Radius;
             }
@@ -89,11 +92,10 @@ namespace Gangdollarff
 
         protected override IEnumerator CastJob()
         {
+            DisableMove();
             _tempChar = GetTargetCharacter();
             
             if(!_tempChar) yield break;
-            
-            DisableMove();
             _skillRender.SetPrepareCursor();
             Hero.Abilities.SetAbilitiesDisactive(true);
             
@@ -105,21 +107,26 @@ namespace Gangdollarff
             Vector3 hoverOffset = new Vector3(0, _amountOfLift, 0);
 
             float castStartTime = Time.time;
-            bool secondPointUsed = false;
-            Vector3? secondPoint = null;
-            
+
             CmdMoveTaget(targetGO, startPos + hoverOffset, _deleyTelekines);
+            yield return new WaitForSeconds(_deleyTelekines);
+            
+            _radiusEnemy.gameObject.SetActive(true);
+            _radiusEnemy.transform.parent = GetTargetCharacter().transform;
+            _radiusEnemy.transform.localPosition = Vector3.zero;
+            
+            _isLifted = true;
 
             while (Time.time - castStartTime < _castDuration)
             {
-                if (Input.GetMouseButtonDown(0) && !secondPointUsed)
+                if (Input.GetMouseButtonDown(0) && !_isSecondClick)
                 {
                     _secondClickPoint = GetMousePoint();
                     if (_secondClickPoint != Vector3.zero &&
                         Vector3.Distance(_secondClickPoint, _tempChar.transform.position) <= Radius)
                     {
+                        _isLifted = false;
                         _isSecondClick = true;
-                        secondPointUsed = true;
                         _skillRender.ResetCursor();
                         _radiusEnemy.gameObject.SetActive(false);
 
@@ -169,6 +176,7 @@ namespace Gangdollarff
             //_target = null;
             _radiusEnemy.gameObject.SetActive(false);
             _isSecondClick = false;
+            _isLifted = false;
         }
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -192,10 +200,6 @@ namespace Gangdollarff
             yield return new WaitForSeconds(0.1f);
 
             _skillRender.StopDrawRadius();
-
-            _radiusEnemy.gameObject.SetActive(true);
-            _radiusEnemy.transform.parent = GetTargetCharacter().transform;
-            _radiusEnemy.transform.localPosition = Vector3.zero;
         }
 
         private void EnableMove()

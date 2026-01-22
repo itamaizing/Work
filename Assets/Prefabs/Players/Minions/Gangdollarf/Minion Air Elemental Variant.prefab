@@ -339,6 +339,7 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _agent: {fileID: 2830961031403866016}
   _particlePref: {fileID: 8634428716550452945, guid: 7291e60055d363e4f8faae9c7d00d8b0, type: 3}
   _debuffChance: 15
 --- !u!114 &-2491272557544422272
@@ -364,6 +365,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4a13cc13c691cf48b313c3aceaea208, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!195 &2830961031403866016 stripped
+NavMeshAgent:
+  m_CorrespondingSourceObject: {fileID: 1780925315992858912, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+  m_PrefabInstance: {fileID: 4611270594267985536}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3591010202385703913 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1021000915379606889, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
