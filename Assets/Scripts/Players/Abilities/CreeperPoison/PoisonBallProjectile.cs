@@ -24,7 +24,7 @@ public class PoisonBallProjectile : Test_Projectile
     private int _poisonBoneStack;
     private int _playerLayer;
     private Vector3 _directionOfFlight;
-    private float _buffer = 0.1f;
+    private float _buffer = 0.5f;
 
     #region FloatVariables
     private float _newDistancePush;
@@ -381,9 +381,9 @@ public class PoisonBallProjectile : Test_Projectile
     public void ScheduleAutoDestroy(Vector3 targetPoint, float speed)
     {
         float distance = Vector3.Distance(transform.position, targetPoint);
-        float flightTime = distance / speed;
+        float flightTime = (distance + _buffer) / speed;
 
-        Invoke(nameof(DestroyProjectile), flightTime + _buffer);
+        Invoke(nameof(DestroyProjectile), flightTime);
     }
     #endregion
 

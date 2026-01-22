@@ -272,25 +272,21 @@ public class PoisonBall : Skill, IAltAbility
             if (Input.GetMouseButtonDown(0))
             {
                 Vector3 click = GetMousePoint();
-                if (Vector3.Distance(_player.transform.position, click) <= CastLength)
+                _secondMousePosition = click;
+                _secondClickDone = true;
+
+                if (GetTargetCharacter() != null)
                 {
-                    _secondMousePosition = click;
-                    _secondClickDone = true;
-
-
-                    if (GetTargetCharacter() != null)
+                    Vector3 currentMousePosition = GetMousePoint();
+                    if (currentMousePosition.x < _secondMousePosition.x && currentMousePosition.z < _secondMousePosition.z)
                     {
-                        Vector3 currentMousePosition = GetMousePoint();
-                        if (currentMousePosition.x < _secondMousePosition.x && currentMousePosition.z < _secondMousePosition.z)
-                        {
-                            SetArrowVisibility(1, true);
-                            SetArrowVisibility(3, false);
-                        }
-                        else
-                        {
-                            SetArrowVisibility(3, true);
-                            SetArrowVisibility(1, false);
-                        }
+                        SetArrowVisibility(1, true);
+                        SetArrowVisibility(3, false);
+                    }
+                    else
+                    {
+                        SetArrowVisibility(3, true);
+                        SetArrowVisibility(1, false);
                     }
                 }
             }
@@ -305,11 +301,8 @@ public class PoisonBall : Skill, IAltAbility
                 _arrowRenderers[1].SetDeafaultMaterail();
 
                 Vector3 click = GetMousePoint();
-                if (Vector3.Distance(_player.transform.position, click) <= CastLength)
-                {
-                    _thirdClickDone = true;
-                    _thirdMousePosition = click;
-                }
+                _thirdClickDone = true;
+                _thirdMousePosition = click;
 
                 ClearArrows();
             }
