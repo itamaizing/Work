@@ -63,7 +63,7 @@ public class LightningMovement : Skill
         float distance = Vector3.Distance(start, end);
 
         RaycastHit hit;
-        return Physics.SphereCast(start, 1, direction, out hit, distance, _obstacle);
+        return Physics.SphereCast(start, 0.2f, direction, out hit, distance, _obstacle);
 
     }
 
