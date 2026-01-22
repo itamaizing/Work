@@ -100,6 +100,7 @@ public class SpitPoison : Skill, IAltAbility
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         _isAbilityActive = true;
+        Vector3 targetPoint = Vector3.positiveInfinity;
 
         if (_setSpawnPointCoroutine == null) _setSpawnPointCoroutine = StartCoroutine(SetSpawnPointJob());
 
@@ -107,20 +108,19 @@ public class SpitPoison : Skill, IAltAbility
 
         //CheckActiveTalents();
 
-        while (float.IsPositiveInfinity(_mousePos.x))
+        while (float.IsPositiveInfinity(targetPoint.x))
         {
             if (GetMouseButton)
             {
                 //_currentTarget = GetRaycastTarget(true);
 
                 FindTarget(_radiusTargetCheck, GetMousePoint());
-                _mousePos = GetMousePoint();
+                targetPoint = GetMousePoint();
 
                 if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
                 {
                     if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
                     else ChooseTarget(damageable);
-
                 }
             }
             yield return null;
@@ -130,7 +130,7 @@ public class SpitPoison : Skill, IAltAbility
 
         TargetInfo targetInfo = new();
         targetInfo.AddTarget(GetTarget());
-        targetInfo.Points.Add(_mousePos);
+        targetInfo.Points.Add(targetPoint);
         callbackDataSaved(targetInfo);
     }
 
