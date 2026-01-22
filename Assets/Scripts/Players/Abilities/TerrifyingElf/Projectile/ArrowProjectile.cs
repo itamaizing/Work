@@ -165,8 +165,7 @@ public class ArrowProjectile : Projectiles
         {
             Vector3 targetPos = _followTarget.position + Vector3.up * _arrowYOffset;
             Vector3 dir = (targetPos - transform.position).normalized;
-            if (_rb != null)
-                _rb.linearVelocity = dir * _speed;
+            if (_rb != null) _rb.linearVelocity = dir * _speed;
 
             yield return null;
         }

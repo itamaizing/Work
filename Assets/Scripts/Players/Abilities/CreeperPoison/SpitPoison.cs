@@ -173,10 +173,10 @@ public class SpitPoison : Skill, IAltAbility
 
     private bool CheckCanCast()
     {
-        if (GetTarget() == null) return Vector3.Distance(_mousePos, transform.position) <= Radius && NoObstacles(_mousePos, _obstacle);
+        if (GetTarget() == null) return Vector3.Distance(_mousePos, transform.position) <= CastLength && NoObstacles(_mousePos, _obstacle);
 
-        return Vector3.Distance(_mousePos, transform.position) <= Radius && NoObstacles(_mousePos, _obstacle) ||
-               Vector3.Distance(GetTarget().Transform.position, transform.position) <= Radius && NoObstacles(GetTarget().Transform.position, _obstacle);
+        return Vector3.Distance(_mousePos, transform.position) <= CastLength && NoObstacles(_mousePos, _obstacle) ||
+               Vector3.Distance(GetTarget().Transform.position, transform.position) <= CastLength && NoObstacles(GetTarget().Transform.position, _obstacle);
     }
 
     private void CooldownChange()
@@ -330,6 +330,11 @@ public class SpitPoison : Skill, IAltAbility
         projectile.InitializationProjectile(_player, this, _player.Resources.FirstOrDefault()!.CurrentValue,
             isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
             isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack);
+
+        Vector3 direction = (point - spawnPosition).normalized;
+        float distance = Vector3.Distance(spawnPosition, point);
+
+        if (distance > CastLength) point = spawnPosition + direction * CastLength;
 
         projectile.MoveBallOnMaxDistance(point);
 

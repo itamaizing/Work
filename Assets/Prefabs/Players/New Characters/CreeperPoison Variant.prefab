@@ -14049,7 +14049,7 @@ MonoBehaviour:
   _isTalentSpell: 1
   _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: a81ffcd04ca1cad479f49a2f56016a70, type: 2}
-  _isSubjectToGlobalCooldownTime: 1
+  _isSubjectToGlobalCooldownTime: 0
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -14097,6 +14097,7 @@ MonoBehaviour:
   _preparingForFight: {fileID: 6757583794360340372}
   _creeperStrike: {fileID: 6745892867125186241}
   _coldBlood: {fileID: 4616268591970552908}
+  _cooldown: 6
   _altAbilities:
   - {fileID: 4992365342693795224}
   - {fileID: 4719927588574066064}

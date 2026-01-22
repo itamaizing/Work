@@ -33,10 +33,10 @@ public class CreeperInvisible : Skill
     private PoisonBall _poisonBall;
 
     private Coroutine _checkEnemiesRoutine;
+    private Coroutine _stopDrawRadiusRoutine;
 
     private float _previousHealth;
     private float _currentHealth;
-    private float _distanceWithoutEnemies = 6f;
 
     private bool _isInvisible = false;
     private bool _isPlayerSeen = true;
@@ -82,7 +82,13 @@ public class CreeperInvisible : Skill
             _checkEnemiesRoutine = null;
         }
 
-        InputHandler.OnCast += OnCastKeyPressed;
+        InputHandler.OnCast -= OnCastKeyPressed;
+
+        if (_stopDrawRadiusRoutine != null)
+        {
+            StopCoroutine(StopDrawRadiusAfterDelay());
+            _checkEnemiesRoutine = null;
+        }
     }
 
      private void Start()
@@ -107,7 +113,14 @@ public class CreeperInvisible : Skill
         if (Disactive)
         {
             SkillRender.DrawRadius(Radius);
-            StartCoroutine(StopDrawRadiusAfterDelay());
+
+            if (_stopDrawRadiusRoutine != null)
+            {
+                StopCoroutine(StopDrawRadiusAfterDelay());
+                _checkEnemiesRoutine = null;
+            }
+
+            _stopDrawRadiusRoutine = StartCoroutine(StopDrawRadiusAfterDelay());
         }
     }
 
@@ -180,7 +193,7 @@ public class CreeperInvisible : Skill
             CmdRemoveInvisible(_player.gameObject, _isCreeperStrikeIsHit);
         }
 
-        CmdApplyInvis(_player.gameObject);
+        else CmdApplyInvis(_player.gameObject);
 
         if (_isInvisible && _transparentPoisons.Data.IsOpen)
         {
@@ -205,27 +218,27 @@ public class CreeperInvisible : Skill
             CmdTransparentPoisonsIncreaseManaCots();
         }
 
-        if (_desireToHide.Data.IsOpen && _desireToHide.IsCanApplyInvisible)
-        {
-            Debug.Log("CreeperInvisible / desireToHide");
+        //if (_desireToHide.Data.IsOpen && _desireToHide.IsCanApplyInvisible)
+        //{
+        //    Debug.Log("CreeperInvisible / desireToHide");
 
-            CmdApplyInvis(_player.gameObject);
-            yield break;
-        }
-        else if (_continuationAmbush.Data.IsOpen && _continuationAmbush.IsCanApplyInvisible)
-        {
-            Debug.Log("CreeperInvisible / continuationAmbushTalent");
-            CmdApplyInvis(_player.gameObject);
-            yield break;
-        }
-        else if (!_isInvisible)
-        {
-            yield return new WaitForSeconds(5f);
+        //    CmdApplyInvis(_player.gameObject);
+        //    yield break;
+        //}
+        //else if (_continuationAmbush.Data.IsOpen && _continuationAmbush.IsCanApplyInvisible)
+        //{
+        //    Debug.Log("CreeperInvisible / continuationAmbushTalent");
+        //    CmdApplyInvis(_player.gameObject);
+        //    yield break;
+        //}
+        //else if (!_isInvisible)
+        //{
+        //    yield return new WaitForSeconds(5f);
 
-            Debug.Log("CreeperInvisible / else if (invisible)");
+        //    Debug.Log("CreeperInvisible / else if (invisible)");
 
-            EnteringInvisible();
-        }
+        //    EnteringInvisible();
+        //}
         yield return null;
     }
 
