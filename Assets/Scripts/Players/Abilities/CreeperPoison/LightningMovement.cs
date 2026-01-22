@@ -69,7 +69,7 @@ public class LightningMovement : Skill
 
     private bool IsValidLeapPoint(Vector3 point)
     {
-        return !float.IsNaN(point.x) && !float.IsInfinity(point.x) && !float.IsNaN(point.y) && !float.IsInfinity(point.y) && !float.IsNaN(point.z) && !float.IsInfinity(point.z);
+        return !float.IsNaN(point.y) && !float.IsInfinity(point.y) && point.y > 0.01f;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
