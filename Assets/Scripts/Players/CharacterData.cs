@@ -35,7 +35,7 @@ public class CharacterData : ScriptableObject
             return attribute;
         else
         {
-            Debug.LogError("No attribute data");
+            Debug.LogError("No attribute data " + attributeName);
             return null;
         }
     }
@@ -142,6 +142,7 @@ public class AttributeGroup
         new Attributes(AttributeNames.Health),
         new Attributes(AttributeNames.HpRegen),
         new Attributes(AttributeNames.Resourse),
+        new Attributes(AttributeNames.Mana),
         new Attributes(AttributeNames.ResourseRegen),
         new Attributes(AttributeNames.Speed),
         new Attributes(AttributeNames.MagicResist),

@@ -30142,6 +30142,7 @@ GameObject:
   - component: {fileID: 582667559171038809}
   - component: {fileID: 2325131165822693477}
   - component: {fileID: 6438771747420870763}
+  - component: {fileID: 1257681269524314154}
   - component: {fileID: 5630810179120932799}
   - component: {fileID: 5590339039165547173}
   - component: {fileID: 5293857831816092782}
@@ -30454,6 +30455,19 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   controllableUnits: []
+--- !u!114 &1257681269524314154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8423443208040621164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36119deea7370464ba6e74a8a3c290a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttributeSystem
+  _data: {fileID: 11400000, guid: f71e3e6e8b3ca6245b0c37fd016a4039, type: 2}
 --- !u!114 &5630810179120932799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30470,6 +30484,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _playerData: {fileID: 11400000, guid: f71e3e6e8b3ca6245b0c37fd016a4039, type: 2}
+  _attributeSystem: {fileID: 1257681269524314154}
   _networkSettings: {fileID: 2325131165822693477}
   _rigidbody: {fileID: 2201725961568704641}
   _collider: {fileID: 1550066538247365834}

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class Attributes : MonoBehaviour
+public class Attributes
 {
     public string Name;
 
