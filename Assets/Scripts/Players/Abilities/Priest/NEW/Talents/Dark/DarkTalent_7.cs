@@ -12,13 +12,13 @@ public class DarkTalent_7 : Talent
     
     public override void Enter()
     {
-        _spark.CmdSetDestructionFillingTalent(true, _baffDuration, _baffAdditionalTime, _baffChance);
+        _spark.DestructionFillingTalent(true, _baffDuration, _baffAdditionalTime, _baffChance);
         _flowOfLight.DestructionFillingTalent(true,_baffDuration,_baffAdditionalTime,_baffChance);
     }
 
     public override void Exit()
     {
-        _spark.CmdSetDestructionFillingTalent(false, _baffDuration, _baffAdditionalTime, _baffChance);
+        _spark.DestructionFillingTalent(false, _baffDuration, _baffAdditionalTime, _baffChance);
         _flowOfLight.DestructionFillingTalent(false,_baffDuration,_baffAdditionalTime,_baffChance);
     }
 }

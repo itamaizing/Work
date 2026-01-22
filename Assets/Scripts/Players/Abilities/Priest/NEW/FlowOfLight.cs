@@ -4,7 +4,7 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class FlowOfLight : Skill
+public class FlowOfLight : Skill, IPolaritySwitchable
 {
     [Header("Flow Light Settings")]
     [SerializeField] private float buffDuration = 18f;

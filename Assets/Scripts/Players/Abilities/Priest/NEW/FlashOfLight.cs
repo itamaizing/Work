@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class FlashOfLight : Skill
+public class FlashOfLight : Skill,IPolaritySwitchable
 {
     [Header("Flash of Light Settings")]
     [SerializeField] private float _healAmount = 35f;

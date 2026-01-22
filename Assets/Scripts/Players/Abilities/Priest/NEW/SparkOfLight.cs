@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SparkOfLight : Skill
+public class SparkOfLight : Skill,IPolaritySwitchable
 {
     [Header("Spark Of Light Settings")]
     [SerializeField] private float _buffDuration = 9f;
@@ -136,7 +136,7 @@ public class SparkOfLight : Skill
 
                 if (GetTempTargetCharacter() is Character character)
                 {
-                    if (GetTempTargetCharacter() != null && (IsAllyTarget(character)) && !isLightMode || (IsEnemyTarget(character) && isLightMode))
+                    if (GetTempTargetCharacter() != null && (IsAllyTarget(character)) && !isLightMode)
                     {
                         ClearTempTarget();
                     }
@@ -221,17 +221,21 @@ public class SparkOfLight : Skill
         if (!isLightMode && (UnityEngine.Random.value <= 0.2f)) stateComponent.AddState(States.Destruction, 12f, 0, gameObject, Name);
     }
     
-    private void TryApplyDestructionFilling(CharacterState target)
+    private void TryApplyDestructionFilling(Character target)
     {
         if (target == null) return;
+        if(IsEnemyTarget(target) && isLightMode) return; 
         
+        CharacterState targetState = target.CharacterState;
         if (UnityEngine.Random.value <= _destructionFillingChance)
         {
-            float durationToApply = target.CheckForState(isLightMode ? States.Restoration : States.Destruction) ? _destructionFillingExtensionTime : _destructionFillingDuration;
-            target.AddState(isLightMode ? States.Restoration : States.Destruction, durationToApply, 0f, gameObject, Name);
+            float durationToApply = targetState.CheckForState(isLightMode ? States.Restoration : States.Destruction) ? _destructionFillingExtensionTime : _destructionFillingDuration;
+            CmdStateRestorationOrDestruction(targetState,isLightMode ? States.Restoration : States.Destruction, durationToApply);
         }
     }
     
+    [Command] private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) => stateComponent.AddState(states, duration, 1f, gameObject, Name);
+
     [TargetRpc]
     private void TargetRpcOnEndPointReached(GameObject target)
     {
@@ -246,6 +250,10 @@ public class SparkOfLight : Skill
             Heal(target);
             ApplySpiritEnergyBuff(target);
             //ApplyHealthBuff(_target);
+        }
+        if (IsEnemyTarget(target))
+        {
+            ApplyDamageInAltMode(target);
         }
     }
 
@@ -284,7 +292,7 @@ public class SparkOfLight : Skill
 
         if (_isDestructionFillingTalent)
         {
-            TryApplyDestructionFilling(target.CharacterState);
+            TryApplyDestructionFilling(target);
         }
     }
 
@@ -311,7 +319,7 @@ public class SparkOfLight : Skill
         
         if (_isDestructionFillingTalent)
         {
-            TryApplyDestructionFilling(target.CharacterState);
+            TryApplyDestructionFilling(target);
         }
     }
 

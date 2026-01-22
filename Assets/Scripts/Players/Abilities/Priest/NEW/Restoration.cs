@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class Restoration : Skill
+public class Restoration : Skill,IPolaritySwitchable
 {
     [Header("Restoration (Light Mode) Settings")]
     [SerializeField] private float healPerTick = 6f;
@@ -122,7 +122,7 @@ public class Restoration : Skill
         bool isEnemy = GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Enemy");
         if (isEnemy && TryPayCost())
         {
-            CmdRemoveState(GetTargetCharacter(), States.Restoration);
+            CmdRemoveState(GetTargetCharacter(), States.Destruction);
             CmdAddState(GetTargetCharacter(), States.Destruction, darkDuration);
         }
     }

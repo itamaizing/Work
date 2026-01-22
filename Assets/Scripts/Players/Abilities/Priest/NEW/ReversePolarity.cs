@@ -1,15 +1,12 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
 public class ReversePolarity : Skill
 {
-    [SerializeField] private SparkOfLight sparkOfLight;
-    [SerializeField] private FlashOfLight flashOfLight;
-    [SerializeField] private Restoration restoration;
-    [SerializeField] private FlowOfLight flowOfLight;
-    [SerializeField] private PriestShield priestShield;
+    [SerializeField] private List<Skill> _switchableSkills;
 
     [SerializeField] private AudioClip audioClip;
 
@@ -121,17 +118,17 @@ public class ReversePolarity : Skill
         if (!IsAutoMode)
         {
             _hero.Abilities.AutoSkillCast.DeleteSkill();
-            _hero.Abilities.SkillQueue.RemoveNeededSkillFromQueue(sparkOfLight);
-            _hero.Abilities.SkillQueue.RemoveNeededSkillFromQueue(flowOfLight);
-            _hero.Abilities.SkillQueue.RemoveNeededSkillFromQueue(restoration);
-            _hero.Abilities.SkillQueue.RemoveNeededSkillFromQueue(flashOfLight);
+            foreach (var switchable in _switchableSkills)
+            {
+                _hero.Abilities.SkillQueue.RemoveNeededSkillFromQueue(switchable);
+            }
         }
-        
-        sparkOfLight.SwitchMode();
-        flashOfLight.SwitchMode();
-        restoration.SwitchMode();
-        flowOfLight.SwitchMode();
-        //priestShield.SwitchMode();
+
+        foreach (var skill in _switchableSkills)
+        {
+            var switchable = (IPolaritySwitchable)skill;
+            switchable?.SwitchMode();
+        }
     }
 
     public void SetCooldownFromSpell()

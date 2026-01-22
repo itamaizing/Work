@@ -6524,11 +6524,15 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _switchableSkills:
+  - {fileID: 744928704386096395}
+  - {fileID: 2650038749754245899}
+  - {fileID: 4087625883292875692}
+  - {fileID: 683463177557245195}
   sparkOfLight: {fileID: 683463177557245195}
   flashOfLight: {fileID: 2650038749754245899}
   restoration: {fileID: 4087625883292875692}
   flowOfLight: {fileID: 744928704386096395}
-  priestShield: {fileID: 9090548113051291277}
   audioClip: {fileID: 8300000, guid: 2a5bdf6fd66e9564ca2db2bad82d4059, type: 3}
 --- !u!114 &504324304728665980
 MonoBehaviour:
