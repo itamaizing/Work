@@ -20,6 +20,8 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
         
         _talentSystem = talentSystem;
 
+        if (_talentSystem.Level != null) _talentSystem.Level.LVLUped += OnLevelUp;
+
         foreach (var data in _talentSystem.TalentsGroups)
         {
             var panel = Instantiate(_talentsPanelGroup, _itemsParent);
@@ -30,7 +32,6 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
             panel.PointerEnteredOnTalentIcon += ShowTalentInfo;
             panel.PointerExitedOnTalentIcon += HideTalentInfo;
             panel.OnTalentChanged += UpdateTalentPointsText;
-            if (_talentSystem.TryGetComponent<Level>(out var level)) level.LVLUped += OnLevelUp;
 
             ItemsPool.Add(panel);
         }
@@ -46,8 +47,9 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
             item.PointerEnteredOnTalentIcon -= ShowTalentInfo;
             item.PointerExitedOnTalentIcon -= HideTalentInfo;
             item.OnTalentChanged -= UpdateTalentPointsText;
-            if (_talentSystem != null && _talentSystem.TryGetComponent<Level>(out var level)) level.LVLUped -= OnLevelUp;
         }
+
+        if (_talentSystem.Level != null) _talentSystem.Level.LVLUped -= OnLevelUp;
     }
 
     private void OnLevelUp(int newLevel)
@@ -66,6 +68,8 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
         {
             _talantsText.gameObject.SetActive(false);
         }
+
+        Debug.Log($"_points: {_talentSystem.Points}");
     }
 
     private void ResetPanel()
