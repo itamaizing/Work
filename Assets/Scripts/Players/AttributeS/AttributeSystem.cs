@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class AttributeSystem : MonoBehaviour
 {
-    [SerializeField] private CharacterData _data;
+    private CharacterData _data;
 
     private Attributes _health;
     private Attributes _hpRegen;
@@ -17,8 +17,9 @@ public class AttributeSystem : MonoBehaviour
     public Attributes MoveSpeed => _moveSpeed;
 
 
-    public void Awake()
+    public void Init(CharacterData data)
     {
+        _data = data;
         _health = _data.GetAttribute(AttributeNames.Health);
         _hpRegen = _data.GetAttribute(AttributeNames.HpRegen);
         _resourse = _data.GetAttribute(AttributeNames.Mana);

@@ -125,7 +125,8 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 
     public virtual void Initialize()
 	{
-		Move.Initialize(Data.GetAttributeValue(AttributeNames.Speed), Rigidbody , AttributeSystem.MoveSpeed, true);
+        AttributeSystem.Init(Data);
+        Move.Initialize(Data.GetAttributeValue(AttributeNames.Speed), Rigidbody , AttributeSystem.MoveSpeed, true);
 		CharacterState.Initialize(this);
 		SelectComponent.Initialize(Move,Abilities,UIComponent);
 		//_visionComponent.VisionRange = Data.GetAttributeValue(AttributeNames.VisionRadius);
