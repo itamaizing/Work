@@ -144,7 +144,7 @@ public class TalentSystem : NetworkBehaviour
 
     public int GetMaxTalentPoints()
     {
-        return _lvl != null ? _lvl.CurrentLevel : 0;
+        return _lvl != null ? _lvl.Value : 1;
     }
 
     public void SetActive(int group, int row, string name, bool value)

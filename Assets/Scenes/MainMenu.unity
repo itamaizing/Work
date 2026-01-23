@@ -759,7 +759,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1452231101
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1373,6 +1373,10 @@ PrefabInstance:
       propertyPath: _itemMode
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 2101423324199204861, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2529099385818678149, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1837,6 +1841,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9042087459874751428, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
+      propertyPath: _talantsText
+      value: 
+      objectReference: {fileID: 1452231102}
     - target: {fileID: 9042087459874751428, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
       propertyPath: _talentInfoPanel
       value: 

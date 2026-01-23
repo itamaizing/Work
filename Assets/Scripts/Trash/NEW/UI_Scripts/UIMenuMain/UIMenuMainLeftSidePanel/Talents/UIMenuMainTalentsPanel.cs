@@ -29,10 +29,13 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
             panel.OnShowPanelGroup += HidePanels;
             panel.PointerEnteredOnTalentIcon += ShowTalentInfo;
             panel.PointerExitedOnTalentIcon += HideTalentInfo;
-
+            panel.OnTalentChanged += UpdateTalentPointsText;
+            if (_talentSystem.TryGetComponent<Level>(out var level)) level.LVLUped += OnLevelUp;
 
             ItemsPool.Add(panel);
         }
+
+        UpdateTalentPointsText();
     }
 
     private void OnDisable()
@@ -42,6 +45,26 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
             item.OnShowPanelGroup -= HidePanels;
             item.PointerEnteredOnTalentIcon -= ShowTalentInfo;
             item.PointerExitedOnTalentIcon -= HideTalentInfo;
+            item.OnTalentChanged -= UpdateTalentPointsText;
+            if (_talentSystem != null && _talentSystem.TryGetComponent<Level>(out var level)) level.LVLUped -= OnLevelUp;
+        }
+    }
+
+    private void OnLevelUp(int newLevel)
+    {
+        UpdateTalentPointsText();
+    }
+
+    private void UpdateTalentPointsText()
+    {
+        if (_talentSystem.Points > 0)
+        {
+            _talantsText.gameObject.SetActive(true);
+            _talantsText.ChangeKey(_talentSystem.Points);
+        }
+        else
+        {
+            _talantsText.gameObject.SetActive(false);
         }
     }
 

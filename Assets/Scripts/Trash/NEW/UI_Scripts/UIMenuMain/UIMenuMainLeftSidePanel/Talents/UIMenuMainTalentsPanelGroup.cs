@@ -22,6 +22,7 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
     private TalentsGroup _talentsGroup;
     private UIMenuMainAttributesPanel _attributesPanel;
 
+    public event UnityAction OnTalentChanged;
     public event Action<TalentData> PointerEnteredOnTalentIcon;
     public event Action<TalentData> PointerExitedOnTalentIcon;
 
@@ -100,6 +101,8 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
 
         UpdateActiveTalentsCount();
         _attributesPanel.UpdateAttributesPoints();
+
+        OnTalentChanged?.Invoke();
     }
 	private int GetActiveTalents()
 	{
