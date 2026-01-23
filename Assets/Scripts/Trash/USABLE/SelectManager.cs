@@ -15,6 +15,9 @@ public class SelectManager : MonoBehaviour
 
     private int _currentUnitNumber;
 
+    private bool _isUIVisible = true;
+
+    public event Action<bool> UIVisibilityToggled;
     public event Action<Character> CharacterSelected;
     public event Action<Character> CharacterDeselected;
 
@@ -75,6 +78,13 @@ public class SelectManager : MonoBehaviour
                 _currentUnitNumber = 0;
 
             SelectInArea(_canContollUnits[_currentUnitNumber]);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Tab) && Input.GetKey(KeyCode.LeftShift))
+        {
+            _isUIVisible = !_isUIVisible;
+            UIVisibilityToggled?.Invoke(_isUIVisible);
+            return;
         }
         /*
         if (Input.GetKeyDown(KeyCode.Tab))

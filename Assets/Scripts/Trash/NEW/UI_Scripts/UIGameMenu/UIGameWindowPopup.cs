@@ -11,6 +11,7 @@ public class UIGameWindowPopup : MonoBehaviour
     [SerializeField] private SelectManager _selectManager;
     [SerializeField] private GameObject _settings;
     [SerializeField] private GameObject[] _forHide;
+    [SerializeField] private GameObject _teamSource; //test
 
     private HeroComponent _currentHero;
     private Character _currentCharacter;
@@ -30,6 +31,8 @@ public class UIGameWindowPopup : MonoBehaviour
                 item.SetActive(true);
     }
 
+    private void TeamSourceSwich(bool value) => _teamSource.SetActive(value);
+
     private void ShowSettings()
     {
         if (_settings.activeSelf)
@@ -44,12 +47,14 @@ public class UIGameWindowPopup : MonoBehaviour
 
     private void OnEnable()
     {
+        _selectManager.UIVisibilityToggled += TeamSourceSwich;
         _selectManager.CharacterSelected += OnCharacterSelected;
         _selectManager.CharacterDeselected += OnCharacterDeselected;
     }
 
     private void OnDisable()
     {
+        _selectManager.UIVisibilityToggled -= TeamSourceSwich;
         _selectManager.CharacterSelected -= OnCharacterSelected;
         _selectManager.CharacterDeselected -= OnCharacterDeselected;
     }
