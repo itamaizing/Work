@@ -8326,7 +8326,6 @@ MonoBehaviour:
   _firework: {fileID: 3150633468305956490}
   _damageRangeMin: -2
   _damageRangeMax: 1
-  _rotationSpeed: 5
 --- !u!114 &4402813572123645427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8689,6 +8688,7 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _agent: {fileID: 0}
   _particlePref: {fileID: 8634428716550452945, guid: 7291e60055d363e4f8faae9c7d00d8b0, type: 3}
   _debuffChance: 15
 --- !u!114 &9150375643976407256

@@ -61,11 +61,13 @@ namespace Gangdollarff
         public void AnimCastTelekinesis()
         {
             AnimStartCastCoroutine();
+            _isLifted = true;
         }
 
         public void AnimTelekinesisEnd()
         {
             AnimCastEnded();
+            _isLifted = false;
         }
 
         public void ChangeMode()
@@ -114,8 +116,6 @@ namespace Gangdollarff
             _radiusEnemy.gameObject.SetActive(true);
             _radiusEnemy.transform.parent = GetTargetCharacter().transform;
             _radiusEnemy.transform.localPosition = Vector3.zero;
-            
-            _isLifted = true;
 
             while (Time.time - castStartTime < _castDuration)
             {

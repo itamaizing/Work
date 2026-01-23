@@ -10,6 +10,7 @@ using UnityEngine.SceneManagement;
 public class FireBoll : MoveSkill
 {
     [SerializeField] private Projectile _projectile;
+    [SerializeField] private float _debuffTime = 7;
     
     protected override bool IsCanCast { get => CheckCanCast(); }
     private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
@@ -139,6 +140,13 @@ public class FireBoll : MoveSkill
             PhysicAttackType = AttackRangeType,
         };
         CmdApplyDamage(damage, target);
-        target.GetComponent<Character>().CharacterState.CmdAddState(States.Burning, 6, 0, Hero.gameObject, name);
+        CmdState(target,_debuffTime);
+    }
+    
+    [Command]
+    private void CmdState(GameObject enemy, float time)
+    {
+        Character enemyChar = enemy.GetComponent<Character>();
+        enemyChar.CharacterState.AddState(States.Burning, time, 0, Hero.gameObject, name);
     }
 }

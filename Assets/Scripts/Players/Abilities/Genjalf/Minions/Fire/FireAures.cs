@@ -77,7 +77,7 @@ public class Burning : AbstractCharacterState
         {
             Value = _damage,
         };
-        character.Character.TryTakeDamage(ref damage, null);
+        character.Character.CmdTryTakeDamage(damage, null);
     }
 
     public override void ExitState()
@@ -87,6 +87,7 @@ public class Burning : AbstractCharacterState
 
     public override bool Stack(float time)
     {
+        _time = time;
         return false;
     }
 
@@ -108,7 +109,7 @@ public class Burning : AbstractCharacterState
         {
             Value = _damage,
         };
-        _character.TryTakeDamage(ref damage, null);
+        _character.CmdTryTakeDamage(damage, null);
 
         _timeAfterLastEffect = 0;
     }

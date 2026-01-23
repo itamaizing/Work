@@ -8,7 +8,7 @@ public class TeamSource : MonoBehaviour
 
     private void OnEnable()
     {
-        //UpdateInfo();
+        UpdateInfo();
     }
 
     public void AddInFirstTeam(Character character)

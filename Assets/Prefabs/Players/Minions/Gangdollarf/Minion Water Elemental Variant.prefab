@@ -544,6 +544,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0eaa338de0c76e4fbe06fa8331fcfa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TargetSeeker
+--- !u!195 &6215928600746481535 stripped
+NavMeshAgent:
+  m_CorrespondingSourceObject: {fileID: 1780925315992858912, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+  m_PrefabInstance: {fileID: 5689299783830627935}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6270067163818579670 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
@@ -622,6 +627,7 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _agent: {fileID: 6215928600746481535}
   _effect: {fileID: 5728214450654004770}
 --- !u!114 &6129426252062776704
 MonoBehaviour:

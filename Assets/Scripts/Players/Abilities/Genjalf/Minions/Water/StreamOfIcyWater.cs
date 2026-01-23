@@ -3,7 +3,7 @@ using System.Collections;
 using Mirror;
 using UnityEngine;
 
-public class StreamOfIcyWater : Skill
+public class StreamOfIcyWater : MoveSkill
 {
     [SerializeField] private GameObject _effect;
 
@@ -26,10 +26,25 @@ public class StreamOfIcyWater : Skill
     {
         AnimCastEnded();
     }
+    
+    private void OnEnable()
+    {
+        Canceled += CancelMove;
+    }
+
+    private void OnDisable()
+    {
+        Canceled -= CancelMove;
+    }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        
+        if (!IsCanCast)
+        {
+            MoveTo();
+        }
     }
 
     protected override IEnumerator CastJob()
@@ -77,9 +92,8 @@ public class StreamOfIcyWater : Skill
             if (GetMouseButton)
             {
                 Vector3 clickPoint = GetMousePoint();
-                
+        
                 FindTarget(_clickRadius, clickPoint, canTargetHimself: false);
-
                 if (GetTempTargetCharacter() is Character character)
                 {
                     if (GetTempTargetCharacter() != null && !IsEnemyTarget(character))
@@ -95,9 +109,8 @@ public class StreamOfIcyWater : Skill
             }
             yield return null;
         }
-        SetTarget(GetTempTarget());
+        targetInfo.AddTarget(GetTempTargetCharacter());
         ClearTempTarget();
-        targetInfo.AddTarget(GetTargetCharacter());
         targetDataSavedCallback(targetInfo);
     }
 
