@@ -18,8 +18,6 @@ public class Health : Resource, IDamageable, IHealingable
 
     private List<IDamageable> _shields = new List<IDamageable>();
 	[SyncVar] private float _sumDamageTaken = 0;
-    private Coroutine _dOTDamageAnimJob;
-    private float _dOTDamageAnimDuration = 0.1f;
     private float _totalMaxAbsorption = 0;
     private float _blockChance;
     private bool _isDot = false;
@@ -167,12 +165,6 @@ public class Health : Resource, IDamageable, IHealingable
     {
         _evadeMeleeDamage = value;
         _evadeRangeDamage = value;
-    }
-
-    public void SetHp(float current, float max)
-    {
-        CurrentValue = current;
-        MaxValue = max;
     }
 
     #region HookMethods

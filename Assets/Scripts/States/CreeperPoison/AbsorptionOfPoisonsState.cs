@@ -12,6 +12,7 @@ public class AbsorptionOfPoisonsState : AbstractCharacterState
 
     private float _duration;
     private float _baseDuration;
+    private AttributeModifiers _attributeModifiers; 
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Absorptions };
     public override States State => States.AbsorptionOfPoison;
@@ -21,6 +22,7 @@ public class AbsorptionOfPoisonsState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+        _attributeModifiers = new AttributeModifiers(0, ModifierType.Flat);
         characterState = character;
         _player = personWhoMadeBuff;
 
@@ -55,7 +57,8 @@ public class AbsorptionOfPoisonsState : AbstractCharacterState
 
     public override void ExitState()
     {
-        _player.Health.ChangedMaxValue(-_allIncreasedHealth);
+        _player.Health.RemoveModifier(_attributeModifiers);
+        //_player.Health.ChangedMaxValue(-_allIncreasedHealth);
 
         ResetValues();
 
@@ -64,17 +67,23 @@ public class AbsorptionOfPoisonsState : AbstractCharacterState
 
     private void IncreaseHealth()
     {
+        _player.Health.RemoveModifier(_attributeModifiers);
         float increasingValue = currentStacksCount * _baseHealthIncrease;
 
         _increasedHealth = _maxHealth * increasingValue;
 
-        _player.Health.ChangedMaxValue(_increasedHealth);
+        _attributeModifiers.Value = _increasedHealth;
+
+       
+        //_player.Health.ChangedMaxValue(_increasedHealth);
+        _player.Health.AddModifier(_attributeModifiers);
 
         _allIncreasedHealth += _increasedHealth;
     }
 
     private void ResetValues()
     {
+        _player.Health.RemoveModifier(_attributeModifiers);
         _allIncreasedHealth = 0;
 
         currentStacksCount = 0;

@@ -7,8 +7,8 @@ public class Attributes
 {
     public string Name;
 
-    [SerializeField]private float _value;
-    private List<AttributeModifiers> _modifiers;
+    [SerializeField] private float _value;
+    [SerializeField] private List<AttributeModifiers> _modifiers = new();
     
 
     public Attributes(string name)
@@ -24,7 +24,13 @@ public class Attributes
 
     public void RemoveModifier(AttributeModifiers modifier)
     {
-        _modifiers.Remove(modifier);
+        if(_modifiers.Contains(modifier))
+            _modifiers.Remove(modifier);
+    }
+
+    public void SetValue(float value)
+    {
+        _value = value;
     }
 
     public float GetValue()
@@ -54,8 +60,15 @@ public class Attributes
     }
 }
 
+[Serializable]
 public struct AttributeModifiers
 {
+    public AttributeModifiers(float value, ModifierType type)
+    {
+        Value = value;
+        Type = type;
+    }
+
     public float Value;
     public ModifierType Type;
 }

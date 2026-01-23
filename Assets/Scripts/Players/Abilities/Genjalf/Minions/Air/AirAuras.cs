@@ -63,6 +63,7 @@ namespace Gangdollarff.AirElemental
     {
         private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Strengthening };
         private float _procent = 1.10f;
+        private AttributeModifiers _modif = new();
 
         public override float Distance => 6;
         public override float EffectRate => 0.2f;
@@ -73,12 +74,16 @@ namespace Gangdollarff.AirElemental
 
         public override void EffectOnEnter(Character character)
         {
-            character.Move.SetMoveSpeed(character.Move.CurrentSpeed * _procent);
+            _modif.Value = _procent;
+            _modif.Type = ModifierType.Percent;
+            //character.Move.SetMoveSpeed(character.Move.CurrentSpeed * _procent);
+            character.Move.AddModifier(_modif);
         }
 
         public override void EffectOnExit(Character character)
         {
-            character.Move.SetMoveSpeed(character.Move.CurrentSpeed / _procent);
+            //character.Move.SetMoveSpeed(character.Move.CurrentSpeed / _procent);
+            character.Move.RemoveModifier(_modif);
         }
 
         public override void EffectOnStay(List<Character> characters)

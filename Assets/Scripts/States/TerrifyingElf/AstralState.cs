@@ -21,6 +21,7 @@ public class AstralState : AbstractCharacterState
     private Material[] _originalMaterials;
 
     private Coroutine _dotJob;
+    private AttributeModifiers _modif;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability, StatusEffect.Move };
     private readonly Dictionary<Skill, float> _modifiedSkills = new();
@@ -32,7 +33,8 @@ public class AstralState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log("Entering Astral State");
+        _modif.Value = .5f;
+        _modif.Type = ModifierType.Multiplier;
         _baseDuration = durationToExit;
 
         _stateEffects = characterState.GetComponent<StateEffects>();
@@ -70,7 +72,10 @@ public class AstralState : AbstractCharacterState
         characterHealth.DefPhysDamage = 100;
 
         characterState.Character.Health.RegenerationValue = 0;
-        characterState.Character.Move.ChangeMoveSpeed(0.5f);
+
+
+       // characterState.Character.Move.ChangeMoveSpeed(0.5f);
+        characterState.Character.Move.AddModifier(_modif);
 
         BlockPhysicalAbilities();
 
@@ -103,7 +108,9 @@ public class AstralState : AbstractCharacterState
 
         characterHealth.DefMagDamage += _defMagDamageMod;
         characterHealth.DefPhysDamage = _originalDefPhysDamage;
-        characterState.Character.Move.ChangeMoveSpeed(2);
+
+        characterState.Character.Move.RemoveModifier(_modif);
+        //characterState.Character.Move.ChangeMoveSpeed(2);
 
         if (_dotJob != null) characterState.StopCoroutine(_dotJob);
         characterHealth.RegenerationValue = _originalRegenerationValue;

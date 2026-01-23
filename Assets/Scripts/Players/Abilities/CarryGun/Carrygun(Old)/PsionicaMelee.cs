@@ -25,7 +25,7 @@ public class PsionicaMelee : Resource
 
         if (_hero != null)
         {
-            MaxValue = _hero.Data.GetAttributeValue(AttributeNames.Health);
+            _maxValue = _hero.Data.GetAttributeValue(AttributeNames.Health);
 
             if (_hero.DamageTracker != null)
             {

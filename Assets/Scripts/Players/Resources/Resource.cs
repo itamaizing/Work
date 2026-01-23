@@ -14,7 +14,7 @@ public enum ResourceType
     CooldownEnergy,
 }
 
-public abstract class Resource : NetworkBehaviour
+public abstract class Resource : NetworkBehaviour, IAttribute
 {
     [SerializeField] private ResourceType _resourceType;
     [SerializeField, SyncVar] protected float _regenerationDelay = 0;
@@ -26,9 +26,17 @@ public abstract class Resource : NetworkBehaviour
     protected Coroutine _regenCoroutine;
     protected Attributes _attribute;
 
-    private float _bonusMaxValue = 0f;
 	public float CurrentValue { get => _currentValue; set { ValueChanged?.Invoke(_currentValue, value); _currentValue = value; } }
-    public float MaxValue { get => _maxValue; set { MaxValueChanged?.Invoke(_maxValue, value); _maxValue = value; } }
+    public float MaxValue { 
+        get 
+        { 
+            if (_attribute != null) 
+                return _attribute.GetValue();
+            else
+                return _maxValue;
+        } 
+        private set { MaxValueChanged?.Invoke(_maxValue, value); _maxValue = value; } }
+
     public float RegenerationValue { get => _regenerationValue; set { _regenerationValue = value; } }
     public float RegenerationDelay { get => _regenerationPeriod; set { _regenerationPeriod = value; } }
 
@@ -54,30 +62,16 @@ public abstract class Resource : NetworkBehaviour
         ClientStopRegenerateJob();
     }
 
-    /*private void Update()
-	{
-        
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            Debug.Log("MaxValue" + MaxValue);
-            TEST();
-        }
-	}
-
-    [Command]
-    private void UpdateValue(float value)
-    {
-        MaxValue = value;
-    }*/
-    
     public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data, Attributes attribute)
     {
-        _attribute = attribute;
         _currentValue = maxValue / 2;
         _maxValue = maxValue;
         _regenerationValue = regenValue;
         _regenerationPeriod = regenDelay;
 
+
+        _attribute = attribute;
+        _maxValue = attribute.GetValue();
         /*if (regenValue > 0)
             ClientStartRegenirateJob();*/
     }
@@ -183,10 +177,10 @@ public abstract class Resource : NetworkBehaviour
         RpcResetValueUpdate();
     }
 
-    public void ChangedMaxValue(float value)
+   /* public void ChangedMaxValue(float value)
     {
         _maxValue += value;
-    }
+    }*/
 
     public void Regenerate() => _regenCoroutine = StartCoroutine(RegenerateJob());
 
@@ -279,5 +273,20 @@ public abstract class Resource : NetworkBehaviour
     protected void CmdResetRegen()
     {
         ResetRegen();
+    }
+
+    public void AddModifier(AttributeModifiers modif)
+    {
+        _attribute.AddModifier(modif);
+
+        _maxValue = _attribute.GetValue();
+    }
+
+    public void RemoveModifier(AttributeModifiers modif)
+    {
+        _attribute.RemoveModifier(modif);
+
+        _maxValue = _attribute.GetValue();
+
     }
 }

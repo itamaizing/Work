@@ -33,7 +33,7 @@ public class BasePsionicEnergy : Resource, IDamageable
         _psionicaDecayTime = psionicEnergySkill.CooldownTime;
         if (_player != null)
         {
-            MaxValue = _player.Data.GetAttributeValue(AttributeNames.Health);
+            _maxValue = _player.Data.GetAttributeValue(AttributeNames.Health);
             _player.Health.Shields.Add(this);
         }
     }

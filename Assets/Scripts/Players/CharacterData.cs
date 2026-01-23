@@ -32,7 +32,11 @@ public class CharacterData : ScriptableObject
     {
         var attribute = _attributes.AttributeData2.FirstOrDefault(o => o.Name == attributeName);
         if (attribute != null)
-            return attribute;
+        {
+            var tempAttribute = new Attributes(attribute.Name);
+            tempAttribute.SetValue(attribute.GetValue());
+            return tempAttribute;
+        }
         else
         {
             Debug.LogError("No attribute data " + attributeName);

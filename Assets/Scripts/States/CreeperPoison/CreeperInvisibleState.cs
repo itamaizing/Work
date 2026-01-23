@@ -7,6 +7,7 @@ public class CreeperInvisibleState : AbstractCharacterState
     private List<Skill> _skills = new();
     private CreeperInvisible _creeperInvisible;
     private Character _player;
+    private AttributeModifiers _modif = new();
 
     private float _reductionMoveSpeed = 0.3f;
     private float _originalMoveSpeed;
@@ -81,10 +82,14 @@ public class CreeperInvisibleState : AbstractCharacterState
         _playerInInvisible = true;
 
         float reductionMoveSpeed = _originalMoveSpeed * _reductionMoveSpeed;
+        _modif.Value = -reductionMoveSpeed;
+        _modif.Type = ModifierType.Flat;
+        //float endReductionMoveSpeed = _originalMoveSpeed - reductionMoveSpeed;
 
-        float endReductionMoveSpeed = _originalMoveSpeed - reductionMoveSpeed;
+        //_player.Move.SetMoveSpeed(endReductionMoveSpeed);
+        _player.Move.AddModifier(_modif);
 
-        _player.Move.SetMoveSpeed(endReductionMoveSpeed);
+
 
         _player.TryGetResource(ResourceType.Mana).RegenerationDelay *= (1 + _increaseStaminaRegen);
 
@@ -100,7 +105,9 @@ public class CreeperInvisibleState : AbstractCharacterState
 
     private void ResetValues()
     {
-        _player.Move.SetDefaultSpeed();
+       // _player.Move.SetDefaultSpeed();
+        _player.Move.RemoveModifier(_modif);
+
 
         if (_player.TryGetResource(ResourceType.Mana).RegenerationDelay != _originalStaminaRegen)
         {

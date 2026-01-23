@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
 
-public class MoveComponent : NetworkBehaviour
+public class MoveComponent : NetworkBehaviour, IAttribute
 {
     [SerializeField, Range(0, 0.5f)] private float _smoothTime = 0.15f;
 	[SerializeField] protected float _currentSpeed = 5;
@@ -85,6 +85,7 @@ public class MoveComponent : NetworkBehaviour
 	{
 		_attribute = attributes;
 		_defaultSpeed = speed;
+		_defaultSpeed = attributes.GetValue();
 
 		_rigidbody = rb;
 		
@@ -165,19 +166,9 @@ public class MoveComponent : NetworkBehaviour
 		}
 	}
 
-	public void ChangeMoveSpeed(float value)
-	{
-		_currentSpeed *= value;
-	}
-
-	public void SetMoveSpeed(float speed)
-	{
-		_currentSpeed = speed;
-	}
-
 	public void SetDefaultSpeed()
 	{
-		_currentSpeed = _defaultSpeed;
+		_currentSpeed = _attribute.GetValue();
 	}
 
 	public void DoMove(Vector3 vector3, float duration)
@@ -465,8 +456,18 @@ public class MoveComponent : NetworkBehaviour
 		StartCoroutine(DoPushWithAgent(targetPos, duration));
 	}
 
-	#region Test
-	[Command]
+    public void AddModifier(AttributeModifiers modif)
+    {
+        _attribute.AddModifier(modif);
+    }
+
+    public void RemoveModifier(AttributeModifiers modif)
+    {
+        _attribute.RemoveModifier(modif);
+    }
+
+    #region Test
+    [Command]
 	public void CmdAddTransformPosition(Vector3 vector3)
     {
 		RpcAddTransformPosition(vector3);
@@ -519,5 +520,5 @@ public class MoveComponent : NetworkBehaviour
 		Debug.Log("DoMove " + vector3, this);
 		DoMove(vector3, duration);
 	}
-	#endregion
+    #endregion
 }

@@ -9,6 +9,7 @@ public class Cooling : RefreshingState
 	private float _damageToExit;
 	//private float _curSpeedDebuf = 0.05f;
 	private float _speedDebuf = 0.05f;
+	private AttributeModifiers _modif = new();
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.MoveSpeed, StatusEffect.AbilitySpeed };
 	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
@@ -19,8 +20,11 @@ public class Cooling : RefreshingState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		//Debug.Log("Entering cooling State");
-		characterState = character;
+		_modif.Value = 1 -_speedDebuf;
+		_modif.Type = ModifierType.Multiplier;
+
+        //Debug.Log("Entering cooling State");
+        characterState = character;
 		MaxStacksCount = 5;
 		if (damageToExit == 0)
 		{
@@ -32,7 +36,8 @@ public class Cooling : RefreshingState
 		}
 		_damageOnStart = characterState.Character.Health.SumDamageTaken;
 
-		characterState.Character.Move.ChangeMoveSpeed(1 - _speedDebuf);
+		//characterState.Character.Move.ChangeMoveSpeed(1 - _speedDebuf);
+		characterState.Character.Move.AddModifier(_modif);
 		currentStacksCount = 1;
 		//decrease speed of attact and movement
 		//_characterState.Health.sumDamageTaken = 0;
@@ -49,10 +54,10 @@ public class Cooling : RefreshingState
 	public override void ExitState()
 	{
 		characterState.RemoveState(this);
-		if (!characterState.Check(StatusEffect.MoveSpeed))
-		{
-			characterState.Character.Move.SetDefaultSpeed();
-		}
+		//if (!characterState.Check(StatusEffect.MoveSpeed))
+		//{
+            characterState.Character.Move.RemoveModifier(_modif);
+       // }
 		if (!characterState.Check(StatusEffect.AbilitySpeed))
 		{
 			//return speed of attact
@@ -64,8 +69,11 @@ public class Cooling : RefreshingState
         duration = time;
 		if(currentStacksCount < MaxStacksCount)
 		{
-			currentStacksCount++;
-            characterState.Character.Move.ChangeMoveSpeed(1 - currentStacksCount * _speedDebuf);
+            characterState.Character.Move.RemoveModifier(_modif);
+            currentStacksCount++;
+            //characterState.Character.Move.ChangeMoveSpeed(1 - currentStacksCount * _speedDebuf);
+			_modif.Value = 1 - currentStacksCount * _speedDebuf;
+            characterState.Character.Move.AddModifier(_modif);
         }
         return true;
     }
