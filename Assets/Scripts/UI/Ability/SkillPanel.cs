@@ -81,6 +81,11 @@ public class SkillPanel : MonoBehaviour
         OnEndDrag();
     }
 
+    public void OnMinionSelected(SkillManager minionSkillManager)
+    {
+        Fill(minionSkillManager);
+    }
+
     public void SetHideUnusedButtons(bool value)
     {
         if (value)

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class UIGameWindowPopup : MonoBehaviour
@@ -8,6 +10,7 @@ public class UIGameWindowPopup : MonoBehaviour
     [SerializeField] private PlayerIcon _playerIcon;
     [SerializeField] private MinionPanel _minionPanel;
     [SerializeField] private SkillPanel _skillPanel;
+    [SerializeField] private SkillPanel _skillMinionPanel;
     [SerializeField] private SelectManager _selectManager;
     [SerializeField] private GameObject _settings;
     [SerializeField] private GameObject[] _forHide;
@@ -100,5 +103,22 @@ public class UIGameWindowPopup : MonoBehaviour
         _talentsPanel.gameObject.SetActive(true);
         _talentsPanel.Show(_currentHero.TalentManager, true);
 
+        UpdateMinionSkills();
+    }
+
+    private void UpdateMinionSkills()
+    {
+        if (_currentCharacter == null) return;
+
+        var spawn = _currentCharacter.SpawnComponent;
+        if (spawn == null) return;
+
+        var minion = spawn.Units.FirstOrDefault(m => m != null && !m.IsDead);
+
+        if (minion != null)
+        {
+            var skillManager = minion.GetComponent<SkillManager>();
+            if (skillManager != null)_skillMinionPanel.OnMinionSelected(skillManager);
+        }
     }
 }
