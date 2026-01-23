@@ -43,7 +43,7 @@ public class TalentSaveManager
         var isTalentActive = isActive ? 1 : 0;
 		//var talentGroup = character.TalentManager.TalentsGroups.FirstOrDefault(o => o.ID == idGroup);
 		// var talent = talentGroup?.TalentsData.FirstOrDefault(o => o.Data.Name == idTalent);
-		if (!character.TalentManager.CanOpenTalent) return;
+		if (isActive && !character.TalentManager.CanOpenTalent) return;
 
 		var talentGroup = character.TalentManager.TalentsGroups.FirstOrDefault(o => o.ID == idGroup);
 		var talentRow = talentGroup.TalentRows[row];
@@ -75,7 +75,6 @@ public class TalentSaveManager
         int remainingPoints = points;
 
         remainingPoints = _saveManager.ReduceFreePoints(remainingPoints);
-
 		_saveManager.ReduceAttributePoints(remainingPoints);
 
 		//if (remainingPoints > 0)

@@ -17,7 +17,7 @@ public class TalentSystem : NetworkBehaviour
     [SerializeField] private List<TalentsGroup> _talents;
 
     private Level _lvl;
-    private int _points = 10;
+    private int _points = 1;
     private int _prevValue = 1;
 
     public List<TalentsGroup> TalentsGroups => _talents;
@@ -58,6 +58,7 @@ public class TalentSystem : NetworkBehaviour
     // [Command]
     public void Initialize(Level level)
     {
+        Debug.Log($"_points: {_points}");
         if(level != null)
         {
             _lvl = level;
@@ -132,9 +133,20 @@ public class TalentSystem : NetworkBehaviour
 	public void SetActive(int group, int row ,int id, bool value)
 	{
         _talents[group].TalentRows[row].Talents[id].SetActive(value);
-        if(value)
-            _points--;
-	}
+        if (value) _points--;
+
+        else
+        {
+            int maxPoints = GetMaxTalentPoints();
+            if (_points < maxPoints) _points++;
+        }
+    }
+
+    public int GetMaxTalentPoints()
+    {
+        return _lvl != null ? _lvl.CurrentLevel : 0;
+    }
+
     public void SetActive(int group, int row, string name, bool value)
     {
         //Debug.Log(" Try group" + group + " row " + row + " " + name);
@@ -143,8 +155,13 @@ public class TalentSystem : NetworkBehaviour
 
         var talent = talentGroup.TalentRows[row].Talents?.FirstOrDefault(o => o.Data.Name == name);
         talent.SetActive(value);
-        if (value)
-            _points--;
+        if (value) _points--;
+
+        else
+        {
+            int maxPoints = GetMaxTalentPoints();
+            if (_points < maxPoints) _points++;
+        }
         //_talents[group].TalentRows[row].Talents[id].SetActive(value);
     }
 
