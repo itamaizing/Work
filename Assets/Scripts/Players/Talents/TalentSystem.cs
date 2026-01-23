@@ -200,6 +200,7 @@ public class TalentSystem : NetworkBehaviour
     {
 
     }
+
     public void Add(Talent talent)
     {
         talent.Enter();

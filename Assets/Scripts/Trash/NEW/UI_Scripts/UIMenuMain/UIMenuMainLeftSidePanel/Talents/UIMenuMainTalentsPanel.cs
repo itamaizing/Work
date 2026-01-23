@@ -8,7 +8,8 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
     [SerializeField] private UIMenuMainTalentsPanelGroup _talentsPanelGroup;
     [SerializeField] private RectTransform _itemsParent;
     [SerializeField] private TalentInfoPanel _talentInfoPanel;
-    
+    [SerializeField] private TMProLocalizer _talantsText;
+
     private List<UIMenuMainTalentsPanelGroup> ItemsPool = new();
     
     private TalentSystem _talentSystem;

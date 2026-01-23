@@ -76,15 +76,17 @@ public class TalentSaveManager
 
         remainingPoints = _saveManager.ReduceFreePoints(remainingPoints);
 
-        if (remainingPoints > 0)
-        {
-            _saveManager.ReduceAttributePoints(remainingPoints);
-        }
+		_saveManager.ReduceAttributePoints(remainingPoints);
 
-        if (remainingPoints > 0)
-        {
-            Debug.LogWarning("Недостаточно очков для деактивации таланта!");
-        }
+		//if (remainingPoints > 0)
+  //      {
+  //          _saveManager.ReduceAttributePoints(remainingPoints);
+  //      }
+
+  //      if (remainingPoints > 0)
+  //      {
+  //          Debug.LogWarning("Недостаточно очков для деактивации таланта!");
+  //      }
     }
 	/*public void LoadTalent(HeroComponent character, int idGroup, string idTalent, bool needActive, int saveGroup)
 	{

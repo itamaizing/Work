@@ -10,7 +10,7 @@ public class TalentData
 
 	private string _name;
 	public bool IsOpen;
-
+	
 	public string Description = string.Empty;
 	public Sprite Icon;
 	public int Group, Row = 0;
