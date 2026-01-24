@@ -81,10 +81,11 @@ public class MoveComponent : NetworkBehaviour, IAttribute
         _canMoveState = canMove;
     }
 
-    public void Initialize(float speed, Rigidbody rb , Attributes attributes, bool isHero = false)
+    //public void Initialize(float speed, Rigidbody rb , Attributes attributes, bool isHero = false)
+    public void Initialize(Rigidbody rb , Attributes attributes, bool isHero = false)
 	{
 		_attribute = attributes;
-		_defaultSpeed = speed;
+		//_defaultSpeed = speed;
 		_defaultSpeed = attributes.GetValue();
 
 		_rigidbody = rb;

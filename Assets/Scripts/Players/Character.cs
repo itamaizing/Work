@@ -126,14 +126,14 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
     public virtual void Initialize()
 	{
         AttributeSystem.Init(Data);
-        Move.Initialize(Data.GetAttributeValue(AttributeNames.Speed), Rigidbody , AttributeSystem.MoveSpeed, true);
+        Move.Initialize(Rigidbody , AttributeSystem.MoveSpeed, true);
 		CharacterState.Initialize(this);
 		SelectComponent.Initialize(Move,Abilities,UIComponent);
 		//_visionComponent.VisionRange = Data.GetAttributeValue(AttributeNames.VisionRadius);
 
 		foreach (var resource in Resources)
 		{
-			if (resource.Type == ResourceType.Health)
+            /*if (resource.Type == ResourceType.Health)
 			{
 				resource.Initialize(
 					 Data.GetAttributeValue(AttributeNames.Health), 
@@ -164,8 +164,28 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 					Data.GetAttributeValue(AttributeNames.RuneRegen), 
 					Data.GetAttributeValue(AttributeNames.RuneRegenDelay), 
 					Data, AttributeSystem.Resourse);
-			}
-		}
+			}*/
+            if (resource.Type == ResourceType.Health)
+            {
+                resource.Initialize(
+                     AttributeSystem.Health, AttributeSystem.HpRegen, Data);
+            }
+            if (resource.Type == ResourceType.Energy)
+            {
+                resource.Initialize(
+                     AttributeSystem.Resourse, AttributeSystem.ResourseRegen, Data);
+            }
+            if (resource.Type == ResourceType.Mana)
+            {
+                resource.Initialize(
+                     AttributeSystem.ResourseRegen, AttributeSystem.ResourseRegen, Data);
+            }
+            if (resource.Type == ResourceType.Rune)
+            {
+                resource.Initialize(
+                     AttributeSystem.Resourse, AttributeSystem.ResourseRegen, Data);
+            }
+        }
 
 		Health.Died += AddDeadCounter;
 	}

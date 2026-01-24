@@ -24,14 +24,15 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     [SyncVar] protected float _regenerationPeriod;
 
     protected Coroutine _regenCoroutine;
-    protected Attributes _attribute;
+    protected Attributes _maxValueAttribute;
+    protected Attributes _regenValueAttribute;
 
 	public float CurrentValue { get => _currentValue; set { ValueChanged?.Invoke(_currentValue, value); _currentValue = value; } }
     public float MaxValue { 
         get 
         { 
-            if (_attribute != null) 
-                return _attribute.GetValue();
+            if (_maxValueAttribute != null) 
+                return _maxValueAttribute.GetValue();
             else
                 return _maxValue;
         } 
@@ -62,7 +63,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         ClientStopRegenerateJob();
     }
 
-    public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data, Attributes attribute)
+  /*  public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data, Attributes attribute)
     {
         _currentValue = maxValue / 2;
         _maxValue = maxValue;
@@ -70,10 +71,22 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         _regenerationPeriod = regenDelay;
 
 
-        _attribute = attribute;
+        _maxValueAttribute = attribute;
         _maxValue = attribute.GetValue();
+        _currentValue = _maxValue / 2;
         /*if (regenValue > 0)
-            ClientStartRegenirateJob();*/
+            ClientStartRegenirateJob();
+    }*/
+
+    public virtual void Initialize(Attributes maxValue, Attributes regenValue, CharacterData data)
+    {
+        _regenValueAttribute = regenValue;
+        _regenerationValue = regenValue.GetValue();
+
+
+        _maxValueAttribute = maxValue;
+        _maxValue = maxValue.GetValue();
+        _currentValue = _maxValue / 2;
     }
 
     public virtual void Add(float value)
@@ -277,16 +290,16 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 
     public void AddModifier(AttributeModifiers modif)
     {
-        _attribute.AddModifier(modif);
+        _maxValueAttribute.AddModifier(modif);
 
-        _maxValue = _attribute.GetValue();
+        _maxValue = _maxValueAttribute.GetValue();
     }
 
     public void RemoveModifier(AttributeModifiers modif)
     {
-        _attribute.RemoveModifier(modif);
+        _maxValueAttribute.RemoveModifier(modif);
 
-        _maxValue = _attribute.GetValue();
+        _maxValue = _maxValueAttribute.GetValue();
 
     }
 }

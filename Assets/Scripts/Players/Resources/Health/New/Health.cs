@@ -1,4 +1,5 @@
 using Mirror;
+using Org.BouncyCastle.Asn1.Cms;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -57,9 +58,19 @@ public class Health : Resource, IDamageable, IHealingable
 
     public bool IsDot { get => _isDot; set => _isDot = value; }
 
-    public override void Initialize(float health, float hpRegen, float hpRegenDelay, CharacterData data, Attributes attribute)
+    /* public override void Initialize(float health, float hpRegen, float hpRegenDelay, CharacterData data, Attributes attribute)
+     {
+         base.Initialize(health, hpRegen, hpRegenDelay, data, attribute);
+
+         _defPhysDamage = data.GetAttributeValue(AttributeNames.PhysicResist);
+         _defMagDamage = data.GetAttributeValue(AttributeNames.MagicResist);
+         _resistMagDamage = data.GetAttributeValue(AttributeNames.MagicEvade);
+         _evadeMeleeDamage = data.GetAttributeValue(AttributeNames.MeleeEvade);
+         _evadeRangeDamage = data.GetAttributeValue(AttributeNames.RangeEvade);
+     }*/
+    public override void Initialize(Attributes maxValue, Attributes regenValue, CharacterData data)
     {
-        base.Initialize(health, hpRegen, hpRegenDelay, data, attribute);
+        base.Initialize(maxValue, regenValue, data);
 
         _defPhysDamage = data.GetAttributeValue(AttributeNames.PhysicResist);
         _defMagDamage = data.GetAttributeValue(AttributeNames.MagicResist);

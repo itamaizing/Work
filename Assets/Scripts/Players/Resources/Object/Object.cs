@@ -50,11 +50,11 @@ public class Object : NetworkBehaviour, IDamageable, ITargetable
 
     public void Initialize()
     {
-        foreach (var resource in Resources)
+      /*  foreach (var resource in Resources)
             if (resource.Type == ResourceType.Health) resource.Initialize(_objectData.MaxHealth, _objectData.RegenerationAmount, 0, null, _objectData.Attribute);
 
         _objectHealth.InitializeObject(_objectData);
-        _objectHealth.OnDeath += ServerOnDeath;
+        _objectHealth.OnDeath += ServerOnDeath;*/
         if (_minimapMarker != null) _minimapMarker.IsActive = true;
     }
 
