@@ -317994,6 +317994,10 @@ PrefabInstance:
       propertyPath: _uiCamera
       value: 
       objectReference: {fileID: 767801948}
+    - target: {fileID: 802771631171074795, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+      propertyPath: _draggableIconPref
+      value: 
+      objectReference: {fileID: 1388298724582322407, guid: 8b203ba26d0014d43badf0af4742c57c, type: 3}
     - target: {fileID: 1573476390218021318, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
