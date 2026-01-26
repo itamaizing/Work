@@ -16,6 +16,9 @@ public class UIGameWindowPopup : MonoBehaviour
     [SerializeField] private GameObject[] _forHide;
     [SerializeField] private GameObject _teamSource; //test
 
+    private readonly List<Skill> _allMinionSkills = new();
+    private readonly Dictionary<Character, List<Skill>> _minionSkillMap = new();
+
     private HeroComponent _currentHero;
     private Character _currentCharacter;
 
@@ -123,13 +126,16 @@ public class UIGameWindowPopup : MonoBehaviour
         var spawn = _currentCharacter.SpawnComponent;
         if (spawn == null) return;
 
-        var minion = spawn.Units.FirstOrDefault(m => m != null && !m.IsDead);
+        var allMinionSkills = spawn.Units
+            .Where(m => m is MinionComponent { IsDead: false })
+            .SelectMany(m => m.GetComponent<SkillManager>().SelectedSkills)
+            .Where(skill => skill != null)
+            .Distinct()
+            .ToList();
 
-        if (minion != null)
-        {
-            var skillManager = minion.GetComponent<SkillManager>();
-            if (skillManager != null)_skillMinionPanel.OnMinionSelected(skillManager);
-        }
+        _allMinionSkills.Clear();
+        _allMinionSkills.AddRange(allMinionSkills);
+        UpdateMinionSkillPanel();
     }
 
     private void OnMinionSpawned(Character character)
@@ -139,31 +145,52 @@ public class UIGameWindowPopup : MonoBehaviour
         if (character is MinionComponent)
         {
             var skillManager = character.GetComponent<SkillManager>();
-            if (skillManager != null)
+            if (skillManager == null) return;
+
+            var newSkills = new List<Skill>();
+            foreach (var skill in skillManager.SelectedSkills)
             {
-                _skillMinionPanel.gameObject.SetActive(true);
-                _skillMinionPanel.SetHideUnusedButtons(true);
-                _skillMinionPanel.OnMinionSelected(skillManager);
+                if (skill == null) continue;
+                if (_allMinionSkills.Contains(skill)) continue;
+
+                _allMinionSkills.Add(skill);
+                newSkills.Add(skill);
             }
+
+            _minionSkillMap[character] = newSkills;
+
+            UpdateMinionSkillPanel();
+        }
+    }
+
+    private void UpdateMinionSkillPanel()
+    {
+        _skillMinionPanel.gameObject.SetActive(true);
+        _skillMinionPanel.SetHideUnusedButtons(true);
+
+        foreach (var skill in _allMinionSkills)
+        {
+            _skillMinionPanel.AddSkill(skill);
         }
     }
 
     private void OnMinionRemoved(Character character)
     {
-        if (character == null) return;
+        if (character == null || !_minionSkillMap.ContainsKey(character)) return;
 
-        if (character is MinionComponent)
+        var skillsToRemove = _minionSkillMap[character];
+        foreach (var skill in skillsToRemove)
         {
-            _skillMinionPanel.OnCharacterDeselected(character);
+            _allMinionSkills.Remove(skill);
+        }
 
-            if (_currentCharacter != null)
-            {
-                var units = _currentCharacter.SpawnComponent?.Units;
-                bool hasAliveMinion = units?.Any(u => u is MinionComponent m && !m.IsDead) ?? false;
+        _minionSkillMap.Remove(character);
 
-                if (!hasAliveMinion) _skillMinionPanel.gameObject.SetActive(false);
-            }
+        UpdateMinionSkillPanel();
+
+        if (_allMinionSkills.Count == 0)
+        {
+            _skillMinionPanel.gameObject.SetActive(false);
         }
     }
-
 }

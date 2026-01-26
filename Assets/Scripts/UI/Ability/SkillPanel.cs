@@ -187,6 +187,9 @@ public class SkillPanel : MonoBehaviour
 
     private void SkillChenged(int index, Skill skill)
     {
+        if (_playerAbilities?.SelectedSkills == null) return;
+        if (index < 0 || index >= _playerAbilities.SelectedSkills.Length) return;
+
         _playerAbilities.SelectedSkills[index] = skill;
     }
 
@@ -243,6 +246,28 @@ public class SkillPanel : MonoBehaviour
         Fill(_playerAbilities);
 		//UpdatePanel();
 	}
+
+    public void AddSkill(Skill skill)
+    {
+        if (skill == null) return;
+
+        if (_skills.Any(icon => icon.Skill == skill)) return;
+
+        var freeIcon = _skillIcons.FirstOrDefault(icon => icon.CurrentIcon == null);
+        if (freeIcon == null) return;
+
+        var icon = Instantiate(_draggableIconPref, freeIcon.transform);
+        icon.Init(skill, freeIcon.transform, _uiCamera, _cameraCanvasDistance);
+        freeIcon.CurrentIcon = icon;
+        freeIcon.Show();
+        icon.transform.SetAsFirstSibling();
+        _skills.Add(icon);
+
+        icon.BeginDrag += OnBeginDrag;
+        icon.EndDrag += OnEndDrag;
+        icon.PointerEnter += OnPointerEnterIcon;
+        icon.PointerExit += OnPointerExitIcon;
+    }
 
     public void UpdateKeys()
     {
