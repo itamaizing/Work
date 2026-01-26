@@ -75,6 +75,9 @@ public class UIGameWindowPopup : MonoBehaviour
         _currentHero = hero;
         SaveManager.Instance.SetHero(_currentHero);
         UpdateCharacterPanels();
+
+        _currentCharacter.SpawnComponent.UnitAdded += OnMinionSpawned;
+        _currentCharacter.SpawnComponent.UnitRemoved += OnMinionRemoved;
     }
 
     private void OnCharacterDeselected(Character character)
@@ -86,6 +89,10 @@ public class UIGameWindowPopup : MonoBehaviour
         _attributesPanel.gameObject.SetActive(false);
         _talentsPanel.HidePanels();
         _talentsPanel.gameObject.SetActive(false);
+        _skillMinionPanel.gameObject.SetActive(false);
+
+        _currentCharacter.SpawnComponent.UnitAdded -= OnMinionSpawned;
+        _currentCharacter.SpawnComponent.UnitRemoved -= OnMinionRemoved;
     }
     
     private void UpdateCharacterPanels()
@@ -104,6 +111,9 @@ public class UIGameWindowPopup : MonoBehaviour
         _talentsPanel.Show(_currentHero.TalentManager, true);
 
         UpdateMinionSkills();
+
+        _skillMinionPanel.gameObject.SetActive(true);
+        _skillMinionPanel.SetHideUnusedButtons(true);
     }
 
     private void UpdateMinionSkills()
@@ -121,4 +131,39 @@ public class UIGameWindowPopup : MonoBehaviour
             if (skillManager != null)_skillMinionPanel.OnMinionSelected(skillManager);
         }
     }
+
+    private void OnMinionSpawned(Character character)
+    {
+        if (character == null || character.IsDead) return;
+
+        if (character is MinionComponent)
+        {
+            var skillManager = character.GetComponent<SkillManager>();
+            if (skillManager != null)
+            {
+                _skillMinionPanel.gameObject.SetActive(true);
+                _skillMinionPanel.SetHideUnusedButtons(true);
+                _skillMinionPanel.OnMinionSelected(skillManager);
+            }
+        }
+    }
+
+    private void OnMinionRemoved(Character character)
+    {
+        if (character == null) return;
+
+        if (character is MinionComponent)
+        {
+            _skillMinionPanel.OnCharacterDeselected(character);
+
+            if (_currentCharacter != null)
+            {
+                var units = _currentCharacter.SpawnComponent?.Units;
+                bool hasAliveMinion = units?.Any(u => u is MinionComponent m && !m.IsDead) ?? false;
+
+                if (!hasAliveMinion) _skillMinionPanel.gameObject.SetActive(false);
+            }
+        }
+    }
+
 }
