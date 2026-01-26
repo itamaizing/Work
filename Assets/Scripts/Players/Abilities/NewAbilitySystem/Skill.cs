@@ -1579,11 +1579,20 @@ public abstract class Skill : NetworkBehaviour
     public void ApplyDamage(Damage damage, GameObject target)
     {
         var damageable = target != null ? target.GetComponent<IDamageable>() : null;
+        Character targetCharacter = target != null ? target.GetComponent<Character>() : null;
+        if (targetCharacter)
+        {
+            if (targetCharacter.IsDead)
+            {
+                return;
+            }
+        }
         if (damageable != null)
         {
             damageable.TryTakeDamage(ref damage, this);
             _hero.DamageTracker.AddDamage(damage, target, isServerRequest: isServer);
             _hero.DamageGet(damage, target);
+            TryCountGettedDamage(damage);
         }
 
         else
@@ -1593,7 +1602,42 @@ public abstract class Skill : NetworkBehaviour
 
         _hero.DamageTracker.AddDamage(damage, target, isServerRequest: isServer);
         _hero.DamageGet(damage, target);
+        OnTargetDied(target);
+    }
 
+    private void TryCountGettedDamage(Damage damage)
+    {
+        if (_hero is MinionComponent minion)
+        {
+            if (minion)
+            {
+                if (minion.CharacterParent != null)
+                {
+                    minion.CharacterParent.IncreaseGettedDamage(damage);
+                }
+                else
+                {
+                    Debug.LogError("PARENT IS NULL");
+                }
+            }
+        }
+        else
+        {
+            _hero.IncreaseGettedDamage(damage);
+        }
+    }
+
+    private void OnTargetDied(GameObject target)
+    {
+        var character = target != null ? target.GetComponent<Character>() : null;
+
+        if (character)
+        {
+            if (character.IsDead)
+            {
+                AddKill(character);
+            }
+        }
     }
 
     public void CmdApplyDamage(Damage damage, GameObject target)

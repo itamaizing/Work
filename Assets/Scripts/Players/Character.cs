@@ -281,6 +281,11 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 		DamageGeted?.Invoke(damage, target);
 	}
 
+	public void IncreaseGettedDamage(Damage damage)
+	{
+		_damageGetCounter += damage.Value;
+	}
+
 	protected virtual void OnDied()
     {
 		if(_isDead) return;
