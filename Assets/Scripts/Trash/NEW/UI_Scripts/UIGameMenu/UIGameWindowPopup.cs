@@ -170,6 +170,9 @@ public class UIGameWindowPopup : MonoBehaviour
 
         foreach (var skill in _allMinionSkills)
         {
+            if (_skillMinionPanel.HasSkill(skill)) continue;
+
+            Debug.Log($"skill: {skill}");
             _skillMinionPanel.AddSkill(skill);
         }
     }

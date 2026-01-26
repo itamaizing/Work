@@ -247,6 +247,12 @@ public class SkillPanel : MonoBehaviour
 		//UpdatePanel();
 	}
 
+    public bool HasSkill(Skill skill)
+    {
+        if (skill == null) return false;
+        return _skills.Any(icon => icon.Skill != null && icon.Skill.GetType() == skill.GetType());
+    }
+
     public void AddSkill(Skill skill)
     {
         if (skill == null) return;
