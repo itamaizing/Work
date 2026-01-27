@@ -280,7 +280,7 @@ public class IcePuddle : Skill
     public void IceDeathInIcePudleTalentActive(bool value, string text)
     {
         _iceDeathInIcePudleTalent = value;
-        AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
+        AbilityInfoHero.FinalDescriptionSet(value, text);
     }
 
     public void IcePuddleCast() => AnimStartCastCoroutine();

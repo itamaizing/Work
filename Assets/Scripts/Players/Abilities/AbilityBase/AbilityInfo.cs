@@ -26,4 +26,9 @@ public class AbilityInfo : ScriptableObject
     {
         _finalDescription = _description;
     }
+
+    public void FinalDescriptionSet(bool value, string text)
+    {
+        _finalDescription = value ? _description + $" {text}" : _description;
+    }
 }
