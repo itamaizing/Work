@@ -7523,7 +7523,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.size
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRow.Array.data[0].Talents.Array.data[0]'
@@ -7565,6 +7565,14 @@ PrefabInstance:
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.data[3]'
       value: 
       objectReference: {fileID: 3551611631032480463}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.data[4]'
+      value: 
+      objectReference: {fileID: 4700997506177914789}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.data[5]'
+      value: 
+      objectReference: {fileID: 5040640883951079247}
     - target: {fileID: 7849522353126173969, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
@@ -7772,6 +7780,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4599828457609018234}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5040640883951079247}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4700997506177914789}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!4 &1526857230373420528 stripped
 Transform:
@@ -7799,7 +7813,7 @@ MonoBehaviour:
     _descriptionsForInfoPanel:
     - "\u0418\u0437\u0443\u0447\u0438\u0442\u044C \u0422\u0435\u043B\u0435\u043A\u0438\u043D\u0435\u0437"
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0422\u0435\u043B\u0435\u043A\u0438\u043D\u0435\u0437"
     Icon: {fileID: 21300000, guid: f5579b5d10247654cae4bdc55ae23486, type: 3}
     Group: 0
@@ -7830,7 +7844,7 @@ MonoBehaviour:
       \u0443\u0440\u043E\u043D \u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435
       2 \u0441\u0435\u043A\u0443\u043D\u0434"
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0428\u0430\u0440 \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F"
     Icon: {fileID: 21300000, guid: 3c709b466f53c0141944292653b6dff8, type: 3}
     Group: 0
@@ -7858,7 +7872,7 @@ MonoBehaviour:
       \u0447\u0435\u0440\u0435\u0437 \u043A\u043E\u0442\u043E\u0440\u0443\u044E \u043D\u0435
       \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E \u043F\u0440\u043E\u0439\u0442\u0438."
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0420\u0430\u0441\u043A\u043E\u043B \u0437\u0435\u043C\u043B\u0438"
     Icon: {fileID: 21300000, guid: 02a620129ceab05499a5576ff306c13a, type: 3}
     Group: 0
@@ -7884,7 +7898,7 @@ MonoBehaviour:
       \u0443\u0440\u043E\u043D \u0413\u0430\u043D\u0433\u0434\u043E\u043B\u043B\u0430\u0440\u0444\u0444\u043E\u043C
       \u0432 2 \u0440\u0430\u0437\u0430 \u043D\u0430 2 \u0441\u0435\u043A\u0443\u043D\u0434\u044B."
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0411\u043E\u0436\u0435\u0441\u0442\u0432\u0435\u043D\u043D\u043E\u0435
       \u0443\u0441\u0438\u043B\u0435\u043D\u0438\u0435"
     Icon: {fileID: 21300000, guid: 765b5465876568f4e8e23fcd242b4b24, type: 3}
@@ -8189,7 +8203,7 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: God ability
     Icon: {fileID: 21300000, guid: 75313173717aca84aa7a265b4075c961, type: 3}
     Group: 0
@@ -8211,7 +8225,7 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: CounterSpell
     Icon: {fileID: 21300000, guid: a42f881e303f5ec41ab1065e45b5b380, type: 3}
     Group: 0
@@ -8259,6 +8273,61 @@ MonoBehaviour:
   character: {fileID: 8782633265950416607}
   _skill: {fileID: -6863981154326105301}
   _skillManagerGangdollarff: {fileID: 9207050407313082510}
+--- !u!114 &5040640883951079247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4372299641285588602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d11041f5346a6a419c7c809f575d6d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AbsorbationBallAllyTarget
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0448\u0430\u0440 \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F
+      \u043C\u043E\u0436\u043D\u043E \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0442\u044C
+      \u043D\u0430 \u0441\u043E\u044E\u0437\u043D\u0438\u043A\u0430"
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u0428\u0430\u0440 \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F
+      \u043D\u0430 \u0441\u043E\u044E\u0437\u043D\u0438\u043A\u043E\u0432"
+    Icon: {fileID: 21300000, guid: 893f912149befbd4980a4594fa3e744a, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 8782633265950416607}
+  _absorptionBall: {fileID: 4402813572123645427}
+--- !u!114 &4700997506177914789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4372299641285588602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 373d94bbf6f072b49b721ce5065c35ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AbsorbationBallManaRestorationTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0428\u0430\u0440 \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F
+      \u0432 \u043A\u043E\u043D\u0446\u0435 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F
+      \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
+      \u0432 2 \u0440\u0430\u0437\u0430 \u0431\u043E\u043B\u044C\u0448\u0435 \u043C\u0430\u043D\u044B
+      \u043E\u0442 \u043F\u043E\u0433\u043B\u043E\u0449\u0451\u043D\u043D\u043E\u0433\u043E
+      \u0443\u0440\u043E\u043D\u0430."
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u0428\u0430\u0440 \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F
+      \u043C\u0430\u043D\u0430 X2"
+    Icon: {fileID: 21300000, guid: 5b53cad99487f0147be177f5009be820, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 8782633265950416607}
+  _absorptionBall: {fileID: 4402813572123645427}
 --- !u!1 &4837027206785457420 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -8347,9 +8416,9 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts:
   - resourceType: 1
-    resourceCost: 30
+    resourceCost: 10
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 12
+  _cooldownTime: 14
   _castDeley: 0
   _damageValue: 0
   _abilitySchool: 0
@@ -8368,11 +8437,11 @@ MonoBehaviour:
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
-  _isUseCharges: 0
+  _isUseCharges: 1
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 1
-  _chargeCooldown: 12
+  _chargeCooldown: 14
   _radius: 0
   _area: 0
   _castLength: 0
@@ -8386,8 +8455,9 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   _shieldPref: {fileID: 1158249924082485831, guid: 13647bb6f83d1b34c8c511be314fb9d3, type: 3}
-  _shieldValue: 40
+  _shieldValue: 100
   _shieldDuration: 2
+  IsAllyTargetAvailable: 0
 --- !u!114 &7914139750777672279
 MonoBehaviour:
   m_ObjectHideFlags: 0

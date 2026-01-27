@@ -15,6 +15,10 @@ namespace Gangdollarff
 
         private float _tempCooldownTime = 5f;
 
+        private float _absorbedDamage;
+
+        private float _absorbationMultiplier;
+
         private Shield _shield;
 
         public override string AdditionalDescription =>
@@ -26,14 +30,18 @@ namespace Gangdollarff
         protected override int AnimTriggerCast => 0;
 
         protected override bool IsCanCast => true;
-
+        
         public float ShieldDuration { get => _shieldDuration; set => _shieldDuration = value; }
+        
+        private float _clickRadius = 0.5f;
+        private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
+        public float AbsorbationMultiplier { get => _absorbationMultiplier; set => _absorbationMultiplier = value; }
         public bool IsEnabled { get; protected set; }
+        public bool IsAllyTargetAvailable = false;
 
         public override void LoadTargetData(TargetInfo targetInfo)
         {
-            
         }
 
         public void ChangeMode()
@@ -55,53 +63,109 @@ namespace Gangdollarff
 
         protected override IEnumerator CastJob()
         {
-            CmdAddShield();
+            CmdAddShield(IsAllyTargetAvailable ? GetTargetCharacter().gameObject : Hero.gameObject);
             yield return null;
         }
 
         protected override void ClearData()
         {
-            
+        }
+
+        private void ClearSkillInfo()
+        {
+            _absorbedDamage = 0;
         }
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
         {
-            yield return null;
+            if(!IsAllyTargetAvailable) yield break;
+            
+            TargetInfo targetInfo = new TargetInfo();
+
+            while (GetTempTarget() == null)
+            {
+                if (GetMouseButton)
+                {
+                    Vector3 clickPoint = GetMousePoint();
+                
+                    FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
+
+                    if (GetTempTargetCharacter() is Character character)
+                    {
+                        if (GetTempTargetCharacter() != null && !IsAllyTarget(character))
+                        {
+                            ClearTempTarget();
+                        }
+                        else
+                        {
+                            if (character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                            break;
+                        }
+                    }
+                }
+                yield return null;
+            }
+            SetTarget(GetTempTargetCharacter());
+            ClearTempTarget();
+
+            targetInfo.AddTarget(GetTargetCharacter());
+            callbackDataSaved(targetInfo);
         }
 
         [Command]
-        private void CmdAddShield()
+        private void CmdAddShield(GameObject target)
         {
-            if(_shield != null)
+            if(target == null) return;
+            if (_shield != null)
             {
                 NetworkServer.Destroy(_shield.gameObject);
             }
 
-            var shield = Instantiate(_shieldPref, transform.position, Quaternion.identity);
+            Character targetChar = target.GetComponent<Character>();
+            
+            var shield = Instantiate(_shieldPref, target.transform.position, Quaternion.identity);
             SceneManager.MoveGameObjectToScene(shield.gameObject, _hero.NetworkSettings.MyRoom);
             shield.Initialize(_shieldValue, DamageType.Both);
             NetworkServer.Spawn(shield.gameObject);
             _shield = shield;
-            Hero.Health.Shields.Add(shield);
-            StartCoroutine(ShieldJob());
+            targetChar.Health.Shields.Add(shield);
+            StartCoroutine(ShieldJob(target));
 
-            ClientRpcShieldFollow(_shield.gameObject);
+            ClientRpcShieldFollow(_shield.gameObject, target.transform);
         }
 
         [ClientRpc]
-        private void ClientRpcShieldFollow(GameObject shield)
+        private void ClientRpcShieldFollow(GameObject shield, Transform target)
         {
-            shield.GetComponent<Shield>().FollowTo(transform);
+            shield.GetComponent<Shield>().FollowTo(target);
         }
 
-        private IEnumerator ShieldJob()
+        private void OnAbsorb(Damage damage, Skill skill)
         {
-            yield return new WaitForSecondsRealtime(_shieldDuration);
+            _absorbedDamage += damage.Value;
+        }
 
+        private IEnumerator ShieldJob(GameObject target)
+        {
+            _shield.DamageTaken += OnAbsorb;
+            yield return new WaitForSecondsRealtime(_shieldDuration);
+            _shield.DamageTaken -= OnAbsorb;
+            RpcAbsorbJob(target,_absorbedDamage);
             if (_shield != null)
             {
                 _shield.TryUse(99999);
                 NetworkServer.Destroy(_shield.gameObject);
+            }
+            ClearSkillInfo();
+        }
+
+        [TargetRpc]
+        private void RpcAbsorbJob(GameObject target,float damage)
+        {
+            if (target != null)
+            {
+                target.TryGetComponent(out Character character);
+                character.TryGetResource(ResourceType.Mana).CmdAdd(damage * _absorbationMultiplier);
             }
         }
     }
