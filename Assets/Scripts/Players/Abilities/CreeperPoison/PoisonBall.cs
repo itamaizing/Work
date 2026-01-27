@@ -109,7 +109,6 @@ public class PoisonBall : Skill, IAltAbility
     #region BoolVariables
 
     private bool _isCanCheckActiveTalents = true;
-    private bool _isCanSetSpawnPoint = true;
     private bool _isCanCheckTimerActive = true;
     private bool _isCanApplyInvisible;
 
@@ -130,7 +129,6 @@ public class PoisonBall : Skill, IAltAbility
 
     private Coroutine _mouseDetectionCoroutine;
     private Coroutine _checkingTalentsCoroutine;
-    private Coroutine _setSpawnPointCoroutine;
     private Coroutine _checkTimerActiveCoroutine;
 
     public GameObject LastTarget { get; set; }
@@ -226,7 +224,7 @@ public class PoisonBall : Skill, IAltAbility
 
         CheckingActiveTalents();
 
-        while (GetTargetCharacter() == null && float.IsPositiveInfinity(targetPoint.x))
+        while (GetTempTargetCharacter() == null && float.IsPositiveInfinity(targetPoint.x))
         {
             if (GetMouseButton)
             {
@@ -238,7 +236,7 @@ public class PoisonBall : Skill, IAltAbility
                 {
                     targetPoint = click;
 
-                    if (GetTargetCharacter() != null)
+                    if (GetTempTargetCharacter() != null)
                     {
                         _isTarget = true;
                     }
@@ -275,7 +273,7 @@ public class PoisonBall : Skill, IAltAbility
                 _secondMousePosition = click;
                 _secondClickDone = true;
 
-                if (GetTargetCharacter() != null)
+                if (GetTempTargetCharacter() != null)
                 {
                     Vector3 currentMousePosition = GetMousePoint();
                     if (currentMousePosition.x < _secondMousePosition.x && currentMousePosition.z < _secondMousePosition.z)
@@ -318,6 +316,7 @@ public class PoisonBall : Skill, IAltAbility
 
     protected override IEnumerator CastJob()
     {
+        SetSpawnPointPosition(_player.transform.position.x, _player.transform.position.y, _player.transform.position.z);
         ChooseWhichProjectileCreate();
 
         ResetAbilityParameters?.Invoke();
@@ -337,11 +336,6 @@ public class PoisonBall : Skill, IAltAbility
 
     private void StartCoroutine()
     {
-        if (_setSpawnPointCoroutine == null)
-        {
-            _setSpawnPointCoroutine = StartCoroutine(SetSpawnPointJob());
-        }
-
         if (_mouseDetectionCoroutine == null)
         {
             _mouseDetectionCoroutine = StartCoroutine(UpdateMouseDetectionJob());
@@ -360,12 +354,6 @@ public class PoisonBall : Skill, IAltAbility
 
     private void CancelCoroutine()
     {
-        if (_setSpawnPointCoroutine != null)
-        {
-            StopCoroutine(_setSpawnPointCoroutine);
-            _setSpawnPointCoroutine = null;
-        }
-
         if (_mouseDetectionCoroutine != null)
         {
             StopCoroutine(_mouseDetectionCoroutine);
@@ -381,16 +369,6 @@ public class PoisonBall : Skill, IAltAbility
             {
                 Timer();
             }
-
-            yield return null;
-        }
-    }
-
-    private IEnumerator SetSpawnPointJob()
-    {
-        while (_isCanSetSpawnPoint)
-        {
-            SetSpawnPointPosition(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
 
             yield return null;
         }
