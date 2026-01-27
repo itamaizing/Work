@@ -8,13 +8,13 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler
     [SerializeField] private Image _icon;
     [SerializeField] private TMProLocalizer _attributeValue;
 
-    private Attribute _currentAttribute;
+    private Attribute_old _currentAttribute;
     
     public event UnityAction OnValueChange;
-    public event UnityAction<Attribute> OnPointerEntered;
+    public event UnityAction<Attribute_old> OnPointerEntered;
     public event UnityAction OnPointerExited;
 
-    public void Fill(Attribute attribute)
+    public void Fill(Attribute_old attribute)
     {
         _currentAttribute = attribute;
         _icon.sprite = _currentAttribute.Icon;

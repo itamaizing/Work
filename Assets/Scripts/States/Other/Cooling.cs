@@ -9,7 +9,7 @@ public class Cooling : RefreshingState
 	private float _damageToExit;
 	//private float _curSpeedDebuf = 0.05f;
 	private float _speedDebuf = 0.05f;
-	private AttributeModifiers _modif = new();
+	private AttributeModifier _modif;
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.MoveSpeed, StatusEffect.AbilitySpeed };
 	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;

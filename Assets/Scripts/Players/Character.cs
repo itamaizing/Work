@@ -129,61 +129,61 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
         Move.Initialize(Rigidbody , AttributeSystem.MoveSpeed, true);
 		CharacterState.Initialize(this);
 		SelectComponent.Initialize(Move,Abilities,UIComponent);
-		//_visionComponent.VisionRange = Data.GetAttributeValue(AttributeNames.VisionRadius);
+		//_visionComponent.VisionRange = Data.GetAttributeValue(AttributeNames_old.VisionRadius);
 
 		foreach (var resource in Resources)
 		{
             /*if (resource.Type == ResourceType.Health)
 			{
 				resource.Initialize(
-					 Data.GetAttributeValue(AttributeNames.Health), 
-					Data.GetAttributeValue(AttributeNames.HpRegen), 
-					Data.GetAttributeValue(AttributeNames.HpRegenDelay), 
+					 Data.GetAttributeValue(AttributeNames_old.Health), 
+					Data.GetAttributeValue(AttributeNames_old.HpRegen), 
+					Data.GetAttributeValue(AttributeNames_old.HpRegenDelay), 
 					Data, AttributeSystem.Health);
 			}
 			if (resource.Type == ResourceType.Energy)
 			{
 				resource.Initialize(
-					 Data.GetAttributeValue(AttributeNames.Energy), 
-					Data.GetAttributeValue(AttributeNames.EnergyRegen), 
-					Data.GetAttributeValue(AttributeNames.EnergyRegenDelay), 
+					 Data.GetAttributeValue(AttributeNames_old.Energy), 
+					Data.GetAttributeValue(AttributeNames_old.EnergyRegen), 
+					Data.GetAttributeValue(AttributeNames_old.EnergyRegenDelay), 
 					Data, AttributeSystem.Resourse);
 			}
 			if (resource.Type == ResourceType.Mana)
 			{
 				resource.Initialize(
-					 Data.GetAttributeValue(AttributeNames.Mana), 
-					Data.GetAttributeValue(AttributeNames.ManaRegen), 
-					Data.GetAttributeValue(AttributeNames.ManaRegenDelay), 
+					 Data.GetAttributeValue(AttributeNames_old.Mana), 
+					Data.GetAttributeValue(AttributeNames_old.ManaRegen), 
+					Data.GetAttributeValue(AttributeNames_old.ManaRegenDelay), 
 					Data, AttributeSystem.Resourse);
 			}
 			if (resource.Type == ResourceType.Rune)
 			{
 				resource.Initialize(
-					 Data.GetAttributeValue(AttributeNames.Rune), 
-					Data.GetAttributeValue(AttributeNames.RuneRegen), 
-					Data.GetAttributeValue(AttributeNames.RuneRegenDelay), 
+					 Data.GetAttributeValue(AttributeNames_old.Rune), 
+					Data.GetAttributeValue(AttributeNames_old.RuneRegen), 
+					Data.GetAttributeValue(AttributeNames_old.RuneRegenDelay), 
 					Data, AttributeSystem.Resourse);
 			}*/
             if (resource.Type == ResourceType.Health)
             {
                 resource.Initialize(
-                     AttributeSystem.Health, AttributeSystem.HpRegen, Data);
+                     AttributeSystem.HPMax, AttributeSystem.HPRegen, Data);
             }
             if (resource.Type == ResourceType.Energy)
             {
                 resource.Initialize(
-                     AttributeSystem.Resourse, AttributeSystem.ResourseRegen, Data);
+                     AttributeSystem.ResourceMax, AttributeSystem.ResourceRegen, Data);
             }
             if (resource.Type == ResourceType.Mana)
             {
                 resource.Initialize(
-                     AttributeSystem.ResourseRegen, AttributeSystem.ResourseRegen, Data);
+                     AttributeSystem.ResourceRegen, AttributeSystem.ResourceRegen, Data);
             }
             if (resource.Type == ResourceType.Rune)
             {
                 resource.Initialize(
-                     AttributeSystem.Resourse, AttributeSystem.ResourseRegen, Data);
+                     AttributeSystem.ResourceMax, AttributeSystem.ResourceRegen, Data);
             }
         }
 

@@ -45,7 +45,7 @@ public class SaveManager : MonoBehaviour
     private ISaveData _saveData;
     private AttributeSaveManager _attributeManager;
     private TalentSaveManager _talentManager;
-    private AttributeModifier _attributeModifier;
+    private AttributeSaveModifier _attributeModifier;
 
     private void Awake()
     {
@@ -55,7 +55,7 @@ public class SaveManager : MonoBehaviour
             _saveData = new PlayerPrefsSaveData();
             _attributeManager = new AttributeSaveManager(_saveData);
             _talentManager = new TalentSaveManager(_saveData, _instance);
-            _attributeModifier = new AttributeModifier(_attributeManager);
+            _attributeModifier = new AttributeSaveModifier(_attributeManager);
         }
         else
         {

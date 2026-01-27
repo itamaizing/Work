@@ -21,7 +21,7 @@ public class AstralState : AbstractCharacterState
     private Material[] _originalMaterials;
 
     private Coroutine _dotJob;
-    private AttributeModifiers _modif;
+    private AttributeModifier _modif;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability, StatusEffect.Move };
     private readonly Dictionary<Skill, float> _modifiedSkills = new();

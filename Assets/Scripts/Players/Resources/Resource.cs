@@ -24,8 +24,8 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     [SyncVar] protected float _regenerationPeriod;
 
     protected Coroutine _regenCoroutine;
-    protected Attributes _maxValueAttribute;
-    protected Attributes _regenValueAttribute;
+    protected Attribute _maxValueAttribute;
+    protected Attribute _regenValueAttribute;
 
 	public float CurrentValue { get => _currentValue; set { ValueChanged?.Invoke(_currentValue, value); _currentValue = value; } }
     public float MaxValue { 
@@ -63,7 +63,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         ClientStopRegenerateJob();
     }
 
-  /*  public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data, Attributes attribute)
+  /*  public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data, Attribute attribute)
     {
         _currentValue = maxValue / 2;
         _maxValue = maxValue;
@@ -78,7 +78,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
             ClientStartRegenirateJob();
     }*/
 
-    public virtual void Initialize(Attributes maxValue, Attributes regenValue, CharacterData data)
+    public virtual void Initialize(Attribute maxValue, Attribute regenValue, CharacterData data)
     {
         _regenValueAttribute = regenValue;
         _regenerationValue = regenValue.GetValue();
@@ -288,14 +288,14 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         ResetRegen();
     }
 
-    public void AddModifier(AttributeModifiers modif)
+    public void AddModifier(AttributeModifier modif)
     {
         _maxValueAttribute.AddModifier(modif);
 
         _maxValue = _maxValueAttribute.GetValue();
     }
 
-    public void RemoveModifier(AttributeModifiers modif)
+    public void RemoveModifier(AttributeModifier modif)
     {
         _maxValueAttribute.RemoveModifier(modif);
 

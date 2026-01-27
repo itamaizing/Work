@@ -58,25 +58,25 @@ public class Health : Resource, IDamageable, IHealingable
 
     public bool IsDot { get => _isDot; set => _isDot = value; }
 
-    /* public override void Initialize(float health, float hpRegen, float hpRegenDelay, CharacterData data, Attributes attribute)
+    /* public override void Initialize(float health, float hpRegen, float hpRegenDelay, CharacterData data, Attribute attribute)
      {
          base.Initialize(health, hpRegen, hpRegenDelay, data, attribute);
 
-         _defPhysDamage = data.GetAttributeValue(AttributeNames.PhysicResist);
-         _defMagDamage = data.GetAttributeValue(AttributeNames.MagicResist);
-         _resistMagDamage = data.GetAttributeValue(AttributeNames.MagicEvade);
-         _evadeMeleeDamage = data.GetAttributeValue(AttributeNames.MeleeEvade);
-         _evadeRangeDamage = data.GetAttributeValue(AttributeNames.RangeEvade);
+         _defPhysDamage = data.GetAttributeValue(AttributeNames_old.PhysicResist);
+         _defMagDamage = data.GetAttributeValue(AttributeNames_old.MagicResist);
+         _resistMagDamage = data.GetAttributeValue(AttributeNames_old.MagicEvade);
+         _evadeMeleeDamage = data.GetAttributeValue(AttributeNames_old.MeleeEvade);
+         _evadeRangeDamage = data.GetAttributeValue(AttributeNames_old.RangeEvade);
      }*/
-    public override void Initialize(Attributes maxValue, Attributes regenValue, CharacterData data)
+    public override void Initialize(Attribute maxValue, Attribute regenValue, CharacterData data)
     {
         base.Initialize(maxValue, regenValue, data);
 
-        _defPhysDamage = data.GetAttributeValue(AttributeNames.PhysicResist);
-        _defMagDamage = data.GetAttributeValue(AttributeNames.MagicResist);
-        _resistMagDamage = data.GetAttributeValue(AttributeNames.MagicEvade);
-        _evadeMeleeDamage = data.GetAttributeValue(AttributeNames.MeleeEvade);
-        _evadeRangeDamage = data.GetAttributeValue(AttributeNames.RangeEvade);
+        //_defPhysDamage = data.GetAttributeValue(AttributeNames_old.PhysicResist);
+        //_defMagDamage = data.GetAttributeValue(AttributeNames_old.MagicResist);
+        //_resistMagDamage = data.GetAttributeValue(AttributeNames_old.MagicEvade);
+        //_evadeMeleeDamage = data.GetAttributeValue(AttributeNames_old.MeleeEvade);
+        //_evadeRangeDamage = data.GetAttributeValue(AttributeNames_old.RangeEvade);
     }
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)

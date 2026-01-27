@@ -63,7 +63,7 @@ namespace Gangdollarff.AirElemental
     {
         private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Strengthening };
         private float _procent = 1.10f;
-        private AttributeModifiers _modif = new();
+        private AttributeModifier _modif;
 
         public override float Distance => 6;
         public override float EffectRate => 0.2f;

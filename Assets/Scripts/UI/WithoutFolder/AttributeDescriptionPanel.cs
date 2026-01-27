@@ -6,7 +6,7 @@ public class AttributeDescriptionPanel : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _description;
 
-    public void ShowDesciption(Attribute attribute)
+    public void ShowDesciption(Attribute_old attribute)
     {
         gameObject.transform.DOScale(1, .2f);
         _description.text = attribute.Description;

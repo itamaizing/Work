@@ -16,22 +16,22 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
 
     public void Show(AttributeGroup attributeGroup)
     {
-        _attributeGroup = attributeGroup;
+        //_attributeGroup = attributeGroup;
         
-        ResetPanel();
+        //ResetPanel();
 
-        foreach (var item in _attributeGroup.AttributeData.Where(o=> o.IsVisible))
-        {
-            var attribute = Instantiate(_attributeItem, _itemsParent);
-            attribute.Fill(item);
-            attribute.OnValueChange += UpdateAttributesPoints;
-            attribute.OnPointerEntered += ShowDescription;
-            attribute.OnPointerExited += HideDescription;
+        //foreach (var item in _attributeGroup.AttributeData.Where(o=> o.IsVisible))
+        //{
+        //    var attribute = Instantiate(_attributeItem, _itemsParent);
+        //    attribute.Fill(item);
+        //    attribute.OnValueChange += UpdateAttributesPoints;
+        //    attribute.OnPointerEntered += ShowDescription;
+        //    attribute.OnPointerExited += HideDescription;
 
-            _attributes.Add(attribute);
-        }
+        //    _attributes.Add(attribute);
+        //}
         
-        UpdateAttributesPoints();
+        //UpdateAttributesPoints();
     }
 
     private void OnDisable()
@@ -74,7 +74,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
         _attributesText.ChangeKey(_attributeGroup.FreeAttributePointsCount);
     }
     
-    private void ShowDescription(Attribute attribute)
+    private void ShowDescription(Attribute_old attribute)
     {
         if(attribute.Description.Length > 2)
         {

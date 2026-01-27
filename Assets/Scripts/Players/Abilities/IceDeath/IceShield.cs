@@ -14,7 +14,7 @@ public class IceShield : Skill
 	private bool _active = false;
 	private float _timer = 1f;
 	private Energy _energy;
-	private AttributeModifiers _modif = new(.8f, ModifierType.Multiplier);
+	private AttributeModifier _modif = new(.8f, ModifierType.Multiplier);
 
 	protected override bool IsCanCast => true;
 

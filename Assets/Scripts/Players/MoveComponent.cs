@@ -21,7 +21,7 @@ public class MoveComponent : NetworkBehaviour, IAttribute
 	public Vector3 MoveDirection = Vector3.zero;
 	public Vector3 ExternalMoveDirection = Vector3.zero;
 
-	private Attributes _attribute;
+	private Attribute _attribute;
 	private bool _canMove = false;
 	private bool _canMoveState = false;
 	public bool IsMoving = false;
@@ -81,8 +81,8 @@ public class MoveComponent : NetworkBehaviour, IAttribute
         _canMoveState = canMove;
     }
 
-    //public void Initialize(float speed, Rigidbody rb , Attributes attributes, bool isHero = false)
-    public void Initialize(Rigidbody rb , Attributes attributes, bool isHero = false)
+    //public void Initialize(float speed, Rigidbody rb , Attribute attributes, bool isHero = false)
+    public void Initialize(Rigidbody rb , Attribute attributes, bool isHero = false)
 	{
 		_attribute = attributes;
 		//_defaultSpeed = speed;
@@ -457,12 +457,12 @@ public class MoveComponent : NetworkBehaviour, IAttribute
 		StartCoroutine(DoPushWithAgent(targetPos, duration));
 	}
 
-    public void AddModifier(AttributeModifiers modif)
+    public void AddModifier(AttributeModifier modif)
     {
         _attribute.AddModifier(modif);
     }
 
-    public void RemoveModifier(AttributeModifiers modif)
+    public void RemoveModifier(AttributeModifier modif)
     {
         _attribute.RemoveModifier(modif);
     }

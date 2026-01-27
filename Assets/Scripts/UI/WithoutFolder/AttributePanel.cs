@@ -30,13 +30,13 @@ public class AttributePanel : MonoBehaviour
 
 	public void Init(HeroComponent character)
     {
-        /*_attributes[0].Init(null, character.Data.Health);
-        _attributes[1].Init(null, character.Data.Runes);
-        _attributes[2].Init(null, character.Data.HealthInfo.DefaultPhysicsDamage);
-        _attributes[3].Init(null, character.Data.HealthInfo.DefaultMagicDamage);
-        _attributes[4].Init(null, character.Data.HealthInfo.EvadeMeleeDamage);
-        _attributes[5].Init(null, character.Data.HealthInfo.EvadeRangeDamage);
-        _attributes[6].Init(null, character.Data.HealthInfo.EvadeMagicDamage);
+        /*_attributes_old[0].Init(null, character.Data.Health);
+        _attributes_old[1].Init(null, character.Data.Runes);
+        _attributes_old[2].Init(null, character.Data.HealthInfo.DefaultPhysicsDamage);
+        _attributes_old[3].Init(null, character.Data.HealthInfo.DefaultMagicDamage);
+        _attributes_old[4].Init(null, character.Data.HealthInfo.EvadeMeleeDamage);
+        _attributes_old[5].Init(null, character.Data.HealthInfo.EvadeRangeDamage);
+        _attributes_old[6].Init(null, character.Data.HealthInfo.EvadeMagicDamage);
 */
         for(int i = 0; i < _attributes.Length; i++) 
         {
