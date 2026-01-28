@@ -344,8 +344,7 @@ public class SkillRenderer : NetworkBehaviour
 
         _lineStartImage.SetColor(color);
 
-        Vector3 center = (startPoint + endPoint) / 2f;
-        _lineStartImage.transform.position = center;
+        _lineStartImage.transform.position = startPoint;
 
         Vector3 direction = (endPoint - startPoint).normalized;
         float angle = Mathf.Atan2(direction.z, direction.x) * Mathf.Rad2Deg;
