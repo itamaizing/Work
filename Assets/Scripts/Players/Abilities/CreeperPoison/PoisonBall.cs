@@ -228,10 +228,19 @@ public class PoisonBall : Skill, IAltAbility
         {
             if (GetMouseButton)
             {
+                SkillRender.StopDrawLine();
+
                 FindTargetCharacter(_radiusFindTarget, GetMousePoint(), true);
                 CheckWhoTarget();
 
                 Vector3 click = GetMousePoint();
+
+
+                Vector3 start = _player.transform.position;
+                Vector3 end = click;
+
+                SkillRender.StartDetachedLine(start, end, CastWidth, Color.yellow);
+
                 if (Vector3.Distance(_player.transform.position, click) <= CastLength)
                 {
                     targetPoint = click;
@@ -302,6 +311,7 @@ public class PoisonBall : Skill, IAltAbility
                 _thirdClickDone = true;
                 _thirdMousePosition = click;
 
+                SkillRender.StopDrawLine();
                 ClearArrows();
             }
             yield return null;

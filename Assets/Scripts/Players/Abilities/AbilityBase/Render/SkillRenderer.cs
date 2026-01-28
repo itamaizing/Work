@@ -334,6 +334,24 @@ public class SkillRenderer : NetworkBehaviour
         _drawLineCoroutine = StartCoroutine(DrawLineJob(finalLength, finalWidth, damage, layerMask, line));
     }
 
+    public void StartDetachedLine(Vector3 startPoint, Vector3 endPoint, float width, Color color)
+    {
+        if (_lineStartImage != null)
+            Destroy(_lineStartImage.gameObject);
+
+        _lineStartImage = Instantiate(_line.Start);
+        _lineStartImage.SetSize(width, Vector3.Distance(startPoint, endPoint), new Damage());
+
+        _lineStartImage.SetColor(color);
+
+        Vector3 center = (startPoint + endPoint) / 2f;
+        _lineStartImage.transform.position = center;
+
+        Vector3 direction = (endPoint - startPoint).normalized;
+        float angle = Mathf.Atan2(direction.z, direction.x) * Mathf.Rad2Deg;
+        _lineStartImage.transform.rotation = Quaternion.Euler(90, -angle + 90, 0);
+    }
+
     public void StopDrawLine()
     {
         if (_drawLineCoroutine != null)
@@ -546,7 +564,7 @@ public class SkillRenderer : NetworkBehaviour
         {
             //Debug.Log(_boxLength + " Test");
             RotateAtMouse(_lineStartImage.transform);
-			_lineStartImage.SetSize(_boxWidth, _boxLength, damage);
+            _lineStartImage.SetSize(_boxWidth, _boxLength, damage);
 			//_lineEndImage.SetSize(width, length, damage);
 		//	_lineEndImage.SetSize(_boxWidth, _boxLength, damage);
 
