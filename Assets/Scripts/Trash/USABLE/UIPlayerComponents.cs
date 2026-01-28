@@ -24,6 +24,8 @@ public class UIPlayerComponents : MonoBehaviour
     private float popupSpawnDelay = 0.2f;
     private float _fixDuration = 0.1f;
 
+    private string miss = "Промах";
+
     private Queue<PopupRequest> popupQueue = new Queue<PopupRequest>();
     private bool isProcessingQueue = false;
 
@@ -90,7 +92,7 @@ public class UIPlayerComponents : MonoBehaviour
     {
         if (_character.TryGetComponent<UIPlayerComponents>(out var ui))
         {
-            ui.ShowPopupText("Промах!", Color.gray, Color.gray);
+            ui.ShowPopupText(miss, Color.gray, Color.gray);
         }
     }
 
