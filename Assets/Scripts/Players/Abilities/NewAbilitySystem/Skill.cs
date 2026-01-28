@@ -1467,6 +1467,7 @@ public abstract class Skill : NetworkBehaviour
                 OnSkillCanceled?.Invoke();
                 Canceled?.Invoke();
                 _actionWrapperForCastCoroutine = null;
+                Hero.UIComponent.Miss();
                 yield return null;
             }
 

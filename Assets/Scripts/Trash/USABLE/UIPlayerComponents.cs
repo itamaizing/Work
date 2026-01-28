@@ -86,6 +86,14 @@ public class UIPlayerComponents : MonoBehaviour
         TryStartQueueProcessing();
     }
 
+    public void Miss()
+    {
+        if (_character.TryGetComponent<UIPlayerComponents>(out var ui))
+        {
+            ui.ShowPopupText("Промах!", Color.gray, Color.gray);
+        }
+    }
+
     public void ShowPopupText(string text, Color startColor, Color endColor)
     {
         popupQueue.Enqueue(new PopupRequest(text, startColor, endColor, DamageSpawn));
