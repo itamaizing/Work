@@ -253,7 +253,7 @@ public class Ghost : Skill
 
             else if (isHoveringGhost && !Hero.CharacterState.CheckForState(States.Bound))
             {
-                if (_isSpawningGhostVisual)
+                if (IsCasting || _isSpawningGhostVisual)
                 {
                     yield return null;
                     continue;
