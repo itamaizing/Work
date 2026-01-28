@@ -6,7 +6,7 @@ public class PartialBlindness : AbstractCharacterState
 {
     private float _baseDuration;
     private float _duration;
-
+    
     #region Const
     private const int MaxStacks = 3;
     private const float BaseMissChancePerStack = 10f;
@@ -80,7 +80,7 @@ public class PartialBlindness : AbstractCharacterState
 
         if (UnityEngine.Random.Range(0f, 100f) < totalMissChance)
         {
-            skill.CmdCancelActiveSkill();
+            skill.CmdForceFailCastJobOnce();
         }
     }
 }

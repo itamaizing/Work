@@ -166,6 +166,7 @@ public abstract class Skill : NetworkBehaviour
     protected IDamageable _tempForDamage;
     protected IHealingable _tempForHealing;
     protected bool _isPlayCastAnim;
+    protected bool _forceFailCastEarly;
     protected int _currentChargers;
     protected float _baseCooldownTime;
     //test counter
@@ -1426,7 +1427,7 @@ public abstract class Skill : NetworkBehaviour
         ClearTempTarget();
         _isPreparing = false;
         StopAutoDraw();
-
+        
         _prepareCoroutine = null;
     }
 
@@ -1448,6 +1449,26 @@ public abstract class Skill : NetworkBehaviour
             Hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, finalCastSpeed);
             _hero.Animator.SetTrigger(AnimTriggerCast);
             _hero.NetworkAnimator.SetTrigger(AnimTriggerCast);
+
+            if (_forceFailCastEarly)
+            {
+                _forceFailCastEarly = false;
+
+                _isCasting = false;
+                _isPlayCastAnim = false;
+
+                _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
+                _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+                _hero.Move.StopLookAt();
+                _hero.Move.CanMove = true;
+
+                ClearData();
+                CastEnded?.Invoke();
+                OnSkillCanceled?.Invoke();
+                Canceled?.Invoke();
+                _actionWrapperForCastCoroutine = null;
+                yield return null;
+            }
 
             while (_isPlayCastAnim)
             {
@@ -1524,6 +1545,14 @@ public abstract class Skill : NetworkBehaviour
             TryCancel(true);
         }
     }
+
+    [ClientRpc]
+    private void RpcForceFailCastJobOnce()
+    {
+        _forceFailCastEarly = true;
+    }
+
+    [Command] public void CmdForceFailCastJobOnce() => RpcForceFailCastJobOnce();
 
     [Command]
     public void CmdCancelActiveSkill() => RpcCancelActiveSkill();

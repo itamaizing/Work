@@ -160,8 +160,6 @@ public class SkillQueue : MonoBehaviour
     }
     private void OnCastEnded()
     {
-        _currentSkill.CastEnded -= OnCastEnded;
-
 
         if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
         {
@@ -169,6 +167,7 @@ public class SkillQueue : MonoBehaviour
             foreach (var item in _targetInfo.GetTargets()) if (item is Character character) character.SelectedCircle.SwitchSelectCircle(false);
         }
 
+        _currentSkill.CastEnded -= OnCastEnded;
         _currentSkill = null;
     }
 
