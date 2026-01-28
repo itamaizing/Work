@@ -55,8 +55,6 @@ public class SpitPoison : Skill, IAltAbility
     private bool _isOriginalTargetPlayer;
     private bool _isAbilityActive = false;
 
-    private Coroutine _setSpawnPointCoroutine;
-
     public bool IsAltAbility { get; set; }
     public int PoisonBoneStack { get => _poisonBoneStack; set => _poisonBoneStack = value; }
 
@@ -85,12 +83,6 @@ public class SpitPoison : Skill, IAltAbility
         _originalCooldown = _cooldownTime;
     }
 
-    private void Update()
-    {
-        if (_isAbilityActive)
-            SetSpawnPoint(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
-    }
-
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0]);
@@ -101,8 +93,6 @@ public class SpitPoison : Skill, IAltAbility
     {
         _isAbilityActive = true;
         Vector3 targetPoint = Vector3.positiveInfinity;
-
-        if (_setSpawnPointCoroutine == null) _setSpawnPointCoroutine = StartCoroutine(SetSpawnPointJob());
 
         CooldownChange();
 
@@ -136,6 +126,8 @@ public class SpitPoison : Skill, IAltAbility
 
     protected override IEnumerator CastJob()
     {
+        SetSpawnPoint(transform.position.x, transform.position.y, transform.position.z);
+
         Shoot(GetTarget() as IDamageable);
         ResetAbilityParameters?.Invoke();
 
@@ -156,19 +148,6 @@ public class SpitPoison : Skill, IAltAbility
         ClearTarget();
 
         _mousePos = Vector3.positiveInfinity;
-    }
-
-    private IEnumerator SetSpawnPointJob()
-    {
-        while (_isAbilityActive)
-        {
-            SetSpawnPoint(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
-
-            yield return null;
-        }
-
-        StopCoroutine(_setSpawnPointCoroutine);
-        _setSpawnPointCoroutine = null;
     }
 
     private bool CheckCanCast()
