@@ -19,7 +19,7 @@ public class TestGameRulesBattlegrounds : GameRules
     private TeamsPanel _teams; // need rework
     private int[] _teamDeaths = new int[3];
 
-    private int _teamMaxScore = 1;
+    private int _teamMaxScore = 3;
     private int _team1Score = 0;
     private int _team2Score = 0;
 
@@ -48,6 +48,23 @@ public class TestGameRulesBattlegrounds : GameRules
         teamDeaths[playerSettings.NetworkSettings.TeamIndex]++;
         CheckForRoundEnd();
         */
+        
+        AddScorePoint(player.NetworkSettings.TeamIndex);
+        
+        _gameManager.Source.UpdateInfo();
+        
+        if(_team1Score >= _teamMaxScore || _team2Score >= _teamMaxScore)
+        {
+            if (_team1Score > _team2Score)
+            {
+                RpcShowWinner(1);
+            }
+            else
+            {
+                RpcShowWinner(2);
+            }
+            EndGame();
+        }
     }
 
     private void AddScorePoint(int teamIndex)

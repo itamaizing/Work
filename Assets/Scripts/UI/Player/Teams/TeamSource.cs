@@ -25,7 +25,7 @@ public class TeamSource : MonoBehaviour
         _heroInfoUI[1].SetHero(character);
     }
 
-    private void UpdateInfo()
+    public void UpdateInfo()
     {
         foreach (var item in _heroInfoUI)
         {
