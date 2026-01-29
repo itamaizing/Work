@@ -50,8 +50,8 @@ public class Tentacles : Skill
 
     public TentacleProjectile CurrentTentacle { get => _currentTentacle; set => _currentTentacle = value; }
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("Spell");
-    protected override int AnimTriggerCast => 0;
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => Animator.StringToHash("Spell");
     protected override bool IsCanCast => (GetTargetCharacter() != null || _isClickedOnGround) && _spawnPoint != Vector3.positiveInfinity && IsCanRadius();
 
     private bool IsCanRadius()
@@ -88,6 +88,21 @@ public class Tentacles : Skill
         _skillRender.StopDrawRadius();
     }
 
+    public void MoveStop()
+    {
+        Hero.Move.CanMove = false;
+        Hero.Move.StopMoveAndAnimationMove();
+    }
+
+    public void AnimSpitPoisonCast()
+    {
+        AnimStartCastCoroutine();
+    }
+
+    public void AnimSpitPoisonCastEnd()
+    {
+        AnimCastEnded();
+    }
 
     protected override void ClearData()
     {
@@ -302,8 +317,6 @@ public class Tentacles : Skill
         SetTarget(_lockedTarget);
 
         TrySpendAttackingPsi();
-        Hero.Move.CanMove = false;
-        Hero.Move.StopMoveAndAnimationMove();
         if (_previewInstance != null) Destroy(_previewInstance.gameObject);
 
         TargetInfo targetInfo = new TargetInfo();
