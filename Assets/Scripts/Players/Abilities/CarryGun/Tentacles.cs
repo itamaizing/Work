@@ -142,7 +142,11 @@ public class Tentacles : Skill
                     if (_isAttractionTentacleTalent && hitTarget.collider.TryGetComponent<Character>(out Character character) && ((1 << character.gameObject.layer) & TargetsLayers.value) != 0)
                     {
                         float distToHero = Vector3.Distance(Hero.transform.position, character.transform.position);
-                        if (distToHero > Radius) continue;
+                        if (distToHero > Radius)
+                        {
+                            yield return null;
+                            continue;
+                        }
 
                         _isPlacingTentacles = true;
                         _lockedTarget = character;

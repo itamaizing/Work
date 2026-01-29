@@ -183,15 +183,22 @@ public class TentacleProjectile : NetworkBehaviour
             timer += Time.deltaTime;
             float t = timer / grabDuration;
 
-            Vector3 currentPos = Vector3.Lerp(start, end, t);
-            targetTransform.position = currentPos;
+            Vector3 recalculatingPosition = Vector3.Lerp(start, end, t);
 
-            if (Vector3.Distance(currentPos, transform.position) <= _maxPullDistance) break;
+            float currentDistance = Vector3.Distance(recalculatingPosition, transform.position);
+            if (currentDistance > _maxPullDistance)
+            {
+                Vector3 direction = (transform.position - start).normalized;
+                recalculatingPosition = transform.position - direction * _maxPullDistance;
+                timer = grabDuration;
+            }
+
+            targetTransform.position = recalculatingPosition;
 
             if (tentacleLine != null && tentaclePoint != null)
             {
                 tentacleLine.SetPosition(0, tentaclePoint.position);
-                tentacleLine.SetPosition(1, currentPos + Vector3.up * 0.5f);
+                tentacleLine.SetPosition(1, recalculatingPosition + Vector3.up * 0.5f);
             }
 
             yield return null;
