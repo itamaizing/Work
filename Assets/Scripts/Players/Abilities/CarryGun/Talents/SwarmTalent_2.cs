@@ -26,7 +26,7 @@ public class SwarmTalent_2 : Talent
 
     private void AddingDescriptionSet(bool value)
     {
-        swarmCapacity.AddingDescriptionSet(value, Data.DescriptionsForInfoPanel[0]);
-        tentacles.AddingDescriptionSet(value, Data.DescriptionsForInfoPanel[1]);
+        swarmCapacity.AddingDescriptionSet(value, Data.DescriptionsForInfoPanel[1]);
+        tentacles.AddingDescriptionSet(value, Data.DescriptionsForInfoPanel[0]);
     }
 }

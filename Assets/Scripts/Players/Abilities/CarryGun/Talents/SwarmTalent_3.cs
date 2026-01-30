@@ -20,6 +20,6 @@ public class SwarmTalent_3 : Talent
 
     private void AddingDescriptionSet(bool value)
     {
-        tentacles.AddingDescriptionSet(value, Data.DescriptionsForInfoPanel[2]);
+        tentacles.AddingDescriptionSet(value, Data.DescriptionsForInfoPanel[0]);
     }
 }

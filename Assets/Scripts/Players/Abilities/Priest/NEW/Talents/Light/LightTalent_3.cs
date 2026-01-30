@@ -18,4 +18,6 @@ public class LightTalent_3 : Talent
         manager.DeactivateSkill(stunMagicPassiveSkill);
         stunMagicPassiveSkill.DamageDarkLightStun(false, Data.DescriptionsForInfoPanel[0]);
     }
+
+
 }

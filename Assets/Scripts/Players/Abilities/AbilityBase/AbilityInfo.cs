@@ -13,6 +13,7 @@ public class AbilityInfo : ScriptableObject
     [SerializeField] private Sprite _icon;
 
     private string _addingDescription;
+    private HashSet<string> _addedDescriptions = new();
 
     public string AddingDescription { get => _addingDescription; set => _addingDescription = value; }
     public string Name => _name;
@@ -29,6 +30,17 @@ public class AbilityInfo : ScriptableObject
 
     public void AddingDescriptionSet(bool value, string text)
     {
-        _addingDescription = value ? _description + $" {text}" : _description;
+        if (string.IsNullOrWhiteSpace(text)) return;
+
+        if (value) _addedDescriptions.Add(text);
+        else _addedDescriptions.Remove(text);
+
+        UpdateFinalDescription();
+    }
+
+    private void UpdateFinalDescription()
+    {
+        if (_addedDescriptions.Count > 0) _addingDescription = _description + " " + string.Join(" ", _addedDescriptions);
+        else _addingDescription = _description;
     }
 }
