@@ -25,6 +25,7 @@ public class SkillRenderer : NetworkBehaviour
     private List<LineZoneRender> _lineZoneRenders = new();
     private bool _isOverrideClosestTarget = false;
     private bool _lineZoneRenderManuallyStarted = false;
+    private bool _useFixedDirection = false;
     private CircleArea _tempDamageZone;
     private CircleArea _tempArea;
     private float _lineStartLength;
@@ -33,6 +34,8 @@ public class SkillRenderer : NetworkBehaviour
     private float _boxWidth;
     private float _circleRadius;
     private float _modRadis;
+    private float _lineLengthFixed;
+    private Vector3 _lineDirectionFixed;
     private BoxArea _lineStartImage;
     //private BoxArea _lineEndImage;
     private SkillCircleRanderer _drawAutoAttackRadius;
@@ -334,21 +337,21 @@ public class SkillRenderer : NetworkBehaviour
         _drawLineCoroutine = StartCoroutine(DrawLineJob(finalLength, finalWidth, damage, layerMask, line));
     }
 
-    public void StartDetachedLine(Vector3 startPoint, Vector3 endPoint, float width, Color color)
+    public void StartDetachedLineFixedDirection(Vector3 direction, float length)
     {
-        if (_lineStartImage != null)
-            Destroy(_lineStartImage.gameObject);
+        _lineDirectionFixed = direction.normalized;
+        _lineLengthFixed = length;
+        _useFixedDirection = true;
+
+        if (_lineStartImage != null) Destroy(_lineStartImage.gameObject);
 
         _lineStartImage = Instantiate(_line.Start);
-        _lineStartImage.SetSize(width, Vector3.Distance(startPoint, endPoint), new Damage());
+        _lineStartImage.SetSize(_boxWidth, _lineLengthFixed, new Damage());
+        _lineStartImage.SetColor(_colorForStart);
 
-        _lineStartImage.SetColor(color);
+        if (_drawLineCoroutine != null) StopCoroutine(_drawLineCoroutine);
 
-        _lineStartImage.transform.position = startPoint;
-
-        Vector3 direction = (endPoint - startPoint).normalized;
-        float angle = Mathf.Atan2(direction.z, direction.x) * Mathf.Rad2Deg;
-        _lineStartImage.transform.rotation = Quaternion.Euler(90, -angle + 90, 0);
+        _drawLineCoroutine = StartCoroutine(DrawFixedDirectionLine());
     }
 
     public void StopDrawLine()
@@ -464,6 +467,13 @@ public class SkillRenderer : NetworkBehaviour
         }
     }
 
+    public void StopDetachedLine()
+    {
+        _useFixedDirection = false;
+
+        if (_lineStartImage != null) Destroy(_lineStartImage.gameObject);
+        if (_drawLineCoroutine != null) StopCoroutine(_drawLineCoroutine);
+    }
 
     private void RotateAtMouse(Transform transform)
     {
@@ -508,7 +518,6 @@ public class SkillRenderer : NetworkBehaviour
         }
     }
 
-
     private IEnumerator HoverHighlightJob()
     {
         while(true)
@@ -544,6 +553,25 @@ public class SkillRenderer : NetworkBehaviour
 
             _circle.SetColor(hasEnemyInRadius ? _colorForAllies : _colorForEnemies);
             yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    private IEnumerator DrawFixedDirectionLine()
+    {
+        while (_useFixedDirection)
+        {
+            Vector3 start = transform.position;
+            Vector3 end = start + _lineDirectionFixed * _lineLengthFixed;
+
+            _lineStartImage.transform.position = start;
+
+            Vector3 lookDir = end - start;
+            float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg;
+            _lineStartImage.transform.rotation = Quaternion.Euler(90, -angle + 90, 0);
+
+            _lineStartImage.SetSize(_boxWidth, _lineLengthFixed, new Damage());
+
+            yield return null;
         }
     }
 

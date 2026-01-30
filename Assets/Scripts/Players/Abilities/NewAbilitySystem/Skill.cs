@@ -1009,6 +1009,7 @@ public abstract class Skill : NetworkBehaviour
         _skillRender.StopDrawLine();
         _skillRender.StopDrawClosestTarget();
         _skillRender.StopDynamicRadiusColor();
+        _skillRender.StopDetachedLine();
 
         _skillRender.StopPreview();
         if(_dynamicRendererJob != null)

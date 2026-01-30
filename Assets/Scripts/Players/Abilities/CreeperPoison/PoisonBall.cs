@@ -235,11 +235,11 @@ public class PoisonBall : Skill, IAltAbility
 
                 Vector3 click = GetMousePoint();
 
-
                 Vector3 start = _player.transform.position;
                 Vector3 end = click;
 
-                SkillRender.StartDetachedLine(start, end, CastWidth, Color.yellow);
+                Vector3 direction = (end - start).normalized;
+                SkillRender.StartDetachedLineFixedDirection(direction, CastLength);
 
                 if (Vector3.Distance(_player.transform.position, click) <= CastLength)
                 {
