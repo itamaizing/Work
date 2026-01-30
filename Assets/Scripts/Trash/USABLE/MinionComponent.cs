@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.AI;
+using Debug = UnityEngine.Debug;
 
 public class MinionComponent : Character
 {
@@ -12,6 +13,7 @@ public class MinionComponent : Character
     protected HeroComponent _myHeroParent;
     [SyncVar] private bool _isIntercepted = false;
 
+    public MinionCamp MyCamp;
     public int ExpForDieKill { get => _expForDieKill; }
     public bool IsIntercepted { get => _isIntercepted; }
 
@@ -31,6 +33,7 @@ public class MinionComponent : Character
     private void OnDestroy()
     {
         Destroyed?.Invoke(this);
+        if (MyCamp != null) MyCamp.RemoveDeadMinion(this);
     }
 
     protected override void OnDied()
@@ -38,7 +41,21 @@ public class MinionComponent : Character
         base.OnDied();
         if (_navMeshAgent != null) _navMeshAgent.enabled = false;
 
-        if (isServer) Destroyed?.Invoke(this);
+        if (isServer)
+        {
+            Destroyed?.Invoke(this);
+            Destroy(gameObject,3f);
+        }
+    }
+    
+    public override bool TryTakeDamage(ref Damage damage, Skill skill)
+    {
+        bool b = base.TryTakeDamage(ref damage, skill);
+        if (b && skill != null && skill.Hero != null && MyCamp != null)
+        {
+            MyCamp.AddAttacker(skill.Hero.netIdentity.connectionToClient);
+        }
+        return b;
     }
 
     protected override void ResetAll()

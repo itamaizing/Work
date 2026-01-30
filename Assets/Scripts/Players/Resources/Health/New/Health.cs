@@ -68,6 +68,8 @@ public class Health : Resource, IDamageable, IHealingable
         _resistMagDamage = data.GetAttributeValue(AttributeNames.MagicEvade);
         _evadeMeleeDamage = data.GetAttributeValue(AttributeNames.MeleeEvade);
         _evadeRangeDamage = data.GetAttributeValue(AttributeNames.RangeEvade);
+        
+        SetHp(health,_maxValue);
     }
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)

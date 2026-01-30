@@ -9,21 +9,29 @@ public class MinionCamp : NetworkBehaviour
 {
     [SerializeField] private LayerMask _playersLayerMask;
     [SerializeField] private MinionComponent _minionLeadPref;
+    [SerializeField] private CampSurrenderUI _surrenderUI;
     [SerializeField] private List<MinionComponent> _minionPrefs;
     [SerializeField, Range(0, 1)] private float _percentageHPForSurrender;
     [SerializeField, Range(0, 10)] private float _distance = 5;
 
-    private float _spawnDelayMinions = 3;
-    private float _spawnDelayForLead = 6;
+    [SerializeField] private LayerMask _enemyLayer;
+    [SerializeField] private LayerMask _allyLayer;
+
+    private float _spawnDelayMinions = 15f;
+    private float _spawnDelayForLead = 15f;
     private float _distanceToLead = 3;
     private float _randomSpawnDistance = 3;
+
+    public CampStatus _campStatus = CampStatus.Neutral;
 
     private Coroutine _spawnCoroutine;
     private Coroutine _checkSurrenderCoroutine;
     private MinionComponent _minionLead = null;
     private List<MinionComponent> _minions = new();
+    public HashSet<NetworkConnectionToClient> _attackers = new();
+    private Dictionary<NetworkConnectionToClient, Coroutine> _attackerTimers = new();
     private NetworkConnectionToClient _owner;
-    private float _totalMaxHP;
+    public float _totalMaxHP;
 
     public event Action ReadyForSurrender;
     public event Action Surrendered;
@@ -31,14 +39,7 @@ public class MinionCamp : NetworkBehaviour
     public override void OnStartServer()
     {
         base.OnStartServer();
-
         StartSpawnCoroutine();
-    }
-
-    public override void OnStartClient()
-    {
-        base.OnStartClient();
-
         StartCheckSurrender();
     }
 
@@ -51,7 +52,47 @@ public class MinionCamp : NetworkBehaviour
     {
         _checkSurrenderCoroutine = StartCoroutine(CheckSurrenderJob());
     }
+    
+    public void AddAttacker(NetworkConnectionToClient attacker)
+    {
+        if (attacker == null) return;
 
+        if (!isServer)
+        {
+            CmdRefreshAttackersCount(attacker);
+            return;
+        }
+
+        if (_attackers.Contains(attacker))
+        {
+            if (_attackerTimers.TryGetValue(attacker, out var existingCoroutine))
+            {
+                StopCoroutine(existingCoroutine);
+                _attackerTimers.Remove(attacker);
+            }
+        }
+        else
+        {
+            _attackers.Add(attacker);
+        }
+
+        _attackerTimers[attacker] = StartCoroutine(RemoveAttackerAfterDelay(attacker, 5f));
+    }
+
+    
+    [Command]
+    private void CmdRefreshAttackersCount(NetworkConnectionToClient target)
+    {
+        AddAttacker(target);  // This will run on server and execute the server logic
+    }
+
+    private IEnumerator RemoveAttackerAfterDelay(NetworkConnectionToClient hero, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        _attackers.Remove(hero);
+        _attackerTimers.Remove(hero);
+    }
     private void Spawn()
     {
         if (_minionLead == null && _minions.Count <= 0)
@@ -66,6 +107,7 @@ public class MinionCamp : NetworkBehaviour
                 spawnPoint = new Vector3(UnityEngine.Random.Range(0, _randomSpawnDistance), UnityEngine.Random.Range(0, _randomSpawnDistance), UnityEngine.Random.Range(0, _randomSpawnDistance));
                 var tempMinion = Instantiate(item, transform.position + spawnPoint, Quaternion.identity);
                 _minions.Add(tempMinion);
+                tempMinion.MyCamp = this;
                 NetworkServer.Spawn(tempMinion.gameObject);
                 RpcAddMinion(tempMinion.gameObject);
             }
@@ -136,35 +178,63 @@ public class MinionCamp : NetworkBehaviour
             {
                 _totalMaxHP += item.Health.MaxValue;
             }
-
             while (GetTotalHP() > (_totalMaxHP * (1 - _percentageHPForSurrender)))
             {
                 yield return new WaitForSecondsRealtime(1); ;
             }
+            foreach (var hero in _attackers)
+            {
+                if (hero == null) continue;
+
+                TargetShowSurrenderUI(hero);
+            }
 
             ReadyForSurrender?.Invoke();
 
-            HeroComponent owner = null;
+            //HeroComponent owner = null;
 
-            while (owner == null)
+            /*while (owner == null)
             {
                 owner = GetClosestOwner();
                 yield return null;
-            }
+            }*/
 
-            if (_minionLead != null && _minionLead.IsIntercepted == false)
+            /*if (_minionLead != null && _minionLead.IsIntercepted == false)
             {
                 CmdIntercept(_minionLead.gameObject, owner.gameObject);
-            }
+            }*/
 
 
-            foreach (var item in _minions)
+            /*foreach (var item in _minions)
             {
                 if(item.IsIntercepted == false)
                     CmdIntercept(item.gameObject, owner.gameObject);
-            }
+            }*/
             yield return new WaitForSecondsRealtime(1); ;
         }
+    }
+
+    [TargetRpc]
+    private void TargetShowSurrenderUI(NetworkConnectionToClient conn)
+    {
+        if (_surrenderUI == null)
+            return;
+
+        _surrenderUI.gameObject.SetActive(true);
+        _surrenderUI.Setup(this);
+        _surrenderUI.Show();
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdChooseOption1()
+    {
+        // Empty for now
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdChooseOption2()
+    {
+        // Empty for now
     }
 
     private HeroComponent GetClosestOwner()
@@ -195,6 +265,33 @@ public class MinionCamp : NetworkBehaviour
     {
         var tempMinion = minion.GetComponent<MinionComponent>();
         _minions.Add(tempMinion);
+        tempMinion.MyCamp = this;
+        SetMinionLayer(minion);
+    }
+    
+    public void RemoveDeadMinion(MinionComponent minion)
+    {
+        if (minion == _minionLead) _minionLead = null;
+        _minions.Remove(minion);
+    }
+    
+    private void SetMinionLayer(GameObject minion)
+    {
+        switch (_campStatus)
+        {
+            case CampStatus.Neutral:
+                minion.gameObject.layer = LayerMask.NameToLayer("Enemy");
+                break;
+            case CampStatus.DarkTeam:
+                minion.gameObject.layer = LayerMask.NameToLayer("Enemy");
+                break;
+            case CampStatus.LightTeam:
+                minion.gameObject.layer = LayerMask.NameToLayer("Enemy");
+                break;
+            default:
+                minion.gameObject.layer = LayerMask.NameToLayer("Enemy");
+                break;
+        }
     }
 
     [ClientRpc]
@@ -202,6 +299,7 @@ public class MinionCamp : NetworkBehaviour
     {
         var tempMinion = minion.GetComponent<MinionComponent>();
         _minionLead = tempMinion;
+        SetMinionLayer(minion);
     }
 
     [Command(requiresAuthority = false)]
@@ -214,4 +312,11 @@ public class MinionCamp : NetworkBehaviour
         var player = hero.GetComponent<HeroComponent>();
         player.SpawnComponent.AddUnit(minion.GetComponent<MinionComponent>());
     }
+}
+
+public enum CampStatus
+{
+    Neutral,
+    DarkTeam,
+    LightTeam
 }
