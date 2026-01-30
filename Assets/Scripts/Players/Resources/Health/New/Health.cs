@@ -23,6 +23,11 @@ public class Health : Resource, IDamageable, IHealingable
     private float _blockChance;
     private bool _isDot = false;
 
+    private Attributes _physicResist;
+    private Attributes _magResist;
+    private Attributes _evasionPhysic;
+    private Attributes _evasionMagic;
+
     public Bar barCharacter { get => bar; }
     public float BlockChance { get => _blockChance; set => _blockChance = value; }
     //public float SumDamageTaken { get { Debug.Log("Sum dmg " + _sumDamageTaken); return _sumDamageTaken; }} //=> _sumDamageTaken; }
@@ -68,15 +73,20 @@ public class Health : Resource, IDamageable, IHealingable
          _evadeMeleeDamage = data.GetAttributeValue(AttributeNames.MeleeEvade);
          _evadeRangeDamage = data.GetAttributeValue(AttributeNames.RangeEvade);
      }*/
-    public override void Initialize(Attributes maxValue, Attributes regenValue, CharacterData data)
+    public void Initialize(Attributes maxValue, Attributes regenValue, CharacterData data, Attributes physicResist, Attributes magResist, Attributes evasionPhysic, Attributes evasionMagic)
     {
         base.Initialize(maxValue, regenValue, data);
 
-        _defPhysDamage = data.GetAttributeValue(AttributeNames.PhysicResist);
+        _physicResist = physicResist;
+        _magResist = magResist;
+        _evasionPhysic = evasionPhysic;
+        _evasionMagic = evasionMagic;
+
+        /*_defPhysDamage = data.GetAttributeValue(AttributeNames.PhysicResist);
         _defMagDamage = data.GetAttributeValue(AttributeNames.MagicResist);
         _resistMagDamage = data.GetAttributeValue(AttributeNames.MagicEvade);
         _evadeMeleeDamage = data.GetAttributeValue(AttributeNames.MeleeEvade);
-        _evadeRangeDamage = data.GetAttributeValue(AttributeNames.RangeEvade);
+        _evadeRangeDamage = data.GetAttributeValue(AttributeNames.RangeEvade);*/
     }
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)

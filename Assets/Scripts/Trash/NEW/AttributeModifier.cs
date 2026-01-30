@@ -16,7 +16,7 @@ public class AttributeModifier
         
         if (currentPoints - points < 0) return;
 
-        var attribute = character.Data.Attributes.AttributeData.FirstOrDefault(a => a.Id == index);
+        /*var attribute = character.Data.Attributes.AttributeData.FirstOrDefault(a => a.Id == index);
         if (attribute == null) return;
         
         attribute.Points += points;
@@ -30,7 +30,7 @@ public class AttributeModifier
             usedAttributes.Add(index);
         }
         _attributeSaveManager.SaveUsedAttributes(character, usedAttributes, saveGroup);
-        _attributeSaveManager.SaveAttributePoints(character, saveGroup,currentPoints - points);
+        _attributeSaveManager.SaveAttributePoints(character, saveGroup,currentPoints - points);*/
     }
 
     public int ReduceFreePoints(HeroComponent character, int pointsToDeduct, int saveGroup)
@@ -50,7 +50,7 @@ public class AttributeModifier
         {
             if (pointsToDeduct <= 0) break;
 
-            var attribute = character.Data.Attributes.AttributeData.FirstOrDefault(a => a.Id == attributeIndex);
+            /*var attribute = character.Data.Attributes.AttributeData.FirstOrDefault(a => a.Id == attributeIndex);
             if (attribute == null || attribute.Points <= 0) continue;
 
             int deductPoints = Mathf.Min(pointsToDeduct, 1);
@@ -58,10 +58,10 @@ public class AttributeModifier
             pointsToDeduct -= deductPoints;
 
             _attributeSaveManager.SaveAttribute(character, attribute.Id , saveGroup);
-            _attributeSaveManager.LoadAttribute(character, attribute.Id, saveGroup);
+            _attributeSaveManager.LoadAttribute(character, attribute.Id, saveGroup);*/
         }
 
-        usedAttributes.RemoveAll(attributeIndex => character.Data.Attributes.AttributeData.FirstOrDefault(a => a.Id == attributeIndex)?.Points <= 0);
+        //usedAttributes.RemoveAll(attributeIndex => character.Data.Attributes.AttributeData.FirstOrDefault(a => a.Id == attributeIndex)?.Points <= 0);
         _attributeSaveManager.SaveUsedAttributes(character, usedAttributes, saveGroup);
     }
 }

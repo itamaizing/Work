@@ -167,8 +167,9 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 			}*/
             if (resource.Type == ResourceType.Health)
             {
-                resource.Initialize(
-                     AttributeSystem.Health, AttributeSystem.HpRegen, Data);
+				Health hp = (Health)resource;
+                hp.Initialize(
+                     AttributeSystem.Health, AttributeSystem.HpRegen, Data, AttributeSystem.PhysicResist, AttributeSystem.MagicResist, AttributeSystem.PhysicEvade, AttributeSystem.MagicEvade);
             }
             if (resource.Type == ResourceType.Energy)
             {

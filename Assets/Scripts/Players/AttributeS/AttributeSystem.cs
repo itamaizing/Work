@@ -9,12 +9,21 @@ public class AttributeSystem : MonoBehaviour
     private Attributes _resourse;
     private Attributes _resourseRegen;
     private Attributes _moveSpeed;
+    private Attributes _physicResist;
+    private Attributes _magicResist;
+    private Attributes _physicEvade;
+    private Attributes _magicEvade;
 
     public Attributes Health => _health;
     public Attributes HpRegen => _hpRegen;
     public Attributes Resourse => _resourse;
     public Attributes ResourseRegen => _resourseRegen;
     public Attributes MoveSpeed => _moveSpeed;
+    public Attributes PhysicResist => _physicResist;
+    public Attributes MagicResist => _magicResist;
+    public Attributes PhysicEvade => _physicEvade;
+    public Attributes MagicEvade => _magicEvade;
+
 
 
     public void Init(CharacterData data)
@@ -25,5 +34,9 @@ public class AttributeSystem : MonoBehaviour
         _resourse = _data.GetAttribute(AttributeNames.Mana);
         _resourseRegen = _data.GetAttribute(AttributeNames.ResourseRegen);
         _moveSpeed = _data.GetAttribute(AttributeNames.Speed);
+        _physicEvade = data.GetAttribute(AttributeNames.EvasionPhysical);
+        _physicResist = data.GetAttribute(AttributeNames.PhysicResist);
+        _magicResist = data.GetAttribute(AttributeNames.MagicResist);
+        _magicEvade = data.GetAttribute(AttributeNames.MagicEvade);
     }
 }

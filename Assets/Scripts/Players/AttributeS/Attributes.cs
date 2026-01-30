@@ -36,7 +36,7 @@ public class Attributes
     public float GetValue()
     {
         float value;
-        float flat = 0, percent = 0, multipliy = 0;
+        float flat = 0, percent = 1, multipliy = 1;
 
         foreach (var modifier in _modifiers)
         {

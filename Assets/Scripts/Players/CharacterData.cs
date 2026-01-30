@@ -20,13 +20,13 @@ public class CharacterData : ScriptableObject
     public Sprite Icon => _icon;
     public float IconSize => _iconSize;
 
-    public AttributeGroup Attributes => _attributes;
+    /*public AttributeGroup Attributes => _attributes;
 
     public float GetAttributeValue(string attributeName)
     {
         var attribute = _attributes.AttributeData.FirstOrDefault(o => o.Name == attributeName);
         return attribute?.DefaultValue ?? 0f;
-    }
+    }*/
 
     public Attributes GetAttribute(string attributeName)
     {
