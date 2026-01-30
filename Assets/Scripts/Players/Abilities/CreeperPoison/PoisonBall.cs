@@ -202,6 +202,7 @@ public class PoisonBall : Skill, IAltAbility
         ClearArrows();
 
         ClearTarget();
+        SkillRender.ClearFixedLookPoint();
         //_currentTarget = null;
 
         _firstMousePosition = Vector3.positiveInfinity;
@@ -228,18 +229,13 @@ public class PoisonBall : Skill, IAltAbility
         {
             if (GetMouseButton)
             {
-                SkillRender.StopDrawLine();
-
                 FindTargetCharacter(_radiusFindTarget, GetMousePoint(), true);
                 CheckWhoTarget();
 
                 Vector3 click = GetMousePoint();
-
-                Vector3 start = _player.transform.position;
                 Vector3 end = click;
 
-                Vector3 direction = (end - start).normalized;
-                SkillRender.StartDetachedLineFixedDirection(direction, CastLength);
+                SkillRender.SetFixedLookPoint(end);
 
                 if (Vector3.Distance(_player.transform.position, click) <= CastLength)
                 {
