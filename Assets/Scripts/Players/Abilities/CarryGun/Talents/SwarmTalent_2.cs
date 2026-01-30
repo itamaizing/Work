@@ -12,11 +12,21 @@ public class SwarmTalent_2 : Talent
     {
         skillManager.ActivateSkill(swarmCapacity);
         tentacles.CocoonSpawnTalent(true);
+
+        AddingDescriptionSet(true);
     }
 
     public override void Exit()
     {
         skillManager.DeactivateSkill(swarmCapacity);
         tentacles.CocoonSpawnTalent(false);
+
+        AddingDescriptionSet(false);
+    }
+
+    private void AddingDescriptionSet(bool value)
+    {
+        swarmCapacity.AddingDescriptionSet(value, Data.DescriptionsForInfoPanel[0]);
+        tentacles.AddingDescriptionSet(value, Data.DescriptionsForInfoPanel[1]);
     }
 }

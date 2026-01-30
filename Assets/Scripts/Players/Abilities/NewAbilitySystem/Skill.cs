@@ -220,7 +220,7 @@ public abstract class Skill : NetworkBehaviour
     public Character Hero { get => _hero; }
     public StatsBuff Buff => _statsBuff;
     public string Name => _abilityInfo.Name;
-    public string Description { get => _abilityInfo.FinalDescription; set => _abilityInfo.FinalDescription = value; }
+    public string Description { get => _abilityInfo.AddingDescription; set => _abilityInfo.AddingDescription = value; }
     public string State => _abilityInfo.State; // test: we output the name of the state
     public string DescriptionState => _abilityInfo.DescriptionState; // test: we output a description of the state
     public string CounterSkill => _abilityInfo.Counter; // test: the counter is in the ability
@@ -481,6 +481,11 @@ public abstract class Skill : NetworkBehaviour
     public void ClearTempTarget()
     {
         _tempTarget = null;
+    }
+
+    public void AddingDescriptionSet(bool value, string text)
+    {
+        AbilityInfoHero.AddingDescriptionSet(value, text);
     }
 
     protected void FindTarget(float radius, Vector3 point, bool canTargetHimself = false, bool canTargetDead = false)

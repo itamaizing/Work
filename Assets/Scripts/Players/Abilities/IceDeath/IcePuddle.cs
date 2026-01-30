@@ -277,10 +277,9 @@ public class IcePuddle : Skill
     public void SetTalentPuddleSize(bool active) => _talentPuddleSize = active;
     public void SetTalentFrostingFrozen(bool value) => _talentFrostingFrozen = value;
     public void SetTalentEvadeDadBoost(bool value) => _talentEvadeDadBoost = value;
-    public void IceDeathInIcePudleTalentActive(bool value, string text)
+    public void IceDeathInIcePudleTalentActive(bool value)
     {
         _iceDeathInIcePudleTalent = value;
-        AbilityInfoHero.FinalDescriptionSet(value, text);
     }
 
     public void IcePuddleCast() => AnimStartCastCoroutine();

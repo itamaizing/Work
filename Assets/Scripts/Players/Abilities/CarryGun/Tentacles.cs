@@ -91,6 +91,7 @@ public class Tentacles : Skill
     public void MoveStop()
     {
         Hero.Move.CanMove = false;
+        if (GetTargetCharacter()) _player.Move.LookAtPosition(GetTargetCharacter().transform.position);
         Hero.Move.StopMoveAndAnimationMove();
     }
 
@@ -283,7 +284,6 @@ public class Tentacles : Skill
                                 }
 
                                 targetPoint = potentialSpawnPoint;
-                                _player.Move.LookAtPosition(targetPoint);
                                 break;
                             }
                         }

@@ -94,12 +94,7 @@ public class CheliceraStrike : Skill
 
     public void CheliceraStrikeChanceDamageCrit(bool value) => isCheliceraStrikeChanceDamageCrit = value;
     public void EvolutionTalentTwo(bool value) => isEvolutionTalentTwo = value;
-
-    public void PsionicsTalentTwo(bool value, string text)
-    {
-        isPsionicsTalentTwo = value;
-        AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
-    }
+    public void PsionicsTalentTwo(bool value, string text) => isPsionicsTalentTwo = value;
 
     public void ChanceApplyBleedingIncrease(bool value) => _isChanceApplyBleedingIncrease = value;
     public void ChanceCritDamageIncrease(bool value) => _isChanceCritDamageIncrease = value;
