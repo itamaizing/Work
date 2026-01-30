@@ -94,12 +94,12 @@ public class Tentacles : Skill
         Hero.Move.StopMoveAndAnimationMove();
     }
 
-    public void AnimSpitPoisonCast()
+    public void AnimTentaclesCast()
     {
         AnimStartCastCoroutine();
     }
 
-    public void AnimSpitPoisonCastEnd()
+    public void AnimTentaclesCastEnd()
     {
         AnimCastEnded();
     }
@@ -157,11 +157,6 @@ public class Tentacles : Skill
                     if (_isAttractionTentacleTalent && hitTarget.collider.TryGetComponent<Character>(out Character character) && ((1 << character.gameObject.layer) & TargetsLayers.value) != 0)
                     {
                         float distToHero = Vector3.Distance(Hero.transform.position, character.transform.position);
-                        if (distToHero > Radius)
-                        {
-                            yield return null;
-                            continue;
-                        }
 
                         _isPlacingTentacles = true;
                         _lockedTarget = character;
@@ -329,7 +324,20 @@ public class Tentacles : Skill
     {
         if (!IsValidVector(_spawnPoint)) yield break;
 
-        if (GetTargetCharacter() != null) CmdSpawnTentacles(_spawnPoint, GetTargetCharacter(), _spentAttackingPsiEnergy);
+        if (GetTargetCharacter() != null)
+        {
+            float distance = Vector3.Distance(_spawnPoint, GetTargetCharacter().transform.position);
+
+            float tentacleRange = _previewInstancePrefab != null ? _previewInstancePrefab.Radius : Radius;
+
+            if (distance > tentacleRange)
+            {
+                TryCancel(true);
+                yield break;
+            }
+
+            CmdSpawnTentacles(_spawnPoint, GetTargetCharacter(), _spentAttackingPsiEnergy);
+        }
 
         else
         {
