@@ -333,6 +333,7 @@ public class Tentacles : Skill
             if (distance > tentacleRange)
             {
                 TryCancel(true);
+                _hero.Move.CanMove = true;
                 yield break;
             }
 
