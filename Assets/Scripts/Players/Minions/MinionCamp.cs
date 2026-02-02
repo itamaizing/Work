@@ -4,18 +4,15 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class MinionCamp : NetworkBehaviour
 {
-    [SerializeField] private LayerMask _playersLayerMask;
     [SerializeField] private MinionComponent _minionLeadPref;
     [SerializeField] private CampSurrenderUI _surrenderUI;
     [SerializeField] private List<MinionComponent> _minionPrefs;
     [SerializeField, Range(0, 1)] private float _percentageHPForSurrender;
     [SerializeField, Range(0, 10)] private float _distance = 5;
-
-    [SerializeField] private LayerMask _enemyLayer;
-    [SerializeField] private LayerMask _allyLayer;
 
     private float _spawnDelayMinions = 15f;
     private float _spawnDelayForLead = 15f;
@@ -24,12 +21,14 @@ public class MinionCamp : NetworkBehaviour
 
     public CampStatus _campStatus = CampStatus.Neutral;
 
+    private List<Character> _players = new();
+    
     private Coroutine _spawnCoroutine;
     private Coroutine _checkSurrenderCoroutine;
     private MinionComponent _minionLead = null;
     private List<MinionComponent> _minions = new();
-    public HashSet<NetworkConnectionToClient> _attackers = new();
-    private Dictionary<NetworkConnectionToClient, Coroutine> _attackerTimers = new();
+    public HashSet<HeroComponent> _attackers = new();
+    private Dictionary<HeroComponent, Coroutine> _attackerTimers = new();
     private NetworkConnectionToClient _owner;
     public float _totalMaxHP;
 
@@ -43,6 +42,15 @@ public class MinionCamp : NetworkBehaviour
         StartCheckSurrender();
     }
 
+    public void SetPlayers(GameObject playersObject)
+    {
+        var playerSettings = playersObject.GetComponent<Character>();
+        if (playerSettings != null)
+        {
+            _players.Add(playerSettings);
+        }
+    }
+
     public void StartSpawnCoroutine()
     {
         _spawnCoroutine = StartCoroutine(SpawnJob());
@@ -52,59 +60,81 @@ public class MinionCamp : NetworkBehaviour
     {
         _checkSurrenderCoroutine = StartCoroutine(CheckSurrenderJob());
     }
-    
-    public void AddAttacker(NetworkConnectionToClient attacker)
+
+    public void AddAttacker(GameObject attacker)
     {
         if (attacker == null) return;
 
-        if (!isServer)
+        if (attacker.TryGetComponent(out HeroComponent heroComponent))
         {
-            CmdRefreshAttackersCount(attacker);
-            return;
-        }
 
-        if (_attackers.Contains(attacker))
-        {
-            if (_attackerTimers.TryGetValue(attacker, out var existingCoroutine))
+            if (!isServer)
             {
-                StopCoroutine(existingCoroutine);
-                _attackerTimers.Remove(attacker);
+                CmdRefreshAttackersCount(attacker);
+                return;
             }
-        }
-        else
-        {
-            _attackers.Add(attacker);
-        }
 
-        _attackerTimers[attacker] = StartCoroutine(RemoveAttackerAfterDelay(attacker, 5f));
+            if (_attackers.Contains(heroComponent))
+            {
+                if (_attackerTimers.TryGetValue(heroComponent, out var existingCoroutine))
+                {
+                    StopCoroutine(existingCoroutine);
+                    _attackerTimers.Remove(heroComponent);
+                }
+            }
+            else
+            {
+                _attackers.Add(heroComponent);
+                heroComponent.Health.HealTaked += TryAddHealer;
+            }
+
+            _attackerTimers[heroComponent] = StartCoroutine(RemoveAttackerAfterDelay(attacker, 5f));
+        }
     }
 
-    
-    [Command]
-    private void CmdRefreshAttackersCount(NetworkConnectionToClient target)
+    private void TryAddHealer(float amount, Skill skill, string skillName)
     {
-        AddAttacker(target);  // This will run on server and execute the server logic
+        if (skill.Hero.gameObject == null) return;
+
+        AddAttacker(skill.Hero.gameObject);
     }
 
-    private IEnumerator RemoveAttackerAfterDelay(NetworkConnectionToClient hero, float delay)
+
+    [Command]
+    private void CmdRefreshAttackersCount(GameObject target)
+    {
+        AddAttacker(target);
+    }
+
+    private IEnumerator RemoveAttackerAfterDelay(GameObject hero, float delay)
     {
         yield return new WaitForSeconds(delay);
 
-        _attackers.Remove(hero);
-        _attackerTimers.Remove(hero);
+        if (hero == null) yield break;
+
+        if (hero.TryGetComponent(out HeroComponent heroComponent))
+        {
+            heroComponent.Health.HealTaked -= TryAddHealer;
+            _attackers.Remove(heroComponent);
+            _attackerTimers.Remove(heroComponent);
+        }
     }
+
     private void Spawn()
     {
         if (_minionLead == null && _minions.Count <= 0)
         {
-            var spawnPoint = new Vector3(UnityEngine.Random.Range(0, _randomSpawnDistance), UnityEngine.Random.Range(0, _randomSpawnDistance), UnityEngine.Random.Range(0, _randomSpawnDistance));
+            var spawnPoint = new Vector3(UnityEngine.Random.Range(0, _randomSpawnDistance),
+                UnityEngine.Random.Range(0, _randomSpawnDistance), UnityEngine.Random.Range(0, _randomSpawnDistance));
             _minionLead = Instantiate(_minionLeadPref, transform.position + spawnPoint, Quaternion.identity);
             NetworkServer.Spawn(_minionLead.gameObject);
             RpcAddMinionLead(_minionLead.gameObject);
 
             foreach (var item in _minionPrefs)
             {
-                spawnPoint = new Vector3(UnityEngine.Random.Range(0, _randomSpawnDistance), UnityEngine.Random.Range(0, _randomSpawnDistance), UnityEngine.Random.Range(0, _randomSpawnDistance));
+                spawnPoint = new Vector3(UnityEngine.Random.Range(0, _randomSpawnDistance),
+                    UnityEngine.Random.Range(0, _randomSpawnDistance),
+                    UnityEngine.Random.Range(0, _randomSpawnDistance));
                 var tempMinion = Instantiate(item, transform.position + spawnPoint, Quaternion.identity);
                 _minions.Add(tempMinion);
                 tempMinion.MyCamp = this;
@@ -112,18 +142,20 @@ public class MinionCamp : NetworkBehaviour
                 RpcAddMinion(tempMinion.gameObject);
             }
         }
-        else if (_minionLead != null && Vector3.Distance(_minionLead.transform.position, transform.position) <= _distanceToLead && _minions.Count <= 0)
+        else if (_minionLead != null &&
+                 Vector3.Distance(_minionLead.transform.position, transform.position) <= _distanceToLead &&
+                 _minions.Count <= 0)
         {
             foreach (var item in _minionPrefs)
             {
-                var spawnPoint = new Vector3(UnityEngine.Random.Range(0, _randomSpawnDistance), UnityEngine.Random.Range(0, _randomSpawnDistance), UnityEngine.Random.Range(0, _randomSpawnDistance));
+                var spawnPoint = new Vector3(UnityEngine.Random.Range(0, _randomSpawnDistance),
+                    UnityEngine.Random.Range(0, _randomSpawnDistance),
+                    UnityEngine.Random.Range(0, _randomSpawnDistance));
                 var tempMinion = Instantiate(item, transform.position + spawnPoint, Quaternion.identity);
                 _minions.Add(tempMinion);
                 NetworkServer.Spawn(tempMinion.gameObject);
 
-                //_minionLead.SpawnComponent.AddUnit(tempMinion);
-
-                if(_minionLead.netIdentity.connectionToClient != null)
+                if (_minionLead.netIdentity.connectionToClient != null)
                 {
                     tempMinion.SetAuthority(_minionLead.netIdentity.connectionToClient);
                 }
@@ -144,7 +176,7 @@ public class MinionCamp : NetworkBehaviour
         {
             totalHP = _minionLead.Health.CurrentValue;
         }
-        
+
 
         foreach (var item in _minions)
         {
@@ -173,44 +205,31 @@ public class MinionCamp : NetworkBehaviour
             {
                 _totalMaxHP = _minionLead.Health.MaxValue;
             }
-            
+
             foreach (var item in _minions)
             {
                 _totalMaxHP += item.Health.MaxValue;
             }
+
             while (GetTotalHP() > (_totalMaxHP * (1 - _percentageHPForSurrender)))
             {
-                yield return new WaitForSecondsRealtime(1); ;
+                yield return new WaitForSecondsRealtime(1);
             }
+
             foreach (var hero in _attackers)
             {
                 if (hero == null) continue;
 
-                TargetShowSurrenderUI(hero);
+                TargetShowSurrenderUI(hero.netIdentity.connectionToClient);
+            }
+            foreach (var timers in _attackerTimers.Values)
+            {
+                StopCoroutine(timers);
             }
 
             ReadyForSurrender?.Invoke();
 
-            //HeroComponent owner = null;
-
-            /*while (owner == null)
-            {
-                owner = GetClosestOwner();
-                yield return null;
-            }*/
-
-            /*if (_minionLead != null && _minionLead.IsIntercepted == false)
-            {
-                CmdIntercept(_minionLead.gameObject, owner.gameObject);
-            }*/
-
-
-            /*foreach (var item in _minions)
-            {
-                if(item.IsIntercepted == false)
-                    CmdIntercept(item.gameObject, owner.gameObject);
-            }*/
-            yield return new WaitForSecondsRealtime(1); ;
+            yield return new WaitForSecondsRealtime(1);
         }
     }
 
@@ -224,40 +243,55 @@ public class MinionCamp : NetworkBehaviour
         _surrenderUI.Setup(this);
         _surrenderUI.Show();
     }
-
-    [Command(requiresAuthority = false)]
-    public void CmdChooseOption1()
+    
+    
+    [ClientRpc]
+    private void RpcHideSurrenderUI()
     {
-        // Empty for now
+        if (_surrenderUI == null)
+            return;
+
+        _surrenderUI.Hide();
     }
 
+
     [Command(requiresAuthority = false)]
-    public void CmdChooseOption2()
+    public void CmdOnCapture(bool isTakeLead, NetworkConnectionToClient senderConn = null)
     {
-        // Empty for now
-    }
-
-    private HeroComponent GetClosestOwner()
-    {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, _distance, _playersLayerMask);
-
-        Collider closest = null;
-        float closestDistance = Mathf.Infinity;
-        Vector3 currentPosition = transform.position;
-
-        foreach (Collider col in colliders)
+        HeroComponent clickedHero = FindHeroByConnection(senderConn);
+        
+        if (clickedHero == null)
         {
-            if (col == null) continue;
-
-            float distance = Vector3.Distance(currentPosition, col.transform.position);
-            if (distance < closestDistance)
-            {
-                closestDistance = distance;
-                closest = col;
-            }
+            return;
         }
+        
+        int teamIndex = clickedHero.NetworkSettings.TeamIndex;
+        
+        if (isTakeLead)
+        {
+            _campStatus = teamIndex == 1 ? CampStatus.DarkTeam : CampStatus.LightTeam;
 
-        return closest.GetComponent<HeroComponent>();
+            TransferMinionsToHero(clickedHero);
+        }
+        
+        _attackerTimers.Clear();
+        _attackers.Clear();
+        
+        RpcHideSurrenderUI();
+
+        UpdateMinionsLayersForAllPlayers();
+        
+        Surrendered?.Invoke();
+    }
+    
+    private HeroComponent FindHeroByConnection(NetworkConnectionToClient conn)
+    {
+        foreach (var hero in _attackers)
+        {
+            if (hero?.netIdentity?.connectionToClient == conn)
+                return hero;
+        }
+        return null;
     }
 
     [ClientRpc]
@@ -266,51 +300,151 @@ public class MinionCamp : NetworkBehaviour
         var tempMinion = minion.GetComponent<MinionComponent>();
         _minions.Add(tempMinion);
         tempMinion.MyCamp = this;
-        SetMinionLayer(minion);
-    }
-    
-    public void RemoveDeadMinion(MinionComponent minion)
-    {
-        if (minion == _minionLead) _minionLead = null;
-        _minions.Remove(minion);
-    }
-    
-    private void SetMinionLayer(GameObject minion)
-    {
-        switch (_campStatus)
+        
+        foreach (var player in _players)
         {
-            case CampStatus.Neutral:
-                minion.gameObject.layer = LayerMask.NameToLayer("Enemy");
-                break;
-            case CampStatus.DarkTeam:
-                minion.gameObject.layer = LayerMask.NameToLayer("Enemy");
-                break;
-            case CampStatus.LightTeam:
-                minion.gameObject.layer = LayerMask.NameToLayer("Enemy");
-                break;
-            default:
-                minion.gameObject.layer = LayerMask.NameToLayer("Enemy");
-                break;
+            if (player == null) continue;
+
+            var hero = player.GetComponent<HeroComponent>();
+            if (hero == null || hero.netIdentity == null || hero.netIdentity.connectionToClient == null)
+            {
+                int localTeamIndex = hero.NetworkSettings.TeamIndex;
+                SetMinionLayerForClient(minion, localTeamIndex);
+            }
         }
     }
+
 
     [ClientRpc]
     private void RpcAddMinionLead(GameObject minion)
     {
         var tempMinion = minion.GetComponent<MinionComponent>();
         _minionLead = tempMinion;
-        SetMinionLayer(minion);
+
+        foreach (var player in _players)
+        {
+            if (player == null) continue;
+
+            var hero = player.GetComponent<HeroComponent>();
+            if (hero == null || hero.netIdentity == null || hero.netIdentity.connectionToClient == null)
+            {
+                int localTeamIndex = hero.NetworkSettings.TeamIndex;
+                SetMinionLayerForClient(minion, localTeamIndex);
+            }
+        }
     }
 
-    [Command(requiresAuthority = false)]
-    private void CmdIntercept(GameObject minion, GameObject hero)
+    private void SetMinionLayerForClient(GameObject minion, int clientTeamIndex)
     {
-        Debug.Log(minion.GetComponent<MinionComponent>().authority);
-        minion.GetComponent<MinionComponent>().SetAuthority(hero.GetComponent<NetworkIdentity>().connectionToClient);
-        Debug.Log(minion.GetComponent<MinionComponent>().authority);
+        string layerName;
+        
+        switch (_campStatus)
+        {
+            case CampStatus.Neutral:
+                layerName = "Enemy";
+                break;
+                
+            case CampStatus.LightTeam:
+                if (clientTeamIndex == 2)
+                {
+                    layerName = "Allies";
+                }
+                else
+                {
+                    layerName = "Enemy";
+                }
+                break;
+                
+            case CampStatus.DarkTeam:
+                if (clientTeamIndex == 1)
+                {
+                    layerName = "Allies";
+                }
+                else
+                {
+                    layerName = "Enemy";
+                }
+                break;
+                
+            default:
+                layerName = "Enemy";
+                break;
+        }
+        
+        minion.layer = LayerMask.NameToLayer(layerName);
+    }
+    private void UpdateMinionsLayersForAllPlayers()
+    {
+        if (_players == null || _players.Count == 0)
+        {
+            Debug.LogWarning("Players list is empty! Cannot update minion layers.");
+            return;
+        }
 
-        var player = hero.GetComponent<HeroComponent>();
-        player.SpawnComponent.AddUnit(minion.GetComponent<MinionComponent>());
+        foreach (var player in _players)
+        {
+            if (player == null) continue;
+
+            var hero = player.GetComponent<HeroComponent>();
+            if (hero == null || hero.netIdentity == null || hero.netIdentity.connectionToClient == null)
+            {
+                continue;
+            }
+
+            int playerTeamIndex = hero.NetworkSettings.TeamIndex;
+            NetworkConnectionToClient conn = hero.netIdentity.connectionToClient;
+
+            TargetUpdateMinionsLayers(conn, playerTeamIndex);
+        }
+    }
+    
+    [TargetRpc]
+    private void TargetUpdateMinionsLayers(NetworkConnectionToClient conn, int clientTeamIndex)
+    {
+        if (_minionLead != null)
+        {
+            SetMinionLayerForClient(_minionLead.gameObject, clientTeamIndex);
+        }
+
+        foreach (var minion in _minions)
+        {
+            if (minion != null)
+            {
+                SetMinionLayerForClient(minion.gameObject, clientTeamIndex);
+            }
+        }
+        
+        Debug.Log($"[Client] Updated minion layers for team {clientTeamIndex}. Camp status: {_campStatus}");
+    }
+    
+    private void TransferMinionsToHero(HeroComponent hero)
+    {
+        if (hero == null || hero.netIdentity == null || hero.netIdentity.connectionToClient == null)
+        {
+            Debug.LogError("Cannot transfer minions - invalid hero or connection");
+            return;
+        }
+
+        if (_minionLead != null)
+        {
+            _minionLead.SetAuthority(hero.netIdentity.connectionToClient);
+            hero.SpawnComponent.AddUnit(_minionLead);
+        }
+
+        foreach (var minion in _minions)
+        {
+            if (minion != null)
+            {
+                minion.SetAuthority(hero.netIdentity.connectionToClient);
+                hero.SpawnComponent.AddUnit(minion);
+            }
+        }
+    }
+
+    public void RemoveDeadMinion(MinionComponent minion)
+    {
+        if (minion == _minionLead) _minionLead = null;
+        _minions.Remove(minion);
     }
 }
 

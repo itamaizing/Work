@@ -7,14 +7,14 @@ public class CampSurrenderUI : MonoBehaviour
     [SerializeField] private RectTransform _panel;
     [SerializeField] private Button _option1Button;
     [SerializeField] private Button _option2Button;
+    [SerializeField] private MinionCamp _camp;
 
     [Header("Animation")]
     [SerializeField] private float _showDuration = 0.3f;
     [SerializeField] private float _hideDuration = 0.25f;
     [SerializeField] private Ease _showEase = Ease.OutBack;
     [SerializeField] private Ease _hideEase = Ease.InBack;
-
-    private MinionCamp _camp;
+    
     private Tween _currentTween;
 
     private void Awake()
@@ -29,12 +29,12 @@ public class CampSurrenderUI : MonoBehaviour
     {
         if (_option1Button != null)
         {
-            _option1Button.onClick.AddListener(OnOption1);
+            _option1Button.onClick.AddListener(OnTakeLead);
         }
 
         if (_option2Button != null)
         {
-            _option2Button.onClick.AddListener(OnOption2);
+            _option2Button.onClick.AddListener(OnLeaveLead);
         }
     }
 
@@ -63,7 +63,7 @@ public class CampSurrenderUI : MonoBehaviour
     {
         if (_panel == null)
         {
-            Destroy(gameObject);
+            gameObject.SetActive(false);
             return;
         }
 
@@ -74,27 +74,25 @@ public class CampSurrenderUI : MonoBehaviour
             .SetEase(_hideEase)
             .OnComplete(() =>
             {
-                Destroy(gameObject);
+                gameObject.SetActive(false);
             });
     }
 
-    private void OnOption1()
+    private void OnTakeLead()
     {
         if (_camp != null)
         {
-            _camp.CmdChooseOption1();
+            _camp.CmdOnCapture(true);
         }
-
         Hide();
     }
 
-    private void OnOption2()
+    private void OnLeaveLead()
     {
         if (_camp != null)
         {
-            _camp.CmdChooseOption2();
+            _camp.CmdOnCapture(false);
         }
-
         Hide();
     }
 

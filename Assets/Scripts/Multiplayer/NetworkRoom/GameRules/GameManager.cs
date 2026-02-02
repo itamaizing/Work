@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private MonoBehaviour _sourceUI;
     [SerializeField] private TeamsPanel _teamsPanel;
     [SerializeField] private TeamSource _sourceTabl;
+    [SerializeField] private List<MinionCamp> _minionCamps;
 
     private IGameSourceUI _gameSourceUI;
 
@@ -34,4 +35,5 @@ public class GameManager : MonoBehaviour
     public IGameSourceUI SourceUI { get => _gameSourceUI; }
     public TeamsPanel TeamsPanel { get => _teamsPanel; }
     public TeamSource Source { get => _sourceTabl; }
+    public List<MinionCamp> Camps { get => _minionCamps; } 
 }

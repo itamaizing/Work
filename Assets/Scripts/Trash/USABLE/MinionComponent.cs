@@ -53,7 +53,7 @@ public class MinionComponent : Character
         bool b = base.TryTakeDamage(ref damage, skill);
         if (b && skill != null && skill.Hero != null && MyCamp != null)
         {
-            MyCamp.AddAttacker(skill.Hero.netIdentity.connectionToClient);
+            MyCamp.AddAttacker(skill.Hero.gameObject);
         }
         return b;
     }

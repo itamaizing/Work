@@ -100866,6 +100866,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 930308535663925543, guid: 4812c8b9678ac6747a349eeb911e32fd, type: 3}
   m_PrefabInstance: {fileID: 446885937}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &446885939 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1553097900142774207, guid: 4812c8b9678ac6747a349eeb911e32fd, type: 3}
+  m_PrefabInstance: {fileID: 446885937}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c20897b768816484d8c9eff6412bebea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &457199450
 GameObject:
   m_ObjectHideFlags: 0
@@ -183407,6 +183418,8 @@ MonoBehaviour:
   _sourceUI: {fileID: 2105022533}
   _teamsPanel: {fileID: 2105022532}
   _sourceTabl: {fileID: 2369399868655483652}
+  _minionCamps:
+  - {fileID: 446885939}
 --- !u!4 &1113800067
 Transform:
   m_ObjectHideFlags: 0
@@ -240670,6 +240683,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 2739342022316990771, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: _camp
+      value: 
+      objectReference: {fileID: 446885939}
     - target: {fileID: 2944315490237258149, guid: b8fe638bfd764814d950253dca78920a, type: 3}
       propertyPath: m_Layer
       value: 5
@@ -240758,17 +240775,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4491219970960653917, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_IgnoreReversedGraphics
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6136487388383205722, guid: b8fe638bfd764814d950253dca78920a, type: 3}
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6136487388383205722, guid: b8fe638bfd764814d950253dca78920a, type: 3}
       propertyPath: m_SortingLayerID
-      value: -1420622223
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6136487388383205722, guid: b8fe638bfd764814d950253dca78920a, type: 3}
       propertyPath: m_VertexColorAlwaysGammaSpace
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6330037147803364989, guid: b8fe638bfd764814d950253dca78920a, type: 3}
       propertyPath: m_Name

@@ -275,6 +275,12 @@ public abstract class GameRules : NetworkBehaviour
             {
                 _gameManager.Source.AddInSecondTeam(playerSettings);
             }
+            
+            
+            foreach (var camp in _gameManager.Camps)
+            {
+                camp.SetPlayers(item);
+            }
         }
 
         //UnityEngine.Debug.Log("this");
