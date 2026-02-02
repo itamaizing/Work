@@ -1235,6 +1235,7 @@ MonoBehaviour:
   - {fileID: 2152374494346322251, guid: e3f8b1d07bf91a843899c3d8b908fa40, type: 3}
   - {fileID: 3906734254346883187, guid: b4974656f43ed384e9560645ff90b572, type: 3}
   - {fileID: 6581410618162525258, guid: a7f53fff04ebc6947aa302af5c5ecf21, type: 3}
+  - {fileID: 8763643763125113918, guid: 7ca7e11552419974da01f50646019b88, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -1765,7 +1766,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   workOn: {fileID: 1780031975}
   workOff: {fileID: 1791073519}
-  uIMenuMainWindow: {fileID: 0}
+  uIMenuMainWindow: {fileID: 1559230635589990854, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
 --- !u!1 &605208264
 GameObject:
   m_ObjectHideFlags: 0
