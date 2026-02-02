@@ -26,6 +26,8 @@ public class LightningMovement : Skill
     private Vector3 _secondLeapPoint;
     private bool _hasSecondLeap;
 
+    private Coroutine _movementRoutine;
+
     private Character _damagedCharacter;
 
     public bool IsInMovement { get; private set; }
@@ -48,6 +50,12 @@ public class LightningMovement : Skill
 
     private void HandleSkillCanceled()
     {
+        if (_movementRoutine != null)
+        {
+            StopCoroutine(_movementRoutine);
+            _movementRoutine = null;
+        }
+
         if (_player?.Move != null)
         {
             _player.Move.CanMove = true;
@@ -121,95 +129,10 @@ public class LightningMovement : Skill
 
     protected override IEnumerator CastJob()
     {
-        IsInMovement = true;
-        _player.Move.CanMove = false;
-        _damagedCharacter = null;
+        if (_movementRoutine != null) yield return null;
 
-        if (_superFastScales.Data.IsOpen)
-            _superFastScales.IncreasingResistance(Target);
-
-        if (_heatedGlands.Data.IsOpen)
-            _player.CharacterState.AddState(States.HeatedGlands, 4f, 0, _player.gameObject, null);
-
-        _player.CharacterState.CmdAddState(States.Immateriality, _durationLeap, 0, _player.gameObject, Name);
-
-        _leapPoint = CalculateLeapPoint(_leapPoint); //To check distance
-
-        Vector3 direction = (_leapPoint - _player.transform.position).normalized;
-
-        _leapPoint = CalculateLeapPoint(_leapPoint);
-
-        if (!IsValidLeapPoint(_leapPoint))
-        {
-            ClearData();
-            yield break;
-        }
-
-        if (direction.sqrMagnitude > 0.001f) _player.transform.rotation = Quaternion.LookRotation(direction);
-
-        _lightningStrikes.IsUsedLightningStrikes = true;
-        _poisonSlap.IsCanDamageDeal = true;
-
-        StartCoroutine(DamageCheckRoutine());
-
-        bool secondLeapRequested = false;
-
-        _player.Move.SetAnimationMovement((_leapPoint - _player.transform.position).normalized * _player.Move.CurrentSpeed);
-
-        _leapPoint = CalculateLeapPoint(_leapPoint);
-        if (Vector3.Distance(_player.transform.position, _leapPoint) < 0.1f)
-        {
-            ClearData();
-            yield break;
-        }
-
-        _player.Rigidbody.DOMove(_leapPoint, _durationLeap)
-            .SetEase(Ease.InSine)
-            .OnUpdate(() =>
-            {
-                Vector3 velocity = (_leapPoint - _player.transform.position).normalized * _player.Move.CurrentSpeed;
-                _player.Move.SetAnimationMovement(velocity);
-            })
-            .OnComplete(() =>
-            {
-                Debug.Log($"������ ������ �������� �������");
-                _lightningStrikes.IsUsedLightningStrikes = false;
-                _poisonSlap.IsCanDamageDeal = false;
-                _player.Move.StopMoveAndAnimationMove();
-        });
-
-
-        float elapsed = 0;
-
-        //while (elapsed < _durationLeap)
-        //{
-        //    elapsed += Time.deltaTime;
-        //    if (Input.GetMouseButtonDown(0) && !_hasSecondLeap)
-        //    {
-        //        _secondLeapPoint = CalculateLeapPoint(GetMousePoint());
-
-        //        if (!HasObstaclesBetween(_player.transform.position, _secondLeapPoint)) secondLeapRequested = true;
-        //        else _secondLeapPoint = Vector3.positiveInfinity;
-        //    }
-        //    yield return null;
-        //}
-
-        while (elapsed < _durationLeap)
-        {
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        _leapPoint = CalculateLeapPoint(_leapPoint);
-
-        if (!IsValidLeapPoint(_leapPoint))
-        {
-            ClearData();
-            yield break;
-        }
-
-        if (secondLeapRequested && _damagedCharacter != null) ExecuteLeapSecond(_secondLeapPoint);
-        else ClearData();
+        StartCoroutine(MovementRoutine());
+        yield return null;
     }
 
     private void ExecuteLeapSecond(Vector3 pointSecond)
@@ -232,6 +155,76 @@ public class LightningMovement : Skill
               ClearData();
               });
         }
+    }
+
+    private IEnumerator MovementRoutine()
+    {
+        IsInMovement = true;
+        _player.Move.CanMove = false;
+        _damagedCharacter = null;
+
+        if (_superFastScales.Data.IsOpen)
+            _superFastScales.IncreasingResistance(Target);
+
+        if (_heatedGlands.Data.IsOpen)
+            _player.CharacterState.AddState(States.HeatedGlands, 4f, 0, _player.gameObject, null);
+
+        _player.CharacterState.CmdAddState(States.Immateriality, _durationLeap, 0, _player.gameObject, Name);
+
+        _leapPoint = CalculateLeapPoint(_leapPoint);
+
+        if (!IsValidLeapPoint(_leapPoint))
+        {
+            ClearData();
+            yield break;
+        }
+
+        Vector3 direction = (_leapPoint - _player.transform.position).normalized;
+
+        if (direction.sqrMagnitude > 0.001f)
+            _player.transform.rotation = Quaternion.LookRotation(direction);
+
+        _lightningStrikes.IsUsedLightningStrikes = true;
+        _poisonSlap.IsCanDamageDeal = true;
+
+        StartCoroutine(DamageCheckRoutine());
+
+        _player.Move.SetAnimationMovement(direction * _player.Move.CurrentSpeed);
+
+        if (Vector3.Distance(_player.transform.position, _leapPoint) < 0.1f)
+        {
+            ClearData();
+            yield break;
+        }
+
+        Tween moveTween = _player.Rigidbody.DOMove(_leapPoint, _durationLeap)
+            .SetEase(Ease.InSine)
+            .OnUpdate(() =>
+            {
+                Vector3 velocity = (_leapPoint - _player.transform.position).normalized * _player.Move.CurrentSpeed;
+                _player.Move.SetAnimationMovement(velocity);
+            });
+
+        yield return moveTween.WaitForCompletion();
+
+        _lightningStrikes.IsUsedLightningStrikes = false;
+        _poisonSlap.IsCanDamageDeal = false;
+        _player.Move.StopMoveAndAnimationMove();
+
+        if (!IsValidLeapPoint(_leapPoint))
+        {
+            ClearData();
+            yield break;
+        }
+
+        if (_hasSecondLeap && _damagedCharacter != null)
+        {
+            ExecuteLeapSecond(_secondLeapPoint);
+            yield break;
+        }
+
+        ClearData();
+        _movementRoutine = null;
     }
 
     private IEnumerator DamageCheckRoutine()
