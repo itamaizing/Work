@@ -13490,6 +13490,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2446571645698719713}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7643787431872027281}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1642371375121005174}
@@ -13752,8 +13755,6 @@ MonoBehaviour:
   _poisonBall: {fileID: 4719927588574066064}
   _creeperInvisible: {fileID: 6857802422684928800}
   _coldBlood: {fileID: 4616268591970552908}
-  sneakySpit: {fileID: 1964640632880337021}
-  blockPassiveSkill: {fileID: 2446571645698719713}
   _player: {fileID: 2483674839823445686}
   _multiplyCritDamage: 1.5
   _chanceOfCriticalStrike: 0.05
@@ -14653,6 +14654,26 @@ MonoBehaviour:
   maxCounter: 0
   durationWindowsBoost: 5
   blockChance: 50
+--- !u!114 &7643787431872027281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1780458876409769317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbc855bee21f6034a9aee02fb310a675, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CreeperCombo
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  sneakySpit: {fileID: 1964640632880337021}
+  blockPassiveSkill: {fileID: 2446571645698719713}
+  _lightningStrikes: {fileID: 734640227586387152}
+  _creeperStrike: {fileID: 6745892867125186241}
+  _skillManager: {fileID: 2617687491934927079}
 --- !u!114 &2483674839823445686 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
