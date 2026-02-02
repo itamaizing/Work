@@ -22,7 +22,7 @@ public class CocoonSpawn : Skill
     protected override void Awake()
     {
         base.Awake();
-        minionMove.CanMove = false;
+        minionMove.SetCanMove(false);
     }
 
     protected override IEnumerator PrepareJob(System.Action<TargetInfo> callback)

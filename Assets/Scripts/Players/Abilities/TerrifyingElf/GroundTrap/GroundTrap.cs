@@ -66,7 +66,7 @@ public class GroundTrap : Skill
     {
         if (_hero == null || _hero.Move == null) return;
 
-        Hero.Move.CanMove = false;
+        Hero.Move.SetCanMove(false);
         Hero.Move.StopMoveAndAnimationMove();
     }
 
@@ -103,7 +103,7 @@ public class GroundTrap : Skill
 
     private void SkillCastEnd()
     {
-        if (_hero?.Move != null) Hero.Move.CanMove = true;
+        if (_hero?.Move != null) Hero.Move.SetCanMove(true);
         Hero.Animator.speed = 1;
         minDistanceRadiusCircle?.Clear();
 

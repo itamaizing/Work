@@ -226,7 +226,7 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
     {
         _objectData = objectData;
 
-        Initialize(objectData.MaxHealth, objectData.RegenerationAmount, objectData.RegenerationInterval, null);
+        //Initialize(objectData.MaxHealth, objectData.RegenerationAmount, objectData.RegenerationInterval, null, objectData.Attribute);
 
         if (objectData.MaxEndurance)
         {

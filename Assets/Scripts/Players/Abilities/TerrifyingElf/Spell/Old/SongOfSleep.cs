@@ -29,7 +29,7 @@ public class SongOfSleep : Skill
     public void SongOfSleepMove()
     {
         _hero.Move.StopMoveAndAnimationMove();
-        Hero.Move.CanMove = false;
+        Hero.Move.SetCanMove(false);
     }
 
     private void OnDestroy()
@@ -46,7 +46,7 @@ public class SongOfSleep : Skill
     {
         if (_hero?.Move != null)
         {
-            Hero.Move.CanMove = true;
+            Hero.Move.SetCanMove(true);
             Hero.Move.StopLookAt();
         }
     }
@@ -78,7 +78,7 @@ public class SongOfSleep : Skill
         if (_centerPoint != Vector3.positiveInfinity)
         {
             ApplyStateEnemiesInZone();
-            Hero.Move.CanMove = true;
+            Hero.Move.SetCanMove(true);
             ClearData();
             yield return null;
         }

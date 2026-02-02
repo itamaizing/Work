@@ -73,7 +73,7 @@ public class JumpWithChelicera : Skill
     {
         if (_hero == null || _hero.Move == null) return;
         _hero.Move.StopMoveAndAnimationMove();
-        _hero.Move.CanMove = false;
+        _hero.Move.SetCanMove(false);
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -169,7 +169,7 @@ public class JumpWithChelicera : Skill
     {
         _animator.applyRootMotion = false;
         _player.Move.StopLookAt();
-        Hero.Move.CanMove = true;
+        Hero.Move.SetCanMove(true);
         if (_trackMovementDuringJumpCoroutine != null) StopCoroutine(_trackMovementDuringJumpCoroutine);
         AnimCastEnded();
     }

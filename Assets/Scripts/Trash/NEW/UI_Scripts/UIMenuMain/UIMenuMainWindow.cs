@@ -69,7 +69,7 @@ public class UIMenuMainWindow : MonoBehaviour
         
         _abilitiesPanel.Show(hero.Abilities);
         
-        _attributesPanel.Show(hero.Data.Attributes);
+        //_attributesPanel.Show(hero.Data.Attributes);
 
         _talentsPanel.Show(hero.TalentManager, false);
     }

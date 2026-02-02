@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ManaRegen : AbstractCharacterState
 {
-    private float _duration;
     private GameObject _manaRegen;
 
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
@@ -16,10 +15,7 @@ public class ManaRegen : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _duration = durationToExit;
-        _characterState = character;
-        _personWhoMadeBuff = personWhoMadeBuff;
-        _manaRegen = _characterState.StateEffects.ManaRegen;
+        _manaRegen = characterState.StateEffects.ManaRegen;
 
         if (_manaRegen) _manaRegen.SetActive(true);
     }
@@ -28,8 +24,8 @@ public class ManaRegen : AbstractCharacterState
     {
         if (_manaRegen) _manaRegen.SetActive(false);
 
-        _characterState.StateIcons.RemoveItemByState(State);
-        _characterState.RemoveState(this);
+        characterState.StateIcons.RemoveItemByState(State);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -39,8 +35,5 @@ public class ManaRegen : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-
-        if (_duration <= 0) ExitState();
     }
 }

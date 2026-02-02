@@ -288,7 +288,7 @@ public class CheliceraStrike : Skill
 
     public void CheliceraStrikePreparingForAnim()
     {
-        _player.Move.CanMove = false;
+        _player.Move.SetCanMove(false);
         _hero.Move.StopMoveAndAnimationMove();
         if (_attackingPsionicEnergy.IsAttackingPsiEnergy && _attackingPsionicEnergy.CurrentValue > 0f) TrySpendAttackingPsi();
         else _spentAttackingPsiEnergy = 0;
@@ -308,7 +308,7 @@ public class CheliceraStrike : Skill
     {
         OnCheliceraStrikeEnd?.Invoke();
         _player.Move.StopLookAt();
-        _player.Move.CanMove = true;
+        _player.Move.SetCanMove(true);
         AnimCastEnded();
     }
 

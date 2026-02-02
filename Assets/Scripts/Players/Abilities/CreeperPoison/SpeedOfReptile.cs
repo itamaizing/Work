@@ -14,6 +14,7 @@ public class SpeedOfReptile : Skill
     private float _increaseMoveSpeed = 2f;
     private float _increaseAttackSpeed = 2f;
     private float _increaseEvasion = 2f;
+    private AttributeModifiers _modif;
 
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
@@ -58,9 +59,12 @@ public class SpeedOfReptile : Skill
     {
         _player.Health.ResistMagDamage *= _increaseEvasion;
         _player.Health.EvadeMeleeDamage *= _increaseEvasion; 
-        _player.Health.EvadeRangeDamage *= _increaseEvasion; 
+        _player.Health.EvadeRangeDamage *= _increaseEvasion;
 
-        _player.Move.ChangeMoveSpeed(_increaseMoveSpeed);
+        //_player.Move.ChangeMoveSpeed(_increaseMoveSpeed);
+        _modif.Value = _increaseMoveSpeed;
+        _modif.Type = ModifierType.Multiplier;
+        _player.Move.AddModifier(_modif);
     }
 
     [Command]
@@ -70,7 +74,9 @@ public class SpeedOfReptile : Skill
         _player.Health.EvadeMeleeDamage /= _increaseEvasion;
         _player.Health.EvadeRangeDamage /= _increaseEvasion;
 
-        _player.Move.SetDefaultSpeed();
+        //_player.Move.SetDefaultSpeed();
+
+        _player.Move.RemoveModifier(_modif);
     }
 
 }

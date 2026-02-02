@@ -197,6 +197,6 @@ public class IceCloud : Skill
 		AnimCastEnded();
 	}
 
-	public void CanMoveIceCloud() => Hero.Move.CanMove = true;
-	public void StopMoveIceCloud() => Hero.Move.CanMove = false;
+	public void CanMoveIceCloud() => Hero.Move.SetCanMove(true);
+	public void StopMoveIceCloud() => Hero.Move.SetCanMove(false);
 }

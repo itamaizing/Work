@@ -4,8 +4,9 @@ using UnityEngine;
 public class HeroComponent : Character
 {
     [SerializeField] private TalentSystem talentManager;
-
+    [SerializeField] private GameObject _menuPreview;
     public TalentSystem TalentManager => talentManager;
+    public GameObject MenuPreview => _menuPreview;
 
     public override void Initialize()
     {
