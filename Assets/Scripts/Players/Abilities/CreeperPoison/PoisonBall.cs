@@ -188,6 +188,19 @@ public class PoisonBall : Skill, IAltAbility
 
     #region PrepareAndStartJob
 
+    private void PostPrepearClear()
+    {
+        ClearArrows();
+        SkillRender.ClearFixedLookPoint();
+        _firstMousePosition = Vector3.positiveInfinity;
+        _secondMousePosition = Vector3.zero;
+        _thirdMousePosition = Vector3.zero;
+
+        _secondClickDone = false;
+        _thirdClickDone = false;
+        _firstClickDone = false;
+    }
+
     protected override void ClearData()
     {
         if (_animTime > 0)
@@ -199,21 +212,14 @@ public class PoisonBall : Skill, IAltAbility
             Invoke("CancelCoroutine", timerForCancelCoroutine);
         }
 
-        ClearArrows();
-
         ClearTarget();
-        SkillRender.ClearFixedLookPoint();
         //_currentTarget = null;
 
-        _firstMousePosition = Vector3.positiveInfinity;
-        _secondMousePosition = Vector3.zero;
-        _thirdMousePosition = Vector3.zero;
-
         _isTarget = false;
-        _secondClickDone = false;
-        _thirdClickDone = false;
         _isAbilityActive = false;
-        _firstClickDone = false;
+
+        PostPrepearClear();
+
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -314,6 +320,7 @@ public class PoisonBall : Skill, IAltAbility
         }
 
         UseAbility();
+        PostPrepearClear();
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(targetPoint);
