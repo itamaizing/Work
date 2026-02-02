@@ -62,6 +62,7 @@ public class LightningMovement : Skill
             _player.Move.StopMoveAndAnimationMove();
         }
 
+        FinalizeMovement();
         ClearData();
     }
 
@@ -85,18 +86,20 @@ public class LightningMovement : Skill
         _leapPoint = targetInfo.Points[0];
     }
 
-    protected override void ClearData()
+    private void FinalizeMovement()
     {
-
-        if (_player?.Rigidbody != null)
-        {
-            DOTween.Kill(_player.Rigidbody);
-        }
-
-        IsInMovement = false;
+        _lightningStrikes.IsUsedLightningStrikes = false;
+        _poisonSlap.IsCanDamageDeal = false;
+        if (DOTween.IsTweening(_player.Rigidbody)) DOTween.Kill(_player.Rigidbody);
         _player.Move.CanMove = true;
         _player.Move.StopMoveAndAnimationMove();
-        _player.Move.StopLookAt();
+
+        IsInMovement = false;
+        _movementRoutine = null;
+    }
+
+    protected override void ClearData()
+    {
         Target = null;
         _hasSecondLeap = false;
         _secondLeapPoint = Vector3.positiveInfinity;
@@ -175,7 +178,7 @@ public class LightningMovement : Skill
 
         if (!IsValidLeapPoint(_leapPoint))
         {
-            ClearData();
+            FinalizeMovement();
             yield break;
         }
 
@@ -193,7 +196,7 @@ public class LightningMovement : Skill
 
         if (Vector3.Distance(_player.transform.position, _leapPoint) < 0.1f)
         {
-            ClearData();
+            FinalizeMovement();
             yield break;
         }
 
@@ -213,7 +216,7 @@ public class LightningMovement : Skill
 
         if (!IsValidLeapPoint(_leapPoint))
         {
-            ClearData();
+            FinalizeMovement();
             yield break;
         }
 
@@ -223,7 +226,7 @@ public class LightningMovement : Skill
             yield break;
         }
 
-        ClearData();
+        FinalizeMovement();
         _movementRoutine = null;
     }
 
