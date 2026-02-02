@@ -1465,7 +1465,7 @@ public abstract class Skill : NetworkBehaviour
                 _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
                 _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
                 _hero.Move.StopLookAt();
-                _hero.Move.CanMove = true;
+                Hero.Move.SetCanMove(true);
 
                 ClearData();
                 CastEnded?.Invoke();
