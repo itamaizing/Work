@@ -193,24 +193,24 @@ public class PoisonBall : Skill, IAltAbility
         ClearArrows();
         SkillRender.ClearFixedLookPoint();
         _firstMousePosition = Vector3.positiveInfinity;
-        _secondMousePosition = Vector3.zero;
-        _thirdMousePosition = Vector3.zero;
+        _secondMousePosition = Vector3.positiveInfinity;
+        _thirdMousePosition = Vector3.positiveInfinity;
 
         _secondClickDone = false;
         _thirdClickDone = false;
         _firstClickDone = false;
-    }
-
-    protected override void ClearData()
-    {
-        if (_animTime > 0)
-            _player.Animator.SetFloat("PoisonBallMultiplierSpeedAnimation", _baseMultiplierAnimationSpeed);
 
         if (_isAbilityActive)
         {
             float timerForCancelCoroutine = 0.2f;
             Invoke("CancelCoroutine", timerForCancelCoroutine);
         }
+    }
+
+    protected override void ClearData()
+    {
+        if (_animTime > 0)
+            _player.Animator.SetFloat("PoisonBallMultiplierSpeedAnimation", _baseMultiplierAnimationSpeed);
 
         ClearTarget();
         //_currentTarget = null;
@@ -314,7 +314,6 @@ public class PoisonBall : Skill, IAltAbility
                 _thirdMousePosition = click;
 
                 SkillRender.StopDrawLine();
-                ClearArrows();
             }
             yield return null;
         }
