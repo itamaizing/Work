@@ -26,8 +26,6 @@ public class CreeperStrike : Skill
     [SerializeField] private PoisonBall _poisonBall;
     [SerializeField] private CreeperInvisible _creeperInvisible;
     [SerializeField] private ColdBlood _coldBlood;
-    [SerializeField] private SneakySpit sneakySpit;
-    [SerializeField] private BlockPassiveSkill blockPassiveSkill;
 
     [Header("Ability properties")]
     [SerializeField] private Character _player;
@@ -294,40 +292,40 @@ public class CreeperStrike : Skill
         }
 
         int countToRegister = (isUsingLightningStrikes ? 2 : 1);
-        TryTriggerWindow(character, countToRegister);
+        //TryTriggerWindow(character, countToRegister);
     }
 
     #region Combo Creeper
 
-    private void TryTriggerWindow(Character target, int repeatCount = 1)
-    {
-        if (target == null) return;
-        if (_recentTargets.Exists(character => character == null || character.IsDead)) _recentTargets.Clear();
+    //private void TryTriggerWindow(Character target, int repeatCount = 1)
+    //{
+    //    if (target == null) return;
+    //    if (_recentTargets.Exists(character => character == null || character.IsDead)) _recentTargets.Clear();
 
-        RegisterRecentTarget(target, repeatCount);
+    //    RegisterRecentTarget(target, repeatCount);
 
-        bool sameTargetTwoTimes = _recentTargets.Count >= 2 && _recentTargets[0] == _recentTargets[1];
-        bool sameTargetThreeTimes = SameTargetCastCounter(3);
+    //    bool sameTargetTwoTimes = _recentTargets.Count >= 2 && _recentTargets[0] == _recentTargets[1];
+    //    bool sameTargetThreeTimes = SameTargetCastCounter(3);
 
-        if (_recentTargets.Count >= 4 && _recentTargets[3] != _recentTargets[0]) CmdTriggerSneakySpitWindowCancel();
+    //    if (_recentTargets.Count >= 4 && _recentTargets[3] != _recentTargets[0]) CmdTriggerSneakySpitWindowCancel();
 
-        if (sameTargetThreeTimes && IsDoubleCreeperChain())
-        {
-            CmdTriggerSneakySpitFreeWindow(target);
-            ClearRecentTargetsNow();
-        }
-        else if (sameTargetTwoTimes && IsStrikeCombo())
-        {
-            CmdTriggerSneakySpitFreeWindow(target);
-            ClearRecentTargetsNow();
-        }
+    //    if (sameTargetThreeTimes && IsDoubleCreeperChain())
+    //    {
+    //        CmdTriggerSneakySpitFreeWindow(target);
+    //        ClearRecentTargetsNow();
+    //    }
+    //    else if (sameTargetTwoTimes && IsStrikeCombo())
+    //    {
+    //        CmdTriggerSneakySpitFreeWindow(target);
+    //        ClearRecentTargetsNow();
+    //    }
 
-        if (sameTargetTwoTimes && IsCreeperChain())
-        {
-            CmdBlockPassiveSkillFreeWindow(target);
-            ClearRecentTargetsNow();
-        }
-    }
+    //    if (sameTargetTwoTimes && IsCreeperChain())
+    //    {
+    //        CmdBlockPassiveSkillFreeWindow(target);
+    //        ClearRecentTargetsNow();
+    //    }
+    //}
 
     private bool IsCreeperChain()
     {
@@ -507,31 +505,6 @@ public class CreeperStrike : Skill
     }
 
     [Command] private void CmdDamageDeal(Damage damage, GameObject target) => ApplyDamage(damage, target);
-
-    [Command] private void CmdTriggerSneakySpitFreeWindow(Character target) => RpcTriggerSneakySpitWindow(target);
-
-    [Command] private void CmdTriggerSneakySpitWindowCancel() => RpcTriggerSneakySpitWindowCancel();
-
-    [Command] private void CmdBlockPassiveSkillFreeWindow(Character target) => RpcBlockPassiveSkillFreeWindow(target);
-
-    [ClientRpc]
-    private void RpcTriggerSneakySpitWindow(Character target)
-    {
-        if (sneakySpit != null) sneakySpit.TryStartSneakySpitBoostWindow(target);
-    }
-
-    [ClientRpc]
-    private void RpcTriggerSneakySpitWindowCancel()
-    {
-        if (sneakySpit != null) sneakySpit.CancelBoostWindow();
-    }
-
-    [ClientRpc]
-    private void RpcBlockPassiveSkillFreeWindow(Character target)
-    {
-        if (blockPassiveSkill != null) blockPassiveSkill.TryStartBlockPassiveSkillBoostWindow(target);
-    }
-
     #endregion
 
     public override void LoadTargetData(TargetInfo targetInfo)
