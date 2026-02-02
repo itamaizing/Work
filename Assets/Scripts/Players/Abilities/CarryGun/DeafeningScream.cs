@@ -34,7 +34,7 @@ public class DeafeningScream : Skill
         Hero.Animator.applyRootMotion = false;
         _playerLinks.Move.StopLookAt();
         Hero.Move.SetCanMove(true);
-        _isCanCancle = true;
+        _isCanCancel = true;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -48,7 +48,7 @@ public class DeafeningScream : Skill
                 FindTargetCharacter();
 
                 if (GetTargetCharacter() != null) if (GetTargetCharacter() is Character characterTarget) _runtimeTarget = characterTarget;
-                _isCanCancle = false;
+                _isCanCancel = false;
             }
             yield return null;
         }
@@ -103,13 +103,13 @@ public class DeafeningScream : Skill
     {
         AnimCastEnded();
         HandleJumpEnd();
-        _isCanCancle = true;
+        _isCanCancel = true;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0) SetTarget((ITargetable)(targetInfo.GetTargets()[0] as Character));
         Hero.Move.LookAtTransform(GetTargetCharacter().transform);
-        _isCanCancle = false;
+        _isCanCancel = false;
     }
-}
+}

@@ -5,11 +5,11 @@ public class AttributeSystem : MonoBehaviour
 {
     private CharacterData _data;
 
-    private Dictionary<BasicAttributeName, Attribute> _attributes;    
+    private Dictionary<BasicAttributeName, Attribute> _attributes = new();    
     public Dictionary<BasicAttributeName, Attribute> Attributes => _attributes;
 
     private ResourceType mainResourceType;
-    private Dictionary<ResourceType, ResourceAttribute> _resources;
+    private Dictionary<ResourceType, ResourceAttribute> _resources = new();
     public Dictionary<ResourceType, ResourceAttribute> Resources => _resources;
     public Attribute HPMax => _resources[ResourceType.Health].Attributes[ResourceAttributeName.MaxValue];
     public Attribute HPRegen => _resources[ResourceType.Health].Attributes[ResourceAttributeName.Regen];
@@ -47,4 +47,4 @@ public class ResourceAttribute
             _attributes.Add(attribute.type, new Attribute(attribute.value));
         }
     }
-}
+}

@@ -154,7 +154,7 @@ public abstract class Skill : NetworkBehaviour
 
     protected SkillRenderer _skillRender;
     protected Character _hero;
-    protected bool _isCanCancle = true;
+    protected bool _isCanCancel = true;
     protected Coroutine _prepareCoroutine;
     protected Coroutine _castCoroutine;
     protected Coroutine _cooldownJob;
@@ -203,7 +203,7 @@ public abstract class Skill : NetworkBehaviour
         }
     }
 
-    public bool IsCanCancle { get => _isCanCancle; set => _isCanCancle = value; }
+    public bool IsCanCancel { get => _isCanCancel; set => _isCanCancel = value; }
     public bool IsAutoRadiusRender => _isAutoRadiusRender;
     public bool IsTalentSpell => _isTalentSpell;
     public bool IsSkillActive
@@ -421,6 +421,7 @@ public abstract class Skill : NetworkBehaviour
             _currentChargers = 1;
     }
 
+    #region Target Related
     public ITargetable GetTarget(bool canGetDead = false)
     {
 		if (_target != null)
@@ -543,6 +544,7 @@ public abstract class Skill : NetworkBehaviour
     {
         _target = null; 
     }
+#endregion
 
     public void EnableSkillBoost()
     {
@@ -556,6 +558,7 @@ public abstract class Skill : NetworkBehaviour
         BoostDisabled?.Invoke();
     }
 
+    #region Cast Related
     public void InvokeCastStreamStarted(float duration)
     {
         CastStreamStarted?.Invoke(duration);
@@ -568,7 +571,7 @@ public abstract class Skill : NetworkBehaviour
             foreach(var skillCost in _skillEnergyCosts)
             {
 				//var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.resourceType);
-				var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+				var resource = _hero.Resources[skillCost.resourceType];
                 resource.PhantomValueShow(skillCost.resourceCost);
             }
             _actionWrapperForPreparingCoroutine = StartCoroutine(ActionWrapperForPreparingJob());
@@ -664,17 +667,17 @@ public abstract class Skill : NetworkBehaviour
         }
     }
 
-    public bool TryCancel(bool foceCancel = false)
+    public bool TryCancel(bool forceCancel = false)
     {
 		foreach (var skillCost in _skillEnergyCosts)
 		{
 			//var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.resourceType);
-			var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+			var resource = _hero.Resources[skillCost.resourceType];
 			resource.PhantomValueShow(0);
 			//resourse.
 		}
 
-		if (foceCancel || _isCanCancle)
+		if (forceCancel || _isCanCancel)
         {
             Canceled?.Invoke();
             _hero.Move.SetCanMove(true);
@@ -728,7 +731,9 @@ public abstract class Skill : NetworkBehaviour
             return false;
         }
     }
+    #endregion
 
+    #region Cooldown Related
     public void IncreaseSetCooldown(float time)
     {
         if (time < _remainingCooldownTime)
@@ -798,12 +803,13 @@ public abstract class Skill : NetworkBehaviour
 
         ChargeCooldownEnded?.Invoke(index);
     }
+    #endregion
 
     public void CheckResources()
     {
         foreach (var skillCost in _skillEnergyCosts)
         {
-            var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.resourceType).Sum(r => r.CurrentValue);
+            var currentResourceValue = _hero.Resources[skillCost.resourceType].CurrentValue;
 
             if (currentResourceValue < Buff.ManaCost.GetBuffedValue(skillCost.resourceCost))
             {
@@ -839,9 +845,10 @@ public abstract class Skill : NetworkBehaviour
     private bool CheckResourcesOnSkill()
     {
         return _skillEnergyCosts.All(skillCost =>
-            _hero.Resources.Where(r => r.Type == skillCost.resourceType).Sum(r => r.CurrentValue) >= Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
+            _hero.Resources[skillCost.resourceType].CurrentValue >= Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
     }
 
+    #region Charge Related
     public void AddMaxChargeCount()
     {
         _maxCharges += 1;
@@ -897,7 +904,29 @@ public abstract class Skill : NetworkBehaviour
             }
         }
     }
+    #endregion
 
+
+    #region Animation Related
+    [ClientCallback]
+    protected void AnimStartCastCoroutine()
+    {
+        _castCoroutine = StartCoroutine(CastJob());
+        if (_castDuration > 0) _castStreamCoroutine = StartCoroutine(CastStreamJob());
+    }
+
+    protected virtual void AnimCastEnded()
+    {
+        _isPlayCastAnim = false;
+    }
+
+    protected virtual void PlayCastAnim(bool value)
+    {
+        _isPlayCastAnim = value;
+    }
+    #endregion
+
+    #region Display Related
     public void DrawDamageZone(Vector3 position)
     {
         Damage damage = new Damage
@@ -928,24 +957,6 @@ public abstract class Skill : NetworkBehaviour
     public void ClientStopDamageZone()
     {
         _skillRender.RemoveNextDamageZone();
-    }
-
-
-    [ClientCallback]
-    protected void AnimStartCastCoroutine()
-    {
-        _castCoroutine = StartCoroutine(CastJob());
-        if (_castDuration > 0) _castStreamCoroutine = StartCoroutine(CastStreamJob());
-    }
-
-    protected virtual void AnimCastEnded()
-    {
-        _isPlayCastAnim = false;
-    }
-
-    protected virtual void PlayCastAnim(bool value)
-    {
-        _isPlayCastAnim = value;
     }
 
     protected virtual IEnumerator DynamicRendererJob(float time = 0.2f)
@@ -1020,6 +1031,7 @@ public abstract class Skill : NetworkBehaviour
 			enemy.SelectedCircle.IsActive = false;
 		}*/
     }
+#endregion
 
     protected virtual bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
     {
@@ -1027,7 +1039,7 @@ public abstract class Skill : NetworkBehaviour
         {
             foreach (var skillCost in skillEnergyCosts)
             {
-                var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+                var resource = _hero.Resources[skillCost.resourceType];
                 resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
             }
 
@@ -1371,7 +1383,7 @@ public abstract class Skill : NetworkBehaviour
 
             foreach (var skillCost in _manaCostPerTick)
             {
-                var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.resourceType).Sum(r => r.CurrentValue);
+                var currentResourceValue = _hero.Resources[skillCost.resourceType].CurrentValue;
 
                 if (currentResourceValue < Buff.ManaCost.GetBuffedValue(skillCost.resourceCost))
                 {
@@ -1379,7 +1391,7 @@ public abstract class Skill : NetworkBehaviour
                 }
                 else
                 {
-                    var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+                    var resource = _hero.Resources[skillCost.resourceType];
                     resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
                 }
             }
@@ -1454,7 +1466,7 @@ public abstract class Skill : NetworkBehaviour
                 //*
                 if (_tempForDamage != null && !IsValidTarget(_tempForDamage))
                 {
-                    _isCanCancle = true;
+                    _isCanCancel = true;
                     _hero.Move.SetCanMove(true);
 
                     TryCancel(true);
@@ -1672,4 +1684,4 @@ public abstract class Skill : NetworkBehaviour
         InputHandler.OnSpacetLeftMouseCanceled -= OnClickCanceled;
 
     }
-}
+}

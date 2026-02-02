@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,6 +16,7 @@ public static class DB_Attribute
 
 
     public readonly static string AttributeFolder = "Assets/Resources/AttributeSystem"; // По хорошему надо в отдельном конфиг-файле, но пока подобная система одна
+    public readonly static string AttributeRelativeFolder = "AttributeSystem"; // По хорошему надо в отдельном конфиг-файле, но пока подобная система одна
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     public static void InitAttributeDatabase()
@@ -25,18 +25,32 @@ public static class DB_Attribute
         _basicAttributes.Clear();
         _extraAttributes.Clear();
 
-        var resources = Resources.LoadAll<SO_ResourceData>($"{AttributeFolder}/ResourceAttributes");
+        var resources = Resources.LoadAll<SO_ResourceData>($"{AttributeRelativeFolder}/ResourceAttributes");
         foreach ( var resource in resources )
             _resourceAttributes.Add(resource.type, resource);
         
-        var basic = Resources.LoadAll<SO_AttributeData>($"{AttributeFolder}/BasicAttributes");
+        var basic = Resources.LoadAll<SO_AttributeData>($"{AttributeRelativeFolder}/BasicAttributes");
         foreach ( var attribute in basic )
             _basicAttributes.Add(attribute.type, attribute);
         
-        var extra = Resources.LoadAll<SO_AttributeData>($"{AttributeFolder}/ExtraAttributes");
+        var extra = Resources.LoadAll<SO_AttributeData>($"{AttributeRelativeFolder}/ExtraAttributes");
         foreach ( var attribute in extra )
             _extraAttributes.Add(attribute.type, attribute);
         Debug.Log(_resourceAttributes.Count);
+    }
+
+    public static Type GetResourceClass(ResourceType type)
+    {
+        switch (type)
+        {
+            case ResourceType.Health: return typeof(Health);
+            case ResourceType.Mana: return typeof(Mana);
+            case ResourceType.Energy: return typeof(Energy);
+            case ResourceType.Rune: return typeof(RuneComponent);
+            case ResourceType.Psionic: return typeof(BasePsionicEnergy);
+            case ResourceType.CooldownEnergy: return typeof(CooldownEnergy);
+            default: return null;
+        }
     }
 
 #if UNITY_EDITOR
@@ -77,10 +91,6 @@ public static class DB_Attribute
 #region enums
 public enum BasicAttributeName
 {
-    //Health,
-    //HealthRegen,
-    //ResourceMaxValue,
-    //ResourceRegen,
     ResistancePhysical,
     ResistanceMagical,
     EvasionPhysical,
@@ -99,4 +109,4 @@ public enum ResourceAttributeName
     Regen,
     //ResourceDelay,
 }
-#endregion
+#endregion

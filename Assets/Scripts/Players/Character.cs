@@ -9,20 +9,20 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 {
 	[SerializeField] private CharacterData _playerData;
 	[SerializeField] private AttributeSystem _attributeSystem;
-	[SerializeField] private UserNetworkSettings _networkSettings; 
+	[SerializeField] private UserNetworkSettings _networkSettings;
 	[SerializeField] private Rigidbody _rigidbody;
 	[SerializeField] private Collider _collider;
 	[SerializeField] private Level _lvl;
 	[SerializeField] private Animator _animator;
 	[SerializeField] private NetworkAnimator _networkAnimator;
 	[SerializeField] private Health _healthComponent;
-	[SerializeField] private MoveComponent _playerMove; 
+	[SerializeField] private MoveComponent _playerMove;
 	[SerializeField] private SkillManager _abilities;
 	[SerializeField] private CharacterState _characterState;
 	[SerializeField] private UIPlayerComponents uiComponent;
 	[SerializeField] private SelectComponent _selectComponent;
 	[SerializeField] private DamageTracker _damageTracker;
-	[SerializeField] private List<Resource> _resources;
+	[SerializeField] private Dictionary<ResourceType, Resource> _resources = new();
 	[SerializeField] private SelectedCircle _selectedCircle;
 	[SerializeField] private SpawnComponent _spawnComponent;
 	[SerializeField] private VisionComponent _visionComponent;
@@ -53,7 +53,14 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 	public UIPlayerComponents UIComponent => uiComponent;
 	public SelectComponent SelectComponent => _selectComponent;
 	public DamageTracker DamageTracker => _damageTracker;
-	public List<Resource> Resources => _resources;
+	/// <summary>
+	/// Main resource
+	/// </summary>
+	public Resource Resource { get; private set; }
+	/// <summary>
+	/// All of resources
+	/// </summary>
+	public Dictionary <ResourceType, Resource> Resources => _resources;
 	public SelectedCircle SelectedCircle => _selectedCircle;
     public Animator Animator => _animator;
 	public TargetSeeker TargetSeeker => _targetSeeker;
@@ -126,6 +133,9 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
     public virtual void Initialize()
 	{
         AttributeSystem.Init(Data);
+		Debug.Log($"Resources{_resources.Count}");
+		EnsureResources();
+		Resource = _resources[Data.Resource.type];
         Move.Initialize(Rigidbody , AttributeSystem.MoveSpeed, true);
 		CharacterState.Initialize(this);
 		SelectComponent.Initialize(Move,Abilities,UIComponent);
@@ -133,6 +143,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 
 		foreach (var resource in Resources)
 		{
+
             /*if (resource.Type == ResourceType.Health)
 			{
 				resource.Initialize(
@@ -165,29 +176,53 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 					Data.GetAttributeValue(AttributeNames_old.RuneRegenDelay), 
 					Data, AttributeSystem.Resourse);
 			}*/
-            if (resource.Type == ResourceType.Health)
-            {
-                resource.Initialize(
-                     AttributeSystem.HPMax, AttributeSystem.HPRegen, Data);
-            }
-            if (resource.Type == ResourceType.Energy)
-            {
-                resource.Initialize(
-                     AttributeSystem.ResourceMax, AttributeSystem.ResourceRegen, Data);
-            }
-            if (resource.Type == ResourceType.Mana)
-            {
-                resource.Initialize(
-                     AttributeSystem.ResourceRegen, AttributeSystem.ResourceRegen, Data);
-            }
-            if (resource.Type == ResourceType.Rune)
-            {
-                resource.Initialize(
-                     AttributeSystem.ResourceMax, AttributeSystem.ResourceRegen, Data);
-            }
+
         }
 
 		Health.Died += AddDeadCounter;
+	}
+
+	private void EnsureResources()
+	{
+        foreach (var resource in _attributeSystem.Resources)
+		{
+			var component = gameObject.GetComponent(DB_Attribute.GetResourceClass(resource.Key));
+			if (component == null)
+			{
+				Debug.Log($"Could not find {resource.Key.ToString()}");
+				component = gameObject.AddComponent(DB_Attribute.GetResourceClass(resource.Key));
+			}
+			Debug.Log($"Now i have {resource.Key.ToString()}", gameObject);
+			_resources.Add(resource.Key, (Resource)component);
+            //_resources.Add(resource.Key, new Resource(resource.Key));
+        }
+		    //var resComponent = GetOrAddResourceClass<Mana>();
+            //_resources.Keys.GetFe
+            // TODO: Брать/спавнить компоненты ресурсов (через switch брать компонент, криво но будет работать)
+
+        foreach (var resource in Resources)
+		{
+            if (resource.Value.Type == ResourceType.Health)
+            {
+                resource.Value.Initialize(
+                     AttributeSystem.HPMax, AttributeSystem.HPRegen, Data);
+            }
+            if (resource.Value.Type == ResourceType.Energy)
+            {
+                resource.Value.Initialize(
+                     AttributeSystem.ResourceMax, AttributeSystem.ResourceRegen, Data);
+            }
+            if (resource.Value.Type == ResourceType.Mana)
+            {
+                resource.Value.Initialize(
+                     AttributeSystem.ResourceRegen, AttributeSystem.ResourceRegen, Data);
+            }
+            if (resource.Value.Type == ResourceType.Rune)
+            {
+                resource.Value.Initialize(
+                     AttributeSystem.ResourceMax, AttributeSystem.ResourceRegen, Data);
+            }
+        }
 	}
 
 	private void OnCharacterParentChanged(uint oldNetId, uint newNetId)
@@ -269,10 +304,15 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 		}
 		AuthorityOnUnitDeleted?.Invoke(this);
 	}
-	
+
 	public Resource TryGetResource(ResourceType type)
 	{
-		return Resources.FirstOrDefault(r => r.Type == type);
+		return _resources[type];
+	}
+
+	public bool TryGetResource(ResourceType type, out Resource resource)
+	{
+		return _resources.TryGetValue(type, out resource);
 	}
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
@@ -317,7 +357,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 		_playerMove.enabled = false;
 		_abilities.CancleAllSkills();
 
-		foreach (var item in _resources)
+		foreach (var item in _resources.Values)
         {
 			item.enabled = false;
         }
@@ -333,7 +373,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 		_rigidbody.isKinematic = false;
 		_playerMove.enabled = true;
 
-		foreach (var item in _resources)
+		foreach (var item in _resources.Values)
 		{
 			item.enabled = true;
 

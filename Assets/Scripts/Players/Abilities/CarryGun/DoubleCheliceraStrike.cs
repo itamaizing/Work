@@ -79,7 +79,7 @@ public class DoubleCheliceraStrike : Skill
     {
         ClearTarget();
         //_target = null;
-        _isCanCancle = true;
+        _isCanCancel = true;
     }
 
     private void DealDoubleCheliceraStrikeDamage(IDamageable targetCharacter)
@@ -104,7 +104,7 @@ public class DoubleCheliceraStrike : Skill
 
     public void DoubleCheliceraStrikeEnded()
     {
-        _isCanCancle = true;
+        _isCanCancel = true;
         AnimCastEnded();
     }
 
@@ -120,7 +120,7 @@ public class DoubleCheliceraStrike : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0) SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
-        _isCanCancle = false;
+        _isCanCancel = false;
     }
 
     protected override void ClearData()
@@ -128,4 +128,4 @@ public class DoubleCheliceraStrike : Skill
         ClearTarget();
         //_target = null;
     }
-}
+}

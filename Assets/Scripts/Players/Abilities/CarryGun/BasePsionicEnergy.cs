@@ -268,4 +268,4 @@ public class BasePsionicEnergy : Resource, IDamageable
 
         base.Add(value);
     }
-}
+}

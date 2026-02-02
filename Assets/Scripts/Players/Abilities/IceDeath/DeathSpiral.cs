@@ -2,7 +2,6 @@ using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -306,7 +305,7 @@ public class DeathSpiral : Skill
 		{
 			foreach (var skillCost in _skillEnergyCosts)
 			{
-				var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+				var resource = _hero.Resources[skillCost.resourceType];
 				resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
 			}
 			_firstShot = false;

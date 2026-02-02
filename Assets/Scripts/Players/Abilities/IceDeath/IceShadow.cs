@@ -2,10 +2,8 @@ using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class IceShadow : Skill
 {
@@ -47,13 +45,7 @@ public class IceShadow : Skill
 	{
 		_audioSource = GetComponent<AudioSource>();
 
-		for (int i = 0; i < _playerLinks.Resources.Count; i++)
-		{
-			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)_playerLinks.Resources[i];
-			}
-		}
+        _energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
 
 	}
 
@@ -225,7 +217,7 @@ public class IceShadow : Skill
 			{
 				foreach (var skillCost in _skillEnergyCosts)
 				{
-					var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+					var resource = _hero.Resources[skillCost.resourceType];
 					resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
 				}
 				_evaded = false;

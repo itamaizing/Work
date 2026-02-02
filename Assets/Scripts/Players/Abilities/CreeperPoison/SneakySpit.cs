@@ -51,7 +51,7 @@ public class SneakySpit : Skill
             if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
             if (GetTargetCharacter() != null) Hero.Move.LookAtTransform(GetTargetCharacter().transform);
         }
-        _isCanCancle = false;
+        _isCanCancel = false;
     }
 
     private bool CheckCanCast()

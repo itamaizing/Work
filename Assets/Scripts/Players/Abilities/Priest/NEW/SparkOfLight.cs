@@ -215,7 +215,7 @@ public class SparkOfLight : Skill
 
             foreach (var skillCost in skillEnergyCosts)
             {
-                var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+                var resource = _hero.Resources[skillCost.resourceType];
                 resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
             }
 
@@ -497,4 +497,4 @@ public class SparkOfLight : Skill
         if (targetInfo.GetTargets().Count > 0)
             SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
-}
+}

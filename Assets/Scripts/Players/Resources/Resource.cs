@@ -1,7 +1,6 @@
 using Mirror;
 using System;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public enum ResourceType
@@ -50,13 +49,19 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 
     private void Awake()
     {
-        ClientStartRegenirateJob();
+        //ClientStartRegenirateJob();
     }
 
     private void OnEnable()
     {
+        //ClientStartRegenirateJob();
+    }
+
+    public void CharacterInitialized()
+    {
         ClientStartRegenirateJob();
     }
+
 
     private void OnDisable()
     {
@@ -87,6 +92,8 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         _maxValueAttribute = maxValue;
         _maxValue = maxValue.GetValue();
         _currentValue = _maxValue / 2;
+
+        ClientStartRegenirateJob();
     }
 
     public virtual void Add(float value)
@@ -162,6 +169,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
             if (_currentValue > _maxValue) _currentValue = _maxValue;
         }
 
+
         if (!Mathf.Approximately(oldMax, _maxValue)) HookMaxValueChanged(oldMax, _maxValue);
         if (!Mathf.Approximately(oldCurrent, _currentValue)) HookValueChanged(oldCurrent, _currentValue);
 
@@ -201,6 +209,8 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     {
         while (true)
         {
+            while (!isServer || netIdentity == null || connectionToClient == null)
+                yield return null;
             if (_regenerationValue < 0) yield return null;
 
             if (_currentValue < _maxValue)
@@ -302,4 +312,4 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         _maxValue = _maxValueAttribute.GetValue();
 
     }
-}
+}

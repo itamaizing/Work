@@ -219,32 +219,26 @@ public class ShotDarkness : Skill
     private void UseMana(float amount)
     {
         float mana = amount;
-        foreach (var resource in _playerLinks.Resources.Where(resource => resource.Type == ResourceType.Mana))
-        {
-            if (mana <= 0) break;
-            float spend = Math.Min(resource.CurrentValue, mana);
-            resource.CurrentValue -= spend;
-            mana -= spend;
-        }
+        var resource = _playerLinks.Resources[ResourceType.Mana];
+        if (mana <= 0) return;
+        float spend = Math.Min(resource.CurrentValue, mana);
+        resource.CurrentValue -= spend;
+        mana -= spend;
     }
+
     private float CalculateAndSpendBonusMagicDamage(float maxBonusMana = 6f)
     {
-        float availableMana = _playerLinks.Resources
-            .Where(r => r.Type == ResourceType.Mana)
-            .Sum(r => r.CurrentValue);
+        float availableMana = _playerLinks.Resources[ResourceType.Mana].CurrentValue;
 
         float bonusManaToUse = Mathf.Min(availableMana, maxBonusMana);
 
         float manaSpent = 0f;
         float manaToSpend = bonusManaToUse;
 
-        foreach (var resource in _playerLinks.Resources.Where(r => r.Type == ResourceType.Mana))
-        {
-            if (manaToSpend <= 0) break;
+        var resource = _playerLinks.Resources[ResourceType.Mana];
 
-            float spend = Mathf.Min(resource.CurrentValue, manaToSpend);
-            manaSpent += spend;
-        }
+        float spend = Mathf.Min(resource.CurrentValue, manaToSpend);
+        manaSpent += spend;
 
         _magicDamage = manaSpent;
 

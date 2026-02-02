@@ -62,9 +62,9 @@ public class helperCharData_ResourceInfo
 
     public void OnValidate()
     {
+        nameToShow = type.ToString();
         if (attributes.Count > 0)
             return;
-        nameToShow = type.ToString();
         foreach (ResourceAttributeName attr in Enum.GetValues(typeof(ResourceAttributeName)))
         {
             attributes.Add(new helperCharData_ResourceValue(attr));
@@ -146,6 +146,15 @@ public class AttributeGroup
         foreach (BasicAttributeName attr in Enum.GetValues(typeof(BasicAttributeName)))
         {
             _attributes.Add(new helperCharData_AttributeInfo(attr));
+            switch (attr)
+            {
+                case BasicAttributeName.VisionRadius:
+                    _attributes.Last().value = 2;
+                    break;
+                case BasicAttributeName.MoveSpeed:
+                    _attributes.Last().value = 1;
+                    break;
+            }
         }
     }
 
@@ -178,4 +187,4 @@ public class AttributeGroup
         }
         SyncronizeAttributes();
     }
-}
+}

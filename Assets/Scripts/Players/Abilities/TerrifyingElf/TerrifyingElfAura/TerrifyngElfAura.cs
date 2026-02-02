@@ -94,14 +94,17 @@ public class TerrifyingElfAura : NetworkBehaviour
         if (hero == null) return;
         if (_heroMana != null) return;
 
-        _heroMana = hero.TryGetResource(ResourceType.Mana) as Mana;
+        //_heroMana = hero.TryGetResource(ResourceType.Mana, out _heroMana) as Mana;
+        Resource res;
+        hero.TryGetResource(ResourceType.Mana, out res);
+        _heroMana = res as Mana;
     }
 
     private void OnManaChanged(float oldValue, float newValue)
     {
         if (newValue > 0f) return;
 
-        Debug.Log("Μΰνϋ νες");
+        Debug.Log("ΠΠ°Π½Ρ‹ Π½ΠµΡ‚");
         ApplyElvenSkill();
         StartCoroutine(ReSubscribeAfterDelay());
     }

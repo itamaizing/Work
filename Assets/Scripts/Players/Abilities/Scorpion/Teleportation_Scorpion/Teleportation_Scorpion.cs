@@ -43,7 +43,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
         {
             if (GetTargetCharacter() != null) return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
 
-            var mana = _hero.Resources.FirstOrDefault(r => r.Type == ResourceType.Mana);
+            var mana = _hero.Resources[ResourceType.Mana];
             if (mana == null) return false;
 
             if (GetTargetCharacter() != null)
@@ -212,7 +212,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
                         }
 
                         int manaCost = GetCurrentManaCost(dist);
-                        var mana = _hero.Resources.FirstOrDefault(r => r.Type == ResourceType.Mana);
+                        var mana = _hero.Resources[ResourceType.Mana];
                         if (mana == null || mana.CurrentValue < manaCost)
                         {
                             Debug.Log("[Teleportation] Недостаточно маны");

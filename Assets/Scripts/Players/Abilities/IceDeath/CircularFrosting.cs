@@ -1,8 +1,6 @@
 using Mirror;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class CircularFrosting : Skill
@@ -24,15 +22,9 @@ public class CircularFrosting : Skill
 
     private void Start()
 	{
-		for (int i = 0; i < Hero.Resources.Count; i++)
-		{
-			if (Hero.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)Hero.Resources[i];
-			}
-		}
+        _energy = (Energy)Hero.Resources[ResourceType.Energy];
 
-	}
+    }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {

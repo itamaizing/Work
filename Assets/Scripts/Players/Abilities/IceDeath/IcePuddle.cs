@@ -2,7 +2,6 @@ using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
 public class IcePuddle : Skill
@@ -76,9 +75,7 @@ public class IcePuddle : Skill
     {
         _audioSource = GetComponent<AudioSource>();
 
-        for (int i = 0; i < Hero.Resources.Count; i++)
-            if (Hero.Resources[i].Type == ResourceType.Energy)
-                _energy = (Energy)Hero.Resources[i];
+        _energy = (Energy)Hero.Resources[ResourceType.Energy];
     }
 
     private void UpdatePreviewAtMouse()

@@ -17,7 +17,7 @@ public class Ghost : Skill
     [SerializeField] private GameObject ghostPrefabPreview;
     [SerializeField] private GameObject way;
     [SerializeField] private AudioClip aCTeleportToGhost;
-    [SerializeField] private AudioClip aC裲ntrolGhostToTarget;
+    [SerializeField] private AudioClip aC小ontrolGhostToTarget;
     [SerializeField] private AudioClip aCSummoningGhost;
     [SerializeField] private DrawCircle _extendedRadiusCircle;
     [SerializeField] private Color extendedRadiusColor = new Color(0.8f, 0.3f, 0f);
@@ -397,7 +397,7 @@ public class Ghost : Skill
             else if (innerDarknessStacks == 0) characterState.AddState(States.Fear, UnityEngine.Random.Range(0.4f, 0.6f), 0, gameObject, "Ghost");
         }
 
-        CmdAc裲ntrolGhostToTarget();
+        CmdAc小ontrolGhostToTarget();
         _ghosts.Remove(ghost);
         Destroy(ghost.gameObject);
     }
@@ -559,7 +559,7 @@ public class Ghost : Skill
 
     private bool TryConsumeMana(float amount)
     {
-        var manaResource = _hero.Resources.FirstOrDefault(r => r.Type == ResourceType.Mana);
+        var manaResource = _hero.Resources[ResourceType.Mana];
         if (manaResource != null && manaResource.CurrentValue >= amount)
         {
             manaResource.CmdUse(amount);
@@ -742,9 +742,9 @@ public class Ghost : Skill
     }
 
     [Command]
-    private void CmdAc裲ntrolGhostToTarget()
+    private void CmdAc小ontrolGhostToTarget()
     {
-        RpcAc裲ntrolGhostToTarget();
+        RpcAc小ontrolGhostToTarget();
     }
 
 
@@ -761,8 +761,8 @@ public class Ghost : Skill
     }
 
     [ClientRpc]
-    private void RpcAc裲ntrolGhostToTarget()
+    private void RpcAc小ontrolGhostToTarget()
     {
-        if (_audioSource != null && aC裲ntrolGhostToTarget != null) _audioSource.PlayOneShot(aC裲ntrolGhostToTarget);
+        if (_audioSource != null && aC小ontrolGhostToTarget != null) _audioSource.PlayOneShot(aC小ontrolGhostToTarget);
     }
-}
+}

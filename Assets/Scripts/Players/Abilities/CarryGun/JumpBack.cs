@@ -53,7 +53,7 @@ public class JumpBack : Skill
         Hero.Animator.applyRootMotion = false;
         Hero.Move.StopLookAt();
         Hero.Move.SetCanMove(true);
-        _isCanCancle = true;
+        _isCanCancel = true;
     }
 
     public void JumpBackCast() => AnimStartCastCoroutine();
@@ -142,4 +142,4 @@ public class JumpBack : Skill
 
         HandleJumpBackEnd();
     }
-}
+}

@@ -2,7 +2,6 @@ using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -46,19 +45,10 @@ public class IceSword : CloseCombatSkill
 
 	private void Start()
 	{
-		for (int i = 0; i < _playerLinks.Resources.Count; i++)
-		{
-			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)_playerLinks.Resources[i];
-			}
-			if (_playerLinks.Resources[i].Type == ResourceType.Rune)
-			{
-				_rune = (RuneComponent)_playerLinks.Resources[i];
-			}
-		}
+        _audioSource = GetComponent<AudioSource>();
 
-		_audioSource = GetComponent<AudioSource>();
+        _energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
+        _rune = (RuneComponent)_playerLinks.Resources[ResourceType.Rune];
 	}
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -177,14 +167,14 @@ public class IceSword : CloseCombatSkill
     {
 		if (!IsHaveResourceOnSkill)
 		{
-			return false;			// ïàòòåðí Guard Clause - èçáàâëÿåìñÿ îò ëèøíåé âëîæåííîñòè
+			return false;			// Ð¿Ð°Ñ‚Ñ‚ÐµÑ€Ð½ Guard Clause - Ð¸Ð·Ð±Ð°Ð²Ð»ÑÐµÐ¼ÑÑ Ð¾Ñ‚ Ð»Ð¸ÑˆÐ½ÐµÐ¹ Ð²Ð»Ð¾Ð¶ÐµÐ½Ð½Ð¾ÑÑ‚Ð¸
 		}
 
-        _additionalDamage = 0;      // áåç ýòîãî, åñëè ñïîñîáíîñòü òðàòèò ðîâíî 40 ðåñóðñà - èñïîëüçóåòñÿ äîï óðîí, ðàññ÷èòàíûé â ïðîøëûé ðàç
+        _additionalDamage = 0;      // Ð±ÐµÐ· ÑÑ‚Ð¾Ð³Ð¾, ÐµÑÐ»Ð¸ ÑÐ¿Ð¾ÑÐ¾Ð±Ð½Ð¾ÑÑ‚ÑŒ Ñ‚Ñ€Ð°Ñ‚Ð¸Ñ‚ Ñ€Ð¾Ð²Ð½Ð¾ 40 Ñ€ÐµÑÑƒÑ€ÑÐ° - Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐµÑ‚ÑÑ Ð´Ð¾Ð¿ ÑƒÑ€Ð¾Ð½, Ñ€Ð°ÑÑÑ‡Ð¸Ñ‚Ð°Ð½Ñ‹Ð¹ Ð² Ð¿Ñ€Ð¾ÑˆÐ»Ñ‹Ð¹ Ñ€Ð°Ð·
 
         foreach (var skillCost in skillEnergyCosts)
         {
-			var baseCost = skillCost.resourceCost;  // óæå âçÿëè skillCost, ïî÷åìó íèæå ìàã. ÷èñëà?
+			var baseCost = skillCost.resourceCost;  // ÑƒÐ¶Ðµ Ð²Ð·ÑÐ»Ð¸ skillCost, Ð¿Ð¾Ñ‡ÐµÐ¼Ñƒ Ð½Ð¸Ð¶Ðµ Ð¼Ð°Ð³. Ñ‡Ð¸ÑÐ»Ð°?
 
             if (_energy.CurrentValue > baseCost)
 			{
