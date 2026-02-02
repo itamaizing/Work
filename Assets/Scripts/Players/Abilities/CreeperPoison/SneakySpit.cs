@@ -53,6 +53,7 @@ public class SneakySpit : Skill
             if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
             if (GetTargetCharacter() != null) Hero.Move.LookAtTransform(GetTargetCharacter().transform);
         }
+
         _isCanCancle = false;
     }
 
@@ -92,7 +93,7 @@ public class SneakySpit : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (Disactive) yield return null;
+        if (Disactive) yield break;
 
         ApplyStateAndDamage();
         yield return null;
@@ -141,6 +142,19 @@ public class SneakySpit : Skill
 
             CmdApplyDamage(damage, GetTargetCharacter().gameObject);
             ClearData();
+        }
+    }
+
+    public void SneakySpitDisactive()
+    {
+        if (Disactive)
+        {
+            _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
+            _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+
+            isAnimStart = false;
+            CancelBoostWindow();
+            ClearTarget();
         }
     }
 
