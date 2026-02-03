@@ -318565,11 +318565,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5853040576233888555, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6079958574433426246, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6170846542189561758, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: m_AnchorMax.y

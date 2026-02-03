@@ -168,7 +168,7 @@ MonoBehaviour:
       IsVisible: 0
     _attributeGroup2:
     - Name: Health
-      _value: 0
+      _value: 777
       _modifiers: []
     - Name: HPRegen
       _value: 0
