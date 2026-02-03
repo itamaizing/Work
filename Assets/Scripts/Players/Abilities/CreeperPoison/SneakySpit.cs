@@ -32,7 +32,7 @@ public class SneakySpit : Skill
         ClearTarget();
     }
 
-    private void OnEnable() 
+    private void OnEnable()
     {
         Hero.Health.OnBeforeTakeDamage += HandleBeforeTakeDamage;
         Hero.Health.Evaded += OnHeroEvade;
@@ -93,8 +93,6 @@ public class SneakySpit : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (Disactive) yield break;
-
         ApplyStateAndDamage();
         yield return null;
     }
@@ -116,7 +114,7 @@ public class SneakySpit : Skill
         isAbilityQueue = false;
         //_target = null;
     }
-    
+
     public void CancelBoostWindow()
     {
         if (_boostWindow != null)
