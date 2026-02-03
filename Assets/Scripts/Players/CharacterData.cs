@@ -20,9 +20,9 @@ public class CharacterData : ScriptableObject
     public Sprite Icon => _icon;
     public float IconSize => _iconSize;
 
-    /*public AttributeGroup Attributes => _attributes;
+    //public AttributeGroup Attributes => _attributes;
 
-    public float GetAttributeValue(string attributeName)
+   /* public float GetAttributeValue(string attributeName)
     {
         var attribute = _attributes.AttributeData.FirstOrDefault(o => o.Name == attributeName);
         return attribute?.DefaultValue ?? 0f;
@@ -114,7 +114,7 @@ public static class AttributeNames
 [Serializable]
 public class AttributeGroup
 {
-    [SerializeField]
+   /* [SerializeField]
     private List<Attribute> attributesGroup = new()
     {
         new Attribute(1001, AttributeNames.Health, 0, "Health"),
@@ -139,24 +139,24 @@ public class AttributeGroup
         new Attribute(1020, AttributeNames.PhysicAbsorb, 0),
         new Attribute(1021, AttributeNames.MagicAbsorb, 0)
     };
-
+    */
     [SerializeField]
     private List<Attributes> _attributeGroup2 = new()
     {
-        new Attributes(AttributeNames.Health),
-        new Attributes(AttributeNames.HpRegen),
-        new Attributes(AttributeNames.Resourse),
+        new Attributes(AttributeNames.Health, "Health"),
+        new Attributes(AttributeNames.HpRegen, "Hp regen"),
+        new Attributes(AttributeNames.Resourse, "Resourse"),
         new Attributes(AttributeNames.Mana),
-        new Attributes(AttributeNames.ResourseRegen),
-        new Attributes(AttributeNames.Speed),
-        new Attributes(AttributeNames.MagicResist),
-        new Attributes(AttributeNames.PhysicResist),
-        new Attributes(AttributeNames.MagicEvade),
-        new Attributes(AttributeNames.EvasionPhysical),
+        new Attributes(AttributeNames.ResourseRegen, "Res Regen"),
+        new Attributes(AttributeNames.Speed, "Speed"),
+        new Attributes(AttributeNames.MagicResist, "Magic Resist"),
+        new Attributes(AttributeNames.PhysicResist, "Phys Resist"),
+        new Attributes(AttributeNames.MagicEvade, "Magic Evade"),
+        new Attributes(AttributeNames.EvasionPhysical, "Phys Evade"),
     };
 
-    public List<Attribute> AttributeData => attributesGroup;
+    //public List<Attribute> AttributeData => attributesGroup;
     public List<Attributes> AttributeData2 => _attributeGroup2;
     public int FreeAttributePointsCount { get; set; }
-    public int UsedAttributePointsCount => attributesGroup.Sum(o => o.Points);
+    //public int UsedAttributePointsCount => attributesGroup.Sum(o => o.Points);
 }

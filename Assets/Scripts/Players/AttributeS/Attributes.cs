@@ -6,14 +6,17 @@ using UnityEngine;
 public class Attributes
 {
     public string Name;
+    public string Description;
 
     [SerializeField] private float _value;
-    [SerializeField] private List<AttributeModifiers> _modifiers = new();
-    
+    private List<AttributeModifiers> _modifiers = new();
 
-    public Attributes(string name)
+    public List<AttributeModifiers> Modifiers => _modifiers;
+
+    public Attributes(string name, string description = null)
     {
         Name = name;
+        Description = description;
         //_value = value; 
     }
 
@@ -36,7 +39,7 @@ public class Attributes
     public float GetValue()
     {
         float value;
-        float flat = 0, percent = 1, multipliy = 1;
+        float flat = 0, percent = 1, multipliy = 1, menuFlat = 0;
 
         foreach (var modifier in _modifiers)
         {
@@ -51,11 +54,14 @@ public class Attributes
                 case ModifierType.Multiplier:
                     percent += modifier.Value;
                     break;
+                case ModifierType.MenuFlat:
+                    menuFlat += modifier.Value;
+                    break;
                 default:
                     break;
             }
         }
-        value = (_value + flat) * percent * multipliy; 
+        value = (_value + flat + menuFlat) * percent * multipliy; 
         return value;
     }
 }
@@ -77,5 +83,6 @@ public enum ModifierType
 {
     Flat,
     Percent,
-    Multiplier
+    Multiplier,
+    MenuFlat
 }

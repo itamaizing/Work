@@ -1,3 +1,6 @@
+using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public interface ISaveData
@@ -43,9 +46,11 @@ public class SaveManager : MonoBehaviour
     private HeroComponent _character;
     private int _currentSaveGroup = 0;
     private ISaveData _saveData;
-    private AttributeSaveManager _attributeManager;
+    //private AttributeSaveManager _attributeManager;
     private TalentSaveManager _talentManager;
-    private AttributeModifier _attributeModifier;
+
+    private AttributeSystem _attributeSystem;
+    private SaveSystem _saveSystem = new SaveSystem();
 
     private void Awake()
     {
@@ -53,9 +58,9 @@ public class SaveManager : MonoBehaviour
         {
             _instance = this;
             _saveData = new PlayerPrefsSaveData();
-            _attributeManager = new AttributeSaveManager(_saveData);
             _talentManager = new TalentSaveManager(_saveData, _instance);
-            _attributeModifier = new AttributeModifier(_attributeManager);
+            //_attributeManager = new AttributeSaveManager(_saveData);
+            //_attributeModifier = new AttributeModifier(_attributeManager);
         }
         else
         {
@@ -66,6 +71,7 @@ public class SaveManager : MonoBehaviour
     public void SetHero(HeroComponent hero)
     {
         _character = hero;
+        _attributeSystem = hero.AttributeSystem;
         LoadHeroData();
     }
 
@@ -77,42 +83,63 @@ public class SaveManager : MonoBehaviour
     
     public void SaveAttributePoints(int points)
     {
+        _saveSystem.Save($"{_character.Data.Name}_Group{_currentSaveGroup}_FreeAttributesPoints", _attributeSystem.Points);
        // var currentPoints = _character.Data.Attributes.FreeAttributePointsCount + points;
        // _attributeManager.SaveAttributePoints(_character, _currentSaveGroup, currentPoints);
     }
     
     public int LoadAttributePoints()
     {
+        int points = 0;
+        _saveSystem.Load<int>($"{_character.Data.Name}_Group{_currentSaveGroup}_FreeAttributesPoints", e => points = e);
         // return _character.Data.Attributes.FreeAttributePointsCount = _attributeManager.LoadAttributePoints(_character, _currentSaveGroup);
-        return 0;
+        return points;
     }
     
     public void ChangeAttribute(int index, int points)
     {
-        _attributeModifier.ChangeAttribute(_character, index, points, _currentSaveGroup);
+        //_attributeSystem.AddValueAttribute
+        //_attributeModifier.ChangeAttribute(_character, index, points, _currentSaveGroup);
     }
-    
-    public void SaveAttribute(int index)
+
+    public void AddAttributesModif(Attributes attribute, AttributeModifiers modif)
     {
-        _attributeManager.SaveAttribute(_character, index, _currentSaveGroup);
+        attribute.AddModifier(modif);
+        //Save
+        //_attributeModifier.ChangeAttribute(_character, index, points, _currentSaveGroup);
     }
 
-    public void LoadAttribute(int attributeId)
+    public void RemoveAttributesModif(Attributes attribute, AttributeModifiers modif)
     {
-        _attributeManager.LoadAttribute(_character, attributeId, _currentSaveGroup);
+        attribute.RemoveModifier(modif);
+        //Save
+
+        //_attributeModifier.ChangeAttribute(_character, index, points, _currentSaveGroup);
     }
 
-	/*public void SaveTalent(int idGroup, string idTalent, bool isActive)
-	{
-		_talentManager.SaveTalent(_character, idGroup, idTalent, isActive, _currentSaveGroup);
-	}
 
-	public void LoadTalent(int idGroup, string idTalent, bool needActivate)
-	{
-		_talentManager.LoadTalent(_character, idGroup, idTalent, needActivate, _currentSaveGroup);
-	}*/
+    public void SaveAttribute(Attributes attribute)
+    {
+        _saveSystem.Save($"{_character.Data.Name}_Group{_currentSaveGroup}_{attribute.Name}_Points", attribute.Modifiers);
+    }
 
-	public void SaveTalent(int idGroup, int row, string idTalent, bool isActive)
+    public List<AttributeModifiers> LoadAttribute(Attributes attribute)
+    {
+        List<AttributeModifiers> modifs = new();
+        _saveSystem.Load<List<AttributeModifiers>>($"{_character.Data.Name}_Group{_currentSaveGroup}_{attribute.Name}_Points", e => modifs = e);
+
+        Attributes atrib = _attributeSystem.Attributes.FirstOrDefault(a => a.Name == attribute.Name);
+        foreach (AttributeModifiers modif in modifs)
+        {
+            atrib.AddModifier(modif);
+        }
+
+        Debug.Log(modifs.Count);
+
+        return modifs;
+    }
+
+    public void SaveTalent(int idGroup, int row, string idTalent, bool isActive)
     {
         _talentManager.SaveTalent(_character, idGroup, row, idTalent, isActive, _currentSaveGroup);
     }
@@ -124,23 +151,23 @@ public class SaveManager : MonoBehaviour
 
     public int ReduceFreePoints(int pointsToDeduct)
     {
-        return _attributeModifier.ReduceFreePoints(_character, pointsToDeduct, _currentSaveGroup);
+        return 0; //_attributeModifier.ReduceFreePoints(_character, pointsToDeduct, _currentSaveGroup);
     }
 
     public void ReduceAttributePoints(int pointsToDeduct)
     {
-        _attributeModifier.ReduceAttributePoints(_character, pointsToDeduct, _currentSaveGroup);
+        //_attributeModifier.ReduceAttributePoints(_character, pointsToDeduct, _currentSaveGroup);
     }
 
     public void SaveAllData()
     {
-        _attributeManager.SaveAllAttributes(_character, _currentSaveGroup);
+        //_attributeManager.SaveAllAttributes(_character, _currentSaveGroup);
         _talentManager.SaveAllTalents(_character, _currentSaveGroup);
     }
 
     public void LoadAllData()
     {
-        _attributeManager.LoadAllAttributes(_character, _currentSaveGroup);
+        //_attributeManager.LoadAllAttributes(_character, _currentSaveGroup);
         _talentManager.LoadAllTalents(_character, _currentSaveGroup);
     }
 
