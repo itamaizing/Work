@@ -33,7 +33,11 @@ public class MinionComponent : Character
     private void OnDestroy()
     {
         Destroyed?.Invoke(this);
-        if (MyCamp != null) MyCamp.RemoveDeadMinion(this);
+        if (MyCamp != null)
+        {
+            MyCamp.OnMinionDied(gameObject);
+            MyCamp.RemoveDeadMinion(this);
+        }
     }
 
     protected override void OnDied()

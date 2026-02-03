@@ -66,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: f6099097ec4492742abbdbabff4e6c7d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -138,22 +138,15 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _playersLayerMask:
-    serializedVersion: 2
-    m_Bits: 768
   _minionLeadPref: {fileID: 880709639755590841, guid: c660bdcdea2d5184ba8d361d3fc628fc, type: 3}
   _surrenderUI: {fileID: 2739342022316990771, guid: b8fe638bfd764814d950253dca78920a, type: 3}
   _minionPrefs:
   - {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
   _percentageHPForSurrender: 0.5
   _distance: 5
-  _enemyLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  _allyLayer:
-    serializedVersion: 2
-    m_Bits: 0
+  _campColor: {fileID: 6626269199134353010}
   _campStatus: 0
+  _players: []
   _totalMaxHP: 0
 --- !u!114 &5266253427922722445
 MonoBehaviour:

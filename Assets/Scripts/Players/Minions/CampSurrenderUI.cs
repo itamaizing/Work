@@ -29,12 +29,12 @@ public class CampSurrenderUI : MonoBehaviour
     {
         if (_option1Button != null)
         {
-            _option1Button.onClick.AddListener(OnTakeLead);
+            _option1Button.onClick.AddListener(OnLeaveLead);
         }
 
         if (_option2Button != null)
         {
-            _option2Button.onClick.AddListener(OnLeaveLead);
+            _option2Button.onClick.AddListener(OnTakeLead);
         }
     }
 
