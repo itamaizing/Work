@@ -93,8 +93,6 @@ public class SneakySpit : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (Disactive) yield break;
-
         ApplyStateAndDamage();
         yield return null;
     }

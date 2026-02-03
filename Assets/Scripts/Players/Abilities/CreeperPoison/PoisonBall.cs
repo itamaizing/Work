@@ -200,11 +200,8 @@ public class PoisonBall : Skill, IAltAbility
         _thirdClickDone = false;
         _firstClickDone = false;
 
-        if (_isAbilityActive)
-        {
-            float timerForCancelCoroutine = 0.2f;
-            Invoke("CancelCoroutine", timerForCancelCoroutine);
-        }
+        float timerForCancelCoroutine = 0.2f;
+        Invoke("CancelCoroutine", timerForCancelCoroutine);
     }
 
     protected override void ClearData()
@@ -218,8 +215,7 @@ public class PoisonBall : Skill, IAltAbility
         _isTarget = false;
         _isAbilityActive = false;
 
-        PostPrepearClear();
-
+        if (!IsPreparing) PostPrepearClear();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
