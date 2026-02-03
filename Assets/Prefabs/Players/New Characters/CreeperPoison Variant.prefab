@@ -14671,9 +14671,8 @@ MonoBehaviour:
   syncInterval: 0
   sneakySpit: {fileID: 1964640632880337021}
   blockPassiveSkill: {fileID: 2446571645698719713}
-  _lightningStrikes: {fileID: 734640227586387152}
-  _creeperStrike: {fileID: 6745892867125186241}
   _skillManager: {fileID: 2617687491934927079}
+  _comboResetDelay: 2
 --- !u!114 &2483674839823445686 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
