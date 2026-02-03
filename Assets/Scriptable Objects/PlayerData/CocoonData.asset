@@ -183,7 +183,7 @@ MonoBehaviour:
       _value: 0
       _modifiers: []
     - Name: Speed
-      _value: 1
+      _value: 7
       _modifiers: []
     - Name: MagicResist
       _value: 0
