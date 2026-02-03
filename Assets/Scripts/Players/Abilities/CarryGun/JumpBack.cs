@@ -34,7 +34,7 @@ public class JumpBack : Skill
         if (_hero == null || _hero.Move == null) return;
 
         _hero.Move.StopMoveAndAnimationMove();
-        _hero.Move.CanMove = false;
+        _hero.Move.SetCanMove(false);
 
         Vector3 direction = _hero.transform.forward;
         bool badDirection = float.IsInfinity(_hero.transform.forward.x) || direction.sqrMagnitude < 0.0001f;
@@ -52,7 +52,7 @@ public class JumpBack : Skill
     {
         Hero.Animator.applyRootMotion = false;
         Hero.Move.StopLookAt();
-        Hero.Move.CanMove = true;
+        Hero.Move.SetCanMove(true);
         _isCanCancle = true;
     }
 

@@ -47,8 +47,9 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
         _button.onClick.RemoveListener(Select);
     }
 
-    public void Fill(TalentData talent, int row)
+    public void Fill(TalentData talent, int row, bool isInteractable)
     {
+        _button.interactable = isInteractable;
         _row = row;
         activeImage.sprite = talent.Icon;
         nonActiveImage.sprite = talent.Icon;
@@ -64,7 +65,6 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
     
     public void Select()
     {
-        Debug.Log("Talent selected in talent " +  _talent);
         Selected?.Invoke(_talent, !_talent.IsOpen);
         activeState.isActive = _talent.IsOpen;
     }

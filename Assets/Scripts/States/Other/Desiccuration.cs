@@ -19,18 +19,18 @@ public class Desiccuration : AbstractCharacterState
 	{
 	//	Debug.Log("Entering Desiccuration State");
 
-		_characterState = character;
+		characterState = character;
 
 		if (character.TryGetComponent<Character>(out var ability))
 		{
-			_abilities = ability.Abilities;
-			_abilities.SetAbilitiesDisactive(true);
+			abilities = ability.Abilities;
+			abilities.SetAbilitiesDisactive(true);
 		}
 		else
 		{
 			Debug.Log("no ability at " + character.gameObject.name);
 		}
-		_characterState.Character.Move.CanMove = false;
+		characterState.Character.Move.SetCanMove(false);
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
 		//_damageToExit = damageToExit;
@@ -41,7 +41,7 @@ public class Desiccuration : AbstractCharacterState
 	{
 	//	Debug.Log("Updating Desiccuration State");
 		_duration -= Time.deltaTime;
-		if (_duration < 0 || turnOff || _characterState.Character.Health.SumDamageTaken >= _damageToExit)
+		if (_duration < 0 || turnOff || characterState.Character.Health.SumDamageTaken >= _damageToExit)
 		{
 			ExitState();
 		}
@@ -50,9 +50,9 @@ public class Desiccuration : AbstractCharacterState
 	public override void ExitState()
 	{
 	//	Debug.Log("Exiting Desiccuration State");
-		_characterState.RemoveState(this);
-		if (!_characterState.Check(StatusEffect.Move)) _characterState.Character.Move.CanMove = true;
-		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null) _abilities.SetAbilitiesDisactive(false);
+		characterState.RemoveState(this);
+		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.SetCanMove(true);
+		if (!characterState.Check(StatusEffect.Ability) && abilities != null) abilities.SetAbilitiesDisactive(false);
 	}
 
 	public override bool Stack(float time)

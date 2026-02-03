@@ -18,7 +18,7 @@ public class FocusingOnReflexesState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
+        characterState = character;
         _duration = durationToExit;
         _character = character.Character;
 
@@ -60,7 +60,7 @@ public class FocusingOnReflexesState : AbstractCharacterState
             health.Evaded -= OnEvaded;
         }
 
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     private void OnEvaded()

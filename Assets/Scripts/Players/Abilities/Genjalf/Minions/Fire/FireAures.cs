@@ -56,10 +56,8 @@ public class Burning : AbstractCharacterState
 {
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
     private float _damage = 1;
-    private Character _character;
     private float _timeAfterLastEffect = 0;
     private float _effectRate = 1;
-    private float _time;
 
     public override States State => States.Burning;
 
@@ -71,8 +69,7 @@ public class Burning : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _time = durationToExit;
-        _character = character.Character;
+
         Damage damage = new Damage
         {
             Value = _damage,
@@ -82,7 +79,7 @@ public class Burning : AbstractCharacterState
 
     public override void ExitState()
     {
-        _character.CharacterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -92,11 +89,6 @@ public class Burning : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _time -= Time.deltaTime;
-        if (_time <= 0)
-        {
-            ExitState();
-        }
 
         _timeAfterLastEffect += Time.deltaTime;
 
@@ -108,7 +100,7 @@ public class Burning : AbstractCharacterState
         {
             Value = _damage,
         };
-        _character.TryTakeDamage(ref damage, null);
+        characterState.Character.TryTakeDamage(ref damage, null);
 
         _timeAfterLastEffect = 0;
     }

@@ -55,7 +55,7 @@ public class ShotsIntoSky : Skill
         if (_hero == null || _hero.Move == null) return;
 
         _hero.Move.StopMoveAndAnimationMove();
-        _hero.Move.CanMove = false;
+        _hero.Move.SetCanMove(false);
 
         Vector3 direction = _targetPoint - _hero.transform.position;
         bool badDirection = float.IsInfinity(_targetPoint.x) || direction.sqrMagnitude < 0.0001f;
@@ -84,7 +84,7 @@ public class ShotsIntoSky : Skill
     {
         if (_hero?.Move != null)
         {
-            Hero.Move.CanMove = true;
+            Hero.Move.SetCanMove(true);
             Hero.Animator.speed = 1;
             Hero.Move.StopLookAt();
 
@@ -261,7 +261,7 @@ public class ShotsIntoSky : Skill
     {
         _targetPoint = Vector3.positiveInfinity;
         _hero.Move.StopLookAt();
-        _hero.Move.CanMove = true;
+        _hero.Move.SetCanMove(true);
     }
 
     public override void LoadTargetData(TargetInfo targetInfo) => _targetPoint = targetInfo.Points[0];

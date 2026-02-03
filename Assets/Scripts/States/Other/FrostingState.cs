@@ -22,8 +22,6 @@ public class FrostingState : AbstractCharacterState
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		//Debug.Log("Entering Frosting State");
-		_characterState = character;
-
 		if (damageToExit == 0)
 		{
 			_damageToExit = 10000;
@@ -36,15 +34,15 @@ public class FrostingState : AbstractCharacterState
 		_baseDuration = durationToExit;
 		_audioSource = character.GetComponent<AudioSource>();
 
-		_damageOnStart = _characterState.Character.Health.SumDamageTaken;
-		_characterState.Character.Move.CanMoveState = false;
-		_characterState.Character.Move.LookAtTransform(_characterState.gameObject.transform);
+		_damageOnStart = characterState.Character.Health.SumDamageTaken;
+		characterState.Character.Move.SetCanMoveState(false);
+		characterState.Character.Move.LookAtTransform(characterState.gameObject.transform);
 
 		if (character.TryGetComponent<Character>(out var ability))
 		{
-			_abilities = ability.Abilities;
+			abilities = ability.Abilities;
 
-			foreach (var abil in _abilities.Abilities)
+			foreach (var abil in abilities.Abilities)
 			{
 				if (abil.AbilityForm == AbilityForm.Physical)
 				{
@@ -58,19 +56,19 @@ public class FrostingState : AbstractCharacterState
 			Debug.Log("no ability at " + character.gameObject.name);
 		}
 
-		if (_characterState.StateEffects.Ice != null)
+		if (characterState.StateEffects.Ice != null)
 		{
-			_ice = _characterState.StateEffects.Ice;
+			_ice = characterState.StateEffects.Ice;
 			_ice.SetActive(true);
 		}
 
-		if (_characterState.StateEffects.FrostingAudio != null) _audioSource.PlayOneShot(_characterState.StateEffects.FrostingAudio);
+		if (characterState.StateEffects.FrostingAudio != null) _audioSource.PlayOneShot(characterState.StateEffects.FrostingAudio);
 	}
 
 	public override void UpdateState()
 	{
 		_duration -= Time.deltaTime;
-		if (_characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || _duration < 0 || turnOff)
+		if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || _duration < 0 || turnOff)
 		{
 			ExitState();
 		}
@@ -79,18 +77,18 @@ public class FrostingState : AbstractCharacterState
 	public override void ExitState()
 	{
 		//Debug.Log("Exiting Frosting State");
-		_characterState.RemoveState(this);
+		characterState.RemoveState(this);
 
-		if (!_characterState.Check(StatusEffect.Move))
+		if (!characterState.Check(StatusEffect.Move))
 		{
-			_characterState.Character.Move.CanMoveState = true;
+			characterState.Character.Move.SetCanMoveState(true);
 		}
 
-		_characterState.Character.Move.StopLookAt();
+		characterState.Character.Move.StopLookAt();
 
-		if (!_characterState.Check(StatusEffect.AbilitySpeed) && _abilities != null)
+		if (!characterState.Check(StatusEffect.AbilitySpeed) && abilities != null)
 		{
-			foreach (var abil in _abilities.Abilities)
+			foreach (var abil in abilities.Abilities)
 			{
 				if (abil.AbilityForm == AbilityForm.Physical)
 				{
@@ -99,7 +97,7 @@ public class FrostingState : AbstractCharacterState
 			}
 		}
 
-		if (_characterState.StateEffects.Ice != null) _ice.SetActive(false);
+		if (characterState.StateEffects.Ice != null) _ice.SetActive(false);
 	}
 
 	public override bool Stack(float time)

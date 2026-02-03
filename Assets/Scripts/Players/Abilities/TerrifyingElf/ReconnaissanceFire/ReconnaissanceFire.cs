@@ -125,7 +125,7 @@ public class ReconnaissanceFire : Skill
         if (_hero == null || _hero.Move == null) return;
 
         _hero.Move.StopMoveAndAnimationMove();
-        _hero.Move.CanMove = false;
+        _hero.Move.SetCanMove(false);
 
         Vector3 direction = _targetPoint - _hero.transform.position;
         bool badDirection = float.IsInfinity(_targetPoint.x) || direction.sqrMagnitude < AnimationFireMoveMagnitude;
@@ -204,7 +204,7 @@ public class ReconnaissanceFire : Skill
         Hero.Animator.speed = _baseAnimSpeed;
         Hero.Move.StopLookAt();
         Hero.Animator.speed = _baseAnimSpeed;
-        Hero.Move.CanMove = true;
+        Hero.Move.SetCanMove(true);
 
         CmdSpawnProjectile(_targetPoint);
 
@@ -223,7 +223,7 @@ public class ReconnaissanceFire : Skill
         if (_hero != null && _hero.Move != null) ReconnaissanceFireHealthTalentExit();
         if (_arcRenderer != null) _arcRenderer.positionCount = 0;
         Hero.Animator.speed = _baseAnimSpeed;
-        Hero.Move.CanMove = true;
+        Hero.Move.SetCanMove(true);
         Hero.Move.StopLookAt();
         _targetPoint = Vector3.positiveInfinity;
         AnimCastEnded();

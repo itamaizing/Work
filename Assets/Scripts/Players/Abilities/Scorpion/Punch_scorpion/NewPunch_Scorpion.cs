@@ -69,7 +69,7 @@ public class NewPunch_Scorpion : Skill
         ClearTempTarget();
         //_target = null;
         Hero.Move.StopLookAt();
-        _hero.Move.CanMove = true;
+        _hero.Move.SetCanMove(true);
         if (_hitsInRowCoroutine != null) StopCoroutine(_hitsInRowCoroutine);
         AnimCastEnded();
     }
@@ -87,7 +87,7 @@ public class NewPunch_Scorpion : Skill
 
 
         _hero.Move.StopMoveAndAnimationMove();
-        _hero.Move.CanMove = false;
+        _hero.Move.SetCanMove(false);
 
         if (target is IDamageable damageable)
         {
@@ -105,7 +105,7 @@ public class NewPunch_Scorpion : Skill
 
     public void NewPunch_ScorpionMoveTrue()
     {
-        _hero.Move.CanMove = true;
+        _hero.Move.SetCanMove(true);
         Hero.Move.StopLookAt();
     }
 

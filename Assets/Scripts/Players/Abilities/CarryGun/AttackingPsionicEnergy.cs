@@ -23,7 +23,7 @@ public class AttackingPsionicEnergy : Energy
 
     private void Start()
     {
-        MaxValue = _maxAttackingPsiEnergy;
+        _maxValue = _maxAttackingPsiEnergy;
         UpdateAttackingEnergyBar();
     }
 

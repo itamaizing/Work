@@ -12,7 +12,7 @@ public class DivineEnhancementState : AbstractCharacterState, IDamageGivenModifi
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
+        characterState = character;
         _duration = durationToExit;
     }
 
@@ -24,7 +24,7 @@ public class DivineEnhancementState : AbstractCharacterState, IDamageGivenModifi
 
     public override void ExitState()
     {
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

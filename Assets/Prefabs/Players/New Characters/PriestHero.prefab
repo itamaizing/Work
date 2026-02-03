@@ -5262,6 +5262,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 80ce10cdeea490248a7097f9dfbaa541, type: 2}
     - target: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _menuPreview
+      value: 
+      objectReference: {fileID: 4039387502136921584, guid: 5f331e191d7d5e6468ee480745e95241, type: 3}
+    - target: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _resources.Array.size
       value: 4
       objectReference: {fileID: 0}

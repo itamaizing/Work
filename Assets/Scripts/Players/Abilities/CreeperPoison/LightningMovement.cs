@@ -58,7 +58,7 @@ public class LightningMovement : Skill
 
         if (_player?.Move != null)
         {
-            _player.Move.CanMove = true;
+            Hero.Move.SetCanMove(true);
             _player.Move.StopMoveAndAnimationMove();
         }
 
@@ -91,7 +91,7 @@ public class LightningMovement : Skill
         _lightningStrikes.IsUsedLightningStrikes = false;
         _poisonSlap.IsCanDamageDeal = false;
         if (DOTween.IsTweening(_player.Rigidbody)) DOTween.Kill(_player.Rigidbody);
-        _player.Move.CanMove = true;
+        Hero.Move.SetCanMove(true);
         _player.Move.StopMoveAndAnimationMove();
 
         IsInMovement = false;
@@ -163,7 +163,7 @@ public class LightningMovement : Skill
     private IEnumerator MovementRoutine()
     {
         IsInMovement = true;
-        _player.Move.CanMove = false;
+        Hero.Move.SetCanMove(false);
         _damagedCharacter = null;
 
         if (_superFastScales.Data.IsOpen)

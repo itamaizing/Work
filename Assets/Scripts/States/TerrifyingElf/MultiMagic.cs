@@ -28,7 +28,7 @@ public class MultiMagic : AuraState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
-        _characterState = character;
+        characterState = character;
         _skills = caster.GetComponent<SkillManager>();
         duration = durationToExit;
 
@@ -54,7 +54,7 @@ public class MultiMagic : AuraState
             skill.AfterCast -= ExitState;
         }
         Debug.Log("выход из мульти");
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time) => false;
@@ -67,7 +67,7 @@ public class MultiMagic : AuraState
 
         foreach (var character in characters)
         {
-            if (character == _characterState.Character) continue;
+            if (character == characterState.Character) continue;
 
             _characters.Add(character);
         }
@@ -91,9 +91,9 @@ public class MultiMagic : AuraState
         _distance = skill.Radius;
         _targetsMask = skill.TargetsLayers;
 
-        var colliders = Physics.OverlapSphere(_characterState.transform.position, _distance, _targetsMask);
+        var colliders = Physics.OverlapSphere(characterState.transform.position, _distance, _targetsMask);
 
-        foreach (var collider in colliders) if (collider.TryGetComponent(out Character character) && character != _characterState.Character && character != _lastTarget)
+        foreach (var collider in colliders) if (collider.TryGetComponent(out Character character) && character != characterState.Character && character != _lastTarget)
                 _characters.Add(character);
     }
 

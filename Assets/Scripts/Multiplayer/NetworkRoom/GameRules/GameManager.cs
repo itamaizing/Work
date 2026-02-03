@@ -32,6 +32,6 @@ public class GameManager : MonoBehaviour
     public HeroSpawnManager HeroSpawnManager { get => _heroSpawnManager; }
     public PreparationAreaManager PreparationAreaManager { get => preparationAreaManager; }
     public IGameSourceUI SourceUI { get => _gameSourceUI; }
-    public TeamsPanel TeamsPanel { get => _teamsPanel; }
+    public TeamsPanel TeamsPanel { get => _teamsPanel; }  
     public TeamSource Source { get => _sourceTabl; }
 }

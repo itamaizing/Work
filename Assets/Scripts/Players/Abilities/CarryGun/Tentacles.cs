@@ -90,7 +90,7 @@ public class Tentacles : Skill
 
     public void MoveStop()
     {
-        Hero.Move.CanMove = false;
+        Hero.Move.SetCanMove(false);
         if (GetTargetCharacter()) _player.Move.LookAtPosition(GetTargetCharacter().transform.position);
         Hero.Move.StopMoveAndAnimationMove();
     }
@@ -116,7 +116,7 @@ public class Tentacles : Skill
         _spawnPoint = Vector3.positiveInfinity;
         ClearTarget();
         _spentAttackingPsiEnergy = 0f;
-        Hero.Move.CanMove = true;
+        Hero.Move.SetCanMove(true);
         _player.Move.StopLookAt();
 
         if (_previewInstance != null) Destroy(_previewInstance.gameObject);
@@ -333,7 +333,7 @@ public class Tentacles : Skill
             if (distance > tentacleRange)
             {
                 TryCancel(true);
-                _hero.Move.CanMove = true;
+                Hero.Move.SetCanMove(true);
                 yield break;
             }
 

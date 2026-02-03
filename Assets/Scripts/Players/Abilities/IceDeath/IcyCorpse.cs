@@ -1,6 +1,4 @@
 using Mirror;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,7 +12,7 @@ public class IcyCorpse : MinionComponent
 
 	private void Start()
 	{
-		Health.SetHp(_hp, _maxHp);
+		//Health.SetHp(_hp, _maxHp);
 	}
 	public void InitWithHp(float hp, float maxHp)
 	{

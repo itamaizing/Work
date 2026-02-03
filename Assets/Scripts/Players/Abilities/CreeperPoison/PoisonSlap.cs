@@ -89,7 +89,7 @@ public class PoisonSlap : Skill
     public void PoisonSlapPreparation()
     {
         _hero.Move.StopMoveAndAnimationMove();
-        _hero.Move.CanMove = false;
+        _hero.Move.SetCanMove(false);
     }
 
     public void AnimPoisonSlapCast()
@@ -132,7 +132,7 @@ public class PoisonSlap : Skill
         _isPushTargetAllowed = false;
         _isUsedPoisonBallCharger = true;
         Hero.Move.StopLookAt();
-        Hero.Move.CanMove = true;
+        Hero.Move.SetCanMove(true);
 
         ClearTarget();
         ClearTempTarget();

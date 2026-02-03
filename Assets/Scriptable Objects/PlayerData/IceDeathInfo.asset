@@ -166,3 +166,34 @@ MonoBehaviour:
       DefaultValue: 0
       Icon: {fileID: 0}
       IsVisible: 0
+    _attributeGroup2:
+    - Name: Health
+      _value: 0
+      _modifiers: []
+    - Name: HPRegen
+      _value: 0
+      _modifiers: []
+    - Name: Resourse
+      _value: 0
+      _modifiers: []
+    - Name: Mana
+      _value: 0
+      _modifiers: []
+    - Name: ResourseRegen
+      _value: 0
+      _modifiers: []
+    - Name: Speed
+      _value: 1
+      _modifiers: []
+    - Name: MagicResist
+      _value: 0
+      _modifiers: []
+    - Name: PhysicResist
+      _value: 0
+      _modifiers: []
+    - Name: MagicEvade
+      _value: 0
+      _modifiers: []
+    - Name: EvasionPhysical
+      _value: 0
+      _modifiers: []

@@ -18554,6 +18554,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 114aef51a60b0fb4294a2dc37323acaf, type: 2}
     - target: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _menuPreview
+      value: 
+      objectReference: {fileID: 6119676662231931430, guid: e83312f7f70fffa4a9c0ab8d1efda095, type: 3}
+    - target: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _visionComponent
       value: 
       objectReference: {fileID: 5614925148377618008}

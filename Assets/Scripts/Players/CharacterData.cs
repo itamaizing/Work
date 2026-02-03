@@ -20,12 +20,28 @@ public class CharacterData : ScriptableObject
     public Sprite Icon => _icon;
     public float IconSize => _iconSize;
 
-    public AttributeGroup Attributes => _attributes;
+    /*public AttributeGroup Attributes => _attributes;
 
     public float GetAttributeValue(string attributeName)
     {
         var attribute = _attributes.AttributeData.FirstOrDefault(o => o.Name == attributeName);
         return attribute?.DefaultValue ?? 0f;
+    }*/
+
+    public Attributes GetAttribute(string attributeName)
+    {
+        var attribute = _attributes.AttributeData2.FirstOrDefault(o => o.Name == attributeName);
+        if (attribute != null)
+        {
+            var tempAttribute = new Attributes(attribute.Name);
+            tempAttribute.SetValue(attribute.GetValue());
+            return tempAttribute;
+        }
+        else
+        {
+            Debug.LogError("No attribute data " + attributeName);
+            return null;
+        }
     }
 }
 
@@ -72,6 +88,8 @@ public static class AttributeNames
     public const string Health = "Health";
     public const string Mana = "Mana";
     public const string Energy = "Energy";
+    public const string Resourse = "Resourse";
+    public const string ResourseRegen = "ResourseRegen";
     public const string Rune = "Rune";
     public const string Speed = "Speed";
     public const string HpRegen = "HPRegen";
@@ -90,6 +108,7 @@ public static class AttributeNames
     public const string MagicEvade = "MagicEvade";
     public const string PhysicAbsorb = "PhysicAbsorb";
     public const string MagicAbsorb = "MagicAbsorb";
+    public const string EvasionPhysical = "EvasionPhysical";
 }
 
 [Serializable]
@@ -121,7 +140,23 @@ public class AttributeGroup
         new Attribute(1021, AttributeNames.MagicAbsorb, 0)
     };
 
+    [SerializeField]
+    private List<Attributes> _attributeGroup2 = new()
+    {
+        new Attributes(AttributeNames.Health),
+        new Attributes(AttributeNames.HpRegen),
+        new Attributes(AttributeNames.Resourse),
+        new Attributes(AttributeNames.Mana),
+        new Attributes(AttributeNames.ResourseRegen),
+        new Attributes(AttributeNames.Speed),
+        new Attributes(AttributeNames.MagicResist),
+        new Attributes(AttributeNames.PhysicResist),
+        new Attributes(AttributeNames.MagicEvade),
+        new Attributes(AttributeNames.EvasionPhysical),
+    };
+
     public List<Attribute> AttributeData => attributesGroup;
+    public List<Attributes> AttributeData2 => _attributeGroup2;
     public int FreeAttributePointsCount { get; set; }
     public int UsedAttributePointsCount => attributesGroup.Sum(o => o.Points);
 }
