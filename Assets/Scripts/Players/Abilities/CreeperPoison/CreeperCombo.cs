@@ -8,12 +8,12 @@ public class CreeperCombo : NetworkBehaviour
     [SerializeField] private SneakySpit sneakySpit;
     [SerializeField] private BlockPassiveSkill blockPassiveSkill;
     [SerializeField] private SkillManager _skillManager;
+    [SerializeField] private float _comboResetDelay = 1f;
 
     private Queue<Skill> _sneakyComboQueue = new();
     private Queue<Skill> _blockComboQueue = new();
 
     private Coroutine _resetCoroutine;
-    private float _comboResetDelay = 1f;
 
     private const int SneakyComboSize = 3;
     private const int BlockComboSize = 2;
@@ -81,9 +81,10 @@ public class CreeperCombo : NetworkBehaviour
         }
 
         bool validCombo =
-            lightningCount == 2 ||
-            creeperCount == 3 ||
-            (lightningCount == 1 && creeperCount == 2);
+       lightningCount == 2 ||
+       creeperCount == 3 ||
+       (lightningCount == 1 && creeperCount == 2) ||
+       (lightningCount == 1 && creeperCount == 1);
 
         if (validCombo)
         {
