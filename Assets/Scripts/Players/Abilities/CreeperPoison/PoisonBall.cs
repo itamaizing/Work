@@ -255,6 +255,7 @@ public class PoisonBall : Skill, IAltAbility
                     if (_arrowRenderers[0] == null)
                     {
                         CreateArrowsParallelToPlayer(targetPoint);
+                        StartMouseDetectionIfNeeded();
                     }
 
                     _arrowRenderers[0]?.gameObject.SetActive(true);
@@ -660,6 +661,17 @@ public class PoisonBall : Skill, IAltAbility
 
     #region ArrowManagement
 
+    private void StartMouseDetectionIfNeeded()
+    {
+        if (_mouseDetectionCoroutine != null)
+        {
+            StopCoroutine(_mouseDetectionCoroutine);
+            _mouseDetectionCoroutine = null;
+        }
+
+        _mouseDetectionCoroutine = StartCoroutine(UpdateMouseDetectionJob());
+    }
+
     private void CreateArrowsParallelToPlayer(Vector3 point)
     {
         if (_arrowPrefab == null || pointArrowRender == null) return;
@@ -713,7 +725,6 @@ public class PoisonBall : Skill, IAltAbility
 
         childArrow.localRotation = Quaternion.Euler(currentXRotation, 0, zRotation);
     }
-
 
     private void SetArrowVisibility(int arrowIndex, bool isVisible)
     {
