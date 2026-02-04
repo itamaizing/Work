@@ -181,6 +181,7 @@ public class CharacterState : NetworkBehaviour
 	public List<AbstractCharacterState> CurrentStates => _currentStates;
 	public Character Character => _hero;
 	public event System.Action<AbstractCharacterState> OnStateAdded;
+	public event System.Action<GameObject> OnStateAddFromPerson; 
 
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
 	{
@@ -515,6 +516,7 @@ public class CharacterState : NetworkBehaviour
 		CreateState(stateInstance, state, duration, damageToExit, personWhoShooted, skillName, false);
 
 		OnStateAdded?.Invoke(stateInstance);
+		OnStateAddFromPerson?.Invoke(personWhoShooted);
 
 		if (stateInstance is IDamageable damageableShield)
 		{

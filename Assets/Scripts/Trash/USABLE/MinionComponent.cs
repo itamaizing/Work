@@ -1,9 +1,7 @@
 using Mirror;
 using System;
-using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.AI;
-using Debug = UnityEngine.Debug;
 
 public class MinionComponent : Character
 {

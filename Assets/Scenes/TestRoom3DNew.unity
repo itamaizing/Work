@@ -100845,6 +100845,50 @@ PrefabInstance:
       propertyPath: _enemyLayer.m_Bits
       value: 256
       objectReference: {fileID: 0}
+    - target: {fileID: 1553097900142774207, guid: 4812c8b9678ac6747a349eeb911e32fd, type: 3}
+      propertyPath: _minionPrefs.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1553097900142774207, guid: 4812c8b9678ac6747a349eeb911e32fd, type: 3}
+      propertyPath: '_minionPrefs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+    - target: {fileID: 1553097900142774207, guid: 4812c8b9678ac6747a349eeb911e32fd, type: 3}
+      propertyPath: '_minionPrefs.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+    - target: {fileID: 2389372146903702434, guid: 4812c8b9678ac6747a349eeb911e32fd, type: 3}
+      propertyPath: _campColor
+      value: 
+      objectReference: {fileID: 446885940}
+    - target: {fileID: 2768610894694132959, guid: 4812c8b9678ac6747a349eeb911e32fd, type: 3}
+      propertyPath: _surrenderUI
+      value: 
+      objectReference: {fileID: 1513542736}
+    - target: {fileID: 3909583295994357731, guid: 4812c8b9678ac6747a349eeb911e32fd, type: 3}
+      propertyPath: _minionLeadPref
+      value: 
+      objectReference: {fileID: 880709639755590841, guid: c660bdcdea2d5184ba8d361d3fc628fc, type: 3}
+    - target: {fileID: 3909583295994357731, guid: 4812c8b9678ac6747a349eeb911e32fd, type: 3}
+      propertyPath: _spawnDelaySeconds
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909583295994357731, guid: 4812c8b9678ac6747a349eeb911e32fd, type: 3}
+      propertyPath: _minionPrefs.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3909583295994357731, guid: 4812c8b9678ac6747a349eeb911e32fd, type: 3}
+      propertyPath: '_minionPrefs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+    - target: {fileID: 3909583295994357731, guid: 4812c8b9678ac6747a349eeb911e32fd, type: 3}
+      propertyPath: '_minionPrefs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+    - target: {fileID: 3909583295994357731, guid: 4812c8b9678ac6747a349eeb911e32fd, type: 3}
+      propertyPath: '_minionPrefs.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
     - target: {fileID: 4342702718005923716, guid: 4812c8b9678ac6747a349eeb911e32fd, type: 3}
       propertyPath: m_Name
       value: Camp (1)
@@ -100877,6 +100921,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c20897b768816484d8c9eff6412bebea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!23 &446885940 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 6626269199134353010, guid: 4812c8b9678ac6747a349eeb911e32fd, type: 3}
+  m_PrefabInstance: {fileID: 446885937}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &457199450
 GameObject:
   m_ObjectHideFlags: 0
