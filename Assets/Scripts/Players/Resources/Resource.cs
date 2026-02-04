@@ -80,6 +80,8 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 
     public virtual void Initialize(Attributes maxValue, Attributes regenValue, CharacterData data)
     {
+        Debug.Log("Init resourse " + maxValue.GetValue());
+
         _regenValueAttribute = regenValue;
         _regenerationValue = regenValue.GetValue();
 

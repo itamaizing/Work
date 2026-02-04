@@ -84,39 +84,26 @@ public class SaveManager : MonoBehaviour
     public void SaveAttributePoints(int points)
     {
         _saveSystem.Save($"{_character.Data.Name}_Group{_currentSaveGroup}_FreeAttributesPoints", _attributeSystem.Points);
-       // var currentPoints = _character.Data.Attributes.FreeAttributePointsCount + points;
-       // _attributeManager.SaveAttributePoints(_character, _currentSaveGroup, currentPoints);
     }
     
     public int LoadAttributePoints()
     {
         int points = 0;
         _saveSystem.Load<int>($"{_character.Data.Name}_Group{_currentSaveGroup}_FreeAttributesPoints", e => points = e);
-        // return _character.Data.Attributes.FreeAttributePointsCount = _attributeManager.LoadAttributePoints(_character, _currentSaveGroup);
         return points;
-    }
-    
-    public void ChangeAttribute(int index, int points)
-    {
-        //_attributeSystem.AddValueAttribute
-        //_attributeModifier.ChangeAttribute(_character, index, points, _currentSaveGroup);
     }
 
     public void AddAttributesModif(Attributes attribute, AttributeModifiers modif)
     {
         attribute.AddModifier(modif);
-        //Save
-        //_attributeModifier.ChangeAttribute(_character, index, points, _currentSaveGroup);
+        SaveAttribute(attribute);
     }
 
     public void RemoveAttributesModif(Attributes attribute, AttributeModifiers modif)
     {
         attribute.RemoveModifier(modif);
-        //Save
-
-        //_attributeModifier.ChangeAttribute(_character, index, points, _currentSaveGroup);
+        SaveAttribute(attribute);
     }
-
 
     public void SaveAttribute(Attributes attribute)
     {
@@ -138,6 +125,8 @@ public class SaveManager : MonoBehaviour
 
         return modifs;
     }
+
+
 
     public void SaveTalent(int idGroup, int row, string idTalent, bool isActive)
     {

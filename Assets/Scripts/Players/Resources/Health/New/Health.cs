@@ -75,6 +75,8 @@ public class Health : Resource, IDamageable, IHealingable
      }*/
     public void Initialize(Attributes maxValue, Attributes regenValue, CharacterData data, Attributes physicResist, Attributes magResist, Attributes evasionPhysic, Attributes evasionMagic)
     {
+        Debug.Log("Init hp " + maxValue.GetValue());
+
         base.Initialize(maxValue, regenValue, data);
 
         _physicResist = physicResist;

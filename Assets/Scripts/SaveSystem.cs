@@ -9,7 +9,6 @@ public class SaveSystem
     {
         string path = BuildPath(key);
         string json = JsonConvert.SerializeObject(data);
-
         using (var filestream = new StreamWriter(path))
         {
             filestream.WriteLine(json);

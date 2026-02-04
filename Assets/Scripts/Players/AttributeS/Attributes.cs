@@ -22,6 +22,7 @@ public class Attributes
 
     public void AddModifier(AttributeModifiers modifier)
     {
+        Debug.Log("Added");
         _modifiers.Add(modifier);
     }
 

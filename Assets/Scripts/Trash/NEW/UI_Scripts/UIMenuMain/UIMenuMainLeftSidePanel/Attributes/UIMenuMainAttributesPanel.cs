@@ -16,28 +16,28 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
 
     public void Show(Character hero)
     {
-        _attributeSystem = hero.AttributeSystem;
+        _attributeSystem = new AttributeSystem();
+        _attributeSystem.Init2(hero.Data);
 
-        _attributeSystem.Init(hero.Data);
         ResetPanel();
 
-       /* foreach (var item in _attributeGroup.AttributeData.Where(o=> o.IsVisible))
-        {
-            var attribute = Instantiate(_attributeItem, _itemsParent);
-            attribute.Fill(item);
-            attribute.OnValueChange += UpdateAttributesPoints;
-            attribute.OnPointerEntered += ShowDescription;
-            attribute.OnPointerExited += HideDescription;
+        /* foreach (var item in _attributeGroup.AttributeData.Where(o=> o.IsVisible))
+         {
+             var attribute = Instantiate(_attributeItem, _itemsParent);
+             attribute.Fill(item);
+             attribute.OnValueChange += UpdateAttributesPoints;
+             attribute.OnPointerEntered += ShowDescription;
+             attribute.OnPointerExited += HideDescription;
 
-            _attributes.Add(attribute);
-        }*/
+             _attributes.Add(attribute);
+         }*/
 
         foreach (var item in _attributeSystem.Attributes)
         {
             var attribute = Instantiate(_attributeItem, _itemsParent);
             attribute.Fills(item);
             Debug.Log(item.GetValue());
-            attribute.OnValueChange += UpdateAttributesPoints;
+            //attribute.OnValueChange += UpdateAttributesPoints;
             attribute.OnPointerEntered += ShowDescription;
             attribute.OnPointerExited += HideDescription;
 
@@ -51,7 +51,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     {
         foreach (var attribute in _attributes)
         {
-            attribute.OnValueChange -= UpdateAttributesPoints;
+            //attribute.OnValueChange -= UpdateAttributesPoints;
             attribute.OnPointerEntered -= ShowDescription;
             attribute.OnPointerExited -= HideDescription;
         }

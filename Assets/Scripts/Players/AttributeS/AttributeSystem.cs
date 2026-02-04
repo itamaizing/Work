@@ -1,9 +1,13 @@
+using Mirror;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class AttributeSystem : MonoBehaviour
+public class AttributeSystem : NetworkBehaviour
 {
-    private CharacterData _data;
+    //private CharacterData _data;
+
+    //Переделать в Dictionary
 
     private Attributes _health;
     private Attributes _hpRegen;
@@ -33,19 +37,19 @@ public class AttributeSystem : MonoBehaviour
 
     public int Points => _points;
 
-    public void Init(CharacterData data)
+    public void Init2(CharacterData data)
     {
         if (_isInited) return;
-        _data = data;
-        _health = _data.GetAttribute(AttributeNames.Health);
-        _hpRegen = _data.GetAttribute(AttributeNames.HpRegen);
-        _resourse = _data.GetAttribute(AttributeNames.Mana);
-        _resourseRegen = _data.GetAttribute(AttributeNames.ResourseRegen);
-        _moveSpeed = _data.GetAttribute(AttributeNames.Speed);
-        _physicEvade = _data.GetAttribute(AttributeNames.EvasionPhysical);
-        _physicResist = _data.GetAttribute(AttributeNames.PhysicResist);
-        _magicResist = _data.GetAttribute(AttributeNames.MagicResist);
-        _magicEvade = _data.GetAttribute(AttributeNames.MagicEvade);
+        //_data = data;
+        _health = data.GetAttribute(AttributeNames.Health);
+        _hpRegen = data.GetAttribute(AttributeNames.HpRegen);
+        _resourse = data.GetAttribute(AttributeNames.Mana);
+        _resourseRegen = data.GetAttribute(AttributeNames.ResourseRegen);
+        _moveSpeed = data.GetAttribute(AttributeNames.Speed);
+        _physicEvade = data.GetAttribute(AttributeNames.EvasionPhysical);
+        _physicResist = data.GetAttribute(AttributeNames.PhysicResist);
+        _magicResist = data.GetAttribute(AttributeNames.MagicResist);
+        _magicEvade = data.GetAttribute(AttributeNames.MagicEvade);
 
         _attributes.Add(_health);
         _attributes.Add(_hpRegen);
@@ -56,9 +60,47 @@ public class AttributeSystem : MonoBehaviour
         _attributes.Add(_physicResist);
         _attributes.Add(_magicResist);
         _attributes.Add(_magicEvade);
+        Debug.Log("Init");
+
+        foreach (var attribute in _attributes)
+        {
+            List<AttributeModifiers> modifs = SaveManager.Instance.LoadAttribute(attribute);
+            Debug.Log(modifs.Count);
+            foreach (var modifier in modifs)
+            {
+                Debug.Log(modifier.Value + attribute.Name);
+                attribute.AddModifier(modifier);
+            }
+
+            //Commands(attribute.Name, modifs);
+        }
 
         _isInited = true;
+    }
 
+    public void Init(CharacterData data)
+    {
+        if (_isInited) return;
+        //_data = data;
+        _health = data.GetAttribute(AttributeNames.Health);
+        _hpRegen = data.GetAttribute(AttributeNames.HpRegen);
+        _resourse = data.GetAttribute(AttributeNames.Mana);
+        _resourseRegen = data.GetAttribute(AttributeNames.ResourseRegen);
+        _moveSpeed = data.GetAttribute(AttributeNames.Speed);
+        _physicEvade = data.GetAttribute(AttributeNames.EvasionPhysical);
+        _physicResist = data.GetAttribute(AttributeNames.PhysicResist);
+        _magicResist = data.GetAttribute(AttributeNames.MagicResist);
+        _magicEvade = data.GetAttribute(AttributeNames.MagicEvade);
+
+        _attributes.Add(_health);
+        _attributes.Add(_hpRegen);
+        _attributes.Add(_resourse);
+        _attributes.Add(_resourseRegen);
+        _attributes.Add(_moveSpeed);
+        _attributes.Add(_physicEvade);
+        _attributes.Add(_physicResist);
+        _attributes.Add(_magicResist);
+        _attributes.Add(_magicEvade);
         Debug.Log("Init");
 
         foreach (var attribute in _attributes)
@@ -70,11 +112,26 @@ public class AttributeSystem : MonoBehaviour
                 Debug.Log(modifier.Value + attribute.Name);
                 attribute.AddModifier(modifier);
             }
+
+            Commands(attribute.Name, modifs);
         }
+
+        _isInited = true;
     }
 
     public void AddPoints(int point)
     {
         _points += point;
+    }
+
+    [Command]
+    private void Commands(string name, List<AttributeModifiers> modifs)
+    {
+        var attribute = _attributes.FirstOrDefault(n => n.Name == name);
+        foreach (var modifier in modifs)
+        {
+            Debug.Log(modifier.Value + attribute.Name);
+            attribute.AddModifier(modifier);
+        }
     }
 }

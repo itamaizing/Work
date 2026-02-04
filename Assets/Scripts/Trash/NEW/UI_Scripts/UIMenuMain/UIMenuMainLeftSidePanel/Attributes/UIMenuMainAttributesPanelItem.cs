@@ -14,7 +14,7 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler
     private Attributes _currentAttributes;
     private List<AttributeModifiers> _modifs = new();
 
-    public event UnityAction OnValueChange;
+    //public event UnityAction OnValueChange;
     public event UnityAction<string> OnPointerEntered;
     public event UnityAction OnPointerExited;
 
@@ -29,8 +29,13 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler
     public void Fills(Attributes attribute)
     {
         _currentAttributes = attribute;
+
+        foreach (var modif in _currentAttributes.Modifiers)
+        {
+            _modifs.Add(modif);
+        }
         // _icon.sprite = _currentAttributes.Icon;
-        _attributeValue.Localize(_modifs.Count);
+        _attributeValue.ChangeKey(_modifs.Count);
     }
 
     public void Add()
@@ -40,15 +45,8 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler
         modif.Type = ModifierType.MenuFlat;
         _modifs.Add(modif);
 
-        //SaveManager.Instance.ChangeAttribute(_currentAttribute.Id,1);
-        //SaveManager.Instance.LoadAttribute(_currentAttribute.Id);
-
         SaveManager.Instance.AddAttributesModif(_currentAttributes, modif);
-        SaveManager.Instance.LoadAttribute(_currentAttributes);
-        
-        //_attributeValue.ChangeKey(_currentAttribute.Points);
-        
-        OnValueChange?.Invoke();
+        _attributeValue.ChangeKey(_modifs.Count);
     }
 
     public void Reduce()
@@ -57,17 +55,11 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler
         
         SaveManager.Instance.RemoveAttributesModif(_currentAttributes, _modifs[0]);
         _modifs.RemoveAt(0);
-
-        SaveManager.Instance.LoadAttribute(_currentAttributes);
-        
-        _attributeValue.ChangeKey((int)_currentAttributes.GetValue());
-        
-        OnValueChange?.Invoke();
+        _attributeValue.ChangeKey(_modifs.Count);
     }
 
     public void UpdateValue()
     {
-        SaveManager.Instance.LoadAttribute(_currentAttributes);
         _attributeValue.ChangeKey((int)_currentAttributes.GetValue());
     }
     
