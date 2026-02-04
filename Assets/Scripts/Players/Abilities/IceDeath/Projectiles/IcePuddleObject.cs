@@ -98,7 +98,7 @@ public class IcePuddleObject : Projectiles
 	{
 		if (!_initialized || !collision.TryGetComponent<Character>(out var target)) return;
 		if (target == _dad) return;
-		if (target.gameObject.layer == LayerMask.NameToLayer("Allies")) return;
+		if (target.gameObject.layer == _skill.TargetsLayers) return;
 		if (_enemiesInZone.Contains(target)) return;
 
 		_enemiesInZone.Add(target);

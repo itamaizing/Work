@@ -200,8 +200,10 @@ public class PoisonBall : Skill, IAltAbility
         _thirdClickDone = false;
         _firstClickDone = false;
 
-        float timerForCancelCoroutine = 0.2f;
-        Invoke("CancelCoroutine", timerForCancelCoroutine);
+        //float timerForCancelCoroutine = 0.2f;
+        //Invoke("CancelCoroutine", timerForCancelCoroutine);
+
+        CancelCoroutine();
     }
 
     protected override void ClearData()
