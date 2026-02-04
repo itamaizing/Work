@@ -30,8 +30,6 @@ public class TrueSight : AbstractCharacterState
         {
             ExitState();
         }
-
-        CheckInvisibility();
     }
 
     public override void ExitState()
@@ -44,6 +42,7 @@ public class TrueSight : AbstractCharacterState
     public override bool Stack(float time)
     {
         duration = Mathf.Max(duration, time);
+        CheckInvisibility();
         return false;
     }
 
@@ -65,6 +64,7 @@ public class TrueSight : AbstractCharacterState
             mat.color = color;
         }
 
+        invisibleEnemy.Appeared();
         invisibleEnemy.SelectedCircle?.SetAllProjectorsEnabled(true);
     }
 
@@ -80,6 +80,7 @@ public class TrueSight : AbstractCharacterState
             mat.color = color;
         }
 
+        invisibleEnemy.Disappeared();
         invisibleEnemy.SelectedCircle?.SetAllProjectorsEnabled(false);
     }
 }
