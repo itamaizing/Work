@@ -372,7 +372,7 @@ public class CreeperInvisible : Skill
     {
         var playerLayer = player.layer;
 
-        player.GetComponent<Character>().IsInvisible = true;
+        player.GetComponent<Character>().IsInvisible = false;
 
         SkinnedMeshRenderer playerRenderer = player.GetComponentInChildren<SkinnedMeshRenderer>();
         Dictionary<Material, Color> playerMaterial = new Dictionary<Material, Color>();
