@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TrueSightState : AbstractCharacterState
+public class TrueSight : AbstractCharacterState
 {
-    public override States State => States.TestAuraState;
+    public override States State => States.TrueSightState;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => new();
@@ -36,6 +36,8 @@ public class TrueSightState : AbstractCharacterState
 
     public override void ExitState()
     {
+        var character = _characterState.GetComponent<Character>();
+        if (_characterState.CheckForState(States.Invisible) || _characterState.CheckForState(States.CreeperInvisible)) LostInvisibleEnemy(character);
         _characterState.RemoveState(this);
     }
 
@@ -47,11 +49,37 @@ public class TrueSightState : AbstractCharacterState
 
     private void CheckInvisibility()
     {
-        var state = _characterState;
+        var character = _characterState.GetComponent<Character>();
+        if (_characterState.CheckForState(States.Invisible) || _characterState.CheckForState(States.CreeperInvisible)) DetectionInvisibleEnemy(character);
+    }
 
-        if (state.CheckForState(States.Invisible) || state.CheckForState(States.CreeperInvisible))
+    private void DetectionInvisibleEnemy(Character invisibleEnemy)
+    {
+        SkinnedMeshRenderer renderer = invisibleEnemy.GetComponentInChildren<SkinnedMeshRenderer>();
+        if (renderer == null) return;
+
+        foreach (var mat in renderer.materials)
         {
-            Debug.Log($"[TrueSight] Обнаружен невидимый персонаж: {state.Character.name}");
+            Color color = mat.color;
+            color.a = 0.5f;
+            mat.color = color;
         }
+
+        invisibleEnemy.SelectedCircle?.SetAllProjectorsEnabled(true);
+    }
+
+    private void LostInvisibleEnemy(Character invisibleEnemy)
+    {
+        SkinnedMeshRenderer renderer = invisibleEnemy.GetComponentInChildren<SkinnedMeshRenderer>();
+        if (renderer == null) return;
+
+        foreach (var mat in renderer.materials)
+        {
+            Color color = mat.color;
+            color.a = 0.0f;
+            mat.color = color;
+        }
+
+        invisibleEnemy.SelectedCircle?.SetAllProjectorsEnabled(false);
     }
 }
