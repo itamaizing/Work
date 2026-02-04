@@ -1,48 +1,57 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TrueSightAuraState : AuraState
+public class TrueSightState : AbstractCharacterState
 {
-    public override States State => States.TestAuraState; // заменишь на States.TrueSight при добавлении в enum
-    public override StateType Type => StateType.Aura;
+    public override States State => States.TestAuraState;
+    public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
+    public override List<StatusEffect> Effects => new();
 
-    public override float Distance => 6f;
-    public override float EffectRate => 0.5f;
-    public override LayerMask LayerMask => LayerMask.GetMask("Enemy", "Allies"); // или конкретный слой врагов
-
-    public override List<StatusEffect> Effects => new() { StatusEffect.Invisible };
-
-    public override void EffectOnEnter(Character character)
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        // не нужен, т.к. эффект постоянный
+        _characterState = character;
+        _abilities = character.Character.GetComponent<SkillManager>();
+        _health = character.Character.GetComponent<Health>();
+        _personWhoMadeBuff = personWhoMadeBuff;
+
+        duration = durationToExit;
+        MaxStacksCount = 0;
+        CanStack = false;
+
+        CheckInvisibility();
     }
 
-    public override void EffectOnExit(Character character)
+    public override void UpdateState()
     {
-        // не нужен, т.к. эффект постоянный
-    }
+        duration -= Time.deltaTime;
 
-    public override void EffectOnStay(List<Character> characters)
-    {
-        foreach (var character in characters)
+        if (duration <= 0)
         {
-            if (character == null || character == _self) continue;
+            ExitState();
+        }
 
-            var state = character.CharacterState;
+        CheckInvisibility();
+    }
 
-            // Раскрыть любые невидимости
-            if (state.CheckForState(States.Invisible))
-            {
-                state.RemoveState(States.Invisible);
-            }
+    public override void ExitState()
+    {
+        _characterState.RemoveState(this);
+    }
 
-            if (state.CheckForState(States.CreeperInvisible))
-            {
-                state.RemoveState(States.CreeperInvisible);
-            }
+    public override bool Stack(float time)
+    {
+        duration = Mathf.Max(duration, time);
+        return false;
+    }
 
-            // Добавь любые другие невидимости
+    private void CheckInvisibility()
+    {
+        var state = _characterState;
+
+        if (state.CheckForState(States.Invisible) || state.CheckForState(States.CreeperInvisible))
+        {
+            Debug.Log($"[TrueSight] Обнаружен невидимый персонаж: {state.Character.name}");
         }
     }
 }

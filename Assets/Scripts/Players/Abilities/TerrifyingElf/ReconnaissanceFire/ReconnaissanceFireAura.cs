@@ -138,6 +138,8 @@ public class ReconnaissanceFireAura : NetworkBehaviour
             {
                 if (character == null || !character.TryGetComponent(out CharacterState state)) continue;
 
+                state.AddState(States.TestAuraState, 1f, 0f, gameObject, "ReconnaissanceFireAura");
+
                 if (stateDark && _fireDarkTalent)
                 {
                     state.AddState(States.FireFlash, FireFlashDuration, 0f, gameObject, name);
