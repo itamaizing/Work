@@ -76,6 +76,17 @@ public class CampStatusController : NetworkBehaviour
 
         RpcSetStatus(_campStatus);
     }
+    
+    public void ReturnToNeutralAfterCapture()
+    {
+        _campStatus = CampStatus.Neutral;
+        _isLeadTaken = false;
+        _currentOwner = null;
+
+        RpcSetStatus(_campStatus);
+
+        _minionManager.ClearAllMinions();
+    }
 
     private void ReturnToNeutral()
     {

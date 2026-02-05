@@ -205,10 +205,16 @@ public class CampMinionManager : NetworkBehaviour
     {
         foreach (var minion in _minions)
         {
-            minion.gameObject.layer = 0;
+            if (minion != null && minion.gameObject != null)
+            {
+                minion.gameObject.layer = 0;
+            }
         }
 
-        _minionLead.gameObject.layer = 0;
+        if (_minionLead != null && _minionLead.gameObject != null)
+        {
+            _minionLead.gameObject.layer = 0;
+        }
     }
 
     private void UpdateMinionLayerForLocalPlayer(GameObject minion)

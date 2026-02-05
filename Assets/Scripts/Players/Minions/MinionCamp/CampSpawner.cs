@@ -15,6 +15,9 @@ public class CampSpawner : NetworkBehaviour
     private Transform _campTransform;
     private CampMinionManager _minionManager;
     private CampStatusController _statusController;
+    
+    private float _spawnTimer = 0f;
+    private bool _isWaitingToSpawn = false;
 
     public void Initialize(Transform campTransform, CampMinionManager minionManager, CampStatusController statusController)
     {
@@ -44,25 +47,63 @@ public class CampSpawner : NetworkBehaviour
     {
         while (true)
         {
+            yield return new WaitForSecondsRealtime(1f);
+
             CampStatus status = _statusController.CurrentStatus;
             bool isLeadTaken = _statusController.IsLeadTaken;
+            var lead = _minionManager.GetLead();
+            var minions = _minionManager.GetMinions();
 
-            if (status == CampStatus.Neutral || (!isLeadTaken && status != CampStatus.Neutral))
+            bool needsSpawn = false;
+
+            if (status == CampStatus.Neutral)
             {
-                yield return new WaitForSecondsRealtime(_spawnDelaySeconds);
-
-                if (_statusController.CurrentStatus == CampStatus.Neutral)
+                if (lead == null || minions.Count == 0)
                 {
-                    SpawnNeutralMinions();
+                    needsSpawn = true;
                 }
-                else if (!_statusController.IsLeadTaken && _statusController.CurrentStatus != CampStatus.Neutral)
+                else if (lead != null && 
+                         Vector3.Distance(lead.transform.position, _campTransform.position) <= _distanceToLead &&
+                         minions.Count < _initialMinionCount)
                 {
-                    SpawnControlledMinions();
+                    needsSpawn = true;
+                }
+            }
+            else if (!isLeadTaken && status != CampStatus.Neutral)
+            {
+                if (minions.Count < _initialMinionCount)
+                {
+                    needsSpawn = true;
+                }
+            }
+            
+            if (needsSpawn)
+            {
+                if (!_isWaitingToSpawn)
+                {
+                    _isWaitingToSpawn = true;
+                    _spawnTimer = 0f;
+                }
+
+                _spawnTimer += 1f;
+                
+                if (_spawnTimer >= _spawnDelaySeconds)
+                {
+                    if (status == CampStatus.Neutral)
+                    {
+                        SpawnNeutralMinions();
+                    }
+                    else if (!isLeadTaken && status != CampStatus.Neutral)
+                    {
+                        SpawnControlledMinions();
+                    }
+
+                    ResetSpawnTimer();
                 }
             }
             else
             {
-                yield return new WaitForSecondsRealtime(1f);
+                ResetSpawnTimer();
             }
         }
     }
@@ -86,7 +127,7 @@ public class CampSpawner : NetworkBehaviour
         }
     }
 
-    public void SpawnControlledMinions()
+    private void SpawnControlledMinions()
     {
         var owner = _statusController.CurrentOwner;
         if (owner == null || _statusController.CurrentStatus == CampStatus.Neutral || _statusController.IsLeadTaken)
@@ -164,14 +205,10 @@ public class CampSpawner : NetworkBehaviour
     public void FullRespawn()
     {
         _minionManager.ClearControlledMinions();
-
-        if (_minionManager.GetLead() == null)
-        {
-            SpawnLead();
-        }
-
+        
         _minionManager.ClearAllMinions();
-        SpawnAllMinions(_initialMinionCount);
+        
+        ResetSpawnTimer();
     }
 
     public void RespawnMissing()
@@ -188,6 +225,14 @@ public class CampSpawner : NetworkBehaviour
         {
             SpawnMinions(minions.Count, missingCount);
         }
+        
+        ResetSpawnTimer();
+    }
+    
+    public void ResetSpawnTimer()
+    {
+        _spawnTimer = 0f;
+        _isWaitingToSpawn = false;
     }
 
     private Vector3 GetRandomSpawnPoint()

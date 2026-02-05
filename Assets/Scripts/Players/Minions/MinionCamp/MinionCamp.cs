@@ -69,7 +69,7 @@ public class MinionCamp : NetworkBehaviour
             _minionManager.OnMinionDied(minionComp);
         }
     }
-
+    
     [Command(requiresAuthority = false)]
     public void CmdOnCapture(bool isTakeLead, NetworkConnectionToClient senderConn = null)
     {
@@ -78,8 +78,6 @@ public class MinionCamp : NetworkBehaviour
         if (clickedHero == null)
             return;
 
-        _statusController.SetCaptured(isTakeLead, clickedHero);
-
         if (isTakeLead)
         {
             if (_minionManager.GetLead() == null || _minionManager.GetLead().Health.CurrentValue <= 0)
@@ -87,10 +85,16 @@ public class MinionCamp : NetworkBehaviour
                 _spawner.SpawnLead();
             }
             _minionManager.TransferLeadToHero(clickedHero);
+            _minionManager.TransferMinionsToHero(clickedHero);
+     
+            _statusController.ReturnToNeutralAfterCapture();
+            _spawner.ResetSpawnTimer();
         }
         else
         {
+            _statusController.SetCaptured(isTakeLead, clickedHero);
             _minionManager.TransferMinionsToHero(clickedHero);
+            _spawner.ResetSpawnTimer();
         }
 
         _attackerTracker.ClearAllAttackers();
