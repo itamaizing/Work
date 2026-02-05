@@ -10,12 +10,12 @@ public class NinjaTalent_4 : Talent
     public override void Enter()
     {
         iceShadow.IceDeathInShadowTalentActive(true, Data.DescriptionsForInfoPanel[0]);
-        icePuddle.IceDeathInIcePudleTalentActive(true, "");
+        //icePuddle.IceDeathInIcePudleTalentActive(true, "");
     }
 
     public override void Exit()
     {
         iceShadow.IceDeathInShadowTalentActive(false, Data.DescriptionsForInfoPanel[0]);
-        icePuddle.IceDeathInIcePudleTalentActive(false, "");
+        //icePuddle.IceDeathInIcePudleTalentActive(false, "");
     }
 }

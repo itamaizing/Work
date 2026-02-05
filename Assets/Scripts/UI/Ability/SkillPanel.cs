@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -81,6 +82,54 @@ public class SkillPanel : MonoBehaviour
         OnEndDrag();
     }
 
+    public void FillMinionPanel(SkillManager abilities)
+    {
+        if (_playerAbilities != null)
+        {
+            _playerAbilities.SkillSelected -= OnAbilitySelected;
+            _playerAbilities.SkillDeselected -= OnAbilityDeselected;
+            _playerAbilities.SkillAdded -= OnSkillAdded;
+            _playerAbilities.SkillRemoved -= OnSkillRemoved;
+        }
+
+        _playerAbilities = abilities;
+
+        for (int i = 0; i < abilities.SelectedSkills.Length; i++)
+        {
+            var skill = abilities.SelectedSkills[i];
+            if (skill == null) continue;
+
+            var freeIcon = _skillIcons.FirstOrDefault(icon => icon.CurrentIcon == null);
+            if (freeIcon == null) break;
+
+            var icon = Instantiate(_draggableIconPref, freeIcon.transform);
+            icon.Init(skill, freeIcon.transform, _uiCamera, _cameraCanvasDistance);
+            freeIcon.CurrentIcon = icon;
+            freeIcon.Show();
+            icon.transform.SetAsFirstSibling();
+            _skills.Add(icon);
+
+            icon.BeginDrag += OnBeginDrag;
+            icon.EndDrag += OnEndDrag;
+            icon.PointerEnter += OnPointerEnterIcon;
+            icon.PointerExit += OnPointerExitIcon;
+        }
+
+        _playerAbilities.SkillSelected += OnAbilitySelected;
+        _playerAbilities.SkillDeselected += OnAbilityDeselected;
+        _playerAbilities.SkillAdded += OnSkillAdded;
+        _playerAbilities.SkillRemoved += OnSkillRemoved;
+
+        OnBeginDrag();
+        OnEndDrag();
+    }
+
+
+    public void OnMinionSelected(SkillManager minionSkillManager)
+    {
+        FillMinionPanel(minionSkillManager);
+    }
+
     public void SetHideUnusedButtons(bool value)
     {
         if (value)
@@ -138,6 +187,9 @@ public class SkillPanel : MonoBehaviour
 
     private void SkillChenged(int index, Skill skill)
     {
+        if (_playerAbilities?.SelectedSkills == null) return;
+        if (index < 0 || index >= _playerAbilities.SelectedSkills.Length) return;
+
         _playerAbilities.SelectedSkills[index] = skill;
     }
 
@@ -194,6 +246,34 @@ public class SkillPanel : MonoBehaviour
         Fill(_playerAbilities);
 		//UpdatePanel();
 	}
+
+    public bool HasSkill(Skill skill)
+    {
+        if (skill == null) return false;
+        return _skills.Any(icon => icon.Skill != null && icon.Skill.GetType() == skill.GetType());
+    }
+
+    public void AddSkill(Skill skill)
+    {
+        if (skill == null) return;
+
+        if (_skills.Any(icon => icon.Skill == skill)) return;
+
+        var freeIcon = _skillIcons.FirstOrDefault(icon => icon.CurrentIcon == null);
+        if (freeIcon == null) return;
+
+        var icon = Instantiate(_draggableIconPref, freeIcon.transform);
+        icon.Init(skill, freeIcon.transform, _uiCamera, _cameraCanvasDistance);
+        freeIcon.CurrentIcon = icon;
+        freeIcon.Show();
+        icon.transform.SetAsFirstSibling();
+        _skills.Add(icon);
+
+        icon.BeginDrag += OnBeginDrag;
+        icon.EndDrag += OnEndDrag;
+        icon.PointerEnter += OnPointerEnterIcon;
+        icon.PointerExit += OnPointerExitIcon;
+    }
 
     public void UpdateKeys()
     {

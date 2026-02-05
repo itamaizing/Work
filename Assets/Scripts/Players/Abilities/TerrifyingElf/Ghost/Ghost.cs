@@ -253,6 +253,12 @@ public class Ghost : Skill
 
             else if (isHoveringGhost && !Hero.CharacterState.CheckForState(States.Bound))
             {
+                if (IsCasting || _isSpawningGhostVisual)
+                {
+                    yield return null;
+                    continue;
+                }
+
                 if (GetMouseButton)
                 {
                     if (!_isGhostSpawnInRadiusTree && !IsWithinRadius(ghostPreview.transform.position, Radius + extendedRadius))

@@ -46,6 +46,7 @@ public class SkillManager : MonoBehaviour
     public event Action<int> SkillDeselected;
     public event Action<Skill> SkillAdded;
     public event Action<Skill> SkillRemoved;
+    public event Action<Skill> SkillCastEnded;
     public event Action<Skill> OnSkillPreparedSuccessfully;
 
     private void OnEnable()
@@ -96,6 +97,7 @@ public class SkillManager : MonoBehaviour
             PreviewCastedSkill = LastCastedSkill;
             LastCastedSkill = skill;
             _castWindowId++;
+            SkillCastEnded?.Invoke(skill);
 
             if (_lastCastResetCoroutine != null) StopCoroutine(_lastCastResetCoroutine);
             _lastCastResetCoroutine = StartCoroutine(CastWindowResetCoroutine(_castWindowId));

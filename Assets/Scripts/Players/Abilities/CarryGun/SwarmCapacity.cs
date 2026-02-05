@@ -63,7 +63,9 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
 
         while (true)
         {
-            int realCount = _spawnComponent.Units.Count(unit => unit != null && !unit.TryGetComponent<MucusAutoGrowth>(out _));
+            int realCount = _spawnComponent.Units.Count(unit => unit != null 
+            && !unit.TryGetComponent<MucusAutoGrowth>(out _) 
+            && !unit.TryGetComponent<ScraderSpawn>(out _));
 
             if (realCount > MaxCounter)
             {
@@ -74,6 +76,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
                 {
                     if (minion == null || minion.IsDead) continue;
                     if (minion.TryGetComponent<MucusAutoGrowth>(out _)) continue;
+                    if (minion.TryGetComponent<ScraderSpawn>(out _)) continue;
 
                     float damageValue = minion.Health.MaxValue * percentDamage;
 

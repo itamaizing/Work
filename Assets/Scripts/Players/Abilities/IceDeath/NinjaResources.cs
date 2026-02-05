@@ -30,13 +30,13 @@ public class NinjaResources : Skill, IPassiveSkill
     public void EnergyToRestore(bool value, string text)
     {
         _isIceRuneTalent = value;
-        AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
+        //AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
     }
 
     public void HardenedFleshTalent(bool value, string text)
     {
         _isHardenedFleshTalent = value;
-        AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
+        //AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
     }
     #endregion
 

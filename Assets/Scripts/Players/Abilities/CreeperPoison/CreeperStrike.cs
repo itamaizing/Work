@@ -26,8 +26,6 @@ public class CreeperStrike : Skill
     [SerializeField] private PoisonBall _poisonBall;
     [SerializeField] private CreeperInvisible _creeperInvisible;
     [SerializeField] private ColdBlood _coldBlood;
-    [SerializeField] private SneakySpit sneakySpit;
-    [SerializeField] private BlockPassiveSkill blockPassiveSkill;
 
     [Header("Ability properties")]
     [SerializeField] private Character _player;
@@ -292,61 +290,7 @@ public class CreeperStrike : Skill
 
             _isHit = false;
         }
-
-        TryTriggerWindow(character);
     }
-
-    #region Combo Creeper
-
-    private void TryTriggerWindow(Character target)
-    {
-        if (target == null) return;
-        if (_recentTargets.Exists(character => character == null || character.IsDead)) _recentTargets.Clear();
-
-        RegisterRecentTarget(target);
-
-        var lastCast = _player.Abilities.LastCastedSkill;
-        var previewCast = _player.Abilities.PreviewCastedSkill;
-
-        bool isCreeperChain = lastCast is CreeperStrike || lastCast is LightningStrikes;
-        bool isDoubleCreeperChain = isCreeperChain && previewCast is CreeperStrike || previewCast is LightningStrikes;
-
-        bool sameTargetTwice = SameTargetCastCounter(2);
-        bool sameTargetThreeTimes = SameTargetCastCounter(3);
-
-        if (_recentTargets.Count >= 4 && _recentTargets[3] != _recentTargets[0]) CmdTriggerSneakySpitWindowCancel();
-
-        if (sameTargetThreeTimes && isDoubleCreeperChain) CmdTriggerSneakySpitFreeWindow(target);
-        if (sameTargetTwice && isCreeperChain) CmdBlockPassiveSkillFreeWindow(target);
-    }
-
-    private void RegisterRecentTarget(Character target)
-    {
-        _recentTargets.Insert(0, target);
-
-        if (_recentTargets.Count > 4) _recentTargets.RemoveAt(_recentTargets.Count - 1);
-        if (_clearTargetsCoroutine != null) StopCoroutine(_clearTargetsCoroutine);
-
-        _clearTargetsCoroutine = StartCoroutine(ClearRecentTargetsAfterDelay());
-    }
-
-    private bool SameTargetCastCounter(int count)
-    {
-        if (_recentTargets.Count < count) return false;
-
-        Character first = _recentTargets[0];
-
-        for (int i = 1; i < count; i++) if (_recentTargets[i] != first) return false;
-        return true;
-    }
-
-    private IEnumerator ClearRecentTargetsAfterDelay()
-    {
-        yield return new WaitForSeconds(_targetMemoryTime);
-        _recentTargets.Clear();
-    }
-
-    #endregion
 
     private IEnumerator TimerForTwoHit(float duration, bool isUsingLightningStrikes)
     {
@@ -462,31 +406,6 @@ public class CreeperStrike : Skill
     }
 
     [Command] private void CmdDamageDeal(Damage damage, GameObject target) => ApplyDamage(damage, target);
-
-    [Command] private void CmdTriggerSneakySpitFreeWindow(Character target) => RpcTriggerSneakySpitWindow(target);
-
-    [Command] private void CmdTriggerSneakySpitWindowCancel() => RpcTriggerSneakySpitWindowCancel();
-
-    [Command] private void CmdBlockPassiveSkillFreeWindow(Character target) => RpcBlockPassiveSkillFreeWindow(target);
-
-    [ClientRpc]
-    private void RpcTriggerSneakySpitWindow(Character target)
-    {
-        if (sneakySpit != null) sneakySpit.TryStartSneakySpitBoostWindow(target);
-    }
-
-    [ClientRpc]
-    private void RpcTriggerSneakySpitWindowCancel()
-    {
-        if (sneakySpit != null) sneakySpit.CancelBoostWindow();
-    }
-
-    [ClientRpc]
-    private void RpcBlockPassiveSkillFreeWindow(Character target)
-    {
-        if (blockPassiveSkill != null) blockPassiveSkill.TryStartBlockPassiveSkillBoostWindow(target);
-    }
-
     #endregion
 
     public override void LoadTargetData(TargetInfo targetInfo)

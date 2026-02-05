@@ -10,10 +10,17 @@ public class SwarmTalent_1 : Talent
     public override void Enter()
     {
         skillManager.ActivateSkill(tentacles);
+        AddingDescriptionSet(true);
     }
 
     public override void Exit()
     {
         skillManager.DeactivateSkill(tentacles);
+        AddingDescriptionSet(false);
+    }
+
+    private void AddingDescriptionSet(bool value)
+    {
+        tentacles.AddingDescriptionSet(value, Data.DescriptionsForInfoPanel[0]);
     }
 }
