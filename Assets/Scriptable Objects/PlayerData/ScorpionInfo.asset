@@ -168,7 +168,7 @@ MonoBehaviour:
       IsVisible: 0
     _attributeGroup2:
     - Name: Health
-      _value: 0
+      _value: 999
       _modifiers: []
     - Name: HPRegen
       _value: 0
@@ -183,7 +183,7 @@ MonoBehaviour:
       _value: 0
       _modifiers: []
     - Name: Speed
-      _value: 1
+      _value: 7
       _modifiers: []
     - Name: MagicResist
       _value: 0

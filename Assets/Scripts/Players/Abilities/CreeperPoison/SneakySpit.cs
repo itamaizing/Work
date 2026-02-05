@@ -14,6 +14,7 @@ public class SneakySpit : Skill
     private Coroutine _boostWindow;
     private NetworkIdentity identity;
     private bool isAbilityQueue = false;
+    private bool isAnimStart = false;
 
     protected override bool IsCanCast => CheckCanCast();
 
@@ -26,8 +27,9 @@ public class SneakySpit : Skill
     }
     protected override void SkillDisableBoostLogic()
     {
-        ClearTarget();
         Disactive = true;
+        if (isAnimStart) return;
+        ClearTarget();
     }
 
     private void OnEnable() 
@@ -51,6 +53,7 @@ public class SneakySpit : Skill
             if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
             if (GetTargetCharacter() != null) Hero.Move.LookAtTransform(GetTargetCharacter().transform);
         }
+
         _isCanCancle = false;
     }
 
@@ -58,7 +61,7 @@ public class SneakySpit : Skill
     {
         return GetTargetCharacter() != null &&
         Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius &&
-        NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle) && !Disactive;
+        NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
     }
 
     private void OnHeroEvade()
@@ -81,6 +84,7 @@ public class SneakySpit : Skill
 
         FindTargetCharacter();
         isAbilityQueue = true;
+        isAnimStart = true;
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(GetTargetCharacter());
@@ -106,12 +110,11 @@ public class SneakySpit : Skill
     protected override void ClearData()
     {
         ClearTarget();
-        CancelBoostWindow();
         Hero.Move.StopLookAt();
         isAbilityQueue = false;
         //_target = null;
     }
-
+    
     public void CancelBoostWindow()
     {
         if (_boostWindow != null)
@@ -140,8 +143,27 @@ public class SneakySpit : Skill
         }
     }
 
+    public void SneakySpitDisactive()
+    {
+        if (Disactive)
+        {
+            _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
+            _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+
+            isAnimStart = false;
+            CancelBoostWindow();
+            ClearTarget();
+        }
+    }
+
     public void SneakySpitCast() => AnimStartCastCoroutine();
-    public void SneakySpitEnd() => AnimCastEnded();
+
+    public void SneakySpitEnd()
+    {
+        AnimCastEnded();
+        isAnimStart = false;
+        CancelBoostWindow();
+    }
 
     [Command] private void CmdAddState(Character target) => target.CharacterState.AddState(States.Blind, duration, 0, _playerLinks.gameObject, name);
 

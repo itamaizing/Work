@@ -166,6 +166,7 @@ public abstract class Skill : NetworkBehaviour
     protected IDamageable _tempForDamage;
     protected IHealingable _tempForHealing;
     protected bool _isPlayCastAnim;
+    protected bool _forceFailCastEarly;
     protected int _currentChargers;
     protected float _baseCooldownTime;
     //test counter
@@ -219,7 +220,7 @@ public abstract class Skill : NetworkBehaviour
     public Character Hero { get => _hero; }
     public StatsBuff Buff => _statsBuff;
     public string Name => _abilityInfo.Name;
-    public string Description { get => _abilityInfo.FinalDescription; set => _abilityInfo.FinalDescription = value; }
+    public string Description { get => _abilityInfo.AddingDescription; set => _abilityInfo.AddingDescription = value; }
     public string State => _abilityInfo.State; // test: we output the name of the state
     public string DescriptionState => _abilityInfo.DescriptionState; // test: we output a description of the state
     public string CounterSkill => _abilityInfo.Counter; // test: the counter is in the ability
@@ -480,6 +481,11 @@ public abstract class Skill : NetworkBehaviour
     public void ClearTempTarget()
     {
         _tempTarget = null;
+    }
+
+    public void AddingDescriptionSet(bool value, string text)
+    {
+        AbilityInfoHero.AddingDescriptionSet(value, text);
     }
 
     protected void FindTarget(float radius, Vector3 point, bool canTargetHimself = false, bool canTargetDead = false)
@@ -1426,7 +1432,7 @@ public abstract class Skill : NetworkBehaviour
         ClearTempTarget();
         _isPreparing = false;
         StopAutoDraw();
-
+        
         _prepareCoroutine = null;
     }
 
@@ -1448,6 +1454,27 @@ public abstract class Skill : NetworkBehaviour
             Hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, finalCastSpeed);
             _hero.Animator.SetTrigger(AnimTriggerCast);
             _hero.NetworkAnimator.SetTrigger(AnimTriggerCast);
+
+            if (_forceFailCastEarly)
+            {
+                _forceFailCastEarly = false;
+
+                _isCasting = false;
+                _isPlayCastAnim = false;
+
+                _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
+                _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+                _hero.Move.StopLookAt();
+                Hero.Move.SetCanMove(true);
+
+                ClearData();
+                CastEnded?.Invoke();
+                OnSkillCanceled?.Invoke();
+                Canceled?.Invoke();
+                _actionWrapperForCastCoroutine = null;
+                Hero.UIComponent.Miss();
+                yield return null;
+            }
 
             while (_isPlayCastAnim)
             {
@@ -1524,6 +1551,14 @@ public abstract class Skill : NetworkBehaviour
             TryCancel(true);
         }
     }
+
+    [ClientRpc]
+    private void RpcForceFailCastJobOnce()
+    {
+        _forceFailCastEarly = true;
+    }
+
+    [Command] public void CmdForceFailCastJobOnce() => RpcForceFailCastJobOnce();
 
     [Command]
     public void CmdCancelActiveSkill() => RpcCancelActiveSkill();

@@ -187,7 +187,7 @@ public class IceShadow : Skill
 	public void IceDeathInShadowTalentActive(bool value, string text)
     {
 		_iceDeathInShadowTalent = value;
-		AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
+		//AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
 
 	}
 

@@ -22,6 +22,8 @@ public class TentacleProjectile : NetworkBehaviour
     private Vector3 _startPosition;
     private Vector3 _endPosition;
 
+    private float _maxPullDistance;
+
     private bool _isAttackingPsiEnergyActive;
     private bool _isAttractionTentacleActive;
     private bool _isAttractionTentacle;
@@ -81,6 +83,8 @@ public class TentacleProjectile : NetworkBehaviour
         _skill = skill;
 
         transform.position = startPosition;
+
+        _maxPullDistance = Vector3.Distance(endPosition, target.transform.position);
 
         Invoke(nameof(ReleaseTarget), lifeTentacle);
     }
@@ -181,6 +185,11 @@ public class TentacleProjectile : NetworkBehaviour
 
             Vector3 currentPos = Vector3.Lerp(start, end, t);
             targetTransform.position = currentPos;
+
+            if (Vector3.Distance(currentPos, transform.position) <= _maxPullDistance)
+            {
+                break;
+            }
 
             if (tentacleLine != null && tentaclePoint != null)
             {
