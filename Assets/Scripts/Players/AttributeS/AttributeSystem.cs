@@ -71,8 +71,6 @@ public class AttributeSystem : NetworkBehaviour
                 Debug.Log(modifier.Value + attribute.Name);
                 attribute.AddModifier(modifier);
             }
-
-            //Commands(attribute.Name, modifs);
         }
 
         _isInited = true;
@@ -112,8 +110,8 @@ public class AttributeSystem : NetworkBehaviour
                 Debug.Log(modifier.Value + attribute.Name);
                 attribute.AddModifier(modifier);
             }
-
-            Commands(attribute.Name, modifs);
+            if(isClient)
+                Commands(attribute.Name, modifs);
         }
 
         _isInited = true;

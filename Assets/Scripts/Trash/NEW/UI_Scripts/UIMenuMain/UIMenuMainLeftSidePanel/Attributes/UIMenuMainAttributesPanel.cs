@@ -21,17 +21,6 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
 
         ResetPanel();
 
-        /* foreach (var item in _attributeGroup.AttributeData.Where(o=> o.IsVisible))
-         {
-             var attribute = Instantiate(_attributeItem, _itemsParent);
-             attribute.Fill(item);
-             attribute.OnValueChange += UpdateAttributesPoints;
-             attribute.OnPointerEntered += ShowDescription;
-             attribute.OnPointerExited += HideDescription;
-
-             _attributes.Add(attribute);
-         }*/
-
         foreach (var item in _attributeSystem.Attributes)
         {
             var attribute = Instantiate(_attributeItem, _itemsParent);

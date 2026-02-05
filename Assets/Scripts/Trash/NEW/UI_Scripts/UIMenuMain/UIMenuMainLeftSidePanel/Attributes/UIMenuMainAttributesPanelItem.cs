@@ -18,14 +18,6 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler
     public event UnityAction<string> OnPointerEntered;
     public event UnityAction OnPointerExited;
 
-
-   /* public void Fill(Attribute attribute)
-    {
-        _currentAttribute = attribute;
-        _icon.sprite = _currentAttribute.Icon;
-        _attributeValue.Localize(_currentAttribute.Points);
-    }*/
-
     public void Fills(Attributes attribute)
     {
         _currentAttributes = attribute;
