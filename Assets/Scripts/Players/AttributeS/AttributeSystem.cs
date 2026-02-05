@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
+using System;
 
 public class AttributeSystem : MonoBehaviour
 {
@@ -10,6 +12,7 @@ public class AttributeSystem : MonoBehaviour
 
     private ResourceType mainResourceType;
     private Dictionary<ResourceType, ResourceAttribute> _resources = new();
+    [SerializeField] public List<ResourceAttribute> TemporaryResourceDisplay = new(); //TMP: Для простоты дебаггинга, потом убрать
     public Dictionary<ResourceType, ResourceAttribute> Resources => _resources;
     public Attribute HPMax => _resources[ResourceType.Health].Attributes[ResourceAttributeName.MaxValue];
     public Attribute HPRegen => _resources[ResourceType.Health].Attributes[ResourceAttributeName.Regen];
@@ -27,24 +30,31 @@ public class AttributeSystem : MonoBehaviour
         foreach (helperCharData_AttributeInfo info in data.Attributes.AttributeData)
         {
             _attributes.Add(info.type, new Attribute(info.value));
+            Debug.Log($"Added {info.type}={info.value}");
+
         }
         foreach (helperCharData_ResourceInfo info in data.ExtraResources)
         {
             _resources.Add(info.type, new ResourceAttribute(info));
         }
+        TemporaryResourceDisplay = _resources.Values.ToList();
     }
 }
 
+[Serializable]
 public class ResourceAttribute
 {
     private Dictionary<ResourceAttributeName, Attribute> _attributes = new ();
     public Dictionary<ResourceAttributeName, Attribute> Attributes => _attributes;
+    [SerializeField] public List<Attribute> TemporaryAttributeDisplay = new();
 
     public ResourceAttribute(helperCharData_ResourceInfo info)
     {
         foreach (var attribute in info.attributes)
         {
             _attributes.Add(attribute.type, new Attribute(attribute.value));
+            Debug.Log($"Added {attribute.type}={attribute.value}");
         }
+        TemporaryAttributeDisplay = _attributes.Values.ToList();
     }
 }

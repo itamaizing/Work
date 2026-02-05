@@ -54,7 +54,7 @@ MonoBehaviour:
       value: 5
     - nameToShow: MoveSpeed
       type: 4
-      value: 3
+      value: 5
     - nameToShow: VisionRadius
       type: 5
       value: 2

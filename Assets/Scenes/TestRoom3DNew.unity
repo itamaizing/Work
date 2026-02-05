@@ -84230,7 +84230,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4788504804088175071, guid: 82b70bdb0fc80c343859665623ea7ed8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 82b70bdb0fc80c343859665623ea7ed8, type: 3}
 --- !u!114 &342719152 stripped
 MonoBehaviour:
@@ -183493,6 +183496,8 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 0
   _regenerationDelay: 0
+  _currentValue: 0
+  _maxValue: 0
   _objectBar: {fileID: 1130355474}
   _objectData: {fileID: 11400000, guid: afb0ecbfafe8e474488bc7296e843064, type: 2}
   obj: {fileID: 1130355471}
@@ -246505,7 +246510,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1789129032609799444, guid: 40044d92dc9a52a44b73b5569f957a7a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
+    - targetCorrespondingSourceObject: {fileID: 3044140054504963609, guid: 40044d92dc9a52a44b73b5569f957a7a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 40044d92dc9a52a44b73b5569f957a7a, type: 3}
 --- !u!1 &1576998213
 GameObject:
@@ -254598,6 +254609,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2058911381882631605, guid: 82b70bdb0fc80c343859665623ea7ed8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1733043599}
+    - targetCorrespondingSourceObject: {fileID: 4788504804088175071, guid: 82b70bdb0fc80c343859665623ea7ed8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 82b70bdb0fc80c343859665623ea7ed8, type: 3}
 --- !u!1 &1733043598 stripped
 GameObject:
@@ -292069,6 +292083,8 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 0
   _regenerationDelay: 0
+  _currentValue: 0
+  _maxValue: 0
   _objectBar: {fileID: 1931245828}
   _objectData: {fileID: 11400000, guid: afb0ecbfafe8e474488bc7296e843064, type: 2}
   obj: {fileID: 1931245824}

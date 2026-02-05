@@ -1,9 +1,7 @@
-using Org.BouncyCastle.Asn1.Cms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static helperCharData_ResourceInfo;
 
 [CreateAssetMenu(fileName = "PlayerData", menuName = "ScriptableObjects/Player", order = 1)]
 [Serializable]

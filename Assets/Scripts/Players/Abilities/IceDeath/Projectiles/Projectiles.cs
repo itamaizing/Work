@@ -27,8 +27,8 @@ public class Projectiles : NetworkBehaviour
 		_lastHit = lastHit;
 		_skill = skill;
 		_rb.AddForce(transform.forward * _force, ForceMode.Impulse);
-        _energy = (Energy)_dad.Resources[ResourceType.Energy];
-        _rune = (RuneComponent)_dad.Resources[ResourceType.Rune];
+        //_energy = (Energy)_dad.Resources[ResourceType.Energy];
+        //_rune = (RuneComponent)_dad.Resources[ResourceType.Rune];
         //Debug.Log("bullet init");
     }
 

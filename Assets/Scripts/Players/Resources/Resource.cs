@@ -17,8 +17,8 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 {
     [SerializeField] private ResourceType _resourceType;
     [SerializeField, SyncVar] protected float _regenerationDelay = 0;
-    [SyncVar(hook = nameof(HookValueChanged))] protected float _currentValue;
-    [SyncVar(hook = nameof(HookMaxValueChanged))] protected float _maxValue;
+    [SyncVar(hook = nameof(HookValueChanged)), SerializeField] protected float _currentValue;
+    [SyncVar(hook = nameof(HookMaxValueChanged)), SerializeField] protected float _maxValue;
     [SyncVar] protected float _regenerationValue;
     [SyncVar] protected float _regenerationPeriod;
 
@@ -96,6 +96,21 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         ClientStartRegenirateJob();
     }
 
+    // Можно перевести на такой же формат хранения атрибутов (ResourceAttribute) - тогда можно вообще весь хардкод убрать
+    public virtual void Init(ResourceAttribute resource) 
+    {
+        _regenValueAttribute = resource.Attributes[ResourceAttributeName.Regen];
+        _regenerationValue = resource.Attributes[ResourceAttributeName.Regen].GetValue();
+
+        _maxValueAttribute = resource.Attributes[ResourceAttributeName.MaxValue];
+        _maxValue = resource.Attributes[ResourceAttributeName.MaxValue].GetValue();
+        _currentValue = _maxValue / 2;
+        Debug.Log($"{CurrentValue}/{MaxValue} + {_regenerationValue}");
+        _regenerationPeriod = 0.5f; //TEMPORARY TEST
+        _regenerationDelay = 0.5f; //TEMPORARY TEST
+        ClientStartRegenirateJob();
+    }
+
     public virtual void Add(float value)
     {
         if (_maxValue >= _currentValue + value)
@@ -115,14 +130,15 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 			StopCoroutine(_regenCoroutine);
 			_regenCoroutine = StartCoroutine(RegenerateJob());
 		}
-		if (_currentValue - value >= 0)
+        Debug.Log($"Used {value}, now {_currentValue}");
+        if (_currentValue - value >= 0)
         {
-            CurrentValue -= value;
+            _currentValue -= value;
             return true;
         }
         else
         {
-            CurrentValue = 0;
+            _currentValue = 0;
             return false;
         }
     }
@@ -312,4 +328,4 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         _maxValue = _maxValueAttribute.GetValue();
 
     }
-}
+}

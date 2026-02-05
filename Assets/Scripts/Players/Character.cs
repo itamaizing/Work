@@ -22,7 +22,8 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 	[SerializeField] private UIPlayerComponents uiComponent;
 	[SerializeField] private SelectComponent _selectComponent;
 	[SerializeField] private DamageTracker _damageTracker;
-	[SerializeField] private Dictionary<ResourceType, Resource> _resources = new();
+	public List<Resource> TemporaryResourceDisplay = new(); //TMP: Для простоты дебаггинга, потом убрать
+    [SerializeField] private Dictionary<ResourceType, Resource> _resources = new();
 	[SerializeField] private SelectedCircle _selectedCircle;
 	[SerializeField] private SpawnComponent _spawnComponent;
 	[SerializeField] private VisionComponent _visionComponent;
@@ -133,96 +134,58 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
     public virtual void Initialize()
 	{
         AttributeSystem.Init(Data);
-		Debug.Log($"Resources{_resources.Count}");
 		EnsureResources();
+		Debug.Log($"Resources{_resources.Count}", gameObject);
 		Resource = _resources[Data.Resource.type];
         Move.Initialize(Rigidbody , AttributeSystem.MoveSpeed, true);
 		CharacterState.Initialize(this);
 		SelectComponent.Initialize(Move,Abilities,UIComponent);
 		//_visionComponent.VisionRange = Data.GetAttributeValue(AttributeNames_old.VisionRadius);
 
-		foreach (var resource in Resources)
-		{
-
-            /*if (resource.Type == ResourceType.Health)
-			{
-				resource.Initialize(
-					 Data.GetAttributeValue(AttributeNames_old.Health), 
-					Data.GetAttributeValue(AttributeNames_old.HpRegen), 
-					Data.GetAttributeValue(AttributeNames_old.HpRegenDelay), 
-					Data, AttributeSystem.Health);
-			}
-			if (resource.Type == ResourceType.Energy)
-			{
-				resource.Initialize(
-					 Data.GetAttributeValue(AttributeNames_old.Energy), 
-					Data.GetAttributeValue(AttributeNames_old.EnergyRegen), 
-					Data.GetAttributeValue(AttributeNames_old.EnergyRegenDelay), 
-					Data, AttributeSystem.Resourse);
-			}
-			if (resource.Type == ResourceType.Mana)
-			{
-				resource.Initialize(
-					 Data.GetAttributeValue(AttributeNames_old.Mana), 
-					Data.GetAttributeValue(AttributeNames_old.ManaRegen), 
-					Data.GetAttributeValue(AttributeNames_old.ManaRegenDelay), 
-					Data, AttributeSystem.Resourse);
-			}
-			if (resource.Type == ResourceType.Rune)
-			{
-				resource.Initialize(
-					 Data.GetAttributeValue(AttributeNames_old.Rune), 
-					Data.GetAttributeValue(AttributeNames_old.RuneRegen), 
-					Data.GetAttributeValue(AttributeNames_old.RuneRegenDelay), 
-					Data, AttributeSystem.Resourse);
-			}*/
-
-        }
-
 		Health.Died += AddDeadCounter;
+		TemporaryResourceDisplay = _resources.Values.ToList();
 	}
 
 	private void EnsureResources()
 	{
         foreach (var resource in _attributeSystem.Resources)
 		{
-			var component = gameObject.GetComponent(DB_Attribute.GetResourceClass(resource.Key));
+			Resource component = gameObject.GetComponent(DB_Attribute.GetResourceClass(resource.Key)) as Resource;
 			if (component == null)
 			{
 				Debug.Log($"Could not find {resource.Key.ToString()}");
-				component = gameObject.AddComponent(DB_Attribute.GetResourceClass(resource.Key));
+				//component = gameObject.AddComponent(DB_Attribute.GetResourceClass(resource.Key));
+				throw new ArgumentException($"Couldn't find resource {resource.Key} on {gameObject.name}\n" +
+					$"Adding resource in runtime is impossible");
 			}
-			Debug.Log($"Now i have {resource.Key.ToString()}", gameObject);
-			_resources.Add(resource.Key, (Resource)component);
-            //_resources.Add(resource.Key, new Resource(resource.Key));
+			//Debug.Log($"Now i have {resource.Key.ToString()}", gameObject);
+			component.Init(resource.Value);
+			_resources.Add(resource.Key, component);
         }
-		    //var resComponent = GetOrAddResourceClass<Mana>();
-            //_resources.Keys.GetFe
-            // TODO: Брать/спавнить компоненты ресурсов (через switch брать компонент, криво но будет работать)
 
-        foreach (var resource in Resources)
-		{
-            if (resource.Value.Type == ResourceType.Health)
-            {
-                resource.Value.Initialize(
-                     AttributeSystem.HPMax, AttributeSystem.HPRegen, Data);
-            }
-            if (resource.Value.Type == ResourceType.Energy)
-            {
-                resource.Value.Initialize(
-                     AttributeSystem.ResourceMax, AttributeSystem.ResourceRegen, Data);
-            }
-            if (resource.Value.Type == ResourceType.Mana)
-            {
-                resource.Value.Initialize(
-                     AttributeSystem.ResourceRegen, AttributeSystem.ResourceRegen, Data);
-            }
-            if (resource.Value.Type == ResourceType.Rune)
-            {
-                resource.Value.Initialize(
-                     AttributeSystem.ResourceMax, AttributeSystem.ResourceRegen, Data);
-            }
-        }
+  //      foreach (var resource in Resources)
+		//{
+  //          if (resource.Value.Type == ResourceType.Health)
+  //          {
+  //              resource.Value.Initialize(
+  //                   AttributeSystem.HPMax, AttributeSystem.HPRegen, Data);
+  //          }
+  //          if (resource.Value.Type == ResourceType.Energy)
+  //          {
+  //              resource.Value.Initialize(
+  //                   AttributeSystem.ResourceMax, AttributeSystem.ResourceRegen, Data);
+  //          }
+  //          if (resource.Value.Type == ResourceType.Mana)
+  //          {
+  //              resource.Value.Initialize(
+  //                   AttributeSystem.ResourceRegen, AttributeSystem.ResourceRegen, Data);
+  //          }
+  //          if (resource.Value.Type == ResourceType.Rune)
+  //          {
+  //              resource.Value.Initialize(
+  //                   AttributeSystem.ResourceMax, AttributeSystem.ResourceRegen, Data);
+  //          }
+  //      }
 	}
 
 	private void OnCharacterParentChanged(uint oldNetId, uint newNetId)
