@@ -116,11 +116,13 @@ public class SaveManager : MonoBehaviour
         _saveSystem.Load<List<AttributeModifiers>>($"{_character.Data.Name}_Group{_currentSaveGroup}_{attribute.Name}_Points", e => modifs = e);
 
         Attributes atrib = _attributeSystem.Attributes.FirstOrDefault(a => a.Name == attribute.Name);
-        foreach (AttributeModifiers modif in modifs)
+        if (atrib != null)
         {
-            atrib.AddModifier(modif);
+            foreach (AttributeModifiers modif in modifs)
+            {
+                atrib.AddModifier(modif);
+            }
         }
-
         Debug.Log(modifs.Count);
 
         return modifs;
