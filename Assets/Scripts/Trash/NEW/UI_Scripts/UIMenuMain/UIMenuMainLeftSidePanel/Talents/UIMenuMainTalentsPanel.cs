@@ -86,9 +86,6 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
                 _talentSystem.SetPoints(freePoints);
                 _talantsText.ChangeKey(_talentSystem.Points);
             }
-
-            _talantsText.gameObject.SetActive(true);
-            _talantsText.GetComponent<TMPro.TextMeshProUGUI>().text = "";
         }
         else
         {
