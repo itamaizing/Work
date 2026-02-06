@@ -268,6 +268,8 @@ public abstract class GameRules : NetworkBehaviour
             }
         }
 
+        InitializeChat();
+
         //UnityEngine.Debug.Log("this");
         //foreach (var playerSettings in _players)
         //{
@@ -285,6 +287,21 @@ public abstract class GameRules : NetworkBehaviour
         //}
 
         GameStartClient();
+    }
+    
+    protected void InitializeChat()
+    {
+        if (_gameManager == null || _gameManager.ChatController == null) return;
+        
+        foreach (var player in _players)
+        {
+            var networkIdentity = player.GetComponent<NetworkIdentity>();
+            if (networkIdentity != null && player.isOwned)
+            {
+                _gameManager.ChatController.Initialize(player);
+                break;
+            }
+        }
     }
 
     [ClientRpc]
