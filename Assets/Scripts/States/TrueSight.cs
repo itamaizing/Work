@@ -24,12 +24,7 @@ public class TrueSight : AbstractCharacterState
 
     public override void UpdateState()
     {
-        duration -= Time.deltaTime;
 
-        if (duration <= 0)
-        {
-            ExitState();
-        }
     }
 
     public override void ExitState()
