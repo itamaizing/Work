@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -196,6 +197,8 @@ public class LevelCharacterManager
     private const int _maxLevel = 9;
     private const int _maxExperienceAtMaxLevel = 800;
 
+    public event Action<int> OnLevelChanged;
+
     public int MaxLevel => _maxLevel;
 
     public void LevelInitialize()
@@ -234,6 +237,8 @@ public class LevelCharacterManager
         SaveLevelData();
     }
 
+    public void LevelChanged() => OnLevelChanged?.Invoke(_currentLevel);
+
     private void CheckForLevelUp()
     {
         while (_currentExperience >= _experienceForNextLevel && _currentLevel < _maxLevel)
@@ -241,6 +246,8 @@ public class LevelCharacterManager
             _currentExperience -= _experienceForNextLevel;
             _currentLevel++;
             _experienceForNextLevel = CalculateExperienceForNextLevel();
+
+            LevelChanged();
 
             if (_currentLevel == _maxLevel)
             {
@@ -299,6 +306,6 @@ public class LevelCharacterManager
     public void DisplayCurrentHeroLevelInfo()
     {
         if (_character == null) return;
-        //Debug.Log($"Character: {_character.Data.Name} | Level: {_currentLevel} | Experience: {_currentExperience}/{_experienceForNextLevel}");
+        Debug.Log($"Character: {_character.Data.Name} | Level: {_currentLevel} | Experience: {_currentExperience}/{_experienceForNextLevel}");
     }
 }
