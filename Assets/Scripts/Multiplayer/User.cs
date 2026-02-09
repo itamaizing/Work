@@ -198,6 +198,7 @@ public class LevelCharacterManager
     private const int _maxExperienceAtMaxLevel = 800;
 
     public event Action<int> OnLevelChanged;
+    public event Action<int, int> OnExperienceChanged;
 
     public int MaxLevel => _maxLevel;
 
@@ -241,6 +242,8 @@ public class LevelCharacterManager
         _currentExperience += experience;
         CheckForLevelUp();
         SaveLevelData();
+
+        OnExperienceChanged?.Invoke(_currentExperience, _experienceForNextLevel);
     }
 
     public void LevelChanged() => OnLevelChanged?.Invoke(_currentLevel);

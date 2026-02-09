@@ -18,21 +18,34 @@ public class LvlInfoMain : MonoBehaviour
     private void OnEnable()
     {
         LevelCharacterManager.Instance.OnLevelChanged += HandleLevelChanged;
+        LevelCharacterManager.Instance.OnExperienceChanged += HandleExperienceChanged;
         UpdateInfoIfCurrent();
     }
 
     private void OnDisable()
     {
         LevelCharacterManager.Instance.OnLevelChanged -= HandleLevelChanged;
+        LevelCharacterManager.Instance.OnExperienceChanged -= HandleExperienceChanged;
     }
 
-    public void SetInfo(int level, int exp, int maxExp)
+    public void SetInfo(int level, int exp, int maxExp, HeroComponent hero)
     {
         _lvlValue = level;
         _expValue = exp;
         _maxExpValue = maxExp;
+        _currentHero = hero;
 
         UpdateInfo();
+    }
+
+    private void HandleExperienceChanged(int newExp, int maxExp)
+    {
+        if (LevelCharacterManager.Instance.TryGetCurrentHero(out var current) && current == _currentHero)
+        {
+            _expValue = newExp;
+            _maxExpValue = maxExp;
+            UpdateInfo();
+        }
     }
 
     private void HandleLevelChanged(int newLevel)
@@ -40,6 +53,9 @@ public class LvlInfoMain : MonoBehaviour
         if (LevelCharacterManager.Instance.TryGetCurrentHero(out var current) && current == _currentHero)
         {
             _lvlValue = newLevel;
+            _expValue = LevelCharacterManager.Instance.GetCurrentExperience();
+            _maxExpValue = LevelCharacterManager.Instance.GetExperienceForNextLevel();
+
             AnimateLevelText();
             UpdateInfo();
         }

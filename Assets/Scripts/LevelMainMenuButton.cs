@@ -21,6 +21,6 @@ public class LevelMainMenuButton : MonoBehaviour
         }
 
         Debug.Log("Add Level");
-        LevelCharacterManager.Instance.AddExperience(LevelCharacterManager.Instance.GetExperienceForNextLevel());
+        LevelCharacterManager.Instance.AddExperience(100);
     }
 }

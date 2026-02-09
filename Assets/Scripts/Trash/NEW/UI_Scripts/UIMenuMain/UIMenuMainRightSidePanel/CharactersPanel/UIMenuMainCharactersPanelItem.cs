@@ -26,7 +26,7 @@ public class UIMenuMainCharactersPanelItem : MonoBehaviour, IPointerEnterHandler
             lvlInfo.SetInfo(
                 LevelCharacterManager.Instance.GetCurrentLevel(),
                 LevelCharacterManager.Instance.GetCurrentExperience(),
-                LevelCharacterManager.Instance.GetExperienceForNextLevel()
+                LevelCharacterManager.Instance.GetExperienceForNextLevel(), CurrentHero
             );
         }
     }
