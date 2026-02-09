@@ -34,7 +34,6 @@ public class ChatController : NetworkBehaviour
 
     public void Initialize(Character localPlayer)
     {
-        Debug.LogError("Player name is: " + localPlayer.name);
         _localPlayer = localPlayer;
         _localTeamIndex = localPlayer.NetworkSettings.TeamIndex;
     }
