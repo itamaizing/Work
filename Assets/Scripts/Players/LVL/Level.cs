@@ -74,4 +74,19 @@ public class Level : NetworkBehaviour
         EXPAdded?.Invoke(experience);
         EXPForNextLVLChanged?.Invoke(experienceForNextLVL);
     }
+
+    [Command]
+    public void CmdApplyLoadedLevel(int level, int experience, int experienceForNextLVL)
+    {
+        Debug.Log("Level UP");
+        _value = Mathf.Clamp(level, 1, _maxValue);
+        _experience = experience;
+        _experienceForNextLVL = experienceForNextLVL;
+
+        LVLUped?.Invoke(_value);
+        EXPAdded?.Invoke(_experience);
+        EXPForNextLVLChanged?.Invoke(_experienceForNextLVL);
+
+        RpcUpdateInfo(_value, _experience, _experienceForNextLVL);
+    }
 }
