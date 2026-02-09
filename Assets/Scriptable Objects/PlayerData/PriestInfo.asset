@@ -27,13 +27,13 @@ MonoBehaviour:
       _value: 1
     - Name: Resourse
       Description: Resourse
-      _value: 0
+      _value: 100
     - Name: Mana
       Description: 
-      _value: 0
+      _value: 100
     - Name: ResourseRegen
       Description: Res Regen
-      _value: 0
+      _value: 5
     - Name: Speed
       Description: Speed
       _value: 2

@@ -26,6 +26,7 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler
         {
             _modifs.Add(modif);
         }
+        Debug.Log("Attribute " + _attributeValue.name + " " + _modifs.Count);
         // _icon.sprite = _currentAttributes.Icon;
         _attributeValue.ChangeKey(_modifs.Count);
     }
@@ -52,7 +53,7 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler
 
     public void UpdateValue()
     {
-        _attributeValue.ChangeKey((int)_currentAttributes.GetValue());
+        _attributeValue.ChangeKey(_modifs.Count);
     }
     
     public void Destroy()

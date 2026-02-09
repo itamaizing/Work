@@ -82,7 +82,7 @@ public class AttributeSystem : NetworkBehaviour
         //_data = data;
         _health = data.GetAttribute(AttributeNames.Health);
         _hpRegen = data.GetAttribute(AttributeNames.HpRegen);
-        _resourse = data.GetAttribute(AttributeNames.Mana);
+        _resourse = data.GetAttribute(AttributeNames.Resourse);
         _resourseRegen = data.GetAttribute(AttributeNames.ResourseRegen);
         _moveSpeed = data.GetAttribute(AttributeNames.Speed);
         _physicEvade = data.GetAttribute(AttributeNames.EvasionPhysical);
@@ -104,7 +104,7 @@ public class AttributeSystem : NetworkBehaviour
         foreach (var attribute in _attributes)
         {
             List<AttributeModifiers> modifs =  SaveManager.Instance.LoadAttribute(attribute);
-            Debug.Log(modifs.Count);
+            Debug.Log(modifs.Count + attribute.Name);
             foreach (var modifier in modifs)
             {
                 Debug.Log(modifier.Value + attribute.Name);

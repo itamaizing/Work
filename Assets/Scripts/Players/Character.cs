@@ -179,7 +179,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
             if (resource.Type == ResourceType.Mana)
             {
                 resource.Initialize(
-                     AttributeSystem.ResourseRegen, AttributeSystem.ResourseRegen, Data);
+                     AttributeSystem.Resourse, AttributeSystem.ResourseRegen, Data);
             }
             if (resource.Type == ResourceType.Rune)
             {

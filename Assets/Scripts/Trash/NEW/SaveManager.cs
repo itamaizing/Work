@@ -128,8 +128,6 @@ public class SaveManager : MonoBehaviour
         return modifs;
     }
 
-
-
     public void SaveTalent(int idGroup, int row, string idTalent, bool isActive)
     {
         _talentManager.SaveTalent(_character, idGroup, row, idTalent, isActive, _currentSaveGroup);

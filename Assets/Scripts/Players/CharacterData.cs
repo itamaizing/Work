@@ -146,7 +146,6 @@ public class AttributeGroup
         new Attributes(AttributeNames.Health, "Health"),
         new Attributes(AttributeNames.HpRegen, "Hp regen"),
         new Attributes(AttributeNames.Resourse, "Resourse"),
-        new Attributes(AttributeNames.Mana),
         new Attributes(AttributeNames.ResourseRegen, "Res Regen"),
         new Attributes(AttributeNames.Speed, "Speed"),
         new Attributes(AttributeNames.MagicResist, "Magic Resist"),

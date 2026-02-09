@@ -48,8 +48,8 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
             item.PointerExitedOnTalentIcon -= HideTalentInfo;
             item.OnTalentChanged -= UpdateTalentPointsText;
         }
-
-        if (_talentSystem.Level != null) _talentSystem.Level.LVLUped -= OnLevelUp;
+        if(_talentSystem != null)
+            if (_talentSystem.Level != null) _talentSystem.Level.LVLUped -= OnLevelUp;
     }
 
     private void OnLevelUp(int newLevel)
