@@ -11,25 +11,27 @@ public class ChatView : MonoBehaviour, IChatView
     [SerializeField] private GameObject _unfocusedPanel;
     [SerializeField] private ScrollRect _scrollRect;
     [SerializeField] private Transform _messageContainer;
+    [SerializeField] private Transform _unfocusedMessageContainer;
     [SerializeField] private TMP_InputField _inputField;
     [SerializeField] private TMP_Dropdown _channelDropdown;
     [SerializeField] private ChatMessageUI _messagePrefab;
 
     [Header("Settings")]
     [SerializeField] private ChatConfig _config;
-    [SerializeField] private Color _team1Color = Color.blue;
-    [SerializeField] private Color _team2Color = Color.red;
-    [SerializeField] private Color _whiteColor = Color.white;
 
     public event Action<string, ChatChannel> OnMessageSent;
 
-    private List<ChatMessageUI> _messageUIList = new List<ChatMessageUI>();
+    private List<ChatMessageUI> _focusedMessageUIList = new List<ChatMessageUI>();
+    private List<ChatMessageUI> _unfocusedMessageUIList = new List<ChatMessageUI>();
+    private List<ChatMessage> _allMessages = new List<ChatMessage>();
     private ChatChannel _currentChannel = ChatChannel.Team;
 
     private void Awake()
     {
         SetupInputField();
         SetupChannelDropdown();
+        
+        SetState(ChatState.Hidden);
     }
 
     private void SetupInputField()
@@ -81,21 +83,36 @@ public class ChatView : MonoBehaviour, IChatView
     {
         if (_messagePrefab == null || _messageContainer == null) return;
 
-        ChatMessageUI messageUI = Instantiate(_messagePrefab, _messageContainer);
-        messageUI.Setup(message, GetTeamColor(message.TeamIndex), _whiteColor);
-        _messageUIList.Add(messageUI);
+        _allMessages.Add(message);
+
+        ChatMessageUI focusedMessageUI = Instantiate(_messagePrefab, _messageContainer);
+        focusedMessageUI.Setup(message, GetTeamColor(message.TeamIndex), _config.WhiteColor);
+        _focusedMessageUIList.Add(focusedMessageUI);
+
+        UpdateUnfocusedMessages();
     }
 
     public void ClearMessages()
     {
-        foreach (var messageUI in _messageUIList)
+        _allMessages.Clear();
+
+        foreach (var messageUI in _focusedMessageUIList)
         {
             if (messageUI != null)
             {
                 Destroy(messageUI.gameObject);
             }
         }
-        _messageUIList.Clear();
+        _focusedMessageUIList.Clear();
+
+        foreach (var messageUI in _unfocusedMessageUIList)
+        {
+            if (messageUI != null)
+            {
+                Destroy(messageUI.gameObject);
+            }
+        }
+        _unfocusedMessageUIList.Clear();
     }
 
     public void SetCurrentChannel(ChatChannel channel)
@@ -115,13 +132,24 @@ public class ChatView : MonoBehaviour, IChatView
 
     private void UpdateUnfocusedMessages()
     {
-        int startIndex = Mathf.Max(0, _messageUIList.Count - _config.MaxUnfocusedMessages);
-        
-        for (int i = 0; i < _messageUIList.Count; i++)
+        foreach (var messageUI in _unfocusedMessageUIList)
         {
-            if (_messageUIList[i] != null)
+            if (messageUI != null)
             {
-                _messageUIList[i].gameObject.SetActive(i >= startIndex);
+                Destroy(messageUI.gameObject);
+            }
+        }
+        _unfocusedMessageUIList.Clear();
+
+        int startIndex = Mathf.Max(0, _allMessages.Count - _config.MaxUnfocusedMessages);
+        
+        for (int i = startIndex; i < _allMessages.Count; i++)
+        {
+            if (_unfocusedMessageContainer != null)
+            {
+                ChatMessageUI unfocusedMessageUI = Instantiate(_messagePrefab, _unfocusedMessageContainer);
+                unfocusedMessageUI.Setup(_allMessages[i], GetTeamColor(_allMessages[i].TeamIndex), _config.WhiteColor);
+                _unfocusedMessageUIList.Add(unfocusedMessageUI);
             }
         }
     }
@@ -129,7 +157,6 @@ public class ChatView : MonoBehaviour, IChatView
     private void OnSubmit(string text)
     {
         OnMessageSent?.Invoke(text, _currentChannel);
-        Debug.LogError("Отправлено сообщение: " + text);
         _inputField.text = string.Empty;
     }
 
@@ -140,7 +167,7 @@ public class ChatView : MonoBehaviour, IChatView
 
     private Color GetTeamColor(int teamIndex)
     {
-        return teamIndex == 1 ? _team1Color : _team2Color;
+        return teamIndex == 1 ? _config.Team1Color : _config.Team2Color;
     }
 
     private void OnDestroy()
