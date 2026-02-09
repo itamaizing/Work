@@ -512,7 +512,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5199132715520129052}
-  - component: {fileID: 1767492436412514603}
+  - component: {fileID: 3330160332464299977}
   m_Layer: 5
   m_Name: LVLInfo
   m_TagString: Untagged
@@ -541,7 +541,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 17}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0}
---- !u!114 &1767492436412514603
+--- !u!114 &3330160332464299977
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -550,9 +550,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 5907079708717527315}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a56098b03d307034d820122fc95d917f, type: 3}
+  m_Script: {fileID: 11500000, guid: 1cd2db8886eeab44aa4017b49b6be22e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::LvlInfoMain
   _lvlBar: {fileID: 8447379874979073733}
   _LvlText: {fileID: 7236312050385606429}
 --- !u!1 &6674395192312934261

@@ -9,61 +9,52 @@ public class LvlInfoMain : MonoBehaviour
     [SerializeField] private Slider _lvlBar;
     [SerializeField] private TMP_Text _LvlText;
 
+    private HeroComponent _currentHero;
+
     private int _lvlValue;
     private int _expValue;
     private int _maxExpValue;
 
     private void OnEnable()
     {
-        Init();
+        LevelCharacterManager.Instance.OnLevelChanged += HandleLevelChanged;
+        UpdateInfoIfCurrent();
     }
 
     private void OnDisable()
     {
-        Unsubscribe();
+        LevelCharacterManager.Instance.OnLevelChanged -= HandleLevelChanged;
     }
 
-    public void Init()
+    public void SetInfo(int level, int exp, int maxExp)
     {
-        var levelManager = LevelCharacterManager.Instance;
-
-        _lvlValue = levelManager.GetCurrentLevel();
-        _expValue = levelManager.GetCurrentExperience();
-        _maxExpValue = levelManager.GetExperienceForNextLevel();
+        _lvlValue = level;
+        _expValue = exp;
+        _maxExpValue = maxExp;
 
         UpdateInfo();
-
-        levelManager.OnLevelChanged += HandleLevelChanged;
-        //levelManager.OnExperienceChanged += HandleExpChanged;
-        //levelManager.OnMaxExperienceChanged += HandleMaxExpChanged;
-    }
-
-    private void Unsubscribe()
-    {
-        var levelManager = LevelCharacterManager.Instance;
-
-        levelManager.OnLevelChanged -= HandleLevelChanged;
-        //levelManager.OnExperienceChanged -= HandleExpChanged;
-        //levelManager.OnMaxExperienceChanged -= HandleMaxExpChanged;
     }
 
     private void HandleLevelChanged(int newLevel)
     {
-        _lvlValue = newLevel;
-
-        AnimateLevelText();
-        UpdateInfo();
+        if (LevelCharacterManager.Instance.TryGetCurrentHero(out var current) && current == _currentHero)
+        {
+            _lvlValue = newLevel;
+            AnimateLevelText();
+            UpdateInfo();
+        }
     }
 
-    private void HandleExpChanged(int exp)
+    private void UpdateInfoIfCurrent()
     {
-        _expValue = exp;
-        UpdateInfo();
-    }
+        if (_currentHero == null) return;
+        if (!LevelCharacterManager.Instance.TryGetCurrentHero(out var current)) return;
+        if (current != _currentHero) return;
 
-    private void HandleMaxExpChanged(int maxExp)
-    {
-        _maxExpValue = maxExp;
+        _lvlValue = LevelCharacterManager.Instance.GetCurrentLevel();
+        _expValue = LevelCharacterManager.Instance.GetCurrentExperience();
+        _maxExpValue = LevelCharacterManager.Instance.GetExperienceForNextLevel();
+
         UpdateInfo();
     }
 
@@ -77,7 +68,7 @@ public class LvlInfoMain : MonoBehaviour
     private void AnimateLevelText()
     {
         _LvlText.transform.DOKill();
-        _LvlText.transform.localScale = new Vector3(2f, 2f, 2f);
-        _LvlText.transform.DOScale(1f, 1f).SetEase(Ease.OutBounce);
+        _LvlText.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+        _LvlText.transform.DOScale(0.5f, 0.5f).SetEase(Ease.OutBounce);
     }
 }

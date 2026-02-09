@@ -76,11 +76,6 @@ public class User : NetworkBehaviour
     {
         BottleUserManager.Instance?.BottleInitialize();
         LevelCharacterManager.Instance?.LevelInitialize();
-
-        if (TryGetComponent<HeroComponent>(out var hero))
-        {
-            LevelCharacterManager.Instance.SetHero(hero);
-        }
     }
 }
 
@@ -249,6 +244,26 @@ public class LevelCharacterManager
     }
 
     public void LevelChanged() => OnLevelChanged?.Invoke(_currentLevel);
+
+    public void PreloadHeroLevelData(HeroComponent hero, int saveIndex = 0)
+    {
+        string key = hero.Data.Name + "_Group" + saveIndex;
+
+        int level = PlayerPrefs.GetInt(key + "_Level", 1);
+        int exp = PlayerPrefs.GetInt(key + "_Experience", 0);
+        int maxExp = PlayerPrefs.GetInt(key + "_ExperienceForNextLevel", 100);
+
+        if (level >= _maxLevel)
+        {
+            level = _maxLevel;
+            exp = _maxExperienceAtMaxLevel;
+            maxExp = _maxExperienceAtMaxLevel;
+        }
+
+        _currentLevel = level;
+        _currentExperience = exp;
+        _experienceForNextLevel = maxExp;
+    }
 
     private void CheckForLevelUp()
     {
