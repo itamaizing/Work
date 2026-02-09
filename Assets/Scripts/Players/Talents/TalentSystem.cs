@@ -67,6 +67,9 @@ public class TalentSystem : NetworkBehaviour
             _lvl.LVLUped += AddPoint;
         }
 
+        _prevValue = _lvl.Value;
+        _points = _lvl.Value;
+
         foreach (var talentRow in _talents.SelectMany(talentsGroup => talentsGroup.TalentRows))
         {
             foreach (var talent in talentRow.Talents)

@@ -43,7 +43,6 @@ public class SaveManager : MonoBehaviour
     private HeroComponent _character;
     private int _currentSaveGroup = 0;
     private ISaveData _saveData;
-    private LevelSaveManager _levelManager;
     private AttributeSaveManager _attributeManager;
     private TalentSaveManager _talentManager;
     private AttributeModifier _attributeModifier;
@@ -57,7 +56,6 @@ public class SaveManager : MonoBehaviour
             _attributeManager = new AttributeSaveManager(_saveData);
             _talentManager = new TalentSaveManager(_saveData, _instance);
             _attributeModifier = new AttributeModifier(_attributeManager);
-            _levelManager = new LevelSaveManager(_saveData);
         }
         else
         {
@@ -75,16 +73,6 @@ public class SaveManager : MonoBehaviour
     {
         _currentSaveGroup = index;
         LoadHeroData();
-    }
-
-    public void SaveLevelData()
-    {
-        _levelManager.SaveLevelData(_character, _currentSaveGroup);
-    }
-
-    public void LoadLevelData()
-    {
-        _levelManager.LoadLevelData(_character, _currentSaveGroup);
     }
 
     public void SaveAttributePoints(int points)
@@ -147,14 +135,12 @@ public class SaveManager : MonoBehaviour
     {
         _attributeManager.SaveAllAttributes(_character, _currentSaveGroup);
         _talentManager.SaveAllTalents(_character, _currentSaveGroup);
-        _levelManager.SaveLevelData(_character, _currentSaveGroup);
     }
 
     public void LoadAllData()
     {
         _attributeManager.LoadAllAttributes(_character, _currentSaveGroup);
         _talentManager.LoadAllTalents(_character, _currentSaveGroup);
-        _levelManager.LoadLevelData(_character, _currentSaveGroup);
     }
 
     private void LoadHeroData()

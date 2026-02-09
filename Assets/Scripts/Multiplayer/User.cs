@@ -76,6 +76,11 @@ public class User : NetworkBehaviour
     {
         BottleUserManager.Instance?.BottleInitialize();
         LevelCharacterManager.Instance?.LevelInitialize();
+
+        if (TryGetComponent<HeroComponent>(out var hero))
+        {
+            LevelCharacterManager.Instance.SetHero(hero);
+        }
     }
 }
 
@@ -212,6 +217,12 @@ public class LevelCharacterManager
     public void Dispose()
     {
 
+    }
+
+    public bool TryGetCurrentHero(out HeroComponent hero)
+    {
+        hero = _character;
+        return hero != null;
     }
 
     public void SetHero(HeroComponent hero)
