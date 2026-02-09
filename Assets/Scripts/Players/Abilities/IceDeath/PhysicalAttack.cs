@@ -1,4 +1,3 @@
-using DG.Tweening;
 using Mirror;
 using System;
 using System.Collections;
@@ -49,20 +48,12 @@ public class PhysicalAttack : Skill
 		_audioSource = GetComponent<AudioSource>();
 		_animator = GetComponent<Animator>();
 
-		for (int i = 0; i < Hero.Resources.Count; i++)
-		{
-			if (Hero.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)Hero.Resources[i];
-			}
-			if (Hero.Resources[i].Type == ResourceType.Rune)
-			{
-				_rune = (RuneComponent)Hero.Resources[i];
-			}
-		}
-	}
+        _energy = (Energy)Hero.Resources[ResourceType.Energy];
+        _rune = (RuneComponent)Hero.Resources[ResourceType.Rune];
 
-	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
 		TargetInfo targetInfo = new TargetInfo();
 
@@ -338,4 +329,4 @@ public class PhysicalAttack : Skill
 		ClearTempTarget();
 		_hero.Move.StopLookAt();
 	}
-}
+}

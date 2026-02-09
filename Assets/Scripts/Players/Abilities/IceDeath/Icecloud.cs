@@ -61,20 +61,10 @@ public class IceCloud : Skill
 	{
 		_audioSource = GetComponent<AudioSource>();
 
-		for (int i = 0; i < Hero.Resources.Count; i++)
-		{
-			if (Hero.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)Hero.Resources[i];
-			}
-			/*if (_playerLinks.Resources[i].Type == ResourceType.Rune)
-			{
-				_rune = (RuneComponent)_playerLinks.Resources[i];
-			}*/
-		}
-	}
+        _energy = (Energy)Hero.Resources[ResourceType.Energy];
+    }
 
-	private void Shoot()
+    private void Shoot()
 	{
 		Vector3 lookDir = _mousePos - Hero.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - AngleOffset;
@@ -199,4 +189,4 @@ public class IceCloud : Skill
 
 	public void CanMoveIceCloud() => Hero.Move.SetCanMove(true);
 	public void StopMoveIceCloud() => Hero.Move.SetCanMove(false);
-}
+}

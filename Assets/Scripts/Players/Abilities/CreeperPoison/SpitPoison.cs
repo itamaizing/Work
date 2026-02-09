@@ -243,7 +243,7 @@ public class SpitPoison : Skill, IAltAbility
     {
         if (damageable != null)
         {
-            CmdInstantiateProjectileToTarget(damageable.gameObject, _player.Resources.FirstOrDefault()!.CurrentValue,
+            CmdInstantiateProjectileToTarget(damageable.gameObject, _player.Resource.CurrentValue,
                 _isActiveHealingSpitPoison, _isActiveRestorationOfGlands, IsAltAbility,
                 _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
 
@@ -251,7 +251,7 @@ public class SpitPoison : Skill, IAltAbility
         }
         else
         {
-            CmdInstantiateProjectileToPoint(_mousePos, _player.Resources.FirstOrDefault()!.CurrentValue,
+            CmdInstantiateProjectileToPoint(_mousePos, _player.Resource.CurrentValue,
                 _isActiveHealingSpitPoison, _isActiveRestorationOfGlands, IsAltAbility,
                 _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
 
@@ -284,7 +284,7 @@ public class SpitPoison : Skill, IAltAbility
 
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
-        projectile.InitializationProjectile(_player, this, _player.Resources.FirstOrDefault()!.CurrentValue,
+        projectile.InitializationProjectile(_player, this, _player.Resource.CurrentValue,
             isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
             isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack);
 
@@ -306,7 +306,7 @@ public class SpitPoison : Skill, IAltAbility
 
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
-        projectile.InitializationProjectile(_player, this, _player.Resources.FirstOrDefault()!.CurrentValue,
+        projectile.InitializationProjectile(_player, this, _player.Resource.CurrentValue,
             isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
             isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack);
 

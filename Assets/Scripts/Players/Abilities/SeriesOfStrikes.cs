@@ -38,21 +38,11 @@ public class SeriesOfStrikes : MonoBehaviour
 
 	private void Start()
 	{
-		for (int i = 0; i < _playerLinks.Resources.Count; i++)
-		{
-			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)_playerLinks.Resources[i];
-			}
-			if (_playerLinks.Resources[i].Type == ResourceType.Rune)
-			{
-				_rune = (RuneComponent)_playerLinks.Resources[i];
-			}
-		}
+        _energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
+        _rune = (RuneComponent)_playerLinks.Resources[ResourceType.Rune];
+    }
 
-	}
-
-	private void Update()
+    private void Update()
 	{
 		Timer();
 	}
@@ -263,4 +253,4 @@ public class Series
  * hit count
  * used rune 
  * 
- * */
+ * */

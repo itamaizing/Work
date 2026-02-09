@@ -1,6 +1,4 @@
 using Mirror;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class IceShowerProjectile : Projectiles
@@ -30,18 +28,9 @@ public class IceShowerProjectile : Projectiles
 		_lastHit = lastHit;
 		_skill = skill;
 		_rb.AddForce(-transform.up * _force, ForceMode.Impulse);
-		for (int i = 0; i < _dad.Resources.Count; i++)
-		{
-			if (_dad.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)_dad.Resources[i];
-			}
-			if (_dad.Resources[i].Type == ResourceType.Rune)
-			{
-				_rune = (RuneComponent)_dad.Resources[i];
-			}
-		}
-		Debug.Log("bullet init");
+        _energy = (Energy)_dad.Resources[ResourceType.Energy];
+        _rune = (RuneComponent)_dad.Resources[ResourceType.Rune];
+        Debug.Log("bullet init");
 	}
 
 	private void Update()
@@ -89,15 +78,10 @@ public class IceShowerProjectile : Projectiles
 				{
 					_dad.Health.SetEvadeMagic(20);
 				}
-				for (int i = 0; i < _dad.Resources.Count; i++)
-				{
-					if (_dad.Resources[i].Type == ResourceType.Energy)
-					{
-						_energy = (Energy)_dad.Resources[i];
-					}
-				}
-				//_energy.TryUse(_energyDad);
-				_energy.UseAllEnergy();
+                _energy = (Energy)_dad.Resources[ResourceType.Energy];
+
+                //_energy.TryUse(_energyDad);
+                _energy.UseAllEnergy();
 				//ClientUse(_energyDad, _energy.gameObject);
 				target.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
 				//damage

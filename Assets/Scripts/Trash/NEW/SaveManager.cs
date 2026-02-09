@@ -51,6 +51,7 @@ public class SaveManager : MonoBehaviour
 
     private AttributeSystem _attributeSystem;
     private SaveSystem _saveSystem = new SaveSystem();
+    private AttributeSaveModifier _attributeModifier;
 
     private void Awake()
     {
@@ -61,6 +62,7 @@ public class SaveManager : MonoBehaviour
             _talentManager = new TalentSaveManager(_saveData, _instance);
             //_attributeManager = new AttributeSaveManager(_saveData);
             //_attributeModifier = new AttributeModifier(_attributeManager);
+            _attributeModifier = new AttributeSaveModifier(_attributeManager);
         }
         else
         {

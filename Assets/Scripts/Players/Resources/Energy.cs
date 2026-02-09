@@ -36,7 +36,7 @@ public class Energy : Resource
 		while (true)
 		{
 			yield return new WaitForSeconds(_regenerationDelay);
-			if (_canRegen && _value < _maxValue)
+			if (_canRegen && _baseValue < _maxValue)
 			{
 				this.Add(_regenerationValue);
 			}

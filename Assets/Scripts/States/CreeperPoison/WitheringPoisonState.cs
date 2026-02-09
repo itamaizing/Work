@@ -117,7 +117,7 @@ public class WitheringPoisonState : AbstractCharacterState
     {
         float takeAwayMana = currentStacksCount * _baseValueTakeAwayMana;
 
-        _endValueTakeAwayMana = characterState.Character.Resources.FirstOrDefault(r => r.Type == ResourceType.Mana)!.CurrentValue * takeAwayMana;
+        _endValueTakeAwayMana = characterState.Character.Resources[ResourceType.Mana]!.CurrentValue * takeAwayMana;
 
         _chanceOfApplyBindingPoison *= _baseChanceOfApplyBindingPoison;
 
@@ -129,7 +129,7 @@ public class WitheringPoisonState : AbstractCharacterState
             }
         }
 
-        characterState.Character.Resources.FirstOrDefault(r => r.Type == ResourceType.Mana)!.Add(-_endValueTakeAwayMana);
+        characterState.Character.Resources[ResourceType.Mana].Add(-_endValueTakeAwayMana);
     }
 
     private void ResetValues()

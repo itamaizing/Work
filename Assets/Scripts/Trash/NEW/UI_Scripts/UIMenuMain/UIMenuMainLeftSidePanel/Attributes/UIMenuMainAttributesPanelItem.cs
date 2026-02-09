@@ -11,14 +11,22 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler
     [SerializeField] private TMProLocalizer _attributeValue;
 
     //private Attribute _currentAttribute;
-    private Attributes _currentAttributes;
+    //private Attributes _currentAttributes;
     private List<AttributeModifiers> _modifs = new();
 
     //public event UnityAction OnValueChange;
     public event UnityAction<string> OnPointerEntered;
     public event UnityAction OnPointerExited;
 
-    public void Fills(Attributes attribute)
+    
+    private Attribute_old _currentAttribute;
+    
+    public event UnityAction OnValueChange;
+    public event UnityAction<Attribute_old> OnPointerEntered;
+    public event UnityAction OnPointerExited;
+
+    //public void Fills(Attributes attribute)
+    public void Fill(Attribute_old attribute)
     {
         _currentAttributes = attribute;
 

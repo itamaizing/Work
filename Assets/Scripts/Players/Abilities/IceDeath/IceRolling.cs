@@ -74,14 +74,10 @@ public class IceRolling : Skill
 		_animator = GetComponent<Animator>();
 		_audioSource = GetComponent<AudioSource>();
 
-		for (int i = 0; i < _playerLinks.Resources.Count; i++)
-		{
-			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
-				_energy = (Energy)_playerLinks.Resources[i];
-		}
-	}
+        _energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
+    }
 
-	private void Update()
+    private void Update()
 	{
 		if (_afterJump)
 		{
@@ -204,7 +200,7 @@ public class IceRolling : Skill
 
 		//if (_energy.CurrentValue < totalCost)
 		//{
-		//	Debug.Log("Íåäîñòàòî÷íî ýíåðãèè äëÿ ïðûæêà.");
+		//	Debug.Log("ÐÐµÐ´Ð¾ÑÑ‚Ð°Ñ‚Ð¾Ñ‡Ð½Ð¾ ÑÐ½ÐµÑ€Ð³Ð¸Ð¸ Ð´Ð»Ñ Ð¿Ñ€Ñ‹Ð¶ÐºÐ°.");
 		//	return;
 		//}
 
@@ -512,4 +508,4 @@ public class IceRolling : Skill
 		}
 		target.transform.SetParent(_playerLinks.transform);
 	}
-}
+}
