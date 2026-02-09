@@ -62,7 +62,7 @@ public class SaveManager : MonoBehaviour
             _talentManager = new TalentSaveManager(_saveData, _instance);
             //_attributeManager = new AttributeSaveManager(_saveData);
             //_attributeModifier = new AttributeModifier(_attributeManager);
-            _attributeModifier = new AttributeSaveModifier(_attributeManager);
+            //_attributeModifier = new AttributeSaveModifier(_attributeManager);
         }
         else
         {
@@ -85,7 +85,7 @@ public class SaveManager : MonoBehaviour
     
     public void SaveAttributePoints(int points)
     {
-        _saveSystem.Save($"{_character.Data.Name}_Group{_currentSaveGroup}_FreeAttributesPoints", _attributeSystem.Points);
+        //_saveSystem.Save($"{_character.Data.Name}_Group{_currentSaveGroup}_FreeAttributesPoints", _attributeSystem.Points);
     }
     
     public int LoadAttributePoints()
@@ -95,37 +95,37 @@ public class SaveManager : MonoBehaviour
         return points;
     }
 
-    public void AddAttributesModif(Attributes attribute, AttributeModifiers modif)
+    public void AddAttributesModif(Attribute attribute, AttributeModifier modif)
     {
         attribute.AddModifier(modif);
         SaveAttribute(attribute);
     }
 
-    public void RemoveAttributesModif(Attributes attribute, AttributeModifiers modif)
+    public void RemoveAttributesModif(Attribute attribute, AttributeModifier modif)
     {
         attribute.RemoveModifier(modif);
         SaveAttribute(attribute);
     }
 
-    public void SaveAttribute(Attributes attribute)
+    public void SaveAttribute(Attribute attribute)
     {
-        _saveSystem.Save($"{_character.Data.Name}_Group{_currentSaveGroup}_{attribute.Name}_Points", attribute.Modifiers);
+       // _saveSystem.Save($"{_character.Data.Name}_Group{_currentSaveGroup}_{attribute.Name}_Points", attribute.Modifiers);
     }
 
-    public List<AttributeModifiers> LoadAttribute(Attributes attribute)
+    public List<AttributeModifier> LoadAttribute(Attribute attribute)
     {
-        List<AttributeModifiers> modifs = new();
-        _saveSystem.Load<List<AttributeModifiers>>($"{_character.Data.Name}_Group{_currentSaveGroup}_{attribute.Name}_Points", e => modifs = e);
+        List<AttributeModifier> modifs = new();
+        //_saveSystem.Load<List<AttributeModifier>>($"{_character.Data.Name}_Group{_currentSaveGroup}_{attribute.Name}_Points", e => modifs = e);
 
-        Attributes atrib = _attributeSystem.Attributes.FirstOrDefault(a => a.Name == attribute.Name);
+       /* Attribute atrib = _attributeSystem.Attribute.FirstOrDefault(a => a.Name == attribute.Name);
         if (atrib != null)
         {
-            foreach (AttributeModifiers modif in modifs)
+            foreach (AttributeModifier modif in modifs)
             {
                 atrib.AddModifier(modif);
             }
         }
-        Debug.Log(modifs.Count);
+        Debug.Log(modifs.Count);*/
 
         return modifs;
     }

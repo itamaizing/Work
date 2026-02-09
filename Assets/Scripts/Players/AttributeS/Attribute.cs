@@ -7,18 +7,19 @@ using UnityEngine;
 [Serializable]
 public class Attribute
 {
-    //public BasicAttributeName Name;
+    public string Name;
 
     [SerializeField] private float _baseValue;
     [SerializeField] private float _cachedValue;
     private bool isActual = false;
     [SerializeField] private List<AttributeModifier> _modifiers = new();
-    
+
+    public List<AttributeModifier> Modifiers => _modifiers;
 
     //public Attribute(BasicAttributeName name, float _value=0)
-    public Attribute(float _value=0)
+    public Attribute(float _value=0, string name = null)
     {
-        //Name = name;
+        Name = name;
         _baseValue = _value; 
     }
 

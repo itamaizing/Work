@@ -17,21 +17,22 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     public void Show(Character hero)
     {
         _attributeSystem = new AttributeSystem();
-        _attributeSystem.Init2(hero.Data);
+        //_attributeSystem.Init2(hero.Data);
 
         ResetPanel();
 
-        foreach (var item in _attributeSystem.Attributes)
+      /*  foreach (var item in _attributeSystem.Attributes)
         {
             var attribute = Instantiate(_attributeItem, _itemsParent);
             attribute.Fills(item);
-            Debug.Log(item.GetValue());
+            //Debug.Log(item.GetValue());
             //attribute.OnValueChange += UpdateAttributesPoints;
             attribute.OnPointerEntered += ShowDescription;
             attribute.OnPointerExited += HideDescription;
 
             _attributes.Add(attribute);
-        }
+        }*/
+
 
         UpdateAttributesPoints();
     }
@@ -73,7 +74,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
         }
         
         SaveManager.Instance.LoadAttributePoints();
-        _attributesText.ChangeKey(_attributeSystem.Points);
+        //_attributesText.ChangeKey(_attributeSystem.Points);
     }
     
     private void ShowDescription(string text)

@@ -11,22 +11,15 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler
     [SerializeField] private TMProLocalizer _attributeValue;
 
     //private Attribute _currentAttribute;
-    //private Attributes _currentAttributes;
-    private List<AttributeModifiers> _modifs = new();
+    private Attribute _currentAttributes;
+    private List<AttributeModifier> _modifs = new();
 
     //public event UnityAction OnValueChange;
     public event UnityAction<string> OnPointerEntered;
     public event UnityAction OnPointerExited;
 
-    
-    private Attribute_old _currentAttribute;
-    
-    public event UnityAction OnValueChange;
-    public event UnityAction<Attribute_old> OnPointerEntered;
-    public event UnityAction OnPointerExited;
 
-    //public void Fills(Attributes attribute)
-    public void Fill(Attribute_old attribute)
+    public void Fills(Attribute attribute)
     {
         _currentAttributes = attribute;
 
@@ -41,9 +34,7 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler
 
     public void Add()
     {
-        var modif = new AttributeModifiers();
-        modif.Value = 1;
-        modif.Type = ModifierType.MenuFlat;
+        var modif = new AttributeModifier(1, ModifierType.MenuFlat);
         _modifs.Add(modif);
 
         SaveManager.Instance.AddAttributesModif(_currentAttributes, modif);
@@ -71,9 +62,9 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log(_currentAttributes.Name);
+       /* Debug.Log(_currentAttributes.Name);
         if(_currentAttributes != null)
-            OnPointerEntered?.Invoke(_currentAttributes.Name);
+            OnPointerEntered?.Invoke(_currentAttributes.Name);*/
     }
 
     public void OnPointerExit(PointerEventData eventData)

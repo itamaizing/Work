@@ -2,15 +2,11 @@ using Mirror;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using System.Collections.Generic;
-using System.Linq;
 using System;
 
 public class AttributeSystem : NetworkBehaviour
 {
-    //private CharacterData _data;
-
-    //���������� � Dictionary
+    private CharacterData _data;
 
     private Dictionary<BasicAttributeName, Attribute> _attributes = new();    
     public Dictionary<BasicAttributeName, Attribute> Attributes => _attributes;
@@ -26,11 +22,11 @@ public class AttributeSystem : NetworkBehaviour
     public Attribute ResourceRegen => _resources[mainResourceType].Attributes[ResourceAttributeName.Regen];
     public Attribute MoveSpeed => _attributes[BasicAttributeName.MoveSpeed];
 
-    public List<Attributes> Attributes => _attributes;
+   // public List<Attribute> Attribute => _attribute;
 
-    public int Points => _points;
+    //public int Points => _points;
 
-    public void Init2(CharacterData data)
+  /*  public void Init2(CharacterData data)
     {
         if (_isInited) return;
         //_data = data;
@@ -80,7 +76,7 @@ public class AttributeSystem : NetworkBehaviour
             Debug.Log(modifier.Value + attribute.Name);
             attribute.AddModifier(modifier);
         }
-    }
+    }*/
 
     public void Init(CharacterData data)
     {

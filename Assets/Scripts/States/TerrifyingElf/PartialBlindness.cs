@@ -79,7 +79,7 @@ public class PartialBlindness : AbstractCharacterState
 
         if (UnityEngine.Random.Range(0f, 100f) < totalMissChance)
         {
-            skill.CmdForceFailCastJobOnce();
+            //skill.CmdForceFailCastJobOnce();
         }
     }
 }
