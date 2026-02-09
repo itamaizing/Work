@@ -8,8 +8,9 @@ public class UIMenuMainWindow : MonoBehaviour
     [SerializeField] private UIMenuMainCharactersPanel _charactersPanel;
     [SerializeField] private UIMenuMainGameTypesPanel _gameTypesPanel;
     [SerializeField] private UIMenuMainSavesPanel _savesPanel;
+    [SerializeField] private UIMenuMainPlayerInfoPanel _infoPanel;
 
-	private void Start()
+    private void Start()
     {
         Show();
     }

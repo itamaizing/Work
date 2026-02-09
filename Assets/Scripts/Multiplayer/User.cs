@@ -91,6 +91,8 @@ public class BottleUserManager
     private string _currentUser;
     private string mainMenuSceneName = "MainMenu";
 
+    public event Action<int> OnBottlesChanged;
+
     public void BottleInitialize()
     {
         _instance = this;
@@ -159,6 +161,8 @@ public class BottleUserManager
         PlayerPrefs.Save();
 
         Debug.Log($"Bottle data saved for {_currentUser}. Bottles: {_currentBottles}, Volume: {_currentBottleVolume}");
+
+        OnBottlesChanged?.Invoke(_currentBottles);
     }
 
     private void LoadBottleData()
@@ -173,6 +177,8 @@ public class BottleUserManager
         _currentBottleVolume = PlayerPrefs.GetFloat(_currentUser + "_BottleVolume", 0f);
 
         Debug.Log($"Bottle data loaded for {_currentUser}. Bottles: {_currentBottles}, Volume: {_currentBottleVolume}");
+
+        OnBottlesChanged?.Invoke(_currentBottles);
     }
 
     public void LogBottleInfoOnClient()
