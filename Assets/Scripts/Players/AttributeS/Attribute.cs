@@ -43,7 +43,7 @@ public class Attribute
     public float Recalculate()
     {
         float value;
-        float flat = 0, percent = 0, multiplier = 1;
+        float flat = 0, percent = 0, multiplier = 1, menuFlat = 0;
 
         foreach (var modifier in _modifiers)
         {
@@ -58,11 +58,14 @@ public class Attribute
                 case ModifierType.Multiplier:
                     multiplier *= (1 + modifier.Value);
                     break;
+                case ModifierType.MenuFlat:
+                    menuFlat += modifier.Value;
+                    break;
                 default:
                     break;
             }
         }
-        value = (_baseValue + flat) * (1 + percent) * multiplier;
+        value = (_baseValue + flat + menuFlat) * (1 + percent) * multiplier;
         _cachedValue = value;
         isActual = true;
         return value;
@@ -109,6 +112,7 @@ public class AttributeModifier
 public enum ModifierType
 {
     Flat,
+    MenuFlat,
     Percent,
     Multiplier
 }

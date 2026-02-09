@@ -13,6 +13,7 @@ public class AttributeSystem : MonoBehaviour
     private ResourceType mainResourceType;
     private Dictionary<ResourceType, ResourceAttribute> _resources = new();
     [SerializeField] public List<ResourceAttribute> TemporaryResourceDisplay = new(); //TMP: Для простоты дебаггинга, потом убрать
+
     public Dictionary<ResourceType, ResourceAttribute> Resources => _resources;
     public Attribute HPMax => _resources[ResourceType.Health].Attributes[ResourceAttributeName.MaxValue];
     public Attribute HPRegen => _resources[ResourceType.Health].Attributes[ResourceAttributeName.Regen];
