@@ -109,7 +109,7 @@ public class SaveManager : MonoBehaviour
 
     public void SaveAttribute(Attribute attribute)
     {
-       // _saveSystem.Save($"{_character.Data.Name}_Group{_currentSaveGroup}_{attribute.Name}_Points", attribute.Modifiers);
+        _saveSystem.Save($"{_character.Data.Name}_Group{_currentSaveGroup}_{attribute.Name}_Points", attribute.Modifiers);
     }
 
     public List<AttributeModifier> LoadAttribute(Attribute attribute)

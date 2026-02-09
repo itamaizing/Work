@@ -109,7 +109,7 @@ public class ResourceAttribute
     {
         foreach (var attribute in info.attributes)
         {
-            _attributes.Add(attribute.type, new Attribute(attribute.value));
+            _attributes.Add(attribute.type, new Attribute(attribute.value, attribute.type.ToString()));
             Debug.Log($"Added {attribute.type}={attribute.value}");
         }
         TemporaryAttributeDisplay = _attributes.Values.ToList();
