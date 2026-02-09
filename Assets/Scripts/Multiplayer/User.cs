@@ -93,6 +93,11 @@ public class BottleUserManager
 
     public event Action<int> OnBottlesChanged;
 
+    public void BottlesChanged(int count)
+    {
+        OnBottlesChanged?.Invoke(count);
+    }
+
     public void BottleInitialize()
     {
         _instance = this;

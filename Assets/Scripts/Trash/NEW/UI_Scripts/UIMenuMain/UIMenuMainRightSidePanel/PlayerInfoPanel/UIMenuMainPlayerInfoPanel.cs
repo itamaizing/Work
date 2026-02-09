@@ -12,6 +12,14 @@ public class UIMenuMainPlayerInfoPanel : MonoBehaviour
         Instance = this;
     }
 
+    private void Start()
+    {
+        if (BottleUserManager.Instance != null)
+        {
+            SetBottleInfo(BottleUserManager.Instance.GetCurrentBottles());
+        }
+    }
+
     private void OnEnable()
     {
         if (BottleUserManager.Instance != null)

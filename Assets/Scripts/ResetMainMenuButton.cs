@@ -26,14 +26,20 @@ public class ResetMainMenuButton : MonoBehaviour
             .GetField("_currentUser", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?
             .GetValue(BottleUserManager.Instance) as string;
 
-        if (string.IsNullOrEmpty(userKey))
-        {
-            return;
-        }
+        if (string.IsNullOrEmpty(userKey)) return;
 
         PlayerPrefs.DeleteKey(userKey + "_Bottles");
         PlayerPrefs.DeleteKey(userKey + "_BottleVolume");
+
+        var fieldBottles = typeof(BottleUserManager).GetField("_currentBottles", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var fieldVolume = typeof(BottleUserManager).GetField("_currentBottleVolume", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        fieldBottles?.SetValue(BottleUserManager.Instance, 0);
+        fieldVolume?.SetValue(BottleUserManager.Instance, 0f);
+
+        BottleUserManager.Instance.BottlesChanged(0);
     }
+
 
     private void ResetLevelData()
     {
