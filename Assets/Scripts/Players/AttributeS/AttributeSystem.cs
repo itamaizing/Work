@@ -43,7 +43,7 @@ public class AttributeSystem : NetworkBehaviour
         //_data = data;
         _health = data.GetAttribute(AttributeNames.Health);
         _hpRegen = data.GetAttribute(AttributeNames.HpRegen);
-        _resourse = data.GetAttribute(AttributeNames.Mana);
+        _resourse = data.GetAttribute(AttributeNames.Resourse);
         _resourseRegen = data.GetAttribute(AttributeNames.ResourseRegen);
         _moveSpeed = data.GetAttribute(AttributeNames.Speed);
         _physicEvade = data.GetAttribute(AttributeNames.EvasionPhysical);

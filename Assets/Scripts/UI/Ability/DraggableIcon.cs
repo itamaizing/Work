@@ -25,8 +25,9 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private float _distance;
     private Coroutine _cooldownCoroutine;
     private float _pendingCooldown = -1f;
+    private bool _isMenu = false;
 
-    public Transform PatentAfterDrag { get => _patentAfterDrag; set => _patentAfterDrag = value; }
+    public Transform ParentAfterDrag { get => _patentAfterDrag; set => _patentAfterDrag = value; }
     public Skill Skill { get => _skill; set => _skill = value; }
     public bool Selected { get => _selected; set => _selected = value; }
 
@@ -44,11 +45,12 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
     }
 
-    public void Init(Skill skill, Transform parent, Camera camera, float distance)
+    public void Init(Skill skill, Transform parent, Camera camera, float distance, bool isMenu = false)
     {
         _skill = skill;
+        _isMenu = isMenu;
         _image.sprite = _skill.Icon;
-        PatentAfterDrag = parent;
+        ParentAfterDrag = parent;
         _camera = camera;
         _distance = distance;
         _skill.LinkedChargeCDUI = _chargeCD;
@@ -78,9 +80,12 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        PatentAfterDrag = transform.parent;
-        PatentAfterDrag.GetComponent<SkillIcon>().CurrentIcon = null;
-        transform.SetParent(transform.root);
+        ParentAfterDrag = transform.parent;
+        ParentAfterDrag.GetComponent<SkillIcon>().CurrentIcon = null;
+
+        if(!_isMenu)
+            transform.SetParent(transform.root);
+
         transform.SetAsLastSibling();
         _image.raycastTarget = false;
 
@@ -93,17 +98,32 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         Vector3 screenPos = new Vector3(mousePosition.x, mousePosition.y, _distance);
         Vector3 worldPos = _camera.ScreenToWorldPoint(screenPos);
 
+        if (_isMenu)
+            worldPos = screenPos;
+
         transform.position = worldPos;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        transform.SetParent(PatentAfterDrag);
+        transform.SetParent(ParentAfterDrag);
         transform.SetAsFirstSibling();
+
+        if(_isMenu)
+            transform.position = ParentAfterDrag.position;
+
         _image.raycastTarget = true;
-        PatentAfterDrag.GetComponent<SkillIcon>().CurrentIcon = this;
+        ParentAfterDrag.GetComponent<SkillIcon>().CurrentIcon = this;
 
         EndDrag?.Invoke();
+    }
+
+    public void UpdatePosition(Transform parent)
+    {
+        ParentAfterDrag = parent;
+        transform.SetParent(ParentAfterDrag);
+        transform.SetAsFirstSibling();
+        transform.position = ParentAfterDrag.position;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -154,12 +174,6 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     private void SubscribingSkillOnEvents(Skill ability)
     {
-        //ability.CastStreamStarted += OnStartStreaming;
-        //ability.Canceled += OnStopStreaming;
-
-        //ability.CastDeleyStarted += OnStartCastDeley;
-        //ability.Canceled += OnStopCastDeley;
-
         ability.CooldownStarted += OnStartCooldown;
         ability.CurrentChargeChanged += OnCurrentChargeChanged;
         ability.ChargeStartCooldown += OnChargeStartCooldown;
@@ -178,12 +192,6 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     private void UnsubscribingSkillOnEvents(Skill ability)
     {
-        //ability.CastStreamStarted -= OnStartStreaming;
-        //ability.Canceled -= OnStopStreaming;
-
-        //ability.CastDeleyStarted -= OnStartCastDeley;
-        //ability.Canceled -= OnStopCastDeley;
-
         ability.CooldownStarted -= OnStartCooldown;
         ability.CurrentChargeChanged -= OnCurrentChargeChanged;
         ability.ChargeStartCooldown -= OnChargeStartCooldown;

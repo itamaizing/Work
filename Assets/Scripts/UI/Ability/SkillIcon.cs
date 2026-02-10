@@ -63,14 +63,14 @@ public class SkillIcon : MonoBehaviour, IDropHandler
 
         if(CurrentIcon == null)    
         {
-            draggableIcon.PatentAfterDrag = transform;
+            draggableIcon.ParentAfterDrag = transform;
             CurrentIcon = draggableIcon;
         }
         else 
         {
-            CurrentIcon.PatentAfterDrag = draggableIcon.PatentAfterDrag;
+            CurrentIcon.ParentAfterDrag = draggableIcon.ParentAfterDrag;
             CurrentIcon.OnEndDrag(null);
-            draggableIcon.PatentAfterDrag = transform;
+            draggableIcon.ParentAfterDrag = transform;
             CurrentIcon = draggableIcon;
         }
     }

@@ -113,7 +113,8 @@ public class SaveManager : MonoBehaviour
     public List<AttributeModifiers> LoadAttribute(Attributes attribute)
     {
         List<AttributeModifiers> modifs = new();
-        _saveSystem.Load<List<AttributeModifiers>>($"{_character.Data.Name}_Group{_currentSaveGroup}_{attribute.Name}_Points", e => modifs = e);
+        _saveSystem.Load<List<AttributeModifiers>>($"{_character.Data.Name}_Group{_currentSaveGroup}_{attribute.Name}_Points", 
+            e => modifs = e);
 
         Attributes atrib = _attributeSystem.Attributes.FirstOrDefault(a => a.Name == attribute.Name);
         if (atrib != null)

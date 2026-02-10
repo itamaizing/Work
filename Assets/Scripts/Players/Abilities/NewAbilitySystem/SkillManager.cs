@@ -39,7 +39,8 @@ public class SkillManager : MonoBehaviour
     public bool IsNextSkillFree { get; private set; }
     public IEnumerable<Skill> DefaultSkills => _skills.Where(o => o.IsTalentSpell == false);
     public IEnumerable<Skill> TalentsSkills => _skills.Where(o => o.IsTalentSpell);
-
+    public List<Skill> Skills => _skills;
+    public Character Hero => _hero;
     public AutoSkillCast AutoSkillCast => _autoSkillCast;
     public List<Skill> Abilities => _skills;
     public event Action<int> SkillSelected;

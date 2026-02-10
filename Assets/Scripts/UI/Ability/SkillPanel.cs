@@ -21,6 +21,7 @@ public class SkillPanel : MonoBehaviour
     private SkillManager _playerAbilities;
     private bool _isActive;
     private bool _isSelect;
+    private SaveSystem _saveSystem = new();
 
     private void Start()
     {
@@ -82,6 +83,48 @@ public class SkillPanel : MonoBehaviour
         OnEndDrag();
     }
 
+    public void FillMenu(SkillManager abilities)
+    {
+        ClearPanel();
+
+        if (_playerAbilities != null)
+        {
+            _playerAbilities.SkillAdded -= OnSkillAdded;
+            _playerAbilities.SkillRemoved -= OnSkillRemoved;
+        }
+
+        _playerAbilities = abilities;
+
+        for (int i = 0; i < _playerAbilities.Skills.Count; i++)
+        {
+            if (_playerAbilities.Skills[i] == null)
+            {
+                _skillIcons[i].CurrentIcon = null;
+                continue;
+            }
+            if (i >= _skillIcons.Length) return;
+
+            var icon = Instantiate(_draggableIconPref, _skillIcons[i].transform);
+            icon.Init(_playerAbilities.Skills[i], _skillIcons[i].transform, _uiCamera, _cameraCanvasDistance, true);
+            _skillIcons[i].CurrentIcon = icon;
+            icon.transform.SetAsFirstSibling();
+            _skills.Add(icon);
+
+            icon.BeginDrag += OnBeginDrag;
+            icon.EndDrag += OnEndDrag;
+            icon.PointerEnter += OnPointerEnterIcon;
+            icon.PointerExit += OnPointerExitIcon;
+        }
+
+        _playerAbilities.SkillAdded += OnSkillAdded;
+        _playerAbilities.SkillRemoved += OnSkillRemoved;
+
+        OnBeginDrag();
+        LoadPanel();
+
+        OnEndDrag();
+    }
+
     public void FillMinionPanel(SkillManager abilities)
     {
         if (_playerAbilities != null)
@@ -123,7 +166,6 @@ public class SkillPanel : MonoBehaviour
         OnBeginDrag();
         OnEndDrag();
     }
-
 
     public void OnMinionSelected(SkillManager minionSkillManager)
     {
@@ -173,6 +215,7 @@ public class SkillPanel : MonoBehaviour
     
     private void OnEndDrag()
     {
+        SavePanel();
         if (_hideUnusedButtons)
         {
             foreach (var item in _skillIcons)
@@ -222,6 +265,10 @@ public class SkillPanel : MonoBehaviour
             Destroy(item.gameObject);
         }
         _skills.Clear();
+        foreach(var ico in _skillIcons)
+        {
+            ico.CurrentIcon = null;
+        }
     }
 
     private void OnAbilitySelected(int index)
@@ -233,7 +280,6 @@ public class SkillPanel : MonoBehaviour
     {
         _skillIcons[index].Deselected();
     }
-
 
     private void OnSkillAdded(Skill skill)
     {
@@ -299,4 +345,50 @@ public class SkillPanel : MonoBehaviour
     {
         UpdateKeys();
     }
+
+    private void SavePanel()
+    {
+        List<SkillPanelSave> save = new();
+        for(int i = 0; i< _skillIcons.Length; i++)
+        {
+            if (_skillIcons[i].CurrentIcon != null)
+            {
+                SkillPanelSave item = new();
+                item.Name = _skillIcons[i].CurrentIcon.Skill.Name;
+                item.Id = i;
+
+                save.Add(item);
+                Debug.Log("Ico  " + i + " Ability" + _skillIcons[i].CurrentIcon.Skill.Name);
+            }
+        }
+        _saveSystem.Save($"{_playerAbilities.Hero.Data.Name}_Group{0}_AbilityPanel", save);
+
+        
+    }
+
+    private void LoadPanel()
+    {
+        List<SkillPanelSave> save = new();
+        _saveSystem.Load<List<SkillPanelSave>>($"{_playerAbilities.Hero.Data.Name}_Group{0}_AbilityPanel", e => save = e);
+        if (save == null) return;
+
+        foreach(var skillSave in save)
+        {
+            DraggableIcon icon = _skills.FirstOrDefault(a => a.Skill.Name == skillSave.Name);
+            SkillIcon cell = _skillIcons.FirstOrDefault(a => a.CurrentIcon == icon);
+            if (icon == null || cell == null) return;
+
+            cell.CurrentIcon = null;
+
+            _skillIcons[skillSave.Id].CurrentIcon = icon;
+            icon.UpdatePosition(_skillIcons[skillSave.Id].transform);
+        }
+        Debug.Log("Load");
+    }
+}
+
+public struct SkillPanelSave
+{
+    public string Name;
+    public int Id;
 }
