@@ -63,7 +63,7 @@ public abstract class AuraState : AbstractCharacterState
 	private Dictionary<Collider, Character> _colliderToCharacter = new();
 	private float _timeAfterLastEffect = 0;
 
-    public abstract float Distance { get; }
+	public abstract float Distance { get; }
     public abstract float EffectRate { get; }
     public abstract LayerMask LayerMask { get; }
 
@@ -78,7 +78,8 @@ public abstract class AuraState : AbstractCharacterState
         _characterState = character;
 		_auraCentre = character.transform;
 		_self = personWhoMadeBuff;
-	}
+		duration = durationToExit;
+    }
 
     public override void UpdateState()
     {

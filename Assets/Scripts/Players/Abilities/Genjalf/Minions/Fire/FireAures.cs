@@ -21,19 +21,57 @@ public class Burn : AuraState
 
     public override float Distance => 2;
     public override float EffectRate => 1f;
-    public override LayerMask LayerMask => LayerMask.GetMask("Allies");
+    public override LayerMask LayerMask => LayerMask.GetMask("Enemy");
     public override States State => States.Burn;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
+    private Character _currentCharacter;
+
     public override void EffectOnEnter(Character character)
     {
-
+        _currentCharacter = character;
+        
+        _currentCharacter.Health.DamageTaken += OnDamageTaken;
     }
-
+    
     public override void EffectOnExit(Character character)
     {
+    }
 
+    private void OnDamageTaken(Damage damage, Skill target)
+    {
+        if (damage.Type == DamageType.Physical && damage.PhysicAttackType == AttackRangeType.MeleeAttack)
+        {
+            if (target.gameObject != null)
+            {
+                CmdAddState(target.Hero.gameObject);
+            }
+        }
+    }
+    
+    [Command]
+    private void CmdAddState(GameObject target)
+    {
+        target.GetComponent<Character>().CharacterState.AddState(States.Burning,7,0,target,nameof(Burning));
+    }
+
+    public override void UpdateState()
+    {
+        base.UpdateState();
+        if (duration > 0)
+        {
+            duration -= Time.deltaTime;
+        }
+        else
+        {
+            ExitState();
+            if (_currentCharacter)
+            {
+                _currentCharacter.Health.DamageTaken -= OnDamageTaken;
+                _currentCharacter = null;
+            }
+        }
     }
 
     public override void EffectOnStay(List<Character> characters)
