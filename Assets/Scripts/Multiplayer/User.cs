@@ -78,22 +78,6 @@ public class User : NetworkBehaviour
         BottleUserManager.Instance?.BottleInitialize();
         LevelCharacterManager.Instance?.LevelInitialize();
     }
-
-    [TargetRpc]
-    public void TargetApplyRewards(NetworkConnection target, int experience, float bottleVolume)
-    {
-        Debug.Log($"[CLIENT] Rewards: EXP={experience}, Bottle={bottleVolume}");
-
-        if (experience > 0 && LevelCharacterManager.Instance != null)
-        {
-            LevelCharacterManager.Instance.AddExperience(experience);
-        }
-
-        if (bottleVolume > 0f && BottleUserManager.Instance != null)
-        {
-            BottleUserManager.Instance.AddBottleVolume(bottleVolume);
-        }
-    }
 }
 
 public class BottleUserManager

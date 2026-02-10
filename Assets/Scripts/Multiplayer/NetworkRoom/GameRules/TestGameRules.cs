@@ -14,13 +14,13 @@ public class TestGameRules : GameRules
     [Header("Team Settings")]
     [SerializeField] private int experiencePerWin = 6;
     [SerializeField] private int experiencePerLoss = 2;
-    [SerializeField] private float bottleVolumePerWin = 10f / 30f;
+    [SerializeField] private float bottleVolumePerWin = 1f / 3f;
 
     private TeamsPanel _teams; // need rework
     private int[] _teamDeaths = new int[3];
-    
 
-	private int _teamMaxScore = 3;
+
+    private int _teamMaxScore = 3;
     private int _team1Score = 0;
     private int _team2Score = 0;
 
@@ -37,11 +37,11 @@ public class TestGameRules : GameRules
     protected override void OnPlayerDied(Character player)
     {
         if (_regenCoroutine != null) return;
-		AddExpForAllEnemy(player);
-		_regenCoroutine = StartCoroutine(RevivalPlayerCoroutine(player));
+        AddExpForAllEnemy(player);
+        _regenCoroutine = StartCoroutine(RevivalPlayerCoroutine(player));
         AddScorePoint(player.NetworkSettings.TeamIndex);
 
-        if(_team1Score >= _teamMaxScore || _team2Score >= _teamMaxScore)
+        if (_team1Score >= _teamMaxScore || _team2Score >= _teamMaxScore)
         {
             if (_team1Score > _team2Score)
             {
@@ -107,49 +107,15 @@ public class TestGameRules : GameRules
 
     private void AfterEndGame()
     {
-        if (!isServer) return;
+        var bottleManager = BottleUserManager.Instance;
+        var levelManager = LevelCharacterManager.Instance;
 
         GameMode currentMode = ServerManager.Instance.CurrentGameMode;
+        bool isMaxLevel = levelManager.GetCurrentLevel() >= LevelCharacterManager.Instance.MaxLevel;
         bool isVictory = _team1Score >= _teamMaxScore;
 
-        foreach (var character in _players)
-        {
-            var user = character.GetComponent<User>();
-            if (user == null || user.connectionToClient == null)
-                continue;
-
-            int expReward = 0;
-            float bottleReward = 0f;
-
-            bool isMaxLevel =
-                LevelCharacterManager.Instance.GetCurrentLevel() >=
-                LevelCharacterManager.Instance.MaxLevel;
-
-            switch (currentMode)
-            {
-                case GameMode.GM1vs1MaximumMode:
-                    if (isVictory)
-                    {
-                        bottleReward = bottleVolumePerWin;
-                        if (!isMaxLevel)
-                            expReward = experiencePerWin;
-                    }
-                    break;
-
-                default:
-                    if (isVictory)
-                    {
-                        bottleReward = bottleVolumePerWin;
-                        if (!isMaxLevel)
-                            expReward = experiencePerLoss;
-                    }
-                    break;
-            }
-
-            user.TargetApplyRewards(user.connectionToClient, expReward, bottleReward);
-        }
+        CmdAfterEndGame(currentMode, isVictory, isMaxLevel, bottleManager, levelManager);
     }
-
 
     private void RestartRound()
     {
@@ -274,7 +240,47 @@ public class TestGameRules : GameRules
         StartCoroutine(CloseRoomJob());
     }
 
+    [Command] 
+    private void CmdAfterEndGame(GameMode currentMode, bool isVictory, bool isMaxLevel, BottleUserManager bottleManager, LevelCharacterManager levelManager) => RpcAfterEndGame(currentMode, isVictory, isMaxLevel, bottleManager, levelManager);
     [ClientRpc] private void RpcEnablePreparationAreas(float duration) => _preparationAreaManager?.PreparationAreasDisable(duration);
+
+    [ClientRpc]
+    private void RpcAfterEndGame(GameMode currentMode, bool isVictory, bool isMaxLevel, BottleUserManager bottleManager, LevelCharacterManager levelManager)
+    {
+        switch (currentMode)
+        {
+            case GameMode.GM1vs1MaximumMode:
+                if (isVictory)
+                {
+                    if (isMaxLevel)
+                    {
+                        bottleManager.AddBottleVolume(1000);
+                    }
+                    else
+                    {
+                        levelManager.AddExperience(1000);
+                        bottleManager.AddBottleVolume(1000);
+                    }
+                }
+
+                break;
+
+            default:
+                if (isVictory)
+                {
+                    if (isMaxLevel)
+                    {
+                        bottleManager.AddBottleVolume(1000);
+                    }
+                    else
+                    {
+                        levelManager.AddExperience(experiencePerLoss);
+                        bottleManager.AddBottleVolume(1000);
+                    }
+                }
+                break;
+        }
+    }
 
     protected override void OnTowerDied(Object tower)
     {

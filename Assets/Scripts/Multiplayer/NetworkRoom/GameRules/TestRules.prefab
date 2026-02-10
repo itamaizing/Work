@@ -53,9 +53,9 @@ MonoBehaviour:
   _AddTimeForRevival: 1
   _lifeTime: 10
   isRemoveRoom: 0
-  experiencePerWin: 6
+  experiencePerWin: 500
   experiencePerLoss: 2
-  bottleVolumePerWin: 30
+  bottleVolumePerWin: 1000
 --- !u!114 &2921794203723352403
 MonoBehaviour:
   m_ObjectHideFlags: 0
