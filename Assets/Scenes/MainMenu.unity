@@ -791,7 +791,7 @@ MonoBehaviour:
   _gameMode: 1
   _scene: Assets/Scenes/TestRoom3DNew.unity
   _maxPlayers: 2
-  _gameRulesPref: {fileID: 2955064748104778921, guid: 2ae4dc3e896cc6040afe290737e398a9, type: 3}
+  _gameRulesPref: {fileID: 2624942693930062612, guid: 9c3ab8f1c5352c34ea72aeec43bb21be, type: 3}
 --- !u!114 &572863235
 MonoBehaviour:
   m_ObjectHideFlags: 0

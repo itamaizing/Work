@@ -14,7 +14,7 @@ public class TestGameRules : GameRules
     [Header("Team Settings")]
     [SerializeField] private int experiencePerWin = 6;
     [SerializeField] private int experiencePerLoss = 2;
-    [SerializeField] private float bottleVolumePerWin = 1f / 3f;
+    [SerializeField] private float bottleVolumePerWin = 10f / 30f;
 
     private TeamsPanel _teams; // need rework
     private int[] _teamDeaths = new int[3];
@@ -51,6 +51,7 @@ public class TestGameRules : GameRules
             {
                 RpcShowWinner(2);
             }
+            AfterEndGame();
             EndGame();
         }
     }
@@ -104,8 +105,7 @@ public class TestGameRules : GameRules
         }
     }
 
-    /*
-    private void EndGame()
+    private void AfterEndGame()
     {
         if (!isServer) return;
 
@@ -151,11 +151,7 @@ public class TestGameRules : GameRules
                 }
                 break;
         }
-
-        RpcCloseRoomOnClients();
-        StartCoroutine(CloseRoomJob());
     }
-    */
 
     private void RestartRound()
     {
