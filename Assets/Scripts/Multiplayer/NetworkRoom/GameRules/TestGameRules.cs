@@ -107,6 +107,8 @@ public class TestGameRules : GameRules
 
     private void AfterEndGame()
     {
+        if (!isServer) return;
+
         var bottleManager = BottleUserManager.Instance;
         var levelManager = LevelCharacterManager.Instance;
 
@@ -114,7 +116,39 @@ public class TestGameRules : GameRules
         bool isMaxLevel = levelManager.GetCurrentLevel() >= LevelCharacterManager.Instance.MaxLevel;
         bool isVictory = _team1Score >= _teamMaxScore;
 
-        CmdAfterEndGame(currentMode, isVictory, isMaxLevel, bottleManager, levelManager);
+        switch (currentMode)
+        {
+            case GameMode.GM1vs1MaximumMode:
+                if (isVictory)
+                {
+                    if (isMaxLevel)
+                    {
+                        bottleManager.AddBottleVolume(1000);
+                    }
+                    else
+                    {
+                        levelManager.AddExperience(1000);
+                        bottleManager.AddBottleVolume(1000);
+                    }
+                }
+
+                break;
+
+            default:
+                if (isVictory)
+                {
+                    if (isMaxLevel)
+                    {
+                        bottleManager.AddBottleVolume(1000);
+                    }
+                    else
+                    {
+                        levelManager.AddExperience(experiencePerLoss);
+                        bottleManager.AddBottleVolume(1000);
+                    }
+                }
+                break;
+        }
     }
 
     private void RestartRound()
@@ -240,47 +274,7 @@ public class TestGameRules : GameRules
         StartCoroutine(CloseRoomJob());
     }
 
-    [Command] 
-    private void CmdAfterEndGame(GameMode currentMode, bool isVictory, bool isMaxLevel, BottleUserManager bottleManager, LevelCharacterManager levelManager) => RpcAfterEndGame(currentMode, isVictory, isMaxLevel, bottleManager, levelManager);
     [ClientRpc] private void RpcEnablePreparationAreas(float duration) => _preparationAreaManager?.PreparationAreasDisable(duration);
-
-    [ClientRpc]
-    private void RpcAfterEndGame(GameMode currentMode, bool isVictory, bool isMaxLevel, BottleUserManager bottleManager, LevelCharacterManager levelManager)
-    {
-        switch (currentMode)
-        {
-            case GameMode.GM1vs1MaximumMode:
-                if (isVictory)
-                {
-                    if (isMaxLevel)
-                    {
-                        bottleManager.AddBottleVolume(1000);
-                    }
-                    else
-                    {
-                        levelManager.AddExperience(1000);
-                        bottleManager.AddBottleVolume(1000);
-                    }
-                }
-
-                break;
-
-            default:
-                if (isVictory)
-                {
-                    if (isMaxLevel)
-                    {
-                        bottleManager.AddBottleVolume(1000);
-                    }
-                    else
-                    {
-                        levelManager.AddExperience(experiencePerLoss);
-                        bottleManager.AddBottleVolume(1000);
-                    }
-                }
-                break;
-        }
-    }
 
     protected override void OnTowerDied(Object tower)
     {
