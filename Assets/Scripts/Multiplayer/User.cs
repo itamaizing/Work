@@ -74,6 +74,7 @@ public class User : NetworkBehaviour
 
     private void InitializeManagers()
     {
+        BottleUserManager.Instance?.SetUser("User_" + _id);
         BottleUserManager.Instance?.BottleInitialize();
         LevelCharacterManager.Instance?.LevelInitialize();
     }
@@ -137,6 +138,8 @@ public class BottleUserManager
         }
 
         SaveBottleData();
+
+        OnBottlesChanged?.Invoke(_currentBottles);
     }
 
     public bool TryUseBottle()
@@ -178,8 +181,8 @@ public class BottleUserManager
             return;
         }
 
-        _currentBottles = PlayerPrefs.GetInt(_currentUser + "_Bottles", 0);
-        _currentBottleVolume = PlayerPrefs.GetFloat(_currentUser + "_BottleVolume", 0f);
+        _currentBottles = PlayerPrefs.GetInt(_currentUser + "_Bottles", _currentBottles);
+        _currentBottleVolume = PlayerPrefs.GetFloat(_currentUser + "_BottleVolume", _currentBottleVolume);
 
         Debug.Log($"Bottle data loaded for {_currentUser}. Bottles: {_currentBottles}, Volume: {_currentBottleVolume}");
 
