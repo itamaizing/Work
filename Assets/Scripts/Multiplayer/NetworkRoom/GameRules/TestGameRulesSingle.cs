@@ -23,6 +23,11 @@ public class TestGameRulesSingle : GameRules
     protected override void GameStartClient()
     {
         _preparationAreaManager?.PreparationAreasDisable(5f);
+
+        if (isLocalPlayer && TryGetComponent(out HeroComponent hero))
+        {
+            LevelCharacterManager.Instance.SetHero(hero);
+        }
     }
 
     protected override void OnTowerDied(Object tower)
@@ -45,15 +50,12 @@ public class TestGameRulesSingle : GameRules
         int winningTeam = destroyedTower.IndexTeam == 1 ? 2 : 1;
         AddScorePointFromTower(winningTeam);
 
-        // ¬осстановление башен если не была победа
         var allTowers = GameObject.FindObjectsOfType<Object>().Where(obj => obj.ObjectHealth != null && !obj.DestroyOnDeath);
         foreach (var tower in allTowers)
         {
             tower.ObjectHealth.ServerSetCurrentHealth(tower.ObjectHealth.MaxValue);
             tower.Live = true;
         }
-
-        RestartRound();
     }
 
     private void AddScorePointFromTower(int winningTeam)
@@ -75,93 +77,23 @@ public class TestGameRulesSingle : GameRules
             AfterEndGame();
             EndGame();
         }
-
-        else
-        {
-            RestartRound();
-        }
     }
 
     private void AfterEndGame()
     {
         if (!isServer) return;
-
         var bottleManager = BottleUserManager.Instance;
         var levelManager = LevelCharacterManager.Instance;
 
-        GameMode currentMode = ServerManager.Instance.CurrentGameMode;
-        bool isMaxLevel = levelManager.GetCurrentLevel() >= LevelCharacterManager.Instance.MaxLevel;
-        bool isVictory = _team1Score >= _teamMaxScore;
-
-        switch (currentMode)
-        {
-            case GameMode.GM1vs1MaximumMode:
-                if (isVictory)
-                {
-                    if (isMaxLevel)
-                    {
-                        bottleManager.AddBottleVolume(1000);
-                    }
-                    else
-                    {
-                        levelManager.AddExperience(1000);
-                        bottleManager.AddBottleVolume(1000);
-                    }
-                }
-                break;
-
-            default:
-                if (isVictory)
-                {
-                    if (isMaxLevel)
-                    {
-                        bottleManager.AddBottleVolume(1000);
-                    }
-                    else
-                    {
-                        levelManager.AddExperience(2);
-                        bottleManager.AddBottleVolume(1000);
-                    }
-                }
-                break;
-        }
-    }
-
-
-    private void RestartRound()
-    {
-        RpcEnablePreparationAreas(5f);
-
-        if (isServer)
-        {
-            List<NetworkIdentity> toDestroy = new();
-            foreach (var netObj in NetworkServer.spawned.Values)
-            {
-                if (!_players.Any(p => p.gameObject == netObj.gameObject) &&
-                    !netObj.GetComponent<TestGameRulesSingle>() &&
-                    !netObj.GetComponent<User>())
-                {
-                    toDestroy.Add(netObj);
-                }
-            }
-
-            foreach (var netObj in toDestroy)
-            {
-                if (netObj != null && netObj.isServer)
-                    NetworkServer.Destroy(netObj.gameObject);
-            }
-        }
+        int experience = 1000;
+        float bottleVolume = 1000;
 
         foreach (var player in _players)
         {
-            int spawnIndex = player.NetworkSettings.TeamIndex - 1;
-            if (_spawnPoints != null)
-            {
-                RpcTeleportPlayer(player.gameObject, _spawnPoints.GetRandomPoint(spawnIndex), _spawnPoints.GetRotate(spawnIndex));
-            }
+            TargetApplyRewards(player.connectionToClient, experience, bottleVolume);
         }
     }
-
+    
     private IEnumerator HandleTeamsAndSpawns(HeroSpawnManager spawnPoints)
     {
         yield return StartCoroutine(SplitTeams(spawnPoints));
@@ -188,14 +120,27 @@ public class TestGameRulesSingle : GameRules
         }
     }
 
-    [ClientRpc]
-    private void RpcEnablePreparationAreas(float duration)
+    [TargetRpc]
+    private void TargetApplyRewards(NetworkConnectionToClient connection, int experience, float bottleVolume)
     {
-        _preparationAreaManager?.PreparationAreasDisable(duration);
+        Debug.Log($"[Client] Received rewards: EXP={experience}, Bottles={bottleVolume}");
+
+        BottleUserManager.Instance.AddBottleVolume(bottleVolume);
+
+        if (LevelCharacterManager.Instance.TryGetCurrentHero(out var hero))
+        {
+            LevelCharacterManager.Instance.AddExperience(experience);
+            Debug.Log("[Client] Experience applied to selected hero.");
+        }
+        else
+        {
+            Debug.LogWarning("[Client] No hero set in LevelCharacterManager. Experience not applied.");
+        }
     }
 
     protected override void OnPlayerDied(Character character)
     {
         throw new System.NotImplementedException();
     }
+
 }
