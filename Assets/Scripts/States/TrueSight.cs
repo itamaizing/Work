@@ -8,16 +8,15 @@ public class TrueSight : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => new();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personMadeBuff, string skillName)
     {
-        _characterState = character;
-        _abilities = character.Character.GetComponent<SkillManager>();
-        _health = character.Character.GetComponent<Health>();
-        _personWhoMadeBuff = personWhoMadeBuff;
+        characterState = character;
+        abilities = character.Character.GetComponent<SkillManager>();
+        health = character.Character.GetComponent<Health>();
+        personWhoMadeBuff = personMadeBuff;
 
         duration = durationToExit;
         MaxStacksCount = 0;
-        CanStack = false;
 
         CheckInvisibility();
     }
@@ -29,9 +28,9 @@ public class TrueSight : AbstractCharacterState
 
     public override void ExitState()
     {
-        var character = _characterState.GetComponent<Character>();
-        if (_characterState.CheckForState(States.Invisible) || _characterState.CheckForState(States.CreeperInvisible)) LostInvisibleEnemy(character);
-        _characterState.RemoveState(this);
+        var character = characterState.GetComponent<Character>();
+        if (characterState.CheckForState(States.Invisible) || characterState.CheckForState(States.CreeperInvisible)) LostInvisibleEnemy(character);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -43,8 +42,8 @@ public class TrueSight : AbstractCharacterState
 
     private void CheckInvisibility()
     {
-        var character = _characterState.GetComponent<Character>();
-        if (_characterState.CheckForState(States.Invisible) || _characterState.CheckForState(States.CreeperInvisible)) DetectionInvisibleEnemy(character);
+        var character = characterState.GetComponent<Character>();
+        if (characterState.CheckForState(States.Invisible) || characterState.CheckForState(States.CreeperInvisible)) DetectionInvisibleEnemy(character);
     }
 
     private void DetectionInvisibleEnemy(Character invisibleEnemy)
