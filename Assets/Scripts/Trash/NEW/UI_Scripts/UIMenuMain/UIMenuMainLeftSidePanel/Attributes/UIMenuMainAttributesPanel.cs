@@ -73,7 +73,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
         }
         
         SaveManager.Instance.LoadAttributePoints();
-        _attributesText.ChangeKey(_attributeSystem.Points);
+        //_attributesText.ChangeKey(_attributeSystem.Points);
     }
     
     private void ShowDescription(string text)
