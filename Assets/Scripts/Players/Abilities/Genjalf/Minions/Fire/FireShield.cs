@@ -7,8 +7,8 @@ using UnityEngine.SceneManagement;
 public class FireShield : MoveSkill
 {
     [SerializeField] private Shield _shieldPref;
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellDaley");
-    protected override int AnimTriggerCast => Animator.StringToHash("Attack04");
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => Animator.StringToHash("FireShield");
     protected override bool IsCanCast => CheckCanCast();
 
     private float _clickRadius = 0.5f;
@@ -18,6 +18,16 @@ public class FireShield : MoveSkill
     [SerializeField] private float _baffDuration = 9;
 
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
+    
+    public void AnimCastFireShield()
+    {
+        AnimStartCastCoroutine();
+    }
+
+    public void AnimFireShieldEnd()
+    {
+        AnimCastEnded();
+    }
 
     private bool CheckCanCast()
     {

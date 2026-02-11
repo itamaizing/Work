@@ -129,6 +129,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 20353759858711181, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 210309098473444930, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 242370089425684122, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: _hero
       value: 
@@ -156,6 +164,14 @@ PrefabInstance:
     - target: {fileID: 1021000915379606889, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: -44.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1215856417207880914, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1397155178013366936, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1780925315992858912, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: m_StoppingDistance
@@ -187,12 +203,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2057095471850671928, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: _skills.Array.size
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2057095471850671928, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: '_skills.Array.data[1]'
       value: 
       objectReference: {fileID: 2855724587031224958}
+    - target: {fileID: 2057095471850671928, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      propertyPath: '_skills.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1168176175291536109}
+    - target: {fileID: 2057095471850671928, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      propertyPath: '_skills.Array.data[3]'
+      value: 
+      objectReference: {fileID: 2919457201291660018}
     - target: {fileID: 2335912879836011194, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: m_Name
       value: Minion Water Elemental Variant
@@ -417,6 +441,10 @@ PrefabInstance:
       propertyPath: _enemyCheckRadius
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4033107891956484632, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5326594176156712067, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -431,6 +459,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5949187555122336416, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5985992756387353149, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6400541073820962625, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
@@ -455,6 +487,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6772620451952565277, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7200355258018103891, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7205074397723696916, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7327094927191176916, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
@@ -500,6 +540,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2335912879836011194, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       insertIndex: -1
       addedObject: {fileID: 806564155690012044}
+    - targetCorrespondingSourceObject: {fileID: 2335912879836011194, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1168176175291536109}
+    - targetCorrespondingSourceObject: {fileID: 2335912879836011194, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2919457201291660018}
   m_SourcePrefab: {fileID: 100100000, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
 --- !u!114 &1328203006657971920 stripped
 MonoBehaviour:
@@ -629,6 +675,7 @@ MonoBehaviour:
   maxCounter: 0
   _agent: {fileID: 6215928600746481535}
   _effect: {fileID: 5728214450654004770}
+  _breakCastDistance: 0.5
 --- !u!114 &6129426252062776704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -653,6 +700,120 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 334bc5121d931b94ba1863c8ffe5a467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1168176175291536109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7970984732438363365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e567e427dab340a419bb31d0d066ce5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MagicWaterPassive
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
+  _abilityInfo: {fileID: 11400000, guid: b1db6814ffb9fb947a3afe2a14da9084, type: 2}
+  _isSubjectToGlobalCooldownTime: 0
+  _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
+  _castDeley: 0
+  _damageValue: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _skillType: 0
+  _moving: 0
+  autoAttack: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _autoAttackDelay: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
+--- !u!114 &2919457201291660018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7970984732438363365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a96731efc8053ba489763cbb6ab005ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CoolingActive
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
+  _abilityInfo: {fileID: 11400000, guid: 064e5b38aa1d521428c2e5c4e1572ce0, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 18
+  _castDeley: 2
+  _damageValue: 0
+  _abilitySchool: 3
+  _abilityForm: 1
+  _damageType: 0
+  _attackRangeType: 0
+  _skillType: 0
+  _moving: 0
+  autoAttack: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 1
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _autoAttackDelay: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
 --- !u!1001 &5708473038929150688
 PrefabInstance:
   m_ObjectHideFlags: 0

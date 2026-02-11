@@ -609,6 +609,7 @@ MonoBehaviour:
   maxCounter: 0
   _agent: {fileID: 8521629497404255749}
   _shieldPref: {fileID: 1158249924082485831, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+  _baffDuration: 9
 --- !u!4 &6980196994501872204 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1021000915379606889, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}

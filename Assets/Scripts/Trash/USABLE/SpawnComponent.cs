@@ -39,7 +39,7 @@ public class SpawnComponent : NetworkBehaviour
         SpawnCharacter(_units[index], Vector3.forward + Vector3.zero, Quaternion.identity);
     }
 
-    [Command] // не стал убирать метод с мейна, хотя мой ниже такой же, но сохраняет вращение и спавнит не по индексу, а напрямую берет префаб
+    [Command] // РЅРµ СЃС‚Р°Р» СѓР±РёСЂР°С‚СЊ РјРµС‚РѕРґ СЃ РјРµР№РЅР°, С…РѕС‚СЏ РјРѕР№ РЅРёР¶Рµ С‚Р°РєРѕР№ Р¶Рµ, РЅРѕ СЃРѕС…СЂР°РЅСЏРµС‚ РІСЂР°С‰РµРЅРёРµ Рё СЃРїР°РІРЅРёС‚ РЅРµ РїРѕ РёРЅРґРµРєСЃСѓ, Р° РЅР°РїСЂСЏРјСѓСЋ Р±РµСЂРµС‚ РїСЂРµС„Р°Р±
     public void CmdSpawnUnitInPoint(Vector3 position, int index)
     {
         if (_characterPrefabs == null || _characterPrefabs.Count == 0) return;

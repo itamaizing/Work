@@ -7,6 +7,8 @@ public class StreamOfIcyWater : MoveSkill
 {
     [SerializeField] private GameObject _effect;
 
+    [SerializeField] private float _breakCastDistance = 0.5f;
+
     //private Character _target;
 
     protected override int AnimTriggerCastDelay => 0;
@@ -55,6 +57,8 @@ public class StreamOfIcyWater : MoveSkill
         float time = 0;
         CmdSetActiveParticle(true);
 
+        float initialDistance = Vector3.Distance(transform.position, GetTargetCharacter().Position);
+
         while (time < CastStreamDuration)
         {
             _effect.transform.localScale = new Vector3(_effect.transform.localScale.x, _effect.transform.localScale.y, Vector3.Distance(transform.position, GetTargetCharacter().Position));
@@ -67,12 +71,17 @@ public class StreamOfIcyWater : MoveSkill
                 PhysicAttackType = AttackRangeType,
             };
             CmdApplyDamage(damage, GetTargetCharacter().gameObject);
-			GetTargetCharacter().CharacterState.CmdAddState(States.Frosting, 6, 0, Hero.gameObject, name);
+			GetTargetCharacter().CharacterState.CmdAddState(States.Cooling, 6, 0, Hero.gameObject, name);
 
             time += _manaCostRate;
 
             yield return null;
+
+            if (Vector3.Distance(transform.position, GetTargetCharacter().Position) > initialDistance + _breakCastDistance)
+                break;
         }
+
+        TryCancel(true);
         ClearData();
     }
 

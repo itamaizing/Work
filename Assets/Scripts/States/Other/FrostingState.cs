@@ -37,7 +37,7 @@ public class FrostingState : AbstractCharacterState
 		_audioSource = character.GetComponent<AudioSource>();
 
 		_damageOnStart = _characterState.Character.Health.SumDamageTaken;
-		_characterState.Character.Move.CanMove = false;
+		//_characterState.Character.Move.CanMove = false;
 		_characterState.Character.Move.LookAtTransform(_characterState.gameObject.transform);
 
 		if (character.TryGetComponent<Character>(out var ability))
@@ -48,7 +48,7 @@ public class FrostingState : AbstractCharacterState
 			{
 				if (abil.AbilityForm == AbilityForm.Physical)
 				{
-					abil.Buff.CastSpeed.ReductionPercentage(.5f);
+					abil.Buff.CastSpeed.ReductionPercentage(.05f);
 				}
 			}
 		}
