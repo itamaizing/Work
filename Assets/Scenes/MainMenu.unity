@@ -809,8 +809,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _managers:
-  - {fileID: 572863234}
-  - {fileID: 572863234}
+  - {fileID: 572863239}
+  - {fileID: 572863239}
   - {fileID: 572863234}
   _heroList:
   - {fileID: 8319872899575431858, guid: e8f214e8238220749bbf66c7cca6a334, type: 3}
@@ -891,7 +891,7 @@ MonoBehaviour:
   _gameMode: 0
   _scene: Assets/Scenes/TestRoom3DNew.unity
   _maxPlayers: 1
-  _gameRulesPref: {fileID: 2624942693930062612, guid: 9c3ab8f1c5352c34ea72aeec43bb21be, type: 3}
+  _gameRulesPref: {fileID: 669276037884193687, guid: 51af385f54fff2443b84b5bdc9b030ad, type: 3}
 --- !u!1 &602871141
 GameObject:
   m_ObjectHideFlags: 0
@@ -2644,6 +2644,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7151836980086484052, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
       propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7492621429872727071, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
+      propertyPath: _itemMode
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7589636911861529976, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
