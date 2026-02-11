@@ -61,9 +61,6 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
             if (_talentSystem.Level != null) _talentSystem.Level.LVLUped -= OnLevelUp;
             LevelCharacterManager.Instance.OnLevelChanged -= OnLevelUp;
         }
-
-        if (_talentSystem != null)
-            if (_talentSystem.Level != null) _talentSystem.Level.LVLUped -= OnLevelUp;
     }
 
     private void OnLevelUp(int newLevel)
