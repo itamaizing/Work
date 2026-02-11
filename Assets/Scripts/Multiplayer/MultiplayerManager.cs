@@ -19,7 +19,7 @@ public class MultiplayerManager : NetworkManager
     
     private int _clientCount;
     private int _currentHeroIndex;
-    private GameMode _currentGameMod = GameMode.GMTest;
+    private GameMode _currentGameMod = GameMode.GMSingle;
     
     private static MultiplayerManager _instance;
     public static MultiplayerManager Instance => _instance;

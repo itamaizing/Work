@@ -747,6 +747,7 @@ GameObject:
   - component: {fileID: 572863234}
   - component: {fileID: 572863233}
   - component: {fileID: 572863238}
+  - component: {fileID: 572863239}
   m_Layer: 0
   m_Name: RoonManager
   m_TagString: Untagged
@@ -872,6 +873,25 @@ MonoBehaviour:
   _scene: Assets/Scenes/TestRoom3DNew.unity
   _maxPlayers: 2
   _gameRulesPref: {fileID: 2955064748104778921, guid: 2ae4dc3e896cc6040afe290737e398a9, type: 3}
+--- !u!114 &572863239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 572863232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 029dfd1dbddeef94289b197cea74ffd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NetworkRoomsManager
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _gameMode: 0
+  _scene: Assets/Scenes/TestRoom3DNew.unity
+  _maxPlayers: 1
+  _gameRulesPref: {fileID: 2624942693930062612, guid: 9c3ab8f1c5352c34ea72aeec43bb21be, type: 3}
 --- !u!1 &602871141
 GameObject:
   m_ObjectHideFlags: 0
