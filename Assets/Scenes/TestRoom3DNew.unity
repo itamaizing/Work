@@ -320628,7 +320628,7 @@ Transform:
   m_GameObject: {fileID: 2813502122101990825}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071066, y: -0.0000000027939677, z: 0.0000000010477379, w: 0.707107}
-  m_LocalPosition: {x: 0.80705166, y: 35.742344, z: -1.0361404}
+  m_LocalPosition: {x: 0, y: 35.742344, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -321261,7 +321261,7 @@ Transform:
   m_GameObject: {fileID: 7980821659159193853}
   serializedVersion: 2
   m_LocalRotation: {x: 0.70710677, y: -0, z: -2.220446e-16, w: 0.7071068}
-  m_LocalPosition: {x: 0.80705166, y: 35.742348, z: 4.189993}
+  m_LocalPosition: {x: 0, y: 25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -322447,6 +322447,7 @@ GameObject:
   - component: {fileID: 5702245875008427790}
   - component: {fileID: 2272119436268379564}
   - component: {fileID: 7980821659159193854}
+  - component: {fileID: 7980821659159193855}
   m_Layer: 0
   m_Name: MinimapCamera
   m_TagString: Untagged
@@ -322498,6 +322499,19 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &7980821659159193855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7980821659159193853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18367776cd44a63418c8187f069bb254, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MiniMapFollow
+  target: {fileID: 4456171774845196309}
 --- !u!1 &8240090945397829985
 GameObject:
   m_ObjectHideFlags: 0
@@ -322743,6 +322757,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraBoxLimiter
   targetCamera: {fileID: 4456171774845196309}
   boundsCollider: {fileID: 1340252169}
+  softZone: 0.5
+  smoothSpeed: 5
 --- !u!1 &9045081165718043072
 GameObject:
   m_ObjectHideFlags: 0
