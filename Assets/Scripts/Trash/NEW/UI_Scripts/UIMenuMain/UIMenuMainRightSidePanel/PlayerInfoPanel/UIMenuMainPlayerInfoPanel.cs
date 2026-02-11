@@ -16,15 +16,8 @@ public class UIMenuMainPlayerInfoPanel : MonoBehaviour
     {
         if (BottleUserManager.Instance != null)
         {
-            SetBottleInfo(BottleUserManager.Instance.GetCurrentBottles());
-        }
-    }
-
-    private void OnEnable()
-    {
-        if (BottleUserManager.Instance != null)
-        {
             BottleUserManager.Instance.OnBottlesChanged += SetBottleInfo;
+            SetBottleInfo(BottleUserManager.Instance.GetCurrentBottles());
         }
     }
 

@@ -89,9 +89,9 @@ public class TestGameRulesSingle : GameRules
         float bottleVolume = 1000;
 
         foreach (var player in _players)
-        {
-            TargetApplyRewards(player.connectionToClient, experience, bottleVolume);
-        }
+{
+    TargetApplyRewards(player.connectionToClient, experience, bottleVolume);
+}
     }
     
     private IEnumerator HandleTeamsAndSpawns(HeroSpawnManager spawnPoints)
@@ -123,8 +123,6 @@ public class TestGameRulesSingle : GameRules
     [TargetRpc]
     private void TargetApplyRewards(NetworkConnectionToClient connection, int experience, float bottleVolume)
     {
-        Debug.Log($"[Client] Received rewards: EXP={experience}, Bottles={bottleVolume}");
-
         BottleUserManager.Instance.AddBottleVolume(bottleVolume);
 
         if (LevelCharacterManager.Instance.TryGetCurrentHero(out var hero))
