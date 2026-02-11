@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class WarmingUpState : AbstractCharacterState
 {
-	private float _duration;
 	private const float BonusPerStack = 1f;
 
 	public AbilityForm canceledForm;
@@ -22,26 +21,23 @@ public class WarmingUpState : AbstractCharacterState
 	public WarmingUpState()
 	{
 		MaxStacksCount = 3;
-		CurrentStacksCount = 1;
+		currentStacksCount = 1;
 	}
 
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		_characterState = character;
-		_duration = durationToExit;
-
 		if (character.TryGetComponent<Character>(out var ability))
 		{
-			_abilities = ability.Abilities;
-			_abilities.SwitchAvaliable(canceledForm, false);
+			abilities = ability.Abilities;
+			abilities.SwitchAvaliable(canceledForm, false);
 
-			foreach (var skill in _abilities.Abilities)
+			foreach (var skill in abilities.Abilities)
 			{
 				if (skill.AbilityForm == AbilityForm.Physical && skill.AnimTriggerCastPublic != 0)
 				{
 					_affectedSkills.Add(skill);
-					skill.ExtraAnimationSpeedMultiplier = 1 + BonusPerStack * CurrentStacksCount;
+					skill.ExtraAnimationSpeedMultiplier = 1 + BonusPerStack * currentStacksCount;
 				}
 			}
 		}
@@ -50,14 +46,12 @@ public class WarmingUpState : AbstractCharacterState
 			Debug.LogWarning($"[WarmingUpState] Character {character.name} doesn't have abilities.");
 		}
 
-		CurrentStacksCount = 1;
+		currentStacksCount = 1;
 	}
 
 	public override void UpdateState()
 	{
-		_duration -= Time.deltaTime;
-
-		if (_duration <= 0f || turnOff)
+		if (turnOff)
 		{
 			ExitState();
 		}
@@ -65,7 +59,7 @@ public class WarmingUpState : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		_characterState.RemoveState(this);
+		characterState.RemoveState(this);
 
 		foreach (var skill in _affectedSkills)
 		{
@@ -75,27 +69,27 @@ public class WarmingUpState : AbstractCharacterState
 			}
 		}
 
-		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null)
+		if (!characterState.Check(StatusEffect.Ability) && abilities != null)
 		{
-			_abilities.SwitchAvaliable(canceledForm, true);
+			abilities.SwitchAvaliable(canceledForm, true);
 		}
 
-		CurrentStacksCount = 1;
+		currentStacksCount = 1;
 	}
 
 	public override bool Stack(float time)
 	{
-		_duration = time;
+		duration = time;
 
-		if (CurrentStacksCount < MaxStacksCount)
+		if (currentStacksCount < MaxStacksCount)
 		{
-			CurrentStacksCount++;
+			currentStacksCount++;
 
 			foreach (var skill in _affectedSkills)
 			{
 				if (skill != null)
 				{
-					skill.ExtraAnimationSpeedMultiplier = 1 + BonusPerStack * CurrentStacksCount;
+					skill.ExtraAnimationSpeedMultiplier = 1 + BonusPerStack * currentStacksCount;
 				}
 			}
 		}

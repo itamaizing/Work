@@ -72,7 +72,7 @@ public class ScratchClaws : Skill
     {
         if (_hero?.Move != null)
         {
-            Hero.Move.CanMove = true;
+            Hero.Move.SetCanMove(true);
             Hero.Move.StopLookAt();
         }
 
@@ -143,7 +143,7 @@ public class ScratchClaws : Skill
 
         if (_hero?.Move != null)
         {
-            Hero.Move.CanMove = true;
+            Hero.Move.SetCanMove(true);
             Hero.Move.StopLookAt();
         }
 
@@ -160,7 +160,7 @@ public class ScratchClaws : Skill
 
         Vector3 destination = GetApproachPointNearEnemy(target);
 
-        Hero.Move.CanMove = false;
+        Hero.Move.SetCanMove(false);
 
         NavMeshPath path = new NavMeshPath();
 
@@ -168,7 +168,7 @@ public class ScratchClaws : Skill
 
         if (!hasPath || path.status != NavMeshPathStatus.PathComplete)
         {
-            Hero.Move.CanMove = true;
+            Hero.Move.SetCanMove(true);
             yield break;
         }
 
@@ -215,7 +215,7 @@ public class ScratchClaws : Skill
             if (interrupted) break;
         }
 
-        Hero.Move.CanMove = true;
+        Hero.Move.SetCanMove(true);
 
         scraderClawsAnimCast();
     }

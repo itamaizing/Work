@@ -57,7 +57,7 @@ public class FlowOfLight : Skill
 
     public void MoveFlowLight()
     {
-        _hero.Move.CanMove = false;
+        _hero.Move.SetCanMove(false);
         _hero.Move.StopMoveAndAnimationMove();
     }
 
@@ -70,7 +70,7 @@ public class FlowOfLight : Skill
     {
         if (_hero != null && _hero.Move != null)
         {
-            Hero.Move.CanMove = true;
+            Hero.Move.SetCanMove(true);
         }
     }
 

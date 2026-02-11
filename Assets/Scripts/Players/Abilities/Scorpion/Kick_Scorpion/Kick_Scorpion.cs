@@ -62,7 +62,7 @@ public class Kick_Scorpion : Skill
         ClearTempTarget();
         //_target = null;
         Hero.Move.StopLookAt();
-        _hero.Move.CanMove = true;
+        _hero.Move.SetCanMove(true);
         AnimCastEnded();
         if (_hitsInRowCoroutine != null) StopCoroutine(_hitsInRowCoroutine);
     }
@@ -80,7 +80,7 @@ public class Kick_Scorpion : Skill
 
 
         _hero.Move.StopMoveAndAnimationMove();
-        _hero.Move.CanMove = false;
+        _hero.Move.SetCanMove(false);
 
         Vector3 direction = target.transform.position - _hero.transform.position;
         bool badDirection = float.IsInfinity(target.transform.position.x) || direction.sqrMagnitude < MinDirectionSqrMagnitude;
@@ -96,7 +96,7 @@ public class Kick_Scorpion : Skill
 
     public void Kick_ScorpionMoveTrue()
     {
-        _hero.Move.CanMove = true;
+        _hero.Move.SetCanMove(true);
         Hero.Move.StopLookAt();
     }
 

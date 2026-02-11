@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealingSlime : AbstractCharacterState
+public class HealingSlime :  AbstractCharacterState
 {
     public override States State => States.HealingSlime;
     public override StateType Type => StateType.Magic;
@@ -27,7 +27,7 @@ public class HealingSlime : AbstractCharacterState
     {
         _timer = 0f;
         _infinite = false;
-        _remaining = Mathf.Clamp(CurrentStacksCount, 1, 999f);
+        _remaining = Mathf.Clamp(currentStacksCount, 1, 999f);
     }
 
     public void SwitchToInfinite()
@@ -39,11 +39,9 @@ public class HealingSlime : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
-        _characterState = character;
-        _personWhoMadeBuff = caster;
-        _health = character.Character.Health;
+        health = character.Character.Health;
 
-        CurrentStacksCount = 0;
+        currentStacksCount = 0;
         SwitchToInfinite();
         Stack(0);
     }
@@ -57,26 +55,26 @@ public class HealingSlime : AbstractCharacterState
         {
             _timer = 0f;
 
-            if (CurrentStacksCount > 0)
+            if (currentStacksCount > 0)
             {
-                CurrentStacksCount--;
-                float removeValue = Mathf.Floor(_health.MaxValue * PercentPerStack);
-                _health.AddMax(-removeValue);
-                _characterState.StateIcons.RemoveIconCount();
+                currentStacksCount--;
+                float removeValue = Mathf.Floor(health.MaxValue * PercentPerStack);
+                health.AddMax(-removeValue);
+                characterState.StateIcons.RemoveIconCount();
             }
 
             _remaining -= 1f;
-            if (_remaining <= 0f || CurrentStacksCount <= 0) ExitState();
+            if (_remaining <= 0f || currentStacksCount <= 0) ExitState();
         }
     }
 
     public override bool Stack(float _)
     {
-        if (CurrentStacksCount >= MaxStacksCount) return false;
+        if (currentStacksCount >= MaxStacksCount) return false;
 
-        CurrentStacksCount++;
-        float addValue = Mathf.Floor(_health.MaxValue * PercentPerStack);
-        _health.AddMax(addValue);
+        currentStacksCount++;
+        float addValue = Mathf.Floor(health.MaxValue * PercentPerStack);
+        health.AddMax(addValue);
 
         if (!_infinite) SwitchToInfinite();
         return true;
@@ -84,12 +82,12 @@ public class HealingSlime : AbstractCharacterState
 
     public override void ExitState()
     {
-        if (CurrentStacksCount > 0)
+        if (currentStacksCount > 0)
         {
-            float removeValue = Mathf.Floor(_health.MaxValue * PercentPerStack * CurrentStacksCount);
-            _health.AddMax(-removeValue);
+            float removeValue = Mathf.Floor(health.MaxValue * PercentPerStack * currentStacksCount);
+            health.AddMax(-removeValue);
         }
 
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 }

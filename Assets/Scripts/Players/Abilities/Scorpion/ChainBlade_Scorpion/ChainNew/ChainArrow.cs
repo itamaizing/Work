@@ -32,7 +32,7 @@ public class ChainArrow : Projectiles
         if (_skill is ChainBlade chain)
         {
             chain.ChainBladeCastEnd(false);
-            chain.Hero.Move.CanMove = true;
+            chain.Hero.Move.SetCanMove(true);
         }
     }
 
@@ -181,7 +181,7 @@ public class ChainArrow : Projectiles
         if (_skill is ChainBlade chain)
         {
             chain.Hero.Move.IsMoveBlocked = false;
-            chain.Hero.Move.CanMove = false;
+            chain.Hero.Move.SetCanMove(false);
         }
 
         Debug.Log($"StartReturn Speed: {_speed}");

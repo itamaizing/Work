@@ -1,4 +1,5 @@
 using Mirror;
+using Org.BouncyCastle.Asn1.Cms;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,11 +19,14 @@ public class Health : Resource, IDamageable, IHealingable
 
     private List<IDamageable> _shields = new List<IDamageable>();
 	[SyncVar] private float _sumDamageTaken = 0;
-    private Coroutine _dOTDamageAnimJob;
-    private float _dOTDamageAnimDuration = 0.1f;
     private float _totalMaxAbsorption = 0;
     private float _blockChance;
     private bool _isDot = false;
+
+    private Attributes _physicResist;
+    private Attributes _magResist;
+    private Attributes _evasionPhysic;
+    private Attributes _evasionMagic;
 
     public Bar barCharacter { get => bar; }
     public float BlockChance { get => _blockChance; set => _blockChance = value; }
@@ -59,15 +63,32 @@ public class Health : Resource, IDamageable, IHealingable
 
     public bool IsDot { get => _isDot; set => _isDot = value; }
 
-    public override void Initialize(float health, float hpRegen, float hpRegenDelay, CharacterData data)
-    {
-        base.Initialize(health, hpRegen, hpRegenDelay, data);
+    /* public override void Initialize(float health, float hpRegen, float hpRegenDelay, CharacterData data, Attributes attribute)
+     {
+         base.Initialize(health, hpRegen, hpRegenDelay, data, attribute);
 
-        _defPhysDamage = data.GetAttributeValue(AttributeNames.PhysicResist);
+         _defPhysDamage = data.GetAttributeValue(AttributeNames.PhysicResist);
+         _defMagDamage = data.GetAttributeValue(AttributeNames.MagicResist);
+         _resistMagDamage = data.GetAttributeValue(AttributeNames.MagicEvade);
+         _evadeMeleeDamage = data.GetAttributeValue(AttributeNames.MeleeEvade);
+         _evadeRangeDamage = data.GetAttributeValue(AttributeNames.RangeEvade);
+     }*/
+    public void Initialize(Attributes maxValue, Attributes regenValue, CharacterData data, Attributes physicResist, Attributes magResist, Attributes evasionPhysic, Attributes evasionMagic)
+    {
+        Debug.Log("Init hp " + maxValue.GetValue());
+
+        base.Initialize(maxValue, regenValue, data);
+
+        _physicResist = physicResist;
+        _magResist = magResist;
+        _evasionPhysic = evasionPhysic;
+        _evasionMagic = evasionMagic;
+
+        /*_defPhysDamage = data.GetAttributeValue(AttributeNames.PhysicResist);
         _defMagDamage = data.GetAttributeValue(AttributeNames.MagicResist);
         _resistMagDamage = data.GetAttributeValue(AttributeNames.MagicEvade);
         _evadeMeleeDamage = data.GetAttributeValue(AttributeNames.MeleeEvade);
-        _evadeRangeDamage = data.GetAttributeValue(AttributeNames.RangeEvade);
+        _evadeRangeDamage = data.GetAttributeValue(AttributeNames.RangeEvade);*/
     }
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
@@ -167,12 +188,6 @@ public class Health : Resource, IDamageable, IHealingable
     {
         _evadeMeleeDamage = value;
         _evadeRangeDamage = value;
-    }
-
-    public void SetHp(float current, float max)
-    {
-        CurrentValue = current;
-        MaxValue = max;
     }
 
     #region HookMethods

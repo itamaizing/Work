@@ -18,13 +18,13 @@ public class InnerDarkness : AbstractCharacterState
     public InnerDarkness()
     {
         MaxStacksCount = 6;
-        CurrentStacksCount = 1;
+        currentStacksCount = 1;
     }
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
-        _personWhoMadeBuff = personWhoMadeBuff;
+        characterState = character;
+        base.personWhoMadeBuff = personWhoMadeBuff;
         _durationRemaining = durationToExit;
         var terrifyingElfAura = personWhoMadeBuff.GetComponent<TerrifyingElfAura>();
 
@@ -54,21 +54,21 @@ public class InnerDarkness : AbstractCharacterState
 
     public override void ExitState()
     {
-        _characterState.RemoveState(this);
-        CurrentStacksCount = 1;
+        characterState.RemoveState(this);
+        currentStacksCount = 1;
     }
 
     public override bool Stack(float time)
     {
-        Debug.Log($"CurrentStacksCount: {CurrentStacksCount}");
+        Debug.Log($"CurrentStacksCount: {currentStacksCount}");
 
-        if(CurrentStacksCount < MaxStacksCount)
+        if(currentStacksCount < MaxStacksCount)
         {
             AddNewStack(time);
             return true;
         }
 
-        else if (CurrentStacksCount == MaxStacksCount)
+        else if (currentStacksCount == MaxStacksCount)
         {
             UpdateDurationForMaxStacks(time);
             return false;
@@ -79,20 +79,20 @@ public class InnerDarkness : AbstractCharacterState
 
     private void AddNewStack(float time)
     {
-        CurrentStacksCount++;
+        currentStacksCount++;
 
-        if (CurrentStacksCount == MaxStacksCount) CmdStateFear();
+        if (currentStacksCount == MaxStacksCount) CmdStateFear();
 
-        _durationRemaining = time - (CurrentStacksCount - 1) * TimeDecreasePerStack;
+        _durationRemaining = time - (currentStacksCount - 1) * TimeDecreasePerStack;
     }
 
     private void UpdateDurationForMaxStacks(float time)
     {
-        _durationRemaining = time - (CurrentStacksCount - 1) * TimeDecreasePerStack;
+        _durationRemaining = time - (currentStacksCount - 1) * TimeDecreasePerStack;
         CmdStateFear();
         Debug.Log("обновление при максимальном стаке");
     }
 
     [Command] private void CmdStateFear() => ClientRpcStateFear();
-    [ClientRpc] private void ClientRpcStateFear() { _characterState.AddStateLogic(States.Fear, Random.Range(0.7f, 1.4f), 0f, Schools.None, _personWhoMadeBuff.gameObject, null); }
+    [ClientRpc] private void ClientRpcStateFear() { characterState.AddStateLogic(States.Fear, Random.Range(0.7f, 1.4f), 0f, Schools.None, personWhoMadeBuff.gameObject, null); }
 }

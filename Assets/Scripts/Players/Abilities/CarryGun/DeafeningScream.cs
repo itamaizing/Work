@@ -33,7 +33,7 @@ public class DeafeningScream : Skill
     {
         Hero.Animator.applyRootMotion = false;
         _playerLinks.Move.StopLookAt();
-        Hero.Move.CanMove = true;
+        Hero.Move.SetCanMove(true);
         _isCanCancle = true;
     }
 
@@ -89,7 +89,7 @@ public class DeafeningScream : Skill
         if (_hero == null || _hero.Move == null) return;
 
         _hero.Move.StopMoveAndAnimationMove();
-        _hero.Move.CanMove = false;
+        _hero.Move.SetCanMove(false);
     }
 
     public void DeafeningScreamCast()

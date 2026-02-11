@@ -13,13 +13,13 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
     [SerializeField] private bool _isMainMenu = true;
 
     private List<UIMenuMainTalentsPanelGroup> ItemsPool = new();
-    
+
     private TalentSystem _talentSystem;
 
     public void Show(TalentSystem talentSystem, bool isGameUI, bool isInteractable = true)
     {
         ResetPanel();
-        
+
         _talentSystem = talentSystem;
 
         if (!_isMainMenu)
@@ -32,7 +32,7 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
         foreach (var data in _talentSystem.TalentsGroups)
         {
             var panel = Instantiate(_talentsPanelGroup, _itemsParent);
-            
+
             panel.SetPanel(data, _attributesPanel, isGameUI, isInteractable);
 
             panel.OnShowPanelGroup += HidePanels;
@@ -61,6 +61,9 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
             if (_talentSystem.Level != null) _talentSystem.Level.LVLUped -= OnLevelUp;
             LevelCharacterManager.Instance.OnLevelChanged -= OnLevelUp;
         }
+
+        if (_talentSystem != null)
+            if (_talentSystem.Level != null) _talentSystem.Level.LVLUped -= OnLevelUp;
     }
 
     private void OnLevelUp(int newLevel)
@@ -98,7 +101,7 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
     private void ResetPanel()
     {
         if (ItemsPool.Count <= 0) return;
-        
+
         foreach (var attribute in ItemsPool)
         {
             attribute.Destroy();

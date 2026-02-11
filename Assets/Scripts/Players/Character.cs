@@ -8,6 +8,7 @@ using Mirror;
 public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, ITargetable
 {
 	[SerializeField] private CharacterData _playerData;
+	[SerializeField] private AttributeSystem _attributeSystem;
 	[SerializeField] private UserNetworkSettings _networkSettings; 
 	[SerializeField] private Rigidbody _rigidbody;
 	[SerializeField] private Collider _collider;
@@ -57,6 +58,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
     public Animator Animator => _animator;
 	public TargetSeeker TargetSeeker => _targetSeeker;
     public NetworkAnimator NetworkAnimator => _networkAnimator;
+    public AttributeSystem AttributeSystem => _attributeSystem;
 	public Character CharacterParent
 	{
 		get => _characterParent;
@@ -123,20 +125,21 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 
     public virtual void Initialize()
 	{
-		Move.Initialize(Data.GetAttributeValue(AttributeNames.Speed), Rigidbody , true);
+        AttributeSystem.Init(Data);
+        Move.Initialize(Rigidbody , AttributeSystem.MoveSpeed, true);
 		CharacterState.Initialize(this);
 		SelectComponent.Initialize(Move,Abilities,UIComponent);
 		//_visionComponent.VisionRange = Data.GetAttributeValue(AttributeNames.VisionRadius);
 
 		foreach (var resource in Resources)
 		{
-			if (resource.Type == ResourceType.Health)
+            /*if (resource.Type == ResourceType.Health)
 			{
 				resource.Initialize(
 					 Data.GetAttributeValue(AttributeNames.Health), 
 					Data.GetAttributeValue(AttributeNames.HpRegen), 
 					Data.GetAttributeValue(AttributeNames.HpRegenDelay), 
-					Data);
+					Data, AttributeSystem.Health);
 			}
 			if (resource.Type == ResourceType.Energy)
 			{
@@ -144,7 +147,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 					 Data.GetAttributeValue(AttributeNames.Energy), 
 					Data.GetAttributeValue(AttributeNames.EnergyRegen), 
 					Data.GetAttributeValue(AttributeNames.EnergyRegenDelay), 
-					Data);
+					Data, AttributeSystem.Resourse);
 			}
 			if (resource.Type == ResourceType.Mana)
 			{
@@ -152,7 +155,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 					 Data.GetAttributeValue(AttributeNames.Mana), 
 					Data.GetAttributeValue(AttributeNames.ManaRegen), 
 					Data.GetAttributeValue(AttributeNames.ManaRegenDelay), 
-					Data);
+					Data, AttributeSystem.Resourse);
 			}
 			if (resource.Type == ResourceType.Rune)
 			{
@@ -160,9 +163,30 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 					 Data.GetAttributeValue(AttributeNames.Rune), 
 					Data.GetAttributeValue(AttributeNames.RuneRegen), 
 					Data.GetAttributeValue(AttributeNames.RuneRegenDelay), 
-					Data);
-			}
-		}
+					Data, AttributeSystem.Resourse);
+			}*/
+            if (resource.Type == ResourceType.Health)
+            {
+				Health hp = (Health)resource;
+                hp.Initialize(
+                     AttributeSystem.Health, AttributeSystem.HpRegen, Data, AttributeSystem.PhysicResist, AttributeSystem.MagicResist, AttributeSystem.PhysicEvade, AttributeSystem.MagicEvade);
+            }
+            if (resource.Type == ResourceType.Energy)
+            {
+                resource.Initialize(
+                     AttributeSystem.Resourse, AttributeSystem.ResourseRegen, Data);
+            }
+            if (resource.Type == ResourceType.Mana)
+            {
+                resource.Initialize(
+                     AttributeSystem.Resourse, AttributeSystem.ResourseRegen, Data);
+            }
+            if (resource.Type == ResourceType.Rune)
+            {
+                resource.Initialize(
+                     AttributeSystem.Resourse, AttributeSystem.ResourseRegen, Data);
+            }
+        }
 
 		Health.Died += AddDeadCounter;
 	}

@@ -14,7 +14,7 @@ public class Curse : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		_characterState = character;
+		characterState = character;
 		_durationToExit = durationToExit;
 		//if(character.personWhoShoted != null)
 		//_personWhoShooted = character.personWhoShoted;
@@ -31,7 +31,7 @@ public class Curse : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		_characterState.RemoveState(this);
+		characterState.RemoveState(this);
 	}
 
 	public override bool Stack(float time)

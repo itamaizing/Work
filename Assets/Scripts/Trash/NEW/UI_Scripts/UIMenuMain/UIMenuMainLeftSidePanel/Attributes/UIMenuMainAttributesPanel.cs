@@ -10,27 +10,29 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     [SerializeField] private TMProLocalizer _attributesText;
     [SerializeField] private AttributeDescriptionPanel _descriptionPanel;
 
-    private AttributeGroup _attributeGroup;
+    private AttributeSystem _attributeSystem;
     
     private List<UIMenuMainAttributesPanelItem> _attributes = new ();
 
-    public void Show(AttributeGroup attributeGroup)
+    public void Show(Character hero)
     {
-        _attributeGroup = attributeGroup;
-        
+        _attributeSystem = new AttributeSystem();
+        _attributeSystem.Init2(hero.Data);
+
         ResetPanel();
 
-        foreach (var item in _attributeGroup.AttributeData.Where(o=> o.IsVisible))
+        foreach (var item in _attributeSystem.Attributes)
         {
             var attribute = Instantiate(_attributeItem, _itemsParent);
-            attribute.Fill(item);
-            attribute.OnValueChange += UpdateAttributesPoints;
+            attribute.Fills(item);
+            Debug.Log(item.GetValue());
+            //attribute.OnValueChange += UpdateAttributesPoints;
             attribute.OnPointerEntered += ShowDescription;
             attribute.OnPointerExited += HideDescription;
 
             _attributes.Add(attribute);
         }
-        
+
         UpdateAttributesPoints();
     }
 
@@ -38,7 +40,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     {
         foreach (var attribute in _attributes)
         {
-            attribute.OnValueChange -= UpdateAttributesPoints;
+            //attribute.OnValueChange -= UpdateAttributesPoints;
             attribute.OnPointerEntered -= ShowDescription;
             attribute.OnPointerExited -= HideDescription;
         }
@@ -71,15 +73,15 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
         }
         
         SaveManager.Instance.LoadAttributePoints();
-        _attributesText.ChangeKey(_attributeGroup.FreeAttributePointsCount);
+        _attributesText.ChangeKey(_attributeSystem.Points);
     }
     
-    private void ShowDescription(Attribute attribute)
+    private void ShowDescription(string text)
     {
-        if(attribute.Description.Length > 2)
+        if(text.Length > 2)
         {
-            Debug.Log(attribute.Description);
-            _descriptionPanel.ShowDesciption(attribute);
+            Debug.Log(text);
+            _descriptionPanel.ShowDesciption(text);
         }
     }
 

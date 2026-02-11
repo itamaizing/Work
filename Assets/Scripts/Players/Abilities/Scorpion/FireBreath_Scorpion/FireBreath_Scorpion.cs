@@ -173,7 +173,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
         float elapsed = 0f;
         int baseDamage = 1;
 
-        Hero.Move.CanMove = false;
+        Hero.Move.SetCanMove(false);
 
         while (elapsed < CastStreamDuration)
         {
@@ -186,7 +186,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
             baseDamage *= 2;
         }
 
-        Hero.Move.CanMove = true;
+        Hero.Move.SetCanMove(true);
         CmdDestroyFireBreath();
     }
 

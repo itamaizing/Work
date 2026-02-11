@@ -119,7 +119,7 @@ public class ShotDarkness : Skill
     public void ShotDarkPreparation()
     {
         _hero.Move.StopMoveAndAnimationMove();
-        _hero.Move.CanMove = false;
+        _hero.Move.SetCanMove(false);
     }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -205,7 +205,7 @@ public class ShotDarkness : Skill
     {
         if (_hero?.Move != null)
         {
-            Hero.Move.CanMove = true;
+            Hero.Move.SetCanMove(true);
             ClearTarget();
             ClearTempTarget();
             _targetPoint = Vector3.positiveInfinity;
