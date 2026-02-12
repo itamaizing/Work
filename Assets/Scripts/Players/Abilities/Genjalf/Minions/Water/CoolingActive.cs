@@ -5,11 +5,14 @@ using UnityEngine;
 
 public class CoolingActive : Skill
 {
+    [SerializeField] private GameObject _effectObject;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => CheckCanCast();
 
     private float _clickRadius = 0.5f;
+
+    private float _auraDuration = 5f;
     
     private GameObject _shield;
     
@@ -50,7 +53,41 @@ public class CoolingActive : Skill
     [Command]
     private void CmdAddAura()
     {
-        _hero.CharacterState.AddState(States.CoolingAura, 5f, 0, Hero.gameObject, name);
+        _hero.CharacterState.AddState(States.CoolingAura, _auraDuration, 0, Hero.gameObject, name);
+        StartEffectJob();
+    }
+
+    [ClientRpc]
+    private void StartEffectJob()
+    {
+        StartCoroutine(EffectJob());
+    }
+    
+    private IEnumerator EffectJob()
+    {
+        if (_effectObject == null)
+            yield break;
+
+        float duration = _auraDuration;
+        float elapsed = 0f;
+
+        Transform effectTransform = _effectObject.transform;
+
+        effectTransform.localScale = Vector3.one;
+        _effectObject.SetActive(true);
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+
+            float scale = Mathf.Lerp(1f, duration, elapsed / duration);
+            effectTransform.localScale = Vector3.one * scale;
+
+            yield return null;
+        }
+
+        _effectObject.SetActive(false);
+        effectTransform.localScale = Vector3.one;
     }
     
     protected override void ClearData()

@@ -524,6 +524,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3107770508428623872, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2147146021123656458}
+    - targetCorrespondingSourceObject: {fileID: 3107770508428623872, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 337736083812662888}
     - targetCorrespondingSourceObject: {fileID: 1021000915379606889, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       insertIndex: 0
       addedObject: {fileID: 5918973472140431420}
@@ -814,6 +817,7 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _effectObject: {fileID: 2813404374678221984}
 --- !u!1001 &5708473038929150688
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -926,6 +930,158 @@ MonoBehaviour:
 Transform:
   m_CorrespondingSourceObject: {fileID: 2097827472302166748, guid: ac24d348ed0eea048a271e360f3ca7ff, type: 3}
   m_PrefabInstance: {fileID: 5708473038929150688}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &7464136283391891624
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 7337895195079124575}
+    m_Modifications:
+    - target: {fileID: 1467717789173092130, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: RotationModule.enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1467717789173092130, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: RotationModule.x.scalar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1467717789173092130, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: RotationModule.y.scalar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1467717789173092130, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: InitialModule.rotation3D
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1467717789173092130, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1467717789173092130, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: InitialModule.startRotation.scalar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1467717789173092130, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: InitialModule.startRotationX.scalar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2787011108355036567, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: _assetId
+      value: 1395314751
+      objectReference: {fileID: 0}
+    - target: {fileID: 4656379208741956616, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_Name
+      value: WaterAura
+      objectReference: {fileID: 0}
+    - target: {fileID: 4656379208741956616, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6592486499845945603, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 31ffe826e3e69c341b077d0e65aa9e70, type: 3}
+    - target: {fileID: 6592486499845945603, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_Flip.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6592486499845945603, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_RenderAlignment
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6592486499845945603, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4d818de6576501946a958585f201f0b4, type: 2}
+    - target: {fileID: 7150046371852166848, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7150046371852166848, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7150046371852166848, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7150046371852166848, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7150046371852166848, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7150046371852166848, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7150046371852166848, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7150046371852166848, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7150046371852166848, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7150046371852166848, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8127166233225309455, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8127166233225309455, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8127166233225309455, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8127166233225309455, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8127166233225309455, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8127166233225309455, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8127166233225309455, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9094354812563722369, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+      propertyPath: m_Name
+      value: WaterAura
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 2787011108355036567, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+--- !u!4 &337736083812662888 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7150046371852166848, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+  m_PrefabInstance: {fileID: 7464136283391891624}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2813404374678221984 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4656379208741956616, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
+  m_PrefabInstance: {fileID: 7464136283391891624}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8779129982895738730
 PrefabInstance:
