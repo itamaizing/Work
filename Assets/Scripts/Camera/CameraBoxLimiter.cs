@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class CameraBoxLimiter : MonoBehaviour
 {
-    [SerializeField] private Transform targetCamera;
-    [SerializeField] private BoxCollider boundsCollider;
+    [SerializeField] private Transform _targetCamera;
+    [SerializeField] private BoxCollider _boundsCollider;
 
-    [SerializeField] private float softZone = 0.5f; 
-    [SerializeField] private float smoothSpeed = 5f;
+    [SerializeField] private float _softZone = 0.5f; 
+    [SerializeField] private float _smoothSpeed = 5f;
 
     private Vector3 minBounds;
     private Vector3 maxBounds;
@@ -14,10 +14,10 @@ public class CameraBoxLimiter : MonoBehaviour
 
     private void Start()
     {
-        if (targetCamera == null)
-            targetCamera = Camera.main.transform;
+        if (_targetCamera == null)
+            _targetCamera = Camera.main.transform;
 
-        Bounds bounds = boundsCollider.bounds;
+        Bounds bounds = _boundsCollider.bounds;
         minBounds = bounds.min;
         maxBounds = bounds.max;
     }
@@ -29,28 +29,28 @@ public class CameraBoxLimiter : MonoBehaviour
 
     private void CameraLimiter()
     {
-        Vector3 desiredPos = targetCamera.position;
-        Vector3 currentPos = targetCamera.position;
+        Vector3 desiredPos = _targetCamera.position;
+        Vector3 currentPos = _targetCamera.position;
 
         desiredPos.x = SoftLimitAxis(currentPos.x, minBounds.x, maxBounds.x);
         desiredPos.y = SoftLimitAxis(currentPos.y, minBounds.y, maxBounds.y);
         desiredPos.z = SoftLimitAxis(currentPos.z, minBounds.z, maxBounds.z);
 
-        targetCamera.position = Vector3.SmoothDamp(currentPos, desiredPos, ref velocity, 1f / smoothSpeed);
+        _targetCamera.position = Vector3.SmoothDamp(currentPos, desiredPos, ref velocity, 1f / _smoothSpeed);
     }
 
     private float SoftLimitAxis(float value, float min, float max)
     {
-        if (value < min + softZone)
+        if (value < min + _softZone)
         {
-            float t = Mathf.InverseLerp(min, min + softZone, value);
-            return Mathf.Lerp(min, min + softZone, t * t);
+            float t = Mathf.InverseLerp(min, min + _softZone, value);
+            return Mathf.Lerp(min, min + _softZone, t * t);
         }
 
-        if (value > max - softZone)
+        if (value > max - _softZone)
         {
-            float t = Mathf.InverseLerp(max, max - softZone, value);
-            return Mathf.Lerp(max, max - softZone, t * t);
+            float t = Mathf.InverseLerp(max, max - _softZone, value);
+            return Mathf.Lerp(max, max - _softZone, t * t);
         }
 
         return value;
