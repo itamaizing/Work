@@ -59,7 +59,7 @@ public class SpellMoveTo : Skill
             {
                 _agent.SetDestination(_enemyTarget.transform.position);
 
-                if (Vector3.Distance(transform.position, _enemyTarget.transform.position) <= Radius)
+                if (Vector3.Distance(transform.position, _enemyTarget.transform.position) <= AreaInfo.Radius)
                 {
                     _currentDamageDeley += Time.deltaTime;
 
@@ -157,4 +157,4 @@ public class SpellMoveTo : Skill
             yield return null;
         }
     }
-}
+}

@@ -162,8 +162,8 @@ public class TerrifyingElfAura : NetworkBehaviour
     public void FireWorshipperTalentActive(bool value)
     {
         fireWorshipperTalent = value;
-        if (!fireWorshipperTalent) reconnaissanceFire.Area = _baseAreaReconnaissanceFire;
-        else reconnaissanceFire.Area += 1;
+        if (!fireWorshipperTalent) reconnaissanceFire.AreaInfo.Area = _baseAreaReconnaissanceFire;
+        else reconnaissanceFire.AreaInfo.Area += 1;
     }
 
     private void ApplyFireWorshipperTalent()
@@ -174,7 +174,7 @@ public class TerrifyingElfAura : NetworkBehaviour
             return;
 
         var character = currentSkill.Hero;
-        var targets = currentSkill.GetCloserTargetsCharacter(currentSkill.transform.position, currentSkill.Radius);
+        var targets = currentSkill.GetCloserTargetsCharacter(currentSkill.transform.position, currentSkill.AreaInfo.Radius);
         if (targets == null || targets.Count == 0) return;
 
         foreach (var target in targets)

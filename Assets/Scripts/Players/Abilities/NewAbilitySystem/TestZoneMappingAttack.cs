@@ -26,7 +26,7 @@ public class TestZoneMappingAttack : Skill
             {
                 Vector3 clickedPoint = GetMousePoint();
 
-                if (IsPointInRadius(Radius, clickedPoint))
+                if (IsPointInRadius(AreaInfo.Radius, clickedPoint))
                 {
                     _targetPoint = clickedPoint;
                 }

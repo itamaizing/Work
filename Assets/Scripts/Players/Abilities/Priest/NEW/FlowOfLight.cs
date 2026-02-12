@@ -35,7 +35,7 @@ public class FlowOfLight : Skill
 
     protected override bool IsCanCast =>
 		GetTargetCharacter() != null &&
-        Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius &&
+        Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius &&
         NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle) &&
         ((isLightMode && IsAllyTarget(GetTargetCharacter())) || (!isLightMode && IsEnemyTarget(GetTargetCharacter())));
 
@@ -146,7 +146,7 @@ public class FlowOfLight : Skill
         {
             if (GetTargetCharacter() == null || !GetTargetCharacter().gameObject.activeSelf ||
                 Input.GetMouseButtonDown(1) ||
-                Vector3.Distance(transform.position, GetTargetCharacter().transform.position) > Radius ||
+                Vector3.Distance(transform.position, GetTargetCharacter().transform.position) > AreaInfo.Radius ||
                 Vector3.Distance(transform.position, initialPosition) > maxMoveDistance ||
                 (manaResource != null && manaResource.CurrentValue < 1f))
             {
@@ -278,7 +278,7 @@ private void CmdStateRestorationOrDestruction(NetworkIdentity targetNetIdentity,
 
         if (flows.Length == 0)
         {
-            Debug.LogWarning("FlowLightEffect íå íàéäåí íè íà îäíîì äî÷åðíåì îáúåêòå ýôôåêòà: " + effect.name);
+            Debug.LogWarning("FlowLightEffect Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½ Ð½Ð¸ Ð½Ð° Ð¾Ð´Ð½Ð¾Ð¼ Ð´Ð¾Ñ‡ÐµÑ€Ð½ÐµÐ¼ Ð¾Ð±ÑŠÐµÐºÑ‚Ðµ ÑÑ„Ñ„ÐµÐºÑ‚Ð°: " + effect.name);
         }
     }
-}
+}

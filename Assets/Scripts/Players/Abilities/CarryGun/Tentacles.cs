@@ -59,7 +59,7 @@ public class Tentacles : Skill
         if (!IsValidVector(_spawnPoint)) return false;
 
         float distance = Vector3.Distance(Hero.transform.position, _spawnPoint);
-        return distance <= Radius;
+        return distance <= AreaInfo.Radius;
     }
 
     private bool IsValidVector(Vector3 vector)
@@ -185,7 +185,7 @@ public class Tentacles : Skill
                             }
                         }
 
-                        if (!foundEnemy && distance <= Radius && _isCocoonSpawnTalent)
+                        if (!foundEnemy && distance <= AreaInfo.Radius && _isCocoonSpawnTalent)
                         {
                             if (!IsValidVector(mousePoint)) yield break;
 
@@ -255,7 +255,7 @@ public class Tentacles : Skill
 
                             float distanceToTarget = Vector3.Distance(_previewInstancePrefab.transform.position, transform.position);
 
-                            if (distanceToTarget <= Radius)
+                            if (distanceToTarget <= AreaInfo.Radius)
                             {
                                 Vector3 potentialSpawnPoint = _previewInstancePrefab.transform.position;
 
@@ -332,7 +332,7 @@ public class Tentacles : Skill
 
             if (_previewInstance != null)
             {
-                Collider[] hitColliders = Physics.OverlapSphere(_previewInstance.transform.position, Area + UpdateRadiusColorSphereCastRadius);
+                Collider[] hitColliders = Physics.OverlapSphere(_previewInstance.transform.position, AreaInfo.Area + UpdateRadiusColorSphereCastRadius);
 
                 foreach (var hitCollider in hitColliders)
                 {
@@ -340,7 +340,7 @@ public class Tentacles : Skill
                     {
                         float distanceToCharacter = Vector3.Distance(_previewInstance.transform.position, character.transform.position);
 
-                        if (distanceToCharacter <= Area)
+                        if (distanceToCharacter <= AreaInfo.Area)
                         {
                             isCharacterInsidePreview = true;
                             character.SelectedCircle.SwitchClostestTarget(true);
@@ -457,4 +457,4 @@ public class Tentacles : Skill
     {
         _currentMinion = newMinion;
     }
-}
+}

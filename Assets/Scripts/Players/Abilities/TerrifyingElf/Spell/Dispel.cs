@@ -1,4 +1,4 @@
-﻿using Mirror;
+using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -8,7 +8,7 @@ public class Dispel : Skill
     //private Character _target;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
 
-    protected override bool IsCanCast => GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+    protected override bool IsCanCast => GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("Dispel");
     protected override int AnimTriggerCast => 0;
@@ -73,9 +73,9 @@ public class Dispel : Skill
 
     private Character GetNearestTargetInRadius()
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, Radius, TargetsLayers);
+        Collider[] colliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius, TargetsLayers);
         Character nearestTarget = null;
-        float shortestDistance = Radius;
+        float shortestDistance = AreaInfo.Radius;
 
         foreach (var collider in colliders)
         {

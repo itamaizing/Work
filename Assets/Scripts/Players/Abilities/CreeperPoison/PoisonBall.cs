@@ -1,4 +1,4 @@
-﻿using Mirror;
+using Mirror;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine;
@@ -537,11 +537,11 @@ public class PoisonBall : Skill, IAltAbility
         //Debug.Log("CheckCanCast PoisonBall");
 
         if (GetTargetCharacter() == null)
-            return Vector3.Distance(_firstMousePosition, transform.position) <= Radius && NoObstacles(_firstMousePosition, _obstacle);
+            return Vector3.Distance(_firstMousePosition, transform.position) <= AreaInfo.Radius && NoObstacles(_firstMousePosition, _obstacle);
 
-        return Vector3.Distance(_firstMousePosition, transform.position) <= Radius &&
+        return Vector3.Distance(_firstMousePosition, transform.position) <= AreaInfo.Radius &&
             NoObstacles(_firstMousePosition, _obstacle) ||
-            Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius &&
+            Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius &&
             NoObstacles(GetTargetCharacter().transform.position, _obstacle);
 
     }
@@ -1085,4 +1085,4 @@ public class PoisonBall : Skill, IAltAbility
     {
         throw new NotImplementedException();
     }
-}
+}

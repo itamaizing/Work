@@ -234,7 +234,7 @@ public class PoisonSlap : Skill
         if (GetTargetCharacter() == null)
             return false;
 
-        return Vector3.Distance(_player.transform.position, GetTargetCharacter().transform.position) <= Radius;
+        return Vector3.Distance(_player.transform.position, GetTargetCharacter().transform.position) <= AreaInfo.Radius;
     }
 
     private void ChooseDirectionPush(Character target)
@@ -544,4 +544,4 @@ public class PoisonSlap : Skill
 
 
     #endregion
-}
+}

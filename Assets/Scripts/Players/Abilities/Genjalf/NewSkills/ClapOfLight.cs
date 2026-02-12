@@ -15,7 +15,7 @@ namespace Gangdollarff
         public bool IsBaffed = false;
 
         public override string AdditionalDescription =>
-            $"Ðàññòîÿíèå òîë÷êà: {AbilityNameBox.ColorOpen}{_pushRange}{AbilityNameBox.ColorEnd}";
+            $"Ð Ð°ÑÑÑ‚Ð¾ÑÐ½Ð¸Ðµ Ñ‚Ð¾Ð»Ñ‡ÐºÐ°: {AbilityNameBox.ColorOpen}{_pushRange}{AbilityNameBox.ColorEnd}";
 
         protected override int AnimTriggerCastDelay => 0;
 
@@ -37,7 +37,7 @@ namespace Gangdollarff
 
         protected override IEnumerator CastJob()
         {
-            var colliders = Physics.OverlapSphere(transform.position, Radius, TargetsLayers);
+            var colliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius, TargetsLayers);
 
             Damage damage = new Damage
             {

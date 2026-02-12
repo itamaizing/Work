@@ -36,7 +36,7 @@ public class IceSword : CloseCombatSkill
 	{
 		if (GetTargetCharacter() == null) return false;
 
-		if (Vector3.Distance(GetTargetCharacter().transform.position, transform.position) > Radius)
+		if (Vector3.Distance(GetTargetCharacter().transform.position, transform.position) > AreaInfo.Radius)
 		{
 			return false;
 		}

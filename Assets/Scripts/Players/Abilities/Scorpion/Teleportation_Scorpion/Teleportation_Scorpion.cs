@@ -41,7 +41,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     {
         get
         {
-            if (GetTargetCharacter() != null) return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+            if (GetTargetCharacter() != null) return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius;
 
             var mana = _hero.Resources[ResourceType.Mana];
             if (mana == null) return false;
@@ -51,7 +51,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
                 float distance = Vector3.Distance(GetTargetCharacter().transform.position, transform.position);
                 int manaCost = GetCurrentManaCost(distance);
                 _skillEnergyCosts[0].resourceCost = manaCost;
-                return distance <= Radius && mana.CurrentValue >= manaCost;
+                return distance <= AreaInfo.Radius && mana.CurrentValue >= manaCost;
 
             }
 
@@ -79,7 +79,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     //        transform.position
     //        );
 
-    //    return distance <= Radius;
+    //    return distance <= AreaInfo.Radius;
     //}
 
     private Vector3 FindPlace(Character target)
@@ -87,7 +87,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
         Vector3 directionToEnemy = (target.transform.position - transform.position).normalized;
 
         float distanceToTarget = Vector3.Distance(transform.position, target.transform.position);
-        float clampedDistance = Mathf.Min(distanceToTarget, Radius);
+        float clampedDistance = Mathf.Min(distanceToTarget, AreaInfo.Radius);
 
         Vector3 teleportBasePosition = transform.position + directionToEnemy * clampedDistance;
         Vector3 initialOffset = directionToEnemy * _offset;
@@ -191,7 +191,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     {
         while (GetTempTargetCharacter() == null)
         {
-            _drawCircleSelf.Draw(Radius);
+            _drawCircleSelf.Draw(AreaInfo.Radius);
 
             if (GetMouseButton)
             {
@@ -205,7 +205,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
                     {
                         float dist = Vector3.Distance(GetTempTargetCharacter().transform.position, transform.position);
 
-                        if (dist > Radius)
+                        if (dist > AreaInfo.Radius)
                         {
                             Debug.Log("[Teleportation] Цель вне зоны действия");
                             continue;

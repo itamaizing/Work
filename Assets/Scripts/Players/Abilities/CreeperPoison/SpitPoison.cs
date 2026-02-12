@@ -174,10 +174,10 @@ public class SpitPoison : Skill, IAltAbility
 
     private bool CheckCanCast()
     {
-        if (GetTarget() == null) return Vector3.Distance(_mousePos, transform.position) <= Radius && NoObstacles(_mousePos, _obstacle);
+        if (GetTarget() == null) return Vector3.Distance(_mousePos, transform.position) <= AreaInfo.Radius && NoObstacles(_mousePos, _obstacle);
 
-        return Vector3.Distance(_mousePos, transform.position) <= Radius && NoObstacles(_mousePos, _obstacle) ||
-               Vector3.Distance(GetTarget().Transform.position, transform.position) <= Radius && NoObstacles(GetTarget().Transform.position, _obstacle);
+        return Vector3.Distance(_mousePos, transform.position) <= AreaInfo.Radius && NoObstacles(_mousePos, _obstacle) ||
+               Vector3.Distance(GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && NoObstacles(GetTarget().Transform.position, _obstacle);
     }
 
     private void CooldownChange()

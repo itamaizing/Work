@@ -58,7 +58,7 @@ public class ClawStrike : Skill
     private bool CheckIsCanCast()
     {
         return GetTarget() != null &&
-            Vector3.Distance(GetTarget().Transform.position, transform.position) <= Radius &&
+            Vector3.Distance(GetTarget().Transform.position, transform.position) <= AreaInfo.Radius &&
             NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
     }
 
@@ -137,7 +137,7 @@ public class ClawStrike : Skill
         yield return null;
     }
 
-    private bool IsTargetInRange() { return GetTarget() != null && Vector3.Distance(_player.transform.position, GetTarget().Transform.position) <= Radius; }
+    private bool IsTargetInRange() { return GetTarget() != null && Vector3.Distance(_player.transform.position, GetTarget().Transform.position) <= AreaInfo.Radius; }
 
     private void DamageDeal(ITargetable target)
     {
@@ -308,4 +308,4 @@ public class ClawStrike : Skill
         if (coroutineDurationChanceApplyBleedingWithJump != null) StopCoroutine(IDurationChanceApplyBleedingWithJump());
         AnimCastEnded();
     }
-}
+}

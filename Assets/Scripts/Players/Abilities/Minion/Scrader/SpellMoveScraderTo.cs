@@ -166,7 +166,7 @@ public class SpellMoveScraderTo : Skill
     {
         while (true)
         {
-            Collider[] hits = Physics.OverlapSphere(transform.position, Radius, TargetsLayers);
+            Collider[] hits = Physics.OverlapSphere(transform.position, AreaInfo.Radius, TargetsLayers);
 
             Character nearest = null;
             float minDist = float.MaxValue;
@@ -190,7 +190,7 @@ public class SpellMoveScraderTo : Skill
                 yield break;
             }
 
-            while (nearest != null && !nearest.IsDead && Vector3.Distance(transform.position, nearest.transform.position) <= Radius)
+            while (nearest != null && !nearest.IsDead && Vector3.Distance(transform.position, nearest.transform.position) <= AreaInfo.Radius)
             {
                 float distance = Vector3.Distance(transform.position, nearest.transform.position);
 
@@ -275,7 +275,7 @@ public class SpellMoveScraderTo : Skill
             return;
         }
 
-        Collider[] hits = Physics.OverlapSphere(transform.position, Radius, TargetsLayers);
+        Collider[] hits = Physics.OverlapSphere(transform.position, AreaInfo.Radius, TargetsLayers);
 
         Character nearest = null;
         float minDist = float.MaxValue;
@@ -342,4 +342,4 @@ public class SpellMoveScraderTo : Skill
 
         CancelWork();
     }
-}
+}

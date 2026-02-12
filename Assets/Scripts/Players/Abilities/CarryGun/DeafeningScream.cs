@@ -25,7 +25,7 @@ public class DeafeningScream : Skill
     private bool CheckCanCast()
     {
         return GetTargetCharacter() != null && cooldownEnergy.CurrentValue >= jumpWithChelicera.ChargeCooldown &&
-        Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius &&
+        Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius &&
         NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
     }
 
@@ -112,4 +112,4 @@ public class DeafeningScream : Skill
         Hero.Move.LookAtTransform(GetTargetCharacter().transform);
         _isCanCancel = false;
     }
-}
+}

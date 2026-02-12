@@ -30,10 +30,10 @@ public class TestH3 : Skill
     private bool CheckCanCast()
     {
         if (GetTargetCharacter() == null)
-            return Vector3.Distance(_targetPoint, transform.position) <= Radius;
+            return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.Radius;
 
-        return Vector3.Distance(_targetPoint, transform.position) <= Radius ||
-               Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+        return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.Radius ||
+               Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius;
     }
 
     public void AnimCastH3()

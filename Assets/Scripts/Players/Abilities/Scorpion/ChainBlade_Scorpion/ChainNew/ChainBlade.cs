@@ -45,7 +45,7 @@ public class ChainBlade : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => chainBladeStart;
 
-    protected override bool IsCanCast => Vector3.Distance(_clickPoint, transform.position) <= CastLength && NoObstacles(_clickPoint, transform.position, _obstacle);
+    protected override bool IsCanCast => Vector3.Distance(_clickPoint, transform.position) <= AreaInfo.CastLength && NoObstacles(_clickPoint, transform.position, _obstacle);
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     public float DamageRange => UnityEngine.Random.Range(_minDamage, _maxDamage);
@@ -102,7 +102,7 @@ public class ChainBlade : Skill
                     {
                         float distance = Vector3.Distance(_hero.transform.position, targetPoint);
 
-                        if (distance <= Radius) targetPoint = GetTempTargetCharacter().transform.position;
+                        if (distance <= AreaInfo.Radius) targetPoint = GetTempTargetCharacter().transform.position;
 
                         else
                         {
@@ -248,7 +248,7 @@ public class ChainBlade : Skill
 
         Vector3 direction = (clickPoint - transform.position).normalized;
         Vector3 flatDirection = new Vector3(direction.x, 0, direction.z).normalized;
-        Vector3 targetPoint = transform.position + flatDirection * (CastLength - ChainArrowCastOffset);
+        Vector3 targetPoint = transform.position + flatDirection * (AreaInfo.CastLength - ChainArrowCastOffset);
         targetPoint.y = transform.position.y;
         Vector3 spawnPosition = transform.position + Vector3.up * _arrowYOffset;
         var arrow = Instantiate(_chainArrowPrefab, spawnPosition, Quaternion.identity);
@@ -273,7 +273,7 @@ public class ChainBlade : Skill
         NetworkServer.Spawn(arrow.gameObject);
         SceneManager.MoveGameObjectToScene(arrow.gameObject, _hero.NetworkSettings.MyRoom);
 
-        arrow.InitArrow(targetPoint, transform, CastLength, DamageRange);
+        arrow.InitArrow(targetPoint, transform, AreaInfo.CastLength, DamageRange);
         RpcInitArrow(arrow.gameObject, targetPoint);
     }
 
@@ -309,7 +309,7 @@ public class ChainBlade : Skill
 
         var arrow = arrowObj.GetComponent<ChainArrow>();
         arrow.Init(_playerLinks, 0, false, this);
-        arrow.InitArrow(targetPoint, transform, CastLength, DamageRange);
+        arrow.InitArrow(targetPoint, transform, AreaInfo.CastLength, DamageRange);
         _currentChainArrowPrefab = arrow;
     }
 }

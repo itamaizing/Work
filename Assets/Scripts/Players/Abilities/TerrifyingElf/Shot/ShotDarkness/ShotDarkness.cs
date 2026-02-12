@@ -53,8 +53,8 @@ public class ShotDarkness : Skill
 
     private bool CheckCanCast()
     {
-        if (GetTarget() == null) return Vector3.Distance(_targetPoint, transform.position) <= CastLength;
-        return Vector3.Distance(_targetPoint, transform.position) <= CastLength || Vector3.Distance(GetTarget().Transform.position, transform.position) <= CastLength;
+        if (GetTarget() == null) return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength;
+        return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength || Vector3.Distance(GetTarget().Transform.position, transform.position) <= AreaInfo.CastLength;
     }
 
     private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
@@ -215,7 +215,7 @@ public class ShotDarkness : Skill
         AnimCastEnded();
     }
 
-    private bool IsTargetInRange() { return GetTarget() != null && Vector3.Distance(transform.position, GetTarget().Transform.position) <= CastLength; }
+    private bool IsTargetInRange() { return GetTarget() != null && Vector3.Distance(transform.position, GetTarget().Transform.position) <= AreaInfo.CastLength; }
     private void UseMana(float amount)
     {
         float mana = amount;

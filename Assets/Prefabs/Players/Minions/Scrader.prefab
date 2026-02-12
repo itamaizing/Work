@@ -13330,6 +13330,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _playerData: {fileID: 11400000, guid: 56f88e1aa8c06a044a76ec3336cf274a, type: 2}
+  _attributeSystem: {fileID: 0}
   _networkSettings: {fileID: 4352968657823446686}
   _rigidbody: {fileID: 512746244656594313}
   _collider: {fileID: 3393799689084107314}
@@ -13343,9 +13344,7 @@ MonoBehaviour:
   uiComponent: {fileID: 1655977055310397963}
   _selectComponent: {fileID: 2075396149247580188}
   _damageTracker: {fileID: 245123127051599623}
-  _resources:
-  - {fileID: 4688992458449892271}
-  - {fileID: 9206734014017938443}
+  TemporaryResourceDisplay: []
   _selectedCircle: {fileID: 3552332020641030606}
   _spawnComponent: {fileID: 2769373615330125278}
   _visionComponent: {fileID: 0}
@@ -13464,6 +13463,8 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 0
   _regenerationDelay: 0
+  _currentValue: 0
+  _maxValue: 0
   _animator: {fileID: 4853408415625794062}
   _netAnimator: {fileID: 6676246011477726785}
   bar: {fileID: 0}
@@ -13484,6 +13485,8 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 2
   _regenerationDelay: 0
+  _currentValue: 0
+  _maxValue: 0
   _sumDamageGiven: 0
 --- !u!114 &9206734014017938443
 MonoBehaviour:
@@ -13502,6 +13505,8 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 1
   _regenerationDelay: 0
+  _currentValue: 0
+  _maxValue: 0
 --- !u!114 &6614722740098716129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13519,6 +13524,8 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 3
   _regenerationDelay: 0
+  _currentValue: 0
+  _maxValue: 0
   _sumDamageGiven: 0
 --- !u!114 &1655977055310397963
 MonoBehaviour:
@@ -13599,8 +13606,6 @@ MonoBehaviour:
   moveClips: []
   MoveDirection: {x: 0, y: 0, z: 0}
   ExternalMoveDirection: {x: 0, y: 0, z: 0}
-  CanMove: 0
-  CanMoveState: 0
   IsMoving: 0
   IsSelect: 0
   IsNoRotateAtCursor: 1
@@ -13837,19 +13842,39 @@ MonoBehaviour:
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
+  _chargeComponent:
+    _hasCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
   _isUseCharges: 0
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
+  _areaComponent:
+    _radius: 1.5
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
   _radius: 1.5
   _area: 0
   _castLength: 0
   _castWidth: 0
   _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 1
+    _isDynamicRenderer: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
@@ -13902,19 +13927,39 @@ MonoBehaviour:
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
+  _chargeComponent:
+    _hasCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
   _isUseCharges: 0
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
+  _areaComponent:
+    _radius: 6
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
   _radius: 6
   _area: 0
   _castLength: 0
   _castWidth: 0
   _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 0
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 1
+    _isDynamicRenderer: 0
   _isAutoRadiusRender: 0
   _isAutoAreaRender: 1
   _isAutoLineRender: 1

@@ -94,7 +94,7 @@ public class FlashOfLight : Skill
 
     private void UpdateMode()
     {
-        Radius = isLightMode ? _lightRange : _darkRange;
+        AreaInfo.Radius = isLightMode ? _lightRange : _darkRange;
         School = isLightMode ? Schools.Light : Schools.Dark;
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
         TargetsLayers = isLightMode

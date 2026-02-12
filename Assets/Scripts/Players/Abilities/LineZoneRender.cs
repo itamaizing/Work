@@ -71,9 +71,9 @@ public class LineZoneRender : MonoBehaviour
             else
                 lastPoint = mouse;
 
-            if (_lineRenderer.positionCount > 1 && Vector3.Distance(lastPoint, mouse) > _skill.CastLength)
+            if (_lineRenderer.positionCount > 1 && Vector3.Distance(lastPoint, mouse) > _skill.AreaInfo.CastLength)
             {
-                _lineRenderer.SetPosition(_lineRenderer.positionCount - 1, lastPoint + (mouse - lastPoint).normalized * _skill.CastLength);
+                _lineRenderer.SetPosition(_lineRenderer.positionCount - 1, lastPoint + (mouse - lastPoint).normalized * _skill.AreaInfo.CastLength);
                 continue;
             }
 

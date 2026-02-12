@@ -36,7 +36,7 @@ public static class DB_Attribute
         var extra = Resources.LoadAll<SO_AttributeData>($"{AttributeRelativeFolder}/ExtraAttributes");
         foreach ( var attribute in extra )
             _extraAttributes.Add(attribute.type, attribute);
-        Debug.Log(_resourceAttributes.Count);
+        //Debug.Log(_resourceAttributes.Count);
     }
 
     public static Type GetResourceClass(ResourceType type)

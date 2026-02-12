@@ -48,7 +48,7 @@ public class Restoration : Skill
     private bool IsCanCastCheck()
     {
         if (GetTargetCharacter() == null) return false;
-        return Vector3.Distance(transform.position, GetTargetCharacter().transform.position) <= Radius;
+        return Vector3.Distance(transform.position, GetTargetCharacter().transform.position) <= AreaInfo.Radius;
     }
 
     public event Action OnModeChange;
@@ -98,7 +98,7 @@ public class Restoration : Skill
 
     private void UpdateMode()
     {
-        Radius = isLightMode ? lightRange : darkRange;
+        AreaInfo.Radius = isLightMode ? lightRange : darkRange;
         School = isLightMode ? Schools.Light : Schools.Dark;
         CastDeley = isLightMode ? lightCastTime : darkCastTime;
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
@@ -216,4 +216,4 @@ public class Restoration : Skill
     {
         SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
-} 
+} 

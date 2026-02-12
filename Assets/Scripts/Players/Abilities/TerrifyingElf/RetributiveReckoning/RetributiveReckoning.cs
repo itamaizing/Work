@@ -14,7 +14,7 @@ public class RetributiveReckoning : AutoAttackSkill
     private Coroutine _disactiveResetCoroutine;
     private bool _isTeleporting;
 
-    protected override bool IsCanCast => _lastAttacker != null && IsTargetInRadius(Radius, _lastAttacker.transform);
+    protected override bool IsCanCast => _lastAttacker != null && IsTargetInRadius(AreaInfo.Radius, _lastAttacker.transform);
     protected override int AnimTriggerAutoAttack => 0;
     protected override int AnimTriggerCastDelay => Animator.StringToHash("RetributiveReckoningCastDelay");
 
@@ -44,7 +44,7 @@ public class RetributiveReckoning : AutoAttackSkill
         Vector3 forwardDirection = moveComponent.transform.forward.normalized;
         float angle = Vector3.Angle(forwardDirection, directionToAttacker);
 
-        return angle > 120 && Vector3.Distance(attacker.transform.position, transform.position) <= Radius;
+        return angle > 120 && Vector3.Distance(attacker.transform.position, transform.position) <= AreaInfo.Radius;
     }
 
     private IEnumerator ResetDisactiveAfterDelay()
@@ -58,7 +58,7 @@ public class RetributiveReckoning : AutoAttackSkill
     {
         while (!Disactive)
         {
-            if (_lastAttacker != null && IsTargetInRadius(Radius, _lastAttacker.transform))
+            if (_lastAttacker != null && IsTargetInRadius(AreaInfo.Radius, _lastAttacker.transform))
             {
                 if (IsAutoattackMode)
                 {
@@ -81,7 +81,7 @@ public class RetributiveReckoning : AutoAttackSkill
             yield break;
         }
 
-        if (!IsTargetInRadius(Radius, _lastAttacker.transform))
+        if (!IsTargetInRadius(AreaInfo.Radius, _lastAttacker.transform))
         {
             yield break;
         }
@@ -108,7 +108,7 @@ public class RetributiveReckoning : AutoAttackSkill
     private Vector3 GetBehindPosition(Character enemy)
     {
         Vector3 directionToEnemy = (transform.position - enemy.transform.position).normalized;
-        return enemy.transform.position - directionToEnemy * Radius;
+        return enemy.transform.position - directionToEnemy * AreaInfo.Radius;
     }
 
     private void PayTeleportCost()

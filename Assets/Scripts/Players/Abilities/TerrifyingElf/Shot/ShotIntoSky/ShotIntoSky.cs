@@ -38,7 +38,7 @@ public class ShotIntoSky : Skill
 
     private void OnEnable()
     {
-        _baseRadius = Radius;
+        _baseRadius = AreaInfo.Radius;
         Canceled += HandleSkillCanceled;
     }
 
@@ -52,10 +52,10 @@ public class ShotIntoSky : Skill
             {
                 var point = target.Points[0];
                 if (float.IsInfinity(point.x)) return false;
-                return IsPointInRadius(Radius, point);
+                return IsPointInRadius(AreaInfo.Radius, point);
             }
 
-            return IsPointInRadius(Radius, _targetPoint);
+            return IsPointInRadius(AreaInfo.Radius, _targetPoint);
         }
     }
 
@@ -110,7 +110,7 @@ public class ShotIntoSky : Skill
 
         while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
         {
-            if (GetMouseButton) if (TryGetGroundPoint(out Vector3 ground) && IsPointInRadius(Radius, ground)) _targetPoint = ground;
+            if (GetMouseButton) if (TryGetGroundPoint(out Vector3 ground) && IsPointInRadius(AreaInfo.Radius, ground)) _targetPoint = ground;
             yield return null;
         }
 
@@ -119,7 +119,7 @@ public class ShotIntoSky : Skill
         if (tripleShotTalentActive && reconnaissanceFire != null && reconnaissanceFire.CurrentFireAura != null)
         {
             Vector3 auraCenter = reconnaissanceFire.CurrentFireAura.transform.position;
-            float combinedRadius = Area + reconnaissanceFire.Area;
+            float combinedRadius = AreaInfo.Area + reconnaissanceFire.AreaInfo.Area;
             float distantion = Vector3.Distance(_targetPoint, auraCenter);
 
             if (distantion <= combinedRadius / 2)
@@ -284,8 +284,8 @@ public class ShotIntoSky : Skill
     {
         _isShotRadiusUpgradeActive = value;
 
-        if (_isShotRadiusUpgradeActive) Radius *= 3;
-        else Radius = _baseRadius;
+        if (_isShotRadiusUpgradeActive) AreaInfo.Radius *= 3;
+        else AreaInfo.Radius = _baseRadius;
     }
     #endregion
 }

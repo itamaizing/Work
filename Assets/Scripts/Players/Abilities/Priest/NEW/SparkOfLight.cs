@@ -73,7 +73,7 @@ public class SparkOfLight : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("SparkOfLights");
 
-    protected override bool IsCanCast => GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius && NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
+    protected override bool IsCanCast => GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius && NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
 
     public event Action OnModeChange;
 
@@ -497,4 +497,4 @@ public class SparkOfLight : Skill
         if (targetInfo.GetTargets().Count > 0)
             SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
-}
+}

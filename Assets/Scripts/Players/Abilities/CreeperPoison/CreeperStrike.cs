@@ -73,7 +73,7 @@ public class CreeperStrike : Skill
     private bool CheckIsCanCast()
     {
         return GetTarget() != null &&
-            Vector3.Distance(GetTarget().Transform.position, transform.position) <= Radius &&
+            Vector3.Distance(GetTarget().Transform.position, transform.position) <= AreaInfo.Radius &&
             NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
     }
 
@@ -140,7 +140,7 @@ public class CreeperStrike : Skill
     {
         if (_animTime > 0)
         {
-            float multiplier = _lightningMovement.DurationLeap - 4.9f; // тестовая скорость (изначально - 0.1)
+            float multiplier = _lightningMovement.DurationLeap - 4.9f; // С‚РµСЃС‚РѕРІР°СЏ СЃРєРѕСЂРѕСЃС‚СЊ (РёР·РЅР°С‡Р°Р»СЊРЅРѕ - 0.1)
             float animTimeMultiplier = _animTime / multiplier;
             _player.Animator.SetFloat("CreeperStrikeMultiplierSpeedAnimation", animTimeMultiplier);
         }
@@ -161,7 +161,7 @@ public class CreeperStrike : Skill
 
     public void DamageDeal(IDamageable target, bool isUsingLightningStrikes = false)
     {
-        var lastСast = _player.Abilities.LastCastedSkill;
+        var lastРЎast = _player.Abilities.LastCastedSkill;
         var previewCast = _player.Abilities.PreviewCastedSkill;
 
         Character character = target as Character;

@@ -105,7 +105,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         _maxValueAttribute = resource.Attributes[ResourceAttributeName.MaxValue];
         _maxValue = resource.Attributes[ResourceAttributeName.MaxValue].GetValue();
         _currentValue = _maxValue / 2;
-        Debug.Log($"{CurrentValue}/{MaxValue} + {_regenerationValue}");
+        //Debug.Log($"{CurrentValue}/{MaxValue} + {_regenerationValue}");
         _regenerationPeriod = 0.5f; //TEMPORARY TEST
         _regenerationDelay = 0.5f; //TEMPORARY TEST
         ClientStartRegenirateJob();

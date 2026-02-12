@@ -50,10 +50,10 @@ public class Shot : Skill
     private bool CheckCanCast()
     {
         if (GetTarget() != null)
-            return Vector3.Distance(GetTarget().Transform.position, transform.position) <= CastLength;
+            return Vector3.Distance(GetTarget().Transform.position, transform.position) <= AreaInfo.CastLength;
 
         if (_targetPoint != Vector3.positiveInfinity)
-            return Vector3.Distance(_targetPoint, transform.position) <= CastLength;
+            return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength;
 
         return false;
     }
@@ -179,7 +179,7 @@ public class Shot : Skill
 
         yield return null;
     }
-    private bool IsTargetInRange() { return GetTarget() != null && Vector3.Distance(transform.position, GetTarget().Transform.position) <= CastLength; }
+    private bool IsTargetInRange() { return GetTarget() != null && Vector3.Distance(transform.position, GetTarget().Transform.position) <= AreaInfo.CastLength; }
     private void ProcessGhostCooldownReduction()
     {
         if (!_ghostSkill || !_ghostSkill.CooldownGhostShotActive) return;

@@ -64,7 +64,7 @@ public class ReconnaissanceFire : Skill
     public ReconnaissanceFireAura CurrentFireAura => _currentFireAura;
     public float BaseArea { get => _baseArea; set => _baseArea = value; }
 
-    protected override bool IsCanCast => Vector3.Distance(_targetPoint, transform.position) <= Radius;
+    protected override bool IsCanCast => Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.Radius;
     protected override int AnimTriggerCastDelay => Animator.StringToHash("ThrowCastDelay");
     protected override int AnimTriggerCast => 0;
 
@@ -183,7 +183,7 @@ public class ReconnaissanceFire : Skill
                 targetPoint = GetMousePoint();
                 if (_arcRenderer != null) _arcRenderer.positionCount = 0;
 
-                if (IsPointInRadius(Radius, targetPoint) && NoObstacles(targetPoint, transform.position, _obstacle))
+                if (IsPointInRadius(AreaInfo.Radius, targetPoint) && NoObstacles(targetPoint, transform.position, _obstacle))
                 {
                     Hero.Move.LookAtPosition(targetPoint);
                 }

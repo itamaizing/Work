@@ -20,7 +20,7 @@ namespace Gangdollarff
         private float _tempCastDeley = 1;
 
         public override string AdditionalDescription =>
-            $"Äëèòåëüíîñòü: {AbilityNameBox.ColorOpen}{_fisuraDuration} ñåê{AbilityNameBox.ColorEnd}";
+            $"Ð”Ð»Ð¸Ñ‚ÐµÐ»ÑŒÐ½Ð¾ÑÑ‚ÑŒ: {AbilityNameBox.ColorOpen}{_fisuraDuration} ÑÐµÐº{AbilityNameBox.ColorEnd}";
 
         protected override int AnimTriggerCastDelay => Animator.StringToHash("FisuraCast");
 
@@ -32,7 +32,7 @@ namespace Gangdollarff
 
         private bool CheckCanCast()
         {
-            return Vector3.Distance(_startPoint, transform.position) <= Radius;
+            return Vector3.Distance(_startPoint, transform.position) <= AreaInfo.Radius;
         }
 
         public void AnimCastFisura()

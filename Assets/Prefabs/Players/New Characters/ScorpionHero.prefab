@@ -4913,6 +4913,8 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 3
   _regenerationDelay: 0
+  _currentValue: 0
+  _maxValue: 0
 --- !u!114 &6732054044553877427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4950,19 +4952,39 @@ MonoBehaviour:
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
+  _chargeComponent:
+    _hasCharges: 1
+    _isComboPart: 1
+    _cooldownType: 1
+    _maxCharges: 3
+    _baseCooldown: 6
   _isUseCharges: 1
   _useChargesAsComboPart: 1
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 3
   _chargeCooldown: 6
+  _areaComponent:
+    _radius: 1.1
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
   _radius: 1.1
   _area: 0
   _castLength: 0
   _castWidth: 0
   _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 0
+    _isDynamicRenderer: 1
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
@@ -5015,19 +5037,39 @@ MonoBehaviour:
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
+  _chargeComponent:
+    _hasCharges: 1
+    _isComboPart: 1
+    _cooldownType: 1
+    _maxCharges: 3
+    _baseCooldown: 6
   _isUseCharges: 1
   _useChargesAsComboPart: 1
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 3
   _chargeCooldown: 6
+  _areaComponent:
+    _radius: 1.6
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
   _radius: 1.6
   _area: 0
   _castLength: 0
   _castWidth: 0
   _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 0
+    _isDynamicRenderer: 1
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
@@ -5081,19 +5123,39 @@ MonoBehaviour:
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
+  _chargeComponent:
+    _hasCharges: 1
+    _isComboPart: 1
+    _cooldownType: 1
+    _maxCharges: 3
+    _baseCooldown: 6
   _isUseCharges: 1
   _useChargesAsComboPart: 1
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 3
   _chargeCooldown: 6
+  _areaComponent:
+    _radius: 1.2
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
   _radius: 1.2
   _area: 0
   _castLength: 0
   _castWidth: 0
   _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 0
+    _isDynamicRenderer: 1
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
@@ -5143,21 +5205,43 @@ MonoBehaviour:
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
+  _channelComponent:
+    _castDuration: 1.5
+    _tickInterval: 0.15
+    _baseCostPerTick:
+    - resourceType: 1
+      resourceCost: 1
   _castDuration: 1.5
   _manaCostRate: 0.15
   _manaCostPerTick:
   - resourceType: 1
     resourceCost: 1
+  _chargeComponent:
+    _hasCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
   _isUseCharges: 0
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
+  _areaComponent:
+    _radius: 5
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
   _radius: 5
   _area: 0
   _castLength: 0
   _castWidth: 0
   _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 0
+    _isDynamicRenderer: 1
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
@@ -5213,19 +5297,39 @@ MonoBehaviour:
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
+  _chargeComponent:
+    _hasCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
   _isUseCharges: 0
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
+  _areaComponent:
+    _radius: 6
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
   _radius: 6
   _area: 0
   _castLength: 0
   _castWidth: 0
   _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 0
+    _isDynamicRenderer: 1
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
@@ -5281,19 +5385,39 @@ MonoBehaviour:
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
+  _chargeComponent:
+    _hasCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
   _isUseCharges: 0
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
+  _areaComponent:
+    _radius: 0
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
   _radius: 0
   _area: 0
   _castLength: 0
   _castWidth: 0
   _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 1
+    _isDynamicRenderer: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
@@ -5362,19 +5486,39 @@ MonoBehaviour:
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
+  _chargeComponent:
+    _hasCharges: 1
+    _isComboPart: 1
+    _cooldownType: 1
+    _maxCharges: 3
+    _baseCooldown: 6
   _isUseCharges: 1
   _useChargesAsComboPart: 1
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 3
   _chargeCooldown: 6
+  _areaComponent:
+    _radius: 0
+    _area: 0
+    _castLength: 3.5
+    _castWidth: 0.2
   _radius: 0
   _area: 0
   _castLength: 3.5
   _castWidth: 0.2
   _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 0
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 1
+    _isDynamicRenderer: 1
   _isAutoRadiusRender: 0
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
@@ -5426,19 +5570,39 @@ MonoBehaviour:
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
+  _chargeComponent:
+    _hasCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
   _isUseCharges: 0
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
+  _areaComponent:
+    _radius: 0
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
   _radius: 0
   _area: 0
   _castLength: 0
   _castWidth: 0
   _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 0
+    _isAutoAreaRender: 0
+    _isAutoLineRender: 0
+    _isDynamicRenderer: 0
   _isAutoRadiusRender: 0
   _isAutoAreaRender: 0
   _isAutoLineRender: 0

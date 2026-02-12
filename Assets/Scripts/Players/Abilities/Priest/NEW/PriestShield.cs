@@ -80,7 +80,7 @@ public class PriestShield : Skill
     private bool IsCanCastCheck()
     {
         if (GetTargetCharacter() == null || Time.time < _nextAvailableTime) return false;
-        return Vector3.Distance(transform.position, GetTargetCharacter().transform.position) <= Radius;
+        return Vector3.Distance(transform.position, GetTargetCharacter().transform.position) <= AreaInfo.Radius;
     }
 
     public event Action OnModeChange;
@@ -453,4 +453,4 @@ public class PriestShield : Skill
         _damagePerTickBonus = 0;
         _absorbBonus = 0;
     }
-}
+}

@@ -27,7 +27,7 @@ public class Kick_Scorpion : Skill
     private bool _wasDamageApplied = false;
     private WaitForSeconds _waitForHitsInRowTimer;
 
-    #region Ñonst
+    #region Ð¡onst
     private const float HitsInRowResetDelay = 2f;
     private const float MinDirectionSqrMagnitude = 0.0001f;
     private const float KnockdownDurationDefault = 13f;
@@ -41,7 +41,7 @@ public class Kick_Scorpion : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => KickTrigger;
 
-    protected override bool IsCanCast => GetTarget() != null && Vector3.Distance(GetTarget().Transform.position, transform.position) <= Radius && NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
+    protected override bool IsCanCast => GetTarget() != null && Vector3.Distance(GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     public float DamageRange => UnityEngine.Random.Range(_minDamage, _maxDamage);
@@ -102,7 +102,7 @@ public class Kick_Scorpion : Skill
 
     private bool IsTargetInRange()
     {
-        return Vector3.Distance(_playerLinks.transform.position, GetTargetCharacter().transform.position) <= Radius;
+        return Vector3.Distance(_playerLinks.transform.position, GetTargetCharacter().transform.position) <= AreaInfo.Radius;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -155,7 +155,7 @@ public class Kick_Scorpion : Skill
     {
         if (_wasDamageApplied) return;
         if (GetTarget() == null) return;
-        if (Vector2.Distance(_lastTarget.transform.position, GetTarget().Transform.position) > Radius) return;
+        if (Vector2.Distance(_lastTarget.transform.position, GetTarget().Transform.position) > AreaInfo.Radius) return;
 
         Damage damage = new Damage
         {
@@ -282,4 +282,4 @@ public class Kick_Scorpion : Skill
         AnimCastEnded();
         if (_hitsInRowCoroutine != null) StopCoroutine(_hitsInRowCoroutine);
     }
-}
+}

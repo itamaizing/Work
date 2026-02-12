@@ -27,8 +27,8 @@ namespace Gangdollarff
 
         private bool CheckCanCast()
         {
-            return Vector3.Distance(_point, transform.position) <= Radius &&
-                   Vector3.Distance(GetTargetCharacter().transform.position, _point) <= Radius;
+            return Vector3.Distance(_point, transform.position) <= AreaInfo.Radius &&
+                   Vector3.Distance(GetTargetCharacter().transform.position, _point) <= AreaInfo.Radius;
         }
 
         public void AnimCastTelekinesis()
@@ -132,4 +132,4 @@ namespace Gangdollarff
 			//enemyMove.TargetRpcDoMove(point, time);
         }
     }
-}
+}

@@ -13,7 +13,7 @@ public class SleepSpell : Skill
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private bool _isSleepInnerDarknessTalentActive = false;
 
-    protected override bool IsCanCast => IsHaveCharge && GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+    protected override bool IsCanCast => IsHaveCharge && GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius;
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
     protected override int AnimTriggerCast => 0;
 

@@ -76,7 +76,7 @@ public class GhostAura : Skill
             yield return new WaitForSeconds(tickInterval);
 
             bool hasObjectsInZone = false;
-            Collider[] hitColliders = Physics.OverlapSphere(transform.position, Radius, TargetsLayers);
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius, TargetsLayers);
 
             foreach (var collider in hitColliders)
             {

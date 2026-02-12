@@ -30,7 +30,7 @@ public class CleavingBlade_Scorpion : Skill
 
     public float DamageRange => Random.Range(_minDamage, _maxDamage);
 
-    protected override bool IsCanCast => GetTarget() != null && Vector3.Distance(GetTarget().Transform.position, transform.position) <= Radius;
+    protected override bool IsCanCast => GetTarget() != null && Vector3.Distance(GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     protected override int AnimTriggerCastDelay => 0;
@@ -127,7 +127,7 @@ public class CleavingBlade_Scorpion : Skill
     {
         if(_wasDamageApplied) return;
 
-        if (GetTarget() != null && Vector2.Distance(transform.position, GetTarget().Transform.position) <= Radius)
+        if (GetTarget() != null && Vector2.Distance(transform.position, GetTarget().Transform.position) <= AreaInfo.Radius)
         {
             Damage damage = new Damage
             {

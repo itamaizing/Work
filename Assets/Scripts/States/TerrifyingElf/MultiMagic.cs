@@ -53,7 +53,7 @@ public class MultiMagic : AuraState
             skill.PreparingSuccess -= OnTargetSkillCast;
             skill.AfterCast -= ExitState;
         }
-        Debug.Log("выход из мульти");
+        Debug.Log("РІС‹С…РѕРґ РёР· РјСѓР»СЊС‚Рё");
         characterState.RemoveState(this);
     }
 
@@ -84,11 +84,11 @@ public class MultiMagic : AuraState
 
     private void OnTargetSkillCast(Skill skill)
     {
-        Debug.Log("вызов CastSuccessSkill");
+        Debug.Log("РІС‹Р·РѕРІ CastSuccessSkill");
 
         _characters.Clear();
 
-        _distance = skill.Radius;
+        _distance = skill.AreaInfo.Radius;
         _targetsMask = skill.TargetsLayers;
 
         var colliders = Physics.OverlapSphere(characterState.transform.position, _distance, _targetsMask);

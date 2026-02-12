@@ -42,7 +42,7 @@ public class IceShower : Skill
 			{
 				Vector3 clickedPoint = GetMousePoint();
 
-				if (IsPointInRadius(Radius, clickedPoint))
+				if (IsPointInRadius(AreaInfo.Radius, clickedPoint))
 				{
 					_targetPoint = clickedPoint;
 				}
@@ -113,7 +113,7 @@ public class IceShower : Skill
 			{
 				worldPos = hit.point;
 			}
-			Collider[] hitColliders = Physics.OverlapSphere(worldPos, Area, TargetsLayers);
+			Collider[] hitColliders = Physics.OverlapSphere(worldPos, AreaInfo.Area, TargetsLayers);
 
 			foreach (var hitCollider in hitColliders)
 			{
@@ -194,4 +194,4 @@ public class IceShower : Skill
 	{
 		_frozwenTalent = value;
 	}
-}
+}

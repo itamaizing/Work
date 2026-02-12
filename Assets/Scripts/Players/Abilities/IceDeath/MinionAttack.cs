@@ -18,7 +18,7 @@ public class MinionAttack : AutoAttackSkill
         {
 			return;
         }
-        Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, Radius);
+        Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, AreaInfo.Radius);
 
 		foreach (Collider2D col in enemyDetected)
 		{

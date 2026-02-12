@@ -143,7 +143,7 @@ public class IcePuddle : Skill
 
 
                 float dist = Vector3.Distance(_hero.transform.position, _placedPosition);
-                if (dist > Radius)
+                if (dist > AreaInfo.Radius)
                 {
                     yield return null;
                     continue;

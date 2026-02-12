@@ -12,7 +12,7 @@ namespace Gangdollarff.EarthElemental
 
         protected override int AnimTriggerCastDelay => 0;
         protected override int AnimTriggerCast => Animator.StringToHash("Attack01");
-        protected override bool IsCanCast => Vector3.Distance(GetTargetCharacter().Position, transform.position) <= Radius;
+        protected override bool IsCanCast => Vector3.Distance(GetTargetCharacter().Position, transform.position) <= AreaInfo.Radius;
 
         public void AnimCastPunch()
         {

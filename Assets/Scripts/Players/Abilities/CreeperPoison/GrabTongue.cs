@@ -60,7 +60,7 @@ public class GrabTongue : Skill
             //    Debug.Log($"GrabTongue / PrepareJob / _target == {_target}");
             //    _mousePosition = GetMousePoint();
 
-            //    if (Vector3.Distance(_startPosition, _mousePosition) <= Radius)
+            //    if (Vector3.Distance(_startPosition, _mousePosition) <= AreaInfo.Radius)
             //    {
             //        _endPosition = _mousePosition;
             //    }
@@ -84,7 +84,7 @@ public class GrabTongue : Skill
     {
         while (true)
         {
-            Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, Radius, _targetsLayers);
+            Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, AreaInfo.Radius, _targetsLayers);
             foreach (Collider2D enemy in hits)
             {
                 if (enemy != null)
@@ -111,7 +111,7 @@ public class GrabTongue : Skill
     private bool CheckCanCast()
     {
         if (_target != null)
-            return Vector3.Distance(_player.transform.position, _target.transform.position) <= Radius;
+            return Vector3.Distance(_player.transform.position, _target.transform.position) <= AreaInfo.Radius;
 
         else 
             return false;

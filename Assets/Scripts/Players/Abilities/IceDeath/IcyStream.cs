@@ -25,7 +25,7 @@ public class IcyStream : Skill
 	{
 		if(GetTargetCharacter() != null)
 		{
-			if(Vector3.Distance(GetTargetCharacter().transform.position, _playerLinks.transform.position) > Radius)
+			if(Vector3.Distance(GetTargetCharacter().transform.position, _playerLinks.transform.position) > AreaInfo.Radius)
 			{
 				return false;
 			}

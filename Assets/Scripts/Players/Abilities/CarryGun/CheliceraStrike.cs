@@ -107,7 +107,7 @@ public class CheliceraStrike : Skill
 
     private bool CheckIsCanCast()
     {
-        return GetTarget() != null && Vector3.Distance(GetTarget().Transform.position, transform.position) <= Radius && NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
+        return GetTarget() != null && Vector3.Distance(GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -352,4 +352,4 @@ public class CheliceraStrike : Skill
         ClearTarget();
         AnimCastEnded();
     }
-}
+}

@@ -56,7 +56,7 @@ public class IceRolling : Skill
 	{
 		get
 		{
-			if (GetTargetCharacter() != null) return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+			if (GetTargetCharacter() != null) return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius;
 			else return true;
 		}
 	}
@@ -508,4 +508,4 @@ public class IceRolling : Skill
 		}
 		target.transform.SetParent(_playerLinks.transform);
 	}
-}
+}

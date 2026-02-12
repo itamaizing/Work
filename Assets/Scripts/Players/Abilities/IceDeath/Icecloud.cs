@@ -30,7 +30,7 @@ public class IceCloud : Skill
 	{
 		get
 		{
-			if (GetTargetCharacter() != null) return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+			if (GetTargetCharacter() != null) return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius;
 
 			else return true;
 		}
@@ -138,7 +138,7 @@ public class IceCloud : Skill
 				{
 					float distance = Vector3.Distance(_hero.transform.position, _mousePos);
 
-					if (distance <= Radius) _mousePos2 = GetTargetCharacter().transform.position;
+					if (distance <= AreaInfo.Radius) _mousePos2 = GetTargetCharacter().transform.position;
 
 					else
 					{
@@ -189,4 +189,4 @@ public class IceCloud : Skill
 
 	public void CanMoveIceCloud() => Hero.Move.SetCanMove(true);
 	public void StopMoveIceCloud() => Hero.Move.SetCanMove(false);
-}
+}

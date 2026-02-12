@@ -69,7 +69,7 @@ public class LightningMovement : Skill
             {
                 Vector3 clickedPoint = GetMousePoint();
 
-                if (IsPointInRadius(Radius, clickedPoint))
+                if (IsPointInRadius(AreaInfo.Radius, clickedPoint))
                 {
                     _leapPoint = CalculateLeapPoint(GetMousePoint());
                 }
@@ -209,7 +209,7 @@ public class LightningMovement : Skill
     private Vector3 CalculateLeapPoint(Vector3 targetPoint)
     {
         Vector3 direction = (targetPoint - transform.position).normalized;
-        Vector3 leapPoint = transform.position + direction * Mathf.Min(Radius, Vector3.Distance(transform.position, targetPoint));
+        Vector3 leapPoint = transform.position + direction * Mathf.Min(AreaInfo.Radius, Vector3.Distance(transform.position, targetPoint));
         leapPoint.y = 1f;
         return leapPoint;
     }
@@ -231,4 +231,4 @@ public class LightningMovement : Skill
         _lightningStrikes.ClearDataLightningStrikes();
         _lightningStrikes.OnLightningStrikesEnd -= HandleLightningStrikesEnd;
     }
-}
+}

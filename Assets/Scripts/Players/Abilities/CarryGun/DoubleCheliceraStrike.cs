@@ -71,7 +71,7 @@ public class DoubleCheliceraStrike : Skill
     private bool IsTargetInRange()
     {
         return GetTargetCharacter() != null &&
-            Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius &&
+            Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius &&
             NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
     }
 
@@ -128,4 +128,4 @@ public class DoubleCheliceraStrike : Skill
         ClearTarget();
         //_target = null;
     }
-}
+}

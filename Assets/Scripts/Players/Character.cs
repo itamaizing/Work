@@ -135,7 +135,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 	{
         AttributeSystem.Init(Data);
 		EnsureResources();
-		Debug.Log($"Resources{_resources.Count}", gameObject);
+		//Debug.Log($"Resources{_resources.Count}", gameObject);
 		Resource = _resources[Data.Resource.type];
         Move.Initialize(Rigidbody , AttributeSystem.MoveSpeed, true);
 		CharacterState.Initialize(this);

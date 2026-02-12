@@ -38,7 +38,7 @@ public abstract class AutoAttackSkill : Skill
             if (Target == null)
                 return false;
 
-            return NoObstacles(Target.transform.position, _obstacle) && IsTargetInRadius(Radius, Target.transform); ;
+            return NoObstacles(Target.transform.position, _obstacle) && IsTargetInRadius(AreaInfo.Radius, Target.transform); ;
         }
     }
 
@@ -66,7 +66,7 @@ public abstract class AutoAttackSkill : Skill
 		float t = Mathf.PingPong(Time.time * duration, 1f);
 		Color currentColor = Color.Lerp(startColor, endColor, t);
 		//_target.SelectedCircle.Circle.color = currentColor;
-		_skillRender.DrawRadiusColor(Radius, currentColor);
+		_skillRender.DrawRadiusColor(AreaInfo.Radius, currentColor);
 	}
 
 
@@ -159,9 +159,9 @@ public abstract class AutoAttackSkill : Skill
     {
 		while (Target != null)
         {
-            if (IsTargetInRadius(Radius + _attackZoneSize, Target.transform))
+            if (IsTargetInRadius(AreaInfo.Radius + _attackZoneSize, Target.transform))
             {
-                if (IsTargetInRadius(Radius, Target.transform))
+                if (IsTargetInRadius(AreaInfo.Radius, Target.transform))
                     _isAttacking = true;
 
                 if (_isAttacking && NoObstacles(Target.transform.position, _obstacle))
@@ -174,7 +174,7 @@ public abstract class AutoAttackSkill : Skill
 
                     //yield return new WaitForSeconds(AttackSpeed);
 
-                    if (IsTargetInRadius(Radius + _attackZoneSize, Target.transform) && NoObstacles(Target.transform.position, _obstacle) && IsCooldowned)
+                    if (IsTargetInRadius(AreaInfo.Radius + _attackZoneSize, Target.transform) && NoObstacles(Target.transform.position, _obstacle) && IsCooldowned)
                     {
                         if (TryPayCost(true))
                         {
@@ -187,7 +187,7 @@ public abstract class AutoAttackSkill : Skill
 
                                 while (_isPlayCastAnimAA)
                                 {
-                                    if((IsTargetInRadius(Radius + _attackZoneSize, Target.transform) && NoObstacles(Target.transform.position, _obstacle) && IsCooldowned) == false)
+                                    if((IsTargetInRadius(AreaInfo.Radius + _attackZoneSize, Target.transform) && NoObstacles(Target.transform.position, _obstacle) && IsCooldowned) == false)
                                     {
                                         _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
                                         _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);

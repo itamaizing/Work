@@ -25,7 +25,7 @@ public class GrowTree : Skill
     [SerializeField] private SkillQueue _skillQueue;
 
     [Header("Talents")]
-    //[SerializeField] private bool treeHealthTalent; // Созданное дерево каждые 0,3 сек увеличивает максималньый запас здоровья на 1 ед. Вплоть до 60 сек.
+    //[SerializeField] private bool treeHealthTalent; // РЎРѕР·РґР°РЅРЅРѕРµ РґРµСЂРµРІРѕ РєР°Р¶РґС‹Рµ 0,3 СЃРµРє СѓРІРµР»РёС‡РёРІР°РµС‚ РјР°РєСЃРёРјР°Р»РЅСЊС‹Р№ Р·Р°РїР°СЃ Р·РґРѕСЂРѕРІСЊСЏ РЅР° 1 РµРґ. Р’РїР»РѕС‚СЊ РґРѕ 60 СЃРµРє.
     private bool _growTreeIncreasesMaxHealth;
     private bool _treeMagicEvadeTalent;
     private bool _treeShotCooldownTalent;
@@ -75,7 +75,7 @@ public class GrowTree : Skill
         {
             if (float.IsPositiveInfinity(_targetPoint.x)) return false;
 
-            float allowedRadius = _isGrowTreeArrowIntoSkyRadiusTalent ? extendedRadius : Radius;
+            float allowedRadius = _isGrowTreeArrowIntoSkyRadiusTalent ? extendedRadius : AreaInfo.Radius;
             return IsPointInRadius(allowedRadius, _targetPoint);
         }
     }
@@ -187,7 +187,7 @@ public class GrowTree : Skill
                 continue;
             }
 
-            //float extRadius = (_shotIntoSky != null) ? _shotIntoSky.Radius : 0f;
+            //float extRadius = (_shotIntoSky != null) ? _shotIntoSky.AreaInfo.Radius : 0f;
 
             //if (extRadius <= 0f)
             //{
@@ -217,7 +217,7 @@ public class GrowTree : Skill
     //        {
     //            if (_hero == null) yield break;
 
-    //            float allowed = _castFromExtendedRadius ? extendedRadius : Radius;
+    //            float allowed = _castFromExtendedRadius ? extendedRadius : AreaInfo.Radius;
     //            float allowedSqr = allowed * allowed;
 
     //            Vector3 heroPos = _hero.transform.position;
@@ -253,7 +253,7 @@ public class GrowTree : Skill
         }
 
         int treeCount = _activeTrees.Count;
-        CastStreamDuration = treeCount == 0 ? _baseCastStreamDuration : _baseCastStreamDuration * Mathf.Pow(2, treeCount);
+        Channeling.CastDuration = treeCount == 0 ? _baseCastStreamDuration : _baseCastStreamDuration * Mathf.Pow(2, treeCount);
 
         Vector3 targetPoint = Vector3.positiveInfinity;
 
@@ -285,7 +285,7 @@ public class GrowTree : Skill
                 else
                 {
                     float dist = Vector3.Distance(transform.position, targetPoint);
-                    if (dist <= Radius) _castFromExtendedRadius = false;
+                    if (dist <= AreaInfo.Radius) _castFromExtendedRadius = false;
 
                     //else if (dist <= extendedRadius && _isGrowTreeArrowIntoSkyRadiusTalent)
                     //{
@@ -308,10 +308,10 @@ public class GrowTree : Skill
             yield return null;
         }
 
-        int nearCount = _activeTrees.Count(tree => tree != null && Vector3.Distance(tree.transform.position, targetPoint) <= Radius);
-        CastStreamDuration = nearCount == 0 ? _baseCastStreamDuration : _baseCastStreamDuration * Mathf.Pow(2, nearCount);
+        int nearCount = _activeTrees.Count(tree => tree != null && Vector3.Distance(tree.transform.position, targetPoint) <= AreaInfo.Radius);
+        Channeling.CastDuration = nearCount == 0 ? _baseCastStreamDuration : _baseCastStreamDuration * Mathf.Pow(2, nearCount);
 
-        CmdSetCastStreamDurationByProximity(targetPoint, Radius);
+        CmdSetCastStreamDurationByProximity(targetPoint, AreaInfo.Radius);
 
         if (_checkExtendedRadiusCoroutine != null)
         {
@@ -524,7 +524,7 @@ public class GrowTree : Skill
 
         int nearCount = 0;
         foreach (var tree in _activeTrees) if (tree != null && Vector3.Distance(tree.transform.position, plannedPos) <= checkRadius) nearCount++;
-        CastStreamDuration = nearCount == 0 ? _baseCastStreamDuration : _baseCastStreamDuration * Mathf.Pow(2, nearCount);
+        Channeling.CastDuration = nearCount == 0 ? _baseCastStreamDuration : _baseCastStreamDuration * Mathf.Pow(2, nearCount);
     }
 
     [ClientRpc]
@@ -581,7 +581,7 @@ public class GrowTree : Skill
         }
 
         _treeData.MaxHealth = _baseHealth;
-        CastStreamDuration = _baseCastStreamDuration;
+        Channeling.CastDuration = _baseCastStreamDuration;
 
         CmdSetMaxHealth(_treeData.MaxHealth);
     }
@@ -598,4 +598,4 @@ public class GrowTree : Skill
 
     protected override void ClearData() => _targetPoint = Vector3.positiveInfinity;
     public override void LoadTargetData(TargetInfo targetInfo) => _targetPoint = targetInfo.Points[0];
-}
+}

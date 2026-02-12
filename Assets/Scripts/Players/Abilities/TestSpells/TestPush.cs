@@ -18,7 +18,7 @@ public class TestPush : Skill
             if (_target == null)
                 return false;
 
-            return NoObstacles(_target.transform.position, _obstacle) && IsTargetInRadius(Radius, _target.transform); ;
+            return NoObstacles(_target.transform.position, _obstacle) && IsTargetInRadius(AreaInfo.Radius, _target.transform); ;
         }
     }
 

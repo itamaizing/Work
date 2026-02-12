@@ -50,7 +50,7 @@ public class CircularFrosting : Skill
 
 	private void CreateSmoke()
 	{
-		Collider[] enemyDetected = Physics.OverlapSphere(transform.position, Radius);
+		Collider[] enemyDetected = Physics.OverlapSphere(transform.position, AreaInfo.Radius);
 		float usedEnergy = 0;
 		if (_energy.CurrentValue >= 30)
 		{

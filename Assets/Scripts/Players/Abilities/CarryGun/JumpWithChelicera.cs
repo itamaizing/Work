@@ -280,6 +280,6 @@ public class JumpWithChelicera : Skill
     private bool CheckCanCast()
     {
         if (GetTarget() == null) return false;
-        return Vector3.Distance(GetTarget().Transform.position, transform.position) <= Radius && NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
+        return Vector3.Distance(GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
     }
-}
+}

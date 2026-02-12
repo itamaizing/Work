@@ -37,7 +37,7 @@ public class LightningStrikes : Skill
         get
         {
             if (GetTarget() == null)return false;
-            return NoObstacles(GetTarget().Transform.position, _obstacle) && IsTargetInRadius(Radius, GetTarget().Transform);
+            return NoObstacles(GetTarget().Transform.position, _obstacle) && IsTargetInRadius(AreaInfo.Radius, GetTarget().Transform);
         }
     }
 
@@ -145,7 +145,7 @@ public class LightningStrikes : Skill
 
     private bool IsTargetInRange()
     {
-        return GetTarget() != null && Vector3.Distance(_player.transform.position, GetTarget().Transform.position) <= Radius;
+        return GetTarget() != null && Vector3.Distance(_player.transform.position, GetTarget().Transform.position) <= AreaInfo.Radius;
     }
 
     private float GetClipLength()
@@ -185,4 +185,4 @@ public class LightningStrikes : Skill
 
         if (_coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime == true) _isIncreaseCooldownTime = false;
     }
-}
+}

@@ -62,10 +62,10 @@ public class Silence : Skill
             {
                 var point = target.Points[0];
                 if (float.IsInfinity(point.x)) return false;
-                return IsPointInRadius(Radius, point);
+                return IsPointInRadius(AreaInfo.Radius, point);
             }
 
-            return IsPointInRadius(Radius, _targetPoint);
+            return IsPointInRadius(AreaInfo.Radius, _targetPoint);
         }
     }
 
@@ -91,7 +91,7 @@ public class Silence : Skill
             {
                 targetPoint = GetMousePoint();
 
-                if (IsPointInRadius(Radius, targetPoint))
+                if (IsPointInRadius(AreaInfo.Radius, targetPoint))
                 {
                     DrawDamageZoneClient(targetPoint);
                     break;
@@ -119,7 +119,7 @@ public class Silence : Skill
 
     private void ApplyStateToEnemiesInZone(Vector3 target)
     {
-        Collider[] hitColliders = Physics.OverlapSphere(target, Area - SilenceAreaRadiusOffset, TargetsLayers);
+        Collider[] hitColliders = Physics.OverlapSphere(target, AreaInfo.Area - SilenceAreaRadiusOffset, TargetsLayers);
 
         int minionHitCount = 0;
         int ghostAuraMinionHitCount = 0;

@@ -63,7 +63,7 @@ public class TreeCharacterZone : NetworkBehaviour
         foreach (var skill in character.Abilities.Abilities)
         {
             if (skill.AbilityForm == AbilityForm.Physical)
-                skill.Radius *= multiplier;
+                skill.AreaInfo.Radius *= multiplier;
         }
     }
 
@@ -74,7 +74,7 @@ public class TreeCharacterZone : NetworkBehaviour
         foreach (var skill in character.Abilities.Abilities)
         {
             if (skill.AbilityForm == AbilityForm.Physical)
-                skill.Radius /= multiplier;
+                skill.AreaInfo.Radius /= multiplier;
         }
     }
 }

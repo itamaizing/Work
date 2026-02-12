@@ -78,7 +78,7 @@ public class Ghost : Skill
 
             if (_teleportGhost && _ghostToTeleport != null)
             {
-                if (!_isGhostSpawnInRadiusTree) return IsWithinRadius(_ghostToTeleport.transform.position, Radius + extendedRadius);
+                if (!_isGhostSpawnInRadiusTree) return IsWithinRadius(_ghostToTeleport.transform.position, AreaInfo.Radius + extendedRadius);
                 if (_isGhostSpawnInRadiusTree) return IsWithinRadius(_ghostToTeleport.transform.position, _infinityDistance); 
             }
 
@@ -101,8 +101,8 @@ public class Ghost : Skill
     {
         _isGhostSpawnInRadiusTree = value;
 
-        //if (_isGhostSpawnInRadiusTree) Radius = 0;
-        //else Radius = baseRadius;
+        //if (_isGhostSpawnInRadiusTree) AreaInfo.Radius = 0;
+        //else AreaInfo.Radius = baseRadius;
     }
 
     #endregion
@@ -117,8 +117,8 @@ public class Ghost : Skill
         InitializeFields();
         RegisterSpawnEvents();
 
-        //if (_isGhostSpawnInRadiusTree) Radius = 0;
-        Radius = baseRadius;
+        //if (_isGhostSpawnInRadiusTree) AreaInfo.Radius = 0;
+        AreaInfo.Radius = baseRadius;
 
         if (_extendedRadiusCircle == null) _extendedRadiusCircle = GetComponentInChildren<DrawCircle>(true);
     }
@@ -238,7 +238,7 @@ public class Ghost : Skill
 
             if (_sendingGhostTargetTalentActive && IsMouseOverTarget(out Character character) && character.CharacterState.CheckForState(States.InnerDarkness))
             {
-                if (GetMouseButton && IsWithinRadius(character.transform.position, Radius) && !GetComponent<GhostAura>())
+                if (GetMouseButton && IsWithinRadius(character.transform.position, AreaInfo.Radius) && !GetComponent<GhostAura>())
                 {
                     if (_ghosts.Count > 0)
                     {
@@ -255,7 +255,7 @@ public class Ghost : Skill
             {
                 if (GetMouseButton)
                 {
-                    if (!_isGhostSpawnInRadiusTree && !IsWithinRadius(ghostPreview.transform.position, Radius + extendedRadius))
+                    if (!_isGhostSpawnInRadiusTree && !IsWithinRadius(ghostPreview.transform.position, AreaInfo.Radius + extendedRadius))
                     {
                         _teleportQueue.Enqueue(ghostPreview);
                         if (!_isWaitingTeleport) StartCoroutine(WaitTeleportQueueCoroutine());
@@ -281,7 +281,7 @@ public class Ghost : Skill
                     if (secondPoint == Vector3.zero) { yield return null; continue; }
                     bool heroCanSee = IsWithinRadius(secondPoint, _heroVisionRadius);
                     bool treeCanSee = _allGrowTrees.Any(tree => IsWithinRadius(tree.transform.position, secondPoint, _treeVisionRadius));
-                    bool canSpawnHere = (_isGhostSpawnInRadiusTree && (IsNearGrowTree(secondPoint, 1f) || IsVisibleToHero(secondPoint))) || (!_isGhostSpawnInRadiusTree && IsMouseInRadius(Radius));
+                    bool canSpawnHere = (_isGhostSpawnInRadiusTree && (IsNearGrowTree(secondPoint, 1f) || IsVisibleToHero(secondPoint))) || (!_isGhostSpawnInRadiusTree && IsMouseInRadius(AreaInfo.Radius));
 
                     if (!canSpawnHere) { yield return null; continue; }
 
@@ -578,7 +578,7 @@ public class Ghost : Skill
         CmdAcSummoningGhost();
 
         Vector3 spawnDirection = (targetPosition - transform.position).normalized;
-        float offsetDistance = Radius - 1;
+        float offsetDistance = AreaInfo.Radius - 1;
         Vector3 spawnStartPosition = targetPosition - spawnDirection * offsetDistance;
 
         var ghostVisual = Instantiate(ghostPrefabPreview, spawnStartPosition, Quaternion.identity);
@@ -638,13 +638,13 @@ public class Ghost : Skill
             bool ghostWithAuraInExtendedRadius = _ghosts.Any(ghost =>
                 ghost != null &&
                 ghost.GetComponent<GhostAura>() != null &&
-                IsWithinRadius(ghost.transform.position, Radius + extendedRadius));
+                IsWithinRadius(ghost.transform.position, AreaInfo.Radius + extendedRadius));
 
             if (_extendedRadiusCircle != null)
             {
                 var color = ghostWithAuraInExtendedRadius ? Color.green : extendedRadiusColor;
                 _extendedRadiusCircle.SetColor(color);
-                _extendedRadiusCircle.Draw(Radius + extendedRadius);
+                _extendedRadiusCircle.Draw(AreaInfo.Radius + extendedRadius);
             }
 
             yield return new WaitForSeconds(0.1f);
@@ -669,7 +669,7 @@ public class Ghost : Skill
                 continue;
             }
 
-            while (character != null && !IsWithinRadius(character.transform.position, Radius + extendedRadius))
+            while (character != null && !IsWithinRadius(character.transform.position, AreaInfo.Radius + extendedRadius))
                 yield return null;
 
             if (character != null) TeleportToGhost(character);
@@ -765,4 +765,4 @@ public class Ghost : Skill
     {
         if (_audioSource != null && aCСontrolGhostToTarget != null) _audioSource.PlayOneShot(aCСontrolGhostToTarget);
     }
-}
+}

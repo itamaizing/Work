@@ -21,7 +21,7 @@ namespace Gangdollarff.AirElemental
         private bool CheckCanCast()
         {
             return
-                   Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+                   Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius;
         }
 
         public void AnimCastLight()
@@ -102,4 +102,4 @@ namespace Gangdollarff.AirElemental
             CreateParticle(position);
         }
     }
-}
+}

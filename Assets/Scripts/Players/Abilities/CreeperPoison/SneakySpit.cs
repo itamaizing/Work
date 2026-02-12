@@ -57,7 +57,7 @@ public class SneakySpit : Skill
     private bool CheckCanCast()
     {
         return GetTargetCharacter() != null &&
-        Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius &&
+        Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius &&
         NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle) && !Disactive;
     }
 

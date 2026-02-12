@@ -19,7 +19,7 @@ public class ShotAstral : Skill
     protected override int AnimTriggerCastDelay => Animator.StringToHash(_startAnimTrigger);
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast =>
-        Vector3.Distance(_targetPoint, transform.position) <= Radius &&
+        Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.Radius &&
         NoObstacles(_targetPoint, transform.position, _obstacle);
 
     private void OnDestroy() => OnSkillCanceled -= HandleSkillCanceled;
@@ -36,7 +36,7 @@ public class ShotAstral : Skill
             {
                 Vector3 click = GetMousePoint();
 
-                if (IsPointInRadius(Radius, click) && NoObstacles(click, transform.position, _obstacle))
+                if (IsPointInRadius(AreaInfo.Radius, click) && NoObstacles(click, transform.position, _obstacle))
                 {
                     _targetPoint = click;
                     FindTargetCharacter();

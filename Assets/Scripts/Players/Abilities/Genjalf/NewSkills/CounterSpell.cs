@@ -16,7 +16,7 @@ public class CounterSpell : Skill
 
     private bool CheckCanCast()
     {
-        return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius && GetTargetCharacter() != null;
+        return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius && GetTargetCharacter() != null;
     }
 
     public void AnimCastLight()

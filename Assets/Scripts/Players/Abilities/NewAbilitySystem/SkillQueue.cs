@@ -140,7 +140,7 @@ public class SkillQueue : MonoBehaviour
         for (int i = 0; i < info.Count; i++) vector3s[i] = new Vector3(info[i].x, info[i].y + 0.1f, info[i].z);
 
         _skillRenderer.StartDrawAllLineForZone(vector3s);
-        _skillRenderer.DrawRadius(skill.Radius);
+        _skillRenderer.DrawRadius(skill.AreaInfo.Radius);
     }
 
     private Skill RemoveFromQueue()
@@ -177,4 +177,4 @@ public class SkillQueue : MonoBehaviour
         if (info?.GetTargets() == null) return;
         foreach (var target in info.GetTargets()) if (target is Character character && character?.SelectedCircle != null) character.SelectedCircle.SwitchSelectCircle(isOn);
     }
-}
+}

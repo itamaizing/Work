@@ -73,7 +73,7 @@ public class SoulAid : Skill
     {
         while (GetTargetCharacter() == null)
         {
-            Radius = _talentDoubleRange ? _largeRadius : _defaultRadius;
+            AreaInfo.Radius = _talentDoubleRange ? _largeRadius : _defaultRadius;
             
             if (GetMouseButton)
             {

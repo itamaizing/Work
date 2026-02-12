@@ -2,8 +2,9 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using Mirror;
 
-public class AttributeSystem : MonoBehaviour
+public class AttributeSystem : NetworkBehaviour
 {
     private CharacterData _data;
 
@@ -31,8 +32,6 @@ public class AttributeSystem : MonoBehaviour
         foreach (helperCharData_AttributeInfo info in data.Attributes.AttributeData)
         {
             _attributes.Add(info.type, new Attribute(info.value));
-            Debug.Log($"Added {info.type}={info.value}");
-
         }
         foreach (helperCharData_ResourceInfo info in data.ExtraResources)
         {
@@ -54,7 +53,6 @@ public class ResourceAttribute
         foreach (var attribute in info.attributes)
         {
             _attributes.Add(attribute.type, new Attribute(attribute.value));
-            Debug.Log($"Added {attribute.type}={attribute.value}");
         }
         TemporaryAttributeDisplay = _attributes.Values.ToList();
     }

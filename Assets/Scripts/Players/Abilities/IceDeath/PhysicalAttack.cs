@@ -39,7 +39,7 @@ public class PhysicalAttack : Skill
 
 	protected override int AnimTriggerCastDelay => 0;
 	protected override int AnimTriggerCast => _animTriggerToUse = UnityEngine.Random.value > RandomAttack ? RightKickTrigger : LeftKickTrigger;
-	protected override bool IsCanCast => GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius && NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
+	protected override bool IsCanCast => GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius && NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
 
 	private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
@@ -329,4 +329,4 @@ public class PhysicalAttack : Skill
 		ClearTempTarget();
 		_hero.Move.StopLookAt();
 	}
-}
+}

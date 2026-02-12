@@ -21,7 +21,7 @@ public class ChainLightning : Skill
     private bool CheckCanCast()
     {
         return
-               Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+               Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius;
     }
 
     public void AnimCastLight()
@@ -45,7 +45,7 @@ public class ChainLightning : Skill
         {
             Attack(GetTargetCharacter());
             yield return new WaitForSecondsRealtime(0.3f);
-            var temps = Physics.OverlapSphere(GetTargetCharacter().Position, Radius, _targetsLayers);
+            var temps = Physics.OverlapSphere(GetTargetCharacter().Position, AreaInfo.Radius, _targetsLayers);
             
             for (int i = 0; i < temps.Length; i++)
             {

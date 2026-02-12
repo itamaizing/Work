@@ -76,7 +76,7 @@ public class PullingHealth : Skill
         get
         {
             if (_isStreaming) return false;
-            if (GetTarget() != null) return Vector3.Distance(GetTarget().Transform.position, transform.position) <= Radius;
+            if (GetTarget() != null) return Vector3.Distance(GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
             return false;
         }
     }
@@ -94,7 +94,7 @@ public class PullingHealth : Skill
     private void Start()
     {
         _audioSource = GetComponent<AudioSource>();
-        _baseRadius = Radius;
+        _baseRadius = AreaInfo.Radius;
         _baseCastStreamDuration = CastStreamDuration;
         _baseTickInterval = _tickInterval;
     }
@@ -164,12 +164,12 @@ public class PullingHealth : Skill
 
     private void UpdateRadiusBasedOnGhosts()
     {
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, Radius);
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius);
         int ghostCount = 0;
         foreach (var collider in hitColliders) if (collider.TryGetComponent<GhostAura>(out var ghostAura)) ghostCount++;
-        Radius = _baseRadius + ghostCount * RadiusIncreasePerGhost;
-        Radius = Mathf.Clamp(Radius, _baseRadius, _baseRadius + MaxGhostRadiusIncrease);
-        if (_skillRender != null) _skillRender.DrawRadius(Radius);
+        AreaInfo.Radius = _baseRadius + ghostCount * RadiusIncreasePerGhost;
+        AreaInfo.Radius = Mathf.Clamp(AreaInfo.Radius, _baseRadius, _baseRadius + MaxGhostRadiusIncrease);
+        if (_skillRender != null) _skillRender.DrawRadius(AreaInfo.Radius);
     }
 
     protected override IEnumerator CastJob()
@@ -189,7 +189,7 @@ public class PullingHealth : Skill
             if (pullingHealthGhostTalent && targetComponentState.CheckForState(States.InnerDarkness))
             {
                 innerDarknessStacks = targetComponentState.CheckStateStacks(States.InnerDarkness);
-                Collider[] nearbyObjects = Physics.OverlapSphere(transform.position, Radius);
+                Collider[] nearbyObjects = Physics.OverlapSphere(transform.position, AreaInfo.Radius);
 
                 int ghostsToAdd = innerDarknessStacks == InnerDarknessFirstThreshold ? GhostsToAddAtFirstThreshold : innerDarknessStacks == InnerDarknessSecondThreshold ? GhostsToAddAtSecondThreshold : GhostsToAddDefault;
                 int addedGhosts = 0;
@@ -201,7 +201,7 @@ public class PullingHealth : Skill
                     if (obj.TryGetComponent<GhostAura>(out GhostAura ghostAura))
                     {
                         float distanceToTarget = Vector3.Distance(obj.transform.position, character.transform.position);
-                        if (distanceToTarget <= Radius && !_ghost.Contains(obj.gameObject))
+                        if (distanceToTarget <= AreaInfo.Radius && !_ghost.Contains(obj.gameObject))
                         {
                             _ghost.Add(obj.gameObject);
                             CmdSyncGhosts(obj.gameObject);
@@ -215,7 +215,7 @@ public class PullingHealth : Skill
                 if (innerDarknessStacks > InnerDarknessFirstThreshold)
                 {
                     float durationMultiplier = BaseDurationMultiplier + DurationPerStack * (innerDarknessStacks - 1);
-                    CastStreamDuration = _baseCastStreamDuration * durationMultiplier;
+                    Channeling.CastDuration = _baseCastStreamDuration * durationMultiplier;
                 }
             }
 
@@ -270,7 +270,7 @@ public class PullingHealth : Skill
         #region Pulling through Ghosts (Length)
         if (_pullingHealthThroughGhosts)
         {
-            Collider[] hitColliders = Physics.OverlapSphere(transform.position, Radius);
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius);
             List<GhostAura> ghostsInZone = new List<GhostAura>();
 
             foreach (var collider in hitColliders) if (collider.TryGetComponent<GhostAura>(out var ghostAura)) ghostsInZone.Add(ghostAura);
@@ -323,7 +323,7 @@ public class PullingHealth : Skill
                 if (_ignoreMoveTimeLeft <= 0f) _ignoreMoveCheck = false;
             }
 
-            if (damageable != null && (Input.GetMouseButtonDown(1) || ( Vector3.Distance(transform.position, damageable.transform.position) > Radius)) || Vector3.Distance(initialPosition, transform.position) > MaxPositionShift && !_ignoreMoveCheck)
+            if (damageable != null && (Input.GetMouseButtonDown(1) || ( Vector3.Distance(transform.position, damageable.transform.position) > AreaInfo.Radius)) || Vector3.Distance(initialPosition, transform.position) > MaxPositionShift && !_ignoreMoveCheck)
             {
                 EndAnimDestroyEffect();
                 _isStreaming = false;
@@ -363,7 +363,7 @@ public class PullingHealth : Skill
 
     private void FinishStream()
     {
-        CastStreamDuration = _baseCastStreamDuration;
+        Channeling.CastDuration = _baseCastStreamDuration;
         _tickInterval = _baseTickInterval;
         _isStreaming = false;
         _streamFinished = true;
@@ -582,6 +582,6 @@ public class PullingHealth : Skill
         _extraEffects.Clear();
         ClearTempTarget();
         ClearTarget();
-        Radius = _baseRadius;
+        AreaInfo.Radius = _baseRadius;
     }
-}
+}

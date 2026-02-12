@@ -22,7 +22,7 @@ public class FireBoll : Skill
     private bool CheckCanCast()
     {
         return 
-               Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+               Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius;
     }
 
     public void AnimCastFireboll()

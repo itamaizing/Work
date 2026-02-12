@@ -29,9 +29,9 @@ public class MagicDefense : Skill
 		Debug.Log("Check");
 		//return true;
 		if (_target != null)
-		return Vector3.Distance(_target.transform.position, transform.position) <= Radius;
+		return Vector3.Distance(_target.transform.position, transform.position) <= AreaInfo.Radius;
 
-		return Vector3.Distance(_position, transform.position) <= Radius;
+		return Vector3.Distance(_position, transform.position) <= AreaInfo.Radius;
 	}
 
 	private void Start()
@@ -78,7 +78,7 @@ public class MagicDefense : Skill
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		while(_target == null && Vector2.Distance(_position, transform.position) > Radius)
+		while(_target == null && Vector2.Distance(_position, transform.position) > AreaInfo.Radius)
 		{
 			Debug.Log("loop");
 			if (GetMouseButton)

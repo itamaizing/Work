@@ -21,7 +21,7 @@ public class TestH2 : Skill
         get
         {
             if(GetTargetCharacter() != null)
-                return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+                return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius;
 
             return false;
         }

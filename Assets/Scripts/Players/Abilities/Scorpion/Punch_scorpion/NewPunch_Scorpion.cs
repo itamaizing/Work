@@ -34,7 +34,7 @@ public class NewPunch_Scorpion : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => _isRightKick ? RightPunchTrigger : LeftPunchTrigger;
 
-    protected override bool IsCanCast => GetTarget() != null && Vector3.Distance(GetTarget().Transform.position, transform.position) <= Radius && NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
+    protected override bool IsCanCast => GetTarget() != null && Vector3.Distance(GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     private void Start()
@@ -60,7 +60,7 @@ public class NewPunch_Scorpion : Skill
     public void WarningUpAddState(bool value) => _isWarningUpAddState = value;
     #endregion
 
-    private bool IsTargetInRange() { return GetTarget() != null && Vector3.Distance(_playerLinks.transform.position, GetTarget().Transform.position) <= Radius; }
+    private bool IsTargetInRange() { return GetTarget() != null && Vector3.Distance(_playerLinks.transform.position, GetTarget().Transform.position) <= AreaInfo.Radius; }
 
     private void HandleSkillCanceled()
     {
@@ -160,7 +160,7 @@ public class NewPunch_Scorpion : Skill
     {
         if (_wasDamageApplied) return;
         if (GetTarget() == null) return;
-        if (Vector2.Distance(_lastTarget.transform.position, GetTarget().Transform.position) > Radius) return;
+        if (Vector2.Distance(_lastTarget.transform.position, GetTarget().Transform.position) > AreaInfo.Radius) return;
 
         Damage damage = new Damage
         {

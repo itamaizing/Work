@@ -64,7 +64,7 @@ public class ArrowProjectile : Projectiles
         if (_startPosition != Vector3.zero)
         {
             float distanceTravelled = Vector3.Distance(_startPosition, transform.position);
-            if (distanceTravelled > _skill.CastLength)
+            if (distanceTravelled > _skill.AreaInfo.CastLength)
             {
                 Destroy(gameObject);
             }
@@ -177,4 +177,4 @@ public class ArrowProjectile : Projectiles
     {
         _arrow.SetActive(true);
     }
-}
+}

@@ -374,4 +374,4 @@ public class Health : Resource, IDamageable, IHealingable
     {
         _regenerationValue /= percentageValue;
     }
-}
+}
