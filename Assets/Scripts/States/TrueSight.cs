@@ -30,7 +30,6 @@ public class TrueSight : AbstractCharacterState
 
     public override void ExitState()
     {
-        Debug.Log("3");
         var character = _characterState.GetComponent<Character>();
         if (_characterState.CheckForState(States.Invisible) || _characterState.CheckForState(States.CreeperInvisible)) LostInvisibleEnemy(character);
         _characterState.RemoveState(this);
