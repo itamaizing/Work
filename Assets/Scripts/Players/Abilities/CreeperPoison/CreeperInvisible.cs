@@ -163,15 +163,15 @@ public class CreeperInvisible : Skill
 
             Collider[] hitEnemies = Physics.OverlapSphere(_player.transform.position, Radius, _targetsLayers);
 
-            foreach (Collider enemy in hitEnemies)
-            {
-                if (enemy.TryGetComponent(out Character character) &&
-                    (_targetsLayers.value & (1 << character.gameObject.layer)) != 0)
-                {
-                    hasEnemies = true;
-                    break;
-                }
-            }
+            //foreach (Collider enemy in hitEnemies)
+            //{
+            //    if (enemy.TryGetComponent(out Character character) &&
+            //        (_targetsLayers.value & (1 << character.gameObject.layer)) != 0)
+            //    {
+            //        hasEnemies = true;
+            //        break;
+            //    }
+            //}
 
             Disactive = hasEnemies;
 

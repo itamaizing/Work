@@ -24,11 +24,13 @@ public class TrueSight : AbstractCharacterState
 
     public override void UpdateState()
     {
-
+        duration -= Time.deltaTime;
+        if (duration <= 0) ExitState();
     }
 
     public override void ExitState()
     {
+        Debug.Log("3");
         var character = _characterState.GetComponent<Character>();
         if (_characterState.CheckForState(States.Invisible) || _characterState.CheckForState(States.CreeperInvisible)) LostInvisibleEnemy(character);
         _characterState.RemoveState(this);
@@ -65,8 +67,11 @@ public class TrueSight : AbstractCharacterState
 
     private void LostInvisibleEnemy(Character invisibleEnemy)
     {
+        Debug.Log("2");
         SkinnedMeshRenderer renderer = invisibleEnemy.GetComponentInChildren<SkinnedMeshRenderer>();
         if (renderer == null) return;
+
+        Debug.Log("1");
 
         foreach (var mat in renderer.materials)
         {
