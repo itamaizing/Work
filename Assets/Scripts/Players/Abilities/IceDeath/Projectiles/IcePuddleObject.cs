@@ -19,6 +19,7 @@ public class IcePuddleObject : Projectiles
 	private bool _talentEvadeDadBoost = false;
 	private bool _talentFrostingFrozen = false;
 	private bool _iceDeathInIcePudleTalent = false;
+	private UserNetworkSettings _dadSettings;
 	private readonly List<Character> _enemiesInZone = new();
 	private readonly Dictionary<Character, Coroutine> _frostingCoroutines = new();
 	private readonly WaitForSeconds _waitApplyDelay = new WaitForSeconds(0.7f);
@@ -55,10 +56,35 @@ public class IcePuddleObject : Projectiles
 		_timeToDestroy = timeToDestroy;
 		_spawnTime = Time.time;
 
+		_dadSettings = _dad?.GetComponent<UserNetworkSettings>();
+
 		Debug.Log($"_timeToDestroy: {_timeToDestroy}");
 		 
 		if (_lastHit) transform.localScale = Vector3.one * 1.7f;
 		StartCoroutine(DestroyPuddle());
+	}
+
+	private bool IsEnemy(GameObject target)
+	{
+		if (_dad == null) return IsEnemyByLayer(target);
+
+		if (!_dadSettings || !target.TryGetComponent(out UserNetworkSettings targetSettings))
+			return IsEnemyByLayer(target);
+
+		if (!IsTeamAssigned(_dadSettings) || !IsTeamAssigned(targetSettings))
+			return IsEnemyByLayer(target);
+
+		return _dadSettings.TeamIndex != targetSettings.TeamIndex;
+	}
+
+	private bool IsTeamAssigned(UserNetworkSettings settings)
+	{
+		return settings.TeamIndex != 0;
+	}
+
+	private bool IsEnemyByLayer(GameObject target)
+	{
+		return ((1 << target.layer) & _skill.TargetsLayers.value) != 0;
 	}
 
 	public void SetTalents(bool talentEvadeDadBoost, bool talentFrostingFrozen)
@@ -98,7 +124,7 @@ public class IcePuddleObject : Projectiles
 	{
 		if (!_initialized || !collision.TryGetComponent<Character>(out var target)) return;
 		if (target == _dad) return;
-		if (target.gameObject.layer == _skill.TargetsLayers) return;
+		if (!IsEnemy(target.gameObject)) return;
 		if (_enemiesInZone.Contains(target)) return;
 
 		_enemiesInZone.Add(target);

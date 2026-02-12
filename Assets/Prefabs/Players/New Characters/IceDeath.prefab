@@ -3582,7 +3582,7 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _abilitySchool: 0
-  _abilityForm: 0
+  _abilityForm: 1
   _damageType: 0
   _attackRangeType: 0
   _skillType: 0
