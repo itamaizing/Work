@@ -22,7 +22,7 @@ public class ImmaterialityState : AbstractCharacterState
         _player = _characterState.Character;
         _duration = durationToExit;
         _defualtPlayerLayer = _characterState.gameObject.layer;
-
+        
         _newPlayerLayer = LayerMask.NameToLayer("LightningMovement");
 
         DisabledCollider();

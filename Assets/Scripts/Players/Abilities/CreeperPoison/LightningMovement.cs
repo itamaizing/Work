@@ -167,12 +167,12 @@ public class LightningMovement : Skill
         _damagedCharacter = null;
 
         if (_superFastScales.Data.IsOpen)
-            _superFastScales.IncreasingResistance(Target);
+           _superFastScales.IncreasingResistance(Target);
 
         if (_heatedGlands.Data.IsOpen)
             _player.CharacterState.AddState(States.HeatedGlands, 4f, 0, _player.gameObject, null);
 
-        _player.CharacterState.CmdAddState(States.Immateriality, _durationLeap, 0, _player.gameObject, Name);
+        //_player.CharacterState.CmdAddState(States.Immateriality, _durationLeap, 0, _player.gameObject, Name);
 
         _leapPoint = CalculateLeapPoint(_leapPoint);
 
