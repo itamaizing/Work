@@ -212,6 +212,7 @@ public class PoisonBall : Skill, IAltAbility
             _player.Animator.SetFloat("PoisonBallMultiplierSpeedAnimation", _baseMultiplierAnimationSpeed);
 
         ClearTarget();
+        ClearTempTarget();
         //_currentTarget = null;
 
         _isTarget = false;
@@ -320,8 +321,11 @@ public class PoisonBall : Skill, IAltAbility
         UseAbility();
         PostPrepearClear();
 
+        SetTarget(GetTempTargetCharacter());
+
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(targetPoint);
+        targetInfo.AddTarget(GetTempTargetCharacter());
         callbackDataSaved(targetInfo);
     }
 
@@ -481,9 +485,9 @@ public class PoisonBall : Skill, IAltAbility
 
     private void CheckWhoTarget()
     {
-        if (GetTargetCharacter() != null)
+        if (GetTempTargetCharacter() != null)
         {
-            if (GetTargetCharacter().gameObject == _player.gameObject)
+            if (GetTempTargetCharacter().gameObject == _player.gameObject)
             {
                 _poisonBallInfo.IsOriginalTargetPlayer = true;
                 _poisonBallInfo.IsOriginalTargetAllies = false;
@@ -498,7 +502,7 @@ public class PoisonBall : Skill, IAltAbility
                     _poisonBallInfo.IsHealingPoisonCloud = false;
                 }
             }
-            else if (GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Allies"))
+            else if (GetTempTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Allies"))
             {
                 _poisonBallInfo.IsOriginalTargetPlayer = false;
                 _poisonBallInfo.IsOriginalTargetAllies = true;
@@ -513,7 +517,7 @@ public class PoisonBall : Skill, IAltAbility
                     _poisonBallInfo.IsHealingPoisonCloud = false;
                 }
             }
-            else if (GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Enemy"))
+            else if (GetTempTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
                 _poisonBallInfo.IsOriginalTargetPlayer = false;
                 _poisonBallInfo.IsOriginalTargetAllies = false;
@@ -586,9 +590,9 @@ public class PoisonBall : Skill, IAltAbility
 
     private void ChooseSpeed()
     {
-        if (_isTarget && GetTargetCharacter().gameObject != _player.gameObject)
+        if (_isTarget && GetTempTargetCharacter().gameObject != _player.gameObject)
         {
-            _isFast = Vector3.Distance(_player.transform.position, _secondMousePosition) > Vector3.Distance(_player.transform.position, GetTargetCharacter().transform.position);
+            _isFast = Vector3.Distance(_player.transform.position, _secondMousePosition) > Vector3.Distance(_player.transform.position, GetTempTargetCharacter().transform.position);
         }
         else
         {
@@ -1077,5 +1081,6 @@ public class PoisonBall : Skill, IAltAbility
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         _firstMousePosition = targetInfo.Points[0];
+        if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 }
