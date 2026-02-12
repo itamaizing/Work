@@ -27,15 +27,14 @@ public class MiniMapFollow : MonoBehaviour
         if (_isRotation)
         {
             float yRotation = _target.eulerAngles.y;
-            float xRotation = _target.eulerAngles.x;
-
-            transform.rotation = Quaternion.Euler(xRotation, yRotation, 0f);
+            transform.rotation = Quaternion.Euler(90f, 0f, -yRotation);
         }
         else
         {
             transform.rotation = _initialRotation;
         }
     }
+
 
     private void MiniMapFollowPosition()
     {

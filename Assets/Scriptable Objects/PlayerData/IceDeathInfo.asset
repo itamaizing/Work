@@ -39,13 +39,13 @@ MonoBehaviour:
       _value: 7
     - Name: MagicResist
       Description: 
-      _value: 0
+      _value: 6
     - Name: PhysicResist
       Description: 
-      _value: 0
+      _value: 6
     - Name: MagicEvade
       Description: 
-      _value: 0
+      _value: 1
     - Name: EvasionPhysical
       Description: 
-      _value: 0
+      _value: 1
