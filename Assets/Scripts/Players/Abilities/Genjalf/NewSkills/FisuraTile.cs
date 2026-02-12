@@ -8,11 +8,8 @@ namespace Gangdollarff
 {
     public class FisuraTile : NetworkBehaviour
     {
-        [SerializeField] private ParticleSystem _particle;
-        [SerializeField] private BoxCollider _collider;
+        [SerializeField] protected BoxCollider _collider;
         [SerializeField] private GameObject[] _tiles;
-        [SerializeField] private int _countTilesInUnit = 4;
-
         private int _maxSizeLock = 7;
 
         [SyncVar] private Vector3 _startPosition;
@@ -20,7 +17,7 @@ namespace Gangdollarff
         [SyncVar] private int _size;
 
         [Client]
-        private void Start()
+        protected virtual void Start()
         {
             Build();
         }
@@ -35,7 +32,7 @@ namespace Gangdollarff
             _endPosition = vector3;
         }
 
-        public void Build()
+        public virtual void Build()
         {
             transform.position = _startPosition;
             transform.LookAt(_endPosition);
