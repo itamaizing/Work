@@ -7339,7 +7339,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
-      value: 11
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[0]'
@@ -7385,6 +7385,10 @@ PrefabInstance:
       propertyPath: '_skills.Array.data[10]'
       value: 
       objectReference: {fileID: 4401943882256093312}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_skills.Array.data[11]'
+      value: 
+      objectReference: {fileID: 8803268676381394891}
     - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: materialsCharacter.Array.size
       value: 2
@@ -7737,6 +7741,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4401943882256093312}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8803268676381394891}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2311228646035138989}
@@ -9049,6 +9056,7 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   _particlePref: {fileID: 0}
+  _schoolSolvent: {fileID: 0}
 --- !u!114 &4401943882256093312
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9111,6 +9119,67 @@ MonoBehaviour:
   _lineRenderer: {fileID: 4073253261590549315}
   _quicksandTile: {fileID: 7163465442160790319, guid: 230941d2d9516a94ba4549647e2156c6, type: 3}
   _quicksandDuration: 6
+--- !u!114 &8803268676381394891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4837027206785457420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69775d2d0b9107444ad1e5a267437e64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WaveSkill
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
+  _abilityInfo: {fileID: 11400000, guid: 0c431d898d86c1c478e8e61f59dc62ae, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 8
+  _castDeley: 0
+  _damageValue: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _skillType: 2
+  _moving: 0
+  autoAttack: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 4
+  _area: 0
+  _castLength: 1
+  _castWidth: 2.5
+  _autoAttackDelay: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 0
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 1
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
+  _particle: {fileID: 3994345256487826021}
+  _pushRange: 3
+  _pushDuration: 0.2
+  _linePrefab: {fileID: 11400000, guid: 7faf4d32cfcc4f54d967e4d01a0c4b65, type: 2}
 --- !u!4 &4888396225278497395 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8363628837774109459, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

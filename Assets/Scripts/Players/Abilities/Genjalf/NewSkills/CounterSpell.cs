@@ -6,6 +6,8 @@ using UnityEngine;
 public class CounterSpell : Skill
 {
     [SerializeField] private ParticleSystem _particlePref;
+
+    [SerializeField] private SchoolSolvent _schoolSolvent;
     //[SerializeField, Range(0, 100)] private int _debuffChance = 15;
 
     protected override bool IsCanCast { get => CheckCanCast(); }
@@ -44,8 +46,13 @@ public class CounterSpell : Skill
         if (GetTargetCharacter() != null)
         {
             var targetGO = GetTargetCharacter().gameObject;
+            Character currentCharacter = GetTargetCharacter();
             
             CmdState(targetGO, 5);
+            if (currentCharacter.Abilities.CurrentCastingSkill != null && _schoolSolvent.IsSkillActive)
+            {
+                _schoolSolvent.AddSchool(currentCharacter.Abilities.CurrentCastingSkill.School);
+            }
         }
         yield return null;
     }

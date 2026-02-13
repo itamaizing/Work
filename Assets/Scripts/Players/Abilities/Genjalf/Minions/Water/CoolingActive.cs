@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CoolingActive : Skill
 {
-    [SerializeField] private GameObject _effectObject;
+    [SerializeField] private ParticleSystem _effectObject;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => CheckCanCast();
@@ -72,21 +72,21 @@ public class CoolingActive : Skill
         float elapsed = 0f;
 
         Transform effectTransform = _effectObject.transform;
-
-        effectTransform.localScale = Vector3.one;
-        _effectObject.SetActive(true);
+        
+        _effectObject.gameObject.SetActive(true);
+        
+        var shape = _effectObject.shape;
 
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-
-            float scale = Mathf.Lerp(1f, duration, elapsed / duration);
-            effectTransform.localScale = Vector3.one * scale;
+            
+            shape.radius = Mathf.Lerp(1f, duration, elapsed / duration);
 
             yield return null;
         }
 
-        _effectObject.SetActive(false);
+        _effectObject.gameObject.SetActive(false);
         effectTransform.localScale = Vector3.one;
     }
     
