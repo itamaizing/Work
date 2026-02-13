@@ -12270,7 +12270,7 @@ MonoBehaviour:
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
-  _castDeley: 0
+  _castDeley: 0.3
   _damageValue: 0
   _abilitySchool: 6
   _abilityForm: 2

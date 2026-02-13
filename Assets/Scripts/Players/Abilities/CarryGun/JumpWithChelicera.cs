@@ -37,7 +37,6 @@ public class JumpWithChelicera : Skill
     private static readonly int jumpStart = Animator.StringToHash("JumpStart");
     private static readonly int jumpEnd = Animator.StringToHash("JumpEnd");
 
-    private float _delayBeforeJump = 1f;
     private float _minDistance = 0.6f;
     private float _additionalDamageInPercentage;
     private bool _isJumpDone = false;
@@ -87,7 +86,6 @@ public class JumpWithChelicera : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _castDeley = _delayBeforeJump;
         if (targetInfo.GetTargets().Count > 0)
         {
             SetTarget(targetInfo.GetTargets()[0]);
