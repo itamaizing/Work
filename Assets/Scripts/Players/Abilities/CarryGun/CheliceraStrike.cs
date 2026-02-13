@@ -136,7 +136,6 @@ public class CheliceraStrike : Skill
         }
 
         SetTarget(GetTempTarget());
-        _player.Move.SetCanMove(false);
 
         targetInfo.Points.Add(GetTarget().Transform.position);
         targetInfo.AddTarget(GetTarget());
@@ -289,6 +288,7 @@ public class CheliceraStrike : Skill
 
     public void CheliceraStrikePreparingForAnim()
     {
+        _player.Move.SetCanMove(false);
         _hero.Move.StopMoveAndAnimationMove();
         if (_attackingPsionicEnergy.IsAttackingPsiEnergy && _attackingPsionicEnergy.CurrentValue > 0f) TrySpendAttackingPsi();
         else _spentAttackingPsiEnergy = 0;
