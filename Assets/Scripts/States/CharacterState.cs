@@ -53,6 +53,7 @@ public abstract class AbstractCharacterState
 	public abstract StateType Type { get; }
 	public abstract BaffDebaff BaffDebaff { get; }
 	public abstract List<StatusEffect> Effects { get; }
+	public virtual Schools Schools { get; }
 	public virtual DispelType dispelType => DispelType.None;
 
     public virtual AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
@@ -133,7 +134,9 @@ public abstract class AbstractCharacterState
 
 public abstract class StackableState : AbstractCharacterState
 {
-	public override bool Stack(float time)
+	public override Schools Schools => Schools.Physical;
+
+    public override bool Stack(float time)
 	{
 		duration = time;
 		return true; 

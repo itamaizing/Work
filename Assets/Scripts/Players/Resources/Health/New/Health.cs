@@ -75,7 +75,7 @@ public class Health : Resource, IDamageable, IHealingable
      }*/
     public void Initialize(Attributes maxValue, Attributes regenValue, CharacterData data, Attributes physicResist, Attributes magResist, Attributes evasionPhysic, Attributes evasionMagic)
     {
-        Debug.Log("Init hp " + maxValue.GetValue());
+        //Debug.Log("Init hp " + maxValue.GetValue());
 
         base.Initialize(maxValue, regenValue, data);
 
@@ -98,7 +98,7 @@ public class Health : Resource, IDamageable, IHealingable
 
         if (TryEvade(damage.Type, damage.PhysicAttackType))
         {
-            Debug.Log($"Evade");
+            //Debug.Log($"Evade");
             Evaded?.Invoke();
             ClientRpcEvade();
             return false;
@@ -106,7 +106,7 @@ public class Health : Resource, IDamageable, IHealingable
 
         else if (UnityEngine.Random.Range(0f, 100f) <= _blockChance)
         {
-            Debug.Log($"Block");
+            //Debug.Log($"Block");
             Block?.Invoke();
             return false;
         }
