@@ -30,6 +30,11 @@ public class SelectComponent : NetworkBehaviour
         }
     }
 
+    public void ForceSelect()
+    {
+        OnSelect?.Invoke();
+    }
+
     [Client]
     private void Awake()
     {

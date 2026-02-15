@@ -17,7 +17,7 @@ public class SaveSystem
         callback?.Invoke(true);
     }
 
-    public void Load<T> (string key, Action<T> callback)
+    public void Load<T>(string key, Action<T> callback)
     {
         string path = BuildPath(key);
         if (File.Exists(path))

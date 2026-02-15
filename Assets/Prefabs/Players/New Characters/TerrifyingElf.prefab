@@ -19731,7 +19731,7 @@ MonoBehaviour:
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _castDeley: 0
-  _damageValue: 5
+  _damageValue: 100
   _abilitySchool: 6
   _abilityForm: 2
   _damageType: 1
@@ -19770,8 +19770,8 @@ MonoBehaviour:
   _ghostSkill: {fileID: 1718052129104348959}
   _audioClip: {fileID: 8300000, guid: ba78f434c86f1ec4d92aa393ca60ca17, type: 3}
   _terrifyingElfAura: {fileID: 6686568037796463366}
-  _minDamage: 6
-  _maxDamage: 10
+  _minDamage: 100
+  _maxDamage: 100
   _arrowYOffsetUp: 1.5
   _arrowYOffsetDown: 0.5
   _groundLayerMask:

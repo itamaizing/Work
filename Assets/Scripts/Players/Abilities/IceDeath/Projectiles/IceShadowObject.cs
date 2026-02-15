@@ -42,7 +42,6 @@ public class IceShadowObject : Projectiles
 	private const float DamageRadius = 4f;
 
 	private const float HitEffectLifetime = 5f;
-	private const string EnemyLayer = "Enemy";
 	#endregion
 	/*
 	 * timer to destroy
@@ -136,7 +135,7 @@ public class IceShadowObject : Projectiles
 		{
 			//attact speed increase
 		}*/
-		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject && collision.gameObject.layer != LayerMask.NameToLayer(EnemyLayer))
+		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject && collision.gameObject.layer != _skill.TargetsLayers)
 			//&& enemyShadow)
 		{
 			float timeElapsed = Time.time - _lifeTimer;

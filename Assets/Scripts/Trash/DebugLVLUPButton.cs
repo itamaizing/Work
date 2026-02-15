@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,14 +8,21 @@ public class DebugLVLUPButton : MonoBehaviour
 
     private Button _button;
 
-    private void Start()
+    private void Awake()
     {
         _button = GetComponent<Button>();
-        _button.onClick.AddListener(LVLUP);
+        _button.onClick.AddListener(AddLevel);
     }
 
-    public void LVLUP()
+    private void AddLevel()
     {
-        _selectManager.SelectedControllableUnits[0].LVL.CMDAddEXP(_selectManager.SelectedControllableUnits[0].LVL.ExperienceForNextLVL);
+        if (User.Instance == null) return;
+        if (_selectManager.SelectedControllableUnits.Count == 0) return;
+        var selectedHero = _selectManager.SelectedControllableUnits[0];
+
+        if (selectedHero == null || selectedHero.LVL == null) return;
+
+        LevelCharacterManager.Instance.AddExperience(LevelCharacterManager.Instance.GetExperienceForNextLevel());
+        selectedHero.SelectComponent.ForceSelect();
     }
 }

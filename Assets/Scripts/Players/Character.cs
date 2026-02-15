@@ -201,6 +201,9 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 		Initialize();
 	}
 
+	public void Appeared() => OnAppeared?.Invoke();
+	public void Disappeared() => OnDisappeared?.Invoke();
+
 	public void ResuceVisionRange(float value)
     {
 		TargetRpcResuceVisionRange(value);

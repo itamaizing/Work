@@ -10,22 +10,29 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
     [SerializeField] private TalentInfoPanel _talentInfoPanel;
     [SerializeField] private TMProLocalizer _talantsText;
 
+    [SerializeField] private bool _isMainMenu = true;
+
     private List<UIMenuMainTalentsPanelGroup> ItemsPool = new();
-    
+
     private TalentSystem _talentSystem;
 
     public void Show(TalentSystem talentSystem, bool isGameUI, bool isInteractable = true)
     {
         ResetPanel();
-        
+
         _talentSystem = talentSystem;
 
-        if (_talentSystem.Level != null) _talentSystem.Level.LVLUped += OnLevelUp;
+        if (!_isMainMenu)
+        {
+            if (_talentSystem.Level != null) _talentSystem.Level.LVLUped += OnLevelUp;
+        }
+
+        else LevelCharacterManager.Instance.OnLevelChanged += OnLevelUp;
 
         foreach (var data in _talentSystem.TalentsGroups)
         {
             var panel = Instantiate(_talentsPanelGroup, _itemsParent);
-            
+
             panel.SetPanel(data, _attributesPanel, isGameUI, isInteractable);
 
             panel.OnShowPanelGroup += HidePanels;
@@ -48,8 +55,12 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
             item.PointerExitedOnTalentIcon -= HideTalentInfo;
             item.OnTalentChanged -= UpdateTalentPointsText;
         }
-        if(_talentSystem != null)
+
+        if (_isMainMenu)
+        {
             if (_talentSystem.Level != null) _talentSystem.Level.LVLUped -= OnLevelUp;
+            LevelCharacterManager.Instance.OnLevelChanged -= OnLevelUp;
+        }
     }
 
     private void OnLevelUp(int newLevel)
@@ -59,10 +70,22 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
 
     private void UpdateTalentPointsText()
     {
-        if (_talentSystem.Points > 0)
+        int maxPoints = LevelCharacterManager.Instance.GetCurrentLevel();
+        int usedPoints = _talentSystem.GetActiveTalentCount();
+        int freePoints = maxPoints - usedPoints;
+
+        Debug.Log($"freePoints: {freePoints}");
+
+        if (_talentSystem.Points >= 0)
         {
             _talantsText.gameObject.SetActive(true);
-            _talantsText.ChangeKey(_talentSystem.Points);
+
+            if (!_isMainMenu) _talantsText.ChangeKey(_talentSystem.Points);
+            else
+            {
+                _talentSystem.SetPoints(freePoints);
+                _talantsText.ChangeKey(_talentSystem.Points);
+            }
         }
         else
         {
@@ -75,7 +98,7 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
     private void ResetPanel()
     {
         if (ItemsPool.Count <= 0) return;
-        
+
         foreach (var attribute in ItemsPool)
         {
             attribute.Destroy();

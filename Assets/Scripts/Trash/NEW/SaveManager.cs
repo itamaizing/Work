@@ -80,7 +80,7 @@ public class SaveManager : MonoBehaviour
         _currentSaveGroup = index;
         LoadHeroData();
     }
-    
+
     public void SaveAttributePoints(int points)
     {
         _saveSystem.Save($"{_character.Data.Name}_Group{_currentSaveGroup}_FreeAttributesPoints", _attributeSystem.Points);

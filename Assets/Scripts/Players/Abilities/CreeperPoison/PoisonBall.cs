@@ -200,8 +200,10 @@ public class PoisonBall : Skill, IAltAbility
         _thirdClickDone = false;
         _firstClickDone = false;
 
-        float timerForCancelCoroutine = 0.2f;
-        Invoke("CancelCoroutine", timerForCancelCoroutine);
+        //float timerForCancelCoroutine = 0.2f;
+        //Invoke("CancelCoroutine", timerForCancelCoroutine);
+
+        CancelCoroutine();
     }
 
     protected override void ClearData()
@@ -255,6 +257,7 @@ public class PoisonBall : Skill, IAltAbility
                     if (_arrowRenderers[0] == null)
                     {
                         CreateArrowsParallelToPlayer(targetPoint);
+                        StartMouseDetectionIfNeeded();
                     }
 
                     _arrowRenderers[0]?.gameObject.SetActive(true);
@@ -660,6 +663,17 @@ public class PoisonBall : Skill, IAltAbility
 
     #region ArrowManagement
 
+    private void StartMouseDetectionIfNeeded()
+    {
+        if (_mouseDetectionCoroutine != null)
+        {
+            StopCoroutine(_mouseDetectionCoroutine);
+            _mouseDetectionCoroutine = null;
+        }
+
+        _mouseDetectionCoroutine = StartCoroutine(UpdateMouseDetectionJob());
+    }
+
     private void CreateArrowsParallelToPlayer(Vector3 point)
     {
         if (_arrowPrefab == null || pointArrowRender == null) return;
@@ -714,7 +728,6 @@ public class PoisonBall : Skill, IAltAbility
         childArrow.localRotation = Quaternion.Euler(currentXRotation, 0, zRotation);
     }
 
-
     private void SetArrowVisibility(int arrowIndex, bool isVisible)
     {
         if (arrowIndex >= 0 && arrowIndex < _arrowRenderers.Length && _arrowRenderers[arrowIndex] != null)
@@ -737,7 +750,7 @@ public class PoisonBall : Skill, IAltAbility
                 Destroy(_pointArrowInstance);
                 _pointArrowInstance = null;
             }
-             
+
             for (int i = 0; i < _arrowRenderers.Length; i++) _arrowRenderers[i] = null;
         }
         Debug.Log("Arrows cleared.");

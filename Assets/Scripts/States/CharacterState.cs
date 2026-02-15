@@ -351,6 +351,7 @@ public class CharacterState : NetworkBehaviour
 		[States.FocusingOnReflexesState] = new FocusingOnReflexesState(),
 		[States.DivineEnhancement] = new DivineEnhancementState(),
 		[States.DischargePsi] = new DischargePsiState(),
+		[States.TrueSightState] = new TrueSight(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -893,6 +894,7 @@ public enum States
 	BleedingScrader,
 	DischargePsi,
 	BleedingDebuff,
+	TrueSightState,
 }
 
 public enum BaffDebaff
