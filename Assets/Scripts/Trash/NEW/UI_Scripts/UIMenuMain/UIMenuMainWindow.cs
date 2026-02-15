@@ -3,6 +3,7 @@ using UnityEngine;
 public class UIMenuMainWindow : MonoBehaviour
 {
     [SerializeField] private UIMenuMainAbilitiesPanel _abilitiesPanel;
+    [SerializeField] private SkillPanel _skillPanel;
     [SerializeField] private UIMenuMainAttributesPanel _attributesPanel;
     [SerializeField] private UIMenuMainTalentsPanel _talentsPanel;
     [SerializeField] private UIMenuMainCharactersPanel _charactersPanel;
@@ -69,6 +70,9 @@ public class UIMenuMainWindow : MonoBehaviour
         var hero = GetHero();
         
         _abilitiesPanel.Show(hero.Abilities);
+
+        if(_skillPanel != null)
+            _skillPanel.FillMenu(hero.Abilities);
         
         _attributesPanel.Show(hero);
 
