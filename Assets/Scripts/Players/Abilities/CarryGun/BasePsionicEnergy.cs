@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class BasePsionicEnergy : Resource, IDamageable
 {
+    [SerializeField] private AttributeSystem _attributeSystem;
     [SerializeField] private Character _player;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
     [SerializeField] private Slider basePsionicsSlider;
@@ -33,7 +34,7 @@ public class BasePsionicEnergy : Resource, IDamageable
         _psionicaDecayTime = psionicEnergySkill.CooldownTime;
         if (_player != null)
         {
-            _maxValue = _player.AttributeSystem.Health.GetValue();
+            _maxValue = _attributeSystem.Health.GetValue();
             _player.Health.Shields.Add(this);
         }
     }

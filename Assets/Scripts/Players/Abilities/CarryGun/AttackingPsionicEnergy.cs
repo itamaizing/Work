@@ -32,6 +32,16 @@ public class AttackingPsionicEnergy : Energy
         UpdateAttackingEnergyBar();
     }
 
+    public float GetBonusDamage(float energySpent)
+    {
+        return Mathf.Floor(energySpent);
+    }
+
+    public int GetDispelCount(float energySpent)
+    {
+        return Mathf.FloorToInt(energySpent / 10f);
+    }
+
     public void ReceiveAttackingEnergy(float transferAmount)
     {
         _remainingTime = _timeAttackingPsiEnergy;

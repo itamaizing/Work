@@ -142,7 +142,7 @@ public class IceShadowObject : Projectiles
 			float remainingLifetime = Mathf.Max(0f, timeToDestroy - timeElapsed);
 			//float freezeDuration = Mathf.Clamp(remainingLifetime, MinFreezeDuration, MaxFreezeDuration);
 
-			target.CharacterState.AddState(States.Frozen, MinFreezeDuration, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
+			target.CharacterState.AddState(States.Frozen, remainingLifetime, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
 			//GetComponent<Collider2D>().enabled = false;
 			//Destroy(gameObject);
 			if(_lastHit)
@@ -152,7 +152,7 @@ public class IceShadowObject : Projectiles
 				{
 					if (enemy.TryGetComponent<Character>(out var newTatget) && collision.gameObject != _dad.gameObject)
 					{
-						newTatget.CharacterState.AddState(States.Frozen, MinFreezeDuration, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
+						newTatget.CharacterState.AddState(States.Frozen, remainingLifetime, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
 					}
 				}
 			}

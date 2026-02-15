@@ -44,6 +44,16 @@ public class PhysicalAttack : Skill
 
 	private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
+	private void OnEnable()
+	{
+		OnSkillCanceled += HandleSkillCanceled;
+	}
+
+	private void OnDisable()
+	{
+		OnSkillCanceled -= HandleSkillCanceled;
+	}
+
 	private void Start()
 	{
 		_audioSource = GetComponent<AudioSource>();
@@ -60,6 +70,14 @@ public class PhysicalAttack : Skill
 				_rune = (RuneComponent)Hero.Resources[i];
 			}
 		}
+	}
+
+	private void HandleSkillCanceled()
+	{
+		ClearTarget();
+		ClearTempTarget();
+		_hero.Move.StopLookAt();
+		AnimCastEnded();
 	}
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -113,6 +131,14 @@ public class PhysicalAttack : Skill
 
 	public void PhysicalAttackCast()
 	{
+		if (GetTargetCharacter() == null ||
+			Vector3.Distance(GetTargetCharacter().transform.position, transform.position) > Radius ||
+			!NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle))
+		{
+			TryCancel();
+			return;
+		}
+
 		AnimStartCastCoroutine();
 	}
 

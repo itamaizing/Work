@@ -37,7 +37,6 @@ public class JumpWithChelicera : Skill
     private static readonly int jumpStart = Animator.StringToHash("JumpStart");
     private static readonly int jumpEnd = Animator.StringToHash("JumpEnd");
 
-    private float _delayBeforeJump = 1f;
     private float _minDistance = 0.6f;
     private float _additionalDamageInPercentage;
     private bool _isJumpDone = false;
@@ -58,8 +57,24 @@ public class JumpWithChelicera : Skill
     public void JumpWithCheliceraChanceDamageCrit(bool value) => isJumpWithCheliceraChanceDamageCrit = value;
 
     private void Start() => _animator = GetComponent<Animator>();
-    private void OnDisable() => Canceled -= HandleJumpWithCheliceraEnd;
-    private void OnEnable() => Canceled += HandleJumpWithCheliceraEnd;
+
+    private void OnDisable()
+    {
+        Canceled -= HandleJumpWithCheliceraEnd;
+        CastDeleyStarted -= CanMoveJumpWithCheilcera;
+    }
+
+    private void OnEnable()
+    {
+        CastDeleyStarted += CanMoveJumpWithCheilcera;
+        Canceled += HandleJumpWithCheliceraEnd;
+    }
+
+    private void CanMoveJumpWithCheilcera(float castDelay)
+    {
+        _hero.Move.StopMoveAndAnimationMove();
+        _hero.Move.SetCanMove(false);
+    }
 
     protected override void ClearData()
     {
@@ -69,16 +84,8 @@ public class JumpWithChelicera : Skill
         AnimCastEnded();
     }
 
-    public void JumpWithCheliceraAnimationMove()
-    {
-        if (_hero == null || _hero.Move == null) return;
-        _hero.Move.StopMoveAndAnimationMove();
-        _hero.Move.SetCanMove(false);
-    }
-
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _castDeley = _delayBeforeJump;
         if (targetInfo.GetTargets().Count > 0)
         {
             SetTarget(targetInfo.GetTargets()[0]);
@@ -267,7 +274,6 @@ public class JumpWithChelicera : Skill
     public void ApplyRootTrue()
     {
         IncreaseSetCooldown(CooldownTime);
-        JumpWithCheliceraAnimationMove();
         _animator.applyRootMotion = true;
     }
 

@@ -1603,7 +1603,7 @@ public abstract class Skill : NetworkBehaviour
         CancelCoroutine(_actionWrapperForCastCoroutine);
         ClearData();
     }
-
+    
     public void ApplyDamage(Damage damage, GameObject target)
     {
         var damageable = target != null ? target.GetComponent<IDamageable>() : null;

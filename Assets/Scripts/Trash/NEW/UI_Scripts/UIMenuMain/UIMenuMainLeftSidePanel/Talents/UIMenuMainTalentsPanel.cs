@@ -56,11 +56,12 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
             item.OnTalentChanged -= UpdateTalentPointsText;
         }
 
-        if (_isMainMenu)
+        if (!_isMainMenu)
         {
             if (_talentSystem.Level != null) _talentSystem.Level.LVLUped -= OnLevelUp;
-            LevelCharacterManager.Instance.OnLevelChanged -= OnLevelUp;
         }
+
+        else LevelCharacterManager.Instance.OnLevelChanged -= OnLevelUp;
     }
 
     private void OnLevelUp(int newLevel)
