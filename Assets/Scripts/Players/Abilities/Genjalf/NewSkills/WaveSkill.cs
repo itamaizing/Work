@@ -8,13 +8,11 @@ public class WaveSkill : Skill
     [SerializeField] private ParticleSystem _particle;
     [SerializeField] private float _pushRange = 1f;
     [SerializeField] private float _pushDuration = 0.33f;
-    [SerializeField] private AbilityLineRenderer _linePrefab;
+    [SerializeField] private Transform _previewPivot;
+    [SerializeField] private BoxArea _lineVisual;
 
     private Vector3 _waveStartPoint;
     private Vector3 _waveDirection;
-    private Transform _dynamicTransform;
-    private GameObject _dynamicPivot;
-    private BoxArea _lineVisual;
 
     public override string AdditionalDescription => "";
 
@@ -87,7 +85,7 @@ public class WaveSkill : Skill
             }
         }
 
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.6f);
         CmdSetActiveParticle(false);
     }
 
@@ -97,19 +95,6 @@ public class WaveSkill : Skill
         _waveDirection = Vector3.zero;
         ClearTarget();
         ClearTempTarget();
-
-        if (_lineVisual != null)
-        {
-            Destroy(_lineVisual.gameObject);
-            _lineVisual = null;
-        }
-
-        if (_dynamicPivot != null)
-        {
-            Destroy(_dynamicPivot);
-            _dynamicPivot = null;
-            _dynamicTransform = null;
-        }
     }
 
     protected override void StartAutoDraw()
@@ -120,53 +105,52 @@ public class WaveSkill : Skill
     protected override void StopAutoDraw()
     {
         SkillRender.StopDrawRadius();
-
-        if (_lineVisual != null)
-        {
-            Destroy(_lineVisual.gameObject);
-            _lineVisual = null;
-        }
-
-        if (_dynamicPivot != null)
-        {
-            Destroy(_dynamicPivot);
-            _dynamicPivot = null;
-            _dynamicTransform = null;
-        }
+        _lineVisual.gameObject.SetActive(false);
     }
 
     protected override IEnumerator DynamicRendererJob(float time = 0.2f)
     {
-        if (SkillRender == null || _linePrefab == null) yield break;
+        if (_lineVisual == null)
+        {
+            yield break;
+        }
 
-        var pivot = new GameObject("WavePreviewPivot").transform;
-        pivot.SetParent(transform, false);
+        Transform pivotTransform = _previewPivot;
+        
+        _lineVisual.gameObject.SetActive(true);
 
-        _lineVisual = Instantiate(_linePrefab.Start, pivot);
-
-        _lineVisual.SetColor(new Color(1f, 1f, 0.4f, 0.7f));
-
-        Damage damage = new Damage();
+        Damage damage = new Damage
+        {
+            Value = Damage,
+            Type = DamageType,
+        };
 
         while (true)
         {
-            Vector3 mouse = GetMousePoint();
-            if (mouse == Vector3.zero) 
+            Vector3 mousePoint = GetMousePoint();
+
+            if (mousePoint == Vector3.zero)
             {
                 yield return null;
                 continue;
             }
 
-            Vector3 toMouse = mouse - transform.position;
-            toMouse.y = 0;
+            Vector3 directionToMouse = mousePoint - transform.position;
+            directionToMouse.y = 0;
 
-            float dist = toMouse.magnitude;
-            Vector3 dir = toMouse.normalized;
+            if (directionToMouse.magnitude < 0.1f)
+            {
+                yield return null;
+                continue;
+            }
 
-            Vector3 startPos = transform.position + dir * Mathf.Min(dist, Radius);
-            pivot.position = startPos;
+            float distance = directionToMouse.magnitude;
+            Vector3 direction = directionToMouse.normalized;
 
-            pivot.rotation = Quaternion.LookRotation(dir, Vector3.up);
+            Vector3 startPosition = transform.position + direction * Mathf.Min(distance, Radius);
+
+            pivotTransform.position = startPosition;
+            pivotTransform.rotation = Quaternion.LookRotation(direction, Vector3.up);
 
             _lineVisual.SetSize(CastWidth, CastLength, damage);
 
@@ -213,12 +197,14 @@ public class WaveSkill : Skill
     [Command]
     private void CmdSetActiveParticle(bool status)
     {
-        ClientRpcSetActiveParticle(status);
+        RpcSetActiveParticle(status);
     }
 
     [ClientRpc]
-    private void ClientRpcSetActiveParticle(bool status)
+    private void RpcSetActiveParticle(bool status)
     {
+        if (_particle == null) return;
+
         _particle.gameObject.SetActive(status);
     }
 }
