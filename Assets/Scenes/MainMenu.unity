@@ -2067,6 +2067,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8911577129873546843, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
   m_PrefabInstance: {fileID: 2059825313}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1663963813 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6219244272945020064, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
+  m_PrefabInstance: {fileID: 2059825313}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ed9cb21a45c20a43b6c83ebdab86e11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIMenuMainPlayerInfoPanel
 --- !u!1 &1692478513
 GameObject:
   m_ObjectHideFlags: 0
@@ -2883,6 +2894,10 @@ PrefabInstance:
       value: 1801810542
       objectReference: {fileID: 0}
     - target: {fileID: 1559230635589990854, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
+      propertyPath: _infoPanel
+      value: 
+      objectReference: {fileID: 1663963813}
+    - target: {fileID: 1559230635589990854, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
       propertyPath: _skillPanel
       value: 
       objectReference: {fileID: 685239730}
@@ -3376,6 +3391,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7868944331943526398, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8429933625752128025, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8429933625752128025, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8429933625752128025, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8429933625752128025, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8429933625752128025, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
+      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8727767855741384699, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
