@@ -1456,6 +1456,7 @@ GameObject:
   - component: {fileID: 1525237466600288129}
   - component: {fileID: 8613289223205190744}
   - component: {fileID: 6702295980755575950}
+  - component: {fileID: 6360774811645249758}
   m_Layer: 9
   m_Name: protective Cocoon
   m_TagString: Enemies
@@ -1615,7 +1616,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61223552b5399ec4cb555068de37de05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectHealth: {fileID: 0}
+  objectHealth: {fileID: 1525237466600288129}
   circleSelect: {fileID: 9115519821676638475}
   minimapMarker: {fileID: 7500440178365392226}
   damageSpawn: {fileID: 5087257125756015543}
@@ -1670,7 +1671,7 @@ MonoBehaviour:
   _resourceType: 0
   _regenerationDelay: 0
   _objectBar: {fileID: 7413096228921928745}
-  _objectData: {fileID: 11400000, guid: 7ee4128bb430f07458a639f23fc41069, type: 2}
+  _objectData: {fileID: 11400000, guid: ec826efa35c5876498bd9e427ec967d9, type: 2}
   obj: {fileID: 2058911381882631605}
   _ignoredSchools: 
   _ignoredForms: 
@@ -1719,6 +1720,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6360774811645249758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2058911381882631605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 509e6344b60e815439cd69cfb1bc6eef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProtectiveCocoon
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &2073601238477653019
 GameObject:
   m_ObjectHideFlags: 0

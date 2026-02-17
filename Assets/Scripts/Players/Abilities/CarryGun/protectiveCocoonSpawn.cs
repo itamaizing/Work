@@ -10,40 +10,85 @@ public class protectiveCocoonSpawn : Skill
 
     private Character _targetCharacter;
 
+    private const float TargetSearchRadius = 0.5f;
+
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    protected override bool IsCanCast => CheckIsCanCast();
+
+    private bool CheckIsCanCast()
     {
-        FindTargetCharacter(false, false);
-
-        var target = GetTempTargetCharacter();
-
-        if (target == null)
-            yield break;
-
-        if (!target.TryGetComponent(out SwarmCapacity _))
-            yield break;
-
-        TargetInfo info = new TargetInfo();
-        info.AddTarget(target);
-
-        targetDataSavedCallback?.Invoke(info);
-
-        yield break;
+        return GetTarget() != null &&
+               Vector3.Distance(GetTarget().Transform.position, transform.position) <= Radius &&
+               NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
     }
+
+    #region PREPARE (как ClawStrike)
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    {
+        TargetInfo targetInfo = new TargetInfo();
+
+        while (GetTempTarget() == null)
+        {
+            if (GetMouseButton)
+            {
+                FindTarget(TargetSearchRadius, GetMousePoint());
+
+                if (GetTempTarget() != null)
+                {
+                    if (!(GetTempTarget() is Character character))
+                    {
+                        ClearTempTarget();
+                    }
+                    else
+                    {
+                        if (!character.TryGetComponent(out SwarmCapacity _))
+                        {
+                            ClearTempTarget();
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            yield return null;
+        }
+
+        SetTarget(GetTempTarget());
+        _targetCharacter = GetTarget() as Character;
+
+        if (_targetCharacter == null)
+            yield break;
+
+        targetInfo.Points.Add(_targetCharacter.transform.position);
+        targetInfo.AddTarget(_targetCharacter);
+
+        callbackDataSaved.Invoke(targetInfo);
+    }
+
+    #endregion
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0)
-        {
-            _targetCharacter = targetInfo.GetTargets()[0] as Character;
-        }
+            SetTarget(targetInfo.GetTargets()[0]);
+
+        _targetCharacter = GetTarget() as Character;
     }
+
+    #region CAST
 
     protected override IEnumerator CastJob()
     {
         if (_targetCharacter == null)
+            yield break;
+
+        if (!IsCanCast)
             yield break;
 
         if (!isServer)
@@ -53,8 +98,6 @@ public class protectiveCocoonSpawn : Skill
         }
 
         SpawnCocoon(_targetCharacter);
-
-        yield break;
     }
 
     [Command]
@@ -83,9 +126,12 @@ public class protectiveCocoonSpawn : Skill
         cocoon.Init(target);
     }
 
+    #endregion
+
     protected override void ClearData()
     {
-        _targetCharacter = null;
+        ClearTarget();
         ClearTempTarget();
+        _targetCharacter = null;
     }
 }

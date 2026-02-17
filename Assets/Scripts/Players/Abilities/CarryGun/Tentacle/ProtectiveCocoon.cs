@@ -1,20 +1,29 @@
 using Mirror;
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 public class ProtectiveCocoon : NetworkBehaviour
 {
+    private const float Lifetime = 6f;
+
     [SyncVar] private uint _targetNetId;
 
     private Character _target;
     private List<Skill> _disabledSkills = new();
 
+    private Coroutine _lifeCoroutine;
+
     public void Init(Character target)
     {
+        if (!isServer) return;
+
         _target = target;
         _targetNetId = target.netId;
 
         ApplyControl();
+
+        _lifeCoroutine = StartCoroutine(LifeTimer());
     }
 
     private void ApplyControl()
@@ -47,6 +56,17 @@ public class ProtectiveCocoon : NetworkBehaviour
 
         _disabledSkills.Clear();
     }
+
+    private IEnumerator LifeTimer()
+    {
+        yield return new WaitForSeconds(Lifetime);
+
+        RemoveControl();
+
+        if (isServer)
+            NetworkServer.Destroy(gameObject);
+    }
+
 
     public override void OnStopServer()
     {
