@@ -6,6 +6,8 @@ using System.Collections.Generic;
 public class ProtectiveCocoon : NetworkBehaviour
 {
     private const float Lifetime = 6f;
+    private const float RegenBuffDuration = 20f;
+    private const float RegenMultiplier = 2f;
 
     [SyncVar] private uint _targetNetId;
 
@@ -13,6 +15,9 @@ public class ProtectiveCocoon : NetworkBehaviour
     private List<Skill> _disabledSkills = new();
 
     private Coroutine _lifeCoroutine;
+    private Coroutine _regenBuffCoroutine;
+
+    private float _originalRegenValue;
 
     public void Init(Character target)
     {
@@ -22,8 +27,10 @@ public class ProtectiveCocoon : NetworkBehaviour
         _targetNetId = target.netId;
 
         ApplyControl();
+        ApplyRegenBuff();
 
         _lifeCoroutine = StartCoroutine(LifeTimer());
+        _regenBuffCoroutine = StartCoroutine(RegenBuffTimer());
     }
 
     private void ApplyControl()
@@ -57,6 +64,35 @@ public class ProtectiveCocoon : NetworkBehaviour
         _disabledSkills.Clear();
     }
 
+    private void ApplyRegenBuff()
+    {
+        if (_target == null) return;
+
+        foreach (var resource in _target.GetComponents<Resource>())
+        {
+            if (resource.RegenerationValue > 0)
+            {
+                _originalRegenValue = resource.RegenerationValue;
+                resource.RegenerationValue *= RegenMultiplier;
+            }
+        }
+    }
+
+    private IEnumerator RegenBuffTimer()
+    {
+        yield return new WaitForSeconds(RegenBuffDuration);
+
+        if (_target == null) yield break;
+
+        foreach (var resource in _target.GetComponents<Resource>())
+        {
+            if (resource.RegenerationValue > 0)
+            {
+                resource.RegenerationValue = _originalRegenValue;
+            }
+        }
+    }
+
     private IEnumerator LifeTimer()
     {
         yield return new WaitForSeconds(Lifetime);
@@ -66,7 +102,6 @@ public class ProtectiveCocoon : NetworkBehaviour
         if (isServer)
             NetworkServer.Destroy(gameObject);
     }
-
 
     public override void OnStopServer()
     {

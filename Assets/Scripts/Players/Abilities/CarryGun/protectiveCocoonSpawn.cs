@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class protectiveCocoonSpawn : Skill
+public class ProtectiveCocoonSpawn : Skill
 {
     [Header("Cocoon")]
     [SerializeField] private ProtectiveCocoon _cocoonPrefab;
