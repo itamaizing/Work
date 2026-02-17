@@ -14,6 +14,7 @@ public class UIMenuMainWindow : MonoBehaviour
     private void Start()
     {
         Show();
+        _abilitiesPanel.gameObject.SetActive(false);
     }
 
     private void OnEnable()
@@ -69,7 +70,7 @@ public class UIMenuMainWindow : MonoBehaviour
     {
         var hero = GetHero();
         
-        _abilitiesPanel.Show(hero.Abilities);
+        //_abilitiesPanel.Show(hero.Abilities);
 
         if(_skillPanel != null)
             _skillPanel.FillMenu(hero.Abilities);
