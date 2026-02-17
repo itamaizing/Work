@@ -17124,6 +17124,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _playerData: {fileID: 11400000, guid: d1404a1119ca3294292dc387fa392e94, type: 2}
+  _attributeSystem: {fileID: 0}
   _networkSettings: {fileID: 4704448068992970106}
   _rigidbody: {fileID: 6956811484752265138}
   _collider: {fileID: 7046688650934260390}
@@ -17236,6 +17237,8 @@ MonoBehaviour:
   manaRegen: {fileID: 0}
   ropeTrap: {fileID: 0}
   trapPrefab: {fileID: 0}
+  spiritHealthEffect: {fileID: 0}
+  spiritEnergyEffect: {fileID: 0}
   materialsCharacter:
   - {fileID: 2100000, guid: acfa2dc1ef192cb4391aecaaff8e192f, type: 2}
   weapon: {fileID: 0}
@@ -17414,10 +17417,10 @@ MonoBehaviour:
   moveClips: []
   MoveDirection: {x: 0, y: 0, z: 0}
   ExternalMoveDirection: {x: 0, y: 0, z: 0}
-  CanMove: 0
-  CanMoveState: 0
   IsMoving: 0
   IsSelect: 0
+  IsNoRotateAtCursor: 0
+  _agent: {fileID: 0}
 --- !u!114 &7790970521576675334
 MonoBehaviour:
   m_ObjectHideFlags: 0
