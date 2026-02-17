@@ -24,8 +24,6 @@ public class ProtectiveCocoonSpawn : Skill
                NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
     }
 
-    #region PREPARE (как ClawStrike)
-
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
@@ -71,8 +69,6 @@ public class ProtectiveCocoonSpawn : Skill
         callbackDataSaved.Invoke(targetInfo);
     }
 
-    #endregion
-
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0)
@@ -80,8 +76,6 @@ public class ProtectiveCocoonSpawn : Skill
 
         _targetCharacter = GetTarget() as Character;
     }
-
-    #region CAST
 
     protected override IEnumerator CastJob()
     {
@@ -125,8 +119,6 @@ public class ProtectiveCocoonSpawn : Skill
 
         cocoon.Init(target);
     }
-
-    #endregion
 
     protected override void ClearData()
     {
