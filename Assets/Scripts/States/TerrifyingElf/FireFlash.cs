@@ -11,14 +11,14 @@ public class FireFlash : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Null;
     public override List<StatusEffect> Effects => _effects;
 
-    private int _ñhance => CurrentStacksCount * 10;
+    private int _Ñhance => CurrentStacksCount * 10;
 
     private float _timer;
     private float _remaining;
     private bool _infinite;
 
     public override float RemainingDuration => _infinite ? 9999 : _remaining;
-    public int Chance { get => _ñhance; }
+    public int Chance { get => _Ñhance; }
 
     public FireFlash() => MaxStacksCount = 3;
 

@@ -38,6 +38,7 @@ public class SkillManager : MonoBehaviour
     
     public Skill CurrentCastingSkill { get; private set; }
     public bool IsNextSkillFree { get; private set; }
+    public bool IsNextSkillNoCast { get; private set; }
     public IEnumerable<Skill> DefaultSkills => _skills.Where(o => o.IsTalentSpell == false);
     public IEnumerable<Skill> TalentsSkills => _skills.Where(o => o.IsTalentSpell);
 
@@ -229,8 +230,19 @@ public class SkillManager : MonoBehaviour
         IsNextSkillFree = false;
         return true;
     }
+    
+    public bool TryConsumeNoCast()
+    {
+        if (!IsNextSkillNoCast)
+            return false;
+
+        IsNextSkillNoCast = false;
+        return true;
+    }
 
     public void SetNextSkillFree() => IsNextSkillFree = true;
+
+    public void SetNextSkillNoCast() => IsNextSkillNoCast = true;
 
     public void DeactivateSkill(Skill skill)
     {

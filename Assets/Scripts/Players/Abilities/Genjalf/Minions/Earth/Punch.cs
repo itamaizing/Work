@@ -1,12 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 namespace Gangdollarff.EarthElemental
 {
     public class Punch : MoveSkill
     {
+        [SerializeField] private float _stunDuration = 1.5f;
+        [SerializeField] private float _stunChance = 0.15f;
+        
         protected override int AnimTriggerCastDelay => 0;
         protected override int AnimTriggerCast => Animator.StringToHash("Attack01");
         
@@ -61,6 +65,7 @@ namespace Gangdollarff.EarthElemental
                 Form = AbilityForm,
             };
             CmdApplyDamage(damage, originalTarget.gameObject);
+            CmdAddState(originalTarget.gameObject);
 
             yield return null;
         }
@@ -100,6 +105,22 @@ namespace Gangdollarff.EarthElemental
             targetInfo.AddTarget(GetTempTargetCharacter());
             ClearTempTarget();
             targetDataSavedCallback(targetInfo);
+        }
+
+        [Command]
+        private void CmdAddState(GameObject target)
+        {
+            if(target == null) return;
+
+            if (target == null) return;
+            
+            if (UnityEngine.Random.value > _stunChance)
+                return;
+
+            if (target.TryGetComponent(out Character enemy))
+            {
+                enemy.CharacterState.AddState(States.Stun, _stunDuration, 0, _hero.gameObject, nameof(Punch));
+            }
         }
     }
 }

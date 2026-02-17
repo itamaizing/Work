@@ -269,11 +269,14 @@ public class CharacterState : NetworkBehaviour
 		[States.PowerOfEarth] = new PowerOfEarth(),
         [States.EarthsHealth] = new EarthsHealth(),
         [States.MagicWater] = new MagicWater(),
+        [States.HotBloodAura] = new HotBloodAura(),
+        [States.HotBloodBuff] = new HotAuraBuff(),
         [States.Burning] = new Burning(),
         [States.Burn] = new Burn(),
 		[States.Discharge] = new Gangdollarff.AirElemental.Discharge(),
 		[States.CoolingAura] = new CoolingAura(),
 		[States.MagicalExcitement] = new MagicalExcitement(),
+		[States.GodLight] = new GodLightState(),
         #endregion
 
         #region Test Baff and Debaff
@@ -780,6 +783,9 @@ public enum States
 	DischargePsi,
 	BleedingDebuff,
 	MagicalExcitement,
+	GodLight,
+	HotBloodAura,
+	HotBloodBuff
 }
 public enum BaffDebaff
 {

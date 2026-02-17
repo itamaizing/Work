@@ -375,6 +375,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2335912879836011194, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       insertIndex: -1
       addedObject: {fileID: -2837521630394622147}
+    - targetCorrespondingSourceObject: {fileID: 2335912879836011194, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -4032445377014633577}
   m_SourcePrefab: {fileID: 100100000, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
 --- !u!114 &531154088669589675 stripped
 MonoBehaviour:
@@ -610,6 +613,18 @@ MonoBehaviour:
   _agent: {fileID: 8521629497404255749}
   _shieldPref: {fileID: 1158249924082485831, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
   _baffDuration: 9
+--- !u!114 &-4032445377014633577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5665284927246484895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ebd5338e622f30439f5a06dec5366ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HotAura
 --- !u!4 &6980196994501872204 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1021000915379606889, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}

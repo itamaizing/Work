@@ -1442,8 +1442,11 @@ public abstract class Skill : NetworkBehaviour
         CastStarted?.Invoke();
         _isCasting = true;
 
-        if (CastDeley > 0)
-            yield return StartCastDeleyCoroutine();
+        if (!_hero.Abilities.TryConsumeNoCast())
+        {
+            if (CastDeley > 0)
+                yield return StartCastDeleyCoroutine();
+        }
 
         if (AnimTriggerCast != 0)
         {
