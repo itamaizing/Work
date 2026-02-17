@@ -10,6 +10,7 @@ public class Tentacles : Skill
     [SerializeField] private Character _player;
     [SerializeField] private TentacleProjectile _tentaclesPrefab;
     [SerializeField] private TentacleProjectile _tentaclesPreview;
+    [SerializeField] private ProtectiveCocoon _protectiveCocoonPrefab;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private SpawnComponent _spawnComponent;
@@ -42,7 +43,9 @@ public class Tentacles : Skill
     private bool _isPsionicsTalentThree = false;
     private bool _isCocoonSpawnTalent = false;
     private bool _isAttractionTentacleTalent = false;
+    private bool _isProtectiveCooconSpawn = false;
 
+    public void ProtectiveCooconSpawn(bool value) => _isProtectiveCooconSpawn = value;
     public void PsionicsTalentThree(bool value) => _isPsionicsTalentThree = value;
     public void CocoonSpawnTalent(bool value) => _isCocoonSpawnTalent = value;
     public void AttractionTentacleTalent(bool value) => _isAttractionTentacleTalent = value;
@@ -147,6 +150,16 @@ public class Tentacles : Skill
 
         while (float.IsPositiveInfinity(targetPoint.x))
         {
+            if (_isCocoonSpawnTalent)
+            {
+                if (TryClickHero(out Character hero))
+                {
+                    _spawnPoint = hero.transform.position;
+                    SetTarget(hero);
+                    yield break;
+                }
+            }
+
             Vector3 mousePoint = GetMousePoint();
 
             if (_previewInstance != null) _previewInstance.transform.position = mousePoint;
@@ -425,6 +438,44 @@ public class Tentacles : Skill
         _spawnComponent.CmdSpawnEnemyPoint(position, Quaternion.identity, null, 0, false, Hero);
 
         CmdTentacleWomb();
+    }
+
+    private bool TryClickHero(out Character hero)
+    {
+        hero = null;
+
+        if (!GetMouseButton)
+            return false;
+
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
+        {
+            if (hit.collider.TryGetComponent<Character>(out Character character))
+            {
+                if (character == Hero)
+                {
+                    hero = character;
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    [Command]
+    private void CmdSpawnProtectiveCocoon(NetworkIdentity targetIdentity)
+    {
+        if (targetIdentity == null) return;
+
+        var target = targetIdentity.GetComponent<Character>();
+        if (target == null) return;
+
+        Vector3 spawnPos = target.transform.position;
+
+        var cocoon = Instantiate(_protectiveCocoonPrefab, spawnPos, Quaternion.identity);
+        NetworkServer.Spawn(cocoon.gameObject);
+
+        cocoon.Init(target);
     }
 
     [Command]
