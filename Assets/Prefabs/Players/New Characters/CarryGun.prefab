@@ -11487,17 +11487,6 @@ CapsuleCollider:
   m_CorrespondingSourceObject: {fileID: 1550066538247365834, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
   m_PrefabInstance: {fileID: 4418744079295177997}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &3181412874846690599 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1257681269524314154, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-  m_PrefabInstance: {fileID: 4418744079295177997}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5311042088619458913}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36119deea7370464ba6e74a8a3c290a4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AttributeSystem
 --- !u!114 &3838339407395912532 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 582667559171038809, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -12560,7 +12549,6 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 4
   _regenerationDelay: 1
-  _attributeSystem: {fileID: 3181412874846690599}
   _player: {fileID: 8319872899575431858}
   _attackingPsionicEnergy: {fileID: 1487487552333656207}
   basePsionicsSlider: {fileID: 8327061482150587068}

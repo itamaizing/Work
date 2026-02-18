@@ -16,6 +16,7 @@ public class BasePsionicEnergy : Resource, IDamageable
     private const float RemainingSliderFillPercent = 0.7f;
     private const float DamageToPsiConversionRate = 0.1f;
 
+    private Attributes _health;
     private float _psionicaDecayTime;
     private bool _isInternalPsiEnergy = false;
     private Coroutine _energyDecayCoroutine;
@@ -33,7 +34,8 @@ public class BasePsionicEnergy : Resource, IDamageable
         _psionicaDecayTime = psionicEnergySkill.CooldownTime;
         if (_player != null)
         {
-            //_maxValue = _attributeSystem.Health.GetValue();
+            _health = _player.Data.GetAttribute(AttributeNames.Health);
+            _maxValue = _health.GetValue();
             _player.Health.Shields.Add(this);
         }
     }
