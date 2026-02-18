@@ -159,12 +159,14 @@ public class Tentacles : Skill
                     {
                         if (((1 << clickedCharacter.gameObject.layer) & TargetsLayers.value) != 0)
                         {
-                            if (clickedCharacter.TryGetComponent<NetworkIdentity>(out NetworkIdentity identity))
+                            if (clickedCharacter == Hero)
                             {
-                                CmdSpawnProtectiveCocoon(identity);
+                                _spawnPoint = clickedCharacter.transform.position;
+                                SetTarget(clickedCharacter);
 
-                                targetPoint = clickedCharacter.transform.position;
-                                yield break;
+                                targetPoint = _spawnPoint;
+                                yield return null;
+                                continue;
                             }
                         }
                     }
@@ -357,6 +359,13 @@ public class Tentacles : Skill
     protected override IEnumerator CastJob()
     {
         if (!IsValidVector(_spawnPoint)) yield break;
+
+        if (_isProtectiveCooconSpawn && GetTargetCharacter() != null)
+        {
+            CmdSpawnProtectiveCocoon(GetTargetCharacter().netIdentity);
+            ClearData();
+            yield break;
+        }
 
         if (GetTargetCharacter() != null)
         {
