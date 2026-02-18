@@ -5,8 +5,8 @@ using System.Collections.Generic;
 
 public class ProtectiveCocoon : NetworkBehaviour
 {
-    private const float Lifetime = 6f;
-    private const float RegenBuffDuration = 20f;
+    [SerializeField] private const float _lifetime = 20f;
+    [SerializeField] private const float _regenBuffDuration = 20f;
     private const float RegenMultiplier = 2f;
 
     private Character _target;
@@ -106,13 +106,13 @@ public class ProtectiveCocoon : NetworkBehaviour
 
     private IEnumerator RegenBuffTimer()
     {
-        yield return new WaitForSeconds(RegenBuffDuration);
+        yield return new WaitForSeconds(_regenBuffDuration);
         RemoveRegenBuff();
     }
 
     private IEnumerator LifeTimer()
     {
-        yield return new WaitForSeconds(Lifetime);
+        yield return new WaitForSeconds(_lifetime);
 
         RemoveControl();
 
