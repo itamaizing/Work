@@ -51,6 +51,7 @@ public class ProtectiveCocoon : NetworkBehaviour
         if (_target == null) return;
 
         _target.Move.IsMoveBlocked = true;
+        _target.IsDisappeared = true;
 
         foreach (var skill in _target.Abilities.Skills)
         {
@@ -67,6 +68,7 @@ public class ProtectiveCocoon : NetworkBehaviour
         if (_target == null) return;
 
         _target.Move.IsMoveBlocked = false;
+        _target.IsDisappeared = false;
 
         foreach (var skill in _disabledSkills)
         {
