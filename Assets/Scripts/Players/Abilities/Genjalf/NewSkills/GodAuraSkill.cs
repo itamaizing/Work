@@ -1,36 +1,32 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Mirror;
 using UnityEngine;
 
-public class HotAura : MonoBehaviour
+public class GodAuraSkill : MonoBehaviour
 {
-    private void Start()
-    {
-        var chatacter = GetComponent<Character>();
-        chatacter.CharacterState.CmdAddState(States.HotBloodAura, 0, 0, chatacter.gameObject, name);
-    }
+
 }
 
-public class HotBloodAura : AuraState
+public class GodAura : AuraState
 {
-    private float _percentage = 0.1f;
-    public override States State { get; }
+    public override States State => States.GodAura;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects { get; }
-    public override float Distance => 6;
+    public override float Distance => 8;
     public override float EffectRate { get; }
     public override LayerMask LayerMask => LayerMask.GetMask("Allies");
 
     public override void EffectOnEnter(Character character)
     {
-        CmdAddState(character.gameObject);
+        if (_characterState.Character != character)
+        {
+            CmdAddState(character.gameObject);
+        }
     }
 
     public override void EffectOnExit(Character character)
     {
-        if (character.CharacterState.CheckForState(States.HotBloodBuff))
+        if (character.CharacterState.CheckForState(States.GodAuraBuff))
         {
             CmdRemoveState(character.gameObject);
         }
@@ -38,28 +34,38 @@ public class HotBloodAura : AuraState
 
     public override void EffectOnStay(List<Character> characters)
     {
+
+    }
+
+    public override void ExitState()
+    {
+        base.ExitState();
+        foreach (var character in _charactersInRadius)
+        {
+            CmdRemoveState(character.gameObject);
+        }
     }
     
     [Command]
     private void CmdAddState(GameObject target)
     {
-        target.GetComponent<Character>().CharacterState.AddState(States.HotBloodBuff,-1,0,target,nameof(HotAuraBuff));
+        target.GetComponent<Character>().CharacterState.AddState(States.GodAuraBuff,-1,0,target,nameof(HotAuraBuff));
     }
-    
+
     [Command]
     private void CmdRemoveState(GameObject target)
     {
-        target.GetComponent<Character>().CharacterState.RemoveState(States.HotBloodBuff);
+        target.GetComponent<Character>().CharacterState.RemoveState(States.GodAuraBuff);
     }
 }
 
-public class HotAuraBuff : AbstractCharacterState
+public class GodAuraBuff : AbstractCharacterState
 {
     private List<StatusEffect> _effects = new List<StatusEffect>();
     private float _percentage = 0.1f;
     private Character _character;
 
-    public override States State => States.HotBloodBuff;
+    public override States State => States.GodAuraBuff;
 
     public override StateType Type => StateType.Magic;
 
@@ -72,8 +78,7 @@ public class HotAuraBuff : AbstractCharacterState
         _character = character.Character;
         foreach (var skill in character.Character.Abilities.Abilities)
         {
-            skill.Buff.CastSpeed.IncreasePercentage(1 - _percentage);
-            skill.Buff.AttackSpeed.IncreasePercentage(1 - _percentage);
+            skill.Buff.Cooldown.IncreasePercentage(1 - _percentage);
         }
     }
 

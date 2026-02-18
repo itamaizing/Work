@@ -28,6 +28,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 	[SerializeField] private Auras _auras;
 	[SerializeField] private TargetSeeker _targetSeeker;
 	[SerializeField] private Character _characterParent;
+	[SerializeField] private TransformationComponent _transformationComponent;
 
 	[SyncVar] private int _killCounter;
 	[SyncVar] private float _damageTakeCounter;
@@ -56,6 +57,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 	public SelectedCircle SelectedCircle => _selectedCircle;
     public Animator Animator => _animator;
 	public TargetSeeker TargetSeeker => _targetSeeker;
+	public TransformationComponent TransformationComponent => _transformationComponent;
     public NetworkAnimator NetworkAnimator => _networkAnimator;
 	public Character CharacterParent
 	{

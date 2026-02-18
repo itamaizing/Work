@@ -59,7 +59,7 @@ public abstract class AuraState : AbstractCharacterState
 {
 	protected Character _self;
     private Transform _auraCentre;
-    private List<Character> _charactersInRadius = new();
+    protected List<Character> _charactersInRadius = new();
     private List<Collider> _collidersKeysForRemove = new();
 	private Dictionary<Collider, Character> _colliderToCharacter = new();
 	private float _timeAfterLastEffect = 0;
@@ -271,6 +271,9 @@ public class CharacterState : NetworkBehaviour
         [States.MagicWater] = new MagicWater(),
         [States.HotBloodAura] = new HotBloodAura(),
         [States.HotBloodBuff] = new HotAuraBuff(),
+        [States.GodAura] = new GodAura(),
+        [States.GodAuraBuff] = new GodAuraBuff(),
+        [States.TransformationDebuff] = new TransformationDebuff(),
         [States.Burning] = new Burning(),
         [States.Burn] = new Burn(),
 		[States.Discharge] = new Gangdollarff.AirElemental.Discharge(),
@@ -785,7 +788,10 @@ public enum States
 	MagicalExcitement,
 	GodLight,
 	HotBloodAura,
-	HotBloodBuff
+	HotBloodBuff,
+	GodAura,
+	GodAuraBuff,
+	TransformationDebuff
 }
 public enum BaffDebaff
 {
