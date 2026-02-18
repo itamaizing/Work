@@ -150,6 +150,27 @@ public class Tentacles : Skill
 
         while (float.IsPositiveInfinity(targetPoint.x))
         {
+            if (_isProtectiveCooconSpawn)
+            {
+                if (GetMouseButton &&
+                    Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
+                {
+                    if (hit.collider.TryGetComponent<Character>(out Character clickedCharacter))
+                    {
+                        if (((1 << clickedCharacter.gameObject.layer) & TargetsLayers.value) != 0)
+                        {
+                            if (clickedCharacter.TryGetComponent<NetworkIdentity>(out NetworkIdentity identity))
+                            {
+                                CmdSpawnProtectiveCocoon(identity);
+
+                                targetPoint = clickedCharacter.transform.position;
+                                yield break;
+                            }
+                        }
+                    }
+                }
+            }
+
             if (_isCocoonSpawnTalent)
             {
                 if (TryClickHero(out Character hero))
