@@ -9,8 +9,6 @@ public class ProtectiveCocoon : NetworkBehaviour
     private const float RegenBuffDuration = 20f;
     private const float RegenMultiplier = 2f;
 
-    [SyncVar] private uint _targetNetId;
-
     private Character _target;
     private List<Skill> _disabledSkills = new();
 
@@ -21,10 +19,7 @@ public class ProtectiveCocoon : NetworkBehaviour
 
     public void Init(Character target)
     {
-        if (!isServer) return;
-
         _target = target;
-        _targetNetId = target.netId;
 
         ApplyControl();
         ApplyRegenBuff();
@@ -33,11 +28,29 @@ public class ProtectiveCocoon : NetworkBehaviour
         _regenBuffCoroutine = StartCoroutine(RegenBuffTimer());
     }
 
+    private void OnDisable()
+    {
+        if (_lifeCoroutine != null)
+        {
+            StopCoroutine(_lifeCoroutine);
+            _lifeCoroutine = null;
+        }
+
+        if (_regenBuffCoroutine != null)
+        {
+            StopCoroutine(_regenBuffCoroutine);
+            _regenBuffCoroutine = null;
+        }
+
+        RemoveControl();
+        RemoveRegenBuff();
+    }
+
     private void ApplyControl()
     {
         if (_target == null) return;
 
-        _target.Move.SetCanMove(false);
+        _target.Move.IsMoveBlocked = true;
 
         foreach (var skill in _target.Abilities.Skills)
         {
@@ -53,7 +66,7 @@ public class ProtectiveCocoon : NetworkBehaviour
     {
         if (_target == null) return;
 
-        _target.Move.SetCanMove(true);
+        _target.Move.IsMoveBlocked = false;
 
         foreach (var skill in _disabledSkills)
         {
@@ -78,11 +91,9 @@ public class ProtectiveCocoon : NetworkBehaviour
         }
     }
 
-    private IEnumerator RegenBuffTimer()
+    private void RemoveRegenBuff()
     {
-        yield return new WaitForSeconds(RegenBuffDuration);
-
-        if (_target == null) yield break;
+        if (_target == null) return;
 
         foreach (var resource in _target.GetComponents<Resource>())
         {
@@ -91,6 +102,12 @@ public class ProtectiveCocoon : NetworkBehaviour
                 resource.RegenerationValue = _originalRegenValue;
             }
         }
+    }
+
+    private IEnumerator RegenBuffTimer()
+    {
+        yield return new WaitForSeconds(RegenBuffDuration);
+        RemoveRegenBuff();
     }
 
     private IEnumerator LifeTimer()
@@ -105,6 +122,19 @@ public class ProtectiveCocoon : NetworkBehaviour
 
     public override void OnStopServer()
     {
+        if (_lifeCoroutine != null)
+        {
+            StopCoroutine(_lifeCoroutine);
+            _lifeCoroutine = null;
+        }
+
+        if (_regenBuffCoroutine != null)
+        {
+            StopCoroutine(_regenBuffCoroutine);
+            _regenBuffCoroutine = null;
+        }
+
         RemoveControl();
+        RemoveRegenBuff();
     }
 }

@@ -164,12 +164,18 @@ public class Tentacles : Skill
                                 _spawnPoint = clickedCharacter.transform.position;
                                 SetTarget(clickedCharacter);
 
-                                targetPoint = _spawnPoint;
-                                yield return null;
-                                continue;
+                                TargetInfo info = new TargetInfo();
+                                info.Points.Add(_spawnPoint);
+                                info.AddTarget(clickedCharacter);
+
+                                callbackDataSaved(info);
+                                yield break;
                             }
                         }
                     }
+
+                    yield return null;
+                    continue;
                 }
             }
 
@@ -362,7 +368,7 @@ public class Tentacles : Skill
 
         if (_isProtectiveCooconSpawn && GetTargetCharacter() != null)
         {
-            CmdSpawnProtectiveCocoon(GetTargetCharacter().netIdentity);
+            CmdSpawnProtectiveCocoon(GetTargetCharacter());
             ClearData();
             yield break;
         }
@@ -493,11 +499,8 @@ public class Tentacles : Skill
     }
 
     [Command]
-    private void CmdSpawnProtectiveCocoon(NetworkIdentity targetIdentity)
+    private void CmdSpawnProtectiveCocoon(Character target)
     {
-        if (targetIdentity == null) return;
-
-        var target = targetIdentity.GetComponent<Character>();
         if (target == null) return;
 
         Vector3 spawnPos = target.transform.position;
