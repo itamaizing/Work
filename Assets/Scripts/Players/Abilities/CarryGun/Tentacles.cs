@@ -509,6 +509,8 @@ public class Tentacles : Skill
         NetworkServer.Spawn(cocoon.gameObject);
 
         cocoon.Init(target);
+
+        RpcInitProtectiveCocoon(cocoon.gameObject, target);
     }
 
     [Command]
@@ -552,6 +554,15 @@ public class Tentacles : Skill
         if (tentacleObject == null) return;
 
         tentacleObject.GetComponent<TentacleProjectile>().Init(_player, target, position, target.transform.position, true, _isPsionicsTalentThree, _isAttractionTentacleTalent, _spentAttackingPsiEnergy, this);
+    }
+
+    [ClientRpc]
+    private void RpcInitProtectiveCocoon(GameObject cocoonObject, Character target)
+    {
+        if (cocoonObject == null || target == null) return;
+
+        var cocoon = cocoonObject.GetComponent<ProtectiveCocoon>();
+        cocoon.Init(target);
     }
 
     [ClientRpc]
