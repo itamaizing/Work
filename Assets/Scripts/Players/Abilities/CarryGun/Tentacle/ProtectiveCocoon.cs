@@ -9,7 +9,7 @@ public class ProtectiveCocoon : NetworkBehaviour
     [SerializeField] private const float _regenBuffDuration = 20f;
     private const float RegenMultiplier = 2f;
 
-    private Character _target;
+    private Character _hero;
     private List<Skill> _disabledSkills = new();
 
     private Coroutine _lifeCoroutine;
@@ -19,7 +19,7 @@ public class ProtectiveCocoon : NetworkBehaviour
 
     public void Init(Character target)
     {
-        _target = target;
+        _hero = target;
 
         ApplyControl();
         ApplyRegenBuff();
@@ -48,12 +48,14 @@ public class ProtectiveCocoon : NetworkBehaviour
 
     private void ApplyControl()
     {
-        if (_target == null) return;
+        if (_hero == null) return;
 
-        _target.Move.IsMoveBlocked = true;
-        _target.IsDisappeared = true;
+        _hero.Move.IsMoveBlocked = true;
+        _hero.IsDisappeared = true;
+        _hero.Collider.enabled = false;
+        _hero.Rigidbody.isKinematic = true;
 
-        foreach (var skill in _target.Abilities.Skills)
+        foreach (var skill in _hero.Abilities.Skills)
         {
             if (!skill.Disactive)
             {
@@ -65,10 +67,12 @@ public class ProtectiveCocoon : NetworkBehaviour
 
     private void RemoveControl()
     {
-        if (_target == null) return;
+        if (_hero == null) return;
 
-        _target.Move.IsMoveBlocked = false;
-        _target.IsDisappeared = false;
+        _hero.Move.IsMoveBlocked = false;
+        _hero.IsDisappeared = false;
+        _hero.Collider.enabled = true;
+        _hero.Rigidbody.isKinematic = false;
 
         foreach (var skill in _disabledSkills)
         {
@@ -81,9 +85,9 @@ public class ProtectiveCocoon : NetworkBehaviour
 
     private void ApplyRegenBuff()
     {
-        if (_target == null) return;
+        if (_hero == null) return;
 
-        foreach (var resource in _target.GetComponents<Resource>())
+        foreach (var resource in _hero.GetComponents<Resource>())
         {
             if (resource.RegenerationValue > 0)
             {
@@ -95,9 +99,9 @@ public class ProtectiveCocoon : NetworkBehaviour
 
     private void RemoveRegenBuff()
     {
-        if (_target == null) return;
+        if (_hero == null) return;
 
-        foreach (var resource in _target.GetComponents<Resource>())
+        foreach (var resource in _hero.GetComponents<Resource>())
         {
             if (resource.RegenerationValue > 0)
             {
