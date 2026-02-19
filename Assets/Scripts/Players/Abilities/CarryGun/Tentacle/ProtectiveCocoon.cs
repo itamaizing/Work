@@ -5,8 +5,8 @@ using System.Collections.Generic;
 
 public class ProtectiveCocoon : NetworkBehaviour
 {
-    [SerializeField] private const float _lifetime = 20f;
-    [SerializeField] private const float _regenBuffDuration = 20f;
+    [SerializeField] private float _lifetime = 20f;
+    [SerializeField] private float _regenBuffDuration = 20f;
     private const float RegenMultiplier = 2f;
 
     private Character _hero;
