@@ -22,13 +22,14 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     [SyncVar(hook = nameof(HookMaxValueChanged))] protected float _maxValue;
     [SyncVar] protected float _regenerationValue;
     [SyncVar] protected float _regenerationPeriod;
-
+    
     protected Coroutine _regenCoroutine;
     protected Attributes _maxValueAttribute;
     protected Attributes _regenValueAttribute;
 
 	public float CurrentValue { get => _currentValue; set { ValueChanged?.Invoke(_currentValue, value); _currentValue = value; } }
-    public float MaxValue { 
+    public virtual float MaxValue
+    { 
         get 
         { 
             if (_maxValueAttribute != null) 

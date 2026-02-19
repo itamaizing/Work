@@ -73,6 +73,11 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
 
     public bool IsTargetable => throw new NotImplementedException();
 
+    public override float MaxValue
+    {
+        get => _objectData != null ? _objectData.MaxHealth : base.MaxValue;
+    }
+
     #region regeneration
 
     private Coroutine _fillCoroutine;
@@ -270,9 +275,11 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
 
         if (_regenerationCoroutine == null) ÑmdStartCustomRegeneration();
         float damageValue = damage.Value;
+        Debug.Log("0");
 
         if (_currentHealth > 0)
         {
+            Debug.Log("1");
             _currentHealth -= damageValue;
              
             DamageTaken?.Invoke(damage, skill);
