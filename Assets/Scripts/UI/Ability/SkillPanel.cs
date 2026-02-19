@@ -96,9 +96,9 @@ public class SkillPanel : MonoBehaviour
 
         _playerAbilities = abilities;
 
-        for (int i = 0; i < _playerAbilities.Skills.Count; i++)
+        for (int i = 0; i < _playerAbilities.SelectedSkills.Count(); i++)
         {
-            if (_playerAbilities.Skills[i] == null)
+            if (_playerAbilities.SelectedSkills[i] == null)
             {
                 _skillIcons[i].CurrentIcon = null;
                 continue;
@@ -106,7 +106,7 @@ public class SkillPanel : MonoBehaviour
             if (i >= _skillIcons.Length) return;
 
             var icon = Instantiate(_draggableIconPref, _skillIcons[i].transform);
-            icon.Init(_playerAbilities.Skills[i], _skillIcons[i].transform, _uiCamera, _cameraCanvasDistance, true);
+            icon.Init(_playerAbilities.SelectedSkills[i], _skillIcons[i].transform, _uiCamera, _cameraCanvasDistance, true);
             _skillIcons[i].CurrentIcon = icon;
             icon.transform.SetAsFirstSibling();
             _skills.Add(icon);
