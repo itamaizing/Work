@@ -274,10 +274,13 @@ public class CharacterState : NetworkBehaviour
         [States.GodAura] = new GodAura(),
         [States.GodAuraBuff] = new GodAuraBuff(),
         [States.TransformationDebuff] = new TransformationDebuff(),
+        [States.PetrificationDebuff] = new PetrificationState(),
+        [States.PushingWindBuff] = new PushingWindBuff(),
         [States.Burning] = new Burning(),
         [States.Burn] = new Burn(),
 		[States.Discharge] = new Gangdollarff.AirElemental.Discharge(),
 		[States.CoolingAura] = new CoolingAura(),
+		[States.CoolingDamaged] = new CoolingDamaged(),
 		[States.MagicalExcitement] = new MagicalExcitement(),
 		[States.GodLight] = new GodLightState(),
         #endregion
@@ -791,7 +794,10 @@ public enum States
 	HotBloodBuff,
 	GodAura,
 	GodAuraBuff,
-	TransformationDebuff
+	TransformationDebuff,
+	PetrificationDebuff,
+	PushingWindBuff,
+	CoolingDamaged
 }
 public enum BaffDebaff
 {

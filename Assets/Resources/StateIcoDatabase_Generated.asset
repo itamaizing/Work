@@ -301,3 +301,12 @@ MonoBehaviour:
   - State: 95
     Icon: {fileID: 21300000, guid: ee0fb337505e68442a4822376f993c92, type: 3}
     BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 96
+    Icon: {fileID: 21300000, guid: 4544b6e08fc609244b20d914b4f319db, type: 3}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 97
+    Icon: {fileID: 21300000, guid: d50c5901892c1ca49869e3c93f076995, type: 3}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 98
+    Icon: {fileID: 21300000, guid: c2e5fa9f5294ea048ad91ea82a721379, type: 3}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}
