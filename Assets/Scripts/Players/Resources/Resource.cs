@@ -28,7 +28,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     protected Attributes _regenValueAttribute;
 
 	public float CurrentValue { get => _currentValue; set { ValueChanged?.Invoke(_currentValue, value); _currentValue = value; } }
-    public virtual float MaxValue
+    public float MaxValue
     { 
         get 
         { 

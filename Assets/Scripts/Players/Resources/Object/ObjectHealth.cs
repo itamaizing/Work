@@ -73,14 +73,11 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
 
     public bool IsTargetable => throw new NotImplementedException();
 
-    public override float MaxValue
-    {
-        get => _objectData != null ? _objectData.MaxHealth : base.MaxValue;
-    }
-
     #region regeneration
 
     private Coroutine _fillCoroutine;
+
+    private void Awake() => InitializeObject(ObjectData);
 
     private void OnDisable()
     {
@@ -227,7 +224,7 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
 
     #region Initialization
 
-    public void InitializeObject(ObjectData objectData)
+    private void InitializeObject(ObjectData objectData)
     {
         _objectData = objectData;
 
