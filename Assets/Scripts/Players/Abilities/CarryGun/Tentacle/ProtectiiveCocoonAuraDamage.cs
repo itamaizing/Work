@@ -5,20 +5,36 @@ using UnityEngine;
 
 public class ProtectiiveCocoonAuraDamage : NetworkBehaviour
 {
-    [Header("Settings")]
+    [Header("Damage Settings")]
     [SerializeField] private float damageValue = 2f;
     [SerializeField] private float tickInterval = 1f;
-    [SerializeField] private LayerMask characterLayer;
     [SerializeField] private DamageType damageType = DamageType.Physical;
+
+    [Header("References")]
+    [SerializeField] private LayerMask characterLayer;
+    [SerializeField] private LightningProjectile _lightningPrefab;
     [SerializeField] private ProtectiveCocoon _protectiveCocoon;
 
-    private readonly List<Character> _charactersInZone = new();
+    private readonly Dictionary<Character, Coroutine> _enemyCoroutines = new();
     private WaitForSeconds _wait;
-    private Coroutine _damageCoroutine;
 
     private void Awake()
     {
         _wait = new WaitForSeconds(tickInterval);
+
+        if (_protectiveCocoon == null)
+            _protectiveCocoon = GetComponentInParent<ProtectiveCocoon>();
+    }
+
+    public override void OnStopServer()
+    {
+        foreach (var pair in _enemyCoroutines)
+        {
+            if (pair.Value != null)
+                StopCoroutine(pair.Value);
+        }
+
+        _enemyCoroutines.Clear();
     }
 
     [Server]
@@ -27,16 +43,14 @@ public class ProtectiiveCocoonAuraDamage : NetworkBehaviour
         if (!other.TryGetComponent(out Character character))
             return;
 
-        if (_charactersInZone.Contains(character))
+        if (_enemyCoroutines.ContainsKey(character))
             return;
 
         if (!IsEnemy(character, other.gameObject))
             return;
 
-        _charactersInZone.Add(character);
-        Debug.Log("Противник в радиусе кокона");
-
-        if (_damageCoroutine == null) _damageCoroutine = StartCoroutine(DamageRoutine());
+        Coroutine routine = StartCoroutine(ShootRoutine(character));
+        _enemyCoroutines.Add(character, routine);
     }
 
     [Server]
@@ -45,68 +59,67 @@ public class ProtectiiveCocoonAuraDamage : NetworkBehaviour
         if (!other.TryGetComponent(out Character character))
             return;
 
-        _charactersInZone.Remove(character);
-
-        if (_charactersInZone.Count == 0 && _damageCoroutine != null)
+        if (_enemyCoroutines.TryGetValue(character, out Coroutine routine))
         {
-            StopCoroutine(_damageCoroutine);
-            _damageCoroutine = null;
+            StopCoroutine(routine);
+            _enemyCoroutines.Remove(character);
         }
     }
 
-    private IEnumerator DamageRoutine()
+    [Server]
+    private IEnumerator ShootRoutine(Character target)
     {
-        while (_charactersInZone.Count > 0)
+        yield return new WaitForSeconds(Random.Range(0f, tickInterval));
+
+        while (target != null)
         {
-            foreach (var character in _charactersInZone.ToArray())
-            {
-                if (character == null)
-                {
-                    _charactersInZone.Remove(character);
-                    continue;
-                }
-
-                ApplyEnemy(character);
-            }
-
+            SpawnProjectile(target);
             yield return _wait;
         }
 
-        _damageCoroutine = null;
+        _enemyCoroutines.Remove(target);
     }
 
-    private void ApplyEnemy(Character character)
+    [Server]
+    private void SpawnProjectile(Character target)
     {
+        if (_protectiveCocoon == null) return;
+        if (_protectiveCocoon.Hero == null) return;
         if (_protectiveCocoon.SkillHero == null) return;
+        if (_lightningPrefab == null) return;
 
-        Debug.Log("Урон по противнику");
-        ApplyDamage(damageValue, damageType, character.gameObject);
-    }
+        LightningProjectile projectile = Instantiate(
+            _lightningPrefab,
+            transform.position,
+            Quaternion.identity
+        );
 
-    private void ApplyDamage(float value, DamageType type, GameObject target)
-    {
-        Damage damage = new Damage
-        {
-            Value = value,
-            Type = type,
-            School = _protectiveCocoon.SkillHero.School
-        };
+        NetworkServer.Spawn(projectile.gameObject);
 
-        _protectiveCocoon.SkillHero.ApplyDamage(damage, target);
+        projectile.Init(
+            _protectiveCocoon.Hero,
+            0f,
+            false,
+            _protectiveCocoon.SkillHero,
+            target,
+            damageValue,
+            damageType
+        );
     }
 
     private bool IsEnemy(Character characterTarget, GameObject target)
     {
-        if (_protectiveCocoon.Hero == null) return IsEnemyByLayer(target);
-        if (!_protectiveCocoon.Hero.TryGetComponent(out UserNetworkSettings ownerSettings) || !characterTarget.TryGetComponent(out UserNetworkSettings targetSettings)) return IsEnemyByLayer(target);
-        if (!IsTeamAssigned(ownerSettings) || !IsTeamAssigned(targetSettings)) return IsEnemyByLayer(target);
+        if (_protectiveCocoon == null || _protectiveCocoon.Hero == null)
+            return IsEnemyByLayer(target);
+
+        if (!_protectiveCocoon.Hero.TryGetComponent(out UserNetworkSettings ownerSettings) ||
+            !characterTarget.TryGetComponent(out UserNetworkSettings targetSettings))
+            return IsEnemyByLayer(target);
+
+        if (ownerSettings.TeamIndex == 0 || targetSettings.TeamIndex == 0)
+            return IsEnemyByLayer(target);
 
         return ownerSettings.TeamIndex != targetSettings.TeamIndex;
-    }
-
-    private bool IsTeamAssigned(UserNetworkSettings settings)
-    {
-        return settings.TeamIndex != 0;
     }
 
     private bool IsEnemyByLayer(GameObject target)
