@@ -437,7 +437,6 @@ public class Tentacles : Skill
 
                 if (_lockedTarget == null)
                 {
-                    Debug.Log("1");
                     float distanceToPreview = Vector3.Distance(transform.position, _previewInstance.transform.position);
                     isPreviewInsideRadius = distanceToPreview <= (_radius + _previewInstance.Radius);
                 }
@@ -445,7 +444,6 @@ public class Tentacles : Skill
 
             if (_previewInstancePrefab != null && _lockedTarget != null)
             {
-                Debug.Log("2");
                 float distanceToPrefab = Vector3.Distance(transform.position, _previewInstancePrefab.transform.position);
                 isPreviewInsideRadius = distanceToPrefab <= _radius;
             }

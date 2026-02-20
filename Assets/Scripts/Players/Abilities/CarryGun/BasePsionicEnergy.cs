@@ -35,7 +35,7 @@ public class BasePsionicEnergy : Resource, IDamageable
         if (_player != null)
         {
             _health = _player.Data.GetAttribute(AttributeNames.Health);
-            _maxValue = _health.GetValue();
+            _maxValue = 100;
             _player.Health.Shields.Add(this);
         }
     }
@@ -98,6 +98,7 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     private void OnDamageDealt(Damage damage, GameObject target)
     {
+        Debug.Log("Псионическая атака");
         if (damage.Type != DamageType.Physical) return;
         if (psionicEnergySkill == null || !psionicEnergySkill.IsPsiEnergyActive) return;
 

@@ -1460,6 +1460,7 @@ GameObject:
   - component: {fileID: 5203634066366645836}
   - component: {fileID: 382204351057568089}
   - component: {fileID: -5756218852103883079}
+  - component: {fileID: 1137416220148551760}
   m_Layer: 9
   m_Name: protective Cocoon
   m_TagString: Enemies
@@ -1783,13 +1784,13 @@ MonoBehaviour:
   syncInterval: 0
   damageValue: 2
   tickInterval: 1
-  damageType: 1
   characterLayer:
     serializedVersion: 2
     m_Bits: 256
-  _lightningPrefab: {fileID: 2259880340315435021, guid: 84b32eb190f515648ad48b7a83370fb4, type: 3}
+  damageType: 1
   _protectiveCocoon: {fileID: 6360774811645249758}
   _spawnPoint: {fileID: 6215393525193891765}
+  _lightningPrefab: {fileID: 65214949556324364, guid: 853339a5fd1f8a34d99e6e382d4702ae, type: 3}
 --- !u!114 &-5756218852103883079
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1805,6 +1806,28 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+--- !u!114 &1137416220148551760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2058911381882631605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01fd82e5f79316f41b45d03c09c9ecb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RetaliationCocoon
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _objectHealth: {fileID: 1525237466600288129}
+  damageValue: 2
+  retaliationPercent: 1
+  damageType: 1
+  _lightningPrefab: {fileID: 65214949556324364, guid: da6c0edcfeef78a40ab289260f992064, type: 3}
+  _spawnPoint: {fileID: 3553033850970622170}
+  _protectiveCocoon: {fileID: 6360774811645249758}
 --- !u!1 &2073601238477653019
 GameObject:
   m_ObjectHideFlags: 0
@@ -4280,7 +4303,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 8, y: 8, z: 5}
+  m_LocalScale: {x: 10, y: 10, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3553033850970622170}
