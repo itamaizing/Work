@@ -69,8 +69,10 @@ public class UIMenuMainWindow : MonoBehaviour
     private void UpdateCharacterPanels()
     {
         var hero = GetHero();
-        
+
         //_abilitiesPanel.Show(hero.Abilities);
+
+        hero.TalentManager.Initialize(hero.LVL);
 
         if(_skillPanel != null)
             _skillPanel.FillMenu(hero.Abilities);

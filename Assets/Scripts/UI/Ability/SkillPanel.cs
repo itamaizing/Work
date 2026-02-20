@@ -95,15 +95,32 @@ public class SkillPanel : MonoBehaviour
         }
 
         _playerAbilities = abilities;
+        int j = 0;
+        foreach (Skill skill in _playerAbilities.DefaultSkills)
+        {
+            if (skill == null)
+            {
+                _skillIcons[j].CurrentIcon = null;
+                continue;
+            }
+
+            var icon = Instantiate(_draggableIconPref, _skillIcons[j].transform);
+            icon.Init(skill, _skillIcons[j].transform, _uiCamera, _cameraCanvasDistance, true);
+            _skillIcons[j].CurrentIcon = icon;
+            icon.transform.SetAsFirstSibling();
+            _skills.Add(icon);
+
+            icon.BeginDrag += OnBeginDrag;
+            icon.EndDrag += OnEndDrag;
+            icon.PointerEnter += OnPointerEnterIcon;
+            icon.PointerExit += OnPointerExitIcon;
+            j++;
+            Debug.Log("J" + j);
+        }
 
         for (int i = 0; i < _playerAbilities.SelectedSkills.Count(); i++)
         {
-            if (_playerAbilities.SelectedSkills[i] == null)
-            {
-                _skillIcons[i].CurrentIcon = null;
-                continue;
-            }
-            if (i >= _skillIcons.Length) return;
+            if (i>= _skillIcons.Length) return;
 
             var icon = Instantiate(_draggableIconPref, _skillIcons[i].transform);
             icon.Init(_playerAbilities.SelectedSkills[i], _skillIcons[i].transform, _uiCamera, _cameraCanvasDistance, true);
