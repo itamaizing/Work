@@ -1486,6 +1486,7 @@ Transform:
   - {fileID: 8655153954021486391}
   - {fileID: 246145643891271541}
   - {fileID: 2202608579202095028}
+  - {fileID: 6215393525193891765}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8678674039354576897
@@ -1782,11 +1783,13 @@ MonoBehaviour:
   syncInterval: 0
   damageValue: 2
   tickInterval: 1
+  damageType: 1
   characterLayer:
     serializedVersion: 2
     m_Bits: 256
-  damageType: 1
+  _lightningPrefab: {fileID: 2259880340315435021, guid: 84b32eb190f515648ad48b7a83370fb4, type: 3}
   _protectiveCocoon: {fileID: 6360774811645249758}
+  _spawnPoint: {fileID: 6215393525193891765}
 --- !u!114 &-5756218852103883079
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2021,6 +2024,37 @@ Transform:
   m_Children:
   - {fileID: 4669999810883827308}
   m_Father: {fileID: 9094534959271352646}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2704704138034926872
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6215393525193891765}
+  m_Layer: 9
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: -5938655980376293919, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6215393525193891765
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2704704138034926872}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.211, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3553033850970622170}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2819338362514659564
 GameObject:

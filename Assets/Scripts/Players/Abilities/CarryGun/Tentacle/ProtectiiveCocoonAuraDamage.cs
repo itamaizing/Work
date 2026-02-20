@@ -2,6 +2,7 @@ using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ProtectiiveCocoonAuraDamage : NetworkBehaviour
 {
@@ -14,6 +15,7 @@ public class ProtectiiveCocoonAuraDamage : NetworkBehaviour
     [SerializeField] private LayerMask characterLayer;
     [SerializeField] private LightningProjectile _lightningPrefab;
     [SerializeField] private ProtectiveCocoon _protectiveCocoon;
+    [SerializeField] private Transform _spawnPoint;
 
     private readonly Dictionary<Character, Coroutine> _enemyCoroutines = new();
     private WaitForSeconds _wait;
@@ -87,24 +89,13 @@ public class ProtectiiveCocoonAuraDamage : NetworkBehaviour
         if (_protectiveCocoon.Hero == null) return;
         if (_protectiveCocoon.SkillHero == null) return;
         if (_lightningPrefab == null) return;
+        if (_spawnPoint == null) return;
 
-        LightningProjectile projectile = Instantiate(
-            _lightningPrefab,
-            transform.position,
-            Quaternion.identity
-        );
-
+        LightningProjectile projectile = Instantiate( _lightningPrefab, _spawnPoint.position, Quaternion.identity);
+        SceneManager.MoveGameObjectToScene(projectile.gameObject, _protectiveCocoon.Hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(projectile.gameObject);
-
-        projectile.Init(
-            _protectiveCocoon.Hero,
-            0f,
-            false,
-            _protectiveCocoon.SkillHero,
-            target,
-            damageValue,
-            damageType
-        );
+        projectile.Init(_protectiveCocoon.Hero, 0f, false, _protectiveCocoon.SkillHero, target, damageValue, damageType);
+        projectile.StartFly(target.transform);
     }
 
     private bool IsEnemy(Character characterTarget, GameObject target)

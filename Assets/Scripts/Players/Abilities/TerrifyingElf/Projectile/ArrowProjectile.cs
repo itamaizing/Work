@@ -80,6 +80,7 @@ public class ArrowProjectile : Projectiles
         _sphereCollider.enabled = true;
         RpcArrowTrue();
     }
+
     public void StartFly(Transform target)
     {
         _startPosition = transform.position;

@@ -1,17 +1,21 @@
 using Mirror;
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
 public class LightningProjectile : Projectiles
 {
-    [SerializeField] private float _speed = 20f;
+    [SerializeField] private float _speed = 15f;
+    [SerializeField] private float _yOffset = 1.2f;
     [SerializeField] private float _lifeTime = 5f;
     [SerializeField] private SphereCollider _collider;
-    [SerializeField] private float _yOffset = 1.2f;
 
     private Character _target;
     private float _damage;
     private DamageType _damageType;
+    private Transform _followTarget;
+
+    private Vector3 _startPosition;
+    private bool _isFollowingTarget = false;
 
     public void Init(
         Character dad,
@@ -32,25 +36,28 @@ public class LightningProjectile : Projectiles
         _initialized = true;
 
         _collider.enabled = true;
-
-        StartCoroutine(FollowTarget());
         Destroy(gameObject, _lifeTime);
     }
 
-    [Server]
-    private IEnumerator FollowTarget()
+    public void StartFly(Transform target)
     {
-        while (_target != null)
-        {
-            Vector3 targetPos = _target.transform.position + Vector3.up * _yOffset;
-            Vector3 dir = (targetPos - transform.position).normalized;
+        Debug.Log("1");
+        _startPosition = transform.position;
+        _followTarget = target;
+        _isFollowingTarget = true;
+        StartCoroutine(FollowTargetCoroutine());
+    }
 
-            transform.position += dir * _speed * Time.deltaTime;
+    private IEnumerator FollowTargetCoroutine()
+    {
+        while (_isFollowingTarget && _followTarget != null)
+        {
+            Vector3 targetPos = _followTarget.position;
+            Vector3 dir = (targetPos - transform.position).normalized;
+            if (_rb != null) _rb.linearVelocity = dir * _speed;
 
             yield return null;
         }
-
-        NetworkServer.Destroy(gameObject);
     }
 
     [ServerCallback]
