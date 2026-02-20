@@ -60,15 +60,15 @@ public class AttributeSystem : NetworkBehaviour
         _attributes.Add(_physicResist);
         _attributes.Add(_magicResist);
         _attributes.Add(_magicEvade);
-        Debug.Log("Init");
+        //Debug.Log("Init");
 
         foreach (var attribute in _attributes)
         {
             List<AttributeModifiers> modifs = SaveManager.Instance.LoadAttribute(attribute);
-            Debug.Log(modifs.Count);
+            //Debug.Log(modifs.Count);
             foreach (var modifier in modifs)
             {
-                Debug.Log(modifier.Value + attribute.Name);
+                //Debug.Log(modifier.Value + attribute.Name);
                 attribute.AddModifier(modifier);
             }
         }
@@ -99,15 +99,15 @@ public class AttributeSystem : NetworkBehaviour
         _attributes.Add(_physicResist);
         _attributes.Add(_magicResist);
         _attributes.Add(_magicEvade);
-        Debug.Log("Init");
+        //Debug.Log("Init");
 
         foreach (var attribute in _attributes)
         {
             List<AttributeModifiers> modifs =  SaveManager.Instance.LoadAttribute(attribute);
-            Debug.Log(modifs.Count + attribute.Name);
+            //Debug.Log(modifs.Count + attribute.Name);
             foreach (var modifier in modifs)
             {
-                Debug.Log(modifier.Value + attribute.Name);
+                //Debug.Log(modifier.Value + attribute.Name);
                 attribute.AddModifier(modifier);
             }
             if(isClient)

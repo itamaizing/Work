@@ -25,7 +25,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
         {
             var attribute = Instantiate(_attributeItem, _itemsParent);
             attribute.Fills(item);
-            Debug.Log(item.GetValue());
+            //Debug.Log(item.GetValue());
             //attribute.OnValueChange += UpdateAttributesPoints;
             attribute.OnPointerEntered += ShowDescription;
             attribute.OnPointerExited += HideDescription;
@@ -80,7 +80,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     {
         if(text.Length > 2)
         {
-            Debug.Log(text);
+            //Debug.Log(text);
             _descriptionPanel.ShowDesciption(text);
         }
     }
