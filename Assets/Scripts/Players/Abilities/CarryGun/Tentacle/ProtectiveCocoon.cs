@@ -10,6 +10,8 @@ public class ProtectiveCocoon : NetworkBehaviour
     private const float RegenMultiplier = 2f;
 
     private Character _hero;
+    private Skill _skill;
+
     private List<Skill> _disabledSkills = new();
 
     private Coroutine _lifeCoroutine;
@@ -17,9 +19,13 @@ public class ProtectiveCocoon : NetworkBehaviour
 
     private float _originalRegenValue;
 
-    public void Init(Character target)
+    public Character Hero { get => _hero; set => _hero = value; }
+    public Skill SkillHero { get => _skill; set => _skill = value; }
+
+    public void Init(Character target, Skill skill)
     {
         _hero = target;
+        _skill = skill;
 
         ApplyControl();
         ApplyRegenBuff();

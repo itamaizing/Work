@@ -1458,7 +1458,8 @@ GameObject:
   - component: {fileID: 6702295980755575950}
   - component: {fileID: 6360774811645249758}
   - component: {fileID: 5203634066366645836}
-  - component: {fileID: 654268104759743398}
+  - component: {fileID: 382204351057568089}
+  - component: {fileID: -5756218852103883079}
   m_Layer: 9
   m_Name: protective Cocoon
   m_TagString: Enemies
@@ -1741,7 +1742,6 @@ MonoBehaviour:
   syncInterval: 0
   _lifetime: 20
   _regenBuffDuration: 20
-  _protectiiveCocoonAuraDamage: {fileID: 654268104759743398}
 --- !u!136 &5203634066366645836
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1759,13 +1759,13 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 1
-  m_Height: 3
+  m_Height: 2.2691643
   m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &654268104759743398
+  m_Center: {x: 0, y: 1.3654178, z: 0}
+--- !u!114 &382204351057568089
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1780,12 +1780,28 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  radius: 6
   damageValue: 2
   tickInterval: 1
-  enemyLayer:
+  characterLayer:
     serializedVersion: 2
     m_Bits: 256
+  damageType: 1
+  _protectiveCocoon: {fileID: 6360774811645249758}
+--- !u!114 &-5756218852103883079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2058911381882631605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4045a79ec1c504439a0501f22780052, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UserNetworkSettings
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &2073601238477653019
 GameObject:
   m_ObjectHideFlags: 0
@@ -4210,9 +4226,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5721075149976065708}
-  - component: {fileID: 5411718601235630807}
   - component: {fileID: 6213500880130011260}
   - component: {fileID: 6553238901054644532}
+  - component: {fileID: 5757389301131912149}
   m_Layer: 0
   m_Name: ProtectiveCocoonAura
   m_TagString: Untagged
@@ -4230,24 +4246,11 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 8, y: 8, z: 0}
+  m_LocalScale: {x: 8, y: 8, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3553033850970622170}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
---- !u!114 &5411718601235630807
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6405108017026025071}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 323879a84e922544ab7c04a2846a7594, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AuraTriggerForwarder
-  _aura: {fileID: 0}
 --- !u!64 &6213500880130011260
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -4278,6 +4281,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6405108017026025071}
   m_Mesh: {fileID: -2124705421725058983, guid: 4dfd0f488b41313448811248edb4e215, type: 3}
+--- !u!114 &5757389301131912149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6405108017026025071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43c8a2744f11d8c409a795a81f4dba1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProtectiveAuraTrigger
+  _protectiiveCocoonAuraDamage: {fileID: 382204351057568089}
 --- !u!1 &6428234955932255961
 GameObject:
   m_ObjectHideFlags: 0

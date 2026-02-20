@@ -3,27 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(NetworkIdentity))]
 public class ProtectiiveCocoonAuraDamage : NetworkBehaviour
 {
     [Header("Settings")]
     [SerializeField] private float damageValue = 2f;
     [SerializeField] private float tickInterval = 1f;
     [SerializeField] private LayerMask characterLayer;
+    [SerializeField] private DamageType damageType = DamageType.Physical;
+    [SerializeField] private ProtectiveCocoon _protectiveCocoon;
 
     private readonly List<Character> _charactersInZone = new();
     private WaitForSeconds _wait;
     private Coroutine _damageCoroutine;
-    private Character _owner;
 
     private void Awake()
     {
         _wait = new WaitForSeconds(tickInterval);
-    }
-
-    public void Init(Character owner)
-    {
-        _owner = owner;
     }
 
     [Server]
@@ -35,13 +30,13 @@ public class ProtectiiveCocoonAuraDamage : NetworkBehaviour
         if (_charactersInZone.Contains(character))
             return;
 
-        if (!IsEnemy(character))
+        if (!IsEnemy(character, other.gameObject))
             return;
 
         _charactersInZone.Add(character);
+        Debug.Log("Противник в радиусе кокона");
 
-        if (_damageCoroutine == null)
-            _damageCoroutine = StartCoroutine(DamageRoutine());
+        if (_damageCoroutine == null) _damageCoroutine = StartCoroutine(DamageRoutine());
     }
 
     [Server]
@@ -59,7 +54,6 @@ public class ProtectiiveCocoonAuraDamage : NetworkBehaviour
         }
     }
 
-    [Server]
     private IEnumerator DamageRoutine()
     {
         while (_charactersInZone.Count > 0)
@@ -72,7 +66,7 @@ public class ProtectiiveCocoonAuraDamage : NetworkBehaviour
                     continue;
                 }
 
-                ApplyDamageServer(character);
+                ApplyEnemy(character);
             }
 
             yield return _wait;
@@ -81,44 +75,38 @@ public class ProtectiiveCocoonAuraDamage : NetworkBehaviour
         _damageCoroutine = null;
     }
 
-    [Server]
-    private void ApplyDamageServer(Character target)
+    private void ApplyEnemy(Character character)
     {
-        if (!target.TryGetComponent(out IDamageable damageable))
-            return;
+        if (_protectiveCocoon.SkillHero == null) return;
 
-        Damage damage = new Damage
-        {
-            Value = damageValue,
-            Type = DamageType.Physical,
-            School = Schools.Physical
-        };
-
-        damageable.TryTakeDamage(ref damage, null);
-
-        if (_owner != null)
-        {
-            _owner.DamageTracker.AddDamage(
-                damage,
-                target.gameObject,
-                isServerRequest: true
-            );
-        }
+        Debug.Log("Урон по противнику");
+        ApplyDamage(damageValue, damageType, character.gameObject);
     }
 
-    private bool IsEnemy(Character target)
+    private void ApplyDamage(float value, DamageType type, GameObject target)
     {
-        if (_owner == null)
-            return IsEnemyByLayer(target.gameObject);
+        Damage damage = new Damage
+        {
+            Value = value,
+            Type = type,
+            School = _protectiveCocoon.SkillHero.School
+        };
 
-        if (!_owner.TryGetComponent(out UserNetworkSettings ownerSettings) ||
-            !target.TryGetComponent(out UserNetworkSettings targetSettings))
-            return IsEnemyByLayer(target.gameObject);
+        _protectiveCocoon.SkillHero.ApplyDamage(damage, target);
+    }
 
-        if (ownerSettings.TeamIndex == 0 || targetSettings.TeamIndex == 0)
-            return IsEnemyByLayer(target.gameObject);
+    private bool IsEnemy(Character characterTarget, GameObject target)
+    {
+        if (_protectiveCocoon.Hero == null) return IsEnemyByLayer(target);
+        if (!_protectiveCocoon.Hero.TryGetComponent(out UserNetworkSettings ownerSettings) || !characterTarget.TryGetComponent(out UserNetworkSettings targetSettings)) return IsEnemyByLayer(target);
+        if (!IsTeamAssigned(ownerSettings) || !IsTeamAssigned(targetSettings)) return IsEnemyByLayer(target);
 
         return ownerSettings.TeamIndex != targetSettings.TeamIndex;
+    }
+
+    private bool IsTeamAssigned(UserNetworkSettings settings)
+    {
+        return settings.TeamIndex != 0;
     }
 
     private bool IsEnemyByLayer(GameObject target)

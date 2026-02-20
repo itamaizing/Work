@@ -53,6 +53,8 @@ public class Tentacles : Skill
 
     public TentacleProjectile CurrentTentacle { get => _currentTentacle; set => _currentTentacle = value; }
 
+    private LayerMask _alliesMask;
+
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Spell");
     protected override bool IsCanCast => (GetTargetCharacter() != null || _isClickedOnGround) && _spawnPoint != Vector3.positiveInfinity && IsCanRadius();
@@ -82,6 +84,7 @@ public class Tentacles : Skill
 
     private void Start()
     {
+        _alliesMask = LayerMask.GetMask("Allies");
         _waitForSeconds = new WaitForSeconds(WaitForSecondsTick);
     }
 
@@ -157,7 +160,7 @@ public class Tentacles : Skill
                 {
                     if (hit.collider.TryGetComponent<Character>(out Character clickedCharacter))
                     {
-                        if (((1 << clickedCharacter.gameObject.layer) & TargetsLayers.value) != 0)
+                        if (((1 << clickedCharacter.gameObject.layer) & _alliesMask) != 0)
                         {
                             if (clickedCharacter == Hero)
                             {
@@ -506,9 +509,10 @@ public class Tentacles : Skill
         Vector3 spawnPos = target.transform.position;
 
         var cocoon = Instantiate(_protectiveCocoonPrefab, spawnPos, Quaternion.identity);
+        SceneManager.MoveGameObjectToScene(cocoon.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(cocoon.gameObject);
 
-        cocoon.Init(target);
+        cocoon.Init(target, this);
 
         RpcInitProtectiveCocoon(cocoon.gameObject, target);
     }
@@ -562,7 +566,7 @@ public class Tentacles : Skill
         if (cocoonObject == null || target == null) return;
 
         var cocoon = cocoonObject.GetComponent<ProtectiveCocoon>();
-        cocoon.Init(target);
+        cocoon.Init(target, this);
     }
 
     [ClientRpc]
