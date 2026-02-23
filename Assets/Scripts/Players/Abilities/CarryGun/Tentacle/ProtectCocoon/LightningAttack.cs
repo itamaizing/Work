@@ -10,8 +10,10 @@ public class LightningAttack : MonoBehaviour
 
         if (target != null)
         {
-            Vector3 direction = (target.position - startPos).normalized;
-            transform.rotation = Quaternion.LookRotation(direction);
+            Vector3 targetPos = target.position + Vector3.up * 1f;
+            Vector3 direction = (targetPos - startPos).normalized;
+
+            transform.right = direction;
         }
 
         Destroy(gameObject, lifeTime);
