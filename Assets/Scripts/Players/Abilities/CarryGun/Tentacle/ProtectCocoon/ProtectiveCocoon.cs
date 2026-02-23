@@ -19,13 +19,17 @@ public class ProtectiveCocoon : NetworkBehaviour
 
     private float _originalRegenValue;
 
+    private bool _isProtectiveCooconSpawnAttack;
+
     public Character Hero { get => _hero; set => _hero = value; }
     public Skill SkillHero { get => _skill; set => _skill = value; }
+    public bool IsProtectiveCooconSpawnAttack { get => _isProtectiveCooconSpawnAttack; set => _isProtectiveCooconSpawnAttack = value; }
 
-    public void Init(Character target, Skill skill)
+    public void Init(Character target, Skill skill, bool isProtectiveCooconSpawnAttack)
     {
         _hero = target;
         _skill = skill;
+        _isProtectiveCooconSpawnAttack = isProtectiveCooconSpawnAttack;
 
         ApplyControl();
         ApplyRegenBuff();

@@ -89,7 +89,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 
         _maxValueAttribute = maxValue;
         _maxValue = maxValue.GetValue();
-        _currentValue = _maxValue / 2;
+        _currentValue = _maxValue;
     }
 
     public virtual void Add(float value)

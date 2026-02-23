@@ -44,11 +44,13 @@ public class Tentacles : Skill
     private bool _isCocoonSpawnTalent = false;
     private bool _isAttractionTentacleTalent = false;
     private bool _isProtectiveCooconSpawn = false;
+    private bool _isProtectiveCooconSpawnAttack = false;
 
     public void ProtectiveCooconSpawn(bool value) => _isProtectiveCooconSpawn = value;
     public void PsionicsTalentThree(bool value) => _isPsionicsTalentThree = value;
     public void CocoonSpawnTalent(bool value) => _isCocoonSpawnTalent = value;
     public void AttractionTentacleTalent(bool value) => _isAttractionTentacleTalent = value;
+    public void ProtectiveCooconSpawnAttack(bool value) => _isProtectiveCooconSpawnAttack = value;
     #endregion
 
     public TentacleProjectile CurrentTentacle { get => _currentTentacle; set => _currentTentacle = value; }
@@ -510,7 +512,7 @@ public class Tentacles : Skill
         SceneManager.MoveGameObjectToScene(cocoon.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(cocoon.gameObject);
 
-        cocoon.Init(target, this);
+        cocoon.Init(target, this, _isProtectiveCooconSpawnAttack);
 
         RpcInitProtectiveCocoon(cocoon.gameObject, target);
     }
@@ -564,7 +566,7 @@ public class Tentacles : Skill
         if (cocoonObject == null || target == null) return;
 
         var cocoon = cocoonObject.GetComponent<ProtectiveCocoon>();
-        cocoon.Init(target, this);
+        cocoon.Init(target, this, _isProtectiveCooconSpawnAttack);
     }
 
     [ClientRpc]

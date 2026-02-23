@@ -38,26 +38,20 @@ public class ProtectiiveCocoonAuraDamage : NetworkBehaviour
     [Server]
     public void HandleTriggerEnter(Collider other)
     {
-        if (!other.TryGetComponent(out Character character))
-            return;
-
-        if (_charactersInZone.Contains(character))
-            return;
-
-        if (!IsEnemy(character, other.gameObject))
-            return;
+        if (!_protectiveCocoon.IsProtectiveCooconSpawnAttack) return;
+        if (!other.TryGetComponent(out Character character)) return;
+        if (_charactersInZone.Contains(character)) return;
+        if (!IsEnemy(character, other.gameObject)) return;
 
         _charactersInZone.Add(character);
 
-        Debug.Log("Защита");
         if (_damageCoroutine == null) _damageCoroutine = StartCoroutine(DamageRoutine());
     }
 
     [Server]
     public void HandleTriggerExit(Collider other)
     {
-        if (!other.TryGetComponent(out Character character))
-            return;
+        if (!other.TryGetComponent(out Character character)) return;
 
         _charactersInZone.Remove(character);
 
@@ -80,7 +74,6 @@ public class ProtectiiveCocoonAuraDamage : NetworkBehaviour
                     continue;
                 }
 
-                Debug.Log("В зоне");
                 ApplyEnemy(character);
             }
 
