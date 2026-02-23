@@ -39,7 +39,7 @@ public class PsionicEnergySkill : Skill, IPassiveSkill
         if (damage.Value <= 0 || basePsionicEnergy.CurrentValue <= 0) return;
 
         float absorptionAmount = Mathf.Min(basePsionicEnergy.CurrentValue, damage.Value);
-        basePsionicEnergy.UsePsiEnergy(absorptionAmount);
+        basePsionicEnergy.CurrentValue -= absorptionAmount;
 
         float reduced = absorptionAmount * modifier;
         damage.Value -= reduced;
