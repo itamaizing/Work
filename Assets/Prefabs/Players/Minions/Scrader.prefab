@@ -13081,7 +13081,6 @@ GameObject:
   - component: {fileID: 1655977055310397963}
   - component: {fileID: 2075396149247580188}
   - component: {fileID: 2769373615330125278}
-  - component: {fileID: 1734545154344040367}
   - component: {fileID: 3962161804199240009}
   - component: {fileID: 2486038140440756892}
   - component: {fileID: 4316793701678651147}
@@ -13092,6 +13091,7 @@ GameObject:
   - component: {fileID: 1027874424821115294}
   - component: {fileID: 8741847699558006757}
   - component: {fileID: 8331210179348555134}
+  - component: {fileID: 2196113789592555911}
   m_Layer: 9
   m_Name: Scrader
   m_TagString: Allies
@@ -13338,7 +13338,7 @@ MonoBehaviour:
   _animator: {fileID: 4853408415625794062}
   _networkAnimator: {fileID: 6676246011477726785}
   _healthComponent: {fileID: 4688992458449892271}
-  _playerMove: {fileID: 1734545154344040367}
+  _playerMove: {fileID: 0}
   _abilities: {fileID: 6892265620981845488}
   _characterState: {fileID: 161335861236570360}
   uiComponent: {fileID: 1655977055310397963}
@@ -13576,33 +13576,6 @@ MonoBehaviour:
   _characterPrefabs: []
   _enemyPrefabs: []
   _allyPrefabs: []
---- !u!114 &1734545154344040367
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4305573293433524190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c0019237cf69df49b821845cc8edb86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MoveScrader
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _smoothTime: 0.15
-  _currentSpeed: 5
-  _rotationDefaultSpeed: 1000
-  _anim: {fileID: 4853408415625794062}
-  _flyChecker: {fileID: 2036623601641642670}
-  moveAudioSource: {fileID: 5970206098610166088}
-  moveClips: []
-  MoveDirection: {x: 0, y: 0, z: 0}
-  ExternalMoveDirection: {x: 0, y: 0, z: 0}
-  IsMoving: 0
-  IsSelect: 0
-  IsNoRotateAtCursor: 1
 --- !u!114 &3962161804199240009
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13615,10 +13588,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9566eed453ace294f9630617b8f34010, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 1215395125402789392}
-  moveScrader: {fileID: 1734545154344040367}
-  spell: {fileID: 8331210179348555134}
-  scratchClaws: {fileID: 8741847699558006757}
+  _animator: {fileID: 1215395125402789392}
+  _moveCreature: {fileID: 2196113789592555911}
+  _spell: {fileID: 8331210179348555134}
+  _scratchClaws: {fileID: 8741847699558006757}
 --- !u!114 &2486038140440756892
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13927,6 +13900,33 @@ MonoBehaviour:
   _damage: 5
   _animator: {fileID: 1215395125402789392}
   _skillManager: {fileID: 6892265620981845488}
+--- !u!114 &2196113789592555911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305573293433524190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9afd7493b334a5242bc46972f1d2d7e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MoveCreature
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _smoothTime: 0.15
+  _currentSpeed: 5
+  _rotationDefaultSpeed: 1000
+  _anim: {fileID: 1215395125402789392}
+  _flyChecker: {fileID: 2036623601641642670}
+  moveAudioSource: {fileID: 0}
+  moveClips: []
+  MoveDirection: {x: 0, y: 0, z: 0}
+  ExternalMoveDirection: {x: 0, y: 0, z: 0}
+  IsMoving: 0
+  IsSelect: 0
+  IsNoRotateAtCursor: 0
 --- !u!1 &4348563488435226753
 GameObject:
   m_ObjectHideFlags: 0

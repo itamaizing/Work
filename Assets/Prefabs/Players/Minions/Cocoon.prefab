@@ -12198,6 +12198,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _playerData: {fileID: 11400000, guid: 77ed62c2befefcd4a9d71e180b4e3708, type: 2}
+  _attributeSystem: {fileID: 0}
   _networkSettings: {fileID: 4704448068992970106}
   _rigidbody: {fileID: 6956811484752265138}
   _collider: {fileID: 3666356079801673500}
@@ -12467,8 +12468,6 @@ MonoBehaviour:
   moveClips: []
   MoveDirection: {x: 0, y: 0, z: 0}
   ExternalMoveDirection: {x: 0, y: 0, z: 0}
-  CanMove: 0
-  CanMoveState: 0
   IsMoving: 0
   IsSelect: 0
   IsNoRotateAtCursor: 1

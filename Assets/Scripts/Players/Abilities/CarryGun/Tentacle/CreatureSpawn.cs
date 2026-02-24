@@ -5,6 +5,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+public enum SpawnType
+{
+    Scrader = 0,
+    Spisnacider = 1,
+}
+
 public class ScraderSpawn : Skill
 {
     private Vector3 _spawnPoint = Vector3.positiveInfinity;
@@ -13,6 +19,7 @@ public class ScraderSpawn : Skill
     [SerializeField] private CocoonSpawn cocoonSpawn;
     [SerializeField] private MinionMove minionMove;
     [SerializeField] private MinionComponent minion;
+    [SerializeField] private SpawnType spawnType;
     [SerializeField] private Tentacles tentacle;
 
     protected override int AnimTriggerCastDelay => 0;
@@ -68,7 +75,11 @@ public class ScraderSpawn : Skill
 
         Hero.Abilities.DeactivateSkill(this);
 
-        if (tentacle.TryGetComponent<SpawnComponent>(out var spawnComponent)) spawnComponent.CmdSpawnAliesPoint(_spawnPoint, Quaternion.identity, minion, 0, true , tentacle.Hero);
+        if (tentacle.TryGetComponent<SpawnComponent>(out var spawnComponent))
+        {
+            int index = (int)spawnType;
+            spawnComponent.CmdSpawnAliesPoint(_spawnPoint, Quaternion.identity, minion, index, true, tentacle.Hero);
+        }
 
         yield return null;
     }

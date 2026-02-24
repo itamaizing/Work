@@ -22,7 +22,7 @@ public class SpittingAcid : Skill
     private const float RaycastCheckDistance = 1f;
     private const float TargetSearchRadius = 0.5f;
 
-    private const string AttackScaredTrigger = "AttackScared";
+    private const string AttackScaredTrigger = "AttackSpisnacider";
 
     #endregion
 
