@@ -19,10 +19,34 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
     private float _timer = 0f;
     private float _remaining = 0f;
     private bool _infinite = true;
+    private bool _isWombSpreadsMucus;
 
     private int _currentCircleIndex = 0;
 
     public static event Action OnAnyMucusAutoGrowthDestroyed;
+
+    public bool IsWombSpreadsMucus 
+    {
+        get
+        {
+            return _isWombSpreadsMucus;
+        }
+
+        set
+        {
+            if (_isWombSpreadsMucus)
+            {
+                if (_spawnRoutine != null) _spawnRoutine = null;
+                _spawnRoutine = StartCoroutine(ApplyMucusPeriodically());
+            }
+
+            else
+            {
+                StopCoroutine(ApplyMucusPeriodically());
+                _spawnRoutine = null;
+            }
+        }
+    }
 
     private void OnEnable()
     {
@@ -30,19 +54,28 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
         for (int i = 0; i < MaxCircles; i++)
             _mucusByCircle.Add(new List<GameObject>());
 
-        _spawnRoutine = StartCoroutine(ApplyMucusPeriodically());
-
         Radius = 0;
     }
 
     private void OnDestroy()
     {
-        if (_spawnRoutine != null) StopCoroutine(_spawnRoutine);
+        if (_spawnRoutine != null)
+        {
+            StopCoroutine(_spawnRoutine);
+            _spawnRoutine = null;
+        }
+
         CleanupAllMucus();
         OnAnyMucusAutoGrowthDestroyed?.Invoke();
     }
     private void OnDisable()
     {
+        if (_spawnRoutine != null)
+        {
+            StopCoroutine(_spawnRoutine);
+            _spawnRoutine = null;
+        }
+
         if (!gameObject.scene.isLoaded)
         {
             CleanupAllMucus();

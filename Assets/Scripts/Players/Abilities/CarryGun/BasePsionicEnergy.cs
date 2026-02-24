@@ -28,12 +28,16 @@ public class BasePsionicEnergy : Resource, IDamageable
     public PsionicEnergySkill PsionicEnergySkill { get => psionicEnergySkill; set => psionicEnergySkill = value; }
     public float PsionicaDecayTime { get => _psionicaDecayTime; set => _psionicaDecayTime = value; }
 
+    public override void Initialize(Attributes maxValue, Attributes regenValue, CharacterData data)
+    {
+        base.Initialize(maxValue, regenValue, data);
+    }
+
     private void Start()
     {
         _psionicaDecayTime = psionicEnergySkill.CooldownTime;
         if (_player != null)
         {
-            _maxValue = _player.Health.MaxValue;
             _player.Health.Shields.Add(this);
         }
     }
@@ -96,7 +100,6 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     private void OnDamageDealt(Damage damage, GameObject target)
     {
-        Debug.Log("Псионическая атака");
         if (damage.Type != DamageType.Physical) return;
         if (psionicEnergySkill == null || !psionicEnergySkill.IsPsiEnergyActive) return;
 

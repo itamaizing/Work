@@ -45,12 +45,14 @@ public class Tentacles : Skill
     private bool _isAttractionTentacleTalent = false;
     private bool _isProtectiveCooconSpawn = false;
     private bool _isProtectiveCooconSpawnAttack = false;
+    private bool _isWombSpreadsMucus = false;
 
     public void ProtectiveCooconSpawn(bool value) => _isProtectiveCooconSpawn = value;
     public void PsionicsTalentThree(bool value) => _isPsionicsTalentThree = value;
     public void CocoonSpawnTalent(bool value) => _isCocoonSpawnTalent = value;
     public void AttractionTentacleTalent(bool value) => _isAttractionTentacleTalent = value;
     public void ProtectiveCooconSpawnAttack(bool value) => _isProtectiveCooconSpawnAttack = value;
+    public void WombSpreadsMucus(bool value) => _isWombSpreadsMucus = value;
     #endregion
 
     public TentacleProjectile CurrentTentacle { get => _currentTentacle; set => _currentTentacle = value; }
@@ -572,7 +574,10 @@ public class Tentacles : Skill
     [ClientRpc]
     private void RpcTentacleWomb()
     {
-        foreach (var womb in _spawnComponent.Units) if (womb.TryGetComponent<CocoonSpawn>(out CocoonSpawn cocoonSpawn)) cocoonSpawn.Tentacle = this;
+        foreach (var womb in _spawnComponent.Units)
+        {
+            if (womb.TryGetComponent<CocoonSpawn>(out CocoonSpawn cocoonSpawn)) cocoonSpawn.Tentacle = this;
+        }
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
