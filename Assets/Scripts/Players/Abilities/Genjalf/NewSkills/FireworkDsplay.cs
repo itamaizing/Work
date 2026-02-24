@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Gangdollarff
 {
@@ -12,13 +13,13 @@ namespace Gangdollarff
         [SerializeField] private float _damageRangeMin = -2;
         [SerializeField] private float _damageRangeMax = 1;
 
+        private bool _isBlinding;
+        
         private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
-
-        private List<float> _damageForTarget = new List<float>() { 1, .75f, .50f, .25f };
-
         private Vector3 _targetPoint;
-        //private Character _target;
+        private float _blindingChance = 50;
+        private float _blindingDuration = 2f;
 
         private float _clickRadius = 0.5f;
         protected override int AnimTriggerCastDelay => 0;
@@ -35,6 +36,11 @@ namespace Gangdollarff
         public override void LoadTargetData(TargetInfo targetInfo)
         {
             _targetPoint = targetInfo.Points[0];
+        }
+
+        public void SetBlinding(bool isBlinding)
+        {
+            _isBlinding = isBlinding;
         }
 
         protected override IEnumerator CastJob()
@@ -66,7 +72,7 @@ namespace Gangdollarff
                         if (modifier <= 0f)
                             break;
                         float currentDamage =
-                            UnityEngine.Random.Range(Damage + _damageRangeMin, Damage + _damageRangeMax);
+                            Random.Range(Damage + _damageRangeMin, Damage + _damageRangeMax);
                         currentDamage *= modifier;
                         Damage damage = new Damage
                         {
@@ -75,6 +81,15 @@ namespace Gangdollarff
                             PhysicAttackType = AttackRangeType,
                         };
                         CmdApplyDamage(damage, item.gameObject);
+                        if (_isBlinding)
+                        {
+                            var randomInt = Random.Range(0, 100);
+
+                            if (randomInt > _blindingChance)
+                            {
+                                CmdAddState(item.gameObject);
+                            }
+                        }
                         index++;
                     }
                 }
@@ -125,6 +140,12 @@ namespace Gangdollarff
             Hero.Animator.SetTrigger("Fire");
             Hero.Move.IsMoveBlocked = true;
             Hero.Move.StopLookAt();
+        }
+
+        [Command]
+        private void CmdAddState(GameObject target)
+        {
+            target.GetComponent<Character>().CharacterState.AddState(States.Blind,_blindingDuration,0,_hero.gameObject,nameof(FireworkDsplay));
         }
 
         [Command]

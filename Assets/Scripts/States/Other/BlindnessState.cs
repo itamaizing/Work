@@ -28,6 +28,7 @@ public class BlindnessState : AbstractCharacterState
         _duration = durationToExit;
         _baseDuration = durationToExit;
         _characterState = character;
+        MaxStacksCount = 1;
 
         if (_characterState.isOwned) ApplyEffectToLocalCamera();
 
@@ -60,9 +61,9 @@ public class BlindnessState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        if (_baseDuration > time) return false;
-
-        _duration = time;
+        //if (_baseDuration > time) return false;
+        _duration += time;
+        RemainingDuration = _duration;
         return true;
     }
 

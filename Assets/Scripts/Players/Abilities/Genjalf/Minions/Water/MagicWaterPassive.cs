@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Mirror;
 using UnityEngine;
 
 public class MagicWaterPassive : Skill, IPassiveSkill
@@ -18,6 +19,12 @@ public class MagicWaterPassive : Skill, IPassiveSkill
 
     private void Start()
     {
-        _hero.CharacterState.CmdAddState(States.MagicWater, 0, 0, _hero.gameObject, name);
+        CmdAddState();
+    }
+
+    [Command]
+    private void CmdAddState()
+    {
+        _hero.CharacterState.AddState(States.MagicWater, 0, 0, _hero.gameObject, name);
     }
 }
