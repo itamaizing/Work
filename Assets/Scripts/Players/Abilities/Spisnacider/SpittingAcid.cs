@@ -12,7 +12,6 @@ public class SpittingAcid : Skill
     [SerializeField] private float _moveDurationPerUnit = 0.2f;
     [SerializeField] private float _stopDistance = 1.5f;
     [SerializeField] private float _bleedingDuration = 3f;
-    [SerializeField, Range(0, 1f)] private float _bleedingChance = 1f;
     [SerializeField] private float _minDamage = 1f;
     [SerializeField] private float _maxDamage = 4f;
 
@@ -22,7 +21,6 @@ public class SpittingAcid : Skill
     private const float SegmentMinDistance = 0.01f;
     private const float RaycastCheckDistance = 1f;
     private const float TargetSearchRadius = 0.5f;
-    private const float DamagePerTick = 1f;
 
     private const string AttackScaredTrigger = "AttackScared";
 
@@ -240,7 +238,6 @@ public class SpittingAcid : Skill
             PhysicAttackType = AttackRangeType
         };
 
-        if (targetCurrent != null && UnityEngine.Random.value <= _bleedingChance) targetCurrent.CharacterState.CmdAddState(States.Bleeding, _bleedingDuration, DamagePerTick, _playerLinks.gameObject, name);
         CmdApplyDamage(damage, targetCurrent.gameObject);
     }
 

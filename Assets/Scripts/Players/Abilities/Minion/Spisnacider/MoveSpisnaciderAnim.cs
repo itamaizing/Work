@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MoveScraderAnim : MonoBehaviour
+public class MoveSpisnaciderAnim : MonoBehaviour
 {
     [SerializeField] private Animator _animator;
     [SerializeField] private MoveCreature _moveCreature;
