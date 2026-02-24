@@ -146,7 +146,7 @@ public class SkillPanel : MonoBehaviour
         _playerAbilities.SkillRemoved += OnSkillRemoved;
 
         OnBeginDrag();
-        //LoadPanel();
+        LoadPanel();
 
         OnEndDrag();
     }
@@ -413,7 +413,7 @@ public class SkillPanel : MonoBehaviour
             if (icon == null || cell == null) continue;
             cell.CurrentIcon = null;
 
-            if (_skillIcons[skillSave.Id].CurrentIcon != null)
+            if (_skillIcons[skillSave.Id].CurrentIcon != null && _skillIcons[skillSave.Id].CurrentIcon != icon)
             {
                 DraggableIcon iconTemp = _skillIcons[skillSave.Id].CurrentIcon;
                 SkillIcon cellTemp = _skillIcons.FirstOrDefault(a => a.CurrentIcon == null);

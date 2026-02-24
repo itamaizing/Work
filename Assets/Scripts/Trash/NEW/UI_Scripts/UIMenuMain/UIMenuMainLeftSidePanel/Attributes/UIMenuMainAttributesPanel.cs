@@ -71,8 +71,8 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
         {
             attribute.UpdateValue();
         }
-        
-        SaveManager.Instance.LoadAttributePoints();
+
+        _attributesText.ChangeKey(SaveManager.Instance.LoadAttributePoints());
         //_attributesText.ChangeKey(_attributeSystem.Points);
     }
     
