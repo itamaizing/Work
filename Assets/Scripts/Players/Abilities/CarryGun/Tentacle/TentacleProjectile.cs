@@ -302,8 +302,9 @@ public class TentacleProjectile : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent<Character>(out var character) && character != _target)
-            _isCollidedWithOtherCharacter = true;
+        if (other.TryGetComponent<Character>(out var character) && character != _target) _isCollidedWithOtherCharacter = true;
+
+        if (!_isAttractionTentacleActive && isServer) AttackTentacles();
     }
 
     private void OnTriggerStay(Collider other)

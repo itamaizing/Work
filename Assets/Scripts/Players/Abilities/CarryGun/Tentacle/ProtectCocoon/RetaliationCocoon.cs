@@ -5,7 +5,6 @@ public class RetaliationCocoon : NetworkBehaviour
 {
     [Header("Settings")]
     [SerializeField] private ObjectHealth _objectHealth;
-    [SerializeField] private float damageValue = 2f;
     [SerializeField] private DamageType damageType = DamageType.Physical;
     [SerializeField] private float maxDistance = 4f;
     [SerializeField] private LightningAttack _lightningPrefab;
@@ -39,7 +38,7 @@ public class RetaliationCocoon : NetworkBehaviour
         if (!IsInRange(attacker.transform.position))
             return;
 
-        ApplyDamage(damageValue, damageType, attacker.gameObject);
+        ApplyDamage(_protectiveCocoon.BaseDamage, damageType, attacker.gameObject);
         RpcSpawnLightning(attacker.netIdentity);
     }
 

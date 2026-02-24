@@ -6,7 +6,6 @@ using UnityEngine;
 public class ProtectiiveCocoonAuraDamage : NetworkBehaviour
 {
     [Header("Settings")]
-    [SerializeField] private float damageValue = 2f;
     [SerializeField] private float tickInterval = 1f;
     [SerializeField] private LayerMask characterLayer;
     [SerializeField] private DamageType damageType = DamageType.Physical;
@@ -88,7 +87,7 @@ public class ProtectiiveCocoonAuraDamage : NetworkBehaviour
         if (_protectiveCocoon.SkillHero == null) return;
 
         RpcSpawnLightning(character.netIdentity);
-        ApplyDamage(damageValue, damageType, character.gameObject);
+        ApplyDamage(_protectiveCocoon.BaseDamage, damageType, character.gameObject);
     }
 
     private void ApplyDamage(float value, DamageType type, GameObject target)
