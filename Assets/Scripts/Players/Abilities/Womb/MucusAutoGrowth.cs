@@ -25,25 +25,27 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
 
     public static event Action OnAnyMucusAutoGrowthDestroyed;
 
-    public bool IsWombSpreadsMucus 
+    public bool IsWombSpreadsMucus
     {
-        get
-        {
-            return _isWombSpreadsMucus;
-        }
-
+        get => _isWombSpreadsMucus;
         set
         {
+            if (_isWombSpreadsMucus == value) return;
+
+            _isWombSpreadsMucus = value;
+
             if (_isWombSpreadsMucus)
             {
-                if (_spawnRoutine != null) _spawnRoutine = null;
-                _spawnRoutine = StartCoroutine(ApplyMucusPeriodically());
+                if (_spawnRoutine == null)
+                    _spawnRoutine = StartCoroutine(ApplyMucusPeriodically());
             }
-
             else
             {
-                StopCoroutine(ApplyMucusPeriodically());
-                _spawnRoutine = null;
+                if (_spawnRoutine != null)
+                {
+                    StopCoroutine(_spawnRoutine);
+                    _spawnRoutine = null;
+                }
             }
         }
     }

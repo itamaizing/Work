@@ -16908,6 +16908,7 @@ GameObject:
   - component: {fileID: 7046688650934260390}
   - component: {fileID: 2786580149324115967}
   - component: {fileID: 2267743082958508268}
+  - component: {fileID: 4111835201553902504}
   m_Layer: 9
   m_Name: Womb
   m_TagString: Allies
@@ -17124,7 +17125,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _playerData: {fileID: 11400000, guid: d1404a1119ca3294292dc387fa392e94, type: 2}
-  _attributeSystem: {fileID: 0}
+  _attributeSystem: {fileID: 4111835201553902504}
   _networkSettings: {fileID: 4704448068992970106}
   _rigidbody: {fileID: 6956811484752265138}
   _collider: {fileID: 7046688650934260390}
@@ -17145,7 +17146,7 @@ MonoBehaviour:
   _spawnComponent: {fileID: 7099943676139532891}
   _visionComponent: {fileID: 430165030280571863}
   _auras: {fileID: 0}
-  _targetSeeker: {fileID: 0}
+  _targetSeeker: {fileID: 7468612026582595350}
   _characterParent: {fileID: 0}
   _expForDieKill: 5
   _navMeshAgent: {fileID: 4697272463135853912}
@@ -17808,6 +17809,21 @@ MonoBehaviour:
   _tick: 0.1
   _radiusGrowthInterval: 1
   _maxRadius: 6
+--- !u!114 &4111835201553902504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3906734254346883187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36119deea7370464ba6e74a8a3c290a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttributeSystem
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &3949581781584673982
 GameObject:
   m_ObjectHideFlags: 0
@@ -24756,6 +24772,7 @@ GameObject:
   - component: {fileID: 8606608762921799100}
   - component: {fileID: 376959542437357243}
   - component: {fileID: 1106875357886514586}
+  - component: {fileID: 7468612026582595350}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -24962,6 +24979,22 @@ MonoBehaviour:
   _cursorPrepareTexture: {fileID: 0}
   _cursorPrepareLightTexture: {fileID: 0}
   _cursorDefaultTexture: {fileID: 0}
+--- !u!114 &7468612026582595350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5001548455269228886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0eaa338de0c76e4fbe06fa8331fcfa7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TargetSeeker
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _hero: {fileID: 6271332717105215193}
 --- !u!1 &5081787332024182715
 GameObject:
   m_ObjectHideFlags: 0

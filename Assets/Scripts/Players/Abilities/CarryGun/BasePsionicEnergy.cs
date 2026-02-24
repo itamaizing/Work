@@ -11,6 +11,8 @@ public class BasePsionicEnergy : Resource, IDamageable
     [SerializeField] private Slider basePsionicsSlider;
     [SerializeField] private PsionicEnergySkill psionicEnergySkill;
 
+    private float _maxValuePsi;
+
     private const float BasePsionicaThreshold = 30f;
     private const float BaseSliderFillPercent = 0.3f;
     private const float RemainingSliderFillPercent = 0.7f;
@@ -36,6 +38,7 @@ public class BasePsionicEnergy : Resource, IDamageable
     private void Start()
     {
         _psionicaDecayTime = psionicEnergySkill.CooldownTime;
+        _maxValuePsi = _player.Health.MaxValue;
         if (_player != null)
         {
             _player.Health.Shields.Add(this);

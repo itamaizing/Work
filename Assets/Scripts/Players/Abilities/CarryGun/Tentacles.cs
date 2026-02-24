@@ -21,6 +21,7 @@ public class Tentacles : Skill
     private bool _isSpawnCocoonOnGround = false;
 
     private Vector3 _spawnPoint = Vector3.positiveInfinity;
+    private readonly List<GameObject> _spawnedWombs = new();
     private HashSet<Character> _charactersInPreview = new HashSet<Character>();
 
     private Character _lockedTarget;
@@ -52,7 +53,19 @@ public class Tentacles : Skill
     public void CocoonSpawnTalent(bool value) => _isCocoonSpawnTalent = value;
     public void AttractionTentacleTalent(bool value) => _isAttractionTentacleTalent = value;
     public void ProtectiveCooconSpawnAttack(bool value) => _isProtectiveCooconSpawnAttack = value;
-    public void WombSpreadsMucus(bool value) => _isWombSpreadsMucus = value;
+
+    public void WombSpreadsMucus(bool value)
+    {
+        _isWombSpreadsMucus = value;
+
+        foreach (var womb in _spawnedWombs)
+        {
+            if (womb == null) continue;
+
+            if (womb.TryGetComponent<MucusAutoGrowth>(out var mucus)) mucus.IsWombSpreadsMucus = value;
+            if (womb.TryGetComponent<WombApplyStateInRadius>(out var radiusSkill)) radiusSkill.IsWombApplyStateInRadius = value;
+        }
+    }
     #endregion
 
     public TentacleProjectile CurrentTentacle { get => _currentTentacle; set => _currentTentacle = value; }
@@ -477,7 +490,6 @@ public class Tentacles : Skill
     {
         if (!IsValidVector(position)) return;
         _spawnComponent.CmdSpawnEnemyPoint(position, Quaternion.identity, null, 0, false, Hero);
-
         CmdTentacleWomb();
     }
 
@@ -549,6 +561,7 @@ public class Tentacles : Skill
     [Command]
     private void CmdTentacleWomb()
     {
+
         RpcTentacleWomb();
         _skillRender.StopDrawRadius();
     }
@@ -577,6 +590,10 @@ public class Tentacles : Skill
         foreach (var womb in _spawnComponent.Units)
         {
             if (womb.TryGetComponent<CocoonSpawn>(out CocoonSpawn cocoonSpawn)) cocoonSpawn.Tentacle = this;
+            _spawnedWombs.Add(womb.gameObject);
+
+            if (womb.TryGetComponent<MucusAutoGrowth>(out var mucus)) mucus.IsWombSpreadsMucus = _isWombSpreadsMucus;
+            if (womb.TryGetComponent<WombApplyStateInRadius>(out var radiusSkill)) radiusSkill.IsWombApplyStateInRadius = _isWombSpreadsMucus;
         }
     }
 
