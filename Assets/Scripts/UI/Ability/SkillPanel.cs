@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -115,7 +116,6 @@ public class SkillPanel : MonoBehaviour
             icon.PointerEnter += OnPointerEnterIcon;
             icon.PointerExit += OnPointerExitIcon;
             j++;
-            Debug.Log("J" + j);
         }
         foreach(Skill skill in _playerAbilities.SelectedSkills)
         {
@@ -139,7 +139,6 @@ public class SkillPanel : MonoBehaviour
             icon.PointerEnter += OnPointerEnterIcon;
             icon.PointerExit += OnPointerExitIcon;
             j++;
-            Debug.Log("J" + j);
         }
 
         _playerAbilities.SkillAdded += OnSkillAdded;
@@ -148,7 +147,7 @@ public class SkillPanel : MonoBehaviour
         OnBeginDrag();
         LoadPanel();
 
-        OnEndDrag();
+       // OnEndDrag();
     }
 
     public void FillMinionPanel(SkillManager abilities)
@@ -259,7 +258,7 @@ public class SkillPanel : MonoBehaviour
         if (_playerAbilities?.SelectedSkills == null) return;
         if (index < 0 || index >= _playerAbilities.SelectedSkills.Length) return;
 
-        //_playerAbilities.SelectedSkills[index] = skill;
+        _playerAbilities.SelectedSkills[index] = skill;
     }
 
     public void OnCharacterSelected(Character character)
@@ -423,8 +422,9 @@ public class SkillPanel : MonoBehaviour
             }
             _skillIcons[skillSave.Id].CurrentIcon = icon;
             icon.UpdatePosition(_skillIcons[skillSave.Id].transform);
-            
         }
+        OnBeginDrag();
+        OnEndDrag();
     }
 
     private void LoadOneSkill(Skill skill)

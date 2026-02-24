@@ -124,6 +124,8 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         transform.SetParent(ParentAfterDrag);
         transform.SetAsFirstSibling();
         transform.position = ParentAfterDrag.position;
+
+        EndDrag?.Invoke();
     }
 
     public void OnPointerEnter(PointerEventData eventData)

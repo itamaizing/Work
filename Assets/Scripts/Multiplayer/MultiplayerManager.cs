@@ -31,6 +31,7 @@ public class MultiplayerManager : NetworkManager
 
     public override void Awake()
     {
+        Debug.Log("TEST");
         base.Awake();
         if (_instance != null)
         {

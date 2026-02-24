@@ -12,6 +12,16 @@ public class HeroComponent : Character
     {
 		base.Initialize();
         TalentManager.Initialize(LVL);
+
+       /* if (TeamsPanel.Instance == null) return;
+        if (NetworkSettings.TeamIndex == 1)
+        {
+            TeamsPanel.Instance.AddInFirstTeam(this);
+        }
+        else
+        {
+            TeamsPanel.Instance.AddInSecondTeam(this);
+        }*/
     }
 
     public void DestroySelf()

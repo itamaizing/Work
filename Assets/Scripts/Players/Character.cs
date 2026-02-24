@@ -199,6 +199,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 	private void Start()
 	{
 		Initialize();
+		//Debug.Log("Team " + NetworkSettings.TeamIndex, this);
 	}
 
 	public void Appeared() => OnAppeared?.Invoke();
