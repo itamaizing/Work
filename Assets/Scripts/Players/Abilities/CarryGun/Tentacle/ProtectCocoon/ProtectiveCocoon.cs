@@ -11,6 +11,7 @@ public class ProtectiveCocoon : NetworkBehaviour
 
     private Character _hero;
     private Skill _skill;
+    private float _baseDamage;
 
     private List<Skill> _disabledSkills = new();
 
@@ -21,15 +22,17 @@ public class ProtectiveCocoon : NetworkBehaviour
 
     private bool _isProtectiveCooconSpawnAttack;
 
+    public float BaseDamage => _baseDamage;
     public Character Hero { get => _hero; set => _hero = value; }
     public Skill SkillHero { get => _skill; set => _skill = value; }
     public bool IsProtectiveCooconSpawnAttack { get => _isProtectiveCooconSpawnAttack; set => _isProtectiveCooconSpawnAttack = value; }
 
-    public void Init(Character target, Skill skill, bool isProtectiveCooconSpawnAttack)
+    public void Init(Character target, Skill skill, bool isProtectiveCooconSpawnAttack, float baseDamage)
     {
         _hero = target;
         _skill = skill;
         _isProtectiveCooconSpawnAttack = isProtectiveCooconSpawnAttack;
+        _baseDamage = baseDamage;
 
         ApplyControl();
         ApplyRegenBuff();

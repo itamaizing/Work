@@ -12592,7 +12592,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _resourceType: 0
+  _resourceType: 4
   _regenerationDelay: 1
   _player: {fileID: 8319872899575431858}
   _attackingPsionicEnergy: {fileID: 1487487552333656207}

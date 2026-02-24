@@ -526,9 +526,20 @@ public class Tentacles : Skill
         SceneManager.MoveGameObjectToScene(cocoon.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(cocoon.gameObject);
 
-        cocoon.Init(target, this, _isProtectiveCooconSpawnAttack);
+        int damage = 0;
 
-        RpcInitProtectiveCocoon(cocoon.gameObject, target);
+        if (_attackingPsionicEnergy != null)
+        {
+            float availableEnergy = _attackingPsionicEnergy.CurrentValue;
+            damage = Mathf.FloorToInt(availableEnergy / 2f);
+
+            float energyToSpend = damage * 2f;
+            _attackingPsionicEnergy.CurrentValue -= energyToSpend;
+        }
+
+        cocoon.Init(target, this, _isProtectiveCooconSpawnAttack, damage);
+
+        RpcInitProtectiveCocoon(cocoon.gameObject, target, damage);
     }
 
     [Command]
@@ -576,12 +587,12 @@ public class Tentacles : Skill
     }
 
     [ClientRpc]
-    private void RpcInitProtectiveCocoon(GameObject cocoonObject, Character target)
+    private void RpcInitProtectiveCocoon(GameObject cocoonObject, Character target, float damage)
     {
         if (cocoonObject == null || target == null) return;
 
         var cocoon = cocoonObject.GetComponent<ProtectiveCocoon>();
-        cocoon.Init(target, this, _isProtectiveCooconSpawnAttack);
+        cocoon.Init(target, this, _isProtectiveCooconSpawnAttack, damage);
     }
 
     [ClientRpc]
