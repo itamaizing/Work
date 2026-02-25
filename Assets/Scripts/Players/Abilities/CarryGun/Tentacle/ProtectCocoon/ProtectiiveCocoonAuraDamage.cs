@@ -9,6 +9,7 @@ public class ProtectiiveCocoonAuraDamage : NetworkBehaviour
     [SerializeField] private float tickInterval = 1f;
     [SerializeField] private LayerMask characterLayer;
     [SerializeField] private DamageType damageType = DamageType.Physical;
+    [SerializeField] private Schools _schools = Schools.Air;
     [SerializeField] private ProtectiveCocoon _protectiveCocoon;
     [SerializeField] private Transform _spawnPoint;
 
@@ -96,7 +97,7 @@ public class ProtectiiveCocoonAuraDamage : NetworkBehaviour
         {
             Value = value,
             Type = type,
-            School = _protectiveCocoon.SkillHero.School
+            School = _schools
         };
 
         _protectiveCocoon.SkillHero.ApplyDamage(damage, target);

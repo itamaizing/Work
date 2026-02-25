@@ -21,8 +21,9 @@ public class SpittingAcid : Skill
     private const float SegmentMinDistance = 0.01f;
     private const float RaycastCheckDistance = 1f;
     private const float TargetSearchRadius = 0.5f;
+    private const float CorrodedArmorDuration = 6f;
 
-    private const string AttackScaredTrigger = "AttackSpisnacider";
+    private const string AttackSpisnaciderTrigger = "AttackSpisnacider";
 
     #endregion
 
@@ -36,14 +37,14 @@ public class SpittingAcid : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
-    private void scraderClawsAnimCast()
+    private void SpisnaciderClawsAnimCast()
     {
-        _animator.SetTrigger(AttackScaredTrigger);
+        _animator.SetTrigger(AttackSpisnaciderTrigger);
     }
 
     public void AttackAnimationHit()
     {
-        ApplyScratchDamage();
+        SpittingAcidDamage();
         _moveActive = false;
     }
 
@@ -128,7 +129,7 @@ public class SpittingAcid : Skill
 
         else
         {
-            scraderClawsAnimCast();
+            SpisnaciderClawsAnimCast();
             while (_moveActive) yield return null;
         }
     }
@@ -215,7 +216,7 @@ public class SpittingAcid : Skill
 
         Hero.Move.SetCanMove(true);
 
-        scraderClawsAnimCast();
+        SpisnaciderClawsAnimCast();
     }
 
     private Vector3 GetApproachPointNearEnemy(IDamageable enemy)
@@ -224,7 +225,7 @@ public class SpittingAcid : Skill
         return enemy.transform.position - toEnemy * _stopDistance;
     }
 
-    private void ApplyScratchDamage()
+    private void SpittingAcidDamage()
     {
         if (_currentTarget == null) return;
         Damage = UnityEngine.Random.Range(_minDamage, _maxDamage);
@@ -239,6 +240,7 @@ public class SpittingAcid : Skill
         };
 
         CmdApplyDamage(damage, targetCurrent.gameObject);
+        targetCurrent.CharacterState.CmdAddState(States.CorrodedArmor, CorrodedArmorDuration, 0f, Hero.gameObject, Name);    
     }
 
     private void CancelWork()

@@ -1782,12 +1782,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  damageValue: 2
   tickInterval: 1
   characterLayer:
     serializedVersion: 2
     m_Bits: 256
   damageType: 1
+  _schools: 4
   _protectiveCocoon: {fileID: 6360774811645249758}
   _spawnPoint: {fileID: 6215393525193891765}
   _lightningPrefab: {fileID: 65214949556324364, guid: 853339a5fd1f8a34d99e6e382d4702ae, type: 3}
@@ -1822,9 +1822,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _objectHealth: {fileID: 1525237466600288129}
-  damageValue: 2
-  retaliationPercent: 1
   damageType: 1
+  maxDistance: 4
   _lightningPrefab: {fileID: 65214949556324364, guid: da6c0edcfeef78a40ab289260f992064, type: 3}
   _spawnPoint: {fileID: 3553033850970622170}
   _protectiveCocoon: {fileID: 6360774811645249758}
