@@ -11510,6 +11510,9 @@ PrefabInstance:
       addedObject: {fileID: 8719499337075397945}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 1820726796010007506}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 9002526479791327859}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
@@ -11856,6 +11859,30 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 8319872899575431858}
   _basePsionic: {fileID: 369466722820063190}
+--- !u!114 &1820726796010007506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3907305221297154583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68394fa76a5e56a43a3f6c02e18c0f66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PsionicsTalent_10
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0418\u043C\u043F\u0430\u0442\u0438\u043A\u0430 \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u0442
+      \u0432\u0442\u043E\u0440\u043E\u0439 \u0437\u0430\u0440\u044F\u0434"
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u041F\u0441\u0438\u043E\u043D\u0438\u043A\u0430 10"
+    Icon: {fileID: 811533111, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 8319872899575431858}
+  _impatica: {fileID: 7709957828632342126}
 --- !u!114 &9002526479791327859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13072,7 +13099,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 14
+  _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
   _abilitySchool: 4
@@ -13091,11 +13118,11 @@ MonoBehaviour:
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
-  _isUseCharges: 0
+  _isUseCharges: 1
   _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
+  _chargesHaveSeparateCooldown: 1
+  _maxCharges: 1
+  _chargeCooldown: 14
   _radius: 6
   _area: 1
   _castLength: 0

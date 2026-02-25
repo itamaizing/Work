@@ -9,10 +9,17 @@ public class Impatica : Skill
     [SerializeField] private float duration;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
 
+    private int _baseCharges = 1;
+
     protected override bool IsCanCast => IsHaveCharge && GetTargetCharacter() != null;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
+    public void SecondCharge(bool value)
+    {
+        if (value) AddMaxChargeCount();
+        else DeductMaxChargeCount();
+    }    
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
