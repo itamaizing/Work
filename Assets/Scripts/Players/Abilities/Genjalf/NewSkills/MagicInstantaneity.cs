@@ -2,90 +2,113 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Mirror;
 using UnityEngine;
 
-public class MagicInstantaneity : Skill, IPassiveSkill
+public class MagicInstantaneity : Skill, IPassiveSkill, IDamageGivenModifier
 {
-    [SerializeField] private List<Skill> _instantSkills = new();
-    [SerializeField] private float _speedBonusMultiplier = 0.8f;
     [SerializeField] private float _buffDuration = 3f;
     [SerializeField] private float _chainBreakTime = 2f;
+    [SerializeField] private float _invisDamageMultiplier = 2f;
 
+    private List<Skill> _instantSkills = new();
+    private List<GameObject> _damagedTargets = new();
+    private Coroutine _chainBreakCoroutine;
+    private bool _nextSkillFromInvisible = false;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
     private GameObject _lastDamagedTarget;
-    private int _chainCount = 0;
-    private Coroutine _chainBreakCoroutine;
-    private Coroutine _buffCoroutine;
-    private List<Skill> _buffedSkills = new();
 
     public override void LoadTargetData(TargetInfo targetInfo) { }
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) { yield break; }
     protected override IEnumerator CastJob() { yield break; }
     protected override void ClearData() { }
 
-    private void OnActive()
+    public void OnActive()
     {
-        _instantSkills.Clear();
         _instantSkills = _hero.Abilities.Abilities
-            .Where(s => s != this && s.CastDeley == 0 && s.CastStreamDuration == 0 && s.IsSkillActive)
+            .Where(s => s != this && s.CastDeley == 0 && s.IsSkillActive)
             .ToList();
 
         foreach (var skill in _instantSkills)
             skill.OnDamageApplied += OnInstantSkillDamageApplied;
+        
+        _hero.Abilities.OnSkillPreparedSuccessfully += OnAnySkillCastStarted;
     }
-
-    private void OnDiactive()
+    
+    public void OnDiactive()
     {
         foreach (var skill in _instantSkills)
             skill.OnDamageApplied -= OnInstantSkillDamageApplied;
 
         _instantSkills.Clear();
+
+        _hero.Abilities.OnSkillPreparedSuccessfully -= OnAnySkillCastStarted;
+
+        ResetChain();
+    }
+    
+    [Command]
+    private void OnAnySkillCastStarted(Skill skill)
+    {
+        if (skill == this) return;
+
+        if (_hero.IsInvisible)
+            _nextSkillFromInvisible = true;
     }
 
-    private void OnInstantSkillDamageApplied(GameObject target)
+    public float ModifyOutgoingDamage(Damage damage)
+    {
+        if (_nextSkillFromInvisible)
+        {
+            _nextSkillFromInvisible = false;
+            return damage.Value * _invisDamageMultiplier;
+        }
+
+        return damage.Value;
+    }
+
+    private void OnInstantSkillDamageApplied(GameObject target, Skill skill)
     {
         if (target == null) return;
 
-        bool isNewTarget = target != _lastDamagedTarget;
-        _lastDamagedTarget = target;
+        bool isNewTarget = !_damagedTargets.Contains(target);
 
-        if (!isNewTarget) return;
-        
-        ApplySpeedBuff();
-    }
-
-    private void ApplySpeedBuff()
-    {
-        var skillsWithDelay = _hero.Abilities.Abilities
-            .Where(s => s != this && s.CastDeley > 0)
-            .ToList();
-
-        RemoveBuff();
-        _buffedSkills = skillsWithDelay;
-
-        foreach (var skill in _buffedSkills)
-            skill.Buff.CastSpeed.IncreasePercentage(_speedBonusMultiplier);
-
-        if (_buffCoroutine != null) StopCoroutine(_buffCoroutine);
-        _buffCoroutine = StartCoroutine(BuffDurationCoroutine());
-    }
-
-    private IEnumerator BuffDurationCoroutine()
-    {
-        yield return new WaitForSeconds(_buffDuration);
-        RemoveBuff();
-    }
-
-    private void RemoveBuff()
-    {
-        foreach (var skill in _buffedSkills)
+        if (!isNewTarget)
         {
-            if (skill != null)
-                skill.Buff.CastSpeed.ReductionPercentage(_speedBonusMultiplier);
+            return;
         }
-        _buffedSkills.Clear();
-        _buffCoroutine = null;
+
+        _damagedTargets.Add(target);
+        RestartChainBreakTimer();
+
+        CmdAddState();
+    }
+
+    private void RestartChainBreakTimer()
+    {
+        if (_chainBreakCoroutine != null)
+            StopCoroutine(_chainBreakCoroutine);
+
+        _chainBreakCoroutine = StartCoroutine(ChainBreakCoroutine());
+    }
+
+    private IEnumerator ChainBreakCoroutine()
+    {
+        yield return new WaitForSeconds(_chainBreakTime);
+        ResetChain();
+    }
+
+    private void ResetChain()
+    {
+        _damagedTargets.Clear();
+        _chainBreakCoroutine = null;
+    }
+
+    [Command]
+    private void CmdAddState()
+    {
+        _hero.CharacterState.AddState(States.MagicInstantaneity,_buffDuration,0,_hero.gameObject,nameof(MagicInstantaneity));
     }
 }

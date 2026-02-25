@@ -306,7 +306,7 @@ public abstract class Skill : NetworkBehaviour
     public event Action BoostDisabled;
     public event Action AfterCast;
     
-    public event Action<GameObject> OnDamageApplied;
+    public event Action<GameObject,Skill> OnDamageApplied;
     public int AnimTriggerCastPublic => AnimTriggerCast;
 
     /// <summary>
@@ -1595,7 +1595,7 @@ public abstract class Skill : NetworkBehaviour
         if (damageable != null)
         {
             damageable.TryTakeDamage(ref damage, this);
-            OnDamageApplied?.Invoke(target);
+            OnDamagedApplied(target);
             _hero.DamageTracker.AddDamage(damage, target, isServerRequest: isServer);
             _hero.DamageGet(damage, target);
             TryCountGettedDamage(damage);
@@ -1609,6 +1609,12 @@ public abstract class Skill : NetworkBehaviour
         _hero.DamageTracker.AddDamage(damage, target, isServerRequest: isServer);
         _hero.DamageGet(damage, target);
         OnTargetDied(target);
+    }
+
+    [ClientRpc]
+    private void OnDamagedApplied(GameObject target)
+    {
+        OnDamageApplied?.Invoke(target,this);
     }
 
     private void TryCountGettedDamage(Damage damage)

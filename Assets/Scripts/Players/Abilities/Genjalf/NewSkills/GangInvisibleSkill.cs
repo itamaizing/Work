@@ -170,7 +170,7 @@ public class GangInvisibleSkill : Skill
 
         float alpha = 0.5f;
         ApplyTransparency(_playerRenderers, alpha);
-        _hero.Abilities.OnSkillPreparedSuccessfully += OnAbilityUsed;
+        _hero.Abilities.SkillCastEnded += OnAbilityUsed;
 
         if (_manaDrainCoroutine != null) StopCoroutine(_manaDrainCoroutine);
         _manaDrainCoroutine = StartCoroutine(ManaDrainCoroutine());
@@ -189,7 +189,7 @@ public class GangInvisibleSkill : Skill
 
         ApplyTransparency(_playerRenderers, 1f);
         
-        _hero.Abilities.OnSkillPreparedSuccessfully -= OnAbilityUsed;
+        _hero.Abilities.SkillCastEnded -= OnAbilityUsed;
 
         if (_manaDrainCoroutine != null)
         {

@@ -49,6 +49,7 @@ public class SkillManager : MonoBehaviour
     public event Action<Skill> SkillAdded;
     public event Action<Skill> SkillRemoved;
     public event Action<Skill> OnSkillPreparedSuccessfully;
+    public event Action<Skill> SkillCastEnded;
 
     private void OnEnable()
     {
@@ -93,6 +94,8 @@ public class SkillManager : MonoBehaviour
     #region Test
     private void OnSkillCastEnded(Skill skill)
     {
+        SkillCastEnded?.Invoke(skill);
+        
         if (!(skill is IPassiveSkill))
         {
             PreviewCastedSkill = LastCastedSkill;

@@ -283,6 +283,7 @@ public class CharacterState : NetworkBehaviour
 		[States.CoolingDamaged] = new CoolingDamaged(),
 		[States.MagicalExcitement] = new MagicalExcitement(),
 		[States.GodLight] = new GodLightState(),
+		[States.MagicInstantaneity] = new MagicInstantaneityState(),
         #endregion
 
         #region Test Baff and Debaff
@@ -502,7 +503,6 @@ public class CharacterState : NetworkBehaviour
 					int newMaxStack = _currentStates[i].MaxStacksCount;
 
 					_stateIcons.ActivateIco(state, remaining, 1, true, newMaxStack);
-
 					MoveStateToEnd(i);
 				}
 
@@ -797,7 +797,8 @@ public enum States
 	TransformationDebuff,
 	PetrificationDebuff,
 	PushingWindBuff,
-	CoolingDamaged
+	CoolingDamaged,
+	MagicInstantaneity
 }
 public enum BaffDebaff
 {
