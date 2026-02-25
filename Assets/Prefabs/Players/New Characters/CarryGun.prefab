@@ -10902,7 +10902,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[3]._talentRow.Array.data[0].Talents.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[3]._talentRow.Array.data[1].Talents.Array.size
@@ -11008,6 +11008,10 @@ PrefabInstance:
       propertyPath: '_talents.Array.data[3]._talentRow.Array.data[0].Talents.Array.data[2]'
       value: 
       objectReference: {fileID: 2864148410240025507}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[3]._talentRow.Array.data[0].Talents.Array.data[3]'
+      value: 
+      objectReference: {fileID: 837576168659285789}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[3]._talentRow.Array.data[1].Talents.Array.data[0]'
       value: 
@@ -11516,6 +11520,9 @@ PrefabInstance:
       addedObject: {fileID: 2864148410240025507}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 837576168659285789}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 9002526479791327859}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
@@ -11911,6 +11918,30 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 8319872899575431858}
   _attackingPsionicEnergy: {fileID: 1487487552333656207}
+--- !u!114 &837576168659285789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3907305221297154583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f2958a50557a0e48acccbdb01b9065d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PsionicsTalent_13
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u043F\u0441\u0438 \u043D\u0430\u043A\u0430\u043F\u043B\u0438\u0432\u0430\u0435\u0442\u0441\u044F
+      \u0441 \u043B\u044E\u0431\u043E\u0433\u043E \u0443\u0440\u043E\u043D\u0430."
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u041F\u0441\u0438\u043E\u043D\u0438\u043A\u0430 13"
+    Icon: {fileID: 1351023415, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 8319872899575431858}
+  _basePsionic: {fileID: 369466722820063190}
 --- !u!114 &9002526479791327859
 MonoBehaviour:
   m_ObjectHideFlags: 0

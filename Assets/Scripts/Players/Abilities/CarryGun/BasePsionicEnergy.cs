@@ -23,6 +23,7 @@ public class BasePsionicEnergy : Resource, IDamageable
     private float _distanceAccumulator;
     private bool _isInternalPsiEnergy = false;
     private bool _isAccumulationPsionicRunning = false;
+    private bool _isTakesAnyDamage = false;
     private Coroutine _energyDecayCoroutine;
 
     private float MaxPsi => _player.Health.MaxValue;
@@ -40,6 +41,7 @@ public class BasePsionicEnergy : Resource, IDamageable
         base.Initialize(maxValue, regenValue, data);
     }
 
+    public void TakesAnyDamage(bool value) => _isTakesAnyDamage = value;
     public void AccumulationPsionicChanged(bool value) => OnAccumulationPsionicChanged?.Invoke(value);
     public void AccumulationPsionicRunning(bool value)
     {
@@ -138,7 +140,7 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     private void OnDamageDealt(Damage damage, GameObject target)
     {
-        if (damage.Type != DamageType.Physical) return;
+        if (!_isTakesAnyDamage && damage.Type != DamageType.Physical) return;
         if (psionicEnergySkill == null || !psionicEnergySkill.IsPsiEnergyActive) return;
 
         float energyGain = damage.Value * DamageToPsiConversionRate;
