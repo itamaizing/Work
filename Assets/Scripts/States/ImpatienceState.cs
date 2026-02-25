@@ -4,64 +4,88 @@ using UnityEngine;
 
 public class ImpatienceState : AbstractCharacterState
 {
-    private const float TimeDecreasePerStack = 2f;
     private float _durationRemaining;
 
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
+    private static readonly HashSet<Character> ActiveCharacters = new();
+
+    private bool _isProcessingSharedDamage;
+
+    private List<StatusEffect> _effects = new() { StatusEffect.Ability };
 
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
-    public override States State => States.InnerDarkness;
-    public override StateType Type => StateType.Aura;
+    public override States State => States.Impatience;
+    public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void EnterState(CharacterState character,
+        float durationToExit,
+        float damageToExit,
+        Character personWhoMadeBuff,
+        string skillName)
     {
         characterState = character;
-        base.personWhoMadeBuff = personWhoMadeBuff;
+        health = character.Character.Health;
+        this.personWhoMadeBuff = personWhoMadeBuff;
+
         _durationRemaining = durationToExit;
+
+        if (!character.isServer) return;
+
+        ActiveCharacters.Add(character.Character);
+        health.OnBeforeDamage += HandleBeforeDamage;
     }
 
     public override void UpdateState()
     {
         _durationRemaining -= Time.deltaTime;
-        if (_durationRemaining <= 0) ExitState();
+
+        if (_durationRemaining <= 0)
+            ExitState();
     }
 
     public override void ExitState()
     {
+        if (characterState.Character.isServer)
+        {
+            ActiveCharacters.Remove(characterState.Character);
+
+            if (health != null)
+                health.OnBeforeDamage -= HandleBeforeDamage;
+        }
+
         characterState.RemoveState(this);
-        currentStacksCount = 1;
     }
 
-    public override bool Stack(float time)
+    private void HandleBeforeDamage(ref Damage damage, Skill skill)
     {
-        Debug.Log($"CurrentStacksCount: {currentStacksCount}");
+        if (_isProcessingSharedDamage) return;
+        if (damage.Value <= 0) return;
+        if (ActiveCharacters.Count <= 1) return;
 
-        if (currentStacksCount < MaxStacksCount)
+        float originalDamage = damage.Value;
+        float dividedDamage = originalDamage / ActiveCharacters.Count;
+
+        _isProcessingSharedDamage = true;
+
+        foreach (var character in ActiveCharacters)
         {
-            AddNewStack(time);
-            return true;
+            if (character == characterState.Character)
+                continue;
+
+            Damage sharedDamage = new Damage
+            {
+                Value = dividedDamage,
+                Type = damage.Type,
+                School = damage.School,
+                Form = damage.Form,
+                PhysicAttackType = damage.PhysicAttackType
+            };
+
+            character.Health.TryTakeDamage(ref sharedDamage, skill);
         }
 
-        else if (currentStacksCount == MaxStacksCount)
-        {
-            UpdateDurationForMaxStacks(time);
-            return false;
-        }
+        damage.Value = dividedDamage;
 
-        return false;
-    }
-
-    private void AddNewStack(float time)
-    {
-        currentStacksCount++;
-
-        _durationRemaining = time - (currentStacksCount - 1) * TimeDecreasePerStack;
-    }
-
-    private void UpdateDurationForMaxStacks(float time)
-    {
-        _durationRemaining = time - (currentStacksCount - 1) * TimeDecreasePerStack;
-        Debug.Log("обновление при максимальном стаке");
+        _isProcessingSharedDamage = false;
     }
 }

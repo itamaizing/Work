@@ -12600,6 +12600,9 @@ MonoBehaviour:
   maxCounter: 0
   basePsionicEnergy: {fileID: 369466722820063190}
   modifier: 1
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &369466722820063190
 MonoBehaviour:
   m_ObjectHideFlags: 0
