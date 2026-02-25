@@ -21,6 +21,10 @@ public class PsionicEnergySkill : Skill, IPassiveSkill
 
     [SerializeField] private BasePsionicEnergy basePsionicEnergy;
     [SerializeField] private float modifier = 1f;
+    [SerializeField] private LayerMask enemyLayer;
+
+    private const float PsiExplosionPercent = 0.3f;
+    private const float PsiExplosionRadius = 3f;
 
     #region Talent
     private bool _isPsiEnergyActive = false;
@@ -45,21 +49,28 @@ public class PsionicEnergySkill : Skill, IPassiveSkill
         damage.Value -= reduced;
         damage.Value = Mathf.Max(damage.Value, 0f);
 
-        if (_isDischargingPsiTalent && skill?.Hero != null)
+        float aoeDamageValue = absorptionAmount * PsiExplosionPercent;
+
+        Collider[] hits = Physics.OverlapSphere(
+            Hero.transform.position,
+            PsiExplosionRadius,
+            enemyLayer
+        );
+
+        foreach (var hit in hits)
         {
-            Damage retaliationDamage = new Damage
+            if (!hit.TryGetComponent(out Character target)) continue;
+            if (target == Hero) continue;
+
+            Damage aoeDamage = new Damage
             {
-                Value = absorptionAmount,
+                Value = aoeDamageValue,
                 Type = DamageType.Magical,
                 School = Schools.Air,
-                Form = AbilityForm.Magic,
+                Form = AbilityForm.Magic
             };
 
-
-            ApplyDamage(retaliationDamage, skill.Hero.gameObject);
-
-            var targetCharacterState = skill.Hero.CharacterState;
-            //if (targetCharacterState != null) targetCharacterState.AddState(States.DischargePsi, 6f, 0f, Hero.gameObject, nameof(PsionicEnergySkill));
+            ApplyDamage(aoeDamage, target.gameObject);
         }
     }
 }

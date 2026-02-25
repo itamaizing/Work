@@ -356,6 +356,7 @@ public class CharacterState : NetworkBehaviour
 		[States.DischargePsi] = new DischargePsiState(),
 		[States.TrueSightState] = new TrueSight(),
 		[States.CorrodedArmor] = new CorrodedArmorState(),
+		[States.Impatience] = new ImpatienceState(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -900,6 +901,7 @@ public enum States
 	BleedingDebuff,
 	TrueSightState,
 	CorrodedArmor,
+	Impatience,
 }
 
 public enum BaffDebaff
