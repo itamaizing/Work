@@ -1,4 +1,4 @@
-public class BaseSkillComponent
+﻿public abstract class BaseSkillComponent
 {
     #region Dependencies and Init
     // Обратные ссылки на контекст.
@@ -8,15 +8,17 @@ public class BaseSkillComponent
     protected Character _character;
     protected Resource _resource;
     protected StatsBuff _skillBuffs;
+    protected SkillAttributes _skillAttributes;
     protected AttributeSystem _attributes;
 
-    public void Init(Skill skill)
+    public virtual void Init(Skill skill)
     {
         _skill = skill;
         _character = skill.Hero;
         _resource = _character.Resource;
         _attributes = _character.AttributeSystem;
         _skillBuffs = _skill.Buff;
+        _skillAttributes = _skill.Attributes;
     }
     #endregion
 }

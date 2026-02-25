@@ -12129,6 +12129,20 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
+  _infoComponent:
+    _school: 6
+    _form: 2
+    _damageType: 1
+    _rangeType: 1
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+    _targetsLayers:
+      serializedVersion: 2
+      m_Bits: 256
+    _obstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _abilitySchool: 6
   _abilityForm: 2
   _damageType: 1
@@ -12146,39 +12160,23 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _chargeComponent:
-    _hasCharges: 0
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 1.5
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 1.5
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -12219,6 +12217,20 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
+  _infoComponent:
+    _school: 6
+    _form: 2
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+    _targetsLayers:
+      serializedVersion: 2
+      m_Bits: 256
+    _obstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _abilitySchool: 6
   _abilityForm: 2
   _damageType: 0
@@ -12236,39 +12248,23 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _chargeComponent:
-    _hasCharges: 0
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 1.5
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 1.5
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0.2
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -12312,6 +12308,20 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
+  _infoComponent:
+    _school: 6
+    _form: 2
+    _damageType: 1
+    _rangeType: 1
+    _skillType: 0
+    _whileMoving: 1
+    _autoAttack: 0
+    _targetsLayers:
+      serializedVersion: 2
+      m_Bits: 256
+    _obstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _abilitySchool: 6
   _abilityForm: 2
   _damageType: 1
@@ -12329,39 +12339,23 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _chargeComponent:
-    _hasCharges: 0
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 4
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 4
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 1
   maxCounter: 0
@@ -12396,6 +12390,20 @@ MonoBehaviour:
   _cooldownTime: 7
   _castDeley: 1.2
   _damageValue: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 2
+    _whileMoving: 0
+    _autoAttack: 1
+    _targetsLayers:
+      serializedVersion: 2
+      m_Bits: 256
+    _obstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -12413,39 +12421,23 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _chargeComponent:
-    _hasCharges: 0
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 4
     _area: 3
     _castLength: 0
     _castWidth: 0
-  _radius: 4
-  _area: 3
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 0
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -12482,6 +12474,20 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
+  _infoComponent:
+    _school: 4
+    _form: 0
+    _damageType: 0
+    _rangeType: 1
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+    _targetsLayers:
+      serializedVersion: 2
+      m_Bits: 0
+    _obstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _abilitySchool: 4
   _abilityForm: 0
   _damageType: 0
@@ -12499,39 +12505,23 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _chargeComponent:
-    _hasCharges: 0
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -12561,6 +12551,20 @@ MonoBehaviour:
   _cooldownTime: 12
   _castDeley: 0
   _damageValue: 0
+  _infoComponent:
+    _school: 8
+    _form: 4
+    _damageType: 5
+    _rangeType: 1
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+    _targetsLayers:
+      serializedVersion: 2
+      m_Bits: 0
+    _obstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _abilitySchool: 8
   _abilityForm: 4
   _damageType: 5
@@ -12578,39 +12582,23 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _chargeComponent:
-    _hasCharges: 0
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -12700,6 +12688,20 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+    _targetsLayers:
+      serializedVersion: 2
+      m_Bits: 256
+    _obstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -12717,39 +12719,23 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _chargeComponent:
-    _hasCharges: 0
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 1.2
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 1.2
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -12781,6 +12767,20 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 3
+    _whileMoving: 0
+    _autoAttack: 1
+    _targetsLayers:
+      serializedVersion: 2
+      m_Bits: 0
+    _obstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -12798,39 +12798,23 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _chargeComponent:
-    _hasCharges: 0
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 1
   _earlyCooldown: 0
   maxCounter: 0
@@ -12862,6 +12846,20 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
+  _infoComponent:
+    _school: 1
+    _form: 2
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+    _targetsLayers:
+      serializedVersion: 2
+      m_Bits: 512
+    _obstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _abilitySchool: 1
   _abilityForm: 2
   _damageType: 0
@@ -12879,39 +12877,23 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _chargeComponent:
-    _hasCharges: 0
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 1.7
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 1.7
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -12974,6 +12956,20 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+    _targetsLayers:
+      serializedVersion: 2
+      m_Bits: 0
+    _obstacle:
+      serializedVersion: 2
+      m_Bits: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -12991,39 +12987,23 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _chargeComponent:
-    _hasCharges: 0
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 0
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 2

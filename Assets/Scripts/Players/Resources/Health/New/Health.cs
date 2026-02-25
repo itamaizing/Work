@@ -1,9 +1,9 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Health : Resource, IDamageable, IHealingable
+public class Health : Resource, IDamageable, IHealable
 {
     [SerializeField] private Animator _animator;
     [SerializeField] private NetworkAnimator _netAnimator;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,14 +6,48 @@ using UnityEngine;
 [Serializable]
 public class Attribute
 {
-    //public BasicAttributeName Name;
+    //private string _name;
 
     [SerializeField] private float _baseValue;
     [SerializeField] private float _cachedValue;
-    private bool isActual = false;
     [SerializeField] private List<AttributeModifier> _modifiers = new();
-    
 
+    private bool _isActual = false;
+    private float _flat = 0, _percent = 0, _multiplier = 0, _menuFlat = 0;
+
+    #region Properties
+    public float BaseValue => _baseValue;
+    public float FlatBonus
+    {
+        get
+        {
+            if (_isActual)
+                return _flat;
+            UpdateCached();
+            return _flat;
+        }
+    }
+    public float PercentBonus
+    {
+        get
+        {
+            if (_isActual)
+                return _percent;
+            UpdateCached();
+            return _percent;
+        }
+    }
+    public float MultiplierBonus
+    {
+        get
+        {
+            if (_isActual)
+                return _multiplier;
+            UpdateCached();
+            return _multiplier;
+        }
+    }
+    #endregion Properties
     //public Attribute(BasicAttributeName name, float _value=0)
     public Attribute(float _value=0)
     {
@@ -24,14 +58,14 @@ public class Attribute
     public void AddModifier(AttributeModifier modifier)
     {
         _modifiers.Add(modifier);
-        isActual = false;
+        _isActual = false;
     }
 
     public void RemoveModifier(AttributeModifier modifier)
     {
         if(_modifiers.Contains(modifier))
             _modifiers.Remove(modifier);
-        isActual = false;
+        _isActual = false;
     }
 
     public void SetBaseValue(float value)
@@ -39,9 +73,8 @@ public class Attribute
         _baseValue = value;
     }
 
-    public float Recalculate()
+    public void RecalculateMultipliers()
     {
-        float value;
         float flat = 0, percent = 0, multiplier = 1, menuFlat = 0;
 
         foreach (var modifier in _modifiers)
@@ -64,20 +97,34 @@ public class Attribute
                     break;
             }
         }
-        value = (_baseValue + flat + menuFlat) * (1 + percent) * multiplier;
-        _cachedValue = value;
-        isActual = true;
-        return value;
+        _flat = flat;
+        _percent = percent;
+        _multiplier = multiplier;
+        _menuFlat = menuFlat;
     }
 
     public float GetValue()
     {
-        if (isActual)
+        if (_isActual)
             return _cachedValue;
-        return Recalculate();
+        UpdateCached();
+        return _cachedValue;
+    }
+
+    public float CalculateFor(float value)
+    {
+        RecalculateMultipliers();
+        float final = (value + _flat + _menuFlat) * (1 + _percent) * _multiplier;
+        return final;
+    }
+
+
+    private void UpdateCached()
+    {
+        _cachedValue = CalculateFor(_baseValue);
+        _isActual = true;
     }
 }
-
 #endregion
 
 #region Modifier

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Mirror;
 
 public struct Heal : NetworkMessage
@@ -6,7 +6,7 @@ public struct Heal : NetworkMessage
     public float Value;
     public Skill DamageableSkill;
 }
-public interface IHealingable
+public interface IHealable
 {
     public event Action<float, Skill,string > HealTaked;
 

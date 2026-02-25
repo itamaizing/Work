@@ -8140,6 +8140,14 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 5
+  _infoComponent:
+    _school: 2
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 1
+    _whileMoving: 0
+    _autoAttack: 0
   _abilitySchool: 2
   _abilityForm: 0
   _damageType: 0
@@ -8159,41 +8167,23 @@ MonoBehaviour:
     _baseCostPerTick:
     - resourceType: 1
       resourceCost: 3
-  _castDuration: 1.3
-  _manaCostRate: 0.1
-  _manaCostPerTick:
-  - resourceType: 1
-    resourceCost: 3
   _chargeComponent:
-    _hasCharges: 0
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 5
     _area: 0
     _castLength: 5
     _castWidth: 1
-  _radius: 5
-  _area: 0
-  _castLength: 5
-  _castWidth: 1
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 0
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 0
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -8226,6 +8216,14 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -8243,39 +8241,23 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _chargeComponent:
-    _hasCharges: 1
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 2
     _baseCooldown: 24
-  _isUseCharges: 1
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 1
-  _maxCharges: 2
-  _chargeCooldown: 24
   _areaComponent:
     _radius: 0
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 0
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -8306,6 +8288,14 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
+  _infoComponent:
+    _school: 4
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
   _abilitySchool: 4
   _abilityForm: 0
   _damageType: 0
@@ -8325,41 +8315,23 @@ MonoBehaviour:
     _baseCostPerTick:
     - resourceType: 1
       resourceCost: 3
-  _castDuration: 2.1
-  _manaCostRate: 0.1
-  _manaCostPerTick:
-  - resourceType: 1
-    resourceCost: 3
   _chargeComponent:
-    _hasCharges: 1
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 1
     _maxCharges: 1
     _baseCooldown: 18
-  _isUseCharges: 1
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 1
-  _chargeCooldown: 18
   _areaComponent:
     _radius: 5
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 5
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -8390,6 +8362,14 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 10
+  _infoComponent:
+    _school: 3
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
   _abilitySchool: 3
   _abilityForm: 0
   _damageType: 0
@@ -8407,39 +8387,23 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _chargeComponent:
-    _hasCharges: 1
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 1
     _maxCharges: 1
     _baseCooldown: 15
-  _isUseCharges: 1
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 1
-  _chargeCooldown: 15
   _areaComponent:
     _radius: 2
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 2
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 0
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -8473,6 +8437,14 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 1.6
   _damageValue: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 2
+    _whileMoving: 0
+    _autoAttack: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -8490,39 +8462,23 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _chargeComponent:
-    _hasCharges: 1
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 1
     _maxCharges: 1
     _baseCooldown: 16
-  _isUseCharges: 1
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 1
-  _chargeCooldown: 16
   _areaComponent:
     _radius: 5
     _area: 0
     _castLength: 7
     _castWidth: 0
-  _radius: 5
-  _area: 0
-  _castLength: 7
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -8554,6 +8510,14 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 2
   _damageValue: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -8571,39 +8535,23 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _chargeComponent:
-    _hasCharges: 0
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 5
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 5
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -8631,6 +8579,14 @@ MonoBehaviour:
   _cooldownTime: 5
   _castDeley: 0
   _damageValue: 12
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -8648,39 +8604,23 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _chargeComponent:
-    _hasCharges: 0
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 7
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 7
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -8710,6 +8650,14 @@ MonoBehaviour:
   _cooldownTime: 12
   _castDeley: 0
   _damageValue: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -8729,41 +8677,23 @@ MonoBehaviour:
     _baseCostPerTick:
     - resourceType: 1
       resourceCost: 10
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick:
-  - resourceType: 1
-    resourceCost: 10
   _chargeComponent:
-    _hasCharges: 0
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 0
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -8793,6 +8723,14 @@ MonoBehaviour:
   _cooldownTime: 8
   _castDeley: 2
   _damageValue: 0
+  _infoComponent:
+    _school: 0
+    _form: 1
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
   _abilitySchool: 0
   _abilityForm: 1
   _damageType: 0
@@ -8810,39 +8748,23 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _chargeComponent:
-    _hasCharges: 0
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -8873,6 +8795,14 @@ MonoBehaviour:
   _cooldownTime: 1
   _castDeley: 0
   _damageValue: 117
+  _infoComponent:
+    _school: 4
+    _form: 0
+    _damageType: 0
+    _rangeType: 1
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
   _abilitySchool: 4
   _abilityForm: 0
   _damageType: 0
@@ -8890,39 +8820,23 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _chargeComponent:
-    _hasCharges: 0
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 6
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 6
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -8954,6 +8868,14 @@ MonoBehaviour:
   _cooldownTime: 0
   _castDeley: 0
   _damageValue: 0
+  _infoComponent:
+    _school: 4
+    _form: 1
+    _damageType: 0
+    _rangeType: 1
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 1
   _abilitySchool: 4
   _abilityForm: 1
   _damageType: 0
@@ -8971,39 +8893,23 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
   _chargeComponent:
-    _hasCharges: 0
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
-  _isUseCharges: 0
-  _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
-  _chargeCooldown: 0
   _areaComponent:
     _radius: 6
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 6
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0

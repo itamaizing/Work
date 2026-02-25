@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,6 +27,7 @@ public class SkillEnergyCost
         resourceCost = baseCost;
     }
 }
+
 /*
 public class TargetToShot
 {
@@ -38,66 +39,10 @@ public class TargetToShot
     public bool isCharater = false;
 }*/
 
-public enum Schools
-{
-    Light,
-    Dark,
-    Fire,
-    Water,
-    Air,
-    Earth,
-    Physical,
-    Discipline,
-    None
-}
-
-public enum AbilityForm
-{
-    Spell,
-    Magic,
-    Physical,
-    Both,
-    Passiv,
-}
-
-public enum SkillType
-{
-    Target,
-    Projectile,
-    Zone,
-    NonTarget
-}
-
-public enum Moving
-{
-    Static,
-    NonStatic
-}
-
-public enum AutoAttack
-{
-    autoAttack,
-    nonAutoAttack
-}
-
-public enum DamageType
-{
-	Magical,
-	Physical,
-	DOTPhys,
-	DOTMag,
-	Both,
-	None
-}
-
-public enum AttackRangeType
-{
-	MeleeAttack,
-	RangeAttack,
-}
 
 public abstract class Skill : NetworkBehaviour
 {
+    #region InspectorSettings
     [Header("Talent State")]
     [SerializeField] protected bool _isTalentSpell = false;
     [SerializeField] protected bool _isSkillActive = true;
@@ -109,94 +54,729 @@ public abstract class Skill : NetworkBehaviour
     [NonSerialized] public float ExtraAnimationSpeedMultiplier = 1f; // test
     [SerializeField] protected bool _isSubjectToGlobalCooldownTime = true;
 
+    [SerializeField] CostComponent _costComponent;
+    public CostComponent Cost => _costComponent;
+    #region ResourceToDelete
     [SerializeField] protected List<SkillEnergyCost> _skillEnergyCosts;
     [SerializeField] protected List<SkillEnergyCost> _additionalSkillEnergyCosts;
+    #endregion
+
     [SerializeField] protected float _cooldownTime;
+    private CooldownComponent _cooldownComponent;
+    public CooldownComponent Cooldown => _cooldownComponent;
+
     [SerializeField] protected float _castDeley;
     [SerializeField] protected float _damageValue;
-    [SerializeField] private Schools _abilitySchool;
-    [SerializeField] private AbilityForm _abilityForm;
-    [SerializeField] private DamageType _damageType;
-    [SerializeField] private AttackRangeType _attackRangeType;
-    [SerializeField] private SkillType _skillType;
-    [SerializeField] private Moving _moving;
-    [SerializeField] private AutoAttack autoAttack;
+
+    [SerializeField] protected InfoComponent _infoComponent;
+    public InfoComponent Info => _infoComponent;
+    #region InfoToDelete
+    private Schools _abilitySchool;
+    private AbilityForm _abilityForm;
+    private DamageType _damageType;
+    private AttackRangeType _attackRangeType;
+    private SkillType _skillType;
+    private Moving _moving;
+    private AutoAttack autoAttack;
+    #endregion
+
+    [SerializeField] TargetingComponent _targetingComponent;
+    public TargetingComponent Targeting => _targetingComponent;
+    #region TargetingToDelete
     [SerializeField] protected LayerMask _targetsLayers;
     [SerializeField] protected LayerMask _obstacle;
+    #endregion
+
     [Header("Streaming settings")]
     [SerializeField] protected ChannelComponent _channelComponent;
     public ChannelComponent Channeling => _channelComponent;
+    #region ChannelToDelete
     protected float _castDuration;
     protected float _manaCostRate;
     protected List<SkillEnergyCost> _manaCostPerTick;
+    #endregion
+
     [Header("Charge settings")]
     [SerializeField] protected ChargeComponent _chargeComponent;
     public ChargeComponent Charges => _chargeComponent;
+    #region ChargesTodDelete
     private bool _isUseCharges;
     protected bool _useChargesAsComboPart = false; // test
     protected bool _chargesHaveSeparateCooldown;
     protected int _maxCharges;
     protected float _chargeCooldown;
+    #endregion
+
     [Header("Area settings")]
     [SerializeField] protected AreaComponent _areaComponent;
     public AreaComponent AreaInfo => _areaComponent;
+    #region AreaInfoToDelete
     protected float _radius;
     protected float _area;
     protected float _castLength;
     protected float _castWidth;
+    #endregion
     [Header("Area settings")]
     [SerializeField] protected float _autoAttackDelay;
+    
     [Header("Render settings")]
     [SerializeField] protected InformationRenderComponent _informationRenderComponent;
     public InformationRenderComponent Renderer => _informationRenderComponent;
+    #region RenderToDelete
     protected bool _isAutoRadiusRender = true;
     protected bool _isAutoAreaRender = true;
     protected bool _isAutoLineRender = true;
-    [SerializeField] protected bool _isDynamicRenderer = false;
+    protected bool _isDynamicRenderer = false;
+    #endregion
+
     [Header("Availability")]
     [SerializeField] protected bool _disactive = false;
     [SerializeField] protected bool _earlyCooldown = false;
     [Header("Counter settings")]
     [SerializeField] protected float maxCounter;
+    #endregion InspectorSettings
 
     #region Context
     protected SkillRenderer _skillRender;
     protected Character _hero;
+    private StatsBuff _statsBuff = new StatsBuff();
+    protected SkillAttributes _skillAttributes = new SkillAttributes();
     #endregion
     protected bool _isCanCancel = true;
+
     #region Coroutines
     protected Coroutine _prepareCoroutine;
     protected Coroutine _castCoroutine;
+    //COOLDOWNS
     protected Coroutine _cooldownJob;
     protected Coroutine _rechargeJob;
+    //COOLDOWNS
     protected Coroutine _castDeleyCoroutine;
     protected Coroutine _castStreamCoroutine;
     protected Coroutine _dynamicRendererJob;
     #endregion
+    protected bool _isPlayCastAnim;
+
+    //Charges
+    #region Charges
+    protected int _currentChargers;
+	private List<float> _remainingCooldownTimeChargers = new();
+    private List<Coroutine> _currentChargeCooldownJob;
+
+    #region ChargeRelatedProperties
+    public bool IsUseCharges => Charges.UsesCharges;
+    public int MaxChargers => Charges.MaxCharges; //Ctrl+R
+    public int Chargers { get => _currentChargers; protected set { _currentChargers = value; CurrentChargeChanged?.Invoke(_currentChargers); } }
+    public bool IsHaveCharge => Charges.HasCharges;
+    public float ChargeCooldown => Charges.BaseCooldown;
+    public List<float> RemainingCooldownTimeCharge => Charges.ActiveCooldowns;
+    #endregion
+
+    #region Charge Events
+    public event Action<int> CurrentChargeChanged;
+    public event Action<float> ChargeStartCooldown;
+    public event Action<int> ChargeCooldownEnded;
+    public event Action MassageHaventCharge;
+    #endregion
+
+    #region Methods
+    public void ResetCurrentChargeCooldown(int index)
+    {
+        if (!_isUseCharges || !_chargesHaveSeparateCooldown) return;
+        if (_currentChargeCooldownJob[index] != null)
+        {
+            StopCoroutine(_currentChargeCooldownJob[index]);
+            _currentChargeCooldownJob[index] = null;
+        }
+
+        _remainingCooldownTimeChargers[index] = 0f;
+
+        LinkedChargeCDUI?.RemoveChargeCD(index);
+
+        _currentChargers = Mathf.Min(_currentChargers + 1, _maxCharges);
+        CurrentChargeChanged?.Invoke(_currentChargers);
+        ChargeCooldownEnded?.Invoke(index);
+    }
+    public void AddMaxChargeCount()
+    {
+        _maxCharges += 1;
+
+        _remainingCooldownTimeChargers.Add(0);
+
+        _currentChargers += 1;
+
+        CurrentChargeChanged?.Invoke(_currentChargers);
+    }
+
+    public void ReductionCooldownForAllCharges(float reductionTime, float reductionPercentage = 0)
+    {
+        for (int i = 0; i < RemainingCooldownTimeCharge.Count; i++)
+        {
+            var time = _remainingCooldownTimeChargers[i] - reductionTime - (_remainingCooldownTimeChargers[i] * reductionPercentage);
+            ReductionCooldownForCharge(i, time);
+        }
+    }
+
+    public void ReductionCooldownCharges(float reductionTime)
+    {
+        float time;
+        for (int i = 0; i < RemainingCooldownTimeCharge.Count; i++)
+        {
+            time = _remainingCooldownTimeChargers[i] - reductionTime;
+
+            if (time <= 0)
+            {
+                ReductionCooldownForCharge(i, reductionTime);
+                reductionTime = reductionTime - _remainingCooldownTimeChargers[i];
+            }
+            else
+            {
+                ReductionCooldownForCharge(i, reductionTime);
+                break;
+            }
+        }
+    }
+
+    public void DeductMaxChargeCount()
+    {
+        if (_maxCharges - 1 > 0)
+        {
+            _maxCharges -= 1;
+
+            _remainingCooldownTimeChargers.RemoveAt(_remainingCooldownTimeChargers.Count - 1);
+
+            if (_currentChargers > _maxCharges)
+            {
+                _currentChargers -= 1;
+                CurrentChargeChanged?.Invoke(_currentChargers);
+            }
+        }
+    }
+
+    private void ReductionCooldownForCharge(int index, float reductionTime)
+    {
+        var tempTime = reductionTime;
+        if (tempTime > _remainingCooldownTimeChargers[index])
+            return;
+
+        if (_currentChargeCooldownJob[index] != null)
+            StopCoroutine(_currentChargeCooldownJob[index]);
+
+        _currentChargeCooldownJob[index] = StartCoroutine(RechargeOneChargeCoroutine(index, tempTime));
+    }
+
+    public bool TryUseCharge()
+    {
+        if (_isUseCharges == false)
+            return true;
+
+        if (_currentChargers > 0)
+        {
+            _currentChargers--;
+            CurrentChargeChanged?.Invoke(_currentChargers);
+
+            if (_rechargeJob == null && _chargesHaveSeparateCooldown == false)
+            {
+                _rechargeJob = StartCoroutine(RechargeCoroutine());
+            }
+            else if (_rechargeJob == null && _chargesHaveSeparateCooldown)
+            {
+                for (int i = 0; i < _maxCharges; i++)
+                {
+                    if (_remainingCooldownTimeChargers[i] <= 0)
+                    {
+                        _currentChargeCooldownJob[i] = StartCoroutine(RechargeOneChargeCoroutine(i, ChargeCooldown));
+
+                        ChargeStartCooldown?.Invoke(ChargeCooldown);
+                        break;
+                    }
+                }
+            }
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private IEnumerator RechargeOneChargeCoroutine(int chargeIndex, float time)
+    {
+        _remainingCooldownTimeChargers[chargeIndex] = time;
+
+        while (_remainingCooldownTimeChargers[chargeIndex] > 0)
+        {
+            _remainingCooldownTimeChargers[chargeIndex] -= Time.deltaTime;
+
+            yield return null;
+        }
+
+        if (_currentChargers < _maxCharges)
+        {
+            _currentChargers++;
+            CurrentChargeChanged?.Invoke(_currentChargers);
+        }
+
+    }
+
+    protected virtual IEnumerator RechargeCoroutine()
+    {
+        while (_currentChargers < _maxCharges)
+        {
+            ChargeStartCooldown?.Invoke(ChargeCooldown);
+            float time = 0;
+            while (time < ChargeCooldown)
+            {
+                time += Time.deltaTime;
+                yield return null;
+            }
+            if (_currentChargers < _maxCharges)
+            {
+                _currentChargers++;
+                CurrentChargeChanged?.Invoke(_currentChargers);
+            }
+        }
+        _rechargeJob = null;
+    }
+    #endregion Coroutines
+    #endregion CHARGES
+    //Charges
+
+    //Cooldowns
+    #region Cooldown
+    protected float _baseCooldownTime;
+    private float _remainingCooldownTime;
+
+    public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); protected set => _cooldownTime = value; }
+    public float RemainingCooldownTime { get => _remainingCooldownTime; set => _remainingCooldownTime = value; }
+    public bool IsCooldowned { get => _remainingCooldownTime <= 0; }
+
+    #region Cooldown Events
+    public event Action CooldownEnded;
+    public event Action<float> CooldownStarted;
+    public event Action<float> MassageNotCooldowned;
+    #endregion events
+
+    #region Methods
+    protected void RaiseCooldownStarted(float cooldownTime) => CooldownStarted?.Invoke(cooldownTime);
+    
+    protected void RaiseCooldownEnded() => CooldownEnded?.Invoke();
+
+    public void IncreaseSetCooldown(float time)
+    {
+        if (time < _remainingCooldownTime)
+            return;
+
+        if (_cooldownJob != null)
+            StopCoroutine(_cooldownJob);
+
+        _cooldownJob = StartCoroutine(CooldownCoroutine(time));
+    }
+
+    public void IncreaseSetCooldownPassive(float time)
+    {
+        if (_cooldownJob != null) StopCoroutine(_cooldownJob);
+        _cooldownJob = StartCoroutine(CooldownCoroutine(time));
+    }
+
+    public void ResetCooldown()
+    {
+        if (_cooldownJob != null)
+        {
+            StopCoroutine(_cooldownJob);
+            _cooldownJob = null;
+        }
+
+        _remainingCooldownTime = 0;
+
+        CooldownEnded?.Invoke();
+    }
+
+    public void DecreaseSetCooldown(float time)
+    {
+        var timeToSet = _remainingCooldownTime - time > 0 ? _remainingCooldownTime - time : 0;
+
+        if (_cooldownJob != null)
+            StopCoroutine(_cooldownJob);
+
+        _cooldownJob = StartCoroutine(CooldownCoroutine(timeToSet));
+    }
+    public void ReductionSetCooldown(float time)
+    {
+        if (time > _remainingCooldownTime)
+            return;
+
+        if (_cooldownJob != null)
+            StopCoroutine(_cooldownJob);
+
+        _cooldownJob = StartCoroutine(CooldownCoroutine(time));
+    }
+
+    private IEnumerator CooldownCoroutine(float cooldownTime)
+    {
+        CooldownStarted?.Invoke(cooldownTime);
+        _remainingCooldownTime = cooldownTime;
+
+        while (_remainingCooldownTime > 0)
+        {
+            _remainingCooldownTime -= Time.deltaTime;
+            yield return null;
+        }
+        CooldownEnded?.Invoke();
+        _cooldownJob = null;
+    }
+    #endregion
+    #endregion
+    //Cooldowns
+
+    //Targeting
+    #region Targeting
+
+    #region Variables
     protected Transform _tempTargetForDamage;
     protected IDamageable _tempForDamage;
-    protected IHealingable _tempForHealing;
-    protected bool _isPlayCastAnim;
-    protected int _currentChargers;
-    protected float _baseCooldownTime;
+    protected IHealable _tempForHealing;
+    private Character _tempTargetbase;
+    private ITargetable _target;
+    private ITargetable _tempTarget;
+    private Queue<TargetInfo> _targetInfoQueue = new();
+
+    #endregion Variables
+
+    #region Properties
+    public ITargetable TempTarget => _tempTarget;
+    public Transform TempTargetForDamage => _tempTargetForDamage;
+    public LayerMask TargetsLayers { get => _targetsLayers; protected set => _targetsLayers = value; }
+    public Queue<TargetInfo> TargetInfoQueue { get => _targetInfoQueue; }
+    #endregion Properites
+
+    #region Events
+    public event Action<TargetInfo> TargetDataSaved;
+    public event Action<Vector3> ClickPoint;
+
+    #endregion Events
+
+    public abstract void LoadTargetData(TargetInfo targetInfo);
+
+    #region Methods
+    #region Target
+    public ITargetable GetTarget(bool canGetDead = false)
+    {
+        if (_target != null)
+        {
+            if (!_target.IsTargetable && !canGetDead) return null;
+
+            return _target;
+        }
+        return null;
+    }
+    
+    public Character GetTargetCharacter(bool canGetDead = false)
+    {
+        if (_target != null)
+        {
+            if (!_target.IsTargetable && !canGetDead) return null;
+
+            return (Character)_target;
+        }
+        return null;
+    }
+
+    public void SetTargetCharacter(Character character)
+    {
+        if (character != null)
+            _target = character;
+    }
+
+    public void SetTarget(ITargetable character)
+    {
+        if (character != null)
+            _target = character;
+    }
+
+    public void ClearTarget()
+    {
+        _target = null;
+    }
+    #endregion target
+
+    #region TempTarget
+    public ITargetable GetTempTarget(bool canGetDead = false)
+    {
+        if (_tempTarget != null)
+        {
+            if (!_tempTarget.IsTargetable && !canGetDead) return null;
+
+            return _tempTarget;
+        }
+        return null;
+    }
+    public Character GetTempTargetCharacter(bool canGetDead = false)
+    {
+        if (_tempTarget != null)
+        {
+            if (!_tempTarget.IsTargetable && !canGetDead) return null;
+
+            return (Character)_tempTarget;
+        }
+        return null;
+    }
+    public void ClearTempTarget()
+    {
+        _tempTarget = null;
+    }
+    #endregion
+
+
+    protected void FindTarget(float radius, Vector3 point, bool canTargetHimself = false, bool canTargetDead = false) //Targeting.GetByPoint
+    {
+        if (canTargetDead)
+        {
+            if (GetCloserTargets(point, radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargets(point, radius, canTargetHimself)[0];
+        }
+        else
+        {
+            if (GetCloserTargets(point, radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargets(point, radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
+        }
+    }
+
+    protected void FindTarget(bool canTargetHimself = false, bool canTargetDead = false) //TargetLayer.GetByCursor
+    {
+        if (canTargetDead)
+        {
+            if (GetCloserTargets(GetMousePoint(), AreaInfo.Radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargets(GetMousePoint(), AreaInfo.Radius, canTargetHimself)[0];
+        }
+        else
+        {
+            if (GetCloserTargets(GetMousePoint(), AreaInfo.Radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargets(GetMousePoint(), AreaInfo.Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
+        }
+    }
+
+    protected void FindTargetCharacter(bool canTargetHimself = false, bool canTargetDead = false)
+    {
+        if (canTargetDead)
+        {
+            if (GetCloserTargets(GetMousePoint(), AreaInfo.Radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargetsCharacter(GetMousePoint(), AreaInfo.Radius, canTargetHimself)[0];
+        }
+        else
+        {
+            if (GetCloserTargets(GetMousePoint(), AreaInfo.Radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargetsCharacter(GetMousePoint(), AreaInfo.Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
+        }
+    }
+
+    protected void FindTargetCharacter(float radius, Vector3 point, bool canTargetHimself = false, bool canTargetDead = false)
+    {
+        if (canTargetDead)
+        {
+            if (GetCloserTargets(point, radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargetsCharacter(GetMousePoint(), radius, canTargetHimself)[0];
+        }
+        else
+        {
+            if (GetCloserTargets(point, radius, canTargetHimself) != null)
+                _tempTarget = GetCloserTargetsCharacter(point, radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
+        }
+    }
+
+    /* protected IDamageable GetRaycastTarget(bool isCanTargetHimself = false)
+     {
+         return _hero.TargetSeeker.GetRaycastTarget(this, isCanTargetHimself);
+     }*/
+
+    public List<ITargetable> GetCloserTargets(Vector3 position, float radius, bool isCanTargetHimself = false)
+    {
+        return _hero.TargetSeeker.GetCloserTargets(position, radius, isCanTargetHimself);
+    }
+
+    public List<Character> GetCloserTargetsCharacter(Vector3 position, float radius, bool isCanTargetHimself = false)
+    {
+        return _hero.TargetSeeker.GetCloserTargetsCharacter(position, radius, isCanTargetHimself);
+    }
+
+    protected bool IsTargetInRadius(float radius, Transform target)
+    {
+        if (target == null)
+            return false;
+
+        float distance = Vector3.Distance(target.position, transform.position);
+        return distance <= radius;
+    }
+
+    protected bool IsPointInRadius(float radius, Vector3 point)
+    {
+        float distance = Vector3.Distance(point, transform.position);
+        return distance <= radius;
+    }
+
+    protected bool NoObstacles(Vector3 target, Vector3 point, LayerMask obstacle)
+    {
+        if (target == Vector3.zero)
+            return true;
+
+        var vector = (target - point);
+        var dir = vector.normalized;
+        float distance = vector.magnitude;
+
+        RaycastHit[] rayHit = Physics.RaycastAll(point, dir, distance, obstacle);
+
+        if (rayHit.Length > 0)
+            return false;
+        else
+            return true;
+    }
+
+    protected bool NoObstacles(Vector3 target, LayerMask obstacle)
+    {
+        return NoObstacles(target, transform.position, obstacle);
+    }
+
+    protected bool NoObstacles()
+    {
+        if (_tempTargetbase != null)
+            return NoObstacles(_tempTargetbase.transform.position, transform.position, _obstacle);
+
+        return true;
+    }
+    
+    protected bool IsMouseInRadius(float radius)
+    {
+        float distance = Vector3.Distance(GetMousePoint(), transform.position);
+
+        return distance <= radius;
+    }
+
+    public Vector3 GetMousePoint() //добавить в Raycast() layerMask
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (autoAttack == AutoAttack.autoAttack)
+            {
+                if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed)
+                {
+                    if (hit.collider.TryGetComponent<IDamageable>(out _))
+                    {
+
+                        IsAutoMode = true;
+                        AutoModeChanged?.Invoke(true);
+                    }
+                }
+            }
+
+            return hit.point;
+        }
+        return Vector3.zero;
+    }
+
+    /*protected TargetToShot GetTarget(bool isCanTargetHimself = false)
+	{
+		return _hero.TargetSeeker.GetTarget(_click, ClickPoint, _skillType, AreaInfo.Radius, this, isCanTargetHimself);
+	}*/
+
+    protected ITargetable ClosedTarget(bool isCanTargetHimself = false)
+    {
+        return _hero.TargetSeeker.ClosedTarget(isCanTargetHimself);
+    }
+    
+    protected Character ClosedTargetCharacter(bool isCanTargetHimself = false)
+    {
+        return _hero.TargetSeeker.ClosedTargetCharacter(isCanTargetHimself);
+    }
+
+    // Done ^
+    private bool IsValidTarget(IDamageable target) //оставить тут, сделать virutal?
+    {
+        if (target == null) return false;
+        if (target is MonoBehaviour monoBehaviour) return monoBehaviour != null;
+
+        return true;
+    }
+    
+    private void SaveTargetData(TargetInfo targetInfo)
+    {
+        _targetInfoQueue.Enqueue(targetInfo);
+    }
+
+    private void LoadTargetDataForCheckCast() //Targeting.CheckDataForCast
+    {
+        if (_isCasting == false && _targetInfoQueue.TryPeek(out TargetInfo temp))
+            LoadTargetData(temp);
+    }
+    #endregion Methods
+
+    #endregion Targeting
+    //Targetning
+
+    //Channeling
+    #region Channeling
+
+    #region Properties
+    public float CastStreamDuration => Channeling.CastDuration; // Ctrl+R
+    public float ManaCostRate { get => _manaCostRate; }
+    public List<SkillEnergyCost> ManaCostPerTick { get => Channeling.Costs; }
+    #endregion
+
+    #region Events
+    public event Action<float> CastStreamStarted;
+    public event Action CastStreamEnded;
+    #endregion
+
+    #region Methods
+    public void InvokeCastStreamStarted(float duration)
+    {
+        CastStreamStarted?.Invoke(duration);
+    }
+    private IEnumerator CastStreamJob()
+    {
+        CastStreamStarted?.Invoke(CastStreamDuration);
+        float time = 0;
+
+        while (time < CastStreamDuration)
+        {
+            time += _manaCostRate;
+
+            foreach (var skillCost in _manaCostPerTick)
+            {
+                var currentResourceValue = _hero.Resources[skillCost.resourceType].CurrentValue;
+
+                if (currentResourceValue < Buff.ManaCost.GetBuffedValue(skillCost.resourceCost))
+                {
+                    TryCancel(true);
+                }
+                else
+                {
+                    var resource = _hero.Resources[skillCost.resourceType];
+                    resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
+                }
+            }
+            yield return new WaitForSeconds(_manaCostRate);
+        }
+        _castStreamCoroutine = null;
+        CastStreamEnded?.Invoke();
+    }
+
+    #endregion
+    #endregion
+    //Channeling
+
     //test counter
     protected float _currentCounter;
 
-    private Character _tempTargetbase;
-    private float _remainingCooldownTime;
-    private StatsBuff _statsBuff = new StatsBuff();
     private Coroutine _actionWrapperForPreparingCoroutine;
     private Coroutine _actionWrapperForCastCoroutine;
     private bool _isPreparing = false;
     private bool _isCasting = false;
     private TypeClick _click;
-	private List<float> _remainingCooldownTimeChargers = new();
-    private List<Coroutine> _currentChargeCooldownJob;
-    private Queue<TargetInfo> _targetInfoQueue = new();
     private bool _isAutoMode;
 
-    private ITargetable _target;
-    private ITargetable _tempTarget;
 
     public bool IsAutoMode
     {
@@ -222,12 +802,12 @@ public abstract class Skill : NetworkBehaviour
         set => _isSkillActive = value;
     }
 
-    public ITargetable TempTarget => _tempTarget;
-    public Transform TempTargetForDamage => _tempTargetForDamage;
     public bool GetMouseButton { get => _click != TypeClick.None; }
     public bool IsSubjectToGlobalCooldownTime { get => _isSubjectToGlobalCooldownTime; }
     public Character Hero { get => _hero; }
     public StatsBuff Buff => _statsBuff;
+    public SkillAttributes Attributes => _skillAttributes; //TODO: Прикрепить SyncDictionary, чтобы аттрибуты синхронились по сети
+    #region Scriptable Objects
     public string Name => _abilityInfo.Name;
     public string Description { get => _abilityInfo.FinalDescription; set => _abilityInfo.FinalDescription = value; }
     public string State => _abilityInfo.State; // test: we output the name of the state
@@ -235,39 +815,28 @@ public abstract class Skill : NetworkBehaviour
     public string CounterSkill => _abilityInfo.Counter; // test: the counter is in the ability
     public Sprite Icon => _abilityInfo.Icon;
     public AbilityInfo AbilityInfoHero { get => _abilityInfo; set => _abilityInfo = value; }
-    public bool IsCooldowned { get => _remainingCooldownTime <= 0; }
-    public virtual bool IsPayCostStartCooldown { get => true; }
-   
-    #region ChargeRelatedProperties
-    public bool IsUseCharges => Charges.UsesCharges;
-    public int MaxChargers => Charges.MaxCharges; //Ctrl+R
-    public int Chargers { get => _currentChargers; protected set { _currentChargers = value; CurrentChargeChanged?.Invoke(_currentChargers); } }
-    public bool IsHaveCharge => Charges.HasCharges;
-    public float ChargeCooldown => Charges.BaseCooldown;
-    public List<float> RemainingCooldownTimeCharge => Charges.ActiveCooldowns;
     #endregion
-
+    public virtual bool IsPayCostStartCooldown { get => true; }
     public bool IsPreparing => _isPreparing;
     public SkillRenderer SkillRender => _skillRender;
     public bool IsHaveResourceOnSkill { get => CheckResourcesOnSkill(); }
     public bool IsHaveResources { get => IsHaveResourceOnSkill && IsCooldowned && IsHaveCharge; }
-    public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); protected set => _cooldownTime = value; }
-    public float RemainingCooldownTime { get => _remainingCooldownTime; set => _remainingCooldownTime = value; }
+    public List<SkillEnergyCost> SkillEnergyCosts { get => _skillEnergyCosts; }
+    public List<SkillEnergyCost> AdditionalSkillEnergyCosts { get => _additionalSkillEnergyCosts; }
     public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); set => _castDeley = value; }
     public bool IsCasting { get => _isCasting; protected set => _isCasting = value; }
-    public float CastStreamDuration => Channeling.CastDuration; // Ctrl+R
 
     #region AreaComponent
     //public float AreaInfo.Radius => AreaInfo.Radius; // Ctrl+R на rand название потом его через CtrlF переименовать
     //public float AreaInfo.Area => AreaInfo.Area; // Ctrl+R
     //public float AreaInfo.CastLength => AreaInfo.CastLength; // Ctrl+R
-    public float CastWidth => AreaInfo.CastWidth; // Ctrl+R
+    //public float CastWidth => AreaInfo.CastWidth; // Ctrl+R
     #endregion
 
     public float MaxCounter { get => maxCounter; set => maxCounter = value; }
     public float CurrentCounter { get => _currentCounter; set => _currentCounter = value; }
     public virtual float Damage { get => _damageValue; set => _damageValue = value; }
-    public LayerMask TargetsLayers { get => _targetsLayers; protected set => _targetsLayers = value; }
+    #region InfoComponentProp
     public Schools School { get => _abilitySchool; protected set => _abilitySchool = value; }
     public AbilityForm AbilityForm => _abilityForm;
     public DamageType DamageType => _damageType;
@@ -275,12 +844,10 @@ public abstract class Skill : NetworkBehaviour
     public SkillType SkillType => _skillType;
     public Moving Moving => _moving;
     public AutoAttack AutoAttack => autoAttack;
-    public List<SkillEnergyCost> SkillEnergyCosts { get => _skillEnergyCosts; }
-    public List<SkillEnergyCost> AdditionalSkillEnergyCosts { get => _additionalSkillEnergyCosts; }
-    public List<SkillEnergyCost> ManaCostPerTick { get => Channeling.Costs; }
-    public float ManaCostRate { get => _manaCostRate; }
+    #endregion
+
+
     public float AutoAttackDelay { get => _autoAttackDelay; }
-    public Queue<TargetInfo> TargetInfoQueue { get => _targetInfoQueue; }
     public ChargeCDUI LinkedChargeCDUI { get; set; }
 
     public bool Disactive
@@ -298,17 +865,7 @@ public abstract class Skill : NetworkBehaviour
 
     #region AllEvents
     public event Action<bool> OnSkillStateChanged;
-    #region Charge Events
-    public event Action<int> CurrentChargeChanged;
-    public event Action<float> ChargeStartCooldown;
-    public event Action<int> ChargeCooldownEnded;
-    public event Action MassageHaventCharge;
-    #endregion
-    #region Cooldown Events
-    public event Action CooldownEnded;
-    public event Action<float> CooldownStarted;
-    #endregion
-    #region Casting
+    #region Casting Events
     public event Action<Skill> PreparingStarted;
     public event Action<Skill> PreparingSuccess;
     public event Action PreparingCanceled;
@@ -322,14 +879,7 @@ public abstract class Skill : NetworkBehaviour
     public event Action AfterCast;
     #endregion
     public event Action<bool> AutoModeChanged;
-    #region Channeling Events
-    public event Action<float> CastStreamStarted;
-    public event Action CastStreamEnded;
-    #endregion
     public event Action<float> MassageHaventMana;
-    public event Action<float> MassageNotCooldowned;
-    public event Action<TargetInfo> TargetDataSaved;
-    public event Action<Vector3> ClickPoint;
     public event Action BoostEnabled;
     public event Action BoostDisabled;
     #endregion
@@ -342,12 +892,10 @@ public abstract class Skill : NetworkBehaviour
     protected abstract int AnimTriggerCastDelay { get; }
     protected abstract int AnimTriggerCast { get; }
 
-    protected void RaiseCooldownStarted(float cooldownTime) => CooldownStarted?.Invoke(cooldownTime);
-    protected void RaiseCooldownEnded() => CooldownEnded?.Invoke();
     protected void SkillAfterCastJob() => AfterCast?.Invoke();
     protected void CastEndedJob() => CastEnded?.Invoke();
 
-    protected virtual bool IsCanCast
+    protected virtual bool IsCanCast //важно потрогать
     {
         get
         {
@@ -414,6 +962,7 @@ public abstract class Skill : NetworkBehaviour
                 case SkillType.NonTarget:
 
                     return true;
+                    //обработать бесцельный с границей и кликом
 
                 default:
 
@@ -422,7 +971,6 @@ public abstract class Skill : NetworkBehaviour
         }
     }
 
-    public abstract void LoadTargetData(TargetInfo targetInfo);
     protected abstract IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback);
     protected abstract IEnumerator CastJob();
     protected abstract void ClearData();
@@ -435,6 +983,7 @@ public abstract class Skill : NetworkBehaviour
     {
         _hero = hero;
         _skillRender = render;
+        _skillAttributes.Init(hero.AttributeSystem);
         AreaInfo.Init(this);
         Charges.Init(this);
         Channeling.Init(this);
@@ -453,130 +1002,15 @@ public abstract class Skill : NetworkBehaviour
             _currentChargers = 1;
     }
 
-    #region Target Related
-    public ITargetable GetTarget(bool canGetDead = false)
+    //Возможно стоит сделать синглтон для Server-Side таймеров?
+    //И сервер будет сообщать когда кд пошел, когда прошел
+    //Мб лучше перевести на event, компонент в Init/OnEnable будет подписываться на него
+    [Server]
+    private void Update()
     {
-		if (_target != null)
-        {
-            if (!_target.IsTargetable && !canGetDead) return null;
-
-            return _target;
-        }
-        return null;
+        //_cooldownComponent.Tick(Time.deltaTime);
+        _chargeComponent.Tick(Time.deltaTime);
     }
-
-    public ITargetable GetTempTarget(bool canGetDead = false)
-    {
-        if (_tempTarget != null)
-        {
-            if (!_tempTarget.IsTargetable && !canGetDead) return null;
-
-            return _tempTarget;
-        }
-        return null;
-    }
-
-    public Character GetTargetCharacter(bool canGetDead = false)
-	{
-		if (_target != null)
-		{
-			if (!_target.IsTargetable && !canGetDead) return null;
-
-			return (Character)_target;
-		}
-		return null;
-	}
-
-    public Character GetTempTargetCharacter(bool canGetDead = false)
-    {
-        if (_tempTarget != null)
-        {
-            if (!_tempTarget.IsTargetable && !canGetDead) return null;
-
-            return (Character)_tempTarget;
-        }
-        return null;
-    }
-
-    public void SetTargetCharacter(Character character)
-    {
-        if (character != null)
-            _target = character;
-    }
-
-    public void SetTarget(ITargetable character)
-	{
-        if (character != null)
-            _target = character;
-	}
-
-    public void ClearTempTarget()
-    {
-        _tempTarget = null;
-    }
-
-    protected void FindTarget(float radius, Vector3 point, bool canTargetHimself = false, bool canTargetDead = false)
-    {
-        if (canTargetDead)
-        {
-            if (GetCloserTargets(point, radius, canTargetHimself) != null)
-                _tempTarget = GetCloserTargets(point, radius, canTargetHimself)[0];
-        }
-        else
-        {
-            if (GetCloserTargets(point, radius, canTargetHimself) != null)
-                _tempTarget = GetCloserTargets(point, radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
-        }
-    }
-
-    protected void FindTarget(bool canTargetHimself = false, bool canTargetDead = false)
-    {
-        if (canTargetDead)
-        {
-            if (GetCloserTargets(GetMousePoint(), AreaInfo.Radius, canTargetHimself) != null)
-                _tempTarget = GetCloserTargets(GetMousePoint(), AreaInfo.Radius, canTargetHimself)[0];
-        }
-        else
-        {
-            //Debug.Log()
-            if (GetCloserTargets(GetMousePoint(), AreaInfo.Radius, canTargetHimself) != null)
-                _tempTarget = GetCloserTargets(GetMousePoint(), AreaInfo.Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
-        }
-    }
-
-    protected void FindTargetCharacter(bool canTargetHimself = false, bool canTargetDead = false)
-	{
-		if (canTargetDead)
-		{
-            if (GetCloserTargets(GetMousePoint(), AreaInfo.Radius, canTargetHimself) != null)
-                _tempTarget = GetCloserTargetsCharacter(GetMousePoint(), AreaInfo.Radius, canTargetHimself)[0];
-		}
-		else
-		{
-            if (GetCloserTargets(GetMousePoint(), AreaInfo.Radius, canTargetHimself) != null)
-                _tempTarget = GetCloserTargetsCharacter(GetMousePoint(), AreaInfo.Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
-		}
-	}
-
-    protected void FindTargetCharacter(float radius, Vector3 point, bool canTargetHimself = false, bool canTargetDead = false)
-    {
-        if (canTargetDead)
-        {
-            if (GetCloserTargets(point, radius, canTargetHimself) != null)
-                _tempTarget = GetCloserTargetsCharacter(GetMousePoint(), radius, canTargetHimself)[0];
-        }
-        else
-        {
-            if (GetCloserTargets(point, radius, canTargetHimself) != null)
-                _tempTarget = GetCloserTargetsCharacter(point, radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
-        }
-    }
-
-    public void ClearTarget()
-    {
-        _target = null; 
-    }
-#endregion
 
     public void EnableSkillBoost()
     {
@@ -591,11 +1025,6 @@ public abstract class Skill : NetworkBehaviour
     }
 
     #region Cast Related
-    public void InvokeCastStreamStarted(float duration)
-    {
-        CastStreamStarted?.Invoke(duration);
-    }
-
     public bool TryPreparing()
     {
         if (_isPreparing == false)
@@ -624,7 +1053,7 @@ public abstract class Skill : NetworkBehaviour
         if (IsHaveResources && IsCanCast && _isCasting == false && NoObstacles() && Hero.IsDead == false)
         {
             _isCasting = true;
-            TryPayCost(IsPayCostStartCooldown);
+             TryPayCost(IsPayCostStartCooldown);
 
             if (_targetInfoQueue.Count > 0)
             {
@@ -765,77 +1194,7 @@ public abstract class Skill : NetworkBehaviour
     }
     #endregion
 
-    #region Cooldown Related
-    public void IncreaseSetCooldown(float time)
-    {
-        if (time < _remainingCooldownTime)
-            return;
-
-        if (_cooldownJob != null)
-            StopCoroutine(_cooldownJob);
-
-        _cooldownJob = StartCoroutine(CooldownCoroutine(time));
-    }
-
-    public void IncreaseSetCooldownPassive(float time)
-    {
-        if (_cooldownJob != null) StopCoroutine(_cooldownJob);
-        _cooldownJob = StartCoroutine(CooldownCoroutine(time));
-    }
-
-    public void DecreaseSetCooldown(float time)
-    {
-        var timeToSet = _remainingCooldownTime - time > 0 ? _remainingCooldownTime - time : 0;
-
-        if (_cooldownJob != null)
-            StopCoroutine(_cooldownJob);
-
-        _cooldownJob = StartCoroutine(CooldownCoroutine(timeToSet));
-    }
-
-    public void ResetCooldown()
-    {
-        if (_cooldownJob != null)
-        {
-            StopCoroutine(_cooldownJob);
-            _cooldownJob = null;
-        }
-
-        _remainingCooldownTime = 0;
-
-        CooldownEnded?.Invoke();
-    }
-
-    public void ReductionSetCooldown(float time)
-    {
-        if (time > _remainingCooldownTime)
-            return;
-
-        if (_cooldownJob != null)
-            StopCoroutine(_cooldownJob);
-
-        _cooldownJob = StartCoroutine(CooldownCoroutine(time));
-    }
-
-    public void ResetCurrentChargeCooldown(int index)
-    {
-        if (!_isUseCharges || !_chargesHaveSeparateCooldown) return;
-        if (_currentChargeCooldownJob[index] != null)
-        {
-            StopCoroutine(_currentChargeCooldownJob[index]);
-            _currentChargeCooldownJob[index] = null;
-        }
-
-        _remainingCooldownTimeChargers[index] = 0f;
-
-        LinkedChargeCDUI?.RemoveChargeCD(index);
-
-        _currentChargers = Mathf.Min(_currentChargers + 1, _maxCharges);
-        CurrentChargeChanged?.Invoke(_currentChargers);
-        ChargeCooldownEnded?.Invoke(index);
-    }
-    #endregion
-
+    #region Resource Related
     public void CheckResources()
     {
         foreach (var skillCost in _skillEnergyCosts)
@@ -879,64 +1238,35 @@ public abstract class Skill : NetworkBehaviour
             _hero.Resources[skillCost.resourceType].CurrentValue >= Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
     }
 
-    #region Charge Related
-    public void AddMaxChargeCount()
+    protected virtual bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
     {
-        _maxCharges += 1;
-
-        _remainingCooldownTimeChargers.Add(0);
-
-        _currentChargers += 1;
-
-        CurrentChargeChanged?.Invoke(_currentChargers);
-    }
-
-    public void ReductionCooldownForAllCharges(float reductionTime, float reductionPercentage = 0)
-    {
-        for (int i = 0; i < RemainingCooldownTimeCharge.Count; i++)
+        if (IsHaveResourceOnSkill)
         {
-            var time = _remainingCooldownTimeChargers[i] - reductionTime - (_remainingCooldownTimeChargers[i] * reductionPercentage);
-            ReductionCooldownForCharge(i, time);
+            foreach (var skillCost in skillEnergyCosts)
+            {
+                var resource = _hero.Resources[skillCost.resourceType];
+                resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
+
+            }
+
+            if (startCooldown)
+                IncreaseSetCooldown(CooldownTime);
+
+            if (!Charges.IsComboPart) TryUseCharge();
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
-    public void ReductionCooldownCharges(float reductionTime)
+    protected virtual bool TryPayCost(bool startCooldown = true)
     {
-        float time;
-        for (int i = 0; i < RemainingCooldownTimeCharge.Count; i++)
-        {
-            time = _remainingCooldownTimeChargers[i] - reductionTime;
-
-            if (time <= 0)
-            {
-                ReductionCooldownForCharge(i, reductionTime);
-                reductionTime = reductionTime - _remainingCooldownTimeChargers[i];
-            }
-            else
-            {
-                ReductionCooldownForCharge(i, reductionTime);
-                break;
-            }
-        }
-    }
-
-    public void DeductMaxChargeCount()
-    {
-        if (_maxCharges - 1 > 0)
-        {
-            _maxCharges -= 1;
-
-            _remainingCooldownTimeChargers.RemoveAt(_remainingCooldownTimeChargers.Count - 1);
-
-            if (_currentChargers > _maxCharges)
-            {
-                _currentChargers -= 1;
-                CurrentChargeChanged?.Invoke(_currentChargers);
-            }
-        }
+        if (_hero.Abilities.TryConsumeNextSkillFree()) return true;
+        return TryPayCost(_skillEnergyCosts, startCooldown);
     }
     #endregion
-
 
     #region Animation Related
     [ClientCallback]
@@ -980,17 +1310,17 @@ public abstract class Skill : NetworkBehaviour
         _skillRender.DrawDamageZone(position, AreaInfo.Area, damage, _hero.gameObject);
     }
 
-
     public void StopDamageZone()
     {
         _skillRender.CmdRemoveNextDamageZone();
     }
+    
     public void ClientStopDamageZone()
     {
         _skillRender.RemoveNextDamageZone();
     }
 
-    protected virtual IEnumerator DynamicRendererJob(float time = 0.2f)
+    public virtual IEnumerator DynamicRendererJob(float time = 0.2f)
     {
         yield return null; //new WaitForSeconds(time);
     }
@@ -1035,9 +1365,9 @@ public abstract class Skill : NetworkBehaviour
         }
     }
 
-    protected virtual void StopAutoDrawRadius() => _skillRender.StopDrawRadius();
+    protected virtual void StopAutoDrawRadius() => _skillRender.StopDrawRadius(); //CtrR
 
-    protected virtual void StopAutoDraw()
+    protected virtual void StopAutoDraw() // В базовом - вызывать Renderer.StopSmartDraw
     {
         _skillRender.ResetCursor();
         _skillRender.StopDrawRadius();
@@ -1062,96 +1392,19 @@ public abstract class Skill : NetworkBehaviour
 			enemy.SelectedCircle.IsActive = false;
 		}*/
     }
-#endregion
-
-
-    protected virtual bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
+    
+    private void StartDynamicRenderer()
     {
-        if (IsHaveResourceOnSkill)
-        {
-            foreach (var skillCost in skillEnergyCosts)
-            {
-                var resource = _hero.Resources[skillCost.resourceType];
-                resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
-
-            }
-
-            if (startCooldown)
-                IncreaseSetCooldown(CooldownTime);
-
-            if (!Charges.IsComboPart) TryUseCharge();
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        _dynamicRendererJob = StartCoroutine(DynamicRendererJob());
     }
-
-    protected virtual bool TryPayCost(bool startCooldown = true)
+    
+    public void StopDynamicRender()
     {
-        if (_hero.Abilities.TryConsumeNextSkillFree()) return true;
-        return TryPayCost(_skillEnergyCosts, startCooldown);
+        if (_dynamicRendererJob != null)
+            StopCoroutine(_dynamicRendererJob);
     }
+    #endregion
 
-   /* protected IDamageable GetRaycastTarget(bool isCanTargetHimself = false)
-    {
-        return _hero.TargetSeeker.GetRaycastTarget(this, isCanTargetHimself);
-	}*/
-
-    public List<ITargetable> GetCloserTargets(Vector3 position, float radius, bool isCanTargetHimself = false)
-    {
-        return _hero.TargetSeeker.GetCloserTargets(position, radius, isCanTargetHimself);
-    }
-
-	public List<Character> GetCloserTargetsCharacter(Vector3 position, float radius, bool isCanTargetHimself = false)
-	{
-		return _hero.TargetSeeker.GetCloserTargetsCharacter(position, radius, isCanTargetHimself);
-	}
-
-	protected bool IsTargetInRadius(float radius, Transform target)
-    {
-        if (target == null)
-            return false;
-
-        float distance = Vector3.Distance(target.position, transform.position);
-        return distance <= radius;
-    }
-    protected bool IsPointInRadius(float radius, Vector3 point)
-    {
-        float distance = Vector3.Distance(point, transform.position);
-        return distance <= radius;
-    }
-
-    protected bool NoObstacles(Vector3 target, Vector3 point, LayerMask obstacle)
-    {
-        if (target == Vector3.zero)
-            return true;
-
-        var vector = (target - point);
-        var dir = vector.normalized;
-        float distance = vector.magnitude;
-
-        RaycastHit[] rayHit = Physics.RaycastAll(point, dir, distance, obstacle);
-
-        if (rayHit.Length > 0)
-            return false;
-        else
-            return true;
-    }
-
-    protected bool NoObstacles(Vector3 target, LayerMask obstacle)
-    {
-        return NoObstacles(target, transform.position, obstacle);
-    }
-
-    protected bool NoObstacles()
-    {
-        if (_tempTargetbase != null)
-            return NoObstacles(_tempTargetbase.transform.position, transform.position, _obstacle);
-
-        return true;
-    }
 
     protected Coroutine StartCastDeleyCoroutine()
     {
@@ -1173,175 +1426,7 @@ public abstract class Skill : NetworkBehaviour
         }
     }
 
-    protected bool IsMouseInRadius(float radius)
-    {
-        float distance = Vector3.Distance(GetMousePoint(), transform.position);
-
-        return distance <= radius;
-    }
-
-    public Vector3 GetMousePoint()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
-        {
-            if (autoAttack == AutoAttack.autoAttack)
-            {
-                if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed)
-                {
-                    if (hit.collider.TryGetComponent<IDamageable>(out _))
-                    {
-
-                        IsAutoMode = true;
-                        AutoModeChanged?.Invoke(true);
-                    }
-                }
-            }
-
-            return hit.point;
-        }
-        return Vector3.zero;
-    }
-
-	/*protected TargetToShot GetTarget(bool isCanTargetHimself = false)
-	{
-		return _hero.TargetSeeker.GetTarget(_click, ClickPoint, _skillType, AreaInfo.Radius, this, isCanTargetHimself);
-	}*/
-
-	protected ITargetable ClosedTarget(bool isCanTargetHimself = false)
-	{
-		return _hero.TargetSeeker.ClosedTarget(isCanTargetHimself);
-	}
-	protected Character ClosedTargetCharacter(bool isCanTargetHimself = false)
-	{
-		return _hero.TargetSeeker.ClosedTargetCharacter(isCanTargetHimself);
-	}
-
-	public bool TryUseCharge()
-    {
-        if (_isUseCharges == false)
-            return true;
-
-        if (_currentChargers > 0)
-        {
-            _currentChargers--;
-            CurrentChargeChanged?.Invoke(_currentChargers);
-
-            if (_rechargeJob == null && _chargesHaveSeparateCooldown == false)
-            {
-                _rechargeJob = StartCoroutine(RechargeCoroutine());
-            }
-            else if (_rechargeJob == null && _chargesHaveSeparateCooldown)
-            {
-                for (int i = 0; i < _maxCharges; i++)
-                {
-                    if (_remainingCooldownTimeChargers[i] <= 0)
-                    {
-                        _currentChargeCooldownJob[i] = StartCoroutine(RechargeOneChargeCoroutine(i, ChargeCooldown));
-
-                        ChargeStartCooldown?.Invoke(ChargeCooldown);
-                        break;
-                    }
-                }
-            }
-
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    private IEnumerator RechargeOneChargeCoroutine(int chargeIndex, float time)
-    {
-        _remainingCooldownTimeChargers[chargeIndex] = time;
-
-        while (_remainingCooldownTimeChargers[chargeIndex] > 0)
-        {
-            _remainingCooldownTimeChargers[chargeIndex] -= Time.deltaTime;
-
-            yield return null;
-        }
-
-        if (_currentChargers < _maxCharges)
-        {
-            _currentChargers++;
-            CurrentChargeChanged?.Invoke(_currentChargers);
-        }
-
-    }
-
-    protected virtual IEnumerator RechargeCoroutine()
-    {
-        while (_currentChargers < _maxCharges)
-        {
-            ChargeStartCooldown?.Invoke(ChargeCooldown);
-            float time = 0;
-            while (time < ChargeCooldown)
-            {
-                time += Time.deltaTime;
-                yield return null;
-            }
-            if (_currentChargers < _maxCharges)
-            {
-                _currentChargers++;
-                CurrentChargeChanged?.Invoke(_currentChargers);
-            }
-        }
-        _rechargeJob = null;
-    }
-
-    private bool IsValidTarget(IDamageable target)
-    {
-        if (target == null) return false;
-        if (target is MonoBehaviour monoBehaviour) return monoBehaviour != null;
-
-        return true;
-    }
-
-    private void OnClick()
-    {
-        _click = TypeClick.LMB;
-    }
-
-    private void OnClickCanceled()
-    {
-		_click = TypeClick.None;
-    }
-
-    private void OnShiftClick()
-    {
-		_click = TypeClick.ShiftLMB;
-    }
-
-    private void OnCtrlClick()
-    {
-		_click = TypeClick.CtrlLMB;
-    }
-
-    private void OnSpaceClick()
-    {
-		_click = TypeClick.SpaceLMB;
-    }
-
-    private void ReductionCooldownForCharge(int index, float reductionTime)
-    {
-        var tempTime = reductionTime;
-        if (tempTime > _remainingCooldownTimeChargers[index])
-            return;
-
-        if (_currentChargeCooldownJob[index] != null)
-            StopCoroutine(_currentChargeCooldownJob[index]);
-
-        _currentChargeCooldownJob[index] = StartCoroutine(RechargeOneChargeCoroutine(index, tempTime));
-    }
-
-    private void StartDynamicRenderer()
-    {
-        _dynamicRendererJob = StartCoroutine(DynamicRendererJob());
-    }
+    #region ScoreBoard?
     private void AddAssist(Character character)
     {
         Hero.AssystCounter++;
@@ -1356,32 +1441,8 @@ public abstract class Skill : NetworkBehaviour
     {
         Hero.KillCounter++;
     }
-
-    private void SaveTargetData(TargetInfo targetInfo)
-    {
-        _targetInfoQueue.Enqueue(targetInfo);
-    }
-
-    private void LoadTargetDataForCheckCast()
-    {
-        if (_isCasting == false && _targetInfoQueue.TryPeek(out TargetInfo temp))
-            LoadTargetData(temp);
-    }
-
-    private IEnumerator CooldownCoroutine(float cooldownTime)
-    {
-        CooldownStarted?.Invoke(cooldownTime);
-        _remainingCooldownTime = cooldownTime;
-
-        while (_remainingCooldownTime > 0)
-        {
-            _remainingCooldownTime -= Time.deltaTime;
-            yield return null;
-        }
-        CooldownEnded?.Invoke();
-        _cooldownJob = null;
-    }
-
+    #endregion
+    
     private IEnumerator CastDeleyJob(float delayTime)
     {
         CastDeleyStarted?.Invoke(delayTime);
@@ -1403,35 +1464,6 @@ public abstract class Skill : NetworkBehaviour
         }
         _castDeleyCoroutine = null;
         CastDeleyEnded?.Invoke();
-    }
-
-    private IEnumerator CastStreamJob()
-    {
-        CastStreamStarted?.Invoke(CastStreamDuration);
-        float time = 0;
-
-        while (time < CastStreamDuration)
-        {
-            time += _manaCostRate;
-
-            foreach (var skillCost in _manaCostPerTick)
-            {
-                var currentResourceValue = _hero.Resources[skillCost.resourceType].CurrentValue;
-
-                if (currentResourceValue < Buff.ManaCost.GetBuffedValue(skillCost.resourceCost))
-                {
-                    TryCancel(true);
-                }
-                else
-                {
-                    var resource = _hero.Resources[skillCost.resourceType];
-                    resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
-                }
-            }
-            yield return new WaitForSeconds(_manaCostRate);
-        }
-        _castStreamCoroutine = null;
-        CastStreamEnded?.Invoke();
     }
 
     private IEnumerator ActionWrapperForPreparingJob()
@@ -1550,11 +1582,6 @@ public abstract class Skill : NetworkBehaviour
         _castCoroutine = null;
     }
 
-    private IEnumerator CancelCoroutine()
-    {
-        yield return new WaitForNextFrameUnit();
-    }
-
     [ClientRpc]
     public void RpcResetSkillState()
     {
@@ -1662,7 +1689,7 @@ public abstract class Skill : NetworkBehaviour
 
     public void ApplyHeal(Heal heal, GameObject hp, Skill skill, string sourceName)
     {
-        hp.GetComponent<IHealingable>().Heal(ref heal, sourceName, skill);
+        hp.GetComponent<IHealable>().Heal(ref heal, sourceName, skill);
         Hero.DamageTracker.AddHeal(heal, isServerRequest: isServer);
     }
 
@@ -1672,7 +1699,7 @@ public abstract class Skill : NetworkBehaviour
         if (_tempTargetForDamage != hp.transform)
         {
             _tempTargetForDamage = hp.transform;
-            _tempForHealing = hp.GetComponent<IHealingable>();
+            _tempForHealing = hp.GetComponent<IHealable>();
         }
 
         ApplyHeal(heal, hp, skill, sourceName);
@@ -1685,6 +1712,33 @@ public abstract class Skill : NetworkBehaviour
     }
 
     [Command] private void CmdSkillAfterCastJob() => SkillAfterCastJob();
+
+    #region OnClicks
+    private void OnClick()
+    {
+        _click = TypeClick.LMB;
+    }
+
+    private void OnClickCanceled()
+    {
+        _click = TypeClick.None;
+    }
+
+    private void OnShiftClick()
+    {
+        _click = TypeClick.ShiftLMB;
+    }
+
+    private void OnCtrlClick()
+    {
+        _click = TypeClick.CtrlLMB;
+    }
+
+    private void OnSpaceClick()
+    {
+        _click = TypeClick.SpaceLMB;
+    }
+    #endregion
 
     private void SubscribeClickEvents()
     {

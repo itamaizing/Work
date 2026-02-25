@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -55,7 +55,7 @@ public class Plague : RefreshingState
 				if(deathSpiral != null) 
 				{
 					Debug.Log("ADD CHRAGE");
-					deathSpiral.AddCharge();
+					deathSpiral.RestoreCharge();
 				}
 			}*/
 

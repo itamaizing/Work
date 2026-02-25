@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Mirror;
 
 [RequireComponent(typeof(NetworkIdentity))]
-public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, ITargetable
+public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITargetable
 {
 	[SerializeField] private CharacterData _playerData;
 	[SerializeField] private AttributeSystem _attributeSystem;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using UnityEngine;
 
@@ -40,7 +40,7 @@ public class ColdBlood : Skill
     {
         base.Awake();
 
-        _baseCooldownTime = CooldownTime;    
+        _baseCooldownTime = CooldownTime;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -82,12 +82,12 @@ public class ColdBlood : Skill
                     if (GetTargetCharacter() != Hero)
                     {
                         _isPlayer = false;
-                       // Debug.Log("Target != player / Target == " + _target);
+                       // Debug.Log("TargetLayer != player / TargetLayer == " + _target);
                     }
                     if (GetTargetCharacter() == Hero)
                     { 
                         _isPlayer = true;
-                       // Debug.Log("Target == player / Target == " + _target);
+                       // Debug.Log("TargetLayer == player / TargetLayer == " + _target);
                     }
 
                     _mousePosition = GetMousePoint();

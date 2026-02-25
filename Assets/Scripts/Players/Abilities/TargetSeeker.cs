@@ -1,5 +1,4 @@
-using Org.BouncyCastle.Asn1.X509;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -232,8 +231,8 @@ public class TargetSeeker : MonoBehaviour
 
 		switch (_skillType)
 		{
-			case SkillType.Target:
-				Debug.Log("SkillType Target");
+			case SkillType.TargetLayer:
+				Debug.Log("SkillType TargetLayer");
 				target.character = ClosedTarget();
 				target.isCharater = true;
 				break;
@@ -308,7 +307,7 @@ public class TargetSeeker : MonoBehaviour
 
 		switch (_skillType)
 		{
-			case SkillType.Target:
+			case SkillType.TargetLayer:
 				target.character = ClosedTarget();
 				target.isCharater = true;
 				break;

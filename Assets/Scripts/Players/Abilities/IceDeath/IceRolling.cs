@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using Mirror;
 using UnityEngine.AI;
@@ -341,7 +341,7 @@ public class IceRolling : Skill
         callbackDataSaved(targetInfo);
     }
 
-	protected override IEnumerator DynamicRendererJob(float time = DynamicRendererJobTime)
+	public override IEnumerator DynamicRendererJob(float time = DynamicRendererJobTime)
 	{
 		while (IsPreparing)
 		{
