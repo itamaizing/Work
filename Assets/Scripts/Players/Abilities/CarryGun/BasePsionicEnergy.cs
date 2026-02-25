@@ -25,6 +25,7 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     public event Action<Damage, Skill> DamageTaken;
     public event Action<float> OnEnergyChanged;
+    public event Action<bool> OnAccumulationPsionicChanged;
 
     public PsionicEnergySkill PsionicEnergySkill { get => psionicEnergySkill; set => psionicEnergySkill = value; }
     public float PsionicaDecayTime { get => _psionicaDecayTime; set => _psionicaDecayTime = value; }
@@ -33,6 +34,8 @@ public class BasePsionicEnergy : Resource, IDamageable
     {
         base.Initialize(maxValue, regenValue, data);
     }
+
+    public void AccumulationPsionicChanged(bool value) => OnAccumulationPsionicChanged?.Invoke(value);
 
     private void Start()
     {

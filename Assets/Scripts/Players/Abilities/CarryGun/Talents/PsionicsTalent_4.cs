@@ -9,11 +9,13 @@ public class PsionicsTalent_4 : Talent
     {
         _psionicEnergySkill.DischargingPsiTalen(true);
         _tentacles.ProtectiveCooconSpawnAttack(true);
+        _tentacles.PsionicsTalentThree(true);
     }
 
     public override void Exit()
     {
         _psionicEnergySkill.DischargingPsiTalen(false);
         _tentacles.ProtectiveCooconSpawnAttack(false);
+        _tentacles.PsionicsTalentThree(false);
     }
 }

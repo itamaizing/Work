@@ -11,21 +11,17 @@ public class Impatica : Skill
 
     protected override bool IsCanCast => IsHaveCharge && GetTargetCharacter() != null;
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
-
+    protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
-
         while (float.IsPositiveInfinity(_targetPoint.x) && GetTargetCharacter() == null && !_disactive)
         {
             if (GetMouseButton)
             {
                 _targetPoint = GetMousePoint();
                 FindTargetCharacter();
-                if (multiMagic != null) multiMagic.LastTarget = GetTargetCharacter();
             }
             yield return null;
         }
