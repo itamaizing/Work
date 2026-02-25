@@ -11,7 +11,7 @@ public enum SpawnType
     Spisnacider = 1,
 }
 
-public class ScraderSpawn : Skill
+public class CreatureSpawn : Skill
 {
     private Vector3 _spawnPoint = Vector3.positiveInfinity;
 
@@ -19,8 +19,10 @@ public class ScraderSpawn : Skill
     [SerializeField] private CocoonSpawn cocoonSpawn;
     [SerializeField] private MinionMove minionMove;
     [SerializeField] private MinionComponent minion;
-    [SerializeField] private SpawnType spawnType;
     [SerializeField] private Tentacles tentacle;
+
+    [SerializeField] private SpawnType spawnType;
+    [SerializeField] private int swarmWeight = 1;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
@@ -28,6 +30,7 @@ public class ScraderSpawn : Skill
 
     public Tentacles Tentacle { get => tentacle; set => tentacle = value; }
     public CocoonSpawn CocoonSpawn { get => cocoonSpawn; set => cocoonSpawn = value; }
+    public int SwarmWeight => swarmWeight;
 
     private void OnEnable()
     {

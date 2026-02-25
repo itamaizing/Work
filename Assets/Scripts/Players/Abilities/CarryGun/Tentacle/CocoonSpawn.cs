@@ -80,7 +80,7 @@ public class CocoonSpawn : Skill
     [ClientRpc]
     private void RpcTentacleCocoon(SpawnComponent spawnComponent)
     {
-        foreach (var cocoon in spawnComponent.Units) if (cocoon.TryGetComponent<ScraderSpawn>(out ScraderSpawn scraderSpawn)) scraderSpawn.Tentacle = tentacle;
+        foreach (var cocoon in spawnComponent.Units) if (cocoon.TryGetComponent<CreatureSpawn>(out CreatureSpawn creatureSpawn)) creatureSpawn.Tentacle = tentacle;
     }
 
     protected override void ClearData() { }

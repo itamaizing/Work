@@ -51,7 +51,15 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
     {
         if (_spawnComponent == null) return;
 
-        CurrentCounter = _spawnComponent.Units.Count(unit => unit != null && !unit.TryGetComponent<MucusAutoGrowth>(out _));
+       CurrentCounter = _spawnComponent.Units
+    .Where(unit => unit != null && !unit.TryGetComponent<MucusAutoGrowth>(out _))
+    .Sum(unit =>
+    {
+        if (unit.TryGetComponent<CreatureSpawn>(out var spawn))
+            return spawn.SwarmWeight;
+
+        return 1;
+    });
 
         if (_overloadCheckRoutine == null)
             _overloadCheckRoutine = StartCoroutine(CheckOverloadRoutine());
@@ -63,9 +71,16 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
 
         while (true)
         {
-            int realCount = _spawnComponent.Units.Count(unit => unit != null 
-            && !unit.TryGetComponent<MucusAutoGrowth>(out _) 
-            && !unit.TryGetComponent<ScraderSpawn>(out _));
+            int realCount = _spawnComponent.Units
+                .Where(unit => unit != null
+                    && !unit.TryGetComponent<MucusAutoGrowth>(out _))
+                .Sum(unit =>
+                {
+                    if (unit.TryGetComponent<CreatureSpawn>(out var spawn))
+                        return spawn.SwarmWeight;
+
+                    return 1;
+                });
 
             if (realCount > MaxCounter)
             {
@@ -76,7 +91,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
                 {
                     if (minion == null || minion.IsDead) continue;
                     if (minion.TryGetComponent<MucusAutoGrowth>(out _)) continue;
-                    if (minion.TryGetComponent<ScraderSpawn>(out _)) continue;
+                    if (minion.TryGetComponent<CreatureSpawn>(out _)) continue;
 
                     float damageValue = minion.Health.MaxValue * percentDamage;
 
@@ -87,7 +102,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
                         PhysicAttackType = AttackRangeType.MeleeAttack,
                     };
 
-                    CmdApplyDamage(damage, minion.gameObject);
+                    CmdApplyDamageSwarm(damage, minion.gameObject);
                 }
             }
 
@@ -97,7 +112,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
 
 
     [Command]
-    private void CmdApplyDamage(Damage damage, GameObject target)
+    private void CmdApplyDamageSwarm(Damage damage, GameObject target)
     {
         if (target == null) return;
 
