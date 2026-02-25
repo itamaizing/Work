@@ -8,22 +8,37 @@ public class AttackingPsionicEnergy : Energy
 {
     [SerializeField] private Slider attackingPsionicsSlider;
 
-    private const float _maxAttackingPsiEnergy = 30f;
+    private const float _baseMaxAttackingPsiEnergy = 30f;
     private const float _timeAttackingPsiEnergy = 6f;
-    
+
+    private float _currentMaxAttackingPsiEnergy;
     private float _remainingTime;
     private bool _isAttackingPsiActive = false;
 
     private Coroutine _attackingPsiEnergyCoroutine;
 
-    public float MaxAttackingPsiEnergy => _maxAttackingPsiEnergy;
+    public float MaxAttackingPsiEnergy => _currentMaxAttackingPsiEnergy;
     public bool IsAttackingPsiEnergy => _isAttackingPsiActive;
 
     public event Action<float> OnEnergyChanged;
 
+    public void AttackingPsiIncrease(bool value)
+    {
+        if (value) _currentMaxAttackingPsiEnergy = _baseMaxAttackingPsiEnergy + 10f;
+        else _currentMaxAttackingPsiEnergy = _baseMaxAttackingPsiEnergy;
+
+        CurrentValue = Mathf.Min(CurrentValue, _currentMaxAttackingPsiEnergy);
+
+        _maxValue = _currentMaxAttackingPsiEnergy;
+
+        RpcOnEnergyChanged(CurrentValue);
+        UpdateAttackingEnergyBar();
+    }
+
     private void Start()
     {
-        _maxValue = _maxAttackingPsiEnergy;
+        _currentMaxAttackingPsiEnergy = _baseMaxAttackingPsiEnergy;
+        _maxValue = _currentMaxAttackingPsiEnergy;
         UpdateAttackingEnergyBar();
     }
 
@@ -47,7 +62,7 @@ public class AttackingPsionicEnergy : Energy
         _remainingTime = _timeAttackingPsiEnergy;
 
         Add(transferAmount);
-        CurrentValue = Mathf.Min(CurrentValue, _maxAttackingPsiEnergy);
+        CurrentValue = Mathf.Min(CurrentValue, _currentMaxAttackingPsiEnergy);
 
         RpcOnEnergyChanged(CurrentValue);
 
@@ -80,7 +95,7 @@ public class AttackingPsionicEnergy : Energy
 
     private void UpdateAttackingEnergyBar()
     {
-        attackingPsionicsSlider.value = CurrentValue / _maxAttackingPsiEnergy;
+        attackingPsionicsSlider.value = CurrentValue / _currentMaxAttackingPsiEnergy;
     }
 
     [ClientRpc]

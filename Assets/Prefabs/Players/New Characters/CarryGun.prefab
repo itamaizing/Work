@@ -10902,7 +10902,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[3]._talentRow.Array.data[0].Talents.Array.size
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[3]._talentRow.Array.data[1].Talents.Array.size
@@ -11003,11 +11003,11 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[3]._talentRow.Array.data[0].Talents.Array.data[1]'
       value: 
-      objectReference: {fileID: 6595352334955899536}
+      objectReference: {fileID: 1820726796010007506}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[3]._talentRow.Array.data[0].Talents.Array.data[2]'
       value: 
-      objectReference: {fileID: 6595352334955899536}
+      objectReference: {fileID: 2864148410240025507}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[3]._talentRow.Array.data[1].Talents.Array.data[0]'
       value: 
@@ -11513,6 +11513,9 @@ PrefabInstance:
       addedObject: {fileID: 1820726796010007506}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 2864148410240025507}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 9002526479791327859}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
@@ -11883,6 +11886,31 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 8319872899575431858}
   _impatica: {fileID: 7709957828632342126}
+--- !u!114 &2864148410240025507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3907305221297154583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23cf798d375a2c04a9ae7e295c6eb821, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PsionicsTalent_11
+  _data:
+    _descriptionsForInfoPanel:
+    - " \u0437\u0430\u043F\u0430\u0441 \u0430\u0442\u0430\u043A\u0443\u044E\u0449\u0435\u0439
+      \u043F\u0441\u0438 \u0443\u0432\u0435\u043B\u0438\u0447\u0432\u0430\u0435\u0442\u0441\u044F
+      \u043D\u0430 10 \u0435\u0434\u0438\u043D\u0438\u0446 "
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u041F\u0441\u0438\u043E\u043D\u0438\u043A\u0430 11"
+    Icon: {fileID: -811072399, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 8319872899575431858}
+  _attackingPsionicEnergy: {fileID: 1487487552333656207}
 --- !u!114 &9002526479791327859
 MonoBehaviour:
   m_ObjectHideFlags: 0
