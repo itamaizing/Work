@@ -24,7 +24,7 @@ public class PsionicEnergySkill : Skill, IPassiveSkill
     [SerializeField] private LayerMask enemyLayer;
 
     private const float PsiExplosionPercent = 0.3f;
-    private const float PsiExplosionRadius = 3f;
+    private const float BasePsiExplosionRadius = 3f;
 
     #region Talent
     private bool _isPsiEnergyActive = false;
@@ -51,11 +51,14 @@ public class PsionicEnergySkill : Skill, IPassiveSkill
 
         float aoeDamageValue = absorptionAmount * PsiExplosionPercent;
 
-        Collider[] hits = Physics.OverlapSphere(
-            Hero.transform.position,
-            PsiExplosionRadius,
-            enemyLayer
-        );
+        float radius = BasePsiExplosionRadius;
+
+        if (Hero.CharacterState.CheckForState(States.PsionicGeneration))
+        {
+            radius *= 2f;
+        }
+
+        Collider[] hits = Physics.OverlapSphere(Hero.transform.position, radius, enemyLayer);
 
         foreach (var hit in hits)
         {

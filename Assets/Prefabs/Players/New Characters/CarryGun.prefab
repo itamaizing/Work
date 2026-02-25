@@ -10886,7 +10886,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRow.Array.data[1].Talents.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRow.Array.data[2].Talents.Array.size
@@ -10975,11 +10975,11 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[1].Talents.Array.data[1]'
       value: 
-      objectReference: {fileID: 6595352334955899536}
+      objectReference: {fileID: 5256781074406682682}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[1].Talents.Array.data[2]'
       value: 
-      objectReference: {fileID: 6595352334955899536}
+      objectReference: {fileID: 5256781074406682682}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[2].Talents.Array.data[0]'
       value: 
@@ -11202,11 +11202,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8492809262968261936, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_SizeDelta.x
-      value: -2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8492809262968261936, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_SizeDelta.y
-      value: -2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8569747795464636412, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _flyChecker
@@ -11457,6 +11457,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7709957828632342126}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1206870191879820980}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7928657652816047543}
@@ -11472,6 +11475,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3265292172318105642}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5256781074406682682}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9002526479791327859}
@@ -11643,8 +11649,8 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 8319872899575431858}
-  _impatica: {fileID: 0}
-  _skillManager: {fileID: 0}
+  _impatica: {fileID: 7709957828632342126}
+  _skillManager: {fileID: 8453834493232682211}
 --- !u!114 &3546478342820346117
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11737,6 +11743,32 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 8319872899575431858}
   cheliceraStrike: {fileID: 640134254429411212}
+--- !u!114 &5256781074406682682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3907305221297154583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b643d280500e68b48b69cd7a698e3bcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PsionicsTalent_6
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0421 \u0430\u043A\u0442\u0438\u0432\u043D\u043E\u0439 \u0430\u0442\u0430\u043A\u0443\u044E\u0449\u0435\u0439
+      \u043F\u0441\u0438  \u0446\u0435\u043B\u0438 \u0441 \u0438\u043C\u043F\u0430\u0442\u0438\u043A\u043E\u0439
+      \u043D\u0430\u043D\u043E\u0441\u044F \u0444\u0438\u0437 \u0443\u0440\u043E\u043D
+      \u043D\u0430\u043A\u0430\u043F\u043B\u0438\u0432\u0430\u044E\u0442 \u043F\u0441\u0438"
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u041F\u0441\u0438\u043E\u043D\u0438\u043A\u0430 6"
+    Icon: {fileID: 577668657, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 8319872899575431858}
+  _basePsionic: {fileID: 369466722820063190}
 --- !u!114 &9002526479791327859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12991,6 +13023,63 @@ MonoBehaviour:
   maxCounter: 0
   _playerLinks: {fileID: 8319872899575431858}
   duration: 6
+--- !u!114 &1206870191879820980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5311042088619458913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c23af93889291544ab43efeb4eb5aac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PsionicGeneration
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 1
+  _isSkillActive: 0
+  _abilityInfo: {fileID: 0}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 15
+  _castDeley: 0
+  _damageValue: 0
+  _abilitySchool: 4
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _skillType: 0
+  _moving: 0
+  autoAttack: 1
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _autoAttackDelay: 0
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
 --- !u!224 &7572513388100405829 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6072102004952575816, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
