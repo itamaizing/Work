@@ -15,9 +15,14 @@ public class BasePsionicEnergy : Resource, IDamageable
     private const float BaseSliderFillPercent = 0.3f;
     private const float RemainingSliderFillPercent = 0.7f;
     private const float DamageToPsiConversionRate = 0.1f;
+    private const float DistanceStep = 1f;
+    private const float PsiPercentPerStep = 0.01f;
 
     private float _psionicaDecayTime;
+    private Vector3 _lastPosition;
+    private float _distanceAccumulator;
     private bool _isInternalPsiEnergy = false;
+    private bool _isAccumulationPsionicRunning = false;
     private Coroutine _energyDecayCoroutine;
 
     private float MaxPsi => _player.Health.MaxValue;
@@ -36,6 +41,12 @@ public class BasePsionicEnergy : Resource, IDamageable
     }
 
     public void AccumulationPsionicChanged(bool value) => OnAccumulationPsionicChanged?.Invoke(value);
+    public void AccumulationPsionicRunning(bool value)
+    {
+        _isAccumulationPsionicRunning = value;
+        _lastPosition = _player.transform.position;
+        _distanceAccumulator = 0f;
+    }
 
     private void Start()
     {
@@ -49,6 +60,7 @@ public class BasePsionicEnergy : Resource, IDamageable
     private void Update()
     {
         UpdatePsionicaBar();
+        PsionicRunning();
     }
 
     private void OnEnable()
@@ -87,6 +99,28 @@ public class BasePsionicEnergy : Resource, IDamageable
                 if (unit != null && unit.DamageTracker != null) unit.DamageTracker.OnDamageTracked -= OnDamageDealt;
             }
         }
+    }
+
+    private void PsionicRunning()
+    {
+        if (!_isAccumulationPsionicRunning) return;
+        if (!_attackingPsionicEnergy.IsAttackingPsiEnergy) return;
+
+        Vector3 currentPos = _player.transform.position;
+        float distanceDelta = Vector3.Distance(currentPos, _lastPosition);
+        if (distanceDelta <= 0.001f) return;
+
+        _distanceAccumulator += distanceDelta;
+
+        if (_distanceAccumulator >= DistanceStep)
+        {
+            int steps = Mathf.FloorToInt(_distanceAccumulator / DistanceStep);
+            _distanceAccumulator -= steps * DistanceStep;
+            float psiGain = MaxPsi * PsiPercentPerStep * steps;
+            AddAndResetDecay(psiGain);
+        }
+
+        _lastPosition = currentPos;
     }
 
     private void OnMinionSpawned(Character minion)
