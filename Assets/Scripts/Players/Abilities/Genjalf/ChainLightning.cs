@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
@@ -21,7 +21,7 @@ public class ChainLightning : Skill
     private bool CheckCanCast()
     {
         return
-               Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius;
+               Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
     }
 
     public void AnimCastLight()
@@ -36,16 +36,16 @@ public class ChainLightning : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() != null)
+        if (Targeting.GetTarget().Character != null)
         {
-            Attack(GetTargetCharacter());
+            Attack(Targeting.GetTarget().Character);
             yield return new WaitForSecondsRealtime(0.3f);
-            var temps = Physics.OverlapSphere(GetTargetCharacter().Position, AreaInfo.Radius, _targetsLayers);
+            var temps = Physics.OverlapSphere(Targeting.GetTarget().Character.Position, AreaInfo.Radius, _targetsLayers);
             
             for (int i = 0; i < temps.Length; i++)
             {
@@ -61,7 +61,7 @@ public class ChainLightning : Skill
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
     }
 
@@ -69,17 +69,17 @@ public class ChainLightning : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (GetTargetCharacter() == null)
+        while (Targeting.GetTarget().Character == null)
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter();
+                Targeting.FindTempTarget();
                 //_target = GetRaycastTarget();
             }
             yield return null;
         }
 
-        targetInfo.AddTarget(GetTargetCharacter());
+        targetInfo.AddTarget(Targeting.GetTarget().Character);
         callbackDataSaved(targetInfo);
     }
 

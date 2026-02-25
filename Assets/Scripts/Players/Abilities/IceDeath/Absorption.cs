@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ public class Absorption : Skill
 
 	protected override bool IsCanCast
 	{
-		get { return GetTargetCharacter() != null; }
+		get { return Targeting.GetTarget().Character != null; }
 	}
 
     protected override int AnimTriggerCastDelay => throw new System.NotImplementedException();
@@ -50,7 +50,7 @@ public class Absorption : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(IcyCorpse)targetInfo.GetTargets()[0]);
+        Targeting.SetTarget((ITargetable)(IcyCorpse)targetInfo.GetTargets()[0]);
     }
 
     [Command]
@@ -82,39 +82,39 @@ public class Absorption : Skill
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		while (GetTargetCharacter() == null)
+		while (Targeting.GetTarget().Character == null)
 		{
 			if (GetMouseButton)
 			{
-				FindTargetCharacter();
-				if(GetTargetCharacter() is IcyCorpse)
+				Targeting.FindTempTarget();
+				if(Targeting.GetTarget().Character is IcyCorpse)
 				{
 
 				}
 				else
 				{
-					ClearTarget();
+					Targeting.ClearTarget();
 				}
 					//_target = (IcyCorpse)GetRaycastTarget();
 			}
 			yield return null;
 		}
 		TargetInfo targetInfo = new();
-		targetInfo.AddTarget(GetTargetCharacter());
+		targetInfo.AddTarget(Targeting.GetTarget().Character);
 		callbackDataSaved(targetInfo);
 	}
 
 	protected override IEnumerator CastJob()
 	{
 		Debug.Log("cast job");
-		CmdAction(GetTargetCharacter().gameObject);
+		CmdAction(Targeting.GetTarget().Character.gameObject);
 
 		yield return null;
 	}
 
 	protected override void ClearData()
 	{
-		ClearTarget();
+		Targeting.ClearTarget();
 		//_target = null;
 		return;
 	}

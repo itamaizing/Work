@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -36,11 +36,11 @@ public class FlashOfLight : Skill
 
     private bool IsCanCastCheck()
     {
-        if (GetTargetCharacter() == null) return false;
+        if (Targeting.GetTarget().Character == null) return false;
 
-        if (isLightMode) return (GetTargetCharacter() is Character character && character == Hero) || GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Allies");
+        if (isLightMode) return (Targeting.GetTarget().Character is Character character && character == Hero) || Targeting.GetTarget().Character.gameObject.layer == LayerMask.NameToLayer("Allies");
         else
-            return GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Enemy");
+            return Targeting.GetTarget().Character.gameObject.layer == LayerMask.NameToLayer("Enemy");
     }
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("Spell");
@@ -56,7 +56,7 @@ public class FlashOfLight : Skill
     }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 
     private void OnEnable()
@@ -97,7 +97,7 @@ public class FlashOfLight : Skill
         AreaInfo.Radius = isLightMode ? _lightRange : _darkRange;
         School = isLightMode ? Schools.Light : Schools.Dark;
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
-        TargetsLayers = isLightMode
+        Targeting.Layer = isLightMode
             ? LayerMask.GetMask("Allies", "Player")
             : LayerMask.GetMask("Enemy");
         Hero.Abilities.SkillPanelUpdate();
@@ -106,28 +106,28 @@ public class FlashOfLight : Skill
     {
        // _previousTarget = null;
 
-        while (GetTempTargetCharacter() == null)
+        while (Targeting.GetTempTarget().Character == null)
         {
             if (Input.GetMouseButton(0))
             {
-                FindTargetCharacter(true);
+                Targeting.FindTempTarget(true);
                 //_target = GetRaycastTarget(true);
 
-                if (GetTempTargetCharacter() != null && GetTempTargetCharacter() is Character characte && IsValidTarget(characte)) SetTarget((ITargetable)characte);
-                else ClearTarget();
+                if (Targeting.GetTempTarget().Character != null && Targeting.GetTempTarget().Character is Character characte && IsValidTarget(characte)) Targeting.SetTarget((ITargetable)characte);
+                else Targeting.ClearTarget();
 
             }
             yield return null;
         }
-        SetTarget(GetTempTargetCharacter());
+        Targeting.SetTarget(Targeting.GetTempTarget().Character);
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTargetCharacter());
+        targetInfo.AddTarget(Targeting.GetTarget().Character);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() == null || !IsCanCast) yield break;
+        if (Targeting.GetTarget().Character == null || !IsCanCast) yield break;
 
         if (TryPayCost())
         {
@@ -154,12 +154,12 @@ public class FlashOfLight : Skill
             _lastTalentTime = Time.time;
         }
 
-        Heal(GetTargetCharacter());
+        Heal(Targeting.GetTarget().Character);
     }
 
     private void HandleFlashOfDarkness()
     {
-        Damage(GetTargetCharacter());
+        Damage(Targeting.GetTarget().Character);
     }
 
     private void Heal(Character target)
@@ -233,7 +233,7 @@ public class FlashOfLight : Skill
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
     }
 }

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -89,7 +89,7 @@ public class MultiMagic : AuraState
         _characters.Clear();
 
         _distance = skill.AreaInfo.Radius;
-        _targetsMask = skill.TargetsLayers;
+        _targetsMask = skill.Targeting.Layer;
 
         var colliders = Physics.OverlapSphere(characterState.transform.position, _distance, _targetsMask);
 

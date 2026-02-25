@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine;
@@ -194,7 +194,7 @@ public class PoisonBall : Skill, IAltAbility
 
         ClearArrows();
 
-        ClearTarget();
+        Targeting.ClearTarget();
         //_currentTarget = null;
 
         _firstMousePosition = Vector3.positiveInfinity;
@@ -216,17 +216,17 @@ public class PoisonBall : Skill, IAltAbility
 
         CheckingActiveTalents();
 
-        while (GetTargetCharacter() == null && float.IsPositiveInfinity(_firstMousePosition.x))
+        while (Targeting.GetTarget().Character == null && float.IsPositiveInfinity(_firstMousePosition.x))
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter(true);
-               // _currentTarget = GetTarget(true).character;
+                Targeting.FindTempTarget(true);
+               // _currentTarget = Targeting.GetTarget(true).character;
 
                 CheckWhoTarget();
-                _firstMousePosition = GetMousePoint();
+                _firstMousePosition = Targeting.GetMousePoint();
 
-                if (GetTargetCharacter() != null)
+                if (Targeting.GetTarget().Character != null)
                 {
                     //_player.Move.LookAtTransform(_currentTarget.transform);
                     _isTarget = true;
@@ -454,9 +454,9 @@ public class PoisonBall : Skill, IAltAbility
 
     private void CheckWhoTarget()
     {
-        if (GetTargetCharacter() != null)
+        if (Targeting.GetTarget().Character != null)
         {
-            if (GetTargetCharacter().gameObject == _player.gameObject)
+            if (Targeting.GetTarget().Character.gameObject == _player.gameObject)
             {
                 _poisonBallInfo.IsOriginalTargetPlayer = true;
                 _poisonBallInfo.IsOriginalTargetAllies = false;
@@ -471,7 +471,7 @@ public class PoisonBall : Skill, IAltAbility
                     _poisonBallInfo.IsHealingPoisonCloud = false;
                 }
             }
-            else if (GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Allies"))
+            else if (Targeting.GetTarget().Character.gameObject.layer == LayerMask.NameToLayer("Allies"))
             {
                 _poisonBallInfo.IsOriginalTargetPlayer = false;
                 _poisonBallInfo.IsOriginalTargetAllies = true;
@@ -486,7 +486,7 @@ public class PoisonBall : Skill, IAltAbility
                     _poisonBallInfo.IsHealingPoisonCloud = false;
                 }
             }
-            else if (GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Enemy"))
+            else if (Targeting.GetTarget().Character.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
                 _poisonBallInfo.IsOriginalTargetPlayer = false;
                 _poisonBallInfo.IsOriginalTargetAllies = false;
@@ -536,13 +536,13 @@ public class PoisonBall : Skill, IAltAbility
     {
         //Debug.Log("CheckCanCast PoisonBall");
 
-        if (GetTargetCharacter() == null)
-            return Vector3.Distance(_firstMousePosition, transform.position) <= AreaInfo.Radius && NoObstacles(_firstMousePosition, _obstacle);
+        if (Targeting.GetTarget().Character == null)
+            return Vector3.Distance(_firstMousePosition, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_firstMousePosition, _obstacle);
 
         return Vector3.Distance(_firstMousePosition, transform.position) <= AreaInfo.Radius &&
-            NoObstacles(_firstMousePosition, _obstacle) ||
-            Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius &&
-            NoObstacles(GetTargetCharacter().transform.position, _obstacle);
+            Targeting.NoObstacles(_firstMousePosition, _obstacle) ||
+            Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius &&
+            Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, _obstacle);
 
     }
 
@@ -559,9 +559,9 @@ public class PoisonBall : Skill, IAltAbility
 
     private void ChooseSpeed()
     {
-        if (_isTarget && GetTargetCharacter().gameObject != _player.gameObject)
+        if (_isTarget && Targeting.GetTarget().Character.gameObject != _player.gameObject)
         {
-            _isFast = Vector3.Distance(_player.transform.position, _secondMousePosition) > Vector3.Distance(_player.transform.position, GetTargetCharacter().transform.position);
+            _isFast = Vector3.Distance(_player.transform.position, _secondMousePosition) > Vector3.Distance(_player.transform.position, Targeting.GetTarget().Character.transform.position);
         }
         else
         {
@@ -608,7 +608,7 @@ public class PoisonBall : Skill, IAltAbility
     {
         if (_isTarget)
         {
-            CmdCreateProjectileForTarget(GetTargetCharacter().gameObject, GetTargetCharacter().transform.position,
+            CmdCreateProjectileForTarget(Targeting.GetTarget().Character.gameObject, Targeting.GetTarget().Character.transform.position,
                 _poisonBallInfo.MaxCountProjectile, _multiplierForPushDistance, PoisonBoneStack,
                 _isFast, _isPushTarget, IsAltAbility,
                 _activeTalentsInfo.IsActiveFootInstincts, _activeTalentsInfo.IsActiveRestorationOfGlands,
@@ -640,7 +640,7 @@ public class PoisonBall : Skill, IAltAbility
     {
         if (_arrowPrefab == null || pointArrowRender == null) return;
         Quaternion rotation = Quaternion.identity;
-        Vector3 center = GetTargetCharacter() != null ? GetTargetCharacter().transform.position : _firstMousePosition;
+        Vector3 center = Targeting.GetTarget().Character != null ? Targeting.GetTarget().Character.transform.position : _firstMousePosition;
         center.y = 0.8f;
 
         _pointArrowInstance = Instantiate(pointArrowRender, center, Quaternion.identity);
@@ -727,11 +727,11 @@ public class PoisonBall : Skill, IAltAbility
                 _arrowRenderers[0].SetTransparentMaterial();
                 _arrowRenderers[1].SetTransparentMaterial();
 
-                _secondMousePosition = GetMousePoint();
+                _secondMousePosition = Targeting.GetMousePoint();
 
-                if (GetTargetCharacter() != null)
+                if (Targeting.GetTarget().Character != null)
                 {
-                    Vector3 currentMousePosition = GetMousePoint();
+                    Vector3 currentMousePosition = Targeting.GetMousePoint();
                     if (currentMousePosition.x < _secondMousePosition.x && currentMousePosition.z < _secondMousePosition.z)
                     {
                         SetArrowVisibility(1, true);
@@ -758,7 +758,7 @@ public class PoisonBall : Skill, IAltAbility
                 _arrowRenderers[1].SetDeafaultMaterail();
 
                 _thirdClickDone = true;
-                _thirdMousePosition = GetMousePoint();
+                _thirdMousePosition = Targeting.GetMousePoint();
             }
             yield return null;
         }
@@ -779,7 +779,7 @@ public class PoisonBall : Skill, IAltAbility
                 if (dir != Vector3.zero) _pointArrowInstance.transform.rotation = Quaternion.LookRotation(dir);
             }
 
-            Vector3 currentMousePosition = GetMousePoint();
+            Vector3 currentMousePosition = Targeting.GetMousePoint();
 
             if (_firstClickDone && !_secondClickDone)
             {
@@ -1085,4 +1085,4 @@ public class PoisonBall : Skill, IAltAbility
     {
         throw new NotImplementedException();
     }
-}
+}

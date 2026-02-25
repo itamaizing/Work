@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Linq;
 using Mirror;
@@ -40,10 +40,10 @@ public class ShotsIntoSky : Skill
             {
                 var point = target.Points[0];
                 if (float.IsInfinity(point.x)) return false;
-                return IsPointInRadius(AreaInfo.Radius, point);
+                return Targeting.IsPointInRadius(AreaInfo.Radius, point);
             }
 
-            return IsPointInRadius(AreaInfo.Radius, _targetPoint);
+            return Targeting.IsPointInRadius(AreaInfo.Radius, _targetPoint);
         }
     }
 
@@ -99,7 +99,7 @@ public class ShotsIntoSky : Skill
 
         while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
         {
-            if (GetMouseButton) if (TryGetGroundPoint(out Vector3 ground) && IsPointInRadius(AreaInfo.Radius, ground)) _targetPoint = ground;
+            if (GetMouseButton) if (TryGetGroundPoint(out Vector3 ground) && Targeting.IsPointInRadius(AreaInfo.Radius, ground)) _targetPoint = ground;
             yield return null;
         }
 

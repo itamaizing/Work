@@ -1,4 +1,4 @@
-using UnityEngine.SceneManagement;
+﻿using UnityEngine.SceneManagement;
 using Mirror;
 using System.Collections;
 using UnityEngine;
@@ -76,7 +76,7 @@ public class GrowTree : Skill
             if (float.IsPositiveInfinity(_targetPoint.x)) return false;
 
             float allowedRadius = _isGrowTreeArrowIntoSkyRadiusTalent ? extendedRadius : AreaInfo.Radius;
-            return IsPointInRadius(allowedRadius, _targetPoint);
+            return Targeting.IsPointInRadius(allowedRadius, _targetPoint);
         }
     }
 
@@ -123,7 +123,7 @@ public class GrowTree : Skill
 
     private void HandleSkillDeleted(Skill skill)
     {
-        if (skill == this) ClientStopDamageZone();
+        if (skill == this) Renderer.HideAOEIndicator(isCommand: false);
     }
     private void ShowExtendedRadius()
     {
@@ -261,7 +261,7 @@ public class GrowTree : Skill
         {
             if (GetMouseButton)
             {
-                Vector3 mousePoint = GetMousePoint();
+                Vector3 mousePoint = Targeting.GetMousePoint();
                 bool clickedOnHero = false;
 
                 Collider[] colliders = Physics.OverlapSphere(mousePoint, SearchMousClickTarget);
@@ -320,7 +320,7 @@ public class GrowTree : Skill
         }
         HideExtendedRadius();
 
-        DrawDamageZoneClient(targetPoint);
+        Renderer.ShowAOEIndicator(targetPoint, isCommand: false);
 
         if (_castFromExtendedRadius)
         {
@@ -341,7 +341,7 @@ public class GrowTree : Skill
         if (_streamCoroutine != null) StopCoroutine(_streamCoroutine);
 
         _streamCoroutine = StartCoroutine(StreamDuration());
-        ClientStopDamageZone();
+        Renderer.HideAOEIndicator(isCommand: false);
 
         if (_rangeWatch != null)
         {

@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -12,7 +12,7 @@ public class BleedingSpell : Skill
     //private Character _target;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
 
-    protected override bool IsCanCast => GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius;
+    protected override bool IsCanCast => Targeting.GetTarget().Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
     protected override int AnimTriggerCast => 0;
 
@@ -22,26 +22,26 @@ public class BleedingSpell : Skill
 
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
-        while (GetTargetCharacter() == null && !_disactive)
+        while (Targeting.GetTarget().Character == null && !_disactive)
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter();
+                Targeting.FindTempTarget();
                 //_target = GetRaycastTarget(true);
-                if (multiMagic != null) multiMagic.LastTarget = GetTargetCharacter();
+                if (multiMagic != null) multiMagic.LastTarget = Targeting.GetTarget().Character;
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTargetCharacter());
+        targetInfo.AddTarget(Targeting.GetTarget().Character);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
         Damage = _baseDamage;
-        if (GetTargetCharacter() != null) CmdApplyAbsorptionState(GetTargetCharacter().gameObject);
+        if (Targeting.GetTarget().Character != null) CmdApplyAbsorptionState(Targeting.GetTarget().Character.gameObject);
 
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
@@ -62,7 +62,7 @@ public class BleedingSpell : Skill
     protected override void ClearData()
     {
         _targetPoint = Vector3.positiveInfinity;
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
     }
 
@@ -78,7 +78,7 @@ public class BleedingSpell : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) SetTarget((ITargetable)(targetInfo.GetTargets()[0] as Character));
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((ITargetable)(targetInfo.GetTargets()[0] as Character));
     }
 }
 

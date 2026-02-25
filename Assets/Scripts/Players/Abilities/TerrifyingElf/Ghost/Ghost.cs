@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -202,7 +202,7 @@ public class Ghost : Skill
         if (!_isGhostSpawnInRadiusTree) _checkExtendedRadiusCoroutine = StartCoroutine(CheckExtendedRadiusJob());
         else _allGrowTrees = FindObjectsOfType<GrowTreeAura>().ToList();
 
-        Vector3 mousePositionStart = GetMousePoint();
+        Vector3 mousePositionStart = Targeting.GetMousePoint();
         _ghostPrefabPreview = Instantiate(ghostPrefabPreview, mousePositionStart, Quaternion.identity);
         _isPreviewHiddenOverGhost = false;
 
@@ -214,7 +214,7 @@ public class Ghost : Skill
 
         while (float.IsPositiveInfinity(secondPoint.x) || targetCharacter == null || targetGhost == null)
         {
-            firstPoint = GetMousePoint();
+            firstPoint = Targeting.GetMousePoint();
             _teleportGhost = false;
             bool isHoveringGhost = IsMouseOverGhost(out Character ghostPreview) && ghostPreview.GetComponent<GhostAura>();
 
@@ -277,11 +277,11 @@ public class Ghost : Skill
             {
                 if (GetMouseButton && !_teleportGhost && !IsMouseOverTarget(out _))
                 {
-                    secondPoint = GetMousePoint();
+                    secondPoint = Targeting.GetMousePoint();
                     if (secondPoint == Vector3.zero) { yield return null; continue; }
                     bool heroCanSee = IsWithinRadius(secondPoint, _heroVisionRadius);
                     bool treeCanSee = _allGrowTrees.Any(tree => IsWithinRadius(tree.transform.position, secondPoint, _treeVisionRadius));
-                    bool canSpawnHere = (_isGhostSpawnInRadiusTree && (IsNearGrowTree(secondPoint, 1f) || IsVisibleToHero(secondPoint))) || (!_isGhostSpawnInRadiusTree && IsMouseInRadius(AreaInfo.Radius));
+                    bool canSpawnHere = (_isGhostSpawnInRadiusTree && (IsNearGrowTree(secondPoint, 1f) || IsVisibleToHero(secondPoint))) || (!_isGhostSpawnInRadiusTree && Targeting.IsPointInRadius(AreaInfo.Radius, Targeting.GetMousePoint()));
 
                     if (!canSpawnHere) { yield return null; continue; }
 

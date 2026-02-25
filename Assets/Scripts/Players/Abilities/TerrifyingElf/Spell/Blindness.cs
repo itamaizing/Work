@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ public class Blindness : Skill
     [SerializeField] private float duration;
     //private Character _target;
 
-    protected override bool IsCanCast => IsHaveCharge && GetTargetCharacter() != null;
+    protected override bool IsCanCast => IsHaveCharge && Targeting.GetTarget().Character != null;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
 
@@ -19,34 +19,34 @@ public class Blindness : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) SetTarget((ITargetable)(targetInfo.GetTargets()[0] as Character));
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((ITargetable)(targetInfo.GetTargets()[0] as Character));
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
-        while (GetTargetCharacter() == null && !_disactive)
+        while (Targeting.GetTarget().Character == null && !_disactive)
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter();
+                Targeting.FindTempTarget();
                 //_target = GetRaycastTarget(true);
-                if (multiMagic != null) multiMagic.LastTarget = GetTargetCharacter();
+                if (multiMagic != null) multiMagic.LastTarget = Targeting.GetTarget().Character;
             }
             yield return null;
         }
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTargetCharacter());
+        targetInfo.AddTarget(Targeting.GetTarget().Character);
 
         targetDataSavedCallback(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() != null)
+        if (Targeting.GetTarget().Character != null)
         {
-            CmdApplyAbsorptionState(GetTargetCharacter().gameObject);
+            CmdApplyAbsorptionState(Targeting.GetTarget().Character.gameObject);
 
             var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
@@ -67,7 +67,7 @@ public class Blindness : Skill
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
     }
 

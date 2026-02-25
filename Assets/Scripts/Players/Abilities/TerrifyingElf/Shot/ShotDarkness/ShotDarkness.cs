@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Linq;
@@ -53,8 +53,8 @@ public class ShotDarkness : Skill
 
     private bool CheckCanCast()
     {
-        if (GetTarget() == null) return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength;
-        return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength || Vector3.Distance(GetTarget().Transform.position, transform.position) <= AreaInfo.CastLength;
+        if (Targeting.GetTarget() == null) return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength;
+        return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength || Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.CastLength;
     }
 
     private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
@@ -67,7 +67,7 @@ public class ShotDarkness : Skill
 
         _isHealthAboveThreshold = false;
 
-        if (GetTarget() != null && GetTarget() is Character targetCurrent)
+        if (Targeting.GetTarget() != null && Targeting.GetTarget().Character is Character targetCurrent)
         {
             var health = targetCurrent.Health;
             _isHealthAboveThreshold = health.CurrentValue >= health.MaxValue * HealthThresholdPercent;
@@ -123,7 +123,7 @@ public class ShotDarkness : Skill
     }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0]);
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
         _targetPoint = targetInfo.Points[0];
     }
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -134,16 +134,16 @@ public class ShotDarkness : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget(RadiusTargetCheck, GetMousePoint());
+                Targeting.FindTempTarget(Targeting.GetMousePoint(), RadiusTargetCheck);
                 targetPoint = GetMousePoint(_groundLayerMask);
 
-                if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
+                if (Targeting.GetTempTarget().Targetable != null && Targeting.GetTempTarget().Targetable is IDamageable damageable)
                 {
-                    if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
 
                     else
                     {
-                        if (GetTempTarget() is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        if (Targeting.GetTempTarget().Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
                         break;
                     }
                 }
@@ -151,24 +151,24 @@ public class ShotDarkness : Skill
             yield return null;
         }
 
-        SetTarget(GetTempTarget());
+        Targeting.SetTarget(Targeting.GetTempTarget().Targetable);
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTarget());
+        targetInfo.AddTarget(Targeting.GetTarget().Targetable);
         targetInfo.Points.Add(targetPoint);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() == null && _targetPoint == Vector3.positiveInfinity) yield return null;
-        if (GetTarget() != null && !IsTargetInRange()) yield return null;
+        if (Targeting.GetTarget() == null && _targetPoint == Vector3.positiveInfinity) yield return null;
+        if (Targeting.GetTarget() != null && !IsTargetInRange()) yield return null;
 
         _magicDamage = CalculateAndSpendBonusMagicDamage();
         ShotDarknessAnimationMove();
         ProcessGhostCooldownReduction();
 
-        if (GetTarget() != null) CmdCreateProjectileAtTarget(GetTarget().Transform, Damage, _magicDamage);
+        if (Targeting.GetTarget() != null) CmdCreateProjectileAtTarget(Targeting.GetTarget().Transform, Damage, _magicDamage);
         else CmdCreateProjectileAtPosition(new Vector3(_targetPoint.x, _targetPoint.y, _targetPoint.z), Damage, _magicDamage);
 
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
@@ -206,8 +206,8 @@ public class ShotDarkness : Skill
         if (_hero?.Move != null)
         {
             Hero.Move.SetCanMove(true);
-            ClearTarget();
-            ClearTempTarget();
+            Targeting.ClearTarget();
+            Targeting.ClearTempTarget();
             _targetPoint = Vector3.positiveInfinity;
             Hero.Move.StopLookAt();
         }
@@ -215,7 +215,7 @@ public class ShotDarkness : Skill
         AnimCastEnded();
     }
 
-    private bool IsTargetInRange() { return GetTarget() != null && Vector3.Distance(transform.position, GetTarget().Transform.position) <= AreaInfo.CastLength; }
+    private bool IsTargetInRange() { return Targeting.GetTarget() != null && Vector3.Distance(transform.position, Targeting.GetTarget().Transform.position) <= AreaInfo.CastLength; }
     private void UseMana(float amount)
     {
         float mana = amount;
@@ -298,8 +298,8 @@ public class ShotDarkness : Skill
     protected override void ClearData()
     {
         _targetPoint = Vector3.positiveInfinity;
-        ClearTarget();
-        ClearTempTarget();
+        Targeting.ClearTarget();
+        Targeting.ClearTempTarget();
         _consecutiveShots = 0;
         AnimCastEnded();
     }

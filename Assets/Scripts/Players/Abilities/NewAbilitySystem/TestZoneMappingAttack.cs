@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,9 +24,9 @@ public class TestZoneMappingAttack : Skill
         {
             if (Input.GetMouseButtonDown(0))
             {
-                Vector3 clickedPoint = GetMousePoint();
+                Vector3 clickedPoint = Targeting.GetMousePoint();
 
-                if (IsPointInRadius(AreaInfo.Radius, clickedPoint))
+                if (Targeting.IsPointInRadius(AreaInfo.Radius, clickedPoint))
                 {
                     _targetPoint = clickedPoint;
                 }
@@ -40,7 +40,7 @@ public class TestZoneMappingAttack : Skill
 
     protected override IEnumerator CastJob()
     {
-        DrawDamageZone(_targetPoint);
+        Renderer.ShowAOEIndicator(_targetPoint, isCommand: true);
 
         yield return new WaitForSeconds(2f);
         //skillRenderer.CmdStopDrawDamageZone();

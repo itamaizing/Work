@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -53,7 +53,7 @@ public class SpellMoveScraderTo : Skill
         CancelWork();
 
         _moveActive = false;
-        ClearTarget();
+        Targeting.ClearTarget();
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -67,7 +67,7 @@ public class SpellMoveScraderTo : Skill
 
         while (float.IsPositiveInfinity(clickedPoint.x))
         {
-            if (GetMouseButton) clickedPoint = GetMousePoint();
+            if (GetMouseButton) clickedPoint = Targeting.GetMousePoint();
             yield return null;
         }
 
@@ -166,7 +166,7 @@ public class SpellMoveScraderTo : Skill
     {
         while (true)
         {
-            Collider[] hits = Physics.OverlapSphere(transform.position, AreaInfo.Radius, TargetsLayers);
+            Collider[] hits = Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.Layer);
 
             Character nearest = null;
             float minDist = float.MaxValue;
@@ -216,7 +216,7 @@ public class SpellMoveScraderTo : Skill
                 {
                     CancelWork();
                     _moveActive = false;
-                    ClearTarget();
+                    Targeting.ClearTarget();
                     yield break;
                 }
 
@@ -271,11 +271,11 @@ public class SpellMoveScraderTo : Skill
         {
             CancelWork();
             _moveActive = false;
-            ClearTarget();
+            Targeting.ClearTarget();
             return;
         }
 
-        Collider[] hits = Physics.OverlapSphere(transform.position, AreaInfo.Radius, TargetsLayers);
+        Collider[] hits = Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.Layer);
 
         Character nearest = null;
         float minDist = float.MaxValue;
@@ -299,7 +299,7 @@ public class SpellMoveScraderTo : Skill
         {
             CancelWork();
             _moveActive = false;
-            ClearTarget();
+            Targeting.ClearTarget();
         }
     }
 

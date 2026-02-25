@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -37,7 +37,7 @@ namespace Gangdollarff
 
         protected override IEnumerator CastJob()
         {
-            var colliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius, TargetsLayers);
+            var colliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.Layer);
 
             Damage damage = new Damage
             {

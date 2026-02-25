@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -81,7 +81,7 @@ public class JumpBack : Skill
         Vector3 targetPoint = Vector3.positiveInfinity;
         while (Disactive && float.IsPositiveInfinity(targetPoint.x))
         {
-            if (GetMouseButton) targetPoint = GetMousePoint();
+            if (GetMouseButton) targetPoint = Targeting.GetMousePoint();
             yield return null;
         }
 

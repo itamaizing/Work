@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -39,7 +39,7 @@ public class PhysicalAttack : Skill
 
 	protected override int AnimTriggerCastDelay => 0;
 	protected override int AnimTriggerCast => _animTriggerToUse = UnityEngine.Random.value > RandomAttack ? RightKickTrigger : LeftKickTrigger;
-	protected override bool IsCanCast => GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius && NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
+	protected override bool IsCanCast => Targeting.GetTarget().Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
 
 	private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
@@ -57,31 +57,31 @@ public class PhysicalAttack : Skill
 	{
 		TargetInfo targetInfo = new TargetInfo();
 
-		if (GetTempTargetCharacter() != null)
+		if (Targeting.GetTempTarget().Character != null)
 		{
-			_hero.Move.LookAtTransform(GetTargetCharacter().transform);
-			targetInfo.AddTarget(GetTargetCharacter());
-			targetInfo.Points.Add(GetTargetCharacter().transform.position);
+			_hero.Move.LookAtTransform(Targeting.GetTarget().Character.transform);
+			targetInfo.AddTarget(Targeting.GetTarget().Character);
+			targetInfo.Points.Add(Targeting.GetTarget().Character.transform.position);
 			callbackDataSaved?.Invoke(targetInfo);
 			yield break;
 		}
 
-        while (GetTempTargetCharacter() == null)
+        while (Targeting.GetTempTarget().Character == null)
         {
             if (GetMouseButton)
 			{
-				FindTargetCharacter(RadiusSearchTarget, GetMousePoint());
+				Targeting.FindTempTarget(Targeting.GetMousePoint(), RadiusSearchTarget);
 
-				if (GetTempTargetCharacter() != null)
+				if (Targeting.GetTempTarget().Character != null)
 				{
-					if (IsAllyTarget(GetTempTargetCharacter()) || GetTempTargetCharacter() == Hero)
+					if (IsAllyTarget(Targeting.GetTempTarget().Character) || Targeting.GetTempTarget().Character == Hero)
 					{
-						ClearTempTarget();						
+						Targeting.ClearTempTarget();						
 					}
 					else
 					{
-                        GetTempTargetCharacter().SelectedCircle.IsActive = true;
-						_hero.Move.LookAtTransform(GetTempTargetCharacter().transform);
+                        Targeting.GetTempTarget().Character.SelectedCircle.IsActive = true;
+						_hero.Move.LookAtTransform(Targeting.GetTempTarget().Character.transform);
                         break;
 					}
 				}
@@ -89,16 +89,16 @@ public class PhysicalAttack : Skill
 			yield return null;
 		}
 
-		SetTarget(GetTempTargetCharacter());
-        ClearTempTarget();
-        targetInfo.AddTarget(GetTargetCharacter());
-		targetInfo.Points.Add(GetTargetCharacter().transform.position);
+		Targeting.SetTarget(Targeting.GetTempTarget().Character);
+        Targeting.ClearTempTarget();
+        targetInfo.AddTarget(Targeting.GetTarget().Character);
+		targetInfo.Points.Add(Targeting.GetTarget().Character.transform.position);
 		callbackDataSaved?.Invoke(targetInfo);
 	}
 
 	protected override IEnumerator CastJob()
 	{
-		if (GetTargetCharacter() == null || _animator == null) yield break;
+		if (Targeting.GetTarget().Character == null || _animator == null) yield break;
 		yield break;
 	}
 
@@ -114,14 +114,14 @@ public class PhysicalAttack : Skill
 
 	public void ApplyAttackDamage()
 	{
-		if (GetTargetCharacter() == null) return;
+		if (Targeting.GetTarget().Character == null) return;
 
-		if (_seriesPhysicalTalent) Hit(GetTargetCharacter());
-		else SingleHit(GetTargetCharacter());
+		if (_seriesPhysicalTalent) Hit(Targeting.GetTarget().Character);
+		else SingleHit(Targeting.GetTarget().Character);
 
 		if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
 		{
-			ClearTarget();
+			Targeting.ClearTarget();
 		}
 		CmdPlayShotSound();
 	}
@@ -239,11 +239,11 @@ public class PhysicalAttack : Skill
 
 	private void PushBackEnemy(Character enemy)
 	{
-		Vector3 lookDir = (GetTargetCharacter().transform.position - Hero.transform.position).normalized;
-		Vector3 jumpPos = lookDir * DefaultMultiplier + GetTargetCharacter().transform.position;
+		Vector3 lookDir = (Targeting.GetTarget().Character.transform.position - Hero.transform.position).normalized;
+		Vector3 jumpPos = lookDir * DefaultMultiplier + Targeting.GetTarget().Character.transform.position;
 		if (!CheckObstacleBetween(Hero.transform.position, jumpPos))
 		{
-			CmdPush(GetTargetCharacter().gameObject, jumpPos);
+			CmdPush(Targeting.GetTarget().Character.gameObject, jumpPos);
 		}
 	}
 
@@ -320,13 +320,14 @@ public class PhysicalAttack : Skill
 
 	public override void LoadTargetData(TargetInfo targetInfo)
 	{
-		if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
+		if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
 	}
 
     protected override void ClearData()
     {
-		ClearTarget();
-		ClearTempTarget();
+		Targeting.ClearTarget();
+		Targeting.ClearTempTarget();
 		_hero.Move.StopLookAt();
 	}
-}
+}
+

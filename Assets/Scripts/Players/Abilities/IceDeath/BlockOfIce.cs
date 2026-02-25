@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -67,14 +67,14 @@ public class BlockOfIce : Skill
 		{			
 			if (GetMouseButton)
 			{
-				_mousePos = GetMousePoint();
-				/*if (GetTarget().isCharater)
+				_mousePos = Targeting.GetMousePoint();
+				/*if (Targeting.GetTarget().isCharater)
 				{
 					Debug.Log("Character try");
-					if (GetTarget().character != null)
+					if (Targeting.GetTarget().character != null)
 					{
 						//Debug.Log("Character");
-						_mousePos = GetTarget().character.transform.position;
+						_mousePos = Targeting.GetTarget().character.transform.position;
 						Debug.Log(Vector3.Distance(_mousePos, transform.position) + " Distance");
 						if(Vector3.Distance(_mousePos, transform.position) < 0.2f)
 						{
@@ -85,7 +85,7 @@ public class BlockOfIce : Skill
 				else
 				{
 					Debug.Log("Position");
-					_mousePos = GetMousePoint();
+					_mousePos = Targeting.GetMousePoint();
 				}*/
 			}
 			yield return null;

@@ -1,4 +1,4 @@
-//using Mirror;
+﻿//using Mirror;
 //using System;
 //using System.Collections;
 //using System.Collections.Generic;
@@ -119,17 +119,17 @@
 //    {
 //        if (_target == null)
 //        {
-//            return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= AreaInfo.Radius && NoObstacles(_firstTentaclesPoint, _obstacle);
+//            return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_firstTentaclesPoint, _obstacle);
 //        }
 //        else if (_target != null)
 //        {
-//            return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= AreaInfo.Radius && NoObstacles(_firstTentaclesPoint, _obstacle) 
-//                && Vector3.Distance(_secondTentaclesPoint, _target.transform.position) <= AreaInfo.Radius && NoObstacles(_secondTentaclesPoint, _obstacle);
+//            return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_firstTentaclesPoint, _obstacle) 
+//                && Vector3.Distance(_secondTentaclesPoint, _target.transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_secondTentaclesPoint, _obstacle);
 //        }
 //        else
 //        {
-//            return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= AreaInfo.Radius && NoObstacles(_firstTentaclesPoint, _obstacle) 
-//                && Vector3.Distance(_secondTentaclesPoint, _player.transform.position) <= AreaInfo.Radius && NoObstacles(_firstTentaclesPoint, _obstacle);
+//            return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_firstTentaclesPoint, _obstacle) 
+//                && Vector3.Distance(_secondTentaclesPoint, _player.transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_firstTentaclesPoint, _obstacle);
 
 //        }
 //    }
@@ -140,7 +140,7 @@
 //        {
 //            if (Input.GetMouseButtonDown(0))
 //            {
-//                _pointForSearchingTargets = GetMousePoint();
+//                _pointForSearchingTargets = Targeting.GetMousePoint();
 //                _targets = GetCloserTargets(_pointForSearchingTargets, AreaInfo.Area);
 //                foreach (var target in _targets)
 //                {
@@ -222,7 +222,7 @@
 //                }
 //                else
 //                {
-//                    _secondTentaclesPoint = GetMousePoint();
+//                    _secondTentaclesPoint = Targeting.GetMousePoint();
 //                }
 //                _isSecondPointDone = true;
 //            }

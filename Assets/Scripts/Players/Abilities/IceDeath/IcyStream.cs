@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -23,9 +23,9 @@ public class IcyStream : Skill
 
     private bool IsCanCastCheck()
 	{
-		if(GetTargetCharacter() != null)
+		if(Targeting.GetTarget().Character != null)
 		{
-			if(Vector3.Distance(GetTargetCharacter().transform.position, _playerLinks.transform.position) > AreaInfo.Radius)
+			if(Vector3.Distance(Targeting.GetTarget().Character.transform.position, _playerLinks.transform.position) > AreaInfo.Radius)
 			{
 				return false;
 			}
@@ -96,15 +96,15 @@ public class IcyStream : Skill
 		{
 			if (GetMouseButton)
 			{
-				_mousePos = GetMousePoint();
-				/*if (GetTarget() != null)
+				_mousePos = Targeting.GetMousePoint();
+				/*if (Targeting.GetTarget() != null)
 				{
-					if (GetTarget().character != null)
+					if (Targeting.GetTarget().character != null)
 					{
-						_target = GetTarget().character;
+						_target = Targeting.GetTarget().character;
 					}
 				}*/
-				//_mousePos = GetMousePoint();
+				//_mousePos = Targeting.GetMousePoint();
 			}
 			yield return null;
 		}
@@ -121,7 +121,7 @@ public class IcyStream : Skill
 
 	protected override void ClearData()
 	{
-		ClearTarget();
+		Targeting.ClearTarget();
 		//_target = null;
 		StartCoroutine(TurnOff());
 		//_projectile.gameObject.SetActive(false);

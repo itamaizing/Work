@@ -432,266 +432,12 @@ public abstract class Skill : NetworkBehaviour
 
     //Targeting
     #region Targeting
-
-    #region Variables
-    protected Transform _tempTargetForDamage;
-    protected IDamageable _tempForDamage;
     protected IHealable _tempForHealing;
-    private Character _tempTargetbase;
-    private ITargetable _target;
-    private ITargetable _tempTarget;
     private Queue<TargetInfo> _targetInfoQueue = new();
-
-    #endregion Variables
-
-    #region Properties
-    public ITargetable TempTarget => _tempTarget;
-    public Transform TempTargetForDamage => _tempTargetForDamage;
-    public LayerMask TargetsLayers { get => _targetsLayers; protected set => _targetsLayers = value; }
     public Queue<TargetInfo> TargetInfoQueue { get => _targetInfoQueue; }
-    #endregion Properites
-
-    #region Events
-    public event Action<TargetInfo> TargetDataSaved;
-    public event Action<Vector3> ClickPoint;
-
-    #endregion Events
 
     public abstract void LoadTargetData(TargetInfo targetInfo);
 
-    #region Methods
-    #region Target
-    public ITargetable GetTarget(bool canGetDead = false)
-    {
-        if (_target != null)
-        {
-            if (!_target.IsTargetable && !canGetDead) return null;
-
-            return _target;
-        }
-        return null;
-    }
-    
-    public Character GetTargetCharacter(bool canGetDead = false)
-    {
-        if (_target != null)
-        {
-            if (!_target.IsTargetable && !canGetDead) return null;
-
-            return (Character)_target;
-        }
-        return null;
-    }
-
-    public void SetTargetCharacter(Character character)
-    {
-        if (character != null)
-            _target = character;
-    }
-
-    public void SetTarget(ITargetable character)
-    {
-        if (character != null)
-            _target = character;
-    }
-
-    public void ClearTarget()
-    {
-        _target = null;
-    }
-    #endregion target
-
-    #region TempTarget
-    public ITargetable GetTempTarget(bool canGetDead = false)
-    {
-        if (_tempTarget != null)
-        {
-            if (!_tempTarget.IsTargetable && !canGetDead) return null;
-
-            return _tempTarget;
-        }
-        return null;
-    }
-    public Character GetTempTargetCharacter(bool canGetDead = false)
-    {
-        if (_tempTarget != null)
-        {
-            if (!_tempTarget.IsTargetable && !canGetDead) return null;
-
-            return (Character)_tempTarget;
-        }
-        return null;
-    }
-    public void ClearTempTarget()
-    {
-        _tempTarget = null;
-    }
-    #endregion
-
-
-    protected void FindTarget(float radius, Vector3 point, bool canTargetHimself = false, bool canTargetDead = false) //Targeting.GetByPoint
-    {
-        if (canTargetDead)
-        {
-            if (GetCloserTargets(point, radius, canTargetHimself) != null)
-                _tempTarget = GetCloserTargets(point, radius, canTargetHimself)[0];
-        }
-        else
-        {
-            if (GetCloserTargets(point, radius, canTargetHimself) != null)
-                _tempTarget = GetCloserTargets(point, radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
-        }
-    }
-
-    protected void FindTarget(bool canTargetHimself = false, bool canTargetDead = false) //TargetLayer.GetByCursor
-    {
-        if (canTargetDead)
-        {
-            if (GetCloserTargets(GetMousePoint(), AreaInfo.Radius, canTargetHimself) != null)
-                _tempTarget = GetCloserTargets(GetMousePoint(), AreaInfo.Radius, canTargetHimself)[0];
-        }
-        else
-        {
-            if (GetCloserTargets(GetMousePoint(), AreaInfo.Radius, canTargetHimself) != null)
-                _tempTarget = GetCloserTargets(GetMousePoint(), AreaInfo.Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
-        }
-    }
-
-    protected void FindTargetCharacter(bool canTargetHimself = false, bool canTargetDead = false)
-    {
-        if (canTargetDead)
-        {
-            if (GetCloserTargets(GetMousePoint(), AreaInfo.Radius, canTargetHimself) != null)
-                _tempTarget = GetCloserTargetsCharacter(GetMousePoint(), AreaInfo.Radius, canTargetHimself)[0];
-        }
-        else
-        {
-            if (GetCloserTargets(GetMousePoint(), AreaInfo.Radius, canTargetHimself) != null)
-                _tempTarget = GetCloserTargetsCharacter(GetMousePoint(), AreaInfo.Radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
-        }
-    }
-
-    protected void FindTargetCharacter(float radius, Vector3 point, bool canTargetHimself = false, bool canTargetDead = false)
-    {
-        if (canTargetDead)
-        {
-            if (GetCloserTargets(point, radius, canTargetHimself) != null)
-                _tempTarget = GetCloserTargetsCharacter(GetMousePoint(), radius, canTargetHimself)[0];
-        }
-        else
-        {
-            if (GetCloserTargets(point, radius, canTargetHimself) != null)
-                _tempTarget = GetCloserTargetsCharacter(point, radius, canTargetHimself).FirstOrDefault(target => target.IsTargetable);
-        }
-    }
-
-    /* protected IDamageable GetRaycastTarget(bool isCanTargetHimself = false)
-     {
-         return _hero.TargetSeeker.GetRaycastTarget(this, isCanTargetHimself);
-     }*/
-
-    public List<ITargetable> GetCloserTargets(Vector3 position, float radius, bool isCanTargetHimself = false)
-    {
-        return _hero.TargetSeeker.GetCloserTargets(position, radius, isCanTargetHimself);
-    }
-
-    public List<Character> GetCloserTargetsCharacter(Vector3 position, float radius, bool isCanTargetHimself = false)
-    {
-        return _hero.TargetSeeker.GetCloserTargetsCharacter(position, radius, isCanTargetHimself);
-    }
-
-    protected bool IsTargetInRadius(float radius, Transform target)
-    {
-        if (target == null)
-            return false;
-
-        float distance = Vector3.Distance(target.position, transform.position);
-        return distance <= radius;
-    }
-
-    protected bool IsPointInRadius(float radius, Vector3 point)
-    {
-        float distance = Vector3.Distance(point, transform.position);
-        return distance <= radius;
-    }
-
-    protected bool NoObstacles(Vector3 target, Vector3 point, LayerMask obstacle)
-    {
-        if (target == Vector3.zero)
-            return true;
-
-        var vector = (target - point);
-        var dir = vector.normalized;
-        float distance = vector.magnitude;
-
-        RaycastHit[] rayHit = Physics.RaycastAll(point, dir, distance, obstacle);
-
-        if (rayHit.Length > 0)
-            return false;
-        else
-            return true;
-    }
-
-    protected bool NoObstacles(Vector3 target, LayerMask obstacle)
-    {
-        return NoObstacles(target, transform.position, obstacle);
-    }
-
-    protected bool NoObstacles()
-    {
-        if (_tempTargetbase != null)
-            return NoObstacles(_tempTargetbase.transform.position, transform.position, _obstacle);
-
-        return true;
-    }
-    
-    protected bool IsMouseInRadius(float radius)
-    {
-        float distance = Vector3.Distance(GetMousePoint(), transform.position);
-
-        return distance <= radius;
-    }
-
-    public Vector3 GetMousePoint() //добавить в Raycast() layerMask
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
-        {
-            if (autoAttack == AutoAttack.autoAttack)
-            {
-                if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed)
-                {
-                    if (hit.collider.TryGetComponent<IDamageable>(out _))
-                    {
-
-                        IsAutoMode = true;
-                        AutoModeChanged?.Invoke(true);
-                    }
-                }
-            }
-
-            return hit.point;
-        }
-        return Vector3.zero;
-    }
-
-    /*protected TargetToShot GetTarget(bool isCanTargetHimself = false)
-	{
-		return _hero.TargetSeeker.GetTarget(_click, ClickPoint, _skillType, AreaInfo.Radius, this, isCanTargetHimself);
-	}*/
-
-    protected ITargetable ClosedTarget(bool isCanTargetHimself = false)
-    {
-        return _hero.TargetSeeker.ClosedTarget(isCanTargetHimself);
-    }
-    
-    protected Character ClosedTargetCharacter(bool isCanTargetHimself = false)
-    {
-        return _hero.TargetSeeker.ClosedTargetCharacter(isCanTargetHimself);
-    }
-
-    // Done ^
     private bool IsValidTarget(IDamageable target) //оставить тут, сделать virutal?
     {
         if (target == null) return false;
@@ -710,8 +456,6 @@ public abstract class Skill : NetworkBehaviour
         if (_isCasting == false && _targetInfoQueue.TryPeek(out TargetInfo temp))
             LoadTargetData(temp);
     }
-    #endregion Methods
-
     #endregion Targeting
     //Targetning
 
@@ -1050,7 +794,7 @@ public abstract class Skill : NetworkBehaviour
             return false;
 
         LoadTargetDataForCheckCast();
-        if (IsHaveResources && IsCanCast && _isCasting == false && NoObstacles() && Hero.IsDead == false)
+        if (IsHaveResources && IsCanCast && _isCasting == false && Targeting.NoObstacles() && Hero.IsDead == false)
         {
             _isCasting = true;
              TryPayCost(IsPayCostStartCooldown);
@@ -1089,7 +833,7 @@ public abstract class Skill : NetworkBehaviour
             return false;
 
         LoadTargetDataForCheckCast();
-        if (IsHaveResources && _isCasting == false && NoObstacles() && Hero.IsDead == false)
+        if (IsHaveResources && _isCasting == false && Targeting.NoObstacles() && Hero.IsDead == false)
         {
             LoadTargetData(targetInfo);
 
@@ -1171,7 +915,7 @@ public abstract class Skill : NetworkBehaviour
                 CancelCoroutine(_prepareCoroutine);
                 _actionWrapperForPreparingCoroutine = null;
                 _isPreparing = false;
-                StopAutoDraw();
+                Renderer.HideSmartIndicator();
 
                 PreparingCanceled?.Invoke();
 
@@ -1179,7 +923,7 @@ public abstract class Skill : NetworkBehaviour
                 OnClickCanceled();
             }
 
-            _tempTargetbase = null;
+            //_tempTargetbase = null; => Targeting.Temporary = null?
 
             _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
             _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
@@ -1288,109 +1032,9 @@ public abstract class Skill : NetworkBehaviour
     #endregion
 
     #region Display Related
-    public void DrawDamageZone(Vector3 position)
-    {
-        Damage damage = new Damage
-        {
-            Value = Damage,
-            Type = DamageType,
-        };
-
-        _skillRender.CmdDrawDamageZone(position, AreaInfo.Area, damage, _hero.gameObject);
-    }
-
-    public void DrawDamageZoneClient(Vector3 position)
-    {
-        Damage damage = new Damage
-        {
-            Value = Damage,
-            Type = DamageType,
-        };
-
-        _skillRender.DrawDamageZone(position, AreaInfo.Area, damage, _hero.gameObject);
-    }
-
-    public void StopDamageZone()
-    {
-        _skillRender.CmdRemoveNextDamageZone();
-    }
-    
-    public void ClientStopDamageZone()
-    {
-        _skillRender.RemoveNextDamageZone();
-    }
-
     public virtual IEnumerator DynamicRendererJob(float time = 0.2f)
     {
         yield return null; //new WaitForSeconds(time);
-    }
-
-    protected virtual void StartAutoDraw()
-    {
-        Damage damage = new Damage
-        {
-            Value = Damage,
-            Type = DamageType,
-        };
-
-        if (_isAutoRadiusRender)
-            _skillRender.DrawRadius(AreaInfo.Radius);
-
-        if (_isAutoAreaRender)
-        {
-            _skillRender.DrawArea(AreaInfo.Area, damage, TargetsLayers);
-            _skillRender.StartDynamicRadiusColor(AreaInfo.Radius, this);
-        }
-
-        _skillRender.StartPreview(AreaInfo.Area, damage, TargetsLayers);
-
-        if (_isAutoLineRender)
-        {
-            Debug.Log("Auto line " + this, this);
-            _skillRender.DrawLine(AreaInfo.CastLength, AreaInfo.CastWidth, damage, TargetsLayers);
-        }
-
-        if (_skillType == SkillType.Target)
-        {
-            /* Debug.Log("DRAAAAAAAAAAW");
-             Character enemy = GetCloserTargets(transform.position, AreaInfo.Radius)[0];
-             Debug.Log(enemy.name);
-             enemy.SelectedCircle.IsActive = true;*/
-            _skillRender.DrawClosestTarget(AreaInfo.Radius, TargetsLayers, _hero);
-        }
-
-        if (_skillType == SkillType.Zone)
-        {
-            _skillRender.StartDrawLineForZone(this);
-        }
-    }
-
-    protected virtual void StopAutoDrawRadius() => _skillRender.StopDrawRadius(); //CtrR
-
-    protected virtual void StopAutoDraw() // В базовом - вызывать Renderer.StopSmartDraw
-    {
-        _skillRender.ResetCursor();
-        _skillRender.StopDrawRadius();
-        _skillRender.StopDrawArea();
-        _skillRender.StopDrawLine();
-        _skillRender.StopDrawClosestTarget();
-        _skillRender.StopDynamicRadiusColor();
-
-        _skillRender.StopPreview();
-        if(_dynamicRendererJob != null)
-            StopCoroutine(_dynamicRendererJob);
-
-        if (_skillType == SkillType.Zone)
-        {
-            _skillRender.StopDrawLineForZone();
-        }
-        
-
-        /*if (true)
-		{
-			Character enemy = GetCloserTargets(transform.position, AreaInfo.Radius)[0];
-			enemy.SelectedCircle.IsActive = false;
-		}*/
     }
     
     private void StartDynamicRenderer()
@@ -1455,7 +1099,7 @@ public abstract class Skill : NetworkBehaviour
 
         while (time < delayTime)
         {
-            if (NoObstacles() == false)
+            if (Targeting.NoObstacles() == false)
             {
                 TryCancel(true);
             }
@@ -1471,7 +1115,7 @@ public abstract class Skill : NetworkBehaviour
         PreparingStarted?.Invoke(this);
         _isPreparing = true;
         //ClearData();
-        StartAutoDraw();
+        Renderer.ShowSmartIndicator();
 
         if (_isDynamicRenderer)
         {
@@ -1500,9 +1144,9 @@ public abstract class Skill : NetworkBehaviour
         }
 
         PreparingSuccess?.Invoke(this);
-        ClearTempTarget();
+        Targeting.ClearTempTarget();
         _isPreparing = false;
-        StopAutoDraw();
+        Renderer.HideSmartIndicator();
 
         _prepareCoroutine = null;
     }
@@ -1529,7 +1173,7 @@ public abstract class Skill : NetworkBehaviour
             while (_isPlayCastAnim)
             {
                 //*
-                if (_tempForDamage != null && !IsValidTarget(_tempForDamage))
+                if (Targeting.ForDamage.Damageable != null && !IsValidTarget(Targeting.ForDamage.Damageable))
                 {
                     _isCanCancel = true;
                     _hero.Move.SetCanMove(true);
@@ -1570,10 +1214,10 @@ public abstract class Skill : NetworkBehaviour
         ClearData();
 
         /// test
-        if (_tempTargetForDamage != null && _tempTargetForDamage.TryGetComponent(out Character character))
+        if (Targeting.ForDamage != null && Targeting.ForDamage.Character != null)
         {
-            character.SelectedCircle.IsActive = false;
-            character.SelectedCircle.SwitchSelectCircle(false);
+            Targeting.ForDamage.Character.SelectedCircle.IsActive = false;
+            Targeting.ForDamage.Character.SelectedCircle.SwitchSelectCircle(false);
         }
 
         _hero.Move.StopLookAt();
@@ -1672,10 +1316,9 @@ public abstract class Skill : NetworkBehaviour
     {
         if (target == null) return;
 
-        if (_tempTargetForDamage != target.transform)
+        if (Targeting.ForDamage.Transform != target.transform)
         {
-            _tempTargetForDamage = target.transform;
-            _tempForDamage = target.GetComponent<IDamageable>();
+            Targeting.ForDamage = new TargetData(target);
         }
 
         if (target == null)
@@ -1696,9 +1339,9 @@ public abstract class Skill : NetworkBehaviour
     [Command]
     public void CmdApplyHeal(Heal heal, GameObject hp, Skill skill, string sourceName)
     {
-        if (_tempTargetForDamage != hp.transform)
+        if (Targeting.ForDamage.Transform != hp.transform)
         {
-            _tempTargetForDamage = hp.transform;
+            Targeting.ForDamage = new TargetData(hp);
             _tempForHealing = hp.GetComponent<IHealable>();
         }
 

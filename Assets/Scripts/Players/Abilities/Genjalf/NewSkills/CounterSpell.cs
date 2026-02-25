@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -16,7 +16,7 @@ public class CounterSpell : Skill
 
     private bool CheckCanCast()
     {
-        return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius && GetTargetCharacter() != null;
+        return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.GetTarget().Character != null;
     }
 
     public void AnimCastLight()
@@ -32,24 +32,24 @@ public class CounterSpell : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if(targetInfo.GetTargets().Count > 0 && targetInfo.GetTargets()[0] != null)
-            SetTarget(targetInfo.GetTargets()[0]);
+            Targeting.SetTarget(targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() != null)
+        if (Targeting.GetTarget().Character != null)
         {
-            CmdState(GetTargetCharacter().gameObject, 5);
-            GetTargetCharacter().Abilities.CancleAllSkills();
+            CmdState(Targeting.GetTarget().Character.gameObject, 5);
+            Targeting.GetTarget().Character.Abilities.CancleAllSkills();
 
-            //ClearTarget();
+            //Targeting.ClearTarget();
         }
         yield return null;
     }
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
     }
 
@@ -57,18 +57,18 @@ public class CounterSpell : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (GetTempTarget() == null)
+        while (Targeting.GetTempTarget().Targetable == null)
         {
             if (GetMouseButton)
             {
-                FindTarget();
+                Targeting.FindTempTarget();
             }
             yield return null;
         }
-        SetTarget(GetTempTarget());
-        ClearTempTarget();
+        Targeting.SetTarget(Targeting.GetTempTarget().Targetable);
+        Targeting.ClearTempTarget();
 
-        targetInfo.AddTarget(GetTargetCharacter());
+        targetInfo.AddTarget(Targeting.GetTarget().Character);
         callbackDataSaved(targetInfo);
     }
 

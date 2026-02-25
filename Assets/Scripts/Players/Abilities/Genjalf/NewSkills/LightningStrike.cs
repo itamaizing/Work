@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -16,7 +16,7 @@ public class LightningStrike : Skill
 
     private bool CheckCanCast()
     {
-        return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius && GetTargetCharacter() != null;
+        return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.GetTarget().Character != null;
     }
 
     public void AnimCastLight()
@@ -31,34 +31,34 @@ public class LightningStrike : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() != null)
+        if (Targeting.GetTarget().Character != null)
         {
             Damage damage = new Damage
             {
                 Value = Buff.Damage.GetBuffedValue(Damage),
                 Type = DamageType
             };
-            CmdApplyDamage(damage, GetTargetCharacter().gameObject);
+            CmdApplyDamage(damage, Targeting.GetTarget().Character.gameObject);
 
-            CmdCreateParticle(GetTargetCharacter().Position);
+            CmdCreateParticle(Targeting.GetTarget().Character.Position);
 
             if (UnityEngine.Random.Range(1, 100) <= _debuffChance)
             {
-                GetTargetCharacter().CharacterState.AddState(States.Discharge, 2, 0, Hero.gameObject, name);
+                Targeting.GetTarget().Character.CharacterState.AddState(States.Discharge, 2, 0, Hero.gameObject, name);
             }
-            ClearTarget();
+            Targeting.ClearTarget();
         }
         yield return null;
     }
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
     }
 
@@ -66,16 +66,16 @@ public class LightningStrike : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (GetTargetCharacter() == null)
+        while (Targeting.GetTarget().Character == null)
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter();
+                Targeting.FindTempTarget();
             }
             yield return null;
         }
 
-        targetInfo.AddTarget(GetTargetCharacter());
+        targetInfo.AddTarget(Targeting.GetTarget().Character);
         callbackDataSaved(targetInfo);
     }
 

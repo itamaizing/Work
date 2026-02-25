@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -84,7 +84,7 @@ public class MagicDefense : Skill
 			if (GetMouseButton)
 			{
 			//	_target = GetRaycastTarget(true);
-				_position = GetMousePoint();
+				_position = Targeting.GetMousePoint();
 			}
 			yield return null;
 		}

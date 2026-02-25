@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -30,7 +30,7 @@ public class IceCloud : Skill
 	{
 		get
 		{
-			if (GetTargetCharacter() != null) return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius;
+			if (Targeting.GetTarget().Character != null) return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
 
 			else return true;
 		}
@@ -53,7 +53,7 @@ public class IceCloud : Skill
     private void HandleSkillCanceled()
     {
 		CanMoveIceCloud();
-		ClearTarget();
+		Targeting.ClearTarget();
 		_mousePos = Vector3.positiveInfinity;
 	}
 
@@ -75,7 +75,7 @@ public class IceCloud : Skill
 
 		CmdCreateProjecttile(angle, energyToUse, lookDir.normalized);
 
-		ClearTarget();
+		Targeting.ClearTarget();
 		_mousePos = Vector2.positiveInfinity;
 		ClearData();
 	}
@@ -124,7 +124,7 @@ public class IceCloud : Skill
 	public override void LoadTargetData(TargetInfo targetInfo)
 	{
 		if (targetInfo.Points.Count > 0) _mousePos = targetInfo.Points[0];
-		if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
+		if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
 	}
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -133,30 +133,30 @@ public class IceCloud : Skill
 		{
 			if (GetMouseButton)
 			{
-				if(GetTargetCharacter() == null) yield return null;
-				if (GetTargetCharacter() != null)
+				if(Targeting.GetTarget().Character == null) yield return null;
+				if (Targeting.GetTarget().Character != null)
 				{
 					float distance = Vector3.Distance(_hero.transform.position, _mousePos);
 
-					if (distance <= AreaInfo.Radius) _mousePos2 = GetTargetCharacter().transform.position;
+					if (distance <= AreaInfo.Radius) _mousePos2 = Targeting.GetTarget().Character.transform.position;
 
 					else
 					{
-						//FindTarget();
+						//Targeting.FindTempTarget();
 
-						//_target = GetTarget().character;
+						//_target = Targeting.GetTarget().character;
 						Damage = _baseDamage + _energy.CurrentValue / EnergyPerDamageUnit;
-						_mousePos2 = GetTargetCharacter().transform.position;
+						_mousePos2 = Targeting.GetTarget().Character.transform.position;
 					}
 				}
 
-				else _mousePos2 = GetMousePoint();
+				else _mousePos2 = Targeting.GetMousePoint();
 			}
 			yield return null;
 		}        
 
         TargetInfo targetInfo = new TargetInfo();
-		if (GetTargetCharacter() != null) targetInfo.Points.Add(GetTargetCharacter().Position);
+		if (Targeting.GetTarget().Character != null) targetInfo.Points.Add(Targeting.GetTarget().Character.Position);
 		else if (_mousePos2 != Vector3.positiveInfinity) targetInfo.Points.Add(_mousePos2);
 		callbackDataSaved(targetInfo);
 
@@ -172,7 +172,7 @@ public class IceCloud : Skill
 
 	protected override void ClearData()
 	{
-		ClearTarget();
+		Targeting.ClearTarget();
 		_mousePos = Vector2.positiveInfinity;
 		//_enabled = false;
 	}
@@ -189,4 +189,5 @@ public class IceCloud : Skill
 
 	public void CanMoveIceCloud() => Hero.Move.SetCanMove(true);
 	public void StopMoveIceCloud() => Hero.Move.SetCanMove(false);
-}
+}
+

@@ -16,21 +16,36 @@ public class AreaComponent : BaseSkillComponent
     #endregion
 
     #region Properties
-    public float Radius {
+    public float Radius
+    {
         get { return _skillAttributes.Attributes[SkillAttributeName.Radius].GetValue(); }
         set { _skillAttributes.Attributes[SkillAttributeName.Radius].SetBaseValue(value); }
     }
-    public float Area {
+    public float Area
+    {
         get { return _skillAttributes.Attributes[SkillAttributeName.Area].GetValue(); }
         set { _skillAttributes.Attributes[SkillAttributeName.Area].SetBaseValue(value); }
     }
-    public float CastLength {
+    public float CastLength
+    {
         get { return _skillAttributes.Attributes[SkillAttributeName.Length].GetValue(); }
         set { _skillAttributes.Attributes[SkillAttributeName.Length].SetBaseValue(value); }
     }
-    public float CastWidth {
+    public float CastWidth
+    {
         get { return _skillAttributes.Attributes[SkillAttributeName.Width].GetValue(); }
         set { _skillAttributes.Attributes[SkillAttributeName.Width].SetBaseValue(value); }
+    }
+    #endregion
+
+    #region Methods
+    public override void Init(Skill skill)
+    {
+        base.Init(skill);
+        Radius = _radius;
+        Area = _area;
+        CastLength = _castLength;
+        CastWidth = _castWidth;
     }
     #endregion
 }

@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -90,7 +90,7 @@ namespace Gangdollarff
             while (targetInfo.Points.Count != 1)
             {
                 if (GetMouseButton)
-                    targetInfo.Points.Add(GetMousePoint());
+                    targetInfo.Points.Add(Targeting.GetMousePoint());
 
                 yield return null;
             }
@@ -100,9 +100,9 @@ namespace Gangdollarff
             while (targetInfo.Points.Count != 2)
             {
                 if (Input.GetMouseButton(0))
-                    targetInfo.Points.Add(GetMousePoint());
+                    targetInfo.Points.Add(Targeting.GetMousePoint());
 
-                //_lineRenderer.SetPosition(1, GetMousePoint() + Vector3.up / 10);
+                //_lineRenderer.SetPosition(1, Targeting.GetMousePoint() + Vector3.up / 10);
                 yield return null;
             }
             callbackDataSaved.Invoke(targetInfo);

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -34,10 +34,10 @@ public class FlowOfLight : Skill
     #endregion
 
     protected override bool IsCanCast =>
-		GetTargetCharacter() != null &&
-        Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius &&
-        NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle) &&
-        ((isLightMode && IsAllyTarget(GetTargetCharacter())) || (!isLightMode && IsEnemyTarget(GetTargetCharacter())));
+		Targeting.GetTarget().Character != null &&
+        Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius &&
+        Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle) &&
+        ((isLightMode && IsAllyTarget(Targeting.GetTarget().Character)) || (!isLightMode && IsEnemyTarget(Targeting.GetTarget().Character)));
 
     private void OnEnable()
     {
@@ -109,30 +109,30 @@ public class FlowOfLight : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
-        while (GetTempTargetCharacter() == null)
+        while (Targeting.GetTempTarget().Character == null)
         {
             if (GetMouseButton)
             {
-                FindTarget();
+                Targeting.FindTempTarget();
             }
             yield return null;
         }
-        SetTarget(GetTempTargetCharacter());
+        Targeting.SetTarget(Targeting.GetTempTarget().Character);
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTargetCharacter());
+        targetInfo.AddTarget(Targeting.GetTarget().Character);
         targetDataSavedCallback(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() == null || !IsCanCast)
+        if (Targeting.GetTarget().Character == null || !IsCanCast)
         {
             TryCancel();
             yield break;
         }
 
         TryPayCost();
-        CmdSpawnEffect(gameObject, GetTargetCharacter().gameObject);
+        CmdSpawnEffect(gameObject, Targeting.GetTarget().Character.gameObject);
 
         float elapsed = 0f;
         float interval = 1f;
@@ -144,9 +144,9 @@ public class FlowOfLight : Skill
 
         while (elapsed < CastStreamDuration)
         {
-            if (GetTargetCharacter() == null || !GetTargetCharacter().gameObject.activeSelf ||
+            if (Targeting.GetTarget().Character == null || !Targeting.GetTarget().Character.gameObject.activeSelf ||
                 Input.GetMouseButtonDown(1) ||
-                Vector3.Distance(transform.position, GetTargetCharacter().transform.position) > AreaInfo.Radius ||
+                Vector3.Distance(transform.position, Targeting.GetTarget().Character.transform.position) > AreaInfo.Radius ||
                 Vector3.Distance(transform.position, initialPosition) > maxMoveDistance ||
                 (manaResource != null && manaResource.CurrentValue < 1f))
             {
@@ -164,14 +164,14 @@ public class FlowOfLight : Skill
 
             if (elapsed % interval < Time.deltaTime)
             {
-                if (isLightMode && IsAllyTarget(GetTargetCharacter()))
+                if (isLightMode && IsAllyTarget(Targeting.GetTarget().Character))
                 {
                     Heal heal = new Heal { Value = tickValue };
-                    CmdApplyHeal(heal, GetTargetCharacter().gameObject, this, Name);
-                    TryApplyExtraState(GetTargetCharacter());
-                    ApplySpiritBuff(GetTargetCharacter());
+                    CmdApplyHeal(heal, Targeting.GetTarget().Character.gameObject, this, Name);
+                    TryApplyExtraState(Targeting.GetTarget().Character);
+                    ApplySpiritBuff(Targeting.GetTarget().Character);
                 }
-                else if (!isLightMode && IsEnemyTarget(GetTargetCharacter()))
+                else if (!isLightMode && IsEnemyTarget(Targeting.GetTarget().Character))
                 {
                     Damage damage = new Damage
                     {
@@ -179,9 +179,9 @@ public class FlowOfLight : Skill
                         Type = DamageType,
                         School = School
                     };
-                    CmdApplyDamage(damage, GetTargetCharacter().gameObject);
-                    TryApplyExtraState(GetTargetCharacter());
-                    ApplySpiritBuff(GetTargetCharacter());
+                    CmdApplyDamage(damage, Targeting.GetTarget().Character.gameObject);
+                    TryApplyExtraState(Targeting.GetTarget().Character);
+                    ApplySpiritBuff(Targeting.GetTarget().Character);
                 }
             }
 
@@ -199,7 +199,7 @@ public class FlowOfLight : Skill
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         _hero.Move.StopLookAt();
         CmdDestroyEffect();
     }
@@ -207,7 +207,7 @@ public class FlowOfLight : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0)
-            SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+            Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 
     [Command] private void CmdCrossFade() => _hero.Animator.CrossFade("FlowSpellEnd", 0.1f);

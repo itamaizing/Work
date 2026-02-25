@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -58,7 +58,7 @@ public class GrabTongue : Skill
             //{
             //    _target = GetRaycastTarget();
             //    Debug.Log($"GrabTongue / PrepareJob / _target == {_target}");
-            //    _mousePosition = GetMousePoint();
+            //    _mousePosition = Targeting.GetMousePoint();
 
             //    if (Vector3.Distance(_startPosition, _mousePosition) <= AreaInfo.Radius)
             //    {

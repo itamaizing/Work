@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using Mirror;
 using System;
@@ -45,7 +45,7 @@ public class ChainBlade : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => chainBladeStart;
 
-    protected override bool IsCanCast => Vector3.Distance(_clickPoint, transform.position) <= AreaInfo.CastLength && NoObstacles(_clickPoint, transform.position, _obstacle);
+    protected override bool IsCanCast => Vector3.Distance(_clickPoint, transform.position) <= AreaInfo.CastLength && Targeting.NoObstacles(_clickPoint, transform.position, _obstacle);
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     public float DamageRange => UnityEngine.Random.Range(_minDamage, _maxDamage);
@@ -92,26 +92,26 @@ public class ChainBlade : Skill
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter(SearchTargetInRadius, GetMousePoint());
+                Targeting.FindTempTarget(Targeting.GetMousePoint(), SearchTargetInRadius);
 
-                if (GetTempTargetCharacter() != null)
+                if (Targeting.GetTempTarget().Character != null)
                 {
-                    if (IsAllyTarget(GetTempTargetCharacter()) || GetTempTargetCharacter() == Hero) ClearTempTarget();
+                    if (IsAllyTarget(Targeting.GetTempTarget().Character) || Targeting.GetTempTarget().Character == Hero) Targeting.ClearTempTarget();
 
                     else
                     {
                         float distance = Vector3.Distance(_hero.transform.position, targetPoint);
 
-                        if (distance <= AreaInfo.Radius) targetPoint = GetTempTargetCharacter().transform.position;
+                        if (distance <= AreaInfo.Radius) targetPoint = Targeting.GetTempTarget().Character.transform.position;
 
                         else
                         {
-                            targetPoint = GetTempTargetCharacter().transform.position;
+                            targetPoint = Targeting.GetTempTarget().Character.transform.position;
                         }
                     }
                 }
 
-                else targetPoint = GetMousePoint();
+                else targetPoint = Targeting.GetMousePoint();
             }
 
             yield return null;
@@ -184,8 +184,8 @@ public class ChainBlade : Skill
     protected override void ClearData()
     {
         _clickPoint = Vector3.positiveInfinity;
-        ClearTarget();
-        ClearTempTarget();
+        Targeting.ClearTarget();
+        Targeting.ClearTempTarget();
     }
 
     public void ChainBladeCast()

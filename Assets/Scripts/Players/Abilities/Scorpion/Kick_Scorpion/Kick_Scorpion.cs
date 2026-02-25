@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using Mirror;
 using System;
@@ -41,7 +41,7 @@ public class Kick_Scorpion : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => KickTrigger;
 
-    protected override bool IsCanCast => GetTarget() != null && Vector3.Distance(GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
+    protected override bool IsCanCast => Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Transform.position, transform.position, _obstacle);
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     public float DamageRange => UnityEngine.Random.Range(_minDamage, _maxDamage);
@@ -58,8 +58,8 @@ public class Kick_Scorpion : Skill
     private void HandleSkillCanceled()
     {
         _wasDamageApplied = false;
-        ClearTarget();
-        ClearTempTarget();
+        Targeting.ClearTarget();
+        Targeting.ClearTempTarget();
         //_target = null;
         Hero.Move.StopLookAt();
         _hero.Move.SetCanMove(true);
@@ -71,7 +71,7 @@ public class Kick_Scorpion : Skill
     {
         if (_hero == null || _hero.Move == null) return;
 
-        var target = GetTargetCharacter() != null ? GetTargetCharacter() : _lastTarget;
+        var target = Targeting.GetTarget().Character != null ? Targeting.GetTarget().Character : _lastTarget;
         if (target == null)
         {
             _hero.Move.StopLookAt();
@@ -91,7 +91,7 @@ public class Kick_Scorpion : Skill
             return;
         }
 
-        _hero.Move.LookAtPosition(GetTargetCharacter().transform.position);
+        _hero.Move.LookAtPosition(Targeting.GetTarget().Character.transform.position);
     }
 
     public void Kick_ScorpionMoveTrue()
@@ -102,27 +102,27 @@ public class Kick_Scorpion : Skill
 
     private bool IsTargetInRange()
     {
-        return Vector3.Distance(_playerLinks.transform.position, GetTargetCharacter().transform.position) <= AreaInfo.Radius;
+        return Vector3.Distance(_playerLinks.transform.position, Targeting.GetTarget().Character.transform.position) <= AreaInfo.Radius;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         _wasDamageApplied = false;
 
-        while (GetTempTarget() == null)
+        while (Targeting.GetTempTarget().Targetable == null)
         {
             if (GetMouseButton)
             {
-                FindTarget(SearchTargetInRadius, GetMousePoint());
+                Targeting.FindTempTarget(Targeting.GetMousePoint(), SearchTargetInRadius);
 
-                if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
+                if (Targeting.GetTempTarget().Targetable != null && Targeting.GetTempTarget().Targetable is IDamageable damageable)
                 {
-                    if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
 
                     else
                     {
-                        _hero.Move.LookAtTransform(GetTempTarget().Transform);
-                        if (GetTempTarget() is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        _hero.Move.LookAtTransform(Targeting.GetTempTarget().Targetable.Transform);
+                        if (Targeting.GetTempTarget().Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
                         break;
                     }
                 }
@@ -130,23 +130,23 @@ public class Kick_Scorpion : Skill
             yield return null;
         }
 
-        SetTarget(GetTempTarget());
+        Targeting.SetTarget(Targeting.GetTempTarget().Targetable);
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTarget());
+        targetInfo.AddTarget(Targeting.GetTarget().Targetable);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() == null) yield return null;
+        if (Targeting.GetTarget() == null) yield return null;
         if (!IsTargetInRange()) yield return null;
 
-        if (_lastTarget != null && _lastTarget != GetTarget() as Character) _comboCounter.ResetCounter();
+        if (_lastTarget != null && _lastTarget != Targeting.GetTarget().Character as Character) _comboCounter.ResetCounter();
 
         if (_hitsInRowCoroutine != null) StopCoroutine(_hitsInRowCoroutine);
 
-        _lastTarget = GetTarget() as Character;
+        _lastTarget = Targeting.GetTarget().Character;
 
         ApplyAttackDamageKick();
     }
@@ -154,8 +154,8 @@ public class Kick_Scorpion : Skill
     private void ApplyAttackDamageKick()
     {
         if (_wasDamageApplied) return;
-        if (GetTarget() == null) return;
-        if (Vector2.Distance(_lastTarget.transform.position, GetTarget().Transform.position) > AreaInfo.Radius) return;
+        if (Targeting.GetTarget() == null) return;
+        if (Vector2.Distance(_lastTarget.transform.position, Targeting.GetTarget().Transform.position) > AreaInfo.Radius) return;
 
         Damage damage = new Damage
         {
@@ -165,7 +165,7 @@ public class Kick_Scorpion : Skill
 
         _wasDamageApplied = true;
 
-        if (GetTarget() is IDamageable damageable) CmdApplyDamage(damageable.gameObject, damage);
+        if (Targeting.GetTarget() is IDamageable damageable) CmdApplyDamage(damageable.gameObject, damage);
     }
 
     private IEnumerator HitsInRowTimer()
@@ -270,16 +270,16 @@ public class Kick_Scorpion : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0]);
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
     }
 
     protected override void ClearData()
     {
         _wasDamageApplied = false;
-        ClearTarget();
-        ClearTempTarget();
+        Targeting.ClearTarget();
+        Targeting.ClearTempTarget();
         _hero.Move.StopLookAt();
         AnimCastEnded();
         if (_hitsInRowCoroutine != null) StopCoroutine(_hitsInRowCoroutine);
     }
-}
+}

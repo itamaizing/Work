@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -21,7 +21,7 @@ namespace Gangdollarff.AirElemental
         private bool CheckCanCast()
         {
             return
-                   Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius;
+                   Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
         }
 
         public void AnimCastLight()
@@ -36,12 +36,12 @@ namespace Gangdollarff.AirElemental
 
         public override void LoadTargetData(TargetInfo targetInfo)
         {
-            SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+            Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
         }
 
         protected override IEnumerator CastJob()
         {
-            if (GetTargetCharacter() != null)
+            if (Targeting.GetTarget().Character != null)
             {
                 Damage damage = new Damage
                 {
@@ -49,13 +49,13 @@ namespace Gangdollarff.AirElemental
                     Type = DamageType,
                     PhysicAttackType = AttackRangeType,
                 };
-                CmdApplyDamage(damage, GetTargetCharacter().gameObject);
+                CmdApplyDamage(damage, Targeting.GetTarget().Character.gameObject);
 
-                CmdCreateParticle(GetTargetCharacter().Position);
+                CmdCreateParticle(Targeting.GetTarget().Character.Position);
 
                 if (UnityEngine.Random.Range(1, 100) <= _debuffChance)
                 {
-					GetTargetCharacter().CharacterState.AddState(States.Discharge, 2, 0, Hero.gameObject, name);
+					Targeting.GetTarget().Character.CharacterState.AddState(States.Discharge, 2, 0, Hero.gameObject, name);
                 }
             }
             yield return null;
@@ -63,7 +63,7 @@ namespace Gangdollarff.AirElemental
 
         protected override void ClearData()
         {
-            ClearTarget();
+            Targeting.ClearTarget();
             //_target = null;
         }
 
@@ -71,17 +71,17 @@ namespace Gangdollarff.AirElemental
         {
             TargetInfo targetInfo = new TargetInfo();
 
-            while (GetTargetCharacter() == null)
+            while (Targeting.GetTarget().Character == null)
             {
                 if (GetMouseButton)
                 {
-                    FindTargetCharacter();
+                    Targeting.FindTempTarget();
                //     _target = GetRaycastTarget();
                 }
                 yield return null;
             }
 
-            targetInfo.AddTarget(GetTargetCharacter());
+            targetInfo.AddTarget(Targeting.GetTarget().Character);
             callbackDataSaved(targetInfo);
         }
 

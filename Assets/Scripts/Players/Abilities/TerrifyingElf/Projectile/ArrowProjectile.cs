@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -51,7 +51,7 @@ public class ArrowProjectile : Projectiles
 
     private bool IsEnemyByLayer(GameObject target)
     {
-        return ((1 << target.layer) & _skill.TargetsLayers.value) != 0;
+        return ((1 << target.layer) & _skill.Targeting.Layer.value) != 0;
     }
 
     private void Update()

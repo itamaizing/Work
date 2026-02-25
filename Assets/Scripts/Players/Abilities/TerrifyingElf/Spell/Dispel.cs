@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -8,19 +8,19 @@ public class Dispel : Skill
     //private Character _target;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
 
-    protected override bool IsCanCast => GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius;
+    protected override bool IsCanCast => Targeting.GetTarget().Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("Dispel");
     protected override int AnimTriggerCast => 0;
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (float.IsPositiveInfinity(_targetPoint.x) && GetTargetCharacter() == null)
+        while (float.IsPositiveInfinity(_targetPoint.x) && Targeting.GetTarget().Character == null)
         {
             if (GetMouseButton)
             {
-                _targetPoint = GetMousePoint();
-                FindTargetCharacter();
+                _targetPoint = Targeting.GetMousePoint();
+                Targeting.FindTempTarget();
                 //_target = GetNearestTargetInRadius();
             }
             yield return null;
@@ -33,11 +33,11 @@ public class Dispel : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() == null) yield break;
+        if (Targeting.GetTarget().Character == null) yield break;
 
-        if (GetTargetCharacter() is MinionComponent minionTarget) ApplyDamageToMinion(minionTarget);
+        if (Targeting.GetTarget().Character is MinionComponent minionTarget) ApplyDamageToMinion(minionTarget);
 
-        var targetCharacter = GetTargetCharacter().GetComponent<CharacterState>();
+        var targetCharacter = Targeting.GetTarget().Character.GetComponent<CharacterState>();
         if (targetCharacter != null)
         {
             //CmdDispelState(targetCharacter, _target.NetworkSettings.TeamIndex, Hero.NetworkSettings.TeamIndex);
@@ -49,7 +49,7 @@ public class Dispel : Skill
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
     }
 
@@ -73,7 +73,7 @@ public class Dispel : Skill
 
     private Character GetNearestTargetInRadius()
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius, TargetsLayers);
+        Collider[] colliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.Layer);
         Character nearestTarget = null;
         float shortestDistance = AreaInfo.Radius;
 

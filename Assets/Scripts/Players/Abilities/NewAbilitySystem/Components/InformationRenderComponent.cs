@@ -24,7 +24,7 @@ public class InformationRenderComponent : BaseSkillComponent
     #endregion
 
     #region Methods
-    public void DrawAOEIndicator(Vector3 position, bool isCommand)
+    public void ShowAOEIndicator(Vector3 position, bool isCommand=false)
     {
         Damage damage = new Damage
         {
@@ -42,7 +42,7 @@ public class InformationRenderComponent : BaseSkillComponent
         }
     }
 
-    public void StopDamageZone(bool isCommand)
+    public void HideAOEIndicator(bool isCommand=false)
     {
         if (isCommand)
         {
@@ -54,7 +54,7 @@ public class InformationRenderComponent : BaseSkillComponent
         }
     }
 
-    public void StartSmartDraw() //TODO: в _skill воткнуть "smartDraw". По умолчанию он вызывает это, но можно переопределить
+    public void ShowSmartIndicator() //TODO: в _skill воткнуть "smartDraw". По умолчанию он вызывает это, но можно переопределить
     {
         Damage damage = new Damage
         {
@@ -90,7 +90,7 @@ public class InformationRenderComponent : BaseSkillComponent
         }
     }
 
-    protected virtual void StopSmartDraw()
+    public void HideSmartIndicator()
     {
         _skill.SkillRender.ResetCursor();
         _skill.SkillRender.StopDrawRadius();

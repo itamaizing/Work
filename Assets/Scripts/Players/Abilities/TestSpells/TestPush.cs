@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -18,7 +18,7 @@ public class TestPush : Skill
             if (_target == null)
                 return false;
 
-            return NoObstacles(_target.transform.position, _obstacle) && IsTargetInRadius(AreaInfo.Radius, _target.transform); ;
+            return Targeting.NoObstacles(_target.transform.position, _obstacle) && Targeting.IsTargetInRadius(AreaInfo.Radius, _target.transform); ;
         }
     }
 

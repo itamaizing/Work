@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using UnityEngine;
 using System.Collections;
 using System;
@@ -174,18 +174,18 @@ public class TerrifyingElfAura : NetworkBehaviour
             return;
 
         var character = currentSkill.Hero;
-        var targets = currentSkill.GetCloserTargetsCharacter(currentSkill.transform.position, currentSkill.AreaInfo.Radius);
+        var targets = currentSkill.Targeting.GetClosestTargets(currentSkill.transform.position, currentSkill.AreaInfo.Radius);
         if (targets == null || targets.Count == 0) return;
 
         foreach (var target in targets)
         {
-            if (target != null && target.CharacterState.CheckForState(States.HuntressMark))
+            if (target != null && target.Character.CharacterState.CheckForState(States.HuntressMark))
             {
                 bool isCalmnessChance = UnityEngine.Random.Range(0f, 100f) <= calmnessChance;
 
                 if (isCalmnessChance)
                 {
-                    character.CharacterState.CmdAddState(States.Calmness, durationCalmess, 0f, target.gameObject, currentSkill.Name);
+                    character.CharacterState.CmdAddState(States.Calmness, durationCalmess, 0f, target.Character.gameObject, currentSkill.Name);
 
                     if (treeRadiusCalmessTalent)
                     {

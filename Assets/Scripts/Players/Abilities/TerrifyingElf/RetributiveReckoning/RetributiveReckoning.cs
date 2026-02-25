@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -14,7 +14,7 @@ public class RetributiveReckoning : AutoAttackSkill
     private Coroutine _disactiveResetCoroutine;
     private bool _isTeleporting;
 
-    protected override bool IsCanCast => _lastAttacker != null && IsTargetInRadius(AreaInfo.Radius, _lastAttacker.transform);
+    protected override bool IsCanCast => _lastAttacker != null && Targeting.IsTargetInRadius(AreaInfo.Radius, _lastAttacker.transform);
     protected override int AnimTriggerAutoAttack => 0;
     protected override int AnimTriggerCastDelay => Animator.StringToHash("RetributiveReckoningCastDelay");
 
@@ -58,7 +58,7 @@ public class RetributiveReckoning : AutoAttackSkill
     {
         while (!Disactive)
         {
-            if (_lastAttacker != null && IsTargetInRadius(AreaInfo.Radius, _lastAttacker.transform))
+            if (_lastAttacker != null && Targeting.IsTargetInRadius(AreaInfo.Radius, _lastAttacker.transform))
             {
                 if (IsAutoattackMode)
                 {
@@ -81,7 +81,7 @@ public class RetributiveReckoning : AutoAttackSkill
             yield break;
         }
 
-        if (!IsTargetInRadius(AreaInfo.Radius, _lastAttacker.transform))
+        if (!Targeting.IsTargetInRadius(AreaInfo.Radius, _lastAttacker.transform))
         {
             yield break;
         }

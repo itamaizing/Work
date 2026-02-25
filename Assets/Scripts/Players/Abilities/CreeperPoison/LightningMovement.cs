@@ -1,4 +1,4 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using Mirror;
 using System;
 using System.Collections;
@@ -67,11 +67,11 @@ public class LightningMovement : Skill
         {
             if (GetMouseButton)
             {
-                Vector3 clickedPoint = GetMousePoint();
+                Vector3 clickedPoint = Targeting.GetMousePoint();
 
-                if (IsPointInRadius(AreaInfo.Radius, clickedPoint))
+                if (Targeting.IsPointInRadius(AreaInfo.Radius, clickedPoint))
                 {
-                    _leapPoint = CalculateLeapPoint(GetMousePoint());
+                    _leapPoint = CalculateLeapPoint(Targeting.GetMousePoint());
                 }
             }
 
@@ -130,7 +130,7 @@ public class LightningMovement : Skill
             elapsed += Time.deltaTime;
             if (Input.GetMouseButtonDown(0) && !_hasSecondLeap)
             {
-                _secondLeapPoint = CalculateLeapPoint(GetMousePoint());
+                _secondLeapPoint = CalculateLeapPoint(Targeting.GetMousePoint());
                  
                 if (!HasObstaclesBetween(_player.transform.position, _secondLeapPoint)) secondLeapRequested = true;
                 else _secondLeapPoint = Vector3.positiveInfinity;
@@ -179,7 +179,7 @@ public class LightningMovement : Skill
                     if (_player.Abilities.SelectedSkills.Contains(_lightningStrikes) && _lightningStrikes.IsPreparing)
                     {
                         _lightningStrikes.OnLightningStrikesEnd += HandleLightningStrikesEnd;
-                        _lightningStrikes.SetTarget((ITargetable)character);
+                        _lightningStrikes.Targeting.SetTarget((ITargetable)character);
                         _lightningStrikes.TryCast();
                         _creeperStrike.DamageDeal(character);
                         _damagedCharacter = character;
@@ -189,7 +189,7 @@ public class LightningMovement : Skill
                     if (_player.Abilities.SelectedSkills.Contains(_poisonSlap) && _poisonSlap.IsPreparing)
                     {
                         _poisonSlap.OnPoisonSlapEnd += HandlePoisonSlapEnd;
-                        _poisonSlap.SetTarget((ITargetable)character);
+                        _poisonSlap.Targeting.SetTarget((ITargetable)character);
                         _poisonSlap.TryCast();
                         _creeperStrike.DamageDeal(character);
                         _damagedCharacter = character;
@@ -197,7 +197,7 @@ public class LightningMovement : Skill
                     }
 
                     _creeperStrike.OnCreeperStrikeEnd += HandleCreeperStrikeEnd;
-                    _creeperStrike.SetTarget((ITargetable)character);
+                    _creeperStrike.Targeting.SetTarget((ITargetable)character);
                     _creeperStrike.TryCast();
                     _damagedCharacter = character;
                 }
@@ -231,4 +231,4 @@ public class LightningMovement : Skill
         _lightningStrikes.ClearDataLightningStrikes();
         _lightningStrikes.OnLightningStrikesEnd -= HandleLightningStrikesEnd;
     }
-}
+}

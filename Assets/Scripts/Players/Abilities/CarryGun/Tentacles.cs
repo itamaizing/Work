@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using Mirror;
 using UnityEngine.SceneManagement;
@@ -52,7 +52,7 @@ public class Tentacles : Skill
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("Spell");
     protected override int AnimTriggerCast => 0;
-    protected override bool IsCanCast => (GetTargetCharacter() != null || _isClickedOnGround) && _spawnPoint != Vector3.positiveInfinity && IsCanRadius();
+    protected override bool IsCanCast => (Targeting.GetTarget().Character != null || _isClickedOnGround) && _spawnPoint != Vector3.positiveInfinity && IsCanRadius();
 
     private bool IsCanRadius()
     {
@@ -84,7 +84,7 @@ public class Tentacles : Skill
 
     private void HandleSkillCanceled()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         _skillRender.StopDrawRadius();
     }
 
@@ -98,7 +98,7 @@ public class Tentacles : Skill
         _isSpawnCocoonOnGround = false;
         _isPlacingTentacles = false;
         _spawnPoint = Vector3.positiveInfinity;
-        ClearTarget();
+        Targeting.ClearTarget();
         _spentAttackingPsiEnergy = 0f;
         Hero.Move.SetCanMove(true);
         _player.Move.StopLookAt();
@@ -118,7 +118,7 @@ public class Tentacles : Skill
         _skillRender.IsOverrideClosestTarget = true;
         _lockedTarget = null;
 
-        Vector3 mousePositionStart = GetMousePoint();
+        Vector3 mousePositionStart = Targeting.GetMousePoint();
         Vector3 targetPoint = Vector3.positiveInfinity;
 
         if (!_isPlacingTentacles)
@@ -131,7 +131,7 @@ public class Tentacles : Skill
 
         while (float.IsPositiveInfinity(targetPoint.x))
         {
-            Vector3 mousePoint = GetMousePoint();
+            Vector3 mousePoint = Targeting.GetMousePoint();
 
             if (_previewInstance != null) _previewInstance.transform.position = mousePoint;
 
@@ -139,7 +139,7 @@ public class Tentacles : Skill
             {
                 if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hitTarget))
                 {
-                    if (_isAttractionTentacleTalent && hitTarget.collider.TryGetComponent<Character>(out Character character) && ((1 << character.gameObject.layer) & TargetsLayers.value) != 0)
+                    if (_isAttractionTentacleTalent && hitTarget.collider.TryGetComponent<Character>(out Character character) && ((1 << character.gameObject.layer) & Targeting.Layer.value) != 0)
                     {
                         _isPlacingTentacles = true;
                         _lockedTarget = character;
@@ -165,7 +165,7 @@ public class Tentacles : Skill
                         {
                             if (!collider.TryGetComponent<Character>(out Character targetHit)) continue;
 
-                            if (((1 << targetHit.gameObject.layer) & TargetsLayers.value) != 0)
+                            if (((1 << targetHit.gameObject.layer) & Targeting.Layer.value) != 0)
                             {
                                 _isPlacingTentacles = true;
                                 _lockedTarget = targetHit;
@@ -292,7 +292,7 @@ public class Tentacles : Skill
             }
         }
 
-        SetTarget(_lockedTarget);
+        Targeting.SetTarget(_lockedTarget);
 
         TrySpendAttackingPsi();
         Hero.Move.SetCanMove(false);
@@ -301,7 +301,7 @@ public class Tentacles : Skill
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(targetPoint);
-        targetInfo.AddTarget(GetTargetCharacter());
+        targetInfo.AddTarget(Targeting.GetTarget().Character);
         callbackDataSaved(targetInfo);
     }
 
@@ -309,7 +309,7 @@ public class Tentacles : Skill
     {
         if (!IsValidVector(_spawnPoint)) yield break;
 
-        if (GetTargetCharacter() != null) CmdSpawnTentacles(_spawnPoint, GetTargetCharacter(), _spentAttackingPsiEnergy);
+        if (Targeting.GetTarget().Character != null) CmdSpawnTentacles(_spawnPoint, Targeting.GetTarget().Character, _spentAttackingPsiEnergy);
 
         else
         {
@@ -450,11 +450,11 @@ public class Tentacles : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         _spawnPoint = targetInfo.Points[0];
-        if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 
     public void SetCurrentMinion(MinionComponent newMinion)
     {
         _currentMinion = newMinion;
     }
-}
+}

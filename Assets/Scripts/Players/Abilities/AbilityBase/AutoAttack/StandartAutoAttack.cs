@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class StandartAutoAttack : AutoAttackSkill
 {
@@ -26,7 +26,7 @@ public class StandartAutoAttack : AutoAttackSkill
 
     protected override void CastAction()
     {
-        if (GetTargetCharacter() == null)
+        if (Targeting.GetTarget().Character == null)
             return;
 
         Buff.AttackSpeed.IncreasePercentage(_animSpeed);
@@ -40,6 +40,6 @@ public class StandartAutoAttack : AutoAttackSkill
             PhysicAttackType = AttackRangeType,
 
         };
-        CmdApplyDamage(damage, GetTargetCharacter().Transform.gameObject);
+        CmdApplyDamage(damage, Targeting.GetTarget().Character.Transform.gameObject);
     }
 }

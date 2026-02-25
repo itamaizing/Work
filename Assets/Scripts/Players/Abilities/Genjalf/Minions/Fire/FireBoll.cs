@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
@@ -22,7 +22,7 @@ public class FireBoll : Skill
     private bool CheckCanCast()
     {
         return 
-               Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius;
+               Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
     }
 
     public void AnimCastFireboll()
@@ -37,21 +37,21 @@ public class FireBoll : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() != null)
+        if (Targeting.GetTarget().Character != null)
         {
-            CmdCreateProjecttile(GetTargetCharacter().gameObject);
+            CmdCreateProjecttile(Targeting.GetTarget().Character.gameObject);
         }
         yield return null;
     }
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
         Hero.Move.StopLookAt();
     }
@@ -60,17 +60,17 @@ public class FireBoll : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (GetTargetCharacter() == null)
+        while (Targeting.GetTarget().Character == null)
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter();
+                Targeting.FindTempTarget();
               //  _target = GetRaycastTarget();
             }
             yield return null;
         }
         
-        targetInfo.AddTarget(GetTargetCharacter());
+        targetInfo.AddTarget(Targeting.GetTarget().Character);
         callbackDataSaved(targetInfo);
 
         this.CastStarted += OnCastStarted;
@@ -78,7 +78,7 @@ public class FireBoll : Skill
 
     private void OnCastStarted()
     {
-        Hero.Move.LookAtTransform(GetTargetCharacter().transform);
+        Hero.Move.LookAtTransform(Targeting.GetTarget().Character.transform);
         this.CastStarted -= OnCastStarted;
     }
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,7 +12,7 @@ namespace Gangdollarff.EarthElemental
 
         protected override int AnimTriggerCastDelay => 0;
         protected override int AnimTriggerCast => Animator.StringToHash("Attack01");
-        protected override bool IsCanCast => Vector3.Distance(GetTargetCharacter().Position, transform.position) <= AreaInfo.Radius;
+        protected override bool IsCanCast => Vector3.Distance(Targeting.GetTarget().Character.Position, transform.position) <= AreaInfo.Radius;
 
         public void AnimCastPunch()
         {
@@ -26,12 +26,12 @@ namespace Gangdollarff.EarthElemental
 
         public override void LoadTargetData(TargetInfo targetInfo)
         {
-            SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+            Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
         }
 
         protected override IEnumerator CastJob()
         {
-            Hero.Move.LookAtPosition(GetTargetCharacter().Position);
+            Hero.Move.LookAtPosition(Targeting.GetTarget().Character.Position);
 
             Damage damage = new Damage
             {
@@ -42,14 +42,14 @@ namespace Gangdollarff.EarthElemental
                 Form = AbilityForm,
              };
 
-            CmdApplyDamage(damage, GetTargetCharacter().gameObject);
+            CmdApplyDamage(damage, Targeting.GetTarget().Character.gameObject);
 
             yield return null;
         }
 
         protected override void ClearData()
         {
-            ClearTarget();
+            Targeting.ClearTarget();
             //_target = null;
         }
 
@@ -59,10 +59,10 @@ namespace Gangdollarff.EarthElemental
 
             TargetInfo targetInfo = new();
 
-            while (GetTargetCharacter() == null)
+            while (Targeting.GetTarget().Character == null)
             {
                 if (GetMouseButton)
-                    FindTargetCharacter();
+                    Targeting.FindTempTarget();
                //     target = GetRaycastTarget();
 
                 yield return null;

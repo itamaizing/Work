@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using UnityEngine;
 using HeathenEngineering.UnityPhysics;
@@ -167,7 +167,7 @@ public class ReconnaissanceFire : Skill
 
         while (float.IsPositiveInfinity(targetPoint.x))
         {
-            Vector3 hoverPoint = GetMousePoint();
+            Vector3 hoverPoint = Targeting.GetMousePoint();
 
             if (_arcRenderer != null && hoverPoint.IsFinite())
             {
@@ -180,10 +180,10 @@ public class ReconnaissanceFire : Skill
 
             if (GetMouseButton)
             {
-                targetPoint = GetMousePoint();
+                targetPoint = Targeting.GetMousePoint();
                 if (_arcRenderer != null) _arcRenderer.positionCount = 0;
 
-                if (IsPointInRadius(AreaInfo.Radius, targetPoint) && NoObstacles(targetPoint, transform.position, _obstacle))
+                if (Targeting.IsPointInRadius(AreaInfo.Radius, targetPoint) && Targeting.NoObstacles(targetPoint, transform.position, _obstacle))
                 {
                     Hero.Move.LookAtPosition(targetPoint);
                 }

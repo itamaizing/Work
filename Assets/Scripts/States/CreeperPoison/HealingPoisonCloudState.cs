@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -99,7 +99,7 @@ public class HealingPoisonCloudState : AbstractCharacterState
             {
                 if (creeperInvisible != null)
                 {
-                    _alliesLayer = creeperInvisible.TargetsLayers;
+                    _alliesLayer = creeperInvisible.Targeting.Layer;
                 }
             }
 

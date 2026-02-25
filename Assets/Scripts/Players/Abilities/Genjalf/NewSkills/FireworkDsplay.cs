@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,7 +30,7 @@ namespace Gangdollarff
 
         public override void LoadTargetData(TargetInfo targetInfo)
         {
-            SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+            Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
             _targetPoint = targetInfo.Points[0];
         }
 
@@ -52,7 +52,7 @@ namespace Gangdollarff
 
                 foreach (var item in _firework.Damageables)
                 {
-                    if (((1 << item.gameObject.layer) & TargetsLayers) != 0)
+                    if (((1 << item.gameObject.layer) & Targeting.Layer) != 0)
                     {
                         if (item.TryGetComponent<IDamageable>(out IDamageable enemy) && count < 4)
                         {
@@ -83,28 +83,28 @@ namespace Gangdollarff
             _firework.gameObject.SetActive(false);
             CmdSetActiveParticle(false);
 
-            ClearTarget();
+            Targeting.ClearTarget();
            // _target = null;
             _targetPoint = Vector3.positiveInfinity;
         }
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
         {
-            while (float.IsPositiveInfinity(_targetPoint.x) && GetTargetCharacter() == null)
+            while (float.IsPositiveInfinity(_targetPoint.x) && Targeting.GetTarget().Character == null)
             {
                 if (GetMouseButton)
                 {
-                    FindTargetCharacter();
-                    //_target = GetTarget().character;
-                    _targetPoint = GetTargetCharacter().Position;
+                    Targeting.FindTempTarget();
+                    //_target = Targeting.GetTarget().character;
+                    _targetPoint = Targeting.GetTarget().Character.Position;
 
                    // _target = GetRaycastTarget();
-                    _targetPoint = GetMousePoint();
+                    _targetPoint = Targeting.GetMousePoint();
                 }
                 yield return null;
             }
             TargetInfo targetInfo = new();
-            targetInfo.AddTarget(GetTargetCharacter());
+            targetInfo.AddTarget(Targeting.GetTarget().Character);
             targetInfo.Points.Add(_targetPoint);
             callbackDataSaved(targetInfo);
         }

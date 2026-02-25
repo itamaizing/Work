@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -40,9 +40,9 @@ public class IceShower : Skill
 		{
 			if (GetMouseButton && IsCanCast)
 			{
-				Vector3 clickedPoint = GetMousePoint();
+				Vector3 clickedPoint = Targeting.GetMousePoint();
 
-				if (IsPointInRadius(AreaInfo.Radius, clickedPoint))
+				if (Targeting.IsPointInRadius(AreaInfo.Radius, clickedPoint))
 				{
 					_targetPoint = clickedPoint;
 				}
@@ -59,7 +59,7 @@ public class IceShower : Skill
 		//DrawDamageZone(_targetPoint);
 
 		//ApplyDamageToEnemiesInZone();
-		//StopDamageZone();
+		//HideAOEIndicator();
 		Shoot();
 		yield return null;
 	}
@@ -113,7 +113,7 @@ public class IceShower : Skill
 			{
 				worldPos = hit.point;
 			}
-			Collider[] hitColliders = Physics.OverlapSphere(worldPos, AreaInfo.Area, TargetsLayers);
+			Collider[] hitColliders = Physics.OverlapSphere(worldPos, AreaInfo.Area, Targeting.Layer);
 
 			foreach (var hitCollider in hitColliders)
 			{

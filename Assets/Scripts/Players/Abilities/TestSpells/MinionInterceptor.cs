@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,44 +17,44 @@ public class MinionInterceptor : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
 
-        SetTarget((ITargetable)(MinionComponent)targetInfo.GetTargets()[0]);
+        Targeting.SetTarget((ITargetable)(MinionComponent)targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator CastJob()
     {
         //CmdIntercept(_target.gameObject);
-        CmdIntercept(GetTargetCharacter().gameObject);
+        CmdIntercept(Targeting.GetTarget().Character.gameObject);
         yield return null;
     }
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (GetTargetCharacter() == null)
+        while (Targeting.GetTarget().Character == null)
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter(true);
+                Targeting.FindTempTarget(true);
                 //var temp = GetRaycastTarget();
 
-                if (GetTargetCharacter() is MinionComponent minion)
+                if (Targeting.GetTarget().Character is MinionComponent minion)
                 {
                     //_target = minion;
                 }
                 else
                 {
-                    ClearTarget();
+                    Targeting.ClearTarget();
                 }
             }
             yield return null;
         }
         TargetInfo targetInfo = new();
-        targetInfo.GetTargets().Add(GetTargetCharacter());
+        targetInfo.GetTargets().Add(Targeting.GetTarget().Character);
         callbackDataSaved?.Invoke(targetInfo);
     }
 

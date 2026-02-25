@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -74,14 +74,14 @@ public class IceShard : Skill
 		{
 			if (GetMouseButton)
 			{
-				_mousePos = GetMousePoint();
-				/*if (GetTarget().character == null)
+				_mousePos = Targeting.GetMousePoint();
+				/*if (Targeting.GetTarget().character == null)
 				{
-					_mousePos = GetTarget().Position;
+					_mousePos = Targeting.GetTarget().Position;
 				}
 				else
 				{
-					_mousePos = GetTarget().character.transform.position;
+					_mousePos = Targeting.GetTarget().character.transform.position;
 				}*/
 			}
 			yield return null;

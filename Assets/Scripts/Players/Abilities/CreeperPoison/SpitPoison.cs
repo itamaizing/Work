@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -93,7 +93,7 @@ public class SpitPoison : Skill, IAltAbility
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
         _mousePos = targetInfo.Points[0];
     }
 
@@ -114,12 +114,12 @@ public class SpitPoison : Skill, IAltAbility
             {
                 //_currentTarget = GetRaycastTarget(true);
 
-                FindTarget(_radiusTargetCheck, GetMousePoint());
-                _mousePos = GetMousePoint();
+                Targeting.FindTempTarget(Targeting.GetMousePoint(), _radiusTargetCheck);
+                _mousePos = Targeting.GetMousePoint();
 
-                if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
+                if (Targeting.GetTempTarget().Targetable != null && Targeting.GetTempTarget().Targetable is IDamageable damageable)
                 {
-                    if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
                     else ChooseTarget(damageable);
 
                 }
@@ -127,17 +127,17 @@ public class SpitPoison : Skill, IAltAbility
             yield return null;
         }
 
-        SetTarget(GetTempTarget());
+        Targeting.SetTarget(Targeting.GetTempTarget().Targetable);
 
         TargetInfo targetInfo = new();
-        targetInfo.AddTarget(GetTarget());
+        targetInfo.AddTarget(Targeting.GetTarget().Targetable);
         targetInfo.Points.Add(_mousePos);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        Shoot(GetTarget() as IDamageable);
+        Shoot(Targeting.GetTarget() as IDamageable);
         ResetAbilityParameters?.Invoke();
 
         yield return null;
@@ -154,7 +154,7 @@ public class SpitPoison : Skill, IAltAbility
         _isOriginalTargetEnemy = false;
         _isOriginalTargetPlayer = false;
 
-        ClearTarget();
+        Targeting.ClearTarget();
 
         _mousePos = Vector3.positiveInfinity;
     }
@@ -174,10 +174,10 @@ public class SpitPoison : Skill, IAltAbility
 
     private bool CheckCanCast()
     {
-        if (GetTarget() == null) return Vector3.Distance(_mousePos, transform.position) <= AreaInfo.Radius && NoObstacles(_mousePos, _obstacle);
+        if (Targeting.GetTarget() == null) return Vector3.Distance(_mousePos, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_mousePos, _obstacle);
 
-        return Vector3.Distance(_mousePos, transform.position) <= AreaInfo.Radius && NoObstacles(_mousePos, _obstacle) ||
-               Vector3.Distance(GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && NoObstacles(GetTarget().Transform.position, _obstacle);
+        return Vector3.Distance(_mousePos, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_mousePos, _obstacle) ||
+               Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Transform.position, _obstacle);
     }
 
     private void CooldownChange()
@@ -255,7 +255,7 @@ public class SpitPoison : Skill, IAltAbility
 
             if (_mousePos != Vector3.zero)
             {
-                ClearTempTarget();
+                Targeting.ClearTempTarget();
             }
         }
     }

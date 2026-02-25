@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using UnityEngine;
 
 public class MinionArrowProjectile : MinionProjectile
@@ -29,7 +29,7 @@ public class MinionArrowProjectile : MinionProjectile
     {
         if (other.gameObject != _dad.gameObject)
         {
-            if (((1 << other.gameObject.layer) & _skill.TargetsLayers.value) != 0)
+            if (((1 << other.gameObject.layer) & _skill.Targeting.Layer.value) != 0)
             {
                 ApplyEnemy(other);
                 Destroy(gameObject);
@@ -49,7 +49,7 @@ public class MinionArrowProjectile : MinionProjectile
     //    //    //    }
     //    //    //}
 
-    //    //    if (other.gameObject != _dad.gameObject && ((1 << other.gameObject.layer) & _skill.TargetsLayers.value) != 0) ApplyEnemy(other);
+    //    //    if (other.gameObject != _dad.gameObject && ((1 << other.gameObject.layer) & _skill.Targeting.Layer.value) != 0) ApplyEnemy(other);
     //    //}
     //}
 

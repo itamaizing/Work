@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -72,9 +72,9 @@ public class CreeperStrike : Skill
 
     private bool CheckIsCanCast()
     {
-        return GetTarget() != null &&
-            Vector3.Distance(GetTarget().Transform.position, transform.position) <= AreaInfo.Radius &&
-            NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
+        return Targeting.GetTarget() != null &&
+            Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius &&
+            Targeting.NoObstacles(Targeting.GetTarget().Transform.position, transform.position, _obstacle);
     }
 
     #region CastAbility
@@ -94,38 +94,38 @@ public class CreeperStrike : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (GetTempTarget() == null)
+        while (Targeting.GetTempTarget().Targetable == null)
         {
             if (GetMouseButton)
             {
-                FindTarget(_radiusSearchTarget, GetMousePoint());
+                Targeting.FindTempTarget(Targeting.GetMousePoint(), _radiusSearchTarget);
 
-                if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
+                if (Targeting.GetTempTarget().Targetable != null && Targeting.GetTempTarget().Targetable is IDamageable damageable)
                 {
-                    if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
                     else break;
                 }
             }
             yield return null;
         }
 
-        SetTarget(GetTempTarget());
+        Targeting.SetTarget(Targeting.GetTempTarget().Targetable);
 
-        targetInfo.Points.Add(GetTarget().Transform.position);
-        targetInfo.AddTarget(GetTarget());
+        targetInfo.Points.Add(Targeting.GetTarget().Transform.position);
+        targetInfo.AddTarget(Targeting.GetTarget().Targetable);
         callbackDataSaved.Invoke(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() == null) yield return null;
+        if (Targeting.GetTarget() == null) yield return null;
         _hero.Move.StopLookAt();
-        DamageDeal(GetTarget() as IDamageable);
+        DamageDeal(Targeting.GetTarget() as IDamageable);
 
         yield return null;
     }
 
-    /*public void SetTarget(Character target)
+    /*public void Targeting.SetTarget(Character target)
     {
        // _target = target;
     }*/
@@ -133,7 +133,7 @@ public class CreeperStrike : Skill
     public void ClearDataCreeperStrike()
     {
         TryCancel();
-        StopAutoDraw();
+        Renderer.HideSmartIndicator();
     }
 
     private void IncreaseAnimSpeed()
@@ -186,7 +186,7 @@ public class CreeperStrike : Skill
 
                 if (_currentHitForStrokesOfAspiration == 2)
                 {
-                    if (GetTarget() != null)
+                    if (Targeting.GetTarget() != null)
                     {
                         _strokesOfAspiration.UseTalentStrokesOfAspiration();
                     }
@@ -491,7 +491,7 @@ public class CreeperStrike : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo?.GetTargets()?.Count > 0) SetTarget(targetInfo.GetTargets()[0]);
+        if (targetInfo?.GetTargets()?.Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
     }
 
     #region Talents
@@ -503,8 +503,8 @@ public class CreeperStrike : Skill
 
     protected override void ClearData()
     {
-        ClearTarget();
-        ClearTempTarget();
+        Targeting.ClearTarget();
+        Targeting.ClearTempTarget();
         if (_clearTargetsCoroutine != null) StopCoroutine(_clearTargetsCoroutine);
         _hero.Move.StopLookAt();
     }

@@ -1,4 +1,4 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using Mirror;
 using System;
 using System.Collections;
@@ -49,12 +49,12 @@ public class ScratchClaws : Skill
         _moveActive = false;
     }
 
-    protected override bool IsCanCast => GetTarget() != null;
+    protected override bool IsCanCast => Targeting.GetTarget() != null;
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0]);
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
     }
 
     private void OnEnable()
@@ -80,21 +80,21 @@ public class ScratchClaws : Skill
         CancelWork();
 
         _moveActive = false;
-        ClearTarget();
-        ClearTempTarget();
+        Targeting.ClearTarget();
+        Targeting.ClearTempTarget();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
-        while (GetTempTarget() == null)
+        while (Targeting.GetTempTarget().Targetable == null)
         {
             if (GetMouseButton)
             {
-                FindTarget(TargetSearchRadius, GetMousePoint());
+                Targeting.FindTempTarget(Targeting.GetMousePoint(), TargetSearchRadius);
 
-                if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
+                if (Targeting.GetTempTarget().Targetable != null && Targeting.GetTempTarget().Targetable is IDamageable damageable)
                 {
-                    if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
                     else break;
                 }
             }
@@ -102,10 +102,10 @@ public class ScratchClaws : Skill
             yield return null;
         }
 
-        SetTarget(GetTempTarget());
+        Targeting.SetTarget(Targeting.GetTempTarget().Targetable);
 
         TargetInfo info = new();
-        info.AddTarget(GetTarget());
+        info.AddTarget(Targeting.GetTarget().Targetable);
         targetDataSavedCallback?.Invoke(info);
     }
 
@@ -113,7 +113,7 @@ public class ScratchClaws : Skill
     {
         CancelWork();
         _moveActive = true;
-        _currentTarget = GetTarget() as Character;
+        _currentTarget = Targeting.GetTarget().Character;
 
         float distanceToTarget = Vector3.Distance(transform.position, _currentTarget.transform.position);
         if (distanceToTarget > _stopDistance + StopDistanceThreshold)
@@ -137,8 +137,8 @@ public class ScratchClaws : Skill
 
     protected override void ClearData()
     {
-        ClearTarget();
-        ClearTempTarget();
+        Targeting.ClearTarget();
+        Targeting.ClearTempTarget();
         _currentTarget = null;
 
         if (_hero?.Move != null)

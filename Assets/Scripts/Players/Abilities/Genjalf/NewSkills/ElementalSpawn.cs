@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
@@ -62,7 +62,7 @@ public class ElementalSpawn : Skill
         {
             if (GetMouseButton)
             {
-                _position = GetMousePoint();
+                _position = Targeting.GetMousePoint();
             }
             yield return null;
         }

@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -34,9 +34,9 @@ public class IceSword : CloseCombatSkill
 
 	private bool IsCanCastCheck()
 	{
-		if (GetTargetCharacter() == null) return false;
+		if (Targeting.GetTarget().Character == null) return false;
 
-		if (Vector3.Distance(GetTargetCharacter().transform.position, transform.position) > AreaInfo.Radius)
+		if (Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) > AreaInfo.Radius)
 		{
 			return false;
 		}
@@ -53,20 +53,20 @@ public class IceSword : CloseCombatSkill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((Character)targetInfo.GetTargets()[0]);
+        Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 
 	protected override IEnumerator CastJob()
 	{
-		_seriesOfStrikes.MakeHit(GetTargetCharacter(), AbilityForm, 0, 10, 0);
-		if (GetTargetCharacter() == _oldtarget)
+		_seriesOfStrikes.MakeHit(Targeting.GetTarget().Character, AbilityForm, 0, 10, 0);
+		if (Targeting.GetTarget().Character == _oldtarget)
 		{
 			_hitInTheRow++;
 		}
 		else
 		{
 			_hitInTheRow = 1;
-			_oldtarget = GetTargetCharacter();
+			_oldtarget = Targeting.GetTarget().Character;
 		}
 		if (_hitInTheRow > 2)
 		{
@@ -74,14 +74,14 @@ public class IceSword : CloseCombatSkill
 			_hitInTheRow = 0;
 		}
 		ApplyDamage();
-		CmdAdd(GetTargetCharacter().gameObject);
+		CmdAdd(Targeting.GetTarget().Character.gameObject);
 		yield return null;
 	}
 
 	protected override void ClearData()
 	{
-		ClearTarget();
-		ClearTempTarget();
+		Targeting.ClearTarget();
+		Targeting.ClearTempTarget();
 		//_target = null;
 	}
 
@@ -106,12 +106,12 @@ public class IceSword : CloseCombatSkill
 		};
 		Debug.Log("Damage " + totalDamage);
 
-		if (_critDmg && GetTargetCharacter().CharacterState.CheckForState(States.Frozen))
+		if (_critDmg && Targeting.GetTarget().Character.CharacterState.CheckForState(States.Frozen))
 		{
 			damage2.Value *= (Random.Range(0, 100) < 15) ? 1.8f : 1.1f;
 		}
 
-		CmdApplyDamage(damage2, GetTargetCharacter().gameObject);
+		CmdApplyDamage(damage2, Targeting.GetTarget().Character.gameObject);
 
 		_energy.SumDamageMake(damage2.Value);
 		_rune.SumDamageMake(damage2.Value);

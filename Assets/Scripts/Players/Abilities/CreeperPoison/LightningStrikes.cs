@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using UnityEngine;
 
@@ -36,8 +36,8 @@ public class LightningStrikes : Skill
     {
         get
         {
-            if (GetTarget() == null)return false;
-            return NoObstacles(GetTarget().Transform.position, _obstacle) && IsTargetInRadius(AreaInfo.Radius, GetTarget().Transform);
+            if (Targeting.GetTarget() == null)return false;
+            return Targeting.NoObstacles(Targeting.GetTarget().Transform.position, _obstacle) && Targeting.IsTargetInRadius(AreaInfo.Radius, Targeting.GetTarget().Transform);
         }
     }
 
@@ -62,15 +62,15 @@ public class LightningStrikes : Skill
         OnLightningStrikesEnd?.Invoke();
         AnimCastEnded();
     }
-    /* public void SetTarget(Character target)
+    /* public void Targeting.SetTarget(Character target)
      {
          _target = target;
      }*/
 
     protected override void ClearData()
     {
-        ClearTarget();
-        ClearTempTarget();
+        Targeting.ClearTarget();
+        Targeting.ClearTempTarget();
         _hero.Move.StopLookAt();
     }
 
@@ -78,38 +78,38 @@ public class LightningStrikes : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo?.GetTargets()?.Count > 0) SetTarget(targetInfo.GetTargets()[0]);
+        if (targetInfo?.GetTargets()?.Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (GetTempTarget() == null)
+        while (Targeting.GetTempTarget().Targetable == null)
         {
             if (GetMouseButton)
             {
-                FindTarget(_radiusSearchTarget, GetMousePoint());
+                Targeting.FindTempTarget(Targeting.GetMousePoint(), _radiusSearchTarget);
 
-                if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
+                if (Targeting.GetTempTarget().Targetable != null && Targeting.GetTempTarget().Targetable is IDamageable damageable)
                 {
-                    if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
                     else break;
                 }
             }
             yield return null;
         }
 
-        SetTarget(GetTempTarget());
+        Targeting.SetTarget(Targeting.GetTempTarget().Targetable);
 
-        targetInfo.Points.Add(GetTarget().Transform.position);
-        targetInfo.AddTarget(GetTarget());
+        targetInfo.Points.Add(Targeting.GetTarget().Transform.position);
+        targetInfo.AddTarget(Targeting.GetTarget().Targetable);
         callbackDataSaved.Invoke(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() == null || !IsTargetInRange())
+        if (Targeting.GetTarget() == null || !IsTargetInRange())
         {
             AnimCastEnded();
             yield break;
@@ -145,7 +145,7 @@ public class LightningStrikes : Skill
 
     private bool IsTargetInRange()
     {
-        return GetTarget() != null && Vector3.Distance(_player.transform.position, GetTarget().Transform.position) <= AreaInfo.Radius;
+        return Targeting.GetTarget() != null && Vector3.Distance(_player.transform.position, Targeting.GetTarget().Transform.position) <= AreaInfo.Radius;
     }
 
     private float GetClipLength()
@@ -175,7 +175,7 @@ public class LightningStrikes : Skill
     private void DamageDeal()
     {
         Debug.Log("LightningStrikes / DamageDeal");
-        _creeperStrike.DamageDeal(GetTargetCharacter(), true);
+        _creeperStrike.DamageDeal(Targeting.GetTarget().Character, true);
         _player.Abilities.LastCastedSkill = _creeperStrike;
 
        _isCanDamageDeal = false;
@@ -185,4 +185,4 @@ public class LightningStrikes : Skill
 
         if (_coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime == true) _isIncreaseCooldownTime = false;
     }
-}
+}

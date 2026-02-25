@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -15,12 +15,12 @@ public class SubjugationMind : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) SetTarget((ITargetable)(targetInfo.GetTargets()[0] as Character));
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((ITargetable)(targetInfo.GetTargets()[0] as Character));
     }
 
     protected override IEnumerator CastJob()
     {
-        CmdIntercept(GetTargetCharacter());
+        CmdIntercept(Targeting.GetTarget().Character);
 
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
@@ -40,7 +40,7 @@ public class SubjugationMind : Skill
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
     }
 
@@ -48,17 +48,17 @@ public class SubjugationMind : Skill
     {
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && GetTargetCharacter() == null)
+        while (float.IsPositiveInfinity(_targetPoint.x) && Targeting.GetTarget().Character == null)
         {
             if (GetMouseButton)
             {
                 //var temp = GetRaycastTarget();
-                FindTargetCharacter();
-                _targetPoint = GetMousePoint();
+                Targeting.FindTempTarget();
+                _targetPoint = Targeting.GetMousePoint();
 
-                //if (GetTarget() is MinionComponent minion) _target = minion;
-                //else if (GetTarget() is HeroComponent heroComponent) _target = heroComponent;
-                if (multiMagic != null) multiMagic.LastTarget = GetTargetCharacter();
+                //if (Targeting.GetTarget() is MinionComponent minion) _target = minion;
+                //else if (Targeting.GetTarget() is HeroComponent heroComponent) _target = heroComponent;
+                if (multiMagic != null) multiMagic.LastTarget = Targeting.GetTarget().Character;
             }
             yield return null;
         }

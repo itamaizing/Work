@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -43,7 +43,7 @@ public class GhostAura : Skill
     [Server]
     private void OnTriggerEnter(Collider other)
     {
-        if (((1 << other.gameObject.layer) & TargetsLayers) != 0 && Time.time > _spawnTime + delayBeforeEffect)
+        if (((1 << other.gameObject.layer) & Targeting.Layer) != 0 && Time.time > _spawnTime + delayBeforeEffect)
         {
             if (other.TryGetComponent<CharacterState>(out var characterState) && other.gameObject != gameObject)
             {
@@ -76,7 +76,7 @@ public class GhostAura : Skill
             yield return new WaitForSeconds(tickInterval);
 
             bool hasObjectsInZone = false;
-            Collider[] hitColliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius, TargetsLayers);
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.Layer);
 
             foreach (var collider in hitColliders)
             {
@@ -104,7 +104,7 @@ public class GhostAura : Skill
             yield return new WaitForSeconds(tickInterval);
 
             bool hasObjectsInCollider = false;
-            Collider[] colliders = Physics.OverlapBox(_auraCollider.bounds.center, _auraCollider.bounds.extents, Quaternion.identity, TargetsLayers);
+            Collider[] colliders = Physics.OverlapBox(_auraCollider.bounds.center, _auraCollider.bounds.extents, Quaternion.identity, Targeting.Layer);
 
             foreach (var collider in colliders)
             {
@@ -126,7 +126,7 @@ public class GhostAura : Skill
 
     private bool HasObjectsInCollider()
     {
-        Collider[] colliders = Physics.OverlapBox(_auraCollider.bounds.center, _auraCollider.bounds.extents, Quaternion.identity, TargetsLayers);
+        Collider[] colliders = Physics.OverlapBox(_auraCollider.bounds.center, _auraCollider.bounds.extents, Quaternion.identity, Targeting.Layer);
         foreach (var collider in colliders)
         {
             if (collider.TryGetComponent<CharacterState>(out var characterState) && collider.gameObject != gameObject)

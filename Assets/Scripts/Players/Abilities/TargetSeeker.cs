@@ -15,7 +15,7 @@ public class TargetSeeker : MonoBehaviour
 	public LayerMask TargetsLayers { get => _targetsLayers; protected set => _targetsLayers = value; }
 
 	/*
-	public TargetToShot GetTarget(TypeClick click, Action<Vector3> ClickPoint, SkillType skillType, float radius, Skill skill, bool isCanTargetHimself = false, bool canTargetDead = false)
+	public TargetToShot Targeting.GetTarget(TypeClick click, Action<Vector3> Targeting.OnClick, SkillType skillType, float radius, Skill skill, bool isCanTargetHimself = false, bool canTargetDead = false)
 	{
 		_skillType = skillType;
 		_radius = radius;
@@ -27,25 +27,25 @@ public class TargetSeeker : MonoBehaviour
 			case TypeClick.LMB:
 
 				target = LeftClick();
-				ClickPoint?.Invoke(target.Position);
+				Targeting.OnClick?.Invoke(target.Position);
 				break;
 
 			case TypeClick.ShiftLMB:
 
 				target = ShiftLeftClick();
-				ClickPoint?.Invoke(target.Position);
+				Targeting.OnClick?.Invoke(target.Position);
 				break;
 
 			case TypeClick.CtrlLMB:
 
 				target = CtrlLeftClick();
-				ClickPoint?.Invoke(target.Position);
+				Targeting.OnClick?.Invoke(target.Position);
 				break;
 
 			case TypeClick.SpaceLMB:
 
 				target = SpaceLeftClick();
-				ClickPoint?.Invoke(target.Position);
+				Targeting.OnClick?.Invoke(target.Position);
 				break;
 		}
 
@@ -354,7 +354,7 @@ public class TargetSeeker : MonoBehaviour
 		return target;
 	}
 	
-	 public Vector3 GetMousePoint()
+	 public Vector3 Targeting.GetMousePoint()
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;

@@ -65,19 +65,28 @@ public class TargetingComponent : BaseSkillComponent
     protected LayerMask _targetLayer;
     protected LayerMask _obstacles;
 
-    protected Transform _tempTargetForDamage;
     protected TargetData _target;
     protected TargetData _tempTarget;
+    protected TargetData _forDamage;
+
+    public event Action<Vector3> OnClick;
     #endregion
 
     #region Properties
     public LayerMask Layer {
         get => _targetLayer;
-        protected set => _targetLayer = value;
+        set => _targetLayer = value;
     }
 
     public TargetData Target => _target;
-    public TargetData Temporary => _tempTarget;
+    public TargetData Temporary { 
+        get => _tempTarget;
+    }
+    public TargetData ForDamage
+    {
+        get => _forDamage;
+        set => _forDamage = value;
+    }
     #endregion
 
     #region Methods
@@ -130,12 +139,12 @@ public class TargetingComponent : BaseSkillComponent
     #endregion Target
     #endregion Get-Set
     
-    public TargetData SetTempTarget(bool canTargetSelf = false, bool canTargetDead = false)
+    public TargetData FindTempTarget(bool canTargetSelf = false, bool canTargetDead = false)
     {
-        return SetTempTarget(GetMousePoint(), _skill.AreaInfo.Radius, canTargetSelf, canTargetDead);
+        return FindTempTarget(GetMousePoint(), _skill.AreaInfo.Radius, canTargetSelf, canTargetDead);
     }
     
-    public TargetData SetTempTarget(Vector3 position, float radius, bool canTargetSelf = false, bool canTargetDead = false)
+    public TargetData FindTempTarget(Vector3 position, float radius, bool canTargetSelf = false, bool canTargetDead = false)
     {
         var targets = FindTargets(position, radius, canTargetSelf, canTargetDead);
         if (targets == null)
@@ -175,7 +184,7 @@ public class TargetingComponent : BaseSkillComponent
     }
 
     #region Helpers
-    protected bool IsTargetInRadius(float radius, Transform target)
+    public bool IsTargetInRadius(float radius, Transform target)
     {
         if (target == null)
             return false;
@@ -184,7 +193,7 @@ public class TargetingComponent : BaseSkillComponent
         return distance <= radius;
     }
 
-    protected bool IsPointInRadius(float radius, Vector3 point)
+    public bool IsPointInRadius(float radius, Vector3 point)
     {
         float distance = Vector3.Distance(point, _character.transform.position);
         return distance <= radius;
@@ -216,14 +225,14 @@ public class TargetingComponent : BaseSkillComponent
         return Vector3.zero;
     }
 
-    protected bool IsMouseInRadius(float radius)
+    public bool IsMouseInRadius(float radius)
     {
         float distance = Vector3.Distance(GetMousePoint(), _character.transform.position);
 
         return distance <= radius;
     }
 
-    protected bool NoObstacles(Vector3 target, Vector3 point, LayerMask obstacle)
+    public bool NoObstacles(Vector3 target, Vector3 point, LayerMask obstacle)
     {
         if (target == Vector3.zero)
             return true;
@@ -240,12 +249,12 @@ public class TargetingComponent : BaseSkillComponent
             return true;
     }
 
-    protected bool NoObstacles(Vector3 target, LayerMask obstacle)
+    public bool NoObstacles(Vector3 target, LayerMask obstacle)
     {
         return NoObstacles(target, _character.transform.position, obstacle);
     }
 
-    protected bool NoObstacles()
+    public bool NoObstacles()
     {
         if (_tempTarget != null)
             return NoObstacles(_tempTarget.Character.transform.position, _character.transform.position, _obstacles);

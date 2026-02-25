@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -56,14 +56,14 @@ public class DeathSpiral : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		while (GetTargetCharacter() == null)
+		while (Targeting.GetTarget().Character == null)
 		{
 			if (GetMouseButton)
 			{
-				FindTargetCharacter();
+				Targeting.FindTempTarget();
 				if (GetRaycastTargetShadow() != null)
 				{
-					//SetTarget(GetRaycastTargetShadow());
+					//Targeting.SetTarget(GetRaycastTargetShadow());
 					//_target = GetRaycastTargetShadow();					
 				}			
 			}
@@ -91,7 +91,7 @@ public class DeathSpiral : Skill
 	}
 	protected override void ClearData()
 	{
-		ClearTarget();
+		Targeting.ClearTarget();
 		//_target = null;
 		_mousePos = Vector3.positiveInfinity;
 	}
@@ -189,7 +189,7 @@ public class DeathSpiral : Skill
 	private GameObject GetRaycastTargetShadow(bool isCanTargetHimself = false)
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		RaycastHit[] rayHit = Physics.RaycastAll(ray, 100f, TargetsLayers);
+		RaycastHit[] rayHit = Physics.RaycastAll(ray, 100f, Targeting.Layer);
 
 		foreach (var hit in rayHit)
 		{
@@ -252,7 +252,7 @@ public class DeathSpiral : Skill
 		_seriesOfStrikes.MakeHit(null, AbilityForm, 1, 0, 0);
 
 
-		Shoot(angle, _inTheRow, GetTargetCharacter().gameObject, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
+		Shoot(angle, _inTheRow, Targeting.GetTarget().Character.gameObject, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
 	}
 
 	private void BasicShoot()
@@ -264,7 +264,7 @@ public class DeathSpiral : Skill
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 		_seriesOfStrikes.MakeHit(null, AbilityForm, 1, 0, 0);
-		Shoot(angle, _inTheRow, GetTargetCharacter().gameObject, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
+		Shoot(angle, _inTheRow, Targeting.GetTarget().Character.gameObject, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
 	}
 
 	private void SecondAttact()
@@ -274,7 +274,7 @@ public class DeathSpiral : Skill
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 		_seriesOfStrikes.MakeHit(null, AbilityForm, 1, 0, 0);
-		Shoot(angle, _inTheRow, GetTargetCharacter().gameObject, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
+		Shoot(angle, _inTheRow, Targeting.GetTarget().Character.gameObject, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
 	}
 
 	public void AddCharge()

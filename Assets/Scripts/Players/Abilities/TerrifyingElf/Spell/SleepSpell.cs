@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -13,7 +13,7 @@ public class SleepSpell : Skill
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private bool _isSleepInnerDarknessTalentActive = false;
 
-    protected override bool IsCanCast => IsHaveCharge && GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= AreaInfo.Radius;
+    protected override bool IsCanCast => IsHaveCharge && Targeting.GetTarget().Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
     protected override int AnimTriggerCast => 0;
 
@@ -23,26 +23,26 @@ public class SleepSpell : Skill
     {
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
-        while (GetTargetCharacter() == null && !_disactive)
+        while (Targeting.GetTarget().Character == null && !_disactive)
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter();
+                Targeting.FindTempTarget();
                 //_target = GetRaycastTarget(true);
-                //_runtimeTarget = GetTarget();
-                if (multiMagic != null) multiMagic.LastTarget = GetTargetCharacter();
+                //_runtimeTarget = Targeting.GetTarget();
+                if (multiMagic != null) multiMagic.LastTarget = Targeting.GetTarget().Character;
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTargetCharacter());
+        targetInfo.AddTarget(Targeting.GetTarget().Character);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() != null) CmdApplyAbsorptionState(GetTargetCharacter().gameObject);
+        if (Targeting.GetTarget().Character != null) CmdApplyAbsorptionState(Targeting.GetTarget().Character.gameObject);
 
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
@@ -62,7 +62,7 @@ public class SleepSpell : Skill
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
     }
 
@@ -78,7 +78,7 @@ public class SleepSpell : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) SetTarget((ITargetable)(targetInfo.GetTargets()[0] as Character));
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((ITargetable)(targetInfo.GetTargets()[0] as Character));
     }
 
     #region Talent

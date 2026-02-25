@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
@@ -245,7 +245,7 @@ public class TentacleProjectile : NetworkBehaviour
 
         _skill.ApplyDamage(mainDamage, _target.gameObject);
 
-        Collider[] nearbyEnemies = Physics.OverlapSphere(_target.transform.position, 1f, _skill.TargetsLayers);
+        Collider[] nearbyEnemies = Physics.OverlapSphere(_target.transform.position, 1f, _skill.Targeting.Layer);
 
         foreach (var collider in nearbyEnemies)
         {
