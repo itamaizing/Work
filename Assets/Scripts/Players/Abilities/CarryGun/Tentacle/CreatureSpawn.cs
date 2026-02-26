@@ -21,14 +21,12 @@ public class CreatureSpawn : Skill
     [SerializeField] private Tentacles tentacle;
 
     [SerializeField] private SpawnType spawnType;
-    [SerializeField] private int swarmWeight = 1;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => _spawnPoint != Vector3.positiveInfinity;
 
     public Tentacles Tentacle { get => tentacle; set => tentacle = value; }
-    public int SwarmWeight => swarmWeight;
 
     private void OnEnable()
     {
