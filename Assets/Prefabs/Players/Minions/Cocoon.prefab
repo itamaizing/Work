@@ -12512,6 +12512,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skills:
   - {fileID: 6995002632317580941}
+  - {fileID: 3666110360829044945}
   _hero: {fileID: 6271332717105215193}
   _talentSystem: {fileID: 3303275859523176835}
   _skillRenderer: {fileID: 1106875357886514586}

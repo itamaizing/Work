@@ -18242,7 +18242,7 @@ MonoBehaviour:
   _animator: {fileID: 4853408415625794062}
   _networkAnimator: {fileID: 6676246011477726785}
   _healthComponent: {fileID: 4688992458449892271}
-  _playerMove: {fileID: 0}
+  _playerMove: {fileID: 4144108970412608448}
   _abilities: {fileID: 6892265620981845488}
   _characterState: {fileID: 161335861236570360}
   uiComponent: {fileID: 1655977055310397963}
