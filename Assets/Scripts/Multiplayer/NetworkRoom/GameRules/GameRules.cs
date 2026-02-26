@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -107,14 +108,16 @@ public abstract class GameRules : NetworkBehaviour
             {
                 playerSettings.NetworkSettings.Players.Add(player.gameObject);
             }
-            if (teamIndex == 1)
+          /*  if (teamIndex == 1)
             {
                 _gameManager.TeamsPanel.AddInFirstTeam(playerSettings);
+                //RpcAddToTeam(teamIndex, playerSettings);
             }
             else
             {
                 _gameManager.TeamsPanel.AddInSecondTeam(playerSettings);
-            }    
+                //RpcAddToTeam(teamIndex, playerSettings);
+            }   */ 
 
             playerSettings.transform.SetPositionAndRotation(spawnPoints.GetRandomPoint(teamIndex-1), spawnPoints.GetRotate(teamIndex-1));
             playerSettings.NetworkSettings.SetSpawnPosition(spawnPoints.GetRandomPoint(teamIndex-1));
@@ -324,5 +327,18 @@ public abstract class GameRules : NetworkBehaviour
     protected void RpcCloseRoomOnClients()
     {
         CloseRoomOnClient();
+    }
+
+    [ClientRpc]
+    protected void RpcAddToTeam(int index, Character hero)
+    {
+        if (index == 1)
+        {
+            _gameManager.TeamsPanel.AddInFirstTeam(hero);
+        }
+        else
+        {
+            _gameManager.TeamsPanel.AddInSecondTeam(hero);
+        }
     }
 }

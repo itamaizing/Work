@@ -12,7 +12,7 @@ public class SkillIcon : MonoBehaviour, IDropHandler
     private int _index;
     private DraggableIcon _currentIcon;
 
-    public event Action<int, Skill> CurrentSkillChenged;
+    public event Action<int, Skill> CurrentSkillChanged;
 
     public DraggableIcon CurrentIcon 
     {
@@ -25,7 +25,7 @@ public class SkillIcon : MonoBehaviour, IDropHandler
 
                 Deselected();
 
-                CurrentSkillChenged?.Invoke(_index, null);
+                CurrentSkillChanged?.Invoke(_index, null);
                 return;
             }
             else if (_currentIcon == null)
@@ -44,7 +44,7 @@ public class SkillIcon : MonoBehaviour, IDropHandler
                 else
                     Deselected();
             }
-            CurrentSkillChenged?.Invoke(_index, _currentIcon.Skill);
+            CurrentSkillChanged?.Invoke(_index, _currentIcon.Skill);
         }
     }
 
@@ -100,5 +100,10 @@ public class SkillIcon : MonoBehaviour, IDropHandler
     public void Hide()
     {
         gameObject.SetActive(false);
+    }
+
+    public void ClearData()
+    {
+        _currentIcon = null; 
     }
 }
