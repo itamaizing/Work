@@ -9907,7 +9907,7 @@ PrefabInstance:
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_enemyPrefabs.Array.data[0]'
       value: 
-      objectReference: {fileID: 6271332717105215193, guid: b4974656f43ed384e9560645ff90b572, type: 3}
+      objectReference: {fileID: 1369531615380711236, guid: 2a26b6e6797f5a84c88bae170eb080b3, type: 3}
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_enemyPrefabs.Array.data[1]'
       value: 
@@ -11619,7 +11619,7 @@ MonoBehaviour:
       \u0437\u0430\u043F\u0430\u0441\u0443 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F,
       \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0443\u0435\u0442 12 \u0441\u0435\u043A\u0443\u043D\u0434. "
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u043F\u0441\u0438\u043E\u043D\u0438\u0447\u0435\u0441\u043A\u0430\u044F
       \u044D\u043D\u0435\u0440\u0433\u0438\u044F"
     Icon: {fileID: 21300000, guid: a3a8d614ed6ad3341991d578d430dc27, type: 3}
@@ -11655,7 +11655,7 @@ MonoBehaviour:
       \u0441\u0432\u043E\u0439\u0441\u0442\u0432\u0430\u043C\u0438 \u0438 \u0443\u0440\u043E\u043D\u043E\u043C
       \u0448\u043A\u043E\u043B\u044B \u0432\u043E\u0437\u0434\u0443\u0445\u0430."
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0410\u0442\u0430\u043A\u0443\u044E\u0449\u0430\u044F \u043F\u0441\u0438"
     Icon: {fileID: 21300000, guid: 05e9dc472a8a279439a75ccf171a5a6f, type: 3}
     Group: 0
@@ -11686,7 +11686,7 @@ MonoBehaviour:
         \u0434\u0435\u043B\u0438\u0442\u0441\u044F \u043F\u043E\u0440\u043E\u0432\u043D\u0443
         \u043C\u0435\u0436\u0434\u0443 \u043A\u044D\u0440\u0440\u0438\u0433\u0430\u043D
         \u0438 \u0446\u0435\u043B\u044F\u043C\u0438 \u0441 \u0438\u043C\u043F\u0430\u0442\u0438\u043A\u043E\u0439."
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0418\u043C\u043F\u0430\u0442\u0438\u043A\u0430"
     Icon: {fileID: 21300000, guid: 8d177058b628a854487d1af8f3aba693, type: 3}
     Group: 0
@@ -11738,12 +11738,12 @@ MonoBehaviour:
       \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0435 \u0441\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u0435
       \xAB\u0440\u0430\u0437\u0440\u044F\u0436\u0435\u043D\u0438\u0435\xBB 3 \u0441\u0442\u0430\u043A "
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0420\u0430\u0441\u0441\u0435\u0438\u0432\u0430\u044E\u0449\u0430\u044F\u0441\u044F
       \u043F\u0441\u0438"
     Icon: {fileID: 615579297, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
-    Row: 0
+    Row: 1
   character: {fileID: 8319872899575431858}
   _tentacles: {fileID: 431818094498011482}
   _psionicEnergySkill: {fileID: 2069191703388085909}
@@ -11809,7 +11809,7 @@ MonoBehaviour:
     Description: "\u041F\u0441\u0438\u043E\u043D\u0438\u043A\u0430 6"
     Icon: {fileID: 577668657, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
-    Row: 0
+    Row: 1
   character: {fileID: 8319872899575431858}
   _basePsionic: {fileID: 369466722820063190}
 --- !u!114 &557754638212878599
@@ -11838,7 +11838,7 @@ MonoBehaviour:
     Description: "\u0413\u0435\u043D\u0435\u0440\u0430\u0446\u0438\u044F \u043F\u0441\u0438"
     Icon: {fileID: -764080699210817362, guid: d8d4f4f9cfe2ed845afb52dfebd689a6, type: 3}
     Group: 0
-    Row: 0
+    Row: 1
   character: {fileID: 8319872899575431858}
   _psionicGeneration: {fileID: 1206870191879820980}
   _skillManager: {fileID: 8453834493232682211}
@@ -11993,7 +11993,7 @@ MonoBehaviour:
       \u043A\u0443\u043B\u0434\u0430\u0443\u043D\u0430 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439
       \u044D\u0432\u043E\u043B\u044E\u0446\u0438\u0438."
     _stateInfos: []
-    IsOpen: 1
+    IsOpen: 0
     Description: "\u041F\u0440\u043E\u043D\u0437\u0430\u044E\u0449\u0438\u0439 \u043D\u0430\u0441\u043A\u043E\u043A"
     Icon: {fileID: 21300000, guid: 4400fc45b7d7bf341b510b0598413a3b, type: 3}
     Group: 0
@@ -12275,7 +12275,7 @@ MonoBehaviour:
       \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0435\u0442\u0441\u044F \u0434\u043B\u044F
       \u0440\u043E\u0436\u0434\u0435\u043D\u0438\u044F \u0441\u0443\u0449\u0435\u0441\u0442\u0432.  "
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0429\u0443\u043F\u0430\u043B\u044C\u0446\u0430"
     Icon: {fileID: 21300000, guid: 58e44ea1eb75bab42a26767369e4183c, type: 3}
     Group: 0
@@ -12329,7 +12329,7 @@ MonoBehaviour:
       \u0440\u043E\u044F \u0441\u043E\u0441\u0442\u0430\u0432\u043B\u044F\u0435\u0442
       1 \u0435\u0434\u0438\u043D\u0438\u0446\u0430"
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u041A\u043E\u043A\u043E\u043D_2"
     Icon: {fileID: 21300000, guid: ee0f08a0ce484464e9adff1b91a3cba8, type: 3}
     Group: 0
@@ -12393,7 +12393,7 @@ MonoBehaviour:
     Description: "\u0417\u0430\u0449\u0438\u0442\u043D\u044B\u0439 \u043A\u043E\u043A\u043E\u043D"
     Icon: {fileID: 1115175246, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
-    Row: 0
+    Row: 1
   character: {fileID: 8319872899575431858}
   _tentacles: {fileID: 431818094498011482}
 --- !u!114 &4260348460032838645 stripped
@@ -12774,7 +12774,7 @@ MonoBehaviour:
   _cooldownTime: 12
   _castDeley: 0
   _damageValue: 0
-  _abilitySchool: 8
+  _abilitySchool: 4
   _abilityForm: 4
   _damageType: 5
   _attackRangeType: 1
@@ -12783,7 +12783,7 @@ MonoBehaviour:
   autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 768
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -12795,7 +12795,7 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 0
+  _radius: 3
   _area: 0
   _castLength: 0
   _castWidth: 0
@@ -12809,9 +12809,6 @@ MonoBehaviour:
   maxCounter: 0
   basePsionicEnergy: {fileID: 369466722820063190}
   modifier: 1
-  enemyLayer:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!114 &369466722820063190
 MonoBehaviour:
   m_ObjectHideFlags: 0

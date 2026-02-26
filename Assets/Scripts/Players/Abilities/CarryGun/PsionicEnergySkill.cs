@@ -21,10 +21,8 @@ public class PsionicEnergySkill : Skill, IPassiveSkill
 
     [SerializeField] private BasePsionicEnergy basePsionicEnergy;
     [SerializeField] private float modifier = 1f;
-    [SerializeField] private LayerMask enemyLayer;
 
     private const float PsiExplosionPercent = 0.3f;
-    private const float BasePsiExplosionRadius = 3f;
 
     #region Talent
     private bool _isPsiEnergyActive = false;
@@ -39,7 +37,7 @@ public class PsionicEnergySkill : Skill, IPassiveSkill
 
     public void HandleIncomingDamage(ref Damage damage, Skill skill)
     {
-        if (!_isPsiEnergyActive) return;
+        if (!_isPsiEnergyActive && !_isDischargingPsiTalent) return;
         if (damage.Value <= 0 || basePsionicEnergy.CurrentValue <= 0) return;
 
         float absorptionAmount = Mathf.Min(basePsionicEnergy.CurrentValue, damage.Value);
@@ -51,19 +49,24 @@ public class PsionicEnergySkill : Skill, IPassiveSkill
 
         float aoeDamageValue = absorptionAmount * PsiExplosionPercent;
 
-        float radius = BasePsiExplosionRadius;
+        float radius = Radius;
 
         if (Hero.CharacterState.CheckForState(States.PsionicGeneration))
         {
             radius *= 2f;
         }
 
-        Collider[] hits = Physics.OverlapSphere(Hero.transform.position, radius, enemyLayer);
+        var allCharacters = FindObjectsOfType<Character>();
 
-        foreach (var hit in hits)
+        foreach (var target in allCharacters)
         {
-            if (!hit.TryGetComponent(out Character target)) continue;
+            if (target == null) continue;
             if (target == Hero) continue;
+            if (target.IsDead) continue;
+
+            float sqrDistance = (target.transform.position - Hero.transform.position).sqrMagnitude;
+
+            if (sqrDistance > radius * radius) continue;
 
             Damage aoeDamage = new Damage
             {

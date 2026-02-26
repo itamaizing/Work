@@ -12223,6 +12223,7 @@ MonoBehaviour:
   _targetSeeker: {fileID: 7521758626764982985}
   _characterParent: {fileID: 0}
   _expForDieKill: 5
+  _costCall: 0
   _navMeshAgent: {fileID: 0}
 --- !u!114 &8102436864039870552
 MonoBehaviour:
@@ -12700,7 +12701,6 @@ MonoBehaviour:
   minion: {fileID: 6271332717105215193}
   tentacle: {fileID: 0}
   spawnType: 0
-  swarmWeight: 1
 --- !u!114 &3666110360829044945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12763,7 +12763,6 @@ MonoBehaviour:
   minion: {fileID: 6271332717105215193}
   tentacle: {fileID: 0}
   spawnType: 1
-  swarmWeight: 2
 --- !u!114 &2554924530257722236
 MonoBehaviour:
   m_ObjectHideFlags: 0

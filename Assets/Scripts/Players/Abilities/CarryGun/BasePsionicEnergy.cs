@@ -69,24 +69,18 @@ public class BasePsionicEnergy : Resource, IDamageable
     {
         if (_player.DamageTracker != null)
         {
-            _player.DamageTracker.OnDamageTracked -= OnDamageDealt;
             _player.DamageTracker.OnDamageTracked += OnDamageDealt;
         }
-        if (_player.Health != null)
-        {
-            _player.Health.OnBeforeDamage -= psionicEnergySkill.HandleIncomingDamage;
-            _player.Health.OnBeforeDamage += psionicEnergySkill.HandleIncomingDamage;
+        if (_player.Health != null) _player.Health.OnBeforeDamage += psionicEnergySkill.HandleIncomingDamage;
 
-        }
         if (_player.SpawnComponent != null)
         {
-            _player.SpawnComponent.UnitAdded -= OnMinionSpawned;
-            _player.SpawnComponent.UnitRemoved -= OnMinionRemoved;
             _player.SpawnComponent.UnitAdded += OnMinionSpawned;
             _player.SpawnComponent.UnitRemoved += OnMinionRemoved;
         }
     }
-    private void OnDisable()
+
+    private void OnDestroy()
     {
         if (_player != null && _player.DamageTracker != null) _player.DamageTracker.OnDamageTracked -= OnDamageDealt;
         if (_player.Health != null) _player.Health.OnBeforeDamage -= psionicEnergySkill.HandleIncomingDamage;
