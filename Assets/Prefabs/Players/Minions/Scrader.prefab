@@ -13092,6 +13092,7 @@ GameObject:
   - component: {fileID: 8741847699558006757}
   - component: {fileID: 8331210179348555134}
   - component: {fileID: 2196113789592555911}
+  - component: {fileID: 1393425115325331674}
   m_Layer: 9
   m_Name: Scrader
   m_TagString: Allies
@@ -13330,7 +13331,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _playerData: {fileID: 11400000, guid: 56f88e1aa8c06a044a76ec3336cf274a, type: 2}
-  _attributeSystem: {fileID: 0}
+  _attributeSystem: {fileID: 1393425115325331674}
   _networkSettings: {fileID: 4352968657823446686}
   _rigidbody: {fileID: 512746244656594313}
   _collider: {fileID: 3393799689084107314}
@@ -13927,6 +13928,21 @@ MonoBehaviour:
   IsMoving: 0
   IsSelect: 0
   IsNoRotateAtCursor: 0
+--- !u!114 &1393425115325331674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305573293433524190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36119deea7370464ba6e74a8a3c290a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttributeSystem
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &4348563488435226753
 GameObject:
   m_ObjectHideFlags: 0

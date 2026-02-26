@@ -11,6 +11,9 @@ public class AttackingPsionicEnergy : Energy
     private const float _baseMaxAttackingPsiEnergy = 30f;
     private const float _timeAttackingPsiEnergy = 6f;
 
+    [SyncVar(hook = nameof(OnEnergyUpdated))]
+    private float _syncedEnergy;
+
     private float _currentMaxAttackingPsiEnergy;
     private float _remainingTime;
     private bool _isAttackingPsiActive = false;
@@ -31,7 +34,6 @@ public class AttackingPsionicEnergy : Energy
 
         _maxValue = _currentMaxAttackingPsiEnergy;
 
-        RpcOnEnergyChanged(CurrentValue);
         UpdateAttackingEnergyBar();
     }
 
@@ -57,6 +59,7 @@ public class AttackingPsionicEnergy : Energy
         return Mathf.FloorToInt(energySpent / 10f);
     }
 
+    [Server]
     public void ReceiveAttackingEnergy(float transferAmount)
     {
         _remainingTime = _timeAttackingPsiEnergy;
@@ -64,16 +67,18 @@ public class AttackingPsionicEnergy : Energy
         Add(transferAmount);
         CurrentValue = Mathf.Min(CurrentValue, _currentMaxAttackingPsiEnergy);
 
-        RpcOnEnergyChanged(CurrentValue);
-
-        RpcAttackingPsiEnergyChanged(true, CurrentValue);
-        UpdateAttackingEnergyBar();
+        _syncedEnergy = CurrentValue;
 
         if (_attackingPsiEnergyCoroutine != null)
-        {
             StopCoroutine(_attackingPsiEnergyCoroutine);
-        }
+
         _attackingPsiEnergyCoroutine = StartCoroutine(AttackingPsiEnergyJob());
+    }
+
+    private void OnEnergyUpdated(float oldValue, float newValue)
+    {
+        CurrentValue = newValue;
+        UpdateAttackingEnergyBar();
     }
 
     private IEnumerator AttackingPsiEnergyJob()
@@ -87,28 +92,12 @@ public class AttackingPsionicEnergy : Energy
         CurrentValue = 0;
         _isAttackingPsiActive = false;
 
-        RpcOnEnergyChanged(CurrentValue);
-
-        RpcAttackingPsiEnergyChanged(false, 0f);
+        OnEnergyChanged?.Invoke(CurrentValue);
         UpdateAttackingEnergyBar();
     }
 
     private void UpdateAttackingEnergyBar()
     {
         attackingPsionicsSlider.value = CurrentValue / _currentMaxAttackingPsiEnergy;
-    }
-
-    [ClientRpc]
-    private void RpcAttackingPsiEnergyChanged(bool isActive, float energyValue)
-    {
-        _isAttackingPsiActive = isActive;
-        UpdateAttackingEnergyBar();
-    }
-
-    [ClientRpc]
-    private void RpcOnEnergyChanged(float value)
-    {
-        CurrentValue = value;
-        OnEnergyChanged?.Invoke(value);
     }
 }

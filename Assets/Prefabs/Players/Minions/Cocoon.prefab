@@ -11961,6 +11961,7 @@ GameObject:
   - component: {fileID: 430165030280571863}
   - component: {fileID: 6995002632317580941}
   - component: {fileID: 3666110360829044945}
+  - component: {fileID: 2554924530257722236}
   m_Layer: 9
   m_Name: Cocoon
   m_TagString: Allies
@@ -12052,7 +12053,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 126
   m_CollisionDetection: 1
@@ -12199,7 +12200,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _playerData: {fileID: 11400000, guid: 77ed62c2befefcd4a9d71e180b4e3708, type: 2}
-  _attributeSystem: {fileID: 0}
+  _attributeSystem: {fileID: 2554924530257722236}
   _networkSettings: {fileID: 4704448068992970106}
   _rigidbody: {fileID: 6956811484752265138}
   _collider: {fileID: 3666356079801673500}
@@ -12220,7 +12221,7 @@ MonoBehaviour:
   _spawnComponent: {fileID: 7099943676139532891}
   _visionComponent: {fileID: 430165030280571863}
   _auras: {fileID: 0}
-  _targetSeeker: {fileID: 0}
+  _targetSeeker: {fileID: 7521758626764982985}
   _characterParent: {fileID: 0}
   _expForDieKill: 5
   _navMeshAgent: {fileID: 0}
@@ -12710,7 +12711,6 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   spawnComponent: {fileID: 7099943676139532891}
-  cocoonSpawn: {fileID: 0}
   minionMove: {fileID: 321651727084008340}
   minion: {fileID: 6271332717105215193}
   tentacle: {fileID: 0}
@@ -12774,12 +12774,26 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   spawnComponent: {fileID: 7099943676139532891}
-  cocoonSpawn: {fileID: 0}
   minionMove: {fileID: 321651727084008340}
   minion: {fileID: 6271332717105215193}
   tentacle: {fileID: 0}
   spawnType: 1
   swarmWeight: 2
+--- !u!114 &2554924530257722236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3906734254346883187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36119deea7370464ba6e74a8a3c290a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttributeSystem
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &4028508627336737555
 GameObject:
   m_ObjectHideFlags: 0
@@ -18063,6 +18077,7 @@ GameObject:
   - component: {fileID: 8606608762921799100}
   - component: {fileID: 376959542437357243}
   - component: {fileID: 1106875357886514586}
+  - component: {fileID: 7521758626764982985}
   m_Layer: 0
   m_Name: Abilities
   m_TagString: Untagged
@@ -18269,6 +18284,22 @@ MonoBehaviour:
   _cursorPrepareTexture: {fileID: 0}
   _cursorPrepareLightTexture: {fileID: 0}
   _cursorDefaultTexture: {fileID: 0}
+--- !u!114 &7521758626764982985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5001548455269228886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0eaa338de0c76e4fbe06fa8331fcfa7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TargetSeeker
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _hero: {fileID: 6271332717105215193}
 --- !u!1 &5031739736488934481
 GameObject:
   m_ObjectHideFlags: 0

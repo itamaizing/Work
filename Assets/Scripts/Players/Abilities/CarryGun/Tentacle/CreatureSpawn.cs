@@ -16,7 +16,6 @@ public class CreatureSpawn : Skill
     private Vector3 _spawnPoint = Vector3.positiveInfinity;
 
     [SerializeField] private SpawnComponent spawnComponent;
-    [SerializeField] private CocoonSpawn cocoonSpawn;
     [SerializeField] private MinionMove minionMove;
     [SerializeField] private MinionComponent minion;
     [SerializeField] private Tentacles tentacle;
@@ -29,22 +28,11 @@ public class CreatureSpawn : Skill
     protected override bool IsCanCast => _spawnPoint != Vector3.positiveInfinity;
 
     public Tentacles Tentacle { get => tentacle; set => tentacle = value; }
-    public CocoonSpawn CocoonSpawn { get => cocoonSpawn; set => cocoonSpawn = value; }
     public int SwarmWeight => swarmWeight;
 
     private void OnEnable()
     {
         Hero.Move.SetCanMove(false);
-    }
-
-    private void OnDestroy()
-    {
-        if (cocoonSpawn != null) cocoonSpawn.CurrentCounter--;
-    }
-
-    private void Start()
-    {
-        if (cocoonSpawn != null) cocoonSpawn.CurrentCounter++;
     }
 
     protected override IEnumerator PrepareJob(System.Action<TargetInfo> callback)
