@@ -67,7 +67,7 @@ public class ShotDarkness : Skill
 
         _isHealthAboveThreshold = false;
 
-        if (Targeting.GetTarget() != null && Targeting.GetTarget().Character is Character targetCurrent)
+        if (Targeting.GetTarget() != null && Targeting.GetTarget()?.Character is Character targetCurrent)
         {
             var health = targetCurrent.Health;
             _isHealthAboveThreshold = health.CurrentValue >= health.MaxValue * HealthThresholdPercent;
@@ -137,13 +137,13 @@ public class ShotDarkness : Skill
                 Targeting.FindTempTarget(Targeting.GetMousePoint(), RadiusTargetCheck);
                 targetPoint = GetMousePoint(_groundLayerMask);
 
-                if (Targeting.GetTempTarget().Targetable != null && Targeting.GetTempTarget().Targetable is IDamageable damageable)
+                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
                 {
                     if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
 
                     else
                     {
-                        if (Targeting.GetTempTarget().Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        if (Targeting.GetTempTarget()?.Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
                         break;
                     }
                 }
@@ -151,10 +151,10 @@ public class ShotDarkness : Skill
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget().Targetable);
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget().Targetable);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
         targetInfo.Points.Add(targetPoint);
         callbackDataSaved(targetInfo);
     }

@@ -37,18 +37,19 @@ public class ChargeComponent : BaseSkillComponent
     public bool UsesCharges => _usesCharges;
     public bool IsComboPart => _isComboPart;
     public ChargeCooldownType CooldownType => _cooldownType;
-    public int MaxCharges  {
+    public int MaxCharges {
         get { return _maxCharges; }
         set { _maxCharges = value; }
     }
-    public int CurrentCharges  {
+    public int CurrentCharges {
         get { return _currentCharges; }
         set {
             _currentCharges = value;
             //_skill.CurrentChargeChanged?.Invoke(_currentCharges);
         }
     }
-    public bool HasCharges => _currentCharges > 0;
+    public bool HasCharges => UsesCharges ? _currentCharges > 0 : true;
+
     public float BaseCooldown => _baseCooldown;
 
     public List<float> ActiveCooldowns => _remainingCooldowns;

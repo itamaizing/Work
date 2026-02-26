@@ -159,18 +159,18 @@ public class PoisonSlap : Skill
         //    yield break;
         //}
 
-        while (Targeting.GetTempTarget().Character == null)
+        while (Targeting.GetTempTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
                 Targeting.FindTempTarget(Targeting.GetMousePoint(), _radiusTargetSearch);
 
-                if (Targeting.GetTempTarget().Character != null)
+                if (Targeting.GetTempTarget()?.Character != null)
                 {
-                    if (IsAllyTarget(Targeting.GetTempTarget().Character) || Targeting.GetTempTarget().Character == Hero) Targeting.ClearTempTarget();
+                    if (IsAllyTarget(Targeting.GetTempTarget()?.Character) || Targeting.GetTempTarget()?.Character == Hero) Targeting.ClearTempTarget();
 
                     _firstMousePosition = Targeting.GetMousePoint();
-                    CreateArrowsParallelToPlayer(Targeting.GetTempTarget().Character);
+                    CreateArrowsParallelToPlayer(Targeting.GetTempTarget()?.Character);
                     Renderer.HideSmartIndicator();
                     _firstClickDone = true;
 
@@ -181,10 +181,10 @@ public class PoisonSlap : Skill
         }
 
         yield return _secondMouseClickCoroutine = StartCoroutine(SecondClick());
-        Targeting.SetTarget(Targeting.GetTempTarget().Character);
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget().Character);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 
@@ -195,8 +195,8 @@ public class PoisonSlap : Skill
             _poisonBall.PayCostPoisonBall();
         }
 
-        ChooseDirectionPush(Targeting.GetTarget().Character);
-        DamageDeal(Targeting.GetTarget().Character);
+        ChooseDirectionPush(Targeting.GetTarget()?.Character);
+        DamageDeal(Targeting.GetTarget()?.Character);
 
         yield return null;
     }
@@ -231,7 +231,7 @@ public class PoisonSlap : Skill
 
     private bool CheckCanCast()
     {
-        if (Targeting.GetTarget().Character == null)
+        if (Targeting.GetTarget()?.Character == null)
             return false;
 
         return Vector3.Distance(_player.transform.position, Targeting.GetTarget().Character.transform.position) <= AreaInfo.Radius;
@@ -333,7 +333,7 @@ public class PoisonSlap : Skill
 
     private void UpdateMouseDetection()
     {
-        if (!_firstClickDone || Targeting.GetTempTarget().Character == null) return;
+        if (!_firstClickDone || Targeting.GetTempTarget()?.Character == null) return;
 
         Vector3 playerPos = _player.transform.position;
         Vector3 targetPos = Targeting.GetTempTarget().Character.transform.position;
@@ -379,7 +379,7 @@ public class PoisonSlap : Skill
                 _secondClickDone = true;
                 _secondMousePosition = Targeting.GetMousePoint();
 
-                if (Targeting.GetTempTarget().Character != null)
+                if (Targeting.GetTempTarget()?.Character != null)
                 {
                     SetArrowVisibility(0, false);
                     SetArrowVisibility(1, false);
@@ -442,7 +442,7 @@ public class PoisonSlap : Skill
             _poisonBall.PayCostPoisonBall();
         }
 
-        if (Targeting.GetTarget().Character != null)
+        if (Targeting.GetTarget()?.Character != null)
         {
             Damage damage = new Damage
             {
@@ -451,7 +451,7 @@ public class PoisonSlap : Skill
                 PhysicAttackType = AttackRangeType.MeleeAttack,
             };
 
-            CmdApplyDamage(damage, Targeting.GetTarget().Character.gameObject);
+            CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
 
             if (Targeting.GetTarget().Character.CharacterState.CheckForState(States.PoisonBone) && _restorationOfGlands && _poisonBoneStack > 0)
             {
@@ -464,7 +464,7 @@ public class PoisonSlap : Skill
                 }
             }
 
-            PushTarget(Targeting.GetTarget().Character, _distancePush, _durationPush, _isPushTargetAllowed);
+            PushTarget(Targeting.GetTarget()?.Character, _distancePush, _durationPush, _isPushTargetAllowed);
         }
         UseRecharge();
     }
@@ -541,7 +541,5 @@ public class PoisonSlap : Skill
         if (targetMoveComponent.connectionToClient != null) targetMoveComponent.TargetRpcDoMove(target.transform.position + perpendicularDirection * distancePush, durationPush);
         else targetMoveComponent.RpcDoMove(target.transform.position + perpendicularDirection * distancePush, durationPush);
     }
-
-
     #endregion
 }

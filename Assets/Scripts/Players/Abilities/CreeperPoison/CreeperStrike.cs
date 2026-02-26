@@ -94,13 +94,13 @@ public class CreeperStrike : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (Targeting.GetTempTarget().Targetable == null)
+        while (Targeting.GetTempTarget()?.Targetable == null)
         {
             if (GetMouseButton)
             {
                 Targeting.FindTempTarget(Targeting.GetMousePoint(), _radiusSearchTarget);
 
-                if (Targeting.GetTempTarget().Targetable != null && Targeting.GetTempTarget().Targetable is IDamageable damageable)
+                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
                 {
                     if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
                     else break;
@@ -109,10 +109,10 @@ public class CreeperStrike : Skill
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget().Targetable);
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
 
         targetInfo.Points.Add(Targeting.GetTarget().Transform.position);
-        targetInfo.AddTarget(Targeting.GetTarget().Targetable);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
         callbackDataSaved.Invoke(targetInfo);
     }
 
@@ -120,7 +120,7 @@ public class CreeperStrike : Skill
     {
         if (Targeting.GetTarget() == null) yield return null;
         _hero.Move.StopLookAt();
-        DamageDeal(Targeting.GetTarget() as IDamageable);
+        DamageDeal(Targeting.GetTarget()?.Damageable);
 
         yield return null;
     }

@@ -13,7 +13,7 @@ public class SleepSpell : Skill
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private bool _isSleepInnerDarknessTalentActive = false;
 
-    protected override bool IsCanCast => IsHaveCharge && Targeting.GetTarget().Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
+    protected override bool IsCanCast => IsHaveCharge && Targeting.GetTarget()?.Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
     protected override int AnimTriggerCast => 0;
 
@@ -23,26 +23,26 @@ public class SleepSpell : Skill
     {
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
-        while (Targeting.GetTarget().Character == null && !_disactive)
+        while (Targeting.GetTarget()?.Character == null && !_disactive)
         {
             if (GetMouseButton)
             {
                 Targeting.FindTempTarget();
                 //_target = GetRaycastTarget(true);
                 //_runtimeTarget = Targeting.GetTarget();
-                if (multiMagic != null) multiMagic.LastTarget = Targeting.GetTarget().Character;
+                if (multiMagic != null) multiMagic.LastTarget = Targeting.GetTarget()?.Character;
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget().Character);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget().Character != null) CmdApplyAbsorptionState(Targeting.GetTarget().Character.gameObject);
+        if (Targeting.GetTarget()?.Character != null) CmdApplyAbsorptionState(Targeting.GetTarget()?.Character.gameObject);
 
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 

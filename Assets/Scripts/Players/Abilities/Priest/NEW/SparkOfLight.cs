@@ -73,7 +73,7 @@ public class SparkOfLight : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("SparkOfLights");
 
-    protected override bool IsCanCast => Targeting.GetTarget().Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
+    protected override bool IsCanCast => Targeting.GetTarget()?.Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
 
     public event Action OnModeChange;
 
@@ -130,22 +130,22 @@ public class SparkOfLight : Skill
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
 
-        while (Targeting.GetTempTarget().Character == null)
+        while (Targeting.GetTempTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
                 Targeting.FindTempTarget();
 
-                if (Targeting.GetTempTarget().Character is Character character)
+                if (Targeting.GetTempTarget()?.Character is Character character)
                 {
                     //_characterTarget = character;
 
-                    if (Targeting.GetTempTarget().Character != null && (IsAllyTarget(character) || character == Hero) && !isLightMode)
+                    if (Targeting.GetTempTarget()?.Character != null && (IsAllyTarget(character) || character == Hero) && !isLightMode)
                     {
                         Targeting.ClearTarget();
                     }
 
-                    if (Targeting.GetTempTarget().Character != null)
+                    if (Targeting.GetTempTarget()?.Character != null)
                     {
                         character.SelectedCircle.IsActive = true;
                     }
@@ -155,16 +155,16 @@ public class SparkOfLight : Skill
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget().Character);
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget().Character);
-        targetInfo.AddTarget(Targeting.GetTarget().Character);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget().Character == null) yield break;
+        if (Targeting.GetTarget()?.Character == null) yield break;
 
         if (!IsCanCast)
         {
@@ -173,22 +173,22 @@ public class SparkOfLight : Skill
             yield break;
         }
 
-        if (IsAllyTarget(Targeting.GetTarget().Character))
+        if (IsAllyTarget(Targeting.GetTarget()?.Character))
         {
             //TryPayCost(_manaCostHeal);
 
-            if (Targeting.GetTarget().Character == playerLinks) CmdHandleDefaultMode(playerLinks);
-            else CmdSpawnProjectile(Targeting.GetTarget().Character);
+            if (Targeting.GetTarget()?.Character == playerLinks) CmdHandleDefaultMode(playerLinks);
+            else CmdSpawnProjectile(Targeting.GetTarget()?.Character);
 
             yield break;
         }
 
-        if (IsEnemyTarget(Targeting.GetTarget().Character))
+        if (IsEnemyTarget(Targeting.GetTarget()?.Character))
         {
             //TryPayCost(isLightMode ? _manaCostDamage : _altManaCostDamage);
 
-            if (isLightMode) CmdSpawnProjectile(Targeting.GetTarget().Character);
-            else CmdSpawnProjectileDark(Targeting.GetTarget().Character);
+            if (isLightMode) CmdSpawnProjectile(Targeting.GetTarget()?.Character);
+            else CmdSpawnProjectileDark(Targeting.GetTarget()?.Character);
         }
     }
 
@@ -198,7 +198,7 @@ public class SparkOfLight : Skill
         {
             if (isLightMode)
             {
-                if (IsAllyTarget(Targeting.GetTarget().Character))
+                if (IsAllyTarget(Targeting.GetTarget()?.Character))
                 {
                     skillEnergyCosts = _manaCostHeal;
                 }

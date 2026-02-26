@@ -94,9 +94,9 @@ public class ChainBlade : Skill
             {
                 Targeting.FindTempTarget(Targeting.GetMousePoint(), SearchTargetInRadius);
 
-                if (Targeting.GetTempTarget().Character != null)
+                if (Targeting.GetTempTarget()?.Character != null)
                 {
-                    if (IsAllyTarget(Targeting.GetTempTarget().Character) || Targeting.GetTempTarget().Character == Hero) Targeting.ClearTempTarget();
+                    if (IsAllyTarget(Targeting.GetTempTarget()?.Character) || Targeting.GetTempTarget()?.Character == Hero) Targeting.ClearTempTarget();
 
                     else
                     {

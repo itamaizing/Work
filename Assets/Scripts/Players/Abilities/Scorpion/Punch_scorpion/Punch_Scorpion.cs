@@ -17,7 +17,7 @@ public class Punch_Scorpion : AutoAttackSkill
 
     protected override void CastAction()
     {
-        if (_lastTarget != null && _lastTarget != Targeting.GetTarget().Character) //�����
+        if (_lastTarget != null && _lastTarget != Targeting.GetTarget()?.Character) //�����
         {
             _comboCounter.ResetCounter();
         }
@@ -38,10 +38,10 @@ public class Punch_Scorpion : AutoAttackSkill
                 Type = DamageType,
             };
 
-            CmdAttack(damage, Targeting.GetTarget().Character.gameObject);
+            CmdAttack(damage, Targeting.GetTarget()?.Character.gameObject);
         }
         else Debug.LogWarning("������� ������");
-        _lastTarget = Targeting.GetTarget().Character;
+        _lastTarget = Targeting.GetTarget()?.Character;
 
     }
     private void AttackPassed(Character target)

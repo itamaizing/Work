@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -45,8 +45,7 @@ public class IceShadow : Skill
 	{
 		_audioSource = GetComponent<AudioSource>();
 
-        _energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
-
+        //_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
 	}
 
 	private void OnEnable()
@@ -67,7 +66,10 @@ public class IceShadow : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		TargetInfo targetInfo = new TargetInfo();
+		if (_energy == null)
+			_energy = (Energy)Hero.Resources[ResourceType.Energy];
+
+        TargetInfo targetInfo = new TargetInfo();
 		targetInfo.AddTarget(Hero);
 		callbackDataSaved(targetInfo);
 		yield return null;

@@ -18,7 +18,7 @@ public class TestH3 : Skill
 
     protected override int AnimTriggerCast => Animator.StringToHash("H3Cast");
 
-    public Character Target { get => Targeting.GetTarget().Character; private set
+    public Character Target { get => Targeting.GetTarget()?.Character; private set
         {
             if (value != null)
                 Debug.Log(value.name);
@@ -29,7 +29,7 @@ public class TestH3 : Skill
 
     private bool CheckCanCast()
     {
-        if (Targeting.GetTarget().Character == null)
+        if (Targeting.GetTarget()?.Character == null)
             return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.Radius;
 
         return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.Radius ||
@@ -66,9 +66,9 @@ public class TestH3 : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget().Character != null)
+        if (Targeting.GetTarget()?.Character != null)
         {
-            CmdCreateProjecttile(Targeting.GetTarget().Character.transform);
+            CmdCreateProjecttile(Targeting.GetTarget()?.Character.transform);
         }
         else
         {
@@ -90,12 +90,12 @@ public class TestH3 : Skill
     {
         Buff.CastSpeed.IncreasePercentage(_animSpeed);
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && Targeting.GetTarget().Character == null)
+        while (float.IsPositiveInfinity(_targetPoint.x) && Targeting.GetTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
                 Targeting.FindTempTarget();
-                //_target = Targeting.GetTarget().character;
+                //_target = Targeting.GetTarget()?.Character;
                 //_targetPoint = Targeting.GetTarget().Position;
 
                 _targetPoint = Targeting.GetMousePoint();
@@ -103,7 +103,7 @@ public class TestH3 : Skill
             yield return null;
         }
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget().Character);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         targetInfo.Points.Add(_targetPoint);
         callbackDataSaved(targetInfo);
     }

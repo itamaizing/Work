@@ -20,7 +20,7 @@ public class SubjugationMind : Skill
 
     protected override IEnumerator CastJob()
     {
-        CmdIntercept(Targeting.GetTarget().Character);
+        CmdIntercept(Targeting.GetTarget()?.Character);
 
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
@@ -48,7 +48,7 @@ public class SubjugationMind : Skill
     {
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && Targeting.GetTarget().Character == null)
+        while (float.IsPositiveInfinity(_targetPoint.x) && Targeting.GetTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
@@ -58,7 +58,7 @@ public class SubjugationMind : Skill
 
                 //if (Targeting.GetTarget() is MinionComponent minion) _target = minion;
                 //else if (Targeting.GetTarget() is HeroComponent heroComponent) _target = heroComponent;
-                if (multiMagic != null) multiMagic.LastTarget = Targeting.GetTarget().Character;
+                if (multiMagic != null) multiMagic.LastTarget = Targeting.GetTarget()?.Character;
             }
             yield return null;
         }

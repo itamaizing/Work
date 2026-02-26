@@ -56,7 +56,7 @@ public class DeathSpiral : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		while (Targeting.GetTarget().Character == null)
+		while (Targeting.GetTarget()?.Character == null)
 		{
 			if (GetMouseButton)
 			{
@@ -252,7 +252,7 @@ public class DeathSpiral : Skill
 		_seriesOfStrikes.MakeHit(null, AbilityForm, 1, 0, 0);
 
 
-		Shoot(angle, _inTheRow, Targeting.GetTarget().Character.gameObject, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
+		Shoot(angle, _inTheRow, Targeting.GetTarget()?.Character.gameObject, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
 	}
 
 	private void BasicShoot()
@@ -264,7 +264,7 @@ public class DeathSpiral : Skill
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 		_seriesOfStrikes.MakeHit(null, AbilityForm, 1, 0, 0);
-		Shoot(angle, _inTheRow, Targeting.GetTarget().Character.gameObject, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
+		Shoot(angle, _inTheRow, Targeting.GetTarget()?.Character.gameObject, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
 	}
 
 	private void SecondAttact()
@@ -274,7 +274,7 @@ public class DeathSpiral : Skill
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 		_seriesOfStrikes.MakeHit(null, AbilityForm, 1, 0, 0);
-		Shoot(angle, _inTheRow, Targeting.GetTarget().Character.gameObject, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
+		Shoot(angle, _inTheRow, Targeting.GetTarget()?.Character.gameObject, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
 	}
 
 	public void AddCharge()

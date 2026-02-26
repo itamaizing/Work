@@ -33,16 +33,16 @@ public class DoubleCheliceraStrike : Skill
     {
         //_runtimeTarget = null;
 
-        while (Targeting.GetTarget().Character == null)
+        while (Targeting.GetTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
                 Targeting.FindTempTarget();
                 //_target = GetRaycastTarget();
 
-                if (Targeting.GetTarget().Character != null)
+                if (Targeting.GetTarget()?.Character != null)
                 {
-                    if (Targeting.GetTarget().Character is Character characterTarget)
+                    if (Targeting.GetTarget()?.Character is Character characterTarget)
                     {
                         //_runtimeTarget = characterTarget;
                         characterTarget.SelectedCircle.IsActive = true;
@@ -53,15 +53,15 @@ public class DoubleCheliceraStrike : Skill
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget().Character);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget().Character == null) yield return null;
+        if (Targeting.GetTarget()?.Character == null) yield return null;
 
-        DealDoubleCheliceraStrikeDamage(Targeting.GetTarget().Character);
+        DealDoubleCheliceraStrikeDamage(Targeting.GetTarget()?.Character);
 
         cooldownEnergy.CastCooldownEnergySkill(cooldownEnergyCost, this);
 
@@ -70,7 +70,7 @@ public class DoubleCheliceraStrike : Skill
 
     private bool IsTargetInRange()
     {
-        return Targeting.GetTarget().Character != null &&
+        return Targeting.GetTarget()?.Character != null &&
             Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius &&
             Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
     }

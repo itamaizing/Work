@@ -20,7 +20,7 @@ public class TestH2 : Skill
     {
         get
         {
-            if(Targeting.GetTarget().Character != null)
+            if(Targeting.GetTarget()?.Character != null)
                 return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
 
             return false;
@@ -45,7 +45,7 @@ public class TestH2 : Skill
             Type = DamageType,
             PhysicAttackType = AttackRangeType,
         };
-        CmdApplyDamage(damage, Targeting.GetTarget().Character.gameObject);
+        CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
 
         var deley = new WaitForSeconds(_spawnDeley); ;
 
@@ -73,7 +73,7 @@ public class TestH2 : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (Targeting.GetTarget().Character == null)
+        while (Targeting.GetTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
@@ -85,7 +85,7 @@ public class TestH2 : Skill
         }
         TargetInfo targetInfo = new();
         targetInfo.Points.Add(_targetPoint);
-        targetInfo.AddTarget(Targeting.GetTarget().Character);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 

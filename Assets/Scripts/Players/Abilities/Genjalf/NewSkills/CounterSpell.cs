@@ -16,7 +16,7 @@ public class CounterSpell : Skill
 
     private bool CheckCanCast()
     {
-        return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.GetTarget().Character != null;
+        return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.GetTarget()?.Character != null;
     }
 
     public void AnimCastLight()
@@ -37,10 +37,10 @@ public class CounterSpell : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget().Character != null)
+        if (Targeting.GetTarget()?.Character != null)
         {
-            CmdState(Targeting.GetTarget().Character.gameObject, 5);
-            Targeting.GetTarget().Character.Abilities.CancleAllSkills();
+            CmdState(Targeting.GetTarget()?.Character.gameObject, 5);
+            Targeting.GetTarget()?.Character.Abilities.CancleAllSkills();
 
             //Targeting.ClearTarget();
         }
@@ -57,7 +57,7 @@ public class CounterSpell : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (Targeting.GetTempTarget().Targetable == null)
+        while (Targeting.GetTempTarget()?.Targetable == null)
         {
             if (GetMouseButton)
             {
@@ -65,10 +65,10 @@ public class CounterSpell : Skill
             }
             yield return null;
         }
-        Targeting.SetTarget(Targeting.GetTempTarget().Targetable);
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
         Targeting.ClearTempTarget();
 
-        targetInfo.AddTarget(Targeting.GetTarget().Character);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 

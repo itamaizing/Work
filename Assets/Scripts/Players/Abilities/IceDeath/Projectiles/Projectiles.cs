@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using UnityEngine;
 
 
@@ -27,7 +27,10 @@ public class Projectiles : NetworkBehaviour
 		_lastHit = lastHit;
 		_skill = skill;
 		_rb.AddForce(transform.forward * _force, ForceMode.Impulse);
-        //_energy = (Energy)_dad.Resources[ResourceType.Energy];
+        if (_dad.Resources.TryGetValue(ResourceType.Energy, out var res))
+			_energy = (Energy) res;
+        if (_dad.Resources.TryGetValue(ResourceType.Rune, out res))
+            _rune = (RuneComponent)res;
         //_rune = (RuneComponent)_dad.Resources[ResourceType.Rune];
         //Debug.Log("bullet init");
     }

@@ -52,7 +52,7 @@ public class Tentacles : Skill
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("Spell");
     protected override int AnimTriggerCast => 0;
-    protected override bool IsCanCast => (Targeting.GetTarget().Character != null || _isClickedOnGround) && _spawnPoint != Vector3.positiveInfinity && IsCanRadius();
+    protected override bool IsCanCast => (Targeting.GetTarget()?.Character != null || _isClickedOnGround) && _spawnPoint != Vector3.positiveInfinity && IsCanRadius();
 
     private bool IsCanRadius()
     {
@@ -301,7 +301,7 @@ public class Tentacles : Skill
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(targetPoint);
-        targetInfo.AddTarget(Targeting.GetTarget().Character);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 
@@ -309,7 +309,7 @@ public class Tentacles : Skill
     {
         if (!IsValidVector(_spawnPoint)) yield break;
 
-        if (Targeting.GetTarget().Character != null) CmdSpawnTentacles(_spawnPoint, Targeting.GetTarget().Character, _spentAttackingPsiEnergy);
+        if (Targeting.GetTarget()?.Character != null) CmdSpawnTentacles(_spawnPoint, Targeting.GetTarget()?.Character, _spentAttackingPsiEnergy);
 
         else
         {

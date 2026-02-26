@@ -24,7 +24,7 @@ public class PlagueAbsorption : Skill
 
     private bool IsCanCastCheck()
 	{
-		if(Targeting.GetTarget().Character == null) return false;
+		if(Targeting.GetTarget()?.Character == null) return false;
 		return true;
 
 	}
@@ -40,7 +40,7 @@ public class PlagueAbsorption : Skill
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		while (Targeting.GetTarget().Character == null && _charges <= 0)
+		while (Targeting.GetTarget()?.Character == null && _charges <= 0)
 		{
 			if (GetMouseButton)
 			{
@@ -55,7 +55,7 @@ public class PlagueAbsorption : Skill
 
 	protected override IEnumerator CastJob()
 	{
-		Absorption(Targeting.GetTarget().Character.gameObject);
+		Absorption(Targeting.GetTarget()?.Character.gameObject);
 		yield return null;
 	}
 

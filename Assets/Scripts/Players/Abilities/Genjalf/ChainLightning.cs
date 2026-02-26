@@ -41,9 +41,9 @@ public class ChainLightning : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget().Character != null)
+        if (Targeting.GetTarget()?.Character != null)
         {
-            Attack(Targeting.GetTarget().Character);
+            Attack(Targeting.GetTarget()?.Character);
             yield return new WaitForSecondsRealtime(0.3f);
             var temps = Physics.OverlapSphere(Targeting.GetTarget().Character.Position, AreaInfo.Radius, _targetsLayers);
             
@@ -69,7 +69,7 @@ public class ChainLightning : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (Targeting.GetTarget().Character == null)
+        while (Targeting.GetTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
@@ -79,7 +79,7 @@ public class ChainLightning : Skill
             yield return null;
         }
 
-        targetInfo.AddTarget(Targeting.GetTarget().Character);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 

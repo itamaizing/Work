@@ -24,7 +24,7 @@ public class DeafeningScream : Skill
 
     private bool CheckCanCast()
     {
-        return Targeting.GetTarget().Character != null && cooldownEnergy.CurrentValue >= jumpWithChelicera.ChargeCooldown &&
+        return Targeting.GetTarget()?.Character != null && cooldownEnergy.CurrentValue >= jumpWithChelicera.ChargeCooldown &&
         Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius &&
         Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
     }
@@ -41,13 +41,13 @@ public class DeafeningScream : Skill
     {
         _runtimeTarget = null;
 
-        while (Targeting.GetTarget().Character == null)
+        while (Targeting.GetTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
                 Targeting.FindTempTarget();
 
-                if (Targeting.GetTarget().Character != null) if (Targeting.GetTarget().Character is Character characterTarget) _runtimeTarget = characterTarget;
+                if (Targeting.GetTarget()?.Character != null) if (Targeting.GetTarget()?.Character is Character characterTarget) _runtimeTarget = characterTarget;
                 _isCanCancel = false;
             }
             yield return null;
@@ -60,7 +60,7 @@ public class DeafeningScream : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget().Character != null) CmdApplyState(Targeting.GetTarget().Character.gameObject);
+        if (Targeting.GetTarget()?.Character != null) CmdApplyState(Targeting.GetTarget()?.Character.gameObject);
 
         cooldownEnergy.CastCooldownEnergySkill(13, this);
         AfterCastJob();
@@ -109,7 +109,7 @@ public class DeafeningScream : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((ITargetable)(targetInfo.GetTargets()[0] as Character));
-        Hero.Move.LookAtTransform(Targeting.GetTarget().Character.transform);
+        Hero.Move.LookAtTransform(Targeting.GetTarget()?.Character.transform);
         _isCanCancel = false;
     }
 }

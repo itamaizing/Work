@@ -16,7 +16,7 @@ public class LightningStrike : Skill
 
     private bool CheckCanCast()
     {
-        return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.GetTarget().Character != null;
+        return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.GetTarget()?.Character != null;
     }
 
     public void AnimCastLight()
@@ -36,20 +36,20 @@ public class LightningStrike : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget().Character != null)
+        if (Targeting.GetTarget()?.Character != null)
         {
             Damage damage = new Damage
             {
                 Value = Buff.Damage.GetBuffedValue(Damage),
                 Type = DamageType
             };
-            CmdApplyDamage(damage, Targeting.GetTarget().Character.gameObject);
+            CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
 
             CmdCreateParticle(Targeting.GetTarget().Character.Position);
 
             if (UnityEngine.Random.Range(1, 100) <= _debuffChance)
             {
-                Targeting.GetTarget().Character.CharacterState.AddState(States.Discharge, 2, 0, Hero.gameObject, name);
+                Targeting.GetTarget()?.Character.CharacterState.AddState(States.Discharge, 2, 0, Hero.gameObject, name);
             }
             Targeting.ClearTarget();
         }
@@ -66,7 +66,7 @@ public class LightningStrike : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (Targeting.GetTarget().Character == null)
+        while (Targeting.GetTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
@@ -75,7 +75,7 @@ public class LightningStrike : Skill
             yield return null;
         }
 
-        targetInfo.AddTarget(Targeting.GetTarget().Character);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 

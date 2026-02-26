@@ -657,7 +657,7 @@ public abstract class Skill : NetworkBehaviour
                         foreach (var target in temp.GetTargets())
                             if (Vector3.Distance(target.Position, transform.position) > AreaInfo.Radius)
                                 return false;
-
+                        
                         return true;
                     }
                     else
@@ -732,6 +732,7 @@ public abstract class Skill : NetworkBehaviour
         Charges.Init(this);
         Channeling.Init(this);
         Renderer.Init(this);
+        Targeting.Init(this);
     }
 
     protected virtual void Awake()
@@ -790,6 +791,7 @@ public abstract class Skill : NetworkBehaviour
 
     public bool TryCast()
     {
+
         if (_isCasting || _isPreparing)
             return false;
 
@@ -801,6 +803,7 @@ public abstract class Skill : NetworkBehaviour
 
             if (_targetInfoQueue.Count > 0)
             {
+
                 var targetInfo = _targetInfoQueue.Dequeue();
 
                 LoadTargetData(targetInfo);
@@ -823,12 +826,12 @@ public abstract class Skill : NetworkBehaviour
 
             return true;
         }
-
         else return false;
     }
 
     public bool TryCast(TargetInfo targetInfo)
     {
+
         if (_isCasting || _isPreparing)
             return false;
 
@@ -1173,7 +1176,7 @@ public abstract class Skill : NetworkBehaviour
             while (_isPlayCastAnim)
             {
                 //*
-                if (Targeting.ForDamage.Damageable != null && !IsValidTarget(Targeting.ForDamage.Damageable))
+                if (Targeting.ForDamage?.Damageable != null && !IsValidTarget(Targeting.ForDamage?.Damageable))
                 {
                     _isCanCancel = true;
                     _hero.Move.SetCanMove(true);
@@ -1316,7 +1319,7 @@ public abstract class Skill : NetworkBehaviour
     {
         if (target == null) return;
 
-        if (Targeting.ForDamage.Transform != target.transform)
+        if (Targeting.ForDamage == null || Targeting.ForDamage?.Transform != target.transform)
         {
             Targeting.ForDamage = new TargetData(target);
         }
@@ -1332,6 +1335,7 @@ public abstract class Skill : NetworkBehaviour
 
     public void ApplyHeal(Heal heal, GameObject hp, Skill skill, string sourceName)
     {
+        Debug.Log(hp);
         hp.GetComponent<IHealable>().Heal(ref heal, sourceName, skill);
         Hero.DamageTracker.AddHeal(heal, isServerRequest: isServer);
     }
@@ -1339,13 +1343,13 @@ public abstract class Skill : NetworkBehaviour
     [Command]
     public void CmdApplyHeal(Heal heal, GameObject hp, Skill skill, string sourceName)
     {
-        if (Targeting.ForDamage.Transform != hp.transform)
+        if (Targeting.ForDamage == null || Targeting.ForDamage?.Transform != hp.transform)
         {
             Targeting.ForDamage = new TargetData(hp);
             _tempForHealing = hp.GetComponent<IHealable>();
         }
-
-        ApplyHeal(heal, hp, skill, sourceName);
+        if (_tempForHealing != null)
+            ApplyHeal(heal, hp, skill, sourceName);
     }
 
     public void AfterCastJob()

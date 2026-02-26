@@ -34,10 +34,10 @@ public class FlowOfLight : Skill
     #endregion
 
     protected override bool IsCanCast =>
-		Targeting.GetTarget().Character != null &&
+		Targeting.GetTarget()?.Character != null &&
         Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius &&
         Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle) &&
-        ((isLightMode && IsAllyTarget(Targeting.GetTarget().Character)) || (!isLightMode && IsEnemyTarget(Targeting.GetTarget().Character)));
+        ((isLightMode && IsAllyTarget(Targeting.GetTarget()?.Character)) || (!isLightMode && IsEnemyTarget(Targeting.GetTarget()?.Character)));
 
     private void OnEnable()
     {
@@ -109,7 +109,7 @@ public class FlowOfLight : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
-        while (Targeting.GetTempTarget().Character == null)
+        while (Targeting.GetTempTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
@@ -117,22 +117,22 @@ public class FlowOfLight : Skill
             }
             yield return null;
         }
-        Targeting.SetTarget(Targeting.GetTempTarget().Character);
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget().Character);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         targetDataSavedCallback(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget().Character == null || !IsCanCast)
+        if (Targeting.GetTarget()?.Character == null || !IsCanCast)
         {
             TryCancel();
             yield break;
         }
 
         TryPayCost();
-        CmdSpawnEffect(gameObject, Targeting.GetTarget().Character.gameObject);
+        CmdSpawnEffect(gameObject, Targeting.GetTarget()?.Character.gameObject);
 
         float elapsed = 0f;
         float interval = 1f;
@@ -164,14 +164,14 @@ public class FlowOfLight : Skill
 
             if (elapsed % interval < Time.deltaTime)
             {
-                if (isLightMode && IsAllyTarget(Targeting.GetTarget().Character))
+                if (isLightMode && IsAllyTarget(Targeting.GetTarget()?.Character))
                 {
                     Heal heal = new Heal { Value = tickValue };
-                    CmdApplyHeal(heal, Targeting.GetTarget().Character.gameObject, this, Name);
-                    TryApplyExtraState(Targeting.GetTarget().Character);
-                    ApplySpiritBuff(Targeting.GetTarget().Character);
+                    CmdApplyHeal(heal, Targeting.GetTarget()?.Character.gameObject, this, Name);
+                    TryApplyExtraState(Targeting.GetTarget()?.Character);
+                    ApplySpiritBuff(Targeting.GetTarget()?.Character);
                 }
-                else if (!isLightMode && IsEnemyTarget(Targeting.GetTarget().Character))
+                else if (!isLightMode && IsEnemyTarget(Targeting.GetTarget()?.Character))
                 {
                     Damage damage = new Damage
                     {
@@ -179,9 +179,9 @@ public class FlowOfLight : Skill
                         Type = DamageType,
                         School = School
                     };
-                    CmdApplyDamage(damage, Targeting.GetTarget().Character.gameObject);
-                    TryApplyExtraState(Targeting.GetTarget().Character);
-                    ApplySpiritBuff(Targeting.GetTarget().Character);
+                    CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
+                    TryApplyExtraState(Targeting.GetTarget()?.Character);
+                    ApplySpiritBuff(Targeting.GetTarget()?.Character);
                 }
             }
 
@@ -281,4 +281,4 @@ private void CmdStateRestorationOrDestruction(NetworkIdentity targetNetIdentity,
             Debug.LogWarning("FlowLightEffect не найден ни на одном дочернем объекте эффекта: " + effect.name);
         }
     }
-}
+}

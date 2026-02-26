@@ -30,7 +30,7 @@ public class IceCloud : Skill
 	{
 		get
 		{
-			if (Targeting.GetTarget().Character != null) return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
+			if (Targeting.GetTarget()?.Character != null) return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
 
 			else return true;
 		}
@@ -61,12 +61,15 @@ public class IceCloud : Skill
 	{
 		_audioSource = GetComponent<AudioSource>();
 
-        _energy = (Energy)Hero.Resources[ResourceType.Energy];
+        //_energy = (Energy)Hero.Resources[ResourceType.Energy];
     }
 
     private void Shoot()
 	{
-		Vector3 lookDir = _mousePos - Hero.transform.position;
+		if (_energy == null)
+			_energy = (Energy)Hero.Resources[ResourceType.Energy];
+
+        Vector3 lookDir = _mousePos - Hero.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - AngleOffset;
 		if (_combo.MakeHit(null, AbilityForm, 1, 0, 0, _combo.GetMultipliedSpeed() / ComboSpeedDivider)) _lastHit = true;
 
@@ -133,8 +136,8 @@ public class IceCloud : Skill
 		{
 			if (GetMouseButton)
 			{
-				if(Targeting.GetTarget().Character == null) yield return null;
-				if (Targeting.GetTarget().Character != null)
+				if(Targeting.GetTarget()?.Character == null) yield return null;
+				if (Targeting.GetTarget()?.Character != null)
 				{
 					float distance = Vector3.Distance(_hero.transform.position, _mousePos);
 
@@ -144,7 +147,7 @@ public class IceCloud : Skill
 					{
 						//Targeting.FindTempTarget();
 
-						//_target = Targeting.GetTarget().character;
+						//_target = Targeting.GetTarget()?.Character;
 						Damage = _baseDamage + _energy.CurrentValue / EnergyPerDamageUnit;
 						_mousePos2 = Targeting.GetTarget().Character.transform.position;
 					}
@@ -156,7 +159,7 @@ public class IceCloud : Skill
 		}        
 
         TargetInfo targetInfo = new TargetInfo();
-		if (Targeting.GetTarget().Character != null) targetInfo.Points.Add(Targeting.GetTarget().Character.Position);
+		if (Targeting.GetTarget()?.Character != null) targetInfo.Points.Add(Targeting.GetTarget().Character.Position);
 		else if (_mousePos2 != Vector3.positiveInfinity) targetInfo.Points.Add(_mousePos2);
 		callbackDataSaved(targetInfo);
 

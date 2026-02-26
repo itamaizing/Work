@@ -26,7 +26,7 @@ public class IceShower : Skill
 
 	private void Start()
 	{
-        _energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
+        //_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -36,7 +36,10 @@ public class IceShower : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		while (float.IsPositiveInfinity(_targetPoint.x))
+		if (_energy == null)
+			_energy = (Energy)Hero.Resources[ResourceType.Energy];
+
+        while (float.IsPositiveInfinity(_targetPoint.x))
 		{
 			if (GetMouseButton && IsCanCast)
 			{
@@ -194,4 +197,5 @@ public class IceShower : Skill
 	{
 		_frozwenTalent = value;
 	}
-}
+}
+

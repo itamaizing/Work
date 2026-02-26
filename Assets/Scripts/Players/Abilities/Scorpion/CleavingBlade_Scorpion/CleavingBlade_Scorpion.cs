@@ -80,20 +80,20 @@ public class CleavingBlade_Scorpion : Skill
     {
         _wasDamageApplied = false;
 
-        while (Targeting.GetTempTarget().Targetable == null)
+        while (Targeting.GetTempTarget()?.Targetable == null)
         {
             if (GetMouseButton)
             {
                 Targeting.FindTempTarget(Targeting.GetMousePoint(), SearchTargetInRadius);
 
-                if (Targeting.GetTempTarget().Targetable != null && Targeting.GetTempTarget().Targetable is IDamageable damageable)
+                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
                 {
                     if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
 
                     else
                     {
-                        _hero.Move.LookAtTransform(Targeting.GetTempTarget().Targetable.Transform);
-                        if (Targeting.GetTempTarget().Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        _hero.Move.LookAtTransform(Targeting.GetTempTarget()?.Targetable.Transform);
+                        if (Targeting.GetTempTarget()?.Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
                         break;
                     }
                 }
@@ -101,10 +101,10 @@ public class CleavingBlade_Scorpion : Skill
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget().Targetable);
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget().Targetable);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
         callbackDataSaved(targetInfo);
     }
 

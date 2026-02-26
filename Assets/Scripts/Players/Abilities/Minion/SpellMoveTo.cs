@@ -97,15 +97,15 @@ public class SpellMoveTo : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && Targeting.GetTarget().Character == null)
+        while (float.IsPositiveInfinity(_targetPoint.x) && Targeting.GetTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
                 Targeting.FindTempTarget();
 
-                if (Targeting.GetTarget().Character is Character character) targetInfo.AddTarget(character);
+                if (Targeting.GetTarget()?.Character is Character character) targetInfo.AddTarget(character);
 
-                if (Targeting.GetTarget().Character == null)
+                if (Targeting.GetTarget()?.Character == null)
                 {
                     _targetPoint = Targeting.GetMousePoint();
 
@@ -144,7 +144,7 @@ public class SpellMoveTo : Skill
             if (Input.GetMouseButton(0))
             {
 
-                if (Targeting.GetTarget().Character == null)
+                if (Targeting.GetTarget()?.Character == null)
                 {
                     _targetPoint = Targeting.GetMousePoint();
                 }
@@ -156,4 +156,4 @@ public class SpellMoveTo : Skill
             yield return null;
         }
     }
-}
+}

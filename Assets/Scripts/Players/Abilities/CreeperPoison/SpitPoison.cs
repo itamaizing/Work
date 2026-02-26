@@ -106,7 +106,7 @@ public class SpitPoison : Skill, IAltAbility
 
         CooldownChange();
 
-        CheckActiveTalents();
+        //CheckActiveTalents(); //TODO: Вернуть
 
         while (float.IsPositiveInfinity(_mousePos.x))
         {
@@ -117,7 +117,7 @@ public class SpitPoison : Skill, IAltAbility
                 Targeting.FindTempTarget(Targeting.GetMousePoint(), _radiusTargetCheck);
                 _mousePos = Targeting.GetMousePoint();
 
-                if (Targeting.GetTempTarget().Targetable != null && Targeting.GetTempTarget().Targetable is IDamageable damageable)
+                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
                 {
                     if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
                     else ChooseTarget(damageable);
@@ -127,17 +127,17 @@ public class SpitPoison : Skill, IAltAbility
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget().Targetable);
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
 
         TargetInfo targetInfo = new();
-        targetInfo.AddTarget(Targeting.GetTarget().Targetable);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
         targetInfo.Points.Add(_mousePos);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        Shoot(Targeting.GetTarget() as IDamageable);
+        Shoot(Targeting.GetTarget()?.Damageable);
         ResetAbilityParameters?.Invoke();
 
         yield return null;

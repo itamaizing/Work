@@ -41,7 +41,7 @@ namespace Gangdollarff.AirElemental
 
         protected override IEnumerator CastJob()
         {
-            if (Targeting.GetTarget().Character != null)
+            if (Targeting.GetTarget()?.Character != null)
             {
                 Damage damage = new Damage
                 {
@@ -49,13 +49,13 @@ namespace Gangdollarff.AirElemental
                     Type = DamageType,
                     PhysicAttackType = AttackRangeType,
                 };
-                CmdApplyDamage(damage, Targeting.GetTarget().Character.gameObject);
+                CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
 
                 CmdCreateParticle(Targeting.GetTarget().Character.Position);
 
                 if (UnityEngine.Random.Range(1, 100) <= _debuffChance)
                 {
-					Targeting.GetTarget().Character.CharacterState.AddState(States.Discharge, 2, 0, Hero.gameObject, name);
+					Targeting.GetTarget()?.Character.CharacterState.AddState(States.Discharge, 2, 0, Hero.gameObject, name);
                 }
             }
             yield return null;
@@ -71,7 +71,7 @@ namespace Gangdollarff.AirElemental
         {
             TargetInfo targetInfo = new TargetInfo();
 
-            while (Targeting.GetTarget().Character == null)
+            while (Targeting.GetTarget()?.Character == null)
             {
                 if (GetMouseButton)
                 {
@@ -81,7 +81,7 @@ namespace Gangdollarff.AirElemental
                 yield return null;
             }
 
-            targetInfo.AddTarget(Targeting.GetTarget().Character);
+            targetInfo.AddTarget(Targeting.GetTarget()?.Character);
             callbackDataSaved(targetInfo);
         }
 

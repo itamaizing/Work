@@ -84,26 +84,26 @@ public class JumpWithChelicera : Skill
             Targeting.SetTarget(targetInfo.GetTargets()[0]);
             _cheliceraeStrike.Targeting.SetTarget(targetInfo.GetTargets()[0]);
         }
-        if (Targeting.GetTarget().Character is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+        if (Targeting.GetTarget()?.Character is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (Targeting.GetTempTarget().Targetable == null)
+        while (Targeting.GetTempTarget()?.Targetable == null)
         {
             if (GetMouseButton)
             {
                 Targeting.FindTempTarget(Targeting.GetMousePoint(), TargetSearchRadius);
 
-                if (Targeting.GetTempTarget().Targetable != null && Targeting.GetTempTarget().Targetable is IDamageable damageable)
+                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
                 {
                     if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
 
                     else
                     {
-                        if (Targeting.GetTempTarget().Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        if (Targeting.GetTempTarget()?.Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
                         break;
                     }
                 }
@@ -111,10 +111,10 @@ public class JumpWithChelicera : Skill
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget().Targetable);
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
 
         targetInfo.Points.Add(Targeting.GetTarget().Transform.position);
-        targetInfo.AddTarget(Targeting.GetTarget().Targetable);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
         callbackDataSaved.Invoke(targetInfo);
     }
 
@@ -132,7 +132,7 @@ public class JumpWithChelicera : Skill
             yield break;
         }
 
-        ExecuteJump(Targeting.GetTarget().Targetable);
+        ExecuteJump(Targeting.GetTarget()?.Targetable);
         yield return null;
     }
 

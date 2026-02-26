@@ -29,7 +29,7 @@ public class Explosion : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget().Character != null)
+        if (Targeting.GetTarget()?.Character != null)
         {
             int stacks = Targeting.GetTarget().Character.CharacterState.GetState(States.Burning).CurrentStacksCount;
 
@@ -39,7 +39,7 @@ public class Explosion : Skill
                 Type = DamageType,
                 PhysicAttackType = AttackRangeType,
             };
-            CmdApplyDamage(damage, Targeting.GetTarget().Character.gameObject);
+            CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
 
             CmdCreateParticle(Targeting.GetTarget().Character.Position);
         }
@@ -56,7 +56,7 @@ public class Explosion : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (Targeting.GetTarget().Character == null)
+        while (Targeting.GetTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
@@ -66,7 +66,7 @@ public class Explosion : Skill
             yield return null;
         }
 
-        targetInfo.GetTargets().Add(Targeting.GetTarget().Character);
+        targetInfo.GetTargets().Add(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 

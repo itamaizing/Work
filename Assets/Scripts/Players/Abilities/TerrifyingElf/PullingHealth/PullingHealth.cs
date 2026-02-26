@@ -127,19 +127,19 @@ public class PullingHealth : Skill
     }
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (Targeting.GetTempTarget().Targetable == null)
+        while (Targeting.GetTempTarget()?.Targetable == null)
         {
             if (GetMouseButton)
             {
                 Targeting.FindTempTarget(Targeting.GetMousePoint(), SearchTargetRadius);
 
-                if (Targeting.GetTempTarget().Targetable != null && Targeting.GetTempTarget().Targetable is IDamageable damageable)
+                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
                 {
                     if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
 
                     else
                     {
-                        if (Targeting.GetTempTarget().Targetable is Character character && character.SelectedCircle != null)
+                        if (Targeting.GetTempTarget()?.Targetable is Character character && character.SelectedCircle != null)
                         {
                             character.SelectedCircle.IsActive = false;
                             var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
@@ -155,10 +155,10 @@ public class PullingHealth : Skill
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget().Targetable);
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget().Targetable);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
         callbackDataSaved(targetInfo);
     }
 
@@ -182,7 +182,7 @@ public class PullingHealth : Skill
         int innerDarknessStacks;
 
         #region Work with InnerDarkness
-        if (Targeting.GetTarget().Character is Character character)
+        if (Targeting.GetTarget()?.Character is Character character)
         {
             var targetComponentState = character.GetComponent<CharacterState>();
 
@@ -231,7 +231,7 @@ public class PullingHealth : Skill
         {
             foreach (var characterTarget in multiMagic.PopPendingTargets())
             {
-                if (characterTarget == Targeting.GetTarget().Character)
+                if (characterTarget == Targeting.GetTarget()?.Character)
                 {
                     _extraTargets.Add(characterTarget);
 
@@ -254,7 +254,8 @@ public class PullingHealth : Skill
         float elapsed = 0f;
         float damageTickElapsed = 0f;
         var manaResource = Hero.TryGetResource(ResourceType.Mana);
-        IDamageable damageable = Targeting.GetTarget() as IDamageable;
+        IDamageable damageable = Targeting.GetTarget()?.Damageable;
+        Debug.Log(damageable + "AAAAAAA");
 
         if (manaResource == null || manaResource.CurrentValue < MinManaToStream)
         {
@@ -307,7 +308,7 @@ public class PullingHealth : Skill
 
         while (elapsed < CastStreamDuration)
         {
-            var target = Targeting.GetTarget().Character;
+            var target = Targeting.GetTarget()?.Character;
             if (target == null || target.IsDead)
             {
                 EndAnimDestroyEffect();

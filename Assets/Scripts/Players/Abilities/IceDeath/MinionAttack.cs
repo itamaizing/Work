@@ -63,7 +63,7 @@ public class MinionAttack : AutoAttackSkill
 			Type = DamageType.Physical,
 			PhysicAttackType = AttackRangeType.MeleeAttack,
 		};
-		Targeting.GetTarget().Character.Health.TryTakeDamage(ref damage, this);
+		Targeting.GetTarget()?.Character.Health.TryTakeDamage(ref damage, this);
 	}
 
 	public void TalentBoostSpeed(float speed)

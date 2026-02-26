@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -22,7 +22,7 @@ public class CircularFrosting : Skill
 
     private void Start()
 	{
-        _energy = (Energy)Hero.Resources[ResourceType.Energy];
+        //_energy = (Energy)Hero.Resources[ResourceType.Energy];
 
     }
 
@@ -44,7 +44,10 @@ public class CircularFrosting : Skill
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		callbackDataSaved(null);
+		if (_energy == null)
+			_energy = (Energy)Hero.Resources[ResourceType.Energy];
+
+        callbackDataSaved(null);
 		yield return null;
 	}
 

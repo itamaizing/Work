@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -38,8 +38,8 @@ public class SeriesOfStrikes : MonoBehaviour
 
 	private void Start()
 	{
-        _energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
-        _rune = (RuneComponent)_playerLinks.Resources[ResourceType.Rune];
+        //_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
+        //_rune = (RuneComponent)_playerLinks.Resources[ResourceType.Rune];
     }
 
     private void Update()
@@ -69,7 +69,12 @@ public class SeriesOfStrikes : MonoBehaviour
 
     public bool MakeHit(Character target, AbilityForm form, float usedRuneValue, float usedEnergy, float damage, float multiplier = 0f)
 	{
-		if (_iceRuneTalent) BonusRuneForDamage(damage);
+		if (_energy == null)
+			_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
+		if (_rune == null)
+			_rune = (RuneComponent)_playerLinks.Resources[ResourceType.Rune];
+
+        if (_iceRuneTalent) BonusRuneForDamage(damage);
 		CheckCurse(target, damage);
 		
 		if (!_seriesCompliteCompoTalent) return false;
@@ -253,4 +258,4 @@ public class Series
  * hit count
  * used rune 
  * 
- * */
+ * */

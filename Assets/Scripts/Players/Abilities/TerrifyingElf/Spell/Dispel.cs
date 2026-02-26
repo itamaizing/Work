@@ -8,14 +8,14 @@ public class Dispel : Skill
     //private Character _target;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
 
-    protected override bool IsCanCast => Targeting.GetTarget().Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
+    protected override bool IsCanCast => Targeting.GetTarget()?.Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("Dispel");
     protected override int AnimTriggerCast => 0;
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (float.IsPositiveInfinity(_targetPoint.x) && Targeting.GetTarget().Character == null)
+        while (float.IsPositiveInfinity(_targetPoint.x) && Targeting.GetTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
@@ -33,11 +33,11 @@ public class Dispel : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget().Character == null) yield break;
+        if (Targeting.GetTarget()?.Character == null) yield break;
 
-        if (Targeting.GetTarget().Character is MinionComponent minionTarget) ApplyDamageToMinion(minionTarget);
+        if (Targeting.GetTarget()?.Character is MinionComponent minionTarget) ApplyDamageToMinion(minionTarget);
 
-        var targetCharacter = Targeting.GetTarget().Character.GetComponent<CharacterState>();
+        var targetCharacter = Targeting.GetTarget()?.Character.GetComponent<CharacterState>();
         if (targetCharacter != null)
         {
             //CmdDispelState(targetCharacter, _target.NetworkSettings.TeamIndex, Hero.NetworkSettings.TeamIndex);

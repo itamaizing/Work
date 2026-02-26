@@ -23,7 +23,7 @@ public class IcyStream : Skill
 
     private bool IsCanCastCheck()
 	{
-		if(Targeting.GetTarget().Character != null)
+		if(Targeting.GetTarget()?.Character != null)
 		{
 			if(Vector3.Distance(Targeting.GetTarget().Character.transform.position, _playerLinks.transform.position) > AreaInfo.Radius)
 			{
@@ -35,7 +35,7 @@ public class IcyStream : Skill
 
 	private void Start()
 	{
-        _energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
+        //_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -91,17 +91,19 @@ public class IcyStream : Skill
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		//while (_target == null)
-		while (float.IsPositiveInfinity(_mousePos.x))
+		if (_energy == null)
+			_energy = (Energy)Hero.Resources[ResourceType.Energy];
+        //while (_target == null)
+        while (float.IsPositiveInfinity(_mousePos.x))
 		{
 			if (GetMouseButton)
 			{
 				_mousePos = Targeting.GetMousePoint();
 				/*if (Targeting.GetTarget() != null)
 				{
-					if (Targeting.GetTarget().character != null)
+					if (Targeting.GetTarget()?.Character != null)
 					{
-						_target = Targeting.GetTarget().character;
+						_target = Targeting.GetTarget()?.Character;
 					}
 				}*/
 				//_mousePos = Targeting.GetMousePoint();

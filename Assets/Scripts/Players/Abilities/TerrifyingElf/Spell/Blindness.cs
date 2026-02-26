@@ -10,7 +10,7 @@ public class Blindness : Skill
     [SerializeField] private float duration;
     //private Character _target;
 
-    protected override bool IsCanCast => IsHaveCharge && Targeting.GetTarget().Character != null;
+    protected override bool IsCanCast => IsHaveCharge && Targeting.GetTarget()?.Character != null;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
 
@@ -26,27 +26,27 @@ public class Blindness : Skill
     {
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
-        while (Targeting.GetTarget().Character == null && !_disactive)
+        while (Targeting.GetTarget()?.Character == null && !_disactive)
         {
             if (GetMouseButton)
             {
                 Targeting.FindTempTarget();
                 //_target = GetRaycastTarget(true);
-                if (multiMagic != null) multiMagic.LastTarget = Targeting.GetTarget().Character;
+                if (multiMagic != null) multiMagic.LastTarget = Targeting.GetTarget()?.Character;
             }
             yield return null;
         }
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget().Character);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
 
         targetDataSavedCallback(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget().Character != null)
+        if (Targeting.GetTarget()?.Character != null)
         {
-            CmdApplyAbsorptionState(Targeting.GetTarget().Character.gameObject);
+            CmdApplyAbsorptionState(Targeting.GetTarget()?.Character.gameObject);
 
             var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 

@@ -49,14 +49,14 @@ public class SneakySpit : Skill
         if (targetInfo?.GetTargets()?.Count > 0)
         {
             if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
-            if (Targeting.GetTarget().Character != null) Hero.Move.LookAtTransform(Targeting.GetTarget().Character.transform);
+            if (Targeting.GetTarget()?.Character != null) Hero.Move.LookAtTransform(Targeting.GetTarget()?.Character.transform);
         }
         _isCanCancel = false;
     }
 
     private bool CheckCanCast()
     {
-        return Targeting.GetTarget().Character != null &&
+        return Targeting.GetTarget()?.Character != null &&
         Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius &&
         Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle) && !Disactive;
     }
@@ -77,13 +77,13 @@ public class SneakySpit : Skill
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (isAbilityQueue) yield return null;
-        while (Disactive || Targeting.GetTarget().Character == null) yield return null;
+        while (Disactive || Targeting.GetTarget()?.Character == null) yield return null;
 
         Targeting.FindTempTarget();
         isAbilityQueue = true;
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget().Character);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 
@@ -124,9 +124,9 @@ public class SneakySpit : Skill
 
     public void ApplyStateAndDamage()
     {
-        if (Targeting.GetTarget().Character != null)
+        if (Targeting.GetTarget()?.Character != null)
         {
-            CmdAddState(Targeting.GetTarget().Character);
+            CmdAddState(Targeting.GetTarget()?.Character);
 
             Damage damage = new Damage
             {
@@ -135,7 +135,7 @@ public class SneakySpit : Skill
                 Type = DamageType,
             };
 
-            CmdApplyDamage(damage, Targeting.GetTarget().Character.gameObject);
+            CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
             ClearData();
         }
     }

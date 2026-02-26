@@ -10,7 +10,7 @@ public class Suppression : Skill
     //private Character _target;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
 
-    protected override bool IsCanCast => IsHaveCharge && Targeting.GetTarget().Character != null;
+    protected override bool IsCanCast => IsHaveCharge && Targeting.GetTarget()?.Character != null;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
 
@@ -20,28 +20,28 @@ public class Suppression : Skill
     {
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && Targeting.GetTarget().Character == null && !_disactive)
+        while (float.IsPositiveInfinity(_targetPoint.x) && Targeting.GetTarget()?.Character == null && !_disactive)
         {
             if (GetMouseButton)
             {
                 _targetPoint = Targeting.GetMousePoint();
                 Targeting.FindTempTarget();
                 //_target = GetRaycastTarget(true);
-                if (multiMagic != null) multiMagic.LastTarget = Targeting.GetTarget().Character;
+                if (multiMagic != null) multiMagic.LastTarget = Targeting.GetTarget()?.Character;
             }
             yield return null;
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget().Character);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget().Character != null)
+        if (Targeting.GetTarget()?.Character != null)
         {
-            CmdApplyAbsorptionState(Targeting.GetTarget().Character.gameObject);
+            CmdApplyAbsorptionState(Targeting.GetTarget()?.Character.gameObject);
 
             var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 

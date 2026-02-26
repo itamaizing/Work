@@ -86,13 +86,13 @@ public class ScratchClaws : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
-        while (Targeting.GetTempTarget().Targetable == null)
+        while (Targeting.GetTempTarget()?.Targetable == null)
         {
             if (GetMouseButton)
             {
                 Targeting.FindTempTarget(Targeting.GetMousePoint(), TargetSearchRadius);
 
-                if (Targeting.GetTempTarget().Targetable != null && Targeting.GetTempTarget().Targetable is IDamageable damageable)
+                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
                 {
                     if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
                     else break;
@@ -102,10 +102,10 @@ public class ScratchClaws : Skill
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget().Targetable);
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
 
         TargetInfo info = new();
-        info.AddTarget(Targeting.GetTarget().Targetable);
+        info.AddTarget(Targeting.GetTarget()?.Targetable);
         targetDataSavedCallback?.Invoke(info);
     }
 
@@ -113,7 +113,7 @@ public class ScratchClaws : Skill
     {
         CancelWork();
         _moveActive = true;
-        _currentTarget = Targeting.GetTarget().Character;
+        _currentTarget = Targeting.GetTarget()?.Character;
 
         float distanceToTarget = Vector3.Distance(transform.position, _currentTarget.transform.position);
         if (distanceToTarget > _stopDistance + StopDistanceThreshold)

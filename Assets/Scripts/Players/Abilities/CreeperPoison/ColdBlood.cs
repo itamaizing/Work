@@ -71,7 +71,7 @@ public class ColdBlood : Skill
     {
         if (_indomitable.Data.IsOpen)
         {
-            while (Targeting.GetTarget().Character == null || float.IsPositiveInfinity(_mousePosition.x))
+            while (Targeting.GetTarget()?.Character == null || float.IsPositiveInfinity(_mousePosition.x))
             {
                 if (GetMouseButton)
                 {
@@ -79,12 +79,12 @@ public class ColdBlood : Skill
 					//_target = Targeting.GetTarget(true).character;
                    // Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / target == " + _target);
 
-                    if (Targeting.GetTarget().Character != Hero)
+                    if (Targeting.GetTarget()?.Character != Hero)
                     {
                         _isPlayer = false;
                        // Debug.Log("TargetLayer != player / TargetLayer == " + _target);
                     }
-                    if (Targeting.GetTarget().Character == Hero)
+                    if (Targeting.GetTarget()?.Character == Hero)
                     { 
                         _isPlayer = true;
                        // Debug.Log("TargetLayer == player / TargetLayer == " + _target);

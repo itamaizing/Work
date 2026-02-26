@@ -42,9 +42,9 @@ public class FireBoll : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget().Character != null)
+        if (Targeting.GetTarget()?.Character != null)
         {
-            CmdCreateProjecttile(Targeting.GetTarget().Character.gameObject);
+            CmdCreateProjecttile(Targeting.GetTarget()?.Character.gameObject);
         }
         yield return null;
     }
@@ -60,7 +60,7 @@ public class FireBoll : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (Targeting.GetTarget().Character == null)
+        while (Targeting.GetTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
@@ -70,7 +70,7 @@ public class FireBoll : Skill
             yield return null;
         }
         
-        targetInfo.AddTarget(Targeting.GetTarget().Character);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
 
         this.CastStarted += OnCastStarted;
@@ -78,7 +78,7 @@ public class FireBoll : Skill
 
     private void OnCastStarted()
     {
-        Hero.Move.LookAtTransform(Targeting.GetTarget().Character.transform);
+        Hero.Move.LookAtTransform(Targeting.GetTarget()?.Character.transform);
         this.CastStarted -= OnCastStarted;
     }
 

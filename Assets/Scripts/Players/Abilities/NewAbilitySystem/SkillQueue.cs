@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -177,4 +177,4 @@ public class SkillQueue : MonoBehaviour
         if (info?.GetTargets() == null) return;
         foreach (var target in info.GetTargets()) if (target is Character character && character?.SelectedCircle != null) character.SelectedCircle.SwitchSelectCircle(isOn);
     }
-}
+}

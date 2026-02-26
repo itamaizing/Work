@@ -26,7 +26,7 @@ public abstract class AutoAttackSkill : Skill
     Color endColor = new Color(0, 1, 0, 0f);
 
 	public float AttackDelay { get => Buff.AttackSpeed.GetBuffedValue(_attackDelay); }
-    public Character Target { get => Targeting.GetTarget().Character; }
+    public Character Target { get => Targeting.GetTarget()?.Character; }
     public Vector2 LastTargetPosition { get => _lastTargetPosition; }
     public override bool IsPayCostStartCooldown { get => false; }
     public bool IsAutoattackMode { get => _isAutoattackMode; set => _isAutoattackMode = value; }
@@ -48,7 +48,7 @@ public abstract class AutoAttackSkill : Skill
 
     private void Update()
     {
-        if (Targeting.GetTarget().Character == null)
+        if (Targeting.GetTarget()?.Character == null)
         {
             return;
         }
@@ -79,7 +79,7 @@ public abstract class AutoAttackSkill : Skill
 
     protected override void ClearData()
     {
-        if (Targeting.GetTarget().Character != null)
+        if (Targeting.GetTarget()?.Character != null)
         {
 			//_target.SelectedCircle.Circle.color = Color.green;
 			Targeting.GetTarget().Character.SelectedCircle.IsActive = false;
@@ -102,20 +102,20 @@ public abstract class AutoAttackSkill : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
-        while (Targeting.GetTempTarget().Character == null)
+        while (Targeting.GetTempTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
                 //   _target = GetRaycastTarget();
                 Targeting.FindTempTarget();
-                if(Targeting.GetTarget().Character != null)
+                if(Targeting.GetTarget()?.Character != null)
 					Targeting.GetTarget().Character.SelectedCircle.IsActive = true;
 			}
             yield return null;
         }
-        Targeting.SetTarget(Targeting.GetTempTarget().Character);
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget().Character);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         targetDataSavedCallback(targetInfo);
 
         _hero.Move.LookAtTransform(Target.transform);
@@ -167,7 +167,7 @@ public abstract class AutoAttackSkill : Skill
                 if (_isAttacking && Targeting.NoObstacles(Target.transform.position, _obstacle))
                 {
                     _lastTargetPosition = Target.transform.position;
-                    LastTarget = Targeting.GetTarget().Character;
+                    LastTarget = Targeting.GetTarget()?.Character;
 
                     if (_chargeAttackDelay > 0)
                         yield return StartCastDeleyCoroutine(_chargeAttackDelay);

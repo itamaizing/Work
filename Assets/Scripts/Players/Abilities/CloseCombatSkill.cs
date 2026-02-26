@@ -8,7 +8,7 @@ public abstract class CloseCombatSkill : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
-        while (Targeting.GetTempTarget().Character == null)
+        while (Targeting.GetTempTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
@@ -16,9 +16,9 @@ public abstract class CloseCombatSkill : Skill
             }
             yield return null;
         }
-        Targeting.SetTarget(Targeting.GetTempTarget().Character);
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget().Character);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         targetDataSavedCallback(targetInfo);
     }
 }

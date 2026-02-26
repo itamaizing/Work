@@ -56,7 +56,7 @@ public class IceRolling : Skill
 	{
 		get
 		{
-			if (Targeting.GetTarget().Character != null) return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
+			if (Targeting.GetTarget()?.Character != null) return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
 			else return true;
 		}
 	}
@@ -74,7 +74,7 @@ public class IceRolling : Skill
 		_animator = GetComponent<Animator>();
 		_audioSource = GetComponent<AudioSource>();
 
-        _energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
+        //_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
     }
 
     private void Update()
@@ -117,7 +117,7 @@ public class IceRolling : Skill
 			{
 				if (character != _playerLinks)
                 {
-					if (!_rollingWithEnemyTalent && character != Targeting.GetTarget().Character)
+					if (!_rollingWithEnemyTalent && character != Targeting.GetTarget()?.Character)
 					{
 						stopPosition = hit.point - direction;
 						characterHit = character;
@@ -206,7 +206,7 @@ public class IceRolling : Skill
 
 		_energy.CmdUse(additionalCost);
 
-		if (_isLastInSeries && Targeting.GetTarget().Character == null && _rollingWithEnemyTalent)
+		if (_isLastInSeries && Targeting.GetTarget()?.Character == null && _rollingWithEnemyTalent)
 			finalRange *= 1.5f;
 
 		Vector3 jumpPos = startPosition + _lookDir * finalRange;
@@ -223,7 +223,7 @@ public class IceRolling : Skill
 
 		CmdPush(stopPosition, actualDistance);
 
-		if (_rollingWithEnemyTalent && Targeting.GetTarget().Character != null && hitTarget && characterHitTarget != null)
+		if (_rollingWithEnemyTalent && Targeting.GetTarget()?.Character != null && hitTarget && characterHitTarget != null)
 			CmdPushWithCharacter(stopPosition, characterHitTarget, actualDistance);
 
 		if (_rollingPhysTalent)
@@ -241,7 +241,7 @@ public class IceRolling : Skill
 		else
 		{
 			Targeting.FindTempTarget();
-			_mousePos = Targeting.GetTarget().Character != null ? Targeting.GetTarget().Character.transform.position : Targeting.GetMousePoint();
+			_mousePos = Targeting.GetTarget()?.Character != null ? Targeting.GetTarget().Character.transform.position : Targeting.GetMousePoint();
 		}
 	}
 
@@ -316,7 +316,10 @@ public class IceRolling : Skill
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		Vector3 candidatePoint = Vector3.positiveInfinity;
+		if (_energy == null)
+			_energy = (Energy)Hero.Resources[ResourceType.Energy];
+
+        Vector3 candidatePoint = Vector3.positiveInfinity;
 
 		while (float.IsPositiveInfinity(candidatePoint.x))
 		{
@@ -324,7 +327,7 @@ public class IceRolling : Skill
 			{
 				Targeting.FindTempTarget(Targeting.GetMousePoint(), TargetSearchRadius);
 
-				if (Targeting.GetTempTarget().Targetable != null && Targeting.GetTempTarget().Targetable is IDamageable damageable)
+				if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
 				{
 					if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
 					else candidatePoint = Targeting.GetTempTarget().Targetable.Transform.position;
@@ -354,7 +357,7 @@ public class IceRolling : Skill
 	{
 		if (!float.IsInfinity(_mousePos.x))
         {
-			_isLastInSeries = _seriesOfStrikes.MakeHit(Targeting.GetTarget().Character, AbilityForm, 1, 0, 0);
+			_isLastInSeries = _seriesOfStrikes.MakeHit(Targeting.GetTarget()?.Character, AbilityForm, 1, 0, 0);
 			Jump2();
 			yield return null;
 		}

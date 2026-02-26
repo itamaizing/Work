@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -75,7 +75,7 @@ public class IcePuddle : Skill
     {
         _audioSource = GetComponent<AudioSource>();
 
-        _energy = (Energy)Hero.Resources[ResourceType.Energy];
+        //_energy = (Energy)Hero.Resources[ResourceType.Energy];
     }
 
     private void UpdatePreviewAtMouse()
@@ -124,6 +124,8 @@ public class IcePuddle : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        if (_energy == null)
+            _energy = (Energy)Hero.Resources[ResourceType.Energy]; ;
         if (preViewPuddlePrefab != null) _preViewPuddle = Instantiate(preViewPuddlePrefab);
 
 

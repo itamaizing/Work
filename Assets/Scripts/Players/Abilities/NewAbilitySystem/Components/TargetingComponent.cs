@@ -147,7 +147,7 @@ public class TargetingComponent : BaseSkillComponent
     public TargetData FindTempTarget(Vector3 position, float radius, bool canTargetSelf = false, bool canTargetDead = false)
     {
         var targets = FindTargets(position, radius, canTargetSelf, canTargetDead);
-        if (targets == null)
+        if (targets == null || targets.Count <= 0)
             return null;
         _tempTarget = targets[0];
         return _tempTarget;
@@ -175,6 +175,11 @@ public class TargetingComponent : BaseSkillComponent
     public List<TargetData> GetClosestTargets(Vector3 position, float radius, bool canTargetSelf = false)
     {
         var targets = _character.TargetSeeker.GetCloserTargetsCharacter(position, radius, canTargetSelf);
+        if (targets == null || targets.Count <= 0)
+        {
+            ClearTempTarget();
+            return new();
+        }
         List<TargetData> targetsData = new();
         foreach (var target in targets)
         {
@@ -202,7 +207,7 @@ public class TargetingComponent : BaseSkillComponent
     public Vector3 GetMousePoint(bool useLayerMask = false) //добавить в Raycast() layerMask
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        LayerMask mask = useLayerMask ? _targetLayer : Physics.DefaultRaycastLayers;
+        LayerMask mask = useLayerMask ? _targetLayer : (LayerMask.GetMask("Default", "Ground", "Obstecls"));
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, mask))
         {
@@ -293,7 +298,7 @@ public class TargetingComponent : BaseSkillComponent
 public class TargetData
 {
     public TargetType Type;
-    public GameObject? Object;
+    public GameObject Object;
     public Vector3 Point;
 
     public TargetData(Vector3 point)
@@ -310,9 +315,9 @@ public class TargetData
         Object = gameObject;
     }
 
-    public Transform Transform => Object?.transform;
-    public ITargetable? Targetable => Object?.GetComponent<ITargetable>();
-    public IHealable? Healable => Object?.GetComponent<IHealable>();
-    public IDamageable? Damageable => Object?.GetComponent<IDamageable>();
-    public Character? Character => Object?.GetComponent<Character>();
+    public Transform Transform => Object == null ? null : Object.transform;
+    public ITargetable Targetable => Object == null ? null : Object.GetComponent<ITargetable>();
+    public IHealable Healable => Object == null ? null : Object.GetComponent<IHealable>();
+    public IDamageable Damageable => Object == null ? null : Object.GetComponent<IDamageable>();
+    public Character Character => Object == null ? null : Object.GetComponent<Character>();
 }

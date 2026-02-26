@@ -39,7 +39,7 @@ public class PhysicalAttack : Skill
 
 	protected override int AnimTriggerCastDelay => 0;
 	protected override int AnimTriggerCast => _animTriggerToUse = UnityEngine.Random.value > RandomAttack ? RightKickTrigger : LeftKickTrigger;
-	protected override bool IsCanCast => Targeting.GetTarget().Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
+	protected override bool IsCanCast => Targeting.GetTarget()?.Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
 
 	private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
@@ -48,8 +48,8 @@ public class PhysicalAttack : Skill
 		_audioSource = GetComponent<AudioSource>();
 		_animator = GetComponent<Animator>();
 
-        _energy = (Energy)Hero.Resources[ResourceType.Energy];
-        _rune = (RuneComponent)Hero.Resources[ResourceType.Rune];
+        //_energy = (Energy)Hero.Resources[ResourceType.Energy];
+        //_rune = (RuneComponent)Hero.Resources[ResourceType.Rune];
 
     }
 
@@ -57,24 +57,24 @@ public class PhysicalAttack : Skill
 	{
 		TargetInfo targetInfo = new TargetInfo();
 
-		if (Targeting.GetTempTarget().Character != null)
+		if (Targeting.GetTempTarget()?.Character != null)
 		{
-			_hero.Move.LookAtTransform(Targeting.GetTarget().Character.transform);
-			targetInfo.AddTarget(Targeting.GetTarget().Character);
+			_hero.Move.LookAtTransform(Targeting.GetTarget()?.Character.transform);
+			targetInfo.AddTarget(Targeting.GetTarget()?.Character);
 			targetInfo.Points.Add(Targeting.GetTarget().Character.transform.position);
 			callbackDataSaved?.Invoke(targetInfo);
 			yield break;
 		}
 
-        while (Targeting.GetTempTarget().Character == null)
+        while (Targeting.GetTempTarget()?.Character == null)
         {
             if (GetMouseButton)
 			{
 				Targeting.FindTempTarget(Targeting.GetMousePoint(), RadiusSearchTarget);
 
-				if (Targeting.GetTempTarget().Character != null)
+				if (Targeting.GetTempTarget()?.Character != null)
 				{
-					if (IsAllyTarget(Targeting.GetTempTarget().Character) || Targeting.GetTempTarget().Character == Hero)
+					if (IsAllyTarget(Targeting.GetTempTarget()?.Character) || Targeting.GetTempTarget()?.Character == Hero)
 					{
 						Targeting.ClearTempTarget();						
 					}
@@ -89,16 +89,16 @@ public class PhysicalAttack : Skill
 			yield return null;
 		}
 
-		Targeting.SetTarget(Targeting.GetTempTarget().Character);
+		Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
         Targeting.ClearTempTarget();
-        targetInfo.AddTarget(Targeting.GetTarget().Character);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
 		targetInfo.Points.Add(Targeting.GetTarget().Character.transform.position);
 		callbackDataSaved?.Invoke(targetInfo);
 	}
 
 	protected override IEnumerator CastJob()
 	{
-		if (Targeting.GetTarget().Character == null || _animator == null) yield break;
+		if (Targeting.GetTarget()?.Character == null || _animator == null) yield break;
 		yield break;
 	}
 
@@ -114,10 +114,10 @@ public class PhysicalAttack : Skill
 
 	public void ApplyAttackDamage()
 	{
-		if (Targeting.GetTarget().Character == null) return;
+		if (Targeting.GetTarget()?.Character == null) return;
 
-		if (_seriesPhysicalTalent) Hit(Targeting.GetTarget().Character);
-		else SingleHit(Targeting.GetTarget().Character);
+		if (_seriesPhysicalTalent) Hit(Targeting.GetTarget()?.Character);
+		else SingleHit(Targeting.GetTarget()?.Character);
 
 		if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
 		{
@@ -128,6 +128,10 @@ public class PhysicalAttack : Skill
 
 	private void Hit(Character enemy)
 	{
+		if (_energy == null)
+			_energy = (Energy)Hero.Resources[ResourceType.Energy];
+		if (_rune == null)
+			_rune = (RuneComponent)Hero.Resources[ResourceType.Rune];
 		if (_curTarget == enemy && _energy.CurrentValue >= EnergyPerAttack)
 		{
 			float curDamage = _damageValue + UnityEngine.Random.Range(0, HitVariationMax);
@@ -173,6 +177,7 @@ public class PhysicalAttack : Skill
 
 			float curDamage = _damageValue + UnityEngine.Random.Range(0, HitVariationMax);
 			_energy.SumDamageMake(curDamage);
+			Debug.Log(_rune, _rune.gameObject);
 			_rune.SumDamageMake(curDamage);
 
 			_combo.MakeHit(enemy, AbilityForm, 0, 0, curDamage, _multiplier);
@@ -243,7 +248,7 @@ public class PhysicalAttack : Skill
 		Vector3 jumpPos = lookDir * DefaultMultiplier + Targeting.GetTarget().Character.transform.position;
 		if (!CheckObstacleBetween(Hero.transform.position, jumpPos))
 		{
-			CmdPush(Targeting.GetTarget().Character.gameObject, jumpPos);
+			CmdPush(Targeting.GetTarget()?.Character.gameObject, jumpPos);
 		}
 	}
 

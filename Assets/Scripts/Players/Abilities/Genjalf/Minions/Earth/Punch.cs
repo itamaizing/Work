@@ -42,7 +42,7 @@ namespace Gangdollarff.EarthElemental
                 Form = AbilityForm,
              };
 
-            CmdApplyDamage(damage, Targeting.GetTarget().Character.gameObject);
+            CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
 
             yield return null;
         }
@@ -59,7 +59,7 @@ namespace Gangdollarff.EarthElemental
 
             TargetInfo targetInfo = new();
 
-            while (Targeting.GetTarget().Character == null)
+            while (Targeting.GetTarget()?.Character == null)
             {
                 if (GetMouseButton)
                     Targeting.FindTempTarget();

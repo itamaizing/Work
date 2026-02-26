@@ -49,6 +49,10 @@ public class Shot : Skill
 
     private bool CheckCanCast()
     {
+        Debug.Log("CheckCanCast");
+        Debug.Log($"HasTarget: {Targeting.GetTarget()}");
+        Debug.Log($"castLength: {AreaInfo.CastLength}");
+
         if (Targeting.GetTarget() != null)
             return Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.CastLength;
 
@@ -79,7 +83,7 @@ public class Shot : Skill
 
         _isHealthAboveThreshold = false;
 
-        if (Targeting.GetTarget() != null && Targeting.GetTarget().Character is Character targetCurrent)
+        if (Targeting.GetTarget() != null && Targeting.GetTarget()?.Character is Character targetCurrent)
         {
             var health = targetCurrent.Health;
             _isHealthAboveThreshold = health.CurrentValue >= health.MaxValue * HealthThresholdPercent;
@@ -131,11 +135,14 @@ public class Shot : Skill
     {
         if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
         _targetPoint = targetInfo.Points[0];
-    }
+		Debug.Log("LoadTargetData");
+	}
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        Vector3 targetPoint = Vector3.positiveInfinity;
+		Debug.Log("PrepareJob");
+
+		Vector3 targetPoint = Vector3.positiveInfinity;
 
         while (float.IsPositiveInfinity(targetPoint.x))
         {
@@ -144,31 +151,35 @@ public class Shot : Skill
                 Targeting.FindTempTarget(Targeting.GetMousePoint(), RadiusTargetCheck);
                 targetPoint = GetMousePoint(_groundLayerMask);
 
-                if (Targeting.GetTempTarget().Targetable != null && Targeting.GetTempTarget().Targetable is IDamageable damageable)
+                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
                 {
                     if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
 
                     else
                     {
-                        if (Targeting.GetTempTarget().Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        if (Targeting.GetTempTarget()?.Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
                         break;
                     }
                 }
             }
-            yield return null;
+            Debug.Log("Null");
+			yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget().Targetable);
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
+		Debug.Log($"{Targeting.GetTempTarget()}: Range {AreaInfo.CastLength}");
+		Debug.Log($"{targetPoint.ToString()}: Range {AreaInfo.CastLength}");
 
-        TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget().Targetable);
+		TargetInfo targetInfo = new TargetInfo();
+        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
         targetInfo.Points.Add(targetPoint);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget() == null && _targetPoint == Vector3.positiveInfinity) yield return null;
+        Debug.Log("TryingToCast");
+		if (Targeting.GetTarget() == null && _targetPoint == Vector3.positiveInfinity) yield return null;
         if (Targeting.GetTarget() != null && !IsTargetInRange()) yield return null;
 
         ShotAnimationMove();
