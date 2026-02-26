@@ -10,7 +10,8 @@ public class SpellMoveSpisnaciderTo : Skill
     [SerializeField] private float _moveDurationPerUnit = 0.9f;
     [SerializeField] private float _damageDelay = 0.5f;
     [SerializeField] private float _attackDistance = 3f;
-    [SerializeField] private float _damage = 5f;
+    [SerializeField] private float _minDamage = 8f;
+    [SerializeField] private float _maxDamage = 10f;
     [SerializeField] private Animator _animator;
     [SerializeField] private SkillManager _skillManager;
 
@@ -238,9 +239,10 @@ public class SpellMoveSpisnaciderTo : Skill
     {
         if (_currentEnemyTarget == null) return;
 
+
         Damage damage = new Damage
         {
-            Value = Buff.Damage.GetBuffedValue(_damage),
+            Value = Buff.Damage.GetBuffedValue(UnityEngine.Random.Range(_minDamage, _maxDamage)),
             Type = DamageType,
             PhysicAttackType = AttackRangeType
         };
@@ -267,7 +269,7 @@ public class SpellMoveSpisnaciderTo : Skill
             _attackCoroutine = null;
         }
 
-        if (_skillManager.SkillQueue.CurrentSkill.GetType() != typeof(SpellMoveScraderTo) || _skillManager.AutoSkillCast.IsBusy || _skillManager.SkillQueue.IsEmpty == false)
+        if (_skillManager.SkillQueue.CurrentSkill.GetType() != typeof(SpellMoveSpisnaciderTo) || _skillManager.AutoSkillCast.IsBusy || _skillManager.SkillQueue.IsEmpty == false)
         {
             CancelWork();
             _moveActive = false;
@@ -283,7 +285,7 @@ public class SpellMoveSpisnaciderTo : Skill
         foreach (var hit in hits)
         {
             Character enemy = hit.GetComponent<Character>();
-            if (enemy != null && !enemy.IsDead && enemy != Hero && enemy.gameObject != gameObject)
+            if (enemy != null && !enemy.IsDead && enemy != Hero)
             {
                 float dist = Vector3.Distance(transform.position, enemy.transform.position);
                 if (dist < minDist)

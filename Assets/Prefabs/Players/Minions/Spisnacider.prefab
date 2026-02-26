@@ -18678,7 +18678,7 @@ MonoBehaviour:
   autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -18690,12 +18690,12 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 0
+  _radius: 6
   _area: 0
   _castLength: 0
   _castWidth: 0
   _autoAttackDelay: 0
-  _isAutoRadiusRender: 1
+  _isAutoRadiusRender: 0
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
   _isDynamicRenderer: 0
@@ -18705,7 +18705,8 @@ MonoBehaviour:
   _moveDurationPerUnit: 0.9
   _damageDelay: 0.5
   _attackDistance: 3
-  _damage: 5
+  _minDamage: 8
+  _maxDamage: 10
   _animator: {fileID: 1215395125402789392}
   _skillManager: {fileID: 6892265620981845488}
 --- !u!114 &5921960195754634602
@@ -18741,7 +18742,7 @@ MonoBehaviour:
   autoAttack: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -18767,11 +18768,11 @@ MonoBehaviour:
   maxCounter: 0
   _animator: {fileID: 1215395125402789392}
   _playerLinks: {fileID: 5830977165762126247}
-  _moveDurationPerUnit: 0.2
-  _stopDistance: 1.5
+  _moveDurationPerUnit: 0.9
+  _stopDistance: 3
   _bleedingDuration: 3
-  _minDamage: 1
-  _maxDamage: 4
+  _minDamage: 8
+  _maxDamage: 10
 --- !u!114 &4144108970412608448
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -75,7 +75,7 @@ public class CorrodedArmorState : AbstractCharacterState
         {
             health.DefPhysDamage += _appliedReduction;
         }
-
+        
         currentStacksCount = 1;
         _appliedReduction = 0f;
 
