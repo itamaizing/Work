@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Gangdollarff;
 using Mirror;
@@ -7,71 +8,118 @@ using UnityEngine;
 public class QuicksandTile : FisuraTile
 {
     [SerializeField] private ParticleSystem _sandParticle;
-    
-    private List<GameObject> _charTemp = new();
-    
-    private bool IsEnemyTarget(GameObject target) => target.layer == LayerMask.NameToLayer("Enemy");
 
+    [SyncVar] private byte _ownerTeamIndex;
+
+    private List<GameObject> _charTemp = new();
+    private bool _isInvisible;
+    
     private void Start()
     {
         base.Start();
-
         _collider.isTrigger = true;
+    }
+
+    public void SetOwnerTeam(byte teamIndex, bool isInvisible, int bonusLength = 0, float bonusWidth = 0f)
+    {
+        _ownerTeamIndex = teamIndex;
+        _isInvisible = isInvisible;
+    
+        if (bonusLength != 0) AddMaxSize(bonusLength);
+        if (bonusWidth != 0f) AddWidth(bonusWidth);
     }
 
     public override void Build()
     {
         base.Build();
-        
+
         var shape = _sandParticle.shape;
-        shape.scale = new Vector3(_collider.size.x,_collider.size.z);
+        shape.scale = new Vector3(_collider.size.x, _collider.size.z);
         _sandParticle.gameObject.transform.localPosition = _collider.center;
+        
+        if(_isInvisible)
+            StartCoroutine(HideForEnemiesAfterDelay(1f));
+    }
+
+    private IEnumerator HideForEnemiesAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        RpcHideForEnemies(_ownerTeamIndex);
+    }
+
+    [ClientRpc]
+    private void RpcHideForEnemies(byte ownerTeamIndex)
+    {
+        var localPlayers = FindObjectsOfType<UserNetworkSettings>();
+        byte localTeamIndex = 0;
+
+        foreach (var player in localPlayers)
+        {
+            if (player.isOwned)
+            {
+                localTeamIndex = player.TeamIndex;
+                break;
+            }
+        }
+
+        bool isEnemy = localTeamIndex != ownerTeamIndex;
+        SetRenderersVisible(!isEnemy);
+    }
+
+    private void SetRenderersVisible(bool visible)
+    {
+        foreach (var t in _tiles)
+        {
+            if (t != null && visible != true) t.SetActive(false);
+        }
+
+        if (_sandParticle != null && !visible)
+        {
+            _sandParticle.Stop();
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out Character character) && IsEnemyTarget(other.gameObject))
+        if (other.TryGetComponent(out Character character))
         {
-            _charTemp.Add(other.gameObject);
-            ChangeMoveSpeed(character.gameObject);
+            if (character.NetworkSettings.TeamIndex != _ownerTeamIndex)
+            {
+                _charTemp.Add(other.gameObject);
+                ChangeMoveSpeed(character.gameObject);
+            }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.TryGetComponent(out Character character) && IsEnemyTarget(other.gameObject))
+        if (other.TryGetComponent(out Character character))
         {
-            SetDefaultSpeed(character.gameObject);
-            _charTemp.Remove(other.gameObject);
-        }
-    }
-
-    private void ChangeMoveSpeed(GameObject target)
-    {
-        if (target.TryGetComponent(out Character character))
-        {
-            character.Move.ChangeMoveSpeed(0.2f);
-        }
-    }
-
-    private void SetDefaultSpeed(GameObject target)
-    {
-        if (target.TryGetComponent(out Character character))
-        {
-            character.Move.SetDefaultSpeed();
+            if (character.NetworkSettings.TeamIndex != _ownerTeamIndex)
+            {
+                SetDefaultSpeed(character.gameObject);
+                _charTemp.Remove(other.gameObject);
+            }
         }
     }
 
     private void OnDestroy()
     {
-        if (_charTemp.Count != 0)
-        {
-            foreach (var character in _charTemp)
-            {
-                SetDefaultSpeed(character);
-            }
-        }
-        
+        foreach (var character in _charTemp)
+            SetDefaultSpeed(character);
+    
         _charTemp.Clear();
+    }
+
+    private void ChangeMoveSpeed(GameObject target)
+    {
+        if (target.TryGetComponent(out Character character))
+            character.Move.ChangeMoveSpeed(0.2f);
+    }
+
+    private void SetDefaultSpeed(GameObject target)
+    {
+        if (target.TryGetComponent(out Character character))
+            character.Move.SetDefaultSpeed();
     }
 }

@@ -17,6 +17,12 @@ public class Quicksand : Skill, IGodLightSpell
     private QuicksandTile _quicksandTempTile;
     private float _tempCastDeley = 1;
     private float _longPressThreshold = 0.25f;
+    private int _bonusLength = 0;
+    private float _bonusWidth = 0f;
+    private float _initialLenght = 7;
+    private float _initialWidth = 1;
+    private float _initialRadius = 5;
+    private bool _isInvisibleQuickSand;
 
     public override string AdditionalDescription =>
         $"Длительность: {AbilityNameBox.ColorOpen}{_quicksandDuration} сек{AbilityNameBox.ColorEnd}";
@@ -40,6 +46,21 @@ public class Quicksand : Skill, IGodLightSpell
         _endPoint = targetInfo.Points[1];
     }
 
+    public void SetQuickSandInvisible(bool value)
+    {
+        _isInvisibleQuickSand = value;
+    }
+    
+    public void SetBonusSize(int length, float width)
+    {
+        _bonusLength = length;
+        _bonusWidth = width;
+
+        CastLength = _isInvisibleQuickSand ? CastLength +_bonusLength: _initialLenght;
+        CastWidth = _isInvisibleQuickSand ? CastWidth + _bonusWidth : _initialWidth;
+        Radius = _isInvisibleQuickSand ? Radius + _bonusWidth : _initialRadius;
+    }
+
     public void ChangeMode()
     {
         if (IsEnabled)
@@ -59,7 +80,7 @@ public class Quicksand : Skill, IGodLightSpell
 
     protected override IEnumerator CastJob()
     {
-        CmdUse(_startPoint, _endPoint);
+        CmdUse(_startPoint, _endPoint, _hero.NetworkSettings.TeamIndex);
         yield return null;
     }
 
@@ -121,21 +142,18 @@ public class Quicksand : Skill, IGodLightSpell
 
         callbackDataSaved.Invoke(targetInfo);
     }
-
+    
     [Command]
-    private void CmdUse(Vector3 startPoint, Vector3 endPoint)
+    private void CmdUse(Vector3 startPoint, Vector3 endPoint, byte ownerTeamIndex)
     {
         GameObject item = Instantiate(_quicksandTile.gameObject, startPoint, Quaternion.identity);
-
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
-
         NetworkServer.Spawn(item);
 
         _quicksandTempTile = item.GetComponent<QuicksandTile>();
-
+        _quicksandTempTile.SetOwnerTeam(ownerTeamIndex, _isInvisibleQuickSand, _bonusLength, _bonusWidth);
         _quicksandTempTile.SetStartPosition(startPoint);
         _quicksandTempTile.SetEndPosition(endPoint);
-
         _quicksandTempTile.Build();
 
         StartCoroutine(DurationJob());

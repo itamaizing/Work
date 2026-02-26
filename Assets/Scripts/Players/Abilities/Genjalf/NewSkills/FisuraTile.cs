@@ -9,12 +9,16 @@ namespace Gangdollarff
     public class FisuraTile : NetworkBehaviour
     {
         [SerializeField] protected BoxCollider _collider;
-        [SerializeField] private GameObject[] _tiles;
-        private int _maxSizeLock = 7;
+        [SerializeField] protected GameObject[] _tiles;
+        [SyncVar] protected int _maxSizeLock = 7;
+        [SyncVar] protected float _widthModifier = 0f;
 
         [SyncVar] private Vector3 _startPosition;
         [SyncVar] private Vector3 _endPosition;
         [SyncVar] private int _size;
+        
+        public void AddMaxSize(int value) => _maxSizeLock += value;
+        public void AddWidth(float value) => _widthModifier += value;
 
         [Client]
         protected virtual void Start()
@@ -48,7 +52,7 @@ namespace Gangdollarff
                 _tiles[i].SetActive(true);
 
             _collider.center = new Vector3(_collider.center.x, _collider.center.y, _size / 2f);
-            _collider.size = new Vector3(_collider.size.x, _collider.size.y, _size);
+            _collider.size = new Vector3(_collider.size.x + _widthModifier, _collider.size.y, _size);
             _collider.enabled = true;
         }
     }
