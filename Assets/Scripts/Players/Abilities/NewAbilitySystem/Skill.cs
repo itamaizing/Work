@@ -426,6 +426,38 @@ public abstract class Skill : NetworkBehaviour
         CooldownEnded?.Invoke();
         _cooldownJob = null;
     }
+
+    [SyncVar(hook = nameof(OnCooldownChanged))] private double _cooldownEndTime = 0;
+    public double CooldownEnd => _cooldownEndTime;
+    private void OnCooldownChanged(double oldValue, double newValue)
+    {
+        Cooldown?.OnServerCooldownChanged(oldValue, newValue);
+    }
+    [Command]
+    public void CmdCooldownStart(float duration)
+    {
+        _cooldownEndTime = NetworkTime.time + duration;
+        //трогать ивенты?
+    }
+
+    [Command]
+    public void CmdCooldownModify(double delta)
+    {
+        if (!Cooldown.IsActive)
+            return;
+
+        _cooldownEndTime += delta;
+        if (_cooldownEndTime >= NetworkTime.time)
+        {
+            Cooldown.ForceEnd();
+        }
+    }
+
+    [Command]
+    public void CmdCooldownEnd()
+    {
+        _cooldownEndTime = NetworkTime.time;
+    }
     #endregion
     #endregion
     //Cooldowns
@@ -740,11 +772,10 @@ public abstract class Skill : NetworkBehaviour
     //Возможно стоит сделать синглтон для Server-Side таймеров?
     //И сервер будет сообщать когда кд пошел, когда прошел
     //Мб лучше перевести на event, компонент в Init/OnEnable будет подписываться на него
-    [Server]
     private void Update()
     {
-        Cooldown.Tick(Time.deltaTime);
-        Charges.Tick(Time.deltaTime);
+        Cooldown?.Tick();
+        //Charges.Tick(Time.deltaTime);
     }
 
     public void EnableSkillBoost()
