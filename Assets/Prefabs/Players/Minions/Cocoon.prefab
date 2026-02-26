@@ -11952,7 +11952,6 @@ GameObject:
   - component: {fileID: 3543592199279037076}
   - component: {fileID: 7099943676139532891}
   - component: {fileID: 321651727084008340}
-  - component: {fileID: 7790970521576675334}
   - component: {fileID: 102178938915016677}
   - component: {fileID: 4553409324821289454}
   - component: {fileID: 2798338264175827724}
@@ -12204,7 +12203,7 @@ MonoBehaviour:
   _networkSettings: {fileID: 4704448068992970106}
   _rigidbody: {fileID: 6956811484752265138}
   _collider: {fileID: 3666356079801673500}
-  _lvl: {fileID: 7790970521576675334}
+  _lvl: {fileID: 0}
   _animator: {fileID: 7330930160410084482}
   _networkAnimator: {fileID: 7562276694809356217}
   _healthComponent: {fileID: 4860516575898058464}
@@ -12474,21 +12473,6 @@ MonoBehaviour:
   IsSelect: 0
   IsNoRotateAtCursor: 1
   _agent: {fileID: 0}
---- !u!114 &7790970521576675334
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3906734254346883187}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 428637f045d35d24696a6e8a4728d7d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
 --- !u!114 &102178938915016677
 MonoBehaviour:
   m_ObjectHideFlags: 0

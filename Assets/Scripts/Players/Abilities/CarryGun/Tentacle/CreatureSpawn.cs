@@ -32,7 +32,7 @@ public class CreatureSpawn : Skill
 
     private void OnEnable()
     {
-        Hero.Move.SetCanMove(false);
+        minionMove.SetCanMove(false);
     }
 
     protected override IEnumerator PrepareJob(System.Action<TargetInfo> callback)

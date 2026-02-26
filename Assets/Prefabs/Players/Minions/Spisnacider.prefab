@@ -17985,7 +17985,6 @@ GameObject:
   - component: {fileID: 1655977055310397963}
   - component: {fileID: 2075396149247580188}
   - component: {fileID: 2769373615330125278}
-  - component: {fileID: 2486038140440756892}
   - component: {fileID: 4316793701678651147}
   - component: {fileID: 6795151795875073132}
   - component: {fileID: 6892265620981845488}
@@ -18239,7 +18238,7 @@ MonoBehaviour:
   _networkSettings: {fileID: 4352968657823446686}
   _rigidbody: {fileID: 512746244656594313}
   _collider: {fileID: 3393799689084107314}
-  _lvl: {fileID: 2486038140440756892}
+  _lvl: {fileID: 0}
   _animator: {fileID: 4853408415625794062}
   _networkAnimator: {fileID: 6676246011477726785}
   _healthComponent: {fileID: 4688992458449892271}
@@ -18481,21 +18480,6 @@ MonoBehaviour:
   _characterPrefabs: []
   _enemyPrefabs: []
   _allyPrefabs: []
---- !u!114 &2486038140440756892
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4305573293433524190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 428637f045d35d24696a6e8a4728d7d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
 --- !u!114 &4316793701678651147
 MonoBehaviour:
   m_ObjectHideFlags: 0
