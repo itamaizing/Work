@@ -852,10 +852,10 @@ public abstract class Skill : NetworkBehaviour
     {
         _maxCharges += 1;
 
-        _remainingCooldownTimeChargers.Add(0);
+        _remainingCooldownTimeChargers.Add(0f);
+        _currentChargeCooldownJob.Add(null);
 
         _currentChargers += 1;
-
         CurrentChargeChanged?.Invoke(_currentChargers);
     }
 
@@ -890,18 +890,25 @@ public abstract class Skill : NetworkBehaviour
 
     public void DeductMaxChargeCount()
     {
-        if (_maxCharges - 1 > 0)
-        {
-            _maxCharges -= 1;
+        if (_maxCharges <= 1) return;
 
-            _remainingCooldownTimeChargers.RemoveAt(_remainingCooldownTimeChargers.Count - 1);
+        int lastIndex = _maxCharges - 1;
 
-            if (_currentChargers > _maxCharges)
-            {
-                _currentChargers -= 1;
-                CurrentChargeChanged?.Invoke(_currentChargers);
-            }
-        }
+        if (_currentChargeCooldownJob.Count > lastIndex && _currentChargeCooldownJob[lastIndex] != null)
+            StopCoroutine(_currentChargeCooldownJob[lastIndex]);
+
+        if (_remainingCooldownTimeChargers.Count > lastIndex)
+            _remainingCooldownTimeChargers.RemoveAt(lastIndex);
+
+        if (_currentChargeCooldownJob.Count > lastIndex)
+            _currentChargeCooldownJob.RemoveAt(lastIndex);
+
+        _maxCharges -= 1;
+
+        if (_currentChargers > _maxCharges)
+            _currentChargers = _maxCharges;
+
+        CurrentChargeChanged?.Invoke(_currentChargers);
     }
 
     public void DrawDamageZone(Vector3 position)
