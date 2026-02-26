@@ -131,8 +131,8 @@ public class SneakySpit : Skill
             Damage damage = new Damage
             {
                 Value = Damage,
-                School = School,
-                Type = DamageType,
+                School = Info.School,
+                Type = Info.DamageType,
             };
 
             CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);

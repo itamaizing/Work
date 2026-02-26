@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
@@ -212,7 +212,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     private void OnClickWithCtrl()
     {
-        if (Skill.AutoAttack != AutoAttack.autoAttack) return;
+        if (Skill.Info.AutoAttack != AutoAttack.autoAttack) return;
 
         Skill.IsAutoMode = !Skill.IsAutoMode;
         Debug.Log("AA mode - " + Skill.IsAutoMode);

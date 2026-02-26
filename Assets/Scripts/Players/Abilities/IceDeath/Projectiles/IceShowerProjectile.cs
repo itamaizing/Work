@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using UnityEngine;
 
 public class IceShowerProjectile : Projectiles
@@ -65,7 +65,7 @@ public class IceShowerProjectile : Projectiles
 					Debug.Log("NEW DAMAGE");
 				}
 
-				TargetRpcDamgeMake(_curDamage);
+				TargetRpcDamageMake(_curDamage);
 				//_skill.CmdApplyDamage(_damage, target.gameObject);
 				target.Health.TryTakeDamage(ref _damage, _skill);
 

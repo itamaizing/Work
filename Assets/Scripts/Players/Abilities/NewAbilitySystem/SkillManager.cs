@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -458,7 +458,7 @@ public class SkillManager : MonoBehaviour
             return;
         foreach (var item in _skills)
         {
-            if (item.School == school)
+            if (item.Info.School == school)
             {
                 item.Disactive = !value;
                 //item.KnockDownTimerStart(coolDown);
@@ -495,7 +495,7 @@ public class SkillManager : MonoBehaviour
 
     public void SetPhysicalAbilitiesDisactive(bool state)
     {
-        foreach (Skill skill in Abilities) if (skill.AbilityForm == AbilityForm.Physical) skill.Disactive = state;
+        foreach (Skill skill in Abilities) if (skill.Info.AbilityForm == AbilityForm.Physical) skill.Disactive = state;
     }
 
    
@@ -505,7 +505,7 @@ public class SkillManager : MonoBehaviour
         /*
         foreach (var item in _abilities)
         {
-            if (item.AbilityForm == form)
+            if (item.Info.AbilityForm == form)
             {
                 item.SwitchAvailible(value);
                 //item.KnockDownTimerStart(coolDown);

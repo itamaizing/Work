@@ -129,7 +129,7 @@ public class ArrowProjectile : Projectiles
             if (!inAstral)
             {
                 ApplyDamage(_damage, _damageTypePhysics, collider.gameObject);
-                if (TryApplyDamage(_damageTypePhysics, _skill.AttackRangeType, collider.gameObject)) return;
+                if (TryApplyDamage(_damageTypePhysics, _skill.Info.AttackRangeType, collider.gameObject)) return;
             }
 
             float totalMagDamage = _magDamage;
@@ -137,7 +137,7 @@ public class ArrowProjectile : Projectiles
 
             Debug.Log($"totalMagDamage: {totalMagDamage}");
 
-            ApplyDamage(totalMagDamage, _skill.DamageType, collider.gameObject);
+            ApplyDamage(totalMagDamage, _skill.Info.DamageType, collider.gameObject);
 
             if (collider.TryGetComponent<Character>(out Character character)) character.CharacterState.AddState(States.InnerDarkness, _duration, 0, _skill.Hero.gameObject, _skill.name);
         }

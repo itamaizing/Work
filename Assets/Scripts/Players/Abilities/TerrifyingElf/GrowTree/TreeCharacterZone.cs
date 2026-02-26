@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using UnityEngine;
 
 public class TreeCharacterZone : NetworkBehaviour
@@ -62,7 +62,7 @@ public class TreeCharacterZone : NetworkBehaviour
 
         foreach (var skill in character.Abilities.Abilities)
         {
-            if (skill.AbilityForm == AbilityForm.Physical)
+            if (skill.Info.AbilityForm == AbilityForm.Physical)
                 skill.AreaInfo.Radius *= multiplier;
         }
     }
@@ -73,7 +73,7 @@ public class TreeCharacterZone : NetworkBehaviour
 
         foreach (var skill in character.Abilities.Abilities)
         {
-            if (skill.AbilityForm == AbilityForm.Physical)
+            if (skill.Info.AbilityForm == AbilityForm.Physical)
                 skill.AreaInfo.Radius /= multiplier;
         }
     }

@@ -19728,10 +19728,13 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 1234a0457cd7d68489fcc887f4e41225, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 5
   _infoComponent:
@@ -19778,7 +19781,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  netComponent: {fileID: 0}
   _projectile: {fileID: 727437498118149735, guid: e444badf466360e41a896340462c6a62, type: 3}
   _playerLinks: {fileID: 4534754468497973439}
   _ghostSkill: {fileID: 1718052129104348959}
@@ -19811,10 +19813,13 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 88969341e9a4bb444bc7ca1d18082b91, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 8
+  _cooldownComponent:
+    _baseCooldown: 8
   _castDeley: 1.4
   _damageValue: 12
   _infoComponent:
@@ -19861,7 +19866,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  netComponent: {fileID: 0}
   skillRenderer: {fileID: 2807589928063243029}
   groundLayer:
     serializedVersion: 2
@@ -19891,7 +19895,8 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 6371db4ea9593dc49abdd2a651ea311b, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 4
@@ -19899,6 +19904,8 @@ MonoBehaviour:
   - resourceType: 1
     resourceCost: 6
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 6
   _infoComponent:
@@ -19945,7 +19952,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  netComponent: {fileID: 0}
   _projectile: {fileID: 7795660894077134963, guid: 8e56a73e4e78d7841ac2f37176fe2356, type: 3}
   _playerLinks: {fileID: 4534754468497973439}
   _ghostSkill: {fileID: 1718052129104348959}
@@ -19979,10 +19985,13 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 4b464a60ed601d04ab739bef141b8038, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 13
+  _cooldownComponent:
+    _baseCooldown: 13
   _castDeley: 0.1
   _damageValue: 0
   _infoComponent:
@@ -20031,7 +20040,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  netComponent: {fileID: 0}
   _effectPrefab: {fileID: 4195082103051815756, guid: 2d76beef07956e948946e409a372473d, type: 3}
   _reducedCooldown: 0
   _audioClip: {fileID: 8300000, guid: 0e697ad5442a11a4990c66e9b6fb2e18, type: 3}
@@ -20059,12 +20067,15 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 2827654704df1e841824f85306c16461, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 30
   _additionalSkillEnergyCosts: []
   _cooldownTime: 10
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -20111,7 +20122,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  netComponent: {fileID: 0}
   _playerLinks: {fileID: 4534754468497973439}
   duration: 6
 --- !u!114 &826193211731534654
@@ -20134,12 +20144,15 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 41dc99a2dc0db1b48bfe3ab875799e50, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 2
   _additionalSkillEnergyCosts: []
   _cooldownTime: 8
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 1
   _damageValue: 30
   _infoComponent:
@@ -20186,7 +20199,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  netComponent: {fileID: 0}
   skillRenderer: {fileID: 2807589928063243029}
   silenceTalentActive: 0
   tripleShotTalentActive: 0
@@ -20219,10 +20231,13 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 49a816b3ef4f3194191a8cc4430f75e1, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0.66
   _damageValue: 10
   _infoComponent:
@@ -20271,7 +20286,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  netComponent: {fileID: 0}
   _pullingHealthPrefab: {fileID: 7744228389031826322, guid: 01d3359ced6c7904e8d18b398f189893, type: 3}
   _spawnPoint: {fileID: 1110070738435946966}
   _health: {fileID: 2320460443592093226}
@@ -20299,10 +20313,13 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 613823284f8e627408f8c11ca13d4b8a, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 1.2
   _damageValue: 0
   _infoComponent:
@@ -20349,7 +20366,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  netComponent: {fileID: 0}
   extendedRadius: 2
   baseRadius: 3
   teleportManaUse: 6
@@ -20386,10 +20402,13 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: c0be93563e0ed9e4593dd029b0a8eab4, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -20436,7 +20455,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  netComponent: {fileID: 0}
   _playerLinks: {fileID: 4534754468497973439}
   duration: 5
 --- !u!114 &3491896792666520145
@@ -20459,12 +20477,15 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 787e10eda323eea48aac38cc0540a2b8, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 8
   _additionalSkillEnergyCosts: []
   _cooldownTime: 13
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 1.8
   _damageValue: 0
   _infoComponent:
@@ -20511,7 +20532,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  netComponent: {fileID: 0}
   _projectile: {fileID: 2123849334646659443, guid: 8e3073b46604e4040ac3eb03dabfd124, type: 3}
   _spawnPoint: {fileID: 7608591018717630632}
   _playerLinks: {fileID: 4534754468497973439}
@@ -20535,10 +20555,13 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 814ce04994c45f942a7480c3c6c0fcdb, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 6
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 2.8
   _damageValue: 0
   _infoComponent:
@@ -20585,7 +20608,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  netComponent: {fileID: 0}
   trapPrefab: {fileID: 4405999295883627067, guid: 634880f733438024cbf14d239d494d86, type: 3}
   owner: {fileID: 4534754468497973439}
   minDistanceRadiusCircle: {fileID: 6586971803846960611}
@@ -20618,12 +20640,15 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: e616953e4fb63fe4ba9860ceec006bdf, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 15
   _additionalSkillEnergyCosts: []
   _cooldownTime: 12
+  _cooldownComponent:
+    _baseCooldown: 12
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -20670,7 +20695,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  netComponent: {fileID: 0}
   extendedRadius: 8
   _moveDuration: 0.5
   _arrowEffectLifetime: 2
@@ -20708,12 +20732,15 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 2327db16cbf9ac64bb628397725b1cba, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 12
   _additionalSkillEnergyCosts: []
   _cooldownTime: 6
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -20760,7 +20787,6 @@ MonoBehaviour:
   _disactive: 1
   _earlyCooldown: 0
   maxCounter: 0
-  netComponent: {fileID: 0}
   _attackZoneSize: 1
   _attackDelay: 1
   _chargeAttackDelay: 0
@@ -20788,10 +20814,13 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: ff45a428b2382e34393ac58749a92a3d, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 1.8
   _damageValue: 0
   _infoComponent:
@@ -20838,7 +20867,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  netComponent: {fileID: 0}
   _fireAura: {fileID: 8163329122190285983, guid: 57f4b1dca44be5d41bcdf5931936f545, type: 3}
   _arrowFireProjectile: {fileID: 2545325199570042187, guid: 25ced05e8e27cec46bee956e4622103e, type: 3}
   _fireData: {fileID: 11400000, guid: 67c31e48e164c944a90e72fd98b08a37, type: 2}
@@ -20896,10 +20924,13 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 6bd80f86cccf26344927ccf5c8e1b83e, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -20946,7 +20977,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  netComponent: {fileID: 0}
 --- !u!114 &5245378433989923716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20967,12 +20997,15 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: fed6aaa6d139723498ff8d0c2ebaf5ad, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 80
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 1.5
   _damageValue: 0
   _infoComponent:
@@ -21019,7 +21052,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  netComponent: {fileID: 0}
   playerLinks: {fileID: 4534754468497973439}
   drawCircle: {fileID: 6586971803846960611}
   duration: 6
@@ -21043,12 +21075,15 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 16c3d53a2f99df74c857d70b790fe41d, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 40
   _additionalSkillEnergyCosts: []
   _cooldownTime: 6
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -21095,7 +21130,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  netComponent: {fileID: 0}
 --- !u!114 &1094805825435644166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21116,12 +21150,15 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 0dadb43cae00bf64ea1fe2c0dfd800c8, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 80
   _additionalSkillEnergyCosts: []
   _cooldownTime: 2
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -21168,7 +21205,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  netComponent: {fileID: 0}
 --- !u!114 &127445238161157264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21189,12 +21225,15 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: fed6aaa6d139723498ff8d0c2ebaf5ad, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 8
   _additionalSkillEnergyCosts: []
   _cooldownTime: 8
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 1.5
   _damageValue: 0
   _infoComponent:
@@ -21241,7 +21280,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  netComponent: {fileID: 0}
   _playerLinks: {fileID: 4534754468497973439}
   duration: 6
 --- !u!114 &1457342243689941384
@@ -21264,10 +21302,13 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 1c95279a57cf6f5419e5f68c427ea9b0, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 2
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 1
   _damageValue: 10
   _infoComponent:
@@ -21314,7 +21355,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  netComponent: {fileID: 0}
   _playerLinks: {fileID: 4534754468497973439}
   duration: 30
   _baseDamage: 10
@@ -21528,7 +21568,7 @@ MonoBehaviour:
       \u0438 \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u043E\u0441\u0442\u044C
       \u043F\u043E\u043B\u043D\u043E\u0441\u0442\u044C\u044E \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442\u0441\u044F.\_"
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0420\u0430\u0437\u0432\u0435\u0434\u044B\u0432\u0430\u0442\u0435\u043B\u044C\u043D\u044B\u0439
       \u043E\u0433\u043E\u043D\u044C"
     Icon: {fileID: 21300000, guid: 3daccdca469e8c7408109fb56b87cf0b, type: 3}
@@ -21740,7 +21780,7 @@ MonoBehaviour:
       \u043F\u043E 1 \u0435\u0434\u0438\u043D\u0438\u0446\u044B \u043D\u0430 \u043A\u0430\u0436\u0434\u0443\u044E
       0,5 \u0441\u0435\u043A\u0443\u043D\u0434\u044B \u0434\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u0438."
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0411\u0435\u0437\u043C\u043E\u043B\u0432\u0438\u0435"
     Icon: {fileID: 21300000, guid: 28ac766020ba79d41b1e77139a03a2e1, type: 3}
     Group: 0
@@ -21827,7 +21867,7 @@ MonoBehaviour:
         2 \u0440\u0430\u0437, \u0434\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C
         8 \u0441\u0435\u043A\u0443\u043D\u0434, \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0439
         \u0431\u0430\u0444"
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0421\u043F\u043E\u043A\u043E\u0439\u0441\u0442\u0432\u0438\u0435 "
     Icon: {fileID: 21300000, guid: 5f3cf76348a150a4fac45482942b1000, type: 3}
     Group: 0
@@ -22126,7 +22166,7 @@ MonoBehaviour:
         \u044D\u0444\u0444\u0435\u043A\u0442 \u0441\u0442\u0440\u0430\u0445 - \u0436\u0435\u0440\u0442\u0432\u0430
         \u0442\u0435\u0440\u044F\u0435\u0442 \u043A\u043E\u043D\u0442\u0440\u043E\u043B\u044C
         \u0438 \u0443\u0431\u0435\u0433\u0430\u0435\u0442 \u043F\u0440\u043E\u0447\u044C"
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0412\u044B\u0441\u0442\u0440\u0435\u043B \u0442\u044C\u043C\u043E\u0439"
     Icon: {fileID: 21300000, guid: 938620e654f6d2d47a71a99689361b9c, type: 3}
     Group: 0
@@ -22154,7 +22194,7 @@ MonoBehaviour:
       \u0437\u0430\u0431\u0438\u0440\u0430\u0435\u0442 \u0436\u0438\u0437\u043D\u0438
       \u0438 \u043F\u0435\u0440\u0435\u0434\u0430\u0451\u0442 \u0422\u044D\u0440\u0440\u0430\u0444\u0430\u0439\u043D\_"
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0412\u044B\u0442\u044F\u0433\u0438\u0432\u0430\u043D\u0438\u0435
       \u0436\u0438\u0437\u043D\u0438"
     Icon: {fileID: 21300000, guid: 193371c19b9788944b31bf44c9e0c270, type: 3}

@@ -99,7 +99,7 @@ public class Restoration : Skill
     private void UpdateMode()
     {
         AreaInfo.Radius = isLightMode ? lightRange : darkRange;
-        School = isLightMode ? Schools.Light : Schools.Dark;
+        Info.School = isLightMode ? Schools.Light : Schools.Dark;
         CastDeley = isLightMode ? lightCastTime : darkCastTime;
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
         Targeting.Layer = isLightMode ? LayerMask.GetMask("Allies") : LayerMask.GetMask("Enemy");

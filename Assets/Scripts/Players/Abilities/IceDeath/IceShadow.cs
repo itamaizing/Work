@@ -90,7 +90,7 @@ public class IceShadow : Skill
 	{
 		/*IceShadowObject projectileGm = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
 		projectileGm.Init(_playerLinks.gameObject ,Mana.Value);*/
-		_lastHit = _combo.MakeHit(null, AbilityForm, 1, _manaUsed, 0, _combo.GetMultipliedSpeed() / SpeedScaleDivisor);
+		_lastHit = _combo.MakeHit(null, Info.AbilityForm, 1, _manaUsed, 0, _combo.GetMultipliedSpeed() / SpeedScaleDivisor);
 
 		_manaUsed = Mathf.Min(_energy.CurrentValue, MaxManaPerCast);
 		_energy.CmdUse(_manaUsed);

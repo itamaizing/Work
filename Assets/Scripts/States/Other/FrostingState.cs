@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -41,7 +41,7 @@ public class FrostingState : AbstractCharacterState
 
 			foreach (var abil in abilities.Abilities)
 			{
-				if (abil.AbilityForm == AbilityForm.Physical)
+				if (abil.Info.AbilityForm == AbilityForm.Physical)
 				{
 					abil.Buff.CastSpeed.ReductionPercentage(.5f);
 				}
@@ -86,7 +86,7 @@ public class FrostingState : AbstractCharacterState
 		{
 			foreach (var abil in abilities.Abilities)
 			{
-				if (abil.AbilityForm == AbilityForm.Physical)
+				if (abil.Info.AbilityForm == AbilityForm.Physical)
 				{
 					abil.Buff.CastSpeed.IncreasePercentage(.5f);
 				}

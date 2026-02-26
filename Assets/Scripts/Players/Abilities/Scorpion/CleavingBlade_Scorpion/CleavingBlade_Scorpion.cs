@@ -132,7 +132,7 @@ public class CleavingBlade_Scorpion : Skill
             Damage damage = new Damage
             {
                 Value = Buff.Damage.GetBuffedValue(DamageRange * damageMultiplier),
-                Type = DamageType,
+                Type = Info.DamageType,
             };
 
             _wasDamageApplied = true;

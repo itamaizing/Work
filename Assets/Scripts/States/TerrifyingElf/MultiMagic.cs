@@ -33,7 +33,7 @@ public class MultiMagic : AuraState
         duration = durationToExit;
 
         foreach (var skill in _skills.Abilities.Where
-            (ability => ability.SkillType == SkillType.Target && (ability.AbilityForm == AbilityForm.Magic || ability.AbilityForm == AbilityForm.Spell || ability.AbilityForm == AbilityForm.Both)))
+            (ability => ability.Info.SkillType == SkillType.Target && (ability.Info.AbilityForm == AbilityForm.Magic || ability.Info.AbilityForm == AbilityForm.Spell || ability.Info.AbilityForm == AbilityForm.Both)))
         {
             skill.PreparingSuccess += OnTargetSkillCast;
             skill.AfterCast += ExitState;
@@ -48,7 +48,7 @@ public class MultiMagic : AuraState
 
     public override void ExitState()
     {
-        foreach (var skill in _skills.Abilities.Where(ability => ability.SkillType == SkillType.Target))
+        foreach (var skill in _skills.Abilities.Where(ability => ability.Info.SkillType == SkillType.Target))
         {
             skill.PreparingSuccess -= OnTargetSkillCast;
             skill.AfterCast -= ExitState;

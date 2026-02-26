@@ -2,9 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 [Serializable]
 public class CooldownComponent : BaseSkillComponent
@@ -47,6 +45,7 @@ public class CooldownComponent : BaseSkillComponent
         CooldownTime = _baseCooldown;
         _currentMax = CooldownTime;
     }
+    
     public void Tick(float time)
     {
         if (!CooldownActive)
@@ -115,6 +114,7 @@ public class CooldownComponent : BaseSkillComponent
 
     private void StartCooldown(float time)
     {
+        Debug.Log($"{time} CD STARTED!!");
         _remainingTime = time;
         _currentMax = time;
         OnCooldownStart?.Invoke(time);
@@ -122,6 +122,7 @@ public class CooldownComponent : BaseSkillComponent
 
     private void EndCooldown()
     {
+        Debug.Log("CD ENDED!!!");
         _remainingTime = 0;
         _currentMax = _skillAttributes.Cooldown;
         OnCooldownEnd?.Invoke();

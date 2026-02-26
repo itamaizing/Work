@@ -85,35 +85,35 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
             switch (_damageType)
             {
                 case DamageType.Physical:
-                //    Debug.Log("EmpathicPoison / TryTakeDamage / Case DamageType.Physical");
+                //    Debug.Log("EmpathicPoison / TryTakeDamage / Case Info.DamageType.Physical");
                     switch (_attackRangeType)
                     {
                         case AttackRangeType.MeleeAttack:
-                       //     Debug.Log("EmpathicPoison / TryTakeDamage / Case DamageType.Physical / case AttackRangeType.Melee");
+                       //     Debug.Log("EmpathicPoison / TryTakeDamage / Case Info.DamageType.Physical / case Info.AttackRangeType.Melee");
                             if (UnityEngine.Random.Range(0.0f, 100.0f) <= _evadeMeleePhysicalDamage)
                             {
-                           //     Debug.Log("EmpathicPoison / TryTakeDamage / case AttackRangeType.Melee / if evadeMeleeDamage");
+                           //     Debug.Log("EmpathicPoison / TryTakeDamage / case Info.AttackRangeType.Melee / if evadeMeleeDamage");
                                 damage.Value = 0;
                                 return true;
                             }
                             else
                             {
-                             //   Debug.Log("EmpathicPoison / TryTakeDamage / case AttackRangeType.Melee / else evadeMeleeDamage");
+                             //   Debug.Log("EmpathicPoison / TryTakeDamage / case Info.AttackRangeType.Melee / else evadeMeleeDamage");
                                 return false;
                             }
                             break;
 
                         case AttackRangeType.RangeAttack:
-                          //  Debug.Log("EmpathicPoison / TryTakeDamage / Case DamageType.Physical / case AttackRangeType.Range");
+                          //  Debug.Log("EmpathicPoison / TryTakeDamage / Case Info.DamageType.Physical / case Info.AttackRangeType.Range");
                             if (UnityEngine.Random.Range(0.0f, 100.0f) <= _evadeRangePhysicalDamage)
                             {
-                               // Debug.Log("EmpathicPoison / TryTakeDamage / case AttackRangeType.Range / if evadeRangeDamage");
+                               // Debug.Log("EmpathicPoison / TryTakeDamage / case Info.AttackRangeType.Range / if evadeRangeDamage");
                                 damage.Value = 0;
                                 return true;
                             }
                             else
                             {
-                              //  Debug.Log("EmpathicPoison / TryTakeDamage / case AttackRangeType.Range / else evadeRangeDamage");
+                              //  Debug.Log("EmpathicPoison / TryTakeDamage / case Info.AttackRangeType.Range / else evadeRangeDamage");
                                 return false;
                             }
                             break;

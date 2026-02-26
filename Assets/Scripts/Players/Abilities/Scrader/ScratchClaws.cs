@@ -236,8 +236,8 @@ public class ScratchClaws : Skill
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(Damage),
-            Type = DamageType,
-            PhysicAttackType = AttackRangeType
+            Type = Info.DamageType,
+            PhysicAttackType = Info.AttackRangeType
         };
 
         if (targetCurrent != null && UnityEngine.Random.value <= _bleedingChance) targetCurrent.CharacterState.CmdAddState(States.Bleeding, _bleedingDuration, DamagePerTick, _playerLinks.gameObject, name);

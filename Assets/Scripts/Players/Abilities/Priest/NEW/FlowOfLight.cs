@@ -82,7 +82,7 @@ public class FlowOfLight : Skill
 
     private void UpdateMode()
     {
-        School = isLightMode ? Schools.Light : Schools.Dark;
+        Info.School = isLightMode ? Schools.Light : Schools.Dark;
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
     }
 
@@ -176,8 +176,8 @@ public class FlowOfLight : Skill
                     Damage damage = new Damage
                     {
                         Value = tickValue,
-                        Type = DamageType,
-                        School = School
+                        Type = Info.DamageType,
+                        School = Info.School
                     };
                     CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
                     TryApplyExtraState(Targeting.GetTarget()?.Character);

@@ -46,8 +46,8 @@ namespace Gangdollarff.AirElemental
                 Damage damage = new Damage
                 {
                     Value = Buff.Damage.GetBuffedValue(Damage),
-                    Type = DamageType,
-                    PhysicAttackType = AttackRangeType,
+                    Type = Info.DamageType,
+                    PhysicAttackType = Info.AttackRangeType,
                 };
                 CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
 

@@ -88,8 +88,8 @@ public class ChainLightning : Skill
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(Damage),
-            Type = DamageType,
-            PhysicAttackType = AttackRangeType,
+            Type = Info.DamageType,
+            PhysicAttackType = Info.AttackRangeType,
         };
         CmdApplyDamage(damage, target.gameObject);
 

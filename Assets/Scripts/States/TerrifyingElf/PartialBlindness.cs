@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -60,7 +60,7 @@ public class PartialBlindness : RefreshingState
     private void HandleSkillPrepared(Skill skill)
     {
         if (skill == null) return;
-        if (skill.AbilityForm != AbilityForm.Physical) return;
+        if (skill.Info.AbilityForm != AbilityForm.Physical) return;
         if (skill.Hero != characterState.Character) return;
 
         _effectivenessLoss = Mathf.Max(MinEffectiveness, (_baseDuration - duration) * EffectivenessDecayPerSecond)* CurrentStacksCount;

@@ -64,7 +64,7 @@ public class IceSword : CloseCombatSkill
 		if (_rune == null)
 			_rune = (RuneComponent)Hero.Resources[ResourceType.Rune];
 
-        _seriesOfStrikes.MakeHit(Targeting.GetTarget()?.Character, AbilityForm, 0, 10, 0);
+        _seriesOfStrikes.MakeHit(Targeting.GetTarget()?.Character, Info.AbilityForm, 0, 10, 0);
 		if (Targeting.GetTarget()?.Character == _oldtarget)
 		{
 			_hitInTheRow++;

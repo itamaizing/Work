@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -81,7 +81,7 @@ public class AstralState : AbstractCharacterState
 
         foreach (var skill in characterState.Character.Abilities.Abilities)
         {
-            if (skill.AbilityForm == AbilityForm.Magic || skill.AbilityForm == AbilityForm.Spell)
+            if (skill.Info.AbilityForm == AbilityForm.Magic || skill.Info.AbilityForm == AbilityForm.Spell)
             {
                 _modifiedSkills[skill] = skill.Damage;
                 skill.Damage *= 1.5f;
@@ -125,13 +125,13 @@ public class AstralState : AbstractCharacterState
     private void BlockPhysicalAbilities()
     {
         foreach (var skill in characterState.Character.Abilities.Abilities)
-            if (skill.AbilityForm == AbilityForm.Physical) skill.Disactive = true;
+            if (skill.Info.AbilityForm == AbilityForm.Physical) skill.Disactive = true;
     }
 
     private void UnblockPhysicalAbilities()
     {
         foreach (var skill in characterState.Character.Abilities.Abilities)
-            if (skill.AbilityForm == AbilityForm.Physical) skill.Disactive = false;
+            if (skill.Info.AbilityForm == AbilityForm.Physical) skill.Disactive = false;
     }
 
     public override bool Stack(float time)

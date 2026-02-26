@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using UnityEngine;
 
@@ -39,7 +39,7 @@ public class Dark1PassiveSkill : Skill, IPassiveSkill
 
     private void OnHealMade(Heal healed)
     {
-        if (healed.Value > 0 && healed.DamageableSkill.School == Schools.Light)
+        if (healed.Value > 0 && healed.DamageableSkill.Info.School == Schools.Light)
         {
             Heal heal = new Heal();
             heal.Value = healed.Value * .1f;

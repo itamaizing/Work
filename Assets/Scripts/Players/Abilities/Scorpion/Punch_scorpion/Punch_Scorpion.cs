@@ -35,7 +35,7 @@ public class Punch_Scorpion : AutoAttackSkill
             Damage damage = new Damage   
             {
                 Value = Buff.Damage.GetBuffedValue(_damageValue),
-                Type = DamageType,
+                Type = Info.DamageType,
             };
 
             CmdAttack(damage, Targeting.GetTarget()?.Character.gameObject);

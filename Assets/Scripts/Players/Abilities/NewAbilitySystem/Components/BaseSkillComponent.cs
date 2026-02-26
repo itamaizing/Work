@@ -21,4 +21,4 @@
         _skillAttributes = _skill.Attributes;
     }
     #endregion
-}
+}

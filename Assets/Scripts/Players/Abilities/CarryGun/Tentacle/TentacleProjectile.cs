@@ -313,6 +313,6 @@ public class TentacleProjectile : NetworkBehaviour
     //private void SetPhysicalSkillsDisactive(bool state)
     //{
     //    if (_target != null && _target.Abilities != null)
-    //        foreach (Skill skill in _target.Abilities.Abilities) if (skill.AbilityForm == AbilityForm.Physical) skill.Disactive = state;
+    //        foreach (Skill skill in _target.Abilities.Abilities) if (skill.Info.AbilityForm == Info.AbilityForm.Physical) skill.Disactive = state;
     //}
 }

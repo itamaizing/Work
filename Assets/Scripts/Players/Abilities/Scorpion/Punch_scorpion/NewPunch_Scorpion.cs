@@ -165,7 +165,7 @@ public class NewPunch_Scorpion : Skill
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(_damageValue),
-            Type = DamageType,
+            Type = Info.DamageType,
         };
 
         _wasDamageApplied = true;

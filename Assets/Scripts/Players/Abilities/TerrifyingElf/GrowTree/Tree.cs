@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using UnityEngine;
 
 public class Tree : NetworkBehaviour
@@ -15,7 +15,7 @@ public class Tree : NetworkBehaviour
             baseVision = visionComponent.VisionRange;
             visionComponent.VisionRange += VisionMultiplier;
 
-            foreach (var skill in character.Abilities.Abilities) if (skill.AbilityForm == AbilityForm.Physical) skill.AreaInfo.Radius *= RadiusMultiplier;
+            foreach (var skill in character.Abilities.Abilities) if (skill.Info.AbilityForm == AbilityForm.Physical) skill.AreaInfo.Radius *= RadiusMultiplier;
 
         }
     }
@@ -27,7 +27,7 @@ public class Tree : NetworkBehaviour
             VisionComponent visionComponent = character.GetComponent<VisionComponent>();
             visionComponent.VisionRange = baseVision;
 
-            foreach (var skill in character.Abilities.Abilities) if (skill.AbilityForm == AbilityForm.Physical) skill.AreaInfo.Radius /= RadiusMultiplier;
+            foreach (var skill in character.Abilities.Abilities) if (skill.Info.AbilityForm == AbilityForm.Physical) skill.AreaInfo.Radius /= RadiusMultiplier;
         }
     }
 }

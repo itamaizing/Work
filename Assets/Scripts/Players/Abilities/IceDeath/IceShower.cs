@@ -71,7 +71,7 @@ public class IceShower : Skill
 	{
 		//Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		//float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
-		if (_combo.MakeHit(null, AbilityForm, 1, 0, 0, _combo.GetMultipliedSpeed() / 100))
+		if (_combo.MakeHit(null, Info.AbilityForm, 1, 0, 0, _combo.GetMultipliedSpeed() / 100))
 		{
 			Debug.LogError("some talents i guess in ice cloud");
 			//_playerLinks.RuneComponent.IceCloudBonus();
@@ -124,7 +124,7 @@ public class IceShower : Skill
 				if (enemy != null)
 				{
 					_damageValue = 10 + _energy.CurrentValue / 4;
-					ApplyDamage(_damageValue, DamageType.Magical, enemy);
+					ApplyDamage(_damageValue, Info.DamageType.Magical, enemy);
 
 					var targetState = enemy.CharacterState;
 					if (targetState != null)
@@ -159,13 +159,13 @@ public class IceShower : Skill
 		return baseDamage;
 	}
 
-	private void ApplyDamage(float damage, DamageType damageType, Character target)
+	private void ApplyDamage(float damage, Info.DamageType damageType, Character target)
 	{
 		Damage _damage = new Damage
 		{
 			Value = damage,
-			Type = DamageType.Physical,
-			PhysicAttackType = AttackRangeType.RangeAttack,
+			Type = Info.DamageType.Physical,
+			PhysicAttackType = Info.AttackRangeType.RangeAttack,
 		};
 		Debug.Log("DAMAGE");
 		CmdApplyDamage(_damage, target.gameObject);

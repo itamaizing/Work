@@ -67,7 +67,7 @@ public enum AttackRangeType
 public class InfoComponent : BaseSkillComponent
 {
     #region InspectorFields
-    [SerializeField] protected Schools _school;
+    [SerializeField] private Schools _school;
     [SerializeField] protected AbilityForm _form;
     [SerializeField] protected DamageType _damageType;
     [SerializeField] protected AttackRangeType _rangeType;
@@ -81,7 +81,11 @@ public class InfoComponent : BaseSkillComponent
     #endregion
 
     #region Properties
-    public Schools School => _school;
+    public Schools School
+    {
+        get { return _school; }
+        set { _school = value; }
+    }
     public AbilityForm AbilityForm => _form;
     public DamageType DamageType => _damageType;
     public AttackRangeType AttackRangeType => _rangeType;

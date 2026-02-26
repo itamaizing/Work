@@ -56,7 +56,7 @@ public class MinionArrowProjectile : MinionProjectile
     #region ApplyEnemy
     private void ApplyEnemy(Collider collider)
     {
-        ApplyDamage(physicDamage, _skill.DamageType, collider.gameObject);
+        ApplyDamage(physicDamage, _skill.Info.DamageType, collider.gameObject);
     }
     #endregion
 

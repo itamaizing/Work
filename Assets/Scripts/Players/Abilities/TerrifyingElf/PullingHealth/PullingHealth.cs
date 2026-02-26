@@ -255,7 +255,6 @@ public class PullingHealth : Skill
         float damageTickElapsed = 0f;
         var manaResource = Hero.TryGetResource(ResourceType.Mana);
         IDamageable damageable = Targeting.GetTarget()?.Damageable;
-        Debug.Log(damageable + "AAAAAAA");
 
         if (manaResource == null || manaResource.CurrentValue < MinManaToStream)
         {
@@ -399,7 +398,7 @@ public class PullingHealth : Skill
             Damage damage = new Damage
             {
                 Value = ghostBaseDamage,
-                Type = DamageType,
+                Type = Info.DamageType,
             };
 
             if (Targeting.GetTarget() != null && Targeting.GetTarget() is IDamageable damageable)
@@ -418,7 +417,7 @@ public class PullingHealth : Skill
         Damage damage = new Damage
         {
             Value = Damage,
-            Type = DamageType,
+            Type = Info.DamageType,
         };
 
         if (Targeting.GetTarget() != null && Targeting.GetTarget() is IDamageable damageable) CmdApplyDamage(damage, damageable.gameObject);

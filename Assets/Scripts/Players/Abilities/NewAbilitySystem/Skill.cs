@@ -62,7 +62,7 @@ public abstract class Skill : NetworkBehaviour
     #endregion
 
     [SerializeField] protected float _cooldownTime;
-    private CooldownComponent _cooldownComponent;
+    [SerializeField] private CooldownComponent _cooldownComponent;
     public CooldownComponent Cooldown => _cooldownComponent;
 
     [SerializeField] protected float _castDeley;
@@ -521,7 +521,7 @@ public abstract class Skill : NetworkBehaviour
     private TypeClick _click;
     private bool _isAutoMode;
 
-
+    #region Properites
     public bool IsAutoMode
     {
         get
@@ -569,31 +569,11 @@ public abstract class Skill : NetworkBehaviour
     public List<SkillEnergyCost> AdditionalSkillEnergyCosts { get => _additionalSkillEnergyCosts; }
     public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); set => _castDeley = value; }
     public bool IsCasting { get => _isCasting; protected set => _isCasting = value; }
-
-    #region AreaComponent
-    //public float AreaInfo.Radius => AreaInfo.Radius; // Ctrl+R на rand название потом его через CtrlF переименовать
-    //public float AreaInfo.Area => AreaInfo.Area; // Ctrl+R
-    //public float AreaInfo.CastLength => AreaInfo.CastLength; // Ctrl+R
-    //public float CastWidth => AreaInfo.CastWidth; // Ctrl+R
-    #endregion
-
     public float MaxCounter { get => maxCounter; set => maxCounter = value; }
     public float CurrentCounter { get => _currentCounter; set => _currentCounter = value; }
     public virtual float Damage { get => _damageValue; set => _damageValue = value; }
-    #region InfoComponentProp
-    public Schools School { get => _abilitySchool; protected set => _abilitySchool = value; }
-    public AbilityForm AbilityForm => _abilityForm;
-    public DamageType DamageType => _damageType;
-    public AttackRangeType AttackRangeType => _attackRangeType;
-    public SkillType SkillType => _skillType;
-    public Moving Moving => _moving;
-    public AutoAttack AutoAttack => autoAttack;
-    #endregion
-
-
     public float AutoAttackDelay { get => _autoAttackDelay; }
     public ChargeCDUI LinkedChargeCDUI { get; set; }
-
     public bool Disactive
     {
         get => _disactive;
@@ -606,6 +586,7 @@ public abstract class Skill : NetworkBehaviour
             }
         }
     }
+    #endregion Properties
 
     #region AllEvents
     public event Action<bool> OnSkillStateChanged;
@@ -648,7 +629,7 @@ public abstract class Skill : NetworkBehaviour
             if (temp == null)
                 return true;
 
-            switch (SkillType)
+            switch (Info.SkillType)
             {
                 case SkillType.Target:
 
@@ -728,11 +709,20 @@ public abstract class Skill : NetworkBehaviour
         _hero = hero;
         _skillRender = render;
         _skillAttributes.Init(hero.AttributeSystem);
+        InitComponents();
+    }   
+
+    public void InitComponents()
+    {
+        Info.Init(this);
         AreaInfo.Init(this);
         Charges.Init(this);
         Channeling.Init(this);
         Renderer.Init(this);
         Targeting.Init(this);
+        Cooldown.Init(this);
+        Cost.Init(this);
+        //CastBar, Sound, Animation
     }
 
     protected virtual void Awake()
@@ -753,8 +743,8 @@ public abstract class Skill : NetworkBehaviour
     [Server]
     private void Update()
     {
-        //_cooldownComponent.Tick(Time.deltaTime);
-        _chargeComponent.Tick(Time.deltaTime);
+        Cooldown.Tick(Time.deltaTime);
+        Charges.Tick(Time.deltaTime);
     }
 
     public void EnableSkillBoost()
@@ -926,7 +916,8 @@ public abstract class Skill : NetworkBehaviour
                 OnClickCanceled();
             }
 
-            //_tempTargetbase = null; => Targeting.Temporary = null?
+            //_tempTargetbase = null; => Targeting.ClearTemporary()?
+            Targeting.ClearTempTarget();
 
             _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
             _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
@@ -997,8 +988,10 @@ public abstract class Skill : NetworkBehaviour
             }
 
             if (startCooldown)
+            {
+                Cooldown.Start();
                 IncreaseSetCooldown(CooldownTime);
-
+            }
             if (!Charges.IsComboPart) TryUseCharge();
             return true;
         }
@@ -1034,7 +1027,7 @@ public abstract class Skill : NetworkBehaviour
     }
     #endregion
 
-    #region Display Related
+    #region Custom Radius Rendering
     public virtual IEnumerator DynamicRendererJob(float time = 0.2f)
     {
         yield return null; //new WaitForSeconds(time);
@@ -1051,7 +1044,6 @@ public abstract class Skill : NetworkBehaviour
             StopCoroutine(_dynamicRendererJob);
     }
     #endregion
-
 
     protected Coroutine StartCastDeleyCoroutine()
     {

@@ -98,7 +98,7 @@ public class PriestShield : Skill
         Hero.DamageTracker.OnHealTracked += TrackHealDone;
         UpdateMode();
 
-        foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.School == Schools.Discipline))
+        foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.Info.School == Schools.Discipline))
         {
             skill.CastEnded += AddDisciplineStack;
         }
@@ -111,7 +111,7 @@ public class PriestShield : Skill
         Hero.Health.DamageTaken -= TrackPhysDamage;
         Hero.DamageTracker.OnHealTracked -= TrackHealDone;
 
-        foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.School == Schools.Discipline))
+        foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.Info.School == Schools.Discipline))
         {
             skill.CastEnded -= AddDisciplineStack;
         }
@@ -163,7 +163,7 @@ public class PriestShield : Skill
     private void TrackHealDone(Heal heal)
     {
         if (heal.DamageableSkill == null) return;
-        if (heal.DamageableSkill.School != Schools.Light) return;
+        if (heal.DamageableSkill.Info.School != Schools.Light) return;
 
         if (Time.time - _lastHealingTime > PhysBoostTimeWindow)
         {
@@ -185,7 +185,7 @@ public class PriestShield : Skill
     {
         CastDeley = isLightMode ? allyCastTime : darkCastTime;
         CooldownTime = isLightMode ? cooldownLight : cooldownDark;
-        School = isLightMode ? Schools.Light : Schools.Dark;
+        Info.School = isLightMode ? Schools.Light : Schools.Dark;
         Targeting.Layer = isLightMode ? LayerMask.GetMask("Allies") : LayerMask.GetMask("Enemy");
     }
 

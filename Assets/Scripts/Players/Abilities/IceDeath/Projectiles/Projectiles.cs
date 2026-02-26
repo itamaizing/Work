@@ -31,12 +31,10 @@ public class Projectiles : NetworkBehaviour
 			_energy = (Energy) res;
         if (_dad.Resources.TryGetValue(ResourceType.Rune, out res))
             _rune = (RuneComponent)res;
-        //_rune = (RuneComponent)_dad.Resources[ResourceType.Rune];
-        //Debug.Log("bullet init");
     }
 
     [ClientRpc]
-	protected void TargetRpcDamgeMake(float value)
+	protected void TargetRpcDamageMake(float value)
 	{
 		//Debug.Log("CLIENT RPC");
 		_energy.SumDamageMake(value);

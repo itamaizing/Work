@@ -95,7 +95,7 @@ public class FlashOfLight : Skill
     private void UpdateMode()
     {
         AreaInfo.Radius = isLightMode ? _lightRange : _darkRange;
-        School = isLightMode ? Schools.Light : Schools.Dark;
+        Info.School = isLightMode ? Schools.Light : Schools.Dark;
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
         Targeting.Layer = isLightMode
             ? LayerMask.GetMask("Allies", "Player")
@@ -198,7 +198,7 @@ public class FlashOfLight : Skill
             Value = Buff.Damage.GetBuffedValue(_damageAmount),
             Type = DamageType.Physical,
             PhysicAttackType = AttackRangeType.RangeAttack,
-            School = this.School,
+            School = this.Info.School,
         };
 
         CmdApplyDamage(damage, target.gameObject);

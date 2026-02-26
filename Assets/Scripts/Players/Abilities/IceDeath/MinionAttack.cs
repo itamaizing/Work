@@ -38,7 +38,7 @@ public class MinionAttack : AutoAttackSkill
 	{
 		_isReadyToShot = false;
 
-		//enemy.Health.TakeDamage(_damage + Random.Range(0, 1), DamageType.Physical, this);
+		//enemy.Health.TakeDamage(_damage + Random.Range(0, 1), Info.DamageType.Physical, this);
 		Debug.LogError("!!!damage method has been changed!!!");
 	}
 

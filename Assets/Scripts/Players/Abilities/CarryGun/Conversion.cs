@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -37,7 +37,7 @@ public class Conversion : Skill
         }
 
         var lastSkill = Hero.Abilities.LastCastedSkill;
-        if (lastSkill.AutoAttack == AutoAttack.autoAttack) lastSkill.TryPreparing();
+        if (lastSkill.Info.AutoAttack == AutoAttack.autoAttack) lastSkill.TryPreparing();
 
         yield break;
     }

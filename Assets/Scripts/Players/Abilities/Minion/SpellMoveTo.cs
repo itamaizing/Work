@@ -35,8 +35,8 @@ public class SpellMoveTo : Skill
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(_damageValue),
-            Type = DamageType,
-            PhysicAttackType = AttackRangeType,
+            Type = Info.DamageType,
+            PhysicAttackType = Info.AttackRangeType,
         };
         CmdApplyDamage(damage, _enemyTarget.gameObject);
     }

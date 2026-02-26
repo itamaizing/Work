@@ -36,10 +36,10 @@ namespace Gangdollarff.EarthElemental
             Damage damage = new Damage
             {
                 Value = Buff.Damage.GetBuffedValue(Damage),
-                Type = DamageType,
-                PhysicAttackType = AttackRangeType,
-                School = School,
-                Form = AbilityForm,
+                Type = Info.DamageType,
+                PhysicAttackType = Info.AttackRangeType,
+                School = Info.School,
+                Form = Info.AbilityForm,
              };
 
             CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);

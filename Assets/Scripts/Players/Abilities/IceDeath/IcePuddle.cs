@@ -179,7 +179,7 @@ public class IcePuddle : Skill
 
     protected override IEnumerator CastJob()
     {
-        _lastHit = _seriesOfStrikes.MakeHit(null, AbilityForm, 1, 0, 0, _seriesOfStrikes.GetMultipliedSpeed() / 100);
+        _lastHit = _seriesOfStrikes.MakeHit(null, Info.AbilityForm, 1, 0, 0, _seriesOfStrikes.GetMultipliedSpeed() / 100);
 
         Shoot();
         yield return null;

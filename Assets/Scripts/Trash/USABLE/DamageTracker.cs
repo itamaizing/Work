@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using UnityEngine;
@@ -29,7 +29,7 @@ public class DamageTracker : NetworkBehaviour
         RemoveOldServerEntries();
         RemoveOldLocalEntries();
 
-        //Debug.Log($"[DamageTracker] Damage added: {damage.Value}, Time: {Time.time}, School: {damage.School}, DamageType: {damage.Type}");
+        //Debug.Log($"[DamageTracker] Damage added: {damage.Value}, Time: {Time.time}, Info.School: {damage.Info.School}, Info.DamageType: {damage.Type}");
 
         OnDamageTracked?.Invoke(damage, targetObject);
     }

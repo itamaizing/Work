@@ -357,7 +357,7 @@ public class IceRolling : Skill
 	{
 		if (!float.IsInfinity(_mousePos.x))
         {
-			_isLastInSeries = _seriesOfStrikes.MakeHit(Targeting.GetTarget()?.Character, AbilityForm, 1, 0, 0);
+			_isLastInSeries = _seriesOfStrikes.MakeHit(Targeting.GetTarget()?.Character, Info.AbilityForm, 1, 0, 0);
 			Jump2();
 			yield return null;
 		}

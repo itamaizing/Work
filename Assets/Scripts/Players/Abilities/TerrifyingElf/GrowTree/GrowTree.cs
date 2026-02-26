@@ -76,8 +76,6 @@ public class GrowTree : Skill
             if (float.IsPositiveInfinity(_targetPoint.x)) return false;
 
             float allowedRadius = _isGrowTreeArrowIntoSkyRadiusTalent ? extendedRadius : AreaInfo.Radius;
-            Debug.Log($"{Targeting.IsPointInRadius(allowedRadius, _targetPoint)}");
-            Debug.Log($"{allowedRadius}, {_targetPoint.ToString()}");
             return Targeting.IsPointInRadius(allowedRadius, _targetPoint);
         }
     }
@@ -264,7 +262,6 @@ public class GrowTree : Skill
             if (GetMouseButton)
             {
                 Vector3 mousePoint = Targeting.GetMousePoint();
-                Debug.Log($"MousePount: {mousePoint.ToString()}");
 
                 bool clickedOnHero = false;
 
@@ -277,7 +274,6 @@ public class GrowTree : Skill
                         break;
                     }
                 }
-                Debug.Log($"Set Mouse Point: {mousePoint.ToString()}");
 
                 targetPoint = mousePoint;
 
@@ -291,7 +287,6 @@ public class GrowTree : Skill
                 {
                     float dist = Vector3.Distance(transform.position, targetPoint);
                     if (dist <= AreaInfo.Radius) _castFromExtendedRadius = false;
-                    Debug.Log($"AfterClick1: {targetPoint.ToString()}");
 
                     //else if (dist <= extendedRadius && _isGrowTreeArrowIntoSkyRadiusTalent)
                     //{
@@ -313,7 +308,6 @@ public class GrowTree : Skill
 
             yield return null;
         }
-        Debug.Log($"BeforeCast: {targetPoint.ToString()}");
 
         int nearCount = _activeTrees.Count(tree => tree != null && Vector3.Distance(tree.transform.position, targetPoint) <= AreaInfo.Radius);
         Channeling.CastDuration = nearCount == 0 ? _baseCastStreamDuration : _baseCastStreamDuration * Mathf.Pow(2, nearCount);
@@ -337,7 +331,6 @@ public class GrowTree : Skill
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(targetPoint);
-        Debug.Log($"ADDDED CAST POINT: {targetPoint.ToString()}");
         callbackDataSaved(targetInfo);
     }
 
@@ -481,7 +474,6 @@ public class GrowTree : Skill
     [Command]
     private void CmdSpawnTreeAndTeleport(Vector3 position)
     {
-        Debug.Log($"TargetPoint: {_targetPoint.x}");
         Vector3 spawnPosition = position;
 
         var tree = Instantiate(_treePrefab, spawnPosition, Quaternion.identity);
@@ -606,4 +598,4 @@ public class GrowTree : Skill
 
     protected override void ClearData() => _targetPoint = Vector3.positiveInfinity;
     public override void LoadTargetData(TargetInfo targetInfo) => _targetPoint = targetInfo.Points[0];
-}
+}

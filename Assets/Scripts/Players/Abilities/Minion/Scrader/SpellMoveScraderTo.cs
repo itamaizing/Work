@@ -241,8 +241,8 @@ public class SpellMoveScraderTo : Skill
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(_damage),
-            Type = DamageType,
-            PhysicAttackType = AttackRangeType
+            Type = Info.DamageType,
+            PhysicAttackType = Info.AttackRangeType
         };
 
         CmdApplyDamage(damage, _currentEnemyTarget.gameObject);

@@ -160,7 +160,7 @@ public class Kick_Scorpion : Skill
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(DamageRange),
-            Type = DamageType,
+            Type = Info.DamageType,
         };
 
         _wasDamageApplied = true;

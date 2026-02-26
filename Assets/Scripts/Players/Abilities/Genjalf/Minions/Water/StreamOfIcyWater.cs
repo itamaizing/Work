@@ -44,8 +44,8 @@ public class StreamOfIcyWater : Skill
             Damage damage = new Damage
             {
                 Value = Buff.Damage.GetBuffedValue(Damage),
-                Type = DamageType,
-                PhysicAttackType = AttackRangeType,
+                Type = Info.DamageType,
+                PhysicAttackType = Info.AttackRangeType,
             };
             CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
 			Targeting.GetTarget()?.Character.CharacterState.CmdAddState(States.Frosting, 6, 0, Hero.gameObject, name);

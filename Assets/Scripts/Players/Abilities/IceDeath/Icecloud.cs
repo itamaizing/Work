@@ -71,7 +71,7 @@ public class IceCloud : Skill
 
         Vector3 lookDir = _mousePos - Hero.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - AngleOffset;
-		if (_combo.MakeHit(null, AbilityForm, 1, 0, 0, _combo.GetMultipliedSpeed() / ComboSpeedDivider)) _lastHit = true;
+		if (_combo.MakeHit(null, Info.AbilityForm, 1, 0, 0, _combo.GetMultipliedSpeed() / ComboSpeedDivider)) _lastHit = true;
 
 		float energyToUse = _energy.CurrentValue;
 		_energy.CmdUse(energyToUse);

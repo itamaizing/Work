@@ -68,7 +68,7 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
     //    {
     //        if (enemyCollider.TryGetComponent<IDamageable>(out IDamageable target) && enemyCollider != _character.gameObject)
     //        {
-    //            ApplyDamage(damageValue, DamageType.Magical, target);
+    //            ApplyDamage(damageValue, Info.DamageType.Magical, target);
 
     //            if (enemyCollider.TryGetComponent<Character>(out Character character))
     //            {
@@ -100,7 +100,7 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
     //    {
     //        if (enemyCollider.TryGetComponent<IDamageable>(out IDamageable target) && enemyCollider != _character.gameObject)
     //        {
-    //            ApplyDamage(_damage, DamageType.Magical, target);
+    //            ApplyDamage(_damage, Info.DamageType.Magical, target);
 
     //            if (enemyCollider.TryGetComponent<Character>(out Character character))
     //            {

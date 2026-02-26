@@ -109,8 +109,8 @@ public class FireBoll : Skill
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(Damage),
-            Type = DamageType,
-            PhysicAttackType = AttackRangeType,
+            Type = Info.DamageType,
+            PhysicAttackType = Info.AttackRangeType,
         };
         CmdApplyDamage(damage, target);
         target.GetComponent<Character>().CharacterState.CmdAddState(States.Burning, 6, 0, Hero.gameObject, name);

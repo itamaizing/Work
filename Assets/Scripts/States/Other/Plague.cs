@@ -116,7 +116,7 @@ public class Plague : RefreshingState
 		{
 			if (collider.TryGetComponent<Character>(out var enemy) && collider.gameObject != characterState.gameObject)
 			{
-				//enemy.Health.TryTakeDamage(damage / 2, DamageType.Magical, AttackRangeType.RangeAttack);
+				//enemy.Health.TryTakeDamage(damage / 2, Info.DamageType.Magical, Info.AttackRangeType.RangeAttack);
 				enemy.CharacterState.CmdAddState(States.Plague, 4, 0, null, null);
 			}
 		}

@@ -24,7 +24,7 @@ public class SeriesOfStrikes : MonoBehaviour
 	private static List<AbilityForm> _formList = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical };
 	private static List<AbilityForm> _formList2 = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Magic };
 	private static List<AbilityForm> _formList3 = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Magic, AbilityForm.Physical, AbilityForm.Magic, AbilityForm.Physical, AbilityForm.Magic };
-	//private static List<AbilityForm> _formList3 = new List<AbilityForm> { AbilityForm.Physical, AbilityForm.Magic, AbilityForm.Physical };
+	//private static List<Info.AbilityForm> _formList3 = new List<Info.AbilityForm> { Info.AbilityForm.Physical, Info.AbilityForm.Magic, Info.AbilityForm.Physical };
 
 	private List<Series> _seriesOfStrikes = new List<Series>()
 	{
@@ -142,7 +142,7 @@ public class SeriesOfStrikes : MonoBehaviour
 	{
 		var selectedSkill = _playerLinks.Abilities.SelectedSkill;
 
-		if (selectedSkill != null && selectedSkill.DamageType == DamageType.Physical)
+		if (selectedSkill != null && selectedSkill.Info.DamageType == DamageType.Physical)
 		{
 			_sumPhisDamage += damage;
 

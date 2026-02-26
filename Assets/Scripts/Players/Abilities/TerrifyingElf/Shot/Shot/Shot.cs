@@ -49,10 +49,6 @@ public class Shot : Skill
 
     private bool CheckCanCast()
     {
-        Debug.Log("CheckCanCast");
-        Debug.Log($"HasTarget: {Targeting.GetTarget()}");
-        Debug.Log($"castLength: {AreaInfo.CastLength}");
-
         if (Targeting.GetTarget() != null)
             return Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.CastLength;
 
@@ -135,13 +131,10 @@ public class Shot : Skill
     {
         if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
         _targetPoint = targetInfo.Points[0];
-		Debug.Log("LoadTargetData");
 	}
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-		Debug.Log("PrepareJob");
-
 		Vector3 targetPoint = Vector3.positiveInfinity;
 
         while (float.IsPositiveInfinity(targetPoint.x))
@@ -162,14 +155,10 @@ public class Shot : Skill
                     }
                 }
             }
-            Debug.Log("Null");
 			yield return null;
         }
 
         Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
-		Debug.Log($"{Targeting.GetTempTarget()}: Range {AreaInfo.CastLength}");
-		Debug.Log($"{targetPoint.ToString()}: Range {AreaInfo.CastLength}");
-
 		TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
         targetInfo.Points.Add(targetPoint);
@@ -178,7 +167,6 @@ public class Shot : Skill
 
     protected override IEnumerator CastJob()
     {
-        Debug.Log("TryingToCast");
 		if (Targeting.GetTarget() == null && _targetPoint == Vector3.positiveInfinity) yield return null;
         if (Targeting.GetTarget() != null && !IsTargetInRange()) yield return null;
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
@@ -137,7 +137,7 @@ public class LightShield : AbstractCharacterState, IDamageable
     //        {
     //            Form = damage.Form,
     //            PhysicAttackType = damage.PhysicAttackType,
-    //            School = damage.School,
+    //            Info.School = damage.Info.School,
     //            Type = damage.Type,
     //            Value = damage.Value * 0.2f
     //        };

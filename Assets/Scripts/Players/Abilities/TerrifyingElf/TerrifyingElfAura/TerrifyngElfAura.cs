@@ -132,7 +132,7 @@ public class TerrifyingElfAura : NetworkBehaviour
     {
         if (!calmnessTalent || currentSkill == null) return;
 
-        if (currentSkill.AbilityForm == AbilityForm.Spell || currentSkill.AbilityForm == AbilityForm.Magic)
+        if (currentSkill.Info.AbilityForm == AbilityForm.Spell || currentSkill.Info.AbilityForm == AbilityForm.Magic)
         {
             var character = currentSkill.Hero;
             if (character != null && character.CharacterState != null)
@@ -170,7 +170,7 @@ public class TerrifyingElfAura : NetworkBehaviour
     {
         if (!fireWorshipperTalent || currentSkill == null) return;
 
-        if (currentSkill.DamageType != DamageType.Physical)
+        if (currentSkill.Info.DamageType != DamageType.Physical)
             return;
 
         var character = currentSkill.Hero;

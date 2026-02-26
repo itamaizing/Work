@@ -41,7 +41,7 @@ public class LightningStrike : Skill
             Damage damage = new Damage
             {
                 Value = Buff.Damage.GetBuffedValue(Damage),
-                Type = DamageType
+                Type = Info.DamageType
             };
             CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
 

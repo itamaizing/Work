@@ -113,7 +113,7 @@ public class SparkOfLight : Skill
 
     private void UpdateMode()
     {
-        School = isLightMode ? Schools.Light : Schools.Dark;
+        Info.School = isLightMode ? Schools.Light : Schools.Dark;
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
 
         ClearData();
@@ -334,7 +334,7 @@ public class SparkOfLight : Skill
             Value = Buff.Damage.GetBuffedValue(amount),
             Type = DamageType.Magical,
             PhysicAttackType = AttackRangeType.RangeAttack,
-            School = this.School,
+            School = this.Info.School,
             //DamageableSkill = this,
         };
     }
