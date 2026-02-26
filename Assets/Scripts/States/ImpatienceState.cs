@@ -75,17 +75,24 @@ public class ImpatienceState : AbstractCharacterState
             _casterPsionic.AddAndResetDecay(psiGain);
         }
 
-        if (ActiveCharacters.Count <= 1) return;
+        List<Character> recipients = new List<Character>(ActiveCharacters);
+
+        if (personWhoMadeBuff != null && !personWhoMadeBuff.IsDead)
+        {
+            if (!recipients.Contains(personWhoMadeBuff))
+                recipients.Add(personWhoMadeBuff);
+        }
+
+        if (recipients.Count <= 1) return;
 
         float originalDamage = damage.Value;
-        float dividedDamage = originalDamage / ActiveCharacters.Count;
+        float dividedDamage = originalDamage / recipients.Count;
 
         _isProcessingSharedDamage = true;
 
-        foreach (var character in ActiveCharacters)
+        foreach (var character in recipients)
         {
-            if (character == characterState.Character)
-                continue;
+            if (character == characterState.Character) continue;
 
             Damage sharedDamage = new Damage
             {
