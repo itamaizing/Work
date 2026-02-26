@@ -7,14 +7,15 @@ public class Impatica : Skill
 {
     [SerializeField] private Character _playerLinks;
     [SerializeField] private float duration;
-    private Vector3 _targetPoint = Vector3.positiveInfinity;
-
-    private int _baseCharges = 1;
 
     protected override bool IsCanCast => IsHaveCharge && GetTargetCharacter() != null;
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
+
+    private const float TargetSearchRadius = 0.5f;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
+
     public void SecondCharge(bool value)
     {
         if (value) AddMaxChargeCount();
@@ -23,16 +24,30 @@ public class Impatica : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (float.IsPositiveInfinity(_targetPoint.x) && GetTargetCharacter() == null && !_disactive)
+        while (GetTempTargetCharacter() == null)
         {
             if (GetMouseButton)
             {
-                _targetPoint = GetMousePoint();
-                FindTargetCharacter();
+                FindTargetCharacter(TargetSearchRadius, GetMousePoint());
+
+                if (GetTempTargetCharacter() != null)
+                {
+                    if (IsAllyTarget(GetTempTargetCharacter()) || GetTempTargetCharacter() == Hero)
+                    {
+                        ClearTempTarget();
+                    }
+                    else
+                    {
+                        GetTempTargetCharacter().SelectedCircle.IsActive = true;
+                        break;
+                    }
+                }
             }
             yield return null;
         }
 
+        SetTarget(GetTempTargetCharacter());
+        ClearTempTarget();
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(GetTargetCharacter());
         callbackDataSaved(targetInfo);
@@ -51,8 +66,8 @@ public class Impatica : Skill
 
     protected override void ClearData()
     {
-        _targetPoint = Vector3.positiveInfinity;
         ClearTarget();
+        ClearTempTarget();
         //_target = null;
     }
 
