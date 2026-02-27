@@ -43,7 +43,7 @@ MonoBehaviour:
     attributes:
     - nameToShow: MaxValue
       type: 0
-      value: 0
+      value: 100
     - nameToShow: Regen
       type: 1
       value: 0
