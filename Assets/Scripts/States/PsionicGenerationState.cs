@@ -11,8 +11,7 @@ public class PsionicGenerationState : AbstractCharacterState
 
     private BasePsionicEnergy _psionicEnergy;
 
-    private readonly System.Collections.Generic.List<StatusEffect> _effects =
-        new() { StatusEffect.Ability };
+    private readonly System.Collections.Generic.List<StatusEffect> _effects = new() { StatusEffect.Ability };
 
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.PsionicGeneration;
@@ -46,13 +45,10 @@ public class PsionicGenerationState : AbstractCharacterState
         if (_tickTimer >= TickInterval)
         {
             _tickTimer = 0f;
-
-            if (_psionicEnergy != null)
-                _psionicEnergy.AddAndResetDecay(PsiPerTick);
+            if (_psionicEnergy != null) _psionicEnergy.AddPsiAndRestartDecay(PsiPerTick);
         }
 
-        if (_durationRemaining <= 0f)
-            ExitState();
+        if (_durationRemaining <= 0f) ExitState();
     }
 
     public override bool Stack(float time)

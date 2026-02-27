@@ -28,7 +28,7 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     private float MaxPsi => _player.Health.MaxValue;
     public bool IsAttackingPsiEnergyActive => _attackingPsionicEnergy.IsAttackingPsiEnergy;
-
+    
     public event Action<Damage, Skill> DamageTaken;
     public event Action<float> OnEnergyChanged;
     public event Action<bool> OnAccumulationPsionicChanged;
@@ -155,6 +155,31 @@ public class BasePsionicEnergy : Resource, IDamageable
         _energyDecayCoroutine = StartCoroutine(EnergyDecayCoroutine());
 
         UpdatePsionicaBar();
+    }
+
+    public void AddPsiAndRestartDecay(float value)
+    {
+        if (!isServer) return;
+
+        if (psionicEnergySkill == null || !psionicEnergySkill.IsPsiEnergyActive)
+            return;
+
+        CurrentValue = Mathf.Min(CurrentValue + value, MaxPsi);
+
+        RpcOnEnergyChanged(CurrentValue);
+
+        bool wasInternalEnergy = _isInternalPsiEnergy;
+        _isInternalPsiEnergy = CurrentValue > 0;
+
+        if (wasInternalEnergy != _isInternalPsiEnergy)
+            RpcInternalPsiEnergyChanged(_isInternalPsiEnergy);
+
+        if (_energyDecayCoroutine != null)
+            StopCoroutine(_energyDecayCoroutine);
+
+        _energyDecayCoroutine = StartCoroutine(EnergyDecayCoroutine());
+
+        RpcCoolDownPsionicEnegry();
     }
 
     #region Test
