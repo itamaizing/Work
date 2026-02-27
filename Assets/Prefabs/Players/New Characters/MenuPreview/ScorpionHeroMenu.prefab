@@ -20,6 +20,10 @@ PrefabInstance:
       propertyPath: _assetId
       value: 3188755592
       objectReference: {fileID: 0}
+    - target: {fileID: 2675348779447106883, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2785578367526533986, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
       propertyPath: _castLine
       value: 
@@ -217,6 +221,8 @@ PrefabInstance:
     - {fileID: 220446193611464409, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
     - {fileID: 1595654106541851295, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
     - {fileID: 1481728531424617190, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 2675348779447106883, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 3713062146289152410, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
     m_RemovedGameObjects:
     - {fileID: 1073531778476955462, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
     - {fileID: 3785244378745797364, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
