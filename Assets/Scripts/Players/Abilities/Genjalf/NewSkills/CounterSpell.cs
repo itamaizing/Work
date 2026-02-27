@@ -6,6 +6,8 @@ using UnityEngine;
 public class CounterSpell : Skill
 {
     [SerializeField] private ParticleSystem _particlePref;
+
+    [SerializeField] private SchoolSolvent _schoolSolvent;
     //[SerializeField, Range(0, 100)] private int _debuffChance = 15;
 
     protected override bool IsCanCast { get => CheckCanCast(); }
@@ -13,6 +15,10 @@ public class CounterSpell : Skill
     protected override int AnimTriggerCastDelay => 0;
 
     protected override int AnimTriggerCast => 0;
+    
+    private float _clickRadius = 0.5f;
+    
+    private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
     private bool CheckCanCast()
     {
@@ -39,10 +45,13 @@ public class CounterSpell : Skill
     {
         if (Targeting.GetTarget()?.Character != null)
         {
-            CmdState(Targeting.GetTarget()?.Character.gameObject, 5);
-            Targeting.GetTarget()?.Character.Abilities.CancleAllSkills();
-
-            //Targeting.ClearTarget();
+            Character currentCharacter = Targeting.GetTarget()?.Character;
+            
+            CmdState(currentCharacter.gameObject, 5);
+            if (currentCharacter.Abilities.CurrentCastingSkill != null && _schoolSolvent.IsSkillActive)
+            {
+                _schoolSolvent.AddSchool(currentCharacter.Abilities.CurrentCastingSkill.School);
+            }
         }
         yield return null;
     }
@@ -61,7 +70,22 @@ public class CounterSpell : Skill
         {
             if (GetMouseButton)
             {
-                Targeting.FindTempTarget();
+                Vector3 clickPoint = Targeting.GetMousePoint();
+                
+                Targeting.FindTempTarget(_clickRadius, clickPoint, canTargetHimself: true);
+
+                if (Targeting.GetTempTarget()?.Character is Character character)
+                {
+                    if (character != null && !IsEnemyTarget(character))
+                    {
+                        ClearTempTarget();
+                    }
+                    else
+                    {
+                        if (character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        break;
+                    }
+                }
             }
             yield return null;
         }

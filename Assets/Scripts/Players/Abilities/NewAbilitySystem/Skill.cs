@@ -640,7 +640,10 @@ public abstract class Skill : NetworkBehaviour
     public event Action<float> MassageHaventMana;
     public event Action BoostEnabled;
     public event Action BoostDisabled;
+    public event Action<GameObject,Skill> OnDamageApplied;
     #endregion
+    
+    public int AnimTriggerCastPublic => AnimTriggerCast;
 
     public int AnimTriggerCastPublic => AnimTriggerCast;
     /// <summary>
@@ -909,6 +912,7 @@ public abstract class Skill : NetworkBehaviour
 
 		if (forceCancel || _isCanCancel)
         {
+            Hero.Abilities.NotifySkillIsPreparing(this,false);
             Canceled?.Invoke();
             _hero.Move.SetCanMove(true);
             ClearData();
@@ -959,6 +963,7 @@ public abstract class Skill : NetworkBehaviour
         }
         else
         {
+            Hero.Abilities.NotifySkillIsPreparing(this,false);
             return false;
         }
     }
@@ -1008,7 +1013,20 @@ public abstract class Skill : NetworkBehaviour
             _hero.Resources[skillCost.resourceType].CurrentValue >= Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
     }
 
-    protected virtual bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
+    public void AddMaxChargeCount()
+    {
+        bool isRecharging = (_currentChargers < _maxCharges);
+        
+        _maxCharges += 1;
+
+        _remainingCooldownTimeChargers.Add(0);
+        if(!isRecharging)
+            _currentChargers += 1;
+
+        CurrentChargeChanged?.Invoke(_currentChargers);
+    }
+
+    public void ReductionCooldownForAllCharges(float reductionTime, float reductionPercentage = 0)
     {
         if (IsHaveResourceOnSkill)
         {
@@ -1021,26 +1039,67 @@ public abstract class Skill : NetworkBehaviour
 
             if (startCooldown)
             {
-                Cooldown.Start();
-                IncreaseSetCooldown(CooldownTime);
+                ReductionCooldownForCharge(i, reductionTime);
+                reductionTime = reductionTime - _remainingCooldownTimeChargers[i];
             }
-            if (!Charges.IsComboPart) TryUseCharge();
-            return true;
-        }
-        else
-        {
-            return false;
+            else
+            {
+                ReductionCooldownForCharge(i, reductionTime);
+                break;
+            }
         }
     }
 
-    protected virtual bool TryPayCost(bool startCooldown = true)
+    public void DeductMaxChargeCount()
     {
-        if (_hero.Abilities.TryConsumeNextSkillFree()) return true;
-        return TryPayCost(_skillEnergyCosts, startCooldown);
-    }
-    #endregion
+        if (_maxCharges - 1 > 0)
+        {
+            int lastIndex = _maxCharges - 1;
 
-    #region Animation Related
+            _remainingCooldownTimeChargers.RemoveAt(lastIndex);
+            
+            _maxCharges -= 1;
+            if (_currentChargers > _maxCharges)
+            {
+                _currentChargers -= 1;
+                CurrentChargeChanged?.Invoke(_currentChargers);
+            }
+        }
+    }
+
+    public void DrawDamageZone(Vector3 position)
+    {
+        Damage damage = new Damage
+        {
+            Value = Damage,
+            Type = DamageType,
+        };
+
+        _skillRender.CmdDrawDamageZone(position, Area, damage, _hero.gameObject);
+    }
+
+    public void DrawDamageZoneClient(Vector3 position)
+    {
+        Damage damage = new Damage
+        {
+            Value = Damage,
+            Type = DamageType,
+        };
+
+        _skillRender.DrawDamageZone(position, Area, damage, _hero.gameObject);
+    }
+
+
+    public void StopDamageZone()
+    {
+        _skillRender.CmdRemoveNextDamageZone();
+    }
+    public void ClientStopDamageZone()
+    {
+        _skillRender.RemoveNextDamageZone();
+    }
+
+
     [ClientCallback]
     protected void AnimStartCastCoroutine()
     {
@@ -1181,11 +1240,15 @@ public abstract class Skill : NetworkBehaviour
     private IEnumerator ActionWrapperForCastingJob()
     {
         Hero.Abilities.NotifySkillPrepared(this);
+        Hero.Abilities.NotifySkillIsPreparing(this,true);
         CastStarted?.Invoke();
         _isCasting = true;
 
-        if (CastDeley > 0)
-            yield return StartCastDeleyCoroutine();
+        if (!_hero.Abilities.TryConsumeNoCast())
+        {
+            if (CastDeley > 0)
+                yield return StartCastDeleyCoroutine();
+        }
 
         if (AnimTriggerCast != 0)
         {
@@ -1236,6 +1299,7 @@ public abstract class Skill : NetworkBehaviour
 
         CastSuccess?.Invoke();
         CastEnded?.Invoke();
+        Hero.Abilities.NotifySkillIsPreparing(this,false);
         _isCasting = false;
 
         ClearData();
@@ -1315,11 +1379,21 @@ public abstract class Skill : NetworkBehaviour
     public void ApplyDamage(Damage damage, GameObject target)
     {
         var damageable = target != null ? target.GetComponent<IDamageable>() : null;
+        Character targetCharacter = target != null ? target.GetComponent<Character>() : null;
+        if (targetCharacter)
+        {
+            if (targetCharacter.IsDead)
+            {
+                return;
+            }
+        }
         if (damageable != null)
         {
             damageable.TryTakeDamage(ref damage, this);
+            OnDamagedApplied(target);
             _hero.DamageTracker.AddDamage(damage, target, isServerRequest: isServer);
             _hero.DamageGet(damage, target);
+            TryCountGettedDamage(damage);
         }
 
         else
@@ -1329,7 +1403,48 @@ public abstract class Skill : NetworkBehaviour
 
         _hero.DamageTracker.AddDamage(damage, target, isServerRequest: isServer);
         _hero.DamageGet(damage, target);
+        OnTargetDied(target);
+    }
 
+    [ClientRpc]
+    private void OnDamagedApplied(GameObject target)
+    {
+        OnDamageApplied?.Invoke(target,this);
+    }
+
+    private void TryCountGettedDamage(Damage damage)
+    {
+        if (_hero is MinionComponent minion)
+        {
+            if (minion)
+            {
+                if (minion.CharacterParent != null)
+                {
+                    minion.CharacterParent.IncreaseGettedDamage(damage);
+                }
+                else
+                {
+                    Debug.LogError("PARENT IS NULL");
+                }
+            }
+        }
+        else
+        {
+            _hero.IncreaseGettedDamage(damage);
+        }
+    }
+
+    private void OnTargetDied(GameObject target)
+    {
+        var character = target != null ? target.GetComponent<Character>() : null;
+
+        if (character)
+        {
+            if (character.IsDead)
+            {
+                AddKill(character);
+            }
+        }
     }
 
     public void CmdApplyDamage(Damage damage, GameObject target)

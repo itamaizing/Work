@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Gangdollarff
 {
@@ -12,11 +13,15 @@ namespace Gangdollarff
         [SerializeField] private float _damageRangeMin = -2;
         [SerializeField] private float _damageRangeMax = 1;
 
-        private List<float> _damageForTarget = new List<float>() { 1, .75f, .50f, .25f };
+        private bool _isBlinding;
+        
+        private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
-        private Vector3 _targetPoint = Vector3.positiveInfinity;
-        //private Character _target;
+        private Vector3 _targetPoint;
+        private float _blindingChance = 50;
+        private float _blindingDuration = 2f;
 
+        private float _clickRadius = 0.5f;
         protected override int AnimTriggerCastDelay => 0;
 
         protected override int AnimTriggerCast => 0;
@@ -30,81 +35,92 @@ namespace Gangdollarff
 
         public override void LoadTargetData(TargetInfo targetInfo)
         {
-            Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
             _targetPoint = targetInfo.Points[0];
+        }
+
+        public void SetBlinding(bool isBlinding)
+        {
+            _isBlinding = isBlinding;
         }
 
         protected override IEnumerator CastJob()
         {
-            DisableMove();
-
-            float time = 0;
-            //_firework.gameObject.SetActive(true);
             CmdSetActiveParticle(true);
-            Hero.Move.RotateModifier = -700;
-
-            while (time < CastStreamDuration)
+            float elapsedTime = 0f;
+            float manaTimer = 0f;
+            Hero.Move.RotateModifier = 0.05f;
+            DisableMove();
+            while (elapsedTime < CastStreamDuration)
             {
-                yield return new WaitForSeconds(_manaCostRate);
-
-                int count = 0;
-                _firework.SortDamageablesByDistance(transform.position);
-
-                foreach (var item in _firework.Damageables)
+                float delta = Time.deltaTime;
+                elapsedTime += delta;
+                manaTimer += delta;
+                if (manaTimer >= _manaCostRate)
                 {
-                    if (((1 << item.gameObject.layer) & Targeting.Layer) != 0)
+                    manaTimer -= _manaCostRate;
+                    _firework.SortDamageablesByDistance(transform.position);
+                    int index = 0;
+                    foreach (var item in _firework.Damageables)
                     {
-                        if (item.TryGetComponent<IDamageable>(out IDamageable enemy) && count < 4)
+                        if (!item.TryGetComponent<IDamageable>(out var enemy))
+                            continue;
+                        
+                        if (!item.TryGetComponent<Character>(out var character) || !IsEnemyTarget(character))
+                            continue;
+                        
+                        float modifier = 1f - (0.25f * index);
+                        if (modifier <= 0f)
+                            break;
+                        float currentDamage =
+                            Random.Range(Damage + _damageRangeMin, Damage + _damageRangeMax);
+                        currentDamage *= modifier;
+                        Damage damage = new Damage
                         {
-                            float currentDamage = UnityEngine.Random.Range(Damage + _damageRangeMin, Damage + _damageRangeMax) * _damageForTarget[count];
-                            count++;
+                            Value = Buff.Damage.GetBuffedValue(currentDamage),
+                            Type = DamageType,
+                            PhysicAttackType = AttackRangeType,
+                        };
+                        CmdApplyDamage(damage, item.gameObject);
+                        if (_isBlinding)
+                        {
+                            var randomInt = Random.Range(0, 100);
 
-                            Damage damage = new Damage
+                            if (randomInt > _blindingChance)
                             {
-                                Value = Buff.Damage.GetBuffedValue(currentDamage),
-                                Type = Info.DamageType,
-                                PhysicAttackType = Info.AttackRangeType,
-                            };
-
-                            CmdApplyDamage(damage, item.gameObject);
+                                CmdAddState(item.gameObject);
+                            }
                         }
+                        index++;
                     }
                 }
-                time += _manaCostRate;
+
                 yield return null;
             }
+
             ClearData();
         }
 
+
         protected override void ClearData()
         {
-            Hero.Move.RotateModifier = 0;
+            //Hero.Move.RotateModifier = 0;
             EnableMove();
             _firework.gameObject.SetActive(false);
             CmdSetActiveParticle(false);
 
             Targeting.ClearTarget();
+            Targeting.ClearTempTarget();
            // _target = null;
             _targetPoint = Vector3.positiveInfinity;
         }
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
         {
-            while (float.IsPositiveInfinity(_targetPoint.x) && Targeting.GetTarget()?.Character == null)
-            {
-                if (GetMouseButton)
-                {
-                    Targeting.FindTempTarget();
-                    //_target = Targeting.GetTarget()?.Character;
-                    _targetPoint = Targeting.GetTarget().Character.Position;
-
-                   // _target = GetRaycastTarget();
-                    _targetPoint = Targeting.GetMousePoint();
-                }
-                yield return null;
-            }
             TargetInfo targetInfo = new();
-            targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+            while (!Input.GetMouseButtonDown(0))
+                yield return null;
+
+            _targetPoint = Targeting.GetMousePoint();
             targetInfo.Points.Add(_targetPoint);
             callbackDataSaved(targetInfo);
         }
@@ -112,13 +128,24 @@ namespace Gangdollarff
         private void EnableMove()
         {
             Hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
+            Hero.Move.StopLookAt();
+            Hero.Move.IsLookAtCursor = true;
+            
             Hero.Move.IsMoveBlocked = false;
+            Hero.Move.RotateModifier = 1f;
         }
 
         private void DisableMove()
         {
             Hero.Animator.SetTrigger("Fire");
             Hero.Move.IsMoveBlocked = true;
+            Hero.Move.StopLookAt();
+        }
+
+        [Command]
+        private void CmdAddState(GameObject target)
+        {
+            target.GetComponent<Character>().CharacterState.AddState(States.Blind,_blindingDuration,0,_hero.gameObject,nameof(FireworkDsplay));
         }
 
         [Command]

@@ -12,6 +12,7 @@ public class UIGameWindowPopup : MonoBehaviour
     [SerializeField] private SkillPanel _skillPanel;
     [SerializeField] private SelectManager _selectManager;
     [SerializeField] private GameObject _settings;
+    [SerializeField] private GameObject _teamStatistics;
     [SerializeField] private GameObject[] _forHide;
     [SerializeField] private GameObject _rightSide;
 
@@ -24,6 +25,7 @@ public class UIGameWindowPopup : MonoBehaviour
         if(_rightSide != null)
             _rightSide.gameObject.SetActive(false);
         InputHandler.ShowMenu += ShowSettings;
+        InputHandler.ShowStatistics += ShowStatistics;
     }
 
     public void SwichAll(bool value)
@@ -45,6 +47,18 @@ public class UIGameWindowPopup : MonoBehaviour
         else
         {
             _settings.SetActive(true);
+        }
+    }
+
+    private void ShowStatistics()
+    {
+        if (_teamStatistics.activeSelf)
+        {
+            _teamStatistics.SetActive(false);
+        }
+        else
+        {
+            _teamStatistics.SetActive(true);
         }
     }
 

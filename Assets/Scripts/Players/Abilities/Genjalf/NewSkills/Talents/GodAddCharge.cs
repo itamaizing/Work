@@ -10,15 +10,15 @@ public class GodAddCharge : Talent
 
     public override void Enter()
     {
-        _clapOfLight.AddMaxChargeCount();
+        /*_clapOfLight.AddMaxChargeCount();
         _fisura.AddMaxChargeCount();
-        _absorptionBall.AddMaxChargeCount();
+        _absorptionBall.AddMaxChargeCount();*/
     }
 
     public override void Exit()
     {
-        _clapOfLight.DeductMaxChargeCount();
+        /*_clapOfLight.DeductMaxChargeCount();
         _fisura.DeductMaxChargeCount();
-        _absorptionBall.DeductMaxChargeCount();
+        _absorptionBall.DeductMaxChargeCount();*/
     }
 }

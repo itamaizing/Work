@@ -43,7 +43,7 @@ public class FrostingState : AbstractCharacterState
 			{
 				if (abil.Info.AbilityForm == AbilityForm.Physical)
 				{
-					abil.Buff.CastSpeed.ReductionPercentage(.5f);
+					abil.Buff.CastSpeed.ReductionPercentage(.05f);
 				}
 			}
 		}

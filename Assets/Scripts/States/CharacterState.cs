@@ -31,9 +31,11 @@ public abstract class AbstractCharacterState
 	protected Health health;
 	protected Character personWhoMadeBuff;
 	protected Skill skill;
+	protected Schools _schoolState;
 
 	protected int currentStacksCount = 0;
-	protected bool isHidden = false;
+	protected bool isHidden = false;	protected Schools _schoolState;
+
 	public int CurrentStacksCount => currentStacksCount;
 
     public int MaxStacksCount = 0;
@@ -189,12 +191,12 @@ public abstract class AuraState : AbstractCharacterState
 {
 	protected Character _self;
     private Transform _auraCentre;
-    private List<Character> _charactersInRadius = new();
+    protected List<Character> _charactersInRadius = new();
     private List<Collider> _collidersKeysForRemove = new();
 	private Dictionary<Collider, Character> _colliderToCharacter = new();
 	private float _timeAfterLastEffect = 0;
 
-    public abstract float Distance { get; }
+	public abstract float Distance { get; }
     public abstract float EffectRate { get; }
     public abstract LayerMask LayerMask { get; }
 
@@ -208,7 +210,8 @@ public abstract class AuraState : AbstractCharacterState
     {
 		_auraCentre = character.transform;
 		_self = personWhoMadeBuff;
-	}
+		duration = durationToExit;
+    }
 
     public override void UpdateState()
     {
@@ -375,10 +378,21 @@ public class CharacterState : NetworkBehaviour
 		[States.PowerOfEarth] = new PowerOfEarth(),
         [States.EarthsHealth] = new EarthsHealth(),
         [States.MagicWater] = new MagicWater(),
+        [States.HotBloodAura] = new HotBloodAura(),
+        [States.HotBloodBuff] = new HotAuraBuff(),
+        [States.GodAura] = new GodAura(),
+        [States.GodAuraBuff] = new GodAuraBuff(),
+        [States.TransformationDebuff] = new TransformationDebuff(),
+        [States.PetrificationDebuff] = new PetrificationState(),
+        [States.PushingWindBuff] = new PushingWindBuff(),
         [States.Burning] = new Burning(),
         [States.Burn] = new Burn(),
 		[States.Discharge] = new Gangdollarff.AirElemental.Discharge(),
 		[States.CoolingAura] = new CoolingAura(),
+		[States.CoolingDamaged] = new CoolingDamaged(),
+		[States.MagicalExcitement] = new MagicalExcitement(),
+		[States.GodLight] = new GodLightState(),
+		[States.MagicInstantaneity] = new MagicInstantaneityState(),
         #endregion
 
         #region Test Baff and Debaff
@@ -893,8 +907,18 @@ public enum States
 	BleedingScrader,
 	DischargePsi,
 	BleedingDebuff,
+	MagicalExcitement,
+	GodLight,
+	HotBloodAura,
+	HotBloodBuff,
+	GodAura,
+	GodAuraBuff,
+	TransformationDebuff,
+	PetrificationDebuff,
+	PushingWindBuff,
+	CoolingDamaged,
+	MagicInstantaneity,
 }
-
 public enum BaffDebaff
 {
 	Baff,

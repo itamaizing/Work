@@ -55,7 +55,10 @@ public class MoveComponent : NetworkBehaviour, IAttribute
 
 	public bool CanMove => _canMove;
 	public bool IsMoveBlocked { get => _isMoveBlocked; set => _isMoveBlocked = value; }
-    public float CurrentRotationSpeed { get => _rotationDefaultSpeed + RotateModifier; }
+    public float CurrentRotationSpeed
+    {
+	    get => _rotationDefaultSpeed * RotateModifier;
+    }
     public float RotateModifier { get; set; }
 
     protected override void OnValidate()
@@ -100,6 +103,8 @@ public class MoveComponent : NetworkBehaviour, IAttribute
 		InputHandler.OnPlayerMove += OnMove;
 		_flyChecker.OffedGround += OnOffedGround;
 		_flyChecker.ReachGround += OnReachGround;
+
+		RotateModifier = 1;
 	}
 
     private void OnDestroy()
@@ -179,6 +184,18 @@ public class MoveComponent : NetworkBehaviour, IAttribute
 		{
             _canMove = true;
 		});
+	}
+
+	public void DoKillMoves()
+	{
+		_rigidbody.DOKill();
+		CancelMoveTowards();
+	}
+
+	public void DoKillMoves()
+	{
+		_rigidbody.DOKill();
+		CancelMoveTowards();
 	}
 
 	private void OnReachGround()
@@ -404,6 +421,20 @@ public class MoveComponent : NetworkBehaviour, IAttribute
             _canMove = true;
 		});
 	}
+	
+	[TargetRpc]
+	public void TargetRpcForceDrop(NetworkConnection conn, Vector3 dropPos, float duration)
+	{
+		DoKillMoves();
+		DoMove(dropPos, duration);
+	}
+	
+	[TargetRpc]
+	public void TargetRpcForceDrop(NetworkConnection conn, Vector3 dropPos, float duration)
+	{
+		DoKillMoves();
+		DoMove(dropPos, duration);
+	}
 
 	public void TargetRpcDoMoveNavMeshAgent(Vector3 postion)
     {
@@ -520,6 +551,13 @@ public class MoveComponent : NetworkBehaviour, IAttribute
 	{
 		Debug.Log("DoMove " + vector3, this);
 		DoMove(vector3, duration);
+	}
+	
+	[ClientRpc]
+	public void RpcForceDrop(Vector3 dropPos, float duration)
+	{
+		DoKillMoves();
+		DoMove(dropPos, duration);
 	}
     #endregion
 }

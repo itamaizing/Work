@@ -27,7 +27,7 @@ namespace Gangdollarff
 
         public override void LoadTargetData(TargetInfo targetInfo)
         {
-            
+
         }
 
         public void ChangeMode()
@@ -39,47 +39,52 @@ namespace Gangdollarff
         {
             var colliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.Layer);
 
-            Damage damage = new Damage
-            {
-                Value = Buff.Damage.GetBuffedValue(Damage),
-                Type = Info.DamageType,
-                PhysicAttackType = Info.AttackRangeType,
-            };
-
             CmdSetActiveParticle(true);
 
             foreach (var item in colliders)
             {
-                if(item.TryGetComponent(out Character enemy))
+                if (item.TryGetComponent(out Character enemy))
                 {
                     if (IsBaffed)
                         CooldownTime = CooldownTime - 2;
 
-                    CmdApplyDamage(damage, enemy.gameObject);
+                    float casterRadius = ((CapsuleCollider)_hero.Collider).radius;
+                    float enemyRadius = ((CapsuleCollider)enemy.Collider).radius;
 
-                    Vector3 dirForPush;
-                    Vector3 pointForPush;
+                    float centerDist = Vector3.Distance(transform.position, enemy.transform.position);
 
-                    if (IsEnabled)
+                    float edgeDist = Mathf.Max(centerDist - (casterRadius + enemyRadius), 0f);
+
+                    float damageMul = Mathf.Clamp01(1f - edgeDist / Radius);
+
+                    Damage scaledDamage = new Damage
                     {
-                        dirForPush = (transform.position - enemy.transform.position).normalized;
-                        pointForPush = enemy.transform.position + (dirForPush * _pushRange);
-                    }
-                    else
-                    {
-                        dirForPush = (enemy.transform.position - transform.position).normalized;
-                        pointForPush = enemy.transform.position + (dirForPush * _pushRange);
-                    }
+                        Value = Buff.Damage.GetBuffedValue(Damage) * damageMul,
+                        Type = DamageType,
+                        PhysicAttackType = AttackRangeType,
+                    };
 
-                    CmdMoveTaget(enemy.gameObject, pointForPush, _pushDuration);
+                    CmdApplyDamage(scaledDamage, enemy.gameObject);
+
+                    float finalDist = _pushRange;
+                    float distToPush = finalDist - edgeDist;
+
+                    if (distToPush > 0f)
+                    {
+                        Vector3 dir = (enemy.transform.position - transform.position).normalized;
+                        Vector3 pointForPush = enemy.transform.position + dir * distToPush;
+
+                        CmdMoveTaget(enemy.gameObject, pointForPush, _pushDuration);
+                    }
                 }
             }
+
             yield return null;
         }
 
         protected override void ClearData()
         {
-            
+
         }
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -91,7 +96,7 @@ namespace Gangdollarff
         private void CmdMoveTaget(GameObject target, Vector3 point, float time)
         {
             var enemyMove = target.GetComponent<MoveComponent>();
-            enemyMove.TargetRpcDoMove(point, time);
+            enemyMove.RpcDoPush(point, time);
         }
 
         [Command]

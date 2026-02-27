@@ -30,6 +30,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 	[SerializeField] private Auras _auras;
 	[SerializeField] private TargetSeeker _targetSeeker;
 	[SerializeField] private Character _characterParent;
+	[SerializeField] private TransformationComponent _transformationComponent;
 
 	[SyncVar] private int _killCounter;
 	[SyncVar] private float _damageTakeCounter;
@@ -65,6 +66,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 	public SelectedCircle SelectedCircle => _selectedCircle;
     public Animator Animator => _animator;
 	public TargetSeeker TargetSeeker => _targetSeeker;
+	public TransformationComponent TransformationComponent => _transformationComponent;
     public NetworkAnimator NetworkAnimator => _networkAnimator;
     public AttributeSystem AttributeSystem => _attributeSystem;
 	public Character CharacterParent
@@ -305,6 +307,11 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 	public void DamageGet(Damage damage, GameObject target)
 	{
 		DamageGeted?.Invoke(damage, target);
+	}
+
+	public void IncreaseGettedDamage(Damage damage)
+	{
+		_damageGetCounter += damage.Value;
 	}
 
 	protected virtual void OnDied()

@@ -243,6 +243,12 @@ public abstract class Resource : NetworkBehaviour, IAttribute
             yield return null;
         }
     }
+    
+    [Command]
+    public void CmdAddMax(float delta)
+    {
+        AddMax(delta);
+    }
 
     [Command]
     public void ReduceRegenerationPeriod(float value)

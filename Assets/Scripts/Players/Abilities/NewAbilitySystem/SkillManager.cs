@@ -36,7 +36,10 @@ public class SkillManager : MonoBehaviour
     public SkillQueue SkillQueue { get => _skillQueue; }
     public Skill[] SelectedSkills { get => _selectedSkills; }
     public Skill SelectedSkill { get => _selectedSkill; }
+    
+    public Skill CurrentCastingSkill { get; private set; }
     public bool IsNextSkillFree { get; private set; }
+    public bool IsNextSkillNoCast { get; private set; }
     public IEnumerable<Skill> DefaultSkills => _skills.Where(o => o.IsTalentSpell == false);
     public IEnumerable<Skill> TalentsSkills => _skills.Where(o => o.IsTalentSpell);
 
@@ -47,6 +50,7 @@ public class SkillManager : MonoBehaviour
     public event Action<Skill> SkillAdded;
     public event Action<Skill> SkillRemoved;
     public event Action<Skill> OnSkillPreparedSuccessfully;
+    public event Action<Skill> SkillCastEnded;
 
     private void OnEnable()
     {
@@ -91,6 +95,8 @@ public class SkillManager : MonoBehaviour
     #region Test
     private void OnSkillCastEnded(Skill skill)
     {
+        SkillCastEnded?.Invoke(skill);
+        
         if (!(skill is IPassiveSkill))
         {
             PreviewCastedSkill = LastCastedSkill;
@@ -119,6 +125,19 @@ public class SkillManager : MonoBehaviour
     public void NotifySkillPrepared(Skill skill)
     {
         OnSkillPreparedSuccessfully?.Invoke(skill);
+    }
+    
+    public void NotifySkillIsPreparing(Skill skill, bool isPreparing)
+    {
+        if (isPreparing)
+        {
+            CurrentCastingSkill = skill;
+        }
+        else
+        {
+            if (CurrentCastingSkill == skill)
+                CurrentCastingSkill = null;
+        }
     }
     public void CancleAllSkills()
     {
@@ -215,8 +234,19 @@ public class SkillManager : MonoBehaviour
         IsNextSkillFree = false;
         return true;
     }
+    
+    public bool TryConsumeNoCast()
+    {
+        if (!IsNextSkillNoCast)
+            return false;
+
+        IsNextSkillNoCast = false;
+        return true;
+    }
 
     public void SetNextSkillFree() => IsNextSkillFree = true;
+
+    public void SetNextSkillNoCast() => IsNextSkillNoCast = true;
 
     public void DeactivateSkill(Skill skill)
     {
@@ -447,9 +477,22 @@ public class SkillManager : MonoBehaviour
         }
     }
 
-    public void TalentAddCharges(int countBonusCharges)
+    public void TalentAddCharges(bool isAdditionalCharge)
     {
-        _countBonusCharges = countBonusCharges;
+        foreach (var skill in _skills)
+        {
+            if (skill.IsUseCharges)
+            {
+                if (isAdditionalCharge)
+                {
+                    skill.AddMaxChargeCount();
+                }
+                else
+                {
+                    skill.DeductMaxChargeCount();
+                }
+            }
+        }
     }
 
     public void SwitchAvaliable(Schools school, bool value)

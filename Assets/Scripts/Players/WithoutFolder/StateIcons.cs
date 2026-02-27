@@ -93,11 +93,18 @@ public class StateIcons : MonoBehaviour
 
     private void StartProgress(StateIcoItem ico, float duration)
     {
-        ico.currentDuration = duration;
-        ico.FadeFront.DOKill();
-        ico.FadeFront.fillAmount = 0f;
+        if (duration != -1f)
+        {
+            ico.currentDuration = duration;
+            ico.FadeFront.DOKill();
+            ico.FadeFront.fillAmount = 0f;
 
-        ico.FadeFront.DOFillAmount(1f, duration).SetEase(Ease.Linear).OnComplete(() => RemoveOrRestart(ico));
+            ico.FadeFront.DOFillAmount(1f, duration).SetEase(Ease.Linear).OnComplete(() => RemoveOrRestart(ico));
+        }
+        else if(duration == -1f)
+        {
+            ico.FadeFront.fillAmount = 0f;
+        }
     }
 
     private void RemoveOrRestart(StateIcoItem ico)

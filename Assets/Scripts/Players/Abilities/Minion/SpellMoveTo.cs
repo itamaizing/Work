@@ -7,80 +7,71 @@ using UnityEngine.AI;
 public class SpellMoveTo : Skill
 {
     [SerializeField] private NavMeshAgent _agent;
-    [SerializeField] private float _enemyCheckRadius = 6;
-    [SerializeField] private LayerMask _enemyLayerMask;
-    [SerializeField] private float _damageDeley = 0.5f;
+    [SerializeField] private float _stopDistance = 0.5f;
 
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private Character _target = null;
     private Character _enemyTarget = null;
     private float _currentDamageDeley;
-    private Coroutine _onClickCoroutine;
+    private bool _isHolding = false;
+    private bool _detectingClick = false;
+    private float _clickDetectTime = 0;
+    private Vector3 _tempPoint;
+    private Character _tempTarget;
 
     protected override int AnimTriggerCastDelay => 0;
-
     protected override int AnimTriggerCast => 0;
-
     protected override bool IsCanCast => true;
-
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0] as Character);
+        if (targetInfo.GetTargets().Count > 0) Targeting._target = targetInfo.GetTargets()[0] as Character;
         _targetPoint = targetInfo.Points[0];
-    }
-
-    protected virtual void DealDamage()
-    {
-        Damage damage = new Damage
-        {
-            Value = Buff.Damage.GetBuffedValue(_damageValue),
-            Type = Info.DamageType,
-            PhysicAttackType = Info.AttackRangeType,
-        };
-        CmdApplyDamage(damage, _enemyTarget.gameObject);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_onClickCoroutine != null)
-            StopCoroutine(_onClickCoroutine);
+        _isHolding = true;
+        _agent.SetDestination(_targetPoint);
 
-        _onClickCoroutine = StartCoroutine(OnClickJob());
-
-        while (_targetPoint != Vector3.positiveInfinity)
+        while (true)
         {
             if (_target != null)
                 _targetPoint = _target.transform.position;
 
-            _enemyTarget = CheckEnemy(_enemyCheckRadius);
+            _currentDamageDeley = 0;
 
-            if (_enemyTarget != null)
+            if (_isHolding && Input.GetMouseButton(0))
             {
-                _agent.SetDestination(_enemyTarget.transform.position);
-
-                if (Vector3.Distance(transform.position, _enemyTarget.transform.position) <= AreaInfo.Radius)
+                Character newTarget = Targeting.GetTarget()?.Character;
+                if (newTarget != null)
                 {
-                    _currentDamageDeley += Time.deltaTime;
-
-                    if (_currentDamageDeley >= _damageDeley)
-                    {
-                        DealDamage();
-                        _currentDamageDeley = 0;
-                    }
+                    _target = newTarget;
+                    _targetPoint = _target.transform.position;
                 }
-            }
-            else
-            {
-                _currentDamageDeley = 0;
+                else
+                {
+                    _target = null;
+                    _targetPoint = GetMousePoint();
+                }
+
                 _agent.SetDestination(_targetPoint);
             }
+
+            if (_isHolding && !Input.GetMouseButton(0))
+            {
+                _isHolding = false;
+            }
+
+            if (!_isHolding && !_agent.pathPending && _agent.remainingDistance <= _stopDistance)
+            {
+                break;
+            }
+
             yield return null;
         }
-        yield return null;
 
-        if (_onClickCoroutine != null)
-            StopCoroutine(_onClickCoroutine);
+        ClearData();
     }
 
     protected override void ClearData()
@@ -88,72 +79,28 @@ public class SpellMoveTo : Skill
         _agent.SetDestination(transform.position);
         _targetPoint = Vector3.positiveInfinity;
         _target = null;
-
-        if (_onClickCoroutine != null)
-            StopCoroutine(_onClickCoroutine);
+        _isHolding = false;
+        _detectingClick = false;
+        _currentDamageDeley = 0;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && Targeting.GetTarget()?.Character == null)
-        {
-            if (GetMouseButton)
-            {
-                Targeting.FindTempTarget();
-
-                if (Targeting.GetTarget()?.Character is Character character) targetInfo.AddTarget(character);
-
-                if (Targeting.GetTarget()?.Character == null)
-                {
-                    _targetPoint = Targeting.GetMousePoint();
-
-                    targetInfo.Points.Add(_targetPoint);
-                }
-                else
-                {
-                    _targetPoint = _target.transform.position;
-
-                    targetInfo.Points.Add(_targetPoint);
-                }
-            }
+        while (!Input.GetMouseButtonDown(0))
             yield return null;
+
+        Character initialTarget = GetTargetCharacter();
+        Vector3 initialPoint = GetMousePoint();
+
+        if (initialTarget != null)
+        {
+            targetInfo.AddTarget(initialTarget);
+            initialPoint = initialTarget.transform.position;
         }
+
+        targetInfo.Points.Add(initialPoint);
         targetDataSavedCallback(targetInfo);
-    }
-
-    private Character CheckEnemy(float radius)
-    {
-        Collider[] coliders = Physics.OverlapSphere(_targetPoint, radius, _enemyLayerMask);
-        Character enemy = null;
-
-        if (coliders.Length > 0)
-        {
-            Debug.Log(coliders[0].name);
-            coliders[0].TryGetComponent<Character>(out enemy);
-        }
-
-        return enemy;
-    }
-
-    private IEnumerator OnClickJob()
-    {
-        while (true)
-        {
-            if (Input.GetMouseButton(0))
-            {
-
-                if (Targeting.GetTarget()?.Character == null)
-                {
-                    _targetPoint = Targeting.GetMousePoint();
-                }
-                else
-                {
-                    _targetPoint = _target.transform.position;
-                }
-            }
-            yield return null;
-        }
     }
 }

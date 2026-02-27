@@ -14,6 +14,10 @@ public class LightningStrike : Skill
 
     protected override int AnimTriggerCast => 0;
 
+    private float _clickRadius = 0.5f;
+    
+    private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+
     private bool CheckCanCast()
     {
         return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.GetTarget()?.Character != null;
@@ -49,12 +53,14 @@ public class LightningStrike : Skill
 
             if (UnityEngine.Random.Range(1, 100) <= _debuffChance)
             {
-                Targeting.GetTarget()?.Character.CharacterState.AddState(States.Discharge, 2, 0, Hero.gameObject, name);
+                CmdAddState(Targeting.GetTarget()?.Character);
             }
             Targeting.ClearTarget();
         }
         yield return null;
     }
+    
+    [Command] private void CmdAddState(Character target) => target.CharacterState.AddState(States.Discharge, 2, 0,Hero.gameObject, name);
 
     protected override void ClearData()
     {
@@ -66,15 +72,31 @@ public class LightningStrike : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (Targeting.GetTarget()?.Character == null)
+        while (Targeting.GetTempTarget()?.Character == null)
         {
+        
             if (GetMouseButton)
             {
-                Targeting.FindTempTarget();
+                Vector3 clickPoint = Targeting.GetMousePoint();
+                
+                Targeting.FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
+                
+                if (Targeting.GetTempTarget()?.Character is Character character)
+                {
+                    if (character != null && !IsEnemyTarget(character))
+                    {
+                        Targeting.ClearTempTarget();
+                    }
+                    else
+                    {
+                        if (character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        break;
+                    }
+                }
             }
             yield return null;
         }
-
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
         targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }

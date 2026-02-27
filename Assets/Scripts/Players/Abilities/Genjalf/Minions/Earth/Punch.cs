@@ -1,21 +1,26 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 namespace Gangdollarff.EarthElemental
 {
-    public class Punch : Skill
+    public class Punch : MoveSkill
     {
-
-        //private Character _target;
-
+        [SerializeField] private float _stunDuration = 1.5f;
+        [SerializeField] private float _stunChance = 0.15f;
+        
         protected override int AnimTriggerCastDelay => 0;
         protected override int AnimTriggerCast => Animator.StringToHash("Attack01");
+        
+        private float _clickRadius = 0.5f;
         protected override bool IsCanCast => Vector3.Distance(Targeting.GetTarget().Character.Position, transform.position) <= AreaInfo.Radius;
+        private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
         public void AnimCastPunch()
         {
+            
             AnimStartCastCoroutine();
         }
 
@@ -23,15 +28,33 @@ namespace Gangdollarff.EarthElemental
         {
             AnimCastEnded();
         }   
+        
+        private void OnEnable()
+        {
+            Canceled += CancelMove;
+        }
+
+        private void OnDisable()
+        {
+            Canceled -= CancelMove;
+        }
 
         public override void LoadTargetData(TargetInfo targetInfo)
         {
             Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        
+            if (!IsCanCast)
+            {
+                MoveTo();
+            }
         }
 
         protected override IEnumerator CastJob()
         {
-            Hero.Move.LookAtPosition(Targeting.GetTarget().Character.Position);
+            Character originalTarget = Targeting.GetTempTarget()?.Character;//GetTargetCharacter();
+            if (originalTarget == null) yield break;
+    
+            Hero.Move.LookAtPosition(originalTarget.Position);
 
             Damage damage = new Damage
             {
@@ -43,6 +66,7 @@ namespace Gangdollarff.EarthElemental
              };
 
             CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
+            CmdAddState(originalTarget.gameObject);
 
             yield return null;
         }
@@ -50,6 +74,7 @@ namespace Gangdollarff.EarthElemental
         protected override void ClearData()
         {
             Targeting.ClearTarget();
+            Targeting.ClearTempTarget();
             //_target = null;
         }
 
@@ -62,16 +87,44 @@ namespace Gangdollarff.EarthElemental
             while (Targeting.GetTarget()?.Character == null)
             {
                 if (GetMouseButton)
-                    Targeting.FindTempTarget();
-               //     target = GetRaycastTarget();
-
+                {
+                    Vector3 clickPoint = Targeting.GetMousePoint();
+        
+                    FindTarget(_clickRadius, clickPoint, canTargetHimself: false);
+                    if (Targeting.GetTempTarget()?.Character is Character character)
+                    {
+                        if (Targeting.GetTempTarget() != null && !IsEnemyTarget(character))
+                        {
+                            Targeting.ClearTempTarget();
+                        }
+                        else
+                        {
+                            if (character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                            break;
+                        }
+                    }
+                }
                 yield return null;
             }
+            targetInfo.AddTarget(GetTempTargetCharacter());
+            ClearTempTarget();
+            targetDataSavedCallback(targetInfo);
+        }
 
-            Hero.Move.LookAtPosition(target.Position);
-            targetInfo.AddTarget(target);
-            targetDataSavedCallback.Invoke(targetInfo);
-            yield return null;
+        [Command]
+        private void CmdAddState(GameObject target)
+        {
+            if(target == null) return;
+
+            if (target == null) return;
+            
+            if (UnityEngine.Random.value > _stunChance)
+                return;
+
+            if (target.TryGetComponent(out Character enemy))
+            {
+                enemy.CharacterState.AddState(States.Stun, _stunDuration, 0, _hero.gameObject, nameof(Punch));
+            }
         }
     }
 }

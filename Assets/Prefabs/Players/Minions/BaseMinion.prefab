@@ -311,6 +311,7 @@ MonoBehaviour:
   _auras: {fileID: 0}
   _targetSeeker: {fileID: 0}
   _characterParent: {fileID: 0}
+  _transformationComponent: {fileID: 7969626015849665324}
   _expForDieKill: 5
   _navMeshAgent: {fileID: 1780925315992858912}
 --- !u!195 &1780925315992858912
@@ -433,11 +434,7 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   _agent: {fileID: 1780925315992858912}
-  _enemyCheckRadius: 6
-  _enemyLayerMask:
-    serializedVersion: 2
-    m_Bits: 256
-  _damageDeley: 1
+  _stopDistance: 0.5
 --- !u!114 &3097324644064452792 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 9112797239584284270, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -497,6 +494,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25397801c5beb30488b57202e0ad634f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7969626015849665324 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4185264856112098810, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 6092456140968476374}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2335912879836011194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84375c825009b75438b87e3c401fcc09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TransformationComponent
 --- !u!114 &8415053888924651187 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2325131165822693477, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class SourceUI : MonoBehaviour, IGameSourceUI
@@ -10,7 +11,10 @@ public class SourceUI : MonoBehaviour, IGameSourceUI
     [SerializeField] private TMP_Text _teamText1;
     [SerializeField] private TMP_Text _teamText2;
     [SerializeField] private Image _winImage;
-    [SerializeField] private TMP_Text _winText;
+    [SerializeField] private TMP_Text _teamEndText1;
+    [SerializeField] private TMP_Text _teamEndText2;
+    [SerializeField] private string _winLabel;
+    [SerializeField] private string _loseLabel;
 
 
     private string _teamName1 = "Light";
@@ -65,14 +69,18 @@ public class SourceUI : MonoBehaviour, IGameSourceUI
         teamIndex--;
 
         _winImage.gameObject.SetActive(true);
+        _teamEndText1.gameObject.SetActive(true);
+        _teamEndText2.gameObject.SetActive(true);
 
         switch (teamIndex)
         {
             case 0:
-                _winText.text = _teamName1 + " team WIN";
+                _teamEndText1.text = _winLabel;
+                _teamEndText2.text = _loseLabel;
                 break;
             case 1:
-                _winText.text = _teamName2 + " team WIN";
+                _teamEndText1.text = _loseLabel;
+                _teamEndText2.text = _winLabel;
                 break;
 
             default:

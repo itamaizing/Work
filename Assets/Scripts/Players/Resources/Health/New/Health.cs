@@ -100,11 +100,17 @@ public class Health : Resource, IDamageable, IHealable
         Defence(ref damage);
 
         // Test: If the state has a damage modification, it increases the damage.
+        //Or if skill has IDamageGivenModifier interface, it increases the damage.
         if (skill != null && skill.Hero != null)
         {
             foreach (var state in skill.Hero.CharacterState.CurrentStates)
             {
                 if (state is IDamageGivenModifier modifier) damage.Value = modifier.ModifyOutgoingDamage(damage);
+            }
+
+            foreach (var ability in skill.Hero.Abilities.Abilities)
+            {
+                if (ability is IDamageGivenModifier modifier) damage.Value = modifier.ModifyOutgoingDamage(damage);
             }
         }
 

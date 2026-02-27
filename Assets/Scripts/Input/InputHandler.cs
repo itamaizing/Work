@@ -36,6 +36,7 @@ public class InputHandler : MonoBehaviour
 	public static UnityAction OnSpacetLeftMouseCanceled = delegate { };
 	public static UnityAction<float> ScrollMouse = delegate { };
 	public static UnityAction ShowMenu = delegate { };
+	public static UnityAction ShowStatistics = delegate { };
 	public static UnityAction ShowSource = delegate { };
 
 	public static UnityAction OnFirstAbility = delegate { };
@@ -107,6 +108,7 @@ public class InputHandler : MonoBehaviour
 		_inputActions.GameplayMap.SpaceMouse.canceled += i => OnSpacetLeftMouseCanceled?.Invoke();
 		_inputActions.GameplayMap.ScrollMouse.performed += i => ScrollMouse?.Invoke(i.ReadValue<float>());
 		_inputActions.GameplayMap.ShowMenu.performed += i => ShowMenu?.Invoke();
+		_inputActions.GameplayMap.ShowStatistics.performed += i => ShowStatistics?.Invoke();
 		_inputActions.GameplayMap.ShowSource.performed += i => ShowSource?.Invoke();
 
 		// spells 1-2-3-4-5-6-7-8
