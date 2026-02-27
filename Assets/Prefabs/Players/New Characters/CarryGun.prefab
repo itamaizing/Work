@@ -10991,7 +10991,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[1].Talents.Array.data[2]'
       value: 
-      objectReference: {fileID: 837576168659285789}
+      objectReference: {fileID: 5518789025108628316}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[1].Talents.Array.data[3]'
       value: 
@@ -11539,6 +11539,9 @@ PrefabInstance:
       addedObject: {fileID: 2864148410240025507}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 5518789025108628316}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 837576168659285789}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
@@ -11964,6 +11967,36 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 8319872899575431858}
   _attackingPsionicEnergy: {fileID: 1487487552333656207}
+--- !u!114 &5518789025108628316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3907305221297154583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37c05f15c43221240b1c45f182a1c565, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PsionicsTalent_12
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u043A\u0430\u0436\u0434\u044B\u0439 \u0440\u0430\u0437 \u043A\u0430\u043A
+      \u0440\u0430\u0441\u0441\u0435\u0438\u0432\u0430\u043D\u0438\u0435 \u043D\u0430\u043D\u043E\u0441\u0438\u0442
+      \u0443\u0440\u043E\u043D \u0437\u0430 \u043A\u0430\u0436\u0434\u0443\u044E
+      \u0446\u0435\u043B\u044C \u043F\u0440\u043E\u0434\u043B\u0435\u0432\u0430\u0435\u0442\u0441\u044F
+      \u0432\u0440\u0435\u043C\u044F \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F
+      \u0430\u043A\u0442\u0438\u0432\u043D\u043E\u0439 \u0430\u0442\u0430\u043A\u0443\u044E\u0449\u0435\u0439
+      \u043F\u0441\u0438 \u0438 \u0438\u043C\u043F\u0430\u0442\u0438\u043A\u0438
+      \u043D\u0430 0,1 \u0441\u0435\u043A. "
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u041F\u0441\u0438\u043E\u043D\u0438\u043A\u0430 12"
+    Icon: {fileID: 1307702248, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 8319872899575431858}
+  _psionicEnergySkill: {fileID: 2069191703388085909}
 --- !u!114 &837576168659285789
 MonoBehaviour:
   m_ObjectHideFlags: 0
