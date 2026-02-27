@@ -72,7 +72,7 @@ public class ImpatienceState : AbstractCharacterState
         if (_isAccumulationActive && _casterPsionic != null)
         {
             float psiGain = damage.Value * 0.1f;
-            _casterPsionic.AddAndResetDecay(psiGain);
+            _casterPsionic.AddPsiAndRestartDecay(psiGain);
         }
 
         List<Character> recipients = new List<Character>(ActiveCharacters);

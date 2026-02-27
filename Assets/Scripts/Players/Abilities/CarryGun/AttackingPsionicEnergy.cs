@@ -21,7 +21,7 @@ public class AttackingPsionicEnergy : Energy
     private Coroutine _attackingPsiEnergyCoroutine;
 
     public float MaxAttackingPsiEnergy => _currentMaxAttackingPsiEnergy;
-    public bool IsAttackingPsiEnergy => _isAttackingPsiActive;
+    public bool IsAttackingPsiEnergy { get => _isAttackingPsiActive; set => _isAttackingPsiActive = value; }
 
     public event Action<float> OnEnergyChanged;
 

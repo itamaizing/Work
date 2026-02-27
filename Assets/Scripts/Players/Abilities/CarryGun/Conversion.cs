@@ -39,5 +39,8 @@ public class Conversion : Skill
     private void CmdConvertEnergy()
     {
         _psionicEnergy.ConvertToAttackingEnergy(_attackingPsionicEnergy.MaxAttackingPsiEnergy);
+        RpcConvertEnergy();
     }
+
+    private void RpcConvertEnergy() => _attackingPsionicEnergy.IsAttackingPsiEnergy = true;
 }

@@ -230,7 +230,7 @@ public class JumpWithChelicera : Skill
             while (playerDistanceAccumulator >= PsiStepDistance)
             {
                 playerDistanceAccumulator -= PsiStepDistance;
-                if (_player != null && _player.TryGetComponent(out BasePsionicEnergy psiEnergy)) psiEnergy.AddAndResetDecay(_basePsi);
+                if (_player != null && _player.TryGetComponent(out BasePsionicEnergy psiEnergy)) psiEnergy.AddPsiAndRestartDecay(_basePsi);
             }
 
             lastPlayerPos = currentPlayerPos;

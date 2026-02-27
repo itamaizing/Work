@@ -113,7 +113,7 @@ public class BasePsionicEnergy : Resource, IDamageable
             int steps = Mathf.FloorToInt(_distanceAccumulator / DistanceStep);
             _distanceAccumulator -= steps * DistanceStep;
             float psiGain = MaxPsi * PsiPercentPerStep * steps;
-            AddAndResetDecay(psiGain);
+            AddPsiAndRestartDecay(psiGain);
         }
 
         _lastPosition = currentPos;
@@ -180,63 +180,6 @@ public class BasePsionicEnergy : Resource, IDamageable
         _energyDecayCoroutine = StartCoroutine(EnergyDecayCoroutine());
 
         RpcCoolDownPsionicEnegry();
-    }
-
-    #region Test
-    public void AddAndResetDecayCoolDownPsionicEnegry(float value)
-    {
-        Add(value);
-        CurrentValue = Mathf.Min(CurrentValue, MaxPsi);
-
-        if (isServer)
-        {
-            RpcOnEnergyChanged(CurrentValue);
-
-            bool wasInternalEnergy = _isInternalPsiEnergy;
-            _isInternalPsiEnergy = CurrentValue > 0;
-
-            if (wasInternalEnergy != _isInternalPsiEnergy)
-            {
-                RpcInternalPsiEnergyChanged(_isInternalPsiEnergy);
-            }
-
-            if (_energyDecayCoroutine != null)
-            {
-                StopCoroutine(_energyDecayCoroutine);
-            }
-            _energyDecayCoroutine = StartCoroutine(EnergyDecayCoroutine());
-        }
-
-        UpdatePsionicaBar();
-    }
-    #endregion
-
-    public void AddAndResetDecay(float value)
-    {
-        Add(value);
-        CurrentValue = Mathf.Min(CurrentValue, MaxPsi);
-        RpcCoolDownPsionicEnegry();
-
-        if (isServer)
-        {
-            RpcOnEnergyChanged(CurrentValue);
-
-            bool wasInternalEnergy = _isInternalPsiEnergy;
-            _isInternalPsiEnergy = CurrentValue > 0;
-
-            if (wasInternalEnergy != _isInternalPsiEnergy)
-            {
-                RpcInternalPsiEnergyChanged(_isInternalPsiEnergy);
-            }
-
-            if (_energyDecayCoroutine != null)
-            {
-                StopCoroutine(_energyDecayCoroutine);
-            }
-            _energyDecayCoroutine = StartCoroutine(EnergyDecayCoroutine());
-        }
-
-        UpdatePsionicaBar();
     }
 
     [ClientRpc] public void RpcCoolDownPsionicEnegry() => CoolDownPsionicEnegry();
