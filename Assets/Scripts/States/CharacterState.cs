@@ -608,6 +608,14 @@ public class CharacterState : NetworkBehaviour
                     if (!_currentStates[i].IsHidden)
                         _stateIcons.ActivateIco(state, duration, 1, false, newMaxStack);
 					
+
+					float timeForIcon = duration;
+					if (state == States.Restoration || state == States.Destruction)
+					{
+						timeForIcon = _currentStates[i].RemainingDuration > 0f ? _currentStates[i].RemainingDuration : duration;
+					}
+					_stateIcons.ActivateIco(state, timeForIcon, 1, canStack, newMaxStack);
+
 					MoveStateToEnd(i);
 				}
 

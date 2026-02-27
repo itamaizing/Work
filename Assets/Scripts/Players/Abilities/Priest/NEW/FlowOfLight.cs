@@ -3,7 +3,8 @@ using System.Collections;
 using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-public class FlowOfLight : Skill
+
+public class FlowOfLight : Skill, IPolaritySwitchable
 {
     [Header("Flow Light Settings")]
     [SerializeField] private float buffDuration = 18f;
@@ -16,6 +17,7 @@ public class FlowOfLight : Skill
     [SerializeField] private AbilityInfo darkInfo;
 
     [SerializeField] private StunMagicPassiveSkill stunMagicPassiveSkill;
+    [SerializeField] private ReversePolarity _reversePolarity;
 
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
     public event Action OnModeChange;
@@ -24,13 +26,31 @@ public class FlowOfLight : Skill
 
     private bool IsAllyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Allies");
     private bool IsEnemyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+    
+    private float _clickRadius = 0.5f;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("FlowSpellStart");
 
     #region Talent
+    private float _destructionFillingExtensionTime;
+    private float _destructionFillingDuration;
+    private float _destructionFillingChance;
+
     private bool _spiritEnergyAddTalent;
+    private bool _isDestructionFillingTalent;
+    public bool IsDestructionFillingTalent { get => _isDestructionFillingTalent; private set => _isDestructionFillingTalent = value; }
+    
     public void SpiritEnergyAddTalent(bool value) => _spiritEnergyAddTalent = value;
+
+    public void DestructionFillingTalent(bool value, float duration, float additionalTime,float chance)
+    {
+        _isDestructionFillingTalent = value;
+        _destructionFillingExtensionTime = additionalTime;
+        _destructionFillingDuration = duration;
+        _destructionFillingChance = chance;
+    }
+
     #endregion
 
     protected override bool IsCanCast =>
@@ -76,7 +96,7 @@ public class FlowOfLight : Skill
 
     private void OnModeChanged(bool oldValue, bool newValue)
     {
-        //UpdateMode();
+        UpdateMode();
         OnModeChange?.Invoke();
     }
 
@@ -84,6 +104,7 @@ public class FlowOfLight : Skill
     {
         Info.School = isLightMode ? Schools.Light : Schools.Dark;
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
+        Hero.Abilities.SkillPanelUpdate();
     }
 
     private void ApplySpiritBuff(Character target)
@@ -104,7 +125,18 @@ public class FlowOfLight : Skill
         var stateComponent = target.GetComponent<CharacterState>();
         if (stateComponent == null) return;
 
-        if (!isLightMode && UnityEngine.Random.value <= 0.2f) CmdStateRestorationOrDestruction(stateComponent, States.Destruction, 12f);
+        //if (!isLightMode && UnityEngine.Random.value <= 0.2f) CmdStateRestorationOrDestruction(stateComponent, States.Destruction, 12f);
+    }
+
+    private void TryApplyDestructionFilling(CharacterState target)
+    {
+        if (target == null) return;
+        
+        if (UnityEngine.Random.value <= _destructionFillingChance)
+        {
+            float durationToApply = target.CheckForState(isLightMode ? States.Restoration : States.Destruction) ? _destructionFillingExtensionTime : _destructionFillingDuration;
+            CmdStateRestorationOrDestruction(target, isLightMode ? States.Restoration : States.Destruction, durationToApply);
+        }
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
@@ -113,7 +145,24 @@ public class FlowOfLight : Skill
         {
             if (GetMouseButton)
             {
-                Targeting.FindTempTarget();
+                Vector3 clickPoint = GetMousePoint();
+
+                FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
+                //_target = GetRaycastTarget(true);
+
+                if (GetTempTargetCharacter() != null)
+                {
+                    if (isLightMode && IsEnemyTarget(GetTempTargetCharacter()) || !isLightMode && !IsEnemyTarget(GetTempTargetCharacter()))
+                    {
+                        ClearTempTarget();
+                    }
+                    else
+                    {
+                        GetTempTargetCharacter().SelectedCircle.IsActive = true;
+                        _hero.Move.LookAtTransform(GetTempTargetCharacter().transform);
+                    }
+                }
+
             }
             yield return null;
         }
@@ -159,6 +208,7 @@ public class FlowOfLight : Skill
 
                 TryCancel();
                 CmdDestroyEffect();
+                TrySwitchSpellsOnDarkMode();
                 yield break;
             }
 
@@ -183,18 +233,36 @@ public class FlowOfLight : Skill
                     TryApplyExtraState(Targeting.GetTarget()?.Character);
                     ApplySpiritBuff(Targeting.GetTarget()?.Character);
                 }
+                if (_isDestructionFillingTalent)
+                {
+                    TryApplyDestructionFilling(GetTargetCharacter().CharacterState);
+                }
+                if (_isDestructionFillingTalent)
+                {
+                    TryApplyDestructionFilling(GetTargetCharacter().CharacterState);
+                }
             }
 
             elapsed += Time.deltaTime;
             yield return null;
         }
 
+        TrySwitchSpellsOnDarkMode();
         _hero.Animator.ResetTrigger(AnimTriggerCast);
         _hero.NetworkAnimator.ResetTrigger(AnimTriggerCast);
-
         CmdCrossFade();
         _hero.Animator.CrossFade("FlowSpellEnd", 0.1f);
         CmdDestroyEffect();
+    }
+
+    private void TrySwitchSpellsOnDarkMode()
+    {
+        if (_reversePolarity != null && Hero.CharacterState.CheckForState(States.ReversePolarity))
+        {
+            _reversePolarity.SwitchSpells();
+            _reversePolarity.RemoveReversePolarityEffect();
+            _reversePolarity.SetCooldownFromSpell();
+        }
     }
 
     protected override void ClearData()
@@ -247,21 +315,19 @@ public class FlowOfLight : Skill
         }
     }
 
-    [Command]
-private void CmdStateRestorationOrDestruction(NetworkIdentity targetNetIdentity, States states, float duration)
-{
-    if (targetNetIdentity == null) return;
 
-    var stateComponent = targetNetIdentity.GetComponent<CharacterState>();
-    if (stateComponent == null) return;
+    [Command] private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) => StateRestorationOrDestruction(stateComponent, states, duration);
+    [Command] private void CmdStateSpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration) => SpiritEnergyOrHealth(stateComponent, states, duration);
 
-    stateComponent.AddState(states, duration, 0, gameObject, Name);
-}
-    [Command] private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) => ClientRpcStateRestorationOrDestruction(stateComponent, states, duration);
-    [Command] private void CmdStateSpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration) => ClientRpcSpiritEnergyOrHealth(stateComponent, states, duration);
+    private void SpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration)
+    {
+        stateComponent.AddState(states, duration, 1f, gameObject, Name);
+    }
 
-    [ClientRpc] private void ClientRpcSpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration) { stateComponent.AddStateLogic(states, duration, 1f, Schools.None, gameObject, Name); }
-    [ClientRpc] private void ClientRpcStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) { stateComponent.AddStateLogic(states, duration, 0, Schools.None, gameObject, "FlowOfLight"); }
+    private void StateRestorationOrDestruction(CharacterState stateComponent, States states, float duration)
+    {
+        stateComponent.AddState(states, duration, 0, gameObject, Name);
+    }
 
 
         [ClientRpc]

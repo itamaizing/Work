@@ -182,6 +182,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3009901119154364267}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -4800256726937707271}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!114 &1203017476815782494 stripped
 MonoBehaviour:
@@ -369,6 +372,11 @@ MonoBehaviour:
   maxCounter: 0
   _agent: {fileID: 0}
   _stopDistance: 0.5
+  _enemyCheckRadius: 6
+  _enemyLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  _damageDeley: 0.5
 --- !u!114 &3009901119154364267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -390,6 +398,22 @@ MonoBehaviour:
   - {fileID: 3634594317198119594}
   m_GameObjectsToHide:
   - {fileID: 3009303187757147287}
+--- !u!114 &-4800256726937707271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3009303187757147287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f110e2c9800b7b409c0ac05f77408a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnitLayerSync
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  TeamIndex: 0
 --- !u!23 &3413987327993322111 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8234214932904483460, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

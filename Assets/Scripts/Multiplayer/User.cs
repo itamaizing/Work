@@ -219,6 +219,11 @@ public class LevelCharacterManager
         //ResetLevelData();
     }
 
+    public HeroComponent GetHero()
+    {
+        return _character;
+    }
+
     public void SetSaveIndex(int index)
     {
         _currentSaveGroup = index;

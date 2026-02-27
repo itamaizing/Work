@@ -783,6 +783,8 @@ public abstract class Skill : NetworkBehaviour
         Cooldown?.Tick();
         //Charges.Tick(Time.deltaTime);
     }
+    
+    public void ClearQueueTarget() => _targetInfoQueue.Clear();
 
     public void EnableSkillBoost()
     {

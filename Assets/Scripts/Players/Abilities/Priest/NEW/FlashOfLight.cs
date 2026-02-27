@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class FlashOfLight : Skill
+public class FlashOfLight : Skill,IPolaritySwitchable
 {
     [Header("Flash of Light Settings")]
     [SerializeField] private float _healAmount = 35f;
@@ -16,7 +16,9 @@ public class FlashOfLight : Skill
     [SerializeField] private AbilityInfo darkInfo;
 
     [SerializeField] private AudioClip audioClip;
-    [SerializeField] private ReversePolarity reversePolarity;
+    [SerializeField] private ReversePolarity _reversePolarity;
+
+    private float _clickRadius = 0.5f;
 
     private bool _spiritEnergyTalent;
 
@@ -32,6 +34,9 @@ public class FlashOfLight : Skill
     public event Action OnModeChange;
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
 
+    private bool IsAllyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Allies");
+    private bool IsEnemyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+    
     protected override bool IsCanCast => IsCanCastCheck();
 
     private bool IsCanCastCheck()
@@ -108,13 +113,25 @@ public class FlashOfLight : Skill
 
         while (Targeting.GetTempTarget()?.Character == null)
         {
-            if (Input.GetMouseButton(0))
+            if (GetMouseButton)
             {
-                Targeting.FindTempTarget(true);
+                Vector3 clickPoint = GetMousePoint();
+
+                FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
                 //_target = GetRaycastTarget(true);
 
-                if (Targeting.GetTempTarget()?.Character != null && Targeting.GetTempTarget()?.Character is Character characte && IsValidTarget(characte)) Targeting.SetTarget((ITargetable)characte);
-                else Targeting.ClearTarget();
+                if (GetTempTargetCharacter() is Character character)
+                {
+                    if (GetTempTargetCharacter() != null && (IsEnemyTarget(character) && isLightMode) || (IsAllyTarget(character) && !isLightMode))
+                    {
+                        ClearTempTarget();
+                    }
+                    else
+                    {
+                        GetTempTargetCharacter().SelectedCircle.IsActive = true;
+                        _hero.Move.LookAtTransform(GetTempTargetCharacter().transform);
+                    }
+                }
 
             }
             yield return null;
@@ -129,19 +146,29 @@ public class FlashOfLight : Skill
     {
         if (Targeting.GetTarget()?.Character == null || !IsCanCast) yield break;
 
-        if (TryPayCost())
+        var target = GetTargetCharacter();
+        
+        if (isLightMode && IsEnemyTarget(target) || !isLightMode && !IsEnemyTarget(target))
         {
-            CmdPlayShootSound();
-
-            if (reversePolarity != null && Hero.CharacterState.CheckForState(States.ReversePolarity))
-            {
-                reversePolarity.SwitchSpells();
-                reversePolarity.RemoveReversePolarityEffect();
-            }
-
-                if (isLightMode) HandleFlashOfLight();
-                else HandleFlashOfDarkness();
+            ResetCooldown();
+            yield break;
         }
+
+        /*if (TryPayCost())
+        {*/
+
+        CmdPlayShootSound();
+
+        if (isLightMode) HandleFlashOfLight();
+        else HandleFlashOfDarkness();
+
+        if (_reversePolarity != null && Hero.CharacterState.CheckForState(States.ReversePolarity))
+        {
+            _reversePolarity.SwitchSpells();
+            _reversePolarity.RemoveReversePolarityEffect();
+            _reversePolarity.SetCooldownFromSpell();
+        }
+        //}
 
         yield return null;
     }

@@ -8,6 +8,8 @@ public class Dark1PassiveSkill : Skill, IPassiveSkill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => false;
+    private readonly float _healPercentage = 0.1f;
+    
     protected override IEnumerator CastJob() => null;
     protected override void ClearData() { }
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved) => null;
@@ -39,10 +41,14 @@ public class Dark1PassiveSkill : Skill, IPassiveSkill
 
     private void OnHealMade(Heal healed)
     {
-        if (healed.Value > 0 && healed.DamageableSkill.Info.School == Schools.Light)
+        if (healed.Value <= 0) return;
+
+        if (healed.DamageableSkill != null && healed.DamageableSkill.Info.School == Schools.Light)
         {
-            Heal heal = new Heal();
-            heal.Value = healed.Value * .1f;
+            Heal heal = new Heal
+            {
+                Value = healed.Value * _healPercentage
+            };
 
             Hero.Heal(ref heal, this.Name, this);
         }

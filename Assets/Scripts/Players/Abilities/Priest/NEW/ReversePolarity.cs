@@ -1,15 +1,12 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
 public class ReversePolarity : Skill
 {
-    [SerializeField] private SparkOfLight sparkOfLight;
-    [SerializeField] private FlashOfLight flashOfLight;
-    [SerializeField] private Restoration restoration;
-    [SerializeField] private FlowOfLight flowOfLight;
-    [SerializeField] private PriestShield priestShield;
+    [SerializeField] private List<Skill> _switchableSkills;
 
     [SerializeField] private AudioClip audioClip;
 
@@ -18,6 +15,8 @@ public class ReversePolarity : Skill
     protected override bool IsCanCast => true;
 
     private AudioSource _audioSource;
+
+    private float _cooldownAfterDarkMode = 6f;
 
     private void Start()
     {
@@ -49,7 +48,11 @@ public class ReversePolarity : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        yield break;
+        if (_hero == null) yield break;
+        SetTarget(_hero);
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.AddTarget(_hero);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
@@ -112,11 +115,25 @@ public class ReversePolarity : Skill
 
     public void SwitchSpells()
     {
-        sparkOfLight.SwitchMode();
-        flashOfLight.SwitchMode();
-        restoration.SwitchMode();
-        flowOfLight.SwitchMode();
-        //priestShield.SwitchMode();
+        if (!IsAutoMode)
+        {
+            _hero.Abilities.AutoSkillCast.DeleteSkill();
+            foreach (var switchable in _switchableSkills)
+            {
+                _hero.Abilities.SkillQueue.RemoveNeededSkillFromQueue(switchable);
+            }
+        }
+
+        foreach (var skill in _switchableSkills)
+        {
+            var switchable = (IPolaritySwitchable)skill;
+            switchable?.SwitchMode();
+        }
+    }
+
+    public void SetCooldownFromSpell()
+    {
+        IncreaseSetCooldown(_cooldownAfterDarkMode);
     }
 
     protected override void ClearData()

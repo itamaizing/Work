@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SoulAid : Skill
 {
-    [SerializeField] private float _speed = 0.0025f;
+    [SerializeField] private float _speed = 2f;
     [SerializeField] private float _cooldownReduceValue = 5f;
     [SerializeField] private float _defaultRadius = 4f;
     [SerializeField] private float _largeRadius = 8f;
@@ -16,9 +16,13 @@ public class SoulAid : Skill
     private GameObject _tempTarget;
     private MoveComponent _tempTargetMove;
     
+    private bool IsAllyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Allies");
+    
     private bool _talentTiredSoulDispelActive = false;
     private bool _talentCooldownReduce = false;
     private bool _talentDoubleRange = false;
+    
+    private float _clickRadius = 0.5f;
 
     private void OnEnable()
     {
@@ -51,16 +55,10 @@ public class SoulAid : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget()?.Character == null || Targeting.GetTarget()?.Character == Hero || !IsCanCast) yield break;
-        
-        while (Vector2.Distance(transform.position, Targeting.GetTarget().Character.transform.position) > 2.1f)
-        {
-            Vector2 direction = (transform.position - Targeting.GetTarget().Character.transform.position).normalized;
-            Vector2 pullForce = direction * (_speed * Time.fixedTime);
+        if (Targeting.GetTarget()?.Character == null || !IsCanCast) yield break;
 
-            CmdPull(Targeting.GetTarget()?.Character.gameObject, pullForce);
-            yield return new WaitForFixedUpdate();
-        }
+        var target = Targeting.GetTarget()?.Character.gameObject;
+        CmdStartPull(target);
     }
 
     protected override void ClearData()
@@ -71,18 +69,33 @@ public class SoulAid : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (Targeting.GetTarget()?.Character == null)
+        while (Targeting.GetTempTarget()?.Character == null)
         {
             AreaInfo.Radius = _talentDoubleRange ? _largeRadius : _defaultRadius;
             
             if (GetMouseButton)
             {
-                Targeting.FindTempTarget();
-               // _target = GetRaycastTarget(_talentTiredSoulDispelActive);
+                Vector3 clickPoint = Targeting.GetMousePoint();
+                
+                FindTarget(_clickRadius, clickPoint, canTargetHimself: false);
+                
+                if (GetTempTargetCharacter() is Character character)
+                {
+                    if (GetTempTargetCharacter() != null && !IsAllyTarget(character))
+                    {
+                        ClearTempTarget();
+                    }
+                    else
+                    {
+                        GetTempTargetCharacter().SelectedCircle.IsActive = true;
+                        _hero.Move.LookAtTransform(GetTempTargetCharacter().transform);
+                    }
+                }
             }
             yield return null;
         }
         TargetInfo targetInfo = new TargetInfo();
+        Targeting.SetTarget(GetTempTarget()?.Character);
         targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
@@ -129,15 +142,70 @@ public class SoulAid : Skill
         DecreaseSetCooldown(_cooldownReduceValue);
     }
 
-    [Command]
+    /*[Command]
     private void CmdPull(GameObject gameObject, Vector2 force)
     {
+
         if (_tempTarget != gameObject)
         {
             _tempTarget = gameObject;
             _tempTargetMove = gameObject.GetComponent<MoveComponent>();
         }
         _tempTargetMove.TargetRpcAddTransformPosition(force);
+    }*/
+    
+    [Command]
+    private void CmdStartPull(GameObject targetObj)
+    {
+        StartCoroutine(ServerPullCoroutine(targetObj));
+    }
+    
+    private IEnumerator ServerPullCoroutine(GameObject targetObj)
+    {
+        var targetTransform = targetObj.transform;
+        var targetMove = targetObj.GetComponent<MoveComponent>();
+        if (targetMove == null) yield break;
+
+        bool originalCanMove = targetMove.CanMove;
+        targetMove.CanMove = false;
+
+        while (Vector2.Distance(transform.position, targetTransform.position) > 0.01f)
+        {
+            Vector3 direction = (transform.position - targetTransform.position).normalized;
+            Vector3 pullForce = direction * (2 * Time.fixedDeltaTime);
+
+            if (targetMove.Rigidbody != null)
+            {
+                targetMove.Rigidbody.MovePosition(targetTransform.position + pullForce);
+            }
+            else
+            {
+                targetTransform.position += pullForce;
+            }
+
+            RpcApplyPullForce(targetObj, pullForce);
+
+            yield return new WaitForFixedUpdate();
+        }
+
+        targetMove.CanMove = originalCanMove;
+    }
+
+    [ClientRpc]
+    private void RpcApplyPullForce(GameObject targetObj, Vector3 force)
+    {
+        var targetTransform = targetObj.transform;
+        var targetMove = targetObj.GetComponent<MoveComponent>();
+        if (targetMove == null) return;
+
+        if (targetMove.Rigidbody != null)
+        {
+            targetMove.Rigidbody.MovePosition(targetTransform.position + force);
+        }
+        else
+        {
+            targetTransform.position += force;
+        }
     }
     
     [Command]
