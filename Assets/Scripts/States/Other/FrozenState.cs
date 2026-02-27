@@ -32,7 +32,7 @@ public class FrozenState : AbstractCharacterState
 			_damageToExit = damageToExit;
 		}
 
-		//_damageOnStart = _characterState.Character.Health.SumDamageTaken;
+		//_damageOnStart = characterState.Character.Health.SumDamageTaken;
 		_damageOnStart = 0;
 		characterState.Character.Move.SetCanMove(false);
 		characterState.Character.Move.Rigidbody.isKinematic = true;

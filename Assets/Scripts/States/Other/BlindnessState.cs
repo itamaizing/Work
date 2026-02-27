@@ -27,7 +27,7 @@ public class BlindnessState : AbstractCharacterState
 
         _duration = durationToExit;
         _baseDuration = durationToExit;
-        _characterState = character;
+        characterState = character;
         MaxStacksCount = 1;
 
         if (characterState.isOwned) ApplyEffectToLocalCamera();
@@ -56,7 +56,7 @@ public class BlindnessState : AbstractCharacterState
             foreach (var abil in abilities.Abilities) if (abil.Info.SkillType == SkillType.Target) abil.Disactive = false;
         }
 
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

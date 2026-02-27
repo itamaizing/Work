@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 public class GodLightState : AbstractCharacterState
 {
@@ -11,17 +11,17 @@ public class GodLightState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
-        _personWhoMadeBuff = personWhoMadeBuff;
+        characterState = character;
+        personWhoMadeBuff = personWhoMadeBuff;
         
-        _characterState.Character.Abilities.SetNextSkillFree();
-        _characterState.Character.Abilities.SetNextSkillNoCast();
+        characterState.Character.Abilities.SetNextSkillFree();
+        characterState.Character.Abilities.SetNextSkillNoCast();
     }
 
     public override void ExitState()
     {
-        _characterState.StateIcons.RemoveItemByState(State);
-        _characterState.RemoveState(this);
+        characterState.StateIcons.RemoveItemByState(State);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -31,6 +31,6 @@ public class GodLightState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        if (!_characterState.Character.Abilities.IsNextSkillNoCast) ExitState();
+        if (!characterState.Character.Abilities.IsNextSkillNoCast) ExitState();
     }
 }

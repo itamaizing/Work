@@ -5266,6 +5266,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 4039387502136921584, guid: 5f331e191d7d5e6468ee480745e95241, type: 3}
     - target: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: characterState
+      value: 
+      objectReference: {fileID: 4422210011089978789}
+    - target: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _resources.Array.size
       value: 4
       objectReference: {fileID: 0}
@@ -6099,10 +6103,13 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 83e21c29a8358a84c98e9e3409e72dce, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -6117,6 +6124,7 @@ MonoBehaviour:
     _clickLayer: 3
     _faction: 6
     _unitType: 1
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -6173,12 +6181,15 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 03421708f78eb824ca74806705f86a02, type: 2}
   _isSubjectToGlobalCooldownTime: 0
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 6
   _additionalSkillEnergyCosts: []
   _cooldownTime: 1
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -6193,6 +6204,7 @@ MonoBehaviour:
     _clickLayer: 0
     _faction: 0
     _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -6271,12 +6283,15 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 048a51707f36a914bb8c9b86717fb736, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 30
   _additionalSkillEnergyCosts: []
   _cooldownTime: 9
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 1.8
   _damageValue: 0
   _infoComponent:
@@ -6291,6 +6306,7 @@ MonoBehaviour:
     _clickLayer: 0
     _faction: 0
     _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -6351,12 +6367,15 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 29f4a097d1fbabf49924792a7b9935d5, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 4
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -6371,6 +6390,7 @@ MonoBehaviour:
     _clickLayer: 0
     _faction: 0
     _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -6437,10 +6457,13 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: fae20c68fbd43a04691d2a18e59c051d, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -6455,6 +6478,7 @@ MonoBehaviour:
     _clickLayer: 0
     _faction: 0
     _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -6520,12 +6544,15 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 4ac9b94a28a62fa4bbd5224c36c79453, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 20
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 1.5
   _damageValue: 0
   _infoComponent:
@@ -6540,6 +6567,7 @@ MonoBehaviour:
     _clickLayer: 0
     _faction: 0
     _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -6597,12 +6625,15 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: cfe5dc2162037314eb434ca77d72908b, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 80
   _additionalSkillEnergyCosts: []
   _cooldownTime: 5
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -6617,6 +6648,7 @@ MonoBehaviour:
     _clickLayer: 0
     _faction: 0
     _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -6669,12 +6701,15 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: d121c8b9e38427c4fae26c029281ca12, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 10
   _additionalSkillEnergyCosts: []
   _cooldownTime: 4
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -6689,6 +6724,7 @@ MonoBehaviour:
     _clickLayer: 0
     _faction: 0
     _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -6746,10 +6782,13 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 1234a0457cd7d68489fcc887f4e41225, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -6764,6 +6803,7 @@ MonoBehaviour:
     _clickLayer: 0
     _faction: 0
     _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -6827,10 +6867,13 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 841bdc7bd09965940af4259c7b728b56, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -6845,6 +6888,7 @@ MonoBehaviour:
     _clickLayer: 0
     _faction: 0
     _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -6897,10 +6941,13 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: a01ecc5cf4d4ac04ba96007c73bc07cb, type: 2}
   _isSubjectToGlobalCooldownTime: 0
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -6915,6 +6962,7 @@ MonoBehaviour:
     _clickLayer: 0
     _faction: 0
     _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -6976,10 +7024,13 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 933065e6fa146a04fbb7774d57bb2e7c, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    template: 0
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -6994,6 +7045,7 @@ MonoBehaviour:
     _clickLayer: 0
     _faction: 0
     _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -7066,6 +7118,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 73c845a97d0479341a34f6e1275e1107, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4422210011089978789 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5590339039165547173, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 8127316380187346688}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300637093874885484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7f243771c2613d40a4aecc719336ae4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &4534754468497973439 stripped

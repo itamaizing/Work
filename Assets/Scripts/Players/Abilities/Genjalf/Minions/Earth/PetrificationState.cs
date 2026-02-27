@@ -1,7 +1,7 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class PetrificationState : AbstractCharacterState
+public class PetrificationState : StackableState
 {
 	private float _duration;
 	private float _curSpeedDebuf = 0f;
@@ -16,18 +16,18 @@ public class PetrificationState : AbstractCharacterState
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
 		Character personWhoMadeBuff, string skillName)
 	{
-		_characterState = character;
-		CanStack = true;
+		characterState = character;
+		//CanStack = true;
 		_duration = durationToExit;
 
-		_baseMagicResist = _characterState.Character.Health.ResistMagDamage;
-		_basePhysicsResist = _characterState.Character.Health.DefPhysDamage;
+		_baseMagicResist = characterState.Character.Health.ResistMagDamage;
+		_basePhysicsResist = characterState.Character.Health.DefPhysDamage;
 		
-		_characterState.Character.Health.SetMagicDef(80);
-		_characterState.Character.Health.SetPhysicDef(80);
-		_characterState.Character.Move.CanMove = false;
+		characterState.Character.Health.SetMagicDef(80);
+		characterState.Character.Health.SetPhysicDef(80);
+		characterState.Character.Move.SetCanMove(false);
 
-		foreach (var ability in _characterState.Character.Abilities.Abilities)
+		foreach (var ability in characterState.Character.Abilities.Abilities)
 		{
 			ability.Disactive = true;
 		}
@@ -44,16 +44,16 @@ public class PetrificationState : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		_characterState.RemoveState(this);
-		foreach (var ability in _characterState.Character.Abilities.Abilities)
+		characterState.RemoveState(this);
+		foreach (var ability in characterState.Character.Abilities.Abilities)
 		{
 			ability.Disactive = false;
 		}
 
-		_characterState.Character.Move.CanMove = true;
+		characterState.Character.Move.SetCanMove(true);
 		
-		_characterState.Character.Health.SetMagicDef(_baseMagicResist);
-		_characterState.Character.Health.SetPhysicDef(_basePhysicsResist);
+		characterState.Character.Health.SetMagicDef(_baseMagicResist);
+		characterState.Character.Health.SetPhysicDef(_basePhysicsResist);
 	}
 
 	public override bool Stack(float time)

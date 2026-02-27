@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -72,6 +72,6 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
         };
 
         characterState.Character.Health.Heal(ref heal, null);
-        //_characterState.Character.DamageTracker.AddHeal(heal, true);
+        //characterState.Character.DamageTracker.AddHeal(heal, true);
     }
 }

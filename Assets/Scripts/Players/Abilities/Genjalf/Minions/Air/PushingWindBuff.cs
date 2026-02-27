@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class PushingWindBuff : AbstractCharacterState
@@ -13,10 +13,10 @@ public class PushingWindBuff : AbstractCharacterState
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
 		Character personWhoMadeBuff, string skillName)
 	{
-		_characterState = character;
+		characterState = character;
 		_duration = durationToExit;
 
-		_characterState.Character.Move.ChangeMoveSpeed(1 + _curSpeedBuf);
+		//characterState.Character.Move.ChangeMoveSpeed(1 + _curSpeedBuf); TODO: Переделать на систему аттрибутов
 	}
 
 	public override void UpdateState()
@@ -30,10 +30,10 @@ public class PushingWindBuff : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		_characterState.RemoveState(this);
-		_characterState.Character.Move.SetDefaultSpeed();
+		characterState.RemoveState(this);
+		characterState.Character.Move.SetDefaultSpeed(); //TODO: Переделать на систему аттрибутов
 
-	}
+    }
 
 	public override bool Stack(float time)
 	{

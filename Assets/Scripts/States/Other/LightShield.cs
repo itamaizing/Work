@@ -130,7 +130,7 @@ public class LightShield : AbstractCharacterState, IDamageable
     //    {
     //        if (!obj.TryGetComponent(out Character enemy)) continue;
 
-    //        var distance = Vector3.Distance(_characterState.transform.position, enemy.transform.position);
+    //        var distance = Vector3.Distance(characterState.transform.position, enemy.transform.position);
     //        if (distance > 10f || distance <= 0.25f) continue;
 
     //        var tempDamage = new Damage

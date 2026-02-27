@@ -1,4 +1,4 @@
-using Mirror;
+ï»¿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -23,8 +23,8 @@ namespace Gangdollarff
         private float _lastOpacityChangeTime = 0f;
         
         public override string AdditionalDescription =>
-            $"Ýôôåêòèâíîñòü: {AbilityNameBox.ColorOpen}{_shieldValue} åä.{AbilityNameBox.ColorEnd}" +
-            $"\nÄëèòåëüíîñòü: {AbilityNameBox.ColorOpen}{_shieldDuration} ñåê{AbilityNameBox.ColorEnd}";
+            $"Ð­Ñ„Ñ„ÐµÐºÑ‚Ð¸Ð²Ð½Ð¾ÑÑ‚ÑŒ: {AbilityNameBox.ColorOpen}{_shieldValue} ÐµÐ´.{AbilityNameBox.ColorEnd}" +
+            $"\nÐ”Ð»Ð¸Ñ‚ÐµÐ»ÑŒÐ½Ð¾ÑÑ‚ÑŒ: {AbilityNameBox.ColorOpen}{_shieldDuration} ÑÐµÐº{AbilityNameBox.ColorEnd}";
 
         protected override int AnimTriggerCastDelay => 0;
 
@@ -40,7 +40,7 @@ namespace Gangdollarff
         private bool CheckCanCast()
         {
             if(IsAllyTargetAvailable)
-                return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius && GetTargetCharacter() != null;
+                return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.GetTarget()?.Character != null;
             return true;
         }
         public bool IsEnabled { get; protected set; }
@@ -70,7 +70,7 @@ namespace Gangdollarff
 
         protected override IEnumerator CastJob()
         {
-            CmdAddShield(IsAllyTargetAvailable ? GetTargetCharacter().gameObject : Hero.gameObject, Hero.gameObject);
+            CmdAddShield(IsAllyTargetAvailable ? Targeting.GetTarget()?.Character.gameObject : Hero.gameObject, Hero.gameObject);
             yield return null;
         }
 
@@ -89,19 +89,19 @@ namespace Gangdollarff
             
             TargetInfo targetInfo = new TargetInfo();
 
-            while (GetTempTarget() == null)
+            while (Targeting.GetTempTarget() == null)
             {
                 if (GetMouseButton)
                 {
-                    Vector3 clickPoint = GetMousePoint();
+                    Vector3 clickPoint = Targeting.GetMousePoint();
                 
-                    FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
+                    Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
 
-                    if (GetTempTargetCharacter() is Character character)
+                    if (Targeting.GetTempTarget()?.Character is Character character)
                     {
-                        if (GetTempTargetCharacter() != null && !IsAllyTarget(character))
+                        if (Targeting.GetTempTarget()?.Character != null && !IsAllyTarget(character))
                         {
-                            ClearTempTarget();
+                            Targeting.ClearTempTarget();
                         }
                         else
                         {
@@ -112,10 +112,10 @@ namespace Gangdollarff
                 }
                 yield return null;
             }
-            SetTarget(GetTempTargetCharacter());
-            ClearTempTarget();
+            Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
+            Targeting.ClearTempTarget();
 
-            targetInfo.AddTarget(GetTargetCharacter());
+            targetInfo.AddTarget(Targeting.GetTarget()?.Character);
             callbackDataSaved(targetInfo);
         }
 

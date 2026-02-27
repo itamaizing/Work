@@ -82,12 +82,12 @@ public class FireBoll : MoveSkill
             {
                 Vector3 clickPoint = Targeting.GetMousePoint();
         
-                Targeting.FindTarget(_clickRadius, clickPoint, canTargetHimself: false);
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: false);
                 if (Targeting.GetTempTarget()?.Character is Character character)
                 {
-                    if (GetTempTargetCharacter() != null && !IsEnemyTarget(character))
+                    if (Targeting.GetTempTarget()?.Character != null && !IsEnemyTarget(character))
                     {
-                        ClearTempTarget();
+                        Targeting.ClearTempTarget();
                     }
                     else
                     {
@@ -99,7 +99,7 @@ public class FireBoll : MoveSkill
             yield return null;
         }
         targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
-        ClearTempTarget();
+        Targeting.ClearTempTarget();
         callbackDataSaved(targetInfo);
         
         CastStarted += OnCastStarted;

@@ -57,7 +57,7 @@ public class StreamOfIcyWater : MoveSkill
         float time = 0;
         CmdSetActiveParticle(true);
 
-        float initialDistance = Vector3.Distance(transform.position, GetTargetCharacter().Position);
+        float initialDistance = Vector3.Distance(transform.position, Targeting.GetTarget().Character.Position);
 
         while (time < CastStreamDuration)
         {
@@ -77,7 +77,7 @@ public class StreamOfIcyWater : MoveSkill
 
             yield return null;
 
-            if (Vector3.Distance(transform.position, GetTargetCharacter().Position) > initialDistance + _breakCastDistance)
+            if (Vector3.Distance(transform.position, Targeting.GetTarget().Character.Position) > initialDistance + _breakCastDistance)
                 break;
         }
 
@@ -105,7 +105,7 @@ public class StreamOfIcyWater : MoveSkill
             {
                 Vector3 clickPoint = Targeting.GetMousePoint();
         
-                Targeting.FindTarget(_clickRadius, clickPoint, canTargetHimself: false);
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: false);
                 if (Targeting.GetTempTarget()?.Character is Character character)
                 {
                     if (character != null && !IsEnemyTarget(character))
@@ -122,7 +122,7 @@ public class StreamOfIcyWater : MoveSkill
             yield return null;
         }
         targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
-        targeting.ClearTempTarget();
+        Targeting.ClearTempTarget();
         targetDataSavedCallback(targetInfo);
     }
 

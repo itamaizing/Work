@@ -51,7 +51,7 @@ namespace Gangdollarff.EarthElemental
 
         protected override IEnumerator CastJob()
         {
-            Character originalTarget = Targeting.GetTempTarget()?.Character;//GetTargetCharacter();
+            Character originalTarget = Targeting.GetTempTarget()?.Character;//Targeting.GetTarget()?.Character;
             if (originalTarget == null) yield break;
     
             Hero.Move.LookAtPosition(originalTarget.Position);
@@ -90,7 +90,7 @@ namespace Gangdollarff.EarthElemental
                 {
                     Vector3 clickPoint = Targeting.GetMousePoint();
         
-                    FindTarget(_clickRadius, clickPoint, canTargetHimself: false);
+                    Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: false);
                     if (Targeting.GetTempTarget()?.Character is Character character)
                     {
                         if (Targeting.GetTempTarget() != null && !IsEnemyTarget(character))
@@ -106,8 +106,8 @@ namespace Gangdollarff.EarthElemental
                 }
                 yield return null;
             }
-            targetInfo.AddTarget(GetTempTargetCharacter());
-            ClearTempTarget();
+            targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
+            Targeting.ClearTempTarget();
             targetDataSavedCallback(targetInfo);
         }
 

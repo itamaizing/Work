@@ -49,7 +49,7 @@ public class CreeperStrike : Skill
     private bool _isHit = false;
 
     private List<Character> _recentTargets = new();
-    private Coroutine _clearTargetsCoroutine;
+    private Coroutine ClearTargetsCoroutine;
     private float _targetMemoryTime = 0.5f;
 
     private Coroutine _timerForTwoHitVariableCoroutine;
@@ -325,9 +325,10 @@ public class CreeperStrike : Skill
         _recentTargets.Insert(0, target);
 
         if (_recentTargets.Count > 4) _recentTargets.RemoveAt(_recentTargets.Count - 1);
-        if (_clearTargetsCoroutine != null) StopCoroutine(_clearTargetsCoroutine);
+        if (ClearTargetsCoroutine != null)
+            StopCoroutine(ClearTargetsCoroutine);
 
-        _clearTargetsCoroutine = StartCoroutine(ClearRecentTargetsAfterDelay());
+        ClearTargetsCoroutine = StartCoroutine(ClearRecentTargetsAfterDelay());
     }
 
     private bool SameTargetCastCounter(int count)
@@ -505,7 +506,7 @@ public class CreeperStrike : Skill
     {
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();
-        if (_clearTargetsCoroutine != null) StopCoroutine(_clearTargetsCoroutine);
+        if (ClearTargetsCoroutine != null) StopCoroutine(ClearTargetsCoroutine);
         _hero.Move.StopLookAt();
     }
 

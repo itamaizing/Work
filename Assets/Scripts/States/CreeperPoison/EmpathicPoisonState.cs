@@ -191,8 +191,8 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
     private void DecreaseEvasionForCurrentTarget()
     {
         //float reductionPerSecond = _baseEvasionValue * 0.33f;
-        //_endEvasionValue = Mathf.Max(_originalEvasionValue, _characterState.Character.Health.EvadeMeleeDamage + reductionPerSecond);
-        //_characterState.Character.Health.EvadeMeleeDamage = _endEvasionValue;
+        //_endEvasionValue = Mathf.Max(_originalEvasionValue, characterState.Character.Health.EvadeMeleeDamage + reductionPerSecond);
+        //characterState.Character.Health.EvadeMeleeDamage = _endEvasionValue;
     }
 
     private void CheckIfInPoisonCloud(Vector3 playerPos, Vector3 characterPos)

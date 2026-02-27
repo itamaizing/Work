@@ -18,7 +18,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 	[SerializeField] private Health _healthComponent;
 	[SerializeField] private MoveComponent _playerMove;
 	[SerializeField] private SkillManager _abilities;
-	[SerializeField] private CharacterState _characterState;
+	[SerializeField] private CharacterState characterState;
 	[SerializeField] private UIPlayerComponents uiComponent;
 	[SerializeField] private SelectComponent _selectComponent;
 	[SerializeField] private DamageTracker _damageTracker;
@@ -51,7 +51,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 	public Level LVL => _lvl;
 	public MoveComponent Move => _playerMove;
 	public SkillManager Abilities => _abilities;
-	public CharacterState CharacterState => _characterState;
+	public CharacterState CharacterState => characterState;
 	public UIPlayerComponents UIComponent => uiComponent;
 	public SelectComponent SelectComponent => _selectComponent;
 	public DamageTracker DamageTracker => _damageTracker;
@@ -354,10 +354,10 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 
 	private void DeleteStates()
     {
-		var statesCopy = new List<AbstractCharacterState>(_characterState.CurrentStates);
+		var statesCopy = new List<AbstractCharacterState>(characterState.CurrentStates);
 		foreach (var state in statesCopy)
 		{
-			_characterState.RemoveState(state.State);
+			characterState.RemoveState(state.State);
 		}
 	}
 

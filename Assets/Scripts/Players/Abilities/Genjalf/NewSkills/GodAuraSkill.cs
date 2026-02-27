@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
@@ -18,7 +18,7 @@ public class GodAura : AuraState
 
     public override void EffectOnEnter(Character character)
     {
-        if (_characterState.Character != character)
+        if (characterState.Character != character)
         {
             CmdAddState(character.gameObject);
         }

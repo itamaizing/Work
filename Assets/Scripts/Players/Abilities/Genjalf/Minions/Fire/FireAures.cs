@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Mirror;
@@ -122,7 +122,7 @@ public class Burning : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        _time = time;
+        duration = time;
         return false;
     }
 
@@ -139,7 +139,7 @@ public class Burning : AbstractCharacterState
         {
             Value = _damage,
         };
-        _character.CmdTryTakeDamage(damage, null);
+        //_character.CmdTryTakeDamage(damage, null); //TODO: FIX
 
         _timeAfterLastEffect = 0;
     }

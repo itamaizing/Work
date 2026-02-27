@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -36,13 +36,13 @@ public class WaveSkill : Skill
     {
         CmdSetActiveParticle(true);
 
-        Vector3 waveCenter = _waveStartPoint + _waveDirection * (CastLength / 2f);
+        Vector3 waveCenter = _waveStartPoint + _waveDirection * (AreaInfo.CastLength / 2f);
 
         var colliders = Physics.OverlapBox(
             waveCenter,
-            new Vector3(CastWidth / 2f, 2f, CastLength / 2f),
+            new Vector3(AreaInfo.CastWidth / 2f, 2f, AreaInfo.CastLength / 2f),
             Quaternion.LookRotation(_waveDirection),
-            TargetsLayers
+            Targeting.Layer
         );
 
         foreach (var collider in colliders)
@@ -53,12 +53,12 @@ public class WaveSkill : Skill
                 toEnemy.y = 0;
 
                 float distanceAlongWave = Vector3.Dot(toEnemy, _waveDirection);
-                if (distanceAlongWave < 0 || distanceAlongWave > CastLength)
+                if (distanceAlongWave < 0 || distanceAlongWave > AreaInfo.CastLength)
                     continue;
 
                 Vector3 perpendicular = Vector3.Cross(_waveDirection, Vector3.up);
                 float distanceFromCenter = Mathf.Abs(Vector3.Dot(toEnemy, perpendicular));
-                if (distanceFromCenter > CastWidth / 2f)
+                if (distanceFromCenter > AreaInfo.CastWidth / 2f)
                     continue;
 
                 float casterRadius = ((CapsuleCollider)_hero.Collider).radius;
@@ -67,13 +67,13 @@ public class WaveSkill : Skill
                 float centerDist = Vector3.Distance(_waveStartPoint, enemy.transform.position);
                 float edgeDist = Mathf.Max(centerDist - (casterRadius + enemyRadius), 0f);
 
-                float damageMul = Mathf.Clamp01(1f - edgeDist / CastLength);
+                float damageMul = Mathf.Clamp01(1f - edgeDist / AreaInfo.CastLength);
 
                 Damage scaledDamage = new Damage
                 {
                     Value = Buff.Damage.GetBuffedValue(Damage) * damageMul,
-                    Type = DamageType,
-                    PhysicAttackType = AttackRangeType,
+                    Type = Info.DamageType,
+                    PhysicAttackType = Info.AttackRangeType,
                 };
 
                 CmdApplyDamage(scaledDamage, enemy.gameObject);
@@ -93,22 +93,22 @@ public class WaveSkill : Skill
     {
         _waveStartPoint = Vector3.zero;
         _waveDirection = Vector3.zero;
-        ClearTarget();
-        ClearTempTarget();
+        Targeting.ClearTarget();
+        Targeting.ClearTempTarget();
     }
 
-    protected override void StartAutoDraw()
+    public override void StartCustomDraw()
     {
-        SkillRender.DrawRadius(Radius);
+        SkillRender.DrawRadius(AreaInfo.Radius);
     }
 
-    protected override void StopAutoDraw()
+    public override void StopCustomDraw()
     {
         SkillRender.StopDrawRadius();
         _lineVisual.gameObject.SetActive(false);
     }
 
-    protected override IEnumerator DynamicRendererJob(float time = 0.2f)
+    public override IEnumerator CustomDrawJob(float time = 0.2f)
     {
         if (_lineVisual == null)
         {
@@ -122,12 +122,12 @@ public class WaveSkill : Skill
         Damage damage = new Damage
         {
             Value = Damage,
-            Type = DamageType,
+            Type = Info.DamageType,
         };
 
         while (true)
         {
-            Vector3 mousePoint = GetMousePoint();
+            Vector3 mousePoint = Targeting.GetMousePoint();
 
             if (mousePoint == Vector3.zero)
             {
@@ -147,12 +147,12 @@ public class WaveSkill : Skill
             float distance = directionToMouse.magnitude;
             Vector3 direction = directionToMouse.normalized;
 
-            Vector3 startPosition = transform.position + direction * Mathf.Min(distance, Radius);
+            Vector3 startPosition = transform.position + direction * Mathf.Min(distance, AreaInfo.Radius);
 
             pivotTransform.position = startPosition;
             pivotTransform.rotation = Quaternion.LookRotation(direction, Vector3.up);
 
-            _lineVisual.SetSize(CastWidth, CastLength, damage);
+            _lineVisual.SetSize(AreaInfo.CastWidth, AreaInfo.CastLength, damage);
 
             yield return null;
         }
@@ -167,20 +167,20 @@ public class WaveSkill : Skill
             yield return null;
         }
 
-        Vector3 clickPoint = GetMousePoint();
+        Vector3 clickPoint = Targeting.GetMousePoint();
 
         Vector3 directionToClick = clickPoint - transform.position;
         directionToClick.y = 0;
 
-        if (directionToClick.magnitude > Radius)
+        if (directionToClick.magnitude > AreaInfo.Radius)
         {
-            directionToClick = directionToClick.normalized * Radius;
+            directionToClick = directionToClick.normalized * AreaInfo.Radius;
         }
 
         _waveStartPoint = transform.position + directionToClick;
         _waveDirection = directionToClick.normalized;
 
-        Vector3 waveEndPoint = _waveStartPoint + _waveDirection * CastLength;
+        Vector3 waveEndPoint = _waveStartPoint + _waveDirection * AreaInfo.CastLength;
 
         targetInfo.Points.Add(_waveStartPoint);
         targetInfo.Points.Add(waveEndPoint);

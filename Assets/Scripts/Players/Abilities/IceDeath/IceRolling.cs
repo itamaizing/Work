@@ -344,7 +344,7 @@ public class IceRolling : Skill
         callbackDataSaved(targetInfo);
     }
 
-	public override IEnumerator DynamicRendererJob(float time = DynamicRendererJobTime)
+	public override IEnumerator CustomDrawJob(float time = DynamicRendererJobTime)
 	{
 		while (IsPreparing)
 		{
@@ -512,4 +512,3 @@ public class IceRolling : Skill
 		target.transform.SetParent(_playerLinks.transform);
 	}
 }
-

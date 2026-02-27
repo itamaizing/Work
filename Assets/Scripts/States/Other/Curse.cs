@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -36,9 +36,9 @@ public class Curse : AbstractCharacterState
 
 	public override bool Stack(float time)
 	{
-		/*if (_characterState.personWhoShoted != null)
+		/*if (characterState.personWhoShoted != null)
 		{
-			_personWhoShooted = _characterState.personWhoShoted;
+			_personWhoShooted = characterState.personWhoShoted;
 		}*/
 		return true;
 	}

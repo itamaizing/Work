@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
@@ -81,13 +81,13 @@ namespace Gangdollarff.EarthElemental
             _charactersMaxHealth.Add(character,initialMaxHealth);
             
             character.Health.IncreaseRegen(_charactersMaxHealth[character] * _procent);
-            character.Health.ChangedMaxValue(_charactersMaxHealth[character] * _maxValuePercent);
+            //character.Health.ChangedMaxValue(_charactersMaxHealth[character] * _maxValuePercent); //TODO: Переписать на атрибут
         }
 
         public override void EffectOnExit(Character character)
         {
             character.Health.DecreaseRegen(_charactersMaxHealth[character] * _procent);
-            character.Health.ChangedMaxValue(-(_charactersMaxHealth[character] * _maxValuePercent));
+            //character.Health.ChangedMaxValue(-(_charactersMaxHealth[character] * _maxValuePercent)); //TODO: Переписать на атрибут
             _charactersMaxHealth.Remove(character);
         }
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Gangdollarff;
@@ -86,7 +86,7 @@ public class QuicksandTile : FisuraTile
             if (character.NetworkSettings.TeamIndex != _ownerTeamIndex)
             {
                 _charTemp.Add(other.gameObject);
-                ChangeMoveSpeed(character.gameObject);
+                //ChangeMoveSpeed(character.gameObject);
             }
         }
     }
@@ -111,15 +111,15 @@ public class QuicksandTile : FisuraTile
         _charTemp.Clear();
     }
 
-    private void ChangeMoveSpeed(GameObject target)
-    {
-        if (target.TryGetComponent(out Character character))
-            character.Move.ChangeMoveSpeed(0.2f);
-    }
+    //private void ChangeMoveSpeed(GameObject target)
+    //{
+    //    if (target.TryGetComponent(out Character character))
+    //        character.Move.ChangeMoveSpeed(0.2f); //TODO: Переписать на аттрибут
+    //}
 
     private void SetDefaultSpeed(GameObject target)
     {
         if (target.TryGetComponent(out Character character))
-            character.Move.SetDefaultSpeed();
+            character.Move.SetDefaultSpeed();   //TODO: Переписать на атрибут
     }
 }

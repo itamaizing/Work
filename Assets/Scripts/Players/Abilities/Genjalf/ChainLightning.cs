@@ -92,15 +92,15 @@ public class ChainLightning : MoveSkill
         {
             if (GetMouseButton)
             {
-                Vector3 clickPoint = GetMousePoint();
+                Vector3 clickPoint = Targeting.GetMousePoint();
                 
-                FindTarget(_clickRadius, clickPoint, canTargetHimself: false);
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: false);
 
-                if (GetTempTargetCharacter() is Character character)
+                if (Targeting.GetTempTarget()?.Character is Character character)
                 {
-                    if (GetTempTargetCharacter() != null && !IsEnemyTarget(character))
+                    if (Targeting.GetTempTarget()?.Character != null && !IsEnemyTarget(character))
                     {
-                        ClearTempTarget();
+                        Targeting.ClearTempTarget();
                     }
                     else
                     {
@@ -111,8 +111,8 @@ public class ChainLightning : MoveSkill
             }
             yield return null;
         }
-        SetTarget(GetTempTarget());
-        ClearTempTarget();
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
+        Targeting.ClearTempTarget();
         targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
@@ -129,7 +129,7 @@ public class ChainLightning : MoveSkill
         
         if (UnityEngine.Random.Range(1, 100) <= _debuffChance)
         {
-            CmdAddState(GetTargetCharacter());
+            CmdAddState(Targeting.GetTarget()?.Character);
         }
 
         CmdCreateParticle(target.Position);

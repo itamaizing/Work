@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -40,7 +40,7 @@ public class Cooling : RefreshingState
 		characterState.Character.Move.AddModifier(_modif);
 		currentStacksCount = 1;
 		//decrease speed of attact and movement
-		//_characterState.Health.sumDamageTaken = 0;
+		//characterState.Health.sumDamageTaken = 0;
 	}
 
 	public override void UpdateState()

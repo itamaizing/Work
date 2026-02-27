@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -31,12 +31,12 @@ public class FireShield : MoveSkill
 
     private bool CheckCanCast()
     {
-        return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius && GetTargetCharacter() != null;
+        return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.GetTarget()?.Character != null;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((Character)targetInfo.GetTargets()[0]);
+        Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
         
         if (!IsCanCast)
         {
@@ -57,18 +57,18 @@ public class FireShield : MoveSkill
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
-        while (GetTempTarget() == null)
+        while (Targeting.GetTempTarget() == null)
         {
             if (GetMouseButton)
             {
-                Vector3 clickPoint = GetMousePoint();
+                Vector3 clickPoint = Targeting.GetMousePoint();
         
-                FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
-                if (GetTempTargetCharacter() is Character character)
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
+                if (Targeting.GetTempTarget()?.Character is Character character)
                 {
-                    if (GetTempTargetCharacter() != null && !IsAllyTarget(character))
+                    if (Targeting.GetTempTarget()?.Character != null && !IsAllyTarget(character))
                     {
-                        ClearTempTarget();
+                        Targeting.ClearTempTarget();
                     }
                     else
                     {
@@ -79,16 +79,16 @@ public class FireShield : MoveSkill
             }
             yield return null;
         }
-        targetInfo.AddTarget(GetTempTargetCharacter());
-        ClearTempTarget();
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
+        Targeting.ClearTempTarget();
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() != null)
+        if (Targeting.GetTarget()?.Character != null)
         {
-            CmdAddShield(GetTargetCharacter().gameObject);
+            CmdAddShield(Targeting.GetTarget()?.Character.gameObject);
         }
 
         yield return null;
@@ -126,7 +126,7 @@ public class FireShield : MoveSkill
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         Hero.Move.StopLookAt();
     }
 }

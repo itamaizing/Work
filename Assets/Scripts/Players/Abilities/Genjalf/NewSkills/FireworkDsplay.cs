@@ -77,8 +77,8 @@ namespace Gangdollarff
                         Damage damage = new Damage
                         {
                             Value = Buff.Damage.GetBuffedValue(currentDamage),
-                            Type = DamageType,
-                            PhysicAttackType = AttackRangeType,
+                            Type = Info.DamageType,
+                            PhysicAttackType = Info.AttackRangeType,
                         };
                         CmdApplyDamage(damage, item.gameObject);
                         if (_isBlinding)

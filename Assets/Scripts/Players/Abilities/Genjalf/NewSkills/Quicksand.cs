@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using Gangdollarff;
 using Mirror;
@@ -37,7 +37,7 @@ public class Quicksand : Skill, IGodLightSpell
 
     private bool CheckCanCast()
     {
-        return Vector3.Distance(_startPoint, transform.position) <= Radius;
+        return Vector3.Distance(_startPoint, transform.position) <= AreaInfo.Radius;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -56,9 +56,9 @@ public class Quicksand : Skill, IGodLightSpell
         _bonusLength = length;
         _bonusWidth = width;
 
-        CastLength = _isInvisibleQuickSand ? CastLength +_bonusLength: _initialLenght;
-        CastWidth = _isInvisibleQuickSand ? CastWidth + _bonusWidth : _initialWidth;
-        Radius = _isInvisibleQuickSand ? Radius + _bonusWidth : _initialRadius;
+        AreaInfo.CastLength = _isInvisibleQuickSand ? AreaInfo.CastLength +_bonusLength: _initialLenght;
+        AreaInfo.CastWidth = _isInvisibleQuickSand ? AreaInfo.CastWidth + _bonusWidth : _initialWidth;
+        AreaInfo.Radius = _isInvisibleQuickSand ? AreaInfo.Radius + _bonusWidth : _initialRadius;
     }
 
     public void ChangeMode()
@@ -100,14 +100,14 @@ public class Quicksand : Skill, IGodLightSpell
             yield return null;
 
         float downTime = Time.time;
-        firstPoint = GetMousePoint();
+        firstPoint = Targeting.GetMousePoint();
         targetInfo.Points.Add(firstPoint);
 
         while (!Input.GetMouseButtonUp(0))
         {
             if (Time.time - downTime > _longPressThreshold)
             {
-                Vector3 holdPoint = GetMousePoint();
+                Vector3 holdPoint = Targeting.GetMousePoint();
                 if (targetInfo.Points.Count == 1)
                     targetInfo.Points.Add(holdPoint);
                 else
@@ -121,7 +121,7 @@ public class Quicksand : Skill, IGodLightSpell
 
         if (longClick)
         {
-            Vector3 secondPointOnUp = GetMousePoint();
+            Vector3 secondPointOnUp = Targeting.GetMousePoint();
             if (targetInfo.Points.Count == 1)
                 targetInfo.Points.Add(secondPointOnUp);
             else
@@ -132,7 +132,7 @@ public class Quicksand : Skill, IGodLightSpell
             while (!Input.GetMouseButtonDown(0))
                 yield return null;
 
-            Vector3 secondPoint = GetMousePoint();
+            Vector3 secondPoint = Targeting.GetMousePoint();
 
             while (!Input.GetMouseButtonUp(0))
                 yield return null;

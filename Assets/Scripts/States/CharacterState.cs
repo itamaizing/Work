@@ -1,4 +1,4 @@
-using Gangdollarff.EarthElemental;
+﻿using Gangdollarff.EarthElemental;
 using Gangdollarff.WaterElemental;
 using Mirror;
 using System.Collections.Generic;
@@ -34,7 +34,7 @@ public abstract class AbstractCharacterState
 	protected Schools _schoolState;
 
 	protected int currentStacksCount = 0;
-	protected bool isHidden = false;	protected Schools _schoolState;
+	protected bool isHidden = false;
 
 	public int CurrentStacksCount => currentStacksCount;
 

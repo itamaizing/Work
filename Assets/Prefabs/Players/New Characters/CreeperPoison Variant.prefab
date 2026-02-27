@@ -13197,6 +13197,10 @@ PrefabInstance:
       propertyPath: _menuPreview
       value: 
       objectReference: {fileID: 3823157750646750641, guid: 97031eb22819a18439efc44177e4eb95, type: 3}
+    - target: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: characterState
+      value: 
+      objectReference: {fileID: 2434123723962207148}
     - target: {fileID: 5653443088679015109, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -13706,11 +13710,16 @@ MonoBehaviour:
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 3f2366dd6c4aabe499c9701e0d47053b, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 4
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -13721,19 +13730,11 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-    _targetsLayers:
-      serializedVersion: 2
-      m_Bits: 256
-    _obstacle:
-      serializedVersion: 2
-      m_Bits: 128
-  _abilitySchool: 5
-  _abilityForm: 2
-  _damageType: 1
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -13750,6 +13751,7 @@ MonoBehaviour:
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
+    affectedByCDR: 0
   _areaComponent:
     _radius: 2
     _area: 0
@@ -13802,9 +13804,14 @@ MonoBehaviour:
   _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 1af7963ead8875042bc84e9fa3cf58e1, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 4
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -13815,19 +13822,11 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-    _targetsLayers:
-      serializedVersion: 2
-      m_Bits: 256
-    _obstacle:
-      serializedVersion: 2
-      m_Bits: 128
-  _abilitySchool: 5
-  _abilityForm: 2
-  _damageType: 1
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -13844,6 +13843,7 @@ MonoBehaviour:
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
+    affectedByCDR: 0
   _areaComponent:
     _radius: 2
     _area: 0
@@ -13883,11 +13883,16 @@ MonoBehaviour:
   _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 899fa83671534eb42b15ae0986749e2c, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 50
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -13898,19 +13903,11 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-    _targetsLayers:
-      serializedVersion: 2
-      m_Bits: 768
-    _obstacle:
-      serializedVersion: 2
-      m_Bits: 128
-  _abilitySchool: 5
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -13927,6 +13924,7 @@ MonoBehaviour:
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
+    affectedByCDR: 0
   _areaComponent:
     _radius: 12
     _area: 0
@@ -13969,9 +13967,14 @@ MonoBehaviour:
   _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 5e12a4e98f6c3dd42ad804c36ea87337, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -13982,19 +13985,11 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-    _targetsLayers:
-      serializedVersion: 2
-      m_Bits: 768
-    _obstacle:
-      serializedVersion: 2
-      m_Bits: 128
-  _abilitySchool: 5
-  _abilityForm: 2
-  _damageType: 0
-  _attackRangeType: 1
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -14011,6 +14006,7 @@ MonoBehaviour:
     _cooldownType: 0
     _maxCharges: 3
     _baseCooldown: 14
+    affectedByCDR: 0
   _areaComponent:
     _radius: 12
     _area: 0
@@ -14066,11 +14062,16 @@ MonoBehaviour:
   _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 7d0ee064be7acc0469ab7540e835c7f9, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 4
   _additionalSkillEnergyCosts: []
   _cooldownTime: 8
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -14081,19 +14082,11 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 1
     _autoAttack: 0
-    _targetsLayers:
-      serializedVersion: 2
-      m_Bits: 256
-    _obstacle:
-      serializedVersion: 2
-      m_Bits: 128
-  _abilitySchool: 5
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 1
-  autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -14110,6 +14103,7 @@ MonoBehaviour:
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
+    affectedByCDR: 0
   _areaComponent:
     _radius: 10
     _area: 0
@@ -14152,9 +14146,14 @@ MonoBehaviour:
   _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: a81ffcd04ca1cad479f49a2f56016a70, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -14165,19 +14164,11 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-    _targetsLayers:
-      serializedVersion: 2
-      m_Bits: 256
-    _obstacle:
-      serializedVersion: 2
-      m_Bits: 128
-  _abilitySchool: 5
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -14194,6 +14185,7 @@ MonoBehaviour:
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
+    affectedByCDR: 0
   _areaComponent:
     _radius: 0
     _area: 0
@@ -14241,9 +14233,14 @@ MonoBehaviour:
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 99ddb513034121044845fa2d5c1fd25a, type: 2}
   _isSubjectToGlobalCooldownTime: 0
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -14254,19 +14251,11 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-    _targetsLayers:
-      serializedVersion: 2
-      m_Bits: 256
-    _obstacle:
-      serializedVersion: 2
-      m_Bits: 128
-  _abilitySchool: 5
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -14283,6 +14272,7 @@ MonoBehaviour:
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
+    affectedByCDR: 0
   _areaComponent:
     _radius: 3
     _area: 0
@@ -14325,9 +14315,14 @@ MonoBehaviour:
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 65739a9ef35d180498531bc3c7cff2e8, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -14338,19 +14333,11 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-    _targetsLayers:
-      serializedVersion: 2
-      m_Bits: 768
-    _obstacle:
-      serializedVersion: 2
-      m_Bits: 128
-  _abilitySchool: 5
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -14367,6 +14354,7 @@ MonoBehaviour:
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
+    affectedByCDR: 0
   _areaComponent:
     _radius: 0
     _area: 0
@@ -14402,9 +14390,14 @@ MonoBehaviour:
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: b01cdda0a8d49e24a8cd5c7190f8483b, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -14415,19 +14408,11 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-    _targetsLayers:
-      serializedVersion: 2
-      m_Bits: 768
-    _obstacle:
-      serializedVersion: 2
-      m_Bits: 128
-  _abilitySchool: 5
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -14444,6 +14429,7 @@ MonoBehaviour:
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
+    affectedByCDR: 0
   _areaComponent:
     _radius: 0
     _area: 0
@@ -14483,9 +14469,14 @@ MonoBehaviour:
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 5dd2210736bee3d4197798d0dd5f05e3, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -14496,19 +14487,11 @@ MonoBehaviour:
     _skillType: 2
     _whileMoving: 0
     _autoAttack: 0
-    _targetsLayers:
-      serializedVersion: 2
-      m_Bits: 256
-    _obstacle:
-      serializedVersion: 2
-      m_Bits: 128
-  _abilitySchool: 5
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 2
-  _moving: 0
-  autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -14525,6 +14508,7 @@ MonoBehaviour:
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
+    affectedByCDR: 0
   _areaComponent:
     _radius: 0
     _area: 0
@@ -14559,9 +14543,14 @@ MonoBehaviour:
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: ebeca0253d3207d4cb39a4e352e99b11, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -14572,19 +14561,11 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-    _targetsLayers:
-      serializedVersion: 2
-      m_Bits: 512
-    _obstacle:
-      serializedVersion: 2
-      m_Bits: 128
-  _abilitySchool: 5
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -14601,6 +14582,7 @@ MonoBehaviour:
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
+    affectedByCDR: 0
   _areaComponent:
     _radius: 0
     _area: 0
@@ -14638,9 +14620,14 @@ MonoBehaviour:
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: e0a694047bc706b4fb4d88da4b0399dc, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -14651,19 +14638,11 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-    _targetsLayers:
-      serializedVersion: 2
-      m_Bits: 512
-    _obstacle:
-      serializedVersion: 2
-      m_Bits: 128
-  _abilitySchool: 5
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -14680,6 +14659,7 @@ MonoBehaviour:
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
+    affectedByCDR: 0
   _areaComponent:
     _radius: 0
     _area: 0
@@ -14718,11 +14698,16 @@ MonoBehaviour:
   _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 684407cfd1f266e4f8485125e1d658e0, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 20
   _additionalSkillEnergyCosts: []
   _cooldownTime: 6
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -14733,19 +14718,11 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-    _targetsLayers:
-      serializedVersion: 2
-      m_Bits: 0
-    _obstacle:
-      serializedVersion: 2
-      m_Bits: 0
-  _abilitySchool: 5
-  _abilityForm: 2
-  _damageType: 5
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -14762,6 +14739,7 @@ MonoBehaviour:
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
+    affectedByCDR: 0
   _areaComponent:
     _radius: 0
     _area: 0
@@ -14796,11 +14774,16 @@ MonoBehaviour:
   _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 2563dafa7e5bf274987ede444e21e3bb, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 20
   _additionalSkillEnergyCosts: []
   _cooldownTime: 6
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 12
   _infoComponent:
@@ -14811,19 +14794,11 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-    _targetsLayers:
-      serializedVersion: 2
-      m_Bits: 256
-    _obstacle:
-      serializedVersion: 2
-      m_Bits: 0
-  _abilitySchool: 5
-  _abilityForm: 2
-  _damageType: 1
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -14840,6 +14815,7 @@ MonoBehaviour:
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
+    affectedByCDR: 0
   _areaComponent:
     _radius: 2
     _area: 0
@@ -14876,9 +14852,14 @@ MonoBehaviour:
   _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 76dd2c4cf194baf4da366c275c6544eb, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 6
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -14889,19 +14870,11 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-    _targetsLayers:
-      serializedVersion: 2
-      m_Bits: 0
-    _obstacle:
-      serializedVersion: 2
-      m_Bits: 0
-  _abilitySchool: 5
-  _abilityForm: 2
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -14918,6 +14891,7 @@ MonoBehaviour:
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
+    affectedByCDR: 0
   _areaComponent:
     _radius: 0
     _area: 0
@@ -14934,6 +14908,17 @@ MonoBehaviour:
   maxCounter: 0
   durationWindowsBoost: 5
   blockChance: 50
+--- !u!114 &2434123723962207148 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5590339039165547173, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 7805689359992637705}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1780458876409769317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7f243771c2613d40a4aecc719336ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2483674839823445686 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5630810179120932799, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

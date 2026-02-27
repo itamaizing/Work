@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Mirror;
@@ -42,7 +42,7 @@ namespace Gangdollarff.WaterElemental
         {
             if (character.Resources.Count > 0)
             {
-                Resource mana = character.Resources.FirstOrDefault(r => r.Type == ResourceType.Mana);
+                character.Resources.TryGetValue(ResourceType.Mana, out Resource mana);
                 if (mana != null && !_snapshots.ContainsKey(character))
                 {
                     _snapshots[character] = new ManaSnapshot
@@ -71,7 +71,7 @@ namespace Gangdollarff.WaterElemental
             if (!_snapshots.TryGetValue(character, out ManaSnapshot snapshot))
                 return;
 
-            Resource mana = character.Resources.FirstOrDefault(r => r.Type == ResourceType.Mana);
+            character.Resources.TryGetValue(ResourceType.Mana, out Resource mana);
             if (mana != null)
             {
                 mana.RegenerationValue = snapshot.OriginalRegenValue;

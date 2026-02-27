@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -34,7 +34,7 @@ public class CoolingActive : Skill
         {
             if (GetMouseButton)
             {
-                _clickPoint = GetMousePoint();
+                _clickPoint = Targeting.GetMousePoint();
             }
             yield return null;
         }
@@ -92,7 +92,7 @@ public class CoolingActive : Skill
     
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         Hero.Move.StopLookAt();
         _clickPoint = Vector3.zero;
     }

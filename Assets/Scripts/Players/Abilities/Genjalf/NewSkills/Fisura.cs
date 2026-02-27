@@ -91,7 +91,7 @@ namespace Gangdollarff
                 yield return null;
 
             float downTime = Time.time;
-            firstPoint = GetMousePoint();
+            firstPoint = Targeting.GetMousePoint();
             targetInfo.Points.Add(firstPoint);
 
             while (!Input.GetMouseButtonUp(0))
@@ -111,7 +111,7 @@ namespace Gangdollarff
 
             if (longClick)
             {
-                Vector3 secondPointOnUp = GetMousePoint();
+                Vector3 secondPointOnUp = Targeting.GetMousePoint();
                 if (targetInfo.Points.Count == 1)
                     targetInfo.Points.Add(secondPointOnUp);
                 else

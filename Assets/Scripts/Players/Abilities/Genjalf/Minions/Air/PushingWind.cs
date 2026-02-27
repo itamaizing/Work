@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -15,13 +15,12 @@ public class PushingWind : MoveSkill
 
     private bool CheckCanCast()
     {
-        return Vector3.Distance(GetTargetCharacter().Position, transform.position) <= Radius;
+        return Vector3.Distance(Targeting.GetTarget().Character.Position, transform.position) <= AreaInfo.Radius;
     }
     
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
-        
+        Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
         if (!IsCanCast)
         {
             MoveTo();
@@ -30,7 +29,7 @@ public class PushingWind : MoveSkill
 
     protected override IEnumerator CastJob()
     {
-        Character originalTarget = GetTargetCharacter();
+        Character originalTarget = Targeting.GetTarget()?.Character;
         if (originalTarget == null) yield break;
         
         CmdAddState(originalTarget.gameObject,_buffDuration);
@@ -39,24 +38,24 @@ public class PushingWind : MoveSkill
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
         TargetInfo targetInfo = new TargetInfo();
-        while (GetTempTarget() == null)
+        while (Targeting.GetTempTarget() == null)
         {
             if (GetMouseButton)
             {
-                Vector3 clickPoint = GetMousePoint();
+                Vector3 clickPoint = Targeting.GetMousePoint();
         
-                FindTarget(_clickRadius, clickPoint, canTargetHimself: false);
-                if (GetTempTargetCharacter() is Character character)
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: false);
+                if (Targeting.GetTempTarget()?.Character is Character character)
                 {
-                    if (GetTempTargetCharacter() != null && IsEnemyTarget(character))
+                    if (Targeting.GetTempTarget()?.Character != null && IsEnemyTarget(character))
                     {
-                        ClearTempTarget();
+                        Targeting.ClearTempTarget();
                     }
                     else
                     {
@@ -67,8 +66,8 @@ public class PushingWind : MoveSkill
             }
             yield return null;
         }
-        targetInfo.AddTarget(GetTempTargetCharacter());
-        ClearTempTarget();
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
+        Targeting.ClearTempTarget();
         targetDataSavedCallback(targetInfo);
     }
 

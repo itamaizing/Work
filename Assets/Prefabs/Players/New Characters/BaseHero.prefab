@@ -30590,7 +30590,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36119deea7370464ba6e74a8a3c290a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttributeSystem
-  _data: {fileID: 11400000, guid: f71e3e6e8b3ca6245b0c37fd016a4039, type: 2}
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  TemporaryResourceDisplay: []
 --- !u!114 &5630810179120932799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30617,14 +30620,11 @@ MonoBehaviour:
   _healthComponent: {fileID: 5834951345091717418}
   _playerMove: {fileID: 8569747795464636412}
   _abilities: {fileID: 5188294081543664110}
-  _characterState: {fileID: 5590339039165547173}
+  characterState: {fileID: 5590339039165547173}
   uiComponent: {fileID: 2543507432100258222}
   _selectComponent: {fileID: 9112797239584284270}
   _damageTracker: {fileID: 582667559171038809}
-  _resources:
-  - {fileID: 5834951345091717418}
-  - {fileID: 3919103737457224534}
-  - {fileID: 2461163197728234484}
+  TemporaryResourceDisplay: []
   _selectedCircle: {fileID: 7875534060547890866}
   _spawnComponent: {fileID: 454093965362999032}
   _visionComponent: {fileID: 0}
@@ -30633,6 +30633,7 @@ MonoBehaviour:
   _characterParent: {fileID: 0}
   _transformationComponent: {fileID: 4185264856112098810}
   talentManager: {fileID: 5950354320950511597}
+  _menuPreview: {fileID: 0}
 --- !u!114 &4185264856112098810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30651,7 +30652,6 @@ MonoBehaviour:
   _baseModel: {fileID: 5263749372223534569}
   _transformationModel: {fileID: 702905445770710509}
   _transformationRenderer: {fileID: 4452744594937034730}
-  _menuPreview: {fileID: 5263749372223534569}
 --- !u!114 &5590339039165547173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30696,8 +30696,6 @@ MonoBehaviour:
   trapPrefab: {fileID: 7460133517014728669, guid: 6fb2c64c6de91b348a2fca1cc340de43, type: 3}
   spiritHealthEffect: {fileID: 0}
   spiritEnergyEffect: {fileID: 0}
-  spiritHealthEffect: {fileID: 0}
-  spiritEnergyEffect: {fileID: 0}
   materialsCharacter:
   - {fileID: 2100000, guid: acfa2dc1ef192cb4391aecaaff8e192f, type: 2}
   weapon: {fileID: 0}
@@ -30718,6 +30716,8 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 0
   _regenerationDelay: 0
+  _currentValue: 0
+  _maxValue: 0
   _animator: {fileID: 8658026411023210807}
   _netAnimator: {fileID: 3389994900111398297}
   bar: {fileID: 870197213327468265}
@@ -30738,6 +30738,8 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 2
   _regenerationDelay: 0
+  _currentValue: 0
+  _maxValue: 0
   _sumDamageGiven: 0
 --- !u!114 &2461163197728234484
 MonoBehaviour:
@@ -30756,6 +30758,8 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 1
   _regenerationDelay: 0
+  _currentValue: 0
+  _maxValue: 0
 --- !u!114 &6608200012251847517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30773,6 +30777,8 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 3
   _regenerationDelay: 0
+  _currentValue: 0
+  _maxValue: 0
   _sumDamageGiven: 0
 --- !u!114 &2543507432100258222
 MonoBehaviour:

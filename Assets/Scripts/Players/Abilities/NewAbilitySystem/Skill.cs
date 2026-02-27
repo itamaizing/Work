@@ -1,4 +1,4 @@
-﻿using Mirror;
+﻿﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -71,13 +71,13 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected InfoComponent _infoComponent;
     public InfoComponent Info => _infoComponent;
     #region InfoToDelete
-    private Schools _abilitySchool;
-    private AbilityForm _abilityForm;
-    private DamageType _damageType;
-    private AttackRangeType _attackRangeType;
-    private SkillType _skillType;
-    private Moving _moving;
-    private AutoAttack autoAttack;
+    [SerializeField] private Schools _abilitySchool;
+    [SerializeField] private AbilityForm _abilityForm;
+    [SerializeField] private DamageType _damageType;
+    [SerializeField] private AttackRangeType _attackRangeType;
+    [SerializeField] private SkillType _skillType;
+    [SerializeField] private Moving _moving;
+    [SerializeField] private AutoAttack autoAttack;
     #endregion
 
     [SerializeField] TargetingComponent _targetingComponent;
@@ -91,42 +91,42 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected ChannelComponent _channelComponent;
     public ChannelComponent Channeling => _channelComponent;
     #region ChannelToDelete
-    protected float _castDuration;
-    protected float _manaCostRate;
-    protected List<SkillEnergyCost> _manaCostPerTick;
+    [SerializeField] protected float _castDuration;
+    [SerializeField] protected float _manaCostRate;
+    [SerializeField] protected List<SkillEnergyCost> _manaCostPerTick;
     #endregion
 
     [Header("Charge settings")]
     [SerializeField] protected ChargeComponent _chargeComponent;
     public ChargeComponent Charges => _chargeComponent;
     #region ChargesTodDelete
-    private bool _isUseCharges;
-    protected bool _useChargesAsComboPart = false; // test
-    protected bool _chargesHaveSeparateCooldown;
-    protected int _maxCharges;
-    protected float _chargeCooldown;
+    [SerializeField] private bool _isUseCharges;
+    [SerializeField] protected bool _useChargesAsComboPart = false; // test
+    [SerializeField] protected bool _chargesHaveSeparateCooldown;
+    [SerializeField] protected int _maxCharges;
+    [SerializeField] protected float _chargeCooldown;
     #endregion
 
     [Header("Area settings")]
     [SerializeField] protected AreaComponent _areaComponent;
     public AreaComponent AreaInfo => _areaComponent;
     #region AreaInfoToDelete
-    protected float _radius;
-    protected float _area;
-    protected float _castLength;
-    protected float _castWidth;
+    [SerializeField] protected float _radius;
+    [SerializeField] protected float _area;
+    [SerializeField] protected float _castLength;
+    [SerializeField] protected float _castWidth;
     #endregion
     [Header("Area settings")]
     [SerializeField] protected float _autoAttackDelay;
-    
+
     [Header("Render settings")]
     [SerializeField] protected InformationRenderComponent _informationRenderComponent;
     public InformationRenderComponent Renderer => _informationRenderComponent;
     #region RenderToDelete
-    protected bool _isAutoRadiusRender = true;
-    protected bool _isAutoAreaRender = true;
-    protected bool _isAutoLineRender = true;
-    protected bool _isDynamicRenderer = false;
+    [SerializeField] protected bool _isAutoRadiusRender = true;
+    [SerializeField] protected bool _isAutoAreaRender = true;
+    [SerializeField] protected bool _isAutoLineRender = true;
+    [SerializeField] protected bool _isDynamicRenderer = false;
     #endregion
 
     [Header("Availability")]
@@ -160,7 +160,7 @@ public abstract class Skill : NetworkBehaviour
     //Charges
     #region Charges
     protected int _currentChargers;
-	private List<float> _remainingCooldownTimeChargers = new();
+    private List<float> _remainingCooldownTimeChargers = new();
     private List<Coroutine> _currentChargeCooldownJob;
 
     #region ChargeRelatedProperties
@@ -199,14 +199,18 @@ public abstract class Skill : NetworkBehaviour
     }
     public void AddMaxChargeCount()
     {
+        bool isRecharging = (_currentChargers < _maxCharges);
+
         _maxCharges += 1;
 
         _remainingCooldownTimeChargers.Add(0);
-
-        _currentChargers += 1;
+        if (!isRecharging)
+            _currentChargers += 1;
 
         CurrentChargeChanged?.Invoke(_currentChargers);
     }
+
+
 
     public void ReductionCooldownForAllCharges(float reductionTime, float reductionPercentage = 0)
     {
@@ -241,10 +245,11 @@ public abstract class Skill : NetworkBehaviour
     {
         if (_maxCharges - 1 > 0)
         {
+            int lastIndex = _maxCharges - 1;
+
+            _remainingCooldownTimeChargers.RemoveAt(lastIndex);
+
             _maxCharges -= 1;
-
-            _remainingCooldownTimeChargers.RemoveAt(_remainingCooldownTimeChargers.Count - 1);
-
             if (_currentChargers > _maxCharges)
             {
                 _currentChargers -= 1;
@@ -317,7 +322,6 @@ public abstract class Skill : NetworkBehaviour
             _currentChargers++;
             CurrentChargeChanged?.Invoke(_currentChargers);
         }
-
     }
 
     protected virtual IEnumerator RechargeCoroutine()
@@ -360,7 +364,7 @@ public abstract class Skill : NetworkBehaviour
 
     #region Methods
     protected void RaiseCooldownStarted(float cooldownTime) => CooldownStarted?.Invoke(cooldownTime);
-    
+
     protected void RaiseCooldownEnded() => CooldownEnded?.Invoke();
 
     public void IncreaseSetCooldown(float time)
@@ -478,7 +482,7 @@ public abstract class Skill : NetworkBehaviour
 
         return true;
     }
-    
+
     private void SaveTargetData(TargetInfo targetInfo)
     {
         _targetInfoQueue.Enqueue(targetInfo);
@@ -640,10 +644,8 @@ public abstract class Skill : NetworkBehaviour
     public event Action<float> MassageHaventMana;
     public event Action BoostEnabled;
     public event Action BoostDisabled;
-    public event Action<GameObject,Skill> OnDamageApplied;
+    public event Action<GameObject, Skill> OnDamageApplied;
     #endregion
-    
-    public int AnimTriggerCastPublic => AnimTriggerCast;
 
     public int AnimTriggerCastPublic => AnimTriggerCast;
     /// <summary>
@@ -674,7 +676,7 @@ public abstract class Skill : NetworkBehaviour
                         foreach (var target in temp.GetTargets())
                             if (Vector3.Distance(target.Position, transform.position) > AreaInfo.Radius)
                                 return false;
-                        
+
                         return true;
                     }
                     else
@@ -723,7 +725,7 @@ public abstract class Skill : NetworkBehaviour
                 case SkillType.NonTarget:
 
                     return true;
-                    //обработать бесцельный с границей и кликом
+                //обработать бесцельный с границей и кликом
 
                 default:
 
@@ -737,7 +739,7 @@ public abstract class Skill : NetworkBehaviour
     protected abstract void ClearData();
 
     protected virtual void SkillEnableBoostLogic() { }
-    
+
     protected virtual void SkillDisableBoostLogic() { }
 
     public void Init(SkillRenderer render, Character hero)
@@ -746,7 +748,7 @@ public abstract class Skill : NetworkBehaviour
         _skillRender = render;
         _skillAttributes.Init(hero.AttributeSystem);
         InitComponents();
-    }   
+    }
 
     public void InitComponents()
     {
@@ -799,10 +801,10 @@ public abstract class Skill : NetworkBehaviour
     {
         if (_isPreparing == false)
         {
-            foreach(var skillCost in _skillEnergyCosts)
+            foreach (var skillCost in _skillEnergyCosts)
             {
-				//var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.resourceType);
-				var resource = _hero.Resources[skillCost.resourceType];
+                //var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.resourceType);
+                var resource = _hero.Resources[skillCost.resourceType];
                 resource.PhantomValueShow(skillCost.resourceCost);
             }
             _actionWrapperForPreparingCoroutine = StartCoroutine(ActionWrapperForPreparingJob());
@@ -824,7 +826,7 @@ public abstract class Skill : NetworkBehaviour
         if (IsHaveResources && IsCanCast && _isCasting == false && Targeting.NoObstacles() && Hero.IsDead == false)
         {
             _isCasting = true;
-             TryPayCost(IsPayCostStartCooldown);
+            TryPayCost(IsPayCostStartCooldown);
 
             if (_targetInfoQueue.Count > 0)
             {
@@ -874,7 +876,7 @@ public abstract class Skill : NetworkBehaviour
 
                 if (_targetInfoQueue.Count > 0)
                 {
-                   if (targetInfo.GetTargets().Count > 0)
+                    if (targetInfo.GetTargets().Count > 0)
                     {
                         var target = (Character)targetInfo.GetTargets()[0];
                         _hero.Move.LookAtTransform(target.transform);
@@ -902,17 +904,17 @@ public abstract class Skill : NetworkBehaviour
 
     public bool TryCancel(bool forceCancel = false)
     {
-		foreach (var skillCost in _skillEnergyCosts)
-		{
-			//var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.resourceType);
-			var resource = _hero.Resources[skillCost.resourceType];
-			resource.PhantomValueShow(0);
-			//resourse.
-		}
-
-		if (forceCancel || _isCanCancel)
+        foreach (var skillCost in _skillEnergyCosts)
         {
-            Hero.Abilities.NotifySkillIsPreparing(this,false);
+            //var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.resourceType);
+            var resource = _hero.Resources[skillCost.resourceType];
+            resource.PhantomValueShow(0);
+            //resourse.
+        }
+
+        if (forceCancel || _isCanCancel)
+        {
+            Hero.Abilities.NotifySkillIsPreparing(this, false);
             Canceled?.Invoke();
             _hero.Move.SetCanMove(true);
             ClearData();
@@ -963,7 +965,7 @@ public abstract class Skill : NetworkBehaviour
         }
         else
         {
-            Hero.Abilities.NotifySkillIsPreparing(this,false);
+            Hero.Abilities.NotifySkillIsPreparing(this, false);
             return false;
         }
     }
@@ -1013,20 +1015,7 @@ public abstract class Skill : NetworkBehaviour
             _hero.Resources[skillCost.resourceType].CurrentValue >= Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
     }
 
-    public void AddMaxChargeCount()
-    {
-        bool isRecharging = (_currentChargers < _maxCharges);
-        
-        _maxCharges += 1;
-
-        _remainingCooldownTimeChargers.Add(0);
-        if(!isRecharging)
-            _currentChargers += 1;
-
-        CurrentChargeChanged?.Invoke(_currentChargers);
-    }
-
-    public void ReductionCooldownForAllCharges(float reductionTime, float reductionPercentage = 0)
+    protected virtual bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
     {
         if (IsHaveResourceOnSkill)
         {
@@ -1039,67 +1028,26 @@ public abstract class Skill : NetworkBehaviour
 
             if (startCooldown)
             {
-                ReductionCooldownForCharge(i, reductionTime);
-                reductionTime = reductionTime - _remainingCooldownTimeChargers[i];
+                Cooldown.Start();
+                IncreaseSetCooldown(CooldownTime);
             }
-            else
-            {
-                ReductionCooldownForCharge(i, reductionTime);
-                break;
-            }
+            if (!Charges.IsComboPart) TryUseCharge();
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
-    public void DeductMaxChargeCount()
+    protected virtual bool TryPayCost(bool startCooldown = true)
     {
-        if (_maxCharges - 1 > 0)
-        {
-            int lastIndex = _maxCharges - 1;
-
-            _remainingCooldownTimeChargers.RemoveAt(lastIndex);
-            
-            _maxCharges -= 1;
-            if (_currentChargers > _maxCharges)
-            {
-                _currentChargers -= 1;
-                CurrentChargeChanged?.Invoke(_currentChargers);
-            }
-        }
+        if (_hero.Abilities.TryConsumeNextSkillFree()) return true;
+        return TryPayCost(_skillEnergyCosts, startCooldown);
     }
+    #endregion
 
-    public void DrawDamageZone(Vector3 position)
-    {
-        Damage damage = new Damage
-        {
-            Value = Damage,
-            Type = DamageType,
-        };
-
-        _skillRender.CmdDrawDamageZone(position, Area, damage, _hero.gameObject);
-    }
-
-    public void DrawDamageZoneClient(Vector3 position)
-    {
-        Damage damage = new Damage
-        {
-            Value = Damage,
-            Type = DamageType,
-        };
-
-        _skillRender.DrawDamageZone(position, Area, damage, _hero.gameObject);
-    }
-
-
-    public void StopDamageZone()
-    {
-        _skillRender.CmdRemoveNextDamageZone();
-    }
-    public void ClientStopDamageZone()
-    {
-        _skillRender.RemoveNextDamageZone();
-    }
-
-
+    #region Animation Related
     [ClientCallback]
     protected void AnimStartCastCoroutine()
     {
@@ -1119,16 +1067,25 @@ public abstract class Skill : NetworkBehaviour
     #endregion
 
     #region Custom Radius Rendering
-    public virtual IEnumerator DynamicRendererJob(float time = 0.2f)
+
+    public virtual void StartCustomDraw()
+    {
+
+    }
+    public virtual void StopCustomDraw()
+    {
+        
+    }
+    public virtual IEnumerator CustomDrawJob(float time = 0.2f)
     {
         yield return null; //new WaitForSeconds(time);
     }
-    
+
     private void StartDynamicRenderer()
     {
-        _dynamicRendererJob = StartCoroutine(DynamicRendererJob());
+        _dynamicRendererJob = StartCoroutine(CustomDrawJob());
     }
-    
+
     public void StopDynamicRender()
     {
         if (_dynamicRendererJob != null)
@@ -1172,7 +1129,7 @@ public abstract class Skill : NetworkBehaviour
         Hero.KillCounter++;
     }
     #endregion
-    
+
     private IEnumerator CastDeleyJob(float delayTime)
     {
         CastDeleyStarted?.Invoke(delayTime);
@@ -1240,15 +1197,11 @@ public abstract class Skill : NetworkBehaviour
     private IEnumerator ActionWrapperForCastingJob()
     {
         Hero.Abilities.NotifySkillPrepared(this);
-        Hero.Abilities.NotifySkillIsPreparing(this,true);
         CastStarted?.Invoke();
         _isCasting = true;
 
-        if (!_hero.Abilities.TryConsumeNoCast())
-        {
-            if (CastDeley > 0)
-                yield return StartCastDeleyCoroutine();
-        }
+        if (CastDeley > 0)
+            yield return StartCastDeleyCoroutine();
 
         if (AnimTriggerCast != 0)
         {
@@ -1299,7 +1252,6 @@ public abstract class Skill : NetworkBehaviour
 
         CastSuccess?.Invoke();
         CastEnded?.Invoke();
-        Hero.Abilities.NotifySkillIsPreparing(this,false);
         _isCasting = false;
 
         ClearData();
@@ -1387,6 +1339,7 @@ public abstract class Skill : NetworkBehaviour
                 return;
             }
         }
+
         if (damageable != null)
         {
             damageable.TryTakeDamage(ref damage, this);
@@ -1403,13 +1356,12 @@ public abstract class Skill : NetworkBehaviour
 
         _hero.DamageTracker.AddDamage(damage, target, isServerRequest: isServer);
         _hero.DamageGet(damage, target);
-        OnTargetDied(target);
-    }
 
+    }
     [ClientRpc]
     private void OnDamagedApplied(GameObject target)
     {
-        OnDamageApplied?.Invoke(target,this);
+        OnDamageApplied?.Invoke(target, this);
     }
 
     private void TryCountGettedDamage(Damage damage)
@@ -1534,14 +1486,14 @@ public abstract class Skill : NetworkBehaviour
         InputHandler.OnSpacetLeftMouse += OnSpaceClick;
 
         //cancelled
-        
+
         InputHandler.OnClickCanceled += OnClickCanceled;
         InputHandler.OnShiftLeftMouseCanceled += OnClickCanceled;
         InputHandler.OnSwitchAutoModeCanceled += OnClickCanceled;
         InputHandler.OnSpacetLeftMouseCanceled += OnClickCanceled;
 
     }
-    
+
     private void UnSubscribeClickEvents()
     {
         InputHandler.OnClick -= OnClick;

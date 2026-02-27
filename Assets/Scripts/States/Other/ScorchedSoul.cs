@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class ScorchedSoul : RefreshingState
@@ -41,7 +41,7 @@ public class ScorchedSoul : RefreshingState
                 }
             }
         }
-        //if (_characterState.Check(StatusEffect.AbilityCooldownSpeed))
+        //if (characterState.Check(StatusEffect.AbilityCooldownSpeed))
         //{
         //    //return abilitys' CD speed
         //}

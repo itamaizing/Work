@@ -38,11 +38,11 @@ namespace Gangdollarff
             if (Targeting.GetTarget()?.Character != null)
             {
                 if (!_isSecondClick && !_isLifted)
-                    return Vector3.Distance(Targeting.GetTarget()?.Transform.position, transform.position) <= AreaInfo.Radius;
+                    return Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
                 else if(_isLifted)
-                    return Vector3.Distance(Targeting.GetTarget()?.Transform.position, transform.position) <= AreaInfo.Radius + _amountOfLift;
+                    return Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius + _amountOfLift;
                 else
-                    return Vector3.Distance(Targeting.GetTarget()?.Transform.position, _secondClickPoint) <= AreaInfo.Radius;
+                    return Vector3.Distance(Targeting.GetTarget().Transform.position, _secondClickPoint) <= AreaInfo.Radius;
             }
 
             return false;
@@ -114,7 +114,7 @@ namespace Gangdollarff
             yield return new WaitForSeconds(_deleyTelekines);
             
             _radiusEnemy.gameObject.SetActive(true);
-            _radiusEnemy.transform.parent = GetTargetCharacter().transform;
+            _radiusEnemy.transform.parent = Targeting.GetTarget()?.Transform;
             _radiusEnemy.transform.localPosition = Vector3.zero;
 
             while (Time.time - castStartTime < _castDuration)
@@ -123,7 +123,7 @@ namespace Gangdollarff
                 {
                     _secondClickPoint = Targeting.GetMousePoint();
                     if (_secondClickPoint != Vector3.zero &&
-                        Vector3.Distance(_secondClickPoint, _tempChar.transform.position) <= Radius)
+                        Vector3.Distance(_secondClickPoint, _tempChar.transform.position) <= AreaInfo.Radius)
                     {
                         _isLifted = false;
                         _isSecondClick = true;
@@ -172,7 +172,7 @@ namespace Gangdollarff
         protected override void ClearData()
         {
             Targeting.ClearTarget();
-            ClearTempTarget();
+            Targeting.ClearTempTarget();
             //_target = null;
             _radiusEnemy.gameObject.SetActive(false);
             _isSecondClick = false;
@@ -181,14 +181,14 @@ namespace Gangdollarff
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
         {
-            _skillRender.DrawRadius(Radius);
+            _skillRender.DrawRadius(AreaInfo.Radius);
             while (Targeting.GetTempTarget()?.Character == null)
             {
                 if (GetMouseButton)
                 {
                     Vector3 clickPoint = Targeting.GetMousePoint();
 
-                    Targeting.FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
+                    Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
                 }
                 yield return null;
             }

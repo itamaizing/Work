@@ -79,7 +79,7 @@ public class LightningStrike : Skill
             {
                 Vector3 clickPoint = Targeting.GetMousePoint();
                 
-                Targeting.FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
                 
                 if (Targeting.GetTempTarget()?.Character is Character character)
                 {

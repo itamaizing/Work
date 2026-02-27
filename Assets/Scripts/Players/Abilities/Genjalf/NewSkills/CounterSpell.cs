@@ -50,7 +50,7 @@ public class CounterSpell : Skill
             CmdState(currentCharacter.gameObject, 5);
             if (currentCharacter.Abilities.CurrentCastingSkill != null && _schoolSolvent.IsSkillActive)
             {
-                _schoolSolvent.AddSchool(currentCharacter.Abilities.CurrentCastingSkill.School);
+                _schoolSolvent.AddSchool(currentCharacter.Abilities.CurrentCastingSkill.Info.School);
             }
         }
         yield return null;
@@ -72,13 +72,13 @@ public class CounterSpell : Skill
             {
                 Vector3 clickPoint = Targeting.GetMousePoint();
                 
-                Targeting.FindTempTarget(_clickRadius, clickPoint, canTargetHimself: true);
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
 
                 if (Targeting.GetTempTarget()?.Character is Character character)
                 {
                     if (character != null && !IsEnemyTarget(character))
                     {
-                        ClearTempTarget();
+                        Targeting.ClearTempTarget();
                     }
                     else
                     {

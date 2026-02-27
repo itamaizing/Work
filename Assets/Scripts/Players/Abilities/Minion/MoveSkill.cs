@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
@@ -37,7 +37,7 @@ public class MoveSkill : Skill
 
     private IEnumerator MoveRoutine()
     {
-        Character target = GetTargetCharacter();
+        Character target = Targeting.GetTarget()?.Character;
         if (target == null)
             yield break;
 

@@ -352,4 +352,4 @@ public class CheliceraStrike : Skill
         Targeting.ClearTarget();
         AnimCastEnded();
     }
-}
+}

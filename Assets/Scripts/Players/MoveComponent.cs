@@ -1,4 +1,4 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using Mirror;
 using System;
 using System.Collections;
@@ -184,12 +184,6 @@ public class MoveComponent : NetworkBehaviour, IAttribute
 		{
             _canMove = true;
 		});
-	}
-
-	public void DoKillMoves()
-	{
-		_rigidbody.DOKill();
-		CancelMoveTowards();
 	}
 
 	public void DoKillMoves()
@@ -420,13 +414,6 @@ public class MoveComponent : NetworkBehaviour, IAttribute
 		{
             _canMove = true;
 		});
-	}
-	
-	[TargetRpc]
-	public void TargetRpcForceDrop(NetworkConnection conn, Vector3 dropPos, float duration)
-	{
-		DoKillMoves();
-		DoMove(dropPos, duration);
 	}
 	
 	[TargetRpc]

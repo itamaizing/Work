@@ -1,9 +1,9 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using UnityEngine;
 
-public class MagicInstantaneityState : AbstractCharacterState
+public class MagicInstantaneityState : StackableState
 {
     private List<StatusEffect> _effects = new();
     private List<Skill> _buffedSkills = new();
@@ -21,11 +21,11 @@ public class MagicInstantaneityState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        CanStack = true;
+        //CanStack = true;
         _time = durationToExit;
         _character = character.Character;
         MaxStacksCount = 5;
-        CurrentStacksCount = 1;
+        currentStacksCount = 1;
 
         var skillsWithDelay = _character.Abilities.Abilities
             .Where(s => s.CastDeley > 0 && s.IsSkillActive)
@@ -49,7 +49,7 @@ public class MagicInstantaneityState : AbstractCharacterState
     {
         if (CurrentStacksCount < MaxStacksCount)
         {
-            CurrentStacksCount++;
+            currentStacksCount++;
             foreach (var skill in _buffedSkills)
             {
                 skill.Buff.CastSpeed.Reset();
