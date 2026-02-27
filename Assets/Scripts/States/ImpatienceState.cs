@@ -100,10 +100,9 @@ public class ImpatienceState : AbstractCharacterState
 
                 if (aoeDamageValue > 0f)
                 {
-                    Collider[] hits = Physics.OverlapSphere(
-                        characterState.Character.transform.position,
-                        PsiExplosionRadius
-                    );
+                    Collider[] hits = Physics.OverlapSphere( characterState.Character.transform.position, PsiExplosionRadius);
+
+                    int enemiesHitCount = 0;
 
                     foreach (var hit in hits)
                     {
@@ -121,6 +120,26 @@ public class ImpatienceState : AbstractCharacterState
                         };
 
                         target.Health.TryTakeDamage(ref aoeDamage, skill);
+
+                        enemiesHitCount++;
+                    }
+
+                    var psionicEnergy = _casterPsionic.GetComponent<PsionicEnergySkill>();
+
+                    if (psionicEnergy.IsExtendedDuration && enemiesHitCount > 0)
+                    {
+                        float bonusTime = enemiesHitCount * 0.1f;
+
+                        var attacking = _casterPsionic.GetComponent<AttackingPsionicEnergy>();
+                        if (attacking != null)
+                            attacking.ExtendDuration(bonusTime);
+
+                        foreach (var character in ActiveCharacters)
+                        {
+                            var state = character.CharacterState.GetState(States.Impatience) as ImpatienceState;
+                            if (state != null)
+                                state.ExtendDuration(bonusTime);
+                        }
                     }
                 }
             }
@@ -170,5 +189,11 @@ public class ImpatienceState : AbstractCharacterState
         {
             _isProcessingSharedDamage = false;
         }
+    }
+
+    [Server]
+    public void ExtendDuration(float amount)
+    {
+        _durationRemaining += amount;
     }
 }

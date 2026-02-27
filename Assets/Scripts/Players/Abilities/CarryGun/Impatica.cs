@@ -20,10 +20,8 @@ public class Impatica : Skill
 
     #region Talent
     private bool _isExtendDamageAbsorption = false;
-    private bool _isExtendedDuration = false;
 
     public void ExtendDamageAbsorption(bool value) => _isExtendDamageAbsorption = value;
-    public void ExtendedDuration(bool value) => _isExtendedDuration = value;
 
     public void SecondCharge(bool value)
     {

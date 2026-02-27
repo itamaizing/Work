@@ -27,12 +27,15 @@ public class PsionicEnergySkill : Skill, IPassiveSkill
     #region Talent
     private bool _isPsiEnergyActive = false;
     private bool _isDischargingPsiTalent = false;
+    private bool _isExtendedDuration = false;
 
     public bool IsDischargingPsiTalent { get => _isDischargingPsiTalent; set => _isDischargingPsiTalent = value; }
     public bool IsPsiEnergyActive { get => _isPsiEnergyActive; set => _isPsiEnergyActive = value;}
+    public bool IsExtendedDuration { get => _isExtendedDuration; set => _isExtendedDuration = value; }
 
     public void DischargingPsiTalen(bool value) => _isDischargingPsiTalent = value;
     public void PsiEnergyActive(bool value) => _isPsiEnergyActive = value;
+    public void ExtendedDuration(bool value) => _isExtendedDuration = value;
     #endregion
 
     public void HandleIncomingDamage(ref Damage damage, Skill skill)
