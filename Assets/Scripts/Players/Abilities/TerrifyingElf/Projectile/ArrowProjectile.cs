@@ -1,4 +1,4 @@
-﻿using Mirror;
+using Mirror;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -80,6 +80,7 @@ public class ArrowProjectile : Projectiles
         _sphereCollider.enabled = true;
         RpcArrowTrue();
     }
+
     public void StartFly(Transform target)
     {
         _startPosition = transform.position;
@@ -165,8 +166,7 @@ public class ArrowProjectile : Projectiles
         {
             Vector3 targetPos = _followTarget.position + Vector3.up * _arrowYOffset;
             Vector3 dir = (targetPos - transform.position).normalized;
-            if (_rb != null)
-                _rb.linearVelocity = dir * _speed;
+            if (_rb != null) _rb.linearVelocity = dir * _speed;
 
             yield return null;
         }
@@ -177,4 +177,4 @@ public class ArrowProjectile : Projectiles
     {
         _arrow.SetActive(true);
     }
-}
+}

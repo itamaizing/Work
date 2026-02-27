@@ -1,12 +1,11 @@
-﻿using UnityEngine;
+using Mirror;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using System;
-using Mirror;
 
 public class AttributeSystem : NetworkBehaviour
 {
-    private CharacterData _data;
 
     private Dictionary<BasicAttributeName, Attribute> _attributes = new();    
     public Dictionary<BasicAttributeName, Attribute> Attributes => _attributes;

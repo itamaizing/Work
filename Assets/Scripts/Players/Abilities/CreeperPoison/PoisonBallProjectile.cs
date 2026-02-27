@@ -23,6 +23,8 @@ public class PoisonBallProjectile : Test_Projectile
     private int _currentCountBall;
     private int _poisonBoneStack;
     private int _playerLayer;
+    private Vector3 _directionOfFlight;
+    private float _buffer = 0.5f;
 
     #region FloatVariables
     private float _newDistancePush;
@@ -53,11 +55,32 @@ public class PoisonBallProjectile : Test_Projectile
 
     #endregion
 
+    private bool IsEnemy(GameObject target)
+    {
+        if (_player == null) return IsEnemyByLayer(target);
+        if (!_player.TryGetComponent(out UserNetworkSettings ownerSettings) || !target.TryGetComponent(out UserNetworkSettings targetSettings)) return IsEnemyByLayer(target);
+        if (!IsTeamAssigned(ownerSettings) || !IsTeamAssigned(targetSettings)) return IsEnemyByLayer(target);
+
+        return ownerSettings.TeamIndex != targetSettings.TeamIndex;
+    }
+
+    private bool IsTeamAssigned(UserNetworkSettings settings)
+    {
+        return settings.TeamIndex != 0;
+    }
+
+    private bool IsEnemyByLayer(GameObject target)
+    {
+        return ((1 << target.layer) & _skill.TargetsLayers.value) != 0;
+    }
+
     #region OnTriggerEnter
 
     [Server]
     private void OnTriggerEnter(Collider collision)
     {
+        if (!IsEnemy(collision.gameObject)) return;
+
         if (_isActiveHealingPoisonBall)
         {
             if (_isPlayer)
@@ -141,6 +164,7 @@ public class PoisonBallProjectile : Test_Projectile
                 }
             }
         }
+
         else
         {
             if (collision.gameObject != _player.gameObject && _playerLayer != LayerMask.NameToLayer("Enemy"))
@@ -171,6 +195,7 @@ public class PoisonBallProjectile : Test_Projectile
         _isFast = isFast;
 
         float speed = isFast ? _fastMovementSpeed : _slowMovementSpeed;
+        _directionOfFlight = (target - transform.position).normalized;
 
         MoveToTarget(target, speed);
     }
@@ -179,11 +204,14 @@ public class PoisonBallProjectile : Test_Projectile
     {
         Debug.Log("PoisonBallProjectile / MoveBallOnMaxDistance");
         _isFast = isFast;
+        _directionOfFlight = (point - transform.position).normalized;
 
         float speed = isFast ? _fastMovementSpeed : _slowMovementSpeed;
         Debug.Log("PoisonBallProjectile / MoveBallOnMaxDistance / speed = " + speed);
         Debug.Log("PoisonBallProjectile / MoveBallOnMaxDistance / point = " + point);
 
+        Vector3 finalPoint = transform.position + _directionOfFlight * Mathf.Min(Vector3.Distance(transform.position, point), _skill.CastLength);
+        ScheduleAutoDestroy(finalPoint, speed);
         MoveToPoint(point, speed);
     }
 
@@ -233,27 +261,23 @@ public class PoisonBallProjectile : Test_Projectile
             _newDistancePush = _baseDistancePush;
         }
 
-        PushEnemy(target, durationPush, _newDistancePush);
+        PushEnemy(target.gameObject, _newDistancePush, durationPush, _isPushTarget);
     }
 
-    private void PushEnemy(Character target, float durationPush, float newDistancePush)
+    public void PushEnemy(GameObject targetObj, float distancePush, float durationPush, bool isPushAway)
     {
-        MoveComponent targetMove = target.GetComponent<MoveComponent>();
-        Vector3 directionPush = (_transformBall.transform.position - targetMove.transform.position);
-
-        newDistancePush = (newDistancePush * durationPush) / GlobalVariable.cellSize;
-
-        Vector3 finalPoint = targetMove.transform.position + (_isPushTarget ? -directionPush : directionPush) * newDistancePush;
-        finalPoint.y = 0;
-
-        if (targetMove.connectionToClient != null) targetMove.TargetRpcDoMove(finalPoint, durationPush);
-
-        else
+        if (targetObj.TryGetComponent(out Character target))
         {
-            StartCoroutine(ServerMove(targetMove, finalPoint, durationPush));
-        }
+            MoveComponent targetMove = target.GetComponent<MoveComponent>();
+            Vector3 direction = _directionOfFlight;
+            direction.y = 0;
 
-        target.Move.SetCanMove(true);
+            Vector3 finalPoint = target.transform.position + (isPushAway ? direction : -direction) * distancePush;
+            finalPoint.y = target.transform.position.y;
+
+            if (targetMove.connectionToClient != null) targetMove.TargetRpcDoMove(finalPoint, durationPush);
+            else targetMove.RpcDoMove(finalPoint, durationPush);
+        }
     }
 
     private void ReductionCooldownFromRestorationOfGlands()
@@ -354,6 +378,13 @@ public class PoisonBallProjectile : Test_Projectile
         _currentCountBall = _poisonBall.CurrentCountBall;
     }
 
+    public void ScheduleAutoDestroy(Vector3 targetPoint, float speed)
+    {
+        float distance = Vector3.Distance(transform.position, targetPoint);
+        float flightTime = (distance + _buffer) / speed;
+
+        Invoke(nameof(DestroyProjectile), flightTime);
+    }
     #endregion
 
     #region ServerMethods

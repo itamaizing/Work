@@ -10,7 +10,7 @@ public class Conversion : Skill
 
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
-    protected override bool IsCanCast => _psionicEnergy.CurrentValue > 0;
+    protected override bool IsCanCast => _psionicEnergy != null && _psionicEnergy.CurrentValue > 0;
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -46,5 +46,8 @@ public class Conversion : Skill
     private void CmdConvertEnergy()
     {
         _psionicEnergy.ConvertToAttackingEnergy(_attackingPsionicEnergy.MaxAttackingPsiEnergy);
+        RpcConvertEnergy();
     }
+
+    private void RpcConvertEnergy() => _attackingPsionicEnergy.IsAttackingPsiEnergy = true;
 }

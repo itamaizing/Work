@@ -43,12 +43,15 @@ public class SkillManager : MonoBehaviour
     public bool IsNextSkillNoCast { get; private set; }
     public IEnumerable<Skill> DefaultSkills => _skills.Where(o => o.IsTalentSpell == false);
     public IEnumerable<Skill> TalentsSkills => _skills.Where(o => o.IsTalentSpell);
-
+    public List<Skill> Skills => _skills;
+    public Character Hero => _hero;
+    public AutoSkillCast AutoSkillCast => _autoSkillCast;
     public List<Skill> Abilities => _skills;
     public event Action<int> SkillSelected;
     public event Action<int> SkillDeselected;
     public event Action<Skill> SkillAdded;
     public event Action<Skill> SkillRemoved;
+    public event Action<Skill> SkillCastEnded;
     public event Action<Skill> OnSkillPreparedSuccessfully;
     public event Action<Skill> SkillCastEnded;
 
@@ -102,6 +105,7 @@ public class SkillManager : MonoBehaviour
             PreviewCastedSkill = LastCastedSkill;
             LastCastedSkill = skill;
             _castWindowId++;
+            SkillCastEnded?.Invoke(skill);
 
             if (_lastCastResetCoroutine != null) StopCoroutine(_lastCastResetCoroutine);
             _lastCastResetCoroutine = StartCoroutine(CastWindowResetCoroutine(_castWindowId));

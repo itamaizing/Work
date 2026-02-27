@@ -60,7 +60,7 @@ public class CocoonSpawn : Skill
             spawnComponent.CmdSpawnEnemyPoint(spawnPos, Quaternion.identity, minion, 1, false, Hero);
         }
 
-        CmdTentacleCocoon(spawnComponent);
+        CmdTentacleCocoon(spawnComponent.netIdentity);
         yield return null;
     }
     private Vector3 GetRandomOffsetPosition(Vector3 center, float radius)
@@ -71,16 +71,28 @@ public class CocoonSpawn : Skill
     }
 
     [Command]
-    private void CmdTentacleCocoon(SpawnComponent spawnComponent)
+    private void CmdTentacleCocoon(NetworkIdentity spawnIdentity)
     {
-        RpcTentacleCocoon(spawnComponent);
+        RpcTentacleCocoon(spawnIdentity);
     }
 
-
     [ClientRpc]
-    private void RpcTentacleCocoon(SpawnComponent spawnComponent)
+    private void RpcTentacleCocoon(NetworkIdentity spawnIdentity)
     {
-        foreach (var cocoon in spawnComponent.Units) if (cocoon.TryGetComponent<ScraderSpawn>(out ScraderSpawn scraderSpawn)) scraderSpawn.Tentacle = tentacle;
+        if (spawnIdentity == null) return;
+
+        var spawnComponent = spawnIdentity.GetComponent<SpawnComponent>();
+        if (spawnComponent == null) return;
+
+        foreach (var unit in spawnComponent.Units)
+        {
+            if (unit == null) continue;
+
+            foreach (var spawn in unit.GetComponents<CreatureSpawn>())
+            {
+                spawn.Tentacle = tentacle;
+            }
+        }
     }
 
     protected override void ClearData() { }

@@ -26,8 +26,6 @@ public class CreeperStrike : Skill
     [SerializeField] private PoisonBall _poisonBall;
     [SerializeField] private CreeperInvisible _creeperInvisible;
     [SerializeField] private ColdBlood _coldBlood;
-    [SerializeField] private SneakySpit sneakySpit;
-    [SerializeField] private BlockPassiveSkill blockPassiveSkill;
 
     [Header("Ability properties")]
     [SerializeField] private Character _player;
@@ -293,7 +291,7 @@ public class CreeperStrike : Skill
             _isHit = false;
         }
 
-        TryTriggerWindow(character);
+        TryTriggerWindow(character); //Возможно нужно удалть от сюда
     }
 
     #region Combo Creeper
@@ -348,6 +346,7 @@ public class CreeperStrike : Skill
     }
 
     #endregion
+// до сюда
 
     private IEnumerator TimerForTwoHit(float duration, bool isUsingLightningStrikes)
     {
@@ -463,31 +462,6 @@ public class CreeperStrike : Skill
     }
 
     [Command] private void CmdDamageDeal(Damage damage, GameObject target) => ApplyDamage(damage, target);
-
-    [Command] private void CmdTriggerSneakySpitFreeWindow(Character target) => RpcTriggerSneakySpitWindow(target);
-
-    [Command] private void CmdTriggerSneakySpitWindowCancel() => RpcTriggerSneakySpitWindowCancel();
-
-    [Command] private void CmdBlockPassiveSkillFreeWindow(Character target) => RpcBlockPassiveSkillFreeWindow(target);
-
-    [ClientRpc]
-    private void RpcTriggerSneakySpitWindow(Character target)
-    {
-        if (sneakySpit != null) sneakySpit.TryStartSneakySpitBoostWindow(target);
-    }
-
-    [ClientRpc]
-    private void RpcTriggerSneakySpitWindowCancel()
-    {
-        if (sneakySpit != null) sneakySpit.CancelBoostWindow();
-    }
-
-    [ClientRpc]
-    private void RpcBlockPassiveSkillFreeWindow(Character target)
-    {
-        if (blockPassiveSkill != null) blockPassiveSkill.TryStartBlockPassiveSkillBoostWindow(target);
-    }
-
     #endregion
 
     public override void LoadTargetData(TargetInfo targetInfo)

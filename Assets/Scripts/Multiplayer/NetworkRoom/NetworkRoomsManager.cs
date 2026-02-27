@@ -25,6 +25,10 @@ public class NetworkRoomsManager : NetworkBehaviour
 
 		switch (_gameMode)
 		{
+			case GameMode.GMSingle:
+				_maxPlayers = 1;
+				break;
+
 			case GameMode.GM1vs1:
 				_maxPlayers = 2;
 				break;
@@ -83,7 +87,7 @@ public class NetworkRoomsManager : NetworkBehaviour
 
 public enum GameMode
 {
-	GMTest,
+	GMSingle,
 	GM1vs1,
 	GM2vs2,
 	GM3vs3,

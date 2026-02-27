@@ -15,10 +15,10 @@ public struct SpitPoisonSpawnPointInfo : NetworkMessage
 public class SpitPoison : Skill, IAltAbility
 {
     [Header("Talents")]
-    [SerializeField] private RestorationOfGlands _restorationOfGlands;
-    [SerializeField] private HealingSpitPoison _healingSpitPoison;
-    [SerializeField] private HealingPoisonCloud _healPoisonCloud;
-    [SerializeField] private TransparentPoisons _transparentPoisons;
+    //[SerializeField] private RestorationOfGlands _restorationOfGlands;
+    //[SerializeField] private HealingSpitPoison _healingSpitPoison;
+    //[SerializeField] private HealingPoisonCloud _healPoisonCloud;
+    //[SerializeField] private TransparentPoisons _transparentPoisons;
     //[SerializeField] private EatingAcid _eatingAcid;
 
     [Header("Ability Properties")]
@@ -55,8 +55,6 @@ public class SpitPoison : Skill, IAltAbility
     private bool _isOriginalTargetPlayer;
     private bool _isAbilityActive = false;
 
-    private Coroutine _setSpawnPointCoroutine;
-
     public bool IsAltAbility { get; set; }
     public int PoisonBoneStack { get => _poisonBoneStack; set => _poisonBoneStack = value; }
 
@@ -85,43 +83,34 @@ public class SpitPoison : Skill, IAltAbility
         _originalCooldown = _cooldownTime;
     }
 
-    private void Update()
-    {
-        if (_isAbilityActive)
-            SetSpawnPoint(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
-    }
-
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
         _mousePos = targetInfo.Points[0];
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         _isAbilityActive = true;
-
-        if (_setSpawnPointCoroutine == null)
-            _setSpawnPointCoroutine = StartCoroutine(SetSpawnPointJob());
+        Vector3 targetPoint = Vector3.positiveInfinity;
 
         CooldownChange();
 
-        //CheckActiveTalents(); //TODO: Вернуть
+        ////CheckActiveTalents(); //TODO: Вернуть
 
-        while (float.IsPositiveInfinity(_mousePos.x))
+        while (float.IsPositiveInfinity(targetPoint.x))
         {
             if (GetMouseButton)
             {
                 //_currentTarget = GetRaycastTarget(true);
 
                 Targeting.FindTempTarget(Targeting.GetMousePoint(), _radiusTargetCheck);
-                _mousePos = Targeting.GetMousePoint();
+                targetPoint = Targeting.GetMousePoint();
 
                 if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
                 {
                     if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
                     else ChooseTarget(damageable);
-
                 }
             }
             yield return null;
@@ -131,12 +120,14 @@ public class SpitPoison : Skill, IAltAbility
 
         TargetInfo targetInfo = new();
         targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
-        targetInfo.Points.Add(_mousePos);
+        targetInfo.Points.Add(targetPoint);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
+        SetSpawnPoint(transform.position.x, transform.position.y, transform.position.z);
+
         Shoot(Targeting.GetTarget()?.Damageable);
         ResetAbilityParameters?.Invoke();
 
@@ -159,25 +150,12 @@ public class SpitPoison : Skill, IAltAbility
         _mousePos = Vector3.positiveInfinity;
     }
 
-    private IEnumerator SetSpawnPointJob()
-    {
-        while (_isAbilityActive)
-        {
-            SetSpawnPoint(_spawnPoint.transform.position.x, _spawnPoint.transform.position.y, _spawnPoint.transform.position.z);
-
-            yield return null;
-        }
-
-        StopCoroutine(_setSpawnPointCoroutine);
-        _setSpawnPointCoroutine = null;
-    }
-
     private bool CheckCanCast()
     {
-        if (Targeting.GetTarget() == null) return Vector3.Distance(_mousePos, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_mousePos, _obstacle);
+        if (Targeting.GetTarget() == null) return Vector3.Distance(_mousePos, transform.position) <= AreaInfo.CastLength && Targeting.NoObstacles(_mousePos, _obstacle);
 
-        return Vector3.Distance(_mousePos, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_mousePos, _obstacle) ||
-               Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Transform.position, _obstacle);
+        return Vector3.Distance(_mousePos, transform.position) <= AreaInfo.CastLength && Targeting.NoObstacles(_mousePos, _obstacle) ||
+               Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.CastLength && Targeting.NoObstacles(Targeting.GetTarget().Transform.position, _obstacle);
     }
 
     private void CooldownChange()
@@ -202,12 +180,12 @@ public class SpitPoison : Skill, IAltAbility
         }
     }
 
-    private void CheckActiveTalents()
-    {
-        //_isActiveEatingAcid = _eatingAcid.Data.IsOpen;
-        _isActiveHealingSpitPoison = _healingSpitPoison.Data.IsOpen;
-        _isActiveRestorationOfGlands = _restorationOfGlands.Data.IsOpen;
-    }
+    //private void CheckActiveTalents()
+    //{
+    //    //_isActiveEatingAcid = _eatingAcid.Data.IsOpen;
+    //    _isActiveHealingSpitPoison = _healingSpitPoison.Data.IsOpen;
+    //    _isActiveRestorationOfGlands = _restorationOfGlands.Data.IsOpen;
+    //}
 
     private void ChooseTarget(IDamageable damageable)
     {
@@ -218,33 +196,34 @@ public class SpitPoison : Skill, IAltAbility
                 _isOriginalTargetPlayer = true;
                 _isOriginalTargetAllies = false;
                 _isOriginalTargetEnemy = false;
-                if (_healPoisonCloud.Data.IsOpen && _isActiveHealingSpitPoison)
-                {
-                    _isHealingPoisonCloud = true;
-                }
+                //if (_healPoisonCloud.Data.IsOpen && _isActiveHealingSpitPoison)
+                //{
+                //    _isHealingPoisonCloud = true;
+                //}
             }
             else if (damageable.gameObject.layer == LayerMask.NameToLayer("Allies"))
             {
                 _isOriginalTargetPlayer = false;
                 _isOriginalTargetAllies = true;
                 _isOriginalTargetEnemy = false;
-                if (_isActiveHealingSpitPoison && _healPoisonCloud.Data.IsOpen)
-                {
-                    if (_healPoisonCloud.Data.IsOpen)
-                    {
-                        _isHealingPoisonCloud = true;
-                    }
-                }
+
+                //if (_isActiveHealingSpitPoison && _healPoisonCloud.Data.IsOpen)
+                //{
+                //    if (_healPoisonCloud.Data.IsOpen)
+                //    {
+                //        _isHealingPoisonCloud = true;
+                //    }
+                //}
             }
             else if (damageable.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
                 _isOriginalTargetPlayer = false;
                 _isOriginalTargetAllies = false;
                 _isOriginalTargetEnemy = true;
-                if (_healPoisonCloud.Data.IsOpen && _isActiveHealingSpitPoison)
-                {
-                    _isHealingPoisonCloud = false;
-                }
+                //if (_healPoisonCloud.Data.IsOpen && _isActiveHealingSpitPoison)
+                //{
+                //    _isHealingPoisonCloud = false;
+                //}
             }
         }
         else
@@ -331,6 +310,14 @@ public class SpitPoison : Skill, IAltAbility
             isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
             isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack);
 
+        Vector3 direction = point - spawnPosition;
+        direction.y = 0;
+        direction = direction.normalized;
+
+        point = spawnPosition + direction * CastLength;
+        point.y = spawnPosition.y;
+
+        projectile.ScheduleAutoDestroy(point, _projectile.Speed);
         projectile.MoveBallOnMaxDistance(point);
 
         NetworkServer.Spawn(item);

@@ -590,7 +590,7 @@ public abstract class Skill : NetworkBehaviour
     public SkillAttributes Attributes => _skillAttributes; //TODO: Прикрепить SyncDictionary, чтобы аттрибуты синхронились по сети
     #region Scriptable Objects
     public string Name => _abilityInfo.Name;
-    public string Description { get => _abilityInfo.FinalDescription; set => _abilityInfo.FinalDescription = value; }
+    public string Description { get => _abilityInfo.AddingDescription; set => _abilityInfo.AddingDescription = value; }
     public string State => _abilityInfo.State; // test: we output the name of the state
     public string DescriptionState => _abilityInfo.DescriptionState; // test: we output a description of the state
     public string CounterSkill => _abilityInfo.Counter; // test: the counter is in the ability
@@ -1215,6 +1215,27 @@ public abstract class Skill : NetworkBehaviour
             _hero.Animator.SetTrigger(AnimTriggerCast);
             _hero.NetworkAnimator.SetTrigger(AnimTriggerCast);
 
+            if (_forceFailCastEarly)
+            {
+                _forceFailCastEarly = false;
+
+                _isCasting = false;
+                _isPlayCastAnim = false;
+
+                _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
+                _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+                _hero.Move.StopLookAt();
+                Hero.Move.SetCanMove(true);
+
+                ClearData();
+                CastEnded?.Invoke();
+                OnSkillCanceled?.Invoke();
+                Canceled?.Invoke();
+                _actionWrapperForCastCoroutine = null;
+                Hero.UIComponent.Miss();
+                yield return null;
+            }
+
             while (_isPlayCastAnim)
             {
                 //*
@@ -1286,6 +1307,14 @@ public abstract class Skill : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
+    private void RpcForceFailCastJobOnce()
+    {
+        _forceFailCastEarly = true;
+    }
+
+    [Command] public void CmdForceFailCastJobOnce() => RpcForceFailCastJobOnce();
+
     [Command]
     public void CmdCancelActiveSkill() => RpcCancelActiveSkill();
 
@@ -1329,7 +1358,7 @@ public abstract class Skill : NetworkBehaviour
         CancelCoroutine(_actionWrapperForCastCoroutine);
         ClearData();
     }
-
+    
     public void ApplyDamage(Damage damage, GameObject target)
     {
         var damageable = target != null ? target.GetComponent<IDamageable>() : null;

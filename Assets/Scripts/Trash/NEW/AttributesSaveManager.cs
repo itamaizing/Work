@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-
+//TO DELETE
 public class AttributeSaveManager
 {
     private readonly ISaveData _saveData;
@@ -22,26 +22,26 @@ public class AttributeSaveManager
 
     public void SaveAllAttributes(HeroComponent character, int saveGroup)
     {
-        //foreach (var attribute in character.Data.Attributes.AttributeData)
-        //{
-        //    //SaveAttribute(character, attribute.Id, saveGroup);
-        //}
+        /*foreach (var attribute in character.Data.Attributes.AttributeData)
+        {
+            SaveAttribute(character, attribute.Id, saveGroup);
+        }*/
     }
 
     public void LoadAllAttributes(HeroComponent character, int saveGroup)
     {
-        //foreach (var attribute in character.Data.Attributes.AttributeData)
-        //{
-        //    //attribute.Points = _saveData.LoadInt($"{character.Data.Name}_Group{saveGroup}_{attribute.Name}_Points", 0);
-        //}
+       /* foreach (var attribute in character.Data.Attributes.AttributeData)
+        {
+            attribute.Points = _saveData.LoadInt($"{character.Data.Name}_Group{saveGroup}_{attribute.Name}_Points", 0);
+        }*/
     }
 
     public void SaveAttribute(HeroComponent character, int index, int saveGroup)
     {
-        //var attribute = character.Data.Attributes.AttributeData.FirstOrDefault(a => a.Id == index);
-        //if (attribute == null) return;
+        /*var attribute = character.Data.Attributes.AttributeData.FirstOrDefault(a => a.Id == index);
+        if (attribute == null) return;
         
-        //_saveData.SaveInt($"{character.Data.Name}_Group{saveGroup}_{attribute.Name}_Points", attribute.Points);
+        _saveData.SaveInt($"{character.Data.Name}_Group{saveGroup}_{attribute.Name}_Points", attribute.Points);*/
     }
 
     public List<int> LoadUsedAttributes(HeroComponent character, int saveGroup)
@@ -64,9 +64,9 @@ public class AttributeSaveManager
     
     public void LoadAttribute(HeroComponent character, int attributeId, int saveGroup)
     {
-        //var attribute = character.Data.Attributes.AttributeData.FirstOrDefault(a => a.Id == attributeId);
-        //if (attribute == null) return;
+        /*var attribute = character.Data.Attributes.AttributeData.FirstOrDefault(a => a.Id == attributeId);
+        if (attribute == null) return;
 
-        //attribute.Points = _saveData.LoadInt($"{character.Data.Name}_Group{saveGroup}_{attribute.Name}_Points", 0);
+        attribute.Points = _saveData.LoadInt($"{character.Data.Name}_Group{saveGroup}_{attribute.Name}_Points", 0);*/
     }
 }

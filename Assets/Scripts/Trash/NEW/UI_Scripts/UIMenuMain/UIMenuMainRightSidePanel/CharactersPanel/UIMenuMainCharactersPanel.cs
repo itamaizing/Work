@@ -10,7 +10,7 @@ public class UIMenuMainCharactersPanel : MonoBehaviour
     [SerializeField] private RectTransform _itemsParent;
 
     public event UnityAction<HeroComponent> OnHeroChanged;
-    
+
     private HeroComponent _currentHero;
     public HeroComponent CurrentHero => _currentHero;
     

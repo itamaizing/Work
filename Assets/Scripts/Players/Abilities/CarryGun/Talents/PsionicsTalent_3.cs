@@ -4,18 +4,16 @@ using UnityEngine;
 
 public class PsionicsTalent_3 : Talent
 {
-    [SerializeField] private Tentacles tentacles;
-    [SerializeField] private PsionicEnergySkill psionicEnergySkill;
+    [SerializeField] private Impatica _impatica;
+    [SerializeField] SkillManager _skillManager;
 
     public override void Enter()
     {
-        psionicEnergySkill.DischargingPsiTalen(true);
-        tentacles.PsionicsTalentThree(true);
+        _skillManager.ActivateSkill(_impatica);
     }
 
     public override void Exit()
     {
-        psionicEnergySkill.DischargingPsiTalen(false);
-        tentacles.PsionicsTalentThree(false);
+        _skillManager.DeactivateSkill(_impatica);
     }
 }

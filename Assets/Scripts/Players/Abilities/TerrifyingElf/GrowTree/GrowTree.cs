@@ -458,7 +458,6 @@ public class GrowTree : Skill
             if (!castFromExtendedRadius) regenDuration = CastStreamDuration - CastStreamDuration / CastStreamDurationFirst;
             else regenDuration = CastStreamDuration;
 
-            _healthTree.InitializeObject(_treeData);
             if (_treeData.MinEndurance) _healthTree.ServerStartFillHP(_healthTree.ObjectData.MaxHealth, regenDuration);
 
             if (_treeMagicEvadeTalent) _healthTree.SetMagicEvade(MagicEvade);
@@ -486,8 +485,6 @@ public class GrowTree : Skill
         _healthTree = _currentTree.GetComponentInChildren<ObjectHealth>();
         if (_healthTree != null)
         {
-            _healthTree.InitializeObject(_treeData);
-
             float regenDuration = CastStreamDuration - CastStreamDuration / CastStreamDurationFirst;
 
             if (_treeData.MinEndurance) _healthTree.ServerStartFillHP(_healthTree.ObjectData.MaxHealth, regenDuration);

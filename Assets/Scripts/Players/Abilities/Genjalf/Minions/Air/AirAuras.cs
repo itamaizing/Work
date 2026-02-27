@@ -26,6 +26,8 @@ namespace Gangdollarff.AirElemental
 
         public override List<StatusEffect> Effects => _effects;
 
+        public override Schools Schools => Schools.Air;
+
         public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
         {
         }

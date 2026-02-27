@@ -21,13 +21,14 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     [SyncVar(hook = nameof(HookMaxValueChanged)), SerializeField] protected float _maxValue;
     [SyncVar] protected float _regenerationValue;
     [SyncVar] protected float _regenerationPeriod;
-
+    
     protected Coroutine _regenCoroutine;
     protected Attribute _maxValueAttribute;
     protected Attribute _regenValueAttribute;
 
 	public float CurrentValue { get => _currentValue; set { ValueChanged?.Invoke(_currentValue, value); _currentValue = value; } }
-    public float MaxValue { 
+    public float MaxValue
+    { 
         get 
         { 
             if (_maxValueAttribute != null) 
@@ -85,6 +86,8 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 
     public virtual void Initialize(Attribute maxValue, Attribute regenValue, CharacterData data)
     {
+        //Debug.Log("Init resourse " + maxValue.GetValue());
+
         _regenValueAttribute = regenValue;
         _regenerationValue = regenValue.GetValue();
 

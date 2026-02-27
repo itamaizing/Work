@@ -175,8 +175,10 @@ public class LightningStrikes : Skill
     private void DamageDeal()
     {
         Debug.Log("LightningStrikes / DamageDeal");
-        _creeperStrike.DamageDeal(Targeting.GetTarget()?.Character, true);
-        _player.Abilities.LastCastedSkill = _creeperStrike;
+
+        if (_player.Abilities.LastCastedSkill is CreeperStrike) _player.Abilities.PreviewCastedSkill = this;
+        _player.Abilities.LastCastedSkill = this;
+        _creeperStrike.DamageDeal(GetTargetCharacter(), true);
 
        _isCanDamageDeal = false;
 

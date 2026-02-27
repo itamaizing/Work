@@ -39,6 +39,8 @@ public class SkillRenderer : NetworkBehaviour
     private Character _hovered;
     private Character _hoveredTarget;
 
+    private Vector3 _fixedLookPoint = Vector3.zero;
+
     private Coroutine _previewDamageCoroutine;
     private readonly HashSet<Health> _previewSet = new();
 
@@ -82,6 +84,16 @@ public class SkillRenderer : NetworkBehaviour
     {
         _boxLength /= mod;
         _modRadis -= mod;
+    }
+
+    public void SetFixedLookPoint(Vector3 point)
+    {
+        _fixedLookPoint = point;
+    }
+
+    public void ClearFixedLookPoint()
+    {
+        _fixedLookPoint = Vector3.zero;
     }
 
     public bool IsOverrideClosestTarget
@@ -448,17 +460,25 @@ public class SkillRenderer : NetworkBehaviour
     }
 
 
-    private void RotateAtMouse(Transform transform)
+    private void RotateAtMouseOrFixedPoint(Transform transform)
     {
-		Vector3 worldPosition = Vector3.zero;
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		RaycastHit hit;
-		if (Physics.Raycast(ray, out hit,  Mathf.Infinity,  _layerMask, QueryTriggerInteraction.Ignore)) worldPosition = hit.point;
-		//Vector3 dir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
-		Vector3 dir = worldPosition - gameObject.transform.position;
-		float angle = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(90, - angle + 90, 0);
+        Vector3 targetPoint = Vector3.zero;
+
+        if (_fixedLookPoint != Vector3.zero)
+        {
+            targetPoint = _fixedLookPoint;
+        }
+        else
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, _layerMask, QueryTriggerInteraction.Ignore)) targetPoint = hit.point;
+        }
+
+        Vector3 dir = targetPoint - transform.position;
+        float angle = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(90, -angle + 90, 0);
     }
+
 
     private void UpdateHoverTargetAlways(Character self)
     {
@@ -545,8 +565,8 @@ public class SkillRenderer : NetworkBehaviour
         while (true)
         {
             //Debug.Log(_boxLength + " Test");
-            RotateAtMouse(_lineStartImage.transform);
-			_lineStartImage.SetSize(_boxWidth, _boxLength, damage);
+            RotateAtMouseOrFixedPoint(_lineStartImage.transform);
+            _lineStartImage.SetSize(_boxWidth, _boxLength, damage);
 			//_lineEndImage.SetSize(width, length, damage);
 		//	_lineEndImage.SetSize(_boxWidth, _boxLength, damage);
 

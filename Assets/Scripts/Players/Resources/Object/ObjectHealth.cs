@@ -77,6 +77,8 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
 
     private Coroutine _fillCoroutine;
 
+    private void Awake() => InitializeObject(ObjectData);
+
     private void OnDisable()
     {
         StopCustomRegeneration();
@@ -222,7 +224,7 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
 
     #region Initialization
 
-    public void InitializeObject(ObjectData objectData)
+    private void InitializeObject(ObjectData objectData)
     {
         _objectData = objectData;
 
@@ -270,9 +272,11 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
 
         if (_regenerationCoroutine == null) СmdStartCustomRegeneration();
         float damageValue = damage.Value;
+        Debug.Log("0");
 
         if (_currentHealth > 0)
         {
+            Debug.Log("1");
             _currentHealth -= damageValue;
              
             DamageTaken?.Invoke(damage, skill);

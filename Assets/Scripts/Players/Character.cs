@@ -40,6 +40,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 	[SyncVar(hook = nameof(OnCharacterParentChanged))]
 	private uint _characterParentNetId;
 	private bool _isInvisible;
+	protected bool _isDisappeared;
 	private bool _isDead = false;
 
 	public SpawnComponent SpawnComponent => _spawnComponent;
@@ -88,15 +89,23 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 
             if (_isInvisible)
             {
-                OnDisappeared?.Invoke();
+				_isDisappeared = true;
+				OnDisappeared?.Invoke();
             }
             else
             {
-                OnAppeared?.Invoke();
+				_isDisappeared = false;
+				OnAppeared?.Invoke();
             }
         }
     }
-    public bool IsDead => _isDead;
+
+	public bool IsDisappeared
+	{
+		get => _isDisappeared;
+		set => _isDisappeared = value;
+	}
+	public bool IsDead => _isDead;
 
     public int KillCounter { get => _killCounter; set { _killCounter = value; Killed?.Invoke(); } }
     public int AssystCounter { get => _assystCounter; set => _assystCounter = value; }
@@ -109,9 +118,9 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
     public Transform Transform => transform;
     public Auras Auras { get => _auras; }
 
-    public bool IsTargetable => !_isDead;
+    public bool IsTargetable => !_isDead && !_isDisappeared;
 
-    public static event Action<Character> ServerOnUnitSpawned;
+	public static event Action<Character> ServerOnUnitSpawned;
 	public static event Action<Character> ServerOnUnitDeleted; 
 	public static event Action<Character> AuthorityOnUnitSpawned;
 	public static event Action<Character> AuthorityOnUnitDeleted;
@@ -199,6 +208,9 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 	{
 		Initialize();
 	}
+
+	public void Appeared() => OnAppeared?.Invoke();
+	public void Disappeared() => OnDisappeared?.Invoke();
 
 	public void ResuceVisionRange(float value)
     {

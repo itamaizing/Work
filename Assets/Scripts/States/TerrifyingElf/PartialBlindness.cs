@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PartialBlindness : RefreshingState
+public class PartialBlindness : AbstractCharacterState
 {
     private float _baseDuration;
-
+    private float _duration;
+    
     #region Const
     private const int MaxStacks = 3;
     private const float BaseMissChancePerStack = 10f;
@@ -26,7 +27,10 @@ public class PartialBlindness : RefreshingState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+        characterState = character;
+
         _baseDuration = durationToExit;
+        _duration = _baseDuration;
 
         //_talentPartialBlindnessActive = skillName;
 
@@ -46,13 +50,20 @@ public class PartialBlindness : RefreshingState
 
     public override void UpdateState()
     {
+        _duration -= Time.deltaTime;
+        if (_duration <= 0f)
+        {
+            ExitState();
+            return;
+        }
+
     }
 
     public override bool Stack(float time)
     {
-        duration = _baseDuration;
+        _duration = _baseDuration;
 
-        if (currentStacksCount < MaxStacksCount) currentStacksCount++;
+        if (CurrentStacksCount < MaxStacksCount) currentStacksCount++;
 
         return true;
     }
@@ -63,12 +74,12 @@ public class PartialBlindness : RefreshingState
         if (skill.Info.AbilityForm != AbilityForm.Physical) return;
         if (skill.Hero != characterState.Character) return;
 
-        _effectivenessLoss = Mathf.Max(MinEffectiveness, (_baseDuration - duration) * EffectivenessDecayPerSecond)* CurrentStacksCount;
-        float totalMissChance = currentStacksCount * BaseMissChancePerStack - _effectivenessLoss;
+        _effectivenessLoss = Mathf.Max(MinEffectiveness, (_baseDuration - _duration) * EffectivenessDecayPerSecond); //* CurrentStacksCount)?
+        float totalMissChance = CurrentStacksCount * BaseMissChancePerStack - _effectivenessLoss;
 
         if (UnityEngine.Random.Range(0f, 100f) < totalMissChance)
         {
-            skill.CmdCancelActiveSkill();
+            skill.CmdForceFailCastJobOnce();
         }
     }
 }

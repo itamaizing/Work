@@ -144,45 +144,37 @@ public class ClawStrike : Skill
         if (target == null) return;
 
         IDamageable damageable = target as IDamageable;
-        float attackingPsiValue = _spentAttackingPsiEnergy;
+        Character targetCharacter = target as Character;
         _baseDamage = UnityEngine.Random.Range(_minDamage, _maxDamage);
         Damage = _baseDamage;
 
-        var damage = new Damage
+        var physicalDamage = new Damage
         {
             Value = _baseDamage,
             Type = DamageType.Physical,
             PhysicAttackType = AttackRangeType.MeleeAttack,
         };
 
-        CmdApplyDamage(damage, damageable.gameObject);
-
-        Character targetCharacter = target as Character;
+        CmdApplyDamage(physicalDamage, damageable.gameObject);
 
         if (targetCharacter != null) TryApplyBleeding(targetCharacter);
 
-        if (attackingPsiValue > 0)
+        if (_spentAttackingPsiEnergy > 0 && targetCharacter != null)
         {
-            var additionalDamage = attackingPsiValue;
+            float psi = _spentAttackingPsiEnergy;
 
-            int dispelCount = 0;
-
-            if (attackingPsiValue >= PsiDispel_3) dispelCount = 3;
-            else if (attackingPsiValue >= PsiDispel_2) dispelCount = 2;
-            else if (attackingPsiValue >= PsiDispel_1) dispelCount = 1;
-
-            if (dispelCount > 0 && targetCharacter != null) for (int i = 0; i < dispelCount; i++) CmdDispel(targetCharacter, dispelCount);
-
-            var damagePsi = new Damage
+            var psiMagicDamage = new Damage
             {
-                Value = additionalDamage,
+                Value = psi,
                 Type = DamageType.Magical,
                 PhysicAttackType = AttackRangeType.MeleeAttack,
             };
 
-            CmdApplyDamage(damagePsi, damageable.gameObject);
-        }
+            CmdApplyDamage(psiMagicDamage, targetCharacter.gameObject);
 
+            int dispelCount = Mathf.FloorToInt(psi / 10f);
+            if (dispelCount > 0) CmdDispel(targetCharacter, dispelCount);
+        }
     }
 
     private void JumpBackClawStrike()

@@ -1,29 +1,30 @@
-using Mirror;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class UIGameWindowPopup : MonoBehaviour
 {
     [SerializeField] private UIMenuMainAttributesPanel _attributesPanel;
     [SerializeField] private UIMenuMainTalentsPanel _talentsPanel;
-    [SerializeField] private UIMenuMainTalentsPanel _talentsPanel2;
     [SerializeField] private PlayerIcon _playerIcon;
     [SerializeField] private MinionPanel _minionPanel;
     [SerializeField] private SkillPanel _skillPanel;
+    [SerializeField] private SkillPanel _skillMinionPanel;
     [SerializeField] private SelectManager _selectManager;
     [SerializeField] private GameObject _settings;
     [SerializeField] private GameObject _teamStatistics;
     [SerializeField] private GameObject[] _forHide;
-    [SerializeField] private GameObject _rightSide;
+    [SerializeField] private GameObject _teamSource; //test
+
+    private readonly List<Skill> _allMinionSkills = new();
+    private readonly Dictionary<Character, List<Skill>> _minionSkillMap = new();
 
     private HeroComponent _currentHero;
     private Character _currentCharacter;
-    private HeroComponent _tempChar;
 
     private void Awake()
     {
-        if(_rightSide != null)
-            _rightSide.gameObject.SetActive(false);
         InputHandler.ShowMenu += ShowSettings;
         InputHandler.ShowStatistics += ShowStatistics;
     }
@@ -37,6 +38,8 @@ public class UIGameWindowPopup : MonoBehaviour
             foreach (var item in _forHide)
                 item.SetActive(true);
     }
+
+    private void TeamSourceSwich(bool value) => _teamSource.SetActive(value);
 
     private void ShowSettings()
     {
@@ -64,12 +67,14 @@ public class UIGameWindowPopup : MonoBehaviour
 
     private void OnEnable()
     {
+        _selectManager.UIVisibilityToggled += TeamSourceSwich;
         _selectManager.CharacterSelected += OnCharacterSelected;
         _selectManager.CharacterDeselected += OnCharacterDeselected;
     }
 
     private void OnDisable()
     {
+        _selectManager.UIVisibilityToggled -= TeamSourceSwich;
         _selectManager.CharacterSelected -= OnCharacterSelected;
         _selectManager.CharacterDeselected -= OnCharacterDeselected;
     }
@@ -85,12 +90,11 @@ public class UIGameWindowPopup : MonoBehaviour
         }
         
         _currentHero = hero;
-        if(_currentHero.isOwned)
-        {
-            _tempChar = _currentHero;
-            SaveManager.Instance.SetHero(_currentHero);
-        }        
+        SaveManager.Instance.SetHero(_currentHero);
         UpdateCharacterPanels();
+
+        _currentCharacter.SpawnComponent.UnitAdded += OnMinionSpawned;
+        _currentCharacter.SpawnComponent.UnitRemoved += OnMinionRemoved;
     }
 
     private void OnCharacterDeselected(Character character)
@@ -102,41 +106,108 @@ public class UIGameWindowPopup : MonoBehaviour
         _attributesPanel.gameObject.SetActive(false);
         _talentsPanel.HidePanels();
         _talentsPanel.gameObject.SetActive(false);
+        _skillMinionPanel.gameObject.SetActive(false);
+
+        _currentCharacter.SpawnComponent.UnitAdded -= OnMinionSpawned;
+        _currentCharacter.SpawnComponent.UnitRemoved -= OnMinionRemoved;
     }
     
     private void UpdateCharacterPanels()
     {
         if(_currentHero == null)
             return;
-        if (_currentHero.isOwned)
+        
+        _playerIcon.OnCharacterSelected(_currentHero);
+        _minionPanel.OnCharacterSelected(_currentHero);
+        _skillPanel.OnCharacterSelected(_currentCharacter);
+
+        _attributesPanel.gameObject.SetActive(true);
+        //_attributesPanel.Show(_currentHero.Data.Attributes);
+        
+        _talentsPanel.gameObject.SetActive(true);
+        _talentsPanel.Show(_currentHero.TalentManager, true);
+
+        UpdateMinionSkills();
+
+        _skillMinionPanel.gameObject.SetActive(true);
+        _skillMinionPanel.SetHideUnusedButtons(true);
+    }
+
+    private void UpdateMinionSkills()
+    {
+        if (_currentCharacter == null) return;
+
+        var spawn = _currentCharacter.SpawnComponent;
+        if (spawn == null) return;
+
+        var allMinionSkills = spawn.Units
+            .Where(m => m is MinionComponent { IsDead: false })
+            .SelectMany(m => m.GetComponent<SkillManager>().SelectedSkills)
+            .Where(skill => skill != null)
+            .Distinct()
+            .ToList();
+
+        _allMinionSkills.Clear();
+        _allMinionSkills.AddRange(allMinionSkills);
+        UpdateMinionSkillPanel();
+    }
+
+    private void OnMinionSpawned(Character character)
+    {
+        if (character == null || character.IsDead) return;
+
+        if (character is MinionComponent)
         {
-            _playerIcon.OnCharacterSelected(_currentHero);
-            _minionPanel.OnCharacterSelected(_currentHero);
-            _skillPanel.OnCharacterSelected(_currentCharacter);
+            var skillManager = character.GetComponent<SkillManager>();
+            if (skillManager == null) return;
 
-            _attributesPanel.gameObject.SetActive(true);
-            _attributesPanel.Show(_currentHero.Data.Attributes);
+            var newSkills = new List<Skill>();
+            foreach (var skill in skillManager.SelectedSkills)
+            {
+                if (skill == null) continue;
+                if (_allMinionSkills.Contains(skill)) continue;
 
-            _talentsPanel.gameObject.SetActive(true);
+                _allMinionSkills.Add(skill);
+                newSkills.Add(skill);
+            }
 
-            _talentsPanel.Show(_currentHero.TalentManager, true, _currentHero.isOwned);
-            _rightSide.gameObject.SetActive(false);
+            _minionSkillMap[character] = newSkills;
+
+            UpdateMinionSkillPanel();
         }
-        else
+    }
+
+    private void UpdateMinionSkillPanel()
+    {
+        _skillMinionPanel.gameObject.SetActive(true);
+        _skillMinionPanel.SetHideUnusedButtons(true);
+
+        foreach (var skill in _allMinionSkills)
         {
-            _rightSide.gameObject.SetActive(true);
-            _talentsPanel2.Show(_currentHero.TalentManager, true, _currentHero.isOwned);
+            if (_skillMinionPanel.HasSkill(skill)) continue;
 
-            _playerIcon.OnCharacterSelected(_tempChar);
-            _minionPanel.OnCharacterSelected(_tempChar);
-            _skillPanel.OnCharacterSelected(_tempChar);
+            Debug.Log($"skill: {skill}");
+            _skillMinionPanel.AddSkill(skill);
+        }
+    }
 
-            _attributesPanel.gameObject.SetActive(true);
-            _attributesPanel.Show(_tempChar.Data.Attributes);
+    private void OnMinionRemoved(Character character)
+    {
+        if (character == null || !_minionSkillMap.ContainsKey(character)) return;
 
-            _talentsPanel.gameObject.SetActive(true);
+        var skillsToRemove = _minionSkillMap[character];
+        foreach (var skill in skillsToRemove)
+        {
+            _allMinionSkills.Remove(skill);
+        }
 
-            _talentsPanel.Show(_tempChar.TalentManager, true, _tempChar.isOwned);
+        _minionSkillMap.Remove(character);
+
+        UpdateMinionSkillPanel();
+
+        if (_allMinionSkills.Count == 0)
+        {
+            _skillMinionPanel.gameObject.SetActive(false);
         }
     }
 }

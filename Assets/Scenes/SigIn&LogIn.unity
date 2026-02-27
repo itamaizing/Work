@@ -1235,6 +1235,11 @@ MonoBehaviour:
   - {fileID: 2152374494346322251, guid: e3f8b1d07bf91a843899c3d8b908fa40, type: 3}
   - {fileID: 3906734254346883187, guid: b4974656f43ed384e9560645ff90b572, type: 3}
   - {fileID: 6581410618162525258, guid: a7f53fff04ebc6947aa302af5c5ecf21, type: 3}
+  - {fileID: 5951033593581366366, guid: 51af385f54fff2443b84b5bdc9b030ad, type: 3}
+  - {fileID: 2058911381882631605, guid: 4e34233c4c2d9d84f99c0f2e9143692f, type: 3}
+  - {fileID: 8361394281957908205, guid: 84b32eb190f515648ad48b7a83370fb4, type: 3}
+  - {fileID: 4305573293433524190, guid: 682f90d0fd7d378488c83f9fef85e8c2, type: 3}
+  - {fileID: 8763643763125113918, guid: 7ca7e11552419974da01f50646019b88, type: 3}
   - {fileID: 4656379208741956616, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
   - {fileID: 8493071214933416540, guid: 230941d2d9516a94ba4549647e2156c6, type: 3}
   - {fileID: 4656379208741956616, guid: 8436cda64b22c4f4f9becfe3d409d4fc, type: 3}
@@ -1768,7 +1773,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   workOn: {fileID: 1780031975}
   workOff: {fileID: 1791073519}
-  uIMenuMainWindow: {fileID: 0}
+  uIMenuMainWindow: {fileID: 1559230635589990854, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
 --- !u!1 &605208264
 GameObject:
   m_ObjectHideFlags: 0

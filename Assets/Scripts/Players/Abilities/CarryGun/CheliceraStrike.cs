@@ -94,12 +94,7 @@ public class CheliceraStrike : Skill
 
     public void CheliceraStrikeChanceDamageCrit(bool value) => isCheliceraStrikeChanceDamageCrit = value;
     public void EvolutionTalentTwo(bool value) => isEvolutionTalentTwo = value;
-
-    public void PsionicsTalentTwo(bool value, string text)
-    {
-        isPsionicsTalentTwo = value;
-        AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
-    }
+    public void PsionicsTalentTwo(bool value, string text) => isPsionicsTalentTwo = value;
 
     public void ChanceApplyBleedingIncrease(bool value) => _isChanceApplyBleedingIncrease = value;
     public void ChanceCritDamageIncrease(bool value) => _isChanceCritDamageIncrease = value;
@@ -248,24 +243,53 @@ public class CheliceraStrike : Skill
 
     private void DamageDealWithAttackingPsionicEnergy(Character targetCharacter)
     {
-        float attackingPsi = _spentAttackingPsiEnergy;
+        if (!isPsionicsTalentTwo || _attackingPsionicEnergy.CurrentValue <= 0f) return;
 
-        if (!isPsionicsTalentTwo && attackingPsi <= 0) return;
+        float psiValue = _attackingPsionicEnergy.CurrentValue;
 
-        float radius = attackingPsi >= AttackingPsiThresholdHigh ? RadiusHigh : attackingPsi >= AttackingPsiThresholdMid ? RadiusMid : RadiusLow;
+        // 1. ? Магический урон по цели
+        float bonusMagicDamage = _attackingPsionicEnergy.GetBonusDamage(psiValue);
 
-        if (attackingPsi >= AttackingPsiThresholdLow)
+        var magicDamageToMain = new Damage
         {
-            Collider[] nearbyEnemies = Physics.OverlapSphere(transform.position, radius, _targetsLayers);
-            foreach (var enemyCollider in nearbyEnemies)
-                if (enemyCollider.TryGetComponent<Character>(out var enemy) && enemy != targetCharacter)
-                {
-                    CmdDispel(enemy);
-                    ApplyDamage(attackingPsi, MagicDamagePerPsiNearby, enemy);
-                }
+            Value = bonusMagicDamage,
+            Type = DamageType.Magical,
+            PhysicAttackType = AttackRangeType.MeleeAttack,
+        };
 
-            TotalMagicDamageEnemy(targetCharacter, attackingPsi, MagicDamagePerPsiMainTarget);
-            CmdDispel(targetCharacter);
+        CmdApplyDamage(magicDamageToMain, targetCharacter.gameObject);
+        TotalMagicDamageEnemy(targetCharacter, psiValue, 1f);
+
+        int dispelCount = _attackingPsionicEnergy.GetDispelCount(psiValue);
+        CmdDispel(targetCharacter, dispelCount);
+
+        if (psiValue >= AttackingPsiThresholdLow)
+        {
+            float radius =
+                psiValue >= AttackingPsiThresholdHigh ? RadiusHigh :
+                psiValue >= AttackingPsiThresholdMid ? RadiusMid :
+                RadiusLow;
+
+            Collider[] nearbyEnemies = Physics.OverlapSphere(transform.position, radius, _targetsLayers);
+
+            foreach (var enemyCollider in nearbyEnemies)
+            {
+                if (enemyCollider.TryGetComponent<Character>(out var enemy) &&
+                    enemy != targetCharacter && enemy != _player)
+                {
+                    float aoeDamage = psiValue * MagicDamagePerPsiNearby;
+
+                    var magicDamageToEnemy = new Damage
+                    {
+                        Value = aoeDamage,
+                        Type = DamageType.Magical,
+                        PhysicAttackType = AttackRangeType.MeleeAttack,
+                    };
+
+                    CmdApplyDamage(magicDamageToEnemy, enemy.gameObject);
+                    TotalMagicDamageEnemy(enemy, psiValue, MagicDamagePerPsiNearby);
+                }
+            }
         }
     }
 
@@ -342,9 +366,9 @@ public class CheliceraStrike : Skill
     }
 
     [Command]
-    private void CmdDispel(Character targetCharacter)
+    private void CmdDispel(Character targetCharacter, int count)
     {
-        targetCharacter.CharacterState.DispelStates(StateType.Magic, targetCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
+        for (int i = 0; i < count; i++) targetCharacter.CharacterState.DispelStates(StateType.Magic, true, isDispelOneState: true);
     }
     protected override void ClearData()
     {

@@ -28,8 +28,9 @@ public class IceShadowObject : Projectiles
 	private const float MinShadowLifetime = 2f;
 	private const float MaxShadowLifetime = 5f;
 
-	private const float MinFreezeDuration = 2f;
-	private const float MaxFreezeDuration = 5f;
+	private const float MinFreezeDuration = 0.2f;
+	//private const float MinFreezeDuration = 2f;
+	//private const float MaxFreezeDuration = 5f;
 
 	private const float ChainFreezeRadius = 3f;
 
@@ -126,16 +127,22 @@ public class IceShadowObject : Projectiles
 
 		if (collision.gameObject == _dad.gameObject)
 		{
-			if (_iceDeathInShadowTalent) _dad.Health.IncreaseRegen(1.01f + _modifierRegen);
+			if (_iceDeathInShadowTalent) _dad.Health.IncreaseRegen(BaseRegenMultiplier + _modifierRegen);
+			//_healthPlayer.SetBoostRegen(0.01f);
+			//Debug.LogError("setboost in hp has been deleted");
 		}
-		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject && collision.gameObject.layer != LayerMask.NameToLayer("Allies"))
+		/*if(collision.TryGetComponent<IcePuddleObject>(out var obj)) 
+		{
+			//attact speed increase
+		}*/
+		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject && collision.gameObject.layer != _skill.TargetsLayers)
 			//&& enemyShadow)
 		{
 			float timeElapsed = Time.time - _lifeTimer;
 			float remainingLifetime = Mathf.Max(0f, timeToDestroy - timeElapsed);
-			float freezeDuration = Mathf.Clamp(remainingLifetime, MinFreezeDuration, MaxFreezeDuration);
+			//float freezeDuration = Mathf.Clamp(remainingLifetime, MinFreezeDuration, MaxFreezeDuration);
 
-			//target.CharacterState.AddState(States.Frozen, freezeDuration, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
+			target.CharacterState.AddState(States.Frozen, remainingLifetime, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
 			//GetComponent<Collider2D>().enabled = false;
 			//Destroy(gameObject);
 			if(_lastHit)
@@ -145,24 +152,16 @@ public class IceShadowObject : Projectiles
 				{
 					if (enemy.TryGetComponent<Character>(out var newTatget) && collision.gameObject != _dad.gameObject)
 					{
-                        StartCoroutine(CrutchDelay(newTatget, freezeDuration));
-                        //newTatget.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
+						newTatget.CharacterState.AddState(States.Frozen, remainingLifetime, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
 					}
 				}
 			}
-
 			Explode();
 		}
 		//Explode();
 	}
-    private IEnumerator CrutchDelay(Character target, float duration)
-    {
-        //yield return new WaitForSecondsRealtime(0.1f);
-        yield return null;
-        target.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
-        Explode();
-    }
-    public void Explode()
+
+	public void Explode()
 	{
 		if (_hitEffect != null)
 		{

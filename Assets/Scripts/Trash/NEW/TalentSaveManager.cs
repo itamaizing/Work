@@ -14,36 +14,12 @@ public class TalentSaveManager
         _saveManager = saveManager;
     }
 
-	/*public void SaveTalent(HeroComponent character, int idGroup, string idTalent, bool isActive, int saveGroup)
-	{
-		var isTalentActive = isActive ? 1 : 0;
-		var talentGroup = character.TalentManager.TalentsGroups.FirstOrDefault(o => o.ID == idGroup);
-		var talent = talentGroup?.TalentsData.FirstOrDefault(o => o.Data.Name == idTalent);
-
-		if (talentGroup == null || talent == null) return;
-
-		var points = talentGroup.BonusAttributePoints(talent.Data.Name, !isActive);
-		talent.Data.IsOpen = isActive;
-
-		if (isActive)
-		{
-			_saveManager.SaveAttributePoints(points);
-		}
-		else
-		{
-			HandleDeactivation(points);
-		}
-		Debug.Log("SHOULD " + isActive + " TALENT " + $"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}");
-
-		_saveData.SaveInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", isTalentActive);
-	}*/
-
 	public void SaveTalent(HeroComponent character, int idGroup, int row, string idTalent, bool isActive, int saveGroup)
     {
         var isTalentActive = isActive ? 1 : 0;
 		//var talentGroup = character.TalentManager.TalentsGroups.FirstOrDefault(o => o.ID == idGroup);
 		// var talent = talentGroup?.TalentsData.FirstOrDefault(o => o.Data.Name == idTalent);
-		if (!character.TalentManager.CanOpenTalent) return;
+		if (isActive && !character.TalentManager.CanOpenTalent) return;
 
 		var talentGroup = character.TalentManager.TalentsGroups.FirstOrDefault(o => o.ID == idGroup);
 		var talentRow = talentGroup.TalentRows[row];
@@ -75,16 +51,17 @@ public class TalentSaveManager
         int remainingPoints = points;
 
         remainingPoints = _saveManager.ReduceFreePoints(remainingPoints);
+		_saveManager.ReduceAttributePoints(remainingPoints);
 
-        if (remainingPoints > 0)
-        {
-            _saveManager.ReduceAttributePoints(remainingPoints);
-        }
+		//if (remainingPoints > 0)
+  //      {
+  //          _saveManager.ReduceAttributePoints(remainingPoints);
+  //      }
 
-        if (remainingPoints > 0)
-        {
-            Debug.LogWarning("Недостаточно очков для деактивации таланта!");
-        }
+  //      if (remainingPoints > 0)
+  //      {
+  //          Debug.LogWarning("Недостаточно очков для деактивации таланта!");
+  //      }
     }
 	/*public void LoadTalent(HeroComponent character, int idGroup, string idTalent, bool needActive, int saveGroup)
 	{

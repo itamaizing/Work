@@ -8,6 +8,7 @@ public class FrostingState : AbstractCharacterState
 
 	private GameObject _ice;
 	private AudioSource _audioSource;
+	private float _duration;
 	private float _baseDuration;
 	private float _damageOnStart;
 	private float _damageToExit;
@@ -20,6 +21,7 @@ public class FrostingState : AbstractCharacterState
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
+		//Debug.Log("Entering Frosting State");
 		if (damageToExit == 0)
 		{
 			_damageToExit = 10000;
@@ -28,11 +30,12 @@ public class FrostingState : AbstractCharacterState
 		{
 			_damageToExit = damageToExit;
 		}
+		_duration = durationToExit;
 		_baseDuration = durationToExit;
 		_audioSource = character.GetComponent<AudioSource>();
 
 		_damageOnStart = characterState.Character.Health.SumDamageTaken;
-		characterState.Character.Move.SetCanMove(false);
+		characterState.Character.Move.SetCanMoveState(false);
 		characterState.Character.Move.LookAtTransform(characterState.gameObject.transform);
 
 		if (character.TryGetComponent<Character>(out var ability))
@@ -64,7 +67,8 @@ public class FrostingState : AbstractCharacterState
 
 	public override void UpdateState()
 	{
-		if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || turnOff)
+		_duration -= Time.deltaTime;
+		if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || _duration < 0 || turnOff)
 		{
 			ExitState();
 		}
@@ -77,7 +81,7 @@ public class FrostingState : AbstractCharacterState
 
 		if (!characterState.Check(StatusEffect.Move))
 		{
-			characterState.Character.Move.SetCanMove(true);
+			characterState.Character.Move.SetCanMoveState(true);
 		}
 
 		characterState.Character.Move.StopLookAt();
@@ -95,4 +99,11 @@ public class FrostingState : AbstractCharacterState
 
 		if (characterState.StateEffects.Ice != null) _ice.SetActive(false);
 	}
+
+	public override bool Stack(float time)
+	{
+		_duration = _baseDuration;
+		return true;
+	}
+
 }

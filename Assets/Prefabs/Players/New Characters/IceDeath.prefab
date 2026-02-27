@@ -3578,7 +3578,7 @@ MonoBehaviour:
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -3642,9 +3642,16 @@ MonoBehaviour:
     _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
+  _abilitySchool: 0
+  _abilityForm: 1
+  _damageType: 0
+  _attackRangeType: 0
+  _skillType: 0
+  _moving: 0
+  autoAttack: 0
   _infoComponent:
     _school: 0
-    _form: 0
+    _form: 1
     _damageType: 0
     _rangeType: 0
     _skillType: 0
@@ -3657,7 +3664,7 @@ MonoBehaviour:
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   _obstacle:
     serializedVersion: 2
     m_Bits: 0

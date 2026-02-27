@@ -26,7 +26,7 @@ public class CharacterData : ScriptableObject
     public helperCharData_ResourceInfo Resource => _mainResource;
     public List<helperCharData_ResourceInfo> ExtraResources => _extraResources;
 
-    public AttributeGroup Attributes => _attributes;
+    //public AttributeGroup Attributes => _attributes;
 
     private void OnValidate()
     {
