@@ -16,6 +16,12 @@ public class Impatica : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
+    private bool _isExtendDamageAbsorption = false;
+
+    public bool IsExtendDamageAbsorption { get => _isExtendDamageAbsorption; set => _isExtendDamageAbsorption = value; }
+
+    public void ExtendDamageAbsorption(bool value) => _isExtendDamageAbsorption = value;
+
     public void SecondCharge(bool value)
     {
         if (value) AddMaxChargeCount();

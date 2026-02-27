@@ -10,7 +10,12 @@ public class ImpatienceState : AbstractCharacterState
 
     private bool _isProcessingSharedDamage;
     private bool _isAccumulationActive;
+    private bool _extendDamageAbsorption;
     private BasePsionicEnergy _casterPsionic;
+    private Impatica _impatica;
+
+    private const float PsiExplosionPercent = 0.3f;
+    private const float PsiExplosionRadius = 3f;
 
     private List<StatusEffect> _effects = new() { StatusEffect.Ability };
 
@@ -35,6 +40,9 @@ public class ImpatienceState : AbstractCharacterState
         if (personWhoMadeBuff != null)
         {
             _casterPsionic = personWhoMadeBuff.GetComponent<BasePsionicEnergy>();
+            _impatica = personWhoMadeBuff.GetComponent<Impatica>();
+
+            _isAccumulationActive = _impatica.IsExtendDamageAbsorption;
 
             if (_casterPsionic != null) _casterPsionic.OnAccumulationPsionicChanged += HandleAccumulationChanged;
         }
@@ -66,33 +74,75 @@ public class ImpatienceState : AbstractCharacterState
 
     private void HandleBeforeDamage(ref Damage damage, Skill skill)
     {
+        if (!NetworkServer.active) return;
         if (_isProcessingSharedDamage) return;
         if (damage.Value <= 0) return;
 
-        if (_isAccumulationActive && _casterPsionic != null)
+        float originalDamage = damage.Value;
+
+        if (_extendDamageAbsorption && _casterPsionic != null)
         {
-            float psiGain = damage.Value * 0.1f;
-            _casterPsionic.AddPsiAndRestartDecay(psiGain);
+            if (_casterPsionic.CurrentValue > 0)
+            {
+                float absorbAmount = Mathf.Min(_casterPsionic.CurrentValue, damage.Value);
+
+                _casterPsionic.UsePsiEnergy(absorbAmount);
+
+                damage.Value -= absorbAmount;
+                damage.Value = Mathf.Max(damage.Value, 0f);
+
+                float aoeDamageValue = absorbAmount * PsiExplosionPercent;
+
+                if (aoeDamageValue > 0f)
+                {
+                    Collider[] hits = Physics.OverlapSphere(
+                        characterState.Character.transform.position,
+                        PsiExplosionRadius
+                    );
+
+                    foreach (var hit in hits)
+                    {
+                        Character target = hit.GetComponent<Character>();
+                        if (target == null) continue;
+                        if (target == characterState.Character) continue;
+                        if (target.IsDead) continue;
+
+                        Damage aoeDamage = new Damage
+                        {
+                            Value = aoeDamageValue,
+                            Type = DamageType.Magical,
+                            School = Schools.Air,
+                            Form = AbilityForm.Magic
+                        };
+
+                        target.Health.TryTakeDamage(ref aoeDamage, skill);
+                    }
+                }
+            }
         }
+
+        if (damage.Value <= 0f) return;
 
         List<Character> recipients = new List<Character>(ActiveCharacters);
 
-        if (personWhoMadeBuff != null && !personWhoMadeBuff.IsDead)
+        if (personWhoMadeBuff != null &&
+            !personWhoMadeBuff.IsDead &&
+            !recipients.Contains(personWhoMadeBuff))
         {
-            if (!recipients.Contains(personWhoMadeBuff))
-                recipients.Add(personWhoMadeBuff);
+            recipients.Add(personWhoMadeBuff);
         }
 
-        if (recipients.Count <= 1) return;
+        if (recipients.Count <= 1)
+            return;
 
-        float originalDamage = damage.Value;
-        float dividedDamage = originalDamage / recipients.Count;
+        float dividedDamage = damage.Value / recipients.Count;
 
         _isProcessingSharedDamage = true;
 
         foreach (var character in recipients)
         {
             if (character == characterState.Character) continue;
+            if (character == null || character.IsDead) continue;
 
             Damage sharedDamage = new Damage
             {
