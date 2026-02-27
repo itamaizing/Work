@@ -603,7 +603,7 @@ public class CharacterState : NetworkBehaviour
                 if ((_currentStates[i] is RefreshingState) == false) break;
 				if (_currentStates[i].MaxStacksCount == 0)
                 {
-					//bool canStack = _currentStates[i].Stack(duration);
+					bool canStack = _currentStates[i].Stack(duration);
 					int newMaxStack = _currentStates[i].MaxStacksCount;
                     if (!_currentStates[i].IsHidden)
                         _stateIcons.ActivateIco(state, duration, 1, false, newMaxStack);

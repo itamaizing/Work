@@ -44,7 +44,6 @@ public class SkillManager : MonoBehaviour
     public IEnumerable<Skill> DefaultSkills => _skills.Where(o => o.IsTalentSpell == false);
     public IEnumerable<Skill> TalentsSkills => _skills.Where(o => o.IsTalentSpell);
 
-    public AutoSkillCast AutoSkillCast => _autoSkillCast;
     public List<Skill> Abilities => _skills;
     public event Action<int> SkillSelected;
     public event Action<int> SkillDeselected;

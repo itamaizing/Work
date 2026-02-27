@@ -37,16 +37,18 @@ public class FlashOfLight : Skill,IPolaritySwitchable
     private bool IsAllyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Allies");
     private bool IsEnemyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Enemy");
     
-    protected override bool IsCanCast => IsCanCastCheck();
+    //protected override bool IsCanCast => IsCanCastCheck();
 
-    private bool IsCanCastCheck()
-    {
-        if (Targeting.GetTarget()?.Character == null) return false;
+    //private bool IsCanCastCheck()
+    //{
+    //    if (Targeting.GetTarget()?.Character == null) return false;
 
-        if (isLightMode) return (Targeting.GetTarget()?.Character is Character character && character == Hero) || Targeting.GetTarget()?.Character.gameObject.layer == LayerMask.NameToLayer("Allies");
-        else
-            return Targeting.GetTarget()?.Character.gameObject.layer == LayerMask.NameToLayer("Enemy");
-    }
+    //    if (isLightMode)
+    //        return (Targeting.GetTarget()?.Character is Character character &&character == Hero) ||
+    //            Targeting.GetTarget()?.Character.gameObject.layer == LayerMask.NameToLayer("Allies");
+    //    else
+    //        return Targeting.GetTarget()?.Character.gameObject.layer == LayerMask.NameToLayer("Enemy");
+    //}
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("Spell");
     protected override int AnimTriggerCast => 0;
@@ -115,27 +117,31 @@ public class FlashOfLight : Skill,IPolaritySwitchable
         {
             if (GetMouseButton)
             {
-                Vector3 clickPoint = GetMousePoint();
+                Vector3 clickPoint = Targeting.GetMousePoint();
 
-                FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
                 //_target = GetRaycastTarget(true);
-
-                if (GetTempTargetCharacter() is Character character)
+                Debug.Log(Targeting.GetTempTarget()?.Object);
+                if (Targeting.GetTempTarget()?.Character is Character character)
                 {
-                    if (GetTempTargetCharacter() != null && (IsEnemyTarget(character) && isLightMode) || (IsAllyTarget(character) && !isLightMode))
+                    if (Targeting.GetTempTarget()?.Character != null &&
+                        (IsEnemyTarget(character) && isLightMode) || (IsAllyTarget(character) && !isLightMode))
                     {
-                        ClearTempTarget();
+                        Targeting.ClearTempTarget();
+                        Debug.Log("Wrong");
                     }
                     else
                     {
-                        GetTempTargetCharacter().SelectedCircle.IsActive = true;
-                        _hero.Move.LookAtTransform(GetTempTargetCharacter().transform);
+                        Debug.Log("Right");
+                        Targeting.GetTempTarget().Character.SelectedCircle.IsActive = true;
+                        _hero.Move.LookAtTransform(Targeting.GetTempTarget()?.Character.transform);
                     }
                 }
 
             }
             yield return null;
         }
+        Debug.Log("Setting Target");
         Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(Targeting.GetTarget()?.Character);
@@ -144,9 +150,10 @@ public class FlashOfLight : Skill,IPolaritySwitchable
 
     protected override IEnumerator CastJob()
     {
+        Debug.Log("CastJob");
         if (Targeting.GetTarget()?.Character == null || !IsCanCast) yield break;
 
-        var target = GetTargetCharacter();
+        var target = Targeting.GetTarget()?.Character;
         
         if (isLightMode && IsEnemyTarget(target) || !isLightMode && !IsEnemyTarget(target))
         {
@@ -186,6 +193,7 @@ public class FlashOfLight : Skill,IPolaritySwitchable
 
     private void HandleFlashOfDarkness()
     {
+        Debug.Log("Damaging" + Targeting.GetTarget()?.Character.gameObject);
         Damage(Targeting.GetTarget()?.Character);
     }
 

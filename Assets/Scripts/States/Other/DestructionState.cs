@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,7 +25,7 @@ public class DestructionState : AbstractCharacterState
         base.personWhoMadeBuff = personWhoMadeBuff;
         duration = durationToExit;
 
-        _health = character.Character.Health;
+        //_health = character.Character.Health; //??
         //_accumulatedEffectiveness = 1f;
         //_totalDamageInInterval = 0f;
 

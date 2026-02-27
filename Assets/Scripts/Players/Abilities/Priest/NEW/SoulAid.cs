@@ -77,25 +77,25 @@ public class SoulAid : Skill
             {
                 Vector3 clickPoint = Targeting.GetMousePoint();
                 
-                FindTarget(_clickRadius, clickPoint, canTargetHimself: false);
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: false);
                 
-                if (GetTempTargetCharacter() is Character character)
+                if (Targeting.GetTempTarget().Character is Character character)
                 {
-                    if (GetTempTargetCharacter() != null && !IsAllyTarget(character))
+                    if (Targeting.GetTempTarget().Character != null && !IsAllyTarget(character))
                     {
-                        ClearTempTarget();
+                        Targeting.ClearTempTarget();
                     }
                     else
                     {
-                        GetTempTargetCharacter().SelectedCircle.IsActive = true;
-                        _hero.Move.LookAtTransform(GetTempTargetCharacter().transform);
+                        Targeting.GetTempTarget().Character.SelectedCircle.IsActive = true;
+                        _hero.Move.LookAtTransform(Targeting.GetTempTarget().Character.transform);
                     }
                 }
             }
             yield return null;
         }
         TargetInfo targetInfo = new TargetInfo();
-        Targeting.SetTarget(GetTempTarget()?.Character);
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
         targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
@@ -167,7 +167,7 @@ public class SoulAid : Skill
         if (targetMove == null) yield break;
 
         bool originalCanMove = targetMove.CanMove;
-        targetMove.CanMove = false;
+        targetMove.SetCanMove(false);
 
         while (Vector2.Distance(transform.position, targetTransform.position) > 0.01f)
         {
@@ -188,7 +188,7 @@ public class SoulAid : Skill
             yield return new WaitForFixedUpdate();
         }
 
-        targetMove.CanMove = originalCanMove;
+        targetMove.SetCanMove(originalCanMove);
     }
 
     [ClientRpc]

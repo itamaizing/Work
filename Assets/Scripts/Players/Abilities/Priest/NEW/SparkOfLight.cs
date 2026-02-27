@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -132,7 +132,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
             {
                 Vector3 clickPoint = Targeting.GetMousePoint();
 
-                FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
 
                 if (Targeting.GetTempTarget()?.Character is Character character)
                 {
@@ -159,9 +159,9 @@ public class SparkOfLight : Skill,IPolaritySwitchable
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() == null) yield break;
+        if (Targeting.GetTarget()?.Character == null) yield break;
         
-        GameObject target = GetTargetCharacter().gameObject;
+        GameObject target = Targeting.GetTarget()?.Character.gameObject;
         CmdSpawnProjectile(target, isLightMode);
         ClearData();
     }
@@ -234,9 +234,10 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         }
     }
     
-    [Command] private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) => stateComponent.AddState(states, duration, 1f, gameObject, Name);
+    //[Command]
+    private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) => stateComponent.AddState(states, duration, 1f, gameObject, Name);
 
-    [TargetRpc]
+    //[TargetRpc]
     private void TargetRpcOnEndPointReached(GameObject target)
     {
         if (isLightMode) HandleDefaultMode(target.GetComponent<Character>());

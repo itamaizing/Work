@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
@@ -49,7 +49,7 @@ public class ReversePolarity : Skill
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         if (_hero == null) yield break;
-        SetTarget(_hero);
+        Targeting.SetTarget(_hero);
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(_hero);
         callbackDataSaved(targetInfo);

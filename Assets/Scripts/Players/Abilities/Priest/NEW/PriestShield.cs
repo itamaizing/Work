@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -255,18 +255,18 @@ public class PriestShield : Skill
             {
                 Vector3 clickPoint = Targeting.GetMousePoint();
 
-                FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
 
-                if (GetTempTargetCharacter() is Character character)
+                if (Targeting.GetTempTarget().Character is Character character)
                 {
-                    if (GetTempTargetCharacter() != null && (IsEnemyTarget(character) && isLightMode) || (IsAllyTarget(character) && !isLightMode))
+                    if (Targeting.GetTempTarget().Character != null && (Targeting.GetTempTarget(character).Character && isLightMode) || (Targeting.GetTempTarget(character).Character && !isLightMode))
                     {
-                        ClearTempTarget();
+                        Targeting.ClearTempTarget();
                     }
                     else
                     {
-                        GetTempTargetCharacter().SelectedCircle.IsActive = true;
-                        _hero.Move.LookAtTransform(GetTempTargetCharacter().transform);
+                        Targeting.GetTempTarget().Character.SelectedCircle.IsActive = true;
+                        _hero.Move.LookAtTransform(Targeting.GetTempTarget().Character.transform);
                     }
                 }
             }
@@ -274,7 +274,7 @@ public class PriestShield : Skill
             yield return null;
         }
         
-        SetTarget(Targeting.GetTempTarget()?.Character);
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
         targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }

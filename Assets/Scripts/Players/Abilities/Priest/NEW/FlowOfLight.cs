@@ -145,21 +145,21 @@ public class FlowOfLight : Skill, IPolaritySwitchable
         {
             if (GetMouseButton)
             {
-                Vector3 clickPoint = GetMousePoint();
+                Vector3 clickPoint = Targeting.GetMousePoint();
 
-                FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
                 //_target = GetRaycastTarget(true);
 
-                if (GetTempTargetCharacter() != null)
+                if (Targeting.GetTempTarget()?.Character != null)
                 {
-                    if (isLightMode && IsEnemyTarget(GetTempTargetCharacter()) || !isLightMode && !IsEnemyTarget(GetTempTargetCharacter()))
+                    if (isLightMode && IsEnemyTarget(Targeting.GetTempTarget()?.Character) || !isLightMode && !IsEnemyTarget(Targeting.GetTempTarget()?.Character))
                     {
-                        ClearTempTarget();
+                        Targeting.ClearTempTarget();
                     }
                     else
                     {
-                        GetTempTargetCharacter().SelectedCircle.IsActive = true;
-                        _hero.Move.LookAtTransform(GetTempTargetCharacter().transform);
+                        Targeting.GetTempTarget().Character.SelectedCircle.IsActive = true;
+                        _hero.Move.LookAtTransform(Targeting.GetTempTarget()?.Character.transform);
                     }
                 }
 
@@ -235,11 +235,11 @@ public class FlowOfLight : Skill, IPolaritySwitchable
                 }
                 if (_isDestructionFillingTalent)
                 {
-                    TryApplyDestructionFilling(GetTargetCharacter().CharacterState);
+                    TryApplyDestructionFilling(Targeting.GetTarget()?.Character.CharacterState);
                 }
                 if (_isDestructionFillingTalent)
                 {
-                    TryApplyDestructionFilling(GetTargetCharacter().CharacterState);
+                    TryApplyDestructionFilling(Targeting.GetTarget()?.Character.CharacterState);
                 }
             }
 

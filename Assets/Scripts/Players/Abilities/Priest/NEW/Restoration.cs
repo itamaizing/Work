@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -102,8 +102,8 @@ public class Restoration : Skill,IPolaritySwitchable
         bool isAlly = Targeting.GetTarget()?.Character.gameObject.layer == LayerMask.NameToLayer("Allies");
         if (isAlly && TryPayCost())
         {
-            CmdRemoveState(GetTargetCharacter(), States.Restoration);
-            CmdAddState(GetTargetCharacter(), States.Restoration, lightDuration);
+            CmdRemoveState(Targeting.GetTarget()?.Character, States.Restoration);
+            CmdAddState(Targeting.GetTarget()?.Character, States.Restoration, lightDuration);
         }
     }
 
@@ -122,8 +122,8 @@ public class Restoration : Skill,IPolaritySwitchable
         bool isEnemy = Targeting.GetTarget()?.Character.gameObject.layer == LayerMask.NameToLayer("Enemy");
         if (isEnemy && TryPayCost())
         {
-            CmdRemoveState(GetTargetCharacter(), States.Destruction);
-            CmdAddState(GetTargetCharacter(), States.Destruction, darkDuration);
+            CmdRemoveState(Targeting.GetTarget()?.Character, States.Destruction);
+            CmdAddState(Targeting.GetTarget()?.Character, States.Destruction, darkDuration);
         }
     }
 
@@ -135,24 +135,24 @@ public class Restoration : Skill,IPolaritySwitchable
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (Targeting.GetTarget()?.Character == null)
+        while (Targeting.GetTempTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
-                Vector3 clickPoint = GetMousePoint();
+                Vector3 clickPoint = Targeting.GetMousePoint();
 
-                FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
                 
-                if (GetTempTargetCharacter() is Character character)
+                if (Targeting.GetTempTarget()?.Character is Character character)
                 {
-                    if (GetTempTargetCharacter() != null && (IsEnemyTarget(character) && isLightMode) || (IsAllyTarget(character) && !isLightMode))
+                    if (Targeting.GetTempTarget()?.Character != null && (IsEnemyTarget(character) && isLightMode) || (IsAllyTarget(character) && !isLightMode))
                     {
-                        ClearTempTarget();
+                        Targeting.ClearTempTarget();
                     }
                     else
                     {
-                        GetTempTargetCharacter().SelectedCircle.IsActive = true;
-                        _hero.Move.LookAtTransform(GetTempTargetCharacter().transform);
+                        Targeting.GetTempTarget().Character.SelectedCircle.IsActive = true;
+                        _hero.Move.LookAtTransform(Targeting.GetTempTarget()?.Character.transform);
                     }
                 }
             }
@@ -160,7 +160,7 @@ public class Restoration : Skill,IPolaritySwitchable
         }
 
         TargetInfo targetInfo = new();
-        Targeting.SetTarget(GetTempTarget()?.Character);
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
         targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
@@ -189,20 +189,20 @@ public class Restoration : Skill,IPolaritySwitchable
        // _target = null;
     }
 
-    [Command]
+    //[Command]
     private void CmdPlayShootSound()
     {
         RpcPlayShotSound();
     }
 
-    [Command]
+    //[Command]
     private void CmdRemoveState(Character character, States states) => character.CharacterState.RemoveState(states);
 
     
-    [Command]
+    //[Command]
     private void CmdAddState(Character character, States states, float duration) => character.CharacterState.AddState(states, duration, 0, Hero.gameObject, _initialRestorationName);
 
-    [ClientRpc]
+    //[ClientRpc]
     private void RpcPlayShotSound()
     {
         if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
