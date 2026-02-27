@@ -6,7 +6,7 @@ using UnityEngine;
 [Serializable]
 public class Attribute
 {
-    //private string _name;
+    private string _name;
 
     [SerializeField] private float _baseValue;
     [SerializeField] private float _cachedValue;
@@ -16,6 +16,8 @@ public class Attribute
     private float _flat = 0, _percent = 0, _multiplier = 0, _menuFlat = 0;
 
     #region Properties
+    public string Name => _name;
+    public List<AttributeModifier> Modifiers => _modifiers;
     public float BaseValue => _baseValue;
     public float FlatBonus
     {

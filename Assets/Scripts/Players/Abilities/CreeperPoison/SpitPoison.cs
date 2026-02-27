@@ -314,7 +314,7 @@ public class SpitPoison : Skill, IAltAbility
         direction.y = 0;
         direction = direction.normalized;
 
-        point = spawnPosition + direction * CastLength;
+        point = spawnPosition + direction * AreaInfo.CastLength;
         point.y = spawnPosition.y;
 
         projectile.ScheduleAutoDestroy(point, _projectile.Speed);

@@ -65,8 +65,8 @@ public class PhysicalAttack : Skill
 
 	private void HandleSkillCanceled()
 	{
-		ClearTarget();
-		ClearTempTarget();
+		Targeting.ClearTarget();
+		Targeting.ClearTempTarget();
 		_hero.Move.StopLookAt();
 		AnimCastEnded();
 	}
@@ -122,9 +122,9 @@ public class PhysicalAttack : Skill
 
 	public void PhysicalAttackCast()
 	{
-		if (GetTargetCharacter() == null ||
-			Vector3.Distance(GetTargetCharacter().transform.position, transform.position) > Radius ||
-			!NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle))
+		if (Targeting.GetTarget()?.Character == null ||
+			Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) > AreaInfo.Radius ||
+			!Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle))
 		{
 			TryCancel();
 			return;

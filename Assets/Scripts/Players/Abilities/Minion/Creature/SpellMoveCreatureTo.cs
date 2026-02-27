@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using UnityEngine;
 using DG.Tweening;
@@ -43,7 +43,7 @@ public abstract class SpellMoveCreatureTo : Skill
         while (float.IsPositiveInfinity(clicked.x))
         {
             if (GetMouseButton)
-                clicked = GetMousePoint();
+                clicked = Targeting.GetMousePoint();
 
             yield return null;
         }
@@ -186,7 +186,7 @@ public abstract class SpellMoveCreatureTo : Skill
 
     protected Character FindNearestEnemy()
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, Radius, TargetsLayers);
+        Collider[] hits = Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.Layer);
 
         Character nearest = null;
         float minDist = float.MaxValue;
@@ -229,7 +229,7 @@ public abstract class SpellMoveCreatureTo : Skill
     {
         activeTween?.Kill();
         moveActive = false;
-        ClearTarget();
+        Targeting.ClearTarget();
     }
 
     protected override void ClearData()

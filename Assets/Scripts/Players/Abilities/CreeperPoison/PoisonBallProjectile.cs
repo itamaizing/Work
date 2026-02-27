@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using UnityEngine;
 
@@ -71,7 +71,7 @@ public class PoisonBallProjectile : Test_Projectile
 
     private bool IsEnemyByLayer(GameObject target)
     {
-        return ((1 << target.layer) & _skill.TargetsLayers.value) != 0;
+        return ((1 << target.layer) & _skill.Targeting.Layer.value) != 0;
     }
 
     #region OnTriggerEnter
@@ -210,7 +210,7 @@ public class PoisonBallProjectile : Test_Projectile
         Debug.Log("PoisonBallProjectile / MoveBallOnMaxDistance / speed = " + speed);
         Debug.Log("PoisonBallProjectile / MoveBallOnMaxDistance / point = " + point);
 
-        Vector3 finalPoint = transform.position + _directionOfFlight * Mathf.Min(Vector3.Distance(transform.position, point), _skill.CastLength);
+        Vector3 finalPoint = transform.position + _directionOfFlight * Mathf.Min(Vector3.Distance(transform.position, point), _skill.AreaInfo.CastLength);
         ScheduleAutoDestroy(finalPoint, speed);
         MoveToPoint(point, speed);
     }

@@ -36,7 +36,7 @@ public class BasePsionicEnergy : Resource, IDamageable
     public PsionicEnergySkill PsionicEnergySkill { get => psionicEnergySkill; set => psionicEnergySkill = value; }
     public float PsionicaDecayTime { get => _psionicaDecayTime; set => _psionicaDecayTime = value; }
 
-    public override void Initialize(Attributes maxValue, Attributes regenValue, CharacterData data)
+    public override void Initialize(Attribute maxValue, Attribute regenValue, CharacterData data)
     {
         base.Initialize(maxValue, regenValue, data);
     }

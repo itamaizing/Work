@@ -290,63 +290,7 @@ public class CreeperStrike : Skill
 
             _isHit = false;
         }
-
-        TryTriggerWindow(character); //Возможно нужно удалть от сюда
     }
-
-    #region Combo Creeper
-
-    private void TryTriggerWindow(Character target)
-    {
-        if (target == null) return;
-        if (_recentTargets.Exists(character => character == null || character.IsDead)) _recentTargets.Clear();
-
-        RegisterRecentTarget(target);
-
-        var lastCast = _player.Abilities.LastCastedSkill;
-        var previewCast = _player.Abilities.PreviewCastedSkill;
-
-        bool isCreeperChain = lastCast is CreeperStrike || lastCast is LightningStrikes;
-        bool isDoubleCreeperChain = isCreeperChain && previewCast is CreeperStrike || previewCast is LightningStrikes;
-
-        bool sameTargetTwice = SameTargetCastCounter(2);
-        bool sameTargetThreeTimes = SameTargetCastCounter(3);
-
-        if (_recentTargets.Count >= 4 && _recentTargets[3] != _recentTargets[0]) CmdTriggerSneakySpitWindowCancel();
-
-        if (sameTargetThreeTimes && isDoubleCreeperChain) CmdTriggerSneakySpitFreeWindow(target);
-        if (sameTargetTwice && isCreeperChain) CmdBlockPassiveSkillFreeWindow(target);
-    }
-
-    private void RegisterRecentTarget(Character target)
-    {
-        _recentTargets.Insert(0, target);
-
-        if (_recentTargets.Count > 4) _recentTargets.RemoveAt(_recentTargets.Count - 1);
-        if (ClearTargetsCoroutine != null)
-            StopCoroutine(ClearTargetsCoroutine);
-
-        ClearTargetsCoroutine = StartCoroutine(ClearRecentTargetsAfterDelay());
-    }
-
-    private bool SameTargetCastCounter(int count)
-    {
-        if (_recentTargets.Count < count) return false;
-
-        Character first = _recentTargets[0];
-
-        for (int i = 1; i < count; i++) if (_recentTargets[i] != first) return false;
-        return true;
-    }
-
-    private IEnumerator ClearRecentTargetsAfterDelay()
-    {
-        yield return new WaitForSeconds(_targetMemoryTime);
-        _recentTargets.Clear();
-    }
-
-    #endregion
-// до сюда
 
     private IEnumerator TimerForTwoHit(float duration, bool isUsingLightningStrikes)
     {

@@ -178,7 +178,7 @@ public class LightningStrikes : Skill
 
         if (_player.Abilities.LastCastedSkill is CreeperStrike) _player.Abilities.PreviewCastedSkill = this;
         _player.Abilities.LastCastedSkill = this;
-        _creeperStrike.DamageDeal(GetTargetCharacter(), true);
+        _creeperStrike.DamageDeal(Targeting.GetTarget()?.Character, true);
 
        _isCanDamageDeal = false;
 

@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -8,7 +8,7 @@ public class Impatica : Skill
     [SerializeField] private Character _playerLinks;
     [SerializeField] private float duration;
 
-    protected override bool IsCanCast => IsHaveCharge && GetTargetCharacter() != null;
+    protected override bool IsCanCast => IsHaveCharge && Targeting.GetTarget()?.Character != null;
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     private const float TargetSearchRadius = 0.5f;
@@ -33,21 +33,21 @@ public class Impatica : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (GetTempTargetCharacter() == null)
+        while (Targeting.GetTempTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter(TargetSearchRadius, GetMousePoint());
+                Targeting.FindTempTarget(Targeting.GetMousePoint(), TargetSearchRadius);
 
-                if (GetTempTargetCharacter() != null)
+                if (Targeting.GetTempTarget()?.Character != null)
                 {
-                    if (IsAllyTarget(GetTempTargetCharacter()) || GetTempTargetCharacter() == Hero)
+                    if (IsAllyTarget(Targeting.GetTempTarget()?.Character) || Targeting.GetTempTarget()?.Character == Hero)
                     {
-                        ClearTempTarget();
+                        Targeting.ClearTempTarget();
                     }
                     else
                     {
-                        GetTempTargetCharacter().SelectedCircle.IsActive = true;
+                        Targeting.GetTempTarget().Character.SelectedCircle.IsActive = true;
                         break;
                     }
                 }
@@ -55,18 +55,18 @@ public class Impatica : Skill
             yield return null;
         }
 
-        SetTarget(GetTempTargetCharacter());
-        ClearTempTarget();
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
+        Targeting.ClearTempTarget();
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTargetCharacter());
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() != null)
+        if (Targeting.GetTarget()?.Character != null)
         {
-            CmdApplyImpaticaState(GetTargetCharacter().gameObject);
+            CmdApplyImpaticaState(Targeting.GetTarget()?.Character.gameObject);
 
         }
 
@@ -75,8 +75,8 @@ public class Impatica : Skill
 
     protected override void ClearData()
     {
-        ClearTarget();
-        ClearTempTarget();
+        Targeting.ClearTarget();
+        Targeting.ClearTempTarget();
         //_target = null;
     }
 
@@ -92,6 +92,6 @@ public class Impatica : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) SetTarget((targetInfo.GetTargets()[0] as Character));
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((targetInfo.GetTargets()[0] as Character));
     }
 }

@@ -31,7 +31,6 @@ public class SkillManager : MonoBehaviour
     private Dictionary<Skill, Action> _castEndedHandlers = new();
 
     public TalentSystem TalesntSystem => _talentSystem;
-    public AutoSkillCast AutoSkillCast => _autoSkillCast;
     public Skill LastCastedSkill { get; set; }
     public Skill PreviewCastedSkill { get; set; }
     public SkillQueue SkillQueue { get => _skillQueue; }
@@ -53,7 +52,6 @@ public class SkillManager : MonoBehaviour
     public event Action<Skill> SkillRemoved;
     public event Action<Skill> SkillCastEnded;
     public event Action<Skill> OnSkillPreparedSuccessfully;
-    public event Action<Skill> SkillCastEnded;
 
     private void OnEnable()
     {

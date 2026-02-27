@@ -152,7 +152,7 @@ public class SneakySpit : Skill
 
             isAnimStart = false;
             CancelBoostWindow();
-            ClearTarget();
+            Targeting.ClearTarget();
         }
     }
 

@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -6,6 +6,7 @@ using System;
 
 public class AttributeSystem : NetworkBehaviour
 {
+    private CharacterData _data;
 
     private Dictionary<BasicAttributeName, Attribute> _attributes = new();    
     public Dictionary<BasicAttributeName, Attribute> Attributes => _attributes;
@@ -21,6 +22,9 @@ public class AttributeSystem : NetworkBehaviour
     public Attribute ResourceRegen => _resources[mainResourceType].Attributes[ResourceAttributeName.Regen];
     public Attribute MoveSpeed => _attributes[BasicAttributeName.MoveSpeed];
 
+
+    private int _points = 0;
+    public int Points => _points;
 
     public void Init(CharacterData data)
     {

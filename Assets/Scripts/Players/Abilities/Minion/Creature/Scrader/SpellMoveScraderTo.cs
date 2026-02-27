@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using DG.Tweening;
 
 public class SpellMoveScraderTo : SpellMoveCreatureTo
@@ -12,8 +12,8 @@ public class SpellMoveScraderTo : SpellMoveCreatureTo
         Damage dmg = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(damage),
-            Type = DamageType,
-            PhysicAttackType = AttackRangeType
+            Type = Info.DamageType,
+            PhysicAttackType = Info.AttackRangeType
         };
 
         CmdApplyDamage(dmg, target.gameObject);

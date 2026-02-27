@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -64,94 +64,6 @@ public class SkillPanel : MonoBehaviour
             var icon = Instantiate(_draggableIconPref, _skillIcons[i].transform);
             icon.Init(_playerAbilities.SelectedSkills[i], _skillIcons[i].transform, _uiCamera, _cameraCanvasDistance);
             _skillIcons[i].CurrentIcon = icon;
-            icon.transform.SetAsFirstSibling();
-            _skills.Add(icon);
-
-            icon.BeginDrag += OnBeginDrag;
-            icon.EndDrag += OnEndDrag;
-            icon.PointerEnter += OnPointerEnterIcon;
-            icon.PointerExit += OnPointerExitIcon;
-            icon.BeginDrag += () => { _draggingIcon = icon; };
-            icon.EndDrag += () => { if (_draggingIcon == icon) _draggingIcon = null; };
-        }
-
-        _playerAbilities.SkillSelected += OnAbilitySelected;
-        _playerAbilities.SkillDeselected += OnAbilityDeselected;
-        _playerAbilities.SkillAdded += OnSkillAdded;
-        _playerAbilities.SkillRemoved += OnSkillRemoved;
-
-        OnBeginDrag();
-        LoadPanel();
-        OnEndDrag();
-    }
-
-    public void FillMenu(SkillManager abilities)
-    {
-        _isMenu = true;
-        ClearPanel();
-
-        if (_playerAbilities != null)
-        {
-            _playerAbilities.SkillAdded -= OnSkillAdded;
-            _playerAbilities.SkillRemoved -= OnSkillRemoved;
-        }
-
-        _playerAbilities = abilities;
-
-        for (int i = 0; i < _playerAbilities.Skills.Count; i++)
-        {
-            if (_playerAbilities.Skills[i] == null)
-            {
-                _skillIcons[i].CurrentIcon = null;
-                continue;
-            }
-            if (i >= _skillIcons.Length) return;
-
-            var icon = Instantiate(_draggableIconPref, _skillIcons[i].transform);
-            icon.Init(_playerAbilities.Skills[i], _skillIcons[i].transform, _uiCamera, _cameraCanvasDistance, true);
-            _skillIcons[i].CurrentIcon = icon;
-            icon.transform.SetAsFirstSibling();
-            _skills.Add(icon);
-
-            icon.BeginDrag += OnBeginDrag;
-            icon.EndDrag += OnEndDrag;
-            icon.PointerEnter += OnPointerEnterIcon;
-            icon.PointerExit += OnPointerExitIcon;
-        }
-
-        _playerAbilities.SkillAdded += OnSkillAdded;
-        _playerAbilities.SkillRemoved += OnSkillRemoved;
-
-        OnBeginDrag();
-        LoadPanel();
-
-        OnEndDrag();
-    }
-
-    public void FillMinionPanel(SkillManager abilities)
-    {
-        if (_playerAbilities != null)
-        {
-            _playerAbilities.SkillSelected -= OnAbilitySelected;
-            _playerAbilities.SkillDeselected -= OnAbilityDeselected;
-            _playerAbilities.SkillAdded -= OnSkillAdded;
-            _playerAbilities.SkillRemoved -= OnSkillRemoved;
-        }
-
-        _playerAbilities = abilities;
-
-        for (int i = 0; i < abilities.SelectedSkills.Length; i++)
-        {
-            var skill = abilities.SelectedSkills[i];
-            if (skill == null) continue;
-
-            var freeIcon = _skillIcons.FirstOrDefault(icon => icon.CurrentIcon == null);
-            if (freeIcon == null) break;
-
-            var icon = Instantiate(_draggableIconPref, freeIcon.transform);
-            icon.Init(skill, freeIcon.transform, _uiCamera, _cameraCanvasDistance);
-            freeIcon.CurrentIcon = icon;
-            freeIcon.Show();
             icon.transform.SetAsFirstSibling();
             _skills.Add(icon);
 
@@ -315,18 +227,6 @@ public class SkillPanel : MonoBehaviour
                 }
             }
         }
-    }
-    
-    private void ForceEndDrag(DraggableIcon icon)
-    {
-        icon.transform.SetParent(icon.PatentAfterDrag);
-        icon.transform.SetAsFirstSibling();
-
-        var slot = icon.PatentAfterDrag.GetComponent<SkillIcon>();
-        if (slot != null)
-            slot.CurrentIcon = icon;
-
-        _draggingIcon = null;
     }
 
     private void SkillChenged(int index, Skill skill)

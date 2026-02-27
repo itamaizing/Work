@@ -234,19 +234,19 @@ public class PoisonBall : Skill, IAltAbility
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter(_radiusFindTarget, GetMousePoint(), true);
+                Targeting.FindTempTarget(Targeting.GetMousePoint(), _radiusFindTarget, true);
                 CheckWhoTarget();
 
-                Vector3 click = GetMousePoint();
+                Vector3 click = Targeting.GetMousePoint();
                 Vector3 end = click;
 
                 SkillRender.SetFixedLookPoint(end);
 
-                if (Vector3.Distance(_player.transform.position, click) <= CastLength)
+                if (Vector3.Distance(_player.transform.position, click) <= AreaInfo.CastLength)
                 {
                     targetPoint = click;
 
-                    if (GetTempTargetCharacter() != null)
+                    if (Targeting.GetTempTarget()?.Character != null)
                     {
                         _isTarget = true;
                     }
@@ -280,13 +280,13 @@ public class PoisonBall : Skill, IAltAbility
         {
             if (Input.GetMouseButtonDown(0))
             {
-                Vector3 click = GetMousePoint();
+                Vector3 click = Targeting.GetMousePoint();
                 _secondMousePosition = click;
                 _secondClickDone = true;
 
-                if (GetTempTargetCharacter() != null)
+                if (Targeting.GetTempTarget()?.Character != null)
                 {
-                    Vector3 currentMousePosition = GetMousePoint();
+                    Vector3 currentMousePosition = Targeting.GetMousePoint();
                     if (currentMousePosition.x < _secondMousePosition.x && currentMousePosition.z < _secondMousePosition.z)
                     {
                         SetArrowVisibility(1, true);
@@ -309,7 +309,7 @@ public class PoisonBall : Skill, IAltAbility
                 _arrowRenderers[0].SetDeafaultMaterail();
                 _arrowRenderers[1].SetDeafaultMaterail();
 
-                Vector3 click = GetMousePoint();
+                Vector3 click = Targeting.GetMousePoint();
                 _thirdClickDone = true;
                 _thirdMousePosition = click;
 
@@ -321,11 +321,11 @@ public class PoisonBall : Skill, IAltAbility
         UseAbility();
         PostPrepearClear();
 
-        SetTarget(GetTempTargetCharacter());
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(targetPoint);
-        targetInfo.AddTarget(GetTempTargetCharacter());
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 
@@ -955,7 +955,7 @@ public class PoisonBall : Skill, IAltAbility
         direction.y = 0;
         direction = direction.normalized;
 
-        Vector3 finalPoint = spawnPosition + direction * CastLength;
+        Vector3 finalPoint = spawnPosition + direction * AreaInfo.CastLength;
         finalPoint.y = spawnPosition.y;
 
         GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
@@ -1081,6 +1081,6 @@ public class PoisonBall : Skill, IAltAbility
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         _firstMousePosition = targetInfo.Points[0];
-        if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 }

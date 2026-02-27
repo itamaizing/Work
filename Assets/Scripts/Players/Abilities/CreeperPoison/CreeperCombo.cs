@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -89,7 +89,7 @@ public class CreeperCombo : NetworkBehaviour
         if (validCombo)
         {
             Skill lastSkill = combo[^1];
-            CmdTriggerSneakySpitFreeWindow(lastSkill.GetTargetCharacter());
+            CmdTriggerSneakySpitFreeWindow(lastSkill.Targeting.GetTarget()?.Character);
             _sneakyComboQueue.Clear();
 
             if (_resetCoroutine != null)
@@ -140,7 +140,7 @@ public class CreeperCombo : NetworkBehaviour
         if (validCombo)
         {
             Skill lastSkill = combo[^1];
-            CmdBlockPassiveSkillFreeWindow(lastSkill.GetTargetCharacter());
+            CmdBlockPassiveSkillFreeWindow(lastSkill.Targeting.GetTarget()?.Character);
             _blockComboQueue.Clear();
 
             if (_resetCoroutine != null)

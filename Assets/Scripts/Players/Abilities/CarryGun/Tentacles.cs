@@ -74,7 +74,7 @@ public class Tentacles : Skill
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Spell");
-    protected override bool IsCanCast => (GetTargetCharacter() != null || _isClickedOnGround) && _spawnPoint != Vector3.positiveInfinity && IsCanRadius();
+    protected override bool IsCanCast => (Targeting.GetTarget()?.Character != null || _isClickedOnGround) && _spawnPoint != Vector3.positiveInfinity && IsCanRadius();
 
     private bool IsCanRadius()
     {
@@ -114,7 +114,7 @@ public class Tentacles : Skill
     public void MoveStop()
     {
         Hero.Move.SetCanMove(false);
-        if (GetTargetCharacter()) _player.Move.LookAtPosition(GetTargetCharacter().transform.position);
+        if (Targeting.GetTarget()?.Character) _player.Move.LookAtPosition(Targeting.GetTarget().Character.transform.position);
         Hero.Move.StopMoveAndAnimationMove();
     }
 
@@ -182,7 +182,7 @@ public class Tentacles : Skill
                             if (clickedCharacter == Hero)
                             {
                                 _spawnPoint = clickedCharacter.transform.position;
-                                SetTarget(clickedCharacter);
+                                Targeting.SetTarget(clickedCharacter);
 
                                 TargetInfo info = new TargetInfo();
                                 info.Points.Add(_spawnPoint);
@@ -204,7 +204,7 @@ public class Tentacles : Skill
                 if (TryClickHero(out Character hero))
                 {
                     _spawnPoint = hero.transform.position;
-                    SetTarget(hero);
+                    Targeting.SetTarget(hero);
                     yield break;
                 }
             }
@@ -388,16 +388,16 @@ public class Tentacles : Skill
 
         if (_isProtectiveCooconSpawn && Targeting.GetTarget()?.Character != null)
         {
-            CmdSpawnProtectiveCocoon(GetTargetCharacter());
+            CmdSpawnProtectiveCocoon(Targeting.GetTarget()?.Character);
             ClearData();
             yield break;
         }
 
         if (Targeting.GetTarget()?.Character != null)
         {
-            float distance = Vector3.Distance(_spawnPoint, Targeting.GetTarget()?.Character.ransform.position);
+            float distance = Vector3.Distance(_spawnPoint, Targeting.GetTarget().Character.transform.position);
 
-            float tentacleRange = _previewInstancePrefab != null ? _previewInstancePrefab.Radius : Radius;
+            float tentacleRange = _previewInstancePrefab != null ? _previewInstancePrefab.Radius : AreaInfo.Radius;
 
             if (distance > tentacleRange)
             {

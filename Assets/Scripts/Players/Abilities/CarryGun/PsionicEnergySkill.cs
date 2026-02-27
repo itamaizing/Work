@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -52,7 +52,7 @@ public class PsionicEnergySkill : Skill, IPassiveSkill
 
         float aoeDamageValue = absorptionAmount * PsiExplosionPercent;
 
-        float radius = Radius;
+        float radius = AreaInfo.Radius;
 
         if (Hero.CharacterState.CheckForState(States.PsionicGeneration))
         {

@@ -156,6 +156,8 @@ public abstract class Skill : NetworkBehaviour
     protected Coroutine _dynamicRendererJob;
     #endregion
     protected bool _isPlayCastAnim;
+    protected bool _forceFailCastEarly;
+
 
     //Charges
     #region Charges
@@ -1113,6 +1115,10 @@ public abstract class Skill : NetworkBehaviour
         {
             StopCoroutine(coroutine);
         }
+    }
+    public void AddingDescriptionSet(bool value, string text)
+    {
+        AbilityInfoHero.AddingDescriptionSet(value, text);
     }
 
     #region ScoreBoard?
