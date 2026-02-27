@@ -10979,7 +10979,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.data[2]'
       value: 
-      objectReference: {fileID: 8719499337075397945}
+      objectReference: {fileID: 6595352334955899536}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[1].Talents.Array.data[0]'
       value: 
@@ -10987,7 +10987,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[1].Talents.Array.data[1]'
       value: 
-      objectReference: {fileID: 2864148410240025507}
+      objectReference: {fileID: 6284290643498962180}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[1].Talents.Array.data[2]'
       value: 
@@ -11530,6 +11530,9 @@ PrefabInstance:
       addedObject: {fileID: 8719499337075397945}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 6284290643498962180}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 1820726796010007506}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
@@ -11885,6 +11888,33 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 8319872899575431858}
   _basePsionic: {fileID: 369466722820063190}
+--- !u!114 &6284290643498962180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3907305221297154583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42fd81fcb9426ed4e8d5d390c761fc1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PsionicsTalent_9
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0418\u043C\u043F\u0430\u0442\u0438\u043A\u0430 \u0440\u0430\u0441\u043F\u0440\u043E\u0441\u0442\u0440\u043E\u043D\u044F\u0442\u0435
+      \u044D\u0444\u0444\u0435\u043A\u0442 \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F
+      \u0443\u0440\u043E\u043D\u0430 \u043F\u0441\u0438 \u044D\u043D\u0435\u0440\u0433\u0438\u0435\u0439,
+      \u0442\u0430\u043A \u0436\u0435 \u043D\u0430 \u0446\u0435\u043B\u044F\u0445
+      \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442 \u0440\u0430\u0441\u0441\u0435\u0438\u0432\u0430\u043D\u0438\u0435."
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u041F\u0441\u0438\u043E\u043D\u0438\u043A\u0430 9"
+    Icon: {fileID: -4696705, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 8319872899575431858}
+  impatica: {fileID: 7709957828632342126}
 --- !u!114 &1820726796010007506
 MonoBehaviour:
   m_ObjectHideFlags: 0

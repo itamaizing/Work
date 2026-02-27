@@ -7,8 +7,8 @@ public class ImpatienceState : AbstractCharacterState
     private float _durationRemaining;
 
     private static readonly HashSet<Character> ActiveCharacters = new();
+    private static bool _isProcessingSharedDamage;
 
-    private bool _isProcessingSharedDamage;
     private bool _isAccumulationActive;
     private bool _extendDamageAbsorption;
     private BasePsionicEnergy _casterPsionic;
@@ -41,8 +41,6 @@ public class ImpatienceState : AbstractCharacterState
         {
             _casterPsionic = personWhoMadeBuff.GetComponent<BasePsionicEnergy>();
             _impatica = personWhoMadeBuff.GetComponent<Impatica>();
-
-            _isAccumulationActive = _impatica.IsExtendDamageAbsorption;
 
             if (_casterPsionic != null) _casterPsionic.OnAccumulationPsionicChanged += HandleAccumulationChanged;
         }
@@ -79,6 +77,13 @@ public class ImpatienceState : AbstractCharacterState
         if (damage.Value <= 0) return;
 
         float originalDamage = damage.Value;
+
+        if (_isAccumulationActive && _casterPsionic != null)
+        {
+            float psiGain = originalDamage;
+
+            _casterPsionic.AddPsiAndRestartDecay(psiGain);
+        }
 
         if (_extendDamageAbsorption && _casterPsionic != null)
         {
@@ -139,25 +144,31 @@ public class ImpatienceState : AbstractCharacterState
 
         _isProcessingSharedDamage = true;
 
-        foreach (var character in recipients)
+        try
         {
-            if (character == characterState.Character) continue;
-            if (character == null || character.IsDead) continue;
-
-            Damage sharedDamage = new Damage
+            foreach (var character in recipients)
             {
-                Value = dividedDamage,
-                Type = damage.Type,
-                School = damage.School,
-                Form = damage.Form,
-                PhysicAttackType = damage.PhysicAttackType
-            };
+                if (character == characterState.Character) continue;
+                if (character == null || character.IsDead) continue;
 
-            character.Health.TryTakeDamage(ref sharedDamage, skill);
+                Damage sharedDamage = new Damage
+                {
+                    Value = dividedDamage,
+                    Type = damage.Type,
+                    School = damage.School,
+                    Form = damage.Form,
+                    PhysicAttackType = damage.PhysicAttackType
+                };
+
+                character.Health.TryTakeDamage(ref sharedDamage, skill);
+            }
+
+            damage.Value = dividedDamage;
         }
 
-        damage.Value = dividedDamage;
-
-        _isProcessingSharedDamage = false;
+        finally
+        {
+            _isProcessingSharedDamage = false;
+        }
     }
 }

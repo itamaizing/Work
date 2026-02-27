@@ -25,6 +25,9 @@ public class AttackingPsionicEnergy : Energy
 
     public event Action<float> OnEnergyChanged;
 
+    #region Talent
+    private bool _isExtendedDuration = false;
+
     public void AttackingPsiIncrease(bool value)
     {
         if (value) _currentMaxAttackingPsiEnergy = _baseMaxAttackingPsiEnergy + 10f;
@@ -36,6 +39,9 @@ public class AttackingPsionicEnergy : Energy
 
         UpdateAttackingEnergyBar();
     }
+
+    public void ExtendedDuration(bool value) => _isExtendedDuration = value;
+    #endregion
 
     private void Start()
     {
