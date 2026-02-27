@@ -433,6 +433,7 @@ public abstract class Skill : NetworkBehaviour
     {
         Cooldown?.OnServerCooldownChanged(oldValue, newValue);
     }
+
     [Command]
     public void CmdCooldownStart(float duration)
     {
