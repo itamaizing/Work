@@ -10,6 +10,7 @@ public abstract class SpellMoveCreatureTo : Skill
     [SerializeField] protected float moveDurationPerUnit = 0.2f;
     [SerializeField] protected float attackDistance = 3f;
     [SerializeField] protected float damageDelay = 0.5f;
+    [SerializeField] protected LayerMask obstacle;
 
     [Header("Refs")]
     [SerializeField] protected Animator animator;
@@ -23,6 +24,8 @@ public abstract class SpellMoveCreatureTo : Skill
     protected float lastAttackTime;
     protected Tween activeTween;
     protected bool moveActive;
+
+    public Action<GameObject> DoMove;
 
     protected abstract string AutoAttackTrigger { get; }
     protected abstract void DealDamage(Character target);
@@ -62,7 +65,8 @@ public abstract class SpellMoveCreatureTo : Skill
         if (moveCoroutine != null)
             StopCoroutine(moveCoroutine);
 
-        moveCoroutine = StartCoroutine(MoveWithPath(targetPoint));
+        moveCoroutine = StartCoroutine(MoveWithPath(targetPoint, false));
+
         while (moveActive)
             yield return null;
     }
@@ -71,31 +75,62 @@ public abstract class SpellMoveCreatureTo : Skill
 
     #region Movement
 
-    private IEnumerator MoveWithPath(Vector3 point)
+    protected IEnumerator MoveWithPath(Vector3 point, bool stopAtObstacle)
     {
         Hero.Move.SetCanMove(false);
 
         NavMeshPath path = new NavMeshPath();
-        if (!NavMesh.CalculatePath(transform.position, point, NavMesh.AllAreas, path) ||
-            path.status != NavMeshPathStatus.PathComplete)
+        bool hasPath = NavMesh.CalculatePath(transform.position, point, NavMesh.AllAreas, path);
+
+        if (!hasPath || path.status != NavMeshPathStatus.PathComplete)
         {
             Hero.Move.SetCanMove(true);
             yield break;
         }
 
+        Vector3 lastDoMovePoint = transform.position;
+
         for (int i = 1; i < path.corners.Length; i++)
         {
             Vector3 segment = path.corners[i];
-            float duration = Vector3.Distance(transform.position, segment) * moveDurationPerUnit;
+            float distance = Vector3.Distance(transform.position, segment);
+            float duration = distance * moveDurationPerUnit;
 
             transform.rotation = Quaternion.LookRotation((segment - transform.position).normalized);
+
+            bool interrupted = false;
 
             activeTween?.Kill();
 
             activeTween = transform.DOMove(segment, duration)
-                                   .SetEase(Ease.Linear);
+                .SetEase(Ease.Linear)
+                .OnUpdate(() =>
+                {
+                    if (this == null || !gameObject.activeInHierarchy) return;
+
+                    float movedDist = Vector3.Distance(lastDoMovePoint, transform.position);
+                    if (movedDist >= 1f)
+                    {
+                        DoMove?.Invoke(gameObject);
+                        lastDoMovePoint = transform.position;
+                    }
+
+                    if (stopAtObstacle &&
+                        Physics.Raycast(transform.position, transform.forward,
+                        out RaycastHit hit, 1f, obstacle))
+                    {
+                        interrupted = true;
+                        activeTween?.Kill();
+                    }
+                });
 
             yield return activeTween.WaitForCompletion();
+
+            if (interrupted)
+            {
+                EndMovement();
+                yield break;
+            }
         }
 
         EndMovement();
@@ -109,13 +144,11 @@ public abstract class SpellMoveCreatureTo : Skill
     {
         Hero.Move.SetCanMove(true);
 
-        if (attackCoroutine != null)
-            StopCoroutine(attackCoroutine);
+        if (attackCoroutine != null) StopCoroutine(attackCoroutine);
 
         Character nearest = FindNearestEnemy();
 
-        if (nearest != null)
-            attackCoroutine = StartCoroutine(AutoAttackLoop());
+        if (nearest != null) attackCoroutine = StartCoroutine(AutoAttackLoop());
         else
             StopSkill();
     }
@@ -125,14 +158,16 @@ public abstract class SpellMoveCreatureTo : Skill
         while (true)
         {
             Character nearest = FindNearestEnemy();
-            if (nearest == null)
-                yield break;
+            if (nearest == null) yield break;
 
             float distance = Vector3.Distance(transform.position, nearest.transform.position);
 
+            Vector3 dir = (nearest.transform.position - transform.position).normalized;
+            if (dir != Vector3.zero) transform.rotation = Quaternion.LookRotation(dir);
+
             if (distance > attackDistance)
             {
-                yield return MoveWithPath(GetApproachPoint(nearest));
+                yield return MoveWithPath(GetApproachPoint(nearest), false);
                 continue;
             }
 
@@ -159,8 +194,7 @@ public abstract class SpellMoveCreatureTo : Skill
         foreach (var hit in hits)
         {
             Character enemy = hit.GetComponent<Character>();
-            if (enemy == null || enemy.IsDead || enemy == Hero)
-                continue;
+            if (enemy == null || enemy.IsDead || enemy == Hero) continue;
 
             float dist = Vector3.Distance(transform.position, enemy.transform.position);
             if (dist < minDist)
@@ -181,8 +215,7 @@ public abstract class SpellMoveCreatureTo : Skill
 
     public void OnAutoAttackAnimationHit()
     {
-        if (currentEnemyTarget != null)
-            DealDamage(currentEnemyTarget);
+        if (currentEnemyTarget != null) DealDamage(currentEnemyTarget);
     }
 
     public void OnAutoAttackAnimationEnd()
