@@ -392,6 +392,56 @@ public class SkillPanel : MonoBehaviour
         UpdateKeys();
     }
 
+    [ContextMenu("swapTest")]
+    public void TestSwapSkillIcon() // Delete this ---------------------------------------------------------------------------------
+    {
+        DraggableIcon temp;
+        int index1 = 0;
+        int index2 = 3;
+
+        temp = _skillIcons[index1].CurrentIcon;
+
+        temp.OnBeginDrag(null);
+        temp.ParentAfterDrag = _skillIcons[index2].transform;
+        temp.OnEndDrag(null);
+    }
+
+    [ContextMenu("swapTest2")]
+    public void TestSwapSkillIcon2() // Delete this ---------------------------------------------------------------------------------
+    {
+        SwapSkillIcon(0, 2);
+    }
+
+    public void SwapSkillIcon(int index1, int index2) // Delete this ---------------------------------------------------------------------------------
+    {
+        DraggableIcon tempIcon1;
+        DraggableIcon tempIcon2;
+
+        tempIcon1 = _skillIcons[index1].CurrentIcon;
+        tempIcon2 = _skillIcons[index2].CurrentIcon;
+
+        if (tempIcon1 != null)
+        {
+            SetSkillIconFrame(tempIcon1, index2);
+        }
+    }
+
+    private void SetSkillIconFrame(DraggableIcon tempIcon, int index)
+    {
+        tempIcon.OnBeginDrag(null);
+        _skillIcons[index].OnDrop(tempIcon);
+        tempIcon.OnEndDrag(null);
+    }
+
+    private void SetSkillIconFrame(int indexFrom, int indexTo) // I didn't test it
+    {
+        DraggableIcon tempIcon = _skillIcons[indexFrom].CurrentIcon;
+
+        tempIcon.OnBeginDrag(null);
+        _skillIcons[indexTo].OnDrop(tempIcon);
+        tempIcon.OnEndDrag(null);
+    }
+
     [ContextMenu("Save")]
     private void SavePanel()
     {

@@ -75,6 +75,22 @@ public class SkillIcon : MonoBehaviour, IDropHandler
         }
     }
 
+    public void OnDrop(DraggableIcon draggableIcon)
+    {
+        if(CurrentIcon == null)    
+        {
+            draggableIcon.ParentAfterDrag = transform;
+            CurrentIcon = draggableIcon;
+        }
+        else 
+        {
+            CurrentIcon.ParentAfterDrag = draggableIcon.ParentAfterDrag;
+            CurrentIcon.OnEndDrag(null);
+            draggableIcon.ParentAfterDrag = transform;
+            CurrentIcon = draggableIcon;
+        }
+    }
+
     public void Selected()
     {
         if (_currentIcon != null)
