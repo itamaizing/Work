@@ -18,6 +18,7 @@ public class UserNetworkSettings : NetworkBehaviour
     [SyncVar] private string _roomName;
 
     public Scene MyRoom { get { return _myRoom; } set { _myRoom = value; _roomName = value.name; } }
+    public event Action OnUpdateValue;
 
     public byte TeamIndex
     {
@@ -73,6 +74,7 @@ public class UserNetworkSettings : NetworkBehaviour
     public void TargetUpdateLayers(NetworkConnection target)
     {
         MarkUpEnemiesOrAllies();
+        OnUpdateValue?.Invoke();
     }
 
     public void MarkUpEnemiesOrAllies()

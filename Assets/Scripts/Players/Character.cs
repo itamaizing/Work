@@ -68,6 +68,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 			if (isServer && _characterParent != null) _characterParentNetId = _characterParent.netId;
 		}
 	}
+
 	public bool IsInvisible
     {
         get => _isInvisible;
