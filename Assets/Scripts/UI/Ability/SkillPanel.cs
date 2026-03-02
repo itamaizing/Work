@@ -82,7 +82,7 @@ public class SkillPanel : MonoBehaviour
         _playerAbilities.SkillRemoved += OnSkillRemoved;
 
         OnBeginDrag();
-        LoadPanel();
+        //LoadPanel();
         OnEndDrag();
     }
 
@@ -99,6 +99,12 @@ public class SkillPanel : MonoBehaviour
         }
 
         _playerAbilities = abilities;
+       /* if (hero != null)
+        {
+            Debug.Log("Init");
+            hero.TalentManager.Initialize(hero.LVL);
+        }*/
+
         int j = 0;
         foreach (Skill skill in _playerAbilities.DefaultSkills)
         {
@@ -120,7 +126,7 @@ public class SkillPanel : MonoBehaviour
             icon.PointerExit += OnPointerExitIcon;
             j++;
         }
-        foreach(Skill skill in _playerAbilities.SelectedSkills)
+        foreach (Skill skill in _playerAbilities.SelectedSkills)
         {
             if (skill == null)
             {
@@ -148,7 +154,7 @@ public class SkillPanel : MonoBehaviour
         _playerAbilities.SkillRemoved += OnSkillRemoved;
 
         OnBeginDrag();
-        LoadPanel();
+        //LoadPanel();
 
         OnEndDrag();
     }
@@ -471,29 +477,32 @@ public class SkillPanel : MonoBehaviour
             DraggableIcon icon = _skills.FirstOrDefault(a => a.Skill.Name == skillSave.Name);
             SkillIcon cell = _skillIcons.FirstOrDefault(a => a.CurrentIcon == icon);
             if (icon == null || cell == null) continue;
-            
-            if (_skillIcons[skillSave.Id].CurrentIcon != null && _skillIcons[skillSave.Id].CurrentIcon != icon)
-            {
-                DraggableIcon iconTemp = _skillIcons[skillSave.Id].CurrentIcon;
-                SkillIcon cellTemp = _skillIcons.FirstOrDefault(a => a.CurrentIcon == null);
 
-                iconTemp.OnBeginDrag(null);
+            /* if (_skillIcons[skillSave.Id].CurrentIcon != null && _skillIcons[skillSave.Id].CurrentIcon != icon)
+             {
+                 DraggableIcon iconTemp = _skillIcons[skillSave.Id].CurrentIcon;
+                 SkillIcon cellTemp = _skillIcons.FirstOrDefault(a => a.CurrentIcon == null);
 
-                cellTemp.CurrentIcon = iconTemp;
-                //iconTemp.UpdatePosition(cellTemp.transform);
-                iconTemp.OnEndDrag(null);
-            }
+                 iconTemp.OnBeginDrag(null);
 
-            icon.OnBeginDrag(null);
-            _skillIcons[skillSave.Id].CurrentIcon = icon;
-            //icon.UpdatePosition(_skillIcons[skillSave.Id].transform);
+                 cellTemp.CurrentIcon = iconTemp;
+                 //iconTemp.UpdatePosition(cellTemp.transform);
+                 iconTemp.OnEndDrag(null);
+             }
 
-            icon.OnEndDrag(null);
+             icon.OnBeginDrag(null);
+             _skillIcons[skillSave.Id].CurrentIcon = icon;
+             //icon.UpdatePosition(_skillIcons[skillSave.Id].transform);
 
-            if(_skillIcons[skillSave.Id].Index != cell.Index)
-                cell.ClearData();
+             icon.OnEndDrag(null);
 
-            SkillChanged(skillSave.Id, icon.Skill);
+             if(_skillIcons[skillSave.Id].Index != cell.Index)
+                 cell.ClearData();
+
+             SkillChanged(skillSave.Id, icon.Skill);*/
+
+
+            SetSkillIconFrame(icon, skillSave.Id);
         }
         OnBeginDrag();
         OnEndDrag();

@@ -13,6 +13,7 @@ public class TeamsPanel : MonoBehaviour
 
     private List<PlayerIcon> _playerIcons = new();
 
+
     private void Awake()
     {
         if (Instance != null)
