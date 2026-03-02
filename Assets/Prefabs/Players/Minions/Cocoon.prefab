@@ -12780,8 +12780,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: a551d45e39a91fe47a892363f95369e6, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _skillEnergyCosts: []

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 
 public class TentacleProjectile : NetworkBehaviour
 {
@@ -15,6 +16,7 @@ public class TentacleProjectile : NetworkBehaviour
     [SerializeField] private float lifeTentacle = 4f;
     [SerializeField] private LineRenderer tentacleLine;
     [SerializeField] private Transform tentaclePoint;
+    [SerializeField] private GameObject _spike;
 
     private Coroutine _lineCoroutine;
     private Character _player;
@@ -27,6 +29,7 @@ public class TentacleProjectile : NetworkBehaviour
     private bool _isAttackingPsiEnergyActive;
     private bool _isAttractionTentacleActive;
     private bool _isAttractionTentacle;
+    private bool _isSpawnSpike;
     private float _spentAttackingPsiEnergy;
 
     private float _radius = 4f;
@@ -65,11 +68,11 @@ public class TentacleProjectile : NetworkBehaviour
         if (_drawCircle != null) _drawCircle.Clear();
         if (_radiusUpdateCoroutine != null) StopCoroutine(_radiusUpdateCoroutine);
         if (isServer && _target.CharacterState.CheckForState(States.TentacleGrip)) _target.CharacterState.RemoveState(States.TentacleGrip);
-
+        if (_isSpawnSpike && _isPullTarget) SpawnSpike();
     }
 
     public void Init(Character player, Character target, Vector3 startPosition, Vector3 endPosition,
-        bool isAttackingPsiEnergyActive, bool isPsionicsTalentThree, bool isAttractionTentacleTalent, float currentDamage, Skill skill)
+        bool isAttackingPsiEnergyActive, bool isPsionicsTalentThree, bool isAttractionTentacleTalent, bool isSpawnSpike, float currentDamage, Skill skill)
     {
         _isPsionicsTalentThree = isPsionicsTalentThree;
         _player = player;
@@ -81,6 +84,7 @@ public class TentacleProjectile : NetworkBehaviour
         _spentAttackingPsiEnergy = currentDamage;
         _isPsionicsTalentThree =
         _skill = skill;
+        _isSpawnSpike = isSpawnSpike;
 
         transform.position = startPosition;
 
@@ -149,6 +153,29 @@ public class TentacleProjectile : NetworkBehaviour
             }
             else _drawCircle.Clear();
         }
+    }
+
+    private void SpawnSpike()
+    {
+        if (_target == null || _skill == null)
+            return;
+
+        GameObject spike = Instantiate(_spike, transform.position, Quaternion.identity);
+
+        SceneManager.MoveGameObjectToScene(spike.gameObject, _player.NetworkSettings.MyRoom);
+
+        NetworkServer.Spawn(spike);
+
+        var damage = new Damage
+        {
+            Value = 30f,
+            Type = DamageType.Physical,
+            PhysicAttackType = AttackRangeType.MeleeAttack
+        };
+
+        _skill.ApplyDamage(damage, _target.gameObject);
+
+        _target.CharacterState.AddState( States.Stun, 2f, 0f, _player.gameObject, "TentacleSpike");
     }
 
     public void SetRadiusColor(Color color)

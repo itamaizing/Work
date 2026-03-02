@@ -21,8 +21,7 @@ public class PowerStrike : Skill
     private const float RaycastCheckDistance = 1f;
     private const float TargetSearchRadius = 0.5f;
 
-    private const string AttackScaredTrigger = "AttackGetomir";
-
+    private const string AttackGetomirTrigger = "AttackGetomir";
     #endregion
 
     private IDamageable _currentTarget;
@@ -37,7 +36,7 @@ public class PowerStrike : Skill
 
     private void powerStrikeAnimCast()
     {
-        _animator.SetTrigger(AttackScaredTrigger);
+        _animator.SetTrigger(AttackGetomirTrigger);
     }
 
     public void AttackAnimationHit()

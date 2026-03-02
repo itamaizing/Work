@@ -10995,7 +10995,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[1].Talents.Array.data[2]'
       value: 
-      objectReference: {fileID: 5518789025108628316}
+      objectReference: {fileID: 1343908129402524421}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[1].Talents.Array.data[3]'
       value: 
@@ -11586,6 +11586,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5532934128591317355}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1343908129402524421}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!136 &2940983708473868743 stripped
 CapsuleCollider:
@@ -12477,6 +12480,34 @@ MonoBehaviour:
     Icon: {fileID: 1115175246, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
     Row: 1
+  character: {fileID: 8319872899575431858}
+  _tentacles: {fileID: 431818094498011482}
+--- !u!114 &1343908129402524421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3907305221297154583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 769352ceedbafae4590cdf952a2e4ae5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SwarmTalent_12
+  _data:
+    _descriptionsForInfoPanel:
+    - " \u043C\u043E\u0436\u0435\u0442 \u043F\u0440\u0438\u0437\u044B\u0432\u0430\u0442\u044C
+      \"\u0413\u0435\u0442\u043E\u043C\u0438\u0440\" \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u043E
+      \u0441 370 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F,  \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C
+      \u0431\u0435\u0433\u0430 0,9 \u043A\u043B\u0435\u0442\u043A\u0438,  \u0440\u0430\u0437\u043C\u0435\u0440
+      1.3 \u043A\u043B\u0435\u0442\u043A\u0438, 3 \u0451\u043C\u043A\u043E\u0441\u0442\u0438
+      \u0440\u043E\u044F \u0437\u0430\u043D\u0438\u043C\u0430\u0435\u0442"
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u0413\u0435\u0442\u043E\u043C\u0438\u0440"
+    Icon: {fileID: 7968614990152163906, guid: 0824c4374f224f1499548a94f4199027, type: 3}
+    Group: 0
+    Row: 0
   character: {fileID: 8319872899575431858}
   _tentacles: {fileID: 431818094498011482}
 --- !u!114 &4260348460032838645 stripped

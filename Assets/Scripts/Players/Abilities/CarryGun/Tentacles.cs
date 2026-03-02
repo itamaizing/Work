@@ -48,6 +48,7 @@ public class Tentacles : Skill
     private bool _isProtectiveCooconSpawnAttack = false;
     private bool _isWombSpreadsMucus = false;
     private bool _isSpawnGetomir;
+    private bool _isSpawnSpike = false;
 
     public event Action<bool> OnSpawnGetomirChanged;
 
@@ -69,6 +70,7 @@ public class Tentacles : Skill
     public void AttractionTentacleTalent(bool value) => _isAttractionTentacleTalent = value;
     public void ProtectiveCooconSpawnAttack(bool value) => _isProtectiveCooconSpawnAttack = value;
     public void SpawnGetomir(bool value) => IsSpawnGetomir = value;
+    public void SpawnSpike(bool value) => _isSpawnSpike = value;
 
     public void WombSpreadsMucus(bool value)
     {
@@ -567,7 +569,7 @@ public class Tentacles : Skill
         _currentTentacle = Instantiate(_tentaclesPrefab, position, Quaternion.identity);
         SceneManager.MoveGameObjectToScene(_currentTentacle.gameObject, _hero.NetworkSettings.MyRoom);
 
-        _currentTentacle.Init(_player, target, position, target.transform.position, true, _isPsionicsTalentThree, _isAttractionTentacleTalent, _spentAttackingPsiEnergy, this);
+        _currentTentacle.Init(_player, target, position, target.transform.position, true, _isPsionicsTalentThree, _isAttractionTentacleTalent, _isSpawnSpike, _spentAttackingPsiEnergy, this);
 
         NetworkServer.Spawn(_currentTentacle.gameObject);
         RpcInitTentacles(_currentTentacle.gameObject, target, position, _spentAttackingPsiEnergy);
@@ -599,7 +601,7 @@ public class Tentacles : Skill
         if (!IsValidVector(position)) return;
         if (tentacleObject == null) return;
 
-        tentacleObject.GetComponent<TentacleProjectile>().Init(_player, target, position, target.transform.position, true, _isPsionicsTalentThree, _isAttractionTentacleTalent, _spentAttackingPsiEnergy, this);
+        tentacleObject.GetComponent<TentacleProjectile>().Init(_player, target, position, target.transform.position, true, _isPsionicsTalentThree, _isAttractionTentacleTalent, _isSpawnSpike, _spentAttackingPsiEnergy, this);
     }
 
     [ClientRpc]
