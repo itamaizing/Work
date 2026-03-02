@@ -93,7 +93,8 @@ public abstract class SpellMoveCreatureTo : Skill
         {
             Vector3 segment = path.corners[i];
             float distance = Vector3.Distance(transform.position, segment);
-            float duration = distance * moveDurationPerUnit;
+            float speed = Mathf.Max(0.01f, moveDurationPerUnit);
+            float duration = distance / speed;
 
             transform.rotation = Quaternion.LookRotation((segment - transform.position).normalized);
 

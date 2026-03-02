@@ -47,12 +47,28 @@ public class Tentacles : Skill
     private bool _isProtectiveCooconSpawn = false;
     private bool _isProtectiveCooconSpawnAttack = false;
     private bool _isWombSpreadsMucus = false;
+    private bool _isSpawnGetomir;
+
+    public event Action<bool> OnSpawnGetomirChanged;
+
+    public bool IsSpawnGetomir
+    {
+        get => _isSpawnGetomir;
+        set
+        {
+            if (_isSpawnGetomir == value) return;
+
+            _isSpawnGetomir = value;
+            OnSpawnGetomirChanged?.Invoke(_isSpawnGetomir);
+        }
+    }
 
     public void ProtectiveCooconSpawn(bool value) => _isProtectiveCooconSpawn = value;
     public void PsionicsTalentThree(bool value) => _isPsionicsTalentThree = value;
     public void CocoonSpawnTalent(bool value) => _isCocoonSpawnTalent = value;
     public void AttractionTentacleTalent(bool value) => _isAttractionTentacleTalent = value;
     public void ProtectiveCooconSpawnAttack(bool value) => _isProtectiveCooconSpawnAttack = value;
+    public void SpawnGetomir(bool value) => IsSpawnGetomir = value;
 
     public void WombSpreadsMucus(bool value)
     {
