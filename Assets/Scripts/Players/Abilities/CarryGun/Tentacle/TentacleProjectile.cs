@@ -16,7 +16,7 @@ public class TentacleProjectile : NetworkBehaviour
     [SerializeField] private float lifeTentacle = 4f;
     [SerializeField] private LineRenderer tentacleLine;
     [SerializeField] private Transform tentaclePoint;
-    [SerializeField] private GameObject _spike;
+    [SerializeField] private SpikeTentacle _spike;
 
     private Coroutine _lineCoroutine;
     private Character _player;
@@ -68,7 +68,6 @@ public class TentacleProjectile : NetworkBehaviour
         if (_drawCircle != null) _drawCircle.Clear();
         if (_radiusUpdateCoroutine != null) StopCoroutine(_radiusUpdateCoroutine);
         if (isServer && _target.CharacterState.CheckForState(States.TentacleGrip)) _target.CharacterState.RemoveState(States.TentacleGrip);
-        if (_isSpawnSpike && _isPullTarget) SpawnSpike();
     }
 
     public void Init(Character player, Character target, Vector3 startPosition, Vector3 endPosition,
@@ -160,22 +159,12 @@ public class TentacleProjectile : NetworkBehaviour
         if (_target == null || _skill == null)
             return;
 
-        GameObject spike = Instantiate(_spike, transform.position, Quaternion.identity);
+        SpikeTentacle spike = Instantiate(_spike, transform.position, Quaternion.identity);
 
         SceneManager.MoveGameObjectToScene(spike.gameObject, _player.NetworkSettings.MyRoom);
+        spike.Init(_target, _player, _skill);
 
-        NetworkServer.Spawn(spike);
-
-        var damage = new Damage
-        {
-            Value = 30f,
-            Type = DamageType.Physical,
-            PhysicAttackType = AttackRangeType.MeleeAttack
-        };
-
-        _skill.ApplyDamage(damage, _target.gameObject);
-
-        _target.CharacterState.AddState( States.Stun, 2f, 0f, _player.gameObject, "TentacleSpike");
+        NetworkServer.Spawn(spike.gameObject);
     }
 
     public void SetRadiusColor(Color color)
@@ -241,6 +230,8 @@ public class TentacleProjectile : NetworkBehaviour
             _target.Move.CancelMoveTowards();
             _target.Move.TargetRpcSetTransformPosition(finalPosition);
             _target.Move.TargetRpcStopMoveAndAnimationMove();
+
+            if (_isSpawnSpike && _isPullTarget) SpawnSpike();
         }
     }
 
