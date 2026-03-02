@@ -18752,7 +18752,7 @@ MonoBehaviour:
   skillManager: {fileID: 6892265620981845488}
   _minDamage: 12
   _maxDamage: 18
-  _aoeRadius: 1.5
+  _aoeRadius: 3
 --- !u!114 &2793843212359387630
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18816,7 +18816,7 @@ MonoBehaviour:
   _stopDistance: 1.5
   _minDamage: 12
   _maxDamage: 18
-  _aoeRadius: 1.5
+  _aoeRadius: 3
 --- !u!114 &5026398779494985239
 MonoBehaviour:
   m_ObjectHideFlags: 0

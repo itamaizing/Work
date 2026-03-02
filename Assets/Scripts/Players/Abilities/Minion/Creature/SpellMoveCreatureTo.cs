@@ -35,6 +35,13 @@ public abstract class SpellMoveCreatureTo : Skill
 
     #region Cast Flow
 
+    protected void ClearAutoAttackSkill()
+    {
+        if (skillManager == null) return;
+
+        if (skillManager.AutoSkillCast != null) skillManager.AutoSkillCast.DeleteSkill();
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callback)
     {
         Vector3 clicked = Vector3.positiveInfinity;
@@ -59,6 +66,7 @@ public abstract class SpellMoveCreatureTo : Skill
 
     protected override IEnumerator CastJob()
     {
+        ClearAutoAttackSkill();
         moveActive = true;
 
         if (moveCoroutine != null)
@@ -146,17 +154,36 @@ public abstract class SpellMoveCreatureTo : Skill
 
         if (attackCoroutine != null) StopCoroutine(attackCoroutine);
 
+        if (skillManager != null)
+        {
+            if (skillManager.SkillQueue.IsEmpty == false ||
+                skillManager.AutoSkillCast.IsBusy)
+            {
+                StopSkill();
+                return;
+            }
+        }
+
         Character nearest = FindNearestEnemy();
 
         if (nearest != null) attackCoroutine = StartCoroutine(AutoAttackLoop());
-        else
-            StopSkill();
+        else StopSkill();
     }
 
     private IEnumerator AutoAttackLoop()
     {
         while (true)
         {
+            if (skillManager != null)
+            {
+                if (skillManager.SkillQueue.IsEmpty == false ||
+                    skillManager.AutoSkillCast.IsBusy)
+                {
+                    StopSkill();
+                    yield break;
+                }
+            }
+
             Character nearest = FindNearestEnemy();
             if (nearest == null) yield break;
 

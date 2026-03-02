@@ -11,7 +11,6 @@ public class SpellMoveGetomirTo : SpellMoveCreatureTo
 
     protected override void DealDamage(Character target)
     {
-        if (!isServer) return;
         if (target == null) return;
 
         float randomDamage = Random.Range(_minDamage, _maxDamage);

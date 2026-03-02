@@ -225,7 +225,6 @@ public class PowerStrike : Skill
 
     private void ApplyStrikeDamage()
     {
-        if (!isServer) return;
         if (_currentTarget == null) return;
 
         Character mainTarget = _currentTarget as Character;
