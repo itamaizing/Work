@@ -20,7 +20,7 @@ namespace Gangdollarff.AirElemental
 
         private int _chance = 50;
 
-        public override States State => States.Burning;
+        public override States State => States.Discharge;
 
         public override StateType Type => StateType.Magic;
 

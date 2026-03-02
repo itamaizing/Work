@@ -10,6 +10,11 @@ public class WaveSkill : Skill
     [SerializeField] private float _pushDuration = 0.33f;
     [SerializeField] private Transform _previewPivot;
     [SerializeField] private BoxArea _lineVisual;
+    
+    private float _bonusLength = 0;
+    private float _bonusWidth = 0f;
+    private float _initialLenght = 2.5f;
+    private float _initialWidth = 1;
 
     private Vector3 _waveStartPoint;
     private Vector3 _waveDirection;
@@ -30,6 +35,15 @@ public class WaveSkill : Skill
             Vector3 endPoint = targetInfo.Points[1];
             _waveDirection = (endPoint - _waveStartPoint).normalized;
         }
+    }
+
+    public void SetBonusSize(Vector2 bonusSize)
+    {
+        _bonusLength = bonusSize.x; 
+        _bonusWidth = bonusSize.y;
+
+        CastLength = _initialWidth + _bonusWidth ;
+        CastWidth = _initialLenght + _bonusLength;
     }
 
     protected override IEnumerator CastJob()
@@ -87,6 +101,7 @@ public class WaveSkill : Skill
 
         yield return new WaitForSeconds(0.6f);
         CmdSetActiveParticle(false);
+        _skillRender.ResetCursor();
     }
 
     protected override void ClearData()
