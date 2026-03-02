@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Mirror;
 
 public class SpellMoveGetomirTo : SpellMoveCreatureTo
@@ -18,7 +18,7 @@ public class SpellMoveGetomirTo : SpellMoveCreatureTo
 
         Vector3 center = target.transform.position;
 
-        Collider[] hits = Physics.OverlapSphere(center, _aoeRadius, TargetsLayers);
+        Collider[] hits = Physics.OverlapSphere(center, _aoeRadius, Targeting.Layer);
 
         foreach (var hit in hits)
         {
@@ -32,8 +32,8 @@ public class SpellMoveGetomirTo : SpellMoveCreatureTo
             Damage damage = new Damage
             {
                 Value = finalDamage,
-                Type = DamageType,
-                PhysicAttackType = AttackRangeType
+                Type = Info.DamageType,
+                PhysicAttackType = Info.AttackRangeType
             };
 
             CmdApplyDamage(damage, character.gameObject);

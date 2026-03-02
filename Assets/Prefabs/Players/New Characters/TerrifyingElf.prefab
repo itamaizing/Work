@@ -19753,6 +19753,13 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
+  _abilitySchool: 6
+  _abilityForm: 2
+  _damageType: 1
+  _attackRangeType: 1
+  _skillType: 0
+  _moving: 0
+  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -19768,6 +19775,9 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -19775,17 +19785,30 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
     _castLength: 7
     _castWidth: 0.1
+  _radius: 0
+  _area: 0
+  _castLength: 7
+  _castWidth: 0.1
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 1
+  _isAutoRadiusRender: 0
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -19838,6 +19861,13 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
+  _abilitySchool: 6
+  _abilityForm: 2
+  _damageType: 1
+  _attackRangeType: 1
+  _skillType: 0
+  _moving: 0
+  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -19853,6 +19883,9 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -19860,17 +19893,30 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 8
     _area: 0.5
     _castLength: 0
     _castWidth: 0
+  _radius: 8
+  _area: 0.4
+  _castLength: 0
+  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -19903,7 +19949,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 6371db4ea9593dc49abdd2a651ea311b, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 0
+    _base: 4
     _additional: []
   _skillEnergyCosts:
   - resourceType: 1
@@ -19924,6 +19970,13 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
+  _abilitySchool: 1
+  _abilityForm: 3
+  _damageType: 4
+  _attackRangeType: 1
+  _skillType: 0
+  _moving: 0
+  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -19939,6 +19992,9 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -19946,17 +20002,30 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
     _castLength: 7
     _castWidth: 0.1
+  _radius: 0
+  _area: 0
+  _castLength: 7
+  _castWidth: 0.1
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 1
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -20010,6 +20079,13 @@ MonoBehaviour:
     _skillType: 2
     _whileMoving: 0
     _autoAttack: 0
+  _abilitySchool: 1
+  _abilityForm: 1
+  _damageType: 0
+  _attackRangeType: 1
+  _skillType: 2
+  _moving: 0
+  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -20027,6 +20103,11 @@ MonoBehaviour:
     _baseCostPerTick:
     - resourceType: 1
       resourceCost: 1
+  _castDuration: 0
+  _manaCostRate: 0.5
+  _manaCostPerTick:
+  - resourceType: 1
+    resourceCost: 1
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -20034,17 +20115,30 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 10
     _area: 3
     _castLength: 0
     _castWidth: 0
+  _radius: 10
+  _area: 3
+  _castLength: 0
+  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -20075,7 +20169,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 2827654704df1e841824f85306c16461, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 0
+    _base: 30
     _additional: []
   _skillEnergyCosts:
   - resourceType: 1
@@ -20083,7 +20177,7 @@ MonoBehaviour:
   _additionalSkillEnergyCosts: []
   _cooldownTime: 10
   _cooldownComponent:
-    _baseCooldown: 0
+    _baseCooldown: 10
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -20094,6 +20188,13 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
+  _abilitySchool: 1
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 1
+  _skillType: 0
+  _moving: 0
+  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -20109,6 +20210,9 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -20116,17 +20220,30 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 4
     _area: 0
     _castLength: 0
     _castWidth: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -20152,7 +20269,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 41dc99a2dc0db1b48bfe3ab875799e50, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 0
+    _base: 2
     _additional: []
   _skillEnergyCosts:
   - resourceType: 1
@@ -20160,7 +20277,7 @@ MonoBehaviour:
   _additionalSkillEnergyCosts: []
   _cooldownTime: 8
   _cooldownComponent:
-    _baseCooldown: 0
+    _baseCooldown: 8
   _castDeley: 1
   _damageValue: 30
   _infoComponent:
@@ -20171,6 +20288,13 @@ MonoBehaviour:
     _skillType: 2
     _whileMoving: 0
     _autoAttack: 0
+  _abilitySchool: 4
+  _abilityForm: 1
+  _damageType: 0
+  _attackRangeType: 1
+  _skillType: 2
+  _moving: 0
+  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -20186,6 +20310,9 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -20193,17 +20320,30 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 8
     _area: 4
     _castLength: 0
     _castWidth: 0
+  _radius: 8
+  _area: 4
+  _castLength: 0
+  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -20256,6 +20396,13 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
+  _abilitySchool: 5
+  _abilityForm: 1
+  _damageType: 0
+  _attackRangeType: 1
+  _skillType: 0
+  _moving: 0
+  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -20273,6 +20420,11 @@ MonoBehaviour:
     _baseCostPerTick:
     - resourceType: 1
       resourceCost: 2
+  _castDuration: 6
+  _manaCostRate: 0.1
+  _manaCostPerTick:
+  - resourceType: 1
+    resourceCost: 2
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -20280,17 +20432,30 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 4
     _area: 0
     _castLength: 0
     _castWidth: 0
+  _radius: 4
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -20342,6 +20507,13 @@ MonoBehaviour:
     _skillType: 3
     _whileMoving: 0
     _autoAttack: 0
+  _abilitySchool: 1
+  _abilityForm: 1
+  _damageType: 0
+  _attackRangeType: 1
+  _skillType: 3
+  _moving: 0
+  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -20357,24 +20529,40 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
-    _usesCharges: 0
+    _usesCharges: 1
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 2
     _baseCooldown: 30
     affectedByCDR: 0
+  _isUseCharges: 1
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 1
+  _maxCharges: 2
+  _chargeCooldown: 30
   _areaComponent:
     _radius: 3
     _area: 1
     _castLength: 0
     _castWidth: 0
+  _radius: 3
+  _area: 1
+  _castLength: 0
+  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -20431,6 +20619,13 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 1
+  _skillType: 0
+  _moving: 0
+  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -20446,6 +20641,9 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -20453,17 +20651,30 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 10
     _area: 0
     _castLength: 0
     _castWidth: 0
+  _radius: 10
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -20489,7 +20700,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 787e10eda323eea48aac38cc0540a2b8, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 0
+    _base: 8
     _additional: []
   _skillEnergyCosts:
   - resourceType: 1
@@ -20497,7 +20708,7 @@ MonoBehaviour:
   _additionalSkillEnergyCosts: []
   _cooldownTime: 13
   _cooldownComponent:
-    _baseCooldown: 0
+    _baseCooldown: 13
   _castDeley: 1.8
   _damageValue: 0
   _infoComponent:
@@ -20508,6 +20719,13 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
+  _abilitySchool: 5
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 1
+  _skillType: 0
+  _moving: 0
+  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -20523,6 +20741,9 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -20530,17 +20751,30 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 5
     _area: 0
     _castLength: 5
     _castWidth: 0
+  _radius: 5
+  _area: 0
+  _castLength: 5
+  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 0
     _isAutoLineRender: 1
     _isDynamicRenderer: 1
+  _isAutoRadiusRender: 0
+  _isAutoAreaRender: 0
+  _isAutoLineRender: 1
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -20573,7 +20807,7 @@ MonoBehaviour:
   _additionalSkillEnergyCosts: []
   _cooldownTime: 6
   _cooldownComponent:
-    _baseCooldown: 0
+    _baseCooldown: 6
   _castDeley: 2.8
   _damageValue: 0
   _infoComponent:
@@ -20584,6 +20818,13 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
+  _abilitySchool: 6
+  _abilityForm: 2
+  _damageType: 5
+  _attackRangeType: 1
+  _skillType: 0
+  _moving: 0
+  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -20599,6 +20840,9 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -20606,17 +20850,30 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 4
     _area: 0.01
     _castLength: 0
     _castWidth: 0
+  _radius: 4
+  _area: 0.01
+  _castLength: 0
+  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -20652,7 +20909,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: e616953e4fb63fe4ba9860ceec006bdf, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 0
+    _base: 15
     _additional: []
   _skillEnergyCosts:
   - resourceType: 1
@@ -20671,6 +20928,13 @@ MonoBehaviour:
     _skillType: 2
     _whileMoving: 0
     _autoAttack: 0
+  _abilitySchool: 5
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 1
+  _skillType: 2
+  _moving: 0
+  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -20686,6 +20950,9 @@ MonoBehaviour:
     _castDuration: 1.5
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 1.5
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -20693,17 +20960,30 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 5
     _area: 0.5
     _castLength: 0
     _castWidth: 0
+  _radius: 5
+  _area: 0.5
+  _castLength: 0
+  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 1
+  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -20744,7 +21024,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 2327db16cbf9ac64bb628397725b1cba, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 0
+    _base: 12
     _additional: []
   _skillEnergyCosts:
   - resourceType: 1
@@ -20752,7 +21032,7 @@ MonoBehaviour:
   _additionalSkillEnergyCosts: []
   _cooldownTime: 6
   _cooldownComponent:
-    _baseCooldown: 0
+    _baseCooldown: 6
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -20763,6 +21043,13 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 1
     _autoAttack: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _skillType: 0
+  _moving: 0
+  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -20778,6 +21065,9 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -20785,17 +21075,30 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 1.5
     _area: 0
     _castLength: 0
     _castWidth: 0
+  _radius: 1.5
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 0
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 1
   _disactive: 1
   _earlyCooldown: 0
   maxCounter: 0
@@ -20843,6 +21146,13 @@ MonoBehaviour:
     _skillType: 2
     _whileMoving: 0
     _autoAttack: 0
+  _abilitySchool: 0
+  _abilityForm: 2
+  _damageType: 1
+  _attackRangeType: 1
+  _skillType: 2
+  _moving: 0
+  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -20858,6 +21168,9 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -20865,17 +21178,30 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 10
     _area: 3
     _castLength: 0
     _castWidth: 0
+  _radius: 10
+  _area: 3
+  _castLength: 0
+  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -20953,6 +21279,13 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _skillType: 0
+  _moving: 0
+  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -20968,6 +21301,9 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -20975,17 +21311,30 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
     _castLength: 0
     _castWidth: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
+  _isAutoRadiusRender: 0
+  _isAutoAreaRender: 0
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -21009,7 +21358,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: fed6aaa6d139723498ff8d0c2ebaf5ad, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 0
+    _base: 80
     _additional: []
   _skillEnergyCosts:
   - resourceType: 1
@@ -21028,6 +21377,13 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
+  _abilitySchool: 5
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 1
+  _skillType: 0
+  _moving: 0
+  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -21043,6 +21399,9 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -21050,17 +21409,30 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 6
     _area: 0
     _castLength: 0
     _castWidth: 0
+  _radius: 6
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -21087,7 +21459,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 16c3d53a2f99df74c857d70b790fe41d, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 0
+    _base: 40
     _additional: []
   _skillEnergyCosts:
   - resourceType: 1
@@ -21106,6 +21478,13 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _skillType: 0
+  _moving: 0
+  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -21121,6 +21500,9 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -21128,17 +21510,30 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 4
     _area: 0.01
     _castLength: 0
     _castWidth: 0
+  _radius: 4
+  _area: 0.01
+  _castLength: 0
+  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -21162,7 +21557,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 0dadb43cae00bf64ea1fe2c0dfd800c8, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 0
+    _base: 80
     _additional: []
   _skillEnergyCosts:
   - resourceType: 1
@@ -21170,7 +21565,7 @@ MonoBehaviour:
   _additionalSkillEnergyCosts: []
   _cooldownTime: 2
   _cooldownComponent:
-    _baseCooldown: 0
+    _baseCooldown: 2
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -21181,6 +21576,13 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
+  _abilitySchool: 3
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 1
+  _skillType: 0
+  _moving: 0
+  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -21196,6 +21598,9 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -21203,17 +21608,30 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
     _castLength: 0
     _castWidth: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
+  _isAutoRadiusRender: 0
+  _isAutoAreaRender: 0
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -21237,7 +21655,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: fed6aaa6d139723498ff8d0c2ebaf5ad, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 0
+    _base: 8
     _additional: []
   _skillEnergyCosts:
   - resourceType: 1
@@ -21245,7 +21663,7 @@ MonoBehaviour:
   _additionalSkillEnergyCosts: []
   _cooldownTime: 8
   _cooldownComponent:
-    _baseCooldown: 0
+    _baseCooldown: 8
   _castDeley: 1.5
   _damageValue: 0
   _infoComponent:
@@ -21256,6 +21674,13 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
+  _abilitySchool: 4
+  _abilityForm: 0
+  _damageType: 5
+  _attackRangeType: 1
+  _skillType: 0
+  _moving: 0
+  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -21271,6 +21696,9 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -21278,17 +21706,30 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 4
     _area: 1
     _castLength: 0
     _castWidth: 0
+  _radius: 4
+  _area: 1
+  _castLength: 0
+  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -21320,7 +21761,7 @@ MonoBehaviour:
   _additionalSkillEnergyCosts: []
   _cooldownTime: 2
   _cooldownComponent:
-    _baseCooldown: 0
+    _baseCooldown: 2
   _castDeley: 1
   _damageValue: 10
   _infoComponent:
@@ -21331,6 +21772,13 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _skillType: 0
+  _moving: 0
+  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -21346,6 +21794,9 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -21353,17 +21804,30 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 5
     _area: 1
     _castLength: 0
     _castWidth: 0
+  _radius: 5
+  _area: 1
+  _castLength: 0
+  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
+  _isAutoRadiusRender: 1
+  _isAutoAreaRender: 1
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
