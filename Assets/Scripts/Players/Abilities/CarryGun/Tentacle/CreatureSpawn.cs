@@ -1,14 +1,12 @@
-using Mirror;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 public enum SpawnType
 {
     Scrader = 0,
     Spisnacider = 1,
+    Getomir = 2,
 }
 
 public class CreatureSpawn : Skill
@@ -31,6 +29,35 @@ public class CreatureSpawn : Skill
     private void OnEnable()
     {
         minionMove.SetCanMove(false);
+    }
+
+    private void OnDisable()
+    {
+        if (spawnType == SpawnType.Getomir && tentacle != null)
+        {
+            tentacle.OnSpawnGetomirChanged -= HandleSpawnGetomirChanged;
+        }
+    }
+
+    private void Start()
+    {
+        if (spawnType == SpawnType.Getomir && tentacle != null)
+        {
+            tentacle.OnSpawnGetomirChanged += HandleSpawnGetomirChanged;
+        }
+    }
+
+    private void HandleSpawnGetomirChanged(bool isActive)
+    {
+        Debug.Log("1");
+        if (spawnType != SpawnType.Getomir) return;
+        if (Hero == null) return;
+
+        var skillManager = Hero.Abilities;
+        if (skillManager == null) return;
+
+        if (isActive) skillManager.ActivateSkill(this);
+        else skillManager.DeactivateSkill(this);
     }
 
     protected override IEnumerator PrepareJob(System.Action<TargetInfo> callback)

@@ -4,16 +4,15 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class ScratchClaws : Skill
+public class PowerStrike : Skill
 {
     [SerializeField] private Animator _animator;
     [SerializeField] private Character _playerLinks;
     [SerializeField] private float _moveDurationPerUnit = 0.2f;
     [SerializeField] private float _stopDistance = 1.5f;
-    [SerializeField] private float _bleedingDuration = 3f;
-    [SerializeField, Range(0, 1f)] private float _bleedingChance = 1f;
-    [SerializeField] private float _minDamage = 1f;
-    [SerializeField] private float _maxDamage = 4f;
+    [SerializeField] private float _minDamage = 12f;
+    [SerializeField] private float _maxDamage = 18f;
+    [SerializeField] private float _aoeRadius = 1.5f;
 
     #region Const
     private const float StopDistanceThreshold = 0.05f;
@@ -21,10 +20,8 @@ public class ScratchClaws : Skill
     private const float SegmentMinDistance = 0.01f;
     private const float RaycastCheckDistance = 1f;
     private const float TargetSearchRadius = 0.5f;
-    private const float DamagePerTick = 1f;
 
-    private const string AttackScaredTrigger = "AttackScared";
-
+    private const string AttackGetomirTrigger = "AttackGetomir";
     #endregion
 
     private IDamageable _currentTarget;
@@ -37,23 +34,23 @@ public class ScratchClaws : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
-    private void scraderClawsAnimCast()
+    private void powerStrikeAnimCast()
     {
-        _animator.SetTrigger(AttackScaredTrigger);
+        _animator.SetTrigger(AttackGetomirTrigger);
     }
 
     public void AttackAnimationHit()
     {
-        ApplyScratchDamage();
+        ApplyStrikeDamage();
         _moveActive = false;
     }
 
-    protected override bool IsCanCast => Targeting.GetTarget() != null;
+    protected override bool IsCanCast => GetTarget() != null;
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
+        if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0]);
     }
 
     private void OnEnable()
@@ -74,26 +71,26 @@ public class ScratchClaws : Skill
             Hero.Move.SetCanMove(true);
             Hero.Move.StopLookAt();
         }
-        
+
         _currentTarget = null;
         CancelWork();
 
         _moveActive = false;
-        Targeting.ClearTarget();
-        Targeting.ClearTempTarget();
+        ClearTarget();
+        ClearTempTarget();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
-        while (Targeting.GetTempTarget()?.Targetable == null)
+        while (GetTempTarget() == null)
         {
             if (GetMouseButton)
             {
-                Targeting.FindTempTarget(Targeting.GetMousePoint(), TargetSearchRadius);
+                FindTarget(TargetSearchRadius, GetMousePoint());
 
-                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
+                if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
                 {
-                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
                     else break;
                 }
             }
@@ -101,10 +98,10 @@ public class ScratchClaws : Skill
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
+        SetTarget(GetTempTarget());
 
         TargetInfo info = new();
-        info.AddTarget(Targeting.GetTarget()?.Targetable);
+        info.AddTarget(GetTarget());
         targetDataSavedCallback?.Invoke(info);
     }
 
@@ -112,7 +109,7 @@ public class ScratchClaws : Skill
     {
         CancelWork();
         _moveActive = true;
-        _currentTarget = Targeting.GetTarget()?.Character;
+        _currentTarget = GetTarget() as Character;
 
         float distanceToTarget = Vector3.Distance(transform.position, _currentTarget.transform.position);
         if (distanceToTarget > _stopDistance + StopDistanceThreshold)
@@ -129,15 +126,15 @@ public class ScratchClaws : Skill
 
         else
         {
-            scraderClawsAnimCast();
+            powerStrikeAnimCast();
             while (_moveActive) yield return null;
         }
     }
 
     protected override void ClearData()
     {
-        Targeting.ClearTarget();
-        Targeting.ClearTempTarget();
+        ClearTarget();
+        ClearTempTarget();
         _currentTarget = null;
 
         if (_hero?.Move != null)
@@ -216,7 +213,7 @@ public class ScratchClaws : Skill
 
         Hero.Move.SetCanMove(true);
 
-        scraderClawsAnimCast();
+        powerStrikeAnimCast();
     }
 
     private Vector3 GetApproachPointNearEnemy(IDamageable enemy)
@@ -225,22 +222,45 @@ public class ScratchClaws : Skill
         return enemy.transform.position - toEnemy * _stopDistance;
     }
 
-    private void ApplyScratchDamage()
+    private void ApplyStrikeDamage()
     {
         if (_currentTarget == null) return;
-        Damage = UnityEngine.Random.Range(_minDamage, _maxDamage);
 
-        var targetCurrent = _currentTarget as Character;
+        Character mainTarget = _currentTarget as Character;
+        if (mainTarget == null) return;
 
-        Damage damage = new Damage
+        float randomDamage = UnityEngine.Random.Range(_minDamage, _maxDamage);
+        float baseDamage = Buff.Damage.GetBuffedValue(randomDamage);
+
+        Vector3 center = mainTarget.transform.position;
+
+        Collider[] hits = Physics.OverlapSphere(center, _aoeRadius, TargetsLayers);
+
+        foreach (var hit in hits)
         {
-            Value = Buff.Damage.GetBuffedValue(Damage),
-            Type = Info.DamageType,
-            PhysicAttackType = Info.AttackRangeType
-        };
+            Character character = hit.GetComponent<Character>();
+            if (character == null) continue;
+            if (!IsValidTarget(character)) continue;
 
-        if (targetCurrent != null && UnityEngine.Random.value <= _bleedingChance) targetCurrent.CharacterState.CmdAddState(States.Bleeding, _bleedingDuration, DamagePerTick, _playerLinks.gameObject, name);
-        CmdApplyDamage(damage, targetCurrent.gameObject);
+            float finalDamage = character == mainTarget ? baseDamage : baseDamage * 0.5f;
+
+            Damage damage = new Damage
+            {
+                Value = finalDamage,
+                Type = DamageType,
+                PhysicAttackType = AttackRangeType
+            };
+
+            CmdApplyDamage(damage, character.gameObject);
+        }
+    }
+
+    private bool IsValidTarget(Character character)
+    {
+        if (character == Hero) return false;
+        if (character.IsDead) return false;
+
+        return true;
     }
 
     private void CancelWork()

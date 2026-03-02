@@ -18013,7 +18013,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 964929301270209834}
@@ -18682,7 +18682,7 @@ MonoBehaviour:
     m_Bits: 256
   _obstacle:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
@@ -18703,13 +18703,13 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _moveDurationPerUnit: 0.9
-  _damageDelay: 0.5
-  _attackDistance: 3
-  _minDamage: 8
-  _maxDamage: 10
-  _animator: {fileID: 1215395125402789392}
-  _skillManager: {fileID: 6892265620981845488}
+  moveDurationPerUnit: 0.2
+  attackDistance: 3
+  damageDelay: 0.5
+  animator: {fileID: 1215395125402789392}
+  skillManager: {fileID: 6892265620981845488}
+  minDamage: 8
+  maxDamage: 10
 --- !u!114 &5921960195754634602
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18746,7 +18746,7 @@ MonoBehaviour:
     m_Bits: 256
   _obstacle:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
@@ -18816,6 +18816,7 @@ MonoBehaviour:
   _animator: {fileID: 1215395125402789392}
   _moveCreature: {fileID: 4144108970412608448}
   _spell: {fileID: 2840888049310110577}
+  _spellMoveCreatureTo: {fileID: 2840888049310110577}
   _spittingAcid: {fileID: 5921960195754634602}
 --- !u!114 &3764020448229271524
 MonoBehaviour:

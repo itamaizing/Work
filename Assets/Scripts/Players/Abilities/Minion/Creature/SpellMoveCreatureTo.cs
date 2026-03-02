@@ -10,7 +10,6 @@ public abstract class SpellMoveCreatureTo : Skill
     [SerializeField] protected float moveDurationPerUnit = 0.2f;
     [SerializeField] protected float attackDistance = 3f;
     [SerializeField] protected float damageDelay = 0.5f;
-    [SerializeField] protected LayerMask obstacle;
 
     [Header("Refs")]
     [SerializeField] protected Animator animator;
@@ -36,6 +35,13 @@ public abstract class SpellMoveCreatureTo : Skill
 
     #region Cast Flow
 
+    protected void ClearAutoAttackSkill()
+    {
+        if (skillManager == null) return;
+
+        if (skillManager.AutoSkillCast != null) skillManager.AutoSkillCast.DeleteSkill();
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callback)
     {
         Vector3 clicked = Vector3.positiveInfinity;
@@ -60,6 +66,7 @@ public abstract class SpellMoveCreatureTo : Skill
 
     protected override IEnumerator CastJob()
     {
+        ClearAutoAttackSkill();
         moveActive = true;
 
         if (moveCoroutine != null)
@@ -94,7 +101,8 @@ public abstract class SpellMoveCreatureTo : Skill
         {
             Vector3 segment = path.corners[i];
             float distance = Vector3.Distance(transform.position, segment);
-            float duration = distance * moveDurationPerUnit;
+            float speed = Mathf.Max(0.01f, moveDurationPerUnit);
+            float duration = distance / speed;
 
             transform.rotation = Quaternion.LookRotation((segment - transform.position).normalized);
 
@@ -117,7 +125,7 @@ public abstract class SpellMoveCreatureTo : Skill
 
                     if (stopAtObstacle &&
                         Physics.Raycast(transform.position, transform.forward,
-                        out RaycastHit hit, 1f, obstacle))
+                        out RaycastHit hit, 1f, _obstacle))
                     {
                         interrupted = true;
                         activeTween?.Kill();
@@ -146,17 +154,36 @@ public abstract class SpellMoveCreatureTo : Skill
 
         if (attackCoroutine != null) StopCoroutine(attackCoroutine);
 
+        if (skillManager != null)
+        {
+            if (skillManager.SkillQueue.IsEmpty == false ||
+                skillManager.AutoSkillCast.IsBusy)
+            {
+                StopSkill();
+                return;
+            }
+        }
+
         Character nearest = FindNearestEnemy();
 
         if (nearest != null) attackCoroutine = StartCoroutine(AutoAttackLoop());
-        else
-            StopSkill();
+        else StopSkill();
     }
 
     private IEnumerator AutoAttackLoop()
     {
         while (true)
         {
+            if (skillManager != null)
+            {
+                if (skillManager.SkillQueue.IsEmpty == false ||
+                    skillManager.AutoSkillCast.IsBusy)
+                {
+                    StopSkill();
+                    yield break;
+                }
+            }
+
             Character nearest = FindNearestEnemy();
             if (nearest == null) yield break;
 

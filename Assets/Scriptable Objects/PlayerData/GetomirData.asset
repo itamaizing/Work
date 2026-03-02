@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4db219e2a0b6a648befa165334af915, type: 3}
+  m_Name: GetomirData
+  m_EditorClassIdentifier: 
+  _name: Getomir
+  _description: 300
+  type: 
+  _icon: {fileID: 7968614990152163906, guid: 0824c4374f224f1499548a94f4199027, type: 3}
+  _iconSize: 0
+  _attributes:
+    _attributeGroup2:
+    - Name: Health
+      Description: 
+      _value: 370
+    - Name: HPRegen
+      Description: 
+      _value: 0
+    - Name: Resourse
+      Description: 
+      _value: 0
+    - Name: Mana
+      Description: 
+      _value: 0
+    - Name: ResourseRegen
+      Description: 
+      _value: 0
+    - Name: Speed
+      Description: 
+      _value: 7
+    - Name: MagicResist
+      Description: 
+      _value: 0
+    - Name: PhysicResist
+      Description: 
+      _value: 0
+    - Name: MagicEvade
+      Description: 
+      _value: 0
+    - Name: EvasionPhysical
+      Description: 
+      _value: 0

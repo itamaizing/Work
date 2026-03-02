@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SwarmTalent_4 : Talent
+public class SwarmTalent_8 : Talent
 {
 
     public override void Enter()
