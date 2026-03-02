@@ -6197,7 +6197,7 @@ Animator:
   m_GameObject: {fileID: 1801549179431471552}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 59d588b7f02e0974baadf203445e9751, type: 2}
+  m_Controller: {fileID: 9100000, guid: 8e35dabd1a3934c45bea04ee37eb7a3e, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -18733,7 +18733,7 @@ MonoBehaviour:
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 0
+  _radius: 6
   _area: 0
   _castLength: 0
   _castWidth: 0
@@ -18746,11 +18746,8 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   moveDurationPerUnit: 0.9
-  attackDistance: 3
+  attackDistance: 1.5
   damageDelay: 1.4
-  obstacle:
-    serializedVersion: 2
-    m_Bits: 128
   animator: {fileID: 1215395125402789392}
   skillManager: {fileID: 6892265620981845488}
   _minDamage: 12

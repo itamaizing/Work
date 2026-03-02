@@ -7,7 +7,7 @@ public class SpellMoveGetomirTo : SpellMoveCreatureTo
     [SerializeField] private float _maxDamage = 18f;
     [SerializeField] private float _aoeRadius = 1.5f;
 
-    protected override string AutoAttackTrigger => "AutoAttackScrader";
+    protected override string AutoAttackTrigger => "AutoAttackGetomir";
 
     protected override void DealDamage(Character target)
     {

@@ -21,7 +21,7 @@ public class PowerStrike : Skill
     private const float RaycastCheckDistance = 1f;
     private const float TargetSearchRadius = 0.5f;
 
-    private const string AttackScaredTrigger = "AttackScared";
+    private const string AttackScaredTrigger = "AttackGetomir";
 
     #endregion
 

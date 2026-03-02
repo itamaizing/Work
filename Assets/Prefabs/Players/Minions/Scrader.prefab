@@ -13881,7 +13881,7 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   moveDurationPerUnit: 1.1
-  attackDistance: 3
+  attackDistance: 1.5
   damageDelay: 0.7
   animator: {fileID: 1215395125402789392}
   skillManager: {fileID: 6892265620981845488}
