@@ -10,7 +10,6 @@ public abstract class SpellMoveCreatureTo : Skill
     [SerializeField] protected float moveDurationPerUnit = 0.2f;
     [SerializeField] protected float attackDistance = 3f;
     [SerializeField] protected float damageDelay = 0.5f;
-    [SerializeField] protected LayerMask obstacle;
 
     [Header("Refs")]
     [SerializeField] protected Animator animator;
@@ -117,7 +116,7 @@ public abstract class SpellMoveCreatureTo : Skill
 
                     if (stopAtObstacle &&
                         Physics.Raycast(transform.position, transform.forward,
-                        out RaycastHit hit, 1f, obstacle))
+                        out RaycastHit hit, 1f, _obstacle))
                     {
                         interrupted = true;
                         activeTween?.Kill();

@@ -13,7 +13,6 @@ public class PowerStrike : Skill
     [SerializeField] private float _minDamage = 12f;
     [SerializeField] private float _maxDamage = 18f;
     [SerializeField] private float _aoeRadius = 1.5f;
-    [SerializeField] private LayerMask _characterLayer;
 
     #region Const
     private const float StopDistanceThreshold = 0.05f;
@@ -233,18 +232,19 @@ public class PowerStrike : Skill
         if (mainTarget == null) return;
 
         float randomDamage = UnityEngine.Random.Range(_minDamage, _maxDamage);
-        float finalDamage = Buff.Damage.GetBuffedValue(randomDamage);
+        float baseDamage = Buff.Damage.GetBuffedValue(randomDamage);
 
         Vector3 center = mainTarget.transform.position;
 
-        Collider[] hits = Physics.OverlapSphere(center, _aoeRadius, _characterLayer);
+        Collider[] hits = Physics.OverlapSphere(center, _aoeRadius, TargetsLayers);
 
         foreach (var hit in hits)
         {
             Character character = hit.GetComponent<Character>();
             if (character == null) continue;
-
             if (!IsValidTarget(character)) continue;
+
+            float finalDamage = character == mainTarget ? baseDamage : baseDamage * 0.5f;
 
             Damage damage = new Damage
             {
