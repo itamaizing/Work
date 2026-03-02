@@ -4,16 +4,16 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class ScratchClaws : Skill
+public class PowerStrike : Skill
 {
     [SerializeField] private Animator _animator;
     [SerializeField] private Character _playerLinks;
     [SerializeField] private float _moveDurationPerUnit = 0.2f;
     [SerializeField] private float _stopDistance = 1.5f;
-    [SerializeField] private float _bleedingDuration = 3f;
-    [SerializeField, Range(0, 1f)] private float _bleedingChance = 1f;
-    [SerializeField] private float _minDamage = 1f;
-    [SerializeField] private float _maxDamage = 4f;
+    [SerializeField] private float _minDamage = 12f;
+    [SerializeField] private float _maxDamage = 18f;
+    [SerializeField] private float _aoeRadius = 1.5f;
+    [SerializeField] private LayerMask _characterLayer;
 
     #region Const
     private const float StopDistanceThreshold = 0.05f;
@@ -21,7 +21,6 @@ public class ScratchClaws : Skill
     private const float SegmentMinDistance = 0.01f;
     private const float RaycastCheckDistance = 1f;
     private const float TargetSearchRadius = 0.5f;
-    private const float DamagePerTick = 1f;
 
     private const string AttackScaredTrigger = "AttackScared";
 
@@ -37,14 +36,14 @@ public class ScratchClaws : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
-    private void scraderClawsAnimCast()
+    private void powerStrikeAnimCast()
     {
         _animator.SetTrigger(AttackScaredTrigger);
     }
 
     public void AttackAnimationHit()
     {
-        ApplyScratchDamage();
+        ApplyStrikeDamage();
         _moveActive = false;
     }
 
@@ -74,7 +73,7 @@ public class ScratchClaws : Skill
             Hero.Move.SetCanMove(true);
             Hero.Move.StopLookAt();
         }
-        
+
         _currentTarget = null;
         CancelWork();
 
@@ -129,7 +128,7 @@ public class ScratchClaws : Skill
 
         else
         {
-            scraderClawsAnimCast();
+            powerStrikeAnimCast();
             while (_moveActive) yield return null;
         }
     }
@@ -216,7 +215,7 @@ public class ScratchClaws : Skill
 
         Hero.Move.SetCanMove(true);
 
-        scraderClawsAnimCast();
+        powerStrikeAnimCast();
     }
 
     private Vector3 GetApproachPointNearEnemy(IDamageable enemy)
@@ -225,22 +224,45 @@ public class ScratchClaws : Skill
         return enemy.transform.position - toEnemy * _stopDistance;
     }
 
-    private void ApplyScratchDamage()
+    private void ApplyStrikeDamage()
     {
+        if (!isServer) return;
         if (_currentTarget == null) return;
-        Damage = UnityEngine.Random.Range(_minDamage, _maxDamage);
 
-        var targetCurrent = _currentTarget as Character;
+        Character mainTarget = _currentTarget as Character;
+        if (mainTarget == null) return;
 
-        Damage damage = new Damage
+        float randomDamage = UnityEngine.Random.Range(_minDamage, _maxDamage);
+        float finalDamage = Buff.Damage.GetBuffedValue(randomDamage);
+
+        Vector3 center = mainTarget.transform.position;
+
+        Collider[] hits = Physics.OverlapSphere(center, _aoeRadius, _characterLayer);
+
+        foreach (var hit in hits)
         {
-            Value = Buff.Damage.GetBuffedValue(Damage),
-            Type = DamageType,
-            PhysicAttackType = AttackRangeType
-        };
+            Character character = hit.GetComponent<Character>();
+            if (character == null) continue;
 
-        if (targetCurrent != null && UnityEngine.Random.value <= _bleedingChance) targetCurrent.CharacterState.CmdAddState(States.Bleeding, _bleedingDuration, DamagePerTick, _playerLinks.gameObject, name);
-        CmdApplyDamage(damage, targetCurrent.gameObject);
+            if (!IsValidTarget(character)) continue;
+
+            Damage damage = new Damage
+            {
+                Value = finalDamage,
+                Type = DamageType,
+                PhysicAttackType = AttackRangeType
+            };
+
+            CmdApplyDamage(damage, character.gameObject);
+        }
+    }
+
+    private bool IsValidTarget(Character character)
+    {
+        if (character == Hero) return false;
+        if (character.IsDead) return false;
+
+        return true;
     }
 
     private void CancelWork()

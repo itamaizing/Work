@@ -18702,13 +18702,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _moveDurationPerUnit: 0.9
-  _damageDelay: 0.5
-  _attackDistance: 3
-  _minDamage: 8
-  _maxDamage: 10
-  _animator: {fileID: 1215395125402789392}
-  _skillManager: {fileID: 6892265620981845488}
+  moveDurationPerUnit: 0.2
+  attackDistance: 3
+  damageDelay: 0.5
+  obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  animator: {fileID: 0}
+  skillManager: {fileID: 0}
+  minDamage: 8
+  maxDamage: 10
 --- !u!114 &4144108970412608448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18751,6 +18754,7 @@ MonoBehaviour:
   _animator: {fileID: 1215395125402789392}
   _moveCreature: {fileID: 4144108970412608448}
   _spell: {fileID: 2840888049310110577}
+  _spellMoveCreatureTo: {fileID: 0}
   _spittingAcid: {fileID: 0}
 --- !u!114 &3764020448229271524
 MonoBehaviour:

@@ -9,15 +9,15 @@ public class SpellMoveSpisnaciderTo : SpellMoveCreatureTo
 
     protected override void DealDamage(Character target)
     {
-        float roll = UnityEngine.Random.Range(minDamage, maxDamage);
+        float randomDamage = Random.Range(minDamage, maxDamage);
 
-        Damage dmg = new Damage
+        Damage damage = new Damage
         {
-            Value = Buff.Damage.GetBuffedValue(roll),
+            Value = Buff.Damage.GetBuffedValue(randomDamage),
             Type = DamageType,
             PhysicAttackType = AttackRangeType
         };
 
-        CmdApplyDamage(dmg, target.gameObject);
+        CmdApplyDamage(damage, target.gameObject);
     }
 }
