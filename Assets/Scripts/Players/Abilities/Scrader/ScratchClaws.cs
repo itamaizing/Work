@@ -15,6 +15,8 @@ public class ScratchClaws : Skill
     [SerializeField] private float _minDamage = 1f;
     [SerializeField] private float _maxDamage = 4f;
 
+    [SerializeField] private CreatureCarryGun _creatureCarryGun;
+
     #region Const
     private const float StopDistanceThreshold = 0.05f;
     private const float MoveEventThreshold = 1f;

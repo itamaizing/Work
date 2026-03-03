@@ -14,6 +14,8 @@ public class PowerStrike : Skill
     [SerializeField] private float _maxDamage = 18f;
     [SerializeField] private float _aoeRadius = 1.5f;
 
+    [SerializeField] private CreatureCarryGun _creatureCarryGun;
+
     #region Const
     private const float StopDistanceThreshold = 0.05f;
     private const float MoveEventThreshold = 1f;

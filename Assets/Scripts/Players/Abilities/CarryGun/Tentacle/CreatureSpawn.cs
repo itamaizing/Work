@@ -49,7 +49,6 @@ public class CreatureSpawn : Skill
 
     private void HandleSpawnGetomirChanged(bool isActive)
     {
-        Debug.Log("1");
         if (spawnType != SpawnType.Getomir) return;
         if (Hero == null) return;
 

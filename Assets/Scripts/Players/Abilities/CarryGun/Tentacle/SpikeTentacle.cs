@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpikeTentacle : MonoBehaviour
+public class SpikeTentacle : NetworkBehaviour
 {
     [SerializeField] private Animator _animatorSpike;
 
@@ -23,8 +23,7 @@ public class SpikeTentacle : MonoBehaviour
 
     private void SpawnSpike()
     {
-        _animatorSpike.SetTrigger(SpawnSpikeTrigger);
-
+        RpcSpawnSpike();
         DamageTarget();
         Destroy(gameObject, 0.5f);
     }
@@ -41,4 +40,6 @@ public class SpikeTentacle : MonoBehaviour
         _skill.ApplyDamage(damage, _target.gameObject);
         _target.CharacterState.AddState(States.Stun, 2f, 0f, _player.gameObject, "TentacleSpike");
     }
+
+    [ClientRpc] private void RpcSpawnSpike() => _animatorSpike.SetTrigger(SpawnSpikeTrigger);
 }

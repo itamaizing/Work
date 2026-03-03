@@ -18771,9 +18771,9 @@ MonoBehaviour:
   _playerLinks: {fileID: 5830977165762126247}
   _moveDurationPerUnit: 0.9
   _stopDistance: 3
-  _bleedingDuration: 3
   _minDamage: 8
   _maxDamage: 10
+  _creatureCarryGun: {fileID: 0}
 --- !u!114 &4144108970412608448
 MonoBehaviour:
   m_ObjectHideFlags: 0

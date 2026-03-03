@@ -10,9 +10,10 @@ public class SpittingAcid : Skill
     [SerializeField] private Character _playerLinks;
     [SerializeField] private float _moveDurationPerUnit = 0.2f;
     [SerializeField] private float _stopDistance = 1.5f;
-    [SerializeField] private float _bleedingDuration = 3f;
     [SerializeField] private float _minDamage = 1f;
     [SerializeField] private float _maxDamage = 4f;
+
+    [SerializeField] private CreatureCarryGun _creatureCarryGun;
 
     #region Const
     private const float StopDistanceThreshold = 0.05f;
