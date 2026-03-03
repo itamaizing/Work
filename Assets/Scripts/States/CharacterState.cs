@@ -395,7 +395,7 @@ public class CharacterState : NetworkBehaviour
         #endregion
 
         #region Test
-        [States.TestAuraState] = new TestAuraState(),
+        //[States.TestAuraState] = new TestAuraState(),
         #endregion
     };
 
