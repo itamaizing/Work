@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -32,7 +32,7 @@ public class FrozenState : AbstractCharacterState
 			_damageToExit = damageToExit;
 		}
 
-		//_damageOnStart = _characterState.Character.Health.SumDamageTaken;
+		//_damageOnStart = characterState.Character.Health.SumDamageTaken;
 		_damageOnStart = 0;
 		characterState.Character.Move.SetCanMove(false);
 		characterState.Character.Move.Rigidbody.isKinematic = true;
@@ -46,7 +46,7 @@ public class FrozenState : AbstractCharacterState
 			foreach (var abil in abilities.Abilities)
 			{
 				abil.Disactive = true;
-				if (abil.AbilityForm == AbilityForm.Physical)
+				if (abil.Info.AbilityForm == AbilityForm.Physical)
 				{
 					abil.Buff.CastSpeed.ReductionPercentage(.5f);
 				}

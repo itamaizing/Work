@@ -1,4 +1,4 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using Mirror;
 using System;
 using System.Collections;
@@ -114,11 +114,11 @@ public class LightningMovement : Skill
         {
             if (GetMouseButton)
             {
-                Vector3 clickedPoint = GetMousePoint();
+                Vector3 clickedPoint = Targeting.GetMousePoint();
 
-                if (IsPointInRadius(Radius, clickedPoint))
+                if (Targeting.IsPointInRadius(AreaInfo.Radius, clickedPoint))
                 {
-                    targetPoint = CalculateLeapPoint(GetMousePoint());
+                    targetPoint = CalculateLeapPoint(Targeting.GetMousePoint());
                 }
             }
 
@@ -245,7 +245,7 @@ public class LightningMovement : Skill
                     if (_player.Abilities.SelectedSkills.Contains(_lightningStrikes) && _lightningStrikes.IsPreparing)
                     {
                         _lightningStrikes.OnLightningStrikesEnd += HandleLightningStrikesEnd;
-                        _lightningStrikes.SetTarget((ITargetable)character);
+                        _lightningStrikes.Targeting.SetTarget((ITargetable)character);
                         _lightningStrikes.TryCast();
                         _creeperStrike.DamageDeal(character);
                         _damagedCharacter = character;
@@ -255,7 +255,7 @@ public class LightningMovement : Skill
                     if (_player.Abilities.SelectedSkills.Contains(_poisonSlap) && _poisonSlap.IsPreparing)
                     {
                         _poisonSlap.OnPoisonSlapEnd += HandlePoisonSlapEnd;
-                        _poisonSlap.SetTarget((ITargetable)character);
+                        _poisonSlap.Targeting.SetTarget((ITargetable)character);
                         _poisonSlap.TryCast();
                         _creeperStrike.DamageDeal(character);
                         _damagedCharacter = character;
@@ -263,7 +263,7 @@ public class LightningMovement : Skill
                     }
 
                     _creeperStrike.OnCreeperStrikeEnd += HandleCreeperStrikeEnd;
-                    _creeperStrike.SetTarget((ITargetable)character);
+                    _creeperStrike.Targeting.SetTarget((ITargetable)character);
                     _creeperStrike.TryCast();
                     _damagedCharacter = character;
                 }
@@ -275,7 +275,7 @@ public class LightningMovement : Skill
     private Vector3 CalculateLeapPoint(Vector3 targetPoint)
     {
         Vector3 direction = (targetPoint - transform.position).normalized;
-        Vector3 leapPoint = transform.position + direction * Mathf.Min(Radius, Vector3.Distance(transform.position, targetPoint));
+        Vector3 leapPoint = transform.position + direction * Mathf.Min(AreaInfo.Radius, Vector3.Distance(transform.position, targetPoint));
         leapPoint.y = 1f;
         return leapPoint;
     }

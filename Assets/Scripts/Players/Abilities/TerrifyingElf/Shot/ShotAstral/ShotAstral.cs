@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -19,8 +19,8 @@ public class ShotAstral : Skill
     protected override int AnimTriggerCastDelay => Animator.StringToHash(_startAnimTrigger);
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast =>
-        Vector3.Distance(_targetPoint, transform.position) <= Radius &&
-        NoObstacles(_targetPoint, transform.position, _obstacle);
+        Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.Radius &&
+        Targeting.NoObstacles(_targetPoint, transform.position, _obstacle);
 
     private void OnDestroy() => OnSkillCanceled -= HandleSkillCanceled;
 
@@ -34,23 +34,23 @@ public class ShotAstral : Skill
         {
             if (GetMouseButton)
             {
-                Vector3 click = GetMousePoint();
+                Vector3 click = Targeting.GetMousePoint();
 
-                if (IsPointInRadius(Radius, click) && NoObstacles(click, transform.position, _obstacle))
+                if (Targeting.IsPointInRadius(AreaInfo.Radius, click) && Targeting.NoObstacles(click, transform.position, _obstacle))
                 {
                     _targetPoint = click;
-                    FindTargetCharacter();
-                    if (GetTargetCharacter() is Character player && player == _playerLinks)
+                    Targeting.FindTempTarget();
+                    if (Targeting.GetTarget()?.Character is Character player && player == _playerLinks)
                     {
                         _playerLinks.CharacterState.CmdAddState(States.Astral, _projectile.Duration, 0, gameObject, "ShotAstral");
                         TryCancel(true);
                         yield break;
                     }
 
-                    if (GetTargetCharacter() is Character character)
+                    if (Targeting.GetTarget()?.Character is Character character)
                     {
                         //_target = character;
-                        if (multiMagic != null) multiMagic.LastTarget = GetTargetCharacter();
+                        if (multiMagic != null) multiMagic.LastTarget = Targeting.GetTarget()?.Character;
                         Hero.Move.LookAtTransform(character.transform);
                     }
 
@@ -138,7 +138,7 @@ public class ShotAstral : Skill
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
        // _target = null;
         _targetPoint = Vector3.positiveInfinity;
     }

@@ -51,10 +51,10 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
     {
         if (_spawnComponent == null) return;
 
-        CurrentCounter = _spawnComponent.Units.Count(unit => unit != null && !unit.TryGetComponent<MucusAutoGrowth>(out _));
+        CurrentCounter = Mathf.RoundToInt(_spawnComponent.Units.Where(unit => unit != null && !unit.TryGetComponent<MucusAutoGrowth>(out _))
+                .Select(unit => unit.GetComponent<MinionComponent>()).Where(minion => minion != null).Sum(minion => minion.CostCall));
 
-        if (_overloadCheckRoutine == null)
-            _overloadCheckRoutine = StartCoroutine(CheckOverloadRoutine());
+        if (_overloadCheckRoutine == null) _overloadCheckRoutine = StartCoroutine(CheckOverloadRoutine());
     }
 
     private IEnumerator CheckOverloadRoutine()
@@ -63,20 +63,20 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
 
         while (true)
         {
-            int realCount = _spawnComponent.Units.Count(unit => unit != null 
-            && !unit.TryGetComponent<MucusAutoGrowth>(out _) 
-            && !unit.TryGetComponent<ScraderSpawn>(out _));
+            float realCost = _spawnComponent.Units
+                .Where(unit => unit != null && !unit.TryGetComponent<MucusAutoGrowth>(out _))
+                .Select(unit => unit.GetComponent<MinionComponent>()).Where(minion => minion != null).Sum(minion => minion.CostCall);
 
-            if (realCount > MaxCounter)
+            if (realCost > MaxCounter)
             {
-                float overloadCount = realCount - MaxCounter;
+                float overloadCount = realCost - MaxCounter;
                 float percentDamage = overloadCount * 0.05f;
 
                 foreach (var minion in _spawnComponent.Units)
                 {
                     if (minion == null || minion.IsDead) continue;
                     if (minion.TryGetComponent<MucusAutoGrowth>(out _)) continue;
-                    if (minion.TryGetComponent<ScraderSpawn>(out _)) continue;
+                    if (minion.TryGetComponent<CreatureSpawn>(out _)) continue;
 
                     float damageValue = minion.Health.MaxValue * percentDamage;
 

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,7 +24,7 @@ public class SeriesOfStrikes : MonoBehaviour
 	private static List<AbilityForm> _formList = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical };
 	private static List<AbilityForm> _formList2 = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Magic };
 	private static List<AbilityForm> _formList3 = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Magic, AbilityForm.Physical, AbilityForm.Magic, AbilityForm.Physical, AbilityForm.Magic };
-	//private static List<AbilityForm> _formList3 = new List<AbilityForm> { AbilityForm.Physical, AbilityForm.Magic, AbilityForm.Physical };
+	//private static List<Info.AbilityForm> _formList3 = new List<Info.AbilityForm> { Info.AbilityForm.Physical, Info.AbilityForm.Magic, Info.AbilityForm.Physical };
 
 	private List<Series> _seriesOfStrikes = new List<Series>()
 	{
@@ -38,21 +38,11 @@ public class SeriesOfStrikes : MonoBehaviour
 
 	private void Start()
 	{
-		for (int i = 0; i < _playerLinks.Resources.Count; i++)
-		{
-			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)_playerLinks.Resources[i];
-			}
-			if (_playerLinks.Resources[i].Type == ResourceType.Rune)
-			{
-				_rune = (RuneComponent)_playerLinks.Resources[i];
-			}
-		}
+        //_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
+        //_rune = (RuneComponent)_playerLinks.Resources[ResourceType.Rune];
+    }
 
-	}
-
-	private void Update()
+    private void Update()
 	{
 		Timer();
 	}
@@ -79,7 +69,12 @@ public class SeriesOfStrikes : MonoBehaviour
 
     public bool MakeHit(Character target, AbilityForm form, float usedRuneValue, float usedEnergy, float damage, float multiplier = 0f)
 	{
-		if (_iceRuneTalent) BonusRuneForDamage(damage);
+		if (_energy == null)
+			_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
+		if (_rune == null)
+			_rune = (RuneComponent)_playerLinks.Resources[ResourceType.Rune];
+
+        if (_iceRuneTalent) BonusRuneForDamage(damage);
 		CheckCurse(target, damage);
 		
 		if (!_seriesCompliteCompoTalent) return false;
@@ -147,7 +142,7 @@ public class SeriesOfStrikes : MonoBehaviour
 	{
 		var selectedSkill = _playerLinks.Abilities.SelectedSkill;
 
-		if (selectedSkill != null && selectedSkill.DamageType == DamageType.Physical)
+		if (selectedSkill != null && selectedSkill.Info.DamageType == DamageType.Physical)
 		{
 			_sumPhisDamage += damage;
 

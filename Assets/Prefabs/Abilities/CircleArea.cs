@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
@@ -22,8 +22,8 @@ public class CircleArea : MonoBehaviour
 		_zeroDamage = new Damage
 		{
 			Value = 0,
-			Type = DamageType.Physical,
-			Range = AttackRangeType.RangeAttack,
+			Type = Info.DamageType.Physical,
+			Range = Info.AttackRangeType.RangeAttack,
 		};
 	}*/
 

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class EmeraldSkinState : AbstractCharacterState
@@ -30,7 +30,7 @@ public class EmeraldSkinState : AbstractCharacterState
         
         foreach (var skill in characterState.Character.Abilities.Abilities)
         {
-            if (skill.School == Schools.Light && _isTalentActive)
+            if (skill.Info.School == Schools.Light && _isTalentActive)
             {
                 skill.CastEnded += AddTimeByLightMagic;
             }
@@ -63,7 +63,7 @@ public class EmeraldSkinState : AbstractCharacterState
     {
         foreach (var skill in characterState.Character.Abilities.Abilities)
         {
-            if (skill.School == Schools.Light && _isTalentActive)
+            if (skill.Info.School == Schools.Light && _isTalentActive)
             {
                 skill.CastEnded -= AddTimeByLightMagic;
             }

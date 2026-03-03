@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -34,7 +34,7 @@ public class NewPunch_Scorpion : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => _isRightKick ? RightPunchTrigger : LeftPunchTrigger;
 
-    protected override bool IsCanCast => GetTarget() != null && Vector3.Distance(GetTarget().Transform.position, transform.position) <= Radius && NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
+    protected override bool IsCanCast => Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Transform.position, transform.position, _obstacle);
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     private void Start()
@@ -60,13 +60,13 @@ public class NewPunch_Scorpion : Skill
     public void WarningUpAddState(bool value) => _isWarningUpAddState = value;
     #endregion
 
-    private bool IsTargetInRange() { return GetTarget() != null && Vector3.Distance(_playerLinks.transform.position, GetTarget().Transform.position) <= Radius; }
+    private bool IsTargetInRange() { return Targeting.GetTarget() != null && Vector3.Distance(_playerLinks.transform.position, Targeting.GetTarget().Transform.position) <= AreaInfo.Radius; }
 
     private void HandleSkillCanceled()
     {
         _wasDamageApplied = false;
-        ClearTarget();
-        ClearTempTarget();
+        Targeting.ClearTarget();
+        Targeting.ClearTempTarget();
         //_target = null;
         Hero.Move.StopLookAt();
         _hero.Move.SetCanMove(true);
@@ -78,7 +78,7 @@ public class NewPunch_Scorpion : Skill
     {
         if (_hero == null || _hero.Move == null) return;
 
-        var target = GetTarget() != null ? GetTarget() : _lastTarget;
+        var target = Targeting.GetTarget() != null ? Targeting.GetTarget()?.Targetable : _lastTarget;
         if (target == null)
         {
             _hero.Move.StopLookAt();
@@ -113,20 +113,20 @@ public class NewPunch_Scorpion : Skill
     {
         _wasDamageApplied = false;
 
-        while (GetTempTarget() == null)
+        while (Targeting.GetTempTarget()?.Targetable == null)
         {
             if (GetMouseButton)
             {
-                FindTarget(SearchTargetInRadius, GetMousePoint());
+                Targeting.FindTempTarget(Targeting.GetMousePoint(), SearchTargetInRadius);
 
-                if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
+                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
                 {
-                    if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
 
                     else
                     {
-                        _hero.Move.LookAtTransform(GetTempTarget().Transform);
-                        if (GetTempTarget() is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        _hero.Move.LookAtTransform(Targeting.GetTempTarget()?.Targetable.Transform);
+                        if (Targeting.GetTempTarget()?.Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
                         break;
                     }
                 }
@@ -134,22 +134,22 @@ public class NewPunch_Scorpion : Skill
             yield return null;
         }
 
-        SetTarget(GetTempTarget());
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTarget());
+        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() == null) yield return null;
+        if (Targeting.GetTarget() == null) yield return null;
         if (!IsTargetInRange()) yield return null;
 
-        if (_lastTarget != null && _lastTarget != GetTarget() as Character)  _comboCounter.ResetCounter();
+        if (_lastTarget != null && _lastTarget != Targeting.GetTarget()?.Character)  _comboCounter.ResetCounter();
 
         _isRightKick = !_isRightKick;
-        _lastTarget = GetTarget() as Character;
+        _lastTarget = Targeting.GetTarget()?.Character;
 
         ApplyAttackDamage();
 
@@ -159,18 +159,18 @@ public class NewPunch_Scorpion : Skill
     private void ApplyAttackDamage()
     {
         if (_wasDamageApplied) return;
-        if (GetTarget() == null) return;
-        if (Vector2.Distance(_lastTarget.transform.position, GetTarget().Transform.position) > Radius) return;
+        if (Targeting.GetTarget() == null) return;
+        if (Vector2.Distance(_lastTarget.transform.position, Targeting.GetTarget().Transform.position) > AreaInfo.Radius) return;
 
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(_damageValue),
-            Type = DamageType,
+            Type = Info.DamageType,
         };
 
         _wasDamageApplied = true;
 
-        if (GetTarget() is IDamageable damageable) CmdApplyDamage(damageable.gameObject, damage);
+        if (Targeting.GetTarget() is IDamageable damageable) CmdApplyDamage(damageable.gameObject, damage);
     }
 
     [Command]
@@ -182,20 +182,19 @@ public class NewPunch_Scorpion : Skill
             return;
         }
 
-        if (_tempTargetForDamage != target.transform)
+        if (Targeting.ForDamage.Transform != target.transform)
         {
-            _tempTargetForDamage = target.transform;
-            _tempForDamage = target.GetComponent<IDamageable>();
+            Targeting.ForDamage = new TargetData(target);
         }
 
-        if (_tempForDamage == null)
+        if (Targeting.ForDamage.Damageable == null)
         {
             Debug.LogError("[NewPunch_Scorpion] CmdApplyDamage: Target does not have IDamageable component!");
             return;
         }
 
-        bool isHit = _tempForDamage.TryTakeDamage(ref damage, this);
-        if (isHit && _tempForDamage is Character character) AttackPassed(character);
+        bool isHit = Targeting.ForDamage.Damageable.TryTakeDamage(ref damage, this);
+        if (isHit && Targeting.ForDamage.Damageable is Character character) AttackPassed(character);
 
         //RpcSelfNotifyHitResult(isHit, targetObject);
     }
@@ -273,14 +272,14 @@ public class NewPunch_Scorpion : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0]);
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
     }
 
     protected override void ClearData()
     {
         _wasDamageApplied = false;
-        ClearTarget();
-        ClearTempTarget();
+        Targeting.ClearTarget();
+        Targeting.ClearTempTarget();
         _hero.Move.StopLookAt();
         if (_hitsInRowCoroutine != null) StopCoroutine(_hitsInRowCoroutine);
         AnimCastEnded();

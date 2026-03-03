@@ -72,13 +72,15 @@ public class UIMenuMainWindow : MonoBehaviour
 
         //_abilitiesPanel.Show(hero.Abilities);
 
-        hero.TalentManager.Initialize(hero.LVL);
+        //hero.TalentManager.Initialize(hero.LVL);
 
-        if(_skillPanel != null)
+        _talentsPanel.Show(hero.TalentManager, false);
+
+        if (_skillPanel != null)
             _skillPanel.FillMenu(hero.Abilities, hero);
         
         _attributesPanel.Show(hero);
 
-        _talentsPanel.Show(hero.TalentManager, false);
+       
     }
 }

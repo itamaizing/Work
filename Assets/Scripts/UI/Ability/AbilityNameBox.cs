@@ -1,4 +1,4 @@
-using System.Collections;
+п»їusing System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -25,23 +25,23 @@ public class AbilityNameBox : MonoBehaviour
         {
             if (skill.SkillEnergyCosts.Count > 0)
             {
-                _descriptionWithNumbers.text = $"Затрата: {ColorOpen}{skill.SkillEnergyCosts[0].resourceCost} ед. маны{ColorEnd}";
+                _descriptionWithNumbers.text = $"Р—Р°С‚СЂР°С‚Р°: {ColorOpen}{skill.SkillEnergyCosts[0].resourceCost} РµРґ. РјР°РЅС‹{ColorEnd}";
 
-                if (skill.AdditionalSkillEnergyCosts.Count > 0) _descriptionWithNumbers.text += $"{ColorOpen} + {skill.AdditionalSkillEnergyCosts[0].resourceCost} ед. маны{ColorEnd}";
+                if (skill.AdditionalSkillEnergyCosts.Count > 0) _descriptionWithNumbers.text += $"{ColorOpen} + {skill.AdditionalSkillEnergyCosts[0].resourceCost} РµРґ. РјР°РЅС‹{ColorEnd}";
             }
-            else _descriptionWithNumbers.text = $"Затрата: {ColorOpen}0 ед. маны{ColorEnd}";
+            else _descriptionWithNumbers.text = $"Р—Р°С‚СЂР°С‚Р°: {ColorOpen}0 РµРґ. РјР°РЅС‹{ColorEnd}";
 
             if (skill.ManaCostPerTick.Count > 0)
-                _descriptionWithNumbers.text += $" + {ColorOpen}{skill.ManaCostPerTick[0].resourceCost} ед. маны/{skill.ManaCostRate} сек{ColorEnd}";
+                _descriptionWithNumbers.text += $" + {ColorOpen}{skill.ManaCostPerTick[0].resourceCost} РµРґ. РјР°РЅС‹/{skill.ManaCostRate} СЃРµРє{ColorEnd}";
 
-            switch (skill.AbilityForm)
+            switch (skill.Info.AbilityForm)
             {
                 case AbilityForm.Spell:
-                    _descriptionWithNumbers.text += $" заклинание {GetSchoolName(skill)}";
+                    _descriptionWithNumbers.text += $" Р·Р°РєР»РёРЅР°РЅРёРµ {GetSchoolName(skill)}";
                     break;
 
                 case AbilityForm.Magic:
-                    _descriptionWithNumbers.text += $" магия {GetSchoolName(skill)}";
+                    _descriptionWithNumbers.text += $" РјР°РіРёСЏ {GetSchoolName(skill)}";
                     break;
 
                 case AbilityForm.Physical:
@@ -54,23 +54,23 @@ public class AbilityNameBox : MonoBehaviour
             if (skill.Damage > 0)
             {
                 int damage = Mathf.RoundToInt(skill.Damage);
-                _descriptionWithNumbers.text += $"\nУрон: {ColorOpen}{damage}{ColorEnd} ед. {GetShoolNameForDamage(skill)}";
+                _descriptionWithNumbers.text += $"\nРЈСЂРѕРЅ: {ColorOpen}{damage}{ColorEnd} РµРґ. {GetShoolNameForDamage(skill)}";
             }
 
             //WriteTypeDamage(skill);
             //WriteTypeAbityForm(skill);
 
             if (skill.CastDeley > 0)
-                _descriptionWithNumbers.text += $"\nПодготовка: {ColorOpen}{skill.CastDeley} сек{ColorEnd}";
+                _descriptionWithNumbers.text += $"\nРџРѕРґРіРѕС‚РѕРІРєР°: {ColorOpen}{skill.CastDeley} СЃРµРє{ColorEnd}";
 
             if (skill.CastStreamDuration > 0)
-                _descriptionWithNumbers.text += $"\nВыполнение: {ColorOpen}{skill.CastStreamDuration} сек{ColorEnd}";
+                _descriptionWithNumbers.text += $"\nР’С‹РїРѕР»РЅРµРЅРёРµ: {ColorOpen}{skill.CastStreamDuration} СЃРµРє{ColorEnd}";
 
             if (skill.CooldownTime > 0)
-                _descriptionWithNumbers.text += $"\nПерезарядка: {ColorOpen}{skill.CooldownTime} сек{ColorEnd}";
+                _descriptionWithNumbers.text += $"\nРџРµСЂРµР·Р°СЂСЏРґРєР°: {ColorOpen}{skill.CooldownTime} СЃРµРє{ColorEnd}";
 
             if (skill.ChargeCooldown > 0)
-                _descriptionWithNumbers.text += $"\nКол-во Зарядов: {ColorOpen}{skill.MaxChargers}/{skill.ChargeCooldown} сек{ColorEnd}";
+                _descriptionWithNumbers.text += $"\nРљРѕР»-РІРѕ Р—Р°СЂСЏРґРѕРІ: {ColorOpen}{skill.MaxChargers}/{skill.ChargeCooldown} СЃРµРє{ColorEnd}";
 
             //if (skill.AdditionalDescription != string.Empty)
             //    _descriptionWithNumbers.text += $"\n{skill.AdditionalDescription}";
@@ -82,30 +82,30 @@ public class AbilityNameBox : MonoBehaviour
 
     private string GetShoolNameForDamage(Skill skill)
     {
-        switch (skill.School)
+        switch (skill.Info.School)
         {
             case Schools.Light:
-                return "светом";
+                return "СЃРІРµС‚РѕРј";
                 break;
 
             case Schools.Dark:
-                return "тьмой";
+                return "С‚СЊРјРѕР№";
                 break;
 
             case Schools.Fire:
-                return "огнем";
+                return "РѕРіРЅРµРј";
                 break;
 
             case Schools.Water:
-                return "водой";
+                return "РІРѕРґРѕР№";
                 break;
 
             case Schools.Air:
-                return "воздухом";
+                return "РІРѕР·РґСѓС…РѕРј";
                 break;
 
             case Schools.Earth:
-                return "землей";
+                return "Р·РµРјР»РµР№";
                 break;
 
             case Schools.Physical:
@@ -128,18 +128,18 @@ public class AbilityNameBox : MonoBehaviour
 
     private void WriteTypeAbityForm(Skill skill)
     {
-        _descriptionWithNumbers.text += "\nФорма способности:";
+        _descriptionWithNumbers.text += "\nР¤РѕСЂРјР° СЃРїРѕСЃРѕР±РЅРѕСЃС‚Рё:";
 
-        switch (skill.AbilityForm)
+        switch (skill.Info.AbilityForm)
         {
             case AbilityForm.Magic:
-                _descriptionWithNumbers.text += " магия";
+                _descriptionWithNumbers.text += " РјР°РіРёСЏ";
                 break;
             case AbilityForm.Physical:
-                _descriptionWithNumbers.text += " физика";
+                _descriptionWithNumbers.text += " С„РёР·РёРєР°";
                 break;
             case AbilityForm.Spell:
-                _descriptionWithNumbers.text += " заклинания";
+                _descriptionWithNumbers.text += " Р·Р°РєР»РёРЅР°РЅРёСЏ";
                 break;
             default:
                 break;
@@ -148,29 +148,29 @@ public class AbilityNameBox : MonoBehaviour
 
     private void WriteTypeDamage(Skill skill)
     {
-        switch (skill.DamageType)
+        switch (skill.Info.DamageType)
         {
             case DamageType.Magical:
-                _descriptionWithNumbers.text += " \nмагия";
-                switch (skill.School)
+                _descriptionWithNumbers.text += " \nРјР°РіРёСЏ";
+                switch (skill.Info.School)
                 {
                     case Schools.Light:
-                        _descriptionWithNumbers.text += " света";
+                        _descriptionWithNumbers.text += " СЃРІРµС‚Р°";
                         break;
                     case Schools.Dark:
-                        _descriptionWithNumbers.text += " тьмы";
+                        _descriptionWithNumbers.text += " С‚СЊРјС‹";
                         break;
                     case Schools.Fire:
-                        _descriptionWithNumbers.text += " огня";
+                        _descriptionWithNumbers.text += " РѕРіРЅСЏ";
                         break;
                     case Schools.Water:
-                        _descriptionWithNumbers.text += " воды";
+                        _descriptionWithNumbers.text += " РІРѕРґС‹";
                         break;
                     case Schools.Air:
-                        _descriptionWithNumbers.text += " воздуха";
+                        _descriptionWithNumbers.text += " РІРѕР·РґСѓС…Р°";
                         break;
                     case Schools.Earth:
-                        _descriptionWithNumbers.text += " земли";
+                        _descriptionWithNumbers.text += " Р·РµРјР»Рё";
                         break;
                     case Schools.Physical:
                         // ---
@@ -185,14 +185,14 @@ public class AbilityNameBox : MonoBehaviour
                 }
                 break;
             case DamageType.Physical:
-                _descriptionWithNumbers.text += " физический";
+                _descriptionWithNumbers.text += " С„РёР·РёС‡РµСЃРєРёР№";
                 break;
             case DamageType.DOTPhys:
                 break;
             case DamageType.DOTMag:
                 break;
             case DamageType.Both:
-                _descriptionWithNumbers.text += "смешанный";
+                _descriptionWithNumbers.text += "СЃРјРµС€Р°РЅРЅС‹Р№";
                 break;
             case DamageType.None:
                 break;
@@ -203,25 +203,25 @@ public class AbilityNameBox : MonoBehaviour
 
     private string GetSchoolName(Skill skill)
     {
-        switch (skill.School)
+        switch (skill.Info.School)
         {
             case Schools.Light:
-                return "света";
+                return "СЃРІРµС‚Р°";
                 break;
             case Schools.Dark:
-                return "тьмы";
+                return "С‚СЊРјС‹";
                 break;
             case Schools.Fire:
-                return "огня";
+                return "РѕРіРЅСЏ";
                 break;
             case Schools.Water:
-                return "воды";
+                return "РІРѕРґС‹";
                 break;
             case Schools.Air:
-                return "воздуха";
+                return "РІРѕР·РґСѓС…Р°";
                 break;
             case Schools.Earth:
-                return "земли";
+                return "Р·РµРјР»Рё";
                 break;
             case Schools.Physical:
                 return "";

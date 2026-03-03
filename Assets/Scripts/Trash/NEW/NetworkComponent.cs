@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using Mirror;
 
 public class NetworkComponent : NetworkBehaviour
 {
     public List<Character> controllableUnits = new List<Character>();
+    public event Action OnListUpdated;
 
     public override void OnStartServer()
     {
@@ -30,6 +32,7 @@ public class NetworkComponent : NetworkBehaviour
             return;
 
         controllableUnits.Add(character);
+        OnListUpdated?.Invoke();
     }
 
     private void ServerHandleUnitDelete(Character character)
@@ -46,6 +49,7 @@ public class NetworkComponent : NetworkBehaviour
         if (controllableUnits.Contains(character))
         {
             controllableUnits.Remove(character);
+            OnListUpdated?.Invoke();
         }
     }
 
@@ -69,6 +73,7 @@ public class NetworkComponent : NetworkBehaviour
     {
         if (!isOwned) return;
         controllableUnits.Add(character);
+
     }
 
     private void AuthorityHandleUnitDelete(Character character)

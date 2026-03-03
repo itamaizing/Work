@@ -22,6 +22,8 @@ public class HeroInfoUI : MonoBehaviour
 
     public void UpdateInfo()
     {
+        if(!_hero) return;
+        
         _playerIcon.Init(_hero);
         _heroName.text = _hero.Data.Name;
         _kills.text = _hero.KillCounter.ToString();

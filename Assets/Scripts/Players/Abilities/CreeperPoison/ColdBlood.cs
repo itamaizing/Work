@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using UnityEngine;
 
@@ -40,7 +40,7 @@ public class ColdBlood : Skill
     {
         base.Awake();
 
-        _baseCooldownTime = CooldownTime;    
+        _baseCooldownTime = CooldownTime;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -71,26 +71,26 @@ public class ColdBlood : Skill
     {
         if (_indomitable.Data.IsOpen)
         {
-            while (GetTargetCharacter() == null || float.IsPositiveInfinity(_mousePosition.x))
+            while (Targeting.GetTarget()?.Character == null || float.IsPositiveInfinity(_mousePosition.x))
             {
                 if (GetMouseButton)
                 {
-                    FindTargetCharacter(true);
-					//_target = GetTarget(true).character;
+                    Targeting.FindTempTarget(true);
+					//_target = Targeting.GetTarget(true).character;
                    // Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / target == " + _target);
 
-                    if (GetTargetCharacter() != Hero)
+                    if (Targeting.GetTarget()?.Character != Hero)
                     {
                         _isPlayer = false;
-                       // Debug.Log("Target != player / Target == " + _target);
+                       // Debug.Log("TargetLayer != player / TargetLayer == " + _target);
                     }
-                    if (GetTargetCharacter() == Hero)
+                    if (Targeting.GetTarget()?.Character == Hero)
                     { 
                         _isPlayer = true;
-                       // Debug.Log("Target == player / Target == " + _target);
+                       // Debug.Log("TargetLayer == player / TargetLayer == " + _target);
                     }
 
-                    _mousePosition = GetMousePoint();
+                    _mousePosition = Targeting.GetMousePoint();
                     Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / _mousePosition == " + _mousePosition);
 
 					Hero.CharacterState.CmdAddState(States.Immateriality, 0, 0, Hero.gameObject, Name);
@@ -152,7 +152,7 @@ public class ColdBlood : Skill
         {
             ReductionSetCooldown(_cooldownTimeWithTalent);
             Debug.Log("ColdBlood / UseAbilityWithTalent / if _isPlayer == true");
-			Hero.CharacterState.DispelStates(StateType.Physical, GetTargetCharacter().NetworkSettings.TeamIndex, Hero.NetworkSettings.TeamIndex, true);
+			Hero.CharacterState.DispelStates(StateType.Physical, Targeting.GetTarget().Character.NetworkSettings.TeamIndex, Hero.NetworkSettings.TeamIndex, true);
         }
         else
         {

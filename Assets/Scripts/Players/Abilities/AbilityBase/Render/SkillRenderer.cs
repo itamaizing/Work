@@ -407,7 +407,7 @@ public class SkillRenderer : NetworkBehaviour
         if (_dynamicRadiusColorCoroutine != null)
             StopCoroutine(_dynamicRadiusColorCoroutine);
 
-        if (skill.IsAutoRadiusRender) _dynamicRadiusColorCoroutine = StartCoroutine(DynamicRadiusColorJob(radius + _modRadis));
+        if (skill.Renderer.IsAutoRadiusRender) _dynamicRadiusColorCoroutine = StartCoroutine(DynamicRadiusColorJob(radius + _modRadis));
     }
 
     public void StopDynamicRadiusColor()

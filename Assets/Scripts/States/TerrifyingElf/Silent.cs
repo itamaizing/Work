@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -106,7 +106,7 @@ public class Silent : AbstractCharacterState
 
         foreach (var skill in characterState.Character.Abilities.Abilities)
         {
-            if (skill.AbilityForm == AbilityForm.Magic || skill.AbilityForm == AbilityForm.Spell)
+            if (skill.Info.AbilityForm == AbilityForm.Magic || skill.Info.AbilityForm == AbilityForm.Spell)
             {
                 skill.Disactive = true;
                 Debug.Log($"Blocking magic skill: {skill.Name}");
@@ -120,7 +120,7 @@ public class Silent : AbstractCharacterState
 
         foreach (var skill in characterState.Character.Abilities.Abilities)
         {
-            if (skill.AbilityForm == AbilityForm.Magic || skill.AbilityForm == AbilityForm.Spell)
+            if (skill.Info.AbilityForm == AbilityForm.Magic || skill.Info.AbilityForm == AbilityForm.Spell)
             {
                 skill.Disactive = false;
                 Debug.Log($"Unblocking magic skill: {skill.Name}");

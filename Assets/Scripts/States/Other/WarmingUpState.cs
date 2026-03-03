@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class WarmingUpState : AbstractCharacterState
@@ -34,7 +34,7 @@ public class WarmingUpState : AbstractCharacterState
 
 			foreach (var skill in abilities.Abilities)
 			{
-				if (skill.AbilityForm == AbilityForm.Physical && skill.AnimTriggerCastPublic != 0)
+				if (skill.Info.AbilityForm == AbilityForm.Physical && skill.AnimTriggerCastPublic != 0)
 				{
 					_affectedSkills.Add(skill);
 					skill.ExtraAnimationSpeedMultiplier = 1 + BonusPerStack * currentStacksCount;

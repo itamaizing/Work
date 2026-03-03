@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -32,7 +32,7 @@ public class ElvenSkill : AbstractCharacterState
         {
             foreach (var skill in _skillManager.Abilities)
             {
-                if (skill.DamageType == DamageType.Physical || skill.DamageType == DamageType.Both)
+                if (skill.Info.DamageType == DamageType.Physical || skill.Info.DamageType == DamageType.Both)
                 {
                     skill.CastStarted += OnPhysCastStarted;
                 }
@@ -59,7 +59,7 @@ public class ElvenSkill : AbstractCharacterState
         {
             foreach (var skill in _skillManager.Abilities)
             {
-                if (skill.DamageType == DamageType.Physical || skill.DamageType == DamageType.Both)
+                if (skill.Info.DamageType == DamageType.Physical || skill.Info.DamageType == DamageType.Both)
                 {
                     skill.CastStarted -= OnPhysCastStarted;
                 }

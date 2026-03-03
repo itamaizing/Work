@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,7 +15,7 @@ public class LineZoneRender : MonoBehaviour
     public void StartDraw(Skill skill)
     {
         _skill = skill;
-        _skill.ClickPoint += SetPoint;
+        _skill.Targeting.OnClick += SetPoint;
 
         _lineDrawCoroutine = _skill.StartCoroutine(DrawJob());
     }
@@ -34,7 +34,7 @@ public class LineZoneRender : MonoBehaviour
 
             _lineRenderer.positionCount = 0;
             _lineRenderer.SetPositions(new Vector3[0]);
-            _skill.ClickPoint -= SetPoint;
+            _skill.Targeting.OnClick -= SetPoint;
             _skill = null;
         }
         else
@@ -64,16 +64,16 @@ public class LineZoneRender : MonoBehaviour
         {
             yield return null;
 
-            mouse = _skill.GetMousePoint() + Vector3.up / 10;
+            mouse = _skill.Targeting.GetMousePoint() + Vector3.up / 10;
 
             if (_lineRenderer.positionCount > 1)
                 lastPoint = _lineRenderer.GetPosition(_lineRenderer.positionCount - 2);
             else
                 lastPoint = mouse;
 
-            if (_lineRenderer.positionCount > 1 && Vector3.Distance(lastPoint, mouse) > _skill.CastLength)
+            if (_lineRenderer.positionCount > 1 && Vector3.Distance(lastPoint, mouse) > _skill.AreaInfo.CastLength)
             {
-                _lineRenderer.SetPosition(_lineRenderer.positionCount - 1, lastPoint + (mouse - lastPoint).normalized * _skill.CastLength);
+                _lineRenderer.SetPosition(_lineRenderer.positionCount - 1, lastPoint + (mouse - lastPoint).normalized * _skill.AreaInfo.CastLength);
                 continue;
             }
 

@@ -1,10 +1,10 @@
-using UnityEngine.SceneManagement;
-using Mirror;
-using System.Collections;
-using UnityEngine;
+п»їusing Mirror;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GrowTree : Skill
 {
@@ -25,7 +25,7 @@ public class GrowTree : Skill
     [SerializeField] private SkillQueue _skillQueue;
 
     [Header("Talents")]
-    //[SerializeField] private bool treeHealthTalent; // Созданное дерево каждые 0,3 сек увеличивает максималньый запас здоровья на 1 ед. Вплоть до 60 сек.
+    //[SerializeField] private bool treeHealthTalent; // РЎРѕР·РґР°РЅРЅРѕРµ РґРµСЂРµРІРѕ РєР°Р¶РґС‹Рµ 0,3 СЃРµРє СѓРІРµР»РёС‡РёРІР°РµС‚ РјР°РєСЃРёРјР°Р»РЅСЊС‹Р№ Р·Р°РїР°СЃ Р·РґРѕСЂРѕРІСЊСЏ РЅР° 1 РµРґ. Р’РїР»РѕС‚СЊ РґРѕ 60 СЃРµРє.
     private bool _growTreeIncreasesMaxHealth;
     private bool _treeMagicEvadeTalent;
     private bool _treeShotCooldownTalent;
@@ -75,8 +75,8 @@ public class GrowTree : Skill
         {
             if (float.IsPositiveInfinity(_targetPoint.x)) return false;
 
-            float allowedRadius = _isGrowTreeArrowIntoSkyRadiusTalent ? extendedRadius : Radius;
-            return IsPointInRadius(allowedRadius, _targetPoint);
+            float allowedRadius = _isGrowTreeArrowIntoSkyRadiusTalent ? extendedRadius : AreaInfo.Radius;
+            return Targeting.IsPointInRadius(allowedRadius, _targetPoint);
         }
     }
 
@@ -123,7 +123,7 @@ public class GrowTree : Skill
 
     private void HandleSkillDeleted(Skill skill)
     {
-        if (skill == this) ClientStopDamageZone();
+        if (skill == this) Renderer.HideAOEIndicator(isCommand: false);
     }
     private void ShowExtendedRadius()
     {
@@ -187,7 +187,7 @@ public class GrowTree : Skill
                 continue;
             }
 
-            //float extRadius = (_shotIntoSky != null) ? _shotIntoSky.Radius : 0f;
+            //float extRadius = (_shotIntoSky != null) ? _shotIntoSky.AreaInfo.Radius : 0f;
 
             //if (extRadius <= 0f)
             //{
@@ -217,7 +217,7 @@ public class GrowTree : Skill
     //        {
     //            if (_hero == null) yield break;
 
-    //            float allowed = _castFromExtendedRadius ? extendedRadius : Radius;
+    //            float allowed = _castFromExtendedRadius ? extendedRadius : AreaInfo.Radius;
     //            float allowedSqr = allowed * allowed;
 
     //            Vector3 heroPos = _hero.transform.position;
@@ -253,7 +253,7 @@ public class GrowTree : Skill
         }
 
         int treeCount = _activeTrees.Count;
-        CastStreamDuration = treeCount == 0 ? _baseCastStreamDuration : _baseCastStreamDuration * Mathf.Pow(2, treeCount);
+        Channeling.CastDuration = treeCount == 0 ? _baseCastStreamDuration : _baseCastStreamDuration * Mathf.Pow(2, treeCount);
 
         Vector3 targetPoint = Vector3.positiveInfinity;
 
@@ -261,7 +261,8 @@ public class GrowTree : Skill
         {
             if (GetMouseButton)
             {
-                Vector3 mousePoint = GetMousePoint();
+                Vector3 mousePoint = Targeting.GetMousePoint();
+
                 bool clickedOnHero = false;
 
                 Collider[] colliders = Physics.OverlapSphere(mousePoint, SearchMousClickTarget);
@@ -285,7 +286,7 @@ public class GrowTree : Skill
                 else
                 {
                     float dist = Vector3.Distance(transform.position, targetPoint);
-                    if (dist <= Radius) _castFromExtendedRadius = false;
+                    if (dist <= AreaInfo.Radius) _castFromExtendedRadius = false;
 
                     //else if (dist <= extendedRadius && _isGrowTreeArrowIntoSkyRadiusTalent)
                     //{
@@ -308,10 +309,10 @@ public class GrowTree : Skill
             yield return null;
         }
 
-        int nearCount = _activeTrees.Count(tree => tree != null && Vector3.Distance(tree.transform.position, targetPoint) <= Radius);
-        CastStreamDuration = nearCount == 0 ? _baseCastStreamDuration : _baseCastStreamDuration * Mathf.Pow(2, nearCount);
+        int nearCount = _activeTrees.Count(tree => tree != null && Vector3.Distance(tree.transform.position, targetPoint) <= AreaInfo.Radius);
+        Channeling.CastDuration = nearCount == 0 ? _baseCastStreamDuration : _baseCastStreamDuration * Mathf.Pow(2, nearCount);
 
-        CmdSetCastStreamDurationByProximity(targetPoint, Radius);
+        CmdSetCastStreamDurationByProximity(targetPoint, AreaInfo.Radius);
 
         if (_checkExtendedRadiusCoroutine != null)
         {
@@ -320,7 +321,7 @@ public class GrowTree : Skill
         }
         HideExtendedRadius();
 
-        DrawDamageZoneClient(targetPoint);
+        Renderer.ShowAOEIndicator(targetPoint, isCommand: false);
 
         if (_castFromExtendedRadius)
         {
@@ -341,7 +342,7 @@ public class GrowTree : Skill
         if (_streamCoroutine != null) StopCoroutine(_streamCoroutine);
 
         _streamCoroutine = StartCoroutine(StreamDuration());
-        ClientStopDamageZone();
+        Renderer.HideAOEIndicator(isCommand: false);
 
         if (_rangeWatch != null)
         {
@@ -457,7 +458,6 @@ public class GrowTree : Skill
             if (!castFromExtendedRadius) regenDuration = CastStreamDuration - CastStreamDuration / CastStreamDurationFirst;
             else regenDuration = CastStreamDuration;
 
-            _healthTree.InitializeObject(_treeData);
             if (_treeData.MinEndurance) _healthTree.ServerStartFillHP(_healthTree.ObjectData.MaxHealth, regenDuration);
 
             if (_treeMagicEvadeTalent) _healthTree.SetMagicEvade(MagicEvade);
@@ -473,7 +473,6 @@ public class GrowTree : Skill
     [Command]
     private void CmdSpawnTreeAndTeleport(Vector3 position)
     {
-        Debug.Log($"TargetPoint: {_targetPoint.x}");
         Vector3 spawnPosition = position;
 
         var tree = Instantiate(_treePrefab, spawnPosition, Quaternion.identity);
@@ -486,8 +485,6 @@ public class GrowTree : Skill
         _healthTree = _currentTree.GetComponentInChildren<ObjectHealth>();
         if (_healthTree != null)
         {
-            _healthTree.InitializeObject(_treeData);
-
             float regenDuration = CastStreamDuration - CastStreamDuration / CastStreamDurationFirst;
 
             if (_treeData.MinEndurance) _healthTree.ServerStartFillHP(_healthTree.ObjectData.MaxHealth, regenDuration);
@@ -524,7 +521,7 @@ public class GrowTree : Skill
 
         int nearCount = 0;
         foreach (var tree in _activeTrees) if (tree != null && Vector3.Distance(tree.transform.position, plannedPos) <= checkRadius) nearCount++;
-        CastStreamDuration = nearCount == 0 ? _baseCastStreamDuration : _baseCastStreamDuration * Mathf.Pow(2, nearCount);
+        Channeling.CastDuration = nearCount == 0 ? _baseCastStreamDuration : _baseCastStreamDuration * Mathf.Pow(2, nearCount);
     }
 
     [ClientRpc]
@@ -581,7 +578,7 @@ public class GrowTree : Skill
         }
 
         _treeData.MaxHealth = _baseHealth;
-        CastStreamDuration = _baseCastStreamDuration;
+        Channeling.CastDuration = _baseCastStreamDuration;
 
         CmdSetMaxHealth(_treeData.MaxHealth);
     }

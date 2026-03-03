@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -30,7 +30,7 @@ public class IceCloud : Skill
 	{
 		get
 		{
-			if (GetTargetCharacter() != null) return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+			if (Targeting.GetTarget()?.Character != null) return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
 
 			else return true;
 		}
@@ -53,7 +53,7 @@ public class IceCloud : Skill
     private void HandleSkillCanceled()
     {
 		CanMoveIceCloud();
-		ClearTarget();
+		Targeting.ClearTarget();
 		_mousePos = Vector3.positiveInfinity;
 	}
 
@@ -61,31 +61,24 @@ public class IceCloud : Skill
 	{
 		_audioSource = GetComponent<AudioSource>();
 
-		for (int i = 0; i < Hero.Resources.Count; i++)
-		{
-			if (Hero.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)Hero.Resources[i];
-			}
-			/*if (_playerLinks.Resources[i].Type == ResourceType.Rune)
-			{
-				_rune = (RuneComponent)_playerLinks.Resources[i];
-			}*/
-		}
-	}
+        //_energy = (Energy)Hero.Resources[ResourceType.Energy];
+    }
 
-	private void Shoot()
+    private void Shoot()
 	{
-		Vector3 lookDir = _mousePos - Hero.transform.position;
+		if (_energy == null)
+			_energy = (Energy)Hero.Resources[ResourceType.Energy];
+
+        Vector3 lookDir = _mousePos - Hero.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - AngleOffset;
-		if (_combo.MakeHit(null, AbilityForm, 1, 0, 0, _combo.GetMultipliedSpeed() / ComboSpeedDivider)) _lastHit = true;
+		if (_combo.MakeHit(null, Info.AbilityForm, 1, 0, 0, _combo.GetMultipliedSpeed() / ComboSpeedDivider)) _lastHit = true;
 
 		float energyToUse = _energy.CurrentValue;
 		_energy.CmdUse(energyToUse);
 
 		CmdCreateProjecttile(angle, energyToUse, lookDir.normalized);
 
-		ClearTarget();
+		Targeting.ClearTarget();
 		_mousePos = Vector2.positiveInfinity;
 		ClearData();
 	}
@@ -134,7 +127,7 @@ public class IceCloud : Skill
 	public override void LoadTargetData(TargetInfo targetInfo)
 	{
 		if (targetInfo.Points.Count > 0) _mousePos = targetInfo.Points[0];
-		if (targetInfo.GetTargets().Count > 0) SetTarget((Character)targetInfo.GetTargets()[0]);
+		if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
 	}
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -143,30 +136,30 @@ public class IceCloud : Skill
 		{
 			if (GetMouseButton)
 			{
-				if(GetTargetCharacter() == null) yield return null;
-				if (GetTargetCharacter() != null)
+				if(Targeting.GetTarget()?.Character == null) yield return null;
+				if (Targeting.GetTarget()?.Character != null)
 				{
 					float distance = Vector3.Distance(_hero.transform.position, _mousePos);
 
-					if (distance <= Radius) _mousePos2 = GetTargetCharacter().transform.position;
+					if (distance <= AreaInfo.Radius) _mousePos2 = Targeting.GetTarget().Character.transform.position;
 
 					else
 					{
-						//FindTarget();
+						//Targeting.FindTempTarget();
 
-						//_target = GetTarget().character;
+						//_target = Targeting.GetTarget()?.Character;
 						Damage = _baseDamage + _energy.CurrentValue / EnergyPerDamageUnit;
-						_mousePos2 = GetTargetCharacter().transform.position;
+						_mousePos2 = Targeting.GetTarget().Character.transform.position;
 					}
 				}
 
-				else _mousePos2 = GetMousePoint();
+				else _mousePos2 = Targeting.GetMousePoint();
 			}
 			yield return null;
 		}        
 
         TargetInfo targetInfo = new TargetInfo();
-		if (GetTargetCharacter() != null) targetInfo.Points.Add(GetTargetCharacter().Position);
+		if (Targeting.GetTarget()?.Character != null) targetInfo.Points.Add(Targeting.GetTarget().Character.Position);
 		else if (_mousePos2 != Vector3.positiveInfinity) targetInfo.Points.Add(_mousePos2);
 		callbackDataSaved(targetInfo);
 
@@ -182,7 +175,7 @@ public class IceCloud : Skill
 
 	protected override void ClearData()
 	{
-		ClearTarget();
+		Targeting.ClearTarget();
 		_mousePos = Vector2.positiveInfinity;
 		//_enabled = false;
 	}
@@ -200,3 +193,4 @@ public class IceCloud : Skill
 	public void CanMoveIceCloud() => Hero.Move.SetCanMove(true);
 	public void StopMoveIceCloud() => Hero.Move.SetCanMove(false);
 }
+

@@ -52,7 +52,7 @@ public class TestShootAuto : Skill
     private void UpdateTargets()
     {
         _targetsInRange.Clear();
-        Collider[] colliders = Physics.OverlapSphere(transform.position, Radius, _targetsLayers);
+        Collider[] colliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius, _targetsLayers);
         foreach (var collider in colliders)
         {
             if (collider.TryGetComponent<Character>(out var character) && character != null && character != shoter)

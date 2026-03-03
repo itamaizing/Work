@@ -1,34 +1,36 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Mirror;
 
 [RequireComponent(typeof(NetworkIdentity))]
-public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, ITargetable
+public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITargetable
 {
 	[SerializeField] private CharacterData _playerData;
 	[SerializeField] private AttributeSystem _attributeSystem;
-	[SerializeField] private UserNetworkSettings _networkSettings; 
+	[SerializeField] private UserNetworkSettings _networkSettings;
 	[SerializeField] private Rigidbody _rigidbody;
 	[SerializeField] private Collider _collider;
 	[SerializeField] private Level _lvl;
 	[SerializeField] private Animator _animator;
 	[SerializeField] private NetworkAnimator _networkAnimator;
 	[SerializeField] private Health _healthComponent;
-	[SerializeField] private MoveComponent _playerMove; 
+	[SerializeField] private MoveComponent _playerMove;
 	[SerializeField] private SkillManager _abilities;
-	[SerializeField] private CharacterState _characterState;
+	[SerializeField] private CharacterState characterState;
 	[SerializeField] private UIPlayerComponents uiComponent;
 	[SerializeField] private SelectComponent _selectComponent;
 	[SerializeField] private DamageTracker _damageTracker;
-	[SerializeField] private List<Resource> _resources;
+	public List<Resource> TemporaryResourceDisplay = new(); //TMP: Для простоты дебаггинга, потом убрать
+    [SerializeField] private Dictionary<ResourceType, Resource> _resources = new();
 	[SerializeField] private SelectedCircle _selectedCircle;
 	[SerializeField] private SpawnComponent _spawnComponent;
 	[SerializeField] private VisionComponent _visionComponent;
 	[SerializeField] private Auras _auras;
 	[SerializeField] private TargetSeeker _targetSeeker;
 	[SerializeField] private Character _characterParent;
+	[SerializeField] private TransformationComponent _transformationComponent;
 
 	[SyncVar] private int _killCounter;
 	[SyncVar] private float _damageTakeCounter;
@@ -38,6 +40,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 	[SyncVar(hook = nameof(OnCharacterParentChanged))]
 	private uint _characterParentNetId;
 	private bool _isInvisible;
+	protected bool _isDisappeared;
 	private bool _isDead = false;
 
 	public SpawnComponent SpawnComponent => _spawnComponent;
@@ -49,14 +52,22 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 	public Level LVL => _lvl;
 	public MoveComponent Move => _playerMove;
 	public SkillManager Abilities => _abilities;
-	public CharacterState CharacterState => _characterState;
+	public CharacterState CharacterState => characterState;
 	public UIPlayerComponents UIComponent => uiComponent;
 	public SelectComponent SelectComponent => _selectComponent;
 	public DamageTracker DamageTracker => _damageTracker;
-	public List<Resource> Resources => _resources;
+	/// <summary>
+	/// Main resource
+	/// </summary>
+	public Resource Resource { get; private set; }
+	/// <summary>
+	/// All of resources
+	/// </summary>
+	public Dictionary <ResourceType, Resource> Resources => _resources;
 	public SelectedCircle SelectedCircle => _selectedCircle;
     public Animator Animator => _animator;
 	public TargetSeeker TargetSeeker => _targetSeeker;
+	public TransformationComponent TransformationComponent => _transformationComponent;
     public NetworkAnimator NetworkAnimator => _networkAnimator;
     public AttributeSystem AttributeSystem => _attributeSystem;
 	public Character CharacterParent
@@ -68,6 +79,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 			if (isServer && _characterParent != null) _characterParentNetId = _characterParent.netId;
 		}
 	}
+
 	public bool IsInvisible
     {
         get => _isInvisible;
@@ -78,15 +90,23 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 
             if (_isInvisible)
             {
-                OnDisappeared?.Invoke();
+				_isDisappeared = true;
+				OnDisappeared?.Invoke();
             }
             else
             {
-                OnAppeared?.Invoke();
+				_isDisappeared = false;
+				OnAppeared?.Invoke();
             }
         }
     }
-    public bool IsDead => _isDead;
+
+	public bool IsDisappeared
+	{
+		get => _isDisappeared;
+		set => _isDisappeared = value;
+	}
+	public bool IsDead => _isDead;
 
     public int KillCounter { get => _killCounter; set { _killCounter = value; Killed?.Invoke(); } }
     public int AssystCounter { get => _assystCounter; set => _assystCounter = value; }
@@ -99,9 +119,9 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
     public Transform Transform => transform;
     public Auras Auras { get => _auras; }
 
-    public bool IsTargetable => !_isDead;
+    public bool IsTargetable => !_isDead && !_isDisappeared;
 
-    public static event Action<Character> ServerOnUnitSpawned;
+	public static event Action<Character> ServerOnUnitSpawned;
 	public static event Action<Character> ServerOnUnitDeleted; 
 	public static event Action<Character> AuthorityOnUnitSpawned;
 	public static event Action<Character> AuthorityOnUnitDeleted;
@@ -126,69 +146,58 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
     public virtual void Initialize()
 	{
         AttributeSystem.Init(Data);
+		EnsureResources();
+		//Debug.Log($"Resources{_resources.Count}", gameObject);
+		Resource = _resources[Data.Resource.type];
         Move.Initialize(Rigidbody , AttributeSystem.MoveSpeed, true);
 		CharacterState.Initialize(this);
 		SelectComponent.Initialize(Move,Abilities,UIComponent);
-		//_visionComponent.VisionRange = Data.GetAttributeValue(AttributeNames.VisionRadius);
-
-		foreach (var resource in Resources)
-		{
-            /*if (resource.Type == ResourceType.Health)
-			{
-				resource.Initialize(
-					 Data.GetAttributeValue(AttributeNames.Health), 
-					Data.GetAttributeValue(AttributeNames.HpRegen), 
-					Data.GetAttributeValue(AttributeNames.HpRegenDelay), 
-					Data, AttributeSystem.Health);
-			}
-			if (resource.Type == ResourceType.Energy)
-			{
-				resource.Initialize(
-					 Data.GetAttributeValue(AttributeNames.Energy), 
-					Data.GetAttributeValue(AttributeNames.EnergyRegen), 
-					Data.GetAttributeValue(AttributeNames.EnergyRegenDelay), 
-					Data, AttributeSystem.Resourse);
-			}
-			if (resource.Type == ResourceType.Mana)
-			{
-				resource.Initialize(
-					 Data.GetAttributeValue(AttributeNames.Mana), 
-					Data.GetAttributeValue(AttributeNames.ManaRegen), 
-					Data.GetAttributeValue(AttributeNames.ManaRegenDelay), 
-					Data, AttributeSystem.Resourse);
-			}
-			if (resource.Type == ResourceType.Rune)
-			{
-				resource.Initialize(
-					 Data.GetAttributeValue(AttributeNames.Rune), 
-					Data.GetAttributeValue(AttributeNames.RuneRegen), 
-					Data.GetAttributeValue(AttributeNames.RuneRegenDelay), 
-					Data, AttributeSystem.Resourse);
-			}*/
-            if (resource.Type == ResourceType.Health)
-            {
-				Health hp = (Health)resource;
-                hp.Initialize(
-                     AttributeSystem.Health, AttributeSystem.HpRegen, Data, AttributeSystem.PhysicResist, AttributeSystem.MagicResist, AttributeSystem.PhysicEvade, AttributeSystem.MagicEvade);
-            }
-            if (resource.Type == ResourceType.Energy)
-            {
-                resource.Initialize(
-                     AttributeSystem.Resourse, AttributeSystem.ResourseRegen, Data);
-            }
-            if (resource.Type == ResourceType.Mana)
-            {
-                resource.Initialize(
-                     AttributeSystem.Resourse, AttributeSystem.ResourseRegen, Data);
-            }
-            if (resource.Type == ResourceType.Rune)
-            {
-                resource.Initialize(
-                     AttributeSystem.Resourse, AttributeSystem.ResourseRegen, Data);
-            }
-        }
+		//_visionComponent.VisionRange = Data.GetAttributeValue(AttributeNames_old.VisionRadius);
 
 		Health.Died += AddDeadCounter;
+		TemporaryResourceDisplay = _resources.Values.ToList();
+	}
+
+	private void EnsureResources()
+	{
+        foreach (var resource in _attributeSystem.Resources)
+		{
+			Resource component = gameObject.GetComponent(DB_Attribute.GetResourceClass(resource.Key)) as Resource;
+			if (component == null)
+			{
+				Debug.Log($"Could not find {resource.Key.ToString()}");
+				//component = gameObject.AddComponent(DB_Attribute.GetResourceClass(resource.Key));
+				throw new ArgumentException($"Couldn't find resource {resource.Key} on {gameObject.name}\n" +
+					$"Adding resource in runtime is impossible");
+			}
+			//Debug.Log($"Now i have {resource.Key.ToString()}", gameObject);
+			component.Init(resource.Value);
+			_resources.Add(resource.Key, component);
+        }
+
+  //      foreach (var resource in Resources)
+		//{
+  //          if (resource.Value.Type == ResourceType.Health)
+  //          {
+  //              resource.Value.Initialize(
+  //                   AttributeSystem.HPMax, AttributeSystem.HPRegen, Data);
+  //          }
+  //          if (resource.Value.Type == ResourceType.Energy)
+  //          {
+  //              resource.Value.Initialize(
+  //                   AttributeSystem.ResourceMax, AttributeSystem.ResourceRegen, Data);
+  //          }
+  //          if (resource.Value.Type == ResourceType.Mana)
+  //          {
+  //              resource.Value.Initialize(
+  //                   AttributeSystem.ResourceRegen, AttributeSystem.ResourceRegen, Data);
+  //          }
+  //          if (resource.Value.Type == ResourceType.Rune)
+  //          {
+  //              resource.Value.Initialize(
+  //                   AttributeSystem.ResourceMax, AttributeSystem.ResourceRegen, Data);
+  //          }
+  //      }
 	}
 
 	private void OnCharacterParentChanged(uint oldNetId, uint newNetId)
@@ -274,10 +283,15 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 		}
 		AuthorityOnUnitDeleted?.Invoke(this);
 	}
-	
+
 	public Resource TryGetResource(ResourceType type)
 	{
-		return Resources.FirstOrDefault(r => r.Type == type);
+		return _resources[type];
+	}
+
+	public bool TryGetResource(ResourceType type, out Resource resource)
+	{
+		return _resources.TryGetValue(type, out resource);
 	}
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
@@ -309,6 +323,11 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 		DamageGeted?.Invoke(damage, target);
 	}
 
+	public void IncreaseGettedDamage(Damage damage)
+	{
+		_damageGetCounter += damage.Value;
+	}
+
 	protected virtual void OnDied()
     {
 		if(_isDead) return;
@@ -322,7 +341,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 		_playerMove.enabled = false;
 		_abilities.CancleAllSkills();
 
-		foreach (var item in _resources)
+		foreach (var item in _resources.Values)
         {
 			item.enabled = false;
         }
@@ -338,7 +357,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 		_rigidbody.isKinematic = false;
 		_playerMove.enabled = true;
 
-		foreach (var item in _resources)
+		foreach (var item in _resources.Values)
 		{
 			item.enabled = true;
 
@@ -349,10 +368,10 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealingable, I
 
 	private void DeleteStates()
     {
-		var statesCopy = new List<AbstractCharacterState>(_characterState.CurrentStates);
+		var statesCopy = new List<AbstractCharacterState>(characterState.CurrentStates);
 		foreach (var state in statesCopy)
 		{
-			_characterState.RemoveState(state.State);
+			characterState.RemoveState(state.State);
 		}
 	}
 

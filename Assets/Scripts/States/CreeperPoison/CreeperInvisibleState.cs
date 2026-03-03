@@ -7,7 +7,7 @@ public class CreeperInvisibleState : AbstractCharacterState
     private List<Skill> _skills = new();
     private CreeperInvisible _creeperInvisible;
     private Character _player;
-    private AttributeModifiers _modif = new();
+    private AttributeModifier _modif;
 
     private float _reductionMoveSpeed = 0.3f;
     private float _originalMoveSpeed;

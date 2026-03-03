@@ -1,4 +1,4 @@
-using Mirror;
+ï»¿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,9 +18,10 @@ namespace Gangdollarff
         private Vector3 _endPoint = Vector3.zero;
         private FisuraTile _fisuraTail;
         private float _tempCastDeley = 1;
+        private float _longPressThreshold = 0.25f;
 
         public override string AdditionalDescription =>
-            $"Äëèòåëüíîñòü: {AbilityNameBox.ColorOpen}{_fisuraDuration} ñåê{AbilityNameBox.ColorEnd}";
+            $"Ð”Ð»Ð¸Ñ‚ÐµÐ»ÑŒÐ½Ð¾ÑÑ‚ÑŒ: {AbilityNameBox.ColorOpen}{_fisuraDuration} ÑÐµÐº{AbilityNameBox.ColorEnd}";
 
         protected override int AnimTriggerCastDelay => Animator.StringToHash("FisuraCast");
 
@@ -32,7 +33,7 @@ namespace Gangdollarff
 
         private bool CheckCanCast()
         {
-            return Vector3.Distance(_startPoint, transform.position) <= Radius;
+            return Vector3.Distance(_startPoint, transform.position) <= AreaInfo.Radius;
         }
 
         public void AnimCastFisura()
@@ -83,31 +84,53 @@ namespace Gangdollarff
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
         {
-            TargetInfo targetInfo = new();
-            //_lineRenderer.transform.parent = null;
-            //_lineRenderer.positionCount = 2;
+            TargetInfo targetInfo = new TargetInfo();
+            Vector3 firstPoint = Vector3.zero;
 
-            while (targetInfo.Points.Count != 1)
+            while (!Input.GetMouseButtonDown(0))
+                yield return null;
+
+            float downTime = Time.time;
+            firstPoint = Targeting.GetMousePoint();
+            targetInfo.Points.Add(firstPoint);
+
+            while (!Input.GetMouseButtonUp(0))
             {
-                if (GetMouseButton)
-                    targetInfo.Points.Add(GetMousePoint());
-
+                if (Time.time - downTime > _longPressThreshold)
+                {
+                    Vector3 holdPoint = Targeting.GetMousePoint();
+                    if (targetInfo.Points.Count == 1)
+                        targetInfo.Points.Add(holdPoint);
+                    else
+                        targetInfo.Points[1] = holdPoint;
+                }
                 yield return null;
             }
-            //_lineRenderer.SetPosition(0, _startPoint + Vector3.up / 10);
-            yield return new WaitForSeconds(0.1f);
 
-            while (targetInfo.Points.Count != 2)
+            bool longClick = (Time.time - downTime) > _longPressThreshold;
+
+            if (longClick)
             {
-                if (Input.GetMouseButton(0))
-                    targetInfo.Points.Add(GetMousePoint());
-
-                //_lineRenderer.SetPosition(1, GetMousePoint() + Vector3.up / 10);
-                yield return null;
+                Vector3 secondPointOnUp = Targeting.GetMousePoint();
+                if (targetInfo.Points.Count == 1)
+                    targetInfo.Points.Add(secondPointOnUp);
+                else
+                    targetInfo.Points[1] = secondPointOnUp;
             }
+            else
+            {
+                while (!Input.GetMouseButtonDown(0))
+                    yield return null;
+
+                Vector3 secondPoint = Targeting.GetMousePoint();
+
+                while (!Input.GetMouseButtonUp(0))
+                    yield return null;
+
+                targetInfo.Points.Add(secondPoint);
+            }
+
             callbackDataSaved.Invoke(targetInfo);
-            _lineRenderer.positionCount = 0;
-            yield return null;
         }
 
         [Command]
@@ -128,7 +151,6 @@ namespace Gangdollarff
 
             StartCoroutine(DurationJob());
         }
-
         private IEnumerator DurationJob()
         {
             yield return new WaitForSecondsRealtime(_fisuraDuration);

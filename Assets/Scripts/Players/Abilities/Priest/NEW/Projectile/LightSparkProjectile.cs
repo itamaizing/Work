@@ -1,5 +1,6 @@
 using Mirror;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class LightSparkProjectile : Projectiles
 {
@@ -12,22 +13,24 @@ public class LightSparkProjectile : Projectiles
 
     [SerializeField] public ParticleSystem particleSystem;
 
-    private SparkOfLight _skillReference;
-    private float _attackDelay;
-    private Vector3 _direction;
     private float _waveAmplitude;
     private float _waveFrequency;
     private float _startTime;
 
-    private Character _target;
+    private GameObject _target;
+    
+    public event UnityAction<LightSparkProjectile, GameObject> EndPointReached;
 
-    public void Init(HeroComponent dad, bool isLightMode, SparkOfLight skill, float distance, float attackDelay, Character target)
+    private void Awake()
     {
-        _dad = dad;
-        _skillReference = skill;
-        _distance = distance;
-        _attackDelay = attackDelay;
-
+        if (_rb != null)
+        {
+            _rb.isKinematic = true;
+        }
+    }
+    
+    public void Init(GameObject target)
+    {
         _waveAmplitude = Random.Range(waveAmplitudeMin, waveAmplitudeMax);
         _waveFrequency = Random.Range(waveFrequencyMin, waveFrequencyMax);
 
@@ -36,16 +39,13 @@ public class LightSparkProjectile : Projectiles
         _target = target;
     }
 
-    public void StartFly(Vector3 direction)
+    public void StartFly()
     {
-        _direction = direction.normalized;
-
         if (particleSystem != null) particleSystem.Play();
-
         Destroy(gameObject, lifeTime);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (_rb == null || _target == null) return;
 
@@ -53,31 +53,28 @@ public class LightSparkProjectile : Projectiles
         Vector3 directionToTarget = (targetPosition - transform.position).normalized;
 
         float elapsedTime = Time.time - _startTime;
-        Vector3 forwardMovement = directionToTarget * (speed * Time.deltaTime);
+        Vector3 forwardMovement = directionToTarget * (speed * Time.fixedDeltaTime);
 
-        Vector3 waveOffset = Vector3.up * Mathf.Sin(elapsedTime * _waveFrequency) * _waveAmplitude;
-        Vector3 sideOffset = Vector3.right * Mathf.Sin(elapsedTime * _waveFrequency * 0.5f) * (_waveAmplitude * 0.5f);
+        Vector3 rightLocal = Vector3.Cross(directionToTarget, Vector3.up).normalized;
+        Vector3 upLocal = Vector3.Cross(rightLocal, directionToTarget).normalized;
 
-        transform.position += forwardMovement + waveOffset + sideOffset;
+        Vector3 waveOffset = upLocal * Mathf.Sin(elapsedTime * _waveFrequency) * _waveAmplitude;
+        Vector3 sideOffset = rightLocal * Mathf.Sin(elapsedTime * _waveFrequency * 0.5f) * (_waveAmplitude * 0.5f);
+
+        _rb.MovePosition(_rb.position + forwardMovement + waveOffset + sideOffset);
 
         if (particleSystem != null)
         {
             particleSystem.transform.position = transform.position;
         }
     }
-
-    [Server]
+    
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject != _dad.gameObject)
+        if (other.gameObject.TryGetComponent(out Character character))
         {
-            if (other.gameObject.TryGetComponent<Character>(out Character character) && character == _target)
-            {
-                _skillReference.HandleMode(character);
-                if (particleSystem != null) particleSystem.Stop();
-
-                Destroy(gameObject, 0.1f);
-            }
+            EndPointReached?.Invoke(this, _target.gameObject);
+            Destroy(gameObject, 0.1f);
         }
     }
 }

@@ -1,4 +1,4 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using Mirror;
 using System.Linq;
 using UnityEngine;
@@ -186,7 +186,7 @@ public class DeathSpiralProjectile : Projectiles
 				StateTalent(target, _damage.Value);
 			}
 		}
-		TargetRpcDamgeMake(_curDamage);
+		TargetRpcDamageMake(_curDamage);
 	}
 
 	private void StateTalent(Character target, float damage)

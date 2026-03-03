@@ -1,4 +1,4 @@
-
+﻿
 using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
@@ -84,7 +84,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
         };
 
         characterState.Character.Health.Heal(ref heal, null);
-        //_characterState.Character.DamageTracker.AddHeal(heal);
+        //characterState.Character.DamageTracker.AddHeal(heal);
     }
 
     private void ResetValues()

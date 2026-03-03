@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -112,7 +112,7 @@ public class CreeperInvisible : Skill
 
         if (Disactive)
         {
-            SkillRender.DrawRadius(Radius);
+            SkillRender.DrawRadius(AreaInfo.Radius);
 
             if (_stopDrawRadiusRoutine != null)
             {
@@ -161,7 +161,7 @@ public class CreeperInvisible : Skill
 
             bool hasEnemies = false;
 
-            Collider[] hitEnemies = Physics.OverlapSphere(_player.transform.position, Radius, _targetsLayers);
+            Collider[] hitEnemies = Physics.OverlapSphere(_player.transform.position, AreaInfo.Radius, _targetsLayers);
 
             foreach (Collider enemy in hitEnemies)
             {

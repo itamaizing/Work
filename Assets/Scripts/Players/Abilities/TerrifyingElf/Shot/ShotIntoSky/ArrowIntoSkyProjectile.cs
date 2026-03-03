@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -58,7 +58,7 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
     private void OnTriggerStay(Collider other)
     {
         //if (other.gameObject == _dad.gameObject) return;
-        if (((1 << other.gameObject.layer) & _skill.TargetsLayers.value) == 0) return;
+        if (((1 << other.gameObject.layer) & _skill.Targeting.Layer.value) == 0) return;
 
         if (!_damagedThisTick.Add(other)) return;
 
@@ -74,7 +74,7 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
     //    {
     //        if (enemyCollider.TryGetComponent<IDamageable>(out IDamageable target) && enemyCollider != _character.gameObject)
     //        {
-    //            ApplyDamage(damageValue, DamageType.Magical, target);
+    //            ApplyDamage(damageValue, Info.DamageType.Magical, target);
 
     //            if (enemyCollider.TryGetComponent<Character>(out Character character))
     //            {
@@ -106,7 +106,7 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
     //    {
     //        if (enemyCollider.TryGetComponent<IDamageable>(out IDamageable target) && enemyCollider != _character.gameObject)
     //        {
-    //            ApplyDamage(_damage, DamageType.Magical, target);
+    //            ApplyDamage(_damage, Info.DamageType.Magical, target);
 
     //            if (enemyCollider.TryGetComponent<Character>(out Character character))
     //            {
@@ -136,7 +136,7 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
     //    //    }
     //    //}
 
-    //    //if (!_tripleShot) StopDamageZone();
+    //    //if (!_tripleShot) HideAOEIndicator();
     //}
     #endregion
 
@@ -213,12 +213,12 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
     //        yield return new WaitForSeconds(1f);
     //        ApplyAdditionalDamage(Damage / 4);
     //        _tripleShot = false;
-    //        StopDamageZone();
+    //        HideAOEIndicator();
     //        yield break;
     //    }
 
     //    _tripleShot = false;
-    //    StopDamageZone();
+    //    HideAOEIndicator();
     //    yield break;
     //}
 }

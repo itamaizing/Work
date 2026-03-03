@@ -1,20 +1,20 @@
-using System.Collections;
+Ôªøusing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TestStateAura : MonoBehaviour
 {
-    [SerializeField] private CharacterState _characterState;
+    [SerializeField] private CharacterState characterState;
 
     private void Update()
     {
         if (Input.GetKeyUp(KeyCode.H))
         {
-            _characterState.CmdAddState(States.TestAuraState, 0, 0, this.gameObject, name);
+            characterState.CmdAddState(States.TestAuraState, 0, 0, this.gameObject, name);
         }
         if (Input.GetKeyUp(KeyCode.J))
         {
-            _characterState.CmdRemoveState(States.TestAuraState);
+            characterState.CmdRemoveState(States.TestAuraState);
         }
     }
 }
@@ -29,7 +29,7 @@ public class TestAuraState : AuraState
     public override float Distance => 10;
     //public override LayerMask LayerMask => LayerMask.GetMask("Allies");
     public override LayerMask LayerMask => LayerMask.GetMask("Enemy");
-    public override float EffectRate => 1f; //‡Á ‚ ÒÂÍÛÌ‰Û
+    public override float EffectRate => 1f; //—Ä–∞–∑ –≤ —Å–µ–∫—É–Ω–¥—É
 
     public override void EffectOnEnter(Character character)
     {

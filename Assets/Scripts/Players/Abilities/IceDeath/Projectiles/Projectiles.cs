@@ -1,6 +1,4 @@
-using Mirror;
-using System.Collections;
-using System.Collections.Generic;
+﻿using Mirror;
 using UnityEngine;
 
 
@@ -29,22 +27,14 @@ public class Projectiles : NetworkBehaviour
 		_lastHit = lastHit;
 		_skill = skill;
 		_rb.AddForce(transform.forward * _force, ForceMode.Impulse);
-		for (int i = 0; i < _dad.Resources.Count; i++)
-		{
-			if (_dad.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)_dad.Resources[i];
-			}
-			if (_dad.Resources[i].Type == ResourceType.Rune)
-			{
-				_rune = (RuneComponent)_dad.Resources[i];
-			}
-		}
-		//Debug.Log("bullet init");
-	}
+        if (_dad.Resources.TryGetValue(ResourceType.Energy, out var res))
+			_energy = (Energy) res;
+        if (_dad.Resources.TryGetValue(ResourceType.Rune, out res))
+            _rune = (RuneComponent)res;
+    }
 
-	[ClientRpc]
-	protected void TargetRpcDamgeMake(float value)
+    [ClientRpc]
+	protected void TargetRpcDamageMake(float value)
 	{
 		//Debug.Log("CLIENT RPC");
 		_energy.SumDamageMake(value);

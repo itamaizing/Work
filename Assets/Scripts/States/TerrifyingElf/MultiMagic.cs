@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -33,7 +33,7 @@ public class MultiMagic : AuraState
         duration = durationToExit;
 
         foreach (var skill in _skills.Abilities.Where
-            (ability => ability.SkillType == SkillType.Target && (ability.AbilityForm == AbilityForm.Magic || ability.AbilityForm == AbilityForm.Spell || ability.AbilityForm == AbilityForm.Both)))
+            (ability => ability.Info.SkillType == SkillType.Target && (ability.Info.AbilityForm == AbilityForm.Magic || ability.Info.AbilityForm == AbilityForm.Spell || ability.Info.AbilityForm == AbilityForm.Both)))
         {
             skill.PreparingSuccess += OnTargetSkillCast;
             skill.AfterCast += ExitState;
@@ -48,12 +48,12 @@ public class MultiMagic : AuraState
 
     public override void ExitState()
     {
-        foreach (var skill in _skills.Abilities.Where(ability => ability.SkillType == SkillType.Target))
+        foreach (var skill in _skills.Abilities.Where(ability => ability.Info.SkillType == SkillType.Target))
         {
             skill.PreparingSuccess -= OnTargetSkillCast;
             skill.AfterCast -= ExitState;
         }
-        Debug.Log("âûõîä èç ìóëüòè");
+        Debug.Log("Ğ²Ñ‹Ñ…Ğ¾Ğ´ Ğ¸Ğ· Ğ¼ÑƒĞ»ÑŒÑ‚Ğ¸");
         characterState.RemoveState(this);
     }
 
@@ -84,12 +84,12 @@ public class MultiMagic : AuraState
 
     private void OnTargetSkillCast(Skill skill)
     {
-        Debug.Log("âûçîâ CastSuccessSkill");
+        Debug.Log("Ğ²Ñ‹Ğ·Ğ¾Ğ² CastSuccessSkill");
 
         _characters.Clear();
 
-        _distance = skill.Radius;
-        _targetsMask = skill.TargetsLayers;
+        _distance = skill.AreaInfo.Radius;
+        _targetsMask = skill.Targeting.Layer;
 
         var colliders = Physics.OverlapSphere(characterState.transform.position, _distance, _targetsMask);
 

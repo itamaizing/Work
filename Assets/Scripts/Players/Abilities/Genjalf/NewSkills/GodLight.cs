@@ -1,52 +1,40 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 public class GodLight : Skill
 {
     protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => 0;
-
-    public override void LoadTargetData(TargetInfo targetInfo)
+    protected override int AnimTriggerCast => Animator.StringToHash("GodLight");
+    
+    public void AnimCastGodLight()
     {
-        
+        AnimStartCastCoroutine();
     }
+
+    public void AnimGodLightEnd()
+    {
+        AnimCastEnded();
+    }
+    
+    public override void LoadTargetData(TargetInfo targetInfo) { }
 
     protected override IEnumerator CastJob()
     {
-        foreach (var item in Hero.Abilities.Abilities)
-        {
-            if (item is IGodLightSpell spell)
-            {
-                spell.ChangeMode();
-                item.CastEnded += OnCastEnded;
-            }
-        } 
+        CmdAddState();
 
         yield return null;
     }
 
-    private void OnCastEnded()
+    [Command]
+    private void CmdAddState()
     {
-        foreach (var item in Hero.Abilities.Abilities)
-        {
-            if (item is IGodLightSpell spell)
-            {
-                spell.ChangeMode();
-                item.CastEnded -= OnCastEnded;
-            }
-        }
+        _hero.CharacterState.AddState(States.GodLight,-1,0,_hero.gameObject,nameof(GodLight));
     }
 
-    protected override void ClearData()
-    {
-        
-    }
+    protected override void ClearData() { }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
-    {
-        yield return null;
-    }
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) { yield return null; }
 }

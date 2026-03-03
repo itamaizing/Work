@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,8 +20,8 @@ public class TestH2 : Skill
     {
         get
         {
-            if(GetTargetCharacter() != null)
-                return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+            if(Targeting.GetTarget()?.Character != null)
+                return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
 
             return false;
         }
@@ -34,7 +34,7 @@ public class TestH2 : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         _targetPoint = targetInfo.Points[0];
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator CastJob()
@@ -42,10 +42,10 @@ public class TestH2 : Skill
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(_damage),
-            Type = DamageType,
-            PhysicAttackType = AttackRangeType,
+            Type = Info.DamageType,
+            PhysicAttackType = Info.AttackRangeType,
         };
-        CmdApplyDamage(damage, GetTargetCharacter().gameObject);
+        CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
 
         var deley = new WaitForSeconds(_spawnDeley); ;
 
@@ -56,9 +56,9 @@ public class TestH2 : Skill
             float x = Mathf.Cos(angle);
             float y = Mathf.Sin(angle);
 
-            Vector3 point = new Vector3(x, y, 0) + GetTargetCharacter().transform.position;
+            Vector3 point = new Vector3(x, y, 0) + Targeting.GetTarget().Character.transform.position;
 
-            CmdCreateProjecttile(point, GetTargetCharacter().transform.position);
+            CmdCreateProjecttile(point, Targeting.GetTarget().Character.transform.position);
             yield return deley;
         }
         yield return null;
@@ -66,26 +66,26 @@ public class TestH2 : Skill
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_targetPoint = 
         //_target = null;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (GetTargetCharacter() == null)
+        while (Targeting.GetTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter();
-				_targetPoint = GetMousePoint();
+                Targeting.FindTempTarget();
+				_targetPoint = Targeting.GetMousePoint();
 				//_target = GetRaycastTarget(true);
             }
             yield return null;
         }
         TargetInfo targetInfo = new();
         targetInfo.Points.Add(_targetPoint);
-        targetInfo.AddTarget(GetTargetCharacter());
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 

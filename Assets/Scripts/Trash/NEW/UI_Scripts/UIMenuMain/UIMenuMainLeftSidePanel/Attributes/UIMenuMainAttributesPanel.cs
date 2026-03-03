@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -17,11 +17,12 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     public void Show(Character hero)
     {
         _attributeSystem = new AttributeSystem();
-        _attributeSystem.Init2(hero.Data);
+        //_attributeSystem.Init2(hero.Data);
+        _attributeSystem.Init(hero.Data);
 
         ResetPanel();
 
-        foreach (var item in _attributeSystem.Attributes)
+        foreach (var item in _attributeSystem.Attributes.Values)
         {
             var attribute = Instantiate(_attributeItem, _itemsParent);
             attribute.Fills(item);

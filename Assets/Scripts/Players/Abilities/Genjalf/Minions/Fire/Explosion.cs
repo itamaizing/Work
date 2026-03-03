@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
@@ -19,36 +19,36 @@ public class Explosion : Skill
     private bool CheckCanCast()
     {
         return
-               Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+               Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() != null)
+        if (Targeting.GetTarget()?.Character != null)
         {
-            int stacks = GetTargetCharacter().CharacterState.GetState(States.Burning).CurrentStacksCount;
+            int stacks = Targeting.GetTarget().Character.CharacterState.GetState(States.Burning).CurrentStacksCount;
 
             Damage damage = new Damage
             {
                 Value = stacks * Buff.Damage.GetBuffedValue(Damage),
-                Type = DamageType,
-                PhysicAttackType = AttackRangeType,
+                Type = Info.DamageType,
+                PhysicAttackType = Info.AttackRangeType,
             };
-            CmdApplyDamage(damage, GetTargetCharacter().gameObject);
+            CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
 
-            CmdCreateParticle(GetTargetCharacter().Position);
+            CmdCreateParticle(Targeting.GetTarget().Character.Position);
         }
         yield return null;
     }
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
     }
 
@@ -56,17 +56,17 @@ public class Explosion : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (GetTargetCharacter() == null)
+        while (Targeting.GetTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter();
+                Targeting.FindTempTarget();
                 //_target = GetRaycastTarget();
             }
             yield return null;
         }
 
-        targetInfo.GetTargets().Add(GetTargetCharacter());
+        targetInfo.GetTargets().Add(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 

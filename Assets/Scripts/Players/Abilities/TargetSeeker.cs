@@ -1,5 +1,4 @@
-using Org.BouncyCastle.Asn1.X509;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -16,7 +15,7 @@ public class TargetSeeker : MonoBehaviour
 	public LayerMask TargetsLayers { get => _targetsLayers; protected set => _targetsLayers = value; }
 
 	/*
-	public TargetToShot GetTarget(TypeClick click, Action<Vector3> ClickPoint, SkillType skillType, float radius, Skill skill, bool isCanTargetHimself = false, bool canTargetDead = false)
+	public TargetToShot Targeting.GetTarget(TypeClick click, Action<Vector3> Targeting.OnClick, Info.SkillType skillType, float radius, Skill skill, bool isCanTargetHimself = false, bool canTargetDead = false)
 	{
 		_skillType = skillType;
 		_radius = radius;
@@ -28,25 +27,25 @@ public class TargetSeeker : MonoBehaviour
 			case TypeClick.LMB:
 
 				target = LeftClick();
-				ClickPoint?.Invoke(target.Position);
+				Targeting.OnClick?.Invoke(target.Position);
 				break;
 
 			case TypeClick.ShiftLMB:
 
 				target = ShiftLeftClick();
-				ClickPoint?.Invoke(target.Position);
+				Targeting.OnClick?.Invoke(target.Position);
 				break;
 
 			case TypeClick.CtrlLMB:
 
 				target = CtrlLeftClick();
-				ClickPoint?.Invoke(target.Position);
+				Targeting.OnClick?.Invoke(target.Position);
 				break;
 
 			case TypeClick.SpaceLMB:
 
 				target = SpaceLeftClick();
-				ClickPoint?.Invoke(target.Position);
+				Targeting.OnClick?.Invoke(target.Position);
 				break;
 		}
 
@@ -172,7 +171,7 @@ public class TargetSeeker : MonoBehaviour
 
 		foreach (var hit in rayHit)
 		{
-			if (_skill.AutoAttack == AutoAttack.autoAttack)
+			if (_skill.Info.AutoAttack == AutoAttack.autoAttack)
 			{
 				if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed)
 				{
@@ -232,13 +231,13 @@ public class TargetSeeker : MonoBehaviour
 
 		switch (_skillType)
 		{
-			case SkillType.Target:
-				Debug.Log("SkillType Target");
+			case Info.SkillType.TargetLayer:
+				Debug.Log("Info.SkillType TargetLayer");
 				target.character = ClosedTarget();
 				target.isCharater = true;
 				break;
-			case SkillType.Projectile:
-				Debug.Log("SkillType Projectile");
+			case Info.SkillType.Projectile:
+				Debug.Log("Info.SkillType Projectile");
 
 				if (Physics.Raycast(ray, out hit))
 				{
@@ -258,8 +257,8 @@ public class TargetSeeker : MonoBehaviour
 					}
 				}
 				break;
-			case SkillType.Zone:
-				Debug.Log("SkillType Zone");
+			case Info.SkillType.Zone:
+				Debug.Log("Info.SkillType Zone");
 
 				if (Physics.Raycast(ray, out hit))
 				{
@@ -269,8 +268,8 @@ public class TargetSeeker : MonoBehaviour
 					target.Position = hit.point;
 				target.isCharater = false;
 				break;
-			case SkillType.NonTarget:
-				Debug.Log("SkillType NonTarget");
+			case Info.SkillType.NonTarget:
+				Debug.Log("Info.SkillType NonTarget");
 				break;
 			default:
 				if (Physics.Raycast(ray, out hit))
@@ -301,18 +300,18 @@ public class TargetSeeker : MonoBehaviour
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
 
-		if (_skill.AutoAttack == AutoAttack.autoAttack)
+		if (_skill.Info.AutoAttack == Info.AutoAttack.autoAttack)
 		{
 			_skill.IsAutoMode = true;
 		}
 
 		switch (_skillType)
 		{
-			case SkillType.Target:
+			case Info.SkillType.TargetLayer:
 				target.character = ClosedTarget();
 				target.isCharater = true;
 				break;
-			case SkillType.Projectile:
+			case Info.SkillType.Projectile:
 				if (Physics.Raycast(ray, out hit))
 				{
 					Debug.Log(hit.point);
@@ -320,7 +319,7 @@ public class TargetSeeker : MonoBehaviour
 				target.Position = hit.point;
 				target.isCharater = false;
 				break;
-			case SkillType.Zone:
+			case Info.SkillType.Zone:
 				if (Physics.Raycast(ray, out hit))
 				{
 					Debug.Log(hit.point);
@@ -355,13 +354,13 @@ public class TargetSeeker : MonoBehaviour
 		return target;
 	}
 	
-	 public Vector3 GetMousePoint()
+	 public Vector3 Targeting.GetMousePoint()
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
 		if (Physics.Raycast(ray, out hit))
 		{
-			if (autoAttack == AutoAttack.autoAttack)
+			if (autoAttack == Info.AutoAttack.autoAttack)
 			{
 				if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed)
 				{
