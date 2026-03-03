@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
@@ -63,7 +63,7 @@ public class TimeBackSkill : Skill
                 ResourceValues = new Dictionary<ResourceType, float>()
             };
 
-            foreach (var resource in _hero.Resources)
+            foreach (var resource in _hero.Resources.Values)
                 snapshot.ResourceValues[resource.Type] = resource.CurrentValue;
 
             _snapshots.Enqueue(snapshot);

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class ImmortalityState : AbstractCharacterState
@@ -18,8 +18,8 @@ public class ImmortalityState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
-        _player = _characterState.Character;
+        characterState = character;
+        _player = characterState.Character;
         _duration = durationToExit;
 
         _savedBlockChance = _player.Health.BlockChance;
@@ -52,7 +52,7 @@ public class ImmortalityState : AbstractCharacterState
             _player.Health.ResistMagDamage   = _savedResistMag;
         }
 
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

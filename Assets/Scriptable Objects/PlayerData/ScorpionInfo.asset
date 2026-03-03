@@ -37,16 +37,7 @@ MonoBehaviour:
     - nameToShow: Regen
       type: 1
       value: 1
-  _extraResources:
-  - nameToShow: Energy
-    type: 2
-    attributes:
-    - nameToShow: MaxValue
-      type: 0
-      value: 100
-    - nameToShow: Regen
-      type: 1
-      value: 0
+  _extraResources: []
   _attributes:
     _attributes:
     - nameToShow: ResistancePhysical

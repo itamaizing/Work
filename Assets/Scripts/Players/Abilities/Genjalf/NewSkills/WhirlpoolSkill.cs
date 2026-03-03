@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -19,7 +19,7 @@ public class WhirlpoolSkill : Skill
     protected override int AnimTriggerCast => 0;
 
     protected override bool IsCanCast =>
-        Vector3.Distance(_clickPoint, transform.position) <= Radius;
+        Vector3.Distance(_clickPoint, transform.position) <= AreaInfo.Radius;
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -34,7 +34,7 @@ public class WhirlpoolSkill : Skill
         while (!GetMouseButton)
             yield return null;
 
-        _clickPoint = GetMousePoint();
+        _clickPoint = Targeting.GetMousePoint();
         targetInfo.Points.Add(_clickPoint);
         callbackDataSaved(targetInfo);
     }

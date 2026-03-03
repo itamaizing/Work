@@ -42,8 +42,8 @@ public class WaveSkill : Skill
         _bonusLength = bonusSize.x; 
         _bonusWidth = bonusSize.y;
 
-        CastLength = _initialWidth + _bonusWidth ;
-        CastWidth = _initialLenght + _bonusLength;
+        AreaInfo.CastLength = _initialWidth + _bonusWidth ;
+        AreaInfo.CastWidth = _initialLenght + _bonusLength;
     }
 
     protected override IEnumerator CastJob()

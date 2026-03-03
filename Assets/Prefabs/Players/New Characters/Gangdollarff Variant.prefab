@@ -12893,6 +12893,10 @@ PrefabInstance:
       propertyPath: _assetId
       value: 265740785
       objectReference: {fileID: 0}
+    - target: {fileID: 2361216367366023055, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3405671967090184702, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: materialCharacter
       value: 
@@ -15579,6 +15583,9 @@ MonoBehaviour:
   _beamPrefab: {fileID: 6286129620195013125, guid: 6c796b5dfb94dbb468a1ff41196448a3, type: 3}
   _debuffChance: 100
   _chainDelay: 0.15
+  _beamHeightOffset: 0.8
+  _damageReductionPercent: 0.8
+  _maxChainTargets: 3
 --- !u!114 &8856192836074503412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16107,7 +16114,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _isTalentSpell: 1
-  _isSkillActive: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: d5dc63c203a33e143bd7c79d157ed671, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
@@ -16245,7 +16252,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _isTalentSpell: 1
-  _isSkillActive: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 5756eda9f51c2824c9e4a8ac144a7e03, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
@@ -16344,7 +16351,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _isTalentSpell: 1
-  _isSkillActive: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: a0f8f8b126f590d4c9dfb37fb7d64234, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
@@ -16444,14 +16451,27 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _isTalentSpell: 1
-  _isSkillActive: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 62cfd605b9701cd4dbd9bc90311d0504, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -16459,25 +16479,51 @@ MonoBehaviour:
   _skillType: 0
   _moving: 0
   autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
+  _chargeComponent:
+    _usesCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
+    affectedByCDR: 0
   _isUseCharges: 0
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
+  _areaComponent:
+    _radius: 0
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
   _radius: 0
   _area: 0
   _castLength: 0
   _castWidth: 0
   _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 0
+    _isAutoAreaRender: 0
+    _isAutoLineRender: 0
+    _isDynamicRenderer: 0
   _isAutoRadiusRender: 0
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
@@ -16503,16 +16549,29 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _isTalentSpell: 1
-  _isSkillActive: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: ec3042d10610ad94494174ac34986129, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 80
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 80
   _additionalSkillEnergyCosts: []
   _cooldownTime: 18
+  _cooldownComponent:
+    _baseCooldown: 18
   _castDeley: 0
   _damageValue: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -16520,25 +16579,51 @@ MonoBehaviour:
   _skillType: 0
   _moving: 0
   autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
+  _chargeComponent:
+    _usesCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
+    affectedByCDR: 0
   _isUseCharges: 0
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
+  _areaComponent:
+    _radius: 0
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
   _radius: 0
   _area: 0
   _castLength: 0
   _castWidth: 0
   _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 1
+    _isDynamicRenderer: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 1
@@ -16563,16 +16648,29 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _isTalentSpell: 1
-  _isSkillActive: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 8fd4270f219fb3a4fa419491da00e340, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 20
+    _additional: []
   _skillEnergyCosts:
   - resourceType: 1
     resourceCost: 20
   _additionalSkillEnergyCosts: []
   _cooldownTime: 12
+  _cooldownComponent:
+    _baseCooldown: 12
   _castDeley: 2
   _damageValue: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
   _abilitySchool: 0
   _abilityForm: 0
   _damageType: 0
@@ -16580,25 +16678,51 @@ MonoBehaviour:
   _skillType: 0
   _moving: 0
   autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
+  _chargeComponent:
+    _usesCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
+    affectedByCDR: 0
   _isUseCharges: 0
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
+  _areaComponent:
+    _radius: 6
+    _area: 6
+    _castLength: 0
+    _castWidth: 0
   _radius: 6
   _area: 6
   _castLength: 0
   _castWidth: 0
   _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 0
+    _isDynamicRenderer: 0
   _isAutoRadiusRender: 1
   _isAutoAreaRender: 1
   _isAutoLineRender: 0
