@@ -278,6 +278,7 @@ public class CharacterState : NetworkBehaviour
         [States.PushingWindBuff] = new PushingWindBuff(),
         [States.Burning] = new Burning(),
         [States.Burn] = new Burn(),
+        [States.BurningStacked] = new BurningStacked(),
 		[States.Discharge] = new Gangdollarff.AirElemental.Discharge(),
 		[States.CoolingAura] = new CoolingAura(),
 		[States.CoolingDamaged] = new CoolingDamaged(),
@@ -800,7 +801,8 @@ public enum States
 	PushingWindBuff,
 	CoolingDamaged,
 	MagicInstantaneity,
-	ImmortalityState
+	ImmortalityState,
+	BurningStacked
 }
 public enum BaffDebaff
 {

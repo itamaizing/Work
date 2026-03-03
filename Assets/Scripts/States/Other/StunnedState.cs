@@ -9,7 +9,7 @@ public class StunnedState : AbstractCharacterState
 	private float _baseDuration;
 	private float _duration;
 
-	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability };
+	private List<StatusEffect> _effects = new() { StatusEffect.Move, StatusEffect.Ability };
 	public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
 	public override States State => States.Stun;
 	public override StateType Type => StateType.Physical;
@@ -46,8 +46,8 @@ public class StunnedState : AbstractCharacterState
 	public override void ExitState()
 	{
 		_characterState.RemoveState(this);
-		if (!_characterState.Check(StatusEffect.Move)) _characterState.Character.Move.IsMoveBlocked = false;
-		if (!_characterState.Check(StatusEffect.Ability) && _abilities != null) _abilities.SetAbilitiesDisactive(false);
+		_characterState.Character.Move.IsMoveBlocked = false;
+		_abilities.SetAbilitiesDisactive(false);
 	}
 
 	public override bool Stack(float time)
