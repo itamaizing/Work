@@ -10894,7 +10894,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRow.Array.data[1].Talents.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRow.Array.data[2].Talents.Array.size
@@ -10963,7 +10963,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRow.Array.data[1].Talents.Array.data[1]'
       value: 
-      objectReference: {fileID: 9211752331925338671}
+      objectReference: {fileID: 3602519918867514040}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRow.Array.data[1].Talents.Array.data[2]'
       value: 
@@ -11596,6 +11596,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5532934128591317355}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3602519918867514040}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5128464946524989285}
@@ -12533,6 +12536,34 @@ MonoBehaviour:
     Row: 1
   character: {fileID: 8319872899575431858}
   _tentacles: {fileID: 431818094498011482}
+--- !u!114 &3602519918867514040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3907305221297154583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dac9d5a90ded059468dedac6aee12c11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SwarmTalent_8
+  _data:
+    _descriptionsForInfoPanel:
+    - " \u043F\u043E\u0441\u043B\u0435 \u0444\u0438\u0437 \u0430\u0442\u0430\u043A\u0438
+      \u043A\u044D\u0440\u0440\u0438\u0433\u0430\u043D \u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435
+      1 \u0441\u0435\u043A\u0443\u043D\u0434\u044B  \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0430
+      \u0430\u0442\u0430\u043A\u0443\u044E\u0449\u0438\u0435 \u044D\u0442\u0443 \u0436\u0435
+      \u0446\u0435\u043B\u044C  \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0438\u0439
+      \u0443\u0434\u0430\u0440 \u0431\u0443\u0434\u0435\u0442 \u0441 +150% \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C\u044E. "
+    _stateInfos: []
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 249521398, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 8319872899575431858}
+  _swarmCapacity: {fileID: 3168550865384704014}
 --- !u!114 &5128464946524989285
 MonoBehaviour:
   m_ObjectHideFlags: 0
