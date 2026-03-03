@@ -35,15 +35,13 @@ public abstract class SkillCreatureCarryGun : Skill
 
     protected override bool IsCanCast => GetTarget() != null;
 
-    private bool IsAllyTarget(IDamageable target)
-        => target.gameObject.layer == LayerMask.NameToLayer("Allies");
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     #region Target
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0)
-            SetTarget(targetInfo.GetTargets()[0]);
+        if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callback)
@@ -54,12 +52,10 @@ public abstract class SkillCreatureCarryGun : Skill
             {
                 FindTarget(_targetSearchRadius, GetMousePoint());
 
-                if (GetTempTarget() is IDamageable dmg)
+                if (GetTempTarget() is IDamageable damageable)
                 {
-                    if (IsAllyTarget(dmg) || dmg as Character == Hero)
-                        ClearTempTarget();
-                    else
-                        break;
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
+                    else break;
                 }
             }
 
@@ -109,9 +105,7 @@ public abstract class SkillCreatureCarryGun : Skill
 
     public void AnimationHit()
     {
-        if (_currentTarget is Character ch)
-            ApplySkillEffect(ch);
-
+        if (_currentTarget is Character character) ApplySkillEffect(character);
         _moveActive = false;
     }
 

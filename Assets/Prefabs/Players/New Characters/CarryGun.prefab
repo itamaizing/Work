@@ -13280,7 +13280,7 @@ MonoBehaviour:
   _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
-  maxCounter: 2
+  maxCounter: 10
 --- !u!114 &7709957828632342126
 MonoBehaviour:
   m_ObjectHideFlags: 0

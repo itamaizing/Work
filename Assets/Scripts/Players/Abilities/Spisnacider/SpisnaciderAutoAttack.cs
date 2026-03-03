@@ -8,5 +8,5 @@ public class SpisnaciderAutoAttack : MonoBehaviour
     public void OnAutoAttackAnimationHitSpisnacider() => _spellMoveSpisnacider.OnAutoAttackAnimationHit();
     public void OnAutoAttackAnimationEndSpisnacider() => _spellMoveSpisnacider.OnAutoAttackAnimationEnd();
 
-    public void ScratchClawsAttackAnimationHit() => _spittingAcid.TriggerAnimation();
+    public void ScratchClawsAttackAnimationHit() => _spittingAcid.AnimationHit();
 }

@@ -17148,6 +17148,7 @@ MonoBehaviour:
   _targetSeeker: {fileID: 7468612026582595350}
   _characterParent: {fileID: 0}
   _expForDieKill: 5
+  _costCall: 0
   _navMeshAgent: {fileID: 4697272463135853912}
 --- !u!114 &8102436864039870552
 MonoBehaviour:

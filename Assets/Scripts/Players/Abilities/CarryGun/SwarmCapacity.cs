@@ -87,7 +87,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
                         PhysicAttackType = AttackRangeType.MeleeAttack,
                     };
 
-                    CmdApplyDamage(damage, minion.gameObject);
+                    CmdApplyDamageSwarm(damage, minion.gameObject);
                 }
             }
 
@@ -97,7 +97,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
 
 
     [Command]
-    private void CmdApplyDamage(Damage damage, GameObject target)
+    private void CmdApplyDamageSwarm(Damage damage, GameObject target)
     {
         if (target == null) return;
 
