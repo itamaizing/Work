@@ -42,6 +42,24 @@ public class AttributeSystem : NetworkBehaviour
         }
         TemporaryResourceDisplay = _resources.Values.ToList();
     }
+
+    public void InitFromSave
+    {
+        foreach (var attribute in _attributes)
+        {
+            List<AttributeModifiers> modifs =  SaveManager.Instance.LoadAttribute(attribute);
+            //Debug.Log(modifs.Count + attribute.Name);
+            foreach (var modifier in modifs)
+            {
+                //Debug.Log(modifier.Value + attribute.Name);
+                attribute.AddModifier(modifier);
+            }
+            if(isClient)
+                Commands(attribute.Name, modifs);
+        }
+
+        _isInited = true;
+    }
 }
 
 [Serializable]

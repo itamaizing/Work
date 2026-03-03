@@ -16,13 +16,10 @@ public class SkillManager : MonoBehaviour
 
     private Skill[] _selectedSkills = new Skill[16];
     private List<AutoAttackSkill> _autoAttackSkills = new List<AutoAttackSkill>();
-    //private List<AutoSkill> _autoSkills = new List<AutoSkill>();
     private List<Skill> _simpleSkills = new List<Skill>();
     private float _globalCooldownTime = .5f;
     private SkillQueue _skillQueue;
-    //private AutoSkillQueue _autoSkillQueue;
     private AutoSkillCast _autoSkillCast;
-    //private AutoAttackQueue _autoAttackQueue;
     private Skill _selectedSkill;
     private Coroutine _lastCastResetCoroutine;
     private int _castWindowId = 0;

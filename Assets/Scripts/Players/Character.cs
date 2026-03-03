@@ -79,6 +79,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 			if (isServer && _characterParent != null) _characterParentNetId = _characterParent.netId;
 		}
 	}
+
 	public bool IsInvisible
     {
         get => _isInvisible;
@@ -207,6 +208,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 	private void Start()
 	{
 		Initialize();
+		//Debug.Log("Team " + NetworkSettings.TeamIndex, this);
 	}
 
 	public void Appeared() => OnAppeared?.Invoke();

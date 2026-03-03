@@ -72,8 +72,8 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
         {
             attribute.UpdateValue();
         }
-        
-        SaveManager.Instance.LoadAttributePoints();
+
+        _attributesText.ChangeKey(SaveManager.Instance.LoadAttributePoints());
         //_attributesText.ChangeKey(_attributeSystem.Points);
     }
     
@@ -81,7 +81,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     {
         if(text.Length > 2)
         {
-            Debug.Log(text);
+            //Debug.Log(text);
             _descriptionPanel.ShowDesciption(text);
         }
     }

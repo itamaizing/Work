@@ -147,7 +147,7 @@ public class SpawnComponent : NetworkBehaviour
         var spawnedCharacter = Instantiate(prefab, position, rotation);
         spawnedCharacter.Initialize();
         spawnedCharacter.NetworkSettings.MyRoom = _hero.NetworkSettings.MyRoom;
-
+        spawnedCharacter.NetworkSettings.TeamIndex = _hero.NetworkSettings.TeamIndex;
         if (_hero == null || _hero.NetworkSettings == null)
         {
             Debug.LogError("Hero or NetworkSettings is null. Cannot move character to scene.");

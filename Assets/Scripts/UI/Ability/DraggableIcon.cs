@@ -83,10 +83,12 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         ParentAfterDrag = transform.parent;
         ParentAfterDrag.GetComponent<SkillIcon>().CurrentIcon = null;
 
-        if(!_isMenu)
+        if (!_isMenu)
+        {
             transform.SetParent(transform.root);
-
-        transform.SetAsLastSibling();
+            transform.SetAsLastSibling();
+        }
+        
         _image.raycastTarget = false;
 
         BeginDrag?.Invoke();
@@ -120,10 +122,16 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void UpdatePosition(Transform parent)
     {
+        ParentAfterDrag = transform.parent;
+        ParentAfterDrag.GetComponent<SkillIcon>().CurrentIcon = null;
+
         ParentAfterDrag = parent;
+        transform.position = ParentAfterDrag.position;
         transform.SetParent(ParentAfterDrag);
         transform.SetAsFirstSibling();
-        transform.position = ParentAfterDrag.position;
+
+        ParentAfterDrag.GetComponent<SkillIcon>().CurrentIcon = this;
+        EndDrag?.Invoke();
     }
 
     public void OnPointerEnter(PointerEventData eventData)

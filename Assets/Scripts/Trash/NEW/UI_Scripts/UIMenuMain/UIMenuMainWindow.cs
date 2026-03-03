@@ -14,6 +14,7 @@ public class UIMenuMainWindow : MonoBehaviour
     private void Start()
     {
         Show();
+        _abilitiesPanel.gameObject.SetActive(false);
     }
 
     private void OnEnable()
@@ -68,14 +69,18 @@ public class UIMenuMainWindow : MonoBehaviour
     private void UpdateCharacterPanels()
     {
         var hero = GetHero();
-        
-        _abilitiesPanel.Show(hero.Abilities);
 
-        if(_skillPanel != null)
-            _skillPanel.FillMenu(hero.Abilities);
+        //_abilitiesPanel.Show(hero.Abilities);
+
+        //hero.TalentManager.Initialize(hero.LVL);
+
+        _talentsPanel.Show(hero.TalentManager, false);
+
+        if (_skillPanel != null)
+            _skillPanel.FillMenu(hero.Abilities, hero);
         
         _attributesPanel.Show(hero);
 
-        _talentsPanel.Show(hero.TalentManager, false);
+       
     }
 }
