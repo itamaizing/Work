@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using Mirror;
 using System.Linq;
+using System.Collections.Generic;
 
 public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
 {
@@ -18,6 +19,9 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
     private SpawnComponent _spawnComponent;
     private Coroutine _overloadCheckRoutine;
 
+    private readonly List<CreatureCarryGun> _swarmUnits = new();
+
+    public IReadOnlyList<CreatureCarryGun> SwarmUnits => _swarmUnits;
     public event Action<float> CounterChanged;
 
     private void Start()
@@ -53,11 +57,23 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
     {
         if (_spawnComponent == null) return;
 
-        CurrentCounter = Mathf.RoundToInt(_spawnComponent.Units.Where(unit => unit != null && !unit.TryGetComponent<MucusAutoGrowth>(out _))
-                .Select(unit => unit.GetComponent<MinionComponent>()).Where(minion => minion != null).Sum(minion => minion.CostCall));
+        float totalCost = 0f;
+
+        _swarmUnits.Clear();
+
+        foreach (var unit in _spawnComponent.Units)
+        {
+            if (unit == null) continue;
+
+            var minion = unit.GetComponent<MinionComponent>();
+            if (minion != null) totalCost += minion.CostCall;
+
+            if (unit.TryGetComponent(out CreatureCarryGun carryGun)) _swarmUnits.Add(carryGun);
+        }
+
+        CurrentCounter = Mathf.RoundToInt(totalCost);
 
         CounterChanged?.Invoke(CurrentCounter);
-        if (_overloadCheckRoutine == null) _overloadCheckRoutine = StartCoroutine(CheckOverloadRoutine());
     }
 
     private IEnumerator CheckOverloadRoutine()

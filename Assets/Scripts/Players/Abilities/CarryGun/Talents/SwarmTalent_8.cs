@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class SwarmTalent_8 : Talent
 {
-
     public override void Enter()
     {
        
