@@ -10,6 +10,22 @@ public class SwarmSpeedAura : Skill
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
 
+    private void Start()
+    {
+        if (_swarmCapacity != null)
+        {
+            _swarmCapacity.CounterChanged += OnCounterChanged;
+            OnCounterChanged(_swarmCapacity.CurrentCounter);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (_swarmCapacity != null) _swarmCapacity.CounterChanged -= OnCounterChanged;
+    }
+
+    private void OnCounterChanged(float value) => Disactive = value <= 0;
+
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo == null) return;

@@ -18,6 +18,8 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
     private SpawnComponent _spawnComponent;
     private Coroutine _overloadCheckRoutine;
 
+    public event Action<float> CounterChanged;
+
     private void Start()
     {
         _spawnComponent = Hero.GetComponent<SpawnComponent>();
@@ -54,6 +56,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
         CurrentCounter = Mathf.RoundToInt(_spawnComponent.Units.Where(unit => unit != null && !unit.TryGetComponent<MucusAutoGrowth>(out _))
                 .Select(unit => unit.GetComponent<MinionComponent>()).Where(minion => minion != null).Sum(minion => minion.CostCall));
 
+        CounterChanged?.Invoke(CurrentCounter);
         if (_overloadCheckRoutine == null) _overloadCheckRoutine = StartCoroutine(CheckOverloadRoutine());
     }
 
