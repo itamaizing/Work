@@ -8,6 +8,6 @@ public class GetomirAutoAttack : MonoBehaviour
     public void OnAutoAttackAnimationHitScrader() => _spell.OnAutoAttackAnimationHit();
     public void OnAutoAttackAnimationEndScrader() => _spell.OnAutoAttackAnimationEnd();
 
-    public void ScratchClawsAttackAnimationHit() => _powerStrike.AttackAnimationHit();
+    public void ScratchClawsAttackAnimationHit() => _powerStrike.TriggerAnimation();
 }
 

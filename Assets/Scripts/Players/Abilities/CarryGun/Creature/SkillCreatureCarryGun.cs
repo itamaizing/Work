@@ -6,16 +6,19 @@ using UnityEngine.AI;
 
 public abstract class SkillCreatureCarryGun : Skill
 {
-    [Header("Common Settings")]
-    [SerializeField] protected Animator animator;
-    [SerializeField] protected float moveDurationPerUnit = 0.2f;
-    [SerializeField] protected float stopDistance = 1.5f;
-    [SerializeField] protected float targetSearchRadius = 0.5f;
+    [Header("Modifier Settings")]
+    [SerializeField] protected CreatureCarryGun _creatureCarryGun;
 
-    protected IDamageable currentTarget;
-    protected Tween activeTween;
-    protected Coroutine moveCoroutine;
-    protected bool moveActive;
+    [Header("Common Settings")]
+    [SerializeField] protected Animator _animator;
+    [SerializeField] protected float _moveDurationPerUnit = 0.2f;
+    [SerializeField] protected float _stopDistance = 1.5f;
+    [SerializeField] protected float _targetSearchRadius = 0.5f;
+
+    protected IDamageable _currentTarget;
+    protected Tween _activeTween;
+    protected Coroutine _moveCoroutine;
+    protected bool _moveActive;
 
     protected const float StopDistanceThreshold = 0.05f;
     protected const float SegmentMinDistance = 0.01f;
@@ -49,7 +52,7 @@ public abstract class SkillCreatureCarryGun : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget(targetSearchRadius, GetMousePoint());
+                FindTarget(_targetSearchRadius, GetMousePoint());
 
                 if (GetTempTarget() is IDamageable dmg)
                 {
@@ -77,34 +80,39 @@ public abstract class SkillCreatureCarryGun : Skill
     protected override IEnumerator CastJob()
     {
         CancelWork();
-        moveActive = true;
-        currentTarget = GetTarget() as Character;
+        _moveActive = true;
+        _currentTarget = GetTarget() as Character;
 
-        float distance = Vector3.Distance(transform.position, currentTarget.transform.position);
+        float distance = Vector3.Distance(transform.position, _currentTarget.transform.position);
 
-        if (distance > stopDistance + StopDistanceThreshold)
+        if (distance > _stopDistance + StopDistanceThreshold)
         {
-            moveCoroutine = StartCoroutine(MoveToTarget(currentTarget));
-            while (moveActive) yield return null;
+            _moveCoroutine = StartCoroutine(MoveToTarget(_currentTarget));
+            while (_moveActive) yield return null;
         }
         else
         {
             TriggerAnimation();
-            while (moveActive) yield return null;
+            while (_moveActive) yield return null;
         }
     }
 
-    protected void TriggerAnimation()
+    public void TriggerAnimation()
     {
-        animator.SetTrigger(AnimationTrigger);
+        float speed = 1f;
+
+        if (_creatureCarryGun != null) speed = _creatureCarryGun.SpeedModifier;
+
+        _animator.speed = speed;
+        _animator.SetTrigger(AnimationTrigger);
     }
 
     public void AnimationHit()
     {
-        if (currentTarget is Character ch)
+        if (_currentTarget is Character ch)
             ApplySkillEffect(ch);
 
-        moveActive = false;
+        _moveActive = false;
     }
 
     #endregion
@@ -135,15 +143,15 @@ public abstract class SkillCreatureCarryGun : Skill
         {
             Vector3 segment = path.corners[i];
             float dist = Vector3.Distance(transform.position, segment);
-            float duration = dist * moveDurationPerUnit;
+            float duration = dist * _moveDurationPerUnit;
 
             if (dist < SegmentMinDistance) continue;
 
             bool interrupted = false;
 
-            activeTween?.Kill();
+            _activeTween?.Kill();
 
-            activeTween = transform.DOMove(segment, duration)
+            _activeTween = transform.DOMove(segment, duration)
                 .SetEase(Ease.Linear)
                 .OnUpdate(() =>
                 {
@@ -154,14 +162,12 @@ public abstract class SkillCreatureCarryGun : Skill
                         lastMovePoint = transform.position;
                     }
 
-                    if (Physics.Raycast(transform.position, transform.forward, RaycastCheckDistance, _obstacle))
-                        interrupted = true;
+                    if (Physics.Raycast(transform.position, transform.forward, RaycastCheckDistance, _obstacle)) interrupted = true;
 
-                    if (interrupted)
-                        activeTween?.Kill();
+                    if (interrupted) _activeTween?.Kill();
                 });
 
-            yield return activeTween.WaitForCompletion();
+            yield return _activeTween.WaitForCompletion();
             if (interrupted) break;
         }
 
@@ -172,7 +178,7 @@ public abstract class SkillCreatureCarryGun : Skill
     private Vector3 GetApproachPoint(IDamageable enemy)
     {
         Vector3 dir = (enemy.transform.position - transform.position).normalized;
-        return enemy.transform.position - dir * stopDistance;
+        return enemy.transform.position - dir * _stopDistance;
     }
 
     #endregion
@@ -183,23 +189,26 @@ public abstract class SkillCreatureCarryGun : Skill
     {
         ClearTarget();
         ClearTempTarget();
-        currentTarget = null;
+        _currentTarget = null;
 
         Hero?.Move?.SetCanMove(true);
         Hero?.Move?.StopLookAt();
 
-        moveActive = false;
+        _moveActive = false;
+
+        if (_animator != null) _animator.speed = 1f;
+
         CancelWork();
     }
 
     private void CancelWork()
     {
-        activeTween?.Kill();
+        _activeTween?.Kill();
 
-        if (moveCoroutine != null)
+        if (_moveCoroutine != null)
         {
-            StopCoroutine(moveCoroutine);
-            moveCoroutine = null;
+            StopCoroutine(_moveCoroutine);
+            _moveCoroutine = null;
         }
     }
 

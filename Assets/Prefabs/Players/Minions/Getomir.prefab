@@ -17996,6 +17996,7 @@ GameObject:
   - component: {fileID: 864070538008051548}
   - component: {fileID: 2793843212359387630}
   - component: {fileID: 5026398779494985239}
+  - component: {fileID: 7679627626532406740}
   m_Layer: 9
   m_Name: Getomir
   m_TagString: Allies
@@ -18810,13 +18811,14 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _creatureCarryGun: {fileID: 7679627626532406740}
   _animator: {fileID: 1215395125402789392}
-  _playerLinks: {fileID: 5830977165762126247}
-  _moveDurationPerUnit: 0.9
+  _moveDurationPerUnit: 0.2
   _stopDistance: 1.5
-  _minDamage: 12
-  _maxDamage: 18
-  _aoeRadius: 3
+  _targetSearchRadius: 0.5
+  minDamage: 12
+  maxDamage: 18
+  aoeRadius: 1.5
 --- !u!114 &5026398779494985239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18833,6 +18835,18 @@ MonoBehaviour:
   _moveCreature: {fileID: 4144108970412608448}
   _spell: {fileID: 864070538008051548}
   _powerStrike: {fileID: 2793843212359387630}
+--- !u!114 &7679627626532406740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305573293433524190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06f6c1dd94c6aef43baf923029a6cddc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CreatureCarryGun
 --- !u!1 &4348563488435226753
 GameObject:
   m_ObjectHideFlags: 0

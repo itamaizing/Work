@@ -17996,6 +17996,7 @@ GameObject:
   - component: {fileID: 4144108970412608448}
   - component: {fileID: 6883696665691649820}
   - component: {fileID: 3764020448229271524}
+  - component: {fileID: 6309914231843903030}
   m_Layer: 9
   m_Name: Spisnacider
   m_TagString: Allies
@@ -18767,13 +18768,14 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _creatureCarryGun: {fileID: 6309914231843903030}
   _animator: {fileID: 1215395125402789392}
-  _playerLinks: {fileID: 5830977165762126247}
-  _moveDurationPerUnit: 0.9
-  _stopDistance: 3
-  _minDamage: 8
-  _maxDamage: 10
-  _creatureCarryGun: {fileID: 0}
+  _moveDurationPerUnit: 0.2
+  _stopDistance: 1.5
+  _targetSearchRadius: 0.5
+  minDamage: 1
+  maxDamage: 8
+  corrodedDuration: 10
 --- !u!114 &4144108970412608448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18833,6 +18835,18 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+--- !u!114 &6309914231843903030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305573293433524190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06f6c1dd94c6aef43baf923029a6cddc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CreatureCarryGun
 --- !u!1 &4348563488435226753
 GameObject:
   m_ObjectHideFlags: 0
