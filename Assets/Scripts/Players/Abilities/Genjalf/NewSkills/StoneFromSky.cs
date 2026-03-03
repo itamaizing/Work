@@ -150,7 +150,13 @@ public class StoneFromSky : Skill
 
             CmdApplyDamage(damage, target.gameObject);
 
-            target.CharacterState.CmdAddState(States.Stun, 2, 0, Hero.gameObject, name);
+            CmdAddStunState(target.gameObject);
         }
+    }
+
+    [Command]
+    private void CmdAddStunState(GameObject target)
+    {
+        target.GetComponent<Character>().CharacterState.AddState(States.Stun, 2, 0, Hero.gameObject, name);
     }
 }

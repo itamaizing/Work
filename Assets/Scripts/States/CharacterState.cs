@@ -400,6 +400,7 @@ public class CharacterState : NetworkBehaviour
 		[States.MagicalExcitement] = new MagicalExcitement(),
 		[States.GodLight] = new GodLightState(),
 		[States.MagicInstantaneity] = new MagicInstantaneityState(),
+		[States.ImmortalityState] = new ImmortalityState(),
         #endregion
 
         #region Test Baff and Debaff
@@ -937,6 +938,7 @@ public enum States
 	PushingWindBuff,
 	CoolingDamaged,
 	MagicInstantaneity,
+	ImmortalityState,
 }
 public enum BaffDebaff
 {
