@@ -13,7 +13,6 @@ public abstract class SkillCreatureCarryGun : Skill
     [SerializeField] protected Animator _animator;
     [SerializeField] protected float _moveDurationPerUnit = 0.2f;
     [SerializeField] protected float _stopDistance = 1.5f;
-    [SerializeField] protected float _targetSearchRadius = 0.5f;
 
     protected IDamageable _currentTarget;
     protected Tween _activeTween;
@@ -24,6 +23,7 @@ public abstract class SkillCreatureCarryGun : Skill
     protected const float SegmentMinDistance = 0.01f;
     protected const float RaycastCheckDistance = 1f;
     protected const float MoveEventThreshold = 1f;
+    protected const float TargetSearchRadius = 0.5f;
 
     public Action<GameObject> DoMove;
 
@@ -50,7 +50,7 @@ public abstract class SkillCreatureCarryGun : Skill
         {
             if (GetMouseButton)
             {
-                FindTarget(_targetSearchRadius, GetMousePoint());
+                FindTarget(TargetSearchRadius, GetMousePoint());
 
                 if (GetTempTarget() is IDamageable damageable)
                 {

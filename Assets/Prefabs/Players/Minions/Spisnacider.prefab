@@ -18771,8 +18771,7 @@ MonoBehaviour:
   _creatureCarryGun: {fileID: 6309914231843903030}
   _animator: {fileID: 1215395125402789392}
   _moveDurationPerUnit: 0.2
-  _stopDistance: 1.5
-  _targetSearchRadius: 0.5
+  _stopDistance: 3
   minDamage: 1
   maxDamage: 8
   corrodedDuration: 10
