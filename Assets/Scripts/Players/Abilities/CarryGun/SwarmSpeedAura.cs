@@ -14,6 +14,7 @@ public class SwarmSpeedAura : Skill
     private const float BaseBonus = 0.30f;
     private const float PerUnitBonus = 0.05f;
     private const float Duration = 5f;
+    private const string SwarmSpeedSource = "SwarmSpeedAura";
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
@@ -103,7 +104,7 @@ public class SwarmSpeedAura : Skill
         foreach (var unit in _swarmCapacity.SwarmUnits)
         {
             if (unit == null) continue;
-            unit.SpeedModifier /= _currentMultiplier;
+            unit.RemoveSpeedModifier(SwarmSpeedSource);
         }
 
         if (counter > 0)
@@ -111,7 +112,7 @@ public class SwarmSpeedAura : Skill
             foreach (var unit in _swarmCapacity.SwarmUnits)
             {
                 if (unit == null) continue;
-                unit.SpeedModifier *= newMultiplier;
+                unit.SetSpeedModifier(SwarmSpeedSource, newMultiplier);
             }
         }
 
@@ -125,7 +126,7 @@ public class SwarmSpeedAura : Skill
         foreach (var unit in _swarmCapacity.SwarmUnits)
         {
             if (unit == null) continue;
-            unit.SpeedModifier /= _currentMultiplier;
+            unit.RemoveSpeedModifier(SwarmSpeedSource);
         }
 
         _currentMultiplier = 1f;
