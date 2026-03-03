@@ -39,7 +39,6 @@ public class PsionicGenerationState : AbstractCharacterState
     {
         if (!characterState.Character.isServer) return;
 
-        _durationRemaining -= Time.deltaTime;
         _tickTimer += Time.deltaTime;
 
         if (_tickTimer >= TickInterval)
@@ -47,8 +46,6 @@ public class PsionicGenerationState : AbstractCharacterState
             _tickTimer = 0f;
             if (_psionicEnergy != null) _psionicEnergy.AddPsiAndRestartDecay(PsiPerTick);
         }
-
-        if (_durationRemaining <= 0f) ExitState();
     }
 
     public override bool Stack(float time)

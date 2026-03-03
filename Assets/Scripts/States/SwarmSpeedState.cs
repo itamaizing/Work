@@ -3,8 +3,12 @@ using UnityEngine;
 
 public class SwarmSpeedState : AuraState
 {
-    private const float SpeedMultiplier = 1.3f;
+    private float _currentCountWarm;
+    private float _appliedMultiplier;
+
     private const float AuraRadius = 10f;
+    private const float BaseBonus = 0.30f;
+    private const float PerStackBonus = 0.05f;
 
     private readonly HashSet<Character> _buffedCharacters = new();
 
@@ -41,7 +45,7 @@ public class SwarmSpeedState : AuraState
     {
         foreach (var skill in character.Abilities.Abilities)
         {
-            skill.Buff.CastSpeed.IncreasePercentage(SpeedMultiplier);
+            skill.Buff.CastSpeed.IncreasePercentage(_appliedMultiplier);
         }
 
         _buffedCharacters.Add(character);
@@ -53,10 +57,25 @@ public class SwarmSpeedState : AuraState
 
         foreach (var skill in character.Abilities.Abilities)
         {
-            skill.Buff.CastSpeed.ReductionPercentage(SpeedMultiplier);
+            skill.Buff.CastSpeed.ReductionPercentage(_appliedMultiplier);
         }
 
         _buffedCharacters.Remove(character);
+    }
+
+    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        _currentCountWarm = damageToExit;
+        _appliedMultiplier = 1f + BaseBonus + (_currentCountWarm * PerStackBonus);
+
+        var existing = character.GetState(State);
+        if (existing != null)
+        {
+            existing.RemainingDuration = durationToExit;
+            return existing;
+        }
+
+        return base.TryApply(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
     }
 
     public override void ExitState()
@@ -65,7 +84,7 @@ public class SwarmSpeedState : AuraState
         {
             foreach (var skill in character.Abilities.Abilities)
             {
-                skill.Buff.CastSpeed.ReductionPercentage(SpeedMultiplier);
+                skill.Buff.CastSpeed.ReductionPercentage(_appliedMultiplier);
             }
         }
 

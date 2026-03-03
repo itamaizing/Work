@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class DamageSpeedAura : Skill
+public class SwarmSpeedAura : Skill
 {
+    [SerializeField] private SwarmCapacity _swarmCapacity;
+
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
@@ -29,5 +31,6 @@ public class DamageSpeedAura : Skill
     protected override IEnumerator CastJob()
     {
         if (Hero == null || Hero.CharacterState == null) yield break;
+        Hero.CharacterState.CmdAddState(States.SwarmSpeed, 5, _swarmCapacity.CurrentCounter, Hero.gameObject, name);
     }
 }
