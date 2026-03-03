@@ -60,7 +60,7 @@ MonoBehaviour:
       value: 1
     - nameToShow: EvasionMagical
       type: 3
-      value: 1
+      value: 6
     - nameToShow: MoveSpeed
       type: 4
       value: 5

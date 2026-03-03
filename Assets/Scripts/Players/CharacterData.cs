@@ -102,28 +102,6 @@ public class helperCharData_AttributeInfo
     }
 }
 
-[Serializable]
-public class Attribute_old
-{
-    public int Id;
-    public string Name;
-    public int Points;
-    public string Description;
-
-    public float DefaultValue;
-    public Sprite Icon;
-
-    public bool IsVisible = false;
-
-    public Attribute_old(int id, string name, int points, string description = null)
-    {
-        Id = id;
-        Name = name;
-        Points = points;
-        Description = description;
-    }
-}
-
 
 [Serializable]
 public class AttributeGroup

@@ -26,35 +26,35 @@ MonoBehaviour:
       value: 999
     - nameToShow: Regen
       type: 1
-      value: 0
+      value: 1.8
   _mainResource:
-    nameToShow: Mana
-    type: 1
+    nameToShow: Energy
+    type: 2
     attributes:
     - nameToShow: MaxValue
       type: 0
       value: 100
     - nameToShow: Regen
       type: 1
-      value: 0
+      value: 1
   _extraResources: []
   _attributes:
     _attributes:
     - nameToShow: ResistancePhysical
       type: 0
-      value: 0
+      value: 4
     - nameToShow: ResistanceMagical
       type: 1
-      value: 0
+      value: 2
     - nameToShow: EvasionPhysical
       type: 2
-      value: 0
+      value: 4
     - nameToShow: EvasionMagical
       type: 3
-      value: 0
+      value: 1
     - nameToShow: MoveSpeed
       type: 4
-      value: 1
+      value: 5
     - nameToShow: VisionRadius
       type: 5
       value: 2
