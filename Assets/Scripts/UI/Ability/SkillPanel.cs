@@ -82,7 +82,7 @@ public class SkillPanel : MonoBehaviour
         _playerAbilities.SkillRemoved += OnSkillRemoved;
 
         OnBeginDrag();
-        LoadPanel();
+        //LoadPanel();
         OnEndDrag();
     }
 

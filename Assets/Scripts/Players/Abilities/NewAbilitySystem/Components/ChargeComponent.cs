@@ -48,7 +48,18 @@ public class ChargeComponent : BaseSkillComponent
             //_skill.CurrentChargeChanged?.Invoke(_currentCharges);
         }
     }
-    public bool HasCharges => UsesCharges ? _currentCharges > 0 : true;
+    public bool HasCharges
+    {
+        get
+        { if (!_usesCharges)
+                return true;
+            else
+            {
+                if (_isComboPart) return true;
+                return (_currentCharges > 0);
+            }
+        }
+    }
 
     public float BaseCooldown => _baseCooldown;
 

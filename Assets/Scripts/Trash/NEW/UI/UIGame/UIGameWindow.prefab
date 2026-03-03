@@ -14260,7 +14260,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 710c7e6000b731840bccc411ed94a984, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerIconPref: {fileID: 3711394077566105922, guid: 864f6be5d6a75474197b906deb913797, type: 3}
+  _playerIconPref: {fileID: 910499944508277086, guid: 50b36540f60db2b469918a654ac3a7c8, type: 3}
   _team1: {fileID: 2875239973119195903}
   _team2: {fileID: 9159237905461615780}
 --- !u!1 &8594423192949150860
