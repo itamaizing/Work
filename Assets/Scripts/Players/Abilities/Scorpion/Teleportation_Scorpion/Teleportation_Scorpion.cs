@@ -212,7 +212,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
                         }
 
                         int manaCost = GetCurrentManaCost(dist);
-                        var mana = _hero.Resources[ResourceType.Mana];
+                        var mana = _hero.Resources[ResourceType.Energy];
                         if (mana == null || mana.CurrentValue < manaCost)
                         {
                             Debug.Log("[Teleportation] Недостаточно маны");

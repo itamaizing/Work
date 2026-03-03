@@ -87,7 +87,9 @@ public class IceRolling : Skill
 
 	private float GetJumpRange()
 	{
-		float range = _jumprange;
+        if (_energy == null)
+            _energy = (Energy)Hero.Resources[ResourceType.Energy];
+        float range = _jumprange;
 		float energyCost = 1;
 		for (int i = 0; i < 2; i++)
 		{
@@ -316,9 +318,6 @@ public class IceRolling : Skill
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		if (_energy == null)
-			_energy = (Energy)Hero.Resources[ResourceType.Energy];
-
         Vector3 candidatePoint = Vector3.positiveInfinity;
 
 		while (float.IsPositiveInfinity(candidatePoint.x))
