@@ -1,7 +1,6 @@
 using Mirror;
 using System;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public enum ResourceType
@@ -18,17 +17,18 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 {
     [SerializeField] private ResourceType _resourceType;
     [SerializeField, SyncVar] protected float _regenerationDelay = 0;
-    [SyncVar(hook = nameof(HookValueChanged))] protected float _currentValue;
-    [SyncVar(hook = nameof(HookMaxValueChanged))] protected float _maxValue;
+    [SyncVar(hook = nameof(HookValueChanged)), SerializeField] protected float _currentValue;
+    [SyncVar(hook = nameof(HookMaxValueChanged)), SerializeField] protected float _maxValue;
     [SyncVar] protected float _regenerationValue;
     [SyncVar] protected float _regenerationPeriod;
-
+    
     protected Coroutine _regenCoroutine;
-    protected Attributes _maxValueAttribute;
-    protected Attributes _regenValueAttribute;
+    protected Attribute _maxValueAttribute;
+    protected Attribute _regenValueAttribute;
 
 	public float CurrentValue { get => _currentValue; set { ValueChanged?.Invoke(_currentValue, value); _currentValue = value; } }
-    public float MaxValue { 
+    public float MaxValue
+    { 
         get 
         { 
             if (_maxValueAttribute != null) 
@@ -50,20 +50,26 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 
     private void Awake()
     {
-        ClientStartRegenirateJob();
+        //ClientStartRegenirateJob();
     }
 
     private void OnEnable()
     {
+        //ClientStartRegenirateJob();
+    }
+
+    public void CharacterInitialized()
+    {
         ClientStartRegenirateJob();
     }
+
 
     private void OnDisable()
     {
         ClientStopRegenerateJob();
     }
 
-  /*  public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data, Attributes attribute)
+  /*  public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data, Attribute attribute)
     {
         _currentValue = maxValue / 2;
         _maxValue = maxValue;
@@ -78,7 +84,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
             ClientStartRegenirateJob();
     }*/
 
-    public virtual void Initialize(Attributes maxValue, Attributes regenValue, CharacterData data)
+    public virtual void Initialize(Attribute maxValue, Attribute regenValue, CharacterData data)
     {
         //Debug.Log("Init resourse " + maxValue.GetValue());
 
@@ -89,6 +95,23 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         _maxValueAttribute = maxValue;
         _maxValue = maxValue.GetValue();
         _currentValue = _maxValue / 2;
+
+        ClientStartRegenirateJob();
+    }
+
+    // Можно перевести на такой же формат хранения атрибутов (ResourceAttribute) - тогда можно вообще весь хардкод убрать
+    public virtual void Init(ResourceAttribute resource) 
+    {
+        _regenValueAttribute = resource.Attributes[ResourceAttributeName.Regen];
+        _regenerationValue = resource.Attributes[ResourceAttributeName.Regen].GetValue();
+
+        _maxValueAttribute = resource.Attributes[ResourceAttributeName.MaxValue];
+        _maxValue = resource.Attributes[ResourceAttributeName.MaxValue].GetValue();
+        _currentValue = _maxValue / 2;
+        //Debug.Log($"{CurrentValue}/{MaxValue} + {_regenerationValue}");
+        _regenerationPeriod = 0.5f; //TEMPORARY TEST
+        _regenerationDelay = 0.5f; //TEMPORARY TEST
+        ClientStartRegenirateJob();
     }
 
     public virtual void Add(float value)
@@ -110,14 +133,15 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 			StopCoroutine(_regenCoroutine);
 			_regenCoroutine = StartCoroutine(RegenerateJob());
 		}
-		if (_currentValue - value >= 0)
+        Debug.Log($"Used {value}, now {_currentValue}");
+        if (_currentValue - value >= 0)
         {
-            CurrentValue -= value;
+            _currentValue -= value;
             return true;
         }
         else
         {
-            CurrentValue = 0;
+            _currentValue = 0;
             return false;
         }
     }
@@ -164,6 +188,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
             if (_currentValue > _maxValue) _currentValue = _maxValue;
         }
 
+
         if (!Mathf.Approximately(oldMax, _maxValue)) HookMaxValueChanged(oldMax, _maxValue);
         if (!Mathf.Approximately(oldCurrent, _currentValue)) HookValueChanged(oldCurrent, _currentValue);
 
@@ -203,6 +228,8 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     {
         while (true)
         {
+            while (!isServer || netIdentity == null || connectionToClient == null)
+                yield return null;
             if (_regenerationValue < 0) yield return null;
 
             if (_currentValue < _maxValue)
@@ -218,6 +245,12 @@ public abstract class Resource : NetworkBehaviour, IAttribute
             }
             yield return null;
         }
+    }
+    
+    [Command]
+    public void CmdAddMax(float delta)
+    {
+        AddMax(delta);
     }
 
     [Command]
@@ -290,14 +323,14 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         ResetRegen();
     }
 
-    public void AddModifier(AttributeModifiers modif)
+    public void AddModifier(AttributeModifier modif)
     {
         _maxValueAttribute.AddModifier(modif);
 
         _maxValue = _maxValueAttribute.GetValue();
     }
 
-    public void RemoveModifier(AttributeModifiers modif)
+    public void RemoveModifier(AttributeModifier modif)
     {
         _maxValueAttribute.RemoveModifier(modif);
 

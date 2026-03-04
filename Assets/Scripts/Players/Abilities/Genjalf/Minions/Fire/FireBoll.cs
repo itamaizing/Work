@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
@@ -7,22 +7,23 @@ using UnityEngine.SceneManagement;
 
 
 
-public class FireBoll : Skill
+public class FireBoll : MoveSkill
 {
     [SerializeField] private Projectile _projectile;
-
-    //private Character _target;
-
+    [SerializeField] private float _debuffTime = 7;
+    
     protected override bool IsCanCast { get => CheckCanCast(); }
+    private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellDaley");
 
     protected override int AnimTriggerCast => Animator.StringToHash("Attack04");
-
+    
+    private float _clickRadius = 0.5f;
     private bool CheckCanCast()
     {
         return 
-               Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+               Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
     }
 
     public void AnimCastFireboll()
@@ -34,24 +35,39 @@ public class FireBoll : Skill
     {
         AnimCastEnded();
     }
+    
+    private void OnEnable()
+    {
+        Canceled += CancelMove;
+    }
+
+    private void OnDisable()
+    {
+        Canceled -= CancelMove;
+    }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        
+        if (!IsCanCast)
+        {
+            MoveTo();
+        }
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() != null)
+        if (Targeting.GetTarget()?.Character != null)
         {
-            CmdCreateProjecttile(GetTargetCharacter().gameObject);
+            CmdCreateProjecttile(Targeting.GetTarget()?.Character.gameObject);
         }
         yield return null;
     }
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
         Hero.Move.StopLookAt();
     }
@@ -60,26 +76,39 @@ public class FireBoll : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (GetTargetCharacter() == null)
+        while (Targeting.GetTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter();
-              //  _target = GetRaycastTarget();
+                Vector3 clickPoint = Targeting.GetMousePoint();
+        
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: false);
+                if (Targeting.GetTempTarget()?.Character is Character character)
+                {
+                    if (Targeting.GetTempTarget()?.Character != null && !IsEnemyTarget(character))
+                    {
+                        Targeting.ClearTempTarget();
+                    }
+                    else
+                    {
+                        if (character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        break;
+                    }
+                }
             }
             yield return null;
         }
-        
-        targetInfo.AddTarget(GetTargetCharacter());
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
+        Targeting.ClearTempTarget();
         callbackDataSaved(targetInfo);
-
-        this.CastStarted += OnCastStarted;
+        
+        CastStarted += OnCastStarted;
     }
 
     private void OnCastStarted()
     {
-        Hero.Move.LookAtTransform(GetTargetCharacter().transform);
-        this.CastStarted -= OnCastStarted;
+        Hero.Move.LookAtTransform(Targeting.GetTarget()?.Character.transform);
+        CastStarted -= OnCastStarted;
     }
 
     [Command]
@@ -109,10 +138,17 @@ public class FireBoll : Skill
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(Damage),
-            Type = DamageType,
-            PhysicAttackType = AttackRangeType,
+            Type = Info.DamageType,
+            PhysicAttackType = Info.AttackRangeType,
         };
         CmdApplyDamage(damage, target);
-        target.GetComponent<Character>().CharacterState.CmdAddState(States.Burning, 6, 0, Hero.gameObject, name);
+        CmdState(target,_debuffTime);
+    }
+    
+    [Command]
+    private void CmdState(GameObject enemy, float time)
+    {
+        Character enemyChar = enemy.GetComponent<Character>();
+        enemyChar.CharacterState.AddState(States.Burning, time, 0, Hero.gameObject, name);
     }
 }

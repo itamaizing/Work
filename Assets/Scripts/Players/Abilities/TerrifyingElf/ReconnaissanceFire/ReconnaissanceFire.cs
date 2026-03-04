@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using UnityEngine;
 using HeathenEngineering.UnityPhysics;
@@ -64,7 +64,7 @@ public class ReconnaissanceFire : Skill
     public ReconnaissanceFireAura CurrentFireAura => _currentFireAura;
     public float BaseArea { get => _baseArea; set => _baseArea = value; }
 
-    protected override bool IsCanCast => Vector3.Distance(_targetPoint, transform.position) <= Radius;
+    protected override bool IsCanCast => Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.Radius;
     protected override int AnimTriggerCastDelay => Animator.StringToHash("ThrowCastDelay");
     protected override int AnimTriggerCast => 0;
 
@@ -167,7 +167,7 @@ public class ReconnaissanceFire : Skill
 
         while (float.IsPositiveInfinity(targetPoint.x))
         {
-            Vector3 hoverPoint = GetMousePoint();
+            Vector3 hoverPoint = Targeting.GetMousePoint();
 
             if (_arcRenderer != null && hoverPoint.IsFinite())
             {
@@ -180,10 +180,10 @@ public class ReconnaissanceFire : Skill
 
             if (GetMouseButton)
             {
-                targetPoint = GetMousePoint();
+                targetPoint = Targeting.GetMousePoint();
                 if (_arcRenderer != null) _arcRenderer.positionCount = 0;
 
-                if (IsPointInRadius(Radius, targetPoint) && NoObstacles(targetPoint, transform.position, _obstacle))
+                if (Targeting.IsPointInRadius(AreaInfo.Radius, targetPoint) && Targeting.NoObstacles(targetPoint, transform.position, _obstacle))
                 {
                     Hero.Move.LookAtPosition(targetPoint);
                 }

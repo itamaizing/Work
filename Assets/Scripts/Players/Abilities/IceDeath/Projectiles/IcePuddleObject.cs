@@ -1,4 +1,4 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
@@ -84,7 +84,7 @@ public class IcePuddleObject : Projectiles
 
 	private bool IsEnemyByLayer(GameObject target)
 	{
-		return ((1 << target.layer) & _skill.TargetsLayers.value) != 0;
+		return ((1 << target.layer) & _skill.Targeting.Layer.value) != 0;
 	}
 
 	public void SetTalents(bool talentEvadeDadBoost, bool talentFrostingFrozen)

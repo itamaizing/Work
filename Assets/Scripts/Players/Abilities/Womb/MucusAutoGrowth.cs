@@ -19,10 +19,36 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
     private float _timer = 0f;
     private float _remaining = 0f;
     private bool _infinite = true;
+    private bool _isWombSpreadsMucus;
 
     private int _currentCircleIndex = 0;
 
     public static event Action OnAnyMucusAutoGrowthDestroyed;
+
+    public bool IsWombSpreadsMucus
+    {
+        get => _isWombSpreadsMucus;
+        set
+        {
+            if (_isWombSpreadsMucus == value) return;
+
+            _isWombSpreadsMucus = value;
+
+            if (_isWombSpreadsMucus)
+            {
+                if (_spawnRoutine == null)
+                    _spawnRoutine = StartCoroutine(ApplyMucusPeriodically());
+            }
+            else
+            {
+                if (_spawnRoutine != null)
+                {
+                    StopCoroutine(_spawnRoutine);
+                    _spawnRoutine = null;
+                }
+            }
+        }
+    }
 
     private void OnEnable()
     {
@@ -30,19 +56,28 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
         for (int i = 0; i < MaxCircles; i++)
             _mucusByCircle.Add(new List<GameObject>());
 
-        _spawnRoutine = StartCoroutine(ApplyMucusPeriodically());
-
-        Radius = 0;
+        AreaInfo.Radius = 0;
     }
 
     private void OnDestroy()
     {
-        if (_spawnRoutine != null) StopCoroutine(_spawnRoutine);
+        if (_spawnRoutine != null)
+        {
+            StopCoroutine(_spawnRoutine);
+            _spawnRoutine = null;
+        }
+
         CleanupAllMucus();
         OnAnyMucusAutoGrowthDestroyed?.Invoke();
     }
     private void OnDisable()
     {
+        if (_spawnRoutine != null)
+        {
+            StopCoroutine(_spawnRoutine);
+            _spawnRoutine = null;
+        }
+
         if (!gameObject.scene.isLoaded)
         {
             CleanupAllMucus();
@@ -64,7 +99,7 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
         {
             yield return new WaitForSeconds(TickRate);
 
-            Radius = Mathf.Min(Radius + 1, 6);
+            AreaInfo.Radius = Mathf.Min(AreaInfo.Radius + 1, 6);
 
             if (!_infinite)
             {
@@ -137,12 +172,12 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
                     if (mucus == null || mucus.MucusAutoGrowths.Contains(this)) continue;
 
                     float distance = Vector3.Distance(transform.position, mucus.transform.position);
-                    if (distance > Radius) continue;
+                    if (distance > AreaInfo.Radius) continue;
 
                     var health = mucus.GetComponent<ObjectHealth>();
                     if (health == null) continue;
 
-                    health.ÑmdStartCustomRegeneration();
+                    health.Ð¡mdStartCustomRegeneration();
                     mucus.AddMucusAutoGrowth(this);
 
                     int circleIndex = Mathf.Clamp(_currentCircleIndex - 1, 0, _mucusByCircle.Count - 1);

@@ -3,14 +3,15 @@ using UnityEngine;
 public class DispelTiredSoulTalent : Talent
 {
     [SerializeField] private SoulAid _soulAid;
+    [SerializeField] private SkillManager _ability;
     
     public override void Enter()
     {
-        _soulAid.EnableTiredSoulDispel(true);
+        _ability.ActivateSkill(_soulAid);
     }
 
     public override void Exit()
     {
-        _soulAid.EnableTiredSoulDispel(false);
+        _ability.DeactivateSkill(_soulAid);
     }
 }

@@ -54,7 +54,7 @@ public abstract class StaminaComponent : NetworkBehaviour
 
 	protected void UpdateBar()
 	{
-		//bar.UpdateBar(_value,_maxValue);
+		//bar.UpdateBar(_baseValue,_maxValue);
 	}
 	public void NetworkUpdateBar(float oldValue, float newValue)
 	{

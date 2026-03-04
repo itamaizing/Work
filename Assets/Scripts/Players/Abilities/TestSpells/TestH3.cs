@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -18,7 +18,7 @@ public class TestH3 : Skill
 
     protected override int AnimTriggerCast => Animator.StringToHash("H3Cast");
 
-    public Character Target { get => GetTargetCharacter(); private set
+    public Character Target { get => Targeting.GetTarget()?.Character; private set
         {
             if (value != null)
                 Debug.Log(value.name);
@@ -29,11 +29,11 @@ public class TestH3 : Skill
 
     private bool CheckCanCast()
     {
-        if (GetTargetCharacter() == null)
-            return Vector3.Distance(_targetPoint, transform.position) <= Radius;
+        if (Targeting.GetTarget()?.Character == null)
+            return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.Radius;
 
-        return Vector3.Distance(_targetPoint, transform.position) <= Radius ||
-               Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+        return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.Radius ||
+               Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
     }
 
     public void AnimCastH3()
@@ -60,15 +60,15 @@ public class TestH3 : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
         _targetPoint = targetInfo.Points[0];
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() != null)
+        if (Targeting.GetTarget()?.Character != null)
         {
-            CmdCreateProjecttile(GetTargetCharacter().transform);
+            CmdCreateProjecttile(Targeting.GetTarget()?.Character.transform);
         }
         else
         {
@@ -82,7 +82,7 @@ public class TestH3 : Skill
     {
         //_target = null;
 
-        ClearTarget();
+        Targeting.ClearTarget();
         _targetPoint = Vector3.positiveInfinity;
     }
 
@@ -90,20 +90,20 @@ public class TestH3 : Skill
     {
         Buff.CastSpeed.IncreasePercentage(_animSpeed);
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && GetTargetCharacter() == null)
+        while (float.IsPositiveInfinity(_targetPoint.x) && Targeting.GetTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter();
-                //_target = GetTarget().character;
-                //_targetPoint = GetTarget().Position;
+                Targeting.FindTempTarget();
+                //_target = Targeting.GetTarget()?.Character;
+                //_targetPoint = Targeting.GetTarget().Position;
 
-                _targetPoint = GetMousePoint();
+                _targetPoint = Targeting.GetMousePoint();
             }
             yield return null;
         }
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTargetCharacter());
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         targetInfo.Points.Add(_targetPoint);
         callbackDataSaved(targetInfo);
     }

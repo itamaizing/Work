@@ -278,6 +278,15 @@ public abstract class GameRules : NetworkBehaviour
             {
                 _players.Add(playerSettings);
             }
+
+            if (playerSettings.NetworkSettings.TeamIndex == 1)
+            {
+                _gameManager.Source.AddInFirstTeam(playerSettings);
+            }
+            else
+            {
+                _gameManager.Source.AddInSecondTeam(playerSettings);
+            }
         }
 
         //UnityEngine.Debug.Log("this");

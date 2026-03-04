@@ -37,14 +37,8 @@ public class IcyStreamProjectile : Projectiles
 		_initialized = true;
 		_lastHit = lastHit;
 		_skill = skill;
-		for (int i = 0; i < _dad.Resources.Count; i++)
-		{
-			if (_dad.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)_dad.Resources[i];
-			}
-		}
-		Debug.Log("bullet init");
+        _energy = (Energy)_dad.Resources[ResourceType.Energy];
+        Debug.Log("bullet init");
 	}
 
 	private void Update()

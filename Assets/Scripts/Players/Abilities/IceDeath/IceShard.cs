@@ -1,7 +1,6 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -24,21 +23,14 @@ public class IceShard : Skill
 
     private void Start()
 	{
-		for (int i = 0; i < _playerLinks.Resources.Count; i++)
-		{
-			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)_playerLinks.Resources[i];
-			}
-		}
+        //_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
+    }
 
-	}
-
-	private void Shoot()
+    private void Shoot()
 	{
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
-		_seriesOfStrikes.MakeHit(null, AbilityForm, 1, 5, 3);
+		_seriesOfStrikes.MakeHit(null, Info.AbilityForm, 1, 5, 3);
 
 		CmdCreateProjecttile(angle, _energy.CurrentValue, _talentPlague, _talentChragesPlague);
 	}
@@ -77,19 +69,21 @@ public class IceShard : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		//Debug.Log("MOUSE POS " + float.IsPositiveInfinity(_mousePos.x));
-		while (float.IsPositiveInfinity(_mousePos.x))
+		if (_energy == null)
+			_energy = (Energy)Hero.Resources[ResourceType.Energy];
+        //Debug.Log("MOUSE POS " + float.IsPositiveInfinity(_mousePos.x));
+        while (float.IsPositiveInfinity(_mousePos.x))
 		{
 			if (GetMouseButton)
 			{
-				_mousePos = GetMousePoint();
-				/*if (GetTarget().character == null)
+				_mousePos = Targeting.GetMousePoint();
+				/*if (Targeting.GetTarget()?.Character == null)
 				{
-					_mousePos = GetTarget().Position;
+					_mousePos = Targeting.GetTarget().Position;
 				}
 				else
 				{
-					_mousePos = GetTarget().character.transform.position;
+					_mousePos = Targeting.GetTarget().Character.transform.position;
 				}*/
 			}
 			yield return null;

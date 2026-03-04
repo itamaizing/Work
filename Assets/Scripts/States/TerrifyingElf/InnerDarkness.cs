@@ -1,4 +1,4 @@
-using Mirror;
+ï»¿using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -34,8 +34,8 @@ public class InnerDarkness : AbstractCharacterState
             SkillManager caster = personWhoMadeBuff.Abilities;
             foreach (Skill skill in caster.Abilities)
             {
-                bool isDark = skill.School == Schools.Dark;
-                bool isSpellish = skill.AbilityForm == AbilityForm.Magic || skill.AbilityForm == AbilityForm.Spell || skill.AbilityForm == AbilityForm.Both;
+                bool isDark = skill.Info.School == Schools.Dark;
+                bool isSpellish = skill.Info.AbilityForm == AbilityForm.Magic || skill.Info.AbilityForm == AbilityForm.Spell || skill.Info.AbilityForm == AbilityForm.Both;
 
                 if (isDark && isSpellish && !skill.IsCooldowned)
                 {
@@ -90,7 +90,7 @@ public class InnerDarkness : AbstractCharacterState
     {
         _durationRemaining = time - (currentStacksCount - 1) * TimeDecreasePerStack;
         CmdStateFear();
-        Debug.Log("îáíîâëåíèå ïðè ìàêñèìàëüíîì ñòàêå");
+        Debug.Log("Ð¾Ð±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ðµ Ð¿Ñ€Ð¸ Ð¼Ð°ÐºÑÐ¸Ð¼Ð°Ð»ÑŒÐ½Ð¾Ð¼ ÑÑ‚Ð°ÐºÐµ");
     }
 
     [Command] private void CmdStateFear() => ClientRpcStateFear();

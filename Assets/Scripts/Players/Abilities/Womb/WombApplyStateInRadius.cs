@@ -16,10 +16,20 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
     private Coroutine _mainRoutine;
     private Coroutine _radiusRoutine;
 
-    public void OnEnable()
+    private bool _isWombApplyStateInRadius;
+
+    public bool IsWombApplyStateInRadius
     {
-        _mainRoutine = StartCoroutine(CheckZoneRoutine());
-        _radiusRoutine = StartCoroutine(RadiusGrowthRoutine());
+        get => _isWombApplyStateInRadius;
+        set
+        {
+            if (_isWombApplyStateInRadius == value) return;
+
+            _isWombApplyStateInRadius = value;
+
+            if (_isWombApplyStateInRadius) StartCorutines();
+            else StartCorutines();
+        }
     }
 
     private void OnDisable()
@@ -132,6 +142,33 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
 
         _inZoneCharacters.Clear();
         _slimeCoroutines.Clear();
+    }
+
+    private void StartCorutines()
+    {
+        if (_mainRoutine == null)
+            _mainRoutine = StartCoroutine(CheckZoneRoutine());
+
+        if (_radiusRoutine == null)
+            _radiusRoutine = StartCoroutine(RadiusGrowthRoutine());
+    }
+
+    private void StopCorutines()
+    {
+        if (_mainRoutine != null)
+        {
+            StopCoroutine(_mainRoutine);
+            _mainRoutine = null;
+        }
+
+        if (_radiusRoutine != null)
+        {
+            StopCoroutine(_radiusRoutine);
+            _radiusRoutine = null;
+        }
+
+        ClearAllStates();
+        _currentRadius = 0f;
     }
 
     #region NotUsedSkillOverrides

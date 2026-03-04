@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using UnityEngine;
 
@@ -8,17 +8,17 @@ public abstract class CloseCombatSkill : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
-        while (GetTempTargetCharacter() == null)
+        while (Targeting.GetTempTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
-                FindTarget();
+                Targeting.FindTempTarget();
             }
             yield return null;
         }
-        SetTarget(GetTempTargetCharacter());
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTargetCharacter());
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         targetDataSavedCallback(targetInfo);
     }
 }

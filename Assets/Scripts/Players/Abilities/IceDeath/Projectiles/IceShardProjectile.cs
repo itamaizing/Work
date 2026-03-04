@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
@@ -49,12 +49,12 @@ public class IceShardProjectile : Projectiles
 				{
 					_curDamage *= 2.2f;
 				}
-				TargetRpcDamgeMake(_curDamage);
+				TargetRpcDamageMake(_curDamage);
 
 				//_skill.CmdApplyDamage(damage, target.gameObject);
 				target.Health.TryTakeDamage(ref _damage, _skill);
 
-				//target.Health.TryTakeDamage(curDamage, DamageType.Physical, AttackRangeType.RangeAttack);
+				//target.Health.TryTakeDamage(curDamage, Info.DamageType.Physical, Info.AttackRangeType.RangeAttack);
 				target.CharacterState.AddState(States.Frozen, duration, 30, _dad.gameObject, _skill.name);
 				if (_talentPlague)
 				{

@@ -12,7 +12,7 @@ public class AbsorptionOfPoisonsState : AbstractCharacterState
 
     private float _duration;
     private float _baseDuration;
-    private AttributeModifiers _attributeModifiers; 
+    private AttributeModifier _attributeModifiers; 
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Absorptions };
     public override States State => States.AbsorptionOfPoison;
@@ -22,7 +22,7 @@ public class AbsorptionOfPoisonsState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _attributeModifiers = new AttributeModifiers(0, ModifierType.Flat);
+        _attributeModifiers = new AttributeModifier(0, ModifierType.Flat);
         characterState = character;
         _player = personWhoMadeBuff;
 

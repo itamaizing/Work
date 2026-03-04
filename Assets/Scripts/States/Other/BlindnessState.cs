@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -28,13 +28,14 @@ public class BlindnessState : AbstractCharacterState
         _duration = durationToExit;
         _baseDuration = durationToExit;
         characterState = character;
+        MaxStacksCount = 1;
 
         if (characterState.isOwned) ApplyEffectToLocalCamera();
 
         if (character.TryGetComponent<Character>(out var ability))
         {
             abilities = ability.Abilities;
-            foreach (var abil in abilities.Abilities) if (abil.SkillType == SkillType.Target) abil.Disactive = true;
+            foreach (var abil in abilities.Abilities) if (abil.Info.SkillType == SkillType.Target) abil.Disactive = true;
         }
     }
 
@@ -52,10 +53,18 @@ public class BlindnessState : AbstractCharacterState
         if (characterState.TryGetComponent<Character>(out var ability))
         {
             abilities = ability.Abilities;
-            foreach (var abil in abilities.Abilities) if (abil.SkillType == SkillType.Target) abil.Disactive = false;
+            foreach (var abil in abilities.Abilities) if (abil.Info.SkillType == SkillType.Target) abil.Disactive = false;
         }
 
         characterState.RemoveState(this);
+    }
+
+    public override bool Stack(float time)
+    {
+        //if (_baseDuration > time) return false;
+        _duration += time;
+        RemainingDuration = _duration;
+        return true;
     }
 
     private void ApplyEffectToLocalCamera()

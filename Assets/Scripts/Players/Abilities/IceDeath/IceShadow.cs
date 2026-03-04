@@ -1,11 +1,9 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class IceShadow : Skill
 {
@@ -47,14 +45,7 @@ public class IceShadow : Skill
 	{
 		_audioSource = GetComponent<AudioSource>();
 
-		for (int i = 0; i < _playerLinks.Resources.Count; i++)
-		{
-			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)_playerLinks.Resources[i];
-			}
-		}
-
+        //_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
 	}
 
 	private void OnEnable()
@@ -75,7 +66,10 @@ public class IceShadow : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		TargetInfo targetInfo = new TargetInfo();
+		if (_energy == null)
+			_energy = (Energy)Hero.Resources[ResourceType.Energy];
+
+        TargetInfo targetInfo = new TargetInfo();
 		targetInfo.AddTarget(Hero);
 		callbackDataSaved(targetInfo);
 		yield return null;
@@ -96,7 +90,7 @@ public class IceShadow : Skill
 	{
 		/*IceShadowObject projectileGm = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
 		projectileGm.Init(_playerLinks.gameObject ,Mana.Value);*/
-		_lastHit = _combo.MakeHit(null, AbilityForm, 1, _manaUsed, 0, _combo.GetMultipliedSpeed() / SpeedScaleDivisor);
+		_lastHit = _combo.MakeHit(null, Info.AbilityForm, 1, _manaUsed, 0, _combo.GetMultipliedSpeed() / SpeedScaleDivisor);
 
 		_manaUsed = Mathf.Min(_energy.CurrentValue, MaxManaPerCast);
 		_energy.CmdUse(_manaUsed);
@@ -225,7 +219,7 @@ public class IceShadow : Skill
 			{
 				foreach (var skillCost in _skillEnergyCosts)
 				{
-					var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+					var resource = _hero.Resources[skillCost.resourceType];
 					resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
 				}
 				_evaded = false;

@@ -1,4 +1,4 @@
-using Gangdollarff.EarthElemental;
+﻿using Gangdollarff.EarthElemental;
 using Gangdollarff.WaterElemental;
 using Mirror;
 using System.Collections.Generic;
@@ -31,9 +31,11 @@ public abstract class AbstractCharacterState
 	protected Health health;
 	protected Character personWhoMadeBuff;
 	protected Skill skill;
+	protected Schools _schoolState;
 
 	protected int currentStacksCount = 0;
 	protected bool isHidden = false;
+
 	public int CurrentStacksCount => currentStacksCount;
 
     public int MaxStacksCount = 0;
@@ -192,12 +194,12 @@ public abstract class AuraState : AbstractCharacterState
 {
 	protected Character _self;
     private Transform _auraCentre;
-    private List<Character> _charactersInRadius = new();
+    protected List<Character> _charactersInRadius = new();
     private List<Collider> _collidersKeysForRemove = new();
 	private Dictionary<Collider, Character> _colliderToCharacter = new();
 	private float _timeAfterLastEffect = 0;
 
-    public abstract float Distance { get; }
+	public abstract float Distance { get; }
     public abstract float EffectRate { get; }
     public abstract LayerMask LayerMask { get; }
 
@@ -211,7 +213,8 @@ public abstract class AuraState : AbstractCharacterState
     {
 		_auraCentre = character.transform;
 		_self = personWhoMadeBuff;
-	}
+		duration = durationToExit;
+    }
 
     public override void UpdateState()
     {
@@ -355,6 +358,9 @@ public class CharacterState : NetworkBehaviour
 		[States.DivineEnhancement] = new DivineEnhancementState(),
 		[States.DischargePsi] = new DischargePsiState(),
 		[States.TrueSightState] = new TrueSight(),
+		[States.CorrodedArmor] = new CorrodedArmorState(),
+		[States.Impatience] = new ImpatienceState(),
+		[States.PsionicGeneration] = new PsionicGenerationState(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -379,10 +385,22 @@ public class CharacterState : NetworkBehaviour
 		[States.PowerOfEarth] = new PowerOfEarth(),
         [States.EarthsHealth] = new EarthsHealth(),
         [States.MagicWater] = new MagicWater(),
+        [States.HotBloodAura] = new HotBloodAura(),
+        [States.HotBloodBuff] = new HotAuraBuff(),
+        [States.GodAura] = new GodAura(),
+        [States.GodAuraBuff] = new GodAuraBuff(),
+        [States.TransformationDebuff] = new TransformationDebuff(),
+        [States.PetrificationDebuff] = new PetrificationState(),
+        [States.PushingWindBuff] = new PushingWindBuff(),
         [States.Burning] = new Burning(),
         [States.Burn] = new Burn(),
 		[States.Discharge] = new Gangdollarff.AirElemental.Discharge(),
 		[States.CoolingAura] = new CoolingAura(),
+		[States.CoolingDamaged] = new CoolingDamaged(),
+		[States.MagicalExcitement] = new MagicalExcitement(),
+		[States.GodLight] = new GodLightState(),
+		[States.MagicInstantaneity] = new MagicInstantaneityState(),
+		[States.ImmortalityState] = new ImmortalityState(),
         #endregion
 
         #region Test Baff and Debaff
@@ -593,11 +611,19 @@ public class CharacterState : NetworkBehaviour
                 if ((_currentStates[i] is RefreshingState) == false) break;
 				if (_currentStates[i].MaxStacksCount == 0)
                 {
-					//bool canStack = _currentStates[i].Stack(duration);
+					bool canStack = _currentStates[i].Stack(duration);
 					int newMaxStack = _currentStates[i].MaxStacksCount;
                     if (!_currentStates[i].IsHidden)
                         _stateIcons.ActivateIco(state, duration, 1, false, newMaxStack);
 					
+
+					float timeForIcon = duration;
+					if (state == States.Restoration || state == States.Destruction)
+					{
+						timeForIcon = _currentStates[i].RemainingDuration > 0f ? _currentStates[i].RemainingDuration : duration;
+					}
+					_stateIcons.ActivateIco(state, timeForIcon, 1, canStack, newMaxStack);
+
 					MoveStateToEnd(i);
 				}
 
@@ -898,8 +924,22 @@ public enum States
 	DischargePsi,
 	BleedingDebuff,
 	TrueSightState,
+	CorrodedArmor,
+	Impatience,
+	PsionicGeneration,
+	MagicalExcitement,
+	GodLight,
+	HotBloodAura,
+	HotBloodBuff,
+	GodAura,
+	GodAuraBuff,
+	TransformationDebuff,
+	PetrificationDebuff,
+	PushingWindBuff,
+	CoolingDamaged,
+	MagicInstantaneity,
+	ImmortalityState,
 }
-
 public enum BaffDebaff
 {
 	Baff,

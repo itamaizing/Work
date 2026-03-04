@@ -14,7 +14,7 @@ public class SpeedOfReptile : Skill
     private float _increaseMoveSpeed = 2f;
     private float _increaseAttackSpeed = 2f;
     private float _increaseEvasion = 2f;
-    private AttributeModifiers _modif;
+    private AttributeModifier _modif;
 
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;

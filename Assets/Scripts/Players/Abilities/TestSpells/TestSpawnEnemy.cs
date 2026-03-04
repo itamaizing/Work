@@ -16,12 +16,11 @@ public class TestSpawnEnemy : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Alpha0))
         {
-            Hero.SpawnComponent.CmdSpawnUnitEnemy(0);
+            Hero.SpawnComponent.CmdSpawnCharacter(0, transform.position + Vector3.forward * 2f, Quaternion.identity, teamId: 1); //Враг
         }
         if (Input.GetKeyDown(KeyCode.Alpha9))
         {
-            //CmdSpawnUnitAlies();
-            //Hero.SpawnComponent.CmdSpawnUnitAlies();
+            Hero.SpawnComponent.CmdSpawnCharacter(0, transform.position + Vector3.forward * 2f, Quaternion.identity, teamId: 0); //Союзник
         }
     }
 }

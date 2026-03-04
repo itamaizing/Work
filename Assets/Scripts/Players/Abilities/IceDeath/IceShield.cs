@@ -14,7 +14,7 @@ public class IceShield : Skill
 	private bool _active = false;
 	private float _timer = 1f;
 	private Energy _energy;
-	private AttributeModifiers _modif = new(.8f, ModifierType.Multiplier);
+	private AttributeModifier _modif = new(.8f, ModifierType.Multiplier);
 
 	protected override bool IsCanCast => true;
 
@@ -24,16 +24,10 @@ public class IceShield : Skill
 
     private void Start()
 	{
-		for (int i = 0; i < _playerLinks.Resources.Count; i++)
-		{
-			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)_playerLinks.Resources[i];
-			}
-		}
-	}
+        _energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
+    }
 
-	private void Update()
+    private void Update()
 	{
 		if (!_active) return;
 

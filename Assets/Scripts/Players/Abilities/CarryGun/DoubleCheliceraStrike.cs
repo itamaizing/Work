@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -33,16 +33,16 @@ public class DoubleCheliceraStrike : Skill
     {
         //_runtimeTarget = null;
 
-        while (GetTargetCharacter() == null)
+        while (Targeting.GetTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter();
+                Targeting.FindTempTarget();
                 //_target = GetRaycastTarget();
 
-                if (GetTargetCharacter() != null)
+                if (Targeting.GetTarget()?.Character != null)
                 {
-                    if (GetTargetCharacter() is Character characterTarget)
+                    if (Targeting.GetTarget()?.Character is Character characterTarget)
                     {
                         //_runtimeTarget = characterTarget;
                         characterTarget.SelectedCircle.IsActive = true;
@@ -53,15 +53,15 @@ public class DoubleCheliceraStrike : Skill
         }
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTargetCharacter());
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() == null) yield return null;
+        if (Targeting.GetTarget()?.Character == null) yield return null;
 
-        DealDoubleCheliceraStrikeDamage(GetTargetCharacter());
+        DealDoubleCheliceraStrikeDamage(Targeting.GetTarget()?.Character);
 
         cooldownEnergy.CastCooldownEnergySkill(cooldownEnergyCost, this);
 
@@ -70,16 +70,16 @@ public class DoubleCheliceraStrike : Skill
 
     private bool IsTargetInRange()
     {
-        return GetTargetCharacter() != null &&
-            Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius &&
-            NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
+        return Targeting.GetTarget()?.Character != null &&
+            Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius &&
+            Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
     }
 
     private void HandleSkillCanceled()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
-        _isCanCancle = true;
+        _isCanCancel = true;
     }
 
     private void DealDoubleCheliceraStrikeDamage(IDamageable targetCharacter)
@@ -104,7 +104,7 @@ public class DoubleCheliceraStrike : Skill
 
     public void DoubleCheliceraStrikeEnded()
     {
-        _isCanCancle = true;
+        _isCanCancel = true;
         AnimCastEnded();
     }
 
@@ -119,13 +119,14 @@ public class DoubleCheliceraStrike : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
-        _isCanCancle = false;
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        _isCanCancel = false;
     }
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
     }
 }
+

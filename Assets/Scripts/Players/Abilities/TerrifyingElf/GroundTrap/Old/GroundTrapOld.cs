@@ -31,7 +31,7 @@
 //    private float baseHealth = 23;
 
 //    protected override bool IsCanCast => _isStartPointPlaced ||
-//                                         Vector3.Distance(transform.position, _endPosition) <= Radius &&
+//                                         Vector3.Distance(transform.position, _endPosition) <= AreaInfo.Radius &&
 //                                         Vector3.Distance(transform.position, _endPosition) >= minDistanceRadius &&
 //                                         Vector3.Distance(_startPosition, _endPosition) <= distanceforTrap;
 
@@ -86,7 +86,7 @@
 //    private bool InsideRadius(Vector3 position)
 //    {
 //        float direction = Vector3.Distance(transform.position, position);
-//        return direction >= minDistanceRadius && direction <= Radius;
+//        return direction >= minDistanceRadius && direction <= AreaInfo.Radius;
 //    }
 
 //    private void SetGroundNewHealth()
@@ -159,7 +159,7 @@
 //            _preview.UpdateSecondPoint(rawPos);
 //            UpdateMinRadiusCircle(rawPos);
 
-//            bool inOuterRadius = Vector3.Distance(transform.position, rawPos) <= Radius;
+//            bool inOuterRadius = Vector3.Distance(transform.position, rawPos) <= AreaInfo.Radius;
 //            bool outOfInnerRing = Vector3.Distance(transform.position, rawPos) >= minDistanceRadius;
 
 //            if (GetMouseButton && inOuterRadius && outOfInnerRing && !blocked)

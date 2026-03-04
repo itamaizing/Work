@@ -4473,6 +4473,7 @@ MonoBehaviour:
   _skillMinionPanel: {fileID: 9072973448013671613}
   _selectManager: {fileID: 0}
   _settings: {fileID: 5987989851800356111}
+  _teamStatistics: {fileID: 0}
   _forHide:
   - {fileID: 3717972105673291489}
   - {fileID: 2383863665915225127}
@@ -9821,7 +9822,10 @@ MonoBehaviour:
   _teamText1: {fileID: 1822857253674763110}
   _teamText2: {fileID: 8467300243592498610}
   _winImage: {fileID: 7667160248075098995}
-  _winText: {fileID: 446676314135069085}
+  _teamEndText1: {fileID: 0}
+  _teamEndText2: {fileID: 0}
+  _winLabel: 
+  _loseLabel: 
 --- !u!1 &5702332951692205014
 GameObject:
   m_ObjectHideFlags: 0

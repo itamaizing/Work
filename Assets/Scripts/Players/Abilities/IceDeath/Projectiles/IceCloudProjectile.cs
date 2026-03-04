@@ -1,4 +1,4 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using Mirror;
 using System.Collections;
 using UnityEngine;
@@ -67,7 +67,7 @@ public class IceCloudProjectile : Projectiles
 
 			_damage.Value = finalDamage;
 
-			TargetRpcDamgeMake(finalDamage);
+			TargetRpcDamageMake(finalDamage);
 			target.Health.TryTakeDamage(ref _damage, _skill);
 
             StartCoroutine(CrutchDelay(target, _curFreezeDuration));

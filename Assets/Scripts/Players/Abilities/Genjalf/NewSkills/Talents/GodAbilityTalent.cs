@@ -6,11 +6,11 @@ public class GodAbilityTalent : Talent
 
 	public override void Enter()
 	{
-		_skillManager.TalentAddCharges(2);
+		_skillManager.TalentAddCharges(true);
 	}
 
 	public override void Exit()
 	{
-		_skillManager.TalentAddCharges(0);
+		_skillManager.TalentAddCharges(false);
 	}
 }

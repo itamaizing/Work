@@ -8,22 +8,41 @@ public class AttackingPsionicEnergy : Energy
 {
     [SerializeField] private Slider attackingPsionicsSlider;
 
-    private const float _maxAttackingPsiEnergy = 30f;
+    private const float _baseMaxAttackingPsiEnergy = 30f;
     private const float _timeAttackingPsiEnergy = 6f;
-    
+
+    [SyncVar(hook = nameof(OnEnergyUpdated))]
+    private float _syncedEnergy;
+
+    private float _currentMaxAttackingPsiEnergy;
     private float _remainingTime;
     private bool _isAttackingPsiActive = false;
 
     private Coroutine _attackingPsiEnergyCoroutine;
 
-    public float MaxAttackingPsiEnergy => _maxAttackingPsiEnergy;
-    public bool IsAttackingPsiEnergy => _isAttackingPsiActive;
+    public float MaxAttackingPsiEnergy => _currentMaxAttackingPsiEnergy;
+    public bool IsAttackingPsiEnergy { get => _isAttackingPsiActive; set => _isAttackingPsiActive = value; }
 
     public event Action<float> OnEnergyChanged;
 
+    #region Talent
+    public void AttackingPsiIncrease(bool value)
+    {
+        if (value) _currentMaxAttackingPsiEnergy = _baseMaxAttackingPsiEnergy + 10f;
+        else _currentMaxAttackingPsiEnergy = _baseMaxAttackingPsiEnergy;
+
+        CurrentValue = Mathf.Min(CurrentValue, _currentMaxAttackingPsiEnergy);
+
+        _maxValue = _currentMaxAttackingPsiEnergy;
+
+        UpdateAttackingEnergyBar();
+    }
+    #endregion
+
     private void Start()
     {
-        _maxValue = _maxAttackingPsiEnergy;
+        _currentMaxAttackingPsiEnergy = _baseMaxAttackingPsiEnergy;
+        _maxValue = _currentMaxAttackingPsiEnergy;
         UpdateAttackingEnergyBar();
     }
 
@@ -42,23 +61,26 @@ public class AttackingPsionicEnergy : Energy
         return Mathf.FloorToInt(energySpent / 10f);
     }
 
+    [Server]
     public void ReceiveAttackingEnergy(float transferAmount)
     {
         _remainingTime = _timeAttackingPsiEnergy;
 
         Add(transferAmount);
-        CurrentValue = Mathf.Min(CurrentValue, _maxAttackingPsiEnergy);
+        CurrentValue = Mathf.Min(CurrentValue, _currentMaxAttackingPsiEnergy);
 
-        RpcOnEnergyChanged(CurrentValue);
-
-        RpcAttackingPsiEnergyChanged(true, CurrentValue);
-        UpdateAttackingEnergyBar();
+        _syncedEnergy = CurrentValue;
 
         if (_attackingPsiEnergyCoroutine != null)
-        {
             StopCoroutine(_attackingPsiEnergyCoroutine);
-        }
+
         _attackingPsiEnergyCoroutine = StartCoroutine(AttackingPsiEnergyJob());
+    }
+
+    private void OnEnergyUpdated(float oldValue, float newValue)
+    {
+        CurrentValue = newValue;
+        UpdateAttackingEnergyBar();
     }
 
     private IEnumerator AttackingPsiEnergyJob()
@@ -72,28 +94,20 @@ public class AttackingPsionicEnergy : Energy
         CurrentValue = 0;
         _isAttackingPsiActive = false;
 
-        RpcOnEnergyChanged(CurrentValue);
-
-        RpcAttackingPsiEnergyChanged(false, 0f);
+        OnEnergyChanged?.Invoke(CurrentValue);
         UpdateAttackingEnergyBar();
     }
 
     private void UpdateAttackingEnergyBar()
     {
-        attackingPsionicsSlider.value = CurrentValue / _maxAttackingPsiEnergy;
+        attackingPsionicsSlider.value = CurrentValue / _currentMaxAttackingPsiEnergy;
     }
 
-    [ClientRpc]
-    private void RpcAttackingPsiEnergyChanged(bool isActive, float energyValue)
+    [Server]
+    public void ExtendDuration(float amount)
     {
-        _isAttackingPsiActive = isActive;
-        UpdateAttackingEnergyBar();
-    }
+        if (CurrentValue <= 0) return;
 
-    [ClientRpc]
-    private void RpcOnEnergyChanged(float value)
-    {
-        CurrentValue = value;
-        OnEnergyChanged?.Invoke(value);
+        _remainingTime += amount;
     }
 }
