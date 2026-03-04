@@ -52,6 +52,7 @@ public class Tentacles : Skill
 
     public event Action<bool> OnSpawnGetomirChanged;
 
+
     public bool IsSpawnGetomir
     {
         get => _isSpawnGetomir;
