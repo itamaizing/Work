@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,14 +20,14 @@ public class Silent : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Debug.Log("Entering Silent State");
-        _characterState = character;
-        _personWhoMadeBuff = personWhoMadeBuff;
+        characterState = character;
+        base.personWhoMadeBuff = personWhoMadeBuff;
         _baseDuration = durationToExit;
         _duration = _baseDuration;
 
         Debug.Log($"_duration: {_duration}");
 
-        if (_personWhoMadeBuff.TryGetComponent<Silence>(out var silence))
+        if (base.personWhoMadeBuff.TryGetComponent<Silence>(out var silence))
         {
             _isSilenceAddAllCharacterWithDeabaffElf = silence.IsSilenceAddAllCharacterWithDeabaffElf;
             _silence = silence;
@@ -37,14 +37,14 @@ public class Silent : AbstractCharacterState
         {
             HashSet<States> targetDebuffsFromCaster = new();
 
-            foreach (var state in _characterState.CurrentStates) 
-                if (state.BaffDebaff == BaffDebaff.Debaff && state.PersonWhoMadeBuff == _personWhoMadeBuff) targetDebuffsFromCaster.Add(state.State);
+            foreach (var state in characterState.CurrentStates) 
+                if (state.BaffDebaff == BaffDebaff.Debaff && state.PersonWhoMadeBuff == base.personWhoMadeBuff) targetDebuffsFromCaster.Add(state.State);
 
             if (targetDebuffsFromCaster.Count == 0) return;
 
             foreach (var target in GameObject.FindObjectsOfType<Character>())
             {
-                if (target == _characterState.Character)
+                if (target == characterState.Character)
                     continue;
 
                 var state = target.CharacterState;
@@ -52,7 +52,7 @@ public class Silent : AbstractCharacterState
 
                 foreach (var targetState in state.CurrentStates)
                 {
-                    if (targetState.BaffDebaff == BaffDebaff.Debaff && targetState.PersonWhoMadeBuff == _personWhoMadeBuff && targetDebuffsFromCaster.Contains(targetState.State))
+                    if (targetState.BaffDebaff == BaffDebaff.Debaff && targetState.PersonWhoMadeBuff == base.personWhoMadeBuff && targetDebuffsFromCaster.Contains(targetState.State))
                     {
                         CmdStateSilent(target);
                         break;
@@ -77,13 +77,13 @@ public class Silent : AbstractCharacterState
     public override void ExitState()
     {
         Debug.Log("Exiting Silent State");
-        _characterState.StateIcons.RemoveItemByState(State);
-        _characterState.RemoveState(this);
+        characterState.StateIcons.RemoveItemByState(State);
+        characterState.RemoveState(this);
 
         UnblockMagicAbilities();
     }
 
-    public override bool Stack(float time)
+   /* public override bool Stack(float time)
     {
         if (_currentStacks < _maxStacks)
         {
@@ -98,15 +98,15 @@ public class Silent : AbstractCharacterState
             Debug.Log($"Max stacks reached. Refreshing Silent duration: {_duration}s");
             return false;
         }
-    }
+    }*/
 
     private void BlockMagicAbilities()
     {
-        if (_characterState.Character.Abilities == null) return;
+        if (characterState.Character.Abilities == null) return;
 
-        foreach (var skill in _characterState.Character.Abilities.Abilities)
+        foreach (var skill in characterState.Character.Abilities.Abilities)
         {
-            if (skill.AbilityForm == AbilityForm.Magic || skill.AbilityForm == AbilityForm.Spell)
+            if (skill.Info.AbilityForm == AbilityForm.Magic || skill.Info.AbilityForm == AbilityForm.Spell)
             {
                 skill.Disactive = true;
                 Debug.Log($"Blocking magic skill: {skill.Name}");
@@ -116,11 +116,11 @@ public class Silent : AbstractCharacterState
 
     private void UnblockMagicAbilities()
     {
-        if (_characterState.Character.Abilities == null) return;
+        if (characterState.Character.Abilities == null) return;
 
-        foreach (var skill in _characterState.Character.Abilities.Abilities)
+        foreach (var skill in characterState.Character.Abilities.Abilities)
         {
-            if (skill.AbilityForm == AbilityForm.Magic || skill.AbilityForm == AbilityForm.Spell)
+            if (skill.Info.AbilityForm == AbilityForm.Magic || skill.Info.AbilityForm == AbilityForm.Spell)
             {
                 skill.Disactive = false;
                 Debug.Log($"Unblocking magic skill: {skill.Name}");
@@ -129,5 +129,5 @@ public class Silent : AbstractCharacterState
     }
 
     [Command] private void CmdStateSilent(Character target) => ClientRpcStateSilent(target);
-    [ClientRpc] private void ClientRpcStateSilent(Character target) { target.CharacterState.AddStateLogic(States.Silent, _duration, 0f, Schools.None, _characterState.gameObject, null); }
+    [ClientRpc] private void ClientRpcStateSilent(Character target) { target.CharacterState.AddStateLogic(States.Silent, _duration, 0f, Schools.None, characterState.gameObject, null); }
 }

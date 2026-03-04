@@ -7,9 +7,8 @@ public class StunnedState : AbstractCharacterState
 	public bool turnOff = false;
 	//private PlayerAbilities _abilities;
 	private float _baseDuration;
-	private float _duration;
 
-	private List<StatusEffect> _effects = new() { StatusEffect.Move, StatusEffect.Ability };
+	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability };
 	public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
 	public override States State => States.Stun;
 	public override StateType Type => StateType.Physical;
@@ -18,26 +17,23 @@ public class StunnedState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		_characterState = character;
 
 		if (character.TryGetComponent<Character>(out var ability))
 		{
-			_abilities = ability.Abilities;
-			_abilities.SetAbilitiesDisactive(true);
+			abilities = ability.Abilities;
+			abilities.SetAbilitiesDisactive(true);
 		}
 		else Debug.Log("no ability at " + character.gameObject.name);
 
-		_characterState.Character.Move.IsMoveBlocked = true;
-		_characterState.Character.Move.StopMoveAndAnimationMove();
+		characterState.Character.Move.IsMoveBlocked = true;
+		characterState.Character.Move.StopMoveAndAnimationMove();
 
-		_duration = durationToExit;
 		_baseDuration = durationToExit;
 	}
 
 	public override void UpdateState()
 	{
-		_duration -= Time.deltaTime;
-		if (_duration < 0 || turnOff)
+		if (turnOff)
 		{
 			ExitState();
 		}
@@ -45,21 +41,8 @@ public class StunnedState : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		_characterState.RemoveState(this);
-		_characterState.Character.Move.IsMoveBlocked = false;
-		_abilities.SetAbilitiesDisactive(false);
-	}
-
-	public override bool Stack(float time)
-	{
-		if (_baseDuration > time)
-		{
-			return false;
-		}
-		else
-		{
-			_duration = time;
-			return true;
-		}
+		characterState.RemoveState(this);
+		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.IsMoveBlocked = false;
+		if (!characterState.Check(StatusEffect.Ability) && abilities != null) abilities.SetAbilitiesDisactive(false);
 	}
 }

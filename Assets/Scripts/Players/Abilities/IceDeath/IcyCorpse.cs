@@ -1,6 +1,4 @@
-using Mirror;
-using System.Collections;
-using System.Collections.Generic;
+﻿using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,7 +12,7 @@ public class IcyCorpse : MinionComponent
 
 	private void Start()
 	{
-		Health.SetHp(_hp, _maxHp);
+		//Health.SetHp(_hp, _maxHp);
 	}
 	public void InitWithHp(float hp, float maxHp)
 	{
@@ -45,7 +43,7 @@ public class IcyCorpse : MinionComponent
 					};
 					//_skill.CmdApplyDamage(damage, target.gameObject);
 					enemy.Health.TryTakeDamage(ref damage2, null);
-					//enemy.Health.TryTakeDamage(damage, DamageType.Magical, AttackRangeType.RangeAttack);
+					//enemy.Health.TryTakeDamage(damage, Info.DamageType.Magical, Info.AttackRangeType.RangeAttack);
 					if (Random.Range(0, 3) < 1)
 					{
 						enemy.CharacterState.CmdAddState(States.Plague, 4, 0, this.gameObject, name);

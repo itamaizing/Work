@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -73,6 +74,7 @@ public class User : NetworkBehaviour
 
     private void InitializeManagers()
     {
+        BottleUserManager.Instance?.SetUser("User_" + _id);
         BottleUserManager.Instance?.BottleInitialize();
         LevelCharacterManager.Instance?.LevelInitialize();
     }
@@ -89,6 +91,13 @@ public class BottleUserManager
     private float _currentBottleVolume = 0f;
     private string _currentUser;
     private string mainMenuSceneName = "MainMenu";
+
+    public event Action<int> OnBottlesChanged;
+
+    public void BottlesChanged(int count)
+    {
+        OnBottlesChanged?.Invoke(count);
+    }
 
     public void BottleInitialize()
     {
@@ -129,6 +138,8 @@ public class BottleUserManager
         }
 
         SaveBottleData();
+
+        OnBottlesChanged?.Invoke(_currentBottles);
     }
 
     public bool TryUseBottle()
@@ -158,6 +169,8 @@ public class BottleUserManager
         PlayerPrefs.Save();
 
         Debug.Log($"Bottle data saved for {_currentUser}. Bottles: {_currentBottles}, Volume: {_currentBottleVolume}");
+
+        OnBottlesChanged?.Invoke(_currentBottles);
     }
 
     private void LoadBottleData()
@@ -168,10 +181,12 @@ public class BottleUserManager
             return;
         }
 
-        _currentBottles = PlayerPrefs.GetInt(_currentUser + "_Bottles", 0);
-        _currentBottleVolume = PlayerPrefs.GetFloat(_currentUser + "_BottleVolume", 0f);
+        _currentBottles = PlayerPrefs.GetInt(_currentUser + "_Bottles", _currentBottles);
+        _currentBottleVolume = PlayerPrefs.GetFloat(_currentUser + "_BottleVolume", _currentBottleVolume);
 
         Debug.Log($"Bottle data loaded for {_currentUser}. Bottles: {_currentBottles}, Volume: {_currentBottleVolume}");
+
+        OnBottlesChanged?.Invoke(_currentBottles);
     }
 
     public void LogBottleInfoOnClient()
@@ -196,6 +211,9 @@ public class LevelCharacterManager
     private const int _maxLevel = 9;
     private const int _maxExperienceAtMaxLevel = 800;
 
+    public event Action<int> OnLevelChanged;
+    public event Action<int, int> OnExperienceChanged;
+
     public int MaxLevel => _maxLevel;
 
     public void LevelInitialize()
@@ -211,12 +229,23 @@ public class LevelCharacterManager
 
     }
 
+    public bool TryGetCurrentHero(out HeroComponent hero)
+    {
+        hero = _character;
+        return hero != null;
+    }
+
     public void SetHero(HeroComponent hero)
     {
         _character = hero;
         LoadLevelData();
         DisplayCurrentHeroLevelInfo();
         //ResetLevelData();
+    }
+
+    public HeroComponent GetHero()
+    {
+        return _character;
     }
 
     public void SetSaveIndex(int index)
@@ -232,6 +261,30 @@ public class LevelCharacterManager
         _currentExperience += experience;
         CheckForLevelUp();
         SaveLevelData();
+
+        OnExperienceChanged?.Invoke(_currentExperience, _experienceForNextLevel);
+    }
+
+    public void LevelChanged() => OnLevelChanged?.Invoke(_currentLevel);
+
+    public void PreloadHeroLevelData(HeroComponent hero, int saveIndex = 0)
+    {
+        string key = hero.Data.Name + "_Group" + saveIndex;
+
+        int level = PlayerPrefs.GetInt(key + "_Level", 1);
+        int exp = PlayerPrefs.GetInt(key + "_Experience", 0);
+        int maxExp = PlayerPrefs.GetInt(key + "_ExperienceForNextLevel", 100);
+
+        if (level >= _maxLevel)
+        {
+            level = _maxLevel;
+            exp = _maxExperienceAtMaxLevel;
+            maxExp = _maxExperienceAtMaxLevel;
+        }
+
+        _currentLevel = level;
+        _currentExperience = exp;
+        _experienceForNextLevel = maxExp;
     }
 
     private void CheckForLevelUp()
@@ -241,6 +294,8 @@ public class LevelCharacterManager
             _currentExperience -= _experienceForNextLevel;
             _currentLevel++;
             _experienceForNextLevel = CalculateExperienceForNextLevel();
+
+            LevelChanged();
 
             if (_currentLevel == _maxLevel)
             {
@@ -299,6 +354,6 @@ public class LevelCharacterManager
     public void DisplayCurrentHeroLevelInfo()
     {
         if (_character == null) return;
-        //Debug.Log($"Character: {_character.Data.Name} | Level: {_currentLevel} | Experience: {_currentExperience}/{_experienceForNextLevel}");
+        Debug.Log($"Character: {_character.Data.Name} | Level: {_currentLevel} | Experience: {_currentExperience}/{_experienceForNextLevel}");
     }
 }

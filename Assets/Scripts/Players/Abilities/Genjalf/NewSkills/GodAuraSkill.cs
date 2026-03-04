@@ -28,7 +28,7 @@ public class GodAura : AuraState
             if (character == null) continue;
             
             character.CharacterState.AddState(States.GodAuraBuff, 3f, 0,
-                _characterState.Character.gameObject, nameof(GodAuraBuff));
+                characterState.Character.gameObject, nameof(GodAuraBuff));
 
             var buffState = character.CharacterState.GetState(States.GodAuraBuff) as GodAuraBuff;
             buffState?.RefreshBonus(TalentStacks);
@@ -61,7 +61,7 @@ public class GodAura : AuraState
             
             character.CharacterState.RemoveState(States.GodAuraBuff);
             character.CharacterState.AddState(States.GodAuraBuff, -1, 0,
-                _characterState.Character.gameObject, nameof(GodAuraBuff));
+                characterState.Character.gameObject, nameof(GodAuraBuff));
 
             var buffState = character.CharacterState.GetState(States.GodAuraBuff) as GodAuraBuff;
             buffState?.RefreshBonus(0);
@@ -70,9 +70,9 @@ public class GodAura : AuraState
 
     public override void EffectOnEnter(Character character)
     {
-        if (_characterState.Character == character) return;
+        if (characterState.Character == character) return;
         
-        character.CharacterState.AddState(States.GodAuraBuff, -1, 0, _characterState.Character.gameObject, nameof(GodAuraBuff));
+        character.CharacterState.AddState(States.GodAuraBuff, -1, 0, characterState.Character.gameObject, nameof(GodAuraBuff));
     }
 
     public override void EffectOnExit(Character character)
@@ -110,7 +110,7 @@ public class GodAuraBuff : AbstractCharacterState
     {
         _character = character.Character;
         MaxStacksCount = 3;
-        CurrentStacksCount = 1;
+        currentStacksCount = 1;
         ApplyBonus(_basePercentage);
     }
 
@@ -139,7 +139,7 @@ public class GodAuraBuff : AbstractCharacterState
     {
         RemoveBonus(_currentPercentage);
         _currentPercentage = 0f;
-        CurrentStacksCount = 0;
+        currentStacksCount = 0;
         _character.CharacterState.RemoveState(this);
     }
 
@@ -147,14 +147,14 @@ public class GodAuraBuff : AbstractCharacterState
     {
         if (time < 0)
         {
-            CurrentStacksCount = 1;
+            currentStacksCount = 1;
             return false;
         }
 
         if (CurrentStacksCount >= MaxStacksCount)
             return false;
 
-        CurrentStacksCount++;
+        currentStacksCount++;
         return true;
     }
     public override void UpdateState() { }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
@@ -22,7 +22,8 @@ public class FireBoll : MoveSkill
     private float _clickRadius = 0.5f;
     private bool CheckCanCast()
     {
-        return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+        return 
+               Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
     }
 
     public void AnimCastFireboll()
@@ -47,7 +48,7 @@ public class FireBoll : MoveSkill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
         
         if (!IsCanCast)
         {
@@ -57,16 +58,16 @@ public class FireBoll : MoveSkill
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() != null)
+        if (Targeting.GetTarget()?.Character != null)
         {
-            CmdCreateProjecttile(GetTargetCharacter().gameObject);
+            CmdCreateProjecttile(Targeting.GetTarget()?.Character.gameObject);
         }
         yield return null;
     }
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
         Hero.Move.StopLookAt();
     }
@@ -74,18 +75,19 @@ public class FireBoll : MoveSkill
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
-        while (GetTempTarget() == null)
+
+        while (Targeting.GetTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
-                Vector3 clickPoint = GetMousePoint();
+                Vector3 clickPoint = Targeting.GetMousePoint();
         
-                FindTarget(_clickRadius, clickPoint, canTargetHimself: false);
-                if (GetTempTargetCharacter() is Character character)
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: false);
+                if (Targeting.GetTempTarget()?.Character is Character character)
                 {
-                    if (GetTempTargetCharacter() != null && !IsEnemyTarget(character))
+                    if (Targeting.GetTempTarget()?.Character != null && !IsEnemyTarget(character))
                     {
-                        ClearTempTarget();
+                        Targeting.ClearTempTarget();
                     }
                     else
                     {
@@ -96,8 +98,8 @@ public class FireBoll : MoveSkill
             }
             yield return null;
         }
-        targetInfo.AddTarget(GetTempTargetCharacter());
-        ClearTempTarget();
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
+        Targeting.ClearTempTarget();
         callbackDataSaved(targetInfo);
         
         CastStarted += OnCastStarted;
@@ -105,7 +107,7 @@ public class FireBoll : MoveSkill
 
     private void OnCastStarted()
     {
-        Hero.Move.LookAtTransform(GetTargetCharacter().transform);
+        Hero.Move.LookAtTransform(Targeting.GetTarget()?.Character.transform);
         CastStarted -= OnCastStarted;
     }
 
@@ -136,8 +138,8 @@ public class FireBoll : MoveSkill
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(Damage),
-            Type = DamageType,
-            PhysicAttackType = AttackRangeType,
+            Type = Info.DamageType,
+            PhysicAttackType = Info.AttackRangeType,
         };
         CmdApplyDamage(damage, target);
         CmdState(target,_debuffTime);

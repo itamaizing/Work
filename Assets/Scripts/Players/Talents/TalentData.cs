@@ -9,8 +9,8 @@ public class TalentData
 	[SerializeField] private List<TalentStateInfo> _stateInfos = new();
 
 	private string _name;
-	public bool IsOpen;
-
+	public bool IsOpen = false;
+	
 	public string Description = string.Empty;
 	public Sprite Icon;
 	public int Group, Row = 0;

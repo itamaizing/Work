@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -34,7 +34,7 @@ public class LightningStrike : Skill
 
     private bool CheckCanCast()
     {
-        return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius && GetTargetCharacter() != null;
+        return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.GetTarget()?.Character != null;
     }
 
     public void AnimCastLight()
@@ -49,19 +49,19 @@ public class LightningStrike : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator CastJob()
     {
-        var target = GetTargetCharacter();
+        var target = Targeting.GetTarget()?.Character;
        
         if (target != null)
         {
             Damage damage = new Damage
             {
                 Value = Buff.Damage.GetBuffedValue(Damage),
-                Type = DamageType
+                Type = Info.DamageType
             };
 
             CmdApplyDamage(damage, target.gameObject);
@@ -100,7 +100,7 @@ public class LightningStrike : Skill
             {
                 CmdAddState(target);
             }
-            ClearTarget();
+            Targeting.ClearTarget();
         }
         yield return null;
     }
@@ -203,26 +203,26 @@ public class LightningStrike : Skill
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (GetTempTargetCharacter() == null)
+        while (Targeting.GetTempTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
-                Vector3 clickPoint = GetMousePoint();
-               
-                FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
-               
-                if (GetTempTargetCharacter() is Character character)
+                Vector3 clickPoint = Targeting.GetMousePoint();
+                
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
+                
+                if (Targeting.GetTempTarget()?.Character is Character character)
                 {
-                    if (GetTempTargetCharacter() != null && !IsEnemyTarget(character))
+                    if (character != null && !IsEnemyTarget(character))
                     {
-                        ClearTempTarget();
+                        Targeting.ClearTempTarget();
                     }
                     else
                     {
@@ -233,8 +233,8 @@ public class LightningStrike : Skill
             }
             yield return null;
         }
-        SetTarget(GetTempTargetCharacter());
-        targetInfo.AddTarget(GetTargetCharacter());
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 

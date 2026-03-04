@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -20,7 +20,7 @@ public class StoneFromSky : Skill
 
     private bool CheckCanCast()
     {
-        return Vector3.Distance(_clickPoint, transform.position) <= Radius;
+        return Vector3.Distance(_clickPoint, transform.position) <= AreaInfo.Radius;
     }
     
     private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
@@ -60,7 +60,7 @@ public class StoneFromSky : Skill
         while (!GetMouseButton)
             yield return null;
 
-        _clickPoint = GetMousePoint();
+        _clickPoint = Targeting.GetMousePoint();
         targetInfo.Points.Add(_clickPoint);
         callbackDataSaved(targetInfo);
     }
@@ -145,7 +145,7 @@ public class StoneFromSky : Skill
             Damage damage = new Damage
             {
                 Value = Buff.Damage.GetBuffedValue(Damage),
-                Type = DamageType,
+                Type = Info.DamageType,
             };
 
             CmdApplyDamage(damage, target.gameObject);

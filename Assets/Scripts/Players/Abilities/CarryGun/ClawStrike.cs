@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Linq;
@@ -57,9 +57,9 @@ public class ClawStrike : Skill
 
     private bool CheckIsCanCast()
     {
-        return GetTarget() != null &&
-            Vector3.Distance(GetTarget().Transform.position, transform.position) <= Radius &&
-            NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
+        return Targeting.GetTarget() != null &&
+            Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius &&
+            Targeting.NoObstacles(Targeting.GetTarget().Transform.position, transform.position, _obstacle);
     }
 
     private void OnDisable()
@@ -91,26 +91,26 @@ public class ClawStrike : Skill
     #endregion
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0]);
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (GetTempTarget() == null)
+        while (Targeting.GetTempTarget()?.Targetable == null)
         {
             if (GetMouseButton)
             {
-                FindTarget(TargetSearchRadius, GetMousePoint());
+                Targeting.FindTempTarget(Targeting.GetMousePoint(), TargetSearchRadius);
 
-                if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
+                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
                 {
-                    if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
 
                     else
                     {
-                        if (GetTempTarget() is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        if (Targeting.GetTempTarget()?.Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
                         break;
                     }
                 }
@@ -118,71 +118,63 @@ public class ClawStrike : Skill
             yield return null;
         }
 
-        SetTarget(GetTempTarget());
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
 
-        targetInfo.Points.Add(GetTarget().Transform.position);
-        targetInfo.AddTarget(GetTarget());
+        targetInfo.Points.Add(Targeting.GetTarget().Transform.position);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
         callbackDataSaved.Invoke(targetInfo);
     }
 
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() == null) yield return null;
+        if (Targeting.GetTarget() == null) yield return null;
         if (!IsTargetInRange()) yield return null;
 
         JumpBackClawStrike();
-        DamageDeal(GetTarget());
+        DamageDeal(Targeting.GetTarget()?.Targetable);
 
         yield return null;
     }
 
-    private bool IsTargetInRange() { return GetTarget() != null && Vector3.Distance(_player.transform.position, GetTarget().Transform.position) <= Radius; }
+    private bool IsTargetInRange() { return Targeting.GetTarget() != null && Vector3.Distance(_player.transform.position, Targeting.GetTarget().Transform.position) <= AreaInfo.Radius; }
 
     private void DamageDeal(ITargetable target)
     {
         if (target == null) return;
 
         IDamageable damageable = target as IDamageable;
-        float attackingPsiValue = _spentAttackingPsiEnergy;
+        Character targetCharacter = target as Character;
         _baseDamage = UnityEngine.Random.Range(_minDamage, _maxDamage);
         Damage = _baseDamage;
 
-        var damage = new Damage
+        var physicalDamage = new Damage
         {
             Value = _baseDamage,
             Type = DamageType.Physical,
             PhysicAttackType = AttackRangeType.MeleeAttack,
         };
 
-        CmdApplyDamage(damage, damageable.gameObject);
-
-        Character targetCharacter = target as Character;
+        CmdApplyDamage(physicalDamage, damageable.gameObject);
 
         if (targetCharacter != null) TryApplyBleeding(targetCharacter);
 
-        if (attackingPsiValue > 0)
+        if (_spentAttackingPsiEnergy > 0 && targetCharacter != null)
         {
-            var additionalDamage = attackingPsiValue;
+            float psi = _spentAttackingPsiEnergy;
 
-            int dispelCount = 0;
-
-            if (attackingPsiValue >= PsiDispel_3) dispelCount = 3;
-            else if (attackingPsiValue >= PsiDispel_2) dispelCount = 2;
-            else if (attackingPsiValue >= PsiDispel_1) dispelCount = 1;
-
-            if (dispelCount > 0 && targetCharacter != null) for (int i = 0; i < dispelCount; i++) CmdDispel(targetCharacter, dispelCount);
-
-            var damagePsi = new Damage
+            var psiMagicDamage = new Damage
             {
-                Value = additionalDamage,
+                Value = psi,
                 Type = DamageType.Magical,
                 PhysicAttackType = AttackRangeType.MeleeAttack,
             };
 
-            CmdApplyDamage(damagePsi, damageable.gameObject);
-        }
+            CmdApplyDamage(psiMagicDamage, targetCharacter.gameObject);
 
+            int dispelCount = Mathf.FloorToInt(psi / 10f);
+            if (dispelCount > 0) CmdDispel(targetCharacter, dispelCount);
+        }
     }
 
     private void JumpBackClawStrike()
@@ -251,7 +243,8 @@ public class ClawStrike : Skill
     private void HandleSkillCanceled()
     {
         _player.Move.StopLookAt();
-        ClearTarget();
+        Targeting.ClearTarget();
+        Targeting.ClearTempTarget();
         if (coroutineDurationChanceApplyBleedingWithJump != null) StopCoroutine(IDurationChanceApplyBleedingWithJump());
         AnimCastEnded();
     }
@@ -302,7 +295,8 @@ public class ClawStrike : Skill
     }
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
+        Targeting.ClearTempTarget();
         if (coroutineDurationChanceApplyBleedingWithJump != null) StopCoroutine(IDurationChanceApplyBleedingWithJump());
         AnimCastEnded();
     }

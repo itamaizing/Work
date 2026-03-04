@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using UnityEngine;
 
 public class SpitPoisonProjectile : Test_Projectile
@@ -14,6 +14,7 @@ public class SpitPoisonProjectile : Test_Projectile
     private float _energyDad;
     private float _damage;
     private float _lifeTimePoisonBoneStacks = 60.0f;
+    private float _buffer = 0.5f;
 
     private bool _isPlayer;
     private bool _isAllies;
@@ -25,11 +26,32 @@ public class SpitPoisonProjectile : Test_Projectile
 
     #endregion
 
+    private bool IsEnemy(GameObject target)
+    {
+        if (_player == null) return IsEnemyByLayer(target);
+        if (!_player.TryGetComponent(out UserNetworkSettings ownerSettings) || !target.TryGetComponent(out UserNetworkSettings targetSettings)) return IsEnemyByLayer(target);
+        if (!IsTeamAssigned(ownerSettings) || !IsTeamAssigned(targetSettings)) return IsEnemyByLayer(target);
+
+        return ownerSettings.TeamIndex != targetSettings.TeamIndex;
+    }
+
+    private bool IsTeamAssigned(UserNetworkSettings settings)
+    {
+        return settings.TeamIndex != 0;
+    }
+
+    private bool IsEnemyByLayer(GameObject target)
+    {
+        return ((1 << target.layer) & _skill.Targeting.Layer.value) != 0;
+    }
+
     #region OnTriggerEnter
 
     [Server]
     private void OnTriggerEnter(Collider collision)
     {
+        if (!IsEnemy(collision.gameObject)) return;
+
         if (_isActiveHealingSpitPoison)
         {
             if (_isPlayer)
@@ -185,6 +207,14 @@ public class SpitPoisonProjectile : Test_Projectile
     private void InitializationComponents()
     {
         _spitPoison = _player.GetComponentInChildren<SpitPoison>();
+    }
+
+    public void ScheduleAutoDestroy(Vector3 targetPoint, float speed)
+    {
+        float distance = Vector3.Distance(transform.position, targetPoint);
+        float flightTime = (distance + _buffer) / speed;
+
+        Invoke(nameof(DestroyProjectile), flightTime);
     }
 
     #endregion

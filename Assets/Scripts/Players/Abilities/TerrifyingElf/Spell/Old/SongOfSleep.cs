@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Linq;
@@ -29,7 +29,7 @@ public class SongOfSleep : Skill
     public void SongOfSleepMove()
     {
         _hero.Move.StopMoveAndAnimationMove();
-        Hero.Move.CanMove = false;
+        Hero.Move.SetCanMove(false);
     }
 
     private void OnDestroy()
@@ -46,7 +46,7 @@ public class SongOfSleep : Skill
     {
         if (_hero?.Move != null)
         {
-            Hero.Move.CanMove = true;
+            Hero.Move.SetCanMove(true);
             Hero.Move.StopLookAt();
         }
     }
@@ -78,7 +78,7 @@ public class SongOfSleep : Skill
         if (_centerPoint != Vector3.positiveInfinity)
         {
             ApplyStateEnemiesInZone();
-            Hero.Move.CanMove = true;
+            Hero.Move.SetCanMove(true);
             ClearData();
             yield return null;
         }
@@ -94,7 +94,7 @@ public class SongOfSleep : Skill
     {
         if (drawCircle == null) return;
 
-        drawCircle.Draw(Radius);
+        drawCircle.Draw(AreaInfo.Radius);
         _radiusJob = StartCoroutine(RadiusColorJob());
     }
 
@@ -110,7 +110,7 @@ public class SongOfSleep : Skill
 
     private void ApplyStateEnemiesInZone()
     {
-        Collider[] hitColliders = Physics.OverlapSphere(_centerPoint, Radius, TargetsLayers);
+        Collider[] hitColliders = Physics.OverlapSphere(_centerPoint, AreaInfo.Radius, Targeting.Layer);
         foreach (var hitCollider in hitColliders) if (hitCollider.gameObject != Hero.gameObject) ApplyEnemiesZone(hitCollider);
     }
 
@@ -130,7 +130,7 @@ public class SongOfSleep : Skill
         var wait = new WaitForSeconds(0.1f);
         while (true)
         {
-            bool enemyInside = Physics.OverlapSphere(transform.position, Radius, TargetsLayers).Any(collider => collider.TryGetComponent<Character>(out var character)
+            bool enemyInside = Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.Layer).Any(collider => collider.TryGetComponent<Character>(out var character)
             && character != playerLinks);
 
             drawCircle.SetColor(enemyInside ? Color.green : Color.red);

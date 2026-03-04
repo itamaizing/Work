@@ -1,8 +1,7 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class PlagueAbsorption : Skill
@@ -25,7 +24,7 @@ public class PlagueAbsorption : Skill
 
     private bool IsCanCastCheck()
 	{
-		if(GetTargetCharacter() == null) return false;
+		if(Targeting.GetTarget()?.Character == null) return false;
 		return true;
 
 	}
@@ -41,11 +40,11 @@ public class PlagueAbsorption : Skill
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		while (GetTargetCharacter() == null && _charges <= 0)
+		while (Targeting.GetTarget()?.Character == null && _charges <= 0)
 		{
 			if (GetMouseButton)
 			{
-				FindTargetCharacter();
+				Targeting.FindTempTarget();
 				//Debug.Log("CHECK FOR TEst@@");
 				//_target = GetRaycastTarget();
 			}
@@ -56,13 +55,13 @@ public class PlagueAbsorption : Skill
 
 	protected override IEnumerator CastJob()
 	{
-		Absorption(GetTargetCharacter().gameObject);
+		Absorption(Targeting.GetTarget()?.Character.gameObject);
 		yield return null;
 	}
 
 	protected override void ClearData()
 	{
-		ClearTarget();
+		Targeting.ClearTarget();
 		//_target = null;
 	}
 
@@ -99,7 +98,7 @@ public class PlagueAbsorption : Skill
 			{
 				foreach (var skillCost in _skillEnergyCosts)
 				{
-					var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+					var resource = _hero.Resources[skillCost.resourceType];
 					resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
 				}
 				//_firstShot = false;

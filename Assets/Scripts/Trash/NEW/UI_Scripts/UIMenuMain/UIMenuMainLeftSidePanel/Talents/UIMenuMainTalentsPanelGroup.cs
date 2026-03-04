@@ -25,6 +25,7 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
     private TalentsGroup _talentsGroup;
     private UIMenuMainAttributesPanel _attributesPanel;
 
+    public event UnityAction OnTalentChanged;
     public event Action<TalentData> PointerEnteredOnTalentIcon;
     public event Action<TalentData> PointerExitedOnTalentIcon;
 
@@ -48,11 +49,12 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
                 var talent = Instantiate(_talentPrefab, row.Rect);
 
                 talent.Owner = this;
-                talent.Fill(item.Data, i);
+                talent.Fill(item.Data, i, isInteractable);
                 item.Data.Row = i;
-                talent.Button.interactable = isInteractable;
 
-                talent.Selected += OnTalentSelected;
+                if(isInteractable)
+                    talent.Selected += OnTalentSelected;
+
                 talent.PointerEntered += OnPointerEnteredOnTalentIcon;
                 talent.PointerExited += OnPointerExitedOnTalentIcon;
 
@@ -99,12 +101,13 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
 
     void OnTalentSelected(TalentData talent, bool isOpen)
     {
-		Debug.Log("Talent selected in MAIN" + talent);
 		SaveManager.Instance.SaveTalent(_talentsGroup.ID, talent.Row, talent.Name, isOpen);
         SaveManager.Instance.LoadTalent(_talentsGroup.ID, talent.Row, talent.Name, _isGameUI);
 
         UpdateActiveTalentsCount();
         _attributesPanel.UpdateAttributesPoints();
+
+        OnTalentChanged?.Invoke();
     }
 	private int GetActiveTalents()
 	{

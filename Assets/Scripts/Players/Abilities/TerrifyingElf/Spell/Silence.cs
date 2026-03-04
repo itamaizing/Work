@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -49,7 +49,7 @@ public class Silence : Skill
 
     private void HandleSkillDeleted(Skill skill)
     {
-        if (skill == this) ClientStopDamageZone();
+        if (skill == this) Renderer.HideAOEIndicator(isCommand: false);
     }
 
     protected override bool IsCanCast
@@ -62,10 +62,10 @@ public class Silence : Skill
             {
                 var point = target.Points[0];
                 if (float.IsInfinity(point.x)) return false;
-                return IsPointInRadius(Radius, point);
+                return Targeting.IsPointInRadius(AreaInfo.Radius, point);
             }
 
-            return IsPointInRadius(Radius, _targetPoint);
+            return Targeting.IsPointInRadius(AreaInfo.Radius, _targetPoint);
         }
     }
 
@@ -89,11 +89,11 @@ public class Silence : Skill
         {
             if (GetMouseButton)
             {
-                targetPoint = GetMousePoint();
+                targetPoint = Targeting.GetMousePoint();
 
-                if (IsPointInRadius(Radius, targetPoint))
+                if (Targeting.IsPointInRadius(AreaInfo.Radius, targetPoint))
                 {
-                    DrawDamageZoneClient(targetPoint);
+                    Renderer.ShowAOEIndicator(targetPoint, isCommand: false);
                     break;
                 }
             }
@@ -113,13 +113,13 @@ public class Silence : Skill
 
         CmdSpawnEffectAtTargetPoint(_targetPoint);
         ApplyStateToEnemiesInZone(_targetPoint);
-        ClientStopDamageZone();
+        Renderer.HideAOEIndicator(isCommand: false);
         yield return null;
     }
 
     private void ApplyStateToEnemiesInZone(Vector3 target)
     {
-        Collider[] hitColliders = Physics.OverlapSphere(target, Area - SilenceAreaRadiusOffset, TargetsLayers);
+        Collider[] hitColliders = Physics.OverlapSphere(target, AreaInfo.Area - SilenceAreaRadiusOffset, Targeting.Layer);
 
         int minionHitCount = 0;
         int ghostAuraMinionHitCount = 0;

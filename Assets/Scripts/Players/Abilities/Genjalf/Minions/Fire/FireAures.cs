@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Mirror;
@@ -94,10 +94,8 @@ public class Burning : AbstractCharacterState
 {
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
     protected float _damage = 1;
-    protected Character _character;
     protected float _timeAfterLastEffect = 0;
     protected float _effectRate = 1;
-    private float _time;
 
     public override States State => States.Burning;
 
@@ -109,8 +107,7 @@ public class Burning : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _time = durationToExit;
-        _character = character.Character;
+
         Damage damage = new Damage
         {
             Value = _damage,
@@ -120,22 +117,17 @@ public class Burning : AbstractCharacterState
 
     public override void ExitState()
     {
-        _character.CharacterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        _time = time;
+        duration = time;
         return false;
     }
 
     public override void UpdateState()
     {
-        _time -= Time.deltaTime;
-        if (_time <= 0)
-        {
-            ExitState();
-        }
 
         _timeAfterLastEffect += Time.deltaTime;
 
@@ -147,8 +139,7 @@ public class Burning : AbstractCharacterState
         {
             Value = _damage,
         };
-        _character.CmdTryTakeDamage(damage, null);
-
+        characterState.Character.CmdTryTakeDamage(damage,null);
         _timeAfterLastEffect = 0;
     }
 }
@@ -171,10 +162,9 @@ public class BurningStacked : Burning
     {
         base.EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
         MaxStacksCount = 3;
-        CurrentStacksCount = 1;
+        currentStacksCount = 1;
         _baseDuration = durationToExit;
         _stackTimer = durationToExit;
-        _character = character.Character;
     }
 
     public override bool Stack(float time)
@@ -182,7 +172,7 @@ public class BurningStacked : Burning
         if (CurrentStacksCount >= MaxStacksCount)
             return false;
 
-        CurrentStacksCount++;
+        currentStacksCount++;
         _stackTimer = _baseDuration;
         return true;
     }
@@ -193,7 +183,7 @@ public class BurningStacked : Burning
 
         if (_stackTimer <= 0)
         {
-            CurrentStacksCount--;
+            currentStacksCount--;
 
             if (CurrentStacksCount <= 0)
             {
@@ -208,13 +198,13 @@ public class BurningStacked : Burning
         if (_timeAfterLastEffect < _effectRate) return;
 
         Damage damage = new Damage { Value = _damage };
-        _character.CmdTryTakeDamage(damage, null);
+        characterState.Character.CmdTryTakeDamage(damage, null);
         _timeAfterLastEffect = 0;
     }
 
     public override void ExitState()
     {
-        _character.CharacterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 }
 

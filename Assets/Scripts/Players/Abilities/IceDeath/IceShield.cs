@@ -1,10 +1,7 @@
 using Mirror;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
 
 public class IceShield : Skill
 {
@@ -17,6 +14,7 @@ public class IceShield : Skill
 	private bool _active = false;
 	private float _timer = 1f;
 	private Energy _energy;
+	private AttributeModifier _modif = new(.8f, ModifierType.Multiplier);
 
 	protected override bool IsCanCast => true;
 
@@ -26,16 +24,10 @@ public class IceShield : Skill
 
     private void Start()
 	{
-		for (int i = 0; i < _playerLinks.Resources.Count; i++)
-		{
-			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)_playerLinks.Resources[i];
-			}
-		}
-	}
+        _energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
+    }
 
-	private void Update()
+    private void Update()
 	{
 		if (!_active) return;
 
@@ -74,13 +66,18 @@ public class IceShield : Skill
 		if (_active) 
 		{
 			CmdAddShield();
-			_playerLinks.Move.ChangeMoveSpeed(0.8f);			
+
+			//_playerLinks.Move.ChangeMoveSpeed(0.8f);
+
+			_playerLinks.Move.AddModifier(_modif);	
+			
 		}
 		else
 		{
 			CmdRemoveShield();
-			_playerLinks.Move.ChangeMoveSpeed(1.25f);
-		}
+            _playerLinks.Move.RemoveModifier(_modif);
+            //_playerLinks.Move.ChangeMoveSpeed(1.25f);
+        }
 	}
 
 	/*private void Timer()

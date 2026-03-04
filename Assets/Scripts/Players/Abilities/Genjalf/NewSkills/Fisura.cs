@@ -1,4 +1,4 @@
-using Mirror;
+ï»¿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,7 +21,7 @@ namespace Gangdollarff
         private float _longPressThreshold = 0.25f;
 
         public override string AdditionalDescription =>
-            $"Äëèòåëüíîñòü: {AbilityNameBox.ColorOpen}{_fisuraDuration} ñåê{AbilityNameBox.ColorEnd}";
+            $"Ð”Ð»Ð¸Ñ‚ÐµÐ»ÑŒÐ½Ð¾ÑÑ‚ÑŒ: {AbilityNameBox.ColorOpen}{_fisuraDuration} ÑÐµÐº{AbilityNameBox.ColorEnd}";
 
         protected override int AnimTriggerCastDelay => Animator.StringToHash("FisuraCast");
 
@@ -33,7 +33,7 @@ namespace Gangdollarff
 
         private bool CheckCanCast()
         {
-            return Vector3.Distance(_startPoint, transform.position) <= Radius;
+            return Vector3.Distance(_startPoint, transform.position) <= AreaInfo.Radius;
         }
 
         public void AnimCastFisura()
@@ -91,14 +91,14 @@ namespace Gangdollarff
                 yield return null;
 
             float downTime = Time.time;
-            firstPoint = GetMousePoint();
+            firstPoint = Targeting.GetMousePoint();
             targetInfo.Points.Add(firstPoint);
 
             while (!Input.GetMouseButtonUp(0))
             {
                 if (Time.time - downTime > _longPressThreshold)
                 {
-                    Vector3 holdPoint = GetMousePoint();
+                    Vector3 holdPoint = Targeting.GetMousePoint();
                     if (targetInfo.Points.Count == 1)
                         targetInfo.Points.Add(holdPoint);
                     else
@@ -111,7 +111,7 @@ namespace Gangdollarff
 
             if (longClick)
             {
-                Vector3 secondPointOnUp = GetMousePoint();
+                Vector3 secondPointOnUp = Targeting.GetMousePoint();
                 if (targetInfo.Points.Count == 1)
                     targetInfo.Points.Add(secondPointOnUp);
                 else
@@ -122,7 +122,7 @@ namespace Gangdollarff
                 while (!Input.GetMouseButtonDown(0))
                     yield return null;
 
-                Vector3 secondPoint = GetMousePoint();
+                Vector3 secondPoint = Targeting.GetMousePoint();
 
                 while (!Input.GetMouseButtonUp(0))
                     yield return null;

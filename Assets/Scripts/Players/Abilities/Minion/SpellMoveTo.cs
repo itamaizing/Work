@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,7 +25,7 @@ public class SpellMoveTo : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) _target = targetInfo.GetTargets()[0] as Character;
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
         _targetPoint = targetInfo.Points[0];
     }
 
@@ -43,7 +43,7 @@ public class SpellMoveTo : Skill
 
             if (_isHolding && Input.GetMouseButton(0))
             {
-                Character newTarget = GetTargetCharacter();
+                Character newTarget = Targeting.GetTarget()?.Character;
                 if (newTarget != null)
                 {
                     _target = newTarget;
@@ -52,7 +52,7 @@ public class SpellMoveTo : Skill
                 else
                 {
                     _target = null;
-                    _targetPoint = GetMousePoint();
+                    _targetPoint = Targeting.GetMousePoint();
                 }
 
                 _agent.SetDestination(_targetPoint);
@@ -91,8 +91,8 @@ public class SpellMoveTo : Skill
         while (!Input.GetMouseButtonDown(0))
             yield return null;
 
-        Character initialTarget = GetTargetCharacter();
-        Vector3 initialPoint = GetMousePoint();
+        Character initialTarget = Targeting.GetTarget()?.Character;
+        Vector3 initialPoint = Targeting.GetMousePoint();
 
         if (initialTarget != null)
         {

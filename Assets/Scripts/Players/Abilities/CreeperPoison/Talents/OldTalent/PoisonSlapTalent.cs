@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class PoisonSlapTalent : Talent
 {
     public override void Enter()

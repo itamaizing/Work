@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Gangdollarff;
@@ -10,6 +10,8 @@ public class QuicksandTile : FisuraTile
     [SerializeField] private ParticleSystem _sandParticle;
 
     [SyncVar] private byte _ownerTeamIndex;
+
+    private AttributeModifier _modifier = new(-0.8f, ModifierType.Percent);
 
     private List<GameObject> _charTemp = new();
     private bool _isInvisible;
@@ -113,13 +115,13 @@ public class QuicksandTile : FisuraTile
 
     private void ChangeMoveSpeed(GameObject target)
     {
-        if (target.TryGetComponent(out Character character))
-            character.Move.ChangeMoveSpeed(0.2f);
+       if (target.TryGetComponent(out Character character))
+           character.Move.AddModifier(_modifier);
     }
 
     private void SetDefaultSpeed(GameObject target)
     {
         if (target.TryGetComponent(out Character character))
-            character.Move.SetDefaultSpeed();
+            character.Move.RemoveModifier(_modifier);
     }
 }

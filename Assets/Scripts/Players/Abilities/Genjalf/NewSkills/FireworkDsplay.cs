@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -77,8 +77,8 @@ namespace Gangdollarff
                         Damage damage = new Damage
                         {
                             Value = Buff.Damage.GetBuffedValue(currentDamage),
-                            Type = DamageType,
-                            PhysicAttackType = AttackRangeType,
+                            Type = Info.DamageType,
+                            PhysicAttackType = Info.AttackRangeType,
                         };
                         CmdApplyDamage(damage, item.gameObject);
                         if (_isBlinding)
@@ -108,8 +108,8 @@ namespace Gangdollarff
             _firework.gameObject.SetActive(false);
             CmdSetActiveParticle(false);
 
-            ClearTarget();
-            ClearTempTarget();
+            Targeting.ClearTarget();
+            Targeting.ClearTempTarget();
            // _target = null;
             _targetPoint = Vector3.positiveInfinity;
         }
@@ -120,7 +120,7 @@ namespace Gangdollarff
             while (!Input.GetMouseButtonDown(0))
                 yield return null;
 
-            _targetPoint = GetMousePoint();
+            _targetPoint = Targeting.GetMousePoint();
             targetInfo.Points.Add(_targetPoint);
             callbackDataSaved(targetInfo);
         }

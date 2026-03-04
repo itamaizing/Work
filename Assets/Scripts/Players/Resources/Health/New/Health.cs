@@ -1,10 +1,9 @@
-using Mirror;
+﻿using Mirror;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Health : Resource, IDamageable, IHealingable
+public class Health : Resource, IDamageable, IHealable
 {
     [SerializeField] private Animator _animator;
     [SerializeField] private NetworkAnimator _netAnimator;
@@ -18,8 +17,6 @@ public class Health : Resource, IDamageable, IHealingable
 
     private List<IDamageable> _shields = new List<IDamageable>();
 	[SyncVar] private float _sumDamageTaken = 0;
-    private Coroutine _dOTDamageAnimJob;
-    private float _dOTDamageAnimDuration = 0.1f;
     private float _totalMaxAbsorption = 0;
     private float _blockChance;
     private bool _isDot = false;
@@ -59,30 +56,45 @@ public class Health : Resource, IDamageable, IHealingable
 
     public bool IsDot { get => _isDot; set => _isDot = value; }
 
-    public override void Initialize(float health, float hpRegen, float hpRegenDelay, CharacterData data)
-    {
-        base.Initialize(health, hpRegen, hpRegenDelay, data);
+    /* public override void Initialize(float health, float hpRegen, float hpRegenDelay, CharacterData data, Attribute attribute)
+     {
+         base.Initialize(health, hpRegen, hpRegenDelay, data, attribute);
 
-        _defPhysDamage = data.GetAttributeValue(AttributeNames.PhysicResist);
-        _defMagDamage = data.GetAttributeValue(AttributeNames.MagicResist);
-        _resistMagDamage = data.GetAttributeValue(AttributeNames.MagicEvade);
-        _evadeMeleeDamage = data.GetAttributeValue(AttributeNames.MeleeEvade);
-        _evadeRangeDamage = data.GetAttributeValue(AttributeNames.RangeEvade);
+         _defPhysDamage = data.GetAttributeValue(AttributeNames_old.PhysicResist);
+         _defMagDamage = data.GetAttributeValue(AttributeNames_old.MagicResist);
+         _resistMagDamage = data.GetAttributeValue(AttributeNames_old.MagicEvade);
+         _evadeMeleeDamage = data.GetAttributeValue(AttributeNames_old.MeleeEvade);
+         _evadeRangeDamage = data.GetAttributeValue(AttributeNames_old.RangeEvade);
+     }*/
+    public override void Initialize(Attribute maxValue, Attribute regenValue, CharacterData data)
+    {
+        //Debug.Log("Init hp " + maxValue.GetValue());
+
+        base.Initialize(maxValue, regenValue, data);
+
+        //_defPhysDamage = data.GetAttributeValue(AttributeNames_old.PhysicResist);
+        //_defMagDamage = data.GetAttributeValue(AttributeNames_old.MagicResist);
+        //_resistMagDamage = data.GetAttributeValue(AttributeNames_old.MagicEvade);
+        //_evadeMeleeDamage = data.GetAttributeValue(AttributeNames_old.MeleeEvade);
+        //_evadeRangeDamage = data.GetAttributeValue(AttributeNames_old.RangeEvade);
     }
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
         OnBeforeTakeDamage?.Invoke(damage, skill);
-        OnBeforeDamage?.Invoke(ref damage, skill); //Test: we transmit incoming damage before it is inflicted by the enem
+        OnBeforeDamage?.Invoke(ref damage, skill);
 
         if (TryEvade(damage.Type, damage.PhysicAttackType))
         {
+            //Debug.Log($"Evade");
+            Evaded?.Invoke();
             ClientRpcEvade();
             return false;
         }
 
-        if (UnityEngine.Random.Range(0f, 100f) <= _blockChance)
+        else if (UnityEngine.Random.Range(0f, 100f) <= _blockChance)
         {
+            //Debug.Log($"Block");
             Block?.Invoke();
             return false;
         }
@@ -170,12 +182,6 @@ public class Health : Resource, IDamageable, IHealingable
     {
         _evadeMeleeDamage = value;
         _evadeRangeDamage = value;
-    }
-
-    public void SetHp(float current, float max)
-    {
-        CurrentValue = current;
-        MaxValue = max;
     }
 
     #region HookMethods
@@ -332,11 +338,7 @@ public class Health : Resource, IDamageable, IHealingable
 
 
     [ClientRpc]
-    private void ClientRpcEvade()
-    {
-        Evaded?.Invoke();
-        _animator.SetTrigger(HashAnimPlayer.Evade);
-    }
+    private void ClientRpcEvade() => _animator.SetTrigger(HashAnimPlayer.Evade);
 
     [ClientRpc]
     private void ClientRpcHealTaked(float healTaken, Skill skill, string sourceName)

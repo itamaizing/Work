@@ -1,4 +1,4 @@
-using Mirror;
+锘縰sing Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -26,7 +26,7 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
     public event Action OnDeath;
 
     public event Action<Damage, Skill> DamageTaken;
-    //public event Action<float, DamageType, Skill> DamageTakenType;
+    //public event Action<float, Info.DamageType, Skill> DamageTakenType;
 
     [SyncVar] private float _maxHealth;
     [SyncVar(hook = nameof(OnHealthChanged))]
@@ -62,8 +62,8 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
 
             isRegenerationEnabled = value;
 
-            if (isRegenerationEnabled) 裮dStartCustomRegeneration();
-            else 裮dStopCustomRegeneration();
+            if (isRegenerationEnabled) 小mdStartCustomRegeneration();
+            else 小mdStopCustomRegeneration();
         }
     }
 
@@ -76,6 +76,8 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
     #region regeneration
 
     private Coroutine _fillCoroutine;
+
+    private void Awake() => InitializeObject(ObjectData);
 
     private void OnDisable()
     {
@@ -222,11 +224,11 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
 
     #region Initialization
 
-    public void InitializeObject(ObjectData objectData)
+    private void InitializeObject(ObjectData objectData)
     {
         _objectData = objectData;
 
-        Initialize(objectData.MaxHealth, objectData.RegenerationAmount, objectData.RegenerationInterval, null);
+        //Initialize(objectData.MaxHealth, objectData.RegenerationAmount, objectData.RegenerationInterval, null, objectData.Attribute_old);
 
         if (objectData.MaxEndurance)
         {
@@ -268,11 +270,13 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
         if (!CheckIngorSkill(skill)) return false;
         if (TryEvade(damage.Type)) return false;   
 
-        if (_regenerationCoroutine == null) 裮dStartCustomRegeneration();
+        if (_regenerationCoroutine == null) 小mdStartCustomRegeneration();
         float damageValue = damage.Value;
+        Debug.Log("0");
 
         if (_currentHealth > 0)
         {
+            Debug.Log("1");
             _currentHealth -= damageValue;
              
             DamageTaken?.Invoke(damage, skill);
@@ -290,7 +294,7 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
                 if (obj != null) obj.IsDeath = true;
 
                 GameObject target = transform.parent != null ? transform.parent.gameObject : gameObject;
-                裮dStopCustomRegeneration();
+                小mdStopCustomRegeneration();
 
                 if (isDestroyOnDeath)
                 {
@@ -402,7 +406,7 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
     }
 
     [Server]
-    public void 裮dStartCustomRegeneration()
+    public void 小mdStartCustomRegeneration()
     {
         StopCustomNegativeRegeneration(true);
         StartCustomRegeneration();
@@ -410,7 +414,7 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
     }
 
     [Server]
-    public void 裮dStartCustomNegativeRegeneration()
+    public void 小mdStartCustomNegativeRegeneration()
     {
         StopCustomRegeneration(true);
         StartCustomNegativeRegeneration();
@@ -418,7 +422,7 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
     }
 
     [Server]
-    public void 裮dStopCustomRegeneration()
+    public void 小mdStopCustomRegeneration()
     {
         StopCustomRegeneration();
         ClientRpcStopCustomRegeneration();
@@ -474,9 +478,9 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
     {
         if (skill == null) return false;
 
-        if (_ignoredSchools.Contains(skill.School)) return true;
-        if (_ignoredForms.Contains(skill.AbilityForm)) return true;
-        if (_ignoredSkillTypes.Contains(skill.SkillType)) return true;
+        if (_ignoredSchools.Contains(skill.Info.School)) return true;
+        if (_ignoredForms.Contains(skill.Info.AbilityForm)) return true;
+        if (_ignoredSkillTypes.Contains(skill.Info.SkillType)) return true;
         return false;
     }
 

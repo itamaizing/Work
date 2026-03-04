@@ -12,9 +12,10 @@ public class AbilityInfo : ScriptableObject
     [SerializeField] private string _counter;
     [SerializeField] private Sprite _icon;
 
-    private string _finalDescription;
+    private string _addingDescription;
+    private HashSet<string> _addedDescriptions = new();
 
-    public string FinalDescription { get => _finalDescription; set => _finalDescription = value; }
+    public string AddingDescription { get => _addingDescription; set => _addingDescription = value; }
     public string Name => _name;
     public string Description => _description;
     public string State => _state;
@@ -24,6 +25,22 @@ public class AbilityInfo : ScriptableObject
 
     private void OnEnable()
     {
-        _finalDescription = _description;
+        _addingDescription = _description;
+    }
+
+    public void AddingDescriptionSet(bool value, string text)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return;
+
+        if (value) _addedDescriptions.Add(text);
+        else _addedDescriptions.Remove(text);
+
+        UpdateFinalDescription();
+    }
+
+    private void UpdateFinalDescription()
+    {
+        if (_addedDescriptions.Count > 0) _addingDescription = _description + " " + string.Join(" ", _addedDescriptions);
+        else _addingDescription = _description;
     }
 }

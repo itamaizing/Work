@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
@@ -37,11 +37,11 @@ public class MoveSkill : Skill
 
     private IEnumerator MoveRoutine()
     {
-        Character target = GetTargetCharacter();
+        Character target = Targeting.GetTarget()?.Character;
         if (target == null)
             yield break;
 
-        float sqrRadius = _radius * _radius;
+        float sqrRadius = AreaInfo.Radius * AreaInfo.Radius;
 
         while (true)
         {

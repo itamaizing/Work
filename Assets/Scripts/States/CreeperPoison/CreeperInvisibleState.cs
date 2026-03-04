@@ -7,6 +7,7 @@ public class CreeperInvisibleState : AbstractCharacterState
     private List<Skill> _skills = new();
     private CreeperInvisible _creeperInvisible;
     private Character _player;
+    private AttributeModifier _modif;
 
     private float _reductionMoveSpeed = 0.3f;
     private float _originalMoveSpeed;
@@ -25,8 +26,8 @@ public class CreeperInvisibleState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
-        _player = _characterState.Character;
+        characterState = character;
+        _player = characterState.Character;
 
         _originalMoveSpeed = _player.Move.DefaultSpeed;
         _originalStaminaRegen = _player.TryGetResource(ResourceType.Mana).RegenerationDelay;
@@ -68,7 +69,7 @@ public class CreeperInvisibleState : AbstractCharacterState
     {
         _playerInInvisible = false;
         ResetValues();
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -81,10 +82,14 @@ public class CreeperInvisibleState : AbstractCharacterState
         _playerInInvisible = true;
 
         float reductionMoveSpeed = _originalMoveSpeed * _reductionMoveSpeed;
+        _modif.Value = -reductionMoveSpeed;
+        _modif.Type = ModifierType.Flat;
+        //float endReductionMoveSpeed = _originalMoveSpeed - reductionMoveSpeed;
 
-        float endReductionMoveSpeed = _originalMoveSpeed - reductionMoveSpeed;
+        //_player.Move.SetMoveSpeed(endReductionMoveSpeed);
+        _player.Move.AddModifier(_modif);
 
-        _player.Move.SetMoveSpeed(endReductionMoveSpeed);
+
 
         _player.TryGetResource(ResourceType.Mana).RegenerationDelay *= (1 + _increaseStaminaRegen);
 
@@ -100,7 +105,9 @@ public class CreeperInvisibleState : AbstractCharacterState
 
     private void ResetValues()
     {
-        _player.Move.SetDefaultSpeed();
+       // _player.Move.SetDefaultSpeed();
+        _player.Move.RemoveModifier(_modif);
+
 
         if (_player.TryGetResource(ResourceType.Mana).RegenerationDelay != _originalStaminaRegen)
         {

@@ -54,7 +54,7 @@
 
 //    private bool TryGetClosestTarget(out Character target)
 //    {
-//        Collider[] hits = Physics.OverlapSphere(transform.position, Radius, _targetsLayers);
+//        Collider[] hits = Physics.OverlapSphere(transform.position, AreaInfo.Radius, _targetsLayers);
 //        target = null;
 //        float minDistance = Mathf.Infinity;
 
@@ -104,4 +104,4 @@
 //    {
 //        throw new System.NotImplementedException();
 //    }
-//}
+//}

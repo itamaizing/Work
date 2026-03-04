@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MinionAttack : AutoAttackSkill
 {
@@ -18,7 +18,7 @@ public class MinionAttack : AutoAttackSkill
         {
 			return;
         }
-        Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, Radius);
+        Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(transform.position, AreaInfo.Radius);
 
 		foreach (Collider2D col in enemyDetected)
 		{
@@ -38,7 +38,7 @@ public class MinionAttack : AutoAttackSkill
 	{
 		_isReadyToShot = false;
 
-		//enemy.Health.TakeDamage(_damage + Random.Range(0, 1), DamageType.Physical, this);
+		//enemy.Health.TakeDamage(_damage + Random.Range(0, 1), Info.DamageType.Physical, this);
 		Debug.LogError("!!!damage method has been changed!!!");
 	}
 
@@ -63,7 +63,7 @@ public class MinionAttack : AutoAttackSkill
 			Type = DamageType.Physical,
 			PhysicAttackType = AttackRangeType.MeleeAttack,
 		};
-		GetTargetCharacter().Health.TryTakeDamage(ref damage, this);
+		Targeting.GetTarget()?.Character.Health.TryTakeDamage(ref damage, this);
 	}
 
 	public void TalentBoostSpeed(float speed)

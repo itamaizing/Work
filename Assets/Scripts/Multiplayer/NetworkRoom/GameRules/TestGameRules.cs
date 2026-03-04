@@ -18,9 +18,9 @@ public class TestGameRules : GameRules
 
     private TeamsPanel _teams; // need rework
     private int[] _teamDeaths = new int[3];
-    
 
-	private int _teamMaxScore = 3;
+
+    private int _teamMaxScore = 3;
     private int _team1Score = 0;
     private int _team2Score = 0;
 
@@ -37,11 +37,11 @@ public class TestGameRules : GameRules
     protected override void OnPlayerDied(Character player)
     {
         if (_regenCoroutine != null) return;
-		AddExpForAllEnemy(player);
-		_regenCoroutine = StartCoroutine(RevivalPlayerCoroutine(player));
+        AddExpForAllEnemy(player);
+        _regenCoroutine = StartCoroutine(RevivalPlayerCoroutine(player));
         AddScorePoint(player.NetworkSettings.TeamIndex);
 
-        if(_team1Score >= _teamMaxScore || _team2Score >= _teamMaxScore)
+        if (_team1Score >= _teamMaxScore || _team2Score >= _teamMaxScore)
         {
             if (_team1Score > _team2Score)
             {
@@ -51,6 +51,7 @@ public class TestGameRules : GameRules
             {
                 RpcShowWinner(2);
             }
+            AfterEndGame();
             EndGame();
         }
     }
@@ -104,12 +105,9 @@ public class TestGameRules : GameRules
         }
     }
 
-    /*
-    private void EndGame()
+    private void AfterEndGame()
     {
         if (!isServer) return;
-
-        var user = User.Instance ?? FindObjectOfType<User>();
 
         var bottleManager = BottleUserManager.Instance;
         var levelManager = LevelCharacterManager.Instance;
@@ -125,12 +123,12 @@ public class TestGameRules : GameRules
                 {
                     if (isMaxLevel)
                     {
-                        bottleManager.AddBottleVolume(bottleVolumePerWin);
+                        bottleManager.AddBottleVolume(1000);
                     }
                     else
                     {
-                        levelManager.AddExperience(experiencePerWin);
-                        bottleManager.AddBottleVolume(bottleVolumePerWin);
+                        levelManager.AddExperience(1000);
+                        bottleManager.AddBottleVolume(1000);
                     }
                 }
 
@@ -141,21 +139,17 @@ public class TestGameRules : GameRules
                 {
                     if (isMaxLevel)
                     {
-                        bottleManager.AddBottleVolume(bottleVolumePerWin);
+                        bottleManager.AddBottleVolume(1000);
                     }
                     else
                     {
                         levelManager.AddExperience(experiencePerLoss);
-                        bottleManager.AddBottleVolume(bottleVolumePerWin);
+                        bottleManager.AddBottleVolume(1000);
                     }
                 }
                 break;
         }
-
-        RpcCloseRoomOnClients();
-        StartCoroutine(CloseRoomJob());
     }
-    */
 
     private void RestartRound()
     {

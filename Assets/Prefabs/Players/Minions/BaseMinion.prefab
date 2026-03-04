@@ -247,17 +247,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04a32c9096d066945864c8dff3c0ab74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1808229507172449395 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5590339039165547173, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-  m_PrefabInstance: {fileID: 6092456140968476374}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2335912879836011194}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7f243771c2613d40a4aecc719336ae4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2057095471850671928 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -290,6 +279,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _playerData: {fileID: 11400000, guid: 6d4bdd627c946744396722e0bd4dd7d5, type: 2}
+  _attributeSystem: {fileID: 0}
   _networkSettings: {fileID: 8415053888924651187}
   _rigidbody: {fileID: 5333065205538383447}
   _collider: {fileID: 4687739072136256028}
@@ -299,13 +289,11 @@ MonoBehaviour:
   _healthComponent: {fileID: 321208861123123196}
   _playerMove: {fileID: 2054057519776599919}
   _abilities: {fileID: 2057095471850671928}
-  _characterState: {fileID: 1808229507172449395}
+  characterState: {fileID: 0}
   uiComponent: {fileID: 8629066331929730936}
   _selectComponent: {fileID: 3097324644064452792}
   _damageTracker: {fileID: 0}
-  _resources:
-  - {fileID: 321208861123123196}
-  - {fileID: 8550944225159128354}
+  TemporaryResourceDisplay: []
   _selectedCircle: {fileID: 4163371236763689060}
   _spawnComponent: {fileID: 5963193180723515438}
   _visionComponent: {fileID: 0}
@@ -314,6 +302,7 @@ MonoBehaviour:
   _characterParent: {fileID: 0}
   _transformationComponent: {fileID: 7969626015849665324}
   _expForDieKill: 5
+  _costCall: 0
   _navMeshAgent: {fileID: 1780925315992858912}
 --- !u!195 &1780925315992858912
 NavMeshAgent:
@@ -361,8 +350,6 @@ MonoBehaviour:
   moveClips: []
   MoveDirection: {x: 0, y: 0, z: 0}
   ExternalMoveDirection: {x: 0, y: 0, z: 0}
-  CanMove: 0
-  CanMoveState: 0
   IsMoving: 0
   IsSelect: 0
   IsNoRotateAtCursor: 0
@@ -386,11 +373,24 @@ MonoBehaviour:
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: afbef8fac9ee74141abb2a1c1443d316, type: 2}
   _isSubjectToGlobalCooldownTime: 0
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 1
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 5
+  _infoComponent:
+    _school: 8
+    _form: 0
+    _damageType: 5
+    _rangeType: 0
+    _skillType: 2
+    _whileMoving: 0
+    _autoAttack: 0
   _abilitySchool: 8
   _abilityForm: 0
   _damageType: 5
@@ -398,25 +398,51 @@ MonoBehaviour:
   _skillType: 2
   _moving: 0
   autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 512
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
+  _chargeComponent:
+    _usesCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
+    affectedByCDR: 0
   _isUseCharges: 0
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 2
+  _areaComponent:
+    _radius: 2
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
+  _radius: 0
   _area: 0
   _castLength: 0
   _castWidth: 0
   _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 0
+    _isAutoAreaRender: 0
+    _isAutoLineRender: 0
+    _isDynamicRenderer: 0
   _isAutoRadiusRender: 0
   _isAutoAreaRender: 0
   _isAutoLineRender: 0
@@ -505,17 +531,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b4045a79ec1c504439a0501f22780052, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &8550944225159128354 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2461163197728234484, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-  m_PrefabInstance: {fileID: 6092456140968476374}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2335912879836011194}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 538268384e2d5f64f8ee01630137a16d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &8629066331929730936 stripped

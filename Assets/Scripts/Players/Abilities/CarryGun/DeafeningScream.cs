@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,31 +24,31 @@ public class DeafeningScream : Skill
 
     private bool CheckCanCast()
     {
-        return GetTargetCharacter() != null && cooldownEnergy.CurrentValue >= jumpWithChelicera.ChargeCooldown &&
-        Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius &&
-        NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
+        return Targeting.GetTarget()?.Character != null && cooldownEnergy.CurrentValue >= jumpWithChelicera.ChargeCooldown &&
+        Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius &&
+        Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
     }
 
     public void HandleJumpEnd()
     {
         Hero.Animator.applyRootMotion = false;
         _playerLinks.Move.StopLookAt();
-        Hero.Move.CanMove = true;
-        _isCanCancle = true;
+        Hero.Move.SetCanMove(true);
+        _isCanCancel = true;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         _runtimeTarget = null;
 
-        while (GetTargetCharacter() == null)
+        while (Targeting.GetTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter();
+                Targeting.FindTempTarget();
 
-                if (GetTargetCharacter() != null) if (GetTargetCharacter() is Character characterTarget) _runtimeTarget = characterTarget;
-                _isCanCancle = false;
+                if (Targeting.GetTarget()?.Character != null) if (Targeting.GetTarget()?.Character is Character characterTarget) _runtimeTarget = characterTarget;
+                _isCanCancel = false;
             }
             yield return null;
         }
@@ -60,7 +60,7 @@ public class DeafeningScream : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() != null) CmdApplyState(GetTargetCharacter().gameObject);
+        if (Targeting.GetTarget()?.Character != null) CmdApplyState(Targeting.GetTarget()?.Character.gameObject);
 
         cooldownEnergy.CastCooldownEnergySkill(13, this);
         AfterCastJob();
@@ -70,7 +70,7 @@ public class DeafeningScream : Skill
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
     }
 
@@ -89,7 +89,7 @@ public class DeafeningScream : Skill
         if (_hero == null || _hero.Move == null) return;
 
         _hero.Move.StopMoveAndAnimationMove();
-        _hero.Move.CanMove = false;
+        _hero.Move.SetCanMove(false);
     }
 
     public void DeafeningScreamCast()
@@ -103,13 +103,14 @@ public class DeafeningScream : Skill
     {
         AnimCastEnded();
         HandleJumpEnd();
-        _isCanCancle = true;
+        _isCanCancel = true;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) SetTarget((ITargetable)(targetInfo.GetTargets()[0] as Character));
-        Hero.Move.LookAtTransform(GetTargetCharacter().transform);
-        _isCanCancle = false;
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((ITargetable)(targetInfo.GetTargets()[0] as Character));
+        Hero.Move.LookAtTransform(Targeting.GetTarget()?.Character.transform);
+        _isCanCancel = false;
     }
 }
+

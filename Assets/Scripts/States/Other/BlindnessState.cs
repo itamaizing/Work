@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -23,19 +23,21 @@ public class BlindnessState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-      //  Debug.Log($"Entering Blindness State on Character netId: {character.netId}");
-
+        //  Debug.Log($"Entering Blindness State on Character netId: {character.netId}");
         _duration = durationToExit;
         _baseDuration = durationToExit;
-        _characterState = character;
+        characterState = character;
         MaxStacksCount = 1;
+        currentStacksCount = 1;
 
-        if (_characterState.isOwned) ApplyEffectToLocalCamera();
+        if (characterState.isOwned) ApplyEffectToLocalCamera();
 
         if (character.TryGetComponent<Character>(out var ability))
         {
-            _abilities = ability.Abilities;
-            foreach (var abil in _abilities.Abilities) if (abil.SkillType == SkillType.Target) abil.Disactive = true;
+            abilities = ability.Abilities;
+            foreach (var abil in abilities.Abilities)
+                if (abil.Info.SkillType == SkillType.Target)
+                    abil.Disactive = true;
         }
     }
 
@@ -48,23 +50,22 @@ public class BlindnessState : AbstractCharacterState
 
     public override void ExitState()
     {
-        if (_characterState.isOwned) RemoveEffectFromLocalCamera();
+        if (characterState.isOwned) RemoveEffectFromLocalCamera();
 
-        if (_characterState.TryGetComponent<Character>(out var ability))
+        if (characterState.TryGetComponent<Character>(out var ability))
         {
-            _abilities = ability.Abilities;
-            foreach (var abil in _abilities.Abilities) if (abil.SkillType == SkillType.Target) abil.Disactive = false;
+            abilities = ability.Abilities;
+            foreach (var abil in abilities.Abilities) if (abil.Info.SkillType == SkillType.Target) abil.Disactive = false;
         }
 
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        //if (_baseDuration > time) return false;
         _duration += time;
         RemainingDuration = _duration;
-        return true;
+        return false;
     }
 
     private void ApplyEffectToLocalCamera()

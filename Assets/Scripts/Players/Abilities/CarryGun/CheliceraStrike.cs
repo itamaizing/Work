@@ -1,4 +1,4 @@
-using Mirror;
+п»їusing Mirror;
 using System;
 using System.Collections;
 using System.Linq;
@@ -94,12 +94,7 @@ public class CheliceraStrike : Skill
 
     public void CheliceraStrikeChanceDamageCrit(bool value) => isCheliceraStrikeChanceDamageCrit = value;
     public void EvolutionTalentTwo(bool value) => isEvolutionTalentTwo = value;
-
-    public void PsionicsTalentTwo(bool value, string text)
-    {
-        isPsionicsTalentTwo = value;
-        AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
-    }
+    public void PsionicsTalentTwo(bool value, string text) => isPsionicsTalentTwo = value;
 
     public void ChanceApplyBleedingIncrease(bool value) => _isChanceApplyBleedingIncrease = value;
     public void ChanceCritDamageIncrease(bool value) => _isChanceCritDamageIncrease = value;
@@ -107,12 +102,12 @@ public class CheliceraStrike : Skill
 
     private bool CheckIsCanCast()
     {
-        return GetTarget() != null && Vector3.Distance(GetTarget().Transform.position, transform.position) <= Radius && NoObstacles(GetTarget().Transform.position, transform.position, _obstacle);
+        return Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Transform.position, transform.position, _obstacle);
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0]);
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
     }
 
 
@@ -120,19 +115,19 @@ public class CheliceraStrike : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (GetTempTarget() == null)
+        while (Targeting.GetTempTarget()?.Targetable == null)
         {
             if (GetMouseButton)
             {
-                FindTarget(TargetSearchRadius, GetMousePoint());
+                Targeting.FindTempTarget(Targeting.GetMousePoint(), TargetSearchRadius);
 
-                if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
+                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
                 {
-                    if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
 
                     else
                     {
-                        if (GetTempTarget() is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        if (Targeting.GetTempTarget()?.Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
                         break;
                     }
                 }
@@ -140,21 +135,21 @@ public class CheliceraStrike : Skill
             yield return null;
         }
 
-        SetTarget(GetTempTarget());
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
 
-        targetInfo.Points.Add(GetTarget().Transform.position);
-        targetInfo.AddTarget(GetTarget());
+        targetInfo.Points.Add(Targeting.GetTarget().Transform.position);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
         callbackDataSaved.Invoke(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTarget() == null) yield break;
+        if (Targeting.GetTarget() == null) yield break;
 
         _baseDamage = UnityEngine.Random.Range(_minDamage, _maxDamage);
         Damage = _baseDamage;
 
-        IDamageable damageable = GetTarget() as IDamageable;
+        IDamageable damageable = Targeting.GetTarget()?.Damageable;
 
         if (_jumpWithChelicera.IsJumpDone)
         {
@@ -174,7 +169,8 @@ public class CheliceraStrike : Skill
     {
         CheliceraStrikeEnded();
         _isPlayCastAnim = false;
-        ClearTarget();
+        Targeting.ClearTarget();
+        Targeting.ClearTempTarget();
         AnimCastEnded();
     }
 
@@ -247,24 +243,53 @@ public class CheliceraStrike : Skill
 
     private void DamageDealWithAttackingPsionicEnergy(Character targetCharacter)
     {
-        float attackingPsi = _spentAttackingPsiEnergy;
+        if (!isPsionicsTalentTwo || _attackingPsionicEnergy.CurrentValue <= 0f) return;
 
-        if (!isPsionicsTalentTwo && attackingPsi <= 0) return;
+        float psiValue = _attackingPsionicEnergy.CurrentValue;
 
-        float radius = attackingPsi >= AttackingPsiThresholdHigh ? RadiusHigh : attackingPsi >= AttackingPsiThresholdMid ? RadiusMid : RadiusLow;
+        // 1. ? Магический урон по цели
+        float bonusMagicDamage = _attackingPsionicEnergy.GetBonusDamage(psiValue);
 
-        if (attackingPsi >= AttackingPsiThresholdLow)
+        var magicDamageToMain = new Damage
         {
-            Collider[] nearbyEnemies = Physics.OverlapSphere(transform.position, radius, _targetsLayers);
-            foreach (var enemyCollider in nearbyEnemies)
-                if (enemyCollider.TryGetComponent<Character>(out var enemy) && enemy != targetCharacter)
-                {
-                    CmdDispel(enemy);
-                    ApplyDamage(attackingPsi, MagicDamagePerPsiNearby, enemy);
-                }
+            Value = bonusMagicDamage,
+            Type = DamageType.Magical,
+            PhysicAttackType = AttackRangeType.MeleeAttack,
+        };
 
-            TotalMagicDamageEnemy(targetCharacter, attackingPsi, MagicDamagePerPsiMainTarget);
-            CmdDispel(targetCharacter);
+        CmdApplyDamage(magicDamageToMain, targetCharacter.gameObject);
+        TotalMagicDamageEnemy(targetCharacter, psiValue, 1f);
+
+        int dispelCount = _attackingPsionicEnergy.GetDispelCount(psiValue);
+        CmdDispel(targetCharacter, dispelCount);
+
+        if (psiValue >= AttackingPsiThresholdLow)
+        {
+            float radius =
+                psiValue >= AttackingPsiThresholdHigh ? RadiusHigh :
+                psiValue >= AttackingPsiThresholdMid ? RadiusMid :
+                RadiusLow;
+
+            Collider[] nearbyEnemies = Physics.OverlapSphere(transform.position, radius, _targetsLayers);
+
+            foreach (var enemyCollider in nearbyEnemies)
+            {
+                if (enemyCollider.TryGetComponent<Character>(out var enemy) &&
+                    enemy != targetCharacter && enemy != _player)
+                {
+                    float aoeDamage = psiValue * MagicDamagePerPsiNearby;
+
+                    var magicDamageToEnemy = new Damage
+                    {
+                        Value = aoeDamage,
+                        Type = DamageType.Magical,
+                        PhysicAttackType = AttackRangeType.MeleeAttack,
+                    };
+
+                    CmdApplyDamage(magicDamageToEnemy, enemy.gameObject);
+                    TotalMagicDamageEnemy(enemy, psiValue, MagicDamagePerPsiNearby);
+                }
+            }
         }
     }
 
@@ -292,7 +317,7 @@ public class CheliceraStrike : Skill
 
     public void CheliceraStrikePreparingForAnim()
     {
-        _player.Move.CanMove = false;
+        _player.Move.SetCanMove(false);
         _hero.Move.StopMoveAndAnimationMove();
         if (_attackingPsionicEnergy.IsAttackingPsiEnergy && _attackingPsionicEnergy.CurrentValue > 0f) TrySpendAttackingPsi();
         else _spentAttackingPsiEnergy = 0;
@@ -312,14 +337,14 @@ public class CheliceraStrike : Skill
     {
         OnCheliceraStrikeEnd?.Invoke();
         _player.Move.StopLookAt();
-        _player.Move.CanMove = true;
+        _player.Move.SetCanMove(true);
         AnimCastEnded();
     }
 
     public void ClearDataCheliceraStrike()
     {
         ClearData();
-        StopAutoDraw();
+        Renderer.HideSmartIndicator();
     }
 
     public void TrySpendAttackingPsi()
@@ -341,13 +366,14 @@ public class CheliceraStrike : Skill
     }
 
     [Command]
-    private void CmdDispel(Character targetCharacter)
+    private void CmdDispel(Character targetCharacter, int count)
     {
-        targetCharacter.CharacterState.DispelStates(StateType.Magic, targetCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, true);
+        for (int i = 0; i < count; i++) targetCharacter.CharacterState.DispelStates(StateType.Magic, true, isDispelOneState: true);
     }
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTempTarget();
+        Targeting.ClearTarget();
         AnimCastEnded();
     }
 }

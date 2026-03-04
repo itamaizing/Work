@@ -186,6 +186,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3634188678447660970}
     - target: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      propertyPath: characterState
+      value: 
+      objectReference: {fileID: 8641820456667636566}
+    - target: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      propertyPath: _attributeSystem
+      value: 
+      objectReference: {fileID: 3102162263402764761}
+    - target: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: _visionComponent
       value: 
       objectReference: {fileID: 531154088669589675}
@@ -390,6 +398,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecf32e0aadfc5644aa4e7eb739ccc477, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3102162263402764761 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5042042462013097724, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+  m_PrefabInstance: {fileID: 7995568031969599269}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5665284927246484895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36119deea7370464ba6e74a8a3c290a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttributeSystem
 --- !u!114 &3634188678447660970 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6672871860999954575, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
@@ -430,41 +449,65 @@ MonoBehaviour:
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 83e21c29a8358a84c98e9e3409e72dce, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 1.5
   _damageValue: 12
-  _abilitySchool: 2
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 1
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
+  _infoComponent:
+    _school: 2
+    _form: 0
+    _damageType: 0
+    _rangeType: 1
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
+  _chargeComponent:
+    _usesCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
+    affectedByCDR: 0
   _isUseCharges: 0
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 5
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
+  _areaComponent:
+    _radius: 5
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
   _autoAttackDelay: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 0
+    _isAutoLineRender: 0
+    _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -514,41 +557,65 @@ MonoBehaviour:
   _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 83e21c29a8358a84c98e9e3409e72dce, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 5
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 3
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
+  _chargeComponent:
+    _usesCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
+    affectedByCDR: 0
   _isUseCharges: 0
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 5
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
+  _areaComponent:
+    _radius: 5
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
   _autoAttackDelay: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 0
+    _isAutoLineRender: 0
+    _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -572,41 +639,65 @@ MonoBehaviour:
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 0d46b191d6193f74ca4346a50cbf2e49, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 4
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
-  _abilitySchool: 2
-  _abilityForm: 1
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 512
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _castDuration: 0.6
   _manaCostRate: 0
   _manaCostPerTick: []
+  _chargeComponent:
+    _usesCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
+    affectedByCDR: 0
   _isUseCharges: 0
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 6
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
+  _areaComponent:
+    _radius: 0
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
   _autoAttackDelay: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 1
+    _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -655,5 +746,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c4a13cc13c691cf48b313c3aceaea208, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8641820456667636566 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1808229507172449395, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+  m_PrefabInstance: {fileID: 7995568031969599269}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5665284927246484895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7f243771c2613d40a4aecc719336ae4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

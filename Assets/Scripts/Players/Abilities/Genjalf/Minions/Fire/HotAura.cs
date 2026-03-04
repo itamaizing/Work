@@ -8,14 +8,8 @@ public class HotAura : MonoBehaviour
 {
     private void Start()
     {
-        var character = GetComponent<Character>();
-        character.CharacterState.CmdAddState(States.HotBloodAura, 0, 0, character.gameObject, name);
-    }
-
-    private void OnDestroy()
-    {
-        var character = GetComponent<Character>();
-        character.CharacterState.CmdRemoveState(States.HotBloodAura);
+        var chatacter = GetComponent<Character>();
+        chatacter.CharacterState.CmdAddState(States.HotBloodAura, 0, 0, chatacter.gameObject, name);
     }
 }
 

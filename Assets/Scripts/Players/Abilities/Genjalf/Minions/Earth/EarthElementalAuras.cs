@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
@@ -66,8 +66,8 @@ namespace Gangdollarff.EarthElemental
         private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Strengthening };
         private Dictionary<Character, float> _charactersMaxHealth = new();
         private float _procent = 0.02f;
-        private float _maxValuePercent = 0.1f;
 
+        private AttributeModifier _modifier = new(0.3f,ModifierType.Percent);
         public override float Distance => 6;
         public override float EffectRate => 0.2f;
         public override LayerMask LayerMask => LayerMask.GetMask("Allies");
@@ -81,13 +81,13 @@ namespace Gangdollarff.EarthElemental
             _charactersMaxHealth.Add(character,initialMaxHealth);
             
             character.Health.IncreaseRegen(_charactersMaxHealth[character] * _procent);
-            character.Health.ChangedMaxValue(_charactersMaxHealth[character] * _maxValuePercent);
+            character.Health.AddModifier(_modifier);
         }
 
         public override void EffectOnExit(Character character)
         {
             character.Health.DecreaseRegen(_charactersMaxHealth[character] * _procent);
-            character.Health.ChangedMaxValue(-(_charactersMaxHealth[character] * _maxValuePercent));
+            character.Health.RemoveModifier(_modifier);
             _charactersMaxHealth.Remove(character);
         }
 

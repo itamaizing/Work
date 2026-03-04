@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
@@ -27,15 +27,15 @@ public class LightShield : AbstractCharacterState, IDamageable
 
     public override void EnterState(CharacterState character, float durationToExit, float maxDamageAbsorbed, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
+        characterState = character;
         _duration = durationToExit;
         _damageAbsorbed = 0;
         _maxAbsorption = maxDamageAbsorbed;
         _skillName = skillName;
 
-        if (_characterState.StateEffects.LightShield != null)
+        if (characterState.StateEffects.LightShield != null)
         {
-            _lightShield = _characterState.StateEffects.LightShield;
+            _lightShield = characterState.StateEffects.LightShield;
             _lightShield.SetActive(true);
         }
 
@@ -44,7 +44,7 @@ public class LightShield : AbstractCharacterState, IDamageable
         Debug.Log("Shield HP - " + _maxAbsorption);
         //DamageTaken += DamageEnemiesInRadius;
 
-        if (_characterState.TryGetComponent<Health>(out var health))
+        if (characterState.TryGetComponent<Health>(out var health))
         {
             health.AddShieldValues(_maxAbsorption);
             health.UpdateShieldValues(_damageAbsorbed, _maxAbsorption);
@@ -66,12 +66,12 @@ public class LightShield : AbstractCharacterState, IDamageable
         Debug.Log("LightShield state exited.");
         //DamageTaken -= DamageEnemiesInRadius;
 
-        if (_characterState.TryGetComponent<Health>(out var health))
+        if (characterState.TryGetComponent<Health>(out var health))
         {
             health.ResetShieldValues();
         }
 
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
 
         if (_lightShield != null)
             _lightShield.SetActive(false);
@@ -82,7 +82,7 @@ public class LightShield : AbstractCharacterState, IDamageable
         _duration = time;
         _damageAbsorbed = 0;
 
-        if (_characterState.TryGetComponent<Health>(out var health))
+        if (characterState.TryGetComponent<Health>(out var health))
         {
             health.AddShieldValues(_maxAbsorption);
             health.UpdateShieldValues(_damageAbsorbed, _maxAbsorption);
@@ -97,7 +97,7 @@ public class LightShield : AbstractCharacterState, IDamageable
         _damageAbsorbed += damageToAbsorb;
         damage.Value -= damageToAbsorb;
 
-        _characterState.GetComponent<Character>().DamageTracker.AddDamage(damage, _characterState.gameObject, true);
+        characterState.GetComponent<Character>().DamageTracker.AddDamage(damage, characterState.gameObject, true);
 
         var tempDamage = new Damage
         {
@@ -110,7 +110,7 @@ public class LightShield : AbstractCharacterState, IDamageable
 
         DamageTaken?.Invoke(tempDamage, skill);
 
-        if (_characterState.TryGetComponent<Health>(out var health))
+        if (characterState.TryGetComponent<Health>(out var health))
         {
             health.UpdateShieldValues(_damageAbsorbed, _maxAbsorption);
         }
@@ -130,14 +130,14 @@ public class LightShield : AbstractCharacterState, IDamageable
     //    {
     //        if (!obj.TryGetComponent(out Character enemy)) continue;
 
-    //        var distance = Vector3.Distance(_characterState.transform.position, enemy.transform.position);
+    //        var distance = Vector3.Distance(characterState.transform.position, enemy.transform.position);
     //        if (distance > 10f || distance <= 0.25f) continue;
 
     //        var tempDamage = new Damage
     //        {
     //            Form = damage.Form,
     //            PhysicAttackType = damage.PhysicAttackType,
-    //            School = damage.School,
+    //            Info.School = damage.Info.School,
     //            Type = damage.Type,
     //            Value = damage.Value * 0.2f
     //        };
@@ -154,7 +154,7 @@ public class LightShield : AbstractCharacterState, IDamageable
 
     private void SearchTalent()
     {
-        foreach (var talent in _characterState.Character.Abilities.TalesntSystem.ActiveTalents)
+        foreach (var talent in characterState.Character.Abilities.TalesntSystem.ActiveTalents)
         {
             if (talent is BladeMailPriestTalent bladeMailPriestTalent)
             {

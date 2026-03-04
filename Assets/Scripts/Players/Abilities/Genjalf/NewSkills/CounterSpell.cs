@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -22,7 +22,7 @@ public class CounterSpell : Skill
 
     private bool CheckCanCast()
     {
-        return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius && GetTargetCharacter() != null;
+        return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.GetTarget()?.Character != null;
     }
 
     public void AnimCastLight()
@@ -38,20 +38,19 @@ public class CounterSpell : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if(targetInfo.GetTargets().Count > 0 && targetInfo.GetTargets()[0] != null)
-            SetTarget(targetInfo.GetTargets()[0]);
+            Targeting.SetTarget(targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() != null)
+        if (Targeting.GetTarget()?.Character != null)
         {
-            var targetGO = GetTargetCharacter().gameObject;
-            Character currentCharacter = GetTargetCharacter();
+            Character currentCharacter = Targeting.GetTarget()?.Character;
             
-            CmdState(targetGO, 5);
+            CmdState(currentCharacter.gameObject, 5);
             if (currentCharacter.Abilities.CurrentCastingSkill != null && _schoolSolvent.IsSkillActive)
             {
-                _schoolSolvent.AddSchool(currentCharacter.Abilities.CurrentCastingSkill.School);
+                _schoolSolvent.AddSchool(currentCharacter.Abilities.CurrentCastingSkill.Info.School);
             }
         }
         yield return null;
@@ -59,7 +58,7 @@ public class CounterSpell : Skill
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
     }
 
@@ -67,19 +66,19 @@ public class CounterSpell : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (GetTempTarget() == null)
+        while (Targeting.GetTempTarget()?.Targetable == null)
         {
             if (GetMouseButton)
             {
-                Vector3 clickPoint = GetMousePoint();
+                Vector3 clickPoint = Targeting.GetMousePoint();
                 
-                FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
 
-                if (GetTempTargetCharacter() is Character character)
+                if (Targeting.GetTempTarget()?.Character is Character character)
                 {
-                    if (GetTempTargetCharacter() != null && !IsEnemyTarget(character))
+                    if (character != null && !IsEnemyTarget(character))
                     {
-                        ClearTempTarget();
+                        Targeting.ClearTempTarget();
                     }
                     else
                     {
@@ -90,10 +89,10 @@ public class CounterSpell : Skill
             }
             yield return null;
         }
-        SetTarget(GetTempTarget());
-        ClearTempTarget();
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
+        Targeting.ClearTempTarget();
 
-        targetInfo.AddTarget(GetTargetCharacter());
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 

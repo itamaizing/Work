@@ -8,12 +8,11 @@ public class BindingPoisonState : AbstractCharacterState
 
     private int _maxStacks = 1;
 
-    private float _duration;
     private float _baseDuration;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
-    public int CurrentStacks { get => CurrentStacksCount; set => CurrentStacksCount = value; }
-    public float StacksDuration { get => _duration; }
+    public int CurrentStacks { get => currentStacksCount; set => currentStacksCount = value; }
+    public float StacksDuration { get => duration; }
 
     public override States State => States.BindingPoison;
     public override StateType Type => StateType.Physical;
@@ -23,16 +22,12 @@ public class BindingPoisonState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log("BindingPoisonState / EnterState");
-        _characterState = character;
+        _skillManager = characterState.Character.Abilities;
 
-        _skillManager = _characterState.Character.Abilities;
-
-        _duration = durationToExit;
         _baseDuration = durationToExit;
         MaxStacksCount = _maxStacks;
 
-        if (CurrentStacksCount < MaxStacksCount)
+        if (currentStacksCount < MaxStacksCount)
         {
             AddStacks();
         }
@@ -42,16 +37,12 @@ public class BindingPoisonState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        if (CurrentStacksCount <= 0)
+        if (currentStacksCount <= 0)
         {
             ExitState();
         }
 
         //Debug.Log($"BindingPoisonState / UpdateState / CharacterManager = {_skillManager}");
-        if (_duration < 0)
-        {
-            ExitState();
-        }
 
     }
 
@@ -60,36 +51,36 @@ public class BindingPoisonState : AbstractCharacterState
         //Debug.Log($"BindingPoisonState / ExitState / CharacterManager = {_skillManager}");
         ResetValues();
 
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
         //Debug.Log($"BindingPoisonState / Stack / CharacterManager = {_skillManager}");
-        if (CurrentStacksCount < MaxStacksCount)
+        if (currentStacksCount < MaxStacksCount)
         {
             AddStacks();
             return true;
         }
         else
         {
-            _duration = _baseDuration;
+            duration = _baseDuration;
             return true;
         }
     }
 
     public void AddStacks()
     {
-        if (CurrentStacksCount < MaxStacksCount)
+        if (currentStacksCount < MaxStacksCount)
         {
-            CurrentStacksCount++;
+            currentStacksCount++;
             //Debug.Log("if / CurrentStackPoisonBone in AddStacks == " + _currentStacks);
-            _duration = _baseDuration;
+            duration = _baseDuration;
         }
         else
         {
             //Debug.Log("else / CurrentStackPoisonBone in AddStacks == " + _currentStacks);
-            _duration = _baseDuration;
+            duration = _baseDuration;
         }
     }
 
@@ -114,8 +105,8 @@ public class BindingPoisonState : AbstractCharacterState
 
     private void ResetValues()
     {
-        CurrentStacksCount = 0;
+        currentStacksCount = 0;
         _baseDuration = 0;
-        _duration = 0;
+        duration = 0;
     }
 }

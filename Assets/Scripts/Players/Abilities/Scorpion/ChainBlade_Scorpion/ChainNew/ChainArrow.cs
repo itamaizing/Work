@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using UnityEngine;
 using System;
@@ -32,7 +32,7 @@ public class ChainArrow : Projectiles
         if (_skill is ChainBlade chain)
         {
             chain.ChainBladeCastEnd(false);
-            chain.Hero.Move.CanMove = true;
+            chain.Hero.Move.SetCanMove(true);
         }
     }
 
@@ -83,7 +83,7 @@ public class ChainArrow : Projectiles
         if (_isReturning) return;
 
         if (other.gameObject == _dad.gameObject) return;
-        if (((1 << other.gameObject.layer) & _skill.TargetsLayers.value) == 0) return;
+        if (((1 << other.gameObject.layer) & _skill.Targeting.Layer.value) == 0) return;
 
         if (other.TryGetComponent<Character>(out Character character))
         {
@@ -181,7 +181,7 @@ public class ChainArrow : Projectiles
         if (_skill is ChainBlade chain)
         {
             chain.Hero.Move.IsMoveBlocked = false;
-            chain.Hero.Move.CanMove = false;
+            chain.Hero.Move.SetCanMove(false);
         }
 
         Debug.Log($"StartReturn Speed: {_speed}");

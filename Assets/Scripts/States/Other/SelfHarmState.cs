@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class SelfHarmState : AbstractCharacterState
@@ -16,14 +16,12 @@ public class SelfHarmState : AbstractCharacterState
     private Health _healthComponent;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        _characterState = character;
-        
-        _healthComponent = _characterState.GetComponent<Health>();
+    {        
+        _healthComponent = characterState.GetComponent<Health>();
 
-        foreach (var skill in _characterState.Character.Abilities.Abilities)
+        foreach (var skill in characterState.Character.Abilities.Abilities)
         {
-            if (skill.AbilityForm == AbilityForm.Magic)
+            if (skill.Info.AbilityForm == AbilityForm.Magic)
             {
                 skill.PreparingStarted += OnMagicSpellStartPreparing;
                 skill.PreparingSuccess += OnMagicSpellEndCast;
@@ -44,9 +42,9 @@ public class SelfHarmState : AbstractCharacterState
 
     public override void ExitState()
     {
-        foreach (var skill in _characterState.Character.Abilities.Abilities)
+        foreach (var skill in characterState.Character.Abilities.Abilities)
         {
-            if (skill.AbilityForm == AbilityForm.Magic)
+            if (skill.Info.AbilityForm == AbilityForm.Magic)
             {
                 skill.PreparingStarted -= OnMagicSpellStartPreparing;
                 skill.PreparingSuccess -= OnMagicSpellEndCast;
@@ -58,7 +56,7 @@ public class SelfHarmState : AbstractCharacterState
             _healthComponent.DamageTaken -= OnDamageTaken;
         }
         
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
         
         Debug.Log("SelfHarm exit");
     }
@@ -81,7 +79,7 @@ public class SelfHarmState : AbstractCharacterState
     {
         var isNeedUseBuff = Random.Range(0f, 100f) <= _currentStackChance;
 
-        if (skill.School == Schools.Light && isNeedUseBuff)
+        if (skill.Info.School == Schools.Light && isNeedUseBuff)
         {
             skill.Buff.CastSpeed.IncreasePercentage(CastTimeReductionMultiplier);
             Debug.Log("[SelfHarm] Start preparing");
@@ -93,7 +91,7 @@ public class SelfHarmState : AbstractCharacterState
     {
         var isNeedUseBuff = Random.Range(0f, 100f) <= _currentStackChance;
 
-        if (skill.School == Schools.Light && isNeedUseBuff)
+        if (skill.Info.School == Schools.Light && isNeedUseBuff)
         {
             _currentStackChance = 0f;
             skill.Buff.CastSpeed.ReductionPercentage(CastTimeReductionMultiplier);

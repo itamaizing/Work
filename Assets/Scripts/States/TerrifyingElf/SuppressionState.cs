@@ -32,8 +32,8 @@ public class SuppressionState : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
                                     Character caster, string skillName)
     {
-        _characterState = character;
-        _personWhoMadeBuff = caster;
+        characterState = character;
+        personWhoMadeBuff = caster;
 
         _baseDuration = durationToExit;
         _duration = _baseDuration;
@@ -44,8 +44,8 @@ public class SuppressionState : AbstractCharacterState
         _distBuffer = 0f;
         _isMoving = false;
 
-        _suppressionIdle = _characterState.StateEffects.SuppressionIdle;
-        _suppressionMove = _characterState.StateEffects.SuppressionMove;
+        _suppressionIdle = characterState.StateEffects.SuppressionIdle;
+        _suppressionMove = characterState.StateEffects.SuppressionMove;
 
         if (_suppressionIdle) _suppressionIdle.SetActive(true);
         if (_suppressionMove) _suppressionMove.SetActive(false);
@@ -70,8 +70,8 @@ public class SuppressionState : AbstractCharacterState
         if (_suppressionIdle) _suppressionIdle.SetActive(false);
         if (_suppressionMove) _suppressionMove.SetActive(false);
 
-        _characterState.StateIcons.RemoveItemByState(State);
-        _characterState.RemoveState(this);
+        characterState.StateIcons.RemoveItemByState(State);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -122,7 +122,7 @@ public class SuppressionState : AbstractCharacterState
 
         _distBuffer -= cells * CellLength;
 
-        if (_characterState.Character.TryGetResource(ResourceType.Mana) is Mana mana)
+        if (characterState.Character.TryGetResource(ResourceType.Mana) is Mana mana)
         {
             float loss = cells * mana.MaxValue * ManaLossPerCell;
             mana.TryUse(loss);

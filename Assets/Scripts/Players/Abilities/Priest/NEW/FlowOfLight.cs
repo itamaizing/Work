@@ -1,9 +1,10 @@
-using System;
+п»їusing System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-public class FlowOfLight : Skill
+
+public class FlowOfLight : Skill, IPolaritySwitchable
 {
     [Header("Flow Light Settings")]
     [SerializeField] private float buffDuration = 18f;
@@ -16,6 +17,7 @@ public class FlowOfLight : Skill
     [SerializeField] private AbilityInfo darkInfo;
 
     [SerializeField] private StunMagicPassiveSkill stunMagicPassiveSkill;
+    [SerializeField] private ReversePolarity _reversePolarity;
 
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
     public event Action OnModeChange;
@@ -24,20 +26,38 @@ public class FlowOfLight : Skill
 
     private bool IsAllyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Allies");
     private bool IsEnemyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+    
+    private float _clickRadius = 0.5f;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("FlowSpellStart");
 
     #region Talent
+    private float _destructionFillingExtensionTime;
+    private float _destructionFillingDuration;
+    private float _destructionFillingChance;
+
     private bool _spiritEnergyAddTalent;
+    private bool _isDestructionFillingTalent;
+    public bool IsDestructionFillingTalent { get => _isDestructionFillingTalent; private set => _isDestructionFillingTalent = value; }
+    
     public void SpiritEnergyAddTalent(bool value) => _spiritEnergyAddTalent = value;
+
+    public void DestructionFillingTalent(bool value, float duration, float additionalTime,float chance)
+    {
+        _isDestructionFillingTalent = value;
+        _destructionFillingExtensionTime = additionalTime;
+        _destructionFillingDuration = duration;
+        _destructionFillingChance = chance;
+    }
+
     #endregion
 
     protected override bool IsCanCast =>
-		GetTargetCharacter() != null &&
-        Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius &&
-        NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle) &&
-        ((isLightMode && IsAllyTarget(GetTargetCharacter())) || (!isLightMode && IsEnemyTarget(GetTargetCharacter())));
+		Targeting.GetTarget()?.Character != null &&
+        Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius &&
+        Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle) &&
+        ((isLightMode && IsAllyTarget(Targeting.GetTarget()?.Character)) || (!isLightMode && IsEnemyTarget(Targeting.GetTarget()?.Character)));
 
     private void OnEnable()
     {
@@ -57,7 +77,7 @@ public class FlowOfLight : Skill
 
     public void MoveFlowLight()
     {
-        _hero.Move.CanMove = false;
+        _hero.Move.SetCanMove(false);
         _hero.Move.StopMoveAndAnimationMove();
     }
 
@@ -70,20 +90,21 @@ public class FlowOfLight : Skill
     {
         if (_hero != null && _hero.Move != null)
         {
-            Hero.Move.CanMove = true;
+            Hero.Move.SetCanMove(true);
         }
     }
 
     private void OnModeChanged(bool oldValue, bool newValue)
     {
-        //UpdateMode();
+        UpdateMode();
         OnModeChange?.Invoke();
     }
 
     private void UpdateMode()
     {
-        School = isLightMode ? Schools.Light : Schools.Dark;
+        Info.School = isLightMode ? Schools.Light : Schools.Dark;
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
+        Hero.Abilities.SkillPanelUpdate();
     }
 
     private void ApplySpiritBuff(Character target)
@@ -104,35 +125,63 @@ public class FlowOfLight : Skill
         var stateComponent = target.GetComponent<CharacterState>();
         if (stateComponent == null) return;
 
-        if (!isLightMode && UnityEngine.Random.value <= 0.2f) CmdStateRestorationOrDestruction(stateComponent, States.Destruction, 12f);
+        //if (!isLightMode && UnityEngine.Random.value <= 0.2f) CmdStateRestorationOrDestruction(stateComponent, States.Destruction, 12f);
+    }
+
+    private void TryApplyDestructionFilling(CharacterState target)
+    {
+        if (target == null) return;
+        
+        if (UnityEngine.Random.value <= _destructionFillingChance)
+        {
+            float durationToApply = target.CheckForState(isLightMode ? States.Restoration : States.Destruction) ? _destructionFillingExtensionTime : _destructionFillingDuration;
+            CmdStateRestorationOrDestruction(target, isLightMode ? States.Restoration : States.Destruction, durationToApply);
+        }
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
-        while (GetTempTargetCharacter() == null)
+        while (Targeting.GetTempTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
-                FindTarget();
+                Vector3 clickPoint = Targeting.GetMousePoint();
+
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
+                //_target = GetRaycastTarget(true);
+
+                if (Targeting.GetTempTarget()?.Character != null)
+                {
+                    if (isLightMode && IsEnemyTarget(Targeting.GetTempTarget()?.Character) || !isLightMode && !IsEnemyTarget(Targeting.GetTempTarget()?.Character))
+                    {
+                        Targeting.ClearTempTarget();
+                    }
+                    else
+                    {
+                        Targeting.GetTempTarget().Character.SelectedCircle.IsActive = true;
+                        _hero.Move.LookAtTransform(Targeting.GetTempTarget()?.Character.transform);
+                    }
+                }
+
             }
             yield return null;
         }
-        SetTarget(GetTempTargetCharacter());
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTargetCharacter());
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         targetDataSavedCallback(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() == null || !IsCanCast)
+        if (Targeting.GetTarget()?.Character == null || !IsCanCast)
         {
             TryCancel();
             yield break;
         }
 
         TryPayCost();
-        CmdSpawnEffect(gameObject, GetTargetCharacter().gameObject);
+        CmdSpawnEffect(gameObject, Targeting.GetTarget()?.Character.gameObject);
 
         float elapsed = 0f;
         float interval = 1f;
@@ -144,9 +193,9 @@ public class FlowOfLight : Skill
 
         while (elapsed < CastStreamDuration)
         {
-            if (GetTargetCharacter() == null || !GetTargetCharacter().gameObject.activeSelf ||
+            if (Targeting.GetTarget().Character == null || !Targeting.GetTarget().Character.gameObject.activeSelf ||
                 Input.GetMouseButtonDown(1) ||
-                Vector3.Distance(transform.position, GetTargetCharacter().transform.position) > Radius ||
+                Vector3.Distance(transform.position, Targeting.GetTarget().Character.transform.position) > AreaInfo.Radius ||
                 Vector3.Distance(transform.position, initialPosition) > maxMoveDistance ||
                 (manaResource != null && manaResource.CurrentValue < 1f))
             {
@@ -159,29 +208,38 @@ public class FlowOfLight : Skill
 
                 TryCancel();
                 CmdDestroyEffect();
+                TrySwitchSpellsOnDarkMode();
                 yield break;
             }
 
             if (elapsed % interval < Time.deltaTime)
             {
-                if (isLightMode && IsAllyTarget(GetTargetCharacter()))
+                if (isLightMode && IsAllyTarget(Targeting.GetTarget()?.Character))
                 {
                     Heal heal = new Heal { Value = tickValue };
-                    CmdApplyHeal(heal, GetTargetCharacter().gameObject, this, Name);
-                    TryApplyExtraState(GetTargetCharacter());
-                    ApplySpiritBuff(GetTargetCharacter());
+                    CmdApplyHeal(heal, Targeting.GetTarget()?.Character.gameObject, this, Name);
+                    TryApplyExtraState(Targeting.GetTarget()?.Character);
+                    ApplySpiritBuff(Targeting.GetTarget()?.Character);
                 }
-                else if (!isLightMode && IsEnemyTarget(GetTargetCharacter()))
+                else if (!isLightMode && IsEnemyTarget(Targeting.GetTarget()?.Character))
                 {
                     Damage damage = new Damage
                     {
                         Value = tickValue,
-                        Type = DamageType,
-                        School = School
+                        Type = Info.DamageType,
+                        School = Info.School
                     };
-                    CmdApplyDamage(damage, GetTargetCharacter().gameObject);
-                    TryApplyExtraState(GetTargetCharacter());
-                    ApplySpiritBuff(GetTargetCharacter());
+                    CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
+                    TryApplyExtraState(Targeting.GetTarget()?.Character);
+                    ApplySpiritBuff(Targeting.GetTarget()?.Character);
+                }
+                if (_isDestructionFillingTalent)
+                {
+                    TryApplyDestructionFilling(Targeting.GetTarget()?.Character.CharacterState);
+                }
+                if (_isDestructionFillingTalent)
+                {
+                    TryApplyDestructionFilling(Targeting.GetTarget()?.Character.CharacterState);
                 }
             }
 
@@ -189,17 +247,27 @@ public class FlowOfLight : Skill
             yield return null;
         }
 
+        TrySwitchSpellsOnDarkMode();
         _hero.Animator.ResetTrigger(AnimTriggerCast);
         _hero.NetworkAnimator.ResetTrigger(AnimTriggerCast);
-
         CmdCrossFade();
         _hero.Animator.CrossFade("FlowSpellEnd", 0.1f);
         CmdDestroyEffect();
     }
 
+    private void TrySwitchSpellsOnDarkMode()
+    {
+        if (_reversePolarity != null && Hero.CharacterState.CheckForState(States.ReversePolarity))
+        {
+            _reversePolarity.SwitchSpells();
+            _reversePolarity.RemoveReversePolarityEffect();
+            _reversePolarity.SetCooldownFromSpell();
+        }
+    }
+
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         _hero.Move.StopLookAt();
         CmdDestroyEffect();
     }
@@ -207,7 +275,7 @@ public class FlowOfLight : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0)
-            SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+            Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 
     [Command] private void CmdCrossFade() => _hero.Animator.CrossFade("FlowSpellEnd", 0.1f);
@@ -247,21 +315,19 @@ public class FlowOfLight : Skill
         }
     }
 
-    [Command]
-private void CmdStateRestorationOrDestruction(NetworkIdentity targetNetIdentity, States states, float duration)
-{
-    if (targetNetIdentity == null) return;
 
-    var stateComponent = targetNetIdentity.GetComponent<CharacterState>();
-    if (stateComponent == null) return;
+    [Command] private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) => StateRestorationOrDestruction(stateComponent, states, duration);
+    [Command] private void CmdStateSpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration) => SpiritEnergyOrHealth(stateComponent, states, duration);
 
-    stateComponent.AddState(states, duration, 0, gameObject, Name);
-}
-    [Command] private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) => ClientRpcStateRestorationOrDestruction(stateComponent, states, duration);
-    [Command] private void CmdStateSpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration) => ClientRpcSpiritEnergyOrHealth(stateComponent, states, duration);
+    private void SpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration)
+    {
+        stateComponent.AddState(states, duration, 1f, gameObject, Name);
+    }
 
-    [ClientRpc] private void ClientRpcSpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration) { stateComponent.AddStateLogic(states, duration, 1f, Schools.None, gameObject, Name); }
-    [ClientRpc] private void ClientRpcStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) { stateComponent.AddStateLogic(states, duration, 0, Schools.None, gameObject, "FlowOfLight"); }
+    private void StateRestorationOrDestruction(CharacterState stateComponent, States states, float duration)
+    {
+        stateComponent.AddState(states, duration, 0, gameObject, Name);
+    }
 
 
         [ClientRpc]
@@ -278,7 +344,7 @@ private void CmdStateRestorationOrDestruction(NetworkIdentity targetNetIdentity,
 
         if (flows.Length == 0)
         {
-            Debug.LogWarning("FlowLightEffect не найден ни на одном дочернем объекте эффекта: " + effect.name);
+            Debug.LogWarning("FlowLightEffect РЅРµ РЅР°Р№РґРµРЅ РЅРё РЅР° РѕРґРЅРѕРј РґРѕС‡РµСЂРЅРµРј РѕР±СЉРµРєС‚Рµ СЌС„С„РµРєС‚Р°: " + effect.name);
         }
     }
 }

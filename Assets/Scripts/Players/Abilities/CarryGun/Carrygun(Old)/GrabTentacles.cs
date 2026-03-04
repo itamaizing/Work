@@ -1,4 +1,4 @@
-//using Mirror;
+﻿//using Mirror;
 //using System;
 //using System.Collections;
 //using System.Collections.Generic;
@@ -119,17 +119,17 @@
 //    {
 //        if (_target == null)
 //        {
-//            return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= Radius && NoObstacles(_firstTentaclesPoint, _obstacle);
+//            return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_firstTentaclesPoint, _obstacle);
 //        }
 //        else if (_target != null)
 //        {
-//            return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= Radius && NoObstacles(_firstTentaclesPoint, _obstacle) 
-//                && Vector3.Distance(_secondTentaclesPoint, _target.transform.position) <= Radius && NoObstacles(_secondTentaclesPoint, _obstacle);
+//            return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_firstTentaclesPoint, _obstacle) 
+//                && Vector3.Distance(_secondTentaclesPoint, _target.transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_secondTentaclesPoint, _obstacle);
 //        }
 //        else
 //        {
-//            return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= Radius && NoObstacles(_firstTentaclesPoint, _obstacle) 
-//                && Vector3.Distance(_secondTentaclesPoint, _player.transform.position) <= Radius && NoObstacles(_firstTentaclesPoint, _obstacle);
+//            return Vector3.Distance(_firstTentaclesPoint, _player.transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_firstTentaclesPoint, _obstacle) 
+//                && Vector3.Distance(_secondTentaclesPoint, _player.transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(_firstTentaclesPoint, _obstacle);
 
 //        }
 //    }
@@ -140,8 +140,8 @@
 //        {
 //            if (Input.GetMouseButtonDown(0))
 //            {
-//                _pointForSearchingTargets = GetMousePoint();
-//                _targets = GetCloserTargets(_pointForSearchingTargets, Area);
+//                _pointForSearchingTargets = Targeting.GetMousePoint();
+//                _targets = GetCloserTargets(_pointForSearchingTargets, AreaInfo.Area);
 //                foreach (var target in _targets)
 //                {
 //                    if (target != null)
@@ -172,7 +172,7 @@
 //                    _isTarget = true;
 //                    _isFirstPointTarget = true;
 
-//                    DrawCircleOnTarget(_target.transform, Radius);
+//                    DrawCircleOnTarget(_target.transform, AreaInfo.Radius);
 //                }
 //                else if (_target != null && _target.gameObject.layer == _playerLayer)
 //                {
@@ -222,7 +222,7 @@
 //                }
 //                else
 //                {
-//                    _secondTentaclesPoint = GetMousePoint();
+//                    _secondTentaclesPoint = Targeting.GetMousePoint();
 //                }
 //                _isSecondPointDone = true;
 //            }

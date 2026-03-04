@@ -21,29 +21,29 @@ public class FireBallSkill : Skill
 
     private bool CheckCanCast()
     {
-        return GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+        return Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (GetTempTarget() == null)
+        while (Targeting.GetTempTarget() == null)
         {
             if (GetMouseButton)
             {
-                Vector3 clickPoint = GetMousePoint();
-                FindTarget(_clickRadius, clickPoint, canTargetHimself: false);
+                Vector3 clickPoint = Targeting.GetMousePoint();
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: false);
 
-                if (GetTempTargetCharacter() is Character character)
+                if (Targeting.GetTempTarget()?.Character is Character character)
                 {
                     if (!IsEnemyTarget(character))
-                        ClearTempTarget();
+                        Targeting.ClearTempTarget();
                     else
                     {
                         if (character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
@@ -54,8 +54,8 @@ public class FireBallSkill : Skill
             yield return null;
         }
 
-        targetInfo.AddTarget(GetTempTargetCharacter());
-        ClearTempTarget();
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
+        Targeting.ClearTempTarget();
         callbackDataSaved(targetInfo);
 
         CastStarted += OnCastStarted;
@@ -63,21 +63,21 @@ public class FireBallSkill : Skill
 
     private void OnCastStarted()
     {
-        Hero.Move.LookAtTransform(GetTargetCharacter().transform);
+        Hero.Move.LookAtTransform(Targeting.GetTarget().Character.transform);
         CastStarted -= OnCastStarted;
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() != null)
-            CmdCreateProjectile(GetTargetCharacter().gameObject);
+        if (Targeting.GetTarget() != null)
+            CmdCreateProjectile(Targeting.GetTarget().Character.gameObject);
 
         yield return null;
     }
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         Hero.Move.StopLookAt();
     }
 
@@ -106,8 +106,8 @@ public class FireBallSkill : Skill
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(_damageValue),
-            Type = DamageType,
-            PhysicAttackType = AttackRangeType,
+            Type = Info.DamageType,
+            PhysicAttackType = Info.AttackRangeType,
         };
 
         CmdApplyDamage(damage, target);

@@ -30263,6 +30263,7 @@ GameObject:
   - component: {fileID: 582667559171038809}
   - component: {fileID: 2325131165822693477}
   - component: {fileID: 6438771747420870763}
+  - component: {fileID: 1257681269524314154}
   - component: {fileID: 5630810179120932799}
   - component: {fileID: 4185264856112098810}
   - component: {fileID: 5590339039165547173}
@@ -30577,6 +30578,22 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   controllableUnits: []
+--- !u!114 &1257681269524314154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8423443208040621164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36119deea7370464ba6e74a8a3c290a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttributeSystem
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  TemporaryResourceDisplay: []
 --- !u!114 &5630810179120932799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30593,6 +30610,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _playerData: {fileID: 11400000, guid: f71e3e6e8b3ca6245b0c37fd016a4039, type: 2}
+  _attributeSystem: {fileID: 1257681269524314154}
   _networkSettings: {fileID: 2325131165822693477}
   _rigidbody: {fileID: 2201725961568704641}
   _collider: {fileID: 1550066538247365834}
@@ -30602,14 +30620,11 @@ MonoBehaviour:
   _healthComponent: {fileID: 5834951345091717418}
   _playerMove: {fileID: 8569747795464636412}
   _abilities: {fileID: 5188294081543664110}
-  _characterState: {fileID: 5590339039165547173}
+  characterState: {fileID: 5590339039165547173}
   uiComponent: {fileID: 2543507432100258222}
   _selectComponent: {fileID: 9112797239584284270}
   _damageTracker: {fileID: 582667559171038809}
-  _resources:
-  - {fileID: 5834951345091717418}
-  - {fileID: 3919103737457224534}
-  - {fileID: 2461163197728234484}
+  TemporaryResourceDisplay: []
   _selectedCircle: {fileID: 7875534060547890866}
   _spawnComponent: {fileID: 454093965362999032}
   _visionComponent: {fileID: 0}
@@ -30618,6 +30633,7 @@ MonoBehaviour:
   _characterParent: {fileID: 0}
   _transformationComponent: {fileID: 4185264856112098810}
   talentManager: {fileID: 5950354320950511597}
+  _menuPreview: {fileID: 0}
 --- !u!114 &4185264856112098810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30700,6 +30716,8 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 0
   _regenerationDelay: 0
+  _currentValue: 0
+  _maxValue: 0
   _animator: {fileID: 8658026411023210807}
   _netAnimator: {fileID: 3389994900111398297}
   bar: {fileID: 870197213327468265}
@@ -30720,6 +30738,8 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 2
   _regenerationDelay: 0
+  _currentValue: 0
+  _maxValue: 0
   _sumDamageGiven: 0
 --- !u!114 &2461163197728234484
 MonoBehaviour:
@@ -30738,6 +30758,8 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 1
   _regenerationDelay: 0
+  _currentValue: 0
+  _maxValue: 0
 --- !u!114 &6608200012251847517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30755,6 +30777,8 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 3
   _regenerationDelay: 0
+  _currentValue: 0
+  _maxValue: 0
   _sumDamageGiven: 0
 --- !u!114 &2543507432100258222
 MonoBehaviour:
@@ -30856,8 +30880,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 7672f560c9603a94f8985ebe5157f8f2, type: 3}
   MoveDirection: {x: 0, y: 0, z: 0}
   ExternalMoveDirection: {x: 0, y: 0, z: 0}
-  CanMove: 1
-  CanMoveState: 0
   IsMoving: 0
   IsSelect: 0
   IsNoRotateAtCursor: 0

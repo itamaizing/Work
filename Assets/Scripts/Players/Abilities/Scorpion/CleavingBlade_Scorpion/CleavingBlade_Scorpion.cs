@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -30,7 +30,7 @@ public class CleavingBlade_Scorpion : Skill
 
     public float DamageRange => Random.Range(_minDamage, _maxDamage);
 
-    protected override bool IsCanCast => GetTarget() != null && Vector3.Distance(GetTarget().Transform.position, transform.position) <= Radius;
+    protected override bool IsCanCast => Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     protected override int AnimTriggerCastDelay => 0;
@@ -42,13 +42,14 @@ public class CleavingBlade_Scorpion : Skill
     private void HandleSkillCanceled()
     {
         _wasDamageApplied = false;
-        ClearTarget();
+        Targeting.ClearTarget();
+        Targeting.ClearTempTarget();
         AnimCastEnded();
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget(targetInfo.GetTargets()[0]);
+        Targeting.SetTarget(targetInfo.GetTargets()[0]);
     }
 
     private void AttackPassed(bool shouldIncreaseCounter, Character target)
@@ -79,20 +80,20 @@ public class CleavingBlade_Scorpion : Skill
     {
         _wasDamageApplied = false;
 
-        while (GetTempTarget() == null)
+        while (Targeting.GetTempTarget()?.Targetable == null)
         {
             if (GetMouseButton)
             {
-                FindTarget(SearchTargetInRadius, GetMousePoint());
+                Targeting.FindTempTarget(Targeting.GetMousePoint(), SearchTargetInRadius);
 
-                if (GetTempTarget() != null && GetTempTarget() is IDamageable damageable)
+                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
                 {
-                    if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
 
                     else
                     {
-                        _hero.Move.LookAtTransform(GetTempTarget().Transform);
-                        if (GetTempTarget() is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        _hero.Move.LookAtTransform(Targeting.GetTempTarget()?.Targetable.Transform);
+                        if (Targeting.GetTempTarget()?.Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
                         break;
                     }
                 }
@@ -100,10 +101,10 @@ public class CleavingBlade_Scorpion : Skill
             yield return null;
         }
 
-        SetTarget(GetTempTarget());
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTarget());
+        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
         callbackDataSaved(targetInfo);
     }
 
@@ -126,37 +127,37 @@ public class CleavingBlade_Scorpion : Skill
     {
         if(_wasDamageApplied) return;
 
-        if (GetTarget() != null && Vector2.Distance(transform.position, GetTarget().Transform.position) <= Radius)
+        if (Targeting.GetTarget() != null && Vector2.Distance(transform.position, Targeting.GetTarget().Transform.position) <= AreaInfo.Radius)
         {
             Damage damage = new Damage
             {
                 Value = Buff.Damage.GetBuffedValue(DamageRange * damageMultiplier),
-                Type = DamageType,
+                Type = Info.DamageType,
             };
 
             _wasDamageApplied = true;
 
-            if (GetTarget() is IDamageable damageable) CmdAttack(damage, damageable.gameObject, shouldIncreaseCounter);
+            if (Targeting.GetTarget() is IDamageable damageable) CmdAttack(damage, damageable.gameObject, shouldIncreaseCounter);
         }
     }
 
     [Command]
     private void CmdAttack(Damage damage, GameObject target, bool shouldIncreaseCounter)
     {
-        if (_tempTargetForDamage != target.transform)
+        if (Targeting.ForDamage.Transform != target.transform)
         {
-            _tempTargetForDamage = target.transform;
-            _tempForDamage = target.GetComponent<IDamageable>();
+            Targeting.ForDamage = new TargetData(target);
         }
 
-        bool result = _tempForDamage.TryTakeDamage(ref damage, this);
-        if (result && _tempForDamage is Character character) AttackPassed(shouldIncreaseCounter, character);
+        bool result = Targeting.ForDamage.Damageable.TryTakeDamage(ref damage, this);
+        if (result && Targeting.ForDamage.Damageable is Character character) AttackPassed(shouldIncreaseCounter, character);
     }
 
     protected override void ClearData()
     {
         _wasDamageApplied = false;
-        ClearTarget();
+        Targeting.ClearTarget();
+        Targeting.ClearTempTarget();
         AnimCastEnded();
     }
 

@@ -29,7 +29,7 @@ public class Sleep : AbstractCharacterState
     {
         Debug.Log("������ ��������� � ���");
 
-        _characterState = character;
+        characterState = character;
         _source = personWhoMadeBuff;
         _duration = durationToExit;
         _baseDuration = durationToExit;
@@ -42,8 +42,8 @@ public class Sleep : AbstractCharacterState
 
         character.Character.Health.DamageTaken += OnAnyDamage;
 
-        MoveComponent moveComponent = _characterState.Character.Move;
-        _skillManager = _characterState.Character.Abilities;
+        MoveComponent moveComponent = characterState.Character.Move;
+        _skillManager = characterState.Character.Abilities;
 
         if (moveComponent != null)
         {
@@ -100,11 +100,11 @@ public class Sleep : AbstractCharacterState
     {
         Debug.Log("������ ��� ����������");
 
-        _characterState.gameObject.layer = _initialLayer;
+        characterState.gameObject.layer = _initialLayer;
 
         //if (_giveInnerDarkness) for (int i = 0; i < 3; i++) CmdStateInnerDarkness();
 
-        MoveComponent moveComp = _characterState.Character.Move;
+        MoveComponent moveComp = characterState.Character.Move;
         if (moveComp != null)
         {
             moveComp.IsSelect = _previousIsSelect;
@@ -115,11 +115,11 @@ public class Sleep : AbstractCharacterState
 
         foreach (var skill in _disabledSkills) skill.Disactive = false;
 
-        _characterState.Character.Health.DamageTaken -= OnAnyDamage;
+        characterState.Character.Health.DamageTaken -= OnAnyDamage;
 
         _disabledSkills.Clear();
-        _characterState.StateIcons.RemoveItemByState(State);
-        _characterState.RemoveState(this);
+        characterState.StateIcons.RemoveItemByState(State);
+        characterState.RemoveState(this);
 
     }
 
@@ -132,7 +132,7 @@ public class Sleep : AbstractCharacterState
     private void OnAnyDamage(Damage damage, Skill fromSkill) => turnOff = true;
 
     [Command] private void CmdStateInnerDarkness() => ClientRpcStateInnerDarkness();
-    [ClientRpc] private void ClientRpcStateInnerDarkness() { _characterState.AddStateLogic(States.InnerDarkness, 13, 0f, Schools.None, _source.gameObject, null); }
+    [ClientRpc] private void ClientRpcStateInnerDarkness() { characterState.AddStateLogic(States.InnerDarkness, 13, 0f, Schools.None, _source.gameObject, null); }
 
 
     //private bool ShouldApplyInnerDarkness()
