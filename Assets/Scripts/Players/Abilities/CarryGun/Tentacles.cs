@@ -85,7 +85,7 @@ public class Tentacles : Skill
     public void ProtectiveCooconSpawnAttack(bool value) => _isProtectiveCooconSpawnAttack = value;
     public void SpawnGetomir(bool value) => IsSpawnGetomir = value;
     public void SpawnSpike(bool value) => _isSpawnSpike = value;
-    public void WombSpreadsMucus(bool value) => _isWombSpreadsMucus = value;
+    public void WombSpreadsMucus(bool value) => IsWombSpreadsMucus = value;
     #endregion
 
     public TentacleProjectile CurrentTentacle { get => _currentTentacle; set => _currentTentacle = value; }

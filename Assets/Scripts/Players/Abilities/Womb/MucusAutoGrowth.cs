@@ -160,7 +160,6 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
 
     private void HandleMucusGrowthChanged(bool active)
     {
-
         if (active)
         {
             if (_spawnRoutine == null) _spawnRoutine = StartCoroutine(ApplyMucusPeriodically());
@@ -178,7 +177,7 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
         }
     }
 
-    [Server]
+    [Command]
     private void CmdSpawnOrActivateMucus(Vector3 spawnPosition, int circleIndex)
     {
         GameObject instance = Instantiate(mucusPrefab, spawnPosition, Quaternion.identity);
