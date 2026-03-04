@@ -15,8 +15,8 @@ public class SpittingAcid : SkillCreatureCarryGun
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(dmgValue),
-            Type = DamageType,
-            PhysicAttackType = AttackRangeType
+            Type = Info.DamageType,
+            PhysicAttackType = Info.AttackRangeType
         };
 
         CmdApplyDamage(damage, target.gameObject);

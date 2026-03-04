@@ -33,7 +33,7 @@ public abstract class SkillCreatureCarryGun : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
-    protected override bool IsCanCast => GetTarget() != null;
+    protected override bool IsCanCast => Targeting.GetTarget() != null;
 
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
@@ -41,20 +41,20 @@ public abstract class SkillCreatureCarryGun : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0]);
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callback)
     {
-        while (GetTempTarget() == null)
+        while (Targeting.GetTempTarget() == null)
         {
             if (GetMouseButton)
             {
-                FindTarget(TargetSearchRadius, GetMousePoint());
+                Targeting.FindTempTarget(Targeting.GetMousePoint(), TargetSearchRadius);
 
-                if (GetTempTarget() is IDamageable damageable)
+                if (Targeting.GetTempTarget() is IDamageable damageable)
                 {
-                    if (IsAllyTarget(damageable) || damageable as Character == Hero) ClearTempTarget();
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
                     else break;
                 }
             }
@@ -62,10 +62,10 @@ public abstract class SkillCreatureCarryGun : Skill
             yield return null;
         }
 
-        SetTarget(GetTempTarget());
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
 
         TargetInfo info = new();
-        info.AddTarget(GetTarget());
+        info.AddTarget(Targeting.GetTarget()?.Character);
         callback?.Invoke(info);
     }
 
@@ -77,7 +77,7 @@ public abstract class SkillCreatureCarryGun : Skill
     {
         CancelWork();
         _moveActive = true;
-        _currentTarget = GetTarget() as Character;
+        _currentTarget = Targeting.GetTarget()?.Character;
 
         float distance = Vector3.Distance(transform.position, _currentTarget.transform.position);
 
@@ -181,8 +181,8 @@ public abstract class SkillCreatureCarryGun : Skill
 
     protected override void ClearData()
     {
-        ClearTarget();
-        ClearTempTarget();
+        Targeting.ClearTarget();
+        Targeting.ClearTempTarget();
         _currentTarget = null;
 
         Hero?.Move?.SetCanMove(true);

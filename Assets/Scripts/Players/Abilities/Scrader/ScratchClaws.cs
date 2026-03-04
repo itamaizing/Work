@@ -17,8 +17,8 @@ public class ScratchClaws : SkillCreatureCarryGun
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(dmgValue),
-            Type = DamageType,
-            PhysicAttackType = AttackRangeType
+            Type = Info.DamageType,
+            PhysicAttackType = Info.AttackRangeType
         };
 
         if (UnityEngine.Random.value <= bleedingChance) target.CharacterState.CmdAddState(States.Bleeding, bleedingDuration, 1f, Hero.gameObject, Name);

@@ -62,7 +62,6 @@ public class RetaliationCocoon : NetworkBehaviour
         {
             Value = value,
             Type = type,
-            School = _protectiveCocoon.SkillHero.School
         };
 
         _protectiveCocoon.SkillHero.ApplyDamage(retaliation, target);
