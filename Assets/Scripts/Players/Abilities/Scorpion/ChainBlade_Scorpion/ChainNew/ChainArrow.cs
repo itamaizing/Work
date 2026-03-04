@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using UnityEngine;
 using System;
@@ -83,7 +83,7 @@ public class ChainArrow : Projectiles
         if (_isReturning) return;
 
         if (other.gameObject == _dad.gameObject) return;
-        if (((1 << other.gameObject.layer) & _skill.TargetsLayers.value) == 0) return;
+        if (((1 << other.gameObject.layer) & _skill.Targeting.Layer.value) == 0) return;
 
         if (other.TryGetComponent<Character>(out Character character))
         {

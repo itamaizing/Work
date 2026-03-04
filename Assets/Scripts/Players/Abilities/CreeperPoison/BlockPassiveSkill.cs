@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
@@ -86,7 +86,7 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
     private void ResetDisactive()
     {
         _attacker = null;
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
         Disactive = true;
         _boostWindow = null;

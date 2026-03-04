@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class SelfHarmState : AbstractCharacterState
@@ -21,7 +21,7 @@ public class SelfHarmState : AbstractCharacterState
 
         foreach (var skill in characterState.Character.Abilities.Abilities)
         {
-            if (skill.AbilityForm == AbilityForm.Magic)
+            if (skill.Info.AbilityForm == AbilityForm.Magic)
             {
                 skill.PreparingStarted += OnMagicSpellStartPreparing;
                 skill.PreparingSuccess += OnMagicSpellEndCast;
@@ -44,7 +44,7 @@ public class SelfHarmState : AbstractCharacterState
     {
         foreach (var skill in characterState.Character.Abilities.Abilities)
         {
-            if (skill.AbilityForm == AbilityForm.Magic)
+            if (skill.Info.AbilityForm == AbilityForm.Magic)
             {
                 skill.PreparingStarted -= OnMagicSpellStartPreparing;
                 skill.PreparingSuccess -= OnMagicSpellEndCast;
@@ -79,7 +79,7 @@ public class SelfHarmState : AbstractCharacterState
     {
         var isNeedUseBuff = Random.Range(0f, 100f) <= _currentStackChance;
 
-        if (skill.School == Schools.Light && isNeedUseBuff)
+        if (skill.Info.School == Schools.Light && isNeedUseBuff)
         {
             skill.Buff.CastSpeed.IncreasePercentage(CastTimeReductionMultiplier);
             Debug.Log("[SelfHarm] Start preparing");
@@ -91,7 +91,7 @@ public class SelfHarmState : AbstractCharacterState
     {
         var isNeedUseBuff = Random.Range(0f, 100f) <= _currentStackChance;
 
-        if (skill.School == Schools.Light && isNeedUseBuff)
+        if (skill.Info.School == Schools.Light && isNeedUseBuff)
         {
             _currentStackChance = 0f;
             skill.Buff.CastSpeed.ReductionPercentage(CastTimeReductionMultiplier);

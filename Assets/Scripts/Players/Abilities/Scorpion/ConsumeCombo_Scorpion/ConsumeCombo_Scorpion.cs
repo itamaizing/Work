@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -129,7 +129,7 @@ public class ConsumeCombo_Scorpion : Skill
     {
         if (!isConsumeCombo_ScorpionPhysicStateClear || !isServer) return;
 
-        List<Character> targetsInRadius = Physics.OverlapSphere(transform.position, Radius, TargetsLayers)
+        List<Character> targetsInRadius = Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.Layer)
             .Select(c => c.GetComponent<Character>())
             .Where(c => c != null && c.CharacterState.CheckForState(States.ComboState))
             .ToList();
@@ -159,4 +159,4 @@ public class ConsumeCombo_Scorpion : Skill
     protected override IEnumerator CastJob() => null;
     protected override void ClearData() { }
     public override void LoadTargetData(TargetInfo targetInfo) => throw new NotImplementedException();
-}
+}

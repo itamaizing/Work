@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SpellMoveSpisnaciderTo : SpellMoveCreatureTo
 {
@@ -14,8 +14,8 @@ public class SpellMoveSpisnaciderTo : SpellMoveCreatureTo
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(randomDamage),
-            Type = DamageType,
-            PhysicAttackType = AttackRangeType
+            Type = Info.DamageType,
+            PhysicAttackType = Info.AttackRangeType
         };
 
         CmdApplyDamage(damage, target.gameObject);

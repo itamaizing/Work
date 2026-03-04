@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
@@ -272,7 +272,7 @@ public class TentacleProjectile : NetworkBehaviour
 
         _skill.ApplyDamage(mainDamage, _target.gameObject);
 
-        Collider[] nearbyEnemies = Physics.OverlapSphere(_target.transform.position, 1f, _skill.TargetsLayers);
+        Collider[] nearbyEnemies = Physics.OverlapSphere(_target.transform.position, 1f, _skill.Targeting.Layer);
 
         foreach (var collider in nearbyEnemies)
         {
@@ -341,6 +341,6 @@ public class TentacleProjectile : NetworkBehaviour
     //private void SetPhysicalSkillsDisactive(bool state)
     //{
     //    if (_target != null && _target.Abilities != null)
-    //        foreach (Skill skill in _target.Abilities.Abilities) if (skill.AbilityForm == AbilityForm.Physical) skill.Disactive = state;
+    //        foreach (Skill skill in _target.Abilities.Abilities) if (skill.Info.AbilityForm == Info.AbilityForm.Physical) skill.Disactive = state;
     //}
 }

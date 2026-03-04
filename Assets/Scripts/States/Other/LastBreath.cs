@@ -6,7 +6,7 @@ public class LastBreath : AbstractCharacterState
 {
 	private Character _character;
 	private float _durationToExit = 0;
-	private AttributeModifiers _modif;
+	private AttributeModifier _modif;
 
 	public override States State => States.LastBreath;
 	public override StateType Type => StateType.Magic;

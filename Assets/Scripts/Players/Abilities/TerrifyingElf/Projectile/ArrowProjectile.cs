@@ -51,7 +51,7 @@ public class ArrowProjectile : Projectiles
 
     private bool IsEnemyByLayer(GameObject target)
     {
-        return ((1 << target.layer) & _skill.TargetsLayers.value) != 0;
+        return ((1 << target.layer) & _skill.Targeting.Layer.value) != 0;
     }
 
     private void Update()
@@ -64,7 +64,7 @@ public class ArrowProjectile : Projectiles
         if (_startPosition != Vector3.zero)
         {
             float distanceTravelled = Vector3.Distance(_startPosition, transform.position);
-            if (distanceTravelled > _skill.CastLength)
+            if (distanceTravelled > _skill.AreaInfo.CastLength)
             {
                 Destroy(gameObject);
             }
@@ -130,7 +130,7 @@ public class ArrowProjectile : Projectiles
             if (!inAstral)
             {
                 ApplyDamage(_damage, _damageTypePhysics, collider.gameObject);
-                if (TryApplyDamage(_damageTypePhysics, _skill.AttackRangeType, collider.gameObject)) return;
+                if (TryApplyDamage(_damageTypePhysics, _skill.Info.AttackRangeType, collider.gameObject)) return;
             }
 
             float totalMagDamage = _magDamage;
@@ -138,7 +138,7 @@ public class ArrowProjectile : Projectiles
 
             Debug.Log($"totalMagDamage: {totalMagDamage}");
 
-            ApplyDamage(totalMagDamage, _skill.DamageType, collider.gameObject);
+            ApplyDamage(totalMagDamage, _skill.Info.DamageType, collider.gameObject);
 
             if (collider.TryGetComponent<Character>(out Character character)) character.CharacterState.AddState(States.InnerDarkness, _duration, 0, _skill.Hero.gameObject, _skill.name);
         }

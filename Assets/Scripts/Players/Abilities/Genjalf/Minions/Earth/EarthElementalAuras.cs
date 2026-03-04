@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
@@ -10,7 +10,7 @@ namespace Gangdollarff.EarthElemental
         private void Start()
         {
             var chatacter = GetComponent<Character>();
-            chatacter.CharacterState.CmdAddState(States.PowerOfEarth, 0, 0, chatacter.gameObject, name);
+            //chatacter.CharacterState.CmdAddState(States.PowerOfEarth, 0, 0, chatacter.gameObject, name);
             chatacter.CharacterState.CmdAddState(States.EarthsHealth, 0, 0, chatacter.gameObject, name);
         }
     }
@@ -18,7 +18,7 @@ namespace Gangdollarff.EarthElemental
     public class PowerOfEarth : AuraState
     {
         private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Others };
-        private int _stanChance = 10;
+        private int _stanChance = 20;
         private float _stanDuration = 0.1f;
         private float _addDamage = .5f;
 
@@ -64,7 +64,9 @@ namespace Gangdollarff.EarthElemental
     public class EarthsHealth : AuraState
     {
         private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Strengthening };
+        private Dictionary<Character, float> _charactersMaxHealth = new();
         private float _procent = 0.02f;
+        private float _maxValuePercent = 0.1f;
 
         public override float Distance => 6;
         public override float EffectRate => 0.2f;
@@ -75,12 +77,18 @@ namespace Gangdollarff.EarthElemental
 
         public override void EffectOnEnter(Character character)
         {
-            character.Health.IncreaseRegen(character.Health.MaxValue * _procent);
+            float initialMaxHealth = character.Health.MaxValue;
+            _charactersMaxHealth.Add(character,initialMaxHealth);
+            
+            character.Health.IncreaseRegen(_charactersMaxHealth[character] * _procent);
+            //character.Health.ChangedMaxValue(_charactersMaxHealth[character] * _maxValuePercent); //TODO: Переписать на атрибут
         }
 
         public override void EffectOnExit(Character character)
         {
-            character.Health.DecreaseRegen(character.Health.MaxValue * _procent);
+            character.Health.DecreaseRegen(_charactersMaxHealth[character] * _procent);
+            //character.Health.ChangedMaxValue(-(_charactersMaxHealth[character] * _maxValuePercent)); //TODO: Переписать на атрибут
+            _charactersMaxHealth.Remove(character);
         }
 
         public override void EffectOnStay(List<Character> characters)

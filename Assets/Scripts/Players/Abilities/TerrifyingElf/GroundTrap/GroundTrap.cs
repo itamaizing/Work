@@ -43,13 +43,13 @@ public class GroundTrap : Skill
                 if (float.IsPositiveInfinity(point.x)) return false;
 
                 float distantion = Vector3.Distance(transform.position, point);
-                return distantion <= Radius && distantion >= minDistanceRadius;
+                return distantion <= AreaInfo.Radius && distantion >= minDistanceRadius;
             }
 
             if (!float.IsPositiveInfinity(_startPosition.x))
             {
                 float distantion = Vector3.Distance(transform.position, _startPosition);
-                return distantion <= Radius && distantion >= minDistanceRadius;
+                return distantion <= AreaInfo.Radius && distantion >= minDistanceRadius;
             }
 
             return true;
@@ -170,7 +170,7 @@ public class GroundTrap : Skill
             if (float.IsPositiveInfinity(mousePos.x)) { yield return null; continue; }
 
             float dist = Vector3.Distance(transform.position, mousePos);
-            bool inOuterRadius = dist <= Radius;
+            bool inOuterRadius = dist <= AreaInfo.Radius;
             bool outOfInnerRing = dist >= minDistanceRadius;
             //bool validPlacement = inOuterRadius && outOfInnerRing;
 

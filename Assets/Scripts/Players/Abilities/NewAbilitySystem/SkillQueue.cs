@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -27,7 +27,7 @@ public class SkillQueue : MonoBehaviour
         
         if (_skills.TryPeek(out Skill skill))
         {
-            if (skill.SkillType == SkillType.Zone)
+            if (skill.Info.SkillType == SkillType.Zone)
                 Draw(skill);
 
             if (skill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
@@ -75,7 +75,12 @@ public class SkillQueue : MonoBehaviour
 
     public bool TryCancel(bool isForceCancel = false)
     {
-        if (_currentSkill != null)
+        return TryCancel(_currentSkill, isForceCancel);
+    }
+    
+    public bool TryCancel(Skill skillForCancelling,bool isForceCancel = false)
+    {
+        if (skillForCancelling != null)
         {
             try
             {
@@ -140,7 +145,7 @@ public class SkillQueue : MonoBehaviour
         for (int i = 0; i < info.Count; i++) vector3s[i] = new Vector3(info[i].x, info[i].y + 0.1f, info[i].z);
 
         _skillRenderer.StartDrawAllLineForZone(vector3s);
-        _skillRenderer.DrawRadius(skill.Radius);
+        _skillRenderer.DrawRadius(skill.AreaInfo.Radius);
     }
 
     private Skill RemoveFromQueue()
@@ -150,7 +155,7 @@ public class SkillQueue : MonoBehaviour
         var temp = _skills.Dequeue();
         SkillDeleted?.Invoke(temp);
 
-        if (temp.SkillType == SkillType.Zone)
+        if (temp.Info.SkillType == SkillType.Zone)
         {
             _skillRenderer.StopDrawRadius();
             _skillRenderer.StopDrawAllLineForZone();
@@ -158,6 +163,43 @@ public class SkillQueue : MonoBehaviour
 
         return temp;
     }
+
+    public void RemoveNeededSkillFromQueue(Skill neededSkill)
+    {
+        if (_skills.Count == 0) return;
+
+        Queue<Skill> tempQueue = new Queue<Skill>();
+        
+        while (_skills.Count > 0)
+        {
+            Skill skill = _skills.Dequeue();
+            
+            if (ShouldRemoveSkill(skill, neededSkill))
+            {
+                TryCancel(skill,true);
+                
+                SkillDeleted?.Invoke(skill);
+
+                skill.ClearQueueTarget();
+            }
+            else
+            {
+                tempQueue.Enqueue(skill);
+            }
+        }
+        
+        _skills = tempQueue;
+    }
+    
+    private bool ShouldRemoveSkill(Skill skill, Skill neededSkill)
+    {
+        if (skill.GetType() == neededSkill.GetType())
+            return true;
+
+        return false;
+    }
+
+
     private void OnCastEnded()
     {
 

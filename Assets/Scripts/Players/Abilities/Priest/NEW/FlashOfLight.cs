@@ -1,9 +1,9 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
 
-public class FlashOfLight : Skill
+public class FlashOfLight : Skill,IPolaritySwitchable
 {
     [Header("Flash of Light Settings")]
     [SerializeField] private float _healAmount = 35f;
@@ -16,7 +16,9 @@ public class FlashOfLight : Skill
     [SerializeField] private AbilityInfo darkInfo;
 
     [SerializeField] private AudioClip audioClip;
-    [SerializeField] private ReversePolarity reversePolarity;
+    [SerializeField] private ReversePolarity _reversePolarity;
+
+    private float _clickRadius = 0.5f;
 
     private bool _spiritEnergyTalent;
 
@@ -32,16 +34,21 @@ public class FlashOfLight : Skill
     public event Action OnModeChange;
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
 
-    protected override bool IsCanCast => IsCanCastCheck();
+    private bool IsAllyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Allies");
+    private bool IsEnemyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+    
+    //protected override bool IsCanCast => IsCanCastCheck();
 
-    private bool IsCanCastCheck()
-    {
-        if (GetTargetCharacter() == null) return false;
+    //private bool IsCanCastCheck()
+    //{
+    //    if (Targeting.GetTarget()?.Character == null) return false;
 
-        if (isLightMode) return (GetTargetCharacter() is Character character && character == Hero) || GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Allies");
-        else
-            return GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Enemy");
-    }
+    //    if (isLightMode)
+    //        return (Targeting.GetTarget()?.Character is Character character &&character == Hero) ||
+    //            Targeting.GetTarget()?.Character.gameObject.layer == LayerMask.NameToLayer("Allies");
+    //    else
+    //        return Targeting.GetTarget()?.Character.gameObject.layer == LayerMask.NameToLayer("Enemy");
+    //}
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("Spell");
     protected override int AnimTriggerCast => 0;
@@ -56,7 +63,7 @@ public class FlashOfLight : Skill
     }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 
     private void OnEnable()
@@ -94,10 +101,10 @@ public class FlashOfLight : Skill
 
     private void UpdateMode()
     {
-        Radius = isLightMode ? _lightRange : _darkRange;
-        School = isLightMode ? Schools.Light : Schools.Dark;
+        AreaInfo.Radius = isLightMode ? _lightRange : _darkRange;
+        Info.School = isLightMode ? Schools.Light : Schools.Dark;
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
-        TargetsLayers = isLightMode
+        Targeting.Layer = isLightMode
             ? LayerMask.GetMask("Allies", "Player")
             : LayerMask.GetMask("Enemy");
         Hero.Abilities.SkillPanelUpdate();
@@ -106,42 +113,69 @@ public class FlashOfLight : Skill
     {
        // _previousTarget = null;
 
-        while (GetTempTargetCharacter() == null)
+        while (Targeting.GetTempTarget()?.Character == null)
         {
-            if (Input.GetMouseButton(0))
+            if (GetMouseButton)
             {
-                FindTargetCharacter(true);
-                //_target = GetRaycastTarget(true);
+                Vector3 clickPoint = Targeting.GetMousePoint();
 
-                if (GetTempTargetCharacter() != null && GetTempTargetCharacter() is Character characte && IsValidTarget(characte)) SetTarget((ITargetable)characte);
-                else ClearTarget();
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
+                //_target = GetRaycastTarget(true);
+                Debug.Log(Targeting.GetTempTarget()?.Object);
+                if (Targeting.GetTempTarget()?.Character is Character character)
+                {
+                    if (Targeting.GetTempTarget()?.Character != null &&
+                        (IsEnemyTarget(character) && isLightMode) || (IsAllyTarget(character) && !isLightMode))
+                    {
+                        Targeting.ClearTempTarget();
+                        Debug.Log("Wrong");
+                    }
+                    else
+                    {
+                        Debug.Log("Right");
+                        Targeting.GetTempTarget().Character.SelectedCircle.IsActive = true;
+                        _hero.Move.LookAtTransform(Targeting.GetTempTarget()?.Character.transform);
+                    }
+                }
 
             }
             yield return null;
         }
-        SetTarget(GetTempTargetCharacter());
+        Debug.Log("Setting Target");
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTargetCharacter());
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() == null || !IsCanCast) yield break;
+        Debug.Log("CastJob");
+        if (Targeting.GetTarget()?.Character == null || !IsCanCast) yield break;
 
-        if (TryPayCost())
+        var target = Targeting.GetTarget()?.Character;
+        
+        if (isLightMode && IsEnemyTarget(target) || !isLightMode && !IsEnemyTarget(target))
         {
-            CmdPlayShootSound();
-
-            if (reversePolarity != null && Hero.CharacterState.CheckForState(States.ReversePolarity))
-            {
-                reversePolarity.SwitchSpells();
-                reversePolarity.RemoveReversePolarityEffect();
-            }
-
-                if (isLightMode) HandleFlashOfLight();
-                else HandleFlashOfDarkness();
+            ResetCooldown();
+            yield break;
         }
+
+        /*if (TryPayCost())
+        {*/
+
+        CmdPlayShootSound();
+
+        if (isLightMode) HandleFlashOfLight();
+        else HandleFlashOfDarkness();
+
+        if (_reversePolarity != null && Hero.CharacterState.CheckForState(States.ReversePolarity))
+        {
+            _reversePolarity.SwitchSpells();
+            _reversePolarity.RemoveReversePolarityEffect();
+            _reversePolarity.SetCooldownFromSpell();
+        }
+        //}
 
         yield return null;
     }
@@ -154,12 +188,13 @@ public class FlashOfLight : Skill
             _lastTalentTime = Time.time;
         }
 
-        Heal(GetTargetCharacter());
+        Heal(Targeting.GetTarget()?.Character);
     }
 
     private void HandleFlashOfDarkness()
     {
-        Damage(GetTargetCharacter());
+        Debug.Log("Damaging" + Targeting.GetTarget()?.Character.gameObject);
+        Damage(Targeting.GetTarget()?.Character);
     }
 
     private void Heal(Character target)
@@ -198,7 +233,7 @@ public class FlashOfLight : Skill
             Value = Buff.Damage.GetBuffedValue(_damageAmount),
             Type = DamageType.Physical,
             PhysicAttackType = AttackRangeType.RangeAttack,
-            School = this.School,
+            School = this.Info.School,
         };
 
         CmdApplyDamage(damage, target.gameObject);
@@ -233,7 +268,7 @@ public class FlashOfLight : Skill
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
     }
 }

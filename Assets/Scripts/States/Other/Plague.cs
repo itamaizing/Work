@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,7 +33,7 @@ public class Plague : RefreshingState
 		{
 			int damage = Random.Range(1, 4);
 
-			//MakeDamage(damage, _characterState.gameObject);
+			//MakeDamage(damage, characterState.gameObject);
 
 			Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(characterState.transform.position, 5);
 			foreach (var enemy in enemyDetected)
@@ -51,11 +51,11 @@ public class Plague : RefreshingState
 
 			/*if (Random.Range(0, 100) < 50 && _personWhoMadeBuff != null)
 			{
-				/*DeathSpiral deathSpiral = (DeathSpiral)_characterState.personWhoShoted.Abilities.GetAbilityByName("DeathSpiral");
+				/*DeathSpiral deathSpiral = (DeathSpiral)characterState.personWhoShoted.Abilities.GetAbilityByName("DeathSpiral");
 				if(deathSpiral != null) 
 				{
 					Debug.Log("ADD CHRAGE");
-					deathSpiral.AddCharge();
+					deathSpiral.RestoreCharge();
 				}
 			}*/
 
@@ -102,7 +102,7 @@ public class Plague : RefreshingState
 			Type = DamageType.Magical,
 			PhysicAttackType = AttackRangeType.RangeAttack,
 		};
-		//_characterState.Character.Health.TryUse(10);
+		//characterState.Character.Health.TryUse(10);
 		Character charac = gm.gameObject.GetComponent<Character>();
 		charac.Health.TryUse(10);
 	}
@@ -116,7 +116,7 @@ public class Plague : RefreshingState
 		{
 			if (collider.TryGetComponent<Character>(out var enemy) && collider.gameObject != characterState.gameObject)
 			{
-				//enemy.Health.TryTakeDamage(damage / 2, DamageType.Magical, AttackRangeType.RangeAttack);
+				//enemy.Health.TryTakeDamage(damage / 2, Info.DamageType.Magical, Info.AttackRangeType.RangeAttack);
 				enemy.CharacterState.CmdAddState(States.Plague, 4, 0, null, null);
 			}
 		}

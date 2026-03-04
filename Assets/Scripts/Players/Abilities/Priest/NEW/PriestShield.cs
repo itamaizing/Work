@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,17 +71,15 @@ public class PriestShield : Skill
     //private Character _targetCharacter;
     private float _nextAvailableTime;
     public bool isLightMode = true;
-
-    protected override bool IsCanCast => IsCanCastCheck();
+    private float _clickRadius = 0.5f;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("PriestShield");
     protected override int AnimTriggerCast => 0;
-
-    private bool IsCanCastCheck()
-    {
-        if (GetTargetCharacter() == null || Time.time < _nextAvailableTime) return false;
-        return Vector3.Distance(transform.position, GetTargetCharacter().transform.position) <= Radius;
-    }
+    
+    private bool IsAllyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Allies");
+    private bool IsEnemyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+    
+    public override bool IsPayCostStartCooldown => false;
 
     public event Action OnModeChange;
 
@@ -98,7 +96,7 @@ public class PriestShield : Skill
         Hero.DamageTracker.OnHealTracked += TrackHealDone;
         UpdateMode();
 
-        foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.School == Schools.Discipline))
+        foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.Info.School == Schools.Discipline))
         {
             skill.CastEnded += AddDisciplineStack;
         }
@@ -111,7 +109,7 @@ public class PriestShield : Skill
         Hero.Health.DamageTaken -= TrackPhysDamage;
         Hero.DamageTracker.OnHealTracked -= TrackHealDone;
 
-        foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.School == Schools.Discipline))
+        foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.Info.School == Schools.Discipline))
         {
             skill.CastEnded -= AddDisciplineStack;
         }
@@ -119,7 +117,7 @@ public class PriestShield : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 
     public void SwitchMode()
@@ -163,7 +161,7 @@ public class PriestShield : Skill
     private void TrackHealDone(Heal heal)
     {
         if (heal.DamageableSkill == null) return;
-        if (heal.DamageableSkill.School != Schools.Light) return;
+        if (heal.DamageableSkill.Info.School != Schools.Light) return;
 
         if (Time.time - _lastHealingTime > PhysBoostTimeWindow)
         {
@@ -185,16 +183,19 @@ public class PriestShield : Skill
     {
         CastDeley = isLightMode ? allyCastTime : darkCastTime;
         CooldownTime = isLightMode ? cooldownLight : cooldownDark;
-        School = isLightMode ? Schools.Light : Schools.Dark;
-        TargetsLayers = isLightMode ? LayerMask.GetMask("Allies") : LayerMask.GetMask("Enemy");
+        Info.School = isLightMode ? Schools.Light : Schools.Dark;
+        Targeting.Layer = isLightMode ? LayerMask.GetMask("Allies") : LayerMask.GetMask("Enemy");
     }
 
     //DisciplineTalent_4
     public void EnableTalentPhysicalShieldBoost(bool value)
     {
         _talentPhysicalShieldBoostActive = value;
-        if (!value)
+    
+        if (value) EnableSkillBoost();
+        else
         {
+            DisableSkillBoost();
             _physDamageAccumulator = 0;
         }
     }
@@ -245,33 +246,42 @@ public class PriestShield : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-       // _targetCharacter = null;
+        // _targetCharacter = null;
+        TargetInfo targetInfo = new();
 
-        while (GetTargetCharacter() == null)
+        while (Targeting.GetTarget()?.Character == null)
         {
-            if (Input.GetMouseButton(0))
+            if (GetMouseButton)
             {
-                FindTargetCharacter(true);
-                //_target = GetRaycastTarget(true);
+                Vector3 clickPoint = Targeting.GetMousePoint();
 
-                if (GetTargetCharacter() is Character character && character == transform.GetComponentInParent<Character>())
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
+
+                if (Targeting.GetTempTarget().Character is Character character)
                 {
-                   // _targetCharacter = character;
-                    _absorbBonus = 0;
-                    CastDeley = selfCastTime;
+                    if (Targeting.GetTempTarget().Character != null && (Targeting.GetTempTarget(character).Character && isLightMode) || (Targeting.GetTempTarget(character).Character && !isLightMode))
+                    {
+                        Targeting.ClearTempTarget();
+                    }
+                    else
+                    {
+                        Targeting.GetTempTarget().Character.SelectedCircle.IsActive = true;
+                        _hero.Move.LookAtTransform(Targeting.GetTempTarget().Character.transform);
+                    }
                 }
             }
+
             yield return null;
         }
-
-        TargetInfo targetInfo = new();
-        targetInfo.AddTarget(GetTargetCharacter());
+        
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() == null || !IsCanCast) yield break;
+        if (Targeting.GetTarget()?.Character == null || !IsCanCast) yield break;
         Cast();
 
         yield return null;
@@ -279,7 +289,7 @@ public class PriestShield : Skill
 
     private void Cast()
     {
-        _nextAvailableTime = Time.time + CooldownTime;
+        //_nextAvailableTime = Time.time + CooldownTime;
 
         CmdPlayShootSound();
 
@@ -295,33 +305,30 @@ public class PriestShield : Skill
 
     private void HandleLightShield()
     {
-        if (GetTargetCharacter() == null) return;
-        if (!TryPayCost(manaCostLight)) return;
+        var target = Targeting.GetTarget()?.Character;
+        if (target == null) return;
 
-        _absorbBonus = CalculateTotalAbsorbBonus();
+        var state = target.GetComponent<CharacterState>();
+        if (state.CheckForState(States.TiredSoul))
+        {
+            return;
+        }
 
-        var characterState = GetTargetCharacter().GetComponent<CharacterState>();
-        var duration = _talentTiredSoulActive && characterState.CheckForState(States.TiredSoul)
-            ? lightShieldDuration * TiredSoulEffectPercentage
-            : lightShieldDuration;
+        if (!TryPayCost(manaCostLight, startCooldown: false)) return;
 
-        var absorbDamage = _talentTiredSoulActive && characterState.CheckForState(States.TiredSoul)
-            ? (absorbAmount + _absorbBonus) * TiredSoulEffectPercentage
-            : absorbAmount + _absorbBonus;
+        IncreaseSetCooldown(CooldownTime);
 
-        CmdAddDebaff(States.LightShield, States.TiredSoul, duration, tiredSoulDuration, absorbDamage, GetTargetCharacter().gameObject, Name);
-
-        Debug.Log($"[PriestShield] Final Absorb = {absorbDamage} (Base: {absorbAmount}, Bonus: {_absorbBonus})");
+        CmdAddDebaff(States.LightShield, States.TiredSoul, lightShieldDuration, tiredSoulDuration, absorbAmount, target.gameObject, Name);
     }
 
     private void HandleDarkShield()
     {
-        if (GetTargetCharacter() == null) return;
+        if (Targeting.GetTarget()?.Character == null) return;
 
         if (!TryPayCost(manaCostDark)) return;
 
-        CmdAddBaff(States.DarkShield, darkShieldDuration, maxDamagePerTick + _damagePerTickBonus, GetTargetCharacter().gameObject, Name);
-        Debug.Log("Dark Shield applied to " + GetTargetCharacter().name);
+        CmdAddBaff(States.DarkShield, darkShieldDuration, maxDamagePerTick + _damagePerTickBonus, Targeting.GetTarget()?.Character.gameObject, Name);
+        Debug.Log("Dark Shield applied to " + Targeting.GetTarget()?.Character.name);
     }
 
     private float CalculateTotalAbsorbBonus()
@@ -448,7 +455,7 @@ public class PriestShield : Skill
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
         _damagePerTickBonus = 0;
         _absorbBonus = 0;

@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -11,14 +11,14 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler
     [SerializeField] private TMProLocalizer _attributeValue;
 
     //private Attribute _currentAttribute;
-    private Attributes _currentAttributes;
-    private List<AttributeModifiers> _modifs = new();
+    private Attribute _currentAttributes;
+    private List<AttributeModifier> _modifs = new();
 
     //public event UnityAction OnValueChange;
     public event UnityAction<string> OnPointerEntered;
     public event UnityAction OnPointerExited;
 
-    public void Fills(Attributes attribute)
+    public void Fills(Attribute attribute)
     {
         _currentAttributes = attribute;
 
@@ -33,9 +33,7 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler
 
     public void Add()
     {
-        var modif = new AttributeModifiers();
-        modif.Value = 1;
-        modif.Type = ModifierType.MenuFlat;
+        var modif = new AttributeModifier(1, ModifierType.MenuFlat);
         _modifs.Add(modif);
 
         SaveManager.Instance.AddAttributesModif(_currentAttributes, modif);

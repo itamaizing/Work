@@ -1,4 +1,5 @@
 {
+    "version": 1,
     "name": "StandardInput",
     "maps": [
         {
@@ -216,7 +217,7 @@
                     "name": "ShowMenu",
                     "type": "Button",
                     "id": "112bcf04-8e2c-4c22-aefc-7382a08ded0c",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "Press",
                     "initialStateCheck": false
@@ -225,7 +226,7 @@
                     "name": "ShowSource",
                     "type": "Button",
                     "id": "ae4f2201-2591-45de-afdc-e1c7c5601321",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -234,9 +235,18 @@
                     "name": "SpaceMouse",
                     "type": "Button",
                     "id": "b70078f0-91e3-4ada-8895-f72efad55c5a",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ShowStatistics",
+                    "type": "Button",
+                    "id": "c864a8e0-3f35-4deb-9a16-604e30367a0c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
                     "initialStateCheck": false
                 }
             ],
@@ -658,6 +668,39 @@
                     "action": "ShowSource",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "One Modifier",
+                    "id": "8783c126-ae7c-4763-a1dd-406cb5cf09dc",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShowStatistics",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "ada38115-879d-4630-8b65-d0de6ec086fc",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShowStatistics",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "787ad5bc-34bb-425d-97f2-11269d7d986c",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShowStatistics",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         }

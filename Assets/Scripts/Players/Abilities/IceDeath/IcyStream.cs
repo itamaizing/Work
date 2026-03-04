@@ -1,8 +1,7 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class IcyStream : Skill
 {
@@ -24,9 +23,9 @@ public class IcyStream : Skill
 
     private bool IsCanCastCheck()
 	{
-		if(GetTargetCharacter() != null)
+		if(Targeting.GetTarget()?.Character != null)
 		{
-			if(Vector3.Distance(GetTargetCharacter().transform.position, _playerLinks.transform.position) > Radius)
+			if(Vector3.Distance(Targeting.GetTarget().Character.transform.position, _playerLinks.transform.position) > AreaInfo.Radius)
 			{
 				return false;
 			}
@@ -36,14 +35,8 @@ public class IcyStream : Skill
 
 	private void Start()
 	{
-		for (int i = 0; i < _playerLinks.Resources.Count; i++)
-		{
-			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)_playerLinks.Resources[i];
-			}
-		}
-	}
+        //_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
+    }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -71,7 +64,7 @@ public class IcyStream : Skill
 			usedEnergy = _energy.CurrentValue;
 		}
 		_energy.CmdUse(usedEnergy);
-		_seriesOfStrikes.MakeHit(null, AbilityForm, 1, usedEnergy, 1);
+		_seriesOfStrikes.MakeHit(null, Info.AbilityForm, 1, usedEnergy, 1);
 	}
 
 	[Command]
@@ -98,20 +91,22 @@ public class IcyStream : Skill
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		//while (_target == null)
-		while (float.IsPositiveInfinity(_mousePos.x))
+		if (_energy == null)
+			_energy = (Energy)Hero.Resources[ResourceType.Energy];
+        //while (_target == null)
+        while (float.IsPositiveInfinity(_mousePos.x))
 		{
 			if (GetMouseButton)
 			{
-				_mousePos = GetMousePoint();
-				/*if (GetTarget() != null)
+				_mousePos = Targeting.GetMousePoint();
+				/*if (Targeting.GetTarget() != null)
 				{
-					if (GetTarget().character != null)
+					if (Targeting.GetTarget()?.Character != null)
 					{
-						_target = GetTarget().character;
+						_target = Targeting.GetTarget()?.Character;
 					}
 				}*/
-				//_mousePos = GetMousePoint();
+				//_mousePos = Targeting.GetMousePoint();
 			}
 			yield return null;
 		}
@@ -128,7 +123,7 @@ public class IcyStream : Skill
 
 	protected override void ClearData()
 	{
-		ClearTarget();
+		Targeting.ClearTarget();
 		//_target = null;
 		StartCoroutine(TurnOff());
 		//_projectile.gameObject.SetActive(false);

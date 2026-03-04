@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -36,7 +36,7 @@ public class BasePsionicEnergy : Resource, IDamageable
     public PsionicEnergySkill PsionicEnergySkill { get => psionicEnergySkill; set => psionicEnergySkill = value; }
     public float PsionicaDecayTime { get => _psionicaDecayTime; set => _psionicaDecayTime = value; }
 
-    public override void Initialize(Attributes maxValue, Attributes regenValue, CharacterData data)
+    public override void Initialize(Attribute maxValue, Attribute regenValue, CharacterData data)
     {
         base.Initialize(maxValue, regenValue, data);
     }
@@ -50,11 +50,14 @@ public class BasePsionicEnergy : Resource, IDamageable
         _distanceAccumulator = 0f;
     }
 
-    private void Start()
+
+    public override void Init(ResourceAttribute resource)
     {
+        base.Init(resource);
         _psionicaDecayTime = psionicEnergySkill.CooldownTime;
         if (_player != null)
         {
+            _maxValue = _player.AttributeSystem.HPMax.GetValue();
             _player.Health.Shields.Add(this);
         }
     }

@@ -1,4 +1,4 @@
-using Mirror;
+ï»¿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace Gangdollarff
         public bool IsBaffed = false;
 
         public override string AdditionalDescription =>
-            $"Ðàññòîÿíèå òîë÷êà: {AbilityNameBox.ColorOpen}{_pushRange}{AbilityNameBox.ColorEnd}";
+            $"Ð Ð°ÑÑÑ‚Ð¾ÑÐ½Ð¸Ðµ Ñ‚Ð¾Ð»Ñ‡ÐºÐ°: {AbilityNameBox.ColorOpen}{_pushRange}{AbilityNameBox.ColorEnd}";
 
         protected override int AnimTriggerCastDelay => 0;
 
@@ -27,7 +27,7 @@ namespace Gangdollarff
 
         public override void LoadTargetData(TargetInfo targetInfo)
         {
-            
+
         }
 
         public void ChangeMode()
@@ -37,49 +37,54 @@ namespace Gangdollarff
 
         protected override IEnumerator CastJob()
         {
-            var colliders = Physics.OverlapSphere(transform.position, Radius, TargetsLayers);
-
-            Damage damage = new Damage
-            {
-                Value = Buff.Damage.GetBuffedValue(Damage),
-                Type = DamageType,
-                PhysicAttackType = AttackRangeType,
-            };
+            var colliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.Layer);
 
             CmdSetActiveParticle(true);
 
             foreach (var item in colliders)
             {
-                if(item.TryGetComponent(out Character enemy))
+                if (item.TryGetComponent(out Character enemy))
                 {
                     if (IsBaffed)
                         CooldownTime = CooldownTime - 2;
 
-                    CmdApplyDamage(damage, enemy.gameObject);
+                    float casterRadius = ((CapsuleCollider)_hero.Collider).radius;
+                    float enemyRadius = ((CapsuleCollider)enemy.Collider).radius;
 
-                    Vector3 dirForPush;
-                    Vector3 pointForPush;
+                    float centerDist = Vector3.Distance(transform.position, enemy.transform.position);
 
-                    if (IsEnabled)
+                    float edgeDist = Mathf.Max(centerDist - (casterRadius + enemyRadius), 0f);
+
+                    float damageMul = Mathf.Clamp01(1f - edgeDist / AreaInfo.Radius);
+
+                    Damage scaledDamage = new Damage
                     {
-                        dirForPush = (transform.position - enemy.transform.position).normalized;
-                        pointForPush = enemy.transform.position + (dirForPush * _pushRange);
-                    }
-                    else
-                    {
-                        dirForPush = (enemy.transform.position - transform.position).normalized;
-                        pointForPush = enemy.transform.position + (dirForPush * _pushRange);
-                    }
+                        Value = Buff.Damage.GetBuffedValue(Damage) * damageMul,
+                        Type = Info.DamageType,
+                        PhysicAttackType = Info.AttackRangeType,
+                    };
 
-                    CmdMoveTaget(enemy.gameObject, pointForPush, _pushDuration);
+                    CmdApplyDamage(scaledDamage, enemy.gameObject);
+
+                    float finalDist = _pushRange;
+                    float distToPush = finalDist - edgeDist;
+
+                    if (distToPush > 0f)
+                    {
+                        Vector3 dir = (enemy.transform.position - transform.position).normalized;
+                        Vector3 pointForPush = enemy.transform.position + dir * distToPush;
+
+                        CmdMoveTaget(enemy.gameObject, pointForPush, _pushDuration);
+                    }
                 }
             }
+
             yield return null;
         }
 
         protected override void ClearData()
         {
-            
+
         }
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -91,7 +96,7 @@ namespace Gangdollarff
         private void CmdMoveTaget(GameObject target, Vector3 point, float time)
         {
             var enemyMove = target.GetComponent<MoveComponent>();
-            enemyMove.TargetRpcDoMove(point, time);
+            enemyMove.RpcDoPush(point, time);
         }
 
         [Command]

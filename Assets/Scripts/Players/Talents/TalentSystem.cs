@@ -77,17 +77,14 @@ public class TalentSystem : NetworkBehaviour
                 talent.Data.Name = talent.GetType().Name;
                 if (talent.Data.IsOpen)
                 {
-                    //Debug.Log("Talent activated on init " + talent.GetType().Name);
                     talent.Enter();
                 }
                 else
                 {
-                    //Debug.Log("Talent DEactivated on init " + talent.GetType().Name);
                     talent.Exit();
                 }
             }
         }
-       // Initialize2();
     }
 
     [ClientRpc]
@@ -198,30 +195,6 @@ public class TalentSystem : NetworkBehaviour
 	{
 		SwitchTalent(id, row, talentName, isActive);
 	}
-
-    [Command]
-    public void CmdAdd(int id, int row)
-    {
-        RpcAdd(id, row);
-    }
-
-    [Command]
-    public void CmdRemove(int id, int row)
-    {
-        RpcRemove(id, row);
-    }
-
-    [ClientRpc]
-    private void RpcAdd(int id, int row)
-    {
-
-    }
-
-    [ClientRpc]
-    private void RpcRemove(int id, int row)
-    {
-
-    }
 
     public void Add(Talent talent)
     {

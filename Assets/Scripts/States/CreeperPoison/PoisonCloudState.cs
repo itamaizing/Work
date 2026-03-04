@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -130,7 +130,7 @@ public class PoisonCloudState : AbstractCharacterState
             }
             if (ability is CreeperStrike creeperStrike)
             {
-                _enemiesLayer = creeperStrike.TargetsLayers;
+                _enemiesLayer = creeperStrike.Targeting.Layer;
             }
             
         }

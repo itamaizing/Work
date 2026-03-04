@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -153,7 +153,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
                 Damage damage = new Damage
                 {
                     Value = finalDamageValue,
-                    Type = DamageType
+                    Type = Info.DamageType
                 };
 
                 CmdApplyDamage(damage, enemy.gameObject);
@@ -249,7 +249,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
                     Damage damage = new Damage
                     {
                         Value = finalDamageValue,
-                        Type = DamageType,
+                        Type = Info.DamageType,
                     };
 
                     CmdApplyDamage(damage, enemy.gameObject);

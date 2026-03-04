@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -17,15 +17,16 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     public void Show(Character hero)
     {
         _attributeSystem = new AttributeSystem();
-        _attributeSystem.Init2(hero.Data);
+        //_attributeSystem.Init2(hero.Data);
+        _attributeSystem.Init(hero.Data);
 
         ResetPanel();
 
-        foreach (var item in _attributeSystem.Attributes)
+        foreach (var item in _attributeSystem.Attributes.Values)
         {
             var attribute = Instantiate(_attributeItem, _itemsParent);
             attribute.Fills(item);
-            Debug.Log(item.GetValue());
+            //Debug.Log(item.GetValue());
             //attribute.OnValueChange += UpdateAttributesPoints;
             attribute.OnPointerEntered += ShowDescription;
             attribute.OnPointerExited += HideDescription;
@@ -71,8 +72,8 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
         {
             attribute.UpdateValue();
         }
-        
-        SaveManager.Instance.LoadAttributePoints();
+
+        _attributesText.ChangeKey(SaveManager.Instance.LoadAttributePoints());
         //_attributesText.ChangeKey(_attributeSystem.Points);
     }
     
@@ -80,7 +81,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     {
         if(text.Length > 2)
         {
-            Debug.Log(text);
+            //Debug.Log(text);
             _descriptionPanel.ShowDesciption(text);
         }
     }

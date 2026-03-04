@@ -303,7 +303,7 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                     ""name"": ""ShowMenu"",
                     ""type"": ""Button"",
                     ""id"": ""112bcf04-8e2c-4c22-aefc-7382a08ded0c"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Press"",
                     ""initialStateCheck"": false
@@ -312,7 +312,7 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                     ""name"": ""ShowSource"",
                     ""type"": ""Button"",
                     ""id"": ""ae4f2201-2591-45de-afdc-e1c7c5601321"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -321,9 +321,18 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                     ""name"": ""SpaceMouse"",
                     ""type"": ""Button"",
                     ""id"": ""b70078f0-91e3-4ada-8895-f72efad55c5a"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShowStatistics"",
+                    ""type"": ""Button"",
+                    ""id"": ""c864a8e0-3f35-4deb-9a16-604e30367a0c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Press"",
                     ""initialStateCheck"": false
                 }
             ],
@@ -745,6 +754,39 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
                     ""action"": ""ShowSource"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""8783c126-ae7c-4763-a1dd-406cb5cf09dc"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShowStatistics"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""ada38115-879d-4630-8b65-d0de6ec086fc"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShowStatistics"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""787ad5bc-34bb-425d-97f2-11269d7d986c"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShowStatistics"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -779,6 +821,7 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         m_GameplayMap_ShowMenu = m_GameplayMap.FindAction("ShowMenu", throwIfNotFound: true);
         m_GameplayMap_ShowSource = m_GameplayMap.FindAction("ShowSource", throwIfNotFound: true);
         m_GameplayMap_SpaceMouse = m_GameplayMap.FindAction("SpaceMouse", throwIfNotFound: true);
+        m_GameplayMap_ShowStatistics = m_GameplayMap.FindAction("ShowStatistics", throwIfNotFound: true);
     }
 
     ~@StandardInput()
@@ -885,6 +928,7 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_GameplayMap_ShowMenu;
     private readonly InputAction m_GameplayMap_ShowSource;
     private readonly InputAction m_GameplayMap_SpaceMouse;
+    private readonly InputAction m_GameplayMap_ShowStatistics;
     /// <summary>
     /// Provides access to input actions defined in input action map "GameplayMap".
     /// </summary>
@@ -1001,6 +1045,10 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @SpaceMouse => m_Wrapper.m_GameplayMap_SpaceMouse;
         /// <summary>
+        /// Provides access to the underlying input action "GameplayMap/ShowStatistics".
+        /// </summary>
+        public InputAction @ShowStatistics => m_Wrapper.m_GameplayMap_ShowStatistics;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_GameplayMap; }
@@ -1104,6 +1152,9 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
             @SpaceMouse.started += instance.OnSpaceMouse;
             @SpaceMouse.performed += instance.OnSpaceMouse;
             @SpaceMouse.canceled += instance.OnSpaceMouse;
+            @ShowStatistics.started += instance.OnShowStatistics;
+            @ShowStatistics.performed += instance.OnShowStatistics;
+            @ShowStatistics.canceled += instance.OnShowStatistics;
         }
 
         /// <summary>
@@ -1193,6 +1244,9 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
             @SpaceMouse.started -= instance.OnSpaceMouse;
             @SpaceMouse.performed -= instance.OnSpaceMouse;
             @SpaceMouse.canceled -= instance.OnSpaceMouse;
+            @ShowStatistics.started -= instance.OnShowStatistics;
+            @ShowStatistics.performed -= instance.OnShowStatistics;
+            @ShowStatistics.canceled -= instance.OnShowStatistics;
         }
 
         /// <summary>
@@ -1415,5 +1469,12 @@ public partial class @StandardInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSpaceMouse(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ShowStatistics" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnShowStatistics(InputAction.CallbackContext context);
     }
 }

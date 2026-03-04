@@ -58,7 +58,8 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
 
         if (!_isMainMenu)
         {
-            if (_talentSystem.Level != null) _talentSystem.Level.LVLUped -= OnLevelUp;
+            if(_talentSystem != null)
+                if (_talentSystem.Level != null) _talentSystem.Level.LVLUped -= OnLevelUp;
         }
 
         else LevelCharacterManager.Instance.OnLevelChanged -= OnLevelUp;
@@ -75,7 +76,7 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
         int usedPoints = _talentSystem.GetActiveTalentCount();
         int freePoints = maxPoints - usedPoints;
 
-        Debug.Log($"freePoints: {freePoints}");
+        //Debug.Log($"freePoints: {freePoints}");
 
         if (_talentSystem.Points >= 0)
         {
@@ -93,7 +94,7 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
             _talantsText.gameObject.SetActive(false);
         }
 
-        Debug.Log($"_points: {_talentSystem.Points}");
+        //Debug.Log($"_points: {_talentSystem.Points}");
     }
 
     private void ResetPanel()

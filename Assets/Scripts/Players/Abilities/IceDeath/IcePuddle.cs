@@ -1,8 +1,7 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
 public class IcePuddle : Skill
@@ -76,9 +75,7 @@ public class IcePuddle : Skill
     {
         _audioSource = GetComponent<AudioSource>();
 
-        for (int i = 0; i < Hero.Resources.Count; i++)
-            if (Hero.Resources[i].Type == ResourceType.Energy)
-                _energy = (Energy)Hero.Resources[i];
+        //_energy = (Energy)Hero.Resources[ResourceType.Energy];
     }
 
     private void UpdatePreviewAtMouse()
@@ -127,6 +124,8 @@ public class IcePuddle : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        if (_energy == null)
+            _energy = (Energy)Hero.Resources[ResourceType.Energy]; ;
         if (preViewPuddlePrefab != null) _preViewPuddle = Instantiate(preViewPuddlePrefab);
 
 
@@ -146,7 +145,7 @@ public class IcePuddle : Skill
 
 
                 float dist = Vector3.Distance(_hero.transform.position, _placedPosition);
-                if (dist > Radius)
+                if (dist > AreaInfo.Radius)
                 {
                     yield return null;
                     continue;
@@ -180,7 +179,7 @@ public class IcePuddle : Skill
 
     protected override IEnumerator CastJob()
     {
-        _lastHit = _seriesOfStrikes.MakeHit(null, AbilityForm, 1, 0, 0, _seriesOfStrikes.GetMultipliedSpeed() / 100);
+        _lastHit = _seriesOfStrikes.MakeHit(null, Info.AbilityForm, 1, 0, 0, _seriesOfStrikes.GetMultipliedSpeed() / 100);
 
         Shoot();
         yield return null;

@@ -4,6 +4,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class UIMenuMainTalentsPanelGroup : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
     [SerializeField] private UIMenuTalentRow _rowContainer;
 
 	private bool _isGameUI = false;
+    private float _initialParentCellHeight = 65f;
+    private int _itemsPerRow = 3;
     public event UnityAction OnShowPanelGroup;
 
     private List<UIMenuMainTalentsPanelGroupItem> _talents = new ();
@@ -74,6 +77,8 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
                 talent.Selected += _rows[i + 1].ActivateRow;
             }
         }
+
+        ChangeParentCellHeight();
     }
     
     private void OnDisable()
@@ -123,6 +128,31 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
 		return activeTalents.Count;
 
 	}
+
+    private int GetItemsInRowCount()
+    {
+        int rows = 0;
+		
+        foreach (TalentRow row in _talentsGroup.TalentRows)
+        {
+            foreach (Talent talent in row.Talents)
+            {
+                rows++;
+            }
+        }
+		
+
+        return rows;
+    }
+
+    private void ChangeParentCellHeight()
+    {
+        GridLayoutGroup grid = _itemsParent.GetComponent<GridLayoutGroup>();
+        Vector2 gridSize = grid.cellSize;
+        int rows = Mathf.CeilToInt((float)GetItemsInRowCount() / _itemsPerRow);
+        grid.cellSize = new Vector2(gridSize.x, _initialParentCellHeight * rows);
+    }
+    
 	public void Show()
     {
         if (_itemsParent.gameObject.activeInHierarchy == false)
@@ -134,6 +164,7 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
         {
             OnShowPanelGroup?.Invoke();
         }
+        ChangeParentCellHeight();
     }
     
     public void Hide()

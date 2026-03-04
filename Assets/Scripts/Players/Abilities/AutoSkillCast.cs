@@ -25,7 +25,7 @@ public class AutoSkillCast
         _targetInfo.Points = new(targetInfo.Points);
         _tryCastCoroutine = _parentForCoroutine.StartCoroutine(TryCastJob());
 
-        _currentSkill.SkillRender.StartDrawAutoAttackRadius(_currentSkill.Radius);
+        _currentSkill.SkillRender.StartDrawAutoAttackRadius(_currentSkill.AreaInfo.Radius);
     }
 
     public void DeleteSkill()
@@ -59,7 +59,7 @@ public class AutoSkillCast
         {
             _tryCastCoroutine = _parentForCoroutine.StartCoroutine(TryCastJob());
 
-            _currentSkill.SkillRender.StartDrawAutoAttackRadius(_currentSkill.Radius);
+            _currentSkill.SkillRender.StartDrawAutoAttackRadius(_currentSkill.AreaInfo.Radius);
         }
     }
 

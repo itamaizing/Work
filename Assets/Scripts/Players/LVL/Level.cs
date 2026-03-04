@@ -32,6 +32,7 @@ public class Level : NetworkBehaviour
 
     private void OnDisable()
     {
+        if(hero != null)
         hero.SelectComponent.OnSelect -= HandleHeroSet;
     }
 

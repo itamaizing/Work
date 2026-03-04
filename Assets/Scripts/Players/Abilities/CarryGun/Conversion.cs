@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -28,10 +28,17 @@ public class Conversion : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_psionicEnergy != null && _attackingPsionicEnergy != null) if (_psionicEnergy.CurrentValue > 0) CmdConvertEnergy();
-        var lastSkill = Hero?.Abilities?.LastCastedSkill;
+        if (_psionicEnergy != null && _attackingPsionicEnergy != null)
+        {
+            if (_psionicEnergy.CurrentValue > 0)
+            {
+                CmdConvertEnergy();
+            }
+        }
 
-        if (lastSkill != null && lastSkill.AutoAttack == AutoAttack.autoAttack) lastSkill.TryPreparing();
+        var lastSkill = Hero.Abilities.LastCastedSkill;
+        if (lastSkill.Info.AutoAttack == AutoAttack.autoAttack) lastSkill.TryPreparing();
+
         yield break;
     }
 

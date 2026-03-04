@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -135,7 +135,7 @@ public class IceShadowObject : Projectiles
 		{
 			//attact speed increase
 		}*/
-		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject && collision.gameObject.layer != _skill.TargetsLayers)
+		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject && collision.gameObject.layer != _skill.Targeting.Layer)
 			//&& enemyShadow)
 		{
 			float timeElapsed = Time.time - _lifeTimer;
