@@ -29,16 +29,16 @@ public class AttributeSystem : NetworkBehaviour
     public void Init(CharacterData data)
     {
         _data = data;
-        _resources.Add(data.Health.type, new ResourceAttribute(data.Health));
-        _resources.Add(data.Resource.type, new ResourceAttribute(data.Resource));
+        _resources.TryAdd(data.Health.type, new ResourceAttribute(data.Health));
+        _resources.TryAdd(data.Resource.type, new ResourceAttribute(data.Resource));
         mainResourceType = data.Resource.type;
         foreach (helperCharData_AttributeInfo info in data.Attributes.AttributeData)
         {
-            _attributes.Add(info.type, new Attribute(info.value));
+            _attributes.TryAdd(info.type, new Attribute(info.value));
         }
         foreach (helperCharData_ResourceInfo info in data.ExtraResources)
         {
-            _resources.Add(info.type, new ResourceAttribute(info));
+            _resources.TryAdd(info.type, new ResourceAttribute(info));
         }
         TemporaryResourceDisplay = _resources.Values.ToList();
     }
@@ -73,7 +73,7 @@ public class ResourceAttribute
     {
         foreach (var attribute in info.attributes)
         {
-            _attributes.Add(attribute.type, new Attribute(attribute.value));
+            _attributes.TryAdd(attribute.type, new Attribute(attribute.value));
         }
         TemporaryAttributeDisplay = _attributes.Values.ToList();
     }
