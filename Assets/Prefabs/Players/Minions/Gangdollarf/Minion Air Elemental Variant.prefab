@@ -41,6 +41,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7161932556442932751}
     - target: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      propertyPath: characterState
+      value: 
+      objectReference: {fileID: 2803096062723132147}
+    - target: {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       propertyPath: _attributeSystem
       value: 
       objectReference: {fileID: 8792830544719523964}
@@ -261,9 +265,14 @@ MonoBehaviour:
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 83e21c29a8358a84c98e9e3409e72dce, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 5
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 5
   _infoComponent:
@@ -274,13 +283,11 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 1
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -291,18 +298,26 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
+    affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 5
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _autoAttackDelay: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
@@ -333,9 +348,14 @@ MonoBehaviour:
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 83e21c29a8358a84c98e9e3409e72dce, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 3
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 12
   _infoComponent:
@@ -346,16 +366,14 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 1
+    _faction: 4
+    _unitType: -1
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -363,18 +381,26 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 0
     _baseCooldown: 0
+    affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 5
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _autoAttackDelay: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
@@ -385,7 +411,6 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   _agent: {fileID: 2830961031403866016}
-  maxCounter: 0
   _particlePref: {fileID: 8634428716550452945, guid: 7291e60055d363e4f8faae9c7d00d8b0, type: 3}
   _debuffChance: 15
 --- !u!114 &-2491272557544422272
@@ -419,41 +444,65 @@ MonoBehaviour:
   _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 20fda8462e524fa4ca79a6ba3cb6db22, type: 2}
   _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 12
+  _cooldownComponent:
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
+  _infoComponent:
+    _school: 4
+    _form: 0
+    _damageType: 0
+    _rangeType: 1
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 1
+    _faction: 2
+    _unitType: 5
+    _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 512
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
+  _chargeComponent:
+    _usesCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
+    affectedByCDR: 0
   _isUseCharges: 0
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 0
   _chargeCooldown: 0
-  _radius: 6
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
+  _areaComponent:
+    _radius: 4
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
   _autoAttackDelay: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 1
+    _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -468,6 +517,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c4a13cc13c691cf48b313c3aceaea208, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2803096062723132147 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1808229507172449395, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+  m_PrefabInstance: {fileID: 4611270594267985536}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2275534214515305530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7f243771c2613d40a4aecc719336ae4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!195 &2830961031403866016 stripped

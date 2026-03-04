@@ -27,6 +27,8 @@ public class Level : NetworkBehaviour
     private void Start()
     {
         hero = GetComponent<HeroComponent>();
+        if (hero == null) return;
+        
         hero.SelectComponent.OnSelect += HandleHeroSet;
     }
 

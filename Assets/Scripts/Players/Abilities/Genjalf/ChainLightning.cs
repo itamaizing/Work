@@ -34,8 +34,7 @@ public class ChainLightning : MoveSkill
 
     private bool CheckCanCast()
     {
-        return
-               Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
+        return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
     }
 
     public void AnimCastLight()

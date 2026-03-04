@@ -49,8 +49,8 @@ public class MoveComponent : NetworkBehaviour, IAttribute
 	public bool IsFly => _isFly;
 	public bool IsLookAtCursor { get => _isLookAtCursor; set => _isLookAtCursor = value; }
 	public float DefaultSpeed => _defaultSpeed;
-	public float CurrentSpeed => _currentSpeed;
-
+	public float CurrentSpeed => _attribute?.GetValue() ?? _currentSpeed;
+	
 	public Rigidbody Rigidbody => _rigidbody;
 
 	public bool CanMove => _canMove;
@@ -243,7 +243,7 @@ public class MoveComponent : NetworkBehaviour, IAttribute
 
 		camDir = Quaternion.AngleAxis(-_camera.transform.eulerAngles.x, _camera.transform.TransformVector(Vector3.right)) * camDir;
 
-		_rigidbody.linearVelocity = new Vector3(camDir.x * _currentSpeed, _rigidbody.linearVelocity.y, camDir.z * _currentSpeed);
+		_rigidbody.linearVelocity = new Vector3(camDir.x * CurrentSpeed, _rigidbody.linearVelocity.y, camDir.z * CurrentSpeed);
 
 		if (_rigidbody.linearVelocity.magnitude > 0.5f && moveAudioSource != null && !moveAudioSource.isPlaying) PlayMove();
 

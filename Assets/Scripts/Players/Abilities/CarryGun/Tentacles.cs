@@ -182,7 +182,7 @@ public class Tentacles : Skill
         {
             _previewInstance = Instantiate(_tentaclesPreview, mousePositionStart, Quaternion.identity);
             _previewInstance.IsAttractionTentacle = _isAttractionTentacleTalent;
-            _skillRender.DrawRadius(_radius);
+            _skillRender.DrawRadius(AreaInfo.Radius);
             _radiusUpdateCoroutine = StartCoroutine(UpdateRadiusColor());
         }
 
@@ -473,20 +473,20 @@ public class Tentacles : Skill
                 if (_lockedTarget == null)
                 {
                     float distanceToPreview = Vector3.Distance(transform.position, _previewInstance.transform.position);
-                    isPreviewInsideRadius = distanceToPreview <= (_radius + _previewInstance.Radius);
+                    isPreviewInsideRadius = distanceToPreview <= (AreaInfo.Radius + _previewInstance.Radius);
                 }
             }
 
             if (_previewInstancePrefab != null && _lockedTarget != null)
             {
                 float distanceToPrefab = Vector3.Distance(transform.position, _previewInstancePrefab.transform.position);
-                isPreviewInsideRadius = distanceToPrefab <= _radius;
+                isPreviewInsideRadius = distanceToPrefab <= AreaInfo.Radius;
             }
 
             if (!_isSpawnCocoonOnGround)
             {
                 _previewInstance.SetRadiusColor(isCharacterInsidePreview ? Color.green : Color.red);
-                _skillRender.DrawRadiusColor(_radius, isPreviewInsideRadius ? Color.green : Color.red);
+                _skillRender.DrawRadiusColor(AreaInfo.Radius, isPreviewInsideRadius ? Color.green : Color.red);
             }
 
             _charactersInPreview = newCharactersInPreview;

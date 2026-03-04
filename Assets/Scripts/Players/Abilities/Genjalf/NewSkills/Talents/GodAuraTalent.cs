@@ -3,7 +3,7 @@ public class GodAuraTalent : Talent
 {
     public override void Enter()
     {
-        character.CharacterState.CmdAddState(States.GodAura,100,0,character.gameObject,nameof(GodAura));
+        character.CharacterState.CmdAddState(States.GodAura,0,0,character.gameObject,nameof(GodAura));
     }
 
     public override void Exit()

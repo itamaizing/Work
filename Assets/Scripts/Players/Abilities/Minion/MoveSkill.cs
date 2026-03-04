@@ -41,7 +41,7 @@ public class MoveSkill : Skill
         if (target == null)
             yield break;
 
-        float sqrRadius = _radius * _radius;
+        float sqrRadius = AreaInfo.Radius * AreaInfo.Radius;
 
         while (true)
         {

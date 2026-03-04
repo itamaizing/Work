@@ -4,19 +4,22 @@ using UnityEngine;
 public class PushingWindBuff : AbstractCharacterState
 {
 	private float _duration;
-	private float _curSpeedBuf = 0.3f;
+
+	private float _speedModifier = 0.3f;
+	private AttributeModifier _modifier = new(0,ModifierType.Multiplier);
 	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 	public override States State => States.PushingWindBuff;
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects { get; }
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
-		Character personWhoMadeBuff, string skillName)
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		characterState = character;
 		_duration = durationToExit;
 
-		//characterState.Character.Move.ChangeMoveSpeed(1 + _curSpeedBuf); TODO: Переделать на систему аттрибутов
+		_modifier.Value = _speedModifier;
+		_modifier.Type = ModifierType.Multiplier;
+		characterState.Character.Move.AddModifier(_modifier);
 	}
 
 	public override void UpdateState()
@@ -30,8 +33,8 @@ public class PushingWindBuff : AbstractCharacterState
 
 	public override void ExitState()
 	{
+		characterState.Character.Move.RemoveModifier(_modifier);
 		characterState.RemoveState(this);
-		characterState.Character.Move.SetDefaultSpeed(); //TODO: Переделать на систему аттрибутов
 
     }
 
