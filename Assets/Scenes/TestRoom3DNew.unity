@@ -238242,6 +238242,8 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 0
   _regenerationDelay: 0
+  _currentValue: 0
+  _maxValue: 0
   _objectBar: {fileID: 1130355474}
   _objectData: {fileID: 11400000, guid: afb0ecbfafe8e474488bc7296e843064, type: 2}
   obj: {fileID: 1130355471}
@@ -386729,6 +386731,8 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 0
   _regenerationDelay: 0
+  _currentValue: 0
+  _maxValue: 0
   _objectBar: {fileID: 1931245828}
   _objectData: {fileID: 11400000, guid: afb0ecbfafe8e474488bc7296e843064, type: 2}
   obj: {fileID: 1931245824}
@@ -418498,6 +418502,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7061859934681692012, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
+      propertyPath: _selectManager
+      value: 
+      objectReference: {fileID: 2087077431}
     - target: {fileID: 7068353249301375328, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: _selectManager
       value: 
