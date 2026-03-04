@@ -16908,6 +16908,7 @@ GameObject:
   - component: {fileID: 2786580149324115967}
   - component: {fileID: 2267743082958508268}
   - component: {fileID: 4111835201553902504}
+  - component: {fileID: 6401325642211474292}
   m_Layer: 9
   m_Name: Womb
   m_TagString: Allies
@@ -17128,13 +17129,13 @@ MonoBehaviour:
   _networkSettings: {fileID: 4704448068992970106}
   _rigidbody: {fileID: 6956811484752265138}
   _collider: {fileID: 7046688650934260390}
-  _lvl: {fileID: 0}
+  _lvl: {fileID: 6401325642211474292}
   _animator: {fileID: 7330930160410084482}
   _networkAnimator: {fileID: 7562276694809356217}
   _healthComponent: {fileID: 4860516575898058464}
   _playerMove: {fileID: 321651727084008340}
   _abilities: {fileID: 2798338264175827724}
-  characterState: {fileID: 0}
+  characterState: {fileID: 253901722916089605}
   uiComponent: {fileID: 8756364439207115647}
   _selectComponent: {fileID: 3543592199279037076}
   _damageTracker: {fileID: 8102436864039870552}
@@ -17620,7 +17621,7 @@ MonoBehaviour:
   _additionalSkillEnergyCosts: []
   _cooldownTime: 10
   _cooldownComponent:
-    _baseCooldown: 0
+    _baseCooldown: 10
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -17730,8 +17731,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: e77e9d3f2d0f9a441aebdbb6353233e9, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
@@ -17934,6 +17935,21 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   TemporaryResourceDisplay: []
+--- !u!114 &6401325642211474292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3906734254346883187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 428637f045d35d24696a6e8a4728d7d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Level
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &3949581781584673982
 GameObject:
   m_ObjectHideFlags: 0
