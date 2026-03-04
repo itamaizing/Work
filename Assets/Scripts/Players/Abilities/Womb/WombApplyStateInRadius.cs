@@ -13,6 +13,7 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
 
     private readonly HashSet<Character> _inZoneCharacters = new();
     private readonly Dictionary<Character, Coroutine> _slimeCoroutines = new();
+    private readonly Dictionary<Character, Coroutine> _parasiteCoroutines = new();
     private float _currentRadius = 0f;
     private Coroutine _mainRoutine;
     private Coroutine _radiusRoutine;
@@ -62,8 +63,12 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
                 if (_inZoneCharacters.Add(target))
                 {
                     AddHealingSlime(target);
-                    var routine = StartCoroutine(ApplyHealingSlimeRoutine(target));
-                    _slimeCoroutines[target] = routine;
+
+                    var slimeRoutine = StartCoroutine(ApplyHealingSlimeRoutine(target));
+                    _slimeCoroutines[target] = slimeRoutine;
+
+                    var parasiteRoutine = StartCoroutine(ApplyParasitesRoutine(target));
+                    _parasiteCoroutines[target] = parasiteRoutine;
                 }
             }
 
@@ -74,6 +79,18 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
             }
 
             _inZoneCharacters.RemoveWhere(character => character == null || !current.Contains(character));
+
+            yield return wait;
+        }
+    }
+
+    private IEnumerator ApplyParasitesRoutine(Character character)
+    {
+        WaitForSeconds wait = new(3f);
+
+        while (_inZoneCharacters.Contains(character))
+        {
+            if (character.TryGetComponent(out CharacterState state)) state.CmdAddState(States.Parasites, 12f, 0f, gameObject, name);
 
             yield return wait;
         }
@@ -120,6 +137,12 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
             _slimeCoroutines.Remove(character);
         }
 
+        if (_parasiteCoroutines.TryGetValue(character, out Coroutine parasiteRoutine))
+        {
+            StopCoroutine(parasiteRoutine);
+            _parasiteCoroutines.Remove(character);
+        }
+
         if (character.TryGetComponent(out CharacterState state))
         {
             if (state.GetState(States.HealingSlime) is HealingSlime healingSlime)
@@ -138,6 +161,7 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
 
         _inZoneCharacters.Clear();
         _slimeCoroutines.Clear();
+        _parasiteCoroutines.Clear();
     }
 
     private void StartCorutines()

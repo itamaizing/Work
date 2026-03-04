@@ -359,6 +359,7 @@ public class CharacterState : NetworkBehaviour
 		[States.Impatience] = new ImpatienceState(),
 		[States.PsionicGeneration] = new PsionicGenerationState(),
 		[States.SwarmSpeed] = new SwarmSpeedState(),
+		[States.Parasites] = new ParasitesState(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -906,6 +907,7 @@ public enum States
 	Impatience,
 	PsionicGeneration,
 	SwarmSpeed,
+	Parasites,
 }
 
 public enum BaffDebaff
