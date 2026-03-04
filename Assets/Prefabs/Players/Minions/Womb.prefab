@@ -17731,8 +17731,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 1
-  _isSkillActive: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: e77e9d3f2d0f9a441aebdbb6353233e9, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
@@ -17820,6 +17820,7 @@ MonoBehaviour:
   - {fileID: 674928425986156368}
   - {fileID: 7303513670606648317}
   mucusPrefab: {fileID: 6581410618162525258, guid: a7f53fff04ebc6947aa302af5c5ecf21, type: 3}
+  _cocoonSpawn: {fileID: 6149488522666102982}
 --- !u!114 &2267743082958508268
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17835,8 +17836,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 1
-  _isSkillActive: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
   _abilityInfo: {fileID: 11400000, guid: 80cb2a8cb91b3bf46b5a20b385ef8b1c, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
@@ -17919,6 +17920,7 @@ MonoBehaviour:
   _tick: 0.1
   _radiusGrowthInterval: 1
   _maxRadius: 6
+  _cocoonSpawn: {fileID: 6149488522666102982}
 --- !u!114 &4111835201553902504
 MonoBehaviour:
   m_ObjectHideFlags: 0

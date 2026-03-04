@@ -70,9 +70,7 @@ public class HealingSlime :  AbstractCharacterState
 
     public override bool Stack(float _)
     {
-        if (currentStacksCount >= MaxStacksCount) return false;
-
-        currentStacksCount++;
+        if (currentStacksCount < MaxStacksCount) currentStacksCount++;
         float addValue = Mathf.Floor(health.MaxValue * PercentPerStack);
         health.AddMax(addValue);
 
