@@ -26,8 +26,8 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
 
     private void Start()
     {
-        if (_cocoonSpawn.Tentacle != null) _cocoonSpawn.Tentacle.OnWombSpreadsMucusChanged += HandleMucusGrowthChanged;
-        Invoke("InvokeHandleMucusGrowthChanged", 1f);
+        subscription();
+        Invoke("HandleAction", 1f);
     }
 
     private void OnEnable()
@@ -42,10 +42,8 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
 
     private void OnDisable()
     {
-        if (_cocoonSpawn.Tentacle != null) _cocoonSpawn.Tentacle.OnWombSpreadsMucusChanged -= HandleMucusGrowthChanged;
-
+        unsubscribe();
         StopSpawnRoutine();
-
         CleanupAllMucus();
         OnAnyMucusAutoGrowthDestroyed?.Invoke();
     }
@@ -59,7 +57,25 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
 
     public float RemainingDuration => _infinite ? 9999f : _remaining;
 
-    private void InvokeHandleMucusGrowthChanged()
+    private void subscription()
+    {
+        if (_cocoonSpawn.Tentacle != null)
+        {
+            _cocoonSpawn.Tentacle.OnWombSpreadsMucusChanged += HandleMucusGrowthChanged;
+            _cocoonSpawn.Tentacle.OnSpawnSpikeMucus += HandleSpawnSpikeMucus;
+        }
+    }
+
+    private void unsubscribe()
+    {
+        if (_cocoonSpawn.Tentacle != null)
+        {
+            _cocoonSpawn.Tentacle.OnWombSpreadsMucusChanged -= HandleMucusGrowthChanged;
+            _cocoonSpawn.Tentacle.OnSpawnSpikeMucus -= HandleSpawnSpikeMucus;
+        }
+    }
+
+    private void HandleAction()
     {
         if (_cocoonSpawn.Tentacle != null) HandleMucusGrowthChanged(_cocoonSpawn.Tentacle.IsWombSpreadsMucus);
     }
@@ -164,6 +180,19 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
         return _mucusByCircle.Count;
     }
 
+    private void HandleSpawnSpikeMucus(bool value)
+    {
+        foreach (var circle in _mucusByCircle)
+        {
+            foreach (var obj in circle)
+            {
+                if (obj == null) continue;
+
+                if (obj.TryGetComponent<Mucus>(out var mucus)) mucus.IsAttackSpike = value;
+            }
+        }
+    }
+
     private void HandleMucusGrowthChanged(bool active)
     {
         if (active)
@@ -197,6 +226,7 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
         if (instance.TryGetComponent<Mucus>(out var mucus))
         {
             mucus.AddMucusAutoGrowth(this);
+            if (_cocoonSpawn.Tentacle != null) mucus.Skill = _cocoonSpawn.Tentacle;
         }
 
         uint netId = instance.GetComponent<NetworkIdentity>().netId;

@@ -1039,7 +1039,7 @@ MonoBehaviour:
   syncInterval: 0
   _attackSpike: {fileID: 6787872243421725870}
   _damagePoint: {fileID: 6944523369377414272}
-  _skill: {fileID: 0}
+  _mucus: {fileID: 36351810140532346}
   tickInterval: 2
   damageRadius: 1
   damageValue: 10

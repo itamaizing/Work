@@ -8,8 +8,26 @@ public class Mucus : NetworkBehaviour
 {
     [SerializeField][SyncVar] private List<MucusAutoGrowth> _mucusAutoGrowths = new List<MucusAutoGrowth>();
 
+    [SyncVar] private bool _isAttackSpike;
+    [SyncVar] private NetworkIdentity _skillIdentity;
+
     private ObjectHealth _objectHealth;
     private Coroutine _delayedCheckCoroutine;
+
+    public bool IsAttackSpike { get => _isAttackSpike; set => _isAttackSpike = value; }
+    public Skill Skill
+    {
+        get
+        {
+            if (_skillIdentity == null) return null;
+            return _skillIdentity.GetComponent<Skill>();
+        }
+        set
+        {
+            if (value != null) _skillIdentity = value.netIdentity;
+        }
+    }
+
     public List<MucusAutoGrowth> MucusAutoGrowths 
     { 
         get => _mucusAutoGrowths;

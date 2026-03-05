@@ -8,7 +8,7 @@ public class MucusAttackSpike : NetworkBehaviour
     [Header("Refs")]
     [SerializeField] private Animator _attackSpike;
     [SerializeField] private Transform _damagePoint;
-    [SerializeField] private Skill _skill;
+    [SerializeField] private Mucus _mucus;
 
     [Header("Settings")]
     [SerializeField] private float tickInterval = 2f;
@@ -32,6 +32,7 @@ public class MucusAttackSpike : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!_mucus.IsAttackSpike) return;
         if (!other.TryGetComponent(out Character character)) return;
         if (_charactersInTrigger.Contains(character)) return;
 
@@ -62,8 +63,6 @@ public class MucusAttackSpike : NetworkBehaviour
 
     private IEnumerator AttackRoutine()
     {
-        Debug.Log("Spike attack started");
-
         while (_charactersInTrigger.Count > 0)
         {
             TriggerSpikeAttack();
@@ -75,8 +74,7 @@ public class MucusAttackSpike : NetworkBehaviour
 
     private void TriggerSpikeAttack()
     {
-        if (_attackSpike != null)
-            _attackSpike.SetTrigger(AttackSpikeHash);
+        if (_attackSpike != null) _attackSpike.SetTrigger(AttackSpikeHash);
 
         ApplyDamage();
     }
@@ -96,8 +94,7 @@ public class MucusAttackSpike : NetworkBehaviour
                 School = school
             };
 
-            if (_skill != null)
-                _skill.ApplyDamage(damage, character.gameObject);
+            if (_mucus.Skill != null) _mucus.Skill.ApplyDamage(damage, character.gameObject);
         }
     }
 }
