@@ -83,10 +83,13 @@ public class QuicksandTile : FisuraTile
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.LogError("On entered");
         if (other.TryGetComponent(out Character character))
         {
+            Debug.LogError("CharacterFounded");
             if (character.NetworkSettings.TeamIndex != _ownerTeamIndex)
             {
+                Debug.LogError("Not owner");
                 _charTemp.Add(other.gameObject);
                 ChangeMoveSpeed(character.gameObject);
             }
