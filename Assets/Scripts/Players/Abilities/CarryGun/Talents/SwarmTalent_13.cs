@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EvolutionTalent_13 : Talent
+public class SwarmTalent_13 : Talent
 {
     [SerializeField] private SummoningSwarm _summoningSwarm;
     [SerializeField] private SkillManager _skillManager;

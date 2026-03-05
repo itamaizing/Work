@@ -14,6 +14,7 @@ public class Tentacles : Skill
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private SpawnComponent _spawnComponent;
+    [SerializeField] private SummoningSwarm _summoningSwarm;
     [SerializeField] private float _radiusTarget = 0.5f;
 
     private bool _isPlacingTentacles = false;
@@ -109,7 +110,8 @@ public class Tentacles : Skill
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Spell");
-    protected override bool IsCanCast => (GetTargetCharacter() != null || _isClickedOnGround) && _spawnPoint != Vector3.positiveInfinity && IsCanRadius();
+    protected override bool IsCanCast => (_summoningSwarm != null &&
+    _summoningSwarm.IsHaveCharge && GetTargetCharacter() != null || _isClickedOnGround) && _spawnPoint != Vector3.positiveInfinity && IsCanRadius();
 
     private bool IsCanRadius()
     {
@@ -419,6 +421,12 @@ public class Tentacles : Skill
 
     protected override IEnumerator CastJob()
     {
+        if (!_summoningSwarm.TryUseCharge())
+        {
+            TryCancel(true);
+            yield break;
+        }
+
         if (!IsValidVector(_spawnPoint)) yield break;
 
         if (_isProtectiveCooconSpawn && GetTargetCharacter() != null)

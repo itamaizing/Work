@@ -24,10 +24,13 @@ public class SummoningSwarm : Skill
 
     private IEnumerator ChargesBuffRoutine()
     {
-        for (int i = 0; i < ChargesToAdd; i++) AddMaxChargeCount();
+        // добавляем текущие заряды
+        Chargers += ChargesToAdd;
 
         yield return new WaitForSeconds(CooldownTime);
-        for (int i = 0; i < ChargesToAdd; i++) DeductMaxChargeCount();
+
+        // убираем заряды
+        Chargers = Mathf.Max(0, Chargers - ChargesToAdd);
 
         _buffRoutine = null;
     }
