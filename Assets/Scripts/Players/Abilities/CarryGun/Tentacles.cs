@@ -53,6 +53,7 @@ public class Tentacles : Skill
 
     public event Action<bool> OnSpawnGetomirChanged;
     public event Action<bool> OnWombSpreadsMucusChanged;
+    //public event Action<bool> OnSpawnSpikeMucus;
 
 
     public bool IsSpawnGetomir
@@ -87,6 +88,7 @@ public class Tentacles : Skill
             if (_isSpawnSpikeMucus == value) return;
 
             _isSpawnSpikeMucus = value;
+            //OnSpawnSpikeMucus?.Invoke(_isSpawnSpikeMucus);
         }
     }
 
