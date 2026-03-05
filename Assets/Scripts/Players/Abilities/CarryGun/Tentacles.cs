@@ -110,8 +110,12 @@ public class Tentacles : Skill
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Spell");
-    protected override bool IsCanCast => (_summoningSwarm != null &&
-    _summoningSwarm.IsHaveCharge && GetTargetCharacter() != null || _isClickedOnGround) && _spawnPoint != Vector3.positiveInfinity && IsCanRadius();
+    protected override bool IsCanCast =>
+    _summoningSwarm != null &&
+    _summoningSwarm.ChargesSwarm > 0 &&
+    (GetTargetCharacter() != null || _isClickedOnGround) &&
+    _spawnPoint != Vector3.positiveInfinity &&
+    IsCanRadius();
 
     private bool IsCanRadius()
     {
@@ -421,13 +425,10 @@ public class Tentacles : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (!_summoningSwarm.TryUseCharge())
-        {
-            TryCancel(true);
-            yield break;
-        }
-
+        if (_summoningSwarm.ChargesSwarm < 0) yield break;
         if (!IsValidVector(_spawnPoint)) yield break;
+
+        _summoningSwarm.UseSwarmCharges(1);
 
         if (_isProtectiveCooconSpawn && GetTargetCharacter() != null)
         {

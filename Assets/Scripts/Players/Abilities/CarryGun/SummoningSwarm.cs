@@ -12,18 +12,38 @@ public class SummoningSwarm : Skill
 
     private int _chargesSwarm;
 
+    public int ChargesSwarm => _chargesSwarm;
+
+    private void OnEnable()
+    {
+        CooldownEnded += SwarmChargesNull;
+    }
+
+    private void OnDisable()
+    {
+        CooldownEnded -= SwarmChargesNull;
+    }
+
     protected override IEnumerator CastJob()
     {
         SetSwarmCharges(ChargesToAdd);
-
-        yield return new WaitForSeconds(CooldownTime);
-
-        SetSwarmCharges(0);
+        yield return null;
     }
 
     private void SetSwarmCharges(int value)
     {
         _chargesSwarm = value;
+        CurrentCharge(_chargesSwarm);
+    }
+
+    private void SwarmChargesNull()
+    {
+        SetSwarmCharges(0);
+    }    
+
+    public void UseSwarmCharges(int value)
+    {
+        _chargesSwarm -= value;
         CurrentCharge(_chargesSwarm);
     }
 
