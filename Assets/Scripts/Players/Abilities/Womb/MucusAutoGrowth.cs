@@ -62,7 +62,6 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
         if (_cocoonSpawn.Tentacle != null)
         {
             _cocoonSpawn.Tentacle.OnWombSpreadsMucusChanged += HandleMucusGrowthChanged;
-            _cocoonSpawn.Tentacle.OnSpawnSpikeMucus += HandleSpawnSpikeMucus;
         }
     }
 
@@ -71,7 +70,6 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
         if (_cocoonSpawn.Tentacle != null)
         {
             _cocoonSpawn.Tentacle.OnWombSpreadsMucusChanged -= HandleMucusGrowthChanged;
-            _cocoonSpawn.Tentacle.OnSpawnSpikeMucus -= HandleSpawnSpikeMucus;
         }
     }
 
@@ -180,19 +178,6 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
         return _mucusByCircle.Count;
     }
 
-    private void HandleSpawnSpikeMucus(bool value)
-    {
-        foreach (var circle in _mucusByCircle)
-        {
-            foreach (var obj in circle)
-            {
-                if (obj == null) continue;
-
-                if (obj.TryGetComponent<Mucus>(out var mucus)) mucus.IsAttackSpike = value;
-            }
-        }
-    }
-
     private void HandleMucusGrowthChanged(bool active)
     {
         if (active)
@@ -226,11 +211,21 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
         if (instance.TryGetComponent<Mucus>(out var mucus))
         {
             mucus.AddMucusAutoGrowth(this);
-            if (_cocoonSpawn.Tentacle != null) mucus.Skill = _cocoonSpawn.Tentacle;
+            RpcSpawnSpikeMucus(mucus);
         }
 
         uint netId = instance.GetComponent<NetworkIdentity>().netId;
         RpcAddMucus(netId, circleIndex);
+    }
+
+    [ClientRpc]
+    private void RpcSpawnSpikeMucus(Mucus mucus)
+    {
+        if (_cocoonSpawn.Tentacle != null)
+        {
+            mucus.Skill = _cocoonSpawn.Tentacle;
+            mucus.IsAttackSpike = _cocoonSpawn.Tentacle.IsSpawnSpikeMucus;
+        }
     }
 
     [ClientRpc]

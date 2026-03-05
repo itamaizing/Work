@@ -34,6 +34,7 @@ public class MucusAttackSpike : NetworkBehaviour
     {
         if (!_mucus.IsAttackSpike) return;
         if (!other.TryGetComponent(out Character character)) return;
+        if (character.GetComponent<MucusAutoGrowth>()) return;
         if (_charactersInTrigger.Contains(character)) return;
 
         _charactersInTrigger.Add(character);
@@ -94,7 +95,7 @@ public class MucusAttackSpike : NetworkBehaviour
                 School = school
             };
 
-            if (_mucus.Skill != null) _mucus.Skill.ApplyDamage(damage, character.gameObject);
+            if (_mucus.Skill != null) _mucus.Skill.CmdApplyDamage(damage, character.gameObject);
         }
     }
 }
