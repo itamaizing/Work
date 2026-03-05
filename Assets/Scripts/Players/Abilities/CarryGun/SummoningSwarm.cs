@@ -10,29 +10,26 @@ public class SummoningSwarm : Skill
 
     private const int ChargesToAdd = 3;
 
-    private Coroutine _buffRoutine;
+    private int _chargesSwarm;
 
     protected override IEnumerator CastJob()
     {
-        if (_buffRoutine != null)
-            StopCoroutine(_buffRoutine);
-
-        _buffRoutine = StartCoroutine(ChargesBuffRoutine());
-
-        yield break;
-    }
-
-    private IEnumerator ChargesBuffRoutine()
-    {
-        // добавляем текущие заряды
-        Chargers += ChargesToAdd;
+        SetSwarmCharges(ChargesToAdd);
 
         yield return new WaitForSeconds(CooldownTime);
 
-        // убираем заряды
-        Chargers = Mathf.Max(0, Chargers - ChargesToAdd);
+        SetSwarmCharges(0);
+    }
 
-        _buffRoutine = null;
+    private void SetSwarmCharges(int value)
+    {
+        _chargesSwarm = value;
+        CurrentCharge(_chargesSwarm);
+    }
+
+    protected override void ClearData()
+    {
+
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -42,8 +39,6 @@ public class SummoningSwarm : Skill
 
         targetInfo.AddTarget(Hero);
     }
-
-    protected override void ClearData() { }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {

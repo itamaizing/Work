@@ -10542,7 +10542,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
-      value: 13
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[0]'
@@ -10596,6 +10596,10 @@ PrefabInstance:
       propertyPath: '_skills.Array.data[12]'
       value: 
       objectReference: {fileID: 1223713190726253118}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_skills.Array.data[13]'
+      value: 
+      objectReference: {fileID: 8267736736109211900}
     - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: materialsCharacter.Array.size
       value: 1
@@ -13019,7 +13023,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8192
   _spawnComponent: {fileID: 4260348460032838645}
-  _summoningSwarm: {fileID: 0}
+  _summoningSwarm: {fileID: 8267736736109211900}
   _radiusTarget: 0.5
 --- !u!114 &1791349742383392303
 MonoBehaviour:
