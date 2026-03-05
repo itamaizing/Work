@@ -401,6 +401,7 @@ public class CharacterState : NetworkBehaviour
 		[States.GodLight] = new GodLightState(),
 		[States.MagicInstantaneity] = new MagicInstantaneityState(),
 		[States.ImmortalityState] = new ImmortalityState(),
+		[States.BurningStacked] = new BurningStacked(),
         #endregion
 
         #region Test Baff and Debaff
@@ -598,7 +599,7 @@ public class CharacterState : NetworkBehaviour
 		{
 			if (_currentStates[i].State == state)
 			{
-                if (personWhoShooted.TryGetComponent<Character>(out var character))
+				if (personWhoShooted.TryGetComponent<Character>(out var character))
                 {
                     _currentStates[_currentStates.Count - 1].TryApply(this, duration, damageToExit, character, skillName);
                 }
@@ -639,7 +640,7 @@ public class CharacterState : NetworkBehaviour
 
 					MoveStateToEnd(i);
 				}
-
+				
 				return;
 			}
 		}
@@ -939,6 +940,7 @@ public enum States
 	CoolingDamaged,
 	MagicInstantaneity,
 	ImmortalityState,
+	BurningStacked
 }
 public enum BaffDebaff
 {

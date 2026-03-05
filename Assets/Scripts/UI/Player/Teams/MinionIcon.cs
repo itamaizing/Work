@@ -12,6 +12,10 @@ public class MinionIcon : MonoBehaviour
     {
         _playerIcon.sprite = character.Data.Icon;
         _playerHp.Init(character.Health);
-        _playerMana.Init(character.Resources[ResourceType.Mana]);
+        
+        if (character.Resources.TryGetValue(ResourceType.Mana, out var mana))
+        {
+            _playerMana.Init(mana);
+        }
     }
 }

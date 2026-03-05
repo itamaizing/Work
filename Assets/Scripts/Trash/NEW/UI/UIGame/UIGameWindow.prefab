@@ -10443,23 +10443,23 @@ MonoBehaviour:
   _cameraCanvasDistance: 100
   _hideUnusedButtons: 1
   _rebindsUI:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 6332840544628067440}
+  - {fileID: 2359880429980948552}
+  - {fileID: 1519758008294875184}
+  - {fileID: 2920129107933614854}
+  - {fileID: 3261351911525994661}
+  - {fileID: 8401342782866917383}
+  - {fileID: 1094294628554545889}
+  - {fileID: 8484583922008056656}
+  - {fileID: 3662073584905780475}
+  - {fileID: 8760663511897569406}
+  - {fileID: 6936249792447295620}
+  - {fileID: 5251593785197691651}
+  - {fileID: 533547474858873230}
+  - {fileID: 9095260645517615962}
+  - {fileID: 2612174355156458617}
+  - {fileID: 6565816859004554101}
+  - {fileID: 1845676039870319936}
   _skillIcons:
   - {fileID: 171578602862278565}
   - {fileID: 1005648356810196813}
@@ -10477,7 +10477,7 @@ MonoBehaviour:
   - {fileID: 6857591230806958708}
   - {fileID: 3147209690500797555}
   - {fileID: 1571028104903567390}
-  _draggableIconPref: {fileID: 1388298724582322407, guid: 48b04b5fe7d49ee49a098c7e2056edbf, type: 3}
+  _draggableIconPref: {fileID: 1388298724582322407, guid: 8b203ba26d0014d43badf0af4742c57c, type: 3}
   _castLine: {fileID: 1384970838077230838}
   _queuePanel: {fileID: 8854864582392456380}
   _abilityNameBox: {fileID: 3464187881746360693}
@@ -14260,6 +14260,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 710c7e6000b731840bccc411ed94a984, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _selectManager: {fileID: 0}
   _playerIconPref: {fileID: 910499944508277086, guid: 50b36540f60db2b469918a654ac3a7c8, type: 3}
   _team1: {fileID: 2875239973119195903}
   _team2: {fileID: 9159237905461615780}

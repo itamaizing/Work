@@ -15,7 +15,9 @@ public class PushingWind : MoveSkill
 
     private bool CheckCanCast()
     {
-        return Vector3.Distance(Targeting.GetTarget().Character.Position, transform.position) <= AreaInfo.Radius;
+        if(Targeting.GetTarget().Character)
+            return Vector3.Distance(Targeting.GetTarget().Character.Position, transform.position) <= AreaInfo.Radius;
+        return false;
     }
     
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -44,7 +46,7 @@ public class PushingWind : MoveSkill
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
         TargetInfo targetInfo = new TargetInfo();
-        while (Targeting.GetTempTarget() == null)
+        while (Targeting.GetTarget() == null)
         {
             if (GetMouseButton)
             {
