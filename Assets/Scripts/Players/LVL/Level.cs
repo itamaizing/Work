@@ -27,13 +27,13 @@ public class Level : NetworkBehaviour
     private void Start()
     {
         hero = GetComponent<HeroComponent>();
-        hero.SelectComponent.OnSelect += HandleHeroSet;
+
+        if (hero != null) hero.SelectComponent.OnSelect += HandleHeroSet;
     }
 
     private void OnDisable()
     {
-        if(hero != null)
-        hero.SelectComponent.OnSelect -= HandleHeroSet;
+        if(hero != null) hero.SelectComponent.OnSelect -= HandleHeroSet;
     }
 
     public void AddEXP(int value)

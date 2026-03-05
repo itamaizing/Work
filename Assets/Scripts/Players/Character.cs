@@ -42,6 +42,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 	private bool _isInvisible;
 	protected bool _isDisappeared;
 	private bool _isDead = false;
+	private bool _initialized;
 
 	public SpawnComponent SpawnComponent => _spawnComponent;
 	public CharacterData Data => _playerData;
@@ -145,7 +146,10 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 
     public virtual void Initialize()
 	{
-        AttributeSystem.Init(Data);
+		if (_initialized) return;
+
+		_initialized = true;
+		AttributeSystem.Init(Data);
 		EnsureResources();
 		//Debug.Log($"Resources{_resources.Count}", gameObject);
 		Resource = _resources[Data.Resource.type];
