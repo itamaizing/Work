@@ -856,6 +856,7 @@ GameObject:
   - component: {fileID: 7253454835880531690}
   - component: {fileID: 36351810140532346}
   - component: {fileID: 3536427925966062302}
+  - component: {fileID: 2278419548782817597}
   m_Layer: 8
   m_Name: Mucus
   m_TagString: Untagged
@@ -1033,7 +1034,47 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 601b806b65e33524083e362f90e48fbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MucusAttackSpike
-  _spike: {fileID: 0}
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _attackSpike: {fileID: 6787872243421725870}
+  _damagePoint: {fileID: 6944523369377414272}
+  _skill: {fileID: 0}
+  tickInterval: 2
+  damageRadius: 1
+  damageValue: 10
+  characterLayer:
+    serializedVersion: 2
+    m_Bits: 768
+  damageType: 1
+  school: 4
+--- !u!54 &2278419548782817597
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6581410618162525258}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &7074414954952605452
 GameObject:
   m_ObjectHideFlags: 0

@@ -21,7 +21,7 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
     private void Start()
     {
         if (_cocoonSpawn.Tentacle != null) _cocoonSpawn.Tentacle.OnWombSpreadsMucusChanged += HandleWombSpreadsMucusChanged;
-        HandleWombSpreadsMucusChanged(_cocoonSpawn.Tentacle.IsWombSpreadsMucus);
+        Invoke("InvokeHandleWombSpreadsMucusChanged", 1f);
     }
 
     private void OnDisable()
@@ -31,6 +31,11 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
         if (_mainRoutine != null) StopCoroutine(_mainRoutine);
         if (_radiusRoutine != null) StopCoroutine(_radiusRoutine);
         ClearAllStates();
+    }
+
+    private void InvokeHandleWombSpreadsMucusChanged()
+    {
+        if (_cocoonSpawn.Tentacle != null) HandleWombSpreadsMucusChanged(_cocoonSpawn.Tentacle.IsWombSpreadsMucus);
     }
 
     private IEnumerator RadiusGrowthRoutine()

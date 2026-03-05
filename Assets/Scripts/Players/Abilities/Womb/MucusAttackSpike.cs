@@ -8,11 +8,12 @@ public class MucusAttackSpike : NetworkBehaviour
     [Header("Refs")]
     [SerializeField] private Animator _attackSpike;
     [SerializeField] private Transform _damagePoint;
+    [SerializeField] private Skill _skill;
 
     [Header("Settings")]
-    [SerializeField] private float tickInterval = 1f;
+    [SerializeField] private float tickInterval = 2f;
     [SerializeField] private float damageRadius = 1f;
-    [SerializeField] private float damageValue = 3f;
+    [SerializeField] private float damageValue = 10f;
     [SerializeField] private LayerMask characterLayer;
     [SerializeField] private DamageType damageType = DamageType.Physical;
     [SerializeField] private Schools school = Schools.Air;
@@ -21,9 +22,6 @@ public class MucusAttackSpike : NetworkBehaviour
 
     private Coroutine _attackCoroutine;
     private WaitForSeconds _wait;
-    private Skill _skill;
-
-    private bool _isActive;
 
     private static readonly int AttackSpikeHash = Animator.StringToHash("AttackSpike");
 
@@ -32,42 +30,25 @@ public class MucusAttackSpike : NetworkBehaviour
         _wait = new WaitForSeconds(tickInterval);
     }
 
-    private void OnEnable()
-    {
-        Tentacles.OnSpawnSpikeMucus += HandleSpikeMucusChanged;
-    }
-
-    private void OnDisable()
-    {
-        Tentacles.OnSpawnSpikeMucus -= HandleSpikeMucusChanged;
-    }
-
-    private void HandleSpikeMucusChanged(bool value, Skill skill)
-    {
-        _isActive = value;
-        _skill = skill;
-
-        if (!_isActive) StopAttack();
-    }
-
     private void OnTriggerEnter(Collider other)
     {
-        if (!_isActive) return;
-
         if (!other.TryGetComponent(out Character character)) return;
         if (_charactersInTrigger.Contains(character)) return;
 
         _charactersInTrigger.Add(character);
 
-        if (_attackCoroutine == null) _attackCoroutine = StartCoroutine(AttackRoutine());
+        if (_attackCoroutine == null)
+            _attackCoroutine = StartCoroutine(AttackRoutine());
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (!other.TryGetComponent(out Character character)) return;
+
         _charactersInTrigger.Remove(character);
 
-        if (_charactersInTrigger.Count == 0) StopAttack();
+        if (_charactersInTrigger.Count == 0)
+            StopAttack();
     }
 
     private void StopAttack()
@@ -81,6 +62,8 @@ public class MucusAttackSpike : NetworkBehaviour
 
     private IEnumerator AttackRoutine()
     {
+        Debug.Log("Spike attack started");
+
         while (_charactersInTrigger.Count > 0)
         {
             TriggerSpikeAttack();
@@ -92,7 +75,8 @@ public class MucusAttackSpike : NetworkBehaviour
 
     private void TriggerSpikeAttack()
     {
-        if (_attackSpike != null) _attackSpike.SetTrigger(AttackSpikeHash);
+        if (_attackSpike != null)
+            _attackSpike.SetTrigger(AttackSpikeHash);
 
         ApplyDamage();
     }
@@ -112,7 +96,8 @@ public class MucusAttackSpike : NetworkBehaviour
                 School = school
             };
 
-            if (_skill != null) _skill.ApplyDamage(damage, character.gameObject);
+            if (_skill != null)
+                _skill.ApplyDamage(damage, character.gameObject);
         }
     }
 }

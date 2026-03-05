@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealingSlime : StackableState
+public class HealingSlime : RefreshingState
 {
     public override States State => States.HealingSlime;
     public override StateType Type => StateType.Magic;

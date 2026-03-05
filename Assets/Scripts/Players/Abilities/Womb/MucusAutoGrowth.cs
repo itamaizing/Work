@@ -27,7 +27,7 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
     private void Start()
     {
         if (_cocoonSpawn.Tentacle != null) _cocoonSpawn.Tentacle.OnWombSpreadsMucusChanged += HandleMucusGrowthChanged;
-        HandleMucusGrowthChanged(_cocoonSpawn.Tentacle.IsWombSpreadsMucus);
+        Invoke("InvokeHandleMucusGrowthChanged", 1f);
     }
 
     private void OnEnable()
@@ -58,6 +58,11 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
     }
 
     public float RemainingDuration => _infinite ? 9999f : _remaining;
+
+    private void InvokeHandleMucusGrowthChanged()
+    {
+        if (_cocoonSpawn.Tentacle != null) HandleMucusGrowthChanged(_cocoonSpawn.Tentacle.IsWombSpreadsMucus);
+    }
 
     private IEnumerator ApplyMucusPeriodically()
     {
