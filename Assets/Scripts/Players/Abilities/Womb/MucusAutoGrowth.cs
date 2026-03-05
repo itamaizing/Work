@@ -27,6 +27,7 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
     private void Start()
     {
         if (_cocoonSpawn.Tentacle != null) _cocoonSpawn.Tentacle.OnWombSpreadsMucusChanged += HandleMucusGrowthChanged;
+        HandleMucusGrowthChanged(_cocoonSpawn.Tentacle.IsWombSpreadsMucus);
     }
 
     private void OnEnable()

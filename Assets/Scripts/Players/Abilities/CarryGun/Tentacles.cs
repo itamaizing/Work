@@ -49,9 +49,11 @@ public class Tentacles : Skill
     private bool _isWombSpreadsMucus = false;
     private bool _isSpawnGetomir;
     private bool _isSpawnSpike = false;
+    private bool _isSpawnSpikeMucus = false;
 
     public event Action<bool> OnSpawnGetomirChanged;
     public event Action<bool> OnWombSpreadsMucusChanged;
+    public static event Action<bool, Skill> OnSpawnSpikeMucus;
 
 
     public bool IsSpawnGetomir
@@ -78,6 +80,18 @@ public class Tentacles : Skill
         }
     }
 
+    public bool IsSpawnSpikeMucus
+    {
+        get => _isSpawnSpikeMucus;
+        set
+        {
+            if (_isSpawnSpikeMucus == value) return;
+
+            _isSpawnSpikeMucus = value;
+            OnSpawnSpikeMucus?.Invoke(_isSpawnSpikeMucus, this);
+        }
+    }
+
     public void ProtectiveCooconSpawn(bool value) => _isProtectiveCooconSpawn = value;
     public void PsionicsTalentThree(bool value) => _isPsionicsTalentThree = value;
     public void CocoonSpawnTalent(bool value) => _isCocoonSpawnTalent = value;
@@ -86,6 +100,7 @@ public class Tentacles : Skill
     public void SpawnGetomir(bool value) => IsSpawnGetomir = value;
     public void SpawnSpike(bool value) => _isSpawnSpike = value;
     public void WombSpreadsMucus(bool value) => IsWombSpreadsMucus = value;
+    public void SpawnSpikeMucus(bool value) => IsSpawnSpikeMucus = value;
     #endregion
 
     public TentacleProjectile CurrentTentacle { get => _currentTentacle; set => _currentTentacle = value; }

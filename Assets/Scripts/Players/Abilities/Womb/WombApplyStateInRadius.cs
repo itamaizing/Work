@@ -21,6 +21,7 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
     private void Start()
     {
         if (_cocoonSpawn.Tentacle != null) _cocoonSpawn.Tentacle.OnWombSpreadsMucusChanged += HandleWombSpreadsMucusChanged;
+        HandleWombSpreadsMucusChanged(_cocoonSpawn.Tentacle.IsWombSpreadsMucus);
     }
 
     private void OnDisable()
