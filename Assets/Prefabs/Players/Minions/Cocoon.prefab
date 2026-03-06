@@ -11962,6 +11962,8 @@ GameObject:
   - component: {fileID: 3666110360829044945}
   - component: {fileID: 983519524413758945}
   - component: {fileID: 2554924530257722236}
+  - component: {fileID: 3588390005084419965}
+  - component: {fileID: 657232295252017741}
   m_Layer: 9
   m_Name: Cocoon
   m_TagString: Allies
@@ -12204,7 +12206,7 @@ MonoBehaviour:
   _networkSettings: {fileID: 4704448068992970106}
   _rigidbody: {fileID: 6956811484752265138}
   _collider: {fileID: 3666356079801673500}
-  _lvl: {fileID: 0}
+  _lvl: {fileID: 3588390005084419965}
   _animator: {fileID: 7330930160410084482}
   _networkAnimator: {fileID: 7562276694809356217}
   _healthComponent: {fileID: 4860516575898058464}
@@ -12221,7 +12223,7 @@ MonoBehaviour:
   _auras: {fileID: 0}
   _targetSeeker: {fileID: 7521758626764982985}
   _characterParent: {fileID: 0}
-  _transformationComponent: {fileID: 0}
+  _transformationComponent: {fileID: 657232295252017741}
   _expForDieKill: 5
   _costCall: 0
   _navMeshAgent: {fileID: 0}
@@ -12685,13 +12687,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -12727,20 +12722,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -12786,13 +12773,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -12828,20 +12808,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -12887,13 +12859,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -12929,20 +12894,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -12967,6 +12924,39 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   TemporaryResourceDisplay: []
+--- !u!114 &3588390005084419965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3906734254346883187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 428637f045d35d24696a6e8a4728d7d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Level
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+--- !u!114 &657232295252017741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3906734254346883187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84375c825009b75438b87e3c401fcc09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TransformationComponent
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _baseModel: {fileID: 3906734254346883187}
+  _transformationModel: {fileID: 3906734254346883187}
+  _transformationRenderer: {fileID: 4667145042479006015}
 --- !u!1 &4028508627336737555
 GameObject:
   m_ObjectHideFlags: 0

@@ -17997,6 +17997,8 @@ GameObject:
   - component: {fileID: 2793843212359387630}
   - component: {fileID: 5026398779494985239}
   - component: {fileID: 7679627626532406740}
+  - component: {fileID: 4083383630853884571}
+  - component: {fileID: 6802881737570522238}
   m_Layer: 9
   m_Name: Getomir
   m_TagString: Allies
@@ -18239,7 +18241,7 @@ MonoBehaviour:
   _networkSettings: {fileID: 4352968657823446686}
   _rigidbody: {fileID: 512746244656594313}
   _collider: {fileID: 3393799689084107314}
-  _lvl: {fileID: 0}
+  _lvl: {fileID: 6802881737570522238}
   _animator: {fileID: 4853408415625794062}
   _networkAnimator: {fileID: 6676246011477726785}
   _healthComponent: {fileID: 4688992458449892271}
@@ -18252,11 +18254,11 @@ MonoBehaviour:
   TemporaryResourceDisplay: []
   _selectedCircle: {fileID: 3552332020641030606}
   _spawnComponent: {fileID: 2769373615330125278}
-  _visionComponent: {fileID: 0}
+  _visionComponent: {fileID: 1027874424821115294}
   _auras: {fileID: 0}
   _targetSeeker: {fileID: 5247455161781399062}
   _characterParent: {fileID: 0}
-  _transformationComponent: {fileID: 0}
+  _transformationComponent: {fileID: 4083383630853884571}
   _expForDieKill: 5
   _costCall: 3
   _navMeshAgent: {fileID: 0}
@@ -18734,13 +18736,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -18776,20 +18771,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 6
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -18838,13 +18825,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -18880,20 +18860,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -18932,6 +18904,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06f6c1dd94c6aef43baf923029a6cddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CreatureCarryGun
+--- !u!114 &4083383630853884571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305573293433524190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84375c825009b75438b87e3c401fcc09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TransformationComponent
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _baseModel: {fileID: 4305573293433524190}
+  _transformationModel: {fileID: 4305573293433524190}
+  _transformationRenderer: {fileID: 0}
+--- !u!114 &6802881737570522238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305573293433524190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 428637f045d35d24696a6e8a4728d7d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Level
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &4348563488435226753
 GameObject:
   m_ObjectHideFlags: 0

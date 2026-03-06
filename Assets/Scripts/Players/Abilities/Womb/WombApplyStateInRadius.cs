@@ -18,15 +18,16 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
     private Coroutine _mainRoutine;
     private Coroutine _radiusRoutine;
 
+    private bool _isWombSpreadsParasites = false;
+
     private void Start()
     {
-        if (_cocoonSpawn.Tentacle != null) _cocoonSpawn.Tentacle.OnWombSpreadsMucusChanged += HandleWombSpreadsMucusChanged;
-        Invoke("InvokeHandleWombSpreadsMucusChanged", 1f);
+        Subscription();
     }
 
     private void OnDisable()
     {
-        if (_cocoonSpawn.Tentacle != null) _cocoonSpawn.Tentacle.OnWombSpreadsMucusChanged -= HandleWombSpreadsMucusChanged;
+        Unsubscribe();
 
         if (_mainRoutine != null) StopCoroutine(_mainRoutine);
         if (_radiusRoutine != null) StopCoroutine(_radiusRoutine);
@@ -35,7 +36,28 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
 
     private void InvokeHandleWombSpreadsMucusChanged()
     {
-        if (_cocoonSpawn.Tentacle != null) HandleWombSpreadsMucusChanged(_cocoonSpawn.Tentacle.IsWombSpreadsMucus);
+        HandleWombSpreadsMucusChanged(_cocoonSpawn.Tentacle.IsWombSpreadsMucus);
+        HandleWombSpreadsParasitesChanged(_cocoonSpawn.Tentacle.IsWombSpreadsParasites);
+    }
+
+    private void Subscription()
+    {
+        if (_cocoonSpawn.Tentacle != null)
+        {
+            _cocoonSpawn.Tentacle.OnWombSpreadsMucusChanged += HandleWombSpreadsMucusChanged;
+            _cocoonSpawn.Tentacle.OnWombSpreadsParasitesChanged += HandleWombSpreadsParasitesChanged;
+
+            Invoke("InvokeHandleWombSpreadsMucusChanged", 6f);
+        }
+    }
+
+    private void Unsubscribe()
+    {
+        if (_cocoonSpawn.Tentacle != null)
+        {
+            _cocoonSpawn.Tentacle.OnWombSpreadsMucusChanged -= HandleWombSpreadsMucusChanged;
+            _cocoonSpawn.Tentacle.OnWombSpreadsParasitesChanged -= HandleWombSpreadsParasitesChanged;
+        }
     }
 
     private IEnumerator RadiusGrowthRoutine()
@@ -73,8 +95,11 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
                     var slimeRoutine = StartCoroutine(ApplyHealingSlimeRoutine(target));
                     _slimeCoroutines[target] = slimeRoutine;
 
-                    var parasiteRoutine = StartCoroutine(ApplyParasitesRoutine(target));
-                    _parasiteCoroutines[target] = parasiteRoutine;
+                    if (_isWombSpreadsParasites)
+                    {
+                        var parasiteRoutine = StartCoroutine(ApplyParasitesRoutine(target));
+                        _parasiteCoroutines[target] = parasiteRoutine;
+                    }
                 }
             }
 
@@ -126,6 +151,8 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
         if (active) StartCorutines();
         else StopCorutines();
     }
+
+    private void HandleWombSpreadsParasitesChanged(bool active) => _isWombSpreadsParasites = active;
 
     private void AddHealingSlime(Character character)
     {
