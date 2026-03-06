@@ -26,7 +26,8 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
 
     private void Start()
     {
-        if (_cocoonSpawn.Tentacle != null) _cocoonSpawn.Tentacle.OnWombSpreadsMucusChanged += HandleMucusGrowthChanged;
+        subscription();
+        Invoke("HandleAction", 1f);
     }
 
     private void OnEnable()
@@ -41,10 +42,8 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
 
     private void OnDisable()
     {
-        if (_cocoonSpawn.Tentacle != null) _cocoonSpawn.Tentacle.OnWombSpreadsMucusChanged -= HandleMucusGrowthChanged;
-
+        unsubscribe();
         StopSpawnRoutine();
-
         CleanupAllMucus();
         OnAnyMucusAutoGrowthDestroyed?.Invoke();
     }
@@ -57,6 +56,27 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
     }
 
     public float RemainingDuration => _infinite ? 9999f : _remaining;
+
+    private void subscription()
+    {
+        if (_cocoonSpawn.Tentacle != null)
+        {
+            _cocoonSpawn.Tentacle.OnWombSpreadsMucusChanged += HandleMucusGrowthChanged;
+        }
+    }
+
+    private void unsubscribe()
+    {
+        if (_cocoonSpawn.Tentacle != null)
+        {
+            _cocoonSpawn.Tentacle.OnWombSpreadsMucusChanged -= HandleMucusGrowthChanged;
+        }
+    }
+
+    private void HandleAction()
+    {
+        if (_cocoonSpawn.Tentacle != null) HandleMucusGrowthChanged(_cocoonSpawn.Tentacle.IsWombSpreadsMucus);
+    }
 
     private IEnumerator ApplyMucusPeriodically()
     {
@@ -191,10 +211,21 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
         if (instance.TryGetComponent<Mucus>(out var mucus))
         {
             mucus.AddMucusAutoGrowth(this);
+            RpcSpawnSpikeMucus(mucus);
         }
 
         uint netId = instance.GetComponent<NetworkIdentity>().netId;
         RpcAddMucus(netId, circleIndex);
+    }
+
+    [ClientRpc]
+    private void RpcSpawnSpikeMucus(Mucus mucus)
+    {
+        if (_cocoonSpawn.Tentacle != null)
+        {
+            mucus.Skill = _cocoonSpawn.Tentacle;
+            mucus.IsAttackSpike = _cocoonSpawn.Tentacle.IsSpawnSpikeMucus;
+        }
     }
 
     [ClientRpc]

@@ -10546,7 +10546,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
-      value: 13
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[0]'
@@ -10600,6 +10600,10 @@ PrefabInstance:
       propertyPath: '_skills.Array.data[12]'
       value: 
       objectReference: {fileID: 1223713190726253118}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_skills.Array.data[13]'
+      value: 
+      objectReference: {fileID: 8267736736109211900}
     - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: materialsCharacter.Array.size
       value: 1
@@ -10967,15 +10971,15 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRow.Array.data[1].Talents.Array.data[1]'
       value: 
-      objectReference: {fileID: 3602519918867514040}
+      objectReference: {fileID: 7165700713758957504}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRow.Array.data[1].Talents.Array.data[2]'
       value: 
-      objectReference: {fileID: 2033053580703528879}
+      objectReference: {fileID: 4115938535839889681}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRow.Array.data[1].Talents.Array.data[3]'
       value: 
-      objectReference: {fileID: 5532934128591317355}
+      objectReference: {fileID: 7165700713758957504}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRow.Array.data[2].Talents.Array.data[0]'
       value: 
@@ -11519,6 +11523,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1223713190726253118}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8267736736109211900}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7928657652816047543}
@@ -11611,7 +11618,13 @@ PrefabInstance:
       addedObject: {fileID: 2033053580703528879}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 7165700713758957504}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 1343908129402524421}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4115938535839889681}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!136 &2940983708473868743 stripped
 CapsuleCollider:
@@ -11886,7 +11899,7 @@ MonoBehaviour:
       \u0440\u0430\u0434\u0438\u0443\u0441 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F
       \u0432 2 \u0440\u0430\u0437\u0430 \u0431\u043E\u043B\u044C\u0448\u0435. "
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0413\u0435\u043D\u0435\u0440\u0430\u0446\u0438\u044F \u043F\u0441\u0438"
     Icon: {fileID: -764080699210817362, guid: d8d4f4f9cfe2ed845afb52dfebd689a6, type: 3}
     Group: 0
@@ -11945,7 +11958,7 @@ MonoBehaviour:
     Description: "\u041F\u0441\u0438\u043E\u043D\u0438\u043A\u0430 9"
     Icon: {fileID: -4696705, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
-    Row: 0
+    Row: 1
   character: {fileID: 8319872899575431858}
   impatica: {fileID: 7709957828632342126}
 --- !u!114 &1820726796010007506
@@ -12503,7 +12516,7 @@ MonoBehaviour:
       \u0435\u0434\u0438\u043D\u0438\u0446\u0443 \u0451\u043C\u043A\u043E\u0441\u0442\u0438
       \u0440\u043E\u044F. "
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0420\u043E\u0439 6"
     Icon: {fileID: -8487260895467877749, guid: 21d943db5ad48894ea8625a2f7b82034, type: 3}
     Group: 0
@@ -12568,7 +12581,7 @@ MonoBehaviour:
     Description: 
     Icon: {fileID: 249521398, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
-    Row: 0
+    Row: 1
   character: {fileID: 8319872899575431858}
   _swarmCapacity: {fileID: 3168550865384704014}
 --- !u!114 &5128464946524989285
@@ -12628,11 +12641,41 @@ MonoBehaviour:
         \u0434\u043E 2\u0443\u0445 \u0440\u0430\u0437, \u043F\u0440\u0438 \u043F\u043E\u0432\u0442\u043E\u0440\u043D\u043E\u043C
         \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u0438 \u0432\u0440\u0435\u043C\u044F
         \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F \u043E\u0431\u043D\u043E\u0432\u043B\u044F\u0435\u0442\u0441\u044F.\n"
-    IsOpen: 0
+    IsOpen: 1
     Description: 
     Icon: {fileID: -542047240662843017, guid: 4b9781f07de953248b75939506afb1ab, type: 3}
     Group: 0
-    Row: 0
+    Row: 1
+  character: {fileID: 8319872899575431858}
+  _tentacles: {fileID: 431818094498011482}
+--- !u!114 &7165700713758957504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3907305221297154583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2540274d7daa1b449830c2dc672bdc57, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SwarmTalent_11
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u043A\u0442\u043E \u043D\u0430\u0445\u043E\u0434\u0438\u0442\u0441\u044F
+      \u043D\u0430 \u0441\u043B\u0438\u0437\u0438 \u043E\u0442 \u043C\u0430\u0442\u043A\u0438 
+      \u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435 2 \u0441\u0435\u043A\u0443\u043D\u0434
+      \u0432 \u043E\u0434\u043D\u043E\u0439 \u0442\u043E\u0447\u043A\u0435 \u0432
+      \u0440\u0430\u0437\u043C\u0435\u0440\u0435 1 \u043C\u0435\u0442\u0440\u0430,
+      \u0447\u0435\u0440\u0435\u0437 2 \u0441\u0435\u043A\u0443\u043D\u0434\u044B
+      \u0432\u044B\u043B\u0435\u0437\u0430\u0435\u0442 \u0448\u0438\u043F \u0438
+      \u043D\u0430\u043D\u043E\u0441\u0438\u0442 10 \u0443\u0440\u043E\u043D\u0430 "
+    _stateInfos: []
+    IsOpen: 1
+    Description: "\u0420\u043E\u0439 11"
+    Icon: {fileID: -1014108845444107163, guid: 35910b94f45421843b251fe416c5e012, type: 3}
+    Group: 0
+    Row: 1
   character: {fileID: 8319872899575431858}
   _tentacles: {fileID: 431818094498011482}
 --- !u!114 &1343908129402524421
@@ -12663,6 +12706,33 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 8319872899575431858}
   _tentacles: {fileID: 431818094498011482}
+--- !u!114 &4115938535839889681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3907305221297154583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a45be5404e0baf247bcadbdc38bb025b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EvolutionTalent_13
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435 6 \u0441\u0435\u043A\u0443\u043D\u0434
+      \u0443 \u043A\u044D\u0440\u0438\u0433\u0430\u043D \u043F\u043E\u044F\u0432\u044F\u043B\u0435\u0442\u0441\u044F
+      3 \u0437\u0430\u0440\u044F\u0434\u0430 \u043D\u0430 \u043C\u0430\u0442\u043A\u0443
+      \u0438  \u0449\u0443\u043F\u0430\u043B\u0435\u0446. "
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u0420\u043E\u0439 13"
+    Icon: {fileID: 21300000, guid: 252ccd2f65630e64d97a9d85461c7c21, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 8319872899575431858}
+  _summoningSwarm: {fileID: 8267736736109211900}
+  _skillManager: {fileID: 8453834493232682211}
 --- !u!114 &4260348460032838645 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -13113,6 +13183,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8192
   _spawnComponent: {fileID: 4260348460032838645}
+  _summoningSwarm: {fileID: 8267736736109211900}
   _radiusTarget: 0.5
 --- !u!114 &1791349742383392303
 MonoBehaviour:
@@ -14088,6 +14159,63 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   _swarmCapacity: {fileID: 3168550865384704014}
+--- !u!114 &8267736736109211900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5311042088619458913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87be94333a4251741a6d60f4eb965a6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SummoningSwarm
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 1
+  _isSkillActive: 0
+  _abilityInfo: {fileID: 11400000, guid: 90595ec2d1bca154fabca9dc9db5e34d, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 6
+  _castDeley: 0
+  _damageValue: 0
+  _abilitySchool: 0
+  _abilityForm: 0
+  _damageType: 0
+  _attackRangeType: 0
+  _skillType: 0
+  _moving: 0
+  autoAttack: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _radius: 0
+  _area: 0
+  _castLength: 0
+  _castWidth: 0
+  _autoAttackDelay: 0
+  _isAutoRadiusRender: 0
+  _isAutoAreaRender: 0
+  _isAutoLineRender: 0
+  _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
 --- !u!224 &7572513388100405829 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6072102004952575816, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

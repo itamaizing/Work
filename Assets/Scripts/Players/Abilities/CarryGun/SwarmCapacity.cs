@@ -19,8 +19,10 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
     #region Talent
 
     private bool _isBoostSpeedSwarmDamage = false;
+    private bool _isAddCharges = false;
 
     public void BoostSpeedSwarmDamage(bool value) => _isBoostSpeedSwarmDamage = value;
+    public void AddCharges(bool value) => _isAddCharges = value;
 
     #endregion
 

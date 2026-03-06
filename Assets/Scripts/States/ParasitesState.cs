@@ -5,7 +5,7 @@ using Mirror;
 public class ParasitesState : RefreshingState
 {
     private const float TickInterval = 3f;
-    private const float PercentDamage = 0.02f;
+    private const float PercentDamage = 0.002f;
 
     private float _tickTimer;
 
@@ -60,8 +60,8 @@ public class ParasitesState : RefreshingState
     {
         duration = time;
 
-        if (currentStacksCount < MaxStacksCount)
-            currentStacksCount++;
+        if (currentStacksCount >= MaxStacksCount) return false;
+        currentStacksCount++;
 
         return true;
     }
