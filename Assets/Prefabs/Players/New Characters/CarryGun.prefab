@@ -14149,7 +14149,7 @@ MonoBehaviour:
   _additionalSkillEnergyCosts: []
   _cooldownTime: 16
   _cooldownComponent:
-    _baseCooldown: 0
+    _baseCooldown: 16
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -14231,7 +14231,7 @@ MonoBehaviour:
   _additionalSkillEnergyCosts: []
   _cooldownTime: 24
   _cooldownComponent:
-    _baseCooldown: 0
+    _baseCooldown: 24
   _castDeley: 0
   _damageValue: 0
   _infoComponent:

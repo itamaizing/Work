@@ -363,6 +363,7 @@ public class CharacterState : NetworkBehaviour
 		[States.PsionicGeneration] = new PsionicGenerationState(),
 		[States.Parasites] = new ParasitesState(),
 		[States.SwarmSpeed] = new SwarmSpeedState(),
+		[States.DestructivePoison] = new DestructivePoisonState(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -944,7 +945,8 @@ public enum States
 	ImmortalityState,
 	BurningStacked,
 	Parasites,
-	SwarmSpeed
+	SwarmSpeed,
+	DestructivePoison
 }
 public enum BaffDebaff
 {
