@@ -9,25 +9,34 @@ public class SummoningSwarm : Skill
     protected override bool IsCanCast => true;
 
     private const int ChargesToAdd = 3;
+    private const float ChargesLifetime = 6f;
+
+    private Coroutine _removeChargesCoroutine;
 
     private int _chargesSwarm;
 
     public int ChargesSwarm => _chargesSwarm;
 
-    private void OnEnable()
-    {
-        CooldownEnded += SwarmChargesNull;
-    }
-
     private void OnDisable()
     {
-        CooldownEnded -= SwarmChargesNull;
+        if (_removeChargesCoroutine != null) StopCoroutine(_removeChargesCoroutine);
+        _removeChargesCoroutine = StartCoroutine(RemoveChargesAfterTime());
     }
 
     protected override IEnumerator CastJob()
     {
         SetSwarmCharges(ChargesToAdd);
+
+        if (_removeChargesCoroutine != null) StopCoroutine(_removeChargesCoroutine);
+        _removeChargesCoroutine = StartCoroutine(RemoveChargesAfterTime());
+
         yield return null;
+    }
+
+    private IEnumerator RemoveChargesAfterTime()
+    {
+        yield return new WaitForSeconds(ChargesLifetime);
+        SetSwarmCharges(0);
     }
 
     private void SetSwarmCharges(int value)
@@ -35,11 +44,6 @@ public class SummoningSwarm : Skill
         _chargesSwarm = value;
         CurrentCharge(_chargesSwarm);
     }
-
-    private void SwarmChargesNull()
-    {
-        SetSwarmCharges(0);
-    }    
 
     public void UseSwarmCharges(int value)
     {

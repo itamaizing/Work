@@ -12357,8 +12357,8 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 8319872899575431858}
-  cheliceraStrike: {fileID: 640134254429411212}
-  jumpWithChelicera: {fileID: 7634851756353439263}
+  jumpBack: {fileID: 0}
+  skillManager: {fileID: 0}
 --- !u!114 &2638662595546265076
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12407,9 +12407,8 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 8319872899575431858}
-  deafeningScream: {fileID: 4459667108316582062}
-  abilities: {fileID: 8453834493232682211}
-  clawStrike: {fileID: 1846342972592633463}
+  cheliceraStrike: {fileID: 0}
+  jumpWithChelicera: {fileID: 0}
 --- !u!114 &1846317173275019928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12436,7 +12435,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 8319872899575431858}
-  cheliceraStrike: {fileID: 640134254429411212}
   clawStrike: {fileID: 1846342972592633463}
 --- !u!114 &8544397897508167147
 MonoBehaviour:
@@ -12464,9 +12462,8 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 8319872899575431858}
-  cheliceraStrike: {fileID: 640134254429411212}
-  jumpBack: {fileID: 5778966895328886112}
-  skillManager: {fileID: 8453834493232682211}
+  deafeningScream: {fileID: 0}
+  abilities: {fileID: 0}
 --- !u!114 &1376849657298980924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12499,6 +12496,7 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 8319872899575431858}
   doubleCheliceraStrike: {fileID: 7764012948064342089}
+  cheliceraStrike: {fileID: 0}
   skillManager: {fileID: 8453834493232682211}
 --- !u!114 &4818212956850755947
 MonoBehaviour:
@@ -12547,6 +12545,7 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 8319872899575431858}
   cheliceraStrike: {fileID: 640134254429411212}
+  clawStrike: {fileID: 0}
 --- !u!114 &6895899952551955443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14230,7 +14229,7 @@ MonoBehaviour:
     _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 6
+  _cooldownTime: 24
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
