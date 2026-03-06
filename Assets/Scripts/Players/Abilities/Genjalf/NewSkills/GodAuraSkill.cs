@@ -96,66 +96,95 @@ public class GodAura : AuraState
 public class GodAuraBuff : AbstractCharacterState
 {
     private List<StatusEffect> _effects = new List<StatusEffect>();
-    private float _basePercentage = 0.1f;
-    private float _currentPercentage = 0f;
     private Character _character;
+
+    private AttributeModifier _baseModifier = new AttributeModifier(-0.1f, ModifierType.Percent);
+
+    private AttributeModifier _stackModifier = new AttributeModifier(0f, ModifierType.Percent);
+
+    private int _talentStacks = 0;
+    private float _stackTimer = 0f;
+    private float _stackDuration = 3f;
 
     public override States State => States.GodAuraBuff;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
-    
+
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
         _character = character.Character;
         MaxStacksCount = 3;
         currentStacksCount = 1;
-        ApplyBonus(_basePercentage);
+
+        ApplyModifierToAllSkills(_baseModifier);
     }
 
     public void RefreshBonus(int talentStacks)
     {
-        RemoveBonus(_currentPercentage);
-        float newPercentage = _basePercentage + talentStacks * 0.1f;
-        ApplyBonus(newPercentage);
+        RemoveModifierFromAllSkills(_stackModifier);
+
+        _talentStacks = talentStacks;
+        _stackModifier.Value = -talentStacks * 0.1f;
+
+        if (_talentStacks > 0)
+        {
+            ApplyModifierToAllSkills(_stackModifier);
+            _stackTimer = _stackDuration;
+            currentStacksCount = 1 + _talentStacks;
+        }
+        else
+        {
+            _stackModifier.Value = 0f;
+            currentStacksCount = 1;
+            _stackTimer = 0f;
+
+            RemoveModifierFromAllSkills(_baseModifier);
+            ApplyModifierToAllSkills(_baseModifier);
+        }
     }
 
-    private void ApplyBonus(float percentage)
+    public override void UpdateState()
     {
-        _currentPercentage = percentage;
-        foreach (var skill in _character.Abilities.Abilities)
-            skill.Buff.Cooldown.IncreasePercentage(1f - percentage);
-    }
+        if (_talentStacks <= 0) return;
 
-    private void RemoveBonus(float percentage)
-    {
-        if (percentage <= 0f) return;
-        foreach (var skill in _character.Abilities.Abilities)
-            skill.Buff.Cooldown.IncreasePercentage(1f / (1f - percentage));
+        _stackTimer -= Time.deltaTime;
+
+        if (_stackTimer <= 0f)
+        {
+            RemoveModifierFromAllSkills(_stackModifier);
+            _talentStacks = 0;
+            _stackModifier.Value = 0f;
+            currentStacksCount = 1;
+        }
     }
 
     public override void ExitState()
     {
-        RemoveBonus(_currentPercentage);
-        _currentPercentage = 0f;
+        RemoveModifierFromAllSkills(_baseModifier);
+        RemoveModifierFromAllSkills(_stackModifier);
+        _talentStacks = 0;
         currentStacksCount = 0;
         _character.CharacterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        if (time < 0)
-        {
-            currentStacksCount = 1;
-            return false;
-        }
-
-        if (CurrentStacksCount >= MaxStacksCount)
-            return false;
-
-        currentStacksCount++;
         return true;
     }
-    public override void UpdateState() { }
+
+    private void ApplyModifierToAllSkills(AttributeModifier modifier)
+    {
+        if (_character == null) return;
+        foreach (var skill in _character.Abilities.Abilities)
+            skill.Attributes.Attributes[SkillAttributeName.Cooldown].AddModifier(modifier);
+    }
+
+    private void RemoveModifierFromAllSkills(AttributeModifier modifier)
+    {
+        if (_character == null) return;
+        foreach (var skill in _character.Abilities.Abilities)
+            skill.Attributes.Attributes[SkillAttributeName.Cooldown].RemoveModifier(modifier);
+    }
 }

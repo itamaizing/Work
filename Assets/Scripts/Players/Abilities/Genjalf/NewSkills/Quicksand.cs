@@ -63,8 +63,8 @@ public class Quicksand : Skill, IGodLightSpell
         {
             IsEnabled = true;
 
-            _tempCastDeley = _cooldownTime;
-            _cooldownTime = 0;
+            _tempCastDeley = Cooldown.CooldownTime;
+            Cooldown.CooldownTime = 0;
         }
     }
 

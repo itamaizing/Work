@@ -60,8 +60,7 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected List<SkillEnergyCost> _skillEnergyCosts;
     [SerializeField] protected List<SkillEnergyCost> _additionalSkillEnergyCosts;
     #endregion
-
-    [SerializeField] protected float _cooldownTime;
+    
     [SerializeField] private CooldownComponent _cooldownComponent;
     public CooldownComponent Cooldown => _cooldownComponent;
 
@@ -333,7 +332,7 @@ public abstract class Skill : NetworkBehaviour
     protected float _baseCooldownTime;
     private float _remainingCooldownTime;
 
-    public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); protected set => _cooldownTime = value; }
+    public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(Cooldown.CooldownTime); protected set => Cooldown.CooldownTime = value; }
     public float RemainingCooldownTime { get => _remainingCooldownTime; set => _remainingCooldownTime = value; }
     public bool IsCooldowned { get => _remainingCooldownTime <= 0; }
 
@@ -1187,10 +1186,12 @@ public abstract class Skill : NetworkBehaviour
         CastStarted?.Invoke();
         _isCasting = true;
 
-        if (CastDeley > 0)
+        bool noCast = Hero.Abilities.TryConsumeNoCast();
+
+        if (!noCast && CastDeley > 0)
             yield return StartCastDeleyCoroutine();
 
-        if (AnimTriggerCast != 0)
+        if (!noCast && AnimTriggerCast != 0)
         {
             _isPlayCastAnim = true;
             //_isWaitingForCastCoroutine = true;

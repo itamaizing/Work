@@ -74,7 +74,15 @@ public class ChargeComponent : BaseSkillComponent
     public event Action<float> OnRechargeStart;
     public event Action<int> OnRechargeEnd;
     #region Methods
-
+    
+    public override void Init(Skill skill)
+    {
+        base.Init(skill);
+    
+        if (_usesCharges)
+            _currentCharges = _maxCharges;
+    }
+    
     //Переписать на ModifyMax
     //Если список перезарядок не пустой - оставить КД
     //Если пустой - проверять cooldowned? Или просто вырезать его и добавлять без КД?
@@ -92,7 +100,7 @@ public class ChargeComponent : BaseSkillComponent
         }
         MaxChargesChanged?.Invoke(_maxCharges);
     }
-
+    
     public void RestoreCharge()
     {
         if (_currentCharges < _maxCharges)

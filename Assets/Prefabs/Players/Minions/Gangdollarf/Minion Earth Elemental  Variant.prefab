@@ -753,7 +753,6 @@ MonoBehaviour:
     _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
@@ -767,9 +766,9 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: -1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -861,9 +860,8 @@ MonoBehaviour:
     _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 18
   _cooldownComponent:
-    _baseCooldown: 0
+    _baseCooldown: 18
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -944,7 +942,6 @@ MonoBehaviour:
     _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 18
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0

@@ -57,14 +57,14 @@ namespace Gangdollarff
             {
                 IsEnabled = false;
 
-                _cooldownTime = _tempCooldownTime;
+                Cooldown.CooldownTime = _tempCooldownTime;
             }
             else
             {
                 IsEnabled = true;
 
-                _tempCooldownTime = _cooldownTime;
-                _cooldownTime = 0;
+                _tempCooldownTime = Cooldown.CooldownTime;
+                Cooldown.CooldownTime = 0;
             }
         }
 

@@ -144,37 +144,48 @@ public class Burning : AbstractCharacterState
     }
 }
 
-public class BurningStacked : Burning
+public class BurningStacked : RefreshingState
 {
-    public override States State => States.BurningStacked;
+    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
+    protected float _damage = 1;
+    protected float _timeAfterLastEffect = 0;
+    protected float _effectRate = 1;
 
     private float _baseDuration;
     private float _stackTimer;
 
-    public override float RemainingDuration
-    {
-        get => _stackTimer;
-        set => _stackTimer = value;
-    }
+    public override States State => States.BurningStacked;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
-        Character personWhoMadeBuff, string skillName)
+    public override StateType Type => StateType.Magic;
+
+    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
+
+    public override List<StatusEffect> Effects => _effects;
+
+    public override float RemainingDuration => _baseDuration;
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        base.EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+        Damage damage = new Damage
+        {
+            Value = _damage,
+        };
+        character.Character.CmdTryTakeDamage(damage, null);
+
         MaxStacksCount = 3;
-        currentStacksCount = 1;
         _baseDuration = durationToExit;
         _stackTimer = durationToExit;
     }
 
     public override bool Stack(float time)
     {
-        if (CurrentStacksCount >= MaxStacksCount)
-            return false;
-
-        currentStacksCount++;
         _stackTimer = _baseDuration;
         return true;
+    }
+
+    public override void GloabalUpdate()
+    {
+        UpdateState();
     }
 
     public override void UpdateState()
@@ -184,7 +195,6 @@ public class BurningStacked : Burning
         if (_stackTimer <= 0)
         {
             currentStacksCount--;
-
             if (CurrentStacksCount <= 0)
             {
                 ExitState();

@@ -15,7 +15,15 @@ namespace Gangdollarff.EarthElemental
         protected override int AnimTriggerCast => Animator.StringToHash("Attack01");
         
         private float _clickRadius = 0.5f;
-        protected override bool IsCanCast => Vector3.Distance(Targeting.GetTarget().Character.Position, transform.position) <= AreaInfo.Radius;
+        protected override bool IsCanCast
+        {
+            get
+            {
+                var target = Targeting.GetTarget()?.Character;
+                if (target == null) return false;
+                return Vector3.Distance(target.Position, transform.position) <= AreaInfo.Radius;
+            }
+        }
         private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
         public void AnimCastPunch()
@@ -41,6 +49,9 @@ namespace Gangdollarff.EarthElemental
 
         public override void LoadTargetData(TargetInfo targetInfo)
         {
+            if (targetInfo.GetTargets().Count == 0) return;
+
+            
             Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
         
             if (!IsCanCast)
@@ -51,7 +62,7 @@ namespace Gangdollarff.EarthElemental
 
         protected override IEnumerator CastJob()
         {
-            Character originalTarget = Targeting.GetTempTarget()?.Character;//Targeting.GetTarget()?.Character;
+            Character originalTarget = Targeting.GetTarget()?.Character;
             if (originalTarget == null) yield break;
     
             Hero.Move.LookAtPosition(originalTarget.Position);
@@ -84,7 +95,7 @@ namespace Gangdollarff.EarthElemental
 
             TargetInfo targetInfo = new();
 
-            while (Targeting.GetTarget()?.Character == null)
+            while (Targeting.GetTempTarget()?.Character == null)
             {
                 if (GetMouseButton)
                 {
