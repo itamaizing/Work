@@ -247,7 +247,7 @@ public class CheliceraStrike : Skill
 
         float psiValue = _attackingPsionicEnergy.CurrentValue;
 
-        // 1. ? Магический урон по цели
+        // 1. ? пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ
         float bonusMagicDamage = _attackingPsionicEnergy.GetBonusDamage(psiValue);
 
         var magicDamageToMain = new Damage

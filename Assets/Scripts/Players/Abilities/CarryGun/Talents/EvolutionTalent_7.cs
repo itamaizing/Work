@@ -4,19 +4,17 @@ using UnityEngine;
 
 public class EvolutionTalent_7 : Talent
 {
-    [SerializeField] private CheliceraStrike cheliceraStrike;
-    [SerializeField] private JumpBack jumpBack;
-    [SerializeField] private SkillManager skillManager;
+    [SerializeField] private DeafeningScream deafeningScream;
+
+    [SerializeField] private SkillManager abilities;
 
     public override void Enter()
     {
-        skillManager.ActivateSkill(jumpBack);
-        cheliceraStrike.ChanceCritDamageIncrease(true);
+        abilities.ActivateSkill(deafeningScream);
     }
 
     public override void Exit()
     {
-        skillManager.DeactivateSkill(jumpBack);
-        cheliceraStrike.ChanceCritDamageIncrease(false);
+        abilities.DeactivateSkill(deafeningScream);
     }
 }
