@@ -6,7 +6,8 @@ public class TransformationDebuff : StackableState
 	private float _duration;
 	private float _damageOnStart;
 	private float _damageToExit;
-	private float _curSpeedDebuf = 0.6f;
+
+	private AttributeModifier _modifier = new(-0.8f,ModifierType.Percent);
 	public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
 	public override States State => States.TransformationDebuff;
 	public override StateType Type => StateType.Magic;
@@ -19,8 +20,8 @@ public class TransformationDebuff : StackableState
 		//CanStack = true;
 		_damageToExit = 1;
 		_duration = durationToExit;
-		
-		//characterState.Character.Move.SetMoveSpeed(_curSpeedDebuf); //TODO: Переписать на атрибут
+
+		characterState.Character.Move.AddModifier(_modifier);
 
 		foreach (var ability in characterState.Character.Abilities.Abilities)
 		{
@@ -47,7 +48,7 @@ public class TransformationDebuff : StackableState
 		}
 		if (!characterState.Check(StatusEffect.MoveSpeed))
 		{
-			characterState.Character.Move.SetDefaultSpeed();
+			characterState.Character.Move.RemoveModifier(_modifier);
 		}
 	}
 

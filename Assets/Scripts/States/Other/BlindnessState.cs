@@ -23,19 +23,21 @@ public class BlindnessState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-      //  Debug.Log($"Entering Blindness State on Character netId: {character.netId}");
-
+        //  Debug.Log($"Entering Blindness State on Character netId: {character.netId}");
         _duration = durationToExit;
         _baseDuration = durationToExit;
         characterState = character;
         MaxStacksCount = 1;
+        currentStacksCount = 1;
 
         if (characterState.isOwned) ApplyEffectToLocalCamera();
 
         if (character.TryGetComponent<Character>(out var ability))
         {
             abilities = ability.Abilities;
-            foreach (var abil in abilities.Abilities) if (abil.Info.SkillType == SkillType.Target) abil.Disactive = true;
+            foreach (var abil in abilities.Abilities)
+                if (abil.Info.SkillType == SkillType.Target)
+                    abil.Disactive = true;
         }
     }
 
@@ -61,10 +63,9 @@ public class BlindnessState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        //if (_baseDuration > time) return false;
         _duration += time;
         RemainingDuration = _duration;
-        return true;
+        return false;
     }
 
     private void ApplyEffectToLocalCamera()

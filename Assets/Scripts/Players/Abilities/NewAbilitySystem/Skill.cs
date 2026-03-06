@@ -70,15 +70,6 @@ public abstract class Skill : NetworkBehaviour
 
     [SerializeField] protected InfoComponent _infoComponent;
     public InfoComponent Info => _infoComponent;
-    #region InfoToDelete
-    [SerializeField] private Schools _abilitySchool;
-    [SerializeField] private AbilityForm _abilityForm;
-    [SerializeField] private DamageType _damageType;
-    [SerializeField] private AttackRangeType _attackRangeType;
-    [SerializeField] private SkillType _skillType;
-    [SerializeField] private Moving _moving;
-    [SerializeField] private AutoAttack autoAttack;
-    #endregion
 
     [SerializeField] TargetingComponent _targetingComponent;
     public TargetingComponent Targeting => _targetingComponent;
@@ -110,24 +101,12 @@ public abstract class Skill : NetworkBehaviour
     [Header("Area settings")]
     [SerializeField] protected AreaComponent _areaComponent;
     public AreaComponent AreaInfo => _areaComponent;
-    #region AreaInfoToDelete
-    [SerializeField] protected float _radius;
-    [SerializeField] protected float _area;
-    [SerializeField] protected float _castLength;
-    [SerializeField] protected float _castWidth;
-    #endregion
     [Header("Area settings")]
     [SerializeField] protected float _autoAttackDelay;
 
     [Header("Render settings")]
     [SerializeField] protected InformationRenderComponent _informationRenderComponent;
     public InformationRenderComponent Renderer => _informationRenderComponent;
-    #region RenderToDelete
-    [SerializeField] protected bool _isAutoRadiusRender = true;
-    [SerializeField] protected bool _isAutoAreaRender = true;
-    [SerializeField] protected bool _isAutoLineRender = true;
-    [SerializeField] protected bool _isDynamicRenderer = false;
-    #endregion
 
     [Header("Availability")]
     [SerializeField] protected bool _disactive = false;
@@ -1168,7 +1147,7 @@ public abstract class Skill : NetworkBehaviour
         //ClearData();
         Renderer.ShowSmartIndicator();
 
-        if (_isDynamicRenderer)
+        if (_informationRenderComponent.IsDynamicRenderer)
         {
             StartDynamicRenderer();
         }

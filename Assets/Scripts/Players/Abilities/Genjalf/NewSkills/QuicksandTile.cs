@@ -11,6 +11,8 @@ public class QuicksandTile : FisuraTile
 
     [SyncVar] private byte _ownerTeamIndex;
 
+    private AttributeModifier _modifier = new(-0.8f, ModifierType.Percent);
+
     private List<GameObject> _charTemp = new();
     private bool _isInvisible;
     
@@ -86,7 +88,7 @@ public class QuicksandTile : FisuraTile
             if (character.NetworkSettings.TeamIndex != _ownerTeamIndex)
             {
                 _charTemp.Add(other.gameObject);
-                //ChangeMoveSpeed(character.gameObject);
+                ChangeMoveSpeed(character.gameObject);
             }
         }
     }
@@ -111,15 +113,15 @@ public class QuicksandTile : FisuraTile
         _charTemp.Clear();
     }
 
-    //private void ChangeMoveSpeed(GameObject target)
-    //{
-    //    if (target.TryGetComponent(out Character character))
-    //        character.Move.ChangeMoveSpeed(0.2f); //TODO: Переписать на аттрибут
-    //}
+    private void ChangeMoveSpeed(GameObject target)
+    {
+       if (target.TryGetComponent(out Character character))
+           character.Move.AddModifier(_modifier);
+    }
 
     private void SetDefaultSpeed(GameObject target)
     {
         if (target.TryGetComponent(out Character character))
-            character.Move.SetDefaultSpeed();   //TODO: Переписать на атрибут
+            character.Move.RemoveModifier(_modifier);
     }
 }

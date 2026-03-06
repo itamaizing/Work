@@ -165,7 +165,7 @@ public class PoisonBall : Skill, IAltAbility
 
     private void Start()
     {
-        _baseCastWidth = _castWidth;
+        _baseCastWidth = AreaInfo.CastWidth;
         _originalChargeCooldown = _chargeCooldown;
 
         _poisonBallInfo.StartTimeBetweenAttack = 15.0f;
@@ -456,12 +456,12 @@ public class PoisonBall : Skill, IAltAbility
         if (_activeTalentsInfo.IsActiveVoluminousBall && !_isBallCanBigger)
         {
             float multiplier = _baseCastWidth * 0.2f;
-            _castWidth += multiplier;
+            AreaInfo.CastWidth += multiplier;
             _isBallCanBigger = true;
         }
         else if (!_activeTalentsInfo.IsActiveVoluminousBall && _isBallCanBigger)
         {
-            _castWidth = _baseCastWidth;
+            AreaInfo.CastWidth = _baseCastWidth;
             _isBallCanBigger = false;
         }
 

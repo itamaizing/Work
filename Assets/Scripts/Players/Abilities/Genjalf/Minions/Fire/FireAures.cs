@@ -93,9 +93,9 @@ public class Burn : AuraState
 public class Burning : AbstractCharacterState
 {
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
-    private float _damage = 1;
-    private float _timeAfterLastEffect = 0;
-    private float _effectRate = 1;
+    protected float _damage = 1;
+    protected float _timeAfterLastEffect = 0;
+    protected float _effectRate = 1;
 
     public override States State => States.Burning;
 
@@ -139,9 +139,72 @@ public class Burning : AbstractCharacterState
         {
             Value = _damage,
         };
-        //_character.CmdTryTakeDamage(damage, null); //TODO: FIX
-
+        characterState.Character.CmdTryTakeDamage(damage,null);
         _timeAfterLastEffect = 0;
+    }
+}
+
+public class BurningStacked : Burning
+{
+    public override States State => States.BurningStacked;
+
+    private float _baseDuration;
+    private float _stackTimer;
+
+    public override float RemainingDuration
+    {
+        get => _stackTimer;
+        set => _stackTimer = value;
+    }
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+        Character personWhoMadeBuff, string skillName)
+    {
+        base.EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+        MaxStacksCount = 3;
+        currentStacksCount = 1;
+        _baseDuration = durationToExit;
+        _stackTimer = durationToExit;
+    }
+
+    public override bool Stack(float time)
+    {
+        if (CurrentStacksCount >= MaxStacksCount)
+            return false;
+
+        currentStacksCount++;
+        _stackTimer = _baseDuration;
+        return true;
+    }
+
+    public override void UpdateState()
+    {
+        _stackTimer -= Time.deltaTime;
+
+        if (_stackTimer <= 0)
+        {
+            currentStacksCount--;
+
+            if (CurrentStacksCount <= 0)
+            {
+                ExitState();
+                return;
+            }
+
+            _stackTimer = _baseDuration;
+        }
+        _timeAfterLastEffect += Time.deltaTime;
+
+        if (_timeAfterLastEffect < _effectRate) return;
+
+        Damage damage = new Damage { Value = _damage };
+        characterState.Character.CmdTryTakeDamage(damage, null);
+        _timeAfterLastEffect = 0;
+    }
+
+    public override void ExitState()
+    {
+        characterState.RemoveState(this);
     }
 }
 
