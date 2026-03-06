@@ -4,12 +4,12 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class PlayerIconMain : PlayerIcon, IPointerExitHandler, IPointerEnterHandler
+public class PlayerIconMain : PlayerIcon//, IPointerExitHandler, IPointerEnterHandler
 {
     [SerializeField] private LvlInfo _lvlInfo;
     [SerializeField] private Image _FrameBlink;
 
-    public void OnPointerEnter(PointerEventData eventData)
+    /*public void OnPointerEnter(PointerEventData eventData)
     {
         _FrameBlink.gameObject.SetActive(true);
     }
@@ -17,11 +17,12 @@ public class PlayerIconMain : PlayerIcon, IPointerExitHandler, IPointerEnterHand
     public void OnPointerExit(PointerEventData eventData)
     {
         _FrameBlink.gameObject.SetActive(false);
-    }
+    }*/
 
     protected override void UpdateInfo(Character character)
     {
         base.UpdateInfo(character);
-        _lvlInfo.Init(character.LVL);
+        if( _lvlInfo != null ) 
+            _lvlInfo.Init(character.LVL);
     }
 }

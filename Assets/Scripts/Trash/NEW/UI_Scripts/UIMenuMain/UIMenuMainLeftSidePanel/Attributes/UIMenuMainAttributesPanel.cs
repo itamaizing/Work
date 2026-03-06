@@ -1,21 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class UIMenuMainAttributesPanel : MonoBehaviour
 {
     [SerializeField] private UIMenuMainAttributesPanelItem _attributeItem;
     [SerializeField] private RectTransform _itemsParent;
     [SerializeField] private TMProLocalizer _attributesText;
+
     [SerializeField] private AttributeDescriptionPanel _descriptionPanel;
+    [SerializeField] private Button _button;
 
     private AttributeSystem _attributeSystem;
-    
+    private Character _hero;
+
+    private bool _isActive = false;
+
     private List<UIMenuMainAttributesPanelItem> _attributes = new ();
+
+    private void Awake()
+    {
+        if(_button != null)
+            _button.onClick.AddListener(SwitchPanel);
+    }
 
     public void Show(Character hero)
     {
+        _hero = hero;
         _attributeSystem = new AttributeSystem();
         //_attributeSystem.Init2(hero.Data);
         _attributeSystem.Init(hero.Data);
@@ -35,6 +50,21 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
         }
 
         UpdateAttributesPoints();
+    }
+
+    [ContextMenu("Run Custom Debug Function")]
+    public void SwitchPanel()
+    {
+        if(_isActive)
+        {
+            _isActive = false;
+            Show(_hero);
+        }
+        else
+        {
+            _isActive = true;
+            ResetPanel();
+        }
     }
 
     private void OnDisable()
@@ -79,6 +109,7 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
     
     private void ShowDescription(string text)
     {
+        if(text != null)
         if(text.Length > 2)
         {
             //Debug.Log(text);

@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static System.Net.Mime.MediaTypeNames;
 
-public class UIMenuMainTalentsPanelGroup : MonoBehaviour
+public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private UIMenuMainTalentsPanelGroupItem _talentPrefab;
     [SerializeField] private TMProLocalizer _title;
@@ -24,6 +27,8 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
 
     private TalentsGroup _talentsGroup;
     private UIMenuMainAttributesPanel _attributesPanel;
+    private Color _oldColor, _newColor;
+    private TextMeshProUGUI _text;
 
     public event UnityAction OnTalentChanged;
     public event Action<TalentData> PointerEnteredOnTalentIcon;
@@ -36,6 +41,13 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
         _attributesPanel = attributesPanel;
         _talentsGroup = talentsGroup;
         _title.Localize(talentsGroup.Name);
+
+        if (_title.gameObject.TryGetComponent<TextMeshProUGUI>(out var text))
+        {
+            _oldColor = text.color;
+            _newColor = new Color(255, 255, 141);
+            _text = text;
+        }
 
         UpdateActiveTalentsCount();
 
@@ -185,5 +197,22 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
     private void OnPointerExitedOnTalentIcon(TalentData talent)
     {
         PointerExitedOnTalentIcon?.Invoke(talent);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if(_text != null)
+        {
+            _text.color = _newColor;
+        }
+        
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (_text != null)
+        {
+            _text.color = _oldColor;
+        }
     }
 }
