@@ -19,8 +19,11 @@ public class SummoningSwarm : Skill
 
     private void OnDisable()
     {
-        if (_removeChargesCoroutine != null) StopCoroutine(_removeChargesCoroutine);
-        _removeChargesCoroutine = StartCoroutine(RemoveChargesAfterTime());
+        if (_removeChargesCoroutine != null)
+        {
+            StopCoroutine(_removeChargesCoroutine);
+            _removeChargesCoroutine = null;
+        }
     }
 
     protected override IEnumerator CastJob()
