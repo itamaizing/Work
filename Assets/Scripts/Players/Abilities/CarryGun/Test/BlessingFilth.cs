@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using UnityEngine;
 using System;
@@ -23,7 +23,7 @@ public class BlessingFilth : Skill
 
                 //if (selectedTarget != null)
                 //{
-                //    _tempTargetForDamage = selectedTarget.transform;
+                //    _tempTargetForDamageFORRENAME = selectedTarget.transform;
                 //    targetSelected = true;
                 //}
             }
@@ -34,11 +34,10 @@ public class BlessingFilth : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_tempTargetForDamage == null) yield break;
-        Character targetCharacter = _tempTargetForDamage.GetComponent<Character>();
-        if (targetCharacter == null) yield break;
+        if (Targeting.ForDamage == null) yield break;
+        if (Targeting.ForDamage.Character == null) yield break;
 
-        ApplyBaffState(targetCharacter);
+        ApplyBaffState(Targeting.ForDamage.Character);
 
         yield break;
     }
@@ -53,7 +52,7 @@ public class BlessingFilth : Skill
 
     protected override void ClearData()
     {
-        _tempTargetForDamage = null;
+        Targeting.ForDamage = null;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)

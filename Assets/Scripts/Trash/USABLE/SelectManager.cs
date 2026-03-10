@@ -13,15 +13,26 @@ public class SelectManager : MonoBehaviour
 
     public List<Character> SelectedControllableUnits { get; } = new();
 
+    public List<Character> Characters => _canContollUnits;
+
     private int _currentUnitNumber;
 
+    private bool _isUIVisible = true;
+
+    public event Action<bool> UIVisibilityToggled;
     public event Action<Character> CharacterSelected;
     public event Action<Character> CharacterDeselected;
+    public event Action OnListUpdated;
 
     private void Awake()
     {
         _dragBox.gameObject.SetActive(false);
         _dragBox.SetSelectManager(this);
+    }
+
+    private void UpdateList()
+    {
+        OnListUpdated?.Invoke();
     }
 
     [ClientCallback]
@@ -42,7 +53,9 @@ public class SelectManager : MonoBehaviour
                 return;
             }
 
+            _contoller.OnListUpdated += UpdateList;
             _canContollUnits = _contoller.controllableUnits;
+            OnListUpdated?.Invoke();
         }
 
         if (Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.LeftAlt))
@@ -75,6 +88,13 @@ public class SelectManager : MonoBehaviour
                 _currentUnitNumber = 0;
 
             SelectInArea(_canContollUnits[_currentUnitNumber]);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Tab) && Input.GetKey(KeyCode.LeftShift))
+        {
+            _isUIVisible = !_isUIVisible;
+            UIVisibilityToggled?.Invoke(_isUIVisible);
+            return;
         }
         /*
         if (Input.GetKeyDown(KeyCode.Tab))

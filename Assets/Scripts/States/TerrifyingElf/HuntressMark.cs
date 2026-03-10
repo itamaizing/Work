@@ -16,14 +16,14 @@ public class HuntressMark : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _duration = durationToExit;
-        _characterState = character;
-        _personWhoMadeBuff = personWhoMadeBuff;
+        characterState = character;
+        base.personWhoMadeBuff = personWhoMadeBuff;
     }
 
     public override void ExitState()
     {
-        _characterState.StateIcons.RemoveItemByState(State);
-        _characterState.RemoveState(this);
+        characterState.StateIcons.RemoveItemByState(State);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

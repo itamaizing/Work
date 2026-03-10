@@ -3,15 +3,18 @@ using UnityEngine;
 public class UIMenuMainWindow : MonoBehaviour
 {
     [SerializeField] private UIMenuMainAbilitiesPanel _abilitiesPanel;
+    [SerializeField] private SkillPanel _skillPanel;
     [SerializeField] private UIMenuMainAttributesPanel _attributesPanel;
     [SerializeField] private UIMenuMainTalentsPanel _talentsPanel;
     [SerializeField] private UIMenuMainCharactersPanel _charactersPanel;
     [SerializeField] private UIMenuMainGameTypesPanel _gameTypesPanel;
     [SerializeField] private UIMenuMainSavesPanel _savesPanel;
+    [SerializeField] private UIMenuMainPlayerInfoPanel _infoPanel;
 
-	private void Start()
+    private void Start()
     {
         Show();
+        _abilitiesPanel.gameObject.SetActive(false);
     }
 
     private void OnEnable()
@@ -66,11 +69,18 @@ public class UIMenuMainWindow : MonoBehaviour
     private void UpdateCharacterPanels()
     {
         var hero = GetHero();
-        
-        _abilitiesPanel.Show(hero.Abilities);
-        
-        _attributesPanel.Show(hero.Data.Attributes);
+
+        //_abilitiesPanel.Show(hero.Abilities);
+
+        //hero.TalentManager.Initialize(hero.LVL);
 
         _talentsPanel.Show(hero.TalentManager, false);
+
+        if (_skillPanel != null)
+            _skillPanel.FillMenu(hero.Abilities, hero);
+        
+        _attributesPanel.Show(hero);
+
+       
     }
 }

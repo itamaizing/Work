@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,13 +16,10 @@ public class SkillManager : MonoBehaviour
 
     private Skill[] _selectedSkills = new Skill[16];
     private List<AutoAttackSkill> _autoAttackSkills = new List<AutoAttackSkill>();
-    //private List<AutoSkill> _autoSkills = new List<AutoSkill>();
     private List<Skill> _simpleSkills = new List<Skill>();
     private float _globalCooldownTime = .5f;
     private SkillQueue _skillQueue;
-    //private AutoSkillQueue _autoSkillQueue;
     private AutoSkillCast _autoSkillCast;
-    //private AutoAttackQueue _autoAttackQueue;
     private Skill _selectedSkill;
     private Coroutine _lastCastResetCoroutine;
     private int _castWindowId = 0;
@@ -31,20 +28,27 @@ public class SkillManager : MonoBehaviour
     private Dictionary<Skill, Action> _castEndedHandlers = new();
 
     public TalentSystem TalesntSystem => _talentSystem;
-    public AutoSkillCast AutoSkillCast => _autoSkillCast;
-    public Skill LastCastedSkill { get; private set; }
-    public Skill PreviewCastedSkill { get; private set; }
+    public Skill LastCastedSkill { get; set; }
+    public Skill PreviewCastedSkill { get; set; }
     public SkillQueue SkillQueue { get => _skillQueue; }
     public Skill[] SelectedSkills { get => _selectedSkills; }
+    public Skill SelectedSkill { get => _selectedSkill; }
+    
+    public Skill CurrentCastingSkill { get; private set; }
     public bool IsNextSkillFree { get; private set; }
+    public bool IsNextSkillNoCast { get; private set; }
     public IEnumerable<Skill> DefaultSkills => _skills.Where(o => o.IsTalentSpell == false);
     public IEnumerable<Skill> TalentsSkills => _skills.Where(o => o.IsTalentSpell);
-
+    public List<Skill> Skills => _skills;
+    public Character Hero => _hero;
+    public AutoSkillCast AutoSkillCast => _autoSkillCast;
     public List<Skill> Abilities => _skills;
     public event Action<int> SkillSelected;
     public event Action<int> SkillDeselected;
     public event Action<Skill> SkillAdded;
     public event Action<Skill> SkillRemoved;
+    public event Action<Skill> SkillCastEnded;
+    public event Action<Skill> OnSkillPreparedSuccessfully;
 
     private void OnEnable()
     {
@@ -70,7 +74,7 @@ public class SkillManager : MonoBehaviour
 
     private void Awake()
     {
-        InputHandler.ScrollMouse += ScrollMouse;
+        //InputHandler.ScrollMouse += ScrollMouse;
 
         _skillQueue = GetComponent<SkillQueue>();
         _autoSkillCast = new(this);
@@ -89,11 +93,14 @@ public class SkillManager : MonoBehaviour
     #region Test
     private void OnSkillCastEnded(Skill skill)
     {
+        SkillCastEnded?.Invoke(skill);
+        
         if (!(skill is IPassiveSkill))
         {
             PreviewCastedSkill = LastCastedSkill;
             LastCastedSkill = skill;
             _castWindowId++;
+            SkillCastEnded?.Invoke(skill);
 
             if (_lastCastResetCoroutine != null) StopCoroutine(_lastCastResetCoroutine);
             _lastCastResetCoroutine = StartCoroutine(CastWindowResetCoroutine(_castWindowId));
@@ -114,7 +121,23 @@ public class SkillManager : MonoBehaviour
 
     }
     #endregion
-
+    public void NotifySkillPrepared(Skill skill)
+    {
+        OnSkillPreparedSuccessfully?.Invoke(skill);
+    }
+    
+    public void NotifySkillIsPreparing(Skill skill, bool isPreparing)
+    {
+        if (isPreparing)
+        {
+            CurrentCastingSkill = skill;
+        }
+        else
+        {
+            if (CurrentCastingSkill == skill)
+                CurrentCastingSkill = null;
+        }
+    }
     public void CancleAllSkills()
     {
         while (_selectedSkill != null && _selectedSkill.IsPreparing)
@@ -210,8 +233,19 @@ public class SkillManager : MonoBehaviour
         IsNextSkillFree = false;
         return true;
     }
+    
+    public bool TryConsumeNoCast()
+    {
+        if (!IsNextSkillNoCast)
+            return false;
+
+        IsNextSkillNoCast = false;
+        return true;
+    }
 
     public void SetNextSkillFree() => IsNextSkillFree = true;
+
+    public void SetNextSkillNoCast() => IsNextSkillNoCast = true;
 
     public void DeactivateSkill(Skill skill)
     {
@@ -252,6 +286,7 @@ public class SkillManager : MonoBehaviour
     {
         if (value)
         {
+            //InputHandler.OnClick += PrepereSkill;
             InputHandler.OnShiftLeftMouse += PrepereSkill;
             InputHandler.OnAltClick += CancelSkillCast;
 
@@ -259,6 +294,7 @@ public class SkillManager : MonoBehaviour
         }
         else
         {
+            //InputHandler.OnClick -= PrepereSkill;
             InputHandler.OnShiftLeftMouse -= PrepereSkill;
             InputHandler.OnAltClick -= CancelSkillCast;
 
@@ -320,6 +356,7 @@ public class SkillManager : MonoBehaviour
     {
         if (_selectedSkills[index] == null) return false;
         if (_selectedSkills[index] is IPassiveSkill) return false;
+        if (_selectedSkills[index].Disactive) return false;
 
         if (_selectedSkill != null && _selectedSkill.IsPreparing == true)
         {
@@ -439,9 +476,22 @@ public class SkillManager : MonoBehaviour
         }
     }
 
-    public void TalentAddCharges(int countBonusCharges)
+    public void TalentAddCharges(bool isAdditionalCharge)
     {
-        _countBonusCharges = countBonusCharges;
+        foreach (var skill in _skills)
+        {
+            if (skill.IsUseCharges)
+            {
+                if (isAdditionalCharge)
+                {
+                    skill.AddMaxChargeCount();
+                }
+                else
+                {
+                    skill.DeductMaxChargeCount();
+                }
+            }
+        }
     }
 
     public void SwitchAvaliable(Schools school, bool value)
@@ -450,7 +500,7 @@ public class SkillManager : MonoBehaviour
             return;
         foreach (var item in _skills)
         {
-            if (item.School == school)
+            if (item.Info.School == school)
             {
                 item.Disactive = !value;
                 //item.KnockDownTimerStart(coolDown);
@@ -487,7 +537,7 @@ public class SkillManager : MonoBehaviour
 
     public void SetPhysicalAbilitiesDisactive(bool state)
     {
-        foreach (Skill skill in Abilities) if (skill.AbilityForm == AbilityForm.Physical) skill.Disactive = state;
+        foreach (Skill skill in Abilities) if (skill.Info.AbilityForm == AbilityForm.Physical) skill.Disactive = state;
     }
 
    
@@ -497,7 +547,7 @@ public class SkillManager : MonoBehaviour
         /*
         foreach (var item in _abilities)
         {
-            if (item.AbilityForm == form)
+            if (item.Info.AbilityForm == form)
             {
                 item.SwitchAvailible(value);
                 //item.KnockDownTimerStart(coolDown);

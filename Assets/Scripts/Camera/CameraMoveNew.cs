@@ -1,7 +1,15 @@
-using UnityEngine;
+п»їusing UnityEngine;
 
 public class CameraMoveNew : MonoBehaviour
 {
+    [SerializeField] float m_MoveSpeed = 20;
+    [SerializeField] float m_BorderDistance = 5;
+
+    [SerializeField] float m_MinX = -64;
+    [SerializeField] float m_MaxX = 64;
+    [SerializeField] float m_MinY = -64;
+    [SerializeField] float m_MaxY = 64;
+
     public TestController Target;
 
     public float moveSpeed = 5f;
@@ -12,23 +20,23 @@ public class CameraMoveNew : MonoBehaviour
     private Vector3 initialPosition;
     private Quaternion initialRotation;
 
+
+    public Transform player;
+    public Vector3 offset;
+    public float smoothSpeed = 0.125f; // РЎРєРѕСЂРѕСЃС‚СЊ РїР»Р°РІРЅРѕРіРѕ РїРµСЂРµРјРµС‰РµРЅРёСЏ
+    public float minDistance = 2f; // РњРёРЅРёРјР°Р»СЊРЅРѕРµ СЂР°СЃСЃС‚РѕСЏРЅРёРµ РѕС‚ РёРіСЂРѕРєР°
+
+
+    private Vector3 _velocity; // РџРµСЂРµРјРµРЅРЅР°СЏ РґР»СЏ РїР»Р°РІРЅРѕРіРѕ РґРІРёР¶РµРЅРёСЏ
+
+    public float sensitivity = 10f;
+    public float minY = 5f; // Minimum Y position (zoom in limit)
+    public float maxY = 30f; // Maximum Y position (zoom out limit)
+
     private void Start()
     {
         initialPosition = transform.position;
         initialRotation = transform.rotation;
-    }
-
-    public Transform player;
-    public Vector3 offset;
-    public float smoothSpeed = 0.125f; // Скорость плавного перемещения
-    public float minDistance = 2f; // Минимальное расстояние от игрока
-
-
-    private Vector3 _velocity; // Переменная для плавного движения
-
-    void FixedUpdate()
-    {
-
     }
 
     private void LateUpdate()
@@ -38,24 +46,25 @@ public class CameraMoveNew : MonoBehaviour
         HandleMovement();
         HandleRotation();
         HandleResetPosition();
-
+        HandleZoom();
+        HandleMovement2();
         if (player == null) return;
 
-        // Расчет расстояния от камеры до игрока
+        // Р Р°СЃС‡РµС‚ СЂР°СЃСЃС‚РѕСЏРЅРёСЏ РѕС‚ РєР°РјРµСЂС‹ РґРѕ РёРіСЂРѕРєР°
         Vector3 direction = player.position - transform.position;
         float distance = direction.magnitude;
 
-        // Если расстояние меньше минимального, то корректируем положение
+        // Р•СЃР»Рё СЂР°СЃСЃС‚РѕСЏРЅРёРµ РјРµРЅСЊС€Рµ РјРёРЅРёРјР°Р»СЊРЅРѕРіРѕ, С‚Рѕ РєРѕСЂСЂРµРєС‚РёСЂСѓРµРј РїРѕР»РѕР¶РµРЅРёРµ
         if (distance < minDistance)
         {
             direction = direction.normalized * minDistance;
         }
 
 
-        // Вычисление новой позиции камеры
+        // Р’С‹С‡РёСЃР»РµРЅРёРµ РЅРѕРІРѕР№ РїРѕР·РёС†РёРё РєР°РјРµСЂС‹
         Vector3 targetPosition = player.position + offset;
 
-        // Плавное перемещение камеры
+        // РџР»Р°РІРЅРѕРµ РїРµСЂРµРјРµС‰РµРЅРёРµ РєР°РјРµСЂС‹
         transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref _velocity, smoothSpeed);
     }
 
@@ -68,22 +77,24 @@ public class CameraMoveNew : MonoBehaviour
 
         float moveY = 0f;
 
-        if (Input.GetKey(KeyCode.Q))
+        /*if (Input.GetKey(KeyCode.Q))
         {
             moveY = -1f;
         }
         else if (Input.GetKey(KeyCode.E))
         {
             moveY = 1f;
-        }
+        }*/
         
         if (Input.GetKey(KeyCode.UpArrow))
         {
-            moveZ = 1f;
+            //moveZ = 1f;
+            moveY = 1f;
         }
         else if (Input.GetKey(KeyCode.DownArrow))
         {
-            moveZ = -1f;
+            //moveZ = -1f;
+            moveY = -1f;
         }
         
         if (Input.GetKey(KeyCode.RightArrow))
@@ -126,5 +137,56 @@ public class CameraMoveNew : MonoBehaviour
             transform.position = initialPosition;
             transform.rotation = initialRotation;
         }
+    }
+
+    private void HandleZoom()
+    {
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+
+        // Calculate the new position based on the scroll input and sensitivity
+        // This moves the camera along its local Z-axis (forward/backward)
+        Vector3 move = transform.forward * scroll * sensitivity;
+
+        // Apply the movement
+        transform.Translate(move, Space.World);
+
+        // Optional: Clamp the camera's vertical position to stay within bounds
+        Vector3 currentPosition = transform.position;
+        currentPosition.y = Mathf.Clamp(currentPosition.y, minY, maxY);
+        transform.position = currentPosition;
+    }
+
+    void HandleMovement2()
+    {
+        Vector2 screenpos = Input.mousePosition * 100.0f;
+        screenpos.x /= (float)Screen.width;
+        screenpos.y /= (float)Screen.height;
+
+
+        if (screenpos.x >= 0 && screenpos.x <= 100.0f)
+        {
+            if (screenpos.x < m_BorderDistance)
+            {
+                transform.position += Vector3.left * Time.deltaTime * m_MoveSpeed;
+            }
+            if (screenpos.x > 100 - m_BorderDistance)
+            {
+                transform.position += Vector3.right * Time.deltaTime * m_MoveSpeed;
+            }
+        }
+        if (screenpos.y >= 0 && screenpos.y <= 100.0f)
+        {
+
+            if (screenpos.y < m_BorderDistance)
+            {
+                transform.position += Vector3.back * Time.deltaTime * m_MoveSpeed;
+            }
+            if (screenpos.y > 100 - m_BorderDistance)
+            {
+                transform.position += Vector3.forward * Time.deltaTime * m_MoveSpeed;
+            }
+        }
+
+        transform.position = new Vector3(Mathf.Clamp(transform.position.x, m_MinX, m_MaxX), transform.position.y, Mathf.Clamp(transform.position.z, m_MinY, m_MaxY));
     }
 }

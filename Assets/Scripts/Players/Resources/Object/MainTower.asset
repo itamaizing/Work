@@ -12,7 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff84ab29f61c0cf4bb6fe08ad7e36ea3, type: 3}
   m_Name: MainTower
   m_EditorClassIdentifier: 
+  _attribute:
+    Name: MainTower
+    Description: 
+    _value: 0
   maxHealth: 100
-  regenerationRate: 0
+  regenerationAmount: 0
+  regenerationInterval: 0
   maxEndurance: 1
   minEndurance: 0
+  hideBar: 0

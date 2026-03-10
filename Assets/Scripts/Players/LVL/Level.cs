@@ -13,6 +13,8 @@ public class Level : NetworkBehaviour
     [SyncVar] private int _value = 1;
     private int _maxValue = 9;
 
+    private HeroComponent hero;
+
     public int Value { get => _value; protected set { _value = value; LVLUped?.Invoke(_value); } }
     public int Experience { get => _experience; }
     public int ExperienceForNextLVL { get => _experienceForNextLVL; }
@@ -21,6 +23,20 @@ public class Level : NetworkBehaviour
     public event Action<int> EXPAdded;
     public event Action<int> LVLUped;
     public event Action<int> EXPForNextLVLChanged;
+
+    private void Start()
+    {
+        hero = GetComponent<HeroComponent>();
+        if (hero == null) return;
+        
+        hero.SelectComponent.OnSelect += HandleHeroSet;
+    }
+
+    private void OnDisable()
+    {
+        if(hero != null)
+        hero.SelectComponent.OnSelect -= HandleHeroSet;
+    }
 
     public void AddEXP(int value)
     {
@@ -59,6 +75,30 @@ public class Level : NetworkBehaviour
         _experienceForNextLVL = (int)(_experienceForNextLVL * _multiplierToExperienceForNextLVL) + _additionalToExperienceForNextLVL;
         EXPForNextLVLChanged?.Invoke(_experienceForNextLVL);
         RpcUpdateInfo(_value, _experience, _experienceForNextLVL);
+    }
+
+    public void ApplyLoadedLevelLocal(int level, int experience, int experienceForNextLVL)
+    {
+        _value = Mathf.Clamp(level, 1, _maxValue);
+        _experience = experience;
+        _experienceForNextLVL = experienceForNextLVL;
+
+        LVLUped?.Invoke(_value);
+        EXPAdded?.Invoke(_experience);
+        EXPForNextLVLChanged?.Invoke(_experienceForNextLVL);
+    }
+
+    private void HandleHeroSet()
+    {
+        if (hero == null || hero.LVL != this) return;
+
+        ApplyLoadedLevelLocal(
+            LevelCharacterManager.Instance.GetCurrentLevel(),
+            LevelCharacterManager.Instance.GetCurrentExperience(),
+            LevelCharacterManager.Instance.GetExperienceForNextLevel()
+        );
+
+        hero.TalentManager?.Initialize(this);
     }
 
     [Command]

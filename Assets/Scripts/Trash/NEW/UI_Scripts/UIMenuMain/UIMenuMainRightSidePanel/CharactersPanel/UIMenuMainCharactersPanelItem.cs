@@ -12,11 +12,23 @@ public class UIMenuMainCharactersPanelItem : MonoBehaviour, IPointerEnterHandler
     public HeroComponent CurrentHero;
     private Vector3 _increasedScale = new Vector3(1.3f, 1.3f, 1);
     private Vector3 _standardScale = new Vector3(1f, 1f, 1);
-    
+
     public void Fill(HeroComponent hero)
     {
         _icon.sprite = hero.Data.Icon;
         CurrentHero = hero;
+
+        LevelCharacterManager.Instance.PreloadHeroLevelData(hero);
+
+        var lvlInfo = GetComponentInChildren<LvlInfoMain>();
+        if (lvlInfo != null)
+        {
+            lvlInfo.SetInfo(
+                LevelCharacterManager.Instance.GetCurrentLevel(),
+                LevelCharacterManager.Instance.GetCurrentExperience(),
+                LevelCharacterManager.Instance.GetExperienceForNextLevel(), CurrentHero
+            );
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)

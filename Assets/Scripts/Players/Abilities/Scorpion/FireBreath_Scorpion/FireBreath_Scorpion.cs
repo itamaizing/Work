@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
     [Header("Ability Settings")]
     [SerializeField] private FireBreath_Prefab _conePrefab;
     [SerializeField] private GameObject _prefab;
-    [SerializeField] private float duration = 3;
+    [SerializeField] private float _duration = 3;
 
     [Header("Damage Settings")]
     [SerializeField] private float _damage = 10f;
@@ -25,6 +25,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
 
     private FireBreath_Prefab _fireBreathInstance;
     private Dictionary<Health, int> _enemiesDict = new Dictionary<Health, int>();
+    private WaitForSeconds _waitForApplyFireBreathDamage;
 
     public ConsumeCombo_Scorpion Notifier { get; set; }
     public int ConsumedAmount { get; set; }
@@ -32,6 +33,26 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
     protected override bool IsCanCast => true;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
+
+    #region Const
+    private const float DebuffTickInterval = 0.3f;
+    private const float ApplyFireBreathDamageTickInterval = 0.3f;
+    private const float BaseScorchedSoulChance = 10f;
+    private const float MaxScorchedSoulChance = 100f;
+    private const float ScorchedSoulDuration = 3f;
+    private const float MinRotationThresholdSqr = 0.01f;
+    private const float FallbackMouseForwardDistance = 5f;
+    private const float DamageLerpStart = 1f;
+    private const float DamageLerpEnd = 0.7f;
+    private const float BaseDamageScale = 1f;
+    private const float MinDistanceMultiplier = 0.5f;
+    private const float MaxDistanceRayCast = 100f;
+    #endregion
+
+    private void Start()
+    {
+        _waitForApplyFireBreathDamage = new WaitForSeconds(ApplyFireBreathDamageTickInterval);
+    }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -59,6 +80,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
         Vector3 spawnPosition = transform.position;
 
         var fireObj = Instantiate(_prefab, spawnPosition, Quaternion.identity);
+        _fireBreathInstance = fireObj.GetComponent<FireBreath_Prefab>();
         SceneManager.MoveGameObjectToScene(fireObj, _hero.NetworkSettings.MyRoom);
         fireObj.transform.SetParent(transform);
 
@@ -83,13 +105,13 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
 
     private void TryApplyScorchedSoulDebuff(Health enemy, float elapsedTime)
     {
-        float baseChance = 10f;
-        int tickIndex = Mathf.FloorToInt(elapsedTime / 0.3f);
+        float baseChance = BaseScorchedSoulChance;
+        int tickIndex = Mathf.FloorToInt(elapsedTime / DebuffTickInterval);
         float currentChance = baseChance * Mathf.Pow(2, tickIndex);
 
-        currentChance = Mathf.Clamp(currentChance, 0f, 100f);
+        currentChance = Mathf.Clamp(currentChance, 0f, MaxScorchedSoulChance);
 
-        float roll = UnityEngine.Random.Range(0f, 100f);
+        float roll = UnityEngine.Random.Range(0f, MaxScorchedSoulChance);
         if (roll <= currentChance)
         {
             if (enemy.TryGetComponent<CharacterState>(out var stateManager))
@@ -99,17 +121,16 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
         }
     }
 
-    private void ApplyDamageAndDebuff(float elapsedTime, int currentTickDamage)
+    private void ApplyDamageAndDebuff(float elapsedTime, int dummyTickIndex)
     {
         Collider[] hitColliders = Physics.OverlapCapsule(
             transform.position,
             transform.position + transform.forward * _maxDistance,
             _coneAngle,
-            _targetsLayers); // ��� ��� �� �����, ��!
+            _targetsLayers);
 
         foreach (Collider collider in hitColliders)
         {
-            // �������� �� ���� ������ CompareTag
             if ((_targetsLayers.value & (1 << collider.gameObject.layer)) == 0)
                 continue;
 
@@ -117,7 +138,6 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
             {
                 Vector3 dirToEnemy = (enemy.transform.position - transform.position).normalized;
                 float distance = Vector3.Distance(transform.position, enemy.transform.position);
-
                 if (distance > _maxDistance)
                     continue;
 
@@ -125,19 +145,25 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
                 if (angle > _coneAngle / 2f)
                     continue;
 
-                float distanceMultiplier = Mathf.Lerp(1f, 0.7f, (distance / _maxDistance));
+                float distanceMultiplier = Mathf.Lerp(DamageLerpStart, DamageLerpEnd, (distance / _maxDistance));
+                int damageScale = _enemiesDict.ContainsKey(enemy) ? _enemiesDict[enemy] : 1;
 
-                float finalDamageValue = Buff.Damage.GetBuffedValue(currentTickDamage * distanceMultiplier);
+                float finalDamageValue = Buff.Damage.GetBuffedValue(_damage * damageScale * distanceMultiplier);
 
                 Damage damage = new Damage
                 {
                     Value = finalDamageValue,
-                    Type = DamageType
+                    Type = Info.DamageType
                 };
 
                 CmdApplyDamage(damage, enemy.gameObject);
 
-                TryApplyScorchedSoulDebuff(enemy, duration);
+                if (_enemiesDict.ContainsKey(enemy))
+                    _enemiesDict[enemy] *= (int)_damageScalePerTick;
+                else
+                    _enemiesDict[enemy] = 2;
+
+                TryApplyScorchedSoulDebuff(enemy, elapsedTime);
             }
         }
     }
@@ -145,32 +171,22 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
     private IEnumerator ApplyFireBreathDamage()
     {
         float elapsed = 0f;
-        float tickInterval = 0.3f;
         int baseDamage = 1;
 
-        Hero.Move.CanMove = false;
-
-        float energyRestoreInterval = CastStreamDuration / 10f;
-        float nextEnergyRestoreTime = energyRestoreInterval;
+        Hero.Move.SetCanMove(false);
 
         while (elapsed < CastStreamDuration)
         {
             ApplyDamageAndDebuff(elapsed, baseDamage);
 
-            elapsed += tickInterval;
+            elapsed += ApplyFireBreathDamageTickInterval;
 
-            if (elapsed >= nextEnergyRestoreTime)
-            {
-                Hero.Resources.First(r => r.Type == ResourceType.Mana).CmdAdd(1);
-                nextEnergyRestoreTime += energyRestoreInterval;
-            }
-
-            yield return new WaitForSeconds(tickInterval);
+            yield return _waitForApplyFireBreathDamage;
 
             baseDamage *= 2;
         }
 
-        Hero.Move.CanMove = true;
+        Hero.Move.SetCanMove(true);
         CmdDestroyFireBreath();
     }
 
@@ -182,7 +198,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
             Vector3 direction = (mousePos - transform.position);
             direction.y = 0f;
 
-            if (direction.sqrMagnitude > 0.01f)
+            if (direction.sqrMagnitude > MinRotationThresholdSqr)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
                 CmdRotateFireBreath(targetRotation);
@@ -193,14 +209,14 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
     }
 
     [Command]
-private void CmdApplyScorchedSoulDebuff(NetworkIdentity targetIdentity)
-{
-    if (targetIdentity.TryGetComponent<CharacterState>(out var stateManager))
+    private void CmdApplyScorchedSoulDebuff(NetworkIdentity targetIdentity)
     {
-        float duration = 3f;
-        stateManager.AddState(States.ScorchedSoul, duration, 0, _hero.gameObject, Name);
+        if (targetIdentity.TryGetComponent<CharacterState>(out var stateManager))
+        {
+            float duration = ScorchedSoulDuration;
+            stateManager.AddState(States.ScorchedSoul, duration, 0, _hero.gameObject, Name);
+        }
     }
-}
 
     [Command]
     private void CmdRotateFireBreath(Quaternion rotation)
@@ -233,7 +249,7 @@ private void CmdApplyScorchedSoulDebuff(NetworkIdentity targetIdentity)
                     Damage damage = new Damage
                     {
                         Value = finalDamageValue,
-                        Type = DamageType,
+                        Type = Info.DamageType,
                     };
 
                     CmdApplyDamage(damage, enemy.gameObject);
@@ -253,23 +269,23 @@ private void CmdApplyScorchedSoulDebuff(NetworkIdentity targetIdentity)
         distance = Mathf.Clamp(distance, _minDistance, _maxDistance);
 
         float normalized = (distance - _minDistance) / (_maxDistance - _minDistance);
-        return Mathf.Lerp(1f, 0.5f, normalized);
+        return Mathf.Lerp(BaseDamageScale, MinDistanceMultiplier, normalized);
     }
 
     protected override void ClearData()
     {
         _enemiesDict.Clear();
-        if (_fireBreathInstance != null)
-            Destroy(_fireBreathInstance.gameObject);
+
+        if (_fireBreathInstance != null) Destroy(_fireBreathInstance.gameObject);
     }
 
     private Vector3 GetMouseWorldPosition()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, ~0))
+        if (Physics.Raycast(ray, out RaycastHit hit, MaxDistanceRayCast, ~0))
             return hit.point;
 
-        return transform.position + transform.forward * 5f;
+        return transform.position + transform.forward * FallbackMouseForwardDistance;
     }
 
     //public void TryUpgradeByConsumingCombo(int amount)

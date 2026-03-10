@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Linq.Expressions;
 using UnityEngine;
 
@@ -17,31 +17,31 @@ public class Punch_Scorpion : AutoAttackSkill
 
     protected override void CastAction()
     {
-        if (_lastTarget != null && _lastTarget != GetTargetCharacter()) //�����
+        if (_lastTarget != null && _lastTarget != Targeting.GetTarget()?.Character) //�����
         {
             _comboCounter.ResetCounter();
         }
         Debug.Log(transform.position);
-        Debug.Log(GetTargetCharacter().transform.position);
+        Debug.Log(Targeting.GetTarget().Character.transform.position);
 
         //Vector3 closestEnemyPoint = _target.gameObject.GetComponent<CircleCollider2D>().ClosestPoint(transform.position);
         //Vector3 closestMyPoint = transform.parent.parent.GetComponent<CircleCollider2D>().ClosestPoint(_target.transform.position);
 
 
-        if (Vector2.Distance(LastTargetPosition, GetTargetCharacter().transform.position) <= 2f)
+        if (Vector2.Distance(LastTargetPosition, Targeting.GetTarget().Character.transform.position) <= 2f)
         {
             Debug.Log("����������� ����������");
 
             Damage damage = new Damage   
             {
                 Value = Buff.Damage.GetBuffedValue(_damageValue),
-                Type = DamageType,
+                Type = Info.DamageType,
             };
 
-            CmdAttack(damage, GetTargetCharacter().gameObject);
+            CmdAttack(damage, Targeting.GetTarget()?.Character.gameObject);
         }
         else Debug.LogWarning("������� ������");
-        _lastTarget = GetTargetCharacter();
+        _lastTarget = Targeting.GetTarget()?.Character;
 
     }
     private void AttackPassed(Character target)
@@ -60,14 +60,13 @@ public class Punch_Scorpion : AutoAttackSkill
     [Command]
     private void CmdAttack(Damage damage, GameObject hp)
     {
-        if (_tempTargetForDamage != hp.transform)
+        if (Targeting.ForDamage.Transform != hp.transform)
         {
-            _tempTargetForDamage = hp.transform;
-            _tempForDamage = hp.GetComponent<IDamageable>();
+            Targeting.ForDamage = new TargetData(hp);
         }
 
-        bool result = _tempForDamage.TryTakeDamage(ref damage, this);
-       //RpcSelfNotifyHitResult(result, _tempTargetForDamage);
+        bool result = Targeting.ForDamage.Damageable.TryTakeDamage(ref damage, this);
+       //RpcSelfNotifyHitResult(result, _tempTargetForDamageFORRENAME);
 
     }
 

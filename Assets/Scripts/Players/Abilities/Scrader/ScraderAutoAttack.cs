@@ -1,11 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ScraderAutoAttack : MonoBehaviour
 {
-    [SerializeField] private SpellMoveScraderTo spellMoveTo;
+    [SerializeField] private SpellMoveScraderTo spellMoveScraderTo;
+    [SerializeField] private ScratchClaws scratchClaws;
 
-    public void OnAutoAttackAnimationHitScrader() => spellMoveTo.OnAutoAttackAnimationHit();
-    public void OnAutoAttackAnimationEndScrader() => spellMoveTo.OnAutoAttackAnimationEnd();
+    public void OnAutoAttackAnimationHitScrader() => spellMoveScraderTo.OnAutoAttackAnimationHit();
+    public void OnAutoAttackAnimationEndScrader() => spellMoveScraderTo.OnAutoAttackAnimationEnd();
+
+    public void ScratchClawsAttackAnimationHit() => scratchClaws.AttackAnimationHit();
 }

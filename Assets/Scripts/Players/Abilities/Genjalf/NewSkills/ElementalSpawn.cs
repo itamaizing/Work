@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
@@ -21,7 +21,7 @@ public class ElementalSpawn : Skill
     public Character FireElement => _fireElement;
     public int IndexElemental { get { return _indexElemental; } set { _indexElemental = value; } }
 
-    protected override bool IsCanCast => Vector3.Distance(_position, transform.position) <= Radius;
+    protected override bool IsCanCast => Vector3.Distance(_position, transform.position) <= AreaInfo.Radius;
 
     protected override int AnimTriggerCastDelay => 0;
 
@@ -62,7 +62,7 @@ public class ElementalSpawn : Skill
         {
             if (GetMouseButton)
             {
-                _position = GetMousePoint();
+                _position = Targeting.GetMousePoint();
             }
             yield return null;
         }

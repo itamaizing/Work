@@ -7,30 +7,88 @@ public class ArrowProjectile : Projectiles
 {
     [SerializeField] private float _speed = 10f;
     [SerializeField] private float _lifeTime = 5f;
+    [SerializeField] private float _arrowYOffset = 1.5f;
     [SerializeField] private bool _arrowDark;
-    [SerializeField] private float duration;
-    [SerializeField] private DamageType damageTypePhysics;
+    [SerializeField] private float _duration;
+    [SerializeField] private DamageType _damageTypePhysics;
+    [SerializeField] private GameObject _arrow;
+    [SerializeField] private SphereCollider _sphereCollider;
 
     private Transform _followTarget;
+    private Vector3 _startPosition;
     private bool _isFollowingTarget = false;
+
+    #region Constants
+    private const float InAstralDamageMultiplier = 1.5f;
+    private const int ResistMagicDamageMaxValue = 100;
+    #endregion
 
     private float _magDamage;
     private float _damage;
 
     public bool ArrowDark { get => _arrowDark; set => _arrowDark = value; }
 
-    public void StartFly(Vector3 direction)
+    private void OnEnable()
     {
-        if (_rb != null) _rb.linearVelocity = direction * _speed;
-
+        _arrow.SetActive(false);
+        _sphereCollider.enabled = false;
         Destroy(gameObject, _lifeTime);
     }
+
+    private bool IsEnemy(GameObject target)
+    {
+        if (_dad == null) return IsEnemyByLayer(target);
+        if (!_dad.TryGetComponent(out UserNetworkSettings ownerSettings) || !target.TryGetComponent(out UserNetworkSettings targetSettings)) return IsEnemyByLayer(target);
+        if (!IsTeamAssigned(ownerSettings) || !IsTeamAssigned(targetSettings)) return IsEnemyByLayer(target);
+
+        return ownerSettings.TeamIndex != targetSettings.TeamIndex;
+    }
+
+    private bool IsTeamAssigned(UserNetworkSettings settings)
+    {
+        return settings.TeamIndex != 0;
+    }
+
+    private bool IsEnemyByLayer(GameObject target)
+    {
+        return ((1 << target.layer) & _skill.Targeting.Layer.value) != 0;
+    }
+
+    private void Update()
+    {
+        ArrowStart();
+    }
+
+    private void ArrowStart()
+    {
+        if (_startPosition != Vector3.zero)
+        {
+            float distanceTravelled = Vector3.Distance(_startPosition, transform.position);
+            if (distanceTravelled > _skill.AreaInfo.CastLength)
+            {
+                Destroy(gameObject);
+            }
+        }
+    }
+
+    public void StartFly(Vector3 direction)
+    {
+        if (direction == Vector3.zero || float.IsNaN(direction.x) || float.IsNaN(direction.y) || float.IsNaN(direction.z)) return;
+        if (_rb != null) _rb.linearVelocity = direction * _speed;
+        _startPosition = transform.position;
+        _arrow.SetActive(true);
+        _sphereCollider.enabled = true;
+        RpcArrowTrue();
+    }
+
     public void StartFly(Transform target)
     {
+        _startPosition = transform.position;
         _followTarget = target;
         _isFollowingTarget = true;
+        _sphereCollider.enabled = true;
+        RpcArrowTrue();
         StartCoroutine(FollowTargetCoroutine());
-        Destroy(gameObject, _lifeTime);
     }
 
     public void Init(HeroComponent dad, float energy, bool lastHit, Skill skill, float damage)
@@ -52,32 +110,15 @@ public class ArrowProjectile : Projectiles
             return;
         }
 
-        if (((1 << other.gameObject.layer) & _skill.TargetsLayers.value) == 0) return;
+        if (!IsEnemy(other.gameObject)) return;
 
         if (other.TryGetComponent<ObjectHealth>(out ObjectHealth objectHealth) &&
-            objectHealth.ResistMagicDamage >= 100 && _arrowDark)
+            objectHealth.ResistMagicDamage >= ResistMagicDamageMaxValue && _arrowDark)
             return;
 
         ApplyEnemy(other);
         Destroy(gameObject);
     }
-
-
-    //private void TargetApply(Collider other)
-    //{
-    //    //if (other.TryGetComponent<IDamageable>(out IDamageable target))
-    //    //{
-    //    //    //if (other.TryGetComponent<UserNetworkSettings>(out UserNetworkSettings userNetworkSettings))
-    //    //    //{
-    //    //    //    if (userNetworkSettings.TeamIndex != _dad.NetworkSettings.TeamIndex)
-    //    //    //    {
-    //    //    //        ApplyEnemy(other, target);
-    //    //    //    }
-    //    //    //}
-
-    //    //    if (other.gameObject != _dad.gameObject && ((1 << other.gameObject.layer) & _skill.TargetsLayers.value) != 0) ApplyEnemy(other);
-    //    //}
-    //}
 
     #region ApplyEnemy
     private void ApplyEnemy(Collider collider)
@@ -88,19 +129,21 @@ public class ArrowProjectile : Projectiles
         {
             if (!inAstral)
             {
-                ApplyDamage(_damage, damageTypePhysics, collider.gameObject);
-                if (TryApplyDamage(damageTypePhysics, _skill.AttackRangeType, collider.gameObject)) return;
+                ApplyDamage(_damage, _damageTypePhysics, collider.gameObject);
+                if (TryApplyDamage(_damageTypePhysics, _skill.Info.AttackRangeType, collider.gameObject)) return;
             }
 
             float totalMagDamage = _magDamage;
-            if (inAstral) totalMagDamage *= 1.5f;
+            if (inAstral) totalMagDamage *= InAstralDamageMultiplier;
 
-            ApplyDamage(totalMagDamage, _skill.DamageType, collider.gameObject);
+            Debug.Log($"totalMagDamage: {totalMagDamage}");
 
-            if (collider.TryGetComponent<Character>(out Character character)) character.CharacterState.AddState(States.InnerDarkness, duration, 0, _skill.Hero.gameObject, _skill.name);
+            ApplyDamage(totalMagDamage, _skill.Info.DamageType, collider.gameObject);
+
+            if (collider.TryGetComponent<Character>(out Character character)) character.CharacterState.AddState(States.InnerDarkness, _duration, 0, _skill.Hero.gameObject, _skill.name);
         }
 
-        else ApplyDamage(_damage, damageTypePhysics, collider.gameObject);
+        else ApplyDamage(_damage, _damageTypePhysics, collider.gameObject);
     }
     #endregion
 
@@ -121,11 +164,17 @@ public class ArrowProjectile : Projectiles
     {
         while (_isFollowingTarget && _followTarget != null)
         {
-            Vector3 dir = (_followTarget.position - transform.position).normalized;
-            if (_rb != null)
-                _rb.linearVelocity = dir * _speed;
+            Vector3 targetPos = _followTarget.position + Vector3.up * _arrowYOffset;
+            Vector3 dir = (targetPos - transform.position).normalized;
+            if (_rb != null) _rb.linearVelocity = dir * _speed;
 
             yield return null;
         }
+    }
+
+    [ClientRpc]
+    private void RpcArrowTrue()
+    {
+        _arrow.SetActive(true);
     }
 }

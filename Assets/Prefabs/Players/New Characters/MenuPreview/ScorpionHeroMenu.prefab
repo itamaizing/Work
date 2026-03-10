@@ -1,0 +1,241 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &7375475307404602061
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 629845791727203164, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 629845791727203164, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675348779447106883, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: _assetId
+      value: 3188755592
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675348779447106883, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2785578367526533986, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: _castLine
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2785578367526533986, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: RegenSpawn
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2785578367526533986, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: DamageSpawn
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2785578367526533986, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: CircleSelect
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2785578367526533986, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: MarkersSelect
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2785578367526533986, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: skillRenderer
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3741212121368607163, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: _drawCircleSelf
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5219911594900625513, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: _stateIcons
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5440032567705271470, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: _skillRenderer
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5458554383432203635, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: _targetSeeker
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5458554383432203635, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: talentManager
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5458554383432203635, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: _selectedCircle
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5517905609449129634, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: ice
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5517905609449129634, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: ropeTrap
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5517905609449129634, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: manaRegen
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5517905609449129634, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: darkShield
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5517905609449129634, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: lightShield
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5517905609449129634, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: suppressionIdle
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5517905609449129634, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: suppressionMove
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5517905609449129634, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: frozenStateEffect
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5612755856390318882, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: _talentSystem
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5612755856390318882, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: _skillRenderer
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5883639770937801120, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: _particlesAddStack
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5883639770937801120, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: _particlesFullCombo
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5883639770937801120, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: _particlesCancelCombo
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6133321160658105318, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: bar
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8086357493113313276, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8086357493113313276, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8143091671269686944, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: m_Name
+      value: ScorpionHeroMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 8811787553151181850, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8811787553151181850, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8811787553151181850, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8811787553151181850, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8811787553151181850, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8811787553151181850, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8811787553151181850, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8811787553151181850, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8811787553151181850, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8811787553151181850, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 8182938472827115355, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 2398672331031949088, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 5927941457420025680, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 1975422533784453709, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 1181903535931702790, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 5458554383432203635, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 5219911594900625513, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 6683089537106641575, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 2711307941411400361, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 1004878045372220565, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 3093876368913338197, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 8353205167119092422, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 1863966610777152120, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 1147250939410812164, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 5517905609449129634, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 6133321160658105318, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 2865354444991856952, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 6796227240998224273, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 2785578367526533986, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 8904512024258299042, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 263814908499768372, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 9119303956364008588, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 8289396814807031088, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 5612755856390318882, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 5440032567705271470, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 620904228281339238, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 7999564961451560820, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 1076844638941487828, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 6886788855339223353, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 4089894974583982996, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 6732054044553877427, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 8920276347339243132, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 1485408660127300276, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 6267367289068038631, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 3741212121368607163, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 8732005787551451527, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 5883639770937801120, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 220446193611464409, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 1595654106541851295, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 1481728531424617190, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 2675348779447106883, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 3713062146289152410, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 4607475415042520886, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    m_RemovedGameObjects:
+    - {fileID: 1073531778476955462, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 3785244378745797364, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 5511054199702621730, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 1894683155733971314, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 2628770578363558844, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 7571121469154899162, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 324032816720728980, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 3721043057963782379, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 8904558181664508109, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 1049065473536513494, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 8984319761230545967, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}

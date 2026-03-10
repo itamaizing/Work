@@ -5,10 +5,9 @@ using UnityEngine;
 public class BleedingState : AbstractCharacterState
 {
     private Character _target;
-
+    
     private float _baseDamage;
 
-    private float _duration;
     private float _baseDuration;
     
     private float _timeBetweenAttack;
@@ -22,10 +21,8 @@ public class BleedingState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
-        _target = _characterState.Character;
-
-        _duration = durationToExit;
+        _target = characterState.Character;
+;
         _baseDuration = durationToExit;
         _baseDamage = damageToExit;
 
@@ -35,18 +32,12 @@ public class BleedingState : AbstractCharacterState
     }
 
     public override void UpdateState()
-    {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0)
-        {
-            ExitState();
-        }
-        
+    {        
         _timeBetweenAttack -= Time.deltaTime;
         if (_timeBetweenAttack <= 0)
         {
             BleedingDamage();
-            _characterState.Character.Health.barCharacter.PreviewDoTTick(_baseDamage);
+            characterState.Character.Health.barCharacter.PreviewDoTTick(_baseDamage);
             _timeBetweenAttack = _startTimeBetweenAttack;
         }
     }
@@ -54,12 +45,12 @@ public class BleedingState : AbstractCharacterState
     public override void ExitState()
     {
         _target.Health.IsDot = false;
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        _duration = _baseDuration;
+        duration = _baseDuration;
         return true;
     }
 

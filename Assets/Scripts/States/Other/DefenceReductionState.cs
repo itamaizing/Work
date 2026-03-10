@@ -15,7 +15,7 @@ public class DefenceReductionState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
+        characterState = character;
         _healthBuffActiveTime = durationToExit;
         _healthBoostPercentage = damageToExit;
         ApplyBuff();
@@ -34,7 +34,7 @@ public class DefenceReductionState : AbstractCharacterState
     public override void ExitState()
     {
         RemoveBuff();
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -44,12 +44,12 @@ public class DefenceReductionState : AbstractCharacterState
 
     private void ApplyBuff()
     {
-        _defaultPhysDef = _characterState.Character.Health.DefPhysDamage;
-        _characterState.Character.Health.SetPhysicDef(_defaultPhysDef * _healthBoostPercentage);
+        _defaultPhysDef = characterState.Character.Health.DefPhysDamage;
+        characterState.Character.Health.SetPhysicDef(_defaultPhysDef * _healthBoostPercentage);
     } 
 
     private void RemoveBuff()
     {
-        _characterState.Character.Health.SetPhysicDef(_defaultPhysDef);
+        characterState.Character.Health.SetPhysicDef(_defaultPhysDef);
     }
 }

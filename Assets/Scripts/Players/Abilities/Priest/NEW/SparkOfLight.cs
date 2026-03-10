@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -75,7 +75,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("SparkOfLights");
 
-    protected override bool IsCanCast => GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius && NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
+    protected override bool IsCanCast => Targeting.GetTarget()?.Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
 
     public event Action OnModeChange;
 
@@ -115,33 +115,33 @@ public class SparkOfLight : Skill,IPolaritySwitchable
 
     private void UpdateMode()
     {
-        School = isLightMode ? Schools.Light : Schools.Dark;
+        Info.School = isLightMode ? Schools.Light : Schools.Dark;
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
 
         ClearData();
-        ClearTarget();
+        Targeting.ClearTarget();
         //_characterTarget = null;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
 
-        while (GetTempTargetCharacter() == null)
+        while (Targeting.GetTempTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
-                Vector3 clickPoint = GetMousePoint();
+                Vector3 clickPoint = Targeting.GetMousePoint();
 
-                FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
 
-                if (GetTempTargetCharacter() is Character character)
+                if (Targeting.GetTempTarget()?.Character is Character character)
                 {
-                    if (GetTempTargetCharacter() != null && (IsAllyTarget(character)) && !isLightMode)
+                    if (Targeting.GetTempTarget()?.Character != null && (IsAllyTarget(character)) && !isLightMode)
                     {
-                        ClearTempTarget();
+                        Targeting.ClearTempTarget();
                     }
 
-                    if (GetTempTargetCharacter() != null)
+                    if (Targeting.GetTempTarget()?.Character != null)
                     {
                         character.SelectedCircle.IsActive = true;
                     }
@@ -151,17 +151,17 @@ public class SparkOfLight : Skill,IPolaritySwitchable
             yield return null;
         }
 
-        SetTarget(GetTempTargetCharacter());
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTargetCharacter());
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() == null) yield break;
+        if (Targeting.GetTarget()?.Character == null) yield break;
         
-        GameObject target = GetTargetCharacter().gameObject;
+        GameObject target = Targeting.GetTarget()?.Character.gameObject;
         CmdSpawnProjectile(target, isLightMode);
         ClearData();
     }
@@ -172,7 +172,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         {
             if (isLightMode)
             {
-                if (IsAllyTarget(GetTargetCharacter()))
+                if (IsAllyTarget(Targeting.GetTarget()?.Character))
                 {
                     skillEnergyCosts = _manaCostHeal;
                 }
@@ -189,7 +189,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
 
             foreach (var skillCost in skillEnergyCosts)
             {
-                var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
+                var resource = _hero.Resources[skillCost.resourceType];
                 resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
             }
 
@@ -234,9 +234,10 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         }
     }
     
-    [Command] private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) => stateComponent.AddState(states, duration, 1f, gameObject, Name);
+    //[Command]
+    private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) => stateComponent.AddState(states, duration, 1f, gameObject, Name);
 
-    [TargetRpc]
+    //[TargetRpc]
     private void TargetRpcOnEndPointReached(GameObject target)
     {
         if (isLightMode) HandleDefaultMode(target.GetComponent<Character>());
@@ -330,7 +331,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
             Value = Buff.Damage.GetBuffedValue(amount),
             Type = DamageType.Magical,
             PhysicAttackType = AttackRangeType.RangeAttack,
-            School = this.School,
+            School = this.Info.School,
             //DamageableSkill = this,
         };
     }
@@ -449,7 +450,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
 
         _hero.Move.StopLookAt();
@@ -458,6 +459,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0)
-            SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+            Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 }
+

@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cf25ca78110d1b240ac9c6549f27c30d, type: 3}
   m_Name: StateIcoDatabase_Generated
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::StateIcoDatabase
   Entries:
   - State: 0
     Icon: {fileID: 21300000, guid: ca462af3d19f7ac46b2767cf7c1d951c, type: 3}
@@ -270,4 +270,55 @@ MonoBehaviour:
     BorderColor: {r: 1, g: 1, b: 1, a: 1}
   - State: 85
     Icon: {fileID: 21300000, guid: 7a8cf3ad5418f2f42a98961f8d4848e3, type: 3}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 86
+    Icon: {fileID: -4856909232036157465, guid: 0428d550f1549974da2575ce4d49b8b5, type: 3}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 87
+    Icon: {fileID: -2820539102237515152, guid: 9f718b688f844f442849ecdd6c9ca08f, type: 3}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 88
+    Icon: {fileID: 0}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 89
+    Icon: {fileID: 21300000, guid: ba33a9f74e760af40acd84c6b94a4ea3, type: 3}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 90
+    Icon: {fileID: 21300000, guid: 3ef8f17a384cf20408be7fc7617759f7, type: 3}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 91
+    Icon: {fileID: 21300000, guid: 7764d8d6cfaf60840af322c247c9896b, type: 3}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 92
+    Icon: {fileID: 21300000, guid: 7764d8d6cfaf60840af322c247c9896b, type: 3}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 93
+    Icon: {fileID: 21300000, guid: 6ee621bc049072e49a439414e31b85e2, type: 3}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 94
+    Icon: {fileID: 21300000, guid: 6ee621bc049072e49a439414e31b85e2, type: 3}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 95
+    Icon: {fileID: 21300000, guid: ee0fb337505e68442a4822376f993c92, type: 3}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 96
+    Icon: {fileID: 21300000, guid: 4544b6e08fc609244b20d914b4f319db, type: 3}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 97
+    Icon: {fileID: 21300000, guid: d50c5901892c1ca49869e3c93f076995, type: 3}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 98
+    Icon: {fileID: 21300000, guid: c2e5fa9f5294ea048ad91ea82a721379, type: 3}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 99
+    Icon: {fileID: 21300000, guid: 7e4991e1e04622047bb6749a09522dd8, type: 3}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 100
+    Icon: {fileID: 21300000, guid: c9e058e06c95fa04fbfd12767e30935e, type: 3}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 105
+    Icon: {fileID: 21300000, guid: 3daccdca469e8c7408109fb56b87cf0b, type: 3}
+    BorderColor: {r: 1, g: 1, b: 1, a: 1}
+  - State: 101
+    Icon: {fileID: 21300000, guid: c2877ccf3de6df443a4d3b7a2618cdaf, type: 3}
     BorderColor: {r: 1, g: 1, b: 1, a: 1}

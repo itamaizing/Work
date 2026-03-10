@@ -1,17 +1,23 @@
-using System;
+﻿using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
 
-public class StreamOfIcyWater : Skill
+public class StreamOfIcyWater : MoveSkill
 {
     [SerializeField] private GameObject _effect;
+
+    [SerializeField] private float _breakCastDistance = 0.5f;
 
     //private Character _target;
 
     protected override int AnimTriggerCastDelay => 0;
 
     protected override int AnimTriggerCast => 0;
+    
+    private float _clickRadius = 0.5f;
+    
+    private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
     public void AnimCastStreamOfIcyWater()
     {
@@ -22,10 +28,25 @@ public class StreamOfIcyWater : Skill
     {
         AnimCastEnded();
     }
+    
+    private void OnEnable()
+    {
+        Canceled += CancelMove;
+    }
+
+    private void OnDisable()
+    {
+        Canceled -= CancelMove;
+    }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        
+        if (!IsCanCast)
+        {
+            MoveTo();
+        }
     }
 
     protected override IEnumerator CastJob()
@@ -36,24 +57,32 @@ public class StreamOfIcyWater : Skill
         float time = 0;
         CmdSetActiveParticle(true);
 
-        while (time < CastStreamDuration)
-        {
-            _effect.transform.localScale = new Vector3(_effect.transform.localScale.x, _effect.transform.localScale.y, Vector3.Distance(transform.position, GetTargetCharacter().Position));
+        float initialDistance = Vector3.Distance(transform.position, Targeting.GetTarget().Character.Position);
 
-            yield return new WaitForSeconds(_manaCostRate);
+        while (time < _channelComponent.CastDuration)
+        {
+            _effect.transform.localScale = new Vector3(_effect.transform.localScale.x, _effect.transform.localScale.y, Vector3.Distance(transform.position, Targeting.GetTarget().Character.Position));
+
+            yield return new WaitForSeconds(_channelComponent.TickInterval);
             Damage damage = new Damage
             {
                 Value = Buff.Damage.GetBuffedValue(Damage),
-                Type = DamageType,
-                PhysicAttackType = AttackRangeType,
+                Type = Info.DamageType,
+                PhysicAttackType = Info.AttackRangeType,
             };
-            CmdApplyDamage(damage, GetTargetCharacter().gameObject);
-			GetTargetCharacter().CharacterState.CmdAddState(States.Frosting, 6, 0, Hero.gameObject, name);
+            CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
+            
+            CmdAddState(Targeting.GetTarget()?.Character.gameObject);
 
-            time += _manaCostRate;
+            time += _channelComponent.TickInterval;
 
             yield return null;
+
+            if (Vector3.Distance(transform.position, Targeting.GetTarget().Character.Position) > initialDistance + _breakCastDistance)
+                break;
         }
+
+        TryCancel(true);
         ClearData();
     }
 
@@ -62,7 +91,7 @@ public class StreamOfIcyWater : Skill
         AnimStreamOfIcyWaterEnd();
         CmdSetActiveParticle(false);
         //_target = null;
-        ClearTarget();
+        Targeting.ClearTarget();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
@@ -71,21 +100,40 @@ public class StreamOfIcyWater : Skill
 
         TargetInfo targetInfo = new();
 
-        while (GetTargetCharacter() == null)
+        while (Targeting.GetTarget()?.Character == null)
         {
             if (GetMouseButton)
-                FindTargetCharacter();
-               // target = GetRaycastTarget();
-
+            {
+                Vector3 clickPoint = Targeting.GetMousePoint();
+        
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: false);
+                if (Targeting.GetTempTarget()?.Character is Character character)
+                {
+                    if (character != null && !IsEnemyTarget(character))
+                    {
+                        Targeting.ClearTempTarget();
+                    }
+                    else
+                    {
+                        if (character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        break;
+                    }
+                }
+            }
             yield return null;
         }
-
-        Hero.Move.LookAtPosition(GetTargetCharacter().Position);
-        targetInfo.AddTarget(GetTargetCharacter());
-        targetDataSavedCallback.Invoke(targetInfo);
-        yield return null;
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
+        Targeting.ClearTempTarget();
+        targetDataSavedCallback(targetInfo);
     }
 
+    [Command]
+    private void CmdAddState(GameObject target)
+    {
+        Debug.LogError("Adding state");
+        if(target != null)
+            target.GetComponent<Character>().CharacterState.AddState(States.Cooling, 6, 0, Hero.gameObject, name);
+    }
 
     [Command]
     private void CmdSetActiveParticle(bool status)

@@ -14,11 +14,12 @@ public class SpawnComponent : NetworkBehaviour
     public List<Character> Units => _units;
 
     public event Action<Character> UnitAdded;
-    public event Action UnitRemoved;
+    public event Action<Character> UnitRemoved;
 
     #region Test Methods
+
     [SerializeField] private List<Character> _enemyPrefabs;
-    [SerializeField] private List<Character>  _allyPrefabs;
+    [SerializeField] private List<Character> _allyPrefabs;
 
     [Command]
     public void CmdSpawnUnitEnemy(int index)
@@ -92,7 +93,8 @@ public class SpawnComponent : NetworkBehaviour
     }
 
     [Command]
-    public void CmdSpawnEnemyPoint(Vector3 position, Quaternion rotation, Character toReplace, int index, bool remove, Character parenCharacter)
+    public void CmdSpawnEnemyPoint(Vector3 position, Quaternion rotation, Character toReplace, int index, bool remove,
+        Character parenCharacter)
     {
         var spawned = SpawnCharacterTransfer(_enemyPrefabs[index], position, rotation, remove, parenCharacter);
 
@@ -103,7 +105,8 @@ public class SpawnComponent : NetworkBehaviour
     }
 
     [Command]
-    public void CmdSpawnAliesPoint(Vector3 position, Quaternion rotation, Character toReplace, int index, bool remove, Character parenCharacter)
+    public void CmdSpawnAliesPoint(Vector3 position, Quaternion rotation, Character toReplace, int index, bool remove,
+        Character parenCharacter)
     {
         var spawned = SpawnCharacterTransfer(_allyPrefabs[index], position, rotation, remove, parenCharacter);
 
@@ -118,11 +121,12 @@ public class SpawnComponent : NetworkBehaviour
     {
         var spawned = SpawnCharacterTransfer(_units[index], position, rotation, false, characterParent);
     }
+
     #endregion
 
     public void SpawnUnit(int index, Vector3 position)
     {
-        if (index < 0 || index >= _characterPrefabs.Count) 
+        if (index < 0 || index >= _characterPrefabs.Count)
         {
             Debug.LogError($"Index {index} is out of bounds for spawning units.");
             return;
@@ -143,7 +147,7 @@ public class SpawnComponent : NetworkBehaviour
         var spawnedCharacter = Instantiate(prefab, position, rotation);
         spawnedCharacter.Initialize();
         spawnedCharacter.NetworkSettings.MyRoom = _hero.NetworkSettings.MyRoom;
-
+        spawnedCharacter.NetworkSettings.TeamIndex = _hero.NetworkSettings.TeamIndex;
         if (_hero == null || _hero.NetworkSettings == null)
         {
             Debug.LogError("Hero or NetworkSettings is null. Cannot move character to scene.");
@@ -163,10 +167,15 @@ public class SpawnComponent : NetworkBehaviour
         NetworkServer.Spawn(spawnedCharacter.gameObject, connectionToClient);
 
         AddUnit(spawnedCharacter);
+        
+        if (spawnedCharacter is MinionComponent)
+            spawnedCharacter.CharacterParent = _hero;
     }
 
     #region Test
-    private Character SpawnCharacterTransfer(Character prefab, Vector3 position, Quaternion rotation, bool remove, Character parenCharacter)
+
+    private Character SpawnCharacterTransfer(Character prefab, Vector3 position, Quaternion rotation, bool remove,
+        Character parenCharacter)
     {
         if (prefab == null) return null;
 
@@ -218,9 +227,10 @@ public class SpawnComponent : NetworkBehaviour
                 NetworkServer.Destroy(character.gameObject);
             }
 
-            UnitRemoved?.Invoke();
+            UnitRemoved?.Invoke(character);
         }
     }
+
     #endregion
 
     public void AddUnit(Character character)
@@ -261,7 +271,7 @@ public class SpawnComponent : NetworkBehaviour
         if (_units.Contains(character))
         {
             _units.Remove(character);
-            UnitRemoved?.Invoke();
+            UnitRemoved?.Invoke(character);
 
             if (character is MinionComponent minion)
             {
@@ -298,7 +308,8 @@ public class SpawnComponent : NetworkBehaviour
             {
                 NetworkServer.Destroy(character.gameObject);
             }
-            UnitRemoved?.Invoke();
+
+            UnitRemoved?.Invoke(character);
         }
     }
 
@@ -318,12 +329,15 @@ public class SpawnComponent : NetworkBehaviour
             return;
         }
 
+        characterObject.layer = gameObject.layer;
+
         _units.Add(character);
         _units.RemoveAll(unit => unit == null);
         UnitAdded?.Invoke(character);
 
         Debug.Log($"Character {character.name} added on client. Total units: {_units.Count}");
     }
+
 
     [ClientRpc]
     private void ClientRpcOnUnitDestroyed(GameObject characterObject)
@@ -340,9 +354,9 @@ public class SpawnComponent : NetworkBehaviour
             {
                 Debug.LogWarning("Character component is null on destroyed object.");
             }
-        }
 
-        _units.RemoveAll(unit => unit == null);
-        if (UnitRemoved != null) UnitRemoved.Invoke();
+            _units.RemoveAll(unit => unit == null);
+            if (UnitRemoved != null) UnitRemoved.Invoke(character);
+        }
     }
 }

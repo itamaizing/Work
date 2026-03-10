@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
@@ -25,8 +25,9 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private float _distance;
     private Coroutine _cooldownCoroutine;
     private float _pendingCooldown = -1f;
+    private bool _isMenu = false;
 
-    public Transform PatentAfterDrag { get => _patentAfterDrag; set => _patentAfterDrag = value; }
+    public Transform ParentAfterDrag { get => _patentAfterDrag; set => _patentAfterDrag = value; }
     public Skill Skill { get => _skill; set => _skill = value; }
     public bool Selected { get => _selected; set => _selected = value; }
 
@@ -44,11 +45,12 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
     }
 
-    public void Init(Skill skill, Transform parent, Camera camera, float distance)
+    public void Init(Skill skill, Transform parent, Camera camera, float distance, bool isMenu = false)
     {
         _skill = skill;
+        _isMenu = isMenu;
         _image.sprite = _skill.Icon;
-        PatentAfterDrag = parent;
+        ParentAfterDrag = parent;
         _camera = camera;
         _distance = distance;
         _skill.LinkedChargeCDUI = _chargeCD;
@@ -78,10 +80,15 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        PatentAfterDrag = transform.parent;
-        PatentAfterDrag.GetComponent<SkillIcon>().CurrentIcon = null;
-        transform.SetParent(transform.root);
-        transform.SetAsLastSibling();
+        ParentAfterDrag = transform.parent;
+        ParentAfterDrag.GetComponent<SkillIcon>().CurrentIcon = null;
+
+        if (!_isMenu)
+        {
+            transform.SetParent(transform.root);
+            transform.SetAsLastSibling();
+        }
+        
         _image.raycastTarget = false;
 
         BeginDrag?.Invoke();
@@ -93,16 +100,37 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         Vector3 screenPos = new Vector3(mousePosition.x, mousePosition.y, _distance);
         Vector3 worldPos = _camera.ScreenToWorldPoint(screenPos);
 
+        if (_isMenu)
+            worldPos = screenPos;
+
         transform.position = worldPos;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        transform.SetParent(PatentAfterDrag);
+        transform.SetParent(ParentAfterDrag);
         transform.SetAsFirstSibling();
-        _image.raycastTarget = true;
-        PatentAfterDrag.GetComponent<SkillIcon>().CurrentIcon = this;
 
+        if(_isMenu)
+            transform.position = ParentAfterDrag.position;
+
+        _image.raycastTarget = true;
+        ParentAfterDrag.GetComponent<SkillIcon>().CurrentIcon = this;
+
+        EndDrag?.Invoke();
+    }
+
+    public void UpdatePosition(Transform parent)
+    {
+        ParentAfterDrag = transform.parent;
+        ParentAfterDrag.GetComponent<SkillIcon>().CurrentIcon = null;
+
+        ParentAfterDrag = parent;
+        transform.position = ParentAfterDrag.position;
+        transform.SetParent(ParentAfterDrag);
+        transform.SetAsFirstSibling();
+
+        ParentAfterDrag.GetComponent<SkillIcon>().CurrentIcon = this;
         EndDrag?.Invoke();
     }
 
@@ -154,12 +182,6 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     private void SubscribingSkillOnEvents(Skill ability)
     {
-        //ability.CastStreamStarted += OnStartStreaming;
-        //ability.Canceled += OnStopStreaming;
-
-        //ability.CastDeleyStarted += OnStartCastDeley;
-        //ability.Canceled += OnStopCastDeley;
-
         ability.CooldownStarted += OnStartCooldown;
         ability.CurrentChargeChanged += OnCurrentChargeChanged;
         ability.ChargeStartCooldown += OnChargeStartCooldown;
@@ -178,12 +200,6 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     private void UnsubscribingSkillOnEvents(Skill ability)
     {
-        //ability.CastStreamStarted -= OnStartStreaming;
-        //ability.Canceled -= OnStopStreaming;
-
-        //ability.CastDeleyStarted -= OnStartCastDeley;
-        //ability.Canceled -= OnStopCastDeley;
-
         ability.CooldownStarted -= OnStartCooldown;
         ability.CurrentChargeChanged -= OnCurrentChargeChanged;
         ability.ChargeStartCooldown -= OnChargeStartCooldown;
@@ -212,7 +228,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     private void OnClickWithCtrl()
     {
-        if (Skill.AutoAttack != AutoAttack.autoAttack) return;
+        if (Skill.Info.AutoAttack != AutoAttack.autoAttack) return;
 
         Skill.IsAutoMode = !Skill.IsAutoMode;
         Debug.Log("AA mode - " + Skill.IsAutoMode);
@@ -246,22 +262,23 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         _chargeCounter.text = value.ToString();
     }
 
-    private void OnStartCooldown(float dutarion)
+    private void OnStartCooldown(float duration)
     {
         if (!gameObject.activeInHierarchy)
         {
-            _pendingCooldown = dutarion;
+            _pendingCooldown = duration;
             return;
         }
 
         if (_cooldownCoroutine != null) StopCoroutine(_cooldownCoroutine);
 
         _cooldown.gameObject.SetActive(true);
-        _cooldown.StartFill(dutarion, 1, 0, false);
+
+        CheckingForCurrentRecharge(duration);
 
         _cooldownNum.color = (_skill is IPassiveSkill) ? Color.green : Color.red;
 
-        _cooldownCoroutine = StartCoroutine(CooldownCounterJob(dutarion));
+        _cooldownCoroutine = StartCoroutine(CooldownCounterJob(duration));
     }
 
     private void OnStopCooldown()
@@ -278,6 +295,22 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private void OnChargeStartCooldown(float value)
     {
         _chargeCD.AddChargeCD(value);
+    }
+
+    private void CheckingForCurrentRecharge(float duration)
+    {
+        float time;
+        float startValue = 1f;
+
+        bool isActiveSkill = _skill != null && _skill.RemainingCooldownTime > 0.01f;
+
+        if (isActiveSkill)
+        {
+            time = startValue - duration / _skill.CooldownTime;
+            _cooldown.StartFill(duration, startValue - time, 0, false);
+        }
+
+        else _cooldown.StartFill(duration, 1, 0, false);
     }
 
     private IEnumerator CooldownCounterJob(float dutarion)

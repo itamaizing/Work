@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -34,7 +34,7 @@ public class Restoration : Skill,IPolaritySwitchable
     //private IDamageable _target;
     //private Character characterTarget;
 
-    public IDamageable Target => GetTempTargetCharacter();
+    public IDamageable Target => Targeting.GetTarget()?.Character;
 
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
 
@@ -88,22 +88,22 @@ public class Restoration : Skill,IPolaritySwitchable
 
     private void UpdateMode()
     {
-        Radius = isLightMode ? lightRange : darkRange;
-        School = isLightMode ? Schools.Light : Schools.Dark;
+        AreaInfo.Radius = isLightMode ? lightRange : darkRange;
+        Info.School = isLightMode ? Schools.Light : Schools.Dark;
         CastDeley = isLightMode ? lightCastTime : darkCastTime;
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
-        TargetsLayers = isLightMode ? LayerMask.GetMask("Allies") : LayerMask.GetMask("Enemy");
+        Targeting.Layer = isLightMode ? LayerMask.GetMask("Allies") : LayerMask.GetMask("Enemy");
         Hero.Abilities.SkillPanelUpdate();
     }
 
     private void HandleRestorationLight()
     {
-        if (GetTargetCharacter() == null) return;
-        bool isAlly = GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Allies");
+        if (Targeting.GetTarget()?.Character == null) return;
+        bool isAlly = Targeting.GetTarget()?.Character.gameObject.layer == LayerMask.NameToLayer("Allies");
         if (isAlly && TryPayCost())
         {
-            CmdRemoveState(GetTargetCharacter(), States.Restoration);
-            CmdAddState(GetTargetCharacter(), States.Restoration, lightDuration);
+            CmdRemoveState(Targeting.GetTarget()?.Character, States.Restoration);
+            CmdAddState(Targeting.GetTarget()?.Character, States.Restoration, lightDuration);
         }
     }
 
@@ -118,12 +118,12 @@ public class Restoration : Skill,IPolaritySwitchable
 
     private void HandleRestorationDark()
     {
-        if (GetTargetCharacter() == null) return;
-        bool isEnemy = GetTargetCharacter().gameObject.layer == LayerMask.NameToLayer("Enemy");
+        if (Targeting.GetTarget()?.Character == null) return;
+        bool isEnemy = Targeting.GetTarget()?.Character.gameObject.layer == LayerMask.NameToLayer("Enemy");
         if (isEnemy && TryPayCost())
         {
-            CmdRemoveState(GetTargetCharacter(), States.Destruction);
-            CmdAddState(GetTargetCharacter(), States.Destruction, darkDuration);
+            CmdRemoveState(Targeting.GetTarget()?.Character, States.Destruction);
+            CmdAddState(Targeting.GetTarget()?.Character, States.Destruction, darkDuration);
         }
     }
 
@@ -135,24 +135,24 @@ public class Restoration : Skill,IPolaritySwitchable
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (GetTempTargetCharacter() == null)
+        while (Targeting.GetTempTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
-                Vector3 clickPoint = GetMousePoint();
+                Vector3 clickPoint = Targeting.GetMousePoint();
 
-                FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
                 
-                if (GetTempTargetCharacter() is Character character)
+                if (Targeting.GetTempTarget()?.Character is Character character)
                 {
-                    if (GetTempTargetCharacter() != null && (IsEnemyTarget(character) && isLightMode) || (IsAllyTarget(character) && !isLightMode))
+                    if (Targeting.GetTempTarget()?.Character != null && (IsEnemyTarget(character) && isLightMode) || (IsAllyTarget(character) && !isLightMode))
                     {
-                        ClearTempTarget();
+                        Targeting.ClearTempTarget();
                     }
                     else
                     {
-                        GetTempTargetCharacter().SelectedCircle.IsActive = true;
-                        _hero.Move.LookAtTransform(GetTempTargetCharacter().transform);
+                        Targeting.GetTempTarget().Character.SelectedCircle.IsActive = true;
+                        _hero.Move.LookAtTransform(Targeting.GetTempTarget()?.Character.transform);
                     }
                 }
             }
@@ -160,14 +160,14 @@ public class Restoration : Skill,IPolaritySwitchable
         }
 
         TargetInfo targetInfo = new();
-        SetTarget(GetTempTargetCharacter());
-        targetInfo.AddTarget(GetTargetCharacter());
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() == null) yield break;
+        if (Targeting.GetTarget()?.Character == null) yield break;
 
         CmdPlayShootSound();
 
@@ -185,24 +185,24 @@ public class Restoration : Skill,IPolaritySwitchable
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
        // _target = null;
     }
 
-    [Command]
+    //[Command]
     private void CmdPlayShootSound()
     {
         RpcPlayShotSound();
     }
 
-    [Command]
+    //[Command]
     private void CmdRemoveState(Character character, States states) => character.CharacterState.RemoveState(states);
 
     
-    [Command]
+    //[Command]
     private void CmdAddState(Character character, States states, float duration) => character.CharacterState.AddState(states, duration, 0, Hero.gameObject, _initialRestorationName);
 
-    [ClientRpc]
+    //[ClientRpc]
     private void RpcPlayShotSound()
     {
         if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
@@ -210,6 +210,6 @@ public class Restoration : Skill,IPolaritySwitchable
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 } 

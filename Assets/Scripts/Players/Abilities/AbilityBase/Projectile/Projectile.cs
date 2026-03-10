@@ -35,7 +35,7 @@ public class Projectile : MonoBehaviour, IProjectile
         if (_trailParticle != null)
             _trailParticle.transform.position = transform.position;
     }
-
+    
     protected virtual void OnDestroy()
     {
         if (_destroyParticle != null)
@@ -136,8 +136,6 @@ public class Projectile : MonoBehaviour, IProjectile
     {
         while (true)
         {
-            Debug.Log(direction);
-            Debug.Log(transform.position);
             transform.position += _speed * direction * Time.deltaTime;
             yield return null;
         }

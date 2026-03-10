@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ChainLightning : Skill
+public class ChainLightning : MoveSkill
 {
     [SerializeField] private ParticleSystem _particlePref;
     [SerializeField, Range(0, 100)] private int _debuffChance = 15;
@@ -16,12 +16,25 @@ public class ChainLightning : Skill
 
     protected override int AnimTriggerCastDelay => 0;
 
-    protected override int AnimTriggerCast => Animator.StringToHash("AttackChainLight");
+    protected override int AnimTriggerCast => 0;
+    
+    private float _clickRadius = 0.5f;
+    
+    private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+
+    private void OnEnable()
+    {
+        Canceled += CancelMove;
+    }
+
+    private void OnDisable()
+    {
+        Canceled -= CancelMove;
+    }
 
     private bool CheckCanCast()
     {
-        return
-               Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+        return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
     }
 
     public void AnimCastLight()
@@ -36,16 +49,21 @@ public class ChainLightning : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        
+        if (!IsCanCast)
+        {
+            MoveTo();
+        }
     }
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() != null)
+        if (Targeting.GetTarget()?.Character != null)
         {
-            Attack(GetTargetCharacter());
+            Attack(Targeting.GetTarget()?.Character);
             yield return new WaitForSecondsRealtime(0.3f);
-            var temps = Physics.OverlapSphere(GetTargetCharacter().Position, Radius, _targetsLayers);
+            var temps = Physics.OverlapSphere(Targeting.GetTarget().Character.Position, AreaInfo.Radius, _targetsLayers);
             
             for (int i = 0; i < temps.Length; i++)
             {
@@ -61,7 +79,7 @@ public class ChainLightning : Skill
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
     }
 
@@ -69,17 +87,32 @@ public class ChainLightning : Skill
     {
         TargetInfo targetInfo = new TargetInfo();
 
-        while (GetTargetCharacter() == null)
+        while (Targeting.GetTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
-                FindTargetCharacter();
-                //_target = GetRaycastTarget();
+                Vector3 clickPoint = Targeting.GetMousePoint();
+                
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: false);
+
+                if (Targeting.GetTempTarget()?.Character is Character character)
+                {
+                    if (Targeting.GetTempTarget()?.Character != null && !IsEnemyTarget(character))
+                    {
+                        Targeting.ClearTempTarget();
+                    }
+                    else
+                    {
+                        if (character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        break;
+                    }
+                }
             }
             yield return null;
         }
-
-        targetInfo.AddTarget(GetTargetCharacter());
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
+        Targeting.ClearTempTarget();
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 
@@ -88,10 +121,15 @@ public class ChainLightning : Skill
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(Damage),
-            Type = DamageType,
-            PhysicAttackType = AttackRangeType,
+            Type = Info.DamageType,
+            PhysicAttackType = Info.AttackRangeType,
         };
         CmdApplyDamage(damage, target.gameObject);
+        
+        if (UnityEngine.Random.Range(1, 100) <= _debuffChance)
+        {
+            CmdAddState(Targeting.GetTarget()?.Character);
+        }
 
         CmdCreateParticle(target.Position);
     }
@@ -100,6 +138,8 @@ public class ChainLightning : Skill
     {
         GameObject item = Instantiate(_particlePref.gameObject, position, Quaternion.identity);
     }
+    
+    [Command] private void CmdAddState(Character target) => target.CharacterState.AddState(States.Discharge, 2, 0,Hero.gameObject, name);
 
     [Command]
     protected void CmdCreateParticle(Vector3 position)

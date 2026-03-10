@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(NetworkIdentity))]
-public class Object : NetworkBehaviour, ITargetable
+public class Object : NetworkBehaviour, IDamageable, ITargetable
 {
     [Header("UI")]
     [SerializeField] private SelectedCircle _selectedCircle;
@@ -21,9 +21,12 @@ public class Object : NetworkBehaviour, ITargetable
     [SerializeField] private bool isDestroyOnDeath = true;
     [SerializeField] private bool isTower = false;
 
+    [SyncVar] private float _damageTakeCounter;
+
     private bool _isDeath;
 
     public event Action<Object> Died;
+    public event Action<Damage, Skill> DamageTaken;
 
     public bool Live { get => live; set => live = value; }
     public UIObjectComponents UIComponent => uiComponent;
@@ -47,11 +50,11 @@ public class Object : NetworkBehaviour, ITargetable
 
     public void Initialize()
     {
-        foreach (var resource in Resources)
-            if (resource.Type == ResourceType.Health) resource.Initialize(_objectData.MaxHealth, _objectData.RegenerationAmount, 0, null);
+      /*  foreach (var resource in Resources)
+            if (resource.Type == ResourceType.Health) resource.Initialize(_objectData.MaxHealth, _objectData.RegenerationAmount, 0, null, _objectData.Attribute_old);
 
         _objectHealth.InitializeObject(_objectData);
-        _objectHealth.OnDeath += ServerOnDeath;
+        _objectHealth.OnDeath += ServerOnDeath;*/
         if (_minimapMarker != null) _minimapMarker.IsActive = true;
     }
 
@@ -72,4 +75,22 @@ public class Object : NetworkBehaviour, ITargetable
         RpcClientOnDied();
     }
     [ClientRpc] private void RpcClientOnDied() => OnDied();
+
+    public bool TryTakeDamage(ref Damage damage, Skill skill)
+    {
+        bool b = _objectHealth.TryTakeDamage(ref damage, skill);
+        _damageTakeCounter += damage.Value;
+        return b;
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdTryTakeDamage(Damage damage, Skill skill)
+    {
+        TryTakeDamage(ref damage, skill);
+    }
+
+    public void ShowPhantomValue(Damage phantomValue)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -1,4 +1,4 @@
-using Mirror;
+п»їusing Mirror;
 using System;
 using System.Collections;
 using System.Linq;
@@ -7,126 +7,169 @@ using UnityEngine.SceneManagement;
 
 public class ShotDarkness : Skill
 {
-    [SerializeField] private ArrowProjectile projectile;
-    [SerializeField] private HeroComponent playerLinks;
-    [SerializeField] private Transform spawnPoint;
-    [SerializeField] private Ghost ghostSkill;
-    [SerializeField] private MultiMagicSpell multiMagicSpell;
-    [SerializeField] private TerrifyingElfAura terrifyingElfAura;
-    [SerializeField] private AudioClip audioClip;
-    [SerializeField] private float minDamage;
-    [SerializeField] private float maxDamage;
+    [SerializeField] private ArrowProjectile _projectile;
+    [SerializeField] private HeroComponent _playerLinks;
+    [SerializeField] private Ghost _ghostSkill;
+    [SerializeField] private MultiMagicSpell _multiMagicSpell;
+    [SerializeField] private TerrifyingElfAura _terrifyingElfAura;
+    [SerializeField] private AudioClip _audioClip;
+    [SerializeField] private float _minDamage;
+    [SerializeField] private float _maxDamage;
+    [SerializeField] private float _arrowYOffset = 1.5f;
+    [SerializeField] private float _arrowYOffsetDown = 0.5f;
+    [SerializeField] private LayerMask _groundLayerMask;
 
     private const string _startAnimTrigger = "ShotDarkCastDelayTrigger";
-    private const string _endAnimTrigger = "ShotCastDelayEndAnimTrigger"; // убрать в дальнейшем две анимации, остаток от автоатаки
 
-    private Vector3 _targetPoint = Vector3.positiveInfinity;
+    #region Constants
+
+    private const float HealthThresholdPercent = 0.8f;
+    private const float ExtraDamageMultiplier = 0.3f;
+    private const float CritChance = 0.20f;
+    private const float CritMultiplier = 3.2f;
+    private const float RayCastDistance = 1000f;
+
+    private const int GhostShotsForCooldownReduction = 3;
+    private const int GhostCooldownReductionValue = 1;
+
+    private const float RandomRangeInclusiveOffset = 1f;
+    private const float RadiusTargetCheck = 0.3f;
+
+
+    #endregion
+
     private AudioSource _audioSource;
     private int _consecutiveShots;
     private float _magicDamage;
-    private Character _lastTarget;
+
+    private Vector3 _targetPoint = Vector3.positiveInfinity;
+
     private bool _isHealthAboveThreshold;
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash(_startAnimTrigger);
-    protected override int AnimTriggerCast => 0;
-    protected override bool IsCanCast =>
-        Vector3.Distance(_targetPoint, transform.position) <= Radius &&
-        NoObstacles(_targetPoint, transform.position, _obstacle);
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => Animator.StringToHash(_startAnimTrigger);
+    protected override bool IsCanCast { get => CheckCanCast(); }
+    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
-    private void OnDestroy() => OnSkillCanceled -= HandleSkillCanceled;
+    private bool CheckCanCast()
+    {
+        if (Targeting.GetTarget() == null) return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength;
+        return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength || Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.CastLength;
+    }
+
+    private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
     private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
     private void Start() => _audioSource = GetComponent<AudioSource>();
 
-    public void ShotDarknessAnimationMove()
+    private void ShotDarknessAnimationMove()
     {
         if (_hero == null || _hero.Move == null) return;
 
         _isHealthAboveThreshold = false;
-        if (_lastTarget != null)
+
+        if (Targeting.GetTarget() != null && Targeting.GetTarget()?.Character is Character targetCurrent)
         {
-            var health = _lastTarget.Health;
-            _isHealthAboveThreshold = health.CurrentValue >= health.MaxValue * 0.8f;
+            var health = targetCurrent.Health;
+            _isHealthAboveThreshold = health.CurrentValue >= health.MaxValue * HealthThresholdPercent;
         }
 
-        _hero.Move.StopMoveAndAnimationMove();
-        _hero.Move.CanMove = false;
-
-        Vector3 direction = _targetPoint - _hero.transform.position;
-        bool badDirection = float.IsInfinity(_targetPoint.x) || direction.sqrMagnitude < 0.0001f;
-
-        if (badDirection) _hero.Move.StopLookAt();
-
-        else Hero.Move.LookAtPosition(_targetPoint);
-
-        if (!terrifyingElfAura) Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
+        if (!_terrifyingElfAura) Damage = UnityEngine.Random.Range(_minDamage, _maxDamage + RandomRangeInclusiveOffset);
         else
         {
-            if (!_isHealthAboveThreshold) Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
+            if (!_isHealthAboveThreshold) Damage = UnityEngine.Random.Range(_minDamage, _maxDamage + RandomRangeInclusiveOffset);
 
             else
             {
-                var elvenSkill = playerLinks.CharacterState.GetState(States.ElvenSkill) as ElvenSkill;
+                var elvenSkill = _playerLinks.CharacterState.GetState(States.ElvenSkill) as ElvenSkill;
 
-                if (elvenSkill == null) Damage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
+                if (elvenSkill == null) Damage = UnityEngine.Random.Range(_minDamage, _maxDamage + RandomRangeInclusiveOffset);
 
                 else
                 {
-                    float baseDamage = UnityEngine.Random.Range(minDamage, maxDamage + 1);
-                    float extraDamage = UnityEngine.Random.Range(minDamage, maxDamage + 1) * 0.3f;
+                    float baseDamage = UnityEngine.Random.Range(_minDamage, _maxDamage + RandomRangeInclusiveOffset);
+                    float extraDamage = UnityEngine.Random.Range(_minDamage, _maxDamage + RandomRangeInclusiveOffset) * ExtraDamageMultiplier;
                     float total = baseDamage + extraDamage;
 
-                    bool isCrit = UnityEngine.Random.value < 0.20f;
-                    if (isCrit) total *= 3.2f;
+                    bool isCrit = UnityEngine.Random.value < CritChance;
+                    if (isCrit) total *= CritMultiplier;
 
                     Damage = total;
                 }
             }
         }
-
-        float manaDamage = playerLinks.Resources.Where(resource => resource.Type == ResourceType.Mana).Sum(resource => resource.CurrentValue);
-        _magicDamage = Mathf.Min(6f, Mathf.Floor(manaDamage));
-
-        if (_magicDamage > 0) SpendBonusMana(_magicDamage);
     }
 
+    private Vector3 GetMousePoint(LayerMask mask)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, RayCastDistance, mask)) return hit.point;
+
+        return Vector3.positiveInfinity;
+    }
+
+    public void ShotDarkCastStart()
+    {
+        AnimStartCastCoroutine();
+    }
+
+    public void ShotDarkCastEnd()
+    {
+        AnimCastEnded();
+    }
+    public void ShotDarkPreparation()
+    {
+        _hero.Move.StopMoveAndAnimationMove();
+        _hero.Move.SetCanMove(false);
+    }
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
+        _targetPoint = targetInfo.Points[0];
+    }
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        Hero.Animator.speed = Hero.Animator.speed / CastDeley;
-        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
+        Vector3 targetPoint = Vector3.positiveInfinity;
 
-        while (float.IsPositiveInfinity(_targetPoint.x))
+        while (float.IsPositiveInfinity(targetPoint.x))
         {
             if (GetMouseButton)
             {
-                Vector3 clickedPoint = GetMousePoint();
+                Targeting.FindTempTarget(Targeting.GetMousePoint(), RadiusTargetCheck);
+                targetPoint = GetMousePoint(_groundLayerMask);
 
-                if (NoObstacles(clickedPoint, transform.position, _obstacle) && TryGetDamageableAtPoint(clickedPoint, out var damageable))
+                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
                 {
-                    if (_lastTarget == null) _lastTarget = (damageable as Component)?.GetComponent<Character>();
-                    if (multiMagic != null) multiMagic.LastTarget = _lastTarget;
-                    _targetPoint = clickedPoint;
-                }
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
 
+                    else
+                    {
+                        if (Targeting.GetTempTarget()?.Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                        break;
+                    }
+                }
             }
             yield return null;
         }
 
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
+
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_targetPoint);
+        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
+        targetInfo.Points.Add(targetPoint);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (!IsCanCast)
-        {
-            Hero.Move.CanMove = true;
-            Hero.Move.StopLookAt();
-            ClearData();
-            yield break;
-        }
+        if (Targeting.GetTarget() == null && _targetPoint == Vector3.positiveInfinity) yield return null;
+        if (Targeting.GetTarget() != null && !IsTargetInRange()) yield return null;
 
-        CmdCreateProjectileAtPosition(_targetPoint, Damage);
+        _magicDamage = CalculateAndSpendBonusMagicDamage();
+        ShotDarknessAnimationMove();
+        ProcessGhostCooldownReduction();
+
+        if (Targeting.GetTarget() != null) CmdCreateProjectileAtTarget(Targeting.GetTarget().Transform, Damage, _magicDamage);
+        else CmdCreateProjectileAtPosition(new Vector3(_targetPoint.x, _targetPoint.y, _targetPoint.z), Damage, _magicDamage);
 
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
@@ -136,27 +179,24 @@ public class ShotDarkness : Skill
             {
                 TryPayCost();
                 CmdUseMana(_magicDamage);
-                CmdCreateProjectileAtPosition(character.transform.position, Damage);
+                CmdCreateProjectileAtPosition(character.transform.position, Damage, _magicDamage);
             }
 
-            float reduce = multiMagicSpell.RemainingCooldownTime * 0.1f;
-            multiMagicSpell.DecreaseSetCooldown(reduce);
+            float reduce = _multiMagicSpell.RemainingCooldownTime * 0.1f;
+            _multiMagicSpell.DecreaseSetCooldown(reduce);
         }
 
-        ProcessGhostCooldownReduction();
-        WorkAnimator(_startAnimTrigger, _endAnimTrigger);
-        HandleSkillCanceled();
-        ClearData();
+        else CmdUseMana(_magicDamage);
     }
 
     private void ProcessGhostCooldownReduction()
     {
-        if (!ghostSkill || !ghostSkill.CooldownGhostShotActive) return;
+        if (!_ghostSkill || !_ghostSkill.CooldownGhostShotActive) return;
 
         _consecutiveShots++;
-        if (_consecutiveShots >= 3)
+        if (_consecutiveShots >= GhostShotsForCooldownReduction)
         {
-            ghostSkill.ReductionCooldownCharges(1);
+            _ghostSkill.ReductionCooldownCharges(GhostCooldownReductionValue);
             _consecutiveShots = 0;
         }
     }
@@ -165,85 +205,79 @@ public class ShotDarkness : Skill
     {
         if (_hero?.Move != null)
         {
-            Hero.Move.CanMove = true;
-            _lastTarget = null;
-            Hero.Animator.speed = 1;
+            Hero.Move.SetCanMove(true);
+            Targeting.ClearTarget();
+            Targeting.ClearTempTarget();
+            _targetPoint = Vector3.positiveInfinity;
             Hero.Move.StopLookAt();
         }
 
-        AfterCastJob();
+        AnimCastEnded();
     }
 
-    private bool TryGetDamageableAtPoint(Vector3 point, out IDamageable damageable)
-    {
-        damageable = null;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, _targetsLayers))
-        {
-            if (hit.collider.TryGetComponent(out damageable))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private void WorkAnimator(string oldAnim, string newAnim)
-    {
-        _hero.Animator.ResetTrigger(Animator.StringToHash(oldAnim));
-        _hero.NetworkAnimator.ResetTrigger(Animator.StringToHash(oldAnim));
-        _hero.Animator.CrossFade(newAnim, 0.1f);
-        CmdCrossFade(newAnim);
-    }
-
+    private bool IsTargetInRange() { return Targeting.GetTarget() != null && Vector3.Distance(transform.position, Targeting.GetTarget().Transform.position) <= AreaInfo.CastLength; }
     private void UseMana(float amount)
     {
         float mana = amount;
-        foreach (var resource in playerLinks.Resources.Where(resource => resource.Type == ResourceType.Mana))
-        {
-            if (mana <= 0) break;
-            float spend = Math.Min(resource.CurrentValue, mana);
-            resource.CurrentValue -= spend;
-            mana -= spend;
-        }
+        var resource = _playerLinks.Resources[ResourceType.Mana];
+        if (mana <= 0) return;
+        float spend = Math.Min(resource.CurrentValue, mana);
+        resource.CurrentValue -= spend;
+        mana -= spend;
+    }
+
+    private float CalculateAndSpendBonusMagicDamage(float maxBonusMana = 6f)
+    {
+        float availableMana = _playerLinks.Resources[ResourceType.Mana].CurrentValue;
+
+        float bonusManaToUse = Mathf.Min(availableMana, maxBonusMana);
+
+        float manaSpent = 0f;
+        float manaToSpend = bonusManaToUse;
+
+        var resource = _playerLinks.Resources[ResourceType.Mana];
+
+        float spend = Mathf.Min(resource.CurrentValue, manaToSpend);
+        manaSpent += spend;
+
+        _magicDamage = manaSpent;
+
+        return manaSpent;
     }
 
     [Command]
-    protected void CmdCreateProjectileAtPosition(Vector3 position, float damage)
+    protected void CmdCreateProjectileAtTarget(Transform target, float damage, float magDamage)
     {
-        Vector3 spawnPosition = spawnPoint != null ? spawnPoint.position : transform.position;
-        Vector3 direction = (position - spawnPosition).normalized;
+        Vector3 direction = (target.transform.position - transform.position).normalized;
 
         if (direction == Vector3.zero) return;
 
-        ArrowProjectile proj = Instantiate(projectile, spawnPosition, Quaternion.LookRotation(direction));
-        proj.Init(playerLinks, _magicDamage, false, this, damage);
+        ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffset, Quaternion.LookRotation(direction));
+        proj.Init(_playerLinks, magDamage, false, this, damage);
         SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);
-        proj.StartFly(direction);
-        RpcInit(proj.gameObject, _magicDamage, damage);
+        proj.StartFly(target);
+        RpcInit(proj.gameObject, magDamage, damage);
         RpcPlayShotSound();
     }
 
-    [Command] private void CmdCrossFade(string newAnim) => _hero.Animator.CrossFade(newAnim, 0.1f);
-    [Command] private void CmdUseMana(float amount) => UseMana(amount);
-    [Command] private void CmdSpendBonusMana(float amount) => SpendBonusMana(amount);
-
-    private void SpendBonusMana(float amount)
+    [Command]
+    public void CmdCreateProjectileAtPosition(Vector3 position, float damage, float magDamage)
     {
-        float mana = amount;
-        foreach (var resource in playerLinks.Resources.Where(resource => resource.Type == ResourceType.Mana))
-        {
-            if (mana <= 0) break;
-            float spend = Math.Min(resource.CurrentValue, mana);
-            resource.CurrentValue -= spend;
-            mana -= spend;
-        }
+        Vector3 flatTargetPoint = new Vector3(position.x, position.y, position.z);
+        Vector3 direction = (flatTargetPoint - transform.position).normalized;
 
-        _magicDamage = amount - mana;
+        if (direction == Vector3.zero) return;
+
+        ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffsetDown, Quaternion.LookRotation(direction));
+        proj.Init(_playerLinks, magDamage, false, this, damage);
+        SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
+        NetworkServer.Spawn(proj.gameObject);
+        proj.StartFly(direction);
+        RpcInit(proj.gameObject, magDamage, damage);
+        RpcPlayShotSound();
     }
+    [Command] private void CmdUseMana(float amount) => UseMana(amount);
 
     [ClientRpc]
     protected void RpcInit(GameObject gameObject, float magicDamage, float damage)
@@ -251,24 +285,22 @@ public class ShotDarkness : Skill
         if (gameObject == null) return;
 
         ArrowProjectile proj = gameObject.GetComponent<ArrowProjectile>();
-        if (proj != null) proj.Init(playerLinks, magicDamage, false, this, damage);
+        if (proj != null) proj.Init(_playerLinks, magicDamage, false, this, damage);
     }
 
     [ClientRpc]
     private void RpcPlayShotSound()
     {
-        if (_audioSource != null && audioClip != null)
-            _audioSource.PlayOneShot(audioClip);
+        if (_audioSource != null && _audioClip != null)
+            _audioSource.PlayOneShot(_audioClip);
     }
 
     protected override void ClearData()
     {
         _targetPoint = Vector3.positiveInfinity;
+        Targeting.ClearTarget();
+        Targeting.ClearTempTarget();
         _consecutiveShots = 0;
-    }
-
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        _targetPoint = targetInfo.Points[0];
+        AnimCastEnded();
     }
 }

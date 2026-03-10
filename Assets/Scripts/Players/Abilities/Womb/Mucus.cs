@@ -6,38 +6,75 @@ using UnityEngine;
 
 public class Mucus : NetworkBehaviour
 {
-    private ObjectHealth _objectHealth;
-    private MucusAutoGrowth _mucusAutoGrowth;
+    [SerializeField][SyncVar] private List<MucusAutoGrowth> _mucusAutoGrowths = new List<MucusAutoGrowth>();
 
-    public MucusAutoGrowth MucusAutoGrowth
-    {
-        get => _mucusAutoGrowth;
+    private ObjectHealth _objectHealth;
+    private Coroutine _delayedCheckCoroutine;
+    public List<MucusAutoGrowth> MucusAutoGrowths 
+    { 
+        get => _mucusAutoGrowths;
         set
         {
-            if (_mucusAutoGrowth != null) _mucusAutoGrowth.OnAnyMucusAutoGrowthDestroyed -= OnAutoGrowthDestroyed;
-            _mucusAutoGrowth = value;
-
-            if (_mucusAutoGrowth != null) _mucusAutoGrowth.OnAnyMucusAutoGrowthDestroyed += OnAutoGrowthDestroyed;
+            _mucusAutoGrowths = value;
         }
     }
-
+    private void OnEnable()
+    {
+        MucusAutoGrowth.OnAnyMucusAutoGrowthDestroyed += DelayedCheck;
+    }
+    private void OnDisable()
+    {
+        MucusAutoGrowth.OnAnyMucusAutoGrowthDestroyed -= DelayedCheck;
+        _mucusAutoGrowths.Clear();
+        UpdateRegenMod();
+    }
     private void Start()
     {
         _objectHealth = GetComponent<ObjectHealth>();
+        UpdateRegenMod();
     }
 
-    private void OnDestroy()
+    public void AddMucusAutoGrowth(MucusAutoGrowth autoGrowth)
     {
-        if (_mucusAutoGrowth != null) _mucusAutoGrowth.OnAnyMucusAutoGrowthDestroyed -= OnAutoGrowthDestroyed;
+        if (autoGrowth == null || _mucusAutoGrowths.Contains(autoGrowth)) return;
+
+        _mucusAutoGrowths.Add(autoGrowth);
+        UpdateRegenMod();
     }
 
-    private void OnAutoGrowthDestroyed()
+    public void RemoveMucusAutoGrowth(MucusAutoGrowth autoGrowth)
     {
-        if (_objectHealth != null)
+        if (_mucusAutoGrowths.Remove(autoGrowth))
         {
-            _objectHealth.IsDestroyOnDeath = true;
-            _objectHealth.ÑmdStopCustomRegeneration();
-            _objectHealth.ÑmdStartCustomNegativeRegeneration();
+            UpdateRegenMod();
         }
+    }
+    public void CheckAndUpdateState()
+    {
+        _mucusAutoGrowths.RemoveAll(item => item == null || item.Equals(null) || item.gameObject == null);
+
+        if (_mucusAutoGrowths.Count <= 0)
+        {
+            if (_objectHealth != null)
+            {
+                _objectHealth.IsDestroyOnDeath = true;
+                _objectHealth.ÑmdStopCustomRegeneration();
+                _objectHealth.ÑmdStartCustomNegativeRegeneration();
+            }
+        }
+    }
+    private void UpdateRegenMod()
+    {
+        if (_objectHealth != null) _objectHealth.RegenMod = _mucusAutoGrowths.Count;
+    }
+    private void DelayedCheck()
+    {
+        if (_delayedCheckCoroutine != null) StopCoroutine(_delayedCheckCoroutine);
+        _delayedCheckCoroutine = StartCoroutine(DelayedCheckRoutine());
+    }
+    private IEnumerator DelayedCheckRoutine()
+    {
+        yield return new WaitForSeconds(0.2f);
+        CheckAndUpdateState();
     }
 }

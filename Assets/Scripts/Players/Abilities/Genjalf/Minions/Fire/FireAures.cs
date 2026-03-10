@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Mirror;
@@ -9,57 +9,82 @@ public class FireAures : MonoBehaviour
 {
     private void Start()
     {
-        var chatacter = GetComponent<Character>();
-        chatacter.CharacterState.CmdAddState(States.Burn, 0, 0, chatacter.gameObject, name);
+        //var chatacter = GetComponent<Character>();
+        //chatacter.CharacterState.CmdAddState(States.Burn, 0, 0, chatacter.gameObject, name);
     }
 }
 
-public class Burn : AuraState
+public class Burn : AbstractCharacterState
 {
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
-    private float _damage = 1;
+    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Others };
+    
+    private float _damagePerSecond = 1f;
+    private float _damageRadius = 1f;
+    private float _timer = 0f;
+    private LayerMask _enemyLayer;
 
-    public override float Distance => 2;
-    public override float EffectRate => 1f;
-    public override LayerMask LayerMask => LayerMask.GetMask("Allies");
     public override States State => States.Burn;
+    public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EffectOnEnter(Character character)
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+        Character personWhoMadeBuff, string skillName)
     {
-
+        _enemyLayer = LayerMask.GetMask("Enemy");
+        
+        character.Character.Health.DamageTaken += OnDamageTaken;
     }
 
-    public override void EffectOnExit(Character character)
+    private void OnDamageTaken(Damage damage, Skill skill)
     {
+        if (skill == null) return;
+        if (damage.Type != DamageType.Physical) return;
+        if (damage.PhysicAttackType != AttackRangeType.MeleeAttack) return;
 
+        skill.Hero.CharacterState.AddState(States.Burning, 7f, 0,
+            characterState.Character.gameObject, nameof(Burning));
     }
 
-    public override void EffectOnStay(List<Character> characters)
+    public override void UpdateState()
     {
-        foreach (Character character in characters)
+        _timer += Time.deltaTime;
+        if (_timer < 1f) return;
+        _timer = 0f;
+
+        var colliders = Physics.OverlapSphere(
+            characterState.Character.transform.position, _damageRadius, _enemyLayer);
+
+        foreach (var col in colliders)
         {
-            if (character == _self)
-                continue;
-
-            Damage damage = new Damage
+            if (col.TryGetComponent<Character>(out var enemy))
             {
-                Value = _damage,
-            };
-            character.CmdTryTakeDamage(damage, null);
+                Damage damage = new Damage
+                {
+                    Value = _damagePerSecond,
+                    Type = DamageType.Magical,
+                    School = Schools.Fire,
+                };
+                enemy.CmdTryTakeDamage(damage, null);
+            }
         }
+    }
+
+    public override void ExitState()
+    {
+        if (characterState?.Character != null)
+            characterState.Character.Health.DamageTaken -= OnDamageTaken;
+        
+        characterState?.RemoveState(this);
     }
 }
 
 public class Burning : AbstractCharacterState
 {
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
-    private float _damage = 1;
-    private Character _character;
-    private float _timeAfterLastEffect = 0;
-    private float _effectRate = 1;
-    private float _time;
+    protected float _damage = 1;
+    protected float _timeAfterLastEffect = 0;
+    protected float _effectRate = 1;
 
     public override States State => States.Burning;
 
@@ -71,32 +96,27 @@ public class Burning : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _time = durationToExit;
-        _character = character.Character;
+
         Damage damage = new Damage
         {
             Value = _damage,
         };
-        character.Character.TryTakeDamage(ref damage, null);
+        character.Character.CmdTryTakeDamage(damage, null);
     }
 
     public override void ExitState()
     {
-        _character.CharacterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
+        duration = time;
         return false;
     }
 
     public override void UpdateState()
     {
-        _time -= Time.deltaTime;
-        if (_time <= 0)
-        {
-            ExitState();
-        }
 
         _timeAfterLastEffect += Time.deltaTime;
 
@@ -108,9 +128,82 @@ public class Burning : AbstractCharacterState
         {
             Value = _damage,
         };
-        _character.TryTakeDamage(ref damage, null);
-
+        characterState.Character.CmdTryTakeDamage(damage,null);
         _timeAfterLastEffect = 0;
+    }
+}
+
+public class BurningStacked : RefreshingState
+{
+    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
+    protected float _damage = 1;
+    protected float _timeAfterLastEffect = 0;
+    protected float _effectRate = 1;
+
+    private float _baseDuration;
+    private float _stackTimer;
+
+    public override States State => States.BurningStacked;
+
+    public override StateType Type => StateType.Magic;
+
+    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
+
+    public override List<StatusEffect> Effects => _effects;
+
+    public override float RemainingDuration => _baseDuration;
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        Damage damage = new Damage
+        {
+            Value = _damage,
+        };
+        character.Character.CmdTryTakeDamage(damage, null);
+
+        MaxStacksCount = 3;
+        _baseDuration = durationToExit;
+        _stackTimer = durationToExit;
+    }
+
+    public override bool Stack(float time)
+    {
+        _stackTimer = _baseDuration;
+        return true;
+    }
+
+    public override void GloabalUpdate()
+    {
+        UpdateState();
+    }
+
+    public override void UpdateState()
+    {
+        _stackTimer -= Time.deltaTime;
+
+        if (_stackTimer <= 0)
+        {
+            currentStacksCount--;
+            if (CurrentStacksCount <= 0)
+            {
+                ExitState();
+                return;
+            }
+
+            _stackTimer = _baseDuration;
+        }
+        _timeAfterLastEffect += Time.deltaTime;
+
+        if (_timeAfterLastEffect < _effectRate) return;
+
+        Damage damage = new Damage { Value = _damage };
+        characterState.Character.CmdTryTakeDamage(damage, null);
+        _timeAfterLastEffect = 0;
+    }
+
+    public override void ExitState()
+    {
+        characterState.RemoveState(this);
     }
 }
 

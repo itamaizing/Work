@@ -7,27 +7,64 @@ using UnityEngine;
 
 public class ReconnaissanceFireAura : NetworkBehaviour
 {
-    [SerializeField] private float partialBlindnessDuration = 5f;
-    [SerializeField] private float innerDarknessDuration = 13;
-    [SerializeField] private GameObject fireEffect;
-    [SerializeField] private GameObject fireEffectDark;
-    [SerializeField] private bool fireDarkTalent;
-    [SerializeField] private bool partialBlindnessTalent;
-    [SerializeField] private FlameLightPulse flameLightPulse;
-    [SerializeField] private LayerMask characterLayer;
-
+    [SerializeField] private float _partialBlindnessDuration = 5f;
+    [SerializeField] private float _innerDarknessDuration = 13;
+    [SerializeField] private GameObject _fireEffect;
+    [SerializeField] private GameObject _fireEffectDark;
+    [SerializeField] private bool _fireDarkTalent;
+    [SerializeField] private bool _partialBlindnessTalent;
+    [SerializeField] private FlameLightPulse _flameLightPulse;
+    [SerializeField] private LayerMask _characterLayer;
+    
     public event Action<bool> OnStateDarkTalentChanged;
+    private Character _ownerHero;
 
-    private readonly List<Character> charactersInZone = new();
-    private readonly HashSet<uint> clientIds = new();
-    private Coroutine effectCoroutine;
+    private readonly List<Character> _charactersInZone = new();
+    private readonly HashSet<uint> _clientIds = new();
+    private Coroutine _effectCoroutine;
+    private WaitForSeconds _waitForSecond;
+
+    #region Const
+    private const float FireFlashDuration = 9999f;
+    private const int MaxChanceValue = 100;
+    private const int MinChanceValue = 0;
+    #endregion
 
     [SyncVar(hook = nameof(OnStateDarkChanged))]
     private bool stateDark;
 
-    public bool FireDarkTalent { get => fireDarkTalent; set => fireDarkTalent = value; }
-    public bool PartialBlindnessTalent { get => partialBlindnessTalent; set => partialBlindnessTalent = value; }
+    public bool FireDarkTalent { get => _fireDarkTalent; set => _fireDarkTalent = value; }
+    //public bool PartialBlindnessTalent { get => _partialBlindnessTalent; set => _partialBlindnessTalent = value; }
     public bool StateDark { get => stateDark; set => stateDark = value; }
+
+    private bool IsEnemy(Character characterTarget, GameObject target)
+    {
+        if (_ownerHero == null) return IsEnemyByLayer(target);
+        if (!_ownerHero.TryGetComponent(out UserNetworkSettings ownerSettings) || !characterTarget.TryGetComponent(out UserNetworkSettings targetSettings)) return IsEnemyByLayer(target);
+        if (!IsTeamAssigned(ownerSettings) || !IsTeamAssigned(targetSettings)) return IsEnemyByLayer(target);
+
+        return ownerSettings.TeamIndex != targetSettings.TeamIndex;
+    }
+
+    private bool IsTeamAssigned(UserNetworkSettings settings)
+    {
+        return settings.TeamIndex != 0;
+    }
+
+    private bool IsEnemyByLayer(GameObject target)
+    {
+        return ((1 << target.layer) & _characterLayer.value) != 0;
+    }
+
+    private void Start()
+    {
+        _waitForSecond = new WaitForSeconds(1);
+    }
+
+    public void Init(Character hero)
+    {
+        _ownerHero = hero;
+    }
 
     [Server]
     private void RemoveAuthority()
@@ -38,14 +75,14 @@ public class ReconnaissanceFireAura : NetworkBehaviour
 
     private void OnDestroy()
     {
-        if (effectCoroutine != null) StopCoroutine(effectCoroutine);
+        if (_effectCoroutine != null) StopCoroutine(_effectCoroutine);
 
 
-        foreach (var character in charactersInZone) ForceExit(character);
-        foreach (var id in clientIds.ToArray()) RemoveCharacter(id);
+        foreach (var character in _charactersInZone) ForceExit(character);
+        foreach (var id in _clientIds.ToArray()) RemoveCharacter(id);
 
-        charactersInZone.Clear();
-        clientIds.Clear();
+        _charactersInZone.Clear();
+        _clientIds.Clear();
     }
 
     private void ForceExit(Character character)
@@ -60,70 +97,70 @@ public class ReconnaissanceFireAura : NetworkBehaviour
         OnStateDarkTalentChanged?.Invoke(newValue);
     }
 
-    [ServerCallback]
-    private void OnTriggerEnter(Collider other)
+    [Server]
+    public void HandleTriggerEnter(Collider other)
     {
-        if (((1 << other.gameObject.layer) & characterLayer.value) == 0) return;
+        if (!other.TryGetComponent(out Character character)) return;
+        if (_charactersInZone.Contains(character)) return;
 
-        if (other.TryGetComponent<Character>(out Character character) && !charactersInZone.Contains(character))
-        {
-            charactersInZone.Add(character);
-            RpcAddCharacter(character.netId);
-            if (effectCoroutine == null) effectCoroutine = StartCoroutine(ApplyPartialBlindnessPeriodically());
-        }
+        if (!IsEnemy(character, other.gameObject)) return;
+
+        _charactersInZone.Add(character);
+        RpcAddCharacter(character.netId);
+
+        if (_effectCoroutine == null)
+            _effectCoroutine = StartCoroutine(ApplyPartialBlindnessPeriodically());
     }
 
-    [ServerCallback]
-    private void OnTriggerExit(Collider other)
+    [Server]
+    public void HandleTriggerExit(Collider other)
     {
-        if (((1 << other.gameObject.layer) & characterLayer.value) == 0) return;
+        if (!other.TryGetComponent(out Character character)) return;
 
-        if (other.TryGetComponent<Character>(out Character character))
+        if (!IsEnemy(character, other.gameObject)) return;
+
+        _charactersInZone.Remove(character);
+        ForceExit(character);
+        RpcRemoveCharacter(character.netId);
+
+        if (_charactersInZone.Count == 0 && _effectCoroutine != null)
         {
-            charactersInZone.Remove(character);
-            ForceExit(character);
-            RpcRemoveCharacter(character.netId);
-
-
-            if (charactersInZone.Count == 0 && effectCoroutine != null)
-            {
-                StopCoroutine(effectCoroutine);
-                effectCoroutine = null;
-            }
+            StopCoroutine(_effectCoroutine);
+            _effectCoroutine = null;
         }
     }
 
     private IEnumerator ApplyPartialBlindnessPeriodically()
     {
-        var wait = new WaitForSeconds(1f);
-
-        while (charactersInZone.Count > 0)
+        while (_charactersInZone.Count > 0)
         {
-            foreach (Character character in charactersInZone)
+            foreach (Character character in _charactersInZone)
             {
                 if (character == null || !character.TryGetComponent(out CharacterState state)) continue;
 
-                if (stateDark && fireDarkTalent)
+                state.AddState(States.TrueSightState, 1.1f, 0f, gameObject, "ReconnaissanceFireAura");
+
+                if (stateDark && _fireDarkTalent)
                 {
-                    state.AddState(States.FireFlash, 9999, 0f, gameObject, name);
+                    state.AddState(States.FireFlash, FireFlashDuration, 0f, gameObject, name);
                     var flash = state.GetState(States.FireFlash) as FireFlash;
 
-                    if (UnityEngine.Random.Range(0, 100) < flash.Chance)
+                    if (UnityEngine.Random.Range(MinChanceValue, MaxChanceValue) < flash.Chance)
                     {
                         Debug.Log($"Chance: {flash.Chance}");
-                        state.AddState(States.InnerDarkness, innerDarknessDuration, 0f, gameObject, "ReconnaissanceFireAuraDark");
+                        state.AddState(States.InnerDarkness, _innerDarknessDuration, 0f, gameObject, "ReconnaissanceFireAuraDark");
                     }
                     continue;
                 }
 
-                if (partialBlindnessTalent) state.AddState(States.PartialBlindness, partialBlindnessDuration, 0f, gameObject, "partialBlindnessTalent");
-                else state.AddState(States.PartialBlindness, partialBlindnessDuration, 0f, gameObject, "ReconnaissanceFireAura");
+                if (_partialBlindnessTalent) state.AddState(States.PartialBlindness, _partialBlindnessDuration, 0f, gameObject, "partialBlindnessTalent");
+                else state.AddState(States.PartialBlindness, _partialBlindnessDuration, 0f, gameObject, "ReconnaissanceFireAura");
             }
 
-            yield return wait;
+            yield return _waitForSecond;
         }
 
-        effectCoroutine = null;
+        _effectCoroutine = null;
     }
 
     public void ApplyFireWorshipperTalentEffect(bool isActive)
@@ -131,38 +168,38 @@ public class ReconnaissanceFireAura : NetworkBehaviour
         if (isActive)
         {
             transform.localScale += Vector3.one;
-            if (fireEffect != null) fireEffect.transform.localScale += Vector3.one;
-            if (fireEffectDark != null) fireEffectDark.transform.localScale += Vector3.one;
+            if (_fireEffect != null) _fireEffect.transform.localScale += Vector3.one;
+            if (_fireEffectDark != null) _fireEffectDark.transform.localScale += Vector3.one;
             if (this.TryGetComponent<VisionComponent>(out VisionComponent vision)) vision.VisionRange += 1;
 
-            if (flameLightPulse != null)
+            if (_flameLightPulse != null)
             {
-                flameLightPulse.FlameLight.range += 1;
-                Vector3 position = flameLightPulse.transform.position;
+                _flameLightPulse.FlameLight.range += 1;
+                Vector3 position = _flameLightPulse.transform.position;
                 position.y -= 1f;
-                flameLightPulse.transform.position = position;
+                _flameLightPulse.transform.position = position;
             }
         }
     }
 
     public void SwitchEffectFire()
     {
-        fireEffect.SetActive(false);
-        fireEffectDark.SetActive(true);
+        _fireEffect.SetActive(false);
+        _fireEffectDark.SetActive(true);
     }
 
     [ClientRpc]
     private void RpcAddCharacter(uint netId)
     {
         if (!NetworkClient.spawned.TryGetValue(netId, out var id)) return;
-        if (!clientIds.Add(netId)) return;
+        if (!_clientIds.Add(netId)) return;
     }
 
     [ClientRpc] private void RpcRemoveCharacter(uint netId) => RemoveCharacter(netId);
 
     private void RemoveCharacter(uint netId)
     {
-        if (!clientIds.Remove(netId)) return;
+        if (!_clientIds.Remove(netId)) return;
 
         if (NetworkClient.spawned.TryGetValue(netId, out var id) &&
             id.TryGetComponent(out CharacterState state))

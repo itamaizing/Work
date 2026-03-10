@@ -43,5 +43,10 @@ public class DisconnectButtonUI : MonoBehaviour
                 }
             }
         }
+
+        if (UIMenuMainPlayerInfoPanel.Instance != null)
+        {
+            UIMenuMainPlayerInfoPanel.Instance.SetBottleInfo(BottleUserManager.Instance.GetCurrentBottles());
+        }
     }
 }

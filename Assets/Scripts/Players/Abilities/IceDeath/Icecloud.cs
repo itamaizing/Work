@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -8,25 +8,29 @@ public class IceCloud : Skill
 {
 	[SerializeField] private IceCloudProjectile _projectile;
 	[SerializeField] private SeriesOfStrikes _combo;
-	[SerializeField] private AudioClip audioClip;
+	[SerializeField] private AudioClip _audioClip;
 
 	private Vector3 _mousePos = Vector3.positiveInfinity;
     private Vector3 _mousePos2 = Vector2.positiveInfinity;
-    //private bool _enabled;
     private AudioSource _audioSource;
 	private bool _boostDmg;
 	private bool _lastHit;
 	private Energy _energy;
 	private bool _frozwenTalent;
-	//private Character _target;
+	private float _baseDamage = 10f;
 
-	//private RuneComponent _rune;
+	#region Constants
+	private const float ProjectileSpawnOffset = 0.2f;
+	private const float AngleOffset = 90f;
+	private const float ComboSpeedDivider = 100f;
+	private const float EnergyPerDamageUnit = 5f;
+	#endregion
 
 	protected override bool IsCanCast
 	{
 		get
 		{
-			if (GetTargetCharacter() != null) return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+			if (Targeting.GetTarget()?.Character != null) return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
 
 			else return true;
 		}
@@ -49,8 +53,7 @@ public class IceCloud : Skill
     private void HandleSkillCanceled()
     {
 		CanMoveIceCloud();
-		ClearTarget();
-		//_target = null;
+		Targeting.ClearTarget();
 		_mousePos = Vector3.positiveInfinity;
 	}
 
@@ -58,31 +61,24 @@ public class IceCloud : Skill
 	{
 		_audioSource = GetComponent<AudioSource>();
 
-		for (int i = 0; i < Hero.Resources.Count; i++)
-		{
-			if (Hero.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)Hero.Resources[i];
-			}
-			/*if (_playerLinks.Resources[i].Type == ResourceType.Rune)
-			{
-				_rune = (RuneComponent)_playerLinks.Resources[i];
-			}*/
-		}
-	}
+        //_energy = (Energy)Hero.Resources[ResourceType.Energy];
+    }
 
-	private void Shoot()
+    private void Shoot()
 	{
-		Buff.AttackSpeed.ReductionPercentage(1 + _combo.GetMultipliedSpeed() / 100);
+		if (_energy == null)
+			_energy = (Energy)Hero.Resources[ResourceType.Energy];
 
-		Vector3 lookDir = _mousePos - Hero.transform.position;
-		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
-		if (_combo.MakeHit(null, AbilityForm.Magic, 1, 0, 0)) _lastHit = true;
+        Vector3 lookDir = _mousePos - Hero.transform.position;
+		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - AngleOffset;
+		if (_combo.MakeHit(null, Info.AbilityForm, 1, 0, 0, _combo.GetMultipliedSpeed() / ComboSpeedDivider)) _lastHit = true;
 
-		Buff.AttackSpeed.IncreasePercentage(1 + _combo.GetMultipliedSpeed() / 100);
+		float energyToUse = _energy.CurrentValue;
+		_energy.CmdUse(energyToUse);
 
-		CmdCreateProjecttile(angle, _energy.CurrentValue, lookDir.normalized);
-		ClearTarget();
+		CmdCreateProjecttile(angle, energyToUse, lookDir.normalized);
+
+		Targeting.ClearTarget();
 		_mousePos = Vector2.positiveInfinity;
 		ClearData();
 	}
@@ -90,9 +86,10 @@ public class IceCloud : Skill
 	[Command]
 	private void CmdCreateProjecttile(float angle, float manaValue, Vector3 lookDir)
     {
-		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position + lookDir * .2f, Quaternion.Euler(0, -angle, 0));
+		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position + lookDir * ProjectileSpawnOffset, Quaternion.Euler(0, -angle, 0));
 		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(Hero, manaValue, false, this);
+		projectile.InitIceCloud(manaValue, Damage);
 		projectile.Talent(_boostDmg, _frozwenTalent, _lastHit);
 
 		NetworkServer.Spawn(projectile.gameObject);
@@ -104,13 +101,17 @@ public class IceCloud : Skill
 	[ClientRpc]
 	private void RpcInit(GameObject obj, float manaValue)
 	{
-		obj.GetComponent<IceCloudProjectile>().Init(Hero, manaValue, false, this);
+		if (obj.TryGetComponent<IceCloudProjectile>(out IceCloudProjectile ice))
+        {
+			ice.Init(Hero, manaValue, false, this);
+			ice.InitIceCloud(manaValue, Damage);
+		}
 	}
 
 	[ClientRpc]
 	private void RpcPlayShotSound()
 	{
-		if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
+		if (_audioSource != null && _audioClip != null) _audioSource.PlayOneShot(_audioClip);
 	}
 
 	public void TalentBoostDmg(bool value)
@@ -126,7 +127,7 @@ public class IceCloud : Skill
 	public override void LoadTargetData(TargetInfo targetInfo)
 	{
 		if (targetInfo.Points.Count > 0) _mousePos = targetInfo.Points[0];
-		if (targetInfo.GetTargets().Count > 0 && targetInfo.GetTargets()[0] is Character character) SetTarget((ITargetable)character);
+		if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
 	}
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -135,30 +136,30 @@ public class IceCloud : Skill
 		{
 			if (GetMouseButton)
 			{
-				if(GetTargetCharacter() == null) yield return null;
-				if (GetTargetCharacter() != null)
+				if(Targeting.GetTarget()?.Character == null) yield return null;
+				if (Targeting.GetTarget()?.Character != null)
 				{
 					float distance = Vector3.Distance(_hero.transform.position, _mousePos);
 
-					if (distance <= Radius) _mousePos2 = GetTargetCharacter().transform.position;
+					if (distance <= AreaInfo.Radius) _mousePos2 = Targeting.GetTarget().Character.transform.position;
 
 					else
 					{
-						//FindTarget();
+						//Targeting.FindTempTarget();
 
-						//_target = GetTarget().character;
-						_damageValue = 10 + _energy.CurrentValue / 5;
-						_mousePos2 = GetTargetCharacter().transform.position;
+						//_target = Targeting.GetTarget()?.Character;
+						Damage = _baseDamage + _energy.CurrentValue / EnergyPerDamageUnit;
+						_mousePos2 = Targeting.GetTarget().Character.transform.position;
 					}
 				}
 
-				else _mousePos2 = GetMousePoint();
+				else _mousePos2 = Targeting.GetMousePoint();
 			}
 			yield return null;
 		}        
 
         TargetInfo targetInfo = new TargetInfo();
-		if (GetTargetCharacter() != null) targetInfo.Points.Add(GetTargetCharacter().Position);
+		if (Targeting.GetTarget()?.Character != null) targetInfo.Points.Add(Targeting.GetTarget().Character.Position);
 		else if (_mousePos2 != Vector3.positiveInfinity) targetInfo.Points.Add(_mousePos2);
 		callbackDataSaved(targetInfo);
 
@@ -174,7 +175,7 @@ public class IceCloud : Skill
 
 	protected override void ClearData()
 	{
-		ClearTarget();
+		Targeting.ClearTarget();
 		_mousePos = Vector2.positiveInfinity;
 		//_enabled = false;
 	}
@@ -189,6 +190,7 @@ public class IceCloud : Skill
 		AnimCastEnded();
 	}
 
-	public void CanMoveIceCloud() => Hero.Move.CanMove = true;
-	public void StopMoveIceCloud() => Hero.Move.CanMove = false;
+	public void CanMoveIceCloud() => Hero.Move.SetCanMove(true);
+	public void StopMoveIceCloud() => Hero.Move.SetCanMove(false);
 }
+

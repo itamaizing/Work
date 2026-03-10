@@ -1,4 +1,4 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using Mirror;
 using System.Collections;
 using UnityEngine;
@@ -8,13 +8,17 @@ public class IceCloudProjectile : Projectiles
 	private Vector2 _startPos;
 	private Damage _damage;
 	private bool _boostDmg;
+	private float _damagBase;
+	private float _freezeDurationBase = 1f;
+	private float _curFreezeDuration;
 	private float _curDamage;
 	private float _damageToExit = 1;
+	private float _usedEnergy;
 
 	private void Start()
 	{
 		_startPos = transform.position;
-		_curDamage = 10 + _energyDad / 5;
+		_curDamage = 10 + _usedEnergy / 5;
 		_damage = new Damage
 		{
 			Value = _curDamage,
@@ -34,91 +38,60 @@ public class IceCloudProjectile : Projectiles
 		}
 	}
 
+	public void InitIceCloud(float usedEnergy, float damage)
+	{
+		_damagBase = damage;
+		_usedEnergy = usedEnergy;
+		_curDamage = _damagBase + _usedEnergy / 5f;
+		_curFreezeDuration = _freezeDurationBase + _usedEnergy / 20f;
+	}
 
 	[Server]
 	private void OnTriggerEnter(Collider collision)
 	{
 		if (!_initialized) return;
 		if (_dad == null) return;
-		if (collision.gameObject == _dad.gameObject || collision.gameObject.layer == LayerMask.NameToLayer("Allies"))
+		if (collision.gameObject == _dad.gameObject) return;
+
+		if (!collision.TryGetComponent<IDamageable>(out var damageable))
 			return;
 
-		if(collision.TryGetComponent<IDamageable>(out var damageable))
+		if (collision.TryGetComponent<Character>(out var target) && target != _dad)
 		{
-			if (collision.TryGetComponent<Character>(out var target) && target != _dad)
-			{				
-				float duration = 1 + _energyDad / 20;
+			float finalDamage = _curDamage;
 
-				if (target.CharacterState.CheckForState(States.Frozen) && _boostDmg)
-				{
-					_curDamage *= 1.4f;
-				}
-
-				TargetRpcDamgeMake(_curDamage);				
-				//_skill.CmdApplyDamage(_damage, target.gameObject);
-				target.Health.TryTakeDamage(ref _damage, _skill);
-
-				//talents???
-				if (_dad.Health.ResistMagDamage >= 20)
-				{
-					_dad.Health.SetEvadeMagic(5);
-				}
-				else
-				{
-					_dad.Health.SetEvadeMagic(20);
-				}
-				for (int i = 0; i < _dad.Resources.Count; i++)
-				{
-					if (_dad.Resources[i].Type == ResourceType.Energy)
-					{
-						_energy = (Energy)_dad.Resources[i];
-					}
-				}
-				_energy.UseAllEnergy();
-				ClientUse(_energyDad, _energy.gameObject);
-
-				StartCoroutine(CrutchDelay(target, duration));
-
-				//target.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
-				GetComponent<Collider>().enabled = false;
-				//Explode();
-			}
-			else
+			if (_boostDmg && target.CharacterState.CheckForState(States.Frozen))
 			{
-				damageable.TryTakeDamage(ref _damage, _skill);
-				if (_damage.Value <= 0)
-				{
-					Explode();
-				}
-				return;
+				finalDamage *= 1.4f;
 			}
+
+			_damage.Value = finalDamage;
+
+			TargetRpcDamageMake(finalDamage);
+			target.Health.TryTakeDamage(ref _damage, _skill);
+
+            StartCoroutine(CrutchDelay(target, _curFreezeDuration));
+
+            //target.CharacterState.AddState(States.Frozen, _curFreezeDuration, target.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
 			//Explode();
+			GetComponent<Collider>().enabled = false;
 		}
-	}
-
-	private IEnumerator CrutchDelay(Character target, float duration)
-	{
-		//yield return new WaitForSecondsRealtime(0.1f);
-		yield return null;
-		target.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
-		Explode();
-	}
-
-	//[ClientRpc]
-	private void ClientUse(float value, GameObject player)
-	{
-		/*Energy energy = null;
-		for (int i = 0; i < _dad.Resources.Count; i++)
+		else
 		{
-			if (_dad.Resources[i].Type == ResourceType.Energy)
-			{
-				energy = (Energy)_dad.Resources[i];
-			}
+			damageable.TryTakeDamage(ref _damage, _skill);
+			Explode();
 		}
-		energy.TryUse(value);*/
 	}
 
-	private void Explode()
+    private IEnumerator CrutchDelay(Character target, float duration)
+    {
+        //yield return new WaitForSecondsRealtime(0.1f);
+        yield return null;
+        target.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
+        Explode();
+    }
+
+    private void Explode()
 	{
 		if (_hitEffect != null)
 		{

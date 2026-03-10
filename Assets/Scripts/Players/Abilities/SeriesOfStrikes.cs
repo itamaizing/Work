@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,14 +15,16 @@ public class SeriesOfStrikes : MonoBehaviour
 	private RuneComponent _rune;
 	private float _sumPhisDamage = 0;
 	private float _speedMultiplier = 5;
+	private float _lastKnownSpeedMultiplier = 1f;
 
 	private bool _seriesCompliteCompoTalent;
 	private bool _iceRuneTalent;
+	private bool _seriesCompliteCompo = false;
 
 	private static List<AbilityForm> _formList = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical };
 	private static List<AbilityForm> _formList2 = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Magic };
 	private static List<AbilityForm> _formList3 = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Magic, AbilityForm.Physical, AbilityForm.Magic, AbilityForm.Physical, AbilityForm.Magic };
-	//private static List<AbilityForm> _formList3 = new List<AbilityForm> { AbilityForm.Physical, AbilityForm.Magic, AbilityForm.Physical };
+	//private static List<Info.AbilityForm> _formList3 = new List<Info.AbilityForm> { Info.AbilityForm.Physical, Info.AbilityForm.Magic, Info.AbilityForm.Physical };
 
 	private List<Series> _seriesOfStrikes = new List<Series>()
 	{
@@ -31,51 +33,69 @@ public class SeriesOfStrikes : MonoBehaviour
 		new Series(_formList3),
 	};
 
+	public bool SeriesCompliteCompo { get => _seriesCompliteCompo; set => _seriesCompliteCompo = value; }
+	public float LastKnownSpeedMultiplier => _lastKnownSpeedMultiplier;
+
 	private void Start()
 	{
-		for (int i = 0; i < _playerLinks.Resources.Count; i++)
-		{
-			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)_playerLinks.Resources[i];
-			}
-			if (_playerLinks.Resources[i].Type == ResourceType.Rune)
-			{
-				_rune = (RuneComponent)_playerLinks.Resources[i];
-			}
-		}
+        //_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
+        //_rune = (RuneComponent)_playerLinks.Resources[ResourceType.Rune];
+    }
 
-	}
-
-	private void Update()
+    private void Update()
 	{
 		Timer();
 	}
 
-	public float GetMultipliedSpeed()
-	{
-		if (!_seriesCompliteCompoTalent) return 1f;
+    public float GetMultipliedSpeed()
+    {
+        if (!_seriesCompliteCompoTalent) return 1f;
 
-		int maxCount = 0;
-		for(int i = 0; i< _seriesOfStrikes.Count; i++)
-		{
-			if (_seriesOfStrikes[i].hitCount > maxCount)
-			{
-				maxCount = _seriesOfStrikes[i].hitCount;
-			}
-		}
-		return _speedMultiplier * Mathf.Pow(2, maxCount);
-	}
+        int maxCount = 0;
 
-	public bool MakeHit(Character target, AbilityForm form, float usedRuneValue, float usedEnergy, float damage)
+        for (int i = 0; i < _seriesOfStrikes.Count; i++)
+        {
+            if (_seriesOfStrikes[i].hitCount > maxCount) maxCount = _seriesOfStrikes[i].hitCount;
+        }
+
+        if (!_seriesCompliteCompo)
+        {
+            _lastKnownSpeedMultiplier = _speedMultiplier * Mathf.Pow(2, maxCount);
+            return _lastKnownSpeedMultiplier;
+        }
+
+        else return 1f;
+    }
+
+    public bool MakeHit(Character target, AbilityForm form, float usedRuneValue, float usedEnergy, float damage, float multiplier = 0f)
 	{
-		if (_iceRuneTalent) BonusRuneForDamage(damage);
+		if (_energy == null)
+			_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
+		if (_rune == null)
+			_rune = (RuneComponent)_playerLinks.Resources[ResourceType.Rune];
+
+        if (_iceRuneTalent) BonusRuneForDamage(damage);
 		CheckCurse(target, damage);
-
+		
 		if (!_seriesCompliteCompoTalent) return false;
 		_energy.ChangeBarColor(new Color(255, 165, 0));
 
-		return SeriesHit(target, form, usedRuneValue, usedEnergy, damage);
+		return SeriesHit(target, form, usedRuneValue, usedEnergy, damage, multiplier);
+	}
+
+	public void ResetAttackAnimSpeed()
+    {
+		foreach (var skill in _playerLinks.Abilities.Abilities)
+		{
+			skill.Buff.CastSpeed.Reset();
+			skill.Buff.AttackSpeed.Reset();
+		}
+	}
+
+	public void BoostAttackAnimSpeed(float multiplier)
+	{
+		_playerLinks.Abilities.SelectedSkill.Buff.AttackSpeed.ReductionPercentage(multiplier);
+		_playerLinks.Abilities.SelectedSkill.Buff.CastSpeed.IncreasePercentage(multiplier);
 	}
 
 	public void Timer()
@@ -92,8 +112,11 @@ public class SeriesOfStrikes : MonoBehaviour
 				//Debug.Log("lose streak");
 				_timer = _baseTimer;
 				_isInTheRow = false;
+				_seriesCompliteCompo = true;
 
-				for(int i = 0; i < _seriesOfStrikes.Count; i++) _seriesOfStrikes[i].Reset();
+				ResetAttackAnimSpeed();
+
+				for (int i = 0; i < _seriesOfStrikes.Count; i++) _seriesOfStrikes[i].Reset();
 			}
 		}
 	}
@@ -107,17 +130,27 @@ public class SeriesOfStrikes : MonoBehaviour
 			_energy.CmdAdd(usedEnergy * 0.4f);
 			_energy.ForceRegenNow();
 		}
+
+		_seriesCompliteCompo = true;
+
+		ResetAttackAnimSpeed();
+
 		for (int i = 0; i < _seriesOfStrikes.Count; i++) _seriesOfStrikes[i].Reset();
-		
 	}
 
 	private void BonusRuneForDamage(float damage)
 	{
-		_sumPhisDamage += damage;
-		while( _sumPhisDamage >= 100 ) 
+		var selectedSkill = _playerLinks.Abilities.SelectedSkill;
+
+		if (selectedSkill != null && selectedSkill.Info.DamageType == DamageType.Physical)
 		{
-			_rune.CmdAdd(1f);
-			_sumPhisDamage -= 100;
+			_sumPhisDamage += damage;
+
+			while (_sumPhisDamage >= 100)
+			{
+				_rune.CmdAdd(1f);
+				_sumPhisDamage -= 100;
+			}
 		}
 	}
 
@@ -150,7 +183,7 @@ public class SeriesOfStrikes : MonoBehaviour
 		}
 	}
 
-	private bool SeriesHit(Character target, AbilityForm form, float usedRuneValue, float usedEnergy, float damage)
+	private bool SeriesHit(Character target, AbilityForm form, float usedRuneValue, float usedEnergy, float damage, float multiplier)
 	{
 		if (!_seriesCompliteCompoTalent) return false;
 		for (int i = 0; i < _seriesOfStrikes.Count; i++)
@@ -163,6 +196,7 @@ public class SeriesOfStrikes : MonoBehaviour
 				_seriesOfStrikes[i].usedEnergy += usedEnergy;
 				_seriesOfStrikes[i].hitCount++;
 				_timer = _baseTimer;
+				_seriesCompliteCompo = false;
 
 				//Debug.Log("Hit from " + _seriesOfStrikes[i] + " #" + _seriesOfStrikes[i].hitCount);
 
@@ -171,13 +205,18 @@ public class SeriesOfStrikes : MonoBehaviour
 					LastHit(_seriesOfStrikes[i].usedRune, _seriesOfStrikes[i].usedEnergy);
 					return true;
 				}
+
+				if (!_seriesCompliteCompo) BoostAttackAnimSpeed(multiplier);
 			}
 			else
 			{
 				_isInTheRow = true;
+				_seriesCompliteCompo = false;
 				_seriesOfStrikes[i].Reset(usedRuneValue);
 				_timer = _baseTimer;
 				_curTarget = target;
+
+				if (!_seriesCompliteCompo) BoostAttackAnimSpeed(multiplier);
 			}
 		}
 		return false;

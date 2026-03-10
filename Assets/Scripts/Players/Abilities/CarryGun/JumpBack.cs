@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -34,7 +34,7 @@ public class JumpBack : Skill
         if (_hero == null || _hero.Move == null) return;
 
         _hero.Move.StopMoveAndAnimationMove();
-        _hero.Move.CanMove = false;
+        _hero.Move.SetCanMove(false);
 
         Vector3 direction = _hero.transform.forward;
         bool badDirection = float.IsInfinity(_hero.transform.forward.x) || direction.sqrMagnitude < 0.0001f;
@@ -52,8 +52,8 @@ public class JumpBack : Skill
     {
         Hero.Animator.applyRootMotion = false;
         Hero.Move.StopLookAt();
-        Hero.Move.CanMove = true;
-        _isCanCancle = true;
+        Hero.Move.SetCanMove(true);
+        _isCanCancel = true;
     }
 
     public void JumpBackCast() => AnimStartCastCoroutine();
@@ -78,12 +78,12 @@ public class JumpBack : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (Disactive && float.IsPositiveInfinity(_mousePosition.x))
+        Vector3 targetPoint = Vector3.positiveInfinity;
+        while (Disactive && float.IsPositiveInfinity(targetPoint.x))
         {
-            if (GetMouseButton) _mousePosition = GetMousePoint();
+            if (GetMouseButton) targetPoint = Targeting.GetMousePoint();
             yield return null;
         }
-
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(Hero);
@@ -142,4 +142,4 @@ public class JumpBack : Skill
 
         HandleJumpBackEnd();
     }
-}
+}

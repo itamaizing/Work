@@ -1,14 +1,12 @@
-using DG.Tweening;
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
 
 public class PhysicalAttack : Skill
 {
-	//[SerializeField] private float _damage = 8f;
 	[SerializeField] private SeriesOfStrikes _combo;
-	[SerializeField] private AudioClip[] Hits;
+	[SerializeField] private AudioClip[] _hits;
 
 	private AudioSource _audioSource;
 	private Character _curTarget;
@@ -24,67 +22,84 @@ public class PhysicalAttack : Skill
 	private bool _isRightKick = true;
 	private Animator _animator;
 
-	//protected Character _target;
-
+	#region Const
+	private const int EnergyPerAttack = 5;
+	private const int HitVariationMax = 2;
+	private const float TalentProcChance = 2f;
+	private const float RollingStunTimeMultiplier = 0.7f;
+	private const float DefaultMultiplier = 1f;
+	private const float LastHitDamageMultiplier = 0.5f;
+	private const float RandomAttack = 0.5f;
+	private const float LastHitStunTime = 1.5f;
+	private const float RadiusSearchTarget = 0.5f;
+	private static readonly Vector2 ObstacleCheckSize = new Vector2(1f, 1f);
 	private static readonly int RightKickTrigger = Animator.StringToHash("RightKick");
 	private static readonly int LeftKickTrigger = Animator.StringToHash("LeftKick");
+	#endregion
 
 	protected override int AnimTriggerCastDelay => 0;
+	protected override int AnimTriggerCast => _animTriggerToUse = UnityEngine.Random.value > RandomAttack ? RightKickTrigger : LeftKickTrigger;
+	protected override bool IsCanCast => Targeting.GetTarget()?.Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
 
-	protected override int AnimTriggerCast => _animTriggerToUse = UnityEngine.Random.value > 0.5f ? RightKickTrigger : LeftKickTrigger;
-
-	protected override bool IsCanCast => GetTargetCharacter() != null && Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius && NoObstacles(GetTargetCharacter().transform.position, transform.position, _obstacle);
 	private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
+
+	private void OnEnable()
+	{
+		OnSkillCanceled += HandleSkillCanceled;
+	}
+
+	private void OnDisable()
+	{
+		OnSkillCanceled -= HandleSkillCanceled;
+	}
 
 	private void Start()
 	{
 		_audioSource = GetComponent<AudioSource>();
 		_animator = GetComponent<Animator>();
 
-		for (int i = 0; i < Hero.Resources.Count; i++)
-		{
-			if (Hero.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)Hero.Resources[i];
-			}
-			if (Hero.Resources[i].Type == ResourceType.Rune)
-			{
-				_rune = (RuneComponent)Hero.Resources[i];
-			}
-		}
+        //_energy = (Energy)Hero.Resources[ResourceType.Energy];
+        //_rune = (RuneComponent)Hero.Resources[ResourceType.Rune];
+
+    }
+
+	private void HandleSkillCanceled()
+	{
+		Targeting.ClearTarget();
+		Targeting.ClearTempTarget();
+		_hero.Move.StopLookAt();
+		AnimCastEnded();
 	}
 
-	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
 		TargetInfo targetInfo = new TargetInfo();
 
-		/*if (GetTempTargetCharacter() != null)
+		if (Targeting.GetTempTarget()?.Character != null)
 		{
-			_hero.Move.LookAtTransform(GetTargetCharacter().transform);
-			targetInfo.AddTarget(GetTargetCharacter());
-			targetInfo.Points.Add(GetTargetCharacter().transform.position);
+			_hero.Move.LookAtTransform(Targeting.GetTarget()?.Character.transform);
+			targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+			targetInfo.Points.Add(Targeting.GetTarget().Character.transform.position);
 			callbackDataSaved?.Invoke(targetInfo);
 			yield break;
-		}*/
+		}
 
-        while (GetTempTargetCharacter() == null)
+        while (Targeting.GetTempTarget()?.Character == null)
         {
             if (GetMouseButton)
 			{
-				FindTargetCharacter();
-				//_target = GetTarget().character;
+				Targeting.FindTempTarget(Targeting.GetMousePoint(), RadiusSearchTarget);
 
-				if (GetTempTargetCharacter() != null)
+				if (Targeting.GetTempTarget()?.Character != null)
 				{
-					if (IsAllyTarget(GetTempTargetCharacter()) || GetTempTargetCharacter() == Hero)
+					if (IsAllyTarget(Targeting.GetTempTarget()?.Character) || Targeting.GetTempTarget()?.Character == Hero)
 					{
-						ClearTempTarget();						
+						Targeting.ClearTempTarget();						
 					}
 					else
 					{
-                        GetTempTargetCharacter().SelectedCircle.IsActive = true;
-						_hero.Move.LookAtTransform(GetTempTargetCharacter().transform);
-                        //SetTargetCharacter(GetTempTargetCharacter());
+                        Targeting.GetTempTarget().Character.SelectedCircle.IsActive = true;
+						_hero.Move.LookAtTransform(Targeting.GetTempTarget().Character.transform);
                         break;
 					}
 				}
@@ -92,22 +107,29 @@ public class PhysicalAttack : Skill
 			yield return null;
 		}
 
-		SetTarget(GetTempTargetCharacter());
-		//ClearTempTarget();
-
-        targetInfo.AddTarget(GetTargetCharacter());
-		targetInfo.Points.Add(GetTargetCharacter().transform.position);
+		Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
+        Targeting.ClearTempTarget();
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+		targetInfo.Points.Add(Targeting.GetTarget().Character.transform.position);
 		callbackDataSaved?.Invoke(targetInfo);
 	}
 
 	protected override IEnumerator CastJob()
 	{
-		if (GetTargetCharacter() == null || _animator == null) yield break;
+		if (Targeting.GetTarget()?.Character == null || _animator == null) yield break;
 		yield break;
 	}
 
 	public void PhysicalAttackCast()
 	{
+		if (Targeting.GetTarget()?.Character == null ||
+			Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) > AreaInfo.Radius ||
+			!Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle))
+		{
+			TryCancel();
+			return;
+		}
+
 		AnimStartCastCoroutine();
 	}
 
@@ -118,38 +140,39 @@ public class PhysicalAttack : Skill
 
 	public void ApplyAttackDamage()
 	{
-		if (GetTargetCharacter() == null) return;
+		if (Targeting.GetTarget()?.Character == null) return;
 
-		if (_seriesPhysicalTalent) Hit(GetTargetCharacter());
-		else SingleHit(GetTargetCharacter());
+		if (_seriesPhysicalTalent) Hit(Targeting.GetTarget()?.Character);
+		else SingleHit(Targeting.GetTarget()?.Character);
 
 		if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
 		{
-			ClearTarget();
+			Targeting.ClearTarget();
 		}
 		CmdPlayShotSound();
 	}
 
 	private void Hit(Character enemy)
 	{
-		if (_curTarget == enemy && _energy.CurrentValue >= 5)
+		if (_energy == null)
+			_energy = (Energy)Hero.Resources[ResourceType.Energy];
+		if (_rune == null)
+			_rune = (RuneComponent)Hero.Resources[ResourceType.Rune];
+		if (_curTarget == enemy && _energy.CurrentValue >= EnergyPerAttack)
 		{
-			//_energy.CmdUse(5);
-			Buff.AttackSpeed.IncreasePercentage(_multiplier);
-			Buff.CastSpeed.IncreasePercentage(_multiplier);
-			float curDamage = _damageValue + UnityEngine.Random.Range(0, 2);
+			float curDamage = _damageValue + UnityEngine.Random.Range(0, HitVariationMax);
+			_combo.GetMultipliedSpeed();
+			_multiplier = DefaultMultiplier + _combo.LastKnownSpeedMultiplier / 100;
+			Debug.Log($"_multiplier: {_multiplier}");
 
-			if (_energy.CurrentValue >= 5)
+			if (_energy.CurrentValue >= EnergyPerAttack)
 			{
-				if (_combo.MakeHit(enemy, AbilityForm.Physical, 0, 5, curDamage))
+				if (_combo.MakeHit(enemy, Info.AbilityForm, 0, EnergyPerAttack, curDamage, _multiplier))
 				{
 					Debug.Log("Last hit");
 					LastHit();
 				}
 			}
-			_multiplier = 1 + _combo.GetMultipliedSpeed() / 100;
-			Buff.AttackSpeed.ReductionPercentage(_multiplier);
-			Buff.CastSpeed.IncreasePercentage(_multiplier);
 
 			Damage damage = new Damage
 			{
@@ -169,7 +192,7 @@ public class PhysicalAttack : Skill
 
 			if (_rollingPhysTalent)
 			{
-				CmdState(_curTarget.gameObject, 0.7f * _stunCount);
+				CmdState(_curTarget.gameObject, RollingStunTimeMultiplier * _stunCount);
 			}
 		}
 		else
@@ -178,17 +201,18 @@ public class PhysicalAttack : Skill
 			_multiplier = 1;
 			_curTarget = enemy;
 
-			float curDamage = _damageValue + UnityEngine.Random.Range(0, 2);
+			float curDamage = _damageValue + UnityEngine.Random.Range(0, HitVariationMax);
 			_energy.SumDamageMake(curDamage);
+			Debug.Log(_rune, _rune.gameObject);
 			_rune.SumDamageMake(curDamage);
 
-			_combo.MakeHit(enemy, AbilityForm.Physical, 0, 0, curDamage);
+			_combo.MakeHit(enemy, Info.AbilityForm, 0, 0, curDamage, _multiplier);
 
 			if (_energy.CurrentValue >= 5)
 			{
 				_energy.CmdUse(5);
-				_multiplier = 1 + _combo.GetMultipliedSpeed() / 100;
-				Buff.AttackSpeed.ReductionPercentage(_multiplier); // ?
+				_multiplier = DefaultMultiplier + _combo.GetMultipliedSpeed() / 100;
+				Buff.AttackSpeed.ReductionPercentage(_multiplier);
 			}
 			Damage damage = new Damage
 			{
@@ -198,9 +222,9 @@ public class PhysicalAttack : Skill
 			CmdApplyDamage(damage, enemy.gameObject);
 		}
 
-		if (UnityEngine.Random.Range(0, 100) < 2 && _talentActive)
+		if (UnityEngine.Random.Range(0, 100) < TalentProcChance && _talentActive)
 		{
-			_rune.CmdAdd(1);
+			_rune.CmdAdd(DefaultMultiplier);
 		}
 	}
 
@@ -210,14 +234,14 @@ public class PhysicalAttack : Skill
 		{
 			Damage damage = new Damage
 			{
-				Value = _damageValue * 0.5f,
+				Value = _damageValue * LastHitDamageMultiplier,
 				Type = DamageType.Physical,
 			};
 			CmdApplyDamage(damage, _curTarget.gameObject);
-			float curDamage = _damageValue * .5f;
+			float curDamage = _damageValue * LastHitDamageMultiplier;
 			_energy.SumDamageMake(curDamage);
 			_rune.SumDamageMake(curDamage);
-			CmdState(_curTarget.gameObject, 1.5f);
+			CmdState(_curTarget.gameObject, LastHitStunTime);
 			PushBackEnemy(_curTarget); 			
 		}
 		_curTarget = null;
@@ -225,14 +249,15 @@ public class PhysicalAttack : Skill
 
 	private void SingleHit(Character enemy)
 	{
-		float curDamage = _damageValue + UnityEngine.Random.Range(0, 2);
+		Debug.Log("Single hit");
+		float curDamage = _damageValue + UnityEngine.Random.Range(0, HitVariationMax);
 
 		Damage damage = new Damage
 		{
 			Value = curDamage,
 			Type = DamageType.Physical,
 		};
-		_combo.MakeHit(enemy, AbilityForm.Physical, 0, 5, curDamage);
+		_combo.MakeHit(enemy, Info.AbilityForm, 0, EnergyPerAttack, curDamage, _multiplier);
 		CmdApplyDamage(damage, enemy.gameObject);
 	}
 
@@ -245,11 +270,11 @@ public class PhysicalAttack : Skill
 
 	private void PushBackEnemy(Character enemy)
 	{
-		Vector3 lookDir = (GetTargetCharacter().transform.position - Hero.transform.position).normalized;
-		Vector3 jumpPos = lookDir * 1 + GetTargetCharacter().transform.position;
+		Vector3 lookDir = (Targeting.GetTarget().Character.transform.position - Hero.transform.position).normalized;
+		Vector3 jumpPos = lookDir * DefaultMultiplier + Targeting.GetTarget().Character.transform.position;
 		if (!CheckObstacleBetween(Hero.transform.position, jumpPos))
 		{
-			CmdPush(GetTargetCharacter().gameObject, jumpPos);
+			CmdPush(Targeting.GetTarget()?.Character.gameObject, jumpPos);
 		}
 	}
 
@@ -257,8 +282,6 @@ public class PhysicalAttack : Skill
 	private void CmdPush(GameObject gameObject, Vector2 force)
 	{
 		MoveComponent tempTargetMove = gameObject.GetComponent<MoveComponent>();
-
-		//tempTargetMove.TargetRpcDoMove(force, 0.5f);
 	}
 
 	[Command]
@@ -270,21 +293,20 @@ public class PhysicalAttack : Skill
 	[ClientRpc]
 	private void RpcPlayShotSound()
 	{
-		if (_audioSource != null && Hits != null)
+		if (_audioSource != null && _hits != null)
 		{
-			int index = UnityEngine.Random.Range(0, Hits.Length);
-			_audioSource.PlayOneShot(Hits[index]);
+			int index = UnityEngine.Random.Range(0, _hits.Length);
+			_audioSource.PlayOneShot(_hits[index]);
 		}
 	}
 
 	private bool CheckObstacleBetween(Vector3 start, Vector3 end)
 	{
-		//Проверка на наличие препятствия
 		Vector2 direction = (end - start).normalized;
 		float distance = Vector3.Distance(start, end);
 
 		RaycastHit2D[] hits =
-			Physics2D.BoxCastAll(start, new Vector2(1f, 1f), 0f, direction, distance, _obstacle);
+			Physics2D.BoxCastAll(start, ObstacleCheckSize, 0f, direction, distance, _obstacle);
 
 		foreach (RaycastHit2D hit in hits)
 		{
@@ -318,7 +340,7 @@ public class PhysicalAttack : Skill
 
 	public void ApplyRootTrue()
 	{
-		Hero.Move.CanMove = false;
+		Hero.Move.SetCanMove(false);
 		_animator.applyRootMotion = true;
 	}
 
@@ -329,13 +351,14 @@ public class PhysicalAttack : Skill
 
 	public override void LoadTargetData(TargetInfo targetInfo)
 	{
-		if (targetInfo.GetTargets().Count > 0) SetTarget(targetInfo.GetTargets()[0]);
+		if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
 	}
 
     protected override void ClearData()
     {
-		ClearTarget();
-		ClearTempTarget();
+		Targeting.ClearTarget();
+		Targeting.ClearTempTarget();
 		_hero.Move.StopLookAt();
 	}
 }
+

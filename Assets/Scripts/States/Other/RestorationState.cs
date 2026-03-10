@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,30 +21,29 @@ public class RestorationState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
-        _personWhoMadeBuff = personWhoMadeBuff;
+        characterState = character;
+        personWhoMadeBuff = personWhoMadeBuff;
         duration = durationToExit;
-        _health = character.Character.Health;
+        //_health = character.Character.Health;
         //_accumulatedEffectiveness = 1f;
         //_totalHealedInInterval = 0f;
 
         _timer = _tickInterval;
 
-		float spiritBonus = GetSpiritEnergyBonus(_characterState.Character);
+		float spiritBonus = GetSpiritEnergyBonus(characterState.Character);
 		float healValue = _healPerTick /*_accumulatedEffectiveness */ + spiritBonus;
 		CmdHeal(healValue);
 	}
 
     public override void UpdateState()
     {
-        if (_health == null) return;
+        if (health == null) return;
 
-        duration -= Time.deltaTime;
         _timer -= Time.deltaTime;
 
         if (_timer <= 0f)
         {
-            float spiritBonus = GetSpiritEnergyBonus(_characterState.Character);
+            float spiritBonus = GetSpiritEnergyBonus(characterState.Character);
             float healValue = _healPerTick /*_accumulatedEffectiveness*/ + spiritBonus;
 
             CmdHeal(healValue);
@@ -53,12 +52,6 @@ public class RestorationState : AbstractCharacterState
             _totalHealedInInterval = healValue; */
 
             _timer = _tickInterval;
-        }
-
-        if (duration <= 0)
-        {
-            ExitState();
-            return;
         }
     }
 
@@ -70,7 +63,7 @@ public class RestorationState : AbstractCharacterState
 
     public override void ExitState()
     {
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -90,6 +83,6 @@ public class RestorationState : AbstractCharacterState
             DamageableSkill = null
         };
 
-        _health.Heal(ref heal, "RestorationState", null);
+        health.Heal(ref heal, "RestorationState", null);
     }
 }

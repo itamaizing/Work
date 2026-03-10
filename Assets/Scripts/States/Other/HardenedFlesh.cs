@@ -19,24 +19,24 @@ public class HardenedFlesh : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
-        _health = character.Character.Health;
-        _abilities = character.Character.Abilities;
-        _personWhoMadeBuff = personWhoMadeBuff;
+        characterState = character;
+        health = character.Character.Health;
+        abilities = character.Character.Abilities;
+        base.personWhoMadeBuff = personWhoMadeBuff;
 
-        if (_currentStacks == 0) _originalDefPhysDamage = _health.DefPhysDamage;
+        if (_currentStacks == 0) _originalDefPhysDamage = health.DefPhysDamage;
 
         duration = durationToExit;
 
-        _health.DefPhysDamage = _originalDefPhysDamage + _originalDefPhysDamage * _buffPercent;
+        health.DefPhysDamage = _originalDefPhysDamage + _originalDefPhysDamage * _buffPercent;
 
-        Debug.Log("Def " + _health.DefPhysDamage);
+        Debug.Log("Def " + health.DefPhysDamage);
     }
 
     public override void ExitState()
     {
-        _health.DefPhysDamage = _originalDefPhysDamage;
-        _characterState.RemoveState(this);
+        health.DefPhysDamage = _originalDefPhysDamage;
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -45,9 +45,9 @@ public class HardenedFlesh : AbstractCharacterState
         {
             duration = time;
             _currentStacks++;
-			_health.DefPhysDamage = _health.DefPhysDamage + _buffPercent;
+			health.DefPhysDamage = health.DefPhysDamage + _buffPercent;
 
-			Debug.Log("Def " + _health.DefPhysDamage);
+			Debug.Log("Def " + health.DefPhysDamage);
 			return false;
         }
         return false;

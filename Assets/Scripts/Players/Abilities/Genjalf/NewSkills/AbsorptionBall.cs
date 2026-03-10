@@ -1,7 +1,6 @@
-using Mirror;
+ï»¿using Mirror;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,27 +12,43 @@ namespace Gangdollarff
         [SerializeField] private float _shieldValue = 40;
         [SerializeField] private float _shieldDuration = 2;
 
+        private Shield _shield;
+        
         private float _tempCooldownTime = 5f;
 
-        private Shield _shield;
+        private float _absorbedDamage;
 
+        private float _absorbationMultiplier = 2f;
+        
+        private float _lastOpacityChangeTime = 0f;
+        
         public override string AdditionalDescription =>
-            $"Ýôôåêòèâíîñòü: {AbilityNameBox.ColorOpen}{_shieldValue} åä.{AbilityNameBox.ColorEnd}" +
-            $"\nÄëèòåëüíîñòü: {AbilityNameBox.ColorOpen}{_shieldDuration} ñåê{AbilityNameBox.ColorEnd}";
+            $"Ð­Ñ„Ñ„ÐµÐºÑ‚Ð¸Ð²Ð½Ð¾ÑÑ‚ÑŒ: {AbilityNameBox.ColorOpen}{_shieldValue} ÐµÐ´.{AbilityNameBox.ColorEnd}" +
+            $"\nÐ”Ð»Ð¸Ñ‚ÐµÐ»ÑŒÐ½Ð¾ÑÑ‚ÑŒ: {AbilityNameBox.ColorOpen}{_shieldDuration} ÑÐµÐº{AbilityNameBox.ColorEnd}";
 
         protected override int AnimTriggerCastDelay => 0;
 
         protected override int AnimTriggerCast => 0;
 
-        protected override bool IsCanCast => true;
+        protected override bool IsCanCast => CheckCanCast();
 
         public float ShieldDuration { get => _shieldDuration; set => _shieldDuration = value; }
-
+        
+        private float _clickRadius = 0.5f;
+        private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
+        
+        private bool CheckCanCast()
+        {
+            if(IsAllyTargetAvailable)
+                return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.GetTarget()?.Character != null;
+            return true;
+        }
         public bool IsEnabled { get; protected set; }
+        public bool IsAllyTargetAvailable = false;
+        public bool IsManaRegenActive = false;
 
         public override void LoadTargetData(TargetInfo targetInfo)
         {
-            
         }
 
         public void ChangeMode()
@@ -42,67 +57,160 @@ namespace Gangdollarff
             {
                 IsEnabled = false;
 
-                _cooldownTime = _tempCooldownTime;
+                Cooldown.CooldownTime = _tempCooldownTime;
             }
             else
             {
                 IsEnabled = true;
 
-                _tempCooldownTime = _cooldownTime;
-                _cooldownTime = 0;
+                _tempCooldownTime = Cooldown.CooldownTime;
+                Cooldown.CooldownTime = 0;
             }
         }
 
         protected override IEnumerator CastJob()
         {
-            CmdAddShield();
+            CmdAddShield(IsAllyTargetAvailable ? Targeting.GetTarget()?.Character.gameObject : Hero.gameObject, Hero.gameObject);
             yield return null;
         }
 
         protected override void ClearData()
         {
-            
+        }
+
+        private void ClearSkillInfo()
+        {
+            _absorbedDamage = 0;
         }
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
         {
-            yield return null;
+            if(!IsAllyTargetAvailable) yield break;
+            
+            TargetInfo targetInfo = new TargetInfo();
+
+            while (Targeting.GetTempTarget() == null)
+            {
+                if (GetMouseButton)
+                {
+                    Vector3 clickPoint = Targeting.GetMousePoint();
+                
+                    Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
+
+                    if (Targeting.GetTempTarget()?.Character is Character character)
+                    {
+                        if (Targeting.GetTempTarget()?.Character != null && !IsAllyTarget(character))
+                        {
+                            Targeting.ClearTempTarget();
+                        }
+                        else
+                        {
+                            if (character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
+                            break;
+                        }
+                    }
+                }
+                yield return null;
+            }
+            Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
+            Targeting.ClearTempTarget();
+
+            targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+            callbackDataSaved(targetInfo);
         }
 
         [Command]
-        private void CmdAddShield()
+        private void CmdAddShield(GameObject targetShield,GameObject targetAbsorb)
         {
-            if(_shield != null)
+            if(targetShield == null) return;
+            if (_shield != null)
             {
                 NetworkServer.Destroy(_shield.gameObject);
             }
 
-            var shield = Instantiate(_shieldPref, transform.position, Quaternion.identity);
+            Character targetChar = targetShield.GetComponent<Character>();
+            
+            var shield = Instantiate(_shieldPref, targetShield.transform.position, Quaternion.identity);
             SceneManager.MoveGameObjectToScene(shield.gameObject, _hero.NetworkSettings.MyRoom);
             shield.Initialize(_shieldValue, DamageType.Both);
             NetworkServer.Spawn(shield.gameObject);
             _shield = shield;
-            Hero.Health.Shields.Add(shield);
-            StartCoroutine(ShieldJob());
+            targetChar.Health.Shields.Add(shield);
+            StartCoroutine(ShieldJob(targetAbsorb));
 
-            ClientRpcShieldFollow(_shield.gameObject);
+            ClientRpcShieldFollow(_shield.gameObject, targetShield.transform);
         }
 
         [ClientRpc]
-        private void ClientRpcShieldFollow(GameObject shield)
+        private void ClientRpcShieldFollow(GameObject shield, Transform target)
         {
-            shield.GetComponent<Shield>().FollowTo(transform);
+            shield.GetComponent<Shield>().FollowTo(target);
         }
 
-        private IEnumerator ShieldJob()
+        private void OnAbsorb(Damage damage, Skill skill)
         {
-            yield return new WaitForSecondsRealtime(_shieldDuration);
+            _absorbedDamage += damage.Value;
+            
+            RpcManaSpendJob(_hero.gameObject,damage.Value);
 
+            if (_shield)
+            {
+                RpcChangeShieldAlpha(_shield.gameObject);
+            }
+        }
+
+        private IEnumerator ShieldJob(GameObject target)
+        {
+            _shield.DamageTaken += OnAbsorb;
+            yield return new WaitForSecondsRealtime(_shieldDuration);
+            _shield.DamageTaken -= OnAbsorb;
+            
+            if(IsManaRegenActive)
+                RpcAbsorbJob(target,_absorbedDamage);
+            
             if (_shield != null)
             {
                 _shield.TryUse(99999);
                 NetworkServer.Destroy(_shield.gameObject);
             }
+            ClearSkillInfo();
+        }
+
+        [TargetRpc]
+        private void RpcManaSpendJob(GameObject target, float count)
+        {
+            if (target != null)
+            {
+                target.TryGetComponent(out Character character);
+                character.TryGetResource(ResourceType.Mana).CmdUse(count);
+            }
+        }
+
+        [TargetRpc]
+        private void RpcAbsorbJob(GameObject target,float damage)
+        {
+            if (target != null)
+            {
+                target.TryGetComponent(out Character character);
+                character.TryGetResource(ResourceType.Mana).CmdAdd(damage * _absorbationMultiplier);
+            }
+        }
+        
+        [ClientRpc]
+        private void RpcChangeShieldAlpha(GameObject shieldGo)
+        {
+            if (shieldGo == null) return;
+
+            _lastOpacityChangeTime = Time.time;
+
+            var renderer = shieldGo.GetComponentInChildren<ParticleSystemRenderer>();
+            if (renderer == null) return;
+
+            var mat = renderer.material;
+            var col = mat.color;
+
+            col.a += 0.2f;
+            mat.color = col;
         }
     }
 }

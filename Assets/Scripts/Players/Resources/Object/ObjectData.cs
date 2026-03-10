@@ -4,6 +4,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ObjectData", menuName = "Create Object Data")]
 public class ObjectData : ScriptableObject
 {
+    [SerializeField] private Attribute _attribute;
+
     [Header("Health Settings")]
     [SerializeField] private float maxHealth;
     [SerializeField] private float regenerationAmount;
@@ -15,14 +17,13 @@ public class ObjectData : ScriptableObject
 
     [Header("UI Settings")]
     [SerializeField] private bool hideBar = false;
-
     public float MaxHealth { get => maxHealth; set => maxHealth = value; }
-    public float RegenerationAmount => regenerationAmount;
+    public float RegenerationAmount {get => regenerationAmount; set => regenerationAmount = value; }
     public float RegenerationInterval => regenerationInterval;
-
     public bool MaxEndurance => maxEndurance;
     public bool MinEndurance => minEndurance;
 
+    public Attribute Attribute => _attribute;
     public bool HideBar => hideBar;
 
 }

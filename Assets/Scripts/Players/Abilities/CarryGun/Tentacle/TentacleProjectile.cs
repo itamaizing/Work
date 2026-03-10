@@ -1,7 +1,9 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 
 public class TentacleProjectile : NetworkBehaviour
 {
@@ -14,6 +16,7 @@ public class TentacleProjectile : NetworkBehaviour
     [SerializeField] private float lifeTentacle = 4f;
     [SerializeField] private LineRenderer tentacleLine;
     [SerializeField] private Transform tentaclePoint;
+    [SerializeField] private SpikeTentacle _spike;
 
     private Coroutine _lineCoroutine;
     private Character _player;
@@ -21,9 +24,12 @@ public class TentacleProjectile : NetworkBehaviour
     private Vector3 _startPosition;
     private Vector3 _endPosition;
 
+    private float _maxPullDistance;
+
     private bool _isAttackingPsiEnergyActive;
     private bool _isAttractionTentacleActive;
     private bool _isAttractionTentacle;
+    private bool _isSpawnSpike;
     private float _spentAttackingPsiEnergy;
 
     private float _radius = 4f;
@@ -62,11 +68,10 @@ public class TentacleProjectile : NetworkBehaviour
         if (_drawCircle != null) _drawCircle.Clear();
         if (_radiusUpdateCoroutine != null) StopCoroutine(_radiusUpdateCoroutine);
         if (isServer && _target.CharacterState.CheckForState(States.TentacleGrip)) _target.CharacterState.RemoveState(States.TentacleGrip);
-
     }
 
     public void Init(Character player, Character target, Vector3 startPosition, Vector3 endPosition,
-        bool isAttackingPsiEnergyActive, bool isPsionicsTalentThree, bool isAttractionTentacleTalent, float currentDamage, Skill skill)
+        bool isAttackingPsiEnergyActive, bool isPsionicsTalentThree, bool isAttractionTentacleTalent, bool isSpawnSpike, float currentDamage, Skill skill)
     {
         _isPsionicsTalentThree = isPsionicsTalentThree;
         _player = player;
@@ -76,10 +81,13 @@ public class TentacleProjectile : NetworkBehaviour
         _isAttackingPsiEnergyActive = isAttackingPsiEnergyActive;
         _isAttractionTentacleActive = isAttractionTentacleTalent;
         _spentAttackingPsiEnergy = currentDamage;
-        _isPsionicsTalentThree = 
+        _isPsionicsTalentThree =
         _skill = skill;
+        _isSpawnSpike = isSpawnSpike;
 
         transform.position = startPosition;
+
+        _maxPullDistance = Vector3.Distance(endPosition, target.transform.position);
 
         Invoke(nameof(ReleaseTarget), lifeTentacle);
     }
@@ -126,7 +134,7 @@ public class TentacleProjectile : NetworkBehaviour
 
             if (Physics.SphereCast(transform.position, sphereRadius, direction, out RaycastHit hit, distance, obstecls)) return;
 
-            //_target.Move.CanMove = false;
+            _target.Move.IsMoveBlocked = true;
             _isPullTarget = true;
 
             if (tentacleLine != null) _lineCoroutine = StartCoroutine(DrawAndPullTarget());
@@ -146,62 +154,85 @@ public class TentacleProjectile : NetworkBehaviour
         }
     }
 
+    private void SpawnSpike()
+    {
+        if (_target == null || _skill == null)
+            return;
+
+        SpikeTentacle spike = Instantiate(_spike, transform.position, Quaternion.identity);
+
+        SceneManager.MoveGameObjectToScene(spike.gameObject, _player.NetworkSettings.MyRoom);
+        spike.Init(_target, _player, _skill);
+
+        NetworkServer.Spawn(spike.gameObject);
+    }
+
     public void SetRadiusColor(Color color)
     {
         _drawCircle?.SetColor(color);
     }
-
     private IEnumerator PullTarget()
     {
-        float elapsedTime = 0f;
-        float baseSpeed = 0.25f;
-        float speedIncrease = 0.05f;
-        float minDistance = 0.5f;
+        if (_target == null || tentaclePoint == null) yield break;
 
-        Vector3 lastTargetPosition = _target.transform.position;
-        float targetDistanceAccumulator = 0f;
-        //SetPhysicalSkillsDisactive(true);
-        if (isServer) AddStateTentacleGrip();
+        Transform targetTransform = _target.transform;
+        Vector3 start = targetTransform.position;
+        Vector3 end = transform.position;
+        var agent = _target.GetComponent<NavMeshAgent>();
+        if (agent != null && agent.enabled) agent.enabled = false;
 
-        float heightOffset = _target.transform.position.y - _target.GetComponent<Collider>().bounds.min.y;
+        float timer = 0f;
 
-        while (elapsedTime < grabDuration)
+        if (isServer)
         {
-            Vector3 toTentacle = transform.position - (_target.transform.position - new Vector3(0, heightOffset, 0));
-            float distance = toTentacle.magnitude;
-
-            if (distance <= minDistance) break;
-
-            float speed = baseSpeed + (elapsedTime / 0.1f) * speedIncrease;
-
-            if (_isCollidedWithOtherCharacter)
-                speed /= 2;
-
-            Vector3 direction = toTentacle.normalized;
-            _target.transform.position += direction * speed;
-
-            float traveled = Vector3.Distance(lastTargetPosition, _target.transform.position);
-            targetDistanceAccumulator += traveled;
-
-            while (targetDistanceAccumulator >= 0.1f)
-            {
-                targetDistanceAccumulator -= 0.1f;
-                if (_player != null && _player.TryGetComponent<BasePsionicEnergy>(out var psiEnergy))
-                {
-                    psiEnergy.AddAndResetDecayCoolDownPsionicEnegry(basePsi);
-                    psiEnergy.PsionicEnergySkill.IncreaseSetCooldownPassive(psiEnergy.PsionicaDecayTime);
-                }
-            }
-
-            lastTargetPosition = _target.transform.position;
-
-            elapsedTime += 0.1f;
-            yield return new WaitForSeconds(0.1f);
-
-
+            AddStateTentacleGrip();
+            _target.Move.StopMoveAndAnimationMove();
         }
 
-        //SetPhysicalSkillsDisactive(false);
+        if (tentacleLine != null)
+        {
+            tentacleLine.enabled = true;
+        }
+
+        while (timer < grabDuration)
+        {
+            timer += Time.deltaTime;
+            float t = timer / grabDuration;
+
+            Vector3 currentPos = Vector3.Lerp(start, end, t);
+            targetTransform.position = currentPos;
+
+            if (Vector3.Distance(currentPos, transform.position) <= _maxPullDistance)
+            {
+                break;
+            }
+
+            if (tentacleLine != null && tentaclePoint != null)
+            {
+                tentacleLine.SetPosition(0, tentaclePoint.position);
+                tentacleLine.SetPosition(1, currentPos + Vector3.up * 0.5f);
+            }
+
+            yield return null;
+        }
+
+        if (tentacleLine != null)
+            tentacleLine.enabled = false;
+
+        if (_target != null && isServer)
+        {
+            _target.Move.StopMoveAndAnimationMove();
+
+            if (agent != null && !agent.enabled) agent.enabled = true;
+
+            Vector3 finalPosition = end;
+
+            _target.Move.CancelMoveTowards();
+            _target.Move.TargetRpcSetTransformPosition(finalPosition);
+            _target.Move.TargetRpcStopMoveAndAnimationMove();
+
+            if (_isSpawnSpike && _isPullTarget) SpawnSpike();
+        }
     }
 
     private void AttackTentacles()
@@ -219,8 +250,8 @@ public class TentacleProjectile : NetworkBehaviour
     }
 
     private void ReleaseTarget()
-    { 
-        //if (_target != null) _target.Move.CanMove = true;
+    {
+        if (_target != null) _target.Move.IsMoveBlocked = false;
 
         if (tentacleLine != null && _lineCoroutine != null) StopCoroutine(_lineCoroutine);
 
@@ -241,7 +272,7 @@ public class TentacleProjectile : NetworkBehaviour
 
         _skill.ApplyDamage(mainDamage, _target.gameObject);
 
-        Collider[] nearbyEnemies = Physics.OverlapSphere(_target.transform.position, 1f, _skill.TargetsLayers);
+        Collider[] nearbyEnemies = Physics.OverlapSphere(_target.transform.position, 1f, _skill.Targeting.Layer);
 
         foreach (var collider in nearbyEnemies)
         {
@@ -289,8 +320,9 @@ public class TentacleProjectile : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent<Character>(out var character) && character != _target)
-            _isCollidedWithOtherCharacter = true;
+        if (other.TryGetComponent<Character>(out var character) && character != _target) _isCollidedWithOtherCharacter = true;
+
+        if (!_isAttractionTentacleActive && isServer) AttackTentacles();
     }
 
     private void OnTriggerStay(Collider other)
@@ -309,6 +341,6 @@ public class TentacleProjectile : NetworkBehaviour
     //private void SetPhysicalSkillsDisactive(bool state)
     //{
     //    if (_target != null && _target.Abilities != null)
-    //        foreach (Skill skill in _target.Abilities.Abilities) if (skill.AbilityForm == AbilityForm.Physical) skill.Disactive = state;
+    //        foreach (Skill skill in _target.Abilities.Abilities) if (skill.Info.AbilityForm == Info.AbilityForm.Physical) skill.Disactive = state;
     //}
 }

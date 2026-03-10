@@ -1,8 +1,6 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class CircularFrosting : Skill
@@ -24,15 +22,9 @@ public class CircularFrosting : Skill
 
     private void Start()
 	{
-		for (int i = 0; i < Hero.Resources.Count; i++)
-		{
-			if (Hero.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)Hero.Resources[i];
-			}
-		}
+        //_energy = (Energy)Hero.Resources[ResourceType.Energy];
 
-	}
+    }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -52,13 +44,16 @@ public class CircularFrosting : Skill
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		callbackDataSaved(null);
+		if (_energy == null)
+			_energy = (Energy)Hero.Resources[ResourceType.Energy];
+
+        callbackDataSaved(null);
 		yield return null;
 	}
 
 	private void CreateSmoke()
 	{
-		Collider[] enemyDetected = Physics.OverlapSphere(transform.position, Radius);
+		Collider[] enemyDetected = Physics.OverlapSphere(transform.position, AreaInfo.Radius);
 		float usedEnergy = 0;
 		if (_energy.CurrentValue >= 30)
 		{
@@ -79,7 +74,7 @@ public class CircularFrosting : Skill
 			{
 				if (enemyCharacter != Hero)
 				{
-					_seriesOfStrikes.MakeHit(enemyCharacter, AbilityForm.Magic, 1, usedEnergy, 0);
+					_seriesOfStrikes.MakeHit(enemyCharacter, Info.AbilityForm, 1, usedEnergy, 0);
 					CmdAdd(enemy.gameObject);
 					//enemyCharacter.CharacterState.CmdAddState(States.Frosting, _duration, 0, _playerLinks.gameObject, name);
 				}

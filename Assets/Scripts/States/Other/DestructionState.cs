@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,11 +21,11 @@ public class DestructionState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
-        _personWhoMadeBuff = personWhoMadeBuff;
+        characterState = character;
+        base.personWhoMadeBuff = personWhoMadeBuff;
         duration = durationToExit;
 
-        _health = character.Character.Health;
+        //_health = character.Character.Health; //??
         //_accumulatedEffectiveness = 1f;
         //_totalDamageInInterval = 0f;
 
@@ -38,7 +38,7 @@ public class DestructionState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        if (_health == null) return;
+        if (health == null) return;
 
         duration -= Time.deltaTime;
         _timer -= Time.deltaTime;
@@ -64,7 +64,7 @@ public class DestructionState : AbstractCharacterState
 
     public override void ExitState()
     {
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -85,6 +85,6 @@ public class DestructionState : AbstractCharacterState
             Type = DamageType.Magical,
         };
 
-        _health.TryTakeDamage(ref damage, null);
+        health.TryTakeDamage(ref damage, null);
     }
 }

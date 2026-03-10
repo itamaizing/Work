@@ -8,14 +8,18 @@ public class UpEarth : Talent
 
     private WaitForSeconds _increaseManaRegenerationDeley;
     private Resource _mana;
+    private AttributeModifier attributeModifiers;
 
     public override void Enter()
     {
-        character.Health.ChangedMaxValue(character.Health.MaxValue * _increasePercentages);
+        attributeModifiers = new AttributeModifier(character.Health.MaxValue * _increasePercentages, ModifierType.Flat);
+        character.Health.AddModifier(attributeModifiers);
+        //character.Health.ChangedMaxValue(character.Health.MaxValue * _increasePercentages);
     }
 
     public override void Exit()
     {
-        character.Health.ChangedMaxValue(character.Health.MaxValue / _increasePercentages);
+        character.Health.RemoveModifier(attributeModifiers);
+        //character.Health.ChangedMaxValue(character.Health.MaxValue / _increasePercentages);
     }
 }

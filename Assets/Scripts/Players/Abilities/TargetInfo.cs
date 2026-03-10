@@ -23,7 +23,7 @@ public class TargetInfo
         }
         return targets;
     }
-
+    
     public void AddTarget(ITargetable target)
     {
         if(target != null)

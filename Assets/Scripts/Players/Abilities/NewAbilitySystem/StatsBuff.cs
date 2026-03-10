@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +11,10 @@ public class StatsBuff
     private StatBuff _castSpeed = new StatBuff();
     private StatBuff _cooldown = new StatBuff();
     private StatBuff _manaCost = new StatBuff();
+    private StatBuff _length = new StatBuff();
+    private StatBuff _width = new StatBuff();
+    public StatBuff Length => _length;
+    public StatBuff Width => _width;
 
     public StatBuff Damage => _damage;
     public StatBuff Radius => _radius;
@@ -47,5 +51,15 @@ public class StatBuff
     public void AddValue(float value)
     {
         _additional += value;
+    }
+    public void RemoveValue(float value)
+    {
+        _additional -= value;
+    }
+
+    public void Reset()
+    {
+        _multiplier = 1f;
+        _additional = 0f;
     }
 }

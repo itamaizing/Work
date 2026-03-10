@@ -7,9 +7,9 @@ using UnityEngine;
 
 public class ComboPoints_Player : Resource
 {
-    //public float Value { get { return _value; } }
+    //public float Value { get { return _baseValue; } }
 
-    //[SerializeField] protected int _value;
+    //[SerializeField] protected int _baseValue;
     //[SerializeField] protected int _maxValue;
     //[SyncVar(hook = nameof(HookMaxValueChanged))]
     //new protected float _maxValue = 3;
@@ -44,11 +44,11 @@ public class ComboPoints_Player : Resource
     //public override bool TryUse(float value)
     //{
 
-    //    if (_value >= value)
+    //    if (_baseValue >= value)
     //    {
-    //        _value -= (int) value;
+    //        _baseValue -= (int) value;
     //        ComboAbilities += (int) value;
-    //        if (_value < 0) { _value = 0; }
+    //        if (_baseValue < 0) { _baseValue = 0; }
 
     //        //visualize
     //        //_comboBar.TurnOff((int)value);
@@ -60,12 +60,12 @@ public class ComboPoints_Player : Resource
 
     //protected override void UpdateBar()
     //{
-    //    _comboBar.UpdateBar((int) _value);
+    //    _comboBar.UpdateBar((int) _baseValue);
     //}
 
     //[Command]
     //private void UpdateValue(int newValue)
     //{
-    //    _value = newValue;
+    //    _baseValue = newValue;
     //}
 }

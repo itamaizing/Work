@@ -29,10 +29,14 @@ namespace HeathenEngineering.UnityPhysics
 
         public void Shoot()
         {
+            if (template == null) return;
+
             var GO = Instantiate(template.gameObject);
             var comp = GO.GetComponent<BallisticPathFollow>();
+
             comp.projectile = new BallisticsData { velocity = selfTransform.forward * speed, radius = radius };
             comp.path = new List<BallisticPath>(prediction);
+
             GO.transform.SetPositionAndRotation(selfTransform.position, selfTransform.rotation);
         }
 

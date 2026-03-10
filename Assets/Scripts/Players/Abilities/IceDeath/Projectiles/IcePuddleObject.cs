@@ -1,4 +1,4 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,9 +15,16 @@ public class IcePuddleObject : Projectiles
 	private float _timeToDestroy = 0;
     private float _damageToExit = 30;
     private float _curEvade = 0;
+	private float _spawnTime;
 	private bool _talentEvadeDadBoost = false;
 	private bool _talentFrostingFrozen = false;
 	private bool _iceDeathInIcePudleTalent = false;
+	private UserNetworkSettings _dadSettings;
+	private readonly List<Character> _enemiesInZone = new();
+	private readonly Dictionary<Character, Coroutine> _frostingCoroutines = new();
+	private readonly WaitForSeconds _waitApplyDelay = new WaitForSeconds(0.7f);
+	private readonly WaitForSeconds _waitShort = new(0.1f);
+
 	//private List<CharacterState> _enemies = new List<CharacterState>();
 	private List<EnemyToState> _targets = new List<EnemyToState>();
 
@@ -25,6 +32,20 @@ public class IcePuddleObject : Projectiles
 	/*
 	 * buff player
 	 * */
+
+	private void OnDisable()
+	{
+		if (!isServer) return;
+
+		foreach (var coroutine in _frostingCoroutines.Values)
+		{
+			if (coroutine != null) StopCoroutine(coroutine);
+		}
+
+		_frostingCoroutines.Clear();
+		_enemiesInZone.Clear();
+	}
+
 	public override void Init(Character dad, float timeToDestroy, bool lastHit, Skill skill)
 	{
 		_dad = dad;
@@ -32,41 +53,38 @@ public class IcePuddleObject : Projectiles
 		_initialized = true;
 		_lastHit = lastHit;
 		_healthComponent = _dad.Health;
-		_timeToDestroy += timeToDestroy;
-		if(_lastHit)
-		{
-			transform.localScale = Vector3.one * 1.7f;
-		}
-		for (int i = 0; i < _dad.Resources.Count; i++)
-		{
-			if (_dad.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)_dad.Resources[i];
-			}
-		}
-		//StartCoroutine(DestroyPuddle());
-		StartCoroutine(StartFade());
+		_timeToDestroy = timeToDestroy;
+		_spawnTime = Time.time;
+
+		_dadSettings = _dad?.GetComponent<UserNetworkSettings>();
+
+		Debug.Log($"_timeToDestroy: {_timeToDestroy}");
+		 
+		if (_lastHit) transform.localScale = Vector3.one * 1.7f;
+		StartCoroutine(DestroyPuddle());
 	}
 
-	private void Update()
+	private bool IsEnemy(GameObject target)
 	{
-		_timeToDestroy -= Time.deltaTime;
-		if(_timeToDestroy < 0) 
-		{
-			Explode();
-		}
+		if (_dad == null) return IsEnemyByLayer(target);
 
-		if (_targets.Count <= 0) return;
+		if (!_dadSettings || !target.TryGetComponent(out UserNetworkSettings targetSettings))
+			return IsEnemyByLayer(target);
 
-		for(int i = 0; i < _targets.Count; i++)
-		{
-			_targets[i].time -= Time.deltaTime;
-			if (_targets[i].time < 0 )
-			{
-				_targets[i].enemy.CharacterState.AddState(States.Frosting, _timeToDestroy, _targets[i].enemy.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
-				_targets.Remove(_targets[i]);
-			}
-		}
+		if (!IsTeamAssigned(_dadSettings) || !IsTeamAssigned(targetSettings))
+			return IsEnemyByLayer(target);
+
+		return _dadSettings.TeamIndex != targetSettings.TeamIndex;
+	}
+
+	private bool IsTeamAssigned(UserNetworkSettings settings)
+	{
+		return settings.TeamIndex != 0;
+	}
+
+	private bool IsEnemyByLayer(GameObject target)
+	{
+		return ((1 << target.layer) & _skill.Targeting.Layer.value) != 0;
 	}
 
 	public void SetTalents(bool talentEvadeDadBoost, bool talentFrostingFrozen)
@@ -83,68 +101,76 @@ public class IcePuddleObject : Projectiles
 	[Server]
 	private void OnTriggerExit(Collider collision)
 	{
-		if (collision.gameObject == _dad.gameObject)
+		if (!collision.TryGetComponent<Character>(out var target)) return;
+		if (!_enemiesInZone.Contains(target)) return;
+
+		_enemiesInZone.Remove(target);
+
+		if (_talentEvadeDadBoost && _enemiesInZone.Count == 0)
 		{
-			_dad.Health.DecreaseRegen(1.01f);
-			return;
+			SetEvade(_dad.gameObject, -_curEvade);
+			_curEvade = 0;
 		}
-		if (collision.gameObject.layer == LayerMask.NameToLayer("Allies")) return;
-		if (collision.TryGetComponent<Character>(out var target) && collision.gameObject != _dad.gameObject)
+
+		if (_frostingCoroutines.TryGetValue(target, out var routine))
 		{
-			for(int i = 0; i < _targets.Count; i++) 
-			{
-				if (_targets[i].enemy == target)
-				{
-					_targets.Remove(_targets[i]);
-				}
-			}
-			Debug.Log(_talentEvadeDadBoost + " Talent");
-			if (_talentEvadeDadBoost)
-			{
-				SetEvade(_dad.gameObject, -_curEvade);
-				_curEvade = 0;
-				//_dad.Health.SetEvadeAll(-3);
-			}
+			StopCoroutine(routine);
+			_frostingCoroutines.Remove(target);
 		}
 	}
 
 	[Server]
 	private void OnTriggerEnter(Collider collision)
 	{
-		if(!_initialized) return;
+		if (!_initialized || !collision.TryGetComponent<Character>(out var target)) return;
+		if (target == _dad) return;
+		if (!IsEnemy(target.gameObject)) return;
+		if (_enemiesInZone.Contains(target)) return;
 
-		if (collision.gameObject == _dad.gameObject)
+		_enemiesInZone.Add(target);
+
+		if (_talentFrostingFrozen && target.CharacterState.CheckForState(States.Frosting))
 		{
-			if (_iceDeathInIcePudleTalent) _dad.Health.IncreaseRegen(1.01f);
-			return;
-		}
-		if (collision.gameObject.layer == LayerMask.NameToLayer("Allies")) return;
-		if (collision.TryGetComponent<Character>(out var target) && _energy != null)
-		{
-			Debug.Log(target.name);
-			float duration = _timeToDestroy;
-
-			EnemyToState enemy = new EnemyToState();
-			enemy.enemy = target;
-			enemy.duration = duration;
-
-			if (_talentFrostingFrozen && target.CharacterState.CheckForState(States.Frosting))
-			{
-				target.CharacterState.AddState(States.Frozen, duration, 30 + target.Health.SumDamageTaken, _dad.gameObject, _skill.name);
-			}
-
-			Debug.Log(_talentEvadeDadBoost + " Talent");
-			if (_talentEvadeDadBoost)
-			{
-				Debug.Log("EVADEBOOST SERVER");
-				_curEvade = 3;
-				SetEvade(_dad.gameObject, _curEvade);
-				//_dad.Health.SetEvadeAll(3);
-			}
-			_targets.Add(enemy);
+			target.CharacterState.AddState(States.Frozen, _timeToDestroy, _damageToExit, _dad.gameObject, _skill.name);
 		}
 
+		if (_talentEvadeDadBoost && _curEvade == 0)
+		{
+			_curEvade = 3;
+			SetEvade(_dad.gameObject, _curEvade);
+		}
+
+		if (!_frostingCoroutines.ContainsKey(target))
+		{
+			Coroutine routine = StartCoroutine(CheckAndApplyFrosting(target));
+			_frostingCoroutines[target] = routine;
+		}
 	}
+
+	private IEnumerator CheckAndApplyFrosting(Character enemy)
+	{
+		while (_enemiesInZone.Contains(enemy))
+		{
+			yield return _waitShort;
+
+			if (enemy == null || enemy.CharacterState == null) continue;
+
+			if (!enemy.CharacterState.CheckForState(States.Frosting))
+			{
+				float remainingLife = Mathf.Max(0.1f, _timeToDestroy - (Time.time - _spawnTime));
+
+				yield return _waitApplyDelay;
+
+				if (enemy != null && enemy.CharacterState != null && !enemy.CharacterState.CheckForState(States.Frosting))
+				{
+					enemy.CharacterState.AddState(States.Frosting, remainingLife, _damageToExit, _dad.gameObject, _skill.name);
+				}
+			}
+		}
+
+		_frostingCoroutines.Remove(enemy);
+	}
+
 	private void Explode()
 	{
 		if (_hitEffect != null)
@@ -214,4 +240,5 @@ public class EnemyToState
 	public Character enemy;
 	public float time = 0.5f;
 	public float duration = 1;
+	public Coroutine applyCoroutine;
 }

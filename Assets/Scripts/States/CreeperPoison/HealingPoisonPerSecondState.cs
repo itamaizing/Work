@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,10 +13,7 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
     private float _timeBetweenHeal;
     private float _startTimeBetweenHeal = 1.0f;
 
-    private float _duration;
     private float _baseDuration;
-
-    private Character _player;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing };
 
@@ -31,12 +28,10 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
     {
         MaxStacksCount = _maxStack;
 
-        _characterState = character;
-        _player = personWhoMadeBuff;
+        characterState = character;
 
         _currentHealingValue = 0.0f;
 
-        _duration = durationToExit;
         _baseDuration = durationToExit;
         _timeBetweenHeal = _startTimeBetweenHeal;
     }
@@ -46,24 +41,18 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
         _timeBetweenHeal -= Time.deltaTime;
         if (_timeBetweenHeal <= 0)
         {
-            if (CurrentStacksCount < _maxStack)
+            if (currentStacksCount < _maxStack)
             {
                 MakeHeal();
             }
 
             _timeBetweenHeal = _startTimeBetweenHeal;
         }
-
-        _duration -= Time.deltaTime;
-        if (_duration < 0)
-        {
-            ExitState();
-        }
     }
 
     public override void ExitState()
     {
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -82,7 +71,7 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
             DamageableSkill = null,
         };
 
-        _characterState.Character.Health.Heal(ref heal, null);
-        //_characterState.Character.DamageTracker.AddHeal(heal, true);
+        characterState.Character.Health.Heal(ref heal, null);
+        //characterState.Character.DamageTracker.AddHeal(heal, true);
     }
 }

@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 public class MagicalExcitementTalent : Talent
@@ -10,6 +10,7 @@ public class MagicalExcitementTalent : Talent
 
     private WaitForSeconds _increaseManaRegenerationDeley;
     private Resource _mana;
+    private float _defaultDuration = 3f;
 
     public override void Enter()
     {
@@ -26,6 +27,7 @@ public class MagicalExcitementTalent : Talent
 
     private void OnDamageTaked(Damage damage, GameObject target)
     {
+        character.CharacterState.CmdAddState(States.MagicalExcitement, _increaseManaRegenerationDuration,0,character.gameObject,name);
         StartCoroutine(IncreaseManaRegeneration());
     }
 
@@ -36,5 +38,17 @@ public class MagicalExcitementTalent : Talent
         yield return _increaseManaRegenerationDeley;
 
         _mana.ReduceRegenerationPeriod(_increaseManaRegenerationPercentages);
+    }
+
+    public void IncreaseDuration(float newDuration)
+    {
+        _increaseManaRegenerationDuration = newDuration;
+        _increaseManaRegenerationDeley = new(_increaseManaRegenerationDuration);
+    }
+
+    public void SetDefaultDuration()
+    {
+        _increaseManaRegenerationDuration = _defaultDuration;
+        _increaseManaRegenerationDeley = new(_increaseManaRegenerationDuration);
     }
 }

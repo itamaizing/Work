@@ -17,7 +17,6 @@ public class PoisonBoneState : AbstractCharacterState
     private float _timeBetweenAttack;
     private float _startTimeBetweenAttack = 1f;
 
-    private float _duration;
     private float _baseDuration;
 
     private float _baseDamage = 1f;
@@ -25,8 +24,8 @@ public class PoisonBoneState : AbstractCharacterState
 
     private Character _player;
 
-    public int CurrentStacks { get => CurrentStacksCount; set => CurrentStacksCount = value; }
-    public float StacksDuration { get => _duration; }
+    public int CurrentStacks { get => currentStacksCount; set => currentStacksCount = value; }
+    public float StacksDuration { get => duration; }
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
     public override States State => States.PoisonBone;
@@ -37,13 +36,11 @@ public class PoisonBoneState : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         MaxStacksCount = _maxStacks;
-        _characterState = character;
         _player = personWhoMadeBuff;
 
-        _duration = durationToExit;
         _baseDuration = durationToExit;
 
-        if (CurrentStacksCount < MaxStacksCount)
+        if (currentStacksCount < MaxStacksCount)
         {
             AddStacks();
             UpdatePoisonBoneStackAtSkills();
@@ -63,11 +60,11 @@ public class PoisonBoneState : AbstractCharacterState
                     if (_creeperStrike == null)
                     {
                         _creeperStrike = creeperStrike;
-                        _creeperStrike.PoisonBoneStack = CurrentStacksCount;
+                        _creeperStrike.PoisonBoneStack = currentStacksCount;
                     }
                     else
                     {
-                        _creeperStrike.PoisonBoneStack = CurrentStacksCount;
+                        _creeperStrike.PoisonBoneStack = currentStacksCount;
                     }
                 }
                 if (ability is SpitPoison spitPoison)
@@ -75,7 +72,7 @@ public class PoisonBoneState : AbstractCharacterState
                     if (_spitPoison == null)
                     {
                         _spitPoison = spitPoison;
-                        _spitPoison.PoisonBoneStack = CurrentStacksCount;
+                        _spitPoison.PoisonBoneStack = currentStacksCount;
                     }
                 }
                 if (ability is PoisonBall poisonBall)
@@ -83,7 +80,7 @@ public class PoisonBoneState : AbstractCharacterState
                     if (_poisonBall == null)
                     {
                         _poisonBall = poisonBall;
-                        _poisonBall.PoisonBoneStack = CurrentStacksCount;
+                        _poisonBall.PoisonBoneStack = currentStacksCount;
                     }
                 }
                 if (ability is PoisonSlap poisonSlap)
@@ -91,7 +88,7 @@ public class PoisonBoneState : AbstractCharacterState
                     if (_poisonSlap == null)
                     {
                         _poisonSlap = poisonSlap;
-                        _poisonSlap.PoisonBoneStack = CurrentStacksCount;
+                        _poisonSlap.PoisonBoneStack = currentStacksCount;
                     }
                 }
             }
@@ -100,7 +97,7 @@ public class PoisonBoneState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        if (CurrentStacksCount <= MaxStacksCount)
+        if (currentStacksCount <= MaxStacksCount)
         {
             _timeBetweenAttack -= Time.deltaTime;
             if (_timeBetweenAttack <= 0)
@@ -110,13 +107,7 @@ public class PoisonBoneState : AbstractCharacterState
             }
         }
 
-        if (CurrentStacksCount == 0)
-        {
-            ExitState();
-        }
-
-        _duration -= Time.deltaTime;
-        if (_duration < 0 || turnOff)
+        if (currentStacksCount == 0)
         {
             ExitState();
         }
@@ -126,12 +117,12 @@ public class PoisonBoneState : AbstractCharacterState
     {
         ResetValues();
 
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        if (CurrentStacksCount < MaxStacksCount)
+        if (currentStacksCount < MaxStacksCount)
         {
             AddStacks();
             UpdatePoisonBoneStackAtSkills();
@@ -139,7 +130,7 @@ public class PoisonBoneState : AbstractCharacterState
         }
         else
         {
-            _duration = _baseDuration;
+            duration = _baseDuration;
             UpdatePoisonBoneStackAtSkills();
             return true;
         }
@@ -147,14 +138,14 @@ public class PoisonBoneState : AbstractCharacterState
 
     private void AddStacks()
     {
-        CurrentStacksCount++;
-        _duration = _baseDuration;
+        currentStacksCount++;
+        duration = _baseDuration;
     }
 
     [Server]
     private void DamageDeal()
     {
-        _endDamage = CurrentStacksCount * _baseDamage;
+        _endDamage = currentStacksCount * _baseDamage;
 
         Damage damage = new Damage
         {
@@ -162,15 +153,15 @@ public class PoisonBoneState : AbstractCharacterState
             Type = DamageType.Magical,
         };
 
-        _characterState.Character.Health.TryTakeDamage(ref damage, _creeperStrike);
-        _characterState.Character.DamageTracker.AddDamage(damage, null, true);
+        characterState.Character.Health.TryTakeDamage(ref damage, _creeperStrike);
+        characterState.Character.DamageTracker.AddDamage(damage, null, true);
     }
 
     private void ResetValues()
     {
-        CurrentStacksCount = 0;
+        currentStacksCount = 0;
         _baseDuration = 0;
-        _duration = 0;
+        duration = 0;
         _endDamage = 0;
         _baseDamage = 1f;
         _timeBetweenAttack = _startTimeBetweenAttack;
