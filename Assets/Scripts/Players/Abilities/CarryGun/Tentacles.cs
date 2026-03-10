@@ -52,26 +52,11 @@ public class Tentacles : Skill
     private bool _isSpawnGetomir;
     private bool _isSpawnSpike = false;
     private bool _isSpawnSpikeMucus = false;
-    private bool _isInjectionAdrenaline = false;
 
     public event Action<bool> OnSpawnGetomirChanged;
     public event Action<bool> OnWombSpreadsMucusChanged;
     public event Action<bool> OnWombSpreadsParasitesChanged;
-    public event Action<bool> OnInjectionAdrenaline;
     //public event Action<bool> OnSpawnSpikeMucus;
-
-
-    public bool IsInjectionAdrenaline
-    {
-        get => _isInjectionAdrenaline;
-        set
-        {
-            if (_isInjectionAdrenaline == value) return;
-
-            _isInjectionAdrenaline = value;
-            OnInjectionAdrenaline?.Invoke(_isInjectionAdrenaline);
-        }
-    }
 
     public bool IsSpawnGetomir
     {
@@ -131,7 +116,29 @@ public class Tentacles : Skill
     public void WombSpreadsMucus(bool value) => IsWombSpreadsMucus = value;
     public void WombSpreadsParasites(bool value) => IsWombSpreadsParasites = value;
     public void SpawnSpikeMucus(bool value) => IsSpawnSpikeMucus = value;
+
+    #region Skills Creatures
+
+    private bool _isInjectionAdrenaline = false;
+
+    public event Action<bool> OnInjectionAdrenaline;
+
+    public bool IsInjectionAdrenaline
+    {
+        get => _isInjectionAdrenaline;
+        set
+        {
+            if (_isInjectionAdrenaline == value) return;
+
+            _isInjectionAdrenaline = value;
+            OnInjectionAdrenaline?.Invoke(_isInjectionAdrenaline);
+        }
+    }
+
     public void InjectionAdrenaline(bool value) => IsInjectionAdrenaline = value;
+
+    #endregion
+
     #endregion
 
     public TentacleProjectile CurrentTentacle { get => _currentTentacle; set => _currentTentacle = value; }

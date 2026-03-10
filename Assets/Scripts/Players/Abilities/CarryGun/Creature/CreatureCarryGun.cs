@@ -5,21 +5,34 @@ public class CreatureCarryGun : MonoBehaviour
 {
     [SerializeField] private Tentacles _dadSkill;
     [SerializeField] private SkillManager _skillManager;
-    [SerializeField] private Skill _skill;
+
+    [SerializeField] private List<Skill> _sills;
 
     private void Start()
-    {
-        _dadSkill.OnInjectionAdrenaline += SwitchStateSkill;
+    {       
+        foreach (Skill skill in _sills)
+        {
+            if (skill as InjectionAdrenaline) _dadSkill.OnInjectionAdrenaline += SkillActivationInjectionAdrenaline;
+        }
     }
 
     private void OnDisable()
     {
-        _dadSkill.OnInjectionAdrenaline -= SwitchStateSkill;
+        foreach (Skill skill in _sills)
+        {
+            if (skill as InjectionAdrenaline) _dadSkill.OnInjectionAdrenaline -= SkillActivationInjectionAdrenaline;
+        }
     }
 
-    private void SwitchStateSkill(bool value)
+    private void SkillActivationInjectionAdrenaline(bool value)
     {
-        if (value) _skillManager.ActivateSkill(_skill);
-        else _skillManager.DeactivateSkill(_skill);
+        foreach (Skill skill in _sills)
+        {
+            if (skill as InjectionAdrenaline)
+            {
+                if (value) _skillManager.ActivateSkill(skill);
+                else _skillManager.DeactivateSkill(skill);
+            }
+         }
     }
 }
