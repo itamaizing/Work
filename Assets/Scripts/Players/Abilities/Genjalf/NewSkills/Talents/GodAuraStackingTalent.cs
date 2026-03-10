@@ -1,62 +1,43 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GodAuraStackingTalent : Talent
 {
     [SerializeField] private float _stackChance = 30f;
-    [SerializeField] private float _stackDuration = 3f;
-
-    private int _activeStacks = 0;
-    private Coroutine _stackCoroutine;
+    
+    private bool _isProcessing = false;
+    private bool _isSubscribed = false;
 
     public override void Enter()
     {
+        if (_isSubscribed) return;
         character.Health.DamageTaken += OnDamageTaken;
+        _isSubscribed = true;
     }
 
     public override void Exit()
     {
+        if (!_isSubscribed) return;
         character.Health.DamageTaken -= OnDamageTaken;
+        _isSubscribed = false;
 
-        if (_stackCoroutine != null)
-        {
-            character.StopCoroutine(_stackCoroutine);
-            _stackCoroutine = null;
-        }
-        _activeStacks = 0;
+        character.CharacterState.RemoveState(States.GodAura);
     }
 
     private void OnDamageTaken(Damage damage, Skill skill)
     {
-        if (_activeStacks >= 3) return;
+        if (skill == null) return;
+        if (_isProcessing) return;
         if (Random.Range(0f, 100f) > _stackChance) return;
 
         var godAura = character.CharacterState.GetState(States.GodAura) as GodAura;
         if (godAura == null) return;
 
-        _activeStacks++;
+        _isProcessing = true;
+
         godAura.AddTalentStack();
 
-        if (_stackCoroutine != null)
-            character.StopCoroutine(_stackCoroutine);
-
-        _stackCoroutine = character.StartCoroutine(StacksExpireCoroutine(godAura));
-    }
-
-    private IEnumerator StacksExpireCoroutine(GodAura godAura)
-    {
-        while (_activeStacks > 0)
-        {
-            yield return new WaitForSeconds(_stackDuration);
-
-            if (_activeStacks <= 0) break;
-
-            _activeStacks--;
-            godAura.RemoveTalentStack();
-        }
-
-        godAura.ResetToBaseAura();
-
-        _stackCoroutine = null;
+        _isProcessing = false;
     }
 }

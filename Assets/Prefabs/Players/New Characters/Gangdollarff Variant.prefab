@@ -14340,6 +14340,7 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 8782633265950416607}
+  _godAuraSkill: {fileID: 3127105790014565672}
 --- !u!114 &3677902011510508796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14363,7 +14364,6 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 8782633265950416607}
   _stackChance: 30
-  _stackDuration: 3
 --- !u!114 &308676296038382060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14688,7 +14688,7 @@ MonoBehaviour:
     _school: 2
     _form: 0
     _damageType: 0
-    _rangeType: 0
+    _rangeType: 1
     _skillType: 1
     _whileMoving: 0
     _autoAttack: 0
@@ -15854,6 +15854,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc4102902cb81ad488b9224d66d7a5bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GodAuraSkill
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!114 &8035327156810534685
 MonoBehaviour:
   m_ObjectHideFlags: 0
