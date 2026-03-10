@@ -29,9 +29,9 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
     private SpawnComponent _spawnComponent;
     private Coroutine _overloadCheckRoutine;
 
-    private readonly List<CreatureCarryGun> _swarmUnits = new();
+    private readonly List<MoveCreature> _swarmUnits = new();
 
-    public IReadOnlyList<CreatureCarryGun> SwarmUnits => _swarmUnits;
+    public IReadOnlyList<MoveCreature> SwarmUnits => _swarmUnits;
     public event Action<float> CounterChanged;
 
     private const string DamageBoostSource = "SwarmDamageBoost";
@@ -145,7 +145,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
             var minion = unit.GetComponent<MinionComponent>();
             if (minion != null) totalCost += minion.CostCall;
 
-            if (unit.TryGetComponent(out CreatureCarryGun carryGun)) _swarmUnits.Add(carryGun);
+            if (unit.TryGetComponent(out MoveCreature carryGun)) _swarmUnits.Add(carryGun);
         }
 
         CurrentCounter = Mathf.RoundToInt(totalCost);

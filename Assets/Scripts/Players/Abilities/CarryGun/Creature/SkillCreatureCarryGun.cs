@@ -7,11 +7,10 @@ using UnityEngine.AI;
 public abstract class SkillCreatureCarryGun : Skill
 {
     [Header("Modifier Settings")]
-    [SerializeField] protected CreatureCarryGun _creatureCarryGun;
+    [SerializeField] protected MoveCreature _moveCreature;
 
     [Header("Common Settings")]
     [SerializeField] protected Animator _animator;
-    [SerializeField] protected MoveCreature _moveCreature;
     [SerializeField] protected float _stopDistance = 1.5f;
 
     protected IDamageable _currentTarget;
@@ -97,7 +96,7 @@ public abstract class SkillCreatureCarryGun : Skill
     {
         float speed = 1f;
 
-        if (_creatureCarryGun != null) speed = _creatureCarryGun.SpeedModifier;
+        if (_moveCreature != null) speed = _moveCreature.SpeedModifier;
 
         _animator.speed = speed;
         _animator.SetTrigger(AnimationTrigger);

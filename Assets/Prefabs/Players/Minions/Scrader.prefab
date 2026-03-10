@@ -13849,9 +13849,8 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 3
-  _creatureCarryGun: {fileID: 2019673168310186118}
-  _animator: {fileID: 1215395125402789392}
   _moveCreature: {fileID: 0}
+  _animator: {fileID: 1215395125402789392}
   _stopDistance: 1.5
   minDamage: 1
   maxDamage: 4
@@ -14000,6 +13999,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06f6c1dd94c6aef43baf923029a6cddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CreatureCarryGun
+  _dadSkill: {fileID: 0}
 --- !u!114 &193648750797128802
 MonoBehaviour:
   m_ObjectHideFlags: 0

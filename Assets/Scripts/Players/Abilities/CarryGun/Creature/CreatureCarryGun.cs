@@ -3,31 +3,23 @@ using UnityEngine;
 
 public class CreatureCarryGun : MonoBehaviour
 {
-    private readonly Dictionary<string, float> _speedSources = new();
+    [SerializeField] private Tentacles _dadSkill;
+    [SerializeField] private SkillManager _skillManager;
+    [SerializeField] private Skill _skill;
 
-    public float SpeedModifier { get; private set; } = 1f;
-
-    public void SetSpeedModifier(string sourceId, float multiplier)
+    private void Start()
     {
-        _speedSources[sourceId] = multiplier;
-        RecalculateSpeed();
+        _dadSkill.OnInjectionAdrenaline += SwitchStateSkill;
     }
 
-    public void RemoveSpeedModifier(string sourceId)
+    private void OnDisable()
     {
-        if (_speedSources.ContainsKey(sourceId))
-        {
-            _speedSources.Remove(sourceId);
-            RecalculateSpeed();
-        }
+        _dadSkill.OnInjectionAdrenaline -= SwitchStateSkill;
     }
 
-    private void RecalculateSpeed()
+    private void SwitchStateSkill(bool value)
     {
-        float total = 1f;
-
-        foreach (var value in _speedSources.Values) total *= value;
-
-        SpeedModifier = total;
+        if (value) _skillManager.ActivateSkill(_skill);
+        else _skillManager.DeactivateSkill(_skill);
     }
 }
