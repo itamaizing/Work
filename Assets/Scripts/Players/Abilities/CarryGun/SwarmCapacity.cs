@@ -16,13 +16,34 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) => throw new NotImplementedException();
     #endregion
 
+    private float _baseCounter;
+
     #region Talent
 
     private bool _isBoostSpeedSwarmDamage = false;
-    private bool _isAddCharges = false;
+    private bool _isAddCounter = false;
+
+    public bool IsAddCharges
+    {
+        get => _isAddCounter;
+        set
+        {
+            if (_isAddCounter == value) return;
+
+            _isAddCounter = value;
+
+            if (_isAddCounter) _baseCounter += 1;
+            else
+            {
+                _baseCounter -= 1;
+
+                if (_baseCounter < MaxCounter) _baseCounter = MaxCounter;
+            }
+        }
+    }
 
     public void BoostSpeedSwarmDamage(bool value) => _isBoostSpeedSwarmDamage = value;
-    public void AddCharges(bool value) => _isAddCharges = value;
+    public void AddCounter(bool value) => _isAddCounter = value;
 
     #endregion
 
@@ -43,6 +64,8 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
     private void Start()
     {
         _spawnComponent = Hero.GetComponent<SpawnComponent>();
+
+        _baseCounter = MaxCounter;
 
         if (_spawnComponent != null)
         {
@@ -157,7 +180,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
 
     private void HandleOverload()
     {
-        if (CurrentCounter > MaxCounter)
+        if (CurrentCounter > _baseCounter)
         {
             if (_overloadCheckRoutine == null)
             {
@@ -184,9 +207,9 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
                 .Where(unit => unit != null && !unit.TryGetComponent<MucusAutoGrowth>(out _))
                 .Select(unit => unit.GetComponent<MinionComponent>()).Where(minion => minion != null).Sum(minion => minion.CostCall);
 
-            if (CurrentCounter > MaxCounter)
+            if (CurrentCounter > _baseCounter)
             {
-                float overloadCount = realCost - MaxCounter;
+                float overloadCount = realCost - _baseCounter;
                 float percentDamage = overloadCount * 0.05f;
 
                 foreach (var minion in _spawnComponent.Units)

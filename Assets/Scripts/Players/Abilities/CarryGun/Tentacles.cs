@@ -462,7 +462,6 @@ public class Tentacles : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_summoningSwarm.ChargesSwarm < 0) yield break;
         if (!IsValidVector(_spawnPoint)) yield break;
 
         _summoningSwarm.UseSwarmCharges(1);
