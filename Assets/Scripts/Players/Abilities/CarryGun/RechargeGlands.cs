@@ -75,7 +75,7 @@ public class RechargeGlands : Skill
 
         if (rand <= chance)
         {
-            target.CharacterState.AddStateLogic(States.DestructivePoison, _durationDestructivePoison, 0, Schools.Earth, caster.gameObject, null);
+            target.CharacterState.AddStateLogic(States.DestructivePoison, _durationDestructivePoison, 0, Schools.None, caster.gameObject, null);
             return true;
         }
 
