@@ -22960,7 +22960,7 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   _player: {fileID: 8319872899575431858}
-  _rechargeGlands: {fileID: 0}
+  _rechargeGlands: {fileID: 5181332647309301388}
   _basePsionicEnergy: {fileID: 369466722820063190}
   _attackingPsionicEnergy: {fileID: 1487487552333656207}
   _jumpWithChelicera: {fileID: 7634851756353439263}
@@ -23055,7 +23055,7 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   _player: {fileID: 8319872899575431858}
-  _rechargeGlands: {fileID: 0}
+  _rechargeGlands: {fileID: 5181332647309301388}
   _basePsionicEnergy: {fileID: 369466722820063190}
   _attackingPsionicEnergy: {fileID: 1487487552333656207}
   _jumpWithChelicera: {fileID: 7634851756353439263}

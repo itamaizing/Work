@@ -70,13 +70,12 @@ public class RechargeGlands : Skill
 
         float rand = UnityEngine.Random.Range(0f, 1f);
 
+        _chargesGlands--;
+        CurrentCharge(_chargesGlands);
+
         if (rand <= chance)
         {
-            _chargesGlands--;
-            CurrentCharge(_chargesGlands);
-
-            target.CharacterState.AddState(States.DestructivePoison, _durationDestructivePoison, 0, caster.gameObject, null);
-
+            target.CharacterState.AddStateLogic(States.DestructivePoison, _durationDestructivePoison, 0, Schools.Earth, caster.gameObject, null);
             return true;
         }
 
