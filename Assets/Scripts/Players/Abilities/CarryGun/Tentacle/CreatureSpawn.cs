@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -94,9 +95,37 @@ public class CreatureSpawn : Skill
         {
             int index = (int)spawnType;
             spawnComponent.CmdSpawnAliesPoint(_spawnPoint, Quaternion.identity, minion, index, true, tentacle.Hero);
+
+            CmdSetTentacle(spawnComponent.netIdentity);
         }
 
         yield return null;
+    }
+
+    [Command]
+    private void CmdSetTentacle(NetworkIdentity spawnIdentity)
+    {
+        RpcSetTentacle(spawnIdentity);
+    }
+
+    [ClientRpc]
+    private void RpcSetTentacle(NetworkIdentity spawnIdentity)
+    {
+        if (spawnIdentity == null) return;
+
+        var spawnComponent = spawnIdentity.GetComponent<SpawnComponent>();
+        if (spawnComponent == null) return;
+
+        foreach (var unit in spawnComponent.Units)
+        {
+            if (unit == null) continue;
+
+            var carryGun = unit.GetComponent<CreatureCarryGun>();
+            if (carryGun != null)
+            {
+                carryGun.SetTentacle(tentacle);
+            }
+        }
     }
 
     protected override void ClearData() { }

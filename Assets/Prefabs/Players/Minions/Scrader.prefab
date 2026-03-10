@@ -13644,6 +13644,7 @@ MonoBehaviour:
   _skills:
   - {fileID: 8331210179348555134}
   - {fileID: 8741847699558006757}
+  - {fileID: 6488406720858899140}
   _hero: {fileID: 5830977165762126247}
   _talentSystem: {fileID: 5224625938796084017}
   _skillRenderer: {fileID: 5133789345881183399}
@@ -14052,16 +14053,16 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
-  _abilityInfo: {fileID: 0}
+  _isTalentSpell: 1
+  _isSkillActive: 0
+  _abilityInfo: {fileID: 11400000, guid: 25d75c4213f0d834fba0b9fdcc68ec14, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
     _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
+  _cooldownTime: 14
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0

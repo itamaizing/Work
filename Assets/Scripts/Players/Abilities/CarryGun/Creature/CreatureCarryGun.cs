@@ -35,4 +35,9 @@ public class CreatureCarryGun : MonoBehaviour
             }
          }
     }
+
+    public void SetTentacle(Tentacles tentacle)
+    {
+        _dadSkill = tentacle;
+    }
 }
