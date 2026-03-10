@@ -10,7 +10,20 @@ public class RechargeGlands : Skill
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
-    protected override bool IsCanCast => true;
+
+    protected override bool IsCanCast
+    {
+        get
+        {
+            if (_activeCoroutines >= MaxCharges)
+                return false;
+
+            if (_chargesGlands >= 1 && _activeCoroutines >= 1)
+                return false;
+
+            return base.IsCanCast;
+        }
+    }
 
     private const int ChargesToAdd = 1;
     private const float ChargesToAddTime = 3f;
@@ -23,9 +36,6 @@ public class RechargeGlands : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_chargesGlands >= 1 && _activeCoroutines >= 1) yield break;
-        if (_activeCoroutines >= MaxCharges) yield break;
-
         StartCoroutine(AddChargeAfterDelay());
 
         yield return null;

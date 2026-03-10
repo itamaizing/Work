@@ -36,6 +36,11 @@ public class BasePsionicEnergy : Resource, IDamageable
     public PsionicEnergySkill PsionicEnergySkill { get => psionicEnergySkill; set => psionicEnergySkill = value; }
     public float PsionicaDecayTime { get => _psionicaDecayTime; set => _psionicaDecayTime = value; }
 
+    private void Start()
+    {
+        _psionicaDecayTime = psionicEnergySkill.CooldownTime;
+    }
+
     public override void Initialize(Attribute maxValue, Attribute regenValue, CharacterData data)
     {
         base.Initialize(maxValue, regenValue, data);
@@ -54,7 +59,7 @@ public class BasePsionicEnergy : Resource, IDamageable
     public override void Init(ResourceAttribute resource)
     {
         base.Init(resource);
-        _psionicaDecayTime = psionicEnergySkill.CooldownTime;
+
         if (_player != null)
         {
             _maxValue = _player.AttributeSystem.HPMax.GetValue();
