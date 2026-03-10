@@ -33,10 +33,10 @@ MonoBehaviour:
     attributes:
     - nameToShow: MaxValue
       type: 0
-      value: 100
+      value: 0
     - nameToShow: Regen
       type: 1
-      value: 1
+      value: 0
   _extraResources: []
   _attributes:
     _attributes:

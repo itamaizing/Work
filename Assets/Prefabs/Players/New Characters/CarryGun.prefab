@@ -24193,9 +24193,7 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _additional: []
-  _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 6
+  _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -24254,7 +24252,9 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  durationDestructivePoison: 12
+  _durationDestructivePoison: 12
+  _cooldownEnergy: {fileID: 5998867522025010555}
+  _cooldownEnergyCost: 6
   _rechargeGlands:
   - {fileID: 2133260987182112002}
   - {fileID: 6161074939218866542}

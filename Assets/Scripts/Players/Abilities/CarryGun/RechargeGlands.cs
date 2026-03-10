@@ -5,7 +5,10 @@ using UnityEngine;
 
 public class RechargeGlands : Skill
 {
-    [SerializeField] private float durationDestructivePoison = 12f;
+    [SerializeField] private float _durationDestructivePoison = 12f;
+    [SerializeField] private CooldownEnergy _cooldownEnergy;
+    [SerializeField] private float _cooldownEnergyCost = 6f;
+
     [SerializeField] private List<GameObject> _rechargeGlands;
 
     protected override int AnimTriggerCastDelay => 0;
@@ -15,11 +18,9 @@ public class RechargeGlands : Skill
     {
         get
         {
-            if (_activeCoroutines >= MaxCharges)
-                return false;
-
-            if (_chargesGlands >= 1 && _activeCoroutines >= 1)
-                return false;
+            if (_cooldownEnergy != null && _cooldownEnergy.CurrentValue < _cooldownEnergyCost) return false;
+            if (_activeCoroutines >= MaxCharges) return false;
+            if (_chargesGlands >= 1 && _activeCoroutines >= 1) return false;
 
             return base.IsCanCast;
         }
@@ -36,6 +37,7 @@ public class RechargeGlands : Skill
 
     protected override IEnumerator CastJob()
     {
+        if (_cooldownEnergy != null) _cooldownEnergy.CastCooldownEnergySkill(_cooldownEnergyCost, this);
         StartCoroutine(AddChargeAfterDelay());
 
         yield return null;
@@ -73,7 +75,7 @@ public class RechargeGlands : Skill
             _chargesGlands--;
             CurrentCharge(_chargesGlands);
 
-            target.CharacterState.AddState(States.DestructivePoison, durationDestructivePoison, 0, caster.gameObject, null);
+            target.CharacterState.AddState(States.DestructivePoison, _durationDestructivePoison, 0, caster.gameObject, null);
 
             return true;
         }
