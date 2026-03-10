@@ -11,7 +11,7 @@ public abstract class SkillCreatureCarryGun : Skill
 
     [Header("Common Settings")]
     [SerializeField] protected Animator _animator;
-    [SerializeField] protected float _moveDurationPerUnit = 0.2f;
+    [SerializeField] protected MoveCreature _moveCreature;
     [SerializeField] protected float _stopDistance = 1.5f;
 
     protected IDamageable _currentTarget;
@@ -137,7 +137,7 @@ public abstract class SkillCreatureCarryGun : Skill
         {
             Vector3 segment = path.corners[i];
             float dist = Vector3.Distance(transform.position, segment);
-            float duration = dist * _moveDurationPerUnit;
+            float duration = dist * _moveCreature.MoveDurationPerUnit;
 
             if (dist < SegmentMinDistance) continue;
 

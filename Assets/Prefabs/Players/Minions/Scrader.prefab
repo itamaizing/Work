@@ -794,7 +794,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 1}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -2, y: -2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4033601946040553493
 MonoBehaviour:
@@ -13420,7 +13420,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _stateIcons: {fileID: 447597257756715632}
-  _stateEffects: {fileID: 0}
+  _stateEffects: {fileID: 6170053914584293193}
   invinsible: 0
 --- !u!114 &6170053914584293193
 MonoBehaviour:
@@ -13851,7 +13851,7 @@ MonoBehaviour:
   maxCounter: 3
   _creatureCarryGun: {fileID: 2019673168310186118}
   _animator: {fileID: 1215395125402789392}
-  _moveDurationPerUnit: 1.1
+  _moveCreature: {fileID: 0}
   _stopDistance: 1.5
   minDamage: 1
   maxDamage: 4
@@ -13938,7 +13938,7 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  moveDurationPerUnit: 1.1
+  _moveCreature: {fileID: 0}
   attackDistance: 1.5
   damageDelay: 0.7
   animator: {fileID: 1215395125402789392}
@@ -13971,6 +13971,7 @@ MonoBehaviour:
   IsMoving: 0
   IsSelect: 0
   IsNoRotateAtCursor: 0
+  _moveDurationPerUnit: 0.2
 --- !u!114 &1393425115325331674
 MonoBehaviour:
   m_ObjectHideFlags: 0

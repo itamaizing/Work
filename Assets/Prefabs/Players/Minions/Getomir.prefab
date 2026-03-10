@@ -18871,7 +18871,7 @@ MonoBehaviour:
   maxCounter: 0
   _creatureCarryGun: {fileID: 7679627626532406740}
   _animator: {fileID: 1215395125402789392}
-  _moveDurationPerUnit: 0.2
+  _moveDurationPerUnit: 0.9
   _stopDistance: 1.5
   minDamage: 12
   maxDamage: 18
