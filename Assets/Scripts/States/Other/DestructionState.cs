@@ -3,74 +3,68 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DestructionState : AbstractCharacterState
+public class DestructionState : RefreshingState
 {
     private readonly List<StatusEffect> _effects = new() { StatusEffect.Destruction };
     public override States State => States.Destruction;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
-
+    
     private float _tickInterval = 4f;
     private float _damagePerTick = 6f;
-    //private float _effectivenessIncreasePerTick = 0.1f;
 
+    private float _duration;
     private float _timer;
-    //private float _accumulatedEffectiveness = 1f;
-    //private float _totalDamageInInterval = 0f;
+    private bool _isActive = false;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+        Character personWhoMadeBuff, string skillName)
     {
+        _duration = durationToExit;
         characterState = character;
         base.personWhoMadeBuff = personWhoMadeBuff;
-        duration = durationToExit;
-
-        //_health = character.Character.Health; //??
-        //_accumulatedEffectiveness = 1f;
-        //_totalDamageInInterval = 0f;
-
+        MaxStacksCount = 1;
+        currentStacksCount = 1;
         _timer = _tickInterval;
+        _isActive = true;
 
-		float damageValue = _damagePerTick /* * _accumulatedEffectiveness */;
-
-		CmdDamage(damageValue);
-	}
+        CmdDamage(_damagePerTick);
+    }
 
     public override void UpdateState()
     {
-        if (health == null) return;
+        if (!_isActive) return;
 
-        duration -= Time.deltaTime;
-        _timer -= Time.deltaTime;
-
-        if (_timer <= 0f)
-        {
-            float damageValue = _damagePerTick /* * _accumulatedEffectiveness */ ;
-
-            CmdDamage(damageValue);
-
-            /*_accumulatedEffectiveness += _totalDamageInInterval * _effectivenessIncreasePerTick;
-            _totalDamageInInterval = damageValue;*/
-
-            _timer = _tickInterval;
-        }
-
-        if (duration <= 0)
+        _duration -= Time.deltaTime;
+        if (_duration < 0)
         {
             ExitState();
             return;
+        }
+
+        _timer -= Time.deltaTime;
+        if (_timer <= 0f)
+        {
+            CmdDamage(_damagePerTick);
+            _timer = _tickInterval;
         }
     }
 
     public override void ExitState()
     {
-        characterState.RemoveState(this);
+        _isActive = false;
+        _duration = 0f;
+        _timer = 0f;
+        currentStacksCount = 0;
+        characterState?.RemoveState(this);
+        characterState = null;
     }
 
     public override bool Stack(float time)
     {
-        duration += time;
-        _timer = Mathf.Min(_timer, _tickInterval);
+        _duration += time;
+        RemainingDuration = _duration;
         return false;
     }
 
@@ -84,7 +78,6 @@ public class DestructionState : AbstractCharacterState
             Value = damageValue,
             Type = DamageType.Magical,
         };
-
         health.TryTakeDamage(ref damage, null);
     }
 }

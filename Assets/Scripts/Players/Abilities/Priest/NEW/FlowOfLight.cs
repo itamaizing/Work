@@ -191,7 +191,7 @@ public class FlowOfLight : Skill, IPolaritySwitchable
         Vector3 initialPosition = transform.position;
         float maxMoveDistance = 0.5f;
 
-        while (elapsed < CastStreamDuration)
+        while (elapsed < _channelComponent.CastDuration)
         {
             if (Targeting.GetTarget().Character == null || !Targeting.GetTarget().Character.gameObject.activeSelf ||
                 Input.GetMouseButtonDown(1) ||

@@ -14,17 +14,13 @@ public class SparkOfLight : Skill,IPolaritySwitchable
     [SerializeField] private float _damageAmount = 2f;
     [SerializeField] private float _castTime = 0.8f;
     [SerializeField] private float _range = 4f;
-
-	//override TryPayCost and remove this two things
-	[SerializeField] private List<SkillEnergyCost> _manaCostHeal;
-    [SerializeField] private List<SkillEnergyCost> _manaCostDamage;
+    
     [SerializeField] private AbilityInfo lightInfo;
 
     [Header("Alternative Mode Settings")]
     [SerializeField] private float _altRange = 6f;
     [SerializeField] private float _altBuffDuration = 5f;
     [SerializeField] private float _altDamageAmount = 2f;
-    [SerializeField] private List<SkillEnergyCost> _altManaCostDamage;
     [SerializeField] private FlashOfLight _flashOfLight;
     [SerializeField] private AbilityInfo darkInfo;
 
@@ -166,46 +162,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         ClearData();
     }
 
-    protected override bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
-    {
-        if (IsHaveResourceOnSkill)
-        {
-            if (isLightMode)
-            {
-                if (IsAllyTarget(Targeting.GetTarget()?.Character))
-                {
-                    skillEnergyCosts = _manaCostHeal;
-                }
-                else
-                {
-                    skillEnergyCosts = _manaCostDamage;
-                }
-            }
-            else
-            {
-                skillEnergyCosts = _altManaCostDamage;
-
-            }
-
-            foreach (var skillCost in skillEnergyCosts)
-            {
-                var resource = _hero.Resources[skillCost.resourceType];
-                resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
-            }
-
-            if (startCooldown)
-                IncreaseSetCooldown(CooldownTime);
-
-            if (!_useChargesAsComboPart) TryUseCharge();
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-	private bool IsTargetBelowHealthThreshold(Character target)
+    private bool IsTargetBelowHealthThreshold(Character target)
     {
         var healthComponent = target.GetComponent<Health>();
         return healthComponent != null && healthComponent.CurrentValue <= healthComponent.MaxValue * LowHealthThreshold;
@@ -233,24 +190,17 @@ public class SparkOfLight : Skill,IPolaritySwitchable
             CmdStateRestorationOrDestruction(targetState,isLightMode ? States.Restoration : States.Destruction, durationToApply);
         }
     }
-    
-    //[Command]
+
     private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) => stateComponent.AddState(states, duration, 1f, gameObject, Name);
-
-    //[TargetRpc]
-    private void TargetRpcOnEndPointReached(GameObject target)
-    {
-        if (isLightMode) HandleDefaultMode(target.GetComponent<Character>());
-        else HandleAlternativeMode(target.GetComponent<Character>());
-    }
-
+    
     private void HandleDefaultMode(Character target)
     {
+        if (target == null) return;
+
         if (IsAllyTarget(target) || target == _hero)
         {
             Heal(target);
             ApplySpiritEnergyBuff(target);
-            //ApplyHealthBuff(_target);
         }
         if (IsEnemyTarget(target))
         {
@@ -260,6 +210,8 @@ public class SparkOfLight : Skill,IPolaritySwitchable
 
     private void HandleAlternativeMode(Character target)
     {
+        if (target == null) return;
+
         if (IsEnemyTarget(target))
         {
             ApplyDamageInAltMode(target);
@@ -279,22 +231,18 @@ public class SparkOfLight : Skill,IPolaritySwitchable
 
         float doublingBonus = (_healingBonusStacks > 0) ? Mathf.Pow(2f, _healingBonusStacks) : 0f;
 
-        float bonusHealFromSpiritEnergy = 0f;
-        if (_spiritEnergyTalent) bonusHealFromSpiritEnergy = GetSpiritEnergyBonus(target);
+        float bonusHealFromSpiritEnergy = _spiritEnergyTalent ? GetSpiritEnergyBonus(target) : 0f;
 
         var heal = new Heal
         {
             Value = _healAmount + doublingBonus + bonusHealFromSpiritEnergy,
             DamageableSkill = this
         };
-        CmdApplyHeal(heal, target.gameObject, this, Name);
+        
+        ApplyHeal(heal, target.gameObject, this, Name);
 
         TryApplyExtraState(target);
-
-        if (_isDestructionFillingTalent)
-        {
-            TryApplyDestructionFilling(target);
-        }
+        if (_isDestructionFillingTalent) TryApplyDestructionFilling(target);
     }
 
     private float GetSpiritEnergyBonus(Character target)
@@ -308,20 +256,17 @@ public class SparkOfLight : Skill,IPolaritySwitchable
 
     private void ApplyDamageInAltMode(Character target)
     {
-        float damageAmount = _altDamageAmount;
+        float damageAmount = isLightMode ? _damageAmount : _altDamageAmount;
+
         if (_lowHealthTalentActive && IsTargetBelowHealthThreshold(target))
-        {
             damageAmount *= BonusDamageMultiplier;
-        }
 
         Damage damage = CreateDamage(damageAmount);
-        CmdApplyDamage(damage, target.gameObject);
+
+        ApplyDamage(damage, target.gameObject);
+
         TryApplyExtraState(target);
-        
-        if (_isDestructionFillingTalent)
-        {
-            TryApplyDestructionFilling(target);
-        }
+        if (_isDestructionFillingTalent) TryApplyDestructionFilling(target);
     }
 
     private Damage CreateDamage(float amount)
@@ -350,7 +295,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
 
     private void ApplyDefenseDebuff(Character target)
     {
-        AddBuff(States.DefenseReduction, DefenseDebuffDuration, DefenseReductionPercentage, target.gameObject, Name);
+        //AddBuff(States.DefenseReduction, DefenseDebuffDuration, DefenseReductionPercentage, target.gameObject, Name);
     }
 
     public void SparkOfLightCast()
@@ -405,9 +350,10 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         Vector3 targetPosition = target.transform.position + Vector3.up;
         Vector3 direction = (targetPosition - spawnPoint.transform.position).normalized;
 
-        LightSparkProjectile projectile = Instantiate(isLight ? lightSparkProjectile : darkSparkProjectile, spawnPoint.transform.position, Quaternion.LookRotation(direction));
-
-        //float attackDelay = _castTime;
+        LightSparkProjectile projectile = Instantiate(
+            isLight ? lightSparkProjectile : darkSparkProjectile,
+            spawnPoint.transform.position,
+            Quaternion.LookRotation(direction));
 
         projectile.Init(target);
 
@@ -419,10 +365,12 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         RpcPlayShotSound();
     }
     
-    private void OnEndPointReached(LightSparkProjectile arg0, GameObject target)
+    private void OnEndPointReached(LightSparkProjectile projectile, GameObject target)
     {
-        arg0.EndPointReached -= OnEndPointReached;
-        TargetRpcOnEndPointReached(target);
+        projectile.EndPointReached -= OnEndPointReached;
+
+        if (isLightMode) HandleDefaultMode(target.GetComponent<Character>());
+        else HandleAlternativeMode(target.GetComponent<Character>());
     }
 
 

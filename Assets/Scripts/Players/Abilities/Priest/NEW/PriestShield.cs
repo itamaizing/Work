@@ -249,7 +249,7 @@ public class PriestShield : Skill
         // _targetCharacter = null;
         TargetInfo targetInfo = new();
 
-        while (Targeting.GetTarget()?.Character == null)
+        while (Targeting.GetTempTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
@@ -259,7 +259,7 @@ public class PriestShield : Skill
 
                 if (Targeting.GetTempTarget().Character is Character character)
                 {
-                    if (Targeting.GetTempTarget().Character != null && (Targeting.GetTempTarget(character).Character && isLightMode) || (Targeting.GetTempTarget(character).Character && !isLightMode))
+                    if (Targeting.GetTempTarget().Character != null && !IsAllyTarget(character))
                     {
                         Targeting.ClearTempTarget();
                     }
