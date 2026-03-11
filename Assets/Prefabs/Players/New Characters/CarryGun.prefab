@@ -23218,7 +23218,7 @@ MonoBehaviour:
     m_Bits: 256
   _obstacle:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   _channelComponent:
     _castDuration: 0
     _tickInterval: 0
@@ -23240,7 +23240,7 @@ MonoBehaviour:
   _chargeCooldown: 0
   _areaComponent:
     _radius: 4
-    _area: 3
+    _area: 0.5
     _castLength: 0
     _castWidth: 0
   _autoAttackDelay: 0
