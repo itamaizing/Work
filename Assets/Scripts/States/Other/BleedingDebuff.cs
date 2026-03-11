@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,7 +16,7 @@ public class BleedingDebuff : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Debug.Log("Entering KnockdownDebuff State");
-        _characterState = character;
+        characterState = character;
 
         //effects.Add(StatusEffect.Others);
 
@@ -28,7 +28,7 @@ public class BleedingDebuff : AbstractCharacterState
     {
         Debug.Log("Exiting KnockdownDebuff State");
 
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -60,6 +60,6 @@ public class BleedingDebuff : AbstractCharacterState
     private void DealDamage()
     {
         Debug.LogWarning("Bleeding .DealDamage()");
-        //_characterState.GetComponent<HealthComponent>().CmdTryTakeDamage(Random.Range(1, 3), DamageType.Magical, AttackRangeType.MeleeAttack);
+        //characterState.GetComponent<HealthComponent>().CmdTryTakeDamage(Random.Range(1, 3), Info.DamageType.Magical, Info.AttackRangeType.MeleeAttack);
     }
 }

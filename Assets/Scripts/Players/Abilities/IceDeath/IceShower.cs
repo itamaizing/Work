@@ -1,6 +1,5 @@
-using System;
+﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -27,19 +26,8 @@ public class IceShower : Skill
 
 	private void Start()
 	{
-		for (int i = 0; i < _playerLinks.Resources.Count; i++)
-		{
-			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)_playerLinks.Resources[i];
-			}
-			/*if (_playerLinks.Resources[i].Type == ResourceType.Rune)
-			{
-				_rune = (RuneComponent)_playerLinks.Resources[i];
-			}*/
-		}
-		
-	}
+        //_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
+    }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -48,13 +36,16 @@ public class IceShower : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		while (float.IsPositiveInfinity(_targetPoint.x))
+		if (_energy == null)
+			_energy = (Energy)Hero.Resources[ResourceType.Energy];
+
+        while (float.IsPositiveInfinity(_targetPoint.x))
 		{
 			if (GetMouseButton && IsCanCast)
 			{
-				Vector3 clickedPoint = GetMousePoint();
+				Vector3 clickedPoint = Targeting.GetMousePoint();
 
-				if (IsPointInRadius(Radius, clickedPoint))
+				if (Targeting.IsPointInRadius(AreaInfo.Radius, clickedPoint))
 				{
 					_targetPoint = clickedPoint;
 				}
@@ -71,7 +62,7 @@ public class IceShower : Skill
 		//DrawDamageZone(_targetPoint);
 
 		//ApplyDamageToEnemiesInZone();
-		//StopDamageZone();
+		//HideAOEIndicator();
 		Shoot();
 		yield return null;
 	}
@@ -80,16 +71,10 @@ public class IceShower : Skill
 	{
 		//Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		//float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
-		if (_combo.MakeHit(null, AbilityForm.Magic, 1, 0, 0))
+		if (_combo.MakeHit(null, Info.AbilityForm, 1, 0, 0, _combo.GetMultipliedSpeed() / 100))
 		{
 			Debug.LogError("some talents i guess in ice cloud");
 			//_playerLinks.RuneComponent.IceCloudBonus();
-		}
-
-		if (!_combo.SeriesCompliteCompo)
-		{
-			Buff.AttackSpeed.ReductionPercentage(_combo.GetMultipliedSpeed() / 100);
-			Buff.CastSpeed.IncreasePercentage(_combo.GetMultipliedSpeed() / 100);
 		}
 
 		_targetPoint.y += 5;
@@ -131,7 +116,7 @@ public class IceShower : Skill
 			{
 				worldPos = hit.point;
 			}
-			Collider[] hitColliders = Physics.OverlapSphere(worldPos, Area, TargetsLayers);
+			Collider[] hitColliders = Physics.OverlapSphere(worldPos, AreaInfo.Area, Targeting.Layer);
 
 			foreach (var hitCollider in hitColliders)
 			{
@@ -139,7 +124,7 @@ public class IceShower : Skill
 				if (enemy != null)
 				{
 					_damageValue = 10 + _energy.CurrentValue / 4;
-					ApplyDamage(_damageValue, DamageType.Magical, enemy);
+					ApplyDamage(_damageValue, Info.DamageType.Magical, enemy);
 
 					var targetState = enemy.CharacterState;
 					if (targetState != null)
@@ -174,13 +159,13 @@ public class IceShower : Skill
 		return baseDamage;
 	}
 
-	private void ApplyDamage(float damage, DamageType damageType, Character target)
+	private void ApplyDamage(float damage, Info.DamageType damageType, Character target)
 	{
 		Damage _damage = new Damage
 		{
 			Value = damage,
-			Type = DamageType.Physical,
-			PhysicAttackType = AttackRangeType.RangeAttack,
+			Type = Info.DamageType.Physical,
+			PhysicAttackType = Info.AttackRangeType.RangeAttack,
 		};
 		Debug.Log("DAMAGE");
 		CmdApplyDamage(_damage, target.gameObject);
@@ -213,3 +198,4 @@ public class IceShower : Skill
 		_frozwenTalent = value;
 	}
 }
+

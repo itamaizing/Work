@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
@@ -34,8 +34,7 @@ public class ChainLightning : MoveSkill
 
     private bool CheckCanCast()
     {
-        return
-            Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+        return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
     }
 
     public void AnimCastLight()
@@ -50,7 +49,7 @@ public class ChainLightning : MoveSkill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
         
         if (!IsCanCast)
         {
@@ -60,11 +59,11 @@ public class ChainLightning : MoveSkill
 
     protected override IEnumerator CastJob()
     {
-        if (GetTargetCharacter() != null)
+        if (Targeting.GetTarget()?.Character != null)
         {
-            Attack(GetTargetCharacter());
+            Attack(Targeting.GetTarget()?.Character);
             yield return new WaitForSecondsRealtime(0.3f);
-            var temps = Physics.OverlapSphere(GetTargetCharacter().Position, Radius, _targetsLayers);
+            var temps = Physics.OverlapSphere(Targeting.GetTarget().Character.Position, AreaInfo.Radius, _targetsLayers);
             
             for (int i = 0; i < temps.Length; i++)
             {
@@ -80,26 +79,27 @@ public class ChainLightning : MoveSkill
 
     protected override void ClearData()
     {
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
-        while (GetTempTarget() == null)
+
+        while (Targeting.GetTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
-                Vector3 clickPoint = GetMousePoint();
+                Vector3 clickPoint = Targeting.GetMousePoint();
                 
-                FindTarget(_clickRadius, clickPoint, canTargetHimself: false);
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: false);
 
-                if (GetTempTargetCharacter() is Character character)
+                if (Targeting.GetTempTarget()?.Character is Character character)
                 {
-                    if (GetTempTargetCharacter() != null && !IsEnemyTarget(character))
+                    if (Targeting.GetTempTarget()?.Character != null && !IsEnemyTarget(character))
                     {
-                        ClearTempTarget();
+                        Targeting.ClearTempTarget();
                     }
                     else
                     {
@@ -110,9 +110,9 @@ public class ChainLightning : MoveSkill
             }
             yield return null;
         }
-        SetTarget(GetTempTarget());
-        ClearTempTarget();
-        targetInfo.AddTarget(GetTargetCharacter());
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
+        Targeting.ClearTempTarget();
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 
@@ -121,14 +121,14 @@ public class ChainLightning : MoveSkill
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(Damage),
-            Type = DamageType,
-            PhysicAttackType = AttackRangeType,
+            Type = Info.DamageType,
+            PhysicAttackType = Info.AttackRangeType,
         };
         CmdApplyDamage(damage, target.gameObject);
         
         if (UnityEngine.Random.Range(1, 100) <= _debuffChance)
         {
-            CmdAddState(GetTargetCharacter());
+            CmdAddState(Targeting.GetTarget()?.Character);
         }
 
         CmdCreateParticle(target.Position);

@@ -1,4 +1,4 @@
-
+﻿
 using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,7 +17,6 @@ public class RegeneratingPoisonState : AbstractCharacterState
     private float _timeBetweenHeal;
     private float _startTimeBetweenHeal = 1.0f;
 
-    private float _duration;
     private float _baseDuration;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing };
@@ -31,15 +30,13 @@ public class RegeneratingPoisonState : AbstractCharacterState
     {
         MaxStacksCount = _maxStacks;
 
-        _characterState = character;
         _playerWithTalent = personWhoMadeBuff;
 
-        _duration = durationToExit;
         _baseDuration = durationToExit;
 
-        if (CurrentStacksCount < MaxStacksCount)
+        if (currentStacksCount < MaxStacksCount)
         {
-            CurrentStacksCount++;
+            currentStacksCount++;
         }
     }
 
@@ -51,32 +48,26 @@ public class RegeneratingPoisonState : AbstractCharacterState
             MakeHeal();
             _timeBetweenHeal = _startTimeBetweenHeal;
         }
-
-        _duration -= Time.deltaTime;
-        if (_duration < 0)
-        {
-            ExitState();
-        }
     }
 
     public override void ExitState()
     {
         ResetValues();
 
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        if (CurrentStacksCount < MaxStacksCount)
+        if (currentStacksCount < MaxStacksCount)
         {
-            CurrentStacksCount++;
-            _duration = _baseDuration;
+            currentStacksCount++;
+            duration = _baseDuration;
             return true;
         }
         else
         {
-            _duration = _baseDuration;
+            duration = _baseDuration;
             return true;
         }
     }
@@ -84,7 +75,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
     [Server]
     private void MakeHeal()
     {
-        _endHealingValue = CurrentStacksCount * _baseHealingValue;
+        _endHealingValue = currentStacksCount * _baseHealingValue;
 
         Heal heal = new Heal
         {
@@ -92,15 +83,15 @@ public class RegeneratingPoisonState : AbstractCharacterState
             DamageableSkill = null,
         };
 
-        _characterState.Character.Health.Heal(ref heal, null);
-        //_characterState.Character.DamageTracker.AddHeal(heal);
+        characterState.Character.Health.Heal(ref heal, null);
+        //characterState.Character.DamageTracker.AddHeal(heal);
     }
 
     private void ResetValues()
     {
-        CurrentStacksCount = 0;
+        currentStacksCount = 0;
         _endHealingValue = 0;
         _baseDuration = 0;
-        _duration = 0;
+        duration = 0;
     }
 }

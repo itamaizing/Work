@@ -1,8 +1,7 @@
-using Mirror;
+ï»¿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -35,9 +34,9 @@ public class IceSword : CloseCombatSkill
 
 	private bool IsCanCastCheck()
 	{
-		if (GetTargetCharacter() == null) return false;
+		if (Targeting.GetTarget()?.Character == null) return false;
 
-		if (Vector3.Distance(GetTargetCharacter().transform.position, transform.position) > Radius)
+		if (Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) > AreaInfo.Radius)
 		{
 			return false;
 		}
@@ -46,37 +45,34 @@ public class IceSword : CloseCombatSkill
 
 	private void Start()
 	{
-		for (int i = 0; i < _playerLinks.Resources.Count; i++)
-		{
-			if (_playerLinks.Resources[i].Type == ResourceType.Energy)
-			{
-				_energy = (Energy)_playerLinks.Resources[i];
-			}
-			if (_playerLinks.Resources[i].Type == ResourceType.Rune)
-			{
-				_rune = (RuneComponent)_playerLinks.Resources[i];
-			}
-		}
+        _audioSource = GetComponent<AudioSource>();
 
-		_audioSource = GetComponent<AudioSource>();
+        //_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
+        //_rune = (RuneComponent)_playerLinks.Resources[ResourceType.Rune];
 	}
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+        Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 
 	protected override IEnumerator CastJob()
 	{
-		_seriesOfStrikes.MakeHit(GetTargetCharacter(), AbilityForm.Magic, 0, 10, 0);
-		if (GetTargetCharacter() == _oldtarget)
+		if (_energy == null)
+			_energy = (Energy)Hero.Resources[ResourceType.Energy];
+
+		if (_rune == null)
+			_rune = (RuneComponent)Hero.Resources[ResourceType.Rune];
+
+        _seriesOfStrikes.MakeHit(Targeting.GetTarget()?.Character, Info.AbilityForm, 0, 10, 0);
+		if (Targeting.GetTarget()?.Character == _oldtarget)
 		{
 			_hitInTheRow++;
 		}
 		else
 		{
 			_hitInTheRow = 1;
-			_oldtarget = GetTargetCharacter();
+			_oldtarget = Targeting.GetTarget()?.Character;
 		}
 		if (_hitInTheRow > 2)
 		{
@@ -84,14 +80,14 @@ public class IceSword : CloseCombatSkill
 			_hitInTheRow = 0;
 		}
 		ApplyDamage();
-		CmdAdd(GetTargetCharacter().gameObject);
+		CmdAdd(Targeting.GetTarget()?.Character.gameObject);
 		yield return null;
 	}
 
 	protected override void ClearData()
 	{
-		ClearTarget();
-		ClearTempTarget();
+		Targeting.ClearTarget();
+		Targeting.ClearTempTarget();
 		//_target = null;
 	}
 
@@ -116,12 +112,12 @@ public class IceSword : CloseCombatSkill
 		};
 		Debug.Log("Damage " + totalDamage);
 
-		if (_critDmg && GetTargetCharacter().CharacterState.CheckForState(States.Frozen))
+		if (_critDmg && Targeting.GetTarget().Character.CharacterState.CheckForState(States.Frozen))
 		{
 			damage2.Value *= (Random.Range(0, 100) < 15) ? 1.8f : 1.1f;
 		}
 
-		CmdApplyDamage(damage2, GetTargetCharacter().gameObject);
+		CmdApplyDamage(damage2, Targeting.GetTarget()?.Character.gameObject);
 
 		_energy.SumDamageMake(damage2.Value);
 		_rune.SumDamageMake(damage2.Value);
@@ -177,14 +173,14 @@ public class IceSword : CloseCombatSkill
     {
 		if (!IsHaveResourceOnSkill)
 		{
-			return false;			// ïàòòåðí Guard Clause - èçáàâëÿåìñÿ îò ëèøíåé âëîæåííîñòè
+			return false;			// Ð¿Ð°Ñ‚Ñ‚ÐµÑ€Ð½ Guard Clause - Ð¸Ð·Ð±Ð°Ð²Ð»ÑÐµÐ¼ÑÑ Ð¾Ñ‚ Ð»Ð¸ÑˆÐ½ÐµÐ¹ Ð²Ð»Ð¾Ð¶ÐµÐ½Ð½Ð¾ÑÑ‚Ð¸
 		}
 
-        _additionalDamage = 0;      // áåç ýòîãî, åñëè ñïîñîáíîñòü òðàòèò ðîâíî 40 ðåñóðñà - èñïîëüçóåòñÿ äîï óðîí, ðàññ÷èòàíûé â ïðîøëûé ðàç
+        _additionalDamage = 0;      // Ð±ÐµÐ· ÑÑ‚Ð¾Ð³Ð¾, ÐµÑÐ»Ð¸ ÑÐ¿Ð¾ÑÐ¾Ð±Ð½Ð¾ÑÑ‚ÑŒ Ñ‚Ñ€Ð°Ñ‚Ð¸Ñ‚ Ñ€Ð¾Ð²Ð½Ð¾ 40 Ñ€ÐµÑÑƒÑ€ÑÐ° - Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐµÑ‚ÑÑ Ð´Ð¾Ð¿ ÑƒÑ€Ð¾Ð½, Ñ€Ð°ÑÑÑ‡Ð¸Ñ‚Ð°Ð½Ñ‹Ð¹ Ð² Ð¿Ñ€Ð¾ÑˆÐ»Ñ‹Ð¹ Ñ€Ð°Ð·
 
         foreach (var skillCost in skillEnergyCosts)
         {
-			var baseCost = skillCost.resourceCost;  // óæå âçÿëè skillCost, ïî÷åìó íèæå ìàã. ÷èñëà?
+			var baseCost = skillCost.resourceCost;  // ÑƒÐ¶Ðµ Ð²Ð·ÑÐ»Ð¸ skillCost, Ð¿Ð¾Ñ‡ÐµÐ¼Ñƒ Ð½Ð¸Ð¶Ðµ Ð¼Ð°Ð³. Ñ‡Ð¸ÑÐ»Ð°?
 
             if (_energy.CurrentValue > baseCost)
 			{

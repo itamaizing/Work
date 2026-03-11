@@ -6,6 +6,7 @@ using UnityEngine.AI;
 public class MinionComponent : Character
 {
     [SerializeField] protected int _expForDieKill = 5;
+    [SerializeField] private float _costCall;
     [SerializeField] protected NavMeshAgent _navMeshAgent;
 
     protected HeroComponent _myHeroParent;
@@ -14,6 +15,7 @@ public class MinionComponent : Character
     public MinionCamp MyCamp;
     public int ExpForDieKill { get => _expForDieKill; }
     public bool IsIntercepted { get => _isIntercepted; }
+    public float CostCall => _costCall;
 
     public event Action<MinionComponent> Destroyed;
     public event Action<MinionComponent> Intercepted;

@@ -6,14 +6,12 @@ public class HeatedGlandsState : AbstractCharacterState
 {
     private int _maxStacks = 7;
 
-    private float _duration;
     private float _baseDuration;
 
     private float _baseManaRegenIncrease = 0.3f;
     private float _allManaRegenIncrease;
     private float _baseManaRegen;
 
-    private Character _player;
     private Resource _playerMana;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Strengthening };
@@ -28,49 +26,42 @@ public class HeatedGlandsState : AbstractCharacterState
 
         MaxStacksCount = _maxStacks;
 
-        _characterState = character;
-        _player = personWhoMadeBuff;
-        _playerMana = _player.TryGetResource(ResourceType.Mana);
+        _playerMana = personWhoMadeBuff.TryGetResource(ResourceType.Mana);
 
-        _duration = durationToExit;
-        _baseDuration = _duration;
+        _baseDuration = durationToExit;
 
-        _baseManaRegen = _player.TryGetResource(ResourceType.Mana).RegenerationValue;
+        _baseManaRegen = personWhoMadeBuff.TryGetResource(ResourceType.Mana).RegenerationValue;
 
-        if (CurrentStacksCount < MaxStacksCount)
+        if (currentStacksCount < MaxStacksCount)
         {
-            CurrentStacksCount++;
+            currentStacksCount++;
             IncreasingManaRegeneration();
         }
     }
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_duration < 0)
-        {
-            ExitState();
-        }
+
     }
 
     public override void ExitState()
     {
-        _player.TryGetResource(ResourceType.Mana).RegenerationValue = _baseManaRegen;
+        personWhoMadeBuff.TryGetResource(ResourceType.Mana).RegenerationValue = _baseManaRegen;
         
         _allManaRegenIncrease = 0;
 
-        CurrentStacksCount = 0;
+        currentStacksCount = 0;
 
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        if (CurrentStacksCount < MaxStacksCount)
+        if (currentStacksCount < MaxStacksCount)
         {
-            CurrentStacksCount++;
+            currentStacksCount++;
 
-            _duration = _baseDuration;
+            duration = _baseDuration;
 
             IncreasingManaRegeneration();
 
@@ -78,7 +69,7 @@ public class HeatedGlandsState : AbstractCharacterState
         }
         else
         {
-            _duration = _baseDuration;
+            duration = _baseDuration;
 
             return true;
         }
@@ -91,8 +82,7 @@ public class HeatedGlandsState : AbstractCharacterState
         Debug.Log("HeatedGlands / IncreasingManaRegen / _allManaRegenIncrease = " + _allManaRegenIncrease);
         float increasingManaRegen = _baseManaRegen * _allManaRegenIncrease;
         Debug.Log("HeatedGlands / IncreasingManaRegen / increasingManaRegen = " + increasingManaRegen);
-        _player.TryGetResource(ResourceType.Mana).RegenerationValue = increasingManaRegen;
-        Debug.Log("HeatedGlands / IncreasingManaRegen / player current ManaRegen = " + _player.TryGetResource(ResourceType.Mana).RegenerationValue);
-
+        personWhoMadeBuff.TryGetResource(ResourceType.Mana).RegenerationValue = increasingManaRegen;
+        Debug.Log("HeatedGlands / IncreasingManaRegen / player current ManaRegen = " + personWhoMadeBuff.TryGetResource(ResourceType.Mana).RegenerationValue);
     }
 }

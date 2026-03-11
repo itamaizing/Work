@@ -41,7 +41,6 @@ public class FeelingOfContinuation : Talent
 
         _reductionTimeRegenMana = _baseTimeRegenMana / _reductionTimeManaRegenMultiplier;
         player.TryGetResource(ResourceType.Mana).RegenerationDelay = _reductionTimeRegenMana;
-
         _manaRegenerationCoroutine = StartCoroutine(ManaRegenerationJob(player, _remainingManaValue));
     }
 

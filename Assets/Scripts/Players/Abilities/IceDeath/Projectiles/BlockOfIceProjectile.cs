@@ -1,4 +1,4 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
@@ -51,7 +51,7 @@ public class BlockOfIceProjectile : Projectiles
 				}
 				//_energy.SumDamageMake(_curDamage);
 				//_rune.SumDamageMake(curDamage);
-				TargetRpcDamgeMake(_curDamage);
+				TargetRpcDamageMake(_curDamage);
 
 				target.Health.TryTakeDamage(ref _damage, _skill);
 ;

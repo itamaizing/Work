@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,7 +38,7 @@ public class TestSpawn : Skill
         {
             if (GetMouseButton)
             {
-                _position = GetMousePoint();
+                _position = Targeting.GetMousePoint();
             }
             yield return null;
         }

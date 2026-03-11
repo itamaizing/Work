@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +6,7 @@ public class PartialBlindness : AbstractCharacterState
 {
     private float _baseDuration;
     private float _duration;
-
+    
     #region Const
     private const int MaxStacks = 3;
     private const float BaseMissChancePerStack = 10f;
@@ -27,8 +27,7 @@ public class PartialBlindness : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
-        _personWhoMadeBuff = personWhoMadeBuff;
+        characterState = character;
 
         _baseDuration = durationToExit;
         _duration = _baseDuration;
@@ -36,7 +35,7 @@ public class PartialBlindness : AbstractCharacterState
         //_talentPartialBlindnessActive = skillName;
 
         MaxStacksCount = MaxStacks;
-        CurrentStacksCount = 1;
+        currentStacksCount = 1;
 
         _character = character.GetComponent<Character>();
         _character.Abilities.OnSkillPreparedSuccessfully += HandleSkillPrepared;
@@ -45,8 +44,8 @@ public class PartialBlindness : AbstractCharacterState
     public override void ExitState()
     {
         _character.Abilities.OnSkillPreparedSuccessfully -= HandleSkillPrepared;
-        _characterState.RemoveState(this);
-        CurrentStacksCount = 0;
+        characterState.RemoveState(this);
+        currentStacksCount = 0;
     }
 
     public override void UpdateState()
@@ -64,7 +63,7 @@ public class PartialBlindness : AbstractCharacterState
     {
         _duration = _baseDuration;
 
-        if (CurrentStacksCount < MaxStacksCount) CurrentStacksCount++;
+        if (CurrentStacksCount < MaxStacksCount) currentStacksCount++;
 
         return true;
     }
@@ -72,15 +71,15 @@ public class PartialBlindness : AbstractCharacterState
     private void HandleSkillPrepared(Skill skill)
     {
         if (skill == null) return;
-        if (skill.AbilityForm != AbilityForm.Physical) return;
-        if (skill.Hero != _characterState.Character) return;
+        if (skill.Info.AbilityForm != AbilityForm.Physical) return;
+        if (skill.Hero != characterState.Character) return;
 
         _effectivenessLoss = Mathf.Max(MinEffectiveness, (_baseDuration - _duration) * EffectivenessDecayPerSecond); //* CurrentStacksCount)?
         float totalMissChance = CurrentStacksCount * BaseMissChancePerStack - _effectivenessLoss;
 
         if (UnityEngine.Random.Range(0f, 100f) < totalMissChance)
         {
-            skill.CmdCancelActiveSkill();
+            skill.CmdForceFailCastJobOnce();
         }
     }
 }

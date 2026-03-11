@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -21,18 +21,18 @@ public class ElvenSkill : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _duration = durationToExit;
-        _characterState = character;
-        _personWhoMadeBuff = personWhoMadeBuff;
+        characterState = character;
+        base.personWhoMadeBuff = personWhoMadeBuff;
         _move = character.GetComponent<MoveComponent>();
-        _skillManager = _characterState.Character.Abilities;
+        _skillManager = characterState.Character.Abilities;
 
-        _move.CanMoveState = true;
+        _move.SetCanMoveState(true);
 
         if (_skillManager != null)
         {
             foreach (var skill in _skillManager.Abilities)
             {
-                if (skill.DamageType == DamageType.Physical || skill.DamageType == DamageType.Both)
+                if (skill.Info.DamageType == DamageType.Physical || skill.Info.DamageType == DamageType.Both)
                 {
                     skill.CastStarted += OnPhysCastStarted;
                 }
@@ -53,13 +53,13 @@ public class ElvenSkill : AbstractCharacterState
 
     public override void ExitState()
     {
-        if (_move) _move.CanMoveState = false;
+        if (_move) _move.SetCanMoveState(false);
 
         if (_skillManager != null)
         {
             foreach (var skill in _skillManager.Abilities)
             {
-                if (skill.DamageType == DamageType.Physical || skill.DamageType == DamageType.Both)
+                if (skill.Info.DamageType == DamageType.Physical || skill.Info.DamageType == DamageType.Both)
                 {
                     skill.CastStarted -= OnPhysCastStarted;
                 }
@@ -70,8 +70,8 @@ public class ElvenSkill : AbstractCharacterState
 
         if (_elvenSkillEffect != null) _elvenSkillEffect.SetActive(false);
 
-        _characterState.StateIcons.RemoveItemByState(State);
-        _characterState.RemoveState(this);
+        characterState.StateIcons.RemoveItemByState(State);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -88,12 +88,12 @@ public class ElvenSkill : AbstractCharacterState
 
     private void OnPhysCastStarted()  
     {
-        if (_move) _move.CanMoveState = true;
+        if (_move) _move.SetCanMoveState(true);
     }
 
     private void NotPhysCastStarted()
     {
-        if (_move) _move.CanMoveState = false;
+        if (_move) _move.SetCanMoveState(false);
     }
 }
 

@@ -1,8 +1,7 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
 public class IcePuddle : Skill
@@ -19,6 +18,7 @@ public class IcePuddle : Skill
     [Header("Ability settings")]
     [SerializeField] private SeriesOfStrikes _seriesOfStrikes;
     [SerializeField] private float _timeToDestroy = 3f;
+    [SerializeField] private float _maxLifePuddleTime = 7f;
     [SerializeField] private MoveComponent _move;
     [SerializeField] private AudioClip _audioClip;
 
@@ -50,6 +50,16 @@ public class IcePuddle : Skill
     // private float _timer = 2;
     // private float _time = 0;
 
+    private void OnEnable()
+    {
+        OnSkillCanceled += ClearData;
+    }
+
+    private void OnDisable()
+    {
+        OnSkillCanceled -= ClearData;
+    }
+
     protected override bool IsCanCast
     {
         get
@@ -65,9 +75,7 @@ public class IcePuddle : Skill
     {
         _audioSource = GetComponent<AudioSource>();
 
-        for (int i = 0; i < Hero.Resources.Count; i++)
-            if (Hero.Resources[i].Type == ResourceType.Energy)
-                _energy = (Energy)Hero.Resources[i];
+        //_energy = (Energy)Hero.Resources[ResourceType.Energy];
     }
 
     private void UpdatePreviewAtMouse()
@@ -116,6 +124,8 @@ public class IcePuddle : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        if (_energy == null)
+            _energy = (Energy)Hero.Resources[ResourceType.Energy]; ;
         if (preViewPuddlePrefab != null) _preViewPuddle = Instantiate(preViewPuddlePrefab);
 
 
@@ -135,7 +145,7 @@ public class IcePuddle : Skill
 
 
                 float dist = Vector3.Distance(_hero.transform.position, _placedPosition);
-                if (dist > Radius)
+                if (dist > AreaInfo.Radius)
                 {
                     yield return null;
                     continue;
@@ -169,7 +179,7 @@ public class IcePuddle : Skill
 
     protected override IEnumerator CastJob()
     {
-        _lastHit = _seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0, 0);
+        _lastHit = _seriesOfStrikes.MakeHit(null, Info.AbilityForm, 1, 0, 0, _seriesOfStrikes.GetMultipliedSpeed() / 100);
 
         Shoot();
         yield return null;
@@ -183,7 +193,13 @@ public class IcePuddle : Skill
         _placedPosition = Vector3.positiveInfinity;
         _placedAngleDeg = 0f;
 
-        if (_preViewPuddle) _preViewPuddle.SetActive(false);
+        //if (_preViewPuddle) _preViewPuddle.SetActive(false); ?
+
+        if (_preViewPuddle)
+        {
+            Destroy(_preViewPuddle);
+            _preViewPuddle = null;
+        }
 
         // _enabled = false;
         // _secondPoind = false;
@@ -201,45 +217,43 @@ public class IcePuddle : Skill
         int timeToAdd = (int)_energy.CurrentValue / 5;
         if (timeToAdd > 4) timeToAdd = 4;
 
-        _timeToDestroy += timeToAdd;
         _energy.CmdUse(timeToAdd * 5);
 
-        if (!_seriesOfStrikes.SeriesCompliteCompo)
-        {
-            Buff.AttackSpeed.ReductionPercentage(_seriesOfStrikes.GetMultipliedSpeed() / 100);
-            Buff.CastSpeed.IncreasePercentage(_seriesOfStrikes.GetMultipliedSpeed() / 100);
-        }
+        if (_lastHit) CmdCreateProjecttileBig(_placedAngleDeg, LifeTimePuddle(timeToAdd), _placedPosition, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);
+        else CmdCreateProjecttile(_placedAngleDeg, LifeTimePuddle(timeToAdd), _placedPosition, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);
+    }
 
-        if (_lastHit) CmdCreateProjecttileBig(_placedAngleDeg, _timeToDestroy, _placedPosition, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);
-        else CmdCreateProjecttile(_placedAngleDeg, _timeToDestroy, _placedPosition, _lastHit && _talentPuddleSize, _talentEvadeDadBoost, _talentFrostingFrozen);
+    private float LifeTimePuddle(float timeToAdd)
+    {
+       return Mathf.Min(_maxLifePuddleTime, _timeToDestroy + timeToAdd);
     }
 
     [Command]
-    private void CmdCreateProjecttileBig(float angle, float manaValue, Vector3 position, bool lastHit, bool talentEvade, bool talentFrostingFrozen)
+    private void CmdCreateProjecttileBig(float angle, float timeToDestroy, Vector3 position, bool lastHit, bool talentEvade, bool talentFrostingFrozen)
     {
         IcePuddleObject projectile = Instantiate(_puddleBig, position, Quaternion.Euler(-90, -angle, 0));
         SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
-        projectile.Init(Hero, manaValue, lastHit, this);
+        projectile.Init(Hero, timeToDestroy, lastHit, this);
         projectile.SetTalents(talentEvade, talentFrostingFrozen);
 
         NetworkServer.Spawn(projectile.gameObject);
 
         RpcPlayShotSound();
-        RpcInit(projectile.gameObject, manaValue, lastHit);
+        RpcInit(projectile.gameObject, timeToDestroy, lastHit);
     }
 
     [Command]
-    private void CmdCreateProjecttile(float angle, float manaValue, Vector3 position, bool lastHit, bool talentEvade, bool talentFrostingFrozen)
+    private void CmdCreateProjecttile(float angle, float timeToDestroy, Vector3 position, bool lastHit, bool talentEvade, bool talentFrostingFrozen)
     {
         IcePuddleObject projectile = Instantiate(_puddle, position, Quaternion.Euler(-90, -angle, 0));
         SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
-        projectile.Init(Hero, manaValue, lastHit, this);
+        projectile.Init(Hero, timeToDestroy, lastHit, this);
         projectile.SetTalents(talentEvade, talentFrostingFrozen);
 
         NetworkServer.Spawn(projectile.gameObject);
 
         RpcPlayShotSound();
-        RpcInit(projectile.gameObject, manaValue, lastHit);
+        RpcInit(projectile.gameObject, timeToDestroy, lastHit);
     }
 
     [ClientRpc]
@@ -262,22 +276,21 @@ public class IcePuddle : Skill
     public void SetTalentPuddleSize(bool active) => _talentPuddleSize = active;
     public void SetTalentFrostingFrozen(bool value) => _talentFrostingFrozen = value;
     public void SetTalentEvadeDadBoost(bool value) => _talentEvadeDadBoost = value;
-    public void IceDeathInIcePudleTalentActive(bool value, string text)
+    public void IceDeathInIcePudleTalentActive(bool value)
     {
         _iceDeathInIcePudleTalent = value;
-        AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
     }
 
     public void IcePuddleCast() => AnimStartCastCoroutine();
     public void IcePuddleEnd()
     {
         AnimCastEnded();
-        if (_move) _move.CanMove = true;
+        if (_move) _move.SetCanMove(true);
     }
 
     public void StopMoveIcePuddle()
     {
-        if (_move) _move.CanMove = false;
+        if (_move) _move.SetCanMove(false);
     }
 
     /*

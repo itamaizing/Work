@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,6 +20,7 @@ public class CreeperInvisible : Skill
     [Header("Ability")]
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private ColdBlood _coldBlood;
+    [SerializeField] private float _cooldown = 6f;
 
     [Header("Invisible Abilities")]
     [SerializeField] private List<Skill> _altAbilities = new();
@@ -31,9 +32,11 @@ public class CreeperInvisible : Skill
     private SpitPoison _spitPoison;
     private PoisonBall _poisonBall;
 
+    private Coroutine _checkEnemiesRoutine;
+    private Coroutine _stopDrawRadiusRoutine;
+
     private float _previousHealth;
     private float _currentHealth;
-    private float _distanceWithoutEnemies = 6f;
 
     private bool _isInvisible = false;
     private bool _isPlayerSeen = true;
@@ -41,10 +44,7 @@ public class CreeperInvisible : Skill
     private bool _isReadyToThreeHitForPreparingForFightTalent = false;
     private bool _isCanExitInvisible = false;
     private bool _isCreeperStrikeIsHit;
-    private bool _isEnemy;
 
-    private Coroutine _checkEnemiesCoroutine;
-    private Coroutine _exitFromInvisibleCoroutine;
     public bool IsReadyToThreeHitForPreparingForFightTalent 
     { 
         get => _isReadyToThreeHitForPreparingForFightTalent; 
@@ -55,9 +55,46 @@ public class CreeperInvisible : Skill
 
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
-    protected override bool IsCanCast => _isPlayerSeen == false && _isDamagedPlayer == false;
+    protected override bool IsCanCast => true;
 
     #endregion
+
+    private void OnEnable()
+    {
+        if (_player != null && _player.Health != null)
+        {
+            _player.Health.DamageTaken += OnPlayerDamaged;
+        }
+
+        InputHandler.OnCast += OnCastKeyPressed;
+    }
+
+    private void OnDisable()
+    {
+        if (_player != null && _player.Health != null)
+        {
+            _player.Health.DamageTaken -= OnPlayerDamaged;
+        }
+
+        if (_checkEnemiesRoutine != null)
+        {
+            StopCoroutine(CheckEnemiesInRadiusRoutine());
+            _checkEnemiesRoutine = null;
+        }
+
+        InputHandler.OnCast -= OnCastKeyPressed;
+
+        if (_stopDrawRadiusRoutine != null)
+        {
+            StopCoroutine(StopDrawRadiusAfterDelay());
+            _checkEnemiesRoutine = null;
+        }
+    }
+
+     private void Start()
+    {
+        if (_checkEnemiesRoutine == null) _checkEnemiesRoutine = StartCoroutine(CheckEnemiesInRadiusRoutine());
+    }
 
     #region PrepareAndCastJob
 
@@ -67,35 +104,97 @@ public class CreeperInvisible : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        Debug.LogError("DataError");
+    }
+
+    private void OnCastKeyPressed(int index)
+    {
+        if (!IsSkillSelected(index)) return;
+
+        if (Disactive)
+        {
+            SkillRender.DrawRadius(AreaInfo.Radius);
+
+            if (_stopDrawRadiusRoutine != null)
+            {
+                StopCoroutine(StopDrawRadiusAfterDelay());
+                _checkEnemiesRoutine = null;
+            }
+
+            _stopDrawRadiusRoutine = StartCoroutine(StopDrawRadiusAfterDelay());
+        }
+    }
+
+    private bool IsSkillSelected(int index)
+    {
+        SkillManager manager = _player.GetComponent<SkillManager>();
+        if (manager == null) return false;
+
+        var selected = manager.SelectedSkills;
+        return selected.Length > index && selected[index] == this;
+    }
+
+    private IEnumerator StopDrawRadiusAfterDelay()
+    {
+        yield return new WaitForSeconds(0.2f);
+        SkillRender.StopDrawRadius();
+    }
+
+    private IEnumerator CheckEnemiesInRadiusRoutine()
+    {
+        WaitForSeconds delay = new WaitForSeconds(0.1f);
+
+        while (true)
+        {
+            if (!IsCooldowned)
+            {
+                Disactive = true;
+                yield return delay;
+                continue;
+            }
+
+            if (_isInvisible)
+            {
+                Disactive = false;
+                yield return delay;
+                continue;
+            }
+
+            bool hasEnemies = false;
+
+            Collider[] hitEnemies = Physics.OverlapSphere(_player.transform.position, AreaInfo.Radius, _targetsLayers);
+
+            foreach (Collider enemy in hitEnemies)
+            {
+                if (enemy.TryGetComponent(out Character character) &&
+                    (_targetsLayers.value & (1 << character.gameObject.layer)) != 0)
+                {
+                    hasEnemies = true;
+                    break;
+                }
+            }
+
+            Disactive = hasEnemies;
+
+            yield return delay;
+        }
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         ResetAltAbility();
-
-        switch (_isInvisible)
-        {
-            case false:
-                if (_checkEnemiesCoroutine == null)
-                {
-                    yield return _checkEnemiesCoroutine = StartCoroutine(CheckEnemiesAround());
-                }
-                break;
-
-            case true:
-
-                _exitFromInvisibleCoroutine = StartCoroutine(ExitFromInvisible());
-
-                break;
-
-            default:
-        }
-        Debug.LogError("DataError");
+        yield break;
     }
 
     protected override IEnumerator CastJob()
     {
+        if (_player.CharacterState.CheckForState(States.CreeperInvisible))
+        {
+            _isCreeperStrikeIsHit = _creeperStrike.IsHit;
+            CmdRemoveInvisible(_player.gameObject, _isCreeperStrikeIsHit);
+        }
+
+        else CmdApplyInvis(_player.gameObject);
+
         if (_isInvisible && _transparentPoisons.Data.IsOpen)
         {
             if (_altAbilities != null)
@@ -119,27 +218,27 @@ public class CreeperInvisible : Skill
             CmdTransparentPoisonsIncreaseManaCots();
         }
 
-        if (_desireToHide.Data.IsOpen && _desireToHide.IsCanApplyInvisible)
-        {
-            Debug.Log("CreeperInvisible / desireToHide");
+        //if (_desireToHide.Data.IsOpen && _desireToHide.IsCanApplyInvisible)
+        //{
+        //    Debug.Log("CreeperInvisible / desireToHide");
 
-            CmdApplyInvis(_player.gameObject);
-            yield break;
-        }
-        else if (_continuationAmbush.Data.IsOpen && _continuationAmbush.IsCanApplyInvisible)
-        {
-            Debug.Log("CreeperInvisible / continuationAmbushTalent");
-            CmdApplyInvis(_player.gameObject);
-            yield break;
-        }
-        else if (!_isInvisible)
-        {
-            yield return new WaitForSeconds(5f);
+        //    CmdApplyInvis(_player.gameObject);
+        //    yield break;
+        //}
+        //else if (_continuationAmbush.Data.IsOpen && _continuationAmbush.IsCanApplyInvisible)
+        //{
+        //    Debug.Log("CreeperInvisible / continuationAmbushTalent");
+        //    CmdApplyInvis(_player.gameObject);
+        //    yield break;
+        //}
+        //else if (!_isInvisible)
+        //{
+        //    yield return new WaitForSeconds(5f);
 
-            Debug.Log("CreeperInvisible / else if (invisible)");
+        //    Debug.Log("CreeperInvisible / else if (invisible)");
 
-            EnteringInvisible();
-        }
+        //    EnteringInvisible();
+        //}
         yield return null;
     }
 
@@ -166,25 +265,14 @@ public class CreeperInvisible : Skill
         CmdRemoveInvisible(_player.gameObject, _isCreeperStrikeIsHit);
     }
 
+    private void OnPlayerDamaged(Damage damage, Skill skill)
+    {
+        IncreaseSetCooldown(_cooldown);
+        if (!_isInvisible) return;
+        CmdRemoveInvisible(_player.gameObject, _isCreeperStrikeIsHit);
+    }
+
     #endregion
-
-    private void Update()
-    {
-        CheckCurrentHealthPlayer();
-    }
-
-    private void CheckCurrentHealthPlayer()
-    {
-        _currentHealth = _player.Health.CurrentValue;
-
-        if (_currentHealth < _previousHealth)
-        {
-            if (isServer == false)
-                ExitingInvisible();
-        }
-
-        _previousHealth = _currentHealth;
-    }
 
     private void ResetAltAbility()
     {
@@ -195,73 +283,20 @@ public class CreeperInvisible : Skill
         }
     }
 
-    #region Coroutines
-
-    private IEnumerator CheckEnemiesAround()
-    {
-        while (_isPlayerSeen)
-        {
-            _isEnemy = false;
-
-            Collider[] hitEnemies = Physics.OverlapSphere(_player.transform.position, _distanceWithoutEnemies, _targetsLayers);
-
-            foreach (Collider enemy in hitEnemies)
-            {
-                if (enemy != null)
-                {
-                    _isEnemy = true;
-                    break;
-                }
-            }
-
-            if (!_isEnemy)
-            {
-                _isPlayerSeen = false;
-            }
-            else
-            {
-                _isPlayerSeen = true;
-            }
-
-            hitEnemies = null;
-
-            yield return new WaitForSeconds(0.1f);
-        }
-    }
-
-    private IEnumerator ExitFromInvisible()
-    {
-        while (_isCanExitInvisible == false)
-        {
-            if (Input.GetMouseButton(2))
-            {
-                _isCanExitInvisible = true;
-
-                if (_isInvisible && _isCanExitInvisible)
-                {
-                    CmdRemoveInvisible(_player.gameObject, _isCreeperStrikeIsHit);
-                }
-
-                yield break;
-            }
-            yield return null;
-        }
-    }
-
-    #endregion
-
     #region CommandMethods
 
     [Command]
     private void CmdApplyInvis(GameObject player)
     {
         _isInvisible = true;
+        _isPlayerSeen = false;
+        _isDamagedPlayer = false;
 
         RpcApplyInvis();
 
         RpcMakeTransparentMaterialsPlayer(player);
 
-        _player.CharacterState.AddState(States.CreeperInvisible, 0, 0, _player.gameObject, Name);
+        _player.CharacterState.AddState(States.CreeperInvisible, 999, 0, _player.gameObject, Name);
     }
 
     [Command]
@@ -337,7 +372,7 @@ public class CreeperInvisible : Skill
     {
         var playerLayer = player.layer;
 
-        player.GetComponent<Character>().IsInvisible = true;
+        player.GetComponent<Character>().IsInvisible = false;
 
         SkinnedMeshRenderer playerRenderer = player.GetComponentInChildren<SkinnedMeshRenderer>();
         Dictionary<Material, Color> playerMaterial = new Dictionary<Material, Color>();
@@ -383,12 +418,17 @@ public class CreeperInvisible : Skill
     private void RpcApplyInvis()
     {
         _isInvisible = true;
+        _isPlayerSeen = false;
+        _isDamagedPlayer = false;
+
+        _player.SelectedCircle?.SetAllProjectorsEnabled(false);
     }
 
     [ClientRpc]
     private void RpcRemoveInvisible(bool creeperStrikeIsHit)
     {
         _isInvisible = false;
+        _player.SelectedCircle?.SetAllProjectorsEnabled(true);
 
         if (_assasinPoison != null && _assasinPoison.Data.IsOpen)
             _assasinPoison.RemoveAllCharges();
@@ -408,22 +448,6 @@ public class CreeperInvisible : Skill
 
         if (_coldBlood.ColdBloodTalent != null && _coldBlood.ColdBloodTalent.Data.IsOpen)
             _coldBlood.ReducingAbilityCooldown();
-        
-        
-        #region CancleCoroutines
-
-        if (_checkEnemiesCoroutine != null)
-        {
-            StopCoroutine(CheckEnemiesAround());
-            _checkEnemiesCoroutine = null;
-        }
-        if (_exitFromInvisibleCoroutine != null)
-        {
-            StopCoroutine(ExitFromInvisible());
-            _exitFromInvisibleCoroutine = null;
-        }
-
-        #endregion
 
         _isPlayerSeen = true;
         _isDamagedPlayer = false;

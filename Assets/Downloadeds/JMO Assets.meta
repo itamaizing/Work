@@ -1,6 +1,10 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Downloadeds/JMO Assets.meta
 guid: 161ea6fa03b3e6a4099daf639e9e3752
 folderAsset: yes
+========
+guid: 71f15bb453d8e6e4f9039aa95889bf02
+>>>>>>>> PriestessSkillTargetFix:Assets/_Recovery/0.unity.meta
 DefaultImporter:
   externalObjects: {}
   userData: 

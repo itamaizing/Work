@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Animations/Animations/Terrifying/Shot/ShotAstral.anim.meta
 guid: 621377b7fd925b0498ba7a2652dce3c7
+========
+guid: 1493b169cbeed2e4dac0b241b368d921
+>>>>>>>> PriestessSkillTargetFix:Assets/Animations/Animations/Gangdollarff/Immortality.anim.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 7400000

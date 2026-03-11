@@ -66,4 +66,12 @@ public class SelectedCircle : MonoBehaviour
             mat.color = value;
         }
     }
+
+    public void SetAllProjectorsEnabled(bool enabled)
+    {
+        if (_selectProjector != null) _selectProjector.enabled = enabled;
+        if (_selectProjectorHero != null) _selectProjectorHero.enabled = enabled;
+        if (_selectProjectorTargetVariant != null) _selectProjectorTargetVariant.enabled = enabled;
+        if (_stroke != null) _stroke.enabled = enabled;
+    }
 }

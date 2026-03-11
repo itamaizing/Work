@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Animations/Animations/Terrifying/PullingHealthMid.anim.meta
 guid: 53593929bc889744c94e135d85dca317
+========
+guid: 01421a51d7903d742975e04e6c4bf132
+>>>>>>>> PriestessSkillTargetFix:Assets/Animations/Animations/CarryGun/SpellCarryGun.anim.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 7400000

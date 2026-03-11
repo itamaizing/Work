@@ -18,7 +18,7 @@ public class FocusingOnReflexesState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
+        characterState = character;
         _duration = durationToExit;
         _character = character.Character;
 
@@ -27,9 +27,10 @@ public class FocusingOnReflexesState : AbstractCharacterState
         _originalEvadeMelee = health.EvadeMeleeDamage;
         _originalEvadeRange = health.EvadeRangeDamage;
 
-        health.EvadeMeleeDamage = 100f;
-        health.EvadeRangeDamage = 60f;
-        health.DamageTaken += OnDamageTaken;
+        health.EvadeMeleeDamage = 60f;
+        health.EvadeRangeDamage = 100f;
+
+        health.Evaded += OnEvaded;
     }
 
     public override void UpdateState()
@@ -56,14 +57,15 @@ public class FocusingOnReflexesState : AbstractCharacterState
 
             health.EvadeMeleeDamage = _originalEvadeMelee;
             health.EvadeRangeDamage = _originalEvadeRange;
-            health.DamageTaken -= OnDamageTaken;
+            health.Evaded -= OnEvaded;
         }
 
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
-    private void OnDamageTaken(Damage damage, Skill skill)
+    private void OnEvaded()
     {
         ExitState();
+        Debug.Log("Exit for FocusingOnReflexesState");
     }
 }

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class EmeraldSkinState : AbstractCharacterState
@@ -22,15 +22,15 @@ public class EmeraldSkinState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
+        characterState = character;
         _buffDuration = durationToExit;
         _isTalentActive = damageToExit > 0;
         
         ApplyBuff();
         
-        foreach (var skill in _characterState.Character.Abilities.Abilities)
+        foreach (var skill in characterState.Character.Abilities.Abilities)
         {
-            if (skill.School == Schools.Light && _isTalentActive)
+            if (skill.Info.School == Schools.Light && _isTalentActive)
             {
                 skill.CastEnded += AddTimeByLightMagic;
             }
@@ -61,9 +61,9 @@ public class EmeraldSkinState : AbstractCharacterState
 
     public override void ExitState()
     {
-        foreach (var skill in _characterState.Character.Abilities.Abilities)
+        foreach (var skill in characterState.Character.Abilities.Abilities)
         {
-            if (skill.School == Schools.Light && _isTalentActive)
+            if (skill.Info.School == Schools.Light && _isTalentActive)
             {
                 skill.CastEnded -= AddTimeByLightMagic;
             }
@@ -82,7 +82,7 @@ public class EmeraldSkinState : AbstractCharacterState
 
         Debug.Log("Emerald Skin state Exit");
         RemoveBuff();
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -96,7 +96,7 @@ public class EmeraldSkinState : AbstractCharacterState
         Debug.Log("Add time by flash - " + _flashBuffDuration);
         _buffDuration += _flashBuffDuration;
 
-        _characterState.StateIcons?.ActivateIco(State, _buffDuration, 1, false);
+        characterState.StateIcons?.ActivateIco(State, _buffDuration, 1, false);
     }
 
     private void AddTimeByShield()
@@ -104,7 +104,7 @@ public class EmeraldSkinState : AbstractCharacterState
         Debug.Log("Add time by shield - " + _shieldBuffDuration);
         _buffDuration += _shieldBuffDuration;
 
-        _characterState.StateIcons?.ActivateIco(State, _buffDuration, 1, false);
+        characterState.StateIcons?.ActivateIco(State, _buffDuration, 1, false);
     }
     
     private void AddTimeByLightMagic()
@@ -112,21 +112,21 @@ public class EmeraldSkinState : AbstractCharacterState
         Debug.Log("Add time by light - " + _lightMagicBuffDuration);
         _buffDuration += _lightMagicBuffDuration;
 
-        _characterState.StateIcons?.ActivateIco(State, _buffDuration, 1, false);
+        characterState.StateIcons?.ActivateIco(State, _buffDuration, 1, false);
     }
 
     private void ApplyBuff()
     {
-        _physDefenseIncrease = _defenseIncrease - _characterState.Character.Health.DefPhysDamage;
-        _magDefenseIncrease = _defenseIncrease - _characterState.Character.Health.DefMagDamage;
+        _physDefenseIncrease = _defenseIncrease - characterState.Character.Health.DefPhysDamage;
+        _magDefenseIncrease = _defenseIncrease - characterState.Character.Health.DefMagDamage;
         
-        _characterState.Character.Health.SetPhysicDef(_characterState.Character.Health.DefPhysDamage + _physDefenseIncrease);
-        _characterState.Character.Health.SetMagicDef(_characterState.Character.Health.DefMagDamage + _magDefenseIncrease);
+        characterState.Character.Health.SetPhysicDef(characterState.Character.Health.DefPhysDamage + _physDefenseIncrease);
+        characterState.Character.Health.SetMagicDef(characterState.Character.Health.DefMagDamage + _magDefenseIncrease);
     }
 
     private void RemoveBuff()
     {
-        _characterState.Character.Health.SetPhysicDef(_characterState.Character.Health.DefPhysDamage - _physDefenseIncrease);
-        _characterState.Character.Health.SetMagicDef(_characterState.Character.Health.DefMagDamage - _magDefenseIncrease);
+        characterState.Character.Health.SetPhysicDef(characterState.Character.Health.DefPhysDamage - _physDefenseIncrease);
+        characterState.Character.Health.SetMagicDef(characterState.Character.Health.DefMagDamage - _magDefenseIncrease);
     }
 }

@@ -1,4 +1,4 @@
-using Mirror;
+Ôªøusing Mirror;
 using UnityEngine;
 using System.Collections;
 using System;
@@ -94,14 +94,17 @@ public class TerrifyingElfAura : NetworkBehaviour
         if (hero == null) return;
         if (_heroMana != null) return;
 
-        _heroMana = hero.TryGetResource(ResourceType.Mana) as Mana;
+        //_heroMana = hero.TryGetResource(ResourceType.Mana, out _heroMana) as Mana;
+        Resource res;
+        hero.TryGetResource(ResourceType.Mana, out res);
+        _heroMana = res as Mana;
     }
 
     private void OnManaChanged(float oldValue, float newValue)
     {
         if (newValue > 0f) return;
 
-        Debug.Log("Ã‡Ì˚ ÌÂÚ");
+        Debug.Log("–ú–∞–Ω—ã –Ω–µ—Ç");
         ApplyElvenSkill();
         StartCoroutine(ReSubscribeAfterDelay());
     }
@@ -129,7 +132,7 @@ public class TerrifyingElfAura : NetworkBehaviour
     {
         if (!calmnessTalent || currentSkill == null) return;
 
-        if (currentSkill.AbilityForm == AbilityForm.Spell || currentSkill.AbilityForm == AbilityForm.Magic)
+        if (currentSkill.Info.AbilityForm == AbilityForm.Spell || currentSkill.Info.AbilityForm == AbilityForm.Magic)
         {
             var character = currentSkill.Hero;
             if (character != null && character.CharacterState != null)
@@ -159,30 +162,30 @@ public class TerrifyingElfAura : NetworkBehaviour
     public void FireWorshipperTalentActive(bool value)
     {
         fireWorshipperTalent = value;
-        if (!fireWorshipperTalent) reconnaissanceFire.Area = _baseAreaReconnaissanceFire;
-        else reconnaissanceFire.Area += 1;
+        if (!fireWorshipperTalent) reconnaissanceFire.AreaInfo.Area = _baseAreaReconnaissanceFire;
+        else reconnaissanceFire.AreaInfo.Area += 1;
     }
 
     private void ApplyFireWorshipperTalent()
     {
         if (!fireWorshipperTalent || currentSkill == null) return;
 
-        if (currentSkill.DamageType != DamageType.Physical)
+        if (currentSkill.Info.DamageType != DamageType.Physical)
             return;
 
         var character = currentSkill.Hero;
-        var targets = currentSkill.GetCloserTargetsCharacter(currentSkill.transform.position, currentSkill.Radius);
+        var targets = currentSkill.Targeting.GetClosestTargets(currentSkill.transform.position, currentSkill.AreaInfo.Radius);
         if (targets == null || targets.Count == 0) return;
 
         foreach (var target in targets)
         {
-            if (target != null && target.CharacterState.CheckForState(States.HuntressMark))
+            if (target != null && target.Character.CharacterState.CheckForState(States.HuntressMark))
             {
                 bool isCalmnessChance = UnityEngine.Random.Range(0f, 100f) <= calmnessChance;
 
                 if (isCalmnessChance)
                 {
-                    character.CharacterState.CmdAddState(States.Calmness, durationCalmess, 0f, target.gameObject, currentSkill.Name);
+                    character.CharacterState.CmdAddState(States.Calmness, durationCalmess, 0f, target.Character.gameObject, currentSkill.Name);
 
                     if (treeRadiusCalmessTalent)
                     {

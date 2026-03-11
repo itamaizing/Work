@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,13 +27,13 @@ public class StunMagicPassiveSkill : Skill, IPassiveSkill
     public void DamageDarkLightStun(bool value, string text)
     {
         _isDamageDarkLightStun = value;
-        AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
+        //AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
     }
 
     public void DamageDarkHealLightAddHealth(bool value, string text)
     {
         _isDamageDarkHealLightAddHealth = value;
-        AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
+        //AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
     }
     public void FillingDestruction(bool value) => _isFillingDestruction = value;
     #endregion
@@ -89,7 +89,7 @@ public class StunMagicPassiveSkill : Skill, IPassiveSkill
     {
         if (!_isDamageDarkHealLightAddHealth) return;
         if (heal.DamageableSkill == null) return;
-        if (heal.DamageableSkill.School != Schools.Light) return;
+        if (heal.DamageableSkill.Info.School != Schools.Light) return;
 
         float healAmount = heal.Value * 0.1f;
 

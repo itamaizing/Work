@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,7 +28,6 @@ public class PoisonCloudState : AbstractCharacterState
     private float _timeBetweenApplyEmpathicPoisons;
     private float _startTimeBetweenApplyEmpathicPoisons = 2f;
 
-    private float _duration;
     private float _baseDuration;
     private float _durationEmpathicPoisons = 5f;
 
@@ -43,10 +42,8 @@ public class PoisonCloudState : AbstractCharacterState
     {
         MaxStacksCount = _maxStacks;
 
-        _characterState = character;
         _player = personWhoMadeBuff;
 
-        _duration = durationToExit;
         _baseDuration = durationToExit;
 
         _timeBetweenAttack = _startTimeBetweenAttack;
@@ -62,7 +59,7 @@ public class PoisonCloudState : AbstractCharacterState
             SearchTalent();
         }
 
-        if (CurrentStacksCount < MaxStacksCount)
+        if (currentStacksCount < MaxStacksCount)
         {
             AddStacks();
         }
@@ -76,16 +73,9 @@ public class PoisonCloudState : AbstractCharacterState
 
         if (_timeBetweenAttack <= 0)
         {
-            RpcSearchingEnemies(_enemiesLayer, _characterState.gameObject);
+            RpcSearchingEnemies(_enemiesLayer, characterState.gameObject);
 
             _timeBetweenAttack = _startTimeBetweenAttack;
-        }
-
-        _duration -= Time.deltaTime;
-
-        if (_duration < 0)
-        {
-            ExitState();
         }
     }
 
@@ -93,22 +83,22 @@ public class PoisonCloudState : AbstractCharacterState
     {
         ResetValues();
 
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        if (CurrentStacksCount < MaxStacksCount)
+        if (currentStacksCount < MaxStacksCount)
         {
             AddStacks(); 
             return true;
         }
         else
         {
-            _duration = _baseDuration;
+            duration = _baseDuration;
             if (_cloudExplosion != null)
             {
-                _cloudExplosion.CurrentStacksPoisonCloud(CurrentStacksCount, _radiusCloud);
+                _cloudExplosion.CurrentStacksPoisonCloud(currentStacksCount, _radiusCloud);
             }
             return true;
         }
@@ -116,13 +106,13 @@ public class PoisonCloudState : AbstractCharacterState
 
     public void AddStacks()
     {
-        if (CurrentStacksCount < MaxStacksCount)
+        if (currentStacksCount < MaxStacksCount)
         {
-            CurrentStacksCount++;
-            _duration = _baseDuration;
+            currentStacksCount++;
+            duration = _baseDuration;
             if (_cloudExplosion != null)
             {
-                _cloudExplosion.CurrentStacksPoisonCloud(CurrentStacksCount, _radiusCloud);
+                _cloudExplosion.CurrentStacksPoisonCloud(currentStacksCount, _radiusCloud);
             }
         }
     }
@@ -140,7 +130,7 @@ public class PoisonCloudState : AbstractCharacterState
             }
             if (ability is CreeperStrike creeperStrike)
             {
-                _enemiesLayer = creeperStrike.TargetsLayers;
+                _enemiesLayer = creeperStrike.Targeting.Layer;
             }
             
         }
@@ -195,8 +185,9 @@ public class PoisonCloudState : AbstractCharacterState
         if (target != null)
         {
             var targetHealth = target.GetComponent<Character>();
+            if (targetHealth == null || targetHealth.Health == null) return;
 
-            _increasedDamage = _baseDamage * CurrentStacksCount;
+            _increasedDamage = _baseDamage * currentStacksCount;
             _endDamage = targetHealth.Health.MaxValue * _increasedDamage;
 
             Damage damage = new Damage()
@@ -221,9 +212,9 @@ public class PoisonCloudState : AbstractCharacterState
 
     private void ResetValues()
     {
-        CurrentStacksCount = 0;
+        currentStacksCount = 0;
         _baseDuration = 0;
-        _duration = 0;
+        duration = 0;
         _endDamage = 0;
         _increasedDamage = 0;
         _baseDamage = 0.005f;

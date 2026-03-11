@@ -1,18 +1,37 @@
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class UIMenuMainPlayerInfoPanel : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private TMP_Text _bottleText;
+
+    public static UIMenuMainPlayerInfoPanel Instance;
+
+    private void Awake()
     {
-        
+        Instance = this;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        
+        if (BottleUserManager.Instance != null)
+        {
+            BottleUserManager.Instance.OnBottlesChanged += SetBottleInfo;
+            SetBottleInfo(BottleUserManager.Instance.GetCurrentBottles());
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (BottleUserManager.Instance != null)
+        {
+            BottleUserManager.Instance.OnBottlesChanged -= SetBottleInfo;
+        }
+    }
+
+    public void SetBottleInfo(int count)
+    {
+        Debug.Log("SetBottleInfo");
+        _bottleText.text = $"{count}";
     }
 }

@@ -11,14 +11,14 @@ public class FireFlash : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Null;
     public override List<StatusEffect> Effects => _effects;
 
-    private int _ñhance => CurrentStacksCount * 10;
+    private int _Ñhance => CurrentStacksCount * 10;
 
     private float _timer;
     private float _remaining;
     private bool _infinite;
 
     public override float RemainingDuration => _infinite ? 9999 : _remaining;
-    public int Chance { get => _ñhance; }
+    public int Chance { get => _Ñhance; }
 
     public FireFlash() => MaxStacksCount = 3;
 
@@ -26,7 +26,7 @@ public class FireFlash : AbstractCharacterState
     {
         _timer = 0f;
         _infinite = false;
-        _remaining = Mathf.Clamp(CurrentStacksCount, 1, 9999);
+        _remaining = Mathf.Clamp(currentStacksCount, 1, 9999);
     }
 
     public void SwitchToInfinite()
@@ -38,10 +38,10 @@ public class FireFlash : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
-        _characterState = character;
+        characterState = character;
         duration = durationToExit;
         _timer = 0f;
-        CurrentStacksCount = 1;
+        currentStacksCount = 1;
     }
 
     public override void UpdateState()
@@ -54,25 +54,25 @@ public class FireFlash : AbstractCharacterState
         {
             _timer = 0f;
 
-            if (CurrentStacksCount > 0)
+            if (currentStacksCount > 0)
             {
-                CurrentStacksCount--;
-                _characterState.StateIcons.RemoveIconCount();
+                currentStacksCount--;
+                characterState.StateIcons.RemoveIconCount();
             }
 
             _remaining--;
-            if (CurrentStacksCount <= 0) ExitState();
+            if (currentStacksCount <= 0) ExitState();
         }
     }
 
-    public override void ExitState() => _characterState.RemoveState(this);
+    public override void ExitState() => characterState.RemoveState(this);
 
     public override bool Stack(float time)
     {
-        if (CurrentStacksCount >= MaxStacksCount) return false;
-        CurrentStacksCount++;
+        if (currentStacksCount >= MaxStacksCount) return false;
+        currentStacksCount++;
         if (!_infinite) SwitchToInfinite();
-        _characterState?.StateIcons?.ActivateIco(State, RemainingDuration, 1, true, MaxStacksCount);
+        characterState?.StateIcons?.ActivateIco(State, RemainingDuration, 1, true, MaxStacksCount);
         return true;
     }
 }

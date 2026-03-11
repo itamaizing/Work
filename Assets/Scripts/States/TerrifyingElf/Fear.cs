@@ -20,14 +20,14 @@ public class Fear : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
+        characterState = character;
         _source = personWhoMadeBuff;
         _duration = durationToExit;
         _baseDuration = durationToExit;
         MaxStacksCount = 1;
 
-        MoveComponent moveComponent = _characterState.Character.Move;
-        _skillManager = _characterState.Character.Abilities;
+        MoveComponent moveComponent = characterState.Character.Move;
+        _skillManager = characterState.Character.Abilities;
 
         if (moveComponent != null)
         {
@@ -37,9 +37,9 @@ public class Fear : AbstractCharacterState
             moveComponent.IsSelect = false;
             moveComponent.IsMoving = true;
 
-            if (_moveCoroutine != null) _characterState.StopCoroutine(_moveCoroutine);
+            if (_moveCoroutine != null) characterState.StopCoroutine(_moveCoroutine);
 
-            _moveCoroutine = _characterState.StartCoroutine(MoveAwayCoroutine(moveComponent));
+            _moveCoroutine = characterState.StartCoroutine(MoveAwayCoroutine(moveComponent));
         }
 
         Debug.Log("Страх");
@@ -70,11 +70,11 @@ public class Fear : AbstractCharacterState
     {
         if (_moveCoroutine != null)
         {
-            _characterState.StopCoroutine(_moveCoroutine);
+            characterState.StopCoroutine(_moveCoroutine);
             _moveCoroutine = null;
         }
 
-        MoveComponent moveComp = _characterState.Character.Move;
+        MoveComponent moveComp = characterState.Character.Move;
         if (moveComp != null)
         {
             moveComp.IsSelect = _previousIsSelect;
@@ -91,7 +91,7 @@ public class Fear : AbstractCharacterState
             skill.Disactive = false;
         }
         _disabledSkills.Clear();
-        _characterState.RemoveState(this);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -102,12 +102,12 @@ public class Fear : AbstractCharacterState
     private void InitializeFirstStack()
     {
         _duration = _baseDuration;
-        CurrentStacksCount++;
+        currentStacksCount++;
     }
 
     private IEnumerator MoveAwayCoroutine(MoveComponent moveComp)
     {
-        if (_source == null || _characterState == null || moveComp == null) yield break;
+        if (_source == null || characterState == null || moveComp == null) yield break;
 
         Rigidbody rb = moveComp.Rigidbody;
         if (rb == null) yield break;

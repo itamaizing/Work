@@ -1,4 +1,4 @@
-using Mirror;
+ï»¿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace Gangdollarff
         public bool IsBaffed = false;
 
         public override string AdditionalDescription =>
-            $"Ðàññòîÿíèå òîë÷êà: {AbilityNameBox.ColorOpen}{_pushRange}{AbilityNameBox.ColorEnd}";
+            $"Ð Ð°ÑÑÑ‚Ð¾ÑÐ½Ð¸Ðµ Ñ‚Ð¾Ð»Ñ‡ÐºÐ°: {AbilityNameBox.ColorOpen}{_pushRange}{AbilityNameBox.ColorEnd}";
 
         protected override int AnimTriggerCastDelay => 0;
 
@@ -37,7 +37,7 @@ namespace Gangdollarff
 
         protected override IEnumerator CastJob()
         {
-            var colliders = Physics.OverlapSphere(transform.position, Radius, TargetsLayers);
+            var colliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.Layer);
 
             CmdSetActiveParticle(true);
 
@@ -55,13 +55,13 @@ namespace Gangdollarff
 
                     float edgeDist = Mathf.Max(centerDist - (casterRadius + enemyRadius), 0f);
 
-                    float damageMul = Mathf.Clamp01(1f - edgeDist / Radius);
+                    float damageMul = Mathf.Clamp01(1f - edgeDist / AreaInfo.Radius);
 
                     Damage scaledDamage = new Damage
                     {
                         Value = Buff.Damage.GetBuffedValue(Damage) * damageMul,
-                        Type = DamageType,
-                        PhysicAttackType = AttackRangeType,
+                        Type = Info.DamageType,
+                        PhysicAttackType = Info.AttackRangeType,
                     };
 
                     CmdApplyDamage(scaledDamage, enemy.gameObject);

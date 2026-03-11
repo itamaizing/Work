@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Animations/Animations/Terrifying/Shot/ShotDarkness.anim.meta
 guid: 502c56acb19a2b94aad782355dccbdce
+========
+guid: 77759901f09e72d4cac8c4ff22b1a3b3
+>>>>>>>> PriestessSkillTargetFix:Assets/Animations/Animations/Gangdollarff/Minions/Fire/FireShieldNew.anim.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 7400000

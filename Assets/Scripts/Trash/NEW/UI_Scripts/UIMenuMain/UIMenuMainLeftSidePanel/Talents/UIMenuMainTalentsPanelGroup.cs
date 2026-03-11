@@ -4,6 +4,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class UIMenuMainTalentsPanelGroup : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
     [SerializeField] private UIMenuTalentRow _rowContainer;
 
 	private bool _isGameUI = false;
+    private float _initialParentCellHeight = 65f;
+    private int _itemsPerRow = 3;
     public event UnityAction OnShowPanelGroup;
 
     private List<UIMenuMainTalentsPanelGroupItem> _talents = new ();
@@ -22,6 +25,7 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
     private TalentsGroup _talentsGroup;
     private UIMenuMainAttributesPanel _attributesPanel;
 
+    public event UnityAction OnTalentChanged;
     public event Action<TalentData> PointerEnteredOnTalentIcon;
     public event Action<TalentData> PointerExitedOnTalentIcon;
 
@@ -45,11 +49,12 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
                 var talent = Instantiate(_talentPrefab, row.Rect);
 
                 talent.Owner = this;
-                talent.Fill(item.Data, i);
+                talent.Fill(item.Data, i, isInteractable);
                 item.Data.Row = i;
-                talent.Button.interactable = isInteractable;
 
-                talent.Selected += OnTalentSelected;
+                if(isInteractable)
+                    talent.Selected += OnTalentSelected;
+
                 talent.PointerEntered += OnPointerEnteredOnTalentIcon;
                 talent.PointerExited += OnPointerExitedOnTalentIcon;
 
@@ -72,6 +77,8 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
                 talent.Selected += _rows[i + 1].ActivateRow;
             }
         }
+
+        ChangeParentCellHeight();
     }
     
     private void OnDisable()
@@ -94,12 +101,13 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
 
     void OnTalentSelected(TalentData talent, bool isOpen)
     {
-		Debug.Log("Talent selected in MAIN" + talent);
 		SaveManager.Instance.SaveTalent(_talentsGroup.ID, talent.Row, talent.Name, isOpen);
         SaveManager.Instance.LoadTalent(_talentsGroup.ID, talent.Row, talent.Name, _isGameUI);
 
         UpdateActiveTalentsCount();
         _attributesPanel.UpdateAttributesPoints();
+
+        OnTalentChanged?.Invoke();
     }
 	private int GetActiveTalents()
 	{
@@ -120,6 +128,31 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
 		return activeTalents.Count;
 
 	}
+
+    private int GetItemsInRowCount()
+    {
+        int rows = 0;
+		
+        foreach (TalentRow row in _talentsGroup.TalentRows)
+        {
+            foreach (Talent talent in row.Talents)
+            {
+                rows++;
+            }
+        }
+		
+
+        return rows;
+    }
+
+    private void ChangeParentCellHeight()
+    {
+        GridLayoutGroup grid = _itemsParent.GetComponent<GridLayoutGroup>();
+        Vector2 gridSize = grid.cellSize;
+        int rows = Mathf.CeilToInt((float)GetItemsInRowCount() / _itemsPerRow);
+        grid.cellSize = new Vector2(gridSize.x, _initialParentCellHeight * rows);
+    }
+    
 	public void Show()
     {
         if (_itemsParent.gameObject.activeInHierarchy == false)
@@ -131,6 +164,7 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour
         {
             OnShowPanelGroup?.Invoke();
         }
+        ChangeParentCellHeight();
     }
     
     public void Hide()

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -28,12 +28,12 @@ public class MultiMagic : AuraState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
-        _characterState = character;
+        characterState = character;
         _skills = caster.GetComponent<SkillManager>();
         duration = durationToExit;
 
         foreach (var skill in _skills.Abilities.Where
-            (ability => ability.SkillType == SkillType.Target && (ability.AbilityForm == AbilityForm.Magic || ability.AbilityForm == AbilityForm.Spell || ability.AbilityForm == AbilityForm.Both)))
+            (ability => ability.Info.SkillType == SkillType.Target && (ability.Info.AbilityForm == AbilityForm.Magic || ability.Info.AbilityForm == AbilityForm.Spell || ability.Info.AbilityForm == AbilityForm.Both)))
         {
             skill.PreparingSuccess += OnTargetSkillCast;
             skill.AfterCast += ExitState;
@@ -48,13 +48,13 @@ public class MultiMagic : AuraState
 
     public override void ExitState()
     {
-        foreach (var skill in _skills.Abilities.Where(ability => ability.SkillType == SkillType.Target))
+        foreach (var skill in _skills.Abilities.Where(ability => ability.Info.SkillType == SkillType.Target))
         {
             skill.PreparingSuccess -= OnTargetSkillCast;
             skill.AfterCast -= ExitState;
         }
-        Debug.Log("âûõîä èç ìóëüòè");
-        _characterState.RemoveState(this);
+        Debug.Log("Ð²Ñ‹Ñ…Ð¾Ð´ Ð¸Ð· Ð¼ÑƒÐ»ÑŒÑ‚Ð¸");
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time) => false;
@@ -67,7 +67,7 @@ public class MultiMagic : AuraState
 
         foreach (var character in characters)
         {
-            if (character == _characterState.Character) continue;
+            if (character == characterState.Character) continue;
 
             _characters.Add(character);
         }
@@ -84,16 +84,16 @@ public class MultiMagic : AuraState
 
     private void OnTargetSkillCast(Skill skill)
     {
-        Debug.Log("âûçîâ CastSuccessSkill");
+        Debug.Log("Ð²Ñ‹Ð·Ð¾Ð² CastSuccessSkill");
 
         _characters.Clear();
 
-        _distance = skill.Radius;
-        _targetsMask = skill.TargetsLayers;
+        _distance = skill.AreaInfo.Radius;
+        _targetsMask = skill.Targeting.Layer;
 
-        var colliders = Physics.OverlapSphere(_characterState.transform.position, _distance, _targetsMask);
+        var colliders = Physics.OverlapSphere(characterState.transform.position, _distance, _targetsMask);
 
-        foreach (var collider in colliders) if (collider.TryGetComponent(out Character character) && character != _characterState.Character && character != _lastTarget)
+        foreach (var collider in colliders) if (collider.TryGetComponent(out Character character) && character != characterState.Character && character != _lastTarget)
                 _characters.Add(character);
     }
 

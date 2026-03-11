@@ -1,65 +1,72 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RestorationState : AbstractCharacterState
+public class RestorationState : RefreshingState
 {
+    private float _duration;
+    private float _tickInterval = 3f;
+    private float _healPerTick = 6f;
+    private float _timer;
+    private bool _isActive = false;
+
+    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Restoration };
+
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.Restoration;
     public override StateType Type => StateType.Magic;
-    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
-    public override List<StatusEffect> Effects => new() { StatusEffect.Restoration };
+    public override List<StatusEffect> Effects => _effects;
 
-    private float _tickInterval = 4f;
-    private float _healPerTick = 6f;
-    private float _effectivenessIncreasePerHeal = 0.1f;
-
-    private float _timer;
-    private float _accumulatedEffectiveness = 1f;
-    private float _totalHealedInInterval = 0f;
-
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+        Character personWhoMadeBuff, string skillName)
     {
-        _characterState = character;
-        _personWhoMadeBuff = personWhoMadeBuff;
-        duration = durationToExit;
-
-        _health = character.Character.Health;
-        _accumulatedEffectiveness = 1f;
-        _totalHealedInInterval = 0f;
-
+        _duration = durationToExit;
+        characterState = character;
+        MaxStacksCount = 1;
+        currentStacksCount = 1;
         _timer = _tickInterval;
+        _isActive = true;
 
-		float spiritBonus = GetSpiritEnergyBonus(_characterState.Character);
-		float healValue = _healPerTick * _accumulatedEffectiveness + spiritBonus;
-		CmdHeal(healValue);
-	}
+        float healValue = _healPerTick + GetSpiritEnergyBonus(characterState.Character);
+        CmdHeal(healValue);
+    }
 
     public override void UpdateState()
     {
-        if (_health == null) return;
+        if (!_isActive) return;
 
-        duration -= Time.deltaTime;
-        _timer -= Time.deltaTime;
-
-        if (_timer <= 0f)
-        {
-            float spiritBonus = GetSpiritEnergyBonus(_characterState.Character);
-            float healValue = _healPerTick * _accumulatedEffectiveness + spiritBonus;
-
-            CmdHeal(healValue);
-
-             _accumulatedEffectiveness += _totalHealedInInterval * _effectivenessIncreasePerHeal;
-            _totalHealedInInterval = healValue;
-
-            _timer = _tickInterval;
-        }
-
-        if (duration <= 0)
+        _duration -= Time.deltaTime;
+        if (_duration < 0)
         {
             ExitState();
             return;
         }
+
+        _timer -= Time.deltaTime;
+        if (_timer <= 0f)
+        {
+            float healValue = _healPerTick + GetSpiritEnergyBonus(characterState.Character);
+            CmdHeal(healValue);
+            _timer = _tickInterval;
+        }
+    }
+
+    public override void ExitState()
+    {
+        _isActive = false;
+        _duration = 0f;
+        _timer = 0f;
+        currentStacksCount = 0;
+        characterState?.RemoveState(this);
+        characterState = null;
+    }
+
+    public override bool Stack(float time)
+    {
+        _duration += time;
+        RemainingDuration = _duration;
+        return false;
     }
 
     private float GetSpiritEnergyBonus(Character character)
@@ -68,16 +75,6 @@ public class RestorationState : AbstractCharacterState
         return state != null ? state.GetHealBonus() : 0f;
     }
 
-    public override void ExitState()
-    {
-        _characterState.RemoveState(this);
-    }
-
-    public override bool Stack(float time)
-    {
-        duration = time;
-        return false;
-    }
     [Server] private void CmdHeal(float healValue) => ClientRpcHeal(healValue);
 
     [ClientRpc]
@@ -88,7 +85,6 @@ public class RestorationState : AbstractCharacterState
             Value = healValue,
             DamageableSkill = null
         };
-
-        _health.Heal(ref heal, "RestorationState", null);
+        health.Heal(ref heal, "RestorationState", null);
     }
 }

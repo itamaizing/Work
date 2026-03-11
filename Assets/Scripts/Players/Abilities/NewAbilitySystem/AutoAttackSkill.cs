@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -26,7 +26,7 @@ public abstract class AutoAttackSkill : Skill
     Color endColor = new Color(0, 1, 0, 0f);
 
 	public float AttackDelay { get => Buff.AttackSpeed.GetBuffedValue(_attackDelay); }
-    public Character Target { get => GetTargetCharacter(); }
+    public Character Target { get => Targeting.GetTarget()?.Character; }
     public Vector2 LastTargetPosition { get => _lastTargetPosition; }
     public override bool IsPayCostStartCooldown { get => false; }
     public bool IsAutoattackMode { get => _isAutoattackMode; set => _isAutoattackMode = value; }
@@ -38,7 +38,7 @@ public abstract class AutoAttackSkill : Skill
             if (Target == null)
                 return false;
 
-            return NoObstacles(Target.transform.position, _obstacle) && IsTargetInRadius(Radius, Target.transform); ;
+            return Targeting.NoObstacles(Target.transform.position, _obstacle) && Targeting.IsTargetInRadius(AreaInfo.Radius, Target.transform); ;
         }
     }
 
@@ -48,7 +48,7 @@ public abstract class AutoAttackSkill : Skill
 
     private void Update()
     {
-        if (GetTargetCharacter() == null)
+        if (Targeting.GetTarget()?.Character == null)
         {
             return;
         }
@@ -66,7 +66,7 @@ public abstract class AutoAttackSkill : Skill
 		float t = Mathf.PingPong(Time.time * duration, 1f);
 		Color currentColor = Color.Lerp(startColor, endColor, t);
 		//_target.SelectedCircle.Circle.color = currentColor;
-		_skillRender.DrawRadiusColor(Radius, currentColor);
+		_skillRender.DrawRadiusColor(AreaInfo.Radius, currentColor);
 	}
 
 
@@ -79,10 +79,10 @@ public abstract class AutoAttackSkill : Skill
 
     protected override void ClearData()
     {
-        if (GetTargetCharacter() != null)
+        if (Targeting.GetTarget()?.Character != null)
         {
 			//_target.SelectedCircle.Circle.color = Color.green;
-			GetTargetCharacter().SelectedCircle.IsActive = false;
+			Targeting.GetTarget().Character.SelectedCircle.IsActive = false;
 		}
 		_skillRender.SetColor(Color.green);
 
@@ -94,28 +94,28 @@ public abstract class AutoAttackSkill : Skill
         }
 
         _isAttacking = false;
-        ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
-        if (Hero.Move.CanMove == false) Hero.Move.CanMove = true;
+        if (Hero.Move.CanMove == false) Hero.Move.SetCanMove(true);
         _hero.Move.StopLookAt();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
-        while (GetTempTargetCharacter() == null)
+        while (Targeting.GetTempTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
                 //   _target = GetRaycastTarget();
-                FindTarget();
-                if(GetTargetCharacter() != null)
-					GetTargetCharacter().SelectedCircle.IsActive = true;
+                Targeting.FindTempTarget();
+                if(Targeting.GetTarget()?.Character != null)
+					Targeting.GetTarget().Character.SelectedCircle.IsActive = true;
 			}
             yield return null;
         }
-        SetTarget(GetTempTargetCharacter());
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(GetTargetCharacter());
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         targetDataSavedCallback(targetInfo);
 
         _hero.Move.LookAtTransform(Target.transform);
@@ -159,22 +159,22 @@ public abstract class AutoAttackSkill : Skill
     {
 		while (Target != null)
         {
-            if (IsTargetInRadius(Radius + _attackZoneSize, Target.transform))
+            if (Targeting.IsTargetInRadius(AreaInfo.Radius + _attackZoneSize, Target.transform))
             {
-                if (IsTargetInRadius(Radius, Target.transform))
+                if (Targeting.IsTargetInRadius(AreaInfo.Radius, Target.transform))
                     _isAttacking = true;
 
-                if (_isAttacking && NoObstacles(Target.transform.position, _obstacle))
+                if (_isAttacking && Targeting.NoObstacles(Target.transform.position, _obstacle))
                 {
                     _lastTargetPosition = Target.transform.position;
-                    LastTarget = GetTargetCharacter();
+                    LastTarget = Targeting.GetTarget()?.Character;
 
                     if (_chargeAttackDelay > 0)
                         yield return StartCastDeleyCoroutine(_chargeAttackDelay);
 
                     //yield return new WaitForSeconds(AttackSpeed);
 
-                    if (IsTargetInRadius(Radius + _attackZoneSize, Target.transform) && NoObstacles(Target.transform.position, _obstacle) && IsCooldowned)
+                    if (Targeting.IsTargetInRadius(AreaInfo.Radius + _attackZoneSize, Target.transform) && Targeting.NoObstacles(Target.transform.position, _obstacle) && IsCooldowned)
                     {
                         if (TryPayCost(true))
                         {
@@ -187,7 +187,7 @@ public abstract class AutoAttackSkill : Skill
 
                                 while (_isPlayCastAnimAA)
                                 {
-                                    if((IsTargetInRadius(Radius + _attackZoneSize, Target.transform) && NoObstacles(Target.transform.position, _obstacle) && IsCooldowned) == false)
+                                    if((Targeting.IsTargetInRadius(AreaInfo.Radius + _attackZoneSize, Target.transform) && Targeting.NoObstacles(Target.transform.position, _obstacle) && IsCooldowned) == false)
                                     {
                                         _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
                                         _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);

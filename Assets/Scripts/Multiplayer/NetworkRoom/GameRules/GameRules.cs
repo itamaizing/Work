@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -102,10 +103,21 @@ public abstract class GameRules : NetworkBehaviour
             byte teamIndex = (byte)(team1Count <= team2Count ? 1 : 2);
             playerSettings.NetworkSettings.TeamIndex = teamIndex;
 
+            UnityEngine.Debug.Log("Split teams", this);
             foreach (var player in _players)
             {
                 playerSettings.NetworkSettings.Players.Add(player.gameObject);
             }
+          /*  if (teamIndex == 1)
+            {
+                _gameManager.TeamsPanel.AddInFirstTeam(playerSettings);
+                //RpcAddToTeam(teamIndex, playerSettings);
+            }
+            else
+            {
+                _gameManager.TeamsPanel.AddInSecondTeam(playerSettings);
+                //RpcAddToTeam(teamIndex, playerSettings);
+            }   */ 
 
             playerSettings.transform.SetPositionAndRotation(spawnPoints.GetRandomPoint(teamIndex-1), spawnPoints.GetRotate(teamIndex-1));
             playerSettings.NetworkSettings.SetSpawnPosition(spawnPoints.GetRandomPoint(teamIndex-1));
@@ -275,12 +287,6 @@ public abstract class GameRules : NetworkBehaviour
             {
                 _gameManager.Source.AddInSecondTeam(playerSettings);
             }
-            
-            
-            foreach (var camp in _gameManager.Camps)
-            {
-                camp.SetPlayers(item);
-            }
         }
 
         //UnityEngine.Debug.Log("this");
@@ -330,5 +336,18 @@ public abstract class GameRules : NetworkBehaviour
     protected void RpcCloseRoomOnClients()
     {
         CloseRoomOnClient();
+    }
+
+    [ClientRpc]
+    protected void RpcAddToTeam(int index, Character hero)
+    {
+        if (index == 1)
+        {
+            _gameManager.TeamsPanel.AddInFirstTeam(hero);
+        }
+        else
+        {
+            _gameManager.TeamsPanel.AddInSecondTeam(hero);
+        }
     }
 }

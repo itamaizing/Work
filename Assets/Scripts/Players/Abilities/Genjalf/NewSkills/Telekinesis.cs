@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -35,14 +35,14 @@ namespace Gangdollarff
 
         private bool CheckCanCast()
         {
-            if (GetTargetCharacter() != null)
+            if (Targeting.GetTarget()?.Character != null)
             {
                 if (!_isSecondClick && !_isLifted)
-                    return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius;
+                    return Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
                 else if(_isLifted)
-                    return Vector3.Distance(GetTargetCharacter().transform.position, transform.position) <= Radius + _amountOfLift;
+                    return Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius + _amountOfLift;
                 else
-                    return Vector3.Distance(GetTargetCharacter().transform.position, _secondClickPoint) <= Radius;
+                    return Vector3.Distance(Targeting.GetTarget().Transform.position, _secondClickPoint) <= AreaInfo.Radius;
             }
 
             return false;
@@ -82,20 +82,20 @@ namespace Gangdollarff
             {
                 IsEnabled = true;
 
-                _tempCastDeley = _cooldownTime;
-                _cooldownTime = 0;
+                _tempCastDeley = Cooldown.CooldownTime;
+                Cooldown.CooldownTime = 0;
             }
         }
 
         public override void LoadTargetData(TargetInfo targetInfo)
         {
-            SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+            Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
         }
 
         protected override IEnumerator CastJob()
         {
             DisableMove();
-            _tempChar = GetTargetCharacter();
+            _tempChar = Targeting.GetTarget()?.Character;
             
             if(!_tempChar) yield break;
             _skillRender.SetPrepareCursor();
@@ -114,16 +114,16 @@ namespace Gangdollarff
             yield return new WaitForSeconds(_deleyTelekines);
             
             _radiusEnemy.gameObject.SetActive(true);
-            _radiusEnemy.transform.parent = GetTargetCharacter().transform;
+            _radiusEnemy.transform.parent = Targeting.GetTarget()?.Transform;
             _radiusEnemy.transform.localPosition = Vector3.zero;
 
             while (Time.time - castStartTime < _castDuration)
             {
                 if (Input.GetMouseButtonDown(0) && !_isSecondClick)
                 {
-                    _secondClickPoint = GetMousePoint();
+                    _secondClickPoint = Targeting.GetMousePoint();
                     if (_secondClickPoint != Vector3.zero &&
-                        Vector3.Distance(_secondClickPoint, _tempChar.transform.position) <= Radius)
+                        Vector3.Distance(_secondClickPoint, _tempChar.transform.position) <= AreaInfo.Radius)
                     {
                         _isLifted = false;
                         _isSecondClick = true;
@@ -171,8 +171,8 @@ namespace Gangdollarff
         
         protected override void ClearData()
         {
-            ClearTarget();
-            ClearTempTarget();
+            Targeting.ClearTarget();
+            Targeting.ClearTempTarget();
             //_target = null;
             _radiusEnemy.gameObject.SetActive(false);
             _isSecondClick = false;
@@ -181,20 +181,20 @@ namespace Gangdollarff
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
         {
-            _skillRender.DrawRadius(Radius);
-            while (GetTempTargetCharacter() == null)
+            _skillRender.DrawRadius(AreaInfo.Radius);
+            while (Targeting.GetTempTarget()?.Character == null)
             {
                 if (GetMouseButton)
                 {
-                    Vector3 clickPoint = GetMousePoint();
+                    Vector3 clickPoint = Targeting.GetMousePoint();
 
-                    FindTarget(_clickRadius, clickPoint, canTargetHimself: true);
+                    Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
                 }
                 yield return null;
             }
             TargetInfo targetInfo = new TargetInfo();
-            SetTarget(GetTempTargetCharacter());
-            targetInfo.AddTarget(GetTargetCharacter());
+            Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
+            targetInfo.AddTarget(Targeting.GetTarget()?.Character);
             callbackDataSaved(targetInfo);
            
             yield return new WaitForSeconds(0.1f);

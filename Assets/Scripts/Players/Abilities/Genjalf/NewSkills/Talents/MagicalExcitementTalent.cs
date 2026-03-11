@@ -10,6 +10,7 @@ public class MagicalExcitementTalent : Talent
 
     private WaitForSeconds _increaseManaRegenerationDeley;
     private Resource _mana;
+    private float _defaultDuration = 3f;
 
     public override void Enter()
     {
@@ -37,5 +38,17 @@ public class MagicalExcitementTalent : Talent
         yield return _increaseManaRegenerationDeley;
 
         _mana.ReduceRegenerationPeriod(_increaseManaRegenerationPercentages);
+    }
+
+    public void IncreaseDuration(float newDuration)
+    {
+        _increaseManaRegenerationDuration = newDuration;
+        _increaseManaRegenerationDeley = new(_increaseManaRegenerationDuration);
+    }
+
+    public void SetDefaultDuration()
+    {
+        _increaseManaRegenerationDuration = _defaultDuration;
+        _increaseManaRegenerationDeley = new(_increaseManaRegenerationDuration);
     }
 }

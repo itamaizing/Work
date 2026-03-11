@@ -1,4 +1,4 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -19,13 +19,13 @@ public class StateIcons : MonoBehaviour
     [SerializeField] private Color _neutralColor = Color.gray;
 
     private Dictionary<States, StateIcoData> _icoDataDictionary;
-    private CharacterState _characterState;
+    private CharacterState characterState;
     private List<StateIcoItem> _activeEffects = new List<StateIcoItem>();
     private bool _added = false;
 
     private void Awake()
     {
-        _characterState = GetComponentInParent<CharacterState>();
+        characterState = GetComponentInParent<CharacterState>();
 
         _icoDatabase = Resources.Load<StateIcoDatabase>("StateIcoDatabase_Generated");
 
@@ -37,7 +37,7 @@ public class StateIcons : MonoBehaviour
     {
         foreach (var ico in _activeEffects)
         {
-            if (ico.State == state)
+            if (ico.State == state && canStack)
             {
                 ico.FadeFront.DOKill();
                 ico.count = canStack ? Mathf.Min(ico.count + stack, maxStackValue) : 1;
@@ -77,9 +77,9 @@ public class StateIcons : MonoBehaviour
 
     private Color GetBorderColor(States state)
     {
-        if (_characterState == null) return _neutralColor;
+        if (characterState == null) return _neutralColor;
 
-        if (_characterState.enumToState.TryGetValue(state, out var stateObj))
+        if (characterState.enumToState.TryGetValue(state, out var stateObj))
         {
             return stateObj.BaffDebaff switch
             {
@@ -93,11 +93,18 @@ public class StateIcons : MonoBehaviour
 
     private void StartProgress(StateIcoItem ico, float duration)
     {
-        ico.currentDuration = duration;
-        ico.FadeFront.DOKill();
-        ico.FadeFront.fillAmount = 0f;
+        if (duration != -1f)
+        {
+            ico.currentDuration = duration;
+            ico.FadeFront.DOKill();
+            ico.FadeFront.fillAmount = 0f;
 
-        ico.FadeFront.DOFillAmount(1f, duration).SetEase(Ease.Linear).OnComplete(() => RemoveOrRestart(ico));
+            ico.FadeFront.DOFillAmount(1f, duration).SetEase(Ease.Linear).OnComplete(() => RemoveOrRestart(ico));
+        }
+        else if(duration == -1f)
+        {
+            ico.FadeFront.fillAmount = 0f;
+        }
     }
 
     private void RemoveOrRestart(StateIcoItem ico)
@@ -122,9 +129,9 @@ public class StateIcons : MonoBehaviour
 
     private Color GetTextColor(States state)
     {
-        if (_characterState == null) return _neutralColor;
+        if (characterState == null) return _neutralColor;
 
-        if (_characterState.enumToState.TryGetValue(state, out var stateObj))
+        if (characterState.enumToState.TryGetValue(state, out var stateObj))
         {
             return stateObj.BaffDebaff switch
             {
@@ -137,7 +144,7 @@ public class StateIcons : MonoBehaviour
     }
     private Color GetFallbackColor(States state)
     {
-        if (_characterState == null || !_characterState.enumToState.TryGetValue(state, out var stateObj)) return _neutralColor;
+        if (characterState == null || !characterState.enumToState.TryGetValue(state, out var stateObj)) return _neutralColor;
 
 
         return stateObj.BaffDebaff switch
@@ -156,6 +163,7 @@ public class StateIcons : MonoBehaviour
             {
                 Destroy(_activeEffects[i].gameObject);
                 _activeEffects.RemoveAt(i);
+                break;
             }
         }
     }

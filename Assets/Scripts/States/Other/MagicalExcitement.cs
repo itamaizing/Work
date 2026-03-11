@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class MagicalExcitement : AbstractCharacterState
@@ -15,19 +15,19 @@ public class MagicalExcitement : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _duration = durationToExit;
-        _characterState = character;
-        _personWhoMadeBuff = personWhoMadeBuff;
+        characterState = character;
+        personWhoMadeBuff = personWhoMadeBuff;
     }
 
     public override void ExitState()
     {
-        _characterState.StateIcons.RemoveItemByState(State);
-        _characterState.RemoveState(this);
+        characterState.StateIcons.RemoveItemByState(State);
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        CurrentStacksCount++;
+        currentStacksCount++;
 
         _duration = time;
 

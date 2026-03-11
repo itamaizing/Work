@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -153,7 +153,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
                 Damage damage = new Damage
                 {
                     Value = finalDamageValue,
-                    Type = DamageType
+                    Type = Info.DamageType
                 };
 
                 CmdApplyDamage(damage, enemy.gameObject);
@@ -173,7 +173,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
         float elapsed = 0f;
         int baseDamage = 1;
 
-        Hero.Move.CanMove = false;
+        Hero.Move.SetCanMove(false);
 
         while (elapsed < CastStreamDuration)
         {
@@ -186,7 +186,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
             baseDamage *= 2;
         }
 
-        Hero.Move.CanMove = true;
+        Hero.Move.SetCanMove(true);
         CmdDestroyFireBreath();
     }
 
@@ -249,7 +249,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
                     Damage damage = new Damage
                     {
                         Value = finalDamageValue,
-                        Type = DamageType,
+                        Type = Info.DamageType,
                     };
 
                     CmdApplyDamage(damage, enemy.gameObject);
