@@ -9,7 +9,7 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
 {
     [SerializeField] private List<Transform> points;
     [SerializeField] private GameObject mucusPrefab;
-    [SerializeField] private CocoonSpawn _cocoonSpawn;
+    [SerializeField] private CreatureSpawn _creatureSpawn;
 
     private const float TickRate = 1f;
     private const int MaxCircles = 6;
@@ -59,23 +59,23 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
 
     private void subscription()
     {
-        if (_cocoonSpawn.Tentacle != null)
+        if (_creatureSpawn.Tentacle != null)
         {
-            _cocoonSpawn.Tentacle.OnWombSpreadsMucusChanged += HandleMucusGrowthChanged;
+            _creatureSpawn.Tentacle.OnWombSpreadsMucusChanged += HandleMucusGrowthChanged;
         }
     }
 
     private void unsubscribe()
     {
-        if (_cocoonSpawn.Tentacle != null)
+        if (_creatureSpawn.Tentacle != null)
         {
-            _cocoonSpawn.Tentacle.OnWombSpreadsMucusChanged -= HandleMucusGrowthChanged;
+            _creatureSpawn.Tentacle.OnWombSpreadsMucusChanged -= HandleMucusGrowthChanged;
         }
     }
 
     private void HandleAction()
     {
-        if (_cocoonSpawn.Tentacle != null) HandleMucusGrowthChanged(_cocoonSpawn.Tentacle.IsWombSpreadsMucus);
+        if (_creatureSpawn.Tentacle != null) HandleMucusGrowthChanged(_creatureSpawn.Tentacle.IsWombSpreadsMucus);
     }
 
     private IEnumerator ApplyMucusPeriodically()
@@ -221,10 +221,10 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
     [ClientRpc]
     private void RpcSpawnSpikeMucus(Mucus mucus)
     {
-        if (_cocoonSpawn.Tentacle != null)
+        if (_creatureSpawn.Tentacle != null)
         {
-            mucus.Skill = _cocoonSpawn.Tentacle;
-            mucus.IsAttackSpike = _cocoonSpawn.Tentacle.IsSpawnSpikeMucus;
+            mucus.Skill = _creatureSpawn.Tentacle;
+            mucus.IsAttackSpike = _creatureSpawn.Tentacle.IsSpawnSpikeMucus;
         }
     }
 

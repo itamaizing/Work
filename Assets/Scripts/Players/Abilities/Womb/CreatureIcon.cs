@@ -2,21 +2,20 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ElementIcon : MonoBehaviour
+public class CreatureIcon : MonoBehaviour
 {
     [SerializeField] private Button _button;
-    [SerializeField] private int _index;
-    [SerializeField] private ElementalSpawn _elementalSpawn;
+    [SerializeField] private SpawnType _spawnType;
+    [SerializeField] private CreatureSpawn _creatureSpawn;
 
-    private IconFollowOnMouse _iconFollowOnMouse;
     private Quaternion _rotation;
 
     private void Awake()
     {
         _button.onClick.AddListener(OnClick);
-        _elementalSpawn.CastStarted += OnCastStarted;
-        _elementalSpawn.CastEnded += OnCanceled;
-        _elementalSpawn.Canceled += OnCanceled;
+        _creatureSpawn.CastStarted += OnCastStarted;
+        _creatureSpawn.CastEnded += OnCanceled;
+        _creatureSpawn.Canceled += OnCanceled;
 
         gameObject.SetActive(false);
 
@@ -32,20 +31,20 @@ public class ElementIcon : MonoBehaviour
 
     private void OnDestroy()
     {
-        _elementalSpawn.CastStarted -= OnCastStarted;
-        _elementalSpawn.CastEnded -= OnCanceled;
-        _elementalSpawn.Canceled -= OnCanceled;
+        _creatureSpawn.CastStarted -= OnCastStarted;
+        _creatureSpawn.CastEnded -= OnCanceled;
+        _creatureSpawn.Canceled -= OnCanceled;
     }
 
     private void OnClick()
     {
-        _elementalSpawn.IndexElemental = _index;
+        _creatureSpawn.SpawnType = _spawnType;
     }
-    
+
     private void OnCastStarted()
     {
         gameObject.SetActive(true);
-    }    
+    }
 
     private void OnCanceled()
     {

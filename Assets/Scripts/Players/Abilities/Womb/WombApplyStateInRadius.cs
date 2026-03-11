@@ -9,7 +9,7 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
     [SerializeField] private float _tick = 0.1f;
     [SerializeField] private float _radiusGrowthInterval = 1f;
     [SerializeField] private float _maxRadius = 6f;
-    [SerializeField] private CocoonSpawn _cocoonSpawn;
+    [SerializeField] private CreatureSpawn _creatureSpawn;
 
     private readonly HashSet<Character> _inZoneCharacters = new();
     private readonly Dictionary<Character, Coroutine> _slimeCoroutines = new();
@@ -36,16 +36,16 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
 
     private void InvokeHandleWombSpreadsMucusChanged()
     {
-        HandleWombSpreadsMucusChanged(_cocoonSpawn.Tentacle.IsWombSpreadsMucus);
-        HandleWombSpreadsParasitesChanged(_cocoonSpawn.Tentacle.IsWombSpreadsParasites);
+        HandleWombSpreadsMucusChanged(_creatureSpawn.Tentacle.IsWombSpreadsMucus);
+        HandleWombSpreadsParasitesChanged(_creatureSpawn.Tentacle.IsWombSpreadsParasites);
     }
 
     private void Subscription()
     {
-        if (_cocoonSpawn.Tentacle != null)
+        if (_creatureSpawn.Tentacle != null)
         {
-            _cocoonSpawn.Tentacle.OnWombSpreadsMucusChanged += HandleWombSpreadsMucusChanged;
-            _cocoonSpawn.Tentacle.OnWombSpreadsParasitesChanged += HandleWombSpreadsParasitesChanged;
+            _creatureSpawn.Tentacle.OnWombSpreadsMucusChanged += HandleWombSpreadsMucusChanged;
+            _creatureSpawn.Tentacle.OnWombSpreadsParasitesChanged += HandleWombSpreadsParasitesChanged;
 
             Invoke("InvokeHandleWombSpreadsMucusChanged", 6f);
         }
@@ -53,10 +53,10 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
 
     private void Unsubscribe()
     {
-        if (_cocoonSpawn.Tentacle != null)
+        if (_creatureSpawn.Tentacle != null)
         {
-            _cocoonSpawn.Tentacle.OnWombSpreadsMucusChanged -= HandleWombSpreadsMucusChanged;
-            _cocoonSpawn.Tentacle.OnWombSpreadsParasitesChanged -= HandleWombSpreadsParasitesChanged;
+            _creatureSpawn.Tentacle.OnWombSpreadsMucusChanged -= HandleWombSpreadsMucusChanged;
+            _creatureSpawn.Tentacle.OnWombSpreadsParasitesChanged -= HandleWombSpreadsParasitesChanged;
         }
     }
 

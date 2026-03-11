@@ -1,26 +1,33 @@
+using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CreatureCarryGun : MonoBehaviour
+public class CreatureCarryGun : NetworkComponent
 {
-    [SerializeField] private Tentacles _dadSkill;
     [SerializeField] private SkillManager _skillManager;
 
     [SerializeField] private List<Skill> _sills;
+    [SerializeField][ReadOnly] private Tentacles _dadSkill;
+
+    public Tentacles DadSkill { get => _dadSkill; set => _dadSkill = value; }
 
     private void Start()
-    {       
+    {
+        if (_dadSkill == null) return;
+
         foreach (Skill skill in _sills)
         {
-            if (skill as InjectionAdrenaline) _dadSkill.OnInjectionAdrenaline += SkillActivationInjectionAdrenaline;
+            if (skill is InjectionAdrenaline) _dadSkill.OnInjectionAdrenaline += SkillActivationInjectionAdrenaline;
         }
     }
 
     private void OnDisable()
     {
+        if (_dadSkill == null) return;
+
         foreach (Skill skill in _sills)
         {
-            if (skill as InjectionAdrenaline) _dadSkill.OnInjectionAdrenaline -= SkillActivationInjectionAdrenaline;
+            if (skill is InjectionAdrenaline) _dadSkill.OnInjectionAdrenaline -= SkillActivationInjectionAdrenaline;
         }
     }
 
@@ -34,10 +41,5 @@ public class CreatureCarryGun : MonoBehaviour
                 else _skillManager.DeactivateSkill(skill);
             }
          }
-    }
-
-    public void SetTentacle(Tentacles tentacle)
-    {
-        _dadSkill = tentacle;
     }
 }
