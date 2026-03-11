@@ -8,6 +8,18 @@ public class ParalyzingTentacles : SkillCreatureCarryGun
 
     protected override string AnimationTrigger => "AttackSpisnacider";
 
+    private void OnEnable()
+    {
+        if (Hero.Health != null) Hero.Health.DamageTaken += OnDamageTaken;
+    }
+
+    private void OnDisable()
+    {
+        if (Hero.Health != null) Hero.Health.DamageTaken -= OnDamageTaken;
+    }
+
+    private void OnDamageTaken(Damage damage, Skill skill) => TryCancel();
+
     protected override void ApplySkillEffect(Character target)
     {
         if (target == null)
@@ -25,7 +37,7 @@ public class ParalyzingTentacles : SkillCreatureCarryGun
             _line.SetPosition(1, end);
         }
 
-        target.CharacterState.CmdAddState( States.Paralyzed, paralyzeDuration, 0f, Hero.gameObject, Name);
+        target.CharacterState.CmdAddState( States.Stun, paralyzeDuration, 0f, Hero.gameObject, Name);
     }
 
     protected override void ClearData()

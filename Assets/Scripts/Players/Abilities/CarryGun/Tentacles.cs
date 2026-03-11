@@ -118,23 +118,23 @@ public class Tentacles : Skill
 
     #region Skills Creatures
 
-    private bool _isInjectionAdrenaline = false;
+    private bool _isEffectTentaclesCreatures = false;
 
-    public event Action<bool> OnInjectionAdrenaline;
+    public event Action<bool> OnEffectTentaclesCreatures;
 
-    public bool IsInjectionAdrenaline
+    public bool IsEffectTentaclesCreatures
     {
-        get => _isInjectionAdrenaline;
+        get => _isEffectTentaclesCreatures;
         set
         {
-            if (_isInjectionAdrenaline == value) return;
+            if (_isEffectTentaclesCreatures == value) return;
 
-            _isInjectionAdrenaline = value;
-            OnInjectionAdrenaline?.Invoke(_isInjectionAdrenaline);
+            _isEffectTentaclesCreatures = value;
+            OnEffectTentaclesCreatures?.Invoke(_isEffectTentaclesCreatures);
         }
     }
 
-    public void InjectionAdrenaline(bool value) => IsInjectionAdrenaline = value;
+    public void EffectTentaclesCreatures(bool value) => IsEffectTentaclesCreatures = value;
 
     #endregion
 

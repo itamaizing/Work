@@ -17,7 +17,7 @@ public class CreatureCarryGun : NetworkComponent
 
         foreach (Skill skill in _sills)
         {
-            if (skill is InjectionAdrenaline) _dadSkill.OnInjectionAdrenaline += SkillActivationInjectionAdrenaline;
+            if (skill is InjectionAdrenaline || skill is ParalyzingTentacles || skill is ThrowingBlow) _dadSkill.OnEffectTentaclesCreatures += SkillActivationInjectionAdrenaline;
         }
     }
 
@@ -27,7 +27,7 @@ public class CreatureCarryGun : NetworkComponent
 
         foreach (Skill skill in _sills)
         {
-            if (skill is InjectionAdrenaline) _dadSkill.OnInjectionAdrenaline -= SkillActivationInjectionAdrenaline;
+            if (skill is InjectionAdrenaline || skill is ParalyzingTentacles || skill is ThrowingBlow) _dadSkill.OnEffectTentaclesCreatures -= SkillActivationInjectionAdrenaline;
         }
     }
 
@@ -35,7 +35,7 @@ public class CreatureCarryGun : NetworkComponent
     {
         foreach (Skill skill in _sills)
         {
-            if (skill as InjectionAdrenaline)
+            if (skill is InjectionAdrenaline || skill is ParalyzingTentacles || skill is ThrowingBlow)
             {
                 if (value) _skillManager.ActivateSkill(skill);
                 else _skillManager.DeactivateSkill(skill);

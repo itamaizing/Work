@@ -18533,6 +18533,7 @@ MonoBehaviour:
   _skills:
   - {fileID: 2840888049310110577}
   - {fileID: 5921960195754634602}
+  - {fileID: 6885845920278527182}
   _hero: {fileID: 5830977165762126247}
   _talentSystem: {fileID: 5224625938796084017}
   _skillRenderer: {fileID: 5133789345881183399}
@@ -18911,7 +18912,8 @@ MonoBehaviour:
   syncInterval: 0
   controllableUnits: []
   _skillManager: {fileID: 6892265620981845488}
-  _sills: []
+  _sills:
+  - {fileID: 6885845920278527182}
   _dadSkill: {fileID: 0}
 --- !u!114 &7610105537004708782
 MonoBehaviour:
@@ -19071,16 +19073,16 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
-  _abilityInfo: {fileID: 0}
+  _isTalentSpell: 1
+  _isSkillActive: 0
+  _abilityInfo: {fileID: 11400000, guid: 54610ea95f4f46c4f866f25a32299ef9, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
     _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
+  _cooldownTime: 22
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
@@ -19100,7 +19102,7 @@ MonoBehaviour:
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -19137,8 +19139,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _moveCreature: {fileID: 4144108970412608448}
+  _animator: {fileID: 1215395125402789392}
+  _stopDistance: 1.5
   _line: {fileID: 2357453467845687903}
   _startPoint: {fileID: 2643454510848344631}
+  paralyzeDuration: 3
 --- !u!1 &4348563488435226753
 GameObject:
   m_ObjectHideFlags: 0
