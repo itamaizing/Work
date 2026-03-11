@@ -271,9 +271,6 @@ public class Tentacles : Skill
                             }
                         }
                     }
-
-                    yield return null;
-                    continue;
                 }
             }
 
@@ -293,57 +290,41 @@ public class Tentacles : Skill
 
             if (GetMouseButton && !_isPlacingTentacles)
             {
-                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hitTarget))
+                Collider[] colliders = Physics.OverlapSphere(mousePoint, _radiusTarget);
+
+                foreach (var collider in colliders)
                 {
-                    if (_isAttractionTentacleTalent && hitTarget.collider.TryGetComponent<Character>(out Character character) && ((1 << character.gameObject.layer) & Targeting.Layer.value) != 0)
+                    if (!collider.TryGetComponent<Character>(out Character targetHit))
+                        continue;
+
+                    if (((1 << targetHit.gameObject.layer) & Targeting.Layer.value) != 0)
                     {
-                        float distToHero = Vector3.Distance(Hero.transform.position, character.transform.position);
-
                         _isPlacingTentacles = true;
-                        _lockedTarget = character;
+                        _lockedTarget = targetHit;
 
-                        if (_previewInstance != null) _previewInstance.transform.SetParent(_lockedTarget.transform);
+                        if (_previewInstance != null)
+                            _previewInstance.transform.SetParent(_lockedTarget.transform);
 
-                        _previewInstancePrefab = Instantiate(_tentaclesPreview, _previewInstance.transform.position, Quaternion.identity);
-                        _previewInstancePrefab.Tentacle.SetActive(true);
-                        _previewInstancePrefab.IsPreview = false;
-                        targetPoint = character.transform.position;
+                        if (_isAttractionTentacleTalent)
+                        {
+                            _previewInstancePrefab = Instantiate(_tentaclesPreview, _previewInstance.transform.position, Quaternion.identity);
+                            _previewInstancePrefab.Tentacle.SetActive(true);
+                            _previewInstancePrefab.IsPreview = false;
+                        }
 
+                        targetPoint = targetHit.transform.position;
                         yield return _waitForSeconds;
                         break;
                     }
+                }
 
-                    else
+                if (_lockedTarget == null)
+                {
+                    if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hitTarget))
                     {
                         float distance = Vector3.Distance(transform.position, mousePoint);
-                        bool foundEnemy = false;
 
-                        Collider[] colliders = Physics.OverlapSphere(mousePoint, _radiusTarget);
-                        foreach (var collider in colliders)
-                        {
-                            if (!collider.TryGetComponent<Character>(out Character targetHit)) continue;
-
-                            if (((1 << targetHit.gameObject.layer) & Targeting.Layer.value) != 0)
-                            {
-                                _isPlacingTentacles = true;
-                                _lockedTarget = targetHit;
-                                _previewInstance.transform.SetParent(_lockedTarget.transform);
-
-                                if (_isAttractionTentacleTalent)
-                                {
-                                    _previewInstancePrefab = Instantiate(_tentaclesPreview, _previewInstance.transform.position, Quaternion.identity);
-                                    _previewInstancePrefab.Tentacle.SetActive(true);
-                                    _previewInstancePrefab.IsPreview = false;
-                                }
-
-                                targetPoint = targetHit.transform.position;
-                                yield return _waitForSeconds;
-                                foundEnemy = true;
-                                break;
-                            }
-                        }
-
-                        if (!foundEnemy && distance <= AreaInfo.Radius && _isCocoonSpawnTalent)
+                        if (distance <= AreaInfo.Radius && _isCocoonSpawnTalent)
                         {
                             if (!IsValidVector(mousePoint)) yield break;
 
