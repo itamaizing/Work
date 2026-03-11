@@ -948,7 +948,7 @@ public enum States
 	Parasites,
 	SwarmSpeed,
 	DestructivePoison,
-	InjectionAdrenaline
+	InjectionAdrenaline,
 }
 public enum BaffDebaff
 {
