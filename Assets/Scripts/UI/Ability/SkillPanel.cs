@@ -358,7 +358,7 @@ public class SkillPanel : MonoBehaviour
 
         if (_skills.Any(icon => icon.Skill == skill)) return;
 
-        //FillMenu(_playerAbilities, _hero);
+        //FillMenu(_playerAbilities, _hero);Сен
 
         var freeIcon = _skillIcons.FirstOrDefault(icon => icon.CurrentIcon == null);
         if (freeIcon == null) return;

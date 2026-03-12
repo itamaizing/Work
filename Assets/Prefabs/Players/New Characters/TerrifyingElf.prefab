@@ -19744,7 +19744,7 @@ MonoBehaviour:
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
-  _damageValue: 100
+  _damageValue: 8
   _infoComponent:
     _school: 6
     _form: 2
@@ -19754,9 +19754,9 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 2
+    _faction: -1
+    _unitType: -1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -19802,8 +19802,8 @@ MonoBehaviour:
   _ghostSkill: {fileID: 1718052129104348959}
   _audioClip: {fileID: 8300000, guid: ba78f434c86f1ec4d92aa393ca60ca17, type: 3}
   _terrifyingElfAura: {fileID: 6686568037796463366}
-  _minDamage: 100
-  _maxDamage: 100
+  _minDamage: 6
+  _maxDamage: 10
   _arrowYOffsetUp: 1.5
   _arrowYOffsetDown: 0.5
   _groundLayerMask:

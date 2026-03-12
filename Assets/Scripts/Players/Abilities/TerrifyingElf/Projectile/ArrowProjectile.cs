@@ -51,7 +51,7 @@ public class ArrowProjectile : Projectiles
 
     private bool IsEnemyByLayer(GameObject target)
     {
-        return ((1 << target.layer) & _skill.Targeting.Layer.value) != 0;
+        return ((1 << target.layer) & _skill.Targeting.Layer) != 0;
     }
 
     private void Update()
@@ -98,7 +98,6 @@ public class ArrowProjectile : Projectiles
         _magDamage = energy;
     }
 
-    [Server]
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject == _dad?.gameObject) return;
