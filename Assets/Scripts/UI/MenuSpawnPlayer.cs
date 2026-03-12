@@ -52,9 +52,12 @@ public class MenuSpawnPlayer : MonoBehaviour
 
     private void RotateHero()
     {
-        float rotY = Input.GetAxis("Mouse X") * _rotationSpeed;
+        if (_currentHero != null)
+        {
+            float rotY = Input.GetAxis("Mouse X") * _rotationSpeed;
 
-        _currentHero.transform.RotateAround(transform.position, Vector3.up, -rotY);
+            _currentHero.transform.RotateAround(transform.position, Vector3.up, -rotY);
+        }
 
     }
 

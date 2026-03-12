@@ -1,13 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static System.Net.Mime.MediaTypeNames;
 
 public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -33,6 +30,7 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
     public event UnityAction OnTalentChanged;
     public event Action<TalentData> PointerEnteredOnTalentIcon;
     public event Action<TalentData> PointerExitedOnTalentIcon;
+
 
     public void SetPanel(TalentsGroup talentsGroup, UIMenuMainAttributesPanel attributesPanel, bool isGameUI, bool isInteractable = true)
     {
@@ -121,6 +119,7 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
 
         OnTalentChanged?.Invoke();
     }
+
 	private int GetActiveTalents()
 	{
 		List<Talent> activeTalents = new();
@@ -135,7 +134,6 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
 					}
 				}
 			}
-		
 
 		return activeTalents.Count;
 
