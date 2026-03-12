@@ -106,6 +106,7 @@ public abstract class SkillCreatureCarryGun : Skill
     {
         if (_currentTarget is Character character) ApplySkillEffect(character);
         _moveActive = false;
+        CancelWork();
     }
 
     #endregion
