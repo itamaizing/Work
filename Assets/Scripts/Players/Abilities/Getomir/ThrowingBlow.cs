@@ -23,15 +23,16 @@ public class ThrowingBlow : SkillCreatureCarryGun
 
     protected override void ApplySkillEffect(Character target)
     {
-        if (target == null)
-            return;
+        if (target == null) return;
+
+        Rigidbody rb = target.GetComponent<Rigidbody>();
+        if (rb == null) return;
 
         Vector3 dir = (target.transform.position - transform.position).normalized;
-        dir.y = 0;
+        dir.y = 0f;
 
-        Vector3 endPos = target.transform.position + dir * knockbackDistance;
+        float force = knockbackDistance * 4f;
 
-        target.transform.DOMove(endPos, knockbackDuration)
-            .SetEase(Ease.OutQuad);
+        rb.AddForce(dir * force, ForceMode.Impulse);
     }
 }

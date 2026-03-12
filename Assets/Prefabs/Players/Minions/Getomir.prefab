@@ -17995,6 +17995,7 @@ GameObject:
   - component: {fileID: 3764020448229271524}
   - component: {fileID: 864070538008051548}
   - component: {fileID: 2793843212359387630}
+  - component: {fileID: 7226646740361081333}
   - component: {fileID: 5026398779494985239}
   - component: {fileID: 7679627626532406740}
   - component: {fileID: 4083383630853884571}
@@ -18531,6 +18532,7 @@ MonoBehaviour:
   _skills:
   - {fileID: 864070538008051548}
   - {fileID: 2793843212359387630}
+  - {fileID: 7226646740361081333}
   _hero: {fileID: 5830977165762126247}
   _talentSystem: {fileID: 5224625938796084017}
   _skillRenderer: {fileID: 5133789345881183399}
@@ -18683,6 +18685,7 @@ MonoBehaviour:
   IsMoving: 0
   IsSelect: 0
   IsNoRotateAtCursor: 0
+  _moveDurationPerUnit: 0.9
 --- !u!114 &3764020448229271524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18780,7 +18783,7 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  moveDurationPerUnit: 0.9
+  _moveCreature: {fileID: 4144108970412608448}
   attackDistance: 1.5
   damageDelay: 1.4
   animator: {fileID: 1215395125402789392}
@@ -18869,13 +18872,98 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _creatureCarryGun: {fileID: 7679627626532406740}
+  _moveCreature: {fileID: 4144108970412608448}
   _animator: {fileID: 1215395125402789392}
-  _moveDurationPerUnit: 0.9
   _stopDistance: 1.5
   minDamage: 12
   maxDamage: 18
   aoeRadius: 1.5
+--- !u!114 &7226646740361081333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305573293433524190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9e4b02271d81e54cab7eb048080b264, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ThrowingBlow
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 1
+  _isSkillActive: 0
+  _abilityInfo: {fileID: 11400000, guid: aa9291fbf650c7943a71fd25d1f3c92a, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
+  _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 12
+  _cooldownComponent:
+    _baseCooldown: 0
+  _castDeley: 0
+  _damageValue: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _chargeComponent:
+    _usesCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
+    affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _areaComponent:
+    _radius: 0
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
+  _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 1
+    _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
+  _moveCreature: {fileID: 4144108970412608448}
+  _animator: {fileID: 1215395125402789392}
+  _stopDistance: 1.5
+  knockbackDistance: 6
+  knockbackDuration: 0.35
 --- !u!114 &5026398779494985239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18904,6 +18992,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06f6c1dd94c6aef43baf923029a6cddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CreatureCarryGun
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  controllableUnits: []
+  _skillManager: {fileID: 6892265620981845488}
+  _sills:
+  - {fileID: 7226646740361081333}
+  _dadSkill: {fileID: 0}
 --- !u!114 &4083383630853884571
 MonoBehaviour:
   m_ObjectHideFlags: 0

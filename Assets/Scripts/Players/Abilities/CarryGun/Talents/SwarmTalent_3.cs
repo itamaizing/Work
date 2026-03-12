@@ -10,7 +10,6 @@ public class SwarmTalent_3 : Talent
     public override void Enter()
     {
         _swarmCapacity.AddCounter(true);
-        _tentacles.EffectTentaclesCreatures(true);
         _tentacles.AttractionTentacleTalent(true);
         AddingDescriptionSet(true);
     }
@@ -18,7 +17,6 @@ public class SwarmTalent_3 : Talent
     public override void Exit()
     {
         _swarmCapacity.AddCounter(false);
-        _tentacles.EffectTentaclesCreatures(false);
         _tentacles.AttractionTentacleTalent(false);
         AddingDescriptionSet(false);
     }

@@ -13972,7 +13972,7 @@ MonoBehaviour:
   IsMoving: 0
   IsSelect: 0
   IsNoRotateAtCursor: 0
-  _moveDurationPerUnit: 0.2
+  _moveDurationPerUnit: 1.1
 --- !u!114 &1393425115325331674
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14001,10 +14001,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06f6c1dd94c6aef43baf923029a6cddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CreatureCarryGun
-  _dadSkill: {fileID: 0}
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  controllableUnits: []
   _skillManager: {fileID: 6892265620981845488}
   _sills:
   - {fileID: 6488406720858899140}
+  _dadSkill: {fileID: 0}
 --- !u!114 &193648750797128802
 MonoBehaviour:
   m_ObjectHideFlags: 0

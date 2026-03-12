@@ -942,6 +942,8 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 0
   _regenerationDelay: 0
+  _currentValue: 0
+  _maxValue: 0
   _objectBar: {fileID: 6602408165205967977}
   _objectData: {fileID: 11400000, guid: 4d9848aff32418346bf2ce8b19b940bc, type: 2}
   obj: {fileID: 6581410618162525258}
@@ -1045,7 +1047,7 @@ MonoBehaviour:
   damageValue: 10
   characterLayer:
     serializedVersion: 2
-    m_Bits: 768
+    m_Bits: 256
   damageType: 1
   school: 4
 --- !u!54 &2278419548782817597

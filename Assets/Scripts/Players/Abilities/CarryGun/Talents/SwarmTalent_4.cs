@@ -7,10 +7,12 @@ public class SwarmTalent_4 : Talent
     public override void Enter()
     {
         _tentacles.WombSpreadsMucus(true);
+        _tentacles.EffectTentaclesCreatures(true);
     }
 
     public override void Exit()
     {
         _tentacles.WombSpreadsMucus(false);
+        _tentacles.EffectTentaclesCreatures(false);
     }
 }

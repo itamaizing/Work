@@ -33,6 +33,7 @@ public class MucusAttackSpike : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!_mucus.IsAttackSpike) return;
+        if ((characterLayer.value & (1 << other.gameObject.layer)) == 0) return;
         if (!other.TryGetComponent(out Character character)) return;
         if (character.GetComponent<MucusAutoGrowth>()) return;
         if (_charactersInTrigger.Contains(character)) return;
