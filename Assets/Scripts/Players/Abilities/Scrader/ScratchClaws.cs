@@ -21,7 +21,8 @@ public class ScratchClaws : SkillCreatureCarryGun
             PhysicAttackType = Info.AttackRangeType
         };
 
-        if (UnityEngine.Random.value <= bleedingChance) target.CharacterState.CmdAddState(States.Bleeding, bleedingDuration, 1f, Hero.gameObject, Name);
         CmdApplyDamage(damage, target.gameObject);
+
+        if (UnityEngine.Random.value <= bleedingChance) target.CharacterState.CmdAddState(States.Bleeding, bleedingDuration, 1f, Hero.gameObject, Name);
     }
 }

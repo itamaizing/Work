@@ -45,7 +45,7 @@ public class CreatureCarryGun : NetworkComponent
 
     private void HandleAction()
     {
-        if (_dadSkill == null) SkillActivationInjectionAdrenaline(_dadSkill.IsEffectTentaclesCreatures);
+        if (_dadSkill != null) SkillActivationInjectionAdrenaline(_dadSkill.IsEffectTentaclesCreatures);
     }
 
     private void SkillActivationInjectionAdrenaline(bool value)
