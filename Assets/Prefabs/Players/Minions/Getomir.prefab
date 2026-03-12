@@ -6223,7 +6223,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GetomirAutoAttack
   _spell: {fileID: 864070538008051548}
   _powerStrike: {fileID: 2793843212359387630}
-  _throwingBlow: {fileID: 0}
+  _throwingBlow: {fileID: 7226646740361081333}
 --- !u!1 &1816582864147950907
 GameObject:
   m_ObjectHideFlags: 0

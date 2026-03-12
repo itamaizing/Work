@@ -6,7 +6,7 @@ public class ParalyzingTentacles : SkillCreatureCarryGun
     [SerializeField] private Transform _startPoint;
     [SerializeField] private float paralyzeDuration = 3f;
 
-    protected override string AnimationTrigger => "AttackSpisnacider";
+    protected override string AnimationTrigger => "ParalyzingTentacles";
 
     private void OnEnable()
     {

@@ -4,9 +4,12 @@ public class SpisnaciderAutoAttack : MonoBehaviour
 {
     [SerializeField] private SpellMoveSpisnaciderTo _spellMoveSpisnacider;
     [SerializeField] private SpittingAcid _spittingAcid;
+    [SerializeField] private ParalyzingTentacles _paralyzingTentacles;
+
 
     public void OnAutoAttackAnimationHitSpisnacider() => _spellMoveSpisnacider.OnAutoAttackAnimationHit();
     public void OnAutoAttackAnimationEndSpisnacider() => _spellMoveSpisnacider.OnAutoAttackAnimationEnd();
 
-    public void ScratchClawsAttackAnimationHit() => _spittingAcid.AnimationHit();
+    public void SpittingAcidAttackAnimationHit() => _spittingAcid.AnimationHit();
+    public void ParalyzingTentaclesAttackAnimationHit() => _paralyzingTentacles.AnimationHit();
 }

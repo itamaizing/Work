@@ -6,7 +6,7 @@ public class PowerStrike : SkillCreatureCarryGun
     [SerializeField] private float maxDamage = 18f;
     [SerializeField] private float aoeRadius = 1.5f;
 
-    protected override string AnimationTrigger => "AttackGetomir";
+    protected override string AnimationTrigger => "PowerStrike";
 
     protected override void ApplySkillEffect(Character mainTarget)
     {

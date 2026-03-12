@@ -6,11 +6,11 @@ public class SpittingAcid : SkillCreatureCarryGun
     [SerializeField] private float maxDamage = 4f;
     [SerializeField] private float corrodedDuration = 6f;
 
-    protected override string AnimationTrigger => "AttackSpisnacider";
+    protected override string AnimationTrigger => "SpittingAcid";
 
     protected override void ApplySkillEffect(Character target)
     {
-        float dmgValue = UnityEngine.Random.Range(minDamage, maxDamage);
+        float dmgValue = Random.Range(minDamage, maxDamage);
 
         Damage damage = new Damage
         {

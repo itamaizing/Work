@@ -6223,6 +6223,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpisnaciderAutoAttack
   _spellMoveSpisnacider: {fileID: 2840888049310110577}
   _spittingAcid: {fileID: 5921960195754634602}
+  _paralyzingTentacles: {fileID: 6885845920278527182}
 --- !u!1 &1816582864147950907
 GameObject:
   m_ObjectHideFlags: 0
@@ -18740,7 +18741,7 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _moveCreature: {fileID: 0}
+  _moveCreature: {fileID: 4144108970412608448}
   attackDistance: 3
   damageDelay: 0.5
   animator: {fileID: 1215395125402789392}
@@ -18828,7 +18829,7 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _moveCreature: {fileID: 0}
+  _moveCreature: {fileID: 4144108970412608448}
   _animator: {fileID: 1215395125402789392}
   _stopDistance: 3
   minDamage: 1

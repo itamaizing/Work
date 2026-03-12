@@ -9,7 +9,7 @@ public class ThrowingBlow : SkillCreatureCarryGun
 
     private const string SpeedSource = "ThrowingBlowSpeed";
 
-    protected override string AnimationTrigger => "AttackGetomir";
+    protected override string AnimationTrigger => "ThrowingBlow";
 
     protected override IEnumerator CastJob()
     {

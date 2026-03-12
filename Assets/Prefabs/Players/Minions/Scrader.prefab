@@ -13095,7 +13095,7 @@ GameObject:
   - component: {fileID: 2019673168310186118}
   - component: {fileID: 193648750797128802}
   - component: {fileID: 1860083781445571932}
-  - component: {fileID: 6488406720858899140}
+  - component: {fileID: 8886534226296608121}
   m_Layer: 9
   m_Name: Scrader
   m_TagString: Allies
@@ -13644,7 +13644,7 @@ MonoBehaviour:
   _skills:
   - {fileID: 8331210179348555134}
   - {fileID: 8741847699558006757}
-  - {fileID: 6488406720858899140}
+  - {fileID: 8886534226296608121}
   _hero: {fileID: 5830977165762126247}
   _talentSystem: {fileID: 5224625938796084017}
   _skillRenderer: {fileID: 5133789345881183399}
@@ -13851,7 +13851,7 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 3
-  _moveCreature: {fileID: 0}
+  _moveCreature: {fileID: 2196113789592555911}
   _animator: {fileID: 1215395125402789392}
   _stopDistance: 1.5
   minDamage: 1
@@ -13939,7 +13939,7 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _moveCreature: {fileID: 0}
+  _moveCreature: {fileID: 2196113789592555911}
   attackDistance: 1.5
   damageDelay: 0.7
   animator: {fileID: 1215395125402789392}
@@ -13972,7 +13972,7 @@ MonoBehaviour:
   IsMoving: 0
   IsSelect: 0
   IsNoRotateAtCursor: 0
-  _moveDurationPerUnit: 1.1
+  _moveDurationPerUnit: 0.9
 --- !u!114 &1393425115325331674
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14007,7 +14007,7 @@ MonoBehaviour:
   controllableUnits: []
   _skillManager: {fileID: 6892265620981845488}
   _sills:
-  - {fileID: 6488406720858899140}
+  - {fileID: 8886534226296608121}
   _dadSkill: {fileID: 0}
 --- !u!114 &193648750797128802
 MonoBehaviour:
@@ -14042,7 +14042,7 @@ MonoBehaviour:
   _baseModel: {fileID: 4305573293433524190}
   _transformationModel: {fileID: 4305573293433524190}
   _transformationRenderer: {fileID: 0}
---- !u!114 &6488406720858899140
+--- !u!114 &8886534226296608121
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -14051,7 +14051,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4305573293433524190}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24e07077808a9ca4587b72cd42ad04c5, type: 3}
+  m_Script: {fileID: 11500000, guid: 505f97c0458f11443b52e593443064a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InjectionAdrenaline
   syncDirection: 0
