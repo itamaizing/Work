@@ -170,11 +170,20 @@ public class SkillPanel : MonoBehaviour
         }
 
         _playerAbilities = abilities;
+        bool moveSkillAdded = false;
 
         for (int i = 0; i < abilities.SelectedSkills.Length; i++)
         {
             var skill = abilities.SelectedSkills[i];
             if (skill == null) continue;
+
+            if (skill is SpellMoveCreatureTo || skill is SpellMoveTo)
+            {
+                if (moveSkillAdded)
+                    continue;
+
+                moveSkillAdded = true;
+            }
 
             var freeIcon = _skillIcons.FirstOrDefault(icon => icon.CurrentIcon == null);
             if (freeIcon == null) break;
