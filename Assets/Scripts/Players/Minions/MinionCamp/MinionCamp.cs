@@ -33,7 +33,8 @@ public class MinionCamp : NetworkBehaviour
         _spawner.Initialize(transform, _minionManager, _statusController);
         _statusController.Initialize(_minionManager, _spawner);
         _attackerTracker.Initialize();
-        _surrenderController.Initialize(transform, _minionManager, _statusController, _attackerTracker);
+        _surrenderController.Initialize(transform, _minionManager, _statusController, 
+            _attackerTracker, _spawner.InitialMinionCount);
     }
 
     public override void OnStartServer()

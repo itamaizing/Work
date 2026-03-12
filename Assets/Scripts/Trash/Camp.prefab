@@ -100,6 +100,11 @@ GameObject:
   - component: {fileID: 930308535663925543}
   - component: {fileID: 1553097900142774207}
   - component: {fileID: 5266253427922722445}
+  - component: {fileID: 333896144280220402}
+  - component: {fileID: 3909583295994357731}
+  - component: {fileID: 2389372146903702434}
+  - component: {fileID: 6894690129286515717}
+  - component: {fileID: 2768610894694132959}
   m_Layer: 0
   m_Name: Camp
   m_TagString: Untagged
@@ -121,6 +126,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3976394205952549454}
+  - {fileID: 7068031598801169340}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1553097900142774207
@@ -138,16 +144,6 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _minionLeadPref: {fileID: 880709639755590841, guid: c660bdcdea2d5184ba8d361d3fc628fc, type: 3}
-  _surrenderUI: {fileID: 2739342022316990771, guid: b8fe638bfd764814d950253dca78920a, type: 3}
-  _minionPrefs:
-  - {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
-  _percentageHPForSurrender: 0.5
-  _distance: 5
-  _campColor: {fileID: 6626269199134353010}
-  _campStatus: 0
-  _players: []
-  _totalMaxHP: 0
 --- !u!114 &5266253427922722445
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,3 +161,221 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
+--- !u!114 &333896144280220402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4342702718005923716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0daf3852a8526c34f961e15636a6ba01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CampMinionManager
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+--- !u!114 &3909583295994357731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4342702718005923716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92e1979359f0c3547939649434e72c24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CampSpawner
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _minionLeadPref: {fileID: 880709639755590841, guid: c660bdcdea2d5184ba8d361d3fc628fc, type: 3}
+  _minionPrefs:
+  - {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+  - {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+  - {fileID: 1871163040516354185, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+  _randomSpawnDistance: 3
+  _spawnDelaySeconds: 30
+  _distanceToLead: 3
+  _initialMinionCount: 3
+--- !u!114 &2389372146903702434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4342702718005923716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6fa4c00f75b1254db88da97582fa920, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CampStatusController
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _campColor: {fileID: 6626269199134353010}
+--- !u!114 &6894690129286515717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4342702718005923716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24b1c5db01a3117408c6ac24f82d30ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CampAttackerTracker
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+--- !u!114 &2768610894694132959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4342702718005923716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3964e085a3aa3247948aa03568b0a6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CampSurrenderController
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _surrenderUI: {fileID: 8375836281134852816}
+  _percentageHPForSurrender: 0.1
+  _campDistance: 5
+  _checkDelaySeconds: 5
+--- !u!1001 &5924744477919808483
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 930308535663925543}
+    m_Modifications:
+    - target: {fileID: 2739342022316990771, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: _camp
+      value: 
+      objectReference: {fileID: 1553097900142774207}
+    - target: {fileID: 3471812404425891935, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471812404425891935, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471812404425891935, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471812404425891935, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471812404425891935, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471812404425891935, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471812404425891935, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471812404425891935, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471812404425891935, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471812404425891935, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471812404425891935, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471812404425891935, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471812404425891935, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471812404425891935, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471812404425891935, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471812404425891935, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471812404425891935, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 1.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471812404425891935, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471812404425891935, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471812404425891935, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4491219970960653917, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_IgnoreReversedGraphics
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6330037147803364989, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_Name
+      value: SurrenderUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 6330037147803364989, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6330037147803364989, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+--- !u!224 &7068031598801169340 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3471812404425891935, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+  m_PrefabInstance: {fileID: 5924744477919808483}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8375836281134852816 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2739342022316990771, guid: b8fe638bfd764814d950253dca78920a, type: 3}
+  m_PrefabInstance: {fileID: 5924744477919808483}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ffbcdec99079ae4482a019d25d91e8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CampSurrenderUI

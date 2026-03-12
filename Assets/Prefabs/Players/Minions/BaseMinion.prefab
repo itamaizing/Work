@@ -247,6 +247,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04a32c9096d066945864c8dff3c0ab74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1808229507172449395 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5590339039165547173, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 6092456140968476374}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2335912879836011194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7f243771c2613d40a4aecc719336ae4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2057095471850671928 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -279,7 +290,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _playerData: {fileID: 11400000, guid: 6d4bdd627c946744396722e0bd4dd7d5, type: 2}
-  _attributeSystem: {fileID: 0}
+  _attributeSystem: {fileID: 5042042462013097724}
   _networkSettings: {fileID: 8415053888924651187}
   _rigidbody: {fileID: 5333065205538383447}
   _collider: {fileID: 4687739072136256028}
@@ -289,10 +300,10 @@ MonoBehaviour:
   _healthComponent: {fileID: 321208861123123196}
   _playerMove: {fileID: 2054057519776599919}
   _abilities: {fileID: 2057095471850671928}
-  characterState: {fileID: 0}
+  characterState: {fileID: 1808229507172449395}
   uiComponent: {fileID: 8629066331929730936}
   _selectComponent: {fileID: 3097324644064452792}
-  _damageTracker: {fileID: 0}
+  _damageTracker: {fileID: 6672871860999954575}
   TemporaryResourceDisplay: []
   _selectedCircle: {fileID: 4163371236763689060}
   _spawnComponent: {fileID: 5963193180723515438}
@@ -379,7 +390,6 @@ MonoBehaviour:
     _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 1
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
@@ -392,13 +402,6 @@ MonoBehaviour:
     _skillType: 2
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 8
-  _abilityForm: 0
-  _damageType: 5
-  _attackRangeType: 0
-  _skillType: 2
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -434,20 +437,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 0
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -496,6 +491,17 @@ CapsuleCollider:
   m_CorrespondingSourceObject: {fileID: 1550066538247365834, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
   m_PrefabInstance: {fileID: 6092456140968476374}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5042042462013097724 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1257681269524314154, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 6092456140968476374}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2335912879836011194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36119deea7370464ba6e74a8a3c290a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttributeSystem
 --- !u!54 &5333065205538383447 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 2201725961568704641, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -510,6 +516,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 25397801c5beb30488b57202e0ad634f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6672871860999954575 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 582667559171038809, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 6092456140968476374}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2335912879836011194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f9c63c6a7dd64748ac13474f5a6e770, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &7969626015849665324 stripped

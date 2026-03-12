@@ -40,7 +40,7 @@ public class CampAttackerTracker : NetworkBehaviour
         {
             _attackers.Add(heroComponent);
             heroComponent.Health.HealTaked += OnHealTaken;
-            heroComponent.CharacterState.OnStateAddFromPerson += OnBuffApplied;
+            heroComponent.CharacterState.OnStateAdded += OnBuffApplied;
         }
 
         _attackerTimers[heroComponent] = StartCoroutine(RemoveAttackerAfterDelay(heroComponent, _attackerTimeoutSeconds));
@@ -54,11 +54,11 @@ public class CampAttackerTracker : NetworkBehaviour
         }
     }
 
-    private void OnBuffApplied(GameObject whoAddBuff)
+    private void OnBuffApplied(AbstractCharacterState whoAddBuff)
     {
         if (whoAddBuff != null)
         {
-            AddAttacker(whoAddBuff);
+            AddAttacker(whoAddBuff.PersonWhoMadeBuff.gameObject);
         }
     }
 
@@ -82,7 +82,7 @@ public class CampAttackerTracker : NetworkBehaviour
         if (hero == null) return;
 
         hero.Health.HealTaked -= OnHealTaken;
-        hero.CharacterState.OnStateAddFromPerson -= OnBuffApplied;
+        hero.CharacterState.OnStateAdded -= OnBuffApplied;
 
         _attackers.Remove(hero);
         _attackerTimers.Remove(hero);
@@ -116,7 +116,7 @@ public class CampAttackerTracker : NetworkBehaviour
             if (attacker != null)
             {
                 attacker.Health.HealTaked -= OnHealTaken;
-                attacker.CharacterState.OnStateAddFromPerson -= OnBuffApplied;
+                attacker.CharacterState.OnStateAdded -= OnBuffApplied;
             }
         }
 

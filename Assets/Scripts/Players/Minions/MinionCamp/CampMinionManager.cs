@@ -6,6 +6,7 @@ public class CampMinionManager : NetworkBehaviour
 {
     private MinionComponent _minionLead;
     private List<MinionComponent> _minions = new();
+    private readonly SyncList<GameObject> _playersSyncList = new SyncList<GameObject>();
     private List<Character> _players = new();
     private MinionCamp _camp;
 
@@ -13,11 +14,53 @@ public class CampMinionManager : NetworkBehaviour
     {
         _camp = camp;
     }
+    
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        _playersSyncList.OnChange += OnPlayersListChanged;
+
+        foreach (var go in _playersSyncList)
+        {
+            var character = go.GetComponent<Character>();
+            if (character != null && !_players.Contains(character))
+            {
+                _players.Add(character);
+            }
+        }
+    }
+
+    public override void OnStopClient()
+    {
+        base.OnStopClient();
+        _playersSyncList.OnChange -= OnPlayersListChanged;
+    }
+
+    private void OnPlayersListChanged(SyncList<GameObject>.Operation op, int index, GameObject item)
+    {
+        switch (op)
+        {
+            case SyncList<GameObject>.Operation.OP_ADD:
+                var character = item.GetComponent<Character>();
+                if (character != null && !_players.Contains(character))
+                {
+                    _players.Add(character);
+                }
+                break;
+            case SyncList<GameObject>.Operation.OP_REMOVEAT:
+                if (index < _players.Count)
+                {
+                    _players.RemoveAt(index);
+                }
+                break;
+        }
+    }
 
     public void AddPlayer(Character player)
     {
-        if (player != null && player.NetworkSettings.isOwned && !_players.Contains(player))
+        if (player != null && !_playersSyncList.Contains(player.gameObject))
         {
+            _playersSyncList.Add(player.gameObject);
             _players.Add(player);
         }
     }
@@ -199,23 +242,6 @@ public class CampMinionManager : NetworkBehaviour
             return;
         }
     }
-    
-    [ClientRpc]
-    public void RpcSetDefaultLayerMinions()
-    {
-        foreach (var minion in _minions)
-        {
-            if (minion != null && minion.gameObject != null)
-            {
-                minion.gameObject.layer = 0;
-            }
-        }
-
-        if (_minionLead != null && _minionLead.gameObject != null)
-        {
-            _minionLead.gameObject.layer = 0;
-        }
-    }
 
     private void UpdateMinionLayerForLocalPlayer(GameObject minion)
     {
@@ -226,6 +252,7 @@ public class CampMinionManager : NetworkBehaviour
             if (player == null) continue;
 
             var hero = player.GetComponent<Character>();
+
             if (hero == null || !hero.isOwned) continue;
 
             int localTeamIndex = hero.NetworkSettings.TeamIndex;

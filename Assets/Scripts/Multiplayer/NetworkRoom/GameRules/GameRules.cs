@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Debug = UnityEngine.Debug;
 
 public abstract class GameRules : NetworkBehaviour
 {
@@ -50,6 +51,23 @@ public abstract class GameRules : NetworkBehaviour
         SubscribeToTowerDeath();
 
         StartCoroutine(FindServerGameManager());
+
+        StartCoroutine(RegisterPlayersInCamps());
+    }
+    
+    private IEnumerator RegisterPlayersInCamps()
+    {
+        while (!_room.IsLoaded) yield return null;
+    
+        FindGameManager();
+    
+        foreach (var item in _room.Players)
+        {
+            foreach (var camp in _gameManager.Camps)
+            {
+                camp.SetPlayers(item);
+            }
+        }
     }
 
     public override void OnStartClient()

@@ -16,6 +16,7 @@ public class CampSpawner : NetworkBehaviour
     private CampMinionManager _minionManager;
     private CampStatusController _statusController;
     
+    public int InitialMinionCount => _initialMinionCount;
     private float _spawnTimer = 0f;
     private bool _isWaitingToSpawn = false;
 
@@ -146,7 +147,9 @@ public class CampSpawner : NetworkBehaviour
     {
         Vector3 spawnPoint = GetRandomSpawnPoint();
         var lead = Instantiate(_minionLeadPref, _campTransform.position + spawnPoint, Quaternion.identity);
+        lead.Initialize();
         NetworkServer.Spawn(lead.gameObject);
+        lead.Health.ResetValue();
         
         _minionManager.SetLead(lead);
         
@@ -195,7 +198,9 @@ public class CampSpawner : NetworkBehaviour
     {
         Vector3 spawnPoint = GetRandomSpawnPoint();
         var minion = Instantiate(_minionPrefs[prefabIndex], _campTransform.position + spawnPoint, Quaternion.identity);
+        minion.Initialize();
         NetworkServer.Spawn(minion.gameObject);
+        minion.Health.ResetValue();
         
         _minionManager.AddMinion(minion);
         
