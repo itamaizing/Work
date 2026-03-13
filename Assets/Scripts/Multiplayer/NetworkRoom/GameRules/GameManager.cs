@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private HeroSpawnManager _heroSpawnManager;
     [SerializeField] private PreparationAreaManager preparationAreaManager;
+    [SerializeField] private RestartRound restartRound;
     [SerializeField] private MonoBehaviour _sourceUI;
     [SerializeField] private TeamsPanel _teamsPanel;
     [SerializeField] private TeamSource _sourceTabl;
@@ -34,4 +35,5 @@ public class GameManager : MonoBehaviour
     public IGameSourceUI SourceUI { get => _gameSourceUI; }
     public TeamsPanel TeamsPanel { get => _teamsPanel; }  
     public TeamSource Source { get => _sourceTabl; }
+    public RestartRound RestartRound { get => restartRound; }
 }

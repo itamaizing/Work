@@ -25,7 +25,7 @@ public abstract class GameRules : NetworkBehaviour
     protected GameManager _gameManager;
 	protected Coroutine _regenCoroutine;
 
-	[SyncVar] private bool _isStarted;
+    [SyncVar] private bool _isStarted;
     private float _disconnectDelayClient = 6f;
     private float _disconnectDelayServer = 5f;
     public bool IsStarted { get => _isStarted; set => _isStarted = value; }
@@ -38,7 +38,13 @@ public abstract class GameRules : NetworkBehaviour
     protected abstract void GameStartClient();
     protected abstract void OnPlayerDied(Character character);
     protected abstract void OnTowerDied(Object tower);
+    protected abstract void RestartRound();
 
+    public void CallRestartRound()
+    {
+        if (isServer) RestartRound();
+        else CmdRestartRound();
+    }
 
     public void Init(NetworkRoom room)
     {
@@ -88,6 +94,7 @@ public abstract class GameRules : NetworkBehaviour
 
         _spawnPoints = _gameManager.HeroSpawnManager;
         _preparationAreaManager = _gameManager.PreparationAreaManager;
+        _gameManager.RestartRound.GameRules = this;
 
         if (_gameManager.TeamsPanel == null) return;
     }
@@ -349,5 +356,11 @@ public abstract class GameRules : NetworkBehaviour
         {
             _gameManager.TeamsPanel.AddInSecondTeam(hero);
         }
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdRestartRound()
+    {
+        RestartRound();
     }
 }

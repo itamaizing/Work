@@ -17,6 +17,16 @@ public class LvlInfo : MonoBehaviour
 	private int _expValue;
 	private int _maxExpValue;
 
+	private void OnDestroy()
+	{
+		if (_playerLevel != null)
+		{
+			_playerLevel.EXPAdded -= OnEXPAdded;
+			_playerLevel.LVLUped -= OnLVLUped;
+			_playerLevel.EXPForNextLVLChanged -= OnEXPForNextLVLChanged;
+		}
+	}
+
 	public void Init(Level level)
     {
 		if (_playerLevel != null)
