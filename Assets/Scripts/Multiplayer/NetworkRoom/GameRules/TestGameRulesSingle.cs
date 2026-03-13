@@ -98,6 +98,8 @@ public class TestGameRulesSingle : GameRules
     {
         yield return StartCoroutine(SplitTeams(spawnPoints));
 
+        _preparationAreaManager?.PreparationAreasDisable(5f);
+
         foreach (var player in _players)
         {
             int spawnIndex = player.NetworkSettings.TeamIndex - 1;
@@ -120,6 +122,40 @@ public class TestGameRulesSingle : GameRules
         }
     }
 
+    protected override void RestartRound()
+    {
+        RpcEnablePreparationAreas(5f);
+
+        if (isServer)
+        {
+            List<NetworkIdentity> objectsToRemove = new List<NetworkIdentity>();
+
+            foreach (var networkIdentity in NetworkServer.spawned.Values)
+            {
+                bool isPlayer = _players.Exists(player => player.gameObject == networkIdentity.gameObject);
+                bool isTestGameRules = networkIdentity.GetComponent<TestGameRules>() != null;
+                bool isUser = networkIdentity.GetComponent<User>() != null;
+
+                if (networkIdentity != null && !isPlayer && !isTestGameRules && !isUser)
+                {
+                    objectsToRemove.Add(networkIdentity);
+                }
+            }
+        }
+
+        foreach (var playerSettings in _players)
+        {
+            //ResetPlayerState(playerSettings);
+            int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
+
+            if (_spawnPoints != null)
+            {
+                RpcTeleportPlayer(playerSettings.gameObject, _spawnPoints.GetRandomPoint(spawnIndex), _spawnPoints.GetRotate(spawnIndex));
+            }
+        }
+    }
+    
+
     [TargetRpc]
     private void TargetApplyRewards(NetworkConnectionToClient connection, int experience, float bottleVolume)
     {
@@ -135,6 +171,8 @@ public class TestGameRulesSingle : GameRules
             Debug.LogWarning("[Client] No hero set in LevelCharacterManager. Experience not applied.");
         }
     }
+
+    [ClientRpc] private void RpcEnablePreparationAreas(float duration) => _preparationAreaManager?.PreparationAreasDisable(duration);
 
     protected override void OnPlayerDied(Character character)
     {
