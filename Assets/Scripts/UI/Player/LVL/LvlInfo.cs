@@ -66,4 +66,14 @@ public class LvlInfo : MonoBehaviour
 		_lvlBar.value = (float)_expValue / _maxExpValue;
 		_LvlText.text = _lvlValue.ToString();
 	}
+    
+    private void OnDestroy()
+    {
+	    if (_playerLevel != null)
+	    {
+		    _playerLevel.EXPAdded -= OnEXPAdded;
+		    _playerLevel.LVLUped -= OnLVLUped;
+		    _playerLevel.EXPForNextLVLChanged -= OnEXPForNextLVLChanged;
+	    }
+    }
 }

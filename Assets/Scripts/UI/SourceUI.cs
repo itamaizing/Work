@@ -68,6 +68,8 @@ public class SourceUI : MonoBehaviour, IGameSourceUI
     {
         teamIndex--;
 
+        if(_teamEndText1 == null) return;
+        
         _winImage.gameObject.SetActive(true);
         _teamEndText1.gameObject.SetActive(true);
         _teamEndText2.gameObject.SetActive(true);

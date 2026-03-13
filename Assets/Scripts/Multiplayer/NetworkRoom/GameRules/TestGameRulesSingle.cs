@@ -22,6 +22,8 @@ public class TestGameRulesSingle : GameRules
 
     protected override void GameStartClient()
     {
+        Debug.Log($"[GameStartClient] preparationAreaManager: {_preparationAreaManager}");
+
         _preparationAreaManager?.PreparationAreasDisable(5f);
 
         if (isLocalPlayer && TryGetComponent(out HeroComponent hero))

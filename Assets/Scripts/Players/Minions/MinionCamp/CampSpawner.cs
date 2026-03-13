@@ -149,8 +149,7 @@ public class CampSpawner : NetworkBehaviour
         var lead = Instantiate(_minionLeadPref, _campTransform.position + spawnPoint, Quaternion.identity);
         lead.Initialize();
         NetworkServer.Spawn(lead.gameObject);
-        lead.Health.ResetValue();
-        
+
         _minionManager.SetLead(lead);
         
         return lead;
@@ -200,8 +199,7 @@ public class CampSpawner : NetworkBehaviour
         var minion = Instantiate(_minionPrefs[prefabIndex], _campTransform.position + spawnPoint, Quaternion.identity);
         minion.Initialize();
         NetworkServer.Spawn(minion.gameObject);
-        minion.Health.ResetValue();
-        
+
         _minionManager.AddMinion(minion);
         
         return minion;

@@ -15,6 +15,8 @@ public class MinionComponent : Character
     public MinionCamp MyCamp;
     public int ExpForDieKill { get => _expForDieKill; }
     public bool IsIntercepted { get => _isIntercepted; }
+    
+    private Character _lastAttacker;
     public float CostCall => _costCall;
 
     public event Action<MinionComponent> Destroyed;
@@ -43,21 +45,34 @@ public class MinionComponent : Character
     protected override void OnDied()
     {
         base.OnDied();
+
         if (_navMeshAgent != null) _navMeshAgent.enabled = false;
 
         if (isServer)
         {
+            GiveExpToKiller();
             Destroyed?.Invoke(this);
-            Destroy(gameObject,3f);
+            Destroy(gameObject, 3f);
         }
+    }
+    
+    private void GiveExpToKiller()
+    {
+        if (_lastAttacker == null) return;
+        if (_lastAttacker.IsDead) return;
+
+        _lastAttacker.LVL.AddEXP(_expForDieKill);
     }
     
     public override bool TryTakeDamage(ref Damage damage, Skill skill)
     {
         bool b = base.TryTakeDamage(ref damage, skill);
-        if (b && skill != null && skill.Hero != null && MyCamp != null)
+        if (b && skill != null && skill.Hero != null)
         {
-            MyCamp.AddAttacker(skill.Hero.gameObject);
+            if (MyCamp != null)
+                MyCamp.AddAttacker(skill.Hero.gameObject);
+
+            _lastAttacker = skill.Hero;
         }
         return b;
     }
