@@ -17,6 +17,11 @@ public class SummoningSwarm : Skill
 
     public int ChargesSwarm => _chargesSwarm;
 
+    private void OnEnable()
+    {
+        Hero.Reset += ResettSwarmCharges;
+    }
+
     private void OnDisable()
     {
         if (_removeChargesCoroutine != null)
@@ -24,6 +29,8 @@ public class SummoningSwarm : Skill
             StopCoroutine(_removeChargesCoroutine);
             _removeChargesCoroutine = null;
         }
+
+        Hero.Reset -= ResettSwarmCharges;
     }
 
     protected override IEnumerator CastJob()
@@ -41,6 +48,8 @@ public class SummoningSwarm : Skill
         yield return new WaitForSeconds(ChargesLifetime);
         SetSwarmCharges(0);
     }
+
+    private void ResettSwarmCharges() => CurrentCharge(_chargesSwarm);
 
     private void SetSwarmCharges(int value)
     {

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class AttackingPsionicEnergy : Energy
 {
     [SerializeField] private Slider attackingPsionicsSlider;
+    [SerializeField] private Character _player;
 
     private const float _baseMaxAttackingPsiEnergy = 30f;
     private const float _timeAttackingPsiEnergy = 6f;
@@ -38,6 +39,16 @@ public class AttackingPsionicEnergy : Energy
         UpdateAttackingEnergyBar();
     }
     #endregion
+
+    private void OnEnable()
+    {
+        _player.Reset += AttackingPsiEnergyReset;
+    }
+
+    private void OnDisable()
+    {
+        _player.Reset -= AttackingPsiEnergyReset;
+    }
 
     private void Start()
     {
@@ -91,6 +102,11 @@ public class AttackingPsionicEnergy : Energy
             yield return null;
         }
 
+        AttackingPsiEnergyReset();
+    }
+
+    private void AttackingPsiEnergyReset()
+    {
         CurrentValue = 0;
         _isAttackingPsiActive = false;
 

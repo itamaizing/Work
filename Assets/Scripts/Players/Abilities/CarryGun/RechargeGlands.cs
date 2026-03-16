@@ -35,6 +35,12 @@ public class RechargeGlands : Skill
 
     public int ChargesGlands => _chargesGlands;
 
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+        _activeCoroutines = 0;
+    }
+
     protected override IEnumerator CastJob()
     {
         if (_cooldownEnergy != null) _cooldownEnergy.CastCooldownEnergySkill(_cooldownEnergyCost, this);
@@ -80,12 +86,6 @@ public class RechargeGlands : Skill
         }
 
         return false;
-    }
-
-    private void OnDisable()
-    {
-        StopAllCoroutines();
-        _activeCoroutines = 0;
     }
 
     public void UseSwarmCharges(int value)
