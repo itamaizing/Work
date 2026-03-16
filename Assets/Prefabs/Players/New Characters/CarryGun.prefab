@@ -23485,6 +23485,7 @@ MonoBehaviour:
   _maxValue: 0
   _sumDamageGiven: 0
   attackingPsionicsSlider: {fileID: 3249209933658034755}
+  _player: {fileID: 8319872899575431858}
 --- !u!114 &7664291950465520178
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -23,7 +23,6 @@ public class CooldownEnergy : Resource
     private void Awake()
     {
         InitCooldownEnergyFromJumpSkill();
-        UpdateSlider();
     }
 
     private void OnEnable()
@@ -46,6 +45,8 @@ public class CooldownEnergy : Resource
 
         _maxValue = totalCooldown;
         _currentValue = _maxValue;
+
+        UpdateSlider();
     }
 
     private IEnumerator RegenerateCooldownEnergy()
