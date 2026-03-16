@@ -63,6 +63,38 @@ public class SkillQueue : MonoBehaviour
             }
         }
     }
+
+    public void ClearQueue()
+    {
+        if (_currentSkill != null)
+        {
+            try
+            {
+                _currentSkill.TryCancel(true);
+            }
+            catch { }
+
+            _currentSkill = null;
+        }
+
+        while (_skills.Count > 0)
+        {
+            var skill = _skills.Dequeue();
+
+            try
+            {
+                skill.TryCancel(true);
+                skill.ClearQueueTarget();
+            }
+            catch { }
+
+            SkillDeleted?.Invoke(skill);
+        }
+
+        _skillRenderer?.StopDrawRadius();
+        _skillRenderer?.StopDrawAllLineForZone();
+    }
+
     public void Add(Skill skill)
     {
         //if (_skills.Contains(skill))

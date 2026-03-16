@@ -77,6 +77,8 @@ public abstract class GameRules : NetworkBehaviour
             {
                 playerSettings.Abilities.CancleAllSkills();
 
+                if (playerSettings.Abilities.SkillQueue != null) playerSettings.Abilities.SkillQueue.ClearQueue();
+
                 foreach (var skill in playerSettings.Abilities.Skills) skill.RpcResetSkillState();
             }
 
