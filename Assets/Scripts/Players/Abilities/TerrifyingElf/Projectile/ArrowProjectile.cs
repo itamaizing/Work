@@ -38,6 +38,7 @@ public class ArrowProjectile : Projectiles
     private bool IsEnemy(GameObject target)
     {
         if (_dad == null) return IsEnemyByLayer(target);
+        if (!target.TryGetComponent<NetworkIdentity>(out _)) return IsEnemyByLayer(target);
         if (!_dad.TryGetComponent(out UserNetworkSettings ownerSettings) || !target.TryGetComponent(out UserNetworkSettings targetSettings)) return IsEnemyByLayer(target);
         if (!IsTeamAssigned(ownerSettings) || !IsTeamAssigned(targetSettings)) return IsEnemyByLayer(target);
 
@@ -98,6 +99,7 @@ public class ArrowProjectile : Projectiles
         _magDamage = energy;
     }
 
+    [Server]
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject == _dad?.gameObject) return;
