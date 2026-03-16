@@ -11,12 +11,5 @@ public class RestartRound : MonoBehaviour
     public void Restart()
     {
         if (_gameRules != null) _gameRules.CallRestartRound();
-        else RestartGame();
-    }
-
-    public void RestartGame()
-    {
-        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.LoadScene(currentSceneIndex);
     }
 }

@@ -130,31 +130,34 @@ public class TestGameRulesSingle : GameRules
         {
             List<NetworkIdentity> objectsToRemove = new List<NetworkIdentity>();
 
-            foreach (var networkIdentity in NetworkServer.spawned.Values)
+            foreach (var netIdentity in NetworkServer.spawned.Values)
             {
-                bool isPlayer = _players.Exists(player => player.gameObject == networkIdentity.gameObject);
-                bool isTestGameRules = networkIdentity.GetComponent<TestGameRules>() != null;
-                bool isUser = networkIdentity.GetComponent<User>() != null;
+                if (netIdentity == null) continue;
 
-                if (networkIdentity != null && !isPlayer && !isTestGameRules && !isUser)
-                {
-                    objectsToRemove.Add(networkIdentity);
-                }
+                if (netIdentity.GetComponent<HeroComponent>() != null) continue;
+                if (netIdentity.GetComponent<GameRules>() != null) continue;
+                if (netIdentity.GetComponent<User>() != null) continue;
+
+                objectsToRemove.Add(netIdentity);
+            }
+
+            foreach (var netIdentity in objectsToRemove)
+            {
+                NetworkServer.Destroy(netIdentity.gameObject);
             }
         }
 
         foreach (var playerSettings in _players)
         {
-            //ResetPlayerState(playerSettings);
             int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
 
             if (_spawnPoints != null)
             {
-                RpcTeleportPlayer(playerSettings.gameObject, _spawnPoints.GetRandomPoint(spawnIndex), _spawnPoints.GetRotate(spawnIndex));
+                RpcTeleportPlayer( playerSettings.gameObject, _spawnPoints.GetRandomPoint(spawnIndex), _spawnPoints.GetRotate(spawnIndex));
             }
         }
     }
-    
+
 
     [TargetRpc]
     private void TargetApplyRewards(NetworkConnectionToClient connection, int experience, float bottleVolume)
