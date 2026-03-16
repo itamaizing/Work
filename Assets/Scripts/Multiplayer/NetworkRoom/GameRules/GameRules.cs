@@ -66,28 +66,29 @@ public abstract class GameRules : NetworkBehaviour
             }
         }
 
-        foreach (var player in _players)
-        {
-            if (player == null) continue;
-
-            player.CharacterState.ServerClearAllStates();
-        }
-
         foreach (var playerSettings in _players)
         {
+            if (playerSettings == null) continue;
+
+            playerSettings.CharacterState.ServerClearAllStates();
+
+            if (playerSettings.Abilities != null)
+            {
+                playerSettings.Abilities.CancleAllSkills();
+
+                foreach (var skill in playerSettings.Abilities.Skills) skill.RpcResetSkillState();
+            }
+
             int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
 
-            if (_spawnPoints != null)
-            {
-                RpcTeleportPlayer(playerSettings.gameObject, _spawnPoints.GetRandomPoint(spawnIndex), _spawnPoints.GetRotate(spawnIndex));
-            }
+            if (_spawnPoints != null) RpcTeleportPlayer(playerSettings.gameObject, _spawnPoints.GetRandomPoint(spawnIndex), _spawnPoints.GetRotate(spawnIndex));
         }
     }
 
     public void CallRestartRound()
     {
         if (isServer) Restart();
-        else Restart();
+        else CmdRestart();
     }
 
     public void Init(NetworkRoom room)
@@ -405,8 +406,8 @@ public abstract class GameRules : NetworkBehaviour
     [ClientRpc] public void RpcEnablePreparationAreas(float duration) => _preparationAreaManager?.PreparationAreasDisable(duration);
 
     [Command(requiresAuthority = false)]
-    public void CmdRestartRound()
+    public void CmdRestart()
     {
-        RestartRound();
+        Restart();
     }
 }
