@@ -25,16 +25,6 @@ public class ReversePolarity : Skill
 
     private void OnEnable()
     {
-        /*sparkOfLight.CastEnded += RemoveReversePolarityEffect;
-        flashOfLight.CastEnded += RemoveReversePolarityEffect;
-        restoration.CastEnded += RemoveReversePolarityEffect;
-        priestShield.CastEnded += RemoveReversePolarityEffect;
-        
-        sparkOfLight.CastEnded += SwitchSpells;
-        flashOfLight.CastEnded += SwitchSpells;
-        restoration.CastEnded += SwitchSpells;
-        priestShield.CastEnded += SwitchSpells;
-        */
     }
 
     private void OnDisable()
