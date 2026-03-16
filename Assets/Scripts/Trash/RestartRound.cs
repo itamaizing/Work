@@ -1,5 +1,6 @@
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class RestartRound : MonoBehaviour
 {
@@ -9,12 +10,13 @@ public class RestartRound : MonoBehaviour
 
     public void Restart()
     {
-        if (_gameRules == null)
-        {
-            Debug.LogError("GameRules not found");
-            return;
-        }
+        if (_gameRules != null) _gameRules.CallRestartRound();
+        else RestartGame();
+    }
 
-        _gameRules.CallRestartRound();
+    public void RestartGame()
+    {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex);
     }
 }

@@ -38,7 +38,6 @@ public class ArrowProjectile : Projectiles
     private bool IsEnemy(GameObject target)
     {
         if (_dad == null) return IsEnemyByLayer(target);
-        if (!target.TryGetComponent<NetworkIdentity>(out _)) return IsEnemyByLayer(target);
         if (!_dad.TryGetComponent(out UserNetworkSettings ownerSettings) || !target.TryGetComponent(out UserNetworkSettings targetSettings)) return IsEnemyByLayer(target);
         if (!IsTeamAssigned(ownerSettings) || !IsTeamAssigned(targetSettings)) return IsEnemyByLayer(target);
 
@@ -52,7 +51,8 @@ public class ArrowProjectile : Projectiles
 
     private bool IsEnemyByLayer(GameObject target)
     {
-        return ((1 << target.layer) & _skill.Targeting.Layer) != 0;
+        int enemyLayer = LayerMask.NameToLayer("Enemy");
+        return target.layer == enemyLayer;
     }
 
     private void Update()
