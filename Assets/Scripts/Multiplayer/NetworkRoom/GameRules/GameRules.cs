@@ -40,10 +40,54 @@ public abstract class GameRules : NetworkBehaviour
     protected abstract void OnTowerDied(Object tower);
     protected abstract void RestartRound();
 
+    protected void Restart()
+    {
+        RpcEnablePreparationAreas(5f);
+
+        if (isServer)
+        {
+            List<NetworkIdentity> objectsToRemove = new List<NetworkIdentity>();
+
+            foreach (var netIdentity in NetworkServer.spawned.Values)
+            {
+                if (netIdentity == null) continue;
+
+                if (netIdentity.GetComponent<HeroComponent>() != null) continue;
+                if (netIdentity.GetComponent<GameRules>() != null) continue;
+                if (netIdentity.GetComponent<User>() != null) continue;
+                if (netIdentity.GetComponent<MainTower>() != null) continue;
+
+                objectsToRemove.Add(netIdentity);
+            }
+
+            foreach (var netIdentity in objectsToRemove)
+            {
+                NetworkServer.Destroy(netIdentity.gameObject);
+            }
+        }
+
+        foreach (var player in _players)
+        {
+            if (player == null) continue;
+
+            player.CharacterState.ServerClearAllStates();
+        }
+
+        foreach (var playerSettings in _players)
+        {
+            int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
+
+            if (_spawnPoints != null)
+            {
+                RpcTeleportPlayer(playerSettings.gameObject, _spawnPoints.GetRandomPoint(spawnIndex), _spawnPoints.GetRotate(spawnIndex));
+            }
+        }
+    }
+
     public void CallRestartRound()
     {
-        if (isServer) RestartRound();
-        else CmdRestartRound();
+        if (isServer) Restart();
+        else Restart();
     }
 
     public void Init(NetworkRoom room)
@@ -357,6 +401,8 @@ public abstract class GameRules : NetworkBehaviour
             _gameManager.TeamsPanel.AddInSecondTeam(hero);
         }
     }
+
+    [ClientRpc] public void RpcEnablePreparationAreas(float duration) => _preparationAreaManager?.PreparationAreasDisable(duration);
 
     [Command(requiresAuthority = false)]
     public void CmdRestartRound()

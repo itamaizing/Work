@@ -791,6 +791,12 @@ public class CharacterState : NetworkBehaviour
 		_stateIcons?.RemoveIconCount();
 	}
 
+	[ClientRpc]
+	private void RpcClearStateIcons()
+	{
+		_stateIcons?.DeactivateAll();
+	}
+
 	private void MoveStateToEnd(int index)
 	{
 		if (index < 0 || index >= _currentStates.Count)
@@ -804,6 +810,16 @@ public class CharacterState : NetworkBehaviour
 
 		// Добавляем его в конец списка
 		_currentStates.Add(state);
+	}
+
+	[Server]
+	public void ServerClearAllStates()
+	{
+		var statesCopy = new List<AbstractCharacterState>(_currentStates);
+
+		foreach (var state in statesCopy) state.ExitState();
+		_currentStates.Clear();
+		RpcClearStateIcons();
 	}
 }
 

@@ -124,38 +124,7 @@ public class TestGameRulesSingle : GameRules
 
     protected override void RestartRound()
     {
-        RpcEnablePreparationAreas(5f);
-
-        if (isServer)
-        {
-            List<NetworkIdentity> objectsToRemove = new List<NetworkIdentity>();
-
-            foreach (var netIdentity in NetworkServer.spawned.Values)
-            {
-                if (netIdentity == null) continue;
-
-                if (netIdentity.GetComponent<HeroComponent>() != null) continue;
-                if (netIdentity.GetComponent<GameRules>() != null) continue;
-                if (netIdentity.GetComponent<User>() != null) continue;
-
-                objectsToRemove.Add(netIdentity);
-            }
-
-            foreach (var netIdentity in objectsToRemove)
-            {
-                NetworkServer.Destroy(netIdentity.gameObject);
-            }
-        }
-
-        foreach (var playerSettings in _players)
-        {
-            int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
-
-            if (_spawnPoints != null)
-            {
-                RpcTeleportPlayer( playerSettings.gameObject, _spawnPoints.GetRandomPoint(spawnIndex), _spawnPoints.GetRotate(spawnIndex));
-            }
-        }
+        Restart();
     }
 
 
@@ -174,8 +143,6 @@ public class TestGameRulesSingle : GameRules
             Debug.LogWarning("[Client] No hero set in LevelCharacterManager. Experience not applied.");
         }
     }
-
-    [ClientRpc] private void RpcEnablePreparationAreas(float duration) => _preparationAreaManager?.PreparationAreasDisable(duration);
 
     protected override void OnPlayerDied(Character character)
     {

@@ -177,7 +177,12 @@ public class TestGameRules : GameRules
 
         foreach (var playerSettings in _players)
         {
-            ResetPlayerState(playerSettings);
+            foreach (var player in _players)
+            {
+                if (player == null) continue;
+
+                player.CharacterState.ServerClearAllStates();
+            }
 
             int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
 
@@ -186,28 +191,6 @@ public class TestGameRules : GameRules
                 RpcTeleportPlayer(playerSettings.gameObject, _spawnPoints.GetRandomPoint(spawnIndex), _spawnPoints.GetRotate(spawnIndex));
             }
         }
-    }
-
-    private void ResetPlayerState(Character player)
-    {
-        //player.ServerResetAll();
-        /*
-        var health = playerSettings.Health;
-        health?.ResetValue();
-
-        var runeComponent = playerSettings.GetComponent<RuneComponent>();
-        runeComponent?.ResetValueRune();
-
-        var characterState = playerSettings.CharacterState;
-        if (characterState != null)
-        {
-            var statesCopy = new List<AbstractCharacterState>(characterState.CurrentStates);
-            foreach (var state in statesCopy)
-            {
-                characterState.RemoveState(state.State);
-            }
-        }
-        */
     }
 
     private int GetTeamCount(int teamIndex)
