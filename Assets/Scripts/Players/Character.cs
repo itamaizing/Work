@@ -133,6 +133,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
     public event Action<float, Skill, string> HealTaked;
 	public event Action<Character> Died;
 	public event Action Killed;
+	public event Action Reset;
 
 	protected override void OnValidate()
     {
@@ -360,6 +361,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 		_collider.enabled = true;
 		_rigidbody.isKinematic = false;
 		_playerMove.enabled = true;
+		Reset?.Invoke();
 
 		foreach (var item in _resources.Values)
 		{

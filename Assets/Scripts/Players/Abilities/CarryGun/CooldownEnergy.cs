@@ -29,11 +29,13 @@ public class CooldownEnergy : Resource
     private void OnEnable()
     {
         castCooldownEnergySkill += CooldownEnergySliderMinus;
+        _player.Reset += InitCooldownEnergyFromJumpSkill;
         StartCoroutine(RegenerateCooldownEnergy());
     }
 
     private void OnDisable()
     {
+        _player.Reset -= InitCooldownEnergyFromJumpSkill;
         castCooldownEnergySkill -= CooldownEnergySliderMinus;
         StopAllCoroutines();
     }

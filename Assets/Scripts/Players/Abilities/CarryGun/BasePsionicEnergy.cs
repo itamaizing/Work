@@ -55,7 +55,6 @@ public class BasePsionicEnergy : Resource, IDamageable
         _distanceAccumulator = 0f;
     }
 
-
     public override void Init(ResourceAttribute resource)
     {
         base.Init(resource);
@@ -86,9 +85,11 @@ public class BasePsionicEnergy : Resource, IDamageable
             _player.SpawnComponent.UnitAdded += OnMinionSpawned;
             _player.SpawnComponent.UnitRemoved += OnMinionRemoved;
         }
+
+        _player.Reset += PsiEnergyDecay;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         if (_player != null && _player.DamageTracker != null) _player.DamageTracker.OnDamageTracked -= OnDamageDealt;
         if (_player.Health != null) _player.Health.OnBeforeDamage -= psionicEnergySkill.HandleIncomingDamage;
@@ -103,6 +104,8 @@ public class BasePsionicEnergy : Resource, IDamageable
                 if (unit != null && unit.DamageTracker != null) unit.DamageTracker.OnDamageTracked -= OnDamageDealt;
             }
         }
+
+        _player.Reset -= PsiEnergyDecay;
     }
 
     private void PsionicRunning()
@@ -221,6 +224,11 @@ public class BasePsionicEnergy : Resource, IDamageable
     private IEnumerator EnergyDecayCoroutine()
     {
         yield return new WaitForSeconds(_psionicaDecayTime);
+        PsiEnergyDecay();
+    }
+
+    private void PsiEnergyDecay()
+    {
         CurrentValue = 0;
         RpcOnEnergyChanged(CurrentValue);
         _isInternalPsiEnergy = false;

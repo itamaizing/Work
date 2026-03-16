@@ -52,10 +52,10 @@ public abstract class GameRules : NetworkBehaviour
             {
                 if (netIdentity == null) continue;
 
-                if (netIdentity.GetComponent<HeroComponent>() != null) continue;
                 if (netIdentity.GetComponent<GameRules>() != null) continue;
                 if (netIdentity.GetComponent<User>() != null) continue;
                 if (netIdentity.GetComponent<MainTower>() != null) continue;
+                if (netIdentity.GetComponent<HeroComponent>() != null) continue;
 
                 objectsToRemove.Add(netIdentity);
             }
@@ -71,6 +71,7 @@ public abstract class GameRules : NetworkBehaviour
             if (playerSettings == null) continue;
 
             playerSettings.CharacterState.ServerClearAllStates();
+            playerSettings.ServerResetAll();
 
             if (playerSettings.Abilities != null)
             {
@@ -114,6 +115,11 @@ public abstract class GameRules : NetworkBehaviour
         ServerManager.Instance.EnableMenu();
         SceneManager.UnloadSceneAsync(_roomName);
         Destroy(gameObject);
+    }
+
+    private void ResetResource(NetworkIdentity networkIdentity)
+    {
+        if (networkIdentity.TryGetComponent<Resource>(out Resource resource)) resource.ResetValue();
     }
 
     protected virtual void EndGame()
