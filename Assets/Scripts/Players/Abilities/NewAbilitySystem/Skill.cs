@@ -1466,6 +1466,13 @@ public abstract class Skill : NetworkBehaviour
         SkillAfterCastJob();
     }
 
+    public void FullResetTargeting()
+    {
+        _targetInfoQueue.Clear();
+        Targeting.ClearTempTarget();
+        Targeting.ForDamage = null;
+    }
+
     [Command] private void CmdSkillAfterCastJob() => SkillAfterCastJob();
 
     #region OnClicks

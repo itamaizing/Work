@@ -138,6 +138,7 @@ public class SkillManager : MonoBehaviour
                 CurrentCastingSkill = null;
         }
     }
+
     public void CancleAllSkills()
     {
         while (_selectedSkill != null && _selectedSkill.IsPreparing)

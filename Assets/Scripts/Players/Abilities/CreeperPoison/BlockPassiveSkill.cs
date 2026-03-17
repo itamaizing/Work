@@ -18,10 +18,10 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
     #region Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
-    public override void LoadTargetData(TargetInfo targetInfo) => throw new NotImplementedException();
+    public override void LoadTargetData(TargetInfo targetInfo) { }
     protected override IEnumerator CastJob() => null;
-    protected override void ClearData() => throw new NotImplementedException();
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) => throw new NotImplementedException();
+    protected override void ClearData() { }
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) => null;
     #endregion
 
     private void OnEnable()

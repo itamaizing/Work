@@ -82,7 +82,11 @@ public abstract class GameRules : NetworkBehaviour
             {
                 playerSettings.Abilities.CancleAllSkills();
 
-                foreach (var skill in playerSettings.Abilities.Skills) skill.RpcResetSkillState();
+                foreach (var skill in playerSettings.Abilities.Skills)
+                {
+                    skill.RpcResetSkillState();
+                    skill.FullResetTargeting();
+                }
             }
 
             int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
