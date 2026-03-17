@@ -15,9 +15,6 @@ public class NpcSpawn : MonoBehaviour
 
     private const byte NpcTeamIndex = 3;
 
-    private int EnemyLayer = LayerMask.NameToLayer("Enemy");
-    private int AlliesLayer = LayerMask.NameToLayer("Allies");
-
     private readonly List<GameObject> _spawnedNpcs = new();
 
     public IReadOnlyList<GameObject> SpawnedNpcs => _spawnedNpcs;
@@ -26,11 +23,24 @@ public class NpcSpawn : MonoBehaviour
     {
         if (!NetworkServer.active) return;
 
-        SpawnNpcGroup(_spawnPointsEnemyNpc, _enemyNpcPrefab, roomScene, EnemyLayer);
-        //SpawnNpcGroup(_spawnPointsAlliesNpc, _alliesNpcPrefab, roomScene, AlliesLayer);
+        SpawnNpcGroup(_spawnPointsEnemyNpc, _enemyNpcPrefab, roomScene);
+        //SpawnNpcGroup(_spawnPointsAlliesNpc, _alliesNpcPrefab, roomScene);
     }
 
-    private void SpawnNpcGroup(List<Transform> points, Character prefab, Scene roomScene, LayerMask layer)
+    public void ApplyNpcLayers()
+    {
+        foreach (var npcObj in _spawnedNpcs)
+        {
+            if (npcObj == null) continue;
+
+            var character = npcObj.GetComponent<Character>();
+            if (character == null) continue;
+
+            character.NetworkSettings.RpcUpdateLayers();
+        }
+    }
+
+    private void SpawnNpcGroup(List<Transform> points, Character prefab, Scene roomScene)
     {
         if (prefab == null) return;
 
@@ -40,9 +50,12 @@ public class NpcSpawn : MonoBehaviour
 
             var npc = Instantiate(prefab, point.position, point.rotation);
 
-           npc.gameObject.layer = layer;
-
             npc.NetworkSettings.TeamIndex = NpcTeamIndex;
+
+            foreach (var player in FindObjectsOfType<UserNetworkSettings>())
+            {
+                if (!player.Players.Contains(npc.gameObject)) player.Players.Add(npc.gameObject);
+            }
 
             SceneManager.MoveGameObjectToScene(npc.gameObject, roomScene);
             NetworkServer.Spawn(npc.gameObject);

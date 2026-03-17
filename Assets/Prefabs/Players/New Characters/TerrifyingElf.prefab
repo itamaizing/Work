@@ -20035,7 +20035,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    _clickLayer: 2
+    _clickLayer: 1
     _faction: -1
     _unitType: -1
     _outOfRangeBehaviour: 0
@@ -21790,7 +21790,7 @@ MonoBehaviour:
         \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u044C
         \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0435 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438
         \u043D\u0430 \u0445\u043E\u0434\u0443\r"
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u042D\u043B\u044C\u0444\u0438\u0439\u0441\u043A\u043E\u0435 \u043C\u0430\u0441\u0442\u0435\u0440\u0441\u0442\u0432\u043E "
     Icon: {fileID: 21300000, guid: 523655bbfbe8b0b42869f25f34886283, type: 3}
     Group: 0

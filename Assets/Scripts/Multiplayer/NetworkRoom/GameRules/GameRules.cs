@@ -63,7 +63,12 @@ public abstract class GameRules : NetworkBehaviour
             }
 
             foreach (var netIdentity in objectsToRemove) NetworkServer.Destroy(netIdentity.gameObject);
-            if (_npcSpawn != null) _npcSpawn.SpawnAllNpc(gameObject.scene);
+
+            if (_npcSpawn != null)
+            {
+                _npcSpawn.SpawnAllNpc(gameObject.scene);
+                _npcSpawn.ApplyNpcLayers();
+            }
         }
 
         foreach (var playerSettings in _players)
