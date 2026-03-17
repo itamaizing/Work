@@ -13733,13 +13733,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 5
-  _abilityForm: 2
-  _damageType: 1
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -13775,20 +13768,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 2
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -13846,13 +13831,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 5
-  _abilityForm: 2
-  _damageType: 1
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -13888,20 +13866,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 2
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -13950,17 +13920,10 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 5
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: -1
+    _faction: -1
+    _unitType: -1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -13992,20 +13955,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 6
     _castWidth: 1
-  _radius: 12
-  _area: 0
-  _castLength: 6
-  _castWidth: 1
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 0
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 0
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -14051,17 +14006,10 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 5
-  _abilityForm: 2
-  _damageType: 0
-  _attackRangeType: 1
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: -1
+    _faction: -1
+    _unitType: -1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -14093,20 +14041,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 6
     _castWidth: 0.55
-  _radius: 0
-  _area: 0
-  _castLength: 6
-  _castWidth: 0.55
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 0
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 0
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -14171,13 +14111,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 1
     _autoAttack: 0
-  _abilitySchool: 5
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 1
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -14213,20 +14146,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 10
     _castWidth: 1
-  _radius: 10
-  _area: 0
-  _castLength: 10
-  _castWidth: 1
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 0
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -14276,13 +14201,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 5
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -14318,20 +14236,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 6
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 0
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -14387,13 +14297,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 5
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -14429,20 +14332,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 3
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -14492,13 +14387,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 5
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -14534,20 +14422,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 0
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -14590,13 +14470,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -14632,20 +14505,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -14692,13 +14557,6 @@ MonoBehaviour:
     _skillType: 2
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -14734,20 +14592,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -14789,13 +14639,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -14831,20 +14674,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -14889,13 +14724,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -14931,20 +14759,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -14992,13 +14812,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 5
-  _abilityForm: 2
-  _damageType: 5
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -15034,20 +14847,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -15091,13 +14896,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 5
-  _abilityForm: 2
-  _damageType: 1
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -15133,20 +14931,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 2
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 1
   _earlyCooldown: 0
   maxCounter: 0
@@ -15190,13 +14980,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 5
-  _abilityForm: 2
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -15232,20 +15015,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 1
   _earlyCooldown: 0
   maxCounter: 0
