@@ -10,6 +10,13 @@ public class Mucus : NetworkBehaviour
 
     private ObjectHealth _objectHealth;
     private Coroutine _delayedCheckCoroutine;
+
+    private bool _isAttackSpike;
+    private Skill _skill;
+
+    public bool IsAttackSpike { get => _isAttackSpike; set => _isAttackSpike = value; }
+    public Skill Skill { get => _skill; set => _skill = value; }
+
     public List<MucusAutoGrowth> MucusAutoGrowths 
     { 
         get => _mucusAutoGrowths;

@@ -351,9 +351,14 @@ public class SkillPanel : MonoBehaviour
     {
         if (skill == null) return;
 
+        if (skill is SpellMoveCreatureTo || skill is SpellMoveTo)
+        {
+            if (_skills.Any(icon => icon.Skill is SpellMoveCreatureTo || icon.Skill is SpellMoveTo)) return;
+        }
+
         if (_skills.Any(icon => icon.Skill == skill)) return;
 
-        //FillMenu(_playerAbilities, _hero);
+        //FillMenu(_playerAbilities, _hero);Сен
 
         var freeIcon = _skillIcons.FirstOrDefault(icon => icon.CurrentIcon == null);
         if (freeIcon == null) return;

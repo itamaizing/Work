@@ -1,4 +1,4 @@
-﻿using Mirror;
+using Mirror;
 using UnityEngine;
 
 public class RetaliationCocoon : NetworkBehaviour
@@ -62,7 +62,6 @@ public class RetaliationCocoon : NetworkBehaviour
         {
             Value = value,
             Type = type,
-            School = _protectiveCocoon.SkillHero.Info.School
         };
 
         _protectiveCocoon.SkillHero.ApplyDamage(retaliation, target);

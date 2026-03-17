@@ -262,12 +262,12 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _faction: -1
+    _unitType: -1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 768
+    m_Bits: 512
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -275,6 +275,9 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -282,6 +285,11 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 2
     _area: 0
@@ -349,6 +357,9 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -356,6 +367,11 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
@@ -372,11 +388,6 @@ MonoBehaviour:
   maxCounter: 0
   _agent: {fileID: 0}
   _stopDistance: 0.5
-  _enemyCheckRadius: 6
-  _enemyLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  _damageDeley: 0.5
 --- !u!114 &3009901119154364267
 MonoBehaviour:
   m_ObjectHideFlags: 0

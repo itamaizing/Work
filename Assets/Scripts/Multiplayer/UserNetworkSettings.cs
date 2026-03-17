@@ -77,6 +77,13 @@ public class UserNetworkSettings : NetworkBehaviour
         OnUpdateValue?.Invoke();
     }
 
+    [ClientRpc]
+    public void RpcUpdateLayers()
+    {
+        MarkUpEnemiesOrAllies();
+        OnUpdateValue?.Invoke();
+    }
+
     public void MarkUpEnemiesOrAllies()
     {
         if (Players == null || Players.Count == 0)

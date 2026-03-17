@@ -54,10 +54,10 @@ MonoBehaviour:
       value: 0
     - nameToShow: MoveSpeed
       type: 4
-      value: 0
+      value: 1
     - nameToShow: VisionRadius
       type: 5
-      value: 1
+      value: 2
     - nameToShow: CastSpeed
       type: 6
       value: 0

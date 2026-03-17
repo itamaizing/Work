@@ -16,6 +16,7 @@ public class PullingHealth : Skill
     [SerializeField] private AudioClip _audioClip;
     [SerializeField] private Ghost _ghostSkill;
 
+    private GameObject _cachedTarget;
     private AudioSource _audioSource;
     private GameObject _activeEffect;
     private List<GameObject> _activeGhostEffects = new List<GameObject>();
@@ -249,12 +250,16 @@ public class PullingHealth : Skill
 
     private IEnumerator StreamDuration()
     {
+        IDamageable damageable = Targeting.GetTarget()?.Damageable;
+
+        if (damageable != null) _cachedTarget = damageable.gameObject;
+        else yield break;
+
         _isStreaming = true;
         _streamFinished = false;
         float elapsed = 0f;
         float damageTickElapsed = 0f;
         var manaResource = Hero.TryGetResource(ResourceType.Mana);
-        IDamageable damageable = Targeting.GetTarget()?.Damageable;
 
         if (manaResource == null || manaResource.CurrentValue < MinManaToStream)
         {
@@ -401,10 +406,7 @@ public class PullingHealth : Skill
                 Type = Info.DamageType,
             };
 
-            if (Targeting.GetTarget() != null && Targeting.GetTarget() is IDamageable damageable)
-            {
-                CmdApplyDamage(damage, damageable.gameObject);
-            }
+            if (_cachedTarget != null) CmdApplyDamage(damage, _cachedTarget);
 
             float ghostHealValue = Damage * GhostHealPercent;
             ghostHealth.CmdAdd(ghostHealValue);
@@ -420,7 +422,7 @@ public class PullingHealth : Skill
             Type = Info.DamageType,
         };
 
-        if (Targeting.GetTarget() != null && Targeting.GetTarget() is IDamageable damageable) CmdApplyDamage(damage, damageable.gameObject);
+        if (_cachedTarget != null) CmdApplyDamage(damage, _cachedTarget);
         foreach (var damageble in _extraTargets) CmdApplyDamage(damage, damageble.gameObject);
     }
     private void HealPlayer()
@@ -578,6 +580,7 @@ public class PullingHealth : Skill
     }
     protected override void ClearData()
     {
+        _cachedTarget = null;
         _extraTargets.Clear();
         _extraEffects.Clear();
         Targeting.ClearTempTarget();

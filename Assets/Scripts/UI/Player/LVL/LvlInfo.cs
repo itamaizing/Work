@@ -49,7 +49,17 @@ public class LvlInfo : MonoBehaviour
 		_playerLevel.EXPForNextLVLChanged += OnEXPForNextLVLChanged;
 	}
 
-    private void OnEXPAdded(int obj)
+	private void OnDisable()
+	{
+		if (_playerLevel != null)
+		{
+			_playerLevel.EXPAdded -= OnEXPAdded;
+			_playerLevel.LVLUped -= OnLVLUped;
+			_playerLevel.EXPForNextLVLChanged -= OnEXPForNextLVLChanged;
+		}
+	}
+
+	private void OnEXPAdded(int obj)
     {
 		_expValue = obj;
 		UpdateInfo();

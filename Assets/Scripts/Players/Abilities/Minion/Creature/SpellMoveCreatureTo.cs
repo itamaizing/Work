@@ -7,7 +7,7 @@ using UnityEngine.AI;
 public abstract class SpellMoveCreatureTo : Skill
 {
     [Header("Movement")]
-    [SerializeField] protected float moveDurationPerUnit = 0.2f;
+    [SerializeField] protected MoveCreature _moveCreature;
     [SerializeField] protected float attackDistance = 3f;
     [SerializeField] protected float damageDelay = 0.5f;
 
@@ -101,7 +101,7 @@ public abstract class SpellMoveCreatureTo : Skill
         {
             Vector3 segment = path.corners[i];
             float distance = Vector3.Distance(transform.position, segment);
-            float speed = Mathf.Max(0.01f, moveDurationPerUnit);
+            float speed = Mathf.Max(0.01f, _moveCreature.MoveDurationPerUnit);
             float duration = distance / speed;
 
             transform.rotation = Quaternion.LookRotation((segment - transform.position).normalized);

@@ -1029,10 +1029,10 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _managers:
-  - {fileID: 572863234}
-  - {fileID: 572863234}
-  - {fileID: 572863234}
   - {fileID: 572863239}
+  - {fileID: 572863234}
+  - {fileID: 572863233}
+  - {fileID: 572863238}
   _heroList:
   - {fileID: 8319872899575431858, guid: e8f214e8238220749bbf66c7cca6a334, type: 3}
   - {fileID: 4534754468497973439, guid: 61bdf690f5f8e144aba9494df44f0657, type: 3}
@@ -1599,7 +1599,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6640516812785379933, guid: 7180283404421a844890020e2e7eadc3, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -44.794556
+      value: -44.7948
       objectReference: {fileID: 0}
     - target: {fileID: 6640516812785379933, guid: 7180283404421a844890020e2e7eadc3, type: 3}
       propertyPath: m_AnchoredPosition.y

@@ -638,6 +638,7 @@ public abstract class Skill : NetworkBehaviour
 
     protected void SkillAfterCastJob() => AfterCast?.Invoke();
     protected void CastEndedJob() => CastEnded?.Invoke();
+    protected void CurrentCharge(int charges) => CurrentChargeChanged?.Invoke(charges);
 
     protected virtual bool IsCanCast //важно потрогать
     {

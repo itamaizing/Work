@@ -28,25 +28,16 @@ MonoBehaviour:
       type: 1
       value: 1.5
   _mainResource:
-    nameToShow: CooldownEnergy
-    type: 5
+    nameToShow: Mana
+    type: 1
     attributes:
     - nameToShow: MaxValue
       type: 0
-      value: 12
-    - nameToShow: Regen
-      type: 1
-      value: 1
-  _extraResources:
-  - nameToShow: Psionic
-    type: 4
-    attributes:
-    - nameToShow: MaxValue
-      type: 0
-      value: 100
+      value: 0
     - nameToShow: Regen
       type: 1
       value: 0
+  _extraResources: []
   _attributes:
     _attributes:
     - nameToShow: ResistancePhysical
@@ -60,10 +51,10 @@ MonoBehaviour:
       value: 3
     - nameToShow: EvasionMagical
       type: 3
-      value: 3
+      value: 0
     - nameToShow: MoveSpeed
       type: 4
-      value: 5
+      value: 7
     - nameToShow: VisionRadius
       type: 5
       value: 2
