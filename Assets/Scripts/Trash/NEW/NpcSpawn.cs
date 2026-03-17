@@ -15,6 +15,9 @@ public class NpcSpawn : MonoBehaviour
 
     private const byte NpcTeamIndex = 3;
 
+    private int EnemyLayer = LayerMask.NameToLayer("Enemy");
+    private int AlliesLayer = LayerMask.NameToLayer("Allies");
+
     private readonly List<GameObject> _spawnedNpcs = new();
 
     public IReadOnlyList<GameObject> SpawnedNpcs => _spawnedNpcs;
@@ -23,11 +26,11 @@ public class NpcSpawn : MonoBehaviour
     {
         if (!NetworkServer.active) return;
 
-        SpawnNpcGroup(_spawnPointsEnemyNpc, _enemyNpcPrefab, roomScene);
-        SpawnNpcGroup(_spawnPointsAlliesNpc, _alliesNpcPrefab, roomScene);
+        SpawnNpcGroup(_spawnPointsEnemyNpc, _enemyNpcPrefab, roomScene, EnemyLayer);
+        //SpawnNpcGroup(_spawnPointsAlliesNpc, _alliesNpcPrefab, roomScene, AlliesLayer);
     }
 
-    private void SpawnNpcGroup(List<Transform> points, Character prefab, Scene roomScene)
+    private void SpawnNpcGroup(List<Transform> points, Character prefab, Scene roomScene, LayerMask layer)
     {
         if (prefab == null) return;
 
@@ -36,6 +39,8 @@ public class NpcSpawn : MonoBehaviour
             if (point == null) continue;
 
             var npc = Instantiate(prefab, point.position, point.rotation);
+
+           npc.gameObject.layer = layer;
 
             npc.NetworkSettings.TeamIndex = NpcTeamIndex;
 

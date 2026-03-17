@@ -877,37 +877,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 24461964}
   m_Mesh: {fileID: 4300000, guid: 93ba75cefaaa6bf4fbb93f18a5cafadc, type: 3}
---- !u!1 &25307751
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 25307752}
-  m_Layer: 0
-  m_Name: spawnNpcAllies_1
-  m_TagString: Untagged
-  m_Icon: {fileID: 4422084297763085224, guid: 0000000000000000d000000000000000, type: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &25307752
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 25307751}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.94, y: 1, z: -0.92}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1881097893}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &27857391
 GameObject:
   m_ObjectHideFlags: 0
@@ -145809,6 +145778,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 646319038}
   m_Mesh: {fileID: 4300000, guid: 2ba3d02f6b329ea45b0d491bae80986c, type: 3}
+--- !u!1 &647263117
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 647263118}
+  m_Layer: 0
+  m_Name: spawnNpcEnemy_3
+  m_TagString: Untagged
+  m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &647263118
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 647263117}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3.83, y: 0, z: -1.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1881097893}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &649421893
 GameObject:
   m_ObjectHideFlags: 0
@@ -237822,7 +237822,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _heroSpawnManager: {fileID: 72609307}
   preparationAreaManager: {fileID: 1376233266}
-  _npcSpawn: {fileID: 0}
+  _npcSpawn: {fileID: 1881097894}
   restartRound: {fileID: 1951371947}
   _sourceUI: {fileID: 2369399868655483652}
   _teamsPanel: {fileID: 429144215}
@@ -237981,7 +237981,7 @@ Transform:
   m_GameObject: {fileID: 1120760148}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.46, y: 1, z: -0.61}
+  m_LocalPosition: {x: -4.46, y: 0, z: -0.61}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -304818,7 +304818,7 @@ Transform:
   m_GameObject: {fileID: 1464749960}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.96, y: 1, z: 1.15}
+  m_LocalPosition: {x: -3.96, y: 0, z: 1.15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -385536,7 +385536,7 @@ Transform:
   m_Children:
   - {fileID: 1464749961}
   - {fileID: 1120760149}
-  - {fileID: 25307752}
+  - {fileID: 647263118}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1881097894
@@ -385554,10 +385554,11 @@ MonoBehaviour:
   _spawnPointsEnemyNpc:
   - {fileID: 1464749961}
   - {fileID: 1120760149}
+  - {fileID: 647263118}
   _spawnPointsAlliesNpc:
-  - {fileID: 25307752}
-  _EnemyNpc: {fileID: 1369531615380711236, guid: 2a26b6e6797f5a84c88bae170eb080b3, type: 3}
-  _AlliesNpc: {fileID: 1369531615380711236, guid: 8b9a0582f6da25b4ea6881c63d5b3168, type: 3}
+  - {fileID: 0}
+  _enemyNpcPrefab: {fileID: 1369531615380711236, guid: 2a26b6e6797f5a84c88bae170eb080b3, type: 3}
+  _alliesNpcPrefab: {fileID: 1369531615380711236, guid: 8b9a0582f6da25b4ea6881c63d5b3168, type: 3}
 --- !u!1 &1886107753
 GameObject:
   m_ObjectHideFlags: 0
@@ -417972,7 +417973,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3806926826235635122, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -66.14801
+      value: -66.14804
       objectReference: {fileID: 0}
     - target: {fileID: 3885464923596726237, guid: ebc91ac0252533c458a3868e3db9fe9d, type: 3}
       propertyPath: m_AnchorMax.y
