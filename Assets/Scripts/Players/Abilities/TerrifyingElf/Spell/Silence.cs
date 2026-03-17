@@ -128,7 +128,6 @@ public class Silence : Skill
         {
             if (hitCollider.gameObject != Hero.gameObject)
             {
-                Debug.Log($"Silence target: {hitCollider}");
                 ApplyEnemiesZone(hitCollider, ref minionHitCount, ref ghostAuraMinionHitCount);
             }    
         }
