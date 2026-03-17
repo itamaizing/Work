@@ -86,7 +86,7 @@ public class BasePsionicEnergy : Resource, IDamageable
             _player.SpawnComponent.UnitRemoved += OnMinionRemoved;
         }
 
-        _player.Reset += CmdPsiEnergyDecay;
+        _player.Reset += PsiEnergyDecayServer;
     }
 
     private void OnDisable()
@@ -105,7 +105,7 @@ public class BasePsionicEnergy : Resource, IDamageable
             }
         }
 
-        _player.Reset -= CmdPsiEnergyDecay;
+        _player.Reset -= PsiEnergyDecayServer;
     }
 
     private void PsionicRunning()
@@ -227,6 +227,12 @@ public class BasePsionicEnergy : Resource, IDamageable
         PsiEnergyDecay();
     }
 
+    public void PsiEnergyDecayServer()
+    {
+        if (!isServer) return;
+        PsiEnergyDecay();
+    }
+
     private void PsiEnergyDecay()
     {
         CurrentValue = 0;
@@ -265,8 +271,6 @@ public class BasePsionicEnergy : Resource, IDamageable
             _attackingPsionicEnergy.ReceiveAttackingEnergy(transferAmount);
         }
     }
-
-    [Command] private void CmdPsiEnergyDecay() => PsiEnergyDecay();
 
     [ClientRpc]
     private void RpcInternalPsiEnergyChanged(bool value)

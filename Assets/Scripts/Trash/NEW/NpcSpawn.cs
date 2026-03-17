@@ -1,4 +1,5 @@
 using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -25,19 +26,6 @@ public class NpcSpawn : MonoBehaviour
 
         SpawnNpcGroup(_spawnPointsEnemyNpc, _enemyNpcPrefab, roomScene);
         //SpawnNpcGroup(_spawnPointsAlliesNpc, _alliesNpcPrefab, roomScene);
-    }
-
-    public void ApplyNpcLayers()
-    {
-        foreach (var npcObj in _spawnedNpcs)
-        {
-            if (npcObj == null) continue;
-
-            var character = npcObj.GetComponent<Character>();
-            if (character == null) continue;
-
-            character.NetworkSettings.RpcUpdateLayers();
-        }
     }
 
     private void SpawnNpcGroup(List<Transform> points, Character prefab, Scene roomScene)
