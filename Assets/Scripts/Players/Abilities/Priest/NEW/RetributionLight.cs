@@ -280,9 +280,17 @@ public class RetributionLight : Skill,IPolaritySwitchable
         if (aliveAllies.Count == 0) return;
 
         float healPerTarget = totalHeal / aliveAllies.Count;
+        
+        var heal = new Heal 
+        {
+            Value = healPerTarget,
+            DamageableSkill = this
+        };
 
         foreach (var ally in aliveAllies)
-            CmdApplyHeal(ally.gameObject, healPerTarget);
+        {
+            CmdApplyHeal(heal,ally.gameObject,this,nameof(RetributionLight));
+        }
     }
     
     private void ApplyAreaDarkDamage(Vector3 position, float totalDamage)
@@ -295,7 +303,7 @@ public class RetributionLight : Skill,IPolaritySwitchable
         foreach (var hit in hits)
         {
             if (!hit.TryGetComponent<Character>(out var target)) continue;
-            if (!IsEnemyTarget(target)) continue;
+            if (IsEnemyTarget(target)) continue;
             if (target.IsDead) continue;
 
             aliveEnemies.Add(target);
@@ -315,15 +323,6 @@ public class RetributionLight : Skill,IPolaritySwitchable
 
             CmdApplyDamage(damage, enemy.gameObject);
         }
-    }
-
-    [Command]
-    private void CmdApplyHeal(GameObject target, float healAmount)
-    {
-        if (!target.TryGetComponent<Character>(out var character)) return;
-
-        if (character.TryGetResource(ResourceType.Health) is Health healthResource)
-            healthResource.Add(healAmount);
     }
 
     [Command]
