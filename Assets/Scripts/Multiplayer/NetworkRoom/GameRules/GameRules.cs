@@ -23,7 +23,8 @@ public abstract class GameRules : NetworkBehaviour
     protected HeroSpawnManager _spawnPoints;
     protected PreparationAreaManager _preparationAreaManager;
     protected GameManager _gameManager;
-	protected Coroutine _regenCoroutine;
+    protected NpcSpawn _npcSpawn;
+    protected Coroutine _regenCoroutine;
 
     [SyncVar] private bool _isStarted;
     private float _disconnectDelayClient = 6f;
@@ -46,6 +47,7 @@ public abstract class GameRules : NetworkBehaviour
 
         if (isServer)
         {
+            if (_npcSpawn != null) _npcSpawn.DestroyAllNpc();
             List<NetworkIdentity> objectsToRemove = new List<NetworkIdentity>();
 
             foreach (var netIdentity in NetworkServer.spawned.Values)
@@ -60,10 +62,8 @@ public abstract class GameRules : NetworkBehaviour
                 objectsToRemove.Add(netIdentity);
             }
 
-            foreach (var netIdentity in objectsToRemove)
-            {
-                NetworkServer.Destroy(netIdentity.gameObject);
-            }
+            foreach (var netIdentity in objectsToRemove) NetworkServer.Destroy(netIdentity.gameObject);
+            if (_npcSpawn != null) _npcSpawn.SpawnAllNpc(gameObject.scene);
         }
 
         foreach (var playerSettings in _players)
@@ -76,8 +76,6 @@ public abstract class GameRules : NetworkBehaviour
             if (playerSettings.Abilities != null)
             {
                 playerSettings.Abilities.CancleAllSkills();
-
-                if (playerSettings.Abilities.SkillQueue != null) playerSettings.Abilities.SkillQueue.ClearQueue();
 
                 foreach (var skill in playerSettings.Abilities.Skills) skill.RpcResetSkillState();
             }
@@ -119,10 +117,10 @@ public abstract class GameRules : NetworkBehaviour
         Destroy(gameObject);
     }
 
-    private void ResetResource(NetworkIdentity networkIdentity)
-    {
-        if (networkIdentity.TryGetComponent<Resource>(out Resource resource)) resource.ResetValue();
-    }
+    //private void ResetResource(NetworkIdentity networkIdentity)
+    //{
+    //    if (networkIdentity.TryGetComponent<Resource>(out Resource resource)) resource.ResetValue();
+    //}
 
     protected virtual void EndGame()
     {
@@ -147,6 +145,7 @@ public abstract class GameRules : NetworkBehaviour
 
         _spawnPoints = _gameManager.HeroSpawnManager;
         _preparationAreaManager = _gameManager.PreparationAreaManager;
+        _npcSpawn = _gameManager.NpcSpawn;
         _gameManager.RestartRound.GameRules = this;
 
         if (_gameManager.TeamsPanel == null) return;

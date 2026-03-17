@@ -54,8 +54,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2361216367366023055, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _assetId
-      value: 3566007391
+      value: 10403983
       objectReference: {fileID: 0}
+    - target: {fileID: 2630592347714121683, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 7d64267e5eb8ca74d8c9c25ffd8dcd35, type: 2}
     - target: {fileID: 3540905251162376194, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -96,9 +100,13 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7945282717329285066, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 7d64267e5eb8ca74d8c9c25ffd8dcd35, type: 2}
     - target: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Name
-      value: TestEnemy Variant
+      value: TestAllies Variant
       objectReference: {fileID: 0}
     - target: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Layer
@@ -124,6 +132,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9044555926792547612, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 7d64267e5eb8ca74d8c9c25ffd8dcd35, type: 2}
     - target: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -267,7 +279,7 @@ MonoBehaviour:
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
