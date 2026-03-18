@@ -60,7 +60,7 @@ MonoBehaviour:
     x: 537
     y: -1509
     width: 1900
-    height: 2479
+    height: 2476
 --- !u!114 &114350483966674976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -142,8 +142,8 @@ MonoBehaviour:
     max: Infinity
     enumValues: []
     descendantCount: 0
-  - name: CenterColor
-    path: CenterColor
+  - name: Color
+    path: Color
     tooltip: 
     space: -1
     spaceable: 0
@@ -1231,7 +1231,8 @@ MonoBehaviour:
       m_SerializableType: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
   m_Direction: 0
-  m_LinkedSlots: []
+  m_LinkedSlots:
+  - {fileID: 8926484042661615506}
 --- !u!114 &8926484042661614875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3288,7 +3289,8 @@ MonoBehaviour:
       m_SerializableType: UnityEngine.Color, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
   m_Direction: 0
-  m_LinkedSlots: []
+  m_LinkedSlots:
+  - {fileID: 8926484042661615506}
 --- !u!114 &8926484042661615298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4614,7 +4616,7 @@ MonoBehaviour:
   m_InputSlots: []
   m_OutputSlots:
   - {fileID: 8926484042661615506}
-  m_ExposedName: CenterColor
+  m_ExposedName: Color
   m_Exposed: 1
   m_Order: 3
   m_Category: 
@@ -4630,7 +4632,23 @@ MonoBehaviour:
   m_EnumValues: []
   m_ValueFilter: 0
   m_Tooltip: 
-  m_Nodes: []
+  m_Nodes:
+  - m_Id: 0
+    linkedSlots:
+    - outputSlot: {fileID: 8926484042661615506}
+      inputSlot: {fileID: 8926484042661614874}
+    position: {x: 592.206, y: 593.64}
+    expandedSlots: []
+    expanded: 1
+    supecollapsed: 0
+  - m_Id: 1
+    linkedSlots:
+    - outputSlot: {fileID: 8926484042661615506}
+      inputSlot: {fileID: 8926484042661615297}
+    position: {x: 1741.194, y: 349.242}
+    expandedSlots: []
+    expanded: 1
+    supecollapsed: 0
 --- !u!114 &8926484042661615506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4668,7 +4686,9 @@ MonoBehaviour:
       m_SerializableType: UnityEngine.Color, UnityEngine.CoreModule, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
   m_Direction: 1
-  m_LinkedSlots: []
+  m_LinkedSlots:
+  - {fileID: 8926484042661614874}
+  - {fileID: 8926484042661615297}
 --- !u!114 &8926484042661615507
 MonoBehaviour:
   m_ObjectHideFlags: 0

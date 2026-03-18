@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5d8548505a2c5104980a6fa13739ca3d, type: 3}
-  m_Name: PillarOfLight
+  m_Name: PillarOfDark
   m_EditorClassIdentifier: 
-  _name: "\u0421\u0442\u043E\u043B\u0431 \u0441\u0432\u0435\u0442\u0430"
+  _name: "\u0421\u0442\u043E\u043B\u0431 \u0442\u044C\u043C\u044B"
   _description: "\u043E\u0442 \u0441\u0432\u044F\u0449\u0435\u043D\u0438\u0446\u044B
     \u0440\u0430\u0441\u0448\u0438\u0440\u044F\u0435\u0442\u0441\u044F \u043A\u0443\u043F\u043E\u043B
     \u043D\u0430 2 \u043C\u0435\u0442\u0440\u0430 \u0432 \u0440\u0430\u0434\u0438\u0443\u0441,
@@ -23,4 +23,4 @@ MonoBehaviour:
   _state: 
   _descriptionState: 
   _counter: 
-  _icon: {fileID: -7687848835106167530, guid: fdc6082616e238544808bda9e4cd01f2, type: 3}
+  _icon: {fileID: 21300000, guid: dab1690866ae1a44fad2b6334100c0e1, type: 3}

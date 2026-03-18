@@ -20,6 +20,14 @@ public class RetributionLight : Skill,IPolaritySwitchable
 
     [Header("AOE Preview")]
     [SerializeField] private GameObject _damageCirclePrefab;
+    
+    [Header("VFX Colors")]
+    [SerializeField][ColorUsage(true, true)] private Color _lightCenterColor  = Color.white;
+    [SerializeField][ColorUsage(true, true)] private Color _lightFresnelColor  = Color.white;
+    [SerializeField][ColorUsage(true, true)] private Color _lightVoronoiColor  = Color.white;
+    [SerializeField][ColorUsage(true, true)] private Color _darkCenterColor  = Color.white;
+    [SerializeField][ColorUsage(true, true)] private Color _darkFresnelColor  = Color.white;
+    [SerializeField][ColorUsage(true, true)] private Color _darkVoronoiColor  = Color.white;
 
     protected override bool IsCanCast { get => CheckCanCast(); }
     protected override int AnimTriggerCastDelay => 0;
@@ -236,6 +244,7 @@ public class RetributionLight : Skill,IPolaritySwitchable
             {
                 Value = damageValue,
                 Type  = Info.DamageType,
+                School = Info.School
             };
 
             float healthBefore = target.Health.CurrentValue;
@@ -319,6 +328,7 @@ public class RetributionLight : Skill,IPolaritySwitchable
             {
                 Value = damagePerTarget,
                 Type  = Info.DamageType,
+                School = Info.School
             };
 
             CmdApplyDamage(damage, enemy.gameObject);
@@ -374,8 +384,23 @@ public class RetributionLight : Skill,IPolaritySwitchable
     
     private void UpdateMode()
     {
-        Info.School = isLightMode ? Schools.Light : Schools.Dark;
+        Info.School     = isLightMode ? Schools.Light : Schools.Dark;
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
         Hero.Abilities.SkillPanelUpdate();
+
+        UpdateVFXColors();
+    }
+    
+    private void UpdateVFXColors()
+    {
+        if (_lightVFX == null) return;
+
+        Color centerColor  = isLightMode ? _lightCenterColor  : _darkCenterColor;
+        Color fresnelColor  = isLightMode ? _lightFresnelColor  : _darkFresnelColor;
+        Color voronoiColor  = isLightMode ? _lightVoronoiColor  : _darkVoronoiColor;
+
+        _lightVFX.SetVector4("CenterColor",  centerColor);
+        _lightVFX.SetVector4("FresnelColor",  fresnelColor);
+        _lightVFX.SetVector4("VoronoiColor",  voronoiColor);
     }
 }

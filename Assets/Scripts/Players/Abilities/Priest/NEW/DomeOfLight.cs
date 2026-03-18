@@ -14,6 +14,10 @@ public class DomeOfLight : Skill, IPolaritySwitchable
     [Header("Mode info")]
     [SerializeField] private AbilityInfo lightInfo;
     [SerializeField] private AbilityInfo darkInfo;
+    
+    [Header("VFX Colors")]
+    [SerializeField] private Color _lightColor = Color.white;
+    [SerializeField] private Color _darkColor  = Color.yellow;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("DomeOfLight");
@@ -120,6 +124,7 @@ public class DomeOfLight : Skill, IPolaritySwitchable
                 {
                     Value = Buff.Damage.GetBuffedValue(_damageValue),
                     Type  = Info.DamageType,
+                    School = Info.School
                 };
                 CmdApplyDamage(damage, target.gameObject);
             }
@@ -153,8 +158,18 @@ public class DomeOfLight : Skill, IPolaritySwitchable
 
     private void UpdateMode()
     {
-        Info.School = isLightMode ? Schools.Light : Schools.Dark;
+        Info.School     = isLightMode ? Schools.Light : Schools.Dark;
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
         Hero.Abilities.SkillPanelUpdate();
+
+        UpdateParticleColor();
+    }
+    
+    private void UpdateParticleColor()
+    {
+        if (_effectObject == null) return;
+
+        var main = _effectObject.main;
+        main.startColor = isLightMode ? _lightColor : _darkColor;
     }
 }

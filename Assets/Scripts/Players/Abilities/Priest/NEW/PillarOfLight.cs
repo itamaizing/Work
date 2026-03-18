@@ -3,22 +3,33 @@ using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.VFX;
 
-public class PillarOfLight : Skill
+public class PillarOfLight : Skill, IPolaritySwitchable
 {
-    [Header("Effect Settings")] [SerializeField]
-    private VisualEffect _pillarVFX;
-
+    [Header("Effect Settings")]
+    [SerializeField] private VisualEffect _pillarVFX;
     [SerializeField] private float _pillarDuration = 6f;
     [SerializeField] private float _pillarUpOffset = 6f;
     [SerializeField] private float _tickInterval = 1f;
     [SerializeField] private float _damageIncreasePerTick = 5f;
     [SerializeField] private float _aoeRadius = 1f;
 
+    [Header("Mode info")]
+    [SerializeField] private AbilityInfo lightInfo;
+    [SerializeField] private AbilityInfo darkInfo;
+    
+    [Header("VFX Colors")]
+    [SerializeField][ColorUsage(true, true)] private Color _lightColor = Color.white;
+    [SerializeField][ColorUsage(true, true)] private Color _darkColor  = Color.yellow;
+
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => CheckCanCast();
+
+    [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
+    public event Action OnModeChange;
 
     private Vector3 _clickPoint;
 
@@ -31,15 +42,24 @@ public class PillarOfLight : Skill
     private bool IsAllyTarget(Character target) =>
         target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
+    private void OnEnable()
+    {
+        OnModeChange += UpdateMode;
+        UpdateMode();
+    }
+
+    private void OnDisable()
+    {
+        OnModeChange -= UpdateMode;
+    }
+
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.Points.Count > 0)
             _clickPoint = (Vector3)targetInfo.Points[0];
     }
 
-    protected override void ClearData()
-    {
-    }
+    protected override void ClearData() { }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
@@ -106,15 +126,16 @@ public class PillarOfLight : Skill
                     Damage damage = new Damage
                     {
                         Value = Buff.Damage.GetBuffedValue(value),
-                        Type = Info.DamageType,
+                        Type  = Info.DamageType,
+                        School = Info.School
                     };
                     CmdApplyDamage(damage, target.gameObject);
                 }
-                else if (IsAllyTarget(target))
+                else if (isLightMode && IsAllyTarget(target))
                 {
                     Heal heal = new Heal
                     {
-                        Value = value,
+                        Value           = value,
                         DamageableSkill = this,
                     };
                     CmdApplyHeal(heal, target.gameObject, this, nameof(PillarOfLight));
@@ -148,5 +169,36 @@ public class PillarOfLight : Skill
         _pillarVFX.Stop();
         _pillarVFX.gameObject.SetActive(false);
         _pillarVFX.transform.SetParent(transform);
+    }
+
+    public void SwitchMode() => CmdSwitchMode();
+
+    [Command]
+    private void CmdSwitchMode()
+    {
+        isLightMode = !isLightMode;
+    }
+
+    private void OnModeChanged(bool oldValue, bool newValue)
+    {
+        UpdateMode();
+        OnModeChange?.Invoke();
+    }
+
+    private void UpdateMode()
+    {
+        Info.School     = isLightMode ? Schools.Light : Schools.Dark;
+        AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
+        Hero.Abilities.SkillPanelUpdate();
+
+        UpdateVFXColors();
+    }
+
+    private void UpdateVFXColors()
+    {
+        if (_pillarVFX == null) return;
+        Color frontColor = isLightMode ? _lightColor : _darkColor;
+
+        _pillarVFX.SetVector4("Color", frontColor);
     }
 }

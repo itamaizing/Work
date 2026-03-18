@@ -64,6 +64,13 @@ public class PriestShield : Skill
     //---------------- Talent 5 (Tired Soul Evade)
     private bool _talentTiredSoulActive = false;
     private const float TiredSoulEffectPercentage = 0.5f;
+    
+    //................ Talent 9 (Reflection shield)
+    private bool _shieldAttackTalentActive = false;
+    public void EnableShieldAttackTalent(bool value)
+    {
+        _shieldAttackTalentActive = value;
+    }
 
     private float _absorbBonus = 0;
     private float _damagePerTickBonus = 0;
@@ -94,12 +101,11 @@ public class PriestShield : Skill
         Hero.DamageTracker.OnDamageTracked += TrackDarkDamage;
         Hero.Health.DamageTaken += TrackPhysDamage;
         Hero.DamageTracker.OnHealTracked += TrackHealDone;
+        Hero.Health.ShieldDamageTaken += OnShieldDamageTaken;
         UpdateMode();
 
         foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.Info.School == Schools.Discipline))
-        {
             skill.CastEnded += AddDisciplineStack;
-        }
     }
 
     private void OnDisable()
@@ -108,11 +114,10 @@ public class PriestShield : Skill
         Hero.DamageTracker.OnDamageTracked -= TrackDarkDamage;
         Hero.Health.DamageTaken -= TrackPhysDamage;
         Hero.DamageTracker.OnHealTracked -= TrackHealDone;
+        Hero.Health.ShieldDamageTaken -= OnShieldDamageTaken;
 
         foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.Info.School == Schools.Discipline))
-        {
             skill.CastEnded -= AddDisciplineStack;
-        }
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -242,6 +247,37 @@ public class PriestShield : Skill
     public void EnableTiredSoulEvade(bool value)
     {
         _talentTiredSoulActive = value;
+    }
+    
+    //-------------Talent 9 Logic: Reflection Shield -----------
+    private void OnShieldDamageTaken(float damageValue, DamageType damageType, Skill sourceSkill)
+    {
+        if (!_shieldAttackTalentActive) return;
+        if(damageType != Info.DamageType) return;
+        if (damageValue <= 0f) return;
+        
+        if (sourceSkill == null || sourceSkill.Hero == null) return;
+
+        Character attacker = sourceSkill.Hero;
+        if (attacker.IsDead) return;
+
+        CmdReflectDamage(attacker.gameObject, damageValue, damageType);
+    }
+
+    [Command]
+    private void CmdReflectDamage(GameObject attacker, float damageValue, DamageType damageType)
+    {
+        if (attacker == null) return;
+        if (!attacker.TryGetComponent<Character>(out var attackerCharacter)) return;
+        if (attackerCharacter.IsDead) return;
+
+        Damage reflectDamage = new Damage
+        {
+            Value = damageValue,
+            Type  = damageType,
+        };
+
+        ApplyDamage(reflectDamage, attacker);
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
