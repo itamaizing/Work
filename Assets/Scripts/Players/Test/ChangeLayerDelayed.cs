@@ -21,10 +21,20 @@ public class ChangeParentLayerDelayed : MonoBehaviour
     private IEnumerator ChangeLayerRoutine()
     {
         yield return new WaitForSeconds(_delay);
+        transform.gameObject.layer = LayerMaskToLayer(_targetLayer);
+    }
 
-        if (transform.parent != null)
+    private int LayerMaskToLayer(LayerMask mask)
+    {
+        int layer = 0;
+        int value = mask.value;
+
+        while (value > 1)
         {
-            transform.gameObject.layer = _targetLayer;
+            value >>= 1;
+            layer++;
         }
+
+        return layer;
     }
 }
