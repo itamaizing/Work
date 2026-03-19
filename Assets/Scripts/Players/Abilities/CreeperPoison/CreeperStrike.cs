@@ -19,7 +19,7 @@ public class CreeperStrike : Skill
     [SerializeField] private FeelingOfContinuation _feelingOfContinuation;
     [SerializeField] private PreparingForFight _preparingForFight;
     [SerializeField] private AmbushPoisons _ambushPoisons;
-    [SerializeField] private bool _isGeneticsTalentOne; 
+    [SerializeField] private bool _isCheckForStatePoisonBone; 
 
     [Header("Abilities")]
     [SerializeField] private LightningStrikes _lightningStrikes;
@@ -373,7 +373,7 @@ public class CreeperStrike : Skill
         {
             criticalDamage = CalculateCriticalDamage(currentTarget, criticalDamage);
         }
-        else if (_isGeneticsTalentOne && currentTarget.CharacterState.CheckForState(States.PoisonBone))
+        else if (_isCheckForStatePoisonBone && currentTarget.CharacterState.CheckForState(States.PoisonBone))
         {
             criticalDamage = CalculateCriticalDamage(currentTarget, criticalDamage);
         }
@@ -418,9 +418,9 @@ public class CreeperStrike : Skill
 
     #region Talents
 
-    public void GeneticsTalentOne(bool value)
+    public void CheckForStatePoisonBone(bool value)
     {
-        _isGeneticsTalentOne = value;
+        _isCheckForStatePoisonBone = value;
     }
 
     protected override void ClearData()
