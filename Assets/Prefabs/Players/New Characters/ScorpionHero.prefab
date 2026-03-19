@@ -3137,7 +3137,7 @@ PrefabInstance:
     - target: {fileID: 2622564488409335896, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _resource
       value: 
-      objectReference: {fileID: 2865354444991856952}
+      objectReference: {fileID: 3713062146289152410}
     - target: {fileID: 2622564488409335896, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _showText
       value: 1
@@ -4852,6 +4852,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 538268384e2d5f64f8ee01630137a16d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3713062146289152410 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3919103737457224534, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 424471191848786636}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8143091671269686944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30e849fb64ec77e4b94f9f568f688e22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &4352713586814626683 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4144428480757674423, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -5481,7 +5492,10 @@ MonoBehaviour:
   syncInterval: 0
   _hero: {fileID: 5458554383432203635}
   _comboPlayer: {fileID: 1147250939410812164}
-  _skills: []
+  _skills:
+  - {fileID: 6732054044553877427}
+  - {fileID: 8920276347339243132}
+  - {fileID: 1485408660127300276}
   _comboTimeout: 3
   _particlesAddStack: {fileID: 8947148409542421426}
   _particlesFullCombo: {fileID: 7712857434436745403}
