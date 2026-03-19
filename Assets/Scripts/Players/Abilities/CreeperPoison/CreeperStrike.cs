@@ -18,6 +18,7 @@ public class CreeperStrike : Skill
     [SerializeField] private FirstStrike _firstStrike;
     [SerializeField] private FeelingOfContinuation _feelingOfContinuation;
     [SerializeField] private PreparingForFight _preparingForFight;
+    [SerializeField] private AmbushPoisons _ambushPoisons;
     [SerializeField] private bool _isGeneticsTalentOne; 
 
     [Header("Abilities")]
@@ -290,6 +291,8 @@ public class CreeperStrike : Skill
 
             _isHit = false;
         }
+
+        if (_ambushPoisons != null && character != null) _ambushPoisons.TryConsumeStack(character);
     }
 
     private IEnumerator TimerForTwoHit(float duration, bool isUsingLightningStrikes)

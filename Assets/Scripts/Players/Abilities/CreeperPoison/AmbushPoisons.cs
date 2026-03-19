@@ -76,8 +76,7 @@ public class AmbushPoisons : Skill
         {
             yield return new WaitForSeconds(StackInterval);
 
-            if (_invisible == null || !_invisible.IsInvisible)
-                break;
+            if (_invisible == null || !_invisible.IsInvisible) break;
 
             _currentStacks++;
 
@@ -123,13 +122,7 @@ public class AmbushPoisons : Skill
 
         _currentStacks--;
 
-        //target.CharacterState.AddState(
-        //    States.BonePoison,
-        //    5f,
-        //    1,
-        //    Hero.gameObject,
-        //    nameof(AmbushPoisons)
-        //);
+        target.CharacterState.AddState(States.PoisonBone, 6f, 1, Hero.gameObject, this.name);
 
         if (_invisible != null && _invisible.IsInvisible)
         {

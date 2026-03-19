@@ -13785,6 +13785,7 @@ MonoBehaviour:
   _firstStrike: {fileID: 3980160588782160003}
   _feelingOfContinuation: {fileID: 233453096825435517}
   _preparingForFight: {fileID: 6757583794360340372}
+  _ambushPoisons: {fileID: 0}
   _isGeneticsTalentOne: 0
   _lightningStrikes: {fileID: 734640227586387152}
   _lightningMovement: {fileID: 7013613396998518356}
