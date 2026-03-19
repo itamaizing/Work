@@ -14,6 +14,9 @@ public class NpcSpawn : MonoBehaviour
     [SerializeField] private Character _enemyNpcPrefab;
     [SerializeField] private Character _alliesNpcPrefab;
 
+    private LayerMask layerEnemy = LayerMask.NameToLayer("Enemy");
+    private LayerMask layerAllies = LayerMask.NameToLayer("Allies");
+
     private const byte NpcTeamIndex = 3;
 
     private readonly List<GameObject> _spawnedNpcs = new();

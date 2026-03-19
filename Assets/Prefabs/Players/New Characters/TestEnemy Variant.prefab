@@ -189,6 +189,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: -4800256726937707271}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1339932820219323414}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!114 &1203017476815782494 stripped
 MonoBehaviour:
@@ -429,6 +432,22 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   TeamIndex: 0
+--- !u!114 &1339932820219323414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3009303187757147287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 252b555c633cb2948be4e0f047df696c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChangeParentLayerDelayed
+  _delay: 0.5
+  _targetLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!23 &3413987327993322111 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8234214932904483460, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
