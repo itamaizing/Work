@@ -81,9 +81,9 @@ public class SkillPanel : MonoBehaviour
         _playerAbilities.SkillAdded += OnSkillAdded;
         _playerAbilities.SkillRemoved += OnSkillRemoved;
 
-        OnBeginDrag();
-        LoadPanel();
-        OnEndDrag();
+        //OnBeginDrag();
+        //LoadPanel();
+        //OnEndDrag();
     }
 
     public void FillMenu(SkillManager abilities, HeroComponent hero)
@@ -467,6 +467,7 @@ public class SkillPanel : MonoBehaviour
         _saveSystem.Save($"{_playerAbilities.Hero.Data.Name}_Group{0}_AbilityPanel", save);   
     }
 
+    [ContextMenu("Load")]
     private void LoadPanel()
     {
         List<SkillPanelSave> save = new();
@@ -504,10 +505,8 @@ public class SkillPanel : MonoBehaviour
 
             SetSkillIconFrame(icon, skillSave.Id);
         }
-        OnBeginDrag();
-        OnEndDrag();
-
-
+        //OnBeginDrag();
+        //OnEndDrag();
     }
 
     private void LoadOneSkill(Skill skill)
