@@ -922,7 +922,7 @@ MonoBehaviour:
   lifeTentacle: 4
   tentacleLine: {fileID: 3181529269723519325}
   tentaclePoint: {fileID: 7592468510556066527}
-  _spike: {fileID: 6434436958443670105, guid: 8b6b910dd1421514aa1bbd31c13881dc, type: 3}
+  _spike: {fileID: 1836576411774796802, guid: 8b6b910dd1421514aa1bbd31c13881dc, type: 3}
 --- !u!114 &6961409168004119619
 MonoBehaviour:
   m_ObjectHideFlags: 0

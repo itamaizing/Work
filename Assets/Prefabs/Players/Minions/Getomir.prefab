@@ -6223,6 +6223,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GetomirAutoAttack
   _spell: {fileID: 864070538008051548}
   _powerStrike: {fileID: 2793843212359387630}
+  _throwingBlow: {fileID: 7226646740361081333}
 --- !u!1 &1816582864147950907
 GameObject:
   m_ObjectHideFlags: 0
@@ -17995,7 +17996,11 @@ GameObject:
   - component: {fileID: 3764020448229271524}
   - component: {fileID: 864070538008051548}
   - component: {fileID: 2793843212359387630}
+  - component: {fileID: 7226646740361081333}
   - component: {fileID: 5026398779494985239}
+  - component: {fileID: 7679627626532406740}
+  - component: {fileID: 4083383630853884571}
+  - component: {fileID: 6802881737570522238}
   m_Layer: 9
   m_Name: Getomir
   m_TagString: Allies
@@ -18238,24 +18243,24 @@ MonoBehaviour:
   _networkSettings: {fileID: 4352968657823446686}
   _rigidbody: {fileID: 512746244656594313}
   _collider: {fileID: 3393799689084107314}
-  _lvl: {fileID: 0}
+  _lvl: {fileID: 6802881737570522238}
   _animator: {fileID: 4853408415625794062}
   _networkAnimator: {fileID: 6676246011477726785}
   _healthComponent: {fileID: 4688992458449892271}
   _playerMove: {fileID: 4144108970412608448}
   _abilities: {fileID: 6892265620981845488}
-  characterState: {fileID: 0}
+  characterState: {fileID: 161335861236570360}
   uiComponent: {fileID: 1655977055310397963}
   _selectComponent: {fileID: 2075396149247580188}
   _damageTracker: {fileID: 245123127051599623}
   TemporaryResourceDisplay: []
   _selectedCircle: {fileID: 3552332020641030606}
   _spawnComponent: {fileID: 2769373615330125278}
-  _visionComponent: {fileID: 0}
+  _visionComponent: {fileID: 1027874424821115294}
   _auras: {fileID: 0}
   _targetSeeker: {fileID: 5247455161781399062}
   _characterParent: {fileID: 0}
-  _transformationComponent: {fileID: 0}
+  _transformationComponent: {fileID: 4083383630853884571}
   _expForDieKill: 5
   _costCall: 3
   _navMeshAgent: {fileID: 0}
@@ -18373,7 +18378,7 @@ MonoBehaviour:
   _maxValue: 0
   _animator: {fileID: 4853408415625794062}
   _netAnimator: {fileID: 6676246011477726785}
-  bar: {fileID: 0}
+  bar: {fileID: 8185773278500349435}
 --- !u!114 &970667073185307683
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18528,6 +18533,7 @@ MonoBehaviour:
   _skills:
   - {fileID: 864070538008051548}
   - {fileID: 2793843212359387630}
+  - {fileID: 7226646740361081333}
   _hero: {fileID: 5830977165762126247}
   _talentSystem: {fileID: 5224625938796084017}
   _skillRenderer: {fileID: 5133789345881183399}
@@ -18680,6 +18686,7 @@ MonoBehaviour:
   IsMoving: 0
   IsSelect: 0
   IsNoRotateAtCursor: 0
+  _moveDurationPerUnit: 0.9
 --- !u!114 &3764020448229271524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18733,15 +18740,8 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
-    _clickLayer: 2
+    _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
@@ -18775,24 +18775,16 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 6
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  moveDurationPerUnit: 0.9
+  _moveCreature: {fileID: 4144108970412608448}
   attackDistance: 1.5
   damageDelay: 1.4
   animator: {fileID: 1215395125402789392}
@@ -18837,13 +18829,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -18879,30 +18864,107 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _moveCreature: {fileID: 4144108970412608448}
   _animator: {fileID: 1215395125402789392}
-  _playerLinks: {fileID: 5830977165762126247}
-  _moveDurationPerUnit: 0.9
   _stopDistance: 1.5
-  _minDamage: 12
-  _maxDamage: 18
-  _aoeRadius: 3
+  minDamage: 12
+  maxDamage: 18
+  aoeRadius: 1.5
+--- !u!114 &7226646740361081333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305573293433524190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9e4b02271d81e54cab7eb048080b264, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ThrowingBlow
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 1
+  _isSkillActive: 0
+  _abilityInfo: {fileID: 11400000, guid: aa9291fbf650c7943a71fd25d1f3c92a, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
+  _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 12
+  _cooldownComponent:
+    _baseCooldown: 0
+  _castDeley: 0
+  _damageValue: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _chargeComponent:
+    _usesCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
+    affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _areaComponent:
+    _radius: 0
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
+  _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 1
+    _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
+  _moveCreature: {fileID: 4144108970412608448}
+  _animator: {fileID: 1215395125402789392}
+  _stopDistance: 1.5
+  knockbackDistance: 6
+  knockbackDuration: 0.35
 --- !u!114 &5026398779494985239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18919,6 +18981,59 @@ MonoBehaviour:
   _moveCreature: {fileID: 4144108970412608448}
   _spell: {fileID: 864070538008051548}
   _powerStrike: {fileID: 2793843212359387630}
+--- !u!114 &7679627626532406740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305573293433524190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06f6c1dd94c6aef43baf923029a6cddc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CreatureCarryGun
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  controllableUnits: []
+  _skillManager: {fileID: 6892265620981845488}
+  _sills:
+  - {fileID: 7226646740361081333}
+  _dadSkill: {fileID: 0}
+--- !u!114 &4083383630853884571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305573293433524190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84375c825009b75438b87e3c401fcc09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TransformationComponent
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _baseModel: {fileID: 4305573293433524190}
+  _transformationModel: {fileID: 4305573293433524190}
+  _transformationRenderer: {fileID: 0}
+--- !u!114 &6802881737570522238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4305573293433524190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 428637f045d35d24696a6e8a4728d7d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Level
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &4348563488435226753
 GameObject:
   m_ObjectHideFlags: 0

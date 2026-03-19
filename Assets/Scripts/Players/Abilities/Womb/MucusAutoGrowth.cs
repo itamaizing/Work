@@ -9,6 +9,7 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
 {
     [SerializeField] private List<Transform> points;
     [SerializeField] private GameObject mucusPrefab;
+    [SerializeField] private CreatureSpawn _creatureSpawn;
 
     private const float TickRate = 1f;
     private const int MaxCircles = 6;
@@ -19,69 +20,32 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
     private float _timer = 0f;
     private float _remaining = 0f;
     private bool _infinite = true;
-    private bool _isWombSpreadsMucus;
-
     private int _currentCircleIndex = 0;
 
     public static event Action OnAnyMucusAutoGrowthDestroyed;
 
-    public bool IsWombSpreadsMucus
+    private void Start()
     {
-        get => _isWombSpreadsMucus;
-        set
-        {
-            if (_isWombSpreadsMucus == value) return;
-
-            _isWombSpreadsMucus = value;
-
-            if (_isWombSpreadsMucus)
-            {
-                if (_spawnRoutine == null)
-                    _spawnRoutine = StartCoroutine(ApplyMucusPeriodically());
-            }
-            else
-            {
-                if (_spawnRoutine != null)
-                {
-                    StopCoroutine(_spawnRoutine);
-                    _spawnRoutine = null;
-                }
-            }
-        }
+        subscription();
+        Invoke("HandleAction", 1f);
     }
 
     private void OnEnable()
     {
         _mucusByCircle.Clear();
+
         for (int i = 0; i < MaxCircles; i++)
             _mucusByCircle.Add(new List<GameObject>());
 
         AreaInfo.Radius = 0;
     }
 
-    private void OnDestroy()
-    {
-        if (_spawnRoutine != null)
-        {
-            StopCoroutine(_spawnRoutine);
-            _spawnRoutine = null;
-        }
-
-        CleanupAllMucus();
-        OnAnyMucusAutoGrowthDestroyed?.Invoke();
-    }
     private void OnDisable()
     {
-        if (_spawnRoutine != null)
-        {
-            StopCoroutine(_spawnRoutine);
-            _spawnRoutine = null;
-        }
-
-        if (!gameObject.scene.isLoaded)
-        {
-            CleanupAllMucus();
-        }
+        unsubscribe();
+        StopSpawnRoutine();
+        CleanupAllMucus();
+        OnAnyMucusAutoGrowthDestroyed?.Invoke();
     }
 
     public void SwitchToFinite()
@@ -92,6 +56,27 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
     }
 
     public float RemainingDuration => _infinite ? 9999f : _remaining;
+
+    private void subscription()
+    {
+        if (_creatureSpawn.Tentacle != null)
+        {
+            _creatureSpawn.Tentacle.OnWombSpreadsMucusChanged += HandleMucusGrowthChanged;
+        }
+    }
+
+    private void unsubscribe()
+    {
+        if (_creatureSpawn.Tentacle != null)
+        {
+            _creatureSpawn.Tentacle.OnWombSpreadsMucusChanged -= HandleMucusGrowthChanged;
+        }
+    }
+
+    private void HandleAction()
+    {
+        if (_creatureSpawn.Tentacle != null) HandleMucusGrowthChanged(_creatureSpawn.Tentacle.IsWombSpreadsMucus);
+    }
 
     private IEnumerator ApplyMucusPeriodically()
     {
@@ -193,7 +178,26 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
         return _mucusByCircle.Count;
     }
 
-    [Server]
+    private void HandleMucusGrowthChanged(bool active)
+    {
+        if (active)
+        {
+            if (_spawnRoutine == null) _spawnRoutine = StartCoroutine(ApplyMucusPeriodically());
+        }
+
+        else StopSpawnRoutine();
+    }
+
+    private void StopSpawnRoutine()
+    {
+        if (_spawnRoutine != null)
+        {
+            StopCoroutine(_spawnRoutine);
+            _spawnRoutine = null;
+        }
+    }
+
+    [Command]
     private void CmdSpawnOrActivateMucus(Vector3 spawnPosition, int circleIndex)
     {
         GameObject instance = Instantiate(mucusPrefab, spawnPosition, Quaternion.identity);
@@ -207,10 +211,21 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
         if (instance.TryGetComponent<Mucus>(out var mucus))
         {
             mucus.AddMucusAutoGrowth(this);
+            RpcSpawnSpikeMucus(mucus);
         }
 
         uint netId = instance.GetComponent<NetworkIdentity>().netId;
         RpcAddMucus(netId, circleIndex);
+    }
+
+    [ClientRpc]
+    private void RpcSpawnSpikeMucus(Mucus mucus)
+    {
+        if (_creatureSpawn.Tentacle != null)
+        {
+            mucus.Skill = _creatureSpawn.Tentacle;
+            mucus.IsAttackSpike = _creatureSpawn.Tentacle.IsSpawnSpikeMucus;
+        }
     }
 
     [ClientRpc]

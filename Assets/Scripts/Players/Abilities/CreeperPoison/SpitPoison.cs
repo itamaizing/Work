@@ -80,7 +80,7 @@ public class SpitPoison : Skill, IAltAbility
 
     protected void Start()
     {
-        _originalCooldown = Cooldown.CooldownTime;
+        _originalCooldown = _cooldownTime;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -164,19 +164,19 @@ public class SpitPoison : Skill, IAltAbility
         {
             if (_isOriginalTargetAllies || _isOriginalTargetPlayer)
             {
-                if (Cooldown.CooldownTime == _originalCooldown)
+                if (_cooldownTime == _originalCooldown)
                 {
-                    Cooldown.CooldownTime /= 3;
+                    _cooldownTime /= 3;
                 }
             }
             else
             {
-                Cooldown.CooldownTime = _originalCooldown;
+                _cooldownTime = _originalCooldown;
             }
         }
         else
         {
-            Cooldown.CooldownTime = _originalCooldown;
+            _cooldownTime = _originalCooldown;
         }
     }
 

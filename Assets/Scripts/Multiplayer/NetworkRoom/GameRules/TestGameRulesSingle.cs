@@ -18,6 +18,7 @@ public class TestGameRulesSingle : GameRules
     public override void GameStartServer(HeroSpawnManager spawnPoints)
     {
         StartCoroutine(HandleTeamsAndSpawns(spawnPoints));
+        if (_npcSpawn != null) _npcSpawn.SpawnAllNpc(gameObject.scene);
     }
 
     protected override void GameStartClient()
@@ -98,6 +99,8 @@ public class TestGameRulesSingle : GameRules
     {
         yield return StartCoroutine(SplitTeams(spawnPoints));
 
+        _preparationAreaManager?.PreparationAreasDisable(5f);
+
         foreach (var player in _players)
         {
             int spawnIndex = player.NetworkSettings.TeamIndex - 1;
@@ -119,6 +122,12 @@ public class TestGameRulesSingle : GameRules
             tower.Died -= OnTowerDied;
         }
     }
+
+    protected override void RestartRound()
+    {
+        Restart();
+    }
+
 
     [TargetRpc]
     private void TargetApplyRewards(NetworkConnectionToClient connection, int experience, float bottleVolume)

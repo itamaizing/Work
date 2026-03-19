@@ -169,7 +169,7 @@ public class TestGameRulesBattlegrounds : GameRules
     }
     */
 
-    private void RestartRound()
+    protected override void RestartRound()
     {
         //_teamDeaths[1] = 0;
         //_teamDeaths[2] = 0;

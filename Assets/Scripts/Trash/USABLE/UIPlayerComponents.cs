@@ -24,7 +24,7 @@ public class UIPlayerComponents : MonoBehaviour
     private float popupSpawnDelay = 0.2f;
     private float _fixDuration = 0.1f;
 
-    private string miss = "РџСЂРѕРјР°С…";
+    private string miss = "Промах";
 
     private Queue<PopupRequest> popupQueue = new Queue<PopupRequest>();
     private bool isProcessingQueue = false;

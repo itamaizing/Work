@@ -23,9 +23,10 @@ public abstract class GameRules : NetworkBehaviour
     protected HeroSpawnManager _spawnPoints;
     protected PreparationAreaManager _preparationAreaManager;
     protected GameManager _gameManager;
-	protected Coroutine _regenCoroutine;
+    protected NpcSpawn _npcSpawn;
+    protected Coroutine _regenCoroutine;
 
-	[SyncVar] private bool _isStarted;
+    [SyncVar] private bool _isStarted;
     private float _disconnectDelayClient = 6f;
     private float _disconnectDelayServer = 5f;
     public bool IsStarted { get => _isStarted; set => _isStarted = value; }
@@ -38,7 +39,63 @@ public abstract class GameRules : NetworkBehaviour
     protected abstract void GameStartClient();
     protected abstract void OnPlayerDied(Character character);
     protected abstract void OnTowerDied(Object tower);
+    protected abstract void RestartRound();
 
+    protected void Restart()
+    {
+        RpcEnablePreparationAreas(5f);
+
+        if (isServer)
+        {
+            if (_npcSpawn != null) _npcSpawn.DestroyAllNpc();
+            List<NetworkIdentity> objectsToRemove = new List<NetworkIdentity>();
+
+            foreach (var netIdentity in NetworkServer.spawned.Values)
+            {
+                if (netIdentity == null) continue;
+
+                if (netIdentity.GetComponent<GameRules>() != null) continue;
+                if (netIdentity.GetComponent<User>() != null) continue;
+                if (netIdentity.GetComponent<MainTower>() != null) continue;
+                if (netIdentity.GetComponent<HeroComponent>() != null) continue;
+
+                objectsToRemove.Add(netIdentity);
+            }
+
+            foreach (var netIdentity in objectsToRemove) NetworkServer.Destroy(netIdentity.gameObject);
+
+            if (_npcSpawn != null)
+            {
+                _npcSpawn.SpawnAllNpc(gameObject.scene);
+                _npcSpawn.ApplyNpcLayers();
+            }
+        }
+
+        foreach (var playerSettings in _players)
+        {
+            if (playerSettings == null) continue;
+
+            playerSettings.CharacterState.ServerClearAllStates();
+            playerSettings.ServerResetAll();
+
+            if (playerSettings.Abilities != null)
+            {
+                playerSettings.Abilities.CancleAllSkills();
+
+                foreach (var skill in playerSettings.Abilities.Skills) skill.RpcResetSkillState();
+            }
+
+            int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
+
+            if (_spawnPoints != null) RpcTeleportPlayer(playerSettings.gameObject, _spawnPoints.GetRandomPoint(spawnIndex), _spawnPoints.GetRotate(spawnIndex));
+        }
+    }
+
+    public void CallRestartRound()
+    {
+        if (isServer) Restart();
+        else CmdRestart();
+    }
 
     public void Init(NetworkRoom room)
     {
@@ -65,6 +122,11 @@ public abstract class GameRules : NetworkBehaviour
         Destroy(gameObject);
     }
 
+    //private void ResetResource(NetworkIdentity networkIdentity)
+    //{
+    //    if (networkIdentity.TryGetComponent<Resource>(out Resource resource)) resource.ResetValue();
+    //}
+
     protected virtual void EndGame()
     {
         StartCoroutine(CloseRoomJob());
@@ -88,6 +150,8 @@ public abstract class GameRules : NetworkBehaviour
 
         _spawnPoints = _gameManager.HeroSpawnManager;
         _preparationAreaManager = _gameManager.PreparationAreaManager;
+        _npcSpawn = _gameManager.NpcSpawn;
+        _gameManager.RestartRound.GameRules = this;
 
         if (_gameManager.TeamsPanel == null) return;
     }
@@ -349,5 +413,13 @@ public abstract class GameRules : NetworkBehaviour
         {
             _gameManager.TeamsPanel.AddInSecondTeam(hero);
         }
+    }
+
+    [ClientRpc] public void RpcEnablePreparationAreas(float duration) => _preparationAreaManager?.PreparationAreasDisable(duration);
+
+    [Command(requiresAuthority = false)]
+    public void CmdRestart()
+    {
+        Restart();
     }
 }

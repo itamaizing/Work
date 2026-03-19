@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Downloadeds/LowPolyRPGWeapons_Lite.meta
 guid: cd266854a6a64644d914314b3a69c4ef
+========
+guid: 161ea6fa03b3e6a4099daf639e9e3752
+>>>>>>>> main:Assets/Downloadeds/JMO Assets.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

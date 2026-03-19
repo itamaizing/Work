@@ -14,7 +14,7 @@ public class Conversion : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        throw new NotImplementedException();
+     
     }
 
     protected override void ClearData()

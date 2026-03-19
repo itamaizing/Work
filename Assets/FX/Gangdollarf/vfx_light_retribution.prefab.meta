@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/FX/Gangdollarf/vfx_light_retribution.prefab.meta
 guid: 6daa9c0dcf0dff34db978190f8e2bac3
+========
+guid: 8436cda64b22c4f4f9becfe3d409d4fc
+>>>>>>>> main:Assets/Prefabs/Abilities/Genjalf/new/ColdShield.prefab.meta
 PrefabImporter:
   externalObjects: {}
   userData: 

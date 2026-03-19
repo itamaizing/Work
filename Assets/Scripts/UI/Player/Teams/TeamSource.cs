@@ -15,14 +15,14 @@ public class TeamSource : MonoBehaviour
     {
         //icon.Init(character);
         //_playerIcons.Add(icon);
-        _heroInfoUI[0].SetHero(character);
+        //_heroInfoUI[0].SetHero(character);
     }
 
     public void AddInSecondTeam(Character character)
     {
         //icon.Init(character);
         //_playerIcons.Add(icon);
-        _heroInfoUI[1].SetHero(character);
+        //_heroInfoUI[1].SetHero(character);
     }
 
     public void UpdateInfo()
