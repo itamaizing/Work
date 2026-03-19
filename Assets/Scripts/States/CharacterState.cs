@@ -361,6 +361,12 @@ public class CharacterState : NetworkBehaviour
 		[States.CorrodedArmor] = new CorrodedArmorState(),
 		[States.Impatience] = new ImpatienceState(),
 		[States.PsionicGeneration] = new PsionicGenerationState(),
+		[States.PsionicGeneration] = new PsionicGenerationState(),
+		[States.Parasites] = new ParasitesState(),
+		[States.SwarmSpeed] = new SwarmSpeedState(),
+		[States.DestructivePoison] = new DestructivePoisonState(),
+		[States.InjectionAdrenaline] = new InjectionAdrenalineState(),
+		[States.MergeDark] = new MergeDarkState(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -785,6 +791,12 @@ public class CharacterState : NetworkBehaviour
 	private void ClientRpcRemoveIconCount()
 	{
 		_stateIcons?.RemoveIconCount();
+	} 
+	
+	[ClientRpc]
+	private void RpcClearStateIcons()
+	{
+		_stateIcons?.DeactivateAll();
 	}
 
 	private void MoveStateToEnd(int index)
@@ -800,6 +812,16 @@ public class CharacterState : NetworkBehaviour
 
 		// Добавляем его в конец списка
 		_currentStates.Add(state);
+	}
+	
+	[Server]
+	public void ServerClearAllStates()
+	{
+		var statesCopy = new List<AbstractCharacterState>(_currentStates);
+
+		foreach (var state in statesCopy) state.ExitState();
+		_currentStates.Clear();
+		RpcClearStateIcons();
 	}
 }
 
@@ -940,7 +962,12 @@ public enum States
 	CoolingDamaged,
 	MagicInstantaneity,
 	ImmortalityState,
-	BurningStacked
+	BurningStacked,
+	Parasites,
+	SwarmSpeed,
+	DestructivePoison,
+	InjectionAdrenaline,
+	MergeDark
 }
 public enum BaffDebaff
 {

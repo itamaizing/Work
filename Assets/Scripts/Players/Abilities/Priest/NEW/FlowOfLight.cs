@@ -20,6 +20,7 @@ public class FlowOfLight : Skill, IPolaritySwitchable
     [SerializeField] private ReversePolarity _reversePolarity;
 
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
+    public bool IsLightMode => isLightMode;
     public event Action OnModeChange;
 
     private GameObject _activeEffect;

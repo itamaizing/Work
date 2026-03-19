@@ -29,6 +29,7 @@ public class PillarOfLight : Skill, IPolaritySwitchable
     protected override bool IsCanCast => CheckCanCast();
 
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
+    public bool IsLightMode => isLightMode;
     public event Action OnModeChange;
 
     private Vector3 _clickPoint;

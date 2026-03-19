@@ -35,6 +35,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
     private bool _spiritEnergyAddTalent;
 
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
+    public bool IsLightMode => isLightMode;
 
     private bool _healthBoostActive = false;
     private bool _lowHealthTalentActive = false;

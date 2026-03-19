@@ -3651,8 +3651,8 @@ MonoBehaviour:
   _animator: {fileID: 7879372539739867077}
   _lifetime: 6
   _attackInterval: 1.2
-  _attackRange: 1.5
-  _destinationUpdateThreshold: 0.3
+  _attackRange: 2
+  _destinationUpdateThreshold: 1
 --- !u!195 &8114812499182112177
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -3662,7 +3662,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 7032456880159242910}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -3672,7 +3672,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
-  m_BaseOffset: 0
+  m_BaseOffset: 0.1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!1 &7034783565687729383

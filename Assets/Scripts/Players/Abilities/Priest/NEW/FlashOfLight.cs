@@ -31,6 +31,7 @@ public class FlashOfLight : Skill,IPolaritySwitchable
     private float _lastTalentTime = -5f;
     private float _cooldownReduction = 5f;
 
+    public bool IsLightMode => isLightMode;
     public event Action OnModeChange;
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
 

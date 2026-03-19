@@ -24,6 +24,8 @@ public class DomeOfLight : Skill, IPolaritySwitchable
     protected override bool IsCanCast => true;
 
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
+    
+    public bool IsLightMode => isLightMode;
     public event Action OnModeChange;
     
     public void AnimCastDome() => AnimStartCastCoroutine();

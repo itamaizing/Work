@@ -84,7 +84,7 @@ public class RisingOfShadows : Skill
 
             ShadowMinion shadow = Instantiate(_shadowPrefab, spawnPos, Quaternion.identity);
             SceneManager.MoveGameObjectToScene(shadow.gameObject, _hero.NetworkSettings.MyRoom);
-            NetworkServer.Spawn(shadow.gameObject);
+            NetworkServer.Spawn(shadow.gameObject, connectionToClient);
 
             TargetRpcInitShadow(connectionToClient, shadow.gameObject, targetGO, _shadowSpeedMultiplier);
         }

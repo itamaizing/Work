@@ -42,6 +42,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 	private bool _isInvisible;
 	protected bool _isDisappeared;
 	private bool _isDead = false;
+	private bool _initialized;
 
 	public SpawnComponent SpawnComponent => _spawnComponent;
 	public CharacterData Data => _playerData;
@@ -132,6 +133,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
     public event Action<float, Skill, string> HealTaked;
 	public event Action<Character> Died;
 	public event Action Killed;
+	public event Action Reset;
 
 	protected override void OnValidate()
     {
@@ -145,7 +147,10 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 
     public virtual void Initialize()
 	{
-        AttributeSystem.Init(Data);
+		if (_initialized) return;
+
+		_initialized = true;
+		AttributeSystem.Init(Data);
 		EnsureResources();
 		//Debug.Log($"Resources{_resources.Count}", gameObject);
 		Resource = _resources[Data.Resource.type];
@@ -356,6 +361,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 		_collider.enabled = true;
 		_rigidbody.isKinematic = false;
 		_playerMove.enabled = true;
+		Reset?.Invoke();
 
 		foreach (var item in _resources.Values)
 		{

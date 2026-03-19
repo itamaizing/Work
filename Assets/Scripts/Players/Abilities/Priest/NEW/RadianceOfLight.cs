@@ -24,6 +24,7 @@ public class RadianceOfLight : Skill, IPolaritySwitchable
     protected override bool IsCanCast => true;
 
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
+    public bool IsLightMode => isLightMode;
     public event Action OnModeChange;
 
     private bool IsEnemyTarget(Character target) =>

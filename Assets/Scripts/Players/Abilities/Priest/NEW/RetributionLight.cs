@@ -44,7 +44,7 @@ public class RetributionLight : Skill,IPolaritySwitchable
     private bool _firstBeamDecalsEnded;
     
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
-    
+    public bool IsLightMode => isLightMode;
     public event Action OnModeChange;
 
     private static readonly int _onFinishedEventId = Shader.PropertyToID("OnBeamHit");

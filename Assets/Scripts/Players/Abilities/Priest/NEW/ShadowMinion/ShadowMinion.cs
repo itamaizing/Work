@@ -32,26 +32,36 @@ public class ShadowMinion : NetworkBehaviour
 
         if (_agent != null)
         {
-            _agent.enabled              = true;
-            _agent.speed                = target.Move.CurrentSpeed * speedMultiplier;
-            _agent.stoppingDistance     = _attackRange;
-            _agent.updateRotation       = false;
+            _agent.enabled               = true;
+            _agent.speed                 = target.Move.CurrentSpeed * speedMultiplier;
+            _agent.updateRotation        = false;
             _agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
-            _agent.avoidancePriority    = 0;
+            _agent.avoidancePriority     = 0;
         }
 
         StartCoroutine(AttackJob());
     }
     private void Update()
     {
+        if (!isOwned) return;
         if (!_initialized) return;
         if (_target == null || _target.IsDead) return;
         if (_agent == null || !_agent.isActiveAndEnabled) return;
 
-        if (Vector3.Distance(_target.transform.position, _lastDestination) > _destinationUpdateThreshold)
+        float distToTarget = Vector3.Distance(transform.position, _target.transform.position);
+
+        if (distToTarget > _attackRange)
         {
-            _lastDestination = _target.transform.position;
-            _agent.SetDestination(_lastDestination);
+            if (Vector3.Distance(_target.transform.position, _lastDestination) > _destinationUpdateThreshold)
+            {
+                _lastDestination = _target.transform.position;
+                _agent.SetDestination(_lastDestination);
+            }
+        }
+        else
+        {
+            if (_agent.hasPath)
+                _agent.ResetPath();
         }
 
         UpdateLookAt();

@@ -37,6 +37,7 @@ public class Restoration : Skill,IPolaritySwitchable
     public IDamageable Target => Targeting.GetTarget()?.Character;
 
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
+    public bool IsLightMode => isLightMode;
 
     private bool IsAllyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Allies");
     private bool IsEnemyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Enemy");
