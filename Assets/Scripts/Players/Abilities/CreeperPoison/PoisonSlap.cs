@@ -578,7 +578,7 @@ public class PoisonSlap : Skill
 
                 SceneManager.MoveGameObjectToScene(_poisonDamagingCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
-                _poisonDamagingCloud.InitializationProjectile(_player, duration);
+                _poisonDamagingCloud.InitializationProjectile(_player, duration, this);
                 _poisonDamagingCloud.AddStack();
 
                 NetworkServer.Spawn(_poisonDamagingCloud.gameObject);
@@ -620,7 +620,7 @@ public class PoisonSlap : Skill
     {
         if (dmg != null)
         {
-            dmg.InitializationProjectile(_player, duration);
+            dmg.InitializationProjectile(_player, duration, this);
             dmg.AddStack();
         }
 

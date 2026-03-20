@@ -350,7 +350,7 @@ public class SpitPoison : Skill, IAltAbility
 
                 SceneManager.MoveGameObjectToScene(_poisonDamagingCloudPrefab.PoisonDamageCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
-                _poisonDamagingCloudPrefab.PoisonDamageCloud.InitializationProjectile(_player, duration);
+                _poisonDamagingCloudPrefab.PoisonDamageCloud.InitializationProjectile(_player, duration, this);
                 _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
 
                 NetworkServer.Spawn(_poisonDamagingCloud.gameObject);
@@ -398,7 +398,7 @@ public class SpitPoison : Skill, IAltAbility
     {
         if (poisonDamagingCloud != null)
         {
-            poisonDamagingCloud.InitializationProjectile(_player, duration);
+            poisonDamagingCloud.InitializationProjectile(_player, duration, this);
             poisonDamagingCloud.AddStack();
         }
 

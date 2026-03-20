@@ -910,7 +910,7 @@ public class PoisonBall : Skill, IAltAbility
                 _poisonDamagingCloudPrefab.PoisonDamageCloud = _poisonDamagingCloud;
                 SceneManager.MoveGameObjectToScene(_poisonDamagingCloudPrefab.PoisonDamageCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
-                _poisonDamagingCloudPrefab.PoisonDamageCloud.InitializationProjectile(_player, duration);
+                _poisonDamagingCloudPrefab.PoisonDamageCloud.InitializationProjectile(_player, duration, this);
                 _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
 
                 NetworkServer.Spawn(_poisonDamagingCloud.gameObject);
@@ -965,7 +965,7 @@ public class PoisonBall : Skill, IAltAbility
         //Debug.Log("PoisonBall / RpcApply / if (poisonDamagingCloud != null) = " + poisonDamagingCloud);
         if (poisonDamagingCloud != null)
         {
-            poisonDamagingCloud.InitializationProjectile(_player, duration);
+            poisonDamagingCloud.InitializationProjectile(_player, duration, this);
             poisonDamagingCloud.AddStack();
         }
 

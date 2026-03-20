@@ -8,7 +8,6 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
     private ParticleSystem _instancePoisonDamagingCloud;
 
     [SerializeField] private LayerMask _enemyLayer;
-    [SerializeField] private float _damageRadius = 1.5f;
     [SerializeField] private float _damageTickRate = 1f;
 
     private Coroutine _damageCoroutine;
@@ -22,6 +21,7 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
 
     private PoisonDamagingCloudPrefab _poisonDamageCloud;
     private Character _player;
+    [ReadOnly][SerializeField] private Skill _skill;
 
     private Coroutine _lifetimeStacksCoroutine;
     private Coroutine _activateParticlePoisonCloudCoroutine;
@@ -36,10 +36,11 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
         }
     }
 
-    public void InitializationProjectile(Character player, float duration)
+    public void InitializationProjectile(Character player, float duration, Skill skill)
     {
         _player = player;
-        
+        _skill = skill;
+
         _duration = duration;
         _baseDuration = duration;
     }
@@ -82,10 +83,7 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
             _lifetimeStacksCoroutine = StartCoroutine(LifeTimeStacks());
         }
 
-        if (_damageCoroutine == null && isServer)
-        {
-            _damageCoroutine = StartCoroutine(DamageEnemies());
-        }
+        if (_damageCoroutine == null) _damageCoroutine = StartCoroutine(DamageEnemies());
     }
 
     private void InstantiateCloud()
@@ -154,16 +152,11 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
         PoisonDamageCloud = null;
     }
 
-    [Server]
     private void DealDamageInRadius()
     {
         if (_player == null) return;
 
-        Collider[] targets = Physics.OverlapSphere(
-            _player.transform.position,
-            _damageRadius,
-            _enemyLayer
-        );
+        Collider[] targets = Physics.OverlapSphere( _player.transform.position, _radiusCloud, _enemyLayer);
 
         foreach (var col in targets)
         {
@@ -174,7 +167,7 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
             if (target == _player) continue;
             if (target.IsDead) continue;
 
-            float damageValue = target.Health.MaxValue * 0.5f;
+            float damageValue = target.Health.MaxValue * 0.05f;
 
             Damage damage = new Damage
             {
@@ -183,7 +176,7 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
                 PhysicAttackType = AttackRangeType.RangeAttack
             };
 
-            target.TryTakeDamage(ref damage, null);
+            _skill.CmdApplyDamage(damage, target.gameObject);
         }
     }
 

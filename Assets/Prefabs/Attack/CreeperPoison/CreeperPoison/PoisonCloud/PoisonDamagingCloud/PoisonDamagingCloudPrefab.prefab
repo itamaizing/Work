@@ -102,5 +102,10 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _poisonDamagingCloudParticle: {fileID: 8953399915667988303, guid: 9701a3a53a66bca409933231ce707963, type: 3}
+  _enemyLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  _damageRadius: 1.5
+  _damageTickRate: 1
   _maxStacks: 5
-  _radiusCloud: 1.5
+  _radiusCloud: 3
