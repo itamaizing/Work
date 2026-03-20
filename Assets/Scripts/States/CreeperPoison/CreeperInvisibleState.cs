@@ -88,12 +88,12 @@ public class CreeperInvisibleState : AbstractCharacterState
 
         float reductionMoveSpeed = _originalMoveSpeed * _reductionMoveSpeed;
         _modif = new AttributeModifier(-reductionMoveSpeed, ModifierType.Flat, this);
+        _player.Move.AddModifier(_modif);
         //float endReductionMoveSpeed = _originalMoveSpeed - reductionMoveSpeed;
 
         //_player.Move.SetMoveSpeed(endReductionMoveSpeed);
 
         if (_player?.Move == null) return;
-        _player.Move.AddModifier(_modif);
 
         var mana = _player.TryGetResource(ResourceType.Mana);
         if (mana != null) mana.RegenerationDelay *= (1 + _increaseStaminaRegen);

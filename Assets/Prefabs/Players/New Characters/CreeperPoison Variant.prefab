@@ -13813,7 +13813,7 @@ MonoBehaviour:
   _firstStrike: {fileID: 3980160588782160003}
   _feelingOfContinuation: {fileID: 233453096825435517}
   _preparingForFight: {fileID: 6757583794360340372}
-  _ambushPoisons: {fileID: 0}
+  _ambushPoisons: {fileID: 3254515559312903057}
   _isCheckForStatePoisonBone: 0
   _lightningStrikes: {fileID: 734640227586387152}
   _lightningMovement: {fileID: 7013613396998518356}
@@ -14468,8 +14468,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: b01cdda0a8d49e24a8cd5c7190f8483b, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
@@ -15278,6 +15278,7 @@ MonoBehaviour:
   character: {fileID: 2483674839823445686}
   skillManager: {fileID: 2617687491934927079}
   lightningMovement: {fileID: 7013613396998518356}
+  coldBlood: {fileID: 4616268591970552908}
 --- !u!114 &8303087721396363938
 MonoBehaviour:
   m_ObjectHideFlags: 0

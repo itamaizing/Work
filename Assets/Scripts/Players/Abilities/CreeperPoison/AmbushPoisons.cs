@@ -115,7 +115,7 @@ public class AmbushPoisons : Skill
 
         CurrentCharge(_currentStacks);
 
-        target.CharacterState.AddState(States.PoisonBone, 6f, 1, Hero.gameObject, this.name);
+        target.CharacterState.AddStateLogic(States.PoisonBone, 6, 0, Schools.None, Hero.gameObject, null);
 
         if (_invisible != null && _invisible.IsInvisible)
         {

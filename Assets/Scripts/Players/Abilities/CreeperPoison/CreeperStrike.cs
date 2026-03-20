@@ -484,7 +484,7 @@ public class CreeperStrike : Skill
             _currentStacksPoison = 0;
             _currentAllStacks = 0;
 
-            Collider[] enemies = Physics.OverlapSphere(transform.position, _radiusSearching, _enemyLayer);
+            Collider[] enemies = Physics.OverlapSphere(transform.position, 30, _enemyLayer);
 
             foreach (Collider target in enemies)
             {
