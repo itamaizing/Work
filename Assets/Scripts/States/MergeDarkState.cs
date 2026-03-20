@@ -7,12 +7,12 @@ public class MergeDarkState : AbstractCharacterState
     private Character _character;
     private SkillManager _skillManager;
 
-    private const float _evadeBonus    = 30f;
-    private const float _magResBonus   = 30f;
+    private const float _evadeBonus = 30f;
+    private const float _magResBonus = 30f;
 
-    public override States State       => States.MergeDark;
+    public override States State => States.MergeDark;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
-    public override StateType Type     => StateType.Immaterial;
+    public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
     
     public override void EnterState(CharacterState characterStateComp, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)

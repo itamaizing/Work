@@ -100,6 +100,6 @@ public class RisingOfShadows : Skill
 
         if (shadow == null || target == null) return;
 
-        shadow.InitOnClient(target, this, speedMultiplier);
+        shadow.InitOnClient(target, this, speedMultiplier,false);
     }
 }

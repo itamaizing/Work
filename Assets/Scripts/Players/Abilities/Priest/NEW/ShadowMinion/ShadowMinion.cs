@@ -15,31 +15,40 @@ public class ShadowMinion : NetworkBehaviour
     private Character _target;
     private Skill _sourceSkill;
     private float _damagePercent = 0.02f;
-    private bool _initialized = false;
+    private const float SHACKLE_DURATION = 2f;
     private Vector3 _lastDestination;
     private Vector3 _previousPosition;
+    private bool _initialized = false;
+    private bool _reachedTarget = false;
+    private bool _applyShackleOnExpire = false;
 
     private static readonly int _attackTrigger = Animator.StringToHash("Attack");
     private static readonly int _velocityX = Animator.StringToHash("X");
     private static readonly int _velocityZ = Animator.StringToHash("Y");
 
-    public void InitOnClient(Character target, Skill sourceSkill, float speedMultiplier)
+    public void InitOnClient(Character target, Skill sourceSkill, float speedMultiplier, bool applyShackleOnExpire)
     {
-        _target           = target;
-        _sourceSkill      = sourceSkill;
-        _initialized      = true;
-        _previousPosition = transform.position;
+        _target              = target;
+        _sourceSkill         = sourceSkill;
+        _applyShackleOnExpire = applyShackleOnExpire;
+        _initialized         = true;
+        _previousPosition    = transform.position;
 
         if (_agent != null)
         {
             _agent.enabled               = true;
-            _agent.speed                 = target.Move.CurrentSpeed * speedMultiplier;
             _agent.updateRotation        = false;
             _agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
             _agent.avoidancePriority     = 0;
+            
+            if(applyShackleOnExpire)
+                _agent.speed = sourceSkill.Hero.Move.CurrentSpeed * speedMultiplier;
+            else
+                _agent.speed = _target.Move.CurrentSpeed * speedMultiplier;
         }
 
         StartCoroutine(AttackJob());
+        StartCoroutine(LifetimeJob());
     }
     private void Update()
     {
@@ -117,7 +126,15 @@ public class ShadowMinion : NetworkBehaviour
         float distance = Vector3.Distance(transform.position, _target.transform.position);
         if (distance > _attackRange) return;
 
-        float damageValue = _target.Health.MaxValue * _damagePercent;
+        float damageValue;
+        if (_applyShackleOnExpire)
+        {
+            damageValue = 8f;
+        }
+        else
+        {
+            damageValue = _target.Health.MaxValue * _damagePercent;
+        }
 
         Damage damage = new Damage
         {
@@ -128,15 +145,39 @@ public class ShadowMinion : NetworkBehaviour
         _sourceSkill.CmdApplyDamage(damage, _target.gameObject);
     }
 
-    public override void OnStartServer()
+    [ClientRpc]
+    private void RpcCheckAndApplyShackle()
     {
-        StartCoroutine(ServerLifetimeJob());
-    }
+        if (!isOwned) return;
+        if (!_applyShackleOnExpire) return;
+        if (_target == null || _target.IsDead) return;
 
-    [Server]
-    private IEnumerator ServerLifetimeJob()
+        float distance = Vector3.Distance(transform.position, _target.transform.position);
+        if (distance > _attackRange * 1.5f) return;
+
+        CmdApplyState(_target.gameObject);
+    }
+    
+    [Command] 
+    private void CmdApplyState(GameObject _target)
+    {
+        _target.GetComponent<Character>().CharacterState.AddState(States.ShackleState, SHACKLE_DURATION, 0, _target.gameObject, name);
+        
+        NetworkServer.Destroy(gameObject);
+    }
+    
+    private IEnumerator LifetimeJob()
     {
         yield return new WaitForSeconds(_lifetime);
-        NetworkServer.Destroy(gameObject);
+        OnLifeTimeEnd(_applyShackleOnExpire);
+    }
+
+    [Command]
+    private void OnLifeTimeEnd(bool isShackleOnExpire)
+    {
+        RpcCheckAndApplyShackle();
+        
+        if(!isShackleOnExpire)
+            NetworkServer.Destroy(gameObject);
     }
 }

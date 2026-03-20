@@ -250,7 +250,7 @@ public abstract class Skill : NetworkBehaviour
         _currentChargeCooldownJob[index] = StartCoroutine(RechargeOneChargeCoroutine(index, tempTime));
     }
 
-    public bool TryUseCharge()
+    public virtual bool TryUseCharge()
     {
         if (_isUseCharges == false)
             return true;

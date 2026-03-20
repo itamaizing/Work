@@ -367,6 +367,8 @@ public class CharacterState : NetworkBehaviour
 		[States.DestructivePoison] = new DestructivePoisonState(),
 		[States.InjectionAdrenaline] = new InjectionAdrenalineState(),
 		[States.MergeDark] = new MergeDarkState(),
+		[States.DarkFormState] = new DarkFormState(),
+		[States.ShackleState] = new ShackleState(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -967,7 +969,9 @@ public enum States
 	SwarmSpeed,
 	DestructivePoison,
 	InjectionAdrenaline,
-	MergeDark
+	MergeDark,
+	DarkFormState,
+	ShackleState
 }
 public enum BaffDebaff
 {
