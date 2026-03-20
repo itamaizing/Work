@@ -4,6 +4,8 @@ using Mirror;
 
 public class AmbushPoisons : Skill
 {
+    [SerializeField] private CreeperInvisible _invisible;
+
     private const int MaxStacks = 3;
     private const float StackInterval = 3f;
     private const float ClearDelay = 3f;
@@ -13,44 +15,31 @@ public class AmbushPoisons : Skill
     private Coroutine _stackRoutine;
     private Coroutine _clearRoutine;
 
-    private CreeperInvisible _invisible;
-
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => false;
 
-    private void Start()
+    private void OnEnable()
     {
-        _invisible = GetComponent<CreeperInvisible>();
-        StartCoroutine(StateWatcher());
+        if (_invisible != null) _invisible.OnInvisibleChanged += OnInvisibleChanged;
     }
 
-    private IEnumerator StateWatcher()
+    private void OnDisable()
     {
-        WaitForSeconds delay = new WaitForSeconds(0.1f);
+        if (_invisible != null) _invisible.OnInvisibleChanged -= OnInvisibleChanged;
+    }
 
-        while (true)
+    private void OnInvisibleChanged(bool isInvisible)
+    {
+        if (isInvisible)
         {
-            if (!isServer)
-            {
-                yield return delay;
-                continue;
-            }
-
-            bool isInvis = _invisible != null && _invisible.IsInvisible;
-
-            if (isInvis)
-            {
-                StartStacking();
-                StopClearing();
-            }
-            else
-            {
-                StopStacking();
-                StartClearing();
-            }
-
-            yield return delay;
+            StartStacking();
+            StopClearing();
+        }
+        else
+        {
+            StopStacking();
+            StartClearing();
         }
     }
 
@@ -116,7 +105,6 @@ public class AmbushPoisons : Skill
 
     public bool TryConsumeStack(Character target)
     {
-        if (!isServer) return false;
         if (_currentStacks <= 0) return false;
         if (target == null) return false;
 

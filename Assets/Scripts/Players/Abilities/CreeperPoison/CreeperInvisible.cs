@@ -51,11 +51,23 @@ public class CreeperInvisible : Skill
         set => _isReadyToThreeHitForPreparingForFightTalent = value; 
     }
 
-    public bool IsInvisible { get => _isInvisible; set => _isInvisible = value; }
+    public bool IsInvisible
+    {
+        get => _isInvisible;
+        set
+        {
+            if (_isInvisible == value) return;
+
+            _isInvisible = value;
+            OnInvisibleChanged?.Invoke(_isInvisible);
+        }
+    }
 
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
     protected override bool IsCanCast => true;
+
+    public event Action<bool> OnInvisibleChanged;
 
     #endregion
 
@@ -195,7 +207,7 @@ public class CreeperInvisible : Skill
 
         else CmdApplyInvis(_player.gameObject);
 
-        if (_isInvisible && _transparentPoisons.Data.IsOpen)
+        if (IsInvisible && _transparentPoisons.Data.IsOpen)
         {
             if (_altAbilities != null)
             {
@@ -288,7 +300,7 @@ public class CreeperInvisible : Skill
     [Command]
     private void CmdApplyInvis(GameObject player)
     {
-        _isInvisible = true;
+        IsInvisible = true;
         _isPlayerSeen = false;
         _isDamagedPlayer = false;
 
@@ -302,7 +314,7 @@ public class CreeperInvisible : Skill
     [Command]
     private void CmdRemoveInvisible(GameObject player, bool creeperStrikeIsHit)
     {
-        _isInvisible = false;
+        IsInvisible = false;
         _isPlayerSeen = true;
         _isDamagedPlayer = false;
 
@@ -417,7 +429,7 @@ public class CreeperInvisible : Skill
     [ClientRpc]
     private void RpcApplyInvis()
     {
-        _isInvisible = true;
+        IsInvisible = true;
         _isPlayerSeen = false;
         _isDamagedPlayer = false;
 
@@ -427,7 +439,7 @@ public class CreeperInvisible : Skill
     [ClientRpc]
     private void RpcRemoveInvisible(bool creeperStrikeIsHit)
     {
-        _isInvisible = false;
+        IsInvisible = false;
         _player.SelectedCircle?.SetAllProjectorsEnabled(true);
 
         if (_assasinPoison != null && _assasinPoison.Data.IsOpen)
