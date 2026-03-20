@@ -23,7 +23,7 @@ public class CreeperInvisibleState : AbstractCharacterState
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
-
+    
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
@@ -82,11 +82,12 @@ public class CreeperInvisibleState : AbstractCharacterState
 
     private void ApplyInvisible()
     {
+        if (_modif != null) return;
+
         _playerInInvisible = true;
 
         float reductionMoveSpeed = _originalMoveSpeed * _reductionMoveSpeed;
         _modif = new AttributeModifier(-reductionMoveSpeed, ModifierType.Flat, this);
-        _player.Move.AddModifier(_modif);
         //float endReductionMoveSpeed = _originalMoveSpeed - reductionMoveSpeed;
 
         //_player.Move.SetMoveSpeed(endReductionMoveSpeed);
