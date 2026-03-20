@@ -55,6 +55,17 @@ public class SpitPoison : Skill, IAltAbility
     private bool _isOriginalTargetPlayer;
     private bool _isAbilityActive = false;
 
+    #region Talent
+
+    private bool _canSpawnPoisonCloud = false;
+
+    public void SetPoisonCloudEnabled(bool value)
+    {
+        _canSpawnPoisonCloud = value;
+    }
+
+    #endregion
+
     public bool IsAltAbility { get; set; }
     public int PoisonBoneStack { get => _poisonBoneStack; set => _poisonBoneStack = value; }
 
@@ -259,6 +270,8 @@ public class SpitPoison : Skill, IAltAbility
         }
 
         _player.Move.SetCanMove(true);
+
+        if (_canSpawnPoisonCloud) CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
     }
 
     #region Command Methods

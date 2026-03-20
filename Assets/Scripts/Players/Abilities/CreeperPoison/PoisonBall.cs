@@ -146,6 +146,17 @@ public class PoisonBall : Skill, IAltAbility
     public event Action ResetAbilityParameters;
     public event Action AbilityChange;
 
+    #region Talent
+
+    private bool _canSpawnPoisonCloud = false;
+
+    public void SetPoisonCloudEnabled(bool value)
+    {
+        _canSpawnPoisonCloud = value;
+    }
+
+    #endregion
+
     #endregion
 
     public void PayCostPoisonBall()
@@ -424,19 +435,6 @@ public class PoisonBall : Skill, IAltAbility
 
     private void CheckingActiveTalents()
     {
-        _activeTalentsInfo.IsActiveFootInstincts = _footInstincts.Data.IsOpen;
-        _activeTalentsInfo.IsActiveRestorationOfGlands = _restorationOfGlands.Data.IsOpen;
-        _activeTalentsInfo.IsActiveTransparentPoisons = _transparentPoisons.Data.IsOpen;
-        _activeTalentsInfo.IsActiveWitheringPoison = _witheringPoison.Data.IsOpen;
-        _activeTalentsInfo.IsActiveContinuationAmbush = _continuationAmbush.Data.IsOpen;
-        _activeTalentsInfo.IsActiveHealingPoisonBall = _healingPoisonBall.Data.IsOpen;
-        _activeTalentsInfo.IsActiveHealingPoisonCloud = _healPoisonCloud.Data.IsOpen;
-        _activeTalentsInfo.IsActiveEnlargedGlands = _enlargedGlands.Data.IsOpen;
-        _activeTalentsInfo.IsActiveVoluminousBall = _voluminousBall.Data.IsOpen;
-        _activeTalentsInfo.IsActiveInertialGlands = _inertialGlands.Data.IsOpen;
-        _activeTalentsInfo.IsActiveVolatilityOfPoisons = _volatilityOfPoisons.Data.IsOpen;
-        _activeTalentsInfo.IsActiveBallEffect = _ballEffect.Data.IsOpen;
-
         #region VolatilityOfPoisonsTalentIsActive
 
         if (_activeTalentsInfo.IsActiveVolatilityOfPoisons && _poisonBoneStacks > 0)
@@ -647,7 +645,10 @@ public class PoisonBall : Skill, IAltAbility
                 _activeTalentsInfo.IsActiveInertialGlands, _activeTalentsInfo.IsActiveContinuationAmbush,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
 
-            CmdApplyPoisonCloud(_poisonBallInfo.IsHealingPoisonCloud, _durationPoisonCloud);
+            if (_canSpawnPoisonCloud)
+            {
+                CmdApplyPoisonCloud(_poisonBallInfo.IsHealingPoisonCloud, _durationPoisonCloud);
+            }
         }
         else
         {
@@ -659,7 +660,10 @@ public class PoisonBall : Skill, IAltAbility
                 _activeTalentsInfo.IsActiveInertialGlands, _activeTalentsInfo.IsActiveContinuationAmbush,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
 
-            CmdApplyPoisonCloud(_poisonBallInfo.IsHealingPoisonCloud, _durationPoisonCloud);
+            if (_canSpawnPoisonCloud)
+            {
+                CmdApplyPoisonCloud(_poisonBallInfo.IsHealingPoisonCloud, _durationPoisonCloud);
+            }
         }
     }
 

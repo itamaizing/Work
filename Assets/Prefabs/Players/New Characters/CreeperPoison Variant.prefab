@@ -15443,6 +15443,8 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 2483674839823445686}
   poisonBall: {fileID: 4719927588574066064}
+  poisonSlap: {fileID: 0}
+  spitPoison: {fileID: 0}
   skillManager: {fileID: 2617687491934927079}
 --- !u!114 &1734068584079679132
 MonoBehaviour:
