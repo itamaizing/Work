@@ -19,6 +19,8 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
     private float _baseDuration;
     private float _duration;
 
+    [SerializeField] private float _damageModifier = 0.005f;
+
     private PoisonDamagingCloudPrefab _poisonDamageCloud;
     private Character _player;
     [ReadOnly][SerializeField] private Skill _skill;
@@ -167,7 +169,7 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
             if (target == _player) continue;
             if (target.IsDead) continue;
 
-            float damageValue = target.Health.MaxValue * 0.05f;
+            float damageValue = target.Health.MaxValue * _damageModifier;
 
             Damage damage = new Damage
             {

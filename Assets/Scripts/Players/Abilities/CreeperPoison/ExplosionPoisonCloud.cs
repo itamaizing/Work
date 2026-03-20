@@ -88,13 +88,13 @@ public class ExplosionPoisonCloud : Skill
             {
                 CmdDamageDeal(target, _currentDamage);
 
-                for (int i = 0; i < _currentStacksPoisonCloud; i++)
-                {
-                    if (Random.Range(0.0f, 1.0f) <= _chanceApplyBonePoison)
-                    {
-                        ApplyPoisonBone(target.gameObject);
-                    }
-                }
+                //for (int i = 0; i < _currentStacksPoisonCloud; i++)
+                //{
+                //    if (Random.Range(0.0f, 1.0f) <= _chanceApplyBonePoison)
+                //    {
+                //        ApplyPoisonBone(target.gameObject);
+                //    }
+                //}
             }
         }
 
