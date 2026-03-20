@@ -66,6 +66,7 @@ public class CreeperStrike : Skill
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     public event Action OnCreeperStrikeEnd;
+    public event Action OnHit;
 
     #endregion
 
@@ -171,6 +172,7 @@ public class CreeperStrike : Skill
             float _currentChanceOfCriticalStrike = UnityEngine.Random.Range(0.0f, 1.0f);
 
             _isHit = true;
+            OnHit?.Invoke();
             _currentCountHit++;
 
 

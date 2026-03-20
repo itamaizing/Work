@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class ColdBlood : Skill
 {
     [Header("Talent")]
-    [SerializeField] private ColdBloodEnabledTalent _coldBloodEnabledTalent;
     [SerializeField] private Indomitable _indomitable;
     [SerializeField] private ColdBloodTalent _coldBloodTalent;
     [SerializeField] private KillersStamina _killersStamina;
@@ -24,7 +24,7 @@ public class ColdBlood : Skill
     private bool _isCanCritCreeperStrike;
     private bool _isCanCritLightningStrikes;
 
-    private Coroutine _waitingHitFromCreeperStrike;
+    private bool _isWaitingForHit = false;
 
     public Indomitable IndomitableTalent { get => _indomitable; }
     public ColdBloodTalent ColdBloodTalent { get => _coldBloodTalent; }
@@ -34,7 +34,7 @@ public class ColdBlood : Skill
 
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
-    protected override bool IsCanCast { get => _coldBloodEnabledTalent.Data.IsOpen; }
+    protected override bool IsCanCast => !_isWaitingForHit;
 
     protected override void Awake()
     {
@@ -58,12 +58,6 @@ public class ColdBlood : Skill
         if (Hero.CharacterState.CheckForState(States.Immateriality))
         {
 			Hero.CharacterState.CmdRemoveState(States.Immateriality);
-        }
-
-        if (_waitingHitFromCreeperStrike != null)
-        {
-            StopCoroutine(_waitingHitFromCreeperStrike);
-            _waitingHitFromCreeperStrike = null;
         }
     }
 
@@ -92,8 +86,6 @@ public class ColdBlood : Skill
 
                     _mousePosition = Targeting.GetMousePoint();
                     Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / _mousePosition == " + _mousePosition);
-
-					Hero.CharacterState.CmdAddState(States.Immateriality, 0, 0, Hero.gameObject, Name);
                 }
                 yield return null;
             }
@@ -117,10 +109,10 @@ public class ColdBlood : Skill
             UseAbilityWithoutTalent();
         }
 
-        if (CooldownTime != _baseCooldownTime)
-            CooldownTime = _baseCooldownTime;
+        CmdApplyImmateriality();
+        StartWaitingForHit();
 
-        yield return _waitingHitFromCreeperStrike = StartCoroutine(WaitingHitFromCreeperStrikeJob());
+        yield return null;
     }
 
     public void ReducingAbilityCooldown()
@@ -136,14 +128,29 @@ public class ColdBlood : Skill
             float reducingMultiplier = _reducingCooldownMultiplier;
             CooldownTime /= reducingMultiplier;
         }
+
+        if (Hero.CharacterState.CheckForState(States.Immateriality))
+        {
+            Hero.CharacterState.CmdRemoveState(States.Immateriality);
+        }
     }
 
-    private IEnumerator WaitingHitFromCreeperStrikeJob()
+    private void StartWaitingForHit()
     {
-        while (!_creeperStrike.IsHit)
-        {
-            yield return null;    
-        }
+        if (_isWaitingForHit) return;
+
+        _isWaitingForHit = true;
+
+        _creeperStrike.OnHit += OnCreeperStrikeHit;
+    }
+
+    private void OnCreeperStrikeHit()
+    {
+        _creeperStrike.OnHit -= OnCreeperStrikeHit;
+
+        _isWaitingForHit = false;
+
+        ReducingAbilityCooldown();
     }
 
     private void UseAbilityWithTalent()
@@ -175,5 +182,11 @@ public class ColdBlood : Skill
         }
 
         _isCanCritCreeperStrike = true;
+    }
+
+    [Command]
+    private void CmdApplyImmateriality()
+    {
+        Hero.CharacterState.AddState(States.Immateriality, 999, 0, Hero.gameObject, Name);
     }
 }
