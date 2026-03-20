@@ -51,22 +51,6 @@ public class PoisonBall : Skill, IAltAbility
 {
     #region Variables
 
-    [Header("Talents")]
-    [SerializeField] private RestorationOfGlands _restorationOfGlands;
-    [SerializeField] private TransparentPoisons _transparentPoisons;
-    [SerializeField] private FootInstincts _footInstincts;
-    [SerializeField] private HealingPoisonBall _healingPoisonBall;
-    [SerializeField] private HealingPoisonCloud _healPoisonCloud;
-    [SerializeField] private WitheringPoison _witheringPoison;
-    [SerializeField] private EnlargedGlands _enlargedGlands;
-    [SerializeField] private ContinuationAmbush _continuationAmbush;
-    [SerializeField] private VoluminousBall _voluminousBall;
-    [SerializeField] private InertialGlands _inertialGlands;
-    [SerializeField] private AssasinPoison _assasinPoison;
-    [SerializeField] private FlowOfPoisons _flowOfPoison;
-    [SerializeField] private VolatilityOfPoisons _volatilityOfPoisons;
-    [SerializeField] private BallEffect _ballEffect;
-
     [Header("Ability properties")]
     [SerializeField] private SpitPoison _spitPoison;
     [SerializeField] private PoisonBallProjectile _projectile;
@@ -239,8 +223,6 @@ public class PoisonBall : Skill, IAltAbility
 
         StartCoroutine();
 
-        CheckingActiveTalents();
-
         while (Targeting.GetTempTarget()?.Character == null && float.IsPositiveInfinity(targetPoint.x))
         {
             if (GetMouseButton)
@@ -367,11 +349,6 @@ public class PoisonBall : Skill, IAltAbility
             _mouseDetectionCoroutine = StartCoroutine(UpdateMouseDetectionJob());
         }
 
-        if (_checkingTalentsCoroutine == null)
-        {
-            _checkingTalentsCoroutine = StartCoroutine(CheckingActiveTalentsJob());
-        }
-
         if (_checkTimerActiveCoroutine == null)
         {
             _checkTimerActiveCoroutine = StartCoroutine(CheckTimerActiveJob());
@@ -404,14 +381,6 @@ public class PoisonBall : Skill, IAltAbility
 
     #region CheckingMethods
 
-    private void ContinuationAmbushApplyInvisible()
-    {
-        if (_activeTalentsInfo.IsActiveContinuationAmbush && _isCanApplyInvisible)
-        {
-            _continuationAmbush.CanApplyInvisible(true);
-        }
-    }
-
     private void InertialGlandsReductionCooldown()
     {
         if (_activeTalentsInfo.IsActiveInertialGlands && _isThreeProjectileOnOneTarget)
@@ -420,65 +389,6 @@ public class PoisonBall : Skill, IAltAbility
             _spitPoison.ReductionSetCooldown(newRemainingTime);
             _isThreeProjectileOnOneTarget = false;
         }
-    }
-
-    private IEnumerator CheckingActiveTalentsJob()
-    {
-        while (_isCanCheckActiveTalents)
-        {
-            InertialGlandsReductionCooldown();
-            ContinuationAmbushApplyInvisible();
-
-            yield return null;
-        }
-    }
-
-    private void CheckingActiveTalents()
-    {
-        #region VolatilityOfPoisonsTalentIsActive
-
-        if (_activeTalentsInfo.IsActiveVolatilityOfPoisons && _poisonBoneStacks > 0)
-        {
-            float multiplier = _poisonBoneStacks * 0.1f;
-            _multiplierForPushDistance = multiplier;
-        }
-        else
-        {
-            _multiplierForPushDistance = 0;
-        }
-
-        #endregion
-
-        #region VoluminousBallTalentIsActive
-
-        if (_activeTalentsInfo.IsActiveVoluminousBall && !_isBallCanBigger)
-        {
-            float multiplier = _baseCastWidth * 0.2f;
-            AreaInfo.CastWidth += multiplier;
-            _isBallCanBigger = true;
-        }
-        else if (!_activeTalentsInfo.IsActiveVoluminousBall && _isBallCanBigger)
-        {
-            AreaInfo.CastWidth = _baseCastWidth;
-            _isBallCanBigger = false;
-        }
-
-        #endregion
-
-        #region EnlargedGlandTalentIsActive
-
-        if (_activeTalentsInfo.IsActiveEnlargedGlands && _maxCharges == 3)
-        {
-            AddMaxChargeCount();
-            _poisonBallInfo.MaxCountProjectile = _maxCharges;
-        }
-        else if (!_activeTalentsInfo.IsActiveEnlargedGlands && _maxCharges >= 4)
-        {
-            DeductMaxChargeCount();
-            _poisonBallInfo.MaxCountProjectile = _maxCharges;
-        }
-
-        #endregion
     }
 
     private void CheckWhoTarget()
@@ -841,8 +751,6 @@ public class PoisonBall : Skill, IAltAbility
     {
 
         CurrentTarget = target;
-        FootInstinctsTalent = _footInstincts;
-        RestorationOfGlandsTalent = _restorationOfGlands;
 
         if (LastTarget == CurrentTarget)
         {
@@ -917,8 +825,6 @@ public class PoisonBall : Skill, IAltAbility
     {
         //_player.Health.Add(-100f);
 
-        RestorationOfGlandsTalent = _restorationOfGlands;
-        FootInstinctsTalent = _footInstincts;
         CurrentTarget = LastTarget;
 
         if (LastTarget == CurrentTarget)

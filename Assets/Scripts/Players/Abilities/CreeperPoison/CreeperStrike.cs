@@ -431,5 +431,154 @@ public class CreeperStrike : Skill
         _hero.Move.StopLookAt();
     }
 
+    #region Own Element
+
+    private bool _isReptileTalentActive;
+    private Coroutine _reptileCoroutine;
+
+    private int _currentStacksPoison;
+    private int _currentAllStacks;
+    private int _previousAllStacks;
+    private int _currentStacksAtckSpeed;
+
+    private float _baseIncreaseAttackSpeed = 0.1f;
+    private float _baseAttackSpeed;
+    private float _increasedAttackSpeed;
+    private float _maxMinimumAttackSpeed = 0.1f;
+
+    private float _radiusSearching = 3f;
+    [SerializeField] private LayerMask _enemyLayer;
+
+    private PoisonBoneState _poisonBoneState;
+    private EmpathicPoisonsState _empathicPoisonState;
+    private WitheringPoisonState _witheringPoisonState;
+    private BindingPoisonState _bindingPoisonState;
+
+    public void SetReptileTalentActive(bool value)
+    {
+        _isReptileTalentActive = value;
+
+        if (value)
+        {
+            _baseAttackSpeed = CastDeley;
+
+            if (_reptileCoroutine == null)
+                _reptileCoroutine = StartCoroutine(ReptileLogic());
+        }
+        else
+        {
+            if (_reptileCoroutine != null)
+            {
+                StopCoroutine(_reptileCoroutine);
+                _reptileCoroutine = null;
+            }
+
+            ResetAllAttackSpeed();
+        }
+    }
+
+    private IEnumerator ReptileLogic()
+    {
+        while (_isReptileTalentActive)
+        {
+            _currentStacksPoison = 0;
+            _currentAllStacks = 0;
+
+            Collider[] enemies = Physics.OverlapSphere(transform.position, _radiusSearching, _enemyLayer);
+
+            foreach (Collider target in enemies)
+            {
+                if (target == null) continue;
+
+                var state = target.GetComponent<CharacterState>();
+                if (state == null) continue;
+
+                if (!state.Check(StatusEffect.Poison)) continue;
+
+                CacheStates(state);
+
+                if (_bindingPoisonState != null)
+                    _currentStacksPoison += _bindingPoisonState.CurrentStacks;
+
+                if (_poisonBoneState != null)
+                    _currentStacksPoison += _poisonBoneState.CurrentStacks;
+
+                if (_empathicPoisonState != null)
+                    _currentStacksPoison += _empathicPoisonState.CurrentStacks;
+
+                if (_witheringPoisonState != null)
+                    _currentStacksPoison += _witheringPoisonState.CurrentStacks;
+            }
+
+            _currentAllStacks = _currentStacksPoison;
+
+            HandleAttackSpeed();
+
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    private void CacheStates(CharacterState state)
+    {
+        _bindingPoisonState = (BindingPoisonState)state.GetState(States.BindingPoison);
+        _poisonBoneState = (PoisonBoneState)state.GetState(States.PoisonBone);
+        _empathicPoisonState = (EmpathicPoisonsState)state.GetState(States.EmpathicPoisons);
+        _witheringPoisonState = (WitheringPoisonState)state.GetState(States.WitheringPoison);
+    }
+
+    private void HandleAttackSpeed()
+    {
+        if (_currentAllStacks != _previousAllStacks)
+        {
+            while (_currentStacksAtckSpeed < _currentAllStacks)
+            {
+                if (_currentAllStacks > 0 && CastDeley > _maxMinimumAttackSpeed)
+                {
+                    IncreaseAttackSpeed();
+                    _previousAllStacks = _currentAllStacks;
+                }
+                else break;
+            }
+        }
+
+        if ((_currentAllStacks == 0 || _currentAllStacks < _previousAllStacks))
+        {
+            while (_currentStacksAtckSpeed > _currentAllStacks)
+            {
+                ResetAttackSpeed();
+            }
+            _previousAllStacks = _currentAllStacks;
+        }
+    }
+
+    private void IncreaseAttackSpeed()
+    {
+        _currentStacksAtckSpeed++;
+
+        _increasedAttackSpeed = _baseAttackSpeed - _baseIncreaseAttackSpeed;
+
+        Buff.AttackSpeed.IncreasePercentage(_increasedAttackSpeed);
+    }
+
+    private void ResetAttackSpeed()
+    {
+        if (CastDeley < _baseAttackSpeed)
+        {
+            Buff.AttackSpeed.ReductionPercentage(_increasedAttackSpeed);
+            _currentStacksAtckSpeed--;
+        }
+    }
+
+    private void ResetAllAttackSpeed()
+    {
+        while (_currentStacksAtckSpeed > 0)
+        {
+            ResetAttackSpeed();
+        }
+
+        _previousAllStacks = 0;
+    }
+    #endregion
+
     #endregion
 }

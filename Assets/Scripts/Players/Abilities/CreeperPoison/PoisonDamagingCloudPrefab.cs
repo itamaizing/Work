@@ -7,6 +7,12 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
     [SerializeField] private ParticleSystem _poisonDamagingCloudParticle;
     private ParticleSystem _instancePoisonDamagingCloud;
 
+    [SerializeField] private LayerMask _enemyLayer;
+    [SerializeField] private float _damageRadius = 1.5f;
+    [SerializeField] private float _damageTickRate = 1f;
+
+    private Coroutine _damageCoroutine;
+
     [SerializeField] private int _maxStacks = 5;
     private int _currentStacks;
 
@@ -75,6 +81,11 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
             _duration = _baseDuration;
             _lifetimeStacksCoroutine = StartCoroutine(LifeTimeStacks());
         }
+
+        if (_damageCoroutine == null && isServer)
+        {
+            _damageCoroutine = StartCoroutine(DamageEnemies());
+        }
     }
 
     private void InstantiateCloud()
@@ -94,6 +105,15 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
             ParticleSystem.MainModule main = _instancePoisonDamagingCloud.main;
             main.duration = _baseDuration;
             _instancePoisonDamagingCloud.Play();
+        }
+    }
+
+    private IEnumerator DamageEnemies()
+    {
+        while (true)
+        {
+            DealDamageInRadius();
+            yield return new WaitForSeconds(_damageTickRate);
         }
     }
 
@@ -134,5 +154,37 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
         PoisonDamageCloud = null;
     }
 
-    
+    [Server]
+    private void DealDamageInRadius()
+    {
+        if (_player == null) return;
+
+        Collider[] targets = Physics.OverlapSphere(
+            _player.transform.position,
+            _damageRadius,
+            _enemyLayer
+        );
+
+        foreach (var col in targets)
+        {
+            if (col == null) continue;
+
+            Character target = col.GetComponent<Character>();
+            if (target == null) continue;
+            if (target == _player) continue;
+            if (target.IsDead) continue;
+
+            float damageValue = target.Health.MaxValue * 0.5f;
+
+            Damage damage = new Damage
+            {
+                Value = damageValue,
+                Type = DamageType.Magical,
+                PhysicAttackType = AttackRangeType.RangeAttack
+            };
+
+            target.TryTakeDamage(ref damage, null);
+        }
+    }
+
 }
