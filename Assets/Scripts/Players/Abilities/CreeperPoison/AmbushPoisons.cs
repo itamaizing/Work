@@ -69,6 +69,8 @@ public class AmbushPoisons : Skill
 
             _currentStacks++;
 
+            CurrentCharge(_currentStacks);
+
             if (_currentStacks >= MaxStacks)
             {
                 _stackRoutine = null;
@@ -99,6 +101,7 @@ public class AmbushPoisons : Skill
         yield return new WaitForSeconds(ClearDelay);
 
         _currentStacks = 0;
+        CurrentCharge(_currentStacks);
 
         _clearRoutine = null;
     }
@@ -109,6 +112,8 @@ public class AmbushPoisons : Skill
         if (target == null) return false;
 
         _currentStacks--;
+
+        CurrentCharge(_currentStacks);
 
         target.CharacterState.AddState(States.PoisonBone, 6f, 1, Hero.gameObject, this.name);
 

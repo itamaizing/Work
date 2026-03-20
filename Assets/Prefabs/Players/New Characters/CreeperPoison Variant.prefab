@@ -15146,6 +15146,7 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _invisible: {fileID: 6857802422684928800}
 --- !u!114 &2434123723962207148 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5590339039165547173, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
