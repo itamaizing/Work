@@ -12,6 +12,7 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
 
     private float _timeBetweenHeal;
     private float _startTimeBetweenHeal = 1.0f;
+    private float _healMultiplier = 1f;
 
     private float _baseDuration;
 
@@ -34,6 +35,16 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
 
         _baseDuration = durationToExit;
         _timeBetweenHeal = _startTimeBetweenHeal;
+
+        if (personWhoMadeBuff != null)
+        {
+            var poisonBall = personWhoMadeBuff.GetComponent<PoisonBall>();
+            if (poisonBall != null)
+            {
+                int count = poisonBall.CurrentCountBall;
+                _healMultiplier = 1f + (count - 1) * 0.2f;
+            }
+        }
     }
 
     public override void UpdateState()
@@ -63,7 +74,7 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
     [Server]
     private void MakeHeal()
     {
-        _currentHealingValue += 1.0f;
+        _currentHealingValue += 1.0f * _healMultiplier;
 
         Heal heal = new Heal
         {

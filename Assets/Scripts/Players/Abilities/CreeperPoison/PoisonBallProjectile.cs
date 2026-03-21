@@ -221,9 +221,18 @@ public class PoisonBallProjectile : Test_Projectile
 
     public override void DamageDeal()
     {
+        float multiplier = 1f;
+
+        if (_isActiveBallEffect && _currentCountBall >= 1)
+        {
+            multiplier += (_currentCountBall - 1) * 0.2f;
+        }
+
+        float finalDamage = _skill.Buff.Damage.GetBuffedValue(_damage) * multiplier;
+
         Damage _baseDamage = new Damage
         {
-            Value = _skill.Buff.Damage.GetBuffedValue(_damage),
+            Value = finalDamage,
             Type = DamageType.Physical,
             PhysicAttackType = AttackRangeType.RangeAttack,
         };
