@@ -15190,7 +15190,7 @@ MonoBehaviour:
     _base: 0
     _additional: []
   _skillEnergyCosts:
-  - resourceType: 2
+  - resourceType: 1
     resourceCost: 40
   _additionalSkillEnergyCosts: []
   _cooldownTime: 24
@@ -15199,9 +15199,9 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 0
-    _form: 0
-    _damageType: 0
+    _school: 6
+    _form: 2
+    _damageType: 1
     _rangeType: 0
     _skillType: 0
     _whileMoving: 0

@@ -242,7 +242,7 @@ public class PoisonBallProjectile : Test_Projectile
         //}
 
         _target.CharacterState.AddState(States.InAir, _durationInAir, 0, _player.gameObject, _skill.Name);
-        _target.CharacterState.AddState(States.PoisonBone, poisonBone, 0, _player.gameObject, _skill.Name);
+       // _target.CharacterState.AddState(States.PoisonBone, poisonBone, 0, _player.gameObject, _skill.Name);
 
         PushEnemyDependingOnCountProjectile(_target, _baseDurationPush);
         
@@ -253,13 +253,15 @@ public class PoisonBallProjectile : Test_Projectile
     {
         if (_isActiveBallEffect && _currentCountBall >= 2)
         {
-            float multiplierPush = _currentCountBall * _distanceIncreaseMultiplier;
-            _newDistancePush = _baseDistancePush + multiplierPush + _multiplierDistanceFromTalent;
+            float additionalDistance = (_currentCountBall - 1);
+            _newDistancePush = _baseDistancePush + additionalDistance + _multiplierDistanceFromTalent;
         }
         else
         {
             _newDistancePush = _baseDistancePush;
         }
+
+        _newDistancePush = _baseDistancePush;
 
         PushEnemy(target.gameObject, _newDistancePush, durationPush, _isPushTarget);
     }

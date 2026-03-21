@@ -37,7 +37,6 @@ public struct PoisonBallActiveTalentsInfo : NetworkMessage
     public bool IsActiveVoluminousBall;
     public bool IsActiveInertialGlands;
     public bool IsActiveVolatilityOfPoisons;
-    public bool IsActiveBallEffect;
 }
 
 public struct PoisonBallSpawnPointInfo : NetworkMessage
@@ -132,11 +131,17 @@ public class PoisonBall : Skill, IAltAbility
 
     #region Talent
 
-    private bool _canSpawnPoisonCloud = false;
+    private bool _isCanSpawnPoisonCloud = false;
+    private bool _isActiveBallEffect = false;
+
+    public void ActiveBallEffect(bool value)
+    {
+        _isActiveBallEffect = value;
+    }
 
     public void SetPoisonCloudEnabled(bool value)
     {
-        _canSpawnPoisonCloud = value;
+        _isCanSpawnPoisonCloud = value;
     }
 
     #endregion
@@ -551,11 +556,11 @@ public class PoisonBall : Skill, IAltAbility
                 _poisonBallInfo.MaxCountProjectile, _multiplierForPushDistance, PoisonBoneStack,
                 _isFast, _isPushTarget, IsAltAbility,
                 _activeTalentsInfo.IsActiveFootInstincts, _activeTalentsInfo.IsActiveRestorationOfGlands,
-                _activeTalentsInfo.IsActiveHealingPoisonBall, _activeTalentsInfo.IsActiveWitheringPoison, _activeTalentsInfo.IsActiveVoluminousBall, _activeTalentsInfo.IsActiveBallEffect,
+                _activeTalentsInfo.IsActiveHealingPoisonBall, _activeTalentsInfo.IsActiveWitheringPoison, _activeTalentsInfo.IsActiveVoluminousBall, _isActiveBallEffect,
                 _activeTalentsInfo.IsActiveInertialGlands, _activeTalentsInfo.IsActiveContinuationAmbush,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
 
-            if (_canSpawnPoisonCloud)
+            if (_isCanSpawnPoisonCloud)
             {
                 CmdApplyPoisonCloud(_poisonBallInfo.IsHealingPoisonCloud, _durationPoisonCloud);
             }
@@ -566,11 +571,11 @@ public class PoisonBall : Skill, IAltAbility
                 _poisonBallInfo.MaxCountProjectile, _multiplierForPushDistance, PoisonBoneStack,
                 _isFast, _isPushTarget, IsAltAbility,
                 _activeTalentsInfo.IsActiveFootInstincts, _activeTalentsInfo.IsActiveRestorationOfGlands,
-                _activeTalentsInfo.IsActiveHealingPoisonBall, _activeTalentsInfo.IsActiveWitheringPoison, _activeTalentsInfo.IsActiveVoluminousBall, _activeTalentsInfo.IsActiveBallEffect,
+                _activeTalentsInfo.IsActiveHealingPoisonBall, _activeTalentsInfo.IsActiveWitheringPoison, _activeTalentsInfo.IsActiveVoluminousBall, _isActiveBallEffect,
                 _activeTalentsInfo.IsActiveInertialGlands, _activeTalentsInfo.IsActiveContinuationAmbush,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
 
-            if (_canSpawnPoisonCloud)
+            if (_isCanSpawnPoisonCloud)
             {
                 CmdApplyPoisonCloud(_poisonBallInfo.IsHealingPoisonCloud, _durationPoisonCloud);
             }
@@ -766,17 +771,17 @@ public class PoisonBall : Skill, IAltAbility
             _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
         }
 
-        if (_poisonBallInfo.CountProjectiles >= 3 && isActiveInertialGlands)
-        {
-            _poisonBallInfo.IsThreeProjectileOnOnetarget = true;
-            RpcIsThreeProjectileOnOneTarget(_poisonBallInfo.IsThreeProjectileOnOnetarget);
-        }
+        //if (_poisonBallInfo.CountProjectiles >= 3 && isActiveInertialGlands)
+        //{
+        //    _poisonBallInfo.IsThreeProjectileOnOnetarget = true;
+        //    RpcIsThreeProjectileOnOneTarget(_poisonBallInfo.IsThreeProjectileOnOnetarget);
+        //}
 
-        if (_poisonBallInfo.CountProjectiles >= 4 && isActiveContinuationAmbush)
-        {
-            _poisonBallInfo.IsCanApplyInvisible = true;
-            RpcIsCanApplyInvisible(_poisonBallInfo.IsCanApplyInvisible);
-        }
+        //if (_poisonBallInfo.CountProjectiles >= 4 && isActiveContinuationAmbush)
+        //{
+        //    _poisonBallInfo.IsCanApplyInvisible = true;
+        //    RpcIsCanApplyInvisible(_poisonBallInfo.IsCanApplyInvisible);
+        //}
 
         if (_poisonBallInfo.CountProjectiles < maxCountProjectiles && LastTarget == CurrentTarget)
         {
