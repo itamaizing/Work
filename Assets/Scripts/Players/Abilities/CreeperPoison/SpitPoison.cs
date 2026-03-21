@@ -26,6 +26,8 @@ public class SpitPoison : Skill, IAltAbility
     [SerializeField] private Character _player;
     [SerializeField] private GameObject _spawnPoint;
 
+    [SerializeField] private float durationErodedArmor = 6f;
+
     #region PoisonCloud
 
     [SerializeField] private PoisonDamagingCloudPrefab _poisonDamagingCloudPrefab;
@@ -45,6 +47,7 @@ public class SpitPoison : Skill, IAltAbility
     private float _originalCooldown;
     private float _radiusTargetCheck = 0.5f;
 
+
     private bool _isActiveHealingSpitPoison;
     private bool _isActiveRestorationOfGlands;
     private bool _isHealingPoisonCloud = false;
@@ -58,6 +61,9 @@ public class SpitPoison : Skill, IAltAbility
     #region Talent
 
     private bool _canSpawnPoisonCloud = false;
+    private bool _isErodedArmorState = false;
+
+    public void ErodedArmorState(bool value) => _isErodedArmorState = value;
 
     public void SetPoisonCloudEnabled(bool value)
     {
@@ -271,7 +277,10 @@ public class SpitPoison : Skill, IAltAbility
 
         _player.Move.SetCanMove(true);
 
+        if (_isErodedArmorState && (_isOriginalTargetAllies || _isOriginalTargetPlayer)) DecreaseSetCooldown(3f);
+
         if (_canSpawnPoisonCloud) CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
+        if (_isErodedArmorState) _player.CharacterState.CmdAddState(States.ErodedArmor, durationErodedArmor, 0, _player.gameObject, Name);
     }
 
     #region Command Methods
