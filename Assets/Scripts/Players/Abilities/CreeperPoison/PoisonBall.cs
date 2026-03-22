@@ -57,7 +57,7 @@ public class PoisonBall : Skill, IAltAbility
     [SerializeField] private ArrowRender _arrowPrefab;
     [SerializeField] private GameObject _spawnPoint;
     [SerializeField] private GameObject pointArrowRender;
-    [SerializeField] private float _baseCharges = 3;
+    [SerializeField] private float _baseCharges;
 
     #region PoisonCloud
     [SerializeField] private PoisonDamagingCloudPrefab _poisonDamagingCloudPrefab;
@@ -136,7 +136,13 @@ public class PoisonBall : Skill, IAltAbility
     private bool _isActiveBallEffect = false;
     private bool _isIncreasingPoisonBallCharges = false;
 
-    public void IncreasingPoisonBallCharges(bool value) => _isIncreasingPoisonBallCharges = value;
+    private bool _isBonusChargeApplied = false;
+
+    public void IncreasingPoisonBallCharges(bool value)
+    {
+        _isIncreasingPoisonBallCharges = value;
+        UpdateMaxCharges();
+    }
 
     public void ActiveBallEffect(bool value)
     {
@@ -169,13 +175,16 @@ public class PoisonBall : Skill, IAltAbility
 
     private void Start()
     {
-        Chargers  = _baseCharges;
+        Chargers = (int)_baseCharges;
+
         _baseCastWidth = AreaInfo.CastWidth;
         _originalChargeCooldown = _chargeCooldown;
 
         _poisonBallInfo.StartTimeBetweenAttack = 15.0f;
         _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
         _poisonBallInfo.MaxCountProjectile = _maxCharges;
+
+        UpdateMaxCharges();
     }
 
     private float GetAnimationClipLength()
@@ -191,14 +200,23 @@ public class PoisonBall : Skill, IAltAbility
         return -1f;
     }
 
-    private void TryIncreaseCharge()
+    private void UpdateMaxCharges()
     {
-        if (!_isIncreasingPoisonBallCharges) return;
-
-        if (_currentChargers < _maxCharges)
+        if (_isIncreasingPoisonBallCharges)
         {
-            _currentChargers++;
-            CurrentCharge(_currentChargers);
+            if (!_isBonusChargeApplied)
+            {
+                AddMaxChargeCount();
+                _isBonusChargeApplied = true;
+            }
+        }
+        else
+        {
+            if (_isBonusChargeApplied)
+            {
+                DeductMaxChargeCount();
+                _isBonusChargeApplied = false;
+            }
         }
     }
 
