@@ -138,6 +138,19 @@ public class PoisonBall : Skill, IAltAbility
 
     private bool _isBonusChargeApplied = false;
 
+    public bool IsIncreasingPoisonBallCharges
+    {
+        get => _isIncreasingPoisonBallCharges;
+
+        set
+        {
+            if (_isIncreasingPoisonBallCharges == value) return;
+
+            _isIncreasingPoisonBallCharges = value;
+            UpdateMaxCharges();
+        }
+    }
+
     public void IncreasingPoisonBallCharges(bool value)
     {
         _isIncreasingPoisonBallCharges = value;
@@ -175,14 +188,14 @@ public class PoisonBall : Skill, IAltAbility
 
     private void Start()
     {
-        Chargers = (int)_baseCharges;
+        Charges.CurrentCharges = (int)_baseCharges;
 
         _baseCastWidth = AreaInfo.CastWidth;
         _originalChargeCooldown = _chargeCooldown;
 
         _poisonBallInfo.StartTimeBetweenAttack = 15.0f;
         _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
-        _poisonBallInfo.MaxCountProjectile = _maxCharges;
+        _poisonBallInfo.MaxCountProjectile = Charges.MaxCharges;
 
         UpdateMaxCharges();
     }
@@ -206,7 +219,7 @@ public class PoisonBall : Skill, IAltAbility
         {
             if (!_isBonusChargeApplied)
             {
-                AddMaxChargeCount();
+                Charges.ModifyMaxCharges(1);
                 _isBonusChargeApplied = true;
             }
         }
@@ -214,7 +227,7 @@ public class PoisonBall : Skill, IAltAbility
         {
             if (_isBonusChargeApplied)
             {
-                DeductMaxChargeCount();
+                Charges.ModifyMaxCharges(-1);
                 _isBonusChargeApplied = false;
             }
         }

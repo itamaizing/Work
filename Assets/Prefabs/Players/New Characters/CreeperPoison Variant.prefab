@@ -13303,7 +13303,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.size
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRow.Array.data[0].Talents.Array.data[0]'
@@ -13346,6 +13346,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 536535723249904053}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRow.Array.data[0].Talents.Array.data[5]'
+      value: 
+      objectReference: {fileID: 3157481039742532545}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.data[0]'
       value: 
       objectReference: {fileID: 1774296685369443077}
@@ -13363,6 +13367,10 @@ PrefabInstance:
       objectReference: {fileID: 3656495943832638022}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.data[4]'
+      value: 
+      objectReference: {fileID: 3157481039742532545}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.data[5]'
       value: 
       objectReference: {fileID: 2435486984149934093}
     - target: {fileID: 6226204041481316500, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -13574,6 +13582,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3656495943832638022}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3157481039742532545}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2435486984149934093}
@@ -14102,7 +14113,7 @@ MonoBehaviour:
   _isUseCharges: 1
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 1
-  _maxCharges: 3
+  _maxCharges: 0
   _chargeCooldown: 14
   _areaComponent:
     _radius: 0
@@ -14124,6 +14135,7 @@ MonoBehaviour:
   _arrowPrefab: {fileID: 9064051009418913030, guid: bc01ef0a119629945958526e596df4ec, type: 3}
   _spawnPoint: {fileID: 6943497228995655184}
   pointArrowRender: {fileID: 3442255630167083756, guid: 8bef7db12cb9d0a4ab39fc04ec97740b, type: 3}
+  _baseCharges: 2
   _poisonDamagingCloudPrefab: {fileID: 8376359178360537337, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
   _poisonHealingCloudPrefab: {fileID: -4967518069141830548, guid: 835486046afaafa48885a183fcb94bd6, type: 3}
 --- !u!114 &7013613396998518356
@@ -15664,6 +15676,32 @@ MonoBehaviour:
   character: {fileID: 2483674839823445686}
   _sneakySpit: {fileID: 1964640632880337021}
   _spitPoison: {fileID: 4992365342693795224}
+--- !u!114 &3157481039742532545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7437800528419325459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 796c22b7a587a3d41bfa0c679d9f0980, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PoisonTalent_7
+  _data:
+    _descriptionsForInfoPanel:
+    - " \u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
+      \u043A\u043E\u043B\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u0437\u0430\u0440\u044F\u0434\u043E\u0432
+      \"\u0412\u0437\u0440\u044B\u0432\u043D\u043E\u0433\u043E \u0449\u0430\u0440\u0430
+      \u044F\u0434\u0430\" \u043D\u0430 1   "
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u042F\u0434 7"
+    Icon: {fileID: -4125687490052203788, guid: ef644501c6a48574d99b58d3c563b590, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 2483674839823445686}
+  _poisonBall: {fileID: 4719927588574066064}
 --- !u!114 &2435486984149934093
 MonoBehaviour:
   m_ObjectHideFlags: 0
