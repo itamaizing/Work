@@ -1,5 +1,6 @@
 using Mirror;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PoisonDamagingCloudPrefab : NetworkBehaviour
@@ -27,6 +28,9 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
 
     private Coroutine _lifetimeStacksCoroutine;
     private Coroutine _activateParticlePoisonCloudCoroutine;
+
+    private Dictionary<Character, float> _poisonBoneTimers = new();
+    private float _poisonBoneInterval = 3f;
 
     public PoisonDamagingCloudPrefab PoisonDamageCloud { get => _poisonDamageCloud; set => _poisonDamageCloud = value; }
 
@@ -180,10 +184,22 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
 
             _skill.CmdApplyDamage(damage, target.gameObject);
 
-            if (_skill.TryGetComponent<PoisonBall>(out PoisonBall poisonBall) && poisonBall.IsPoisonCloudAddPoisonBone)
+            if (!_poisonBoneTimers.ContainsKey(target))
             {
-                target.CharacterState.AddStateLogic(States.PoisonBone, 6, 0, Schools.None, _player.gameObject, null);
-            } 
+                _poisonBoneTimers[target] = 0f;
+            }
+
+            _poisonBoneTimers[target] += _damageTickRate;
+
+            if (_poisonBoneTimers[target] >= _poisonBoneInterval)
+            {
+                if (_skill.TryGetComponent<PoisonBall>(out PoisonBall poisonBall) && poisonBall.IsPoisonCloudAddPoisonBone)
+                {
+                    target.CharacterState.AddStateLogic( States.PoisonBone, 6, 0, Schools.None, _player.gameObject, null);
+                }
+
+                _poisonBoneTimers[target] = 0f;
+            }
         }
     }
 
