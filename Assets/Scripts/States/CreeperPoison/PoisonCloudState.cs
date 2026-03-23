@@ -11,6 +11,8 @@ public class PoisonCloudState : AbstractCharacterState
     private ToxiqueCloud _toxiqueCloud;
     private ExplosionPoisonCloud _cloudExplosion;
 
+    private PoisonBall _poisonBall;
+
     private Character _player;
     private LayerMask _enemiesLayer;
 
@@ -31,6 +33,9 @@ public class PoisonCloudState : AbstractCharacterState
     private float _baseDuration;
     private float _durationEmpathicPoisons = 5f;
 
+    private Dictionary<GameObject, float> _damageTimers = new();
+    private float _timeToApplyPoisonBone = 3f;
+
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
     public float RadiusCloud { get => _radiusCloud; }
     public override States State => States.PoisonCloud;
@@ -41,6 +46,7 @@ public class PoisonCloudState : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         MaxStacksCount = _maxStacks;
+        _poisonBall = personWhoMadeBuff.GetComponent<PoisonBall>();
 
         _player = personWhoMadeBuff;
 
@@ -199,13 +205,23 @@ public class PoisonCloudState : AbstractCharacterState
             targetHealth.Health.CmdTryTakeDamage(damage, null);
             //targetHealth.DamageTracker.AddDamage(damage, true);
 
-            if (_toxiqueCloud != null && _toxiqueCloud.Data.IsOpen)
+            //if (_toxiqueCloud != null && _toxiqueCloud.Data.IsOpen)
+            //{
+            //    if (_timeBetweenApplyEmpathicPoisons <= 0)
+            //    {
+            //        targetHealth.CharacterState.AddState(States.EmpathicPoisons, _durationEmpathicPoisons, 0, _player.gameObject, null);
+            //        _timeBetweenApplyEmpathicPoisons = _startTimeBetweenApplyEmpathicPoisons;
+            //    }
+            //}
+
+            if (!_damageTimers.ContainsKey(target)) _damageTimers[target] = 0f;
+
+            _damageTimers[target] += _startTimeBetweenAttack; 
+
+            if (_damageTimers[target] >= _timeToApplyPoisonBone)
             {
-                if (_timeBetweenApplyEmpathicPoisons <= 0)
-                {
-                    targetHealth.CharacterState.AddState(States.EmpathicPoisons, _durationEmpathicPoisons, 0, _player.gameObject, null);
-                    _timeBetweenApplyEmpathicPoisons = _startTimeBetweenApplyEmpathicPoisons;
-                }
+                if (_poisonBall.IsPoisonCloudAddPoisonBone) targetHealth.CharacterState.AddState(States.PoisonBone, 6, 0, _player.gameObject, null);
+                _damageTimers[target] = 0f;
             }
         }
     }

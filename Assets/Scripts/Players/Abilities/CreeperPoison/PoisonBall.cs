@@ -57,7 +57,6 @@ public class PoisonBall : Skill, IAltAbility
     [SerializeField] private ArrowRender _arrowPrefab;
     [SerializeField] private GameObject _spawnPoint;
     [SerializeField] private GameObject pointArrowRender;
-    [SerializeField] private float _baseCharges;
 
     #region PoisonCloud
     [SerializeField] private PoisonDamagingCloudPrefab _poisonDamagingCloudPrefab;
@@ -135,8 +134,11 @@ public class PoisonBall : Skill, IAltAbility
     private bool _isCanSpawnPoisonCloud = false;
     private bool _isActiveBallEffect = false;
     private bool _isIncreasingPoisonBallCharges = false;
+    private bool _isPoisonCloudAddPoisonBone = false;
 
     private bool _isBonusChargeApplied = false;
+
+    public bool IsPoisonCloudAddPoisonBone { get => _isPoisonCloudAddPoisonBone; set => _isPoisonCloudAddPoisonBone = value; }
 
     public bool IsIncreasingPoisonBallCharges
     {
@@ -167,6 +169,11 @@ public class PoisonBall : Skill, IAltAbility
         _isCanSpawnPoisonCloud = value;
     }
 
+    public void PoisonCloudAddPoisonBone(bool value)
+    {
+        _isPoisonCloudAddPoisonBone = value;
+    }
+
     #endregion
 
     #endregion
@@ -188,8 +195,6 @@ public class PoisonBall : Skill, IAltAbility
 
     private void Start()
     {
-        Charges.CurrentCharges = (int)_baseCharges;
-
         _baseCastWidth = AreaInfo.CastWidth;
         _originalChargeCooldown = _chargeCooldown;
 

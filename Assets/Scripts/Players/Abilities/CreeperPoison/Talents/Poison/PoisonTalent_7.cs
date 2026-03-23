@@ -8,11 +8,11 @@ public class PoisonTalent_7 : Talent
 
     public override void Enter()
     {
-        _poisonBall.IncreasingPoisonBallCharges(true);
+        _poisonBall.PoisonCloudAddPoisonBone(true);
     }
 
     public override void Exit()
     {
-        _poisonBall.IncreasingPoisonBallCharges(false);
+        _poisonBall.PoisonCloudAddPoisonBone(false);
     }
 }
