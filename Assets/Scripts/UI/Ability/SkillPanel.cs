@@ -244,8 +244,7 @@ public class SkillPanel : MonoBehaviour
     }
     
     private void OnEndDrag()
-    {
-        
+    {  
         if (_hideUnusedButtons)
         {
             foreach (var item in _skillIcons)
@@ -256,6 +255,7 @@ public class SkillPanel : MonoBehaviour
                 }
             }
         }
+        SavePanel();
     }
 
     private void SkillChanged(int index, Skill skill)
