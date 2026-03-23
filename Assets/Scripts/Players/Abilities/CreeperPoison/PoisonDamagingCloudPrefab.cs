@@ -179,6 +179,11 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
             };
 
             _skill.CmdApplyDamage(damage, target.gameObject);
+
+            if (_skill.TryGetComponent<PoisonBall>(out PoisonBall poisonBall) && poisonBall.IsPoisonCloudAddPoisonBone)
+            {
+                target.CharacterState.AddStateLogic(States.PoisonBone, 6, 0, Schools.None, _player.gameObject, null);
+            } 
         }
     }
 

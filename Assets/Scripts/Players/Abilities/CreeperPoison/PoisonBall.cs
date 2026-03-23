@@ -149,14 +149,12 @@ public class PoisonBall : Skill, IAltAbility
             if (_isIncreasingPoisonBallCharges == value) return;
 
             _isIncreasingPoisonBallCharges = value;
-            UpdateMaxCharges();
         }
     }
 
     public void IncreasingPoisonBallCharges(bool value)
     {
         _isIncreasingPoisonBallCharges = value;
-        UpdateMaxCharges();
     }
 
     public void ActiveBallEffect(bool value)
@@ -201,8 +199,6 @@ public class PoisonBall : Skill, IAltAbility
         _poisonBallInfo.StartTimeBetweenAttack = 15.0f;
         _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
         _poisonBallInfo.MaxCountProjectile = Charges.MaxCharges;
-
-        UpdateMaxCharges();
     }
 
     private float GetAnimationClipLength()
@@ -216,26 +212,6 @@ public class PoisonBall : Skill, IAltAbility
             }
         }
         return -1f;
-    }
-
-    private void UpdateMaxCharges()
-    {
-        if (_isIncreasingPoisonBallCharges)
-        {
-            if (!_isBonusChargeApplied)
-            {
-                Charges.ModifyMaxCharges(1);
-                _isBonusChargeApplied = true;
-            }
-        }
-        else
-        {
-            if (_isBonusChargeApplied)
-            {
-                Charges.ModifyMaxCharges(-1);
-                _isBonusChargeApplied = false;
-            }
-        }
     }
 
     #region PrepareAndStartJob

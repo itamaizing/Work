@@ -172,30 +172,4 @@ public class ChargeComponent : BaseSkillComponent
         }
     }
     #endregion Methods
-
-    #region Test
-
-    public void ModifyMaxCharges(int delta)
-    {
-        _maxCharges += delta;
-
-        if (_maxCharges < 1) _maxCharges = 1;
-
-        if (delta > 0)
-        {
-            _currentCharges += delta;
-            if (_currentCharges > _maxCharges)
-                _currentCharges = _maxCharges;
-        }
-        else
-        {
-            if (_currentCharges > _maxCharges)
-                _currentCharges = _maxCharges;
-        }
-
-        CurrentChargesChanged?.Invoke(_currentCharges);
-        MaxChargesChanged?.Invoke(_maxCharges);
-    }
-
-    #endregion
 }
