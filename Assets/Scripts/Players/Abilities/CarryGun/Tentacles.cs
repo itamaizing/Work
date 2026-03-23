@@ -42,79 +42,12 @@ public class Tentacles : Skill
 
     #region Talent
     private bool _isPsionicsTalentThree = false;
-    private bool _isCocoonSpawnTalent = false;
     private bool _isAttractionTentacleTalent = false;
-    private bool _isProtectiveCooconSpawn = false;
-    private bool _isProtectiveCooconSpawnAttack = false;
-    private bool _isWombSpreadsMucus = false;
-    private bool _isWombSpreadParasites = false;
-    private bool _isSpawnGetomir;
     private bool _isSpawnSpike = false;
-    private bool _isSpawnSpikeMucus = false;
-
-    public event Action<bool> OnSpawnGetomirChanged;
-    public event Action<bool> OnWombSpreadsMucusChanged;
-    public event Action<bool> OnWombSpreadsParasitesChanged;
-    //public event Action<bool> OnSpawnSpikeMucus;
-
-    public bool IsSpawnGetomir
-    {
-        get => _isSpawnGetomir;
-        set
-        {
-            if (_isSpawnGetomir == value) return;
-
-            _isSpawnGetomir = value;
-            OnSpawnGetomirChanged?.Invoke(_isSpawnGetomir);
-        }
-    }
-
-    public bool IsWombSpreadsMucus
-    {
-        get => _isWombSpreadsMucus;
-        set
-        {
-            if (_isWombSpreadsMucus == value) return;
-
-            _isWombSpreadsMucus = value;
-            OnWombSpreadsMucusChanged?.Invoke(_isWombSpreadsMucus);
-        }
-    }
-
-    public bool IsWombSpreadsParasites
-    {
-        get => _isWombSpreadParasites;
-        set
-        {
-            if (_isWombSpreadParasites == value) return;
-
-            _isWombSpreadParasites = value;
-            OnWombSpreadsParasitesChanged?.Invoke(_isWombSpreadParasites);
-        }
-    }
     
-    public bool IsSpawnSpikeMucus
-    {
-        get => _isSpawnSpikeMucus;
-        set
-        {
-            if (_isSpawnSpikeMucus == value) return;
-
-            _isSpawnSpikeMucus = value;
-            //OnSpawnSpikeMucus?.Invoke(_isSpawnSpikeMucus);
-        }
-    }
-
-    public void ProtectiveCooconSpawn(bool value) => _isProtectiveCooconSpawn = value;
     public void PsionicsTalentThree(bool value) => _isPsionicsTalentThree = value;
-    public void CocoonSpawnTalent(bool value) => _isCocoonSpawnTalent = value;
     public void AttractionTentacleTalent(bool value) => _isAttractionTentacleTalent = value;
-    public void ProtectiveCooconSpawnAttack(bool value) => _isProtectiveCooconSpawnAttack = value;
-    public void SpawnGetomir(bool value) => IsSpawnGetomir = value;
     public void SpawnSpike(bool value) => _isSpawnSpike = value;
-    public void WombSpreadsMucus(bool value) => IsWombSpreadsMucus = value;
-    public void WombSpreadsParasites(bool value) => IsWombSpreadsParasites = value;
-    public void SpawnSpikeMucus(bool value) => IsSpawnSpikeMucus = value;
 
     #region Skills Creatures
 
