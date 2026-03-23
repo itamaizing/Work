@@ -22,6 +22,7 @@ public class PlayerIconMain : PlayerIcon, IPointerExitHandler, IPointerEnterHand
     protected override void UpdateInfo(Character character)
     {
         base.UpdateInfo(character);
-        _lvlInfo.Init(character.LVL);
+        if( _lvlInfo != null ) 
+            _lvlInfo.Init(character.LVL);
     }
 }

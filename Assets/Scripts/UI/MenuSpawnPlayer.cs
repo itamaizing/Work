@@ -9,6 +9,7 @@ public class MenuSpawnPlayer : MonoBehaviour
     [SerializeField] private float _scaleMultiplier = 2;
 
     private GameObject _currentHero;
+    private float _rotationSpeed = 5.0f;
 
     private void Awake()
     {
@@ -16,6 +17,14 @@ public class MenuSpawnPlayer : MonoBehaviour
         if (_currentHero != null)
         {
             Destroy(_currentHero.gameObject);
+        }
+    }
+
+    private void Update()
+    {
+        if(Input.GetMouseButton(0))
+        {
+            RotateHero();
         }
     }
 
@@ -41,5 +50,15 @@ public class MenuSpawnPlayer : MonoBehaviour
         _currentHero = spawnedHero;
     }
 
+    private void RotateHero()
+    {
+        if (_currentHero != null)
+        {
+            float rotY = Input.GetAxis("Mouse X") * _rotationSpeed;
+
+            _currentHero.transform.RotateAround(transform.position, Vector3.up, -rotY);
+        }
+
+    }
 
 }
