@@ -31,7 +31,6 @@ public struct PoisonBallActiveTalentsInfo : NetworkMessage
     public bool IsActiveTransparentPoisons;
     public bool IsActiveWitheringPoison;
     public bool IsActiveContinuationAmbush;
-    public bool IsActiveHealingPoisonBall;
     public bool IsActiveHealingPoisonCloud;
     public bool IsActiveEnlargedGlands;
     public bool IsActiveVoluminousBall;
@@ -135,6 +134,7 @@ public class PoisonBall : Skill, IAltAbility
     private bool _isActiveBallEffect = false;
     private bool _isIncreasingPoisonBallCharges = false;
     private bool _isPoisonCloudAddPoisonBone = false;
+    private bool _isHealingPoisonBall = false;
 
     private bool _isBonusChargeApplied = false;
 
@@ -150,6 +150,11 @@ public class PoisonBall : Skill, IAltAbility
 
             _isIncreasingPoisonBallCharges = value;
         }
+    }
+
+    public void HealingPoisonBall(bool value)
+    {
+        _isHealingPoisonBall = value;
     }
 
     public void IncreasingPoisonBallCharges(bool value)
@@ -494,7 +499,7 @@ public class PoisonBall : Skill, IAltAbility
 
     private void CooldownChange()
     {
-        if (_activeTalentsInfo.IsActiveHealingPoisonBall && (_poisonBallInfo.IsOriginalTargetAllies || _poisonBallInfo.IsOriginalTargetPlayer))
+        if (_isHealingPoisonBall && (_poisonBallInfo.IsOriginalTargetAllies || _poisonBallInfo.IsOriginalTargetPlayer))
         {
             _chargeCooldown = _originalChargeCooldown / 2;
         }
@@ -584,7 +589,7 @@ public class PoisonBall : Skill, IAltAbility
                 _poisonBallInfo.MaxCountProjectile, _multiplierForPushDistance, PoisonBoneStack,
                 _isFast, _isPushTarget, IsAltAbility,
                 _activeTalentsInfo.IsActiveFootInstincts, _activeTalentsInfo.IsActiveRestorationOfGlands,
-                _activeTalentsInfo.IsActiveHealingPoisonBall, _activeTalentsInfo.IsActiveWitheringPoison, _activeTalentsInfo.IsActiveVoluminousBall, _isActiveBallEffect,
+                _isHealingPoisonBall, _activeTalentsInfo.IsActiveWitheringPoison, _activeTalentsInfo.IsActiveVoluminousBall, _isActiveBallEffect,
                 _activeTalentsInfo.IsActiveInertialGlands, _activeTalentsInfo.IsActiveContinuationAmbush,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
 
@@ -599,7 +604,7 @@ public class PoisonBall : Skill, IAltAbility
                 _poisonBallInfo.MaxCountProjectile, _multiplierForPushDistance, PoisonBoneStack,
                 _isFast, _isPushTarget, IsAltAbility,
                 _activeTalentsInfo.IsActiveFootInstincts, _activeTalentsInfo.IsActiveRestorationOfGlands,
-                _activeTalentsInfo.IsActiveHealingPoisonBall, _activeTalentsInfo.IsActiveWitheringPoison, _activeTalentsInfo.IsActiveVoluminousBall, _isActiveBallEffect,
+                _isHealingPoisonBall, _activeTalentsInfo.IsActiveWitheringPoison, _activeTalentsInfo.IsActiveVoluminousBall, _isActiveBallEffect,
                 _activeTalentsInfo.IsActiveInertialGlands, _activeTalentsInfo.IsActiveContinuationAmbush,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
 

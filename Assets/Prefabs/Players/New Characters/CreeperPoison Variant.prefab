@@ -14117,11 +14117,11 @@ MonoBehaviour:
     _maxCharges: 3
     _baseCooldown: 14
     affectedByCDR: 0
-  _isUseCharges: 1
+  _isUseCharges: 0
   _useChargesAsComboPart: 0
-  _chargesHaveSeparateCooldown: 1
-  _maxCharges: 2
-  _chargeCooldown: 14
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 0
     _area: 0
@@ -14142,6 +14142,7 @@ MonoBehaviour:
   _arrowPrefab: {fileID: 9064051009418913030, guid: bc01ef0a119629945958526e596df4ec, type: 3}
   _spawnPoint: {fileID: 6943497228995655184}
   pointArrowRender: {fileID: 3442255630167083756, guid: 8bef7db12cb9d0a4ab39fc04ec97740b, type: 3}
+  _baseBallCharges: 2
   _poisonDamagingCloudPrefab: {fileID: 8376359178360537337, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
   _poisonHealingCloudPrefab: {fileID: -4967518069141830548, guid: 835486046afaafa48885a183fcb94bd6, type: 3}
 --- !u!114 &7013613396998518356
@@ -15708,6 +15709,7 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 2483674839823445686}
   _poisonBall: {fileID: 4719927588574066064}
+  _addCharges: 1
 --- !u!114 &8041204729760657720
 MonoBehaviour:
   m_ObjectHideFlags: 0
