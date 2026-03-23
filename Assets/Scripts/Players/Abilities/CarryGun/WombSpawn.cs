@@ -1,30 +1,23 @@
-using Mirror;
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
+using Mirror;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System;
 
 public class WombSpawn : Skill
 {
-    [SerializeField] private SpawnComponent _spawnComponent;
     [SerializeField] private Character _player;
-    [SerializeField] private Tentacles _tentacle;
+    [SerializeField] private SpawnComponent _spawnComponent;
+    [SerializeField] private SummoningSwarm _summoningSwarm;
+    [SerializeField] private float _radiusTarget = 0.5f;
 
-    private readonly List<GameObject> _spawnedWombs = new();
+    private bool _isClickedOnGround = false;
 
     private Vector3 _spawnPoint = Vector3.positiveInfinity;
-
-    protected override int AnimTriggerCast => Animator.StringToHash("Spell");
-    protected override int AnimTriggerCastDelay => 0;
-
-    protected override bool IsCanCast =>
-        IsValid(_spawnPoint);
-
+    private readonly List<GameObject> _spawnedWombs = new();
 
     #region Talent
-    private bool _isCocoonSpawnTalent = false;
-    private bool _isProtectiveCooconSpawn = false;
-    private bool _isProtectiveCooconSpawnAttack = false;
     private bool _isWombSpreadsMucus = false;
     private bool _isWombSpreadParasites = false;
     private bool _isSpawnGetomir;
@@ -83,11 +76,7 @@ public class WombSpawn : Skill
         }
     }
 
-    public void ProtectiveCooconSpawn(bool value) => _isProtectiveCooconSpawn = value;
-    public void CocoonSpawnTalent(bool value) => _isCocoonSpawnTalent = value;
-    public void ProtectiveCooconSpawnAttack(bool value) => _isProtectiveCooconSpawnAttack = value;
     public void SpawnGetomir(bool value) => IsSpawnGetomir = value;
-    public void SpawnSpike(bool value) => _isSpawnSpike = value;
     public void WombSpreadsMucus(bool value) => IsWombSpreadsMucus = value;
     public void WombSpreadsParasites(bool value) => IsWombSpreadsParasites = value;
     public void SpawnSpikeMucus(bool value) => IsSpawnSpikeMucus = value;
@@ -116,65 +105,138 @@ public class WombSpawn : Skill
 
     #endregion
 
-    protected override IEnumerator PrepareJob(System.Action<TargetInfo> callback)
+    private LayerMask _alliesMask;
+
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => Animator.StringToHash("Spell");
+    protected override bool IsCanCast =>
+    _summoningSwarm != null &&
+    _summoningSwarm.ChargesSwarm > 0 &&
+    (Targeting.GetTarget()?.Character != null || _isClickedOnGround) &&
+    _spawnPoint != Vector3.positiveInfinity &&
+    IsCanRadius();
+
+    private bool IsCanRadius()
     {
-        Vector3 mousePoint = Targeting.GetMousePoint();
+        if (!IsValidVector(_spawnPoint)) return false;
 
-        if (!IsValid(mousePoint))
-            yield break;
+        float distance = Vector3.Distance(Hero.transform.position, _spawnPoint);
+        return distance <= AreaInfo.Radius;
+    }
 
-        _spawnPoint = mousePoint;
+    private bool IsValidVector(Vector3 vector)
+    {
+        return !(float.IsNaN(vector.x) || float.IsNaN(vector.y) || float.IsNaN(vector.z) ||
+                 float.IsInfinity(vector.x) || float.IsInfinity(vector.y) || float.IsInfinity(vector.z));
+    }
 
-        TargetInfo info = new TargetInfo();
-        info.Points.Add(_spawnPoint);
+    private void OnDisable()
+    {
+        OnSkillCanceled -= HandleSkillCanceled;
+    }
+    private void OnEnable()
+    {
+        OnSkillCanceled += HandleSkillCanceled;
+    }
 
-        callback(info);
+    private void Start()
+    {
+        _alliesMask = LayerMask.GetMask("Allies");
+    }
+
+    private void HandleSkillCanceled()
+    {
+        Targeting.ClearTarget();
+        _skillRender.StopDrawRadius();
+    }
+
+    public void MoveStop()
+    {
+        Hero.Move.SetCanMove(false);
+        if (Targeting.GetTarget()?.Character) _player.Move.LookAtPosition(Targeting.GetTarget().Character.transform.position);
+        Hero.Move.StopMoveAndAnimationMove();
+    }
+
+    public void AnimTentaclesCast()
+    {
+        AnimStartCastCoroutine();
+    }
+
+    public void AnimTentaclesCastEnd()
+    {
+        AnimCastEnded();
+    }
+
+    protected override void ClearData()
+    {
+        _skillRender.IsOverrideClosestTarget = false;
+        _isClickedOnGround = false;
+        _skillRender.StopDrawRadius();
+
+        _spawnPoint = Vector3.positiveInfinity;
+        Targeting.ClearTarget();
+        Hero.Move.SetCanMove(true);
+        _player.Move.StopLookAt();
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    {
+        Vector3 targetPoint = Vector3.positiveInfinity;
+
+        while (float.IsPositiveInfinity(targetPoint.x))
+        {
+            Vector3 mousePoint = Targeting.GetMousePoint();
+
+            if (GetMouseButton) targetPoint = mousePoint;
+
+            yield return null;
+        }
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(targetPoint);
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (!IsValid(_spawnPoint)) yield break;
+        if (!IsValidVector(_spawnPoint)) yield break;
 
+        _summoningSwarm.UseSwarmCharges(1);
         SpawnWomb(_spawnPoint);
 
+        ClearData();
+        _skillRender.StopDrawRadius();
         yield return null;
     }
 
     private void SpawnWomb(Vector3 position)
     {
-        if (_spawnComponent == null || _player == null) return;
-
-        _spawnComponent.CmdSpawnEnemyPoint(position, Quaternion.identity, null, 0, false, _player);
-
-        CmdSpawnWomb();
+        if (!IsValidVector(position)) return;
+        _spawnComponent.CmdSpawnEnemyPoint(position, Quaternion.identity, null, 0, false, Hero);
+        CmdTentacleWomb();
     }
 
-
     [Command]
-    private void CmdSpawnWomb() => RpcSpawnWomb();
+    private void CmdTentacleWomb()
+    {
+
+        RpcTentacleWomb();
+        _skillRender.StopDrawRadius();
+    }
 
     [ClientRpc]
-    private void RpcSpawnWomb()
+    private void RpcTentacleWomb()
     {
         foreach (var womb in _spawnComponent.Units)
         {
-            if (womb.TryGetComponent<CreatureSpawn>(out CreatureSpawn creatureSpawn)) creatureSpawn.Tentacle = _tentacle;
+            if (womb.TryGetComponent<CreatureSpawn>(out CreatureSpawn creatureSpawn)) creatureSpawn.WombSpawn = this;
             _spawnedWombs.Add(womb.gameObject);
         }
-    }
-
-    private bool IsValid(Vector3 v)
-    {
-        return !(float.IsNaN(v.x) || float.IsInfinity(v.x));
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         _spawnPoint = targetInfo.Points[0];
-    }
-
-    protected override void ClearData()
-    {
-        _spawnPoint = Vector3.positiveInfinity;
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 }

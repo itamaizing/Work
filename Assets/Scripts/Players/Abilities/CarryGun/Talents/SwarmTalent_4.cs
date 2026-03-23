@@ -2,17 +2,17 @@ using UnityEngine;
 
 public class SwarmTalent_4 : Talent
 {
-    [SerializeField] private Tentacles _tentacles;
+    [SerializeField] private WombSpawn _wombSpawn;
 
     public override void Enter()
     {
-        _tentacles.WombSpreadsMucus(true);
-        _tentacles.EffectTentaclesCreatures(true);
+        _wombSpawn.WombSpreadsMucus(true);
+        _wombSpawn.EffectTentaclesCreatures(true);
     }
 
     public override void Exit()
     {
-        _tentacles.WombSpreadsMucus(false);
-        _tentacles.EffectTentaclesCreatures(false);
+        _wombSpawn.WombSpreadsMucus(false);
+        _wombSpawn.EffectTentaclesCreatures(false);
     }
 }

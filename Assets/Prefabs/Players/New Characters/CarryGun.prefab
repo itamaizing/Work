@@ -20354,7 +20354,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
-      value: 15
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[0]'
@@ -20416,6 +20416,10 @@ PrefabInstance:
       propertyPath: '_skills.Array.data[14]'
       value: 
       objectReference: {fileID: 5181332647309301388}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_skills.Array.data[15]'
+      value: 
+      objectReference: {fileID: 5670451322035112231}
     - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: materialsCharacter.Array.size
       value: 1
@@ -21529,6 +21533,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5181332647309301388}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5670451322035112231}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7928657652816047543}
@@ -22522,7 +22529,7 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 8319872899575431858}
-  tentacles: {fileID: 431818094498011482}
+  _wombSpawn: {fileID: 5670451322035112231}
   swarmCapacity: {fileID: 3168550865384704014}
   skillManager: {fileID: 8453834493232682211}
 --- !u!114 &2207144099064470326
@@ -22636,7 +22643,7 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 8319872899575431858}
-  _tentacles: {fileID: 431818094498011482}
+  _wombSpawn: {fileID: 5670451322035112231}
 --- !u!114 &6152317529284908684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22798,7 +22805,7 @@ MonoBehaviour:
     Group: 0
     Row: 1
   character: {fileID: 8319872899575431858}
-  _tentacles: {fileID: 431818094498011482}
+  _wombSpawn: {fileID: 5670451322035112231}
 --- !u!114 &7165700713758957504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22828,7 +22835,7 @@ MonoBehaviour:
     Group: 0
     Row: 1
   character: {fileID: 8319872899575431858}
-  _tentacles: {fileID: 431818094498011482}
+  _wombSpawn: {fileID: 5670451322035112231}
 --- !u!114 &1343908129402524421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22856,7 +22863,7 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 8319872899575431858}
-  _tentacles: {fileID: 431818094498011482}
+  _wombSpawn: {fileID: 5670451322035112231}
 --- !u!114 &4115938535839889681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24283,6 +24290,91 @@ MonoBehaviour:
   _rechargeGlands:
   - {fileID: 2133260987182112002}
   - {fileID: 6161074939218866542}
+--- !u!114 &5670451322035112231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5311042088619458913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47461b66e67022b44ba1fde0d6a3ee97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WombSpawn
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 1
+  _isSkillActive: 0
+  _abilityInfo: {fileID: 11400000, guid: c52802a43472d3b4894b7d6cfe206466, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
+  _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 7
+  _cooldownComponent:
+    _baseCooldown: 7
+  _castDeley: 0
+  _damageValue: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+  _targetingComponent:
+    _clickLayer: -1
+    _faction: -1
+    _unitType: -1
+    _outOfRangeBehaviour: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _chargeComponent:
+    _usesCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
+    affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _areaComponent:
+    _radius: 4
+    _area: 0.5
+    _castLength: 0
+    _castWidth: 0
+  _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 1
+    _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
+  _player: {fileID: 8319872899575431858}
+  _spawnComponent: {fileID: 4260348460032838645}
+  _summoningSwarm: {fileID: 8267736736109211900}
+  _radiusTarget: 0.5
 --- !u!224 &7572513388100405829 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6072102004952575816, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
