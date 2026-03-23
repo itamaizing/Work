@@ -28,13 +28,20 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
             _button.onClick.AddListener(SwitchPanel);
     }
 
-    public void Show(Character hero)
+    public void Show(Character hero, bool isMenu = true)
     {
+        if (_hero == hero) return;
         _hero = hero;
-        _attributeSystem = new AttributeSystem();
-        //_attributeSystem.Init2(hero.Data);
-        _attributeSystem.Init(hero.Data);
-
+        if (isMenu)
+        {
+            _attributeSystem = new AttributeSystem();
+            //_attributeSystem.Init2(hero.Data);
+            _attributeSystem.Init(hero.Data);
+        }
+        else
+        {
+            _attributeSystem = _hero.AttributeSystem;
+        }
         ResetPanel();
 
         foreach (var item in _attributeSystem.Attributes.Values)

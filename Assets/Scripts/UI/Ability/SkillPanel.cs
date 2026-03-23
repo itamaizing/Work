@@ -82,7 +82,8 @@ public class SkillPanel : MonoBehaviour
         _playerAbilities.SkillAdded += OnSkillAdded;
         _playerAbilities.SkillRemoved += OnSkillRemoved;
 
-        StartCoroutine(LoadPanelJob());
+        //StartCoroutine(LoadPanelJob());
+        LoadPanel();
     }
 
     public void FillMenu(SkillManager abilities, HeroComponent hero)
@@ -255,7 +256,7 @@ public class SkillPanel : MonoBehaviour
                 }
             }
         }
-        SavePanel();
+        //SavePanel();
     }
 
     private void SkillChanged(int index, Skill skill)
