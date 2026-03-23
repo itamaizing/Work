@@ -23,7 +23,12 @@ public class Restoration : Skill,IPolaritySwitchable
     [SerializeField] private AbilityInfo darkInfo;
 
     [SerializeField] private AudioClip audioClip;
+    [SerializeField] private FlowOfLight _flowOfLight;
+    [SerializeField] private SparkOfLight _sparkOfLight;
     
+    private bool _stackingRestorationTalent = false;
+    private bool _stackingDestructionTalent = false;
+
     private float _clickRadius = 0.5f;
     private AudioSource _audioSource;
     private float _accumulatedEffectiveness = 1f;
@@ -63,7 +68,20 @@ public class Restoration : Skill,IPolaritySwitchable
         OnModeChange -= UpdateMode;
     }
 
+    public void SetStackingRestorationTalent(bool value)
+    {
+        _stackingRestorationTalent = value;
+        _sparkOfLight.SetStackingRestorationTalent(value);
+        _flowOfLight.SetStackingRestorationTalent(value);
+    }
 
+    public void SetStackingDestructionTalent(bool value)
+    {
+        _stackingDestructionTalent = value;
+        _sparkOfLight.SetStackingDestructionTalent(value);
+        _flowOfLight.SetStackingDestructionTalent(value);
+    }
+    
     public void SwitchMode()
     {
         CmdSwitchMode();
@@ -101,10 +119,20 @@ public class Restoration : Skill,IPolaritySwitchable
     {
         if (Targeting.GetTarget()?.Character == null) return;
         bool isAlly = Targeting.GetTarget()?.Character.gameObject.layer == LayerMask.NameToLayer("Allies");
+
         if (isAlly && TryPayCost())
         {
-            CmdRemoveState(Targeting.GetTarget()?.Character, States.Restoration);
-            CmdAddState(Targeting.GetTarget()?.Character, States.Restoration, lightDuration);
+            var target = Targeting.GetTarget()?.Character;
+
+            if (_stackingRestorationTalent)
+            {
+                CmdAddState(target, States.RestorationStacking, lightDuration);
+            }
+            else
+            {
+                CmdRemoveState(target, States.Restoration);
+                CmdAddState(target, States.Restoration, lightDuration);
+            }
         }
     }
 
@@ -121,10 +149,20 @@ public class Restoration : Skill,IPolaritySwitchable
     {
         if (Targeting.GetTarget()?.Character == null) return;
         bool isEnemy = Targeting.GetTarget()?.Character.gameObject.layer == LayerMask.NameToLayer("Enemy");
+
         if (isEnemy && TryPayCost())
         {
-            CmdRemoveState(Targeting.GetTarget()?.Character, States.Destruction);
-            CmdAddState(Targeting.GetTarget()?.Character, States.Destruction, darkDuration);
+            var target = Targeting.GetTarget()?.Character;
+
+            if (_stackingDestructionTalent)
+            {
+                CmdAddState(target, States.DestructionStacking, darkDuration);
+            }
+            else
+            {
+                CmdRemoveState(target, States.Destruction);
+                CmdAddState(target, States.Destruction, darkDuration);
+            }
         }
     }
 
@@ -196,11 +234,11 @@ public class Restoration : Skill,IPolaritySwitchable
         RpcPlayShotSound();
     }
 
-    //[Command]
+    [Command]
     private void CmdRemoveState(Character character, States states) => character.CharacterState.RemoveState(states);
 
     
-    //[Command]
+    [Command]
     private void CmdAddState(Character character, States states, float duration) => character.CharacterState.AddState(states, duration, 0, Hero.gameObject, _initialRestorationName);
 
     //[ClientRpc]

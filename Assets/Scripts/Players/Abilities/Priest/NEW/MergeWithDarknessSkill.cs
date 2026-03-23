@@ -10,9 +10,13 @@ public class MergeWithDarknessSkill : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
+    public override bool IsPayCostStartCooldown => false;
+
+    private bool _isActive = false;
+    
+    private Coroutine _durationJob;
 
     public override void LoadTargetData(TargetInfo targetInfo) { }
-
     protected override void ClearData() { }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
@@ -25,8 +29,46 @@ public class MergeWithDarknessSkill : Skill
 
     protected override IEnumerator CastJob()
     {
+        if (_isActive)
+        {
+            Deactivate();
+            yield break;
+        }
+
+        _isActive = true;
         CmdApplyState();
+
+        _durationJob = StartCoroutine(DurationJob());
+
         yield return null;
+    }
+
+    private IEnumerator DurationJob()
+    {
+        yield return new WaitForSeconds(_duration);
+
+        _isActive = false;
+        _durationJob = null;
+
+        Cooldown.Start();
+        IncreaseSetCooldown(CooldownTime);
+    }
+
+    private void Deactivate()
+    {
+        if (!_isActive) return;
+        _isActive = false;
+
+        if (_durationJob != null)
+        {
+            StopCoroutine(_durationJob);
+            _durationJob = null;
+        }
+
+        CmdRemoveState();
+
+        Cooldown.Start();
+        IncreaseSetCooldown(CooldownTime);
     }
 
     [Command]
@@ -39,5 +81,11 @@ public class MergeWithDarknessSkill : Skill
             Hero.gameObject,
             name
         );
+    }
+
+    [Command]
+    private void CmdRemoveState()
+    {
+        Hero.CharacterState.RemoveState(States.MergeDark);
     }
 }

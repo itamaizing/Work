@@ -37,7 +37,7 @@ public class MergeDarkState : AbstractCharacterState
     {
         foreach (var skill in _skillManager.Abilities)
         {
-            if (!IsInstantSkill(skill) && !skill.Disactive)
+            if (!IsInstantSkill(skill) && !skill.Disactive && skill is not MergeWithDarknessSkill)
                 skill.Disactive = true;
         }
 

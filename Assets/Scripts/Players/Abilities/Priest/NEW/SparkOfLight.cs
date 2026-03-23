@@ -42,6 +42,8 @@ public class SparkOfLight : Skill,IPolaritySwitchable
     private bool _manaRestoreBoostTalent = false;
     private bool _healingBuffTalentActive = false;
     private bool _spiritEnergyTalent;
+    private bool _stackingRestorationTalent = false;
+    private bool _stackingDestructionTalent = false;
 
     private const float LowHealthThreshold = 0.25f;
     private const float BonusDamageMultiplier = 1.25f;
@@ -57,9 +59,6 @@ public class SparkOfLight : Skill,IPolaritySwitchable
     
     private float _clickRadius = 0.5f;
 
-    //protected IDamageable _target;
-    //private Character _characterTarget;
-
     public void EnableTalentPhysicalShieldBoost(bool value) => _healthBoostActive = value;
     public void EnableLowHealthTalent(bool value) => _lowHealthTalentActive = value;
     public void EnableManaRestoreBoostTalent(bool value) => _manaRestoreBoostTalent = value;
@@ -74,6 +73,28 @@ public class SparkOfLight : Skill,IPolaritySwitchable
 
     protected override bool IsCanCast => Targeting.GetTarget()?.Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
 
+    public void SetStackingRestorationTalent(bool value) => _stackingRestorationTalent = value;
+    public void SetStackingDestructionTalent(bool value) => _stackingDestructionTalent = value;
+    
+    #region AoeTalent
+    private bool _aoeTalentActiveServer = false;
+    private const float _aoeRadius = 1f;
+    private const float _aoeDamagePercent = 0.3f;
+    private const float _aoeHealPercent = 0.3f;
+
+    public void SetAoeTalent(bool value)
+    {
+        _aoeTalentActiveServer = value;
+        CmdSetAoeTalent(value);
+    }
+
+    [Command]
+    private void CmdSetAoeTalent(bool value)
+    {
+        _aoeTalentActiveServer = value;
+    }
+    #endregion
+    
     public event Action OnModeChange;
 
     private void Start()
@@ -157,7 +178,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
     protected override IEnumerator CastJob()
     {
         if (Targeting.GetTarget()?.Character == null) yield break;
-        
+
         GameObject target = Targeting.GetTarget()?.Character.gameObject;
         CmdSpawnProjectile(target, isLightMode);
         ClearData();
@@ -182,14 +203,19 @@ public class SparkOfLight : Skill,IPolaritySwitchable
     private void TryApplyDestructionFilling(Character target)
     {
         if (target == null) return;
-        if(IsEnemyTarget(target) && isLightMode) return; 
-        
+        if (IsEnemyTarget(target) && isLightMode) return;
+        if (UnityEngine.Random.value > _destructionFillingChance) return;
+
         CharacterState targetState = target.CharacterState;
-        if (UnityEngine.Random.value <= _destructionFillingChance)
-        {
-            float durationToApply = targetState.CheckForState(isLightMode ? States.Restoration : States.Destruction) ? _destructionFillingExtensionTime : _destructionFillingDuration;
-            CmdStateRestorationOrDestruction(targetState,isLightMode ? States.Restoration : States.Destruction, durationToApply);
-        }
+        States stateToUse = isLightMode
+            ? (_stackingRestorationTalent ? States.RestorationStacking : States.Restoration)
+            : (_stackingDestructionTalent ? States.DestructionStacking : States.Destruction);
+
+        float duration = targetState.CheckForState(stateToUse)
+            ? _destructionFillingExtensionTime
+            : _destructionFillingDuration;
+
+        CmdStateRestorationOrDestruction(targetState, stateToUse, duration);
     }
 
     private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) => stateComponent.AddState(states, duration, 1f, gameObject, Name);
@@ -200,7 +226,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
 
         if (IsAllyTarget(target) || target == _hero)
         {
-            Heal(target);
+            float healValue = Heal(target);
             ApplySpiritEnergyBuff(target);
         }
         if (IsEnemyTarget(target))
@@ -223,7 +249,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         }
     }
 
-    private void Heal(Character target)
+    private float Heal(Character target)
     {
         bool isBonusActive = _healingBuffTalentActive && Time.time < _lastFlashOfLightCastTime + _healingBuffDuration;
 
@@ -231,19 +257,16 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         else _healingBonusStacks = 0;
 
         float doublingBonus = (_healingBonusStacks > 0) ? Mathf.Pow(2f, _healingBonusStacks) : 0f;
-
         float bonusHealFromSpiritEnergy = _spiritEnergyTalent ? GetSpiritEnergyBonus(target) : 0f;
+        float healValue = _healAmount + doublingBonus + bonusHealFromSpiritEnergy;
 
-        var heal = new Heal
-        {
-            Value = _healAmount + doublingBonus + bonusHealFromSpiritEnergy,
-            DamageableSkill = this
-        };
-        
+        var heal = new Heal { Value = healValue, DamageableSkill = this };
         ApplyHeal(heal, target.gameObject, this, Name);
 
         TryApplyExtraState(target);
         if (_isDestructionFillingTalent) TryApplyDestructionFilling(target);
+
+        return healValue;
     }
 
     private float GetSpiritEnergyBonus(Character target)
@@ -258,14 +281,10 @@ public class SparkOfLight : Skill,IPolaritySwitchable
     private void ApplyDamageInAltMode(Character target)
     {
         float damageAmount = isLightMode ? _damageAmount : _altDamageAmount;
-
         if (_lowHealthTalentActive && IsTargetBelowHealthThreshold(target))
             damageAmount *= BonusDamageMultiplier;
 
-        Damage damage = CreateDamage(damageAmount);
-
-        ApplyDamage(damage, target.gameObject);
-
+        ApplyDamage(CreateDamage(damageAmount), target.gameObject);
         TryApplyExtraState(target);
         if (_isDestructionFillingTalent) TryApplyDestructionFilling(target);
     }
@@ -277,10 +296,36 @@ public class SparkOfLight : Skill,IPolaritySwitchable
             Value = Buff.Damage.GetBuffedValue(amount),
             Type = DamageType.Magical,
             PhysicAttackType = AttackRangeType.RangeAttack,
-            School = this.Info.School,
-            //DamageableSkill = this,
+            School = this.Info.School
         };
     }
+    
+    private void ApplyAoeEffect(Character mainTarget, float value, bool isDamage)
+    {
+        float aoeValue = value * (isDamage ? _aoeDamagePercent : _aoeHealPercent);
+        Collider[] hits = Physics.OverlapSphere(mainTarget.transform.position, _aoeRadius, Targeting.Layer);
+
+        foreach (var hit in hits)
+        {
+            if (!hit.TryGetComponent<Character>(out var target)) continue;
+            if (target == mainTarget || target.IsDead) continue;
+
+            if (isDamage)
+            {
+                if (!IsEnemyTarget(target)) continue;
+                CmdApplyDamage(CreateDamage(aoeValue), target.gameObject);
+            }
+            else
+            {
+                if (!IsAllyTarget(target) && target != _hero) continue;
+                CmdApplyHeal(new Heal { Value = aoeValue, DamageableSkill = this }, target.gameObject, this, Name);
+            }
+
+            TryApplyExtraState(target);
+            if (_isDestructionFillingTalent) TryApplyDestructionFilling(target);
+        }
+    }
+
 
     private void ApplySpiritEnergyBuff(Character target)
     {
@@ -322,12 +367,6 @@ public class SparkOfLight : Skill,IPolaritySwitchable
 
     public void SpiritEnergyAddTalent(bool value) => _spiritEnergyAddTalent = value;
 
-    [Command]
-    public void CmdSetDestructionFillingTalent(bool value, float duration, float additionalTime, float chance)
-    {
-        DestructionFillingTalent(value, duration, additionalTime, chance);
-    }
-    
     public void DestructionFillingTalent(bool value, float duration, float additionalTime,float chance)
     {
         _isDestructionFillingTalent = value;
@@ -357,38 +396,47 @@ public class SparkOfLight : Skill,IPolaritySwitchable
             Quaternion.LookRotation(direction));
 
         projectile.Init(target);
-
         SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
-        projectile.EndPointReached += OnEndPointReached;
+
+        projectile.EndPointReached += (proj, tgt) =>
+        {
+            var character = tgt.GetComponent<Character>();
+
+            if (isLight) HandleDefaultMode(character);
+            else HandleAlternativeMode(character);
+
+            TargetRpcApplyAoe(connectionToClient, tgt, isLight);
+        };
+
         NetworkServer.Spawn(projectile.gameObject);
         projectile.StartFly();
-
         RpcPlayShotSound();
     }
     
-    private void OnEndPointReached(LightSparkProjectile projectile, GameObject target)
+    [TargetRpc]
+    private void TargetRpcApplyAoe(NetworkConnectionToClient conn, GameObject targetGO, bool isLight)
     {
-        projectile.EndPointReached -= OnEndPointReached;
+        if (!_aoeTalentActiveServer) return;
 
-        if (isLightMode) HandleDefaultMode(target.GetComponent<Character>());
-        else HandleAlternativeMode(target.GetComponent<Character>());
+        var target = targetGO.GetComponent<Character>();
+        if (target == null) return;
+
+        if (isLight)
+        {
+            ApplyAoeEffect(target, _healAmount, false);
+        }
+        else
+        {
+            float dmg = isLightMode ? _damageAmount : _altDamageAmount;
+            ApplyAoeEffect(target, isLightMode ? _damageAmount : _altDamageAmount, true);
+        }
     }
-
-
+    
     [Command]
     private void CmdSwitchMode()
     {
         isLightMode = !isLightMode;
         UpdateMode();
-    }
-
-    [ClientRpc]
-    private void RpcInitProjectile(GameObject projectileObject, GameObject target)
-    {
-        if (projectileObject.TryGetComponent(out LightSparkProjectile projectile))
-        {
-            projectile.Init(target);
-        }
     }
 
     [ClientRpc]

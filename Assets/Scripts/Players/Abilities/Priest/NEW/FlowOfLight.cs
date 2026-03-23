@@ -40,7 +40,22 @@ public class FlowOfLight : Skill, IPolaritySwitchable
 
     private bool _spiritEnergyAddTalent;
     private bool _isDestructionFillingTalent;
+    
+    private bool _stackingRestorationTalent = false;
+    private bool _stackingDestructionTalent = false;
     public bool IsDestructionFillingTalent { get => _isDestructionFillingTalent; private set => _isDestructionFillingTalent = value; }
+    
+    #region AoeTalent
+    private bool _aoeTalentActive = false;
+    private const float _aoeRadius = 1f;
+    private const float _aoeDamagePercent = 0.3f;
+    private const float _aoeHealPercent = 0.3f;
+    public void SetAoeTalent(bool value) => _aoeTalentActive = value;
+    
+    #endregion
+    
+    public void SetStackingRestorationTalent(bool value) => _stackingRestorationTalent = value;
+    public void SetStackingDestructionTalent(bool value) => _stackingDestructionTalent = value;
     
     public void SpiritEnergyAddTalent(bool value) => _spiritEnergyAddTalent = value;
 
@@ -129,14 +144,35 @@ public class FlowOfLight : Skill, IPolaritySwitchable
         //if (!isLightMode && UnityEngine.Random.value <= 0.2f) CmdStateRestorationOrDestruction(stateComponent, States.Destruction, 12f);
     }
 
-    private void TryApplyDestructionFilling(CharacterState target)
+    private void TryApplyDestructionFilling(CharacterState targetState)
     {
-        if (target == null) return;
-        
-        if (UnityEngine.Random.value <= _destructionFillingChance)
+        if (targetState == null) return;
+
+        if (UnityEngine.Random.value > _destructionFillingChance) return;
+
+        if (isLightMode)
         {
-            float durationToApply = target.CheckForState(isLightMode ? States.Restoration : States.Destruction) ? _destructionFillingExtensionTime : _destructionFillingDuration;
-            CmdStateRestorationOrDestruction(target, isLightMode ? States.Restoration : States.Destruction, durationToApply);
+            States stateToUse = _stackingRestorationTalent
+                ? States.RestorationStacking
+                : States.Restoration;
+
+            float durationToApply = targetState.CheckForState(stateToUse)
+                ? _destructionFillingExtensionTime
+                : _destructionFillingDuration;
+
+            CmdStateRestorationOrDestruction(targetState, stateToUse, durationToApply);
+        }
+        else
+        {
+            States stateToUse = _stackingDestructionTalent
+                ? States.DestructionStacking
+                : States.Destruction;
+
+            float durationToApply = targetState.CheckForState(stateToUse)
+                ? _destructionFillingExtensionTime
+                : _destructionFillingDuration;
+
+            CmdStateRestorationOrDestruction(targetState, stateToUse, durationToApply);
         }
     }
 
@@ -215,33 +251,34 @@ public class FlowOfLight : Skill, IPolaritySwitchable
 
             if (elapsed % interval < Time.deltaTime)
             {
-                if (isLightMode && IsAllyTarget(Targeting.GetTarget()?.Character))
+                var currentTarget = Targeting.GetTarget()?.Character;
+
+                if (isLightMode && IsAllyTarget(currentTarget))
                 {
                     Heal heal = new Heal { Value = tickValue };
-                    CmdApplyHeal(heal, Targeting.GetTarget()?.Character.gameObject, this, Name);
-                    TryApplyExtraState(Targeting.GetTarget()?.Character);
-                    ApplySpiritBuff(Targeting.GetTarget()?.Character);
+                    CmdApplyHeal(heal, currentTarget.gameObject, this, Name);
+                    TryApplyExtraState(currentTarget);
+                    ApplySpiritBuff(currentTarget);
+
+                    if (_aoeTalentActive) ApplyAoeHeal(currentTarget, tickValue);
                 }
-                else if (!isLightMode && IsEnemyTarget(Targeting.GetTarget()?.Character))
+                else if (!isLightMode && IsEnemyTarget(currentTarget))
                 {
                     Damage damage = new Damage
                     {
-                        Value = tickValue,
-                        Type = Info.DamageType,
+                        Value  = tickValue,
+                        Type   = Info.DamageType,
                         School = Info.School
                     };
-                    CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
-                    TryApplyExtraState(Targeting.GetTarget()?.Character);
-                    ApplySpiritBuff(Targeting.GetTarget()?.Character);
+                    CmdApplyDamage(damage, currentTarget.gameObject);
+                    TryApplyExtraState(currentTarget);
+                    ApplySpiritBuff(currentTarget);
+
+                    if (_aoeTalentActive) ApplyAoeDamage(currentTarget, tickValue);
                 }
+
                 if (_isDestructionFillingTalent)
-                {
-                    TryApplyDestructionFilling(Targeting.GetTarget()?.Character.CharacterState);
-                }
-                if (_isDestructionFillingTalent)
-                {
-                    TryApplyDestructionFilling(Targeting.GetTarget()?.Character.CharacterState);
-                }
+                    TryApplyDestructionFilling(currentTarget.CharacterState);
             }
 
             elapsed += Time.deltaTime;
@@ -254,6 +291,51 @@ public class FlowOfLight : Skill, IPolaritySwitchable
         CmdCrossFade();
         _hero.Animator.CrossFade("FlowSpellEnd", 0.1f);
         CmdDestroyEffect();
+    }
+    
+    private void ApplyAoeDamage(Character mainTarget, float mainDamageValue)
+    {
+        float aoeDamage = mainDamageValue * _aoeDamagePercent;
+
+        Collider[] hits = Physics.OverlapSphere(mainTarget.transform.position, _aoeRadius, Targeting.Layer);
+        foreach (var hit in hits)
+        {
+            if (!hit.TryGetComponent<Character>(out var target)) continue;
+            if (target == mainTarget) continue;
+            if (target.IsDead) continue;
+            if (!IsEnemyTarget(target)) continue;
+
+            Damage damage = new Damage
+            {
+                Value  = aoeDamage,
+                Type   = Info.DamageType,
+                School = Info.School
+            };
+            CmdApplyDamage(damage, target.gameObject);
+
+            TryApplyExtraState(target);
+            if (_isDestructionFillingTalent) TryApplyDestructionFilling(target.CharacterState);
+        }
+    }
+
+    private void ApplyAoeHeal(Character mainTarget, float mainHealValue)
+    {
+        float aoeHeal = mainHealValue * _aoeHealPercent;
+
+        Collider[] hits = Physics.OverlapSphere(mainTarget.transform.position, _aoeRadius, Targeting.Layer);
+        foreach (var hit in hits)
+        {
+            if (!hit.TryGetComponent<Character>(out var target)) continue;
+            if (target == mainTarget) continue;
+            if (target.IsDead) continue;
+            if (!IsAllyTarget(target)) continue;
+
+            Heal heal = new Heal { Value = aoeHeal };
+            CmdApplyHeal(heal, target.gameObject, this, Name);
+
+            TryApplyExtraState(target);
+            if (_isDestructionFillingTalent) TryApplyDestructionFilling(target.CharacterState);
+        }
     }
 
     private void TrySwitchSpellsOnDarkMode()
