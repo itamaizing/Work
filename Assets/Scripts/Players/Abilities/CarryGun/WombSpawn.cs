@@ -110,11 +110,7 @@ public class WombSpawn : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Spell");
     protected override bool IsCanCast =>
-    _summoningSwarm != null &&
-    _summoningSwarm.ChargesSwarm > 0 &&
-    (Targeting.GetTarget()?.Character != null || _isClickedOnGround) &&
-    _spawnPoint != Vector3.positiveInfinity &&
-    IsCanRadius();
+    _summoningSwarm != null && _spawnPoint != Vector3.positiveInfinity && IsCanRadius();
 
     private bool IsCanRadius()
     {
@@ -201,8 +197,13 @@ public class WombSpawn : Skill
     {
         if (!IsValidVector(_spawnPoint)) yield break;
 
-        _summoningSwarm.UseSwarmCharges(1);
+        bool hadCharges = _summoningSwarm != null && _summoningSwarm.ChargesSwarm > 0;
+
+        if (hadCharges) _summoningSwarm.UseSwarmCharges(1);
+
         SpawnWomb(_spawnPoint);
+
+        if (hadCharges) ResetCooldown();
 
         ClearData();
         _skillRender.StopDrawRadius();
