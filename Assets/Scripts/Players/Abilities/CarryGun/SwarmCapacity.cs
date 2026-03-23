@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using UnityEngine;
 using Mirror;
@@ -18,8 +18,10 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
     private SpawnComponent _spawnComponent;
     private Coroutine _overloadCheckRoutine;
 
-    private void Start()
+    public override void Init(SkillRenderer render, Character hero)
     {
+        base.Init(render, hero);
+
         _spawnComponent = Hero.GetComponent<SpawnComponent>();
 
         if (_spawnComponent != null)

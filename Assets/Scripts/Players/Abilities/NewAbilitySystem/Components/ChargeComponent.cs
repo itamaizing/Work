@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mirror;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,25 +30,21 @@ public class ChargeComponent : BaseSkillComponent
     #endregion
 
     #region RuntimeVariables
-    private int _currentCharges;
-    private List<float> _remainingCooldowns = new();
+    Attribute char_attr, skill_attr;
+    private bool isInitialized = false;
     #endregion
 
     #region Properties
     public bool UsesCharges => _usesCharges;
     public bool IsComboPart => _isComboPart;
     public ChargeCooldownType CooldownType => _cooldownType;
+    public float BaseCooldown => _baseCooldown;
     public int MaxCharges {
         get { return _maxCharges; }
         set { _maxCharges = value; }
     }
-    public int CurrentCharges {
-        get { return _currentCharges; }
-        set {
-            _currentCharges = value;
-            //_skill.CurrentChargeChanged?.Invoke(_currentCharges);
-        }
-    }
+    public SyncList<double> RechargeTimers => _skill.RechargeTimers;
+    public int RemainingCharges => (MaxCharges - RechargeTimers.Count);
     public bool HasCharges
     {
         get
@@ -56,14 +53,10 @@ public class ChargeComponent : BaseSkillComponent
             else
             {
                 if (_isComboPart) return true;
-                return (_currentCharges > 0);
+                return (RemainingCharges > 0);
             }
         }
     }
-
-    public float BaseCooldown => _baseCooldown;
-
-    public List<float> ActiveCooldowns => _remainingCooldowns;
     #endregion
 
     #region Events
@@ -75,6 +68,25 @@ public class ChargeComponent : BaseSkillComponent
     public event Action<int> OnRechargeEnd;
     #region Methods
 
+    public override void Init(Skill skill)
+    {
+        base.Init(skill);
+
+        RechargeTimers.Callback += OnChargeChange;
+        skill_attr = _skillAttributes[SkillAttributeName.Cooldown];
+        char_attr = _attributes[CharacterAttributeName.CooldownReduction];
+        isInitialized = true;
+    }
+
+    public void Tick()
+    {
+        if (!isInitialized)
+            return;
+        for (int i = RechargeTimers.Count - 1; i >= 0; i--)
+            if (RechargeTimers[i] <= NetworkTime.time)
+                RestoreCharge(i);
+    }
+
     //Переписать на ModifyMax
     //Если список перезарядок не пустой - оставить КД
     //Если пустой - проверять cooldowned? Или просто вырезать его и добавлять без КД?
@@ -83,36 +95,37 @@ public class ChargeComponent : BaseSkillComponent
         _maxCharges += 1;
         if (cooldowned)
         {
-            _remainingCooldowns.Add(_baseCooldown);
+            float cdTime = _baseCooldown;
+            if (affectedByCDR) 
+                cdTime = _skillAttributes.GetCombined(_baseCooldown, skill_attr, char_attr);
+            _skill.CmdStartRecharge(cdTime);
         }
         else
         {
-            _currentCharges++;
-            CurrentChargesChanged?.Invoke(_currentCharges);
+            CurrentChargesChanged?.Invoke(RemainingCharges);
         }
         MaxChargesChanged?.Invoke(_maxCharges);
     }
 
-    public void RestoreCharge()
+    public void RestoreCharge(int index)
     {
-        if (_currentCharges < _maxCharges)
+        if (RemainingCharges < _maxCharges)
         {
-            _currentCharges++;
-            CurrentChargesChanged?.Invoke(_currentCharges);
+            CurrentChargesChanged?.Invoke(RemainingCharges);
+            _skill.CmdEndRecharge(index);
         }
     }
 
-
     public bool TryUse()
     {
-        if (_currentCharges <= 0)
+        Debug.Log("trying to use a charge");
+        if (RemainingCharges <= 0)
             return false;
 
-        _currentCharges--;
         float cdTime = _baseCooldown;
         if (affectedByCDR)
         {
-            cdTime = _skillAttributes.Attributes[SkillAttributeName.Cooldown].CalculateFor(_baseCooldown);
+            cdTime = _skillAttributes.GetCombined(_baseCooldown, skill_attr, char_attr);
         }
         StartRecharge(cdTime);
         return true;
@@ -121,49 +134,26 @@ public class ChargeComponent : BaseSkillComponent
     private void StartRecharge(float rechargeTime)
     {
         OnRechargeStart?.Invoke(rechargeTime);
-        _currentCharges -= 1;
-        _remainingCooldowns.Add(rechargeTime);
+        _skill.CmdStartRecharge(rechargeTime);
     }
 
     //Если сломается - хардкодим кол-во зарядов в списке, добавляем id текущего заряда на перезарядке
-    public void Tick(float time)
+    public void OnChargeChange(SyncList<double>.Operation op, int index, double oldTime, double newTime)
     {
-        if (_remainingCooldowns.Count <= 0)
-            return;
-        switch (_cooldownType)
+        switch (op)
         {
-            case ChargeCooldownType.Sequential:
-                TickCurrent(time);
+            case SyncList<double>.Operation.OP_ADD:
+                OnRechargeStart?.Invoke((float) (newTime - NetworkTime.time));
+                Debug.Log("RECHARGE STARTED " + (newTime - NetworkTime.time));
                 break;
-            case ChargeCooldownType.Independant:
-                TickAll(time);
+
+            case SyncList<double>.Operation.OP_REMOVEAT:
+                OnRechargeEnd?.Invoke(index); //Это не тот индекс
+                Debug.Log("RECHARGE ENDED! " + index);
                 break;
         }
-    }
 
-    private void TickCurrent(float time)
-    {
-        _remainingCooldowns[0] -= time;
-        if (_remainingCooldowns[0] <= 0)
-        {
-            RestoreCharge();
-            _remainingCooldowns.RemoveAt(0);
-        }
-    }
-
-    private void TickAll(float time)
-    {
-        for (int i = _remainingCooldowns.Count - 1; i >= 0; i--)
-        {
-            _remainingCooldowns[i] -= time;
-
-            if (_remainingCooldowns[i] <= 0)
-            {
-                RestoreCharge();
-                OnRechargeEnd?.Invoke(i);
-                _remainingCooldowns.RemoveAt(i);
-            }
-        }
+        CurrentChargesChanged?.Invoke(RemainingCharges);
     }
     #endregion Methods
 }

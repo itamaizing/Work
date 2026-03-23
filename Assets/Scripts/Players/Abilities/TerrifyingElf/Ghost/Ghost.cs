@@ -107,13 +107,16 @@ public class Ghost : Skill
 
     #endregion
 
-    protected override void Awake()
+
+    public override void Init(SkillRenderer render, Character hero)
     {
+        base.Init(render, hero);
+
         _audioSource = GetComponent<AudioSource>();
         _treeVisionRadius = treeVisionComponent.VisionRange;
         _heroVisionRadius = Hero.VisionComponent.VisionRange;
 
-        base.Awake();
+        //base.Awake();
         InitializeFields();
         RegisterSpawnEvents();
 
@@ -442,7 +445,7 @@ public class Ghost : Skill
     {
         foreach (var skillCost in _skillEnergyCosts)
         {
-            skillCost.resourceCost *= 0.5f;
+            skillCost.value *= 0.5f;
         }
     }
 
@@ -450,7 +453,7 @@ public class Ghost : Skill
     {
         foreach (var skillCost in _skillEnergyCosts)
         {
-            skillCost.resourceCost *= 2f;
+            skillCost.value *= 2f;
         }
     }
 

@@ -16,15 +16,15 @@ public class SparkOfLight : Skill,IPolaritySwitchable
     [SerializeField] private float _range = 4f;
 
 	//override TryPayCost and remove this two things
-	[SerializeField] private List<SkillEnergyCost> _manaCostHeal;
-    [SerializeField] private List<SkillEnergyCost> _manaCostDamage;
+	[SerializeField] private List<SkillResourceCost> _manaCostHeal;
+    [SerializeField] private List<SkillResourceCost> _manaCostDamage;
     [SerializeField] private AbilityInfo lightInfo;
 
     [Header("Alternative Mode Settings")]
     [SerializeField] private float _altRange = 6f;
     [SerializeField] private float _altBuffDuration = 5f;
     [SerializeField] private float _altDamageAmount = 2f;
-    [SerializeField] private List<SkillEnergyCost> _altManaCostDamage;
+    [SerializeField] private List<SkillResourceCost> _altManaCostDamage;
     [SerializeField] private FlashOfLight _flashOfLight;
     [SerializeField] private AbilityInfo darkInfo;
 
@@ -79,23 +79,26 @@ public class SparkOfLight : Skill,IPolaritySwitchable
 
     public event Action OnModeChange;
 
-    private void Start()
+    public override void Init(SkillRenderer render, Character hero)
     {
+        base.Init(render, hero);
         _audioSource = GetComponent<AudioSource>();
+        UpdateMode();
     }
 
     private void OnEnable()
     {
         _flashOfLight.CastEnded += HandleLastTimeFlashOfLightCast;
         OnModeChange += UpdateMode;
-        UpdateMode();
     }
+
 
     private void OnDisable()
     {
         _flashOfLight.CastEnded -= HandleLastTimeFlashOfLightCast;
         OnModeChange -= UpdateMode;
     }
+
 
     public void SwitchMode()
     {
@@ -166,7 +169,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         ClearData();
     }
 
-    protected override bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
+    protected override bool TryPayCost(List<SkillResourceCost> skillEnergyCosts, bool startCooldown = true)
     {
         if (IsHaveResourceOnSkill)
         {
@@ -189,8 +192,8 @@ public class SparkOfLight : Skill,IPolaritySwitchable
 
             foreach (var skillCost in skillEnergyCosts)
             {
-                var resource = _hero.Resources[skillCost.resourceType];
-                resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
+                var resource = _hero.Resources[skillCost.type];
+                resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.value));
             }
 
             if (startCooldown)

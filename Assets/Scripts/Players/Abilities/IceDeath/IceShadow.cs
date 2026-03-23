@@ -202,7 +202,7 @@ public class IceShadow : Skill
 		_evaded = false;
 	}
 
-	protected override bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
+	protected override bool TryPayCost(List<SkillResourceCost> skillEnergyCosts, bool startCooldown = true)
 	{
 		if (IsHaveResourceOnSkill)
 		{
@@ -210,8 +210,8 @@ public class IceShadow : Skill
 			{
 				/*foreach (var skillCost in _skillEnergyCosts)
 				{
-					var resource = _hero.Resources.First(r => r.Type == skillCost.resourceType);
-					resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
+					var resource = _hero.Resources.First(r => r.Type == skillCost.type);
+					resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.value));
 				}*/
 				_evaded = false;
 			}
@@ -219,8 +219,8 @@ public class IceShadow : Skill
 			{
 				foreach (var skillCost in _skillEnergyCosts)
 				{
-					var resource = _hero.Resources[skillCost.resourceType];
-					resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
+					var resource = _hero.Resources[skillCost.type];
+					resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.value));
 				}
 				_evaded = false;
 			}

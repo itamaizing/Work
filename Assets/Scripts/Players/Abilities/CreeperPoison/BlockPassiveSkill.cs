@@ -24,11 +24,15 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) => throw new NotImplementedException();
     #endregion
 
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+        TrySubscribe();
+    }
+
     private void OnEnable()
     {
-        Hero.Health.Block += PlayBlockAnimation;
-        Hero.Health.Evaded += OnHeroEvade;
-        Hero.Health.OnBeforeTakeDamage += OnBeforeTakeDamage;
+        TrySubscribe();
     }
 
     private void OnDisable()
@@ -36,6 +40,16 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
         Hero.Health.Block -= PlayBlockAnimation;
         Hero.Health.Evaded -= OnHeroEvade;
         Hero.Health.OnBeforeTakeDamage -= OnBeforeTakeDamage;
+    }
+
+    private void TrySubscribe()
+    {
+        if (Hero == null)
+            return;
+
+        Hero.Health.Block += PlayBlockAnimation;
+        Hero.Health.Evaded += OnHeroEvade;
+        Hero.Health.OnBeforeTakeDamage += OnBeforeTakeDamage;
     }
 
     private void OnHeroEvade()

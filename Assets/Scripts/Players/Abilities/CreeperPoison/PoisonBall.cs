@@ -163,8 +163,10 @@ public class PoisonBall : Skill, IAltAbility
         OnSkillCanceled += ClearData;
     }
 
-    private void Start()
+    public override void Init(SkillRenderer render, Character hero)
     {
+        base.Init(render, hero);
+
         _baseCastWidth = AreaInfo.CastWidth;
         _originalChargeCooldown = _chargeCooldown;
 

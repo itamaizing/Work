@@ -1225,10 +1225,20 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs:
+    - nameToShow: 10 Mana - Mandatory mod desc
+      type: 1
+      value: 10
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 10
+  - nameToShow: 10 Mana - Mandatory mod desc
+    type: 1
+    value: 10
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 1
   _cooldownComponent:
@@ -1258,6 +1268,9 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -1265,6 +1278,11 @@ MonoBehaviour:
     _maxCharges: 3
     _baseCooldown: 3
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 5
     _area: 2
@@ -1302,10 +1320,20 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs:
+    - nameToShow: 30 Mana - Mandatory mod desc
+      type: 1
+      value: 30
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 30
+  - nameToShow: 30 Mana - Mandatory mod desc
+    type: 1
+    value: 30
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -1335,6 +1363,9 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -1342,6 +1373,11 @@ MonoBehaviour:
     _maxCharges: 3
     _baseCooldown: 5
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 7
     _area: 3
@@ -1381,7 +1417,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 2
@@ -1412,6 +1448,9 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -1419,6 +1458,11 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 5
     _area: 0
@@ -1454,7 +1498,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -1485,6 +1529,9 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -1492,6 +1539,11 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 8
     _area: 0
@@ -1532,7 +1584,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -1563,6 +1615,9 @@ MonoBehaviour:
     _castDuration: 1
     _tickInterval: 0
     _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -1570,6 +1625,11 @@ MonoBehaviour:
     _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
   _areaComponent:
     _radius: 9
     _area: 0

@@ -72,7 +72,7 @@ public class SkillManager : MonoBehaviour
         _castEndedHandlers.Clear();
     }
 
-    private void Awake()
+    public virtual void Initialize()
     {
         //InputHandler.ScrollMouse += ScrollMouse;
 

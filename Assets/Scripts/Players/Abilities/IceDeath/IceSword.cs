@@ -169,7 +169,7 @@ public class IceSword : CloseCombatSkill
 	{
 		AnimCastEnded();
 	}
-    protected override bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
+    protected override bool TryPayCost(List<SkillResourceCost> skillEnergyCosts, bool startCooldown = true)
     {
 		if (!IsHaveResourceOnSkill)
 		{
@@ -180,7 +180,7 @@ public class IceSword : CloseCombatSkill
 
         foreach (var skillCost in skillEnergyCosts)
         {
-			var baseCost = skillCost.resourceCost;  // уже взяли skillCost, почему ниже маг. числа?
+			var baseCost = skillCost.value;  // уже взяли skillCost, почему ниже маг. числа?
 
             if (_energy.CurrentValue > baseCost)
 			{

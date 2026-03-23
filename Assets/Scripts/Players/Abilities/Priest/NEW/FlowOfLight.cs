@@ -59,11 +59,16 @@ public class FlowOfLight : Skill, IPolaritySwitchable
         Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle) &&
         ((isLightMode && IsAllyTarget(Targeting.GetTarget()?.Character)) || (!isLightMode && IsEnemyTarget(Targeting.GetTarget()?.Character)));
 
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+        UpdateMode();
+    }
+
     private void OnEnable()
     {
         OnModeChange += UpdateMode;
         OnSkillCanceled += HandleSkillCanceled;
-        UpdateMode();
     }
 
     private void OnDisable()

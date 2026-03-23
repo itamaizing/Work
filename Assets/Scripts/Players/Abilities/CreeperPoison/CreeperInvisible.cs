@@ -91,8 +91,10 @@ public class CreeperInvisible : Skill
         }
     }
 
-     private void Start()
+    public override void Init(SkillRenderer render, Character hero)
     {
+        base.Init(render, hero);
+
         if (_checkEnemiesRoutine == null) _checkEnemiesRoutine = StartCoroutine(CheckEnemiesInRadiusRoutine());
     }
 

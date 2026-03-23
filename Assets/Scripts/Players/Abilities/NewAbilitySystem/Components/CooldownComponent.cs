@@ -1,7 +1,5 @@
 ﻿using Mirror;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
@@ -27,7 +25,7 @@ public class CooldownComponent : BaseSkillComponent
     #region Properties
     public float CooldownTime {
         get { return _skillAttributes.Cooldown; }
-        set { _skillAttributes.Attributes[SkillAttributeName.Cooldown].SetBaseValue(value); }
+        set { _skillAttributes[SkillAttributeName.Cooldown].SetBaseValue(value); }
     }
     //public bool IsActive =>  NetworkTime.time < _skill.CooldownEnd;
     public bool IsActive
@@ -64,7 +62,6 @@ public class CooldownComponent : BaseSkillComponent
         {
             EndCooldown();
         }
-
     }
 
     public void Start()
@@ -120,8 +117,10 @@ public class CooldownComponent : BaseSkillComponent
 
     public float CalculateValue(float time)
     {
+        return _skillAttributes.GetCombined(time, _skillAttributes[SkillAttributeName.Cooldown],
+            _attributes[CharacterAttributeName.CooldownReduction]);
         // Обновить, когда на персонаже появится атрибут КД
-        return _skillAttributes.Attributes[SkillAttributeName.Cooldown].CalculateFor(time);
+        //return _skillAttributes.Attributes[SkillAttributeName.Cooldown].CalculateFor(time);
     }
 
     private void StartCooldown(float duration)

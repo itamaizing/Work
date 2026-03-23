@@ -44,9 +44,11 @@ public class Restoration : Skill,IPolaritySwitchable
     protected override int AnimTriggerCastDelay => Animator.StringToHash("Cast");
     protected override int AnimTriggerCast => 0;
 
-    private void Start()
+    public override void Init(SkillRenderer render, Character hero)
     {
+        base.Init(render, hero);
         _audioSource = GetComponent<AudioSource>();
+        UpdateMode();
     }
 
     public event Action OnModeChange;
@@ -54,7 +56,6 @@ public class Restoration : Skill,IPolaritySwitchable
     private void OnEnable()
     {
         OnModeChange += UpdateMode;
-        UpdateMode();
     }
 
     private void OnDisable()

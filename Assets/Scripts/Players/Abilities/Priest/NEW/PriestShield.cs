@@ -14,14 +14,14 @@ public class PriestShield : Skill
     [SerializeField] private float selfCastTime = 0.6f;
     [SerializeField] private float allyCastTime = 1.2f;
     [SerializeField] private float absorbAmount = 20f;
-    [SerializeField] private List<SkillEnergyCost> manaCostLight;
+    [SerializeField] private List<SkillResourceCost> manaCostLight;
     [SerializeField] private float cooldownLight = 4f;
 
     //---------------- DarkSettings
     [Header("Shield (Dark Mode) Settings")]
     [SerializeField] private float darkShieldDuration = 12f;
     [SerializeField] private float maxDamagePerTick = 20f;
-    [SerializeField] private List<SkillEnergyCost> manaCostDark;
+    [SerializeField] private List<SkillResourceCost> manaCostDark;
     [SerializeField] private float cooldownDark = 4f;
     [SerializeField] private float darkCastTime = 1.2f;
 
@@ -83,23 +83,17 @@ public class PriestShield : Skill
 
     public event Action OnModeChange;
 
-    private void Start()
+    public override void Init(SkillRenderer render, Character hero)
     {
+        base.Init(render, hero);
         _audioSource = GetComponent<AudioSource>();
+        TrySubscribe();
+        UpdateMode();
     }
 
     private void OnEnable()
     {
-        OnModeChange += HandleModeChange;
-        Hero.DamageTracker.OnDamageTracked += TrackDarkDamage;
-        Hero.Health.DamageTaken += TrackPhysDamage;
-        Hero.DamageTracker.OnHealTracked += TrackHealDone;
-        UpdateMode();
-
-        foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.Info.School == Schools.Discipline))
-        {
-            skill.CastEnded += AddDisciplineStack;
-        }
+        TrySubscribe();
     }
 
     private void OnDisable()
@@ -112,6 +106,22 @@ public class PriestShield : Skill
         foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.Info.School == Schools.Discipline))
         {
             skill.CastEnded -= AddDisciplineStack;
+        }
+    }
+
+    private void TrySubscribe()
+    {
+        if (Hero == null)
+            return;
+
+        OnModeChange += HandleModeChange;
+        Hero.DamageTracker.OnDamageTracked += TrackDarkDamage;
+        Hero.Health.DamageTaken += TrackPhysDamage;
+        Hero.DamageTracker.OnHealTracked += TrackHealDone;
+
+        foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.Info.School == Schools.Discipline))
+        {
+            skill.CastEnded += AddDisciplineStack;
         }
     }
 

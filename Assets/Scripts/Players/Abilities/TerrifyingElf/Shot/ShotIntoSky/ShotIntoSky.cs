@@ -36,13 +36,14 @@ public class ShotIntoSky : Skill
 
     private void OnDestroy() => Canceled -= HandleSkillCanceled;
 
-    private void OnEnable()
+    public override void Init(SkillRenderer render, Character hero)
     {
+        base.Init(render, hero);
         _baseRadius = AreaInfo.Radius;
         Canceled += HandleSkillCanceled;
     }
 
-        protected override bool IsCanCast
+    protected override bool IsCanCast
     {
         get
         {

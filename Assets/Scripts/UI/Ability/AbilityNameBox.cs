@@ -25,14 +25,14 @@ public class AbilityNameBox : MonoBehaviour
         {
             if (skill.SkillEnergyCosts.Count > 0)
             {
-                _descriptionWithNumbers.text = $"Затрата: {ColorOpen}{skill.SkillEnergyCosts[0].resourceCost} ед. маны{ColorEnd}";
+                _descriptionWithNumbers.text = $"Затрата: {ColorOpen}{skill.SkillEnergyCosts[0].value} ед. маны{ColorEnd}";
 
-                if (skill.AdditionalSkillEnergyCosts.Count > 0) _descriptionWithNumbers.text += $"{ColorOpen} + {skill.AdditionalSkillEnergyCosts[0].resourceCost} ед. маны{ColorEnd}";
+                if (skill.AdditionalSkillEnergyCosts.Count > 0) _descriptionWithNumbers.text += $"{ColorOpen} + {skill.AdditionalSkillEnergyCosts[0].value} ед. маны{ColorEnd}";
             }
             else _descriptionWithNumbers.text = $"Затрата: {ColorOpen}0 ед. маны{ColorEnd}";
 
             if (skill.ManaCostPerTick.Count > 0)
-                _descriptionWithNumbers.text += $" + {ColorOpen}{skill.ManaCostPerTick[0].resourceCost} ед. маны/{skill.ManaCostRate} сек{ColorEnd}";
+                _descriptionWithNumbers.text += $" + {ColorOpen}{skill.ManaCostPerTick[0].value} ед. маны/{skill.ManaCostRate} сек{ColorEnd}";
 
             switch (skill.Info.AbilityForm)
             {

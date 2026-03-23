@@ -32,16 +32,30 @@ public class SneakySpit : Skill
         Targeting.ClearTarget();
     }
 
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+        TrySubscribe();
+    }
+
     private void OnEnable()
     {
-        Hero.Health.OnBeforeTakeDamage += HandleBeforeTakeDamage;
-        Hero.Health.Evaded += OnHeroEvade;
+        TrySubscribe();
     }
 
     private void OnDisable()
     {
         Hero.Health.OnBeforeTakeDamage -= HandleBeforeTakeDamage;
         Hero.Health.Evaded -= OnHeroEvade;
+    }
+
+    private void TrySubscribe()
+    {
+        if (Hero == null)
+            return;
+
+        Hero.Health.OnBeforeTakeDamage += HandleBeforeTakeDamage;
+        Hero.Health.Evaded += OnHeroEvade;
     }
 
     public void TryStartSneakySpitBoostWindow(Character target) => _boostWindow = StartCoroutine(SneakySpitBoostWindow(target));

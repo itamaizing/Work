@@ -91,8 +91,9 @@ public class PullingHealth : Skill
         _hero.Move.IsMoveBlocked = true;
     }
 
-    private void Start()
+    public override void Init(SkillRenderer render, Character hero)
     {
+        base.Init(render, hero);
         _audioSource = GetComponent<AudioSource>();
         _baseRadius = AreaInfo.Radius;
         _baseCastStreamDuration = CastStreamDuration;

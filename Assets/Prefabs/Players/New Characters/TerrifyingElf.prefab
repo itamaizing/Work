@@ -19737,7 +19737,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -19753,13 +19753,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 6
-  _abilityForm: 2
-  _damageType: 1
-  _attackRangeType: 1
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -19795,20 +19788,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 7
     _castWidth: 0.1
-  _radius: 0
-  _area: 0
-  _castLength: 7
-  _castWidth: 0.1
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 0
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -19845,7 +19830,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 8
@@ -19861,13 +19846,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 6
-  _abilityForm: 2
-  _damageType: 1
-  _attackRangeType: 1
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -19903,20 +19881,12 @@ MonoBehaviour:
     _area: 0.5
     _castLength: 0
     _castWidth: 0
-  _radius: 8
-  _area: 0.4
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -19950,13 +19920,33 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 4
-    _additional: []
+    _costs:
+    - nameToShow: 4 Mana - Mandatory mod desc
+      type: 1
+      value: 4
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
+    - nameToShow: 6 Mana - Bonus mod desc
+      type: 1
+      value: 6
+      costType: 1
+      shouldModify: 1
+      showInDescription: 1
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 4
+  - nameToShow: 4 Mana - Mandatory mod desc
+    type: 1
+    value: 4
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 6
+  - nameToShow: 0 Health - Mandatory mod desc
+    type: 0
+    value: 0
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
@@ -19970,13 +19960,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 1
-  _abilityForm: 3
-  _damageType: 4
-  _attackRangeType: 1
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -20012,20 +19995,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 7
     _castWidth: 0.1
-  _radius: 0
-  _area: 0
-  _castLength: 7
-  _castWidth: 0.1
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 1
     _isAutoLineRender: 1
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -20063,7 +20038,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 13
@@ -20079,13 +20054,6 @@ MonoBehaviour:
     _skillType: 2
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 1
-  _abilityForm: 1
-  _damageType: 0
-  _attackRangeType: 1
-  _skillType: 2
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -20101,13 +20069,21 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0.5
     _baseCostPerTick:
-    - resourceType: 1
-      resourceCost: 1
+    - nameToShow: 1 Mana - Mandatory mod desc
+      type: 1
+      value: 1
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _castDuration: 0
   _manaCostRate: 0.5
   _manaCostPerTick:
-  - resourceType: 1
-    resourceCost: 1
+  - nameToShow: 1 Mana - Mandatory mod desc
+    type: 1
+    value: 1
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -20125,20 +20101,12 @@ MonoBehaviour:
     _area: 3
     _castLength: 0
     _castWidth: 0
-  _radius: 10
-  _area: 3
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -20170,10 +20138,20 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 30
-    _additional: []
+    _costs:
+    - nameToShow: 30 Mana - Mandatory mod desc
+      type: 1
+      value: 30
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 30
+  - nameToShow: 30 Mana - Mandatory mod desc
+    type: 1
+    value: 30
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 10
   _cooldownComponent:
@@ -20188,13 +20166,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 1
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 1
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -20230,20 +20201,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -20270,10 +20233,20 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 2
-    _additional: []
+    _costs:
+    - nameToShow: 2 Mana - Mandatory mod desc
+      type: 1
+      value: 2
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 2
+  - nameToShow: 2 Mana - Mandatory mod desc
+    type: 1
+    value: 2
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 8
   _cooldownComponent:
@@ -20288,13 +20261,6 @@ MonoBehaviour:
     _skillType: 2
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 4
-  _abilityForm: 1
-  _damageType: 0
-  _attackRangeType: 1
-  _skillType: 2
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -20330,20 +20296,12 @@ MonoBehaviour:
     _area: 4
     _castLength: 0
     _castWidth: 0
-  _radius: 8
-  _area: 4
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -20380,7 +20338,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -20396,13 +20354,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 5
-  _abilityForm: 1
-  _damageType: 0
-  _attackRangeType: 1
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -20418,13 +20369,21 @@ MonoBehaviour:
     _castDuration: 6
     _tickInterval: 0.1
     _baseCostPerTick:
-    - resourceType: 1
-      resourceCost: 2
+    - nameToShow: 2 Health - Mandatory mod desc
+      type: 0
+      value: 2
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _castDuration: 6
   _manaCostRate: 0.1
   _manaCostPerTick:
-  - resourceType: 1
-    resourceCost: 2
+  - nameToShow: 2 Mana - Mandatory mod desc
+    type: 1
+    value: 2
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -20442,20 +20401,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 4
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -20487,13 +20438,33 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
-  _skillEnergyCosts: []
+    _costs: []
+  _skillEnergyCosts:
+  - nameToShow: 12 Mana - Mandatory mod desc
+    type: 1
+    value: 12
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
+  - nameToShow: 0 Mana - Recast
+    type: 1
+    value: 0
+    costType: 2
+    shouldModify: 0
+    showInDescription: 0
   _additionalSkillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 12
-  - resourceType: 1
-    resourceCost: 0
+  - nameToShow: 12 Mana - Mandatory mod desc
+    type: 1
+    value: 12
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
+  - nameToShow: 0 Mana - Recast
+    type: 1
+    value: 0
+    costType: 2
+    shouldModify: 0
+    showInDescription: 0
   _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
@@ -20507,13 +20478,6 @@ MonoBehaviour:
     _skillType: 3
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 1
-  _abilityForm: 1
-  _damageType: 0
-  _attackRangeType: 1
-  _skillType: 3
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -20549,20 +20513,12 @@ MonoBehaviour:
     _area: 1
     _castLength: 0
     _castWidth: 0
-  _radius: 3
-  _area: 1
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -20603,7 +20559,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -20619,13 +20575,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 1
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -20661,20 +20610,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 10
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -20701,10 +20642,20 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 8
-    _additional: []
+    _costs:
+    - nameToShow: 8 Mana - Mandatory mod desc
+      type: 1
+      value: 8
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 8
+  - nameToShow: 8 Mana - Mandatory mod desc
+    type: 1
+    value: 8
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 13
   _cooldownComponent:
@@ -20719,13 +20670,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 5
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 1
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -20761,20 +20705,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 5
     _castWidth: 0
-  _radius: 5
-  _area: 0
-  _castLength: 5
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 0
     _isAutoLineRender: 1
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 0
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -20802,7 +20738,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 6
@@ -20818,13 +20754,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 6
-  _abilityForm: 2
-  _damageType: 5
-  _attackRangeType: 1
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -20860,20 +20789,12 @@ MonoBehaviour:
     _area: 0.01
     _castLength: 0
     _castWidth: 0
-  _radius: 4
-  _area: 0.01
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -20910,10 +20831,20 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 15
-    _additional: []
+    _costs:
+    - nameToShow: 15 Mana - Mandatory mod desc
+      type: 1
+      value: 15
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 15
+  - nameToShow: 15 Mana - Mandatory mod desc
+    type: 1
+    value: 15
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 12
   _cooldownComponent:
@@ -20928,13 +20859,6 @@ MonoBehaviour:
     _skillType: 2
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 5
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 1
-  _skillType: 2
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -20970,20 +20894,12 @@ MonoBehaviour:
     _area: 0.5
     _castLength: 0
     _castWidth: 0
-  _radius: 5
-  _area: 0.5
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 1
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -21025,10 +20941,20 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 12
-    _additional: []
+    _costs:
+    - nameToShow: 12 Mana - Mandatory mod desc
+      type: 1
+      value: 12
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 12
+  - nameToShow: 12 Mana - Mandatory mod desc
+    type: 1
+    value: 12
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 6
   _cooldownComponent:
@@ -21043,13 +20969,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 1
     _autoAttack: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -21085,20 +21004,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 1.5
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 1
   _disactive: 1
   _earlyCooldown: 0
   maxCounter: 0
@@ -21130,7 +21041,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -21146,13 +21057,6 @@ MonoBehaviour:
     _skillType: 2
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 0
-  _abilityForm: 2
-  _damageType: 1
-  _attackRangeType: 1
-  _skillType: 2
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -21188,20 +21092,12 @@ MonoBehaviour:
     _area: 3
     _castLength: 0
     _castWidth: 0
-  _radius: 10
-  _area: 3
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -21263,7 +21159,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -21279,13 +21175,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -21321,20 +21210,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 0
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -21359,10 +21240,20 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 80
-    _additional: []
+    _costs:
+    - nameToShow: 80 Mana - Mandatory mod desc
+      type: 1
+      value: 80
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 80
+  - nameToShow: 80 Mana - Mandatory mod desc
+    type: 1
+    value: 80
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -21377,13 +21268,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 5
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 1
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -21419,20 +21303,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 6
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -21460,10 +21336,20 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 40
-    _additional: []
+    _costs:
+    - nameToShow: 40 Mana - Mandatory mod desc
+      type: 1
+      value: 40
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 40
+  - nameToShow: 40 Mana - Mandatory mod desc
+    type: 1
+    value: 40
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 6
   _cooldownComponent:
@@ -21478,13 +21364,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -21520,20 +21399,12 @@ MonoBehaviour:
     _area: 0.01
     _castLength: 0
     _castWidth: 0
-  _radius: 4
-  _area: 0.01
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -21558,10 +21429,20 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 80
-    _additional: []
+    _costs:
+    - nameToShow: 80 Mana - Mandatory mod desc
+      type: 1
+      value: 80
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 80
+  - nameToShow: 80 Mana - Mandatory mod desc
+    type: 1
+    value: 80
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 2
   _cooldownComponent:
@@ -21576,13 +21457,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 3
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 1
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -21618,20 +21492,12 @@ MonoBehaviour:
     _area: 0
     _castLength: 0
     _castWidth: 0
-  _radius: 0
-  _area: 0
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
-  _isAutoRadiusRender: 0
-  _isAutoAreaRender: 0
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -21656,10 +21522,20 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 8
-    _additional: []
+    _costs:
+    - nameToShow: 8 Mana - Mandatory mod desc
+      type: 1
+      value: 8
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 8
+  - nameToShow: 8 Mana - Mandatory mod desc
+    type: 1
+    value: 8
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 8
   _cooldownComponent:
@@ -21674,13 +21550,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 4
-  _abilityForm: 0
-  _damageType: 5
-  _attackRangeType: 1
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -21716,20 +21585,12 @@ MonoBehaviour:
     _area: 1
     _castLength: 0
     _castWidth: 0
-  _radius: 4
-  _area: 1
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -21756,7 +21617,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 2
@@ -21772,13 +21633,6 @@ MonoBehaviour:
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
-  _abilitySchool: 0
-  _abilityForm: 0
-  _damageType: 0
-  _attackRangeType: 0
-  _skillType: 0
-  _moving: 0
-  autoAttack: 0
   _targetingComponent:
     _clickLayer: 0
     _faction: 0
@@ -21814,20 +21668,12 @@ MonoBehaviour:
     _area: 1
     _castLength: 0
     _castWidth: 0
-  _radius: 5
-  _area: 1
-  _castLength: 0
-  _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 1
     _isAutoLineRender: 0
     _isDynamicRenderer: 1
-  _isAutoRadiusRender: 1
-  _isAutoAreaRender: 1
-  _isAutoLineRender: 0
-  _isDynamicRenderer: 1
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -22090,7 +21936,7 @@ MonoBehaviour:
         \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u044C
         \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0435 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438
         \u043D\u0430 \u0445\u043E\u0434\u0443\r"
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u042D\u043B\u044C\u0444\u0438\u0439\u0441\u043A\u043E\u0435 \u043C\u0430\u0441\u0442\u0435\u0440\u0441\u0442\u0432\u043E "
     Icon: {fileID: 21300000, guid: 523655bbfbe8b0b42869f25f34886283, type: 3}
     Group: 0

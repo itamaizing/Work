@@ -154,11 +154,19 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 		SelectComponent.Initialize(Move,Abilities,UIComponent);
 		//_visionComponent.VisionRange = Data.GetAttributeValue(AttributeNames_old.VisionRadius);
 
+		_abilities.Initialize();
 		Health.Died += AddDeadCounter;
 		TemporaryResourceDisplay = _resources.Values.ToList();
+		Test();
 	}
 
-	private void EnsureResources()
+    private void Test()
+    {
+		AttributeSystem.Attributes[CharacterAttributeName.ResourceCost].AddModifier(new AttributeModifier(0.25f, ModifierType.Multiplier, this));
+		AttributeSystem.Attributes[CharacterAttributeName.ResourceCost].AddModifier(new AttributeModifier(0.25f, ModifierType.Multiplier, this));
+    }
+
+    private void EnsureResources()
 	{
         foreach (var resource in _attributeSystem.Resources)
 		{

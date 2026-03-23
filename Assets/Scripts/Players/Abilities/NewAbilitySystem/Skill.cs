@@ -3,30 +3,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
-[Serializable]
-public class SkillEnergyCost
-{
-    public ResourceType resourceType;
-    public float resourceCost;
-
-    public void ModifyResourceCost(float multiplier)
-    {
-        resourceCost *= multiplier;
-    }
-
-    public void ModifyResourceCost1(float multiplier)
-    {
-        resourceCost /= multiplier;
-    }
-
-    public void ResetResourceCost(float baseCost)
-    {
-        resourceCost = baseCost;
-    }
-}
 
 /*
 public class TargetToShot
@@ -57,8 +35,8 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] CostComponent _costComponent;
     public CostComponent Cost => _costComponent;
     #region ResourceToDelete
-    [SerializeField] protected List<SkillEnergyCost> _skillEnergyCosts;
-    [SerializeField] protected List<SkillEnergyCost> _additionalSkillEnergyCosts;
+    [SerializeField] protected List<SkillResourceCost> _skillEnergyCosts;
+    [SerializeField] protected List<SkillResourceCost> _additionalSkillEnergyCosts;
     #endregion
 
     [SerializeField] protected float _cooldownTime;
@@ -84,7 +62,7 @@ public abstract class Skill : NetworkBehaviour
     #region ChannelToDelete
     [SerializeField] protected float _castDuration;
     [SerializeField] protected float _manaCostRate;
-    [SerializeField] protected List<SkillEnergyCost> _manaCostPerTick;
+    [SerializeField] protected List<SkillResourceCost> _manaCostPerTick;
     #endregion
 
     [Header("Charge settings")]
@@ -113,6 +91,7 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected bool _earlyCooldown = false;
     [Header("Counter settings")]
     [SerializeField] protected float maxCounter;
+    public TagComponent _tags;
     #endregion InspectorSettings
 
     #region Context
@@ -150,7 +129,7 @@ public abstract class Skill : NetworkBehaviour
     public int Chargers { get => _currentChargers; protected set { _currentChargers = value; CurrentChargeChanged?.Invoke(_currentChargers); } }
     public bool IsHaveCharge => Charges.HasCharges;
     public float ChargeCooldown => Charges.BaseCooldown;
-    public List<float> RemainingCooldownTimeCharge => Charges.ActiveCooldowns;
+    public List<float> RemainingCooldownTimeCharge => _remainingCooldownTimeChargers;
     #endregion
 
     #region Charge Events
@@ -178,6 +157,7 @@ public abstract class Skill : NetworkBehaviour
         CurrentChargeChanged?.Invoke(_currentChargers);
         ChargeCooldownEnded?.Invoke(index);
     }
+    
     public void AddMaxChargeCount()
     {
         bool isRecharging = (_currentChargers < _maxCharges);
@@ -190,8 +170,6 @@ public abstract class Skill : NetworkBehaviour
 
         CurrentChargeChanged?.Invoke(_currentChargers);
     }
-
-
 
     public void ReductionCooldownForAllCharges(float reductionTime, float reductionPercentage = 0)
     {
@@ -255,6 +233,8 @@ public abstract class Skill : NetworkBehaviour
     {
         if (_isUseCharges == false)
             return true;
+
+        Charges.TryUse();
 
         if (_currentChargers > 0)
         {
@@ -325,6 +305,60 @@ public abstract class Skill : NetworkBehaviour
         _rechargeJob = null;
     }
     #endregion Coroutines
+
+    #region NewSystem
+    //[SyncVar] private int _maxCharges;
+    private SyncList<double> _rechargeEndTime = new();
+
+    public SyncList<double> RechargeTimers => _rechargeEndTime;
+
+
+    [Command]
+    public void CmdStartRecharge(float duration)
+    {
+        if (Charges.CooldownType == ChargeCooldownType.Independant)
+        {
+            _rechargeEndTime.Add(NetworkTime.time + duration);
+        }
+        else if (Charges.CooldownType == ChargeCooldownType.Sequential)
+        {
+            var endTime = NetworkTime.time + duration;
+            if (_rechargeEndTime.Count > 0)
+            {
+                endTime = _rechargeEndTime.Last() + duration;
+            }
+            _rechargeEndTime.Add(endTime);
+        }
+    }
+
+    [Command]
+    public void CmdDecreaseRechargeTime(float time, bool tickAll)
+    {
+        if (tickAll)
+        {
+            for (int i = _rechargeEndTime.Count-1; i >= 0; i--)
+            {
+                _rechargeEndTime[i] -= time;
+                if (_rechargeEndTime[i] <= NetworkTime.time)
+                    _rechargeEndTime.RemoveAt(i);
+            }
+        }
+        else if (_rechargeEndTime.Count > 0)
+        {
+            _rechargeEndTime[0] -= time; //Первый заряд всегда самый старый, если мы не приколисты
+
+            if (_rechargeEndTime[0] <= NetworkTime.time) //В теории можно излишек перезарядки снимать с кд след. заряда
+                _rechargeEndTime.RemoveAt(0);
+        }
+    }
+    #endregion
+
+    [Command]
+    public void CmdEndRecharge(int index)
+    {
+        _rechargeEndTime.RemoveAt(index);
+    }
+
     #endregion CHARGES
     //Charges
 
@@ -411,7 +445,9 @@ public abstract class Skill : NetworkBehaviour
         CooldownEnded?.Invoke();
         _cooldownJob = null;
     }
+    #endregion Metohds
 
+    #region New
     [SyncVar(hook = nameof(OnCooldownChanged))] private double _cooldownEndTime = 0;
     public double CooldownEnd => _cooldownEndTime;
     private void OnCooldownChanged(double oldValue, double newValue)
@@ -448,42 +484,13 @@ public abstract class Skill : NetworkBehaviour
     #endregion
     //Cooldowns
 
-    //Targeting
-    #region Targeting
-    protected IHealable _tempForHealing;
-    private Queue<TargetInfo> _targetInfoQueue = new();
-    public Queue<TargetInfo> TargetInfoQueue { get => _targetInfoQueue; }
-
-    public abstract void LoadTargetData(TargetInfo targetInfo);
-
-    private bool IsValidTarget(IDamageable target) //оставить тут, сделать virutal?
-    {
-        if (target == null) return false;
-        if (target is MonoBehaviour monoBehaviour) return monoBehaviour != null;
-
-        return true;
-    }
-
-    private void SaveTargetData(TargetInfo targetInfo)
-    {
-        _targetInfoQueue.Enqueue(targetInfo);
-    }
-
-    private void LoadTargetDataForCheckCast() //Targeting.CheckDataForCast
-    {
-        if (_isCasting == false && _targetInfoQueue.TryPeek(out TargetInfo temp))
-            LoadTargetData(temp);
-    }
-    #endregion Targeting
-    //Targetning
-
     //Channeling
     #region Channeling
 
     #region Properties
     public float CastStreamDuration => Channeling.CastDuration; // Ctrl+R
     public float ManaCostRate { get => _manaCostRate; }
-    public List<SkillEnergyCost> ManaCostPerTick { get => Channeling.Costs; }
+    public List<SkillResourceCost> ManaCostPerTick { get => Channeling.Costs; }
     #endregion
 
     #region Events
@@ -507,16 +514,16 @@ public abstract class Skill : NetworkBehaviour
 
             foreach (var skillCost in _manaCostPerTick)
             {
-                var currentResourceValue = _hero.Resources[skillCost.resourceType].CurrentValue;
+                var currentResourceValue = _hero.Resources[skillCost.type].CurrentValue;
 
-                if (currentResourceValue < Buff.ManaCost.GetBuffedValue(skillCost.resourceCost))
+                if (currentResourceValue < Buff.ManaCost.GetBuffedValue(skillCost.value))
                 {
                     TryCancel(true);
                 }
                 else
                 {
-                    var resource = _hero.Resources[skillCost.resourceType];
-                    resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
+                    var resource = _hero.Resources[skillCost.type];
+                    resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.value));
                 }
             }
             yield return new WaitForSeconds(_manaCostRate);
@@ -555,7 +562,6 @@ public abstract class Skill : NetworkBehaviour
             }
         }
     }
-
     public bool IsCanCancel { get => _isCanCancel; set => _isCanCancel = value; }
     public bool IsTalentSpell => _isTalentSpell;
     public bool IsSkillActive
@@ -563,7 +569,6 @@ public abstract class Skill : NetworkBehaviour
         get => _isSkillActive;
         set => _isSkillActive = value;
     }
-
     public bool GetMouseButton { get => _click != TypeClick.None; }
     public bool IsSubjectToGlobalCooldownTime { get => _isSubjectToGlobalCooldownTime; }
     public Character Hero { get => _hero; }
@@ -583,8 +588,8 @@ public abstract class Skill : NetworkBehaviour
     public SkillRenderer SkillRender => _skillRender;
     public bool IsHaveResourceOnSkill { get => CheckResourcesOnSkill(); }
     public bool IsHaveResources { get => IsHaveResourceOnSkill && IsCooldowned && IsHaveCharge; }
-    public List<SkillEnergyCost> SkillEnergyCosts { get => _skillEnergyCosts; }
-    public List<SkillEnergyCost> AdditionalSkillEnergyCosts { get => _additionalSkillEnergyCosts; }
+    public List<SkillResourceCost> SkillEnergyCosts { get => _skillEnergyCosts; }
+    public List<SkillResourceCost> AdditionalSkillEnergyCosts { get => _additionalSkillEnergyCosts; }
     public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); set => _castDeley = value; }
     public bool IsCasting { get => _isCasting; protected set => _isCasting = value; }
     public float MaxCounter { get => maxCounter; set => maxCounter = value; }
@@ -606,7 +611,7 @@ public abstract class Skill : NetworkBehaviour
     }
     #endregion Properties
 
-    #region AllEvents
+    #region Events
     public event Action<bool> OnSkillStateChanged;
     #region Casting Events
     public event Action<Skill> PreparingStarted;
@@ -639,7 +644,7 @@ public abstract class Skill : NetworkBehaviour
     protected void SkillAfterCastJob() => AfterCast?.Invoke();
     protected void CastEndedJob() => CastEnded?.Invoke();
 
-    protected virtual bool IsCanCast //важно потрогать
+    protected virtual bool IsCanCast //важно потрогать, лучше вынести код ниже в таргетинг (в скиллинфо?), а в базовом случае просто вызывать Targeting.CanCast
     {
         get
         {
@@ -655,7 +660,7 @@ public abstract class Skill : NetworkBehaviour
                     if (temp.GetTargets().Count > 0)
                     {
                         foreach (var target in temp.GetTargets())
-                            if (Vector3.Distance(target.Position, transform.position) > AreaInfo.Radius)
+                            if (Vector3.Distance(target.Position, transform.position) > AreaInfo.Radius)//в таргетинге есть IsInRadius
                                 return false;
 
                         return true;
@@ -670,7 +675,7 @@ public abstract class Skill : NetworkBehaviour
                     if (temp.GetTargets().Count > 0)
                     {
                         foreach (var target in temp.GetTargets())
-                            if (Vector3.Distance(target.Position, transform.position) > AreaInfo.Radius)
+                            if (Vector3.Distance(target.Position, transform.position) > AreaInfo.Radius) //&& TargetingComponent.OutOfRangeBehaviour == OutOfRangeClick.Queue)
                                 return false;
 
                         return true;
@@ -715,7 +720,39 @@ public abstract class Skill : NetworkBehaviour
         }
     }
 
-    protected abstract IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback);
+    //Targeting
+    #region Targeting
+    protected IHealable _tempForHealing;
+    private Queue<TargetInfo> _targetInfoQueue = new();
+    public Queue<TargetInfo> TargetInfoQueue { get => _targetInfoQueue; }
+
+    public abstract void LoadTargetData(TargetInfo targetInfo);
+
+    private bool IsValidTarget(IDamageable target) //оставить тут, сделать virutal?
+    {
+        if (target == null) return false;
+        if (target is MonoBehaviour monoBehaviour) return monoBehaviour != null;
+
+        return true;
+    }
+
+    private void SaveTargetData(TargetInfo targetInfo)
+    {
+        _targetInfoQueue.Enqueue(targetInfo);
+    }
+
+    private void LoadTargetDataForCheckCast() //Targeting.CheckDataForCast
+    {
+        if (_isCasting == false && _targetInfoQueue.TryPeek(out TargetInfo temp))
+            LoadTargetData(temp);
+    }
+    #endregion Targeting
+    //Targeting
+
+    protected virtual IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
+    {
+        yield return TargetingBehaviour(targetDataSavedCallback);
+    }
     protected abstract IEnumerator CastJob();
     protected abstract void ClearData();
 
@@ -723,12 +760,13 @@ public abstract class Skill : NetworkBehaviour
 
     protected virtual void SkillDisableBoostLogic() { }
 
-    public void Init(SkillRenderer render, Character hero)
+    public virtual void Init(SkillRenderer render, Character hero)
     {
         _hero = hero;
         _skillRender = render;
         _skillAttributes.Init(hero.AttributeSystem);
         InitComponents();
+
     }
 
     public void InitComponents()
@@ -762,9 +800,114 @@ public abstract class Skill : NetworkBehaviour
     private void Update()
     {
         Cooldown?.Tick();
-        //Charges.Tick(Time.deltaTime);
+        Charges?.Tick();
     }
-    
+
+    #region New
+
+    #region Skill Execution Loop
+    //public virtual bool HandleTargeting(Action<TargetInfo> callbackDataSaved) //Мне нравится меньше
+    //{
+    //    var target = Targeting.GetTargetOrPoint();
+    //    if (target == null)
+    //        return false;
+
+    //    TargetInfo targetInfo = new();
+    //    if (target.Type == TargetType.Object)
+    //    {
+    //        Targeting.SetTempTarget(target?.Character);
+    //        targetInfo.AddTarget(target?.Character);
+    //    }
+    //    else
+    //    {
+    //        targetInfo.Points.Add(target.Point);
+    //    }
+    //    callbackDataSaved(targetInfo);
+    //    return true;
+    //}
+
+    /// <summary>
+    /// Основной метод задания цели. Если нужно несколько точек, доп логика и т.д. - переопределяем это
+    /// </summary>
+    protected virtual IEnumerator TargetingBehaviour(Action<TargetInfo> callbackDataSaved)
+    {
+        //while (!HandleTargeting(callbackDataSaved))
+        //{
+        //    yield return null;
+        //}
+        
+        TargetData targetData = null;
+        while (targetData == null)
+        {
+            if (GetMouseButton)
+                targetData = Targeting.GetTargetOrPoint();
+            yield return null;
+        }
+        SetTarget(targetData, callbackDataSaved);
+    }
+
+    /// <summary>
+    /// Сохранение цели
+    /// </summary>
+    protected virtual bool SetTarget(TargetData target, Action<TargetInfo> callbackDataSaved)
+    {
+        if (target == null)
+            return false;
+        TargetInfo targetInfo = new TargetInfo();
+        switch (target.Type)
+        {
+            case TargetType.Object:
+                Targeting.SetTarget(target.Targetable);
+                targetInfo.AddTarget(target.Targetable);
+                break;
+
+            case TargetType.Point:
+                targetInfo.Points.Add(target.Point);
+                break;
+
+            default:
+                return false;
+        }
+        callbackDataSaved(targetInfo);
+        return true;
+    }
+
+    /// <summary>
+    /// Определяет какой вариант перезарядки нужен и запускет ее
+    /// </summary>
+    protected virtual void UseCooldownOrCharges()
+    {
+        if (Charges.UsesCharges && !Charges.IsComboPart)
+        {
+            Charges.TryUse();
+        }
+        else
+        {
+            if (Charges.IsComboPart)
+                Charges.TryUse();
+            Cooldown.Start();
+        }
+    }
+
+    /// <summary>
+    /// Что делаем, если заклинание сработало
+    /// </summary>
+    protected virtual void CommitUse()
+    {
+        UseCooldownOrCharges();
+        Cost.TryPayMandatory();
+    }
+
+    /// <summary>
+    /// Основная логика заклинания
+    /// </summary>
+    protected virtual void Execute()
+    {
+        Debug.Log($"Somehow Used Default Skill");
+    }
+    #endregion Skill Execution Loop
+    #endregion
+
     public void ClearQueueTarget() => _targetInfoQueue.Clear();
 
     public void EnableSkillBoost()
@@ -786,9 +929,9 @@ public abstract class Skill : NetworkBehaviour
         {
             foreach (var skillCost in _skillEnergyCosts)
             {
-                //var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.resourceType);
-                var resource = _hero.Resources[skillCost.resourceType];
-                resource.PhantomValueShow(skillCost.resourceCost);
+                //var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.type);
+                var resource = _hero.Resources[skillCost.type];
+                resource.PhantomValueShow(skillCost.value);
             }
             _actionWrapperForPreparingCoroutine = StartCoroutine(ActionWrapperForPreparingJob());
             return true;
@@ -810,6 +953,8 @@ public abstract class Skill : NetworkBehaviour
         {
             _isCasting = true;
             TryPayCost(IsPayCostStartCooldown);
+            Debug.Log("TRYING TO PAY");
+            Cost.TryPayMandatory();
 
             if (_targetInfoQueue.Count > 0)
             {
@@ -830,7 +975,6 @@ public abstract class Skill : NetworkBehaviour
                     _hero.Move.LookAtPosition(point);
                 }
             }
-
 
             _actionWrapperForCastCoroutine = StartCoroutine(ActionWrapperForCastingJob());
 
@@ -889,8 +1033,8 @@ public abstract class Skill : NetworkBehaviour
     {
         foreach (var skillCost in _skillEnergyCosts)
         {
-            //var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.resourceType);
-            var resource = _hero.Resources[skillCost.resourceType];
+            //var currentResourceValue = _hero.Resources.Where(r => r.Type == skillCost.type);
+            var resource = _hero.Resources[skillCost.type];
             resource.PhantomValueShow(0);
             //resourse.
         }
@@ -959,13 +1103,13 @@ public abstract class Skill : NetworkBehaviour
     {
         foreach (var skillCost in _skillEnergyCosts)
         {
-            var currentResourceValue = _hero.Resources[skillCost.resourceType].CurrentValue;
+            var currentResourceValue = _hero.Resources[skillCost.type].CurrentValue;
 
-            if (currentResourceValue < Buff.ManaCost.GetBuffedValue(skillCost.resourceCost))
+            if (currentResourceValue < Buff.ManaCost.GetBuffedValue(skillCost.value))
             {
-                float shortage = Buff.ManaCost.GetBuffedValue(skillCost.resourceCost) - currentResourceValue;
+                float shortage = Buff.ManaCost.GetBuffedValue(skillCost.value) - currentResourceValue;
 
-                switch (skillCost.resourceType)
+                switch (skillCost.type)
                 {
                     case ResourceType.Health:
                         MassageHaventMana?.Invoke(shortage);
@@ -995,17 +1139,17 @@ public abstract class Skill : NetworkBehaviour
     private bool CheckResourcesOnSkill()
     {
         return _skillEnergyCosts.All(skillCost =>
-            _hero.Resources[skillCost.resourceType].CurrentValue >= Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
+            _hero.Resources[skillCost.type].CurrentValue >= Buff.ManaCost.GetBuffedValue(skillCost.value));
     }
 
-    protected virtual bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
+    protected virtual bool TryPayCost(List<SkillResourceCost> skillEnergyCosts, bool startCooldown = true)
     {
         if (IsHaveResourceOnSkill)
         {
             foreach (var skillCost in skillEnergyCosts)
             {
-                var resource = _hero.Resources[skillCost.resourceType];
-                resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.resourceCost));
+                var resource = _hero.Resources[skillCost.type];
+                //resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.value));
 
             }
 

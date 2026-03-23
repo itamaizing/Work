@@ -107,7 +107,13 @@ public class TargetingComponent : BaseSkillComponent
             return null;
         return _tempTarget;
     }
-    
+    public void SetTempTarget(ITargetable character)
+    {
+        if (character == null)
+            return;
+        _tempTarget = new TargetData((character as MonoBehaviour)?.gameObject);
+    }
+
     public void ClearTempTarget()
     {
         _tempTarget = null;
@@ -138,17 +144,55 @@ public class TargetingComponent : BaseSkillComponent
     }
     #endregion Target
     #endregion Get-Set
+
+    public bool CanCast(TargetInfo target=null)
+    {
+        if (target == null)
+            return true;    //True? Может стоит проверять тип скилла?
+        throw new NotImplementedException();
+    }
+
+    public TargetData GetTargetOrPoint(float searchRadius = 0.3f)
+    {
+        var clickPoint = GetMousePoint(useLayerMask: true);
+        if ((_clickLayer & TargetLayer.Unit) == 0 && (_clickLayer & TargetLayer.Ground) != 0) //Если ждем только точку - возвращаем точку
+        {
+            return new TargetData(clickPoint);
+        }
+
+        var targets = FindTargets(clickPoint, searchRadius, canTargetSelf: (_faction & TargetFaction.Self) != 0);
+        if (targets == null || targets.Count <= 0) //Если не нашли цель
+        {
+            if ((_clickLayer & TargetLayer.Ground) != 0) // Если нельзя по земле
+            {
+                return new TargetData(clickPoint);
+            }
+            return null;
+        }
+        else if ((_clickLayer & TargetLayer.Unit) != 0) //Если нашли цель - проверяем команду
+        {
+            foreach (var target in targets) 
+            {
+                if ((_targetLayer & (1 << target.Object.layer)) != 0)
+                    return target;
+            }
+        }
+        return null;
+    }
     
     public TargetData FindTempTarget(bool canTargetSelf = false, bool canTargetDead = false)
     {
         return FindTempTarget(GetMousePoint(), _skill.AreaInfo.Radius, canTargetSelf, canTargetDead);
     }
-    
+
     public TargetData FindTempTarget(Vector3 position, float radius, bool canTargetSelf = false, bool canTargetDead = false)
     {
         var targets = FindTargets(position, radius, canTargetSelf, canTargetDead);
         if (targets == null || targets.Count <= 0)
+        {
+            ClearTempTarget(); //Возможно отсюда нужно вынести ниже, но вроде нет.
             return null;
+        }
         _tempTarget = targets[0];
         return _tempTarget;
     }
@@ -158,7 +202,7 @@ public class TargetingComponent : BaseSkillComponent
         List<TargetData> targets = GetClosestTargets(position, radius, canTargetSelf);
         if (targets == null || targets.Count <= 0)
         {
-            ClearTempTarget();
+            //ClearTempTarget(); Почему это вообще тут есть, это же внешние методы
             return new();
         }
 
@@ -177,7 +221,7 @@ public class TargetingComponent : BaseSkillComponent
         var targets = _character.TargetSeeker.GetCloserTargetsCharacter(position, radius, canTargetSelf);
         if (targets == null || targets.Count <= 0)
         {
-            ClearTempTarget();
+            //ClearTempTarget();
             return new();
         }
         List<TargetData> targetsData = new();

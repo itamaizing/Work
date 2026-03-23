@@ -23,15 +23,17 @@ public class SkillAttributes
 
     #region Properties
     public Dictionary<SkillAttributeName, Attribute> Attributes => _attributes;
+    public Attribute this[SkillAttributeName attrubute] => _attributes[attrubute];
     public float Cooldown
     {
         get
         {
-            //if (_heroAttributes == null)
+            if (_heroAttributes == null)
+                return GetCombined(
+                    _attributes[SkillAttributeName.Cooldown].BaseValue,
+                    _attributes[SkillAttributeName.Cooldown],
+                    _heroAttributes[CharacterAttributeName.CooldownReduction]);
             return _attributes[SkillAttributeName.Cooldown].GetValue();
-            //return GetCombined(_attributes[SkillAttributeName.Cooldown],
-            //    _heroAttributes.Attributes[BasicAttributeName.C])
-            // пока что у персонажа нет атрибута КД
         }
     }
     public float ResourceCost
@@ -39,10 +41,11 @@ public class SkillAttributes
         get
         {
             if (_heroAttributes == null)
-                return _attributes[SkillAttributeName.Cooldown].GetValue();
+                return _attributes[SkillAttributeName.ResourceCost].GetValue();
             return GetCombined(_attributes[SkillAttributeName.ResourceCost],
-                _heroAttributes.Attributes[BasicAttributeName.ResourceCost]);
+                _heroAttributes[CharacterAttributeName.ResourceCost]);
         }
+        set { _attributes[SkillAttributeName.ResourceCost].SetBaseValue(value); }
     }
     #endregion Properties
 
@@ -68,7 +71,7 @@ public class SkillAttributes
     public float GetCombined(float baseValue, Attribute skill, Attribute hero)
     {
         return (baseValue + hero.FlatBonus + skill.FlatBonus) *
-            (1 + skill.PercentBonus + skill.PercentBonus) *
+            (1 + skill.PercentBonus + hero.PercentBonus) *
             (skill.MultiplierBonus * hero.MultiplierBonus);
     }
 }
