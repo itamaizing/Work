@@ -125,10 +125,15 @@ public class SpitPoison : Skill, IAltAbility
                 Targeting.FindTempTarget(Targeting.GetMousePoint(), _radiusTargetCheck);
                 targetPoint = Targeting.GetMousePoint();
 
-                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
+                if (Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
                 {
-                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
-                    else ChooseTarget(damageable);
+                    ChooseTarget(damageable);
+                }
+                else
+                {
+                    _isOriginalTargetPlayer = false;
+                    _isOriginalTargetAllies = false;
+                    _isOriginalTargetEnemy = false;
                 }
             }
             yield return null;
@@ -206,53 +211,39 @@ public class SpitPoison : Skill, IAltAbility
 
     private void ChooseTarget(IDamageable damageable)
     {
-        if (damageable != null)
+        if (damageable == null)
         {
-            if (damageable.gameObject == _player.gameObject)
-            {
-                _isOriginalTargetPlayer = true;
-                _isOriginalTargetAllies = false;
-                _isOriginalTargetEnemy = false;
-                //if (_healPoisonCloud.Data.IsOpen && _isActiveHealingSpitPoison)
-                //{
-                //    _isHealingPoisonCloud = true;
-                //}
-            }
-            else if (damageable.gameObject.layer == LayerMask.NameToLayer("Allies"))
-            {
-                _isOriginalTargetPlayer = false;
-                _isOriginalTargetAllies = true;
-                _isOriginalTargetEnemy = false;
+            _isOriginalTargetPlayer = false;
+            _isOriginalTargetAllies = false;
+            _isOriginalTargetEnemy = false;
+            return;
+        }
 
-                //if (_isActiveHealingSpitPoison && _healPoisonCloud.Data.IsOpen)
-                //{
-                //    if (_healPoisonCloud.Data.IsOpen)
-                //    {
-                //        _isHealingPoisonCloud = true;
-                //    }
-                //}
-            }
-            else if (damageable.gameObject.layer == LayerMask.NameToLayer("Enemy"))
-            {
-                _isOriginalTargetPlayer = false;
-                _isOriginalTargetAllies = false;
-                _isOriginalTargetEnemy = true;
-                //if (_healPoisonCloud.Data.IsOpen && _isActiveHealingSpitPoison)
-                //{
-                //    _isHealingPoisonCloud = false;
-                //}
-            }
+        GameObject obj = damageable.gameObject;
+
+        if (obj == _player.gameObject)
+        {
+            _isOriginalTargetPlayer = true;
+            _isOriginalTargetAllies = false;
+            _isOriginalTargetEnemy = false;
+        }
+        else if (obj.layer == LayerMask.NameToLayer("Allies"))
+        {
+            _isOriginalTargetPlayer = false;
+            _isOriginalTargetAllies = true;
+            _isOriginalTargetEnemy = false;
+        }
+        else if (obj.layer == LayerMask.NameToLayer("Enemy"))
+        {
+            _isOriginalTargetPlayer = false;
+            _isOriginalTargetAllies = false;
+            _isOriginalTargetEnemy = true;
         }
         else
         {
             _isOriginalTargetPlayer = false;
             _isOriginalTargetAllies = false;
             _isOriginalTargetEnemy = false;
-
-            if (_mousePos != Vector3.zero)
-            {
-                Targeting.ClearTempTarget();
-            }
         }
     }
 

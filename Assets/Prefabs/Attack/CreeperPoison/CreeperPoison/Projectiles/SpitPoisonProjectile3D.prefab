@@ -4863,7 +4863,7 @@ GameObject:
   - component: {fileID: -9115801365566443104}
   - component: {fileID: 8662475993231192972}
   - component: {fileID: 446228830403445546}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: SpitPoisonProjectile3D
   m_TagString: Ability
   m_Icon: {fileID: 0}

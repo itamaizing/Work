@@ -50,7 +50,7 @@ public class SpitPoisonProjectile : Test_Projectile
     [Server]
     private void OnTriggerEnter(Collider collision)
     {
-        //if (!IsEnemy(collision.gameObject)) return;
+        if (!IsEnemy(collision.gameObject)) return;
 
         if (_isActiveHealingSpitPoison)
         {
