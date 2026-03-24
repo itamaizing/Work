@@ -20,8 +20,6 @@ public struct PoisonBallInfo : NetworkMessage
     public bool IsOriginalTargetEnemy;
     public bool IsOriginalTargetAllies;
     public bool IsOriginalTargetPlayer;
-
-    public bool IsHealingPoisonCloud;
 }
 
 public struct PoisonBallActiveTalentsInfo : NetworkMessage
@@ -31,7 +29,6 @@ public struct PoisonBallActiveTalentsInfo : NetworkMessage
     public bool IsActiveTransparentPoisons;
     public bool IsActiveWitheringPoison;
     public bool IsActiveContinuationAmbush;
-    public bool IsActiveHealingPoisonCloud;
     public bool IsActiveEnlargedGlands;
     public bool IsActiveVoluminousBall;
     public bool IsActiveInertialGlands;
@@ -433,47 +430,15 @@ public class PoisonBall : Skill, IAltAbility
     {
         if (Targeting.GetTempTarget()?.Character != null)
         {
-            if (Targeting.GetTempTarget()?.Character.gameObject == _player.gameObject)
-            {
-                _poisonBallInfo.IsOriginalTargetPlayer = true;
-                _poisonBallInfo.IsOriginalTargetAllies = false;
-                _poisonBallInfo.IsOriginalTargetEnemy = false;
+            var target = Targeting.GetTempTarget().Character.gameObject;
 
-                if (_activeTalentsInfo.IsActiveHealingPoisonCloud)
-                {
-                    _poisonBallInfo.IsHealingPoisonCloud = true;
-                }
-                else
-                {
-                    _poisonBallInfo.IsHealingPoisonCloud = false;
-                }
-            }
-            else if (Targeting.GetTempTarget()?.Character.gameObject.layer == LayerMask.NameToLayer("Allies"))
-            {
-                _poisonBallInfo.IsOriginalTargetPlayer = false;
-                _poisonBallInfo.IsOriginalTargetAllies = true;
-                _poisonBallInfo.IsOriginalTargetEnemy = false;
+            _poisonBallInfo.IsOriginalTargetPlayer = target == _player.gameObject;
+            _poisonBallInfo.IsOriginalTargetAllies = target.layer == LayerMask.NameToLayer("Allies");
+            _poisonBallInfo.IsOriginalTargetEnemy = target.layer == LayerMask.NameToLayer("Enemy");
 
-                if (_activeTalentsInfo.IsActiveHealingPoisonCloud)
-                {
-                    _poisonBallInfo.IsHealingPoisonCloud = true;
-                }
-                else
-                {
-                    _poisonBallInfo.IsHealingPoisonCloud = false;
-                }
-            }
-            else if (Targeting.GetTempTarget()?.Character.gameObject.layer == LayerMask.NameToLayer("Enemy"))
-            {
-                _poisonBallInfo.IsOriginalTargetPlayer = false;
-                _poisonBallInfo.IsOriginalTargetAllies = false;
-                _poisonBallInfo.IsOriginalTargetEnemy = true;
-
-                if (_activeTalentsInfo.IsActiveHealingPoisonCloud)
-                {
-                    _poisonBallInfo.IsHealingPoisonCloud = false;
-                }
-            }
+            bool isHealingTarget =
+                _poisonBallInfo.IsOriginalTargetPlayer ||
+                _poisonBallInfo.IsOriginalTargetAllies;
         }
         else
         {
@@ -595,7 +560,7 @@ public class PoisonBall : Skill, IAltAbility
 
             if (_isCanSpawnPoisonCloud)
             {
-                CmdApplyPoisonCloud(_poisonBallInfo.IsHealingPoisonCloud, _durationPoisonCloud);
+                CmdApplyPoisonCloud(_isHealingPoisonBall, _durationPoisonCloud);
             }
         }
         else
@@ -610,7 +575,7 @@ public class PoisonBall : Skill, IAltAbility
 
             if (_isCanSpawnPoisonCloud)
             {
-                CmdApplyPoisonCloud(_poisonBallInfo.IsHealingPoisonCloud, _durationPoisonCloud);
+                CmdApplyPoisonCloud(_isHealingPoisonBall, _durationPoisonCloud);
             }
         }
     }
