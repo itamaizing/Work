@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StunnedState : AbstractCharacterState
+public class StunnedState : RefreshingState
 {
 	public bool turnOff = false;
-	//private PlayerAbilities _abilities;
 	private float _baseDuration;
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability };
@@ -17,7 +16,9 @@ public class StunnedState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-
+		MaxStacksCount = 1;
+		currentStacksCount = 1;
+		
 		if (character.TryGetComponent<Character>(out var ability))
 		{
 			abilities = ability.Abilities;
@@ -33,16 +34,28 @@ public class StunnedState : AbstractCharacterState
 
 	public override void UpdateState()
 	{
+		_baseDuration -= Time.deltaTime;
+		if (_baseDuration < 0)
+		{
+			ExitState();
+			return;
+		}
 		if (turnOff)
 		{
 			ExitState();
 		}
 	}
 
+	public override bool Stack(float time)
+	{
+		_baseDuration += time;
+		return false;
+	}
+
 	public override void ExitState()
 	{
-		characterState.RemoveState(this);
 		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.IsMoveBlocked = false;
 		if (!characterState.Check(StatusEffect.Ability) && abilities != null) abilities.SetAbilitiesDisactive(false);
+		characterState.RemoveState(this);
 	}
 }

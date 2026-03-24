@@ -49,6 +49,11 @@ public class Restoration : Skill,IPolaritySwitchable
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("Cast");
     protected override int AnimTriggerCast => 0;
+    
+    #region SpiritHealthOnShadow
+    private bool _spiritHealthIsEnabled;
+    public bool EnableSpiritHealth(bool val) => _spiritHealthIsEnabled = val;
+    #endregion
 
     private void Start()
     {
@@ -237,10 +242,18 @@ public class Restoration : Skill,IPolaritySwitchable
     [Command]
     private void CmdRemoveState(Character character, States states) => character.CharacterState.RemoveState(states);
 
-    
-    [Command]
-    private void CmdAddState(Character character, States states, float duration) => character.CharacterState.AddState(states, duration, 0, Hero.gameObject, _initialRestorationName);
 
+    [Command]
+    private void CmdAddState(Character character, States states, float duration)
+    {
+        float damageToExit = 0;
+        if (_spiritHealthIsEnabled)
+        {
+            damageToExit = -1f;
+        }
+        character.CharacterState.AddState(states, duration, damageToExit, Hero.gameObject, _initialRestorationName);
+    }
+    
     //[ClientRpc]
     private void RpcPlayShotSound()
     {

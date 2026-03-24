@@ -19,6 +19,11 @@ public class ShadowSkill : Skill
     private float _clickRadius = 0.5f;
     private Vector3 _clickPoint;
 
+    #region SpiritHealthOnShadow
+    private bool _spiritHealthIsEnabled;
+    public bool EnableSpiritHealth(bool val) => _spiritHealthIsEnabled = val;
+    #endregion
+
     private bool CheckCanCast() =>
         true;
 
@@ -155,5 +160,6 @@ public class ShadowSkill : Skill
         if (shadow == null || target == null) return;
 
         shadow.InitOnClient(target, this, speedMultiplier, applyShackleOnExpire: true);
+        shadow.IsApplySpiritHealth(_spiritHealthIsEnabled);
     }
 }

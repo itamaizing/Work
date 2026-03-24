@@ -94,6 +94,10 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         _aoeTalentActiveServer = value;
     }
     #endregion
+    #region SpiritHealthOnShadow
+    private bool _spiritHealthIsEnabled;
+    public bool EnableSpiritHealth(bool val) => _spiritHealthIsEnabled = val;
+    #endregion
     
     public event Action OnModeChange;
 
@@ -218,8 +222,16 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         CmdStateRestorationOrDestruction(targetState, stateToUse, duration);
     }
 
-    private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) => stateComponent.AddState(states, duration, 1f, gameObject, Name);
-    
+    private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration)
+    {
+        float damageToExit = 0;
+        if (_spiritHealthIsEnabled && (states == States.Destruction || states == States.DestructionStacking))
+        {
+            damageToExit = -1f;
+        }
+        stateComponent.AddState(states, duration, damageToExit, gameObject, Name);
+    }
+
     private void HandleDefaultMode(Character target)
     {
         if (target == null) return;

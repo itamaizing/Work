@@ -54,6 +54,11 @@ public class FlowOfLight : Skill, IPolaritySwitchable
     
     #endregion
     
+    #region SpiritHealthOnShadow
+    private bool _spiritHealthIsEnabled;
+    public bool EnableSpiritHealth(bool val) => _spiritHealthIsEnabled = val;
+    #endregion
+    
     public void SetStackingRestorationTalent(bool value) => _stackingRestorationTalent = value;
     public void SetStackingDestructionTalent(bool value) => _stackingDestructionTalent = value;
     
@@ -66,6 +71,15 @@ public class FlowOfLight : Skill, IPolaritySwitchable
         _destructionFillingDuration = duration;
         _destructionFillingChance = chance;
     }
+
+    #region SlowTalent
+
+    private bool _slowTalentActive = false;
+    private const float _slowAmount = 0.6f;
+
+    public void SetSlowTalent(bool value) => _slowTalentActive = value;
+
+    #endregion
 
     #endregion
 
@@ -175,6 +189,39 @@ public class FlowOfLight : Skill, IPolaritySwitchable
             CmdStateRestorationOrDestruction(targetState, stateToUse, durationToApply);
         }
     }
+    
+    private void TryApplySlowDebuff(Character target)
+    {
+        if (!_slowTalentActive) return;
+        if (_hero.CharacterState.GetState(States.DarkFormState) == null) return;
+        if (target == null || target.IsDead) return;
+        if (!IsEnemyTarget(target)) return;
+
+        CmdApplySlowState(target.gameObject);
+    }
+
+    private void TryRemoveSlowDebuff(Character target)
+    {
+        if (!_slowTalentActive) return;
+        if (target == null || target.IsDead) return;
+        if (!IsEnemyTarget(target)) return;
+        
+        CmdRemoveSlowState(target.gameObject);
+    }
+
+    [Command]
+    private void CmdRemoveSlowState(GameObject target)
+    {
+        if (!target.TryGetComponent<Character>(out var t)) return;
+        t.CharacterState.RemoveState(States.SlowFlowLight);
+    }
+    
+    [Command]
+    private void CmdApplySlowState(GameObject target)
+    {
+        if (!target.TryGetComponent<Character>(out var t)) return;
+        t.CharacterState.AddState(States.SlowFlowLight, 4f, 0, gameObject, Name);
+    }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
@@ -273,6 +320,7 @@ public class FlowOfLight : Skill, IPolaritySwitchable
                     CmdApplyDamage(damage, currentTarget.gameObject);
                     TryApplyExtraState(currentTarget);
                     ApplySpiritBuff(currentTarget);
+                    TryApplySlowDebuff(currentTarget);
 
                     if (_aoeTalentActive) ApplyAoeDamage(currentTarget, tickValue);
                 }
@@ -285,6 +333,7 @@ public class FlowOfLight : Skill, IPolaritySwitchable
             yield return null;
         }
 
+        TryRemoveSlowDebuff(Targeting.GetTarget()?.Character);
         TrySwitchSpellsOnDarkMode();
         _hero.Animator.ResetTrigger(AnimTriggerCast);
         _hero.NetworkAnimator.ResetTrigger(AnimTriggerCast);
@@ -399,7 +448,17 @@ public class FlowOfLight : Skill, IPolaritySwitchable
     }
 
 
-    [Command] private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) => StateRestorationOrDestruction(stateComponent, states, duration);
+    [Command]
+    private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration)
+    {
+        float damageToExit = 0;
+        if (_spiritHealthIsEnabled && (states == States.Destruction || states == States.DestructionStacking))
+        {
+            damageToExit = -1f;
+        }
+        StateRestorationOrDestruction(stateComponent, states, duration, damageToExit);
+    }
+
     [Command] private void CmdStateSpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration) => SpiritEnergyOrHealth(stateComponent, states, duration);
 
     private void SpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration)
@@ -407,9 +466,9 @@ public class FlowOfLight : Skill, IPolaritySwitchable
         stateComponent.AddState(states, duration, 1f, gameObject, Name);
     }
 
-    private void StateRestorationOrDestruction(CharacterState stateComponent, States states, float duration)
+    private void StateRestorationOrDestruction(CharacterState stateComponent, States states, float duration,float damageToExit)
     {
-        stateComponent.AddState(states, duration, 0, gameObject, Name);
+        stateComponent.AddState(states, duration, damageToExit, gameObject, Name);
     }
 
 

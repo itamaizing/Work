@@ -24,6 +24,7 @@ public class PillarOfLight : Skill, IPolaritySwitchable
     [SerializeField][ColorUsage(true, true)] private Color _lightColor = Color.white;
     [SerializeField][ColorUsage(true, true)] private Color _darkColor  = Color.yellow;
 
+    private float _baseDamage = 5f;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => CheckCanCast();
@@ -120,13 +121,13 @@ public class PillarOfLight : Skill, IPolaritySwitchable
                 targetTickCounts[target]++;
                 int ticks = targetTickCounts[target];
 
-                float value = _damageValue + _damageIncreasePerTick * (ticks - 1);
+                _damageValue = _baseDamage + _damageIncreasePerTick * (ticks - 1);
 
                 if (IsEnemyTarget(target))
                 {
                     Damage damage = new Damage
                     {
-                        Value = Buff.Damage.GetBuffedValue(value),
+                        Value = Buff.Damage.GetBuffedValue(_damageValue),
                         Type  = Info.DamageType,
                         School = Info.School
                     };
@@ -136,13 +137,15 @@ public class PillarOfLight : Skill, IPolaritySwitchable
                 {
                     Heal heal = new Heal
                     {
-                        Value           = value,
+                        Value           = _damageValue,
                         DamageableSkill = this,
                     };
                     CmdApplyHeal(heal, target.gameObject, this, nameof(PillarOfLight));
                 }
             }
         }
+
+        _damageValue = _baseDamage;
 
         CmdStopPillarVFX();
     }

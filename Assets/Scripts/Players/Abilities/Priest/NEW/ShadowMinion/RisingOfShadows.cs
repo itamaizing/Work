@@ -17,6 +17,11 @@ public class RisingOfShadows : Skill
     protected override bool IsCanCast => CheckCanCast();
 
     private Vector3 _clickPoint;
+    
+    #region SpiritHealthOnShadow
+    private bool _spiritHealthIsEnabled;
+    public bool EnableSpiritHealth(bool val) => _spiritHealthIsEnabled = val;
+    #endregion
 
     private bool CheckCanCast() =>
         Vector3.Distance(_clickPoint, transform.position) <= AreaInfo.Radius;
@@ -101,5 +106,6 @@ public class RisingOfShadows : Skill
         if (shadow == null || target == null) return;
 
         shadow.InitOnClient(target, this, speedMultiplier,false);
+        shadow.IsApplySpiritHealth(_spiritHealthIsEnabled);
     }
 }

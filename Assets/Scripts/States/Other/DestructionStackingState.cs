@@ -30,6 +30,7 @@ public class DestructionStackingState : RefreshingState
         currentStacksCount     = 1;
         _timer                 = _tickInterval;
         _isActive              = true;
+        this.damageToExit      = damageToExit;
 
         CmdDamage(_damagePerTick * currentStacksCount);
     }
@@ -81,5 +82,17 @@ public class DestructionStackingState : RefreshingState
             Type  = DamageType.Magical,
         };
         health.TryTakeDamage(ref damage, null);
+        CmdAddSpiritHealth();
+    }
+    
+    [Command]
+    private void CmdAddSpiritHealth()
+    {
+        if (damageToExit == -1f)
+        {
+            float chance = Random.Range(0f, 100f);
+            if (chance <= 15)
+                characterState.AddState(States.SpiritHealth, 18, 0, characterState.gameObject, nameof(SpiritHealthState));
+        }
     }
 }

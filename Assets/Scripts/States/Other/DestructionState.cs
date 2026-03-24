@@ -23,12 +23,12 @@ public class DestructionState : RefreshingState
     {
         _duration = durationToExit;
         characterState = character;
+        this.damageToExit = damageToExit;
         base.personWhoMadeBuff = personWhoMadeBuff;
         MaxStacksCount = 1;
         currentStacksCount = 1;
         _timer = _tickInterval;
         _isActive = true;
-
         CmdDamage(_damagePerTick);
     }
 
@@ -79,5 +79,17 @@ public class DestructionState : RefreshingState
             Type = DamageType.Magical,
         };
         health.TryTakeDamage(ref damage, null);
+        CmdAddSpiritHealth();
+    }
+
+    [Command]
+    private void CmdAddSpiritHealth()
+    {
+        if (damageToExit == -1f)
+        {
+            float chance = UnityEngine.Random.Range(0f, 100f);
+            if (chance <= 15)
+                characterState.AddState(States.SpiritHealth, 18, 0, characterState.gameObject, nameof(SpiritHealthState));
+        }
     }
 }

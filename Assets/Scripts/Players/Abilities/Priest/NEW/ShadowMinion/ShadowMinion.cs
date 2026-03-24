@@ -22,6 +22,17 @@ public class ShadowMinion : NetworkBehaviour
     private bool _reachedTarget = false;
     private bool _applyShackleOnExpire = false;
 
+    #region SpiritHealthOnShadow
+
+    private bool _canApplySpititHealth = false;
+
+    public bool IsApplySpiritHealth(bool value) => _canApplySpititHealth = value;
+
+    private float _chance = 15f;
+
+    #endregion
+
+
     private static readonly int _attackTrigger = Animator.StringToHash("Attack");
     private static readonly int _velocityX = Animator.StringToHash("X");
     private static readonly int _velocityZ = Animator.StringToHash("Y");
@@ -143,6 +154,13 @@ public class ShadowMinion : NetworkBehaviour
         };
 
         _sourceSkill.CmdApplyDamage(damage, _target.gameObject);
+
+        if (_canApplySpititHealth)
+        {
+            float chance = Random.Range(0f, 100f);
+            if (chance <= 15)
+                _target.CharacterState.CmdAddState(States.SpiritHealth, 18, 0, _target.gameObject, nameof(SpiritHealthState));
+        }
     }
 
     [ClientRpc]
