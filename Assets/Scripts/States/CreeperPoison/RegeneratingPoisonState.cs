@@ -9,7 +9,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
 
     private Character _playerWithTalent;
 
-    private int _maxStacks = 5;
+    private int _maxStacks = 2;
 
     private float _baseHealingValue = 1.0f;
     private float _endHealingValue;

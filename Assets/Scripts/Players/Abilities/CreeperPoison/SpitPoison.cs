@@ -47,8 +47,6 @@ public class SpitPoison : Skill, IAltAbility
     private float _originalCooldown;
     private float _radiusTargetCheck = 0.5f;
 
-
-    private bool _isActiveHealingSpitPoison;
     private bool _isActiveRestorationOfGlands;
     private bool _isHealingPoisonCloud = false;
     private bool _isPlayerInvisible = false;
@@ -60,10 +58,13 @@ public class SpitPoison : Skill, IAltAbility
 
     #region Talent
 
+
+    private bool _isActiveHealingSpitPoison = false;
     private bool _canSpawnPoisonCloud = false;
     private bool _isErodedArmorState = false;
 
     public void ErodedArmorState(bool value) => _isErodedArmorState = value;
+    public void ActiveHealingSpitPoison(bool value) => _isActiveHealingSpitPoison = value;
 
     public void SetPoisonCloudEnabled(bool value)
     {
@@ -156,7 +157,6 @@ public class SpitPoison : Skill, IAltAbility
         _isAbilityActive = false;
 
         _isHealingPoisonCloud = false;
-        _isActiveHealingSpitPoison = false;
 
         _isOriginalTargetAllies = false;
         _isOriginalTargetEnemy = false;

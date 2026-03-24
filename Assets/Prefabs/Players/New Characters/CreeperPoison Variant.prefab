@@ -15787,6 +15787,7 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 2483674839823445686}
   _poisonBall: {fileID: 4719927588574066064}
+  _spitPoison: {fileID: 4992365342693795224}
 --- !u!114 &2435486984149934093
 MonoBehaviour:
   m_ObjectHideFlags: 0
