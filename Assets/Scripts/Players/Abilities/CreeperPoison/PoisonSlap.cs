@@ -600,7 +600,7 @@ public class PoisonSlap : Skill
 
                 SceneManager.MoveGameObjectToScene(_poisonHealingCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
-                _poisonHealingCloud.InitializationProjectile(_player, duration);
+                _poisonHealingCloud.InitializationProjectile(_player, duration, this);
                 _poisonHealingCloud.AddStack();
 
                 NetworkServer.Spawn(_poisonHealingCloud.gameObject);
@@ -626,7 +626,7 @@ public class PoisonSlap : Skill
 
         if (heal != null && isHealing)
         {
-            heal.InitializationProjectile(_player, duration);
+            heal.InitializationProjectile(_player, duration, this);
             heal.AddStack();
         }
     }

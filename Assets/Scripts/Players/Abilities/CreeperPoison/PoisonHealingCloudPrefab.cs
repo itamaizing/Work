@@ -18,6 +18,8 @@ public class PoisonHealingCloudPrefab : NetworkBehaviour
     [SerializeField] private float _healTickRate = 1f;
     [SerializeField] private float _healModifier = 0.01f;
 
+    [ReadOnly] [SerializeField] private Skill _skill;
+
     private Coroutine _healCoroutine;
 
     private PoisonHealingCloudPrefab _poisonHealCloud;
@@ -35,9 +37,10 @@ public class PoisonHealingCloudPrefab : NetworkBehaviour
         }
     }
 
-    public void InitializationProjectile(Character player, float duration)
+    public void InitializationProjectile(Character player, float duration, Skill skill)
     {
         _player = player;
+        _skill = skill;
 
         _duration = duration;
         _baseDuration = duration;
@@ -130,7 +133,7 @@ public class PoisonHealingCloudPrefab : NetworkBehaviour
                 DamageableSkill = null
             };
 
-            target.Health.Heal(ref heal, null);
+            _skill.CmdApplyHeal(heal, target.gameObject, _skill, _skill.name);
         }
     }
 

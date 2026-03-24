@@ -938,7 +938,7 @@ public class PoisonBall : Skill, IAltAbility
                 _poisonHealingCloudPrefab.PoisonHealingCloud = _poisonHealingCloud;
                 SceneManager.MoveGameObjectToScene(_poisonHealingCloudPrefab.PoisonHealingCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
-                _poisonHealingCloudPrefab.PoisonHealingCloud.InitializationProjectile(_player, duration);
+                _poisonHealingCloudPrefab.PoisonHealingCloud.InitializationProjectile(_player, duration, this);
                 _poisonHealingCloudPrefab.PoisonHealingCloud.AddStack();
 
                 NetworkServer.Spawn(_poisonHealingCloud.gameObject);
@@ -974,7 +974,7 @@ public class PoisonBall : Skill, IAltAbility
 
         if (poisonHealingCloud != null && isHealingCloud)
         {
-            poisonHealingCloud.InitializationProjectile(_player, duration);
+            poisonHealingCloud.InitializationProjectile(_player, duration, this);
             poisonHealingCloud.AddStack();
         }
     }
