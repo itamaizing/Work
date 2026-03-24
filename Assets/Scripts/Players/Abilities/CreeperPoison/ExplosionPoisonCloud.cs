@@ -26,6 +26,14 @@ public class ExplosionPoisonCloud : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override bool IsCanCast => _player.CharacterState.CheckForState(States.PoisonCloud);
 
+    #region Talent
+
+    private bool _isRestorativePoison = false;
+
+    public void RestorativePoison(bool value) => _isRestorativePoison = value;
+
+    #endregion
+
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         foreach (var item in targetInfo.GetTargets())
@@ -87,6 +95,7 @@ public class ExplosionPoisonCloud : Skill
             if (target != null)
             {
                 CmdDamageDeal(target, _currentDamage);
+                CmdApplyRestorativeHeal(target, _currentStacksPoisonCloud);
 
                 //for (int i = 0; i < _currentStacksPoisonCloud; i++)
                 //{
@@ -149,5 +158,27 @@ public class ExplosionPoisonCloud : Skill
     private void CmdApplyPoisonBone(GameObject target)
     {
         target.GetComponent<CharacterState>().AddState(States.PoisonBone, 6f, 0, _player.gameObject, Name);
+    }
+
+    [Command]
+    private void CmdApplyRestorativeHeal(Character target, int cloudStacks)
+    {
+        if (!_isRestorativePoison) return;
+
+        var state = target.CharacterState.GetState(States.RegeneratingPoison) as RegeneratingPoisonState;
+
+        if (state == null) return;
+
+        int regenStacks = state.CurrentStacksCount;
+
+        float healValue = cloudStacks * 5f * regenStacks;
+
+        Heal heal = new Heal
+        {
+            Value = healValue,
+            DamageableSkill = null
+        };
+
+        CmdApplyHeal(heal, target.gameObject, this, Name);
     }
 }
