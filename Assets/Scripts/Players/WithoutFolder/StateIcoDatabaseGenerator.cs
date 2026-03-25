@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 using System;
@@ -43,4 +42,3 @@ public static class StateIcoDatabaseGenerator
         return AssetDatabase.LoadAssetAtPath<Sprite>(assetPath);
     }
 }
-#endif
