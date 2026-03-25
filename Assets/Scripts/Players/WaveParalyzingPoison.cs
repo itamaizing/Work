@@ -13,7 +13,7 @@ public class WaveParalyzingPoison : Skill
     [SerializeField] private float _radiusStep = 1f;
 
     [Header("Effect")]
-    [SerializeField] private float _stunDuration = 2f;
+    [SerializeField] private float _paralyzingPoisonDuration = 2f;
 
     private float _currentRadius;
     private HashSet<Character> _affectedTargets = new();
@@ -30,6 +30,8 @@ public class WaveParalyzingPoison : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callback)
     {
+        while (!GetMouseButton) yield return null;
+
         TargetInfo info = new TargetInfo();
         info.AddTarget(Hero);
 
@@ -39,8 +41,6 @@ public class WaveParalyzingPoison : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (!isServer) yield break;
-
         Vector3 origin = _player.transform.position;
 
         _currentRadius = 0;
@@ -89,6 +89,6 @@ public class WaveParalyzingPoison : Skill
 
     private void ApplyStun(Character target)
     {
-        target.CharacterState.AddState(States.ParalyzingPoison,  _stunDuration, 0, _player.gameObject, Name);
+        target.CharacterState.AddState(States.ParalyzingPoison, _paralyzingPoisonDuration, 0, _player.gameObject, Name);
     }
 }
