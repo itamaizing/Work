@@ -20478,7 +20478,6 @@ MonoBehaviour:
   character: {fileID: 2483674839823445686}
   skillManager: {fileID: 2617687491934927079}
   lightningMovement: {fileID: 7013613396998518356}
-  coldBlood: {fileID: 4616268591970552908}
 --- !u!114 &8303087721396363938
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20523,7 +20522,6 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 2483674839823445686}
   skillManager: {fileID: 2617687491934927079}
-  creeperInvisible: {fileID: 6857802422684928800}
   speed: {fileID: 8150686032681382611}
   _metabolismReptile: {fileID: 1218428867352848936}
   _poisonSlap: {fileID: 8577860281443816807}
@@ -20559,8 +20557,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 2483674839823445686}
-  _ambushPoisons: {fileID: 3254515559312903057}
-  _skillManager: {fileID: 2617687491934927079}
 --- !u!114 &536535723249904053
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21058,7 +21054,7 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 2483674839823445686}
-  block: {fileID: 2446571645698719713}
+  creeperInvisible: {fileID: 6857802422684928800}
   manager: {fileID: 2617687491934927079}
 --- !u!114 &7941594611277133375
 MonoBehaviour:
@@ -21091,6 +21087,8 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 2483674839823445686}
   creeperStrike: {fileID: 6745892867125186241}
+  coldBlood: {fileID: 4616268591970552908}
+  skillManager: {fileID: 2617687491934927079}
 --- !u!114 &1217830514159963980
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21105,19 +21103,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NinjaPoisonTalent_7
   _data:
     _descriptionsForInfoPanel:
-    - "\u0437\u0430\u0449\u0438\u0442\u043D\u0430\u044F \u0447\u0435\u0448\u0443\u044F
-      - \u043D\u0430 2 \u0441\u0435\u043A\u0443\u043D\u0434\u044B \u0440\u0435\u0437\u0438\u0441\u0442
-      \u0432\u0441\u0435\u043C \u0437\u0430\u043A\u043B\u0438\u043D\u0430\u043D\u044F\u043C\u0438
-      90 % \u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u0441\u044F, \u043F\u0440\u0438
-      \u044D\u0442\u043E\u043C \u0432\u0441\u0435 \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0435
-      \u044D\u0444\u0444\u0435\u043A\u0442\u044B \u0434\u0435\u0431\u0430\u0444\u044B 
-      \u043A\u043E\u0442\u043E\u0440\u044B\u0435 \u0431\u044B\u043B\u0438 \u043D\u0430\u0432\u0435\u0448\u0430\u043D\u044B 
-      \u0442\u043E\u0436\u0435 \u0438\u043C\u0435\u044E\u0442 90% \u0441\u043D\u044F\u0442\u0438\u044F
-      \u0432 \u043C\u043E\u043C\u0435\u043D\u0442 \u0430\u043A\u0442\u0438\u0432\u0430\u0446\u0438\u0438. "
+    - '-'
     _stateInfos: []
     IsOpen: 0
-    Description: "\u0417\u0430\u0449\u0438\u0442\u043D\u0430\u044F \u0447\u0435\u0448\u0443\u044F"
-    Icon: {fileID: -3398794806397297794, guid: 78a0951e991afaf498657966fd5958a4, type: 3}
+    Description: '-'
+    Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 2483674839823445686}
