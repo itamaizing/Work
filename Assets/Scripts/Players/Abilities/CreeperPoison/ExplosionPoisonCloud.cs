@@ -12,6 +12,7 @@ public class ExplosionPoisonCloud : Skill
     private List<Character> _enemies = new();
 
     private int _currentStacksPoisonCloud;
+    private int _currentStacksHealingPoisonCloud;
 
     private float _baseDamage = 6.0f;
     private float _currentDamage;
@@ -22,7 +23,7 @@ public class ExplosionPoisonCloud : Skill
 
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
-    protected override bool IsCanCast => _player.CharacterState.CheckForState(States.PoisonCloud);
+    protected override bool IsCanCast => _player.CharacterState.CheckForState(States.PoisonCloud) || _player.CharacterState.CheckForState(States.HealingPoisonCloud);
 
     #region Talent
 
@@ -51,11 +52,8 @@ public class ExplosionPoisonCloud : Skill
     }
     protected override IEnumerator CastJob()
     {
-        if (_player.CharacterState.CheckForState(States.PoisonCloud))
-        {
-            FindEnemies();
-            ExplosionCloud();
-        }
+        FindEnemies();
+        ExplosionCloud();
 
         yield return null;
     }
@@ -105,7 +103,7 @@ public class ExplosionPoisonCloud : Skill
             if (target != null)
             {
                 CmdDamageDeal(target, _currentDamage);
-                CmdApplyRestorativeHeal(target, _currentStacksPoisonCloud);
+                CmdApplyRestorativeHeal(target, _currentStacksHealingPoisonCloud);
 
                 //for (int i = 0; i < _currentStacksPoisonCloud; i++)
                 //{
@@ -124,6 +122,13 @@ public class ExplosionPoisonCloud : Skill
     {
         _currentStacksPoisonCloud = currentStacks;
         Debug.Log("ExplosionPoisonCloud / _currentStacksPoisonCloud = " + _currentStacksPoisonCloud);
+        _radiusExplosion = radiusExplosion;
+    }
+
+    public void CurrentStacksHealingPoisonCloud(int currentStacks, float radiusExplosion)
+    {
+        _currentStacksHealingPoisonCloud = currentStacks;
+        Debug.Log("ExplosionPoisonCloud / _currentStacksHealingPoisonCloud = " + _currentStacksHealingPoisonCloud);
         _radiusExplosion = radiusExplosion;
     }
 
@@ -151,23 +156,19 @@ public class ExplosionPoisonCloud : Skill
     }
 
     [Command]
-    private void CmdApplyRestorativeHeal(Character target, int cloudStacks)
+    private void CmdApplyRestorativeHeal(Character target, int cloudHealingStacks)
     {
         if (!_isRestorativePoison) return;
 
-        var state = target.CharacterState.GetState(States.RegeneratingPoison) as RegeneratingPoisonState;
-
-        if (state == null) return;
-
-        int regenStacks = state.CurrentStacksCount;
-
-        float healValue = cloudStacks * 5f * regenStacks;
+        float healValue =  5f * cloudHealingStacks;
 
         Heal heal = new Heal
         {
             Value = healValue,
             DamageableSkill = null
         };
+
+        Debug.Log($"healValue: {healValue}");
 
         CmdApplyHeal(heal, target.gameObject, this, Name);
     }
