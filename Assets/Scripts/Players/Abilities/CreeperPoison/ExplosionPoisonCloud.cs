@@ -20,8 +20,6 @@ public class ExplosionPoisonCloud : Skill
 
     private bool _isExploded = false;
 
-    private Coroutine _searchingEnemiesCoroutine;
-
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
     protected override bool IsCanCast => _player.CharacterState.CheckForState(States.PoisonCloud);
@@ -44,27 +42,18 @@ public class ExplosionPoisonCloud : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        if (_searchingEnemiesCoroutine == null)
-        {
-            //Debug.Log("ExplosionPoisonCloud / PrepareJob / searchingEnemies == null");
-            _searchingEnemiesCoroutine = StartCoroutine(SearchingenemiesJob());
-        }
-
-        while (_enemies.Count < 0)
-        {
-            yield return null;
-        }
         TargetInfo targetInfo = new TargetInfo();
-		List<ITargetable> listOfInterfaces = _enemies.Cast<ITargetable>().ToList();
 
-		targetInfo.AddTargets(listOfInterfaces);
+        targetInfo.AddTarget(Hero);
+
         callbackDataSaved(targetInfo);
+        yield break;
     }
-
     protected override IEnumerator CastJob()
     {
-        if (_enemies.Count > 0 && _player.CharacterState.CheckForState(States.PoisonCloud))
+        if (_player.CharacterState.CheckForState(States.PoisonCloud))
         {
+            FindEnemies();
             ExplosionCloud();
         }
 
@@ -77,6 +66,27 @@ public class ExplosionPoisonCloud : Skill
         _isExploded = false;
         _currentDamage = 0;
         _enemies.Clear();
+    }
+
+    private void FindEnemies()
+    {
+        _enemies.Clear();
+
+        Collider[] hitEnemies = Physics.OverlapSphere(
+            transform.position,
+            _radiusExplosion,
+            _targetsLayers
+        );
+
+        foreach (Collider enemy in hitEnemies)
+        {
+            Character character = enemy.GetComponent<Character>();
+
+            if (character != null && !_enemies.Contains(character))
+            {
+                _enemies.Add(character);
+            }
+        }
     }
 
     private void ExplosionCloud()
@@ -107,27 +117,7 @@ public class ExplosionPoisonCloud : Skill
             }
         }
 
-        if (_searchingEnemiesCoroutine != null)
-        {
-            StopCoroutine(_searchingEnemiesCoroutine);
-            _searchingEnemiesCoroutine = null;
-        }
-
         _currentStacksPoisonCloud = 0;
-    }
-
-    private IEnumerator SearchingenemiesJob()
-    {
-        while (!_isExploded)
-        {
-            Collider[] hitEnemies = Physics.OverlapSphere(transform.position, _radiusExplosion, _targetsLayers);
-            foreach (Collider enemy in hitEnemies)
-            {
-               Debug.Log("ExplosionPoisonCloud / _enemy = " + enemy);
-                _enemies.Add(enemy.gameObject.GetComponent<Character>());
-            }
-            yield return null;
-        }
     }
 
     public void CurrentStacksPoisonCloud(int currentStacks, float radiusExplosion)
