@@ -18,6 +18,10 @@ public class ExplosionPoisonCloud : Skill
     private float _currentDamage;
     private float _chanceApplyBonePoison = 0.9f;
     private float _radiusExplosion = 4f;
+    private float _healValue = 3f;
+    private float _additionalHealValue = 5f;
+
+    private float _currentHealValue;
 
     private bool _isExploded = false;
 
@@ -95,7 +99,10 @@ public class ExplosionPoisonCloud : Skill
 
         _currentDamage = _baseDamage * _currentStacksPoisonCloud;
 
-       Debug.Log("ExplosionPoisonCloud / ExplosionCloud / currentDamage = " + _currentDamage);
+        if (_isRestorativePoison) _currentHealValue = (_healValue + _additionalHealValue) * _currentStacksHealingPoisonCloud;
+        else _currentHealValue = _healValue * _currentStacksHealingPoisonCloud;
+
+        Debug.Log("ExplosionPoisonCloud / ExplosionCloud / currentDamage = " + _currentDamage);
 
         foreach (Character target in _enemies)
         {
@@ -103,7 +110,7 @@ public class ExplosionPoisonCloud : Skill
             if (target != null)
             {
                 CmdDamageDeal(target, _currentDamage);
-                CmdApplyRestorativeHeal(target, _currentStacksHealingPoisonCloud);
+                CmdApplyRestorativeHeal(target, _currentHealValue);
 
                 //for (int i = 0; i < _currentStacksPoisonCloud; i++)
                 //{
@@ -156,12 +163,8 @@ public class ExplosionPoisonCloud : Skill
     }
 
     [Command]
-    private void CmdApplyRestorativeHeal(Character target, int cloudHealingStacks)
+    private void CmdApplyRestorativeHeal(Character target, float healValue)
     {
-        if (!_isRestorativePoison) return;
-
-        float healValue =  5f * cloudHealingStacks;
-
         Heal heal = new Heal
         {
             Value = healValue,
@@ -170,6 +173,6 @@ public class ExplosionPoisonCloud : Skill
 
         Debug.Log($"healValue: {healValue}");
 
-        CmdApplyHeal(heal, target.gameObject, this, Name);
+        ApplyHeal(heal, target.gameObject, this, Name);
     }
 }
