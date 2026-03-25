@@ -117,7 +117,7 @@ public class ExplosionPoisonCloud : Skill
             }
         }
 
-        _currentStacksPoisonCloud = 0;
+        //_currentStacksPoisonCloud = 0;
     }
 
     public void CurrentStacksPoisonCloud(int currentStacks, float radiusExplosion)
