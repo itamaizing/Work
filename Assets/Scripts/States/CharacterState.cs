@@ -1,10 +1,12 @@
-﻿using Gangdollarff.EarthElemental;
+﻿using System;
+using Gangdollarff.EarthElemental;
 using Gangdollarff.WaterElemental;
 using Mirror;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class StateInfo
 {
@@ -289,6 +291,7 @@ public class CharacterState : NetworkBehaviour
 	public List<AbstractCharacterState> CurrentStates => _currentStates;
 	public Character Character => _hero;
 	public event System.Action<AbstractCharacterState> OnStateAdded;
+	public event Action<States, int> OnStateDispelled;
 
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
 	{
@@ -769,9 +772,10 @@ public class CharacterState : NetworkBehaviour
 			AbstractCharacterState state = _currentStates[i];
 
 			if (state.Type == type &&
-				((isAlly && state.BaffDebaff == BaffDebaff.Baff) ||
-				 (!isAlly && state.BaffDebaff == BaffDebaff.Debaff)))
+			    ((isAlly && state.BaffDebaff == BaffDebaff.Baff) ||
+			     (!isAlly && state.BaffDebaff == BaffDebaff.Debaff)))
 			{
+				NotifyDispelWhoMade(state.PersonWhoMadeBuff.gameObject,state.State,state.CurrentStacksCount);
 				if (state.CurrentStacksCount > 1)
 				{
 					//state.currentStacksCount--;
@@ -782,14 +786,33 @@ public class CharacterState : NetworkBehaviour
 					statesToRemove.Add(state);
 					if (isDispelOneState) break;
 				}
+
 			}
 		}
 
 		foreach (var state in statesToRemove)
 		{
+			//NotifyDispelWhoMade(state.PersonWhoMadeBuff.gameObject,state.CurrentStacksCount);
+
 			RemoveState(state.State);
 			_stateIcons.RemoveItemByState(state.State);
 		}
+	}
+
+	[ClientRpc]
+	private void NotifyDispelWhoMade(GameObject whoMade, States state,int num)
+	{
+		if(whoMade == null) return;
+		whoMade.TryGetComponent(out Character c);
+		if(c == null) return;
+		
+		c.CharacterState.OnOwnStateDispelled(state,num);
+	}
+
+	public void OnOwnStateDispelled(States state, int num)
+	{
+		if (!isOwned) return;
+		OnStateDispelled?.Invoke(state,num);
 	}
 
 	[ClientRpc]

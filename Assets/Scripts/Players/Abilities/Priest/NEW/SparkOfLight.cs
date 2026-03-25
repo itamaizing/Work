@@ -98,6 +98,14 @@ public class SparkOfLight : Skill,IPolaritySwitchable
     private bool _spiritHealthIsEnabled;
     public bool EnableSpiritHealth(bool val) => _spiritHealthIsEnabled = val;
     #endregion
+
+    #region InstantFlashOfLight
+
+    private InstantFlashBooster _instantFlash;
+
+    public InstantFlashBooster InstantFlashBooster => _instantFlash;
+
+    #endregion
     
     public event Action OnModeChange;
 
@@ -111,6 +119,10 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         _flashOfLight.CastEnded += HandleLastTimeFlashOfLightCast;
         OnModeChange += UpdateMode;
         UpdateMode();
+        
+        _instantFlash = new InstantFlashBooster(this, duration: 5f, chance: 10f);
+        var flashSkill = Hero.Abilities.GetSkill<FlashOfLight>();;
+        _instantFlash.Inject(flashSkill);
     }
 
     private void OnDisable()
@@ -240,6 +252,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         {
             float healValue = Heal(target);
             ApplySpiritEnergyBuff(target);
+            RpcApplyInstant();
         }
         if (IsEnemyTarget(target))
         {
@@ -258,6 +271,8 @@ public class SparkOfLight : Skill,IPolaritySwitchable
 
             if (_lowHealthTalentActive && IsTargetBelowHealthThreshold(target))
                 ApplyDefenseDebuff(target);
+            
+            RpcApplyInstant();
         }
     }
 
@@ -274,7 +289,6 @@ public class SparkOfLight : Skill,IPolaritySwitchable
 
         var heal = new Heal { Value = healValue, DamageableSkill = this };
         ApplyHeal(heal, target.gameObject, this, Name);
-
         TryApplyExtraState(target);
         if (_isDestructionFillingTalent) TryApplyDestructionFilling(target);
 
@@ -295,7 +309,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         float damageAmount = isLightMode ? _damageAmount : _altDamageAmount;
         if (_lowHealthTalentActive && IsTargetBelowHealthThreshold(target))
             damageAmount *= BonusDamageMultiplier;
-
+        
         ApplyDamage(CreateDamage(damageAmount), target.gameObject);
         TryApplyExtraState(target);
         if (_isDestructionFillingTalent) TryApplyDestructionFilling(target);
@@ -393,7 +407,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
     private void AddBuff(States state, float duration, float modifier, GameObject target, string skillName)
     {
         var characterState = target.GetComponent<CharacterState>();
-        characterState.AddState(state, duration, modifier, target, skillName);
+        characterState.AddState(state, duration, modifier, gameObject, skillName);
     }
 
     [Command]
@@ -416,13 +430,20 @@ public class SparkOfLight : Skill,IPolaritySwitchable
 
             if (isLight) HandleDefaultMode(character);
             else HandleAlternativeMode(character);
-
+            
             TargetRpcApplyAoe(connectionToClient, tgt, isLight);
         };
 
         NetworkServer.Spawn(projectile.gameObject);
         projectile.StartFly();
         RpcPlayShotSound();
+    }
+
+    [ClientRpc]
+    private void RpcApplyInstant()
+    {
+        if(isOwned)
+            _instantFlash.TryApply();
     }
     
     [TargetRpc]

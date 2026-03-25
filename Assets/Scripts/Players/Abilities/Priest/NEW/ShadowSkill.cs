@@ -35,10 +35,7 @@ public class ShadowSkill : Skill
         base.Awake();
         _currentChargers = 0;
         
-        if (Chargers == 0)
-        {
-            Disactive = true;
-        }
+        CheckChargers();
     }
 
     public void AnimCastShadow() => AnimStartCastCoroutine();
@@ -77,8 +74,7 @@ public class ShadowSkill : Skill
         while (_accumulatedDarkDamage >= _darkDamageThreshold)
         {
             _accumulatedDarkDamage -= _darkDamageThreshold;
-            if (_currentChargers < _maxCharges)
-                Chargers = _currentChargers + 1;
+            AddCharge();
 
             if (Chargers > 0)
             {
@@ -121,6 +117,39 @@ public class ShadowSkill : Skill
         yield return null;
     }
 
+    private void AddCharge()
+    {
+        if (_currentChargers < _maxCharges)
+            Chargers = _currentChargers + 1;
+        
+        CheckChargers();
+    }
+
+    public void AddChargers(int num)
+    {
+        if (_currentChargers < _maxCharges)
+        {
+            Chargers = _currentChargers + num;
+            if (Chargers > _maxCharges)
+            {
+                Chargers = _maxCharges;
+            }
+        }
+        CheckChargers();
+    }
+
+    private void CheckChargers()
+    {
+        if (_currentChargers > 0)
+        {
+            Disactive = false;
+        }
+        else
+        {
+            Disactive = true;
+        }
+    }
+
     [Command]
     private void CmdSpawnShadow(GameObject targetGO)
     {
@@ -141,10 +170,7 @@ public class ShadowSkill : Skill
 
         Chargers = _currentChargers - 1;
 
-        if (Chargers == 0)
-        {
-            Disactive = true;
-        }
+        CheckChargers();
         
         return true;
     }

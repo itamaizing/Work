@@ -81,11 +81,41 @@ public class MergeWithDarknessSkill : Skill
             Hero.gameObject,
             name
         );
+        
+        if (!Hero.CharacterState.CheckForState(States.ReversePolarity))
+        {
+            Hero.CharacterState.AddState(States.ReversePolarity,-1f, 0, transform.gameObject, Name);
+        }
+        
+        RpcSwitchToDarkMode();
     }
 
     [Command]
     private void CmdRemoveState()
     {
         Hero.CharacterState.RemoveState(States.MergeDark);
+        
+        if (Hero.CharacterState.CheckForState(States.ReversePolarity))
+        {
+            Hero.CharacterState.RemoveState(States.ReversePolarity);
+        }
+        
+        RpcSwitchToLightMode();
+    }
+    
+    [ClientRpc]
+    private void RpcSwitchToDarkMode()
+    {
+        foreach (var skill in Hero.Abilities.Abilities)
+            if (skill is IPolaritySwitchable s && s.IsLightMode)
+                s.SwitchMode();
+    }
+
+    [ClientRpc]
+    private void RpcSwitchToLightMode()
+    {
+        foreach (var skill in Hero.Abilities.Abilities)
+            if (skill is IPolaritySwitchable s && !s.IsLightMode)
+                s.SwitchMode();
     }
 }

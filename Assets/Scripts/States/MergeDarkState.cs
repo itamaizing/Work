@@ -28,19 +28,13 @@ public class MergeDarkState : AbstractCharacterState
 
         foreach (var skill in _skillManager.Abilities)
         {
-            if (skill is IPolaritySwitchable switchable)
-                SetDarkMode(switchable);
+            if (!IsInstantSkill(skill) && !skill.Disactive && skill is not MergeWithDarknessSkill)
+                skill.Disactive = true;
         }
     }
 
     public override void UpdateState()
     {
-        foreach (var skill in _skillManager.Abilities)
-        {
-            if (!IsInstantSkill(skill) && !skill.Disactive && skill is not MergeWithDarknessSkill)
-                skill.Disactive = true;
-        }
-
         _duration -= Time.deltaTime;
         if (_duration <= 0f)
             ExitState();
@@ -53,9 +47,6 @@ public class MergeDarkState : AbstractCharacterState
 
         foreach (var skill in _skillManager.Abilities)
         {
-            if (skill is IPolaritySwitchable switchable)
-                RestoreMode(switchable);
-
             if (!IsInstantSkill(skill) && skill.Disactive)
                 skill.Disactive = false;
         }
@@ -70,17 +61,5 @@ public class MergeDarkState : AbstractCharacterState
     private bool IsInstantSkill(Skill skill)
     {
         return skill.CastDeley <= 0f && skill.Channeling.CastDuration <= 0f;
-    }
-
-    private void SetDarkMode(IPolaritySwitchable switchable)
-    {
-        if (switchable.IsLightMode)
-            switchable.SwitchMode();
-    }
-
-    private void RestoreMode(IPolaritySwitchable switchable)
-    {
-        if (!switchable.IsLightMode)
-            switchable.SwitchMode();
     }
 }

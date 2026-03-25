@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class FlowOfLight : Skill, IPolaritySwitchable
 {
@@ -53,6 +55,14 @@ public class FlowOfLight : Skill, IPolaritySwitchable
     public void SetAoeTalent(bool value) => _aoeTalentActive = value;
     
     #endregion
+
+    #region InstantFlashOfLight
+
+    private InstantFlashBooster _instantFlash;
+
+    public InstantFlashBooster InstantFlashBooster => _instantFlash;
+
+    #endregion
     
     #region SpiritHealthOnShadow
     private bool _spiritHealthIsEnabled;
@@ -94,6 +104,10 @@ public class FlowOfLight : Skill, IPolaritySwitchable
         OnModeChange += UpdateMode;
         OnSkillCanceled += HandleSkillCanceled;
         UpdateMode();
+        
+        _instantFlash = new InstantFlashBooster(this, duration: 5f, chance: 10f);
+        var flashSkill = Hero.Abilities.GetSkill<FlashOfLight>();
+        _instantFlash.Inject(flashSkill);
     }
 
     private void OnDisable()
@@ -306,6 +320,7 @@ public class FlowOfLight : Skill, IPolaritySwitchable
                     CmdApplyHeal(heal, currentTarget.gameObject, this, Name);
                     TryApplyExtraState(currentTarget);
                     ApplySpiritBuff(currentTarget);
+                    _instantFlash.TryApply();
 
                     if (_aoeTalentActive) ApplyAoeHeal(currentTarget, tickValue);
                 }
@@ -321,6 +336,7 @@ public class FlowOfLight : Skill, IPolaritySwitchable
                     TryApplyExtraState(currentTarget);
                     ApplySpiritBuff(currentTarget);
                     TryApplySlowDebuff(currentTarget);
+                    _instantFlash.TryApply();
 
                     if (_aoeTalentActive) ApplyAoeDamage(currentTarget, tickValue);
                 }
