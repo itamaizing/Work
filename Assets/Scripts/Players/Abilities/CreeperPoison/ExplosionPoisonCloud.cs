@@ -9,6 +9,8 @@ using Random = UnityEngine.Random;
 public class ExplosionPoisonCloud : Skill
 {
     [SerializeField] private Character _player;
+    [SerializeField] private CreeperPoisonAura _creeperPoisonAura;
+
     private List<Character> _enemies = new();
 
     private int _currentStacksPoisonCloud;
@@ -160,6 +162,7 @@ public class ExplosionPoisonCloud : Skill
     private void CmdApplyPoisonBone(GameObject target)
     {
         target.GetComponent<CharacterState>().AddState(States.PoisonBone, 6f, 0, _player.gameObject, Name);
+        if (_creeperPoisonAura.IsFeelingPoisoning)  Hero.CharacterState.AddState(States.FeelingPoisoning, 2f, 0, _player.gameObject, Name);
     }
 
     [Command]

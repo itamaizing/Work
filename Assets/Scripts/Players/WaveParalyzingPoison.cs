@@ -12,6 +12,7 @@ public class WaveParalyzingPoison : Skill
     [SerializeField] private float _stepTime = 0.2f;
     [SerializeField] private float _radiusStep = 1f;
     [SerializeField] private ParticleSystemController _particleSystem;
+    [SerializeField] private CreeperPoisonAura _creeperPoisonAura;
 
     [Header("Effect")]
     [SerializeField] private float _paralyzingPoisonDuration = 2f;
@@ -95,12 +96,13 @@ public class WaveParalyzingPoison : Skill
 
             _affectedTargets.Add(target);
 
-            ApplyStun(target);
+            ApplyParalyzingPoison(target);
         }
     }
 
-    private void ApplyStun(Character target)
+    private void ApplyParalyzingPoison(Character target)
     {
-        target.CharacterState.AddState(States.ParalyzingPoison, _paralyzingPoisonDuration, 0, _player.gameObject, Name);
+        target.CharacterState.AddStateLogic(States.ParalyzingPoison, _paralyzingPoisonDuration, 0, Schools.None, _player.gameObject, Name);
+        if (_creeperPoisonAura.IsFeelingPoisoning) Hero.CharacterState.CmdAddState(States.FeelingPoisoning, 2, 0, _player.gameObject, Name);
     }
 }

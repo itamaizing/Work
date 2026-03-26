@@ -199,7 +199,7 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
                 if (_skill.TryGetComponent<PoisonBall>(out PoisonBall poisonBall) && poisonBall.IsPoisonCloudAddPoisonBone)
                 {
                     target.CharacterState.AddStateLogic( States.PoisonBone, 6, 0, Schools.None, _player.gameObject, null);
-                    if (_isFeelingPoisoning) _player.CharacterState.AddState(States.FeelingPoisoning, 2f, 0, _player.gameObject, _skill.Name);
+                    if (_isFeelingPoisoning) _player.CharacterState.AddStateLogic(States.FeelingPoisoning, 2f, 0, Schools.None, _player.gameObject, _skill.Name);
                 }
 
                 _poisonBoneTimers[target] = 0f;

@@ -8,9 +8,9 @@ public class ParalyzingPoisonState : AbstractCharacterState
 	//private PlayerAbilities _abilities;
 	private float _baseDuration;
 
-	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability };
+	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability, StatusEffect.Poison };
 	public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
-	public override States State => States.Stun;
+	public override States State => States.ParalyzingPoison;
 	public override StateType Type => StateType.Physical;
 	public override List<StatusEffect> Effects => _effects;
 

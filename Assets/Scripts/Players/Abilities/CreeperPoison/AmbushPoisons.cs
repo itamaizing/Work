@@ -5,6 +5,7 @@ using Mirror;
 public class AmbushPoisons : Skill
 {
     [SerializeField] private CreeperInvisible _invisible;
+    [SerializeField] private CreeperPoisonAura _creeperPoisonAura;
 
     private const int MaxStacks = 3;
     private const float StackInterval = 3f;
@@ -116,6 +117,8 @@ public class AmbushPoisons : Skill
         CurrentCharge(_currentStacks);
 
         target.CharacterState.AddStateLogic(States.PoisonBone, 6, 0, Schools.None, Hero.gameObject, null);
+        if (_creeperPoisonAura.IsFeelingPoisoning) Hero.CharacterState.AddStateLogic(States.FeelingPoisoning, 2f, 0, Schools.None, Hero.gameObject, null);
+
 
         if (_invisible != null && _invisible.IsInvisible)
         {

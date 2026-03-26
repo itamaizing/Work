@@ -19,7 +19,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
 
     private float _baseDuration;
 
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing };
+    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing, StatusEffect.Poison };
 
     public override States State => States.RegeneratingPoison;
     public override StateType Type => StateType.Physical;
