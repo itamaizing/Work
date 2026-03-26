@@ -16,7 +16,7 @@ public class Health : Resource, IDamageable, IHealable
     [SyncVar(hook = nameof(HookDefMagDamageChanged))] protected float _defMagDamage;
 
     private List<IDamageable> _shields = new List<IDamageable>();
-	[SyncVar] private float _sumDamageTaken = 0;
+    [SyncVar] private float _sumDamageTaken = 0;
     private float _totalMaxAbsorption = 0;
     private float _blockChance;
     private bool _isDot = false;

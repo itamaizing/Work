@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class CreeperPoisonAura : NetworkBehaviour
 {
-    private Dictionary<Character, float> _evadeBonusFromTargets = new();
     private Health _health;
     private Character _owner;
 
-    #region Talent
+    private float _tempEvadeBonus = 0f;
 
+    #region Talent
     private bool _isFeelingPoisoning = false;
     private bool _isEvadePoison = false;
 
@@ -31,6 +31,7 @@ public class CreeperPoisonAura : NetworkBehaviour
         if (_health != null)
         {
             _health.OnBeforeTakeDamage += OnBeforeTakeDamage;
+            _health.DamageTaken += OnAfterDamage;
         }
     }
 
@@ -39,6 +40,7 @@ public class CreeperPoisonAura : NetworkBehaviour
         if (_health != null)
         {
             _health.OnBeforeTakeDamage -= OnBeforeTakeDamage;
+            _health.DamageTaken -= OnAfterDamage;
         }
     }
 
@@ -53,10 +55,22 @@ public class CreeperPoisonAura : NetworkBehaviour
 
         if (!HasPoison(attacker)) return;
 
-        if (!_evadeBonusFromTargets.ContainsKey(attacker))
-        {
-            _evadeBonusFromTargets[attacker] = 5f;
-        }
+        _tempEvadeBonus = 5f;
+
+        _health.EvadeMeleeDamage += _tempEvadeBonus;
+        _health.EvadeRangeDamage += _tempEvadeBonus;
+        _health.ResistMagDamage += _tempEvadeBonus;
+    }
+
+    private void OnAfterDamage(Damage damage, Skill skill)
+    {
+        if (_tempEvadeBonus <= 0) return;
+
+        _health.EvadeMeleeDamage -= _tempEvadeBonus;
+        _health.EvadeRangeDamage -= _tempEvadeBonus;
+        _health.ResistMagDamage -= _tempEvadeBonus;
+
+        _tempEvadeBonus = 0f;
     }
 
     private bool HasPoison(Character character)
@@ -65,7 +79,8 @@ public class CreeperPoisonAura : NetworkBehaviour
 
         foreach (var state in states)
         {
-            if (state.Effects.Contains(StatusEffect.Poison))  return true;
+            if (state.Effects.Contains(StatusEffect.Poison))
+                return true;
         }
 
         return false;
