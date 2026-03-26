@@ -29,6 +29,8 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
     private Coroutine _lifetimeStacksCoroutine;
     private Coroutine _activateParticlePoisonCloudCoroutine;
 
+    private bool _isFeelingPoisoning;
+
     private Dictionary<Character, float> _poisonBoneTimers = new();
     private float _poisonBoneInterval = 3f;
 
@@ -42,10 +44,11 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
         }
     }
 
-    public void InitializationProjectile(Character player, float duration, Skill skill)
+    public void InitializationProjectile(Character player, float duration, Skill skill, bool isFeelingPoisoning)
     {
         _player = player;
         _skill = skill;
+        _isFeelingPoisoning = isFeelingPoisoning;
 
         _duration = duration;
         _baseDuration = duration;
@@ -196,6 +199,7 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
                 if (_skill.TryGetComponent<PoisonBall>(out PoisonBall poisonBall) && poisonBall.IsPoisonCloudAddPoisonBone)
                 {
                     target.CharacterState.AddStateLogic( States.PoisonBone, 6, 0, Schools.None, _player.gameObject, null);
+                    if (_isFeelingPoisoning) _player.CharacterState.AddState(States.FeelingPoisoning, 2f, 0, _player.gameObject, _skill.Name);
                 }
 
                 _poisonBoneTimers[target] = 0f;

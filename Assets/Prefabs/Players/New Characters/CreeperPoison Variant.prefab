@@ -19049,6 +19049,7 @@ MonoBehaviour:
   _projectile: {fileID: 6538247731923965443, guid: 482b668adc1f199488e67f043ae88aa9, type: 3}
   _player: {fileID: 2483674839823445686}
   _spawnPoint: {fileID: 6943497228995655184}
+  _creeperPoisonAura: {fileID: 0}
   durationErodedArmor: 6
   _poisonDamagingCloudPrefab: {fileID: 8376359178360537337, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
   _poisonHealingCloudPrefab: {fileID: -4967518069141830548, guid: 835486046afaafa48885a183fcb94bd6, type: 3}
@@ -19139,6 +19140,7 @@ MonoBehaviour:
   _arrowPrefab: {fileID: 9064051009418913030, guid: bc01ef0a119629945958526e596df4ec, type: 3}
   _spawnPoint: {fileID: 6943497228995655184}
   pointArrowRender: {fileID: 3442255630167083756, guid: 8bef7db12cb9d0a4ab39fc04ec97740b, type: 3}
+  _creeperPoisonAura: {fileID: 0}
   _poisonDamagingCloudPrefab: {fileID: 8376359178360537337, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
   _poisonHealingCloudPrefab: {fileID: -4967518069141830548, guid: 835486046afaafa48885a183fcb94bd6, type: 3}
 --- !u!114 &7013613396998518356
@@ -19420,6 +19422,7 @@ MonoBehaviour:
   _poisonSlapTalent: {fileID: 1400299693459156829}
   _poisonDamagingCloudPrefab: {fileID: 8376359178360537337, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
   _poisonHealingCloudPrefab: {fileID: -4967518069141830548, guid: 835486046afaafa48885a183fcb94bd6, type: 3}
+  _creeperPoisonAura: {fileID: 0}
   _arrowPrefab: {fileID: 9064051009418913030, guid: bc01ef0a119629945958526e596df4ec, type: 3}
 --- !u!114 &7910504212405209002
 MonoBehaviour:

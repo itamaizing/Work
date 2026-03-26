@@ -25,6 +25,7 @@ public class SpitPoison : Skill, IAltAbility
     [SerializeField] private SpitPoisonProjectile _projectile;
     [SerializeField] private Character _player;
     [SerializeField] private GameObject _spawnPoint;
+    [SerializeField] private CreeperPoisonAura _creeperPoisonAura;
 
     [SerializeField] private float durationErodedArmor = 6f;
 
@@ -299,7 +300,7 @@ public class SpitPoison : Skill, IAltAbility
 
         projectile.InitializationProjectile(_player, this, _player.Resource.CurrentValue,
             isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
-            isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack);
+            isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack, _creeperPoisonAura.IsFeelingPoisoning);
 
         projectile.MoveBallToTarget(target.transform.position);
 
@@ -321,7 +322,7 @@ public class SpitPoison : Skill, IAltAbility
 
         projectile.InitializationProjectile(_player, this, _player.Resource.CurrentValue,
             isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
-            isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack);
+            isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack, _creeperPoisonAura.IsFeelingPoisoning);
 
         Vector3 direction = point - spawnPosition;
         direction.y = 0;
@@ -350,7 +351,7 @@ public class SpitPoison : Skill, IAltAbility
 
                 SceneManager.MoveGameObjectToScene(_poisonDamagingCloudPrefab.PoisonDamageCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
-                _poisonDamagingCloudPrefab.PoisonDamageCloud.InitializationProjectile(_player, duration, this);
+                _poisonDamagingCloudPrefab.PoisonDamageCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
                 _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
 
                 NetworkServer.Spawn(_poisonDamagingCloud.gameObject);
@@ -373,7 +374,7 @@ public class SpitPoison : Skill, IAltAbility
 
                 SceneManager.MoveGameObjectToScene(_poisonHealingCloudPrefab.PoisonHealingCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
-                _poisonHealingCloudPrefab.PoisonHealingCloud.InitializationProjectile(_player, duration, this);
+                _poisonHealingCloudPrefab.PoisonHealingCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
                 _poisonHealingCloudPrefab.PoisonHealingCloud.AddStack();
 
                 NetworkServer.Spawn(_poisonHealingCloud.gameObject);
@@ -385,6 +386,9 @@ public class SpitPoison : Skill, IAltAbility
                 _poisonHealingCloudPrefab.PoisonHealingCloud.AddStack();
             }
         }
+
+        if (_creeperPoisonAura.IsFeelingPoisoning) _player.CharacterState.AddState(States.FeelingPoisoning, 2f, 0, _player.gameObject, name);
+
         RpcApply(_poisonDamagingCloudPrefab.PoisonDamageCloud, _poisonHealingCloudPrefab.PoisonHealingCloud, duration, isHealingCloud);
     }
 
@@ -398,13 +402,13 @@ public class SpitPoison : Skill, IAltAbility
     {
         if (poisonDamagingCloud != null)
         {
-            poisonDamagingCloud.InitializationProjectile(_player, duration, this);
+            poisonDamagingCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
             poisonDamagingCloud.AddStack();
         }
 
         if (poisonHealingCloud != null && isHealingCloud)
         {
-            poisonHealingCloud.InitializationProjectile(_player, duration, this);
+            poisonHealingCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
             poisonHealingCloud.AddStack();
         }
     }

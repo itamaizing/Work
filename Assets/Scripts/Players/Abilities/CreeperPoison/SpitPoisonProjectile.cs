@@ -23,6 +23,7 @@ public class SpitPoisonProjectile : Test_Projectile
     private bool _isActiveRestorationOfGlands;
     private bool _isActiveEatingAcid;
     private bool _isPlayerInvisible;
+    private bool _isFeelingPoisoning;
 
     #endregion
 
@@ -127,6 +128,8 @@ public class SpitPoisonProjectile : Test_Projectile
             }
             
         }
+
+        if (_isFeelingPoisoning) _player.CharacterState.AddState(States.FeelingPoisoning, 2f, 0, _player.gameObject, _skill.Name);
     }
 
     #endregion
@@ -186,12 +189,13 @@ public class SpitPoisonProjectile : Test_Projectile
 
     public void InitializationProjectile(Character dad, Skill skill, float energy,
         bool isActiveHealingSpitPoison, bool isActiveRestorationOfGlands, bool isPlayerInvisible, 
-        bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, int poisonBoneStack)
+        bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, int poisonBoneStack, bool isFeelingPoisoning)
     {
         _player = dad;
         _energyDad = energy;
         _skill = skill;
         _isPlayerInvisible = isPlayerInvisible;
+        _isFeelingPoisoning = isFeelingPoisoning;
 
         _poisonBoneStack = poisonBoneStack;
         _isActiveRestorationOfGlands = isActiveRestorationOfGlands;

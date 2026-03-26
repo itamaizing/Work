@@ -53,6 +53,7 @@ public class PoisonBall : Skill, IAltAbility
     [SerializeField] private ArrowRender _arrowPrefab;
     [SerializeField] private GameObject _spawnPoint;
     [SerializeField] private GameObject pointArrowRender;
+    [SerializeField] private CreeperPoisonAura _creeperPoisonAura;
 
     #region PoisonCloud
     [SerializeField] private PoisonDamagingCloudPrefab _poisonDamagingCloudPrefab;
@@ -913,7 +914,7 @@ public class PoisonBall : Skill, IAltAbility
                 _poisonDamagingCloudPrefab.PoisonDamageCloud = _poisonDamagingCloud;
                 SceneManager.MoveGameObjectToScene(_poisonDamagingCloudPrefab.PoisonDamageCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
-                _poisonDamagingCloudPrefab.PoisonDamageCloud.InitializationProjectile(_player, duration, this);
+                _poisonDamagingCloudPrefab.PoisonDamageCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
                 _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
 
                 NetworkServer.Spawn(_poisonDamagingCloud.gameObject);
@@ -938,7 +939,7 @@ public class PoisonBall : Skill, IAltAbility
                 _poisonHealingCloudPrefab.PoisonHealingCloud = _poisonHealingCloud;
                 SceneManager.MoveGameObjectToScene(_poisonHealingCloudPrefab.PoisonHealingCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
-                _poisonHealingCloudPrefab.PoisonHealingCloud.InitializationProjectile(_player, duration, this);
+                _poisonHealingCloudPrefab.PoisonHealingCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
                 _poisonHealingCloudPrefab.PoisonHealingCloud.AddStack();
 
                 NetworkServer.Spawn(_poisonHealingCloud.gameObject);
@@ -968,13 +969,13 @@ public class PoisonBall : Skill, IAltAbility
         //Debug.Log("PoisonBall / RpcApply / if (poisonDamagingCloud != null) = " + poisonDamagingCloud);
         if (poisonDamagingCloud != null)
         {
-            poisonDamagingCloud.InitializationProjectile(_player, duration, this);
+            poisonDamagingCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
             poisonDamagingCloud.AddStack();
         }
 
         if (poisonHealingCloud != null && isHealingCloud)
         {
-            poisonHealingCloud.InitializationProjectile(_player, duration, this);
+            poisonHealingCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
             poisonHealingCloud.AddStack();
         }
     }

@@ -4,7 +4,7 @@ using UnityEngine;
 public class FeelingPoisoningState : RefreshingState
 {
     private const int MaxStacks = 6;
-    private const float RegenPercentPerStack = 0.1f; // 10%
+    private const float RegenPercentPerStack = 0.1f;
 
     private Energy _energy;
     private float _baseRegen;
@@ -30,7 +30,6 @@ public class FeelingPoisoningState : RefreshingState
             return;
         }
 
-        // сохраняем базовый regen только при первом стаке
         if (currentStacksCount == 0)
         {
             _baseRegen = _energy.RegenerationValue;
@@ -41,7 +40,7 @@ public class FeelingPoisoningState : RefreshingState
 
     public override void UpdateState()
     {
-        // ничего не нужно делать каждый кадр
+
     }
 
     public override bool Stack(float time)

@@ -20,6 +20,8 @@ public class PoisonHealingCloudPrefab : NetworkBehaviour
 
     [ReadOnly] [SerializeField] private Skill _skill;
 
+    private bool _isFeelingPoisoning;
+
     private Coroutine _healCoroutine;
 
     private PoisonHealingCloudPrefab _poisonHealCloud;
@@ -37,10 +39,11 @@ public class PoisonHealingCloudPrefab : NetworkBehaviour
         }
     }
 
-    public void InitializationProjectile(Character player, float duration, Skill skill)
+    public void InitializationProjectile(Character player, float duration, Skill skill, bool isFeelingPoisoning)
     {
         _player = player;
         _skill = skill;
+        _isFeelingPoisoning = isFeelingPoisoning;
 
         _duration = duration;
         _baseDuration = duration;

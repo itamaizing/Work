@@ -29,6 +29,8 @@ public class PoisonSlap : Skill
     [SerializeField] private PoisonDamagingCloudPrefab _poisonDamagingCloudPrefab;
     [SerializeField] private PoisonHealingCloudPrefab _poisonHealingCloudPrefab;
 
+    [SerializeField] private CreeperPoisonAura _creeperPoisonAura;
+
     private PoisonDamagingCloudPrefab _poisonDamagingCloud;
     private PoisonHealingCloudPrefab _poisonHealingCloud;
 
@@ -578,7 +580,7 @@ public class PoisonSlap : Skill
 
                 SceneManager.MoveGameObjectToScene(_poisonDamagingCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
-                _poisonDamagingCloud.InitializationProjectile(_player, duration, this);
+                _poisonDamagingCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
                 _poisonDamagingCloud.AddStack();
 
                 NetworkServer.Spawn(_poisonDamagingCloud.gameObject);
@@ -600,7 +602,7 @@ public class PoisonSlap : Skill
 
                 SceneManager.MoveGameObjectToScene(_poisonHealingCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
-                _poisonHealingCloud.InitializationProjectile(_player, duration, this);
+                _poisonHealingCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
                 _poisonHealingCloud.AddStack();
 
                 NetworkServer.Spawn(_poisonHealingCloud.gameObject);
@@ -620,13 +622,13 @@ public class PoisonSlap : Skill
     {
         if (dmg != null)
         {
-            dmg.InitializationProjectile(_player, duration, this);
+            dmg.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
             dmg.AddStack();
         }
 
         if (heal != null && isHealing)
         {
-            heal.InitializationProjectile(_player, duration, this);
+            heal.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
             heal.AddStack();
         }
     }
