@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class ReptileTalent_6 : Talent
+public class NinjaPoisonTalent_6 : Talent
 {
     [SerializeField] private AmbushPoisons _ambushPoisons;
     [SerializeField] private SkillManager _skillManager;
