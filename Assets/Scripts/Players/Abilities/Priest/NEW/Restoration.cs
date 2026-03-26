@@ -55,6 +55,13 @@ public class Restoration : Skill,IPolaritySwitchable
     public bool EnableSpiritHealth(bool val) => _spiritHealthIsEnabled = val;
     #endregion
 
+    #region OverhealManaBooster
+
+    private RestorationManaBooster _restorationManaBooster;
+    public RestorationManaBooster RestorationManaBooster => _restorationManaBooster;
+
+    #endregion
+
     private void Start()
     {
         _audioSource = GetComponent<AudioSource>();
@@ -66,6 +73,8 @@ public class Restoration : Skill,IPolaritySwitchable
     {
         OnModeChange += UpdateMode;
         UpdateMode();
+
+        _restorationManaBooster = new RestorationManaBooster(this);
     }
 
     private void OnDisable()

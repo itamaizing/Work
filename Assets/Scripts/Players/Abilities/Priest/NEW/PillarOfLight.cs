@@ -34,6 +34,13 @@ public class PillarOfLight : Skill, IPolaritySwitchable
     public event Action OnModeChange;
 
     private Vector3 _clickPoint;
+    
+    #region OverhealManaBooster
+
+    private OverhealManaBooster _overhealMana;
+    public OverhealManaBooster OverhealManaBooster => _overhealMana;
+
+    #endregion
 
     private bool CheckCanCast() =>
         Vector3.Distance(_clickPoint, transform.position) <= AreaInfo.Radius;
@@ -48,6 +55,8 @@ public class PillarOfLight : Skill, IPolaritySwitchable
     {
         OnModeChange += UpdateMode;
         UpdateMode();
+        
+        _overhealMana = new OverhealManaBooster(this, Hero);
     }
 
     private void OnDisable()
@@ -141,6 +150,7 @@ public class PillarOfLight : Skill, IPolaritySwitchable
                         DamageableSkill = this,
                     };
                     CmdApplyHeal(heal, target.gameObject, this, nameof(PillarOfLight));
+                    _overhealMana.OnAnyHealTaken(target,heal.Value,this);
                 }
             }
         }

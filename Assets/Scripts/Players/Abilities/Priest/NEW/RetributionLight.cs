@@ -43,6 +43,13 @@ public class RetributionLight : Skill,IPolaritySwitchable
     private bool _isDamagePhase;
     private bool _firstBeamDecalsEnded;
     
+    #region OverhealManaBooster
+
+    private OverhealManaBooster _overhealMana;
+    public OverhealManaBooster OverhealManaBooster => _overhealMana;
+
+    #endregion
+    
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
     public bool IsLightMode => isLightMode;
     public event Action OnModeChange;
@@ -81,6 +88,8 @@ public class RetributionLight : Skill,IPolaritySwitchable
     {
         OnModeChange += UpdateMode;
         UpdateMode();
+        
+        _overhealMana = new OverhealManaBooster(this, Hero);
     }
 
     private void OnDisable()
@@ -299,6 +308,7 @@ public class RetributionLight : Skill,IPolaritySwitchable
         foreach (var ally in aliveAllies)
         {
             CmdApplyHeal(heal,ally.gameObject,this,nameof(RetributionLight));
+            _overhealMana.OnAnyHealTaken(ally,heal.Value,this);
         }
     }
     

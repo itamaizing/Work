@@ -29,13 +29,25 @@ public class DomeOfLight : Skill, IPolaritySwitchable
     public event Action OnModeChange;
     
     public void AnimCastDome() => AnimStartCastCoroutine();
-    public void AnimDomeEnd()  => AnimCastEnded();
+    public void AnimDomeEnd() { }
 
     private bool IsEnemyTarget(Character target) =>
         target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
     private bool IsAllyTarget(Character target) =>
         target.gameObject.layer == LayerMask.NameToLayer("Allies");
+    
+    #region OverhealManaBooster
+
+    private OverhealManaBooster _overhealMana;
+    public OverhealManaBooster OverhealManaBooster => _overhealMana;
+
+    #endregion
+    
+    #region Dome Proc Talent
+    private DomeProcBooster _domeProcBooster;
+    public DomeProcBooster DomeProcBooster => _domeProcBooster;
+    #endregion
 
     public override void LoadTargetData(TargetInfo targetInfo) { }
 
@@ -43,11 +55,64 @@ public class DomeOfLight : Skill, IPolaritySwitchable
     {
         OnModeChange += UpdateMode;
         UpdateMode();
+        
+        _overhealMana = new OverhealManaBooster(this, Hero);
+        _domeProcBooster = new DomeProcBooster(this, this);
     }
 
     private void OnDisable()
     {
         OnModeChange -= UpdateMode;
+    }
+    
+    [Command]
+    public void CmdSpawnTemporaryDome(Vector3 centerPosition)
+    {
+        RpcSpawnTemporaryDome(centerPosition);
+    }
+    
+    [ClientRpc]
+    private void RpcSpawnTemporaryDome(Vector3 centerPosition)
+    {
+        if (_effectObject == null) return;
+
+        ParticleSystem tempEffect = Instantiate(_effectObject, centerPosition, Quaternion.identity);
+
+        var main = tempEffect.main;
+        main.startColor = isLightMode ? _lightColor : _darkColor;
+
+        StartCoroutine(RunTemporaryDomeCoroutine(tempEffect));
+    }
+
+    private IEnumerator RunTemporaryDomeCoroutine(ParticleSystem tempEffect)
+    {
+        if (tempEffect == null) yield break;
+
+        tempEffect.gameObject.SetActive(true);
+
+        var hitTargets = new HashSet<Character>();
+        float elapsed = 0f;
+
+        while (elapsed < _expandDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / _expandDuration;
+            float currentRadius = Mathf.Lerp(0f, _maxRadius, t);
+            float currentScale = currentRadius * 2f;
+
+            tempEffect.transform.localScale = Vector3.one * currentScale;
+
+            CheckDomeHitsAtPosition(tempEffect.transform.position, currentRadius, hitTargets);
+
+            yield return null;
+        }
+
+        tempEffect.transform.localScale = Vector3.one * (_maxRadius * 2f);
+        CheckDomeHitsAtPosition(tempEffect.transform.position, _maxRadius, hitTargets);
+
+        yield return new WaitForSeconds(0.5f);
+
+        Destroy(tempEffect.gameObject);
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -72,18 +137,17 @@ public class DomeOfLight : Skill, IPolaritySwitchable
             float currentScale = Mathf.Lerp(0f, _maxRadius * 2, t);
 
             CmdSetDomeScale(currentScale);
-            CheckDomeHits(Mathf.Lerp(0f, _maxRadius, t), hitTargets);
+            CheckDomeHitsAtPosition(transform.position, Mathf.Lerp(0f, _maxRadius, t), hitTargets);
 
             yield return new WaitForEndOfFrame();
         }
 
         CmdSetDomeScale(_maxRadius * 2);
-        CheckDomeHits(_maxRadius, hitTargets);
-
-        yield return new WaitForSeconds(0.5f);
-
+        CheckDomeHitsAtPosition(transform.position, _maxRadius, hitTargets);
+        ApplyProcAfterFullExpansion(hitTargets);
         CmdSetDomeActive(false);
         CmdSetDomeScale(0f);
+        AnimCastEnded();
         yield return null;
     }
 
@@ -108,9 +172,9 @@ public class DomeOfLight : Skill, IPolaritySwitchable
         _effectObject.transform.localScale = Vector3.one * scale;
     }
 
-    private void CheckDomeHits(float currentRadius, HashSet<Character> hitTargets)
+    private void CheckDomeHitsAtPosition(Vector3 position, float radius, HashSet<Character> hitTargets)
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, currentRadius, Targeting.Layer);
+        Collider[] hits = Physics.OverlapSphere(position, radius, Targeting.Layer);
 
         foreach (var hit in hits)
         {
@@ -125,19 +189,29 @@ public class DomeOfLight : Skill, IPolaritySwitchable
                 Damage damage = new Damage
                 {
                     Value = Buff.Damage.GetBuffedValue(_damageValue),
-                    Type  = Info.DamageType,
+                    Type = Info.DamageType,
                     School = Info.School
                 };
                 CmdApplyDamage(damage, target.gameObject);
             }
             else if (isLightMode && IsAllyTarget(target) && target != Hero)
             {
-                var heal = new Heal 
-                {
-                    Value = _damageValue,
-                    DamageableSkill = this
-                };
-                CmdApplyHeal(heal,target.gameObject,this,nameof(DomeOfLight));
+                var heal = new Heal { Value = _damageValue, DamageableSkill = this };
+                CmdApplyHeal(heal, target.gameObject, this, nameof(DomeOfLight));
+                _overhealMana.OnAnyHealTaken(target, heal.Value, this);
+            }
+        }
+    }
+    
+    private void ApplyProcAfterFullExpansion(HashSet<Character> healedTargets)
+    {
+        if (_domeProcBooster == null || !isLightMode) return;
+
+        foreach (var target in healedTargets)
+        {
+            if (IsAllyTarget(target) && target != Hero)
+            {
+                _domeProcBooster.TryProcFromHeal(target);
             }
         }
     }

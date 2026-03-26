@@ -32,6 +32,13 @@ public class RadianceOfLight : Skill, IPolaritySwitchable
 
     private bool IsAllyTarget(Character target) =>
         target.gameObject.layer == LayerMask.NameToLayer("Allies");
+    
+    #region OverhealManaBooster
+
+    private OverhealManaBooster _overhealMana;
+    public OverhealManaBooster OverhealManaBooster => _overhealMana;
+
+    #endregion
 
     public override void LoadTargetData(TargetInfo targetInfo) { }
 
@@ -39,6 +46,8 @@ public class RadianceOfLight : Skill, IPolaritySwitchable
     {
         OnModeChange += UpdateMode;
         UpdateMode();
+        
+        _overhealMana = new OverhealManaBooster(this, Hero);
     }
 
     private void OnDisable()
@@ -107,6 +116,7 @@ public class RadianceOfLight : Skill, IPolaritySwitchable
                     DamageableSkill = this,
                 };
                 CmdApplyHeal(heal, target.gameObject, this, nameof(RadianceOfLight));
+                _overhealMana.OnAnyHealTaken(target,heal.Value,this);
             }
         }
     }

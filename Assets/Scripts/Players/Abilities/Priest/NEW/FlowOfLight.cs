@@ -68,6 +68,13 @@ public class FlowOfLight : Skill, IPolaritySwitchable
     private bool _spiritHealthIsEnabled;
     public bool EnableSpiritHealth(bool val) => _spiritHealthIsEnabled = val;
     #endregion
+
+    #region OverhealManaBooster
+
+    private OverhealManaBooster _overhealMana;
+    public OverhealManaBooster OverhealManaBooster => _overhealMana;
+
+    #endregion
     
     public void SetStackingRestorationTalent(bool value) => _stackingRestorationTalent = value;
     public void SetStackingDestructionTalent(bool value) => _stackingDestructionTalent = value;
@@ -108,6 +115,8 @@ public class FlowOfLight : Skill, IPolaritySwitchable
         _instantFlash = new InstantFlashBooster(this, duration: 5f, chance: 10f);
         var flashSkill = Hero.Abilities.GetSkill<FlashOfLight>();
         _instantFlash.Inject(flashSkill);
+
+        _overhealMana = new OverhealManaBooster(this, Hero);
     }
 
     private void OnDisable()
@@ -321,7 +330,7 @@ public class FlowOfLight : Skill, IPolaritySwitchable
                     TryApplyExtraState(currentTarget);
                     ApplySpiritBuff(currentTarget);
                     _instantFlash.TryApply();
-
+                    _overhealMana.OnAnyHealTaken(currentTarget,tickValue,this);
                     if (_aoeTalentActive) ApplyAoeHeal(currentTarget, tickValue);
                 }
                 else if (!isLightMode && IsEnemyTarget(currentTarget))

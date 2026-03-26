@@ -107,6 +107,13 @@ public class SparkOfLight : Skill,IPolaritySwitchable
 
     #endregion
     
+    #region OverhealManaBooster
+
+    private OverhealManaBooster _overhealMana;
+    public OverhealManaBooster OverhealManaBooster => _overhealMana;
+
+    #endregion
+    
     public event Action OnModeChange;
 
     private void Start()
@@ -123,6 +130,8 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         _instantFlash = new InstantFlashBooster(this, duration: 5f, chance: 10f);
         var flashSkill = Hero.Abilities.GetSkill<FlashOfLight>();;
         _instantFlash.Inject(flashSkill);
+        
+        _overhealMana = new OverhealManaBooster(this, Hero);
     }
 
     private void OnDisable()
@@ -213,7 +222,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         var stateComponent = target.GetComponent<CharacterState>();
         if (stateComponent == null) return;
 
-        if (!isLightMode && (UnityEngine.Random.value <= 0.2f)) stateComponent.AddState(States.Destruction, 12f, 0, gameObject, Name);
+        if (!isLightMode && (UnityEngine.Random.value <= 0.2f)) stateComponent.AddState(States.Destruction, 12f, 0, gameObject, nameof(SparkOfLight));
     }
     
     private void TryApplyDestructionFilling(Character target)
@@ -241,7 +250,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         {
             damageToExit = -1f;
         }
-        stateComponent.AddState(states, duration, damageToExit, gameObject, Name);
+        stateComponent.AddState(states, duration, damageToExit, gameObject, nameof(SparkOfLight));
     }
 
     private void HandleDefaultMode(Character target)
@@ -250,7 +259,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
 
         if (IsAllyTarget(target) || target == _hero)
         {
-            float healValue = Heal(target);
+            float healValue = Heal(target,_healAmount);
             ApplySpiritEnergyBuff(target);
             RpcApplyInstant();
         }
@@ -276,7 +285,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         }
     }
 
-    private float Heal(Character target)
+    private float Heal(Character target,float healVal)
     {
         bool isBonusActive = _healingBuffTalentActive && Time.time < _lastFlashOfLightCastTime + _healingBuffDuration;
 
@@ -285,14 +294,23 @@ public class SparkOfLight : Skill,IPolaritySwitchable
 
         float doublingBonus = (_healingBonusStacks > 0) ? Mathf.Pow(2f, _healingBonusStacks) : 0f;
         float bonusHealFromSpiritEnergy = _spiritEnergyTalent ? GetSpiritEnergyBonus(target) : 0f;
-        float healValue = _healAmount + doublingBonus + bonusHealFromSpiritEnergy;
+        float healValue = healVal + doublingBonus + bonusHealFromSpiritEnergy;
 
         var heal = new Heal { Value = healValue, DamageableSkill = this };
-        ApplyHeal(heal, target.gameObject, this, Name);
+        ApplyHeal(heal, target.gameObject, this, nameof(SparkOfLight));
         TryApplyExtraState(target);
         if (_isDestructionFillingTalent) TryApplyDestructionFilling(target);
 
+        OnOverhealHeal(target.gameObject, healValue);
         return healValue;
+    }
+
+    [ClientRpc]
+    private void OnOverhealHeal(GameObject target, float healValue)
+    {
+        target.TryGetComponent(out Character c);
+        if(c)
+            _overhealMana.OnAnyHealTaken(c,healValue,this);
     }
 
     private float GetSpiritEnergyBonus(Character target)
@@ -344,7 +362,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
             else
             {
                 if (!IsAllyTarget(target) && target != _hero) continue;
-                CmdApplyHeal(new Heal { Value = aoeValue, DamageableSkill = this }, target.gameObject, this, Name);
+                Heal(target,aoeValue);
             }
 
             TryApplyExtraState(target);
@@ -356,13 +374,13 @@ public class SparkOfLight : Skill,IPolaritySwitchable
     private void ApplySpiritEnergyBuff(Character target)
     {
         var talentActive = _manaRestoreBoostTalent ? 1 : 0;
-        if (_spiritEnergyAddTalent) AddBuff(States.SpiritEnergy, _buffDuration, talentActive, target.gameObject, Name);
+        if (_spiritEnergyAddTalent) AddBuff(States.SpiritEnergy, _buffDuration, talentActive, target.gameObject, nameof(SparkOfLight));
     }
 
     private void ApplySpiritHealthBuff(Character target)
     {
         var talentActive = _manaRestoreBoostTalent ? 1 : 0;
-        if (_spiritEnergyAddTalent) AddBuff(States.SpiritHealth, _altBuffDuration, talentActive, target.gameObject, Name);
+        if (_spiritEnergyAddTalent) AddBuff(States.SpiritHealth, _altBuffDuration, talentActive, target.gameObject, nameof(SparkOfLight));
     }
 
     private void ApplyDefenseDebuff(Character target)

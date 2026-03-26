@@ -31,6 +31,13 @@ public class FlashOfLight : Skill,IPolaritySwitchable
     private float _lastTalentTime = -5f;
     private float _cooldownReduction = 5f;
     private float _baseCastDelay;
+    
+    #region OverhealManaBooster
+
+    private OverhealManaBooster _overhealMana;
+    public OverhealManaBooster OverhealManaBooster => _overhealMana;
+
+    #endregion
 
     public bool IsLightMode => isLightMode;
     public event Action OnModeChange;
@@ -73,6 +80,8 @@ public class FlashOfLight : Skill,IPolaritySwitchable
         OnModeChange += UpdateMode;
         _baseCastDelay = CastDeley;
         UpdateMode();
+        
+        _overhealMana = new OverhealManaBooster(this, Hero);
     }
 
     private void OnDisable()
@@ -196,7 +205,6 @@ public class FlashOfLight : Skill,IPolaritySwitchable
 
     private void HandleFlashOfDarkness()
     {
-        Debug.Log("Damaging" + Targeting.GetTarget()?.Character.gameObject);
         Damage(Targeting.GetTarget()?.Character);
     }
 
@@ -212,6 +220,7 @@ public class FlashOfLight : Skill,IPolaritySwitchable
             Value = _healAmount + bonusHealFromSpiritEnergy,
             DamageableSkill = this
         };
+        _overhealMana.OnAnyHealTaken(target,heal.Value,this);
 
         CmdApplyHeal(heal, health.gameObject, this, Name);
     }
