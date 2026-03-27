@@ -11,6 +11,8 @@ public class SpitPoisonProjectile : Test_Projectile
     private int _playerLayer;
     private int _poisonBoneStack;
 
+    private int _ownerLayer;
+
     private float _energyDad;
     private float _damage;
     private float _lifeTimePoisonBoneStacks = 60.0f;
@@ -24,6 +26,7 @@ public class SpitPoisonProjectile : Test_Projectile
     private bool _isActiveEatingAcid;
     private bool _isPlayerInvisible;
     private bool _isFeelingPoisoning;
+    private bool _isTransparentPoisons;
 
     #endregion
 
@@ -189,7 +192,7 @@ public class SpitPoisonProjectile : Test_Projectile
 
     public void InitializationProjectile(Character dad, Skill skill, float energy,
         bool isActiveHealingSpitPoison, bool isActiveRestorationOfGlands, bool isPlayerInvisible, 
-        bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, int poisonBoneStack, bool isFeelingPoisoning)
+        bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, int poisonBoneStack, bool isFeelingPoisoning, bool isTransparentPoisons, int ownerLayer)
     {
         _player = dad;
         _energyDad = energy;
@@ -203,6 +206,8 @@ public class SpitPoisonProjectile : Test_Projectile
         _isPlayer = isTargetPlayer;
         _isAllies = isTargetAllies;
         _isEnemy = isTargetEnemy;
+        _ownerLayer = ownerLayer;
+        _isTransparentPoisons = isTransparentPoisons;
 
         Invoke("TransparentProjectileOnServer", 0.15f);
         InitializationComponents();
@@ -219,6 +224,32 @@ public class SpitPoisonProjectile : Test_Projectile
         float flightTime = (distance + _buffer) / speed;
 
         Invoke(nameof(DestroyProjectile), flightTime);
+    }
+
+    private void ApplyTransparentVisual()
+    {
+        if (!_isTransparentPoisons) return;
+
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+
+        foreach (var r in renderers)
+        {
+            foreach (var mat in r.materials)
+            {
+                Color color = mat.color;
+
+                if (_ownerLayer == LayerMask.NameToLayer("Allies"))
+                {
+                    color.a = 0.5f;
+                }
+                else if (_ownerLayer == LayerMask.NameToLayer("Enemy"))
+                {
+                    color.a = 0f;
+                }
+
+                mat.color = color;
+            }
+        }
     }
 
     #endregion

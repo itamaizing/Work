@@ -47,6 +47,8 @@ public class SpitPoison : Skill, IAltAbility
 
     private float _originalCooldown;
     private float _radiusTargetCheck = 0.5f;
+    private float _increaseManaCostValue = 1.3f;
+    private float _baseIncreaseManaCostValue = 1f;
 
     private bool _isActiveRestorationOfGlands;
     private bool _isHealingPoisonCloud = false;
@@ -63,9 +65,26 @@ public class SpitPoison : Skill, IAltAbility
     private bool _isActiveHealingSpitPoison = false;
     private bool _canSpawnPoisonCloud = false;
     private bool _isErodedArmorState = false;
+    private bool _isTransparentPoisons = false;
+
+    public bool IsTransparentPoisons
+    {
+        get => _isTransparentPoisons;
+        set
+        {
+            if (_isTransparentPoisons != value)
+            {
+                _isTransparentPoisons = value;
+
+                if (_isTransparentPoisons) Buff.ManaCost.IncreasePercentage(_increaseManaCostValue);
+                else Buff.ManaCost.IncreasePercentage(_baseIncreaseManaCostValue);
+            }
+        }
+    }
 
     public void ErodedArmorState(bool value) => _isErodedArmorState = value;
     public void ActiveHealingSpitPoison(bool value) => _isActiveHealingSpitPoison = value;
+    public void TransparentPoisons(bool value) => IsTransparentPoisons = value;
 
     public void SetPoisonCloudEnabled(bool value)
     {
@@ -290,6 +309,8 @@ public class SpitPoison : Skill, IAltAbility
         bool isActiveHealingSpitPoison, bool isActiveRestorationOfGlands, bool isPlayerInvisible,
         bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
+        int ownerLayer = _player.gameObject.layer;
+
         Vector3 spawnPosition = new Vector3 (_spawnPointInfo.SpawnPointX, _spawnPointInfo.SpawnPointY, _spawnPointInfo.SpawnPointZ);
 
         GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
@@ -300,7 +321,7 @@ public class SpitPoison : Skill, IAltAbility
 
         projectile.InitializationProjectile(_player, this, _player.Resource.CurrentValue,
             isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
-            isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack, _creeperPoisonAura.IsFeelingPoisoning);
+            isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack, _creeperPoisonAura.IsFeelingPoisoning, _isTransparentPoisons, ownerLayer);
 
         projectile.MoveBallToTarget(target.transform.position);
 
@@ -312,6 +333,8 @@ public class SpitPoison : Skill, IAltAbility
         bool isActiveHealingSpitPoison, bool isActiveRestorationOfGlands, bool isPlayerInvisible,
         bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
     {
+        int ownerLayer = _player.gameObject.layer;
+
         Vector3 spawnPosition = new Vector3(_spawnPointInfo.SpawnPointX, _spawnPointInfo.SpawnPointY, _spawnPointInfo.SpawnPointZ);
 
         GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
@@ -322,7 +345,7 @@ public class SpitPoison : Skill, IAltAbility
 
         projectile.InitializationProjectile(_player, this, _player.Resource.CurrentValue,
             isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
-            isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack, _creeperPoisonAura.IsFeelingPoisoning);
+            isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack, _creeperPoisonAura.IsFeelingPoisoning, _isTransparentPoisons, ownerLayer);
 
         Vector3 direction = point - spawnPosition;
         direction.y = 0;
