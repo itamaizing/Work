@@ -42,6 +42,8 @@ public class SpeedOfReptile : Skill
 
     private void IncreaseValues()
     {
+        _creeperStrike.SetSpeedOfReptile(true);
+
         _creeperStrike.Buff.AttackSpeed.ReductionPercentage(_increaseAttackSpeed);
         CmdIncreaseValues();
 
@@ -50,6 +52,8 @@ public class SpeedOfReptile : Skill
 
     private void ResetValues()
     {
+        _creeperStrike.SetSpeedOfReptile(false);
+
         _creeperStrike.Buff.AttackSpeed.IncreasePercentage(_increaseAttackSpeed);
         CmdResetValues();
     }

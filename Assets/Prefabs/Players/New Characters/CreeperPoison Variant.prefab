@@ -18622,6 +18622,9 @@ PrefabInstance:
       addedObject: {fileID: 8887524501104309569}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 4318163990653874616}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 3096915051999318309}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
@@ -21323,6 +21326,28 @@ MonoBehaviour:
   character: {fileID: 2483674839823445686}
   _spitPoison: {fileID: 4992365342693795224}
   _poison: {fileID: 4719927588574066064}
+--- !u!114 &4318163990653874616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7437800528419325459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21470f634c592ae44becbd0db70fcb2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NinjaPoisonTalent_9
+  _data:
+    _descriptionsForInfoPanel: []
+    _stateInfos: []
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+    Group: 0
+    Row: 0
+  character: {fileID: 2483674839823445686}
+  _coldBlood: {fileID: 0}
 --- !u!114 &3096915051999318309
 MonoBehaviour:
   m_ObjectHideFlags: 0

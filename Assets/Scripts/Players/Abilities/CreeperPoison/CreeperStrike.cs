@@ -47,6 +47,8 @@ public class CreeperStrike : Skill
     private bool _isTwoHit = false;
     private bool _isHit = false;
 
+    private bool _isSpeedOfReptileActive = false;
+
     private List<Character> _recentTargets = new();
     private Coroutine ClearTargetsCoroutine;
     private float _targetMemoryTime = 0.5f;
@@ -71,7 +73,6 @@ public class CreeperStrike : Skill
     #region Talent
 
     private bool _isColdBloodStrike = false;
-
     public void ColdBloodStrike(bool value) => _isColdBloodStrike = value;
     #endregion
 
@@ -85,6 +86,8 @@ public class CreeperStrike : Skill
     }
 
     #region CastAbility
+
+    public void SetSpeedOfReptile(bool value) => _isSpeedOfReptileActive = value;
 
     public void AnimCreeperStrikeCast()
     {
@@ -166,12 +169,21 @@ public class CreeperStrike : Skill
         return -1f;
     }
 
+    private void TryApplyPoisonBone(Character character)
+    {
+        if (!_isSpeedOfReptileActive || character == null) return;
+
+        character.CharacterState.CmdAddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0, _player.gameObject, Name);
+    }
+
     public void DamageDeal(IDamageable target, bool isUsingLightningStrikes = false)
     {
         var lastСast = _player.Abilities.LastCastedSkill;
         var previewCast = _player.Abilities.PreviewCastedSkill;
 
         Character character = target as Character;
+
+        TryApplyPoisonBone(character);
 
         if (target != null)
         {
