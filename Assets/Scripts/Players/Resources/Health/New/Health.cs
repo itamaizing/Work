@@ -36,6 +36,7 @@ public class Health : Resource, IDamageable, IHealable
     public event Action Evaded;
     public event Action Block;
     public event Action<float , Skill , string> HealTaked;
+    public event Action<float, Skill, string> HealTakedServer;
     public event Action<Damage, Skill> DamageTaken;
     public event Action Died;
     public event Action<float, float> OnShieldValuesChanged;
@@ -144,6 +145,7 @@ public class Health : Resource, IDamageable, IHealable
 
     public void Heal(ref Heal heal, string sourceName, Skill skill = null)
     {
+        HealTakedServer?.Invoke(heal.Value, skill, sourceName);
         ClientRpcHealTaked(heal.Value, skill, sourceName);
         Add(heal.Value);
     }

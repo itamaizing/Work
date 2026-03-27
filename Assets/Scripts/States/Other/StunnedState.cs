@@ -54,8 +54,8 @@ public class StunnedState : RefreshingState
 
 	public override void ExitState()
 	{
-		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.IsMoveBlocked = false;
-		if (!characterState.Check(StatusEffect.Ability) && abilities != null) abilities.SetAbilitiesDisactive(false);
+		 characterState.Character.Move.IsMoveBlocked = false;
+		abilities.SetAbilitiesDisactive(false);
 		characterState.RemoveState(this);
 	}
 }

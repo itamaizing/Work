@@ -61,6 +61,13 @@ public class Restoration : Skill,IPolaritySwitchable
     public RestorationManaBooster RestorationManaBooster => _restorationManaBooster;
 
     #endregion
+    
+    #region EnhancedRestorationBooster
+
+    private RestorationHealBooster _restorationHealBooster;
+    public RestorationHealBooster RestorationHealBooster => _restorationHealBooster;
+
+    #endregion
 
     private void Start()
     {
@@ -75,11 +82,18 @@ public class Restoration : Skill,IPolaritySwitchable
         UpdateMode();
 
         _restorationManaBooster = new RestorationManaBooster(this);
+        _restorationHealBooster    = new RestorationHealBooster(this);
     }
 
     private void OnDisable()
     {
         OnModeChange -= UpdateMode;
+    }
+
+    [Command]
+    public void CmdEnableRestorationHealBooster(bool value)
+    {
+        _restorationHealBooster.Enable(value);
     }
 
     public void SetStackingRestorationTalent(bool value)

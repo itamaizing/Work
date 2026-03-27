@@ -8,9 +8,13 @@ public class RestorationState : RefreshingState
     private const float _tickInterval = 3f;
     private const float _healPerTickBase = 6f;
 
+    private Character _targetCharacter;
+    
     private float _baseDuration;
     private float _timer;
     private bool _isActive;
+    private bool _healBoostActive;
+    private float _bonusHeal;
 
     private List<StatusEffect> _effects = new List<StatusEffect> { StatusEffect.Restoration };
 
@@ -40,6 +44,12 @@ public class RestorationState : RefreshingState
         MaxStacksCount = IsStackingMode ? 2 : 1;
         currentStacksCount = 1;
 
+        var restoration = personWhoMadeBuff.Abilities.GetSkill<Restoration>();
+        restoration.RestorationHealBooster.Reset();
+
+        _targetCharacter = character.Character;
+        _targetCharacter.Health.HealTakedServer += OnTargetHealTaken;
+        
         ApplyHealTick();
     }
 
@@ -58,17 +68,17 @@ public class RestorationState : RefreshingState
 
     private void ApplyHealTick()
     {
-        float healValue = _healPerTickBase * currentStacksCount + GetSpiritEnergyBonus(characterState.Character);
-        var spark = personWhoMadeBuff.Abilities.GetSkill<SparkOfLight>();
-        if (spark)
-        {
-            spark.OverhealManaBooster.OnAnyHealTaken(characterState.Character, healValue, spark);
-        }
-        var restoration = personWhoMadeBuff.Abilities.GetSkill<Restoration>();
-        if (restoration)
-        {
-            restoration.RestorationManaBooster.OnRestorationTick(healValue,characterState.Character);
-        }
+        float baseHeal = _healPerTickBase * currentStacksCount + GetSpiritEnergyBonus(characterState.Character);
+        float healValue = baseHeal;
+        
+        var spark = personWhoMadeBuff?.Abilities?.GetSkill<SparkOfLight>();
+        spark?.OverhealManaBooster.OnAnyHealTaken(characterState.Character, healValue, spark);
+
+        var restoration = personWhoMadeBuff?.Abilities?.GetSkill<Restoration>();
+        restoration?.RestorationManaBooster.OnRestorationTick(healValue, characterState.Character);
+        float bonus = restoration.RestorationHealBooster.BonusHeal;
+        healValue += bonus;
+
         CmdHeal(healValue);
     }
 
@@ -98,6 +108,13 @@ public class RestorationState : RefreshingState
         duration = 0f;
         _timer = 0f;
         currentStacksCount = 0;
+        
+        if (_targetCharacter != null)
+        {
+            _targetCharacter.Health.HealTakedServer -= OnTargetHealTaken;
+            _targetCharacter = null;
+        }
+        
         characterState?.RemoveState(this);
         characterState = null;
     }
@@ -105,7 +122,10 @@ public class RestorationState : RefreshingState
     private bool IsStackingMode => State == States.RestorationStacking;
 
     [Server]
-    private void CmdHeal(float healValue) => ClientRpcHeal(healValue);
+    private void CmdHeal(float healValue)
+    {
+        ClientRpcHeal(healValue);
+    }
 
     [ClientRpc]
     private void ClientRpcHeal(float healValue)
@@ -117,6 +137,17 @@ public class RestorationState : RefreshingState
         };
 
         health.Heal(ref heal, nameof(RestorationState), null);
+    }
+    
+    private void OnTargetHealTaken(float healValue, Skill sourceSkill, string sourceName)
+    {
+        if (sourceSkill == null || healValue <= 0f) return;
+        if (sourceSkill.Hero != personWhoMadeBuff) return;
+
+        var restorationSkill = personWhoMadeBuff?.Abilities?.GetSkill<Restoration>();
+        if (restorationSkill == null) return;
+        
+        restorationSkill.RestorationHealBooster.OnHealReceived(healValue);
     }
 
     public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit,
