@@ -68,6 +68,13 @@ public class CreeperStrike : Skill
     public event Action OnCreeperStrikeEnd;
     public event Action OnHit;
 
+    #region Talent
+
+    private bool _isColdBloodStrike = false;
+
+    public void ColdBloodStrike(bool value) => _isColdBloodStrike = value;
+    #endregion
+
     #endregion
 
     private bool CheckIsCanCast()
@@ -182,6 +189,15 @@ public class CreeperStrike : Skill
             _isHit = true;
             OnHit?.Invoke();
             _currentCountHit++;
+
+            if (_isColdBloodStrike && _coldBlood != null && _coldBlood.IsCanCritCreeperStrike && character != null && character.CharacterState.CheckForState(States.Blind))
+            {
+                _coldBlood.ReducingAbilityCooldown();
+
+                Debug.Log("CreeperStrike: ColdBlood CD reduced (Blind synergy)");
+
+                _isColdBloodStrike = false;
+            }
 
 
             //if (_absorptionOfPoisons != null && _absorptionOfPoisons.IsWorking)
