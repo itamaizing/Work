@@ -4906,6 +4906,10 @@ MonoBehaviour:
   _projectileRigidbody: {fileID: 446228830403445546}
   _speed: 10
   _maxDistanceFlying: 5
+  _projectileMaterialBase: {fileID: 2100000, guid: 4f1f7192d03b9b7449e544eebdb676d5, type: 2}
+  _projectileMaterialEnemy: {fileID: 2100000, guid: 7c4783ccdba32f243b7bb662df9984ac, type: 2}
+  _projectileMaterialAllies: {fileID: 2100000, guid: 4c4c30e204f71ce42805925193fe4067, type: 2}
+  _particleSystem: {fileID: 1605037980458920620}
 --- !u!114 &3621630500748190318
 MonoBehaviour:
   m_ObjectHideFlags: 0

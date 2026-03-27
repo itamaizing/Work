@@ -85,6 +85,8 @@ public class PoisonBall : Skill, IAltAbility
     private float _animTime;
     private float _baseMultiplierAnimationSpeed = 1f;
     private float _radiusFindTarget = 0.5f;
+    private float _increaseManaCostValue = 1.3f;
+    private float _baseIncreaseManaCostValue = 1f;
 
     #region BoolVariables
 
@@ -136,6 +138,23 @@ public class PoisonBall : Skill, IAltAbility
 
     private bool _isBonusChargeApplied = false;
 
+    private bool _isTransparentPoisons = false;
+
+    public bool IsTransparentPoisons
+    {
+        get => _isTransparentPoisons;
+        set
+        {
+            if (_isTransparentPoisons != value)
+            {
+                _isTransparentPoisons = value;
+
+                if (_isTransparentPoisons) Buff.ManaCost.IncreasePercentage(_increaseManaCostValue);
+                else Buff.ManaCost.IncreasePercentage(_baseIncreaseManaCostValue);
+            }
+        }
+    }
+
     public bool IsPoisonCloudAddPoisonBone { get => _isPoisonCloudAddPoisonBone; set => _isPoisonCloudAddPoisonBone = value; }
 
     public bool IsIncreasingPoisonBallCharges
@@ -174,6 +193,8 @@ public class PoisonBall : Skill, IAltAbility
     {
         _isPoisonCloudAddPoisonBone = value;
     }
+
+    public void TransparentPoisons(bool value) => IsTransparentPoisons = value;
 
     #endregion
 
@@ -753,6 +774,7 @@ public class PoisonBall : Skill, IAltAbility
         bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies)
 
     {
+        int ownerLayer = _player.gameObject.layer;
 
         CurrentTarget = target;
 
@@ -800,8 +822,8 @@ public class PoisonBall : Skill, IAltAbility
             isTargetPlayer, isTargetEnemy, isTargetAllies,
             isActiveFootInstincts, isActiveRestorationOfGlands,
             isActiveHealingPoisonBall, isActiveWitheringPoison, isActiveVoluminousBall, isActiveBallEffect,
-            isPushTarget, isPlayerInvisible
-            );
+            isPushTarget, isPlayerInvisible,
+            _isTransparentPoisons, ownerLayer);
 
         poisonBallProjectile.MoveBallToTarget(targetPosition, isFast);
 
@@ -828,6 +850,8 @@ public class PoisonBall : Skill, IAltAbility
         bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies)
     {
         //_player.Health.Add(-100f);
+
+        int ownerLayer = _player.gameObject.layer;
 
         CurrentTarget = LastTarget;
 
@@ -882,7 +906,8 @@ public class PoisonBall : Skill, IAltAbility
             isTargetPlayer, isTargetEnemy, isTargetAllies,
             isActiveFootInstincts, isActiveRestorationOfGlands,
             isActiveHealingPoisonBall, isActiveWitheringPoison, isActiveVoluminousBall, isActiveBallEffect,
-            isPushTarget, isPlayerInvisible
+            isPushTarget, isPlayerInvisible,
+            _isTransparentPoisons, ownerLayer
             );
 
         poisonBallProjectile.MoveBallOnMaxDistance(finalPoint, isFast);

@@ -17,6 +17,15 @@ public class PoisonBallProjectile : Test_Projectile
     [SerializeField] private float _fastMovementSpeed;
     [SerializeField] private float _slowMovementSpeed;
 
+    [SerializeField] private Material _projectileMaterialBase;
+
+    [SerializeField] private Material _projectileMaterialEnemy;
+    [SerializeField] private Material _projectileMaterialAllies;
+
+    [SerializeField] private ParticleSystem _particleSystem;
+
+    private ParticleSystemRenderer _particleSystemRenderer;
+
     private PoisonBall _poisonBall;
     private Skill _skill;
 
@@ -25,6 +34,10 @@ public class PoisonBallProjectile : Test_Projectile
     private int _playerLayer;
     private Vector3 _directionOfFlight;
     private float _buffer = 0.5f;
+
+    private int _ownerLayer;
+
+    private bool _isTransparentPoisons;
 
     #region FloatVariables
     private float _newDistancePush;
@@ -322,7 +335,7 @@ public class PoisonBallProjectile : Test_Projectile
         bool isActiveFootInstincts, bool isActiveRestorationOfGlands,
         bool isActiveTalentHealingPoisonBall, bool isActiveTalentWitheringPoison, 
         bool isActiveVoluminousBall, bool isActiveBallEffect,
-        bool isPushTarget, bool isPlayerInvisible)
+        bool isPushTarget, bool isPlayerInvisible, bool isTransparentPoisons, int ownerLayer)
     {
         CheckActiveTalentVoluminousBall(isActiveVoluminousBall);
 
@@ -335,6 +348,11 @@ public class PoisonBallProjectile : Test_Projectile
         _isPushTarget = isPushTarget;
 
         _isPlayerInvisible = isPlayerInvisible;
+
+        _ownerLayer = ownerLayer;
+        _isTransparentPoisons = isTransparentPoisons;
+
+        if (_particleSystem != null) _particleSystemRenderer = _particleSystem.GetComponent<ParticleSystemRenderer>();
 
         Invoke("TransparentProjectileOnServer", 0.15f);
 
@@ -478,4 +496,18 @@ public class PoisonBallProjectile : Test_Projectile
     }
     #endregion
 
+    private void ApplyTransparentVisual()
+    {
+        if (!_particleSystemRenderer) return;
+
+        if (!_isTransparentPoisons)
+        {
+            _particleSystemRenderer.material = _projectileMaterialBase;
+            return;
+        }
+
+        if (_ownerLayer == LayerMask.NameToLayer("Allies")) _particleSystemRenderer.material = _projectileMaterialAllies;
+        else if (_ownerLayer == LayerMask.NameToLayer("Enemy")) _particleSystemRenderer.material = _projectileMaterialEnemy;
+        else _particleSystemRenderer.material = _projectileMaterialBase;
+    }
 }

@@ -5,6 +5,15 @@ public class SpitPoisonProjectile : Test_Projectile
 {
     #region Variables
 
+    [SerializeField] private Material _projectileMaterialBase;
+
+    [SerializeField] private Material _projectileMaterialEnemy;
+    [SerializeField] private Material _projectileMaterialAllies;
+
+    [SerializeField] private ParticleSystem _particleSystem;
+
+    private ParticleSystemRenderer _particleSystemRenderer;
+
     private SpitPoison _spitPoison;
     private Skill _skill;
 
@@ -209,6 +218,8 @@ public class SpitPoisonProjectile : Test_Projectile
         _ownerLayer = ownerLayer;
         _isTransparentPoisons = isTransparentPoisons;
 
+        if (_particleSystem != null) _particleSystemRenderer = _particleSystem.GetComponent<ParticleSystemRenderer>();
+
         Invoke("TransparentProjectileOnServer", 0.15f);
         InitializationComponents();
     }
@@ -228,28 +239,17 @@ public class SpitPoisonProjectile : Test_Projectile
 
     private void ApplyTransparentVisual()
     {
-        if (!_isTransparentPoisons) return;
+        if (!_particleSystemRenderer) return;
 
-        Renderer[] renderers = GetComponentsInChildren<Renderer>();
-
-        foreach (var r in renderers)
+        if (!_isTransparentPoisons)
         {
-            foreach (var mat in r.materials)
-            {
-                Color color = mat.color;
-
-                if (_ownerLayer == LayerMask.NameToLayer("Allies"))
-                {
-                    color.a = 0.5f;
-                }
-                else if (_ownerLayer == LayerMask.NameToLayer("Enemy"))
-                {
-                    color.a = 0f;
-                }
-
-                mat.color = color;
-            }
+            _particleSystemRenderer.material = _projectileMaterialBase;
+            return;
         }
+
+        if (_ownerLayer == LayerMask.NameToLayer("Allies")) _particleSystemRenderer.material = _projectileMaterialAllies;
+        else if (_ownerLayer == LayerMask.NameToLayer("Enemy")) _particleSystemRenderer.material = _projectileMaterialEnemy;
+        else _particleSystemRenderer.material = _projectileMaterialBase;
     }
 
     #endregion
