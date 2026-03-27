@@ -22,9 +22,7 @@ public class PoisonBallProjectile : Test_Projectile
     [SerializeField] private Material _projectileMaterialEnemy;
     [SerializeField] private Material _projectileMaterialAllies;
 
-    [SerializeField] private ParticleSystem _particleSystem;
-
-    private ParticleSystemRenderer _particleSystemRenderer;
+    [SerializeField] private MeshRenderer _renderer;
 
     private PoisonBall _poisonBall;
     private Skill _skill;
@@ -352,8 +350,6 @@ public class PoisonBallProjectile : Test_Projectile
         _ownerLayer = ownerLayer;
         _isTransparentPoisons = isTransparentPoisons;
 
-        if (_particleSystem != null) _particleSystemRenderer = _particleSystem.GetComponent<ParticleSystemRenderer>();
-
         Invoke("TransparentProjectileOnServer", 0.15f);
 
         InitializationNumericVariables(multiplierDistance, poisonBoneStack);
@@ -467,6 +463,15 @@ public class PoisonBallProjectile : Test_Projectile
     }
 
     [ClientRpc]
+    public void RpcInitTransparent(bool isTransparentPoisons, int ownerLayer)
+    {
+        _isTransparentPoisons = isTransparentPoisons;
+        _ownerLayer = ownerLayer;
+
+        ApplyTransparentVisual();
+    }
+
+    [ClientRpc]
     private void RpcLayerDefinition(int layer)
     {
         _playerLayer = layer;
@@ -498,16 +503,20 @@ public class PoisonBallProjectile : Test_Projectile
 
     private void ApplyTransparentVisual()
     {
-        if (!_particleSystemRenderer) return;
+        if (!_renderer) return;
+
+        Debug.Log("смена");
 
         if (!_isTransparentPoisons)
         {
-            _particleSystemRenderer.material = _projectileMaterialBase;
+            _renderer.material = _projectileMaterialBase;
             return;
         }
 
-        if (_ownerLayer == LayerMask.NameToLayer("Allies")) _particleSystemRenderer.material = _projectileMaterialAllies;
-        else if (_ownerLayer == LayerMask.NameToLayer("Enemy")) _particleSystemRenderer.material = _projectileMaterialEnemy;
-        else _particleSystemRenderer.material = _projectileMaterialBase;
+        Debug.Log("смена прозрачности");
+
+        if (_ownerLayer == LayerMask.NameToLayer("Allies")) _renderer.material = _projectileMaterialAllies;
+        else if (_ownerLayer == LayerMask.NameToLayer("Enemy")) _renderer.material = _projectileMaterialEnemy;
+        else _renderer.material = _projectileMaterialBase;
     }
 }

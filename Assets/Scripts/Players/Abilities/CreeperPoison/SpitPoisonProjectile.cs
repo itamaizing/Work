@@ -303,6 +303,14 @@ public class SpitPoisonProjectile : Test_Projectile
         }
     }
 
+    [ClientRpc]
+    public void RpcInitTransparent(bool isTransparentPoisons, int ownerLayer)
+    {
+        _isTransparentPoisons = isTransparentPoisons;
+        _ownerLayer = ownerLayer;
+
+        ApplyTransparentVisual();
+    }
 
     [ClientRpc]
     private void RpcLayerDefinition(int layer)

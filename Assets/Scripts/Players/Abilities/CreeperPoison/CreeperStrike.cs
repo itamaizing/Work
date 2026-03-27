@@ -169,6 +169,14 @@ public class CreeperStrike : Skill
         if (target != null)
         {
             _currentDamage = UnityEngine.Random.Range(7.0f, 11.0f);
+
+            if (_creeperInvisible != null && _creeperInvisible.IsInvisibilitStrike && _creeperInvisible.StrikeCrit != 0)
+            {
+                _currentDamage *= 4f;
+                _creeperInvisible.StrikeCrit = 0;
+
+                Debug.Log("CreeperStrike: Invis Crit x4 applied");
+            }
             float _currentChanceOfCriticalStrike = UnityEngine.Random.Range(0.0f, 1.0f);
 
             _isHit = true;

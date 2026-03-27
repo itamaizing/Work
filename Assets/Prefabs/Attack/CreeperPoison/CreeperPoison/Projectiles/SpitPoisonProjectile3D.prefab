@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1605037980458920620}
   - component: {fileID: 6194953706042680084}
   m_Layer: 0
-  m_Name: PoisonTrail
+  m_Name: PoisonTrailBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 5826304156659025892}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.7071068, z: -0.7071068, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: -0.19}
+  m_LocalPosition: {x: 0, y: 0, z: -1.222}
   m_LocalScale: {x: 0.20000002, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1300,7 +1300,7 @@ ParticleSystem:
         m_RotationOrder: 4
     separateAxes: 0
   ColorModule:
-    enabled: 1
+    enabled: 0
     gradient:
       serializedVersion: 2
       minMaxState: 1
@@ -1308,7 +1308,7 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0, g: 1, b: 0.036848783, a: 0.5882353}
+        key0: {r: 0.090442896, g: 1, b: 0, a: 0.5882353}
         key1: {r: 1, g: 1, b: 1, a: 0}
         key2: {r: 0, g: 0, b: 0, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
@@ -4907,8 +4907,8 @@ MonoBehaviour:
   _speed: 10
   _maxDistanceFlying: 5
   _projectileMaterialBase: {fileID: 2100000, guid: 4f1f7192d03b9b7449e544eebdb676d5, type: 2}
-  _projectileMaterialEnemy: {fileID: 2100000, guid: 7c4783ccdba32f243b7bb662df9984ac, type: 2}
-  _projectileMaterialAllies: {fileID: 2100000, guid: 4c4c30e204f71ce42805925193fe4067, type: 2}
+  _projectileMaterialEnemy: {fileID: 2100000, guid: 4277aec5287c2af46940cc0833917cb0, type: 2}
+  _projectileMaterialAllies: {fileID: 2100000, guid: f50de0c95014a674d992c543c20cc941, type: 2}
   _particleSystem: {fileID: 1605037980458920620}
 --- !u!114 &3621630500748190318
 MonoBehaviour:

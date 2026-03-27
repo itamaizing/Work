@@ -63,6 +63,19 @@ public class CreeperInvisible : Skill
         }
     }
 
+    #region Talent
+
+    private bool _isInvisibilitStrike = false;
+
+    private int _strikeCrit;
+
+    public int StrikeCrit { get => _strikeCrit; set => _strikeCrit = value; }
+    public bool IsInvisibilitStrike { get => _isInvisibilitStrike; set => _isInvisibilitStrike = value; }
+
+    public void InvisibilitStrike(bool value) => _isInvisibilitStrike = value;
+
+    #endregion
+
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
     protected override bool IsCanCast => true;
@@ -422,6 +435,7 @@ public class CreeperInvisible : Skill
             }
         }
 
+        _strikeCrit = 1;
         playerMaterial.Clear();
     }
     

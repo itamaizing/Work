@@ -76,6 +76,7 @@ public class SpitPoison : Skill, IAltAbility
             {
                 _isTransparentPoisons = value;
 
+                Debug.Log("талант прозрачности активен");
                 if (_isTransparentPoisons) Buff.ManaCost.IncreasePercentage(_increaseManaCostValue);
                 else Buff.ManaCost.IncreasePercentage(_baseIncreaseManaCostValue);
             }
@@ -273,7 +274,7 @@ public class SpitPoison : Skill, IAltAbility
         {
             CmdInstantiateProjectileToTarget(damageable.gameObject, _player.Resource.CurrentValue,
                 _isActiveHealingSpitPoison, _isActiveRestorationOfGlands, IsAltAbility,
-                _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
+                _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies, _isTransparentPoisons);
 
             //CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
         }
@@ -281,7 +282,7 @@ public class SpitPoison : Skill, IAltAbility
         {
             CmdInstantiateProjectileToPoint(_mousePos, _player.Resource.CurrentValue,
                 _isActiveHealingSpitPoison, _isActiveRestorationOfGlands, IsAltAbility,
-                _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies);
+                _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies, _isTransparentPoisons);
 
             //CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
         }
@@ -307,7 +308,7 @@ public class SpitPoison : Skill, IAltAbility
     [Command]
     private void CmdInstantiateProjectileToTarget(GameObject target, float manaValue,
         bool isActiveHealingSpitPoison, bool isActiveRestorationOfGlands, bool isPlayerInvisible,
-        bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
+        bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, bool isTransparentPoisons)
     {
         int ownerLayer = _player.gameObject.layer;
 
@@ -321,17 +322,19 @@ public class SpitPoison : Skill, IAltAbility
 
         projectile.InitializationProjectile(_player, this, _player.Resource.CurrentValue,
             isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
-            isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack, _creeperPoisonAura.IsFeelingPoisoning, _isTransparentPoisons, ownerLayer);
+            isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack, _creeperPoisonAura.IsFeelingPoisoning, isTransparentPoisons, ownerLayer);
 
         projectile.MoveBallToTarget(target.transform.position);
 
         NetworkServer.Spawn(item);
+
+        projectile.RpcInitTransparent(isTransparentPoisons, ownerLayer);
     }
 
     [Command]
     private void CmdInstantiateProjectileToPoint(Vector3 point, float manaValue,
         bool isActiveHealingSpitPoison, bool isActiveRestorationOfGlands, bool isPlayerInvisible,
-        bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies)
+        bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, bool isTransparentPoisons)
     {
         int ownerLayer = _player.gameObject.layer;
 
@@ -345,7 +348,7 @@ public class SpitPoison : Skill, IAltAbility
 
         projectile.InitializationProjectile(_player, this, _player.Resource.CurrentValue,
             isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
-            isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack, _creeperPoisonAura.IsFeelingPoisoning, _isTransparentPoisons, ownerLayer);
+            isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack, _creeperPoisonAura.IsFeelingPoisoning, isTransparentPoisons, ownerLayer);
 
         Vector3 direction = point - spawnPosition;
         direction.y = 0;
@@ -358,6 +361,8 @@ public class SpitPoison : Skill, IAltAbility
         projectile.MoveBallOnMaxDistance(point);
 
         NetworkServer.Spawn(item);
+
+        projectile.RpcInitTransparent(isTransparentPoisons, ownerLayer);
     }
 
     [Command]

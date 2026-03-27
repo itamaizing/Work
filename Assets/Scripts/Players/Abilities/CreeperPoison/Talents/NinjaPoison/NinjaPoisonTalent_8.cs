@@ -9,7 +9,6 @@ public class NinjaPoisonTalent_8 : Talent
     {
         _spitPoison.TransparentPoisons(true);
         _poison.TransparentPoisons(true);
-
     }
 
     public override void Exit()

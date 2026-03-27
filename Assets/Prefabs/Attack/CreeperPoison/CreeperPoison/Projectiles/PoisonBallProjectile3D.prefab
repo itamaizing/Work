@@ -172,6 +172,10 @@ MonoBehaviour:
   poisonBone: 6
   _fastMovementSpeed: 4
   _slowMovementSpeed: 18
+  _projectileMaterialBase: {fileID: 2100000, guid: a1176460fe184df48bd9e64f9125eae9, type: 2}
+  _projectileMaterialEnemy: {fileID: 2100000, guid: f97f6a97d9322824c8379d7e76f4dd3b, type: 2}
+  _projectileMaterialAllies: {fileID: 2100000, guid: 88e95aaee0b630b4e83b856e2b23ef59, type: 2}
+  _renderer: {fileID: 50168921690284967}
 --- !u!114 &7624441198542085386
 MonoBehaviour:
   m_ObjectHideFlags: 0

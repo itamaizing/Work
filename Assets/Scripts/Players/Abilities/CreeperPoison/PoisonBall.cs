@@ -578,7 +578,7 @@ public class PoisonBall : Skill, IAltAbility
                 _activeTalentsInfo.IsActiveFootInstincts, _activeTalentsInfo.IsActiveRestorationOfGlands,
                 _isHealingPoisonBall, _activeTalentsInfo.IsActiveWitheringPoison, _activeTalentsInfo.IsActiveVoluminousBall, _isActiveBallEffect,
                 _activeTalentsInfo.IsActiveInertialGlands, _activeTalentsInfo.IsActiveContinuationAmbush,
-                _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
+                _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies, _isTransparentPoisons);
 
             if (_isCanSpawnPoisonCloud)
             {
@@ -593,7 +593,7 @@ public class PoisonBall : Skill, IAltAbility
                 _activeTalentsInfo.IsActiveFootInstincts, _activeTalentsInfo.IsActiveRestorationOfGlands,
                 _isHealingPoisonBall, _activeTalentsInfo.IsActiveWitheringPoison, _activeTalentsInfo.IsActiveVoluminousBall, _isActiveBallEffect,
                 _activeTalentsInfo.IsActiveInertialGlands, _activeTalentsInfo.IsActiveContinuationAmbush,
-                _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies);
+                _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies, _isTransparentPoisons);
 
             if (_isCanSpawnPoisonCloud)
             {
@@ -771,7 +771,7 @@ public class PoisonBall : Skill, IAltAbility
         bool isActiveFootInstincts, bool isActiveRestorationOfGlands,
         bool isActiveHealingPoisonBall, bool isActiveWitheringPoison, bool isActiveVoluminousBall, bool isActiveBallEffect,
         bool isActiveInertialGlands, bool isActiveContinuationAmbush,
-        bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies)
+        bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies, bool isTransparentPoisons)
 
     {
         int ownerLayer = _player.gameObject.layer;
@@ -823,11 +823,13 @@ public class PoisonBall : Skill, IAltAbility
             isActiveFootInstincts, isActiveRestorationOfGlands,
             isActiveHealingPoisonBall, isActiveWitheringPoison, isActiveVoluminousBall, isActiveBallEffect,
             isPushTarget, isPlayerInvisible,
-            _isTransparentPoisons, ownerLayer);
+            isTransparentPoisons, ownerLayer);
 
         poisonBallProjectile.MoveBallToTarget(targetPosition, isFast);
 
         NetworkServer.Spawn(item);
+
+        poisonBallProjectile.RpcInitTransparent(isTransparentPoisons, ownerLayer);
 
         if (_poisonBallInfo.CountProjectiles > maxCountProjectiles)
         {
@@ -847,7 +849,7 @@ public class PoisonBall : Skill, IAltAbility
         bool isActiveFootInstincts, bool isActiveRestorationOfGlands,
         bool isActiveHealingPoisonBall, bool isActiveWitheringPoison, bool isActiveVoluminousBall, bool isActiveBallEffect,
         bool isActiveInertialGlands, bool isActiveContinuationAmbush,
-        bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies)
+        bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies, bool isTransparentPoisons)
     {
         //_player.Health.Add(-100f);
 
@@ -907,12 +909,14 @@ public class PoisonBall : Skill, IAltAbility
             isActiveFootInstincts, isActiveRestorationOfGlands,
             isActiveHealingPoisonBall, isActiveWitheringPoison, isActiveVoluminousBall, isActiveBallEffect,
             isPushTarget, isPlayerInvisible,
-            _isTransparentPoisons, ownerLayer
+            isTransparentPoisons, ownerLayer
             );
 
         poisonBallProjectile.MoveBallOnMaxDistance(finalPoint, isFast);
 
         NetworkServer.Spawn(item);
+
+        poisonBallProjectile.RpcInitTransparent(isTransparentPoisons, ownerLayer);
 
         if (_poisonBallInfo.CountProjectiles >= maxCountProjectiles)
         {

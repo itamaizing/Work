@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ParticlesTransparentSpitPoisonEnemy
+  m_Name: ParticlesSpitPoisonAllies
   m_Shader: {fileID: 200, guid: 0000000000000000f000000000000000, type: 0}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -134,6 +134,6 @@ Material:
     - _ColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 1024, g: 1024, b: 1024, a: 1}
     - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
-    - _TintColor: {r: 1, g: 1, b: 1, a: 0}
+    - _TintColor: {r: 0, g: 0.4037736, b: 0.012667406, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
