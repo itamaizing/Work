@@ -15,6 +15,8 @@ public class CreeperPoisonAura : NetworkBehaviour
     private Coroutine _poisonAuraRoutine;
     private int _lastStacks = 0;
 
+    private int _lastEnergyStacks = 0;
+
     private Health _health;
     private Character _owner;
 
@@ -24,9 +26,11 @@ public class CreeperPoisonAura : NetworkBehaviour
     private bool _isFeelingPoisoning = false;
     private bool _isEvadePoison = false;
     private bool _isOwnElement = false;
+    private bool _isPleasurePoisoning = false;
 
     public bool IsFeelingPoisoning { get => _isFeelingPoisoning; set => _isFeelingPoisoning = value; }
 
+    public void PleasurePoisoning(bool value) => _isPleasurePoisoning = value;
     public void OwnElement(bool value) => _isOwnElement = value;
     public void FeelingPoisoning(bool value) => _isFeelingPoisoning = value;
     public void EvadePoison(bool value) => _isEvadePoison = value;
@@ -88,6 +92,37 @@ public class CreeperPoisonAura : NetworkBehaviour
         _tempEvadeBonus = 0f;
     }
 
+    private void ApplyEnergyRegen(int stacks)
+    {
+        if (_owner == null || _owner.CharacterState == null) return;
+
+        if (stacks == _lastEnergyStacks) return;
+
+        var state = _owner.CharacterState.GetState(States.FeelingPoisoning) as FeelingPoisoningState;
+
+        if (state == null && stacks > 0)
+        {
+            _owner.CharacterState.CmdAddState(States.FeelingPoisoning, 999f, 0f, gameObject, "PleasurePoisoning");
+            state = _owner.CharacterState.GetState(States.FeelingPoisoning) as FeelingPoisoningState;
+        }
+
+        if (state == null) return;
+
+        int delta = stacks - _lastEnergyStacks;
+
+        if (delta > 0)
+        {
+            for (int i = 0; i < delta; i++) state.Stack(999f);
+        }
+
+        else if (delta < 0)
+        {
+            for (int i = 0; i < -delta; i++) state.ReduceStack();
+        }
+
+        _lastEnergyStacks = stacks;
+    }
+
     private bool HasPoison(Character character)
     {
         var states = character.CharacterState.CurrentStates;
@@ -105,6 +140,18 @@ public class CreeperPoisonAura : NetworkBehaviour
     {
         while (true)
         {
+            if (!_isOwnElement)
+            {
+                if (_lastStacks != 0)
+                {
+                    ApplyAttackSpeed(0);
+                    _lastStacks = 0;
+                }
+
+                yield return new WaitForSeconds(_tickRate);
+                continue;
+            }
+
             int totalStacks = CalculatePoisonStacks();
 
             if (totalStacks != _lastStacks)
@@ -113,8 +160,28 @@ public class CreeperPoisonAura : NetworkBehaviour
                 _lastStacks = totalStacks;
             }
 
+            if (_isPleasurePoisoning)
+            {
+                ApplyEnergyRegen(totalStacks);
+            }
+            else
+            {
+                ResetEnergyRegen();
+            }
+
             yield return new WaitForSeconds(_tickRate);
         }
+    }
+
+    private void ResetEnergyRegen()
+    {
+        if (_owner == null || _owner.CharacterState == null) return;
+
+        var state = _owner.CharacterState.GetState(States.FeelingPoisoning);
+
+        if (state != null) _owner.CharacterState.RemoveState(States.FeelingPoisoning);
+
+        _lastEnergyStacks = 0;
     }
 
     private int CalculatePoisonStacks()
