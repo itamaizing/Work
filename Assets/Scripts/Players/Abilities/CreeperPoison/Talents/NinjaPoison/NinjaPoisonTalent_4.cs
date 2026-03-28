@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class NinjaPoisonTalent_4 : Talent
 {
-    [SerializeField] private CreeperStrike creeperStrike;
     [SerializeField] private ColdBlood coldBlood;
 
     [SerializeField] private SkillManager skillManager;
@@ -12,12 +11,10 @@ public class NinjaPoisonTalent_4 : Talent
     public override void Enter()
     {
         skillManager.ActivateSkill(coldBlood);
-        creeperStrike.CheckForStatePoisonBone(true);
     }
 
     public override void Exit()
     {
         skillManager.DeactivateSkill(coldBlood);
-        creeperStrike.CheckForStatePoisonBone(false);
     }
 }

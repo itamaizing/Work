@@ -196,7 +196,12 @@ public class CreeperStrike : Skill
 
                 Debug.Log("CreeperStrike: Invis Crit x4 applied");
             }
-            float _currentChanceOfCriticalStrike = UnityEngine.Random.Range(0.0f, 1.0f);
+
+            int totalStacks = GetTotalPoisonStacks(character);
+
+            float critChance = 0.05f * totalStacks;
+            critChance = Mathf.Min(critChance, 1f);
+            float roll = UnityEngine.Random.Range(0f, 1f);
 
             _isHit = true;
             OnHit?.Invoke();
@@ -286,10 +291,25 @@ public class CreeperStrike : Skill
 
                 DealCriticalDamage(character, _currentDamage, true);
             }
-            else if (_currentChanceOfCriticalStrike <= _chanceOfCriticalStrike)
+
+            if (_isCheckForStatePoisonBone && character != null)
             {
-                DealCriticalDamage(character, _currentDamage);
+                if (roll <= critChance)
+                {
+                    float critDamage = GetPoisonCritMultiplier(character, _currentDamage);
+
+                    Damage damage = new Damage
+                    {
+                        Value = Buff.Damage.GetBuffedValue(critDamage),
+                        Type = DamageType.Physical,
+                        PhysicAttackType = AttackRangeType.MeleeAttack,
+                    };
+
+                    CmdApplyDamage(damage, character.gameObject);
+                    return;
+                }
             }
+
             else
             {
 
@@ -426,6 +446,37 @@ public class CreeperStrike : Skill
         CmdApplyDamage(critDamage, currentTarget.gameObject);
 
         if (_feelingOfContinuation.Data.IsOpen) CmdFeelingOfContinuation(_player.gameObject, critDamage.Value);
+    }
+
+    private int GetTotalPoisonStacks(Character target)
+    {
+        int stacks = 0;
+
+        if (target.CharacterState.GetState(States.BindingPoison) is BindingPoisonState bindingPoisonState)
+            stacks += bindingPoisonState.CurrentStacks;
+
+        if (target.CharacterState.GetState(States.PoisonBone) is PoisonBoneState poisonBoneState)
+            stacks += poisonBoneState.CurrentStacks;
+
+        if (target.CharacterState.GetState(States.EmpathicPoisons) is EmpathicPoisonsState empathicPoisonsState)
+            stacks += empathicPoisonsState.CurrentStacks;
+
+        if (target.CharacterState.GetState(States.WitheringPoison) is WitheringPoisonState witheringPoisonState)
+            stacks += witheringPoisonState.CurrentStacks;
+
+        return stacks;
+    }
+
+    private float GetPoisonCritMultiplier(Character target, float baseDamage)
+    {
+        int poisonBoneStacks = 0;
+
+        if (target.CharacterState.GetState(States.PoisonBone) is PoisonBoneState poisonBoneState)
+            poisonBoneStacks = poisonBoneState.CurrentStacks;
+
+        float multiplier = 2.5f + poisonBoneStacks;
+
+        return baseDamage * multiplier;
     }
 
     #endregion

@@ -137,17 +137,10 @@ public class CreeperPoisonAura : NetworkBehaviour
     {
         int stacks = 0;
 
-        if (state.GetState(States.BindingPoison) is BindingPoisonState b)
-            stacks += b.CurrentStacks;
-
-        if (state.GetState(States.PoisonBone) is PoisonBoneState pb)
-            stacks += pb.CurrentStacks;
-
-        if (state.GetState(States.EmpathicPoisons) is EmpathicPoisonsState ep)
-            stacks += ep.CurrentStacks;
-
-        if (state.GetState(States.WitheringPoison) is WitheringPoisonState wp)
-            stacks += wp.CurrentStacks;
+        if (state.GetState(States.BindingPoison) is BindingPoisonState bindingPoisonState) stacks += bindingPoisonState.CurrentStacks;
+        if (state.GetState(States.PoisonBone) is PoisonBoneState poisonBoneState) stacks += poisonBoneState.CurrentStacks;
+        if (state.GetState(States.EmpathicPoisons) is EmpathicPoisonsState empathicPoisonsState) stacks += empathicPoisonsState.CurrentStacks;
+        if (state.GetState(States.WitheringPoison) is WitheringPoisonState witheringPoisonState) stacks += witheringPoisonState.CurrentStacks;
 
         return stacks;
     }

@@ -18239,11 +18239,11 @@ PrefabInstance:
       objectReference: {fileID: 3640861181852123848}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentRow.Array.data[0].Talents.Array.size
-      value: 10
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRow.Array.data[0].Talents.Array.size
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.size
@@ -18284,11 +18284,11 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRow.Array.data[0].Talents.Array.data[8]'
       value: 
-      objectReference: {fileID: 3096915051999318309}
+      objectReference: {fileID: 4318163990653874616}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRow.Array.data[0].Talents.Array.data[9]'
       value: 
-      objectReference: {fileID: 7566935048732947578}
+      objectReference: {fileID: 3096915051999318309}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRow.Array.data[0].Talents.Array.data[0]'
       value: 
@@ -18308,11 +18308,11 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRow.Array.data[0].Talents.Array.data[4]'
       value: 
-      objectReference: {fileID: 536535723249904053}
+      objectReference: {fileID: 3990197728858337664}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRow.Array.data[0].Talents.Array.data[5]'
       value: 
-      objectReference: {fileID: 3157481039742532545}
+      objectReference: {fileID: 536535723249904053}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.data[0]'
       value: 
@@ -18353,6 +18353,10 @@ PrefabInstance:
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.data[9]'
       value: 
       objectReference: {fileID: 7712686978828366250}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRow.Array.data[0].Talents.Array.data[10]'
+      value: 
+      objectReference: {fileID: 7566935048732947578}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.data[10]'
       value: 
@@ -18395,11 +18399,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8492809262968261936, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 8492809262968261936, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 8630238717969952997, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchorMax.x
@@ -18560,6 +18564,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 965364833510229628}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3990197728858337664}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 536535723249904053}
@@ -20416,6 +20423,12 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _radius: 6
+  _enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  _attackSpeedPerStack: 0.1
+  _tickRate: 0.2
 --- !u!114 &2434123723962207148 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5590339039165547173, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -20582,8 +20595,6 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 2483674839823445686}
   skillManager: {fileID: 2617687491934927079}
-  speed: {fileID: 8150686032681382611}
-  _metabolismReptile: {fileID: 1218428867352848936}
   _poisonSlap: {fileID: 8577860281443816807}
 --- !u!114 &965364833510229628
 MonoBehaviour:
@@ -20606,6 +20617,39 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 2483674839823445686}
+  speed: {fileID: 0}
+  skillManager: {fileID: 0}
+  _metabolismReptile: {fileID: 0}
+--- !u!114 &3990197728858337664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7437800528419325459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1370fa568bd4c742b7fc1e17acbb9d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ReptileTalent_5
+  _data:
+    _descriptionsForInfoPanel:
+    - "\"\u0441\u0432\u043E\u044F \u0441\u0442\u0438\u0445\u0438\u044F\" - \u043A\u0430\u0436\u0434\u044B\u0439
+      \u0430\u043A\u0442\u0438\u0432\u043D\u044B\u0439 \u044F\u0434 \u043D\u0430
+      \u0446\u0435\u043B\u044F\u0445 \u0432 \u0440\u0430\u0434\u0438\u0443\u0441\u0435
+      6 \u043C\u0435\u0442\u0440\u043E\u0432 \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
+      \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0445
+      \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439  \u043D\u0430
+      10%, \u043A\u0430\u0436\u0434\u044B\u0439 \u0441\u0442\u0430\u043A \u044F\u0434\u0430
+      \u0442\u043E\u0436\u0435 \u0441\u0447\u0438\u0442\u0430\u0435\u0442\u0441\u044F"
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u0441\u0432\u043E\u044F \u0441\u0442\u0438\u0445\u0438\u044F"
+    Icon: {fileID: 21300000, guid: a538aa3f3c7f21744bdd9f0be36dd23a, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 2483674839823445686}
+  _creeperPoisonAura: {fileID: 2161342997938470374}
 --- !u!114 &536535723249904053
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21197,7 +21241,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 2483674839823445686}
-  creeperStrike: {fileID: 6745892867125186241}
   coldBlood: {fileID: 4616268591970552908}
   skillManager: {fileID: 2617687491934927079}
 --- !u!114 &827767455665323477
@@ -21339,15 +21382,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NinjaPoisonTalent_9
   _data:
-    _descriptionsForInfoPanel: []
+    _descriptionsForInfoPanel:
+    - "\u041F\u0440\u0438 \u0443\u0434\u0430\u0440\u0435 \u0441 \"\u0441\u043A\u043E\u043D\u0446\u0435\u043D\u0442\u0440\u0438\u0440\u043E\u0432\u0430\u043D\u043D\u044B\u043C
+      \u0443\u0434\u0430\u0440\u043E\u043C (\u043F\u0435\u0440\u0435\u0438\u043C\u0435\u043D\u043E\u0432\u0430\u043D
+      \u0438\u0437 \u0441\u0442\u044B\u043B\u0430\u044F \u043A\u0440\u043E\u0432\u044C)\"
+      \u043F\u043E \u0446\u0435\u043B\u0438 \u0432 \"\u043E\u0441\u043B\u0435\u043F\u043B\u0435\u043D\u0438\u0438\",
+      \u043A\u0434 \"\u0441\u043A\u043E\u043D\u0446\u0435\u043D\u0442\u0440\u0438\u0440\u043E\u0432\u0430\u043D\u043D\u043E\u0433\u043E
+      \u0443\u0434\u0430\u0440\u0430\" \u043C\u0435\u043D\u044C\u0448\u0435 \u0432
+      2 \u0440\u0430\u0437\u0430."
     _stateInfos: []
     IsOpen: 0
-    Description: 
-    Icon: {fileID: 0}
+    Description: "\u041D\u0438\u043D\u0434\u0437\u044F 9"
+    Icon: {fileID: 21300000, guid: 8d177058b628a854487d1af8f3aba693, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 2483674839823445686}
-  _coldBlood: {fileID: 0}
+  _creeperStrike: {fileID: 6745892867125186241}
 --- !u!114 &3096915051999318309
 MonoBehaviour:
   m_ObjectHideFlags: 0
