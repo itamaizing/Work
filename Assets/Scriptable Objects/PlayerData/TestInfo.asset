@@ -23,20 +23,20 @@ MonoBehaviour:
     attributes:
     - nameToShow: MaxValue
       type: 0
-      value: 9999
+      value: 999
     - nameToShow: Regen
       type: 1
-      value: 0
+      value: 10
   _mainResource:
     nameToShow: Mana
     type: 1
     attributes:
     - nameToShow: MaxValue
       type: 0
-      value: 9999
+      value: 999
     - nameToShow: Regen
       type: 1
-      value: 0
+      value: 10
   _extraResources: []
   _attributes:
     _attributes:
@@ -54,7 +54,7 @@ MonoBehaviour:
       value: 0
     - nameToShow: MoveSpeed
       type: 4
-      value: 1
+      value: 5
     - nameToShow: VisionRadius
       type: 5
       value: 2

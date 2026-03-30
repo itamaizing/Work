@@ -97,6 +97,8 @@ public class NetworkRoom
 
     public void GameStart(GameRules item)
     {
+        Debug.LogError("pupupu");
+        /*
         if (_isLoaded)
         {
             SceneManager.MoveGameObjectToScene(item.gameObject, _currentRoom);
@@ -110,6 +112,7 @@ public class NetworkRoom
         {
             Debug.LogError($"Room loaded status - {_isLoaded}");
         }
+        */
     }
 
     public void AddItem(GameObject item)

@@ -23,6 +23,16 @@ public class DisconnectButtonUI : MonoBehaviour
 
     private void OnClick()
     {
+        if (User.Instance == null || User.Instance.isServer)
+        {
+            MPNetworkManager.Instance.StopServer();
+        }
+        else if (User.Instance.isClient)
+        {
+            MPNetworkManager.Instance.StopClient();
+        }
+
+        /*
         var gameRules = FindObjectOfType<GameRules>();
 
         if (gameRules != null && gameRules.IsStarted)
@@ -48,5 +58,6 @@ public class DisconnectButtonUI : MonoBehaviour
         {
             UIMenuMainPlayerInfoPanel.Instance.SetBottleInfo(BottleUserManager.Instance.GetCurrentBottles());
         }
+        */
     }
 }

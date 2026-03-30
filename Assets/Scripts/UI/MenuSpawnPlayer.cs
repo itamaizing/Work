@@ -37,7 +37,6 @@ public class MenuSpawnPlayer : MonoBehaviour
         }
     }
 
-    [Client]
     private void SpawnPlayer(HeroComponent hero)
     {
         if(_currentHero != null)

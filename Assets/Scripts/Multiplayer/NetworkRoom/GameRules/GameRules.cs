@@ -6,9 +6,11 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Debug = UnityEngine.Debug;
 
 public abstract class GameRules : NetworkBehaviour
 {
+    [SerializeField] private int _maxPlayers = 2;
     [SerializeField] private int _expValuePerPlayer = 10;
     [SerializeField] private float _baseTimeForRevival = 5;
     [SerializeField] private float _AddTimeForRevival = 1;
@@ -16,7 +18,7 @@ public abstract class GameRules : NetworkBehaviour
     protected readonly SyncList<GameObject> _playersSyncList = new SyncList<GameObject>();
     protected List<Character> _players = new List<Character>();
 
-    protected NetworkRoom _room;
+    //protected NetworkRoom _room;
 
     [SyncVar] protected string _roomName;
 
@@ -29,10 +31,13 @@ public abstract class GameRules : NetworkBehaviour
     [SyncVar] private bool _isStarted;
     private float _disconnectDelayClient = 6f;
     private float _disconnectDelayServer = 5f;
+    private int _currentPlayers = 0;
     public bool IsStarted { get => _isStarted; set => _isStarted = value; }
 
     public SyncList<GameObject> Players => _playersSyncList;
     public HeroSpawnManager SpawnPoints => _spawnPoints;
+    public int MaxPlayers { get => _maxPlayers;}
+    public int CurrentPlayers { get => _currentPlayers; set => _currentPlayers = value; }
 
     public abstract void GameStartServer(HeroSpawnManager spawnPoints);
     protected abstract void UnsubscribeFromAllEvents();
@@ -97,11 +102,11 @@ public abstract class GameRules : NetworkBehaviour
         else CmdRestart();
     }
 
-    public void Init(NetworkRoom room)
+    public void Init()
     {
-        _room = room;
-        _roomName = _room.SceneName;
-
+        //_room = room;
+        //_roomName = _room.SceneName;
+        Debug.LogError("asdasd");
         AddAllPlayersInList();
         SubscribingOnPlayerEvents();
         SubscribeToTowerDeath();
@@ -134,7 +139,7 @@ public abstract class GameRules : NetworkBehaviour
 
     protected virtual IEnumerator FindServerGameManager()
     {
-        while (!_room.IsLoaded)
+        while (SceneManager.GetActiveScene().isLoaded == false)
         {
             yield return null;
         }
@@ -224,7 +229,16 @@ public abstract class GameRules : NetworkBehaviour
 
         yield return new WaitForSecondsRealtime(_disconnectDelayServer);
 
-        yield return _room.UnloadRoomJob();
+        //yield return _room.UnloadRoomJob();
+
+        if (User.Instance == null || User.Instance.isServer)
+        {
+            MPNetworkManager.Instance.StopServer();
+        }
+        else if (User.Instance.isClient)
+        {
+            MPNetworkManager.Instance.StopClient();
+        }
     }
 
     protected virtual void AddExpForAllEnemy(Character character)
@@ -283,9 +297,10 @@ public abstract class GameRules : NetworkBehaviour
         _regenCoroutine = null;
     }
 
+    
     private void AddAllPlayersInList()
     {
-        foreach (var item in _room.Players)
+        foreach (var item in MPNetworkManager.Instance.Players)
         {
             _playersSyncList.Add(item);
             var playerSettings = item.GetComponent<Character>();

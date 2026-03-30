@@ -17,56 +17,32 @@ MonoBehaviour:
   type: 
   _icon: {fileID: 21300000, guid: 16405efa12360244cac7d75e550555d9, type: 3}
   _iconSize: 0
-  _health:
-    nameToShow: Health
-    type: 0
-    attributes:
-    - nameToShow: MaxValue
-      type: 0
-      value: 888
-    - nameToShow: Regen
-      type: 1
-      value: 0.8
-  _mainResource:
-    nameToShow: Mana
-    type: 1
-    attributes:
-    - nameToShow: MaxValue
-      type: 0
-      value: 888
-    - nameToShow: Regen
-      type: 1
-      value: 4.2
-  _extraResources: []
   _attributes:
-    _attributes:
-    - nameToShow: ResistancePhysical
-      type: 0
-      value: 0
-    - nameToShow: ResistanceMagical
-      type: 1
-      value: 7
-    - nameToShow: EvasionPhysical
-      type: 2
-      value: 1
-    - nameToShow: EvasionMagical
-      type: 3
-      value: 9
-    - nameToShow: MoveSpeed
-      type: 4
-      value: 5
-    - nameToShow: VisionRadius
-      type: 5
-      value: 2
-    - nameToShow: CastSpeed
-      type: 6
-      value: 0
-    - nameToShow: CastSpeedPhysical
-      type: 7
-      value: 0
-    - nameToShow: CastSpeedMagical
-      type: 8
-      value: 0
-    - nameToShow: ResourceCost
-      type: 9
-      value: 0
+    _attributeGroup2:
+    - Name: Health
+      Description: Health
+      _value: 100
+    - Name: HPRegen
+      Description: Hp regen
+      _value: 0
+    - Name: Resourse
+      Description: Resourse
+      _value: 200
+    - Name: ResourseRegen
+      Description: Res Regen
+      _value: 0
+    - Name: Speed
+      Description: Speed
+      _value: 5
+    - Name: MagicResist
+      Description: Magic Resist
+      _value: 0
+    - Name: PhysicResist
+      Description: Phys Resist
+      _value: 0
+    - Name: MagicEvade
+      Description: Magic Evade
+      _value: 0
+    - Name: EvasionPhysical
+      Description: Phys Evade
+      _value: 0

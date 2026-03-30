@@ -90,6 +90,7 @@ public class MoveComponent : NetworkBehaviour, IAttribute
 		_attribute = attributes;
 		//_defaultSpeed = speed;
 		_defaultSpeed = attributes.GetValue();
+		Debug.Log(_defaultSpeed);
 
 		_rigidbody = rb;
 		
