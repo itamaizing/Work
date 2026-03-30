@@ -17,6 +17,11 @@ public class ReversePolarity : Skill
     private AudioSource _audioSource;
 
     private float _cooldownAfterDarkMode = 6f;
+    
+    #region ReversePolarity Movement Talent
+    private ReversePolarityMovementBooster _movementBooster;
+    public ReversePolarityMovementBooster ReversePolarityMovementBooster => _movementBooster;
+    #endregion
 
     private void Start()
     {
@@ -25,6 +30,7 @@ public class ReversePolarity : Skill
 
     private void OnEnable()
     {
+        _movementBooster = new ReversePolarityMovementBooster(this);
     }
 
     private void OnDisable()
@@ -70,11 +76,15 @@ public class ReversePolarity : Skill
     private void ApplyReversePolarityEffect()
     {
         CmdAddBaff(States.ReversePolarity, -1f, 0, transform.gameObject, Name);
+        
+        _movementBooster?.OnReversePolarityActivated(true);
     }
 
     public void RemoveReversePolarityEffect()
     {
         CmdRemoveBuff(States.ReversePolarity, Hero.gameObject);
+        
+        _movementBooster?.OnReversePolarityActivated(false);
     }
 
     [Command]

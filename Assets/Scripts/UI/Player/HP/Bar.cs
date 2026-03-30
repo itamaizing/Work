@@ -29,6 +29,7 @@ public class Bar : MonoBehaviour
 	protected float _preViewValue;
 	private Health _health;
 
+	private bool _isDestroyed = false;
 	private bool ShieldActive = false;
 
 	public virtual void Init(Resource resource)
@@ -79,6 +80,8 @@ public class Bar : MonoBehaviour
 
     private void OnDestroy()
     {
+	    _isDestroyed = true;
+	    
 		if (_resource != null)
 		{
 			_resource.ValueChanged -= OnValueChanged;
@@ -114,6 +117,9 @@ public class Bar : MonoBehaviour
 			_bar.DOValue(_currentValue / _maxValue, _disapearSpeed);
 
 		if(_showText) _barText.text = Mathf.RoundToInt(_currentValue).ToString();
+		
+		if (_isDestroyed || _bar == null) return;
+		
 		if (gameObject.activeInHierarchy) StartCoroutine(DisapearBar());
 	}
 

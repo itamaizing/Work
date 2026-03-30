@@ -80,7 +80,8 @@ public class DestructionState : RefreshingState
             Type = DamageType.Magical,
         };
 
-        health.TryTakeDamage(ref damage, null);
+        if(characterState.isClient)
+            health.CmdTryTakeDamage(damage, null);
         
         if (damageToExit == -1f)
         {
