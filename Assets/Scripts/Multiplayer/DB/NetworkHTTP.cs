@@ -8,7 +8,7 @@ public class NetworkHTTP : MonoBehaviour
 {
     public static NetworkHTTP Instance { get; private set; }
 
-    private Coroutine _authorizationCoroutine;
+    private Coroutine _postCoroutine;
 
     public static HeroData ConvertInHeroData(string data)
     {
@@ -35,7 +35,7 @@ public class NetworkHTTP : MonoBehaviour
 
     public void Post(string uri, Dictionary<string, string> data, Action<string> success, Action<string> error = null)
     {
-        _authorizationCoroutine = StartCoroutine(PostJob(uri, data, success, error = null));
+        _postCoroutine = StartCoroutine(PostJob(uri, data, success, error = null));
     }
 
     /// <summary>

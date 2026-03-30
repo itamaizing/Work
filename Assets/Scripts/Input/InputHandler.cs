@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -63,10 +64,14 @@ public class InputHandler : MonoBehaviour
 	private void Awake()
 	{
 		if (Instance == null)
-			Instance = this;
+		{
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
 		else
-			Destroy(Instance);
-
+		{
+            Destroy(Instance);
+        }
 		_inputActions = new StandardInput();
 
 
@@ -153,7 +158,18 @@ public class InputHandler : MonoBehaviour
 		OnClickCanceled += SetClickFalse;
 	}
 
-	private void OnEnable()
+    private void Start()
+    {
+		MPNetworkManager.Instance.ConnectClosed += OnClientDisconnect;
+    }
+
+    private void OnClientDisconnect()
+    {
+		Instance = null;
+        Destroy(gameObject);
+    }
+
+    private void OnEnable()
 	{
 		if(_inputActions != null)
 		_inputActions.Enable();

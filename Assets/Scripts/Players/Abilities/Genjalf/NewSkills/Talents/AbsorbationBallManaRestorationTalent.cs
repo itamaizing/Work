@@ -6,11 +6,11 @@ public class AbsorbationBallManaRestorationTalent : Talent
     
     public override void Enter()
     {
-        _absorptionBall.IsManaRegenActive = true;
+        //_absorptionBall.IsManaRegenActive = true;
     }
 
     public override void Exit()
     {
-        _absorptionBall.IsManaRegenActive = false;
+        //_absorptionBall.IsManaRegenActive = false;
     }
 }
