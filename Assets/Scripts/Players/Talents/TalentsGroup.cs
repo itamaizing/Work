@@ -9,12 +9,12 @@ public class TalentsGroup
 	[SerializeField] private int _id;
 	[SerializeField] private string _name;
 	//[SerializeField] private List<Talent> _talentGroup;
-	[SerializeField] private List<TalentRow> _talentRow;
+	[SerializeField] private List<TalentRow> _talentRows;
 
 	public int ID => _id;
 	public string Name => _name;
 	//public List<Talent> TalentsData => _talentGroup;
-	public List<TalentRow> TalentRows => _talentRow;
+	public List<TalentRow> TalentRows => _talentRows;
 
 	public int BonusAttributePoints(string talentName, bool isDecrease)
 	{
@@ -46,13 +46,25 @@ public class TalentsGroup
 			2 => activeCount == 0 ? 0 : activeCount == 1 ? 0 : activeCount == 2 ? 1 : 0,
 			_ => 0
 		};*/
-		return 0;
+		int count = 0;
+		foreach(var row in _talentRows)
+		{
+			foreach(var talent in row.Talents)
+			{
+				if(talent.Data.IsOpen)
+				{
+					count++; 
+				}
+			}
+		}
+		Debug.Log(count);
+		return count;
 	}
 
 	public void SetActive(TalentData data, bool isActive)
 	{
 		Talent talents = null;
-		foreach(TalentRow row in _talentRow)
+		foreach(TalentRow row in _talentRows)
 		{
 			var talent = row.Talents.FirstOrDefault(a => a.Data == data);
 			if (talent != null)

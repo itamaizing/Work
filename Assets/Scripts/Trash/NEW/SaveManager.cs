@@ -83,13 +83,16 @@ public class SaveManager : MonoBehaviour
 
     public void SaveAttributePoints(int points)
     {
-        _saveSystem.Save($"{_character.Data.Name}_Group{_currentSaveGroup}_FreeAttributesPoints", _attributeSystem.Points);
+        //_saveSystem.Save($"{_character.Data.Name}_Group{_currentSaveGroup}_FreeAttributesPoints", _attributeSystem.Points);
+        _saveSystem.Save($"{_character.Data.Name}_Group{_currentSaveGroup}_FreeAttributesPoints", points);
+        Debug.Log("save " + points);
     }
     
     public int LoadAttributePoints()
     {
         int points = 0;
         _saveSystem.Load<int>($"{_character.Data.Name}_Group{_currentSaveGroup}_FreeAttributesPoints", e => points = e);
+        Debug.Log("load " + points);
         return points;
     }
 

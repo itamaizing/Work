@@ -11,17 +11,6 @@ public class BoxArea : MonoBehaviour
     private List<Health> _enemies = new List<Health>();
     private List<Character> _targets = new List<Character>();
     private Damage _damage;
-	/*private Damage _zeroDamage;
-
-	private void Start()
-	{
-		_zeroDamage = new Damage
-		{
-			Value = 0,
-			Type = Info.DamageType.Physical,
-			Range = Info.AttackRangeType.RangeAttack,
-		};
-	}*/
 
 	public void SetSize(float width, float length, Damage damage)
     {
@@ -43,7 +32,6 @@ public class BoxArea : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-       
         if(collision.transform != transform.parent && collision.transform.TryGetComponent(out Character enemy))
         {
             // deistvie s enemy
@@ -52,7 +40,7 @@ public class BoxArea : MonoBehaviour
         }
         if (collision.TryGetComponent<Health>(out var hpEnemy) && collision.transform != transform.root)
 		{
-			//Debug.Log("ENTER " + collision.transform + "  / " + transform.root);
+            //Debug.Log("ENTER " + collision.transform + "  / " + transform.root);
             _enemies.Add(hpEnemy);
 			hpEnemy.ShowPhantomValue(_damage);
 		}
