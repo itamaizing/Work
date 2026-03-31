@@ -265,8 +265,31 @@ public class Health : Resource, IDamageable, IHealable
 
         return false;
     }
-
+    
     protected void UseShields(ref Damage damage, Skill skill)
+    {
+        if (_shields.Count == 0) return;
+        
+        for (int i = _shields.Count - 1; i >= 0; i--)
+        {
+            var shield = _shields[i];
+
+            if (shield == null)
+            {
+                _shields.RemoveAt(i);
+                continue;
+            }
+
+            shield.TryTakeDamage(ref damage, skill);
+
+            if (damage.Value == 0)
+                break;
+        }
+
+        _shields.RemoveAll(shield => shield == null);
+    }
+
+    /*protected void UseShields(ref Damage damage, Skill skill)
     {
         for (int i = 0; i < _shields.Count; i++)
         {
@@ -282,7 +305,7 @@ public class Health : Resource, IDamageable, IHealable
             _shields.RemoveAt(i);
             i--;
         }
-    }
+    }*/
 
     private void Defence(ref Damage damage)
     {

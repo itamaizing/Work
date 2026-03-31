@@ -12,7 +12,7 @@ public class DomeProcBooster : SkillTalentHandler
         _domeSkill = domeSkill;
     }
 
-    public void Enable(bool value)
+    public override void Enable(bool value)
     {
         _enabled = value;
     }

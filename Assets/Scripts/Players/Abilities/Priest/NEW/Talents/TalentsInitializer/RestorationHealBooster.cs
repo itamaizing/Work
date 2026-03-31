@@ -11,7 +11,7 @@ public class RestorationHealBooster : SkillTalentHandler
 
     public RestorationHealBooster(NetworkBehaviour owner) : base(owner) { }
 
-    public void Enable(bool value)
+    public override void Enable(bool value)
     {
         if (_enabled == value) return;
         _enabled = value;

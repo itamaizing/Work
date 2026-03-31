@@ -11,7 +11,7 @@ public class OverhealManaBooster : SkillTalentHandler
         _hero = hero;
     }
 
-    public void Enable(bool value)
+    public override void Enable(bool value)
     {
         if (_enabled == value) return;
         _enabled = value;

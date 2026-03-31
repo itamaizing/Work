@@ -8,7 +8,7 @@ public class SoulTiredDispelBooster : SkillTalentHandler
 
     public SoulTiredDispelBooster(NetworkBehaviour owner) : base(owner) { }
 
-    public void Enable(bool value) => _enabled = value;
+    public override void Enable(bool value) => _enabled = value;
     
     public bool CanCastOnTarget(Character target)
     {

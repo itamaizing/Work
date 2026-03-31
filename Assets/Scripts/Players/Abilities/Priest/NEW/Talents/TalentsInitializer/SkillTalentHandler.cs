@@ -13,4 +13,6 @@ public abstract class SkillTalentHandler
 
     protected Coroutine StartCoroutine(IEnumerator routine) 
         => Owner.StartCoroutine(routine);
+    
+    public virtual void Enable(bool value){}
 }

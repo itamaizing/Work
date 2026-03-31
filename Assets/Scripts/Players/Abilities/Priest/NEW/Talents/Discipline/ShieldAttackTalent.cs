@@ -6,11 +6,11 @@ public class ShieldAttackTalent : Talent
     
     public override void Enter()
     {
-        _priestShield.EnableShieldAttackTalent(true);
+       // _priestShield.EnableShieldAttackTalent(true);
     }
 
     public override void Exit()
     {
-        _priestShield.EnableShieldAttackTalent(false);
+        //_priestShield.EnableShieldAttackTalent(false);
     }
 }

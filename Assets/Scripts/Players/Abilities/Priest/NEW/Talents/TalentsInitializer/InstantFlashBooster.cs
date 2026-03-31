@@ -22,7 +22,7 @@ public class InstantFlashBooster : SkillTalentHandler
 
     public void Inject(FlashOfLight flash) => _flash = flash;
 
-    public void Enable(bool value) => _enabled = value;
+    public override void Enable(bool value) => _enabled = value;
 
     public void TryApply()
     {

@@ -11,19 +11,7 @@ public class PriestShield : Skill
     [Header("Shield (Light Mode) Settings")]
     [SerializeField] private float lightShieldDuration = 18f;
     [SerializeField] private float tiredSoulDuration = 12f;
-    [SerializeField] private float selfCastTime = 0.6f;
-    [SerializeField] private float allyCastTime = 1.2f;
-    [SerializeField] private float absorbAmount = 20f;
-    [SerializeField] private List<SkillEnergyCost> manaCostLight;
-    [SerializeField] private float cooldownLight = 4f;
-
-    //---------------- DarkSettings
-    [Header("Shield (Dark Mode) Settings")]
-    [SerializeField] private float darkShieldDuration = 12f;
-    [SerializeField] private float maxDamagePerTick = 20f;
-    [SerializeField] private List<SkillEnergyCost> manaCostDark;
-    [SerializeField] private float cooldownDark = 4f;
-    [SerializeField] private float darkCastTime = 1.2f;
+    [SerializeField] private float absorbAmount = 40f;
 
     [SerializeField] private AudioClip audioClip;
 
@@ -65,12 +53,12 @@ public class PriestShield : Skill
     private bool _talentTiredSoulActive = false;
     private const float TiredSoulEffectPercentage = 0.5f;
     
-    //................ Talent 9 (Reflection shield)
+    /*//................ Talent 9 (Reflection shield)
     private bool _shieldAttackTalentActive = false;
     public void EnableShieldAttackTalent(bool value)
     {
         _shieldAttackTalentActive = value;
-    }
+    }*/
 
     private float _absorbBonus = 0;
     private float _damagePerTickBonus = 0;
@@ -89,7 +77,39 @@ public class PriestShield : Skill
     public override bool IsPayCostStartCooldown => false;
 
     public event Action OnModeChange;
+    
+    private readonly Dictionary<PriestBoosterType, SkillTalentHandler> _boosters = new();
 
+    #region Boosters
+
+    #region Enums
+
+    public enum PriestBoosterType
+    {
+        None = 0,
+        SpiritShieldReflection,
+        LightShieldManaRestore
+    }
+
+    #endregion
+
+    
+    #region RelfectionShield
+
+    private SpiritShieldReflectionBooster _spiritShieldReflectionBooster;
+    public SpiritShieldReflectionBooster SpiritShieldReflectionBooster => _spiritShieldReflectionBooster;
+
+    #endregion
+
+    #region ShieldManaRestore
+
+    private LightShieldManaRestoreBooster _lightShieldManaBooster;
+    public LightShieldManaRestoreBooster LightShieldManaRestoreBooster => _lightShieldManaBooster;
+
+    #endregion
+
+    #endregion
+    
     private void Start()
     {
         _audioSource = GetComponent<AudioSource>();
@@ -97,43 +117,86 @@ public class PriestShield : Skill
 
     private void OnEnable()
     {
-        OnModeChange += HandleModeChange;
         Hero.DamageTracker.OnDamageTracked += TrackDarkDamage;
         Hero.Health.DamageTaken += TrackPhysDamage;
         Hero.DamageTracker.OnHealTracked += TrackHealDone;
-        Hero.Health.ShieldDamageTaken += OnShieldDamageTaken;
-        UpdateMode();
+        //Hero.Health.ShieldDamageTaken += OnShieldDamageTaken;
 
         foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.Info.School == Schools.Discipline))
             skill.CastEnded += AddDisciplineStack;
+        
+        _spiritShieldReflectionBooster = new SpiritShieldReflectionBooster(this);
+        _lightShieldManaBooster = new LightShieldManaRestoreBooster(this);
+
+        RegisterBooster(PriestBoosterType.SpiritShieldReflection, _spiritShieldReflectionBooster);
+        RegisterBooster(PriestBoosterType.LightShieldManaRestore, _lightShieldManaBooster);
     }
 
     private void OnDisable()
     {
-        OnModeChange -= HandleModeChange;
         Hero.DamageTracker.OnDamageTracked -= TrackDarkDamage;
         Hero.Health.DamageTaken -= TrackPhysDamage;
         Hero.DamageTracker.OnHealTracked -= TrackHealDone;
-        Hero.Health.ShieldDamageTaken -= OnShieldDamageTaken;
+        //Hero.Health.ShieldDamageTaken -= OnShieldDamageTaken;
 
         foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.Info.School == Schools.Discipline))
             skill.CastEnded -= AddDisciplineStack;
     }
 
+    private void RegisterBooster(PriestBoosterType type, SkillTalentHandler booster)
+    {
+        _boosters[type] = booster;
+    }
+    
+    public void EnableBooster(PriestBoosterType type, bool value)
+    {
+        if (!isClient) return;
+        CmdEnableBooster(type, value);
+    }
+
+    [Command]
+    private void CmdEnableBooster(PriestBoosterType type, bool value)
+    {
+        if (_boosters.TryGetValue(type, out var booster))
+        {
+            booster.Enable(value);
+        }
+    }
+    
+    public void EnableReflectionBooster(bool value) 
+        => EnableBooster(PriestBoosterType.SpiritShieldReflection, value);
+
+    public void TryApplyTalents(Character reflector, Damage incomingDamage, Skill sourceSkill)
+    {
+        if (_spiritShieldReflectionBooster.TryReflectDamage(reflector, incomingDamage, sourceSkill))
+        {
+            bool isOnSelf = reflector == Hero;
+            bool hasReversePolarity = Hero.CharacterState.CheckForState(States.ReversePolarity);
+
+            if (isOnSelf && hasReversePolarity)
+            {
+                RpcReflectAoe(reflector.gameObject,incomingDamage);
+            }
+            else
+            {
+                _spiritShieldReflectionBooster.ReflectDamageToAttacker(incomingDamage, sourceSkill);
+            }
+            if (_lightShieldManaBooster.Enabled)
+            {
+                _lightShieldManaBooster.OnShieldAbsorbedDamage(reflector, incomingDamage.Value * _spiritShieldReflectionBooster.ReflectionDamagePercent);
+            }
+        }
+    }
+
+    [ClientRpc]
+    private void RpcReflectAoe(GameObject caster, Damage damage)
+    {
+        _spiritShieldReflectionBooster.ReflectDamageAoE(caster.GetComponent<Character>(), damage);
+    }
+
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
-    }
-
-    public void SwitchMode()
-    {
-        isLightMode = !isLightMode;
-        OnModeChange?.Invoke();
-    }
-
-    private void HandleModeChange()
-    {
-        UpdateMode();
     }
 
     #region Track bonus
@@ -182,14 +245,6 @@ public class PriestShield : Skill
     {
         if (Time.time - lastTime > resetTime) accumulated = 0f;
         return accumulated;
-    }
-
-    private void UpdateMode()
-    {
-        CastDeley = isLightMode ? allyCastTime : darkCastTime;
-        CooldownTime = isLightMode ? cooldownLight : cooldownDark;
-        Info.School = isLightMode ? Schools.Light : Schools.Dark;
-        Targeting.Layer = isLightMode ? LayerMask.GetMask("Allies") : LayerMask.GetMask("Enemy");
     }
 
     //DisciplineTalent_4
@@ -249,7 +304,7 @@ public class PriestShield : Skill
         _talentTiredSoulActive = value;
     }
     
-    //-------------Talent 9 Logic: Reflection Shield -----------
+    /*//-------------Talent 9 Logic: Reflection Shield -----------
     private void OnShieldDamageTaken(float damageValue, DamageType damageType, Skill sourceSkill)
     {
         if (!_shieldAttackTalentActive) return;
@@ -262,7 +317,7 @@ public class PriestShield : Skill
         if (attacker.IsDead) return;
 
         CmdReflectDamage(attacker.gameObject, damageValue, damageType);
-    }
+    }*/
 
     [Command]
     private void CmdReflectDamage(GameObject attacker, float damageValue, DamageType damageType)
@@ -325,18 +380,9 @@ public class PriestShield : Skill
 
     private void Cast()
     {
-        //_nextAvailableTime = Time.time + CooldownTime;
 
         CmdPlayShootSound();
-
-        if (isLightMode)
-        {
-            HandleLightShield();
-        }
-        else
-        {
-            HandleDarkShield();
-        }
+        HandleLightShield();
     }
 
     private void HandleLightShield()
@@ -350,36 +396,9 @@ public class PriestShield : Skill
             return;
         }
 
-        if (!TryPayCost(manaCostLight, startCooldown: false)) return;
-
         IncreaseSetCooldown(CooldownTime);
 
         CmdAddDebaff(States.LightShield, States.TiredSoul, lightShieldDuration, tiredSoulDuration, absorbAmount, target.gameObject, Name);
-    }
-
-    private void HandleDarkShield()
-    {
-        if (Targeting.GetTarget()?.Character == null) return;
-
-        if (!TryPayCost(manaCostDark)) return;
-
-        CmdAddBaff(States.DarkShield, darkShieldDuration, maxDamagePerTick + _damagePerTickBonus, Targeting.GetTarget()?.Character.gameObject, Name);
-        Debug.Log("Dark Shield applied to " + Targeting.GetTarget()?.Character.name);
-    }
-
-    private float CalculateTotalAbsorbBonus()
-    {
-        float bonus = 0f;
-
-        if (_disciplineShieldBoostActive && _disciplineStacks > 0)
-        {
-            float disciplineBonus = absorbAmount * DisciplineBoostPercentage * _disciplineStacks;
-            bonus += disciplineBonus;
-            Debug.Log($"[ShieldBonus] Discipline: +{disciplineBonus}");
-            _disciplineStacks = 0;
-        }
-
-        return bonus;
     }
 
     private float BoostActive(float amount, float unit, float boostPerUnit, float maxBoostPercentage)
@@ -439,8 +458,8 @@ public class PriestShield : Skill
             }
 
             Debug.Log("Talent is inactive, applying LightShield and TiredSoul.");
-            characterState.AddState(lightState, duration, finalAbsorb, target, skillName);
-            characterState.AddState(tiredState, tiredDuration, finalAbsorb, target, skillName);
+            characterState.AddState(lightState, duration, finalAbsorb, Hero.gameObject, skillName);
+            characterState.AddState(tiredState, tiredDuration, finalAbsorb, Hero.gameObject, skillName);
         }
         else
         {
@@ -467,13 +486,6 @@ public class PriestShield : Skill
                 characterState.AddState(tiredState, tiredDuration, damageToExit, target, skillName);
             }
         }
-    }
-
-    [Command]
-    private void CmdAddBaff(States darkState, float duration, float damagePerTick, GameObject target, string skillName)
-    {
-        var characterState = target.GetComponent<CharacterState>();
-        characterState.AddState(darkState, duration, damagePerTick, target, skillName);
     }
 
 
