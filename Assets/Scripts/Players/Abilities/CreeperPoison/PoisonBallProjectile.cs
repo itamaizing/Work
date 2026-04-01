@@ -36,6 +36,7 @@ public class PoisonBallProjectile : Test_Projectile
     private int _ownerLayer;
 
     private bool _isTransparentPoisons;
+    private bool _isColdBloodCrit;
 
     #region FloatVariables
     private float _newDistancePush;
@@ -240,6 +241,7 @@ public class PoisonBallProjectile : Test_Projectile
         }
 
         float finalDamage = _skill.Buff.Damage.GetBuffedValue(_damage) * multiplier;
+        if (_isColdBloodCrit) finalDamage *= 2.5f;
 
         Damage _baseDamage = new Damage
         {
@@ -333,7 +335,7 @@ public class PoisonBallProjectile : Test_Projectile
         bool isActiveFootInstincts, bool isActiveRestorationOfGlands,
         bool isActiveTalentHealingPoisonBall, bool isActiveTalentWitheringPoison, 
         bool isActiveVoluminousBall, bool isActiveBallEffect,
-        bool isPushTarget, bool isPlayerInvisible, bool isTransparentPoisons, int ownerLayer)
+        bool isPushTarget, bool isPlayerInvisible, bool isTransparentPoisons, int ownerLayer, bool isColdBloodCrit)
     {
         CheckActiveTalentVoluminousBall(isActiveVoluminousBall);
 
@@ -349,6 +351,7 @@ public class PoisonBallProjectile : Test_Projectile
 
         _ownerLayer = ownerLayer;
         _isTransparentPoisons = isTransparentPoisons;
+        _isColdBloodCrit = isColdBloodCrit;
 
         Invoke("TransparentProjectileOnServer", 0.15f);
 

@@ -19253,6 +19253,7 @@ MonoBehaviour:
   _player: {fileID: 2483674839823445686}
   _spawnPoint: {fileID: 6943497228995655184}
   _creeperPoisonAura: {fileID: 2161342997938470374}
+  _coldBlood: {fileID: 0}
   durationErodedArmor: 6
   _poisonDamagingCloudPrefab: {fileID: 8376359178360537337, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
   _poisonHealingCloudPrefab: {fileID: -4967518069141830548, guid: 835486046afaafa48885a183fcb94bd6, type: 3}
@@ -20222,6 +20223,7 @@ MonoBehaviour:
   duration: 3
   durationErodedArmor: 6
   durationWindowsBoost: 2
+  _coldBlood: {fileID: 0}
 --- !u!114 &2446571645698719713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21659,6 +21661,7 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 2483674839823445686}
   _sneakySpit: {fileID: 1964640632880337021}
+  _poisonSlap: {fileID: 8577860281443816807}
 --- !u!114 &3096915051999318309
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -54,6 +54,7 @@ public class PoisonBall : Skill, IAltAbility
     [SerializeField] private GameObject _spawnPoint;
     [SerializeField] private GameObject pointArrowRender;
     [SerializeField] private CreeperPoisonAura _creeperPoisonAura;
+    [SerializeField] private ColdBlood _coldBlood;
 
     #region PoisonCloud
     [SerializeField] private PoisonDamagingCloudPrefab _poisonDamagingCloudPrefab;
@@ -135,6 +136,7 @@ public class PoisonBall : Skill, IAltAbility
     private bool _isIncreasingPoisonBallCharges = false;
     private bool _isPoisonCloudAddPoisonBone = false;
     private bool _isHealingPoisonBall = false;
+    private bool _isColdBloodCrit = false;
 
     private bool _isBonusChargeApplied = false;
 
@@ -168,6 +170,8 @@ public class PoisonBall : Skill, IAltAbility
             _isIncreasingPoisonBallCharges = value;
         }
     }
+
+    public void ColdBloodStrike(bool value) => _isColdBloodCrit = value;
 
     public void HealingPoisonBall(bool value)
     {
@@ -817,13 +821,27 @@ public class PoisonBall : Skill, IAltAbility
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
-        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, this,
-            multiplierForPushDistance, poisonBoneStack,
-            isTargetPlayer, isTargetEnemy, isTargetAllies,
-            isActiveFootInstincts, isActiveRestorationOfGlands,
-            isActiveHealingPoisonBall, isActiveWitheringPoison, isActiveVoluminousBall, isActiveBallEffect,
-            isPushTarget, isPlayerInvisible,
-            isTransparentPoisons, ownerLayer);
+        if (_isColdBloodCrit)
+        {
+            poisonBallProjectile.InitializationProjectileForPoisonBall(_player, this,
+    multiplierForPushDistance, poisonBoneStack,
+    isTargetPlayer, isTargetEnemy, isTargetAllies,
+    isActiveFootInstincts, isActiveRestorationOfGlands,
+    isActiveHealingPoisonBall, isActiveWitheringPoison, isActiveVoluminousBall, isActiveBallEffect,
+    isPushTarget, isPlayerInvisible,
+    isTransparentPoisons, ownerLayer, _coldBlood.IsCanCrit);
+        }
+
+        else
+        {
+            poisonBallProjectile.InitializationProjectileForPoisonBall(_player, this,
+    multiplierForPushDistance, poisonBoneStack,
+    isTargetPlayer, isTargetEnemy, isTargetAllies,
+    isActiveFootInstincts, isActiveRestorationOfGlands,
+    isActiveHealingPoisonBall, isActiveWitheringPoison, isActiveVoluminousBall, isActiveBallEffect,
+    isPushTarget, isPlayerInvisible,
+    isTransparentPoisons, ownerLayer, false);
+        }
 
         poisonBallProjectile.MoveBallToTarget(targetPosition, isFast);
 
@@ -903,14 +921,27 @@ public class PoisonBall : Skill, IAltAbility
 
         SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
-        poisonBallProjectile.InitializationProjectileForPoisonBall(_player, this,
-            multiplierForPushDistance, poisonBoneStack,
-            isTargetPlayer, isTargetEnemy, isTargetAllies,
-            isActiveFootInstincts, isActiveRestorationOfGlands,
-            isActiveHealingPoisonBall, isActiveWitheringPoison, isActiveVoluminousBall, isActiveBallEffect,
-            isPushTarget, isPlayerInvisible,
-            isTransparentPoisons, ownerLayer
-            );
+        if (_isColdBloodCrit)
+        {
+            poisonBallProjectile.InitializationProjectileForPoisonBall(_player, this,
+    multiplierForPushDistance, poisonBoneStack,
+    isTargetPlayer, isTargetEnemy, isTargetAllies,
+    isActiveFootInstincts, isActiveRestorationOfGlands,
+    isActiveHealingPoisonBall, isActiveWitheringPoison, isActiveVoluminousBall, isActiveBallEffect,
+    isPushTarget, isPlayerInvisible,
+    isTransparentPoisons, ownerLayer, _coldBlood.IsCanCrit);
+        }
+
+        else
+        {
+            poisonBallProjectile.InitializationProjectileForPoisonBall(_player, this,
+    multiplierForPushDistance, poisonBoneStack,
+    isTargetPlayer, isTargetEnemy, isTargetAllies,
+    isActiveFootInstincts, isActiveRestorationOfGlands,
+    isActiveHealingPoisonBall, isActiveWitheringPoison, isActiveVoluminousBall, isActiveBallEffect,
+    isPushTarget, isPlayerInvisible,
+    isTransparentPoisons, ownerLayer, false);
+        }
 
         poisonBallProjectile.MoveBallOnMaxDistance(finalPoint, isFast);
 
