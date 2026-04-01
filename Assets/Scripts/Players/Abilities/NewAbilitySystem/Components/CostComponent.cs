@@ -15,6 +15,7 @@ public class SkillResourceCost
     public string nameToShow;
 #endif
     public ResourceType type;
+    //[Range(0f, 100f)]
     public float value;
     public SkillCostType costType;
     /// <summary>
@@ -48,7 +49,9 @@ public class SkillResourceCost
     /// </summary>
     public void OnBeforeSerialize()
     {
-        nameToShow = $"{type.ToString()} - {costType.ToString()}";
+        nameToShow = $"{value} {type.ToString()} - {costType.ToString()}" +
+            $"{(shouldModify ? " mod" : "")}{(showInDescription ? " desc" : "")}";
+
     }
 
     public void OnAfterDeserialize() { }
@@ -99,7 +102,7 @@ public class CostComponent : BaseSkillComponent
         _resources = _character.Resources;
 
         atr_skill = _skillAttributes[SkillAttributeName.ResourceCost];
-        atr_char = _attributes[CharacterAttributeName.ResourceCost];
+        atr_char = _characterAttributes[CharacterAttributeName.ResourceCost];
     }
 
     public float CalculateModified(float value, ResourceType type)
@@ -113,7 +116,7 @@ public class CostComponent : BaseSkillComponent
             $"s%{atr_skill.PercentBonus} c%{atr_char.PercentBonus}," +
             $"s*{atr_skill.MultiplierBonus} c*{atr_char.MultiplierBonus}" +
             $"Final:{(value + atr_skill.FlatBonus + atr_char.FlatBonus) * (1 + atr_skill.PercentBonus + atr_char.PercentBonus) * (atr_skill.MultiplierBonus * atr_char.MultiplierBonus)}");
-        return _skillAttributes.GetCombined(value, atr_skill, atr_char);
+        return _skillAttributes.GetCombined(atr_skill, atr_char, value);
     }
 
     #region Checks
@@ -123,6 +126,9 @@ public class CostComponent : BaseSkillComponent
             costs = _costs;
         foreach (SkillResourceCost cost in costs)
         {
+            if (cost.costType != SkillCostType.Mandatory)
+                continue;
+
             if (_resources.TryGetValue(cost.type, out var resource))
             {
                 if (resource.CurrentValue < (shouldModify ? CalculateModified(cost.value, cost.type) : cost.value))

@@ -30,9 +30,9 @@ public class SkillAttributes
         {
             if (_heroAttributes == null)
                 return GetCombined(
-                    _attributes[SkillAttributeName.Cooldown].BaseValue,
                     _attributes[SkillAttributeName.Cooldown],
-                    _heroAttributes[CharacterAttributeName.CooldownReduction]);
+                    _heroAttributes[CharacterAttributeName.CooldownReduction],
+                    _attributes[SkillAttributeName.Cooldown].BaseValue);
             return _attributes[SkillAttributeName.Cooldown].GetValue();
         }
     }
@@ -64,14 +64,17 @@ public class SkillAttributes
         _heroAttributes = characterAttributes;
     }
 
-    public float GetCombined(Attribute skill, Attribute hero)
+    public float GetCombined(Attribute skill, Attribute hero, float baseValue = float.MinValue)
     {
-        return GetCombined(skill.BaseValue, skill, hero);
-    }
-    public float GetCombined(float baseValue, Attribute skill, Attribute hero)
-    {
+        if (baseValue == float.MinValue)
+            baseValue = skill.BaseValue;
         return (baseValue + hero.FlatBonus + skill.FlatBonus) *
             (1 + skill.PercentBonus + hero.PercentBonus) *
             (skill.MultiplierBonus * hero.MultiplierBonus);
+    }
+
+    public float GetCombined(SkillAttributeName skill_atr, CharacterAttributeName hero_atr, float baseValue = float.MinValue)
+    {
+        return GetCombined(_attributes[skill_atr], _heroAttributes[hero_atr], baseValue);
     }
 }

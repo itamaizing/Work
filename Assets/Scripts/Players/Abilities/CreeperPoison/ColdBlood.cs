@@ -130,6 +130,7 @@ public class ColdBlood : Skill
             float reducingMultiplier = _reducingCooldownMultiplier;
             float newCooldownTime = RemainingCooldownTime / reducingMultiplier;
             ReductionSetCooldown(newCooldownTime);
+            Cooldown.SetReduced(newCooldownTime, shouldModify: true);
         }
         else
         {
@@ -151,6 +152,7 @@ public class ColdBlood : Skill
         if (_isPlayer)
         {
             ReductionSetCooldown(_cooldownTimeWithTalent);
+            Cooldown.SetReduced(_cooldownTimeWithTalent, shouldModify: true);
             Debug.Log("ColdBlood / UseAbilityWithTalent / if _isPlayer == true");
 			Hero.CharacterState.DispelStates(StateType.Physical, Targeting.GetTarget().Character.NetworkSettings.TeamIndex, Hero.NetworkSettings.TeamIndex, true);
         }

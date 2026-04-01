@@ -89,6 +89,8 @@ public class ShotIntoSky : Skill
 
         RemainingCooldownTime = 0f;
         RaiseCooldownEnded();
+
+        Cooldown.ForceEnd();
     }
 
 

@@ -41,6 +41,7 @@ public class InnerDarkness : AbstractCharacterState
                 {
                     float duration = skill.RemainingCooldownTime * 0.5f;
                     skill.DecreaseSetCooldown(duration);
+                    skill.Cooldown.Modify(-duration);
                 }
             }
         }

@@ -32,6 +32,7 @@ public class ChargeComponent : BaseSkillComponent
     #region RuntimeVariables
     Attribute char_attr, skill_attr;
     private bool isInitialized = false;
+    private bool _isServer = false;
     #endregion
 
     #region Properties
@@ -60,21 +61,26 @@ public class ChargeComponent : BaseSkillComponent
     #endregion
 
     #region Events
-
-    #endregion Events
-    public event Action<int> MaxChargesChanged;
-    public event Action<int> CurrentChargesChanged;
+    public event Action<int> OnMaxChange;
+    public event Action<int> OnCurrentChange;
     public event Action<float> OnRechargeStart;
     public event Action<int> OnRechargeEnd;
+    #endregion Events
+
+    
     #region Methods
 
-    public override void Init(Skill skill)
+    public void Init(Skill skill, bool isServer)
     {
+        if (isInitialized)
+            return;
+
         base.Init(skill);
 
         RechargeTimers.Callback += OnChargeChange;
         skill_attr = _skillAttributes[SkillAttributeName.Cooldown];
-        char_attr = _attributes[CharacterAttributeName.CooldownReduction];
+        char_attr = _characterAttributes[CharacterAttributeName.CooldownReduction];
+        _isServer = isServer;
         isInitialized = true;
     }
 
@@ -96,50 +102,86 @@ public class ChargeComponent : BaseSkillComponent
         if (cooldowned)
         {
             float cdTime = _baseCooldown;
-            if (affectedByCDR) 
-                cdTime = _skillAttributes.GetCombined(_baseCooldown, skill_attr, char_attr);
+            if (affectedByCDR)
+                cdTime = _skillAttributes.GetCombined(skill_attr, char_attr, _baseCooldown);
             _skill.CmdStartRecharge(cdTime);
         }
         else
         {
-            CurrentChargesChanged?.Invoke(RemainingCharges);
+            OnCurrentChange?.Invoke(RemainingCharges);
         }
-        MaxChargesChanged?.Invoke(_maxCharges);
+        OnMaxChange?.Invoke(_maxCharges);
+    }
+
+    public void ModifyMax(int delta, bool cooldowned=false)
+    {
+        _maxCharges += delta;
+
+        if (_maxCharges < 0) //1?
+            _maxCharges = 0;
+
+        if (cooldowned)
+        {
+            float cdTime = _baseCooldown;
+            if (affectedByCDR)
+                cdTime = _skillAttributes.GetCombined(skill_attr, char_attr, _baseCooldown);
+
+            for (int i = 0; i < delta; i++)
+                _skill.CmdStartRecharge(cdTime);
+        }
+        else
+        {
+        //Нужно ли заканчивать уже идущие? Как будто не стоит, иначе перепрокачка будет сбрасывать КД. Но сейчас оно может уйти в отриц. значения
+            OnCurrentChange?.Invoke(RemainingCharges);
+        }
+        OnMaxChange?.Invoke(_maxCharges);
     }
 
     public void RestoreCharge(int index)
     {
         if (RemainingCharges < _maxCharges)
         {
-            CurrentChargesChanged?.Invoke(RemainingCharges);
+            //OnCurrentChange?.Invoke(RemainingCharges);
+            //OnRechargeEnd?.Invoke(index); //считываются ниже OnChargeChange
+            Debug.Log("Recharged " + index);
+            //if (_isServer)
             _skill.CmdEndRecharge(index);
         }
     }
 
+    public void ModifyDuration(float delta, bool tickAll = false)
+    {
+        _skill.CmdModifyRechargeTime(delta, tickAll);
+    }
+
     public bool TryUse()
     {
-        Debug.Log("trying to use a charge");
         if (RemainingCharges <= 0)
             return false;
 
         float cdTime = _baseCooldown;
         if (affectedByCDR)
         {
-            cdTime = _skillAttributes.GetCombined(_baseCooldown, skill_attr, char_attr);
+            cdTime = _skillAttributes.GetCombined(skill_attr, char_attr, _baseCooldown);
         }
+
+        //Debug.Log("Recgharge time is " + cdTime);
         StartRecharge(cdTime);
         return true;
     }
 
     private void StartRecharge(float rechargeTime)
     {
-        OnRechargeStart?.Invoke(rechargeTime);
+        //OnRechargeStart?.Invoke(rechargeTime);
         _skill.CmdStartRecharge(rechargeTime);
     }
 
     //Если сломается - хардкодим кол-во зарядов в списке, добавляем id текущего заряда на перезарядке
     public void OnChargeChange(SyncList<double>.Operation op, int index, double oldTime, double newTime)
     {
+        if (!_isServer)
+            return;
+
         switch (op)
         {
             case SyncList<double>.Operation.OP_ADD:
@@ -148,12 +190,12 @@ public class ChargeComponent : BaseSkillComponent
                 break;
 
             case SyncList<double>.Operation.OP_REMOVEAT:
-                OnRechargeEnd?.Invoke(index); //Это не тот индекс
+                OnRechargeEnd?.Invoke(index); //Это не тот индекс ?
                 Debug.Log("RECHARGE ENDED! " + index);
                 break;
         }
 
-        CurrentChargesChanged?.Invoke(RemainingCharges);
+        OnCurrentChange?.Invoke(RemainingCharges);
     }
     #endregion Methods
 }

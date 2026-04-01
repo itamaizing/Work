@@ -56,7 +56,8 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         _skill.LinkedChargeCDUI = _chargeCD;
 
         _skill.OnSkillStateChanged += UpdateIconState;
-        _skill.ChargeCooldownEnded += OnChargeCooldownEnded;
+        //_skill.ChargeCooldownEnded += OnChargeCooldownEnded;
+        _skill.Charges.OnRechargeEnd += OnChargeCooldownEnded; //new
 
         UpdateIconState(_skill.Disactive);
 
@@ -75,7 +76,8 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         UnsubscribingSkillOnEvents(_skill);
         _skill.OnSkillStateChanged -= UpdateIconState;
-        _skill.ChargeCooldownEnded -= OnChargeCooldownEnded;
+        //_skill.ChargeCooldownEnded -= OnChargeCooldownEnded;
+        _skill.Charges.OnRechargeEnd -= OnChargeCooldownEnded; //new
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -182,38 +184,50 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     private void SubscribingSkillOnEvents(Skill ability)
     {
-        ability.CooldownStarted += OnStartCooldown;
-        ability.CurrentChargeChanged += OnCurrentChargeChanged;
-        ability.ChargeStartCooldown += OnChargeStartCooldown;
+        //ability.CooldownStarted += OnStartCooldown;
+        //ability.CurrentChargeChanged += OnCurrentChargeChanged;
+        //ability.ChargeStartCooldown += OnChargeStartCooldown;
 
         ability.CastStarted += OnCastStarted;
         ability.CastEnded += OnCastEnded;
         ability.Canceled += OnCastEnded;
 
-        ability.CooldownEnded += OnStopCooldown;
+        //ability.CooldownEnded += OnStopCooldown;
 
         ability.AutoModeChanged += OnAutoModeChanged;
 
         ability.BoostEnabled += OnBoostEnabled;
         ability.BoostDisabled += OnBoostDisabled;
+
+        //new
+        ability.Cooldown.OnStart += OnStartCooldown;
+        ability.Cooldown.OnEnd += OnStopCooldown;
+        ability.Charges.OnRechargeStart += OnChargeStartCooldown;
+        ability.Charges.OnCurrentChange += OnCurrentChargeChanged;
     }
 
     private void UnsubscribingSkillOnEvents(Skill ability)
     {
-        ability.CooldownStarted -= OnStartCooldown;
-        ability.CurrentChargeChanged -= OnCurrentChargeChanged;
-        ability.ChargeStartCooldown -= OnChargeStartCooldown;
+        //ability.CooldownStarted -= OnStartCooldown;
+        //ability.CurrentChargeChanged -= OnCurrentChargeChanged;
+        //ability.ChargeStartCooldown -= OnChargeStartCooldown;
 
         ability.CastStarted -= OnCastStarted;
         ability.CastEnded -= OnCastEnded;
         ability.Canceled -= OnCastEnded;
 
-        ability.CooldownEnded -= OnStopCooldown;
+        //ability.CooldownEnded -= OnStopCooldown;
 
         ability.AutoModeChanged -= OnAutoModeChanged;
 
         ability.BoostEnabled -= OnBoostEnabled;
         ability.BoostDisabled -= OnBoostDisabled;
+
+        //new
+        ability.Cooldown.OnStart -= OnStartCooldown;
+        ability.Cooldown.OnEnd -= OnStopCooldown;
+        ability.Charges.OnRechargeStart -= OnChargeStartCooldown;
+        ability.Charges.OnCurrentChange -= OnCurrentChargeChanged;
     }
 
     private void OnBoostDisabled()

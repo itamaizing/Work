@@ -187,7 +187,8 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     [ClientRpc] public void RpcCoolDownPsionicEnegry() => CoolDownPsionicEnegry();
 
-    public void CoolDownPsionicEnegry() => psionicEnergySkill.IncreaseSetCooldownPassive(_psionicaDecayTime);
+    //public void CoolDownPsionicEnegry() => psionicEnergySkill.IncreaseSetCooldownPassive(_psionicaDecayTime);
+    public void CoolDownPsionicEnegry() => psionicEnergySkill.Cooldown.SetIncreased(_psionicaDecayTime, shouldModify: true);
 
     public void UsePsiEnergy(float value)
     {

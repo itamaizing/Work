@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class StrokesOfAspiration : Talent
 {
@@ -33,6 +33,7 @@ public class StrokesOfAspiration : Talent
         //Debug.Log($"StrokesOfAspiration / UseTalentStrokesOfAspiration / after updateRemainingCooldownTimeForSpitPoison = {_spitPoison.RemainingCooldownTime}");
         float updateRemainingCooldownTimeForSpitPoison = _spitPoison.RemainingCooldownTime - _decreaseCooldownTime;
         _spitPoison.ReductionSetCooldown(updateRemainingCooldownTimeForSpitPoison);
+        _spitPoison.Cooldown.SetReduced(updateRemainingCooldownTimeForSpitPoison, shouldModify: true);
         //Debug.Log($"StrokesOfAspiration / UseTalentStrokesOfAspiration / before updateRemainingCooldownTimeForSpitPoison = {_spitPoison.RemainingCooldownTime}");
 
         for (int i = 0; i < _poisonBall.RemainingCooldownTimeCharge.Count; i++)

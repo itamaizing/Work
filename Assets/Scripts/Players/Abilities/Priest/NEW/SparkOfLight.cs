@@ -197,7 +197,10 @@ public class SparkOfLight : Skill,IPolaritySwitchable
             }
 
             if (startCooldown)
+            {
                 IncreaseSetCooldown(CooldownTime);
+                Cooldown.SetIncreased(Cooldown.CooldownTime, shouldModify: false);
+            }
 
             if (!_useChargesAsComboPart) TryUseCharge();
             return true;

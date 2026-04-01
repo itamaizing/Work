@@ -279,6 +279,7 @@ public class SkillManager : MonoBehaviour
         foreach (var item in _skills)
         {
             item.IncreaseSetCooldown(time);
+            item.Cooldown.SetIncreased(time, shouldModify: true);
         }
     }
 
@@ -412,7 +413,10 @@ public class SkillManager : MonoBehaviour
         foreach (var item in _skills)
         {
             if (item.IsSubjectToGlobalCooldownTime)
+            {
                 item.IncreaseSetCooldown(_globalCooldownTime);
+                item.Cooldown.SetIncreased(_globalCooldownTime, shouldModify: false);
+            }
         }
     }
 
@@ -471,7 +475,8 @@ public class SkillManager : MonoBehaviour
             if (skill.IsUseCharges)
             {
                 _countBonusCharges--;
-                skill.AddMaxChargeCount();
+                //skill.AddMaxChargeCount();
+                skill.Charges.ModifyMax(1);
             }
         }
     }
@@ -484,11 +489,13 @@ public class SkillManager : MonoBehaviour
             {
                 if (isAdditionalCharge)
                 {
-                    skill.AddMaxChargeCount();
+                    //skill.AddMaxChargeCount();
+                    skill.Charges.ModifyMax(1);
                 }
                 else
                 {
-                    skill.DeductMaxChargeCount();
+                    //skill.DeductMaxChargeCount();
+                    skill.Charges.ModifyMax(-1);
                 }
             }
         }

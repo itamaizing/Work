@@ -173,14 +173,14 @@ public class IceSword : CloseCombatSkill
     {
 		if (!IsHaveResourceOnSkill)
 		{
-			return false;			// паттерн Guard Clause - избавляемся от лишней вложенности
+			return false;
 		}
 
-        _additionalDamage = 0;      // без этого, если способность тратит ровно 40 ресурса - используется доп урон, рассчитаный в прошлый раз
+        _additionalDamage = 0;
 
         foreach (var skillCost in skillEnergyCosts)
         {
-			var baseCost = skillCost.value;  // уже взяли skillCost, почему ниже маг. числа?
+			var baseCost = skillCost.value;
 
             if (_energy.CurrentValue > baseCost)
 			{
@@ -191,8 +191,11 @@ public class IceSword : CloseCombatSkill
             _energy.CmdUse(Buff.ManaCost.GetBuffedValue(baseCost));
         }
 
-        if (startCooldown)
-            IncreaseSetCooldown(CooldownTime);
+		if (startCooldown)
+		{
+			IncreaseSetCooldown(CooldownTime);
+			Cooldown.SetIncreased(Cooldown.CooldownTime, shouldModify: false);
+		}
 
         if (!_useChargesAsComboPart) TryUseCharge();
         return true;

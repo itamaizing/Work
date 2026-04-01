@@ -409,6 +409,7 @@ public class PoisonBall : Skill, IAltAbility
         {
             float newRemainingTime = 0.0f;
             _spitPoison.ReductionSetCooldown(newRemainingTime);
+            _spitPoison.Cooldown.SetReduced(newRemainingTime, shouldModify: false);
             _isThreeProjectileOnOneTarget = false;
         }
     }
@@ -473,7 +474,8 @@ public class PoisonBall : Skill, IAltAbility
 
         if (_activeTalentsInfo.IsActiveEnlargedGlands && _maxCharges == 3)
         {
-            AddMaxChargeCount();
+            //AddMaxChargeCount();
+            Charges.ModifyMax(1);
             _poisonBallInfo.MaxCountProjectile = _maxCharges;
         }
         else if (!_activeTalentsInfo.IsActiveEnlargedGlands && _maxCharges >= 4)

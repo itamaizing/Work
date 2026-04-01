@@ -104,8 +104,10 @@ public class PlagueAbsorption : Skill
 				//_firstShot = false;
 			}
 			if (startCooldown)
+			{
+				Cooldown.SetIncreased(Cooldown.CooldownTime, shouldModify: false);
 				IncreaseSetCooldown(CooldownTime);
-
+			}
 			TryUseCharge();
 			return true;
 		}

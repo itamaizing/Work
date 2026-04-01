@@ -4968,6 +4968,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 1
     _faction: 4
     _unitType: -1
@@ -5011,6 +5012,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _playerLinks: {fileID: 5458554383432203635}
   _comboCounter: {fileID: 5883639770937801120}
   scorpionPassive: {fileID: 1595654106541851295}
@@ -5039,14 +5046,14 @@ MonoBehaviour:
   _costComponent:
     _base: 6
     _costs:
-    - nameToShow: 6 Energy - Mandatory mod  desc
+    - nameToShow: 6 Energy - Mandatory mod desc
       type: 2
       value: 6
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 6 Energy - Mandatory mod  desc
+  - nameToShow: 6 Energy - Mandatory mod desc
     type: 2
     value: 6
     costType: 0
@@ -5067,6 +5074,7 @@ MonoBehaviour:
     _whileMoving: 1
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 1
     _faction: 4
     _unitType: -1
@@ -5110,6 +5118,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _playerLinks: {fileID: 5458554383432203635}
   _comboCounter: {fileID: 5883639770937801120}
   _scorpionPassive: {fileID: 1595654106541851295}
@@ -5139,14 +5153,14 @@ MonoBehaviour:
   _costComponent:
     _base: 20
     _costs:
-    - nameToShow: 20 Energy - Mandatory mod  desc
+    - nameToShow: 20 Energy - Mandatory mod desc
       type: 2
       value: 20
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 20 Energy - Mandatory mod  desc
+  - nameToShow: 20 Energy - Mandatory mod desc
     type: 2
     value: 20
     costType: 0
@@ -5167,9 +5181,10 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    type: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: 5
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -5210,6 +5225,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _comboCounter: {fileID: 5883639770937801120}
   _scorpionPassive: {fileID: 1595654106541851295}
   _minDamage: 18
@@ -5253,10 +5274,11 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
-    _outOfRangeBehaviour: 0
+    type: 2
+    _clickLayer: 2
+    _faction: 4
+    _unitType: 5
+    _outOfRangeBehaviour: 1
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -5267,7 +5289,7 @@ MonoBehaviour:
     _castDuration: 1.5
     _tickInterval: 0.15
     _baseCostPerTick:
-    - nameToShow: 1 Energy - Mandatory mod  desc
+    - nameToShow: 1 Energy - Mandatory mod desc
       type: 2
       value: 1
       costType: 0
@@ -5276,7 +5298,7 @@ MonoBehaviour:
   _castDuration: 1.5
   _manaCostRate: 0.15
   _manaCostPerTick:
-  - nameToShow: 1 Energy - Mandatory mod  desc
+  - nameToShow: 1 Energy - Mandatory mod desc
     type: 2
     value: 1
     costType: 0
@@ -5308,6 +5330,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _conePrefab: {fileID: 6453211931130663927, guid: 45218b2aa635a164aae6b7da7d237666, type: 3}
   _prefab: {fileID: 7932399568012328523, guid: 45218b2aa635a164aae6b7da7d237666, type: 3}
   _duration: 3
@@ -5339,14 +5367,14 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs:
-    - nameToShow: 20 Energy - Mandatory mod  desc
+    - nameToShow: 20 Energy - Mandatory mod desc
       type: 2
       value: 20
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 20 Energy - Mandatory mod  desc
+  - nameToShow: 20 Energy - Mandatory mod desc
     type: 2
     value: 20
     costType: 0
@@ -5367,9 +5395,10 @@ MonoBehaviour:
     _whileMoving: 1
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 1
     _faction: 6
-    _unitType: 0
+    _unitType: 5
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -5410,6 +5439,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _playerLinks: {fileID: 5458554383432203635}
   _drawCircleSelf: {fileID: 1402913355469849604}
   _baseManaCost: 2
@@ -5459,9 +5494,10 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    type: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: 1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -5502,6 +5538,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
 --- !u!114 &5883639770937801120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5546,14 +5588,14 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs:
-    - nameToShow: 4 Energy - Mandatory mod  desc
+    - nameToShow: 4 Energy - Mandatory mod desc
       type: 2
       value: 4
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 4 Energy - Mandatory mod  desc
+  - nameToShow: 4 Energy - Mandatory mod desc
     type: 2
     value: 4
     costType: 0
@@ -5574,10 +5616,11 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
-    _outOfRangeBehaviour: 0
+    type: 1
+    _clickLayer: 3
+    _faction: 4
+    _unitType: 5
+    _outOfRangeBehaviour: 1
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -5617,6 +5660,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _minDamage: 3
   _maxDamage: 5
   _arrowYOffset: 1.5
@@ -5662,6 +5711,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -5705,6 +5755,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
 --- !u!4 &8811787553151181850 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class FootInstincts : Talent
 {
@@ -23,6 +23,7 @@ public class FootInstincts : Talent
             float newRemainingCooldownTime = _lightningMovement.RemainingCooldownTime - _reductionCooldownTime;
             Debug.Log("FootInstincts / ReductionCooldown / newRemainingTime = " + newRemainingCooldownTime);
             _lightningMovement.ReductionSetCooldown(newRemainingCooldownTime);
+            _lightningMovement.Cooldown.SetReduced(newRemainingCooldownTime, shouldModify: true);
             Debug.Log("FootInstincts / ReductionCooldown / _lightningMovement.RemainingCooldown = " + _lightningMovement.RemainingCooldownTime);
         }
     }

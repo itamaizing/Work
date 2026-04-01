@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class RestorationOfGlands : Talent
 {
@@ -39,6 +39,7 @@ public class RestorationOfGlands : Talent
         //Debug.Log("RestorationOfGlands / ReductionCooldownNotServer / reducingCooldownPoisonBall = " + reducingCooldownPoisonBall);
 
         _spitPoison.ReductionSetCooldown(reducingCooldownSpitPoison);
+        _spitPoison.Cooldown.SetReduced(reducingCooldownSpitPoison, shouldModify: true);
 
         //_poisonBall.ReductionSetCooldown(reducingCooldownPoisonBall);
     }

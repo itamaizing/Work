@@ -41,6 +41,13 @@ public class TagComponent : BaseSkillComponent
 
     public bool Has(Enum tag)
     {
+        Type tagType = tag.GetType();
+        foreach(var t in tags)
+        {
+            if (t.GetType() == tag.GetType())
+                if (((int)(object)t & (int)(object)tag) != 0)
+                    return true;
+        }
         return false;
     }
 

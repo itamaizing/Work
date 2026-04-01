@@ -14277,7 +14277,7 @@ MonoBehaviour:
       \u0432\u0440\u0430\u0433\u043E\u0432 \u0432 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u043C
       \u043D\u0430\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0438"
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0412\u043E\u043B\u043D\u0430"
     Icon: {fileID: 21300000, guid: efaec6374d1b5054d9037d5d0446e029, type: 3}
     Group: 0
@@ -14694,6 +14694,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 3
     _faction: 0
     _unitType: -1
@@ -14708,7 +14709,7 @@ MonoBehaviour:
     _castDuration: 1.3
     _tickInterval: 0.1
     _baseCostPerTick:
-    - nameToShow: 0 Health - Mandatory  mod  desc
+    - nameToShow: 0 Health - Mandatory mod desc
       type: 0
       value: 0
       costType: 0
@@ -14743,6 +14744,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _firework: {fileID: 3150633468305956490}
   _damageRangeMin: -2
   _damageRangeMax: 1
@@ -14768,14 +14775,14 @@ MonoBehaviour:
   _costComponent:
     _base: 10
     _costs:
-    - nameToShow: 10 Mana - Mandatory  mod  desc
+    - nameToShow: 10 Mana - Mandatory mod desc
       type: 1
       value: 10
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 10 Mana - Mandatory  mod  desc
+  - nameToShow: 10 Mana - Mandatory mod desc
     type: 1
     value: 10
     costType: 0
@@ -14796,6 +14803,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -14818,7 +14826,7 @@ MonoBehaviour:
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 2
-    _baseCooldown: 24
+    _baseCooldown: 6
     affectedByCDR: 0
   _isUseCharges: 1
   _useChargesAsComboPart: 0
@@ -14839,6 +14847,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _shieldPref: {fileID: 1158249924082485831, guid: 13647bb6f83d1b34c8c511be314fb9d3, type: 3}
   _shieldValue: 100
   _shieldDuration: 2
@@ -14882,6 +14896,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 3
     _faction: -1
     _unitType: 1
@@ -14896,7 +14911,7 @@ MonoBehaviour:
     _castDuration: 2.1
     _tickInterval: 0.1
     _baseCostPerTick:
-    - nameToShow: 3 Mana - Mandatory  mod  desc
+    - nameToShow: 3 Mana - Mandatory mod desc
       type: 1
       value: 3
       costType: 0
@@ -14905,7 +14920,7 @@ MonoBehaviour:
   _castDuration: 0
   _manaCostRate: 0.1
   _manaCostPerTick:
-  - nameToShow: '3 Mana - Mandatory  mod '
+  - nameToShow: 3 Mana - Mandatory mod
     type: 1
     value: 3
     costType: 0
@@ -14937,6 +14952,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _deleyTelekines: 0.5
   _amountOfLift: 1.5
   _radiusEnemy: {fileID: 3441613440083509784}
@@ -14978,6 +14999,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -15021,6 +15043,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _particle: {fileID: 3994345256487826021}
   _pushRange: 1
   _pushDuration: 0.33
@@ -15047,14 +15075,14 @@ MonoBehaviour:
   _costComponent:
     _base: 30
     _costs:
-    - nameToShow: 30 Mana - Mandatory  mod  desc
+    - nameToShow: 30 Mana - Mandatory mod desc
       type: 1
       value: 30
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 30 Mana - Mandatory  mod  desc
+  - nameToShow: 30 Mana - Mandatory mod desc
     type: 1
     value: 30
     costType: 0
@@ -15075,6 +15103,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 2
     _faction: 0
     _unitType: 0
@@ -15118,6 +15147,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _lineRenderer: {fileID: 3792777773710482975}
   _fisuraPref: {fileID: 3452147409339536588, guid: 68a5df5d1ae4ea54486b316ec8d2a89c, type: 3}
   _fisuraDuration: 6
@@ -15160,6 +15195,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 2
     _faction: 0
     _unitType: 0
@@ -15203,6 +15239,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
 --- !u!114 &6541281367918590680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15241,6 +15283,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 1
     _faction: 4
     _unitType: 1
@@ -15284,6 +15327,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _agent: {fileID: 0}
   _particlePref: {fileID: 8634428716550452945, guid: 7291e60055d363e4f8faae9c7d00d8b0, type: 3}
   _debuffChance: 15
@@ -15309,14 +15358,14 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs:
-    - nameToShow: 40 Mana - Mandatory  mod  desc
+    - nameToShow: 40 Mana - Mandatory mod desc
       type: 1
       value: 40
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 40 Mana - Mandatory  mod  desc
+  - nameToShow: 40 Mana - Mandatory mod desc
     type: 1
     value: 40
     costType: 0
@@ -15337,6 +15386,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -15351,7 +15401,7 @@ MonoBehaviour:
     _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick:
-    - nameToShow: 10 Mana - Mandatory  mod  desc
+    - nameToShow: 10 Mana - Mandatory mod desc
       type: 1
       value: 10
       costType: 0
@@ -15360,7 +15410,7 @@ MonoBehaviour:
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick:
-  - nameToShow: 10 Mana - Mandatory  mod  desc
+  - nameToShow: 10 Mana - Mandatory mod desc
     type: 1
     value: 10
     costType: 0
@@ -15392,6 +15442,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
 --- !u!114 &483165492512868837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15414,14 +15470,14 @@ MonoBehaviour:
   _costComponent:
     _base: 10
     _costs:
-    - nameToShow: 10 Mana - Mandatory  mod  desc
+    - nameToShow: 10 Mana - Mandatory mod desc
       type: 1
       value: 10
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 10 Mana - Mandatory  mod  desc
+  - nameToShow: 10 Mana - Mandatory mod desc
     type: 1
     value: 10
     costType: 0
@@ -15442,6 +15498,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -15485,6 +15542,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   duration: 2
 --- !u!114 &-6863981154326105301
 MonoBehaviour:
@@ -15508,14 +15571,14 @@ MonoBehaviour:
   _costComponent:
     _base: 8
     _costs:
-    - nameToShow: 8 Mana - Mandatory  mod  desc
+    - nameToShow: 8 Mana - Mandatory mod desc
       type: 1
       value: 8
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 8 Mana - Mandatory  mod  desc
+  - nameToShow: 8 Mana - Mandatory mod desc
     type: 1
     value: 8
     costType: 0
@@ -15536,6 +15599,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 1
   _targetingComponent:
+    type: 0
     _clickLayer: 1
     _faction: 0
     _unitType: 1
@@ -15579,6 +15643,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _particlePref: {fileID: 8634428716550452945, guid: 7291e60055d363e4f8faae9c7d00d8b0, type: 3}
   _beamPrefab: {fileID: 6286129620195013125, guid: 6c796b5dfb94dbb468a1ff41196448a3, type: 3}
   _debuffChance: 100
@@ -15608,14 +15678,14 @@ MonoBehaviour:
   _costComponent:
     _base: 15
     _costs:
-    - nameToShow: 15 Mana - Mandatory  mod  desc
+    - nameToShow: 15 Mana - Mandatory mod desc
       type: 1
       value: 15
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 15 Mana - Mandatory  mod  desc
+  - nameToShow: 15 Mana - Mandatory mod desc
     type: 1
     value: 15
     costType: 0
@@ -15636,6 +15706,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 1
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -15679,6 +15750,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _particlePref: {fileID: 0}
   _schoolSolvent: {fileID: 0}
 --- !u!114 &4401943882256093312
@@ -15703,14 +15780,14 @@ MonoBehaviour:
   _costComponent:
     _base: 30
     _costs:
-    - nameToShow: 30 Mana - Mandatory  mod  desc
+    - nameToShow: 30 Mana - Mandatory mod desc
       type: 1
       value: 30
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 30 Mana - Mandatory  mod  desc
+  - nameToShow: 30 Mana - Mandatory mod desc
     type: 1
     value: 30
     costType: 0
@@ -15731,6 +15808,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -15774,6 +15852,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _lineRenderer: {fileID: 4073253261590549315}
   _quicksandTile: {fileID: 7163465442160790319, guid: 230941d2d9516a94ba4549647e2156c6, type: 3}
   _quicksandDuration: 6
@@ -15815,6 +15899,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 2
     _faction: 4
     _unitType: 5
@@ -15858,6 +15943,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _particle: {fileID: 5826002358924147001}
   _pushRange: 3
   _pushDuration: 0.2
@@ -15885,14 +15976,14 @@ MonoBehaviour:
   _costComponent:
     _base: 40
     _costs:
-    - nameToShow: 40 Mana - Mandatory  mod  desc
+    - nameToShow: 40 Mana - Mandatory mod desc
       type: 1
       value: 40
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 40 Mana - Mandatory  mod  desc
+  - nameToShow: 40 Mana - Mandatory mod desc
     type: 1
     value: 40
     costType: 0
@@ -15913,6 +16004,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -15956,6 +16048,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
 --- !u!114 &3127105790014565672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15990,14 +16088,14 @@ MonoBehaviour:
   _costComponent:
     _base: 80
     _costs:
-    - nameToShow: 80 Mana - Mandatory  mod  desc
+    - nameToShow: 80 Mana - Mandatory mod desc
       type: 1
       value: 80
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 80 Mana - Mandatory  mod  desc
+  - nameToShow: 80 Mana - Mandatory mod desc
     type: 1
     value: 80
     costType: 0
@@ -16018,6 +16116,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -16061,6 +16160,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _meshTranformation: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
   _debuffDuration: 6
 --- !u!114 &4358863268785994334
@@ -16085,14 +16190,14 @@ MonoBehaviour:
   _costComponent:
     _base: 10
     _costs:
-    - nameToShow: 10 Mana - Mandatory  mod  desc
+    - nameToShow: 10 Mana - Mandatory mod desc
       type: 1
       value: 10
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 10 Mana - Mandatory  mod  desc
+  - nameToShow: 10 Mana - Mandatory mod desc
     type: 1
     value: 10
     costType: 0
@@ -16113,6 +16218,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -16156,6 +16262,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _playerRenderers:
   - {fileID: 3976331384424644822}
   - {fileID: 6145141374176819678}
@@ -16234,6 +16346,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -16277,6 +16390,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _buffDuration: 3
   _chainBreakTime: 2
   _invisDamageMultiplier: 2
@@ -16302,14 +16421,14 @@ MonoBehaviour:
   _costComponent:
     _base: 40
     _costs:
-    - nameToShow: 40 Mana - Mandatory  mod  desc
+    - nameToShow: 40 Mana - Mandatory mod desc
       type: 1
       value: 40
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 40 Mana - Mandatory  mod  desc
+  - nameToShow: 40 Mana - Mandatory mod desc
     type: 1
     value: 40
     costType: 0
@@ -16330,6 +16449,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -16373,6 +16493,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _stoneVFX: {fileID: 3475698140105260331}
   _aoeRadius: 2
 --- !u!114 &8020773605070885895
@@ -16413,6 +16539,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -16456,6 +16583,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _snapshotInterval: 0.1
   _rewindTime: 3
 --- !u!114 &4909088627474570662
@@ -16480,14 +16613,14 @@ MonoBehaviour:
   _costComponent:
     _base: 80
     _costs:
-    - nameToShow: 80 Mana - Mandatory  mod  desc
+    - nameToShow: 80 Mana - Mandatory mod desc
       type: 1
       value: 80
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 80 Mana - Mandatory  mod  desc
+  - nameToShow: 80 Mana - Mandatory mod desc
     type: 1
     value: 80
     costType: 0
@@ -16508,6 +16641,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -16551,6 +16685,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _immortalityTime: 4
 --- !u!114 &7485692047686332734
 MonoBehaviour:
@@ -16574,14 +16714,14 @@ MonoBehaviour:
   _costComponent:
     _base: 20
     _costs:
-    - nameToShow: 20 Mana - Mandatory  mod  desc
+    - nameToShow: 20 Mana - Mandatory mod desc
       type: 1
       value: 20
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 20 Health - Mandatory  mod  desc
+  - nameToShow: 20 Health - Mandatory mod desc
     type: 0
     value: 20
     costType: 0
@@ -16602,6 +16742,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -16645,6 +16786,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _whirlpoolTilePrefab: {fileID: 3817491765434079413, guid: c8368645c4192b2478d0f52dc9656d75, type: 3}
   _duration: 5
   _whirlRadius: 6
@@ -16673,14 +16820,14 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs:
-    - nameToShow: 20 Mana - Mandatory  mod  desc
+    - nameToShow: 20 Mana - Mandatory mod desc
       type: 1
       value: 20
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 20 Mana - Mandatory  mod  desc
+  - nameToShow: 20 Mana - Mandatory mod desc
     type: 1
     value: 20
     costType: 0
@@ -16701,6 +16848,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 1
     _faction: 4
     _unitType: -1
@@ -16744,6 +16892,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _projectile: {fileID: -7871612326811465604, guid: 3f48633abc1849a49a5ed18cb8f65a33, type: 3}
   _stunDuration: 4.5
   _burnDuration: 5

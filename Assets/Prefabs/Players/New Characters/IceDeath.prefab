@@ -3415,9 +3415,10 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    type: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: -1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -3458,6 +3459,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _combo: {fileID: 3083348233968490285}
   _hits:
   - {fileID: 8300000, guid: 38dd5da71cb5afd46a2d5744de079417, type: 3}
@@ -3484,14 +3491,14 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs:
-    - nameToShow: 1 Rune - Mandatory  desc
+    - nameToShow: 1 Rune - Mandatory desc
       type: 3
       value: 1
       costType: 0
       shouldModify: 0
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 1 Rune - Mandatory  desc
+  - nameToShow: 1 Rune - Mandatory desc
     type: 3
     value: 1
     costType: 0
@@ -3512,10 +3519,11 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 1
   _targetingComponent:
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
-    _outOfRangeBehaviour: 0
+    type: 1
+    _clickLayer: 3
+    _faction: 4
+    _unitType: 5
+    _outOfRangeBehaviour: 1
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -3555,6 +3563,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 1
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _projectile: {fileID: 3779490377558770127, guid: 911d5f174dbe7ac4b8da163e8aaf32a1, type: 3}
   _combo: {fileID: 3083348233968490285}
   _audioClip: {fileID: 8300000, guid: f609f46a7f40ad84b9b010044a07b747, type: 3}
@@ -3581,7 +3595,7 @@ MonoBehaviour:
     _base: 0
     _costs: []
   _skillEnergyCosts:
-  - nameToShow: 1 Rune - Mandatory  desc
+  - nameToShow: 1 Rune - Mandatory desc
     type: 3
     value: 1
     costType: 0
@@ -3602,9 +3616,10 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 1
   _targetingComponent:
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    type: 0
+    _clickLayer: 3
+    _faction: 4
+    _unitType: 5
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -3645,6 +3660,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _shadow: {fileID: 7237307863484890914, guid: 8dea5af4c60165d45af4522b1a596998, type: 3}
   _playerLinks: {fileID: 4374618947117916461}
   _combo: {fileID: 3083348233968490285}
@@ -3671,14 +3692,14 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs:
-    - nameToShow: 1 Rune - Mandatory  desc
+    - nameToShow: 1 Rune - Mandatory desc
       type: 3
       value: 1
       costType: 0
       shouldModify: 0
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 1 Rune - Mandatory  desc
+  - nameToShow: 1 Rune - Mandatory desc
     type: 3
     value: 1
     costType: 0
@@ -3699,9 +3720,10 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    type: 2
+    _clickLayer: 2
+    _faction: 4
+    _unitType: 5
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -3742,6 +3764,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _puddle: {fileID: -4751265457872843896, guid: 49b94ed23b9d6a447b459769dcbb348d, type: 3}
   _puddleBig: {fileID: -4751265457872843896, guid: 846556c08d21ee240b3671a600246389, type: 3}
   preViewPuddlePrefab: {fileID: 8842404529923409551, guid: c543d7786e879d14cb91ce31839db008, type: 3}
@@ -3775,26 +3803,26 @@ MonoBehaviour:
   _costComponent:
     _base: 10
     _costs:
-    - nameToShow: 10 Energy - Mandatory mod  desc
+    - nameToShow: 10 Energy - Mandatory mod desc
       type: 2
       value: 10
       costType: 0
       shouldModify: 1
       showInDescription: 1
-    - nameToShow: 1 Rune - Mandatory  desc
+    - nameToShow: 1 Rune - Mandatory desc
       type: 3
       value: 1
       costType: 0
       shouldModify: 0
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 10 Energy - Mandatory mod  desc
+  - nameToShow: 10 Energy - Mandatory mod desc
     type: 2
     value: 10
     costType: 0
     shouldModify: 1
     showInDescription: 1
-  - nameToShow: 1 Rune - Mandatory  desc
+  - nameToShow: 1 Rune - Mandatory desc
     type: 3
     value: 1
     costType: 0
@@ -3815,9 +3843,10 @@ MonoBehaviour:
     _whileMoving: 1
     _autoAttack: 1
   _targetingComponent:
-    _clickLayer: 3
+    type: 2
+    _clickLayer: 2
     _faction: 5
-    _unitType: 1
+    _unitType: 5
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -3858,6 +3887,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _playerLinks: {fileID: 4374618947117916461}
   _physicalAttack: {fileID: 7407653808177717906}
   _seriesOfStrikes: {fileID: 3083348233968490285}
@@ -3889,14 +3924,14 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs:
-    - nameToShow: 2 Rune - Mandatory  desc
+    - nameToShow: 2 Rune - Mandatory desc
       type: 3
       value: 2
       costType: 0
       shouldModify: 0
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 2 Rune - Mandatory  desc
+  - nameToShow: 2 Rune - Mandatory desc
     type: 3
     value: 2
     costType: 0
@@ -3917,6 +3952,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -3960,6 +3996,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _projectile: {fileID: 5633596165386628248, guid: 13d29f15dbe0e9c40bac53fe5ff49f89, type: 3}
   _playerLinks: {fileID: 4374618947117916461}
   _seriesOfStrikes: {fileID: 3083348233968490285}
@@ -3987,26 +4029,26 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs:
-    - nameToShow: 10 Energy - Mandatory mod  desc
+    - nameToShow: 10 Energy - Mandatory mod desc
       type: 2
       value: 10
       costType: 0
       shouldModify: 1
       showInDescription: 1
-    - nameToShow: 1 Rune - Mandatory  desc
+    - nameToShow: 1 Rune - Mandatory desc
       type: 3
       value: 1
       costType: 0
       shouldModify: 0
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 10 Energy - Mandatory mod  desc
+  - nameToShow: 10 Energy - Mandatory mod desc
     type: 2
     value: 10
     costType: 0
     shouldModify: 1
     showInDescription: 1
-  - nameToShow: 1 Rune - Mandatory  desc
+  - nameToShow: 1 Rune - Mandatory desc
     type: 3
     value: 1
     costType: 0
@@ -4027,6 +4069,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -4070,6 +4113,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _deathSpiral: {fileID: 5605713643324713456}
   _playerLinks: {fileID: 4374618947117916461}
 --- !u!114 &1852313743646574494
@@ -4094,14 +4143,14 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs:
-    - nameToShow: 1 Rune - Mandatory  desc
+    - nameToShow: 1 Rune - Mandatory desc
       type: 3
       value: 1
       costType: 0
       shouldModify: 0
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 1 Rune - Mandatory  desc
+  - nameToShow: 1 Rune - Mandatory desc
     type: 3
     value: 1
     costType: 0
@@ -4122,6 +4171,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -4165,6 +4215,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _iceArrow: {fileID: -4716538455152202873, guid: 2b98bf57809a2ea488381e132571282f, type: 3}
   _playerLinks: {fileID: 4374618947117916461}
   _seriesOfStrikes: {fileID: 3083348233968490285}
@@ -4206,6 +4262,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -4249,6 +4306,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _projectile: {fileID: -5318331524605723407, guid: 972ffc3bac4d76048b18c6e9bbdcfb98, type: 3}
   _playerLinks: {fileID: 4374618947117916461}
   _seriesOfStrikes: {fileID: 3083348233968490285}
@@ -4274,14 +4337,14 @@ MonoBehaviour:
   _costComponent:
     _base: 40
     _costs:
-    - nameToShow: 40 Energy - Mandatory mod  desc
+    - nameToShow: 40 Energy - Mandatory mod desc
       type: 2
       value: 40
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 40 Energy - Mandatory mod  desc
+  - nameToShow: 40 Energy - Mandatory mod desc
     type: 2
     value: 40
     costType: 0
@@ -4302,9 +4365,10 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    type: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: 5
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -4345,6 +4409,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _damage: 15
   _playerLinks: {fileID: 4374618947117916461}
   _deathSpiral: {fileID: 5605713643324713456}
@@ -4374,14 +4444,14 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs:
-    - nameToShow: 2 Rune - Mandatory  desc
+    - nameToShow: 2 Rune - Mandatory desc
       type: 3
       value: 2
       costType: 0
       shouldModify: 0
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 2 Rune - Mandatory  desc
+  - nameToShow: 2 Rune - Mandatory desc
     type: 3
     value: 2
     costType: 0
@@ -4402,6 +4472,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -4445,6 +4516,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _projectile: {fileID: 4270127104199351435}
   _playerLinks: {fileID: 4374618947117916461}
   _seriesOfStrikes: {fileID: 3083348233968490285}
@@ -4470,14 +4547,14 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs:
-    - nameToShow: 3 Rune - Mandatory mod  desc
+    - nameToShow: 3 Rune - Mandatory mod desc
       type: 3
       value: 3
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 3 Rune - Mandatory  desc
+  - nameToShow: 3 Rune - Mandatory desc
     type: 3
     value: 3
     costType: 0
@@ -4498,6 +4575,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -4541,6 +4619,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _seriesOfStrikes: {fileID: 3083348233968490285}
 --- !u!114 &2036370849879020904
 MonoBehaviour:
@@ -4564,14 +4648,14 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs:
-    - nameToShow: 1 Rune - Mandatory  desc
+    - nameToShow: 1 Rune - Mandatory desc
       type: 3
       value: 1
       costType: 0
       shouldModify: 0
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 1 Rune - Mandatory  desc
+  - nameToShow: 1 Rune - Mandatory desc
     type: 3
     value: 1
     costType: 0
@@ -4592,6 +4676,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -4635,6 +4720,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _projectile: {fileID: 6346210437348289638, guid: 795c930bd55158742a432f093fa0c89e, type: 3}
   _skillRenderer: {fileID: 2643045369493803655}
   _playerLinks: {fileID: 4374618947117916461}
@@ -4677,6 +4768,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -4720,6 +4812,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _playerLinks: {fileID: 4374618947117916461}
 --- !u!114 &5945422429078664588
 MonoBehaviour:
@@ -4759,6 +4857,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -4802,6 +4901,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
 --- !u!114 &2935799894972768155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4824,14 +4929,14 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs:
-    - nameToShow: 70 Energy - Mandatory mod  desc
+    - nameToShow: 70 Energy - Mandatory mod desc
       type: 2
       value: 70
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 70 Energy - Mandatory mod  desc
+  - nameToShow: 70 Energy - Mandatory mod desc
     type: 2
     value: 70
     costType: 0
@@ -4852,6 +4957,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -4895,6 +5001,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   rune: 1
   harvestOfRunes: {fileID: 5679546152039556976}
 --- !u!114 &5679546152039556976
@@ -4919,14 +5031,14 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs:
-    - nameToShow: 1 Rune - Mandatory  desc
+    - nameToShow: 1 Rune - Mandatory desc
       type: 3
       value: 1
       costType: 0
       shouldModify: 0
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 1 Rune - Mandatory  desc
+  - nameToShow: 1 Rune - Mandatory desc
     type: 3
     value: 1
     costType: 0
@@ -4947,6 +5059,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -4990,6 +5103,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   enegry: 70
   harvestOfEnergy: {fileID: 2935799894972768155}
 --- !u!114 &829006267482502751 stripped

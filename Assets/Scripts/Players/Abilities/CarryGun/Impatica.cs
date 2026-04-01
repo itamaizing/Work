@@ -25,8 +25,10 @@ public class Impatica : Skill
 
     public void SecondCharge(bool value)
     {
-        if (value) AddMaxChargeCount();
-        else DeductMaxChargeCount();
+        //if (value) AddMaxChargeCount();
+        if (value) Charges.ModifyMax(1);
+        else Charges.ModifyMax(-1);
+        //else DeductMaxChargeCount();
     }
 
     #endregion

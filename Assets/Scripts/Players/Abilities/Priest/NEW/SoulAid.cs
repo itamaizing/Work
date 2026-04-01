@@ -140,6 +140,7 @@ public class SoulAid : Skill
             return;
         
         DecreaseSetCooldown(_cooldownReduceValue);
+        Cooldown.Modify(-_cooldownReduceValue);
     }
 
     /*[Command]

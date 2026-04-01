@@ -327,6 +327,7 @@ public class PriestShield : Skill
         if (!TryPayCost(manaCostLight, startCooldown: false)) return;
 
         IncreaseSetCooldown(CooldownTime);
+        Cooldown.SetIncreased(Cooldown.CooldownTime, shouldModify: false);
 
         CmdAddDebaff(States.LightShield, States.TiredSoul, lightShieldDuration, tiredSoulDuration, absorbAmount, target.gameObject, Name);
     }

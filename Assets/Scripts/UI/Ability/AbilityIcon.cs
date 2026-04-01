@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -42,7 +42,8 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
 
         if (ability.IsUseCharges)
         {
-            ability.CurrentChargeChanged += OnCurrentChargeText;
+            //ability.CurrentChargeChanged += OnCurrentChargeText; //old
+            ability.Charges.OnCurrentChange += OnCurrentChargeText; //new
             _chargeCounter.enabled = true;
             OnCurrentChargeText(ability.Chargers);
         }
@@ -156,7 +157,8 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
         ability.CastDeleyStarted += OnStartCastDeley;
         ability.Canceled += OnStopCastDeley;
 
-        ability.CooldownStarted += OnStartCooldown;
+        //ability.CooldownStarted += OnStartCooldown; //old
+        ability.Cooldown.OnStart += OnStartCooldown; // new
 
         if (ability is AutoAttackSkill autoAttackSkill)
         {
@@ -176,7 +178,8 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
         ability.CastDeleyStarted -= OnStartCastDeley;
         ability.Canceled -= OnStopCastDeley;
 
-        ability.CooldownStarted -= OnStartCooldown;
+        //ability.CooldownStarted -= OnStartCooldown; //old
+        ability.Cooldown.OnStart -= OnStartCooldown; //new
 
         if (ability is AutoAttackSkill autoAttackSkill)
         {

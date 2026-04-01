@@ -13716,14 +13716,14 @@ MonoBehaviour:
   _costComponent:
     _base: 4
     _costs:
-    - nameToShow: 4 Mana - Mandatory  mod  desc
+    - nameToShow: 4 Mana - Mandatory mod desc
       type: 1
       value: 4
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 4 Mana - Mandatory  mod  desc
+  - nameToShow: 4 Mana - Mandatory mod desc
     type: 1
     value: 4
     costType: 0
@@ -13744,9 +13744,10 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    type: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: -1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -13787,6 +13788,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _restorationOfGlands: {fileID: 5652995459541871454}
   _releaseFromSecrecy: {fileID: 516410951289941241}
   _strokesOfAspiration: {fileID: 4094719415173127066}
@@ -13842,9 +13849,10 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _faction: 4
+    _unitType: -1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -13885,6 +13893,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _heatedGlands: {fileID: 1055448599397857776}
   _killersStamina: {fileID: 2192867466568905156}
   _coldBlood: {fileID: 4616268591970552908}
@@ -13913,14 +13927,14 @@ MonoBehaviour:
   _costComponent:
     _base: 10
     _costs:
-    - nameToShow: 10 Mana - Mandatory  mod  desc
+    - nameToShow: 10 Mana - Mandatory mod desc
       type: 1
       value: 10
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 10 Mana - Mandatory  mod  desc
+  - nameToShow: 10 Mana - Mandatory mod desc
     type: 1
     value: 10
     costType: 0
@@ -13941,10 +13955,11 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
-    _outOfRangeBehaviour: 0
+    type: 1
+    _clickLayer: 3
+    _faction: 4
+    _unitType: 5
+    _outOfRangeBehaviour: 1
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -13984,6 +13999,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _projectile: {fileID: 6538247731923965443, guid: 482b668adc1f199488e67f043ae88aa9, type: 3}
   _player: {fileID: 2483674839823445686}
   _spawnPoint: {fileID: 6943497228995655184}
@@ -14027,10 +14048,11 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
-    _outOfRangeBehaviour: 0
+    type: 1
+    _clickLayer: 3
+    _faction: 4
+    _unitType: 5
+    _outOfRangeBehaviour: 1
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -14070,6 +14092,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _restorationOfGlands: {fileID: 5652995459541871454}
   _transparentPoisons: {fileID: 6707193300562894020}
   _footInstincts: {fileID: 4061216597686852514}
@@ -14114,14 +14142,14 @@ MonoBehaviour:
   _costComponent:
     _base: 4
     _costs:
-    - nameToShow: 4 Mana - Mandatory  mod  desc
+    - nameToShow: 4 Mana - Mandatory mod desc
       type: 1
       value: 4
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 4 Mana - Mandatory  mod  desc
+  - nameToShow: 4 Mana - Mandatory mod desc
     type: 1
     value: 4
     costType: 0
@@ -14142,7 +14170,8 @@ MonoBehaviour:
     _whileMoving: 1
     _autoAttack: 0
   _targetingComponent:
-    _clickLayer: 0
+    type: 2
+    _clickLayer: 2
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
@@ -14185,6 +14214,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _player: {fileID: 2483674839823445686}
   _superFastScales: {fileID: 5847785962727897720}
   _heatedGlands: {fileID: 1055448599397857776}
@@ -14232,6 +14267,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 3
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -14275,6 +14311,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _assasinPoison: {fileID: 3099229603172796830}
   _releaseFromSecrecy: {fileID: 516410951289941241}
   _desireToHide: {fileID: 3114235725149899843}
@@ -14328,9 +14370,10 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    type: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: 5
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -14371,6 +14414,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _player: {fileID: 2483674839823445686}
   _poisonBall: {fileID: 4719927588574066064}
   _lightningMovement: {fileID: 7013613396998518356}
@@ -14418,6 +14467,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -14461,6 +14511,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _player: {fileID: 2483674839823445686}
   _lightningMovement: {fileID: 7013613396998518356}
 --- !u!114 &4616268591970552908
@@ -14501,6 +14557,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -14544,6 +14601,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _coldBloodEnabledTalent: {fileID: 6482517299105492403}
   _indomitable: {fileID: 1000276150029593300}
   _coldBloodTalent: {fileID: 7339358459763876555}
@@ -14588,6 +14651,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -14631,6 +14695,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _player: {fileID: 2483674839823445686}
 --- !u!114 &8150686032681382611
 MonoBehaviour:
@@ -14670,6 +14740,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -14713,6 +14784,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _player: {fileID: 2483674839823445686}
   _creeperStrike: {fileID: 6745892867125186241}
   _speedOfReptileTalent: {fileID: 3814668864262560332}
@@ -14755,6 +14832,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -14798,6 +14876,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _player: {fileID: 2483674839823445686}
   _metabolismReptileTalent: {fileID: 2165728451583290871}
   _poisonBall: {fileID: 4719927588574066064}
@@ -14826,7 +14910,7 @@ MonoBehaviour:
     _base: 20
     _costs: []
   _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory  mod  desc
+  - nameToShow: 0 Health - Mandatory mod desc
     type: 0
     value: 0
     costType: 0
@@ -14847,9 +14931,10 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 3
     _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _faction: 4
+    _unitType: 1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -14890,6 +14975,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   duration: 10
 --- !u!114 &1964640632880337021
 MonoBehaviour:
@@ -14913,14 +15004,14 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs:
-    - nameToShow: 20 Mana - Mandatory  mod  desc
+    - nameToShow: 20 Mana - Mandatory mod desc
       type: 1
       value: 20
       costType: 0
       shouldModify: 1
       showInDescription: 1
   _skillEnergyCosts:
-  - nameToShow: 20 Mana - Mandatory  mod  desc
+  - nameToShow: 20 Mana - Mandatory mod desc
     type: 1
     value: 20
     costType: 0
@@ -14941,9 +15032,10 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 3
     _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _faction: 4
+    _unitType: 1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -14984,6 +15076,12 @@ MonoBehaviour:
   _disactive: 1
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _playerLinks: {fileID: 2483674839823445686}
   duration: 3
   durationWindowsBoost: 2
@@ -15025,9 +15123,10 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 3
     _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _faction: 4
+    _unitType: 1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -15068,6 +15167,12 @@ MonoBehaviour:
   _disactive: 1
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   durationWindowsBoost: 5
   blockChance: 50
 --- !u!114 &7643787431872027281

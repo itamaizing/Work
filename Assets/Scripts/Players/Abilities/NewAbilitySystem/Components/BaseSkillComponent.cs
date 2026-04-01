@@ -9,14 +9,14 @@
     protected Resource _resource;
     protected StatsBuff _skillBuffs;
     protected SkillAttributes _skillAttributes;
-    protected AttributeSystem _attributes;
+    protected AttributeSystem _characterAttributes;
 
     public virtual void Init(Skill skill)
     {
         _skill = skill;
         _character = skill.Hero;
         _resource = _character.Resource;
-        _attributes = _character.AttributeSystem;
+        _characterAttributes = _character.AttributeSystem;
         _skillBuffs = _skill.Buff;
         _skillAttributes = _skill.Attributes;
     }

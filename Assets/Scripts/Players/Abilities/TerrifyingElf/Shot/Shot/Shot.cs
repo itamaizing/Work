@@ -49,13 +49,21 @@ public class Shot : Skill
 
     private bool CheckCanCast()
     {
-        if (Targeting.GetTarget() != null)
-            return Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.CastLength;
+        if (Targeting.GetTarget() == null)
+            return false;
+        return Targeting.CanCast(Targeting.GetTarget());
 
-        if (_targetPoint != Vector3.positiveInfinity)
-            return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength;
-
-        return false;
+        //if (Targeting.GetTarget() != null)
+        //{
+        //    return Targeting.CanCast(Targeting.GetTarget());
+        //    return Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.CastLength;
+        //}
+        //if (_targetPoint != Vector3.positiveInfinity)
+        //{
+        //    return Targeting.CanCast(new TargetData(_targetPoint));
+        //    return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength;
+        //}
+        //return false;
     }
 
     private void OnDisable()
@@ -129,8 +137,11 @@ public class Shot : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
-        _targetPoint = targetInfo.Points[0];
+        Targeting.SetTarget(Targeting.QueueInfoToTargetData(targetInfo));
+        //if (Targeting.GetTarget()?.Type == TargetType.Point)
+        //    _targetPoint = Targeting.GetTarget().Point;
+        //if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
+        _targetPoint = Targeting.GetTarget().Poisition;
 	}
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -168,7 +179,7 @@ public class Shot : Skill
     protected override IEnumerator CastJob()
     {
 		if (Targeting.GetTarget() == null && _targetPoint == Vector3.positiveInfinity) yield return null;
-        if (Targeting.GetTarget() != null && !IsTargetInRange()) yield return null;
+        if (Targeting.GetTarget()?.Transform != null && !IsTargetInRange()) yield return null;
 
         ShotAnimationMove();
         ProcessGhostCooldownReduction();
@@ -186,7 +197,8 @@ public class Shot : Skill
         _consecutiveShots++;
         if (_consecutiveShots >= GhostShotsForCooldownReduction)
         {
-            _ghostSkill.ReductionCooldownCharges(GhostCooldownReductionValue);
+            //_ghostSkill.ReductionCooldownCharges(GhostCooldownReductionValue);
+            _ghostSkill.Charges.ModifyDuration(-GhostCooldownReductionValue, tickAll: true);
             _consecutiveShots = 0;
         }
     }

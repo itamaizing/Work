@@ -1,4 +1,4 @@
-using Mirror;
+п»їusing Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -69,8 +69,9 @@ public class MetabolismReptile : Skill
     {
         float newRemainingCooldownForSpitPoison = _spitPoison.CooldownTime / _increaseCooldownTime;
         _spitPoison.ReductionSetCooldown(newRemainingCooldownForSpitPoison);
+        _spitPoison.Cooldown.SetReduced(newRemainingCooldownForSpitPoison, shouldModify: true);
 
-        //Сделать потом уменьшение кулдаунов зарядов для PoisonBall
+        //РЎРґРµР»Р°С‚СЊ РїРѕС‚РѕРј СѓРјРµРЅСЊС€РµРЅРёРµ РєСѓР»РґР°СѓРЅРѕРІ Р·Р°СЂСЏРґРѕРІ РґР»СЏ PoisonBall
 
         _poisonBall.Buff.CastSpeed.ReductionPercentage(_increaseCastTime);
         _spitPoison.Buff.CastSpeed.ReductionPercentage(_increaseCastTime);
