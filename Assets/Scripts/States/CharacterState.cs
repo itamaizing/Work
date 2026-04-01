@@ -325,7 +325,8 @@ public class CharacterState : NetworkBehaviour
 		[States.ReversePolarity] = new ReversePolarityState(),
 		[States.SpiritEnergy] = new SpiritEnergyState(),
 		[States.SpiritHealth] = new SpiritHealthState(),
-		
+		[States.DisciplineAura]   = new DisciplineAuraState(),
+
 		[States.Knockdown] = new Knockdown(),
 		[States.IdealEvade] = new IdealEvade(),
 		[States.BleedingDebuff] = new BleedingDebuff(),
@@ -1002,7 +1003,8 @@ public enum States
 	DarkFormState,
 	ShackleState,
 	SlowFlowLight,
-	Retribution
+	Retribution,
+	DisciplineAura
 }
 public enum BaffDebaff
 {

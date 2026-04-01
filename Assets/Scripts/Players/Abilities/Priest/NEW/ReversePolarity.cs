@@ -22,6 +22,11 @@ public class ReversePolarity : Skill
     private ReversePolarityMovementBooster _movementBooster;
     public ReversePolarityMovementBooster ReversePolarityMovementBooster => _movementBooster;
     #endregion
+    
+    #region ReversePolarity Movement Talent
+    private ReverseDisciplineBooster _reverseDisciplineBooster;
+    public ReverseDisciplineBooster ReverseDisciplineBooster => _reverseDisciplineBooster;
+    #endregion
 
     private void Start()
     {
@@ -31,6 +36,7 @@ public class ReversePolarity : Skill
     private void OnEnable()
     {
         _movementBooster = new ReversePolarityMovementBooster(this);
+        _reverseDisciplineBooster = new ReverseDisciplineBooster(this);
     }
 
     private void OnDisable()
@@ -78,6 +84,7 @@ public class ReversePolarity : Skill
         CmdAddBaff(States.ReversePolarity, -1f, 0, transform.gameObject, Name);
         
         _movementBooster?.OnReversePolarityActivated(true);
+        _reverseDisciplineBooster?.IsDecreaseManaCost(true,Hero);
     }
 
     public void RemoveReversePolarityEffect()
@@ -85,6 +92,7 @@ public class ReversePolarity : Skill
         CmdRemoveBuff(States.ReversePolarity, Hero.gameObject);
         
         _movementBooster?.OnReversePolarityActivated(false);
+        _reverseDisciplineBooster?.IsDecreaseManaCost(false,Hero);
     }
 
     [Command]
