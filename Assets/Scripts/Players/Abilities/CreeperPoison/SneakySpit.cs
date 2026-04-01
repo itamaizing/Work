@@ -20,7 +20,9 @@ public class SneakySpit : Skill
     #region Talent
 
     private bool _isErodedArmorState = false;
+    private bool _isColdBloodStrike = false;
 
+    public void ColdBloodStrike(bool value) => _isColdBloodStrike = value;
     public void ErodedArmorState(bool value) => _isErodedArmorState = value;
     #endregion
 
@@ -85,6 +87,21 @@ public class SneakySpit : Skill
         if (skill != null && skill.Hero != null) _attacker = skill.Hero;
     }
 
+    private void DealCriticalDamage(Character target, float baseDamage)
+    {
+        float critMultiplier = 2.5f;
+        float finalDamage = baseDamage * critMultiplier;
+
+        Damage damage = new Damage
+        {
+            Value = finalDamage,
+            School = Info.School,
+            Type = Info.DamageType,
+        };
+
+        CmdApplyDamage(damage, target.gameObject);
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (isAbilityQueue) yield return null;
@@ -135,18 +152,29 @@ public class SneakySpit : Skill
 
     public void ApplyStateAndDamage()
     {
-        if (Targeting.GetTarget()?.Character != null)
+        Character target = Targeting.GetTarget()?.Character;
+
+        if (target != null)
         {
-            CmdAddState(Targeting.GetTarget()?.Character);
+            CmdAddState(target);
 
-            Damage damage = new Damage
+            if (_isColdBloodStrike)
             {
-                Value = Damage,
-                School = Info.School,
-                Type = Info.DamageType,
-            };
+                DealCriticalDamage(target, Damage);
+                _isColdBloodStrike = false;
+            }
+            else
+            {
+                Damage damage = new Damage
+                {
+                    Value = Damage,
+                    School = Info.School,
+                    Type = Info.DamageType,
+                };
 
-            CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
+                CmdApplyDamage(damage, target.gameObject);
+            }
+
             ClearData();
         }
     }
