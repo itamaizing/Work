@@ -5,7 +5,10 @@ public abstract class Talent : MonoBehaviour
 	[SerializeField]
 	private TalentData _data;
 
-	public Character character;
+    [SerializeReference, SubclassSelector] 
+	public OpenCondition OpenCondition;
+
+    public Character character;
 
 	public TalentData Data => _data;
 

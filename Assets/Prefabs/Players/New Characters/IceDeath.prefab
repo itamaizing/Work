@@ -5097,9 +5097,27 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: 9499c35003f5fb14387943ad17f06e37, type: 3}
     Group: 0
     Row: 0
+    Level: 0
+  OpenCondition:
+    rid: 5663947266393374849
   character: {fileID: 4374618947117916461}
   iceRolling: {fileID: 8918194537379249446}
   manager: {fileID: 4220410774128686972}
+  OpenConditions:
+    rid: 5663947266393374835
+  references:
+    version: 2
+    RefIds:
+    - rid: 5663947266393374835
+      type: {class: SpecificTalentOpenCondition, ns: , asm: Assembly-CSharp}
+      data:
+        name: 
+        _talentsNeededToOpen: []
+    - rid: 5663947266393374849
+      type: {class: SpecificTalentOpenCondition, ns: , asm: Assembly-CSharp}
+      data:
+        name: 
+        _talentsNeededToOpen: []
 --- !u!114 &7758366791900145808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5140,9 +5158,17 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: 167c36e4613aae345aae37dec1c098ed, type: 3}
     Group: 0
     Row: 0
+    Level: 0
+  OpenCondition:
+    rid: -2
   character: {fileID: 4374618947117916461}
   _seriesOfStrikes: {fileID: 3083348233968490285}
   _physicalAttack: {fileID: 7407653808177717906}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &1789533417509439406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5178,9 +5204,17 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: aad58fe05c776024b9cbcc8dd111c711, type: 3}
     Group: 0
     Row: 0
+    Level: 0
+  OpenCondition:
+    rid: -2
   character: {fileID: 4374618947117916461}
   iceSword: {fileID: 5084671336121015661}
   manager: {fileID: 4220410774128686972}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &4703517711497613664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5220,9 +5254,17 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: 3a4185520579a514291190bd487ed03e, type: 3}
     Group: 0
     Row: 1
+    Level: 0
+  OpenCondition:
+    rid: -2
   character: {fileID: 4374618947117916461}
   iceShadow: {fileID: 3068634069238352843}
   icePuddle: {fileID: 4310610476984543593}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &3308416631096017029
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5264,9 +5306,17 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: 86525d715f89f3c449729556c8557842, type: 3}
     Group: 0
     Row: 0
+    Level: 0
+  OpenCondition:
+    rid: -2
   character: {fileID: 4374618947117916461}
   _iceCloud: {fileID: 752221787785051408}
   _skillManager: {fileID: 4220410774128686972}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &6142297959774152765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5325,10 +5375,18 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: 060880a1a872c9d41895f9e89e58cd3a, type: 3}
     Group: 0
     Row: 0
+    Level: 0
+  OpenCondition:
+    rid: -2
   character: {fileID: 4374618947117916461}
   _icePuddle: {fileID: 4310610476984543593}
   _iceShadow: {fileID: 3068634069238352843}
   _skillManager: {fileID: 4220410774128686972}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &2242834627366772860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5349,7 +5407,15 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
     Group: 0
     Row: 0
+    Level: 0
+  OpenCondition:
+    rid: -2
   character: {fileID: 4374618947117916461}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &2166687460451499452
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5377,8 +5443,16 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: a426e118370acca4e82ea335df4cf87c, type: 3}
     Group: 0
     Row: 1
+    Level: 0
+  OpenCondition:
+    rid: -2
   character: {fileID: 4374618947117916461}
   _icePuddle: {fileID: 4310610476984543593}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &6580995585041578627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5407,9 +5481,17 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: 3e6d7c097245f3a48b5d0c1a985c8f0e, type: 3}
     Group: 0
     Row: 0
+    Level: 0
+  OpenCondition:
+    rid: -2
   character: {fileID: 4374618947117916461}
   _seriesOfStrikes: {fileID: 3083348233968490285}
   _ninjaResources: {fileID: 5945422429078664588}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &7185321803913916173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5437,10 +5519,18 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: ba741e0a405245447ae2ba2fee7fd82a, type: 3}
     Group: 0
     Row: 0
+    Level: 0
+  OpenCondition:
+    rid: -2
   character: {fileID: 4374618947117916461}
   energy: {fileID: 2935799894972768155}
   runes: {fileID: 5679546152039556976}
   skillManager: {fileID: 4220410774128686972}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &1090044804548443068
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5471,8 +5561,16 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: e372d60187227324ba3c5de47777b41e, type: 3}
     Group: 0
     Row: 0
+    Level: 0
+  OpenCondition:
+    rid: -2
   character: {fileID: 4374618947117916461}
   ninjaResources: {fileID: 5945422429078664588}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &3083348233968490285
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5506,6 +5604,14 @@ MonoBehaviour:
     Icon: {fileID: 0}
     Group: 0
     Row: 1
+    Level: 0
+  OpenCondition:
+    rid: -2
   character: {fileID: 4374618947117916461}
   _deathSpiral: {fileID: 5605713643324713456}
   _ability: {fileID: 4220410774128686972}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }

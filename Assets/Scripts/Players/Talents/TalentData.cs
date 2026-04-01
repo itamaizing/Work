@@ -14,6 +14,9 @@ public class TalentData
 	public string Description = string.Empty;
 	public Sprite Icon;
 	public int Group, Row = 0;
+	public int Level = -1;
+    
+
 	public string Name
 	{
 		get { return _name; }

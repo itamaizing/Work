@@ -7,6 +7,9 @@ public class NinjaTalent_1 : Talent
     [SerializeField] private IceRolling iceRolling;
     [SerializeField] private SkillManager manager;
 
+    [SerializeReference]
+    public OpenCondition OpenConditions = new SpecificTalentOpenCondition();
+
     public override void Enter()
     {
         manager.ActivateSkill(iceRolling);
