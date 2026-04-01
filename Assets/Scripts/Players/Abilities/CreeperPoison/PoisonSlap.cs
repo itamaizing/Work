@@ -69,9 +69,9 @@ public class PoisonSlap : Skill
     #region Talent
 
     private bool _canSpawnPoisonCloud = false;
-    private bool _isColdBloodStrike = false;
+    private bool _isColdBloodCrit = false;
 
-    public void ColdBloodStrike(bool value) => _isColdBloodStrike = value;
+    public void ColdBloodStrike(bool value) => _isColdBloodCrit = value;
 
     public void SetPoisonCloudEnabled(bool value)
     {
@@ -436,14 +436,14 @@ public class PoisonSlap : Skill
         if (target != null)
         {
             bool isColdBloodCrit =
-                _coldBlood != null &&
-                (_coldBlood.IsCanCritCreeperStrike || _coldBlood.IsCanCritLightningStrikes);
+                _coldBlood != null && _isColdBloodCrit &&
+                (_coldBlood.IsCanCrit || _coldBlood.IsCanCritLightningStrikes);
 
             if (isColdBloodCrit)
             {
                 DealCriticalDamage(target, _baseDamage);
 
-                _coldBlood.IsCanCritCreeperStrike = false;
+                _coldBlood.IsCanCrit = false;
                 _coldBlood.IsCanCritLightningStrikes = false;
             }
             else

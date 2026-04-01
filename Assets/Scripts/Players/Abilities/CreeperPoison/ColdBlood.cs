@@ -21,7 +21,7 @@ public class ColdBlood : Skill
     private float _cooldownTimeWithTalent = 4f;
 
     private bool _isPlayer = false;
-    private bool _isCanCritCreeperStrike;
+    private bool _isCanCrit;
     private bool _isCanCritLightningStrikes;
 
     private bool _isWaitingForHit = false;
@@ -29,7 +29,7 @@ public class ColdBlood : Skill
     public Indomitable IndomitableTalent { get => _indomitable; }
     public ColdBloodTalent ColdBloodTalent { get => _coldBloodTalent; }
     public KillersStamina KillersStaminaTalent { get => _killersStamina; }
-    public bool IsCanCritCreeperStrike { get => _isCanCritCreeperStrike; set => _isCanCritCreeperStrike = value; }
+    public bool IsCanCrit { get => _isCanCrit; set => _isCanCrit = value; }
     public bool IsCanCritLightningStrikes { get => _isCanCritLightningStrikes; set => _isCanCritLightningStrikes = value; }
 
     protected override int AnimTriggerCast => 0;
@@ -169,7 +169,7 @@ public class ColdBlood : Skill
                 _isCanCritLightningStrikes = true;
             }
 
-            _isCanCritCreeperStrike = true;
+            _isCanCrit = true;
         }
     }
 
@@ -181,7 +181,7 @@ public class ColdBlood : Skill
             _isCanCritLightningStrikes = true;
         }
 
-        _isCanCritCreeperStrike = true;
+        _isCanCrit = true;
     }
 
     [Command]

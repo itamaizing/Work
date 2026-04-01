@@ -10,6 +10,7 @@ public class SneakySpit : Skill
     [SerializeField] private float duration = 2f;
     [SerializeField] private float durationErodedArmor = 6f;
     [SerializeField] private float durationWindowsBoost = 2f;
+    [SerializeField] private ColdBlood _coldBlood;
 
     private Character _attacker;
     private Coroutine _boostWindow;
@@ -20,9 +21,9 @@ public class SneakySpit : Skill
     #region Talent
 
     private bool _isErodedArmorState = false;
-    private bool _isColdBloodStrike = false;
+    private bool _isColdBloodCrit = false;
 
-    public void ColdBloodStrike(bool value) => _isColdBloodStrike = value;
+    public void ColdBloodStrike(bool value) => _isColdBloodCrit = value;
     public void ErodedArmorState(bool value) => _isErodedArmorState = value;
     #endregion
 
@@ -158,11 +159,12 @@ public class SneakySpit : Skill
         {
             CmdAddState(target);
 
-            if (_isColdBloodStrike)
+            if (_isColdBloodCrit && _coldBlood.IsCanCrit)
             {
                 DealCriticalDamage(target, Damage);
-                _isColdBloodStrike = false;
+                _coldBlood.IsCanCrit = false;
             }
+
             else
             {
                 Damage damage = new Damage

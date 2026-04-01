@@ -207,7 +207,7 @@ public class CreeperStrike : Skill
             OnHit?.Invoke();
             _currentCountHit++;
 
-            if (_isColdBloodStrike && _coldBlood != null && _coldBlood.IsCanCritCreeperStrike && character != null && character.CharacterState.CheckForState(States.Blind))
+            if (_isColdBloodStrike && _coldBlood != null && _coldBlood.IsCanCrit && character != null && character.CharacterState.CheckForState(States.Blind))
             {
                 _coldBlood.ReducingAbilityCooldown();
 
@@ -284,7 +284,7 @@ public class CreeperStrike : Skill
                 }
             }
 
-            if (_coldBlood.IsCanCritCreeperStrike || _coldBlood.IsCanCritLightningStrikes)
+            if (_coldBlood.IsCanCrit || _coldBlood.IsCanCritLightningStrikes)
             {
                 if (_player.IsInvisible)
                     _creeperInvisible.ExitingInvisible();
@@ -401,17 +401,17 @@ public class CreeperStrike : Skill
             criticalDamage *= (multiplyDamage * firstStrikeTalentMultiplyDamage);
             _firstStrike.ReturnBoolFalse();
         }
-        else if (_coldBlood.IsCanCritCreeperStrike || _coldBlood.IsCanCritLightningStrikes)
+        else if (_coldBlood.IsCanCrit || _coldBlood.IsCanCritLightningStrikes)
         {
             float endCriticalDamage = coldBloodMultiplyDamage + multiplyDamage;
 
             if (_lightningStrikes.IsUsedLightningStrikes)
             {
-                _coldBlood.IsCanCritCreeperStrike = false;
+                _coldBlood.IsCanCrit = false;
             }
             else
             {
-                _coldBlood.IsCanCritCreeperStrike = false;
+                _coldBlood.IsCanCrit = false;
                 _coldBlood.IsCanCritLightningStrikes = false;
             }
 

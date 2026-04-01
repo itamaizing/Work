@@ -36,6 +36,8 @@ public class SpitPoisonProjectile : Test_Projectile
     private bool _isPlayerInvisible;
     private bool _isFeelingPoisoning;
     private bool _isTransparentPoisons;
+    private bool _isColdBloodCrit;
+
 
     #endregion
 
@@ -170,13 +172,17 @@ public class SpitPoisonProjectile : Test_Projectile
         float chanceOfBlindness = 0.3f;
         float numbersForChanceOfBlindness = Random.Range(0.0f, 1.0f);
 
+        float finalDamage = _damage;
+
+        if (_isColdBloodCrit) finalDamage *= 2.5f;
+
         Damage _baseDamage = new Damage
         {
-            Value = _skill.Buff.Damage.GetBuffedValue(_damage),
+            Value = _skill.Buff.Damage.GetBuffedValue(finalDamage),
             Type = DamageType.Physical,
             PhysicAttackType = AttackRangeType.RangeAttack,
         };
-        
+
         _target.Health.TryTakeDamage(ref _baseDamage, _skill);
         _target.DamageTracker.AddDamage(_baseDamage, null, isServerRequest: isServer);
 
@@ -201,7 +207,7 @@ public class SpitPoisonProjectile : Test_Projectile
 
     public void InitializationProjectile(Character dad, Skill skill, float energy,
         bool isActiveHealingSpitPoison, bool isActiveRestorationOfGlands, bool isPlayerInvisible, 
-        bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, int poisonBoneStack, bool isFeelingPoisoning, bool isTransparentPoisons, int ownerLayer)
+        bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, int poisonBoneStack, bool isFeelingPoisoning, bool isTransparentPoisons, int ownerLayer, bool isColdBloodCrit)
     {
         _player = dad;
         _energyDad = energy;
@@ -217,6 +223,7 @@ public class SpitPoisonProjectile : Test_Projectile
         _isEnemy = isTargetEnemy;
         _ownerLayer = ownerLayer;
         _isTransparentPoisons = isTransparentPoisons;
+        _isColdBloodCrit = isColdBloodCrit;
 
         if (_particleSystem != null) _particleSystemRenderer = _particleSystem.GetComponent<ParticleSystemRenderer>();
 

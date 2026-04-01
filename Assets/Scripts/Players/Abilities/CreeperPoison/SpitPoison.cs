@@ -26,6 +26,7 @@ public class SpitPoison : Skill, IAltAbility
     [SerializeField] private Character _player;
     [SerializeField] private GameObject _spawnPoint;
     [SerializeField] private CreeperPoisonAura _creeperPoisonAura;
+    [SerializeField] private ColdBlood _coldBlood;
 
     [SerializeField] private float durationErodedArmor = 6f;
 
@@ -66,6 +67,7 @@ public class SpitPoison : Skill, IAltAbility
     private bool _canSpawnPoisonCloud = false;
     private bool _isErodedArmorState = false;
     private bool _isTransparentPoisons = false;
+    private bool _isColdBloodCrit = false;
 
     public bool IsTransparentPoisons
     {
@@ -83,6 +85,7 @@ public class SpitPoison : Skill, IAltAbility
         }
     }
 
+    public void ColdBloodStrike(bool value) => _isColdBloodCrit = value;
     public void ErodedArmorState(bool value) => _isErodedArmorState = value;
     public void ActiveHealingSpitPoison(bool value) => _isActiveHealingSpitPoison = value;
     public void TransparentPoisons(bool value) => IsTransparentPoisons = value;
@@ -320,9 +323,21 @@ public class SpitPoison : Skill, IAltAbility
 
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
-        projectile.InitializationProjectile(_player, this, _player.Resource.CurrentValue,
-            isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
-            isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack, _creeperPoisonAura.IsFeelingPoisoning, isTransparentPoisons, ownerLayer);
+        if (_isColdBloodCrit)
+        {
+            projectile.InitializationProjectile(_player, this, _player.Resource.CurrentValue,
+          isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
+          isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack, _creeperPoisonAura.IsFeelingPoisoning, isTransparentPoisons, ownerLayer, _coldBlood.IsCanCrit);
+
+            _coldBlood.IsCanCrit = false;
+        }
+
+        else
+        {
+            projectile.InitializationProjectile(_player, this, _player.Resource.CurrentValue,
+           isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
+           isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack, _creeperPoisonAura.IsFeelingPoisoning, isTransparentPoisons, ownerLayer, false);
+        }
 
         projectile.MoveBallToTarget(target.transform.position);
 
@@ -346,9 +361,21 @@ public class SpitPoison : Skill, IAltAbility
 
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
-        projectile.InitializationProjectile(_player, this, _player.Resource.CurrentValue,
-            isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
-            isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack, _creeperPoisonAura.IsFeelingPoisoning, isTransparentPoisons, ownerLayer);
+        if (_isColdBloodCrit)
+        {
+            projectile.InitializationProjectile(_player, this, _player.Resource.CurrentValue,
+          isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
+          isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack, _creeperPoisonAura.IsFeelingPoisoning, isTransparentPoisons, ownerLayer, _coldBlood.IsCanCrit);
+
+            _coldBlood.IsCanCrit = false;
+        }
+
+        else
+        {
+            projectile.InitializationProjectile(_player, this, _player.Resource.CurrentValue,
+           isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
+           isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack, _creeperPoisonAura.IsFeelingPoisoning, isTransparentPoisons, ownerLayer, false);
+        }
 
         Vector3 direction = point - spawnPosition;
         direction.y = 0;
