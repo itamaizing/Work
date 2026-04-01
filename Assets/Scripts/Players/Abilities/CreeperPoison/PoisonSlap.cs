@@ -12,6 +12,7 @@ public class PoisonSlap : Skill
     private bool _isCanDamageDeal = false;
 
     [SerializeField] private Character _player;
+    [SerializeField] private ColdBlood _coldBlood;
 
     [Header("Abilities")]
 
@@ -68,6 +69,9 @@ public class PoisonSlap : Skill
     #region Talent
 
     private bool _canSpawnPoisonCloud = false;
+    private bool _isColdBloodStrike = false;
+
+    public void ColdBloodStrike(bool value) => _isColdBloodStrike = value;
 
     public void SetPoisonCloudEnabled(bool value)
     {
@@ -431,14 +435,28 @@ public class PoisonSlap : Skill
     {
         if (target != null)
         {
-            Damage damage = new Damage
-            {
-                Value = _baseDamage,
-                Type = DamageType.Physical,
-                PhysicAttackType = AttackRangeType.MeleeAttack,
-            };
+            bool isColdBloodCrit =
+                _coldBlood != null &&
+                (_coldBlood.IsCanCritCreeperStrike || _coldBlood.IsCanCritLightningStrikes);
 
-            CmdApplyDamage(damage, target.gameObject);
+            if (isColdBloodCrit)
+            {
+                DealCriticalDamage(target, _baseDamage);
+
+                _coldBlood.IsCanCritCreeperStrike = false;
+                _coldBlood.IsCanCritLightningStrikes = false;
+            }
+            else
+            {
+                Damage damage = new Damage
+                {
+                    Value = _baseDamage,
+                    Type = DamageType.Physical,
+                    PhysicAttackType = AttackRangeType.MeleeAttack,
+                };
+
+                CmdApplyDamage(damage, target.gameObject);
+            }
 
             if (target.CharacterState.CheckForState(States.PoisonBone) && _restorationOfGlands && _poisonBoneStack > 0)
             {
@@ -633,4 +651,20 @@ public class PoisonSlap : Skill
         }
     }
     #endregion
+
+    private void DealCriticalDamage(Character target, float baseDamage)
+    {
+        float multiplier = 2.5f;
+
+        float finalDamage = baseDamage * multiplier;
+
+        Damage damage = new Damage
+        {
+            Value = Buff.Damage.GetBuffedValue(finalDamage),
+            Type = DamageType.Physical,
+            PhysicAttackType = AttackRangeType.MeleeAttack,
+        };
+
+        CmdApplyDamage(damage, target.gameObject);
+    }
 }

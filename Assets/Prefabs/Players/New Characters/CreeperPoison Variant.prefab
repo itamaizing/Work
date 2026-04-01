@@ -18202,6 +18202,18 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[0]._talentRows.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentRows.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._talentRows.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentGroup.Array.size
       value: 3
       objectReference: {fileID: 0}
@@ -18247,6 +18259,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.size
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.size
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.size
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.size
       value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -18366,7 +18390,135 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7566935048732947578}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1734068584079679132}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[1]'
+      value: 
+      objectReference: {fileID: 6689918021131749657}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[2]'
+      value: 
+      objectReference: {fileID: 6456863432087837353}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[3]'
+      value: 
+      objectReference: {fileID: 7941594611277133375}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[4]'
+      value: 
+      objectReference: {fileID: 827767455665323477}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[5]'
+      value: 
+      objectReference: {fileID: 2756343518254616569}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[6]'
+      value: 
+      objectReference: {fileID: 1217830514159963980}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[7]'
+      value: 
+      objectReference: {fileID: 8887524501104309569}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[8]'
+      value: 
+      objectReference: {fileID: 4318163990653874616}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[9]'
+      value: 
+      objectReference: {fileID: 988417320158050719}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1642371375121005174}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[1]'
+      value: 
+      objectReference: {fileID: 5042264585882244307}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[2]'
+      value: 
+      objectReference: {fileID: 8303087721396363938}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[3]'
+      value: 
+      objectReference: {fileID: 965364833510229628}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[4]'
+      value: 
+      objectReference: {fileID: 3990197728858337664}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[5]'
+      value: 
+      objectReference: {fileID: 536535723249904053}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[6]'
+      value: 
+      objectReference: {fileID: 3197566967140553242}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[7]'
+      value: 
+      objectReference: {fileID: 3197566967140553242}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[8]'
+      value: 
+      objectReference: {fileID: 4403101704771608953}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.data[10]'
+      value: 
+      objectReference: {fileID: 8390387529358146644}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1774296685369443077}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[1]'
+      value: 
+      objectReference: {fileID: 3640861181852123848}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1394518891378483386}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[3]'
+      value: 
+      objectReference: {fileID: 3656495943832638022}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[4]'
+      value: 
+      objectReference: {fileID: 3157481039742532545}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[5]'
+      value: 
+      objectReference: {fileID: 8041204729760657720}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[6]'
+      value: 
+      objectReference: {fileID: 8711396586475798565}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[7]'
+      value: 
+      objectReference: {fileID: 5622163883072666357}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[8]'
+      value: 
+      objectReference: {fileID: 2435486984149934093}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[9]'
+      value: 
+      objectReference: {fileID: 7712686978828366250}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[10]'
+      value: 
+      objectReference: {fileID: 3096915051999318309}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[11]'
+      value: 
+      objectReference: {fileID: 7566935048732947578}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[10]'
       value: 
       objectReference: {fileID: 8390387529358146644}
     - target: {fileID: 6226204041481316500, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -18644,6 +18796,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4318163990653874616}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 988417320158050719}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3096915051999318309}
@@ -19461,6 +19616,7 @@ MonoBehaviour:
   _earlyCooldown: 0
   maxCounter: 0
   _player: {fileID: 2483674839823445686}
+  _coldBlood: {fileID: 0}
   _poisonBall: {fileID: 4719927588574066064}
   _lightningMovement: {fileID: 7013613396998518356}
   _skillManager: {fileID: 2617687491934927079}
@@ -20631,9 +20787,9 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 2483674839823445686}
-  speed: {fileID: 0}
-  skillManager: {fileID: 0}
-  _metabolismReptile: {fileID: 0}
+  speed: {fileID: 8150686032681382611}
+  skillManager: {fileID: 2617687491934927079}
+  _metabolismReptile: {fileID: 1218428867352848936}
 --- !u!114 &3990197728858337664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21475,6 +21631,34 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 2483674839823445686}
   _creeperStrike: {fileID: 6745892867125186241}
+--- !u!114 &988417320158050719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7437800528419325459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17eb42df511b2f947aa6cab3f1a8c451, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NinjaPoisonTalent_10
+  _data:
+    _descriptionsForInfoPanel:
+    - " \"\u0421\u043A\u043E\u043D\u0446\u0435\u043D\u0442\u0440\u0438\u043E\u0432\u0430\u043D\u043D\u044B\u0439
+      \u0443\u0434\u0430\u0440\" \u043C\u043E\u0436\u043D\u043E \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0442\u044C
+      \u0434\u043B\u044F \u0443\u0441\u0438\u043B\u0435\u043D\u0438\u044F \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439
+      \u044F\u0434\u0430, \u0431\u0443\u0434\u0435\u0442 \u0442\u0430\u043A\u043E\u0439
+      \u0436\u0435 \u044D\u0444\u0444\u0435\u043A\u0442 \u043A\u0440\u0438\u0442\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E
+      \u0443\u0440\u043E\u043D\u0430. "
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u041D\u0438\u043D\u0434\u0437\u044F 10"
+    Icon: {fileID: 1547656469, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 2483674839823445686}
+  _sneakySpit: {fileID: 1964640632880337021}
 --- !u!114 &3096915051999318309
 MonoBehaviour:
   m_ObjectHideFlags: 0
