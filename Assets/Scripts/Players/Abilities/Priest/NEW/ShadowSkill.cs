@@ -158,7 +158,6 @@ public class ShadowSkill : Skill
 
         ShadowMinion shadow = Instantiate(_shadowPrefab, transform.position, transform.rotation);
 
-        SceneManager.MoveGameObjectToScene(shadow.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(shadow.gameObject, connectionToClient);
 
         TargetRpcInitShadow(connectionToClient, shadow.gameObject, targetGO, _shadowSpeedMultiplier);

@@ -22,7 +22,7 @@ public class NpcSpawn : MonoBehaviour
     public void SpawnAllNpc(Scene roomScene)
     {
         if (!NetworkServer.active) return;
-
+        
         SpawnNpcGroup(_spawnPointsEnemyNpc, _enemyNpcPrefab, roomScene);
         //SpawnNpcGroup(_spawnPointsAlliesNpc, _alliesNpcPrefab, roomScene);
     }

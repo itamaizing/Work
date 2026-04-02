@@ -93,7 +93,8 @@ public class Restoration : Skill,IPolaritySwitchable
     [Command]
     public void CmdEnableRestorationHealBooster(bool value)
     {
-        _restorationHealBooster.Enable(value);
+        if(isClient)
+            _restorationHealBooster.Enable(value);
     }
 
     public void SetStackingRestorationTalent(bool value)

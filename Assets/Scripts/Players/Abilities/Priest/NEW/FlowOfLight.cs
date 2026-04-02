@@ -454,7 +454,7 @@ public class FlowOfLight : Skill, IPolaritySwitchable
         if (!isLightMode) effectInstance = Instantiate(effectPrefabDark, start.transform.position, Quaternion.identity);
         else effectInstance = Instantiate(effectPrefabLight, start.transform.position, Quaternion.identity);
 
-        SceneManager.MoveGameObjectToScene(effectInstance, _hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(effectInstance, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(effectInstance);
 
         _activeEffect = effectInstance;

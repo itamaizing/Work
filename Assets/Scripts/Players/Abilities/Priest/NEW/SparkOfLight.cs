@@ -85,7 +85,8 @@ public class SparkOfLight : Skill,IPolaritySwitchable
     public void SetAoeTalent(bool value)
     {
         _aoeTalentActiveServer = value;
-        CmdSetAoeTalent(value);
+        if(isClient)
+            CmdSetAoeTalent(value);
     }
 
     [Command]
@@ -440,7 +441,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
             Quaternion.LookRotation(direction));
 
         projectile.Init(target);
-        SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 
         projectile.EndPointReached += (proj, tgt) =>
         {

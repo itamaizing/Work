@@ -251,7 +251,7 @@ public abstract class Skill : NetworkBehaviour
         _currentChargeCooldownJob[index] = StartCoroutine(RechargeOneChargeCoroutine(index, tempTime));
     }
 
-    public bool TryUseCharge()
+    public virtual bool TryUseCharge()
     {
         if (_isUseCharges == false)
             return true;
@@ -626,6 +626,7 @@ public abstract class Skill : NetworkBehaviour
     public event Action BoostEnabled;
     public event Action BoostDisabled;
     public event Action<GameObject, Skill> OnDamageApplied;
+    public event Action<GameObject, Skill> OnHealApplied;
     #endregion
 
     public int AnimTriggerCastPublic => AnimTriggerCast;
@@ -1188,10 +1189,12 @@ public abstract class Skill : NetworkBehaviour
         CastStarted?.Invoke();
         _isCasting = true;
 
-        if (CastDeley > 0)
+        bool noCast = Hero.Abilities.TryConsumeNoCast();
+
+        if (!noCast && CastDeley > 0)
             yield return StartCastDeleyCoroutine();
 
-        if (AnimTriggerCast != 0)
+        if (!noCast && AnimTriggerCast != 0)
         {
             _isPlayCastAnim = true;
             //_isWaitingForCastCoroutine = true;
@@ -1456,8 +1459,18 @@ public abstract class Skill : NetworkBehaviour
             Targeting.ForDamage = new TargetData(hp);
             _tempForHealing = hp.GetComponent<IHealable>();
         }
+
         if (_tempForHealing != null)
+        {
             ApplyHeal(heal, hp, skill, sourceName);
+            OnHealApply(hp);
+        }
+    }
+    
+    [ClientRpc]
+    private void OnHealApply(GameObject target)
+    {
+        OnHealApplied?.Invoke(target, this);
     }
 
     public void AfterCastJob()

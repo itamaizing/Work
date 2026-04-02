@@ -93,9 +93,6 @@ public class RestorationState : RefreshingState
         if (!IsStackingMode)
             return base.Stack(time);
 
-        if (currentStacksCount < MaxStacksCount)
-            currentStacksCount++;
-
         duration = _baseDuration;
         RemainingDuration = _baseDuration;
 
