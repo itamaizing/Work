@@ -2,155 +2,108 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GrabTongue : Skill
 {
-    [SerializeField] private TransparentPoisons _transparentPoisons;
+    [Header("Refs")]
     [SerializeField] private Character _player;
-    [SerializeField] private GrabTongueProjectile _tongueProjectile;
+    [SerializeField] private GrabTongueProjectile _projectile;
+
+    [Header("Settings")]
+    [SerializeField] private float _maxDistance = 3f;
+    [SerializeField] private float _throwDuration = 0.2f;
+    [SerializeField] private float _pullDuration = 0.6f;
+
     private Character _target;
-
-    private Vector3 _mousePosition = Vector3.positiveInfinity;
-    private Vector3 _startPosition;
-    private Vector3 _endPosition;
-
-    private float _maxDistance = 10f;
-    private bool _isCanAttract;
-    private bool _isPlayerInvisible = false;
 
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
-    protected override bool IsCanCast => CheckCanCast();
+
+    protected override bool IsCanCast =>
+        _target != null &&
+        Vector3.Distance(transform.position, _target.transform.position) <= _maxDistance;
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callback)
+    {
+        TargetInfo info = new TargetInfo();
+
+        while (true)
+        {
+            if (GetMouseButton)
+            {
+                Targeting.FindTempTarget(Targeting.GetMousePoint(), _maxDistance);
+
+                var temp = Targeting.GetTempTarget()?.Targetable as Character;
+
+                if (temp != null && temp != _hero)
+                {
+                    _target = temp;
+
+                    info.AddTarget(_target);
+                    info.Points.Add(_target.transform.position);
+
+                    callback?.Invoke(info);
+                    yield break;
+                }
+            }
+
+            yield return null;
+        }
+    }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        Debug.LogError("DataError");
+        if (targetInfo?.GetTargets()?.Count > 0)
+        {
+            _target = targetInfo.GetTargets()[0] as Character;
+        }
+    }
+
+    protected override IEnumerator CastJob()
+    {
+        if (_target == null) yield break;
+
+        CancelTargetSkills(_target);
+
+        bool canPull = _target.CharacterState.CheckForState(States.InAir);
+
+        Vector3 start = transform.position;
+        Vector3 end = _target.transform.position;
+
+        CmdSpawnProjectile(_target.netIdentity, start, end, canPull);
+
+        yield return null;
+    }
+
+    private void CancelTargetSkills(Character target)
+    {
+        if (target == null) return;
+
+        foreach (var skill in target.Abilities.Skills)
+        {
+            if (skill == null) continue;
+
+            if (skill.IsCasting || skill.IsPreparing) skill.CmdCancelActiveSkill();
+        }
+    }
+
+    [Command]
+    private void CmdSpawnProjectile(NetworkIdentity targetId, Vector3 start, Vector3 end, bool canPull)
+    {
+        if (targetId == null) return;
+
+        GameObject go = Instantiate(_projectile.gameObject, start, Quaternion.identity);
+
+        var proj = go.GetComponent<GrabTongueProjectile>();
+        var target = targetId.GetComponent<Character>();
+
+        proj.InitializationProjectile(_player, target, start, end, false);
+
+        NetworkServer.Spawn(go);
     }
 
     protected override void ClearData()
     {
         _target = null;
-        _mousePosition = Vector3.positiveInfinity;
-        _startPosition = Vector3.zero;
-        _endPosition = Vector3.zero;
-    }
-
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-    {
-        if (_transparentPoisons.Data.IsOpen && _player.IsInvisible)
-        {
-            _isPlayerInvisible = true;
-        }
-        else
-        {
-            _isPlayerInvisible = false;
-        }
-
-        _startPosition = _player.transform.position;
-
-        while (_target == null)
-        {
-
-            StartCoroutine(SearchingEnemiesWithDebuff());
-
-            //if (Input.GetMouseButtonDown(0))
-            //{
-            //    _target = GetRaycastTarget();
-            //    Debug.Log($"GrabTongue / PrepareJob / _target == {_target}");
-            //    _mousePosition = Targeting.GetMousePoint();
-
-            //    if (Vector3.Distance(_startPosition, _mousePosition) <= AreaInfo.Radius)
-            //    {
-            //        _endPosition = _mousePosition;
-            //    }
-            //}
-            yield return null;
-        }
-        Debug.LogError("DataError");
-    }
-
-    protected override IEnumerator CastJob()
-    {
-        if (_target != null && _isCanAttract)
-        {
-            Debug.Log($"GrabTongue / CastJob / _target == {_target}");
-            CreateTongueProjectile(_target, _startPosition, _endPosition);
-        }
-        yield return null;
-    }
-
-    private IEnumerator SearchingEnemiesWithDebuff()
-    {
-        while (true)
-        {
-            Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, AreaInfo.Radius, _targetsLayers);
-            foreach (Collider2D enemy in hits)
-            {
-                if (enemy != null)
-                {
-                    _target = enemy.gameObject.GetComponent<Character>();
-                    _endPosition = _target.transform.position;
-
-                    if (_target.CharacterState.CheckForState(States.InAir))
-                    {
-                        Debug.Log("CheckForState in SearchingEnemies");
-                        _isCanAttract = true;
-                    }
-                    else
-                    {
-                        Debug.Log("IsCanAttract = false");
-                        _isCanAttract = false;
-                    }
-                }
-            }
-            yield return null;
-        }
-    }
-
-    private bool CheckCanCast()
-    {
-        if (_target != null)
-            return Vector3.Distance(_player.transform.position, _target.transform.position) <= AreaInfo.Radius;
-
-        else 
-            return false;
-    }
-
-    private void CreateTongueProjectile(Character target, Vector3 startPosition, Vector3 endPosition)
-    {
-        Debug.Log("CreateTongueProjectile");
-        CmdCreateTongueProjectile(target, startPosition, endPosition, _isPlayerInvisible);
-    }
-
-    [Command]
-    private void CmdCreateTongueProjectile(Character target, Vector3 startPosition, Vector3 endPosition, bool isPlayerInvisible)
-    {
-        Debug.Log("CmdCreateTongueProjectile");
-        GameObject item = Instantiate(_tongueProjectile.gameObject, transform.position, Quaternion.identity);
-        GrabTongueProjectile tongueProjectile = item.GetComponent<GrabTongueProjectile>();
-
-        SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
-
-        Debug.Log($"CmdCreate // Projectile = {tongueProjectile}, target = {target}");
-        tongueProjectile.InitializationProjectile(_player, target, startPosition, endPosition, isPlayerInvisible);
-        tongueProjectile.StartTongueAttract();
-
-        NetworkServer.Spawn(item);
-
-        RpcInitializationProjectile(tongueProjectile.gameObject, target, startPosition, endPosition, isPlayerInvisible);
-    }
-
-    [ClientRpc]
-    private void RpcInitializationProjectile(GameObject projectile, Character target, Vector3 startPosition, Vector3 endPosition, bool isPlayerInvisible)
-    {
-        Debug.Log($"RpcCreate //Projectile = {projectile}, target = {target}");
-
-        if (target && projectile != null)
-        {
-            Debug.Log("Rpc // after If");
-            projectile.GetComponent<GrabTongueProjectile>().InitializationProjectile(_player, target, startPosition, endPosition, isPlayerInvisible);
-            projectile.GetComponent<GrabTongueProjectile>().StartTongueAttract();
-        }
     }
 }
