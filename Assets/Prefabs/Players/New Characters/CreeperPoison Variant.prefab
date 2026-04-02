@@ -18712,6 +18712,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2161342997938470374}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 565901441313688860}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1642371375121005174}
@@ -18941,6 +18944,7 @@ MonoBehaviour:
   _poisonBall: {fileID: 4719927588574066064}
   _creeperInvisible: {fileID: 6857802422684928800}
   _coldBlood: {fileID: 4616268591970552908}
+  _creeperPoisonAura: {fileID: 0}
   _player: {fileID: 2483674839823445686}
   _multiplyCritDamage: 1.5
   _chanceOfCriticalStrike: 0.05
@@ -20470,6 +20474,90 @@ MonoBehaviour:
     m_Bits: 256
   _attackSpeedPerStack: 0.1
   _tickRate: 0.2
+--- !u!114 &565901441313688860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1780458876409769317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d19ce5ada878d194385e017efba2fefc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GrabTongue
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
+  _abilityInfo: {fileID: 0}
+  _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _additional: []
+  _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
+  _castDeley: 0
+  _damageValue: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+  _targetingComponent:
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _chargeComponent:
+    _usesCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
+    affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _areaComponent:
+    _radius: 0
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
+  _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 1
+    _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
+  _transparentPoisons: {fileID: 0}
+  _player: {fileID: 0}
+  _tongueProjectile: {fileID: 0}
 --- !u!114 &2434123723962207148 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5590339039165547173, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -20635,6 +20723,7 @@ MonoBehaviour:
   character: {fileID: 2483674839823445686}
   skillManager: {fileID: 2617687491934927079}
   _poisonSlap: {fileID: 8577860281443816807}
+  _creeperPoisonAura: {fileID: 2161342997938470374}
 --- !u!114 &965364833510229628
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20716,9 +20805,9 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 2483674839823445686}
-  skillManager: {fileID: 0}
+  skillManager: {fileID: 2617687491934927079}
   _creeperStrike: {fileID: 6745892867125186241}
-  speed: {fileID: 0}
+  speed: {fileID: 8150686032681382611}
 --- !u!114 &3197566967140553242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21531,7 +21620,7 @@ MonoBehaviour:
   character: {fileID: 2483674839823445686}
   _sneakySpit: {fileID: 1964640632880337021}
   _poisonSlap: {fileID: 8577860281443816807}
-  _poisonBall: {fileID: 0}
+  _poisonBall: {fileID: 4719927588574066064}
 --- !u!114 &3096915051999318309
 MonoBehaviour:
   m_ObjectHideFlags: 0
