@@ -2,18 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NinjaPoisonTalent_5 : Talent
+public class NinjaPoisonTalent_11 : Talent
 {
     [SerializeField] private BlockPassiveSkill block;
-    [SerializeField] private SkillManager manager;
 
     public override void Enter()
     {
-        manager.ActivateSkill(block);
+        block.MagicOrPhysicRessist(true);
     }
 
     public override void Exit()
     {
-        manager.DeactivateSkill(block);
+        block.MagicOrPhysicRessist(false);
     }
 }

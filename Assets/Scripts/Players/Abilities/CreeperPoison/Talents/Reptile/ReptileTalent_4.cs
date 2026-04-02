@@ -5,20 +5,21 @@ using UnityEngine;
 
 public class ReptileTalent_4 : Talent
 {
-    [SerializeField] private SpeedOfReptile speed;
     [SerializeField] private SkillManager skillManager;
     [SerializeField] private MetabolismReptile _metabolismReptile;
+    [SerializeField] private LightningMovement lightningMovement;
 
     public override void Enter()
     {
-        skillManager.ActivateSkill(speed);
         skillManager.ActivateSkill(_metabolismReptile);
+        skillManager.ActivateSkill(lightningMovement);
+
     }
 
     public override void Exit()
     {
-        skillManager.DeactivateSkill(speed);
         skillManager.DeactivateSkill(_metabolismReptile);
+        skillManager.DeactivateSkill(lightningMovement);
     }
 }
 

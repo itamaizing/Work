@@ -27,7 +27,6 @@ public struct PoisonBallActiveTalentsInfo : NetworkMessage
     public bool IsActiveFootInstincts;
     public bool IsActiveRestorationOfGlands;
     public bool IsActiveTransparentPoisons;
-    public bool IsActiveWitheringPoison;
     public bool IsActiveContinuationAmbush;
     public bool IsActiveEnlargedGlands;
     public bool IsActiveVoluminousBall;
@@ -580,7 +579,7 @@ public class PoisonBall : Skill, IAltAbility
                 _poisonBallInfo.MaxCountProjectile, _multiplierForPushDistance, PoisonBoneStack,
                 _isFast, _isPushTarget, IsAltAbility,
                 _activeTalentsInfo.IsActiveFootInstincts, _activeTalentsInfo.IsActiveRestorationOfGlands,
-                _isHealingPoisonBall, _activeTalentsInfo.IsActiveWitheringPoison, _activeTalentsInfo.IsActiveVoluminousBall, _isActiveBallEffect,
+                _isHealingPoisonBall, _creeperPoisonAura.IsActiveWitheringPoison, _activeTalentsInfo.IsActiveVoluminousBall, _isActiveBallEffect,
                 _activeTalentsInfo.IsActiveInertialGlands, _activeTalentsInfo.IsActiveContinuationAmbush,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies, _isTransparentPoisons);
 
@@ -595,7 +594,7 @@ public class PoisonBall : Skill, IAltAbility
                 _poisonBallInfo.MaxCountProjectile, _multiplierForPushDistance, PoisonBoneStack,
                 _isFast, _isPushTarget, IsAltAbility,
                 _activeTalentsInfo.IsActiveFootInstincts, _activeTalentsInfo.IsActiveRestorationOfGlands,
-                _isHealingPoisonBall, _activeTalentsInfo.IsActiveWitheringPoison, _activeTalentsInfo.IsActiveVoluminousBall, _isActiveBallEffect,
+                _isHealingPoisonBall, _creeperPoisonAura.IsActiveWitheringPoison, _activeTalentsInfo.IsActiveVoluminousBall, _isActiveBallEffect,
                 _activeTalentsInfo.IsActiveInertialGlands, _activeTalentsInfo.IsActiveContinuationAmbush,
                 _poisonBallInfo.IsOriginalTargetEnemy, _poisonBallInfo.IsOriginalTargetPlayer, _poisonBallInfo.IsOriginalTargetAllies, _isTransparentPoisons);
 

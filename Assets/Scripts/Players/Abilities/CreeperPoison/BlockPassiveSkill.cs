@@ -24,6 +24,13 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) => null;
     #endregion
 
+    #region Talent
+
+    private bool _isMagicOrPhysicRessist = false;
+
+    public void MagicOrPhysicRessist(bool value) => _isMagicOrPhysicRessist = value;
+    #endregion
+
     private void OnEnable()
     {
         Hero.Health.Block += PlayBlockAnimation;

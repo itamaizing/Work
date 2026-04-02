@@ -27,9 +27,12 @@ public class CreeperPoisonAura : NetworkBehaviour
     private bool _isEvadePoison = false;
     private bool _isOwnElement = false;
     private bool _isPleasurePoisoning = false;
+    private bool _isActiveWitheringPoison = false;
 
     public bool IsFeelingPoisoning { get => _isFeelingPoisoning; set => _isFeelingPoisoning = value; }
+    public bool IsActiveWitheringPoison { get => _isActiveWitheringPoison; set => _isActiveWitheringPoison = value; }
 
+    public void ActiveWitheringPoison(bool value) => _isActiveWitheringPoison = value;
     public void PleasurePoisoning(bool value) => _isPleasurePoisoning = value;
     public void OwnElement(bool value) => _isOwnElement = value;
     public void FeelingPoisoning(bool value) => _isFeelingPoisoning = value;
