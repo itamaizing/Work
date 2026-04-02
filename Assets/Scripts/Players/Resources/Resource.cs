@@ -231,8 +231,9 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     {
         while (true)
         {
-            while (!isServer || netIdentity == null || connectionToClient == null)
-                yield return null;
+            //while (!isServer || netIdentity == null || connectionToClient == null)
+            //    yield return null;
+            while (!isServer) yield return null;
             if (_regenerationValue < 0) yield return null;
 
             if (_currentValue < _maxValue)
@@ -242,7 +243,8 @@ public abstract class Resource : NetworkBehaviour, IAttribute
                 while (_currentValue < _maxValue)
                 {
                     //Debug.Log("Regens");
-                    CmdRegen();
+                    //CmdRegen();
+                    Add(_regenerationValue);
                     yield return new WaitForSeconds(_regenerationPeriod);
                 }
             }
