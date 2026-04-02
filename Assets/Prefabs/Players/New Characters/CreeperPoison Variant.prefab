@@ -18063,7 +18063,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
-      value: 17
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[0]'
@@ -18133,6 +18133,10 @@ PrefabInstance:
       propertyPath: '_skills.Array.data[16]'
       value: 
       objectReference: {fileID: 3350435801472191630}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_skills.Array.data[17]'
+      value: 
+      objectReference: {fileID: 565901441313688860}
     - target: {fileID: 5263749372223534569, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -20489,18 +20493,18 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
-  _abilityInfo: {fileID: 0}
+  _isTalentSpell: 1
+  _isSkillActive: 0
+  _abilityInfo: {fileID: 11400000, guid: 210da40a0085cd74dbbe0231617f4591, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
     _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
+  _cooldownTime: 8
   _cooldownComponent:
-    _baseCooldown: 0
+    _baseCooldown: 8
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -20518,7 +20522,7 @@ MonoBehaviour:
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -20542,7 +20546,7 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 0
+    _radius: 3
     _area: 0
     _castLength: 0
     _castWidth: 0
@@ -20555,9 +20559,11 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _transparentPoisons: {fileID: 0}
-  _player: {fileID: 0}
-  _tongueProjectile: {fileID: 0}
+  _player: {fileID: 2483674839823445686}
+  _projectile: {fileID: 2633956590774819317, guid: 6d4e598214ad8194197d8c3a24b69465, type: 3}
+  _maxDistance: 10
+  _throwDuration: 0.2
+  _pullDuration: 0.6
 --- !u!114 &2434123723962207148 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5590339039165547173, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -20687,6 +20693,8 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 2483674839823445686}
+  _grabTongue: {fileID: 565901441313688860}
+  _skillManager: {fileID: 2617687491934927079}
 --- !u!114 &8303087721396363938
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20747,7 +20755,7 @@ MonoBehaviour:
   character: {fileID: 2483674839823445686}
   skillManager: {fileID: 2617687491934927079}
   _metabolismReptile: {fileID: 1218428867352848936}
-  lightningMovement: {fileID: 0}
+  lightningMovement: {fileID: 7013613396998518356}
 --- !u!114 &3990197728858337664
 MonoBehaviour:
   m_ObjectHideFlags: 0

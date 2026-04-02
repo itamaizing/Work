@@ -206,8 +206,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 
         //ClientStopRegenerateJob();
         //ClientStartRegenirateJob();
-        if(oldValue > newValue)
-            ResetRegen();
+        if(oldValue > newValue) ResetRegen();
     }
 
     protected virtual void HookMaxValueChanged(float oldValue, float newValue)

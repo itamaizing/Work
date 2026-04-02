@@ -1797,7 +1797,7 @@ MonoBehaviour:
   _authorization: {fileID: 1780031980}
   _menuScene: {fileID: 102900000, guid: 0ef4eaeadea665141a482c0ed073c484, type: 3}
   _gameScene: {fileID: 102900000, guid: 21add78d8cb999042a3e0188927f0f9a, type: 3}
-  _webSocketClient: {fileID: 0}
+  _webSocketClient: {fileID: 1308580904}
 --- !u!4 &581331872
 Transform:
   m_ObjectHideFlags: 0
