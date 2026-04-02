@@ -60,7 +60,8 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected List<SkillEnergyCost> _skillEnergyCosts;
     [SerializeField] protected List<SkillEnergyCost> _additionalSkillEnergyCosts;
     #endregion
-    
+
+    [SerializeField] protected float _cooldownTime;
     [SerializeField] private CooldownComponent _cooldownComponent;
     public CooldownComponent Cooldown => _cooldownComponent;
 
@@ -250,7 +251,7 @@ public abstract class Skill : NetworkBehaviour
         _currentChargeCooldownJob[index] = StartCoroutine(RechargeOneChargeCoroutine(index, tempTime));
     }
 
-    public virtual bool TryUseCharge()
+    public bool TryUseCharge()
     {
         if (_isUseCharges == false)
             return true;
@@ -332,7 +333,7 @@ public abstract class Skill : NetworkBehaviour
     protected float _baseCooldownTime;
     private float _remainingCooldownTime;
 
-    public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(Cooldown.CooldownTime); protected set => Cooldown.CooldownTime = value; }
+    public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); protected set => _cooldownTime = value; }
     public float RemainingCooldownTime { get => _remainingCooldownTime; set => _remainingCooldownTime = value; }
     public bool IsCooldowned { get => _remainingCooldownTime <= 0; }
 
@@ -625,7 +626,6 @@ public abstract class Skill : NetworkBehaviour
     public event Action BoostEnabled;
     public event Action BoostDisabled;
     public event Action<GameObject, Skill> OnDamageApplied;
-    public event Action<GameObject, Skill> OnHealApplied;
     #endregion
 
     public int AnimTriggerCastPublic => AnimTriggerCast;
@@ -638,6 +638,7 @@ public abstract class Skill : NetworkBehaviour
 
     protected void SkillAfterCastJob() => AfterCast?.Invoke();
     protected void CastEndedJob() => CastEnded?.Invoke();
+    protected void CurrentCharge(int charges) => CurrentChargeChanged?.Invoke(charges);
 
     protected virtual bool IsCanCast //важно потрогать
     {
@@ -1187,12 +1188,10 @@ public abstract class Skill : NetworkBehaviour
         CastStarted?.Invoke();
         _isCasting = true;
 
-        bool noCast = Hero.Abilities.TryConsumeNoCast();
-
-        if (!noCast && CastDeley > 0)
+        if (CastDeley > 0)
             yield return StartCastDeleyCoroutine();
 
-        if (!noCast && AnimTriggerCast != 0)
+        if (AnimTriggerCast != 0)
         {
             _isPlayCastAnim = true;
             //_isWaitingForCastCoroutine = true;
@@ -1457,18 +1456,8 @@ public abstract class Skill : NetworkBehaviour
             Targeting.ForDamage = new TargetData(hp);
             _tempForHealing = hp.GetComponent<IHealable>();
         }
-
         if (_tempForHealing != null)
-        {
             ApplyHeal(heal, hp, skill, sourceName);
-            OnHealApply(hp);
-        }
-    }
-    
-    [ClientRpc]
-    private void OnHealApply(GameObject target)
-    {
-        OnHealApplied?.Invoke(target, this);
     }
 
     public void AfterCastJob()

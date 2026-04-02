@@ -13,6 +13,9 @@ public class URLLibrary
     private const string _getBottle = "GetBottle.php";
     private const string _setHeroData = "SetHeroData.php";
     private const string _getHeroData = "GetHeroData.php";
+    private const string _startGame = "startGame.php";
+    private const string _webSocketPort = "8888";
+    private const string _webSocket = "ws://";
 
     private readonly List<string> _heroName = new()
     {
@@ -30,6 +33,8 @@ public class URLLibrary
     public static string GetBottle { get { return _mainServer + _getBottle; } }
     public static string SetHeroData { get { return _mainServer + _setHeroData; } }
     public static string GetHeroData { get { return _mainServer + _getHeroData; } }
+    public static string StartGame { get { return _mainServer + _startGame; } }
+    public static string WebSocket { get { return _webSocket + _mainServer + ":" + _webSocketPort; } }
 
     public static string MainServer => _mainServer;
     public static string LocalHost => _localHost;

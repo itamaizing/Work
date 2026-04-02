@@ -15,6 +15,8 @@ public class User : NetworkBehaviour
     private int _id = -37;
     private int _bottle;
 
+    public int Id { get => _id; }
+
     public void SetID(int id)
     {
         if (_id < 0)
@@ -39,6 +41,8 @@ public class User : NetworkBehaviour
                 Instance = this;
                 _id = MPNetworkManager.Instance.UserID;
                 InitializeManagers();
+
+                AddPlayer(gameObject, ServerManager.Instance.CurrentHeroIndex);
             }
 
             else if (Instance != null && Instance != this)
@@ -47,6 +51,21 @@ public class User : NetworkBehaviour
                 return;
             }
         }
+    }
+
+    [Command(requiresAuthority = false)]
+    private void AddPlayer(GameObject user, int characterIndex)
+    {
+        GameObject player = Instantiate(ServerManager.Instance.HeroList[characterIndex].gameObject);
+        NetworkServer.Spawn(player, user);
+        MPNetworkManager.Instance.AddPlayer(player);
+        RpcAddPlayer(player);
+    }
+
+    [ClientRpc]
+    private void RpcAddPlayer(GameObject player)
+    {
+        MPNetworkManager.Instance.Players.Add(player);
     }
 
     private void Success(string data)

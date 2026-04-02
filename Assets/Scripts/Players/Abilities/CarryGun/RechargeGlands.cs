@@ -62,7 +62,7 @@ public class RechargeGlands : Skill
             _chargesGlands += ChargesToAdd;
             _chargesGlands = Mathf.Min(_chargesGlands, MaxCharges);
 
-            Charges.CurrentCharges = _chargesGlands;
+            CurrentCharge(_chargesGlands);
         }
 
         _activeCoroutines--;
@@ -77,7 +77,7 @@ public class RechargeGlands : Skill
         float rand = UnityEngine.Random.Range(0f, 1f);
 
         _chargesGlands--;
-        Charges.CurrentCharges = _chargesGlands;
+        CurrentCharge(_chargesGlands);
 
         if (rand <= chance)
         {
@@ -93,7 +93,7 @@ public class RechargeGlands : Skill
         _chargesGlands -= value;
         _chargesGlands = Mathf.Max(0, _chargesGlands);
 
-        Charges.CurrentCharges = _chargesGlands;
+        CurrentCharge(_chargesGlands);
     }
 
     protected override void ClearData()

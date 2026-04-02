@@ -1,19 +1,19 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Sprites/Ui/Menu/Frame/Screenshot 2026-01-29 114017.png.meta
+<<<<<<<< HEAD:Assets/Sprites/StateIcons/Parasites.png.meta
+guid: 4b9781f07de953248b75939506afb1ab
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -542047240662843017
+    second: Parasites_0
+========
 guid: 53494ce4170427644b100c8947fdc835
 TextureImporter:
   internalIDToNameTable:
   - first:
       213: 3193950621172577634
     second: Screenshot 2026-01-29 114017_0
-========
-guid: ef644501c6a48574d99b58d3c563b590
-TextureImporter:
-  internalIDToNameTable:
-  - first:
-      213: -4125687490052203788
-    second: RechargeGlands_0
->>>>>>>> main:Assets/Sprites/Abilities/CarryGun/RechargeGlands.png.meta
+>>>>>>>> main:Assets/Sprites/Ui/Menu/Frame/Screenshot 2026-01-29 114017.png.meta
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -81,10 +81,10 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 64
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -106,11 +106,11 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-<<<<<<<< HEAD:Assets/Sprites/Ui/Menu/Frame/Screenshot 2026-01-29 114017.png.meta
-    buildTarget: Android
-========
+<<<<<<<< HEAD:Assets/Sprites/StateIcons/Parasites.png.meta
     buildTarget: WindowsStoreApps
->>>>>>>> main:Assets/Sprites/Abilities/CarryGun/RechargeGlands.png.meta
+========
+    buildTarget: Android
+>>>>>>>> main:Assets/Sprites/Ui/Menu/Frame/Screenshot 2026-01-29 114017.png.meta
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -126,22 +126,22 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-<<<<<<<< HEAD:Assets/Sprites/Ui/Menu/Frame/Screenshot 2026-01-29 114017.png.meta
-      name: Screenshot 2026-01-29 114017_0
+<<<<<<<< HEAD:Assets/Sprites/StateIcons/Parasites.png.meta
+      name: Parasites_0
 ========
-      name: RechargeGlands_0
->>>>>>>> main:Assets/Sprites/Abilities/CarryGun/RechargeGlands.png.meta
+      name: Screenshot 2026-01-29 114017_0
+>>>>>>>> main:Assets/Sprites/Ui/Menu/Frame/Screenshot 2026-01-29 114017.png.meta
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-<<<<<<<< HEAD:Assets/Sprites/Ui/Menu/Frame/Screenshot 2026-01-29 114017.png.meta
-        width: 706
-        height: 395
-========
+<<<<<<<< HEAD:Assets/Sprites/StateIcons/Parasites.png.meta
         width: 64
         height: 64
->>>>>>>> main:Assets/Sprites/Abilities/CarryGun/RechargeGlands.png.meta
+========
+        width: 706
+        height: 395
+>>>>>>>> main:Assets/Sprites/Ui/Menu/Frame/Screenshot 2026-01-29 114017.png.meta
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -150,13 +150,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-<<<<<<<< HEAD:Assets/Sprites/Ui/Menu/Frame/Screenshot 2026-01-29 114017.png.meta
+<<<<<<<< HEAD:Assets/Sprites/StateIcons/Parasites.png.meta
+      spriteID: 7718fc018e24a78f0800000000000000
+      internalID: -542047240662843017
+========
       spriteID: 265312dea21335c20800000000000000
       internalID: 3193950621172577634
-========
-      spriteID: 4fa5a2d261d9eb6c0800000000000000
-      internalID: -4125687490052203788
->>>>>>>> main:Assets/Sprites/Abilities/CarryGun/RechargeGlands.png.meta
+>>>>>>>> main:Assets/Sprites/Ui/Menu/Frame/Screenshot 2026-01-29 114017.png.meta
       vertices: []
       indices: 
       edges: []
@@ -175,11 +175,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-<<<<<<<< HEAD:Assets/Sprites/Ui/Menu/Frame/Screenshot 2026-01-29 114017.png.meta
-      Screenshot 2026-01-29 114017_0: 3193950621172577634
+<<<<<<<< HEAD:Assets/Sprites/StateIcons/Parasites.png.meta
+      Parasites_0: -542047240662843017
 ========
-      RechargeGlands_0: -4125687490052203788
->>>>>>>> main:Assets/Sprites/Abilities/CarryGun/RechargeGlands.png.meta
+      Screenshot 2026-01-29 114017_0: 3193950621172577634
+>>>>>>>> main:Assets/Sprites/Ui/Menu/Frame/Screenshot 2026-01-29 114017.png.meta
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

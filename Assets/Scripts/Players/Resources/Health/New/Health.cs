@@ -36,7 +36,6 @@ public class Health : Resource, IDamageable, IHealable
     public event Action Evaded;
     public event Action Block;
     public event Action<float , Skill , string> HealTaked;
-    public event Action<float, Skill, string> HealTakedServer;
     public event Action<Damage, Skill> DamageTaken;
     public event Action Died;
     public event Action<float, float> OnShieldValuesChanged;
@@ -145,7 +144,6 @@ public class Health : Resource, IDamageable, IHealable
 
     public void Heal(ref Heal heal, string sourceName, Skill skill = null)
     {
-        HealTakedServer?.Invoke(heal.Value, skill, sourceName);
         ClientRpcHealTaked(heal.Value, skill, sourceName);
         Add(heal.Value);
     }
@@ -265,31 +263,8 @@ public class Health : Resource, IDamageable, IHealable
 
         return false;
     }
-    
+
     protected void UseShields(ref Damage damage, Skill skill)
-    {
-        if (_shields.Count == 0) return;
-        
-        for (int i = _shields.Count - 1; i >= 0; i--)
-        {
-            var shield = _shields[i];
-
-            if (shield == null)
-            {
-                _shields.RemoveAt(i);
-                continue;
-            }
-
-            shield.TryTakeDamage(ref damage, skill);
-
-            if (damage.Value == 0)
-                break;
-        }
-
-        _shields.RemoveAll(shield => shield == null);
-    }
-
-    /*protected void UseShields(ref Damage damage, Skill skill)
     {
         for (int i = 0; i < _shields.Count; i++)
         {
@@ -305,7 +280,7 @@ public class Health : Resource, IDamageable, IHealable
             _shields.RemoveAt(i);
             i--;
         }
-    }*/
+    }
 
     private void Defence(ref Damage damage)
     {
@@ -408,4 +383,3 @@ public class Health : Resource, IDamageable, IHealable
         _regenerationValue /= percentageValue;
     }
 }
-

@@ -119,11 +119,12 @@ public class UIGameWindowPopup : MonoBehaviour
         
         _playerIcon.OnCharacterSelected(_currentHero);
         _minionPanel.OnCharacterSelected(_currentHero);
-        _skillPanel.OnCharacterSelected(_currentCharacter);
+        _skillPanel.OnCharacterSelected(_currentHero);
 
         _attributesPanel.gameObject.SetActive(true);
-        //_attributesPanel.Show(_currentHero.Data.Attributes);
-        
+        _attributesPanel.Show(_currentHero, false);
+        _attributesPanel.ShowHide(true);
+
         _talentsPanel.gameObject.SetActive(true);
         _talentsPanel.Show(_currentHero.TalentManager, true);
 

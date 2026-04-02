@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Sprites/Ui/Menu/Frame/Screenshot 2026-01-29 114017.png.meta
-guid: df9fdad36475db34eb756f19964cba79
+<<<<<<<< HEAD:Assets/Downloadeds/Hovl Studio/AAA Magic circles Vol 3/Textures/CircleBigMask123.png.meta
+guid: f9f8de1b403409741bdeb31682f45d47
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3193950621172577634
-    second: Screenshot 2026-01-29 114017_0
+      213: -3062566805884558476
+    second: CircleBigMask123_0
 ========
 guid: ef644501c6a48574d99b58d3c563b590
 TextureImporter:
@@ -63,8 +63,8 @@ TextureImporter:
   spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
-  alphaUsage: 1
-  alphaIsTransparency: 1
+  alphaUsage: 2
+  alphaIsTransparency: 0
   spriteTessellationDetail: -1
   textureType: 8
   textureShape: 1
@@ -106,7 +106,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-<<<<<<<< HEAD:Assets/Sprites/Ui/Menu/Frame/Screenshot 2026-01-29 114017.png.meta
+<<<<<<<< HEAD:Assets/Downloadeds/Hovl Studio/AAA Magic circles Vol 3/Textures/CircleBigMask123.png.meta
     buildTarget: Android
 ========
     buildTarget: WindowsStoreApps
@@ -126,8 +126,8 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-<<<<<<<< HEAD:Assets/Sprites/Ui/Menu/Frame/Screenshot 2026-01-29 114017.png.meta
-      name: Screenshot 2026-01-29 114017_0
+<<<<<<<< HEAD:Assets/Downloadeds/Hovl Studio/AAA Magic circles Vol 3/Textures/CircleBigMask123.png.meta
+      name: CircleBigMask123_0
 ========
       name: RechargeGlands_0
 >>>>>>>> main:Assets/Sprites/Abilities/CarryGun/RechargeGlands.png.meta
@@ -135,9 +135,9 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-<<<<<<<< HEAD:Assets/Sprites/Ui/Menu/Frame/Screenshot 2026-01-29 114017.png.meta
-        width: 706
-        height: 395
+<<<<<<<< HEAD:Assets/Downloadeds/Hovl Studio/AAA Magic circles Vol 3/Textures/CircleBigMask123.png.meta
+        width: 509
+        height: 504
 ========
         width: 64
         height: 64
@@ -150,9 +150,9 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-<<<<<<<< HEAD:Assets/Sprites/Ui/Menu/Frame/Screenshot 2026-01-29 114017.png.meta
-      spriteID: 265312dea21335c20800000000000000
-      internalID: 3193950621172577634
+<<<<<<<< HEAD:Assets/Downloadeds/Hovl Studio/AAA Magic circles Vol 3/Textures/CircleBigMask123.png.meta
+      spriteID: 473295a57b39f75d0800000000000000
+      internalID: -3062566805884558476
 ========
       spriteID: 4fa5a2d261d9eb6c0800000000000000
       internalID: -4125687490052203788
@@ -175,8 +175,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-<<<<<<<< HEAD:Assets/Sprites/Ui/Menu/Frame/Screenshot 2026-01-29 114017.png.meta
-      Screenshot 2026-01-29 114017_0: 3193950621172577634
+<<<<<<<< HEAD:Assets/Downloadeds/Hovl Studio/AAA Magic circles Vol 3/Textures/CircleBigMask123.png.meta
+      CircleBigMask123_0: -3062566805884558476
 ========
       RechargeGlands_0: -4125687490052203788
 >>>>>>>> main:Assets/Sprites/Abilities/CarryGun/RechargeGlands.png.meta

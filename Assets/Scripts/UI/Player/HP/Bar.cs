@@ -127,7 +127,7 @@ public class Bar : MonoBehaviour
     {
         _currentValue = newValue;
 
-		if (_health != null && _health.IsDot) _bar.value = _currentValue / _maxValue;
+		if (_health != null && _health.IsDot) _bar.DOValue(_currentValue / _maxValue, _disapearSpeed);
 
 		if (_shieldBar != null)
 		{
@@ -180,6 +180,7 @@ public class Bar : MonoBehaviour
 
 	public void PreviewChange(float damage)
 	{
+		Debug.Log("Try phantom value");
 		float newValue = _currentValue - damage;
 		//Debug.Log(newValue + " new " + _currentValue + " cur " + _maxValue + " max" );
 		if (_barPlus != null)
