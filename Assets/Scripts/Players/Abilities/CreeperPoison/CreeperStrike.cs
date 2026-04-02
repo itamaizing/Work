@@ -27,6 +27,7 @@ public class CreeperStrike : Skill
     [SerializeField] private PoisonBall _poisonBall;
     [SerializeField] private CreeperInvisible _creeperInvisible;
     [SerializeField] private ColdBlood _coldBlood;
+    [SerializeField] private CreeperPoisonAura _creeperPoisonAura;
 
     [Header("Ability properties")]
     [SerializeField] private Character _player;
@@ -184,6 +185,7 @@ public class CreeperStrike : Skill
         Character character = target as Character;
 
         TryApplyPoisonBone(character);
+        TryApplyWitheringPoison(character);
 
         if (target != null)
         {
@@ -423,6 +425,15 @@ public class CreeperStrike : Skill
         }
 
         return criticalDamage;
+    }
+
+    private void TryApplyWitheringPoison(Character target)
+    {
+        if (target == null) return;
+        if (_creeperPoisonAura == null) return;
+        if (!_creeperPoisonAura.IsActiveWitheringPoison) return;
+
+        target.CharacterState.CmdAddState(States.WitheringPoison, 10f, 0, _player.gameObject, Name);
     }
 
     private void DealCriticalDamage(Character currentTarget, float criticalDamage, bool isTalentCritDamage = false)

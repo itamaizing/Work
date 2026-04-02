@@ -13,7 +13,7 @@ public class WitheringPoisonState : AbstractCharacterState
     private int _maxStacks = 3;
 
     private float _timeBetweenTakeAwayMana;
-    private float _startTimeBetweenTakeAwayMana = 1f;
+    private float _startTimeBetweenTakeAwayMana = 2f;
 
     private float _baseDuration;
 
