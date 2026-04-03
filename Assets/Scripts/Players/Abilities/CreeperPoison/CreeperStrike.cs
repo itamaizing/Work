@@ -431,9 +431,17 @@ public class CreeperStrike : Skill
     {
         if (target == null) return;
         if (_creeperPoisonAura == null) return;
-        if (!_creeperPoisonAura.IsActiveWitheringPoison) return;
+        if (!_creeperPoisonAura.IsActiveWitheringPoison || !_creeperPoisonAura.IsActiveWitheringPoisonMetabolism) return;
 
-        target.CharacterState.CmdAddState(States.WitheringPoison, 10f, 0, _player.gameObject, Name);
+        var finalChance = 0f;
+
+        if (_creeperPoisonAura.IsActiveWitheringPoison) finalChance += 0.2f;
+        if (_creeperPoisonAura.IsActiveWitheringPoisonMetabolism) finalChance += 0.3f;
+
+        if (UnityEngine.Random.value <= finalChance)
+        {
+            target.CharacterState.CmdAddState(States.WitheringPoison, 10f, 0, _player.gameObject, Name);
+        }
     }
 
     private void DealCriticalDamage(Character currentTarget, float criticalDamage, bool isTalentCritDamage = false)

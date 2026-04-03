@@ -20727,7 +20727,6 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 2483674839823445686}
   skillManager: {fileID: 2617687491934927079}
-  _metabolismReptile: {fileID: 1218428867352848936}
   lightningMovement: {fileID: 7013613396998518356}
 --- !u!114 &3990197728858337664
 MonoBehaviour:
