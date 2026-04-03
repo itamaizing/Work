@@ -319,7 +319,7 @@ public class SpitPoison : Skill, IAltAbility
 
         GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
 
-        SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
@@ -357,7 +357,7 @@ public class SpitPoison : Skill, IAltAbility
 
         GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
 
-        SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
@@ -404,7 +404,7 @@ public class SpitPoison : Skill, IAltAbility
                 _poisonDamagingCloud = Instantiate(_poisonDamagingCloudPrefab, transform.position, Quaternion.identity);
                 _poisonDamagingCloudPrefab.PoisonDamageCloud = _poisonDamagingCloud;
 
-                SceneManager.MoveGameObjectToScene(_poisonDamagingCloudPrefab.PoisonDamageCloud.gameObject, _hero.NetworkSettings.MyRoom);
+                //SceneManager.MoveGameObjectToScene(_poisonDamagingCloudPrefab.PoisonDamageCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
                 _poisonDamagingCloudPrefab.PoisonDamageCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
                 _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
@@ -427,7 +427,7 @@ public class SpitPoison : Skill, IAltAbility
                 _poisonHealingCloud = Instantiate(_poisonHealingCloudPrefab, transform.position, Quaternion.identity);
                 _poisonHealingCloudPrefab.PoisonHealingCloud = _poisonHealingCloud;
 
-                SceneManager.MoveGameObjectToScene(_poisonHealingCloudPrefab.PoisonHealingCloud.gameObject, _hero.NetworkSettings.MyRoom);
+                //SceneManager.MoveGameObjectToScene(_poisonHealingCloudPrefab.PoisonHealingCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
                 _poisonHealingCloudPrefab.PoisonHealingCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
                 _poisonHealingCloudPrefab.PoisonHealingCloud.AddStack();

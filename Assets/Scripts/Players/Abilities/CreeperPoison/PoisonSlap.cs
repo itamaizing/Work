@@ -596,7 +596,7 @@ public class PoisonSlap : Skill
                 _poisonDamagingCloud = Instantiate(_poisonDamagingCloudPrefab, transform.position, Quaternion.identity);
                 _poisonDamagingCloudPrefab.PoisonDamageCloud = _poisonDamagingCloud;
 
-                SceneManager.MoveGameObjectToScene(_poisonDamagingCloud.gameObject, _hero.NetworkSettings.MyRoom);
+                //SceneManager.MoveGameObjectToScene(_poisonDamagingCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
                 _poisonDamagingCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
                 _poisonDamagingCloud.AddStack();
@@ -618,7 +618,7 @@ public class PoisonSlap : Skill
                 _poisonHealingCloud = Instantiate(_poisonHealingCloudPrefab, transform.position, Quaternion.identity);
                 _poisonHealingCloudPrefab.PoisonHealingCloud = _poisonHealingCloud;
 
-                SceneManager.MoveGameObjectToScene(_poisonHealingCloud.gameObject, _hero.NetworkSettings.MyRoom);
+                //SceneManager.MoveGameObjectToScene(_poisonHealingCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
                 _poisonHealingCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
                 _poisonHealingCloud.AddStack();
