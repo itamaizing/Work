@@ -4,11 +4,11 @@ public class LightShieldManaRestoreTalent : Talent
 {
     public override void Enter()
     {
-        character.Abilities.GetSkill<PriestShield>()?.EnableBooster(PriestShield.PriestBoosterType.LightShieldManaRestore,true);
+        character.Abilities.GetSkill<PriestShield>()?.EnableBooster(PriestShield.PriestShieldBoosterType.LightShieldManaRestore,true);
     }
 
     public override void Exit()
     {
-        character.Abilities.GetSkill<PriestShield>()?.EnableBooster(PriestShield.PriestBoosterType.LightShieldManaRestore,false);
+        character.Abilities.GetSkill<PriestShield>()?.EnableBooster(PriestShield.PriestShieldBoosterType.LightShieldManaRestore,false);
     }
 }

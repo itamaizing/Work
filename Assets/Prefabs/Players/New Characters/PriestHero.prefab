@@ -6403,7 +6403,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[13]'
       value: 
-      objectReference: {fileID: 2269395334650481872}
+      objectReference: {fileID: 324435905908284838}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[10]'
       value: 
@@ -7554,7 +7554,6 @@ MonoBehaviour:
   tiredSoulDuration: 12
   absorbAmount: 40
   audioClip: {fileID: 8300000, guid: b98d79eb8d8561741abaf46e6e955fb1, type: 3}
-  isLightMode: 1
 --- !u!114 &4397321495794393293
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7758,9 +7757,9 @@ MonoBehaviour:
   - resourceType: 1
     resourceCost: 10
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
+  _cooldownTime: 40
   _cooldownComponent:
-    _baseCooldown: 0
+    _baseCooldown: 40
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -9667,7 +9666,6 @@ MonoBehaviour:
     Group: 0
     Row: 1
   character: {fileID: 4534754468497973439}
-  _priestShield: {fileID: 9090548113051291277}
 --- !u!114 &6148027053243259231
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9874,8 +9872,6 @@ MonoBehaviour:
     Group: 0
     Row: 1
   character: {fileID: 4534754468497973439}
-  _priestShield: {fileID: 9090548113051291277}
-  emeraldSkin: {fileID: 504324304728665980}
 --- !u!114 &2757403685024012163
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10053,7 +10049,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8908408265001011226}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 420fbbca05a141b408a7b202600224bd, type: 3}
   m_Name: 
@@ -10083,8 +10079,6 @@ MonoBehaviour:
     Group: 0
     Row: 1
   character: {fileID: 4534754468497973439}
-  _priestShield: {fileID: 9090548113051291277}
-  _soulAid: {fileID: 3096350181652607353}
 --- !u!114 &7783918278128032343
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10200,7 +10194,6 @@ MonoBehaviour:
     Group: 0
     Row: 1
   character: {fileID: 4534754468497973439}
-  _priestShield: {fileID: 9090548113051291277}
 --- !u!114 &2269395334650481872
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -76,24 +76,9 @@ public class SparkOfLight : Skill,IPolaritySwitchable
     public void SetStackingRestorationTalent(bool value) => _stackingRestorationTalent = value;
     public void SetStackingDestructionTalent(bool value) => _stackingDestructionTalent = value;
     
-    #region AoeTalent
-    private bool _aoeTalentActiveServer = false;
-    private const float _aoeRadius = 1f;
-    private const float _aoeDamagePercent = 0.3f;
-    private const float _aoeHealPercent = 0.3f;
-
-    public void SetAoeTalent(bool value)
-    {
-        _aoeTalentActiveServer = value;
-        if(isClient)
-            CmdSetAoeTalent(value);
-    }
-
-    [Command]
-    private void CmdSetAoeTalent(bool value)
-    {
-        _aoeTalentActiveServer = value;
-    }
+    #region Aoe Talent
+    private AoeTalentBooster _aoeBooster;
+    public AoeTalentBooster AoeBooster => _aoeBooster;
     #endregion
     #region SpiritHealthOnShadow
     private bool _spiritHealthIsEnabled;
@@ -133,6 +118,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         _instantFlash.Inject(flashSkill);
         
         _overhealMana = new OverhealManaBooster(this, Hero);
+        _aoeBooster = new AoeTalentBooster(this);
     }
 
     private void OnDisable()
@@ -225,7 +211,10 @@ public class SparkOfLight : Skill,IPolaritySwitchable
 
         if (!isLightMode && (UnityEngine.Random.value <= 0.2f)) stateComponent.AddState(States.Destruction, 12f, 0, gameObject, nameof(SparkOfLight));
     }
-    
+
+    [Command]
+    private void CmdTryApplyDestructionFilling(Character target) => TryApplyDestructionFilling(target);
+
     private void TryApplyDestructionFilling(Character target)
     {
         if (target == null) return;
@@ -241,10 +230,10 @@ public class SparkOfLight : Skill,IPolaritySwitchable
             ? _destructionFillingExtensionTime
             : _destructionFillingDuration;
 
-        CmdStateRestorationOrDestruction(targetState, stateToUse, duration);
+        StateRestorationOrDestruction(targetState, stateToUse, duration);
     }
 
-    private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration)
+    private void StateRestorationOrDestruction(CharacterState stateComponent, States states, float duration)
     {
         float damageToExit = 0;
         if (_spiritHealthIsEnabled && (states == States.Destruction || states == States.DestructionStacking))
@@ -344,32 +333,6 @@ public class SparkOfLight : Skill,IPolaritySwitchable
             School = this.Info.School
         };
     }
-    
-    private void ApplyAoeEffect(Character mainTarget, float value, bool isDamage)
-    {
-        float aoeValue = value * (isDamage ? _aoeDamagePercent : _aoeHealPercent);
-        Collider[] hits = Physics.OverlapSphere(mainTarget.transform.position, _aoeRadius, Targeting.Layer);
-
-        foreach (var hit in hits)
-        {
-            if (!hit.TryGetComponent<Character>(out var target)) continue;
-            if (target == mainTarget || target.IsDead) continue;
-
-            if (isDamage)
-            {
-                if (!IsEnemyTarget(target)) continue;
-                CmdApplyDamage(CreateDamage(aoeValue), target.gameObject);
-            }
-            else
-            {
-                if (!IsAllyTarget(target) && target != _hero) continue;
-                Heal(target,aoeValue);
-            }
-
-            TryApplyExtraState(target);
-            if (_isDestructionFillingTalent) TryApplyDestructionFilling(target);
-        }
-    }
 
 
     private void ApplySpiritEnergyBuff(Character target)
@@ -468,19 +431,30 @@ public class SparkOfLight : Skill,IPolaritySwitchable
     [TargetRpc]
     private void TargetRpcApplyAoe(NetworkConnectionToClient conn, GameObject targetGO, bool isLight)
     {
-        if (!_aoeTalentActiveServer) return;
-
-        var target = targetGO.GetComponent<Character>();
+        var target = targetGO.GetComponent<Character>(); 
         if (target == null) return;
 
         if (isLight)
         {
-            ApplyAoeEffect(target, _healAmount, false);
+            var targets = _aoeBooster?.GetHealableTargets(target, _healAmount, this);
+            if (targets != null) {
+                foreach (var heal in targets)
+                {
+                    TryApplyExtraState(heal.Key.GetComponent<Character>());
+                    if (_isDestructionFillingTalent) TryApplyDestructionFilling(heal.Key.GetComponent<Character>());
+                }
+            }
         }
         else
         {
-            float dmg = isLightMode ? _damageAmount : _altDamageAmount;
-            ApplyAoeEffect(target, isLightMode ? _damageAmount : _altDamageAmount, true);
+            var targets = _aoeBooster?.GetDamagebleTarget(target, _healAmount, this);
+            if (targets != null) {
+                foreach (var heal in targets)
+                {
+                    TryApplyExtraState(heal.Key.GetComponent<Character>());
+                    if (_isDestructionFillingTalent) CmdTryApplyDestructionFilling(heal.Key.GetComponent<Character>());
+                }
+            }
         }
     }
     
