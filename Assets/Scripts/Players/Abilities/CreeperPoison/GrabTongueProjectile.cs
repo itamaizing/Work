@@ -16,8 +16,8 @@ public class GrabTongueProjectile : NetworkBehaviour
 
     private int _teamIndex;
 
-    private float _moveSpeedDirectionFromPlayer = 0.2f; // speed projectile 0.2 cell per second
-    private float _moveSpeedDirectionToPlayer = 1.2f; // speed projectile 0.6 cell per second
+    private float _moveSpeedDirectionFromPlayer = 0.2f;
+    private float _moveSpeedDirectionToPlayer = 0.6f;
 
     private bool _isPlayerInvisible;
     private bool _isAlly;
@@ -25,88 +25,33 @@ public class GrabTongueProjectile : NetworkBehaviour
     private Coroutine _toungeToTargetCoroutine;
     private Coroutine _toungeFromPlayerCoroutine;
 
+    private void Awake()
+    {
+        if (_lineRenderer == null)
+            _lineRenderer = GetComponent<LineRenderer>();
+    }
+
     private void Start()
     {
+        if (_lineRenderer == null)
+        {
+            Debug.LogError("LineRenderer missing!", this);
+            return;
+        }
+
+        _lineRenderer.positionCount = 2;
+
         if (isServer && _isPlayerInvisible)
         {
             RpcNewTransparencySprite();
         }
-        _lineRenderer.positionCount = 2;
     }
 
     private void Update()
     {
-        _lineRenderer.SetPosition(0, _startPosition);
-        _lineRenderer.SetPosition(1, _endPosition);
-    }
+        if (_lineRenderer == null || _player == null) return;
 
-    public void StartTongueAttract()
-    {
-        _toungeToTargetCoroutine = StartCoroutine(TongueToTarget());
-    }
-
-    private IEnumerator TongueToTarget()
-    {
-        float startTime = Time.time;
-        Vector3 currentPosition = _startPosition;
-
-        while (currentPosition != _endPosition)
-        {
-            float time = (Time.time - startTime) / _moveSpeedDirectionFromPlayer;
-            currentPosition = Vector3.Lerp(_startPosition, _endPosition, time);
-            _lineRenderer.SetPosition(1, currentPosition);
-            yield return null;
-        }
-
-        _toungeFromPlayerCoroutine = StartCoroutine(PullTargetToPlayer(_moveSpeedDirectionToPlayer, _startPosition));
-    }
-
-    private IEnumerator PullTargetToPlayer(float speed, Vector3 playerPosition)
-    {
-        float startTime = Time.time;
-        float time;
-        Vector3 currentPosition = _endPosition;
-
-        while (currentPosition != _startPosition)
-        {
-            time = (Time.time - startTime) / _moveSpeedDirectionToPlayer;
-            currentPosition = Vector3.Lerp(_endPosition, _startPosition, time);
-
-            Vector3 direction = (_target.transform.position - _startPosition).normalized;
-
-            PullTarget(direction, time);
-
-            _lineRenderer.SetPosition(1, currentPosition);
-            yield return null;
-        }
-
-        DestoryProjectile();
-    }
-
-    private void PullTarget(Vector3 direction, float time)
-    {
-        if (!_targetCharacterState.CheckForState(States.Immateriality))
-        {
-            _targetCharacterState.AddState(States.Immateriality, time * 1.3f, 0, _player.gameObject, null);
-        }
-
-        _targetMoveComponent.TargetRpcDoMove((Vector3)_target.transform.position - direction * time * 1.2f, time);
-    }
-
-    private void DestoryProjectile()
-    {
-        Destroy(gameObject);
-
-        if (_toungeToTargetCoroutine != null)
-        {
-            StopCoroutine(TongueToTarget());
-            _toungeToTargetCoroutine = null;
-        }
-        if (_toungeFromPlayerCoroutine != null)
-        {
-            StopCoroutine(PullTargetToPlayer(_moveSpeedDirectionToPlayer, _startPosition));
-            _toungeFromPlayerCoroutine = null;
-        }
+        _lineRenderer.SetPosition(0, _player.transform.position);
     }
 
     public void InitializationProjectile(Character player, Character target, Vector3 startPosition, Vector3 endPosition, bool isPlayerInvisible)
@@ -121,43 +66,122 @@ public class GrabTongueProjectile : NetworkBehaviour
         _targetMoveComponent = _target.GetComponent<MoveComponent>();
         _targetCharacterState = _target.GetComponent<CharacterState>();
 
+        if (_lineRenderer == null)
+            _lineRenderer = GetComponent<LineRenderer>();
+
+        _lineRenderer.positionCount = 2;
         _lineRenderer.SetPosition(0, _startPosition);
-        _lineRenderer.SetPosition(1, _endPosition);
+        _lineRenderer.SetPosition(1, _startPosition);
+
+        StartTongueAttract();
+    }
+
+    public void StartTongueAttract()
+    {
+        if (_toungeToTargetCoroutine != null)
+            StopCoroutine(_toungeToTargetCoroutine);
+
+        _toungeToTargetCoroutine = StartCoroutine(TongueToTarget());
+    }
+
+    private IEnumerator TongueToTarget()
+    {
+        float timer = 0f;
+
+        Vector3 start = _startPosition;
+        Vector3 end = _endPosition;
+
+        while (timer < 1f)
+        {
+            timer += Time.deltaTime / _moveSpeedDirectionFromPlayer;
+
+            Vector3 currentPosition = Vector3.Lerp(start, end, timer);
+
+            if (_lineRenderer != null) _lineRenderer.SetPosition(1, currentPosition);
+
+            yield return null;
+        }
+
+        if (_lineRenderer != null) _lineRenderer.SetPosition(1, end);
+
+        _toungeFromPlayerCoroutine = StartCoroutine(PullTargetToPlayer());
+    }
+
+    private IEnumerator PullTargetToPlayer()
+    {
+        if (_target == null) yield break;
+
+        float timer = 0f;
+
+        Vector3 start = _target.transform.position;
+        Vector3 end = _player.transform.position;
+
+        if (_targetMoveComponent != null) _targetMoveComponent.IsMoveBlocked = true;
+
+        if (_targetCharacterState != null && !_targetCharacterState.CheckForState(States.Immateriality))
+        {
+            _targetCharacterState.AddState(States.Immateriality, _moveSpeedDirectionToPlayer * 1.3f, 0, _player.gameObject, null);
+        }
+
+        while (timer < 1f)
+        {
+            timer += Time.deltaTime / _moveSpeedDirectionToPlayer;
+
+            Vector3 currentPos = Vector3.Lerp(start, end, timer);
+
+            if (_targetMoveComponent != null)
+                _targetMoveComponent.TargetRpcSetTransformPosition(currentPos);
+
+            if (_lineRenderer != null)
+                _lineRenderer.SetPosition(1, currentPos);
+
+            yield return null;
+        }
+
+        if (_targetMoveComponent != null)
+        {
+            _targetMoveComponent.TargetRpcSetTransformPosition(end);
+            _targetMoveComponent.TargetRpcStopMoveAndAnimationMove();
+            _targetMoveComponent.IsMoveBlocked = false;
+        }
+
+        DestroyProjectile();
+    }
+
+    private void DestroyProjectile()
+    {
+        if (_toungeToTargetCoroutine != null)
+        {
+            StopCoroutine(_toungeToTargetCoroutine);
+            _toungeToTargetCoroutine = null;
+        }
+
+        if (_toungeFromPlayerCoroutine != null)
+        {
+            StopCoroutine(_toungeFromPlayerCoroutine);
+            _toungeFromPlayerCoroutine = null;
+        }
+
+        Destroy(gameObject);
     }
 
     [ClientRpc]
     private void RpcNewTransparencySprite()
     {
+        if (_lineRenderer == null) return;
+
         var localPlayer = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>();
         _isAlly = localPlayer.TeamIndex == _teamIndex;
 
-        Color originalStartColor = _lineRenderer.startColor;
-        Color originalEndColor = _lineRenderer.endColor;
+        Color start = _lineRenderer.startColor;
+        Color end = _lineRenderer.endColor;
 
-        if (_lineRenderer != null)
-        {
-            if (_isAlly)
-            {
-                Color newTransparencyStartLine = originalStartColor;
-                Color newTransparencyEndLine = originalEndColor;
+        float alpha = _isAlly ? 0.5f : 0f;
 
-                newTransparencyStartLine.a = 0.5f;
-                newTransparencyEndLine.a = 0.5f;
+        start.a = alpha;
+        end.a = alpha;
 
-                _lineRenderer.startColor = new Color(originalStartColor.r, originalStartColor.g, originalStartColor.b, newTransparencyStartLine.a);
-                _lineRenderer.endColor = new Color(originalEndColor.r, originalEndColor.g, originalEndColor.b, newTransparencyEndLine.a);
-            }
-            else
-            {
-                Color newTransparencyStartLine = originalStartColor;
-                Color newTransparencyEndLine = originalEndColor;
-
-                newTransparencyStartLine.a = 0.0f;
-                newTransparencyEndLine.a = 0.0f;
-
-                _lineRenderer.startColor = new Color(originalStartColor.r, originalStartColor.g, originalStartColor.b, newTransparencyStartLine.a);
-                _lineRenderer.endColor = new Color(originalEndColor.r, originalEndColor.g, originalEndColor.b, newTransparencyEndLine.a);
-            }
-        }
+        _lineRenderer.startColor = start;
+        _lineRenderer.endColor = end;
     }
 }

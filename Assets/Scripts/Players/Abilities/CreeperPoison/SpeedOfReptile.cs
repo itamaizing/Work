@@ -7,7 +7,6 @@ public class SpeedOfReptile : Skill
 {
     [SerializeField] private Character _player;
     [SerializeField] private CreeperStrike _creeperStrike;
-    [SerializeField] private SpeedOfReptileTalent _speedOfReptileTalent;
 
     [SerializeField]private float _duration = 3f;
 
@@ -18,7 +17,7 @@ public class SpeedOfReptile : Skill
 
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
-    protected override bool IsCanCast => _speedOfReptileTalent.Data.IsOpen;
+    protected override bool IsCanCast => true;
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {

@@ -12,9 +12,9 @@ public class LightningMovement : Skill
     [SerializeField] private Character _player;
 
     [Header("Talents & Abilities")]
-    [SerializeField] private SuperFastScales _superFastScales;
-    [SerializeField] private HeatedGlands _heatedGlands;
-    [SerializeField] private LightningFastPoisonSlap _lightningFastPoisonSlap;
+    //[SerializeField] private SuperFastScales _superFastScales;
+    //[SerializeField] private HeatedGlands _heatedGlands;
+    //[SerializeField] private LightningFastPoisonSlap _lightningFastPoisonSlap;
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private PoisonSlap _poisonSlap;
     [SerializeField] private LightningStrikes _lightningStrikes;
@@ -166,11 +166,11 @@ public class LightningMovement : Skill
         Hero.Move.SetCanMove(false);
         _damagedCharacter = null;
 
-        if (_superFastScales.Data.IsOpen)
-            _superFastScales.IncreasingResistance(Target);
+        //if (_superFastScales.Data.IsOpen)
+        //    _superFastScales.IncreasingResistance(Target);
 
-        if (_heatedGlands.Data.IsOpen)
-            _player.CharacterState.AddState(States.HeatedGlands, 4f, 0, _player.gameObject, null);
+        //if (_heatedGlands.Data.IsOpen)
+        //    _player.CharacterState.AddState(States.HeatedGlands, 4f, 0, _player.gameObject, null);
 
         //_player.CharacterState.CmdAddState(States.Immateriality, _durationLeap, 0, _player.gameObject, Name);
 

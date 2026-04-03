@@ -22,10 +22,10 @@ public class PoisonSlap : Skill
     [SerializeField] private SkillManager _skillManager;
 
     [Header("Talents")]
-    [SerializeField] private RestorationOfGlands _restorationOfGlands;
-    [SerializeField] private LightningFastPoisonSlap _lightningFastPoisonSlap;
-    [SerializeField] private LightweightSlap _lightweightSlap;
-    [SerializeField] private PoisonSlapTalent _poisonSlapTalent;
+    //[SerializeField] private RestorationOfGlands _restorationOfGlands;
+    //[SerializeField] private LightningFastPoisonSlap _lightningFastPoisonSlap;
+    //[SerializeField] private LightweightSlap _lightweightSlap;
+    //[SerializeField] private PoisonSlapTalent _poisonSlapTalent;
 
     [SerializeField] private PoisonDamagingCloudPrefab _poisonDamagingCloudPrefab;
     [SerializeField] private PoisonHealingCloudPrefab _poisonHealingCloudPrefab;
@@ -458,16 +458,16 @@ public class PoisonSlap : Skill
                 CmdApplyDamage(damage, target.gameObject);
             }
 
-            if (target.CharacterState.CheckForState(States.PoisonBone) && _restorationOfGlands && _poisonBoneStack > 0)
-            {
-                float baseChanceOfRestorationOfGlands = 0.1f;
-                float chanceOfRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
+            //if (target.CharacterState.CheckForState(States.PoisonBone) && _restorationOfGlands && _poisonBoneStack > 0)
+            //{
+            //    float baseChanceOfRestorationOfGlands = 0.1f;
+            //    float chanceOfRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
 
-                if (Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
-                {
-                    _restorationOfGlands.ReductionCooldown();
-                }
-            }
+            //    if (Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
+            //    {
+            //        _restorationOfGlands.ReductionCooldown();
+            //    }
+            //}
 
             PushTarget(target, _distancePush, _durationPush, _isPushTargetAllowed);
         }
@@ -495,16 +495,16 @@ public class PoisonSlap : Skill
 
             CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
 
-            if (Targeting.GetTarget().Character.CharacterState.CheckForState(States.PoisonBone) && _restorationOfGlands && _poisonBoneStack > 0)
-            {
-                float baseChanceOfRestorationOfGlands = 0.1f;
-                float chanceOfRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
+            //if (Targeting.GetTarget().Character.CharacterState.CheckForState(States.PoisonBone) && _restorationOfGlands && _poisonBoneStack > 0)
+            //{
+            //    float baseChanceOfRestorationOfGlands = 0.1f;
+            //    float chanceOfRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
 
-                if (Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
-                {
-                    _restorationOfGlands.ReductionCooldown();
-                }
-            }
+            //    if (Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
+            //    {
+            //        _restorationOfGlands.ReductionCooldown();
+            //    }
+            //}
 
             PushTarget(Targeting.GetTarget()?.Character, _distancePush, _durationPush, _isPushTargetAllowed);
         }
@@ -515,10 +515,10 @@ public class PoisonSlap : Skill
     {
         float baseCooldownTime = _cooldownTime;
 
-        if (_lightweightSlap.Data.IsOpen)
-        {
-            _cooldownTime /= 2;
-        }
+        //if (_lightweightSlap.Data.IsOpen)
+        //{
+        //    _cooldownTime /= 2;
+        //}
 
         _isCanDamageDeal = false;
         TryPayCost(true);

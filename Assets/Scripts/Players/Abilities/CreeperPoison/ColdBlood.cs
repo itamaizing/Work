@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class ColdBlood : Skill
 {
-    [Header("Talent")]
-    [SerializeField] private Indomitable _indomitable;
-    [SerializeField] private ColdBloodTalent _coldBloodTalent;
-    [SerializeField] private KillersStamina _killersStamina;
+    //[Header("Talent")]
+    //[SerializeField] private Indomitable _indomitable;
+    //[SerializeField] private ColdBloodTalent _coldBloodTalent;
+    //[SerializeField] private KillersStamina _killersStamina;
 
     [Header("Ability Properties")]
     [SerializeField] private CreeperStrike _creeperStrike;
@@ -26,9 +26,9 @@ public class ColdBlood : Skill
 
     private bool _isWaitingForHit = false;
 
-    public Indomitable IndomitableTalent { get => _indomitable; }
-    public ColdBloodTalent ColdBloodTalent { get => _coldBloodTalent; }
-    public KillersStamina KillersStaminaTalent { get => _killersStamina; }
+   // public Indomitable IndomitableTalent { get => _indomitable; }
+    //public ColdBloodTalent ColdBloodTalent { get => _coldBloodTalent; }
+    //public KillersStamina KillersStaminaTalent { get => _killersStamina; }
     public bool IsCanCrit { get => _isCanCrit; set => _isCanCrit = value; }
     public bool IsCanCritLightningStrikes { get => _isCanCritLightningStrikes; set => _isCanCritLightningStrikes = value; }
 
@@ -63,51 +63,54 @@ public class ColdBlood : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        if (_indomitable.Data.IsOpen)
-        {
-            while (Targeting.GetTarget()?.Character == null || float.IsPositiveInfinity(_mousePosition.x))
-            {
-                if (GetMouseButton)
-                {
-                    Targeting.FindTempTarget(true);
-					//_target = Targeting.GetTarget(true).character;
-                   // Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / target == " + _target);
+     //   if (_indomitable.Data.IsOpen)
+     //   {
+     //       while (Targeting.GetTarget()?.Character == null || float.IsPositiveInfinity(_mousePosition.x))
+     //       {
+     //           if (GetMouseButton)
+     //           {
+     //               Targeting.FindTempTarget(true);
+					////_target = Targeting.GetTarget(true).character;
+     //              // Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / target == " + _target);
 
-                    if (Targeting.GetTarget()?.Character != Hero)
-                    {
-                        _isPlayer = false;
-                       // Debug.Log("TargetLayer != player / TargetLayer == " + _target);
-                    }
-                    if (Targeting.GetTarget()?.Character == Hero)
-                    { 
-                        _isPlayer = true;
-                       // Debug.Log("TargetLayer == player / TargetLayer == " + _target);
-                    }
+     //               if (Targeting.GetTarget()?.Character != Hero)
+     //               {
+     //                   _isPlayer = false;
+     //                  // Debug.Log("TargetLayer != player / TargetLayer == " + _target);
+     //               }
+     //               if (Targeting.GetTarget()?.Character == Hero)
+     //               { 
+     //                   _isPlayer = true;
+     //                  // Debug.Log("TargetLayer == player / TargetLayer == " + _target);
+     //               }
 
-                    _mousePosition = Targeting.GetMousePoint();
-                    Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / _mousePosition == " + _mousePosition);
-                }
-                yield return null;
-            }
-        }
-        else
-        {
-            yield break;
-        }
+     //               _mousePosition = Targeting.GetMousePoint();
+     //               Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / _mousePosition == " + _mousePosition);
+     //           }
+     //           yield return null;
+     //       }
+     //   }
 
-        Debug.LogError("DataError");
+        //else
+        //{
+        //    yield break;
+        //}
+
+        yield break;
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_indomitable.Data.IsOpen)
-        {
-            UseAbilityWithTalent();
-        }
-        else
-        {
-            UseAbilityWithoutTalent();
-        }
+        //if (_indomitable.Data.IsOpen)
+        //{
+        //    UseAbilityWithTalent();
+        //}
+        //else
+        //{
+        //    UseAbilityWithoutTalent();
+        //}
+
+        UseAbilityWithoutTalent();
 
         CmdApplyImmateriality();
         StartWaitingForHit();
@@ -164,10 +167,10 @@ public class ColdBlood : Skill
         else
         {
             Debug.Log("ColdBlood / UseAbilityWithTalent / else if _isPlayer == false");
-            if (_killersStamina.Data.IsOpen)
-            {
-                _isCanCritLightningStrikes = true;
-            }
+            //if (_killersStamina.Data.IsOpen)
+            //{
+            //    _isCanCritLightningStrikes = true;
+            //}
 
             _isCanCrit = true;
         }
@@ -176,10 +179,10 @@ public class ColdBlood : Skill
     private void UseAbilityWithoutTalent()
     {
         Debug.Log("ColdBlood / UseAbilityWithoutTalent");
-        if (_killersStamina.Data.IsOpen)
-        {
-            _isCanCritLightningStrikes = true;
-        }
+        //if (_killersStamina.Data.IsOpen)
+        //{
+        //    _isCanCritLightningStrikes = true;
+        //}
 
         _isCanCrit = true;
     }

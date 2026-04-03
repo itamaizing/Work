@@ -6,7 +6,6 @@ using UnityEngine;
 public class MetabolismReptile : Skill
 {
     [SerializeField] private Character _player;
-    [SerializeField] private MetabolismReptileTalent _metabolismReptileTalent; 
 
     [SerializeField] private PoisonBall _poisonBall;
     [SerializeField] private SpitPoison _spitPoison; 
@@ -21,7 +20,7 @@ public class MetabolismReptile : Skill
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
 
-    protected override bool IsCanCast => _metabolismReptileTalent.Data.IsOpen;
+    protected override bool IsCanCast => true;
 
     private void Start()
     {
