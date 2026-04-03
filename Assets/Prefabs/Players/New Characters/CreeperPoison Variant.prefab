@@ -18030,6 +18030,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2201725961568704641, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2201725961568704641, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_CollisionDetection
       value: 3
       objectReference: {fileID: 0}
@@ -20723,7 +20727,7 @@ MonoBehaviour:
       \u0432\u043D\u0443\u0442\u0440\u0435\u043D\u043D\u044F\u044F \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0430\u044F
       \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C"
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: " \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0440\u0435\u043F\u0442\u0438\u043B\u0438\u0438"
     Icon: {fileID: 7595241771238511587, guid: eb1e53bce0abfd940816bf6d5da4ce56, type: 3}
     Group: 0
@@ -20747,7 +20751,7 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: '-'
     Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
     Group: 0
@@ -20807,7 +20811,7 @@ MonoBehaviour:
       10%, \u043A\u0430\u0436\u0434\u044B\u0439 \u0441\u0442\u0430\u043A \u044F\u0434\u0430
       \u0442\u043E\u0436\u0435 \u0441\u0447\u0438\u0442\u0430\u0435\u0442\u0441\u044F"
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0441\u0432\u043E\u044F \u0441\u0442\u0438\u0445\u0438\u044F"
     Icon: {fileID: 9134556171150595701, guid: 64973930cd9a4884b953600ae666b1ab, type: 3}
     Group: 0
@@ -20920,7 +20924,7 @@ MonoBehaviour:
         \u0435\u0441\u043B\u0438 \u043A\u0440\u0438\u043F\u0435\u0440\u0430 \u043D\u0435
         \u0432\u0438\u0434\u044F\u0442 \u0446\u0435\u043B\u0438 \u0438 \u043E\u043D
         \u043C\u043E\u0436\u0435\u0442 \u0443\u0439\u0442\u0438 \u0432 \u043D\u0435\u0432\u0438\u0434\u0438\u043C\u043E\u0441\u0442\u044C"
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u043F\u043B\u0435\u0432\u043E\u043A \u043A\u0438\u0441\u043B\u043E\u0442\u043E\u0439"
     Icon: {fileID: 21300000, guid: 6fa6c3f6d5eb01a4cb43016c18d8b73b, type: 3}
     Group: 0
@@ -20952,7 +20956,7 @@ MonoBehaviour:
       \u0432\u0440\u0430\u0433 \u043E\u0442\u043B\u0435\u0442\u0430\u0435\u0442 \u0432
       \u0443\u043A\u0430\u0437\u0430\u043D\u043D\u0443\u044E \u0441\u0442\u043E\u0440\u043E\u043D\u0443. "
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0412\u0437\u0440\u044B\u0432\u043D\u043E\u0439 \u0448\u0430\u0440
       \u044F\u0434\u0430 "
     Icon: {fileID: 21300000, guid: 3b961c01b58408841b2d43cf61a5a242, type: 3}
@@ -20985,7 +20989,7 @@ MonoBehaviour:
       \u0438\u043B\u0438 \u043B\u0435\u0447\u0435\u043D\u0438\u0435 \u043D\u0430
       20%."
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u042D\u0444\u0444\u0435\u043A\u0442 \u0448\u0430\u0440\u0430"
     Icon: {fileID: -1558904516361034743, guid: b58f900a1dac3f241965284bed557139, type: 3}
     Group: 0
@@ -21025,7 +21029,7 @@ MonoBehaviour:
         \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u0438 \u0432\u0440\u0435\u043C\u044F
         \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F \u043E\u0431\u043D\u043E\u0432\u043B\u044F\u0435\u0442\u0441\u044F.
         \n"
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0440\u0430\u0437\u044A\u0435\u0434\u0435\u043D\u043D\u044B\u0439
       \u0434\u043E\u0441\u043F\u0435\u0445"
     Icon: {fileID: -7940820886254876669, guid: f42c89c464c0a214e9424bc9b8828b4f, type: 3}
@@ -21053,7 +21057,7 @@ MonoBehaviour:
       \"\u0412\u0437\u0440\u044B\u0432\u043D\u043E\u0433\u043E \u0449\u0430\u0440\u0430
       \u044F\u0434\u0430\" \u043D\u0430 1   "
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u042F\u0434 7"
     Icon: {fileID: -4125687490052203788, guid: ef644501c6a48574d99b58d3c563b590, type: 3}
     Group: 0
@@ -21081,7 +21085,7 @@ MonoBehaviour:
       \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442\u0441\u044F
       1 \u0441\u0442\u0430\u043A \"\u044F\u0434\u0430 \u043A\u043E\u0441\u0442\u0435\u0439\"."
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u041E\u0442\u0440\u0430\u0432\u043B\u044F\u044E\u0449\u0435\u0435
       \u043E\u0431\u043B\u0430\u043A\u043E"
     Icon: {fileID: -933735038327110134, guid: 37cb6fe2522973c4f9d8f4f376aab3be, type: 3}
@@ -21187,7 +21191,7 @@ MonoBehaviour:
       \u043F\u043E\u0440\u0430\u0436\u0435\u043D\u0438\u044F 1 \u043C\u0435\u0442\u0440
       \u0432 \u0440\u0430\u0434\u0438\u0443\u0441\u0435,"
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0432\u0437\u0440\u044B\u0432 \u043E\u0431\u043B\u0430\u043A\u0430"
     Icon: {fileID: -9187347743565390613, guid: f863a16a4c731ce469496ac94ccd951f, type: 3}
     Group: 0
@@ -21222,7 +21226,7 @@ MonoBehaviour:
       \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u0438 \u0432\u0440\u0435\u043C\u044F
       \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F \u043E\u0431\u043D\u043E\u0432\u043B\u044F\u0435\u0442\u0441\u044F  "
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0447\u0443\u0432\u0441\u0442\u0432\u043E \u043E\u0442\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0439"
     Icon: {fileID: 6525149264358820603, guid: efb326e2166783443ada527b4657fe63, type: 3}
     Group: 0
@@ -21269,7 +21273,7 @@ MonoBehaviour:
         \u0432\u043E\u043B\u043D\u0430, \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C
         1 \u043C\u0435\u0442\u0440 \u0432 0.2 \u0441\u0435\u043A, \u0431\u0435\u0441\u0446\u0435\u043B\u0435\u0432\u0430\u044F
         \u0441 \u043A\u043B\u0438\u043A\u043E\u043C\n"
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0412\u043E\u043B\u043D\u0430 \u043F\u0430\u0440\u0430\u043B\u0438\u0437\u0438\u0440\u0443\u044E\u0449\u0435\u0433\u043E
       \u044F\u0434\u0430"
     Icon: {fileID: -7942494879149397082, guid: 88ed1bd6379225544b36aad09d35198b, type: 3}
@@ -21310,7 +21314,7 @@ MonoBehaviour:
       \u0431\u043B\u0438\u0436\u043D\u0435\u0433\u043E \u0431\u043E\u044F  +60% \u0434\u0430\u043B\u044C\u043D\u0435\u0433\u043E
       \u0431\u043E\u044F +100%."
     _stateInfos: []
-    IsOpen: 1
+    IsOpen: 0
     Description: "\u0424\u043E\u043A\u0443\u0441\u0438\u0440\u043E\u0432\u043A\u0430
       \u043D\u0430 \u0440\u0435\u0444\u043B\u0435\u043A\u0441\u0430\u0445 "
     Icon: {fileID: 21300000, guid: 5cd9984c9b0461848991092ddd38784e, type: 3}
@@ -21343,7 +21347,7 @@ MonoBehaviour:
       \u043F\u043E \u043E\u0434\u043D\u043E\u0439 \u0446\u0435\u043B\u0438 \u0438\u043B\u0438
       \u0443\u043A\u043B\u043E\u043D\u0435\u043D\u0438\u044F."
     _stateInfos: []
-    IsOpen: 1
+    IsOpen: 0
     Description: "\u041F\u043E\u0434\u043B\u044B\u0439 \u043F\u043B\u0435\u0432\u043E\u043A "
     Icon: {fileID: 21300000, guid: 60294cd46b0dc124693512fd643533f5, type: 3}
     Group: 0
@@ -21388,7 +21392,7 @@ MonoBehaviour:
       \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
       \u043D\u0430 30% "
     _stateInfos: []
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: 497fc8e355be5af48bb993ec3c6d117d, type: 3}
     Group: 0
@@ -21562,7 +21566,7 @@ MonoBehaviour:
       - \u0440\u0430\u043D\u044C\u0448\u0435 \u0431\u044B\u043B\u0430 \u0432\u0440\u043E\u0434\u0435
       \u0432 \u04401 "
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u043F\u0440\u043E\u0437\u0440\u0430\u0447\u043D\u044B\u0435 \u044F\u0434\u044B"
     Icon: {fileID: -1241958626550298057, guid: f877ddcc99be4ae439d43920da8a6d27, type: 3}
     Group: 0

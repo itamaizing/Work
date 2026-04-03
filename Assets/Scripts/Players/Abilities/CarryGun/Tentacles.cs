@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using Mirror;
-using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System;
 
@@ -513,7 +512,7 @@ public class Tentacles : Skill
         Vector3 spawnPos = target.transform.position;
 
         var cocoon = Instantiate(_protectiveCocoonPrefab, spawnPos, Quaternion.identity);
-        SceneManager.MoveGameObjectToScene(cocoon.gameObject, _hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(cocoon.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(cocoon.gameObject);
 
         int damage = 0;
@@ -539,7 +538,7 @@ public class Tentacles : Skill
         if (target == null) return;
 
         _currentTentacle = Instantiate(_tentaclesPrefab, position, Quaternion.identity);
-        SceneManager.MoveGameObjectToScene(_currentTentacle.gameObject, _hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(_currentTentacle.gameObject, _hero.NetworkSettings.MyRoom);
 
         _currentTentacle.Init(_player, target, position, target.transform.position, true, _isPsionicsTalentThree, _isAttractionTentacleTalent, _isSpawnSpike, _spentAttackingPsiEnergy, this);
 

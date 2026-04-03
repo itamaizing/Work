@@ -271,7 +271,7 @@ public class ChainBlade : Skill
         arrow.OnHitTarget += HandleArrowHit;
 
         NetworkServer.Spawn(arrow.gameObject);
-        SceneManager.MoveGameObjectToScene(arrow.gameObject, _hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(arrow.gameObject, _hero.NetworkSettings.MyRoom);
 
         arrow.InitArrow(targetPoint, transform, AreaInfo.CastLength, DamageRange);
         RpcInitArrow(arrow.gameObject, targetPoint);

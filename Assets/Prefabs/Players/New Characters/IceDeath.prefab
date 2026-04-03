@@ -1920,6 +1920,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2201725961568704641, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2201725961568704641, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_CollisionDetection
       value: 2
       objectReference: {fileID: 0}
@@ -5137,7 +5141,7 @@ MonoBehaviour:
     Description: "\u0421\u0435\u0440\u0438\u0438 \u043D\u0438\u043D\u0434\u0437\u0438"
     Icon: {fileID: 21300000, guid: 167c36e4613aae345aae37dec1c098ed, type: 3}
     Group: 0
-    Row: 0
+    Row: 1
   character: {fileID: 4374618947117916461}
   _seriesOfStrikes: {fileID: 3083348233968490285}
   _physicalAttack: {fileID: 7407653808177717906}
@@ -5175,7 +5179,7 @@ MonoBehaviour:
     Description: "\u041C\u0435\u0447 \u043B\u044C\u0434\u0430"
     Icon: {fileID: 21300000, guid: aad58fe05c776024b9cbcc8dd111c711, type: 3}
     Group: 0
-    Row: 0
+    Row: 1
   character: {fileID: 4374618947117916461}
   iceSword: {fileID: 5084671336121015661}
   manager: {fileID: 4220410774128686972}
@@ -5217,7 +5221,7 @@ MonoBehaviour:
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 4"
     Icon: {fileID: 21300000, guid: 3a4185520579a514291190bd487ed03e, type: 3}
     Group: 0
-    Row: 1
+    Row: 2
   character: {fileID: 4374618947117916461}
   iceShadow: {fileID: 3068634069238352843}
   icePuddle: {fileID: 4310610476984543593}
@@ -5346,7 +5350,7 @@ MonoBehaviour:
     Description: '-'
     Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
     Group: 0
-    Row: 0
+    Row: 1
   character: {fileID: 4374618947117916461}
 --- !u!114 &2166687460451499452
 MonoBehaviour:
