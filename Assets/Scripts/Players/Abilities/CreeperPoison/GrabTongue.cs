@@ -97,9 +97,18 @@ public class GrabTongue : Skill
         var proj = go.GetComponent<GrabTongueProjectile>();
         var target = targetId.GetComponent<Character>();
 
-        proj.InitializationProjectile(_player, target, start, end, false);
+        proj.Init(_player, target, start, end);
 
         NetworkServer.Spawn(go);
+
+        RpcInitProtectiveCocoon(_player, proj, target, start, end);
+    }
+
+
+    [ClientRpc]
+    private void RpcInitProtectiveCocoon(Character player, GrabTongueProjectile proj, Character target, Vector3 start, Vector3 end)
+    {
+        proj.Init(player, target, start, end);
     }
 
     protected override void ClearData()

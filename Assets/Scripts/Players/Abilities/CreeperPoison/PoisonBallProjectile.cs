@@ -293,14 +293,14 @@ public class PoisonBallProjectile : Test_Projectile
         if (targetObj.TryGetComponent(out Character target))
         {
             MoveComponent targetMove = target.GetComponent<MoveComponent>();
+
             Vector3 direction = _directionOfFlight;
             direction.y = 0;
 
             Vector3 finalPoint = target.transform.position + (isPushAway ? direction : -direction) * distancePush;
             finalPoint.y = target.transform.position.y;
 
-            if (targetMove.connectionToClient != null) targetMove.TargetRpcDoMove(finalPoint, durationPush);
-            else targetMove.RpcDoMove(finalPoint, durationPush);
+            StartCoroutine(HandlePushWithFly(targetMove, finalPoint, durationPush));
         }
     }
 
@@ -323,6 +323,19 @@ public class PoisonBallProjectile : Test_Projectile
         }
 
         targetMove.transform.position = finalPoint;
+    }
+
+    private IEnumerator HandlePushWithFly(MoveComponent targetMove, Vector3 finalPoint, float duration)
+    {
+        if (targetMove == null) yield break;
+
+        targetMove.SetFlyState(true);
+
+        if (targetMove.connectionToClient != null) targetMove.TargetRpcDoMove(finalPoint, duration);
+        else targetMove.RpcDoMove(finalPoint, duration);
+        yield return new WaitForSeconds(duration);
+
+        targetMove.SetFlyState(false);
     }
 
     #endregion
@@ -495,7 +508,7 @@ public class PoisonBallProjectile : Test_Projectile
 
         float baseChanceOfRestorationOfGlands = 0.1f;
         float chanceRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
-
+        
         if (Random.Range(0f, 1f) <= chanceRestorationOfGlands)
         {
             Debug.Log("SpitPoisonProj / If RestorationOfGlands.IsActive = true");

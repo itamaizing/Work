@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class GrabTongueProjectile : NetworkBehaviour
 {
@@ -9,21 +10,15 @@ public class GrabTongueProjectile : NetworkBehaviour
     private Character _player;
     private Character _target;
     private CharacterState _targetCharacterState;
-    private MoveComponent _targetMoveComponent;
 
     private Vector3 _startPosition;
     private Vector3 _endPosition;
 
-    private int _teamIndex;
+    private float _throwDuration = 0.2f;
+    private float _pullDuration = 0.6f;
 
-    private float _moveSpeedDirectionFromPlayer = 0.2f;
-    private float _moveSpeedDirectionToPlayer = 0.6f;
-
-    private bool _isPlayerInvisible;
-    private bool _isAlly;
-
-    private Coroutine _toungeToTargetCoroutine;
-    private Coroutine _toungeFromPlayerCoroutine;
+    private Coroutine _toTargetCoroutine;
+    private Coroutine _pullCoroutine;
 
     private void Awake()
     {
@@ -40,48 +35,40 @@ public class GrabTongueProjectile : NetworkBehaviour
         }
 
         _lineRenderer.positionCount = 2;
-
-        if (isServer && _isPlayerInvisible)
-        {
-            RpcNewTransparencySprite();
-        }
+        _lineRenderer.enabled = true;
     }
 
     private void Update()
     {
-        if (_lineRenderer == null || _player == null) return;
-
+        if (_player == null || _lineRenderer == null) return;
         _lineRenderer.SetPosition(0, _player.transform.position);
     }
 
-    public void InitializationProjectile(Character player, Character target, Vector3 startPosition, Vector3 endPosition, bool isPlayerInvisible)
+    public void Init(Character player, Character target, Vector3 startPosition, Vector3 endPosition)
     {
         _player = player;
         _target = target;
         _startPosition = startPosition;
         _endPosition = endPosition;
 
-        _isPlayerInvisible = isPlayerInvisible;
-
-        _targetMoveComponent = _target.GetComponent<MoveComponent>();
         _targetCharacterState = _target.GetComponent<CharacterState>();
 
         if (_lineRenderer == null)
             _lineRenderer = GetComponent<LineRenderer>();
 
         _lineRenderer.positionCount = 2;
-        _lineRenderer.SetPosition(0, _startPosition);
-        _lineRenderer.SetPosition(1, _startPosition);
+        _lineRenderer.SetPosition(0, startPosition);
+        _lineRenderer.SetPosition(1, startPosition);
 
-        StartTongueAttract();
+        StartTongue();
     }
 
-    public void StartTongueAttract()
+    private void StartTongue()
     {
-        if (_toungeToTargetCoroutine != null)
-            StopCoroutine(_toungeToTargetCoroutine);
+        if (_toTargetCoroutine != null)
+            StopCoroutine(_toTargetCoroutine);
 
-        _toungeToTargetCoroutine = StartCoroutine(TongueToTarget());
+        _toTargetCoroutine = StartCoroutine(TongueToTarget());
     }
 
     private IEnumerator TongueToTarget()
@@ -91,46 +78,12 @@ public class GrabTongueProjectile : NetworkBehaviour
         Vector3 start = _startPosition;
         Vector3 end = _endPosition;
 
-        while (timer < 1f)
+        while (timer < _throwDuration)
         {
-            timer += Time.deltaTime / _moveSpeedDirectionFromPlayer;
+            timer += Time.deltaTime;
+            float t = timer / _throwDuration;
 
-            Vector3 currentPosition = Vector3.Lerp(start, end, timer);
-
-            if (_lineRenderer != null) _lineRenderer.SetPosition(1, currentPosition);
-
-            yield return null;
-        }
-
-        if (_lineRenderer != null) _lineRenderer.SetPosition(1, end);
-
-        _toungeFromPlayerCoroutine = StartCoroutine(PullTargetToPlayer());
-    }
-
-    private IEnumerator PullTargetToPlayer()
-    {
-        if (_target == null) yield break;
-
-        float timer = 0f;
-
-        Vector3 start = _target.transform.position;
-        Vector3 end = _player.transform.position;
-
-        if (_targetMoveComponent != null) _targetMoveComponent.IsMoveBlocked = true;
-
-        if (_targetCharacterState != null && !_targetCharacterState.CheckForState(States.Immateriality))
-        {
-            _targetCharacterState.AddState(States.Immateriality, _moveSpeedDirectionToPlayer * 1.3f, 0, _player.gameObject, null);
-        }
-
-        while (timer < 1f)
-        {
-            timer += Time.deltaTime / _moveSpeedDirectionToPlayer;
-
-            Vector3 currentPos = Vector3.Lerp(start, end, timer);
-
-            if (_targetMoveComponent != null)
-                _targetMoveComponent.TargetRpcSetTransformPosition(currentPos);
+            Vector3 currentPos = Vector3.Lerp(start, end, t);
 
             if (_lineRenderer != null)
                 _lineRenderer.SetPosition(1, currentPos);
@@ -138,50 +91,77 @@ public class GrabTongueProjectile : NetworkBehaviour
             yield return null;
         }
 
-        if (_targetMoveComponent != null)
+        if (_lineRenderer != null)
+            _lineRenderer.SetPosition(1, end);
+
+        if (isServer)
         {
-            _targetMoveComponent.TargetRpcSetTransformPosition(end);
-            _targetMoveComponent.TargetRpcStopMoveAndAnimationMove();
-            _targetMoveComponent.IsMoveBlocked = false;
+            if (_pullCoroutine != null)
+                StopCoroutine(_pullCoroutine);
+
+            _pullCoroutine = StartCoroutine(PullTargetToPlayer());
         }
+    }
+
+    private IEnumerator PullTargetToPlayer()
+    {
+        if (_target == null) yield break;
+
+        Transform targetTransform = _target.transform;
+
+        Vector3 start = targetTransform.position;
+        Vector3 end = _player.transform.position;
+
+        var agent = _target.GetComponent<NavMeshAgent>();
+        if (agent != null && agent.enabled) agent.enabled = false;
+
+        float timer = 0f;
+
+        _target.Move.IsMoveBlocked = true;
+        _target.Move.StopMoveAndAnimationMove();
+
+        if (_targetCharacterState != null && !_targetCharacterState.CheckForState(States.Immateriality)) _targetCharacterState.AddState(States.Immateriality, _pullDuration, 0, _player.gameObject, null);
+
+        while (timer < _pullDuration)
+        {
+            timer += Time.deltaTime;
+            float t = timer / _pullDuration;
+
+            Vector3 currentPos = Vector3.Lerp(start, end, t);
+
+            targetTransform.position = currentPos;
+
+            if (_lineRenderer != null)
+                _lineRenderer.SetPosition(1, currentPos);
+
+            yield return null;
+        }
+
+        targetTransform.position = end;
+
+        if (agent != null && !agent.enabled) agent.enabled = true;
+
+        _target.Move.CancelMoveTowards();
+        _target.Move.StopMoveAndAnimationMove();
+        _target.Move.IsMoveBlocked = false;
 
         DestroyProjectile();
     }
 
     private void DestroyProjectile()
     {
-        if (_toungeToTargetCoroutine != null)
+        if (_toTargetCoroutine != null)
         {
-            StopCoroutine(_toungeToTargetCoroutine);
-            _toungeToTargetCoroutine = null;
+            StopCoroutine(_toTargetCoroutine);
+            _toTargetCoroutine = null;
         }
 
-        if (_toungeFromPlayerCoroutine != null)
+        if (_pullCoroutine != null)
         {
-            StopCoroutine(_toungeFromPlayerCoroutine);
-            _toungeFromPlayerCoroutine = null;
+            StopCoroutine(_pullCoroutine);
+            _pullCoroutine = null;
         }
 
         Destroy(gameObject);
-    }
-
-    [ClientRpc]
-    private void RpcNewTransparencySprite()
-    {
-        if (_lineRenderer == null) return;
-
-        var localPlayer = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>();
-        _isAlly = localPlayer.TeamIndex == _teamIndex;
-
-        Color start = _lineRenderer.startColor;
-        Color end = _lineRenderer.endColor;
-
-        float alpha = _isAlly ? 0.5f : 0f;
-
-        start.a = alpha;
-        end.a = alpha;
-
-        _lineRenderer.startColor = start;
-        _lineRenderer.endColor = end;
     }
 }
