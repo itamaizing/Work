@@ -468,7 +468,7 @@ public class PullingHealth : Skill
         if (_pullingHealthPrefab == null || startPoint == null || targetPoint == null) return;
 
         GameObject effectInstance = Instantiate(_pullingHealthPrefab, startPoint.transform.position, Quaternion.identity);
-        SceneManager.MoveGameObjectToScene(effectInstance, _hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(effectInstance, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(effectInstance);
         RpcInitEffects(effectInstance, startPoint, targetPoint);
 
@@ -485,7 +485,7 @@ public class PullingHealth : Skill
         {
             GameObject ghostEffectInstance = Instantiate(_pullingHealthPrefab, _ghost[i].transform.position, Quaternion.identity);
             _activeGhostEffects.Add(ghostEffectInstance);
-            SceneManager.MoveGameObjectToScene(ghostEffectInstance, _hero.NetworkSettings.MyRoom);
+            //SceneManager.MoveGameObjectToScene(ghostEffectInstance, _hero.NetworkSettings.MyRoom);
             NetworkServer.Spawn(ghostEffectInstance);
             RpcInitEffects(ghostEffectInstance, _ghost[i], targetPoint);
         }
@@ -498,7 +498,7 @@ public class PullingHealth : Skill
 
         var effect = Instantiate(_pullingHealthPrefab, start.transform.position, Quaternion.identity);
         _extraEffects.Add(effect);
-        SceneManager.MoveGameObjectToScene(effect, _hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(effect, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(effect);
         RpcInitEffects(effect, start, target);
     }

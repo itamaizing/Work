@@ -249,7 +249,7 @@ public class GroundTrap : Skill
         Trap trap = Instantiate(trapPrefab, startPosition, rotation);
         trap.Init(owner, this, startPosition, startPosition);
         trap.Finalise();
-        SceneManager.MoveGameObjectToScene(trap.gameObject, Hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(trap.gameObject, Hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(trap.gameObject);
         RpcInit(trap.netIdentity, startPosition, rotation);
     }
@@ -264,7 +264,7 @@ public class GroundTrap : Skill
         if (direction == Vector3.zero) return;
 
         var arrow = Instantiate(arrowTrapProjectile, startPos, Quaternion.LookRotation(direction));
-        SceneManager.MoveGameObjectToScene(arrow.gameObject, Hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(arrow.gameObject, Hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(arrow.gameObject);
 
         arrow.StartFly(targetPosition);

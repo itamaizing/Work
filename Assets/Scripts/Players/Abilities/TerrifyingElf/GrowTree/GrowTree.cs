@@ -153,7 +153,7 @@ public class GrowTree : Skill
     //    Quaternion rotation = direction.sqrMagnitude > ArrowLookMinThresholdSqr ? Quaternion.LookRotation(direction) : Quaternion.identity;
 
     //    var effect = Instantiate(_arrowWithTreeEffect, point, rotation);
-    //    SceneManager.MoveGameObjectToScene(effect, gameObject.scene);
+    //    //SceneManager.MoveGameObjectToScene(effect, gameObject.scene);
     //    Destroy(effect, _arrowEffectLifetime);
     //}
 
@@ -448,7 +448,7 @@ public class GrowTree : Skill
         var tree = Instantiate(_treePrefab, position, Quaternion.identity);
         _currentTree = tree;
 
-        SceneManager.MoveGameObjectToScene(_currentTree.gameObject, Hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(_currentTree.gameObject, Hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(_currentTree.gameObject, connectionToClient);
 
         _healthTree = tree.GetComponentInChildren<ObjectHealth>();
@@ -478,7 +478,7 @@ public class GrowTree : Skill
         var tree = Instantiate(_treePrefab, spawnPosition, Quaternion.identity);
         _currentTree = tree;
         NetworkServer.Spawn(_currentTree.gameObject, connectionToClient);
-        SceneManager.MoveGameObjectToScene(_currentTree.gameObject, Hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(_currentTree.gameObject, Hero.NetworkSettings.MyRoom);
 
         RpcTeleportToTree(_currentTree.gameObject);
 
