@@ -36,6 +36,8 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
         Hero.Health.Block += PlayBlockAnimation;
         Hero.Health.Evaded += OnHeroEvade;
         Hero.Health.OnBeforeTakeDamage += OnBeforeTakeDamage;
+
+        Hero.Health.OnTryResist += TryResist;
     }
 
     private void OnDisable()
@@ -43,6 +45,8 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
         Hero.Health.Block -= PlayBlockAnimation;
         Hero.Health.Evaded -= OnHeroEvade;
         Hero.Health.OnBeforeTakeDamage -= OnBeforeTakeDamage;
+
+        Hero.Health.OnTryResist -= TryResist;
     }
 
     private void OnHeroEvade()
@@ -81,6 +85,31 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
 
         yield return new WaitForSeconds(6f);
         _isCooldownActive = false;
+    }
+
+    private bool TryResist(Damage damage)
+    {
+        if (!_isMagicOrPhysicRessist) return false;
+        if (_attacker == null) return false;
+
+        float chance = 50f;
+
+        float roll = UnityEngine.Random.Range(0f, 100f);
+
+        if (roll > chance) return false;
+
+        switch (damage.Type)
+        {
+            case DamageType.Magical:
+                Debug.Log("Magic resist triggered");
+                return true;
+
+            case DamageType.Physical:
+                Debug.Log("Physical resist triggered");
+                return true;
+        }
+
+        return false;
     }
 
     private void PlayBlockAnimation()

@@ -18271,11 +18271,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.size
-      value: 12
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.size
-      value: 9
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.size
@@ -18472,6 +18472,10 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[8]'
       value: 
+      objectReference: {fileID: 6605119092001046139}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[9]'
+      value: 
       objectReference: {fileID: 4403101704771608953}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.data[10]'
@@ -18520,9 +18524,13 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[10]'
       value: 
-      objectReference: {fileID: 3096915051999318309}
+      objectReference: {fileID: 3398652400627994800}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[11]'
+      value: 
+      objectReference: {fileID: 3096915051999318309}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[12]'
       value: 
       objectReference: {fileID: 7566935048732947578}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -18746,6 +18754,9 @@ PrefabInstance:
       addedObject: {fileID: 3197566967140553242}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 6605119092001046139}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 4403101704771608953}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
@@ -18810,6 +18821,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 988417320158050719}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3398652400627994800}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3096915051999318309}
@@ -20817,6 +20831,40 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 2483674839823445686}
   _creeperPoisonAura: {fileID: 2161342997938470374}
+--- !u!114 &6605119092001046139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7437800528419325459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff9b6a148ead8a54496a1814deee56f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ReptileTalent_10
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u043A\u0440\u0438\u043F\u0435\u0440 \u0443\u0441\u043A\u043E\u0440\u044F\u0435\u0442
+      \u043C\u0435\u0442\u0430\u0431\u043E\u043B\u0438\u0437\u043C, \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C
+      \u043A\u0430\u0441\u0442\u043E\u0432, \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u0435
+      \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F, \u043E\u0441\u0442\u0430\u0432\u0448\u0438\u0445\u0441\u044F
+      \u043A\u0443\u043B\u0434\u0430\u0443\u043D\u043E\u0432 \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
+      \u0432 2 \u0440\u0430\u0437\u0430, 80 \u044D\u043D\u0435\u0440\u0433\u0438\u0438
+      \u043A\u0430\u0436\u0434\u044B\u0439 \u0443\u0434\u0430\u0440 \u0440\u0443\u043A\u043E\u0439
+      \u0438\u043C\u0435\u0435\u0442 30% \u0448\u0430\u043D\u0441 \u0437\u0430\u0440\u0430\u0436\u0435\u043D\u0438\u044F
+      \u0446\u0435\u043B\u0438 \xAB\u0438\u0441\u0441\u0443\u0448\u0430\u044E\u0449\u0438\u043C
+      \u044F\u0434\u043E\u043C\xBB"
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u043C\u0435\u0442\u0430\u0431\u043E\u043B\u0438\u0437\u043C \u0440\u0435\u043F\u0442\u0438\u043B\u0438\u0438"
+    Icon: {fileID: 21300000, guid: 1769f25c7b0c5614a95a094ddfb76d45, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 2483674839823445686}
+  _metabolismReptile: {fileID: 1218428867352848936}
+  _skillManager: {fileID: 2617687491934927079}
+  _creeperPoisonAura: {fileID: 2161342997938470374}
 --- !u!114 &4403101704771608953
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21601,6 +21649,38 @@ MonoBehaviour:
   _sneakySpit: {fileID: 1964640632880337021}
   _poisonSlap: {fileID: 8577860281443816807}
   _poisonBall: {fileID: 4719927588574066064}
+--- !u!114 &3398652400627994800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7437800528419325459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f95b46619cae6846ab7c82d2c2d3569, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NinjaPoisonTalent_11
+  _data:
+    _descriptionsForInfoPanel:
+    - " \u0442\u0430\u043A \u0436\u0435 \u043F\u043E\u0432\u044B\u0448\u0430\u0435\u0442
+      \u0448\u0430\u043D\u0441 \u0440\u0435\u0437\u0438\u0441\u0442\u0430 \u043D\u0430
+      50%, \u0441\u0440\u0430\u0431\u0430\u0442\u044B\u0432\u0430\u0435\u0442 \u043B\u0438\u0431\u043E
+      \u043D\u0430 \u0431\u043B\u043E\u043A\u0438\u0440\u043E\u0432\u043A\u0443 \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E
+      \u0443\u0434\u0430\u0440\u0430 \u043B\u0438\u0431\u043E \u043D\u0430 \u0440\u0435\u0437\u0438\u0441\u0442
+      \u043C\u0430\u0433\u0438\u0438 \u0432 \u0437\u0430\u0432\u0438\u0441\u0438\u043C\u043E\u0441\u0442\u0438
+      \u0447\u0442\u043E \u0431\u044B\u043B\u043E \u043F\u0440\u0438\u043C\u0435\u043D\u0438\u043D\u043E
+      \u043A \u043A\u0440\u0438\u043F\u0435\u0440\u0443, \u043E\u0434\u043D\u043E\u0432\u0440\u0435\u043C\u0435\u043D\u043D\u043E
+      \u0431\u043B\u043E\u043A\u0438\u0440\u043E\u0432\u043A\u0430 \u0438 \u0440\u0435\u0437\u0438\u0441\u0442
+      \u043D\u0435 \u043C\u043E\u0433\u0443\u0442 \u0431\u044B\u0442\u044C \u0441\u0440\u0430\u0431\u043E\u0442\u0430\u043D\u044B. "
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u041D\u0438\u043D\u0434\u0437\u044F 11"
+    Icon: {fileID: 21300000, guid: 1a0a07e66c539064f9e89bb626ea33b5, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 2483674839823445686}
+  block: {fileID: 2446571645698719713}
 --- !u!114 &3096915051999318309
 MonoBehaviour:
   m_ObjectHideFlags: 0
