@@ -30,6 +30,13 @@ public class LightningMovement : Skill
 
     private Character _damagedCharacter;
 
+    #region Talent
+
+    private bool _isLightningEvade;
+
+    public void LightningEvade(bool value) => _isLightningEvade = value;
+    #endregion
+
     public bool IsInMovement { get; private set; }
     public Character Target { get; private set; }
     public float DurationLeap => _durationLeap;
@@ -164,6 +171,8 @@ public class LightningMovement : Skill
     {
         IsInMovement = true;
         Hero.Move.SetCanMove(false);
+
+        if (_isLightningEvade) _player.CharacterState.CmdAddState(States.LightningEvade, 3f, 0, _player.gameObject, Name);
         _damagedCharacter = null;
 
         //if (_superFastScales.Data.IsOpen)
@@ -222,6 +231,8 @@ public class LightningMovement : Skill
 
         if (_hasSecondLeap && _damagedCharacter != null)
         {
+            if (_isLightningEvade) _player.CharacterState.CmdAddState(States.LightningEvade, 3f, 0, _player.gameObject, Name);
+
             ExecuteLeapSecond(_secondLeapPoint);
             yield break;
         }

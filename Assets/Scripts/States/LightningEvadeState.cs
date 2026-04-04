@@ -39,10 +39,9 @@ public class LightningEvadeState : RefreshingState
     private void ApplyEvade()
     {
         float value = _evadePerStack;
-        _totalEvade += value;
 
-        health.SetEvadePhys(health.EvadeMeleeDamage + value);
-        health.SetEvadeMagic(health.ResistMagDamage + value);
+        health.AddEvade(value);
+        _totalEvade += value;
     }
 
     public override void ExitState()
@@ -63,9 +62,7 @@ public class LightningEvadeState : RefreshingState
     {
         if (value < 0) value = _totalEvade;
 
-        health.SetEvadePhys(health.EvadeMeleeDamage - value);
-        health.SetEvadeMagic(health.ResistMagDamage - value);
-
+        health.RemoveEvade(value);
         _totalEvade -= value;
     }
 

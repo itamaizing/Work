@@ -6,12 +6,12 @@ public class ReptileTalent_6 : Talent
 
     public override void Enter()
     {
-
+        _lightningMovement.LightningEvade(true);
     }
 
     public override void Exit()
     {
-
+        _lightningMovement.LightningEvade(false);
     }
 }
 
