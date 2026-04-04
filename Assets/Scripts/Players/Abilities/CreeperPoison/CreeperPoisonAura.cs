@@ -29,11 +29,13 @@ public class CreeperPoisonAura : NetworkBehaviour
     private bool _isPleasurePoisoning = false;
     private bool _isActiveWitheringPoison = false;
     private bool _isActiveWitheringPoisonMetabolism = false;
+    private bool _isDecreaseCooldownDamage = false;
 
     public bool IsFeelingPoisoning { get => _isFeelingPoisoning; set => _isFeelingPoisoning = value; }
     public bool IsActiveWitheringPoison { get => _isActiveWitheringPoison; set => _isActiveWitheringPoison = value; }
     public bool IsActiveWitheringPoisonMetabolism { get => _isActiveWitheringPoisonMetabolism; set => _isActiveWitheringPoisonMetabolism = value; }
 
+    public void DecreaseCooldownDamage(bool value) => _isDecreaseCooldownDamage = value;
     public void ActiveWitheringPoisonMetabolism(bool value) => _isActiveWitheringPoisonMetabolism = value;
     public void ActiveWitheringPoison(bool value) => _isActiveWitheringPoison = value;
     public void PleasurePoisoning(bool value) => _isPleasurePoisoning = value;
@@ -55,6 +57,11 @@ public class CreeperPoisonAura : NetworkBehaviour
             _health.DamageTaken += OnAfterDamage;
         }
 
+        if (_owner != null && _owner.DamageTracker != null)
+        {
+            _owner.DamageTracker.OnDamageTracked += OnDamageDealt;
+        }
+
         _poisonAuraRoutine = StartCoroutine(PoisonAuraRoutine());
     }
 
@@ -64,6 +71,11 @@ public class CreeperPoisonAura : NetworkBehaviour
         {
             _health.OnBeforeTakeDamage -= OnBeforeTakeDamage;
             _health.DamageTaken -= OnAfterDamage;
+        }
+
+        if (_owner != null && _owner.DamageTracker != null)
+        {
+            _owner.DamageTracker.OnDamageTracked -= OnDamageDealt;
         }
 
         if (_poisonAuraRoutine != null) StopCoroutine(_poisonAuraRoutine);
@@ -85,6 +97,22 @@ public class CreeperPoisonAura : NetworkBehaviour
         _health.EvadeMeleeDamage += _tempEvadeBonus;
         _health.EvadeRangeDamage += _tempEvadeBonus;
         _health.ResistMagDamage += _tempEvadeBonus;
+    }
+
+    private void OnDamageDealt(Damage damage, GameObject target)
+    {
+        if (!_isDecreaseCooldownDamage) return;
+
+        if (_owner == null || _owner.Abilities == null) return;
+
+        float reduction = 1f;
+
+        foreach (var skill in _owner.Abilities.Skills)
+        {
+            if (skill == null) continue;
+
+            if (!skill.IsCooldowned) skill.DecreaseSetCooldown(reduction);
+        }
     }
 
     private void OnAfterDamage(Damage damage, Skill skill)
