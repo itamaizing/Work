@@ -370,6 +370,7 @@ public class CharacterState : NetworkBehaviour
 		[States.ParalyzingPoison] = new ParalyzingPoisonState(),
 		[States.FeelingPoisoning] = new FeelingPoisoningState(),
 		[States.LightningEvade] = new LightningEvadeState(),
+		[States.ReptilianStasis] = new ReptilianStasisState(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -975,6 +976,7 @@ public enum States
 	ParalyzingPoison,
 	FeelingPoisoning,
 	LightningEvade,
+	ReptilianStasis,
 }
 public enum BaffDebaff
 {

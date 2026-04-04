@@ -18275,7 +18275,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.size
-      value: 10
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.size
@@ -18476,7 +18476,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[9]'
       value: 
-      objectReference: {fileID: 4403101704771608953}
+      objectReference: {fileID: 6226116417743377566}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.data[10]'
       value: 
@@ -18766,6 +18766,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6605119092001046139}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6226116417743377566}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4403101704771608953}
@@ -20908,6 +20911,33 @@ MonoBehaviour:
   character: {fileID: 2483674839823445686}
   _metabolismReptile: {fileID: 1218428867352848936}
   _skillManager: {fileID: 2617687491934927079}
+  _creeperPoisonAura: {fileID: 2161342997938470374}
+--- !u!114 &6226116417743377566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7437800528419325459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42f15f1d1f1291f45af04bda08e192de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ReptileTalent_11
+  _data:
+    _descriptionsForInfoPanel:
+    - " \u041A\u043E\u0433\u0434\u0430 \u043A\u0440\u0438\u043F\u0435\u0440 \u043D\u0430\u043D\u043E\u0441\u0438\u0442
+      \u0443\u0440\u043E\u043D \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044E
+      \u043D\u043E\u0432\u043E\u0439 \u0446\u0435\u043B\u0438,  \u0443\u043C\u0435\u043D\u044C\u0448\u0430\u0435\u0442
+      \u043E\u0441\u0442\u0430\u0432\u0448\u0435\u0435\u0441\u044F \u043A\u0434 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439
+      \u043D\u0430 1 \u0441\u0435\u043A. "
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u0420\u0435\u043F\u0442\u0438\u043B\u0438\u044F 11"
+    Icon: {fileID: 21300000, guid: b0e188c000d602d4fb9e4faef638d8bc, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 2483674839823445686}
   _creeperPoisonAura: {fileID: 2161342997938470374}
 --- !u!114 &4403101704771608953
 MonoBehaviour:

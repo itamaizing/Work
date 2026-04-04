@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LightningEvadeState : RefreshingState
+public class LightningEvadeState : StackableState
 {
     private float _evadePerStack = 10f;
     private float _totalEvade = 0f;
