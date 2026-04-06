@@ -43,8 +43,11 @@ public class DamageTracker : NetworkBehaviour
     public void AddHeal(Heal heal, bool isServerRequest = false)
     {
         if (!isServerRequest) CmdAddHeal(heal);
+
+        var entry = new HealEntry(heal, Time.time);
         
-        _healEntries.Add(new HealEntry(heal, Time.time));
+        _healEntries.Add(entry);
+        _localHealEntries.Add(entry);
         RemoveOldServerEntries();
         Debug.Log($"[DamageTracker] Heal added: {heal.Value}, Time: {Time.time},  name: {this.name}");
 

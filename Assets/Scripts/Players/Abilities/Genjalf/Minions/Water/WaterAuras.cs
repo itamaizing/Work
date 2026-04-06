@@ -158,66 +158,50 @@ namespace Gangdollarff.WaterElemental
         }
     }
 
-    public class CoolingDamaged : AuraState
+    public class CoolingDamaged : AbstractCharacterState
     {
-        private List<StatusEffect> _effects = new List<StatusEffect>();
-        public override float Distance => 2;
-        public override float EffectRate => 1f;
-        public override LayerMask LayerMask => LayerMask.GetMask("Enemy");
-        public override States State => States.Cooling;
+        private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Others };
+
+        private float _physResistPercent = 0.1f;
+        private float _savedPhysResist;
+
+        public override States State => States.CoolingDamaged;
+        public override StateType Type => StateType.Magic;
         public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
         public override List<StatusEffect> Effects => _effects;
 
-        private Character _currentCharacter;
-
-        public override void EffectOnEnter(Character character)
+        public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+            Character personWhoMadeBuff, string skillName)
         {
-            _currentCharacter = character;
+            _savedPhysResist = character.Character.Health.DefPhysDamage;
+            character.Character.Health.SetPhysicDef(
+                _savedPhysResist + _savedPhysResist * _physResistPercent);
 
-            _currentCharacter.Health.DamageTaken += OnDamageTaken;
+            character.Character.Health.DamageTaken += OnDamageTaken;
         }
 
-        public override void EffectOnExit(Character character)
+        private void OnDamageTaken(Damage damage, Skill skill)
         {
+            if (skill == null) return;
+            if (damage.Type != DamageType.Physical) return;
+            if (damage.PhysicAttackType != AttackRangeType.MeleeAttack) return;
+
+            skill.Hero.CharacterState.AddState(States.Cooling, 6f, 0,
+                characterState.Character.gameObject, nameof(Cooling));
         }
 
-        private void OnDamageTaken(Damage damage, Skill target)
+        public override void UpdateState() { }
+
+        public override void ExitState()
         {
-            if (damage.Type == DamageType.Physical && damage.PhysicAttackType == AttackRangeType.MeleeAttack)
+            if (characterState?.Character != null)
             {
-                if (target.gameObject != null)
-                {
-                    CmdAddState(target.Hero.gameObject);
-                }
+                characterState.Character.Health.SetPhysicDef(_savedPhysResist);
+                characterState.Character.Health.DamageTaken -= OnDamageTaken;
             }
-        }
-
-        [Command]
-        private void CmdAddState(GameObject target)
-        {
-            target.GetComponent<Character>().CharacterState.AddState(States.Cooling, 8, 0, target, nameof(Cooling));
-        }
-
-        public override void UpdateState()
-        {
-            base.UpdateState();
-            if (duration > 0)
-            {
-                duration -= Time.deltaTime;
-            }
-            else
-            {
-                ExitState();
-                if (_currentCharacter)
-                {
-                    _currentCharacter.Health.DamageTaken -= OnDamageTaken;
-                    _currentCharacter = null;
-                }
-            }
-        }
-
-        public override void EffectOnStay(List<Character> characters)
-        {
+            
+            _savedPhysResist = 0f;
+            characterState?.RemoveState(this);
         }
     }
 }

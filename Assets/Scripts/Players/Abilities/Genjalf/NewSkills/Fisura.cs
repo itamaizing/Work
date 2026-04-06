@@ -64,8 +64,8 @@ namespace Gangdollarff
             {
                 IsEnabled = true;
 
-                _tempCastDeley = _cooldownTime;
-                _cooldownTime = 0;
+                _tempCastDeley = Cooldown.CooldownTime;
+                Cooldown.CooldownTime = 0;
             }
         }
 

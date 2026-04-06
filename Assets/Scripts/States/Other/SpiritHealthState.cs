@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class SpiritHealthState : AbstractCharacterState
+public class SpiritHealthState : RefreshingState
 {
     private const float DamageHealthRestorePercent = 0.05f;
     private const int _baseMaxStacks = 3;
@@ -21,20 +21,19 @@ public class SpiritHealthState : AbstractCharacterState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+        Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _character = character.Character;
         _baseDuration = durationToExit;
+        duration = durationToExit;
         currentStacksCount = 1;
         MaxStacksCount = _baseMaxStacks;
 
         _healthComponent = _character.GetComponent<Health>();
-
         if (_healthComponent != null)
-        {
             _healthComponent.DamageTaken += OnDamageTaken;
-        }
 
         if (characterState.StateEffects.SpiritHealthEffect != null)
         {
@@ -45,17 +44,18 @@ public class SpiritHealthState : AbstractCharacterState
         RecalcRegenAmount();
     }
 
-    public override void UpdateState()
-    {
-    }
+    public override void UpdateState() { }
 
     public override bool Stack(float time)
     {
-        duration = Mathf.Max(duration, time);
-
         if (currentStacksCount < MaxStacksCount)
         {
             currentStacksCount++;
+            duration = _baseDuration;
+        }
+        else
+        {
+            duration = _baseDuration;
         }
 
         RecalcRegenAmount();
@@ -65,35 +65,44 @@ public class SpiritHealthState : AbstractCharacterState
     public override void ExitState()
     {
         if (_healthComponent != null)
-        {
             _healthComponent.DamageTaken -= OnDamageTaken;
-        }
 
-        if (characterState.StateEffects.SpiritHealthEffect != null) _spiritHealthStateEffectInstance.SetActive(false);
-        characterState.RemoveState(this);
+        if (_spiritHealthStateEffectInstance != null)
+            _spiritHealthStateEffectInstance.SetActive(false);
+
+        currentStacksCount = 0;
+        duration = 0f;
+        _baseDuration = 0f;
+        _regenAmount = 0f;
+        _healthComponent = null;
+        _manaResource = null;
+        _character = null;
+        _spiritHealthStateEffectInstance = null;
+
+        characterState?.RemoveState(this);
+        characterState = null;
     }
 
     private void OnDamageTaken(Damage damage, Skill skill)
     {
         if (_character == null || skill == null) return;
 
-        if (_manaResource == null && skill.Hero != null) _manaResource = skill.Hero.TryGetResource(ResourceType.Mana);
+        if (_manaResource == null && skill.Hero != null)
+            _manaResource = skill.Hero.TryGetResource(ResourceType.Mana);
 
         float manaRestoreValue = damage.Value * DamageHealthRestorePercent * currentStacksCount;
-
         ApplyRegen(manaRestoreValue);
     }
 
     public void ApplyRegen(float manaRestoreValue)
     {
-        if (_manaResource != null && manaRestoreValue > 0) _manaResource.CmdAdd(manaRestoreValue);
+        if (_manaResource != null && manaRestoreValue > 0)
+            _manaResource.CmdAdd(manaRestoreValue);
     }
 
     private void RecalcRegenAmount()
     {
         if (_manaResource != null)
-        {
             _regenAmount = _manaResource.MaxValue * DamageHealthRestorePercent * currentStacksCount;
-        }
     }
 }

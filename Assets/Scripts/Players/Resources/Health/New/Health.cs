@@ -36,6 +36,7 @@ public class Health : Resource, IDamageable, IHealable
     public event Action Evaded;
     public event Action Block;
     public event Action<float , Skill , string> HealTaked;
+    public event Action<float, Skill, string> HealTakedServer;
     public event Action<Damage, Skill> DamageTaken;
     public event Action Died;
     public event Action<float, float> OnShieldValuesChanged;
@@ -144,6 +145,7 @@ public class Health : Resource, IDamageable, IHealable
 
     public void Heal(ref Heal heal, string sourceName, Skill skill = null)
     {
+        HealTakedServer?.Invoke(heal.Value, skill, sourceName);
         ClientRpcHealTaked(heal.Value, skill, sourceName);
         Add(heal.Value);
     }
@@ -266,20 +268,24 @@ public class Health : Resource, IDamageable, IHealable
 
     protected void UseShields(ref Damage damage, Skill skill)
     {
-        for (int i = 0; i < _shields.Count; i++)
+        if (_shields.Count == 0) return;
+        
+        for (int i = _shields.Count - 1; i >= 0; i--)
         {
-            if (_shields[i] != null)
-            {
-                _shields[i].TryTakeDamage(ref damage, skill);
+            var shield = _shields[i];
 
-                if (damage.Value == 0)
-                {
-                    break;
-                }
+            if (shield == null)
+            {
+                _shields.RemoveAt(i);
+                continue;
             }
-            _shields.RemoveAt(i);
-            i--;
+            shield.TryTakeDamage(ref damage, skill);
+
+            if (damage.Value == 0)
+                break;
         }
+
+        _shields.RemoveAll(shield => shield == null);
     }
 
     private void Defence(ref Damage damage)

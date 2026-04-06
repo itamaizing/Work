@@ -42,16 +42,16 @@ MonoBehaviour:
     _attributes:
     - nameToShow: ResistancePhysical
       type: 0
-      value: 0
+      value: 1
     - nameToShow: ResistanceMagical
       type: 1
-      value: 0
+      value: 1
     - nameToShow: EvasionPhysical
       type: 2
-      value: 0
+      value: 1
     - nameToShow: EvasionMagical
       type: 3
-      value: 0
+      value: 1
     - nameToShow: MoveSpeed
       type: 4
       value: 5
@@ -60,13 +60,13 @@ MonoBehaviour:
       value: 2
     - nameToShow: CastSpeed
       type: 6
-      value: 0
+      value: 1
     - nameToShow: CastSpeedPhysical
       type: 7
-      value: 0
+      value: 1
     - nameToShow: CastSpeedMagical
       type: 8
-      value: 0
+      value: 1
     - nameToShow: ResourceCost
       type: 9
-      value: 0
+      value: 1

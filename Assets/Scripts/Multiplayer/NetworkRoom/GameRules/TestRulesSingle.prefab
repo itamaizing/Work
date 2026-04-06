@@ -65,6 +65,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _maxPlayers: 1
   _expValuePerPlayer: 10
   _baseTimeForRevival: 5
   _AddTimeForRevival: 1

@@ -4,15 +4,19 @@ using UnityEngine;
 
 public class DarkTalent_4 : Talent
 {
-    [SerializeField] private PriestShield _priestShield;
-
     public override void Enter()
     {
-        _priestShield.EnableDarkMagicBoost(true);
+        var priestShield = character.Abilities.GetSkill<PriestShield>();
+        priestShield?.DarkMagicBoostBooster.Enable(true);
     }
 
     public override void Exit()
     {
-        _priestShield.EnableDarkMagicBoost(false);
+        var priestShield = character.Abilities.GetSkill<PriestShield>();
+        if (priestShield != null)
+        {
+            priestShield.DarkMagicBoostBooster.Enable(false);
+            priestShield.DarkMagicBoostBooster.ResetAccumulator();
+        }
     }
 }

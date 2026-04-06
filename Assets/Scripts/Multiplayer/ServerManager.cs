@@ -227,7 +227,7 @@ public class GroupManager
         if (int.TryParse(id, out int idInt))
             _ids.Add(idInt);
         else
-            Debug.LogError("Ψλÿοΰ, ΰ νε ID");
+            Debug.LogError("Π¨Π»ΡΠΏΠ°, Π° Π½Πµ ID");
     }
 
     public void RemovePlayerInGroup(int id)
@@ -240,7 +240,7 @@ public class GroupManager
         if (int.TryParse(id, out int idInt))
             _ids.Remove(idInt);
         else
-            Debug.LogError("Ψλÿοΰ, ΰ νε ID");
+            Debug.LogError("Π¨Π»ΡΠΏΠ°, Π° Π½Πµ ID");
     }
 
     public string GetPlayerInGroup()

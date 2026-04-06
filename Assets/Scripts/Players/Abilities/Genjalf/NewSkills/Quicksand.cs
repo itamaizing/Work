@@ -42,23 +42,13 @@ public class Quicksand : Skill, IGodLightSpell
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _startPoint = targetInfo.Points[0];
-        _endPoint = targetInfo.Points[1];
+        _startPoint = targetInfo.Points.Count > 0 ? targetInfo.Points[0] : Vector3.zero;
+        _endPoint = targetInfo.Points.Count > 1 ? targetInfo.Points[1] : _startPoint;
     }
 
     public void SetQuickSandInvisible(bool value)
     {
         _isInvisibleQuickSand = value;
-    }
-    
-    public void SetBonusSize(int length, float width)
-    {
-        _bonusLength = length;
-        _bonusWidth = width;
-
-        AreaInfo.CastLength = _isInvisibleQuickSand ? AreaInfo.CastLength +_bonusLength: _initialLenght;
-        AreaInfo.CastWidth = _isInvisibleQuickSand ? AreaInfo.CastWidth + _bonusWidth : _initialWidth;
-        AreaInfo.Radius = _isInvisibleQuickSand ? AreaInfo.Radius + _bonusWidth : _initialRadius;
     }
 
     public void ChangeMode()
@@ -73,8 +63,8 @@ public class Quicksand : Skill, IGodLightSpell
         {
             IsEnabled = true;
 
-            _tempCastDeley = _cooldownTime;
-            _cooldownTime = 0;
+            _tempCastDeley = Cooldown.CooldownTime;
+            Cooldown.CooldownTime = 0;
         }
     }
 
@@ -91,23 +81,31 @@ public class Quicksand : Skill, IGodLightSpell
         _endPoint = Vector3.zero;
     }
 
+    private Vector3 ClampEndPoint(Vector3 start, Vector3 end)
+    {
+        float maxLength = AreaInfo.CastLength;
+        Vector3 direction = end - start;
+        if (direction.magnitude > maxLength)
+            return start + direction.normalized * maxLength;
+        return end;
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
-        Vector3 firstPoint = Vector3.zero;
 
         while (!Input.GetMouseButtonDown(0))
             yield return null;
 
         float downTime = Time.time;
-        firstPoint = Targeting.GetMousePoint();
+        Vector3 firstPoint = Targeting.GetMousePoint();
         targetInfo.Points.Add(firstPoint);
 
         while (!Input.GetMouseButtonUp(0))
         {
             if (Time.time - downTime > _longPressThreshold)
             {
-                Vector3 holdPoint = Targeting.GetMousePoint();
+                Vector3 holdPoint = ClampEndPoint(firstPoint, Targeting.GetMousePoint());
                 if (targetInfo.Points.Count == 1)
                     targetInfo.Points.Add(holdPoint);
                 else
@@ -121,7 +119,7 @@ public class Quicksand : Skill, IGodLightSpell
 
         if (longClick)
         {
-            Vector3 secondPointOnUp = Targeting.GetMousePoint();
+            Vector3 secondPointOnUp = ClampEndPoint(firstPoint, Targeting.GetMousePoint());
             if (targetInfo.Points.Count == 1)
                 targetInfo.Points.Add(secondPointOnUp);
             else
@@ -132,7 +130,7 @@ public class Quicksand : Skill, IGodLightSpell
             while (!Input.GetMouseButtonDown(0))
                 yield return null;
 
-            Vector3 secondPoint = Targeting.GetMousePoint();
+            Vector3 secondPoint = ClampEndPoint(firstPoint, Targeting.GetMousePoint());
 
             while (!Input.GetMouseButtonUp(0))
                 yield return null;

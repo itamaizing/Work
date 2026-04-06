@@ -10,11 +10,9 @@ public class WaveSkill : Skill
     [SerializeField] private float _pushDuration = 0.33f;
     [SerializeField] private Transform _previewPivot;
     [SerializeField] private BoxArea _lineVisual;
-    
-    private float _bonusLength = 0;
-    private float _bonusWidth = 0f;
-    private float _initialLenght = 2.5f;
-    private float _initialWidth = 1;
+
+    private AttributeModifier _modifierLenght = new AttributeModifier(0,ModifierType.Flat);
+    private AttributeModifier _modifierWidth = new AttributeModifier(0,ModifierType.Flat);
 
     private Vector3 _waveStartPoint;
     private Vector3 _waveDirection;
@@ -27,6 +25,8 @@ public class WaveSkill : Skill
 
     protected override bool IsCanCast => true;
 
+    private bool _isBonusSizeEnabled;
+    
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.Points.Count >= 2)
@@ -37,13 +37,26 @@ public class WaveSkill : Skill
         }
     }
 
-    public void SetBonusSize(Vector2 bonusSize)
+    public void SetSizeModifier(Vector2 bonusSize)
     {
-        _bonusLength = bonusSize.x; 
-        _bonusWidth = bonusSize.y;
+        if (!_isBonusSizeEnabled)
+        {
+            _modifierWidth.Value = bonusSize.x;
+            _modifierLenght.Value = bonusSize.y;
+            _modifierLenght.Type = ModifierType.Flat;
+            _modifierWidth.Type = ModifierType.Flat;
 
-        AreaInfo.CastLength = _initialWidth + _bonusWidth ;
-        AreaInfo.CastWidth = _initialLenght + _bonusLength;
+            _skillAttributes.Attributes[SkillAttributeName.Length].AddModifier(_modifierLenght);
+            _skillAttributes.Attributes[SkillAttributeName.Width].AddModifier(_modifierWidth);
+            _isBonusSizeEnabled = true;
+        }
+    }
+
+    public void RemoveSizeModifier()
+    {
+        _skillAttributes.Attributes[SkillAttributeName.Length].RemoveModifier(_modifierLenght);
+        _skillAttributes.Attributes[SkillAttributeName.Width].RemoveModifier(_modifierWidth);
+        _isBonusSizeEnabled = false;
     }
 
     protected override IEnumerator CastJob()
@@ -52,9 +65,7 @@ public class WaveSkill : Skill
 
         Vector3 waveCenter = _waveStartPoint + _waveDirection * (AreaInfo.CastLength / 2f);
 
-        var colliders = Physics.OverlapBox(
-            waveCenter,
-            new Vector3(AreaInfo.CastWidth / 2f, 2f, AreaInfo.CastLength / 2f),
+        var colliders = Physics.OverlapBox(waveCenter, new Vector3(AreaInfo.CastWidth / 2f, 2f, AreaInfo.CastLength / 2f),
             Quaternion.LookRotation(_waveDirection),
             Targeting.Layer
         );
@@ -92,9 +103,7 @@ public class WaveSkill : Skill
 
                 CmdApplyDamage(scaledDamage, enemy.gameObject);
 
-                float distToPush = _pushRange;
-                Vector3 pointForPush = enemy.transform.position + _waveDirection * distToPush;
-
+                Vector3 pointForPush = enemy.transform.position + _waveDirection * _pushRange;
                 CmdMoveTarget(enemy.gameObject, pointForPush, _pushDuration);
             }
         }
@@ -110,6 +119,9 @@ public class WaveSkill : Skill
         _waveDirection = Vector3.zero;
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();
+
+        if (_lineVisual != null)
+            _lineVisual.gameObject.SetActive(false);
     }
 
     public override void StartCustomDraw()
@@ -120,7 +132,8 @@ public class WaveSkill : Skill
     public override void StopCustomDraw()
     {
         SkillRender.StopDrawRadius();
-        _lineVisual.gameObject.SetActive(false);
+        if (_lineVisual != null)
+            _lineVisual.gameObject.SetActive(false);
     }
 
     public override IEnumerator CustomDrawJob(float time = 0.2f)
@@ -167,6 +180,9 @@ public class WaveSkill : Skill
             pivotTransform.position = startPosition;
             pivotTransform.rotation = Quaternion.LookRotation(direction, Vector3.up);
 
+            /*Debug.LogError("Cast width" + AreaInfo.CastWidth);
+            Debug.LogError("Cast Length" + AreaInfo.CastLength);*/
+            
             _lineVisual.SetSize(AreaInfo.CastWidth, AreaInfo.CastLength, damage);
 
             yield return null;
@@ -205,8 +221,15 @@ public class WaveSkill : Skill
     [Command]
     private void CmdMoveTarget(GameObject target, Vector3 point, float time)
     {
+        Debug.LogError("Target1");
+        if (target == null) return;
+        Debug.LogError("Target2");
         var enemyMove = target.GetComponent<MoveComponent>();
+        if (enemyMove == null) return;
+
         enemyMove.RpcDoPush(point, time);
+        
+        Debug.LogError("Has pushed");
     }
 
     [Command]
