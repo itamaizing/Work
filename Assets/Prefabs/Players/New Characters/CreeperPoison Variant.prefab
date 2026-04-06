@@ -18595,11 +18595,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8492809262968261936, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_SizeDelta.x
-      value: -2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8492809262968261936, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_SizeDelta.y
-      value: -2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8630238717969952997, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchorMax.x
@@ -20615,7 +20615,7 @@ MonoBehaviour:
     _base: 0
     _additional: []
   _skillEnergyCosts:
-  - resourceType: 2
+  - resourceType: 1
     resourceCost: 140
   _additionalSkillEnergyCosts: []
   _cooldownTime: 24
@@ -20698,7 +20698,7 @@ MonoBehaviour:
     _base: 0
     _additional: []
   _skillEnergyCosts:
-  - resourceType: 2
+  - resourceType: 1
     resourceCost: 20
   _additionalSkillEnergyCosts: []
   _cooldownTime: 12
@@ -20880,7 +20880,7 @@ MonoBehaviour:
       \u043A\u0440\u0438\u043F\u0435\u0440 \u0442\u0430\u043A \u0436\u0435 \u043D\u0430\u043D\u043E\u0441\u0438\u0442
       \u0443\u0434\u0430\u0440\u044B \u0441 \u0440\u0443\u043A\u0438. "
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u041C\u043E\u043B\u043D\u0438\u0435\u043D\u043E\u0441\u043D\u043E\u0435
       \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0436\u0435\u043D\u0438\u0435"
     Icon: {fileID: -2889036831652375965, guid: 0ecb6aa3d380cce48bb2d427267b10be, type: 3}

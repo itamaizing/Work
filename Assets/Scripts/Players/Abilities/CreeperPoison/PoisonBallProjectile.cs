@@ -94,6 +94,17 @@ public class PoisonBallProjectile : Test_Projectile
     [Server]
     private void OnTriggerEnter(Collider collision)
     {
+        if (!collision.TryGetComponent<Character>(out var targetHealth))
+            return;
+
+        if (targetHealth.CharacterState.CheckForState(States.ReflectiveScales))
+        {
+            if (_isReflected) return;
+
+            Reflect(targetHealth);
+            return;
+        }
+
         if (!IsEnemy(collision.gameObject)) return;
 
         if (_isActiveHealingPoisonBall)
@@ -141,16 +152,8 @@ public class PoisonBallProjectile : Test_Projectile
             {
                 if (collision.gameObject != _player.gameObject && _playerLayer != LayerMask.NameToLayer("Enemy"))
                 {
-                    if (collision.TryGetComponent<Character>(out var targetHealth))
+                    if (targetHealth != null)
                     {
-                        if (targetHealth.CharacterState.CheckForState(States.ReflectiveScales))
-                        {
-                            if (_isReflected) return;
-
-                            Reflect(targetHealth);
-                            return;
-                        }
-
                         _target = targetHealth;
                         DamageDeal();
 
@@ -171,16 +174,8 @@ public class PoisonBallProjectile : Test_Projectile
             {
                 if (collision.gameObject != _player.gameObject && _playerLayer != LayerMask.NameToLayer("Enemy"))
                 {
-                    if (collision.TryGetComponent<Character>(out var targetHealth))
+                    if (targetHealth != null)
                     {
-                        if (targetHealth.CharacterState.CheckForState(States.ReflectiveScales))
-                        {
-                            if (_isReflected) return;
-
-                            Reflect(targetHealth);
-                            return;
-                        }
-
                         _target = targetHealth;
 
                         DamageDeal();
@@ -200,16 +195,8 @@ public class PoisonBallProjectile : Test_Projectile
         {
             if (collision.gameObject != _player.gameObject && _playerLayer != LayerMask.NameToLayer("Enemy"))
             {
-                if (collision.TryGetComponent<Character>(out var targetHealth))
+                if (targetHealth != null)
                 {
-
-                    if (targetHealth.CharacterState.CheckForState(States.ReflectiveScales))
-                    {
-                        if (_isReflected) return;
-
-                        Reflect(targetHealth);
-                        return;
-                    }
                     _target = targetHealth;
 
                     DamageDeal();
