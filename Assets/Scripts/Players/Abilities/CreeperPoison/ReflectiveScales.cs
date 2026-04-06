@@ -33,6 +33,6 @@ public class ReflectiveScales: Skill
         if (Hero == null || Hero.CharacterState == null)
             yield break;
 
-        Hero.CharacterState.CmdAddState(States.ProtectiveScales, Duration, 0f, Hero.gameObject, name);
+        Hero.CharacterState.CmdAddState(States.ReflectiveScales, Duration, 0f, Hero.gameObject, name);
     }
 }

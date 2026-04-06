@@ -38,6 +38,8 @@ public class PoisonBallProjectile : Test_Projectile
     private bool _isTransparentPoisons;
     private bool _isColdBloodCrit;
 
+    private bool _isReflected;
+
     #region FloatVariables
     private float _newDistancePush;
     private float _distanceIncreaseMultiplier = 0.5f;
@@ -69,6 +71,7 @@ public class PoisonBallProjectile : Test_Projectile
 
     private bool IsEnemy(GameObject target)
     {
+        if (_isReflected) return target != _player.gameObject;
         if (_player == null) return IsEnemyByLayer(target);
         if (!_player.TryGetComponent(out UserNetworkSettings ownerSettings) || !target.TryGetComponent(out UserNetworkSettings targetSettings)) return IsEnemyByLayer(target);
         if (!IsTeamAssigned(ownerSettings) || !IsTeamAssigned(targetSettings)) return IsEnemyByLayer(target);
@@ -140,6 +143,14 @@ public class PoisonBallProjectile : Test_Projectile
                 {
                     if (collision.TryGetComponent<Character>(out var targetHealth))
                     {
+                        if (targetHealth.CharacterState.CheckForState(States.ReflectiveScales))
+                        {
+                            if (_isReflected) return;
+
+                            Reflect(targetHealth);
+                            return;
+                        }
+
                         _target = targetHealth;
                         DamageDeal();
 
@@ -162,6 +173,14 @@ public class PoisonBallProjectile : Test_Projectile
                 {
                     if (collision.TryGetComponent<Character>(out var targetHealth))
                     {
+                        if (targetHealth.CharacterState.CheckForState(States.ReflectiveScales))
+                        {
+                            if (_isReflected) return;
+
+                            Reflect(targetHealth);
+                            return;
+                        }
+
                         _target = targetHealth;
 
                         DamageDeal();
@@ -183,6 +202,14 @@ public class PoisonBallProjectile : Test_Projectile
             {
                 if (collision.TryGetComponent<Character>(out var targetHealth))
                 {
+
+                    if (targetHealth.CharacterState.CheckForState(States.ReflectiveScales))
+                    {
+                        if (_isReflected) return;
+
+                        Reflect(targetHealth);
+                        return;
+                    }
                     _target = targetHealth;
 
                     DamageDeal();
@@ -199,6 +226,31 @@ public class PoisonBallProjectile : Test_Projectile
     }
 
     #endregion
+
+    private void Reflect(Character reflector)
+    {
+        _isReflected = true;
+
+        Character oldOwner = _player;
+        _player = reflector;
+
+        if (oldOwner == null) return;
+
+        Vector3 target = oldOwner.transform.position;
+
+        _directionOfFlight = (target - transform.position).normalized;
+        float speed = _isFast ? _fastMovementSpeed : _slowMovementSpeed;
+
+        _target = null;
+        _playerLayer = reflector.gameObject.layer;
+
+        _isEnemy = true;
+        _isAllies = false;
+        _isPlayer = false;
+
+        MoveToTarget(target, speed);
+        RpcInitTransparent(_isTransparentPoisons, _playerLayer);
+    }
 
     #region MovementBall
 
