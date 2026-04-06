@@ -100,7 +100,7 @@ public class PoisonBallProjectile : Test_Projectile
         if (targetHealth.CharacterState.CheckForState(States.ReflectiveScales))
         {
             if (_isReflected) return;
-
+            targetHealth.CharacterState.RemoveState(States.ReflectiveScales);
             Reflect(targetHealth);
             return;
         }

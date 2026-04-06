@@ -27,11 +27,6 @@ public class ReflectiveScalesState : StackableState
         this.personWhoMadeBuff = personWhoMadeBuff;
 
         _durationRemaining = durationToExit;
-
-        if (health != null)
-        {
-            health.OnTryResist += TryReflect;
-        }
     }
 
     public override void UpdateState()
@@ -53,12 +48,6 @@ public class ReflectiveScalesState : StackableState
 
     public override void ExitState()
     {
-        if (health != null)
-        {
-            health.OnTryResist -= TryReflect;
-        }
 
-        characterState.StateIcons.RemoveItemByState(State);
-        characterState.RemoveState(this);
     }
 }
