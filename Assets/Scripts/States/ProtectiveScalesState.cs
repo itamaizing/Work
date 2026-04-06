@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ProtectiveScalesState : RefreshingState
+public class ProtectiveScalesState : StackableState
 {
     private float _durationRemaining;
     private float _appliedResist = 0f;
