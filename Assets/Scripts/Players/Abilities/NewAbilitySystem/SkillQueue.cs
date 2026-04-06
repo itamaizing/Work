@@ -63,7 +63,6 @@ public class SkillQueue : MonoBehaviour
             }
         }
     }
-
     public void Add(Skill skill)
     {
         //if (_skills.Contains(skill))

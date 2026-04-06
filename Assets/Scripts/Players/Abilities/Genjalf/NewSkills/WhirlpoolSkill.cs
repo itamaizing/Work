@@ -59,7 +59,7 @@ public class WhirlpoolSkill : Skill
         NetworkServer.Spawn(obj);
 
         var tile = obj.GetComponent<WhirlpoolTile>();
-        tile.Init(ownerTeamIndex, _targetsLayers, _whirlRadius, _maxForce, _minForce, _rate);
+        tile.Init(ownerTeamIndex, Targeting.Layer, _whirlRadius, _maxForce, _minForce, _rate);
         tile.StartPull();
 
         tile.TargetRpcMarkAsOwner(connectionToClient);

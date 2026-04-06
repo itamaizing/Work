@@ -2,7 +2,6 @@
 using System.Collections;
 using Mirror;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class FlowOfLight : Skill, IPolaritySwitchable
 {
@@ -20,6 +19,7 @@ public class FlowOfLight : Skill, IPolaritySwitchable
     [SerializeField] private ReversePolarity _reversePolarity;
 
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
+    public bool IsLightMode => isLightMode;
     public event Action OnModeChange;
 
     private GameObject _activeEffect;
@@ -32,24 +32,47 @@ public class FlowOfLight : Skill, IPolaritySwitchable
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("FlowSpellStart");
 
-    #region Talent
-    private float _destructionFillingExtensionTime;
-    private float _destructionFillingDuration;
-    private float _destructionFillingChance;
+    #region Talents
 
-    private bool _spiritEnergyAddTalent;
-    private bool _isDestructionFillingTalent;
-    public bool IsDestructionFillingTalent { get => _isDestructionFillingTalent; private set => _isDestructionFillingTalent = value; }
+    private DestructionFillingBooster _destructionFillingBooster;
+    public DestructionFillingBooster DestructionFillingBooster => _destructionFillingBooster;
+
+    private SpiritEnergyAddBooster _spiritEnergyAddBooster;
+    public SpiritEnergyAddBooster SpiritEnergyAddBooster => _spiritEnergyAddBooster;
+
+    private SlowTalentBooster _slowTalentBooster;
+    public SlowTalentBooster SlowTalentBooster => _slowTalentBooster;
+
+    #region Aoe Talent
+    private AoeTalentBooster _aoeBooster;
+    public AoeTalentBooster AoeBooster => _aoeBooster;
+    #endregion
+
+    #region InstantFlashOfLight
+
+    private InstantFlashBooster _instantFlash;
+
+    public InstantFlashBooster InstantFlashBooster => _instantFlash;
+
+    #endregion
     
-    public void SpiritEnergyAddTalent(bool value) => _spiritEnergyAddTalent = value;
+    #region SpiritHealthOnShadow
+    private bool _spiritHealthIsEnabled;
+    public bool EnableSpiritHealth(bool val) => _spiritHealthIsEnabled = val;
+    #endregion
 
-    public void DestructionFillingTalent(bool value, float duration, float additionalTime,float chance)
-    {
-        _isDestructionFillingTalent = value;
-        _destructionFillingExtensionTime = additionalTime;
-        _destructionFillingDuration = duration;
-        _destructionFillingChance = chance;
-    }
+    #region OverhealManaBooster
+
+    private OverhealManaBooster _overhealMana;
+    public OverhealManaBooster OverhealManaBooster => _overhealMana;
+
+    #endregion
+    
+    public void SetStackingRestorationTalent(bool value) => _destructionFillingBooster.SetStackingRestoration(value);
+    public void SetStackingDestructionTalent(bool value) => _destructionFillingBooster.SetStackingDestruction(value);
+    public void SpiritEnergyAddTalent(bool value) => _spiritEnergyAddBooster.Enable(value);
+    public void DestructionFillingTalent(bool value, float duration, float additionalTime, float chance) => _destructionFillingBooster.Enable(value, duration, additionalTime, chance);
+    public void SetSlowTalent(bool value) => _slowTalentBooster.Enable(value);
 
     #endregion
 
@@ -59,16 +82,21 @@ public class FlowOfLight : Skill, IPolaritySwitchable
         Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle) &&
         ((isLightMode && IsAllyTarget(Targeting.GetTarget()?.Character)) || (!isLightMode && IsEnemyTarget(Targeting.GetTarget()?.Character)));
 
-    public override void Init(SkillRenderer render, Character hero)
-    {
-        base.Init(render, hero);
-        UpdateMode();
-    }
-
     private void OnEnable()
     {
         OnModeChange += UpdateMode;
         OnSkillCanceled += HandleSkillCanceled;
+        UpdateMode();
+        
+        _instantFlash = new InstantFlashBooster(this, duration: 5f, chance: 10f);
+        var flashSkill = Hero.Abilities.GetSkill<FlashOfLight>();
+        _instantFlash.Inject(flashSkill);
+
+        _overhealMana = new OverhealManaBooster(this, Hero);
+        _aoeBooster = new AoeTalentBooster(this);
+        _destructionFillingBooster = new DestructionFillingBooster(this);
+        _spiritEnergyAddBooster = new SpiritEnergyAddBooster(this);
+        _slowTalentBooster = new SlowTalentBooster(this);
     }
 
     private void OnDisable()
@@ -110,38 +138,6 @@ public class FlowOfLight : Skill, IPolaritySwitchable
         Info.School = isLightMode ? Schools.Light : Schools.Dark;
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
         Hero.Abilities.SkillPanelUpdate();
-    }
-
-    private void ApplySpiritBuff(Character target)
-    {
-        if (!_spiritEnergyAddTalent || target == null) return;
-
-        var stateComponent = target.GetComponent<CharacterState>();
-        if (stateComponent == null) return;
-
-        if (isLightMode) CmdStateSpiritEnergyOrHealth(stateComponent, States.SpiritEnergy, buffDuration);
-        else CmdStateSpiritEnergyOrHealth(stateComponent, States.SpiritHealth, debuffDuration);
-    }
-
-    private void TryApplyExtraState(Character target)
-    {
-        if (!stunMagicPassiveSkill.IsFillingDestruction || target == null) return;
-
-        var stateComponent = target.GetComponent<CharacterState>();
-        if (stateComponent == null) return;
-
-        //if (!isLightMode && UnityEngine.Random.value <= 0.2f) CmdStateRestorationOrDestruction(stateComponent, States.Destruction, 12f);
-    }
-
-    private void TryApplyDestructionFilling(CharacterState target)
-    {
-        if (target == null) return;
-        
-        if (UnityEngine.Random.value <= _destructionFillingChance)
-        {
-            float durationToApply = target.CheckForState(isLightMode ? States.Restoration : States.Destruction) ? _destructionFillingExtensionTime : _destructionFillingDuration;
-            CmdStateRestorationOrDestruction(target, isLightMode ? States.Restoration : States.Destruction, durationToApply);
-        }
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
@@ -196,7 +192,7 @@ public class FlowOfLight : Skill, IPolaritySwitchable
         Vector3 initialPosition = transform.position;
         float maxMoveDistance = 0.5f;
 
-        while (elapsed < CastStreamDuration)
+        while (elapsed < _channelComponent.CastDuration)
         {
             if (Targeting.GetTarget().Character == null || !Targeting.GetTarget().Character.gameObject.activeSelf ||
                 Input.GetMouseButtonDown(1) ||
@@ -219,45 +215,73 @@ public class FlowOfLight : Skill, IPolaritySwitchable
 
             if (elapsed % interval < Time.deltaTime)
             {
-                if (isLightMode && IsAllyTarget(Targeting.GetTarget()?.Character))
+                var currentTarget = Targeting.GetTarget()?.Character;
+
+                if (isLightMode && IsAllyTarget(currentTarget))
                 {
                     Heal heal = new Heal { Value = tickValue };
-                    CmdApplyHeal(heal, Targeting.GetTarget()?.Character.gameObject, this, Name);
-                    TryApplyExtraState(Targeting.GetTarget()?.Character);
-                    ApplySpiritBuff(Targeting.GetTarget()?.Character);
-                }
-                else if (!isLightMode && IsEnemyTarget(Targeting.GetTarget()?.Character))
-                {
-                    Damage damage = new Damage
+                    CmdApplyHeal(heal, currentTarget.gameObject, this, Name);
+                    _instantFlash.TryApply();
+                    _overhealMana.OnAnyHealTaken(currentTarget,tickValue,this);
+                    
+                    foreach (var tHeal in _aoeBooster?.GetHealableTargets(currentTarget,tickValue,this))
                     {
-                        Value = tickValue,
-                        Type = Info.DamageType,
-                        School = Info.School
-                    };
-                    CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
-                    TryApplyExtraState(Targeting.GetTarget()?.Character);
-                    ApplySpiritBuff(Targeting.GetTarget()?.Character);
+                        ApplyFromTalents(tHeal.Key,false);
+                    }
                 }
-                if (_isDestructionFillingTalent)
+                else if (!isLightMode && IsEnemyTarget(currentTarget))
                 {
-                    TryApplyDestructionFilling(Targeting.GetTarget()?.Character.CharacterState);
+                    Damage damage = new Damage { Value  = tickValue, Type   = Info.DamageType, School = Info.School };
+                    CmdApplyDamage(damage, currentTarget?.gameObject);
+                    _slowTalentBooster.TryApplySlow(currentTarget);
+                    _instantFlash.TryApply();
+
+                    foreach (var tDamage in _aoeBooster?.GetDamagebleTarget(currentTarget,tickValue,this))
+                    {
+                        ApplyFromTalents(tDamage.Key,false);
+                    }
                 }
-                if (_isDestructionFillingTalent)
+
+                if (currentTarget == _hero)
                 {
-                    TryApplyDestructionFilling(Targeting.GetTarget()?.Character.CharacterState);
+                    CmdApplyFromTalents(currentTarget.gameObject);
+                }
+                else
+                {
+                    ApplyFromTalents(currentTarget.gameObject,false);
                 }
             }
 
             elapsed += Time.deltaTime;
             yield return null;
         }
-
+        _slowTalentBooster.TryRemoveSlow(Targeting.GetTarget()?.Character);
         TrySwitchSpellsOnDarkMode();
         _hero.Animator.ResetTrigger(AnimTriggerCast);
         _hero.NetworkAnimator.ResetTrigger(AnimTriggerCast);
         CmdCrossFade();
         _hero.Animator.CrossFade("FlowSpellEnd", 0.1f);
         CmdDestroyEffect();
+    }
+
+    private void CmdApplyFromTalents(GameObject target)
+    {
+        ApplyFromTalents(target, true);
+    }
+    
+    private void ApplyFromTalents(GameObject target,bool isAoeTarget)
+    {
+        if (_destructionFillingBooster.TryApply(target, isLightMode, out var dState, out var dDuration))
+        {
+            if(!isAoeTarget)
+                target.GetComponent<CharacterState>().AddStateLogic(dState, dDuration, 0,Schools.None, gameObject, "DestructionFilling");
+            else
+                target.GetComponent<CharacterState>().CmdAddState(dState, dDuration, 0, gameObject, "DestructionFilling");
+        }
+        if (_spiritEnergyAddBooster.TryApply(target, isLightMode, buffDuration, debuffDuration, out States outState, out float outTime))
+        {
+            target.GetComponent<CharacterState>().AddStateLogic(outState, outTime, 0,Schools.None, gameObject, "SpiritEnergyAdd");
+        }
     }
 
     private void TrySwitchSpellsOnDarkMode()
@@ -302,7 +326,7 @@ public class FlowOfLight : Skill, IPolaritySwitchable
         if (!isLightMode) effectInstance = Instantiate(effectPrefabDark, start.transform.position, Quaternion.identity);
         else effectInstance = Instantiate(effectPrefabLight, start.transform.position, Quaternion.identity);
 
-        SceneManager.MoveGameObjectToScene(effectInstance, _hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(effectInstance, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(effectInstance);
 
         _activeEffect = effectInstance;
@@ -319,23 +343,8 @@ public class FlowOfLight : Skill, IPolaritySwitchable
             _activeEffect = null;
         }
     }
-
-
-    [Command] private void CmdStateRestorationOrDestruction(CharacterState stateComponent, States states, float duration) => StateRestorationOrDestruction(stateComponent, states, duration);
-    [Command] private void CmdStateSpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration) => SpiritEnergyOrHealth(stateComponent, states, duration);
-
-    private void SpiritEnergyOrHealth(CharacterState stateComponent, States states, float duration)
-    {
-        stateComponent.AddState(states, duration, 1f, gameObject, Name);
-    }
-
-    private void StateRestorationOrDestruction(CharacterState stateComponent, States states, float duration)
-    {
-        stateComponent.AddState(states, duration, 0, gameObject, Name);
-    }
-
-
-        [ClientRpc]
+    
+    [ClientRpc]
     private void RpcInitEffect(GameObject effect, GameObject start, GameObject end)
     {
         if (effect == null) return;

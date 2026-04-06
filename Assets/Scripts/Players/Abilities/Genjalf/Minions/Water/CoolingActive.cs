@@ -53,7 +53,7 @@ public class CoolingActive : Skill
     [Command]
     private void CmdAddAura()
     {
-        _hero.CharacterState.AddState(States.CoolingAura, _auraDuration, 0, Hero.gameObject, name);
+        _hero.CharacterState.AddState(States.CoolingAura, _auraDuration, 0, Hero.gameObject, nameof(CoolingActive));
         StartEffectJob();
     }
 

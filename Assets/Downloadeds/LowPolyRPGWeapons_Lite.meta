@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Prefabs/Players/Minions/Priest.meta
+guid: e3b505d63ce1edd44ae60e3c98125e0d
+========
 guid: cd266854a6a64644d914314b3a69c4ef
+>>>>>>>> main:Assets/Downloadeds/LowPolyRPGWeapons_Lite.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

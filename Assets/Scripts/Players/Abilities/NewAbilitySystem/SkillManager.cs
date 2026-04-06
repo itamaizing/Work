@@ -262,6 +262,11 @@ public class SkillManager : MonoBehaviour
         skill.IsSkillActive = false;
         SkillRemoved?.Invoke(skill);
     }
+    
+    public T GetSkill<T>() where T : Skill
+    {
+        return _skills.OfType<T>().FirstOrDefault();
+    }
 
     private void ToggleSkillActivation(Skill skill)
     {

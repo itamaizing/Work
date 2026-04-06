@@ -1,10 +1,12 @@
-﻿using Gangdollarff.EarthElemental;
+﻿using System;
+using Gangdollarff.EarthElemental;
 using Gangdollarff.WaterElemental;
 using Mirror;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class StateInfo
 {
@@ -289,6 +291,7 @@ public class CharacterState : NetworkBehaviour
 	public List<AbstractCharacterState> CurrentStates => _currentStates;
 	public Character Character => _hero;
 	public event System.Action<AbstractCharacterState> OnStateAdded;
+	public event Action<States, int> OnStateDispelled;
 
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
 	{
@@ -296,7 +299,8 @@ public class CharacterState : NetworkBehaviour
 		[States.Frozen] = new FrozenState(),
 		[States.Frosting] = new FrostingState(),
 		[States.Cooling] = new Cooling(),
-		[States.Restoration] = new RestorationState(),
+		[States.Restoration] = new RestorationState(States.Restoration),
+		[States.RestorationStacking] = new RestorationState(States.RestorationStacking),
 		[States.Stun] = new StunnedState(),
 		[States.Silent] = new Silent(),
 		[States.Calmness] = new Calmness(),
@@ -321,6 +325,7 @@ public class CharacterState : NetworkBehaviour
 		[States.ReversePolarity] = new ReversePolarityState(),
 		[States.SpiritEnergy] = new SpiritEnergyState(),
 		[States.SpiritHealth] = new SpiritHealthState(),
+		[States.DisciplineAura]   = new DisciplineAuraState(),
 
 		[States.Knockdown] = new Knockdown(),
 		[States.IdealEvade] = new IdealEvade(),
@@ -352,7 +357,8 @@ public class CharacterState : NetworkBehaviour
 		[States.ManaRegen] = new ManaRegen(),
 		[States.Stupefaction] = new Stupefaction(),
 		[States.TentacleGrip] = new TentacleGrip(),
-		[States.Destruction] = new DestructionState(),
+		[States.Destruction] = new DestructionState(States.Destruction),
+		[States.DestructionStacking] = new DestructionState(States.DestructionStacking),
 		[States.HardenedFlesh] = new HardenedFlesh(),
 		[States.FocusingOnReflexesState] = new FocusingOnReflexesState(),
 		[States.DivineEnhancement] = new DivineEnhancementState(),
@@ -372,6 +378,11 @@ public class CharacterState : NetworkBehaviour
 		[States.LightningEvade] = new LightningEvadeState(),
 		[States.ReptilianStasis] = new ReptilianStasisState(),
 		[States.ReflectiveScales] = new ReflectiveScalesState(),
+		[States.MergeDark] = new MergeDarkState(),
+		[States.DarkFormState] = new DarkFormState(),
+		[States.ShackleState] = new ShackleState(),
+		[States.SlowFlowLight] = new SlowFlowLightState(),
+		[States.Retribution] = new RetributionState(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -772,6 +783,7 @@ public class CharacterState : NetworkBehaviour
 				((isAlly && state.BaffDebaff == BaffDebaff.Baff) ||
 				 (!isAlly && state.BaffDebaff == BaffDebaff.Debaff)))
 			{
+				NotifyDispelWhoMade(state.PersonWhoMadeBuff.gameObject,state.State,state.CurrentStacksCount);
 				if (state.CurrentStacksCount > 1)
 				{
 					//state.currentStacksCount--;
@@ -790,6 +802,22 @@ public class CharacterState : NetworkBehaviour
 			RemoveState(state.State);
 			_stateIcons.RemoveItemByState(state.State);
 		}
+	}
+	
+	[ClientRpc]
+	private void NotifyDispelWhoMade(GameObject whoMade, States state,int num)
+	{
+		if(whoMade == null) return;
+		whoMade.TryGetComponent(out Character c);
+		if(c == null) return;
+		
+		c.CharacterState.OnOwnStateDispelled(state,num);
+	}
+
+	public void OnOwnStateDispelled(States state, int num)
+	{
+		if (!isOwned) return;
+		OnStateDispelled?.Invoke(state,num);
 	}
 
 	[ClientRpc]
@@ -941,8 +969,10 @@ public enum States
 	TentacleGrip,
     Discharge,
     CoolingAura,
-	Restoration,
-	Destruction,
+    Restoration,
+    RestorationStacking,
+    Destruction,
+    DestructionStacking,
 	HardenedFlesh,
 	FocusingOnReflexesState,
 	WarmingUpState,
@@ -979,6 +1009,12 @@ public enum States
 	LightningEvade,
 	ReptilianStasis,
 	ReflectiveScales,
+	MergeDark,
+	DarkFormState,
+	ShackleState,
+	SlowFlowLight,
+	Retribution,
+	DisciplineAura
 }
 public enum BaffDebaff
 {

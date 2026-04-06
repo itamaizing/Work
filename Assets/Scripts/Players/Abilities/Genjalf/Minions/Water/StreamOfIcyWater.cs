@@ -59,11 +59,11 @@ public class StreamOfIcyWater : MoveSkill
 
         float initialDistance = Vector3.Distance(transform.position, Targeting.GetTarget().Character.Position);
 
-        while (time < CastStreamDuration)
+        while (time < _channelComponent.CastDuration)
         {
             _effect.transform.localScale = new Vector3(_effect.transform.localScale.x, _effect.transform.localScale.y, Vector3.Distance(transform.position, Targeting.GetTarget().Character.Position));
 
-            yield return new WaitForSeconds(_manaCostRate);
+            yield return new WaitForSeconds(_channelComponent.TickInterval);
             Damage damage = new Damage
             {
                 Value = Buff.Damage.GetBuffedValue(Damage),
@@ -71,9 +71,10 @@ public class StreamOfIcyWater : MoveSkill
                 PhysicAttackType = Info.AttackRangeType,
             };
             CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
-			Targeting.GetTarget()?.Character.CharacterState.CmdAddState(States.Cooling, 6, 0, Hero.gameObject, name);
+            
+            CmdAddState(Targeting.GetTarget()?.Character.gameObject);
 
-            time += _manaCostRate;
+            time += _channelComponent.TickInterval;
 
             yield return null;
 
@@ -126,6 +127,13 @@ public class StreamOfIcyWater : MoveSkill
         targetDataSavedCallback(targetInfo);
     }
 
+    [Command]
+    private void CmdAddState(GameObject target)
+    {
+        Debug.LogError("Adding state");
+        if(target != null)
+            target.GetComponent<Character>().CharacterState.AddState(States.Cooling, 6, 0, Hero.gameObject, name);
+    }
 
     [Command]
     private void CmdSetActiveParticle(bool status)
