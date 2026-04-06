@@ -218,6 +218,9 @@ public class PoisonBallProjectile : Test_Projectile
     {
         _isReflected = true;
 
+        StopMovement();
+        CancelInvoke(nameof(DestroyProjectile));
+
         Character oldOwner = _player;
         _player = reflector;
 
@@ -460,6 +463,8 @@ public class PoisonBallProjectile : Test_Projectile
 
     public void ScheduleAutoDestroy(Vector3 targetPoint, float speed)
     {
+        if (_isReflected) return;
+
         float distance = Vector3.Distance(transform.position, targetPoint);
         float flightTime = (distance + _buffer) / speed;
 
