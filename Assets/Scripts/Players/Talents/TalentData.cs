@@ -15,7 +15,7 @@ public class TalentData
 	public Sprite Icon;
 	public int Group, Row = 0;
 	public int Level = -1;
-    
+	public int MaxLvl = -1;
 
 	public string Name
 	{

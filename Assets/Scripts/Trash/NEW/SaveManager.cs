@@ -132,9 +132,9 @@ public class SaveManager : MonoBehaviour
         return modifs;
     }
 
-    public void SaveTalent(int idGroup, int row, string idTalent, bool isActive)
+    public void SaveTalent(int idGroup, int row, string idTalent, bool isActive, int lvl)
     {
-        _talentManager.SaveTalent(_character, idGroup, row, idTalent, isActive, _currentSaveGroup);
+        _talentManager.SaveTalent(_character, idGroup, row, idTalent, isActive, lvl, _currentSaveGroup);
     }
 
     public void LoadTalent(int idGroup, int row, string idTalent, bool needActivate)

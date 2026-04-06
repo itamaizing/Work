@@ -61,7 +61,7 @@ public class TalentsGroup
 		return count;
 	}
 
-	public void SetActive(TalentData data, bool isActive)
+	public void SetActive(TalentData data, bool isActive, int lvl)
 	{
 		Talent talents = null;
 		foreach(TalentRow row in _talentRows)
@@ -74,7 +74,7 @@ public class TalentsGroup
 		}
 		if (talents == null) return;
 
-		talents.SetActive(isActive);
+		talents.SetActive(isActive, lvl);
 	}
 
 	/*  [Command]

@@ -4,21 +4,18 @@ using UnityEngine;
 
 public class NinjaTalent_1 : Talent
 {
-    [SerializeField] private IceRolling iceRolling;
-    [SerializeField] private SkillManager manager;
-
-    [SerializeReference]
-    public OpenCondition OpenConditions = new SpecificTalentOpenCondition();
+    [SerializeField] private IceRolling _iceRolling;
+    [SerializeField] private SkillManager _manager;
 
     public override void Enter()
     {
-        manager.ActivateSkill(iceRolling);
-        iceRolling.RollingWithEnemyTalentActive(true);
+        _manager.ActivateSkill(_iceRolling);
+        _iceRolling.RollingWithEnemyTalentActive(true);
     }
 
     public override void Exit()
     {
-        manager.DeactivateSkill(iceRolling);
-        iceRolling.RollingWithEnemyTalentActive(false);
+        _manager.DeactivateSkill(_iceRolling);
+        _iceRolling.RollingWithEnemyTalentActive(false);
     }
 }

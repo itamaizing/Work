@@ -5,7 +5,7 @@ public abstract class Talent : MonoBehaviour
 	[SerializeField]
 	private TalentData _data;
 
-    [SerializeReference, SubclassSelector] 
+	[SerializeReference, SubclassSelector]
 	public OpenCondition OpenCondition;
 
     public Character character;
@@ -15,16 +15,22 @@ public abstract class Talent : MonoBehaviour
 	private void OnValidate()
 	{
 		_data.Name = GetType().Name;
+		if(OpenCondition == null)
+		{
+			OpenCondition = new EmptyCondition();
+		}
+		Debug.Log("Open condition " + OpenCondition.CanOpen);
+		
 	}
 
 	public abstract void Enter();
 
 	public abstract void Exit();
 
-	public void SetActive(bool isActive)
+	public void SetActive(bool isActive, int lvl = -1)
 	{
 		_data.IsOpen = isActive;
-
+		_data.Level = lvl;
 		if (isActive)
 		{
 			Enter();

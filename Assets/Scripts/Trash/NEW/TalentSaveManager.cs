@@ -14,9 +14,9 @@ public class TalentSaveManager
         _saveManager = saveManager;
     }
 
-	public void SaveTalent(HeroComponent character, int idGroup, int row, string idTalent, bool isActive, int saveGroup)
+	public void SaveTalent(HeroComponent character, int idGroup, int row, string idTalent, bool isActive, int lvl, int saveGroup)
     {
-        var isTalentActive = isActive ? 1 : 0;
+        var isTalentActive = isActive ? lvl : 0;
 		//var talentGroup = character.TalentManager.TalentsGroups.FirstOrDefault(o => o.ID == idGroup);
 		// var talent = talentGroup?.TalentsData.FirstOrDefault(o => o.Data.Name == idTalent);
 		if (isActive && !character.TalentManager.CanOpenTalent) return;
@@ -99,8 +99,8 @@ public class TalentSaveManager
 
         int isActive = _saveData.LoadInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", 0);
 		character.TalentManager.SetPoints(_saveData.LoadInt($"{character.Data.Name}_TalentPointsCount"));
-        talent.Data.IsOpen = isActive == 1;
-        talentGroup.SetActive(talent.Data, isActive == 1);
+        talent.Data.IsOpen = isActive >= 1;
+        talentGroup.SetActive(talent.Data, isActive >= 1, isActive);
 
         if (needActive)
         {

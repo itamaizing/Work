@@ -6,7 +6,6 @@ using UnityEngine;
 [Serializable]
 public abstract class OpenCondition
 {
-    public string name;
     public virtual bool CanOpen => CanOpenMethod();
     protected abstract bool CanOpenMethod();
 }

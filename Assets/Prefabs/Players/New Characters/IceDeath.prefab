@@ -5098,26 +5098,20 @@ MonoBehaviour:
     Group: 0
     Row: 0
     Level: 0
+    MaxLvl: 5
   OpenCondition:
-    rid: 5663947266393374849
+    rid: 5663947266393374855
   character: {fileID: 4374618947117916461}
-  iceRolling: {fileID: 8918194537379249446}
-  manager: {fileID: 4220410774128686972}
-  OpenConditions:
-    rid: 5663947266393374835
+  _iceRolling: {fileID: 0}
+  _manager: {fileID: 0}
   references:
     version: 2
     RefIds:
-    - rid: 5663947266393374835
+    - rid: 5663947266393374855
       type: {class: SpecificTalentOpenCondition, ns: , asm: Assembly-CSharp}
       data:
-        name: 
-        _talentsNeededToOpen: []
-    - rid: 5663947266393374849
-      type: {class: SpecificTalentOpenCondition, ns: , asm: Assembly-CSharp}
-      data:
-        name: 
-        _talentsNeededToOpen: []
+        _talentsNeededToOpen:
+        - {fileID: 7758366791900145808}
 --- !u!114 &7758366791900145808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5159,16 +5153,18 @@ MonoBehaviour:
     Group: 0
     Row: 0
     Level: 0
+    MaxLvl: 5
   OpenCondition:
-    rid: -2
+    rid: 5663947361763983486
   character: {fileID: 4374618947117916461}
   _seriesOfStrikes: {fileID: 3083348233968490285}
   _physicalAttack: {fileID: 7407653808177717906}
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 5663947361763983486
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &1789533417509439406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5205,16 +5201,18 @@ MonoBehaviour:
     Group: 0
     Row: 0
     Level: 0
+    MaxLvl: 0
   OpenCondition:
-    rid: -2
+    rid: 5663947361763983487
   character: {fileID: 4374618947117916461}
   iceSword: {fileID: 5084671336121015661}
   manager: {fileID: 4220410774128686972}
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 5663947361763983487
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &4703517711497613664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5255,16 +5253,18 @@ MonoBehaviour:
     Group: 0
     Row: 1
     Level: 0
+    MaxLvl: 0
   OpenCondition:
-    rid: -2
+    rid: 5663947361763983488
   character: {fileID: 4374618947117916461}
   iceShadow: {fileID: 3068634069238352843}
   icePuddle: {fileID: 4310610476984543593}
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 5663947361763983488
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3308416631096017029
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5307,16 +5307,18 @@ MonoBehaviour:
     Group: 0
     Row: 0
     Level: 0
+    MaxLvl: 0
   OpenCondition:
-    rid: -2
+    rid: 5663947361763983489
   character: {fileID: 4374618947117916461}
   _iceCloud: {fileID: 752221787785051408}
   _skillManager: {fileID: 4220410774128686972}
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 5663947361763983489
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &6142297959774152765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5376,8 +5378,9 @@ MonoBehaviour:
     Group: 0
     Row: 0
     Level: 0
+    MaxLvl: 0
   OpenCondition:
-    rid: -2
+    rid: 5663947361763983490
   character: {fileID: 4374618947117916461}
   _icePuddle: {fileID: 4310610476984543593}
   _iceShadow: {fileID: 3068634069238352843}
@@ -5385,8 +5388,9 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 5663947361763983490
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &2242834627366772860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5408,14 +5412,16 @@ MonoBehaviour:
     Group: 0
     Row: 0
     Level: 0
+    MaxLvl: 0
   OpenCondition:
-    rid: -2
+    rid: 5663947361763983491
   character: {fileID: 4374618947117916461}
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 5663947361763983491
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &2166687460451499452
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5444,15 +5450,17 @@ MonoBehaviour:
     Group: 0
     Row: 1
     Level: 0
+    MaxLvl: 0
   OpenCondition:
-    rid: -2
+    rid: 5663947361763983492
   character: {fileID: 4374618947117916461}
   _icePuddle: {fileID: 4310610476984543593}
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 5663947361763983492
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &6580995585041578627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5482,16 +5490,18 @@ MonoBehaviour:
     Group: 0
     Row: 0
     Level: 0
+    MaxLvl: 0
   OpenCondition:
-    rid: -2
+    rid: 5663947361763983493
   character: {fileID: 4374618947117916461}
   _seriesOfStrikes: {fileID: 3083348233968490285}
   _ninjaResources: {fileID: 5945422429078664588}
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 5663947361763983493
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &7185321803913916173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5520,8 +5530,9 @@ MonoBehaviour:
     Group: 0
     Row: 0
     Level: 0
+    MaxLvl: 0
   OpenCondition:
-    rid: -2
+    rid: 5663947361763983494
   character: {fileID: 4374618947117916461}
   energy: {fileID: 2935799894972768155}
   runes: {fileID: 5679546152039556976}
@@ -5529,8 +5540,9 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 5663947361763983494
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &1090044804548443068
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5562,15 +5574,17 @@ MonoBehaviour:
     Group: 0
     Row: 0
     Level: 0
+    MaxLvl: 0
   OpenCondition:
-    rid: -2
+    rid: 5663947361763983495
   character: {fileID: 4374618947117916461}
   ninjaResources: {fileID: 5945422429078664588}
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 5663947361763983495
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3083348233968490285
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5605,13 +5619,15 @@ MonoBehaviour:
     Group: 0
     Row: 1
     Level: 0
+    MaxLvl: 0
   OpenCondition:
-    rid: -2
+    rid: 5663947361763983450
   character: {fileID: 4374618947117916461}
   _deathSpiral: {fileID: 5605713643324713456}
   _ability: {fileID: 4220410774128686972}
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 5663947361763983450
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 

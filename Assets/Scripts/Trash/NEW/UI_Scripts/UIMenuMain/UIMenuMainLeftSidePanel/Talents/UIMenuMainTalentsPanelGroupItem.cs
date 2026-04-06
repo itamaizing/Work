@@ -1,4 +1,5 @@
 using Mirror;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -6,7 +7,7 @@ using UnityEngine.UI;
 
 public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    public event UnityAction<TalentData, bool> Selected;
+    public event UnityAction<TalentData, bool, int> Selected;
     public event UnityAction<TalentData> PointerEntered;
     public event UnityAction<TalentData> PointerExited;
     
@@ -20,6 +21,7 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
     [SerializeField] private IconState _iconState;
     [SerializeField] private Image _frameImage;
     [SerializeField] private Image _lightingFrameImage;
+    [SerializeField] private TextMeshProUGUI _lvlText;
 
     [SerializeField] private Button _button;
     
@@ -56,7 +58,8 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
         _talent = talent;
         
         activeState.isActive = _talent.IsOpen;
-
+        _lvlText.text = talent.Level.ToString();
+        _lvlText.gameObject.SetActive(_talent.IsOpen);
         if (_talent.IsOpen == false)
             _frameImage.sprite = _iconState.Off;
         else
@@ -65,7 +68,21 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
     
     public void Select()
     {
-        Selected?.Invoke(_talent, !_talent.IsOpen);
+        if (_talent.IsOpen)
+        {
+            if (_talent.Level < _talent.MaxLvl)
+            {
+                Selected?.Invoke(_talent, _talent.IsOpen, _talent.Level + 1);
+                _lvlText.text = (_talent.Level + 1).ToString();
+                _lvlText.gameObject.SetActive(true);
+            }
+        }
+        else
+        {
+            Selected?.Invoke(_talent, !_talent.IsOpen, 0);
+            _lvlText.text = "0";
+            _lvlText.gameObject.SetActive(false);
+        }
         activeState.isActive = _talent.IsOpen;
     }
 
