@@ -81,7 +81,6 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
 
         var fireObj = Instantiate(_prefab, spawnPosition, Quaternion.identity);
         _fireBreathInstance = fireObj.GetComponent<FireBreath_Prefab>();
-        SceneManager.MoveGameObjectToScene(fireObj, _hero.NetworkSettings.MyRoom);
         fireObj.transform.SetParent(transform);
 
         fireObj.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);

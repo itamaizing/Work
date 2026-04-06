@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Mirror;
 using UnityEngine;
 
 public class ConsumeCombo_Scorpion : Skill
@@ -14,11 +15,15 @@ public class ConsumeCombo_Scorpion : Skill
         return state?.CurrentStacksCount ?? 0;
     });
 
+    private CharacterState _lastCharacterState;
+
     protected override bool IsCanCast => true;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
     private bool isConsumeCombo_ScorpionPhysicStateClear;
+    
+    private float _clickRadius = 0.5f;
 
     public void ApplyComboEffect(Transform enemy)
     {
@@ -36,6 +41,19 @@ public class ConsumeCombo_Scorpion : Skill
         {
             if (!_comboTargetsQueue.Contains(targetCharacter))
                 _comboTargetsQueue.Add(targetCharacter);
+        }
+
+        if (_lastCharacterState != null)
+        {
+            if (_lastCharacterState != stateManager)
+            {
+                _lastCharacterState.RemoveState(States.ComboState);
+                _lastCharacterState = stateManager;
+            }
+        }
+        else
+        {
+            _lastCharacterState = stateManager;
         }
 
         stateManager.AddState(States.ComboState, float.PositiveInfinity, 0f, _hero.gameObject, nameof(ConsumeCombo_Scorpion));
@@ -125,9 +143,9 @@ public class ConsumeCombo_Scorpion : Skill
         isConsumeCombo_ScorpionPhysicStateClear = value;
     }
 
-    public void TryConsumeComboAroundSelf()
+    private void TryConsumeComboAroundSelf()
     {
-        if (!isConsumeCombo_ScorpionPhysicStateClear || !isServer) return;
+        if (!isConsumeCombo_ScorpionPhysicStateClear) return;
 
         List<Character> targetsInRadius = Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.Layer)
             .Select(c => c.GetComponent<Character>())
@@ -138,25 +156,62 @@ public class ConsumeCombo_Scorpion : Skill
         {
             var state = target.CharacterState.GetState(States.ComboState) as ComboState;
             if (state == null || state.CurrentStacksCount <= 0) continue;
-
-            bool reduced = state.Stack(-1);
-            if (reduced)
+            if (isConsumeCombo_ScorpionPhysicStateClear)
             {
-                if (isConsumeCombo_ScorpionPhysicStateClear)
-                {
-                    _hero.CharacterState.DispelStates(StateType.Physical, true, true);
-                }
-
-                if (state.CurrentStacksCount <= 0)
-                {
-                    target.CharacterState.RemoveState(state);
-                }
+                if (isServer)
+                    _hero.CharacterState.DispelStates(StateType.Physical, false, true);
             }
+
+            state.ReduceStack();
         }
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved) => null;
-    protected override IEnumerator CastJob() => null;
+    [Command]
+    private void CmdDispelPhysState()
+    {
+        TryConsumeComboAroundSelf();
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    {
+        while (Targeting.GetTempTarget()?.Character == null)
+        {
+            if (GetMouseButton)
+            {
+                Vector3 clickPoint = Targeting.GetMousePoint();
+
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
+
+                if (Targeting.GetTempTarget()?.Character)
+                {
+                    if (Targeting.GetTempTarget()?.Character != null && Targeting.GetTempTarget()?.Character != Hero)
+                    {
+                        Targeting.ClearTempTarget();
+                    }
+                }
+            }
+
+            yield return null;
+        }
+
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+        callbackDataSaved(targetInfo);
+    }
+
+    protected override IEnumerator CastJob()
+    {
+        CmdDispelPhysState();
+        TryConsumeComboAroundSelf();
+        yield return null;
+    }
+
     protected override void ClearData() { }
-    public override void LoadTargetData(TargetInfo targetInfo) => throw new NotImplementedException();
-}
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        if (targetInfo.GetTargets().Count > 0)
+            Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+    }
+}

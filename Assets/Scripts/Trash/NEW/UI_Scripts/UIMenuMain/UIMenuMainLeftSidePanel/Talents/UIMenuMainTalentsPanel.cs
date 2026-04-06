@@ -80,7 +80,7 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
 
         if (_talentSystem.Points >= 0)
         {
-            _talantsText.gameObject.SetActive(true);
+            //_talantsText.gameObject.SetActive(true);
 
             if (!_isMainMenu) _talantsText.ChangeKey(_talentSystem.Points);
             else

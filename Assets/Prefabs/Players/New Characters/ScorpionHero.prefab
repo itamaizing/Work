@@ -5424,9 +5424,9 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 3
+    _faction: 6
+    _unitType: 5
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -5454,7 +5454,7 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 0
+    _radius: 10
     _area: 0
     _castLength: 0
     _castWidth: 0
