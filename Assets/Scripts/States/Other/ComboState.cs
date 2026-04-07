@@ -48,10 +48,9 @@ public class ComboState : RefreshingState
     {
         currentStacksCount--;
 
-        Debug.LogError(currentStacksCount);
-        
         if (currentStacksCount <= 0)
         {
+            characterState.StateIcons.RemoveItemByState(State);
             ExitState();
         }
         else

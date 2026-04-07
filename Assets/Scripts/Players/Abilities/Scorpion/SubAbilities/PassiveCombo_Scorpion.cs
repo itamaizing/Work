@@ -208,7 +208,7 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
             Debug.Log("ChainBlade Effect");
         }
 
-        enemy.GetComponent<CharacterState>()?.AddState(States.ScorchedSoul, 6f, 100f, _hero.gameObject, nameof(PassiveCombo_Scorpion));
+        //enemy.GetComponent<CharacterState>()?.AddState(States.ScorchedSoul, 6f, 100f, _hero.gameObject, nameof(PassiveCombo_Scorpion));
     }
 
     private void ApplyComboState(Character enemy)
@@ -222,8 +222,6 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
 
         Debug.Log("Применение состояния ComboState к цели");
         consumeCombo.ApplyComboEffect(enemy.transform);
-
-
     }
 
     public bool IsFinalComboSkill(Character target, Skill skill)

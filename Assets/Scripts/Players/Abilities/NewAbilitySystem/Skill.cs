@@ -558,7 +558,7 @@ public abstract class Skill : NetworkBehaviour
 
     public bool IsCanCancel { get => _isCanCancel; set => _isCanCancel = value; }
     public bool IsTalentSpell => _isTalentSpell;
-    public bool IsSkillActive
+    public virtual bool IsSkillActive
     {
         get => _isSkillActive;
         set => _isSkillActive = value;

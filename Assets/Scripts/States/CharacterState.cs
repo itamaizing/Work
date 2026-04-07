@@ -104,7 +104,9 @@ public abstract class AbstractCharacterState
 
 	public virtual void ReduceStack()
 	{
-        ExitState();
+		currentStacksCount--;
+		if (currentStacksCount <= 0)
+			ExitState();
     }
 
 	protected virtual bool CanEnterState(CharacterState character)
@@ -758,8 +760,9 @@ public class CharacterState : NetworkBehaviour
 		}
 	}
 
-	public void DispelStates(StateType type, bool isAlly, bool isDispelOneState = false)
+	public void DispelStates(StateType type, bool isAlly, out int howMuchDispelled ,bool isDispelOneState = false)
 	{
+		howMuchDispelled = 0;
 		if (_currentStates.Count == 0) return;
 
 		List<AbstractCharacterState> statesToRemove = new List<AbstractCharacterState>();
@@ -774,21 +777,30 @@ public class CharacterState : NetworkBehaviour
 			{
 				if (state.CurrentStacksCount > 1)
 				{
-					//state.currentStacksCount--;
-					ClientRpcRemoveIconCount();
+					state.ReduceStack();
+					
+					if (isServer)
+						ClientRpcRemoveIconCount();
+					else
+						_stateIcons?.RemoveIconCount();
+
+					if (state.CurrentStacksCount <= 0)
+					{
+						statesToRemove.Add(state);
+					}
 				}
 				else
 				{
 					statesToRemove.Add(state);
-					if (isDispelOneState) break;
 				}
 			}
 		}
 
 		foreach (var state in statesToRemove)
 		{
-			RemoveState(state.State);
+			howMuchDispelled++;
 			_stateIcons.RemoveItemByState(state.State);
+			RemoveState(state.State);
 		}
 	}
 

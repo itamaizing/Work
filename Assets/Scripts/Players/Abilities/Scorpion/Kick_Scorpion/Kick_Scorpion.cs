@@ -2,6 +2,7 @@
 using UnityEngine;
 using Mirror;
 using System;
+using Random = UnityEngine.Random;
 
 public class Kick_Scorpion : Skill
 {
@@ -18,8 +19,9 @@ public class Kick_Scorpion : Skill
     private bool _isKick_ScorpionRowBonusTalent;
 
     [Header("Internal State")]
-    [SerializeField] [Range(0f, 1f)] private float _baseDebuffChance = 0.3f;
-    [SerializeField] [ReadOnly] private byte _hitsInRow = 1;
+    private byte _kickHitsInRow = 0;
+    private const float BaseKnockdownChance = 0.30f;
+    private const float KnockDownPerHit = 0.20f;
 
     private Coroutine _hitsInRowCoroutine;
     private Character _lastTarget = null;
@@ -100,11 +102,6 @@ public class Kick_Scorpion : Skill
         Hero.Move.StopLookAt();
     }
 
-    private bool IsTargetInRange()
-    {
-        return Vector3.Distance(_playerLinks.transform.position, Targeting.GetTarget().Character.transform.position) <= AreaInfo.Radius;
-    }
-
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         _wasDamageApplied = false;
@@ -140,7 +137,7 @@ public class Kick_Scorpion : Skill
     protected override IEnumerator CastJob()
     {
         if (Targeting.GetTarget() == null) yield return null;
-        if (!IsTargetInRange()) yield return null;
+        if (!IsCanCast) yield return null;
 
         if (_lastTarget != null && _lastTarget != Targeting.GetTarget()?.Character as Character) _comboCounter.ResetCounter();
 
@@ -178,7 +175,7 @@ public class Kick_Scorpion : Skill
     private IEnumerator HitsInRowTimer()
     {
         yield return _waitForHitsInRowTimer;
-        _hitsInRow = 1;
+        _kickHitsInRow = 0;
         _hitsInRowCoroutine = null;
     }
 
@@ -192,39 +189,29 @@ public class Kick_Scorpion : Skill
         _hitsInRowCoroutine = StartCoroutine(HitsInRowTimer());
 
         var state = target.GetComponent<CharacterState>();
-        float chance = 0f;
+
+        if (_scorpionPassive.IsAddStateUpdateChance)
+        {
+            if (state.CheckForState(States.DisappointmentState)) 
+                state?.AddState(States.Knockdown, KnockdownDurationDefault, 0, _hero.gameObject, name);
+        }
 
         if (_isKick_ScorpionRowTalent)
         {
-            if (_scorpionPassive.IsAddStateUpdateChance)
+            _kickHitsInRow++;
+
+            float chance = BaseKnockdownChance + (_kickHitsInRow * KnockDownPerHit);
+
+            if (Random.value <= chance)
             {
-                if (state.CheckForState(States.DisappointmentState)) state?.AddState(States.Knockdown, KnockdownDurationDefault, 0, _hero.gameObject, name);
-            }
-
-            else
-            {
-                if (_isKick_ScorpionRowBonusTalent)
-                {
-                    chance = _baseDebuffChance * Mathf.Pow(2, _hitsInRow - 1);
-
-                    if (UnityEngine.Random.value <= Mathf.Clamp01(chance))
-                    {
-                        state?.AddState(States.Knockdown, KnockdownDurationDefault, 0, _hero.gameObject, name);
-                        _hitsInRow = 1;
-                    }
-
-                    else _hitsInRow = (byte)Mathf.Min(_hitsInRow + 1, MaxHitsInRow);
-                }
-
-                else
-                {
-                    chance = _baseDebuffChance;
-                    if (UnityEngine.Random.value <= Mathf.Clamp01(chance)) state?.AddState(States.Knockdown, KnockdownDurationDefault, 0, _hero.gameObject, name);
-                }
+                target.CharacterState?.AddState(States.Knockdown, KnockdownDurationDefault, 0, _hero.gameObject, name);
+                _kickHitsInRow = 0;
             }
         }
-
-        else _hitsInRow = 1;
+        else
+        {
+            _kickHitsInRow = 0;
+        }
 
         if (_isKick_ScorpionComboTalent && state != null)
         {

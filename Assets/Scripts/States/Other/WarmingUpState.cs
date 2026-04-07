@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class WarmingUpState : AbstractCharacterState
+public class WarmingUpState : RefreshingState
 {
-	private const float BonusPerStack = 1f;
+	private const float BonusPerStack = 0.1f;
 
 	public AbilityForm canceledForm;
 	public bool canCancel = false;
@@ -21,7 +21,7 @@ public class WarmingUpState : AbstractCharacterState
 	public WarmingUpState()
 	{
 		MaxStacksCount = 3;
-		currentStacksCount = 1;
+		currentStacksCount = 0;
 	}
 
 
@@ -46,6 +46,7 @@ public class WarmingUpState : AbstractCharacterState
 			Debug.LogWarning($"[WarmingUpState] Character {character.name} doesn't have abilities.");
 		}
 
+		characterState = character;
 		currentStacksCount = 1;
 	}
 
@@ -59,8 +60,6 @@ public class WarmingUpState : AbstractCharacterState
 
 	public override void ExitState()
 	{
-		characterState.RemoveState(this);
-
 		foreach (var skill in _affectedSkills)
 		{
 			if (skill != null)
@@ -74,7 +73,9 @@ public class WarmingUpState : AbstractCharacterState
 			abilities.SwitchAvaliable(canceledForm, true);
 		}
 
-		currentStacksCount = 1;
+		currentStacksCount = 0;
+		
+		characterState.RemoveState(this);
 	}
 
 	public override bool Stack(float time)
@@ -95,5 +96,17 @@ public class WarmingUpState : AbstractCharacterState
 		}
 
 		return true;
+	}
+	
+	public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	{
+		if (!CanEnterState(character)) return null;
+
+		if (currentStacksCount == 0)
+			EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+		else
+			Stack(duration);
+
+		return this;
 	}
 }

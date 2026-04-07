@@ -55,9 +55,13 @@ public class NewPunch_Scorpion : Skill
 
     [Header("WarmingUp  talent")]
     [SerializeField] private float warmingUpDuration;
-    private bool _isWarningUpAddState = false;
+    private bool _isWarningUpAddState;
 
-    public void WarningUpAddState(bool value) => _isWarningUpAddState = value;
+    public void WarningUpAddState(bool value)
+    {
+        _isWarningUpAddState = value;
+    }
+
     #endregion
 
     private bool IsTargetInRange() { return Targeting.GetTarget() != null && Vector3.Distance(_playerLinks.transform.position, Targeting.GetTarget().Transform.position) <= AreaInfo.Radius; }
