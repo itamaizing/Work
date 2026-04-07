@@ -14694,9 +14694,9 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
-    _clickLayer: 3
-    _faction: 0
+    type: 2
+    _clickLayer: 2
+    _faction: 4
     _unitType: -1
     _outOfRangeBehaviour: 1
   _targetsLayers:
@@ -14804,9 +14804,9 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 1
+    _faction: 3
+    _unitType: 1
     _outOfRangeBehaviour: 1
   _targetsLayers:
     serializedVersion: 2
@@ -14995,14 +14995,14 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
+    _skillType: 3
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
+    type: 3
     _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _faction: 4
+    _unitType: 5
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -15103,7 +15103,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
+    type: 2
     _clickLayer: 2
     _faction: 0
     _unitType: 0
@@ -15195,7 +15195,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
+    type: 2
     _clickLayer: 2
     _faction: 0
     _unitType: 0
@@ -15498,7 +15498,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
+    type: 3
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -15707,9 +15707,9 @@ MonoBehaviour:
     _autoAttack: 1
   _targetingComponent:
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: 1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -15808,10 +15808,10 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    type: 2
+    _clickLayer: 2
+    _faction: 4
+    _unitType: 5
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -15899,7 +15899,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
+    type: 2
     _clickLayer: 2
     _faction: 4
     _unitType: 5

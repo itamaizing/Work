@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mirror;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,6 +25,10 @@ public class CastBarComponent : BaseSkillComponent
     #endregion
 
     #region Methods
+    public override void Init(Skill skill)
+    {
+        base.Init(skill);
+    }
 
     #endregion
 }

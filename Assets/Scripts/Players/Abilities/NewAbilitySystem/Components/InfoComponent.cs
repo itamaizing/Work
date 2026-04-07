@@ -18,7 +18,6 @@ public enum Schools
 
 public enum AbilityForm
 {
-    Spell,
     Magic,
     Physical,
     Both,

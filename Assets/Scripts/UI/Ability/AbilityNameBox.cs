@@ -36,9 +36,9 @@ public class AbilityNameBox : MonoBehaviour
 
             switch (skill.Info.AbilityForm)
             {
-                case AbilityForm.Spell:
-                    _descriptionWithNumbers.text += $" заклинание {GetSchoolName(skill)}";
-                    break;
+                //case AbilityForm.Spell:
+                //    _descriptionWithNumbers.text += $" заклинание {GetSchoolName(skill)}";
+                //    break;
 
                 case AbilityForm.Magic:
                     _descriptionWithNumbers.text += $" магия {GetSchoolName(skill)}";
@@ -138,9 +138,9 @@ public class AbilityNameBox : MonoBehaviour
             case AbilityForm.Physical:
                 _descriptionWithNumbers.text += " физика";
                 break;
-            case AbilityForm.Spell:
-                _descriptionWithNumbers.text += " заклинания";
-                break;
+            //case AbilityForm.Spell:
+            //    _descriptionWithNumbers.text += " заклинания";
+            //    break;
             default:
                 break;
         }

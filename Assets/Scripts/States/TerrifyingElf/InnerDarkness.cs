@@ -35,7 +35,7 @@ public class InnerDarkness : AbstractCharacterState
             foreach (Skill skill in caster.Abilities)
             {
                 bool isDark = skill.Info.School == Schools.Dark;
-                bool isSpellish = skill.Info.AbilityForm == AbilityForm.Magic || skill.Info.AbilityForm == AbilityForm.Spell || skill.Info.AbilityForm == AbilityForm.Both;
+                bool isSpellish = skill.Info.AbilityForm == AbilityForm.Magic || skill.Info.AbilityForm == AbilityForm.Both;
 
                 if (isDark && isSpellish && !skill.IsCooldowned)
                 {
