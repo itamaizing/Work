@@ -57,7 +57,7 @@ public class IceCloudProjectile : Projectiles
 
 		if (!collision.TryGetComponent<Character>(out var target)) return;
 
-		if (target.CharacterState.CheckForState(States.ReflectiveScales))
+		if (target.CharacterState.CheckForState(States.ReflectiveScales) &&	_damage.Type == DamageType.Magical)
 		{
 			if (_isReflected) return;
 

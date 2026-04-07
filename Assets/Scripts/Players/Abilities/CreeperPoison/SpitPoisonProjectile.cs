@@ -69,7 +69,7 @@ public class SpitPoisonProjectile : Test_Projectile
     {
         if (!collision.TryGetComponent<Character>(out var targetHealth)) return;
 
-        if (targetHealth.CharacterState.CheckForState(States.ReflectiveScales))
+        if (targetHealth.CharacterState.CheckForState(States.ReflectiveScales) && _skill.Info.DamageType == DamageType.Magical)
         {
             if (_isReflected) return;
 

@@ -18807,7 +18807,7 @@ PrefabInstance:
       objectReference: {fileID: 3623982303959407510}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.size
-      value: 3
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.size
@@ -18829,6 +18829,22 @@ PrefabInstance:
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[2]'
       value: 
       objectReference: {fileID: 3199921141022633158}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[3]'
+      value: 
+      objectReference: {fileID: 8301483179927327488}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[4]'
+      value: 
+      objectReference: {fileID: 8408601315978840956}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[5]'
+      value: 
+      objectReference: {fileID: 885336317892172373}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[6]'
+      value: 
+      objectReference: {fileID: 2808444879270764260}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[0]'
       value: 
@@ -21858,7 +21874,7 @@ MonoBehaviour:
   character: {fileID: 4534754468497973439}
   reconnaissanceFire: {fileID: 2750012758126725032}
   terrifyingElfAura: {fileID: 6686568037796463366}
-  groundTrap: {fileID: 0}
+  groundTrap: {fileID: 8199207747846444516}
 --- !u!114 &885336317892172373
 MonoBehaviour:
   m_ObjectHideFlags: 0

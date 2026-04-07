@@ -138,7 +138,7 @@ public class ArrowProjectile : Projectiles
         if (!other.TryGetComponent<Character>(out var target))
             return;
 
-        if (target.CharacterState.CheckForState(States.ReflectiveScales))
+        if (target.CharacterState.CheckForState(States.ReflectiveScales) && _arrowDark)
         {
             if (_isReflected) return;
 

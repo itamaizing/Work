@@ -1182,14 +1182,48 @@ public abstract class Skill : NetworkBehaviour
         _prepareCoroutine = null;
     }
 
+    private void CancelCastEarly()
+    {
+        _isCasting = false;
+        _isPlayCastAnim = false;
+
+        _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
+        _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+
+        _hero.Move.StopLookAt();
+        _hero.Move.SetCanMove(true);
+
+        ClearData();
+
+        CastEnded?.Invoke();
+        OnSkillCanceled?.Invoke();
+        Canceled?.Invoke();
+
+        Hero.UIComponent.Miss();
+    }
+
     private IEnumerator ActionWrapperForCastingJob()
     {
+        if (_forceFailCastEarly)
+        {
+            _forceFailCastEarly = false;
+            CancelCastEarly();
+            yield break;
+        }
+
         Hero.Abilities.NotifySkillPrepared(this);
         CastStarted?.Invoke();
         _isCasting = true;
 
         if (CastDeley > 0)
             yield return StartCastDeleyCoroutine();
+
+        if (_forceFailCastEarly)
+        {
+            _forceFailCastEarly = false;
+            CancelCastEarly();
+            yield break;
+        }
 
         if (AnimTriggerCast != 0)
         {
@@ -1248,6 +1282,13 @@ public abstract class Skill : NetworkBehaviour
 
         else
         {
+            if (_forceFailCastEarly)
+            {
+                _forceFailCastEarly = false;
+                CancelCastEarly();
+                yield break;
+            }
+
             _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
             _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
 
