@@ -58,7 +58,7 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
         _talent = talent;
         
         activeState.isActive = _talent.IsOpen;
-        _lvlText.text = talent.Level.ToString();
+        _lvlText.text = (talent.Level + 1).ToString();
         _lvlText.gameObject.SetActive(_talent.IsOpen);
         if (_talent.IsOpen == false)
             _frameImage.sprite = _iconState.Off;
@@ -72,16 +72,22 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
         {
             if (_talent.Level < _talent.MaxLvl)
             {
-                Selected?.Invoke(_talent, _talent.IsOpen, _talent.Level + 1);
                 _lvlText.text = (_talent.Level + 1).ToString();
+                Selected?.Invoke(_talent, _talent.IsOpen, _talent.Level+1);
                 _lvlText.gameObject.SetActive(true);
+            }
+            else
+            {
+                Selected?.Invoke(_talent, !_talent.IsOpen, 0);
+                _lvlText.text = "0";
+                _lvlText.gameObject.SetActive(false);
             }
         }
         else
         {
-            Selected?.Invoke(_talent, !_talent.IsOpen, 0);
-            _lvlText.text = "0";
-            _lvlText.gameObject.SetActive(false);
+            Selected?.Invoke(_talent, !_talent.IsOpen, 1);
+            _lvlText.text = "1";
+            _lvlText.gameObject.SetActive(true);
         }
         activeState.isActive = _talent.IsOpen;
     }

@@ -5102,8 +5102,8 @@ MonoBehaviour:
   OpenCondition:
     rid: 5663947266393374855
   character: {fileID: 4374618947117916461}
-  _iceRolling: {fileID: 0}
-  _manager: {fileID: 0}
+  _iceRolling: {fileID: 8918194537379249446}
+  _manager: {fileID: 4220410774128686972}
   references:
     version: 2
     RefIds:
