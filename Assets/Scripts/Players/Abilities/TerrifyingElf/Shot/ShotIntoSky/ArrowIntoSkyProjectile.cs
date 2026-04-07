@@ -143,7 +143,17 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
     private void ApplyDamageEnemy(Collider other)
     {
         float damageToDeal = UnityEngine.Random.Range(minDamage, maxDamage + 1);
-        if (Random.value * 100f < criticalChance) damageToDeal *= criticalMultiplier;
+
+        float distance = Vector3.Distance(_character.transform.position, other.transform.position);
+        float distanceMultiplier = 1f + (distance * 0.05f);
+
+        damageToDeal *= distanceMultiplier;
+
+        if (Random.value * 100f < criticalChance)
+        {
+            float critMultiplier = Random.Range(1.6f, 2.4f);
+            damageToDeal *= critMultiplier;
+        }
 
         bool isElvenSkill = _dad != null && _dad.CharacterState.GetState(States.ElvenSkill) != null;
 
@@ -158,7 +168,6 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
             }
         }
 
-        if (Random.value * 100f < criticalChance) damageToDeal *= criticalMultiplier;
         if (other.TryGetComponent<IDamageable>(out var damageTarget)) ApplyDamage(damageToDeal, DamageType.Physical, damageTarget);
 
         _skill.Damage = damageToDeal;

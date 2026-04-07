@@ -1260,7 +1260,7 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
-  _gameRules: {fileID: 2624942693930062612, guid: 9c3ab8f1c5352c34ea72aeec43bb21be, type: 3}
+  _gameRules: {fileID: 669276037884193687, guid: 51af385f54fff2443b84b5bdc9b030ad, type: 3}
 --- !u!114 &452850708
 MonoBehaviour:
   m_ObjectHideFlags: 0

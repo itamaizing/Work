@@ -197,7 +197,6 @@ public class ShotIntoSky : Skill
         if (!impactPrefab) return;
 
         ArrowIntoSkyProjectile impact = Instantiate(impactPrefab, position, Quaternion.identity);
-        SceneManager.MoveGameObjectToScene(impact.gameObject, _hero.NetworkSettings.MyRoom);
         impact.Init(playerLinks, this, damage, silenceTalentActive, lastStreamTalent, shotAstralManaActive);
         NetworkServer.Spawn(impact.gameObject);
 
