@@ -173,6 +173,8 @@ public class Shot : Skill
         ShotAnimationMove();
         ProcessGhostCooldownReduction();
 
+        HandleThirdShotRowOnCast();
+
         if (Targeting.GetTarget() != null && Targeting.GetTarget() is IDamageable damageable) CmdCreateProjectileAtTarget(damageable.gameObject, Damage);
         else CmdCreateProjectileAtPosition(_targetPoint, Damage);
 
@@ -202,6 +204,18 @@ public class Shot : Skill
             Hero.Move.StopLookAt();
             AnimCastEnded();
         }
+    }
+
+    private void HandleThirdShotRowOnCast()
+    {
+        if (_terrifyingElfAura == null) return;
+        if (!_terrifyingElfAura.IsThirdShotRowActive) return;
+
+        var targetData = Targeting.GetTarget();
+
+        if (targetData == null || targetData.Character == null) return;
+
+        _terrifyingElfAura.ProcessShot(targetData.Character);
     }
 
     private Vector3 GetMousePoint(LayerMask mask)

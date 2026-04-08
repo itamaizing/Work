@@ -46,6 +46,8 @@ public class TerrifyingElfAura : NetworkBehaviour
     private bool _isElvenSkillPhysDamageHealthChance;
     private bool _isThirdShotRow;
 
+    public bool IsThirdShotRowActive => _isThirdShotRow;
+
     public void ThirdShotRow(bool value) => _isThirdShotRow = value;
 
     #endregion
@@ -244,28 +246,22 @@ public class TerrifyingElfAura : NetworkBehaviour
 
             if (manaAbsorptionPhysicalTalent) OnDamageDealt(damage, target);
         }
-
-        HandleThirdShotRow(damage, target);
     }
 
-    private void HandleThirdShotRow(Damage damage, GameObject target)
+    public void ProcessShot(Character target)
     {
         if (!_isThirdShotRow) return;
-        if (damage.SourceSkill == null) return;
+        if (target == null) return;
 
-        if (damage.SourceSkill is not Shot) return;
-
-        if (target == null || !target.TryGetComponent(out Character targetCharacter)) return;
-
-        if (_lastTarget != targetCharacter)
+        if (_lastTarget != target)
         {
-            _lastTarget = targetCharacter;
+            _lastTarget = target;
             _shotCounter = 0;
         }
 
         _shotCounter++;
 
-        if (_shotCounter == 3)
+        if (_shotCounter >= 3)
         {
             _shotCounter = 0;
             ReduceCooldowns();
