@@ -31,6 +31,18 @@ public class GroundTrap : Skill
 
     private float baseHealth = 23;
 
+    private float _baseCastDelay;
+    private Coroutine _boostWindow;
+    private WaitForSeconds _boostDuration = new WaitForSeconds(2f);
+
+    #region Talent
+
+    private bool _isSkillEnableBoostLogicActiveTalent;
+
+    public void SkillEnableBoostLogicActiveTalent(bool value) => _isSkillEnableBoostLogicActiveTalent = value;
+
+    #endregion
+
     protected override bool IsCanCast
     {
         get
@@ -60,7 +72,15 @@ public class GroundTrap : Skill
     protected override int AnimTriggerCast => 0;
 
     private void OnDestroy() => OnSkillCanceled -= HandleSkillCanceled;
-    private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
+
+    private void OnEnable()
+    {
+        _baseCastDelay = CastDeley;
+        OnSkillCanceled += HandleSkillCanceled;
+    }
+
+    protected override void SkillEnableBoostLogic() => CastDeley = 0;
+    protected override void SkillDisableBoostLogic() => CastDeley = _baseCastDelay;
 
     public void AnimationTrapMove()
     {
@@ -68,6 +88,14 @@ public class GroundTrap : Skill
 
         Hero.Move.SetCanMove(false);
         Hero.Move.StopMoveAndAnimationMove();
+    }
+
+    public void TryStartBoost()
+    {
+        if (!_isSkillEnableBoostLogicActiveTalent) return;
+        if (_boostWindow != null) StopCoroutine(_boostWindow);
+
+        _boostWindow = StartCoroutine(BoostWindow());
     }
 
     private void QueueCurrentPreview()
@@ -147,6 +175,13 @@ public class GroundTrap : Skill
     {
         groundData.MaxHealth = baseHealth;
         CmdSetGorundBaseHealth();
+    }
+
+    private IEnumerator BoostWindow()
+    {
+        EnableSkillBoost();
+        yield return _boostDuration;
+        DisableSkillBoost();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)

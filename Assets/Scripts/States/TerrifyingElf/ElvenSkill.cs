@@ -50,8 +50,10 @@ public class ElvenSkill : StackableState
                 else
                     skill.CastStarted += NotPhysCastStarted;
 
-                if (skill is ReconnaissanceFire reconnaissanceFire)
-                    reconnaissanceFire.TryStartElvenBoostWindow();
+                if (skill is ReconnaissanceFire reconnaissanceFire) reconnaissanceFire.TryStartElvenBoostWindow();
+                if (skill is ShotIntoSky shotIntoSky) shotIntoSky.TryStartBoost();
+                if (skill is ShotsIntoSky shotsIntoSky) shotsIntoSky.TryStartBoost();
+                if (skill is GroundTrap groundTrap) groundTrap.TryStartBoost();
             }
         }
 
