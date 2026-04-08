@@ -31,6 +31,11 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     [SerializeField] private ConsumeCombo_Scorpion _consumeCombo_Scorpion;
     [SerializeField] private ScorpionPassive _scorpionPassive;
 
+    #region FireImpulse Talent
+    private ImpulseFireTalentBooster _impulseFireBooster;
+    public ImpulseFireTalentBooster ImpulseFireBooster => _impulseFireBooster;
+    #endregion
+    
     [field: Header("Test Combo_Upgrade")]
 
     [field: SerializeField]
@@ -50,7 +55,6 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
             {
                 float distance = Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position);
                 int manaCost = GetCurrentManaCost(distance);
-                _skillEnergyCosts[0].resourceCost = manaCost;
                 return distance <= AreaInfo.Radius && mana.CurrentValue >= manaCost;
 
             }
@@ -81,6 +85,11 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
     //    return distance <= AreaInfo.Radius;
     //}
+
+    private void OnEnable()
+    {
+        _impulseFireBooster = new ImpulseFireTalentBooster(this);
+    }
 
     private Vector3 FindPlace(Character target)
     {
@@ -167,7 +176,14 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     private int GetCurrentManaCost(float distance)
     {
         int dist = Mathf.CeilToInt(distance);
-        return _baseManaCost + dist * _manaCostPerTile;
+        int baseCost = _baseManaCost + dist * _manaCostPerTile;
+
+        if (Targeting.GetTarget()?.Character != null)
+        {
+            baseCost = _impulseFireBooster.ApplyTeleportDiscount(baseCost, Targeting.GetTarget().Character);
+        }
+
+        return baseCost;
     }
     //public void TryUpgradeByConsumingCombo(int amount)
     //{
@@ -199,7 +215,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
                 if (Targeting.GetTempTarget()?.Character != null)
                 {
-                    if (IsAllyTarget(Targeting.GetTempTarget()?.Character) || Targeting.GetTempTarget()?.Character == Hero) Targeting.ClearTempTarget();
+                    if (Targeting.GetTempTarget()?.Character == Hero) Targeting.ClearTempTarget();
 
                     else
                     {
@@ -211,15 +227,6 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
                             continue;
                         }
 
-                        int manaCost = GetCurrentManaCost(dist);
-                        var mana = _hero.Resources[ResourceType.Energy];
-                        if (mana == null || mana.CurrentValue < manaCost)
-                        {
-                            Debug.Log("[Teleportation] Недостаточно маны");
-                            continue;
-                        }
-
-                        _skillEnergyCosts[0].resourceCost = manaCost;
                         break;
                     }
                 }         
@@ -227,8 +234,16 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
             yield return null;
         }
-
+        
         Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
+        
+        float distance = Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position);
+        int manaToSpend = GetCurrentManaCost(distance);
+
+        if (manaToSpend > _hero.Resources[ResourceType.Energy].CurrentValue)
+            yield break;
+
+        _skillEnergyCosts[0].resourceCost = manaToSpend;
 
         TargetInfo targetInfo = new();
         targetInfo.AddTarget(Targeting.GetTarget()?.Character);
@@ -238,24 +253,6 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     protected override IEnumerator CastJob()
     {
         if (Targeting.GetTarget()?.Character == null) yield return null;
-
-        float distance = Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position);
-        int manaToSpend = GetCurrentManaCost(distance);
-
-        List<SkillEnergyCost> tempCosts = new()
-        {
-            new SkillEnergyCost
-            {
-                resourceType = _skillEnergyCosts[0].resourceType,
-                resourceCost = manaToSpend
-            }
-        };
-
-        if (!TryPayCost(tempCosts))
-        {
-            Debug.LogWarning("[Teleportation_Scorpion] Not enough mana!");
-            yield break;
-        }
 
         Vector3 tpPos = FindPlace(Targeting.GetTarget()?.Character);
         CmdTeleport(tpPos);
@@ -276,6 +273,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
             passive?.ActivateEnergyFreeAfterTeleport();
         }
 
+        _skillEnergyCosts[0].resourceCost = _baseManaCost;
         yield return null;
     }
 

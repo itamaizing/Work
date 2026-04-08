@@ -9,12 +9,6 @@ public class ConsumeCombo_Scorpion : Skill
 {
     private List<Character> _comboTargetsQueue = new List<Character>();
 
-    public int AvailablePoints => _comboTargetsQueue.Sum(target =>
-    {
-        var state = target.CharacterState.GetState(States.ComboState) as ComboState;
-        return state?.CurrentStacksCount ?? 0;
-    });
-
     private CharacterState _lastCharacterState;
 
     protected override bool IsCanCast => true;
@@ -23,12 +17,25 @@ public class ConsumeCombo_Scorpion : Skill
 
     private bool isConsumeCombo_ScorpionPhysicStateClear;
     private bool _canCastUnderPhysicalDisable = false;
+    
     #region 3% heal per dispelled physical effect
-    private bool _healOnDispelActive;
+    private ConsumeComboHealOnDispelBooster _healOnDispelBooster;
+    public ConsumeComboHealOnDispelBooster HealOnDispelBooster => _healOnDispelBooster;
     #endregion
-
+    
+    #region 5% energy per dispelled physical effect
+    private ConsumeComboEnergyOnDispelBooster _energyOnDispelBooster;
+    public ConsumeComboEnergyOnDispelBooster EnergyOnDispelBooster => _energyOnDispelBooster;
+    #endregion
+    
     private float _clickRadius = 0.5f;
 
+    private void OnEnable()
+    {
+        _healOnDispelBooster = new ConsumeComboHealOnDispelBooster(this);
+        _energyOnDispelBooster = new ConsumeComboEnergyOnDispelBooster(this);
+    }
+    
     public void ApplyComboEffect(Transform enemy)
     {
         if (enemy == null) return;
@@ -71,44 +78,6 @@ public class ConsumeCombo_Scorpion : Skill
         _canCastUnderPhysicalDisable = value;
     }
     
-    public void SetHealOnDispelActive(bool value)
-    {
-        _healOnDispelActive = value;
-    }
-    
-    private void StartDispelHeal()
-    {
-        if (!_healOnDispelActive) return;
-        StartCoroutine(DispelHealCoroutine());
-    }
-    
-    private IEnumerator DispelHealCoroutine()
-    {
-        const float duration = 9f;
-        const float tickInterval = 3f;
-        const float healPercentPerEffect = 0.03f;
-
-        float elapsed = 0f;
-
-        while (elapsed < duration)
-        {
-            yield return new WaitForSeconds(tickInterval);
-            elapsed += tickInterval;
-
-            float healThisTick = _hero.Health.MaxValue * (healPercentPerEffect / 3f);
-
-            Heal heal = new Heal
-            {
-                Value = healThisTick,
-                DamageableSkill = null
-            };
-            
-            ApplyHeal(heal,_hero.Health.gameObject,this,nameof(ConsumeCombo_Scorpion));
-        }
-
-        yield return null;
-    }
-
     private void TryConsumeComboAroundSelf()
     {
         if (!isConsumeCombo_ScorpionPhysicStateClear) return;
@@ -118,11 +87,11 @@ public class ConsumeCombo_Scorpion : Skill
             .Where(c => c != null && c != Hero && c.CharacterState.CheckForState(States.ComboState))
             .Select(c => c.gameObject).ToList();
 
-        CmdDispelPhysState(targetsInRadius);
+        CmdDispelPhysState(targetsInRadius,_healOnDispelBooster.Enabled,_energyOnDispelBooster.Enabled);
     }
 
     [Command]
-    private void CmdDispelPhysState(List<GameObject> targetsInRadius)
+    private void CmdDispelPhysState(List<GameObject> targetsInRadius,bool healOnDispelEnabled,bool energyOnDispelEnabled)
     {
         foreach (var target in targetsInRadius)
         {
@@ -133,7 +102,10 @@ public class ConsumeCombo_Scorpion : Skill
                 _hero.CharacterState.DispelStates(StateType.Physical, true, out int howMuchDispelled, true);
                 if (howMuchDispelled > 0)
                 {
-                    StartDispelHeal();
+                    if(healOnDispelEnabled)
+                        _healOnDispelBooster?.ApplyHealForOneEffect();
+                    if(energyOnDispelEnabled)
+                        _energyOnDispelBooster?.ApplyEnergyForOneEffect(); 
                 }
             }
             state.ReduceStack();
@@ -194,5 +166,21 @@ public class ConsumeCombo_Scorpion : Skill
     {
         get => _canCastUnderPhysicalDisable || base.IsSkillActive;
         set => base.IsSkillActive = value;
+    }
+    
+    public override bool Disactive
+    {
+        get => _disactive;
+        set
+        {
+            if (_canCastUnderPhysicalDisable)
+            {
+                _disactive = false;
+            }
+            else if(_disactive != value && !_canCastUnderPhysicalDisable)
+            {
+                _disactive = value;
+            }
+        }
     }
 }

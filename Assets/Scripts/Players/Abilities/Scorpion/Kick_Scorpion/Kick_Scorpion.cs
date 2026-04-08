@@ -4,11 +4,10 @@ using Mirror;
 using System;
 using Random = UnityEngine.Random;
 
-public class Kick_Scorpion : Skill
+public class Kick_Scorpion : Skill, IComboParticipatingSkill
 {
     [Header("Ability settings")]
     [SerializeField] private Character _playerLinks;
-    [SerializeField] private PassiveCombo_Scorpion _comboCounter;
     [SerializeField] private ScorpionPassive _scorpionPassive;
     [SerializeField] [Range(0, 100)] private float _minDamage = 10f;
     [SerializeField] [Range(0, 100)] private float _maxDamage = 15f;
@@ -28,6 +27,8 @@ public class Kick_Scorpion : Skill
     private Animator _animator;
     private bool _wasDamageApplied = false;
     private WaitForSeconds _waitForHitsInRowTimer;
+    
+    public event Action<GameObject, Skill> OnDamaged;
 
     #region Сonst
     private const float HitsInRowResetDelay = 2f;
@@ -138,9 +139,7 @@ public class Kick_Scorpion : Skill
     {
         if (Targeting.GetTarget() == null) yield return null;
         if (!IsCanCast) yield return null;
-
-        if (_lastTarget != null && _lastTarget != Targeting.GetTarget()?.Character as Character) _comboCounter.ResetCounter();
-
+        
         if (_hitsInRowCoroutine != null) StopCoroutine(_hitsInRowCoroutine);
 
         _lastTarget = Targeting.GetTarget()?.Character;
@@ -181,8 +180,8 @@ public class Kick_Scorpion : Skill
 
     private void AttackPassed(Character target)
     {
-        _comboCounter.AddSkill(target, this);
-
+        OnDamaged?.Invoke(target.gameObject,this);
+        
         if (_hitsInRowCoroutine != null)
             StopCoroutine(_hitsInRowCoroutine);
 

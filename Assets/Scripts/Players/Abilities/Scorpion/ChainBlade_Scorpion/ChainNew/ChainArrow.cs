@@ -88,7 +88,6 @@ public class ChainArrow : Projectiles
         if (other.TryGetComponent<Character>(out Character character))
         {
             AttachToTarget(character);
-            AddSkillCombo(character);
             AddState(character);
             ApplyDamage(_damage, DamageType.Physical, character.gameObject);
 
@@ -211,16 +210,6 @@ public class ChainArrow : Projectiles
         };
 
         _skill.ApplyDamage(_damage, target);
-    }
-
-    private void AddSkillCombo(Character character)
-    {
-        if (character == null) return;
-
-        if (_skill is ChainBlade skill)
-        {
-            skill.ComboCounter.AddSkill(character, skill);
-        }
     }
 
     private void AddState(Character character)

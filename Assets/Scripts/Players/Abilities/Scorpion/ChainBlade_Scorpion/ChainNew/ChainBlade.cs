@@ -13,7 +13,7 @@ public static class Vector3Extensions
     }
 }
 
-public class ChainBlade : Skill
+public class ChainBlade : Skill,IComboParticipatingSkill
 {
     [SerializeField] [Range(0, 100)] private float _minDamage = 3f;
     [SerializeField] [Range(0, 100)] private float _maxDamage = 5f;
@@ -28,6 +28,8 @@ public class ChainBlade : Skill
     private ChainArrow _currentChainArrowPrefab;
     private Vector3 _clickPoint = Vector3.positiveInfinity;
     private Animator _animator;
+    
+    public event Action<GameObject, Skill> OnDamaged;
 
     #region Const
     private const float MinDirectionSqrMagnitude = 0.01f;
@@ -226,7 +228,7 @@ public class ChainBlade : Skill
 
         if (_pullCoroutine != null) StopCoroutine(_pullCoroutine);
         _pullCoroutine = StartCoroutine(PullTargetToPlayer(target, pullDuration));
-
+        OnDamaged?.Invoke(target.gameObject, this);
         RpcHandleHitClient(target.netId, pullDuration);
     }
 
@@ -312,4 +314,6 @@ public class ChainBlade : Skill
         arrow.InitArrow(targetPoint, transform, AreaInfo.CastLength, DamageRange);
         _currentChainArrowPrefab = arrow;
     }
+
+
 }

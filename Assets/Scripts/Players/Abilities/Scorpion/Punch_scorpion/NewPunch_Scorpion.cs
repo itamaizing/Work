@@ -3,11 +3,10 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class NewPunch_Scorpion : Skill
+public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
 {
     [Header("Ability settings")]
     [SerializeField] private Character _playerLinks;
-    [SerializeField] private PassiveCombo_Scorpion _comboCounter;
     [SerializeField] private ScorpionPassive scorpionPassive;
     [SerializeField] private byte _hitsInRow = 1;
 
@@ -19,6 +18,8 @@ public class NewPunch_Scorpion : Skill
 
     private Character _lastTarget;
     private Character _currentTarget;
+    
+    public event Action<GameObject, Skill> OnDamaged;
 
     #region Constants
     private const float MinDirectionSqrMagnitude = 0.0001f;
@@ -150,8 +151,6 @@ public class NewPunch_Scorpion : Skill
         if (Targeting.GetTarget() == null) yield return null;
         if (!IsTargetInRange()) yield return null;
 
-        if (_lastTarget != null && _lastTarget != Targeting.GetTarget()?.Character)  _comboCounter.ResetCounter();
-
         _isRightKick = !_isRightKick;
         _lastTarget = Targeting.GetTarget()?.Character;
 
@@ -218,9 +217,8 @@ public class NewPunch_Scorpion : Skill
 
     private void AttackPassed(Character target)
     {
-        Debug.Log("[NewPunch_Scorpion] Attack Passed");
-        _comboCounter.AddSkill(target, this);
-
+        OnDamaged?.Invoke(target.gameObject,this);
+        
         if (_hitsInRowCoroutine != null)
             StopCoroutine(_hitsInRowCoroutine);
         _hitsInRowCoroutine = StartCoroutine(HitsInRowTimer());

@@ -592,7 +592,7 @@ public abstract class Skill : NetworkBehaviour
     public virtual float Damage { get => _damageValue; set => _damageValue = value; }
     public float AutoAttackDelay { get => _autoAttackDelay; }
     public ChargeCDUI LinkedChargeCDUI { get; set; }
-    public bool Disactive
+    public virtual bool Disactive
     {
         get => _disactive;
         set

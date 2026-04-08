@@ -4,16 +4,18 @@ using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class CleavingBlade_Scorpion : Skill
+public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill
 {
     [Header("Ability settings")]
-    [SerializeField] private PassiveCombo_Scorpion _comboCounter;
     [SerializeField] private ScorpionPassive _scorpionPassive;
+    [SerializeField] private PassiveCombo_Scorpion _comboCounter;
     [SerializeField] [Range(0, 100)] private float _minDamage = 18f;
     [SerializeField] [Range(0, 100)] private float _maxDamage = 26f;
     [SerializeField] private GameObject _blade;
 
     [SyncVar] private int _counter = 1;
+    
+    public event Action<GameObject, Skill> OnDamaged;
 
     #region Const
     private const float BleedingDuration = 6f;
@@ -54,7 +56,7 @@ public class CleavingBlade_Scorpion : Skill
 
     private void AttackPassed(bool shouldIncreaseCounter, Character target)
     {
-        _comboCounter.AddSkill(target, this);
+        OnDamaged?.Invoke(target.gameObject,this);
 
         if (_comboCounter.IsFinalComboSkill(target, this))
         {

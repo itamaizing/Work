@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -12,9 +13,6 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
     [SerializeField] private ComboPoints_Player _comboPlayer;
 
     //[SerializeField] private Sub_LavaPool_Scorpion _poolPrefab;
-
-    [Header("Skills Reference")]
-    [SerializeField] private List<Skill> _skills = new();
 
     [Header("Combo Settings")]
     private List<Skill> _usedSkills = new();
@@ -33,22 +31,57 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
     #region Talent
     public void ConsumeComboTalent(bool value) => _consumeComboTalent = value;
     #endregion
+    
+    #region Новый талант 3о — Импульсный огонь
+    private ImpulseFireTalentBooster _impulseFireBooster;
+    public ImpulseFireTalentBooster ImpulseFireBooster => _impulseFireBooster;
+    #endregion
 
     #region Add Skill (Комбо механика)
-
-    [Command]
-    public void CmdAddSkill(Character enemy, Skill skill)
+    
+    private void OnEnable()
     {
-        AddSkill(enemy, skill);
+        _impulseFireBooster = new ImpulseFireTalentBooster(this);
+
+        foreach (var skill in _hero.Abilities.Abilities)
+        {
+            if (skill is IComboParticipatingSkill)
+            {
+                IComboParticipatingSkill comboSkill = skill as IComboParticipatingSkill;
+                comboSkill.OnDamaged += OnSkillDamageApplied;
+            }
+        }
+    }
+
+    private void OnDisable()
+    {
+        foreach (var skill in _hero.Abilities.Abilities)
+        {
+            if (skill is IComboParticipatingSkill)
+            {
+                IComboParticipatingSkill comboSkill = skill as IComboParticipatingSkill;
+                comboSkill.OnDamaged += OnSkillDamageApplied;
+            }
+        }
+    }
+
+    private void OnSkillDamageApplied(GameObject targetGO, Skill skill)
+    {
+        if (!_consumeComboTalent) return;
+        if (targetGO == null) return;
+
+        var target = targetGO.GetComponent<Character>();
+        if (target == null) return;
+        
+        AddSkill(target, skill);
     }
 
     public void AddSkill(Character enemy, Skill skill)
     {
-        Debug.Log("Проверка добавления");
-
         if (!_consumeComboTalent) return;
 
-        Debug.Log("Проверка добавления 2");
+        if (!_impulseFireBooster.CanUseInCombo(skill)) return;
+        
         if (enemy == null || skill == null) return;
 
         int currentStacks = enemy.CharacterState.CheckStateStacks(States.ComboState);
@@ -193,17 +226,17 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
     {
         if (enemy == null || lastSkillUsed == null) return;
 
-        if (lastSkillUsed == GetSkillByName("Punch"))
+        if (lastSkillUsed == _hero.Abilities.GetSkill<NewPunch_Scorpion>())
         {
             Debug.Log("Debuff: Stun");
             enemy.GetComponent<CharacterState>()?.AddState(States.Stun, 1f, 0, _hero.gameObject, "Punch");
         }
-        else if (lastSkillUsed == GetSkillByName("Kick"))
+        else if (lastSkillUsed == _hero.Abilities.GetSkill<Kick_Scorpion>())
         {
             Debug.Log("Lava Pool");
             SpawnLavaPool(enemy);
         }
-        else if (lastSkillUsed == GetSkillByName("ChainBlade"))
+        else if (lastSkillUsed == _hero.Abilities.GetSkill<ChainBlade>()) 
         {
             Debug.Log("ChainBlade Effect");
         }
@@ -261,15 +294,6 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
 
         pool.GetComponent<Sub_LavaPool_Scorpion>().Init();
         NetworkServer.Spawn(pool);*/
-    }
-
-    #endregion
-
-    #region Вспомогательные методы
-
-    private Skill GetSkillByName(string name)
-    {
-        return _skills.FirstOrDefault(s => s != null && s.name == name);
     }
 
     #endregion

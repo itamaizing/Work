@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
+public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
 {
     [Header("Ability Settings")]
     [SerializeField] private FireBreath_Prefab _conePrefab;
@@ -29,6 +29,8 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
 
     public ConsumeCombo_Scorpion Notifier { get; set; }
     public int ConsumedAmount { get; set; }
+    
+    public event Action<GameObject, Skill> OnDamaged;
 
     protected override bool IsCanCast => true;
     protected override int AnimTriggerCastDelay => 0;
@@ -37,7 +39,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
     #region Const
     private const float DebuffTickInterval = 0.3f;
     private const float ApplyFireBreathDamageTickInterval = 0.3f;
-    private const float BaseScorchedSoulChance = 10f;
+    private const float BaseScorchedSoulChance = 5f;
     private const float MaxScorchedSoulChance = 100f;
     private const float ScorchedSoulDuration = 3f;
     private const float MinRotationThresholdSqr = 0.01f;
@@ -104,6 +106,7 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
 
     private void TryApplyScorchedSoulDebuff(Health enemy, float elapsedTime)
     {
+        CmdOnDamageEnd(enemy.gameObject);
         float baseChance = BaseScorchedSoulChance;
         int tickIndex = Mathf.FloorToInt(elapsedTime / DebuffTickInterval);
         float currentChance = baseChance * Mathf.Pow(2, tickIndex);
@@ -118,6 +121,12 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
                 CmdApplyScorchedSoulDebuff(stateManager.netIdentity);
             }
         }
+    }
+
+    [Command]
+    private void CmdOnDamageEnd(GameObject target)
+    {
+        OnDamaged?.Invoke(target, this);
     }
 
     private void ApplyDamageAndDebuff(float elapsedTime, int dummyTickIndex)
@@ -184,7 +193,6 @@ public class FireBreath_Scorpion : Skill /*, ICanConsumeComboPoints */
 
             baseDamage *= 2;
         }
-
         Hero.Move.SetCanMove(true);
         CmdDestroyFireBreath();
     }
