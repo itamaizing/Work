@@ -44,12 +44,18 @@ public class TerrifyingElfAura : NetworkBehaviour
     private bool suppressionManaAbsorptionTalent;
     private bool _isReductionRecharge;
     private bool _isElvenSkillPhysDamageHealthChance;
+    private bool _isThirdShotRow;
+
+    public void ThirdShotRow(bool value) => _isThirdShotRow = value;
 
     #endregion
 
     private Skill currentSkill;
     private Mana _heroMana;
     private float _baseAreaReconnaissanceFire;
+
+    private int _shotCounter = 0;
+    private Character _lastTarget;
 
     public bool IsReductionRecharge { get => _isReductionRecharge; }
     public bool IsElvenSkillPhysDamageHealthChance { get => _isElvenSkillPhysDamageHealthChance; }
@@ -237,6 +243,42 @@ public class TerrifyingElfAura : NetworkBehaviour
                 mana.Add(damage.Value * 0.25f * suppression.CurrentStacksCount);
 
             if (manaAbsorptionPhysicalTalent) OnDamageDealt(damage, target);
+        }
+
+        HandleThirdShotRow(damage, target);
+    }
+
+    private void HandleThirdShotRow(Damage damage, GameObject target)
+    {
+        if (!_isThirdShotRow) return;
+        if (damage.SourceSkill == null) return;
+
+        if (damage.SourceSkill is not Shot) return;
+
+        if (target == null || !target.TryGetComponent(out Character targetCharacter)) return;
+
+        if (_lastTarget != targetCharacter)
+        {
+            _lastTarget = targetCharacter;
+            _shotCounter = 0;
+        }
+
+        _shotCounter++;
+
+        if (_shotCounter == 3)
+        {
+            _shotCounter = 0;
+            ReduceCooldowns();
+        }
+    }
+
+    private void ReduceCooldowns()
+    {
+        if (skillManager == null) return;
+
+        foreach (var skill in skillManager.Skills)
+        {
+            skill.DecreaseSetCooldown(1f);
         }
     }
 

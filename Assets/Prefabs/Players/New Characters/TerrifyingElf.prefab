@@ -19659,6 +19659,21 @@ PrefabInstance:
       addedObject: {fileID: 2808444879270764260}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 5446808929981299714}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1046202040625647134}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5570433275319391096}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7590989661635297986}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4487867154051678385}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 8900499401904388835}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
@@ -21874,7 +21889,6 @@ MonoBehaviour:
   character: {fileID: 4534754468497973439}
   reconnaissanceFire: {fileID: 2750012758126725032}
   terrifyingElfAura: {fileID: 6686568037796463366}
-  groundTrap: {fileID: 8199207747846444516}
 --- !u!114 &885336317892172373
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21916,8 +21930,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  shotIntoSky: {fileID: 6009180366675701932}
-  reconnaissanceFire: {fileID: 2750012758126725032}
   terrifyingElfAura: {fileID: 6686568037796463366}
 --- !u!114 &2808444879270764260
 MonoBehaviour:
@@ -21947,6 +21959,120 @@ MonoBehaviour:
   character: {fileID: 4534754468497973439}
   groundTrap: {fileID: 8199207747846444516}
   _ability: {fileID: 4092227064955680494}
+--- !u!114 &5446808929981299714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ed51f4e1379f464b833d71bd574c3b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HuntressTalent_8
+  _data:
+    _descriptionsForInfoPanel: []
+    _stateInfos: []
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+    Group: 0
+    Row: 0
+  character: {fileID: 4534754468497973439}
+  shotIntoSky: {fileID: 6009180366675701932}
+--- !u!114 &1046202040625647134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3cf51b8d26ef424a9bd746ecbf981cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HuntressTalent_9
+  _data:
+    _descriptionsForInfoPanel: []
+    _stateInfos: []
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+    Group: 0
+    Row: 0
+  character: {fileID: 4534754468497973439}
+  reconnaissanceFire: {fileID: 2750012758126725032}
+--- !u!114 &5570433275319391096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1ea703641f29fb4bb8d161eae14b1db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HuntressTalent_10
+  _data:
+    _descriptionsForInfoPanel: []
+    _stateInfos: []
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+    Group: 0
+    Row: 0
+  character: {fileID: 4534754468497973439}
+  terrifyingElfAura: {fileID: 6686568037796463366}
+--- !u!114 &7590989661635297986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8082098b3dbfd14459d0a19725a3cb92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HuntressTalent_11
+  _data:
+    _descriptionsForInfoPanel: []
+    _stateInfos: []
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+    Group: 0
+    Row: 0
+  character: {fileID: 4534754468497973439}
+  reconnaissanceFire: {fileID: 2750012758126725032}
+  _shotIntoSky: {fileID: 6009180366675701932}
+  _shotsIntoSky: {fileID: 826193211731534654}
+  _groundTrap: {fileID: 8199207747846444516}
+--- !u!114 &4487867154051678385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f060bf135084e1647b94ddc8ff3054e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HuntressTalent_14
+  _data:
+    _descriptionsForInfoPanel: []
+    _stateInfos: []
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 0}
+    Group: 0
+    Row: 0
+  character: {fileID: 4534754468497973439}
+  groundTrap: {fileID: 8199207747846444516}
+  reconnaissanceFire: {fileID: 2750012758126725032}
 --- !u!114 &8900499401904388835
 MonoBehaviour:
   m_ObjectHideFlags: 0
