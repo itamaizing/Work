@@ -255,7 +255,7 @@ public class TerrifyingElfAura : NetworkBehaviour
 
         if (!isServer)
         {
-            CmdProcessShot(target.netIdentity);
+            ProcessShot(target.netIdentity);
             return;
         }
 
@@ -268,7 +268,7 @@ public class TerrifyingElfAura : NetworkBehaviour
 
         foreach (var skill in skillManager.Skills)
         {
-            skill.DecreaseSetCooldown(1f);
+            skill.CmdCooldownModify(-1f);
         }
     }
 
@@ -291,8 +291,7 @@ public class TerrifyingElfAura : NetworkBehaviour
         }
     }
 
-    [Command]
-    private void CmdProcessShot(NetworkIdentity targetId)
+    private void ProcessShot(NetworkIdentity targetId)
     {
         if (targetId == null) return;
 

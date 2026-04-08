@@ -712,7 +712,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61223552b5399ec4cb555068de37de05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectHealth: {fileID: 0}
+  objectHealth: {fileID: 1525237466600288129}
   circleSelect: {fileID: 9115519821676638475}
   minimapMarker: {fileID: 7500440178365392226}
   damageSpawn: {fileID: 5087257125756015543}
@@ -785,6 +785,8 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 0
   _regenerationDelay: 0
+  _currentValue: 0
+  _maxValue: 0
   _objectBar: {fileID: 7413096228921928745}
   _objectData: {fileID: 11400000, guid: 7ee4128bb430f07458a639f23fc41069, type: 2}
   obj: {fileID: 2058911381882631605}

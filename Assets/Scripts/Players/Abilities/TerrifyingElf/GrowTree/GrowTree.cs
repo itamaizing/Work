@@ -23,6 +23,7 @@ public class GrowTree : Skill
     [SerializeField] private GameObject _arrowWithTreeEffect;
     [SerializeField] private ParticleSystem _arrowIntoSkyEffect;
     [SerializeField] private SkillQueue _skillQueue;
+    [SerializeField] private SkillManager _skillManager;
 
     [Header("Talents")]
     //[SerializeField] private bool treeHealthTalent; // Созданное дерево каждые 0,3 сек увеличивает максималньый запас здоровья на 1 ед. Вплоть до 60 сек.
@@ -53,6 +54,8 @@ public class GrowTree : Skill
     private WaitForSeconds _waitForCastStreamDurationSecond;
     private WaitForSeconds _waitForCastStreamDurationThird;
 
+    private bool _treeBuffApplied = false;
+
     #region Const
     private const float MaxMouseRaycastDistance = 1000f;
     private const float ExtendedRadiusCheckInterval = 0.1f;
@@ -63,6 +66,7 @@ public class GrowTree : Skill
     private const float SearchRadiusTarget = 1f;
     private const float SearchMousClickTarget = 1f;
     private const float MagicEvade = 100f;
+    private const float TreeMultiplier = 1.2f;
 
     private const string GrowTreeCastDelayExit = "GrowTreeCastDelayExit";
     private const string GrowTreeCastDelay = "GrowTreeCastDelay";
@@ -108,6 +112,11 @@ public class GrowTree : Skill
         _waitForCastStreamDurationFirst = new WaitForSeconds(CastStreamDuration / CastStreamDurationFirst);
         _waitForCastStreamDurationSecond = new WaitForSeconds(CastStreamDuration / CastStreamDurationSecond);
         _waitForCastStreamDurationThird = new WaitForSeconds(CastStreamDuration);
+    }
+
+    private void Update()
+    {
+        UpdateTreeBuff();
     }
 
     private void OnEnable()
@@ -168,6 +177,51 @@ public class GrowTree : Skill
         {
             StopCoroutine(_arrowFxRoutine);
             _arrowFxRoutine = null;
+        }
+    }
+
+    private bool IsHeroOnTree()
+    {
+        if (_activeTrees == null || _activeTrees.Count == 0) return false;
+
+        foreach (var tree in _activeTrees)
+        {
+            if (tree == null) continue;
+
+            if (Vector3.Distance(_hero.transform.position, tree.transform.position) <= AreaInfo.Radius)
+                return true;
+        }
+
+        return false;
+    }
+
+    private void UpdateTreeBuff()
+    {
+        bool shouldHaveBuff = IsHeroOnTree();
+
+        if (shouldHaveBuff && !_treeBuffApplied)
+        {
+            foreach (Skill skill in _skillManager.Abilities)
+            {
+                if (skill == null) continue;
+
+                skill.Buff.Length.IncreasePercentage(TreeMultiplier);
+                skill.Buff.Radius.IncreasePercentage(TreeMultiplier);
+            }
+
+            _treeBuffApplied = true;
+        }
+        else if (!shouldHaveBuff && _treeBuffApplied)
+        {
+            foreach (Skill skill in _skillManager.Abilities)
+            {
+                if (skill == null) continue;
+
+                skill.Buff.Length.ReductionPercentage(TreeMultiplier);
+                skill.Buff.Radius.ReductionPercentage(TreeMultiplier);
+            }
+
+            _treeBuffApplied = false;
         }
     }
 

@@ -433,7 +433,8 @@ public abstract class Skill : NetworkBehaviour
             return;
 
         _cooldownEndTime += delta;
-        if (_cooldownEndTime >= NetworkTime.time)
+
+        if (_cooldownEndTime <= NetworkTime.time)
         {
             Cooldown.ForceEnd();
         }
@@ -444,6 +445,7 @@ public abstract class Skill : NetworkBehaviour
     {
         _cooldownEndTime = NetworkTime.time;
     }
+
     #endregion
     #endregion
     //Cooldowns
