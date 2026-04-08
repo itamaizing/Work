@@ -253,6 +253,27 @@ public class TerrifyingElfAura : NetworkBehaviour
         if (!_isThirdShotRow) return;
         if (target == null) return;
 
+        if (!isServer)
+        {
+            CmdProcessShot(target.netIdentity);
+            return;
+        }
+
+        ProcessShotServer(target);
+    }
+
+    private void ReduceCooldowns()
+    {
+        if (skillManager == null) return;
+
+        foreach (var skill in skillManager.Skills)
+        {
+            skill.DecreaseSetCooldown(1f);
+        }
+    }
+
+    private void ProcessShotServer(Character target)
+    {
         if (_lastTarget != target)
         {
             _lastTarget = target;
@@ -268,16 +289,16 @@ public class TerrifyingElfAura : NetworkBehaviour
         }
     }
 
-    private void ReduceCooldowns()
+    [Command]
+    private void CmdProcessShot(NetworkIdentity targetId)
     {
-        if (skillManager == null) return;
+        if (targetId == null) return;
 
-        foreach (var skill in skillManager.Skills)
-        {
-            skill.DecreaseSetCooldown(1f);
-        }
+        var target = targetId.GetComponent<Character>();
+        if (target == null) return;
+
+        ProcessShotServer(target);
     }
-
 
     #endregion
 
