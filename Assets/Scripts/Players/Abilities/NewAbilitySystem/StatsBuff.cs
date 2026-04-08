@@ -52,9 +52,12 @@ public class StatBuff
     {
         _additional += value;
     }
+
     public void RemoveValue(float value)
     {
         _additional -= value;
+
+        if (Mathf.Abs(_additional) < 0.0001f) _additional = 0f;
     }
 
     public void Reset()

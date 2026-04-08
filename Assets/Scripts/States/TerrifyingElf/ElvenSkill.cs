@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class ElvenSkill : StackableState
+public class ElvenSkill : RefreshingState
 {
     private float _duration;
     private MoveComponent _move;
@@ -13,9 +12,7 @@ public class ElvenSkill : StackableState
     private const float PercentBonusPerStack = 0.1f;
     private const int MaxStacks = 3;
 
-    private int _currentStacks = 1;
-
-    private Dictionary<Skill, (float lengthBonus, float radiusBonus)> _bonuses = new();
+    private int _currentStacks = 0;
 
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.ElvenSkill;
@@ -35,9 +32,9 @@ public class ElvenSkill : StackableState
 
         _move.SetCanMoveState(true);
 
-        _currentStacks = 1;
+        _currentStacks = 0;
 
-        ApplyBuffs();
+        AddStack();
 
         if (_skillManager != null)
         {
@@ -72,65 +69,52 @@ public class ElvenSkill : StackableState
         if (_currentStacks >= MaxStacks)
             return false;
 
-        _currentStacks++;
-
-        ReapplyBuffs();
-
+        AddStack();
         return true;
     }
 
-    private void ApplyBuffs()
+    private void AddStack()
     {
-        _bonuses.Clear();
+        _currentStacks++;
 
         if (_skillManager == null) return;
 
-        float totalPercent = _currentStacks * PercentBonusPerStack;
+        float multiplier = 1 + PercentBonusPerStack;
 
         foreach (var skill in _skillManager.Abilities)
         {
             if (skill == null) continue;
 
-            float baseLength = skill.AreaInfo.CastLength;
-            float baseRadius = skill.AreaInfo.Radius;
-
-            float lengthBonus = baseLength * totalPercent;
-            float radiusBonus = baseRadius * totalPercent;
-
-            skill.Buff.Length.AddValue(lengthBonus);
-            skill.Buff.Radius.AddValue(radiusBonus);
-
-            _bonuses[skill] = (lengthBonus, radiusBonus);
+            skill.Buff.Length.IncreasePercentage(multiplier);
+            skill.Buff.Radius.IncreasePercentage(multiplier);
         }
     }
 
-    private void RemoveBuffs()
+    private void RemoveOneStack()
     {
-        foreach (var pair in _bonuses)
-        {
-            var skill = pair.Key;
-            var (lengthBonus, radiusBonus) = pair.Value;
+        if (_skillManager == null) return;
 
+        float multiplier = 1 + PercentBonusPerStack;
+
+        foreach (var skill in _skillManager.Abilities)
+        {
             if (skill == null) continue;
 
-            skill.Buff.Length.RemoveValue(lengthBonus);
-            skill.Buff.Radius.RemoveValue(radiusBonus);
+            skill.Buff.Length.ReductionPercentage(multiplier);
+            skill.Buff.Radius.ReductionPercentage(multiplier);
         }
-
-        _bonuses.Clear();
-    }
-
-    private void ReapplyBuffs()
-    {
-        RemoveBuffs();
-        ApplyBuffs();
     }
 
     public override void ExitState()
     {
         if (_move) _move.SetCanMoveState(false);
 
-        RemoveBuffs();
+        for (int i = 0; i < _currentStacks; i++)
+        {
+            RemoveOneStack();
+        }
+
+        _currentStacks = 0;
 
         if (_skillManager != null)
         {

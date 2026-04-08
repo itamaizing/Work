@@ -282,6 +282,8 @@ public class TerrifyingElfAura : NetworkBehaviour
 
         _shotCounter++;
 
+        Debug.Log($"SHOT COUNT = {_shotCounter} | SERVER = {isServer}");
+
         if (_shotCounter >= 3)
         {
             _shotCounter = 0;
