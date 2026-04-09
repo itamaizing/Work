@@ -157,7 +157,6 @@ public class GrowTreeAura : NetworkBehaviour
         _isBuffApplied = false;
     }
 
-
     [ServerCallback]
     private void OnTriggerEnter(Collider other)
     {

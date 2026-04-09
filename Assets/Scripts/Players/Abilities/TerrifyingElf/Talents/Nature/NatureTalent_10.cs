@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NatureTalent_5 : Talent
+public class NatureTalent_10 : Talent
 {
     [SerializeField] private ShotAstral shotAstral;
     [SerializeField] private ShotIntoSky shotIntoSky;

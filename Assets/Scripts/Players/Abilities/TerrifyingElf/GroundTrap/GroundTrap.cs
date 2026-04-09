@@ -280,12 +280,14 @@ public class GroundTrap : Skill
     [Command]
     private void CmdSpawnGroundTrap(Vector3 startPosition, Quaternion rotation)
     {
-        Trap trap = Instantiate(trapPrefab, startPosition, rotation);
-        trap.Init(owner, this, startPosition, startPosition);
+        Vector3 spawnPos = startPosition + new Vector3(0f, 2f, 0f);
+
+        Trap trap = Instantiate(trapPrefab, spawnPos, rotation);
+        trap.Init(owner, this, spawnPos, startPosition);
         trap.Finalise();
         //SceneManager.MoveGameObjectToScene(trap.gameObject, Hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(trap.gameObject);
-        RpcInit(trap.netIdentity, startPosition, rotation);
+        RpcInit(trap.netIdentity, spawnPos, rotation);
     }
 
     [Command]
