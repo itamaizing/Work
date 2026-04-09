@@ -89,6 +89,6 @@ public class Punch_Scorpion : AutoAttackSkill,IComboParticipatingSkill
     {
         throw new System.NotImplementedException();
     }
-
-
+    public void OnFinalComboSkill(GameObject target) { }
+    public void OnTargetHasComboPoint(GameObject target, float comboPoints) { }
 }

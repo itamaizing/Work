@@ -8,7 +8,6 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill
 {
     [Header("Ability settings")]
     [SerializeField] private ScorpionPassive _scorpionPassive;
-    [SerializeField] private PassiveCombo_Scorpion _comboCounter;
     [SerializeField] [Range(0, 100)] private float _minDamage = 18f;
     [SerializeField] [Range(0, 100)] private float _maxDamage = 26f;
     [SerializeField] private GameObject _blade;
@@ -18,7 +17,8 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill
     public event Action<GameObject, Skill> OnDamaged;
 
     #region Const
-    private const float BleedingDuration = 6f;
+    private const float BleedingDuration = 9f;
+    private const float BaseDamageBaf = 2f;
     private const int MaxComboCounter = 3;
     private const float DefaultAnimSpeed = 1f;
     private const float ReducedAnimSpeed = 0.8f;
@@ -58,24 +58,29 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill
     {
         OnDamaged?.Invoke(target.gameObject,this);
 
-        if (_comboCounter.IsFinalComboSkill(target, this))
-        {
-            CharacterState state = target.GetComponent<CharacterState>();
-
-            if (state != null)
-            {
-                state.AddState(States.Bleeding, BleedingDuration, 0, _hero.gameObject, name);
-
-                int comboStacks = state.CheckStateStacks(States.ComboState);
-
-                for (int i = 0; i < comboStacks; i++) state.AddState(States.Bleeding, BleedingDuration, 0, _hero.gameObject, name);
-            }
-        }
-
         if (shouldIncreaseCounter)
         {
             _counter = _counter == MaxComboCounter ? 1 : _counter + 1;
         }
+    }
+    
+    public void OnFinalComboSkill(GameObject target)
+    {
+        CharacterState state = target.GetComponent<CharacterState>();
+
+        if (state != null)
+        {
+            state.AddState(States.Bleeding, BleedingDuration, BaseDamageBaf, _hero.gameObject, name);
+
+            int comboStacks = state.CheckStateStacks(States.ComboState);
+
+            for (int i = 0; i < comboStacks; i++) state.AddState(States.Bleeding, BleedingDuration, BaseDamageBaf, _hero.gameObject, name);
+        }
+    }
+
+    public void OnTargetHasComboPoint(GameObject target, float comboPoints)
+    {
+        
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)

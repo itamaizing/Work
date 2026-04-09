@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DisappointmentState : AbstractCharacterState
+public class DisappointmentState : RefreshingState
 {
     private float _baseDuration;
     private float _damageToExit;
@@ -32,11 +32,16 @@ public class DisappointmentState : AbstractCharacterState
                 skill.Disactive = true;
             }
         }
+
+        MaxStacksCount = 1;
+        currentStacksCount = 1;
     }
 
     public override void UpdateState()
     {
-        if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit)
+        //Debug.LogError("duration: "+duration);
+        
+        if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || duration <= 0)
         {
             ExitState();
         }
@@ -44,8 +49,6 @@ public class DisappointmentState : AbstractCharacterState
 
     public override void ExitState()
     {
-        characterState.RemoveState(this);
-
         if (!characterState.Check(StatusEffect.Move))
         {
             characterState.Character.Move.SetCanMove(true);
@@ -59,11 +62,14 @@ public class DisappointmentState : AbstractCharacterState
                 skill.Disactive = false;
             }
         }
+        
+        currentStacksCount = 0;
+        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        duration = _baseDuration;
+        duration = time;
         return true;
     }
 }

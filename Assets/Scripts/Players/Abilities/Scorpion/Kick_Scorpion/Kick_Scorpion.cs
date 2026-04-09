@@ -29,6 +29,8 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
     private WaitForSeconds _waitForHitsInRowTimer;
     
     public event Action<GameObject, Skill> OnDamaged;
+    public void OnFinalComboSkill(GameObject target) { }
+    public void OnTargetHasComboPoint(GameObject target, float comboPoints) { }
 
     #region Сonst
     private const float HitsInRowResetDelay = 2f;

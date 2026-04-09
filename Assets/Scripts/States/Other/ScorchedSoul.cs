@@ -67,11 +67,7 @@ public class ScorchedSoul : RefreshingState
             _duration = _baseDuration;
             foreach (var ability in abilities.Abilities)
             {
-                Debug.LogWarning($"Cast speed before: {ability.Buff.CastSpeed.Multiplier}");
                 ability.Buff.CastSpeed.ReductionPercentage(_reducePercentage * currentStacksCount);
-                Debug.LogWarning("Cast speed reduced!!!! - CharacterState.EnterState()");
-                Debug.LogWarning($"Cast speed after: {ability.Buff.CastSpeed.Multiplier}");
-                Debug.LogWarning($"Cast speed after: {ability.Buff.CastSpeed.GetBuffedValue(1f)}");
             }
             return true;
         }

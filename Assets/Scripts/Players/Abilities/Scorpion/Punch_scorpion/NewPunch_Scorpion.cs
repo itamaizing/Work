@@ -287,6 +287,9 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
         _hitsInRow = 0;
         _hitsInRowCoroutine = null;
     }
+    
+    public void OnFinalComboSkill(GameObject target) { }
+    public void OnTargetHasComboPoint(GameObject target, float comboPoints) { }
 
     //private void AttackMissed()
     //{

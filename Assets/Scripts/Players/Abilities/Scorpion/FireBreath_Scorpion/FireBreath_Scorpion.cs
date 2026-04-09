@@ -31,6 +31,8 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
     public int ConsumedAmount { get; set; }
     
     public event Action<GameObject, Skill> OnDamaged;
+    public void OnFinalComboSkill(GameObject target) { }
+    public void OnTargetHasComboPoint(GameObject target, float comboPoints) { }
 
     protected override bool IsCanCast => true;
     protected override int AnimTriggerCastDelay => 0;

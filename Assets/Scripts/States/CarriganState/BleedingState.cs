@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BleedingState : AbstractCharacterState
+public class BleedingState : RefreshingState
 {
     private Character _target;
     
@@ -29,6 +29,9 @@ public class BleedingState : AbstractCharacterState
         _timeBetweenAttack = _startTimeBetweenAttack;
 
         _target.Health.IsDot = true;
+        
+        MaxStacksCount = 3;
+        currentStacksCount = 1;
     }
 
     public override void UpdateState()
@@ -50,6 +53,12 @@ public class BleedingState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
+        if (currentStacksCount < 3)
+        {
+            currentStacksCount++;
+            duration = _baseDuration;
+            return true;
+        }
         duration = _baseDuration;
         return true;
     }
@@ -64,5 +73,19 @@ public class BleedingState : AbstractCharacterState
         };
 
         _target.Health.TryTakeDamage(ref damage, null);
+    }
+    
+    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        if (!CanEnterState(character)) return null;
+
+        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+
+        if (currentStacksCount == 0)
+            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+        else
+            Stack(duration);
+
+        return this;
     }
 }

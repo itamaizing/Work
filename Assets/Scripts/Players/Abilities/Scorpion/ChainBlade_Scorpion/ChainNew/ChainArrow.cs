@@ -88,7 +88,6 @@ public class ChainArrow : Projectiles
         if (other.TryGetComponent<Character>(out Character character))
         {
             AttachToTarget(character);
-            AddState(character);
             ApplyDamage(_damage, DamageType.Physical, character.gameObject);
 
             OnHitTarget?.Invoke(character, _flightTime);
@@ -210,25 +209,6 @@ public class ChainArrow : Projectiles
         };
 
         _skill.ApplyDamage(_damage, target);
-    }
-
-    private void AddState(Character character)
-    {
-        if (character == null) return;
-
-        float pullDistance = Vector3.Distance(_playerTransform.position, character.transform.position);
-
-        if (pullDistance > 1f)
-        {
-            float duration = 1f;
-
-            if (_skill is ChainBlade skill) if (skill.ComboCounter.IsFinalComboSkill(character, skill)) duration += 2f;
-
-            int comboStacks = character.CharacterState.CheckStateStacks(States.ComboState);
-            duration += comboStacks;
-
-            character.CharacterState.AddState(States.DisappointmentState, duration, 0f, _dad.gameObject, _skill.name);
-        }
     }
 
     private Vector3 _startPoint;

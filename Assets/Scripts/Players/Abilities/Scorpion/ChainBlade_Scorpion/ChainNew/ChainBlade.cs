@@ -18,7 +18,6 @@ public class ChainBlade : Skill,IComboParticipatingSkill
     [SerializeField] [Range(0, 100)] private float _minDamage = 3f;
     [SerializeField] [Range(0, 100)] private float _maxDamage = 5f;
     [SerializeField] private float _arrowYOffset = 1.5f;
-    [SerializeField] private PassiveCombo_Scorpion _comboCounter;
 
     [SerializeField] private ChainArrow _chainArrowPrefab;
     [SerializeField] private HeroComponent _playerLinks;
@@ -36,6 +35,8 @@ public class ChainBlade : Skill,IComboParticipatingSkill
     private const float TargetLineYOffset = 1.32f;
     private const float ChainArrowCastOffset = 0.5f;
     private const float SearchTargetInRadius = 1f;
+    private const float BaseTimeDisappointment = 1f;
+    private const float DisappointmentTimeOnFinalHit = 2f;
     #endregion
 
     private bool _needDestroyArrowAfterSpawn = false;
@@ -51,7 +52,6 @@ public class ChainBlade : Skill,IComboParticipatingSkill
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     public float DamageRange => UnityEngine.Random.Range(_minDamage, _maxDamage);
-    public PassiveCombo_Scorpion ComboCounter { get => _comboCounter; set => _comboCounter = value; }
 
     //private void OnDisable()
     //{
@@ -216,8 +216,6 @@ public class ChainBlade : Skill,IComboParticipatingSkill
     [Server]
     private void HandleArrowHit(Character target, float pullDuration)
     {
-        Debug.Log("HIT handling on server");
-
         if (_currentChainArrowPrefab != null)
         {
             _currentChainArrowPrefab.OnHitTarget -= HandleArrowHit;
@@ -230,19 +228,52 @@ public class ChainBlade : Skill,IComboParticipatingSkill
         _pullCoroutine = StartCoroutine(PullTargetToPlayer(target, pullDuration));
         OnDamaged?.Invoke(target.gameObject, this);
         RpcHandleHitClient(target.netId, pullDuration);
+        AddBaseDisappointment(target);
     }
 
-    //[Command]
-    //private void CmdDestroyChain()
-    //{
-    //    if (_currentChainArrowPrefab != null)
-    //    {
-    //        RpcDestroyChain(_currentChainArrowPrefab.gameObject);
-    //        NetworkServer.Destroy(_currentChainArrowPrefab.gameObject);
-    //        _currentChainArrowPrefab = null;
-    //    }
-    //    else _needDestroyArrowAfterSpawn = true;
-    //}
+    private void AddBaseDisappointment(Character target)
+    {
+        float pullDistance = Vector3.Distance(gameObject.transform.position, target.transform.position);
+
+        if (pullDistance > 1f)
+        {
+            var duration = BaseTimeDisappointment + GetDisappointmentDuration(target);
+            target.CharacterState.AddState(States.DisappointmentState, duration, 0, _hero.gameObject, nameof(ChainBlade));
+        }
+    }
+
+    public void OnFinalComboSkill(GameObject target)
+    {
+        if (target == null) return;
+        if (!target.TryGetComponent(out Character character)) return;
+
+        float duration = DisappointmentTimeOnFinalHit + GetDisappointmentDuration(character);
+
+        character.CharacterState.AddState(States.DisappointmentState, duration, 0f, _hero.gameObject,
+            nameof(ChainBlade));
+    }
+
+    public void OnTargetHasComboPoint(GameObject target, float comboPoints)
+    {
+        if (target == null) return;
+        if (!target.TryGetComponent(out Character character)) return;
+        
+        float duration = comboPoints + GetDisappointmentDuration(character);
+
+        if (duration > 0)
+        {
+            character.CharacterState.AddState(States.DisappointmentState, duration, 0, _hero.gameObject, nameof(ChainBlade));
+        }
+    }
+
+    private float GetDisappointmentDuration(Character character)
+    {
+        if (character.CharacterState.GetState(States.DisappointmentState) != null)
+        {
+            return character.CharacterState.GetState(States.DisappointmentState).RemainingDuration;
+        }
+        return 0;
+    }
 
     [Command]
     private void CmdSpawnChainArrow(Vector3 clickPoint)
@@ -314,6 +345,4 @@ public class ChainBlade : Skill,IComboParticipatingSkill
         arrow.InitArrow(targetPoint, transform, AreaInfo.CastLength, DamageRange);
         _currentChainArrowPrefab = arrow;
     }
-
-
 }

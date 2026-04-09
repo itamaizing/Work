@@ -41,6 +41,7 @@ public class ComboState : RefreshingState
 
     public override void ExitState()
     {
+        currentStacksCount = 0;
         characterState.RemoveState(this);
     }
     
@@ -74,7 +75,7 @@ public class ComboState : RefreshingState
     {
         if (!CanEnterState(character)) return null;
 
-        //BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
 
         if (currentStacksCount == 0)
             EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
