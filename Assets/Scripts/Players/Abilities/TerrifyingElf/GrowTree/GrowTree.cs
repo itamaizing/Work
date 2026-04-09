@@ -54,8 +54,6 @@ public class GrowTree : Skill
     private WaitForSeconds _waitForCastStreamDurationSecond;
     private WaitForSeconds _waitForCastStreamDurationThird;
 
-    private bool _treeBuffApplied = false;
-
     #region Const
     private const float MaxMouseRaycastDistance = 1000f;
     private const float ExtendedRadiusCheckInterval = 0.1f;
@@ -452,7 +450,7 @@ public class GrowTree : Skill
         var tree = Instantiate(_treePrefab, position, Quaternion.identity);
         _currentTree = tree;
 
-        tree.Init(_skillManager);
+        tree.Init(_skillManager, Hero);
         //SceneManager.MoveGameObjectToScene(_currentTree.gameObject, Hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(_currentTree.gameObject, connectionToClient);
 
@@ -483,7 +481,7 @@ public class GrowTree : Skill
         var tree = Instantiate(_treePrefab, spawnPosition, Quaternion.identity);
         _currentTree = tree;
 
-        tree.Init(_skillManager);
+        tree.Init(_skillManager, Hero);
 
         NetworkServer.Spawn(_currentTree.gameObject, connectionToClient);
 
@@ -536,7 +534,7 @@ public class GrowTree : Skill
     {
         _currentTree = currentTree;
         _currentTree.GrowTreeIncreasesMaxHealth = _growTreeIncreasesMaxHealth;
-        _currentTree.Init(_skillManager);
+        _currentTree.Init(_skillManager, Hero);
         if (NetworkClient.spawned.TryGetValue(netId, out var networkIdentity)) _activeTrees.Add(networkIdentity.GetComponent<GrowTreeAura>());
     }
 

@@ -10,29 +10,31 @@ public class GrowTreeAura : NetworkBehaviour
     [SerializeField] private float _tick = 1f;
     [SerializeField] private LayerMask characterLayer;
 
-    private SkillManager _skillManager;
     private readonly List<Character> charactersInZone = new();
     private readonly HashSet<uint> clientIds = new();
     private Coroutine _routine;
-
     private const float TreeMultiplier = 1.2f;
-    private readonly HashSet<Character> buffedCharacters = new();
+    private const float VisionBonus = 3f;
+
+    [SerializeField][ReadOnly] private SkillManager _skillManager;
+    [SerializeField] [ReadOnly] private Character _Hero;
 
     [Header("Talent")]
     private bool _growTreeIncreasesMaxHealth;
 
     public bool GrowTreeIncreasesMaxHealth { get => _growTreeIncreasesMaxHealth; set => _growTreeIncreasesMaxHealth = value; }
 
+    public void Init(SkillManager skill, Character hero)
+    {
+        _skillManager = skill;
+        _Hero = hero;
+    }
+
     [Server]
     private void RemoveAuthority()
     {
         var id = netIdentity;
         if (id.connectionToClient != null) id.RemoveClientAuthority();
-    }
-
-    public void Init(SkillManager skillManager)
-    {
-        _skillManager = skillManager;
     }
 
     private void OnDestroy()
@@ -46,6 +48,41 @@ public class GrowTreeAura : NetworkBehaviour
 
         charactersInZone.Clear();
         clientIds.Clear();
+        if (_Hero != null) RemoveTreeBuff(_Hero);
+    }
+
+    public void ApplyTreeBuff(Character character)
+    {
+        if (_skillManager == null) return;
+        if (_Hero != character) return;
+
+        if (character != null) RemoveTreeBuff(character);
+
+        character.VisionComponent.VisionRange += VisionBonus;
+
+        foreach (var skill in _skillManager.Abilities)
+        {
+            if (skill == null) continue;
+
+            skill.Buff.Length.IncreasePercentage(TreeMultiplier);
+            skill.Buff.Radius.IncreasePercentage(TreeMultiplier);
+        }
+    }
+
+    public void RemoveTreeBuff(Character character)
+    {
+        if (_skillManager == null) return;
+        if (_Hero != character) return;
+
+        character.VisionComponent.VisionRange -= VisionBonus;
+
+        foreach (var skill in _skillManager.Abilities)
+        {
+            if (skill == null) continue;
+
+            skill.Buff.Length.ReductionPercentage(TreeMultiplier);
+            skill.Buff.Radius.ReductionPercentage(TreeMultiplier);
+        }
     }
 
     private void ForceExit(Character character)
@@ -54,80 +91,36 @@ public class GrowTreeAura : NetworkBehaviour
         if (character.TryGetComponent<CharacterState>(out var state) && state.GetState(States.ShadowTree) is ShadowTree shadow) shadow.SwitchToFinite();
     }
 
-    private void ApplyBuff(Character character)
-    {
-        if (buffedCharacters.Contains(character)) return;
-
-        if (!character.TryGetComponent(out SkillManager skillManager)) return;
-
-        foreach (var skill in skillManager.Abilities)
-        {
-            if (skill == null) continue;
-
-            skill.Buff.Length.IncreasePercentage(TreeMultiplier);
-            skill.Buff.Radius.IncreasePercentage(TreeMultiplier);
-        }
-
-        buffedCharacters.Add(character);
-    }
-
-    private void RemoveBuff(Character character)
-    {
-        if (!buffedCharacters.Contains(character)) return;
-
-        if (!character.TryGetComponent(out SkillManager skillManager)) return;
-
-        foreach (var skill in skillManager.Abilities)
-        {
-            if (skill == null) continue;
-
-            skill.Buff.Length.ReductionPercentage(TreeMultiplier);
-            skill.Buff.Radius.ReductionPercentage(TreeMultiplier);
-        }
-
-        buffedCharacters.Remove(character);
-    }
-
     [ServerCallback]
     private void OnTriggerEnter(Collider other)
     {
+        if (!_growTreeIncreasesMaxHealth) return;
         if (((1 << other.gameObject.layer) & characterLayer.value) == 0) return;
 
-        if (other.TryGetComponent<Character>(out Character character))
+        if (other.TryGetComponent<Character>(out Character character) && !charactersInZone.Contains(character))
         {
-            ApplyBuff(character);
-
-            if (_growTreeIncreasesMaxHealth && !charactersInZone.Contains(character))
-            {
-                charactersInZone.Add(character);
-                RpcAddCharacter(character.netId);
-
-                if (_routine == null)
-                    _routine = StartCoroutine(ApplyPartialShadowTreePeriodically());
-            }
+            charactersInZone.Add(character);
+            RpcAddCharacter(character.netId);
+            if (_routine == null) _routine = StartCoroutine(ApplyPartialShadowTreePeriodically());
         }
     }
 
     [ServerCallback]
     private void OnTriggerExit(Collider other)
     {
+        if (!_growTreeIncreasesMaxHealth) return;
         if (((1 << other.gameObject.layer) & characterLayer.value) == 0) return;
 
         if (other.TryGetComponent<Character>(out Character character))
         {
-            RemoveBuff(character);
+            charactersInZone.Remove(character);
+            ForceExit(character);
+            RpcRemoveCharacter(character.netId);
 
-            if (_growTreeIncreasesMaxHealth)
+            if (charactersInZone.Count == 0 && _routine != null)
             {
-                charactersInZone.Remove(character);
-                ForceExit(character);
-                RpcRemoveCharacter(character.netId);
-
-                if (charactersInZone.Count == 0 && _routine != null)
-                {
-                    StopCoroutine(_routine);
-                    _routine = null;
-                }
+                StopCoroutine(_routine);
+                _routine = null;
             }
         }
     }
@@ -149,6 +142,9 @@ public class GrowTreeAura : NetworkBehaviour
 
         _routine = null;
     }
+
+    [ClientRpc] public void RpcApplyTreeBuff(Character character) => ApplyTreeBuff(character);
+    [ClientRpc] public void RpcRemoveTreeBuff(Character character) => RemoveTreeBuff(character);
 
     [ClientRpc]
     private void RpcAddCharacter(uint netId)
