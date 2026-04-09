@@ -29,6 +29,11 @@ public class TerrifyingElfAura : NetworkBehaviour
     [Header("Skills")]
     [SerializeField] private ReconnaissanceFire reconnaissanceFire;
 
+    [SerializeField] private float _auraTick = 1f;
+    [SerializeField] private LayerMask _characterLayer;
+
+    private Coroutine _calmnessAuraRoutine;
+
     public GameObject ElvenSkillEffect { get => elvenSkillEffect; set => elvenSkillEffect = value; }
 
     #region boolTalent
@@ -45,6 +50,7 @@ public class TerrifyingElfAura : NetworkBehaviour
     private bool _isReductionRecharge;
     private bool _isElvenSkillPhysDamageHealthChance;
     private bool _isThirdShotRow;
+    private bool _isCalmnessAura;
 
     public bool IsThirdShotRowActive => _isThirdShotRow;
 
@@ -131,6 +137,26 @@ public class TerrifyingElfAura : NetworkBehaviour
     public void ReductionRecharge(bool value) => _isReductionRecharge = value;
     public void CalmnessTalentActive(bool value) => calmnessTalent = value;
     public void ElvenSkillPhysDamageHealthChance(bool value) => _isElvenSkillPhysDamageHealthChance = value;
+    public void CalmnessAura(bool value)
+    {
+        _isCalmnessAura = value;
+
+        if (!isServer) return;
+
+        if (_isCalmnessAura)
+        {
+            if (_calmnessAuraRoutine == null)
+                _calmnessAuraRoutine = StartCoroutine(CalmnessAuraRoutine());
+        }
+        else
+        {
+            if (_calmnessAuraRoutine != null)
+            {
+                StopCoroutine(_calmnessAuraRoutine);
+                _calmnessAuraRoutine = null;
+            }
+        }
+    }
     #endregion
 
     #region CalmnessTalent
@@ -161,6 +187,38 @@ public class TerrifyingElfAura : NetworkBehaviour
         }
 
         currentSkill = null;
+    }
+
+    private IEnumerator CalmnessAuraRoutine()
+    {
+        var wait = new WaitForSeconds(_auraTick);
+
+        while (_isCalmnessAura)
+        {
+            yield return wait;
+
+            if (hero == null || hero.CharacterState == null)
+                continue;
+
+            float radius = hero.VisionComponent.VisionRange;
+
+            var colliders = Physics.OverlapSphere(
+                hero.transform.position,
+                radius,
+                _characterLayer
+            );
+
+            foreach (var col in colliders)
+            {
+                if (!col.TryGetComponent<Character>(out var target)) continue;
+                if (target == hero) continue;
+
+                if (target.NetworkSettings.TeamIndex != hero.NetworkSettings.TeamIndex) continue;
+                if (target.CharacterState == null) continue;
+
+                target.CharacterState.AddState(States.Calmness, durationCalmess, 0f, hero.gameObject, "CalmnessAura");
+            }
+        }
     }
 
     #endregion

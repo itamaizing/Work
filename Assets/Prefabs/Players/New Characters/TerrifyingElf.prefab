@@ -21915,8 +21915,8 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  reconnaissanceFire: {fileID: 2750012758126725032}
   terrifyingElfAura: {fileID: 6686568037796463366}
+  growTree: {fileID: 2248569995468415066}
 --- !u!114 &885336317892172373
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22334,7 +22334,7 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 4534754468497973439}
   shotsIntoSky: {fileID: 826193211731534654}
-  growTree: {fileID: 0}
+  growTree: {fileID: 2248569995468415066}
   _ability: {fileID: 4092227064955680494}
 --- !u!114 &336816487493961371
 MonoBehaviour:
@@ -22382,11 +22382,7 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  shotAstral: {fileID: 3491896792666520145}
-  shotIntoSky: {fileID: 6009180366675701932}
-  shotsIntoSky: {fileID: 826193211731534654}
-  terrifyingElfAura: {fileID: 0}
-  ability: {fileID: 0}
+  terrifyingElfAura: {fileID: 6686568037796463366}
 --- !u!114 &2114024499052472920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22427,8 +22423,6 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 4534754468497973439}
   growTree: {fileID: 2248569995468415066}
-  shotIntoSky: {fileID: 6009180366675701932}
-  shotsIntoSky: {fileID: 826193211731534654}
 --- !u!114 &8747300072688510514
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22461,8 +22455,8 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  sleep: {fileID: 127445238161157264}
-  _ability: {fileID: 4092227064955680494}
+  shotIntoSky: {fileID: 6009180366675701932}
+  shotsIntoSky: {fileID: 826193211731534654}
 --- !u!114 &1410310116505230793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22496,8 +22490,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  abilities: {fileID: 0}
-  multiMagicSpell: {fileID: 0}
 --- !u!114 &3423959342573903484
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22531,7 +22523,7 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  silence: {fileID: 0}
+  silence: {fileID: 4161291845396503115}
 --- !u!114 &4990467896875758726
 MonoBehaviour:
   m_ObjectHideFlags: 0
