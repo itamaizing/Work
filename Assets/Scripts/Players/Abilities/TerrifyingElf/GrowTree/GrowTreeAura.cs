@@ -10,9 +10,13 @@ public class GrowTreeAura : NetworkBehaviour
     [SerializeField] private float _tick = 1f;
     [SerializeField] private LayerMask characterLayer;
 
+    private SkillManager _skillManager;
     private readonly List<Character> charactersInZone = new();
     private readonly HashSet<uint> clientIds = new();
     private Coroutine _routine;
+
+    private const float TreeMultiplier = 1.2f;
+    private readonly HashSet<Character> buffedCharacters = new();
 
     [Header("Talent")]
     private bool _growTreeIncreasesMaxHealth;
@@ -24,6 +28,11 @@ public class GrowTreeAura : NetworkBehaviour
     {
         var id = netIdentity;
         if (id.connectionToClient != null) id.RemoveClientAuthority();
+    }
+
+    public void Init(SkillManager skillManager)
+    {
+        _skillManager = skillManager;
     }
 
     private void OnDestroy()
@@ -45,36 +54,80 @@ public class GrowTreeAura : NetworkBehaviour
         if (character.TryGetComponent<CharacterState>(out var state) && state.GetState(States.ShadowTree) is ShadowTree shadow) shadow.SwitchToFinite();
     }
 
+    private void ApplyBuff(Character character)
+    {
+        if (buffedCharacters.Contains(character)) return;
+
+        if (!character.TryGetComponent(out SkillManager skillManager)) return;
+
+        foreach (var skill in skillManager.Abilities)
+        {
+            if (skill == null) continue;
+
+            skill.Buff.Length.IncreasePercentage(TreeMultiplier);
+            skill.Buff.Radius.IncreasePercentage(TreeMultiplier);
+        }
+
+        buffedCharacters.Add(character);
+    }
+
+    private void RemoveBuff(Character character)
+    {
+        if (!buffedCharacters.Contains(character)) return;
+
+        if (!character.TryGetComponent(out SkillManager skillManager)) return;
+
+        foreach (var skill in skillManager.Abilities)
+        {
+            if (skill == null) continue;
+
+            skill.Buff.Length.ReductionPercentage(TreeMultiplier);
+            skill.Buff.Radius.ReductionPercentage(TreeMultiplier);
+        }
+
+        buffedCharacters.Remove(character);
+    }
+
     [ServerCallback]
     private void OnTriggerEnter(Collider other)
     {
-        if (!_growTreeIncreasesMaxHealth) return;
         if (((1 << other.gameObject.layer) & characterLayer.value) == 0) return;
 
-        if (other.TryGetComponent<Character>(out Character character) && !charactersInZone.Contains(character))
+        if (other.TryGetComponent<Character>(out Character character))
         {
-            charactersInZone.Add(character);
-            RpcAddCharacter(character.netId);
-            if (_routine == null) _routine = StartCoroutine(ApplyPartialShadowTreePeriodically());
+            ApplyBuff(character);
+
+            if (_growTreeIncreasesMaxHealth && !charactersInZone.Contains(character))
+            {
+                charactersInZone.Add(character);
+                RpcAddCharacter(character.netId);
+
+                if (_routine == null)
+                    _routine = StartCoroutine(ApplyPartialShadowTreePeriodically());
+            }
         }
     }
 
     [ServerCallback]
     private void OnTriggerExit(Collider other)
     {
-        if (!_growTreeIncreasesMaxHealth) return;
         if (((1 << other.gameObject.layer) & characterLayer.value) == 0) return;
 
         if (other.TryGetComponent<Character>(out Character character))
         {
-            charactersInZone.Remove(character);
-            ForceExit(character);
-            RpcRemoveCharacter(character.netId);
+            RemoveBuff(character);
 
-            if (charactersInZone.Count == 0 && _routine != null)
+            if (_growTreeIncreasesMaxHealth)
             {
-                StopCoroutine(_routine);
-                _routine = null;
+                charactersInZone.Remove(character);
+                ForceExit(character);
+                RpcRemoveCharacter(character.netId);
+
+                if (charactersInZone.Count == 0 && _routine != null)
+                {
+                    StopCoroutine(_routine);
+                    _routine = null;
+                }
             }
         }
     }

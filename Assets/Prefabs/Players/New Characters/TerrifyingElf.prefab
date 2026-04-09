@@ -20867,6 +20867,7 @@ MonoBehaviour:
   _arrowWithTreeEffect: {fileID: 8904759840201286552}
   _arrowIntoSkyEffect: {fileID: 215749735526849689}
   _skillQueue: {fileID: 4490336970382221666}
+  _skillManager: {fileID: 4092227064955680494}
   groundLayer:
     serializedVersion: 2
     m_Bits: 8192
