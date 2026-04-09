@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class UIMenuMainWindow : MonoBehaviour
 {
@@ -11,11 +11,13 @@ public class UIMenuMainWindow : MonoBehaviour
     [SerializeField] private UIMenuMainSavesPanel _savesPanel;
     [SerializeField] private UIMenuMainPlayerInfoPanel _infoPanel;
 
+#if !UNITY_SERVER
     private void Start()
     {
         Show();
         _abilitiesPanel.gameObject.SetActive(false);
     }
+#endif
 
     private void OnEnable()
     {

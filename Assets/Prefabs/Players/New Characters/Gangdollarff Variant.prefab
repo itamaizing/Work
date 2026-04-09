@@ -12893,6 +12893,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2201725961568704641, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2361216367366023055, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: sceneId
       value: 0
@@ -13076,18 +13080,6 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._name
       value: "\u0411\u043E\u0433"
-      objectReference: {fileID: 0}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: _talents.Array.data[0]._talentRows.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: _talents.Array.data[1]._talentRows.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: _talents.Array.data[2]._talentRows.Array.size
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentRows.Array.size
@@ -14680,6 +14672,7 @@ MonoBehaviour:
     _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
@@ -14767,6 +14760,7 @@ MonoBehaviour:
   - resourceType: 1
     resourceCost: 10
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 14
   _castDeley: 0
@@ -14852,6 +14846,7 @@ MonoBehaviour:
     _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
@@ -14939,6 +14934,7 @@ MonoBehaviour:
     _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
@@ -15025,6 +15021,7 @@ MonoBehaviour:
   - resourceType: 1
     resourceCost: 30
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 1.6
@@ -15109,6 +15106,7 @@ MonoBehaviour:
     _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 2
@@ -15189,6 +15187,7 @@ MonoBehaviour:
     _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 5
   _castDeley: 0
@@ -15274,6 +15273,7 @@ MonoBehaviour:
   - resourceType: 1
     resourceCost: 40
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 20
   _castDeley: 0
@@ -15360,6 +15360,7 @@ MonoBehaviour:
   - resourceType: 1
     resourceCost: 10
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 8
   _castDeley: 2
@@ -15443,6 +15444,7 @@ MonoBehaviour:
   - resourceType: 1
     resourceCost: 8
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 12
   _castDeley: 0
@@ -15532,6 +15534,7 @@ MonoBehaviour:
   - resourceType: 1
     resourceCost: 15
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
@@ -15616,6 +15619,7 @@ MonoBehaviour:
   - resourceType: 1
     resourceCost: 30
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 1.6
@@ -15699,6 +15703,7 @@ MonoBehaviour:
     _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 8
   _castDeley: 0
@@ -15786,6 +15791,7 @@ MonoBehaviour:
   - resourceType: 1
     resourceCost: 40
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 7
   _castDeley: 0
@@ -15883,6 +15889,7 @@ MonoBehaviour:
   - resourceType: 1
     resourceCost: 80
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 18
   _castDeley: 2
@@ -15967,6 +15974,7 @@ MonoBehaviour:
   - resourceType: 1
     resourceCost: 10
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 2
@@ -16087,6 +16095,7 @@ MonoBehaviour:
     _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
@@ -16172,6 +16181,7 @@ MonoBehaviour:
   - resourceType: 1
     resourceCost: 40
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 12
   _castDeley: 0
@@ -16254,6 +16264,7 @@ MonoBehaviour:
     _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
@@ -16338,6 +16349,7 @@ MonoBehaviour:
   - resourceType: 1
     resourceCost: 80
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 18
   _castDeley: 0
@@ -16421,6 +16433,7 @@ MonoBehaviour:
   - resourceType: 1
     resourceCost: 20
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 12
   _castDeley: 2
@@ -16509,6 +16522,7 @@ MonoBehaviour:
   - resourceType: 1
     resourceCost: 20
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 3

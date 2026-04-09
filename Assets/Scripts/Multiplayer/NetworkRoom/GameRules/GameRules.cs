@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -106,7 +106,8 @@ public abstract class GameRules : NetworkBehaviour
     {
         //_room = room;
         //_roomName = _room.SceneName;
-        Debug.LogError("asdasd");
+        //Debug.LogError("asdasd");
+        Debug.Log("Gamerules Init");
         AddAllPlayersInList();
         SubscribingOnPlayerEvents();
         SubscribeToTowerDeath();
@@ -177,16 +178,16 @@ public abstract class GameRules : NetworkBehaviour
             {
                 playerSettings.NetworkSettings.Players.Add(player.gameObject);
             }
-          /*  if (teamIndex == 1)
-            {
-                _gameManager.TeamsPanel.AddInFirstTeam(playerSettings);
-                //RpcAddToTeam(teamIndex, playerSettings);
-            }
-            else
-            {
-                _gameManager.TeamsPanel.AddInSecondTeam(playerSettings);
-                //RpcAddToTeam(teamIndex, playerSettings);
-            }   */ 
+            /*  if (teamIndex == 1)
+              {
+                  _gameManager.TeamsPanel.AddInFirstTeam(playerSettings);
+                  //RpcAddToTeam(teamIndex, playerSettings);
+              }
+              else
+              {
+                  _gameManager.TeamsPanel.AddInSecondTeam(playerSettings);
+                  //RpcAddToTeam(teamIndex, playerSettings);
+              }   */
 
             playerSettings.transform.SetPositionAndRotation(spawnPoints.GetRandomPoint(teamIndex-1), spawnPoints.GetRotate(teamIndex-1));
             playerSettings.NetworkSettings.SetSpawnPosition(spawnPoints.GetRandomPoint(teamIndex-1));

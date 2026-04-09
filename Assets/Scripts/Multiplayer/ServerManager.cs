@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -36,6 +36,7 @@ public class ServerManager : NetworkBehaviour
 
     public void Awake()
     {
+        Debug.Log("ServerAwake");
         if (_instance != null)
         {
             _groupManager = null;
@@ -44,7 +45,7 @@ public class ServerManager : NetworkBehaviour
         else
         {
             _instance = this;
-            DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(transform.root.gameObject);
             _groupManager = new GroupManager();
         }
         _menuEnv.gameObject.SetActive(true);
