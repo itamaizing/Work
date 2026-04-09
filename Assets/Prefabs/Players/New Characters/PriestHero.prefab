@@ -9743,8 +9743,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  _spark: {fileID: 683463177557245195}
-  _flowOfLight: {fileID: 744928704386096395}
   _baffDuration: 12
   _baffAdditionalTime: 3
   _baffChance: 0.2
@@ -10564,8 +10562,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  _spark: {fileID: 683463177557245195}
-  _flowOfLight: {fileID: 744928704386096395}
 --- !u!114 &3721933401981237356
 MonoBehaviour:
   m_ObjectHideFlags: 0
