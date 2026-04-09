@@ -65,4 +65,10 @@ public class StatBuff
         _multiplier = 1f;
         _additional = 0f;
     }
+
+    public void SetBaseValue(float value)
+    {
+        _multiplier = 1;
+        _additional = value - 1f;
+    }
 }

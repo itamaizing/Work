@@ -6,6 +6,12 @@ using UnityEngine;
 
 public class GrowTreeAura : NetworkBehaviour
 {
+    private class SkillBaseData
+    {
+        public float length;
+        public float radius;
+    }
+
     [Header("Tick")]
     [SerializeField] private float _tick = 1f;
     [SerializeField] private LayerMask characterLayer;
@@ -15,6 +21,9 @@ public class GrowTreeAura : NetworkBehaviour
     private Coroutine _routine;
     private const float TreeMultiplier = 1.2f;
     private const float VisionBonus = 3f;
+
+    private readonly Dictionary<Skill, SkillBaseData> _baseValues = new();
+    private bool _isBuffApplied = false;
 
     [SerializeField][ReadOnly] private SkillManager _skillManager;
     [SerializeField] [ReadOnly] private Character _Hero;
@@ -90,6 +99,64 @@ public class GrowTreeAura : NetworkBehaviour
         if (character == null) return;
         if (character.TryGetComponent<CharacterState>(out var state) && state.GetState(States.ShadowTree) is ShadowTree shadow) shadow.SwitchToFinite();
     }
+
+    private void CacheBaseValues()
+    {
+        _baseValues.Clear();
+
+        foreach (var skill in _skillManager.Abilities)
+        {
+            if (skill == null) continue;
+
+            _baseValues[skill] = new SkillBaseData
+            {
+                length = skill.Buff.Length.GetBuffedValue(1f),
+                radius = skill.Buff.Radius.GetBuffedValue(1f)
+            };
+        }
+    }
+
+    private void ApplyTreeBuffLocal()
+    {
+        if (_skillManager == null || _Hero == null) return;
+        if (_isBuffApplied) return;
+
+        CacheBaseValues();
+
+        _Hero.VisionComponent.VisionRange += VisionBonus;
+
+        foreach (var skill in _skillManager.Abilities)
+        {
+            if (skill == null) continue;
+
+            skill.Buff.Length.IncreasePercentage(TreeMultiplier);
+            skill.Buff.Radius.IncreasePercentage(TreeMultiplier);
+        }
+
+        _isBuffApplied = true;
+    }
+
+    private void RemoveTreeBuffLocal()
+    {
+        if (_skillManager == null || _Hero == null) return;
+        if (!_isBuffApplied) return;
+
+        _Hero.VisionComponent.VisionRange -= VisionBonus;
+
+        foreach (var skill in _skillManager.Abilities)
+        {
+            if (skill == null) continue;
+
+            if (_baseValues.TryGetValue(skill, out var data))
+            {
+                skill.Buff.Length.SetBaseValue(data.length);
+                skill.Buff.Radius.SetBaseValue(data.radius);
+            }
+        }
+
+        _isBuffApplied = false;
+    }
+
 
     [ServerCallback]
     private void OnTriggerEnter(Collider other)
