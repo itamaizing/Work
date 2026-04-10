@@ -313,13 +313,7 @@ public class TerrifyingElfAura : NetworkBehaviour
         if (!_isThirdShotRow) return;
         if (target == null) return;
 
-        if (!isServer)
-        {
-            ProcessShot(target.netIdentity);
-            return;
-        }
-
-        ProcessShotServer(target);
+        ProcessShotThird(target);
     }
 
     private void ReduceCooldowns()
@@ -332,7 +326,7 @@ public class TerrifyingElfAura : NetworkBehaviour
         }
     }
 
-    private void ProcessShotServer(Character target)
+    private void ProcessShotThird(Character target)
     {
         if (_lastTarget != target)
         {
@@ -342,23 +336,12 @@ public class TerrifyingElfAura : NetworkBehaviour
 
         _shotCounter++;
 
-        Debug.Log($"SHOT COUNT = {_shotCounter} | SERVER = {isServer}");
 
         if (_shotCounter >= 3)
         {
             _shotCounter = 0;
             ReduceCooldowns();
         }
-    }
-
-    private void ProcessShot(NetworkIdentity targetId)
-    {
-        if (targetId == null) return;
-
-        var target = targetId.GetComponent<Character>();
-        if (target == null) return;
-
-        ProcessShotServer(target);
     }
 
     #endregion

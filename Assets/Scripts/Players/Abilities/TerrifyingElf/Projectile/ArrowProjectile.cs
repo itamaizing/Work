@@ -221,7 +221,6 @@ public class ArrowProjectile : Projectiles
     {
         if (!_isElvenSkillCrit) return damage;
         if (_dad == null || target == null) return damage;
-
         if (!_dad.CharacterState.CheckForState(States.ElvenSkill)) return damage;
 
         float hpPercent = target.Health.CurrentValue / target.Health.MaxValue;
@@ -234,8 +233,6 @@ public class ArrowProjectile : Projectiles
         {
             float critMultiplier = UnityEngine.Random.Range(2.4f, 3.2f);
             damage *= critMultiplier;
-
-            Debug.Log($"[ElvenCrit] CRIT x{critMultiplier}");
         }
 
         return damage;

@@ -426,7 +426,6 @@ public abstract class Skill : NetworkBehaviour
         //трогать ивенты?
     }
 
-    [Command]
     public void CmdCooldownModify(double delta)
     {
         if (!Cooldown.IsActive)
@@ -436,6 +435,7 @@ public abstract class Skill : NetworkBehaviour
 
         if (_cooldownEndTime <= NetworkTime.time)
         {
+            Debug.Log($"_cooldownEndTime");
             Cooldown.ForceEnd();
         }
     }
