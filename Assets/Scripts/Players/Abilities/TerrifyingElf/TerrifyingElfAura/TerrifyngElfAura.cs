@@ -286,6 +286,12 @@ public class TerrifyingElfAura : NetworkBehaviour
         OnDamageTracked(damage, target);
     }
 
+    [Command(requiresAuthority = false)]
+    public void CmdResetCooldown(Skill skill)
+    {
+        skill.RpcResetCooldownStateOnly();
+    }
+
     private void OnDamageTracked(Damage damage, GameObject target)
     {
         if (damage.Type == DamageType.Physical && hero != null && hero.CharacterState != null)
@@ -308,22 +314,18 @@ public class TerrifyingElfAura : NetworkBehaviour
         }
     }
 
+    public void ResetCoolDown(Skill skill)
+    {
+        if (isServer) skill.RpcResetCooldownStateOnly();
+        else CmdResetCooldown(skill);
+    }
+
     public void ProcessShot(Character target)
     {
         if (!_isThirdShotRow) return;
         if (target == null) return;
 
         ProcessShotThird(target);
-    }
-
-    private void ReduceCooldowns()
-    {
-        if (skillManager == null) return;
-
-        foreach (var skill in skillManager.Skills)
-        {
-            skill.CmdCooldownModify(-1f);
-        }
     }
 
     private void ProcessShotThird(Character target)
@@ -336,11 +338,16 @@ public class TerrifyingElfAura : NetworkBehaviour
 
         _shotCounter++;
 
-
         if (_shotCounter >= 3)
         {
             _shotCounter = 0;
-            ReduceCooldowns();
+
+            foreach (var skill in skillManager.Skills)
+            {
+                if (skill == null) continue;
+
+                ResetCoolDown(skill);
+            }
         }
     }
 

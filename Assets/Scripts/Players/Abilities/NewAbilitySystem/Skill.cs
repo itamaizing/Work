@@ -426,6 +426,7 @@ public abstract class Skill : NetworkBehaviour
         //трогать ивенты?
     }
 
+    [Command]
     public void CmdCooldownModify(double delta)
     {
         if (!Cooldown.IsActive)
@@ -435,7 +436,6 @@ public abstract class Skill : NetworkBehaviour
 
         if (_cooldownEndTime <= NetworkTime.time)
         {
-            Debug.Log($"_cooldownEndTime");
             Cooldown.ForceEnd();
         }
     }
@@ -444,6 +444,23 @@ public abstract class Skill : NetworkBehaviour
     public void CmdCooldownEnd()
     {
         _cooldownEndTime = NetworkTime.time;
+    }
+
+    [Server]
+    public void ServerResetCooldownOnly()
+    {
+        _cooldownEndTime = NetworkTime.time;
+
+        if (_cooldownJob != null)
+        {
+            StopCoroutine(_cooldownJob);
+            _cooldownJob = null;
+        }
+
+        _remainingCooldownTime = 0;
+
+        Debug.Log($"_cooldownEndTime");
+        CooldownEnded?.Invoke();
     }
 
     #endregion
@@ -1328,6 +1345,12 @@ public abstract class Skill : NetworkBehaviour
     }
 
     [ClientRpc]
+    public void RpcResetCooldownStateOnly()
+    {
+        ResetCooldownStateOnly();
+    }
+
+    [ClientRpc]
     public void RpcCancelActiveSkill()
     {
         if (_isPreparing || _isCasting)
@@ -1349,14 +1372,7 @@ public abstract class Skill : NetworkBehaviour
 
     public void ResetSkillState()
     {
-        _remainingCooldownTime = 0;
-
-        if (_cooldownJob != null)
-        {
-            StopCoroutine(_cooldownJob);
-            _cooldownJob = null;
-        }
-        CooldownEnded?.Invoke();
+        ResetCooldownStateOnly();
 
         if (_castDeleyCoroutine != null)
         {
@@ -1387,7 +1403,20 @@ public abstract class Skill : NetworkBehaviour
         CancelCoroutine(_actionWrapperForCastCoroutine);
         ClearData();
     }
-    
+
+    public void ResetCooldownStateOnly()
+    {
+        if (_cooldownJob != null)
+        {
+            StopCoroutine(_cooldownJob);
+            _cooldownJob = null;
+        }
+
+        _remainingCooldownTime = 0;
+
+        CooldownEnded?.Invoke();
+    }
+
     public void ApplyDamage(Damage damage, GameObject target)
     {
         var damageable = target != null ? target.GetComponent<IDamageable>() : null;

@@ -168,6 +168,8 @@ public class ShotDarkness : Skill
         ShotDarknessAnimationMove();
         ProcessGhostCooldownReduction();
 
+        HandleThirdShotRowOnCast();
+
         if (Targeting.GetTarget() != null) CmdCreateProjectileAtTarget(Targeting.GetTarget().Transform, Damage, _magicDamage);
         else CmdCreateProjectileAtPosition(new Vector3(_targetPoint.x, _targetPoint.y, _targetPoint.z), Damage, _magicDamage);
 
@@ -187,6 +189,19 @@ public class ShotDarkness : Skill
         }
 
         else CmdUseMana(_magicDamage);
+    }
+
+
+    private void HandleThirdShotRowOnCast()
+    {
+        if (_terrifyingElfAura == null) return;
+        if (!_terrifyingElfAura.IsThirdShotRowActive) return;
+
+        var targetData = Targeting.GetTarget();
+
+        if (targetData == null || targetData.Character == null) return;
+
+        _terrifyingElfAura.ProcessShot(targetData.Character);
     }
 
     private void ProcessGhostCooldownReduction()
