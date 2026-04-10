@@ -29,10 +29,16 @@ public class TerrifyingElfAura : NetworkBehaviour
     [Header("Skills")]
     [SerializeField] private ReconnaissanceFire reconnaissanceFire;
 
+    #region Calmness aura
     [SerializeField] private float _auraTick = 1f;
     [SerializeField] private LayerMask _characterLayer;
-
     private Coroutine _calmnessAuraRoutine;
+    #endregion
+    #region Physical skill crit
+    [SerializeField] private Shot _shot;
+    [SerializeField] private ShotIntoSky _shotIntoSky;
+    [SerializeField] private ShotDarkness _shotDarkness;
+    #endregion
 
     public GameObject ElvenSkillEffect { get => elvenSkillEffect; set => elvenSkillEffect = value; }
 
@@ -55,7 +61,29 @@ public class TerrifyingElfAura : NetworkBehaviour
     public bool IsThirdShotRowActive => _isThirdShotRow;
 
     public void ThirdShotRow(bool value) => _isThirdShotRow = value;
+    public void ReductionRecharge(bool value) => _isReductionRecharge = value;
+    public void CalmnessTalentActive(bool value) => calmnessTalent = value;
+    public void ElvenSkillPhysDamageHealthChance(bool value) => _isElvenSkillPhysDamageHealthChance = value;
+    public void CalmnessAura(bool value)
+    {
+        _isCalmnessAura = value;
 
+        if (!isServer) return;
+
+        if (_isCalmnessAura)
+        {
+            if (_calmnessAuraRoutine == null)
+                _calmnessAuraRoutine = StartCoroutine(CalmnessAuraRoutine());
+        }
+        else
+        {
+            if (_calmnessAuraRoutine != null)
+            {
+                StopCoroutine(_calmnessAuraRoutine);
+                _calmnessAuraRoutine = null;
+            }
+        }
+    }
     #endregion
 
     private Skill currentSkill;
@@ -131,32 +159,6 @@ public class TerrifyingElfAura : NetworkBehaviour
             _heroMana.ValueChanged += OnManaChanged;
     }
 
-    #endregion
-
-    #region Talent
-    public void ReductionRecharge(bool value) => _isReductionRecharge = value;
-    public void CalmnessTalentActive(bool value) => calmnessTalent = value;
-    public void ElvenSkillPhysDamageHealthChance(bool value) => _isElvenSkillPhysDamageHealthChance = value;
-    public void CalmnessAura(bool value)
-    {
-        _isCalmnessAura = value;
-
-        if (!isServer) return;
-
-        if (_isCalmnessAura)
-        {
-            if (_calmnessAuraRoutine == null)
-                _calmnessAuraRoutine = StartCoroutine(CalmnessAuraRoutine());
-        }
-        else
-        {
-            if (_calmnessAuraRoutine != null)
-            {
-                StopCoroutine(_calmnessAuraRoutine);
-                _calmnessAuraRoutine = null;
-            }
-        }
-    }
     #endregion
 
     #region CalmnessTalent

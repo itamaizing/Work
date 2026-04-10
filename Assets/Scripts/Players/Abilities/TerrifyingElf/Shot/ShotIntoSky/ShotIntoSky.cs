@@ -12,6 +12,7 @@ public class ShotIntoSky : Skill
     [SerializeField] private HeroComponent playerLinks;
     [SerializeField] private float _dropDelayTime = 3f;
     [SerializeField] private ReconnaissanceFire reconnaissanceFire;
+    [SerializeField] private TerrifyingElfAura _terrifyingElfAura;
     
     [Header("Arrow Effects Settings")]
     [SerializeField] private ArrowIntoSkyProjectile impactPrefab;
@@ -233,7 +234,7 @@ public class ShotIntoSky : Skill
         if (!impactPrefab) return;
 
         ArrowIntoSkyProjectile impact = Instantiate(impactPrefab, position, Quaternion.identity);
-        impact.Init(playerLinks, this, damage, silenceTalentActive, lastStreamTalent, shotAstralManaActive);
+        impact.Init(playerLinks, this, damage, silenceTalentActive, lastStreamTalent, shotAstralManaActive, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
         NetworkServer.Spawn(impact.gameObject);
 
         _arrowIntoSkyProjectileIds.Add(impact.GetComponent<NetworkIdentity>().netId);
@@ -262,7 +263,7 @@ public class ShotIntoSky : Skill
         if (gameObject == null) return;
 
         ArrowIntoSkyProjectile impact = gameObject.GetComponent<ArrowIntoSkyProjectile>();
-        if (impact != null) impact.Init(playerLinks, this, damage, silenceTalentActive, lastStreamTalent, shotAstralManaActive);
+        if (impact != null) impact.Init(playerLinks, this, damage, silenceTalentActive, lastStreamTalent, shotAstralManaActive, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
     }
  
     [ClientRpc] private void RpcActivate(ArrowIntoSkyProjectile projectile) => projectile.Activate();

@@ -27,12 +27,14 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
     private Character _character;
     private float _damage;
 
+    private bool _isElvenSkillCrit;
+
     private readonly HashSet<Collider> _damagedThisTick = new();
 
     public GameObject Arrow { get => arrow; set => arrow = value; }
     public GameObject Circle { get => circle; set => circle = value; }
 
-    public virtual void Init(HeroComponent dad, Skill skill, float damage, bool silenceTalentActive, bool lastStreamTalent, bool shotAstralManaActive)
+    public virtual void Init(HeroComponent dad, Skill skill, float damage, bool silenceTalentActive, bool lastStreamTalent, bool shotAstralManaActive, bool isElvenSkillCrit)
     {
         this.silenceTalentActive = silenceTalentActive;
         this.lastStreamTalent = lastStreamTalent;
@@ -40,6 +42,7 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
         _dad = dad;
         _skill = skill;
         _damage = damage;
+        _isElvenSkillCrit = isElvenSkillCrit;
 
         if (_dad != null && _dad.TryGetComponent<Character>(out Character character)) _character = character;
     }
@@ -155,19 +158,7 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
             damageToDeal *= critMultiplier;
         }
 
-        bool isElvenSkill = _dad != null && _dad.CharacterState.GetState(States.ElvenSkill) != null;
-
-        if (isElvenSkill && other.TryGetComponent<Character>(out var targetCharacter))
-        {
-            var health = targetCharacter.Health;
-            if (health.CurrentValue >= health.MaxValue * 0.8f)
-            {
-                damageToDeal += UnityEngine.Random.Range(minDamage, maxDamage + 1) * 0.3f;
-
-                if (UnityEngine.Random.value < 0.20f) damageToDeal *= 3.2f;
-            }
-        }
-
+        if (other.TryGetComponent<Character>(out var targetCharacter)) damageToDeal = ApplyElvenCritModifier(damageToDeal, targetCharacter);
         if (other.TryGetComponent<IDamageable>(out var damageTarget)) ApplyDamage(damageToDeal, DamageType.Physical, damageTarget);
 
         _skill.Damage = damageToDeal;
@@ -200,6 +191,32 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
             _skill.ApplyDamage(_damage, targetComponent.gameObject);
             //CmdApplyDamage(targetComponent.gameObject, _damage, null);
         }
+    }
+
+    private float ApplyElvenCritModifier(float damage, Character target)
+    {
+        if (!_isElvenSkillCrit) return damage;
+        if (_dad == null || target == null) return damage;
+
+        if (!_dad.CharacterState.CheckForState(States.ElvenSkill))
+            return damage;
+
+        if (target.Health == null) return damage;
+
+        float hpPercent = target.Health.CurrentValue / target.Health.MaxValue;
+        if (hpPercent <= 0.7f) return damage;
+
+        damage *= 1.3f;
+
+        if (UnityEngine.Random.Range(0f, 100f) <= 30f)
+        {
+            float critMultiplier = UnityEngine.Random.Range(2.4f, 3.2f);
+            damage *= critMultiplier;
+
+            Debug.Log($"[ElvenCrit AoE] CRIT x{critMultiplier}");
+        }
+
+        return damage;
     }
 
     private void RestoreMana()

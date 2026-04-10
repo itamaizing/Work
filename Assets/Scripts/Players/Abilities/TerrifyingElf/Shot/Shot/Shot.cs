@@ -238,7 +238,7 @@ public class Shot : Skill
         if (direction == Vector3.zero) return;
 
         ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffsetUp, Quaternion.LookRotation(direction));
-        proj.Init(_playerLinks, 0, false, this, damage);
+        proj.Init(_playerLinks, 0, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
         //SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);
         proj.StartFly(target);
@@ -255,7 +255,7 @@ public class Shot : Skill
         if (direction == Vector3.zero) return;
 
         ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffsetDown, Quaternion.LookRotation(direction));
-        proj.Init(_playerLinks, 0, false, this, damage);
+        proj.Init(_playerLinks, 0, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
         //SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);
         proj.StartFly(direction);
@@ -269,7 +269,7 @@ public class Shot : Skill
         if (gameObject == null) return;
 
         ArrowProjectile proj = gameObject.GetComponent<ArrowProjectile>();
-        if (proj != null) proj.Init(_playerLinks, 0, false, this, damage);
+        if (proj != null) proj.Init(_playerLinks, 0, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
     }
 
     [ClientRpc]
