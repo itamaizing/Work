@@ -108,7 +108,6 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
 
         if (_usedSkills.Count >= 3)
         {
-            RpcPlayParticles("FullCombo");
 
             var lastThreeHits = _usedSkills.Skip(Mathf.Max(0, _usedSkills.Count - 3)).ToList();
 
@@ -118,6 +117,7 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
                 return;
             }
             
+            RpcPlayParticles("FullCombo");
             TryUseChargersOnLasts(enemy, lastThreeHits);
             if (_consumeComboTalent)
             {

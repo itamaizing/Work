@@ -10,6 +10,11 @@ public class ConsumeCombo_Scorpion : Skill
     private List<Character> _comboTargetsQueue = new List<Character>();
 
     private CharacterState _lastCharacterState;
+    public CharacterState LastCharacterState
+    {
+        get => _lastCharacterState;
+        set => _lastCharacterState = value;
+    }
 
     protected override bool IsCanCast => true;
     protected override int AnimTriggerCastDelay => 0;

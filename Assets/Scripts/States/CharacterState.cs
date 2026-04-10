@@ -374,6 +374,8 @@ public class CharacterState : NetworkBehaviour
 		[States.LightningEvade] = new LightningEvadeState(),
 		[States.ReptilianStasis] = new ReptilianStasisState(),
 		[States.ReflectiveScales] = new ReflectiveScalesState(),
+		[States.SwiftAttacks] = new SwiftAttacksState(),
+		[States.CounterRage] = new CounterRageState(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -991,6 +993,8 @@ public enum States
 	LightningEvade,
 	ReptilianStasis,
 	ReflectiveScales,
+	SwiftAttacks,
+	CounterRage
 }
 public enum BaffDebaff
 {
