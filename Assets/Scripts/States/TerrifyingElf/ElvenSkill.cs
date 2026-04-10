@@ -10,9 +10,6 @@ public class ElvenSkill : RefreshingState
     private SkillManager _skillManager;
 
     private const float PercentBonusPerStack = 0.1f;
-    private const int MaxStacks = 3;
-
-    private int _currentStacks = 0;
 
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.ElvenSkill;
@@ -20,6 +17,12 @@ public class ElvenSkill : RefreshingState
     public override List<StatusEffect> Effects => _effects;
 
     private List<StatusEffect> _effects = new() { StatusEffect.Ability };
+
+    public ElvenSkill()
+    {
+        MaxStacksCount = 6;
+        currentStacksCount = 1;
+    }
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
@@ -31,8 +34,6 @@ public class ElvenSkill : RefreshingState
         _skillManager = characterState.Character.Abilities;
 
         _move.SetCanMoveState(true);
-
-        _currentStacks = 0;
 
         AddStack();
 
@@ -66,7 +67,7 @@ public class ElvenSkill : RefreshingState
     {
         _duration = time;
 
-        if (_currentStacks >= MaxStacks)
+        if (currentStacksCount >= MaxStacksCount)
             return false;
 
         AddStack();
@@ -75,7 +76,7 @@ public class ElvenSkill : RefreshingState
 
     private void AddStack()
     {
-        _currentStacks++;
+        currentStacksCount++;
 
         if (_skillManager == null) return;
 
@@ -109,12 +110,12 @@ public class ElvenSkill : RefreshingState
     {
         if (_move) _move.SetCanMoveState(false);
 
-        for (int i = 0; i < _currentStacks; i++)
+        for (int i = 0; i < currentStacksCount; i++)
         {
             RemoveOneStack();
         }
 
-        _currentStacks = 0;
+        currentStacksCount = 0;
 
         if (_skillManager != null)
         {
