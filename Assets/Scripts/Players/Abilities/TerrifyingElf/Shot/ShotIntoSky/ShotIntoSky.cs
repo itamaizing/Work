@@ -12,7 +12,8 @@ public class ShotIntoSky : Skill
     [SerializeField] private HeroComponent playerLinks;
     [SerializeField] private float _dropDelayTime = 3f;
     [SerializeField] private ReconnaissanceFire reconnaissanceFire;
-
+    [SerializeField] private TerrifyingElfAura _terrifyingElfAura;
+    
     [Header("Arrow Effects Settings")]
     [SerializeField] private ArrowIntoSkyProjectile impactPrefab;
     [SerializeField] private ParticleSystem arrowIntoSkyEffect;
@@ -24,11 +25,29 @@ public class ShotIntoSky : Skill
     private float _baseRadius;
     private const float _extraShotDelay = 1f;
 
+    private float _baseCastDelay;
+    private Coroutine _boostWindow;
+    private WaitForSeconds _boostDuration = new WaitForSeconds(2f);
+
     #region Talent
     private bool silenceTalentActive;
     private bool tripleShotTalentActive;
     private bool shotAstralManaActive;
     private bool _isShotRadiusUpgradeActive;
+    private bool _isSkillEnableBoostLogicActiveTalent;
+
+    public void ShotsIntoSkyAstralTalentActive(bool value) => shotAstralManaActive = value;
+    public void SetSilenceTalentActive(bool value) => silenceTalentActive = value;
+    public void SetTripleShotTalentActive(bool value) => tripleShotTalentActive = value;
+    public void ShotRadiusUpgradeActive(bool value)
+    {
+        _isShotRadiusUpgradeActive = value;
+
+        if (_isShotRadiusUpgradeActive) AreaInfo.Radius *= 3;
+        else AreaInfo.Radius = _baseRadius;
+    }
+
+    public void SkillEnableBoostLogicActiveTalent(bool value) => _isSkillEnableBoostLogicActiveTalent = value;
     #endregion
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotSkyCastDelay");
@@ -40,6 +59,7 @@ public class ShotIntoSky : Skill
     {
         base.Init(render, hero);
         _baseRadius = AreaInfo.Radius;
+        _baseCastDelay = CastDeley;
         Canceled += HandleSkillCanceled;
     }
 
@@ -60,6 +80,16 @@ public class ShotIntoSky : Skill
         }
     }
 
+    protected override void SkillEnableBoostLogic() => CastDeley = 0;
+    protected override void SkillDisableBoostLogic() => CastDeley = _baseCastDelay;
+
+    public void TryStartBoost()
+    {
+        if (!_isSkillEnableBoostLogicActiveTalent) return;
+        if (_boostWindow != null) StopCoroutine(_boostWindow);
+
+        _boostWindow = StartCoroutine(BoostWindow());
+    }
 
     public void ShotAnimationMove()
     {
@@ -173,6 +203,13 @@ public class ShotIntoSky : Skill
         ClearData();
     }
 
+    private IEnumerator BoostWindow()
+    {
+        EnableSkillBoost();
+        yield return _boostDuration;
+        DisableSkillBoost();
+    }
+
     private bool TryGetGroundPoint(out Vector3 groundPoint)
     {
         groundPoint = Vector3.zero;
@@ -200,8 +237,7 @@ public class ShotIntoSky : Skill
         if (!impactPrefab) return;
 
         ArrowIntoSkyProjectile impact = Instantiate(impactPrefab, position, Quaternion.identity);
-        SceneManager.MoveGameObjectToScene(impact.gameObject, _hero.NetworkSettings.MyRoom);
-        impact.Init(playerLinks, this, damage, silenceTalentActive, lastStreamTalent, shotAstralManaActive);
+        impact.Init(playerLinks, this, damage, silenceTalentActive, lastStreamTalent, shotAstralManaActive, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
         NetworkServer.Spawn(impact.gameObject);
 
         _arrowIntoSkyProjectileIds.Add(impact.GetComponent<NetworkIdentity>().netId);
@@ -230,7 +266,7 @@ public class ShotIntoSky : Skill
         if (gameObject == null) return;
 
         ArrowIntoSkyProjectile impact = gameObject.GetComponent<ArrowIntoSkyProjectile>();
-        if (impact != null) impact.Init(playerLinks, this, damage, silenceTalentActive, lastStreamTalent, shotAstralManaActive);
+        if (impact != null) impact.Init(playerLinks, this, damage, silenceTalentActive, lastStreamTalent, shotAstralManaActive, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
     }
  
     [ClientRpc] private void RpcActivate(ArrowIntoSkyProjectile projectile) => projectile.Activate();
@@ -278,17 +314,4 @@ public class ShotIntoSky : Skill
     }
 
     public override void LoadTargetData(TargetInfo targetInfo) => _targetPoint = targetInfo.Points[0];
-
-    #region Talent
-    public void ShotsIntoSkyAstralTalentActive(bool value) => shotAstralManaActive = value;
-    public void SetSilenceTalentActive(bool value) => silenceTalentActive = value;
-    public void SetTripleShotTalentActive(bool value) => tripleShotTalentActive = value;
-    public void ShotRadiusUpgradeActive(bool value)
-    {
-        _isShotRadiusUpgradeActive = value;
-
-        if (_isShotRadiusUpgradeActive) AreaInfo.Radius *= 3;
-        else AreaInfo.Radius = _baseRadius;
-    }
-    #endregion
 }

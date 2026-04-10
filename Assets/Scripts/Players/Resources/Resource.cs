@@ -94,8 +94,9 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 
         _maxValueAttribute = maxValue;
         _maxValue = maxValue.GetValue();
-        _currentValue = _maxValue / 2;
+        _currentValue = _maxValue;
 
+        _regenCoroutine = StartCoroutine(RegenerateJob());
         ClientStartRegenirateJob();
     }
 
@@ -107,15 +108,18 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 
         _maxValueAttribute = resource.Attributes[ResourceAttributeName.MaxValue];
         _maxValue = resource.Attributes[ResourceAttributeName.MaxValue].GetValue();
-        _currentValue = _maxValue / 2;
+        _currentValue = _maxValue;
         //Debug.Log($"{CurrentValue}/{MaxValue} + {_regenerationValue}");
         _regenerationPeriod = 0.5f; //TEMPORARY TEST
         _regenerationDelay = 0.5f; //TEMPORARY TEST
+        _regenCoroutine = StartCoroutine(RegenerateJob());
         ClientStartRegenirateJob();
     }
 
     public virtual void Add(float value)
     {
+        Debug.Log("Try regen " + value);
+
         if (_maxValue >= _currentValue + value)
             _currentValue += value;
         else
@@ -202,8 +206,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 
         //ClientStopRegenerateJob();
         //ClientStartRegenirateJob();
-        if(oldValue > newValue)
-            ResetRegen();
+        if(oldValue > newValue) ResetRegen();
     }
 
     protected virtual void HookMaxValueChanged(float oldValue, float newValue)
@@ -239,7 +242,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
                 while (_currentValue < _maxValue)
                 {
                     //Debug.Log("Regens");
-                    CmdRegen();
+                    if (isClient) CmdRegen();
                     yield return new WaitForSeconds(_regenerationPeriod);
                 }
             }
@@ -297,6 +300,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     [Command]
     protected void CmdRegen()
     {
+
         Add(_regenerationValue);
     }
 

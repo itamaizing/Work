@@ -2,16 +2,15 @@ using UnityEngine;
 
 public class ReptileTalent_3 : Talent
 {
-    [SerializeField] private SkillManager skillManager;
-    [SerializeField] private CreeperInvisible creeperInvisible;
+    [SerializeField] private CreeperPoisonAura _creeperPoisonAura;
 
     public override void Enter()
     {
-        skillManager.ActivateSkill(creeperInvisible);
+        _creeperPoisonAura.ActiveWitheringPoison(true);
     }
 
     public override void Exit()
     {
-        skillManager.DeactivateSkill(creeperInvisible);
+        _creeperPoisonAura.ActiveWitheringPoison(false);
     }
 }

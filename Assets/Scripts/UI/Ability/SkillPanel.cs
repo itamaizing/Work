@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
@@ -81,9 +82,8 @@ public class SkillPanel : MonoBehaviour
         _playerAbilities.SkillAdded += OnSkillAdded;
         _playerAbilities.SkillRemoved += OnSkillRemoved;
 
-        OnBeginDrag();
-        //LoadPanel();
-        OnEndDrag();
+        //StartCoroutine(LoadPanelJob());
+        LoadPanel();
     }
 
     public void FillMenu(SkillManager abilities, HeroComponent hero)
@@ -153,10 +153,7 @@ public class SkillPanel : MonoBehaviour
         _playerAbilities.SkillAdded += OnSkillAdded;
         _playerAbilities.SkillRemoved += OnSkillRemoved;
 
-        OnBeginDrag();
-        //LoadPanel();
-
-        OnEndDrag();
+        StartCoroutine(LoadPanelJob());
     }
 
     public void FillMinionPanel(SkillManager abilities)
@@ -248,8 +245,7 @@ public class SkillPanel : MonoBehaviour
     }
     
     private void OnEndDrag()
-    {
-        
+    {  
         if (_hideUnusedButtons)
         {
             foreach (var item in _skillIcons)
@@ -260,6 +256,7 @@ public class SkillPanel : MonoBehaviour
                 }
             }
         }
+        //SavePanel();
     }
 
     private void SkillChanged(int index, Skill skill)
@@ -351,9 +348,14 @@ public class SkillPanel : MonoBehaviour
     {
         if (skill == null) return;
 
+        if (skill is SpellMoveCreatureTo || skill is SpellMoveTo)
+        {
+            if (_skills.Any(icon => icon.Skill is SpellMoveCreatureTo || icon.Skill is SpellMoveTo)) return;
+        }
+
         if (_skills.Any(icon => icon.Skill == skill)) return;
 
-        //FillMenu(_playerAbilities, _hero);
+        //FillMenu(_playerAbilities, _hero);Сен
 
         var freeIcon = _skillIcons.FirstOrDefault(icon => icon.CurrentIcon == null);
         if (freeIcon == null) return;
@@ -467,47 +469,22 @@ public class SkillPanel : MonoBehaviour
         _saveSystem.Save($"{_playerAbilities.Hero.Data.Name}_Group{0}_AbilityPanel", save);   
     }
 
+    [ContextMenu("Load")]
     private void LoadPanel()
     {
         List<SkillPanelSave> save = new();
         _saveSystem.Load<List<SkillPanelSave>>($"{_playerAbilities.Hero.Data.Name}_Group{0}_AbilityPanel", e => save = e);
-        if (save == null) return;
+
+        if (save == null)
+            return;
+
         foreach(var skillSave in save)
         {
             DraggableIcon icon = _skills.FirstOrDefault(a => a.Skill.Name == skillSave.Name);
-            SkillIcon cell = _skillIcons.FirstOrDefault(a => a.CurrentIcon == icon);
-            if (icon == null || cell == null) continue;
 
-            /* if (_skillIcons[skillSave.Id].CurrentIcon != null && _skillIcons[skillSave.Id].CurrentIcon != icon)
-             {
-                 DraggableIcon iconTemp = _skillIcons[skillSave.Id].CurrentIcon;
-                 SkillIcon cellTemp = _skillIcons.FirstOrDefault(a => a.CurrentIcon == null);
-
-                 iconTemp.OnBeginDrag(null);
-
-                 cellTemp.CurrentIcon = iconTemp;
-                 //iconTemp.UpdatePosition(cellTemp.transform);
-                 iconTemp.OnEndDrag(null);
-             }
-
-             icon.OnBeginDrag(null);
-             _skillIcons[skillSave.Id].CurrentIcon = icon;
-             //icon.UpdatePosition(_skillIcons[skillSave.Id].transform);
-
-             icon.OnEndDrag(null);
-
-             if(_skillIcons[skillSave.Id].Index != cell.Index)
-                 cell.ClearData();
-
-             SkillChanged(skillSave.Id, icon.Skill);*/
-
-
-            SetSkillIconFrame(icon, skillSave.Id);
+            if (icon != null)
+                SetSkillIconFrame(icon, skillSave.Id);
         }
-        OnBeginDrag();
-        OnEndDrag();
-
-
     }
 
     private void LoadOneSkill(Skill skill)
@@ -542,6 +519,12 @@ public class SkillPanel : MonoBehaviour
 
         OnBeginDrag();
         OnEndDrag();
+    }
+
+    private IEnumerator LoadPanelJob()
+    {
+        yield return new WaitForEndOfFrame();
+        LoadPanel();
     }
 }
 

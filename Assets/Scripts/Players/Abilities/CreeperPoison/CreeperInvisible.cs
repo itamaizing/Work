@@ -8,14 +8,14 @@ public class CreeperInvisible : Skill
 {
     #region Variables
 
-    [Header("Talents")]
-    [SerializeField] private AssasinPoison _assasinPoison;
-    [SerializeField] private ReleaseFromSecrecy _releaseFromSecrecy;
-    [SerializeField] private DesireToHide _desireToHide;
-    [SerializeField] private FirstStrike _firstStrike;
-    [SerializeField] private ContinuationAmbush _continuationAmbush;
-    [SerializeField] private TransparentPoisons _transparentPoisons;
-    [SerializeField] private PreparingForFight _preparingForFight;
+    //[Header("Talents")]
+    //[SerializeField] private AssasinPoison _assasinPoison;
+    //[SerializeField] private ReleaseFromSecrecy _releaseFromSecrecy;
+    //[SerializeField] private DesireToHide _desireToHide;
+    //[SerializeField] private FirstStrike _firstStrike;
+    //[SerializeField] private ContinuationAmbush _continuationAmbush;
+    //[SerializeField] private TransparentPoisons _transparentPoisons;
+    //[SerializeField] private PreparingForFight _preparingForFight;
 
     [Header("Ability")]
     [SerializeField] private CreeperStrike _creeperStrike;
@@ -51,11 +51,36 @@ public class CreeperInvisible : Skill
         set => _isReadyToThreeHitForPreparingForFightTalent = value; 
     }
 
-    public bool IsInvisible { get => _isInvisible; set => _isInvisible = value; }
+    public bool IsInvisible
+    {
+        get => _isInvisible;
+        set
+        {
+            if (_isInvisible == value) return;
+
+            _isInvisible = value;
+            OnInvisibleChanged?.Invoke(_isInvisible);
+        }
+    }
+
+    #region Talent
+
+    private bool _isInvisibilitStrike = false;
+
+    private int _strikeCrit;
+
+    public int StrikeCrit { get => _strikeCrit; set => _strikeCrit = value; }
+    public bool IsInvisibilitStrike { get => _isInvisibilitStrike; set => _isInvisibilitStrike = value; }
+
+    public void InvisibilitStrike(bool value) => _isInvisibilitStrike = value;
+
+    #endregion
 
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
     protected override bool IsCanCast => true;
+
+    public event Action<bool> OnInvisibleChanged;
 
     #endregion
 
@@ -197,28 +222,28 @@ public class CreeperInvisible : Skill
 
         else CmdApplyInvis(_player.gameObject);
 
-        if (_isInvisible && _transparentPoisons.Data.IsOpen)
-        {
-            if (_altAbilities != null)
-            {
-                foreach (IAltAbility altAbility in _altAbilities)
-                {
-                    if (altAbility is SpitPoison spitPoison)
-                    {
-                        _spitPoison = spitPoison;
-                        _spitPoison.IsAltAbility = true;
-                        _spitPoison.ResetAbilityParameters += OnResetSpitPoison;
-                    }
-                    if (altAbility is PoisonBall poisonBall)
-                    {
-                        _poisonBall = poisonBall;
-                        _poisonBall.IsAltAbility = true;
-                        _poisonBall.ResetAbilityParameters += OnResetPoisonBall;
-                    }
-                }
-            }
-            CmdTransparentPoisonsIncreaseManaCots();
-        }
+        //if (IsInvisible && _transparentPoisons.Data.IsOpen)
+        //{
+        //    if (_altAbilities != null)
+        //    {
+        //        foreach (IAltAbility altAbility in _altAbilities)
+        //        {
+        //            if (altAbility is SpitPoison spitPoison)
+        //            {
+        //                _spitPoison = spitPoison;
+        //                _spitPoison.IsAltAbility = true;
+        //                _spitPoison.ResetAbilityParameters += OnResetSpitPoison;
+        //            }
+        //            if (altAbility is PoisonBall poisonBall)
+        //            {
+        //                _poisonBall = poisonBall;
+        //                _poisonBall.IsAltAbility = true;
+        //                _poisonBall.ResetAbilityParameters += OnResetPoisonBall;
+        //            }
+        //        }
+        //    }
+        //    CmdTransparentPoisonsIncreaseManaCots();
+        //}
 
         //if (_desireToHide.Data.IsOpen && _desireToHide.IsCanApplyInvisible)
         //{
@@ -291,7 +316,7 @@ public class CreeperInvisible : Skill
     [Command]
     private void CmdApplyInvis(GameObject player)
     {
-        _isInvisible = true;
+        IsInvisible = true;
         _isPlayerSeen = false;
         _isDamagedPlayer = false;
 
@@ -305,7 +330,7 @@ public class CreeperInvisible : Skill
     [Command]
     private void CmdRemoveInvisible(GameObject player, bool creeperStrikeIsHit)
     {
-        _isInvisible = false;
+        IsInvisible = false;
         _isPlayerSeen = true;
         _isDamagedPlayer = false;
 
@@ -314,11 +339,11 @@ public class CreeperInvisible : Skill
         RpcRemoveInvisible(creeperStrikeIsHit);
     }
 
-    [Command]
-    private void CmdTransparentPoisonsIncreaseManaCots()
-    {
-        _transparentPoisons.IncreaseManaCost();
-    }
+    //[Command]
+    //private void CmdTransparentPoisonsIncreaseManaCots()
+    //{
+    //    _transparentPoisons.IncreaseManaCost();
+    //}
 
     #endregion
 
@@ -413,6 +438,7 @@ public class CreeperInvisible : Skill
             }
         }
 
+        _strikeCrit = 1;
         playerMaterial.Clear();
     }
     
@@ -420,7 +446,7 @@ public class CreeperInvisible : Skill
     [ClientRpc]
     private void RpcApplyInvis()
     {
-        _isInvisible = true;
+        IsInvisible = true;
         _isPlayerSeen = false;
         _isDamagedPlayer = false;
 
@@ -430,27 +456,27 @@ public class CreeperInvisible : Skill
     [ClientRpc]
     private void RpcRemoveInvisible(bool creeperStrikeIsHit)
     {
-        _isInvisible = false;
+        IsInvisible = false;
         _player.SelectedCircle?.SetAllProjectorsEnabled(true);
 
-        if (_assasinPoison != null && _assasinPoison.Data.IsOpen)
-            _assasinPoison.RemoveAllCharges();
+        //if (_assasinPoison != null && _assasinPoison.Data.IsOpen)
+        //    _assasinPoison.RemoveAllCharges();
         
 
-        if (_releaseFromSecrecy != null && _releaseFromSecrecy.Data.IsOpen)
-            _releaseFromSecrecy.ApplyBuff();
+        //if (_releaseFromSecrecy != null && _releaseFromSecrecy.Data.IsOpen)
+        //    _releaseFromSecrecy.ApplyBuff();
         
 
-        if (_firstStrike != null && _firstStrike.Data.IsOpen && !_firstStrike.IsCanIncreaseCrit)
-            _firstStrike.SetBoolTrue();
+        //if (_firstStrike != null && _firstStrike.Data.IsOpen && !_firstStrike.IsCanIncreaseCrit)
+        //    _firstStrike.SetBoolTrue();
         
 
-        if (_preparingForFight != null && _preparingForFight.Data.IsOpen)
-            _isReadyToThreeHitForPreparingForFightTalent = true;
+        //if (_preparingForFight != null && _preparingForFight.Data.IsOpen)
+        //    _isReadyToThreeHitForPreparingForFightTalent = true;
             
 
-        if (_coldBlood.ColdBloodTalent != null && _coldBlood.ColdBloodTalent.Data.IsOpen)
-            _coldBlood.ReducingAbilityCooldown();
+        //if (_coldBlood.ColdBloodTalent != null && _coldBlood.ColdBloodTalent.Data.IsOpen)
+        //    _coldBlood.ReducingAbilityCooldown();
 
         _isPlayerSeen = true;
         _isDamagedPlayer = false;

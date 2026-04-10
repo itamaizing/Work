@@ -14,6 +14,16 @@ public class PoisonHealingCloudPrefab : NetworkBehaviour
     private float _baseDuration;
     private float _duration;
 
+    [SerializeField] private LayerMask _alliesLayer;
+    [SerializeField] private float _healTickRate = 1f;
+    [SerializeField] private float _healModifier = 0.01f;
+
+    [ReadOnly] [SerializeField] private Skill _skill;
+
+    private bool _isFeelingPoisoning;
+
+    private Coroutine _healCoroutine;
+
     private PoisonHealingCloudPrefab _poisonHealCloud;
     private Character _player;
 
@@ -29,9 +39,11 @@ public class PoisonHealingCloudPrefab : NetworkBehaviour
         }
     }
 
-    public void InitializationProjectile(Character player, float duration)
+    public void InitializationProjectile(Character player, float duration, Skill skill, bool isFeelingPoisoning)
     {
         _player = player;
+        _skill = skill;
+        _isFeelingPoisoning = isFeelingPoisoning;
 
         _duration = duration;
         _baseDuration = duration;
@@ -71,6 +83,8 @@ public class PoisonHealingCloudPrefab : NetworkBehaviour
             _duration = _baseDuration;
             _lifetimeStacksCoroutine = StartCoroutine(LifeTimeStacks());
         }
+
+        if (_healCoroutine == null) _healCoroutine = StartCoroutine(HealAllies());
     }
 
     private void InstantiateCloud()
@@ -91,6 +105,47 @@ public class PoisonHealingCloudPrefab : NetworkBehaviour
             ParticleSystem.MainModule main = _instancePoisonHealingCloud.main;
             main.duration = _baseDuration;
             _instancePoisonHealingCloud.Play();
+        }
+    }
+
+    private void HealInRadius()
+    {
+        if (_player == null) return;
+
+        Collider[] targets = Physics.OverlapSphere(
+            _player.transform.position,
+            _radiusCloud,
+            _alliesLayer
+        );
+
+        foreach (var col in targets)
+        {
+            if (col == null) continue;
+
+            Character target = col.GetComponent<Character>();
+            if (target == null) continue;
+            if (target.IsDead) continue;
+
+            if (target == _player) continue;
+
+            float healValue = target.Health.MaxValue * _healModifier;
+
+            Heal heal = new Heal
+            {
+                Value = healValue,
+                DamageableSkill = null
+            };
+
+            _skill.CmdApplyHeal(heal, target.gameObject, _skill, _skill.name);
+        }
+    }
+
+    private IEnumerator HealAllies()
+    {
+        while (true)
+        {
+            HealInRadius();
+            yield return new WaitForSeconds(_healTickRate);
         }
     }
 

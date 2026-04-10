@@ -16,7 +16,7 @@ public class Health : Resource, IDamageable, IHealable
     [SyncVar(hook = nameof(HookDefMagDamageChanged))] protected float _defMagDamage;
 
     private List<IDamageable> _shields = new List<IDamageable>();
-	[SyncVar] private float _sumDamageTaken = 0;
+    [SyncVar] private float _sumDamageTaken = 0;
     private float _totalMaxAbsorption = 0;
     private float _blockChance;
     private bool _isDot = false;
@@ -44,6 +44,9 @@ public class Health : Resource, IDamageable, IHealable
 
     public event Action<float, DamageType, Skill> ShieldDamageTaken;
     public event Action<Damage, Skill> OnBeforeTakeDamage; //Test
+
+    public delegate bool TryResistDelegate(Damage damage);
+    public event TryResistDelegate OnTryResist;
 
     public delegate void BeforeDamageDelegate(ref Damage damage, Skill skill);
     public event BeforeDamageDelegate OnBeforeDamage;
@@ -90,6 +93,17 @@ public class Health : Resource, IDamageable, IHealable
             Evaded?.Invoke();
             ClientRpcEvade();
             return false;
+        }
+
+        if (OnTryResist != null)
+        {
+            foreach (TryResistDelegate resist in OnTryResist.GetInvocationList())
+            {
+                if (resist.Invoke(damage))
+                {
+                    return false;
+                }
+            }
         }
 
         else if (UnityEngine.Random.Range(0f, 100f) <= _blockChance)
@@ -182,6 +196,20 @@ public class Health : Resource, IDamageable, IHealable
     {
         _evadeMeleeDamage = value;
         _evadeRangeDamage = value;
+    }
+
+    public void AddEvade(float value)
+    {
+        _evadeMeleeDamage += value;
+        _evadeRangeDamage += value;
+        _resistMagDamage += value;
+    }
+
+    public void RemoveEvade(float value)
+    {
+        _evadeMeleeDamage -= value;
+        _evadeRangeDamage -= value;
+        _resistMagDamage -= value;
     }
 
     #region HookMethods

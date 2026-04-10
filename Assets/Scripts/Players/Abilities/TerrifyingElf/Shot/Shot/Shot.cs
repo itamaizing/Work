@@ -184,6 +184,8 @@ public class Shot : Skill
         ShotAnimationMove();
         ProcessGhostCooldownReduction();
 
+        HandleThirdShotRowOnCast();
+
         if (Targeting.GetTarget() != null && Targeting.GetTarget() is IDamageable damageable) CmdCreateProjectileAtTarget(damageable.gameObject, Damage);
         else CmdCreateProjectileAtPosition(_targetPoint, Damage);
 
@@ -216,6 +218,18 @@ public class Shot : Skill
         }
     }
 
+    private void HandleThirdShotRowOnCast()
+    {
+        if (_terrifyingElfAura == null) return;
+        if (!_terrifyingElfAura.IsThirdShotRowActive) return;
+
+        var targetData = Targeting.GetTarget();
+
+        if (targetData == null || targetData.Character == null) return;
+
+        _terrifyingElfAura.ProcessShot(targetData.Character);
+    }
+
     private Vector3 GetMousePoint(LayerMask mask)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -236,8 +250,8 @@ public class Shot : Skill
         if (direction == Vector3.zero) return;
 
         ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffsetUp, Quaternion.LookRotation(direction));
-        proj.Init(_playerLinks, 0, false, this, damage);
-        SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
+        proj.Init(_playerLinks, 0, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
+        //SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);
         proj.StartFly(target);
         RpcInit(proj.gameObject, damage);
@@ -253,8 +267,8 @@ public class Shot : Skill
         if (direction == Vector3.zero) return;
 
         ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffsetDown, Quaternion.LookRotation(direction));
-        proj.Init(_playerLinks, 0, false, this, damage);
-        SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
+        proj.Init(_playerLinks, 0, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
+        //SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);
         proj.StartFly(direction);
         RpcInit(proj.gameObject, damage);
@@ -267,7 +281,7 @@ public class Shot : Skill
         if (gameObject == null) return;
 
         ArrowProjectile proj = gameObject.GetComponent<ArrowProjectile>();
-        if (proj != null) proj.Init(_playerLinks, 0, false, this, damage);
+        if (proj != null) proj.Init(_playerLinks, 0, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
     }
 
     [ClientRpc]

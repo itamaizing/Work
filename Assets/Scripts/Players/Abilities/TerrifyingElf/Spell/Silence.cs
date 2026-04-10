@@ -126,7 +126,10 @@ public class Silence : Skill
 
         foreach (var hitCollider in hitColliders)
         {
-            if (hitCollider.gameObject != Hero.gameObject)  ApplyEnemiesZone(hitCollider, ref minionHitCount, ref ghostAuraMinionHitCount);
+            if (hitCollider.gameObject != Hero.gameObject)
+            {
+                ApplyEnemiesZone(hitCollider, ref minionHitCount, ref ghostAuraMinionHitCount);
+            }    
         }
 
         //if (minionHitCount > 0 && _isSilenceEffectsOnMinionMagic) DecreaseSetCooldown(GhostCooldownPerMinion * minionHitCount);

@@ -292,22 +292,22 @@ public class CharacterState : NetworkBehaviour
 
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
 	{
-        #region UpdatedStates
-        [States.Frozen] = new FrozenState(),
-        [States.Frosting] = new FrostingState(),
-        [States.Cooling] = new Cooling(),
-        [States.Restoration] = new RestorationState(),
-        [States.Stun] = new StunnedState(),
-        [States.Silent] = new Silent(),
-        [States.Calmness] = new Calmness(),
-        [States.PartialBlindness] = new PartialBlindness(),
-        [States.ScorchedSoul] = new ScorchedSoul(),
-        [States.Blind] = new BlindnessState(),
-        [States.HealingSlime] = new HealingSlime(),
-        #endregion
+		#region UpdatedStates
+		[States.Frozen] = new FrozenState(),
+		[States.Frosting] = new FrostingState(),
+		[States.Cooling] = new Cooling(),
+		[States.Restoration] = new RestorationState(),
+		[States.Stun] = new StunnedState(),
+		[States.Silent] = new Silent(),
+		[States.Calmness] = new Calmness(),
+		[States.PartialBlindness] = new PartialBlindness(),
+		[States.ScorchedSoul] = new ScorchedSoul(),
+		[States.Blind] = new BlindnessState(),
+		[States.HealingSlime] = new HealingSlime(),
+		#endregion
 
 
-        [States.Invisible] = new InvisibleState(),
+		[States.Invisible] = new InvisibleState(),
 		[States.SchoolDebuff] = new AbilitySchoolDebuff(),
 		[States.Desiccuration] = new Desiccuration(),
 		[States.Plague] = new Plague(),
@@ -321,7 +321,7 @@ public class CharacterState : NetworkBehaviour
 		[States.ReversePolarity] = new ReversePolarityState(),
 		[States.SpiritEnergy] = new SpiritEnergyState(),
 		[States.SpiritHealth] = new SpiritHealthState(),
-		
+
 		[States.Knockdown] = new Knockdown(),
 		[States.IdealEvade] = new IdealEvade(),
 		[States.BleedingDebuff] = new BleedingDebuff(),
@@ -361,6 +361,17 @@ public class CharacterState : NetworkBehaviour
 		[States.CorrodedArmor] = new CorrodedArmorState(),
 		[States.Impatience] = new ImpatienceState(),
 		[States.PsionicGeneration] = new PsionicGenerationState(),
+		[States.Parasites] = new ParasitesState(),
+		[States.SwarmSpeed] = new SwarmSpeedState(),
+		[States.DestructivePoison] = new DestructivePoisonState(),
+		[States.InjectionAdrenaline] = new InjectionAdrenalineState(),
+		[States.ProtectiveScales] = new ProtectiveScalesState(),
+		[States.ErodedArmor] = new ErodedArmorState(),
+		[States.ParalyzingPoison] = new ParalyzingPoisonState(),
+		[States.FeelingPoisoning] = new FeelingPoisoningState(),
+		[States.LightningEvade] = new LightningEvadeState(),
+		[States.ReptilianStasis] = new ReptilianStasisState(),
+		[States.ReflectiveScales] = new ReflectiveScalesState(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -787,6 +798,12 @@ public class CharacterState : NetworkBehaviour
 		_stateIcons?.RemoveIconCount();
 	}
 
+	[ClientRpc]
+	private void RpcClearStateIcons()
+	{
+		_stateIcons?.DeactivateAll();
+	}
+
 	private void MoveStateToEnd(int index)
 	{
 		if (index < 0 || index >= _currentStates.Count)
@@ -800,6 +817,16 @@ public class CharacterState : NetworkBehaviour
 
 		// Добавляем его в конец списка
 		_currentStates.Add(state);
+	}
+
+	[Server]
+	public void ServerClearAllStates()
+	{
+		var statesCopy = new List<AbstractCharacterState>(_currentStates);
+
+		foreach (var state in statesCopy) state.ExitState();
+		_currentStates.Clear();
+		RpcClearStateIcons();
 	}
 }
 
@@ -940,7 +967,18 @@ public enum States
 	CoolingDamaged,
 	MagicInstantaneity,
 	ImmortalityState,
-	BurningStacked
+	BurningStacked,
+	Parasites,
+	SwarmSpeed,
+	DestructivePoison,
+	InjectionAdrenaline,
+	ProtectiveScales,
+	ErodedArmor,
+	ParalyzingPoison,
+	FeelingPoisoning,
+	LightningEvade,
+	ReptilianStasis,
+	ReflectiveScales,
 }
 public enum BaffDebaff
 {

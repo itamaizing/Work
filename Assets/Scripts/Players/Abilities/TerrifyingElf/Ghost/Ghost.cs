@@ -122,7 +122,6 @@ public class Ghost : Skill
 
         //if (_isGhostSpawnInRadiusTree) AreaInfo.Radius = 0;
         AreaInfo.Radius = baseRadius;
-
         if (_extendedRadiusCircle == null) _extendedRadiusCircle = GetComponentInChildren<DrawCircle>(true);
     }
 

@@ -5,8 +5,8 @@ using UnityEngine;
 public class LightningStrikes : Skill
 {
     [Header("Talents")]
-    [SerializeField] private HeatedGlands _heatedGlands;
-    [SerializeField] private KillersStamina _killersStamina; 
+    //[SerializeField] private HeatedGlands _heatedGlands;
+    //[SerializeField] private KillersStamina _killersStamina; 
     
     [Header("Abillity Components")]
     [SerializeField] private ColdBlood _coldBlood;

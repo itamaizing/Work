@@ -7,6 +7,7 @@ using UnityEngine;
 public class ClawStrike : Skill
 {
     [SerializeField] private Character _player;
+    [SerializeField] private RechargeGlands _rechargeGlands;
     [SerializeField] private BasePsionicEnergy _basePsionicEnergy;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
     [SerializeField] private JumpWithChelicera _jumpWithChelicera;
@@ -29,6 +30,7 @@ public class ClawStrike : Skill
 
     private const float RandomChanceMin = 0f;
     private const float RandomChanceMax = 1f;
+    private const float TryApplyDestructivePoisonChance = 0.5f;
 
     private const float PsiDispel_3 = 30f;
     private const float PsiDispel_2 = 20f;
@@ -156,6 +158,8 @@ public class ClawStrike : Skill
         };
 
         CmdApplyDamage(physicalDamage, damageable.gameObject);
+
+        if (_rechargeGlands != null && targetCharacter != null) _rechargeGlands.TryApplyDestructivePoison(targetCharacter, TryApplyDestructivePoisonChance, _player);
 
         if (targetCharacter != null) TryApplyBleeding(targetCharacter);
 

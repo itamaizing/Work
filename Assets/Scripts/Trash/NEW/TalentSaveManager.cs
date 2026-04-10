@@ -27,10 +27,10 @@ public class TalentSaveManager
 
 		if (talentGroup == null || talent == null) return;
 
-        var points = talentGroup.BonusAttributePoints(talent.Data.Name, !isActive);
 
 		//talent.Data.IsOpen = isActive;
 		character.TalentManager.SetActive(idGroup, row, idTalent, isActive);
+        var points = talentGroup.BonusAttributePoints(talent.Data.Name, !isActive);
 
         if (isActive)
         {
@@ -40,6 +40,7 @@ public class TalentSaveManager
         {
             HandleDeactivation(points);
         }
+
         Debug.Log("SHOULD " + isActive + " TALENT " + $"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}");
 
         _saveData.SaveInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", isTalentActive);

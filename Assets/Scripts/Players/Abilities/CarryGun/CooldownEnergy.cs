@@ -23,17 +23,18 @@ public class CooldownEnergy : Resource
     private void Awake()
     {
         InitCooldownEnergyFromJumpSkill();
-        UpdateSlider();
     }
 
     private void OnEnable()
     {
         castCooldownEnergySkill += CooldownEnergySliderMinus;
+        _player.Reset += InitCooldownEnergyFromJumpSkill;
         StartCoroutine(RegenerateCooldownEnergy());
     }
 
     private void OnDisable()
     {
+        _player.Reset -= InitCooldownEnergyFromJumpSkill;
         castCooldownEnergySkill -= CooldownEnergySliderMinus;
         StopAllCoroutines();
     }
@@ -44,6 +45,8 @@ public class CooldownEnergy : Resource
 
         _maxValue = totalCooldown;
         _currentValue = _maxValue;
+
+        UpdateSlider();
     }
 
     private IEnumerator RegenerateCooldownEnergy()

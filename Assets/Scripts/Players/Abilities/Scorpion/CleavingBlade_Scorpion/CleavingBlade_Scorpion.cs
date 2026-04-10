@@ -125,32 +125,39 @@ public class CleavingBlade_Scorpion : Skill
 
     private void TryAttack(bool shouldIncreaseCounter, float damageMultiplier)
     {
-        if(_wasDamageApplied) return;
+        if (_wasDamageApplied) return;
 
-        if (Targeting.GetTarget() != null && Vector2.Distance(transform.position, Targeting.GetTarget().Transform.position) <= AreaInfo.Radius)
+        var targetData = Targeting.GetTarget();
+        if (targetData == null) return;
+
+        var target = targetData.Targetable as IDamageable;
+        if (target == null) return;
+
+        if (Vector3.Distance(transform.position, targetData.Transform.position) > AreaInfo.Radius) return;
+
+        Damage damage = new Damage
         {
-            Damage damage = new Damage
-            {
-                Value = Buff.Damage.GetBuffedValue(DamageRange * damageMultiplier),
-                Type = Info.DamageType,
-            };
+            Value = Buff.Damage.GetBuffedValue(DamageRange * damageMultiplier),
+            Type = Info.DamageType,
+        };
 
-            _wasDamageApplied = true;
+        _wasDamageApplied = true;
 
-            if (Targeting.GetTarget() is IDamageable damageable) CmdAttack(damage, damageable.gameObject, shouldIncreaseCounter);
-        }
+        CmdAttack(damage, target.gameObject, shouldIncreaseCounter);
     }
 
     [Command]
     private void CmdAttack(Damage damage, GameObject target, bool shouldIncreaseCounter)
     {
-        if (Targeting.ForDamage.Transform != target.transform)
-        {
-            Targeting.ForDamage = new TargetData(target);
-        }
+        if (target == null) return;
 
-        bool result = Targeting.ForDamage.Damageable.TryTakeDamage(ref damage, this);
-        if (result && Targeting.ForDamage.Damageable is Character character) AttackPassed(shouldIncreaseCounter, character);
+        var damageable = target.GetComponent<IDamageable>();
+
+        if (damageable == null) return;
+
+        bool result = damageable.TryTakeDamage(ref damage, this);
+
+        if (result && damageable is Character character) AttackPassed(shouldIncreaseCounter, character);
     }
 
     protected override void ClearData()

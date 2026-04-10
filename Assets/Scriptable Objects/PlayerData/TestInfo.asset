@@ -17,35 +17,56 @@ MonoBehaviour:
   type: 
   _icon: {fileID: 21300000, guid: 177e9214fe839c641b100e52e7032b0c, type: 3}
   _iconSize: 0
+  _health:
+    nameToShow: Health
+    type: 0
+    attributes:
+    - nameToShow: MaxValue
+      type: 0
+      value: 999
+    - nameToShow: Regen
+      type: 1
+      value: 10
+  _mainResource:
+    nameToShow: Mana
+    type: 1
+    attributes:
+    - nameToShow: MaxValue
+      type: 0
+      value: 999
+    - nameToShow: Regen
+      type: 1
+      value: 10
+  _extraResources: []
   _attributes:
-    _attributeGroup2:
-    - Name: Health
-      Description: 
-      _value: 1000
-    - Name: HPRegen
-      Description: 
-      _value: 0
-    - Name: Resourse
-      Description: 
-      _value: 0
-    - Name: Mana
-      Description: 
-      _value: 0
-    - Name: ResourseRegen
-      Description: 
-      _value: 0
-    - Name: Speed
-      Description: 
-      _value: 7
-    - Name: MagicResist
-      Description: 
-      _value: 0
-    - Name: PhysicResist
-      Description: 
-      _value: 0
-    - Name: MagicEvade
-      Description: 
-      _value: 0
-    - Name: EvasionPhysical
-      Description: 
-      _value: 0
+    _attributes:
+    - nameToShow: ResistancePhysical
+      type: 0
+      value: 0
+    - nameToShow: ResistanceMagical
+      type: 1
+      value: 0
+    - nameToShow: EvasionPhysical
+      type: 2
+      value: 0
+    - nameToShow: EvasionMagical
+      type: 3
+      value: 0
+    - nameToShow: MoveSpeed
+      type: 4
+      value: 5
+    - nameToShow: VisionRadius
+      type: 5
+      value: 2
+    - nameToShow: CastSpeed
+      type: 6
+      value: 0
+    - nameToShow: CastSpeedPhysical
+      type: 7
+      value: 0
+    - nameToShow: CastSpeedMagical
+      type: 8
+      value: 0
+    - nameToShow: ResourceCost
+      type: 9
+      value: 0

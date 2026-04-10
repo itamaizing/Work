@@ -12,9 +12,9 @@ public class LightningMovement : Skill
     [SerializeField] private Character _player;
 
     [Header("Talents & Abilities")]
-    [SerializeField] private SuperFastScales _superFastScales;
-    [SerializeField] private HeatedGlands _heatedGlands;
-    [SerializeField] private LightningFastPoisonSlap _lightningFastPoisonSlap;
+    //[SerializeField] private SuperFastScales _superFastScales;
+    //[SerializeField] private HeatedGlands _heatedGlands;
+    //[SerializeField] private LightningFastPoisonSlap _lightningFastPoisonSlap;
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private PoisonSlap _poisonSlap;
     [SerializeField] private LightningStrikes _lightningStrikes;
@@ -29,6 +29,13 @@ public class LightningMovement : Skill
     private Coroutine _movementRoutine;
 
     private Character _damagedCharacter;
+
+    #region Talent
+
+    private bool _isLightningEvade;
+
+    public void LightningEvade(bool value) => _isLightningEvade = value;
+    #endregion
 
     public bool IsInMovement { get; private set; }
     public Character Target { get; private set; }
@@ -164,13 +171,15 @@ public class LightningMovement : Skill
     {
         IsInMovement = true;
         Hero.Move.SetCanMove(false);
+
+        if (_isLightningEvade) _player.CharacterState.CmdAddState(States.LightningEvade, 3f, 0, _player.gameObject, Name);
         _damagedCharacter = null;
 
-        if (_superFastScales.Data.IsOpen)
-            _superFastScales.IncreasingResistance(Target);
+        //if (_superFastScales.Data.IsOpen)
+        //    _superFastScales.IncreasingResistance(Target);
 
-        if (_heatedGlands.Data.IsOpen)
-            _player.CharacterState.AddState(States.HeatedGlands, 4f, 0, _player.gameObject, null);
+        //if (_heatedGlands.Data.IsOpen)
+        //    _player.CharacterState.AddState(States.HeatedGlands, 4f, 0, _player.gameObject, null);
 
         //_player.CharacterState.CmdAddState(States.Immateriality, _durationLeap, 0, _player.gameObject, Name);
 
@@ -222,6 +231,8 @@ public class LightningMovement : Skill
 
         if (_hasSecondLeap && _damagedCharacter != null)
         {
+            if (_isLightningEvade) _player.CharacterState.CmdAddState(States.LightningEvade, 3f, 0, _player.gameObject, Name);
+
             ExecuteLeapSecond(_secondLeapPoint);
             yield break;
         }

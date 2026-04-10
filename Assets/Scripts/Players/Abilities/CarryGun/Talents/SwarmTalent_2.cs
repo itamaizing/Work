@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class SwarmTalent_2 : Talent
 {
-    [SerializeField] private Tentacles tentacles;
+    [SerializeField] private WombSpawn _wombSpawn;
     [SerializeField] private SwarmCapacity swarmCapacity;
     [SerializeField] private SkillManager skillManager;
 
     public override void Enter()
     {
         skillManager.ActivateSkill(swarmCapacity);
-        tentacles.CocoonSpawnTalent(true);
+        skillManager.ActivateSkill(_wombSpawn);
 
         AddingDescriptionSet(true);
     }
@@ -19,7 +19,7 @@ public class SwarmTalent_2 : Talent
     public override void Exit()
     {
         skillManager.DeactivateSkill(swarmCapacity);
-        tentacles.CocoonSpawnTalent(false);
+        skillManager.DeactivateSkill(_wombSpawn);
 
         AddingDescriptionSet(false);
     }
@@ -27,6 +27,6 @@ public class SwarmTalent_2 : Talent
     private void AddingDescriptionSet(bool value)
     {
         swarmCapacity.AddingDescriptionSet(value, Data.DescriptionsForInfoPanel[1]);
-        tentacles.AddingDescriptionSet(value, Data.DescriptionsForInfoPanel[0]);
+        _wombSpawn.AddingDescriptionSet(value, Data.DescriptionsForInfoPanel[0]);
     }
 }

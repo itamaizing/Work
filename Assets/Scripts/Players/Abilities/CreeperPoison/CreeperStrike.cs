@@ -7,18 +7,16 @@ using UnityEngine;
 
 public class CreeperStrike : Skill
 {
-    #region Variables
-
     [Header("Talents")]
-    [SerializeField] private RestorationOfGlands _restorationOfGlands;
-    [SerializeField] private ReleaseFromSecrecy _releaseFromSecrecy;
-    [SerializeField] private StrokesOfAspiration _strokesOfAspiration;
-    [SerializeField] private AssasinPoison _assasinPoison;
-    [SerializeField] private DesireToHide _desireToHide;
-    [SerializeField] private FirstStrike _firstStrike;
-    [SerializeField] private FeelingOfContinuation _feelingOfContinuation;
-    [SerializeField] private PreparingForFight _preparingForFight;
-    [SerializeField] private bool _isGeneticsTalentOne; 
+    //[SerializeField] private RestorationOfGlands _restorationOfGlands;
+    //[SerializeField] private ReleaseFromSecrecy _releaseFromSecrecy;
+    //[SerializeField] private StrokesOfAspiration _strokesOfAspiration;
+    //[SerializeField] private AssasinPoison _assasinPoison;
+    //[SerializeField] private DesireToHide _desireToHide;
+    //[SerializeField] private FirstStrike _firstStrike;
+    //[SerializeField] private FeelingOfContinuation _feelingOfContinuation;
+    //[SerializeField] private PreparingForFight _preparingForFight;
+    //[SerializeField] private AmbushPoisons _ambushPoisons;
 
     [Header("Abilities")]
     [SerializeField] private LightningStrikes _lightningStrikes;
@@ -26,6 +24,7 @@ public class CreeperStrike : Skill
     [SerializeField] private PoisonBall _poisonBall;
     [SerializeField] private CreeperInvisible _creeperInvisible;
     [SerializeField] private ColdBlood _coldBlood;
+    [SerializeField] private CreeperPoisonAura _creeperPoisonAura;
 
     [Header("Ability properties")]
     [SerializeField] private Character _player;
@@ -46,6 +45,8 @@ public class CreeperStrike : Skill
     private bool _isTwoHit = false;
     private bool _isHit = false;
 
+    private bool _isSpeedOfReptileActive = false;
+
     private List<Character> _recentTargets = new();
     private Coroutine ClearTargetsCoroutine;
     private float _targetMemoryTime = 0.5f;
@@ -65,6 +66,15 @@ public class CreeperStrike : Skill
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     public event Action OnCreeperStrikeEnd;
+    public event Action OnHit;
+
+    #region Talent
+
+    private bool _isColdBloodStrike = false;
+    private bool _isCheckForStatePoisonBone;
+
+    public void CheckForStatePoisonBone(bool value) => _isCheckForStatePoisonBone = value;
+    public void ColdBloodStrike(bool value) => _isColdBloodStrike = value;
 
     #endregion
 
@@ -76,6 +86,8 @@ public class CreeperStrike : Skill
     }
 
     #region CastAbility
+
+    public void SetSpeedOfReptile(bool value) => _isSpeedOfReptileActive = value;
 
     public void AnimCreeperStrikeCast()
     {
@@ -157,6 +169,13 @@ public class CreeperStrike : Skill
         return -1f;
     }
 
+    private void TryApplyPoisonBone(Character character)
+    {
+        if (!_isSpeedOfReptileActive || character == null) return;
+
+        character.CharacterState.CmdAddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0, _player.gameObject, Name);
+    }
+
     public void DamageDeal(IDamageable target, bool isUsingLightningStrikes = false)
     {
         var lastСast = _player.Abilities.LastCastedSkill;
@@ -164,13 +183,39 @@ public class CreeperStrike : Skill
 
         Character character = target as Character;
 
+        TryApplyPoisonBone(character);
+        TryApplyWitheringPoison(character);
+
         if (target != null)
         {
             _currentDamage = UnityEngine.Random.Range(7.0f, 11.0f);
-            float _currentChanceOfCriticalStrike = UnityEngine.Random.Range(0.0f, 1.0f);
+
+            if (_creeperInvisible != null && _creeperInvisible.IsInvisibilitStrike && _creeperInvisible.StrikeCrit != 0)
+            {
+                _currentDamage *= 4f;
+                _creeperInvisible.StrikeCrit = 0;
+
+                Debug.Log("CreeperStrike: Invis Crit x4 applied");
+            }
+
+            int totalStacks = GetTotalPoisonStacks(character);
+
+            float critChance = 0.05f * totalStacks;
+            critChance = Mathf.Min(critChance, 1f);
+            float roll = UnityEngine.Random.Range(0f, 1f);
 
             _isHit = true;
+            OnHit?.Invoke();
             _currentCountHit++;
+
+            if (_isColdBloodStrike && _coldBlood != null && _coldBlood.IsCanCrit && character != null && character.CharacterState.CheckForState(States.Blind))
+            {
+                _coldBlood.ReducingAbilityCooldown();
+
+                Debug.Log("CreeperStrike: ColdBlood CD reduced (Blind synergy)");
+
+                _isColdBloodStrike = false;
+            }
 
 
             //if (_absorptionOfPoisons != null && _absorptionOfPoisons.IsWorking)
@@ -178,79 +223,94 @@ public class CreeperStrike : Skill
             //    _absorptionOfPoisons.CheckTargetWithDebuffs(target.gameObject);
             //}
 
-            if (_strokesOfAspiration.Data.IsOpen)
-            {
-                _currentHitForStrokesOfAspiration++;
+            //if (_strokesOfAspiration.Data.IsOpen)
+            //{
+            //    _currentHitForStrokesOfAspiration++;
 
-                if (_currentHitForStrokesOfAspiration == 2)
-                {
-                    if (Targeting.GetTarget() != null)
-                    {
-                        _strokesOfAspiration.UseTalentStrokesOfAspiration();
-                    }
+            //    if (_currentHitForStrokesOfAspiration == 2)
+            //    {
+            //        if (Targeting.GetTarget() != null)
+            //        {
+            //            _strokesOfAspiration.UseTalentStrokesOfAspiration();
+            //        }
 
-                    _currentHitForStrokesOfAspiration = 0;
-                }
-            }
+            //        _currentHitForStrokesOfAspiration = 0;
+            //    }
+            //}
 
-            if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0 && character.CharacterState.CheckForState(States.PoisonBone))
-            {
-                Debug.Log("CreeperStrike / if == true");
-                float baseChanceOfRestorationOfGlands = 0.9f;
-                float chanceOfRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
+            //if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0 && character.CharacterState.CheckForState(States.PoisonBone))
+            //{
+            //    Debug.Log("CreeperStrike / if == true");
+            //    float baseChanceOfRestorationOfGlands = 0.9f;
+            //    float chanceOfRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
 
-                if (UnityEngine.Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
-                {
-                    Debug.Log("CreeperStrike / restorationOfGlands");
-                    _restorationOfGlands.ReductionCooldown();
-                }
-            }
+            //    if (UnityEngine.Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
+            //    {
+            //        Debug.Log("CreeperStrike / restorationOfGlands");
+            //        _restorationOfGlands.ReductionCooldown();
+            //    }
+            //}
 
-            if (_desireToHide.Data.IsOpen)
-            {
-                _countHitForDesireToHideTalent++;
+            //if (_desireToHide.Data.IsOpen)
+            //{
+            //    _countHitForDesireToHideTalent++;
 
-                if (_countHitForDesireToHideTalent == 5)
-                {
-                    _desireToHide.ApplyInvisible();
-                    _countHitForDesireToHideTalent = 0;
-                }
-            }
+            //    if (_countHitForDesireToHideTalent == 5)
+            //    {
+            //        _desireToHide.ApplyInvisible();
+            //        _countHitForDesireToHideTalent = 0;
+            //    }
+            //}
 
-            if (_releaseFromSecrecy.Data.IsOpen && _creeperInvisible.IsInvisible)
-            {
-                _creeperInvisible.ExitingInvisible();
-            }
+            //if (_releaseFromSecrecy.Data.IsOpen && _creeperInvisible.IsInvisible)
+            //{
+            //    _creeperInvisible.ExitingInvisible();
+            //}
 
-            if (_assasinPoison.Data.IsOpen)
-            {
-                _assasinPoison.SpendCharge(character, _lifeTimePoisonBoneStacks);
-            }
+            //if (_assasinPoison.Data.IsOpen)
+            //{
+            //    _assasinPoison.SpendCharge(character, _lifeTimePoisonBoneStacks);
+            //}
 
-            if (_preparingForFight.Data.IsOpen && _creeperInvisible.IsReadyToThreeHitForPreparingForFightTalent)
-            {
-                _countCurrentHitForPreparingForFight++;
+            //if (_preparingForFight.Data.IsOpen && _creeperInvisible.IsReadyToThreeHitForPreparingForFightTalent)
+            //{
+            //    _countCurrentHitForPreparingForFight++;
 
-                CmdPreparingForFight(_player.gameObject);
+            //    CmdPreparingForFight(_player.gameObject);
 
-                if (_countCurrentHitForPreparingForFight == 3)
-                {
-                    _countCurrentHitForPreparingForFight = 0;
-                    _creeperInvisible.IsReadyToThreeHitForPreparingForFightTalent = false;
-                }
-            }
+            //    if (_countCurrentHitForPreparingForFight == 3)
+            //    {
+            //        _countCurrentHitForPreparingForFight = 0;
+            //        _creeperInvisible.IsReadyToThreeHitForPreparingForFightTalent = false;
+            //    }
+            //}
 
-            if (_coldBlood.IsCanCritCreeperStrike || _coldBlood.IsCanCritLightningStrikes)
+            if (_coldBlood.IsCanCrit || _coldBlood.IsCanCritLightningStrikes)
             {
                 if (_player.IsInvisible)
                     _creeperInvisible.ExitingInvisible();
 
                 DealCriticalDamage(character, _currentDamage, true);
             }
-            else if (_currentChanceOfCriticalStrike <= _chanceOfCriticalStrike)
-            {
-                DealCriticalDamage(character, _currentDamage);
-            }
+
+            //if (_isCheckForStatePoisonBone && character != null)
+            //{
+            //    if (roll <= critChance)
+            //    {
+            //        float critDamage = GetPoisonCritMultiplier(character, _currentDamage);
+
+            //        Damage damage = new Damage
+            //        {
+            //            Value = Buff.Damage.GetBuffedValue(critDamage),
+            //            Type = DamageType.Physical,
+            //            PhysicAttackType = AttackRangeType.MeleeAttack,
+            //        };
+
+            //        CmdApplyDamage(damage, character.gameObject);
+            //        return;
+            //    }
+            //}
+
             else
             {
 
@@ -264,10 +324,10 @@ public class CreeperStrike : Skill
                 CmdDamageDeal(damage, target.gameObject);
             }
 
-            if (_firstStrike.Data.IsOpen)
-            {
-                _firstStrike.ReturnBoolFalse();
-            }
+            //if (_firstStrike.Data.IsOpen)
+            //{
+            //    _firstStrike.ReturnBoolFalse();
+            //}
 
             if (_currentCountHit == 2 || isUsingLightningStrikes && _currentCountHit == 2)
             {
@@ -290,6 +350,8 @@ public class CreeperStrike : Skill
 
             _isHit = false;
         }
+
+        //if (_ambushPoisons != null && character != null) _ambushPoisons.TryConsumeStack(character);
     }
 
     private IEnumerator TimerForTwoHit(float duration, bool isUsingLightningStrikes)
@@ -324,7 +386,7 @@ public class CreeperStrike : Skill
     {
         float criticalDamage = baseDamage;
         float multiplyDamage = _multiplyCritDamage;
-        float firstStrikeTalentMultiplyDamage = 5.0f;
+        //float firstStrikeTalentMultiplyDamage = 5.0f;
         float coldBloodMultiplyDamage = 2.5f;
 
         if (_poisonBoneStack > 0)
@@ -335,22 +397,23 @@ public class CreeperStrike : Skill
             }
         }
 
-        if (_firstStrike.Data.IsOpen && _firstStrike.IsCanIncreaseCrit && _firstStrike.FirstHit)
-        {
-            criticalDamage *= (multiplyDamage * firstStrikeTalentMultiplyDamage);
-            _firstStrike.ReturnBoolFalse();
-        }
-        else if (_coldBlood.IsCanCritCreeperStrike || _coldBlood.IsCanCritLightningStrikes)
+        //if (_firstStrike.Data.IsOpen && _firstStrike.IsCanIncreaseCrit && _firstStrike.FirstHit)
+        //{
+        //    criticalDamage *= (multiplyDamage * firstStrikeTalentMultiplyDamage);
+        //    _firstStrike.ReturnBoolFalse();
+        //}
+
+        else if (_coldBlood.IsCanCrit || _coldBlood.IsCanCritLightningStrikes)
         {
             float endCriticalDamage = coldBloodMultiplyDamage + multiplyDamage;
 
             if (_lightningStrikes.IsUsedLightningStrikes)
             {
-                _coldBlood.IsCanCritCreeperStrike = false;
+                _coldBlood.IsCanCrit = false;
             }
             else
             {
-                _coldBlood.IsCanCritCreeperStrike = false;
+                _coldBlood.IsCanCrit = false;
                 _coldBlood.IsCanCritLightningStrikes = false;
             }
 
@@ -364,13 +427,30 @@ public class CreeperStrike : Skill
         return criticalDamage;
     }
 
+    private void TryApplyWitheringPoison(Character target)
+    {
+        if (target == null) return;
+        if (_creeperPoisonAura == null) return;
+        if (!_creeperPoisonAura.IsActiveWitheringPoison || !_creeperPoisonAura.IsActiveWitheringPoisonMetabolism) return;
+
+        var finalChance = 0f;
+
+        if (_creeperPoisonAura.IsActiveWitheringPoison) finalChance += 0.2f;
+        if (_creeperPoisonAura.IsActiveWitheringPoisonMetabolism) finalChance += 0.3f;
+
+        if (UnityEngine.Random.value <= finalChance)
+        {
+            target.CharacterState.CmdAddState(States.WitheringPoison, 10f, 0, _player.gameObject, Name);
+        }
+    }
+
     private void DealCriticalDamage(Character currentTarget, float criticalDamage, bool isTalentCritDamage = false)
     {
         if (isTalentCritDamage)
         {
             criticalDamage = CalculateCriticalDamage(currentTarget, criticalDamage);
         }
-        else if (_isGeneticsTalentOne && currentTarget.CharacterState.CheckForState(States.PoisonBone))
+        else if (_isCheckForStatePoisonBone && currentTarget.CharacterState.CheckForState(States.PoisonBone))
         {
             criticalDamage = CalculateCriticalDamage(currentTarget, criticalDamage);
         }
@@ -384,7 +464,38 @@ public class CreeperStrike : Skill
 
         CmdApplyDamage(critDamage, currentTarget.gameObject);
 
-        if (_feelingOfContinuation.Data.IsOpen) CmdFeelingOfContinuation(_player.gameObject, critDamage.Value);
+        //if (_feelingOfContinuation.Data.IsOpen) CmdFeelingOfContinuation(_player.gameObject, critDamage.Value);
+    }
+
+    private int GetTotalPoisonStacks(Character target)
+    {
+        int stacks = 0;
+
+        if (target.CharacterState.GetState(States.BindingPoison) is BindingPoisonState bindingPoisonState)
+            stacks += bindingPoisonState.CurrentStacks;
+
+        if (target.CharacterState.GetState(States.PoisonBone) is PoisonBoneState poisonBoneState)
+            stacks += poisonBoneState.CurrentStacks;
+
+        if (target.CharacterState.GetState(States.EmpathicPoisons) is EmpathicPoisonsState empathicPoisonsState)
+            stacks += empathicPoisonsState.CurrentStacks;
+
+        if (target.CharacterState.GetState(States.WitheringPoison) is WitheringPoisonState witheringPoisonState)
+            stacks += witheringPoisonState.CurrentStacks;
+
+        return stacks;
+    }
+
+    private float GetPoisonCritMultiplier(Character target, float baseDamage)
+    {
+        int poisonBoneStacks = 0;
+
+        if (target.CharacterState.GetState(States.PoisonBone) is PoisonBoneState poisonBoneState)
+            poisonBoneStacks = poisonBoneState.CurrentStacks;
+
+        float multiplier = 2.5f + poisonBoneStacks;
+
+        return baseDamage * multiplier;
     }
 
     #endregion
@@ -395,14 +506,14 @@ public class CreeperStrike : Skill
     private void CmdFeelingOfContinuation(GameObject player, float criticalDamage)
     {
         Character playerCharacter = player.GetComponent<Character>();
-        _feelingOfContinuation.IncreaseRegenerationMana(playerCharacter, criticalDamage);
+        //_feelingOfContinuation.IncreaseRegenerationMana(playerCharacter, criticalDamage);
     }
 
     [Command]
     private void CmdPreparingForFight(GameObject player)
     {
         Character playerCharacter = player.GetComponent<Character>();
-        _preparingForFight.IncreaseManaRegeneration(playerCharacter);
+        //_preparingForFight.IncreaseManaRegeneration(playerCharacter);
     }
 
     [Command] private void CmdDamageDeal(Damage damage, GameObject target) => ApplyDamage(damage, target);
@@ -412,14 +523,6 @@ public class CreeperStrike : Skill
     {
         if (targetInfo?.GetTargets()?.Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
     }
-
-    #region Talents
-
-    public void GeneticsTalentOne(bool value)
-    {
-        _isGeneticsTalentOne = value;
-    }
-
     protected override void ClearData()
     {
         Targeting.ClearTarget();
@@ -428,5 +531,152 @@ public class CreeperStrike : Skill
         _hero.Move.StopLookAt();
     }
 
+    #region Own Element
+
+    private bool _isReptileTalentActive;
+    private Coroutine _reptileCoroutine;
+
+    private int _currentStacksPoison;
+    private int _currentAllStacks;
+    private int _previousAllStacks;
+    private int _currentStacksAtckSpeed;
+
+    private float _baseIncreaseAttackSpeed = 0.1f;
+    private float _baseAttackSpeed;
+    private float _increasedAttackSpeed;
+    private float _maxMinimumAttackSpeed = 0.1f;
+
+    private float _radiusSearching = 3f;
+    [SerializeField] private LayerMask _enemyLayer;
+
+    private PoisonBoneState _poisonBoneState;
+    private EmpathicPoisonsState _empathicPoisonState;
+    private WitheringPoisonState _witheringPoisonState;
+    private BindingPoisonState _bindingPoisonState;
+
+    public void SetReptileTalentActive(bool value)
+    {
+        _isReptileTalentActive = value;
+
+        if (value)
+        {
+            _baseAttackSpeed = CastDeley;
+
+            if (_reptileCoroutine == null)
+                _reptileCoroutine = StartCoroutine(ReptileLogic());
+        }
+        else
+        {
+            if (_reptileCoroutine != null)
+            {
+                StopCoroutine(_reptileCoroutine);
+                _reptileCoroutine = null;
+            }
+
+            ResetAllAttackSpeed();
+        }
+    }
+
+    private IEnumerator ReptileLogic()
+    {
+        while (_isReptileTalentActive)
+        {
+            _currentStacksPoison = 0;
+            _currentAllStacks = 0;
+
+            Collider[] enemies = Physics.OverlapSphere(transform.position, 30, _enemyLayer);
+
+            foreach (Collider target in enemies)
+            {
+                if (target == null) continue;
+
+                var state = target.GetComponent<CharacterState>();
+                if (state == null) continue;
+
+                if (!state.Check(StatusEffect.Poison)) continue;
+
+                CacheStates(state);
+
+                if (_bindingPoisonState != null)
+                    _currentStacksPoison += _bindingPoisonState.CurrentStacks;
+
+                if (_poisonBoneState != null)
+                    _currentStacksPoison += _poisonBoneState.CurrentStacks;
+
+                if (_empathicPoisonState != null)
+                    _currentStacksPoison += _empathicPoisonState.CurrentStacks;
+
+                if (_witheringPoisonState != null)
+                    _currentStacksPoison += _witheringPoisonState.CurrentStacks;
+            }
+
+            _currentAllStacks = _currentStacksPoison;
+
+            HandleAttackSpeed();
+
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    private void CacheStates(CharacterState state)
+    {
+        _bindingPoisonState = (BindingPoisonState)state.GetState(States.BindingPoison);
+        _poisonBoneState = (PoisonBoneState)state.GetState(States.PoisonBone);
+        _empathicPoisonState = (EmpathicPoisonsState)state.GetState(States.EmpathicPoisons);
+        _witheringPoisonState = (WitheringPoisonState)state.GetState(States.WitheringPoison);
+    }
+
+    private void HandleAttackSpeed()
+    {
+        if (_currentAllStacks != _previousAllStacks)
+        {
+            while (_currentStacksAtckSpeed < _currentAllStacks)
+            {
+                if (_currentAllStacks > 0 && CastDeley > _maxMinimumAttackSpeed)
+                {
+                    IncreaseAttackSpeed();
+                    _previousAllStacks = _currentAllStacks;
+                }
+                else break;
+            }
+        }
+
+        if ((_currentAllStacks == 0 || _currentAllStacks < _previousAllStacks))
+        {
+            while (_currentStacksAtckSpeed > _currentAllStacks)
+            {
+                ResetAttackSpeed();
+            }
+            _previousAllStacks = _currentAllStacks;
+        }
+    }
+
+    private void IncreaseAttackSpeed()
+    {
+        _currentStacksAtckSpeed++;
+
+        _increasedAttackSpeed = _baseAttackSpeed - _baseIncreaseAttackSpeed;
+
+        Buff.AttackSpeed.IncreasePercentage(_increasedAttackSpeed);
+    }
+
+    private void ResetAttackSpeed()
+    {
+        if (CastDeley < _baseAttackSpeed)
+        {
+            Buff.AttackSpeed.ReductionPercentage(_increasedAttackSpeed);
+            _currentStacksAtckSpeed--;
+        }
+    }
+
+    private void ResetAllAttackSpeed()
+    {
+        while (_currentStacksAtckSpeed > 0)
+        {
+            ResetAttackSpeed();
+        }
+
+        _previousAllStacks = 0;
+    }
     #endregion
 }

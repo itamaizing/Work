@@ -8,13 +8,24 @@ public class SneakySpit : Skill
 {
     [SerializeField] private Character _playerLinks;
     [SerializeField] private float duration = 2f;
+    [SerializeField] private float durationErodedArmor = 6f;
     [SerializeField] private float durationWindowsBoost = 2f;
+    [SerializeField] private ColdBlood _coldBlood;
 
     private Character _attacker;
     private Coroutine _boostWindow;
     private NetworkIdentity identity;
     private bool isAbilityQueue = false;
     private bool isAnimStart = false;
+
+    #region Talent
+
+    private bool _isErodedArmorState = false;
+    private bool _isColdBloodCrit = false;
+
+    public void ColdBloodStrike(bool value) => _isColdBloodCrit = value;
+    public void ErodedArmorState(bool value) => _isErodedArmorState = value;
+    #endregion
 
     protected override bool IsCanCast => CheckCanCast();
 
@@ -91,6 +102,21 @@ public class SneakySpit : Skill
         if (skill != null && skill.Hero != null) _attacker = skill.Hero;
     }
 
+    private void DealCriticalDamage(Character target, float baseDamage)
+    {
+        float critMultiplier = 2.5f;
+        float finalDamage = baseDamage * critMultiplier;
+
+        Damage damage = new Damage
+        {
+            Value = finalDamage,
+            School = Info.School,
+            Type = Info.DamageType,
+        };
+
+        CmdApplyDamage(damage, target.gameObject);
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (isAbilityQueue) yield return null;
@@ -141,18 +167,30 @@ public class SneakySpit : Skill
 
     public void ApplyStateAndDamage()
     {
-        if (Targeting.GetTarget()?.Character != null)
+        Character target = Targeting.GetTarget()?.Character;
+
+        if (target != null)
         {
-            CmdAddState(Targeting.GetTarget()?.Character);
+            CmdAddState(target);
 
-            Damage damage = new Damage
+            if (_isColdBloodCrit && _coldBlood.IsCanCrit)
             {
-                Value = Damage,
-                School = Info.School,
-                Type = Info.DamageType,
-            };
+                DealCriticalDamage(target, Damage);
+                _coldBlood.IsCanCrit = false;
+            }
 
-            CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
+            else
+            {
+                Damage damage = new Damage
+                {
+                    Value = Damage,
+                    School = Info.School,
+                    Type = Info.DamageType,
+                };
+
+                CmdApplyDamage(damage, target.gameObject);
+            }
+
             ClearData();
         }
     }
@@ -179,7 +217,11 @@ public class SneakySpit : Skill
         CancelBoostWindow();
     }
 
-    [Command] private void CmdAddState(Character target) => target.CharacterState.AddState(States.Blind, duration, 0, _playerLinks.gameObject, name);
+    [Command] private void CmdAddState(Character target)
+    {
+        if (_isErodedArmorState) target.CharacterState.AddState(States.ErodedArmor, durationErodedArmor, 0, _playerLinks.gameObject, name);
+        target.CharacterState.AddState(States.Blind, duration, 0, _playerLinks.gameObject, name);
+    }
 
     [TargetRpc]
     private void TargetRpcStartSneakySpitBoostWindow(NetworkConnection target, uint attackerNetId)

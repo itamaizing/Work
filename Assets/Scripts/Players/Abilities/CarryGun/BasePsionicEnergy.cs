@@ -36,6 +36,11 @@ public class BasePsionicEnergy : Resource, IDamageable
     public PsionicEnergySkill PsionicEnergySkill { get => psionicEnergySkill; set => psionicEnergySkill = value; }
     public float PsionicaDecayTime { get => _psionicaDecayTime; set => _psionicaDecayTime = value; }
 
+    private void Start()
+    {
+        _psionicaDecayTime = psionicEnergySkill.CooldownTime;
+    }
+
     public override void Initialize(Attribute maxValue, Attribute regenValue, CharacterData data)
     {
         base.Initialize(maxValue, regenValue, data);
@@ -50,11 +55,10 @@ public class BasePsionicEnergy : Resource, IDamageable
         _distanceAccumulator = 0f;
     }
 
-
     public override void Init(ResourceAttribute resource)
     {
         base.Init(resource);
-        _psionicaDecayTime = psionicEnergySkill.CooldownTime;
+
         if (_player != null)
         {
             _maxValue = _player.AttributeSystem.HPMax.GetValue();
@@ -81,9 +85,11 @@ public class BasePsionicEnergy : Resource, IDamageable
             _player.SpawnComponent.UnitAdded += OnMinionSpawned;
             _player.SpawnComponent.UnitRemoved += OnMinionRemoved;
         }
+
+        _player.Reset += PsiEnergyDecayServer;
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         if (_player != null && _player.DamageTracker != null) _player.DamageTracker.OnDamageTracked -= OnDamageDealt;
         if (_player.Health != null) _player.Health.OnBeforeDamage -= psionicEnergySkill.HandleIncomingDamage;
@@ -98,6 +104,8 @@ public class BasePsionicEnergy : Resource, IDamageable
                 if (unit != null && unit.DamageTracker != null) unit.DamageTracker.OnDamageTracked -= OnDamageDealt;
             }
         }
+
+        _player.Reset -= PsiEnergyDecayServer;
     }
 
     private void PsionicRunning()
@@ -217,6 +225,17 @@ public class BasePsionicEnergy : Resource, IDamageable
     private IEnumerator EnergyDecayCoroutine()
     {
         yield return new WaitForSeconds(_psionicaDecayTime);
+        PsiEnergyDecay();
+    }
+
+    public void PsiEnergyDecayServer()
+    {
+        if (!isServer) return;
+        PsiEnergyDecay();
+    }
+
+    private void PsiEnergyDecay()
+    {
         CurrentValue = 0;
         RpcOnEnergyChanged(CurrentValue);
         _isInternalPsiEnergy = false;

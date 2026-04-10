@@ -9,7 +9,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
 
     private Character _playerWithTalent;
 
-    private int _maxStacks = 5;
+    private int _maxStacks = 2;
 
     private float _baseHealingValue = 1.0f;
     private float _endHealingValue;
@@ -19,7 +19,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
 
     private float _baseDuration;
 
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing };
+    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing, StatusEffect.Poison };
 
     public override States State => States.RegeneratingPoison;
     public override StateType Type => StateType.Physical;

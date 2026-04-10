@@ -4,18 +4,15 @@ using UnityEngine;
 
 public class EvolutionTalent_6 : Talent
 {
-    [SerializeField] private CheliceraStrike cheliceraStrike;
     [SerializeField] private ClawStrike clawStrike;
 
     public override void Enter()
     {
-        cheliceraStrike.ChanceApplyBleedingIncrease(true);
-        clawStrike.ChanceApplyBleedingIncrease(true);
+        clawStrike.BleedingClawStrike(true);
     }
 
     public override void Exit()
     {
-        cheliceraStrike.ChanceApplyBleedingIncrease(false);
-        clawStrike.ChanceApplyBleedingIncrease(false);
+        clawStrike.BleedingClawStrike(false);
     }
 }

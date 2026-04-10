@@ -43,7 +43,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
         {
             if (Targeting.GetTarget()?.Character != null) return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
 
-            var mana = _hero.Resources[ResourceType.Mana];
+            var mana = _hero.Resources[ResourceType.Energy];
             if (mana == null) return false;
 
             if (Targeting.GetTarget()?.Character != null)

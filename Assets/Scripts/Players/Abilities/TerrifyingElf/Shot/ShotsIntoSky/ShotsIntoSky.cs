@@ -26,6 +26,18 @@ public class ShotsIntoSky : Skill
     private bool _tripleShootPlanned;
     private const float _extraShotDelay = 1f;
 
+    private float _baseCastDelay;
+    private Coroutine _boostWindow;
+    private WaitForSeconds _boostDuration = new WaitForSeconds(2f);
+
+    #region Talent
+
+    private bool _isSkillEnableBoostLogicActiveTalent;
+
+    public void SkillEnableBoostLogicActiveTalent(bool value) => _isSkillEnableBoostLogicActiveTalent = value;
+
+    #endregion
+
     protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotsSkyCastDelay");
     protected override int AnimTriggerCast => 0;
 
@@ -48,7 +60,15 @@ public class ShotsIntoSky : Skill
     }
 
     private void OnDestroy() => Canceled -= HandleSkillCanceled;
-    private void OnEnable() => Canceled += HandleSkillCanceled;
+
+    private void OnEnable()
+    {
+        _baseCastDelay = CastDeley;
+        Canceled += HandleSkillCanceled;
+    }
+
+    protected override void SkillEnableBoostLogic() => CastDeley = 0;
+    protected override void SkillDisableBoostLogic() => CastDeley = _baseCastDelay;
 
     public void ShotsAnimationMove()
     {
@@ -82,6 +102,14 @@ public class ShotsIntoSky : Skill
         Cooldown.ForceEnd();
     }
 
+    public void TryStartBoost()
+    {
+        if (!_isSkillEnableBoostLogicActiveTalent) return;
+        if (_boostWindow != null) StopCoroutine(_boostWindow);
+
+        _boostWindow = StartCoroutine(BoostWindow());
+    }
+
     private void HandleSkillCanceled()
     {
         if (_hero?.Move != null)
@@ -93,6 +121,13 @@ public class ShotsIntoSky : Skill
             if (isServer) ServerDestroyPendingImpacts();
             else CmdDestroyPendingImpacts();
         }
+    }
+
+    private IEnumerator BoostWindow()
+    {
+        EnableSkillBoost();
+        yield return _boostDuration;
+        DisableSkillBoost();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)

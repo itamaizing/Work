@@ -15,7 +15,7 @@ public class PsionicEnergySkill : Skill, IPassiveSkill
         yield return null;
     }
 
-    protected override void ClearData() => throw new NotImplementedException();
+    protected override void ClearData() { }
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) => throw new NotImplementedException();
     #endregion
 

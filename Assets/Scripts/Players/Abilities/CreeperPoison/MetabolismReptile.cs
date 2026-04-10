@@ -6,7 +6,6 @@ using UnityEngine;
 public class MetabolismReptile : Skill
 {
     [SerializeField] private Character _player;
-    [SerializeField] private MetabolismReptileTalent _metabolismReptileTalent; 
 
     [SerializeField] private PoisonBall _poisonBall;
     [SerializeField] private SpitPoison _spitPoison; 
@@ -14,6 +13,8 @@ public class MetabolismReptile : Skill
     [SerializeField] private float _duration = 3f;
 
     private float _originalHpRegen;
+    private float _originalManaRegen;
+    private float _increaseManaRegen = 2f;
     private float _increaseHealthRegen = 2f;
     private float _increaseCastTime = 2f;
     private float _increaseCooldownTime = 2f;
@@ -21,11 +22,16 @@ public class MetabolismReptile : Skill
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
 
-    protected override bool IsCanCast => _metabolismReptileTalent.Data.IsOpen;
+    protected override bool IsCanCast => true;
 
     private void Start()
     {
         _originalHpRegen = _player.Health.RegenerationValue;
+
+        if (_player.TryGetResource(ResourceType.Mana, out Resource mana))
+        {
+            _originalManaRegen = mana.RegenerationValue;
+        }
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -52,15 +58,17 @@ public class MetabolismReptile : Skill
     private void ApplyBuff()
     {
         CmdIncreaseHealthRegen(_player.gameObject, _originalHpRegen, _increaseHealthRegen);
+        CmdIncreaseManaRegen(_player.gameObject, _originalManaRegen, _increaseManaRegen);
 
         ReductionCooldownAndCastTimeSpells();
 
-        Invoke("RemoveBuff", _duration);
+        Invoke(nameof(RemoveBuff), _duration);
     }
 
     private void RemoveBuff()
     {
         CmdRemoveHpRegen(_player.gameObject, _originalHpRegen);
+        CmdRemoveManaRegen(_player.gameObject, _originalManaRegen);
 
         ResetCastTimeToBase();
     }
@@ -84,6 +92,29 @@ public class MetabolismReptile : Skill
     }
 
     #region CommandMethods
+
+    [Command]
+    private void CmdIncreaseManaRegen(GameObject player, float originalManaRegen, float increaseManaRegen)
+    {
+        Character playerCharacter = player.GetComponent<Character>();
+
+        if (playerCharacter.TryGetResource(ResourceType.Mana, out Resource mana))
+        {
+            float increasedManaRegen = originalManaRegen * increaseManaRegen;
+            mana.RegenerationValue = increasedManaRegen;
+        }
+    }
+
+    [Command]
+    private void CmdRemoveManaRegen(GameObject player, float originalManaRegen)
+    {
+        Character playerCharacter = player.GetComponent<Character>();
+
+        if (playerCharacter.TryGetResource(ResourceType.Mana, out Resource mana))
+        {
+            mana.RegenerationValue = originalManaRegen;
+        }
+    }
 
     [Command]
     private void CmdIncreaseHealthRegen(GameObject player, float originalHpRegen, float increaseHealthRegen)

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PartialBlindness : AbstractCharacterState
+public class PartialBlindness : StackableState
 {
     private float _baseDuration;
     private float _duration;
@@ -77,8 +77,9 @@ public class PartialBlindness : AbstractCharacterState
         _effectivenessLoss = Mathf.Max(MinEffectiveness, (_baseDuration - _duration) * EffectivenessDecayPerSecond); //* CurrentStacksCount)?
         float totalMissChance = CurrentStacksCount * BaseMissChancePerStack - _effectivenessLoss;
 
-        if (UnityEngine.Random.Range(0f, 100f) < totalMissChance)
+        if (UnityEngine.Random.Range(0f, 100f) < 100)
         {
+            Debug.Log("сброс способности");
             skill.CmdForceFailCastJobOnce();
         }
     }

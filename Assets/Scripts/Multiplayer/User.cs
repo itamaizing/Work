@@ -15,6 +15,8 @@ public class User : NetworkBehaviour
     private int _id = -37;
     private int _bottle;
 
+    public int Id { get => _id; }
+
     public void SetID(int id)
     {
         if (_id < 0)
@@ -39,6 +41,8 @@ public class User : NetworkBehaviour
                 Instance = this;
                 _id = MPNetworkManager.Instance.UserID;
                 InitializeManagers();
+
+                AddPlayer(gameObject, ServerManager.Instance.CurrentHeroIndex);
             }
 
             else if (Instance != null && Instance != this)
@@ -47,6 +51,21 @@ public class User : NetworkBehaviour
                 return;
             }
         }
+    }
+
+    [Command(requiresAuthority = false)]
+    private void AddPlayer(GameObject user, int characterIndex)
+    {
+        GameObject player = Instantiate(ServerManager.Instance.HeroList[characterIndex].gameObject);
+        NetworkServer.Spawn(player, user);
+        MPNetworkManager.Instance.AddPlayer(player);
+        RpcAddPlayer(player);
+    }
+
+    [ClientRpc]
+    private void RpcAddPlayer(GameObject player)
+    {
+        MPNetworkManager.Instance.Players.Add(player);
     }
 
     private void Success(string data)
@@ -97,6 +116,22 @@ public class BottleUserManager
     public void BottlesChanged(int count)
     {
         OnBottlesChanged?.Invoke(count);
+    }
+
+    public void ResetBottleData()
+    {
+        if (string.IsNullOrEmpty(_currentUser))
+            return;
+
+        _currentBottles = 0;
+        _currentBottleVolume = 0f;
+
+        PlayerPrefs.DeleteKey(_currentUser + "_Bottles");
+        PlayerPrefs.DeleteKey(_currentUser + "_BottleVolume");
+
+        PlayerPrefs.Save();
+
+        OnBottlesChanged?.Invoke(_currentBottles);
     }
 
     public void BottleInitialize()
@@ -262,6 +297,26 @@ public class LevelCharacterManager
         CheckForLevelUp();
         SaveLevelData();
 
+        OnExperienceChanged?.Invoke(_currentExperience, _experienceForNextLevel);
+    }
+
+    public void ResetAllLevelData()
+    {
+        if (_character == null) return;
+
+        string baseKey = _character.Data.Name + "_Group" + _currentSaveGroup;
+
+        PlayerPrefs.DeleteKey(baseKey + "_Level");
+        PlayerPrefs.DeleteKey(baseKey + "_Experience");
+        PlayerPrefs.DeleteKey(baseKey + "_ExperienceForNextLevel");
+
+        PlayerPrefs.Save();
+
+        _currentLevel = 1;
+        _currentExperience = 0;
+        _experienceForNextLevel = 100;
+
+        OnLevelChanged?.Invoke(_currentLevel);
         OnExperienceChanged?.Invoke(_currentExperience, _experienceForNextLevel);
     }
 

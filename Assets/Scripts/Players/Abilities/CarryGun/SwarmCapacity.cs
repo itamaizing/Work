@@ -3,26 +3,71 @@ using System.Collections;
 using UnityEngine;
 using Mirror;
 using System.Linq;
+using System.Collections.Generic;
 
 public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
 {
     #region Skill
-    protected override int AnimTriggerCastDelay => throw new NotImplementedException();
-    protected override int AnimTriggerCast => throw new NotImplementedException();
-    public override void LoadTargetData(TargetInfo targetInfo) => throw new NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => 0;
+    public override void LoadTargetData(TargetInfo targetInfo) { }
     protected override IEnumerator CastJob() { yield return null; }
-    protected override void ClearData() => throw new NotImplementedException();
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) => throw new NotImplementedException();
+    protected override void ClearData() { }
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) { yield return null; }
+    #endregion
+
+    private float _baseCounter;
+
+    #region Talent
+
+    private bool _isBoostSpeedSwarmDamage = false;
+    private bool _isAddCounter = false;
+
+    public bool IsAddCharges
+    {
+        get => _isAddCounter;
+        set
+        {
+            if (_isAddCounter == value) return;
+
+            _isAddCounter = value;
+
+            if (_isAddCounter) _baseCounter += 1;
+            else
+            {
+                _baseCounter -= 1;
+
+                if (_baseCounter < MaxCounter) _baseCounter = MaxCounter;
+            }
+        }
+    }
+
+    public void BoostSpeedSwarmDamage(bool value) => _isBoostSpeedSwarmDamage = value;
+    public void AddCounter(bool value) => _isAddCounter = value;
+
     #endregion
 
     private SpawnComponent _spawnComponent;
     private Coroutine _overloadCheckRoutine;
 
-    public override void Init(SkillRenderer render, Character hero)
+    private readonly List<MoveCreature> _swarmUnits = new();
+
+    public IReadOnlyList<MoveCreature> SwarmUnits => _swarmUnits;
+    public event Action<float> CounterChanged;
+
+    private const string DamageBoostSource = "SwarmDamageBoost";
+    private const float DamageBoostMultiplier = 2.5f;
+    private const float DamageBoostDuration = 1f;
+
+    private Coroutine _damageBoostRoutine;
+
+    private void Start()
     {
         base.Init(render, hero);
 
         _spawnComponent = Hero.GetComponent<SpawnComponent>();
+
+        _baseCounter = MaxCounter;
 
         if (_spawnComponent != null)
         {
@@ -30,9 +75,14 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
             _spawnComponent.UnitRemoved += UpdateCounter;
             UpdateCounter();
         }
+
+        if (Hero != null && Hero.DamageTracker != null)
+        {
+            Hero.DamageTracker.OnDamageTracked += OnDamageTracked;
+        }
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         if (_spawnComponent != null)
         {
@@ -45,18 +95,108 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
             StopCoroutine(_overloadCheckRoutine);
             _overloadCheckRoutine = null;
         }
+
+        if (Hero != null && Hero.DamageTracker != null)
+        {
+            Hero.DamageTracker.OnDamageTracked -= OnDamageTracked;
+        }
     }
 
     private void UpdateCounter(Character _) => UpdateCounter();
+
+    #region Boost speed CreatureCarryGun
+
+    private void OnDamageTracked(Damage damage, GameObject target)
+    {
+        if (!isServer) return;
+        if (!_isBoostSpeedSwarmDamage) return;
+        if (damage.Type != DamageType.Physical) return;
+
+        ActivateDamageBoost();
+    }
+
+    private void ActivateDamageBoost()
+    {
+        if (_damageBoostRoutine != null)
+            StopCoroutine(_damageBoostRoutine);
+
+        ApplyDamageBoost();
+
+        _damageBoostRoutine = StartCoroutine(DamageBoostTimer());
+    }
+
+    private IEnumerator DamageBoostTimer()
+    {
+        yield return new WaitForSeconds(DamageBoostDuration);
+
+        RemoveDamageBoost();
+        _damageBoostRoutine = null;
+    }
+
+    private void RemoveDamageBoost()
+    {
+        foreach (var unit in _swarmUnits)
+        {
+            if (unit == null) continue;
+
+            unit.RemoveSpeedModifier(DamageBoostSource);
+        }
+    }
+
+    private void ApplyDamageBoost()
+    {
+        foreach (var unit in _swarmUnits)
+        {
+            if (unit == null) continue;
+
+            unit.SetSpeedModifier(DamageBoostSource, DamageBoostMultiplier);
+        }
+    }
+
+    #endregion
 
     private void UpdateCounter()
     {
         if (_spawnComponent == null) return;
 
-        CurrentCounter = Mathf.RoundToInt(_spawnComponent.Units.Where(unit => unit != null && !unit.TryGetComponent<MucusAutoGrowth>(out _))
-                .Select(unit => unit.GetComponent<MinionComponent>()).Where(minion => minion != null).Sum(minion => minion.CostCall));
+        float totalCost = 0f;
 
-        if (_overloadCheckRoutine == null) _overloadCheckRoutine = StartCoroutine(CheckOverloadRoutine());
+        _swarmUnits.Clear();
+
+        foreach (var unit in _spawnComponent.Units)
+        {
+            if (unit == null) continue;
+
+            var minion = unit.GetComponent<MinionComponent>();
+            if (minion != null) totalCost += minion.CostCall;
+
+            if (unit.TryGetComponent(out MoveCreature carryGun)) _swarmUnits.Add(carryGun);
+        }
+
+        CurrentCounter = Mathf.RoundToInt(totalCost);
+
+        CounterChanged?.Invoke(CurrentCounter);
+
+        HandleOverload();
+    }
+
+    private void HandleOverload()
+    {
+        if (CurrentCounter > _baseCounter)
+        {
+            if (_overloadCheckRoutine == null)
+            {
+                _overloadCheckRoutine = StartCoroutine(CheckOverloadRoutine());
+            }
+        }
+        else
+        {
+            if (_overloadCheckRoutine != null)
+            {
+                StopCoroutine(_overloadCheckRoutine);
+                _overloadCheckRoutine = null;
+            }
+        }
     }
 
     private IEnumerator CheckOverloadRoutine()
@@ -69,9 +209,9 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
                 .Where(unit => unit != null && !unit.TryGetComponent<MucusAutoGrowth>(out _))
                 .Select(unit => unit.GetComponent<MinionComponent>()).Where(minion => minion != null).Sum(minion => minion.CostCall);
 
-            if (realCost > MaxCounter)
+            if (CurrentCounter > _baseCounter)
             {
-                float overloadCount = realCost - MaxCounter;
+                float overloadCount = realCost - _baseCounter;
                 float percentDamage = overloadCount * 0.05f;
 
                 foreach (var minion in _spawnComponent.Units)
@@ -89,7 +229,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
                         PhysicAttackType = AttackRangeType.MeleeAttack,
                     };
 
-                    CmdApplyDamage(damage, minion.gameObject);
+                    CmdApplyDamageSwarm(damage, minion.gameObject);
                 }
             }
 
@@ -97,9 +237,8 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
         }
     }
 
-
     [Command]
-    private void CmdApplyDamage(Damage damage, GameObject target)
+    private void CmdApplyDamageSwarm(Damage damage, GameObject target)
     {
         if (target == null) return;
 

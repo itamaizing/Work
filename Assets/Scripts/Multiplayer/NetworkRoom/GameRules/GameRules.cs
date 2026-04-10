@@ -6,9 +6,11 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Debug = UnityEngine.Debug;
 
 public abstract class GameRules : NetworkBehaviour
 {
+    [SerializeField] private int _maxPlayers = 2;
     [SerializeField] private int _expValuePerPlayer = 10;
     [SerializeField] private float _baseTimeForRevival = 5;
     [SerializeField] private float _AddTimeForRevival = 1;
@@ -16,35 +18,96 @@ public abstract class GameRules : NetworkBehaviour
     protected readonly SyncList<GameObject> _playersSyncList = new SyncList<GameObject>();
     protected List<Character> _players = new List<Character>();
 
-    protected NetworkRoom _room;
+    //protected NetworkRoom _room;
 
     [SyncVar] protected string _roomName;
 
     protected HeroSpawnManager _spawnPoints;
     protected PreparationAreaManager _preparationAreaManager;
     protected GameManager _gameManager;
-	protected Coroutine _regenCoroutine;
+    protected NpcSpawn _npcSpawn;
+    protected Coroutine _regenCoroutine;
 
-	[SyncVar] private bool _isStarted;
+    [SyncVar] private bool _isStarted;
     private float _disconnectDelayClient = 6f;
     private float _disconnectDelayServer = 5f;
+    private int _currentPlayers = 0;
     public bool IsStarted { get => _isStarted; set => _isStarted = value; }
 
     public SyncList<GameObject> Players => _playersSyncList;
     public HeroSpawnManager SpawnPoints => _spawnPoints;
+    public int MaxPlayers { get => _maxPlayers;}
+    public int CurrentPlayers { get => _currentPlayers; set => _currentPlayers = value; }
 
     public abstract void GameStartServer(HeroSpawnManager spawnPoints);
     protected abstract void UnsubscribeFromAllEvents();
     protected abstract void GameStartClient();
     protected abstract void OnPlayerDied(Character character);
     protected abstract void OnTowerDied(Object tower);
+    protected abstract void RestartRound();
 
-
-    public void Init(NetworkRoom room)
+    protected void Restart()
     {
-        _room = room;
-        _roomName = _room.SceneName;
+        RpcEnablePreparationAreas(5f);
 
+        if (isServer)
+        {
+            if (_npcSpawn != null) _npcSpawn.DestroyAllNpc();
+            List<NetworkIdentity> objectsToRemove = new List<NetworkIdentity>();
+
+            foreach (var netIdentity in NetworkServer.spawned.Values)
+            {
+                if (netIdentity == null) continue;
+
+                if (netIdentity.GetComponent<GameRules>() != null) continue;
+                if (netIdentity.GetComponent<User>() != null) continue;
+                if (netIdentity.GetComponent<MainTower>() != null) continue;
+                if (netIdentity.GetComponent<HeroComponent>() != null) continue;
+
+                objectsToRemove.Add(netIdentity);
+            }
+
+            foreach (var netIdentity in objectsToRemove) NetworkServer.Destroy(netIdentity.gameObject);
+
+            if (_npcSpawn != null) _npcSpawn.SpawnAllNpc(gameObject.scene);
+        }
+
+        foreach (var playerSettings in _players)
+        {
+            if (playerSettings == null) continue;
+
+            playerSettings.CharacterState.ServerClearAllStates();
+            playerSettings.ServerResetAll();
+
+            if (playerSettings.connectionToClient != null) playerSettings.NetworkSettings.TargetUpdateLayers(playerSettings.connectionToClient);
+
+            if (playerSettings.Abilities != null)
+            {
+                playerSettings.Abilities.CancleAllSkills();
+
+                foreach (var skill in playerSettings.Abilities.Skills)
+                {
+                    skill.RpcResetSkillState();
+                }
+            }
+
+            int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
+
+            if (_spawnPoints != null) RpcTeleportPlayer(playerSettings.gameObject, _spawnPoints.GetRandomPoint(spawnIndex), _spawnPoints.GetRotate(spawnIndex));
+        }
+    }
+
+    public void CallRestartRound()
+    {
+        if (isServer) Restart();
+        else CmdRestart();
+    }
+
+    public void Init()
+    {
+        //_room = room;
+        //_roomName = _room.SceneName;
+        Debug.LogError("asdasd");
         AddAllPlayersInList();
         SubscribingOnPlayerEvents();
         SubscribeToTowerDeath();
@@ -65,6 +128,11 @@ public abstract class GameRules : NetworkBehaviour
         Destroy(gameObject);
     }
 
+    //private void ResetResource(NetworkIdentity networkIdentity)
+    //{
+    //    if (networkIdentity.TryGetComponent<Resource>(out Resource resource)) resource.ResetValue();
+    //}
+
     protected virtual void EndGame()
     {
         StartCoroutine(CloseRoomJob());
@@ -72,7 +140,7 @@ public abstract class GameRules : NetworkBehaviour
 
     protected virtual IEnumerator FindServerGameManager()
     {
-        while (!_room.IsLoaded)
+        while (SceneManager.GetActiveScene().isLoaded == false)
         {
             yield return null;
         }
@@ -88,6 +156,8 @@ public abstract class GameRules : NetworkBehaviour
 
         _spawnPoints = _gameManager.HeroSpawnManager;
         _preparationAreaManager = _gameManager.PreparationAreaManager;
+        _npcSpawn = _gameManager.NpcSpawn;
+        _gameManager.RestartRound.GameRules = this;
 
         if (_gameManager.TeamsPanel == null) return;
     }
@@ -160,7 +230,16 @@ public abstract class GameRules : NetworkBehaviour
 
         yield return new WaitForSecondsRealtime(_disconnectDelayServer);
 
-        yield return _room.UnloadRoomJob();
+        //yield return _room.UnloadRoomJob();
+
+        if (User.Instance == null || User.Instance.isServer)
+        {
+            MPNetworkManager.Instance.StopServer();
+        }
+        else if (User.Instance.isClient)
+        {
+            MPNetworkManager.Instance.StopClient();
+        }
     }
 
     protected virtual void AddExpForAllEnemy(Character character)
@@ -219,9 +298,10 @@ public abstract class GameRules : NetworkBehaviour
         _regenCoroutine = null;
     }
 
+    
     private void AddAllPlayersInList()
     {
-        foreach (var item in _room.Players)
+        foreach (var item in MPNetworkManager.Instance.Players)
         {
             _playersSyncList.Add(item);
             var playerSettings = item.GetComponent<Character>();
@@ -349,5 +429,13 @@ public abstract class GameRules : NetworkBehaviour
         {
             _gameManager.TeamsPanel.AddInSecondTeam(hero);
         }
+    }
+
+    [ClientRpc] public void RpcEnablePreparationAreas(float duration) => _preparationAreaManager?.PreparationAreasDisable(duration);
+
+    [Command(requiresAuthority = false)]
+    public void CmdRestart()
+    {
+        Restart();
     }
 }
