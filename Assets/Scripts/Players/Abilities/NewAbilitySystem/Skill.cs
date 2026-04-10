@@ -199,6 +199,7 @@ public abstract class Skill : NetworkBehaviour
     public event Action BoostEnabled;
     public event Action BoostDisabled;
     public event Action<GameObject, Skill> OnDamageApplied;
+    public event Action<GameObject, Skill> OnHealApplied;
 
     protected void SkillAfterCastJob() => AfterCast?.Invoke();
     protected void CastEndedJob() => CastEnded?.Invoke();
@@ -602,7 +603,7 @@ public abstract class Skill : NetworkBehaviour
         _currentChargeCooldownJob[index] = StartCoroutine(RechargeOneChargeCoroutine(index, tempTime));
     }
 
-    public bool TryUseCharge()
+    public virtual bool TryUseCharge()
     {
         if (_isUseCharges == false)
             return true;
@@ -852,6 +853,23 @@ public abstract class Skill : NetworkBehaviour
     public void CmdCooldownEnd()
     {
         _cooldownEndTime = NetworkTime.time;
+    }
+
+    [Server]
+    public void ServerResetCooldownOnly()
+    {
+        _cooldownEndTime = NetworkTime.time;
+
+        if (_cooldownJob != null)
+        {
+            StopCoroutine(_cooldownJob);
+            _cooldownJob = null;
+        }
+
+        _remainingCooldownTime = 0;
+
+        Debug.Log($"_cooldownEndTime");
+        CooldownEnded?.Invoke();
     }
     #endregion
     #endregion
@@ -1158,7 +1176,10 @@ public abstract class Skill : NetworkBehaviour
         CastStarted?.Invoke();
         _isCasting = true;
 
-        if (CastDeley > 0)
+        bool noCast = Hero.Abilities.TryConsumeNoCast();
+
+
+        if (!noCast && CastDeley > 0)
             yield return StartCastDeleyCoroutine();
 
         if (_forceFailCastEarly)
@@ -1168,7 +1189,7 @@ public abstract class Skill : NetworkBehaviour
             yield break;
         }
 
-        if (AnimTriggerCast != 0)
+        if (!noCast && AnimTriggerCast != 0)
         {
             _isPlayCastAnim = true;
             //_isWaitingForCastCoroutine = true;
@@ -1622,7 +1643,16 @@ public abstract class Skill : NetworkBehaviour
             _tempForHealing = hp.GetComponent<IHealable>();
         }
         if (_tempForHealing != null)
+        {
             ApplyHeal(heal, hp, skill, sourceName);
+            OnHealApply(hp);
+        }
+    }
+
+    [ClientRpc]
+    private void OnHealApply(GameObject target)
+    {
+        OnHealApplied?.Invoke(target, this);
     }
 
     public void AfterCastJob()

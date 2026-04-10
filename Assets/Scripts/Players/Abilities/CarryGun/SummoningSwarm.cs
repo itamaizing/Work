@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using UnityEngine;
 
@@ -49,18 +49,18 @@ public class SummoningSwarm : Skill
         SetSwarmCharges(0);
     }
 
-    private void ResettSwarmCharges() => CurrentCharge(_chargesSwarm);
+    private void ResettSwarmCharges() => Charges.SendCurrentChange(_chargesSwarm);
 
     private void SetSwarmCharges(int value)
     {
         _chargesSwarm = value;
-        CurrentCharge(_chargesSwarm);
+        Charges.SendCurrentChange(_chargesSwarm);
     }
 
     public void UseSwarmCharges(int value)
     {
         _chargesSwarm -= value;
-        CurrentCharge(_chargesSwarm);
+        Charges.SendCurrentChange(_chargesSwarm);
     }
 
     protected override void ClearData()

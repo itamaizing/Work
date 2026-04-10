@@ -320,4 +320,4 @@ public class ShotsIntoSky : Skill
     #region ShotsIntoSkyAstralTalent
     public void ShotsIntoSkyAstralTalentActive(bool value) => shotAstralManaActive = value;
     #endregion
-}
+}

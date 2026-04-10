@@ -69,7 +69,6 @@ public class ChargeComponent : BaseSkillComponent
 
     
     #region Methods
-
     public void Init(Skill skill, bool isServer)
     {
         if (isInitialized)
@@ -93,9 +92,8 @@ public class ChargeComponent : BaseSkillComponent
                 RestoreCharge(i);
     }
 
-    //Переписать на ModifyMax
-    //Если список перезарядок не пустой - оставить КД
-    //Если пустой - проверять cooldowned? Или просто вырезать его и добавлять без КД?
+    public void SendCurrentChange(int count) => OnCurrentChange?.Invoke(count);
+
     public void AddMax(bool cooldowned=false)
     {
         _maxCharges += 1;

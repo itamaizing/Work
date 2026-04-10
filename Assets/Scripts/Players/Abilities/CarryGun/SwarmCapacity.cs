@@ -63,7 +63,7 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
 
     private void Start()
     {
-        base.Init(render, hero);
+        base.Init(_skillRender, _hero);
 
         _spawnComponent = Hero.GetComponent<SpawnComponent>();
 
