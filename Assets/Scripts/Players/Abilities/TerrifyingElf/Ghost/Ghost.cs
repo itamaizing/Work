@@ -73,7 +73,7 @@ public class Ghost : Skill
     {
         get
         {
-            if (IsHaveCharge && (_chargesHaveSeparateCooldown || IsCooldowned)) return true;
+            if (Charges.HasCharges && (_chargesHaveSeparateCooldown || !Cooldown.IsActive)) return true;
             if (_ghostMoveToTarget) return true;
 
             if (_teleportGhost && _ghostToTeleport != null)
@@ -302,7 +302,7 @@ public class Ghost : Skill
                         yield return null;
                     }
 
-                    else if (IsHaveCharge && (_chargesHaveSeparateCooldown || IsCooldowned))
+                    else if (Charges.HasCharges && (_chargesHaveSeparateCooldown || !Cooldown.IsActive))
                     {
                         if (_isSpawningGhostVisual) _pendingSpawn.Enqueue(secondPoint);
                         else
@@ -597,7 +597,7 @@ public class Ghost : Skill
 
         SpawnGhost(targetPosition, ghostVisual.transform.rotation);
 
-        if (_pendingSpawn.Count > 0 && IsHaveCharge && (isSkillEnableBoostLogic || _chargesHaveSeparateCooldown || IsCooldowned)) StartCoroutine(SpawnGhostVisualEffect(_pendingSpawn.Dequeue()));
+        if (_pendingSpawn.Count > 0 && Charges.HasCharges && (isSkillEnableBoostLogic || _chargesHaveSeparateCooldown || !Cooldown.IsActive)) StartCoroutine(SpawnGhostVisualEffect(_pendingSpawn.Dequeue()));
         else _isSpawningGhostVisual = false;
     }
 

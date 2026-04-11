@@ -169,7 +169,7 @@ public class FlashOfLight : Skill,IPolaritySwitchable
         
         if (isLightMode && IsEnemyTarget(target) || !isLightMode && !IsEnemyTarget(target))
         {
-            ResetCooldown();
+            Cooldown.ForceEnd();
             yield break;
         }
 
@@ -263,7 +263,7 @@ public class FlashOfLight : Skill,IPolaritySwitchable
     private void ReduceCooldowns()
     {
         foreach (var ability in Hero.Abilities.Abilities)
-            ability.DecreaseSetCooldown(_cooldownReduction);
+            ability.Cooldown.Modify(-_cooldownReduction);
     }
 
     [Command]

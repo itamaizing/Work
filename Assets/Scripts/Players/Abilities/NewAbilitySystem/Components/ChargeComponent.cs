@@ -32,7 +32,6 @@ public class ChargeComponent : BaseSkillComponent
     #region RuntimeVariables
     Attribute char_attr, skill_attr;
     private bool isInitialized = false;
-    private bool _isServer = false;
     #endregion
 
     #region Properties
@@ -40,9 +39,13 @@ public class ChargeComponent : BaseSkillComponent
     public bool IsComboPart => _isComboPart;
     public ChargeCooldownType CooldownType => _cooldownType;
     public float BaseCooldown => _baseCooldown;
+    public float CooldownTime => affectedByCDR ? _skillAttributes.GetCombined(skill_attr, char_attr, _baseCooldown) : _baseCooldown;
     public int MaxCharges {
         get { return _maxCharges; }
-        set { _maxCharges = value; }
+        set { 
+            _maxCharges = value;
+            OnMaxChange?.Invoke(_maxCharges);
+        }
     }
     public SyncList<double> RechargeTimers => _skill.RechargeTimers;
     public int RemainingCharges => (MaxCharges - RechargeTimers.Count);
@@ -79,7 +82,6 @@ public class ChargeComponent : BaseSkillComponent
         RechargeTimers.Callback += OnChargeChange;
         skill_attr = _skillAttributes[SkillAttributeName.Cooldown];
         char_attr = _characterAttributes[CharacterAttributeName.CooldownReduction];
-        _isServer = isServer;
         isInitialized = true;
     }
 
@@ -139,10 +141,7 @@ public class ChargeComponent : BaseSkillComponent
     {
         if (RemainingCharges < _maxCharges)
         {
-            //OnCurrentChange?.Invoke(RemainingCharges);
-            //OnRechargeEnd?.Invoke(index); //считываются ниже OnChargeChange
             Debug.Log("Recharged " + index);
-            //if (_isServer)
             _skill.CmdEndRecharge(index);
         }
     }
@@ -163,33 +162,27 @@ public class ChargeComponent : BaseSkillComponent
             cdTime = _skillAttributes.GetCombined(skill_attr, char_attr, _baseCooldown);
         }
 
-        //Debug.Log("Recgharge time is " + cdTime);
         StartRecharge(cdTime);
         return true;
     }
 
     private void StartRecharge(float rechargeTime)
     {
-        //OnRechargeStart?.Invoke(rechargeTime);
         _skill.CmdStartRecharge(rechargeTime);
     }
 
-    //Если сломается - хардкодим кол-во зарядов в списке, добавляем id текущего заряда на перезарядке
     public void OnChargeChange(SyncList<double>.Operation op, int index, double oldTime, double newTime)
     {
-        if (!_isServer)
-            return;
-
         switch (op)
         {
             case SyncList<double>.Operation.OP_ADD:
                 OnRechargeStart?.Invoke((float) (newTime - NetworkTime.time));
-                Debug.Log("RECHARGE STARTED " + (newTime - NetworkTime.time));
+                //Debug.Log("RECHARGE STARTED " + (newTime - NetworkTime.time));
                 break;
 
             case SyncList<double>.Operation.OP_REMOVEAT:
                 OnRechargeEnd?.Invoke(index); //Это не тот индекс ?
-                Debug.Log("RECHARGE ENDED! " + index);
+                //Debug.Log("RECHARGE ENDED! " + index);
                 break;
         }
 

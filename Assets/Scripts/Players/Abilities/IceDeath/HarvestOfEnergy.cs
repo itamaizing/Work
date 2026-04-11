@@ -41,7 +41,6 @@ public class HarvestOfEnergy : Skill
         if (Hero.TryGetResource(ResourceType.Rune) is RuneComponent runeAdd) runeAdd.CmdAdd(rune);
         if (harvestOfRunes != null)
         {
-            harvestOfRunes.IncreaseSetCooldown(harvestOfRunes.CooldownTime);
             harvestOfRunes.Cooldown.SetIncreased(harvestOfRunes.Cooldown.CooldownTime, shouldModify: false);
         }
     }

@@ -61,7 +61,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         UpdateIconState(_skill.Disactive);
 
-        if (_skill.IsUseCharges == true)
+        if (_skill.Charges.UsesCharges == true)
         {
             _chargeCounter.gameObject.SetActive(true);
             OnCurrentChargeChanged(_skill.Chargers);
@@ -160,7 +160,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     private void UpdateAllInfo()
     {
-        OnStartCooldown(_skill.RemainingCooldownTime);
+        OnStartCooldown(0);
         OnAutoModeChanged(_skill.IsAutoMode);
     }
 
@@ -316,11 +316,11 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         float time;
         float startValue = 1f;
 
-        bool isActiveSkill = _skill != null && _skill.RemainingCooldownTime > 0.01f;
+        bool isActiveSkill = _skill != null && _skill.Cooldown.RemainingTime > 0.01f;
 
         if (isActiveSkill)
         {
-            time = startValue - duration / _skill.CooldownTime;
+            time = startValue - duration / _skill.Cooldown.CooldownTime;
             _cooldown.StartFill(duration, startValue - time, 0, false);
         }
 
@@ -332,7 +332,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         float time = dutarion;
         while (dutarion > 0)
         {
-            if (_skill.IsUseCharges == false || _skill.Chargers <= 0)
+            if (_skill.Charges.UsesCharges == false || _skill.Chargers <= 0)
                 _cooldownNum.gameObject.SetActive(true);
             else
                 _cooldownNum.gameObject.SetActive(false);

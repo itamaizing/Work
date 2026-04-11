@@ -106,7 +106,6 @@ public class PlagueAbsorption : Skill
 			if (startCooldown)
 			{
 				Cooldown.SetIncreased(Cooldown.CooldownTime, shouldModify: false);
-				IncreaseSetCooldown(CooldownTime);
 			}
 			TryUseCharge();
 			return true;

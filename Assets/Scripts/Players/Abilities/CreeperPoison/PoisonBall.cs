@@ -447,7 +447,7 @@ public class PoisonBall : Skill, IAltAbility
         if (_activeTalentsInfo.IsActiveInertialGlands && _isThreeProjectileOnOneTarget)
         {
             float newRemainingTime = 0.0f;
-            _spitPoison.ReductionSetCooldown(newRemainingTime);
+            _spitPoison.Cooldown.SetReduced(newRemainingTime);
             _isThreeProjectileOnOneTarget = false;
         }
     }

@@ -184,8 +184,7 @@ public class ShotDarkness : Skill
                 CmdCreateProjectileAtPosition(character.transform.position, Damage, _magicDamage);
             }
 
-            float reduce = _multiMagicSpell.RemainingCooldownTime * 0.1f;
-            _multiMagicSpell.DecreaseSetCooldown(reduce);
+            float reduce = _multiMagicSpell.Cooldown.RemainingTime * 0.1f;
             _multiMagicSpell.Cooldown.Modify(-reduce);
         }
 

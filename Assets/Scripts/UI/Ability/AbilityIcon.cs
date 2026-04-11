@@ -40,7 +40,7 @@ public class AbilityIcon : MonoBehaviour , IPointerEnterHandler , IPointerExitHa
         _description.text = ability.Description;
         _castLine = castLine;
 
-        if (ability.IsUseCharges)
+        if (ability.Charges.UsesCharges)
         {
             //ability.CurrentChargeChanged += OnCurrentChargeText; //old
             ability.Charges.OnCurrentChange += OnCurrentChargeText; //new

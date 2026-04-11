@@ -41,7 +41,6 @@ public class HarvestOfRunes : Skill
         if (Hero.TryGetResource(ResourceType.Energy) is Energy energy) energy.CmdAdd(enegry);
         if (harvestOfEnergy != null)
         {
-            harvestOfEnergy.IncreaseSetCooldown(harvestOfEnergy.CooldownTime);
             harvestOfEnergy.Cooldown.SetIncreased(harvestOfEnergy.Cooldown.CooldownTime, shouldModify: false);
         }
     }

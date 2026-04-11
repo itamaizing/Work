@@ -25,21 +25,20 @@ public class RestorationOfGlands : Talent
 
     public void ReductionCooldown()
     {
-        float baseCooldownSpitPoison = _spitPoison.RemainingCooldownTime;
-        float baseCooldownPoisonBall = _poisonBall.CooldownTime;
+        float baseCooldownSpitPoison = _spitPoison.Cooldown.RemainingTime;
+        float baseCooldownPoisonBall = _poisonBall.Cooldown.BaseCooldownTime;
 
         float procentageCooldownTimeSpitPoison = baseCooldownSpitPoison * _baseProcentageReduction;
         Debug.Log("RestorationOfGlands / ReductionCooldownNotServer / procentageCooldownSpit = " + procentageCooldownTimeSpitPoison);
         //float procentageCooldownTimePoisonBall = baseCooldownPoisonBall * _baseProcentageReduction;
         //Debug.Log("RestorationOfGlands / ReductionCooldownNotServer / procentageCooldownPoisonBall = " + procentageCooldownTimePoisonBall);
 
-        float reducingCooldownSpitPoison = _spitPoison.RemainingCooldownTime - procentageCooldownTimeSpitPoison;
+        float reducingCooldownSpitPoison = _spitPoison.Cooldown.RemainingTime - procentageCooldownTimeSpitPoison;
         Debug.Log("RestorationOfGlands / ReductionCooldownNotServer / reducingCooldownSpitPoison = " + reducingCooldownSpitPoison);
         //float reducingCooldownPoisonBall = _poisonBall.CooldownTime - procentageCooldownTimePoisonBall;
         //Debug.Log("RestorationOfGlands / ReductionCooldownNotServer / reducingCooldownPoisonBall = " + reducingCooldownPoisonBall);
 
-        _spitPoison.ReductionSetCooldown(reducingCooldownSpitPoison);
-        _spitPoison.Cooldown.SetReduced(reducingCooldownSpitPoison, shouldModify: true);
+        _spitPoison.Cooldown.SetReduced(reducingCooldownSpitPoison, shouldModify: false);
 
         //_poisonBall.ReductionSetCooldown(reducingCooldownPoisonBall);
     }

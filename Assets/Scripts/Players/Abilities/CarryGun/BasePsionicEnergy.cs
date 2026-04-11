@@ -38,7 +38,7 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     private void Start()
     {
-        _psionicaDecayTime = psionicEnergySkill.CooldownTime;
+        _psionicaDecayTime = psionicEnergySkill.Cooldown.CooldownTime;
     }
 
     public override void Initialize(Attribute maxValue, Attribute regenValue, CharacterData data)

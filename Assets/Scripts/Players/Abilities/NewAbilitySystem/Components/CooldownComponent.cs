@@ -23,6 +23,7 @@ public class CooldownComponent : BaseSkillComponent
     #endregion
 
     #region Properties
+    public float BaseCooldownTime => _baseCooldown;
     public float CooldownTime {
         get { return _skillAttributes.Cooldown; }
         set { _skillAttributes[SkillAttributeName.Cooldown].SetBaseValue(value); }
@@ -37,7 +38,7 @@ public class CooldownComponent : BaseSkillComponent
             //OnChanged
         }
     }
-    public double RemainingTime => Mathf.Max(0, (float)(_skill.CooldownEnd - NetworkTime.time));
+    public float RemainingTime => _skill != null ? Mathf.Max(0, (float)(_skill.CooldownEnd - NetworkTime.time)) : 0;
     public double ElapsedTime => _currentMax - RemainingTime;
     #endregion
 
@@ -91,6 +92,8 @@ public class CooldownComponent : BaseSkillComponent
         if (!IsActive || (RemainingTime + delta > _currentMax && !canOvershoot))
             return;
 
+        isSyncronized = false;
+
         Debug.Log($"CD Modify: {RemainingTime}+{delta}");
         _skill.CmdCooldownModify(delta);
         OnModify?.Invoke(RemainingTime + delta, _currentMax);
@@ -104,6 +107,8 @@ public class CooldownComponent : BaseSkillComponent
 
         if (!IsActive || (duration > RemainingTime && !canIncrease))
             return;
+        
+        isSyncronized = false;
 
         if (_currentMax < duration)
             _currentMax = duration;
@@ -119,6 +124,8 @@ public class CooldownComponent : BaseSkillComponent
         if (!IsActive || (duration < RemainingTime))
             return;
 
+        isSyncronized = false;
+
         if (_currentMax < duration)
             _currentMax = duration;
         _skill.CmdCooldownStart(duration);
@@ -132,6 +139,8 @@ public class CooldownComponent : BaseSkillComponent
 
         if (!IsActive || (duration > RemainingTime))
             return;
+
+        isSyncronized = false;
 
         if (_currentMax < duration)
             _currentMax = duration;
@@ -151,15 +160,11 @@ public class CooldownComponent : BaseSkillComponent
                 _characterAttributes[CharacterAttributeName.CooldownReduction],
                 time);
         return _skillAttributes[SkillAttributeName.Cooldown].CalculateFor(time);
-        // Обновить, когда на персонаже появится атрибут КД
-        //return _skillAttributes.Attributes[SkillAttributeName.Cooldown].CalculateFor(time);
     }
 
     private void StartCooldown(float duration)
     {
         //Debug.Log($"{duration} CD STARTED!!");
-        //Debug.Log($"{NetworkTime.time}");
-        //_remainingTime = duration;
         isSyncronized = false;
         _currentMax = duration;
         _skill.CmdCooldownStart(duration);
@@ -169,11 +174,9 @@ public class CooldownComponent : BaseSkillComponent
 
     private void EndCooldown()
     {
-        if (!IsActive)
+        if (!IsActive || !isSyncronized)
             return;
-        Debug.Log("CD ENDED!!!");
-        Debug.Log($"{NetworkTime.time}. {_skill.CooldownEnd}");
-        //_remainingTime = 0;
+        //Debug.Log("CD ENDED!!!");
         _currentMax = _skillAttributes.Cooldown;
         _skill.CmdCooldownEnd();
         OnEnd?.Invoke();

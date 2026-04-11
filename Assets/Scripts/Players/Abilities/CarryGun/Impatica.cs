@@ -8,7 +8,7 @@ public class Impatica : Skill
     [SerializeField] private Character _playerLinks;
     [SerializeField] private float duration;
 
-    protected override bool IsCanCast => IsHaveCharge && Targeting.GetTarget()?.Character != null;
+    protected override bool IsCanCast => Charges.HasCharges && Targeting.GetTarget()?.Character != null;
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     private const float TargetSearchRadius = 0.5f;

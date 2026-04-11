@@ -172,7 +172,7 @@ public class CreeperInvisible : Skill
 
         while (true)
         {
-            if (!IsCooldowned)
+            if (Cooldown.IsActive)
             {
                 Disactive = true;
                 yield return delay;
@@ -294,7 +294,6 @@ public class CreeperInvisible : Skill
 
     private void OnPlayerDamaged(Damage damage, Skill skill)
     {
-        IncreaseSetCooldown(_cooldown);
         Cooldown.SetIncreased(_cooldown, shouldModify: false);
         if (!_isInvisible) return;
         CmdRemoveInvisible(_player.gameObject, _isCreeperStrikeIsHit);

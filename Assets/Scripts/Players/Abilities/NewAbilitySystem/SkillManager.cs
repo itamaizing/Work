@@ -284,7 +284,6 @@ public class SkillManager : MonoBehaviour
     {
         foreach (var item in _skills)
         {
-            item.IncreaseSetCooldown(time);
             item.Cooldown.SetIncreased(time, shouldModify: true);
         }
     }
@@ -420,7 +419,6 @@ public class SkillManager : MonoBehaviour
         {
             if (item.IsSubjectToGlobalCooldownTime)
             {
-                item.IncreaseSetCooldown(_globalCooldownTime);
                 item.Cooldown.SetIncreased(_globalCooldownTime, shouldModify: false);
             }
         }
@@ -478,7 +476,7 @@ public class SkillManager : MonoBehaviour
     {
         if (_countBonusCharges > 0)
         {
-            if (skill.IsUseCharges)
+            if (skill.Charges.UsesCharges)
             {
                 _countBonusCharges--;
                 //skill.AddMaxChargeCount();
@@ -491,7 +489,7 @@ public class SkillManager : MonoBehaviour
     {
         foreach (var skill in _skills)
         {
-            if (skill.IsUseCharges)
+            if (skill.Charges.UsesCharges)
             {
                 if (isAdditionalCharge)
                 {

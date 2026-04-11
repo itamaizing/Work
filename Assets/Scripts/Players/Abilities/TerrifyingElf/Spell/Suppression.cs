@@ -10,7 +10,7 @@ public class Suppression : Skill
     //private Character _target;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
 
-    protected override bool IsCanCast => IsHaveCharge && Targeting.GetTarget()?.Character != null;
+    protected override bool IsCanCast => Charges.HasCharges && Targeting.GetTarget()?.Character != null;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
 

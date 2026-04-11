@@ -273,7 +273,7 @@ public class PriestShield : Skill
             return;
         }
 
-        IncreaseSetCooldown(CooldownTime);
+        Cooldown.Start();
 
         CmdAddDebaff(States.LightShield, States.TiredSoul, lightShieldDuration, tiredSoulDuration, absorbAmount, target.gameObject, Name);
     }

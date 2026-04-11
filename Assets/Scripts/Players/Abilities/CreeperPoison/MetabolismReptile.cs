@@ -75,8 +75,7 @@ public class MetabolismReptile : Skill
 
     private void ReductionCooldownAndCastTimeSpells()
     {
-        float newRemainingCooldownForSpitPoison = _spitPoison.CooldownTime / _increaseCooldownTime;
-        _spitPoison.ReductionSetCooldown(newRemainingCooldownForSpitPoison);
+        float newRemainingCooldownForSpitPoison = _spitPoison.Cooldown.CooldownTime / _increaseCooldownTime;
         _spitPoison.Cooldown.SetReduced(newRemainingCooldownForSpitPoison, shouldModify: true);
 
         //Сделать потом уменьшение кулдаунов зарядов для PoisonBall

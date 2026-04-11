@@ -308,7 +308,7 @@ public class TargetingComponent : BaseSkillComponent
     public bool CanCast(TargetData target)
     {
         if (target == null)
-            return true;    //True? Может стоит проверять тип скилла?
+            return false;
         
         Vector3 point = new();
         switch (target.Type)

@@ -17,14 +17,13 @@ public class FootInstincts : Talent
 
     public void ReductionCooldownLightningMovement()
     {
-        if (_lightningMovement.RemainingCooldownTime > 0)
+        if (_lightningMovement.Cooldown.RemainingTime > 0)
         {
-            Debug.Log("FootInstincts / ReductionCooldown / baseRemainingCooldown = " + _lightningMovement.RemainingCooldownTime);
-            float newRemainingCooldownTime = _lightningMovement.RemainingCooldownTime - _reductionCooldownTime;
+            Debug.Log("FootInstincts / ReductionCooldown / baseRemainingCooldown = " + _lightningMovement.Cooldown.RemainingTime);
+            float newRemainingCooldownTime = _lightningMovement.Cooldown.RemainingTime - _reductionCooldownTime;
             Debug.Log("FootInstincts / ReductionCooldown / newRemainingTime = " + newRemainingCooldownTime);
-            _lightningMovement.ReductionSetCooldown(newRemainingCooldownTime);
-            _lightningMovement.Cooldown.SetReduced(newRemainingCooldownTime, shouldModify: true);
-            Debug.Log("FootInstincts / ReductionCooldown / _lightningMovement.RemainingCooldown = " + _lightningMovement.RemainingCooldownTime);
+            _lightningMovement.Cooldown.SetReduced(newRemainingCooldownTime, shouldModify: false);
+            Debug.Log("FootInstincts / ReductionCooldown / _lightningMovement.RemainingCooldown = " + _lightningMovement.Cooldown.RemainingTime);
         }
     }
 }

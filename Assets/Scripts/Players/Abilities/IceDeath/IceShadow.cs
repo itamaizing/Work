@@ -227,7 +227,6 @@ public class IceShadow : Skill
 
 			if (startCooldown)
 			{
-				IncreaseSetCooldown(CooldownTime);
 				Cooldown.SetIncreased(Cooldown.CooldownTime, shouldModify: false);
 			}
 

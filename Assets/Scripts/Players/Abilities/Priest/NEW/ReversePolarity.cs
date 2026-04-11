@@ -141,7 +141,6 @@ public class ReversePolarity : Skill
 
     public void SetCooldownFromSpell()
     {
-        IncreaseSetCooldown(_cooldownAfterDarkMode);
         Cooldown.SetIncreased(_cooldownAfterDarkMode, shouldModify: true);
     }
 

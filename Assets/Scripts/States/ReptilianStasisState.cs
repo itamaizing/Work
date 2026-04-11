@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class ReptilianStasisState : StackableState
@@ -59,9 +59,9 @@ public class ReptilianStasisState : StackableState
         {
             if (skill == null) continue;
 
-            if (!skill.IsCooldowned)
+            if (skill.Cooldown.IsActive)
             {
-                skill.ResetCooldown();
+                skill.Cooldown.ForceEnd();
             }
         }
     }

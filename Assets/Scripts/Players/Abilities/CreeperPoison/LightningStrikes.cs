@@ -49,7 +49,7 @@ public class LightningStrikes : Skill
     {
         base.Awake();
 
-        _baseCooldownTime = CooldownTime;
+        _baseCooldownTime = Cooldown.BaseCooldownTime;
     }
 
     public void AnimLightningStrikesCast()
@@ -126,13 +126,13 @@ public class LightningStrikes : Skill
         if (_coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime == false)
         {
             float newCooldownTime = _baseCooldownTime * _cooldownMultiplier;
-            CooldownTime = newCooldownTime;
+            Cooldown.CooldownTime = newCooldownTime;
 
             _isIncreaseCooldownTime = true;
         }
         else
         {
-            CooldownTime = _baseCooldownTime;
+            Cooldown.CooldownTime = _baseCooldownTime;
         }
 
         /*if (_currentTarget == null)

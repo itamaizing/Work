@@ -66,11 +66,11 @@ public class AbilityNameBox : MonoBehaviour
             if (skill.CastStreamDuration > 0)
                 _descriptionWithNumbers.text += $"\nВыполнение: {ColorOpen}{skill.CastStreamDuration} сек{ColorEnd}";
 
-            if (skill.CooldownTime > 0)
-                _descriptionWithNumbers.text += $"\nПерезарядка: {ColorOpen}{skill.CooldownTime} сек{ColorEnd}";
+            if (skill.Cooldown.CooldownTime > 0)
+                _descriptionWithNumbers.text += $"\nПерезарядка: {ColorOpen}{skill.Cooldown.CooldownTime} сек{ColorEnd}";
 
-            if (skill.ChargeCooldown > 0)
-                _descriptionWithNumbers.text += $"\nКол-во Зарядов: {ColorOpen}{skill.MaxChargers}/{skill.ChargeCooldown} сек{ColorEnd}";
+            if (skill.Charges.CooldownTime > 0)
+                _descriptionWithNumbers.text += $"\nКол-во Зарядов: {ColorOpen}{skill.Charges.MaxCharges}/{skill.Charges.CooldownTime} сек{ColorEnd}";
 
             //if (skill.AdditionalDescription != string.Empty)
             //    _descriptionWithNumbers.text += $"\n{skill.AdditionalDescription}";

@@ -193,7 +193,6 @@ public class IceSword : CloseCombatSkill
 
 		if (startCooldown)
 		{
-			IncreaseSetCooldown(CooldownTime);
 			Cooldown.SetIncreased(Cooldown.CooldownTime, shouldModify: false);
 		}
 

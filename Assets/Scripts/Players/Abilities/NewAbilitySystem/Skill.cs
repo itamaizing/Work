@@ -167,7 +167,7 @@ public abstract class Skill : NetworkBehaviour
     public bool IsPreparing => _isPreparing;
     public SkillRenderer SkillRender => _skillRender;
     public bool IsHaveResourceOnSkill { get => CheckResourcesOnSkill(); }
-    public bool IsHaveResources { get => IsHaveResourceOnSkill && IsCooldowned && IsHaveCharge; }
+    public bool IsHaveResources { get => IsHaveResourceOnSkill && !Cooldown.IsActive && Charges.HasCharges; }
     public List<SkillResourceCost> SkillEnergyCosts { get => _skillEnergyCosts; }
     public List<SkillResourceCost> AdditionalSkillEnergyCosts { get => _additionalSkillEnergyCosts; }
     public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); set => _castDeley = value; }
@@ -258,9 +258,7 @@ public abstract class Skill : NetworkBehaviour
         double time = NetworkTime.time;
 
         if (time > CooldownEnd)
-        {
             Cooldown?.ForceEnd();
-        }
 
         for (int i = _rechargeEndTime.Count - 1; i >= 0; i--)
             if (_rechargeEndTime[i] <= time)
@@ -278,71 +276,6 @@ public abstract class Skill : NetworkBehaviour
                 return true;
 
             return Targeting.CanCast(temp);
-
-            switch (Info.SkillType)
-            {
-                case SkillType.Target:
-
-                    if (temp.GetTargets().Count > 0)
-                    {
-                        foreach (var target in temp.GetTargets())
-                            if (Vector3.Distance(target.Position, transform.position) > AreaInfo.Radius)//в таргетинге есть IsInRadius
-                                return false;
-
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-
-                case SkillType.Projectile:
-
-                    if (temp.GetTargets().Count > 0)
-                    {
-                        foreach (var target in temp.GetTargets())
-                            if (Vector3.Distance(target.Position, transform.position) > AreaInfo.Radius) //&& TargetingComponent.OutOfRangeBehaviour == OutOfRangeClick.Queue)
-                                return false;
-
-                        return true;
-                    }
-                    else
-                    {
-                        return true;
-                    }
-
-                case SkillType.Zone:
-
-                    if (temp.Points.Count > 0)
-                    {
-                        foreach (var point in temp.Points)
-                            if (Vector3.Distance(point, transform.position) > AreaInfo.Radius)
-                                return false;
-
-                        return true;
-                    }
-                    else if (temp.GetTargets().Count > 0)
-                    {
-                        foreach (var target in temp.GetTargets())
-                            if (Vector3.Distance(target.Position, transform.position) > AreaInfo.Radius)
-                                return false;
-
-                        return true;
-                    }
-                    else
-                    {
-                        return true;
-                    }
-
-                case SkillType.NonTarget:
-
-                    return true;
-                //обработать бесцельный с границей и кликом
-
-                default:
-
-                    return true;
-            }
         }
     }
 
@@ -466,6 +399,7 @@ public abstract class Skill : NetworkBehaviour
     {
         if (Charges.UsesCharges && !Charges.IsComboPart)
         {
+            Debug.Log("Starting Charge Cooldown");
             Charges.TryUse();
         }
         else
@@ -498,11 +432,7 @@ public abstract class Skill : NetworkBehaviour
     private List<Coroutine> _currentChargeCooldownJob;
 
     #region ChargeRelatedProperties
-    public bool IsUseCharges => Charges.UsesCharges;
-    public int MaxChargers => Charges.MaxCharges; //Ctrl+R
     public int Chargers { get => _currentChargers; protected set { _currentChargers = value; CurrentChargeChanged?.Invoke(_currentChargers); } }
-    public bool IsHaveCharge => Charges.HasCharges;
-    public float ChargeCooldown => Charges.BaseCooldown;
     public List<float> RemainingCooldownTimeCharge => _remainingCooldownTimeChargers;
     #endregion
 
@@ -625,9 +555,9 @@ public abstract class Skill : NetworkBehaviour
                 {
                     if (_remainingCooldownTimeChargers[i] <= 0)
                     {
-                        _currentChargeCooldownJob[i] = StartCoroutine(RechargeOneChargeCoroutine(i, ChargeCooldown));
+                        _currentChargeCooldownJob[i] = StartCoroutine(RechargeOneChargeCoroutine(i, Charges.CooldownTime));
 
-                        ChargeStartCooldown?.Invoke(ChargeCooldown);
+                        ChargeStartCooldown?.Invoke(Charges.CooldownTime);
                         break;
                     }
                 }
@@ -663,9 +593,9 @@ public abstract class Skill : NetworkBehaviour
     {
         while (_currentChargers < _maxCharges)
         {
-            ChargeStartCooldown?.Invoke(ChargeCooldown);
+            ChargeStartCooldown?.Invoke(Charges.CooldownTime);
             float time = 0;
-            while (time < ChargeCooldown)
+            while (time < Charges.CooldownTime)
             {
                 time += Time.deltaTime;
                 yield return null;
@@ -739,7 +669,6 @@ public abstract class Skill : NetworkBehaviour
     protected float _baseCooldownTime;
     private float _remainingCooldownTime;
 
-    public float CooldownTime { get => Buff.Cooldown.GetBuffedValue(_cooldownTime); protected set => _cooldownTime = value; }
     public float RemainingCooldownTime { get => _remainingCooldownTime; set => _remainingCooldownTime = value; }
     //public bool IsCooldowned { get => _remainingCooldownTime <= 0; }
     public bool IsCooldowned { get => Cooldown.IsActive == false; }
@@ -818,7 +747,7 @@ public abstract class Skill : NetworkBehaviour
         CooldownEnded?.Invoke();
         _cooldownJob = null;
     }
-    #endregion Metohds
+    #endregion Methods
 
     #region New
     [SyncVar(hook = nameof(OnCooldownChanged))] private double _cooldownEndTime = 0;
@@ -845,7 +774,7 @@ public abstract class Skill : NetworkBehaviour
 
         if (_cooldownEndTime <= NetworkTime.time)
         {
-            Cooldown.ForceEnd();
+            Cooldown?.ForceEnd();
         }
     }
 
@@ -1338,9 +1267,7 @@ public abstract class Skill : NetworkBehaviour
 
             if (startCooldown)
             {
-                //Cooldown.Start();
-                IncreaseSetCooldown(CooldownTime);
-                Cooldown.SetIncreased(Cooldown.CooldownTime, shouldModify: false);
+                Cooldown.Start();
             }
             if (!Charges.IsComboPart) TryUseCharge();
             return true;
