@@ -21098,7 +21098,7 @@ MonoBehaviour:
     _stateInfos: []
     IsOpen: 1
     Description: " \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0440\u0435\u043F\u0442\u0438\u043B\u0438\u0438"
-    Icon: {fileID: 7595241771238511587, guid: eb1e53bce0abfd940816bf6d5da4ce56, type: 3}
+    Icon: {fileID: 21300000, guid: eb1e53bce0abfd940816bf6d5da4ce56, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 2483674839823445686}
@@ -21617,7 +21617,7 @@ MonoBehaviour:
     _stateInfos: []
     IsOpen: 0
     Description: "\u042F\u0434 7"
-    Icon: {fileID: -4125687490052203788, guid: ef644501c6a48574d99b58d3c563b590, type: 3}
+    Icon: {fileID: 21300000, guid: 37e2f5ff795d89441a4d306dd4f45782, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 2483674839823445686}
