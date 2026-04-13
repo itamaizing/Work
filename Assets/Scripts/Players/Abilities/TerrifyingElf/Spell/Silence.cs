@@ -36,6 +36,7 @@ public class Silence : Skill
     private bool _isSilenceEffectGhostCast;
     private bool _isSilenceAddAllCharacterWithDeabaffElf;
     private bool _weakeningSilenceTalentActive;
+    private bool _isGhostDeathSilence;
     public bool IsSilenceAddAllCharacterWithDeabaffElf { get => _isSilenceAddAllCharacterWithDeabaffElf; }
     
     public void WeakeningSilenceTalentActive(bool value) => _weakeningSilenceTalentActive = value;
@@ -212,7 +213,7 @@ public class Silence : Skill
         {
             CmdApplyDamage(_damage, targetComponent.gameObject);
             CmdReduceGhostCharge(target);
-            StartCoroutine(IGhostHealthCheck(target));
+            if (_isGhostDeathSilence) StartCoroutine(IGhostHealthCheck(target));
         }
     }
 
@@ -238,6 +239,7 @@ public class Silence : Skill
     public void SilenceEffectsOnMinionMagic(bool value) => _isSilenceEffectsOnMinionMagic = value;
     public void SilenceEffectGhostCast(bool value) => _isSilenceEffectGhostCast = value;
     public void SilenceAddAllCharacterWithDeabaffElf(bool value) => _isSilenceAddAllCharacterWithDeabaffElf = value;
+    public void GhostDeathSilence(bool value) => _isGhostDeathSilence = value;
 
     #endregion
     [Command] private void CmdTriggerGhostFreeWindow() => RpcTriggerGhostFreeWindow();
