@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Linq;
 using Mirror;
@@ -8,7 +8,6 @@ using UnityEngine.SceneManagement;
 public class ShotsIntoSky : Skill
 {
     [SerializeField] private SkillRenderer skillRenderer;
-    [SerializeField] private bool silenceTalentActive;
     [SerializeField] private bool tripleShotTalentActive;
     [SerializeField] private bool shotAstralManaActive;
     [SerializeField] private LayerMask groundLayer;
@@ -214,7 +213,7 @@ public class ShotsIntoSky : Skill
 
         ArrowsIntoSkyProjectile impact = Instantiate(impactPrefab, position, Quaternion.identity);
         SceneManager.MoveGameObjectToScene(impact.gameObject, _hero.NetworkSettings.MyRoom);
-        impact.Init(playerLinks, this, damage, silenceTalentActive, lastStreamTalent, shotAstralManaActive);
+        impact.Init(playerLinks, this, damage, lastStreamTalent, shotAstralManaActive);
         NetworkServer.Spawn(impact.gameObject);
 
         _arrowsIntoSkyProjectileIds.Add(impact.GetComponent<NetworkIdentity>().netId);
@@ -243,7 +242,7 @@ public class ShotsIntoSky : Skill
         if (gameObject == null) return;
 
         ArrowsIntoSkyProjectile impact = gameObject.GetComponent<ArrowsIntoSkyProjectile>();
-        if (impact != null) impact.Init(playerLinks, this, damage, silenceTalentActive, lastStreamTalent, shotAstralManaActive);
+        if (impact != null) impact.Init(playerLinks, this, damage, lastStreamTalent, shotAstralManaActive);
     }
 
     [ClientRpc] private void RpcActivate(ArrowsIntoSkyProjectile projectile) => projectile.Activate();
@@ -298,14 +297,6 @@ public class ShotsIntoSky : Skill
         tripleShotTalentActive = value;
     }
     #endregion
-
-    #region silenceTalent
-    public void SetSilenceTalentActive(bool value)
-    {
-        silenceTalentActive = value;
-    }
-    #endregion
-
     #region ShotsIntoSkyAstralTalent
     public void ShotsIntoSkyAstralTalentActive(bool value) => shotAstralManaActive = value;
     #endregion
