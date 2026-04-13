@@ -14,8 +14,15 @@ public enum ChargeCooldownType
     /// Кдшатся последовательно один после другого
     /// </summary>
     Sequential,
+    /// <summary>
+    /// Висят бесконечно, не тикают
+    /// </summary>
+    Infinite,
 }
 
+/// <summary>
+/// Увы, для синхронизации таймеры тикают в Skill.Update -> Skill.TickTimers()
+/// </summary>
 [Serializable]
 public class ChargeComponent : BaseSkillComponent
 {
@@ -85,15 +92,6 @@ public class ChargeComponent : BaseSkillComponent
         isInitialized = true;
     }
 
-    public void Tick()
-    {
-        if (!isInitialized)
-            return;
-        for (int i = RechargeTimers.Count - 1; i >= 0; i--)
-            if (RechargeTimers[i] <= NetworkTime.time)
-                RestoreCharge(i);
-    }
-
     public void SendCurrentChange(int count) => OnCurrentChange?.Invoke(count);
 
     public void AddMax(bool cooldowned=false)
@@ -117,7 +115,7 @@ public class ChargeComponent : BaseSkillComponent
     {
         _maxCharges += delta;
 
-        if (_maxCharges < 0) //1?
+        if (_maxCharges < 0)
             _maxCharges = 0;
 
         if (cooldowned)
@@ -131,7 +129,8 @@ public class ChargeComponent : BaseSkillComponent
         }
         else
         {
-        //Нужно ли заканчивать уже идущие? Как будто не стоит, иначе перепрокачка будет сбрасывать КД. Но сейчас оно может уйти в отриц. значения
+            //Нужно ли заканчивать уже идущие?
+            //Как будто не стоит, иначе перепрокачка будет сбрасывать КД.Но сейчас оно может уйти в отриц. значения
             OnCurrentChange?.Invoke(RemainingCharges);
         }
         OnMaxChange?.Invoke(_maxCharges);
@@ -143,6 +142,7 @@ public class ChargeComponent : BaseSkillComponent
         {
             Debug.Log("Recharged " + index);
             _skill.CmdEndRecharge(index);
+            _skill.LinkedChargeCDUI?.RemoveChargeCD(index); //Возможно не стоит
         }
     }
 

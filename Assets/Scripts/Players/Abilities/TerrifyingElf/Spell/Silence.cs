@@ -73,7 +73,6 @@ public class Silence : Skill
     protected override int AnimTriggerCast => 0;
     private void Start()
     {
-        _baseCooldownTime = Cooldown.BaseCooldownTime;
         _audioSource = GetComponent<AudioSource>();
         _waitForGhostHealthCheckDelay = new WaitForSeconds(GhostHealthCheckDelay);
     }

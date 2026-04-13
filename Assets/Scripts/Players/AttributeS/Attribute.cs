@@ -70,6 +70,22 @@ public class Attribute
         _isActual = false;
     }
 
+    public void RemoveBySource(object source, bool all=true)
+    {
+        //if(_modifiers.Contains(modifier))
+        //    _modifiers.Remove(modifier);
+        for (int i = _modifiers.Count; i >= 0; i--)
+        {
+            if (_modifiers[i].Source == source)
+            {
+                _modifiers.RemoveAt(i);
+                if (all == false)
+                    break;
+            }
+        }
+        _isActual = false;
+    }
+
     public void SetBaseValue(float value)
     {
         _baseValue = value;
@@ -130,14 +146,19 @@ public class Attribute
 #endregion
 
 #region Modifier
-/// <summary>
-/// <param name="Type">
-/// All ModifierValues should be passed as percent. I.e. 0.30 = 30% boost
-/// </param>
-/// </summary>
+
 [Serializable]
 public class AttributeModifier
 {
+    /// <summary>
+    /// <param name="value">
+    /// Positive => Increase;
+    /// Negative => Decrease;
+    /// </param>
+    /// <param name="Type">
+    /// All ModifierValues should be passed as percent. I.e. 0.30 = 30% boost
+    /// </param>
+    /// </summary>
     public AttributeModifier(float value, ModifierType type, object source=null)
     {
         Value = value;

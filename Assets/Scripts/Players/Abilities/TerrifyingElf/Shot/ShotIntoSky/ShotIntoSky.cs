@@ -114,11 +114,6 @@ public class ShotIntoSky : Skill
 
     public void ForceCooldownEnd()
     {
-        if (_cooldownJob != null)
-            StopCoroutine(_cooldownJob);
-
-        //RemainingCooldownTime = 0f;
-
         Cooldown.ForceEnd();
     }
 

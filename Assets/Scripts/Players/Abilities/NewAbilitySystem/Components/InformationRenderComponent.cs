@@ -54,7 +54,7 @@ public class InformationRenderComponent : BaseSkillComponent
         }
     }
 
-    public void ShowSmartIndicator() //TODO: в _skill воткнуть "smartDraw". По умолчанию он вызывает это, но можно переопределить
+    public void ShowSmartIndicator()
     {
         Damage damage = new Damage
         {

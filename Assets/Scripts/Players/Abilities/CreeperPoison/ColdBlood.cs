@@ -40,7 +40,7 @@ public class ColdBlood : Skill
     {
         base.Awake();
 
-        _baseCooldownTime = Cooldown.BaseCooldownTime;
+        //_baseCooldownTime = Cooldown.BaseCooldownTime;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)

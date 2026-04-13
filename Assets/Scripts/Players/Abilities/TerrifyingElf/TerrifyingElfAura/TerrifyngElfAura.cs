@@ -289,7 +289,8 @@ public class TerrifyingElfAura : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdResetCooldown(Skill skill)
     {
-        skill.RpcResetCooldownStateOnly();
+        Debug.Log($"{skill.Name} should come off CD");
+        skill.Cooldown.ForceEnd();
     }
 
     private void OnDamageTracked(Damage damage, GameObject target)
@@ -316,7 +317,7 @@ public class TerrifyingElfAura : NetworkBehaviour
 
     public void ResetCoolDown(Skill skill)
     {
-        if (isServer) skill.RpcResetCooldownStateOnly();
+        if (isServer) skill.Cooldown.ForceEnd();
         else CmdResetCooldown(skill);
     }
 

@@ -51,29 +51,15 @@ public enum TargetType
 [Serializable]
 #if UNITY_EDITOR
 public class TargetingComponent : BaseSkillComponent, ISerializationCallbackReceiver
-#else
-public class TargetingComponent : BaseSkillComponent
-#endif
 {
-    #region InspectorFields
-    /// <summary>
-    /// ТОЛЬКО на кого можем нажать. Unit - применяется к цели, Ground - прменяется на землю
-    /// </summary>
-    [SerializeField] protected SkillType type;
-    [SerializeField] protected TargetLayer _clickLayer; //возможно стоит разделить клик от физ. взаимодействия
-    [SerializeField] protected TargetFaction _faction;
-    [SerializeField] protected UnitType _unitType;
-    [SerializeField] protected OutOfRangeClick _outOfRangeBehaviour;
-    #endregion
-
-#if UNITY_EDITOR
+    #region Editor-Only
     /// <summary>
     /// Для удобства редактирования, чтобы
     /// А) Слои для клика сами ставились на стандартные при смене типа способности
     /// Б) Не затирались значения, если дергать тип туда-сюда
     /// По идее не живет между запусками Юнити, да и ладно
     /// </summary>
-    private Dictionary<SkillType, TargetLayer> editorBackupValue = new ();
+    private Dictionary<SkillType, TargetLayer> editorBackupValue = new();
     private SkillType oldType = new();
 
     public void OnBeforeSerialize()
@@ -110,7 +96,21 @@ public class TargetingComponent : BaseSkillComponent
     }
 
     public void OnAfterDeserialize() { }
+    #endregion
+#else
+    public class TargetingComponent : BaseSkillComponent
+{
 #endif
+    #region InspectorFields
+    /// <summary>
+    /// ТОЛЬКО на кого можем нажать. Unit - применяется к цели, Ground - прменяется на землю
+    /// </summary>
+    [SerializeField] protected SkillType type;
+    [SerializeField] protected TargetLayer _clickLayer; //возможно стоит разделить клик от физ. взаимодействия
+    [SerializeField] protected TargetFaction _faction;
+    [SerializeField] protected UnitType _unitType;
+    [SerializeField] protected OutOfRangeClick _outOfRangeBehaviour;
+    #endregion
 
     #region Runtime Variables
     protected LayerMask _targetLayer;
@@ -229,85 +229,9 @@ public class TargetingComponent : BaseSkillComponent
         return null;
     }
 
-    public bool CanCast(TargetInfo target=null)
-    {
-        if (target == null)
-            return true;    //True? Может стоит проверять тип скилла?
-
-
-        //таргетный - никогда не клэмпим
-        //нонтаргет - сразу true
-        //если допустимы и цель и точка:
-        //Для ЦЕЛЕЙ: никогда не округляем
-        //Для ТОЧЕК: в зависимости от _outOfRangeBehaviour
-
-        //Остается понять как по TargetInfo догадаться на кого мы нажали
-        //и в каких случаях у нас может быть несколько целей/точек именно внутри TargetInfo
-
-        // var range = 0; //if target/zone => radius | projectile => castLength? || Max(castLength, Radius)?
-        var range = _skill.AreaInfo.Radius;
-        switch (_skill.Info.SkillType)
-        {
-            case SkillType.Target:
-                if (target.GetTargets().Count > 0)
-                {
-                    foreach (var t in target.GetTargets())
-                        if (!IsTargetInRadius(_skill.AreaInfo.Radius, t.Transform))
-                            return false;
-
-                    return true;
-                }
-                return false;
-
-            case SkillType.Zone:
-            case SkillType.Projectile:
-                List<Vector3> pointsToCheck = new();
-                if (_clickLayer == TargetLayer.Unit)
-                    foreach (var unit in target.GetTargets())
-                        pointsToCheck.Add(unit.Transform.position);
-                if (_clickLayer == TargetLayer.Ground)
-                    foreach (var point in target.Points)
-                        pointsToCheck.Add(point);
-
-                if (pointsToCheck.Count == 0)
-                    return false;           //Возвращал True, но это странно, у нас же не указана цель
-
-                for (int i = 0; i < pointsToCheck.Count; i++)
-                {
-                    if (!IsPointInRadius(_skill.AreaInfo.Radius, pointsToCheck[i]))
-                    {
-                        if (_outOfRangeBehaviour == OutOfRangeClick.Queue)
-                            return false;
-                        //else
-                        //  pointsToCheck[i] = ClampToRadius(_character.Position, pointsToCheck[i], _skill.AreaInfo.Radius); | => LoadData
-                        //Не много ли чести для простого bool метода проверки дальности?
-                        //+ это НЕ СРАБОТАЕТ, надо менять точки напрямую в target
-                        //При этом нельзя менять position юнита, т.к. этол его переместит
-                        // См. коммент выше. Вроде таргет инфо все-таки всегда содержит точку.
-                        // Если есть перс - считаем, что клик был по герою, иначе - по земле
-                        // Но вообще, я бы переписал TargetInfo => на свою TargetData
-
-                        // Мб лучше клэмпить уже в CastJob
-                    }
-                }
-                return true;
-
-            case SkillType.NonTargetWithClick:
-            case SkillType.NonTarget:
-                return true;
-
-            default:
-                Debug.LogError("Не проверяем такой тип скилла");
-                throw new NotImplementedException();
-        }
-        //return true;
-    }
-
-    // Мне не очень нравится, что в одном месте мы проверяем SkillType, а в другом ClickLayer
-    // Как будто бы стоит писать все в одном формате. Тогда более главенствующий/информативный - скорее ClickLayer
     public bool CanCast(TargetData target)
     {
-        if (target == null)
+        if (target == null && (type & (SkillType.NonTargetWithClick | SkillType.NonTarget)) == 0)
             return false;
         
         Vector3 point = new();
@@ -346,7 +270,6 @@ public class TargetingComponent : BaseSkillComponent
                 Debug.LogError("Не проверяем такой тип скилла");
                 throw new NotImplementedException();
         }
-        //return true;
     }
 
     public TargetData GetTargetOrPoint(float searchRadius = 0.3f)
@@ -377,11 +300,17 @@ public class TargetingComponent : BaseSkillComponent
         return null;
     }
     
+    /// <summary>
+    /// Находит и устанавливает tempTarget, берет текущую точку курсора и значение радиуса из скилла
+    /// </summary>
     public TargetData FindTempTarget(bool canTargetSelf = false, bool canTargetDead = false)
     {
         return FindTempTarget(GetMousePoint(), _skill.AreaInfo.Radius, canTargetSelf, canTargetDead);
     }
 
+    /// <summary>
+    /// Находит и устанавилвает _tempTarget
+    /// </summary>
     public TargetData FindTempTarget(Vector3 position, float radius, bool canTargetSelf = false, bool canTargetDead = false)
     {
         var targets = FindTargets(position, radius, canTargetSelf, canTargetDead);
@@ -394,13 +323,15 @@ public class TargetingComponent : BaseSkillComponent
         return _tempTarget;
     }
 
+    /// <summary>
+    /// Предконечный метод поиска целей. Позволяет отфильтровать мертвых
+    /// </summary>
     public List<TargetData> FindTargets(Vector3 position, float radius, bool canTargetSelf=false, bool canTargetDead=false)
     {
         List<TargetData> targets = GetClosestTargets(position, radius, canTargetSelf);
         if (targets == null || targets.Count <= 0)
         {
-            //ClearTempTarget(); Почему это вообще тут есть, это же внешние методы
-            return new();
+            return null;
         }
 
         if (canTargetDead)
@@ -413,13 +344,16 @@ public class TargetingComponent : BaseSkillComponent
         }
     }
 
+    /// <summary>
+    /// Конечный метод поиска цели
+    /// </summary>
     public List<TargetData> GetClosestTargets(Vector3 position, float radius, bool canTargetSelf = false)
     {
         var targets = _character.TargetSeeker.GetCloserTargetsCharacter(position, radius, canTargetSelf);
         if (targets == null || targets.Count <= 0)
         {
-            //ClearTempTarget();
-            return new();
+            //return new();
+            return null;
         }
         List<TargetData> targetsData = new();
         foreach (var target in targets)
@@ -445,20 +379,20 @@ public class TargetingComponent : BaseSkillComponent
         return distance <= radius;
     }
 
-    public Vector3 GetMousePoint(bool useLayerMask = false) //добавить в Raycast() layerMask
+    public Vector3 GetMousePoint(bool useLayerMask = false)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         LayerMask mask = useLayerMask ? _targetLayer : (LayerMask.GetMask("Default", "Ground", "Obstecls"));
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, mask))
         {
+            //Я не очень понимаю зачем это нужно было раньше, вероятно можно смело удалять
             if (_skill.Info.AutoAttack == AutoAttack.autoAttack)
             {
                 if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed) //?
                 {
                     if (hit.collider.TryGetComponent<IDamageable>(out _))
                     {
-
                         //Уже неактуально?
                         //_skill.IsAutoMode = true;
                         //_skill.AutoModeChanged?.Invoke(true);
@@ -478,6 +412,9 @@ public class TargetingComponent : BaseSkillComponent
         return distance <= radius;
     }
 
+    /// <summary>
+    /// Обрезает точку до макс. значения радиуса способности
+    /// </summary>
     public Vector3 ClampToRadius(Vector3 center, Vector3 point, float radius)
     {
         Vector3 direction = point - center;

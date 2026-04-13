@@ -553,8 +553,8 @@ public class GrowTree : Skill
     {
         if (!_treeShotCooldownTalent) return;
 
-        if (_shotsIntoSky != null && _shotsIntoSky.Cooldown.IsActive) _shotsIntoSky.ForceCooldownEnd();
-        if (_shotIntoSky != null && _shotIntoSky.Cooldown.IsActive) _shotIntoSky.ForceCooldownEnd();
+        if (_shotsIntoSky != null && _shotsIntoSky.Cooldown.IsActive) _shotsIntoSky.Cooldown.ForceEnd();
+        if (_shotIntoSky != null && _shotIntoSky.Cooldown.IsActive) _shotIntoSky.Cooldown.ForceEnd();
     }
     #endregion
 

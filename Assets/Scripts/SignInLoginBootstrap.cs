@@ -85,7 +85,7 @@ public class SignInLoginBootstrap : MonoBehaviour
         SceneManager.LoadScene(_menuSceneName);
     }
 
-#if UNITY_SERVER
+#if UNITY_SERVER && !UNITY_EDITOR
     private async void Start()
     {
         // Костыльно, но просто LoadScene не работает, если не менять online scene в NetworkHTTP на SignIn (awake не стреляли)

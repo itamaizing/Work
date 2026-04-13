@@ -79,7 +79,8 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] protected bool _earlyCooldown = false;
     [Header("Counter settings")]
     [SerializeField] protected float maxCounter;
-    public TagComponent _tags;
+    [SerializeField] public TagComponent _tags;
+    [SerializeField] public AnimationComponent _animations;
     #endregion InspectorSettings
 
     #region Context
@@ -90,7 +91,7 @@ public abstract class Skill : NetworkBehaviour
     #endregion
     #region Coroutines
     //COOLDOWNS
-    protected Coroutine _cooldownJob;
+    //protected Coroutine _cooldownJob;
     protected Coroutine _rechargeJob;
     //COOLDOWNS
     protected Coroutine _prepareCoroutine;
@@ -214,7 +215,8 @@ public abstract class Skill : NetworkBehaviour
         AbilityInfoHero.AddingDescriptionSet(value, text);
     }
 
-
+    #region Methods
+    #region StartUp
     public virtual void Init(SkillRenderer render, Character hero)
     {
         _hero = hero;
@@ -247,6 +249,7 @@ public abstract class Skill : NetworkBehaviour
         else
             _currentChargers = 1;
     }
+    #endregion
 
     private void Update()
     {
@@ -261,10 +264,9 @@ public abstract class Skill : NetworkBehaviour
             Cooldown?.ForceEnd();
 
         for (int i = _rechargeEndTime.Count - 1; i >= 0; i--)
-            if (_rechargeEndTime[i] <= time)
+            if (_rechargeEndTime[i] <= time && Charges.CooldownType != ChargeCooldownType.Infinite)
                 _rechargeEndTime.RemoveAt(i);
     }
-
 
     protected virtual bool IsCanCast
     {
@@ -275,9 +277,10 @@ public abstract class Skill : NetworkBehaviour
             if (temp == null)
                 return true;
 
-            return Targeting.CanCast(temp);
+            return Targeting.CanCast(Targeting.QueueInfoToTargetData(temp));
         }
     }
+
 
     #region Targeting
     protected IHealable _tempForHealing;
@@ -292,7 +295,7 @@ public abstract class Skill : NetworkBehaviour
         Targeting.SetTarget(Targeting.QueueInfoToTargetData(targetInfo));
     }
 
-    private void LoadTargetDataForCheckCast() //Targeting.CheckDataForCast
+    private void LoadTargetDataForCheckCast()
     {
         if (_isCasting == false && _targetInfoQueue.TryPeek(out TargetInfo temp))
             LoadTargetData(temp);
@@ -320,7 +323,7 @@ public abstract class Skill : NetworkBehaviour
 
     public void ClearQueueTarget() => _targetInfoQueue.Clear();
 
-    private bool IsValidTarget(IDamageable target) //оставить тут, сделать virutal?
+    protected virtual bool IsValidTarget(IDamageable target)
     {
         if (target == null) return false;
         if (target is MonoBehaviour monoBehaviour) return monoBehaviour != null;
@@ -425,433 +428,6 @@ public abstract class Skill : NetworkBehaviour
     }
     #endregion Skill Execution Loop
 
-    #region Charges
-    #region Old
-    protected int _currentChargers;
-    private List<float> _remainingCooldownTimeChargers = new();
-    private List<Coroutine> _currentChargeCooldownJob;
-
-    #region ChargeRelatedProperties
-    public int Chargers { get => _currentChargers; protected set { _currentChargers = value; CurrentChargeChanged?.Invoke(_currentChargers); } }
-    public List<float> RemainingCooldownTimeCharge => _remainingCooldownTimeChargers;
-    #endregion
-
-    #region Charge Events
-    public event Action<int> CurrentChargeChanged;
-    public event Action<float> ChargeStartCooldown;
-    public event Action<int> ChargeCooldownEnded;
-    public event Action MassageHaventCharge;
-    #endregion
-
-    #region Methods
-    public void ResetCurrentChargeCooldown(int index)
-    {
-        if (!_isUseCharges || !_chargesHaveSeparateCooldown) return;
-        if (_currentChargeCooldownJob[index] != null)
-        {
-            StopCoroutine(_currentChargeCooldownJob[index]);
-            _currentChargeCooldownJob[index] = null;
-        }
-
-        _remainingCooldownTimeChargers[index] = 0f;
-
-        LinkedChargeCDUI?.RemoveChargeCD(index);
-
-        _currentChargers = Mathf.Min(_currentChargers + 1, _maxCharges);
-        CurrentChargeChanged?.Invoke(_currentChargers);
-        ChargeCooldownEnded?.Invoke(index);
-    }
-
-    public void AddMaxChargeCount()
-    {
-        bool isRecharging = (_currentChargers < _maxCharges);
-
-        _maxCharges += 1;
-
-        _remainingCooldownTimeChargers.Add(0);
-        if (!isRecharging)
-            _currentChargers += 1;
-
-        CurrentChargeChanged?.Invoke(_currentChargers);
-    }
-
-    public void DeductMaxChargeCount()
-    {
-        if (_maxCharges - 1 > 0)
-        {
-            int lastIndex = _maxCharges - 1;
-
-            _remainingCooldownTimeChargers.RemoveAt(lastIndex);
-
-            _maxCharges -= 1;
-            if (_currentChargers > _maxCharges)
-            {
-                _currentChargers -= 1;
-                CurrentChargeChanged?.Invoke(_currentChargers);
-            }
-        }
-    }
-
-    public void ReductionCooldownForAllCharges(float reductionTime, float reductionPercentage = 0)
-    {
-        for (int i = 0; i < RemainingCooldownTimeCharge.Count; i++)
-        {
-            var time = _remainingCooldownTimeChargers[i] - reductionTime - (_remainingCooldownTimeChargers[i] * reductionPercentage);
-            ReductionCooldownForCharge(i, time);
-        }
-    }
-
-    public void ReductionCooldownCharges(float reductionTime) //done
-    {
-        float time;
-        for (int i = 0; i < RemainingCooldownTimeCharge.Count; i++)
-        {
-            time = _remainingCooldownTimeChargers[i] - reductionTime;
-
-            if (time <= 0)
-            {
-                ReductionCooldownForCharge(i, reductionTime);
-                reductionTime = reductionTime - _remainingCooldownTimeChargers[i];
-            }
-            else
-            {
-                ReductionCooldownForCharge(i, reductionTime);
-                break;
-            }
-        }
-    }
-
-    private void ReductionCooldownForCharge(int index, float reductionTime) //done
-    {
-        var tempTime = reductionTime;
-        if (tempTime > _remainingCooldownTimeChargers[index])
-            return;
-
-        if (_currentChargeCooldownJob[index] != null)
-            StopCoroutine(_currentChargeCooldownJob[index]);
-
-        _currentChargeCooldownJob[index] = StartCoroutine(RechargeOneChargeCoroutine(index, tempTime));
-    }
-
-    public virtual bool TryUseCharge()
-    {
-        if (_isUseCharges == false)
-            return true;
-
-        Charges.TryUse();
-
-        if (_currentChargers > 0)
-        {
-            _currentChargers--;
-            CurrentChargeChanged?.Invoke(_currentChargers);
-
-            if (_rechargeJob == null && _chargesHaveSeparateCooldown == false)
-            {
-                _rechargeJob = StartCoroutine(RechargeCoroutine());
-            }
-            else if (_rechargeJob == null && _chargesHaveSeparateCooldown)
-            {
-                for (int i = 0; i < _maxCharges; i++)
-                {
-                    if (_remainingCooldownTimeChargers[i] <= 0)
-                    {
-                        _currentChargeCooldownJob[i] = StartCoroutine(RechargeOneChargeCoroutine(i, Charges.CooldownTime));
-
-                        ChargeStartCooldown?.Invoke(Charges.CooldownTime);
-                        break;
-                    }
-                }
-            }
-
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    private IEnumerator RechargeOneChargeCoroutine(int chargeIndex, float time)
-    {
-        _remainingCooldownTimeChargers[chargeIndex] = time;
-
-        while (_remainingCooldownTimeChargers[chargeIndex] > 0)
-        {
-            _remainingCooldownTimeChargers[chargeIndex] -= Time.deltaTime;
-
-            yield return null;
-        }
-
-        if (_currentChargers < _maxCharges)
-        {
-            _currentChargers++;
-            CurrentChargeChanged?.Invoke(_currentChargers);
-        }
-    }
-
-    protected virtual IEnumerator RechargeCoroutine()
-    {
-        while (_currentChargers < _maxCharges)
-        {
-            ChargeStartCooldown?.Invoke(Charges.CooldownTime);
-            float time = 0;
-            while (time < Charges.CooldownTime)
-            {
-                time += Time.deltaTime;
-                yield return null;
-            }
-            if (_currentChargers < _maxCharges)
-            {
-                _currentChargers++;
-                CurrentChargeChanged?.Invoke(_currentChargers);
-            }
-        }
-        _rechargeJob = null;
-    }
-    #endregion Coroutines
-    #endregion Old
-
-    #region NewSystem
-    //[SyncVar] private int _maxCharges;
-    private SyncList<double> _rechargeEndTime = new();
-
-    public SyncList<double> RechargeTimers => _rechargeEndTime;
-
-
-    [Command]
-    public void CmdStartRecharge(float duration)
-    {
-        if (Charges.CooldownType == ChargeCooldownType.Independant)
-        {
-            _rechargeEndTime.Add(NetworkTime.time + duration);
-        }
-        else if (Charges.CooldownType == ChargeCooldownType.Sequential)
-        {
-            var endTime = NetworkTime.time + duration;
-            if (_rechargeEndTime.Count > 0)
-            {
-                endTime = _rechargeEndTime.Last() + duration;
-            }
-            _rechargeEndTime.Add(endTime);
-        }
-    }
-
-    [Command]
-    public void CmdModifyRechargeTime(float time, bool tickAll)
-    {
-        if (tickAll)
-        {
-            for (int i = _rechargeEndTime.Count - 1; i >= 0; i--)
-            {
-                _rechargeEndTime[i] += time;
-                if (_rechargeEndTime[i] <= NetworkTime.time)
-                    _rechargeEndTime.RemoveAt(i);
-            }
-        }
-        else if (_rechargeEndTime.Count > 0)
-        {
-            _rechargeEndTime[0] -= time; //Первый заряд всегда самый старый, если мы не приколисты
-
-            if (_rechargeEndTime[0] <= NetworkTime.time) //В теории можно излишек перезарядки снимать с кд след. заряда, но как будто не стоит
-                _rechargeEndTime.RemoveAt(0);
-        }
-    }
-
-    [Command]
-    public void CmdEndRecharge(int index)
-    {
-        _rechargeEndTime.RemoveAt(index);
-    }
-    #endregion
-    #endregion CHARGES
-
-    #region Cooldown
-    protected float _baseCooldownTime;
-    private float _remainingCooldownTime;
-
-    public float RemainingCooldownTime { get => _remainingCooldownTime; set => _remainingCooldownTime = value; }
-    //public bool IsCooldowned { get => _remainingCooldownTime <= 0; }
-    public bool IsCooldowned { get => Cooldown.IsActive == false; }
-
-    #region Cooldown Events
-    public event Action CooldownEnded;
-    public event Action<float> CooldownStarted;
-    public event Action<float> MassageNotCooldowned;
-    #endregion events
-
-    #region Methods
-    protected void RaiseCooldownStarted(float cooldownTime) => CooldownStarted?.Invoke(cooldownTime);
-
-    protected void RaiseCooldownEnded() => CooldownEnded?.Invoke(); //done
-
-    public void IncreaseSetCooldown(float time) //done
-    {
-        if (time < _remainingCooldownTime)
-            return;
-
-        if (_cooldownJob != null)
-            StopCoroutine(_cooldownJob);
-
-        _cooldownJob = StartCoroutine(CooldownCoroutine(time));
-    }
-
-    public void IncreaseSetCooldownPassive(float time)
-    {
-        if (_cooldownJob != null) StopCoroutine(_cooldownJob);
-        _cooldownJob = StartCoroutine(CooldownCoroutine(time));
-    }
-
-    public void ResetCooldown() //Done
-    {
-        if (_cooldownJob != null)
-        {
-            StopCoroutine(_cooldownJob);
-            _cooldownJob = null;
-        }
-
-        _remainingCooldownTime = 0;
-
-        CooldownEnded?.Invoke();
-    }
-
-    public void DecreaseSetCooldown(float time) //done
-    {
-        var timeToSet = _remainingCooldownTime - time > 0 ? _remainingCooldownTime - time : 0;
-
-        if (_cooldownJob != null)
-            StopCoroutine(_cooldownJob);
-
-        _cooldownJob = StartCoroutine(CooldownCoroutine(timeToSet));
-    }
-    public void ReductionSetCooldown(float time) //done
-    {
-        if (time > _remainingCooldownTime)
-            return;
-
-        if (_cooldownJob != null)
-            StopCoroutine(_cooldownJob);
-
-        _cooldownJob = StartCoroutine(CooldownCoroutine(time));
-    }
-
-    private IEnumerator CooldownCoroutine(float cooldownTime)
-    {
-        CooldownStarted?.Invoke(cooldownTime);
-        _remainingCooldownTime = cooldownTime;
-
-        while (_remainingCooldownTime > 0)
-        {
-            _remainingCooldownTime -= Time.deltaTime;
-            yield return null;
-        }
-        CooldownEnded?.Invoke();
-        _cooldownJob = null;
-    }
-    #endregion Methods
-
-    #region New
-    [SyncVar(hook = nameof(OnCooldownChanged))] private double _cooldownEndTime = 0;
-    public double CooldownEnd => _cooldownEndTime;
-    private void OnCooldownChanged(double oldValue, double newValue)
-    {
-        Cooldown?.OnServerCooldownChanged(oldValue, newValue);
-    }
-
-    [Command]
-    public void CmdCooldownStart(float duration)
-    {
-        _cooldownEndTime = NetworkTime.time + duration;
-        Debug.Log("CD STARTED " + duration);
-    }
-
-    [Command]
-    public void CmdCooldownModify(double delta)
-    {
-        if (!Cooldown.IsActive)
-            return;
-
-        _cooldownEndTime += delta;
-
-        if (_cooldownEndTime <= NetworkTime.time)
-        {
-            Cooldown?.ForceEnd();
-        }
-    }
-
-    [Command]
-    public void CmdCooldownEnd()
-    {
-        _cooldownEndTime = NetworkTime.time;
-    }
-
-    [Server]
-    public void ServerResetCooldownOnly()
-    {
-        _cooldownEndTime = NetworkTime.time;
-
-        if (_cooldownJob != null)
-        {
-            StopCoroutine(_cooldownJob);
-            _cooldownJob = null;
-        }
-
-        _remainingCooldownTime = 0;
-
-        Debug.Log($"_cooldownEndTime");
-        CooldownEnded?.Invoke();
-    }
-    #endregion
-    #endregion
-
-    #region Channeling
-
-    #region Properties
-    public float CastStreamDuration => Channeling.CastDuration; // Ctrl+R
-    public float ManaCostRate { get => _manaCostRate; }
-    public List<SkillResourceCost> ManaCostPerTick { get => Channeling.Costs; }
-    #endregion
-
-    #region Events
-    public event Action<float> CastStreamStarted;
-    public event Action CastStreamEnded;
-    #endregion
-
-    #region Methods
-    public void InvokeCastStreamStarted(float duration)
-    {
-        CastStreamStarted?.Invoke(duration);
-    }
-    private IEnumerator CastStreamJob()
-    {
-        CastStreamStarted?.Invoke(CastStreamDuration);
-        float time = 0;
-
-        while (time < CastStreamDuration)
-        {
-            time += _manaCostRate;
-
-            foreach (var skillCost in _manaCostPerTick)
-            {
-                var currentResourceValue = _hero.Resources[skillCost.type].CurrentValue;
-
-                if (currentResourceValue < Buff.ManaCost.GetBuffedValue(skillCost.value))
-                {
-                    TryCancel(true);
-                }
-                else
-                {
-                    var resource = _hero.Resources[skillCost.type];
-                    resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.value));
-                }
-            }
-            yield return new WaitForSeconds(_manaCostRate);
-        }
-        _castStreamCoroutine = null;
-        CastStreamEnded?.Invoke();
-    }
-
-    #endregion
-    #endregion
 
     #region Cast Related
     /// <summary>
@@ -1247,12 +823,258 @@ public abstract class Skill : NetworkBehaviour
     #endregion CastDelay
     #endregion
 
+    #region Charges
+    // Пока не вырезал, есть скиллы завязанные на ручном управлении зарядами
+    // Для переписывания, добавил в новую систему тип Infinite (не тикающие)
+    #region Old
+    protected int _currentChargers;
+    private List<float> _remainingCooldownTimeChargers = new();
+    private List<Coroutine> _currentChargeCooldownJob;
+
+    #region ChargeRelatedProperties
+    public int Chargers { get => _currentChargers; protected set { _currentChargers = value; CurrentChargeChanged?.Invoke(_currentChargers); } }
+    public List<float> RemainingCooldownTimeCharge => _remainingCooldownTimeChargers;
+    #endregion
+
+    #region Charge Events
+    public event Action<int> CurrentChargeChanged;
+    public event Action<float> ChargeStartCooldown;
+    public event Action<int> ChargeCooldownEnded;
+    public event Action MassageHaventCharge;
+    #endregion
+
+    #region Methods
+    public virtual bool TryUseCharge()
+    {
+        if (_isUseCharges == false)
+            return true;
+
+        Charges.TryUse();
+
+        if (_currentChargers > 0)
+        {
+            _currentChargers--;
+            CurrentChargeChanged?.Invoke(_currentChargers);
+
+            if (_rechargeJob == null && _chargesHaveSeparateCooldown == false)
+            {
+                _rechargeJob = StartCoroutine(RechargeCoroutine());
+            }
+            else if (_rechargeJob == null && _chargesHaveSeparateCooldown)
+            {
+                for (int i = 0; i < _maxCharges; i++)
+                {
+                    if (_remainingCooldownTimeChargers[i] <= 0)
+                    {
+                        _currentChargeCooldownJob[i] = StartCoroutine(RechargeOneChargeCoroutine(i, Charges.CooldownTime));
+
+                        ChargeStartCooldown?.Invoke(Charges.CooldownTime);
+                        break;
+                    }
+                }
+            }
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private IEnumerator RechargeOneChargeCoroutine(int chargeIndex, float time)
+    {
+        _remainingCooldownTimeChargers[chargeIndex] = time;
+
+        while (_remainingCooldownTimeChargers[chargeIndex] > 0)
+        {
+            _remainingCooldownTimeChargers[chargeIndex] -= Time.deltaTime;
+
+            yield return null;
+        }
+
+        if (_currentChargers < _maxCharges)
+        {
+            _currentChargers++;
+            CurrentChargeChanged?.Invoke(_currentChargers);
+        }
+    }
+
+    protected virtual IEnumerator RechargeCoroutine()
+    {
+        while (_currentChargers < _maxCharges)
+        {
+            ChargeStartCooldown?.Invoke(Charges.CooldownTime);
+            float time = 0;
+            while (time < Charges.CooldownTime)
+            {
+                time += Time.deltaTime;
+                yield return null;
+            }
+            if (_currentChargers < _maxCharges)
+            {
+                _currentChargers++;
+                CurrentChargeChanged?.Invoke(_currentChargers);
+            }
+        }
+        _rechargeJob = null;
+    }
+    #endregion Coroutines
+    #endregion Old
+
+    #region NewSystem
+    //[SyncVar] private int _maxCharges;
+    private SyncList<double> _rechargeEndTime = new();
+    public SyncList<double> RechargeTimers => _rechargeEndTime;
+
+
+    [Command]
+    public void CmdStartRecharge(float duration)
+    {
+        if (Charges.CooldownType == ChargeCooldownType.Independant)
+        {
+            _rechargeEndTime.Add(NetworkTime.time + duration);
+        }
+        else if (Charges.CooldownType == ChargeCooldownType.Sequential)
+        {
+            var endTime = NetworkTime.time + duration;
+            if (_rechargeEndTime.Count > 0)
+            {
+                endTime = _rechargeEndTime.Last() + duration;
+            }
+            _rechargeEndTime.Add(endTime);
+        }
+    }
+
+    [Command]
+    public void CmdModifyRechargeTime(float time, bool tickAll)
+    {
+        if (tickAll)
+        {
+            for (int i = _rechargeEndTime.Count - 1; i >= 0; i--)
+            {
+                _rechargeEndTime[i] += time;
+                if (_rechargeEndTime[i] <= NetworkTime.time)
+                    _rechargeEndTime.RemoveAt(i);
+            }
+        }
+        else if (_rechargeEndTime.Count > 0)
+        {
+            _rechargeEndTime[0] -= time; //Первый заряд всегда самый старый, если мы не приколисты
+
+            if (_rechargeEndTime[0] <= NetworkTime.time) //В теории можно излишек перезарядки снимать с кд след. заряда, но как будто не стоит
+                _rechargeEndTime.RemoveAt(0);
+        }
+    }
+
+    [Command]
+    public void CmdEndRecharge(int index)
+    {
+        _rechargeEndTime.RemoveAt(index);
+    }
+    #endregion
+    #endregion CHARGES
+
+    #region Cooldown
+    [SyncVar(hook = nameof(OnCooldownChanged))] private double _cooldownEndTime = 0;
+    public double CooldownEnd => _cooldownEndTime;
+    private void OnCooldownChanged(double oldValue, double newValue)
+    {
+        Cooldown?.OnServerCooldownChanged(oldValue, newValue);
+    }
+
+    [Command]
+    public void CmdCooldownStart(float duration)
+    {
+        _cooldownEndTime = NetworkTime.time + duration;
+        Debug.Log("CD STARTED " + duration);
+    }
+
+    [Command]
+    public void CmdCooldownModify(double delta)
+    {
+        if (!Cooldown.IsActive)
+            return;
+
+        _cooldownEndTime += delta;
+
+        if (_cooldownEndTime <= NetworkTime.time)
+        {
+            Cooldown?.ForceEnd();
+        }
+    }
+
+    [Command]
+    public void CmdCooldownEnd()
+    {
+        _cooldownEndTime = NetworkTime.time;
+    }
+
+    [Server]
+    public void ServerResetCooldownOnly()
+    {
+        _cooldownEndTime = NetworkTime.time;
+
+        //_remainingCooldownTime = 0;
+        //CooldownEnded?.Invoke();
+        Debug.Log($"_cooldownEndTime");
+    }
+    #endregion
+
+    #region Channeling
+
+    #region Properties
+    public float CastStreamDuration => Channeling.CastDuration; // Ctrl+R
+    public float ManaCostRate { get => _manaCostRate; }
+    public List<SkillResourceCost> ManaCostPerTick { get => Channeling.Costs; }
+    #endregion
+
+    #region Events
+    public event Action<float> CastStreamStarted;
+    public event Action CastStreamEnded;
+    #endregion
+
+    #region Methods
+    public void InvokeCastStreamStarted(float duration)
+    {
+        CastStreamStarted?.Invoke(duration);
+    }
+    private IEnumerator CastStreamJob()
+    {
+        CastStreamStarted?.Invoke(CastStreamDuration);
+        float time = 0;
+
+        while (time < CastStreamDuration)
+        {
+            time += _manaCostRate;
+
+            foreach (var skillCost in _manaCostPerTick)
+            {
+                var currentResourceValue = _hero.Resources[skillCost.type].CurrentValue;
+
+                if (currentResourceValue < Buff.ManaCost.GetBuffedValue(skillCost.value))
+                {
+                    TryCancel(true);
+                }
+                else
+                {
+                    var resource = _hero.Resources[skillCost.type];
+                    resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.value));
+                }
+            }
+            yield return new WaitForSeconds(_manaCostRate);
+        }
+        _castStreamCoroutine = null;
+        CastStreamEnded?.Invoke();
+    }
+
+    #endregion
+    #endregion
+
     #region Resource Related
-    private bool CheckResourcesOnSkill()
+    protected virtual bool CheckResourcesOnSkill()
     {
         return Cost.EnoughResources();
-        //return _skillEnergyCosts.All(skillCost =>
-        //    _hero.Resources[skillCost.type].CurrentValue >= Buff.ManaCost.GetBuffedValue(skillCost.value));
     }
 
     protected virtual bool TryPayCost(List<SkillResourceCost> skillEnergyCosts, bool startCooldown = true)
@@ -1379,17 +1201,13 @@ public abstract class Skill : NetworkBehaviour
     }
     #endregion
 
+    #region Server-side
     [ClientRpc]
     public void RpcResetSkillState()
     {
         ResetSkillState();
     }
 
-    [ClientRpc]
-    public void RpcResetCooldownStateOnly()
-    {
-        ResetCooldownStateOnly();
-    }
 
     [ClientRpc]
     public void RpcCancelActiveSkill()
@@ -1413,7 +1231,7 @@ public abstract class Skill : NetworkBehaviour
 
     public void ResetSkillState()
     {
-        ResetCooldownStateOnly();
+        //ResetCooldownStateOnly();
 
         if (_castDeleyCoroutine != null)
         {
@@ -1445,18 +1263,6 @@ public abstract class Skill : NetworkBehaviour
         ClearData();
     }
 
-    public void ResetCooldownStateOnly()
-    {
-        if (_cooldownJob != null)
-        {
-            StopCoroutine(_cooldownJob);
-            _cooldownJob = null;
-        }
-
-        _remainingCooldownTime = 0;
-
-        CooldownEnded?.Invoke();
-    }
 
     public void ApplyDamage(Damage damage, GameObject target)
     {
@@ -1581,6 +1387,7 @@ public abstract class Skill : NetworkBehaviour
     {
         OnHealApplied?.Invoke(target, this);
     }
+    #endregion Server-side
 
     public void AfterCastJob()
     {
@@ -1648,4 +1455,5 @@ public abstract class Skill : NetworkBehaviour
         InputHandler.OnSpacetLeftMouseCanceled -= OnClickCanceled;
 
     }
+    #endregion
 }

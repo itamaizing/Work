@@ -17,9 +17,14 @@ public class SummoningSwarm : Skill
 
     public int ChargesSwarm => _chargesSwarm;
 
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+        Hero.Reset += ResettSwarmCharges;
+    }
+
     private void OnEnable()
     {
-        Hero.Reset += ResettSwarmCharges;
     }
 
     private void OnDisable()

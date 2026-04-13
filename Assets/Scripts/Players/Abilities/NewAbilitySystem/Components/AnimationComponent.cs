@@ -4,11 +4,13 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 [Serializable]
 public class AnimationComponent : BaseSkillComponent
 {
     #region InspectorFields
-
+    [SerializeField] List<string> _prepareAnimations;
+    [SerializeField] List<string> _castAnimations;
     #endregion
 
     #region RuntimeVariables
@@ -40,6 +42,7 @@ public class AnimationComponent : BaseSkillComponent
         base.Init(skill);
         _animator = _character.GetComponent<Animator>();
         _netAnimator = _character.GetComponent<NetworkAnimator>();
+        //тут можно захэшировать анимации
     }
 
     public void PlayAnimation(int clipHash, float castSpeed = float.MinValue)
@@ -52,6 +55,34 @@ public class AnimationComponent : BaseSkillComponent
 
         _activeClip = clipHash;
         _activeClipDuration = GetDuration(clipHash);
+    }
+
+    public void PlayPreparing()
+    {
+        var anim = GetRandom(_prepareAnimations);
+        if (anim == null)
+            return;
+
+        PlayAnimation(Animator.StringToHash(anim));
+    }
+
+    public void PlayCasting()
+    {
+        var anim = GetRandom(_prepareAnimations);
+        if (anim == null)
+            return;
+
+        PlayAnimation(Animator.StringToHash(anim));
+    }
+
+    public string GetRandom(List<string> list)
+    {
+        if (list == null || list.Count == 0)
+            return null;
+
+        if (list.Count == 1)
+            return list[0];
+        return list[UnityEngine.Random.Range(0, list.Count)];
     }
 
     public float GetDuration(int clipHash)

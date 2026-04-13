@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
@@ -53,9 +53,14 @@ public class ShadowSkill : Skill
         _clickPoint = Vector3.zero;
     }
 
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+        Hero.DamageTracker.OnDamageTracked += TrackDarkDamage;
+    }
+
     private void OnEnable()
     {
-        Hero.DamageTracker.OnDamageTracked += TrackDarkDamage;
     }
 
     private void OnDisable()

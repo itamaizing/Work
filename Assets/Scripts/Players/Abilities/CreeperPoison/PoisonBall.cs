@@ -209,6 +209,18 @@ public class PoisonBall : Skill, IAltAbility
         TryPayCost(true);
     }
 
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+
+        _baseCastWidth = AreaInfo.CastWidth;
+        _originalChargeCooldown = _chargeCooldown;
+
+        _poisonBallInfo.StartTimeBetweenAttack = 15.0f;
+        _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
+        _poisonBallInfo.MaxCountProjectile = Charges.MaxCharges;
+    }
+
     private void OnDisable()
     {
         OnSkillCanceled -= ClearData;
@@ -217,16 +229,6 @@ public class PoisonBall : Skill, IAltAbility
     private void OnEnable()
     {
         OnSkillCanceled += ClearData;
-    }
-
-    private void Start()
-    {
-        _baseCastWidth = AreaInfo.CastWidth;
-        _originalChargeCooldown = _chargeCooldown;
-
-        _poisonBallInfo.StartTimeBetweenAttack = 15.0f;
-        _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
-        _poisonBallInfo.MaxCountProjectile = Charges.MaxCharges;
     }
 
     private float GetAnimationClipLength()

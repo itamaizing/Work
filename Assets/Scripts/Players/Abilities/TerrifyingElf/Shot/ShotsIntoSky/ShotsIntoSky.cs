@@ -91,16 +91,6 @@ public class ShotsIntoSky : Skill
 
     public void ArrowsIntoSkyEffectPlay() => arrowsIntoSkyEffect.Play();
 
-    public void ForceCooldownEnd()
-    {
-        if (_cooldownJob != null)
-            StopCoroutine(_cooldownJob);
-
-        //RemainingCooldownTime = 0f;
-        
-        Cooldown.ForceEnd();
-    }
-
     public void TryStartBoost()
     {
         if (!_isSkillEnableBoostLogicActiveTalent) return;
