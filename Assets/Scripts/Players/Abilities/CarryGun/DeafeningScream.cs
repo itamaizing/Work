@@ -24,7 +24,7 @@ public class DeafeningScream : Skill
 
     private bool CheckCanCast()
     {
-        return Targeting.GetTarget()?.Character != null && cooldownEnergy.CurrentValue >= jumpWithChelicera.ChargeCooldown &&
+        return Targeting.GetTarget()?.Character != null && cooldownEnergy.CurrentValue >= jumpWithChelicera.Charges.CooldownTime &&
         Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius &&
         Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
     }

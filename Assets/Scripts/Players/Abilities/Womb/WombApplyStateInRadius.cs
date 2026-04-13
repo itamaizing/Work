@@ -36,16 +36,16 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
 
     private void InvokeHandleWombSpreadsMucusChanged()
     {
-        HandleWombSpreadsMucusChanged(_creatureSpawn.Tentacle.IsWombSpreadsMucus);
-        HandleWombSpreadsParasitesChanged(_creatureSpawn.Tentacle.IsWombSpreadsParasites);
+        HandleWombSpreadsMucusChanged(_creatureSpawn.WombSpawn.IsWombSpreadsMucus);
+        HandleWombSpreadsParasitesChanged(_creatureSpawn.WombSpawn.IsWombSpreadsParasites);
     }
 
     private void Subscription()
     {
-        if (_creatureSpawn.Tentacle != null)
+        if (_creatureSpawn.WombSpawn != null)
         {
-            _creatureSpawn.Tentacle.OnWombSpreadsMucusChanged += HandleWombSpreadsMucusChanged;
-            _creatureSpawn.Tentacle.OnWombSpreadsParasitesChanged += HandleWombSpreadsParasitesChanged;
+            _creatureSpawn.WombSpawn.OnWombSpreadsMucusChanged += HandleWombSpreadsMucusChanged;
+            _creatureSpawn.WombSpawn.OnWombSpreadsParasitesChanged += HandleWombSpreadsParasitesChanged;
 
             Invoke("InvokeHandleWombSpreadsMucusChanged", 6f);
         }
@@ -53,10 +53,10 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
 
     private void Unsubscribe()
     {
-        if (_creatureSpawn.Tentacle != null)
+        if (_creatureSpawn.WombSpawn != null)
         {
-            _creatureSpawn.Tentacle.OnWombSpreadsMucusChanged -= HandleWombSpreadsMucusChanged;
-            _creatureSpawn.Tentacle.OnWombSpreadsParasitesChanged -= HandleWombSpreadsParasitesChanged;
+            _creatureSpawn.WombSpawn.OnWombSpreadsMucusChanged -= HandleWombSpreadsMucusChanged;
+            _creatureSpawn.WombSpawn.OnWombSpreadsParasitesChanged -= HandleWombSpreadsParasitesChanged;
         }
     }
 

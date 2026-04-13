@@ -6062,7 +6062,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRows.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.size
@@ -7109,7 +7109,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -7126,6 +7126,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 3
     _faction: 6
     _unitType: 1
@@ -7169,6 +7170,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _attackZoneSize: 1
   _attackDelay: 0
   _chargeAttackDelay: 0
@@ -7195,10 +7206,14 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 0
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 6
+  - nameToShow: 0 Health - Mandatory mod desc
+    type: 0
+    value: 0
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -7214,6 +7229,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 1
     _faction: 6
     _unitType: 5
@@ -7257,6 +7273,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _buffDuration: 18
   _healAmount: 6
   _damageAmount: 6
@@ -7296,10 +7322,14 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 30
+  - nameToShow: 0 Health - Mandatory mod desc
+    type: 0
+    value: 0
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -7315,6 +7345,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 1
     _faction: 6
     _unitType: 5
@@ -7358,6 +7389,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _healAmount: 35
   _lightRange: 4
   lightInfo: {fileID: 11400000, guid: 048a51707f36a914bb8c9b86717fb736, type: 2}
@@ -7388,10 +7429,14 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 4
+  - nameToShow: 0 Health - Mandatory mod desc
+    type: 0
+    value: 0
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -7407,6 +7452,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 1
     _faction: -1
     _unitType: 5
@@ -7450,6 +7496,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   healPerTick: 6
   lightRange: 4
   lightDuration: 12
@@ -7488,10 +7544,14 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 6
+  - nameToShow: 0 Health - Mandatory mod desc
+    type: 0
+    value: 0
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -7507,6 +7567,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 1
     _faction: 3
     _unitType: 5
@@ -7550,6 +7611,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   lightShieldDuration: 18
   tiredSoulDuration: 12
   absorbAmount: 40
@@ -7575,10 +7646,14 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 20
+  - nameToShow: 0 Health - Mandatory mod desc
+    type: 0
+    value: 0
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -7594,6 +7669,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -7637,6 +7713,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _switchableSkills:
   - {fileID: 744928704386096395}
   - {fileID: 2650038749754245899}
@@ -7668,10 +7754,14 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 80
+  - nameToShow: 0 Health - Mandatory mod desc
+    type: 0
+    value: 0
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -7687,6 +7777,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -7730,6 +7821,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _buffDuration: 2
 --- !u!114 &3096350181652607353
 MonoBehaviour:
@@ -7752,10 +7853,14 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 10
+  - nameToShow: 0 Health - Mandatory mod desc
+    type: 0
+    value: 0
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 40
   _cooldownComponent:
@@ -7771,6 +7876,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -7814,6 +7920,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _speed: 0.0015
   _cooldownReduceValue: 5
   _defaultRadius: 4
@@ -7841,7 +7957,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -7858,6 +7974,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -7901,6 +8018,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _projectile: {fileID: 0}
   _playerLinks: {fileID: 0}
   _ghostSkill: {fileID: 0}
@@ -7934,7 +8061,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -7951,6 +8078,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -7994,6 +8122,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   playerCharacter: {fileID: 4534754468497973439}
 --- !u!114 &744928704386096395
 MonoBehaviour:
@@ -8016,7 +8154,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 0
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -8033,6 +8171,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 1
     _faction: 6
     _unitType: 5
@@ -8047,8 +8186,12 @@ MonoBehaviour:
     _castDuration: 3
     _tickInterval: 1
     _baseCostPerTick:
-    - resourceType: 1
-      resourceCost: 8
+    - nameToShow: 0 Health - Mandatory mod desc
+      type: 0
+      value: 0
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
@@ -8078,6 +8221,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   buffDuration: 18
   effectPrefabLight: {fileID: 2152374494346322251, guid: e3f8b1d07bf91a843899c3d8b908fa40, type: 3}
   lightInfo: {fileID: 11400000, guid: a01ecc5cf4d4ac04ba96007c73bc07cb, type: 2}
@@ -8108,7 +8261,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -8125,6 +8278,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 1
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -8168,6 +8322,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
 --- !u!114 &2384888892488266055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8189,10 +8353,14 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 10
+  - nameToShow: 0 Health - Mandatory mod desc
+    type: 0
+    value: 0
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -8208,6 +8376,7 @@ MonoBehaviour:
     _whileMoving: 1
     _autoAttack: 1
   _targetingComponent:
+    type: 0
     _clickLayer: 3
     _faction: -1
     _unitType: 5
@@ -8251,6 +8420,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _lightVFX: {fileID: 3298260292842138349}
   _aoeRadius: 1.5
   _beamUpOffset: 8
@@ -8287,10 +8466,14 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 7
+  - nameToShow: 0 Health - Mandatory mod desc
+    type: 0
+    value: 0
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -8306,6 +8489,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 3
     _faction: 6
     _unitType: 5
@@ -8349,6 +8533,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _effectObject: {fileID: 3561390324075153465}
   _expandDuration: 0.3
   _maxRadius: 2
@@ -8378,10 +8572,14 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 30
+  - nameToShow: 0 Health - Mandatory mod desc
+    type: 0
+    value: 0
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -8397,6 +8595,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 3
     _faction: -1
     _unitType: 5
@@ -8440,6 +8639,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _pillarVFX: {fileID: 8732622908068340559}
   _pillarDuration: 6
   _pillarUpOffset: 2
@@ -8472,7 +8681,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -8489,6 +8698,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 3
     _faction: 6
     _unitType: 5
@@ -8503,13 +8713,21 @@ MonoBehaviour:
     _castDuration: 3
     _tickInterval: 1
     _baseCostPerTick:
-    - resourceType: 1
-      resourceCost: 30
+    - nameToShow: 0 Health - Mandatory mod desc
+      type: 0
+      value: 0
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _castDuration: 3
   _manaCostRate: 1
   _manaCostPerTick:
-  - resourceType: 1
-    resourceCost: 20
+  - nameToShow: 0 Health - Mandatory mod desc
+    type: 0
+    value: 0
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -8536,6 +8754,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _radianceVFX: {fileID: 1748700213592164348}
   _aoeRadius: 2
   _tickInterval: 1
@@ -8565,10 +8793,14 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 30
+  - nameToShow: 0 Health - Mandatory mod desc
+    type: 0
+    value: 0
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -8584,6 +8816,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 3
     _faction: 4
     _unitType: 5
@@ -8627,6 +8860,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _shadowPrefab: {fileID: 6941272477236383263, guid: 877721d50c8db7147b895c23b8ad8df5, type: 3}
   _aoeRadius: 1.5
   _shadowSpeedMultiplier: 0.5
@@ -8652,10 +8895,14 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 60
+  - nameToShow: 0 Health - Mandatory mod desc
+    type: 0
+    value: 0
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -8671,6 +8918,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: -1
     _faction: 4
     _unitType: 5
@@ -8714,6 +8962,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _fearEffect: {fileID: 7584423103798657176}
   _aoeRadius: 1.5
   _fearDuration: 6
@@ -8738,7 +8996,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -8755,6 +9013,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -8769,8 +9028,12 @@ MonoBehaviour:
     _castDuration: 4
     _tickInterval: 1
     _baseCostPerTick:
-    - resourceType: 1
-      resourceCost: 10
+    - nameToShow: 0 Health - Mandatory mod desc
+      type: 0
+      value: 0
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
@@ -8800,6 +9063,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _duration: 4
 --- !u!114 &3445813803428500223
 MonoBehaviour:
@@ -8822,10 +9095,14 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 20
+  - nameToShow: 0 Health - Mandatory mod desc
+    type: 0
+    value: 0
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -8841,6 +9118,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -8884,6 +9162,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _manaCost: 20
 --- !u!114 &813685758969075211
 MonoBehaviour:
@@ -8906,7 +9194,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -8923,6 +9211,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 3
     _faction: 4
     _unitType: 5
@@ -8966,6 +9255,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _shadowPrefab: {fileID: 6941272477236383263, guid: 877721d50c8db7147b895c23b8ad8df5, type: 3}
   _shadowSpeedMultiplier: 0.5
   _darkDamageThreshold: 50
@@ -8990,7 +9289,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -9007,6 +9306,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -9050,6 +9350,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
 --- !u!114 &6819494317702169821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9071,7 +9381,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -9088,6 +9398,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -9131,6 +9442,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _shadowSkill: {fileID: 813685758969075211}
 --- !u!114 &1383847730869930601
 MonoBehaviour:
@@ -9153,7 +9474,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -9170,6 +9491,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -9213,6 +9535,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _buffDuration: 6
 --- !u!114 &1891792751888252515
 MonoBehaviour:
@@ -9235,10 +9567,14 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts:
-  - resourceType: 1
-    resourceCost: 20
+  - nameToShow: 0 Health - Mandatory mod desc
+    type: 0
+    value: 0
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -9254,6 +9590,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 1
     _faction: -1
     _unitType: 5
@@ -9297,6 +9634,16 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
 --- !u!4 &1110070738435946966 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

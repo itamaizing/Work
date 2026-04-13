@@ -43,14 +43,14 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
         {
             if (Targeting.GetTarget()?.Character != null) return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
 
-            var mana = _hero.Resources[ResourceType.Mana];
+            var mana = _hero.Resources[ResourceType.Energy];
             if (mana == null) return false;
 
             if (Targeting.GetTarget()?.Character != null)
             {
                 float distance = Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position);
                 int manaCost = GetCurrentManaCost(distance);
-                _skillEnergyCosts[0].resourceCost = manaCost;
+                _skillEnergyCosts[0].value = manaCost;
                 return distance <= AreaInfo.Radius && mana.CurrentValue >= manaCost;
 
             }
@@ -219,7 +219,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
                             continue;
                         }
 
-                        _skillEnergyCosts[0].resourceCost = manaCost;
+                        _skillEnergyCosts[0].value = manaCost;
                         break;
                     }
                 }         
@@ -242,12 +242,12 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
         float distance = Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position);
         int manaToSpend = GetCurrentManaCost(distance);
 
-        List<SkillEnergyCost> tempCosts = new()
+        List<SkillResourceCost> tempCosts = new()
         {
-            new SkillEnergyCost
+            new SkillResourceCost
             {
-                resourceType = _skillEnergyCosts[0].resourceType,
-                resourceCost = manaToSpend
+                type = _skillEnergyCosts[0].type,
+                value = manaToSpend
             }
         };
 

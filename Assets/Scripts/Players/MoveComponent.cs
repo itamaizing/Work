@@ -79,7 +79,12 @@ public class MoveComponent : NetworkBehaviour, IAttribute
 		_canMove = canMove;
 	}
 
-    public void SetCanMoveState(bool canMove)
+	public void SetFlyState(bool value)
+	{
+		_isFly = value;
+	}
+
+	public void SetCanMoveState(bool canMove)
     {
         _canMoveState = canMove;
     }
@@ -322,7 +327,6 @@ public class MoveComponent : NetworkBehaviour, IAttribute
 			TargetRpcTeleportToPositionSmooth(connectionToClient, position, duration);
 		}
 	}
-
 	private IEnumerator LookAtTransformCoroutine(Transform transform)
     {
 		while (!_isLookAtCursor)
@@ -386,7 +390,8 @@ public class MoveComponent : NetworkBehaviour, IAttribute
 		int index = UnityEngine.Random.Range(0, moveClips.Length);
 		moveAudioSource.PlayOneShot(moveClips[index]);
 	}
-	[TargetRpc] public void TargetRpcStopMoveAndAnimationMove() { StopMoveAndAnimationMove(); }
+
+    [TargetRpc] public void TargetRpcStopMoveAndAnimationMove() { StopMoveAndAnimationMove(); }
 
 	[TargetRpc]
 	public void TargetRpcAddForce(Vector3 vector3)

@@ -15,10 +15,13 @@ public class IceCloudProjectile : Projectiles
 	private float _damageToExit = 1;
 	private float _usedEnergy;
 
+	private bool _isReflected;
+
 	private void Start()
 	{
 		_startPos = transform.position;
 		_curDamage = 10 + _usedEnergy / 5;
+
 		_damage = new Damage
 		{
 			Value = _curDamage,
@@ -30,7 +33,7 @@ public class IceCloudProjectile : Projectiles
 	{
 		if (!_initialized) return;
 
-		_spriteRenderer.DOFade(0, 1);
+		if (!_isReflected) _spriteRenderer.DOFade(0, 1);
 		//Debug.Log("Dist " + Vector2.Distance(transform.position, _startPos) + " Max dist " + _distance);
 		if(Vector2.Distance(transform.position, _startPos) > _distance)
 		{
@@ -51,12 +54,24 @@ public class IceCloudProjectile : Projectiles
 	{
 		if (!_initialized) return;
 		if (_dad == null) return;
+
+		if (!collision.TryGetComponent<Character>(out var target)) return;
+
+		if (target.CharacterState.CheckForState(States.ReflectiveScales) &&	_damage.Type == DamageType.Magical)
+		{
+			if (_isReflected) return;
+
+			target.CharacterState.RemoveState(States.ReflectiveScales);
+			Reflect(target);
+			return;
+		}
+
 		if (collision.gameObject == _dad.gameObject) return;
 
 		if (!collision.TryGetComponent<IDamageable>(out var damageable))
 			return;
 
-		if (collision.TryGetComponent<Character>(out var target) && target != _dad)
+		if (target != _dad)
 		{
 			float finalDamage = _curDamage;
 
@@ -113,5 +128,27 @@ public class IceCloudProjectile : Projectiles
 		{
 			_damageToExit = 1;
 		}
+	}
+
+	private void Reflect(Character reflector)
+	{
+		_isReflected = true;
+
+		Character oldOwner = _dad;
+		_dad = reflector;
+
+		if (oldOwner == null) return;
+
+		_startPos = transform.position;
+
+		if (_rb != null)
+		{
+			_rb.linearVelocity = Vector3.zero;
+			_rb.angularVelocity = Vector3.zero;
+		}
+
+		Vector3 direction = (oldOwner.transform.position - transform.position).normalized;
+
+		_rb.AddForce(direction * _force, ForceMode.Impulse);
 	}
 }

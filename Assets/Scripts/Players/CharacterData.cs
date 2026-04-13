@@ -46,7 +46,6 @@ public class helperCharData_ResourceInfo
     [HideInInspector] public string nameToShow;
     public ResourceType type;
     public List<helperCharData_ResourceValue> attributes = new();
-    //public ResourceValue regenDelay;
 
     public helperCharData_ResourceInfo(ResourceType _type)
     {
@@ -88,9 +87,9 @@ public class helperCharData_ResourceInfo
 public class helperCharData_AttributeInfo
 {
     [HideInInspector] public string nameToShow;
-    [HideInInspector] public BasicAttributeName type;
+    [HideInInspector] public CharacterAttributeName type;
     public float value;
-    public helperCharData_AttributeInfo(BasicAttributeName _type, float _value=0)
+    public helperCharData_AttributeInfo(CharacterAttributeName _type, float _value=0)
     {
         type = _type;
         nameToShow = type.ToString();
@@ -119,16 +118,16 @@ public class AttributeGroup
 
     public void CreateAttributes()
     {
-        foreach (BasicAttributeName attr in Enum.GetValues(typeof(BasicAttributeName)))
+        foreach (CharacterAttributeName attr in DB_Attribute.BasicAttributes)
         {
             _attributes.Add(new helperCharData_AttributeInfo(attr));
             switch (attr)
             {
-                case BasicAttributeName.VisionRadius:
+                case CharacterAttributeName.VisionRadius:
                     _attributes.Last().value = 2;
                     break;
-                case BasicAttributeName.MoveSpeed:
-                    _attributes.Last().value = 1;
+                case CharacterAttributeName.MoveSpeed:
+                    _attributes.Last().value = 5;
                     break;
             }
         }
@@ -138,7 +137,7 @@ public class AttributeGroup
     {
         List<helperCharData_AttributeInfo> newAttributes = new();
 
-        foreach (BasicAttributeName enumVal in Enum.GetValues(typeof(BasicAttributeName)))
+        foreach (CharacterAttributeName enumVal in DB_Attribute.BasicAttributes)
         {
             var existing = _attributes.FirstOrDefault(a => a.type == enumVal);
             if (existing != null)

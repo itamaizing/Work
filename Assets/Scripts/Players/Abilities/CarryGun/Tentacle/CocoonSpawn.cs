@@ -11,13 +11,13 @@ public class CocoonSpawn : Skill
     [SerializeField] private SpawnComponent spawnComponent;
     [SerializeField] private MinionMove minionMove;
     [SerializeField] private MinionComponent minion;
-    [SerializeField] private Tentacles tentacle;
+    [SerializeField] private WombSpawn wombSpawn;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => _spawnPoint != Vector3.positiveInfinity;
 
-    public Tentacles Tentacle { get => tentacle; set => tentacle = value; }
+    public WombSpawn WombSpawn { get => wombSpawn; set => wombSpawn = value; }
 
     protected override void Awake()
     {
@@ -54,7 +54,7 @@ public class CocoonSpawn : Skill
             foreach (var state in states) character.CharacterState.RemoveState(state.State);
         }
 
-        if (tentacle.TryGetComponent<SpawnComponent>(out var spawnComponent))
+        if (wombSpawn.TryGetComponent<SpawnComponent>(out var spawnComponent))
         {
             Vector3 spawnPos = GetRandomOffsetPosition(transform.position, 1.6f);
             spawnComponent.CmdSpawnEnemyPoint(spawnPos, Quaternion.identity, minion, 1, false, Hero);
@@ -90,7 +90,7 @@ public class CocoonSpawn : Skill
 
             foreach (var spawn in unit.GetComponents<CreatureSpawn>())
             {
-                spawn.Tentacle = tentacle;
+                spawn.WombSpawn = wombSpawn;
             }
         }
     }

@@ -13,7 +13,7 @@ public class Attribute
     [SerializeField] private List<AttributeModifier> _modifiers = new();
 
     private bool _isActual = false;
-    private float _flat = 0, _percent = 0, _multiplier = 0, _menuFlat = 0;
+    private float _flat = 0, _percent = 1, _multiplier = 1, _menuFlat = 0;
 
     #region Properties
     public string Name => _name;
@@ -50,7 +50,7 @@ public class Attribute
         }
     }
     #endregion Properties
-    //public Attribute(BasicAttributeName name, float _value=0)
+    //public Attribute(CharacterAttributeName name, float _value=0)
     public Attribute(float _value=0)
     {
         //Name = name;
@@ -67,6 +67,22 @@ public class Attribute
     {
         if(_modifiers.Contains(modifier))
             _modifiers.Remove(modifier);
+        _isActual = false;
+    }
+
+    public void RemoveBySource(object source, bool all=true)
+    {
+        //if(_modifiers.Contains(modifier))
+        //    _modifiers.Remove(modifier);
+        for (int i = _modifiers.Count; i >= 0; i--)
+        {
+            if (_modifiers[i].Source == source)
+            {
+                _modifiers.RemoveAt(i);
+                if (all == false)
+                    break;
+            }
+        }
         _isActual = false;
     }
 
@@ -130,14 +146,19 @@ public class Attribute
 #endregion
 
 #region Modifier
-/// <summary>
-/// <param name="Type">
-/// All ModifierValues should be passed as percent. I.e. 0.30 = 30% boost
-/// </param>
-/// </summary>
+
 [Serializable]
 public class AttributeModifier
 {
+    /// <summary>
+    /// <param name="value">
+    /// Positive => Increase;
+    /// Negative => Decrease;
+    /// </param>
+    /// <param name="Type">
+    /// All ModifierValues should be passed as percent. I.e. 0.30 = 30% boost
+    /// </param>
+    /// </summary>
     public AttributeModifier(float value, ModifierType type, object source=null)
     {
         Value = value;

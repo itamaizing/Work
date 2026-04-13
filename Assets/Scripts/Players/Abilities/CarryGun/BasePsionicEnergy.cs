@@ -38,7 +38,7 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     private void Start()
     {
-        _psionicaDecayTime = psionicEnergySkill.CooldownTime;
+        _psionicaDecayTime = psionicEnergySkill.Cooldown.CooldownTime;
     }
 
     public override void Initialize(Attribute maxValue, Attribute regenValue, CharacterData data)
@@ -86,7 +86,7 @@ public class BasePsionicEnergy : Resource, IDamageable
             _player.SpawnComponent.UnitRemoved += OnMinionRemoved;
         }
 
-        _player.Reset += CmdPsiEnergyDecay;
+        _player.Reset += PsiEnergyDecayServer;
     }
 
     private void OnDisable()
@@ -105,7 +105,7 @@ public class BasePsionicEnergy : Resource, IDamageable
             }
         }
 
-        _player.Reset -= CmdPsiEnergyDecay;
+        _player.Reset -= PsiEnergyDecayServer;
     }
 
     private void PsionicRunning()
@@ -195,7 +195,8 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     [ClientRpc] public void RpcCoolDownPsionicEnegry() => CoolDownPsionicEnegry();
 
-    public void CoolDownPsionicEnegry() => psionicEnergySkill.IncreaseSetCooldownPassive(_psionicaDecayTime);
+    //public void CoolDownPsionicEnegry() => psionicEnergySkill.IncreaseSetCooldownPassive(_psionicaDecayTime);
+    public void CoolDownPsionicEnegry() => psionicEnergySkill.Cooldown.SetIncreased(_psionicaDecayTime, shouldModify: true);
 
     public void UsePsiEnergy(float value)
     {
@@ -224,6 +225,12 @@ public class BasePsionicEnergy : Resource, IDamageable
     private IEnumerator EnergyDecayCoroutine()
     {
         yield return new WaitForSeconds(_psionicaDecayTime);
+        PsiEnergyDecay();
+    }
+
+    public void PsiEnergyDecayServer()
+    {
+        if (!isServer) return;
         PsiEnergyDecay();
     }
 
@@ -265,8 +272,6 @@ public class BasePsionicEnergy : Resource, IDamageable
             _attackingPsionicEnergy.ReceiveAttackingEnergy(transferAmount);
         }
     }
-
-    [Command] private void CmdPsiEnergyDecay() => PsiEnergyDecay();
 
     [ClientRpc]
     private void RpcInternalPsiEnergyChanged(bool value)

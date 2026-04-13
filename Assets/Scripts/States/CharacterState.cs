@@ -371,6 +371,13 @@ public class CharacterState : NetworkBehaviour
 		[States.SwarmSpeed] = new SwarmSpeedState(),
 		[States.DestructivePoison] = new DestructivePoisonState(),
 		[States.InjectionAdrenaline] = new InjectionAdrenalineState(),
+		[States.ProtectiveScales] = new ProtectiveScalesState(),
+		[States.ErodedArmor] = new ErodedArmorState(),
+		[States.ParalyzingPoison] = new ParalyzingPoisonState(),
+		[States.FeelingPoisoning] = new FeelingPoisoningState(),
+		[States.LightningEvade] = new LightningEvadeState(),
+		[States.ReptilianStasis] = new ReptilianStasisState(),
+		[States.ReflectiveScales] = new ReflectiveScalesState(),
 		[States.MergeDark] = new MergeDarkState(),
 		[States.DarkFormState] = new DarkFormState(),
 		[States.ShackleState] = new ShackleState(),
@@ -504,6 +511,12 @@ public class CharacterState : NetworkBehaviour
 				return true;
 			}
 		}
+		return false;
+	}
+
+	public bool HasMagicDebuff()
+	{
+		foreach (var state in _currentStates) if (state.Type == StateType.Magic && state.BaffDebaff == BaffDebaff.Debaff) return true;
 		return false;
 	}
 
@@ -995,6 +1008,13 @@ public enum States
 	SwarmSpeed,
 	DestructivePoison,
 	InjectionAdrenaline,
+	ProtectiveScales,
+	ErodedArmor,
+	ParalyzingPoison,
+	FeelingPoisoning,
+	LightningEvade,
+	ReptilianStasis,
+	ReflectiveScales,
 	MergeDark,
 	DarkFormState,
 	ShackleState,

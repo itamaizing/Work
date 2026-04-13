@@ -108,7 +108,7 @@ public class TentacleProjectile : NetworkBehaviour
         {
             float progress = elapsedTime / grabDuration;
             Vector3 currentPos = Vector3.Lerp(startLinePos, targetLinePos, progress);
-
+            
             tentacleLine.SetPosition(1, currentPos);
 
             elapsedTime += Time.deltaTime;

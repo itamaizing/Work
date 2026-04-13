@@ -8,8 +8,9 @@ public class AttributeSystem : NetworkBehaviour
 {
     private CharacterData _data;
 
-    private Dictionary<BasicAttributeName, Attribute> _attributes = new();    
-    public Dictionary<BasicAttributeName, Attribute> Attributes => _attributes;
+    private Dictionary<CharacterAttributeName, Attribute> _attributes = new();    
+    public Dictionary<CharacterAttributeName, Attribute> Attributes => _attributes;
+    public Attribute this[CharacterAttributeName attribute] => _attributes[attribute];
 
     private ResourceType mainResourceType;
     private Dictionary<ResourceType, ResourceAttribute> _resources = new();
@@ -20,7 +21,7 @@ public class AttributeSystem : NetworkBehaviour
     public Attribute HPRegen => _resources[ResourceType.Health].Attributes[ResourceAttributeName.Regen];
     public Attribute ResourceMax => _resources[mainResourceType].Attributes[ResourceAttributeName.MaxValue];
     public Attribute ResourceRegen => _resources[mainResourceType].Attributes[ResourceAttributeName.Regen];
-    public Attribute MoveSpeed => _attributes[BasicAttributeName.MoveSpeed];
+    public Attribute MoveSpeed => _attributes[CharacterAttributeName.MoveSpeed];
 
 
     private int _points = 0;
@@ -39,6 +40,21 @@ public class AttributeSystem : NetworkBehaviour
         foreach (helperCharData_ResourceInfo info in data.ExtraResources)
         {
             _resources.TryAdd(info.type, new ResourceAttribute(info));
+        }
+
+        foreach (CharacterAttributeName attribute in DB_Attribute.ExtraAttributes)
+        {
+            float baseValue = 0;
+            switch (attribute)
+            {
+                case CharacterAttributeName.CooldownReduction:
+                    baseValue = 1;
+                    break;
+                default:
+                    baseValue = 0;
+                    break;
+            }
+            _attributes.TryAdd(attribute, new Attribute(baseValue));
         }
         TemporaryResourceDisplay = _resources.Values.ToList();
     }

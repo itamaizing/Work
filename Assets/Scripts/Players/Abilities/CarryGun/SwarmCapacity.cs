@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using UnityEngine;
 using Mirror;
@@ -61,8 +61,10 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
 
     private Coroutine _damageBoostRoutine;
 
-    private void Start()
+    public override void Init(SkillRenderer render, Character hero)
     {
+        base.Init(render, hero);
+
         _spawnComponent = Hero.GetComponent<SpawnComponent>();
 
         _baseCounter = MaxCounter;

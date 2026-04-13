@@ -4,16 +4,15 @@ using UnityEngine;
 
 public class NatureTalent_9 : Talent
 {
-    [SerializeField] private SkillManager abilities;
-    [SerializeField] private MultiMagicSpell multiMagicSpell;
+    [SerializeField] private TerrifyingElfAura _terrifyingElfAura;
 
     public override void Enter()
     {
-        abilities.ActivateSkill(multiMagicSpell);
+        _terrifyingElfAura.CalmnessAura(true);
     }
 
     public override void Exit()
     {
-        abilities.DeactivateSkill(multiMagicSpell);
+        _terrifyingElfAura.CalmnessAura(false);
     }
 }

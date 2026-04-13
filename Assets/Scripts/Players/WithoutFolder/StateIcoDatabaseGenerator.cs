@@ -1,9 +1,9 @@
-#if UNITY_EDITOR
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 using System;
 using System.Linq;
 
+#if UNITY_EDITOR
 public static class StateIcoDatabaseGenerator
 {
     private const string GeneratedPath = "Assets/Resources/StateIcoDatabase_Generated.asset";

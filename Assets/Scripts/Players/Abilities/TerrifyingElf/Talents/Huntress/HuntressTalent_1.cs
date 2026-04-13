@@ -6,27 +6,34 @@ public class HuntressTalent_1 : Talent
     [SerializeField] private VisionComponent visionComponent;
     [SerializeField] private SkillManager skillManager;
 
-    private const float Buff = 1.5f;
+    private const float Multiplier = 1.5f;
+
     private bool visualsApplied = false;
     private bool isActiveHuntreesTalent = false;
 
     public override void Enter()
     {
-        ghost.MovingToGhostWithZeroMana(true);
+        if (isActiveHuntreesTalent) return;
+
         isActiveHuntreesTalent = true;
+
+        ghost.MovingToGhostWithZeroMana(true);
         visionComponent.VisionRange += 3;
 
         foreach (Skill skill in skillManager.Abilities)
         {
-            skill.Buff.Length.AddValue(Buff);
-            skill.Buff.Radius.AddValue(Buff);
+            if (skill == null) continue;
+
+            skill.Buff.Length.IncreasePercentage(Multiplier);
+            skill.Buff.Radius.IncreasePercentage(Multiplier);
         }
 
         if (!visualsApplied && skillManager.Abilities.Count > 0)
         {
-            if (skillManager.Abilities[0].TryGetComponent(out SkillRenderer renderer))
+            if (skillManager.Abilities[0] != null &&
+                skillManager.Abilities[0].TryGetComponent(out SkillRenderer renderer))
             {
-                renderer.MultiplyCastVisuals(Buff);
+                renderer.MultiplyCastVisuals(Multiplier);
                 visualsApplied = true;
             }
         }
@@ -34,27 +41,29 @@ public class HuntressTalent_1 : Talent
 
     public override void Exit()
     {
-        if (isActiveHuntreesTalent)
+        if (!isActiveHuntreesTalent) return;
+
+        isActiveHuntreesTalent = false;
+
+        ghost.MovingToGhostWithZeroMana(false);
+        visionComponent.VisionRange -= 3;
+
+        foreach (Skill skill in skillManager.Abilities)
         {
-            ghost.MovingToGhostWithZeroMana(false);
-            visionComponent.VisionRange -= 3;
+            if (skill == null) continue;
 
-            foreach (Skill skill in skillManager.Abilities)
+            skill.Buff.Length.ReductionPercentage(Multiplier);
+            skill.Buff.Radius.ReductionPercentage(Multiplier);
+        }
+
+        if (visualsApplied && skillManager.Abilities.Count > 0)
+        {
+            if (skillManager.Abilities[0] != null &&
+                skillManager.Abilities[0].TryGetComponent(out SkillRenderer renderer))
             {
-                skill.Buff.Length.RemoveValue(Buff);
-                skill.Buff.Radius.RemoveValue(Buff);
+                renderer.DivideCastVisuals(Multiplier);
+                visualsApplied = false;
             }
-
-            if (visualsApplied && skillManager.Abilities.Count > 0)
-            {
-                if (skillManager.Abilities[0].TryGetComponent(out SkillRenderer renderer))
-                {
-                    renderer.DivideCastVisuals(Buff);
-                    visualsApplied = false;
-                }
-            }
-
-            isActiveHuntreesTalent = false;
         }
     }
 }
