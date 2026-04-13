@@ -35,7 +35,10 @@ public class Silence : Skill
     private bool _isSilenceEffectsOnMinionMagic;
     private bool _isSilenceEffectGhostCast;
     private bool _isSilenceAddAllCharacterWithDeabaffElf;
+    private bool _weakeningSilenceTalentActive;
     public bool IsSilenceAddAllCharacterWithDeabaffElf { get => _isSilenceAddAllCharacterWithDeabaffElf; }
+    
+    public void WeakeningSilenceTalentActive(bool value) => _weakeningSilenceTalentActive = value;
 
     private void OnEnable()
     {
@@ -259,8 +262,9 @@ public class Silence : Skill
         RpcPlayShotSound();
 
         float duration = _finalDuration;
+        bool hasInnerDarkness = targetState.CheckForState(States.InnerDarkness);
 
-        if (_effectsDarknessTalent && targetState.CheckForState(States.InnerDarkness))
+        if (_effectsDarknessTalent && hasInnerDarkness)
         {
             int stacks = targetState.CheckStateStacks(States.InnerDarkness);
             float durationMultiplier = BaseDarknessMultiplier + StackMultiplierBonus * (stacks - 1);
@@ -268,6 +272,8 @@ public class Silence : Skill
         }
 
         targetState.AddState(States.Silent, duration, 0, Hero.gameObject, this.name);
+
+        if (_weakeningSilenceTalentActive && hasInnerDarkness) targetState.AddState(States.WeakeningSilence, 4f, 4f, Hero.gameObject, this.name);
     }
 
     [ClientRpc]

@@ -12,7 +12,6 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
     [SerializeField] private GameObject circle;
     [SerializeField] private SphereCollider sphereCollider;
 
-    [SerializeField] private bool silenceTalentActive;
     [SerializeField] private bool lastStreamTalent;
     [SerializeField] private bool shotAstralManaActive;
 
@@ -28,9 +27,8 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
     public GameObject Arrow { get => arrow; set => arrow = value; }
     public GameObject Circle { get => circle; set => circle = value; }
 
-    public virtual void Init(HeroComponent dad, Skill skill, float damage, bool silenceTalentActive, bool lastStreamTalent, bool shotAstralManaActive)
+    public virtual void Init(HeroComponent dad, Skill skill, float damage, bool lastStreamTalent, bool shotAstralManaActive)
     {
-        this.silenceTalentActive = silenceTalentActive;
         this.lastStreamTalent = lastStreamTalent;
         this.shotAstralManaActive = shotAstralManaActive;
 
@@ -154,7 +152,7 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
         if (shotAstralManaActive && characterState.CheckForState(States.Astral))
             RestoreMana();
 
-        if (silenceTalentActive && characterState.CheckForState(States.Silent)) characterState.AddState(States.WeakeningSilence, 4, 3, _character.gameObject, name);
+        //if (silenceTalentActive && characterState.CheckForState(States.Silent)) characterState.AddState(States.WeakeningSilence, 4, 3, _character.gameObject, name);
     }
 
     private void ApplyDamage(float damage, DamageType damageType, IDamageable target)
