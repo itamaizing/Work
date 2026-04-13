@@ -7,6 +7,7 @@ using UnityEngine;
 public class CheliceraStrike : Skill
 {
     [SerializeField] private Character _player;
+    [SerializeField] private RechargeGlands _rechargeGlands;
     [SerializeField] private BasePsionicEnergy _basePsionicEnergy;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
     [SerializeField] private JumpWithChelicera _jumpWithChelicera;
@@ -30,6 +31,7 @@ public class CheliceraStrike : Skill
     private const float CriticalDamageMultiplierDefault = 1.6f;
     private const float ChanceCritDamageMinMultiplier = 1.8f;
     private const float ChanceCritDamageMaxMultiplier = 2.7f;
+    private const float TryApplyDestructivePoisonChance = 0.3f;
 
     private const float MagicDamagePerPsiMainTarget = 0.3f;
     private const float MagicDamagePerPsiNearby = 0.5f;
@@ -225,6 +227,8 @@ public class CheliceraStrike : Skill
 
         CmdApplyDamage(_dealDamage, target.gameObject);
 
+        if (_rechargeGlands != null && targetCharacter != null) _rechargeGlands.TryApplyDestructivePoison(targetCharacter, TryApplyDestructivePoisonChance, _player);
+
         _criticalDamage = 0f;
         _dealDamage.Value = 0f;
         Damage = _baseDamage;
@@ -247,7 +251,7 @@ public class CheliceraStrike : Skill
 
         float psiValue = _attackingPsionicEnergy.CurrentValue;
 
-        // 1. ? Магический урон по цели
+        // 1. ? пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ
         float bonusMagicDamage = _attackingPsionicEnergy.GetBonusDamage(psiValue);
 
         var magicDamageToMain = new Damage

@@ -7,7 +7,7 @@ public class PreparationAreaManager : MonoBehaviour
     [SerializeField] private List<GameObject> _preparationAreas;
 
     private Coroutine preparationAreasDisable;
-
+    
     public void PreparationAreasDisable(float time)
     {
         if (preparationAreasDisable != null)

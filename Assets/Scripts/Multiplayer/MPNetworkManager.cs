@@ -1,20 +1,115 @@
-using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using static UnityEditor.Progress;
 
 public class MPNetworkManager : NetworkManager
 {
     public static MPNetworkManager Instance;
 
-    private int _userID = -37;
-    public int UserID { get => _userID; set { if(_userID == -37) _userID = value; } }
+    [SerializeField] private GameRules _gameRules;
 
-    public override void OnStartClient()
+    private List<GameObject> _players = new List<GameObject>();
+    private int _userID = -37;
+    private GameRules _currentGameRules;
+
+    public int UserID { get => _userID; set { if(_userID == -37) _userID = value; } }
+    public List<GameObject> Players => _players;
+
+    public event Action ConnectClosed;
+    public event Action NewConnected;
+
+    override public void Awake()
     {
+        base.Awake();
+
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+        if (_currentGameRules != null)
+        {
+            Destroy(_currentGameRules);
+            _currentGameRules = null;
+        }
+    }
+
+    public override void OnServerConnect(NetworkConnectionToClient conn)
+    {
+        base.OnServerConnect(conn);
+        NewConnected?.Invoke();
+
+        if (_currentGameRules == null)
+            CreateGameRules();
+    }
+
+    public override void OnClientDisconnect()
+    {
+        base.OnClientDisconnect();
+        _players.Clear();
+        ConnectClosed?.Invoke();
+    }
+
+    public override void OnStopServer()
+    {
+        base.OnStopServer();
+        _players.Clear();
+        ConnectClosed?.Invoke();
+    }
+
+    public void SetServerAddress(string ip, string port)
+    {
+        networkAddress = ip;
+
+        GetComponent<TelepathyTransport>().port = ushort.Parse(port);
+
+        Debug.Log($"Server Address changed on: {ip}:{port}");
+    }
+
+    public void ConnectToServer()
+    {
+        if (isNetworkActive == false)
+            StartClient();
+        else
+            Debug.LogError("Already connected");
+    }
+
+    public void AddPlayer(GameObject player)
+    {
+        Players.Add(player);
+
+        _currentGameRules.CurrentPlayers++;
+
+        if (_currentGameRules.MaxPlayers == _currentGameRules.CurrentPlayers)
+            StartGame();
+    }
+
+    private void StartGame()
+    {
+        _currentGameRules.Init();
+        _currentGameRules.IsStarted = true;
+        _currentGameRules.GameStartServer(_currentGameRules.SpawnPoints);
+    }
+
+    private void CreateGameRules()
+    {
+        GameObject obj = Instantiate(_gameRules.gameObject);
+        NetworkServer.Spawn(obj);
+
+        GameRules item = obj.GetComponent<GameRules>();
+        _currentGameRules = item;
     }
 }

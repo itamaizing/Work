@@ -17,6 +17,16 @@ public class LvlInfo : MonoBehaviour
 	private int _expValue;
 	private int _maxExpValue;
 
+	private void OnDestroy()
+	{
+		if (_playerLevel != null)
+		{
+			_playerLevel.EXPAdded -= OnEXPAdded;
+			_playerLevel.LVLUped -= OnLVLUped;
+			_playerLevel.EXPForNextLVLChanged -= OnEXPForNextLVLChanged;
+		}
+	}
+
 	public void Init(Level level)
     {
 		if (_playerLevel != null)
@@ -39,7 +49,17 @@ public class LvlInfo : MonoBehaviour
 		_playerLevel.EXPForNextLVLChanged += OnEXPForNextLVLChanged;
 	}
 
-    private void OnEXPAdded(int obj)
+	private void OnDisable()
+	{
+		if (_playerLevel != null)
+		{
+			_playerLevel.EXPAdded -= OnEXPAdded;
+			_playerLevel.LVLUped -= OnLVLUped;
+			_playerLevel.EXPForNextLVLChanged -= OnEXPForNextLVLChanged;
+		}
+	}
+
+	private void OnEXPAdded(int obj)
     {
 		_expValue = obj;
 		UpdateInfo();
@@ -47,6 +67,8 @@ public class LvlInfo : MonoBehaviour
 	
     private void OnLVLUped(int obj)
     {
+		if (_LvlText == null) return;
+
 		_lvlValue = obj;
 		_LvlText.transform.DOKill();
 		_LvlText.transform.localScale = new Vector3(2,2,2);
@@ -63,6 +85,8 @@ public class LvlInfo : MonoBehaviour
 
     private void UpdateInfo()
     {
+		if (_LvlText == null || _lvlBar == null) return;
+
 		_lvlBar.value = (float)_expValue / _maxExpValue;
 		_LvlText.text = _lvlValue.ToString();
 	}

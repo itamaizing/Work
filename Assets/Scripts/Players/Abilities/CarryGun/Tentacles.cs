@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 using Mirror;
 using UnityEngine.SceneManagement;
@@ -12,8 +12,8 @@ public class Tentacles : Skill
     [SerializeField] private TentacleProjectile _tentaclesPreview;
     [SerializeField] private ProtectiveCocoon _protectiveCocoonPrefab;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
-    [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private SpawnComponent _spawnComponent;
+    [SerializeField] private SummoningSwarm _summoningSwarm;
     [SerializeField] private float _radiusTarget = 0.5f;
 
     private bool _isPlacingTentacles = false;
@@ -47,10 +47,15 @@ public class Tentacles : Skill
     private bool _isProtectiveCooconSpawn = false;
     private bool _isProtectiveCooconSpawnAttack = false;
     private bool _isWombSpreadsMucus = false;
+    private bool _isWombSpreadParasites = false;
     private bool _isSpawnGetomir;
     private bool _isSpawnSpike = false;
+    private bool _isSpawnSpikeMucus = false;
 
     public event Action<bool> OnSpawnGetomirChanged;
+    public event Action<bool> OnWombSpreadsMucusChanged;
+    public event Action<bool> OnWombSpreadsParasitesChanged;
+    //public event Action<bool> OnSpawnSpikeMucus;
 
     public bool IsSpawnGetomir
     {
@@ -64,6 +69,42 @@ public class Tentacles : Skill
         }
     }
 
+    public bool IsWombSpreadsMucus
+    {
+        get => _isWombSpreadsMucus;
+        set
+        {
+            if (_isWombSpreadsMucus == value) return;
+
+            _isWombSpreadsMucus = value;
+            OnWombSpreadsMucusChanged?.Invoke(_isWombSpreadsMucus);
+        }
+    }
+
+    public bool IsWombSpreadsParasites
+    {
+        get => _isWombSpreadParasites;
+        set
+        {
+            if (_isWombSpreadParasites == value) return;
+
+            _isWombSpreadParasites = value;
+            OnWombSpreadsParasitesChanged?.Invoke(_isWombSpreadParasites);
+        }
+    }
+    
+    public bool IsSpawnSpikeMucus
+    {
+        get => _isSpawnSpikeMucus;
+        set
+        {
+            if (_isSpawnSpikeMucus == value) return;
+
+            _isSpawnSpikeMucus = value;
+            //OnSpawnSpikeMucus?.Invoke(_isSpawnSpikeMucus);
+        }
+    }
+
     public void ProtectiveCooconSpawn(bool value) => _isProtectiveCooconSpawn = value;
     public void PsionicsTalentThree(bool value) => _isPsionicsTalentThree = value;
     public void CocoonSpawnTalent(bool value) => _isCocoonSpawnTalent = value;
@@ -71,19 +112,32 @@ public class Tentacles : Skill
     public void ProtectiveCooconSpawnAttack(bool value) => _isProtectiveCooconSpawnAttack = value;
     public void SpawnGetomir(bool value) => IsSpawnGetomir = value;
     public void SpawnSpike(bool value) => _isSpawnSpike = value;
+    public void WombSpreadsMucus(bool value) => IsWombSpreadsMucus = value;
+    public void WombSpreadsParasites(bool value) => IsWombSpreadsParasites = value;
+    public void SpawnSpikeMucus(bool value) => IsSpawnSpikeMucus = value;
 
-    public void WombSpreadsMucus(bool value)
+    #region Skills Creatures
+
+    private bool _isEffectTentaclesCreatures = false;
+
+    public event Action<bool> OnEffectTentaclesCreatures;
+
+    public bool IsEffectTentaclesCreatures
     {
-        _isWombSpreadsMucus = value;
-
-        foreach (var womb in _spawnedWombs)
+        get => _isEffectTentaclesCreatures;
+        set
         {
-            if (womb == null) continue;
+            if (_isEffectTentaclesCreatures == value) return;
 
-            if (womb.TryGetComponent<MucusAutoGrowth>(out var mucus)) mucus.IsWombSpreadsMucus = value;
-            if (womb.TryGetComponent<WombApplyStateInRadius>(out var radiusSkill)) radiusSkill.IsWombApplyStateInRadius = value;
+            _isEffectTentaclesCreatures = value;
+            OnEffectTentaclesCreatures?.Invoke(_isEffectTentaclesCreatures);
         }
     }
+
+    public void EffectTentaclesCreatures(bool value) => IsEffectTentaclesCreatures = value;
+
+    #endregion
+
     #endregion
 
     public TentacleProjectile CurrentTentacle { get => _currentTentacle; set => _currentTentacle = value; }
@@ -92,7 +146,12 @@ public class Tentacles : Skill
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Spell");
-    protected override bool IsCanCast => (Targeting.GetTarget()?.Character != null || _isClickedOnGround) && _spawnPoint != Vector3.positiveInfinity && IsCanRadius();
+    protected override bool IsCanCast =>
+    _summoningSwarm != null &&
+    _summoningSwarm.ChargesSwarm > 0 &&
+    (Targeting.GetTarget()?.Character != null || _isClickedOnGround) &&
+    _spawnPoint != Vector3.positiveInfinity &&
+    IsCanRadius();
 
     private bool IsCanRadius()
     {
@@ -235,7 +294,7 @@ public class Tentacles : Skill
             {
                 if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hitTarget))
                 {
-                    if (_isAttractionTentacleTalent && hitTarget.collider.TryGetComponent<Character>(out Character character) && ((1 << character.gameObject.layer) & Targeting.Layer.value) != 0)
+                    if (_isAttractionTentacleTalent && hitTarget.collider.TryGetComponent<Character>(out Character character) && ((1 << character.gameObject.layer) & Targeting.Layer) != 0)
                     {
                         float distToHero = Vector3.Distance(Hero.transform.position, character.transform.position);
 
@@ -338,7 +397,7 @@ public class Tentacles : Skill
                             continue;
                         }
 
-                        if (Physics.Raycast(ray, out hit, Mathf.Infinity, _groundLayer))
+                        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
                         {
                             Vector3 groundPoint = hit.point;
 
@@ -371,7 +430,7 @@ public class Tentacles : Skill
 
                     if (_previewInstancePrefab != null)
                     {
-                        if (Physics.Raycast(ray, out hit, Mathf.Infinity, _groundLayer))
+                        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
                         {
                             Vector3 hoverPoint = hit.point;
 
@@ -404,6 +463,8 @@ public class Tentacles : Skill
     {
         if (!IsValidVector(_spawnPoint)) yield break;
 
+        _summoningSwarm.UseSwarmCharges(1);
+
         if (_isProtectiveCooconSpawn && Targeting.GetTarget()?.Character != null)
         {
             CmdSpawnProtectiveCocoon(Targeting.GetTarget()?.Character);
@@ -411,7 +472,7 @@ public class Tentacles : Skill
             yield break;
         }
 
-        if (Targeting.GetTarget()?.Character != null)
+        if (Targeting.GetTarget()?.Character)
         {
             float distance = Vector3.Distance(_spawnPoint, Targeting.GetTarget().Character.transform.position);
 
@@ -618,11 +679,8 @@ public class Tentacles : Skill
     {
         foreach (var womb in _spawnComponent.Units)
         {
-            if (womb.TryGetComponent<CocoonSpawn>(out CocoonSpawn cocoonSpawn)) cocoonSpawn.Tentacle = this;
+            if (womb.TryGetComponent<CreatureSpawn>(out CreatureSpawn creatureSpawn)) creatureSpawn.Tentacle = this;
             _spawnedWombs.Add(womb.gameObject);
-
-            if (womb.TryGetComponent<MucusAutoGrowth>(out var mucus)) mucus.IsWombSpreadsMucus = _isWombSpreadsMucus;
-            if (womb.TryGetComponent<WombApplyStateInRadius>(out var radiusSkill)) radiusSkill.IsWombApplyStateInRadius = _isWombSpreadsMucus;
         }
     }
 

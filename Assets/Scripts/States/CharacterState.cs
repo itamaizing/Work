@@ -1,10 +1,12 @@
-﻿using Gangdollarff.EarthElemental;
+﻿using System;
+using Gangdollarff.EarthElemental;
 using Gangdollarff.WaterElemental;
 using Mirror;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class StateInfo
 {
@@ -289,25 +291,27 @@ public class CharacterState : NetworkBehaviour
 	public List<AbstractCharacterState> CurrentStates => _currentStates;
 	public Character Character => _hero;
 	public event System.Action<AbstractCharacterState> OnStateAdded;
+	public event Action<States, int> OnStateDispelled;
 
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
 	{
-        #region UpdatedStates
-        [States.Frozen] = new FrozenState(),
-        [States.Frosting] = new FrostingState(),
-        [States.Cooling] = new Cooling(),
-        [States.Restoration] = new RestorationState(),
-        [States.Stun] = new StunnedState(),
-        [States.Silent] = new Silent(),
-        [States.Calmness] = new Calmness(),
-        [States.PartialBlindness] = new PartialBlindness(),
-        [States.ScorchedSoul] = new ScorchedSoul(),
-        [States.Blind] = new BlindnessState(),
-        [States.HealingSlime] = new HealingSlime(),
-        #endregion
+		#region UpdatedStates
+		[States.Frozen] = new FrozenState(),
+		[States.Frosting] = new FrostingState(),
+		[States.Cooling] = new Cooling(),
+		[States.Restoration] = new RestorationState(States.Restoration),
+		[States.RestorationStacking] = new RestorationState(States.RestorationStacking),
+		[States.Stun] = new StunnedState(),
+		[States.Silent] = new Silent(),
+		[States.Calmness] = new Calmness(),
+		[States.PartialBlindness] = new PartialBlindness(),
+		[States.ScorchedSoul] = new ScorchedSoul(),
+		[States.Blind] = new BlindnessState(),
+		[States.HealingSlime] = new HealingSlime(),
+		#endregion
 
 
-        [States.Invisible] = new InvisibleState(),
+		[States.Invisible] = new InvisibleState(),
 		[States.SchoolDebuff] = new AbilitySchoolDebuff(),
 		[States.Desiccuration] = new Desiccuration(),
 		[States.Plague] = new Plague(),
@@ -321,7 +325,8 @@ public class CharacterState : NetworkBehaviour
 		[States.ReversePolarity] = new ReversePolarityState(),
 		[States.SpiritEnergy] = new SpiritEnergyState(),
 		[States.SpiritHealth] = new SpiritHealthState(),
-		
+		[States.DisciplineAura]   = new DisciplineAuraState(),
+
 		[States.Knockdown] = new Knockdown(),
 		[States.IdealEvade] = new IdealEvade(),
 		[States.BleedingDebuff] = new BleedingDebuff(),
@@ -352,7 +357,8 @@ public class CharacterState : NetworkBehaviour
 		[States.ManaRegen] = new ManaRegen(),
 		[States.Stupefaction] = new Stupefaction(),
 		[States.TentacleGrip] = new TentacleGrip(),
-		[States.Destruction] = new DestructionState(),
+		[States.Destruction] = new DestructionState(States.Destruction),
+		[States.DestructionStacking] = new DestructionState(States.DestructionStacking),
 		[States.HardenedFlesh] = new HardenedFlesh(),
 		[States.FocusingOnReflexesState] = new FocusingOnReflexesState(),
 		[States.DivineEnhancement] = new DivineEnhancementState(),
@@ -361,6 +367,15 @@ public class CharacterState : NetworkBehaviour
 		[States.CorrodedArmor] = new CorrodedArmorState(),
 		[States.Impatience] = new ImpatienceState(),
 		[States.PsionicGeneration] = new PsionicGenerationState(),
+		[States.Parasites] = new ParasitesState(),
+		[States.SwarmSpeed] = new SwarmSpeedState(),
+		[States.DestructivePoison] = new DestructivePoisonState(),
+		[States.InjectionAdrenaline] = new InjectionAdrenalineState(),
+		[States.MergeDark] = new MergeDarkState(),
+		[States.DarkFormState] = new DarkFormState(),
+		[States.ShackleState] = new ShackleState(),
+		[States.SlowFlowLight] = new SlowFlowLightState(),
+		[States.Retribution] = new RetributionState(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -761,6 +776,7 @@ public class CharacterState : NetworkBehaviour
 				((isAlly && state.BaffDebaff == BaffDebaff.Baff) ||
 				 (!isAlly && state.BaffDebaff == BaffDebaff.Debaff)))
 			{
+				NotifyDispelWhoMade(state.PersonWhoMadeBuff.gameObject,state.State,state.CurrentStacksCount);
 				if (state.CurrentStacksCount > 1)
 				{
 					//state.currentStacksCount--;
@@ -780,11 +796,33 @@ public class CharacterState : NetworkBehaviour
 			_stateIcons.RemoveItemByState(state.State);
 		}
 	}
+	
+	[ClientRpc]
+	private void NotifyDispelWhoMade(GameObject whoMade, States state,int num)
+	{
+		if(whoMade == null) return;
+		whoMade.TryGetComponent(out Character c);
+		if(c == null) return;
+		
+		c.CharacterState.OnOwnStateDispelled(state,num);
+	}
+
+	public void OnOwnStateDispelled(States state, int num)
+	{
+		if (!isOwned) return;
+		OnStateDispelled?.Invoke(state,num);
+	}
 
 	[ClientRpc]
 	private void ClientRpcRemoveIconCount()
 	{
 		_stateIcons?.RemoveIconCount();
+	}
+
+	[ClientRpc]
+	private void RpcClearStateIcons()
+	{
+		_stateIcons?.DeactivateAll();
 	}
 
 	private void MoveStateToEnd(int index)
@@ -800,6 +838,16 @@ public class CharacterState : NetworkBehaviour
 
 		// Добавляем его в конец списка
 		_currentStates.Add(state);
+	}
+
+	[Server]
+	public void ServerClearAllStates()
+	{
+		var statesCopy = new List<AbstractCharacterState>(_currentStates);
+
+		foreach (var state in statesCopy) state.ExitState();
+		_currentStates.Clear();
+		RpcClearStateIcons();
 	}
 }
 
@@ -914,8 +962,10 @@ public enum States
 	TentacleGrip,
     Discharge,
     CoolingAura,
-	Restoration,
-	Destruction,
+    Restoration,
+    RestorationStacking,
+    Destruction,
+    DestructionStacking,
 	HardenedFlesh,
 	FocusingOnReflexesState,
 	WarmingUpState,
@@ -940,7 +990,17 @@ public enum States
 	CoolingDamaged,
 	MagicInstantaneity,
 	ImmortalityState,
-	BurningStacked
+	BurningStacked,
+	Parasites,
+	SwarmSpeed,
+	DestructivePoison,
+	InjectionAdrenaline,
+	MergeDark,
+	DarkFormState,
+	ShackleState,
+	SlowFlowLight,
+	Retribution,
+	DisciplineAura
 }
 public enum BaffDebaff
 {

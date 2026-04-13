@@ -72,11 +72,11 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
 
     private void UpdateTalentPointsText()
     {
-        int maxPoints = LevelCharacterManager.Instance.GetCurrentLevel();
+        int maxPoints = LevelCharacterManager.Instance.GetCurrentLevel() + 10;
+
+        Debug.Log("FOR TEST + +10 talents points! FOR TEST", this);
         int usedPoints = _talentSystem.GetActiveTalentCount();
         int freePoints = maxPoints - usedPoints;
-
-        //Debug.Log($"freePoints: {freePoints}");
 
         if (_talentSystem.Points >= 0)
         {
@@ -93,8 +93,7 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
         {
             _talantsText.gameObject.SetActive(false);
         }
-
-        //Debug.Log($"_points: {_talentSystem.Points}");
+        _attributesPanel.UpdateAttributesPoints();
     }
 
     private void ResetPanel()

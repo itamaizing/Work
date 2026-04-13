@@ -18,7 +18,10 @@ public class SoulAid : Skill
     
     private bool IsAllyTarget(Character target) => target != null && target.gameObject.layer == LayerMask.NameToLayer("Allies");
     
-    private bool _talentTiredSoulDispelActive = false;
+    #region TiredSoul Talent
+    private SoulTiredDispelBooster _tiredSoulBooster;
+    public SoulTiredDispelBooster TiredSoulBooster => _tiredSoulBooster;
+    #endregion
     private bool _talentCooldownReduce = false;
     private bool _talentDoubleRange = false;
     
@@ -26,13 +29,13 @@ public class SoulAid : Skill
 
     private void OnEnable()
     {
-        CastEnded += DispelTiredSoul;
         _priestShield.CastEnded += ReduceCooldown;
+        
+        _tiredSoulBooster = new SoulTiredDispelBooster(this);
     }
 
     private void OnDisable()
     {
-        CastEnded -= DispelTiredSoul;
         _priestShield.CastEnded -= ReduceCooldown;
     }
 
@@ -41,10 +44,17 @@ public class SoulAid : Skill
 
     protected override bool IsCanCast
     {
-        get
+        get 
         {
-            var isTargetInRadius = Targeting.IsTargetInRadius(_defaultRadius, Targeting.GetTarget()?.Character.transform) || IsTargetHaveRestoration() && Targeting.IsTargetInRadius(_largeRadius, Targeting.GetTarget()?.Character.transform);
-            return isTargetInRadius && IsTargetHaveTiredSoul();
+            var target = Targeting.GetTarget()?.Character;
+            if (target == null) return false;
+
+            bool inRange = Targeting.IsTargetInRadius(_talentDoubleRange ? _largeRadius : _defaultRadius, target.transform);
+            bool hasTiredSoul = target.CharacterState.CheckForState(States.TiredSoul);
+
+            if (_tiredSoulBooster.Enabled) { return inRange && _tiredSoulBooster.CanCastOnTarget(target); }
+            
+            return inRange && hasTiredSoul;
         }
     }
 
@@ -58,6 +68,7 @@ public class SoulAid : Skill
         if (Targeting.GetTarget()?.Character == null || !IsCanCast) yield break;
 
         var target = Targeting.GetTarget()?.Character.gameObject;
+        CmdDispelTiredSoul(target,_tiredSoulBooster.Enabled);
         CmdStartPull(target);
     }
 
@@ -77,7 +88,7 @@ public class SoulAid : Skill
             {
                 Vector3 clickPoint = Targeting.GetMousePoint();
                 
-                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: false);
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
                 
                 if (Targeting.GetTempTarget().Character is Character character)
                 {
@@ -100,11 +111,6 @@ public class SoulAid : Skill
         callbackDataSaved(targetInfo);
     }
 
-    public void EnableTiredSoulDispel(bool isActive)
-    {
-        _talentTiredSoulDispelActive = isActive;
-    }
-    
     public void EnableCooldownReduce(bool isActive)
     {
         _talentCooldownReduce = isActive;
@@ -127,13 +133,6 @@ public class SoulAid : Skill
         return _restoration.Target == Targeting.GetTarget()?.Character;
     }
 
-    private void DispelTiredSoul()
-    {
-        if(!IsTargetHaveTiredSoul()) return;
-        
-        CmdRemoveBuff(States.TiredSoul, Targeting.GetTarget()?.Character.gameObject); 
-    }
-
     private void ReduceCooldown()
     {
         if(!_talentCooldownReduce) 
@@ -142,18 +141,6 @@ public class SoulAid : Skill
         DecreaseSetCooldown(_cooldownReduceValue);
     }
 
-    /*[Command]
-    private void CmdPull(GameObject gameObject, Vector2 force)
-    {
-
-        if (_tempTarget != gameObject)
-        {
-            _tempTarget = gameObject;
-            _tempTargetMove = gameObject.GetComponent<MoveComponent>();
-        }
-        _tempTargetMove.TargetRpcAddTransformPosition(force);
-    }*/
-    
     [Command]
     private void CmdStartPull(GameObject targetObj)
     {
@@ -207,11 +194,10 @@ public class SoulAid : Skill
             targetTransform.position += force;
         }
     }
-    
+
     [Command]
-    private void CmdRemoveBuff(States state, GameObject target)
+    private void CmdDispelTiredSoul(GameObject target, bool isEnabled)
     {
-        var characterState = target.GetComponent<CharacterState>();
-        characterState.RemoveState(state);
+        _tiredSoulBooster.TryRemoveTiredSoul(target, isEnabled);
     }
 }

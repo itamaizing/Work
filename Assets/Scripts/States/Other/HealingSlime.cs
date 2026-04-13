@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealingSlime :  AbstractCharacterState
+public class HealingSlime : RefreshingState
 {
     public override States State => States.HealingSlime;
     public override StateType Type => StateType.Magic;
@@ -70,9 +70,7 @@ public class HealingSlime :  AbstractCharacterState
 
     public override bool Stack(float _)
     {
-        if (currentStacksCount >= MaxStacksCount) return false;
-
-        currentStacksCount++;
+        if (currentStacksCount < MaxStacksCount) currentStacksCount++;
         float addValue = Mathf.Floor(health.MaxValue * PercentPerStack);
         health.AddMax(addValue);
 

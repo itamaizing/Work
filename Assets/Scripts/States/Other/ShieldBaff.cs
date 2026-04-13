@@ -49,7 +49,7 @@ public class ShieldBaff : AbstractCharacterState, IDamageable
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
-        Debug.Log($"Урон по стостоянию: {_damageAbsorbed}");
+        Debug.Log($"РЈСЂРѕРЅ РїРѕ СЃС‚РѕСЃС‚РѕСЏРЅРёСЋ: {_damageAbsorbed}");
         float damageToAbsorb = Mathf.Min(characterState.Character.Health.TotalMaxAbsorption - _damageAbsorbed, damage.Value);
         _damageAbsorbed += damageToAbsorb;
         damage.Value -= damageToAbsorb;

@@ -149,6 +149,12 @@ public class ChargeComponent : BaseSkillComponent
         }
     }
 
+    public override void Init(Skill skill)
+    {
+        base.Init(skill);
+        if (_usesCharges) _currentCharges = _maxCharges;
+    }
+
     private void TickCurrent(float time)
     {
         _remainingCooldowns[0] -= time;
