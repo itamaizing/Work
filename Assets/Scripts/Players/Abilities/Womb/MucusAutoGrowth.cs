@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,14 +30,18 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
         Invoke("HandleAction", 1f);
     }
 
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+        AreaInfo.Radius = 0;
+    }
+
     private void OnEnable()
     {
         _mucusByCircle.Clear();
 
         for (int i = 0; i < MaxCircles; i++)
             _mucusByCircle.Add(new List<GameObject>());
-
-        AreaInfo.Radius = 0;
     }
 
     private void OnDisable()
