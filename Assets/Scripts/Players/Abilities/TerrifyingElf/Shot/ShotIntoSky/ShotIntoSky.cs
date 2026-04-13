@@ -31,11 +31,11 @@ public class ShotIntoSky : Skill
 
     #region Talent
     private bool tripleShotTalentActive;
-    private bool shotAstralManaActive;
+    private bool shotMagicDebuffActive;
     private bool _isShotRadiusUpgradeActive;
     private bool _isSkillEnableBoostLogicActiveTalent;
 
-    public void ShotsIntoSkyAstralTalentActive(bool value) => shotAstralManaActive = value;
+    public void ShotsIntoSkyMagicDebuffTalentActive(bool value) => shotMagicDebuffActive = value;
     public void SetTripleShotTalentActive(bool value) => tripleShotTalentActive = value;
     public void ShotRadiusUpgradeActive(bool value)
     {
@@ -232,7 +232,7 @@ public class ShotIntoSky : Skill
         if (!impactPrefab) return;
 
         ArrowIntoSkyProjectile impact = Instantiate(impactPrefab, position, Quaternion.identity);
-        impact.Init(playerLinks, this, damage, lastStreamTalent, shotAstralManaActive, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
+        impact.Init(playerLinks, this, damage, lastStreamTalent, shotMagicDebuffActive, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
         NetworkServer.Spawn(impact.gameObject);
 
         _arrowIntoSkyProjectileIds.Add(impact.GetComponent<NetworkIdentity>().netId);
@@ -261,7 +261,7 @@ public class ShotIntoSky : Skill
         if (gameObject == null) return;
 
         ArrowIntoSkyProjectile impact = gameObject.GetComponent<ArrowIntoSkyProjectile>();
-        if (impact != null) impact.Init(playerLinks, this, damage, lastStreamTalent, shotAstralManaActive, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
+        if (impact != null) impact.Init(playerLinks, this, damage, lastStreamTalent, shotMagicDebuffActive, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
     }
  
     [ClientRpc] private void RpcActivate(ArrowIntoSkyProjectile projectile) => projectile.Activate();

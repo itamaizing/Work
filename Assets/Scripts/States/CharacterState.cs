@@ -503,6 +503,12 @@ public class CharacterState : NetworkBehaviour
 		return false;
 	}
 
+	public bool HasMagicDebuff()
+	{
+		foreach (var state in _currentStates) if (state.Type == StateType.Magic && state.BaffDebaff == BaffDebaff.Debaff) return true;
+		return false;
+	}
+
 	public AbstractCharacterState GetState(States state)
 	{
 		foreach (AbstractCharacterState states in _currentStates)

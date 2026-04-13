@@ -9,7 +9,6 @@ public class ShotsIntoSky : Skill
 {
     [SerializeField] private SkillRenderer skillRenderer;
     [SerializeField] private bool tripleShotTalentActive;
-    [SerializeField] private bool shotAstralManaActive;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private HeroComponent playerLinks;
     [SerializeField] private float _dropDelayTime = 1f;
@@ -32,7 +31,9 @@ public class ShotsIntoSky : Skill
     #region Talent
 
     private bool _isSkillEnableBoostLogicActiveTalent;
+    private bool shotMagicDebuffActive;
 
+    public void ShotsIntoSkyMagicDebuffTalentActive(bool value) => shotMagicDebuffActive = value;
     public void SkillEnableBoostLogicActiveTalent(bool value) => _isSkillEnableBoostLogicActiveTalent = value;
 
     #endregion
@@ -222,7 +223,7 @@ public class ShotsIntoSky : Skill
 
         ArrowsIntoSkyProjectile impact = Instantiate(impactPrefab, position, Quaternion.identity);
         SceneManager.MoveGameObjectToScene(impact.gameObject, _hero.NetworkSettings.MyRoom);
-        impact.Init(playerLinks, this, damage, lastStreamTalent, shotAstralManaActive);
+        impact.Init(playerLinks, this, damage, lastStreamTalent, shotMagicDebuffActive);
         NetworkServer.Spawn(impact.gameObject);
 
         _arrowsIntoSkyProjectileIds.Add(impact.GetComponent<NetworkIdentity>().netId);
@@ -251,7 +252,7 @@ public class ShotsIntoSky : Skill
         if (gameObject == null) return;
 
         ArrowsIntoSkyProjectile impact = gameObject.GetComponent<ArrowsIntoSkyProjectile>();
-        if (impact != null) impact.Init(playerLinks, this, damage, lastStreamTalent, shotAstralManaActive);
+        if (impact != null) impact.Init(playerLinks, this, damage, lastStreamTalent, shotMagicDebuffActive);
     }
 
     [ClientRpc] private void RpcActivate(ArrowsIntoSkyProjectile projectile) => projectile.Activate();
@@ -305,8 +306,5 @@ public class ShotsIntoSky : Skill
     {
         tripleShotTalentActive = value;
     }
-    #endregion
-    #region ShotsIntoSkyAstralTalent
-    public void ShotsIntoSkyAstralTalentActive(bool value) => shotAstralManaActive = value;
     #endregion
 }

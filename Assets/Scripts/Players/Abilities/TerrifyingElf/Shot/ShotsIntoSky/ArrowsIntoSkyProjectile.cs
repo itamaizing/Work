@@ -13,7 +13,7 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
     [SerializeField] private SphereCollider sphereCollider;
 
     [SerializeField] private bool lastStreamTalent;
-    [SerializeField] private bool shotAstralManaActive;
+    [SerializeField] private bool shotMagicDebuffActive;
 
     [SerializeField] private bool isDamage;
 
@@ -27,10 +27,10 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
     public GameObject Arrow { get => arrow; set => arrow = value; }
     public GameObject Circle { get => circle; set => circle = value; }
 
-    public virtual void Init(HeroComponent dad, Skill skill, float damage, bool lastStreamTalent, bool shotAstralManaActive)
+    public virtual void Init(HeroComponent dad, Skill skill, float damage, bool lastStreamTalent, bool shotMagicDebuffActive)
     {
         this.lastStreamTalent = lastStreamTalent;
-        this.shotAstralManaActive = shotAstralManaActive;
+        this.shotMagicDebuffActive = shotMagicDebuffActive;
 
         _dad = dad;
         _skill = skill;
@@ -149,8 +149,7 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
         if (lastStreamTalent) characterState.AddState(States.InnerDarkness, 13, 0, _character.gameObject, name);
         characterState.AddState(States.Irradiation, 9, 0, _character.gameObject, name);
 
-        if (shotAstralManaActive && characterState.CheckForState(States.Astral))
-            RestoreMana();
+        if (shotMagicDebuffActive && characterState.HasMagicDebuff()) RestoreMana();
 
         //if (silenceTalentActive && characterState.CheckForState(States.Silent)) characterState.AddState(States.WeakeningSilence, 4, 3, _character.gameObject, name);
     }
