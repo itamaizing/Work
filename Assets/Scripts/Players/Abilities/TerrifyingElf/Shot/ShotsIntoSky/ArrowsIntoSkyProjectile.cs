@@ -174,7 +174,7 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
     {
         if (_character.TryGetResource(ResourceType.Mana) is Mana manaResource)
         {
-            float manaToRestore = manaResource.MaxValue * 0.03f;
+            float manaToRestore = manaResource.MaxValue * 0.01f;
             manaResource.Add(manaToRestore);
             _character.CharacterState.AddState(States.ManaRegen, 1, 0, _character.gameObject, this.name);
         }

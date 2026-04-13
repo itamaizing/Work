@@ -5,19 +5,17 @@ using UnityEngine;
 public class DarknessTalent_4 : Talent
 {
     [SerializeField] private Ghost ghost;
-    [SerializeField] private PullingHealth pullingHealth;
+    [SerializeField] private SkillManager skillManager;
 
     public override void Enter()
     {
         ghost.SendingGhostTargetTalentActive(true);
-        ghost.CooldownGhostShotActiveTalent(true);
-        pullingHealth.PullingHealthSpeedWithFearTalentActive(true);
+        skillManager.ActivateSkill(ghost);
     }
 
     public override void Exit()
     {
         ghost.SendingGhostTargetTalentActive(false);
-        ghost.CooldownGhostShotActiveTalent(false);
-        pullingHealth.PullingHealthSpeedWithFearTalentActive(false);
+        skillManager.DeactivateSkill(ghost);
     }
 }
