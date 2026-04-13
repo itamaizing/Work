@@ -15,6 +15,7 @@ public class SuppressionState : AbstractCharacterState
     private MoveComponent _move;
     private Rigidbody _rigidbody;
     private Resource manaResource;
+    private Suppression _suppression;
 
     private float _baseDuration;
     private float _duration;
@@ -35,6 +36,8 @@ public class SuppressionState : AbstractCharacterState
     {
         characterState = character;
         personWhoMadeBuff = caster;
+
+        _suppression = personWhoMadeBuff.GetComponent<Suppression>();
 
         _baseDuration = durationToExit;
         _duration = _baseDuration;
@@ -92,6 +95,7 @@ public class SuppressionState : AbstractCharacterState
     private void OnDamageTaken(Damage damage, Skill skill)
     {
         if (!characterState.isServer) return;
+        if (!_suppression.IsSuppressionManaAbsorbtion) return;
         if (skill == null || skill.Hero == null) return;
 
         Character attacker = skill.Hero;
