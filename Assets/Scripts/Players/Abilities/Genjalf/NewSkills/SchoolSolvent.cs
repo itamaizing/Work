@@ -2,79 +2,112 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Mirror;
 using UnityEngine;
 
 public class SchoolSolvent : Skill
 {
-    private HashSet<Schools> _schoolsSet;
-    protected override int AnimTriggerCastDelay { get; }
-    protected override int AnimTriggerCast { get; }
+    [SerializeField] private CounterSpell _counterSpell;
+
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => 0;
+    protected override bool IsCanCast => CheckCanCast();
     
     private float _clickRadius = 0.5f;
+
+    private readonly HashSet<Schools> _accumulatedSchools = new HashSet<Schools>();
     
-    private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+    private bool CheckCanCast()
+    {
+        return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.GetTarget()?.Character != null;
+    }
+
+    private void OnEnable()
+    {
+        if (_counterSpell != null)
+            _counterSpell.OnSpellDispelled += AddSchool;
+    }
+
+    private void OnDisable()
+    {
+        if (_counterSpell != null)
+            _counterSpell.OnSpellDispelled -= AddSchool;
+    }
 
     public void AddSchool(Schools school)
     {
-        _schoolsSet.Add(school);
+        if(!isActiveAndEnabled) return;
+        if (school == Schools.None) return;
+        _accumulatedSchools.Add(school);
+        CmdAddSchool(school);
     }
-    
+
+    [Command]
+    private void CmdAddSchool(Schools school)
+    {
+        _accumulatedSchools.Add(school);
+    }
+
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        throw new NotImplementedException();
+        if (targetInfo.GetTargets().Count > 0)
+            Targeting.SetTarget(targetInfo.GetTargets()[0]);
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
     {
-        TargetInfo targetInfo = new TargetInfo();
-
-        while (Targeting.GetTempTarget() == null)
+        while (Targeting.GetTempTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
                 Vector3 clickPoint = Targeting.GetMousePoint();
-                
+
                 Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
 
-                if (Targeting.GetTempTarget()?.Character is Character character)
-                {
-                    if (Targeting.GetTempTarget()?.Character != null)
-                    {
-                        Targeting.ClearTempTarget();
-                    }
-                    else
-                    {
-                        if (character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
-                        break;
-                    }
-                }
             }
             yield return null;
         }
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
-        Targeting.ClearTempTarget();
-
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
+        TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(Targeting.GetTarget()?.Character);
-        callbackDataSaved(targetInfo);
+        targetDataSavedCallback(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget()?.Character)
-        {
-            Character target = Targeting.GetTarget()?.Character;
+        var target = Targeting.GetTarget()?.Character;
+        if (target == null) yield break;
+        CmdDispelAccumulatedSchools(target.gameObject);
 
-            foreach (var school in _schoolsSet)
-            {
-                //target.CharacterState.CurrentStates.Where(c => c.)
-            }
-        }
+        _accumulatedSchools.Clear();
 
         yield return null;
     }
 
+    [Command]
+    private void CmdDispelAccumulatedSchools(GameObject targetGO)
+    {
+        if (targetGO == null) return;
+
+        var state = targetGO.GetComponent<CharacterState>();
+        if (state == null) return;
+
+        var statesCopy = state.CurrentStates;
+
+        foreach (var s in statesCopy)
+        {
+            Debug.LogError(s.Schools);
+            if (_accumulatedSchools.Contains(s.Schools))
+            {
+                state.RemoveState(s.State);
+            }
+        }
+        statesCopy.Clear();
+        _accumulatedSchools.Clear();
+    }
+
     protected override void ClearData()
     {
-        throw new NotImplementedException();
+        Targeting.ClearTarget();
     }
 }

@@ -155,7 +155,7 @@ public class SpawnComponent : NetworkBehaviour
             return;
         }
 
-        SceneManager.MoveGameObjectToScene(spawnedCharacter.gameObject, _hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(spawnedCharacter.gameObject, _hero.NetworkSettings.MyRoom);
 
         if (connectionToClient == null)
         {

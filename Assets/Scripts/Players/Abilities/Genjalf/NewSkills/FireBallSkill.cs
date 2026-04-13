@@ -85,7 +85,6 @@ public class FireBallSkill : Skill
     private void CmdCreateProjectile(GameObject target)
     {
         GameObject item = Instantiate(_projectile.gameObject, transform.position + Vector3.up, Quaternion.identity);
-        SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         var projectile = item.GetComponent<Projectile>();
         projectile.EndPointReached += OnEndPointReached;

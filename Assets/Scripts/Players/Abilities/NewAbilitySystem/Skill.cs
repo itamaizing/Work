@@ -1186,6 +1186,7 @@ public abstract class Skill : NetworkBehaviour
     {
         Hero.Abilities.NotifySkillPrepared(this);
         CastStarted?.Invoke();
+        Hero.Abilities.NotifySkillIsPreparing(this, true);
         _isCasting = true;
 
         bool noCast = Hero.Abilities.TryConsumeNoCast();

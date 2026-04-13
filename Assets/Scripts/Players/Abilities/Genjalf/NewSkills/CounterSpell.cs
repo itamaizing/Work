@@ -18,6 +18,8 @@ public class CounterSpell : Skill
     
     private float _clickRadius = 0.5f;
     
+    public event Action<Schools> OnSpellDispelled;
+    
     private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
     private bool CheckCanCast()
@@ -46,11 +48,13 @@ public class CounterSpell : Skill
         if (Targeting.GetTarget()?.Character != null)
         {
             Character currentCharacter = Targeting.GetTarget()?.Character;
-            
-            CmdState(currentCharacter.gameObject, 5);
-            if (currentCharacter.Abilities.CurrentCastingSkill != null && _schoolSolvent.IsSkillActive)
+
+            if (currentCharacter)
             {
-                _schoolSolvent.AddSchool(currentCharacter.Abilities.CurrentCastingSkill.Info.School);
+                currentCharacter.CharacterState.CmdAddState(States.SchoolDebuff, 5, 0, Hero.gameObject, name);
+                Schools school = currentCharacter.Abilities.CurrentCastingSkill.Info.School;
+                _schoolSolvent.AddSchool(school);
+                OnSpellDispelled?.Invoke(school);
             }
         }
         yield return null;
@@ -117,9 +121,9 @@ public class CounterSpell : Skill
     }
 
     [Command]
-    private void CmdState(GameObject enemy, float time)
+    private void CmdState(GameObject enemy)
     {
         Character enemyChar = enemy.GetComponent<Character>();
-        enemyChar.CharacterState.AddState(States.SchoolDebuff, time, 0, Hero.gameObject, name);
+        enemyChar.CharacterState.CmdAddState(States.SchoolDebuff, 5, 0,Schools.None, Hero.gameObject, name);
     }
 }

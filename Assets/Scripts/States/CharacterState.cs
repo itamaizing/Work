@@ -525,6 +525,12 @@ public class CharacterState : NetworkBehaviour
 		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
 		ClientAddState(state, duration, damageToExit, schools, personWhoShooted, skillName);
 	}
+	
+	public void AddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
+	{
+		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
+		ClientAddState(state, duration, damageToExit, schools, personWhoShooted, skillName);
+	}
 
 	[Command]
 	public void CmdAddState(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
@@ -682,11 +688,11 @@ public class CharacterState : NetworkBehaviour
 			AddShield(damageableShield);
 		}
 
-		if (school != Schools.None)
+		/*if (school != Schools.None)
 		{
 			var counterSpell = (AbilitySchoolDebuff)stateInstance;
 			counterSpell.canceledSchoool = school;
-		}
+		}*/
 	}
 
 	private void CreateState(AbstractCharacterState state, States stateName, float duration, float damageToExit, GameObject personWhoShooted, string skillName, bool stack)
