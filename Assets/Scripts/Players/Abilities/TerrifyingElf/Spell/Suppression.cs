@@ -9,12 +9,19 @@ public class Suppression : Skill
     [SerializeField] private float duration;
     //private Character _target;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
-
     protected override bool IsCanCast => IsHaveCharge && Targeting.GetTarget()?.Character != null;
-
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
-
     protected override int AnimTriggerCast => 0;
+
+    #region Talent
+
+    private bool _isSuppressionManaAbsorbtion;
+
+    public bool IsSuppressionManaAbsorbtion { get => _isSuppressionManaAbsorbtion; set => _isSuppressionManaAbsorbtion = value; }
+
+    public void SuppressionManaAbsorbtion(bool value) => _isSuppressionManaAbsorbtion = value;
+
+    #endregion
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
@@ -73,7 +80,7 @@ public class Suppression : Skill
         var targetCharacter = targetGameObject.GetComponent<Character>();
         if (targetCharacter != null)
         {
-            targetCharacter.CharacterState.AddState(States.Suppression, duration, 0, _playerLinks.gameObject, name);
+            targetCharacter.CharacterState.AddState(States.Suppression, duration, 0, _playerLinks.gameObject, this.name);
         }
     }
 

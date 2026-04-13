@@ -8,12 +8,10 @@ public class DarknessTalent_5 : Talent
     public override void Enter()
     {
         terrifyingElfAura.ManaAbsorptionPhysicalTalentActive(true);
-        silence.SilenceEffectGhostCast(true);
     }
 
     public override void Exit()
     {
         terrifyingElfAura.ManaAbsorptionPhysicalTalentActive(false);
-        silence.SilenceEffectGhostCast(false);
     }
 }

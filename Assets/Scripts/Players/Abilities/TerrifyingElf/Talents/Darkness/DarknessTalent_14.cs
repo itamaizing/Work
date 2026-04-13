@@ -14,6 +14,7 @@ public class DarknessTalent_14 : Talent
         pullingHealth.SetPullingHealthGhostTalentActive(true);
         silence.SilenceEffectsOnMinionMagic(true);
         silence.GhostDeathSilence(true);
+        silence.SilenceEffectGhostCast(true);
     }
 
     public override void Exit()
@@ -22,5 +23,6 @@ public class DarknessTalent_14 : Talent
         pullingHealth.SetPullingHealthGhostTalentActive(false);
         silence.SilenceEffectsOnMinionMagic(false);
         silence.GhostDeathSilence(false);
+        silence.SilenceEffectGhostCast(false);
     }
 }
