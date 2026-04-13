@@ -10,7 +10,7 @@ namespace Gangdollarff.AirElemental
 
     }
 
-    public class Discharge : AbstractCharacterState
+    public class Discharge : RefreshingState
     {
         private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
         private float _timeAfterLastEffect = 0;

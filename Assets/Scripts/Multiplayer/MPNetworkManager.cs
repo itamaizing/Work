@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using static UnityEditor.Progress;
+//using UnityEngine.SceneManagement;
+//using static UnityEditor.Progress;
 
 public class MPNetworkManager : NetworkManager
 {

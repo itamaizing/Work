@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Prefabs/Players/New Characters/MenuPreview.meta
+guid: 5b7b783ae5e02cf4e998c9f307cfcc10
+========
 guid: 16253d9e21f4de5408ca44593bd1ae09
+>>>>>>>> main:Assets/Animations/Animations/Getomir.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

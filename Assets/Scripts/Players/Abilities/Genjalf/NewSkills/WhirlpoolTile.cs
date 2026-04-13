@@ -44,6 +44,7 @@ public class WhirlpoolTile : NetworkBehaviour
         }
     }
 
+
     private IEnumerator PullCoroutine()
     {
         while (true)
@@ -55,7 +56,7 @@ public class WhirlpoolTile : NetworkBehaviour
             Collider[] hits = Physics.OverlapSphere(transform.position, _radius, _targetLayers);
 
             var targetObjects = new List<GameObject>();
-            var targetVelocities = new List<Vector3>();
+            var targetDisplacements = new List<Vector3>();
 
             foreach (var hit in hits)
             {
@@ -66,43 +67,53 @@ public class WhirlpoolTile : NetworkBehaviour
                 float distance = Mathf.Max(Vector3.Distance(transform.position, character.transform.position), 0.1f);
 
                 float t = 1f - Mathf.Clamp01(distance / _radius);
-                float force = Mathf.Lerp(_minPullForce, _maxPullForce, t * t);
+                float force = Mathf.Lerp(_minPullForce, _maxPullForce, Mathf.Pow(t, 1.5f));
 
                 Vector3 direction = (transform.position - character.transform.position).normalized;
 
-                Vector3 pullVelocity = direction * force;
+                Vector3 displacement = direction * force * _tickRate;
 
                 targetObjects.Add(hit.gameObject);
-                targetVelocities.Add(pullVelocity);
+                targetDisplacements.Add(displacement);
             }
 
             if (targetObjects.Count > 0)
-                CmdApplyPull(targetObjects.ToArray(), targetVelocities.ToArray());
+                CmdApplyPull(targetObjects.ToArray(), targetDisplacements.ToArray());
         }
     }
 
     [Command(requiresAuthority = false)]
-    private void CmdApplyPull(GameObject[] targets, Vector3[] newPositions)
+    private void CmdApplyPull(GameObject[] targets, Vector3[] displacements)
     {
-        RpcApplyPull(targets, newPositions);
+        RpcApplyPull(targets, displacements);
     }
 
     [ClientRpc]
-    private void RpcApplyPull(GameObject[] targets, Vector3[] newPositions)
+    private void RpcApplyPull(GameObject[] targets, Vector3[] displacements)
     {
         for (int i = 0; i < targets.Length; i++)
         {
             if (targets[i] == null) continue;
 
-            if (targets[i].TryGetComponent<Rigidbody>(out var rb))
-            {
-                rb.linearVelocity = newPositions[i];
-            }
-            else
-            {
-                targets[i].transform.position = newPositions[i];
-            }
+            StartCoroutine(SmoothDisplace(targets[i].transform, displacements[i]));
         }
+    }
+
+    private IEnumerator SmoothDisplace(Transform targetTransform, Vector3 displacement)
+    {
+        Vector3 startPos = targetTransform.position;
+        Vector3 targetPos = startPos + displacement;
+        float elapsed = 0f;
+
+        while (elapsed < _tickRate)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / _tickRate;
+            targetTransform.position = Vector3.Lerp(startPos, targetPos, t);
+            yield return null;
+        }
+
+        targetTransform.position = targetPos;
     }
 
     [TargetRpc]

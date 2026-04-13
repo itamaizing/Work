@@ -12,16 +12,14 @@ public class QuicksandInvisibleTalent : Talent
     public override void Enter()
     {
         _quicksand.SetQuickSandInvisible(true);
-        _waveSkill.SetBonusSize(_waveBonusSize);
+        _waveSkill.SetSizeModifier(_waveBonusSize);
         _lightningStrike.EnableChain(true);
-        //_quicksand.SetBonusSize(2, 1f);
     }
 
     public override void Exit()
     {
         _quicksand.SetQuickSandInvisible(false);
-        _waveSkill.SetBonusSize(Vector2.zero);
-        _lightningStrike.EnableChain(false);
-        //_quicksand.SetBonusSize(0, 0f);
+        _waveSkill.RemoveSizeModifier();
+        _lightningStrike.EnableChain(false); 
     }
 }

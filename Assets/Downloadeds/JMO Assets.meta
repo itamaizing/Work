@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/FX/Priest.meta
+guid: d7b9dc4eedffa194989d4e6f0d6dd8b7
+========
 guid: 161ea6fa03b3e6a4099daf639e9e3752
+>>>>>>>> main:Assets/Downloadeds/JMO Assets.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

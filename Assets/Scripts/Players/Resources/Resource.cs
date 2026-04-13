@@ -243,7 +243,8 @@ public abstract class Resource : NetworkBehaviour, IAttribute
                 while (_currentValue < _maxValue)
                 {
                     //Debug.Log("Regens");
-                    CmdRegen();
+                    if(isClient)
+                        CmdRegen();
                     yield return new WaitForSeconds(_regenerationPeriod);
                 }
             }
