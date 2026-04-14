@@ -12,11 +12,18 @@ public class RetributiveReckoning : AutoAttackSkill
 
     private Character _lastAttacker;
     private Coroutine _disactiveResetCoroutine;
+    private Coroutine _magicBoostCoroutine;
     private bool _isTeleporting;
 
     protected override bool IsCanCast => _lastAttacker != null && Targeting.IsTargetInRadius(AreaInfo.Radius, _lastAttacker.transform);
     protected override int AnimTriggerAutoAttack => 0;
     protected override int AnimTriggerCastDelay => Animator.StringToHash("RetributiveReckoningCastDelay");
+
+    #region Talent
+    private bool _isMagicAbilityInstantly;
+
+    public void MagicAbilityInstantly(bool value) => _isMagicAbilityInstantly = value;
+    #endregion
 
     private void Start()
     {
@@ -98,6 +105,8 @@ public class RetributiveReckoning : AutoAttackSkill
         yield return new WaitForSeconds(AttackDelay / 2);
 
         _isTeleporting = false;
+
+        if (_isMagicAbilityInstantly) ActivateMagicBoostForAll();
     }
 
     protected override void CastAction()
@@ -114,6 +123,24 @@ public class RetributiveReckoning : AutoAttackSkill
     private void PayTeleportCost()
     {
         TryPayCost();
+    }
+
+    private void ActivateMagicBoostForAll()
+    {
+        if (_magicBoostCoroutine != null)
+            StopCoroutine(_magicBoostCoroutine);
+
+        _magicBoostCoroutine = StartCoroutine(MagicBoostWindow());
+    }
+
+    private IEnumerator MagicBoostWindow()
+    {
+        var skills = _hero.Abilities.Skills;
+
+        foreach (var skill in skills) if (skill.Info.AbilityForm == AbilityForm.Magic) skill.EnableSkillBoost();
+        yield return new WaitForSeconds(1f);
+
+        foreach (var skill in skills) if (skill.Info.AbilityForm == AbilityForm.Magic) skill.DisableSkillBoost();
     }
 
     [ClientRpc]
