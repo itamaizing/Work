@@ -7,12 +7,42 @@ using UnityEngine;
 public static class DB_Attribute
 {
     private static Dictionary<ResourceType, SO_ResourceData> _resourceAttributes = new();
-    private static Dictionary<BasicAttributeName, SO_AttributeData> _basicAttributes = new();
-    private static Dictionary<BasicAttributeName, SO_AttributeData> _extraAttributes = new();
+    private static Dictionary<CharacterAttributeName, SO_AttributeData> _characterAttributes = new();
+    //private static Dictionary<CharacterAttributeName, SO_AttributeData> _extraAttributes = new();
 
     public static Dictionary<ResourceType, SO_ResourceData> ResourceAttributes => _resourceAttributes;
-    public static Dictionary<BasicAttributeName, SO_AttributeData> BasicAttributes => _basicAttributes;
-    public static Dictionary<BasicAttributeName, SO_AttributeData> ExtraAttributes => _extraAttributes;
+    public static Dictionary<CharacterAttributeName, SO_AttributeData> CharacterAttributes => _characterAttributes;
+    //public static Dictionary<CharacterAttributeName, SO_AttributeData> ExtraAttributes => _extraAttributes;
+
+
+
+    public static List<CharacterAttributeName> BasicAttributes = new List<CharacterAttributeName>
+    {
+        CharacterAttributeName.ResistancePhysical,
+        CharacterAttributeName.ResistanceMagical,
+        CharacterAttributeName.EvasionPhysical,
+        CharacterAttributeName.EvasionMagical,
+        CharacterAttributeName.MoveSpeed,
+        CharacterAttributeName.VisionRadius,
+    };
+    public static List<CharacterAttributeName> ExtraAttributes = new List<CharacterAttributeName>
+    {
+        CharacterAttributeName.CastSpeed,
+        CharacterAttributeName.CastSpeedPhysical,
+        CharacterAttributeName.CastSpeedMagical,
+        CharacterAttributeName.CooldownReduction,
+        CharacterAttributeName.ResourceCost,
+        CharacterAttributeName.OutgoingDamage,
+        CharacterAttributeName.DebuffDuration,
+    };
+
+    public static List<CharacterAttributeName> UpgradableAttributes = new List<CharacterAttributeName>
+    {
+        CharacterAttributeName.ResistancePhysical,
+        CharacterAttributeName.ResistanceMagical,
+        CharacterAttributeName.EvasionPhysical,
+        CharacterAttributeName.EvasionMagical,
+    };
 
 
     public readonly static string AttributeFolder = "Assets/Resources/AttributeSystem"; // По хорошему надо в отдельном конфиг-файле, но пока подобная система одна
@@ -22,8 +52,8 @@ public static class DB_Attribute
     public static void InitAttributeDatabase()
     {
         _resourceAttributes.Clear();
-        _basicAttributes.Clear();
-        _extraAttributes.Clear();
+        _characterAttributes.Clear();
+        //_extraAttributes.Clear();
 
         var resources = Resources.LoadAll<SO_ResourceData>($"{AttributeRelativeFolder}/ResourceAttributes");
         foreach ( var resource in resources )
@@ -31,11 +61,11 @@ public static class DB_Attribute
         
         var basic = Resources.LoadAll<SO_AttributeData>($"{AttributeRelativeFolder}/BasicAttributes");
         foreach ( var attribute in basic )
-            _basicAttributes.Add(attribute.type, attribute);
+            _characterAttributes.Add(attribute.type, attribute);
         
         var extra = Resources.LoadAll<SO_AttributeData>($"{AttributeRelativeFolder}/ExtraAttributes");
-        foreach ( var attribute in extra )
-            _extraAttributes.Add(attribute.type, attribute);
+        //foreach ( var attribute in extra )
+        //    _extraAttributes.Add(attribute.type, attribute);
         //Debug.Log(_resourceAttributes.Count);
     }
 
@@ -70,7 +100,7 @@ public static class DB_Attribute
             );
         }
         path = $"{AttributeFolder}/BasicAttributes";
-        foreach (BasicAttributeName attribute in Enum.GetValues(typeof(BasicAttributeName)))
+        foreach (CharacterAttributeName attribute in Enum.GetValues(typeof(CharacterAttributeName)))
         {
             if (AssetDatabase.LoadAssetAtPath($"{path}/{attribute}.asset", typeof(SO_AttributeData)) != null) continue;
 
@@ -89,7 +119,7 @@ public static class DB_Attribute
 }
 
 #region enums
-public enum BasicAttributeName
+public enum CharacterAttributeName
 {
     ResistancePhysical,
     ResistanceMagical,
@@ -100,7 +130,10 @@ public enum BasicAttributeName
     CastSpeed,
     CastSpeedPhysical,
     CastSpeedMagical,
+    CooldownReduction,
     ResourceCost,
+    OutgoingDamage,
+    DebuffDuration,
 }
 
 public enum ResourceAttributeName
@@ -113,7 +146,7 @@ public enum ResourceAttributeName
 //атрибуты
 /*
  * Крит шанс, урон -> не атрибут персонажа, может быть атрибутом способности
- * Входящий урон -> трогаем отдельно резисты
+ * Весь входящий урон -> трогаем отдельно резисты
  * Исходящий урон -> атрибут
  * Входящий контроль -> атрибут. Время, но не эффективность
  * Исходящий контроль -> не делаем

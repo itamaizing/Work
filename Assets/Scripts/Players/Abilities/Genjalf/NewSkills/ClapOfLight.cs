@@ -46,7 +46,7 @@ namespace Gangdollarff
                 if (item.TryGetComponent(out Character enemy))
                 {
                     if (IsBaffed)
-                        CooldownTime = CooldownTime - 2;
+                        Cooldown.CooldownTime = Cooldown.CooldownTime - 2;
 
                     float casterRadius = ((CapsuleCollider)_hero.Collider).radius;
                     float enemyRadius = ((CapsuleCollider)enemy.Collider).radius;

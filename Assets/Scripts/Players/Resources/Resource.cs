@@ -94,7 +94,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 
         _maxValueAttribute = maxValue;
         _maxValue = maxValue.GetValue();
-        _currentValue = _maxValue / 2;
+        _currentValue = _maxValue;
 
         _regenCoroutine = StartCoroutine(RegenerateJob());
         ClientStartRegenirateJob();
@@ -108,7 +108,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 
         _maxValueAttribute = resource.Attributes[ResourceAttributeName.MaxValue];
         _maxValue = resource.Attributes[ResourceAttributeName.MaxValue].GetValue();
-        _currentValue = _maxValue / 2;
+        _currentValue = _maxValue;
         //Debug.Log($"{CurrentValue}/{MaxValue} + {_regenerationValue}");
         _regenerationPeriod = 0.5f; //TEMPORARY TEST
         _regenerationDelay = 0.5f; //TEMPORARY TEST
@@ -206,8 +206,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 
         //ClientStopRegenerateJob();
         //ClientStartRegenirateJob();
-        if(oldValue > newValue)
-            ResetRegen();
+        if(oldValue > newValue) ResetRegen();
     }
 
     protected virtual void HookMaxValueChanged(float oldValue, float newValue)
@@ -243,8 +242,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
                 while (_currentValue < _maxValue)
                 {
                     //Debug.Log("Regens");
-                    if(isClient)
-                        CmdRegen();
+                    if (isClient) CmdRegen();
                     yield return new WaitForSeconds(_regenerationPeriod);
                 }
             }

@@ -1246,6 +1246,7 @@ MonoBehaviour:
   - {fileID: 6014680388363601321, guid: c8368645c4192b2478d0f52dc9656d75, type: 3}
   - {fileID: 3009303187757147287, guid: 8b9a0582f6da25b4ea6881c63d5b3168, type: 3}
   - {fileID: 7032456880159242910, guid: 877721d50c8db7147b895c23b8ad8df5, type: 3}
+  - {fileID: 4837027206785457420, guid: 502b203ba8b7fb349b7ac42004d01ad1, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -1795,9 +1796,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eabbd4f959991ab4a9b93af854432953, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SignInLoginBootstrap
-  _authorization: {fileID: 1780031980}
   _menuScene: {fileID: 102900000, guid: 0ef4eaeadea665141a482c0ed073c484, type: 3}
   _gameScene: {fileID: 102900000, guid: 21add78d8cb999042a3e0188927f0f9a, type: 3}
+  _menuSceneName: MainMenu
+  _gameSceneName: TestRoom3DNew
+  _authorization: {fileID: 1780031980}
   _webSocketClient: {fileID: 1308580904}
 --- !u!4 &581331872
 Transform:

@@ -1,11 +1,17 @@
 using Mirror;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PoisonDamagingCloudPrefab : NetworkBehaviour
 {
     [SerializeField] private ParticleSystem _poisonDamagingCloudParticle;
     private ParticleSystem _instancePoisonDamagingCloud;
+
+    [SerializeField] private LayerMask _enemyLayer;
+    [SerializeField] private float _damageTickRate = 1f;
+
+    private Coroutine _damageCoroutine;
 
     [SerializeField] private int _maxStacks = 5;
     private int _currentStacks;
@@ -14,11 +20,19 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
     private float _baseDuration;
     private float _duration;
 
+    [SerializeField] private float _damageModifier = 0.005f;
+
     private PoisonDamagingCloudPrefab _poisonDamageCloud;
     private Character _player;
+    [ReadOnly][SerializeField] private Skill _skill;
 
     private Coroutine _lifetimeStacksCoroutine;
     private Coroutine _activateParticlePoisonCloudCoroutine;
+
+    private bool _isFeelingPoisoning;
+
+    private Dictionary<Character, float> _poisonBoneTimers = new();
+    private float _poisonBoneInterval = 3f;
 
     public PoisonDamagingCloudPrefab PoisonDamageCloud { get => _poisonDamageCloud; set => _poisonDamageCloud = value; }
 
@@ -30,10 +44,12 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
         }
     }
 
-    public void InitializationProjectile(Character player, float duration)
+    public void InitializationProjectile(Character player, float duration, Skill skill, bool isFeelingPoisoning)
     {
         _player = player;
-        
+        _skill = skill;
+        _isFeelingPoisoning = isFeelingPoisoning;
+
         _duration = duration;
         _baseDuration = duration;
     }
@@ -75,6 +91,8 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
             _duration = _baseDuration;
             _lifetimeStacksCoroutine = StartCoroutine(LifeTimeStacks());
         }
+
+        if (_damageCoroutine == null) _damageCoroutine = StartCoroutine(DamageEnemies());
     }
 
     private void InstantiateCloud()
@@ -94,6 +112,15 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
             ParticleSystem.MainModule main = _instancePoisonDamagingCloud.main;
             main.duration = _baseDuration;
             _instancePoisonDamagingCloud.Play();
+        }
+    }
+
+    private IEnumerator DamageEnemies()
+    {
+        while (true)
+        {
+            DealDamageInRadius();
+            yield return new WaitForSeconds(_damageTickRate);
         }
     }
 
@@ -134,5 +161,50 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
         PoisonDamageCloud = null;
     }
 
-    
+    private void DealDamageInRadius()
+    {
+        if (_player == null) return;
+
+        Collider[] targets = Physics.OverlapSphere( _player.transform.position, _radiusCloud, _enemyLayer);
+
+        foreach (var col in targets)
+        {
+            if (col == null) continue;
+
+            Character target = col.GetComponent<Character>();
+            if (target == null) continue;
+            if (target == _player) continue;
+            if (target.IsDead) continue;
+
+            float damageValue = target.Health.MaxValue * _damageModifier;
+
+            Damage damage = new Damage
+            {
+                Value = damageValue,
+                Type = DamageType.Magical,
+                PhysicAttackType = AttackRangeType.RangeAttack
+            };
+
+            _skill.CmdApplyDamage(damage, target.gameObject);
+
+            if (!_poisonBoneTimers.ContainsKey(target))
+            {
+                _poisonBoneTimers[target] = 0f;
+            }
+
+            _poisonBoneTimers[target] += _damageTickRate;
+
+            if (_poisonBoneTimers[target] >= _poisonBoneInterval)
+            {
+                if (_skill.TryGetComponent<PoisonBall>(out PoisonBall poisonBall) && poisonBall.IsPoisonCloudAddPoisonBone)
+                {
+                    target.CharacterState.AddStateLogic( States.PoisonBone, 6, 0, Schools.None, _player.gameObject, null);
+                    if (_isFeelingPoisoning) _player.CharacterState.AddStateLogic(States.FeelingPoisoning, 2f, 0, Schools.None, _player.gameObject, _skill.Name);
+                }
+
+                _poisonBoneTimers[target] = 0f;
+            }
+        }
+    }
+
 }

@@ -18,7 +18,7 @@ public class CreatureSpawn : Skill
     [SerializeField] private SpawnComponent spawnComponent;
     [SerializeField] private MinionMove minionMove;
     [SerializeField] private MinionComponent minion;
-    [SerializeField] private Tentacles tentacle;
+    [SerializeField] private WombSpawn wombSpawn;
 
     private SpawnType _spawnType = SpawnType.None;
 
@@ -27,7 +27,7 @@ public class CreatureSpawn : Skill
     protected override bool IsCanCast => _spawnPoint != Vector3.positiveInfinity;
 
     public SpawnType SpawnType { get => _spawnType; set => _spawnType = value; }
-    public Tentacles Tentacle { get => tentacle; set => tentacle = value; }
+    public WombSpawn WombSpawn { get => wombSpawn; set => wombSpawn = value; }
 
     private void OnEnable()
     {
@@ -36,17 +36,17 @@ public class CreatureSpawn : Skill
 
     private void OnDisable()
     {
-        if (_spawnType == SpawnType.Getomir && tentacle != null)
+        if (_spawnType == SpawnType.Getomir && wombSpawn != null)
         {
-            tentacle.OnSpawnGetomirChanged -= HandleSpawnGetomirChanged;
+            wombSpawn.OnSpawnGetomirChanged -= HandleSpawnGetomirChanged;
         }
     }
 
     private void Start()
     {
-        if (_spawnType == SpawnType.Getomir && tentacle != null)
+        if (_spawnType == SpawnType.Getomir && wombSpawn != null)
         {
-            tentacle.OnSpawnGetomirChanged += HandleSpawnGetomirChanged;
+            wombSpawn.OnSpawnGetomirChanged += HandleSpawnGetomirChanged;
         }
     }
 
@@ -102,11 +102,11 @@ public class CreatureSpawn : Skill
             foreach (var state in states) character.CharacterState.RemoveState(state.State);
         }
 
-        if (tentacle.TryGetComponent<SpawnComponent>(out var spawnComponent))
+        if (wombSpawn.TryGetComponent<SpawnComponent>(out var spawnComponent))
         {
             Vector3 spawnPos = GetRandomOffsetPosition(_spawnPoint, 1.6f);
 
-            spawnComponent.CmdSpawnAliesPoint(spawnPos, Quaternion.identity, minion, index, false, tentacle.Hero);
+            spawnComponent.CmdSpawnAliesPoint(spawnPos, Quaternion.identity, minion, index, false, wombSpawn.Hero);
 
             CmdTentacleCocoon(spawnComponent.netIdentity);
         }
@@ -134,7 +134,7 @@ public class CreatureSpawn : Skill
 
             foreach (var spawn in unit.GetComponents<CreatureCarryGun>())
             {
-                spawn.DadSkill = tentacle;
+                spawn.DadSkill = wombSpawn;
             }
         }
     }

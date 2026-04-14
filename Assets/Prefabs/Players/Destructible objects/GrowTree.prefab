@@ -712,7 +712,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61223552b5399ec4cb555068de37de05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectHealth: {fileID: 0}
+  objectHealth: {fileID: 1525237466600288129}
   circleSelect: {fileID: 9115519821676638475}
   minimapMarker: {fileID: 7500440178365392226}
   damageSpawn: {fileID: 5087257125756015543}
@@ -753,6 +753,8 @@ MonoBehaviour:
   characterLayer:
     serializedVersion: 2
     m_Bits: 512
+  _skillManager: {fileID: 0}
+  _Hero: {fileID: 0}
 --- !u!114 &3030817534043718475
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -785,6 +787,8 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 0
   _regenerationDelay: 0
+  _currentValue: 0
+  _maxValue: 0
   _objectBar: {fileID: 7413096228921928745}
   _objectData: {fileID: 11400000, guid: 7ee4128bb430f07458a639f23fc41069, type: 2}
   obj: {fileID: 2058911381882631605}
@@ -1977,6 +1981,7 @@ GameObject:
   m_Component:
   - component: {fileID: 867012621840115103}
   - component: {fileID: 5644481599665937541}
+  - component: {fileID: 3869075489215684771}
   m_Layer: 21
   m_Name: TreeCrown
   m_TagString: Untagged
@@ -2020,6 +2025,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4.5904493, y: 2.0370262, z: 3.7867296}
   m_Center: {x: 0.16133875, y: 6.0232716, z: 0.30386427}
+--- !u!114 &3869075489215684771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6998763136272815148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d26b7a6569fe4144b8a9f74b8b444861, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TreeCharacterZone
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  grow: {fileID: 5108004075575563715}
 --- !u!1 &8174664401504960691
 GameObject:
   m_ObjectHideFlags: 0

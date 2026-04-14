@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -55,7 +55,7 @@ public class AbsorptionOfPoisons : Skill
             _remainingTimeCoroutine = StartCoroutine(RemainingTimeJob());
         }
 
-        _lightningMovement.IncreaseSetCooldown(_cooldownForLightningMovement);
+        _lightningMovement.Cooldown.SetIncreased(_cooldownForLightningMovement, shouldModify: true);
 
         yield return null;
     }

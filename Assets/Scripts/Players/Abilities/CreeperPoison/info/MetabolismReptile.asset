@@ -14,4 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: "\u041C\u0435\u0442\u0430\u0431\u043E\u043B\u0438\u0437\u043C \u0440\u0435\u043F\u0442\u0438\u043B\u0438\u0438"
   _description: 
-  _icon: {fileID: 21300000, guid: 00cbafab1f11fa740ad8987ca9c19ca6, type: 3}
+  _state: 
+  _descriptionState: 
+  _counter: 
+  _icon: {fileID: 249521398, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}

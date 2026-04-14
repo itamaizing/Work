@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class SpawnComponent : NetworkBehaviour
 {
     [SerializeField] private Character _hero;
     [SerializeField] private List<Character> _characterPrefabs;
+    [SerializeField] private List<Character> _clonePrefabs;
 
     private readonly List<Character> _units = new();
 
@@ -20,6 +20,7 @@ public class SpawnComponent : NetworkBehaviour
 
     [SerializeField] private List<Character> _enemyPrefabs;
     [SerializeField] private List<Character> _allyPrefabs;
+    public List<Character> GetClonePrefabs() => _clonePrefabs;
 
     [Command]
     public void CmdSpawnUnitEnemy(int index)
@@ -50,7 +51,6 @@ public class SpawnComponent : NetworkBehaviour
 
         spawned.NetworkSettings.MyRoom = _hero.NetworkSettings.MyRoom;
 
-        SceneManager.MoveGameObjectToScene(spawned.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(spawned.gameObject);
         ClientRpcUnitAdded(spawned.gameObject);
     }
@@ -155,8 +155,6 @@ public class SpawnComponent : NetworkBehaviour
             return;
         }
 
-        //SceneManager.MoveGameObjectToScene(spawnedCharacter.gameObject, _hero.NetworkSettings.MyRoom);
-
         if (connectionToClient == null)
         {
             Debug.LogError("Connection to client is null. Cannot spawn character.");
@@ -190,8 +188,6 @@ public class SpawnComponent : NetworkBehaviour
             Destroy(spawnedCharacter.gameObject);
             return null;
         }
-
-        SceneManager.MoveGameObjectToScene(spawnedCharacter.gameObject, _hero.NetworkSettings.MyRoom);
 
         if (connectionToClient == null)
         {

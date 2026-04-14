@@ -9,22 +9,35 @@ using Random = UnityEngine.Random;
 public class ExplosionPoisonCloud : Skill
 {
     [SerializeField] private Character _player;
+    [SerializeField] private CreeperPoisonAura _creeperPoisonAura;
+
     private List<Character> _enemies = new();
 
     private int _currentStacksPoisonCloud;
+    private int _currentStacksHealingPoisonCloud;
 
     private float _baseDamage = 6.0f;
     private float _currentDamage;
     private float _chanceApplyBonePoison = 0.9f;
     private float _radiusExplosion = 4f;
+    private float _healValue = 3f;
+    private float _additionalHealValue = 5f;
+
+    private float _currentHealValue;
 
     private bool _isExploded = false;
 
-    private Coroutine _searchingEnemiesCoroutine;
-
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
-    protected override bool IsCanCast => _player.CharacterState.CheckForState(States.PoisonCloud);
+    protected override bool IsCanCast => _player.CharacterState.CheckForState(States.PoisonCloud) || _player.CharacterState.CheckForState(States.HealingPoisonCloud);
+
+    #region Talent
+
+    private bool _isRestorativePoison = false;
+
+    public void RestorativePoison(bool value) => _isRestorativePoison = value;
+
+    #endregion
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -36,29 +49,17 @@ public class ExplosionPoisonCloud : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        if (_searchingEnemiesCoroutine == null)
-        {
-            //Debug.Log("ExplosionPoisonCloud / PrepareJob / searchingEnemies == null");
-            _searchingEnemiesCoroutine = StartCoroutine(SearchingenemiesJob());
-        }
-
-        while (_enemies.Count < 0)
-        {
-            yield return null;
-        }
         TargetInfo targetInfo = new TargetInfo();
-		List<ITargetable> listOfInterfaces = _enemies.Cast<ITargetable>().ToList();
 
-		targetInfo.AddTargets(listOfInterfaces);
+        targetInfo.AddTarget(Hero);
+
         callbackDataSaved(targetInfo);
+        yield break;
     }
-
     protected override IEnumerator CastJob()
     {
-        if (_enemies.Count > 0 && _player.CharacterState.CheckForState(States.PoisonCloud))
-        {
-            ExplosionCloud();
-        }
+        FindEnemies();
+        ExplosionCloud();
 
         yield return null;
     }
@@ -71,6 +72,27 @@ public class ExplosionPoisonCloud : Skill
         _enemies.Clear();
     }
 
+    private void FindEnemies()
+    {
+        _enemies.Clear();
+
+        Collider[] hitEnemies = Physics.OverlapSphere(
+            transform.position,
+            _radiusExplosion,
+            _targetsLayers
+        );
+
+        foreach (Collider enemy in hitEnemies)
+        {
+            Character character = enemy.GetComponent<Character>();
+
+            if (character != null && !_enemies.Contains(character))
+            {
+                _enemies.Add(character);
+            }
+        }
+    }
+
     private void ExplosionCloud()
     {
         Debug.Log("ExplosionPoisonCloud / ExplosionCloud");
@@ -79,7 +101,10 @@ public class ExplosionPoisonCloud : Skill
 
         _currentDamage = _baseDamage * _currentStacksPoisonCloud;
 
-       Debug.Log("ExplosionPoisonCloud / ExplosionCloud / currentDamage = " + _currentDamage);
+        if (_isRestorativePoison) _currentHealValue = (_healValue + _additionalHealValue) * _currentStacksHealingPoisonCloud;
+        else _currentHealValue = _healValue * _currentStacksHealingPoisonCloud;
+
+        Debug.Log("ExplosionPoisonCloud / ExplosionCloud / currentDamage = " + _currentDamage);
 
         foreach (Character target in _enemies)
         {
@@ -87,44 +112,32 @@ public class ExplosionPoisonCloud : Skill
             if (target != null)
             {
                 CmdDamageDeal(target, _currentDamage);
+                CmdApplyRestorativeHeal(target, _currentHealValue);
 
-                for (int i = 0; i < _currentStacksPoisonCloud; i++)
-                {
-                    if (Random.Range(0.0f, 1.0f) <= _chanceApplyBonePoison)
-                    {
-                        ApplyPoisonBone(target.gameObject);
-                    }
-                }
+                //for (int i = 0; i < _currentStacksPoisonCloud; i++)
+                //{
+                //    if (Random.Range(0.0f, 1.0f) <= _chanceApplyBonePoison)
+                //    {
+                //        ApplyPoisonBone(target.gameObject);
+                //    }
+                //}
             }
         }
 
-        if (_searchingEnemiesCoroutine != null)
-        {
-            StopCoroutine(_searchingEnemiesCoroutine);
-            _searchingEnemiesCoroutine = null;
-        }
-
-        _currentStacksPoisonCloud = 0;
-    }
-
-    private IEnumerator SearchingenemiesJob()
-    {
-        while (!_isExploded)
-        {
-            Collider[] hitEnemies = Physics.OverlapSphere(transform.position, _radiusExplosion, _targetsLayers);
-            foreach (Collider enemy in hitEnemies)
-            {
-               Debug.Log("ExplosionPoisonCloud / _enemy = " + enemy);
-                _enemies.Add(enemy.gameObject.GetComponent<Character>());
-            }
-            yield return null;
-        }
+        //_currentStacksPoisonCloud = 0;
     }
 
     public void CurrentStacksPoisonCloud(int currentStacks, float radiusExplosion)
     {
         _currentStacksPoisonCloud = currentStacks;
         Debug.Log("ExplosionPoisonCloud / _currentStacksPoisonCloud = " + _currentStacksPoisonCloud);
+        _radiusExplosion = radiusExplosion;
+    }
+
+    public void CurrentStacksHealingPoisonCloud(int currentStacks, float radiusExplosion)
+    {
+        _currentStacksHealingPoisonCloud = currentStacks;
+        Debug.Log("ExplosionPoisonCloud / _currentStacksHealingPoisonCloud = " + _currentStacksHealingPoisonCloud);
         _radiusExplosion = radiusExplosion;
     }
 
@@ -149,5 +162,20 @@ public class ExplosionPoisonCloud : Skill
     private void CmdApplyPoisonBone(GameObject target)
     {
         target.GetComponent<CharacterState>().AddState(States.PoisonBone, 6f, 0, _player.gameObject, Name);
+        if (_creeperPoisonAura.IsFeelingPoisoning)  Hero.CharacterState.AddState(States.FeelingPoisoning, 2f, 0, _player.gameObject, Name);
+    }
+
+    [Command]
+    private void CmdApplyRestorativeHeal(Character target, float healValue)
+    {
+        Heal heal = new Heal
+        {
+            Value = healValue,
+            DamageableSkill = null
+        };
+
+        Debug.Log($"healValue: {healValue}");
+
+        ApplyHeal(heal, target.gameObject, this, Name);
     }
 }

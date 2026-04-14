@@ -371,6 +371,13 @@ public class CharacterState : NetworkBehaviour
 		[States.SwarmSpeed] = new SwarmSpeedState(),
 		[States.DestructivePoison] = new DestructivePoisonState(),
 		[States.InjectionAdrenaline] = new InjectionAdrenalineState(),
+		[States.ProtectiveScales] = new ProtectiveScalesState(),
+		[States.ErodedArmor] = new ErodedArmorState(),
+		[States.ParalyzingPoison] = new ParalyzingPoisonState(),
+		[States.FeelingPoisoning] = new FeelingPoisoningState(),
+		[States.LightningEvade] = new LightningEvadeState(),
+		[States.ReptilianStasis] = new ReptilianStasisState(),
+		[States.ReflectiveScales] = new ReflectiveScalesState(),
 		[States.MergeDark] = new MergeDarkState(),
 		[States.DarkFormState] = new DarkFormState(),
 		[States.ShackleState] = new ShackleState(),
@@ -525,7 +532,7 @@ public class CharacterState : NetworkBehaviour
 		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
 		ClientAddState(state, duration, damageToExit, schools, personWhoShooted, skillName);
 	}
-	
+
 	public void AddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
 	{
 		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
@@ -1001,6 +1008,13 @@ public enum States
 	SwarmSpeed,
 	DestructivePoison,
 	InjectionAdrenaline,
+	ProtectiveScales,
+	ErodedArmor,
+	ParalyzingPoison,
+	FeelingPoisoning,
+	LightningEvade,
+	ReptilianStasis,
+	ReflectiveScales,
 	MergeDark,
 	DarkFormState,
 	ShackleState,

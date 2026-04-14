@@ -5,7 +5,7 @@ using UnityEngine;
 [Serializable]
 public class SO_AttributeData : ScriptableObject
 {
-    [HideInInspector] public BasicAttributeName type;
+    [HideInInspector] public CharacterAttributeName type;
     public Sprite icon;
 
     [HideInInspector] public string name_locKey;

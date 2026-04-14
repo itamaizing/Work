@@ -67,34 +67,45 @@ public class UIMenuMainTalentsPanel : MonoBehaviour
 
     private void OnLevelUp(int newLevel)
     {
+        if (this == null || gameObject == null) return;
+        if (!isActiveAndEnabled) return;
+
         UpdateTalentPointsText();
     }
 
     private void UpdateTalentPointsText()
+{
+    if (this == null || gameObject == null) return;
+    if (_talantsText == null) return;
+    if (_talentSystem == null) return;
+
+    int maxPoints = LevelCharacterManager.Instance.GetCurrentLevel() + 10;
+
+    int usedPoints = _talentSystem.GetActiveTalentCount();
+    int freePoints = maxPoints - usedPoints;
+
+    if (_talentSystem.Points >= 0)
     {
-        int maxPoints = LevelCharacterManager.Instance.GetCurrentLevel() + 10;
+        if (_talantsText != null)
+            _talantsText.gameObject.SetActive(true);
 
-        Debug.Log("FOR TEST + +10 talents points! FOR TEST", this);
-        int usedPoints = _talentSystem.GetActiveTalentCount();
-        int freePoints = maxPoints - usedPoints;
-
-        if (_talentSystem.Points >= 0)
-        {
-            //_talantsText.gameObject.SetActive(true);
-
-            if (!_isMainMenu) _talantsText.ChangeKey(_talentSystem.Points);
-            else
-            {
-                _talentSystem.SetPoints(freePoints);
-                _talantsText.ChangeKey(_talentSystem.Points);
-            }
-        }
+        if (!_isMainMenu)
+            _talantsText.ChangeKey(_talentSystem.Points);
         else
         {
-            _talantsText.gameObject.SetActive(false);
+            _talentSystem.SetPoints(freePoints);
+            _talantsText.ChangeKey(_talentSystem.Points);
         }
-        _attributesPanel.UpdateAttributesPoints();
     }
+    else
+    {
+        if (_talantsText != null)
+            _talantsText.gameObject.SetActive(false);
+    }
+
+    if (_attributesPanel != null)
+        _attributesPanel.UpdateAttributesPoints();
+}
 
     private void ResetPanel()
     {

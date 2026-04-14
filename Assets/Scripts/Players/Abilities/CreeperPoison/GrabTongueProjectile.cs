@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class GrabTongueProjectile : NetworkBehaviour
 {
@@ -9,155 +10,158 @@ public class GrabTongueProjectile : NetworkBehaviour
     private Character _player;
     private Character _target;
     private CharacterState _targetCharacterState;
-    private MoveComponent _targetMoveComponent;
 
     private Vector3 _startPosition;
     private Vector3 _endPosition;
 
-    private int _teamIndex;
+    private float _throwDuration = 0.2f;
+    private float _pullDuration = 0.6f;
 
-    private float _moveSpeedDirectionFromPlayer = 0.2f; // speed projectile 0.2 cell per second
-    private float _moveSpeedDirectionToPlayer = 1.2f; // speed projectile 0.6 cell per second
+    private Coroutine _toTargetCoroutine;
+    private Coroutine _pullCoroutine;
 
-    private bool _isPlayerInvisible;
-    private bool _isAlly;
-
-    private Coroutine _toungeToTargetCoroutine;
-    private Coroutine _toungeFromPlayerCoroutine;
+    private void Awake()
+    {
+        if (_lineRenderer == null)
+            _lineRenderer = GetComponent<LineRenderer>();
+    }
 
     private void Start()
     {
-        if (isServer && _isPlayerInvisible)
+        if (_lineRenderer == null)
         {
-            RpcNewTransparencySprite();
+            Debug.LogError("LineRenderer missing!", this);
+            return;
         }
+
         _lineRenderer.positionCount = 2;
+        _lineRenderer.enabled = true;
     }
 
     private void Update()
     {
-        _lineRenderer.SetPosition(0, _startPosition);
-        _lineRenderer.SetPosition(1, _endPosition);
+        if (_player == null || _lineRenderer == null) return;
+        _lineRenderer.SetPosition(0, _player.transform.position);
     }
 
-    public void StartTongueAttract()
-    {
-        _toungeToTargetCoroutine = StartCoroutine(TongueToTarget());
-    }
-
-    private IEnumerator TongueToTarget()
-    {
-        float startTime = Time.time;
-        Vector3 currentPosition = _startPosition;
-
-        while (currentPosition != _endPosition)
-        {
-            float time = (Time.time - startTime) / _moveSpeedDirectionFromPlayer;
-            currentPosition = Vector3.Lerp(_startPosition, _endPosition, time);
-            _lineRenderer.SetPosition(1, currentPosition);
-            yield return null;
-        }
-
-        _toungeFromPlayerCoroutine = StartCoroutine(PullTargetToPlayer(_moveSpeedDirectionToPlayer, _startPosition));
-    }
-
-    private IEnumerator PullTargetToPlayer(float speed, Vector3 playerPosition)
-    {
-        float startTime = Time.time;
-        float time;
-        Vector3 currentPosition = _endPosition;
-
-        while (currentPosition != _startPosition)
-        {
-            time = (Time.time - startTime) / _moveSpeedDirectionToPlayer;
-            currentPosition = Vector3.Lerp(_endPosition, _startPosition, time);
-
-            Vector3 direction = (_target.transform.position - _startPosition).normalized;
-
-            PullTarget(direction, time);
-
-            _lineRenderer.SetPosition(1, currentPosition);
-            yield return null;
-        }
-
-        DestoryProjectile();
-    }
-
-    private void PullTarget(Vector3 direction, float time)
-    {
-        if (!_targetCharacterState.CheckForState(States.Immateriality))
-        {
-            _targetCharacterState.AddState(States.Immateriality, time * 1.3f, 0, _player.gameObject, null);
-        }
-
-        _targetMoveComponent.TargetRpcDoMove((Vector3)_target.transform.position - direction * time * 1.2f, time);
-    }
-
-    private void DestoryProjectile()
-    {
-        Destroy(gameObject);
-
-        if (_toungeToTargetCoroutine != null)
-        {
-            StopCoroutine(TongueToTarget());
-            _toungeToTargetCoroutine = null;
-        }
-        if (_toungeFromPlayerCoroutine != null)
-        {
-            StopCoroutine(PullTargetToPlayer(_moveSpeedDirectionToPlayer, _startPosition));
-            _toungeFromPlayerCoroutine = null;
-        }
-    }
-
-    public void InitializationProjectile(Character player, Character target, Vector3 startPosition, Vector3 endPosition, bool isPlayerInvisible)
+    public void Init(Character player, Character target, Vector3 startPosition, Vector3 endPosition)
     {
         _player = player;
         _target = target;
         _startPosition = startPosition;
         _endPosition = endPosition;
 
-        _isPlayerInvisible = isPlayerInvisible;
-
-        _targetMoveComponent = _target.GetComponent<MoveComponent>();
         _targetCharacterState = _target.GetComponent<CharacterState>();
 
-        _lineRenderer.SetPosition(0, _startPosition);
-        _lineRenderer.SetPosition(1, _endPosition);
+        if (_lineRenderer == null)
+            _lineRenderer = GetComponent<LineRenderer>();
+
+        _lineRenderer.positionCount = 2;
+        _lineRenderer.SetPosition(0, startPosition);
+        _lineRenderer.SetPosition(1, startPosition);
+
+        StartTongue();
     }
 
-    [ClientRpc]
-    private void RpcNewTransparencySprite()
+    private void StartTongue()
     {
-        var localPlayer = NetworkClient.connection.identity.GetComponent<UserNetworkSettings>();
-        _isAlly = localPlayer.TeamIndex == _teamIndex;
+        if (_toTargetCoroutine != null)
+            StopCoroutine(_toTargetCoroutine);
 
-        Color originalStartColor = _lineRenderer.startColor;
-        Color originalEndColor = _lineRenderer.endColor;
+        _toTargetCoroutine = StartCoroutine(TongueToTarget());
+    }
+
+    private IEnumerator TongueToTarget()
+    {
+        float timer = 0f;
+
+        Vector3 start = _startPosition;
+        Vector3 end = _endPosition;
+
+        while (timer < _throwDuration)
+        {
+            timer += Time.deltaTime;
+            float t = timer / _throwDuration;
+
+            Vector3 currentPos = Vector3.Lerp(start, end, t);
+
+            if (_lineRenderer != null)
+                _lineRenderer.SetPosition(1, currentPos);
+
+            yield return null;
+        }
 
         if (_lineRenderer != null)
+            _lineRenderer.SetPosition(1, end);
+
+        if (isServer)
         {
-            if (_isAlly)
-            {
-                Color newTransparencyStartLine = originalStartColor;
-                Color newTransparencyEndLine = originalEndColor;
+            if (_pullCoroutine != null)
+                StopCoroutine(_pullCoroutine);
 
-                newTransparencyStartLine.a = 0.5f;
-                newTransparencyEndLine.a = 0.5f;
-
-                _lineRenderer.startColor = new Color(originalStartColor.r, originalStartColor.g, originalStartColor.b, newTransparencyStartLine.a);
-                _lineRenderer.endColor = new Color(originalEndColor.r, originalEndColor.g, originalEndColor.b, newTransparencyEndLine.a);
-            }
-            else
-            {
-                Color newTransparencyStartLine = originalStartColor;
-                Color newTransparencyEndLine = originalEndColor;
-
-                newTransparencyStartLine.a = 0.0f;
-                newTransparencyEndLine.a = 0.0f;
-
-                _lineRenderer.startColor = new Color(originalStartColor.r, originalStartColor.g, originalStartColor.b, newTransparencyStartLine.a);
-                _lineRenderer.endColor = new Color(originalEndColor.r, originalEndColor.g, originalEndColor.b, newTransparencyEndLine.a);
-            }
+            _pullCoroutine = StartCoroutine(PullTargetToPlayer());
         }
+    }
+
+    private IEnumerator PullTargetToPlayer()
+    {
+        if (_target == null) yield break;
+
+        Transform targetTransform = _target.transform;
+
+        Vector3 start = targetTransform.position;
+        Vector3 end = _player.transform.position;
+
+        var agent = _target.GetComponent<NavMeshAgent>();
+        if (agent != null && agent.enabled) agent.enabled = false;
+
+        float timer = 0f;
+
+        _target.Move.IsMoveBlocked = true;
+        _target.Move.StopMoveAndAnimationMove();
+
+        if (_targetCharacterState != null && !_targetCharacterState.CheckForState(States.Immateriality)) _targetCharacterState.AddState(States.Immateriality, _pullDuration, 0, _player.gameObject, null);
+
+        while (timer < _pullDuration)
+        {
+            timer += Time.deltaTime;
+            float t = timer / _pullDuration;
+
+            Vector3 currentPos = Vector3.Lerp(start, end, t);
+
+            targetTransform.position = currentPos;
+
+            if (_lineRenderer != null)
+                _lineRenderer.SetPosition(1, currentPos);
+
+            yield return null;
+        }
+
+        targetTransform.position = end;
+
+        if (agent != null && !agent.enabled) agent.enabled = true;
+
+        _target.Move.CancelMoveTowards();
+        _target.Move.StopMoveAndAnimationMove();
+        _target.Move.IsMoveBlocked = false;
+
+        DestroyProjectile();
+    }
+
+    private void DestroyProjectile()
+    {
+        if (_toTargetCoroutine != null)
+        {
+            StopCoroutine(_toTargetCoroutine);
+            _toTargetCoroutine = null;
+        }
+
+        if (_pullCoroutine != null)
+        {
+            StopCoroutine(_pullCoroutine);
+            _pullCoroutine = null;
+        }
+
+        Destroy(gameObject);
     }
 }

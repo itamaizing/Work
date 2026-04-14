@@ -13,7 +13,7 @@ public class Attribute
     [SerializeField] private List<AttributeModifier> _modifiers = new();
 
     private bool _isActual = false;
-    private float _flat = 0, _percent = 0, _multiplier = 0, _menuFlat = 0;
+    private float _flat = 0, _percent = 1, _multiplier = 1, _menuFlat = 0;
 
     #region Properties
     public string Name => _name;
@@ -50,7 +50,7 @@ public class Attribute
         }
     }
     #endregion Properties
-    //public Attribute(BasicAttributeName name, float _value=0)
+    //public Attribute(CharacterAttributeName name, float _value=0)
     public Attribute(float _value=0)
     {
         //Name = name;

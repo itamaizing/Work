@@ -14,7 +14,7 @@ public class CreeperInvisibleState : AbstractCharacterState
     private float _increaseStaminaRegen = 0.3f;
     private float _originalStaminaRegen;
 
-    private static bool _isIncreasedManaCost = false;
+    private bool _isIncreasedManaCost = false;
     private bool _isCanApplyInvisible;
     private bool _playerInInvisible;
 
@@ -23,10 +23,11 @@ public class CreeperInvisibleState : AbstractCharacterState
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
-
+    
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
+        _modif = new AttributeModifier(0, ModifierType.Flat, this);
         _player = characterState.Character;
 
         _originalMoveSpeed = _player.Move.DefaultSpeed;
@@ -50,6 +51,8 @@ public class CreeperInvisibleState : AbstractCharacterState
 
     public override void UpdateState()
     {
+        if (_creeperInvisible == null) return;
+
         _isCanApplyInvisible = _creeperInvisible.IsInvisible;
 
         if (_isCanApplyInvisible)
@@ -79,19 +82,21 @@ public class CreeperInvisibleState : AbstractCharacterState
 
     private void ApplyInvisible()
     {
+        if (_modif != null) return;
+
         _playerInInvisible = true;
 
         float reductionMoveSpeed = _originalMoveSpeed * _reductionMoveSpeed;
-        _modif.Value = -reductionMoveSpeed;
-        _modif.Type = ModifierType.Flat;
+        _modif = new AttributeModifier(-reductionMoveSpeed, ModifierType.Flat, this);
+        _player.Move.AddModifier(_modif);
         //float endReductionMoveSpeed = _originalMoveSpeed - reductionMoveSpeed;
 
         //_player.Move.SetMoveSpeed(endReductionMoveSpeed);
-        _player.Move.AddModifier(_modif);
 
+        if (_player?.Move == null) return;
 
-
-        _player.TryGetResource(ResourceType.Mana).RegenerationDelay *= (1 + _increaseStaminaRegen);
+        var mana = _player.TryGetResource(ResourceType.Mana);
+        if (mana != null) mana.RegenerationDelay *= (1 + _increaseStaminaRegen);
 
         if (_isIncreasedManaCost == false)
         {
@@ -105,8 +110,12 @@ public class CreeperInvisibleState : AbstractCharacterState
 
     private void ResetValues()
     {
-       // _player.Move.SetDefaultSpeed();
-        _player.Move.RemoveModifier(_modif);
+        // _player.Move.SetDefaultSpeed();
+        if (_modif != null)
+        {
+            _player.Move.RemoveModifier(_modif);
+            _modif = null;
+        }
 
 
         if (_player.TryGetResource(ResourceType.Mana).RegenerationDelay != _originalStaminaRegen)

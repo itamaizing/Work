@@ -148,7 +148,7 @@ public class FlowOfLight : Skill, IPolaritySwitchable
             {
                 Vector3 clickPoint = Targeting.GetMousePoint();
 
-                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: false);
                 //_target = GetRaycastTarget(true);
 
                 if (Targeting.GetTempTarget()?.Character != null)

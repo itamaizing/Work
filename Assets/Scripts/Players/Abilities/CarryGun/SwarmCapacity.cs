@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using UnityEngine;
 using Mirror;
@@ -63,6 +63,8 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
 
     private void Start()
     {
+        base.Init(_skillRender, _hero);
+
         _spawnComponent = Hero.GetComponent<SpawnComponent>();
 
         _baseCounter = MaxCounter;

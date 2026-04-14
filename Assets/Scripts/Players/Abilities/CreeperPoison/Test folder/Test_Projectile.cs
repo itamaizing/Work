@@ -27,6 +27,8 @@ public abstract class Test_Projectile : NetworkBehaviour
 
     public void MoveToPoint(Vector3 point, float speed)
     {
+        StopMovement();
+
         _maxDistanceFlying *= GlobalVariable.cellSize;
 
         Vector3 direction = (point - _player.transform.position).normalized;
@@ -42,6 +44,8 @@ public abstract class Test_Projectile : NetworkBehaviour
 
     public void MoveToTarget(Vector3 targetPos, float speed)
     {
+        StopMovement();
+
         _maxDistanceFlying *= GlobalVariable.cellSize;
 
         Vector3 finalPoint = targetPos;
@@ -59,5 +63,14 @@ public abstract class Test_Projectile : NetworkBehaviour
 
         Destroy(gameObject);
         _target = null;
+    }
+
+    public void StopMovement()
+    {
+        if (_moveTween != null && _moveTween.IsActive())
+        {
+            _moveTween.Kill();
+            _moveTween = null;
+        }
     }
 }

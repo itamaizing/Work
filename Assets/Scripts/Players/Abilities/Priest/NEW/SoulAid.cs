@@ -138,7 +138,7 @@ public class SoulAid : Skill
         if(!_talentCooldownReduce) 
             return;
         
-        DecreaseSetCooldown(_cooldownReduceValue);
+        Cooldown.Modify(-_cooldownReduceValue);
     }
 
     [Command]

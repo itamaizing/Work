@@ -2,16 +2,16 @@ using UnityEngine;
 
 public class ReptileTalent_2 : Talent
 {
-    [SerializeField] private SkillManager skillManager;
-    [SerializeField] private LightningMovement lightningMovement;
+    [SerializeField] private GrabTongue _grabTongue;
+    [SerializeField] private SkillManager _skillManager;
 
     public override void Enter()
     {
-        skillManager.ActivateSkill(lightningMovement);
+        _skillManager.ActivateSkill(_grabTongue);
     }
 
     public override void Exit()
     {
-        skillManager.DeactivateSkill(lightningMovement);
+        _skillManager.DeactivateSkill(_grabTongue);
     }
 }

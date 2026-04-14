@@ -33,6 +33,7 @@ public class SkillManager : MonoBehaviour
     public SkillQueue SkillQueue { get => _skillQueue; }
     public Skill[] SelectedSkills { get => _selectedSkills; }
     public Skill SelectedSkill { get => _selectedSkill; }
+    public SkillRenderer SkillRenderer => _skillRenderer;
     
     public Skill CurrentCastingSkill { get; private set; }
     public bool IsNextSkillFree { get; private set; }
@@ -72,7 +73,7 @@ public class SkillManager : MonoBehaviour
         _castEndedHandlers.Clear();
     }
 
-    private void Awake()
+    public virtual void Initialize()
     {
         //InputHandler.ScrollMouse += ScrollMouse;
 
@@ -138,6 +139,7 @@ public class SkillManager : MonoBehaviour
                 CurrentCastingSkill = null;
         }
     }
+
     public void CancleAllSkills()
     {
         while (_selectedSkill != null && _selectedSkill.IsPreparing)
@@ -283,7 +285,7 @@ public class SkillManager : MonoBehaviour
     {
         foreach (var item in _skills)
         {
-            item.IncreaseSetCooldown(time);
+            item.Cooldown.SetIncreased(time, shouldModify: true);
         }
     }
 
@@ -417,7 +419,9 @@ public class SkillManager : MonoBehaviour
         foreach (var item in _skills)
         {
             if (item.IsSubjectToGlobalCooldownTime)
-                item.IncreaseSetCooldown(_globalCooldownTime);
+            {
+                item.Cooldown.SetIncreased(_globalCooldownTime, shouldModify: false);
+            }
         }
     }
 
@@ -473,10 +477,11 @@ public class SkillManager : MonoBehaviour
     {
         if (_countBonusCharges > 0)
         {
-            if (skill.IsUseCharges)
+            if (skill.Charges.UsesCharges)
             {
                 _countBonusCharges--;
-                skill.AddMaxChargeCount();
+                //skill.AddMaxChargeCount();
+                skill.Charges.ModifyMax(1);
             }
         }
     }
@@ -485,15 +490,17 @@ public class SkillManager : MonoBehaviour
     {
         foreach (var skill in _skills)
         {
-            if (skill.IsUseCharges)
+            if (skill.Charges.UsesCharges)
             {
                 if (isAdditionalCharge)
                 {
-                    skill.AddMaxChargeCount();
+                    //skill.AddMaxChargeCount();
+                    skill.Charges.ModifyMax(1);
                 }
                 else
                 {
-                    skill.DeductMaxChargeCount();
+                    //skill.DeductMaxChargeCount();
+                    skill.Charges.ModifyMax(-1);
                 }
             }
         }

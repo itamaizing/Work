@@ -18,10 +18,17 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
     #region Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
-    public override void LoadTargetData(TargetInfo targetInfo) => throw new NotImplementedException();
+    public override void LoadTargetData(TargetInfo targetInfo) { }
     protected override IEnumerator CastJob() => null;
-    protected override void ClearData() => throw new NotImplementedException();
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) => throw new NotImplementedException();
+    protected override void ClearData() { }
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) => null;
+    #endregion
+
+    #region Talent
+
+    private bool _isMagicOrPhysicRessist = false;
+
+    public void MagicOrPhysicRessist(bool value) => _isMagicOrPhysicRessist = value;
     #endregion
 
     private void OnEnable()
@@ -29,6 +36,8 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
         Hero.Health.Block += PlayBlockAnimation;
         Hero.Health.Evaded += OnHeroEvade;
         Hero.Health.OnBeforeTakeDamage += OnBeforeTakeDamage;
+
+        Hero.Health.OnTryResist += TryResist;
     }
 
     private void OnDisable()
@@ -36,6 +45,8 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
         Hero.Health.Block -= PlayBlockAnimation;
         Hero.Health.Evaded -= OnHeroEvade;
         Hero.Health.OnBeforeTakeDamage -= OnBeforeTakeDamage;
+
+        Hero.Health.OnTryResist -= TryResist;
     }
 
     private void OnHeroEvade()
@@ -74,6 +85,31 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
 
         yield return new WaitForSeconds(6f);
         _isCooldownActive = false;
+    }
+
+    private bool TryResist(Damage damage)
+    {
+        if (!_isMagicOrPhysicRessist) return false;
+        if (_attacker == null) return false;
+
+        float chance = 50f;
+
+        float roll = UnityEngine.Random.Range(0f, 100f);
+
+        if (roll > chance) return false;
+
+        switch (damage.Type)
+        {
+            case DamageType.Magical:
+                Debug.Log("Magic resist triggered");
+                return true;
+
+            case DamageType.Physical:
+                Debug.Log("Physical resist triggered");
+                return true;
+        }
+
+        return false;
     }
 
     private void PlayBlockAnimation()

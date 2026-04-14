@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -69,11 +69,7 @@ public abstract class GameRules : NetworkBehaviour
 
             foreach (var netIdentity in objectsToRemove) NetworkServer.Destroy(netIdentity.gameObject);
 
-            if (_npcSpawn != null)
-            {
-                _npcSpawn.SpawnAllNpc(gameObject.scene);
-                _npcSpawn.ApplyNpcLayers();
-            }
+            if (_npcSpawn != null) _npcSpawn.SpawnAllNpc(gameObject.scene);
         }
 
         foreach (var playerSettings in _players)
@@ -83,11 +79,16 @@ public abstract class GameRules : NetworkBehaviour
             playerSettings.CharacterState.ServerClearAllStates();
             playerSettings.ServerResetAll();
 
+            if (playerSettings.connectionToClient != null) playerSettings.NetworkSettings.TargetUpdateLayers(playerSettings.connectionToClient);
+
             if (playerSettings.Abilities != null)
             {
                 playerSettings.Abilities.CancleAllSkills();
 
-                foreach (var skill in playerSettings.Abilities.Skills) skill.RpcResetSkillState();
+                foreach (var skill in playerSettings.Abilities.Skills)
+                {
+                    skill.RpcResetSkillState();
+                }
             }
 
             int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;
@@ -106,7 +107,8 @@ public abstract class GameRules : NetworkBehaviour
     {
         //_room = room;
         //_roomName = _room.SceneName;
-        Debug.LogError("asdasd");
+        //Debug.LogError("asdasd");
+        Debug.Log("Gamerules Init");
         AddAllPlayersInList();
         SubscribingOnPlayerEvents();
         SubscribeToTowerDeath();
@@ -177,16 +179,16 @@ public abstract class GameRules : NetworkBehaviour
             {
                 playerSettings.NetworkSettings.Players.Add(player.gameObject);
             }
-          /*  if (teamIndex == 1)
-            {
-                _gameManager.TeamsPanel.AddInFirstTeam(playerSettings);
-                //RpcAddToTeam(teamIndex, playerSettings);
-            }
-            else
-            {
-                _gameManager.TeamsPanel.AddInSecondTeam(playerSettings);
-                //RpcAddToTeam(teamIndex, playerSettings);
-            }   */ 
+            /*  if (teamIndex == 1)
+              {
+                  _gameManager.TeamsPanel.AddInFirstTeam(playerSettings);
+                  //RpcAddToTeam(teamIndex, playerSettings);
+              }
+              else
+              {
+                  _gameManager.TeamsPanel.AddInSecondTeam(playerSettings);
+                  //RpcAddToTeam(teamIndex, playerSettings);
+              }   */
 
             playerSettings.transform.SetPositionAndRotation(spawnPoints.GetRandomPoint(teamIndex-1), spawnPoints.GetRotate(teamIndex-1));
             playerSettings.NetworkSettings.SetSpawnPosition(spawnPoints.GetRandomPoint(teamIndex-1));

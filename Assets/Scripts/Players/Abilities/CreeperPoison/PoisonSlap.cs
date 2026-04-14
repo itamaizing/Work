@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 public class PoisonSlap : Skill
@@ -11,6 +12,7 @@ public class PoisonSlap : Skill
     private bool _isCanDamageDeal = false;
 
     [SerializeField] private Character _player;
+    [SerializeField] private ColdBlood _coldBlood;
 
     [Header("Abilities")]
 
@@ -20,10 +22,20 @@ public class PoisonSlap : Skill
     [SerializeField] private SkillManager _skillManager;
 
     [Header("Talents")]
-    [SerializeField] private RestorationOfGlands _restorationOfGlands;
-    [SerializeField] private LightningFastPoisonSlap _lightningFastPoisonSlap;
-    [SerializeField] private LightweightSlap _lightweightSlap;
-    [SerializeField] private PoisonSlapTalent _poisonSlapTalent;
+    //[SerializeField] private RestorationOfGlands _restorationOfGlands;
+    //[SerializeField] private LightningFastPoisonSlap _lightningFastPoisonSlap;
+    //[SerializeField] private LightweightSlap _lightweightSlap;
+    //[SerializeField] private PoisonSlapTalent _poisonSlapTalent;
+
+    [SerializeField] private PoisonDamagingCloudPrefab _poisonDamagingCloudPrefab;
+    [SerializeField] private PoisonHealingCloudPrefab _poisonHealingCloudPrefab;
+
+    [SerializeField] private CreeperPoisonAura _creeperPoisonAura;
+
+    private PoisonDamagingCloudPrefab _poisonDamagingCloud;
+    private PoisonHealingCloudPrefab _poisonHealingCloud;
+
+    private float _durationPoisonCloud = 6f;
 
     #region DisplayArrow
 
@@ -52,7 +64,21 @@ public class PoisonSlap : Skill
     private bool _firstClickDone = false;
     private bool _secondClickDone;
     private bool _isUsedPoisonBallCharger = true;
-    private float _radiusTargetSearch = 0.5f; 
+    private float _radiusTargetSearch = 0.5f;
+
+    #region Talent
+
+    private bool _canSpawnPoisonCloud = false;
+    private bool _isColdBloodCrit = false;
+
+    public void ColdBloodStrike(bool value) => _isColdBloodCrit = value;
+
+    public void SetPoisonCloudEnabled(bool value)
+    {
+        _canSpawnPoisonCloud = value;
+    }
+
+    #endregion
 
     private static readonly int poisonSlapTrigger = Animator.StringToHash("PoisonSlapCastAnimTrigger");
 
@@ -409,28 +435,44 @@ public class PoisonSlap : Skill
     {
         if (target != null)
         {
-            Damage damage = new Damage
+            bool isColdBloodCrit =
+                _coldBlood != null && _isColdBloodCrit &&
+                (_coldBlood.IsCanCrit || _coldBlood.IsCanCritLightningStrikes);
+
+            if (isColdBloodCrit)
             {
-                Value = _baseDamage,
-                Type = DamageType.Physical,
-                PhysicAttackType = AttackRangeType.MeleeAttack,
-            };
+                DealCriticalDamage(target, _baseDamage);
 
-            CmdApplyDamage(damage, target.gameObject);
-
-            if (target.CharacterState.CheckForState(States.PoisonBone) && _restorationOfGlands && _poisonBoneStack > 0)
-            {
-                float baseChanceOfRestorationOfGlands = 0.1f;
-                float chanceOfRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
-
-                if (Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
-                {
-                    _restorationOfGlands.ReductionCooldown();
-                }
+                _coldBlood.IsCanCrit = false;
+                _coldBlood.IsCanCritLightningStrikes = false;
             }
+            else
+            {
+                Damage damage = new Damage
+                {
+                    Value = _baseDamage,
+                    Type = DamageType.Physical,
+                    PhysicAttackType = AttackRangeType.MeleeAttack,
+                };
+
+                CmdApplyDamage(damage, target.gameObject);
+            }
+
+            //if (target.CharacterState.CheckForState(States.PoisonBone) && _restorationOfGlands && _poisonBoneStack > 0)
+            //{
+            //    float baseChanceOfRestorationOfGlands = 0.1f;
+            //    float chanceOfRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
+
+            //    if (Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
+            //    {
+            //        _restorationOfGlands.ReductionCooldown();
+            //    }
+            //}
 
             PushTarget(target, _distancePush, _durationPush, _isPushTargetAllowed);
         }
+
+        if (_canSpawnPoisonCloud) CmdApplyPoisonCloud(false, _durationPoisonCloud);
 
         OnPoisonSlapEnd?.Invoke();
     }
@@ -453,16 +495,16 @@ public class PoisonSlap : Skill
 
             CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
 
-            if (Targeting.GetTarget().Character.CharacterState.CheckForState(States.PoisonBone) && _restorationOfGlands && _poisonBoneStack > 0)
-            {
-                float baseChanceOfRestorationOfGlands = 0.1f;
-                float chanceOfRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
+            //if (Targeting.GetTarget().Character.CharacterState.CheckForState(States.PoisonBone) && _restorationOfGlands && _poisonBoneStack > 0)
+            //{
+            //    float baseChanceOfRestorationOfGlands = 0.1f;
+            //    float chanceOfRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
 
-                if (Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
-                {
-                    _restorationOfGlands.ReductionCooldown();
-                }
-            }
+            //    if (Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
+            //    {
+            //        _restorationOfGlands.ReductionCooldown();
+            //    }
+            //}
 
             PushTarget(Targeting.GetTarget()?.Character, _distancePush, _durationPush, _isPushTargetAllowed);
         }
@@ -471,17 +513,17 @@ public class PoisonSlap : Skill
 
     private void UseRecharge()
     {
-        float baseCooldownTime = Cooldown.CooldownTime;
+        float baseCooldownTime = _cooldownTime;
 
-        if (_lightweightSlap.Data.IsOpen)
-        {
-            Cooldown.CooldownTime /= 2;
-        }
+        //if (_lightweightSlap.Data.IsOpen)
+        //{
+        //    _cooldownTime /= 2;
+        //}
 
         _isCanDamageDeal = false;
         TryPayCost(true);
 
-        Cooldown.CooldownTime = baseCooldownTime;
+        _cooldownTime = baseCooldownTime;
     }
 
     private void PushTarget(Character target, float distancePush, float durationPush, bool isCanPushTarget)
@@ -541,5 +583,88 @@ public class PoisonSlap : Skill
         if (targetMoveComponent.connectionToClient != null) targetMoveComponent.TargetRpcDoMove(target.transform.position + perpendicularDirection * distancePush, durationPush);
         else targetMoveComponent.RpcDoMove(target.transform.position + perpendicularDirection * distancePush, durationPush);
     }
+
+    [Command]
+    private void CmdApplyPoisonCloud(bool isHealingCloud, float duration)
+    {
+        if (!isHealingCloud)
+        {
+            if (_poisonDamagingCloud == null && _poisonDamagingCloudPrefab.PoisonDamageCloud == null)
+            {
+                _player.CharacterState.AddState(States.PoisonCloud, duration, 0, _player.gameObject, Name);
+
+                _poisonDamagingCloud = Instantiate(_poisonDamagingCloudPrefab, transform.position, Quaternion.identity);
+                _poisonDamagingCloudPrefab.PoisonDamageCloud = _poisonDamagingCloud;
+
+                //SceneManager.MoveGameObjectToScene(_poisonDamagingCloud.gameObject, _hero.NetworkSettings.MyRoom);
+
+                _poisonDamagingCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
+                _poisonDamagingCloud.AddStack();
+
+                NetworkServer.Spawn(_poisonDamagingCloud.gameObject);
+            }
+            else
+            {
+                _player.CharacterState.AddState(States.PoisonCloud, duration, 0, _player.gameObject, Name);
+                _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
+            }
+        }
+        else
+        {
+            if (_poisonHealingCloud == null && _poisonHealingCloudPrefab.PoisonHealingCloud == null)
+            {
+                _player.CharacterState.AddState(States.HealingPoisonCloud, duration, 0, _player.gameObject, Name);
+
+                _poisonHealingCloud = Instantiate(_poisonHealingCloudPrefab, transform.position, Quaternion.identity);
+                _poisonHealingCloudPrefab.PoisonHealingCloud = _poisonHealingCloud;
+
+                //SceneManager.MoveGameObjectToScene(_poisonHealingCloud.gameObject, _hero.NetworkSettings.MyRoom);
+
+                _poisonHealingCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
+                _poisonHealingCloud.AddStack();
+
+                NetworkServer.Spawn(_poisonHealingCloud.gameObject);
+            }
+            else
+            {
+                _player.CharacterState.AddState(States.HealingPoisonCloud, duration, 0, _player.gameObject, Name);
+                _poisonHealingCloudPrefab.PoisonHealingCloud.AddStack();
+            }
+        }
+
+        RpcApply(_poisonDamagingCloudPrefab.PoisonDamageCloud, _poisonHealingCloudPrefab.PoisonHealingCloud, duration, isHealingCloud);
+    }
+
+    [ClientRpc]
+    private void RpcApply(PoisonDamagingCloudPrefab dmg, PoisonHealingCloudPrefab heal, float duration, bool isHealing)
+    {
+        if (dmg != null)
+        {
+            dmg.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
+            dmg.AddStack();
+        }
+
+        if (heal != null && isHealing)
+        {
+            heal.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
+            heal.AddStack();
+        }
+    }
     #endregion
+
+    private void DealCriticalDamage(Character target, float baseDamage)
+    {
+        float multiplier = 2.5f;
+
+        float finalDamage = baseDamage * multiplier;
+
+        Damage damage = new Damage
+        {
+            Value = Buff.Damage.GetBuffedValue(finalDamage),
+            Type = DamageType.Physical,
+            PhysicAttackType = AttackRangeType.MeleeAttack,
+        };
+
+        CmdApplyDamage(damage, target.gameObject);
+    }
 }
