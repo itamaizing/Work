@@ -14,6 +14,7 @@ public class TerrifyingElfAura : NetworkBehaviour
     [SerializeField, Range(0, 100)] private float elvenSkillFromPhysChance = 10f;
     [SerializeField, Range(0,100)] private float calmnessOnElvenSkillChance = 30f;
     [SerializeField, Range(0f, 100f)] private float huntressMarkApplyChance = 5f;
+    private const float innerDarknessChance = 20f;
 
     [Header("Durations")]
     [SerializeField] private float durationCalmess;
@@ -57,9 +58,11 @@ public class TerrifyingElfAura : NetworkBehaviour
     private bool _isElvenSkillPhysDamageHealthChance;
     private bool _isThirdShotRow;
     private bool _isCalmnessAura;
+    private bool _isSpellAddInnerDarkness;
 
     public bool IsThirdShotRowActive => _isThirdShotRow;
 
+    public void SpellAddInnerDarkness(bool value) => _isSpellAddInnerDarkness = value;
     public void ThirdShotRow(bool value) => _isThirdShotRow = value;
     public void ReductionRecharge(bool value) => _isReductionRecharge = value;
     public void CalmnessTalentActive(bool value) => calmnessTalent = value;
