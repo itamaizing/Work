@@ -113,7 +113,7 @@ public class SpitPoison : Skill, IAltAbility
     public void AnimSpitPoisonCast()
     {
         AnimStartCastCoroutine();
-    }   
+    }
 
     public void AnimSpitPoisonCastEnd()
     {
@@ -292,8 +292,7 @@ public class SpitPoison : Skill, IAltAbility
 
         _player.Move.SetCanMove(true);
 
-        if (_isErodedArmorState && (_isOriginalTargetAllies || _isOriginalTargetPlayer)) DecreaseSetCooldown(3f);
-
+        if (_isErodedArmorState && (_isOriginalTargetAllies || _isOriginalTargetPlayer)) Cooldown.Modify(-3f);
         if (_canSpawnPoisonCloud) CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
         if (_isErodedArmorState) _player.CharacterState.CmdAddState(States.ErodedArmor, durationErodedArmor, 0, _player.gameObject, Name);
     }
@@ -315,7 +314,7 @@ public class SpitPoison : Skill, IAltAbility
     {
         int ownerLayer = _player.gameObject.layer;
 
-        Vector3 spawnPosition = new Vector3 (_spawnPointInfo.SpawnPointX, _spawnPointInfo.SpawnPointY, _spawnPointInfo.SpawnPointZ);
+        Vector3 spawnPosition = new Vector3(_spawnPointInfo.SpawnPointX, _spawnPointInfo.SpawnPointY, _spawnPointInfo.SpawnPointZ);
 
         GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
 

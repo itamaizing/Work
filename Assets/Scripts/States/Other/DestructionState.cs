@@ -2,79 +2,74 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
-public class DestructionState : AbstractCharacterState
+public class DestructionState : RefreshingState
 {
+    private const float _tickInterval = 4f;
+    private const float _damagePerTickBase = 6f;
+
+    private float _baseDuration;
+    private float _timer;
+    private bool _isActive;
+
     private readonly List<StatusEffect> _effects = new() { StatusEffect.Destruction };
-    public override States State => States.Destruction;
+
+    public override States State { get; }
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    private float _tickInterval = 4f;
-    private float _damagePerTick = 6f;
-    //private float _effectivenessIncreasePerTick = 0.1f;
+    public DestructionState(States stateType)
+    {
+        State = stateType;
+    }
 
-    private float _timer;
-    //private float _accumulatedEffectiveness = 1f;
-    //private float _totalDamageInInterval = 0f;
+    public DestructionState() { }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+        Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         base.personWhoMadeBuff = personWhoMadeBuff;
+        this.damageToExit = damageToExit;
+
+        _baseDuration = durationToExit;
         duration = durationToExit;
-
-        //_health = character.Character.Health; //??
-        //_accumulatedEffectiveness = 1f;
-        //_totalDamageInInterval = 0f;
-
         _timer = _tickInterval;
+        _isActive = true;
 
-		float damageValue = _damagePerTick /* * _accumulatedEffectiveness */;
+        MaxStacksCount = IsStackingMode ? 2 : 1;
+        currentStacksCount = 1;
 
-		CmdDamage(damageValue);
-	}
+        ApplyDamageTick();
+    }
 
     public override void UpdateState()
     {
-        if (health == null) return;
+        if (!_isActive) return;
 
-        duration -= Time.deltaTime;
         _timer -= Time.deltaTime;
 
         if (_timer <= 0f)
         {
-            float damageValue = _damagePerTick /* * _accumulatedEffectiveness */ ;
-
-            CmdDamage(damageValue);
-
-            /*_accumulatedEffectiveness += _totalDamageInInterval * _effectivenessIncreasePerTick;
-            _totalDamageInInterval = damageValue;*/
-
+            ApplyDamageTick();
             _timer = _tickInterval;
         }
-
-        if (duration <= 0)
-        {
-            ExitState();
-            return;
-        }
     }
 
-    public override void ExitState()
+    private void ApplyDamageTick()
     {
-        characterState.RemoveState(this);
+        int effectiveStacks = Mathf.Min(currentStacksCount, MaxStacksCount);
+        float damageValue = _damagePerTickBase * effectiveStacks;
+
+        CmdDamage(damageValue);
     }
 
-    public override bool Stack(float time)
+    private void CmdDamage(float damageValue)
     {
-        duration += time;
-        _timer = Mathf.Min(_timer, _tickInterval);
-        return false;
+        ClientRpcDamage(damageValue);
     }
-
-    [Server] private void CmdDamage(float damageValue) => ClientRpcDamage(damageValue);
 
     [ClientRpc]
     private void ClientRpcDamage(float damageValue)
@@ -85,6 +80,66 @@ public class DestructionState : AbstractCharacterState
             Type = DamageType.Magical,
         };
 
-        health.TryTakeDamage(ref damage, null);
+        if(characterState.isClient)
+            health.CmdTryTakeDamage(damage, null);
+        
+        if (damageToExit == -1f)
+        {
+            float chance = Random.Range(0f, 100f);
+            if (chance <= 15f)
+            {
+                characterState.AddState(States.SpiritHealth, 18f, 0, characterState.gameObject, nameof(SpiritHealthState));
+            }
+        }
+    }
+
+    public override bool Stack(float time)
+    {
+        if (!IsStackingMode)
+        {
+            duration = _baseDuration;
+            RemainingDuration = _baseDuration;
+            return true;
+        }
+        
+        if (currentStacksCount < MaxStacksCount)
+            currentStacksCount++;
+
+        duration = _baseDuration;
+        RemainingDuration = _baseDuration;
+
+        return true;
+    }
+
+    public override void ExitState()
+    {
+        _isActive = false;
+        duration = 0f;
+        _timer = 0f;
+        currentStacksCount = 0;
+        characterState?.RemoveState(this);
+        characterState = null;
+    }
+
+    private bool IsStackingMode => State == States.DestructionStacking;
+    
+    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit,
+        Character personWhoMadeBuff, string skillName)
+    {
+        if (!CanEnterState(character)) return null;
+
+        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+
+        if (currentStacksCount == 0)
+        {
+            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+            currentStacksCount = 1;
+        }
+        else
+        {
+            Stack(durationToExit);
+        }
+
+        return this;
     }
 }

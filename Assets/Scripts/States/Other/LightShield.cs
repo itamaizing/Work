@@ -11,9 +11,6 @@ public class LightShield : AbstractCharacterState, IDamageable
     private float _damageAbsorbed;
     private float _maxAbsorption;
     private float _duration;
-    private string _skillName;
-
-    private bool _isBMTalentActive = false;
 
     public event Action<Damage, Skill> DamageTaken;
 
@@ -31,18 +28,13 @@ public class LightShield : AbstractCharacterState, IDamageable
         _duration = durationToExit;
         _damageAbsorbed = 0;
         _maxAbsorption = maxDamageAbsorbed;
-        _skillName = skillName;
+        base.personWhoMadeBuff = personWhoMadeBuff;
 
         if (characterState.StateEffects.LightShield != null)
         {
             _lightShield = characterState.StateEffects.LightShield;
             _lightShield.SetActive(true);
         }
-
-        SearchTalent();
-
-        Debug.Log("Shield HP - " + _maxAbsorption);
-        //DamageTaken += DamageEnemiesInRadius;
 
         if (characterState.TryGetComponent<Health>(out var health))
         {
@@ -63,9 +55,6 @@ public class LightShield : AbstractCharacterState, IDamageable
 
     public override void ExitState()
     {
-        Debug.Log("LightShield state exited.");
-        //DamageTaken -= DamageEnemiesInRadius;
-
         if (characterState.TryGetComponent<Health>(out var health))
         {
             health.ResetShieldValues();
@@ -93,26 +82,44 @@ public class LightShield : AbstractCharacterState, IDamageable
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
+        if (_damageAbsorbed >= _maxAbsorption)
+        {
+            ExitState();
+            return false;
+        }
+
         float damageToAbsorb = Mathf.Min(_maxAbsorption - _damageAbsorbed, damage.Value);
+
         _damageAbsorbed += damageToAbsorb;
         damage.Value -= damageToAbsorb;
 
-        characterState.GetComponent<Character>().DamageTracker.AddDamage(damage, characterState.gameObject, true);
-
-        var tempDamage = new Damage
-        {
-            Form = damage.Form,
-            PhysicAttackType = damage.PhysicAttackType,
-            School = damage.School,
-            Type = damage.Type,
-            Value = damageToAbsorb,
-        };
-
-        DamageTaken?.Invoke(tempDamage, skill);
-
+        Debug.LogError("damage absorbed: " + _damageAbsorbed);
+        
         if (characterState.TryGetComponent<Health>(out var health))
         {
             health.UpdateShieldValues(_damageAbsorbed, _maxAbsorption);
+        }
+        
+        if (damageToAbsorb > 0)
+        {
+            var pShield = personWhoMadeBuff?.Abilities?.GetSkill<PriestShield>();
+            pShield?.LightShieldManaRestoreBooster?.OnShieldAbsorbedDamage(characterState.Character, damageToAbsorb);
+        }
+
+        if (damageToAbsorb > 0)
+        {
+            var pShield = personWhoMadeBuff?.Abilities?.GetSkill<PriestShield>();
+            if (pShield != null)
+            {
+                pShield.TryApplyTalents(characterState.Character, 
+                    new Damage 
+                    { 
+                        Value = damageToAbsorb, 
+                        School = damage.School, 
+                        Type = damage.Type 
+                    }, 
+                    skill);
+            }
         }
 
         if (_damageAbsorbed >= _maxAbsorption)
@@ -124,46 +131,9 @@ public class LightShield : AbstractCharacterState, IDamageable
         return damage.Value == 0;
     }
 
-    //private void DamageEnemiesInRadius(Damage damage, Skill skill)
-    //{
-    //    foreach (var obj in NetworkServer.spawned.Values)
-    //    {
-    //        if (!obj.TryGetComponent(out Character enemy)) continue;
-
-    //        var distance = Vector3.Distance(characterState.transform.position, enemy.transform.position);
-    //        if (distance > 10f || distance <= 0.25f) continue;
-
-    //        var tempDamage = new Damage
-    //        {
-    //            Form = damage.Form,
-    //            PhysicAttackType = damage.PhysicAttackType,
-    //            Info.School = damage.Info.School,
-    //            Type = damage.Type,
-    //            Value = damage.Value * 0.2f
-    //        };
-
-    //        enemy.Health.TryTakeDamage(ref tempDamage, null);
-    //        enemy.DamageTracker.AddDamage(tempDamage, null);
-    //    }
-    //}
 
     public void ShowPhantomValue(Damage phantomValue)
     {
         throw new NotImplementedException();
-    }
-
-    private void SearchTalent()
-    {
-        foreach (var talent in characterState.Character.Abilities.TalesntSystem.ActiveTalents)
-        {
-            if (talent is BladeMailPriestTalent bladeMailPriestTalent)
-            {
-                if (_bladeMailPriestTalent == null)
-                {
-                    _bladeMailPriestTalent = bladeMailPriestTalent;
-                    _isBMTalentActive = _bladeMailPriestTalent.Data.IsOpen;
-                }
-            }
-        }
     }
 }

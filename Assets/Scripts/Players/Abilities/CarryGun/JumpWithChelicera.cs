@@ -273,7 +273,7 @@ public class JumpWithChelicera : Skill
 
     public void ApplyRootTrue()
     {
-        IncreaseSetCooldown(CooldownTime);
+        Cooldown.SetIncreased(Cooldown.CooldownTime);
         _animator.applyRootMotion = true;
     }
 

@@ -81,7 +81,7 @@ public class AstralState : AbstractCharacterState
 
         foreach (var skill in characterState.Character.Abilities.Abilities)
         {
-            if (skill.Info.AbilityForm == AbilityForm.Magic || skill.Info.AbilityForm == AbilityForm.Spell)
+            if (skill.Info.AbilityForm == AbilityForm.Magic)
             {
                 _modifiedSkills[skill] = skill.Damage;
                 skill.Damage *= 1.5f;

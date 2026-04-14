@@ -40,7 +40,7 @@ public class ColdBlood : Skill
     {
         base.Awake();
 
-        _baseCooldownTime = CooldownTime;
+        //_baseCooldownTime = Cooldown.BaseCooldownTime;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -120,16 +120,21 @@ public class ColdBlood : Skill
 
     public void ReducingAbilityCooldown()
     { 
-        if (RemainingCooldownTime > 0)
+        if (Cooldown.RemainingTime > 0)
         {
             float reducingMultiplier = _reducingCooldownMultiplier;
-            float newCooldownTime = RemainingCooldownTime / reducingMultiplier;
-            ReductionSetCooldown(newCooldownTime);
+            float newCooldownTime = Cooldown.RemainingTime / reducingMultiplier;
+            Cooldown.SetReduced(newCooldownTime, shouldModify: false);
         }
         else
         {
             float reducingMultiplier = _reducingCooldownMultiplier;
-            CooldownTime /= reducingMultiplier;
+            Cooldown.CooldownTime /= reducingMultiplier;
+        }
+
+        if (Hero.CharacterState.CheckForState(States.Immateriality))
+        {
+            Hero.CharacterState.CmdRemoveState(States.Immateriality);
         }
 
         if (Hero.CharacterState.CheckForState(States.Immateriality))
@@ -160,7 +165,7 @@ public class ColdBlood : Skill
     {
         if (_isPlayer)
         {
-            ReductionSetCooldown(_cooldownTimeWithTalent);
+            Cooldown.SetReduced(_cooldownTimeWithTalent, shouldModify: true);
             Debug.Log("ColdBlood / UseAbilityWithTalent / if _isPlayer == true");
 			Hero.CharacterState.DispelStates(StateType.Physical, Targeting.GetTarget().Character.NetworkSettings.TeamIndex, Hero.NetworkSettings.TeamIndex, true);
         }

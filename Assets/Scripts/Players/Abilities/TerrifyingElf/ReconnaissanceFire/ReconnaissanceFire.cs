@@ -1,11 +1,7 @@
 ﻿using Mirror;
 using System.Collections;
 using UnityEngine;
-using HeathenEngineering.UnityPhysics;
-using HeathenEngineering.UnityPhysics.API;
-using Unity.Mathematics;
 using UnityEngine.SceneManagement;
-using System.Collections.Generic;
 using System;
 
 public class ReconnaissanceFire : Skill
@@ -79,8 +75,10 @@ public class ReconnaissanceFire : Skill
         _isSkillEnableBoostLogic = false;
     }
 
-    private void Start()
+    public override void Init(SkillRenderer render, Character hero)
     {
+        base.Init(render, hero);
+
         _baseAnimSpeed = Hero.Animator.speed;
         _baseDuration = _duration;
         _waitForElvenBoostDuration = new WaitForSeconds(ElvenBoostDuration);

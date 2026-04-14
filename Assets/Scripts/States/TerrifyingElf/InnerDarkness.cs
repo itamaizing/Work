@@ -35,12 +35,12 @@ public class InnerDarkness : RefreshingState
             foreach (Skill skill in caster.Abilities)
             {
                 bool isDark = skill.Info.School == Schools.Dark;
-                bool isSpellish = skill.Info.AbilityForm == AbilityForm.Magic || skill.Info.AbilityForm == AbilityForm.Spell || skill.Info.AbilityForm == AbilityForm.Both;
+                bool isSpellish = skill.Info.AbilityForm == AbilityForm.Magic || skill.Info.AbilityForm == AbilityForm.Both;
 
-                if (isDark && isSpellish && !skill.IsCooldowned)
+                if (isDark && isSpellish && skill.Cooldown.IsActive)
                 {
-                    float duration = skill.RemainingCooldownTime * 0.5f;
-                    skill.DecreaseSetCooldown(duration);
+                    float duration = skill.Cooldown.RemainingTime * 0.5f;
+                    skill.Cooldown.Modify(-duration);
                 }
             }
         }

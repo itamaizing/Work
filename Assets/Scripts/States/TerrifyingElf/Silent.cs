@@ -106,7 +106,7 @@ public class Silent : AbstractCharacterState
 
         foreach (var skill in characterState.Character.Abilities.Abilities)
         {
-            if (skill.Info.AbilityForm == AbilityForm.Magic || skill.Info.AbilityForm == AbilityForm.Spell)
+            if (skill.Info.AbilityForm == AbilityForm.Magic)
             {
                 skill.Disactive = true;
                 Debug.Log($"Blocking magic skill: {skill.Name}");
@@ -120,7 +120,7 @@ public class Silent : AbstractCharacterState
 
         foreach (var skill in characterState.Character.Abilities.Abilities)
         {
-            if (skill.Info.AbilityForm == AbilityForm.Magic || skill.Info.AbilityForm == AbilityForm.Spell)
+            if (skill.Info.AbilityForm == AbilityForm.Magic)
             {
                 skill.Disactive = false;
                 Debug.Log($"Unblocking magic skill: {skill.Name}");

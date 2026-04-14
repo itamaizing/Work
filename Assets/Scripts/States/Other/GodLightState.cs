@@ -12,7 +12,6 @@ public class GodLightState : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        personWhoMadeBuff = personWhoMadeBuff;
         
         characterState.Character.Abilities.SetNextSkillFree();
         characterState.Character.Abilities.SetNextSkillNoCast();

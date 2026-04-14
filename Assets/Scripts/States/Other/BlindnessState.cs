@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-public class BlindnessState : AbstractCharacterState
+public class BlindnessState : RefreshingState
 {
     public bool turnOff = false;
 

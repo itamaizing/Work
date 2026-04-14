@@ -28,6 +28,7 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler
         }
         Debug.Log("Attribute " + _attributeValue.name + " " + _modifs.Count);
         // _icon.sprite = _currentAttributes.Icon;
+        // Иконки атрибутов скорее всего будем доставть из ScriptableObjects. SO уже считываются и лежат в DB_Attribute
         _attributeValue.ChangeKey(_modifs.Count);
     }
 

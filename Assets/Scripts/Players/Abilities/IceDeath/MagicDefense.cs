@@ -113,7 +113,7 @@ public class MagicDefense : Skill
 		_position = Vector2.positiveInfinity;
 	}
 
-	protected override bool TryPayCost(List<SkillEnergyCost> skillEnergyCosts, bool startCooldown = true)
+	protected override bool TryPayCost(List<SkillResourceCost> skillEnergyCosts, bool startCooldown = true)
 	{
 		Debug.Log("trypay");
 		if (_target != null)

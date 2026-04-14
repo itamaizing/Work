@@ -1,13 +1,16 @@
+using UnityEngine;
 
 public class GodAuraTalent : Talent
 {
+    [SerializeField] private GodAuraSkill _godAuraSkill;
+
     public override void Enter()
     {
-        character.CharacterState.CmdAddState(States.GodAura,0,0,character.gameObject,nameof(GodAura));
+        _godAuraSkill.OnAuraEnabled(character.gameObject);
     }
 
     public override void Exit()
     {
-        character.CharacterState.CmdRemoveState(States.GodAura);
+        _godAuraSkill.OnAuraDisabled(character.gameObject);
     }
 }

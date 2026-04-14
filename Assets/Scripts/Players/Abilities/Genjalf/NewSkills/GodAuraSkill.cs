@@ -2,9 +2,33 @@ using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
-public class GodAuraSkill : MonoBehaviour
+public class GodAuraSkill : NetworkBehaviour
 {
+    private bool _isActive = false;
+    public void OnAuraEnabled(GameObject character)
+    {
+        CmdAddState(character);
+    }
 
+    public void OnAuraDisabled(GameObject character)
+    {
+        CmdRemoveState(character);
+    }
+    
+    
+    [Command]
+    private void CmdAddState(GameObject character)
+    {
+        if(character != null)
+            character.GetComponent<Character>().CharacterState.AddState(States.GodAura,0,0,character.gameObject,nameof(GodAura));
+    }
+
+    [Command]
+    private void CmdRemoveState(GameObject character)
+    {
+        if(character != null)
+            character.GetComponent<Character>().CharacterState.RemoveState(States.GodAura);
+    }
 }
 
 public class GodAura : AuraState
@@ -16,55 +40,17 @@ public class GodAura : AuraState
     public override float EffectRate { get; }
     public override LayerMask LayerMask => LayerMask.GetMask("Allies");
 
-    public int TalentStacks { get; private set; } = 0;
-
     public void AddTalentStack()
     {
-        if (TalentStacks >= 3) return;
-        TalentStacks++;
-
         foreach (var character in _charactersInRadius)
         {
             if (character == null) continue;
             
-            character.CharacterState.AddState(States.GodAuraBuff, 3f, 0,
-                characterState.Character.gameObject, nameof(GodAuraBuff));
-
             var buffState = character.CharacterState.GetState(States.GodAuraBuff) as GodAuraBuff;
-            buffState?.RefreshBonus(TalentStacks);
-        }
-    }
+            if(buffState != null)
+                character.CharacterState.AddState(States.GodAuraBuff, 3f, 0,
+                    characterState.Character.gameObject, nameof(GodAuraBuff));
 
-    public void RemoveTalentStack()
-    {
-        if (TalentStacks <= 0) return;
-        TalentStacks--;
-
-        foreach (var character in _charactersInRadius)
-        {
-            if (character == null) continue;
-            
-            character.CharacterState.StateIcons.RemoveIconCount();
-            
-            var buffState = character.CharacterState.GetState(States.GodAuraBuff) as GodAuraBuff;
-            buffState?.RefreshBonus(TalentStacks);
-        }
-    }
-    
-    public void ResetToBaseAura()
-    {
-        TalentStacks = 0;
-
-        foreach (var character in _charactersInRadius)
-        {
-            if (character == null) continue;
-            
-            character.CharacterState.RemoveState(States.GodAuraBuff);
-            character.CharacterState.AddState(States.GodAuraBuff, -1, 0,
-                characterState.Character.gameObject, nameof(GodAuraBuff));
-
-            var buffState = character.CharacterState.GetState(States.GodAuraBuff) as GodAuraBuff;
-            buffState?.RefreshBonus(0);
         }
     }
 
@@ -72,7 +58,10 @@ public class GodAura : AuraState
     {
         if (characterState.Character == character) return;
         
-        character.CharacterState.AddState(States.GodAuraBuff, -1, 0, characterState.Character.gameObject, nameof(GodAuraBuff));
+        if (character.CharacterState.CheckForState(States.GodAuraBuff)) return;
+    
+        character.CharacterState.AddState(States.GodAuraBuff, -1, 0, 
+            characterState.Character.gameObject, nameof(GodAuraBuff));
     }
 
     public override void EffectOnExit(Character character)
@@ -80,7 +69,16 @@ public class GodAura : AuraState
         if (character.CharacterState.CheckForState(States.GodAuraBuff)) character.CharacterState.RemoveState(States.GodAuraBuff);
     }
 
-    public override void EffectOnStay(List<Character> characters) { }
+    public override void EffectOnStay(List<Character> characters)
+    {
+        foreach (var character in characters)
+        {
+            if (character.CharacterState.CheckForState(States.GodAuraBuff)) continue;
+
+            character.CharacterState.AddState(States.GodAuraBuff, -1, 0, 
+                characterState.Character.gameObject, nameof(GodAuraBuff));
+        }
+    }
 
     public override void ExitState()
     {
@@ -93,69 +91,135 @@ public class GodAura : AuraState
     }
 }
 
-public class GodAuraBuff : AbstractCharacterState
+public class GodAuraBuff : RefreshingState
 {
     private List<StatusEffect> _effects = new List<StatusEffect>();
-    private float _basePercentage = 0.1f;
-    private float _currentPercentage = 0f;
     private Character _character;
+
+    private AttributeModifier _modifier = new AttributeModifier(-0.1f, ModifierType.Percent);
+    private const float _modifierPerStack = -0.1f;
+
+    private float _baseDuration;
+    private float _stackTimer;
 
     public override States State => States.GodAuraBuff;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
-    
+
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
-        _character = character.Character;
-        MaxStacksCount = 3;
-        currentStacksCount = 1;
-        ApplyBonus(_basePercentage);
-    }
-
-    public void RefreshBonus(int talentStacks)
-    {
-        RemoveBonus(_currentPercentage);
-        float newPercentage = _basePercentage + talentStacks * 0.1f;
-        ApplyBonus(newPercentage);
-    }
-
-    private void ApplyBonus(float percentage)
-    {
-        _currentPercentage = percentage;
-        foreach (var skill in _character.Abilities.Abilities)
-            skill.Buff.Cooldown.IncreasePercentage(1f - percentage);
-    }
-
-    private void RemoveBonus(float percentage)
-    {
-        if (percentage <= 0f) return;
-        foreach (var skill in _character.Abilities.Abilities)
-            skill.Buff.Cooldown.IncreasePercentage(1f / (1f - percentage));
-    }
-
-    public override void ExitState()
-    {
-        RemoveBonus(_currentPercentage);
-        _currentPercentage = 0f;
-        currentStacksCount = 0;
-        _character.CharacterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        if (time < 0)
+        if (currentStacksCount == 0)
         {
-            currentStacksCount = 1;
-            return false;
+            return true;
         }
+        
+        _baseDuration = time;
+        _stackTimer = _baseDuration;
 
-        if (CurrentStacksCount >= MaxStacksCount)
-            return false;
+        UpdateModifier(currentStacksCount + 1);
 
-        currentStacksCount++;
         return true;
     }
-    public override void UpdateState() { }
+
+    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit,
+        float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        if (!CanEnterState(character)) return null;
+
+        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+
+        if (currentStacksCount == 0)
+        {
+            _character = character.Character;
+            MaxStacksCount = 4;
+            _baseDuration = durationToExit;
+            _stackTimer = durationToExit;
+            currentStacksCount = 1;
+
+            RemoveModifierFromAllSkills(_modifier);
+            _modifier.Value = _modifierPerStack;
+            ApplyModifierToAllSkills(_modifier);
+        }
+        else if (currentStacksCount < MaxStacksCount)
+        {
+            if (durationToExit > 0)
+            {
+                currentStacksCount++;
+                _baseDuration = durationToExit;
+                _stackTimer = durationToExit;
+                UpdateModifier(currentStacksCount);
+            }
+        }
+
+        return this;
+    }
+
+    private void UpdateModifier(int stacks)
+    {
+        RemoveModifierFromAllSkills(_modifier);
+        _modifier.Value = _modifierPerStack * stacks;
+        ApplyModifierToAllSkills(_modifier);
+    }
+
+    public override void GloabalUpdate()
+    {
+        UpdateState();
+    }
+
+    public override void UpdateState()
+    {
+        if (_stackTimer <= -1) return;
+
+        _stackTimer -= Time.deltaTime;
+
+        if (_stackTimer <= 0)
+        {
+            currentStacksCount--;
+
+            if (currentStacksCount <= 0)
+            {
+                ExitState();
+                return;
+            }
+            
+            _stackTimer = _baseDuration;
+            UpdateModifier(currentStacksCount);
+        }
+    }
+
+    public override void ExitState()
+    {
+        RemoveModifierFromAllSkills(_modifier);
+
+        currentStacksCount = 0;
+        _baseDuration = 0;
+        _stackTimer = 0;
+        _modifier.Value = _modifierPerStack;
+        _character = null;
+    
+        if (characterState != null && characterState.CheckForState(States.GodAuraBuff))
+            characterState.RemoveState(this);
+    
+        characterState = null;
+    }
+
+    private void ApplyModifierToAllSkills(AttributeModifier modifier)
+    {
+        if (_character == null) return;
+        foreach (var skill in _character.Abilities.Abilities)
+            skill.Attributes.Attributes[SkillAttributeName.Cooldown].AddModifier(modifier);
+    }
+
+    private void RemoveModifierFromAllSkills(AttributeModifier modifier)
+    {
+        if (_character == null) return;
+        foreach (var skill in _character.Abilities.Abilities)
+            skill.Attributes.Attributes[SkillAttributeName.Cooldown].RemoveModifier(modifier);
+    }
 }

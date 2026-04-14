@@ -1,4 +1,4 @@
-using Mirror;
+ο»Ώusing Mirror;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -36,6 +36,7 @@ public class ServerManager : NetworkBehaviour
 
     public void Awake()
     {
+        Debug.Log("ServerAwake");
         if (_instance != null)
         {
             _groupManager = null;
@@ -44,7 +45,7 @@ public class ServerManager : NetworkBehaviour
         else
         {
             _instance = this;
-            DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(transform.root.gameObject);
             _groupManager = new GroupManager();
         }
         _menuEnv.gameObject.SetActive(true);
@@ -227,7 +228,7 @@ public class GroupManager
         if (int.TryParse(id, out int idInt))
             _ids.Add(idInt);
         else
-            Debug.LogError("Ψλÿοΰ, ΰ νε ID");
+            Debug.LogError("Π¨Π»ΡΠΏΠ°, Π° Π½Πµ ID");
     }
 
     public void RemovePlayerInGroup(int id)
@@ -240,7 +241,7 @@ public class GroupManager
         if (int.TryParse(id, out int idInt))
             _ids.Remove(idInt);
         else
-            Debug.LogError("Ψλÿοΰ, ΰ νε ID");
+            Debug.LogError("Π¨Π»ΡΠΏΠ°, Π° Π½Πµ ID");
     }
 
     public string GetPlayerInGroup()

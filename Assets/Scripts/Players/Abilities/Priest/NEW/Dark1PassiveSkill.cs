@@ -16,16 +16,30 @@ public class Dark1PassiveSkill : Skill, IPassiveSkill
     public override void LoadTargetData(TargetInfo targetInfo) => throw new NotImplementedException();
     #endregion
 
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+        TrySubscribe();
+    }
+
     private void OnEnable()
     {
-        Hero.DamageTracker.OnDamageTracked += OnDamageMade;
-        Hero.DamageTracker.OnHealTracked += OnHealMade;
+        TrySubscribe();
     }
 
     private void OnDisable()
     {
         Hero.DamageTracker.OnDamageTracked -= OnDamageMade;
         Hero.DamageTracker.OnHealTracked -= OnHealMade;
+    }
+
+    private void TrySubscribe()
+    {
+        if (Hero == null)
+            return;
+
+        Hero.DamageTracker.OnDamageTracked += OnDamageMade;
+        Hero.DamageTracker.OnHealTracked += OnHealMade;
     }
 
     private void OnDamageMade(Damage damage, GameObject attacker)

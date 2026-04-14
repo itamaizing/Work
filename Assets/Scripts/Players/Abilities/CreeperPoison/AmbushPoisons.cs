@@ -70,7 +70,7 @@ public class AmbushPoisons : Skill
 
             _currentStacks++;
 
-            CurrentCharge(_currentStacks);
+            Charges.SendCurrentChange(_currentStacks);
 
             if (_currentStacks >= MaxStacks)
             {
@@ -102,8 +102,8 @@ public class AmbushPoisons : Skill
         yield return new WaitForSeconds(ClearDelay);
 
         _currentStacks = 0;
-        CurrentCharge(_currentStacks);
 
+        Charges.SendCurrentChange(_currentStacks);
         _clearRoutine = null;
     }
 
@@ -114,7 +114,7 @@ public class AmbushPoisons : Skill
 
         _currentStacks--;
 
-        CurrentCharge(_currentStacks);
+        Charges.SendCurrentChange(_currentStacks);
 
         target.CharacterState.AddStateLogic(States.PoisonBone, 6, 0, Schools.None, Hero.gameObject, null);
         if (_creeperPoisonAura.IsFeelingPoisoning) Hero.CharacterState.AddStateLogic(States.FeelingPoisoning, 2f, 0, Schools.None, Hero.gameObject, null);

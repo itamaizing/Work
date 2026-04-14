@@ -17,6 +17,16 @@ public class ReversePolarity : Skill
     private AudioSource _audioSource;
 
     private float _cooldownAfterDarkMode = 6f;
+    
+    #region ReversePolarity Movement Talent
+    private ReversePolarityMovementBooster _movementBooster;
+    public ReversePolarityMovementBooster ReversePolarityMovementBooster => _movementBooster;
+    #endregion
+    
+    #region ReversePolarity Movement Talent
+    private ReverseDisciplineBooster _reverseDisciplineBooster;
+    public ReverseDisciplineBooster ReverseDisciplineBooster => _reverseDisciplineBooster;
+    #endregion
 
     private void Start()
     {
@@ -25,16 +35,8 @@ public class ReversePolarity : Skill
 
     private void OnEnable()
     {
-        /*sparkOfLight.CastEnded += RemoveReversePolarityEffect;
-        flashOfLight.CastEnded += RemoveReversePolarityEffect;
-        restoration.CastEnded += RemoveReversePolarityEffect;
-        priestShield.CastEnded += RemoveReversePolarityEffect;
-        
-        sparkOfLight.CastEnded += SwitchSpells;
-        flashOfLight.CastEnded += SwitchSpells;
-        restoration.CastEnded += SwitchSpells;
-        priestShield.CastEnded += SwitchSpells;
-        */
+        _movementBooster = new ReversePolarityMovementBooster(this);
+        _reverseDisciplineBooster = new ReverseDisciplineBooster(this);
     }
 
     private void OnDisable()
@@ -80,11 +82,17 @@ public class ReversePolarity : Skill
     private void ApplyReversePolarityEffect()
     {
         CmdAddBaff(States.ReversePolarity, -1f, 0, transform.gameObject, Name);
+        
+        _movementBooster?.OnReversePolarityActivated(true);
+        _reverseDisciplineBooster?.IsDecreaseManaCost(true,Hero);
     }
 
     public void RemoveReversePolarityEffect()
     {
         CmdRemoveBuff(States.ReversePolarity, Hero.gameObject);
+        
+        _movementBooster?.OnReversePolarityActivated(false);
+        _reverseDisciplineBooster?.IsDecreaseManaCost(false,Hero);
     }
 
     [Command]
@@ -133,7 +141,7 @@ public class ReversePolarity : Skill
 
     public void SetCooldownFromSpell()
     {
-        IncreaseSetCooldown(_cooldownAfterDarkMode);
+        Cooldown.SetIncreased(_cooldownAfterDarkMode, shouldModify: true);
     }
 
     protected override void ClearData()

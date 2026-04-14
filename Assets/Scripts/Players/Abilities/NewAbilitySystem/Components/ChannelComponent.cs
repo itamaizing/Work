@@ -8,7 +8,7 @@ public class ChannelComponent : BaseSkillComponent
     #region InspectorFields
     [SerializeField] protected float _castDuration;
     [SerializeField] protected float _tickInterval;
-    [SerializeField] protected List<SkillEnergyCost> _baseCostPerTick = new();
+    [SerializeField] protected List<SkillResourceCost> _baseCostPerTick = new();
     #endregion
 
     #region RuntimeVariables
@@ -21,7 +21,7 @@ public class ChannelComponent : BaseSkillComponent
         set { _castDuration = value; }
     }
     public float TickInterval => _tickInterval;
-    public List<SkillEnergyCost> Costs => _baseCostPerTick;
+    public List<SkillResourceCost> Costs => _baseCostPerTick;
 
     #endregion
 

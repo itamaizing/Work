@@ -77,7 +77,6 @@ public class Silence : Skill
     protected override int AnimTriggerCast => 0;
     private void Start()
     {
-        _baseCooldownTime = CooldownTime;
         _audioSource = GetComponent<AudioSource>();
         _waitForGhostHealthCheckDelay = new WaitForSeconds(GhostHealthCheckDelay);
     }
@@ -136,7 +135,8 @@ public class Silence : Skill
             }    
         }
 
-        if (minionHitCount > 0 && _isSilenceEffectsOnMinionMagic) DecreaseSetCooldown(GhostCooldownPerMinion * minionHitCount);
+        //if (minionHitCount > 0 && _isSilenceEffectsOnMinionMagic) DecreaseSetCooldown(GhostCooldownPerMinion * minionHitCount);
+        if (minionHitCount > 0 && _isSilenceEffectsOnMinionMagic) Cooldown.Modify(-(GhostCooldownPerMinion * minionHitCount));
         if (ghostAuraMinionHitCount >= 2 && _isSilenceEffectGhostCast) CmdTriggerGhostFreeWindow();
     }
 
@@ -224,7 +224,8 @@ public class Silence : Skill
         {
             if (ghostAura.TryGetComponent<Health>(out var health))
             {
-                if (health.CurrentValue <= 0) _ghost.ResetCurrentChargeCooldown(0);
+                //if (health.CurrentValue <= 0) _ghost.ResetCurrentChargeCooldown(0);
+                if (health.CurrentValue <= 0) _ghost.Charges.RestoreCharge(0);
             }
         }
 

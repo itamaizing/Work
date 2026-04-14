@@ -184,8 +184,8 @@ public class ShotDarkness : Skill
                 CmdCreateProjectileAtPosition(character.transform.position, Damage, _magicDamage);
             }
 
-            float reduce = _multiMagicSpell.RemainingCooldownTime * 0.1f;
-            _multiMagicSpell.DecreaseSetCooldown(reduce);
+            float reduce = _multiMagicSpell.Cooldown.RemainingTime * 0.1f;
+            _multiMagicSpell.Cooldown.Modify(-reduce);
         }
 
         else CmdUseMana(_magicDamage);
@@ -211,7 +211,8 @@ public class ShotDarkness : Skill
         _consecutiveShots++;
         if (_consecutiveShots >= GhostShotsForCooldownReduction)
         {
-            _ghostSkill.ReductionCooldownCharges(GhostCooldownReductionValue);
+            //_ghostSkill.ReductionCooldownCharges(GhostCooldownReductionValue);
+            _ghostSkill.Charges.ModifyDuration(-GhostCooldownReductionValue, tickAll: true);
             _consecutiveShots = 0;
         }
     }

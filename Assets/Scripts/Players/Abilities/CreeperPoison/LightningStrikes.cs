@@ -25,7 +25,6 @@ public class LightningStrikes : Skill
     private bool _isIncreaseCooldownTime = false;
     private bool _isCanDamageDeal = false;
 
-    public float BaseCooldownTime { get => _baseCooldownTime; }
     public bool IsUsedLightningStrikes { get => _isUsedLightningStrikes; set => _isUsedLightningStrikes = value; }
     public bool IsCanDamageDeal { get => _isCanDamageDeal; set => _isCanDamageDeal = value; }
 
@@ -48,8 +47,6 @@ public class LightningStrikes : Skill
     protected override void Awake()
     {
         base.Awake();
-
-        _baseCooldownTime = CooldownTime;
     }
 
     public void AnimLightningStrikesCast()
@@ -125,14 +122,14 @@ public class LightningStrikes : Skill
 
         if (_coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime == false)
         {
-            float newCooldownTime = _baseCooldownTime * _cooldownMultiplier;
-            CooldownTime = newCooldownTime;
+            float newCooldownTime = Cooldown.BaseCooldownTime * _cooldownMultiplier;
+            Cooldown.CooldownTime = newCooldownTime;
 
             _isIncreaseCooldownTime = true;
         }
         else
         {
-            CooldownTime = _baseCooldownTime;
+            Cooldown.CooldownTime = Cooldown.BaseCooldownTime;
         }
 
         /*if (_currentTarget == null)

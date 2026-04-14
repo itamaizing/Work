@@ -53,14 +53,15 @@ public class ShotIntoSky : Skill
 
     private void OnDestroy() => Canceled -= HandleSkillCanceled;
 
-    private void OnEnable()
+    public override void Init(SkillRenderer render, Character hero)
     {
+        base.Init(render, hero);
         _baseRadius = AreaInfo.Radius;
         _baseCastDelay = CastDeley;
         Canceled += HandleSkillCanceled;
     }
 
-        protected override bool IsCanCast
+    protected override bool IsCanCast
     {
         get
         {
@@ -111,11 +112,7 @@ public class ShotIntoSky : Skill
 
     public void ForceCooldownEnd()
     {
-        if (_cooldownJob != null)
-            StopCoroutine(_cooldownJob);
-
-        RemainingCooldownTime = 0f;
-        RaiseCooldownEnded();
+        Cooldown.ForceEnd();
     }
 
 
