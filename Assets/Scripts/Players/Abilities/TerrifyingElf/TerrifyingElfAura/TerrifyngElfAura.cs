@@ -316,6 +316,12 @@ public class TerrifyingElfAura : NetworkBehaviour
                 mana.Add(damage.Value * 0.25f * suppression.CurrentStacksCount);
 
             if (manaAbsorptionPhysicalTalent) OnDamageDealt(damage, target);
+
+            if (_isSpellAddInnerDarkness && damage.Type == DamageType.Magical && target != null && target.TryGetComponent<Character>(out var targetCharacter))  
+            {
+                float roll = UnityEngine.Random.Range(0f, 100f);
+                if (roll <= innerDarknessChance) targetCharacter.CharacterState.AddState(States.InnerDarkness, durationCalmess, 0f, hero.gameObject, "TerrifyingElfAura");
+            }
         }
     }
 

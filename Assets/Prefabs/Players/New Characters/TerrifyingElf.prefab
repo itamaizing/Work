@@ -19295,11 +19295,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8492809262968261936, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 8492809262968261936, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 8569747795464636412, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _flyChecker
@@ -23414,6 +23414,7 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 4534754468497973439}
   suppression: {fileID: 6063604074090390129}
+  terrifying: {fileID: 0}
 --- !u!114 &9098254726142606622
 MonoBehaviour:
   m_ObjectHideFlags: 0
