@@ -9,7 +9,20 @@ public class Suppression : Skill
     [SerializeField] private float duration;
     //private Character _target;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
-    protected override bool IsCanCast => Charges.HasCharges && Targeting.GetTarget()?.Character != null;
+    protected override bool IsCanCast { get => CheckCanCast(); }
+    private bool CheckCanCast()
+    {
+        if (Targeting.GetTarget()?.Character != null)
+        {
+            return Vector3.Distance(
+                Targeting.GetTarget().Character.transform.position,
+                transform.position
+            ) <= AreaInfo.Radius;
+        }
+
+        return false;
+    }
+
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
     protected override int AnimTriggerCast => 0;
 

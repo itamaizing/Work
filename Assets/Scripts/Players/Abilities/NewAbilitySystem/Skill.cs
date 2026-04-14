@@ -179,7 +179,7 @@ public abstract class Skill : NetworkBehaviour
     public float AutoAttackDelay { get => _autoAttackDelay; }
     public ChargeCDUI LinkedChargeCDUI { get; set; }
     #endregion Properties
-
+    
     #region Events
     #region Casting Events
     public event Action<Skill> PreparingStarted;

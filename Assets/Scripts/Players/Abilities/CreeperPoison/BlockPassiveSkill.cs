@@ -32,13 +32,6 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
 
     #endregion
 
-    #region Talent
-
-    private bool _isMagicOrPhysicRessist = false;
-
-    public void MagicOrPhysicRessist(bool value) => _isMagicOrPhysicRessist = value;
-    #endregion
-
     public override void Init(SkillRenderer render, Character hero)
     {
         base.Init(render, hero);

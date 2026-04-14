@@ -13,9 +13,15 @@ public class SleepSpell : Skill
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private bool _isSleepInnerDarknessTalentActive = false;
 
-    protected override bool IsCanCast => Charges.HasCharges && Targeting.GetTarget()?.Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
+    protected override bool IsCanCast { get => CheckCanCast(); }
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
     protected override int AnimTriggerCast => 0;
+
+    private bool CheckCanCast()
+    {
+        if (Targeting.GetTarget() == null) return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.Radius;
+        else return false;
+    }
 
     public bool IsSleepInnerDarknessTalentActive { get => _isSleepInnerDarknessTalentActive; set => _isSleepInnerDarknessTalentActive = value; }
 
