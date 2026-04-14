@@ -21431,9 +21431,9 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: -1
+    _faction: 4
+    _unitType: 5
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2

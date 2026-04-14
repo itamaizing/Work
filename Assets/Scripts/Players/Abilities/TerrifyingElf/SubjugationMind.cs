@@ -8,7 +8,7 @@ public class SubjugationMind : Skill
     //private Character _target;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
 
-    protected override bool IsCanCast => true;
+    protected override bool IsCanCast => Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("PullingHealthCastDelay");
     protected override int AnimTriggerCast => 0;
@@ -20,7 +20,11 @@ public class SubjugationMind : Skill
 
     protected override IEnumerator CastJob()
     {
-        CmdIntercept(Targeting.GetTarget()?.Character);
+        var target = Targeting.GetTarget()?.Character;
+
+        if (target == null) yield break;
+
+        CmdIntercept(target);
 
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
@@ -34,8 +38,6 @@ public class SubjugationMind : Skill
         }
 
         AfterCastJob();
-
-        yield return null;
     }
 
     protected override void ClearData()
@@ -48,24 +50,37 @@ public class SubjugationMind : Skill
     {
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && Targeting.GetTarget()?.Character == null)
+        TargetInfo targetInfo = new TargetInfo();
+
+        while (Targeting.GetTempTarget()?.Targetable == null && !_disactive)
         {
             if (GetMouseButton)
             {
-                //var temp = GetRaycastTarget();
-                Targeting.FindTempTarget();
-                _targetPoint = Targeting.GetMousePoint();
+                Targeting.FindTempTarget(Targeting.GetMousePoint(), 0.5f);
 
-                //if (Targeting.GetTarget() is MinionComponent minion) _target = minion;
-                //else if (Targeting.GetTarget() is HeroComponent heroComponent) _target = heroComponent;
-                if (multiMagic != null) multiMagic.LastTarget = Targeting.GetTarget()?.Character;
+                var temp = Targeting.GetTempTarget()?.Targetable as Character;
+
+                if (temp != null)
+                {
+                    Targeting.SetTarget(temp);
+
+                    if (multiMagic != null)
+                        multiMagic.LastTarget = temp;
+
+                    break;
+                }
             }
+
             yield return null;
         }
 
-        TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_targetPoint);
-        callbackDataSaved(targetInfo);
+        var target = Targeting.GetTarget()?.Character;
+
+        if (target != null)
+        {
+            targetInfo.AddTarget(target);
+            callbackDataSaved(targetInfo);
+        }
     }
 
     [Command]
