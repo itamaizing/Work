@@ -21448,18 +21448,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   _channelComponent:
-    _castDuration: 0
-    _tickInterval: 0
+    _castDuration: 4
+    _tickInterval: 0.1
     _baseCostPerTick: []
   _castDuration: 4
-  _manaCostRate: 0
-  _manaCostPerTick:
-  - nameToShow: 10 Mana - Mandatory
-    type: 1
-    value: 10
-    costType: 0
-    shouldModify: 0
-    showInDescription: 0
+  _manaCostRate: 0.1
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -21479,7 +21473,7 @@ MonoBehaviour:
     _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
-    _isAutoRadiusRender: 0
+    _isAutoRadiusRender: 1
     _isAutoAreaRender: 0
     _isAutoLineRender: 0
     _isDynamicRenderer: 0
@@ -21496,6 +21490,8 @@ MonoBehaviour:
     _prepareAnimations: []
     _castAnimations: []
     _activeClip: 0
+  _subjugationMindPrefab: {fileID: 7744228389031826322, guid: 9b8d8a2206325ef4787d2a10b24b74a5, type: 3}
+  _breakDistance: 6
 --- !u!114 &5245378433989923716
 MonoBehaviour:
   m_ObjectHideFlags: 0
