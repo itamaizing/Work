@@ -162,14 +162,7 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 		_abilities.Initialize();
 		Health.Died += AddDeadCounter;
 		TemporaryResourceDisplay = _resources.Values.ToList();
-		Test();
 	}
-
-    private void Test()
-    {
-		AttributeSystem.Attributes[CharacterAttributeName.ResourceCost].AddModifier(new AttributeModifier(0.25f, ModifierType.Multiplier, this));
-		AttributeSystem.Attributes[CharacterAttributeName.ResourceCost].AddModifier(new AttributeModifier(0.25f, ModifierType.Multiplier, this));
-    }
 
     private void EnsureResources()
 	{

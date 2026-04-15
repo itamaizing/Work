@@ -20320,6 +20320,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 1
     _faction: -1
     _unitType: 5
@@ -22736,6 +22737,7 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 4534754468497973439}
   terrifyingElfAura: {fileID: 6686568037796463366}
+  sleep: {fileID: 127445238161157264}
 --- !u!114 &2114024499052472920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22808,8 +22810,8 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  pullingHealth: {fileID: 0}
-  ability: {fileID: 0}
+  pullingHealth: {fileID: 679409545534796012}
+  ability: {fileID: 4092227064955680494}
 --- !u!114 &3423959342573903484
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22844,6 +22846,7 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 4534754468497973439}
   silence: {fileID: 4161291845396503115}
+  pulling: {fileID: 679409545534796012}
 --- !u!114 &1410310116505230793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22984,6 +22987,7 @@ MonoBehaviour:
   character: {fileID: 4534754468497973439}
   shotIntoSky: {fileID: 6009180366675701932}
   shotsIntoSky: {fileID: 826193211731534654}
+  pullingHealth: {fileID: 679409545534796012}
 --- !u!114 &4990467896875758726
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23107,6 +23111,7 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 4534754468497973439}
   silence: {fileID: 4161291845396503115}
+  terrifyingElfAura: {fileID: 6686568037796463366}
 --- !u!114 &5176031341533269077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23147,8 +23152,7 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 4534754468497973439}
   ghost: {fileID: 1718052129104348959}
-  pullingHealth: {fileID: 679409545534796012}
-  skillManager: {fileID: 0}
+  skillManager: {fileID: 4092227064955680494}
 --- !u!114 &7675527355086524810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23191,7 +23195,6 @@ MonoBehaviour:
   character: {fileID: 4534754468497973439}
   terrifyingElfAura: {fileID: 6686568037796463366}
   silence: {fileID: 4161291845396503115}
-  pullingHealth: {fileID: 679409545534796012}
 --- !u!114 &3154349677268371443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23229,11 +23232,10 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  retributiveReckoning: {fileID: 1612167112411553268}
   suppression: {fileID: 6063604074090390129}
-  pulling: {fileID: 679409545534796012}
   ability: {fileID: 4092227064955680494}
   reconnaissanceFire: {fileID: 2750012758126725032}
+  ghost: {fileID: 1718052129104348959}
 --- !u!114 &183809737086991779
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23280,9 +23282,8 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 4534754468497973439}
   subjugationMind: {fileID: 6728227519922462803}
-  sleep: {fileID: 127445238161157264}
   ability: {fileID: 4092227064955680494}
-  ghost: {fileID: 1718052129104348959}
+  retributiveReckoning: {fileID: 1612167112411553268}
 --- !u!114 &6150019603701913108
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23316,8 +23317,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  terrifyingElfAura: {fileID: 6686568037796463366}
-  ghost: {fileID: 1718052129104348959}
   silence: {fileID: 4161291845396503115}
 --- !u!114 &6329989501365168688
 MonoBehaviour:
@@ -23377,3 +23376,4 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 4534754468497973439}
   silence: {fileID: 4161291845396503115}
+  terrifyingElfAura: {fileID: 6686568037796463366}
