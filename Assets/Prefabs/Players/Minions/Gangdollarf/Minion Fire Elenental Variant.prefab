@@ -451,9 +451,10 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 1.5
@@ -467,6 +468,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -510,6 +512,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _agent: {fileID: 8521629497404255749}
   _projectile: {fileID: -7871612326811465604, guid: 3f48633abc1849a49a5ed18cb8f65a33, type: 3}
   _debuffTime: 7
@@ -558,9 +566,10 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
@@ -574,6 +583,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -617,6 +627,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _particlePref: {fileID: 2607017853375542456, guid: ac2586615ed6e5948983d73649d16e00, type: 3}
 --- !u!114 &-2837521630394622147
 MonoBehaviour:
@@ -639,9 +655,10 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 4
   _castDeley: 0
@@ -655,6 +672,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -698,6 +716,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _agent: {fileID: 8521629497404255749}
   _shieldPref: {fileID: 1158249924082485831, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
   _baffDuration: 9
@@ -713,6 +737,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ebd5338e622f30439f5a06dec5366ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HotAura
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _radius: 6
+  _checkInterval: 0.5
+  _targetLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  _buffDuration: -1
 --- !u!4 &6980196994501872204 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1021000915379606889, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}

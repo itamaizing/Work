@@ -5,13 +5,30 @@ using UnityEngine.TextCore.Text;
 
 namespace Gangdollarff.EarthElemental
 {
-    public class EarthElementalAuras : MonoBehaviour
+    public class EarthElementalAuras : AuraStateHandler
     {
         private void Start()
         {
             var chatacter = GetComponent<Character>();
             //chatacter.CharacterState.CmdAddState(States.PowerOfEarth, 0, 0, chatacter.gameObject, name);
             chatacter.CharacterState.CmdAddState(States.EarthsHealth, 0, 0, chatacter.gameObject, name);
+        }
+        
+        [SerializeField] private float _buffDuration = -1f;
+
+        protected override void OnTargetEnter(Character target)
+        {
+            target.CharacterState.CmdAddState(States.EarthsHealth, _buffDuration, 0, Schools.Earth, _owner.gameObject, nameof(EarthElementalAuras));
+        }
+
+        protected override void OnTargetExit(Character target)
+        {
+            target.CharacterState.CmdRemoveState(States.EarthsHealth);
+        }
+
+        protected override void OnAuraDisabled()
+        {
+            RemoveEffectsFromAllTargets();
         }
     }
 
@@ -21,7 +38,7 @@ namespace Gangdollarff.EarthElemental
         private int _stanChance = 20;
         private float _stanDuration = 0.1f;
         private float _addDamage = .5f;
-        
+
         private HashSet<Character> _subscribedCharacters = new();
 
         public override float Distance => 1.6f;
@@ -59,6 +76,7 @@ namespace Gangdollarff.EarthElemental
                 if (character != null)
                     character.DamageGeted -= OnDamageGeted;
             }
+
             _subscribedCharacters.Clear();
             base.ExitState();
         }
@@ -80,39 +98,55 @@ namespace Gangdollarff.EarthElemental
         }
     }
 
-    public class EarthsHealth : AuraState
+    public class EarthsHealthBuff : AbstractCharacterState
     {
-        private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Strengthening };
-        private Dictionary<Character, float> _charactersMaxHealth = new();
-        private float _procent = 0.02f;
+        private List<StatusEffect> _effects = new();
 
-        private AttributeModifier _modifier = new(0.3f,ModifierType.Percent);
-        public override float Distance => 6;
-        public override float EffectRate => 0.2f;
-        public override LayerMask LayerMask => LayerMask.GetMask("Allies");
+        private readonly Dictionary<Character, float> _charactersMaxHealth = new();
+
+        private float _percent = 0.02f;
+        private AttributeModifier _modifier = new(0.3f, ModifierType.Percent);
+
+        private Character _character;
+
         public override States State => States.EarthsHealth;
+        public override StateType Type => StateType.Magic;
         public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
         public override List<StatusEffect> Effects => _effects;
 
-        public override void EffectOnEnter(Character character)
+        public override void EnterState(CharacterState characterState, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
         {
-            float initialMaxHealth = character.Health.MaxValue;
-            _charactersMaxHealth.Add(character,initialMaxHealth);
-            
-            character.Health.IncreaseRegen(_charactersMaxHealth[character] * _procent);
-            character.Health.AddModifier(_modifier);
+            _character = characterState.Character;
+
+            float initialMaxHealth = _character.Health.MaxValue;
+            _charactersMaxHealth[_character] = initialMaxHealth;
+
+            _character.Health.IncreaseRegen(initialMaxHealth * _percent);
+            _character.Health.AddModifier(_modifier);
         }
 
-        public override void EffectOnExit(Character character)
+        public override void ExitState()
         {
-            character.Health.DecreaseRegen(_charactersMaxHealth[character] * _procent);
-            character.Health.RemoveModifier(_modifier);
-            _charactersMaxHealth.Remove(character);
+            characterState.RemoveState(this);
+            
+            if (_character == null) return;
+
+            if (_charactersMaxHealth.TryGetValue(_character, out var maxHealth))
+            {
+                _character.Health.DecreaseRegen(maxHealth * _percent);
+                _character.Health.RemoveModifier(_modifier);
+
+                _charactersMaxHealth.Remove(_character);
+            }
         }
 
-        public override void EffectOnStay(List<Character> characters)
+        public override bool Stack(float time)
         {
-            
+            return false;
+        }
+
+        public override void UpdateState()
+        {
         }
     }
 }

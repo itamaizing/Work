@@ -5375,9 +5375,10 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
@@ -5391,6 +5392,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 1
     _faction: 4
     _unitType: 5
@@ -5434,6 +5436,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _agent: {fileID: 6215928600746481535}
   _effect: {fileID: 5728214450654004770}
   _breakCastDistance: 0.5
@@ -5482,9 +5490,10 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 0
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
@@ -5498,6 +5507,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -5541,6 +5551,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
 --- !u!114 &2919457201291660018
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5562,9 +5578,10 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 2
@@ -5578,6 +5595,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 1
     _faction: 4
     _unitType: 5
@@ -5621,6 +5639,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _effectObject: {fileID: 8291093145260447810}
 --- !u!114 &1884285126135186261
 MonoBehaviour:
@@ -5643,9 +5667,10 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
@@ -5659,6 +5684,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 1
     _faction: 2
     _unitType: 5
@@ -5702,6 +5728,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _agent: {fileID: 6215928600746481535}
   _shieldPref: {fileID: 1158249924082485831, guid: 8436cda64b22c4f4f9becfe3d409d4fc, type: 3}
   _baffDuration: 9

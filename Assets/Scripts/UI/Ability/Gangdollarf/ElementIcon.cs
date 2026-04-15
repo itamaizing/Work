@@ -39,7 +39,7 @@ public class ElementIcon : MonoBehaviour
 
     private void OnClick()
     {
-        _elementalSpawn.IndexElemental = _index;
+        _elementalSpawn.SelectedElemental = (Elementals)_index;
     }
     
     private void OnCastStarted()

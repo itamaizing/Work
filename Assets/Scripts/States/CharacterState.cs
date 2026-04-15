@@ -405,9 +405,8 @@ public class CharacterState : NetworkBehaviour
 
 		#region Gandollarf	
 		[States.PowerOfEarth] = new PowerOfEarth(),
-        [States.EarthsHealth] = new EarthsHealth(),
+        [States.EarthsHealth] = new EarthsHealthBuff(),
         [States.MagicWater] = new MagicWater(),
-        [States.HotBloodAura] = new HotBloodAura(),
         [States.HotBloodBuff] = new HotAuraBuff(),
         [States.GodAura] = new GodAura(),
         [States.GodAuraBuff] = new GodAuraBuff(),
@@ -993,7 +992,6 @@ public enum States
 	PsionicGeneration,
 	MagicalExcitement,
 	GodLight,
-	HotBloodAura,
 	HotBloodBuff,
 	GodAura,
 	GodAuraBuff,
