@@ -5,10 +5,14 @@ using UnityEngine;
 
 public class SubjugationMind : Skill
 {
-    //private Character _target;
-    private Vector3 _targetPoint = Vector3.positiveInfinity;
+    [SerializeField] private GameObject _subjugationMindPrefab;
 
-    protected override bool IsCanCast => Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
+    private bool _isStreaming;
+    private bool _streamFinished;
+    private Character _cachedTarget;
+    private bool _isInterceptApplied;
+
+    protected override bool IsCanCast => !_isStreaming && Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("PullingHealthCastDelay");
     protected override int AnimTriggerCast => 0;
@@ -22,28 +26,24 @@ public class SubjugationMind : Skill
     {
         var target = Targeting.GetTarget()?.Character;
 
-        if (target == null) yield break;
+        if (target == null)
+            yield break;
 
-        CmdIntercept(target);
-
-        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
-
-        if (multiMagic != null)
-        {
-            foreach (var character in multiMagic.PopPendingTargets())
-            {
-                TryPayCost();
-                CmdIntercept(character);
-            }
-        }
+        _cachedTarget = target;
 
         AfterCastJob();
+
+        StartCoroutine(StreamDuration());
+
+        while (!_streamFinished)
+            yield return null;
     }
 
     protected override void ClearData()
     {
+        _isStreaming = false;
+        _cachedTarget = null;
         Targeting.ClearTarget();
-        //_target = null;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -81,6 +81,54 @@ public class SubjugationMind : Skill
             targetInfo.AddTarget(target);
             callbackDataSaved(targetInfo);
         }
+    }
+
+    private IEnumerator StreamDuration()
+    {
+        _isStreaming = true;
+        _streamFinished = false;
+
+        float elapsed = 0f;
+
+        if (!_isInterceptApplied)
+        {
+            CmdIntercept(_cachedTarget);
+            _isInterceptApplied = true;
+        }
+
+        while (elapsed < CastStreamDuration)
+        {
+            if (_cachedTarget == null || _cachedTarget.IsDead)
+            {
+                StopStream();
+                yield break;
+            }
+
+            if (Vector3.Distance(transform.position, _cachedTarget.transform.position) > AreaInfo.Radius)
+            {
+                StopStream();
+                yield break;
+            }
+
+            if (!_isInterceptApplied)
+            {
+                CmdIntercept(_cachedTarget);
+                _isInterceptApplied = true;
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        StopStream();
+    }
+
+    private void StopStream()
+    {
+        _isStreaming = false;
+        _streamFinished = true;
+
+        Targeting.ClearTarget();
     }
 
     [Command]
