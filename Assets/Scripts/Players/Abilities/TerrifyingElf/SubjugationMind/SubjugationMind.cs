@@ -14,6 +14,9 @@ public class SubjugationMind : Skill
     private Character _cachedTarget;
     private bool _isInterceptApplied;
 
+    private byte _originalTeamIndex;
+    private bool _teamWasChanged;
+
     private NetworkConnectionToClient _originalOwner;
 
     protected override bool IsCanCast => !_isStreaming && Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
@@ -198,17 +201,65 @@ public class SubjugationMind : Skill
 
         if (netId == null) yield break;
 
+        Vector3 finalPosition = heroTarget.transform.position;
+        Quaternion finalRotation = heroTarget.transform.rotation;
+
         netId.RemoveClientAuthority();
 
         if (_originalOwner != null)
-        { 
-            TargetRpcSetKinematic(_originalOwner, heroTarget.gameObject, true);
+        {
+            TargetRpcSetKinematicTrue(connectionToClient, heroTarget.netId);
+            TargetRpcSetKinematicFalse(_originalOwner, heroTarget.netId);
+
+            TargetRpcResetControlState(connectionToClient, heroTarget.netId);
+
+            TargetRpcSetTransform(_originalOwner, heroTarget.netId, finalPosition, finalRotation);
+
             netId.AssignClientAuthority(_originalOwner);
+
+            RestoreControlledTeam(heroTarget);
         }
 
-        heroTarget.Move.TargetRpcStopMoveAndAnimationMove();
-
         _originalOwner = null;
+    }
+
+    [Server]
+    private void ApplyControlledTeam(HeroComponent heroTarget)
+    {
+        if (heroTarget == null) return;
+
+        var targetSettings = heroTarget.GetComponent<UserNetworkSettings>();
+        var casterSettings = Hero.GetComponent<UserNetworkSettings>();
+
+        if (targetSettings == null || casterSettings == null) return;
+
+        _originalTeamIndex = targetSettings.TeamIndex;
+        _teamWasChanged = true;
+
+        targetSettings.TeamIndex = casterSettings.TeamIndex;
+
+        RefreshAllUsersLayers();
+    }
+
+    [Server]
+    private void RestoreControlledTeam(HeroComponent heroTarget)
+    {
+        if (!_teamWasChanged || heroTarget == null) return;
+
+        var targetSettings = heroTarget.GetComponent<UserNetworkSettings>();
+        if (targetSettings == null) return;
+
+        targetSettings.TeamIndex = _originalTeamIndex;
+        _teamWasChanged = false;
+
+        RefreshAllUsersLayers();
+    }
+
+    [Server]
+    private void RefreshAllUsersLayers()
+    {
+        var allUsers = FindObjectsOfType<UserNetworkSettings>();
+        foreach (var user in allUsers) if (user != null) user.RpcUpdateLayers();
     }
 
     [Command]
@@ -247,8 +298,10 @@ public class SubjugationMind : Skill
             netId.RemoveClientAuthority();
             netId.AssignClientAuthority(connectionToClient);
 
-            TargetRpcSetKinematic(connectionToClient, heroTarget.gameObject, false);
-            heroTarget.Move.TargetRpcStopMoveAndAnimationMove();
+            ApplyControlledTeam(heroTarget);
+
+            TargetRpcSetKinematicFalse(connectionToClient, heroTarget.netId);
+            if (_originalOwner != null) TargetRpcSetKinematicTrue(_originalOwner, heroTarget.netId);
 
             StartCoroutine(ReturnHeroControlAfterDelay(heroTarget, netId));
         }
@@ -286,11 +339,46 @@ public class SubjugationMind : Skill
     }
 
     [TargetRpc]
-    private void TargetRpcSetKinematic(NetworkConnection target, GameObject obj, bool value)
+    private void TargetRpcSetKinematicFalse(NetworkConnection target, uint netId)
     {
-        if (obj == null) return;
+        if (!NetworkClient.spawned.TryGetValue(netId, out var identity)) return;
 
-        var rb = obj.GetComponent<Rigidbody>();
-        if (rb != null) rb.isKinematic = value;
+        var rb = identity.GetComponent<Rigidbody>();
+        if (rb != null) rb.isKinematic = false;
+    }
+
+    [TargetRpc]
+    private void TargetRpcSetKinematicTrue(NetworkConnection target, uint netId)
+    {
+        if (!NetworkClient.spawned.TryGetValue(netId, out var identity)) return;
+
+        var rb = identity.GetComponent<Rigidbody>();
+        if (rb != null) rb.isKinematic = true;
+    }
+
+    [TargetRpc]
+    private void TargetRpcSetTransform(NetworkConnection target, uint netId, Vector3 pos, Quaternion rot)
+    {
+        if (!NetworkClient.spawned.TryGetValue(netId, out var identity)) return;
+
+        identity.transform.position = pos;
+        identity.transform.rotation = rot;
+    }
+
+    [TargetRpc]
+    private void TargetRpcResetControlState(NetworkConnection target, uint heroNetId)
+    {
+        if (!NetworkClient.spawned.TryGetValue(heroNetId, out var identity)) return;
+
+        var hero = identity.GetComponent<HeroComponent>();
+        if (hero == null) return;
+
+        var skillManager = hero.Abilities;
+
+        skillManager.CancleAllSkills();
+        skillManager.OnSelect(false);
+
+        var input = hero.GetComponent<InputHandler>();
+        if (input != null) input.enabled = false;
     }
 }
