@@ -14,6 +14,8 @@ public class SubjugationMind : Skill
     private Character _cachedTarget;
     private bool _isInterceptApplied;
 
+    private NetworkConnectionToClient _originalOwner;
+
     protected override bool IsCanCast => !_isStreaming && Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
 
     private const string SubjugationMindMidTrigger = "PullingHealthMidTrigger";
@@ -189,20 +191,24 @@ public class SubjugationMind : Skill
         StopStream();
     }
 
-    private IEnumerator ReturnHeroControlAfterDelay(HeroComponent heroTarget, NetworkIdentity networkIdentity)
+    [Server]
+    private IEnumerator ReturnHeroControlAfterDelay(HeroComponent heroTarget, NetworkIdentity netId)
     {
         yield return new WaitForSeconds(4);
 
-        if (networkIdentity != null)
-        {
-            networkIdentity.RemoveClientAuthority();
-            networkIdentity.AssignClientAuthority(heroTarget.connectionToClient);
+        if (netId == null) yield break;
 
-            if (Hero is HeroComponent currentHero)
-            {
-                currentHero.SpawnComponent.CmdRemoveUnit(heroTarget);
-            }
+        netId.RemoveClientAuthority();
+
+        if (_originalOwner != null)
+        { 
+            TargetRpcSetKinematic(_originalOwner, heroTarget.gameObject, true);
+            netId.AssignClientAuthority(_originalOwner);
         }
+
+        heroTarget.Move.TargetRpcStopMoveAndAnimationMove();
+
+        _originalOwner = null;
     }
 
     [Command]
@@ -226,22 +232,25 @@ public class SubjugationMind : Skill
         if (character is MinionComponent minion)
         {
             minion.SetAuthority(connectionToClient);
-
             if (Hero is HeroComponent hero) hero.SpawnComponent.AddUnit(minion);
+
             return;
         }
 
-        else if (character is HeroComponent heroTarget)
+        if (character is HeroComponent heroTarget)
         {
-            var networkIdentity = heroTarget.GetComponent<NetworkIdentity>();
-            if (networkIdentity == null) return;
+            var netId = heroTarget.GetComponent<NetworkIdentity>();
+            if (netId == null) return;
 
-            networkIdentity.RemoveClientAuthority();
-            networkIdentity.AssignClientAuthority(connectionToClient);
+            _originalOwner = netId.connectionToClient != null ? netId.connectionToClient : null;
 
-            if (Hero is HeroComponent currentHero) currentHero.SpawnComponent.AddUnit(heroTarget);
+            netId.RemoveClientAuthority();
+            netId.AssignClientAuthority(connectionToClient);
 
-            StartCoroutine(ReturnHeroControlAfterDelay(heroTarget, networkIdentity));
+            TargetRpcSetKinematic(connectionToClient, heroTarget.gameObject, false);
+            heroTarget.Move.TargetRpcStopMoveAndAnimationMove();
+
+            StartCoroutine(ReturnHeroControlAfterDelay(heroTarget, netId));
         }
     }
 
@@ -274,5 +283,14 @@ public class SubjugationMind : Skill
             e.Initialize(start, target);
             e.Activate();
         }
+    }
+
+    [TargetRpc]
+    private void TargetRpcSetKinematic(NetworkConnection target, GameObject obj, bool value)
+    {
+        if (obj == null) return;
+
+        var rb = obj.GetComponent<Rigidbody>();
+        if (rb != null) rb.isKinematic = value;
     }
 }
