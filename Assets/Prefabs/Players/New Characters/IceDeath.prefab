@@ -5466,7 +5466,6 @@ MonoBehaviour:
     Group: 0
     Row: 2
   character: {fileID: 4374618947117916461}
-  iceShadow: {fileID: 3068634069238352843}
   icePuddle: {fileID: 4310610476984543593}
   _seriesOfStrikes: {fileID: 3083348233968490285}
 --- !u!114 &3308416631096017029

@@ -98,6 +98,16 @@ public class IceRolling : Skill
 		}
 	}
 
+	private void OnEnable()
+	{
+		if (Hero != null && Hero.Health != null) Hero.Health.OnBeforeDamage += HandleFrozenEvade;
+	}
+
+	private void OnDisable()
+	{
+		if (Hero != null && Hero.Health != null) Hero.Health.OnBeforeDamage -= HandleFrozenEvade;
+	}
+
 	private float GetJumpRange()
 	{
         if (_energy == null)
@@ -161,20 +171,6 @@ public class IceRolling : Skill
 		return false;
 	}
 
-	public bool TryEvadeFromFrozenAttacker(Character attacker)
-	{
-		if (!_isAttackWithFrosenAddEvade || attacker == null) return false;
-
-		var frozen = attacker.CharacterState.GetState(States.Frozen) as FrozenState;
-		if (frozen == null)	return false;
-
-		float slowPercent = frozen.CurrentAttackSlowPercent;
-		float evadeChance = slowPercent * 0.4f;
-
-		float roll = UnityEngine.Random.Range(0f, 1f);
-		return roll < evadeChance;
-	}
-
 	private bool IsTargetInCloseProximity(Vector3 start, Vector3 direction, out Character characterHit)
 	{
 		Ray ray = new Ray(start, direction);
@@ -192,6 +188,26 @@ public class IceRolling : Skill
 		}
 
 		return false;
+	}
+
+	private void HandleFrozenEvade(ref Damage damage, Skill skill)
+	{
+		if (!_isAttackWithFrosenAddEvade) return;
+		if (skill == null || skill.Hero == null) return;
+
+		Character attacker = skill.Hero;
+
+		var frozen = attacker.CharacterState.GetState(States.Frozen) as FrozenState;
+		if (frozen == null) return;
+
+		float slowPercent = frozen.CurrentAttackSlowPercent;
+		float evadeChance = slowPercent * 40f;
+
+		if (UnityEngine.Random.Range(0f, 100f) <= evadeChance)
+		{
+			damage.Value = 0f;
+			Hero.Health.InvokeEvade();
+		}
 	}
 
 	private void Jump2()
@@ -238,13 +254,6 @@ public class IceRolling : Skill
 		if (_isLastInSeries && Targeting.GetTarget()?.Character == null && _rollingWithEnemyTalent)
 			finalRange *= 1.5f;
 
-		if (_isDamageAddFrosting)
-		{
-			int rolledCells = Mathf.RoundToInt(finalRange);
-			float frozenDuration = 0.7f * rolledCells;
-			_physicalAttack.SetNextHitFrozen(frozenDuration);
-		}
-
 		Vector3 jumpPos = startPosition + _lookDir * finalRange;
 
 		Vector3 stopPosition;
@@ -256,6 +265,13 @@ public class IceRolling : Skill
 
 		Hero.Move.LookAtPosition(jumpPos);
 		float actualDistance = Vector3.Distance(startPosition, stopPosition);
+
+		if (_isDamageAddFrosting)
+		{
+			int rolledCells = Mathf.RoundToInt(finalRange);
+			float frozenDuration = 0.7f * rolledCells;
+			_physicalAttack.SetNextHitFrozen(frozenDuration);
+		}
 
 		CmdPush(stopPosition, actualDistance);
 
