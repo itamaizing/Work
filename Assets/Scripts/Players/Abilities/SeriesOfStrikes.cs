@@ -20,6 +20,7 @@ public class SeriesOfStrikes : MonoBehaviour
 	private bool _seriesCompliteCompoTalent;
 	private bool _iceRuneTalent;
 	private bool _seriesCompliteCompo = false;
+	private bool _seriesCompleteDoubleCombo = false;
 
 	private static List<AbilityForm> _formList = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical };
 	private static List<AbilityForm> _formList2 = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Magic };
@@ -126,7 +127,9 @@ public class SeriesOfStrikes : MonoBehaviour
 		//Debug.Log("Last hit");
 		if (_seriesCompliteCompoTalent)
 		{
-			_rune.CmdAdd(usedRune * 2 + 1);
+			if (_seriesCompleteDoubleCombo) _rune.CmdAdd(usedRune * 2);
+			else _rune.CmdAdd(usedRune);
+
 			_energy.CmdAdd(usedEnergy * 0.4f);
 			_energy.ForceRegenNow();
 		}
@@ -159,9 +162,11 @@ public class SeriesOfStrikes : MonoBehaviour
 		_speedMultiplier = multiplier;
 	}
 
-    #region Talent
+	#region Talent
 
-    public void SeriesCompliteCompoTalentActive(bool value)
+	public void SeriesCompleteDoubleCombo(bool value) => _seriesCompleteDoubleCombo = value;
+
+	public void SeriesCompliteCompoTalentActive(bool value)
 	{
 		_seriesCompliteCompoTalent = value;
 	}
