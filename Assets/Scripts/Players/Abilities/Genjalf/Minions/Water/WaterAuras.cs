@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Mirror;
@@ -7,91 +8,79 @@ using UnityEngine;
 
 namespace Gangdollarff.WaterElemental
 {
-    public class WaterAuras : MonoBehaviour
+    public class WaterAuras : AuraStateHandler
     {
-        private void Start()
+        [SerializeField] private float _buffDuration = -1f;
+
+        protected override void OnTargetEnter(Character target)
         {
-            //var chatacter = GetComponent<Character>();
-            //chatacter.CharacterState.CmdAddState(States.MagicWater, 0, 0, chatacter.gameObject, name);
-            //chatacter.CharacterState.CmdAddState(States.CoolingAura, 0, 0, chatacter.gameObject, name);
+            CmdApplyStateToTarget(target.gameObject,States.MagicWater, _buffDuration, Schools.Water, _owner.gameObject, nameof(MagicWater));
+        }
+
+        protected override void OnTargetExit(Character target)
+        {
+            CmdRemoveStateFromTarget(target.gameObject, States.MagicWater);
+        }
+
+        protected override void OnAuraDisabled()
+        {
+            RemoveEffectsFromAllTargets();
         }
     }
 
-    public class MagicWater : AuraState
+    public class MagicWater : AbstractCharacterState
     {
-        private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Strengthening };
+        private Character _character;
+        private Resource _mana;
+        private List<StatusEffect> _effects = new List<StatusEffect>();
         private float _manaRegenProcent = 0.003f;
         private float _manaMaxProcent = 0.1f;
+        
+        private float _originalRegenValue = 0;
+        private float _originalMaxValue = 0;
+        private float _currentDelta = 0;
 
-        private struct ManaSnapshot
-        {
-            public float OriginalRegenValue;
-            public float OriginalMaxValue;
-        }
-
-        private Dictionary<Character, ManaSnapshot> _snapshots = new Dictionary<Character, ManaSnapshot>();
-
-        public override float Distance => 8;
-        public override float EffectRate => 0.2f;
-        public override LayerMask LayerMask => LayerMask.GetMask("Allies");
-        public override States State => States.EarthsHealth;
+        public override States State => States.MagicWater;
+        public override StateType Type { get; }
         public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
         public override List<StatusEffect> Effects => _effects;
-
-        public override void EffectOnEnter(Character character)
+        
+        public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
         {
-            if (character.Resources.Count > 0)
+            duration = durationToExit;
+            _character = character.Character;
+            if (_character.Resources.Count > 0)
             {
-                character.Resources.TryGetValue(ResourceType.Mana, out Resource mana);
-                if (mana != null && !_snapshots.ContainsKey(character))
+                _character.Resources.TryGetValue(ResourceType.Mana, out _mana);
+                if (_mana != null)
                 {
-                    _snapshots[character] = new ManaSnapshot
-                    {
-                        OriginalRegenValue = mana.RegenerationValue,
-                        OriginalMaxValue = mana.MaxValue
-                    };
-
-                    mana.RegenerationValue += mana.MaxValue * _manaRegenProcent;
-                    mana.CmdAddMax(mana.MaxValue * _manaMaxProcent);
+                    _originalRegenValue = _mana.RegenerationValue;
+                    _originalMaxValue = _mana.MaxValue;
+                    _mana.RegenerationValue += _mana.MaxValue * _manaRegenProcent;
+                    _currentDelta = _mana.MaxValue * _manaMaxProcent;
+                    _mana.AddMax(_currentDelta);
                 }
             }
         }
-
-        public override void EffectOnExit(Character character)
+        
+        private void RestoreMana()
         {
-            RestoreMana(character);
-        }
-
-        public override void EffectOnStay(List<Character> characters)
-        {
-        }
-
-        private void RestoreMana(Character character)
-        {
-            if (!_snapshots.TryGetValue(character, out ManaSnapshot snapshot))
-                return;
-
-            character.Resources.TryGetValue(ResourceType.Mana, out Resource mana);
-            if (mana != null)
+            if (_mana != null)
             {
-                mana.RegenerationValue = snapshot.OriginalRegenValue;
-                float delta = snapshot.OriginalMaxValue - mana.MaxValue;
-                mana.CmdAddMax(delta);
+                _mana.RegenerationValue = _originalRegenValue;
+                _mana.AddMax(-_currentDelta);
             }
-
-            _snapshots.Remove(character);
         }
+
+        public override void UpdateState() { }
 
         public override void ExitState()
         {
             base.ExitState();
-            foreach (var character in _snapshots.Keys.ToList())
-            {
-                if (character != null)
-                    RestoreMana(character);
-            }
+            RestoreMana();
 
-            _snapshots.Clear();
+            _mana = null;
+            _character = null;
         }
     }
 

@@ -10,12 +10,12 @@ public class HotBloodAura : AuraStateHandler
 
     protected override void OnTargetEnter(Character target)
     {
-        target.CharacterState.CmdAddState(States.HotBloodBuff, _buffDuration, 0,Schools.Fire, _owner.gameObject, nameof(HotBloodAura));
+        CmdApplyStateToTarget(target.gameObject, States.HotBloodBuff, _buffDuration, Schools.Fire, _owner.gameObject, nameof(HotBloodAura));
     }
 
     protected override void OnTargetExit(Character target)
     {
-        target.CharacterState.CmdRemoveState(States.HotBloodBuff);
+        CmdRemoveStateFromTarget(target.gameObject, States.HotBloodBuff);
     }
 
     protected override void OnAuraDisabled()

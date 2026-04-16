@@ -5457,6 +5457,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e30ad3cb22b5b945a13863712f763ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _radius: 6
+  _checkInterval: 0.5
+  _targetLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  _buffDuration: -1
 --- !u!114 &806564155690012044
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5484,8 +5493,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: b1db6814ffb9fb947a3afe2a14da9084, type: 2}
   _isSubjectToGlobalCooldownTime: 0
   _costComponent:
@@ -5557,6 +5566,7 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _waterAura: {fileID: 6129426252062776704}
 --- !u!114 &2919457201291660018
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5661,8 +5671,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 824f5a869fcf1704fa05e5637a133a7e, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:

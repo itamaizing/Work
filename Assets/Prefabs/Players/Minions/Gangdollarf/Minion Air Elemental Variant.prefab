@@ -267,7 +267,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 5
@@ -284,6 +284,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -327,6 +328,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _particlePref: {fileID: 8634428716550452945, guid: 7291e60055d363e4f8faae9c7d00d8b0, type: 3}
   _debuffChance: 15
 --- !u!114 &2742934127029527583
@@ -350,7 +357,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 3
@@ -367,6 +374,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 1
     _faction: 4
     _unitType: -1
@@ -410,6 +418,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _agent: {fileID: 2830961031403866016}
   _particlePref: {fileID: 8634428716550452945, guid: 7291e60055d363e4f8faae9c7d00d8b0, type: 3}
   _debuffChance: 15
@@ -425,6 +439,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51cb7a0f58cdb264f84ec40c385b1282, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _radius: 6
+  _checkInterval: 0.5
+  _targetLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  _buffDuration: -1
 --- !u!114 &3552047210059923238
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -446,7 +469,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 12
@@ -463,6 +486,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 1
     _faction: 2
     _unitType: 5
@@ -506,6 +530,12 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
   _agent: {fileID: 2830961031403866016}
   _buffDuration: 4
 --- !u!114 &2740777870113441289 stripped

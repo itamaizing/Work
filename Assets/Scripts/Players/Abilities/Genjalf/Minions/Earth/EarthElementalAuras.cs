@@ -18,12 +18,12 @@ namespace Gangdollarff.EarthElemental
 
         protected override void OnTargetEnter(Character target)
         {
-            target.CharacterState.CmdAddState(States.EarthsHealth, _buffDuration, 0, Schools.Earth, _owner.gameObject, nameof(EarthElementalAuras));
+            CmdApplyStateToTarget(target.gameObject, States.EarthsHealth, _buffDuration, Schools.Earth, _owner.gameObject, nameof(EarthElementalAuras));
         }
 
         protected override void OnTargetExit(Character target)
         {
-            target.CharacterState.CmdRemoveState(States.EarthsHealth);
+            CmdRemoveStateFromTarget(target.gameObject, States.EarthsHealth);
         }
 
         protected override void OnAuraDisabled()

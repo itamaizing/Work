@@ -7,9 +7,10 @@ using UnityEngine;
 
 public class ElementalSpawn : Skill
 {
-    private Character _currentElemental;
+    private MinionComponent _currentElemental;
     private Vector3 _position;
     private Elementals _selectedElemental = Elementals.None;
+    private Elementals _previousElemental;
     public Elementals SelectedElemental
     {
         get => _selectedElemental;
@@ -18,22 +19,35 @@ public class ElementalSpawn : Skill
 
     #region Elementals Talents
 
-    private bool _isHotAuraTalent;
+    private bool _elementalsAuraTalent;
+    private bool _elementalsShieldsTalent;
     #endregion
 
     protected override bool IsCanCast => Vector3.Distance(_position, transform.position) <= AreaInfo.Radius;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
+    private Action OnCurrentElemantalDestroy;
+
     #region Talent Enabling Methods
 
-    public void IsHotAuraEnabled(bool value)
+    public void IsElementalsAuraEnabled(bool value)
     {
-        if (_isHotAuraTalent != value)
+        if (_elementalsAuraTalent != value)
         {
-            _isHotAuraTalent = value;
+            _elementalsAuraTalent = value;
             if(_currentElemental)
-                ConfigureSpawnedElemental(_selectedElemental);
+                TryActivateMinionTalent(_selectedElemental,true);
+        }
+    }
+
+    public void IsElementalsShieldsEnabled(bool value)
+    {
+        if (_elementalsShieldsTalent != value)
+        {
+            _elementalsShieldsTalent = value;
+            if(_currentElemental)
+                TryActivateMinionTalent(_selectedElemental,true);
         }
     }
 
@@ -53,6 +67,8 @@ public class ElementalSpawn : Skill
 
         if (Hero.SpawnComponent.Units.Count > 0)
         {
+            TryActivateMinionTalent(_previousElemental,false);
+            _currentElemental = null;
             CmdDestroyUnit(0);
             Hero.SpawnComponent.Units.RemoveAt(0);
         }
@@ -76,18 +92,19 @@ public class ElementalSpawn : Skill
     private void TargetRpcOnElementalSpawned(NetworkConnectionToClient conn, GameObject elementalGO, Elementals type)
     {
         if (elementalGO == null) return;
-        _currentElemental = elementalGO.GetComponent<Character>();
-        ConfigureSpawnedElemental(type);
+        _currentElemental = elementalGO.GetComponent<MinionComponent>();
+        _currentElemental.CharacterParent = _hero;
+        TryActivateMinionTalent(type,true);
     }
 
     protected override void ClearData()
     {
         _position = Vector2.zero;
-        _currentElemental = null;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        _previousElemental = _selectedElemental;
         _selectedElemental = Elementals.None;
         while (_position == Vector3.zero)
         {
@@ -102,30 +119,80 @@ public class ElementalSpawn : Skill
         callbackDataSaved(targetInfo);
     }
 
-    private void ConfigureSpawnedElemental(Elementals elementalType)
+    private void TryActivateMinionTalent(Elementals elementalType, bool enable)
     {
-        if (_currentElemental)
+        if (_currentElemental == null) 
+            return;
+
+        switch (elementalType)
         {
-            switch (elementalType)
-            {
-                case Elementals.Air:
-                    break;
-                case Elementals.Earth:
-                    _currentElemental.GetComponent<EarthElementalAuras>().SetActive(_isHotAuraTalent);
-                    break;
-                case Elementals.Fire:
-                    _currentElemental.GetComponent<HotBloodAura>().SetActive(_isHotAuraTalent);
-                    break;
-                case Elementals.Water:
-                    break;
-            }
+            case Elementals.Air:
+                HandleAura<AirElement>(enable);
+                HandleSkill<ColdShield>(enable);
+                break;
+
+            case Elementals.Earth:
+                HandleAura<EarthElementalAuras>(enable);
+                HandleSkill<EarthPetrificationSkill>(enable);
+                break;
+
+            case Elementals.Fire:
+                HandleAura<HotBloodAura>(enable);
+                HandleSkill<FireShield>(enable);
+                break;
+
+            case Elementals.Water:
+                HandleWaterTalents(enable);
+                break;
         }
     }
+
+    #region Активация талантов элементалей
+    private void HandleAura<T>(bool shouldBeActive) where T : AuraStateHandler
+    {
+        var auraComponent = _currentElemental.GetComponent<T>();
+        if (auraComponent == null)
+            return;
+
+        bool actuallyActivate = _elementalsAuraTalent && shouldBeActive;
+
+        auraComponent.ActivateAura(actuallyActivate);
+    }
+
+    private void HandleSkill<T>(bool shouldBeActive) where T : Skill
+    {
+        var skillComponent = _currentElemental.GetComponent<T>();
+        if (skillComponent == null)
+            return;
+
+        bool actuallyActivate = _elementalsShieldsTalent && shouldBeActive;
+
+        if (actuallyActivate)
+            _currentElemental.Abilities.ActivateSkill(skillComponent);
+        else
+            _currentElemental.Abilities.DeactivateSkill(skillComponent);
+    }
+
+    private void HandleWaterTalents(bool shouldBeActive)
+    {
+        var magicWater = _currentElemental.GetComponent<MagicWaterPassive>();
+        if (magicWater == null)
+            return;
+
+        bool actuallyActivate = _elementalsAuraTalent && shouldBeActive;
+
+        if (actuallyActivate)
+            _currentElemental.Abilities.ActivateSkill(magicWater);
+        else
+            _currentElemental.Abilities.DeactivateSkill(magicWater);
+
+        magicWater.EnableMagicWaterAura(actuallyActivate);
+    }
+    #endregion
 
     [Command]
     private void CmdDestroyUnit(int index)
     {
-        Debug.Log(Hero.SpawnComponent.Units[index].gameObject.name);
         NetworkServer.Destroy(Hero.SpawnComponent.Units[index].gameObject);
 
         Hero.SpawnComponent.Units.RemoveAt(index);

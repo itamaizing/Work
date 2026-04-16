@@ -20,7 +20,7 @@ public abstract class AuraStateHandler : NetworkBehaviour
 
     public bool IsActive => _isActive;
 
-    public void SetActive(bool active)
+    public void ActivateAura(bool active, bool isAffectOnOwner = false)
     {
         if (_isActive == active) return;
 
@@ -39,7 +39,7 @@ public abstract class AuraStateHandler : NetworkBehaviour
             if (_owner == null)
                 _owner = GetComponent<Character>();
 
-            _checkCoroutine = StartCoroutine(CheckTargetsRoutine());
+            _checkCoroutine = StartCoroutine(CheckTargetsRoutine(isAffectOnOwner));
             OnAuraEnabled();
         }
         else
@@ -48,7 +48,7 @@ public abstract class AuraStateHandler : NetworkBehaviour
         }
     }
 
-    private IEnumerator CheckTargetsRoutine()
+    private IEnumerator CheckTargetsRoutine(bool isAffectOnOwner)
     {
         yield return null;
         
@@ -60,17 +60,20 @@ public abstract class AuraStateHandler : NetworkBehaviour
             foreach (var col in colliders)
             {
                 if (col == null) continue;
-                if (col.TryGetComponent<Character>(out var character) &&
-                    character != _owner &&
-                    !character.IsDead)
+                if (col.TryGetComponent<Character>(out var character) && !character.IsDead)
                 {
-                    newTargets.Add(character);
+                    if (character == _owner && isAffectOnOwner)
+                        newTargets.Add(character);
+                    else if(character != _owner)
+                        newTargets.Add(character);
                 }
             }
-
             foreach (var old in _currentTargets.ToArray())
             {
-                if (old == null) continue;
+                if (old == null)
+                {
+                    continue;
+                }
                 if (!newTargets.Contains(old))
                     OnTargetExit(old);
             }
@@ -101,7 +104,7 @@ public abstract class AuraStateHandler : NetworkBehaviour
 
     private void OnDestroy()
     {
-        SetActive(false);
+        ActivateAura(false);
     }
 
     protected abstract void OnTargetEnter(Character target);
@@ -111,4 +114,18 @@ public abstract class AuraStateHandler : NetworkBehaviour
     protected virtual void OnAuraDisabled() { }
 
     protected virtual void OnTargetStay(Character target) { }
+    
+    [Command]
+    protected void CmdApplyStateToTarget(GameObject target, States state, float duration, Schools school, GameObject source, string skillName)
+    {
+        target.GetComponent<CharacterState>().AddState(state, duration, 0, school, source, skillName);
+    }
+
+    [Command]
+    protected void CmdRemoveStateFromTarget(GameObject target, States state)
+    {
+        target.GetComponent<CharacterState>().RemoveState(state);
+    }
+    
+    
 }

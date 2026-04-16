@@ -835,7 +835,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _radius: 8
+  _radius: 6
   _checkInterval: 0.5
   _targetLayer:
     serializedVersion: 2
@@ -868,8 +868,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: b4f1dab0f9430004ca3b857aea197619, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
