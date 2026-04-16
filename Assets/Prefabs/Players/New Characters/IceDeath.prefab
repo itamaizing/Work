@@ -3161,7 +3161,7 @@ PrefabInstance:
       objectReference: {fileID: 4828835083233773366}
     - target: {fileID: 8569747795464636412, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _currentSpeed
-      value: 3.5
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 8630238717969952997, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchorMax.x
@@ -5467,7 +5467,7 @@ MonoBehaviour:
   character: {fileID: 4374618947117916461}
   iceShadow: {fileID: 3068634069238352843}
   icePuddle: {fileID: 4310610476984543593}
-  _seriesOfStrikes: {fileID: 0}
+  _seriesOfStrikes: {fileID: 3083348233968490285}
 --- !u!114 &3308416631096017029
 MonoBehaviour:
   m_ObjectHideFlags: 0

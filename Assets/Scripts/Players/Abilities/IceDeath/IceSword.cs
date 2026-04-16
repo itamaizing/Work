@@ -21,7 +21,7 @@ public class IceSword : CloseCombatSkill
     [SerializeField] private float _maxAdditionalCost = 10f;
 	private Character _oldtarget;
 	//private Character _target;
-	private float _duration = 3;
+	private float _duration = 12;
 	private Energy _energy;
 	private Coroutine coroutineSwordTime;
 	private RuneComponent _rune;
