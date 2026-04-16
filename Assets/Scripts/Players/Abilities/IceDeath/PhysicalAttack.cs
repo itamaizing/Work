@@ -22,6 +22,9 @@ public class PhysicalAttack : Skill
 	private bool _isRightKick = true;
 	private Animator _animator;
 
+	private bool _nextHitAppliesFrozen;
+	private float _nextHitFrozenDuration;
+
 	#region Const
 	private const int EnergyPerAttack = 5;
 	private const int HitVariationMax = 2;
@@ -189,6 +192,7 @@ public class PhysicalAttack : Skill
 			_rune.SumDamageMake(curDamage);
 			_energy.CmdUse(5);
 			CmdApplyDamage(damage, enemy.gameObject);
+			TryApplyNextHitFrozen(enemy);
 
 			if (_rollingPhysTalent)
 			{
@@ -220,6 +224,7 @@ public class PhysicalAttack : Skill
 				Type = DamageType.Physical,
 			};
 			CmdApplyDamage(damage, enemy.gameObject);
+			TryApplyNextHitFrozen(enemy);
 		}
 
 		if (UnityEngine.Random.Range(0, 100) < TalentProcChance && _talentActive)
@@ -259,6 +264,7 @@ public class PhysicalAttack : Skill
 		};
 		_combo.MakeHit(enemy, Info.AbilityForm, 0, EnergyPerAttack, curDamage, _multiplier);
 		CmdApplyDamage(damage, enemy.gameObject);
+		TryApplyNextHitFrozen(enemy);
 	}
 
 	[Command]
@@ -342,6 +348,22 @@ public class PhysicalAttack : Skill
 	{
 		Hero.Move.SetCanMove(false);
 		_animator.applyRootMotion = true;
+	}
+
+	public void SetNextHitFrozen(float duration)
+	{
+		_nextHitAppliesFrozen = true;
+		_nextHitFrozenDuration = duration;
+	}
+
+	private void TryApplyNextHitFrozen(Character enemy)
+	{
+		if (!_nextHitAppliesFrozen || enemy == null) return;
+
+		enemy.CharacterState.AddState(States.Frozen, _nextHitFrozenDuration, 0f, Hero.gameObject, Name);
+
+		_nextHitAppliesFrozen = false;
+		_nextHitFrozenDuration = 0f;
 	}
 
 	public void ApplyRootFalse()
