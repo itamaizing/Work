@@ -26,11 +26,18 @@ public class IceSword : CloseCombatSkill
 	private Energy _energy;
 	private Coroutine coroutineSwordTime;
 	private RuneComponent _rune;
-	private bool _critDmg = false;
 	private AudioSource _audioSource;
 	protected override bool IsCanCast => IsCanCastCheck();
 
-	protected override int AnimTriggerCastDelay => 0;
+	#region Talent
+
+	private bool _isFrozenCrit;
+
+	public void FrozenCrit(bool value) => _isFrozenCrit = value;
+
+    #endregion
+
+    protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("IceSword");
 
 	private bool IsCanCastCheck()
@@ -83,7 +90,7 @@ public class IceSword : CloseCombatSkill
 			_deathSpiral.AddCharge();
 			_hitInTheRow = 0;
 		}
-		ApplyDamage();
+		ApplyDamage(targetCharacter);
 		CmdAdd(Targeting.GetTarget()?.Character.gameObject);
 		yield return null;
 	}
@@ -95,7 +102,7 @@ public class IceSword : CloseCombatSkill
 		//_target = null;
 	}
 
-	private void ApplyDamage()
+	private void ApplyDamage(Character targetCharacter)
 	{
 		//Debug.Log("111111111111");
 		/*float energyBonus = 0;
@@ -108,6 +115,19 @@ public class IceSword : CloseCombatSkill
 		//float totalDamage = _damage + energyBonus;
 		float totalDamage = _damage + _additionalDamage;
 
+		bool targetHasFrozen = targetCharacter != null && targetCharacter.CharacterState.CheckForState(States.Frozen);
+
+		if (_isFrozenCrit && targetHasFrozen)
+		{
+			totalDamage *= 1.10f;
+
+			if (Random.Range(0f, 100f) < 15f)
+			{
+				float critMultiplier = Random.Range(1.8f, 2.3f);
+				totalDamage *= critMultiplier;
+			}
+		}
+
 		Damage damage2 = new Damage
 		{
 			Value = totalDamage,
@@ -115,11 +135,6 @@ public class IceSword : CloseCombatSkill
 			PhysicAttackType = AttackRangeType.RangeAttack,
 		};
 		Debug.Log("Damage " + totalDamage);
-
-		if (_critDmg && Targeting.GetTarget().Character.CharacterState.CheckForState(States.Frozen))
-		{
-			damage2.Value *= (Random.Range(0, 100) < 15) ? 1.8f : 1.1f;
-		}
 
 		CmdApplyDamage(damage2, Targeting.GetTarget()?.Character.gameObject);
 
@@ -151,11 +166,6 @@ public class IceSword : CloseCombatSkill
 	private void RpcPlayShotSound()
 	{
 		if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
-	}
-
-	public void TalentCritDmg(bool value)
-	{
-		_critDmg = value;
 	}
 
 	public void CorutineSwordTimeStart()
