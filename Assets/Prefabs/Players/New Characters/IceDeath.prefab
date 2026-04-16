@@ -3597,7 +3597,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 4149308b91515334c801b1f26c6c99ba, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 0
+    _base: 70
     _costs: []
   _skillEnergyCosts:
   - nameToShow: 0 Health - Mandatory mod desc
@@ -4427,7 +4427,7 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 735131f592de46b408a7ae44e2bfe1c6, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 0
+    _base: 70
     _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
