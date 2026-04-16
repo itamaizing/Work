@@ -44,7 +44,9 @@ public class IceRolling : Skill
 	#region Talent
 
 	private bool _isDamageAddFrosting;
+	private bool _isAttackWithFrosenAddEvade;
 
+	public void AttackWithFrosenAddEvade(bool value) => _isAttackWithFrosenAddEvade = value;
 	public void DamageAddFrosting(bool value) => _isDamageAddFrosting = value;
 	public void TalentRollingPhys(bool value) => _rollingPhysTalent = value;
 	public void RollingWithEnemyTalentActive(bool value) => _rollingWithEnemyTalent = value;
@@ -157,6 +159,20 @@ public class IceRolling : Skill
 		}
 
 		return false;
+	}
+
+	public bool TryEvadeFromFrozenAttacker(Character attacker)
+	{
+		if (!_isAttackWithFrosenAddEvade || attacker == null) return false;
+
+		var frozen = attacker.CharacterState.GetState(States.Frozen) as FrozenState;
+		if (frozen == null)	return false;
+
+		float slowPercent = frozen.CurrentAttackSlowPercent;
+		float evadeChance = slowPercent * 0.4f;
+
+		float roll = UnityEngine.Random.Range(0f, 1f);
+		return roll < evadeChance;
 	}
 
 	private bool IsTargetInCloseProximity(Vector3 start, Vector3 direction, out Character characterHit)
