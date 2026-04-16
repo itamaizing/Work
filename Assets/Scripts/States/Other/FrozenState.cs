@@ -82,7 +82,8 @@ public class FrozenState : AbstractCharacterState
         if (_frozenEffectInstance != null)
             _frozenEffectInstance.SetActive(false);
 
-        foreach (var mat in characterState.StateEffects.MaterialsCharacter) mat.color = Color.white;
+        foreach (var mat in characterState.StateEffects.MaterialsCharacter)
+            mat.color = Color.white;
     }
 
     public override bool Stack(float time)

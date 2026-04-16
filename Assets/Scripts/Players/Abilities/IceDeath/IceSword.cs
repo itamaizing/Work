@@ -169,34 +169,84 @@ public class IceSword : CloseCombatSkill
 	{
 		AnimCastEnded();
 	}
-    protected override bool TryPayCost(List<SkillResourceCost> skillEnergyCosts, bool startCooldown = true)
-    {
-		if (!IsHaveResourceOnSkill)
+
+	protected override bool CheckResourcesOnSkill()
+	{
+		EnsureResources();
+
+		foreach (var skillCost in _skillEnergyCosts)
 		{
-			return false;
+			var resource = Hero.Resources[skillCost.type];
+			float required = Buff.ManaCost.GetBuffedValue(skillCost.value);
+
+			if (skillCost.type == ResourceType.Energy) required += 1f;
+			if (resource.CurrentValue < required) return false;
 		}
 
-        _additionalDamage = 0;
+		return true;
+	}
 
-        foreach (var skillCost in skillEnergyCosts)
-        {
-			var baseCost = skillCost.value;
+	protected override void SpendResources()
+	{
+		EnsureResources();
 
-            if (_energy.CurrentValue > baseCost)
+		_additionalDamage = 0f;
+
+		foreach (var skillCost in _skillEnergyCosts)
+		{
+			if (skillCost.type != ResourceType.Energy)
 			{
-                _additionalDamage = Mathf.Min(_energy.CurrentValue-baseCost, _maxAdditionalCost);
-                //Debug.Log($"Add damage {_additionalDamage}, | currEnergy {_energy.CurrentValue} ");
-                _energy.CmdUse(_additionalDamage);
-            }
-            _energy.CmdUse(Buff.ManaCost.GetBuffedValue(baseCost));
-        }
+				var resource = Hero.Resources[skillCost.type];
+				resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.value));
+				continue;
+			}
 
-		if (startCooldown)
-		{
-			Cooldown.SetIncreased(Cooldown.CooldownTime, shouldModify: false);
+			float baseCost = Buff.ManaCost.GetBuffedValue(skillCost.value);
+			float currentEnergy = _energy.CurrentValue;
+
+			float availableExtra = Mathf.Max(0f, currentEnergy - baseCost);
+
+			_additionalDamage = Mathf.Clamp(availableExtra, 1f, _maxAdditionalCost);
+
+			float totalCost = baseCost + _additionalDamage;
+			_energy.CmdUse(totalCost);
 		}
+	}
 
-        if (!_useChargesAsComboPart) TryUseCharge();
-        return true;
-    }
+	private void EnsureResources()
+	{
+		if (_energy == null) _energy = (Energy)Hero.Resources[ResourceType.Energy];
+		if (_rune == null) _rune = (RuneComponent)Hero.Resources[ResourceType.Rune];
+	}
+
+	//protected override bool TryPayCost(List<SkillResourceCost> skillEnergyCosts, bool startCooldown = true)
+ //   {
+	//	if (!IsHaveResourceOnSkill)
+	//	{
+	//		return false;
+	//	}
+
+ //       _additionalDamage = 0;
+
+ //       foreach (var skillCost in skillEnergyCosts)
+ //       {
+	//		var baseCost = skillCost.value;
+
+ //           if (_energy.CurrentValue > baseCost)
+	//		{
+ //               _additionalDamage = Mathf.Min(_energy.CurrentValue-baseCost, _maxAdditionalCost);
+ //               //Debug.Log($"Add damage {_additionalDamage}, | currEnergy {_energy.CurrentValue} ");
+ //               _energy.CmdUse(_additionalDamage);
+ //           }
+ //           _energy.CmdUse(Buff.ManaCost.GetBuffedValue(baseCost));
+ //       }
+
+	//	if (startCooldown)
+	//	{
+	//		Cooldown.SetIncreased(Cooldown.CooldownTime, shouldModify: false);
+	//	}
+
+ //       if (!_useChargesAsComboPart) TryUseCharge();
+ //       return true;
+ //   }
 }

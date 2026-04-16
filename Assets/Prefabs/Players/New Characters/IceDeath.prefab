@@ -4429,7 +4429,13 @@ MonoBehaviour:
   _costComponent:
     _base: 40
     _costs: []
-  _skillEnergyCosts: []
+  _skillEnergyCosts:
+  - nameToShow: 40 Energy - Mandatory
+    type: 2
+    value: 40
+    costType: 0
+    shouldModify: 0
+    showInDescription: 0
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
