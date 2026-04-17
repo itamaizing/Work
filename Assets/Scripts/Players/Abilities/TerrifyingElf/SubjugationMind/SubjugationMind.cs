@@ -16,6 +16,7 @@ public class SubjugationMind : Skill
 
     private byte _originalTeamIndex;
     private bool _teamWasChanged;
+    private bool _uiWasSwitched;
 
     private NetworkConnectionToClient _originalOwner;
 
@@ -55,6 +56,11 @@ public class SubjugationMind : Skill
 
         CmdDestroyEffect();
         Targeting.ClearTarget();
+    }
+
+    private SkillPanel GetLocalSkillPanel()
+    {
+        return FindObjectOfType<SkillPanel>(true);
     }
 
     private void StopStream()
@@ -220,6 +226,12 @@ public class SubjugationMind : Skill
             RestoreControlledTeam(heroTarget);
         }
 
+        if (_uiWasSwitched)
+        {
+            TargetRpcSwitchSkillPanelToCaster(connectionToClient);
+            _uiWasSwitched = false;
+        }
+
         _originalOwner = null;
     }
 
@@ -303,6 +315,9 @@ public class SubjugationMind : Skill
             TargetRpcSetKinematicFalse(connectionToClient, heroTarget.netId);
             if (_originalOwner != null) TargetRpcSetKinematicTrue(_originalOwner, heroTarget.netId);
 
+            TargetRpcSwitchSkillPanelToTarget(connectionToClient, heroTarget.netId);
+            _uiWasSwitched = true;
+
             StartCoroutine(ReturnHeroControlAfterDelay(heroTarget, netId));
         }
     }
@@ -380,5 +395,35 @@ public class SubjugationMind : Skill
 
         var input = hero.GetComponent<InputHandler>();
         if (input != null) input.enabled = false;
+    }
+
+    [TargetRpc]
+    private void TargetRpcSwitchSkillPanelToTarget(NetworkConnection target, uint targetNetId)
+    {
+        if (!NetworkClient.spawned.TryGetValue(targetNetId, out var identity))
+            return;
+
+        var targetCharacter = identity.GetComponent<Character>();
+        if (targetCharacter == null || targetCharacter.Abilities == null)
+            return;
+
+        var skillPanel = GetLocalSkillPanel();
+        if (skillPanel == null)
+            return;
+
+        skillPanel.Fill(targetCharacter.Abilities);
+    }
+
+    [TargetRpc]
+    private void TargetRpcSwitchSkillPanelToCaster(NetworkConnection target)
+    {
+        var skillPanel = GetLocalSkillPanel();
+        if (skillPanel == null)
+            return;
+
+        if (Hero == null || Hero.Abilities == null)
+            return;
+
+        skillPanel.Fill(Hero.Abilities);
     }
 }

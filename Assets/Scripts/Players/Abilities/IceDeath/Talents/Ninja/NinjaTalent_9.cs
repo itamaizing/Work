@@ -12,24 +12,32 @@ public class NinjaTalent_9 : Talent
     {
         _iceSword.FrozenCrit(true);
 
-        if (_hero == null) _hero = GetComponentInParent<Character>();
+        if (_hero == null)
+            _hero = GetComponentInParent<Character>();
 
-        if (_hero == null) return;
+        if (_hero == null)
+            return;
 
         if (_energyMaxModifier == null)
             _energyMaxModifier = new AttributeModifier(BonusEnergyMax, ModifierType.Flat, this);
 
         _hero.AttributeSystem.ResourceMax.AddModifier(_energyMaxModifier);
-        if (_hero.TryGetResource(ResourceType.Energy, out var resource) && resource is Energy energy) energy.CmdAdd(BonusEnergyMax);
+
+        if (_hero.TryGetResource(ResourceType.Energy, out var resource) && resource is Energy energy)
+        {
+            energy.Add(BonusEnergyMax);
+        }
     }
 
     public override void Exit()
     {
         _iceSword.FrozenCrit(false);
 
-        if (_hero == null) _hero = GetComponentInParent<Character>();
+        if (_hero == null)
+            _hero = GetComponentInParent<Character>();
 
-        if (_hero == null || _energyMaxModifier == null) return;
+        if (_hero == null || _energyMaxModifier == null)
+            return;
 
         _hero.AttributeSystem.ResourceMax.RemoveModifier(_energyMaxModifier);
 
@@ -40,7 +48,7 @@ public class NinjaTalent_9 : Talent
             if (energy.CurrentValue > maxAfterRemove)
             {
                 float overflow = energy.CurrentValue - maxAfterRemove;
-                energy.CmdUse(overflow);
+                energy.TryUse(overflow);
             }
         }
     }

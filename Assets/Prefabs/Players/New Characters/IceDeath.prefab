@@ -4468,6 +4468,8 @@ MonoBehaviour:
   _projectile: {fileID: -5318331524605723407, guid: 972ffc3bac4d76048b18c6e9bbdcfb98, type: 3}
   _playerLinks: {fileID: 4374618947117916461}
   _seriesOfStrikes: {fileID: 3083348233968490285}
+  _baseEnergyCost: 5
+  _maxAdditionalCost: 0
 --- !u!114 &5084671336121015661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5558,7 +5560,7 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
-  _iceRolling: {fileID: 8918194537379249446}
+  _seriesOfStrikes: {fileID: 3083348233968490285}
 --- !u!114 &2009566426416641374
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5615,6 +5617,7 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 4374618947117916461}
   _iceShadow: {fileID: 3068634069238352843}
+  _iceRolling: {fileID: 8918194537379249446}
 --- !u!114 &1792201985892865307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5640,7 +5643,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
-  _seriesOfStrikes: {fileID: 3083348233968490285}
 --- !u!114 &7564448136993268494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5667,6 +5669,7 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 4374618947117916461}
   _iceSword: {fileID: 5084671336121015661}
+  _hero: {fileID: 4374618947117916461}
 --- !u!114 &3966793049180903548
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5693,7 +5696,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
-  _seriesOfStrikes: {fileID: 3083348233968490285}
 --- !u!114 &1308729042165579930
 MonoBehaviour:
   m_ObjectHideFlags: 0

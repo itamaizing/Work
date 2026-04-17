@@ -9,8 +9,8 @@ public class IceShard : Skill
 	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 
-	[SerializeField] private float _baseEnergyCost = 40f;
-	[SerializeField] private float _maxAdditionalCost = 10f;
+	[SerializeField] private float _baseEnergyCost = 5f;
+	[SerializeField] private float _maxAdditionalCost = 0f;
 
 	private Vector3 _mousePos = Vector2.positiveInfinity;
 	private bool _talentPlague = false;
