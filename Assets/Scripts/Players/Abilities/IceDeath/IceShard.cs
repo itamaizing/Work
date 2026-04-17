@@ -2,7 +2,6 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class IceShard : Skill
 {
@@ -39,7 +38,6 @@ public class IceShard : Skill
 	private void CmdCreateProjecttile(float angle, float manaValue, bool talentPlague, bool talentChargesPlague)
 	{
 		IceShardProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, -angle, 0));
-		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(_playerLinks, manaValue, false, this);
 		projectile.Talents(talentPlague, talentChargesPlague);
 

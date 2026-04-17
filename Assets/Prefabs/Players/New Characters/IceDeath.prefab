@@ -5528,6 +5528,8 @@ MonoBehaviour:
     Row: 2
   character: {fileID: 4374618947117916461}
   icePuddle: {fileID: 4310610476984543593}
+  _iceShard: {fileID: 3138758512476647846}
+  _ability: {fileID: 4220410774128686972}
 --- !u!114 &5895525630716015852
 MonoBehaviour:
   m_ObjectHideFlags: 0
