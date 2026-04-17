@@ -122,6 +122,6 @@ public class FireBallSkill : Skill
         character.CharacterState.AddState(States.Stun, _stunDuration, 0, Hero.gameObject, name);
 
         for (int i = 0; i < _burnStacks; i++)
-            character.CharacterState.AddState(States.BurningStacked, _burnDuration, 0, Hero.gameObject, name);
+            character.CharacterState.AddState(States.Burning, _burnDuration, 0, Hero.gameObject, name);
     }
 }

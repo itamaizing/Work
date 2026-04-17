@@ -22,7 +22,7 @@ public class Cooling : RefreshingState
 		_modif = new AttributeModifier(_speedDebuf, ModifierType.Percent);
     
 		characterState = character;
-		MaxStacksCount = 5;
+		MaxStacksCount = 6;
 		_damageToExit = damageToExit == 0 ? 10000 : damageToExit;
 		_damageOnStart = characterState.Character.Health.SumDamageTaken;
     

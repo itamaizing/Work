@@ -5262,6 +5262,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2335912879836011194, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1884285126135186261}
+    - targetCorrespondingSourceObject: {fileID: 2335912879836011194, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3511659400006813471}
   m_SourcePrefab: {fileID: 100100000, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
 --- !u!114 &796181543974625443 stripped
 MonoBehaviour:
@@ -5566,7 +5569,7 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _waterAura: {fileID: 6129426252062776704}
+  magicWaterAura: {fileID: 6129426252062776704}
 --- !u!114 &2919457201291660018
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5582,8 +5585,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 064e5b38aa1d521428c2e5c4e1572ce0, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
@@ -5656,6 +5659,7 @@ MonoBehaviour:
     mobility: 0
     control: 0
   _effectObject: {fileID: 8291093145260447810}
+  _coolingAura: {fileID: 3511659400006813471}
 --- !u!114 &1884285126135186261
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5747,6 +5751,30 @@ MonoBehaviour:
   _agent: {fileID: 6215928600746481535}
   _shieldPref: {fileID: 1158249924082485831, guid: 8436cda64b22c4f4f9becfe3d409d4fc, type: 3}
   _baffDuration: 9
+--- !u!114 &3511659400006813471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7970984732438363365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 714371d487767004888adc9889f6a1dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CoolingAura
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _radius: 5
+  _checkInterval: 0.5
+  _targetLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  _buffDuration: -1
+  _minRadius: 1
+  _maxRadius: 5
+  _expandTime: 5
 --- !u!1001 &5708473038929150688
 PrefabInstance:
   m_ObjectHideFlags: 0

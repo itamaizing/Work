@@ -713,6 +713,9 @@ PrefabInstance:
       addedObject: {fileID: 3431244675623935200}
     - targetCorrespondingSourceObject: {fileID: 2335912879836011194, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 3917612944800829221}
+    - targetCorrespondingSourceObject: {fileID: 2335912879836011194, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 4104682820791546066}
     - targetCorrespondingSourceObject: {fileID: 2335912879836011194, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
       insertIndex: -1
@@ -820,6 +823,27 @@ MonoBehaviour:
   _agent: {fileID: 3136982779875862714}
   _stunDuration: 1.5
   _stunChance: 0.15
+--- !u!114 &3917612944800829221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1393027867669365536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6aa6d1a18a4862e4db36f1a205465d72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PowerOfEarthAura
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _radius: 8
+  _checkInterval: 0.5
+  _targetLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  _buffDuration: -1
 --- !u!114 &4104682820791546066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -958,8 +982,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: e09aa40ceee0a8e4ea1cd499cff44f7d, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
@@ -1032,6 +1056,7 @@ MonoBehaviour:
     mobility: 0
     control: 0
   _effectObject: {fileID: 2920725488939395447}
+  _powerOfEarthAura: {fileID: 3917612944800829221}
   _auraDuration: 6
 --- !u!4 &1738063844293958042 stripped
 Transform:

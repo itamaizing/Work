@@ -573,7 +573,7 @@ MonoBehaviour:
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
-  _damageValue: 3
+  _damageValue: 10
   _infoComponent:
     _school: 0
     _form: 0
@@ -584,9 +584,9 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 3
+    _faction: 4
+    _unitType: 5
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -633,6 +633,7 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _agent: {fileID: 8521629497404255749}
   _particlePref: {fileID: 2607017853375542456, guid: ac2586615ed6e5948983d73649d16e00, type: 3}
 --- !u!114 &-2837521630394622147
 MonoBehaviour:

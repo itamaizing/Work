@@ -1,6 +1,5 @@
 ﻿using System;
 using Gangdollarff.EarthElemental;
-using Gangdollarff.WaterElemental;
 using Mirror;
 using System.Collections.Generic;
 using System.Linq;
@@ -417,14 +416,12 @@ public class CharacterState : NetworkBehaviour
         [States.Burning] = new Burning(),
         [States.Burn] = new Burn(),
 		[States.Discharge] = new Gangdollarff.AirElemental.Discharge(),
-		[States.CoolingAura] = new CoolingAura(),
 		[States.CoolingDamaged] = new CoolingDamaged(),
 		[States.MagicalExcitement] = new MagicalExcitement(),
 		[States.GodLight] = new GodLightState(),
 		[States.MagicInstantaneity] = new MagicInstantaneityState(),
 		[States.ImmortalityState] = new ImmortalityState(),
-		[States.BurningStacked] = new BurningStacked(),
-        #endregion
+		#endregion
 
         #region Test Baff and Debaff
         [States.BaffState] = new BaffState(),
@@ -974,7 +971,6 @@ public enum States
 	Stupefaction,
 	TentacleGrip,
     Discharge,
-    CoolingAura,
     Restoration,
     RestorationStacking,
     Destruction,
@@ -1003,7 +999,6 @@ public enum States
 	CoolingDamaged,
 	MagicInstantaneity,
 	ImmortalityState,
-	BurningStacked,
 	Parasites,
 	SwarmSpeed,
 	DestructivePoison,

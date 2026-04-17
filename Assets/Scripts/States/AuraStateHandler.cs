@@ -12,24 +12,31 @@ public abstract class AuraStateHandler : NetworkBehaviour
     [SerializeField] protected float _checkInterval = 0.5f;
     [SerializeField] LayerMask _targetLayer;
 
+    protected virtual float GetCurrentRadius() => _radius;
     protected Character _owner;
     protected readonly HashSet<Character> _currentTargets = new();
 
     private Coroutine _checkCoroutine;
+    private Coroutine _durationCoroutine;
     private bool _isActive = false;
 
     public bool IsActive => _isActive;
 
-    public void ActivateAura(bool active, bool isAffectOnOwner = false)
+    public void ActivateAura(bool active, float duration = -1f, bool isAffectOnOwner = false)
     {
         if (_isActive == active) return;
 
         _isActive = active;
-        
+
         if (_checkCoroutine != null)
         {
             StopCoroutine(_checkCoroutine);
             _checkCoroutine = null;
+        }
+        if (_durationCoroutine != null)
+        {
+            StopCoroutine(_durationCoroutine);
+            _durationCoroutine = null;
         }
 
         RemoveEffectsFromAllTargets();
@@ -41,10 +48,25 @@ public abstract class AuraStateHandler : NetworkBehaviour
 
             _checkCoroutine = StartCoroutine(CheckTargetsRoutine(isAffectOnOwner));
             OnAuraEnabled();
+
+            if (duration > 0f)
+            {
+                _durationCoroutine = StartCoroutine(DurationRoutine(duration));
+            }
         }
         else
         {
             OnAuraDisabled();
+        }
+    }
+    
+    private IEnumerator DurationRoutine(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+
+        if (_isActive)
+        {
+            ActivateAura(false);
         }
     }
 
@@ -54,7 +76,7 @@ public abstract class AuraStateHandler : NetworkBehaviour
         
         while (_isActive && _owner != null && !_owner.IsDead)
         {
-            var colliders = Physics.OverlapSphere(transform.position, _radius, _targetLayer);
+            var colliders = Physics.OverlapSphere(transform.position, GetCurrentRadius(), _targetLayer);
             var newTargets = new HashSet<Character>();
 
             foreach (var col in colliders)

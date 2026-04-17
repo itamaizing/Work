@@ -21,6 +21,7 @@ public class ElementalSpawn : Skill
 
     private bool _elementalsAuraTalent;
     private bool _elementalsShieldsTalent;
+    private bool _elementalsActiveTalent;
     #endregion
 
     protected override bool IsCanCast => Vector3.Distance(_position, transform.position) <= AreaInfo.Radius;
@@ -46,6 +47,16 @@ public class ElementalSpawn : Skill
         if (_elementalsShieldsTalent != value)
         {
             _elementalsShieldsTalent = value;
+            if(_currentElemental)
+                TryActivateMinionTalent(_selectedElemental,true);
+        }
+    }
+    
+    public void IsElementalsActiveSkillsEnabled(bool value)
+    {
+        if (_elementalsActiveTalent != value)
+        {
+            _elementalsActiveTalent = value;
             if(_currentElemental)
                 TryActivateMinionTalent(_selectedElemental,true);
         }
@@ -128,21 +139,25 @@ public class ElementalSpawn : Skill
         {
             case Elementals.Air:
                 HandleAura<AirElement>(enable);
-                HandleSkill<ColdShield>(enable);
+                HandleSkill<DischargingSkill>(enable,_elementalsActiveTalent);
                 break;
 
             case Elementals.Earth:
-                HandleAura<EarthElementalAuras>(enable);
-                HandleSkill<EarthPetrificationSkill>(enable);
+                HandleAura<EarthElementalHealthAura>(enable);
+                HandleSkill<EarthPetrificationSkill>(enable,_elementalsShieldsTalent);
+                HandleSkill<PowerOfEarthActive>(enable,_elementalsActiveTalent);
                 break;
 
             case Elementals.Fire:
                 HandleAura<HotBloodAura>(enable);
-                HandleSkill<FireShield>(enable);
+                HandleSkill<FireShield>(enable,_elementalsShieldsTalent);
+                HandleSkill<Explosion>(enable,_elementalsActiveTalent);
                 break;
 
             case Elementals.Water:
                 HandleWaterTalents(enable);
+                HandleSkill<ColdShield>(enable,_elementalsShieldsTalent);
+                HandleSkill<CoolingActive>(enable,_elementalsActiveTalent);
                 break;
         }
     }
@@ -159,13 +174,13 @@ public class ElementalSpawn : Skill
         auraComponent.ActivateAura(actuallyActivate);
     }
 
-    private void HandleSkill<T>(bool shouldBeActive) where T : Skill
+    private void HandleSkill<T>(bool shouldBeActive,bool talentBool) where T : Skill
     {
         var skillComponent = _currentElemental.GetComponent<T>();
         if (skillComponent == null)
             return;
 
-        bool actuallyActivate = _elementalsShieldsTalent && shouldBeActive;
+        bool actuallyActivate = talentBool && shouldBeActive;
 
         if (actuallyActivate)
             _currentElemental.Abilities.ActivateSkill(skillComponent);

@@ -1,24 +1,22 @@
-﻿using System;
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
-public class Explosion : MoveSkill
+public class DischargingSkill : MoveSkill
 {
-    [SerializeField] private ParticleSystem _particlePref;
-
-    //private Character _target;
-
-    protected override bool IsCanCast { get => CheckCanCast(); }
-    
-    private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+    [SerializeField] private float _dischargeDuration = 6f;
+    protected override bool IsCanCast
+    {
+        get => CheckCanCast();
+    }
 
     protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerCast => 0;
+    protected override int AnimTriggerCast => Animator.StringToHash("DischargeSkill");
+    private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
     private float _clickRadius = 0.5f;
-    private float _particleLifetime = 1.5f;
+    private float _particleLifetime = 1f;
 
     private void OnEnable()
     {
@@ -29,10 +27,21 @@ public class Explosion : MoveSkill
     {
         Canceled -= CancelMove;
     }
-    
+
     private bool CheckCanCast()
     {
-        return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
+        return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <=
+               AreaInfo.Radius;
+    }
+
+    public void AnimCastDischarge()
+    {
+        AnimStartCastCoroutine();
+    }
+
+    public void AnimEndDischarge()
+    {
+        AnimCastEnded();
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -48,32 +57,16 @@ public class Explosion : MoveSkill
     {
         if (Targeting.GetTarget()?.Character != null)
         {
-            foreach (var states in Targeting.GetTarget().Character.CharacterState.CurrentStates)
-            {
-                Debug.LogError(states.State);
-            }
-            var state = Targeting.GetTarget().Character.CharacterState.GetState(States.Burning);
-            if (state == null) yield break;
-            
-            int stacks = state.CurrentStacksCount;
-
-            Damage damage = new Damage
-            {
-                Value = stacks * Buff.Damage.GetBuffedValue(Damage),
-                Type = Info.DamageType,
-                PhysicAttackType = Info.AttackRangeType,
-            };
-            CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
-
-            CmdCreateParticle(Targeting.GetTarget().Character.Position);
+            var target = Targeting.GetTarget()?.Character;
+            CmdAddState(target.gameObject);
         }
+
         yield return null;
     }
 
     protected override void ClearData()
     {
         Targeting.ClearTarget();
-        //_target = null;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -84,7 +77,7 @@ public class Explosion : MoveSkill
             if (GetMouseButton)
             {
                 Vector3 clickPoint = Targeting.GetMousePoint();
-        
+
                 Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: false);
                 if (Targeting.GetTempTarget()?.Character is Character character)
                 {
@@ -99,27 +92,21 @@ public class Explosion : MoveSkill
                     }
                 }
             }
+
             yield return null;
         }
+
         targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
         Targeting.ClearTempTarget();
         callbackDataSaved(targetInfo);
     }
 
-    private void CreateParticle(Vector3 position)
-    {
-        Destroy(Instantiate(_particlePref.gameObject, position, Quaternion.identity),_particleLifetime);
-    }
-
     [Command]
-    protected void CmdCreateParticle(Vector3 position)
+    private void CmdAddState(GameObject target)
     {
-        RpcCreateParticle(position);
-    }
-
-    [ClientRpc]
-    private void RpcCreateParticle(Vector3 position)
-    {
-        CreateParticle(position);
+        if (target.TryGetComponent(out Character character))
+        {
+            character.CharacterState.AddState(States.Discharge, _dischargeDuration, 0, Schools.Air, Hero.gameObject, name);
+        }
     }
 }

@@ -11,5 +11,4 @@ public class ElementalsShieldTalent : Talent
     {
         character.Abilities.GetSkill<ElementalSpawn>()?.IsElementalsShieldsEnabled(false);
     }
-
 }

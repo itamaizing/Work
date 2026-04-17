@@ -1,12 +1,12 @@
 using System;
 using System.Collections;
-using Gangdollarff.WaterElemental;
 using Mirror;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class MagicWaterPassive : Skill, IPassiveSkill
 {
-    [SerializeField] private WaterAuras _waterAura;
+    [SerializeField] private MagicWaterAura magicWaterAura;
     
     #region Skill
     protected override int AnimTriggerCastDelay { get; }
@@ -22,6 +22,6 @@ public class MagicWaterPassive : Skill, IPassiveSkill
 
     public void EnableMagicWaterAura(bool value)
     {
-        _waterAura.ActivateAura(value);
+        magicWaterAura.ActivateAura(value);
     }
 }
