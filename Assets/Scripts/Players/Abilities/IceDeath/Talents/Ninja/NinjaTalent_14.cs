@@ -8,11 +8,11 @@ public class NinjaTalent_14 : Talent
 
     public override void Enter()
     {
-        iceShadow.IceDeathInShadowTalentActive(true, Data.DescriptionsForInfoPanel[0]);
+        iceShadow.IceDeathInShadowTalentActive(true);
     }
 
     public override void Exit()
     {
-        iceShadow.IceDeathInShadowTalentActive(false, Data.DescriptionsForInfoPanel[0]);
+        iceShadow.IceDeathInShadowTalentActive(false);
     }
 }
