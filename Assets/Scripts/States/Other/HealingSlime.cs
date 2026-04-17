@@ -77,7 +77,7 @@ public class HealingSlime : RefreshingState
         if (!_infinite) SwitchToInfinite();
         return true;
     }
-
+    
     public override void ExitState()
     {
         if (currentStacksCount > 0)

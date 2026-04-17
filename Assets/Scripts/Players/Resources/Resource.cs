@@ -28,15 +28,14 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 
 	public float CurrentValue { get => _currentValue; set { ValueChanged?.Invoke(_currentValue, value); _currentValue = value; } }
     public float MaxValue
-    { 
-        get 
-        { 
-            if (_maxValueAttribute != null) 
-                return _maxValueAttribute.GetValue();
-            else
-                return _maxValue;
-        } 
-        private set { MaxValueChanged?.Invoke(_maxValue, value); _maxValue = value; } }
+    {
+        get => _maxValue;
+        private set
+        {
+            MaxValueChanged?.Invoke(_maxValue, value);
+            _maxValue = value;
+        }
+    }
 
     public float RegenerationValue { get => _regenerationValue; set { _regenerationValue = value; } }
     public float RegenerationDelay { get => _regenerationPeriod; set { _regenerationPeriod = value; } }
