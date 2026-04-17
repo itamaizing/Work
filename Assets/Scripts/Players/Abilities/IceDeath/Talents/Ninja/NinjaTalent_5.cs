@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class NinjaTalent_5 : Talent
 {
-    [SerializeField] private IceRolling _iceRolling;
+    [SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 
     public override void Enter()
     {
-        _iceRolling.DamageAddFrosting(true);
+        _seriesOfStrikes.SeriesCompleteDoubleCombo(true);
+        _seriesOfStrikes.SeriesCompliteCompoTalentActive(true);
     }
 
     public override void Exit()
     {
-        _iceRolling.DamageAddFrosting(false);
+        _seriesOfStrikes.SeriesCompleteDoubleCombo(false);
+        _seriesOfStrikes.SeriesCompliteCompoTalentActive(false);
     }
 }

@@ -8,11 +8,11 @@ public class NinjaTalent_6 : Talent
 
     public override void Enter()
     {
-        _iceRolling.AttackWithFrosenAddEvade(true);
+        _iceRolling.DamageAddFrosting(true);
     }
 
     public override void Exit()
     {
-        _iceRolling.AttackWithFrosenAddEvade(false);
+        _iceRolling.DamageAddFrosting(false);
     }
 }
