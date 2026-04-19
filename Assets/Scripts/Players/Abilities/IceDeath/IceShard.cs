@@ -20,9 +20,9 @@ public class IceShard : Skill
 
 	protected override bool IsCanCast => true;
 
-    protected override int AnimTriggerCastDelay => 0;
+	protected override int AnimTriggerCastDelay => Animator.StringToHash("Throw");
 
-    protected override int AnimTriggerCast => 0;
+	protected override int AnimTriggerCast => 0;
 
     private void Start()
 	{

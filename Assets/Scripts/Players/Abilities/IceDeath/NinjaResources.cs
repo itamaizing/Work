@@ -18,14 +18,17 @@ public class NinjaResources : Skill, IPassiveSkill
     #region Talent
     private bool _isIceRuneTalent;
     private bool _isHardenedFleshTalent;
+    private bool _isFrozenCrit;
 
-  /*  private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.T))
-        {
-			Hero.CharacterState.CmdAddState(States.HardenedFlesh, 9f, 0, Hero.gameObject, this.Name);
-		}
-    }*/
+    public void FrozenCrit(bool value) => _isFrozenCrit = value;
+
+    /*  private void Update()
+      {
+          if(Input.GetKeyDown(KeyCode.T))
+          {
+              Hero.CharacterState.CmdAddState(States.HardenedFlesh, 9f, 0, Hero.gameObject, this.Name);
+          }
+      }*/
 
     public void EnergyToRestore(bool value, string text)
     {
@@ -39,7 +42,6 @@ public class NinjaResources : Skill, IPassiveSkill
         //AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
     }
     #endregion
-
 
     public override void Init(SkillRenderer render, Character hero)
     {
@@ -57,6 +59,23 @@ public class NinjaResources : Skill, IPassiveSkill
     {
         Hero.DamageTracker.OnDamageTracked -= OnDamageTaken;
         Hero.Health.DamageTaken -= HandleDamageTaken;
+    }
+
+    private void ModifyFrozenCrit(Character targetCharacter, ref Damage damage, Skill skill)
+    {
+        if (!_isFrozenCrit) return;
+        if (targetCharacter == null || skill == null) return;
+        if (skill.Hero != Hero) return;
+        if (skill is not IceSword) return;
+        if (!targetCharacter.CharacterState.CheckForState(States.Frozen))  return;
+
+        damage.Value *= 1.10f;
+
+        if (UnityEngine.Random.Range(0f, 100f) < 30f)
+        {
+            float critMultiplier = UnityEngine.Random.Range(1.8f, 2.3f);
+            damage.Value *= critMultiplier;
+        }
     }
 
     private void TrySubscribe()

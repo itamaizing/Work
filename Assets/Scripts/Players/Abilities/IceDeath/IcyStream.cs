@@ -1,144 +1,184 @@
 ﻿using Mirror;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class IcyStream : Skill
 {
-	[SerializeField] private IcyStreamProjectile _projectile;
-	[SerializeField] private HeroComponent _playerLinks;
-	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
-	private bool _talent = false;
+    [Header("Stream Settings")]
+    [SerializeField] private float _tickInterval = 0.3f;
+    [SerializeField] private float _streamLength = 6f;
+    [SerializeField] private float _streamWidth = 2f;
+    [SerializeField] private float _streamHeight = 2f;
+    [SerializeField] private Transform _streamStartPoint;
+    [SerializeField] private LayerMask _targetsLayers;
 
-	private Vector3 _mousePos = Vector3.positiveInfinity;
-	private Energy _energy;
-	//private Character _target = null;
-	//private RuneComponent _rune;
+    private Energy _energy;
+    private Character _cachedTarget;
 
-	protected override bool IsCanCast => IsCanCastCheck();
+    private Coroutine _streamCoroutine;
+    private bool _isStreaming;
 
+    private const int MaxTicks = 7;
+
+    protected override bool IsCanCast => !_isStreaming && IsCanCastCheck();
     protected override int AnimTriggerCastDelay => 0;
-
     protected override int AnimTriggerCast => 0;
 
     private bool IsCanCastCheck()
-	{
-		if(Targeting.GetTarget()?.Character != null)
-		{
-			if(Vector3.Distance(Targeting.GetTarget().Character.transform.position, _playerLinks.transform.position) > AreaInfo.Radius)
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-
-	private void Start()
-	{
-        //_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
-    }
-
-    public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _mousePos = targetInfo.Points[0];
+        var target = Targeting.GetTarget()?.Character;
+        if (target == null)
+            return false;
+
+        return Vector3.Distance(target.transform.position, Hero.transform.position) <= AreaInfo.Radius;
     }
 
-    private void Shoot()
-	{
-		Debug.Log("shot");
-		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
-		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
-		CmdCreateProjecttile(angle);
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
 
-		_projectile.gameObject.SetActive(true);
-		_projectile.Init(_playerLinks, _energy.CurrentValue, _talent, this);
+        if (_energy == null)
+            _energy = (Energy)Hero.Resources[ResourceType.Energy];
+    }
 
-		float usedEnergy = 0;
-		if (_energy.CurrentValue >= 40)
-		{
-			usedEnergy = 40;
-		}
-		else
-		{
-			usedEnergy = _energy.CurrentValue;
-		}
-		_energy.CmdUse(usedEnergy);
-		_seriesOfStrikes.MakeHit(null, Info.AbilityForm, 1, usedEnergy, 1);
-	}
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    {
+        if (_energy == null)
+            _energy = (Energy)Hero.Resources[ResourceType.Energy];
 
-	[Command]
-	private void CmdCreateProjecttile(float angle)
-	{
-		_projectile.gameObject.SetActive(true);
-		_projectile.Init(_playerLinks, _energy.CurrentValue, _talent, this);
+        while (Targeting.GetTarget()?.Character == null)
+            yield return null;
 
-		/*IcyStreamProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, -angle, 0));
-		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
-		projectile.Init(_playerLinks, _energy.CurrentValue, _talent, this); //its talent bool, no last hit 
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.AddTarget(Targeting.GetTarget().Targetable);
+        callbackDataSaved(targetInfo);
+    }
 
-		NetworkServer.Spawn(projectile.gameObject);*/
+    protected override IEnumerator CastJob()
+    {
+        if (_isStreaming)
+            yield break;
 
-		RpcInit(_projectile.gameObject, _energy.CurrentValue);
-	}
+        _cachedTarget = Targeting.GetTarget()?.Character;
+        if (_cachedTarget == null)
+            yield break;
 
-	[ClientRpc]
-	private void RpcInit(GameObject obj, float manaValue)
-	{
-		//obj.gameObject.SetActive(true);
-		//obj.GetComponent<IcyStreamProjectile>().Init(_playerLinks, manaValue, false, this);
-	}
+        StartStream();
 
-	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-	{
-		if (_energy == null)
-			_energy = (Energy)Hero.Resources[ResourceType.Energy];
-        //while (_target == null)
-        while (float.IsPositiveInfinity(_mousePos.x))
-		{
-			if (GetMouseButton)
-			{
-				_mousePos = Targeting.GetMousePoint();
-				/*if (Targeting.GetTarget() != null)
-				{
-					if (Targeting.GetTarget()?.Character != null)
-					{
-						_target = Targeting.GetTarget()?.Character;
-					}
-				}*/
-				//_mousePos = Targeting.GetMousePoint();
-			}
-			yield return null;
-		}
-		TargetInfo targetInfo = new TargetInfo();
-		targetInfo.Points.Add(_mousePos);
-		callbackDataSaved(targetInfo);
-	}
+        yield return null;
+    }
 
-	protected override IEnumerator CastJob()
-	{
-		Shoot();
-		yield return null;
-	}
+    private void StartStream()
+    {
+        _isStreaming = true;
+        _streamCoroutine = StartCoroutine(StreamRoutine());
+    }
 
-	protected override void ClearData()
-	{
-		Targeting.ClearTarget();
-		//_target = null;
-		StartCoroutine(TurnOff());
-		//_projectile.gameObject.SetActive(false);
-		//_projectile.Init(_playerLinks, _energy.CurrentValue, _talent, this);
-		_mousePos = Vector3.positiveInfinity;
-	}
+    private IEnumerator StreamRoutine()
+    {
+        for (int tick = 1; tick <= MaxTicks; tick++)
+        {
+            yield return new WaitForSeconds(_tickInterval);
 
-	private IEnumerator TurnOff()
-	{
-		yield return new WaitForSeconds(3);
-		_projectile.gameObject.SetActive(false);
-	}
+            ApplyTick(tick);
+        }
 
-	public void Talent(bool value)
-	{
-		_talent = value;
-	}
+        _isStreaming = false;
+    }
+
+    private void ApplyTick(int tickNumber)
+    {
+        List<IDamageable> targets = GetTargetsInStream();
+
+        foreach (var damageable in targets)
+        {
+            if (damageable == null)
+                continue;
+
+            Damage damage = new Damage
+            {
+                Value = tickNumber,
+                Type = Info.DamageType,
+                School = Schools.Water
+            };
+
+            CmdApplyDamage(damage, damageable.gameObject);
+            ApplyFrozen(damageable.gameObject);
+        }
+    }
+
+    private List<IDamageable> GetTargetsInStream()
+    {
+        List<IDamageable> result = new();
+
+        Vector3 startPos = _streamStartPoint != null
+            ? _streamStartPoint.position
+            : Hero.transform.position + Vector3.up * 0.5f;
+
+        Vector3 direction = (_cachedTarget.transform.position - startPos);
+        direction.y = 0f;
+        direction.Normalize();
+
+        Vector3 center = startPos + direction * (_streamLength * 0.5f);
+
+        Vector3 halfExtents = new Vector3(
+            _streamWidth * 0.5f,
+            _streamHeight * 0.5f,
+            _streamLength * 0.5f
+        );
+
+        Collider[] hits = Physics.OverlapBox(
+            center,
+            halfExtents,
+            Quaternion.LookRotation(direction),
+            _targetsLayers
+        );
+
+        foreach (var hit in hits)
+        {
+            IDamageable damageable = hit.GetComponentInParent<IDamageable>();
+            if (damageable == null)
+                continue;
+
+            Character character = hit.GetComponentInParent<Character>();
+            if (character == null)
+                continue;
+
+            if (character == Hero)
+                continue;
+
+            if (!result.Contains(damageable))
+                result.Add(damageable);
+        }
+
+        return result;
+    }
+
+    private void ApplyFrozen(GameObject target)
+    {
+        Character character = target.GetComponent<Character>();
+        if (character == null)
+            return;
+
+        CharacterState state = character.GetComponent<CharacterState>();
+        if (state == null)
+            return;
+
+        state.CmdAddState(States.Frozen, 0.3f, 0, Hero.gameObject, Name);
+    }
+
+    protected override void ClearData()
+    {
+        Targeting.ClearTarget();
+
+        if (_streamCoroutine != null)
+        {
+            StopCoroutine(_streamCoroutine);
+            _streamCoroutine = null;
+        }
+
+        _isStreaming = false;
+    }
 }

@@ -31,9 +31,6 @@ public class IceSword : CloseCombatSkill
 
 	#region Talent
 
-	private bool _isFrozenCrit;
-
-	public void FrozenCrit(bool value) => _isFrozenCrit = value;
 
     #endregion
 
@@ -114,19 +111,6 @@ public class IceSword : CloseCombatSkill
 
 		//float totalDamage = _damage + energyBonus;
 		float totalDamage = _damage + _additionalDamage;
-
-		bool targetHasFrozen = targetCharacter != null && targetCharacter.CharacterState.CheckForState(States.Frozen);
-
-		if (_isFrozenCrit && targetHasFrozen)
-		{
-			totalDamage *= 1.10f;
-
-			if (Random.Range(0f, 100f) < 15f)
-			{
-				float critMultiplier = Random.Range(1.8f, 2.3f);
-				totalDamage *= critMultiplier;
-			}
-		}
 
 		Damage damage2 = new Damage
 		{

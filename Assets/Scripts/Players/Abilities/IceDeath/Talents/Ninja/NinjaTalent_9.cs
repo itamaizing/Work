@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class NinjaTalent_9 : Talent
 {
-    [SerializeField] private IceSword _iceSword;
     [SerializeField] private Character _hero;
 
     private const float BonusEnergyMax = 30f;
@@ -10,16 +9,10 @@ public class NinjaTalent_9 : Talent
 
     public override void Enter()
     {
-        _iceSword.FrozenCrit(true);
+        if (_hero == null) _hero = GetComponentInParent<Character>();
 
-        if (_hero == null)
-            _hero = GetComponentInParent<Character>();
-
-        if (_hero == null)
-            return;
-
-        if (_applied)
-            return;
+        if (_hero == null) return;
+        if (_applied) return;
 
         if (_hero.TryGetResource(ResourceType.Energy, out var resource) && resource is Energy energy)
         {
@@ -31,8 +24,6 @@ public class NinjaTalent_9 : Talent
 
     public override void Exit()
     {
-        _iceSword.FrozenCrit(false);
-
         if (_hero == null)
             _hero = GetComponentInParent<Character>();
 
