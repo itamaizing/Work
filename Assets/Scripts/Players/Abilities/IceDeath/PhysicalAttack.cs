@@ -226,6 +226,7 @@ public class PhysicalAttack : Skill
 				Type = DamageType.Physical,
 			};
 			CmdApplyDamage(damage, enemy.gameObject);
+			CmdTryApplyFrozen(enemy.gameObject);
 			TryApplyNextHitFrozen(enemy);
 		}
 

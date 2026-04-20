@@ -12,6 +12,7 @@ public class IceShardProjectile : Projectiles
 	private Damage _damage;
 	private float _curDamage;
 
+	private const float FrostEnergyFreezeChance = 60f;
 
 	private void Start()
 	{
@@ -56,6 +57,12 @@ public class IceShardProjectile : Projectiles
 
 				//target.Health.TryTakeDamage(curDamage, Info.DamageType.Physical, Info.AttackRangeType.RangeAttack);
 				target.CharacterState.AddState(States.Frozen, duration, 30, _dad.gameObject, _skill.name);
+
+				if (target.CharacterState.CheckForState(States.FrostEnergy))
+				{
+					if (Random.Range(0f, 100f) <= FrostEnergyFreezeChance) target.CharacterState.AddState(States.Frozen, 1f, 0f, _dad.gameObject, _skill.name);
+				}
+
 				if (_talentPlague)
 				{
 					Debug.Log("ADD PLAGUE");
