@@ -14,6 +14,10 @@ public class CircularFrosting : Skill
 	private Energy _energy;
 	private bool _talentFrostingFrozen;
 
+	private const float FrostEnergyCoolingBonusPerStack = 1f;
+	private const float FrostEnergyFrostingBonusPerStack = 5f;
+	private const float FrostEnergyFrozenBonusPerStack = 10f;
+
 	protected override bool IsCanCast => true;
 
 	protected override int AnimTriggerCastDelay => 0;
@@ -96,13 +100,60 @@ public class CircularFrosting : Skill
 	[Command]
 	private void CmdAdd(GameObject enemy)
 	{
+		if (enemy == null) return;
+
 		Character enemyCharacter = enemy.GetComponent<Character>();
+		if (enemyCharacter == null) return;
+
 		if (_talentFrostingFrozen && enemyCharacter.CharacterState.CheckForState(States.Frosting))
 		{
-			enemyCharacter.CharacterState.AddState(States.Frozen, _duration, 0, Hero.gameObject, name);
+			ApplyStateWithFrostEnergyBonus(enemyCharacter, States.Frozen, _duration);
 		}
 
-		enemyCharacter.CharacterState.AddState(States.Frosting, _duration, 0, Hero.gameObject, name);
+		ApplyStateWithFrostEnergyBonus(enemyCharacter, States.Frosting, _duration);
+	}
+
+	private void ApplyStateWithFrostEnergyBonus(Character target, States state, float duration)
+	{
+		if (target == null || target.CharacterState == null)
+			return;
+
+		bool hasFrostEnergy = target.CharacterState.CheckForState(States.FrostEnergy);
+
+		int currentStacks = target.CharacterState.CheckStateStacks(state);
+		int stacksAfterApply = currentStacks + 1;
+
+		float bonusPerStack = 0f;
+
+		switch (state)
+		{
+			case States.Cooling:
+				bonusPerStack = FrostEnergyCoolingBonusPerStack;
+				break;
+
+			case States.Frosting:
+				bonusPerStack = FrostEnergyFrostingBonusPerStack;
+				break;
+
+			case States.Frozen:
+				bonusPerStack = FrostEnergyFrozenBonusPerStack;
+				break;
+		}
+
+		if (hasFrostEnergy && bonusPerStack > 0f)
+		{
+			float bonusDamage = stacksAfterApply * bonusPerStack;
+
+			Damage bonus = new Damage
+			{
+				Value = bonusDamage,
+				Type = DamageType.Magical
+			};
+
+			target.Health.TryTakeDamage(ref bonus, this);
+		}
+
+		target.CharacterState.AddState(state, duration, 0, Hero.gameObject, name);
 	}
 
 	public void SetTalentFrostingFrozen(bool value)
