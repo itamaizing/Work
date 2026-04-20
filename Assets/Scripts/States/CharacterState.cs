@@ -383,6 +383,7 @@ public class CharacterState : NetworkBehaviour
 		[States.ShackleState] = new ShackleState(),
 		[States.SlowFlowLight] = new SlowFlowLightState(),
 		[States.Retribution] = new RetributionState(),
+		[States.FrostEnergy] = new FrostEnergyState(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -1020,7 +1021,8 @@ public enum States
 	ShackleState,
 	SlowFlowLight,
 	Retribution,
-	DisciplineAura
+	DisciplineAura,
+	FrostEnergy
 }
 public enum BaffDebaff
 {

@@ -7,7 +7,7 @@ using UnityEngine;
 public class IcyStream : Skill
 {
     [Header("Stream Settings")]
-    [SerializeField] private float _tickInterval = 0.3f;
+    [SerializeField] private float _tickInterval = 12f;
     [SerializeField] private Transform _streamStartPoint;
 
     [Header("Visual")]
@@ -59,15 +59,11 @@ public class IcyStream : Skill
     protected override IEnumerator CastJob()
     {
         _cachedTarget = Targeting.GetTarget()?.Character;
-        if (_cachedTarget == null)
-            yield break;
+        if (_cachedTarget == null) yield break;
 
         _isStreaming = true;
 
-        CmdSpawnIcyStreamEffect(
-            _streamStartPoint.gameObject,
-            _cachedTarget.gameObject
-        );
+        CmdSpawnIcyStreamEffect( _streamStartPoint.gameObject, _cachedTarget.gameObject);
 
         _streamCoroutine = StartCoroutine(StreamRoutine());
 
@@ -88,22 +84,13 @@ public class IcyStream : Skill
 
     private void ApplyTick(int tickNumber)
     {
-        Collider[] hits = Physics.OverlapSphere(
-            _cachedTarget.transform.position,
-            2f,
-            _targetsLayers
-        );
+        Collider[] hits = Physics.OverlapSphere( _cachedTarget.transform.position, 2f, _targetsLayers);
 
         foreach (var hit in hits)
         {
-            if (!hit.TryGetComponent(out IDamageable damageable))
-                continue;
-
-            if (!hit.TryGetComponent(out Character character))
-                continue;
-
-            if (character == Hero)
-                continue;
+            if (!hit.TryGetComponent(out IDamageable damageable)) continue;
+            if (!hit.TryGetComponent(out Character character)) continue;
+            if (character == Hero) continue;
 
             Damage damage = new Damage
             {
@@ -112,19 +99,17 @@ public class IcyStream : Skill
             };
 
             CmdApplyDamage(damage, character.gameObject);
-
-            character.CharacterState.AddState(States.Frozen, 0.3f, 0, Hero.gameObject, Name);
+            CmdAddFrozen(character);
         }
     }
-
+  
     [Command]
     private void CmdSpawnIcyStreamEffect(GameObject startPoint, GameObject targetPoint)
     {
         if (_icyStreamPrefab == null || startPoint == null || targetPoint == null)
             return;
 
-        GameObject effectInstance =
-            Instantiate(_icyStreamPrefab, startPoint.transform.position, Quaternion.identity);
+        GameObject effectInstance = Instantiate(_icyStreamPrefab, startPoint.transform.position, Quaternion.identity);
 
         NetworkServer.Spawn(effectInstance);
 
@@ -143,14 +128,14 @@ public class IcyStream : Skill
         }
     }
 
+    [Command] private void CmdAddFrozen(Character character) => character.CharacterState.AddState(States.Frozen, 0.3f, 0, Hero.gameObject, Name);
+
     [ClientRpc]
     private void RpcInitEffects(GameObject effectGameObject, GameObject startPoint, GameObject targetPoint)
     {
-        if (effectGameObject == null)
-            return;
+        if (effectGameObject == null) return;
 
-        PullingHealthEffect[] effects =
-            effectGameObject.GetComponentsInChildren<PullingHealthEffect>();
+        PullingHealthEffect[] effects = effectGameObject.GetComponentsInChildren<PullingHealthEffect>();
 
         foreach (var effect in effects)
         {
@@ -163,10 +148,6 @@ public class IcyStream : Skill
     {
         Targeting.ClearTarget();
 
-        if (_streamCoroutine != null)
-            StopCoroutine(_streamCoroutine);
-
-        CmdDestroyIcyStreamEffect();
-        _isStreaming = false;
+        if (_streamCoroutine != null);
     }
 }

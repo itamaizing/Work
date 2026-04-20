@@ -2,18 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FrostTalent_2 : Talent
+public class FrostTalent_5 : Talent
 {
-    [SerializeField] private IcePuddle _icePuddle;
+    [SerializeField] private IceCloud _iceCloud;
     [SerializeField] private SkillManager _skillManager;
 
     public override void Enter()
     {
-        //skillManager.ActivateSkill(icePuddle);
+        _skillManager.ActivateSkill(_iceCloud);
     }
 
     public override void Exit()
     {
-        //skillManager.DeactivateSkill(icePuddle);
+        _skillManager.DeactivateSkill(_iceCloud);
     }
 }
