@@ -15,6 +15,10 @@ public class IceCloudProjectile : Projectiles
 	private float _damageToExit = 1;
 	private float _usedEnergy;
 
+	private const float FrostEnergyCoolingBonusPerStack = 1f;
+	private const float FrostEnergyFrostingBonusPerStack = 5f;
+	private const float FrostEnergyFrozenBonusPerStack = 10f;
+
 	private bool _isReflected;
 
 	private void Start()
@@ -128,15 +132,15 @@ public class IceCloudProjectile : Projectiles
 		switch (state)
 		{
 			case States.Cooling:
-				bonusPerStack = 1f;
+				bonusPerStack = FrostEnergyCoolingBonusPerStack;
 				break;
 
 			case States.Frosting:
-				bonusPerStack = 5f;
+				bonusPerStack = FrostEnergyFrostingBonusPerStack;
 				break;
 
 			case States.Frozen:
-				bonusPerStack = 10f;
+				bonusPerStack = FrostEnergyFrozenBonusPerStack;
 				break;
 
 			default:
