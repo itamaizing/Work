@@ -39,7 +39,8 @@ public abstract class AbstractCharacterState
 
 	public int CurrentStacksCount => currentStacksCount;
 
-    public int MaxStacksCount = 0;
+	public Skill Skill => skill;
+	public int MaxStacksCount = 0;
 	protected float duration = -1;
 	protected float damageToExit = 0;
 	//protected float _duration;

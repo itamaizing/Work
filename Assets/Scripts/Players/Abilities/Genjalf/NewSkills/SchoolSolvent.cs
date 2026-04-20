@@ -12,14 +12,27 @@ public class SchoolSolvent : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => CheckCanCast();
+    private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
     
     private float _clickRadius = 0.5f;
 
     private readonly HashSet<Schools> _accumulatedSchools = new HashSet<Schools>();
     
+    #region Talents
+    private bool _isApplyDamageTalent;
+    private float _manaPercentDamage = 0.3f;
+    private float _lastSkillManaCost;
+    #endregion
+    
     private bool CheckCanCast()
     {
         return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.GetTarget()?.Character != null;
+    }
+    
+    public void IsApplyDamageTalent(bool value)
+    {
+        if (_isApplyDamageTalent == value) return;
+        _isApplyDamageTalent = value;
     }
 
     private void OnEnable()
@@ -77,7 +90,7 @@ public class SchoolSolvent : Skill
     {
         var target = Targeting.GetTarget()?.Character;
         if (target == null) yield break;
-        CmdDispelAccumulatedSchools(target.gameObject);
+        CmdDispelAccumulatedSchools(target.gameObject,IsEnemyTarget(target));
 
         _accumulatedSchools.Clear();
 
@@ -85,7 +98,7 @@ public class SchoolSolvent : Skill
     }
 
     [Command]
-    private void CmdDispelAccumulatedSchools(GameObject targetGO)
+    private void CmdDispelAccumulatedSchools(GameObject targetGO,bool isEnemy)
     {
         if (targetGO == null) return;
 
@@ -96,10 +109,16 @@ public class SchoolSolvent : Skill
 
         foreach (var s in statesCopy)
         {
-            Debug.LogError(s.Schools);
             if (_accumulatedSchools.Contains(s.Schools))
             {
                 state.RemoveState(s.State);
+                if (s.BaffDebaff == BaffDebaff.Baff && _isApplyDamageTalent)
+                {
+                    _lastSkillManaCost = s.Skill.Cost.BaseCost;
+                    Damage dmg = new Damage();
+                    dmg.Value = _lastSkillManaCost * _manaPercentDamage;
+                    ApplyDamage(dmg,targetGO);
+                }
             }
         }
         statesCopy.Clear();

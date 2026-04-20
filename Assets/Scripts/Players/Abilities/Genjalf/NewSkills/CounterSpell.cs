@@ -17,8 +17,14 @@ public class CounterSpell : Skill
     protected override int AnimTriggerCast => 0;
     
     private float _clickRadius = 0.5f;
-    
+
     public event Action<Schools> OnSpellDispelled;
+    
+    #region Talents
+    private bool _isApplyDamageTalent;
+    private float _manaPercentDamage = 0.3f;
+    private float _lastSkillManaCost;
+    #endregion
     
     private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
@@ -27,6 +33,12 @@ public class CounterSpell : Skill
         return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.GetTarget()?.Character != null;
     }
 
+    public void IsApplyDamageTalent(bool value)
+    {
+        if (_isApplyDamageTalent == value) return;
+        _isApplyDamageTalent = value;
+    }
+    
     public void AnimCastLight()
     {
         AnimStartCastCoroutine();
@@ -51,8 +63,16 @@ public class CounterSpell : Skill
 
             if (currentCharacter)
             {
+                var cancelledSkill = currentCharacter.Abilities.CurrentCastingSkill;
                 currentCharacter.CharacterState.CmdAddState(States.SchoolDebuff, 5, 0, Hero.gameObject, name);
-                Schools school = currentCharacter.Abilities.CurrentCastingSkill.Info.School;
+
+                if (cancelledSkill != null && _isApplyDamageTalent)
+                {
+                    _lastSkillManaCost = cancelledSkill.Cost.BaseCost;
+                    CmdApplyManaDamage(currentCharacter.gameObject,_lastSkillManaCost * _manaPercentDamage);
+                }
+
+                Schools school = cancelledSkill.Info.School;
                 _schoolSolvent.AddSchool(school);
                 OnSpellDispelled?.Invoke(school);
             }
@@ -106,6 +126,14 @@ public class CounterSpell : Skill
         {
             GameObject item = Instantiate(_particlePref.gameObject, position, Quaternion.identity);
         }
+    }
+    
+    [Command]
+    private void CmdApplyManaDamage(GameObject target, float damage)
+    {
+        Damage dmg = new Damage();
+        dmg.Value = damage;
+        ApplyDamage(dmg, target);
     }
 
     [Command]

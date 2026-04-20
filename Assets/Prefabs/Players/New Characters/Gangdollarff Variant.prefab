@@ -13103,11 +13103,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRows.Array.size
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.size
-      value: 4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0]'
@@ -13159,7 +13159,7 @@ PrefabInstance:
       objectReference: {fileID: 4967712319262753113}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.size
-      value: 11
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.size
@@ -13176,11 +13176,11 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[1]'
       value: 
-      objectReference: {fileID: 5031629748469295442}
+      objectReference: {fileID: 3396465724686444970}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[2]'
       value: 
-      objectReference: {fileID: 3396465724686444970}
+      objectReference: {fileID: 5031629748469295442}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[3]'
       value: 
@@ -13188,23 +13188,23 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[4]'
       value: 
-      objectReference: {fileID: 6486027622897545265}
+      objectReference: {fileID: 6580646677618872877}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[5]'
       value: 
-      objectReference: {fileID: 308676296038382060}
+      objectReference: {fileID: 3042591342335496185}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[6]'
       value: 
-      objectReference: {fileID: 3042591342335496185}
+      objectReference: {fileID: 6486027622897545265}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[7]'
       value: 
-      objectReference: {fileID: 1870278782762362650}
+      objectReference: {fileID: 4756528340343799191}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[8]'
       value: 
-      objectReference: {fileID: 4756528340343799191}
+      objectReference: {fileID: 308676296038382060}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[9]'
       value: 
@@ -13232,7 +13232,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[5]'
       value: 
-      objectReference: {fileID: 4710988972543738372}
+      objectReference: {fileID: 4838105019699818323}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[6]'
       value: 
@@ -13240,15 +13240,15 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[7]'
       value: 
-      objectReference: {fileID: 8494329667382761152}
+      objectReference: {fileID: 1494690297464286415}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[8]'
       value: 
-      objectReference: {fileID: 2135330488917696545}
+      objectReference: {fileID: 8494329667382761152}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[9]'
       value: 
-      objectReference: {fileID: 9161470001313387124}
+      objectReference: {fileID: 354514987631179107}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[0]'
       value: 
@@ -13264,7 +13264,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[3]'
       value: 
-      objectReference: {fileID: 3551611631032480463}
+      objectReference: {fileID: 4853264508304941808}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[4]'
       value: 
@@ -13272,19 +13272,19 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[5]'
       value: 
-      objectReference: {fileID: 5040640883951079247}
+      objectReference: {fileID: 4777950773765639936}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[6]'
       value: 
-      objectReference: {fileID: 4777950773765639936}
+      objectReference: {fileID: 5040640883951079247}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[7]'
       value: 
-      objectReference: {fileID: 4853264508304941808}
+      objectReference: {fileID: 3677902011510508796}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[8]'
       value: 
-      objectReference: {fileID: 3677902011510508796}
+      objectReference: {fileID: 3551611631032480463}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[9]'
       value: 
@@ -13292,19 +13292,23 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[10]'
       value: 
+      objectReference: {fileID: 1870278782762362650}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[11]'
+      value: 
       objectReference: {fileID: 3879770363589414036}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[10]'
       value: 
-      objectReference: {fileID: 4838105019699818323}
+      objectReference: {fileID: 2135330488917696545}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[11]'
       value: 
-      objectReference: {fileID: 1494690297464286415}
+      objectReference: {fileID: 9161470001313387124}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[12]'
       value: 
-      objectReference: {fileID: 354514987631179107}
+      objectReference: {fileID: 4710988972543738372}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[10]'
       value: 
@@ -13647,6 +13651,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 354514987631179107}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6580646677618872877}
     - targetCorrespondingSourceObject: {fileID: 3911317722819316263, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 786847538432278022}
@@ -13735,7 +13742,7 @@ MonoBehaviour:
       \u0443\u0440\u043E\u043D \u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435
       2 \u0441\u0435\u043A\u0443\u043D\u0434"
     _stateInfos: []
-    IsOpen: 1
+    IsOpen: 0
     Description: "\u0428\u0430\u0440 \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F"
     Icon: {fileID: 21300000, guid: 3c709b466f53c0141944292653b6dff8, type: 3}
     Group: 0
@@ -13763,7 +13770,7 @@ MonoBehaviour:
       \u0447\u0435\u0440\u0435\u0437 \u043A\u043E\u0442\u043E\u0440\u0443\u044E \u043D\u0435
       \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E \u043F\u0440\u043E\u0439\u0442\u0438."
     _stateInfos: []
-    IsOpen: 1
+    IsOpen: 0
     Description: "\u0420\u0430\u0441\u043A\u043E\u043B \u0437\u0435\u043C\u043B\u0438"
     Icon: {fileID: 21300000, guid: 02a620129ceab05499a5576ff306c13a, type: 3}
     Group: 0
@@ -13889,7 +13896,7 @@ MonoBehaviour:
       \u0434\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C 3
       \u0441\u0435\u043A\u0443\u043D\u0434\u044B"
     _stateInfos: []
-    IsOpen: 1
+    IsOpen: 0
     Description: "\u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0430\u0437\u0430\u0440\u0442"
     Icon: {fileID: 21300000, guid: ba33a9f74e760af40acd84c6b94a4ea3, type: 3}
     Group: 0
@@ -14012,7 +14019,7 @@ MonoBehaviour:
       \u0434\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u0432
       2 \u0440\u0430\u0437\u0430 \u0434\u043E\u043B\u044C\u0448\u0435"
     _stateInfos: []
-    IsOpen: 1
+    IsOpen: 0
     Description: "\u0414\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u044B\u0439 \u0448\u0430\u0440"
     Icon: {fileID: 21300000, guid: 09e359aa32a9ff04ea7bbdf596fa2faa, type: 3}
     Group: 0
@@ -14099,7 +14106,7 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 1
+    IsOpen: 0
     Description: God ability
     Icon: {fileID: 21300000, guid: 75313173717aca84aa7a265b4075c961, type: 3}
     Group: 0
@@ -14451,7 +14458,7 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u041F\u0440\u0438\u0437\u044B\u0432 \u044D\u043B\u0435\u043C\u0435\u043D\u0442\u0430\u043B\u044F"
     Icon: {fileID: 21300000, guid: 056dec7639a920649bcddbf484dd066b, type: 3}
     Group: 0
@@ -14614,7 +14621,7 @@ MonoBehaviour:
       \u043D\u0435 \u0443\u043C\u0438\u0440\u0430\u0435\u0442 \u0434\u0430\u0436\u0435
       \u043F\u0440\u0438 \u043D\u0443\u043B\u0435\u0432\u043E\u043C \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u0435"
     _stateInfos: []
-    IsOpen: 1
+    IsOpen: 0
     Description: "\u0411\u0435\u0441\u0441\u043C\u0435\u0440\u0442\u0438\u0435"
     Icon: {fileID: 21300000, guid: c9e058e06c95fa04fbfd12767e30935e, type: 3}
     Group: 0
@@ -14736,7 +14743,7 @@ MonoBehaviour:
       \u043A\u043B\u043E\u043D \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0443\u0435\u0442
       7 \u0441\u0435\u043A\u0443\u043D\u0434."
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u041A\u043B\u043E\u043D"
     Icon: {fileID: 21300000, guid: 16405efa12360244cac7d75e550555d9, type: 3}
     Group: 0
@@ -14852,11 +14859,81 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ElementalsActiveTalent
   _data:
-    _descriptionsForInfoPanel: []
+    _descriptionsForInfoPanel:
+    - "\u041C\u043E\u0449\u044C \u0437\u0435\u043C\u043B\u0438 - \u0443 \u044D\u043B\u0435\u043C\u0435\u043D\u0442\u0430\u043B\u044F
+      \u0437\u0435\u043C\u043B\u0438 \u043F\u043E\u044F\u0432\u043B\u044F\u0435\u0442\u0441\u044F
+      \u0430\u0443\u0440\u0430 \u0434\u0430\u044E\u0449\u0430\u044F \u0441\u043E\u044E\u0437\u043D\u0438\u043A\u0430\u043C
+      20% \u0448\u0430\u043D\u0441 \u0441\u0442\u0430\u043D\u0430 1.5 \u0441\u0435\u043A.
+      \u043E\u0442 \u0444\u0438\u0437\u0438\u0447\u0435\u043A\u0438\u0445 \u0430\u0442\u0430\u043A,
+      \u0434\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u0441\u0442\u044C 6 \u0441\u0435\u043A\u0443\u043D\u0434,
+      \u0434\u0430\u043B\u043D\u043E\u0441\u0442\u044C 6 \u043A\u043B\u0435\u0442\u043E\u043A,
+      \u043A\u0434 18 \u0441\u0435\u043A\u0443\u043D\u0434."
+    - "\xAB\u0413\u0435\u043D\u0435\u0440\u0430\u0446\u0438\u044F \u0440\u0430\u0437\u0440\u044F\u0436\u0435\u043D\u0438\u044F\xBB
+      \u2013 \u0443 \u044D\u043B\u0435\u043C\u0435\u043D\u0442 \u0432\u043E\u0437\u0434\u0443\u0445\u0430
+      \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 \xAB\u0440\u0430\u0437\u0440\u044F\u0436\u0435\u043D\u0438\u0435\xBB
+      \u043D\u0430 \u0443\u043A\u0430\u0437\u0430\u043D\u043D\u0443\u044E \u0446\u0435\u043B\u044C"
+    - "\"\u0412\u0437\u0440\u044B\u0432\" - \u0443 \u044D\u043B\u0435\u043C\u0435\u043D\u0442
+      \u043E\u0433\u043D\u044F \u0432\u0437\u0440\u044B\u0432\u0430\u0435\u0442 \u0446\u0435\u043B\u044C
+      \u043D\u0430 \u043A\u043E\u0442\u043E\u0440\u043E\u0439 \"\u0413\u043E\u0440\u0435\u043D\u0438\u0435\"
+      \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0439 \u0441\u0442\u0430\u043A
+      \u043D\u0430\u043D\u043E\u0441\u0438\u0442 3 \u0443\u0440\u043E\u043D\u0430.
+      \u043A\u0443\u043B\u0434\u0430\u0443\u043D 10 \u0441\u0435\u043A\u0443\u043D\u0434."
+    - "\u0417\u0430\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435 - \u0443 \u044D\u043B\u0435\u043C\u0435\u043D\u0442
+      \u0432\u043E\u0434\u044B \u0432\u043E\u043A\u0440\u0443\u0433 \u044D\u043B\u0435\u043C\u0435\u043D\u0442\u0430\u043B\u044F
+      \u0432\u043E\u0434\u044B \u0441 \u043A\u0430\u0436\u0434\u043E\u0439 \u0441\u0435\u043A\u0443\u043D\u0434\u043E\u0439
+      \u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435 5 \u0441\u0435\u043A\u0443\u043D\u0434
+      \u043D\u0430 1 \u043C\u0435\u0442\u0440 \u0440\u0430\u0441\u043F\u0440\u043E\u0441\u0442\u0440\u043E\u044F\u043D\u0435\u0442\u0441\u044F
+      \u0430\u0443\u0440\u0430 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u044E\u0449\u0430\u044F
+      \u043D\u0430 \u0432\u0441\u0435\u0445 \u0432\u0440\u0430\u0436 \u0446\u0435\u043B\u0438
+      6 \u0441\u0442\u0430\u043A\u043E\u0432 \u0434\u0435\u0431\u0430\u0444 \"\u043E\u0445\u043B\u0430\u0436\u0434\u0435\u043D\u0438\u0435\""
+    _stateInfos: []
+    IsOpen: 1
+    Description: "\u0410\u043A\u0442\u0438\u0432\u043D\u044B\u0435 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438
+      \u044D\u043B\u0435\u043C\u0435\u043D\u0442\u0430\u043B\u0435\u0439"
+    Icon: {fileID: 21300000, guid: 49db5a8861bb9e741ab4943403812c2e, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 8782633265950416607}
+--- !u!114 &6580646677618872877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4372299641285588602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e78075546e19f0e42880af8beb8cae38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TelekinesisDamageTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0442\u0435\u043B\u0435\u043A\u0438\u043D\u0435\u0437 \u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u0441\u044F
+      \u043C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u044B\u043C \u0438 \u043D\u0430\u043D\u043E\u0441\u0438\u0442
+      5% \u0443\u0440\u043E\u043D\u0430 \u043E\u0442 \u0438\u043C\u0435\u044E\u0449\u0435\u0433\u043E\u0441\u044F
+      \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F\u0446\u0435\u043B\u0438, \u043F\u0440\u0438
+      \u0443\u0441\u043F\u0435\u0448\u043D\u043E\u043C \u044D\u0444\u0444\u0435\u043A\u0442\u0435
+      \u043A\u043E\u043D\u0442\u0440\u0441\u043F\u0435\u043B\u043B\u0430, \u0447\u0430\u0440\u043E\u043A\u0440\u0430\u0434\u0435,
+      \u0440\u0430\u0441\u0442\u0432\u043E\u0440\u0435\u043D\u0438\u044F \u0448\u043A\u043E\u043B,
+      \u043D\u0430\u043D\u043E\u0441\u0438\u0442\u0441\u044F 30% \u0443\u0440\u043E\u043D\u0430
+      \u0446\u0435\u043B\u0438 \u043E\u0442 \u0437\u0430\u0442\u0440\u0430\u0447\u0435\u043D\u043E\u0439
+      \u043C\u0430\u043D\u043D\u044B \u043D\u0430 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C
+      \u0438\u043B\u0438 \u0441\u043E\u0441\u0442\u043E\u0441\u044F\u043D\u0438\u0435
+      \u043A \u043A\u043E\u0442\u043E\u0440\u043E\u043C\u0443 \u0431\u044B\u043B\u043E
+      \u043F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u043E"
+    - "\u043F\u0440\u0438 \u0443\u0441\u043F\u0435\u0448\u043D\u043E\u043C \u044D\u0444\u0444\u0435\u043A\u0442\u0435
+      \u043A\u043E\u043D\u0442\u0440\u0441\u043F\u0435\u043B\u043B\u0430, \u0447\u0430\u0440\u043E\u043A\u0440\u0430\u0434\u0435,
+      \u0440\u0430\u0441\u0442\u0432\u043E\u0440\u0435\u043D\u0438\u044F \u0448\u043A\u043E\u043B,
+      \u043D\u0430\u043D\u043E\u0441\u0438\u0442\u0441\u044F 30% \u0443\u0440\u043E\u043D\u0430
+      \u0446\u0435\u043B\u0438 \u043E\u0442 \u0437\u0430\u0442\u0440\u0430\u0447\u0435\u043D\u043E\u0439
+      \u043C\u0430\u043D\u043D\u044B \u043D\u0430 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C
+      \u0438\u043B\u0438 \u0441\u043E\u0441\u0442\u043E\u0441\u044F\u043D\u0438\u0435
+      \u043A \u043A\u043E\u0442\u043E\u0440\u043E\u043C\u0443 \u0431\u044B\u043B\u043E
+      \u043F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u043E"
     _stateInfos: []
     IsOpen: 0
-    Description: 
-    Icon: {fileID: 0}
+    Description: "\u0423\u0440\u043E\u043D \u0442\u0435\u043B\u0435\u043A\u0438\u043D\u0435\u0437\u0430"
+    Icon: {fileID: 21300000, guid: 402c0e5b87e26974dae912f67806ac0d, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 8782633265950416607}
@@ -15085,9 +15162,9 @@ MonoBehaviour:
     _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
+  _cooldownTime: 16
   _cooldownComponent:
-    _baseCooldown: 0
+    _baseCooldown: 16
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -15102,7 +15179,7 @@ MonoBehaviour:
     type: 0
     _clickLayer: 3
     _faction: -1
-    _unitType: 1
+    _unitType: 5
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -15111,32 +15188,32 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   _channelComponent:
-    _castDuration: 2.1
+    _castDuration: 1.5
     _tickInterval: 0.1
     _baseCostPerTick:
-    - nameToShow: 0 Health - Mandatory mod desc
-      type: 0
-      value: 0
+    - nameToShow: 3 Mana - Mandatory mod desc
+      type: 1
+      value: 3
       costType: 0
       shouldModify: 1
       showInDescription: 1
-  _castDuration: 0
+  _castDuration: 1.5
   _manaCostRate: 0.1
   _manaCostPerTick:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
+  - nameToShow: 3 Mana - Mandatory mod desc
+    type: 1
+    value: 3
     costType: 0
     shouldModify: 1
     showInDescription: 1
   _chargeComponent:
-    _usesCharges: 1
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 0
     _maxCharges: 1
     _baseCooldown: 18
     affectedByCDR: 0
-  _isUseCharges: 1
+  _isUseCharges: 0
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
   _maxCharges: 1
@@ -15164,6 +15241,7 @@ MonoBehaviour:
   _deleyTelekines: 0.5
   _amountOfLift: 1.5
   _radiusEnemy: {fileID: 3441613440083509784}
+  _secondClickWindow: 1
 --- !u!114 &4651608391275017639
 MonoBehaviour:
   m_ObjectHideFlags: 0
