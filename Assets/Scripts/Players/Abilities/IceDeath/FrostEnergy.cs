@@ -1,11 +1,10 @@
+using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
 
 public class FrostEnergy : Skill
 {
-    private const float Duration = 6f;
-
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
@@ -31,9 +30,28 @@ public class FrostEnergy : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (Hero == null || Hero.CharacterState == null)
-            yield break;
+        if (Hero == null || Hero.CharacterState == null) yield break;
 
-        Hero.CharacterState.CmdAddState(States.FrostEnergy, Duration, 0f, Hero.gameObject, name);
+        CmdToggleFrostEnergy(Hero.gameObject);
+
+        yield break;
+    }
+
+    [Command]
+    private void CmdToggleFrostEnergy(GameObject targetObj)
+    {
+        if (targetObj == null) return;
+
+        Character character = targetObj.GetComponent<Character>();
+        if (character == null || character.CharacterState == null) return;
+
+        if (character.CharacterState.CheckForState(States.FrostEnergy))
+        {
+            character.CharacterState.RemoveState(States.FrostEnergy);
+        }
+        else
+        {
+            Hero.CharacterState.CmdAddState(States.FrostEnergy, 999, 0f, Hero.gameObject, name);
+        }
     }
 }

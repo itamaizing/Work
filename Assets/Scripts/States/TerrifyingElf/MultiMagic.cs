@@ -84,8 +84,6 @@ public class MultiMagic : AuraState
 
     private void OnTargetSkillCast(Skill skill)
     {
-        Debug.Log("вызов CastSuccessSkill");
-
         _characters.Clear();
 
         _distance = skill.AreaInfo.Radius;
