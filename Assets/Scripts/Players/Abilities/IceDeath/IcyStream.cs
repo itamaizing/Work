@@ -20,6 +20,8 @@ public class IcyStream : Skill
     private bool _isStreaming;
     private const int MaxTicks = 7;
 
+    private const float FrostEnergyCoolingBonusPerStack = 1f;
+
     protected override bool IsCanCast => !_isStreaming && Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
@@ -102,7 +104,30 @@ public class IcyStream : Skill
             CmdAddFrozen(character);
         }
     }
-  
+
+    private void ApplyCoolingWithFrostEnergyBonus(Character target)
+    {
+        bool hasFrostEnergy = target.CharacterState.CheckForState(States.FrostEnergy);
+
+        int currentStacks = target.CharacterState.CheckStateStacks(States.Cooling);
+        int stacksAfterApply = currentStacks + 1;
+
+        if (hasFrostEnergy)
+        {
+            float bonusDamage = stacksAfterApply * FrostEnergyCoolingBonusPerStack;
+
+            Damage bonus = new Damage
+            {
+                Value = bonusDamage,
+                Type = DamageType.Magical
+            };
+
+            target.Health.TryTakeDamage(ref bonus, this);
+        }
+
+        target.CharacterState.AddState(States.Cooling, 12f, 0, Hero.gameObject, Name);
+    }
+
     [Command]
     private void CmdSpawnIcyStreamEffect(GameObject startPoint, GameObject targetPoint)
     {
@@ -128,7 +153,13 @@ public class IcyStream : Skill
         }
     }
 
-    [Command] private void CmdAddFrozen(Character character) => character.CharacterState.AddState(States.Cooling, 12f, 0, Hero.gameObject, Name);
+    [Command]
+    private void CmdAddFrozen(Character character)
+    {
+        if (character == null) return;
+
+        ApplyCoolingWithFrostEnergyBonus(character);
+    }
 
     [ClientRpc]
     private void RpcInitEffects(GameObject effectGameObject, GameObject startPoint, GameObject targetPoint)
