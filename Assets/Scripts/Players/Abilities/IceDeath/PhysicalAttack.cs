@@ -35,6 +35,7 @@ public class PhysicalAttack : Skill
 	private const float RandomAttack = 0.5f;
 	private const float LastHitStunTime = 1.5f;
 	private const float RadiusSearchTarget = 0.5f;
+	private const float FrostEnergyFreezeChance = 60f;
 	private static readonly Vector2 ObstacleCheckSize = new Vector2(1f, 1f);
 	private static readonly int RightKickTrigger = Animator.StringToHash("RightKick");
 	private static readonly int LeftKickTrigger = Animator.StringToHash("LeftKick");
@@ -192,6 +193,7 @@ public class PhysicalAttack : Skill
 			_rune.SumDamageMake(curDamage);
 			_energy.CmdUse(5);
 			CmdApplyDamage(damage, enemy.gameObject);
+			CmdTryApplyFrozen(enemy.gameObject);
 			TryApplyNextHitFrozen(enemy);
 
 			if (_rollingPhysTalent)
@@ -364,6 +366,20 @@ public class PhysicalAttack : Skill
 
 		_nextHitAppliesFrozen = false;
 		_nextHitFrozenDuration = 0f;
+	}
+
+	[Command]
+	private void CmdTryApplyFrozen(GameObject enemyObj)
+	{
+		if (enemyObj == null) return;
+
+		var enemy = enemyObj.GetComponent<Character>();
+		if (enemy == null) return;
+
+		if (enemy.CharacterState.CheckForState(States.FrostEnergy))
+		{
+			if (UnityEngine.Random.Range(0f, 100f) <= FrostEnergyFreezeChance) enemy.CharacterState.AddState(States.Frozen, 12f, 0f, Hero.gameObject, Name);
+		}
 	}
 
 	public void ApplyRootFalse()
