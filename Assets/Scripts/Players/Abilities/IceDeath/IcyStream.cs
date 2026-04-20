@@ -7,7 +7,7 @@ using UnityEngine;
 public class IcyStream : Skill
 {
     [Header("Stream Settings")]
-    [SerializeField] private float _tickInterval = 12f;
+    [SerializeField] private float _tickInterval = 0.3f;
     [SerializeField] private Transform _streamStartPoint;
 
     [Header("Visual")]
@@ -128,7 +128,7 @@ public class IcyStream : Skill
         }
     }
 
-    [Command] private void CmdAddFrozen(Character character) => character.CharacterState.AddState(States.Frozen, 0.3f, 0, Hero.gameObject, Name);
+    [Command] private void CmdAddFrozen(Character character) => character.CharacterState.AddState(States.Cooling, 12f, 0, Hero.gameObject, Name);
 
     [ClientRpc]
     private void RpcInitEffects(GameObject effectGameObject, GameObject startPoint, GameObject targetPoint)

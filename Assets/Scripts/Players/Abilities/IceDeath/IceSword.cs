@@ -143,7 +143,7 @@ public class IceSword : CloseCombatSkill
 	{
 		Character enemyCharacter = enemy.GetComponent<Character>();
 		RpcPlayShotSound();
-		enemyCharacter.CharacterState.AddState(States.Frozen, _duration, 0, _playerLinks.gameObject, name);
+		enemyCharacter.CharacterState.AddState(States.Cooling, _duration, 0, _playerLinks.gameObject, name);
 	}
 
 	[ClientRpc]

@@ -60,7 +60,7 @@ public class IceShardProjectile : Projectiles
 
 				if (target.CharacterState.CheckForState(States.FrostEnergy))
 				{
-					if (Random.Range(0f, 100f) <= FrostEnergyFreezeChance) target.CharacterState.AddState(States.Frozen, 1f, 0f, _dad.gameObject, _skill.name);
+					if (Random.Range(0f, 100f) <= FrostEnergyFreezeChance) target.CharacterState.AddState(States.Cooling, 12f, 0f, _dad.gameObject, _skill.name);
 				}
 
 				if (_talentPlague)

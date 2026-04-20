@@ -193,7 +193,7 @@ public class PhysicalAttack : Skill
 			_rune.SumDamageMake(curDamage);
 			_energy.CmdUse(5);
 			CmdApplyDamage(damage, enemy.gameObject);
-			CmdTryApplyFrozen(enemy.gameObject);
+			CmdTryApplyCooling(enemy.gameObject);
 			TryApplyNextHitFrozen(enemy);
 
 			if (_rollingPhysTalent)
@@ -226,7 +226,7 @@ public class PhysicalAttack : Skill
 				Type = DamageType.Physical,
 			};
 			CmdApplyDamage(damage, enemy.gameObject);
-			CmdTryApplyFrozen(enemy.gameObject);
+			CmdTryApplyCooling(enemy.gameObject);
 			TryApplyNextHitFrozen(enemy);
 		}
 
@@ -370,7 +370,7 @@ public class PhysicalAttack : Skill
 	}
 
 	[Command]
-	private void CmdTryApplyFrozen(GameObject enemyObj)
+	private void CmdTryApplyCooling(GameObject enemyObj)
 	{
 		if (enemyObj == null) return;
 
@@ -379,7 +379,7 @@ public class PhysicalAttack : Skill
 
 		if (enemy.CharacterState.CheckForState(States.FrostEnergy))
 		{
-			if (UnityEngine.Random.Range(0f, 100f) <= FrostEnergyFreezeChance) enemy.CharacterState.AddState(States.Frozen, 12f, 0f, Hero.gameObject, Name);
+			if (UnityEngine.Random.Range(0f, 100f) <= FrostEnergyFreezeChance) enemy.CharacterState.AddState(States.Cooling, 12f, 0f, Hero.gameObject, Name);
 		}
 	}
 
