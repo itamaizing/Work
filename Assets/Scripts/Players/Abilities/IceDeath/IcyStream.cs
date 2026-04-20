@@ -8,72 +8,73 @@ public class IcyStream : Skill
 {
     [Header("Stream Settings")]
     [SerializeField] private float _tickInterval = 0.3f;
-    [SerializeField] private float _streamLength = 6f;
-    [SerializeField] private float _streamWidth = 2f;
-    [SerializeField] private float _streamHeight = 2f;
     [SerializeField] private Transform _streamStartPoint;
-    [SerializeField] private LayerMask _targetsLayers;
 
-    private Energy _energy;
+    [Header("Visual")]
+    [SerializeField] private GameObject _icyStreamPrefab;
+
     private Character _cachedTarget;
-
     private Coroutine _streamCoroutine;
-    private bool _isStreaming;
+    private GameObject _activeEffect;
 
+    private bool _isStreaming;
     private const int MaxTicks = 7;
 
-    protected override bool IsCanCast => !_isStreaming && IsCanCastCheck();
+    protected override bool IsCanCast => !_isStreaming && Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
-    private bool IsCanCastCheck()
-    {
-        var target = Targeting.GetTarget()?.Character;
-        if (target == null)
-            return false;
-
-        return Vector3.Distance(target.transform.position, Hero.transform.position) <= AreaInfo.Radius;
-    }
-
-    public override void Init(SkillRenderer render, Character hero)
-    {
-        base.Init(render, hero);
-
-        if (_energy == null)
-            _energy = (Energy)Hero.Resources[ResourceType.Energy];
-    }
-
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        if (_energy == null)
-            _energy = (Energy)Hero.Resources[ResourceType.Energy];
-
-        while (Targeting.GetTarget()?.Character == null)
-            yield return null;
-
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget().Targetable);
-        callbackDataSaved(targetInfo);
+
+        while (Targeting.GetTempTarget()?.Targetable == null && !_disactive)
+        {
+            if (GetMouseButton)
+            {
+                Targeting.FindTempTarget(Targeting.GetMousePoint(), 0.5f);
+
+                var temp = Targeting.GetTempTarget()?.Targetable as Character;
+
+                if (temp != null)
+                {
+                    Targeting.SetTarget(temp);
+
+                    break;
+                }
+            }
+
+            yield return null;
+        }
+
+        var target = Targeting.GetTarget()?.Character;
+
+        if (target != null)
+        {
+            targetInfo.AddTarget(target);
+            callbackDataSaved(targetInfo);
+        }
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_isStreaming)
-            yield break;
-
         _cachedTarget = Targeting.GetTarget()?.Character;
         if (_cachedTarget == null)
             yield break;
 
-        StartStream();
-
-        yield return null;
-    }
-
-    private void StartStream()
-    {
         _isStreaming = true;
+
+        CmdSpawnIcyStreamEffect(
+            _streamStartPoint.gameObject,
+            _cachedTarget.gameObject
+        );
+
         _streamCoroutine = StartCoroutine(StreamRoutine());
+
+        yield return _streamCoroutine;
+
+        CmdDestroyIcyStreamEffect();
+        _isStreaming = false;
     }
 
     private IEnumerator StreamRoutine()
@@ -81,92 +82,81 @@ public class IcyStream : Skill
         for (int tick = 1; tick <= MaxTicks; tick++)
         {
             yield return new WaitForSeconds(_tickInterval);
-
             ApplyTick(tick);
         }
-
-        _isStreaming = false;
     }
 
     private void ApplyTick(int tickNumber)
     {
-        List<IDamageable> targets = GetTargetsInStream();
-
-        foreach (var damageable in targets)
-        {
-            if (damageable == null)
-                continue;
-
-            Damage damage = new Damage
-            {
-                Value = tickNumber,
-                Type = Info.DamageType,
-                School = Schools.Water
-            };
-
-            CmdApplyDamage(damage, damageable.gameObject);
-            ApplyFrozen(damageable.gameObject);
-        }
-    }
-
-    private List<IDamageable> GetTargetsInStream()
-    {
-        List<IDamageable> result = new();
-
-        Vector3 startPos = _streamStartPoint != null
-            ? _streamStartPoint.position
-            : Hero.transform.position + Vector3.up * 0.5f;
-
-        Vector3 direction = (_cachedTarget.transform.position - startPos);
-        direction.y = 0f;
-        direction.Normalize();
-
-        Vector3 center = startPos + direction * (_streamLength * 0.5f);
-
-        Vector3 halfExtents = new Vector3(
-            _streamWidth * 0.5f,
-            _streamHeight * 0.5f,
-            _streamLength * 0.5f
-        );
-
-        Collider[] hits = Physics.OverlapBox(
-            center,
-            halfExtents,
-            Quaternion.LookRotation(direction),
+        Collider[] hits = Physics.OverlapSphere(
+            _cachedTarget.transform.position,
+            2f,
             _targetsLayers
         );
 
         foreach (var hit in hits)
         {
-            IDamageable damageable = hit.GetComponentInParent<IDamageable>();
-            if (damageable == null)
+            if (!hit.TryGetComponent(out IDamageable damageable))
                 continue;
 
-            Character character = hit.GetComponentInParent<Character>();
-            if (character == null)
+            if (!hit.TryGetComponent(out Character character))
                 continue;
 
             if (character == Hero)
                 continue;
 
-            if (!result.Contains(damageable))
-                result.Add(damageable);
-        }
+            Damage damage = new Damage
+            {
+                Value = tickNumber,
+                Type = Info.DamageType
+            };
 
-        return result;
+            CmdApplyDamage(damage, character.gameObject);
+
+            character.CharacterState.AddState(States.Frozen, 0.3f, 0, Hero.gameObject, Name);
+        }
     }
 
-    private void ApplyFrozen(GameObject target)
+    [Command]
+    private void CmdSpawnIcyStreamEffect(GameObject startPoint, GameObject targetPoint)
     {
-        Character character = target.GetComponent<Character>();
-        if (character == null)
+        if (_icyStreamPrefab == null || startPoint == null || targetPoint == null)
             return;
 
-        CharacterState state = character.GetComponent<CharacterState>();
-        if (state == null)
+        GameObject effectInstance =
+            Instantiate(_icyStreamPrefab, startPoint.transform.position, Quaternion.identity);
+
+        NetworkServer.Spawn(effectInstance);
+
+        RpcInitEffects(effectInstance, startPoint, targetPoint);
+
+        _activeEffect = effectInstance;
+    }
+
+    [Command]
+    private void CmdDestroyIcyStreamEffect()
+    {
+        if (_activeEffect != null)
+        {
+            NetworkServer.Destroy(_activeEffect);
+            _activeEffect = null;
+        }
+    }
+
+    [ClientRpc]
+    private void RpcInitEffects(GameObject effectGameObject, GameObject startPoint, GameObject targetPoint)
+    {
+        if (effectGameObject == null)
             return;
 
-        state.CmdAddState(States.Frozen, 0.3f, 0, Hero.gameObject, Name);
+        PullingHealthEffect[] effects =
+            effectGameObject.GetComponentsInChildren<PullingHealthEffect>();
+
+        foreach (var effect in effects)
+        {
+            effect.Initialize(startPoint, targetPoint);
+            effect.Activate();
+        }
     }
 
     protected override void ClearData()
@@ -174,11 +164,9 @@ public class IcyStream : Skill
         Targeting.ClearTarget();
 
         if (_streamCoroutine != null)
-        {
             StopCoroutine(_streamCoroutine);
-            _streamCoroutine = null;
-        }
 
+        CmdDestroyIcyStreamEffect();
         _isStreaming = false;
     }
 }

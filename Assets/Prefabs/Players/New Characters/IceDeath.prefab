@@ -4606,13 +4606,7 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs: []
-  _skillEnergyCosts:
-  - nameToShow: 1 Rune - Mandatory mod desc
-    type: 3
-    value: 1
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
+  _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -4682,9 +4676,9 @@ MonoBehaviour:
     _prepareAnimations: []
     _castAnimations: []
     _activeClip: 0
-  _projectile: {fileID: 0}
-  _playerLinks: {fileID: 4374618947117916461}
-  _seriesOfStrikes: {fileID: 3083348233968490285}
+  _tickInterval: 0.3
+  _streamStartPoint: {fileID: 953822609278007364}
+  _icyStreamPrefab: {fileID: 7744228389031826322, guid: a86f2fafa49694e4bab52db8f4d3fc78, type: 3}
 --- !u!114 &2727420570257355857
 MonoBehaviour:
   m_ObjectHideFlags: 0
