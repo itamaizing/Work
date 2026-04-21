@@ -1024,6 +1024,7 @@ public enum States
 	DisciplineAura,
 	FrostEnergy
 }
+
 public enum BaffDebaff
 {
 	Baff,
