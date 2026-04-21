@@ -1,9 +1,9 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Editor.meta
-guid: 91419c53482521d44a7d216b34cad83b
+<<<<<<<< HEAD:Assets/Scripts/Players/Abilities/NewAbilitySystem/ExampleSkills.meta
+guid: 1f78fcfa627a7754ba37bb10f85a83c6
 ========
 guid: 7c34b564fe192af4f9ab5868d09c5ff8
->>>>>>>> main:Assets/Animations/Controller/Priest.meta
+>>>>>>>> 6cf021b3 (Changes from priest, gandolarf):Assets/Animations/Controller/Priest.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

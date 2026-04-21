@@ -10,7 +10,7 @@ public class Blindness : Skill
     [SerializeField] private float duration;
     //private Character _target;
 
-    protected override bool IsCanCast => IsHaveCharge && Targeting.GetTarget()?.Character != null;
+    protected override bool IsCanCast => Charges.HasCharges && Targeting.GetTarget()?.Character != null;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
 

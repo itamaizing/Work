@@ -23,6 +23,7 @@ public class GrowTree : Skill
     [SerializeField] private GameObject _arrowWithTreeEffect;
     [SerializeField] private ParticleSystem _arrowIntoSkyEffect;
     [SerializeField] private SkillQueue _skillQueue;
+    [SerializeField] private SkillManager _skillManager;
 
     [Header("Talents")]
     //[SerializeField] private bool treeHealthTalent; // Созданное дерево каждые 0,3 сек увеличивает максималньый запас здоровья на 1 ед. Вплоть до 60 сек.
@@ -63,6 +64,7 @@ public class GrowTree : Skill
     private const float SearchRadiusTarget = 1f;
     private const float SearchMousClickTarget = 1f;
     private const float MagicEvade = 100f;
+    private const float TreeMultiplier = 1.2f;
 
     private const string GrowTreeCastDelayExit = "GrowTreeCastDelayExit";
     private const string GrowTreeCastDelay = "GrowTreeCastDelay";
@@ -153,7 +155,7 @@ public class GrowTree : Skill
     //    Quaternion rotation = direction.sqrMagnitude > ArrowLookMinThresholdSqr ? Quaternion.LookRotation(direction) : Quaternion.identity;
 
     //    var effect = Instantiate(_arrowWithTreeEffect, point, rotation);
-    //    SceneManager.MoveGameObjectToScene(effect, gameObject.scene);
+    //    //SceneManager.MoveGameObjectToScene(effect, gameObject.scene);
     //    Destroy(effect, _arrowEffectLifetime);
     //}
 
@@ -448,7 +450,8 @@ public class GrowTree : Skill
         var tree = Instantiate(_treePrefab, position, Quaternion.identity);
         _currentTree = tree;
 
-        SceneManager.MoveGameObjectToScene(_currentTree.gameObject, Hero.NetworkSettings.MyRoom);
+        tree.Init(_skillManager, Hero);
+        //SceneManager.MoveGameObjectToScene(_currentTree.gameObject, Hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(_currentTree.gameObject, connectionToClient);
 
         _healthTree = tree.GetComponentInChildren<ObjectHealth>();
@@ -477,8 +480,10 @@ public class GrowTree : Skill
 
         var tree = Instantiate(_treePrefab, spawnPosition, Quaternion.identity);
         _currentTree = tree;
+
+        tree.Init(_skillManager, Hero);
+
         NetworkServer.Spawn(_currentTree.gameObject, connectionToClient);
-        SceneManager.MoveGameObjectToScene(_currentTree.gameObject, Hero.NetworkSettings.MyRoom);
 
         RpcTeleportToTree(_currentTree.gameObject);
 
@@ -529,6 +534,7 @@ public class GrowTree : Skill
     {
         _currentTree = currentTree;
         _currentTree.GrowTreeIncreasesMaxHealth = _growTreeIncreasesMaxHealth;
+        _currentTree.Init(_skillManager, Hero);
         if (NetworkClient.spawned.TryGetValue(netId, out var networkIdentity)) _activeTrees.Add(networkIdentity.GetComponent<GrowTreeAura>());
     }
 
@@ -547,8 +553,8 @@ public class GrowTree : Skill
     {
         if (!_treeShotCooldownTalent) return;
 
-        if (_shotsIntoSky != null && !_shotsIntoSky.IsCooldowned) _shotsIntoSky.ForceCooldownEnd();
-        if (_shotIntoSky != null && !_shotIntoSky.IsCooldowned) _shotsIntoSky.ForceCooldownEnd();
+        if (_shotsIntoSky != null && _shotsIntoSky.Cooldown.IsActive) _shotsIntoSky.Cooldown.ForceEnd();
+        if (_shotIntoSky != null && _shotIntoSky.Cooldown.IsActive) _shotIntoSky.Cooldown.ForceEnd();
     }
     #endregion
 

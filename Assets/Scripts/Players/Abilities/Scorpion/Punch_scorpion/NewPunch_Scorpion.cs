@@ -159,8 +159,15 @@ public class NewPunch_Scorpion : Skill
     private void ApplyAttackDamage()
     {
         if (_wasDamageApplied) return;
-        if (Targeting.GetTarget() == null) return;
-        if (Vector2.Distance(_lastTarget.transform.position, Targeting.GetTarget().Transform.position) > AreaInfo.Radius) return;
+
+        var targetData = Targeting.GetTarget();
+        if (targetData == null) return;
+
+        var target = targetData.Targetable as IDamageable;
+        if (target == null) return;
+
+        if (Vector3.Distance(_hero.transform.position, targetData.Transform.position) > AreaInfo.Radius)
+            return;
 
         Damage damage = new Damage
         {
@@ -170,32 +177,19 @@ public class NewPunch_Scorpion : Skill
 
         _wasDamageApplied = true;
 
-        if (Targeting.GetTarget() is IDamageable damageable) CmdApplyDamage(damageable.gameObject, damage);
+        CmdApplyDamage(target.gameObject, damage);
     }
 
     [Command]
     private void CmdApplyDamage(GameObject target, Damage damage)
     {
-        if (target == null)
-        {
-            Debug.LogError("[NewPunch_Scorpion] CmdApplyDamage: TargetObject is null!");
-            return;
-        }
+        if (target == null) return;
+        var damageable = target.GetComponent<IDamageable>();
 
-        if (Targeting.ForDamage.Transform != target.transform)
-        {
-            Targeting.ForDamage = new TargetData(target);
-        }
+        if (damageable == null) return;
+        bool isHit = damageable.TryTakeDamage(ref damage, this);
 
-        if (Targeting.ForDamage.Damageable == null)
-        {
-            Debug.LogError("[NewPunch_Scorpion] CmdApplyDamage: Target does not have IDamageable component!");
-            return;
-        }
-
-        bool isHit = Targeting.ForDamage.Damageable.TryTakeDamage(ref damage, this);
-        if (isHit && Targeting.ForDamage.Damageable is Character character) AttackPassed(character);
-
+        if (isHit && damageable is Character character) AttackPassed(character);
         //RpcSelfNotifyHitResult(isHit, targetObject);
     }
 

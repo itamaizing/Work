@@ -18,7 +18,7 @@ public class InstantHealingPoisonState : AbstractCharacterState
 
     private float _baseDuration;
 
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing };
+    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Healing, StatusEffect.Poison };
 
     public override States State => States.InstantHealingPoison;
     public override StateType Type => StateType.Physical;

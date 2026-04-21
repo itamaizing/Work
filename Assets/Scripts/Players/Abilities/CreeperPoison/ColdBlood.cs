@@ -1,14 +1,14 @@
-﻿using System;
+﻿using Mirror;
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class ColdBlood : Skill
 {
-    [Header("Talent")]
-    [SerializeField] private ColdBloodEnabledTalent _coldBloodEnabledTalent;
-    [SerializeField] private Indomitable _indomitable;
-    [SerializeField] private ColdBloodTalent _coldBloodTalent;
-    [SerializeField] private KillersStamina _killersStamina;
+    //[Header("Talent")]
+    //[SerializeField] private Indomitable _indomitable;
+    //[SerializeField] private ColdBloodTalent _coldBloodTalent;
+    //[SerializeField] private KillersStamina _killersStamina;
 
     [Header("Ability Properties")]
     [SerializeField] private CreeperStrike _creeperStrike;
@@ -21,26 +21,26 @@ public class ColdBlood : Skill
     private float _cooldownTimeWithTalent = 4f;
 
     private bool _isPlayer = false;
-    private bool _isCanCritCreeperStrike;
+    private bool _isCanCrit;
     private bool _isCanCritLightningStrikes;
 
-    private Coroutine _waitingHitFromCreeperStrike;
+    private bool _isWaitingForHit = false;
 
-    public Indomitable IndomitableTalent { get => _indomitable; }
-    public ColdBloodTalent ColdBloodTalent { get => _coldBloodTalent; }
-    public KillersStamina KillersStaminaTalent { get => _killersStamina; }
-    public bool IsCanCritCreeperStrike { get => _isCanCritCreeperStrike; set => _isCanCritCreeperStrike = value; }
+   // public Indomitable IndomitableTalent { get => _indomitable; }
+    //public ColdBloodTalent ColdBloodTalent { get => _coldBloodTalent; }
+    //public KillersStamina KillersStaminaTalent { get => _killersStamina; }
+    public bool IsCanCrit { get => _isCanCrit; set => _isCanCrit = value; }
     public bool IsCanCritLightningStrikes { get => _isCanCritLightningStrikes; set => _isCanCritLightningStrikes = value; }
 
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => 0;
-    protected override bool IsCanCast { get => _coldBloodEnabledTalent.Data.IsOpen; }
+    protected override bool IsCanCast => !_isWaitingForHit;
 
     protected override void Awake()
     {
         base.Awake();
 
-        _baseCooldownTime = CooldownTime;
+        //_baseCooldownTime = Cooldown.BaseCooldownTime;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -59,121 +59,137 @@ public class ColdBlood : Skill
         {
 			Hero.CharacterState.CmdRemoveState(States.Immateriality);
         }
-
-        if (_waitingHitFromCreeperStrike != null)
-        {
-            StopCoroutine(_waitingHitFromCreeperStrike);
-            _waitingHitFromCreeperStrike = null;
-        }
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        if (_indomitable.Data.IsOpen)
-        {
-            while (Targeting.GetTarget()?.Character == null || float.IsPositiveInfinity(_mousePosition.x))
-            {
-                if (GetMouseButton)
-                {
-                    Targeting.FindTempTarget(true);
-					//_target = Targeting.GetTarget(true).character;
-                   // Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / target == " + _target);
+     //   if (_indomitable.Data.IsOpen)
+     //   {
+     //       while (Targeting.GetTarget()?.Character == null || float.IsPositiveInfinity(_mousePosition.x))
+     //       {
+     //           if (GetMouseButton)
+     //           {
+     //               Targeting.FindTempTarget(true);
+					////_target = Targeting.GetTarget(true).character;
+     //              // Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / target == " + _target);
 
-                    if (Targeting.GetTarget()?.Character != Hero)
-                    {
-                        _isPlayer = false;
-                       // Debug.Log("TargetLayer != player / TargetLayer == " + _target);
-                    }
-                    if (Targeting.GetTarget()?.Character == Hero)
-                    { 
-                        _isPlayer = true;
-                       // Debug.Log("TargetLayer == player / TargetLayer == " + _target);
-                    }
+     //               if (Targeting.GetTarget()?.Character != Hero)
+     //               {
+     //                   _isPlayer = false;
+     //                  // Debug.Log("TargetLayer != player / TargetLayer == " + _target);
+     //               }
+     //               if (Targeting.GetTarget()?.Character == Hero)
+     //               { 
+     //                   _isPlayer = true;
+     //                  // Debug.Log("TargetLayer == player / TargetLayer == " + _target);
+     //               }
 
-                    _mousePosition = Targeting.GetMousePoint();
-                    Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / _mousePosition == " + _mousePosition);
+     //               _mousePosition = Targeting.GetMousePoint();
+     //               Debug.Log("ColdBlood / PrepareJob / Input.GetMouseButtonDown / _mousePosition == " + _mousePosition);
+     //           }
+     //           yield return null;
+     //       }
+     //   }
 
-					Hero.CharacterState.CmdAddState(States.Immateriality, 0, 0, Hero.gameObject, Name);
-                }
-                yield return null;
-            }
-        }
-        else
-        {
-            yield break;
-        }
+        //else
+        //{
+        //    yield break;
+        //}
 
-        Debug.LogError("DataError");
+        yield break;
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_indomitable.Data.IsOpen)
-        {
-            UseAbilityWithTalent();
-        }
-        else
-        {
-            UseAbilityWithoutTalent();
-        }
+        //if (_indomitable.Data.IsOpen)
+        //{
+        //    UseAbilityWithTalent();
+        //}
+        //else
+        //{
+        //    UseAbilityWithoutTalent();
+        //}
 
-        if (CooldownTime != _baseCooldownTime)
-            CooldownTime = _baseCooldownTime;
+        UseAbilityWithoutTalent();
 
-        yield return _waitingHitFromCreeperStrike = StartCoroutine(WaitingHitFromCreeperStrikeJob());
+        CmdApplyImmateriality();
+        StartWaitingForHit();
+
+        yield return null;
     }
 
     public void ReducingAbilityCooldown()
     { 
-        if (RemainingCooldownTime > 0)
+        if (Cooldown.RemainingTime > 0)
         {
             float reducingMultiplier = _reducingCooldownMultiplier;
-            float newCooldownTime = RemainingCooldownTime / reducingMultiplier;
-            ReductionSetCooldown(newCooldownTime);
+            float newCooldownTime = Cooldown.RemainingTime / reducingMultiplier;
+            Cooldown.SetReduced(newCooldownTime, shouldModify: false);
         }
         else
         {
             float reducingMultiplier = _reducingCooldownMultiplier;
-            CooldownTime /= reducingMultiplier;
+            Cooldown.CooldownTime /= reducingMultiplier;
+        }
+
+        if (Hero.CharacterState.CheckForState(States.Immateriality))
+        {
+            Hero.CharacterState.CmdRemoveState(States.Immateriality);
         }
     }
 
-    private IEnumerator WaitingHitFromCreeperStrikeJob()
+    private void StartWaitingForHit()
     {
-        while (!_creeperStrike.IsHit)
-        {
-            yield return null;    
-        }
+        if (_isWaitingForHit) return;
+
+        _isWaitingForHit = true;
+
+        _creeperStrike.OnHit += OnCreeperStrikeHit;
+    }
+
+    private void OnCreeperStrikeHit()
+    {
+        _creeperStrike.OnHit -= OnCreeperStrikeHit;
+
+        _isWaitingForHit = false;
+
+        ReducingAbilityCooldown();
     }
 
     private void UseAbilityWithTalent()
     {
         if (_isPlayer)
         {
-            ReductionSetCooldown(_cooldownTimeWithTalent);
+            Cooldown.SetReduced(_cooldownTimeWithTalent, shouldModify: true);
             Debug.Log("ColdBlood / UseAbilityWithTalent / if _isPlayer == true");
 			Hero.CharacterState.DispelStates(StateType.Physical, Targeting.GetTarget().Character.NetworkSettings.TeamIndex, Hero.NetworkSettings.TeamIndex, true);
         }
         else
         {
             Debug.Log("ColdBlood / UseAbilityWithTalent / else if _isPlayer == false");
-            if (_killersStamina.Data.IsOpen)
-            {
-                _isCanCritLightningStrikes = true;
-            }
+            //if (_killersStamina.Data.IsOpen)
+            //{
+            //    _isCanCritLightningStrikes = true;
+            //}
 
-            _isCanCritCreeperStrike = true;
+            _isCanCrit = true;
         }
     }
 
     private void UseAbilityWithoutTalent()
     {
         Debug.Log("ColdBlood / UseAbilityWithoutTalent");
-        if (_killersStamina.Data.IsOpen)
-        {
-            _isCanCritLightningStrikes = true;
-        }
+        //if (_killersStamina.Data.IsOpen)
+        //{
+        //    _isCanCritLightningStrikes = true;
+        //}
 
-        _isCanCritCreeperStrike = true;
+        _isCanCrit = true;
+    }
+
+    [Command]
+    private void CmdApplyImmateriality()
+    {
+        Hero.CharacterState.AddState(States.Immateriality, 999, 0, Hero.gameObject, Name);
     }
 }

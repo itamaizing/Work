@@ -2,7 +2,6 @@ using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GroundTrap : Skill
 {
@@ -30,6 +29,18 @@ public class GroundTrap : Skill
     private Vector3 _startPosition;
 
     private float baseHealth = 23;
+
+    private float _baseCastDelay;
+    private Coroutine _boostWindow;
+    private WaitForSeconds _boostDuration = new WaitForSeconds(2f);
+
+    #region Talent
+
+    private bool _isSkillEnableBoostLogicActiveTalent;
+
+    public void SkillEnableBoostLogicActiveTalent(bool value) => _isSkillEnableBoostLogicActiveTalent = value;
+
+    #endregion
 
     protected override bool IsCanCast
     {
@@ -60,7 +71,15 @@ public class GroundTrap : Skill
     protected override int AnimTriggerCast => 0;
 
     private void OnDestroy() => OnSkillCanceled -= HandleSkillCanceled;
-    private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
+
+    private void OnEnable()
+    {
+        _baseCastDelay = CastDeley;
+        OnSkillCanceled += HandleSkillCanceled;
+    }
+
+    protected override void SkillEnableBoostLogic() => CastDeley = 0;
+    protected override void SkillDisableBoostLogic() => CastDeley = _baseCastDelay;
 
     public void AnimationTrapMove()
     {
@@ -68,6 +87,14 @@ public class GroundTrap : Skill
 
         Hero.Move.SetCanMove(false);
         Hero.Move.StopMoveAndAnimationMove();
+    }
+
+    public void TryStartBoost()
+    {
+        if (!_isSkillEnableBoostLogicActiveTalent) return;
+        if (_boostWindow != null) StopCoroutine(_boostWindow);
+
+        _boostWindow = StartCoroutine(BoostWindow());
     }
 
     private void QueueCurrentPreview()
@@ -147,6 +174,13 @@ public class GroundTrap : Skill
     {
         groundData.MaxHealth = baseHealth;
         CmdSetGorundBaseHealth();
+    }
+
+    private IEnumerator BoostWindow()
+    {
+        EnableSkillBoost();
+        yield return _boostDuration;
+        DisableSkillBoost();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -246,12 +280,14 @@ public class GroundTrap : Skill
     [Command]
     private void CmdSpawnGroundTrap(Vector3 startPosition, Quaternion rotation)
     {
-        Trap trap = Instantiate(trapPrefab, startPosition, rotation);
-        trap.Init(owner, this, startPosition, startPosition);
+        Vector3 spawnPos = startPosition + new Vector3(0f, 2f, 0f);
+
+        Trap trap = Instantiate(trapPrefab, spawnPos, rotation);
+        trap.Init(owner, this, spawnPos, startPosition);
         trap.Finalise();
-        SceneManager.MoveGameObjectToScene(trap.gameObject, Hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(trap.gameObject, Hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(trap.gameObject);
-        RpcInit(trap.netIdentity, startPosition, rotation);
+        RpcInit(trap.netIdentity, spawnPos, rotation);
     }
 
     [Command]
@@ -264,7 +300,7 @@ public class GroundTrap : Skill
         if (direction == Vector3.zero) return;
 
         var arrow = Instantiate(arrowTrapProjectile, startPos, Quaternion.LookRotation(direction));
-        SceneManager.MoveGameObjectToScene(arrow.gameObject, Hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(arrow.gameObject, Hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(arrow.gameObject);
 
         arrow.StartFly(targetPosition);

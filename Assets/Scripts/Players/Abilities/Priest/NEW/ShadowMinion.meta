@@ -1,14 +1,12 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Plugins/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback 1.asset.meta
-guid: c0dc09a60e6c6cf49b6134fd7e2b2e98
-NativeFormatImporter:
+<<<<<<<< HEAD:Assets/Scripts/Players/Test.meta
+guid: 8eba6fec5a65c83498254d1757295406
 ========
 guid: 9d7aa47fa96efa042870cd69b0c98138
+>>>>>>>> 6cf021b3 (Changes from priest, gandolarf):Assets/Scripts/Players/Abilities/Priest/NEW/ShadowMinion.meta
 folderAsset: yes
 DefaultImporter:
->>>>>>>> main:Assets/Scripts/Players/Abilities/Priest/NEW/ShadowMinion.meta
   externalObjects: {}
-  mainObjectFileID: 11400000
   userData: 
   assetBundleName: 
   assetBundleVariant: 

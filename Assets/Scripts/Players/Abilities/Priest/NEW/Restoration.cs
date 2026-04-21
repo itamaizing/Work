@@ -76,10 +76,16 @@ public class Restoration : Skill,IPolaritySwitchable
 
     public event Action OnModeChange;
 
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+        UpdateMode();
+    }
+
     private void OnEnable()
     {
         OnModeChange += UpdateMode;
-        UpdateMode();
+        //UpdateMode();
 
         _restorationManaBooster = new RestorationManaBooster(this);
         _restorationHealBooster    = new RestorationHealBooster(this);

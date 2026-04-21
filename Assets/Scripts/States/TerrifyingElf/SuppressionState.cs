@@ -14,6 +14,8 @@ public class SuppressionState : AbstractCharacterState
 
     private MoveComponent _move;
     private Rigidbody _rigidbody;
+    private Resource manaResource;
+    private Suppression _suppression;
 
     private float _baseDuration;
     private float _duration;
@@ -35,6 +37,8 @@ public class SuppressionState : AbstractCharacterState
         characterState = character;
         personWhoMadeBuff = caster;
 
+        _suppression = personWhoMadeBuff.GetComponent<Suppression>();
+
         _baseDuration = durationToExit;
         _duration = _baseDuration;
 
@@ -43,6 +47,11 @@ public class SuppressionState : AbstractCharacterState
 
         _distBuffer = 0f;
         _isMoving = false;
+
+        manaResource = character.Character.TryGetResource(ResourceType.Mana);
+
+        health = character.Character.Health;
+        health.DamageTaken += OnDamageTaken;
 
         _suppressionIdle = characterState.StateEffects.SuppressionIdle;
         _suppressionMove = characterState.StateEffects.SuppressionMove;
@@ -72,6 +81,8 @@ public class SuppressionState : AbstractCharacterState
 
         characterState.StateIcons.RemoveItemByState(State);
         characterState.RemoveState(this);
+
+        if (health != null) health.DamageTaken -= OnDamageTaken;
     }
 
     public override bool Stack(float time)
@@ -79,6 +90,41 @@ public class SuppressionState : AbstractCharacterState
         if (_currentStacks < MaxStacks) _currentStacks++;
         _duration = _baseDuration;
         return true;
+    }
+
+    private void OnDamageTaken(Damage damage, Skill skill)
+    {
+        if (!characterState.isServer) return;
+        if (!_suppression.IsSuppressionManaAbsorbtion) return;
+        if (skill == null || skill.Hero == null) return;
+
+        Character attacker = skill.Hero;
+
+        if (!IsFromRequiredSource(attacker)) return;
+
+        ApplyManaBurn(damage.Value);
+    }
+
+    private bool IsFromRequiredSource(Character attacker)
+    {
+        if (attacker == null) return false;
+
+        if (attacker.TryGetComponent<TerrifyingElfAura>(out _)) return true;
+        if (attacker.TryGetComponent<GhostAura>(out _)) return true;
+
+        return false;
+    }
+
+    private void ApplyManaBurn(float damageValue)
+    {
+        if (manaResource == null) return;
+
+        float burnAmount = damageValue * 0.25f;
+
+        float currentMana = manaResource.CurrentValue;
+        float newMana = Mathf.Max(0, currentMana - burnAmount);
+
+        manaResource.TryUse(newMana);
     }
 
     #region Helpers

@@ -6,6 +6,12 @@ using UnityEngine;
 
 public class GrowTreeAura : NetworkBehaviour
 {
+    private class SkillBaseData
+    {
+        public float length;
+        public float radius;
+    }
+
     [Header("Tick")]
     [SerializeField] private float _tick = 1f;
     [SerializeField] private LayerMask characterLayer;
@@ -13,11 +19,25 @@ public class GrowTreeAura : NetworkBehaviour
     private readonly List<Character> charactersInZone = new();
     private readonly HashSet<uint> clientIds = new();
     private Coroutine _routine;
+    private const float TreeMultiplier = 1.2f;
+    private const float VisionBonus = 3f;
+
+    private readonly Dictionary<Skill, SkillBaseData> _baseValues = new();
+    private bool _isBuffApplied = false;
+
+    [SerializeField][ReadOnly] private SkillManager _skillManager;
+    [SerializeField] [ReadOnly] private Character _Hero;
 
     [Header("Talent")]
     private bool _growTreeIncreasesMaxHealth;
 
     public bool GrowTreeIncreasesMaxHealth { get => _growTreeIncreasesMaxHealth; set => _growTreeIncreasesMaxHealth = value; }
+
+    public void Init(SkillManager skill, Character hero)
+    {
+        _skillManager = skill;
+        _Hero = hero;
+    }
 
     [Server]
     private void RemoveAuthority()
@@ -37,12 +57,104 @@ public class GrowTreeAura : NetworkBehaviour
 
         charactersInZone.Clear();
         clientIds.Clear();
+        if (_Hero != null) RemoveTreeBuff(_Hero);
+    }
+
+    public void ApplyTreeBuff(Character character)
+    {
+        if (_skillManager == null) return;
+        if (_Hero != character) return;
+
+        if (character != null) RemoveTreeBuff(character);
+
+        character.VisionComponent.VisionRange += VisionBonus;
+
+        foreach (var skill in _skillManager.Abilities)
+        {
+            if (skill == null) continue;
+
+            skill.Buff.Length.IncreasePercentage(TreeMultiplier);
+            skill.Buff.Radius.IncreasePercentage(TreeMultiplier);
+        }
+    }
+
+    public void RemoveTreeBuff(Character character)
+    {
+        if (_skillManager == null) return;
+        if (_Hero != character) return;
+
+        character.VisionComponent.VisionRange -= VisionBonus;
+
+        foreach (var skill in _skillManager.Abilities)
+        {
+            if (skill == null) continue;
+
+            skill.Buff.Length.ReductionPercentage(TreeMultiplier);
+            skill.Buff.Radius.ReductionPercentage(TreeMultiplier);
+        }
     }
 
     private void ForceExit(Character character)
     {
         if (character == null) return;
         if (character.TryGetComponent<CharacterState>(out var state) && state.GetState(States.ShadowTree) is ShadowTree shadow) shadow.SwitchToFinite();
+    }
+
+    private void CacheBaseValues()
+    {
+        _baseValues.Clear();
+
+        foreach (var skill in _skillManager.Abilities)
+        {
+            if (skill == null) continue;
+
+            _baseValues[skill] = new SkillBaseData
+            {
+                length = skill.Buff.Length.GetBuffedValue(1f),
+                radius = skill.Buff.Radius.GetBuffedValue(1f)
+            };
+        }
+    }
+
+    private void ApplyTreeBuffLocal()
+    {
+        if (_skillManager == null || _Hero == null) return;
+        if (_isBuffApplied) return;
+
+        CacheBaseValues();
+
+        _Hero.VisionComponent.VisionRange += VisionBonus;
+
+        foreach (var skill in _skillManager.Abilities)
+        {
+            if (skill == null) continue;
+
+            skill.Buff.Length.IncreasePercentage(TreeMultiplier);
+            skill.Buff.Radius.IncreasePercentage(TreeMultiplier);
+        }
+
+        _isBuffApplied = true;
+    }
+
+    private void RemoveTreeBuffLocal()
+    {
+        if (_skillManager == null || _Hero == null) return;
+        if (!_isBuffApplied) return;
+
+        _Hero.VisionComponent.VisionRange -= VisionBonus;
+
+        foreach (var skill in _skillManager.Abilities)
+        {
+            if (skill == null) continue;
+
+            if (_baseValues.TryGetValue(skill, out var data))
+            {
+                skill.Buff.Length.SetBaseValue(data.length);
+                skill.Buff.Radius.SetBaseValue(data.radius);
+            }
+        }
+
+        _isBuffApplied = false;
     }
 
     [ServerCallback]
@@ -96,6 +208,9 @@ public class GrowTreeAura : NetworkBehaviour
 
         _routine = null;
     }
+
+    [ClientRpc] public void RpcApplyTreeBuff(Character character) => ApplyTreeBuff(character);
+    [ClientRpc] public void RpcRemoveTreeBuff(Character character) => RemoveTreeBuff(character);
 
     [ClientRpc]
     private void RpcAddCharacter(uint netId)

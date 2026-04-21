@@ -69,11 +69,7 @@ public abstract class GameRules : NetworkBehaviour
 
             foreach (var netIdentity in objectsToRemove) NetworkServer.Destroy(netIdentity.gameObject);
 
-            if (_npcSpawn != null)
-            {
-                _npcSpawn.SpawnAllNpc(gameObject.scene);
-                _npcSpawn.ApplyNpcLayers();
-            }
+            if (_npcSpawn != null) _npcSpawn.SpawnAllNpc(gameObject.scene);
         }
 
         foreach (var playerSettings in _players)
@@ -83,11 +79,16 @@ public abstract class GameRules : NetworkBehaviour
             playerSettings.CharacterState.ServerClearAllStates();
             playerSettings.ServerResetAll();
 
+            if (playerSettings.connectionToClient != null) playerSettings.NetworkSettings.TargetUpdateLayers(playerSettings.connectionToClient);
+
             if (playerSettings.Abilities != null)
             {
                 playerSettings.Abilities.CancleAllSkills();
 
-                foreach (var skill in playerSettings.Abilities.Skills) skill.RpcResetSkillState();
+                foreach (var skill in playerSettings.Abilities.Skills)
+                {
+                    skill.RpcResetSkillState();
+                }
             }
 
             int spawnIndex = playerSettings.NetworkSettings.TeamIndex - 1;

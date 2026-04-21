@@ -10,7 +10,6 @@ public enum SkillAttributeName
     Area,
     Length,
     Width,
-    AttackSpeed,
     CastSpeed,
     Cooldown,
     ResourceCost,
@@ -23,15 +22,17 @@ public class SkillAttributes
 
     #region Properties
     public Dictionary<SkillAttributeName, Attribute> Attributes => _attributes;
+    public Attribute this[SkillAttributeName attrubute] => _attributes[attrubute];
     public float Cooldown
     {
         get
         {
-            //if (_heroAttributes == null)
+            if (_heroAttributes == null)
+                return GetCombined(
+                    _attributes[SkillAttributeName.Cooldown],
+                    _heroAttributes[CharacterAttributeName.CooldownReduction],
+                    _attributes[SkillAttributeName.Cooldown].BaseValue);
             return _attributes[SkillAttributeName.Cooldown].GetValue();
-            //return GetCombined(_attributes[SkillAttributeName.Cooldown],
-            //    _heroAttributes.Attributes[BasicAttributeName.C])
-            // пока что у персонажа нет атрибута КД
         }
     }
     public float ResourceCost
@@ -39,9 +40,50 @@ public class SkillAttributes
         get
         {
             if (_heroAttributes == null)
-                return _attributes[SkillAttributeName.Cooldown].GetValue();
+                return _attributes[SkillAttributeName.ResourceCost].GetValue();
             return GetCombined(_attributes[SkillAttributeName.ResourceCost],
-                _heroAttributes.Attributes[BasicAttributeName.ResourceCost]);
+                _heroAttributes[CharacterAttributeName.ResourceCost]);
+        }
+        set { _attributes[SkillAttributeName.ResourceCost].SetBaseValue(value); }
+    }
+    public float CastSpeed
+    {
+        get
+        {
+            if (_heroAttributes == null)
+                return _attributes[SkillAttributeName.CastSpeed].GetValue();
+            return GetCombined(_attributes[SkillAttributeName.CastSpeed], _heroAttributes[CharacterAttributeName.CastSpeed]);
+        }
+        set { _attributes[SkillAttributeName.CastSpeed].SetBaseValue(value); }
+    }
+    public float CastSpeedPhysical
+    {
+        get
+        {
+            if (_heroAttributes == null)
+                return _attributes[SkillAttributeName.CastSpeed].GetValue();
+            var heroB = _heroAttributes[CharacterAttributeName.CastSpeed];
+            var heroP = _heroAttributes[CharacterAttributeName.CastSpeedPhysical];
+            var skill = _attributes[SkillAttributeName.CastSpeed];
+
+            return (skill.BaseValue + skill.FlatBonus + heroB.FlatBonus + heroP.FlatBonus) *
+                (1 + skill.PercentBonus + heroB.FlatBonus + heroP.FlatBonus) *
+                (skill.MultiplierBonus + heroB.MultiplierBonus + heroP.MultiplierBonus);
+        }
+    }
+    public float CastSpeedMagical
+    {
+        get
+        {
+            if (_heroAttributes == null)
+                return _attributes[SkillAttributeName.CastSpeed].GetValue();
+            var heroB = _heroAttributes[CharacterAttributeName.CastSpeed];
+            var heroM = _heroAttributes[CharacterAttributeName.CastSpeedMagical];
+            var skill = _attributes[SkillAttributeName.CastSpeed];
+
+            return (skill.BaseValue + skill.FlatBonus + heroB.FlatBonus + heroM.FlatBonus) *
+                (1 + skill.PercentBonus + heroB.FlatBonus + heroM.FlatBonus) *
+                (skill.MultiplierBonus + heroB.MultiplierBonus + heroM.MultiplierBonus);
         }
     }
     #endregion Properties
@@ -61,14 +103,17 @@ public class SkillAttributes
         _heroAttributes = characterAttributes;
     }
 
-    public float GetCombined(Attribute skill, Attribute hero)
+    public float GetCombined(Attribute skill, Attribute hero, float baseValue = float.MinValue)
     {
-        return GetCombined(skill.BaseValue, skill, hero);
-    }
-    public float GetCombined(float baseValue, Attribute skill, Attribute hero)
-    {
+        if (baseValue == float.MinValue)
+            baseValue = skill.BaseValue;
         return (baseValue + hero.FlatBonus + skill.FlatBonus) *
-            (1 + skill.PercentBonus + skill.PercentBonus) *
+            (1 + skill.PercentBonus + hero.PercentBonus) *
             (skill.MultiplierBonus * hero.MultiplierBonus);
+    }
+
+    public float GetCombined(SkillAttributeName skill_atr, CharacterAttributeName hero_atr, float baseValue = float.MinValue)
+    {
+        return GetCombined(_attributes[skill_atr], _heroAttributes[hero_atr], baseValue);
     }
 }

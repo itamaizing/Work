@@ -16,7 +16,7 @@ public class DestructivePoisonState : RefreshingState
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;
     public override Schools Schools => Schools.Earth;
-
+    
     public DestructivePoisonState()
     {
         MaxStacksCount = 3;

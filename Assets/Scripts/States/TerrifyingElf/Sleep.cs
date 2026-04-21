@@ -16,6 +16,8 @@ public class Sleep : AbstractCharacterState
     private const float _tickInterval = 1f;
     private const string _enemyLayerName = "Enemy";
 
+    private byte _originalTeamIndex;
+
     private Character _source;
     private SkillManager _skillManager;
     private List<Skill> _disabledSkills = new List<Skill>();
@@ -72,6 +74,15 @@ public class Sleep : AbstractCharacterState
             var sleep = _source.Abilities.Abilities.OfType<SleepSpell>().FirstOrDefault();
             if (sleep != null) _giveInnerDarkness = sleep.IsSleepInnerDarknessTalentActive;
         }
+
+        var networkSettings = characterState.Character.NetworkSettings;
+
+        if (networkSettings != null && NetworkServer.active)
+        {
+            _originalTeamIndex = networkSettings.TeamIndex;
+            networkSettings.TeamIndex = 3;
+            networkSettings.RpcUpdateLayers();
+        }
     }
 
     public override void UpdateState()
@@ -121,6 +132,13 @@ public class Sleep : AbstractCharacterState
         characterState.StateIcons.RemoveItemByState(State);
         characterState.RemoveState(this);
 
+        var networkSettings = characterState.Character.NetworkSettings;
+
+        if (networkSettings != null && NetworkServer.active)
+        {
+            networkSettings.TeamIndex = _originalTeamIndex;
+            networkSettings.RpcUpdateLayers();
+        }
     }
 
     public override bool Stack(float time)

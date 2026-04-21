@@ -122,6 +122,13 @@ PrefabInstance:
     - {fileID: 9018264115512144163, guid: 4c3c788ff06ea9f48abda93ece76c4e3, type: 3}
     - {fileID: 7643787431872027281, guid: 4c3c788ff06ea9f48abda93ece76c4e3, type: 3}
     - {fileID: 6216776369600505075, guid: 4c3c788ff06ea9f48abda93ece76c4e3, type: 3}
+    - {fileID: 3254515559312903057, guid: 4c3c788ff06ea9f48abda93ece76c4e3, type: 3}
+    - {fileID: 5132379941379747870, guid: 4c3c788ff06ea9f48abda93ece76c4e3, type: 3}
+    - {fileID: 3350435801472191630, guid: 4c3c788ff06ea9f48abda93ece76c4e3, type: 3}
+    - {fileID: 2161342997938470374, guid: 4c3c788ff06ea9f48abda93ece76c4e3, type: 3}
+    - {fileID: 565901441313688860, guid: 4c3c788ff06ea9f48abda93ece76c4e3, type: 3}
+    - {fileID: 4320175696667952190, guid: 4c3c788ff06ea9f48abda93ece76c4e3, type: 3}
+    - {fileID: 6363943866240832142, guid: 4c3c788ff06ea9f48abda93ece76c4e3, type: 3}
     m_RemovedGameObjects:
     - {fileID: 6715013159227173169, guid: 4c3c788ff06ea9f48abda93ece76c4e3, type: 3}
     - {fileID: 2723646198875676135, guid: 4c3c788ff06ea9f48abda93ece76c4e3, type: 3}

@@ -154,18 +154,25 @@ public class Kick_Scorpion : Skill
     private void ApplyAttackDamageKick()
     {
         if (_wasDamageApplied) return;
-        if (Targeting.GetTarget() == null) return;
-        if (Vector2.Distance(_lastTarget.transform.position, Targeting.GetTarget().Transform.position) > AreaInfo.Radius) return;
+
+        var targetData = Targeting.GetTarget();
+        if (targetData == null) return;
+
+        var target = targetData.Targetable as IDamageable;
+        if (target == null) return;
+
+        if (Vector3.Distance(_hero.transform.position, targetData.Transform.position) > AreaInfo.Radius)
+            return;
 
         Damage damage = new Damage
         {
-            Value = Buff.Damage.GetBuffedValue(DamageRange),
+            Value = Buff.Damage.GetBuffedValue(_damageValue),
             Type = Info.DamageType,
         };
 
         _wasDamageApplied = true;
 
-        if (Targeting.GetTarget() is IDamageable damageable) CmdApplyDamage(damageable.gameObject, damage);
+        CmdApplyDamage(target.gameObject, damage);
     }
 
     private IEnumerator HitsInRowTimer()

@@ -73,7 +73,7 @@ public class Ghost : Skill
     {
         get
         {
-            if (IsHaveCharge && (_chargesHaveSeparateCooldown || IsCooldowned)) return true;
+            if (Charges.HasCharges && (_chargesHaveSeparateCooldown || !Cooldown.IsActive)) return true;
             if (_ghostMoveToTarget) return true;
 
             if (_teleportGhost && _ghostToTeleport != null)
@@ -107,13 +107,16 @@ public class Ghost : Skill
 
     #endregion
 
-    protected override void Awake()
+
+    public override void Init(SkillRenderer render, Character hero)
     {
+        base.Init(render, hero);
+
         _audioSource = GetComponent<AudioSource>();
         _treeVisionRadius = treeVisionComponent.VisionRange;
         _heroVisionRadius = Hero.VisionComponent.VisionRange;
 
-        base.Awake();
+        //base.Awake();
         InitializeFields();
         RegisterSpawnEvents();
 
@@ -299,7 +302,7 @@ public class Ghost : Skill
                         yield return null;
                     }
 
-                    else if (IsHaveCharge && (_chargesHaveSeparateCooldown || IsCooldowned))
+                    else if (Charges.HasCharges && (_chargesHaveSeparateCooldown || !Cooldown.IsActive))
                     {
                         if (_isSpawningGhostVisual) _pendingSpawn.Enqueue(secondPoint);
                         else
@@ -441,7 +444,7 @@ public class Ghost : Skill
     {
         foreach (var skillCost in _skillEnergyCosts)
         {
-            skillCost.resourceCost *= 0.5f;
+            skillCost.value *= 0.5f;
         }
     }
 
@@ -449,7 +452,7 @@ public class Ghost : Skill
     {
         foreach (var skillCost in _skillEnergyCosts)
         {
-            skillCost.resourceCost *= 2f;
+            skillCost.value *= 2f;
         }
     }
 
@@ -594,7 +597,7 @@ public class Ghost : Skill
 
         SpawnGhost(targetPosition, ghostVisual.transform.rotation);
 
-        if (_pendingSpawn.Count > 0 && IsHaveCharge && (isSkillEnableBoostLogic || _chargesHaveSeparateCooldown || IsCooldowned)) StartCoroutine(SpawnGhostVisualEffect(_pendingSpawn.Dequeue()));
+        if (_pendingSpawn.Count > 0 && Charges.HasCharges && (isSkillEnableBoostLogic || _chargesHaveSeparateCooldown || !Cooldown.IsActive)) StartCoroutine(SpawnGhostVisualEffect(_pendingSpawn.Dequeue()));
         else _isSpawningGhostVisual = false;
     }
 

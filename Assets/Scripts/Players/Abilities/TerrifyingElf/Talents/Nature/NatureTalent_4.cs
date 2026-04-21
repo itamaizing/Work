@@ -12,13 +12,11 @@ public class NatureTalent_4 : Talent
     {
         _ability.ActivateSkill(shotsIntoSky);
         growTree.ShotTreeCooldownTalent(true);
-        growTree.GrowTreeArrowIntoSkyRadius(true);
     }
 
     public override void Exit()
     {
         _ability.DeactivateSkill(shotsIntoSky);
         growTree.ShotTreeCooldownTalent(false);
-        growTree.GrowTreeArrowIntoSkyRadius(false);
     }
 }

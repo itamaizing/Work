@@ -1,4 +1,4 @@
-
+﻿
 public class ShoolTalent : Talent
 {
     private int _counter = 0;
@@ -7,6 +7,7 @@ public class ShoolTalent : Talent
     private Skill _skill;
     private Skill _skill1;
     private Skill _skill2;
+    private AttributeModifier mod_cost;
 
     public override void Enter()
     {
@@ -42,11 +43,13 @@ public class ShoolTalent : Talent
         _skill = skill;
 
         skill.PreparingStarted -= OnPreparingStarted;
-
-        foreach (var item in skill.SkillEnergyCosts)
-        {
-            item.ModifyResourceCost(_multiple);
-        }
+        
+        mod_cost = new AttributeModifier(-_multiple, ModifierType.Multiplier, source: this);
+        _skill.Attributes[SkillAttributeName.ResourceCost].AddModifier(mod_cost);
+        //foreach (var item in skill.SkillEnergyCosts)
+        //{
+        //    item.ModifyResourceCost(_multiple);
+        //}
 
         skill.CastEnded += OnCastEnded;
     }
@@ -55,9 +58,10 @@ public class ShoolTalent : Talent
     {
         _skill.CastEnded -= OnCastEnded;
 
-        foreach (var item in _skill.SkillEnergyCosts)
-        {
-            item.ModifyResourceCost1(_multiple);
-        }
+        _skill.Attributes[SkillAttributeName.ResourceCost].RemoveModifier(mod_cost);
+        //foreach (var item in _skill.SkillEnergyCosts)
+        //{
+        //    item.ModifyResourceCost1(_multiple);
+        //}
     }
 }

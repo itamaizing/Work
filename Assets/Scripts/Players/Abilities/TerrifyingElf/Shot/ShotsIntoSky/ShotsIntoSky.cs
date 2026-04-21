@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Linq;
 using Mirror;
@@ -8,9 +8,7 @@ using UnityEngine.SceneManagement;
 public class ShotsIntoSky : Skill
 {
     [SerializeField] private SkillRenderer skillRenderer;
-    [SerializeField] private bool silenceTalentActive;
     [SerializeField] private bool tripleShotTalentActive;
-    [SerializeField] private bool shotAstralManaActive;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private HeroComponent playerLinks;
     [SerializeField] private float _dropDelayTime = 1f;
@@ -25,6 +23,20 @@ public class ShotsIntoSky : Skill
     private bool _secondShotPlanned;
     private bool _tripleShootPlanned;
     private const float _extraShotDelay = 1f;
+
+    private float _baseCastDelay;
+    private Coroutine _boostWindow;
+    private WaitForSeconds _boostDuration = new WaitForSeconds(2f);
+
+    #region Talent
+
+    private bool _isSkillEnableBoostLogicActiveTalent;
+    private bool shotMagicDebuffActive;
+
+    public void ShotsIntoSkyMagicDebuffTalentActive(bool value) => shotMagicDebuffActive = value;
+    public void SkillEnableBoostLogicActiveTalent(bool value) => _isSkillEnableBoostLogicActiveTalent = value;
+
+    #endregion
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotsSkyCastDelay");
     protected override int AnimTriggerCast => 0;
@@ -48,7 +60,15 @@ public class ShotsIntoSky : Skill
     }
 
     private void OnDestroy() => Canceled -= HandleSkillCanceled;
-    private void OnEnable() => Canceled += HandleSkillCanceled;
+
+    private void OnEnable()
+    {
+        _baseCastDelay = CastDeley;
+        Canceled += HandleSkillCanceled;
+    }
+
+    protected override void SkillEnableBoostLogic() => CastDeley = 0;
+    protected override void SkillDisableBoostLogic() => CastDeley = _baseCastDelay;
 
     public void ShotsAnimationMove()
     {
@@ -71,13 +91,12 @@ public class ShotsIntoSky : Skill
 
     public void ArrowsIntoSkyEffectPlay() => arrowsIntoSkyEffect.Play();
 
-    public void ForceCooldownEnd()
+    public void TryStartBoost()
     {
-        if (_cooldownJob != null)
-            StopCoroutine(_cooldownJob);
+        if (!_isSkillEnableBoostLogicActiveTalent) return;
+        if (_boostWindow != null) StopCoroutine(_boostWindow);
 
-        RemainingCooldownTime = 0f;
-        RaiseCooldownEnded();
+        _boostWindow = StartCoroutine(BoostWindow());
     }
 
     private void HandleSkillCanceled()
@@ -91,6 +110,13 @@ public class ShotsIntoSky : Skill
             if (isServer) ServerDestroyPendingImpacts();
             else CmdDestroyPendingImpacts();
         }
+    }
+
+    private IEnumerator BoostWindow()
+    {
+        EnableSkillBoost();
+        yield return _boostDuration;
+        DisableSkillBoost();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -188,7 +214,7 @@ public class ShotsIntoSky : Skill
 
         ArrowsIntoSkyProjectile impact = Instantiate(impactPrefab, position, Quaternion.identity);
         SceneManager.MoveGameObjectToScene(impact.gameObject, _hero.NetworkSettings.MyRoom);
-        impact.Init(playerLinks, this, damage, silenceTalentActive, lastStreamTalent, shotAstralManaActive);
+        impact.Init(playerLinks, this, damage, lastStreamTalent, shotMagicDebuffActive);
         NetworkServer.Spawn(impact.gameObject);
 
         _arrowsIntoSkyProjectileIds.Add(impact.GetComponent<NetworkIdentity>().netId);
@@ -217,7 +243,7 @@ public class ShotsIntoSky : Skill
         if (gameObject == null) return;
 
         ArrowsIntoSkyProjectile impact = gameObject.GetComponent<ArrowsIntoSkyProjectile>();
-        if (impact != null) impact.Init(playerLinks, this, damage, silenceTalentActive, lastStreamTalent, shotAstralManaActive);
+        if (impact != null) impact.Init(playerLinks, this, damage, lastStreamTalent, shotMagicDebuffActive);
     }
 
     [ClientRpc] private void RpcActivate(ArrowsIntoSkyProjectile projectile) => projectile.Activate();
@@ -272,15 +298,4 @@ public class ShotsIntoSky : Skill
         tripleShotTalentActive = value;
     }
     #endregion
-
-    #region silenceTalent
-    public void SetSilenceTalentActive(bool value)
-    {
-        silenceTalentActive = value;
-    }
-    #endregion
-
-    #region ShotsIntoSkyAstralTalent
-    public void ShotsIntoSkyAstralTalentActive(bool value) => shotAstralManaActive = value;
-    #endregion
-}
+}

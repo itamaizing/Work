@@ -12,6 +12,8 @@ public class HealingPoisonCloudState : AbstractCharacterState
     private float _increasedHeal;
     private float _endHeal;
 
+    private ExplosionPoisonCloud _explosion;
+
     private float _timeBetweenHeal;
     private float _startTimeBetweenHeal = 1f;
 
@@ -76,6 +78,11 @@ public class HealingPoisonCloudState : AbstractCharacterState
             duration = _baseDuration;
             return true;
         }
+
+        if (_explosion != null)
+        {
+            _explosion.CurrentStacksHealingPoisonCloud(currentStacksCount, _radiusCloud);
+        }
     }
 
     public void AddStacks()
@@ -89,6 +96,11 @@ public class HealingPoisonCloudState : AbstractCharacterState
         {
             duration = _baseDuration;
         }
+
+        if (_explosion != null)
+        {
+            _explosion.CurrentStacksHealingPoisonCloud(currentStacksCount, _radiusCloud);
+        }
     }
 
     private void SearchAbilities()
@@ -101,6 +113,11 @@ public class HealingPoisonCloudState : AbstractCharacterState
                 {
                     _alliesLayer = creeperInvisible.Targeting.Layer;
                 }
+            }
+
+            if (ability is ExplosionPoisonCloud explosion)
+            {
+                _explosion = explosion;
             }
 
         }

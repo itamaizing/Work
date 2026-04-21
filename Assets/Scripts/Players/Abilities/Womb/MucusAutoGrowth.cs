@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,14 +30,18 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
         Invoke("HandleAction", 1f);
     }
 
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+        AreaInfo.Radius = 0;
+    }
+
     private void OnEnable()
     {
         _mucusByCircle.Clear();
 
         for (int i = 0; i < MaxCircles; i++)
             _mucusByCircle.Add(new List<GameObject>());
-
-        AreaInfo.Radius = 0;
     }
 
     private void OnDisable()
@@ -59,23 +63,23 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
 
     private void subscription()
     {
-        if (_creatureSpawn.Tentacle != null)
+        if (_creatureSpawn.WombSpawn != null)
         {
-            _creatureSpawn.Tentacle.OnWombSpreadsMucusChanged += HandleMucusGrowthChanged;
+            _creatureSpawn.WombSpawn.OnWombSpreadsMucusChanged += HandleMucusGrowthChanged;
         }
     }
 
     private void unsubscribe()
     {
-        if (_creatureSpawn.Tentacle != null)
+        if (_creatureSpawn.WombSpawn != null)
         {
-            _creatureSpawn.Tentacle.OnWombSpreadsMucusChanged -= HandleMucusGrowthChanged;
+            _creatureSpawn.WombSpawn.OnWombSpreadsMucusChanged -= HandleMucusGrowthChanged;
         }
     }
 
     private void HandleAction()
     {
-        if (_creatureSpawn.Tentacle != null) HandleMucusGrowthChanged(_creatureSpawn.Tentacle.IsWombSpreadsMucus);
+        if (_creatureSpawn.WombSpawn != null) HandleMucusGrowthChanged(_creatureSpawn.WombSpawn.IsWombSpreadsMucus);
     }
 
     private IEnumerator ApplyMucusPeriodically()
@@ -221,10 +225,10 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
     [ClientRpc]
     private void RpcSpawnSpikeMucus(Mucus mucus)
     {
-        if (_creatureSpawn.Tentacle != null)
+        if (_creatureSpawn.WombSpawn != null)
         {
-            mucus.Skill = _creatureSpawn.Tentacle;
-            mucus.IsAttackSpike = _creatureSpawn.Tentacle.IsSpawnSpikeMucus;
+            mucus.Skill = _creatureSpawn.WombSpawn;
+            mucus.IsAttackSpike = _creatureSpawn.WombSpawn.IsSpawnSpikeMucus;
         }
     }
 

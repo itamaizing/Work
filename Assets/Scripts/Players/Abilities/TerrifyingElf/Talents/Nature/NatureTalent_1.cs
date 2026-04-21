@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class NatureTalent_1 : Talent
 {
-	[SerializeField] private Silence silence;
-    [SerializeField] private SkillManager _ability;
+	[SerializeField] private SleepSpell sleep;
+	[SerializeField] private SkillManager _ability;
 
 	public override void Enter()
 	{
-		_ability.ActivateSkill(silence);
+		_ability.ActivateSkill(sleep);
 	}
 
 	public override void Exit()
 	{
-		_ability.DeactivateSkill(silence);
+		_ability.DeactivateSkill(sleep);
 	}
 }

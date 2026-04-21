@@ -92,8 +92,9 @@ public class PullingHealth : Skill
         _hero.Move.IsMoveBlocked = true;
     }
 
-    private void Start()
+    public override void Init(SkillRenderer render, Character hero)
     {
+        base.Init(render, hero);
         _audioSource = GetComponent<AudioSource>();
         _baseRadius = AreaInfo.Radius;
         _baseCastStreamDuration = CastStreamDuration;
@@ -276,26 +277,30 @@ public class PullingHealth : Skill
         if (_pullingHealthThroughGhosts)
         {
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius);
-            List<GhostAura> ghostsInZone = new List<GhostAura>();
+            List<GameObject> pullingZone = new List<GameObject>();
 
-            foreach (var collider in hitColliders) if (collider.TryGetComponent<GhostAura>(out var ghostAura)) ghostsInZone.Add(ghostAura);
+            foreach (var collider in hitColliders)
+            {
+                if (collider.TryGetComponent<GhostAura>(out var ghostAura)) pullingZone.Add(ghostAura.gameObject);
+                else if (collider.TryGetComponent<GrowTreeAura>(out var growTreeAura)) pullingZone.Add(growTreeAura.gameObject);
+            }
 
-            ghostsInZone.Sort((a, b) => Vector3.Distance(transform.position, a.transform.position).CompareTo(Vector3.Distance(transform.position, b.transform.position)));
+            pullingZone.Sort((a, b) => Vector3.Distance(transform.position, a.transform.position).CompareTo(Vector3.Distance(transform.position, b.transform.position)));
 
             float targetDistance = Vector3.Distance(transform.position, damageable.transform.position);
             if (targetDistance <= _baseRadius) CmdSpawnPullingHealthEffect(gameObject, damageable.gameObject);
 
-            if (targetDistance <= _baseRadius + GhostChainRangeStep1 && ghostsInZone.Count == 1)
+            if (targetDistance <= _baseRadius + GhostChainRangeStep1 && pullingZone.Count == 1)
             {
-                GameObject nearestGhost = ghostsInZone[0].gameObject;
+                GameObject nearestGhost = pullingZone[0];
                 CmdSpawnPullingHealthEffect(gameObject, nearestGhost);
                 CmdSpawnPullingHealthEffect(nearestGhost, damageable.transform.gameObject);
             }
 
-            else if (targetDistance <= _baseRadius + GhostChainRangeStep2 && ghostsInZone.Count == MaxGhost)
+            else if (targetDistance <= _baseRadius + GhostChainRangeStep2 && pullingZone.Count == MaxGhost)
             {
-                GameObject ghost1 = ghostsInZone[0].gameObject;
-                GameObject ghost2 = ghostsInZone[1].gameObject;
+                GameObject ghost1 = pullingZone[0];
+                GameObject ghost2 = pullingZone[1];
 
                 CmdSpawnPullingHealthEffect(gameObject, ghost1);
                 CmdSpawnPullingHealthEffect(ghost1, ghost2);
@@ -468,7 +473,7 @@ public class PullingHealth : Skill
         if (_pullingHealthPrefab == null || startPoint == null || targetPoint == null) return;
 
         GameObject effectInstance = Instantiate(_pullingHealthPrefab, startPoint.transform.position, Quaternion.identity);
-        SceneManager.MoveGameObjectToScene(effectInstance, _hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(effectInstance, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(effectInstance);
         RpcInitEffects(effectInstance, startPoint, targetPoint);
 
@@ -485,7 +490,7 @@ public class PullingHealth : Skill
         {
             GameObject ghostEffectInstance = Instantiate(_pullingHealthPrefab, _ghost[i].transform.position, Quaternion.identity);
             _activeGhostEffects.Add(ghostEffectInstance);
-            SceneManager.MoveGameObjectToScene(ghostEffectInstance, _hero.NetworkSettings.MyRoom);
+            //SceneManager.MoveGameObjectToScene(ghostEffectInstance, _hero.NetworkSettings.MyRoom);
             NetworkServer.Spawn(ghostEffectInstance);
             RpcInitEffects(ghostEffectInstance, _ghost[i], targetPoint);
         }
@@ -498,7 +503,7 @@ public class PullingHealth : Skill
 
         var effect = Instantiate(_pullingHealthPrefab, start.transform.position, Quaternion.identity);
         _extraEffects.Add(effect);
-        SceneManager.MoveGameObjectToScene(effect, _hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(effect, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(effect);
         RpcInitEffects(effect, start, target);
     }

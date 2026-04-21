@@ -7,9 +7,9 @@ public class CreatureCarryGun : NetworkComponent
     [SerializeField] private SkillManager _skillManager;
 
     [SerializeField] private List<Skill> _sills;
-    [SerializeField][ReadOnly] private Tentacles _dadSkill;
+    [SerializeField][ReadOnly] private WombSpawn _dadSkill;
 
-    public Tentacles DadSkill { get => _dadSkill; set => _dadSkill = value; }
+    public WombSpawn DadSkill { get => _dadSkill; set => _dadSkill = value; }
 
     private void Start()
     {

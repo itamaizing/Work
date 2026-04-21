@@ -44,7 +44,11 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
 
     public void AddSkill(Character enemy, Skill skill)
     {
+        Debug.Log("Проверка добавления");
+
         if (!_consumeComboTalent) return;
+
+        Debug.Log("Проверка добавления 2");
         if (enemy == null || skill == null) return;
 
         int currentStacks = enemy.CharacterState.CheckStateStacks(States.ComboState);

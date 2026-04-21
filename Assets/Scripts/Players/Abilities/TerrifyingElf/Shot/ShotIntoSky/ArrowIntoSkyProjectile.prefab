@@ -5043,7 +5043,7 @@ MonoBehaviour:
   criticalChance: 30
   criticalMultiplier: 2.4
   arrow: {fileID: 9103092950671096227}
-  circle: {fileID: 0}
+  circle: {fileID: 1821308031553832303}
   sphereCollider: {fileID: 3585261139813630317}
   silenceTalentActive: 0
   lastStreamTalent: 0

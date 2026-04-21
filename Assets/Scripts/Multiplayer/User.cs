@@ -118,6 +118,22 @@ public class BottleUserManager
         OnBottlesChanged?.Invoke(count);
     }
 
+    public void ResetBottleData()
+    {
+        if (string.IsNullOrEmpty(_currentUser))
+            return;
+
+        _currentBottles = 0;
+        _currentBottleVolume = 0f;
+
+        PlayerPrefs.DeleteKey(_currentUser + "_Bottles");
+        PlayerPrefs.DeleteKey(_currentUser + "_BottleVolume");
+
+        PlayerPrefs.Save();
+
+        OnBottlesChanged?.Invoke(_currentBottles);
+    }
+
     public void BottleInitialize()
     {
         _instance = this;
@@ -281,6 +297,26 @@ public class LevelCharacterManager
         CheckForLevelUp();
         SaveLevelData();
 
+        OnExperienceChanged?.Invoke(_currentExperience, _experienceForNextLevel);
+    }
+
+    public void ResetAllLevelData()
+    {
+        if (_character == null) return;
+
+        string baseKey = _character.Data.Name + "_Group" + _currentSaveGroup;
+
+        PlayerPrefs.DeleteKey(baseKey + "_Level");
+        PlayerPrefs.DeleteKey(baseKey + "_Experience");
+        PlayerPrefs.DeleteKey(baseKey + "_ExperienceForNextLevel");
+
+        PlayerPrefs.Save();
+
+        _currentLevel = 1;
+        _currentExperience = 0;
+        _experienceForNextLevel = 100;
+
+        OnLevelChanged?.Invoke(_currentLevel);
         OnExperienceChanged?.Invoke(_currentExperience, _experienceForNextLevel);
     }
 

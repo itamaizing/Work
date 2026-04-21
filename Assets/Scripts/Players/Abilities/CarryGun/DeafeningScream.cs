@@ -11,9 +11,6 @@ public class DeafeningScream : Skill
     [SerializeField] private CooldownEnergy cooldownEnergy;
     [SerializeField] private float duration = 2f;
 
-    //private IDamageable _target;
-    private Character _runtimeTarget;
-
     protected override bool IsCanCast => CheckCanCast();
 
     protected override int AnimTriggerCastDelay => 0;
@@ -24,7 +21,7 @@ public class DeafeningScream : Skill
 
     private bool CheckCanCast()
     {
-        return Targeting.GetTarget()?.Character != null && cooldownEnergy.CurrentValue >= jumpWithChelicera.ChargeCooldown &&
+        return Targeting.GetTarget()?.Character != null && cooldownEnergy.CurrentValue >= jumpWithChelicera.Charges.CooldownTime &&
         Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius &&
         Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
     }
@@ -35,27 +32,6 @@ public class DeafeningScream : Skill
         _playerLinks.Move.StopLookAt();
         Hero.Move.SetCanMove(true);
         _isCanCancel = true;
-    }
-
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-    {
-        _runtimeTarget = null;
-
-        while (Targeting.GetTarget()?.Character == null)
-        {
-            if (GetMouseButton)
-            {
-                Targeting.FindTempTarget();
-
-                if (Targeting.GetTarget()?.Character != null) if (Targeting.GetTarget()?.Character is Character characterTarget) _runtimeTarget = characterTarget;
-                _isCanCancel = false;
-            }
-            yield return null;
-        }
-
-        TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(_runtimeTarget);
-        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
@@ -71,7 +47,6 @@ public class DeafeningScream : Skill
     protected override void ClearData()
     {
         Targeting.ClearTarget();
-        //_target = null;
     }
 
     [Command]

@@ -6,17 +6,14 @@ using UnityEngine;
 public class ScorpionPassive : Skill, IPassiveSkill
 {
     #region Skill
-    protected override int AnimTriggerCastDelay => throw new NotImplementedException();
-    protected override int AnimTriggerCast => throw new NotImplementedException();
-    public override void LoadTargetData(TargetInfo targetInfo) => throw new NotImplementedException();
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => 0;
+    public override void LoadTargetData(TargetInfo targetInfo) { }
 
-    protected override IEnumerator CastJob()
-    {
-        yield return null;
-    }
+    protected override IEnumerator CastJob() { yield return null; }
 
-    protected override void ClearData() => throw new NotImplementedException();
-    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) => throw new NotImplementedException();
+    protected override void ClearData() { }
+    protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback) { yield return null; }
     #endregion
     [NonSerialized] public bool IsEnergyFreeAfterTeleport = false;
 

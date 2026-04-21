@@ -174,7 +174,7 @@ public abstract class AutoAttackSkill : Skill
 
                     //yield return new WaitForSeconds(AttackSpeed);
 
-                    if (Targeting.IsTargetInRadius(AreaInfo.Radius + _attackZoneSize, Target.transform) && Targeting.NoObstacles(Target.transform.position, _obstacle) && IsCooldowned)
+                    if (Targeting.IsTargetInRadius(AreaInfo.Radius + _attackZoneSize, Target.transform) && Targeting.NoObstacles(Target.transform.position, _obstacle) && !Cooldown.IsActive)
                     {
                         if (TryPayCost(true))
                         {
@@ -187,7 +187,7 @@ public abstract class AutoAttackSkill : Skill
 
                                 while (_isPlayCastAnimAA)
                                 {
-                                    if((Targeting.IsTargetInRadius(AreaInfo.Radius + _attackZoneSize, Target.transform) && Targeting.NoObstacles(Target.transform.position, _obstacle) && IsCooldowned) == false)
+                                    if((Targeting.IsTargetInRadius(AreaInfo.Radius + _attackZoneSize, Target.transform) && Targeting.NoObstacles(Target.transform.position, _obstacle) && !Cooldown.IsActive) == false)
                                     {
                                         _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
                                         _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);

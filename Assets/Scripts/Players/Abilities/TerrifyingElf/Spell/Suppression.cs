@@ -10,11 +10,20 @@ public class Suppression : Skill
     //private Character _target;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
 
-    protected override bool IsCanCast => IsHaveCharge && Targeting.GetTarget()?.Character != null;
+    protected override bool IsCanCast => Charges.HasCharges && Targeting.GetTarget()?.Character != null;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
-
     protected override int AnimTriggerCast => 0;
+
+    #region Talent
+
+    private bool _isSuppressionManaAbsorbtion;
+
+    public bool IsSuppressionManaAbsorbtion { get => _isSuppressionManaAbsorbtion; set => _isSuppressionManaAbsorbtion = value; }
+
+    public void SuppressionManaAbsorbtion(bool value) => _isSuppressionManaAbsorbtion = value;
+
+    #endregion
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
@@ -73,12 +82,12 @@ public class Suppression : Skill
         var targetCharacter = targetGameObject.GetComponent<Character>();
         if (targetCharacter != null)
         {
-            targetCharacter.CharacterState.AddState(States.Suppression, duration, 0, _playerLinks.gameObject, name);
+            targetCharacter.CharacterState.AddState(States.Suppression, duration, 0, _playerLinks.gameObject, this.name);
         }
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((ITargetable)(targetInfo.GetTargets()[0] as Character));
+        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((targetInfo.GetTargets()[0] as Character));
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -51,7 +51,6 @@ public class MergeWithDarknessSkill : Skill
         _durationJob = null;
 
         Cooldown.Start();
-        IncreaseSetCooldown(CooldownTime);
     }
 
     private void Deactivate()
@@ -68,7 +67,6 @@ public class MergeWithDarknessSkill : Skill
         CmdRemoveState();
 
         Cooldown.Start();
-        IncreaseSetCooldown(CooldownTime);
     }
 
     [Command]

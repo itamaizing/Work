@@ -17,6 +17,13 @@ public class PoisonBallProjectile : Test_Projectile
     [SerializeField] private float _fastMovementSpeed;
     [SerializeField] private float _slowMovementSpeed;
 
+    [SerializeField] private Material _projectileMaterialBase;
+
+    [SerializeField] private Material _projectileMaterialEnemy;
+    [SerializeField] private Material _projectileMaterialAllies;
+
+    [SerializeField] private MeshRenderer _renderer;
+
     private PoisonBall _poisonBall;
     private Skill _skill;
 
@@ -25,6 +32,13 @@ public class PoisonBallProjectile : Test_Projectile
     private int _playerLayer;
     private Vector3 _directionOfFlight;
     private float _buffer = 0.5f;
+
+    private int _ownerLayer;
+
+    private bool _isTransparentPoisons;
+    private bool _isColdBloodCrit;
+
+    private bool _isReflected;
 
     #region FloatVariables
     private float _newDistancePush;
@@ -57,6 +71,7 @@ public class PoisonBallProjectile : Test_Projectile
 
     private bool IsEnemy(GameObject target)
     {
+        if (_isReflected) return target != _player.gameObject;
         if (_player == null) return IsEnemyByLayer(target);
         if (!_player.TryGetComponent(out UserNetworkSettings ownerSettings) || !target.TryGetComponent(out UserNetworkSettings targetSettings)) return IsEnemyByLayer(target);
         if (!IsTeamAssigned(ownerSettings) || !IsTeamAssigned(targetSettings)) return IsEnemyByLayer(target);
@@ -71,7 +86,7 @@ public class PoisonBallProjectile : Test_Projectile
 
     private bool IsEnemyByLayer(GameObject target)
     {
-        return ((1 << target.layer) & _skill.Targeting.Layer.value) != 0;
+        return ((1 << target.layer) & _skill.Targeting.Layer) != 0;
     }
 
     #region OnTriggerEnter
@@ -79,6 +94,17 @@ public class PoisonBallProjectile : Test_Projectile
     [Server]
     private void OnTriggerEnter(Collider collision)
     {
+        if (!collision.TryGetComponent<Character>(out var targetHealth))
+            return;
+
+        if (targetHealth.CharacterState.CheckForState(States.ReflectiveScales) && _skill.Info.DamageType == DamageType.Magical)
+        {
+            if (_isReflected) return;
+            targetHealth.CharacterState.RemoveState(States.ReflectiveScales);
+            Reflect(targetHealth);
+            return;
+        }
+
         if (!IsEnemy(collision.gameObject)) return;
 
         if (_isActiveHealingPoisonBall)
@@ -87,13 +113,13 @@ public class PoisonBallProjectile : Test_Projectile
             {
                 if (collision.gameObject == _player.gameObject)
                 {
-                    if (_isFast)
+                    if (!_isFast)
                     {
                         _player.CharacterState.AddState(States.HealingPoisonPerSecond, 7.0f, 0, _player.gameObject, _skill.Name);
                     }
                     else
                     {
-                        _player.CharacterState.AddState(States.InstantHealingPoison, 0, 0, _player.gameObject, _skill.Name);
+                        _player.CharacterState.AddState(States.InstantHealingPoison, 0.5f, 0, _player.gameObject, _skill.Name);
                     }
 
                     DestroyProjectile();
@@ -111,7 +137,7 @@ public class PoisonBallProjectile : Test_Projectile
                         }
                         else
                         {
-                            alliesHealth.CharacterState.AddState(States.InstantHealingPoison, 0, 0, _player.gameObject, _skill.Name);
+                            alliesHealth.CharacterState.AddState(States.InstantHealingPoison, 0.5f, 0, _player.gameObject, _skill.Name);
                         }
 
                         DestroyProjectile();
@@ -126,7 +152,7 @@ public class PoisonBallProjectile : Test_Projectile
             {
                 if (collision.gameObject != _player.gameObject && _playerLayer != LayerMask.NameToLayer("Enemy"))
                 {
-                    if (collision.TryGetComponent<Character>(out var targetHealth))
+                    if (targetHealth != null)
                     {
                         _target = targetHealth;
                         DamageDeal();
@@ -148,7 +174,7 @@ public class PoisonBallProjectile : Test_Projectile
             {
                 if (collision.gameObject != _player.gameObject && _playerLayer != LayerMask.NameToLayer("Enemy"))
                 {
-                    if (collision.TryGetComponent<Character>(out var targetHealth))
+                    if (targetHealth != null)
                     {
                         _target = targetHealth;
 
@@ -169,7 +195,7 @@ public class PoisonBallProjectile : Test_Projectile
         {
             if (collision.gameObject != _player.gameObject && _playerLayer != LayerMask.NameToLayer("Enemy"))
             {
-                if (collision.TryGetComponent<Character>(out var targetHealth))
+                if (targetHealth != null)
                 {
                     _target = targetHealth;
 
@@ -187,6 +213,34 @@ public class PoisonBallProjectile : Test_Projectile
     }
 
     #endregion
+
+    private void Reflect(Character reflector)
+    {
+        _isReflected = true;
+
+        StopMovement();
+        CancelInvoke(nameof(DestroyProjectile));
+
+        Character oldOwner = _player;
+        _player = reflector;
+
+        if (oldOwner == null) return;
+
+        Vector3 target = oldOwner.transform.position;
+
+        _directionOfFlight = (target - transform.position).normalized;
+        float speed = _isFast ? _fastMovementSpeed : _slowMovementSpeed;
+
+        _target = null;
+        _playerLayer = reflector.gameObject.layer;
+
+        _isEnemy = true;
+        _isAllies = false;
+        _isPlayer = false;
+
+        MoveToTarget(target, speed);
+        RpcInitTransparent(_isTransparentPoisons, _playerLayer);
+    }
 
     #region MovementBall
 
@@ -221,9 +275,19 @@ public class PoisonBallProjectile : Test_Projectile
 
     public override void DamageDeal()
     {
+        float multiplier = 1f;
+
+        if (_isActiveBallEffect && _currentCountBall >= 1)
+        {
+            multiplier += (_currentCountBall - 1) * 0.2f;
+        }
+
+        float finalDamage = _skill.Buff.Damage.GetBuffedValue(_damage) * multiplier;
+        if (_isColdBloodCrit) finalDamage *= 2.5f;
+
         Damage _baseDamage = new Damage
         {
-            Value = _skill.Buff.Damage.GetBuffedValue(_damage),
+            Value = finalDamage,
             Type = DamageType.Physical,
             PhysicAttackType = AttackRangeType.RangeAttack,
         };
@@ -242,7 +306,7 @@ public class PoisonBallProjectile : Test_Projectile
         //}
 
         _target.CharacterState.AddState(States.InAir, _durationInAir, 0, _player.gameObject, _skill.Name);
-        _target.CharacterState.AddState(States.PoisonBone, poisonBone, 0, _player.gameObject, _skill.Name);
+       // _target.CharacterState.AddState(States.PoisonBone, poisonBone, 0, _player.gameObject, _skill.Name);
 
         PushEnemyDependingOnCountProjectile(_target, _baseDurationPush);
         
@@ -253,13 +317,15 @@ public class PoisonBallProjectile : Test_Projectile
     {
         if (_isActiveBallEffect && _currentCountBall >= 2)
         {
-            float multiplierPush = _currentCountBall * _distanceIncreaseMultiplier;
-            _newDistancePush = _baseDistancePush + multiplierPush + _multiplierDistanceFromTalent;
+            float additionalDistance = (_currentCountBall - 1);
+            _newDistancePush = _baseDistancePush + additionalDistance + _multiplierDistanceFromTalent;
         }
         else
         {
             _newDistancePush = _baseDistancePush;
         }
+
+        _newDistancePush = _baseDistancePush;
 
         PushEnemy(target.gameObject, _newDistancePush, durationPush, _isPushTarget);
     }
@@ -269,14 +335,14 @@ public class PoisonBallProjectile : Test_Projectile
         if (targetObj.TryGetComponent(out Character target))
         {
             MoveComponent targetMove = target.GetComponent<MoveComponent>();
+
             Vector3 direction = _directionOfFlight;
             direction.y = 0;
 
             Vector3 finalPoint = target.transform.position + (isPushAway ? direction : -direction) * distancePush;
             finalPoint.y = target.transform.position.y;
 
-            if (targetMove.connectionToClient != null) targetMove.TargetRpcDoMove(finalPoint, durationPush);
-            else targetMove.RpcDoMove(finalPoint, durationPush);
+            StartCoroutine(HandlePushWithFly(targetMove, finalPoint, durationPush));
         }
     }
 
@@ -301,6 +367,19 @@ public class PoisonBallProjectile : Test_Projectile
         targetMove.transform.position = finalPoint;
     }
 
+    private IEnumerator HandlePushWithFly(MoveComponent targetMove, Vector3 finalPoint, float duration)
+    {
+        if (targetMove == null) yield break;
+
+        targetMove.SetFlyState(true);
+
+        if (targetMove.connectionToClient != null) targetMove.TargetRpcDoMove(finalPoint, duration);
+        else targetMove.RpcDoMove(finalPoint, duration);
+        yield return new WaitForSeconds(duration);
+
+        targetMove.SetFlyState(false);
+    }
+
     #endregion
 
     #region InitializationProjectiles
@@ -311,7 +390,7 @@ public class PoisonBallProjectile : Test_Projectile
         bool isActiveFootInstincts, bool isActiveRestorationOfGlands,
         bool isActiveTalentHealingPoisonBall, bool isActiveTalentWitheringPoison, 
         bool isActiveVoluminousBall, bool isActiveBallEffect,
-        bool isPushTarget, bool isPlayerInvisible)
+        bool isPushTarget, bool isPlayerInvisible, bool isTransparentPoisons, int ownerLayer, bool isColdBloodCrit)
     {
         CheckActiveTalentVoluminousBall(isActiveVoluminousBall);
 
@@ -324,6 +403,10 @@ public class PoisonBallProjectile : Test_Projectile
         _isPushTarget = isPushTarget;
 
         _isPlayerInvisible = isPlayerInvisible;
+
+        _ownerLayer = ownerLayer;
+        _isTransparentPoisons = isTransparentPoisons;
+        _isColdBloodCrit = isColdBloodCrit;
 
         Invoke("TransparentProjectileOnServer", 0.15f);
 
@@ -380,6 +463,8 @@ public class PoisonBallProjectile : Test_Projectile
 
     public void ScheduleAutoDestroy(Vector3 targetPoint, float speed)
     {
+        if (_isReflected) return;
+
         float distance = Vector3.Distance(transform.position, targetPoint);
         float flightTime = (distance + _buffer) / speed;
 
@@ -438,6 +523,15 @@ public class PoisonBallProjectile : Test_Projectile
     }
 
     [ClientRpc]
+    public void RpcInitTransparent(bool isTransparentPoisons, int ownerLayer)
+    {
+        _isTransparentPoisons = isTransparentPoisons;
+        _ownerLayer = ownerLayer;
+
+        ApplyTransparentVisual();
+    }
+
+    [ClientRpc]
     private void RpcLayerDefinition(int layer)
     {
         _playerLayer = layer;
@@ -458,7 +552,7 @@ public class PoisonBallProjectile : Test_Projectile
 
         float baseChanceOfRestorationOfGlands = 0.1f;
         float chanceRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
-
+        
         if (Random.Range(0f, 1f) <= chanceRestorationOfGlands)
         {
             Debug.Log("SpitPoisonProj / If RestorationOfGlands.IsActive = true");
@@ -467,4 +561,22 @@ public class PoisonBallProjectile : Test_Projectile
     }
     #endregion
 
+    private void ApplyTransparentVisual()
+    {
+        if (!_renderer) return;
+
+        Debug.Log("смена");
+
+        if (!_isTransparentPoisons)
+        {
+            _renderer.material = _projectileMaterialBase;
+            return;
+        }
+
+        Debug.Log("смена прозрачности");
+
+        if (_ownerLayer == LayerMask.NameToLayer("Allies")) _renderer.material = _projectileMaterialAllies;
+        else if (_ownerLayer == LayerMask.NameToLayer("Enemy")) _renderer.material = _projectileMaterialEnemy;
+        else _renderer.material = _projectileMaterialBase;
+    }
 }
