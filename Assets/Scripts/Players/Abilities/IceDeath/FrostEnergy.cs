@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class FrostEnergy : Skill
 {
+    [SerializeField] private float _runeCost = 1f;
+
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
@@ -31,6 +33,12 @@ public class FrostEnergy : Skill
     protected override IEnumerator CastJob()
     {
         if (Hero == null || Hero.CharacterState == null) yield break;
+
+        if (!Cost.TryPaySingle(_runeCost, ResourceType.Rune, shouldModify: false))
+        {
+            TryCancel(true);
+            yield break;
+        }
 
         CmdSkillToggleFrostEnergyState(Hero.gameObject);
 
