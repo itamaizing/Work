@@ -8,12 +8,14 @@ public class RuneComponent : Resource
 	[SerializeField] private float _sumDamageGiven = 0;
 	private bool _disableMultiplier = false;
 
-	/*private void Update()
+    public event System.Action<float, Skill> OnRuneSpent;
+
+    /*private void Update()
     {
         Timer();
     }*/
 
-	private void Awake()
+    private void Awake()
 	{
         _regenerationDelay = 3;
 	}
@@ -37,6 +39,7 @@ public class RuneComponent : Resource
                     runeValue *= _abilities[i].multiplier;
 
                     _currentValue -= runeValue;
+                    OnRuneSpent?.Invoke(runeValue, usedAbility);
                     // _multiplyCost = true;
                     _abilities[i].time = 6;
                     return true;
@@ -55,6 +58,7 @@ public class RuneComponent : Resource
                 _abilities.Add(abilityTimer);
                 _disableMultiplier = false;
                 _currentValue -= runeValue;
+                OnRuneSpent?.Invoke(runeValue, usedAbility);
                 return true;
             }
             else

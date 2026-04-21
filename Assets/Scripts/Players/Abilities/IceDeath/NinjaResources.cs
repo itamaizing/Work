@@ -59,6 +59,11 @@ public class NinjaResources : Skill, IPassiveSkill
     {
         Hero.DamageTracker.OnDamageTracked -= OnDamageTaken;
         Hero.Health.DamageTaken -= HandleDamageTaken;
+
+        if (Hero.TryGetResource(ResourceType.Rune) is RuneComponent rune)
+        {
+            rune.OnRuneSpent -= OnRuneSpent;
+        }
     }
 
     private void ModifyFrozenCrit(Character targetCharacter, ref Damage damage, Skill skill)
@@ -88,6 +93,11 @@ public class NinjaResources : Skill, IPassiveSkill
         //Debug.LogError("Hero was initialized", gameObject);
         Hero.DamageTracker.OnDamageTracked += OnDamageTaken;
         Hero.Health.DamageTaken += HandleDamageTaken;
+
+        if (Hero.TryGetResource(ResourceType.Rune) is RuneComponent rune)
+        {
+            rune.OnRuneSpent += OnRuneSpent;
+        }
     }
 
     private void OnDamageTaken(Damage damage, GameObject attacker)
@@ -113,5 +123,13 @@ public class NinjaResources : Skill, IPassiveSkill
                 }
             }
         }
+    }
+
+    private void OnRuneSpent(float value, Skill usedSkill)
+    {
+        if (!isServer) return;
+        if (value <= 0) return;
+
+        if (Hero.CharacterState.CheckForState(States.FrostEnergy)) Hero.CharacterState.RemoveState(States.FrostEnergy);
     }
 }

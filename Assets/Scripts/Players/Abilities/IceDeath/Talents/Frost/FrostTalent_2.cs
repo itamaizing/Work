@@ -9,11 +9,11 @@ public class FrostTalent_2 : Talent
 
     public override void Enter()
     {
-        //skillManager.ActivateSkill(icePuddle);
+        _skillManager.ActivateSkill(_icePuddle);
     }
 
     public override void Exit()
     {
-        //skillManager.DeactivateSkill(icePuddle);
+        _skillManager.DeactivateSkill(_icePuddle);
     }
 }

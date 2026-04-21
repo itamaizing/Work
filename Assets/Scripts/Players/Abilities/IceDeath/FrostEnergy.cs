@@ -32,13 +32,13 @@ public class FrostEnergy : Skill
     {
         if (Hero == null || Hero.CharacterState == null) yield break;
 
-        CmdToggleFrostEnergy(Hero.gameObject);
+        CmdSkillToggleFrostEnergyState(Hero.gameObject);
 
         yield break;
     }
 
     [Command]
-    private void CmdToggleFrostEnergy(GameObject targetObj)
+    private void CmdSkillToggleFrostEnergyState(GameObject targetObj)
     {
         if (targetObj == null) return;
 
@@ -49,6 +49,7 @@ public class FrostEnergy : Skill
         {
             character.CharacterState.RemoveState(States.FrostEnergy);
         }
+
         else
         {
             Hero.CharacterState.CmdAddState(States.FrostEnergy, 999, 0f, Hero.gameObject, name);

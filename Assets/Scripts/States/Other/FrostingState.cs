@@ -24,7 +24,7 @@ public class FrostingState : AbstractCharacterState
 		//Debug.Log("Entering Frosting State");
 		if (damageToExit == 0)
 		{
-			_damageToExit = 10000;
+			_damageToExit = 30;
 		}
 		else
 		{
@@ -86,16 +86,16 @@ public class FrostingState : AbstractCharacterState
 
 		characterState.Character.Move.StopLookAt();
 
-		if (!characterState.Check(StatusEffect.AbilitySpeed) && abilities != null)
-		{
-			foreach (var abil in abilities.Abilities)
-			{
-				if (abil.Info.AbilityForm == AbilityForm.Physical)
-				{
-					abil.Buff.CastSpeed.IncreasePercentage(.5f);
-				}
-			}
-		}
+		//if (!characterState.Check(StatusEffect.AbilitySpeed) && abilities != null)
+		//{
+		//	foreach (var abil in abilities.Abilities)
+		//	{
+		//		if (abil.Info.AbilityForm == AbilityForm.Physical)
+		//		{
+		//			abil.Buff.CastSpeed.IncreasePercentage(.5f);
+		//		}
+		//	}
+		//}
 
 		if (characterState.StateEffects.Ice != null) _ice.SetActive(false);
 	}
