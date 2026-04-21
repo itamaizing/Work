@@ -23475,3 +23475,4 @@ MonoBehaviour:
   ghost: {fileID: 1718052129104348959}
   pullingHealth: {fileID: 679409545534796012}
   silence: {fileID: 4161291845396503115}
+  terrifyingElfAura: {fileID: 6686568037796463366}
