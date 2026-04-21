@@ -25,18 +25,13 @@ public class CooldownComponent : BaseSkillComponent
     #region Properties
     public float BaseCooldownTime => _baseCooldown;
     public float CooldownTime {
-        get { return _skillAttributes.Cooldown; }
+        get { return _skillAttributes != null ? _skillAttributes.Cooldown : _baseCooldown; }
         set { _skillAttributes[SkillAttributeName.Cooldown].SetBaseValue(value); }
     }
     //public bool IsActive =>  NetworkTime.time < _skill.CooldownEnd;
     public bool IsActive
     {
         get => _isActive;
-        set
-        {
-            _isActive = value;
-            //OnChanged
-        }
     }
     public float RemainingTime => _skill != null ? Mathf.Max(0, (float)(_skill.CooldownEnd - NetworkTime.time)) : 0;
     public double ElapsedTime => _currentMax - RemainingTime;
@@ -57,17 +52,10 @@ public class CooldownComponent : BaseSkillComponent
         _currentMax = CooldownTime;
     }
 
-    public void Tick()
-    {
-        if (isSyncronized && IsActive && NetworkTime.time > _skill.CooldownEnd)
-        {
-            EndCooldown();
-        }
-    }
-
     public void Start()
     {
-        StartCooldown(CooldownTime);
+        //StartCooldown(CooldownTime); //заметил, что всегда делали именно SetIncreased ¯\_(ツ)_/¯
+        SetIncreased(CooldownTime, shouldModify: false, opModify: false);
     }
 
     public void StartCustom(float time, bool shouldCalculate=false)
@@ -80,6 +68,11 @@ public class CooldownComponent : BaseSkillComponent
         {
             StartCooldown(time);
         }
+    }
+
+    public void ForceEnd()
+    {
+        EndCooldown();
     }
 
     /// <summary>
@@ -97,10 +90,12 @@ public class CooldownComponent : BaseSkillComponent
         Debug.Log($"CD Modify: {RemainingTime}+{delta}");
         _skill.CmdCooldownModify(delta);
         OnModify?.Invoke(RemainingTime + delta, _currentMax);
-
     }
 
-    public void SetRemaining(float duration, bool canIncrease = false, bool shouldModify = false)
+    /// <summary>
+    /// Set remaining duration
+    /// </summary>
+    public void SetRemaining(float duration, bool canIncrease = false, bool shouldModify = false, bool opModify = true)
     {
         if (shouldModify)
             duration = CalculateValue(duration);
@@ -108,49 +103,39 @@ public class CooldownComponent : BaseSkillComponent
         if (!IsActive || (duration > RemainingTime && !canIncrease))
             return;
         
-        isSyncronized = false;
-
-        if (_currentMax < duration)
-            _currentMax = duration;
-        _skill.CmdCooldownStart(duration);
-        OnModify?.Invoke(duration, _currentMax);
+        StartCooldown(duration, opModify);
     }
 
-    public void SetIncreased(float duration, bool shouldModify = false)
+    /// <summary>
+    /// Set remaining duration HIGHER than current
+    /// </summary>
+    /// <param name="duration"></param>
+    /// <param name="shouldModify"></param>
+    public void SetIncreased(float duration, bool shouldModify = false, bool opModify = true)
     {
         if (shouldModify)
             duration = CalculateValue(duration);
 
-        if (!IsActive || (duration < RemainingTime))
+        if (duration < RemainingTime)
             return;
 
-        isSyncronized = false;
-
-        if (_currentMax < duration)
-            _currentMax = duration;
-        _skill.CmdCooldownStart(duration);
-        OnModify?.Invoke(duration, _currentMax);
+        StartCooldown(duration, opModify);
     }
 
-    public void SetReduced(float duration, bool shouldModify = false)
+    /// <summary>
+    /// Set remaining duration LOWER than current
+    /// </summary>
+    /// <param name="duration"></param>
+    /// <param name="shouldModify"></param>
+    public void SetReduced(float duration, bool shouldModify = false, bool opModify = true)
     {
         if (shouldModify)
             duration = CalculateValue(duration);
 
-        if (!IsActive || (duration > RemainingTime))
+        if (duration > RemainingTime)
             return;
 
-        isSyncronized = false;
-
-        if (_currentMax < duration)
-            _currentMax = duration;
-        _skill.CmdCooldownStart(duration);
-        OnModify?.Invoke(duration, _currentMax);
-    }
-
-    public void ForceEnd()
-    {
-        EndCooldown();
+        StartCooldown(duration, opModify);
     }
 
     public float CalculateValue(float time)
@@ -162,25 +147,34 @@ public class CooldownComponent : BaseSkillComponent
         return _skillAttributes[SkillAttributeName.Cooldown].CalculateFor(time);
     }
 
-    private void StartCooldown(float duration)
+    private void StartCooldown(float duration, bool opModify=false)
     {
-        //Debug.Log($"{duration} CD STARTED!!");
+        //Debug.Log($"{duration} CD STARTED");
         isSyncronized = false;
-        _currentMax = duration;
         _skill.CmdCooldownStart(duration);
-        OnStart?.Invoke(duration);
-        IsActive = true;
+        if (!opModify)
+        {
+            _currentMax = duration;
+            OnStart?.Invoke(duration);
+        }
+        else
+        {
+            if (_currentMax < duration)
+                _currentMax = duration;
+            OnModify?.Invoke(duration, _currentMax);
+        }
+        _isActive = true;
     }
 
     private void EndCooldown()
     {
         if (!IsActive || !isSyncronized)
             return;
-        //Debug.Log("CD ENDED!!!");
+        //Debug.Log("CD ENDED");
         _currentMax = _skillAttributes.Cooldown;
         _skill.CmdCooldownEnd();
         OnEnd?.Invoke();
-        IsActive = false;
+        _isActive = false;
     }
 
     public void OnServerCooldownChanged(double oldValue, double newValue)

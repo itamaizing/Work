@@ -4,25 +4,22 @@ using UnityEngine;
 
 public class DarknessTalent_6 : Talent
 {
-    [SerializeField] private RetributiveReckoning retributiveReckoning;
     [SerializeField] private Suppression suppression;
-    [SerializeField] private PullingHealth pulling;
     [SerializeField] private SkillManager ability;
     [SerializeField] private ReconnaissanceFire reconnaissanceFire;
+    [SerializeField] private Ghost ghost;
 
     public override void Enter()
     {
-        ability.ActivateSkill(retributiveReckoning);
+        ghost.PassingThroughGhost(true);
         ability.ActivateSkill(suppression);
-        pulling.PullingHealthThroughGhosts(true);
         reconnaissanceFire.ReconnaissanceFireAuraDarknesActive(true);
     }
 
     public override void Exit()
     {
-        ability.DeactivateSkill(retributiveReckoning);
+        ghost.PassingThroughGhost(false);
         ability.DeactivateSkill(suppression);
-        pulling.PullingHealthThroughGhosts(false);
         reconnaissanceFire.ReconnaissanceFireAuraDarknesActive(true);
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 namespace Gangdollarff
 {
-    public class AbsorptionBall : Skill, IGodLightSpell
+    public class AbsorptionBall : Skill
     {
         [SerializeField] private Shield _shieldPref;
         [SerializeField] private float _shieldValue = 40;
@@ -21,10 +21,8 @@ namespace Gangdollarff
         private float _absorbationMultiplier = 2f;
         
         private float _lastOpacityChangeTime = 0f;
-        
-        public override string AdditionalDescription =>
-            $"Эффективность: {AbilityNameBox.ColorOpen}{_shieldValue} ед.{AbilityNameBox.ColorEnd}" +
-            $"\nДлительность: {AbilityNameBox.ColorOpen}{_shieldDuration} сек{AbilityNameBox.ColorEnd}";
+
+        public override string AdditionalDescription => "";
 
         protected override int AnimTriggerCastDelay => 0;
 
@@ -36,14 +34,13 @@ namespace Gangdollarff
         
         private float _clickRadius = 0.5f;
         private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
-        
+
         private bool CheckCanCast()
         {
             if(IsAllyTargetAvailable)
                 return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.GetTarget()?.Character != null;
             return true;
         }
-        public bool IsEnabled { get; protected set; }
         public bool IsAllyTargetAvailable = false;
         public bool IsManaRegenActive = false;
 
@@ -51,26 +48,19 @@ namespace Gangdollarff
         {
         }
 
-        public void ChangeMode()
-        {
-            if (IsEnabled)
-            {
-                IsEnabled = false;
-
-                Cooldown.CooldownTime = _tempCooldownTime;
-            }
-            else
-            {
-                IsEnabled = true;
-
-                _tempCooldownTime = Cooldown.CooldownTime;
-                Cooldown.CooldownTime = 0;
-            }
-        }
-
         protected override IEnumerator CastJob()
         {
-            CmdAddShield(IsAllyTargetAvailable ? Targeting.GetTarget()?.Character.gameObject : Hero.gameObject, Hero.gameObject);
+            var target = IsAllyTargetAvailable ? Targeting.GetTarget()?.Character.gameObject : Hero.gameObject;
+            CmdAddShield(target, Hero.gameObject);
+
+            var targetMove = GetComponent<MoveComponent>();
+            if (targetMove)
+            {
+                _hero.Move.SetCanMove(false);
+                _hero.Move.StopMoveAndAnimationMove();
+                yield return new WaitForSeconds(_shieldDuration);
+                _hero.Move.SetCanMove(true);
+            }
             yield return null;
         }
 
@@ -131,7 +121,7 @@ namespace Gangdollarff
             Character targetChar = targetShield.GetComponent<Character>();
             
             var shield = Instantiate(_shieldPref, targetShield.transform.position, Quaternion.identity);
-            SceneManager.MoveGameObjectToScene(shield.gameObject, _hero.NetworkSettings.MyRoom);
+            //SceneManager.MoveGameObjectToScene(shield.gameObject, _hero.NetworkSettings.MyRoom);
             shield.Initialize(_shieldValue, DamageType.Both);
             NetworkServer.Spawn(shield.gameObject);
             _shield = shield;
@@ -162,7 +152,7 @@ namespace Gangdollarff
         private IEnumerator ShieldJob(GameObject target)
         {
             _shield.DamageTaken += OnAbsorb;
-            yield return new WaitForSecondsRealtime(_shieldDuration);
+            yield return new WaitForSeconds(_shieldDuration);
             _shield.DamageTaken -= OnAbsorb;
             
             if(IsManaRegenActive)
@@ -189,7 +179,7 @@ namespace Gangdollarff
         [TargetRpc]
         private void RpcAbsorbJob(GameObject target,float damage)
         {
-            if (target != null)
+            if (target != null && damage < _shieldValue)
             {
                 target.TryGetComponent(out Character character);
                 character.TryGetResource(ResourceType.Mana).CmdAdd(damage * _absorbationMultiplier);

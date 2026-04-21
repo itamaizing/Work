@@ -40,7 +40,7 @@ public abstract class AbstractCharacterState
 	public int CurrentStacksCount => currentStacksCount;
 
 	public Skill Skill => skill;
-	public int MaxStacksCount = 0;
+    public int MaxStacksCount = 0;
 	protected float duration = -1;
 	protected float damageToExit = 0;
 	//protected float _duration;
@@ -405,9 +405,9 @@ public class CharacterState : NetworkBehaviour
 
 		#region Gandollarf	
 		[States.PowerOfEarth] = new PowerOfEarth(),
-        [States.EarthsHealth] = new EarthsHealthBuff(),
-        [States.MagicWater] = new MagicWater(),
-        [States.HotBloodBuff] = new HotAuraBuff(),
+		[States.EarthsHealth] = new EarthsHealthBuff(),
+		[States.MagicWater] = new MagicWater(),
+		[States.HotBloodBuff] = new HotAuraBuff(),
         [States.GodAura] = new GodAura(),
         [States.GodAuraBuff] = new GodAuraBuff(),
         [States.TransformationDebuff] = new TransformationDebuff(),
@@ -512,6 +512,12 @@ public class CharacterState : NetworkBehaviour
 		return false;
 	}
 
+	public bool HasMagicDebuff()
+	{
+		foreach (var state in _currentStates) if (state.Type == StateType.Magic && state.BaffDebaff == BaffDebaff.Debaff) return true;
+		return false;
+	}
+
 	public AbstractCharacterState GetState(States state)
 	{
 		foreach (AbstractCharacterState states in _currentStates)
@@ -530,7 +536,7 @@ public class CharacterState : NetworkBehaviour
 		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
 		ClientAddState(state, duration, damageToExit, schools, personWhoShooted, skillName);
 	}
-
+	
 	public void AddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
 	{
 		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);

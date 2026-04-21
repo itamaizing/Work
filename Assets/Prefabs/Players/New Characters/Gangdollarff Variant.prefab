@@ -13099,7 +13099,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentRows.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRows.Array.size
@@ -13107,7 +13107,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0]'
@@ -13162,12 +13162,20 @@ PrefabInstance:
       value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[0]._talentRows.Array.data[1].Talents.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.size
       value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.size
-      value: 11
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.size
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[0]'
@@ -13209,6 +13217,10 @@ PrefabInstance:
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[9]'
       value: 
       objectReference: {fileID: 710480506604598471}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[1].Talents.Array.data[0]'
+      value: 
+      objectReference: {fileID: 4710988972543738372}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[0]'
       value: 
@@ -13284,9 +13296,49 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[8]'
       value: 
-      objectReference: {fileID: 3551611631032480463}
+      objectReference: {fileID: 8405535604584004599}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[9]'
+      value: 
+      objectReference: {fileID: 133323943878450836}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.data[0]'
+      value: 
+      objectReference: {fileID: 3551611631032480463}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.data[1]'
+      value: 
+      objectReference: {fileID: 3798895398071013150}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.data[2]'
+      value: 
+      objectReference: {fileID: 4967712319262753113}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.data[3]'
+      value: 
+      objectReference: {fileID: 133323943878450836}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.data[4]'
+      value: 
+      objectReference: {fileID: 4700997506177914789}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.data[5]'
+      value: 
+      objectReference: {fileID: 4777950773765639936}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.data[6]'
+      value: 
+      objectReference: {fileID: 5040640883951079247}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.data[7]'
+      value: 
+      objectReference: {fileID: 3677902011510508796}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.data[8]'
+      value: 
+      objectReference: {fileID: 3551611631032480463}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.data[9]'
       value: 
       objectReference: {fileID: 8405535604584004599}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -13315,6 +13367,10 @@ PrefabInstance:
       objectReference: {fileID: 133323943878450836}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[11]'
+      value: 
+      objectReference: {fileID: 133323943878450836}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.data[10]'
       value: 
       objectReference: {fileID: 133323943878450836}
     - target: {fileID: 6226204041481316500, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -13792,9 +13848,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DivineEnhancementTalent
   _data:
     _descriptionsForInfoPanel:
-    - "\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u043D\u0430\u043D\u043E\u0441\u0438\u043C
-      \u0443\u0440\u043E\u043D \u0413\u0430\u043D\u0433\u0434\u043E\u043B\u043B\u0430\u0440\u0444\u0444\u043E\u043C
-      \u0432 2 \u0440\u0430\u0437\u0430 \u043D\u0430 2 \u0441\u0435\u043A\u0443\u043D\u0434\u044B."
+    - " \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u043D\u0430\u043D\u043E\u0441\u0438\u043C
+      \u0443\u0440\u043E\u043D \u0438 \u0437\u0430\u0442\u0440\u0430\u0447\u0438\u0432\u0430\u0435\u043C\u0443
+      \u043C\u0430\u043D\u043D\u0443 \u0413\u0430\u043D\u0433\u0434\u043E\u043B\u043B\u0430\u0440\u0444\u0444\u043E\u043C
+      \u0432 2 \u0440\u0430\u0437\u0430 \u043D\u0430 2 \u0441\u0435\u043A\u0443\u043D\u0434\u044B. "
     _stateInfos: []
     IsOpen: 0
     Description: "\u0411\u043E\u0436\u0435\u0441\u0442\u0432\u0435\u043D\u043D\u043E\u0435
@@ -14995,15 +15052,21 @@ MonoBehaviour:
     _castDuration: 1.3
     _tickInterval: 0.1
     _baseCostPerTick:
-    - nameToShow: 0 Health - Mandatory mod desc
-      type: 0
-      value: 0
+    - nameToShow: 3 Mana - Mandatory mod desc
+      type: 1
+      value: 3
       costType: 0
       shouldModify: 1
       showInDescription: 1
-  _castDuration: 0
-  _manaCostRate: 0
-  _manaCostPerTick: []
+  _castDuration: 1.3
+  _manaCostRate: 0.1
+  _manaCostPerTick:
+  - nameToShow: 1,3 Mana - Mandatory mod desc
+    type: 1
+    value: 1.3
+    costType: 0
+    shouldModify: 1
+    showInDescription: 1
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -15036,6 +15099,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _firework: {fileID: 3150633468305956490}
   _damageRangeMin: -2
   _damageRangeMax: 1
@@ -15060,11 +15127,17 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 10
-    _costs: []
+    _costs:
+    - nameToShow: 10 Mana - Mandatory
+      type: 1
+      value: 10
+      costType: 0
+      shouldModify: 0
+      showInDescription: 0
   _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
+  - nameToShow: 10 Mana - Mandatory mod desc
+    type: 1
+    value: 10
     costType: 0
     shouldModify: 1
     showInDescription: 1
@@ -15090,29 +15163,29 @@ MonoBehaviour:
     _outOfRangeBehaviour: 1
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
   _channelComponent:
-    _castDuration: 0
+    _castDuration: 1
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 0
+  _castDuration: 1
   _manaCostRate: 0
   _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 1
     _isComboPart: 0
-    _cooldownType: 0
+    _cooldownType: 1
     _maxCharges: 2
-    _baseCooldown: 24
+    _baseCooldown: 12
     affectedByCDR: 0
   _isUseCharges: 1
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 1
   _maxCharges: 2
-  _chargeCooldown: 24
+  _chargeCooldown: 12
   _areaComponent:
     _radius: 4
     _area: 0
@@ -15133,6 +15206,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _shieldPref: {fileID: 1158249924082485831, guid: 13647bb6f83d1b34c8c511be314fb9d3, type: 3}
   _shieldValue: 100
   _shieldDuration: 2
@@ -15238,6 +15315,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _deleyTelekines: 0.5
   _amountOfLift: 1.5
   _radiusEnemy: {fileID: 3441613440083509784}
@@ -15330,6 +15411,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _particle: {fileID: 3994345256487826021}
   _pushRange: 1
   _pushDuration: 0.33
@@ -15428,6 +15513,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _lineRenderer: {fileID: 3792777773710482975}
   _fisuraPref: {fileID: 3452147409339536588, guid: 68a5df5d1ae4ea54486b316ec8d2a89c, type: 3}
   _fisuraDuration: 6
@@ -15520,6 +15609,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
 --- !u!114 &6541281367918590680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15608,6 +15701,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _agent: {fileID: 0}
   _particlePref: {fileID: 8634428716550452945, guid: 7291e60055d363e4f8faae9c7d00d8b0, type: 3}
   _debuffChance: 15
@@ -15717,6 +15814,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
 --- !u!114 &483165492512868837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15811,6 +15912,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   duration: 2
 --- !u!114 &-6863981154326105301
 MonoBehaviour:
@@ -15906,6 +16011,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _particlePref: {fileID: 8634428716550452945, guid: 7291e60055d363e4f8faae9c7d00d8b0, type: 3}
   _beamPrefab: {fileID: 6286129620195013125, guid: 6c796b5dfb94dbb468a1ff41196448a3, type: 3}
   _debuffChance: 100
@@ -16007,6 +16116,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _particlePref: {fileID: 0}
   _schoolSolvent: {fileID: 8795641180420630933}
 --- !u!114 &4401943882256093312
@@ -16103,6 +16216,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _lineRenderer: {fileID: 4073253261590549315}
   _quicksandTile: {fileID: 7163465442160790319, guid: 230941d2d9516a94ba4549647e2156c6, type: 3}
   _quicksandDuration: 6
@@ -16194,6 +16311,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _particle: {fileID: 5826002358924147001}
   _pushRange: 3
   _pushDuration: 0.2
@@ -16293,6 +16414,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
 --- !u!114 &3127105790014565672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16402,6 +16527,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _meshTranformation: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
   _debuffDuration: 6
 --- !u!114 &4358863268785994334
@@ -16498,6 +16627,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _playerRenderers:
   - {fileID: 3976331384424644822}
   - {fileID: 6145141374176819678}
@@ -16626,6 +16759,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _buffDuration: 3
   _chainBreakTime: 2
   _invisDamageMultiplier: 2
@@ -16723,6 +16860,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _stoneVFX: {fileID: 3475698140105260331}
   _aoeRadius: 2
 --- !u!114 &8020773605070885895
@@ -16813,6 +16954,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _snapshotInterval: 0.1
   _rewindTime: 3
 --- !u!114 &4909088627474570662
@@ -16909,6 +17054,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _immortalityTime: 4
 --- !u!114 &7485692047686332734
 MonoBehaviour:
@@ -17004,6 +17153,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _whirlpoolTilePrefab: {fileID: 3817491765434079413, guid: c8368645c4192b2478d0f52dc9656d75, type: 3}
   _duration: 5
   _whirlRadius: 6
@@ -17104,6 +17257,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _projectile: {fileID: -7871612326811465604, guid: 3f48633abc1849a49a5ed18cb8f65a33, type: 3}
   _stunDuration: 4.5
   _burnDuration: 5
@@ -17202,6 +17359,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _counterSpell: {fileID: 8856192836074503412}
 --- !u!114 &2644037635160296029
 MonoBehaviour:
@@ -17297,6 +17458,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _clonePrefabIndex: 0
   _spawnOffset: 2
   _cloneDuration: 7

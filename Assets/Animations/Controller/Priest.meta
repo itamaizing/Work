@@ -1,7 +1,12 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Animations/Controller/Priest.meta
 guid: 7c34b564fe192af4f9ab5868d09c5ff8
 folderAsset: yes
 DefaultImporter:
+========
+guid: 0238e11c48e9f4a43bd99f7509a0b2f0
+PrefabImporter:
+>>>>>>>> main:Assets/FX/Priest/BeamLight.prefab.meta
   externalObjects: {}
   userData: 
   assetBundleName: 

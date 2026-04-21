@@ -55,7 +55,7 @@ public class WhirlpoolSkill : Skill
     {
         Vector3 instPosition = new Vector3(position.x, position.y + 0.2f, position.z);
         GameObject obj = Instantiate(_whirlpoolTilePrefab.gameObject, instPosition, Quaternion.identity);
-        SceneManager.MoveGameObjectToScene(obj, _hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(obj, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(obj);
 
         var tile = obj.GetComponent<WhirlpoolTile>();

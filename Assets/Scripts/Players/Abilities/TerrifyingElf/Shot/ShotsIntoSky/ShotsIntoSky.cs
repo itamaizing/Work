@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Linq;
 using Mirror;
@@ -8,9 +8,7 @@ using UnityEngine.SceneManagement;
 public class ShotsIntoSky : Skill
 {
     [SerializeField] private SkillRenderer skillRenderer;
-    [SerializeField] private bool silenceTalentActive;
     [SerializeField] private bool tripleShotTalentActive;
-    [SerializeField] private bool shotAstralManaActive;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private HeroComponent playerLinks;
     [SerializeField] private float _dropDelayTime = 1f;
@@ -33,7 +31,9 @@ public class ShotsIntoSky : Skill
     #region Talent
 
     private bool _isSkillEnableBoostLogicActiveTalent;
+    private bool shotMagicDebuffActive;
 
+    public void ShotsIntoSkyMagicDebuffTalentActive(bool value) => shotMagicDebuffActive = value;
     public void SkillEnableBoostLogicActiveTalent(bool value) => _isSkillEnableBoostLogicActiveTalent = value;
 
     #endregion
@@ -90,16 +90,6 @@ public class ShotsIntoSky : Skill
     }
 
     public void ArrowsIntoSkyEffectPlay() => arrowsIntoSkyEffect.Play();
-
-    public void ForceCooldownEnd()
-    {
-        if (_cooldownJob != null)
-            StopCoroutine(_cooldownJob);
-
-        //RemainingCooldownTime = 0f;
-        
-        Cooldown.ForceEnd();
-    }
 
     public void TryStartBoost()
     {
@@ -224,7 +214,7 @@ public class ShotsIntoSky : Skill
 
         ArrowsIntoSkyProjectile impact = Instantiate(impactPrefab, position, Quaternion.identity);
         SceneManager.MoveGameObjectToScene(impact.gameObject, _hero.NetworkSettings.MyRoom);
-        impact.Init(playerLinks, this, damage, silenceTalentActive, lastStreamTalent, shotAstralManaActive);
+        impact.Init(playerLinks, this, damage, lastStreamTalent, shotMagicDebuffActive);
         NetworkServer.Spawn(impact.gameObject);
 
         _arrowsIntoSkyProjectileIds.Add(impact.GetComponent<NetworkIdentity>().netId);
@@ -253,7 +243,7 @@ public class ShotsIntoSky : Skill
         if (gameObject == null) return;
 
         ArrowsIntoSkyProjectile impact = gameObject.GetComponent<ArrowsIntoSkyProjectile>();
-        if (impact != null) impact.Init(playerLinks, this, damage, silenceTalentActive, lastStreamTalent, shotAstralManaActive);
+        if (impact != null) impact.Init(playerLinks, this, damage, lastStreamTalent, shotMagicDebuffActive);
     }
 
     [ClientRpc] private void RpcActivate(ArrowsIntoSkyProjectile projectile) => projectile.Activate();
@@ -307,16 +297,5 @@ public class ShotsIntoSky : Skill
     {
         tripleShotTalentActive = value;
     }
-    #endregion
-
-    #region silenceTalent
-    public void SetSilenceTalentActive(bool value)
-    {
-        silenceTalentActive = value;
-    }
-    #endregion
-
-    #region ShotsIntoSkyAstralTalent
-    public void ShotsIntoSkyAstralTalentActive(bool value) => shotAstralManaActive = value;
     #endregion
 }

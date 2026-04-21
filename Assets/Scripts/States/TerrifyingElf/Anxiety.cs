@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Anxiety : AbstractCharacterState
@@ -46,18 +46,23 @@ public class Anxiety : AbstractCharacterState
 
     private void ApplyEffects()
     {
+        //Теперь есть опция вешать дебаффы на самого героя
         if (abilities != null)
         {
             foreach (var skill in abilities.Abilities)
             {
                 skill.CastDeley *= 1f + (spellSpeedReduction * currentStacksCount);
 
-                foreach (var cost in skill.SkillEnergyCosts)
-                {
-                    cost.ModifyResourceCost(1f + (manaCostIncrease * currentStacksCount));
-                }
+                if (currentStacksCount < MaxStacksCount)
+                    skill.Attributes[SkillAttributeName.ResourceCost].AddModifier(new AttributeModifier(manaCostIncrease, ModifierType.Flat, source: this));
+                //foreach (var cost in skill.SkillEnergyCosts)
+                //{
+                //    cost.ModifyResourceCost(1f + (manaCostIncrease * currentStacksCount));
+                //}
+                Debug.Log(skill.Attributes[SkillAttributeName.ResourceCost].GetValue());
             }
         }
+        
     }
 
     private void RemoveEffects()
@@ -68,10 +73,11 @@ public class Anxiety : AbstractCharacterState
             {
                 skill.CastDeley /= 1f + (spellSpeedReduction * currentStacksCount);
 
-                foreach (var cost in skill.SkillEnergyCosts)
-                {
-                    cost.ModifyResourceCost(1f / (1f + (manaCostIncrease * currentStacksCount)));
-                }
+                skill.Attributes[SkillAttributeName.ResourceCost].RemoveBySource(this, all: true);
+                //foreach (var cost in skill.SkillEnergyCosts)
+                //{
+                //    cost.ModifyResourceCost(1f / (1f + (manaCostIncrease * currentStacksCount)));
+                //}
             }
         }
     }

@@ -2,8 +2,6 @@
 {
     #region Dependencies and Init
     // Обратные ссылки на контекст.
-    // По-хорошему вообще должны не пригодиться
-    // Система зарядов не должна зависит от того, на чем она висит
     protected Skill _skill;
     protected Character _character;
     protected Resource _resource;

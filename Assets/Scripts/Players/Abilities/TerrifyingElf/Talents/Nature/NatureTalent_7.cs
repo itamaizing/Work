@@ -4,18 +4,16 @@ using UnityEngine;
 
 public class NatureTalent_7 : Talent
 {
-    [SerializeField] private ShotIntoSky shotIntoSky;
-    [SerializeField] private ShotsIntoSky shotsIntoSky;
+    [SerializeField] private PullingHealth pullingHealth;
+    [SerializeField] private SkillManager ability;
 
     public override void Enter()
     {
-        shotIntoSky.SetSilenceTalentActive(true);
-        shotsIntoSky.SetSilenceTalentActive(true);
+        ability.ActivateSkill(pullingHealth);
     }
 
     public override void Exit()
     {
-        shotIntoSky.SetSilenceTalentActive(false);
-        shotsIntoSky.SetSilenceTalentActive(false);
+        ability.DeactivateSkill(pullingHealth);
     }
 }

@@ -6,14 +6,28 @@ using UnityEngine;
 [Serializable]
 #if UNITY_EDITOR
 public class SkillResourceCost : ISerializationCallbackReceiver
-#else
-public class SkillResourceCost
-#endif
 {
-#if UNITY_EDITOR
+    #region Editor-Only
     [HideInInspector]
     public string nameToShow;
+
+    /// <summary>
+    /// Для более читаемого списка в инспекторе
+    /// </summary>
+    public void OnBeforeSerialize()
+    {
+        nameToShow = $"{value} {type.ToString()} - {costType.ToString()}" +
+            $"{(shouldModify ? " mod" : "")}{(showInDescription ? " desc" : "")}";
+
+    }
+
+    public void OnAfterDeserialize() { }
+    #endregion
+#else
+    public class SkillResourceCost
+{
 #endif
+
     public ResourceType type;
     //[Range(0f, 100f)]
     public float value;
@@ -27,35 +41,6 @@ public class SkillResourceCost
     /// Вопрос только по локализации
     /// </summary>
     public bool showInDescription = true;
-
-    public void ModifyResourceCost(float multiplier)
-    {
-        value *= multiplier;
-    }
-
-    public void ModifyResourceCost1(float multiplier)
-    {
-        value /= multiplier;
-    }
-
-    public void ResetResourceCost(float baseCost)
-    {
-        value = baseCost;
-    }
-
-#if UNITY_EDITOR
-    /// <summary>
-    /// Для более читаемого списка в инспекторе
-    /// </summary>
-    public void OnBeforeSerialize()
-    {
-        nameToShow = $"{value} {type.ToString()} - {costType.ToString()}" +
-            $"{(shouldModify ? " mod" : "")}{(showInDescription ? " desc" : "")}";
-
-    }
-
-    public void OnAfterDeserialize() { }
-#endif
 }
 
 
@@ -136,20 +121,28 @@ public class CostComponent : BaseSkillComponent
             }
             else
             {
-                Debug.LogError("Отсутствует ресурс на персонаже");
+                Debug.LogError($"Resources are null on {_character.name}");
                 return false;
             }
         }
         return true;
     }
 
-    public bool HasResource(float value, ResourceType type, bool shouldModify=true)
+    public bool HasResource(float value, ResourceType type, bool shouldModify = true)
     {
-        return false;
+        if (!_resources.TryGetValue(type, out var resource))
+        {
+            Debug.LogError($"{_character.name} doesnt have {type.ToString()}");
+            return false;
+        }
+        if (shouldModify)
+            value = CalculateModified(value, type);
+
+        return resource.CurrentValue > value;
     }
     #endregion
 
-    public bool TryPayMandatory() // Проверять дважды? Не круто, суммировать затраты? Тогда PayBase/Extra -> float, что не очень
+    public bool TryPayMandatory()
     {
         if (_mainResource == null || _resources == null)
         {

@@ -61,9 +61,9 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
 
     private Coroutine _damageBoostRoutine;
 
-    private void Start()
+    public override void Init(SkillRenderer render, Character hero)
     {
-        base.Init(_skillRender, _hero);
+        base.Init(render, hero);
 
         _spawnComponent = Hero.GetComponent<SpawnComponent>();
 

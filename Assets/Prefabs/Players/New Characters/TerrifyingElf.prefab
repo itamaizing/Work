@@ -18815,7 +18815,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.size
-      value: 3
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[0]'
@@ -18909,6 +18909,34 @@ PrefabInstance:
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[2]'
       value: 
       objectReference: {fileID: 3161208881145151031}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[3]'
+      value: 
+      objectReference: {fileID: 5176031341533269077}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[4]'
+      value: 
+      objectReference: {fileID: 7675527355086524810}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[5]'
+      value: 
+      objectReference: {fileID: 3154349677268371443}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[6]'
+      value: 
+      objectReference: {fileID: 183809737086991779}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[7]'
+      value: 
+      objectReference: {fileID: 6150019603701913108}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[8]'
+      value: 
+      objectReference: {fileID: 6329989501365168688}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[9]'
+      value: 
+      objectReference: {fileID: 7436968993412666211}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[10]'
       value: 
@@ -19902,6 +19930,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _projectile: {fileID: 727437498118149735, guid: e444badf466360e41a896340462c6a62, type: 3}
   _playerLinks: {fileID: 4534754468497973439}
   _ghostSkill: {fileID: 1718052129104348959}
@@ -20002,6 +20034,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   skillRenderer: {fileID: 2807589928063243029}
   groundLayer:
     serializedVersion: 2
@@ -20112,6 +20148,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _projectile: {fileID: 7795660894077134963, guid: 8e56a73e4e78d7841ac2f37176fe2356, type: 3}
   _playerLinks: {fileID: 4534754468497973439}
   _ghostSkill: {fileID: 1718052129104348959}
@@ -20225,6 +20265,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _effectPrefab: {fileID: 4195082103051815756, guid: 2d76beef07956e948946e409a372473d, type: 3}
   _reducedCooldown: 0
   _audioClip: {fileID: 8300000, guid: 0e697ad5442a11a4990c66e9b6fb2e18, type: 3}
@@ -20277,9 +20321,9 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 1
+    _faction: -1
+    _unitType: 5
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -20326,6 +20370,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _playerLinks: {fileID: 4534754468497973439}
   duration: 6
 --- !u!114 &826193211731534654
@@ -20422,10 +20470,12 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   skillRenderer: {fileID: 2807589928063243029}
-  silenceTalentActive: 0
   tripleShotTalentActive: 0
-  shotAstralManaActive: 0
   groundLayer:
     serializedVersion: 2
     m_Bits: 8192
@@ -20534,6 +20584,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _pullingHealthPrefab: {fileID: 7744228389031826322, guid: 01d3359ced6c7904e8d18b398f189893, type: 3}
   _spawnPoint: {fileID: 1110070738435946966}
   _health: {fileID: 2320460443592093226}
@@ -20641,6 +20695,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   extendedRadius: 2
   baseRadius: 3
   teleportManaUse: 6
@@ -20745,6 +20803,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _playerLinks: {fileID: 4534754468497973439}
   duration: 5
 --- !u!114 &3491896792666520145
@@ -20841,6 +20903,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _projectile: {fileID: 2123849334646659443, guid: 8e3073b46604e4040ac3eb03dabfd124, type: 3}
   _spawnPoint: {fileID: 7608591018717630632}
   _playerLinks: {fileID: 4534754468497973439}
@@ -20932,6 +20998,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   trapPrefab: {fileID: 4405999295883627067, guid: 634880f733438024cbf14d239d494d86, type: 3}
   owner: {fileID: 4534754468497973439}
   minDistanceRadiusCircle: {fileID: 6586971803846960611}
@@ -21038,6 +21108,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   extendedRadius: 8
   _moveDuration: 0.5
   _arrowEffectLifetime: 2
@@ -21150,6 +21224,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _attackZoneSize: 1
   _attackDelay: 1
   _chargeAttackDelay: 0
@@ -21245,6 +21323,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _fireAura: {fileID: 8163329122190285983, guid: 57f4b1dca44be5d41bcdf5931936f545, type: 3}
   _arrowFireProjectile: {fileID: 2545325199570042187, guid: 25ced05e8e27cec46bee956e4622103e, type: 3}
   _fireData: {fileID: 11400000, guid: 67c31e48e164c944a90e72fd98b08a37, type: 2}
@@ -21377,6 +21459,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
 --- !u!114 &5245378433989923716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21471,6 +21557,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   playerLinks: {fileID: 4534754468497973439}
   drawCircle: {fileID: 6586971803846960611}
   duration: 6
@@ -21568,6 +21658,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
 --- !u!114 &1094805825435644166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21662,6 +21756,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
 --- !u!114 &127445238161157264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21756,6 +21854,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _playerLinks: {fileID: 4534754468497973439}
   duration: 6
 --- !u!114 &1457342243689941384
@@ -21846,6 +21948,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _playerLinks: {fileID: 4534754468497973439}
   duration: 30
   _baseDamage: 10
@@ -22468,7 +22574,7 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  silence: {fileID: 4161291845396503115}
+  sleep: {fileID: 127445238161157264}
   _ability: {fileID: 4092227064955680494}
 --- !u!114 &3623982303959407510
 MonoBehaviour:
@@ -22631,6 +22737,7 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 4534754468497973439}
   terrifyingElfAura: {fileID: 6686568037796463366}
+  sleep: {fileID: 127445238161157264}
 --- !u!114 &2114024499052472920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22703,8 +22810,8 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  shotIntoSky: {fileID: 6009180366675701932}
-  shotsIntoSky: {fileID: 826193211731534654}
+  pullingHealth: {fileID: 679409545534796012}
+  ability: {fileID: 4092227064955680494}
 --- !u!114 &3423959342573903484
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22739,6 +22846,7 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 4534754468497973439}
   silence: {fileID: 4161291845396503115}
+  pulling: {fileID: 679409545534796012}
 --- !u!114 &1410310116505230793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22879,8 +22987,7 @@ MonoBehaviour:
   character: {fileID: 4534754468497973439}
   shotIntoSky: {fileID: 6009180366675701932}
   shotsIntoSky: {fileID: 826193211731534654}
-  sleep: {fileID: 127445238161157264}
-  _ability: {fileID: 4092227064955680494}
+  pullingHealth: {fileID: 679409545534796012}
 --- !u!114 &4990467896875758726
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22965,6 +23072,7 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 4534754468497973439}
   pullingHealth: {fileID: 679409545534796012}
+  silence: {fileID: 4161291845396503115}
   ability: {fileID: 4092227064955680494}
 --- !u!114 &3161208881145151031
 MonoBehaviour:
@@ -23002,9 +23110,8 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  ghost: {fileID: 1718052129104348959}
-  skillManager: {fileID: 4092227064955680494}
   silence: {fileID: 4161291845396503115}
+  terrifyingElfAura: {fileID: 6686568037796463366}
 --- !u!114 &5176031341533269077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23045,7 +23152,7 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 4534754468497973439}
   ghost: {fileID: 1718052129104348959}
-  pullingHealth: {fileID: 679409545534796012}
+  skillManager: {fileID: 4092227064955680494}
 --- !u!114 &7675527355086524810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23088,7 +23195,6 @@ MonoBehaviour:
   character: {fileID: 4534754468497973439}
   terrifyingElfAura: {fileID: 6686568037796463366}
   silence: {fileID: 4161291845396503115}
-  pullingHealth: {fileID: 679409545534796012}
 --- !u!114 &3154349677268371443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23126,11 +23232,10 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  retributiveReckoning: {fileID: 1612167112411553268}
-  suppression: {fileID: 0}
-  pulling: {fileID: 679409545534796012}
+  suppression: {fileID: 6063604074090390129}
   ability: {fileID: 4092227064955680494}
-  reconnaissanceFire: {fileID: 0}
+  reconnaissanceFire: {fileID: 2750012758126725032}
+  ghost: {fileID: 1718052129104348959}
 --- !u!114 &183809737086991779
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23177,9 +23282,8 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 4534754468497973439}
   subjugationMind: {fileID: 6728227519922462803}
-  sleep: {fileID: 127445238161157264}
   ability: {fileID: 4092227064955680494}
-  ghost: {fileID: 1718052129104348959}
+  retributiveReckoning: {fileID: 1612167112411553268}
 --- !u!114 &6150019603701913108
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23213,8 +23317,7 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  terrifyingElfAura: {fileID: 6686568037796463366}
-  ghost: {fileID: 1718052129104348959}
+  silence: {fileID: 4161291845396503115}
 --- !u!114 &6329989501365168688
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23273,3 +23376,4 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 4534754468497973439}
   silence: {fileID: 4161291845396503115}
+  terrifyingElfAura: {fileID: 6686568037796463366}
