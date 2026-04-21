@@ -19,6 +19,11 @@ public class NinjaResources : Skill, IPassiveSkill
     private bool _isIceRuneTalent;
     private bool _isHardenedFleshTalent;
     private bool _isFrozenCrit;
+    private bool _isRepeatedFrost;
+
+    public void RepeatedFrost(bool value) => _isRepeatedFrost = value;
+
+    public bool IsRepeatedFrost { get => _isRepeatedFrost; set => _isRepeatedFrost = value; }
 
     public void FrozenCrit(bool value) => _isFrozenCrit = value;
 

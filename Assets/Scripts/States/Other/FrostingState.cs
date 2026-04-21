@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ public class FrostingState : AbstractCharacterState
 
 	private GameObject _ice;
 	private AudioSource _audioSource;
+	private NinjaResources _ninjaResources;
 	private float _duration;
 	private float _baseDuration;
 	private float _damageOnStart;
@@ -33,8 +35,9 @@ public class FrostingState : AbstractCharacterState
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
 		_audioSource = character.GetComponent<AudioSource>();
+		if (personWhoMadeBuff.TryGetComponent<NinjaResources>(out NinjaResources resources)) _ninjaResources = resources;
 
-		_damageOnStart = characterState.Character.Health.SumDamageTaken;
+		 _damageOnStart = characterState.Character.Health.SumDamageTaken;
 		characterState.Character.Move.SetCanMoveState(false);
 		characterState.Character.Move.LookAtTransform(characterState.gameObject.transform);
 
@@ -103,7 +106,12 @@ public class FrostingState : AbstractCharacterState
 	public override bool Stack(float time)
 	{
 		_duration = _baseDuration;
+
+		if (_ninjaResources != null && _ninjaResources.IsRepeatedFrost) AddFrozenCmd();
+
 		return true;
 	}
 
+	[Command] private void AddFrozenCmd() => AddFrozenRpc();
+	[ClientRpc] private void AddFrozenRpc() => characterState.AddStateLogic(States.Frozen, _baseDuration, 0f, Schools.None, characterState.Character.gameObject, "RepeatedFrost");
 }
