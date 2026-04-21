@@ -264,8 +264,6 @@ public class SkillPanel : MonoBehaviour
         if (_playerAbilities?.SelectedSkills == null) return;
         if (index < 0 || index >= _playerAbilities.SelectedSkills.Length) return;
 
-        Debug.Log("Test" + skill);
-
         _playerAbilities.SelectedSkills[index] = skill;
     }
 

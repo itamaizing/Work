@@ -216,6 +216,7 @@ public class GroupManager
         string json = JsonConvert.SerializeObject(invData);
 
         WebSocketClient.Instance.SendMessageToServer(json);
+        Debug.Log("Try inv" + id);
     }
 
     public void AddPlayerInGroup(int id)
