@@ -6031,7 +6031,6 @@ MonoBehaviour:
     Group: 0
     Row: 1
   character: {fileID: 4374618947117916461}
-  _icePuddle: {fileID: 4310610476984543593}
   _iceShadow: {fileID: 3068634069238352843}
   _skillManager: {fileID: 4220410774128686972}
 --- !u!114 &6580995585041578627

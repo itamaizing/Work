@@ -189,7 +189,7 @@ public class IceSword : CloseCombatSkill
 		_additionalDamage = additionalEnergy;
 
 		float totalEnergyToUse = baseCost + additionalEnergy;
-		_energy.CmdUse(totalEnergyToUse);
+		if (!Cost.TryPaySingle(totalEnergyToUse, ResourceType.Energy, shouldModify: false)) return false;
 
 		return true;
 	}

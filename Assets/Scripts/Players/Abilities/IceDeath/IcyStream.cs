@@ -13,9 +13,15 @@ public class IcyStream : Skill
     [Header("Visual")]
     [SerializeField] private GameObject _icyStreamPrefab;
 
+    [SerializeField] private float _runeCost = 1f;
+    [SerializeField] private float _energyPerTick = 5f;
+
     private Character _cachedTarget;
     private Coroutine _streamCoroutine;
     private GameObject _activeEffect;
+
+    private RuneComponent _rune;
+    private Energy _energy;
 
     private bool _isStreaming;
     private const int MaxTicks = 7;
@@ -65,6 +71,12 @@ public class IcyStream : Skill
 
         _isStreaming = true;
 
+        if (!Cost.TryPaySingle(_runeCost, ResourceType.Rune, shouldModify: false))
+        {
+            TryCancel(true);
+            yield break;
+        }
+
         CmdSpawnIcyStreamEffect( _streamStartPoint.gameObject, _cachedTarget.gameObject);
 
         _streamCoroutine = StartCoroutine(StreamRoutine());
@@ -80,8 +92,20 @@ public class IcyStream : Skill
         for (int tick = 1; tick <= MaxTicks; tick++)
         {
             yield return new WaitForSeconds(_tickInterval);
+
+            if (!TryPayEnergyTick())
+            {
+                TryCancel(true);
+                yield break;
+            }
+
             ApplyTick(tick);
         }
+    }
+
+    private bool TryPayEnergyTick()
+    {
+        return Cost.TryPaySingle(_energyPerTick, ResourceType.Energy, shouldModify: false);
     }
 
     private void ApplyTick(int tickNumber)
