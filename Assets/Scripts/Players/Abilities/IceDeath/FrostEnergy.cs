@@ -60,7 +60,7 @@ public class FrostEnergy : Skill
 
         else
         {
-            Hero.CharacterState.CmdAddState(States.FrostEnergy, 999, 0f, Hero.gameObject, name);
+            Hero.CharacterState.AddState(States.FrostEnergy, 999, 0f, Hero.gameObject, name);
         }
     }
 }
