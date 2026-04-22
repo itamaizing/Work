@@ -50,6 +50,9 @@ public class ClawStrike : Skill
     private Coroutine coroutineDurationChanceApplyBleedingWithJump;
     private WaitForSeconds _waitForBuffDuration;
 
+    private float _lastClawOrCheliceraTime;
+    private const float JumpBackWindow = 1.5f;
+
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("ClawStrikeTrigger");
     protected override bool IsCanCast => CheckIsCanCast();
@@ -136,6 +139,8 @@ public class ClawStrike : Skill
         JumpBackClawStrike();
         DamageDeal(Targeting.GetTarget()?.Targetable);
 
+        _lastClawOrCheliceraTime = Time.time;
+
         yield return null;
     }
 
@@ -183,8 +188,14 @@ public class ClawStrike : Skill
 
     private void JumpBackClawStrike()
     {
+        if (_jumpBack == null) return;
+
         var lastSkill = _player.Abilities.LastCastedSkill;
-        if (_jumpBack != null && (lastSkill is CheliceraStrike || lastSkill is ClawStrike)) _jumpBack.EnableJumpBack();
+
+        bool validSkill = lastSkill is CheliceraStrike || lastSkill is ClawStrike;
+        bool inWindow = Time.time - _lastClawOrCheliceraTime <= JumpBackWindow;
+
+        if (validSkill && inWindow) _jumpBack.EnableJumpBack();
     }
 
     private void TryApplyBleeding(Character target)

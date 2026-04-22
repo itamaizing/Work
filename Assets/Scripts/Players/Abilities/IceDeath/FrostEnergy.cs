@@ -87,7 +87,7 @@ public class FrostEnergy : Skill
 
         if (!Hero.CharacterState.CheckForState(States.FrostEnergy)) return;
 
-        ApplyRuneBonusEffect(amount);
+        ApplyEnergyBonusEffect(amount);
     }
 
     private void StartDrain(Character character)
@@ -125,14 +125,14 @@ public class FrostEnergy : Skill
         _drainRoutine = null;
     }
 
-    private void ApplyRuneBonusEffect(float spentRune)
+    private void ApplyEnergyBonusEffect(float spentRune)
     {
         if (_rune == null) return;
 
-        float bonusRune = spentRune * 2f;
+        //float bonusRune = spentRune * 2f;
         float bonusEnergy = spentRune * 0.4f;
 
-        _rune.CmdAdd(bonusRune);
+        //_rune.CmdAdd(bonusRune);
 
         if (Hero.TryGetResource(ResourceType.Energy, out var resource))
         {

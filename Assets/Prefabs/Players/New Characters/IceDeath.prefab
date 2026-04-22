@@ -2761,7 +2761,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.size
-      value: 11
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRows.Array.data[1].Talents.Array.size
@@ -2997,6 +2997,10 @@ PrefabInstance:
       objectReference: {fileID: 1308729042165579930}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[10]'
+      value: 
+      objectReference: {fileID: 5991041448957374658}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[11]'
       value: 
       objectReference: {fileID: 1827268369753905710}
     - target: {fileID: 6214007637544752149, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -3552,6 +3556,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3966793049180903548}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5991041448957374658}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1308729042165579930}
@@ -5922,6 +5929,31 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 4374618947117916461}
   _ninjaResources: {fileID: 5945422429078664588}
+--- !u!114 &5991041448957374658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1de5c9970552ef499b5a3f45d529462, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FrostTalent_13
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
+      \u043E\u0431\u0449\u0438\u0439 \u0437\u0430\u043F\u0430\u0441 \u0440\u0443\u043D
+      \u043D\u0430 5 \u0448\u0442"
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u041C\u043E\u0440\u043E\u0437 13"
+    Icon: {fileID: 21300000, guid: d34409cc09b236d4da56a95d24acd358, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 4374618947117916461}
+  _hero: {fileID: 4374618947117916461}
 --- !u!114 &1308729042165579930
 MonoBehaviour:
   m_ObjectHideFlags: 0

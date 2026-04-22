@@ -132,8 +132,8 @@ public class SeriesOfStrikes : MonoBehaviour
 		//Debug.Log("Last hit");
 		if (_seriesCompliteCompoTalent)
 		{
-			if (_seriesCompleteDoubleCombo) _rune.CmdAdd(usedRune * 2);
-			else _rune.CmdAdd(usedRune);
+			//if (_seriesCompleteDoubleCombo) _rune.CmdAdd(usedRune * 2);
+			//else _rune.CmdAdd(usedRune);
 
 			_energy.CmdAdd(usedEnergy * 0.4f);
 			_energy.ForceRegenNow();
