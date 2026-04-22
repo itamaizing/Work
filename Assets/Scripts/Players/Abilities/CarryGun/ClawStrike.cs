@@ -52,6 +52,7 @@ public class ClawStrike : Skill
 
     private float _lastClawOrCheliceraTime;
     private const float JumpBackWindow = 1.5f;
+    private Character _lastComboTarget;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("ClawStrikeTrigger");
@@ -136,6 +137,9 @@ public class ClawStrike : Skill
         if (Targeting.GetTarget() == null) yield return null;
         if (!IsTargetInRange()) yield return null;
 
+        Character currentTarget = Targeting.GetTarget()?.Targetable as Character;
+        HandleComboTarget(currentTarget);
+
         JumpBackClawStrike();
         DamageDeal(Targeting.GetTarget()?.Targetable);
 
@@ -189,13 +193,31 @@ public class ClawStrike : Skill
     private void JumpBackClawStrike()
     {
         if (_jumpBack == null) return;
+        if (_lastComboTarget == null) return;
 
         var lastSkill = _player.Abilities.LastCastedSkill;
 
         bool validSkill = lastSkill is CheliceraStrike || lastSkill is ClawStrike;
         bool inWindow = Time.time - _lastClawOrCheliceraTime <= JumpBackWindow;
 
-        if (validSkill && inWindow) _jumpBack.EnableJumpBack();
+        if (validSkill && inWindow)
+        {
+            _jumpBack.EnableJumpBack();
+        }
+    }
+
+    private void HandleComboTarget(Character currentTarget)
+    {
+        if (currentTarget == null) return;
+
+        if (_lastComboTarget != null && _lastComboTarget != currentTarget) ResetCombo();
+        _lastComboTarget = currentTarget;
+    }
+
+    private void ResetCombo()
+    {
+        _lastComboTarget = null;
+        _lastClawOrCheliceraTime = 0f;
     }
 
     private void TryApplyBleeding(Character target)
