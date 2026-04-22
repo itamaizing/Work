@@ -8,6 +8,7 @@ public class FrostEnergy : Skill
     [SerializeField] private float _runeCost = 1f;
 
     private Coroutine _drainRoutine;
+    private RuneComponent _rune;
 
     private const float StartDelay = 2f;
     private const float DrainInterval = 0.1f;
@@ -16,6 +17,27 @@ public class FrostEnergy : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
+
+    #region Talent
+
+    private bool _isUseRuneBonusEffect;
+
+    public void _UseRuneBonusEffect(bool value) => _isUseRuneBonusEffect = value;
+    #endregion
+
+    private void OnEnable()
+    {
+        if (Hero.TryGetResource(ResourceType.Rune, out var resource))
+        {
+            _rune = resource as RuneComponent;
+            if (_rune != null) _rune.OnRuneSpent += HandleRuneSpent;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (_rune != null) _rune.OnRuneSpent -= HandleRuneSpent;
+    }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
@@ -59,6 +81,15 @@ public class FrostEnergy : Skill
         }
     }
 
+    private void HandleRuneSpent(float amount, Skill skill)
+    {
+        if (!_isUseRuneBonusEffect) return;
+
+        if (!Hero.CharacterState.CheckForState(States.FrostEnergy)) return;
+
+        ApplyRuneBonusEffect(amount);
+    }
+
     private void StartDrain(Character character)
     {
         if (_drainRoutine != null)
@@ -92,5 +123,22 @@ public class FrostEnergy : Skill
         }
 
         _drainRoutine = null;
+    }
+
+    private void ApplyRuneBonusEffect(float spentRune)
+    {
+        if (_rune == null) return;
+
+        float bonusRune = spentRune * 2f;
+        float bonusEnergy = spentRune * 0.4f;
+
+        _rune.CmdAdd(bonusRune);
+
+        if (Hero.TryGetResource(ResourceType.Energy, out var resource))
+        {
+            Energy energy = resource as Energy;
+            energy?.CmdAdd(bonusEnergy);
+            energy?.ForceRegenNow();
+        }
     }
 }
