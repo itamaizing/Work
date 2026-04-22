@@ -1,15 +1,20 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class FrozenState : AbstractCharacterState
 {
     private GameObject _frozenEffectInstance;
     private AudioSource _audioSource;
+    private TalentSystem _talentSystem;
 
     private float _duration;
+    private float _baseDuration;
     private float _damageToExit;
     private float _damageOnStart;
     private bool _isInited;
+
+    private bool _isFrostTalentActive;
 
     private int _currentStacks = 1;
 
@@ -37,10 +42,14 @@ public class FrozenState : AbstractCharacterState
         MaxStacksCount = MaxStacks;
 
         _duration = durationToExit;
+        _baseDuration = durationToExit;
         _damageToExit = damageToExit == 0 ? 10000 : damageToExit;
         _damageOnStart = characterState.Character.Health.SumDamageTaken;
 
         _audioSource = character.GetComponent<AudioSource>();
+
+        if (personWhoMadeBuff.TryGetComponent<TalentSystem>(out TalentSystem talentSystem)) _talentSystem = talentSystem;
+        if (_talentSystem != null) _isFrostTalentActive = _talentSystem.ActiveTalents.Any(t => t.GetType().Name == "FrostTalent_12");
 
         if (character.TryGetComponent<Character>(out var abilityCharacter))
         {
@@ -66,12 +75,23 @@ public class FrozenState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        if (!_isInited) return;
+        bool timeExpired = _duration < 0;
+        bool damageExceeded = characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit;
 
-        _duration -= Time.deltaTime;
-
-        if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || _duration <= 0f)
+        if (damageExceeded)
         {
+            ExitState();
+            return;
+        }
+
+        if (timeExpired)
+        {
+            if (_isFrostTalentActive)
+            {
+                RestartFrozen();
+                return;
+            }
+
             ExitState();
         }
     }
@@ -93,13 +113,18 @@ public class FrozenState : AbstractCharacterState
     {
         RemoveEffects();
 
-        if (_currentStacks < MaxStacks)
-            _currentStacks++;
+        if (_currentStacks < MaxStacks) _currentStacks++;
 
+        if (_damageToExit < 30) _damageToExit = 30;
         _duration = time;
 
         ApplyEffects();
         return true;
+    }
+
+    private void RestartFrozen()
+    {
+        _duration = _baseDuration;
     }
 
     private void ApplyEffects()
