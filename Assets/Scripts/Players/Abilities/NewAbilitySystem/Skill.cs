@@ -993,13 +993,14 @@ public abstract class Skill : NetworkBehaviour
     [Command]
     public void CmdCooldownModify(double delta)
     {
-        if (!Cooldown.IsActive)
+        if (_cooldownEndTime <= NetworkTime.time)
             return;
 
         _cooldownEndTime += delta;
 
         if (_cooldownEndTime <= NetworkTime.time)
         {
+            _cooldownEndTime = NetworkTime.time;
             Cooldown?.ForceEnd();
         }
     }
