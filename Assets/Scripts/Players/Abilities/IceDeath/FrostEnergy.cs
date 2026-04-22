@@ -36,12 +36,11 @@ public class FrostEnergy : Skill
             yield break;
         }
 
-        CmdSkillToggleFrostEnergyState(Hero.gameObject);
+        SkillToggleFrostEnergyState(Hero.gameObject);
         yield break;
     }
 
-    [Command]
-    private void CmdSkillToggleFrostEnergyState(GameObject targetObj)
+    private void SkillToggleFrostEnergyState(GameObject targetObj)
     {
         if (targetObj == null) return;
 
@@ -50,17 +49,16 @@ public class FrostEnergy : Skill
 
         if (character.CharacterState.CheckForState(States.FrostEnergy))
         {
-            character.CharacterState.RemoveState(States.FrostEnergy);
+            character.CharacterState.CmdRemoveState(States.FrostEnergy);
             StopDrain(character);
         }
         else
         {
-            character.CharacterState.AddState( States.FrostEnergy, 999f, 0f, character.gameObject, name);
+            character.CharacterState.CmdAddState( States.FrostEnergy, 999f, 0f, character.gameObject, name);
             StartDrain(character);
         }
     }
 
-    [Server]
     private void StartDrain(Character character)
     {
         if (_drainRoutine != null)
@@ -69,7 +67,6 @@ public class FrostEnergy : Skill
         _drainRoutine = StartCoroutine(DrainRoutine(character));
     }
 
-    [Server]
     private void StopDrain(Character character)
     {
         if (_drainRoutine != null)
@@ -79,7 +76,6 @@ public class FrostEnergy : Skill
         }
     }
 
-    [Server]
     private IEnumerator DrainRoutine(Character character)
     {
         yield return new WaitForSeconds(StartDelay);
@@ -88,7 +84,7 @@ public class FrostEnergy : Skill
         {
             if (!Cost.TryPaySingle(EnergyPerTick, ResourceType.Energy, shouldModify: true))
             {
-                character.CharacterState.RemoveState(States.FrostEnergy);
+                character.CharacterState.CmdRemoveState(States.FrostEnergy);
                 break;
             }
 
