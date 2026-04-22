@@ -2761,7 +2761,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.size
-      value: 10
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRows.Array.data[1].Talents.Array.size
@@ -2934,19 +2934,19 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[6]'
       value: 
-      objectReference: {fileID: 2120838471947791779}
+      objectReference: {fileID: 1667643855165766473}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[7]'
       value: 
-      objectReference: {fileID: 6843156634071377161}
+      objectReference: {fileID: 2120838471947791779}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[8]'
       value: 
-      objectReference: {fileID: 3472443819795571823}
+      objectReference: {fileID: 6843156634071377161}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[9]'
       value: 
-      objectReference: {fileID: 1827268369753905710}
+      objectReference: {fileID: 3472443819795571823}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[1].Talents.Array.data[0]'
       value: 
@@ -2995,6 +2995,10 @@ PrefabInstance:
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[12]'
       value: 
       objectReference: {fileID: 1308729042165579930}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[10]'
+      value: 
+      objectReference: {fileID: 1827268369753905710}
     - target: {fileID: 6214007637544752149, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _damageZonePref
       value: 
@@ -3569,6 +3573,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1829443914020651821}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1667643855165766473}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2120838471947791779}
@@ -6179,6 +6186,35 @@ MonoBehaviour:
   character: {fileID: 4374618947117916461}
   _circularFrosting: {fileID: 2727420570257355857}
   _ability: {fileID: 4220410774128686972}
+--- !u!114 &1667643855165766473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbea426e96f3d5b45ba1f92ad26e2e1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FrostTalent_8
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u043F\u0440\u0438 \u0430\u043A\u0442\u0438\u0432\u043D\u043E\u0439 \u043C\u043E\u0440\u043E\u0437\u043D\u043E\u0439
+      \u044D\u043D\u0435\u0440\u0433\u0438\u0438 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438
+      \u0437\u0430\u0442\u0440\u0430\u0447\u0438\u0432\u0430\u044E\u0449\u0438\u0435
+      \u0440\u0443\u043D\u0443 \u043B\u044C\u0434\u0430 \u0431\u0443\u0434\u0443\u0442
+      \u0438\u043C\u0435\u0442\u044C \u0431\u043E\u043D\u0443\u0441\u043D\u044B\u0439
+      \u044D\u0444\u0444\u0435\u043A\u0442 \u043A\u0430\u043A \u0432 \u043A\u043E\u043D\u0446\u0435
+      \u0441\u0435\u0440\u0438\u0438 "
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u041C\u043E\u0440\u043E\u0437 8"
+    Icon: {fileID: 21300000, guid: 05e9dc472a8a279439a75ccf171a5a6f, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 4374618947117916461}
+  _frostEnergy: {fileID: 2844793441572165725}
 --- !u!114 &2120838471947791779
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6256,11 +6292,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FrostTalent_12
   _data:
-    _descriptionsForInfoPanel: []
+    _descriptionsForInfoPanel:
+    - " \xAB\u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u0435\xBB
+      \u0438 \"\u0437\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430\" \u0432\u044B\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u044E\u0442
+      30 \u0443\u0440\u043E\u043D\u0430 \u0438 \u043D\u0435 \u0441\u043F\u0430\u0434\u0430\u044E\u0442
+      \u0441 \u0446\u0435\u043B\u0435\u0439, (\u043F\u043E\u0441\u043B\u0435 30 \u0443\u0440\u043E\u043D\u0430
+      \u0441\u043F\u0430\u0434\u0430\u044E\u0442 \u0441 \u0446\u0435\u043B\u0435\u0439),
+      \u043F\u0440\u0438 \u043F\u043E\u0432\u0442\u043E\u0440\u043D\u043E\u043C \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u0438
+      \xAB\u043F\u0440\u0438\u043C\u0435\u0440\u0437\u0430\u043D\u0438\u044F\xBB,
+      \xAB\u0437\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0438\xBB \u043F\u0440\u043E\u0447\u043D\u043E\u0441\u0442\u044C
+      30 \u0435\u0434\u0438\u043D\u0438\u0446 \u043E\u0431\u043D\u043E\u0432\u043B\u044F\u0435\u0442\u0441\u044F  "
     _stateInfos: []
     IsOpen: 0
-    Description: '-'
-    Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
+    Description: " \u0413\u043B\u0443\u0431\u043E\u043A\u043E\u0435 \u043E\u043A\u043E\u0447\u0435\u043D\u0435\u043D\u0438\u0435 "
+    Icon: {fileID: 5970624007284352443, guid: 7418fdb7c020d2144b5470f7be425271, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
