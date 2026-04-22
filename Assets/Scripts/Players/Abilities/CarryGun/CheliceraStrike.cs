@@ -164,6 +164,12 @@ public class CheliceraStrike : Skill
         _jumpWithChelicera.IsJumpDone = false;
         _isClawStrike_Right = !_isClawStrike_Right;
 
+        Character currentTarget = Targeting.GetTarget()?.Targetable as Character;
+
+        JumpBackComboContext.LastTarget = currentTarget;
+        JumpBackComboContext.LastSkill = typeof(CheliceraStrike);
+        JumpBackComboContext.LastTime = Time.time;
+
         yield return null;
     }
 
