@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class MucusAutoGrowth : Skill, IPassiveSkill
 {
@@ -205,7 +204,6 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
     private void CmdSpawnOrActivateMucus(Vector3 spawnPosition, int circleIndex)
     {
         GameObject instance = Instantiate(mucusPrefab, spawnPosition, Quaternion.identity);
-        SceneManager.MoveGameObjectToScene(instance, Hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(instance, connectionToClient);
 
         RpcRegenerationEnabled(instance);
