@@ -82,26 +82,21 @@ public class FlowOfLight : Skill, IPolaritySwitchable
         Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle) &&
         ((isLightMode && IsAllyTarget(Targeting.GetTarget()?.Character)) || (!isLightMode && IsEnemyTarget(Targeting.GetTarget()?.Character)));
 
-    public override void Init(SkillRenderer render, Character hero)
+    private void OnEnable()
     {
-        base.Init(render, hero);
+        OnModeChange += UpdateMode;
+        OnSkillCanceled += HandleSkillCanceled;
         UpdateMode();
-
+        
         _instantFlash = new InstantFlashBooster(this, duration: 5f, chance: 10f);
         var flashSkill = Hero.Abilities.GetSkill<FlashOfLight>();
         _instantFlash.Inject(flashSkill);
+
         _overhealMana = new OverhealManaBooster(this, Hero);
         _aoeBooster = new AoeTalentBooster(this);
         _destructionFillingBooster = new DestructionFillingBooster(this);
         _spiritEnergyAddBooster = new SpiritEnergyAddBooster(this);
         _slowTalentBooster = new SlowTalentBooster(this);
-
-    }
-
-    private void OnEnable()
-    {
-        OnModeChange += UpdateMode;
-        OnSkillCanceled += HandleSkillCanceled;
     }
 
     private void OnDisable()

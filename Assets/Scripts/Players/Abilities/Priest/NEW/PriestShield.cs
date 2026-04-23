@@ -88,19 +88,15 @@ public class PriestShield : Skill
         _audioSource = GetComponent<AudioSource>();
     }
 
-    public override void Init(SkillRenderer render, Character hero)
+    private void OnEnable()
     {
-        base.Init(render, hero);
         Hero.DamageTracker.OnDamageTracked += TrackDarkDamage;
         Hero.Health.DamageTaken += TrackPhysDamage;
         Hero.DamageTracker.OnHealTracked += TrackHealDone;
 
         foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.Info.School == Schools.Discipline))
             skill.CastEnded += AddDisciplineStack;
-    }
-
-    private void OnEnable()
-    {        
+        
         _spiritShieldReflectionBooster = new SpiritShieldReflectionBooster(this);
         _lightShieldManaBooster = new LightShieldManaRestoreBooster(this);
         _healingBoostBooster = new HealingBoostBooster(this);

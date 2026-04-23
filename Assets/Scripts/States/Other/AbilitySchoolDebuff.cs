@@ -26,8 +26,11 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 		
 		var abilities = _character.Abilities;
 		
+		Debug.LogError(abilities.CurrentCastingSkill);
+		
 		if (abilities.CurrentCastingSkill != null)
 		{
+			Debug.LogError("Casting not null");
 			abilities.CurrentCastingSkill.CmdCancelActiveSkill();
 		}
 

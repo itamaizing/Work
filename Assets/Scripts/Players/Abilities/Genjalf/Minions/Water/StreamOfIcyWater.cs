@@ -130,7 +130,6 @@ public class StreamOfIcyWater : MoveSkill
     [Command]
     private void CmdAddState(GameObject target)
     {
-        Debug.LogError("Adding state");
         if(target != null)
             target.GetComponent<Character>().CharacterState.AddState(States.Cooling, 6, 0, Hero.gameObject, name);
     }

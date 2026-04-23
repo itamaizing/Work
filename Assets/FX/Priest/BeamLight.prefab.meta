@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/FX/Priest/BeamLight.prefab.meta
 guid: 0238e11c48e9f4a43bd99f7509a0b2f0
+========
+guid: 271423b0a9cb3c0498760b02dec03d9b
+>>>>>>>> main:Assets/FX/Priest/Fear.prefab.meta
 PrefabImporter:
   externalObjects: {}
   userData: 

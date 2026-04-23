@@ -75,16 +75,11 @@ public class FlashOfLight : Skill,IPolaritySwitchable
         Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
 
-    public override void Init(SkillRenderer render, Character hero)
-    {
-        base.Init(render, hero);
-        UpdateMode();
-    }
-
     private void OnEnable()
     {
         OnModeChange += UpdateMode;
         _baseCastDelay = CastDeley;
+        UpdateMode();
         
         _overhealMana = new OverhealManaBooster(this, Hero);
     }

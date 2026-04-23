@@ -6,12 +6,12 @@ using UnityEngine;
 public class CoolingActive : Skill
 {
     [SerializeField] private ParticleSystem _effectObject;
+    [SerializeField] private CoolingAura _coolingAura;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => CheckCanCast();
-
+    
     private float _clickRadius = 0.5f;
-
     private float _auraDuration = 5f;
     
     private GameObject _shield;
@@ -44,16 +44,15 @@ public class CoolingActive : Skill
 
     protected override IEnumerator CastJob()
     {
-        
-        CmdAddAura();
+        _coolingAura.ActivateAura(true,_auraDuration);
+        CmdStartEffect();
 
         yield return null;
     }
     
     [Command]
-    private void CmdAddAura()
+    private void CmdStartEffect()
     {
-        _hero.CharacterState.AddState(States.CoolingAura, _auraDuration, 0, Hero.gameObject, nameof(CoolingActive));
         StartEffectJob();
     }
 

@@ -115171,14 +115171,14 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events:
-  - time: 0
+  - time: 0.2
     functionName: AnimCastTelekinesis
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 2.1666667
+  - time: 2
     functionName: AnimTelekinesisEnd
     data: 
     objectReferenceParameter: {fileID: 0}

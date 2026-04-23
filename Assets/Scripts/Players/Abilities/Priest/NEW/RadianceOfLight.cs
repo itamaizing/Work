@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -42,15 +42,10 @@ public class RadianceOfLight : Skill, IPolaritySwitchable
 
     public override void LoadTargetData(TargetInfo targetInfo) { }
 
-    public override void Init(SkillRenderer render, Character hero)
-    {
-        base.Init(render, hero);
-        UpdateMode();
-    }
-
     private void OnEnable()
     {
         OnModeChange += UpdateMode;
+        UpdateMode();
         
         _overhealMana = new OverhealManaBooster(this, Hero);
     }

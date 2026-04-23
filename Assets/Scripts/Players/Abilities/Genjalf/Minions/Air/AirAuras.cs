@@ -30,6 +30,9 @@ namespace Gangdollarff.AirElemental
 
         public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
         {
+            MaxStacksCount = 1;
+
+            DischargeTick();
         }
 
         public override void ExitState()
@@ -37,27 +40,21 @@ namespace Gangdollarff.AirElemental
             characterState.RemoveState(this);
         }
 
-        public override bool Stack(float time)
-        {
-            return false;
-        }
-
         public override void UpdateState()
         {
-
             _timeAfterLastEffect += Time.deltaTime;
 
-            if (_effectRate > _timeAfterLastEffect && Random.Range(1, 100) >= _chance)
-                return;
-
-            //
-            characterState.RemoveState(characterState.CurrentStates.FirstOrDefault(item => item.BaffDebaff == BaffDebaff.Baff));
-
+            DischargeTick();
+            
             _timeAfterLastEffect = 0;
         }
-        public override void ReduceStack()
+
+        private void DischargeTick()
         {
-            ExitState();
+            if (_effectRate > _timeAfterLastEffect && Random.Range(1, 100) >= _chance)
+                return;
+            
+            characterState.RemoveState(characterState.CurrentStates.FirstOrDefault(item => item.BaffDebaff == BaffDebaff.Baff));
         }
     }
 

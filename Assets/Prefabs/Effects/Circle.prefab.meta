@@ -1,7 +1,13 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Prefabs/Effects/Circle.prefab.meta
 guid: a62ed93896e53f74f9507bccd1c9acb0
 PrefabImporter:
+========
+guid: d9fbbbeabc081d94e83715e407fcb450
+NativeFormatImporter:
+>>>>>>>> GangdollarffTalentsFix:Assets/Animations/Animations/CreeperPoison/Spell.anim.meta
   externalObjects: {}
+  mainObjectFileID: 7400000
   userData: 
   assetBundleName: 
   assetBundleVariant: 
