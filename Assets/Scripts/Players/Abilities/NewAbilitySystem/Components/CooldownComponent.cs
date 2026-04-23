@@ -84,12 +84,22 @@ public class CooldownComponent : BaseSkillComponent
     {
         if (!IsActive || (RemainingTime + delta > _currentMax && !canOvershoot))
             return;
-        
+
         float newRemaining = Mathf.Max(0f, RemainingTime + delta);
 
         isSyncronized = false;
         _skill.CmdCooldownModify(delta);
-        OnModify?.Invoke(newRemaining, _currentMax);
+
+        if (newRemaining <= 0f)
+        {
+            _isActive = false;
+            _currentMax = _skillAttributes != null ? _skillAttributes.Cooldown : _baseCooldown;
+            OnEnd?.Invoke();
+        }
+        else
+        {
+            OnModify?.Invoke(newRemaining, _currentMax);
+        }
     }
 
     /// <summary>
