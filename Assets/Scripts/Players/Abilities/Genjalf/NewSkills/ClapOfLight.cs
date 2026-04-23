@@ -3,16 +3,24 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Gangdollarff
 {
-    public class ClapOfLight : Skill, IGodLightSpell
+    public class ClapOfLight : Skill
     {
         [SerializeField] private ParticleSystem _particle;
         [SerializeField] private float _pushRange = 1;
         [SerializeField] private float _pushDuration = 0.33f;
 
         public bool IsBaffed = false;
+
+        public bool _isBlockingActive = false;
+
+        private const float RepulsionDuration = 2f;
+        private const float RepulsionCheckInterval = 0.1f;
+
+        private Transform _heroTransformClient;
 
         public override string AdditionalDescription =>
             $"Расстояние толчка: {AbilityNameBox.ColorOpen}{_pushRange}{AbilityNameBox.ColorEnd}";
@@ -23,16 +31,16 @@ namespace Gangdollarff
 
         protected override bool IsCanCast => true;
 
-        public bool IsEnabled { get; protected set; }
-
         public override void LoadTargetData(TargetInfo targetInfo)
         {
 
         }
-
-        public void ChangeMode()
+        
+        public void EnableBlockingClapTalent(bool value)
         {
-            IsEnabled = !IsEnabled;
+            if(value == _isBlockingActive) return;
+
+            _isBlockingActive = value;
         }
 
         protected override IEnumerator CastJob()
@@ -52,9 +60,7 @@ namespace Gangdollarff
                     float enemyRadius = ((CapsuleCollider)enemy.Collider).radius;
 
                     float centerDist = Vector3.Distance(transform.position, enemy.transform.position);
-
                     float edgeDist = Mathf.Max(centerDist - (casterRadius + enemyRadius), 0f);
-
                     float damageMul = Mathf.Clamp01(1f - edgeDist / AreaInfo.Radius);
 
                     Damage scaledDamage = new Damage
@@ -66,25 +72,105 @@ namespace Gangdollarff
 
                     CmdApplyDamage(scaledDamage, enemy.gameObject);
 
-                    float finalDist = _pushRange;
-                    float distToPush = finalDist - edgeDist;
-
+                    float distToPush = _pushRange - edgeDist;
                     if (distToPush > 0f)
                     {
                         Vector3 dir = (enemy.transform.position - transform.position).normalized;
                         Vector3 pointForPush = enemy.transform.position + dir * distToPush;
-
                         CmdMoveTaget(enemy.gameObject, pointForPush, _pushDuration);
                     }
                 }
             }
 
+            if (_isBlockingActive)
+                CmdStartRepulsion();
+
             yield return null;
+        }
+
+        [Command]
+        private void CmdStartRepulsion()
+        {
+            TargetRpcStartRepulsionScan(connectionToClient, _hero.gameObject);
+        }
+
+        [TargetRpc]
+        private void TargetRpcStartRepulsionScan(NetworkConnection conn, GameObject heroGo)
+        {
+            _heroTransformClient = heroGo != null ? heroGo.transform : null;
+            StartCoroutine(ClientRepulsionScanJob());
+        }
+
+        private IEnumerator ClientRepulsionScanJob()
+        {
+            float elapsed = 0f;
+
+            while (elapsed < RepulsionDuration && _heroTransformClient != null)
+            {
+                var hits = Physics.OverlapSphere(_heroTransformClient.position, _pushRange, Targeting.Layer);
+
+                List<uint> netIds = new();
+
+                foreach (var col in hits)
+                {
+                    if (col.gameObject == _heroTransformClient.gameObject)
+                        continue;
+
+                    if (col.TryGetComponent<Character>(out var character))
+                    {
+                        if (!character.IsDead && character.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+                            netIds.Add(character.netId);
+                    }
+                }
+
+                if (netIds.Count > 0)
+                    CmdApplyRepulsion(netIds);
+
+                yield return new WaitForSeconds(RepulsionCheckInterval);
+                elapsed += RepulsionCheckInterval;
+            }
+
+            _heroTransformClient = null;
+        }
+
+        [Command]
+        private void CmdApplyRepulsion(List<uint> netIds)
+        {
+            if (_hero == null) return;
+
+            foreach (var id in netIds)
+            {
+                if (!NetworkServer.spawned.TryGetValue(id, out var identity))
+                    continue;
+
+                if (!identity.TryGetComponent<Character>(out var character))
+                    continue;
+
+                if (character.IsDead)
+                    continue;
+
+                float dist = Vector3.Distance(character.transform.position, _hero.transform.position);
+
+                if (dist > _pushRange + 0.5f)
+                    continue;
+
+                float distToPush = _pushRange - dist;
+                if (distToPush <= 0f)
+                    continue;
+
+                Vector3 dir = (character.transform.position - _hero.transform.position).normalized;
+                if (dir == Vector3.zero)
+                    dir = UnityEngine.Random.insideUnitSphere.normalized;
+
+                Vector3 pushTarget = character.transform.position + dir * distToPush;
+
+                var enemyMove = character.GetComponent<MoveComponent>();
+                enemyMove?.RpcDoPush(pushTarget, RepulsionCheckInterval);
+            }
         }
 
         protected override void ClearData()
         {
-
         }
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
