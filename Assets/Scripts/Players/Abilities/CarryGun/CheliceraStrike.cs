@@ -219,7 +219,7 @@ public class CheliceraStrike : Skill
 
             if (_isChanceCritDamageIncrease && CheckStateForBleeding(targetCharacter)) _totalchanceCritDamage += _chanceCritDamageIncrease;
 
-            if (chanceCritValue <= _chanceCritDamageEvolutionFour) _criticalDamage = CriticalDamageDeal(Damage, chanceCritDamageValue);
+            if (chanceCritValue <= _totalchanceCritDamage) _criticalDamage = CriticalDamageDeal(Damage, chanceCritDamageValue);
         }
 
         _dealDamage = new Damage()

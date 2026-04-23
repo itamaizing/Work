@@ -142,6 +142,14 @@ public class Tentacles : Skill
         AnimCastEnded();
     }
 
+    private bool IsValidEnemy(Character character)
+    {
+        if (character == null) return false;
+        if (((1 << character.gameObject.layer) & _alliesMask) != 0) return false;
+        if (((1 << character.gameObject.layer) & Targeting.Layer) == 0) return false;
+        return true;
+    }
+
     protected override void ClearData()
     {
         _skillRender.IsOverrideClosestTarget = false;
@@ -220,7 +228,7 @@ public class Tentacles : Skill
             {
                 if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hitTarget))
                 {
-                    if (_isAttractionTentacleTalent && hitTarget.collider.TryGetComponent<Character>(out Character character) && ((1 << character.gameObject.layer) & Targeting.Layer) != 0)
+                    if (_isAttractionTentacleTalent && hitTarget.collider.TryGetComponent<Character>(out Character character) && IsValidEnemy(character))
                     {
                         float distToHero = Vector3.Distance(Hero.transform.position, character.transform.position);
 
@@ -253,7 +261,7 @@ public class Tentacles : Skill
                         {
                             if (!collider.TryGetComponent<Character>(out Character targetHit)) continue;
 
-                            if (((1 << targetHit.gameObject.layer) & Targeting.Layer.value) != 0)
+                            if (IsValidEnemy(targetHit))
                             {
                                 float distToHero = Vector3.Distance(Hero.transform.position, targetHit.transform.position);
 

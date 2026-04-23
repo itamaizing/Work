@@ -80,16 +80,13 @@ public class RechargeGlands : Skill
         _chargesGlands--;
         Charges.SendCurrentChange(_chargesGlands);
 
-        //if (rand <= chance)
-        //{
-        //    CmdAddDestructivePoison(target, caster);
-        //    return true;
-        //}
+        if (rand <= chance)
+        {
+            CmdAddDestructivePoison(target, caster);
+            return true;
+        }
 
-        CmdAddDestructivePoison(target, caster);
-        return true;
-
-        //return false;
+        return false;
     }
 
     public void UseSwarmCharges(int value)

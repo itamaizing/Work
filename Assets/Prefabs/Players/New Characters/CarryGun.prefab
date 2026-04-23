@@ -23000,10 +23000,10 @@ MonoBehaviour:
   _jumpBack: {fileID: 5778966895328886112}
   _animSpeed: 0.8
   _chanceApplyBleeding: 0.15
-  _chanceApplyBleedingWithJump: 0.4
   _durationBleeding: 7
   _buffDurationAfterJump: 1
   _chanceApplyBleedingIncrease: 0.4
+  _chanceApplyBleedingWithJump: 0.4
   _minDamage: 10
   _maxDamage: 11
 --- !u!114 &640134254429411212

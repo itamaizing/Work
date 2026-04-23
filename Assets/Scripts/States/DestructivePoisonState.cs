@@ -33,7 +33,6 @@ public class DestructivePoisonState : RefreshingState
         _health = _target.Health;
 
         duration = durationToExit;
-        currentStacksCount = 1;
 
         _tickTimer = TickInterval;
     }
@@ -69,6 +68,7 @@ public class DestructivePoisonState : RefreshingState
 
     public override void ExitState()
     {
+        currentStacksCount = 0;
         characterState.RemoveState(this);
     }
 
