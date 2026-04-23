@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -79,13 +80,16 @@ public class RechargeGlands : Skill
         _chargesGlands--;
         Charges.SendCurrentChange(_chargesGlands);
 
-        if (rand <= chance)
-        {
-            target.CharacterState.AddStateLogic(States.DestructivePoison, _durationDestructivePoison, 0, Schools.None, caster.gameObject, null);
-            return true;
-        }
+        //if (rand <= chance)
+        //{
+        //    CmdAddDestructivePoison(target, caster);
+        //    return true;
+        //}
 
-        return false;
+        CmdAddDestructivePoison(target, caster);
+        return true;
+
+        //return false;
     }
 
     public void UseSwarmCharges(int value)
@@ -115,5 +119,11 @@ public class RechargeGlands : Skill
 
         callbackDataSaved(targetInfo);
         yield break;
+    }
+
+    [Command]
+    private void CmdAddDestructivePoison(Character target, Character caster)
+    {
+        target.CharacterState.AddState(States.DestructivePoison, _durationDestructivePoison, 0, caster.gameObject, null);
     }
 }

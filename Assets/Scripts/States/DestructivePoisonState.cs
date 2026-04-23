@@ -46,22 +46,11 @@ public class DestructivePoisonState : RefreshingState
         {
             _tickTimer = TickInterval;
 
-            if (_health == null || _target == null || _target.IsDead)
-                return;
+            if (_health == null || _target == null || _target.IsDead) return;
 
             float damageValue = DamagePerTick * currentStacksCount;
 
-            if (NetworkServer.active)
-            {
-                Damage damage = new Damage
-                {
-                    Value = damageValue,
-                    Type = DamageType.Physical,
-                    School = Schools.Earth
-                };
-
-                _health.TryTakeDamage(ref damage, null);
-            }
+            if (NetworkServer.active) DestructiveDamage();
 
             _health.barCharacter.PreviewDoTTick(damageValue);
         }
@@ -81,5 +70,25 @@ public class DestructivePoisonState : RefreshingState
     public override void ExitState()
     {
         characterState.RemoveState(this);
+    }
+
+
+    [Server]
+    private void DestructiveDamage()
+    {
+        if (_target == null || _target.IsDead) return;
+
+        float damageValue = DamagePerTick * currentStacksCount;
+
+        Debug.Log($"damageValue: {damageValue}");
+
+        Damage damage = new Damage
+        {
+            Value = damageValue,
+            Type = DamageType.Physical,
+            School = Schools.Earth
+        };
+
+        _health.TryTakeDamage(ref damage, null);
     }
 }
