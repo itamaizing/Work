@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class DestructivePoisonState : RefreshingState
 {
+    private Character _target;
+    private Health _health;
+
     private const float TickInterval = 1f;
     private const float DamagePerTick = 1f;
 
@@ -16,7 +19,7 @@ public class DestructivePoisonState : RefreshingState
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;
     public override Schools Schools => Schools.Earth;
-    
+
     public DestructivePoisonState()
     {
         MaxStacksCount = 3;
@@ -25,8 +28,9 @@ public class DestructivePoisonState : RefreshingState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        health = character.Character.Health;
-        this.personWhoMadeBuff = personWhoMadeBuff;
+
+        _target = character.Character;
+        _health = _target.Health;
 
         duration = durationToExit;
         currentStacksCount = 1;
@@ -36,25 +40,30 @@ public class DestructivePoisonState : RefreshingState
 
     public override void UpdateState()
     {
-        if (!NetworkServer.active) return;
-        if (health == null) return;
-
         _tickTimer -= Time.deltaTime;
 
         if (_tickTimer <= 0f)
         {
             _tickTimer = TickInterval;
 
+            if (_health == null || _target == null || _target.IsDead)
+                return;
+
             float damageValue = DamagePerTick * currentStacksCount;
 
-            Damage damage = new Damage
+            if (NetworkServer.active)
             {
-                Value = damageValue,
-                Type = DamageType.Physical,
-                School = Schools.Earth
-            };
+                Damage damage = new Damage
+                {
+                    Value = damageValue,
+                    Type = DamageType.Physical,
+                    School = Schools.Earth
+                };
 
-            health.TryTakeDamage(ref damage, skill);
+                _health.TryTakeDamage(ref damage, null);
+            }
+
+            _health.barCharacter.PreviewDoTTick(damageValue);
         }
     }
 
