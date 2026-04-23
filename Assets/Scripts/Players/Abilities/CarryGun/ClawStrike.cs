@@ -237,6 +237,8 @@ public class ClawStrike : Skill
         if (_isChanceApplyBleedingIncrease && CheckStateForBleeding(target)) _totalChanceApplyBleeding += _chanceApplyBleedingIncrease;
         _totalChanceApplyBleeding = Mathf.Clamp01(_totalChanceApplyBleeding);
 
+        Debug.Log($"_totalChanceApplyBleeding: {_totalChanceApplyBleeding}");
+
         float rand = UnityEngine.Random.Range(RandomChanceMin, RandomChanceMax);
 
         if (rand <= _totalChanceApplyBleeding) CmdAddBleeding(target);

@@ -2,12 +2,9 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BleedingState : AbstractCharacterState
+public class BleedingState : RefreshingState
 {
     private Character _target;
-    
-    private float _baseDamage;
-
     private float _baseDuration;
     
     private float _timeBetweenAttack;
@@ -22,9 +19,7 @@ public class BleedingState : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _target = characterState.Character;
-;
         _baseDuration = durationToExit;
-        _baseDamage = damageToExit;
 
         _timeBetweenAttack = _startTimeBetweenAttack;
 
@@ -32,12 +27,15 @@ public class BleedingState : AbstractCharacterState
     }
 
     public override void UpdateState()
-    {        
+    {
         _timeBetweenAttack -= Time.deltaTime;
+
         if (_timeBetweenAttack <= 0)
         {
-            BleedingDamage();
-            characterState.Character.Health.barCharacter.PreviewDoTTick(_baseDamage);
+            if (NetworkServer.active) BleedingDamage();
+            float previewDamage = _target.Health.MaxValue * 0.003f;
+            characterState.Character.Health.barCharacter.PreviewDoTTick(previewDamage);
+
             _timeBetweenAttack = _startTimeBetweenAttack;
         }
     }
@@ -57,9 +55,14 @@ public class BleedingState : AbstractCharacterState
     [Server]
     private void BleedingDamage()
     {
+        if (_target == null || _target.IsDead)
+            return;
+
+        float bleedDamage = _target.Health.MaxValue * 0.003f;
+
         Damage damage = new Damage()
         {
-            Value = _baseDamage,
+            Value = bleedDamage,
             Type = DamageType.Physical,
         };
 
