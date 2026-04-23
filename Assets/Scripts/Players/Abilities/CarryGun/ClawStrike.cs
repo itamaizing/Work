@@ -14,10 +14,10 @@ public class ClawStrike : Skill
     [SerializeField] private JumpBack _jumpBack;
     [SerializeField] private float _animSpeed = 0.8f;
     [SerializeField] private float _chanceApplyBleeding = 0.15f;
-    [SerializeField] private float _chanceApplyBleedingWithJump = 0.4f;
     [SerializeField] private float _durationBleeding = 7f;
     [SerializeField] private float _buffDurationAfterJump = 1f;
     [SerializeField] private float _chanceApplyBleedingIncrease = 0.4f;
+    [SerializeField] private float _chanceApplyBleedingWithJump = 0.4f;
 
     [Header("Damage")]
     [SerializeField] private float _minDamage = 10f;
@@ -35,6 +35,9 @@ public class ClawStrike : Skill
     private const float PsiDispel_3 = 30f;
     private const float PsiDispel_2 = 20f;
     private const float PsiDispel_1 = 10f;
+
+    private const float CheliceraBonusChance = 0.15f;
+    private const float JumpWithCheliceraBonusChance = 0.45f;
 
     private const float TargetSearchRadius = 0.5f;
 
@@ -223,20 +226,25 @@ public class ClawStrike : Skill
         if (!_isBleedingClawStrike) return;
 
         _totalChanceApplyBleeding = _chanceApplyBleeding;
+
         var lastSkill = _player.Abilities.LastCastedSkill;
+
+        if (lastSkill is CheliceraStrike) _totalChanceApplyBleeding += CheliceraBonusChance;
+        if (lastSkill is JumpWithChelicera) _totalChanceApplyBleeding += JumpWithCheliceraBonusChance;
 
         if (_isDurationChanceApplyBleedingWithJump && _jumpWithChelicera.IsCheliceraStrikeCast && lastSkill is CheliceraStrike) _totalChanceApplyBleeding = _chanceApplyBleedingWithJump;
 
         if (_isChanceApplyBleedingIncrease && CheckStateForBleeding(target)) _totalChanceApplyBleeding += _chanceApplyBleedingIncrease;
-
-        Debug.Log($"_totalChanceApplyBleeding: {_totalChanceApplyBleeding}");
+        _totalChanceApplyBleeding = Mathf.Clamp01(_totalChanceApplyBleeding);
 
         float rand = UnityEngine.Random.Range(RandomChanceMin, RandomChanceMax);
+
         if (rand <= _totalChanceApplyBleeding) CmdAddBleeding(target);
 
         _jumpWithChelicera.IsCheliceraStrikeCast = false;
         _isDurationChanceApplyBleedingWithJump = false;
-        if (coroutineDurationChanceApplyBleedingWithJump != null) StopCoroutine(IDurationChanceApplyBleedingWithJump());
+
+        if (coroutineDurationChanceApplyBleedingWithJump != null) StopCoroutine(coroutineDurationChanceApplyBleedingWithJump);
     }
 
     public void ClawStrikePreparingForAnim()
