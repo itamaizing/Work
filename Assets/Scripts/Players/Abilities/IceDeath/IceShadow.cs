@@ -9,6 +9,7 @@ public class IceShadow : Skill
 	[Header("Ability properties")]
 	[SerializeField] private IceShadowObject _shadow;
 	[SerializeField] private IcyStream _icyStream;
+	[SerializeField] private CircularFrosting _circularFrosting;
 	[ReadOnly][SerializeField] private IcyStreamShadow _icyStreamShadow;
 	[SerializeField] private HeroComponent _playerLinks; 
 	[SerializeField] private SeriesOfStrikes _combo;
@@ -27,6 +28,7 @@ public class IceShadow : Skill
 	private bool _evaded = false;
 	private float _evadedTimer = 2f;
 	private float _manaUsed = 0;
+	private float _remainingDelayCircularFrostin;
 
 	#region Const
 	private const float MaxManaPerCast = 30f;
@@ -81,6 +83,12 @@ public class IceShadow : Skill
 			_icyStream.TryCancel(true);
 		}
 
+		if (_circularFrosting != null)
+		{
+			_remainingDelayCircularFrostin = _circularFrosting.RemainingDelay;
+			_circularFrosting.TryCancel(true);
+		}
+
 		TargetInfo targetInfo = new TargetInfo();
 		targetInfo.AddTarget(Hero);
 		callbackDataSaved(targetInfo);
@@ -129,6 +137,12 @@ public class IceShadow : Skill
 			_icyStreamShadow.Init(Hero, target, startTick, maxTicks);
 			_icyStreamShadow.StartShadowStream();
 		}
+
+		var shadowFrost = shadow.GetComponent<CircularFrostingShadow>();
+		if (shadowFrost == null) return;
+
+		shadowFrost.Init(Hero, _remainingDelayCircularFrostin, _circularFrosting.AreaInfo.Radius);
+		shadowFrost.StartShadowLogic();
 	}
 
 	[Command]

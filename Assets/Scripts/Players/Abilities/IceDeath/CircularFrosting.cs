@@ -8,6 +8,17 @@ public class CircularFrosting : Skill
 {
     [SerializeField] private Character _player;
     [SerializeField] private SeriesOfStrikes _seriesOfStrikes;
+    [SerializeField] private ParticleSystemController _particleSystem;
+
+    private float _delayDuration;
+    private float _delayStartTime;
+    private bool _delayActive;
+
+    private float _remainingDelay;
+    private bool _wasInterruptedInDelay;
+
+    public float RemainingDelay => _remainingDelay;
+    public bool WasInterruptedInDelay => _wasInterruptedInDelay;
 
     private List<Character> _enemies = new();
 
@@ -25,6 +36,20 @@ public class CircularFrosting : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
+    private void OnEnable()
+    {
+        CastDeleyStarted += OnCastDelayStarted;
+        CastDeleyEnded += OnCastDelayEnded;
+        OnSkillCanceled += OnSkillCanceledHandler;
+    }
+
+    private void OnDisable()
+    {
+        CastDeleyStarted -= OnCastDelayStarted;
+        CastDeleyEnded -= OnCastDelayEnded;
+        OnSkillCanceled -= OnSkillCanceledHandler;
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
@@ -40,6 +65,8 @@ public class CircularFrosting : Skill
 
         FindEnemies();
         ExplosionFrosting();
+
+        _particleSystem?.Play();
 
         yield return null;
     }
@@ -140,8 +167,35 @@ public class CircularFrosting : Skill
     {
         _talentFrostingFrozen = value;
     }
+
     protected override void ClearData()
     {
         _enemies.Clear();
+    }
+
+    private void OnCastDelayStarted(float duration)
+    {
+        _delayDuration = duration;
+        _delayStartTime = Time.time;
+        _delayActive = true;
+
+        _wasInterruptedInDelay = false;
+        _remainingDelay = 0f;
+    }
+
+    private void OnCastDelayEnded()
+    {
+        _delayActive = false;
+    }
+
+    private void OnSkillCanceledHandler()
+    {
+        if (!_delayActive) return;
+
+        float elapsed = Time.time - _delayStartTime;
+        _remainingDelay = Mathf.Max(0f, _delayDuration - elapsed);
+
+        _wasInterruptedInDelay = true;
+        _delayActive = false;
     }
 }
