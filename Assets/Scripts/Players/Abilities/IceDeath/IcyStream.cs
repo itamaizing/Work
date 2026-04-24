@@ -31,11 +31,51 @@ public class IcyStream : Skill
 
     private const float FrostEnergyCoolingBonusPerStack = 1f;
 
-    protected override bool IsCanCast => !_isStreaming && Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
+    protected override bool IsCanCast => !_isStreaming && Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && HasEnoughResourcesToStart();
+
+    private bool HasEnoughResourcesToStart()
+    {
+        var energy = Hero.Resources[ResourceType.Energy];
+        var rune = Hero.Resources[ResourceType.Rune];
+
+        float minEnergy = _energyPerTick;
+
+        return energy.CurrentValue >= minEnergy && rune.CurrentValue >= _runeCost;
+    }
+
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
     public IcyStreamState CurrentState { get; private set; }
+
+    private void OnEnable()
+    {
+        OnSkillCanceled += HandleCancel;
+    }
+
+    private void OnDisable()
+    {
+        OnSkillCanceled -= HandleCancel;
+    }
+
+    private void HandleCancel()
+    {
+        StopStream();
+    }
+
+    public void StopStream()
+    {
+        if (_streamCoroutine != null)
+        {
+            StopCoroutine(_streamCoroutine);
+            _streamCoroutine = null;
+        }
+
+        CmdDestroyIcyStreamEffect();
+        TryCancel(true);
+        _isStreaming = false;
+    }
+
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
@@ -71,6 +111,12 @@ public class IcyStream : Skill
 
     protected override IEnumerator CastJob()
     {
+        if (!HasEnoughResourcesToStart())
+        {
+            TryCancel(true);
+            yield break;
+        }
+
         _cachedTarget = Targeting.GetTarget()?.Character;
         if (_cachedTarget == null) yield break;
 
@@ -96,20 +142,20 @@ public class IcyStream : Skill
     {
         for (int tick = 1; tick <= MaxTicks; tick++)
         {
+            yield return new WaitForSeconds(_tickInterval);
+
+            if (!IsStreamValid() || _cachedTarget.IsDead)
+            {
+                TryCancel(true);
+                yield break;
+            }
+
             CurrentState = new IcyStreamState
             {
                 Target = _cachedTarget,
                 CurrentTick = tick,
                 MaxTicks = MaxTicks
             };
-
-            yield return new WaitForSeconds(_tickInterval);
-
-            if (!TryPayEnergyTick())
-            {
-                TryCancel(true);
-                yield break;
-            }
 
             ApplyTick(tick);
         }
@@ -124,6 +170,17 @@ public class IcyStream : Skill
         }
 
         state = CurrentState;
+        return true;
+    }
+
+    private bool IsStreamValid()
+    {
+        if (_cachedTarget == null) return false;
+        float distance = Vector3.Distance( _cachedTarget.transform.position, transform.position);
+
+        if (distance > AreaInfo.Radius) return false;
+        if (!Cost.TryPaySingle(_energyPerTick, ResourceType.Energy, shouldModify: false)) return false;
+
         return true;
     }
 
@@ -227,6 +284,10 @@ public class IcyStream : Skill
     {
         Targeting.ClearTarget();
 
-        if (_streamCoroutine != null);
+        if (_streamCoroutine != null)
+        {
+            StopCoroutine(_streamCoroutine);
+            _streamCoroutine = null;
+        }
     }
 }

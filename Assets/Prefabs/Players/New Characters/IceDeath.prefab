@@ -3923,6 +3923,8 @@ MonoBehaviour:
     _castAnimations: []
     _activeClip: 0
   _shadow: {fileID: 7355207897669406910, guid: 9076f8626dfb68e41972df7ea9f5e4ec, type: 3}
+  _icyStream: {fileID: 8854865153303019716}
+  _icyStreamShadow: {fileID: 1550736018203531800, guid: 9076f8626dfb68e41972df7ea9f5e4ec, type: 3}
   _playerLinks: {fileID: 4374618947117916461}
   _combo: {fileID: 3083348233968490285}
   audioClip: {fileID: 8300000, guid: 424858f5206c73b4186512fa60be6047, type: 3}

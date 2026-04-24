@@ -9,7 +9,7 @@ public class IceShadow : Skill
 	[Header("Ability properties")]
 	[SerializeField] private IceShadowObject _shadow;
 	[SerializeField] private IcyStream _icyStream;
-	[SerializeField] private IcyStreamShadow _icyStreamShadow;
+	[ReadOnly][SerializeField] private IcyStreamShadow _icyStreamShadow;
 	[SerializeField] private HeroComponent _playerLinks; 
 	[SerializeField] private SeriesOfStrikes _combo;
 	[SerializeField] private AudioClip audioClip;
@@ -69,10 +69,15 @@ public class IceShadow : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		if (_energy == null)
-			_energy = (Energy)Hero.Resources[ResourceType.Energy];
+		if (_energy == null) _energy = (Energy)Hero.Resources[ResourceType.Energy];
 
-        TargetInfo targetInfo = new TargetInfo();
+		if (_icyStream != null && _icyStream.TryGetState(out var state))
+		{
+			_capturedState = state;
+			_icyStream.StopStream();
+		}
+
+		TargetInfo targetInfo = new TargetInfo();
 		targetInfo.AddTarget(Hero);
 		callbackDataSaved(targetInfo);
 		yield return null;
@@ -80,12 +85,6 @@ public class IceShadow : Skill
 
 	protected override IEnumerator CastJob()
 	{
-		if (_icyStream != null && _icyStream.TryGetState(out var state))
-		{
-			_capturedState = state;
-			_icyStream.TryCancel(true);
-		}
-
 		Shoot();
 		yield return null;
 	}
@@ -156,11 +155,11 @@ public class IceShadow : Skill
 
 		if (target != null && startTick > 0)
 		{
-			var stream = shadow.GetComponent<IcyStreamShadow>();
-			if (stream != null)
+			_icyStreamShadow = shadow.GetComponent<IcyStreamShadow>();
+			if (_icyStreamShadow != null)
 			{
-				stream.InitFromStreamState(target, startTick, maxTicks);
-				stream.StartShadowStream();
+				_icyStreamShadow.InitFromStreamState(target, startTick, maxTicks);
+				_icyStreamShadow.StartShadowStream();
 			}
 		}
 	}
@@ -180,6 +179,8 @@ public class IceShadow : Skill
 		obj.GetComponent<IceShadowObject>().Init(_playerLinks, manaValue, lastHit, this);
 		obj.GetComponent<IceShadowObject>().TalentDamage(damage);
 		obj.GetComponent<IceShadowObject>().TalentDamage(inShadow);
+
+
 	}
 
 	[ClientRpc]
