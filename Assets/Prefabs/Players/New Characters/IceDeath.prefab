@@ -4803,13 +4803,13 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     type: 0
-    _clickLayer: 0
-    _faction: 0
+    _clickLayer: -1
+    _faction: -1
     _unitType: 0
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -4856,6 +4856,7 @@ MonoBehaviour:
     _prepareAnimations: []
     _castAnimations: []
     _activeClip: 0
+  _player: {fileID: 4374618947117916461}
   _seriesOfStrikes: {fileID: 3083348233968490285}
 --- !u!114 &2036370849879020904
 MonoBehaviour:

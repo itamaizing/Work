@@ -124,8 +124,6 @@ public class IceShadow : Skill
 
 		_icyStreamShadow = shadow.GetComponent<IcyStreamShadow>();
 
-		Debug.Log("Start stream 0");
-
 		if (_icyStreamShadow != null && target != null && startTick > 0 && maxTicks > 0)
 		{
 			_icyStreamShadow.Init(Hero, target, startTick, maxTicks);

@@ -760,7 +760,7 @@ MonoBehaviour:
   _icyStreamPrefab: {fileID: 7744228389031826322, guid: a86f2fafa49694e4bab52db8f4d3fc78, type: 3}
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   _radius: 2
   _damageType: 0
   _iceShadowObject: {fileID: 7237307863484890914}

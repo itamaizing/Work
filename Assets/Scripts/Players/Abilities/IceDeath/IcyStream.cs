@@ -191,23 +191,17 @@ public class IcyStream : Skill
 
     private void ApplyTick(int tickNumber)
     {
-        Collider[] hits = Physics.OverlapSphere( _cachedTarget.transform.position, 2f, _targetsLayers);
+        if (_cachedTarget == null) return;
+        if (_cachedTarget.IsDead) return;
 
-        foreach (var hit in hits)
+        Damage damage = new Damage
         {
-            if (!hit.TryGetComponent(out IDamageable damageable)) continue;
-            if (!hit.TryGetComponent(out Character character)) continue;
-            if (character == Hero) continue;
+            Value = tickNumber,
+            Type = Info.DamageType
+        };
 
-            Damage damage = new Damage
-            {
-                Value = tickNumber,
-                Type = Info.DamageType
-            };
-
-            CmdApplyDamage(damage, character.gameObject);
-            CmdAddFrozen(character);
-        }
+        CmdApplyDamage(damage, _cachedTarget.gameObject);
+        CmdAddCooling(_cachedTarget);
     }
 
     private void ApplyCoolingWithFrostEnergyBonus(Character target)
@@ -259,7 +253,7 @@ public class IcyStream : Skill
     }
 
     [Command]
-    private void CmdAddFrozen(Character character)
+    private void CmdAddCooling(Character character)
     {
         if (character == null) return;
 

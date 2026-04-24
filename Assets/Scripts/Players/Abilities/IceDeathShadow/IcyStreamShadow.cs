@@ -12,8 +12,6 @@ public class IcyStreamShadow : NetworkBehaviour
     [SerializeField] private GameObject _icyStreamPrefab;
 
     [Header("Damage")]
-    [SerializeField] private LayerMask _targetsLayers;
-    [SerializeField] private float _radius = 2f;
     [SerializeField] private DamageType _damageType;
 
     [SerializeField] private IceShadowObject _iceShadowObject;
@@ -41,15 +39,11 @@ public class IcyStreamShadow : NetworkBehaviour
 
     public void StartShadowStream()
     {
-        Debug.Log("Start stream 1");
-
-        if (!isServer) return;
+         if (!isServer) return;
         if (_cachedTarget == null) return;
         if (_isStreaming) return;
 
         _isStreaming = true;
-
-        Debug.Log("Start stream 2");
 
         SpawnIcyStreamEffect(_streamStartPoint.gameObject, _cachedTarget.gameObject);
 
@@ -87,22 +81,18 @@ public class IcyStreamShadow : NetworkBehaviour
 
     private void ApplyTick(int tickNumber)
     {
-        Collider[] hits = Physics.OverlapSphere(_cachedTarget.transform.position, _radius, _targetsLayers);
+        if (!isServer) return;
+        if (_cachedTarget == null) return;
+        if (_cachedTarget.IsDead) return;
 
-        foreach (var hit in hits)
+        Damage damage = new Damage
         {
-            if (!hit.TryGetComponent(out Character character)) continue;
-            if (character == _owner) continue;
+            Value = tickNumber,
+            Type = _damageType
+        };
 
-            Damage damage = new Damage
-            {
-                Value = tickNumber,
-                Type = _damageType
-            };
-
-            ApplyDamage(character, damage);
-            ApplyCooling(character);
-        }
+        ApplyDamage(_cachedTarget, damage);
+        ApplyCooling(_cachedTarget);
     }
 
     private void ApplyDamage(Character target, Damage damage)
