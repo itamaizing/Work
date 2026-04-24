@@ -17,7 +17,8 @@ public class IcyStreamShadow : Skill
     private GameObject _activeEffect;
 
     private bool _isStreaming;
-    private const int MaxTicks = 7;
+    private int _startTick = 1;
+    private int _maxTicksOverride = 7;
 
     private const float FrostEnergyCoolingBonusPerStack = 1f;
 
@@ -76,12 +77,26 @@ public class IcyStreamShadow : Skill
 
     private IEnumerator StreamRoutine()
     {
-        for (int tick = 1; tick <= MaxTicks; tick++)
+        for (int tick = _startTick; tick <= _maxTicksOverride; tick++)
         {
             yield return new WaitForSeconds(_tickInterval);
 
             ApplyTick(tick);
         }
+    }
+
+    public void InitFromStreamState(Character target, int startTick, int maxTicks)
+    {
+        _cachedTarget = target;
+        _startTick = startTick;
+        _maxTicksOverride = maxTicks;
+    }
+
+    public void StartShadowStream()
+    {
+        if (_cachedTarget == null) return;
+
+        _streamCoroutine = StartCoroutine(StreamRoutine());
     }
 
     private void ApplyTick(int tickNumber)

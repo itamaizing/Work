@@ -104,11 +104,11 @@ public class IceShadow : Skill
 		_manaUsed = Mathf.Min(_energy.CurrentValue, MaxManaPerCast);
 		_energy.CmdUse(_manaUsed);
 
-		CmdCreateProjecttile(0, _manaUsed, _lastHit, _talentDamage, _iceDeathInShadowTalent);
+		CmdCreateProjecttile(0, _manaUsed, _lastHit, _talentDamage,	_iceDeathInShadowTalent, _capturedState?.CurrentTick ?? -1, _capturedState?.MaxTicks ?? -1, _capturedState?.Target != null ? _capturedState.Value.Target.netIdentity : null);
 	}
 
 	[Command]
-	private void CmdCreateProjecttile(float angle, float manaValue, bool lastHit, bool damage, bool inShadow)
+	private void CmdCreateProjecttile(float angle, float manaValue, bool lastHit, bool damage, bool inShadow, int startTick, int maxTicks, NetworkIdentity targetIdentity)
 	{
 		AnimatorStateInfo stateInfo = _playerLinks.Animator.GetCurrentAnimatorStateInfo(0);
 		int animationHash = stateInfo.fullPathHash;
@@ -119,36 +119,50 @@ public class IceShadow : Skill
 
 		Vector3 basePosition = _playerLinks.transform.position;
 
+		Character target = null;
+		if (targetIdentity != null)
+			target = targetIdentity.GetComponent<Character>();
+
 		if (lastHit)
 		{
 			Vector3 right = _playerLinks.transform.right;
 			Vector3 left = -_playerLinks.transform.right;
 			Vector3 forward = _playerLinks.transform.forward;
 
-			Vector3 offsetRight = basePosition + right;
-			Vector3 offsetLeft = basePosition + left;
-			Vector3 centerPosition = basePosition + forward;
-
-			SpawnShadow(offsetRight, rotation, manaValue, lastHit, damage, inShadow, animationHash, normalizedTime, velocityX, velocityZ);
-			SpawnShadow(offsetLeft, rotation, manaValue, lastHit, damage, inShadow, animationHash, normalizedTime, velocityX, velocityZ);
-			SpawnShadow(centerPosition, rotation, manaValue, lastHit, damage, inShadow, animationHash, normalizedTime, velocityX, velocityZ);
+			SpawnShadow(basePosition + right, rotation, manaValue, lastHit, damage, inShadow, animationHash, normalizedTime, velocityX, velocityZ, startTick, maxTicks, target);
+			SpawnShadow(basePosition + left, rotation, manaValue, lastHit, damage, inShadow, animationHash, normalizedTime, velocityX, velocityZ, startTick, maxTicks, target);
+			SpawnShadow(basePosition + forward, rotation, manaValue, lastHit, damage, inShadow, animationHash, normalizedTime, velocityX, velocityZ, startTick, maxTicks, target);
 		}
 
-		else SpawnShadow(basePosition, rotation, manaValue, lastHit, damage, inShadow, animationHash, normalizedTime, velocityX, velocityZ);
+		else
+		{
+			SpawnShadow(basePosition, rotation, manaValue, lastHit, damage, inShadow, animationHash, normalizedTime, velocityX, velocityZ, startTick, maxTicks, target);
+		}
 
 		RpcPlayShotSound();
 	}
 
-	private void SpawnShadow(Vector3 position, Quaternion rotation, float manaValue, bool lastHit, bool damage, bool inShadow,
-		int animationHash, float normalizedTime, float velocityX, float velocityZ)
+	private void SpawnShadow(Vector3 position, Quaternion rotation, float manaValue, bool lastHit, bool damage, bool inShadow, int animationHash, float normalizedTime, float velocityX, float velocityZ, int startTick, int maxTicks, Character target)
 	{
 		IceShadowObject shadow = Instantiate(_shadow, position, rotation);
+
 		shadow.Init(_playerLinks, manaValue, lastHit, this);
 		shadow.TalentDamage(damage);
 
 		NetworkServer.Spawn(shadow.gameObject);
+
 		RpcSetShadowAnimation(shadow.gameObject, animationHash, normalizedTime, velocityX, velocityZ, rotation);
 		RpcInit(shadow.gameObject, manaValue, lastHit, damage, inShadow);
+
+		if (target != null && startTick > 0)
+		{
+			var stream = shadow.GetComponent<IcyStreamShadow>();
+			if (stream != null)
+			{
+				stream.InitFromStreamState(target, startTick, maxTicks);
+				stream.StartShadowStream();
+			}
+		}
 	}
 
 	[ClientRpc]
