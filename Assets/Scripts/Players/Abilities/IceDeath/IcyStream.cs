@@ -72,8 +72,9 @@ public class IcyStream : Skill
         }
 
         CmdDestroyIcyStreamEffect();
-        TryCancel(true);
+
         _isStreaming = false;
+        CurrentState = default;
     }
 
 

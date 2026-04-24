@@ -69,12 +69,15 @@ public class IceShadow : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
+		_capturedState = null;
+
 		if (_energy == null) _energy = (Energy)Hero.Resources[ResourceType.Energy];
 
 		if (_icyStream != null && _icyStream.TryGetState(out var state))
 		{
 			_capturedState = state;
 			_icyStream.StopStream();
+			_icyStream.TryCancel(true);
 		}
 
 		TargetInfo targetInfo = new TargetInfo();
@@ -104,6 +107,28 @@ public class IceShadow : Skill
 		_energy.CmdUse(_manaUsed);
 
 		CmdCreateProjecttile(0, _manaUsed, _lastHit, _talentDamage,	_iceDeathInShadowTalent, _capturedState?.CurrentTick ?? -1, _capturedState?.MaxTicks ?? -1, _capturedState?.Target != null ? _capturedState.Value.Target.netIdentity : null);
+	}
+
+	private void SpawnShadow(Vector3 position, Quaternion rotation, float manaValue, bool lastHit, bool damage, bool inShadow, int animationHash, float normalizedTime, float velocityX, float velocityZ, int startTick, int maxTicks, Character target)
+	{
+		IceShadowObject shadow = Instantiate(_shadow, position, rotation);
+
+		shadow.Init(_playerLinks, manaValue, lastHit, this);
+		shadow.TalentDamage(damage);
+
+		NetworkServer.Spawn(shadow.gameObject);
+
+		RpcSetShadowAnimation(shadow.gameObject, animationHash, normalizedTime, velocityX, velocityZ, rotation);
+		RpcInit(shadow.gameObject, manaValue, lastHit, damage, inShadow);
+
+		bool hasStream = _capturedState.HasValue;
+
+		if (hasStream && target != null)
+		{
+			_icyStreamShadow = shadow.GetComponent<IcyStreamShadow>();
+			_icyStreamShadow.Init(Hero, target, startTick, maxTicks);
+			_icyStreamShadow.StartShadowStream();
+		}
 	}
 
 	[Command]
@@ -139,29 +164,6 @@ public class IceShadow : Skill
 		}
 
 		RpcPlayShotSound();
-	}
-
-	private void SpawnShadow(Vector3 position, Quaternion rotation, float manaValue, bool lastHit, bool damage, bool inShadow, int animationHash, float normalizedTime, float velocityX, float velocityZ, int startTick, int maxTicks, Character target)
-	{
-		IceShadowObject shadow = Instantiate(_shadow, position, rotation);
-
-		shadow.Init(_playerLinks, manaValue, lastHit, this);
-		shadow.TalentDamage(damage);
-
-		NetworkServer.Spawn(shadow.gameObject);
-
-		RpcSetShadowAnimation(shadow.gameObject, animationHash, normalizedTime, velocityX, velocityZ, rotation);
-		RpcInit(shadow.gameObject, manaValue, lastHit, damage, inShadow);
-
-		if (target != null && startTick > 0)
-		{
-			_icyStreamShadow = shadow.GetComponent<IcyStreamShadow>();
-			if (_icyStreamShadow != null)
-			{
-				_icyStreamShadow.InitFromStreamState(target, startTick, maxTicks);
-				_icyStreamShadow.StartShadowStream();
-			}
-		}
 	}
 
 	[ClientRpc]

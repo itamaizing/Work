@@ -568,6 +568,7 @@ GameObject:
   - component: {fileID: -195080186154571951}
   - component: {fileID: 5270865406468176680}
   - component: {fileID: 449859226965953175}
+  - component: {fileID: 472816917373945541}
   m_Layer: 0
   m_Name: IceShadowObject
   m_TagString: Ability
@@ -739,6 +740,30 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &472816917373945541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2672404202709694877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc2dc2d3d719d194cb093461534e4379, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IcyStreamShadow
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _tickInterval: 0.3
+  _streamStartPoint: {fileID: 6693217339590262202}
+  _icyStreamPrefab: {fileID: 7744228389031826322, guid: a86f2fafa49694e4bab52db8f4d3fc78, type: 3}
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _radius: 2
+  _damageType: 0
+  _iceShadowObject: {fileID: 7237307863484890914}
 --- !u!1 &2721983929223266442
 GameObject:
   m_ObjectHideFlags: 0
@@ -1496,10 +1521,9 @@ MonoBehaviour:
   moveClips: []
   MoveDirection: {x: 0, y: 0, z: 0}
   ExternalMoveDirection: {x: 0, y: 0, z: 0}
-  CanMove: 0
-  CanMoveState: 0
   IsMoving: 0
   IsSelect: 0
+  IsNoRotateAtCursor: 0
 --- !u!1 &5751324879934868099
 GameObject:
   m_ObjectHideFlags: 0

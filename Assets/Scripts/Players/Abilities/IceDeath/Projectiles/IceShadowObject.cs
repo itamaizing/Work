@@ -20,6 +20,8 @@ public class IceShadowObject : Projectiles
 	private float _modifierRegen;
 	private float _lifeTimer;
 
+	public Skill SkillShadow { get => _skill; set => _skill = value; }
+
 	#region Const
 	private const float MaxEnergyForShadow = 30f;
 

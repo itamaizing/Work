@@ -1,9 +1,8 @@
 using Mirror;
-using System;
 using System.Collections;
 using UnityEngine;
 
-public class IcyStreamShadow : Skill
+public class IcyStreamShadow : NetworkBehaviour
 {
     [Header("Stream Settings")]
     [SerializeField] private float _tickInterval = 0.3f;
@@ -12,124 +11,119 @@ public class IcyStreamShadow : Skill
     [Header("Visual")]
     [SerializeField] private GameObject _icyStreamPrefab;
 
+    [Header("Damage")]
+    [SerializeField] private LayerMask _targetsLayers;
+    [SerializeField] private float _radius = 2f;
+    [SerializeField] private DamageType _damageType;
+
+    [SerializeField] private IceShadowObject _iceShadowObject;
+
+    private Character _owner;
     private Character _cachedTarget;
+
     private Coroutine _streamCoroutine;
     private GameObject _activeEffect;
 
     private bool _isStreaming;
+
     private int _startTick = 1;
-    private int _maxTicksOverride = 7;
+    private int _maxTicks = 7;
 
     private const float FrostEnergyCoolingBonusPerStack = 1f;
 
-    protected override bool IsCanCast => !_isStreaming && Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
-    protected override int AnimTriggerCastDelay => 0;
-    protected override int AnimTriggerCast => 0;
-
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    public void Init(Character owner, Character target, int startTick, int maxTicks)
     {
-        TargetInfo targetInfo = new TargetInfo();
-
-        while (Targeting.GetTempTarget()?.Targetable == null && !_disactive)
-        {
-            if (GetMouseButton)
-            {
-                Targeting.FindTempTarget(Targeting.GetMousePoint(), 0.5f);
-
-                var temp = Targeting.GetTempTarget()?.Targetable as Character;
-
-                if (temp != null)
-                {
-                    Targeting.SetTarget(temp);
-
-                    break;
-                }
-            }
-
-            yield return null;
-        }
-
-        var target = Targeting.GetTarget()?.Character;
-
-        if (target != null)
-        {
-            targetInfo.AddTarget(target);
-            callbackDataSaved(targetInfo);
-        }
+        _owner = owner;
+        _cachedTarget = target;
+        _startTick = Mathf.Max(1, startTick);
+        _maxTicks = Mathf.Max(_startTick, maxTicks);
     }
 
-    protected override IEnumerator CastJob()
+    public void StartShadowStream()
     {
-        _cachedTarget = Targeting.GetTarget()?.Character;
-        if (_cachedTarget == null) yield break;
+        if (!isServer) return;
+        if (_cachedTarget == null) return;
+        if (_isStreaming) return;
 
         _isStreaming = true;
 
-        CmdSpawnIcyStreamEffect(_streamStartPoint.gameObject, _cachedTarget.gameObject);
+        SpawnIcyStreamEffect(_streamStartPoint.gameObject, _cachedTarget.gameObject);
 
         _streamCoroutine = StartCoroutine(StreamRoutine());
+    }
 
-        yield return _streamCoroutine;
+    public void StopShadowStream()
+    {
+        if (!isServer) return;
 
-        CmdDestroyIcyStreamEffect();
+        if (_streamCoroutine != null)
+        {
+            StopCoroutine(_streamCoroutine);
+            _streamCoroutine = null;
+        }
+
+        DestroyIcyStreamEffect();
+
         _isStreaming = false;
     }
 
     private IEnumerator StreamRoutine()
     {
-        for (int tick = _startTick; tick <= _maxTicksOverride; tick++)
+        for (int tick = _startTick; tick <= _maxTicks; tick++)
         {
+            if (_cachedTarget == null || _cachedTarget.IsDead) break;
+
             yield return new WaitForSeconds(_tickInterval);
 
             ApplyTick(tick);
         }
-    }
 
-    public void InitFromStreamState(Character target, int startTick, int maxTicks)
-    {
-        _cachedTarget = target;
-        _startTick = startTick;
-        _maxTicksOverride = maxTicks;
-    }
-
-    public void StartShadowStream()
-    {
-        if (_cachedTarget == null) return;
-
-        _streamCoroutine = StartCoroutine(StreamRoutine());
+        StopShadowStream();
     }
 
     private void ApplyTick(int tickNumber)
     {
-        Collider[] hits = Physics.OverlapSphere(_cachedTarget.transform.position, 2f, _targetsLayers);
+        Collider[] hits = Physics.OverlapSphere(
+            _cachedTarget.transform.position,
+            _radius,
+            _targetsLayers
+        );
 
         foreach (var hit in hits)
         {
-            if (!hit.TryGetComponent(out IDamageable damageable)) continue;
             if (!hit.TryGetComponent(out Character character)) continue;
-            if (character == Hero) continue;
+            if (character == _owner) continue;
 
             Damage damage = new Damage
             {
                 Value = tickNumber,
-                Type = Info.DamageType
+                Type = _damageType
             };
 
-            CmdApplyDamage(damage, character.gameObject);
-            CmdAddFrozen(character);
+            ApplyDamage(character, damage);
+            ApplyCooling(character);
         }
     }
 
-    private void ApplyCoolingWithFrostEnergyBonus(Character target)
+    private void ApplyDamage(Character target, Damage damage)
     {
+        if (target == null || target.IsDead) return;
+
+        target.Health.TryTakeDamage(ref damage, _iceShadowObject.SkillShadow);
+    }
+
+    private void ApplyCooling(Character target)
+    {
+        if (target == null) return;
+
         bool hasFrostEnergy = target.CharacterState.CheckForState(States.FrostEnergy);
 
         int currentStacks = target.CharacterState.CheckStateStacks(States.Cooling);
-        int stacksAfterApply = currentStacks + 1;
+        int stacksAfter = currentStacks + 1;
 
         if (hasFrostEnergy)
         {
-            float bonusDamage = stacksAfterApply * FrostEnergyCoolingBonusPerStack;
+            float bonusDamage = stacksAfter * FrostEnergyCoolingBonusPerStack;
 
             Damage bonus = new Damage
             {
@@ -137,29 +131,44 @@ public class IcyStreamShadow : Skill
                 Type = DamageType.Magical
             };
 
-            target.Health.TryTakeDamage(ref bonus, this);
+            target.Health.TryTakeDamage(ref bonus, _iceShadowObject.SkillShadow);
         }
 
-        target.CharacterState.AddState(States.Cooling, 12f, 0, Hero.gameObject, Name);
+        target.CharacterState.AddState(States.Cooling, 12f, 0, _owner.gameObject, "IcyStreamShadow");
     }
 
-    [Command]
-    private void CmdSpawnIcyStreamEffect(GameObject startPoint, GameObject targetPoint)
+    public override void OnStopServer()
+    {
+        StopShadowStream();
+    }
+
+    public override void OnStopClient()
+    {
+        if (_activeEffect != null)
+            Destroy(_activeEffect);
+    }
+
+    [Server]
+    private void SpawnIcyStreamEffect(GameObject startPoint, GameObject targetPoint)
     {
         if (_icyStreamPrefab == null || startPoint == null || targetPoint == null)
             return;
 
-        GameObject effectInstance = Instantiate(_icyStreamPrefab, startPoint.transform.position, Quaternion.identity);
+        GameObject effect = Instantiate(
+            _icyStreamPrefab,
+            startPoint.transform.position,
+            Quaternion.identity
+        );
 
-        NetworkServer.Spawn(effectInstance);
+        NetworkServer.Spawn(effect);
 
-        RpcInitEffects(effectInstance, startPoint, targetPoint);
+        RpcInitEffects(effect, startPoint, targetPoint);
 
-        _activeEffect = effectInstance;
+        _activeEffect = effect;
     }
 
-    [Command]
-    private void CmdDestroyIcyStreamEffect()
+    [Server]
+    private void DestroyIcyStreamEffect()
     {
         if (_activeEffect != null)
         {
@@ -168,32 +177,17 @@ public class IcyStreamShadow : Skill
         }
     }
 
-    [Command]
-    private void CmdAddFrozen(Character character)
-    {
-        if (character == null) return;
-
-        ApplyCoolingWithFrostEnergyBonus(character);
-    }
-
     [ClientRpc]
-    private void RpcInitEffects(GameObject effectGameObject, GameObject startPoint, GameObject targetPoint)
+    private void RpcInitEffects(GameObject effect, GameObject startPoint, GameObject targetPoint)
     {
-        if (effectGameObject == null) return;
+        if (effect == null) return;
 
-        PullingHealthEffect[] effects = effectGameObject.GetComponentsInChildren<PullingHealthEffect>();
+        var visuals = effect.GetComponentsInChildren<PullingHealthEffect>();
 
-        foreach (var effect in effects)
+        foreach (var v in visuals)
         {
-            effect.Initialize(startPoint, targetPoint);
-            effect.Activate();
+            v.Initialize(startPoint, targetPoint);
+            v.Activate();
         }
-    }
-
-    protected override void ClearData()
-    {
-        Targeting.ClearTarget();
-
-        if (_streamCoroutine != null) ;
     }
 }

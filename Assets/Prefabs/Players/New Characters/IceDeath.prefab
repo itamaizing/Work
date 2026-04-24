@@ -3922,7 +3922,7 @@ MonoBehaviour:
     _prepareAnimations: []
     _castAnimations: []
     _activeClip: 0
-  _shadow: {fileID: 7355207897669406910, guid: 9076f8626dfb68e41972df7ea9f5e4ec, type: 3}
+  _shadow: {fileID: 7237307863484890914, guid: 8dea5af4c60165d45af4522b1a596998, type: 3}
   _icyStream: {fileID: 8854865153303019716}
   _icyStreamShadow: {fileID: 1550736018203531800, guid: 9076f8626dfb68e41972df7ea9f5e4ec, type: 3}
   _playerLinks: {fileID: 4374618947117916461}
