@@ -73,9 +73,10 @@ public class IceShadow : Skill
 
 		if (_energy == null) _energy = (Energy)Hero.Resources[ResourceType.Energy];
 
-		if (_icyStream != null && _icyStream.TryGetState(out var state))
+		if (_icyStream != null)
 		{
-			_capturedState = state;
+			if (_icyStream.TryGetState(out var state)) _capturedState = state;
+
 			_icyStream.StopStream();
 			_icyStream.TryCancel(true);
 		}
@@ -121,11 +122,12 @@ public class IceShadow : Skill
 		RpcSetShadowAnimation(shadow.gameObject, animationHash, normalizedTime, velocityX, velocityZ, rotation);
 		RpcInit(shadow.gameObject, manaValue, lastHit, damage, inShadow);
 
-		bool hasStream = _capturedState.HasValue;
+		_icyStreamShadow = shadow.GetComponent<IcyStreamShadow>();
 
-		if (hasStream && target != null)
+		Debug.Log("Start stream 0");
+
+		if (_icyStreamShadow != null && target != null && startTick > 0 && maxTicks > 0)
 		{
-			_icyStreamShadow = shadow.GetComponent<IcyStreamShadow>();
 			_icyStreamShadow.Init(Hero, target, startTick, maxTicks);
 			_icyStreamShadow.StartShadowStream();
 		}
@@ -258,10 +260,7 @@ public class IceShadow : Skill
 			TryUseCharge();
 			return true;
 		}
-		else
-		{
-			return false;
-		}
+		else return false;
 	}
 }
 

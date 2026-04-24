@@ -41,11 +41,15 @@ public class IcyStreamShadow : NetworkBehaviour
 
     public void StartShadowStream()
     {
+        Debug.Log("Start stream 1");
+
         if (!isServer) return;
         if (_cachedTarget == null) return;
         if (_isStreaming) return;
 
         _isStreaming = true;
+
+        Debug.Log("Start stream 2");
 
         SpawnIcyStreamEffect(_streamStartPoint.gameObject, _cachedTarget.gameObject);
 
@@ -83,11 +87,7 @@ public class IcyStreamShadow : NetworkBehaviour
 
     private void ApplyTick(int tickNumber)
     {
-        Collider[] hits = Physics.OverlapSphere(
-            _cachedTarget.transform.position,
-            _radius,
-            _targetsLayers
-        );
+        Collider[] hits = Physics.OverlapSphere(_cachedTarget.transform.position, _radius, _targetsLayers);
 
         foreach (var hit in hits)
         {
@@ -151,14 +151,9 @@ public class IcyStreamShadow : NetworkBehaviour
     [Server]
     private void SpawnIcyStreamEffect(GameObject startPoint, GameObject targetPoint)
     {
-        if (_icyStreamPrefab == null || startPoint == null || targetPoint == null)
-            return;
+        if (_icyStreamPrefab == null || startPoint == null || targetPoint == null) return;
 
-        GameObject effect = Instantiate(
-            _icyStreamPrefab,
-            startPoint.transform.position,
-            Quaternion.identity
-        );
+        GameObject effect = Instantiate( _icyStreamPrefab, startPoint.transform.position, Quaternion.identity);
 
         NetworkServer.Spawn(effect);
 
@@ -184,10 +179,10 @@ public class IcyStreamShadow : NetworkBehaviour
 
         var visuals = effect.GetComponentsInChildren<PullingHealthEffect>();
 
-        foreach (var v in visuals)
+        foreach (var visual in visuals)
         {
-            v.Initialize(startPoint, targetPoint);
-            v.Activate();
+            visual.Initialize(startPoint, targetPoint);
+            visual.Activate();
         }
     }
 }
