@@ -27,16 +27,21 @@ public class FrostEnergy : Skill
 
     private void Start()
     {
-        if (Hero.TryGetResource(ResourceType.Rune, out var resource))
-        {
-            _rune = resource as RuneComponent;
-            if (_rune != null) _rune.OnRuneSpent += HandleRuneSpent;
-        }
+        Invoke("addResourceTypeRune", 1);
     }
 
     private void OnDestroy()
     {
         if (_rune != null) _rune.OnRuneSpent -= HandleRuneSpent;
+    }
+
+    private void addResourceTypeRune()
+    {
+        if (Hero.TryGetResource(ResourceType.Rune, out var resource))
+        {
+            _rune = resource as RuneComponent;
+            if (_rune != null) _rune.OnRuneSpent += HandleRuneSpent;
+        }
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)

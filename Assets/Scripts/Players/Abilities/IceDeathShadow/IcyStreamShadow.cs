@@ -1,26 +1,16 @@
-﻿using Mirror;
+using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
 
-public class IcyStream : Skill
+public class IcyStreamShadow : Skill
 {
-    public struct IcyStreamState
-    {
-        public Character Target;
-        public int CurrentTick;
-        public int MaxTicks;
-    }
-
     [Header("Stream Settings")]
     [SerializeField] private float _tickInterval = 0.3f;
     [SerializeField] private Transform _streamStartPoint;
 
     [Header("Visual")]
     [SerializeField] private GameObject _icyStreamPrefab;
-
-    [SerializeField] private float _runeCost = 1f;
-    [SerializeField] private float _energyPerTick = 5f;
 
     private Character _cachedTarget;
     private Coroutine _streamCoroutine;
@@ -34,8 +24,6 @@ public class IcyStream : Skill
     protected override bool IsCanCast => !_isStreaming && Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
-
-    public IcyStreamState CurrentState { get; private set; }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
@@ -76,13 +64,7 @@ public class IcyStream : Skill
 
         _isStreaming = true;
 
-        if (!Cost.TryPaySingle(_runeCost, ResourceType.Rune, shouldModify: false))
-        {
-            TryCancel(true);
-            yield break;
-        }
-
-        CmdSpawnIcyStreamEffect( _streamStartPoint.gameObject, _cachedTarget.gameObject);
+        CmdSpawnIcyStreamEffect(_streamStartPoint.gameObject, _cachedTarget.gameObject);
 
         _streamCoroutine = StartCoroutine(StreamRoutine());
 
@@ -96,45 +78,15 @@ public class IcyStream : Skill
     {
         for (int tick = 1; tick <= MaxTicks; tick++)
         {
-            CurrentState = new IcyStreamState
-            {
-                Target = _cachedTarget,
-                CurrentTick = tick,
-                MaxTicks = MaxTicks
-            };
-
             yield return new WaitForSeconds(_tickInterval);
-
-            if (!TryPayEnergyTick())
-            {
-                TryCancel(true);
-                yield break;
-            }
 
             ApplyTick(tick);
         }
     }
 
-    public bool TryGetState(out IcyStreamState state)
-    {
-        if (!_isStreaming)
-        {
-            state = default;
-            return false;
-        }
-
-        state = CurrentState;
-        return true;
-    }
-
-    private bool TryPayEnergyTick()
-    {
-        return Cost.TryPaySingle(_energyPerTick, ResourceType.Energy, shouldModify: false);
-    }
-
     private void ApplyTick(int tickNumber)
     {
-        Collider[] hits = Physics.OverlapSphere( _cachedTarget.transform.position, 2f, _targetsLayers);
+        Collider[] hits = Physics.OverlapSphere(_cachedTarget.transform.position, 2f, _targetsLayers);
 
         foreach (var hit in hits)
         {
@@ -227,6 +179,6 @@ public class IcyStream : Skill
     {
         Targeting.ClearTarget();
 
-        if (_streamCoroutine != null);
+        if (_streamCoroutine != null) ;
     }
 }

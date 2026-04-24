@@ -8,10 +8,14 @@ public class IceShadow : Skill
 {
 	[Header("Ability properties")]
 	[SerializeField] private IceShadowObject _shadow;
+	[SerializeField] private IcyStream _icyStream;
+	[SerializeField] private IcyStreamShadow _icyStreamShadow;
 	[SerializeField] private HeroComponent _playerLinks; 
 	[SerializeField] private SeriesOfStrikes _combo;
 	[SerializeField] private AudioClip audioClip;
 	//[SerializeField] private bool isTest = true;
+
+	private IcyStream.IcyStreamState? _capturedState;
 
 	private AudioSource _audioSource;
 	private Energy _energy;
@@ -76,6 +80,12 @@ public class IceShadow : Skill
 
 	protected override IEnumerator CastJob()
 	{
+		if (_icyStream != null && _icyStream.TryGetState(out var state))
+		{
+			_capturedState = state;
+			_icyStream.TryCancel(true);
+		}
+
 		Shoot();
 		yield return null;
 	}
