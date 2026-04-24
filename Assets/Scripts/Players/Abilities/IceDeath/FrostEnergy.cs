@@ -25,7 +25,7 @@ public class FrostEnergy : Skill
     public void _UseRuneBonusEffect(bool value) => _isUseRuneBonusEffect = value;
     #endregion
 
-    private void OnEnable()
+    private void Start()
     {
         if (Hero.TryGetResource(ResourceType.Rune, out var resource))
         {

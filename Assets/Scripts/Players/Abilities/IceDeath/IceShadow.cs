@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class IceShadow : Skill
 {
@@ -134,7 +133,6 @@ public class IceShadow : Skill
 		int animationHash, float normalizedTime, float velocityX, float velocityZ)
 	{
 		IceShadowObject shadow = Instantiate(_shadow, position, rotation);
-		SceneManager.MoveGameObjectToScene(shadow.gameObject, _hero.NetworkSettings.MyRoom);
 		shadow.Init(_playerLinks, manaValue, lastHit, this);
 		shadow.TalentDamage(damage);
 
