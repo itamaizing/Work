@@ -69,9 +69,7 @@ public class IcyStreamShadow : NetworkBehaviour
     {
         for (int tick = _startTick; tick <= _maxTicks; tick++)
         {
-            if (_cachedTarget == null || _cachedTarget.IsDead)
-                break;
-
+            if (_cachedTarget == null || _cachedTarget.IsDead) break;
             yield return new WaitForSeconds(_tickInterval);
 
             ApplyTick(tick);

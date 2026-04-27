@@ -199,4 +199,10 @@ public class CircularFrosting : Skill
         _wasInterruptedInDelay = true;
         _delayActive = false;
     }
+
+    public void ConsumeInterruptedDelay()
+    {
+        _wasInterruptedInDelay = false;
+        _remainingDelay = 0f;
+    }
 }

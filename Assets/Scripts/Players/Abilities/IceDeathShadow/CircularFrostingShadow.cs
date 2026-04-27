@@ -19,9 +19,13 @@ public class CircularFrostingShadow : NetworkBehaviour
         _radius = radius;
     }
 
-    public override void OnStartServer()
+    public void StartShadowFrost()
     {
-        if (_routine == null) _routine = StartCoroutine(ShadowRoutine());
+        Debug.Log("Заморозка");
+        if (_owner == null) return;
+        if (_routine != null) return;
+
+        _routine = StartCoroutine(ShadowRoutine());
     }
 
     private IEnumerator ShadowRoutine()
@@ -31,14 +35,12 @@ public class CircularFrostingShadow : NetworkBehaviour
         if (_owner == null || _owner.IsDead) yield break;
 
         ExecuteFrostingLogic();
+        EffectFrosting();
     }
 
-    [Server]
     private void ExecuteFrostingLogic()
     {
         Collider[] hits = Physics.OverlapSphere(_owner.transform.position, _radius);
-
-        RpcPlayEffect();
 
         foreach (var col in hits)
         {
@@ -47,8 +49,15 @@ public class CircularFrostingShadow : NetworkBehaviour
 
             target.CharacterState.AddState(States.Frosting, 4f, 0, _owner.gameObject, "CircularFrostingShadow");
         }
+    }
 
-        NetworkServer.Destroy(gameObject);
+    private void DestroyInvoke() => NetworkServer.Destroy(gameObject);
+
+    [Server]
+    private void EffectFrosting()
+    {
+        RpcPlayEffect();
+        Invoke("DestroyInvoke", 0.5f);
     }
 
     [ClientRpc]
