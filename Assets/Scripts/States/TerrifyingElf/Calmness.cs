@@ -8,7 +8,7 @@ public class Calmness : RefreshingState
     private const int _baseMaxStacks = 2;
     private int _lastTreesCount;
     private float _regenAmount;
-
+    
     private Resource manaResource;
     private Coroutine _regenRoutine;
 

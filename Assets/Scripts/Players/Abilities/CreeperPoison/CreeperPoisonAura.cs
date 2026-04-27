@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -111,7 +111,7 @@ public class CreeperPoisonAura : NetworkBehaviour
         {
             if (skill == null) continue;
 
-            if (!skill.IsCooldowned) skill.DecreaseSetCooldown(reduction);
+            if (skill.Cooldown.IsActive) skill.Cooldown.Modify(-reduction);
         }
     }
 

@@ -64,8 +64,8 @@ namespace Gangdollarff
             {
                 IsEnabled = true;
 
-                _tempCastDeley = _cooldownTime;
-                _cooldownTime = 0;
+                _tempCastDeley = Cooldown.CooldownTime;
+                Cooldown.CooldownTime = 0;
             }
         }
 
@@ -137,9 +137,7 @@ namespace Gangdollarff
         private void CmdUse(Vector3 startPoint, Vector3 endPoint)
         {
             GameObject item = Instantiate(_fisuraPref.gameObject, startPoint, Quaternion.identity);
-
-            SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
-
+            
             NetworkServer.Spawn(item);
 
             _fisuraTail = item.GetComponent<FisuraTile>();

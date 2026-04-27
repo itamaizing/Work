@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Prefabs/Abilities/Genjalf/new/ColdShield.prefab.meta
 guid: 8436cda64b22c4f4f9becfe3d409d4fc
+========
+guid: 76bad0db0083fe84cb4e710c0db55e53
+>>>>>>>> main:Assets/Prefabs/Abilities/Genjalf/new/FireShield.prefab.meta
 PrefabImporter:
   externalObjects: {}
   userData: 

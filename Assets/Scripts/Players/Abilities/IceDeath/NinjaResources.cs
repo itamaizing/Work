@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -40,16 +40,35 @@ public class NinjaResources : Skill, IPassiveSkill
     }
     #endregion
 
+
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+        TrySubscribe();
+    }
+
     private void OnEnable()
     {
-        Hero.DamageTracker.OnDamageTracked += OnDamageTaken;
-        Hero.Health.DamageTaken += HandleDamageTaken;
+        TrySubscribe();
     }
+
 
     private void OnDisable()
     {
         Hero.DamageTracker.OnDamageTracked -= OnDamageTaken;
         Hero.Health.DamageTaken -= HandleDamageTaken;
+    }
+
+    private void TrySubscribe()
+    {
+        if (Hero == null)
+        {
+            //Debug.LogError("Hero was not initialized yet", gameObject);
+            return;
+        }
+        //Debug.LogError("Hero was initialized", gameObject);
+        Hero.DamageTracker.OnDamageTracked += OnDamageTaken;
+        Hero.Health.DamageTaken += HandleDamageTaken;
     }
 
     private void OnDamageTaken(Damage damage, GameObject attacker)

@@ -4,19 +4,18 @@ using UnityEngine;
 
 public class DarknessTalent_3 : Talent
 {
-    [SerializeField] private Ghost ghost;
-    [SerializeField] private SkillManager skillManager;
     [SerializeField] private Silence silence;
+    [SerializeField] private TerrifyingElfAura terrifyingElfAura;
 
     public override void Enter()
     {
-        skillManager.ActivateSkill(ghost);
+        terrifyingElfAura.ReductionRecharge(true);
         silence.SetCanAttackMinions(true);
     }
 
     public override void Exit()
     {
-        skillManager.DeactivateSkill(ghost);
+        terrifyingElfAura.ReductionRecharge(false);
         silence.SetCanAttackMinions(false);
     }
 }

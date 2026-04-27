@@ -122,7 +122,7 @@ public class SpitPoison : Skill, IAltAbility
 
     protected void Start()
     {
-        _originalCooldown = _cooldownTime;
+        _originalCooldown = Cooldown.CooldownTime;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -210,19 +210,19 @@ public class SpitPoison : Skill, IAltAbility
         {
             if (_isOriginalTargetAllies || _isOriginalTargetPlayer)
             {
-                if (_cooldownTime == _originalCooldown)
+                if (Cooldown.CooldownTime == _originalCooldown)
                 {
-                    _cooldownTime /= 3;
+                    Cooldown.CooldownTime /= 3;
                 }
             }
             else
             {
-                _cooldownTime = _originalCooldown;
+                Cooldown.CooldownTime = _originalCooldown;
             }
         }
         else
         {
-            _cooldownTime = _originalCooldown;
+            Cooldown.CooldownTime = _originalCooldown;
         }
     }
 
@@ -292,7 +292,7 @@ public class SpitPoison : Skill, IAltAbility
 
         _player.Move.SetCanMove(true);
 
-        if (_isErodedArmorState && (_isOriginalTargetAllies || _isOriginalTargetPlayer)) DecreaseSetCooldown(3f);
+        if (_isErodedArmorState && (_isOriginalTargetAllies || _isOriginalTargetPlayer)) Cooldown.Modify(-3f);
 
         if (_canSpawnPoisonCloud) CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
         if (_isErodedArmorState) _player.CharacterState.CmdAddState(States.ErodedArmor, durationErodedArmor, 0, _player.gameObject, Name);

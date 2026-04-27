@@ -49,12 +49,63 @@ public enum TargetType
 #endregion
 #endregion Enums
 [Serializable]
-public class TargetingComponent : BaseSkillComponent
+#if UNITY_EDITOR
+public class TargetingComponent : BaseSkillComponent, ISerializationCallbackReceiver
 {
+    #region Editor-Only
+    /// <summary>
+    /// Для удобства редактирования, чтобы
+    /// А) Слои для клика сами ставились на стандартные при смене типа способности
+    /// Б) Не затирались значения, если дергать тип туда-сюда
+    /// По идее не живет между запусками Юнити, да и ладно
+    /// </summary>
+    private Dictionary<SkillType, TargetLayer> editorBackupValue = new();
+    private SkillType oldType = new();
+
+    public void OnBeforeSerialize()
+    {
+        if (type != oldType)
+        {
+            if (!editorBackupValue.TryAdd(oldType, _clickLayer))
+                editorBackupValue[oldType] = _clickLayer;
+
+            if (editorBackupValue.TryGetValue(type, out var oldLayer))
+                _clickLayer = oldLayer;
+            else
+                switch (type)
+                {
+                    case SkillType.Target:
+                        _clickLayer = TargetLayer.Unit;
+                        break;
+
+                    case SkillType.Projectile:
+                        _clickLayer = (TargetLayer.Unit | TargetLayer.Ground);
+                        break;
+
+                    case SkillType.Zone:
+                        _clickLayer = TargetLayer.Ground;
+                        break;
+
+                    case SkillType.NonTarget:
+                    case SkillType.NonTargetWithClick:
+                        _clickLayer = TargetLayer.None;
+                        break;
+                }
+        }
+        oldType = type;
+    }
+
+    public void OnAfterDeserialize() { }
+    #endregion
+#else
+    public class TargetingComponent : BaseSkillComponent
+{
+#endif
     #region InspectorFields
     /// <summary>
     /// ТОЛЬКО на кого можем нажать. Unit - применяется к цели, Ground - прменяется на землю
     /// </summary>
+    [SerializeField] protected SkillType type;
     [SerializeField] protected TargetLayer _clickLayer; //возможно стоит разделить клик от физ. взаимодействия
     [SerializeField] protected TargetFaction _faction;
     [SerializeField] protected UnitType _unitType;
@@ -107,7 +158,13 @@ public class TargetingComponent : BaseSkillComponent
             return null;
         return _tempTarget;
     }
-    
+    public void SetTempTarget(ITargetable character)
+    {
+        if (character == null)
+            return;
+        _tempTarget = new TargetData((character as MonoBehaviour)?.gameObject);
+    }
+
     public void ClearTempTarget()
     {
         _tempTarget = null;
@@ -119,8 +176,10 @@ public class TargetingComponent : BaseSkillComponent
     {
         if (_target == null)
             return null;
+        if (_target.Type == TargetType.Point)
+            return _target;
 
-        if (!_target.Targetable.IsTargetable && !canTargetDead)
+        if (!(_target.Targetable?.IsTargetable ?? false) && !canTargetDead)
             return null;
         return _target;
     }
@@ -132,34 +191,147 @@ public class TargetingComponent : BaseSkillComponent
         _target = new TargetData((character as MonoBehaviour)?.gameObject);
     }
 
+    public void SetTarget(TargetData target) // ??
+    {
+        if (target == null)
+            return;
+        _target = target;
+    }
+
     public void ClearTarget()
     {
         _target = null;
     }
     #endregion Target
     #endregion Get-Set
+
+    public TargetData QueueInfoToTargetData(TargetInfo targetInfo)
+    {
+        if (_clickLayer == TargetLayer.Unit)
+        {
+            if (targetInfo.GetTargets().Count == 0)
+                return null;
+            return new TargetData(targetInfo.GetTargets()[0].Transform.gameObject);
+        }
+        if (_clickLayer == TargetLayer.Ground)
+        {
+            if (targetInfo.Points.Count == 0)
+                return null;
+            return new TargetData(targetInfo.Points[0]);
+        }
+
+        if (targetInfo.GetTargets().Count > 0)
+            return new TargetData(targetInfo.GetTargets()[0].Transform.gameObject);
+
+        if (targetInfo.Points.Count > 0)
+            return new TargetData(targetInfo.Points[0]);
+        
+        return null;
+    }
+
+    public bool CanCast(TargetData target)
+    {
+        if (target == null && (type & (SkillType.NonTargetWithClick | SkillType.NonTarget)) == 0)
+            return false;
+        
+        Vector3 point = new();
+        switch (target.Type)
+        {
+            case TargetType.Point:
+                point = target.Point;
+                break;
+
+            case TargetType.Object:
+                point = target.Transform.position;
+                break;
+        }
+
+        switch (type)
+        {
+            case SkillType.Target:
+                if (!IsPointInRadius(_skill.AreaInfo.Radius, point))
+                    return false;
+                return true;
+
+            case SkillType.Projectile:
+            case SkillType.Zone:
+                if (!IsPointInRadius(_skill.AreaInfo.Radius, point))
+                {
+                    if (_outOfRangeBehaviour == OutOfRangeClick.Queue || target.Type == TargetType.Object)
+                        return false;
+                }
+                return true;
+
+            case SkillType.NonTargetWithClick:
+            case SkillType.NonTarget:
+                return true;
+
+            default:
+                Debug.LogError("Не проверяем такой тип скилла");
+                throw new NotImplementedException();
+        }
+    }
+
+    public TargetData GetTargetOrPoint(float searchRadius = 0.3f)
+    {
+        var clickPoint = GetMousePoint(useLayerMask: true);
+        if ((_clickLayer & TargetLayer.Unit) == 0 && (_clickLayer & TargetLayer.Ground) != 0) //Если ждем только точку - возвращаем точку
+        {
+            return new TargetData(clickPoint);
+        }
+
+        var targets = FindTargets(clickPoint, searchRadius, canTargetSelf: (_faction & TargetFaction.Self) != 0);
+        if (targets == null || targets.Count <= 0) //Если не нашли цель
+        {
+            if ((_clickLayer & TargetLayer.Ground) != 0) // Если нельзя по земле
+            {
+                return new TargetData(clickPoint);
+            }
+            return null;
+        }
+        else if ((_clickLayer & TargetLayer.Unit) != 0) //Если нашли цель - проверяем команду
+        {
+            foreach (var target in targets) 
+            {
+                if ((_targetLayer & (1 << target.Object.layer)) != 0)
+                    return target;
+            }
+        }
+        return null;
+    }
     
+    /// <summary>
+    /// Находит и устанавливает tempTarget, берет текущую точку курсора и значение радиуса из скилла
+    /// </summary>
     public TargetData FindTempTarget(bool canTargetSelf = false, bool canTargetDead = false)
     {
         return FindTempTarget(GetMousePoint(), _skill.AreaInfo.Radius, canTargetSelf, canTargetDead);
     }
-    
+
+    /// <summary>
+    /// Находит и устанавилвает _tempTarget
+    /// </summary>
     public TargetData FindTempTarget(Vector3 position, float radius, bool canTargetSelf = false, bool canTargetDead = false)
     {
         var targets = FindTargets(position, radius, canTargetSelf, canTargetDead);
         if (targets == null || targets.Count <= 0)
+        {
+            ClearTempTarget(); //Возможно отсюда нужно вынести ниже, но вроде нет.
             return null;
+        }
         _tempTarget = targets[0];
         return _tempTarget;
     }
 
+    /// <summary>
+    /// Предконечный метод поиска целей. Позволяет отфильтровать мертвых
+    /// </summary>
     public List<TargetData> FindTargets(Vector3 position, float radius, bool canTargetSelf=false, bool canTargetDead=false)
     {
         List<TargetData> targets = GetClosestTargets(position, radius, canTargetSelf);
         if (targets == null || targets.Count <= 0)
         {
-            ClearTempTarget();
-            return new();
+            return null;
         }
 
         if (canTargetDead)
@@ -172,13 +344,16 @@ public class TargetingComponent : BaseSkillComponent
         }
     }
 
+    /// <summary>
+    /// Конечный метод поиска цели
+    /// </summary>
     public List<TargetData> GetClosestTargets(Vector3 position, float radius, bool canTargetSelf = false)
     {
         var targets = _character.TargetSeeker.GetCloserTargetsCharacter(position, radius, canTargetSelf);
         if (targets == null || targets.Count <= 0)
         {
-            ClearTempTarget();
-            return new();
+            //return new();
+            return null;
         }
         List<TargetData> targetsData = new();
         foreach (var target in targets)
@@ -204,20 +379,20 @@ public class TargetingComponent : BaseSkillComponent
         return distance <= radius;
     }
 
-    public Vector3 GetMousePoint(bool useLayerMask = false) //добавить в Raycast() layerMask
+    public Vector3 GetMousePoint(bool useLayerMask = false)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         LayerMask mask = useLayerMask ? _targetLayer : (LayerMask.GetMask("Default", "Ground", "Obstecls"));
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, mask))
         {
+            //Я не очень понимаю зачем это нужно было раньше, вероятно можно смело удалять
             if (_skill.Info.AutoAttack == AutoAttack.autoAttack)
             {
                 if (UnityEngine.InputSystem.Keyboard.current.leftCtrlKey.isPressed) //?
                 {
                     if (hit.collider.TryGetComponent<IDamageable>(out _))
                     {
-
                         //Уже неактуально?
                         //_skill.IsAutoMode = true;
                         //_skill.AutoModeChanged?.Invoke(true);
@@ -235,6 +410,15 @@ public class TargetingComponent : BaseSkillComponent
         float distance = Vector3.Distance(GetMousePoint(), _character.transform.position);
 
         return distance <= radius;
+    }
+
+    /// <summary>
+    /// Обрезает точку до макс. значения радиуса способности
+    /// </summary>
+    public Vector3 ClampToRadius(Vector3 center, Vector3 point, float radius)
+    {
+        Vector3 direction = point - center;
+        return center + Vector3.ClampMagnitude(direction, radius);
     }
 
     public bool NoObstacles(Vector3 target, Vector3 point, LayerMask obstacle)
@@ -313,6 +497,18 @@ public class TargetData
         Type = TargetType.Object;
         Point = Vector3.positiveInfinity;
         Object = gameObject;
+    }
+
+    public Vector3 Poisition
+    {
+        get
+        {
+            if (Type == TargetType.Point)
+                return Point;
+            if (Type == TargetType.Object)
+                return Transform.position;
+            return Vector3.positiveInfinity;
+        }
     }
 
     public Transform Transform => Object == null ? null : Object.transform;

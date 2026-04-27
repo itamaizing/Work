@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using Mirror;
 using System.Collections.Generic;
@@ -304,7 +304,7 @@ public class Tentacles : Skill
 
                 if (GetMouseButton)
                 {
-                    if (!IsCooldowned)
+                    if (Cooldown.IsActive)
                     {
                         yield return null;
                         continue;
@@ -389,7 +389,7 @@ public class Tentacles : Skill
         {
             CmdSpawnProtectiveCocoon(Targeting.GetTarget()?.Character);
 
-            if (hadCharges) ResetCooldown();
+            if (hadCharges) Cooldown.ForceEnd();
 
             ClearData();
             yield break;
@@ -410,7 +410,7 @@ public class Tentacles : Skill
 
             CmdSpawnTentacles(_spawnPoint, Targeting.GetTarget()?.Character, _spentAttackingPsiEnergy);
 
-            if (hadCharges) ResetCooldown();
+            if (hadCharges) Cooldown.ForceEnd();
         }
 
         ClearData();

@@ -30,7 +30,16 @@ public class FlashOfLight : Skill,IPolaritySwitchable
     private float _talentCooldown = 5f;
     private float _lastTalentTime = -5f;
     private float _cooldownReduction = 5f;
+    private float _baseCastDelay;
+    
+    #region OverhealManaBooster
 
+    private OverhealManaBooster _overhealMana;
+    public OverhealManaBooster OverhealManaBooster => _overhealMana;
+
+    #endregion
+
+    public bool IsLightMode => isLightMode;
     public event Action OnModeChange;
     [SyncVar(hook = nameof(OnModeChanged))] public bool isLightMode = true;
 
@@ -65,11 +74,20 @@ public class FlashOfLight : Skill,IPolaritySwitchable
     {
         Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
     }
+    
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+        
+        _baseCastDelay = CastDeley;
+        UpdateMode();
+        
+        _overhealMana = new OverhealManaBooster(this, Hero);
+    }
 
     private void OnEnable()
     {
         OnModeChange += UpdateMode;
-        UpdateMode();
     }
 
     private void OnDisable()
@@ -157,7 +175,7 @@ public class FlashOfLight : Skill,IPolaritySwitchable
         
         if (isLightMode && IsEnemyTarget(target) || !isLightMode && !IsEnemyTarget(target))
         {
-            ResetCooldown();
+            Cooldown.ForceEnd();
             yield break;
         }
 
@@ -193,7 +211,6 @@ public class FlashOfLight : Skill,IPolaritySwitchable
 
     private void HandleFlashOfDarkness()
     {
-        Debug.Log("Damaging" + Targeting.GetTarget()?.Character.gameObject);
         Damage(Targeting.GetTarget()?.Character);
     }
 
@@ -209,6 +226,7 @@ public class FlashOfLight : Skill,IPolaritySwitchable
             Value = _healAmount + bonusHealFromSpiritEnergy,
             DamageableSkill = this
         };
+        _overhealMana.OnAnyHealTaken(target,heal.Value,this);
 
         CmdApplyHeal(heal, health.gameObject, this, Name);
     }
@@ -239,18 +257,19 @@ public class FlashOfLight : Skill,IPolaritySwitchable
         CmdApplyDamage(damage, target.gameObject);
     }
 
-    private bool IsValidTarget(Character target)
+    protected override void SkillEnableBoostLogic()
     {
-        if (target == null) return false;
-
-        if (isLightMode) return target == Hero || target.gameObject.layer == LayerMask.NameToLayer("Allies");
-        else return target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+        CastDeley = 0;
+    }
+    protected override void SkillDisableBoostLogic()
+    {
+        CastDeley = _baseCastDelay;
     }
 
     private void ReduceCooldowns()
     {
         foreach (var ability in Hero.Abilities.Abilities)
-            ability.DecreaseSetCooldown(_cooldownReduction);
+            ability.Cooldown.Modify(-_cooldownReduction);
     }
 
     [Command]

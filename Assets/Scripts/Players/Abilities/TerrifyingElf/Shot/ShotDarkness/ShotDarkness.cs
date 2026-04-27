@@ -168,6 +168,8 @@ public class ShotDarkness : Skill
         ShotDarknessAnimationMove();
         ProcessGhostCooldownReduction();
 
+        HandleThirdShotRowOnCast();
+
         if (Targeting.GetTarget() != null) CmdCreateProjectileAtTarget(Targeting.GetTarget().Transform, Damage, _magicDamage);
         else CmdCreateProjectileAtPosition(new Vector3(_targetPoint.x, _targetPoint.y, _targetPoint.z), Damage, _magicDamage);
 
@@ -182,11 +184,24 @@ public class ShotDarkness : Skill
                 CmdCreateProjectileAtPosition(character.transform.position, Damage, _magicDamage);
             }
 
-            float reduce = _multiMagicSpell.RemainingCooldownTime * 0.1f;
-            _multiMagicSpell.DecreaseSetCooldown(reduce);
+            float reduce = _multiMagicSpell.Cooldown.RemainingTime * 0.1f;
+            _multiMagicSpell.Cooldown.Modify(-reduce);
         }
 
         else CmdUseMana(_magicDamage);
+    }
+
+
+    private void HandleThirdShotRowOnCast()
+    {
+        if (_terrifyingElfAura == null) return;
+        if (!_terrifyingElfAura.IsThirdShotRowActive) return;
+
+        var targetData = Targeting.GetTarget();
+
+        if (targetData == null || targetData.Character == null) return;
+
+        _terrifyingElfAura.ProcessShot(targetData.Character);
     }
 
     private void ProcessGhostCooldownReduction()
@@ -196,7 +211,8 @@ public class ShotDarkness : Skill
         _consecutiveShots++;
         if (_consecutiveShots >= GhostShotsForCooldownReduction)
         {
-            _ghostSkill.ReductionCooldownCharges(GhostCooldownReductionValue);
+            //_ghostSkill.ReductionCooldownCharges(GhostCooldownReductionValue);
+            _ghostSkill.Charges.ModifyDuration(-GhostCooldownReductionValue, tickAll: true);
             _consecutiveShots = 0;
         }
     }
@@ -253,7 +269,7 @@ public class ShotDarkness : Skill
         if (direction == Vector3.zero) return;
 
         ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffset, Quaternion.LookRotation(direction));
-        proj.Init(_playerLinks, magDamage, false, this, damage);
+        proj.Init(_playerLinks, magDamage, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
         //SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);
         proj.StartFly(target);
@@ -270,7 +286,7 @@ public class ShotDarkness : Skill
         if (direction == Vector3.zero) return;
 
         ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffsetDown, Quaternion.LookRotation(direction));
-        proj.Init(_playerLinks, magDamage, false, this, damage);
+        proj.Init(_playerLinks, magDamage, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
         //SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);
         proj.StartFly(direction);
@@ -285,7 +301,7 @@ public class ShotDarkness : Skill
         if (gameObject == null) return;
 
         ArrowProjectile proj = gameObject.GetComponent<ArrowProjectile>();
-        if (proj != null) proj.Init(_playerLinks, magicDamage, false, this, damage);
+        if (proj != null) proj.Init(_playerLinks, magicDamage, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
     }
 
     [ClientRpc]

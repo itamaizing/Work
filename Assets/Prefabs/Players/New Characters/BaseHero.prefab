@@ -7843,7 +7843,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 1
+  m_Value: 0.612
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -22836,7 +22836,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 1
+  m_FillAmount: 0.612
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -29295,7 +29295,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -29307,7 +29307,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 1
+  m_FillAmount: 0.664
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -30205,9 +30205,9 @@ RectTransform:
   m_Children:
   - {fileID: 2987087763909239767}
   - {fileID: 8949421215325282160}
-  - {fileID: 6783589187673798146}
   - {fileID: 8921247646038512649}
   - {fileID: 2913557148448941418}
+  - {fileID: 6783589187673798146}
   - {fileID: 4420063060191907584}
   - {fileID: 2625498571608911409}
   m_Father: {fileID: 6072102004952575816}
@@ -31880,7 +31880,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 1
+  m_Value: 0.664
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []

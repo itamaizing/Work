@@ -18,6 +18,9 @@ public class ArrowProjectile : Projectiles
     private Vector3 _startPosition;
     private bool _isFollowingTarget = false;
 
+    private bool _isReflected;
+    private bool _isElvenSkillCrit;
+
     #region Constants
     private const float InAstralDamageMultiplier = 1.5f;
     private const int ResistMagicDamageMaxValue = 100;
@@ -72,6 +75,35 @@ public class ArrowProjectile : Projectiles
         }
     }
 
+    private void Reflect(Character reflector)
+    {
+        _isReflected = true;
+
+        CancelInvoke();
+        Destroy(gameObject, _lifeTime);
+
+        Character oldOwner = _dad;
+        _dad = reflector;
+
+        if (oldOwner == null) return;
+
+        _isFollowingTarget = false;
+        StopAllCoroutines();
+
+        if (_rb != null)
+        {
+            _rb.linearVelocity = Vector3.zero;
+            _rb.angularVelocity = Vector3.zero;
+        }
+
+        Vector3 targetPos = oldOwner.transform.position + Vector3.up * _arrowYOffset;
+        Vector3 dir = (targetPos - transform.position).normalized;
+
+        if (_rb != null) _rb.linearVelocity = dir * _speed;
+
+        _startPosition = transform.position;
+    }
+
     public void StartFly(Vector3 direction)
     {
         if (direction == Vector3.zero || float.IsNaN(direction.x) || float.IsNaN(direction.y) || float.IsNaN(direction.z)) return;
@@ -92,16 +124,31 @@ public class ArrowProjectile : Projectiles
         StartCoroutine(FollowTargetCoroutine());
     }
 
-    public void Init(HeroComponent dad, float energy, bool lastHit, Skill skill, float damage)
+    public void Init(HeroComponent dad, float energy, bool lastHit, Skill skill, float damage, bool ElvenSkillCrit)
     {
         base.Init(dad, energy, lastHit, skill);
         _damage = damage;
         _magDamage = energy;
+        _isElvenSkillCrit = ElvenSkillCrit;
     }
 
     [Server]
     private void OnTriggerEnter(Collider other)
     {
+        if (_dad == null) return;
+
+        if (!other.TryGetComponent<Character>(out var target))
+            return;
+
+        if (target.CharacterState.CheckForState(States.ReflectiveScales) && _arrowDark)
+        {
+            if (_isReflected) return;
+
+            target.CharacterState.RemoveState(States.ReflectiveScales);
+            Reflect(target);
+            return;
+        }
+
         if (other.gameObject == _dad?.gameObject) return;
         if (!other.TryGetComponent<IDamageable>(out _)) return;
 
@@ -125,12 +172,19 @@ public class ArrowProjectile : Projectiles
     private void ApplyEnemy(Collider collider)
     {
         bool inAstral = _dad != null && _dad.CharacterState.CheckForState(States.Astral);
+        Character character = collider.GetComponent<Character>();
 
         if (_arrowDark)
         {
             if (!inAstral)
             {
-                ApplyDamage(_damage, _damageTypePhysics, collider.gameObject);
+                if (character != null)
+                {
+                    float modifiedDamage = ApplyElvenCritModifier(_damage, character);
+                    ApplyDamage(modifiedDamage, _damageTypePhysics, collider.gameObject);
+                }
+
+                else ApplyDamage(_damage, _damageTypePhysics, collider.gameObject);
                 if (TryApplyDamage(_damageTypePhysics, _skill.Info.AttackRangeType, collider.gameObject)) return;
             }
 
@@ -141,10 +195,19 @@ public class ArrowProjectile : Projectiles
 
             ApplyDamage(totalMagDamage, _skill.Info.DamageType, collider.gameObject);
 
-            if (collider.TryGetComponent<Character>(out Character character)) character.CharacterState.AddState(States.InnerDarkness, _duration, 0, _skill.Hero.gameObject, _skill.name);
+            if (character != null) character.CharacterState.AddState(States.InnerDarkness, _duration, 0, _skill.Hero.gameObject, _skill.name);
         }
 
-        else ApplyDamage(_damage, _damageTypePhysics, collider.gameObject);
+        else
+        {
+            if (character != null)
+            {
+                float modifiedDamage = ApplyElvenCritModifier(_damage, character);
+                ApplyDamage(modifiedDamage, _damageTypePhysics, collider.gameObject);
+            }
+
+            else ApplyDamage(_damage, _damageTypePhysics, collider.gameObject);
+        }
     }
     #endregion
 
@@ -152,6 +215,27 @@ public class ArrowProjectile : Projectiles
     {
         var damage = new Damage { Value = value, Type = type };
         _skill.ApplyDamage(damage, target);
+    }
+
+    private float ApplyElvenCritModifier(float damage, Character target)
+    {
+        if (!_isElvenSkillCrit) return damage;
+        if (_dad == null || target == null) return damage;
+        if (!_dad.CharacterState.CheckForState(States.ElvenSkill)) return damage;
+
+        float hpPercent = target.Health.CurrentValue / target.Health.MaxValue;
+
+        if (hpPercent <= 0.7f) return damage;
+
+        damage *= 1.3f;
+
+        if (UnityEngine.Random.Range(0f, 100f) <= 30f)
+        {
+            float critMultiplier = UnityEngine.Random.Range(2.4f, 3.2f);
+            damage *= critMultiplier;
+        }
+
+        return damage;
     }
 
     private bool TryApplyDamage(DamageType damageType, AttackRangeType attackRangeType, GameObject target)

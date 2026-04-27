@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Scripts/Players/Test.meta
+guid: a8848675972b16f42b3c9ed78f8d58e3
+folderAsset: yes
+DefaultImporter:
+========
+guid: 86feeef81990ec74785d383e189886fb
+NativeFormatImporter:
+>>>>>>>> main:Assets/Materials/AllFace.mat.meta
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

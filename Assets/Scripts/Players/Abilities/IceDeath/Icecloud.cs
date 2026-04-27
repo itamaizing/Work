@@ -2,7 +2,6 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class IceCloud : Skill
 {
@@ -87,7 +86,6 @@ public class IceCloud : Skill
 	private void CmdCreateProjecttile(float angle, float manaValue, Vector3 lookDir)
     {
 		IceCloudProjectile projectile = Instantiate(_projectile, gameObject.transform.position + lookDir * ProjectileSpawnOffset, Quaternion.Euler(0, -angle, 0));
-		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(Hero, manaValue, false, this);
 		projectile.InitIceCloud(manaValue, Damage);
 		projectile.Talent(_boostDmg, _frozwenTalent, _lastHit);

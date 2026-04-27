@@ -6,11 +6,11 @@ public class AbsorbationBallAllyTarget : Talent
     
     public override void Enter()
     {
-        //_absorptionBall.IsAllyTargetAvailable = true;
+        _absorptionBall.IsAllyTargetAvailable = true;
     }
 
     public override void Exit()
     {
-        //_absorptionBall.IsAllyTargetAvailable = false;
+        _absorptionBall.IsAllyTargetAvailable = false;
     }
 }

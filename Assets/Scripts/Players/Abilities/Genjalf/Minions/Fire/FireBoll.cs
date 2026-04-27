@@ -116,7 +116,7 @@ public class FireBoll : MoveSkill
     {
         GameObject item = Instantiate(_projectile.gameObject, transform.position + Vector3.up, Quaternion.identity);
 
-        SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         var projectile = item.GetComponent<Projectile>();
 
@@ -149,6 +149,6 @@ public class FireBoll : MoveSkill
     private void CmdState(GameObject enemy, float time)
     {
         Character enemyChar = enemy.GetComponent<Character>();
-        enemyChar.CharacterState.AddState(States.Burning, time, 0, Hero.gameObject, name);
+        enemyChar.CharacterState.AddState(States.Burning, time, 0,Schools.Fire, gameObject, name);
     }
 }

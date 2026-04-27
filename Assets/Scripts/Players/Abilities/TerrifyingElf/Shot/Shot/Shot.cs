@@ -49,13 +49,21 @@ public class Shot : Skill
 
     private bool CheckCanCast()
     {
-        if (Targeting.GetTarget() != null)
-            return Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.CastLength;
+        if (Targeting.GetTarget() == null)
+            return false;
+        return Targeting.CanCast(Targeting.GetTarget());
 
-        if (_targetPoint != Vector3.positiveInfinity)
-            return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength;
-
-        return false;
+        //if (Targeting.GetTarget() != null)
+        //{
+        //    return Targeting.CanCast(Targeting.GetTarget());
+        //    return Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.CastLength;
+        //}
+        //if (_targetPoint != Vector3.positiveInfinity)
+        //{
+        //    return Targeting.CanCast(new TargetData(_targetPoint));
+        //    return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength;
+        //}
+        //return false;
     }
 
     private void OnDisable()
@@ -129,8 +137,11 @@ public class Shot : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
-        _targetPoint = targetInfo.Points[0];
+        Targeting.SetTarget(Targeting.QueueInfoToTargetData(targetInfo));
+        //if (Targeting.GetTarget()?.Type == TargetType.Point)
+        //    _targetPoint = Targeting.GetTarget().Point;
+        //if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
+        _targetPoint = Targeting.GetTarget().Poisition;
 	}
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -168,10 +179,12 @@ public class Shot : Skill
     protected override IEnumerator CastJob()
     {
 		if (Targeting.GetTarget() == null && _targetPoint == Vector3.positiveInfinity) yield return null;
-        if (Targeting.GetTarget() != null && !IsTargetInRange()) yield return null;
+        if (Targeting.GetTarget()?.Transform != null && !IsTargetInRange()) yield return null;
 
         ShotAnimationMove();
         ProcessGhostCooldownReduction();
+
+        HandleThirdShotRowOnCast();
 
         if (Targeting.GetTarget() != null && Targeting.GetTarget() is IDamageable damageable) CmdCreateProjectileAtTarget(damageable.gameObject, Damage);
         else CmdCreateProjectileAtPosition(_targetPoint, Damage);
@@ -186,7 +199,8 @@ public class Shot : Skill
         _consecutiveShots++;
         if (_consecutiveShots >= GhostShotsForCooldownReduction)
         {
-            _ghostSkill.ReductionCooldownCharges(GhostCooldownReductionValue);
+            //_ghostSkill.ReductionCooldownCharges(GhostCooldownReductionValue);
+            _ghostSkill.Charges.ModifyDuration(-GhostCooldownReductionValue, tickAll: true);
             _consecutiveShots = 0;
         }
     }
@@ -202,6 +216,18 @@ public class Shot : Skill
             Hero.Move.StopLookAt();
             AnimCastEnded();
         }
+    }
+
+    private void HandleThirdShotRowOnCast()
+    {
+        if (_terrifyingElfAura == null) return;
+        if (!_terrifyingElfAura.IsThirdShotRowActive) return;
+
+        var targetData = Targeting.GetTarget();
+
+        if (targetData == null || targetData.Character == null) return;
+
+        _terrifyingElfAura.ProcessShot(targetData.Character);
     }
 
     private Vector3 GetMousePoint(LayerMask mask)
@@ -224,7 +250,7 @@ public class Shot : Skill
         if (direction == Vector3.zero) return;
 
         ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffsetUp, Quaternion.LookRotation(direction));
-        proj.Init(_playerLinks, 0, false, this, damage);
+        proj.Init(_playerLinks, 0, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
         //SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);
         proj.StartFly(target);
@@ -241,7 +267,7 @@ public class Shot : Skill
         if (direction == Vector3.zero) return;
 
         ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffsetDown, Quaternion.LookRotation(direction));
-        proj.Init(_playerLinks, 0, false, this, damage);
+        proj.Init(_playerLinks, 0, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
         //SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(proj.gameObject);
         proj.StartFly(direction);
@@ -255,7 +281,7 @@ public class Shot : Skill
         if (gameObject == null) return;
 
         ArrowProjectile proj = gameObject.GetComponent<ArrowProjectile>();
-        if (proj != null) proj.Init(_playerLinks, 0, false, this, damage);
+        if (proj != null) proj.Init(_playerLinks, 0, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
     }
 
     [ClientRpc]

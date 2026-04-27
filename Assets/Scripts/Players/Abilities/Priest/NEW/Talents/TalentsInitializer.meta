@@ -1,7 +1,12 @@
 fileFormatVersion: 2
-guid: 2c7122dfdf657cc4eaf45d38af2c4148
+<<<<<<<< HEAD:Assets/Scripts/Players/Abilities/CreeperPoison/Effects/WaveParalyzingPoison.prefab.meta
+guid: 4154d75f55eb4c543ab80b0e97c19c87
+PrefabImporter:
+========
+guid: 61e6a5795b3147043abf436fa96e9f14
 folderAsset: yes
 DefaultImporter:
+>>>>>>>> 6cf021b3 (Changes from priest, gandolarf):Assets/Scripts/Players/Abilities/Priest/NEW/Talents/TalentsInitializer.meta
   externalObjects: {}
   userData: 
   assetBundleName: 

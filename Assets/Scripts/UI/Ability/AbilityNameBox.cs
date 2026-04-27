@@ -25,20 +25,20 @@ public class AbilityNameBox : MonoBehaviour
         {
             if (skill.SkillEnergyCosts.Count > 0)
             {
-                _descriptionWithNumbers.text = $"Затрата: {ColorOpen}{skill.SkillEnergyCosts[0].resourceCost} ед. маны{ColorEnd}";
+                _descriptionWithNumbers.text = $"Затрата: {ColorOpen}{skill.SkillEnergyCosts[0].value} ед. маны{ColorEnd}";
 
-                if (skill.AdditionalSkillEnergyCosts.Count > 0) _descriptionWithNumbers.text += $"{ColorOpen} + {skill.AdditionalSkillEnergyCosts[0].resourceCost} ед. маны{ColorEnd}";
+                if (skill.AdditionalSkillEnergyCosts.Count > 0) _descriptionWithNumbers.text += $"{ColorOpen} + {skill.AdditionalSkillEnergyCosts[0].value} ед. маны{ColorEnd}";
             }
             else _descriptionWithNumbers.text = $"Затрата: {ColorOpen}0 ед. маны{ColorEnd}";
 
             if (skill.ManaCostPerTick.Count > 0)
-                _descriptionWithNumbers.text += $" + {ColorOpen}{skill.ManaCostPerTick[0].resourceCost} ед. маны/{skill.ManaCostRate} сек{ColorEnd}";
+                _descriptionWithNumbers.text += $" + {ColorOpen}{skill.ManaCostPerTick[0].value} ед. маны/{skill.ManaCostRate} сек{ColorEnd}";
 
             switch (skill.Info.AbilityForm)
             {
-                case AbilityForm.Spell:
-                    _descriptionWithNumbers.text += $" заклинание {GetSchoolName(skill)}";
-                    break;
+                //case AbilityForm.Spell:
+                //    _descriptionWithNumbers.text += $" заклинание {GetSchoolName(skill)}";
+                //    break;
 
                 case AbilityForm.Magic:
                     _descriptionWithNumbers.text += $" магия {GetSchoolName(skill)}";
@@ -66,11 +66,11 @@ public class AbilityNameBox : MonoBehaviour
             if (skill.CastStreamDuration > 0)
                 _descriptionWithNumbers.text += $"\nВыполнение: {ColorOpen}{skill.CastStreamDuration} сек{ColorEnd}";
 
-            if (skill.CooldownTime > 0)
-                _descriptionWithNumbers.text += $"\nПерезарядка: {ColorOpen}{skill.CooldownTime} сек{ColorEnd}";
+            if (skill.Cooldown.CooldownTime > 0)
+                _descriptionWithNumbers.text += $"\nПерезарядка: {ColorOpen}{skill.Cooldown.CooldownTime} сек{ColorEnd}";
 
-            if (skill.ChargeCooldown > 0)
-                _descriptionWithNumbers.text += $"\nКол-во Зарядов: {ColorOpen}{skill.MaxChargers}/{skill.ChargeCooldown} сек{ColorEnd}";
+            if (skill.Charges.CooldownTime > 0)
+                _descriptionWithNumbers.text += $"\nКол-во Зарядов: {ColorOpen}{skill.Charges.MaxCharges}/{skill.Charges.CooldownTime} сек{ColorEnd}";
 
             //if (skill.AdditionalDescription != string.Empty)
             //    _descriptionWithNumbers.text += $"\n{skill.AdditionalDescription}";
@@ -138,9 +138,9 @@ public class AbilityNameBox : MonoBehaviour
             case AbilityForm.Physical:
                 _descriptionWithNumbers.text += " физика";
                 break;
-            case AbilityForm.Spell:
-                _descriptionWithNumbers.text += " заклинания";
-                break;
+            //case AbilityForm.Spell:
+            //    _descriptionWithNumbers.text += " заклинания";
+            //    break;
             default:
                 break;
         }

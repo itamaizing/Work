@@ -38,11 +38,13 @@ public class SpitPoisonProjectile : Test_Projectile
     private bool _isTransparentPoisons;
     private bool _isColdBloodCrit;
 
+    private bool _isReflected;
 
     #endregion
 
     private bool IsEnemy(GameObject target)
     {
+        if (_isReflected) return target != _player.gameObject;
         if (_player == null) return IsEnemyByLayer(target);
         if (!_player.TryGetComponent(out UserNetworkSettings ownerSettings) || !target.TryGetComponent(out UserNetworkSettings targetSettings)) return IsEnemyByLayer(target);
         if (!IsTeamAssigned(ownerSettings) || !IsTeamAssigned(targetSettings)) return IsEnemyByLayer(target);
@@ -65,6 +67,17 @@ public class SpitPoisonProjectile : Test_Projectile
     [Server]
     private void OnTriggerEnter(Collider collision)
     {
+        if (!collision.TryGetComponent<Character>(out var targetHealth)) return;
+
+        if (targetHealth.CharacterState.CheckForState(States.ReflectiveScales) && _skill.Info.DamageType == DamageType.Magical)
+        {
+            if (_isReflected) return;
+
+            targetHealth.CharacterState.RemoveState(States.ReflectiveScales);
+            Reflect(targetHealth);
+            return;
+        }
+
         if (!IsEnemy(collision.gameObject)) return;
 
         if (_isActiveHealingSpitPoison)
@@ -200,6 +213,34 @@ public class SpitPoisonProjectile : Test_Projectile
     private void ReductionCooldownFromRestorationOfGlands()
     {
         RpcReductionCooldownFromRestorationOfGlands(_player.gameObject);
+    }
+
+    private void Reflect(Character reflector)
+    {
+        _isReflected = true;
+
+        StopMovement();
+        CancelInvoke(nameof(DestroyProjectile));
+
+        Character oldOwner = _player;
+        _player = reflector;
+
+        if (oldOwner == null) return;
+
+        Vector3 target = oldOwner.transform.position;
+
+        Vector3 direction = (target - transform.position).normalized;
+        float speed = _speed;
+
+        _target = null;
+        _playerLayer = reflector.gameObject.layer;
+
+        _isEnemy = true;
+        _isAllies = false;
+        _isPlayer = false;
+
+        MoveToTarget(target, speed);
+        RpcInitTransparent(_isTransparentPoisons, _playerLayer);
     }
     #endregion
 

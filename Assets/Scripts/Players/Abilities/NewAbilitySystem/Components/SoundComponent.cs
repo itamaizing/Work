@@ -9,7 +9,7 @@ using UnityEngine;
 public class SoundComponent : BaseSkillComponent
 {
     #region InspectorFields
-    List<AudioClip> sounds;
+    [SerializeField] private List<AudioClip> sounds;
     #endregion
 
     #region RuntimeVariables

@@ -4,29 +4,18 @@ using UnityEngine;
 
 public class NatureTalent_5 : Talent
 {
-    [SerializeField] private ShotAstral shotAstral;
-    [SerializeField] private ShotIntoSky shotIntoSky;
-    [SerializeField] private ShotsIntoSky shotsIntoSky;
     [SerializeField] private TerrifyingElfAura terrifyingElfAura;
-    [SerializeField] private SkillManager ability;
+    [SerializeField] private SleepSpell sleep;
 
     public override void Enter()
     {
-        ability.ActivateSkill(shotAstral);
-        shotIntoSky.ShotsIntoSkyAstralTalentActive(true);
-        shotsIntoSky.ShotsIntoSkyAstralTalentActive(true);
-        shotIntoSky.SetSilenceTalentActive(true);
-        shotsIntoSky.SetSilenceTalentActive(true);
         terrifyingElfAura.TreeRadiusCalmessTalentActive(true);
+        sleep.SleepInnerDarknessTalent(true);
     }
 
     public override void Exit()
     {
-        ability.DeactivateSkill(shotAstral);
-        shotIntoSky.ShotsIntoSkyAstralTalentActive(false);
-        shotsIntoSky.ShotsIntoSkyAstralTalentActive(false);
-        shotIntoSky.SetSilenceTalentActive(false);
-        shotsIntoSky.SetSilenceTalentActive(false);
         terrifyingElfAura.TreeRadiusCalmessTalentActive(false);
+        sleep.SleepInnerDarknessTalent(true);
     }
 }

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using Mirror;
 using UnityEngine.SceneManagement;
@@ -203,7 +203,7 @@ public class WombSpawn : Skill
 
         SpawnWomb(_spawnPoint);
 
-        if (hadCharges) ResetCooldown();
+        if (hadCharges) Cooldown.ForceEnd();
 
         ClearData();
         _skillRender.StopDrawRadius();

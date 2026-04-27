@@ -10,12 +10,12 @@ public class Dispel : Skill
 
     protected override bool IsCanCast => Targeting.GetTarget()?.Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
 
-    protected override int AnimTriggerCastDelay => Animator.StringToHash("Dispel");
+    protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (float.IsPositiveInfinity(_targetPoint.x) && Targeting.GetTarget()?.Character == null)
+        while (Targeting.GetTempTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
@@ -26,6 +26,7 @@ public class Dispel : Skill
             yield return null;
         }
 
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(_targetPoint);
         callbackDataSaved(targetInfo);
@@ -41,7 +42,7 @@ public class Dispel : Skill
         if (targetCharacter != null)
         {
             //CmdDispelState(targetCharacter, _target.NetworkSettings.TeamIndex, Hero.NetworkSettings.TeamIndex);
-            CmdDispelState(targetCharacter);
+            CmdDispelState(Targeting.GetTarget()?.Character.gameObject);
         }
 
         yield return null;
@@ -107,13 +108,14 @@ public class Dispel : Skill
     //}
 
     [Command]
-    private void CmdDispelState(CharacterState targetState)
+    private void CmdDispelState(GameObject target)
     {
-        if (targetState == null) return;
+        target.TryGetComponent(out Character c);
+        if (c == null) return;
 
-        bool isAlly = targetState.gameObject.layer == LayerMask.NameToLayer("Allies");
+        bool isAlly = c.gameObject.layer == LayerMask.NameToLayer("Allies");
 
-        targetState.DispelStates(StateType.Magic, isAlly, out int howMuchDispelled, true);
+        c.CharacterState.DispelStates(StateType.Magic, isAlly,out int howMuchDispelled, true);
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)

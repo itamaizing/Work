@@ -1,31 +1,68 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Gangdollarff.EarthElemental;
 using Mirror;
 using UnityEngine;
 
 public class ElementalSpawn : Skill
 {
-    private int _indexElemental = -1;
+    private MinionComponent _currentElemental;
     private Vector3 _position;
-    private int _prefIndex;
-    private bool _isSpawned;
-    private Character _airElement;
-    private Character _waterElement;
-    private Character _earthElement;
-    private Character _fireElement;
+    private Elementals _selectedElemental = Elementals.None;
+    private Elementals _previousElemental;
+    public Elementals SelectedElemental
+    {
+        get => _selectedElemental;
+        set => _selectedElemental = value;
+    }
 
-    public Character AirElement => _airElement;
-    public Character WaterElement => _waterElement;
-    public Character EarthElement => _earthElement;
-    public Character FireElement => _fireElement;
-    public int IndexElemental { get { return _indexElemental; } set { _indexElemental = value; } }
+    #region Elementals Talents
+
+    private bool _elementalsAuraTalent;
+    private bool _elementalsShieldsTalent;
+    private bool _elementalsActiveTalent;
+    #endregion
 
     protected override bool IsCanCast => Vector3.Distance(_position, transform.position) <= AreaInfo.Radius;
-
     protected override int AnimTriggerCastDelay => 0;
-
     protected override int AnimTriggerCast => 0;
+
+    private Action OnCurrentElemantalDestroy;
+
+    #region Talent Enabling Methods
+
+    public void IsElementalsAuraEnabled(bool value)
+    {
+        if (_elementalsAuraTalent != value)
+        {
+            _elementalsAuraTalent = value;
+            if(_currentElemental)
+                TryActivateMinionTalent(_selectedElemental,true);
+        }
+    }
+
+    public void IsElementalsShieldsEnabled(bool value)
+    {
+        if (_elementalsShieldsTalent != value)
+        {
+            _elementalsShieldsTalent = value;
+            if(_currentElemental)
+                TryActivateMinionTalent(_selectedElemental,true);
+        }
+    }
+    
+    public void IsElementalsActiveSkillsEnabled(bool value)
+    {
+        if (_elementalsActiveTalent != value)
+        {
+            _elementalsActiveTalent = value;
+            if(_currentElemental)
+                TryActivateMinionTalent(_selectedElemental,true);
+        }
+    }
+
+    #endregion
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -34,30 +71,52 @@ public class ElementalSpawn : Skill
 
     protected override IEnumerator CastJob()
     {
-        while (_indexElemental == -1)
+        while (_selectedElemental == Elementals.None)
         {
             yield return null;
         }
 
         if (Hero.SpawnComponent.Units.Count > 0)
         {
+            TryActivateMinionTalent(_previousElemental,false);
+            _currentElemental = null;
             CmdDestroyUnit(0);
             Hero.SpawnComponent.Units.RemoveAt(0);
         }
-        //Hero.SpawnComponent.UnitAdded += OnUnitAdded;
-        Hero.SpawnComponent.CmdSpawnUnitInPoint(_position, IndexElemental);
+        
+        CmdSpawnElemental(_position, _selectedElemental);
 
         yield return null;
+    }
+    
+    [Command]
+    private void CmdSpawnElemental(Vector3 position, Elementals type)
+    {
+        int index = (int)type;
+        var spawned = Hero.SpawnComponent.SpawnUnit(index,position);
+
+        if (spawned != null)
+            TargetRpcOnElementalSpawned(connectionToClient, spawned.gameObject, type);
+    }
+
+    [TargetRpc]
+    private void TargetRpcOnElementalSpawned(NetworkConnectionToClient conn, GameObject elementalGO, Elementals type)
+    {
+        if (elementalGO == null) return;
+        _currentElemental = elementalGO.GetComponent<MinionComponent>();
+        _currentElemental.CharacterParent = _hero;
+        TryActivateMinionTalent(type,true);
     }
 
     protected override void ClearData()
     {
         _position = Vector2.zero;
-        _indexElemental = -1;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        _previousElemental = _selectedElemental;
+        _selectedElemental = Elementals.None;
         while (_position == Vector3.zero)
         {
             if (GetMouseButton)
@@ -71,12 +130,96 @@ public class ElementalSpawn : Skill
         callbackDataSaved(targetInfo);
     }
 
+    private void TryActivateMinionTalent(Elementals elementalType, bool enable)
+    {
+        if (_currentElemental == null) 
+            return;
+
+        switch (elementalType)
+        {
+            case Elementals.Air:
+                HandleAura<AirElement>(enable);
+                HandleSkill<DischargingSkill>(enable,_elementalsActiveTalent);
+                break;
+
+            case Elementals.Earth:
+                HandleAura<EarthElementalHealthAura>(enable);
+                HandleSkill<EarthPetrificationSkill>(enable,_elementalsShieldsTalent);
+                HandleSkill<PowerOfEarthActive>(enable,_elementalsActiveTalent);
+                break;
+
+            case Elementals.Fire:
+                HandleAura<HotBloodAura>(enable);
+                HandleSkill<FireShield>(enable,_elementalsShieldsTalent);
+                HandleSkill<Explosion>(enable,_elementalsActiveTalent);
+                break;
+
+            case Elementals.Water:
+                HandleWaterTalents(enable);
+                HandleSkill<ColdShield>(enable,_elementalsShieldsTalent);
+                HandleSkill<CoolingActive>(enable,_elementalsActiveTalent);
+                break;
+        }
+    }
+
+    #region Активация талантов элементалей
+    private void HandleAura<T>(bool shouldBeActive) where T : AuraStateHandler
+    {
+        var auraComponent = _currentElemental.GetComponent<T>();
+        if (auraComponent == null)
+            return;
+
+        bool actuallyActivate = _elementalsAuraTalent && shouldBeActive;
+
+        auraComponent.ActivateAura(actuallyActivate);
+    }
+
+    private void HandleSkill<T>(bool shouldBeActive,bool talentBool) where T : Skill
+    {
+        var skillComponent = _currentElemental.GetComponent<T>();
+        if (skillComponent == null)
+            return;
+
+        bool actuallyActivate = talentBool && shouldBeActive;
+
+        if (actuallyActivate)
+            _currentElemental.Abilities.ActivateSkill(skillComponent);
+        else
+            _currentElemental.Abilities.DeactivateSkill(skillComponent);
+    }
+
+    private void HandleWaterTalents(bool shouldBeActive)
+    {
+        var magicWater = _currentElemental.GetComponent<MagicWaterPassive>();
+        if (magicWater == null)
+            return;
+
+        bool actuallyActivate = _elementalsAuraTalent && shouldBeActive;
+
+        if (actuallyActivate)
+            _currentElemental.Abilities.ActivateSkill(magicWater);
+        else
+            _currentElemental.Abilities.DeactivateSkill(magicWater);
+
+        magicWater.EnableMagicWaterAura(actuallyActivate);
+    }
+    #endregion
+
     [Command]
     private void CmdDestroyUnit(int index)
     {
-        Debug.Log(Hero.SpawnComponent.Units[index].gameObject.name);
         NetworkServer.Destroy(Hero.SpawnComponent.Units[index].gameObject);
 
         Hero.SpawnComponent.Units.RemoveAt(index);
     }
+}
+
+//Базируется на порядке префабов в SpawnComponent
+public enum Elementals
+{
+    None = -1,
+    Air = 0,
+    Earth = 1,
+    Fire = 2,
+    Water = 3,
 }

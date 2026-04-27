@@ -1,10 +1,11 @@
-﻿using Gangdollarff.EarthElemental;
-using Gangdollarff.WaterElemental;
+﻿using System;
+using Gangdollarff.EarthElemental;
 using Mirror;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class StateInfo
 {
@@ -38,6 +39,7 @@ public abstract class AbstractCharacterState
 
 	public int CurrentStacksCount => currentStacksCount;
 
+	public Skill Skill => skill;
     public int MaxStacksCount = 0;
 	protected float duration = -1;
 	protected float damageToExit = 0;
@@ -104,9 +106,7 @@ public abstract class AbstractCharacterState
 
 	public virtual void ReduceStack()
 	{
-		currentStacksCount--;
-		if (currentStacksCount <= 0)
-			ExitState();
+        ExitState();
     }
 
 	protected virtual bool CanEnterState(CharacterState character)
@@ -291,6 +291,7 @@ public class CharacterState : NetworkBehaviour
 	public List<AbstractCharacterState> CurrentStates => _currentStates;
 	public Character Character => _hero;
 	public event System.Action<AbstractCharacterState> OnStateAdded;
+	public event Action<States, int> OnStateDispelled;
 
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
 	{
@@ -298,7 +299,8 @@ public class CharacterState : NetworkBehaviour
 		[States.Frozen] = new FrozenState(),
 		[States.Frosting] = new FrostingState(),
 		[States.Cooling] = new Cooling(),
-		[States.Restoration] = new RestorationState(),
+		[States.Restoration] = new RestorationState(States.Restoration),
+		[States.RestorationStacking] = new RestorationState(States.RestorationStacking),
 		[States.Stun] = new StunnedState(),
 		[States.Silent] = new Silent(),
 		[States.Calmness] = new Calmness(),
@@ -323,6 +325,7 @@ public class CharacterState : NetworkBehaviour
 		[States.ReversePolarity] = new ReversePolarityState(),
 		[States.SpiritEnergy] = new SpiritEnergyState(),
 		[States.SpiritHealth] = new SpiritHealthState(),
+		[States.DisciplineAura]   = new DisciplineAuraState(),
 
 		[States.Knockdown] = new Knockdown(),
 		[States.IdealEvade] = new IdealEvade(),
@@ -354,7 +357,8 @@ public class CharacterState : NetworkBehaviour
 		[States.ManaRegen] = new ManaRegen(),
 		[States.Stupefaction] = new Stupefaction(),
 		[States.TentacleGrip] = new TentacleGrip(),
-		[States.Destruction] = new DestructionState(),
+		[States.Destruction] = new DestructionState(States.Destruction),
+		[States.DestructionStacking] = new DestructionState(States.DestructionStacking),
 		[States.HardenedFlesh] = new HardenedFlesh(),
 		[States.FocusingOnReflexesState] = new FocusingOnReflexesState(),
 		[States.DivineEnhancement] = new DivineEnhancementState(),
@@ -376,6 +380,12 @@ public class CharacterState : NetworkBehaviour
 		[States.ReflectiveScales] = new ReflectiveScalesState(),
 		[States.SwiftAttacks] = new SwiftAttacksState(),
 		[States.CounterRage] = new CounterRageState(),
+		[States.Ignition] = new IgnitionState(),
+		[States.MergeDark] = new MergeDarkState(),
+		[States.DarkFormState] = new DarkFormState(),
+		[States.ShackleState] = new ShackleState(),
+		[States.SlowFlowLight] = new SlowFlowLightState(),
+		[States.Retribution] = new RetributionState(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -398,26 +408,24 @@ public class CharacterState : NetworkBehaviour
 
 		#region Gandollarf	
 		[States.PowerOfEarth] = new PowerOfEarth(),
-        [States.EarthsHealth] = new EarthsHealth(),
-        [States.MagicWater] = new MagicWater(),
-        [States.HotBloodAura] = new HotBloodAura(),
-        [States.HotBloodBuff] = new HotAuraBuff(),
+		[States.EarthsHealth] = new EarthsHealthBuff(),
+		[States.MagicWater] = new MagicWater(),
+		[States.HotBloodBuff] = new HotAuraBuff(),
         [States.GodAura] = new GodAura(),
         [States.GodAuraBuff] = new GodAuraBuff(),
         [States.TransformationDebuff] = new TransformationDebuff(),
         [States.PetrificationDebuff] = new PetrificationState(),
-        [States.PushingWindBuff] = new PushingWindBuff(),
+        [States.PushingWindBuff] = new PushingWindBuff(States.PushingWindBuff),
+        [States.PushingWindAura] = new PushingWindBuff(States.PushingWindAura),
         [States.Burning] = new Burning(),
         [States.Burn] = new Burn(),
 		[States.Discharge] = new Gangdollarff.AirElemental.Discharge(),
-		[States.CoolingAura] = new CoolingAura(),
 		[States.CoolingDamaged] = new CoolingDamaged(),
 		[States.MagicalExcitement] = new MagicalExcitement(),
 		[States.GodLight] = new GodLightState(),
 		[States.MagicInstantaneity] = new MagicInstantaneityState(),
 		[States.ImmortalityState] = new ImmortalityState(),
-		[States.BurningStacked] = new BurningStacked(),
-        #endregion
+		#endregion
 
         #region Test Baff and Debaff
         [States.BaffState] = new BaffState(),
@@ -507,6 +515,12 @@ public class CharacterState : NetworkBehaviour
 		return false;
 	}
 
+	public bool HasMagicDebuff()
+	{
+		foreach (var state in _currentStates) if (state.Type == StateType.Magic && state.BaffDebaff == BaffDebaff.Debaff) return true;
+		return false;
+	}
+
 	public AbstractCharacterState GetState(States state)
 	{
 		foreach (AbstractCharacterState states in _currentStates)
@@ -521,6 +535,12 @@ public class CharacterState : NetworkBehaviour
 
 	[Command]
 	public void CmdAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
+	{
+		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
+		ClientAddState(state, duration, damageToExit, schools, personWhoShooted, skillName);
+	}
+	
+	public void AddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
 	{
 		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
 		ClientAddState(state, duration, damageToExit, schools, personWhoShooted, skillName);
@@ -682,11 +702,11 @@ public class CharacterState : NetworkBehaviour
 			AddShield(damageableShield);
 		}
 
-		if (school != Schools.None)
+		/*if (school != Schools.None)
 		{
 			var counterSpell = (AbilitySchoolDebuff)stateInstance;
 			counterSpell.canceledSchoool = school;
-		}
+		}*/
 	}
 
 	private void CreateState(AbstractCharacterState state, States stateName, float duration, float damageToExit, GameObject personWhoShooted, string skillName, bool stack)
@@ -762,7 +782,7 @@ public class CharacterState : NetworkBehaviour
 		}
 	}
 
-	public void DispelStates(StateType type, bool isAlly, out int howMuchDispelled ,bool isDispelOneState = false)
+	public void DispelStates(StateType type, bool isAlly,out int howMuchDispelled , bool isDispelOneState = false)
 	{
 		howMuchDispelled = 0;
 		if (_currentStates.Count == 0) return;
@@ -777,33 +797,41 @@ public class CharacterState : NetworkBehaviour
 				((isAlly && state.BaffDebaff == BaffDebaff.Baff) ||
 				 (!isAlly && state.BaffDebaff == BaffDebaff.Debaff)))
 			{
+				NotifyDispelWhoMade(state.PersonWhoMadeBuff.gameObject,state.State,state.CurrentStacksCount);
 				if (state.CurrentStacksCount > 1)
 				{
-					state.ReduceStack();
-					
-					if (isServer)
-						ClientRpcRemoveIconCount();
-					else
-						_stateIcons?.RemoveIconCount();
-
-					if (state.CurrentStacksCount <= 0)
-					{
-						statesToRemove.Add(state);
-					}
+					//state.currentStacksCount--;
+					ClientRpcRemoveIconCount();
 				}
 				else
 				{
 					statesToRemove.Add(state);
+					if (isDispelOneState) break;
 				}
 			}
 		}
 
 		foreach (var state in statesToRemove)
 		{
-			howMuchDispelled++;
-			_stateIcons.RemoveItemByState(state.State);
 			RemoveState(state.State);
+			_stateIcons.RemoveItemByState(state.State);
 		}
+	}
+	
+	[ClientRpc]
+	private void NotifyDispelWhoMade(GameObject whoMade, States state,int num)
+	{
+		if(whoMade == null) return;
+		whoMade.TryGetComponent(out Character c);
+		if(c == null) return;
+		
+		c.CharacterState.OnOwnStateDispelled(state,num);
+	}
+
+	public void OnOwnStateDispelled(States state, int num)
+	{
+		if (!isOwned) return;
+		OnStateDispelled?.Invoke(state,num);
 	}
 
 	[ClientRpc]
@@ -954,9 +982,10 @@ public enum States
 	Stupefaction,
 	TentacleGrip,
     Discharge,
-    CoolingAura,
-	Restoration,
-	Destruction,
+    Restoration,
+    RestorationStacking,
+    Destruction,
+    DestructionStacking,
 	HardenedFlesh,
 	FocusingOnReflexesState,
 	WarmingUpState,
@@ -971,17 +1000,16 @@ public enum States
 	PsionicGeneration,
 	MagicalExcitement,
 	GodLight,
-	HotBloodAura,
 	HotBloodBuff,
 	GodAura,
 	GodAuraBuff,
 	TransformationDebuff,
 	PetrificationDebuff,
 	PushingWindBuff,
+	PushingWindAura,
 	CoolingDamaged,
 	MagicInstantaneity,
 	ImmortalityState,
-	BurningStacked,
 	Parasites,
 	SwarmSpeed,
 	DestructivePoison,
@@ -994,7 +1022,14 @@ public enum States
 	ReptilianStasis,
 	ReflectiveScales,
 	SwiftAttacks,
-	CounterRage
+	CounterRage,
+	Ignition,
+	MergeDark,
+	DarkFormState,
+	ShackleState,
+	SlowFlowLight,
+	Retribution,
+	DisciplineAura
 }
 public enum BaffDebaff
 {

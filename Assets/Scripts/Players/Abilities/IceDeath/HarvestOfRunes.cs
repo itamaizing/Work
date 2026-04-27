@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -39,6 +39,9 @@ public class HarvestOfRunes : Skill
     private void AddEnergy()
     {
         if (Hero.TryGetResource(ResourceType.Energy) is Energy energy) energy.CmdAdd(enegry);
-        if (harvestOfEnergy != null) harvestOfEnergy.IncreaseSetCooldown(harvestOfEnergy.CooldownTime);
+        if (harvestOfEnergy != null)
+        {
+            harvestOfEnergy.Cooldown.SetIncreased(harvestOfEnergy.Cooldown.CooldownTime, shouldModify: false);
+        }
     }
 }

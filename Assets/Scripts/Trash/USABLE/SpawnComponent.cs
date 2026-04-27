@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class SpawnComponent : NetworkBehaviour
 {
     [SerializeField] private Character _hero;
     [SerializeField] private List<Character> _characterPrefabs;
+    [SerializeField] private List<Character> _clonePrefabs;
 
     private readonly List<Character> _units = new();
 
@@ -20,6 +20,7 @@ public class SpawnComponent : NetworkBehaviour
 
     [SerializeField] private List<Character> _enemyPrefabs;
     [SerializeField] private List<Character> _allyPrefabs;
+    public List<Character> GetClonePrefabs() => _clonePrefabs;
 
     [Command]
     public void CmdSpawnUnitEnemy(int index)
@@ -50,7 +51,6 @@ public class SpawnComponent : NetworkBehaviour
 
         spawned.NetworkSettings.MyRoom = _hero.NetworkSettings.MyRoom;
 
-        SceneManager.MoveGameObjectToScene(spawned.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(spawned.gameObject);
         ClientRpcUnitAdded(spawned.gameObject);
     }
@@ -124,24 +124,24 @@ public class SpawnComponent : NetworkBehaviour
 
     #endregion
 
-    public void SpawnUnit(int index, Vector3 position)
+    public Character SpawnUnit(int index, Vector3 position)
     {
         if (index < 0 || index >= _characterPrefabs.Count)
         {
             Debug.LogError($"Index {index} is out of bounds for spawning units.");
-            return;
+            return null;
         }
 
         var prefab = _characterPrefabs[index];
-        SpawnCharacter(prefab, position, Quaternion.identity);
+        return SpawnCharacter(prefab, position, Quaternion.identity);
     }
 
-    private void SpawnCharacter(Character prefab, Vector3 position, Quaternion rotation)
+    private Character SpawnCharacter(Character prefab, Vector3 position, Quaternion rotation)
     {
         if (prefab == null)
         {
             Debug.LogError("Character prefab is null.");
-            return;
+            return null;
         }
 
         var spawnedCharacter = Instantiate(prefab, position, rotation);
@@ -152,16 +152,14 @@ public class SpawnComponent : NetworkBehaviour
         {
             Debug.LogError("Hero or NetworkSettings is null. Cannot move character to scene.");
             Destroy(spawnedCharacter.gameObject);
-            return;
+            return null;
         }
-
-        SceneManager.MoveGameObjectToScene(spawnedCharacter.gameObject, _hero.NetworkSettings.MyRoom);
 
         if (connectionToClient == null)
         {
             Debug.LogError("Connection to client is null. Cannot spawn character.");
             Destroy(spawnedCharacter.gameObject);
-            return;
+            return null;
         }
 
         NetworkServer.Spawn(spawnedCharacter.gameObject, connectionToClient);
@@ -170,6 +168,8 @@ public class SpawnComponent : NetworkBehaviour
         
         if (spawnedCharacter is MinionComponent)
             spawnedCharacter.CharacterParent = _hero;
+
+        return spawnedCharacter;
     }
 
     #region Test
@@ -190,8 +190,6 @@ public class SpawnComponent : NetworkBehaviour
             Destroy(spawnedCharacter.gameObject);
             return null;
         }
-
-        SceneManager.MoveGameObjectToScene(spawnedCharacter.gameObject, _hero.NetworkSettings.MyRoom);
 
         if (connectionToClient == null)
         {

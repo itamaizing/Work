@@ -243,7 +243,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
         if (manaToSpend > _hero.Resources[ResourceType.Energy].CurrentValue)
             yield break;
 
-        _skillEnergyCosts[0].resourceCost = manaToSpend;
+        _skillEnergyCosts[0].value = manaToSpend;
 
         TargetInfo targetInfo = new();
         targetInfo.AddTarget(Targeting.GetTarget()?.Character);
@@ -273,7 +273,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
             passive?.ActivateEnergyFreeAfterTeleport();
         }
 
-        _skillEnergyCosts[0].resourceCost = _baseManaCost;
+        _skillEnergyCosts[0].value = _baseManaCost;
         yield return null;
     }
 

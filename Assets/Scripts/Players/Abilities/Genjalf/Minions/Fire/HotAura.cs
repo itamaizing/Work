@@ -4,52 +4,23 @@ using System.Linq;
 using Mirror;
 using UnityEngine;
 
-public class HotAura : MonoBehaviour
+public class HotBloodAura : AuraStateHandler
 {
-    private void Start()
-    {
-        var chatacter = GetComponent<Character>();
-        chatacter.CharacterState.CmdAddState(States.HotBloodAura, 0, 0, chatacter.gameObject, name);
-    }
-}
+    [SerializeField] private float _buffDuration = -1f;
 
-public class HotBloodAura : AuraState
-{
-    private float _percentage = 0.1f;
-    public override States State { get; }
-    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
-    public override List<StatusEffect> Effects { get; }
-    public override float Distance => 6;
-    public override float EffectRate { get; }
-    public override LayerMask LayerMask => LayerMask.GetMask("Allies");
-
-    public override void EffectOnEnter(Character character)
+    protected override void OnTargetEnter(Character target)
     {
-        CmdAddState(character.gameObject);
+        CmdApplyStateToTarget(target.gameObject, States.HotBloodBuff, _buffDuration, Schools.Fire, _owner.gameObject, nameof(HotBloodAura));
     }
 
-    public override void EffectOnExit(Character character)
+    protected override void OnTargetExit(Character target)
     {
-        if (character.CharacterState.CheckForState(States.HotBloodBuff))
-        {
-            CmdRemoveState(character.gameObject);
-        }
+        CmdRemoveStateFromTarget(target.gameObject, States.HotBloodBuff);
     }
 
-    public override void EffectOnStay(List<Character> characters)
+    protected override void OnAuraDisabled()
     {
-    }
-    
-    [Command]
-    private void CmdAddState(GameObject target)
-    {
-        target.GetComponent<Character>().CharacterState.AddState(States.HotBloodBuff,-1,0,target,nameof(HotAuraBuff));
-    }
-    
-    [Command]
-    private void CmdRemoveState(GameObject target)
-    {
-        target.GetComponent<Character>().CharacterState.RemoveState(States.HotBloodBuff);
+        RemoveEffectsFromAllTargets();
     }
 }
 
@@ -79,7 +50,15 @@ public class HotAuraBuff : AbstractCharacterState
 
     public override void ExitState()
     {
-        _character.CharacterState.RemoveState(this);
+        base.ExitState();
+        if (_character != null)
+        {
+            foreach (var skill in _character.Abilities.Abilities)
+            {
+                skill.Buff.CastSpeed.Reset();
+                skill.Buff.AttackSpeed.Reset();
+            }
+        }
     }
 
     public override bool Stack(float time)

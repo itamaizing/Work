@@ -159,11 +159,12 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 		SelectComponent.Initialize(Move,Abilities,UIComponent);
 		//_visionComponent.VisionRange = Data.GetAttributeValue(AttributeNames_old.VisionRadius);
 
+		_abilities.Initialize();
 		Health.Died += AddDeadCounter;
 		TemporaryResourceDisplay = _resources.Values.ToList();
 	}
 
-	private void EnsureResources()
+    private void EnsureResources()
 	{
         foreach (var resource in _attributeSystem.Resources)
 		{

@@ -6,6 +6,7 @@ using UnityEngine;
 public class PowerOfEarthActive : Skill
 {
     [SerializeField] private GameObject _effectObject;
+    [SerializeField] private PowerOfEarthAura _powerOfEarthAura;
     
     [SerializeField]private float _auraDuration = 6f;
     protected override int AnimTriggerCastDelay => 0;
@@ -41,16 +42,15 @@ public class PowerOfEarthActive : Skill
 
     protected override IEnumerator CastJob()
     {
-        
-        CmdAddAura();
+        _powerOfEarthAura.ActivateAura(true,_auraDuration);
+        CmdAddEffect();
 
         yield return null;
     }
     
     [Command]
-    private void CmdAddAura()
+    private void CmdAddEffect()
     {
-        _hero.CharacterState.AddState(States.PowerOfEarth, _auraDuration, 0, Hero.gameObject, name);
         StartEffectJob();
     }
 
@@ -73,7 +73,6 @@ public class PowerOfEarthActive : Skill
         _effectObject.gameObject.SetActive(true);
 
         yield return new WaitForSeconds(_auraDuration);
-
         _effectObject.gameObject.SetActive(false);
     }
 }

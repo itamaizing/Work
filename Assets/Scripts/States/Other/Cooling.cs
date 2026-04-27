@@ -7,9 +7,8 @@ public class Cooling : RefreshingState
 	public bool turnOff = false;
 	private float _damageOnStart;
 	private float _damageToExit;
-	//private float _curSpeedDebuf = 0.05f;
-	private float _speedDebuf = 0.05f;
-	private AttributeModifier _modif;
+	private float _speedDebuf = -0.05f;
+	private AttributeModifier _modif = new AttributeModifier(0f, ModifierType.Percent);
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.MoveSpeed, StatusEffect.AbilitySpeed };
 	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
@@ -20,27 +19,15 @@ public class Cooling : RefreshingState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		_modif.Value = 1 -_speedDebuf;
-		_modif.Type = ModifierType.Multiplier;
-
-        //Debug.Log("Entering cooling State");
-        characterState = character;
-		MaxStacksCount = 5;
-		if (damageToExit == 0)
-		{
-			_damageToExit = 10000;
-		}
-		else
-		{
-			_damageToExit = damageToExit;
-		}
+		_modif = new AttributeModifier(_speedDebuf, ModifierType.Percent);
+    
+		characterState = character;
+		MaxStacksCount = 6;
+		_damageToExit = damageToExit == 0 ? 10000 : damageToExit;
 		_damageOnStart = characterState.Character.Health.SumDamageTaken;
-
-		//characterState.Character.Move.ChangeMoveSpeed(1 - _speedDebuf);
+    
 		characterState.Character.Move.AddModifier(_modif);
 		currentStacksCount = 1;
-		//decrease speed of attact and movement
-		//characterState.Health.sumDamageTaken = 0;
 	}
 
 	public override void UpdateState()
@@ -53,15 +40,13 @@ public class Cooling : RefreshingState
 
 	public override void ExitState()
 	{
+		characterState.Character.Move.RemoveModifier(_modif);
+		currentStacksCount = 0;
+		turnOff = false;
+		_damageOnStart = 0;
+		_damageToExit = 0;
+		_modif = new AttributeModifier(_speedDebuf, ModifierType.Percent);
 		characterState.RemoveState(this);
-		//if (!characterState.Check(StatusEffect.MoveSpeed))
-		//{
-            characterState.Character.Move.RemoveModifier(_modif);
-       // }
-		if (!characterState.Check(StatusEffect.AbilitySpeed))
-		{
-			//return speed of attact
-		}
 	}
 
     public override bool Stack(float time)
@@ -71,10 +56,9 @@ public class Cooling : RefreshingState
 		{
             characterState.Character.Move.RemoveModifier(_modif);
             currentStacksCount++;
-            //characterState.Character.Move.ChangeMoveSpeed(1 - currentStacksCount * _speedDebuf);
-			_modif.Value = 1 - currentStacksCount * _speedDebuf;
-            characterState.Character.Move.AddModifier(_modif);
-        }
+			_modif.Value = currentStacksCount * _speedDebuf;
+			characterState.Character.Move.AddModifier(_modif);
+		}
         return true;
     }
 }

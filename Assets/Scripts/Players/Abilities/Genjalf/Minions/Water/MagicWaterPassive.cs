@@ -2,9 +2,12 @@ using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class MagicWaterPassive : Skill, IPassiveSkill
 {
+    [SerializeField] private MagicWaterAura magicWaterAura;
+    
     #region Skill
     protected override int AnimTriggerCastDelay { get; }
     protected override int AnimTriggerCast { get; }
@@ -17,14 +20,8 @@ public class MagicWaterPassive : Skill, IPassiveSkill
     protected override void ClearData() => throw new NotImplementedException();
     #endregion
 
-    private void Start()
+    public void EnableMagicWaterAura(bool value)
     {
-        CmdAddState();
-    }
-
-    [Command]
-    private void CmdAddState()
-    {
-        _hero.CharacterState.AddState(States.MagicWater, 0, 0, _hero.gameObject, name);
+        magicWaterAura.ActivateAura(value);
     }
 }
