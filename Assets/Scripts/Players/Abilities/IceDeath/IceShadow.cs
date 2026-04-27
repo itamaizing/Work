@@ -142,7 +142,6 @@ public class IceShadow : Skill
 		if (shadowFrost == null) return;
 
 		shadowFrost.Init(Hero, _remainingDelayCircularFrostin, _circularFrosting.AreaInfo.Radius);
-		shadowFrost.StartShadowLogic();
 	}
 
 	[Command]

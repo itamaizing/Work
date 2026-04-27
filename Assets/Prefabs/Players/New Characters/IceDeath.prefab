@@ -9735,7 +9735,7 @@ MonoBehaviour:
   _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
-  _castDeley: 5
+  _castDeley: 2
   _damageValue: 0
   _infoComponent:
     _school: 0

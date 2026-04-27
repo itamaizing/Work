@@ -69,14 +69,22 @@ public class IcyStreamShadow : NetworkBehaviour
     {
         for (int tick = _startTick; tick <= _maxTicks; tick++)
         {
-            if (_cachedTarget == null || _cachedTarget.IsDead) break;
+            if (_cachedTarget == null || _cachedTarget.IsDead)
+                break;
 
             yield return new WaitForSeconds(_tickInterval);
 
             ApplyTick(tick);
         }
 
+        CleanupAndDestroy();
+    }
+
+    [Server]
+    private void CleanupAndDestroy()
+    {
         StopShadowStream();
+        NetworkServer.Destroy(gameObject);
     }
 
     private void ApplyTick(int tickNumber)
@@ -134,8 +142,7 @@ public class IcyStreamShadow : NetworkBehaviour
 
     public override void OnStopClient()
     {
-        if (_activeEffect != null)
-            Destroy(_activeEffect);
+        if (_activeEffect != null) Destroy(_activeEffect);
     }
 
     [Server]
@@ -152,12 +159,11 @@ public class IcyStreamShadow : NetworkBehaviour
         _activeEffect = effect;
     }
 
-    [Server]
     private void DestroyIcyStreamEffect()
     {
         if (_activeEffect != null)
         {
-            NetworkServer.Destroy(_activeEffect);
+            NetworkServer.Destroy(_activeEffect);        
             _activeEffect = null;
         }
     }
