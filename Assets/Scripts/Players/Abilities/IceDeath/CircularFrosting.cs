@@ -62,6 +62,7 @@ public class CircularFrosting : Skill
     {
         if (_energy == null) _energy = (Energy)Hero.Resources[ResourceType.Energy];
         if (_energy == null) yield break;
+        if (!IsCasting) yield break;
 
         FindEnemies();
         ExplosionFrosting();
