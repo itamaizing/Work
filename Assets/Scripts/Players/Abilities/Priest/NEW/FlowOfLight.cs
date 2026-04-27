@@ -82,10 +82,10 @@ public class FlowOfLight : Skill, IPolaritySwitchable
         Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle) &&
         ((isLightMode && IsAllyTarget(Targeting.GetTarget()?.Character)) || (!isLightMode && IsEnemyTarget(Targeting.GetTarget()?.Character)));
 
-    private void OnEnable()
+    public override void Init(SkillRenderer render, Character hero)
     {
-        OnModeChange += UpdateMode;
-        OnSkillCanceled += HandleSkillCanceled;
+        base.Init(render, hero);
+        
         UpdateMode();
         
         _instantFlash = new InstantFlashBooster(this, duration: 5f, chance: 10f);
@@ -97,6 +97,12 @@ public class FlowOfLight : Skill, IPolaritySwitchable
         _destructionFillingBooster = new DestructionFillingBooster(this);
         _spiritEnergyAddBooster = new SpiritEnergyAddBooster(this);
         _slowTalentBooster = new SlowTalentBooster(this);
+    }
+    
+    private void OnEnable()
+    {
+        OnModeChange += UpdateMode;
+        OnSkillCanceled += HandleSkillCanceled;
     }
 
     private void OnDisable()

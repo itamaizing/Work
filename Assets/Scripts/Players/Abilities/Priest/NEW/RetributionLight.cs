@@ -84,12 +84,18 @@ public class RetributionLight : Skill,IPolaritySwitchable
         DestroyCirclePreview(ref _healCircleInstance);
     }
     
-    private void OnEnable()
+    public override void Init(SkillRenderer render, Character hero)
     {
-        OnModeChange += UpdateMode;
+        base.Init(render, hero);
+        
         UpdateMode();
         
         _overhealMana = new OverhealManaBooster(this, Hero);
+    }
+    
+    private void OnEnable()
+    {
+        OnModeChange += UpdateMode;
     }
 
     private void OnDisable()

@@ -32,17 +32,15 @@ public class ReversePolarity : Skill
     {
         _audioSource = GetComponent<AudioSource>();
     }
-
-    private void OnEnable()
+    
+    public override void Init(SkillRenderer render, Character hero)
     {
+        base.Init(render, hero);
+        
         _movementBooster = new ReversePolarityMovementBooster(this);
         _reverseDisciplineBooster = new ReverseDisciplineBooster(this);
     }
 
-    private void OnDisable()
-    {
-
-    }
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         //Debug.LogError("DataError");

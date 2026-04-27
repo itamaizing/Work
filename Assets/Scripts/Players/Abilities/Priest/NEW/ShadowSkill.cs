@@ -52,9 +52,10 @@ public class ShadowSkill : Skill
         Targeting.ClearTarget();
         _clickPoint = Vector3.zero;
     }
-
-    private void OnEnable()
+    
+    public override void Init(SkillRenderer render, Character hero)
     {
+        base.Init(render, hero);
         Hero.DamageTracker.OnDamageTracked += TrackDarkDamage;
     }
 

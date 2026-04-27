@@ -107,10 +107,9 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         _audioSource = GetComponent<AudioSource>();
     }
 
-    private void OnEnable()
+    public override void Init(SkillRenderer render, Character hero)
     {
-        _flashOfLight.CastEnded += HandleLastTimeFlashOfLightCast;
-        OnModeChange += UpdateMode;
+        base.Init(render, hero);
         UpdateMode();
         
         _instantFlash = new InstantFlashBooster(this, duration: 5f, chance: 10f);
@@ -119,6 +118,12 @@ public class SparkOfLight : Skill,IPolaritySwitchable
         
         _overhealMana = new OverhealManaBooster(this, Hero);
         _aoeBooster = new AoeTalentBooster(this);
+    }
+
+    private void OnEnable()
+    {
+        _flashOfLight.CastEnded += HandleLastTimeFlashOfLightCast;
+        OnModeChange += UpdateMode;
     }
 
     private void OnDisable()

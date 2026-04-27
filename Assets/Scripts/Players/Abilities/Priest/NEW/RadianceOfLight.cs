@@ -42,12 +42,18 @@ public class RadianceOfLight : Skill, IPolaritySwitchable
 
     public override void LoadTargetData(TargetInfo targetInfo) { }
 
-    private void OnEnable()
+    public override void Init(SkillRenderer render, Character hero)
     {
-        OnModeChange += UpdateMode;
+        base.Init(render, hero);
+        
         UpdateMode();
         
         _overhealMana = new OverhealManaBooster(this, Hero);
+    }
+    
+    private void OnEnable()
+    {
+        OnModeChange += UpdateMode;
     }
 
     private void OnDisable()
