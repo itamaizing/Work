@@ -228,7 +228,7 @@ public class PriestShield : Skill
 
                 Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
 
-                if (Targeting.GetTempTarget().Character is Character character)
+                if (Targeting.GetTempTarget()?.Character is Character character)
                 {
                     if (Targeting.GetTempTarget().Character != null && !IsAllyTarget(character))
                     {

@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using Mirror;
 using UnityEngine;
 
@@ -21,7 +21,12 @@ public class ReverseDisciplineBooster : SkillTalentHandler
         {
             if (skill.Info.School == Schools.Discipline)
             {
-                skill.Buff.ManaCost.IncreasePercentage(isActive ? 0:1);
+                //skill.Buff.ManaCost.IncreasePercentage(isActive ? 0:1);
+                if (isActive)
+                    skill.Attributes[SkillAttributeName.ResourceCost].AddModifier(
+                        new AttributeModifier(-1, ModifierType.Multiplier, source: this));
+                else
+                    skill.Attributes[SkillAttributeName.ResourceCost].RemoveBySource(this);
             }
         }
     }
