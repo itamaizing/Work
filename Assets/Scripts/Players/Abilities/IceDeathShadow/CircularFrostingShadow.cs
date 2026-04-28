@@ -7,7 +7,7 @@ public class CircularFrostingShadow : NetworkBehaviour
     [SerializeField] private ParticleSystemController _particleSystem;
 
     private Character _owner;
-    //private float _remainingDelay;
+    private float _remainingDelay;
     private float _radius;
 
     private Coroutine _routine;
@@ -15,7 +15,7 @@ public class CircularFrostingShadow : NetworkBehaviour
     public void Init(Character owner, float remainingDelay, float radius)
     {
         _owner = owner;
-        //_remainingDelay = remainingDelay;
+        _remainingDelay = remainingDelay;
         _radius = radius;
     }
 
@@ -29,7 +29,7 @@ public class CircularFrostingShadow : NetworkBehaviour
 
     private IEnumerator ShadowRoutine()
     {
-        yield return new WaitForSeconds(1);
+        if (_remainingDelay > 0f) yield return new WaitForSeconds(_remainingDelay);
 
         if (_owner == null || _owner.IsDead) yield break;
 

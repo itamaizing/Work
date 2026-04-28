@@ -7,7 +7,7 @@ using UnityEngine;
 public class IceShadowObject : Projectiles
 {
 	//[HideInInspector] public EnergyPlayer energyPlayer;
-	[HideInInspector] public float timeToDestroy = 2;
+	[HideInInspector] public float timeToDestroy = 4;
 
 	[SerializeField] private bool enemyShadow = true;
 	[SerializeField] private Animator anim;

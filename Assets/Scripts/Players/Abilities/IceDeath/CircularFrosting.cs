@@ -180,7 +180,7 @@ public class CircularFrosting : Skill
         _delayStartTime = Time.time;
         _delayActive = true;
 
-        _wasInterruptedInDelay = false;
+        _wasInterruptedInDelay = true;
         _remainingDelay = 0f;
     }
 
@@ -191,7 +191,6 @@ public class CircularFrosting : Skill
 
     private void OnSkillCanceledHandler()
     {
-        if(!isServer) return;
         if (!_delayActive) return;
 
         float elapsed = Time.time - _delayStartTime;
@@ -207,7 +206,7 @@ public class CircularFrosting : Skill
         _remainingDelay = 0f;
     }
 
-    [Server]
+    [ClientRpc]
     public void PayEnergyOnInterruptedDelay()
     {
         if (!_wasInterruptedInDelay) return;
