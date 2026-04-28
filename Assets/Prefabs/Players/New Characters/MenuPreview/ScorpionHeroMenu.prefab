@@ -128,6 +128,10 @@ PrefabInstance:
       propertyPath: bar
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 7368319014048586301, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+      propertyPath: _ringOfFireAura
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8086357493113313276, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
@@ -228,6 +232,8 @@ PrefabInstance:
     - {fileID: 1583754041930301776, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
     - {fileID: 7049285627988083031, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
     - {fileID: 5037355390853188139, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 4675390448830311774, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
+    - {fileID: 7368319014048586301, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
     m_RemovedGameObjects:
     - {fileID: 1073531778476955462, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
     - {fileID: 3785244378745797364, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}

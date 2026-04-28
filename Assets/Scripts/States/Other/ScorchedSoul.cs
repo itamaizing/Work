@@ -35,11 +35,12 @@ public class ScorchedSoul : RefreshingState
         _duration = durationToExit;
         _baseDuration = durationToExit;
         MaxStacksCount = 3;
-        currentStacksCount = 1;
     }
 
     public override void ExitState()
     {
+        base.ExitState();
+        
         if (!characterState.Check(StatusEffect.AbilitySpeed))
         {
             //return cast speed
@@ -52,11 +53,8 @@ public class ScorchedSoul : RefreshingState
                 }
             }
         }
-        //if (characterState.Check(StatusEffect.AbilityCooldownSpeed))
-        //{
-        //    //return abilitys' CD speed
-        //}
-        characterState.RemoveState(this);
+
+        currentStacksCount = 0;
     }
 
     public override bool Stack(float time)
@@ -77,21 +75,5 @@ public class ScorchedSoul : RefreshingState
 
     public override void UpdateState()
     {
-        if (_duration <= 0)
-        {
-            ExitState();
-        }
-    }
-    
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        if (!CanEnterState(character)) return null;
-
-        if (currentStacksCount == 0)
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        else
-            Stack(duration);
-
-        return this;
     }
 }

@@ -15,6 +15,7 @@ public abstract class AuraStateHandler : NetworkBehaviour
     protected virtual float GetCurrentRadius() => _radius;
     protected Character _owner;
     protected readonly HashSet<Character> _currentTargets = new();
+    protected Skill _fromSkill;
 
     private Coroutine _checkCoroutine;
     private Coroutine _durationCoroutine;
@@ -22,11 +23,13 @@ public abstract class AuraStateHandler : NetworkBehaviour
 
     public bool IsActive => _isActive;
 
-    public void ActivateAura(bool active, float duration = -1f, bool isAffectOnOwner = false)
+    public void ActivateAura(bool active, float duration = -1f, bool isAffectOnOwner = false, Skill fromSkill = null)
     {
         if (_isActive == active) return;
 
         _isActive = active;
+
+        if (fromSkill != null) _fromSkill = fromSkill;
 
         if (_checkCoroutine != null)
         {

@@ -14,8 +14,6 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
     [SerializeField] private float _duration = 3;
 
     [Header("Damage Settings")]
-    [SerializeField] private float _damage = 10f;
-    [SerializeField] private float _damageRate = 0.5f;
     [SerializeField] private float _damageScalePerTick = 2f;
 
     [Header("Range Settings")]
@@ -158,12 +156,13 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
                 float distanceMultiplier = Mathf.Lerp(DamageLerpStart, DamageLerpEnd, (distance / _maxDistance));
                 int damageScale = _enemiesDict.ContainsKey(enemy) ? _enemiesDict[enemy] : 1;
 
-                float finalDamageValue = Buff.Damage.GetBuffedValue(_damage * damageScale * distanceMultiplier);
+                float finalDamageValue = Buff.Damage.GetBuffedValue(Damage * damageScale * distanceMultiplier);
 
                 Damage damage = new Damage
                 {
                     Value = finalDamageValue,
-                    Type = Info.DamageType
+                    Type = Info.DamageType,
+                    School = Schools.Fire
                 };
 
                 CmdApplyDamage(damage, enemy.gameObject);
@@ -222,8 +221,7 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
     {
         if (targetIdentity.TryGetComponent<CharacterState>(out var stateManager))
         {
-            float duration = ScorchedSoulDuration;
-            stateManager.AddState(States.ScorchedSoul, duration, 0, _hero.gameObject, Name);
+            stateManager.AddState(States.ScorchedSoul, 6, 0, _hero.gameObject, Name);
         }
     }
 
@@ -232,53 +230,6 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
     {
         if (_fireBreathInstance != null)
             _fireBreathInstance.transform.rotation = rotation;
-    }
-
-    private void ApplyDamageToEnemiesInCone()
-    {
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, _maxDistance, _targetsLayers);
-
-        foreach (Collider collider in hitColliders)
-        {
-            if ((_targetsLayers.value & (1 << collider.gameObject.layer)) == 0)
-                continue;
-
-            if (collider.TryGetComponent<Health>(out Health enemy))
-            {
-                Vector3 dirToEnemy = (enemy.transform.position - transform.position).normalized;
-                float angle = Vector3.Angle(transform.forward, dirToEnemy);
-
-                if (angle <= _coneAngle / 2 && !Physics.Linecast(transform.position, enemy.transform.position, _targetsLayers))
-                {
-                    float distanceMultiplier = CalculateDistanceMultiplier(enemy.transform.position);
-                    int damageScale = _enemiesDict.ContainsKey(enemy) ? _enemiesDict[enemy] : 1;
-
-                    float finalDamageValue = Buff.Damage.GetBuffedValue(_damage * distanceMultiplier * damageScale);
-
-                    Damage damage = new Damage
-                    {
-                        Value = finalDamageValue,
-                        Type = Info.DamageType,
-                    };
-
-                    CmdApplyDamage(damage, enemy.gameObject);
-
-                    if (_enemiesDict.ContainsKey(enemy))
-                        _enemiesDict[enemy] *= (int)_damageScalePerTick;
-                    else
-                        _enemiesDict[enemy] = (int)_damageScalePerTick;
-                }
-            }
-        }
-    }
-
-    private float CalculateDistanceMultiplier(Vector3 enemyPos)
-    {
-        float distance = Vector3.Distance(transform.position, enemyPos);
-        distance = Mathf.Clamp(distance, _minDistance, _maxDistance);
-
-        float normalized = (distance - _minDistance) / (_maxDistance - _minDistance);
-        return Mathf.Lerp(BaseDamageScale, MinDistanceMultiplier, normalized);
     }
 
     protected override void ClearData()
@@ -296,14 +247,4 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
 
         return transform.position + transform.forward * FallbackMouseForwardDistance;
     }
-
-    //public void TryUpgradeByConsumingCombo(int amount)
-    //{
-    //    if (!Notifier.IsActive)
-    //    {
-    //        ConsumedAmount = 0;
-    //        return;
-    //    }
-    //    ConsumedAmount = Notifier.PayComboPoints(Mathf.Clamp(amount, 0, Notifier.AvailablePoints));
-    //}
 }
