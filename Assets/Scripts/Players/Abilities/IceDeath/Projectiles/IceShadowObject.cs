@@ -19,6 +19,7 @@ public class IceShadowObject : Projectiles
 	private float _damageTimer = 1f;
 	private float _modifierRegen;
 	private float _lifeTimer;
+	private float _bonusDuration;
 
 	public Skill SkillShadow { get => _skill; set => _skill = value; }
 
@@ -53,10 +54,11 @@ public class IceShadowObject : Projectiles
 	 * timer to destroy
 	 * buff player
 	 * */
-	public override void Init(Character dad, float energy, bool lastHit, Skill skill)
+	public void InitShadow(Character dad, float energy, float bonusDuration, bool lastHit, Skill skill)
 	{
 		_skill = skill;
 		_dad = dad;
+		_bonusDuration = bonusDuration;
 
 		_energyDad = Mathf.Min(energy, MaxEnergyForShadow);
 
@@ -146,6 +148,7 @@ public class IceShadowObject : Projectiles
 		{
 			float timeElapsed = Time.time - _lifeTimer;
 			float remainingLifetime = Mathf.Max(0f, timeToDestroy - timeElapsed);
+			float finalDuration = remainingLifetime + _bonusDuration;
 			//float freezeDuration = Mathf.Clamp(remainingLifetime, MinFreezeDuration, MaxFreezeDuration);
 
 			ApplyStateWithFrostEnergyBonus(target, States.Frozen, remainingLifetime);
@@ -158,7 +161,7 @@ public class IceShadowObject : Projectiles
 				{
 					if (enemy.TryGetComponent<Character>(out var newTatget) && collision.gameObject != _dad.gameObject)
 					{
-						ApplyStateWithFrostEnergyBonus(newTatget, States.Frozen, remainingLifetime);
+						ApplyStateWithFrostEnergyBonus(newTatget, States.Frozen, finalDuration);
 					}
 				}
 			}

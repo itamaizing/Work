@@ -123,20 +123,36 @@ public class IceShadow : Skill
 			_energy.CmdUse(_manaUsed);
 		}
 
-		CmdCreateProjecttile(_remainingDelayCircularFrostin, 0, _manaUsed, _lastHit, _talentDamage,	_iceDeathInShadowTalent, _circularFrosting.WasInterruptedInDelay, _capturedState?.CurrentTick ?? -1, _capturedState?.MaxTicks ?? -1, _capturedState?.Target != null ? _capturedState.Value.Target.netIdentity : null);
+		float bonusDuration = 0f;
+
+		if (triggeredFromFrosting)
+		{
+			bonusDuration += _circularFrosting.RemainingDelay;
+		}
+
+		if (_capturedState.HasValue)
+		{
+			float tickTime = 0.3f;
+			int remainingTicks = _capturedState.Value.MaxTicks - _capturedState.Value.CurrentTick;
+			bonusDuration += remainingTicks * tickTime;
+		}
+
+		CmdCreateProjecttile(_remainingDelayCircularFrostin, 0, _manaUsed, bonusDuration, _lastHit, _talentDamage,	_iceDeathInShadowTalent, _circularFrosting.WasInterruptedInDelay, _capturedState?.CurrentTick ?? -1, _capturedState?.MaxTicks ?? -1, _capturedState?.Target != null ? _capturedState.Value.Target.netIdentity : null);
 	}
 
-	private void SpawnShadow(float remainingDelay, Vector3 position, Quaternion rotation, float manaValue, bool lastHit, bool damage, bool inShadow, bool shouldSpawnCircularShadow, int animationHash, float normalizedTime, float velocityX, float velocityZ, int startTick, int maxTicks, Character target)
+	private void SpawnShadow(float remainingDelay, float streamBonus, Vector3 position, Quaternion rotation, float manaValue, bool lastHit,
+		bool damage, bool inShadow, bool shouldSpawnCircularShadow, int animationHash, float normalizedTime, float velocityX, 
+		float velocityZ, int startTick, int maxTicks, Character target)
 	{
 		IceShadowObject shadow = Instantiate(_shadow, position, rotation);
 
-		shadow.Init(_playerLinks, manaValue, lastHit, this);
+		shadow.InitShadow(_playerLinks, manaValue, streamBonus, lastHit, this);
 		shadow.TalentDamage(damage);
 
 		NetworkServer.Spawn(shadow.gameObject);
 
 		RpcSetShadowAnimation(shadow.gameObject, animationHash, normalizedTime, velocityX, velocityZ, rotation);
-		RpcInit(shadow.gameObject, manaValue, lastHit, damage, inShadow);
+		RpcInit(shadow.gameObject, manaValue, streamBonus, lastHit, damage, inShadow);
 
 		_icyStreamShadow = shadow.GetComponent<IcyStreamShadow>();
 
@@ -162,7 +178,7 @@ public class IceShadow : Skill
 	}
 
 	[Command]
-	private void CmdCreateProjecttile(float remainingDelay, float angle, float manaValue, bool lastHit, bool damage, bool inShadow, bool shouldSpawnCircularShadow, int startTick, int maxTicks, NetworkIdentity targetIdentity)
+	private void CmdCreateProjecttile(float remainingDelay, float angle, float manaValue, float streamBonus, bool lastHit, bool damage, bool inShadow, bool shouldSpawnCircularShadow, int startTick, int maxTicks, NetworkIdentity targetIdentity)
 	{
 		AnimatorStateInfo stateInfo = _playerLinks.Animator.GetCurrentAnimatorStateInfo(0);
 		int animationHash = stateInfo.fullPathHash;
@@ -184,14 +200,14 @@ public class IceShadow : Skill
 			Vector3 left = -_playerLinks.transform.right;
 			Vector3 forward = _playerLinks.transform.forward;
 
-			SpawnShadow(remainingDelay, basePosition + right, rotation, manaValue, lastHit, damage, inShadow, shouldSpawnCircularShadow, animationHash, normalizedTime, velocityX, velocityZ, startTick, maxTicks, target);
-			SpawnShadow(remainingDelay, basePosition + left, rotation, manaValue, lastHit, damage, inShadow, shouldSpawnCircularShadow, animationHash, normalizedTime, velocityX, velocityZ, startTick, maxTicks, target);
-			SpawnShadow(remainingDelay, basePosition + forward, rotation, manaValue, lastHit, damage, inShadow, shouldSpawnCircularShadow, animationHash, normalizedTime, velocityX, velocityZ, startTick, maxTicks, target);
+			SpawnShadow(remainingDelay, streamBonus, basePosition + right, rotation, manaValue, lastHit, damage, inShadow, shouldSpawnCircularShadow, animationHash, normalizedTime, velocityX, velocityZ, startTick, maxTicks, target);
+			SpawnShadow(remainingDelay, streamBonus, basePosition + left, rotation, manaValue, lastHit, damage, inShadow, shouldSpawnCircularShadow, animationHash, normalizedTime, velocityX, velocityZ, startTick, maxTicks, target);
+			SpawnShadow(remainingDelay, streamBonus, basePosition + forward, rotation, manaValue, lastHit, damage, inShadow, shouldSpawnCircularShadow, animationHash, normalizedTime, velocityX, velocityZ, startTick, maxTicks, target);
 		}
 
 		else
 		{
-			SpawnShadow(remainingDelay, basePosition, rotation, manaValue, lastHit, damage, inShadow, shouldSpawnCircularShadow, animationHash, normalizedTime, velocityX, velocityZ, startTick, maxTicks, target);
+			SpawnShadow(remainingDelay, streamBonus, basePosition, rotation, manaValue, lastHit, damage, inShadow, shouldSpawnCircularShadow, animationHash, normalizedTime, velocityX, velocityZ, startTick, maxTicks, target);
 		}
 
 		RpcPlayShotSound();
@@ -207,9 +223,9 @@ public class IceShadow : Skill
 	}
 
 	[ClientRpc]
-	private void RpcInit(GameObject obj, float manaValue, bool lastHit, bool damage, bool inShadow)
+	private void RpcInit(GameObject obj, float manaValue, float streamBonus,  bool lastHit, bool damage, bool inShadow)
 	{
-		obj.GetComponent<IceShadowObject>().Init(_playerLinks, manaValue, lastHit, this);
+		obj.GetComponent<IceShadowObject>().InitShadow(_playerLinks, manaValue, streamBonus, lastHit, this);
 		obj.GetComponent<IceShadowObject>().TalentDamage(damage);
 		obj.GetComponent<IceShadowObject>().TalentDamage(inShadow);
 
