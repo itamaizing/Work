@@ -27,6 +27,7 @@ public class IcyStream : Skill
     private GameObject _activeEffect;
 
     private bool _isStreaming;
+    private int _currentTick;
     private const int MaxTicks = 7;
 
     private const float FrostEnergyCoolingBonusPerStack = 1f;
@@ -65,6 +66,8 @@ public class IcyStream : Skill
 
     public void StopStream()
     {
+        if (_isStreaming) PayRemainingEnergy();
+
         if (_streamCoroutine != null)
         {
             StopCoroutine(_streamCoroutine);
@@ -150,6 +153,8 @@ public class IcyStream : Skill
                 yield break;
             }
 
+            _currentTick = tick;
+
             CurrentState = new IcyStreamState
             {
                 Target = _cachedTarget,
@@ -184,9 +189,15 @@ public class IcyStream : Skill
         return true;
     }
 
-    private bool TryPayEnergyTick()
+    private void PayRemainingEnergy()
     {
-        return Cost.TryPaySingle(_energyPerTick, ResourceType.Energy, shouldModify: false);
+        if (!_isStreaming) return;
+        if (_currentTick >= MaxTicks) return;
+
+        int remainingTicks = MaxTicks - _currentTick;
+        float totalEnergyToPay = remainingTicks * _energyPerTick;
+
+        if (Hero.TryGetResource(ResourceType.Energy, out var resource)) resource.CmdUse(totalEnergyToPay);
     }
 
     private void ApplyTick(int tickNumber)

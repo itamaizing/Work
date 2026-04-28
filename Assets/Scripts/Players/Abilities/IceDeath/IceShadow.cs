@@ -91,6 +91,7 @@ public class IceShadow : Skill
 			_remainingDelayCircularFrostin = _circularFrosting.RemainingDelay;
 			_shouldSpawnCircularShadow = _circularFrosting.WasInterruptedInDelay;
 
+			if (_shouldSpawnCircularShadow) _circularFrosting.PayEnergyOnInterruptedDelay();
 			Debug.Log($"_shouldSpawnCircularShadow: {_shouldSpawnCircularShadow}");
 		}
 
@@ -152,7 +153,6 @@ public class IceShadow : Skill
 			if (shadowFrost != null)
 			{
 
-				Debug.Log("Заморозка");
 				shadowFrost.Init(Hero, _remainingDelayCircularFrostin, _circularFrosting.AreaInfo.Radius);
 				shadowFrost.StartShadowFrost();
 			}

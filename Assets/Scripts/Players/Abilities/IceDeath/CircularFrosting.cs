@@ -15,7 +15,7 @@ public class CircularFrosting : Skill
     private bool _delayActive;
 
     private float _remainingDelay;
-    private bool _wasInterruptedInDelay;
+    [SyncVar] private bool _wasInterruptedInDelay;
 
     public float RemainingDelay => _remainingDelay;
     public bool WasInterruptedInDelay => _wasInterruptedInDelay;
@@ -191,6 +191,7 @@ public class CircularFrosting : Skill
 
     private void OnSkillCanceledHandler()
     {
+        if(!isServer) return;
         if (!_delayActive) return;
 
         float elapsed = Time.time - _delayStartTime;
@@ -204,5 +205,21 @@ public class CircularFrosting : Skill
     {
         _wasInterruptedInDelay = false;
         _remainingDelay = 0f;
+    }
+
+    [Server]
+    public void PayEnergyOnInterruptedDelay()
+    {
+        if (!_wasInterruptedInDelay) return;
+
+        if (_energy == null) _energy = (Energy)Hero.Resources[ResourceType.Energy];
+
+        if (_energy == null) return;
+
+        float energyToUse = Mathf.Min(_energy.CurrentValue, 30f);
+
+        if (energyToUse > 0f) _energy.CmdUse(energyToUse);
+
+        _wasInterruptedInDelay = false;
     }
 }

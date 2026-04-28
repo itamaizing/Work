@@ -21,7 +21,6 @@ public class CircularFrostingShadow : NetworkBehaviour
 
     public void StartShadowFrost()
     {
-        Debug.Log("Заморозка");
         if (_owner == null) return;
         if (_routine != null) return;
 
