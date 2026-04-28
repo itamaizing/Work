@@ -95,8 +95,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         _maxValue = maxValue.GetValue();
         _currentValue = _maxValue;
 
-        _regenCoroutine = StartCoroutine(RegenerateJob());
-        ClientStartRegenirateJob();
+        if (isServer) _regenCoroutine = StartCoroutine(RegenerateJob());
     }
 
     // Можно перевести на такой же формат хранения атрибутов (ResourceAttribute) - тогда можно вообще весь хардкод убрать
@@ -230,9 +229,17 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     {
         while (true)
         {
-            while (!isServer || netIdentity == null || connectionToClient == null)
+            if (!isServer)
+            {
                 yield return null;
-            if (_regenerationValue < 0) yield return null;
+                continue;
+            }
+
+            if (_regenerationValue <= 0)
+            {
+                yield return null;
+                continue;
+            }
 
             if (_currentValue < _maxValue)
             {
@@ -240,15 +247,15 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 
                 while (_currentValue < _maxValue)
                 {
-                    //Debug.Log("Regens");
-                    if (isClient) CmdRegen();
+                    Add(_regenerationValue);
                     yield return new WaitForSeconds(_regenerationPeriod);
                 }
             }
+
             yield return null;
         }
     }
-    
+
     [Command]
     public void CmdAddMax(float delta)
     {
