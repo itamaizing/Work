@@ -8,6 +8,13 @@ public class RuneComponent : Resource
 	[SerializeField] private float _sumDamageGiven = 0;
 	private bool _disableMultiplier = false;
 
+    private float _externalRegenMultiplier = 1f;
+
+    public void SetExternalRegenMultiplier(float multiplier)
+    {
+        _externalRegenMultiplier = Mathf.Max(0f, multiplier);
+    }
+
     public event System.Action<float, Skill> OnRuneSpent;
 
     /*private void Update()

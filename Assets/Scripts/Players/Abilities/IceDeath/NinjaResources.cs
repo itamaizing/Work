@@ -20,8 +20,10 @@ public class NinjaResources : Skill, IPassiveSkill
     private bool _isHardenedFleshTalent;
     private bool _isFrozenCrit;
     private bool _isRepeatedFrost;
+    private bool _isRuneRegenSpeed;
 
     public void RepeatedFrost(bool value) => _isRepeatedFrost = value;
+    public void RuneRegenSpeed(bool value) => _isRuneRegenSpeed = value;
 
     public bool IsRepeatedFrost { get => _isRepeatedFrost; set => _isRepeatedFrost = value; }
 
@@ -48,10 +50,14 @@ public class NinjaResources : Skill, IPassiveSkill
     }
     #endregion
 
+    private Coroutine _regenRoutine;
+
     public override void Init(SkillRenderer render, Character hero)
     {
         base.Init(render, hero);
         TrySubscribe();
+
+        if (isServer) _regenRoutine = StartCoroutine(UpdateRuneRegenRoutine());
     }
 
     private void OnEnable()
@@ -136,5 +142,53 @@ public class NinjaResources : Skill, IPassiveSkill
         if (value <= 0) return;
 
         if (Hero.CharacterState.CheckForState(States.FrostEnergy)) Hero.CharacterState.RemoveState(States.FrostEnergy);
+    }
+
+    private float CalculateRuneRegenBonus()
+    {
+        float totalBonus = 0f;
+
+        foreach (var character in FindObjectsOfType<Character>())
+        {
+            if (character == null) continue;
+
+            var state = character.CharacterState;
+            if (state == null) continue;
+
+            bool isHero = character.GetComponent<HeroComponent>() != null;
+            bool isMinion = character.GetComponent<MinionComponent>() != null;
+
+            if (state.CheckForState(States.Frozen))
+            {
+                if (isHero) totalBonus += 0.20f;
+                else if (isMinion) totalBonus += 0.10f;
+            }
+            else if (state.CheckForState(States.Frosting))
+            {
+                if (isHero) totalBonus += 0.10f;
+                else if (isMinion) totalBonus += 0.05f;
+            }
+        }
+
+        return totalBonus;
+    }
+
+    private IEnumerator UpdateRuneRegenRoutine()
+    {
+        while (true)
+        {
+            if (_isRuneRegenSpeed)
+            {
+                float bonus = CalculateRuneRegenBonus();
+
+                if (Hero.TryGetResource(ResourceType.Rune) is RuneComponent rune) rune.SetExternalRegenMultiplier(1f + bonus);
+            }
+            else
+            {
+                if (Hero.TryGetResource(ResourceType.Rune) is RuneComponent rune) rune.SetExternalRegenMultiplier(1f);
+            }
+
+            yield return new WaitForSeconds(0.5f);
+        }
     }
 }

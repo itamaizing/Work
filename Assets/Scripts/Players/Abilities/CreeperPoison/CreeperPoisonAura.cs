@@ -14,7 +14,7 @@ public class CreeperPoisonAura : NetworkBehaviour
 
     private Coroutine _poisonAuraRoutine;
     private int _lastStacks = 0;
-
+    
     private int _lastEnergyStacks = 0;
 
     private Health _health;

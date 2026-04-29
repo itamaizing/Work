@@ -46,7 +46,7 @@ MonoBehaviour:
       value: 10
     - nameToShow: Regen
       type: 1
-      value: 0
+      value: 0.1
   _attributes:
     _attributes:
     - nameToShow: ResistancePhysical
@@ -67,15 +67,3 @@ MonoBehaviour:
     - nameToShow: VisionRadius
       type: 5
       value: 2
-    - nameToShow: CastSpeed
-      type: 6
-      value: 0
-    - nameToShow: CastSpeedPhysical
-      type: 7
-      value: 0
-    - nameToShow: CastSpeedMagical
-      type: 8
-      value: 0
-    - nameToShow: ResourceCost
-      type: 9
-      value: 0
