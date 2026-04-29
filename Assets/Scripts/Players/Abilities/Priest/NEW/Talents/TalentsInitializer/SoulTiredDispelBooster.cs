@@ -23,19 +23,14 @@ public class SoulTiredDispelBooster : SkillTalentHandler
 
     public void TryRemoveTiredSoul(GameObject target,bool enabled)
     {
-        Debug.LogError("Removing...");
         if (!enabled || target == null) 
             return;
-        Debug.LogError("Is Enabled");
         var characterState = target.GetComponent<Character>().CharacterState;
         if (characterState == null) 
             return;
-
-        Debug.LogError("Character not null");
         
         if (characterState.CheckForState(States.TiredSoul))
         {
-            Debug.LogError("removing cmd");
             characterState.RemoveState(States.TiredSoul);
         }
     }

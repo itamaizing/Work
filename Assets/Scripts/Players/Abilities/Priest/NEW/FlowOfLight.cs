@@ -144,6 +144,8 @@ public class FlowOfLight : Skill, IPolaritySwitchable
         Info.School = isLightMode ? Schools.Light : Schools.Dark;
         AbilityInfoHero = isLightMode ? lightInfo : darkInfo;
         Hero.Abilities.SkillPanelUpdate();
+
+        Cooldown.OnForceRefreshUI();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> targetDataSavedCallback)
