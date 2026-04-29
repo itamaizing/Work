@@ -2239,10 +2239,6 @@ PrefabInstance:
       propertyPath: _skills.Array.size
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: '_skills.Array.data[0]'
-      value: 
-      objectReference: {fileID: 1550736018203531800}
     - target: {fileID: 5653443088679015109, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchorMax.x
       value: 1
@@ -2351,12 +2347,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: 8
       addedObject: {fileID: 1871163040516354185}
-    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7355207897669406910}
-    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1550736018203531800}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!114 &242370089425684122 stripped
 MonoBehaviour:
@@ -2453,53 +2443,6 @@ MonoBehaviour:
   _expForDieKill: 5
   _costCall: 0
   _navMeshAgent: {fileID: 0}
---- !u!114 &7355207897669406910
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2335912879836011194}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9d8851463803a6499fa026852bc9328, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _hitEffect: {fileID: 0}
-  _spriteRenderer: {fileID: 8093760789617283468}
-  _rb: {fileID: 5333065205538383447}
-  _force: 0
-  _distance: 5
-  timeToDestroy: 2
-  enemyShadow: 0
-  anim: {fileID: 1295975029580857905}
---- !u!114 &1550736018203531800
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2335912879836011194}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc2dc2d3d719d194cb093461534e4379, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::IcyStreamShadow
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _tickInterval: 0.3
-  _streamStartPoint: {fileID: 3107770508428623872}
-  _icyStreamPrefab: {fileID: 7744228389031826322, guid: a86f2fafa49694e4bab52db8f4d3fc78, type: 3}
-  _targetsLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  _radius: 2
-  _damageType: 0
-  _iceShadowObject: {fileID: 7355207897669406910}
 --- !u!114 &3097324644064452792 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 9112797239584284270, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -2592,11 +2535,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84375c825009b75438b87e3c401fcc09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TransformationComponent
---- !u!212 &8093760789617283468 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 2656578536299376474, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-  m_PrefabInstance: {fileID: 6092456140968476374}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &8415053888924651187 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2325131165822693477, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
