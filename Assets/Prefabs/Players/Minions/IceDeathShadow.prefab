@@ -1492,7 +1492,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6307323469154441576}
   - component: {fileID: 1295975029580857905}
-  - component: {fileID: 6630649047874300636}
   m_Layer: 0
   m_Name: Shadow
   m_TagString: Untagged
@@ -1539,33 +1538,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &6630649047874300636
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6177063639829153055}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 279100e0cb4b40f42b64a3ac1d1502fe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _smoothTime: 0.15
-  _currentSpeed: 5
-  _rotationDefaultSpeed: 1000
-  _anim: {fileID: 1295975029580857905}
-  _flyChecker: {fileID: 0}
-  moveAudioSource: {fileID: 1079191697634045219}
-  moveClips: []
-  MoveDirection: {x: 0, y: 0, z: 0}
-  ExternalMoveDirection: {x: 0, y: 0, z: 0}
-  IsMoving: 0
-  IsSelect: 0
-  IsNoRotateAtCursor: 0
 --- !u!1 &6355991531804215583
 GameObject:
   m_ObjectHideFlags: 0
@@ -2370,11 +2342,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04a32c9096d066945864c8dff3c0ab74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!82 &1079191697634045219 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 6518625887667459061, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-  m_PrefabInstance: {fileID: 6092456140968476374}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1808229507172449395 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5590339039165547173, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -2426,7 +2393,7 @@ MonoBehaviour:
   _animator: {fileID: 1295975029580857905}
   _networkAnimator: {fileID: 8901205174980455247}
   _healthComponent: {fileID: 321208861123123196}
-  _playerMove: {fileID: 6630649047874300636}
+  _playerMove: {fileID: 0}
   _abilities: {fileID: 2057095471850671928}
   characterState: {fileID: 1808229507172449395}
   uiComponent: {fileID: 8629066331929730936}
