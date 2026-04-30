@@ -11443,6 +11443,8 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 4374618947117916461}
   _seriesOfStrikes: {fileID: 3083348233968490285}
+  _skillManager: {fileID: 0}
+  _portalDarkness: {fileID: 0}
 --- !u!114 &7185321803913916173
 MonoBehaviour:
   m_ObjectHideFlags: 0
