@@ -8,10 +8,20 @@ public class PortalDarkness : Skill
     [SerializeField] private Character _playerLinks;
     [SerializeField] private float _duration = 3f;
 
+    [Header("Energy Cost")]
+    [SerializeField] private float _energyCost = 20f;
+
+    private Energy _energy;
+
     protected override bool IsCanCast => Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
+
+    private void EnsureEnergy()
+    {
+        if (_energy == null) _energy = (Energy)Hero.Resources[ResourceType.Energy];
+    }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
@@ -47,6 +57,16 @@ public class PortalDarkness : Skill
     protected override IEnumerator CastJob()
     {
         var target = Targeting.GetTarget()?.Character;
+
+        EnsureEnergy();
+
+        float cost = Buff.ManaCost.GetBuffedValue(_energyCost);
+
+        if (!Cost.TryPaySingle(cost, ResourceType.Energy, shouldModify: false))
+        {
+            TryCancel(true);
+            yield break;
+        }
 
         if (target == null) yield break;
 

@@ -37,7 +37,7 @@ public class PortalDarknessState : RefreshingState
         if (_timer < Interval) return;
 
         _timer = 0f;
-
+        
         if (Random.value > SpawnChance) return;
 
         SpawnEnemyMinion();
