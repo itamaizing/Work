@@ -293,6 +293,8 @@ public class CharacterState : NetworkBehaviour
 	public event System.Action<AbstractCharacterState> OnStateAdded;
 	public event Action<States, int> OnStateDispelled;
 
+	public event Action<AbstractCharacterState> OnStateRemoved; 
+
 	public Dictionary<States, AbstractCharacterState> enumToState = new Dictionary<States, AbstractCharacterState>()
 	{
 		#region UpdatedStates
@@ -583,6 +585,7 @@ public class CharacterState : NetworkBehaviour
 		{
             _currentStates.Remove(newState);
 			_stateIcons?.RemoveItemByState(newState.State);
+			OnStateRemoved?.Invoke(newState);
 		}
     }
 

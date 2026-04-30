@@ -9184,7 +9184,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
+  _isTalentSpell: 1
   _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 1c068b3a1e4a26b44ab80bf62b2d16d8, type: 2}
   _isSubjectToGlobalCooldownTime: 1
@@ -9228,14 +9228,14 @@ MonoBehaviour:
   _chargeComponent:
     _usesCharges: 1
     _isComboPart: 0
-    _cooldownType: 0
-    _maxCharges: 3
+    _cooldownType: 2
+    _maxCharges: 0
     _baseCooldown: 0
-    affectedByCDR: 1
+    affectedByCDR: 0
   _isUseCharges: 1
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
-  _maxCharges: 3
+  _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
     _radius: 0
@@ -9264,6 +9264,7 @@ MonoBehaviour:
   _shadowPrefab: {fileID: 6941272477236383263, guid: 877721d50c8db7147b895c23b8ad8df5, type: 3}
   _shadowSpeedMultiplier: 0.5
   _darkDamageThreshold: 50
+  _maxShadowCharges: 3
 --- !u!114 &5133618027215628989
 MonoBehaviour:
   m_ObjectHideFlags: 0

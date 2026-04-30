@@ -91,6 +91,24 @@ public class ReversePolarity : Skill
         
         _movementBooster?.OnReversePolarityActivated(false);
         _reverseDisciplineBooster?.IsDecreaseManaCost(false,Hero);
+        
+        HandleDarkFormDeactivationOnPolaritySwitch();
+    }
+    
+    private void HandleDarkFormDeactivationOnPolaritySwitch()
+    {
+        if (Hero.CharacterState.CheckForState(States.DarkFormState))
+        {
+            var darkFormSkill = Hero.Abilities.GetSkill<DarkForm>();
+            if (darkFormSkill != null)
+            {
+                darkFormSkill.Deactivate();
+            }
+        }
+
+        var shadowSkill = Hero.Abilities.GetSkill<ShadowSkill>();
+        if (shadowSkill != null)
+            shadowSkill.Disactive = true;
     }
 
     [Command]

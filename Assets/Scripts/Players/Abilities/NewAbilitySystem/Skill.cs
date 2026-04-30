@@ -944,6 +944,10 @@ public abstract class Skill : NetworkBehaviour
             }
             _rechargeEndTime.Add(endTime);
         }
+        else if (Charges.CooldownType == ChargeCooldownType.Infinite)
+        {
+            _rechargeEndTime.Add(double.MaxValue);
+        }
     }
 
     [Command]
