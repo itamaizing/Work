@@ -2323,6 +2323,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: 8
       addedObject: {fileID: 1871163040516354185}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6036627646030104388}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!114 &242370089425684122 stripped
 MonoBehaviour:
@@ -2414,6 +2417,21 @@ MonoBehaviour:
   _expForDieKill: 5
   _costCall: 0
   _navMeshAgent: {fileID: 0}
+--- !u!114 &6036627646030104388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2335912879836011194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b13e48bfd53ea894ab81291837038d10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DecompositionCorpse
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!114 &3097324644064452792 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 9112797239584284270, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
