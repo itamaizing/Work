@@ -7,6 +7,11 @@ public class PlagueCloudDamagePrefab : NetworkBehaviour
     [SerializeField] private LayerMask _alliesMask;
     private const float Duration = 12f;
 
+    private void OnEnable()
+    {
+        Invoke("DestroySelf", 3f);
+    }
+
     [Server]
     private void OnTriggerEnter(Collider other)
     {
@@ -15,5 +20,11 @@ public class PlagueCloudDamagePrefab : NetworkBehaviour
         if (((1 << other.gameObject.layer) & _alliesMask) != 0) return;
 
         character.CharacterState.CmdAddState(States.Plague, Duration, 0, null, "PlagueCloud");
+    }
+
+    [Server]
+    private void DestroySelf()
+    {
+        NetworkServer.Destroy(gameObject);
     }
 }

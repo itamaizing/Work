@@ -2432,6 +2432,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _plagueCloudPrefab: {fileID: 2533957208652230379, guid: 8d59cdb432c550e4e806457d55212cd0, type: 3}
 --- !u!114 &3097324644064452792 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 9112797239584284270, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
