@@ -10,12 +10,12 @@ public class NinjaTalent_1 : Talent
     public override void Enter()
     {
         _manager.ActivateSkill(_iceRolling);
-        _iceRolling.RollingWithEnemyTalentActive(true);
+        _iceRolling.RollingWithEnemyTalentActive(true, Data.Level);
     }
 
     public override void Exit()
     {
         _manager.DeactivateSkill(_iceRolling);
-        _iceRolling.RollingWithEnemyTalentActive(false);
+        _iceRolling.RollingWithEnemyTalentActive(false, 0);
     }
 }

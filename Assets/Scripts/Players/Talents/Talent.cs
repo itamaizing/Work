@@ -31,7 +31,7 @@ public abstract class Talent : MonoBehaviour
 	{
 		_data.IsOpen = isActive;
 		_data.Level = lvl;
-		if (isActive)
+		if (isActive && OpenCondition.CanOpen)
 		{
 			Enter();
 		}

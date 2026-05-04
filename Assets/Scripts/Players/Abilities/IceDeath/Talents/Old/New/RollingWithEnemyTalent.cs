@@ -8,11 +8,11 @@ public class RollingWithEnemyTalent : Talent
 
     public override void Enter()
     {
-        iceRolling.RollingWithEnemyTalentActive(true);
+        iceRolling.RollingWithEnemyTalentActive(true, 0);
     }
 
     public override void Exit()
     {
-        iceRolling.RollingWithEnemyTalentActive(false);
+        iceRolling.RollingWithEnemyTalentActive(false, 0);
     }
 }

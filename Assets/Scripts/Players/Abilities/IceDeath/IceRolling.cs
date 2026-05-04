@@ -74,10 +74,10 @@ public class IceRolling : Skill
 		_animator = GetComponent<Animator>();
 		_audioSource = GetComponent<AudioSource>();
 
-        //_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
-    }
+		//_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
+	}
 
-    private void Update()
+	private void Update()
 	{
 		if (_afterJump)
 		{
@@ -87,9 +87,9 @@ public class IceRolling : Skill
 
 	private float GetJumpRange()
 	{
-        if (_energy == null)
-            _energy = (Energy)Hero.Resources[ResourceType.Energy];
-        float range = _jumprange;
+		if (_energy == null)
+			_energy = (Energy)Hero.Resources[ResourceType.Energy];
+		float range = _jumprange;
 		float energyCost = 1;
 		for (int i = 0; i < 2; i++)
 		{
@@ -118,7 +118,7 @@ public class IceRolling : Skill
 			if (hit.collider.TryGetComponent(out Character character))
 			{
 				if (character != _playerLinks)
-                {
+				{
 					if (!_rollingWithEnemyTalent && character != Targeting.GetTarget()?.Character)
 					{
 						stopPosition = hit.point - direction;
@@ -247,8 +247,8 @@ public class IceRolling : Skill
 		}
 	}
 
-    #region old
- //   private void Jump()
+	#region old
+	//   private void Jump()
 	//{
 	//	Hero.Move.CanMove = false;
 	//	_isJump = true;
@@ -295,9 +295,9 @@ public class IceRolling : Skill
 	//		_lookDir = Vector3.zero;
 	//	}
 	//}
-    #endregion
+	#endregion
 
-    public override void LoadTargetData(TargetInfo targetInfo)
+	public override void LoadTargetData(TargetInfo targetInfo)
 	{
 		if (targetInfo != null)
 		{
@@ -307,18 +307,18 @@ public class IceRolling : Skill
 					Targeting.SetTarget(character);
 				else Targeting.SetTarget(ClosedTarget());
 			}*/
-			if(targetInfo.Points.Count > 0)
+			if (targetInfo.Points.Count > 0)
 			{
 				_mousePos = targetInfo.Points[0];
 				//targetInfo.Points.RemoveAt(0);
 			}
 		}
-		
+
 	}
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-        Vector3 candidatePoint = Vector3.positiveInfinity;
+		Vector3 candidatePoint = Vector3.positiveInfinity;
 
 		while (float.IsPositiveInfinity(candidatePoint.x))
 		{
@@ -338,10 +338,10 @@ public class IceRolling : Skill
 
 			yield return null;
 		}
-        TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(candidatePoint);
-        callbackDataSaved(targetInfo);
-    }
+		TargetInfo targetInfo = new TargetInfo();
+		targetInfo.Points.Add(candidatePoint);
+		callbackDataSaved(targetInfo);
+	}
 
 	public override IEnumerator CustomDrawJob(float time = DynamicRendererJobTime)
 	{
@@ -355,7 +355,7 @@ public class IceRolling : Skill
 	protected override IEnumerator CastJob()
 	{
 		if (!float.IsInfinity(_mousePos.x))
-        {
+		{
 			_isLastInSeries = _seriesOfStrikes.MakeHit(Targeting.GetTarget()?.Character, Info.AbilityForm, 1, 0, 0);
 			Jump2();
 			yield return null;
@@ -389,7 +389,11 @@ public class IceRolling : Skill
 
 	#region Talent
 	public void TalentRollingPhys(bool value) => _rollingPhysTalent = value;
-	public void RollingWithEnemyTalentActive(bool value) => _rollingWithEnemyTalent = value;
+	public void RollingWithEnemyTalentActive(bool value, int level)
+    {
+		
+		_rollingWithEnemyTalent = value;
+    }
 	#endregion
 
 	private void TimerDelay()
