@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
 {
@@ -10,6 +11,9 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
     [SerializeField] private ScorpionPassive scorpionPassive;
     [SerializeField] private byte _hitsInRow = 1;
 
+    private float _pendingFireDamageBonus = 0f;
+    private float _pendingScorchedSoulChance = 0f;
+    
     private Coroutine _hitsInRowCoroutine;
     private Animator _animator;
     private bool _isRightKick = true;
@@ -42,6 +46,12 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
     {
         _animator = GetComponent<Animator>();
         _waitForMinHitsForWarmingUp = new WaitForSeconds(MinHitsForWarmingUp);
+    }
+    
+    public void AddFireBonus(float damagePercent, float scorchedChance)
+    {
+        _pendingFireDamageBonus += damagePercent;
+        _pendingScorchedSoulChance += scorchedChance;
     }
 
     private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
@@ -180,20 +190,39 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
 
         _wasDamageApplied = true;
 
-        CmdApplyDamage(target.gameObject, damage);
+        CmdApplyDamage(target.gameObject, damage,0);
+        
+        float bonus = _pendingFireDamageBonus;
+        float scorchedChance = _pendingScorchedSoulChance;
+        _pendingFireDamageBonus = 0f;
+        _pendingScorchedSoulChance = 0f;
+
+        Damage additionalDamage = new Damage
+        {
+            Value = damage.Value * bonus,
+            Type = Info.DamageType,
+            School = Schools.Fire
+        };
+
+        if(additionalDamage.Value > 0)
+            CmdApplyDamage(target.gameObject, additionalDamage, scorchedChance);
     }
 
     [Command]
-    private void CmdApplyDamage(GameObject target, Damage damage)
+    private void CmdApplyDamage(GameObject target, Damage damage, float scorchedChance)
     {
         if (target == null) return;
         var damageable = target.GetComponent<IDamageable>();
-
         if (damageable == null) return;
+
         bool isHit = damageable.TryTakeDamage(ref damage, this);
 
-        if (isHit && damageable is Character character) AttackPassed(character);
-        //RpcSelfNotifyHitResult(isHit, targetObject);
+        if (isHit && damageable is Character character)
+        {
+            AttackPassed(character);
+            if (scorchedChance > 0f && Random.Range(0f, 100f) <= scorchedChance)
+                character.CharacterState.AddState(States.ScorchedSoul, 5f, 0f, _hero.gameObject, name);
+        }
     }
 
     //[TargetRpc]

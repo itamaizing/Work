@@ -9,17 +9,6 @@ public class ImpulseFireTalentBooster : SkillTalentHandler
 
     public override void Enable(bool value) => _enabled = value;
 
-    public int ApplyTeleportDiscount(int baseCost, Character target)
-    {
-        if (!_enabled || target == null) return baseCost;
-
-        int stacks = target.CharacterState.CheckStateStacks(States.ScorchedSoul);
-        if (stacks <= 0) return baseCost;
-
-        int divisor = stacks + 1;
-        return Mathf.CeilToInt(baseCost / (float)divisor);
-    }
-
     public bool CanUseInCombo(Skill skill)
     {
         if (!_enabled)

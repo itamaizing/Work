@@ -32,6 +32,9 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
     public void OnFinalComboSkill(GameObject target) { }
     public void OnTargetHasComboPoint(GameObject target, float comboPoints) { }
 
+    private float _pendingFireDamageBonus = 0f;
+    private float _pendingScorchedSoulChance = 0f;
+    
     #region Сonst
     private const float HitsInRowResetDelay = 2f;
     private const float MinDirectionSqrMagnitude = 0.0001f;
@@ -70,6 +73,12 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
         _hero.Move.SetCanMove(true);
         AnimCastEnded();
         if (_hitsInRowCoroutine != null) StopCoroutine(_hitsInRowCoroutine);
+    }
+    
+    public void AddFireBonus(float damagePercent, float scorchedChance)
+    {
+        _pendingFireDamageBonus += damagePercent;
+        _pendingScorchedSoulChance += scorchedChance;
     }
 
     public void Kick_ScorpionMoveFalse()
@@ -166,11 +175,27 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
         {
             Value = Buff.Damage.GetBuffedValue(_damageValue),
             Type = Info.DamageType,
+            School = Schools.Physical
         };
 
         _wasDamageApplied = true;
 
-        CmdApplyDamage(target.gameObject, damage);
+        CmdApplyDamage(target.gameObject, damage,0);
+        
+        float bonus = _pendingFireDamageBonus;
+        float scorchedChance = _pendingScorchedSoulChance;
+        _pendingFireDamageBonus = 0f;
+        _pendingScorchedSoulChance = 0f;
+
+        Damage additionalDamage = new Damage
+        {
+            Value = damage.Value * bonus,
+            Type = Info.DamageType,
+            School = Schools.Fire
+        };
+
+        if(additionalDamage.Value > 0)
+            CmdApplyDamage(target.gameObject, additionalDamage, scorchedChance);
     }
 
     private IEnumerator HitsInRowTimer()
@@ -225,17 +250,20 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
     }
 
     [Command]
-    private void CmdApplyDamage(GameObject target, Damage damage)
+    private void CmdApplyDamage(GameObject target, Damage damage, float scorchedChance)
     {
         if (target == null) return;
+        var damageable = target.GetComponent<IDamageable>();
+        if (damageable == null) return;
 
-        IDamageable targetHealth = target.GetComponent<IDamageable>();
-        if (targetHealth == null) return;
+        bool isHit = damageable.TryTakeDamage(ref damage, this);
 
-        bool isHit = targetHealth.TryTakeDamage(ref damage, this);
-        Hero.DamageTracker.AddDamage(damage, target, isServerRequest: true);
-
-        if (isHit && targetHealth is Character character) AttackPassed(character);
+        if (isHit && damageable is Character character)
+        {
+            AttackPassed(character);
+            if (scorchedChance > 0f && Random.Range(0f, 100f) <= scorchedChance)
+                character.CharacterState.AddState(States.ScorchedSoul, 5f, 0f, _hero.gameObject, name);
+        }
     }
 
     public void Kick_ScorpionRowTalent(bool value)

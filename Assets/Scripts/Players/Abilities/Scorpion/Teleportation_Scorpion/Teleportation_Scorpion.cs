@@ -30,12 +30,8 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
     [SerializeField] private ConsumeCombo_Scorpion _consumeCombo_Scorpion;
     [SerializeField] private ScorpionPassive _scorpionPassive;
-
-    #region FireImpulse Talent
-    private ImpulseFireTalentBooster _impulseFireBooster;
-    public ImpulseFireTalentBooster ImpulseFireBooster => _impulseFireBooster;
-    #endregion
     
+
     [field: Header("Test Combo_Upgrade")]
 
     [field: SerializeField]
@@ -85,11 +81,6 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
     //    return distance <= AreaInfo.Radius;
     //}
-
-    private void OnEnable()
-    {
-        _impulseFireBooster = new ImpulseFireTalentBooster(this);
-    }
 
     private Vector3 FindPlace(Character target)
     {
@@ -177,11 +168,6 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     {
         int dist = Mathf.CeilToInt(distance);
         int baseCost = _baseManaCost + dist * _manaCostPerTile;
-
-        if (Targeting.GetTarget()?.Character != null)
-        {
-            baseCost = _impulseFireBooster.ApplyTeleportDiscount(baseCost, Targeting.GetTarget().Character);
-        }
 
         return baseCost;
     }

@@ -16,6 +16,9 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill
     
     public event Action<GameObject, Skill> OnDamaged;
 
+    private float _pendingFireDamageBonus = 0f;
+    private float _pendingScorchedSoulChance = 0f;
+    
     #region Const
     private const float BleedingDuration = 9f;
     private const float BaseDamageBaf = 2f;
@@ -52,6 +55,12 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         Targeting.SetTarget(targetInfo.GetTargets()[0]);
+    }
+    
+    public void AddFireBonus(float damagePercent, float scorchedChance)
+    {
+        _pendingFireDamageBonus += damagePercent;
+        _pendingScorchedSoulChance += scorchedChance;
     }
 
     private void AttackPassed(bool shouldIncreaseCounter, Character target)
@@ -150,21 +159,40 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill
 
         _wasDamageApplied = true;
 
-        CmdAttack(damage, target.gameObject, shouldIncreaseCounter);
+        CmdAttack(damage, target.gameObject, shouldIncreaseCounter,0);
+        
+        float bonus = _pendingFireDamageBonus;
+        float scorchedChance = _pendingScorchedSoulChance;
+        _pendingFireDamageBonus = 0f;
+        _pendingScorchedSoulChance = 0f;
+
+        Damage additionalDamage = new Damage
+        {
+            Value = damage.Value * bonus,
+            Type = Info.DamageType,
+            School = Schools.Fire
+        };
+
+        if (additionalDamage.Value > 0)
+        {
+            CmdAttack(additionalDamage, target.gameObject, false, scorchedChance);
+        }
     }
 
     [Command]
-    private void CmdAttack(Damage damage, GameObject target, bool shouldIncreaseCounter)
+    private void CmdAttack(Damage damage, GameObject target, bool shouldIncreaseCounter, float scorchedChance)
     {
         if (target == null) return;
-
         var damageable = target.GetComponent<IDamageable>();
-
         if (damageable == null) return;
 
         bool result = damageable.TryTakeDamage(ref damage, this);
-
-        if (result && damageable is Character character) AttackPassed(shouldIncreaseCounter, character);
+        if (result && damageable is Character character)
+        {
+            AttackPassed(shouldIncreaseCounter, character);
+            if (scorchedChance > 0f && Random.Range(0f, 100f) <= scorchedChance)
+                character.CharacterState.AddState(States.ScorchedSoul, 5f, 0f, _hero.gameObject, name);
+        }
     }
 
     protected override void ClearData()

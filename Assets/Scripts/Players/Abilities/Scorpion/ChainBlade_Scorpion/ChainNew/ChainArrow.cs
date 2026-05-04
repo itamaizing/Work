@@ -20,7 +20,7 @@ public class ChainArrow : Projectiles
     private float _damage;
     private float _flightTime = 0f;
 
-    public Action<Character, float> OnHitTarget;
+    public Action<Character, float,float> OnHitTarget;
     private Coroutine _flyCoroutine;
     private Coroutine _returnCoroutine;
     private bool _isReturning = false;
@@ -90,7 +90,7 @@ public class ChainArrow : Projectiles
             AttachToTarget(character);
             ApplyDamage(_damage, DamageType.Physical, character.gameObject);
 
-            OnHitTarget?.Invoke(character, _flightTime);
+            OnHitTarget?.Invoke(character, _flightTime,_damage);
         }
     }
     private IEnumerator FlyCoroutine()

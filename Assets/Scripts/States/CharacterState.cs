@@ -379,6 +379,7 @@ public class CharacterState : NetworkBehaviour
 		[States.ReptilianStasis] = new ReptilianStasisState(),
 		[States.ReflectiveScales] = new ReflectiveScalesState(),
 		[States.SwiftAttacks] = new SwiftAttacksState(),
+		[States.FireCharge] = new FireChargeState(),
 		[States.CounterRage] = new CounterRageState(),
 		[States.Ignition] = new IgnitionState(),
 		[States.MergeDark] = new MergeDarkState(),
@@ -1029,7 +1030,8 @@ public enum States
 	ShackleState,
 	SlowFlowLight,
 	Retribution,
-	DisciplineAura
+	DisciplineAura,
+	FireCharge
 }
 public enum BaffDebaff
 {

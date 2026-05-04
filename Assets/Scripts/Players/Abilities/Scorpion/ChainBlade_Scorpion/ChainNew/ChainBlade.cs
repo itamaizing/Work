@@ -4,6 +4,7 @@ using Mirror;
 using System;
 using UnityEngine.SceneManagement;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 public static class Vector3Extensions
 {
@@ -27,8 +28,8 @@ public class ChainBlade : Skill,IComboParticipatingSkill
     private ChainArrow _currentChainArrowPrefab;
     private Vector3 _clickPoint = Vector3.positiveInfinity;
     private Animator _animator;
-    
     public event Action<GameObject, Skill> OnDamaged;
+    public event Action<Character> OnArrowHit;
 
     #region Const
     private const float MinDirectionSqrMagnitude = 0.01f;
@@ -47,6 +48,9 @@ public class ChainBlade : Skill,IComboParticipatingSkill
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => chainBladeStart;
+    
+    private float _pendingFireDamageBonus = 0f;
+    private float _pendingScorchedSoulChance = 0f;
 
     protected override bool IsCanCast => Vector3.Distance(_clickPoint, transform.position) <= AreaInfo.CastLength && Targeting.NoObstacles(_clickPoint, transform.position, _obstacle);
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
@@ -85,6 +89,13 @@ public class ChainBlade : Skill,IComboParticipatingSkill
     {
         _clickPoint = targetInfo.Points[0];
     }
+    
+    public void AddFireBonus(float damagePercent, float scorchedChance)
+    {
+        _pendingFireDamageBonus += damagePercent;
+        _pendingScorchedSoulChance += scorchedChance;
+    }
+
     
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
@@ -214,7 +225,7 @@ public class ChainBlade : Skill,IComboParticipatingSkill
     }
 
     [Server]
-    private void HandleArrowHit(Character target, float pullDuration)
+    private void HandleArrowHit(Character target, float pullDuration,float damage)
     {
         if (_currentChainArrowPrefab != null)
         {
@@ -227,7 +238,7 @@ public class ChainBlade : Skill,IComboParticipatingSkill
         if (_pullCoroutine != null) StopCoroutine(_pullCoroutine);
         _pullCoroutine = StartCoroutine(PullTargetToPlayer(target, pullDuration));
         OnDamaged?.Invoke(target.gameObject, this);
-        RpcHandleHitClient(target.netId, pullDuration);
+        RpcHandleHitClient(target.netId, pullDuration,damage);
         AddBaseDisappointment(target);
     }
 
@@ -278,7 +289,6 @@ public class ChainBlade : Skill,IComboParticipatingSkill
     [Command]
     private void CmdSpawnChainArrow(Vector3 clickPoint)
     {
-
         Vector3 direction = (clickPoint - transform.position).normalized;
         Vector3 flatDirection = new Vector3(direction.x, 0, direction.z).normalized;
         Vector3 targetPoint = transform.position + flatDirection * (AreaInfo.CastLength - ChainArrowCastOffset);
@@ -311,13 +321,45 @@ public class ChainBlade : Skill,IComboParticipatingSkill
     }
 
     [ClientRpc]
-    private void RpcHandleHitClient(uint targetId, float duration)
+    private void RpcHandleHitClient(uint targetId, float duration,float damage)
     {
         var obj = NetworkClient.spawned[targetId].gameObject;
         var target = obj.GetComponent<Character>();
-
+        OnArrowHit.Invoke(target);
         if (_pullCoroutine != null) StopCoroutine(_pullCoroutine);
         _pullCoroutine = StartCoroutine(PullTargetToPlayer(target, duration));
+        
+        float bonus = _pendingFireDamageBonus;
+        float scorchedChance = _pendingScorchedSoulChance;
+        _pendingFireDamageBonus = 0f;
+        _pendingScorchedSoulChance = 0f;
+
+        Damage additionalDamage = new Damage
+        {
+            Value = damage * bonus,
+            Type = Info.DamageType,
+            School = Schools.Fire
+        };
+
+        if (additionalDamage.Value > 0)
+        {
+            CmdAdditionalAttack(additionalDamage, target.gameObject, scorchedChance);
+        }
+    }
+    
+    [Command]
+    private void CmdAdditionalAttack(Damage damage, GameObject target, float scorchedChance)
+    {
+        if (target == null) return;
+        var damageable = target.GetComponent<IDamageable>();
+        if (damageable == null) return;
+
+        bool result = damageable.TryTakeDamage(ref damage, this);
+        if (result && damageable is Character character)
+        {
+            if (scorchedChance > 0f && Random.Range(0f, 100f) <= scorchedChance)
+                character.CharacterState.AddState(States.ScorchedSoul, 5f, 0f, _hero.gameObject, name);
+        }
     }
 
     [ClientRpc]

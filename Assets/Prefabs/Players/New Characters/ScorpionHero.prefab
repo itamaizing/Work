@@ -8618,7 +8618,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.size
-      value: 8
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.size
@@ -8667,25 +8667,33 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[2]'
       value: 
-      objectReference: {fileID: 9210739428906144500}
+      objectReference: {fileID: 2920573181922060226}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[3]'
       value: 
-      objectReference: {fileID: 3512284666808939635}
+      objectReference: {fileID: 9210739428906144500}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[4]'
       value: 
-      objectReference: {fileID: 179407300096320963}
+      objectReference: {fileID: 3512284666808939635}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[5]'
       value: 
-      objectReference: {fileID: 7510401949783811934}
+      objectReference: {fileID: 5325270773194772758}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[6]'
       value: 
-      objectReference: {fileID: 7077919200476688647}
+      objectReference: {fileID: 179407300096320963}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[7]'
+      value: 
+      objectReference: {fileID: 7510401949783811934}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[8]'
+      value: 
+      objectReference: {fileID: 7077919200476688647}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[9]'
       value: 
       objectReference: {fileID: 2171828936116040099}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -9280,6 +9288,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4646833820534651719}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5325270773194772758}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2920573181922060226}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!1 &1049065473536513494 stripped
 GameObject:
@@ -10249,6 +10263,79 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+--- !u!114 &5325270773194772758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f099e3634b1b5824e8357dc161c420b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FireMagicChargeTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u041F\u043E\u0441\u043B\u0435 \u0430\u043A\u0442\u0438\u0432\u0430\u0446\u0438
+      \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438 \u043C\u0430\u0433\u0438\u0438
+      \u043E\u0433\u043D\u044F \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0438\u0439
+      \xAB\u0443\u0434\u0430\u0440 \u0440\u0443\u043A\u043E\u0439\xBB \u0438\u043B\u0438
+      \xAB\u0443\u0434\u0430\u0440 \u043D\u043E\u0433\u043E\u0439\xBB \u043D\u0430\u043D\u0435\u0441\u0451\u0442
+      +100% \u0443\u0440\u043E\u043D\u0430 \u043E\u0433\u043D\u0451\u043C, \u0438\u043C\u0435\u0435\u0442
+      50% \u0448\u0430\u043D\u0441 \u043D\u0430\u043B\u043E\u0436\u0438\u0442\u044C
+      \u043E\u043F\u0430\u043B\u0451\u043D\u043D\u0443\u044E \u0434\u0443\u0448\u0443,
+      \xAB\u043F\u0440\u0438\u0442\u044F\u0433\u0438\u0432\u0430\u044E\u0449\u0438\u0439
+      \u043A\u043B\u0438\u043D\u043E\u043A\xBB \u0438\u043B\u0438 \"\u0440\u0430\u0441\u0441\u0435\u043A\u0430\u044E\u0449\u0438\u0439
+      \u043A\u043B\u0438\u043D\u043E\u043A\" +50% \u0443\u0440\u043E\u043D\u0430
+      \u043E\u0433\u043D\u0451\u043C \u0438 \u0438\u043C\u0435\u0435\u0442 25% \u0448\u0430\u043D\u0441
+      \u043D\u0430\u043B\u043E\u0436\u0438\u0442\u044C \u043E\u043F\u0430\u043B\u0451\u043D\u043D\u0443\u044E
+      \u0434\u0443\u0448\u0443."
+    _stateInfos: []
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 21300000, guid: bce2307885caedf4da2d62125613e377, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 5458554383432203635}
+  _punch: {fileID: 6732054044553877427}
+  _kick: {fileID: 8920276347339243132}
+  _cleavingBlade: {fileID: 1485408660127300276}
+  _chainBlade: {fileID: 220446193611464409}
+--- !u!114 &2920573181922060226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f71d56453035094691d174d280d3add, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FireFirstHitTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u043F\u043E \u043D\u043E\u0432\u043E\u0439 \u0446\u0435\u043B\u0438 \u043D\u0430\u043D\u0435\u0441\u0451\u0442
+      \u043F\u0435\u0440\u0432\u044B\u0439 \xAB\u0443\u0434\u0430\u0440 \u0440\u0443\u043A\u043E\u0439\xBB
+      \u0438\u043B\u0438 \xAB\u0443\u0434\u0430\u0440 \u043D\u043E\u0433\u043E\u0439\xBB
+      +50% \u0443\u0440\u043E\u043D\u0430 \u043E\u0433\u043D\u0451\u043C, \xAB\u043F\u0440\u0438\u0442\u044F\u0433\u0438\u0432\u0430\u044E\u0449\u0438\u0439
+      \u043A\u043B\u0438\u043D\u043E\u043A\xBB \u0438\u043B\u0438 \"\u0440\u0430\u0441\u0441\u0435\u043A\u0430\u044E\u0449\u0438\u0439
+      \u043A\u043B\u0438\u043D\u043E\u043A\" +25% \u0443\u0440\u043E\u043D\u0430
+      \u043E\u0433\u043D\u0451\u043C \u0438 \u0438\u043C\u0435\u0435\u0442 \u0448\u0430\u043D\u0441
+      \u043D\u0430\u043B\u043E\u0436\u0438\u0442\u044C \u043E\u043F\u0430\u043B\u0451\u043D\u043D\u0443\u044E
+      \u0434\u0443\u0448\u0443"
+    _stateInfos: []
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 21300000, guid: 835c8e4ba07aefe44bdf499df575eb99, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 5458554383432203635}
+  _punch: {fileID: 6732054044553877427}
+  _kick: {fileID: 8920276347339243132}
+  _cleavingBlade: {fileID: 1485408660127300276}
+  _chainBlade: {fileID: 220446193611464409}
 --- !u!114 &1402913355469849604 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1629212415153807048, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
