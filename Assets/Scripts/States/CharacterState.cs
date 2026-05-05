@@ -380,6 +380,7 @@ public class CharacterState : NetworkBehaviour
 		[States.ReflectiveScales] = new ReflectiveScalesState(),
 		[States.SwiftAttacks] = new SwiftAttacksState(),
 		[States.FireCharge] = new FireChargeState(),
+		[States.RestorativeAttacks] = new RestorativeAttacksState(),
 		[States.CounterRage] = new CounterRageState(),
 		[States.Ignition] = new IgnitionState(),
 		[States.MergeDark] = new MergeDarkState(),
@@ -798,7 +799,8 @@ public class CharacterState : NetworkBehaviour
 				((isAlly && state.BaffDebaff == BaffDebaff.Baff) ||
 				 (!isAlly && state.BaffDebaff == BaffDebaff.Debaff)))
 			{
-				NotifyDispelWhoMade(state.PersonWhoMadeBuff.gameObject,state.State,state.CurrentStacksCount);
+				if(state.PersonWhoMadeBuff != null)
+					NotifyDispelWhoMade(state.PersonWhoMadeBuff.gameObject,state.State,state.CurrentStacksCount);
 				if (state.CurrentStacksCount > 1)
 				{
 					//state.currentStacksCount--;
@@ -1031,7 +1033,8 @@ public enum States
 	SlowFlowLight,
 	Retribution,
 	DisciplineAura,
-	FireCharge
+	FireCharge,
+	RestorativeAttacks
 }
 public enum BaffDebaff
 {

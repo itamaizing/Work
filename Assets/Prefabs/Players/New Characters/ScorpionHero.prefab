@@ -8310,7 +8310,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
-      value: 12
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[0]'
@@ -8360,6 +8360,10 @@ PrefabInstance:
       propertyPath: '_skills.Array.data[11]'
       value: 
       objectReference: {fileID: 7368319014048586301}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_skills.Array.data[12]'
+      value: 
+      objectReference: {fileID: 7515729527109596431}
     - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: materialsCharacter.Array.size
       value: 4
@@ -8614,7 +8618,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.size
-      value: 7
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.size
@@ -8657,6 +8661,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5624588270951971439}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[7]'
+      value: 
+      objectReference: {fileID: 6056322227701384780}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[8]'
+      value: 
+      objectReference: {fileID: 4616563741937414494}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[0]'
       value: 
       objectReference: {fileID: 310719922032413749}
@@ -8683,19 +8695,19 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[6]'
       value: 
-      objectReference: {fileID: 179407300096320963}
+      objectReference: {fileID: 7510401949783811934}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[7]'
       value: 
-      objectReference: {fileID: 7510401949783811934}
+      objectReference: {fileID: 7077919200476688647}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[8]'
       value: 
-      objectReference: {fileID: 7077919200476688647}
+      objectReference: {fileID: 2171828936116040099}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[9]'
       value: 
-      objectReference: {fileID: 2171828936116040099}
+      objectReference: {fileID: 8570714050515776634}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[0]'
       value: 
@@ -9189,6 +9201,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7368319014048586301}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7515729527109596431}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6547569093080466137}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3359901628808772774}
@@ -9260,9 +9278,6 @@ PrefabInstance:
       addedObject: {fileID: 8342491426874558004}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 179407300096320963}
-    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 9210739428906144500}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
@@ -9294,6 +9309,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2920573181922060226}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6056322227701384780}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4616563741937414494}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8570714050515776634}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!1 &1049065473536513494 stripped
 GameObject:
@@ -9980,34 +10004,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 5458554383432203635}
---- !u!114 &179407300096320963
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1049065473536513494}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07c3edd038dc37748bfa4a54c17e3e03, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ImpulseFireTalent
-  _data:
-    _descriptionsForInfoPanel:
-    - "\u0422\u0435\u043B\u0435\u043F\u043E\u0440\u0442\u0430\u0446\u0438\u044F \u0441\u0442\u043E\u0438\u0442
-      \u0432 2/3/4 \u0440\u0430\u0437\u0430 \u043C\u0435\u043D\u044C\u0448\u0435
-      \u044D\u043D\u0435\u0440\u0433\u0438\u0438 \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0439
-      \u0441\u0442\u0430\u043A \u201C\u043E\u043F\u0430\u043B\u0435\u043D\u043D\u043E\u0439
-      \u0434\u0443\u0448\u0438\u201D \u043D\u0430 \u0446\u0435\u043B\u0438. "
-    - 
-    _stateInfos: []
-    IsOpen: 0
-    Description: "\u0422\u0435\u043B\u0435\u043F\u043E\u0440\u0442\u0430\u0446\u0438\u044F
-      \u0434\u0435\u0448\u0435\u0432\u043B\u0435"
-    Icon: {fileID: 21300000, guid: 3352296dd54fa7747b820e9b4f45699a, type: 3}
-    Group: 0
-    Row: 0
-  character: {fileID: 5458554383432203635}
 --- !u!114 &9210739428906144500
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10336,6 +10332,94 @@ MonoBehaviour:
   _kick: {fileID: 8920276347339243132}
   _cleavingBlade: {fileID: 1485408660127300276}
   _chainBlade: {fileID: 220446193611464409}
+--- !u!114 &6056322227701384780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40dc4af54461f7f40b9604b2466bb34f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RestorativeAttacksTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0441\u043A\u043E\u043F\u0438\u043E\u043D \u0430\u043A\u0442\u0438\u0432\u0438\u0440\u0443\u0435\u0442
+      \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442
+      \u0441\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u0435 \u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435
+      3 \u0441\u0435\u043A\u0443\u043D\u0434 \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0438\u0435
+      \u0430\u0442\u0430\u043A\u0438 \u0431\u0443\u0434\u0443\u0442 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0442\u044C
+      3% \u043E\u0442 \u043E\u0431\u0449\u0435\u0433\u043E \u0437\u0430\u043F\u0430\u0441\u0430
+      \u044D\u043D\u0435\u0440\u0433\u0438\u0438, \u044D\u0444\u0444\u0435\u043A\u0442
+      \u0441\u043F\u0430\u0434\u0430\u0435\u0442 \u0435\u0441\u043B\u0438 3 \u0443\u0434\u0430\u0440\u0430
+      \u043F\u043E\u0434\u0440\u044F\u0434 \u0431\u0443\u0434\u0443\u0442 \u043E\u0434\u0438\u043D\u0430\u043A\u043E\u0432\u044B\u0435"
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u0412\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u044E\u0449\u0438\u0435
+      \u0430\u0442\u0430\u043A\u0438"
+    Icon: {fileID: 21300000, guid: 523655bbfbe8b0b42869f25f34886283, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 5458554383432203635}
+  _skill: {fileID: 7515729527109596431}
+--- !u!114 &4616563741937414494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccc49482635852841bb21c89975db7ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ComboMaxStackTalent
+  _data:
+    _descriptionsForInfoPanel: []
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442
+      \u043C\u0430\u043A\u0441\u0438\u043C\u0430\u043B\u044C\u043D\u044B\u0439 \u0437\u0430\u043F\u0430\u0441
+      \u043E\u0447\u043A\u043E\u0432 \u043A\u043E\u043C\u0431\u043E \u043D\u0430
+      1"
+    Icon: {fileID: 21300000, guid: 056dec7639a920649bcddbf484dd066b, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 5458554383432203635}
+--- !u!114 &8570714050515776634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 822a161e27729ee4ab2ef8dbf1cf7864, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScorchedSoulEnergyRestoreTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - " \u041A\u043E\u0433\u0434\u0430 \u0446\u0435\u043B\u044C \u0441 \"\u043E\u043F\u0430\u043B\u0451\u043D\u043D\u043E\u0439
+      \u0434\u0443\u0448\u043E\u0439\" \u043D\u0430\u043D\u043E\u0441\u0438\u0442
+      \u043F\u0440\u044F\u043C\u043E\u0439 \u0443\u0440\u043E\u043D (\u043D\u0435
+      \u0441 \u0434\u043E\u0442) \u0441\u043A\u043E\u0440\u043F\u0438\u043E\u043D\u0443,
+      \u0441\u043A\u043E\u0440\u043F\u0438\u043E\u043D \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
+      \u044D\u043D\u0435\u0440\u0433\u0438\u044E \u0432 \u0440\u0430\u0437\u043C\u0435\u0440\u0435
+      20% \u043E\u0442 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u043E\u0433\u043E
+      \u0443\u0440\u043E\u043D\u0430 \u0438 +5% \u0437\u0430 \u043A\u0430\u0436\u0434\u044B\u0439
+      \u043F\u043E\u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0438\u0439 \u0441\u0442\u043A\u0430
+      \"\u041E\u043F\u0430\u043B\u0451\u043D\u043D\u043E\u0439 \u0434\u0443\u0448\u0438\""
+    _stateInfos: []
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 21300000, guid: 5f80cbb38ea3f9f4685ff9b351eb16fb, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 5458554383432203635}
+  _handler: {fileID: 6547569093080466137}
 --- !u!114 &1402913355469849604 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1629212415153807048, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -10565,11 +10649,17 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 6
-    _costs: []
+    _costs:
+    - nameToShow: 6 Energy - Mandatory
+      type: 2
+      value: 6
+      costType: 0
+      shouldModify: 0
+      showInDescription: 0
   _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
+  - nameToShow: 6 Energy - Mandatory mod desc
+    type: 2
+    value: 6
     costType: 0
     shouldModify: 1
     showInDescription: 1
@@ -11696,6 +11786,125 @@ MonoBehaviour:
     _castAnimations: []
     _activeClip: 0
   _ringOfFireAura: {fileID: 4675390448830311774}
+--- !u!114 &7515729527109596431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8143091671269686944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9594a987a38c2f448fa744e055046ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RestorativeAttacks_Scorpion
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 1
+  _isSkillActive: 0
+  _abilityInfo: {fileID: 11400000, guid: 7a31a991936edbe4ab21fc454553a2b8, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 10
+    _costs:
+    - nameToShow: 10 Energy - Mandatory
+      type: 2
+      value: 10
+      costType: 0
+      shouldModify: 0
+      showInDescription: 0
+  _skillEnergyCosts:
+  - nameToShow: 10 Energy - Mandatory
+    type: 2
+    value: 10
+    costType: 0
+    shouldModify: 0
+    showInDescription: 0
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 16
+  _castDeley: 0
+  _damageValue: 0
+  _infoComponent:
+    _school: 6
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+  _targetingComponent:
+    type: 0
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _chargeComponent:
+    _usesCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
+    affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _areaComponent:
+    _radius: 0
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
+  _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 1
+    _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
+--- !u!114 &6547569093080466137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8143091671269686944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ce4e71bf7736f94b90bdd4585203a4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScorchedSoulEnergyRestoreHandler
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!4 &8811787553151181850 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

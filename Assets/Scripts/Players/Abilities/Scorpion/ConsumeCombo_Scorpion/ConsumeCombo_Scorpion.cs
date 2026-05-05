@@ -32,6 +32,11 @@ public class ConsumeCombo_Scorpion : Skill
     private ConsumeComboEnergyOnDispelBooster _energyOnDispelBooster;
     public ConsumeComboEnergyOnDispelBooster EnergyOnDispelBooster => _energyOnDispelBooster;
     #endregion
+
+    #region +1 stacks combo count
+    private bool _isComboStacksIncreased;
+    private int _newMaxStackCount = 4;
+    #endregion
     
     private float _clickRadius = 0.5f;
 
@@ -40,7 +45,63 @@ public class ConsumeCombo_Scorpion : Skill
         _healOnDispelBooster = new ConsumeComboHealOnDispelBooster(this);
         _energyOnDispelBooster = new ConsumeComboEnergyOnDispelBooster(this);
     }
-    
+
+    public void OnComboStacksIncreased(bool value)
+    {
+        if(_isComboStacksIncreased == value) return;
+        
+        _isComboStacksIncreased = value;
+
+        if (!value)
+        {
+            foreach (var target in GetTargetWithCombo())
+            {
+                var state = target.GetComponent<CharacterState>().GetState(States.ComboState) as ComboState;
+                if (state == null) return;
+
+                state.MaxStacksCount = state.InitialStackCount;
+                if(state.CurrentStacksCount > state.InitialStackCount)
+                    state.ReduceStack();
+                
+                if(isClient)
+                    CmdDecreaseStacksOnTargets(target);
+            }
+        }
+        else
+        {
+            foreach (var target in GetTargetWithCombo())
+            {
+                var state = target.GetComponent<CharacterState>().GetState(States.ComboState) as ComboState;
+                if (state == null) return;
+
+                state.MaxStacksCount = _newMaxStackCount;
+                
+                if(isClient)
+                    CmdIncreaseStackOnTargets(target);
+            }
+        }
+    }
+
+    [Command]
+    private void CmdIncreaseStackOnTargets(GameObject target)
+    {
+        var state = target.GetComponent<CharacterState>().GetState(States.ComboState) as ComboState;
+        if (state == null) return;
+        
+        state.MaxStacksCount = _newMaxStackCount; 
+    }
+
+    [Command]
+    private void CmdDecreaseStacksOnTargets(GameObject target)
+    {
+        var state = target.GetComponent<CharacterState>().GetState(States.ComboState) as ComboState;
+        if (state == null) return;
+        
+        state.MaxStacksCount = state.InitialStackCount;
+        if(state.CurrentStacksCount > state.InitialStackCount)
+            state.ReduceStack();
+    }
+
     public void ApplyComboEffect(Transform enemy)
     {
         if (enemy == null) return;
@@ -70,7 +131,9 @@ public class ConsumeCombo_Scorpion : Skill
         {
             _lastCharacterState = stateManager;
         }
-        stateManager.AddState(States.ComboState, float.PositiveInfinity, 0f, _hero.gameObject, nameof(ConsumeCombo_Scorpion));
+
+        stateManager.AddState(States.ComboState, float.PositiveInfinity, 0f, _hero.gameObject,
+            !_isComboStacksIncreased ? nameof(ConsumeCombo_Scorpion) : "ComboIncreaseStacks");
     }
 
     public void ConsumeCombo_ScorpionPhysicStateClearTalent(bool value)
@@ -86,13 +149,16 @@ public class ConsumeCombo_Scorpion : Skill
     private void TryConsumeComboAroundSelf()
     {
         if (!isConsumeCombo_ScorpionPhysicStateClear) return;
+        
+        CmdDispelPhysState(GetTargetWithCombo(),_healOnDispelBooster.Enabled,_energyOnDispelBooster.Enabled);
+    }
 
-        List<GameObject> targetsInRadius = Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.Layer)
+    private List<GameObject> GetTargetWithCombo()
+    {
+        return Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.Layer)
             .Select(c => c.GetComponent<Character>())
             .Where(c => c != null && c != Hero && c.CharacterState.CheckForState(States.ComboState))
             .Select(c => c.gameObject).ToList();
-
-        CmdDispelPhysState(targetsInRadius,_healOnDispelBooster.Enabled,_energyOnDispelBooster.Enabled);
     }
 
     [Command]

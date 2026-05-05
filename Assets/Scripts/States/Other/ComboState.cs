@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,7 @@ public class ComboState : RefreshingState
 {
     private float _durationRemaining;
     private string _skillName;
+    public int InitialStackCount = 3;
 
     public override States State => States.ComboState;
     public override StateType Type => StateType.Magic;
@@ -25,6 +27,10 @@ public class ComboState : RefreshingState
         base.personWhoMadeBuff = personWhoMadeBuff;
         _durationRemaining = durationToExit;
         _skillName = skillName;
+        if (skillName == "ComboIncreaseStacks")
+        {
+            MaxStacksCount += 1;
+        }
         currentStacksCount = 1;
     }
 
@@ -35,7 +41,6 @@ public class ComboState : RefreshingState
             //ExitState();
             return;
         }
-
         //_durationRemaining -= Time.deltaTime;
     }
 
@@ -56,7 +61,7 @@ public class ComboState : RefreshingState
         }
         else
         {
-            characterState.StateIcons.ActivateIco(State, _durationRemaining, -1, true, MaxStacksCount);
+            characterState.StateIcons.ActivateIco(State, float.PositiveInfinity, -1, true, MaxStacksCount);
         }
     }
 
