@@ -15169,9 +15169,9 @@ MonoBehaviour:
   _castDuration: 1.3
   _manaCostRate: 0.1
   _manaCostPerTick:
-  - nameToShow: 1,3 Mana - Mandatory mod desc
+  - nameToShow: 3 Mana - Mandatory mod desc
     type: 1
-    value: 1.3
+    value: 3
     costType: 0
     shouldModify: 1
     showInDescription: 1
@@ -15347,9 +15347,21 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: b95f67b7aed6e464292ebf37483ccc21, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 0
-    _costs: []
-  _skillEnergyCosts: []
+    _base: 3
+    _costs:
+    - nameToShow: 3 Mana - Mandatory
+      type: 1
+      value: 3
+      costType: 0
+      shouldModify: 0
+      showInDescription: 0
+  _skillEnergyCosts:
+  - nameToShow: 3 Mana - Mandatory
+    type: 1
+    value: 3
+    costType: 0
+    shouldModify: 0
+    showInDescription: 0
   _additionalSkillEnergyCosts: []
   _cooldownTime: 16
   _cooldownComponent:
@@ -15531,6 +15543,7 @@ MonoBehaviour:
   _pushRange: 1
   _pushDuration: 0.33
   IsBaffed: 0
+  _isBlockingActive: 0
 --- !u!114 &4513784415459898283
 MonoBehaviour:
   m_ObjectHideFlags: 0

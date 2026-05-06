@@ -28,7 +28,7 @@ public class MagicInstantaneity : Skill, IPassiveSkill, IDamageGivenModifier
     public void OnActive()
     {
         _instantSkills = _hero.Abilities.Abilities
-            .Where(s => s != this && s.CastDeley == 0 && s.IsSkillActive)
+            .Where(s => s != this && s.CastDeley == 0)
             .ToList();
 
         foreach (var skill in _instantSkills)

@@ -43,6 +43,8 @@ namespace Gangdollarff
         {
             if (Targeting.GetTarget()?.Character == null) return false;
 
+            if (!CheckResourcesOnSkill()) return false;
+            
             if (!_isLifted)
                 return Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <=
                        AreaInfo.Radius;
@@ -100,18 +102,18 @@ namespace Gangdollarff
             _radiusEnemy.gameObject.SetActive(true);
 
             Vector3 destination = Vector3.zero;
-            float timeLeft = _secondClickWindow;
 
-            while (timeLeft > 0)
+            while (true)
             {
-                timeLeft -= Time.deltaTime;
-
                 if (GetMouseButton)
                 {
                     Vector3 clickPoint = Targeting.GetMousePoint();
-                    if (clickPoint != Vector3.zero &&
-                        Vector3.Distance(clickPoint, Targeting.GetTarget().Transform.position) <= AreaInfo.Radius)
+                    if (clickPoint != Vector3.zero)
                     {
+                        var targetTransform = Targeting.GetTarget().Transform;
+                        if (Vector3.Distance(clickPoint, targetTransform.position) > AreaInfo.Radius)
+                            clickPoint = Targeting.ClampToRadius(targetTransform.position, clickPoint, AreaInfo.Radius);
+
                         destination = clickPoint;
                         break;
                     }
@@ -124,7 +126,7 @@ namespace Gangdollarff
 
             TargetInfo targetInfo = new TargetInfo();
             targetInfo.AddTarget(Targeting.GetTarget()?.Character);
-            
+
             if (destination != Vector3.zero)
                 targetInfo.Points.Add(destination);
 
@@ -183,6 +185,19 @@ namespace Gangdollarff
             }
 
             ForceDropTarget();
+        }
+        
+        protected override bool CheckResourcesOnSkill()
+        {
+            foreach (var cost in _skillEnergyCosts)
+            {
+                if (!_hero.Resources.TryGetValue(cost.type, out var resource))
+                    return false;
+                if (resource.CurrentValue < Buff.ManaCost.GetBuffedValue(cost.value))
+                    return false;
+            }
+
+            return Cost.EnoughResources();
         }
 
         private void ForceDropTarget()

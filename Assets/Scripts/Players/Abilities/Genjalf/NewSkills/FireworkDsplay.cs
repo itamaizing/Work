@@ -65,8 +65,12 @@ namespace Gangdollarff
 
             Hero.Move.RotateModifier = 0.05f;
             DisableMove();
+            
+            var streamStarted = new WaitUntil(() => _castStreamCoroutine != null);
+            
+            yield return streamStarted;
 
-            while (elapsedTime < CastStreamDuration)
+            while (_castStreamCoroutine != null)
             {
                 float delta = Time.deltaTime;
 
@@ -131,8 +135,19 @@ namespace Gangdollarff
                 index++;
             }
         }
-
-
+        
+        protected override bool CheckResourcesOnSkill()
+        {
+            foreach (var cost in Channeling.Costs)
+            {
+                if (!_hero.Resources.TryGetValue(cost.type, out var resource))
+                    return false;
+                if (resource.CurrentValue < cost.value)
+                    return false;
+            }
+            return base.CheckResourcesOnSkill();
+        }
+        
         protected override void ClearData()
         {
             //Hero.Move.RotateModifier = 0;

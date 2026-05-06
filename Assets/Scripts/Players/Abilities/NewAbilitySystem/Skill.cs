@@ -678,6 +678,7 @@ public abstract class Skill : NetworkBehaviour
         }
 
         Hero.Abilities.NotifySkillPrepared(this);
+        Hero.Abilities.NotifySkillIsPreparing(this, true);
         CastStarted?.Invoke();
         _isCasting = true;
 
@@ -1043,6 +1044,7 @@ public abstract class Skill : NetworkBehaviour
     private IEnumerator CastStreamJob()
     {
         CastStreamStarted?.Invoke(CastStreamDuration);
+        Hero.Abilities.NotifySkillIsPreparing(this, true);
         float time = 0;
 
         while (time < CastStreamDuration)
@@ -1354,7 +1356,6 @@ public abstract class Skill : NetworkBehaviour
 
         if (target == null)
         {
-            Debug.LogError("[CmdApplyDamageLogic] Target is null, skipping");
             return;
         }
 
