@@ -23,12 +23,30 @@ public class WaveSkill : Skill
 
     protected override int AnimTriggerCast => 0;
 
-    protected override bool IsCanCast => true;
+    protected override bool IsCanCast => CheckIsCanCast();
+    
+    private bool CheckIsCanCast()
+    {
+        if (_waveStartPoint == Vector3.zero)
+            return true;
+
+        Vector3 currentPos = transform.position;
+        currentPos.y = 0f;
+
+        Vector3 startPos = _waveStartPoint;
+        startPos.y = 0f;
+
+        float distance = Vector3.Distance(currentPos, startPos);
+
+        return distance <= AreaInfo.Radius;
+    }
 
     private bool _isBonusSizeEnabled;
     
     public override void LoadTargetData(TargetInfo targetInfo)
     {
+        StopCustomDraw();
+        
         if (targetInfo.Points.Count >= 2)
         {
             _waveStartPoint = targetInfo.Points[0];
@@ -61,10 +79,18 @@ public class WaveSkill : Skill
 
     protected override IEnumerator CastJob()
     {
-        CmdSetActiveParticle(true);
-
+        DetachParticle();
+        
         Vector3 waveCenter = _waveStartPoint + _waveDirection * (AreaInfo.CastLength / 2f);
 
+        if (_particle != null)
+        {
+            _particle.transform.position = waveCenter;
+            _particle.transform.rotation = Quaternion.LookRotation(_waveDirection);
+        }
+        
+        CmdSetActiveParticle(true);
+        
         var colliders = Physics.OverlapBox(waveCenter, new Vector3(AreaInfo.CastWidth / 2f, 2f, AreaInfo.CastLength / 2f),
             Quaternion.LookRotation(_waveDirection),
             Targeting.Layer
@@ -110,8 +136,24 @@ public class WaveSkill : Skill
 
         yield return new WaitForSeconds(0.6f);
         CmdSetActiveParticle(false);
+        ReturnParticleToPreview();
         _skillRender.ResetCursor();
     }
+    
+    private void DetachParticle()
+    {
+        if (_particle == null) return;
+
+        _particle.transform.SetParent(null, true);
+    }
+
+    private void ReturnParticleToPreview()
+    {
+        if (_particle == null || _previewPivot == null) return;
+
+        _particle.transform.SetParent(_previewPivot);
+    }
+
 
     protected override void ClearData()
     {
@@ -119,19 +161,17 @@ public class WaveSkill : Skill
         _waveDirection = Vector3.zero;
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();
+        StopCustomDraw();
 
         if (_lineVisual != null)
             _lineVisual.gameObject.SetActive(false);
     }
 
-    public override void StartCustomDraw()
-    {
-        SkillRender.DrawRadius(AreaInfo.Radius);
-    }
-
     public override void StopCustomDraw()
     {
         SkillRender.StopDrawRadius();
+        Renderer?.HideSmartIndicator();
+
         if (_lineVisual != null)
             _lineVisual.gameObject.SetActive(false);
     }
@@ -153,9 +193,9 @@ public class WaveSkill : Skill
             Type = Info.DamageType,
         };
 
-        while (true)
+        while (IsPreparing)
         {
-            Vector3 mousePoint = Targeting.GetMousePoint();
+            Vector3 mousePoint = GetGroundMousePoint();
 
             if (mousePoint == Vector3.zero)
             {
@@ -187,6 +227,9 @@ public class WaveSkill : Skill
 
             yield return null;
         }
+        
+        _lineVisual.gameObject.SetActive(false);
+        SkillRender.StopDrawRadius();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -215,21 +258,32 @@ public class WaveSkill : Skill
 
         targetInfo.Points.Add(_waveStartPoint);
         targetInfo.Points.Add(waveEndPoint);
+        
+        StopCustomDraw();
+        StopDynamicRender();
+        
         callbackDataSaved(targetInfo);
     }
+    
+    private Vector3 GetGroundMousePoint()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, (LayerMask.GetMask("Ground"))))
+        {
+            return hit.point;
+        }
+        return Vector3.zero;
+    }
+
 
     [Command]
     private void CmdMoveTarget(GameObject target, Vector3 point, float time)
     {
-        Debug.LogError("Target1");
         if (target == null) return;
-        Debug.LogError("Target2");
         var enemyMove = target.GetComponent<MoveComponent>();
         if (enemyMove == null) return;
 
         enemyMove.RpcDoPush(point, time);
-        
-        Debug.LogError("Has pushed");
     }
 
     [Command]

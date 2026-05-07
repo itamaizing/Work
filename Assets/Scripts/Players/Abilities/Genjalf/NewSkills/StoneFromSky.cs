@@ -53,8 +53,6 @@ public class StoneFromSky : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        if (_stoneVFX != null)
-            _stoneVFX.outputEventReceived -= OnVFXOutputEvent;
         TargetInfo targetInfo = new TargetInfo();
 
         while (!GetMouseButton)
@@ -67,69 +65,45 @@ public class StoneFromSky : Skill
     
     protected override IEnumerator CastJob()
     {
-        CmdMoveAndPlayVFX(_clickPoint);
-        if (_stoneVFX != null)
-            _stoneVFX.outputEventReceived += OnVFXOutputEvent;
+        CmdSpawnTemporaryStone(_clickPoint);
         yield return null;
     }
+    
+    [Command]
+    private void CmdSpawnTemporaryStone(Vector3 position)
+    {
+        RpcSpawnTemporaryStone(position);
+    }
+    
+    [ClientRpc]
+    private void RpcSpawnTemporaryStone(Vector3 position)
+    {
+        if (_stoneVFX == null) return;
 
-    private void OnVFXOutputEvent(VFXOutputEventArgs args)
+        VisualEffect tempVFX = Instantiate(_stoneVFX, position, Quaternion.identity);
+
+        tempVFX.gameObject.SetActive(true);
+        tempVFX.Stop();
+        tempVFX.Play();
+
+        tempVFX.outputEventReceived += (args) =>
+        {
+            OnTemporaryVFXOutput(tempVFX, position, args);
+        };
+    }
+    
+    private void OnTemporaryVFXOutput(VisualEffect tempVFX, Vector3 castPoint, VFXOutputEventArgs args)
     {
         if (args.nameId == _onFinishedEventId)
-            OnVFXFinished();
+        {
+            if (isOwned)
+                ApplyAreaDamage(castPoint);
+        }
+
         if (args.nameId == _onDecalsEventId)
-            OnVFXDecalsEnded();
-
-    }
-
-    private void OnVFXFinished()
-    {
-        if (!isOwned) return;
-
-        ApplyAreaDamage(_clickPoint);
-    }
-
-    private void OnVFXDecalsEnded()
-    {
-        CmdDisableVFX();
-    }
-
-    [Command]
-    private void CmdDisableVFX()
-    {
-        RpcDisableVFX();
-    }
-
-    [ClientRpc]
-    private void RpcDisableVFX()
-    {
-        if (_stoneVFX == null) return;
-
-        _stoneVFX.Stop();
-        _stoneVFX.gameObject.SetActive(false);
-        
-        _stoneVFX.transform.SetParent(transform);
-        
-        ClearPoints();
-    }
-    
-    
-    [Command]
-    private void CmdMoveAndPlayVFX(Vector3 position)
-    {
-        RpcMoveAndPlayVFX(position);
-    }
-
-    [ClientRpc]
-    private void RpcMoveAndPlayVFX(Vector3 position)
-    {
-        if (_stoneVFX == null) return;
-        
-        _stoneVFX.transform.SetParent(null);
-        _stoneVFX.gameObject.SetActive(true);
-        _stoneVFX.transform.position = position;
-        _stoneVFX.Stop();
-        _stoneVFX.Play();
+        {
+            Destroy(tempVFX.gameObject);
+        }
     }
 
     private void ApplyAreaDamage(Vector3 position)
