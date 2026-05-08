@@ -10531,6 +10531,7 @@ MonoBehaviour:
   _regenerationDelay: 0
   _currentValue: 0
   _maxValue: 0
+  _maxComboPoints: 3
 --- !u!114 &6732054044553877427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11150,6 +11151,7 @@ MonoBehaviour:
     _prepareAnimations: []
     _castAnimations: []
     _activeClip: 0
+  _comboPoints: {fileID: 1147250939410812164}
 --- !u!114 &5883639770937801120
 MonoBehaviour:
   m_ObjectHideFlags: 0

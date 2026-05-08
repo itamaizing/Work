@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class ConsumeCombo_Scorpion : Skill
 {
+    [SerializeField]private ComboPoints_Player _comboPoints;
+    
     private List<Character> _comboTargetsQueue = new List<Character>();
 
     private CharacterState _lastCharacterState;
@@ -39,6 +41,12 @@ public class ConsumeCombo_Scorpion : Skill
     #endregion
     
     private float _clickRadius = 0.5f;
+    
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+        _comboPoints = hero.GetComponent<ComboPoints_Player>();
+    }
 
     private void OnEnable()
     {
@@ -164,6 +172,8 @@ public class ConsumeCombo_Scorpion : Skill
     [Command]
     private void CmdDispelPhysState(List<GameObject> targetsInRadius,bool healOnDispelEnabled,bool energyOnDispelEnabled)
     {
+        int totalDispelled = 0;
+        
         foreach (var target in targetsInRadius)
         {
             var state = target.GetComponent<CharacterState>().GetState(States.ComboState) as ComboState;
@@ -181,13 +191,17 @@ public class ConsumeCombo_Scorpion : Skill
             }
             state.ReduceStack();
             RpcReduceStack(target);
+            totalDispelled++;
         }
+        
+        if (totalDispelled > 0)
+            _comboPoints?.Add(totalDispelled);
     }
 
     [ClientRpc]
     private void RpcReduceStack(GameObject target)
     {
-        target.GetComponent<CharacterState>().GetState(States.ComboState).ReduceStack();
+        target.GetComponent<CharacterState>()?.GetState(States.ComboState)?.ReduceStack();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)

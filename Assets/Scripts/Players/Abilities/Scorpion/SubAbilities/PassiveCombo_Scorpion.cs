@@ -91,8 +91,6 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
         int currentStacks = enemy.CharacterState.CheckStateStacks(States.ComboState);
         int maxStacks = enemy.CharacterState.GetState(States.ComboState)?.MaxStacksCount ?? int.MaxValue;
 
-        if (currentStacks >= maxStacks) return;
-
         bool isMultiTargetMode = _multiTargetComboTalent;
         
         if (_currentTarget == null) _currentTarget = enemy;
@@ -118,8 +116,8 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
             }
             
             RpcPlayParticles("FullCombo");
-            TryUseChargersOnLasts(enemy, lastThreeHits);
-            if (_consumeComboTalent)
+            TryUseChargersOnLasts(enemy,lastThreeHits);
+            if (_consumeComboTalent && currentStacks < maxStacks)
             {
                 ApplyComboState(enemy);
             }
@@ -132,33 +130,29 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
             ResetCounter();
         }
         
-        if (currentStacks > 0)
+        if (_comboPlayer != null && _comboPlayer.HasPoints())
         {
-            comboParticipating?.OnTargetHasComboPoint(enemy.gameObject,currentStacks);
+            int points = _comboPlayer.CurrentComboPoints;
+            comboParticipating?.OnTargetHasComboPoint(enemy.gameObject, points);
+            _comboPlayer.TryUse(points);
         }
     }
 
-    private void TryUseChargersOnLasts(Character enemy,List<Skill> lastThreeHits)
+    private void TryUseChargersOnLasts(Character enemy, List<Skill> lastThreeHits)
     {
         if (_usedSkills.Count < 3) return;
-
         if (lastThreeHits.All(s => s == lastThreeHits[0])) return;
 
-        var grouped = lastThreeHits.GroupBy(s => s).ToDictionary(g => g.Key, g => g.Count());
+        var grouped = lastThreeHits.GroupBy(s => s)
+            .ToDictionary(g => g.Key, g => g.Count());
 
-        foreach (var pair in grouped)
-        {
-            Skill usedSkill = pair.Key;
-            int requiredCharges = pair.Value;
+        bool hasEnoughCharges = grouped.All(pair => pair.Key.Chargers >= pair.Value);
 
-            if (usedSkill.Chargers < requiredCharges) return;
-        }
-        foreach (var pair in grouped)
+        if (hasEnoughCharges)
         {
-            UseCharges(pair.Key, pair.Value);
+            foreach (var pair in grouped)
+                UseCharges(pair.Key, pair.Value);
         }
-        
-        CastDebuff(enemy.transform, lastThreeHits.Last());
     }
 
     [ClientRpc]
@@ -168,8 +162,7 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
 
         for (int i = 0; i < amount; i++)
         {
-            bool success = skill.TryUseCharge();
-            Debug.Log($"Попытка списать заряд {i + 1}/{amount} у {skill.name}. Успех: {success}. Осталось зарядов: {skill.Chargers}");
+            skill.TryUseCharge();
         }
     }
 
@@ -235,28 +228,6 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
     #endregion
 
     #region Debuff и ComboState
-
-    private void CastDebuff(Transform enemy, Skill lastSkillUsed)
-    {
-        if (enemy == null || lastSkillUsed == null) return;
-
-        if (lastSkillUsed == _hero.Abilities.GetSkill<NewPunch_Scorpion>())
-        {
-            Debug.Log("Debuff: Stun");
-            enemy.GetComponent<CharacterState>()?.AddState(States.Stun, 1f, 0, _hero.gameObject, "Punch");
-        }
-        else if (lastSkillUsed == _hero.Abilities.GetSkill<Kick_Scorpion>())
-        {
-            Debug.Log("Lava Pool");
-            SpawnLavaPool(enemy);
-        }
-        else if (lastSkillUsed == _hero.Abilities.GetSkill<ChainBlade>()) 
-        {
-            Debug.Log("ChainBlade Effect");
-        }
-
-        //enemy.GetComponent<CharacterState>()?.AddState(States.ScorchedSoul, 6f, 100f, _hero.gameObject, nameof(PassiveCombo_Scorpion));
-    }
 
     private void ApplyComboState(Character enemy)
     {

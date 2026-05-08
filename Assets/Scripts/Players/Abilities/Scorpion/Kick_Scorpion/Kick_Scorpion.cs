@@ -29,8 +29,24 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
     private WaitForSeconds _waitForHitsInRowTimer;
     
     public event Action<GameObject, Skill> OnDamaged;
-    public void OnFinalComboSkill(GameObject target) { }
-    public void OnTargetHasComboPoint(GameObject target, float comboPoints) { }
+    public void OnFinalComboSkill(GameObject target)
+    {
+        var state = target.GetComponent<CharacterState>();
+        if(isServer)
+            state?.AddState(States.Knockdown, KnockdownDurationDefault, 0, _hero.gameObject, name);
+    }
+
+    public void OnTargetHasComboPoint(GameObject target, float comboPoints)
+    {
+        var state = target.GetComponent<CharacterState>();
+        if (isServer)
+        {
+            for (int i = 0; i < comboPoints - 1; i++)
+            {
+                state?.AddState(States.Knockdown, comboPoints, 0, _hero.gameObject, name);
+            }
+        }
+    }
 
     private float _pendingFireDamageBonus = 0f;
     private float _pendingScorchedSoulChance = 0f;
