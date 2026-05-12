@@ -26,12 +26,17 @@ public class SoulAid : Skill
     private bool _talentDoubleRange = false;
     
     private float _clickRadius = 0.5f;
-
+    
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+        
+        _tiredSoulBooster = new SoulTiredDispelBooster(this);
+    }
+    
     private void OnEnable()
     {
         _priestShield.CastEnded += ReduceCooldown;
-        
-        _tiredSoulBooster = new SoulTiredDispelBooster(this);
     }
 
     private void OnDisable()

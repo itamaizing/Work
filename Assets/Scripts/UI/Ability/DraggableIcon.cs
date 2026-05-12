@@ -202,6 +202,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         //new
         ability.Cooldown.OnStart += OnStartCooldown;
         ability.Cooldown.OnEnd += OnStopCooldown;
+        ability.Cooldown.OnModify += OnModifyCooldown;
         ability.Charges.OnRechargeStart += OnChargeStartCooldown;
         ability.Charges.OnCurrentChange += OnCurrentChargeChanged;
     }
@@ -226,6 +227,7 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         //new
         ability.Cooldown.OnStart -= OnStartCooldown;
         ability.Cooldown.OnEnd -= OnStopCooldown;
+        ability.Cooldown.OnModify -= OnModifyCooldown;
         ability.Charges.OnRechargeStart -= OnChargeStartCooldown;
         ability.Charges.OnCurrentChange -= OnCurrentChargeChanged;
     }
@@ -305,7 +307,34 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         _cooldownNum.gameObject.SetActive(false);
         _pendingCooldown = -1f;
     }
+    
+    private void OnModifyCooldown(double newRemaining, double maxDuration)
+    {
+        if (!_skill.Cooldown.IsActive)
+            return;
 
+        if (newRemaining <= 0f)
+        {
+            OnStopCooldown();
+            return;
+        }
+
+        if (!gameObject.activeInHierarchy)
+        {
+            _pendingCooldown = (float)newRemaining;
+            return;
+        }
+
+        if (_cooldownCoroutine != null) StopCoroutine(_cooldownCoroutine);
+
+        float remaining = (float)newRemaining;
+        float max = (float)maxDuration;
+        float fillStart = max > 0f ? remaining / max : 0f;
+
+        _cooldown.StartFill(remaining, fillStart, 0f, false);
+        _cooldownNum.color = (_skill is IPassiveSkill) ? Color.green : Color.red;
+        _cooldownCoroutine = StartCoroutine(CooldownCounterJob(remaining));
+    }
     private void OnChargeStartCooldown(float value)
     {
         _chargeCD.AddChargeCD(value);
@@ -329,7 +358,6 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     private IEnumerator CooldownCounterJob(float dutarion)
     {
-        float time = dutarion;
         while (dutarion > 0)
         {
             if (_skill.Charges.UsesCharges == false || _skill.Chargers <= 0)
@@ -342,5 +370,6 @@ public class DraggableIcon : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             dutarion -= Time.deltaTime;
         }
         _cooldownCoroutine = null;
+        OnStopCooldown();
     }
 }

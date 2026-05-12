@@ -85,19 +85,20 @@ public class FlowOfLight : Skill, IPolaritySwitchable
     public override void Init(SkillRenderer render, Character hero)
     {
         base.Init(render, hero);
+        
         UpdateMode();
-
+        
         _instantFlash = new InstantFlashBooster(this, duration: 5f, chance: 10f);
         var flashSkill = Hero.Abilities.GetSkill<FlashOfLight>();
         _instantFlash.Inject(flashSkill);
+
         _overhealMana = new OverhealManaBooster(this, Hero);
         _aoeBooster = new AoeTalentBooster(this);
         _destructionFillingBooster = new DestructionFillingBooster(this);
         _spiritEnergyAddBooster = new SpiritEnergyAddBooster(this);
         _slowTalentBooster = new SlowTalentBooster(this);
-
     }
-
+    
     private void OnEnable()
     {
         OnModeChange += UpdateMode;

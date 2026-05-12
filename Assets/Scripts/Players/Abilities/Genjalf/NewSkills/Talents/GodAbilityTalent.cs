@@ -3,14 +3,23 @@ using UnityEngine;
 public class GodAbilityTalent : Talent
 {
 	[SerializeField] private SkillManager _skillManager;
+	private bool _chargesIsAdded = false;
 
 	public override void Enter()
 	{
-		_skillManager.TalentAddCharges(true);
+		if (!_chargesIsAdded)
+		{
+			_skillManager.TalentAddCharges(true);
+			_chargesIsAdded = true;
+		}
 	}
 
 	public override void Exit()
 	{
-		_skillManager.TalentAddCharges(false);
+		if (_chargesIsAdded)
+		{
+			_skillManager.TalentAddCharges(false);
+			_chargesIsAdded = false;
+		}
 	}
 }

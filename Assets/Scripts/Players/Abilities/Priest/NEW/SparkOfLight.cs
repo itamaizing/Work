@@ -111,19 +111,19 @@ public class SparkOfLight : Skill,IPolaritySwitchable
     {
         base.Init(render, hero);
         UpdateMode();
-        var flashSkill = Hero.Abilities.GetSkill<FlashOfLight>(); ;
+        
+        _instantFlash = new InstantFlashBooster(this, duration: 5f, chance: 10f);
+        var flashSkill = Hero.Abilities.GetSkill<FlashOfLight>();;
         _instantFlash.Inject(flashSkill);
+        
+        _overhealMana = new OverhealManaBooster(this, Hero);
+        _aoeBooster = new AoeTalentBooster(this);
     }
 
     private void OnEnable()
     {
         _flashOfLight.CastEnded += HandleLastTimeFlashOfLightCast;
         OnModeChange += UpdateMode;
-        
-        _instantFlash = new InstantFlashBooster(this, duration: 5f, chance: 10f);
-        
-        _overhealMana = new OverhealManaBooster(this, Hero);
-        _aoeBooster = new AoeTalentBooster(this);
     }
 
     private void OnDisable()
@@ -478,7 +478,7 @@ public class SparkOfLight : Skill,IPolaritySwitchable
 
     protected override void ClearData()
     {
-        Targeting?.ClearTarget();
+        Targeting.ClearTarget();
         //_target = null;
 
         _hero.Move.StopLookAt();

@@ -21,12 +21,12 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     [SyncVar(hook = nameof(HookMaxValueChanged)), SerializeField] protected float _maxValue;
     [SyncVar] protected float _regenerationValue;
     [SyncVar] protected float _regenerationPeriod;
-    
+
     protected Coroutine _regenCoroutine;
     protected Attribute _maxValueAttribute;
     protected Attribute _regenValueAttribute;
 
-	public float CurrentValue { get => _currentValue; set { ValueChanged?.Invoke(_currentValue, value); _currentValue = value; } }
+    public float CurrentValue { get => _currentValue; set { ValueChanged?.Invoke(_currentValue, value); _currentValue = value; } }
     public float MaxValue
     {
         get => _maxValue;
@@ -68,20 +68,20 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         ClientStopRegenerateJob();
     }
 
-  /*  public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data, Attribute attribute)
-    {
-        _currentValue = maxValue / 2;
-        _maxValue = maxValue;
-        _regenerationValue = regenValue;
-        _regenerationPeriod = regenDelay;
+    /*  public virtual void Initialize(float maxValue, float regenValue, float regenDelay, CharacterData data, Attribute attribute)
+      {
+          _currentValue = maxValue / 2;
+          _maxValue = maxValue;
+          _regenerationValue = regenValue;
+          _regenerationPeriod = regenDelay;
 
 
-        _maxValueAttribute = attribute;
-        _maxValue = attribute.GetValue();
-        _currentValue = _maxValue / 2;
-        /*if (regenValue > 0)
-            ClientStartRegenirateJob();
-    }*/
+          _maxValueAttribute = attribute;
+          _maxValue = attribute.GetValue();
+          _currentValue = _maxValue / 2;
+          /*if (regenValue > 0)
+              ClientStartRegenirateJob();
+      }*/
 
     public virtual void Initialize(Attribute maxValue, Attribute regenValue, CharacterData data)
     {
@@ -99,7 +99,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     }
 
     // Можно перевести на такой же формат хранения атрибутов (ResourceAttribute) - тогда можно вообще весь хардкод убрать
-    public virtual void Init(ResourceAttribute resource) 
+    public virtual void Init(ResourceAttribute resource)
     {
         _regenValueAttribute = resource.Attributes[ResourceAttributeName.Regen];
         _regenerationValue = resource.Attributes[ResourceAttributeName.Regen].GetValue();
@@ -129,12 +129,12 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         ClientStopRegenerateJob();
         ClientStartRegenirateJob();
         if (_regenCoroutine != null)
-		{
+        {
             CmdResetRegen();
             //Debug.Log("Restart regen");
-			StopCoroutine(_regenCoroutine);
-			_regenCoroutine = StartCoroutine(RegenerateJob());
-		}
+            StopCoroutine(_regenCoroutine);
+            _regenCoroutine = StartCoroutine(RegenerateJob());
+        }
         Debug.Log($"Used {value}, now {_currentValue}");
         if (_currentValue - value >= 0)
         {
@@ -204,7 +204,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 
         //ClientStopRegenerateJob();
         //ClientStartRegenirateJob();
-        if(oldValue > newValue) ResetRegen();
+        if (oldValue > newValue) ResetRegen();
     }
 
     protected virtual void HookMaxValueChanged(float oldValue, float newValue)
@@ -218,10 +218,10 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         RpcResetValueUpdate();
     }
 
-   /* public void ChangedMaxValue(float value)
-    {
-        _maxValue += value;
-    }*/
+    /* public void ChangedMaxValue(float value)
+     {
+         _maxValue += value;
+     }*/
 
     public void Regenerate() => _regenCoroutine = StartCoroutine(RegenerateJob());
 

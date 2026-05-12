@@ -6,44 +6,38 @@ using UnityEngine.SceneManagement;
 
 namespace Gangdollarff
 {
-    public class AbsorptionBall : Skill, IGodLightSpell
+    public class AbsorptionBall : Skill
     {
         [SerializeField] private Shield _shieldPref;
-        [SerializeField] private float _shieldValue = 40;
+        [SerializeField] private float _shieldValue = 100;
         [SerializeField] private float _shieldDuration = 2;
 
         private Shield _shield;
         
         private float _tempCooldownTime = 5f;
-
         private float _absorbedDamage;
-
         private float _absorbationMultiplier = 2f;
-        
         private float _lastOpacityChangeTime = 0f;
-        
-        public override string AdditionalDescription =>
-            $"Эффективность: {AbilityNameBox.ColorOpen}{_shieldValue} ед.{AbilityNameBox.ColorEnd}" +
-            $"\nДлительность: {AbilityNameBox.ColorOpen}{_shieldDuration} сек{AbilityNameBox.ColorEnd}";
+        public float ShieldDuration { get => _shieldDuration; set => _shieldDuration = value; }
+        private float _clickRadius = 0.5f;
+        private float _damagePerSecond;
+        private float _lastDamageTime;
+
+        public override string AdditionalDescription => "";
 
         protected override int AnimTriggerCastDelay => 0;
-
         protected override int AnimTriggerCast => 0;
-
         protected override bool IsCanCast => CheckCanCast();
 
-        public float ShieldDuration { get => _shieldDuration; set => _shieldDuration = value; }
-        
-        private float _clickRadius = 0.5f;
         private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
-        
+
         private bool CheckCanCast()
         {
             if(IsAllyTargetAvailable)
                 return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.GetTarget()?.Character != null;
             return true;
         }
-        public bool IsEnabled { get; protected set; }
+        private bool _shieldBroken = false;
         public bool IsAllyTargetAvailable = false;
         public bool IsManaRegenActive = false;
 
@@ -51,36 +45,28 @@ namespace Gangdollarff
         {
         }
 
-        public void ChangeMode()
-        {
-            if (IsEnabled)
-            {
-                IsEnabled = false;
-
-                Cooldown.CooldownTime = _tempCooldownTime;
-            }
-            else
-            {
-                IsEnabled = true;
-
-                _tempCooldownTime = Cooldown.CooldownTime;
-                Cooldown.CooldownTime = 0;
-            }
-        }
-
         protected override IEnumerator CastJob()
         {
-            CmdAddShield(IsAllyTargetAvailable ? Targeting.GetTarget()?.Character.gameObject : Hero.gameObject, Hero.gameObject);
+            var target = IsAllyTargetAvailable 
+                ? Targeting.GetTarget()?.Character.gameObject 
+                : Hero.gameObject;
+
+            CmdAddShield(target, Hero.gameObject);
+            yield return new WaitForSeconds(_castDuration);
             yield return null;
         }
 
         protected override void ClearData()
         {
+            base.ClearData();
+
+            _hero.Move.SetCanMove(true);
         }
 
         private void ClearSkillInfo()
         {
             _absorbedDamage = 0;
+            _shieldBroken = false;
         }
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -119,6 +105,66 @@ namespace Gangdollarff
             callbackDataSaved(targetInfo);
         }
 
+        private void OnAbsorb(Damage damage, Skill skill)
+        {
+            float now = Time.time;
+
+            if (now - _lastDamageTime > 1f)
+            {
+                _damagePerSecond = 0;
+            }
+
+            _lastDamageTime = now;
+            _damagePerSecond += damage.Value;
+
+            if (_damagePerSecond > 50f)
+            {
+                BreakAbsorption();
+                return;
+            }
+
+            _absorbedDamage += damage.Value;
+            
+            if (_absorbedDamage >= _shieldValue)
+            {
+                _shieldBroken = true;
+            }
+
+            RpcManaSpendJob(_hero.gameObject, damage.Value);
+
+            if (_shield)
+                RpcChangeShieldAlpha(_shield.gameObject);
+        }
+        
+        private void BreakAbsorption()
+        {
+            if (!isServer) return;
+
+            TryCancel(true);
+
+            if (_shield != null)
+            {
+                _shield.DamageTaken -= OnAbsorb;
+                _shield.TryUse(99999);
+                NetworkServer.Destroy(_shield.gameObject);
+                _shield = null;
+            }
+
+            ClearSkillInfo();
+
+            RpcControlMovement(true);
+        }
+        
+        [ClientRpc]
+        private void RpcControlMovement(bool canMove)
+        {
+            _hero.Move.SetCanMove(canMove);
+            if (!canMove)
+            {
+                _hero.Move.StopMoveAndAnimationMove();
+            }
+        }
+        
         [Command]
         private void CmdAddShield(GameObject targetShield,GameObject targetAbsorb)
         {
@@ -131,7 +177,6 @@ namespace Gangdollarff
             Character targetChar = targetShield.GetComponent<Character>();
             
             var shield = Instantiate(_shieldPref, targetShield.transform.position, Quaternion.identity);
-            SceneManager.MoveGameObjectToScene(shield.gameObject, _hero.NetworkSettings.MyRoom);
             shield.Initialize(_shieldValue, DamageType.Both);
             NetworkServer.Spawn(shield.gameObject);
             _shield = shield;
@@ -140,38 +185,30 @@ namespace Gangdollarff
 
             ClientRpcShieldFollow(_shield.gameObject, targetShield.transform);
         }
-
+        
         [ClientRpc]
         private void ClientRpcShieldFollow(GameObject shield, Transform target)
         {
             shield.GetComponent<Shield>().FollowTo(target);
         }
 
-        private void OnAbsorb(Damage damage, Skill skill)
-        {
-            _absorbedDamage += damage.Value;
-            
-            RpcManaSpendJob(_hero.gameObject,damage.Value);
-
-            if (_shield)
-            {
-                RpcChangeShieldAlpha(_shield.gameObject);
-            }
-        }
-
         private IEnumerator ShieldJob(GameObject target)
         {
+            RpcControlMovement(false);
             _shield.DamageTaken += OnAbsorb;
-            yield return new WaitForSecondsRealtime(_shieldDuration);
-            _shield.DamageTaken -= OnAbsorb;
             
-            if(IsManaRegenActive)
-                RpcAbsorbJob(target,_absorbedDamage);
+            yield return new WaitForSeconds(_castDuration);
             
+            if (IsManaRegenActive && !_shieldBroken)
+            {
+                RpcAbsorbJob(target, _absorbedDamage);
+            }
+
             if (_shield != null)
             {
                 _shield.TryUse(99999);
                 NetworkServer.Destroy(_shield.gameObject);
+                RpcControlMovement(true);
             }
             ClearSkillInfo();
         }

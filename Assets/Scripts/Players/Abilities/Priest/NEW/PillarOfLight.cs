@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
@@ -50,18 +50,19 @@ public class PillarOfLight : Skill, IPolaritySwitchable
 
     private bool IsAllyTarget(Character target) =>
         target.gameObject.layer == LayerMask.NameToLayer("Allies");
-
+    
     public override void Init(SkillRenderer render, Character hero)
     {
         base.Init(render, hero);
+        
         UpdateMode();
+        
+        _overhealMana = new OverhealManaBooster(this, Hero);
     }
 
     private void OnEnable()
     {
         OnModeChange += UpdateMode;
-        
-        _overhealMana = new OverhealManaBooster(this, Hero);
     }
 
     private void OnDisable()

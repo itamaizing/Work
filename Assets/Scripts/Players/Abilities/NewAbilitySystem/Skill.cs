@@ -229,7 +229,7 @@ public abstract class Skill : NetworkBehaviour
     {
         Info.Init(this);
         AreaInfo.Init(this);
-        Charges.Init(this, isServer);
+        Charges.Init(this);
         Channeling.Init(this);
         Renderer.Init(this);
         Targeting.Init(this);
@@ -993,13 +993,14 @@ public abstract class Skill : NetworkBehaviour
     [Command]
     public void CmdCooldownModify(double delta)
     {
-        if (!Cooldown.IsActive)
+        if (_cooldownEndTime <= NetworkTime.time)
             return;
 
         _cooldownEndTime += delta;
 
         if (_cooldownEndTime <= NetworkTime.time)
         {
+            _cooldownEndTime = NetworkTime.time;
             Cooldown?.ForceEnd();
         }
     }

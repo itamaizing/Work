@@ -1,6 +1,5 @@
 ﻿using System;
 using Gangdollarff.EarthElemental;
-using Gangdollarff.WaterElemental;
 using Mirror;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +39,7 @@ public abstract class AbstractCharacterState
 
 	public int CurrentStacksCount => currentStacksCount;
 
+	public Skill Skill => skill;
 	public int MaxStacksCount = 0;
 	protected float duration = -1;
 	protected float damageToExit = 0;
@@ -407,25 +407,23 @@ public class CharacterState : NetworkBehaviour
 
 		#region Gandollarf	
 		[States.PowerOfEarth] = new PowerOfEarth(),
-		[States.EarthsHealth] = new EarthsHealth(),
+		[States.EarthsHealth] = new EarthsHealthBuff(),
 		[States.MagicWater] = new MagicWater(),
-		[States.HotBloodAura] = new HotBloodAura(),
 		[States.HotBloodBuff] = new HotAuraBuff(),
 		[States.GodAura] = new GodAura(),
 		[States.GodAuraBuff] = new GodAuraBuff(),
 		[States.TransformationDebuff] = new TransformationDebuff(),
 		[States.PetrificationDebuff] = new PetrificationState(),
-		[States.PushingWindBuff] = new PushingWindBuff(),
+		[States.PushingWindBuff] = new PushingWindBuff(States.PushingWindBuff),
+		[States.PushingWindAura] = new PushingWindBuff(States.PushingWindAura),
 		[States.Burning] = new Burning(),
 		[States.Burn] = new Burn(),
 		[States.Discharge] = new Gangdollarff.AirElemental.Discharge(),
-		[States.CoolingAura] = new CoolingAura(),
 		[States.CoolingDamaged] = new CoolingDamaged(),
 		[States.MagicalExcitement] = new MagicalExcitement(),
 		[States.GodLight] = new GodLightState(),
 		[States.MagicInstantaneity] = new MagicInstantaneityState(),
 		[States.ImmortalityState] = new ImmortalityState(),
-		[States.BurningStacked] = new BurningStacked(),
 		#endregion
 
 		#region Test Baff and Debaff
@@ -536,6 +534,12 @@ public class CharacterState : NetworkBehaviour
 
 	[Command]
 	public void CmdAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
+	{
+		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
+		ClientAddState(state, duration, damageToExit, schools, personWhoShooted, skillName);
+	}
+
+	public void AddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
 	{
 		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
 		ClientAddState(state, duration, damageToExit, schools, personWhoShooted, skillName);
@@ -697,11 +701,11 @@ public class CharacterState : NetworkBehaviour
 			AddShield(damageableShield);
 		}
 
-		if (school != Schools.None)
+		/*if (school != Schools.None)
 		{
 			var counterSpell = (AbilitySchoolDebuff)stateInstance;
 			counterSpell.canceledSchoool = school;
-		}
+		}*/
 	}
 
 	private void CreateState(AbstractCharacterState state, States stateName, float duration, float damageToExit, GameObject personWhoShooted, string skillName, bool stack)
@@ -976,7 +980,6 @@ public enum States
 	Stupefaction,
 	TentacleGrip,
 	Discharge,
-	CoolingAura,
 	Restoration,
 	RestorationStacking,
 	Destruction,
@@ -995,17 +998,16 @@ public enum States
 	PsionicGeneration,
 	MagicalExcitement,
 	GodLight,
-	HotBloodAura,
 	HotBloodBuff,
 	GodAura,
 	GodAuraBuff,
 	TransformationDebuff,
 	PetrificationDebuff,
 	PushingWindBuff,
+	PushingWindAura,
 	CoolingDamaged,
 	MagicInstantaneity,
 	ImmortalityState,
-	BurningStacked,
 	Parasites,
 	SwarmSpeed,
 	DestructivePoison,
