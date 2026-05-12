@@ -16,12 +16,10 @@ public class FeelingOfContinuation : Talent
 
     public override void Enter()
     {
-        SetActive(true);
     }
 
     public override void Exit()
     {
-        SetActive(false);
     }
 
     public void IncreaseRegenerationMana(Character player, float playerCriticalDamage)

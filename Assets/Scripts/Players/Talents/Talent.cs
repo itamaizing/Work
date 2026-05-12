@@ -15,12 +15,12 @@ public abstract class Talent : MonoBehaviour
 	private void OnValidate()
 	{
 		_data.Name = GetType().Name;
+		_data.ConditionDescription = OpenCondition.ConditionDescription();
 		if(OpenCondition == null)
 		{
 			OpenCondition = new EmptyCondition();
 		}
-		Debug.Log("Open condition " + OpenCondition.CanOpen);
-		
+		//Debug.Log("Open condition " + OpenCondition.CanOpen);
 	}
 
 	public abstract void Enter();

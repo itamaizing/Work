@@ -9,6 +9,7 @@ public class NinjaTalent_2 : Talent
 
 	public override void Enter()
     {
+        Debug.Log(Data.Level + " NinjaLv l");
         _seriesOfStrikes.SeriesCompliteCompoTalentActive(true);
 		_physicalAttack.SeriesPhysicalTalentActive(true);
 	}
