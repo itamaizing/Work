@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Mirror;
+using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 public class PassiveCombo_Scorpion : NetworkBehaviour
 {
@@ -16,10 +18,11 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
 
     [Header("Combo Settings")]
     private List<Skill> _usedSkills = new();
-    private Character _currentTarget;
     [SerializeField] private float _comboTimeout = 1f;
     private Coroutine _comboTimerCoroutine;
 
+    [HideInInspector]
+    public Character CurrentTarget;
     [Header("Visuals")]
     [SerializeField] private ParticleSystem _particlesAddStack;
     ///[SerializeField] private ParticleSystem _particlesNoCharges;
@@ -66,8 +69,13 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
             }
         }
     }
-
-    private void OnSkillDamageApplied(GameObject targetGO, Skill skill)
+    public void RegisterFireComboHit(Skill skill, Character target)
+    {
+        if (skill == null || target == null) return;
+        CmdRegisterFireCombo(skill, target.gameObject);
+    }
+    
+    /*private void OnSkillDamageApplied(GameObject targetGO, Skill skill)
     {
         if (!_consumeComboTalent && !_multiTargetComboTalent) return;
         if (targetGO == null) return;
@@ -76,29 +84,47 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
         if (target == null) return;
         
         AddSkill(target, skill);
-    }
-
-    private void AddSkill(Character enemy, Skill skill)
+    }*/
+    
+    private void OnSkillDamageApplied(GameObject targetGO, Skill skill)
     {
         if (!_consumeComboTalent && !_multiTargetComboTalent) return;
+        if (targetGO == null) return;
 
-        if (!_impulseFireBooster.CanUseInCombo(skill)) return;
-        
+        var target = targetGO.GetComponent<Character>();
+        if (target == null) return;
+
+        AddSkillInternal(target, skill, isFireSkill: false);
+    }
+    
+    [Command]
+    private void CmdRegisterFireCombo(Skill skill, GameObject targetGO)
+    {
+        var target = targetGO?.GetComponent<Character>();
+        if (target == null) return;
+        AddSkillInternal(target, skill, isFireSkill: true);
+    }
+
+    private void AddSkillInternal(Character enemy, Skill skill, bool isFireSkill)
+    {
+        if(!isFireSkill)
+            if (!_consumeComboTalent && !_multiTargetComboTalent) return;
+        if (!isFireSkill && !_impulseFireBooster.CanUseInCombo(skill)) return;
+
         if (enemy == null || skill == null) return;
 
         var comboParticipating = skill as IComboParticipatingSkill;
-        
+        var fireComboParticipating = skill as IFireComboParticipatingSkill;
+
         int currentStacks = enemy.CharacterState.CheckStateStacks(States.ComboState);
         int maxStacks = enemy.CharacterState.GetState(States.ComboState)?.MaxStacksCount ?? int.MaxValue;
 
-        bool isMultiTargetMode = _multiTargetComboTalent;
-        
-        if (_currentTarget == null) _currentTarget = enemy;
+        if (CurrentTarget == null) CurrentTarget = enemy;
 
-        if (!isMultiTargetMode && _currentTarget != enemy)
+        if (!_multiTargetComboTalent && CurrentTarget != enemy)
         {
             ResetCounter();
-            _currentTarget = enemy;
+            CurrentTarget = enemy;
         }
 
         _usedSkills.Add(skill);
@@ -106,7 +132,6 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
 
         if (_usedSkills.Count >= 3)
         {
-
             var lastThreeHits = _usedSkills.Skip(Mathf.Max(0, _usedSkills.Count - 3)).ToList();
 
             if (lastThreeHits.All(s => s == lastThreeHits[0]))
@@ -114,26 +139,27 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
                 ResetCounter();
                 return;
             }
-            
+
             RpcPlayParticles("FullCombo");
-            TryUseChargersOnLasts(enemy,lastThreeHits);
-            if (_consumeComboTalent && currentStacks < maxStacks)
-            {
+            TryUseChargersOnLasts(enemy, lastThreeHits);
+
+            if ((_consumeComboTalent || isFireSkill) && currentStacks < maxStacks)
                 ApplyComboState(enemy);
-            }
 
             if (IsFinalComboSkill(enemy, skill))
             {
                 comboParticipating?.OnFinalComboSkill(enemy.gameObject);
+                fireComboParticipating?.OnFinalComboSkill(enemy.gameObject);
             }
 
             ResetCounter();
         }
-        
+
         if (_comboPlayer != null && _comboPlayer.HasPoints())
         {
             int points = _comboPlayer.CurrentComboPoints;
             comboParticipating?.OnTargetHasComboPoint(enemy.gameObject, points);
+            fireComboParticipating?.OnTargetHasComboPoint(enemy.gameObject,points);
             _comboPlayer.TryUse(points);
         }
     }
@@ -207,8 +233,7 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
             timer -= Time.deltaTime;
             yield return null;
         }
-
-        Debug.Log("Таймаут комбо! Сброс связки.");
+        
         ResetCounter();
     }
 
@@ -219,10 +244,8 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
             StopCoroutine(_comboTimerCoroutine);
             _comboTimerCoroutine = null;
         }
-
-        Debug.Log("Сброс текущей серии комбо");
         _usedSkills.Clear();
-        _currentTarget = null;
+        CurrentTarget = null;
     }
 
     #endregion
@@ -234,11 +257,8 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
         var consumeCombo = _hero.Abilities.GetSkill<ConsumeCombo_Scorpion>();
         if (consumeCombo == null)
         {
-            Debug.LogWarning("ConsumeCombo_Scorpion не найден!");
             return;
         }
-
-        Debug.Log("Применение состояния ComboState к цели");
         consumeCombo.ApplyComboEffect(enemy.transform);
     }
 
@@ -252,12 +272,6 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
     #endregion
 
     #region Network Commands
-
-    /*private void AddComboPoint()
-    {
-        Debug.Log("Добавлен 1 очко комбо игроку");
-        _comboPlayer.Add(1);
-    }*/
 
     private void SpawnLavaPool(Transform enemy)
     {

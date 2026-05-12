@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class RingOfFireAura : AuraStateHandler
 {
@@ -11,6 +13,9 @@ public class RingOfFireAura : AuraStateHandler
     private const float TickInterval = 1f;
     private const float ScorchedChance = 5f;
     private const float SlowedRegenRate = 5f;
+
+    public float _baseRadius = 4;
+
 
     private Coroutine _tickCoroutine;
     private float _originalEnergyRegen;
@@ -27,6 +32,16 @@ public class RingOfFireAura : AuraStateHandler
         _ringParticle.gameObject.SetActive(true);
         _ringParticle?.Play();
     }
+    
+    public bool IsTargetInRing(Character target)
+    {
+        return target != null && _currentTargets.Contains(target);
+    }
+    
+    public IEnumerable<Character> GetCurrentTargets()
+    {
+        return _currentTargets.ToArray();
+    }
 
     protected override void OnAuraDisabled()
     {
@@ -35,17 +50,28 @@ public class RingOfFireAura : AuraStateHandler
             StopCoroutine(_tickCoroutine);
             _tickCoroutine = null;
         }
-        
+
+        SetBaseRadius();
         _ringParticle?.Stop();
         _ringParticle.gameObject.SetActive(false);
+    }
+    
+    public void SetRadius(float newRadius)
+    {
+        _radius = _baseRadius + newRadius;
+        UpdateParticleRadius();
+    }
+
+    private void SetBaseRadius()
+    {
+        _radius = _baseRadius;
     }
     
     private void UpdateParticleRadius()
     {
         if (_ringParticle == null) return;
 
-        var shape = _ringParticle.main;
-        shape.startSize = _radius;
+        _ringParticle.transform.localScale = new Vector3(_radius, 1f, _radius);
     }
 
     private IEnumerator TickRoutine()

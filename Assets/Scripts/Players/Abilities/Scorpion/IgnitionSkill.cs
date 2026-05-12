@@ -7,6 +7,8 @@ public class IgnitionSkill : Skill
 {
     private const float SlowedRegenAmount = 30f;
     private const float SlowedRegenRate = 5f;
+    
+    private bool _spreadInRingOfFire = true;
 
     protected override bool IsCanCast =>
         Targeting.GetTarget() != null &&
@@ -17,6 +19,12 @@ public class IgnitionSkill : Skill
 
     private float _clickRadius = 0.5f;
 
+    public void EnableIgnitionSpreadTalent(bool value)
+    {
+        if(_spreadInRingOfFire == value) return;
+        _spreadInRingOfFire = value;
+    }
+    
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (Targeting.GetTempTarget()?.Character == null)
@@ -44,18 +52,40 @@ public class IgnitionSkill : Skill
             yield break;
 
         CmdApplyIgnition(Targeting.GetTarget().Character.gameObject);
+        if (_spreadInRingOfFire)
+        {
+            SpreadIgnitionToRingTargets(Targeting.GetTarget().Character);
+        }
         yield return null;
     }
 
     [Command]
-    private void CmdApplyIgnition(GameObject target)
+    private void CmdApplyIgnition(GameObject targetGO)
     {
-        var character = target.GetComponent<Character>();
-        if (character == null) return;
+        var targetCharacter = targetGO.GetComponent<Character>();
+        if (targetCharacter == null) return;
 
-        character.CharacterState.AddState(States.Ignition, 6f, 0f, Hero.gameObject, nameof(IgnitionSkill));
+        targetCharacter.CharacterState.AddState(States.Ignition, 6f, 0f, Hero.gameObject, nameof(IgnitionSkill));
 
         RpcApplyEnergyPenalty();
+    }
+    
+    private void SpreadIgnitionToRingTargets(Character initialTarget)
+    {
+        var ringAura = Hero.GetComponent<RingOfFireAura>();
+        if (ringAura == null || !ringAura.IsActive) 
+            return;
+        
+        if (!ringAura.IsTargetInRing(initialTarget))
+            return;
+        
+        foreach (var target in ringAura.GetCurrentTargets())
+        {
+            if (target == null || target.IsDead || target == initialTarget) 
+                continue;
+
+            CmdApplyIgnition(target.gameObject);
+        }
     }
     
     [TargetRpc]
