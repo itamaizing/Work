@@ -74,7 +74,7 @@ public class Attribute
     {
         //if(_modifiers.Contains(modifier))
         //    _modifiers.Remove(modifier);
-        for (int i = _modifiers.Count; i >= 0; i--)
+        for (int i = _modifiers.Count - 1; i >= 0; i--)
         {
             if (_modifiers[i].Source == source)
             {

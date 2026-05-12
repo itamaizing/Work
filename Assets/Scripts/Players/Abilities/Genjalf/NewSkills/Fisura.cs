@@ -137,9 +137,7 @@ namespace Gangdollarff
         private void CmdUse(Vector3 startPoint, Vector3 endPoint)
         {
             GameObject item = Instantiate(_fisuraPref.gameObject, startPoint, Quaternion.identity);
-
-            SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
-
+            
             NetworkServer.Spawn(item);
 
             _fisuraTail = item.GetComponent<FisuraTile>();

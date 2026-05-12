@@ -79,63 +79,9 @@ public class Burn : AbstractCharacterState
     }
 }
 
-public class Burning : AbstractCharacterState
+public class Burning : RefreshingState
 {
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
-    protected float _damage = 1;
-    protected float _timeAfterLastEffect = 0;
-    protected float _effectRate = 1;
-
-    public override States State => States.Burning;
-
-    public override StateType Type => StateType.Magic;
-
-    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
-
-    public override List<StatusEffect> Effects => _effects;
-
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-
-        Damage damage = new Damage
-        {
-            Value = _damage,
-        };
-        character.Character.CmdTryTakeDamage(damage, null);
-    }
-
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
-    }
-
-    public override bool Stack(float time)
-    {
-        duration = time;
-        return false;
-    }
-
-    public override void UpdateState()
-    {
-
-        _timeAfterLastEffect += Time.deltaTime;
-
-        if (_effectRate > _timeAfterLastEffect)
-            return;
-
-
-        Damage damage = new Damage
-        {
-            Value = _damage,
-        };
-        characterState.Character.CmdTryTakeDamage(damage,null);
-        _timeAfterLastEffect = 0;
-    }
-}
-
-public class BurningStacked : RefreshingState
-{
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
+    private List<StatusEffect> _effects = new List<StatusEffect>();
     protected float _damage = 1;
     protected float _timeAfterLastEffect = 0;
     protected float _effectRate = 1;
@@ -143,7 +89,7 @@ public class BurningStacked : RefreshingState
     private float _baseDuration;
     private float _stackTimer;
 
-    public override States State => States.BurningStacked;
+    public override States State => States.Burning;
 
     public override StateType Type => StateType.Magic;
 
@@ -159,9 +105,10 @@ public class BurningStacked : RefreshingState
         {
             Value = _damage,
         };
-        character.Character.CmdTryTakeDamage(damage, null);
+        if(character.isClient)
+            character.Character.CmdTryTakeDamage(damage, null);
 
-        MaxStacksCount = 3;
+        MaxStacksCount = 5;
         _baseDuration = durationToExit;
         _stackTimer = durationToExit;
     }
@@ -197,7 +144,8 @@ public class BurningStacked : RefreshingState
         if (_timeAfterLastEffect < _effectRate) return;
 
         Damage damage = new Damage { Value = _damage };
-        characterState.Character.CmdTryTakeDamage(damage, null);
+        if(characterState.isClient)
+            characterState.Character.CmdTryTakeDamage(damage, null);
         _timeAfterLastEffect = 0;
     }
 

@@ -8,12 +8,15 @@ using Random = UnityEngine.Random;
 namespace Gangdollarff
 {
     public class FireworkDsplay : Skill
+    
     {
         [SerializeField] private Firework _firework;
         [SerializeField] private float _damageRangeMin = -2;
         [SerializeField] private float _damageRangeMax = 1;
+        [SerializeField] private float _damageTickRate = 0.1f;
 
         private bool _isBlinding;
+        private bool _isCooldownReduce;
         
         private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
 
@@ -40,64 +43,93 @@ namespace Gangdollarff
 
         public void SetBlinding(bool isBlinding)
         {
+            if(_isBlinding == isBlinding) return;
+            
             _isBlinding = isBlinding;
+        }
+        
+        public void SetCooldownReduceTalent(bool value)
+        {
+            if(_isCooldownReduce == value) return;
+            
+            _isCooldownReduce = value;
         }
 
         protected override IEnumerator CastJob()
         {
             CmdSetActiveParticle(true);
+
             float elapsedTime = 0f;
+            float damageTimer = 0f;
             float manaTimer = 0f;
+
             Hero.Move.RotateModifier = 0.05f;
             DisableMove();
+
             while (elapsedTime < CastStreamDuration)
             {
                 float delta = Time.deltaTime;
-                elapsedTime += delta;
-                manaTimer += delta;
-                if (manaTimer >= _manaCostRate)
-                {
-                    manaTimer -= _manaCostRate;
-                    _firework.SortDamageablesByDistance(transform.position);
-                    int index = 0;
-                    foreach (var item in _firework.Damageables)
-                    {
-                        if (!item.TryGetComponent<IDamageable>(out var enemy))
-                            continue;
-                        
-                        if (!item.TryGetComponent<Character>(out var character) || !IsEnemyTarget(character))
-                            continue;
-                        
-                        float modifier = 1f - (0.25f * index);
-                        if (modifier <= 0f)
-                            break;
-                        float currentDamage =
-                            Random.Range(Damage + _damageRangeMin, Damage + _damageRangeMax);
-                        currentDamage *= modifier;
-                        Damage damage = new Damage
-                        {
-                            Value = Buff.Damage.GetBuffedValue(currentDamage),
-                            Type = Info.DamageType,
-                            PhysicAttackType = Info.AttackRangeType,
-                        };
-                        CmdApplyDamage(damage, item.gameObject);
-                        if (_isBlinding)
-                        {
-                            var randomInt = Random.Range(0, 100);
 
-                            if (randomInt > _blindingChance)
-                            {
-                                CmdAddState(item.gameObject);
-                            }
-                        }
-                        index++;
-                    }
+                elapsedTime += delta;
+                damageTimer += delta;
+                manaTimer += delta;
+                if (damageTimer >= _damageTickRate)
+                {
+                    damageTimer -= _damageTickRate;
+
+                    ApplyFireworkDamage();
                 }
 
                 yield return null;
             }
 
             ClearData();
+        }
+        
+        private void ApplyFireworkDamage()
+        {
+            _firework.SortDamageablesByDistance(transform.position);
+
+            int index = 0;
+
+            foreach (var item in _firework.Damageables)
+            {
+                if (!item.TryGetComponent<IDamageable>(out var enemy))
+                    continue;
+
+                if (!item.TryGetComponent<Character>(out var character) || !IsEnemyTarget(character))
+                    continue;
+
+                float modifier = 1f - (0.25f * index);
+                if (modifier <= 0f)
+                    break;
+
+                float currentDamage = Random.Range(Damage + _damageRangeMin, Damage + _damageRangeMax);
+                currentDamage *= modifier;
+
+                Damage damage = new Damage
+                {
+                    Value = Buff.Damage.GetBuffedValue(currentDamage),
+                    Type = Info.DamageType,
+                    PhysicAttackType = Info.AttackRangeType,
+                };
+
+                CmdApplyDamage(damage, item.gameObject);
+
+                if (_isCooldownReduce)
+                {
+                    ApplyCooldownReduction(item.gameObject);
+                }
+                
+                if (_isBlinding)
+                {
+                    if (Random.Range(0, 100) < _blindingChance)
+                    {
+                        CmdAddState(item.gameObject);
+                    }
+                }
+                index++;
+            }
         }
 
 
@@ -140,6 +172,29 @@ namespace Gangdollarff
             Hero.Animator.SetTrigger("Fire");
             Hero.Move.IsMoveBlocked = true;
             Hero.Move.StopLookAt();
+        }
+        
+        private void ApplyCooldownReduction(GameObject target)
+        {
+            if (!_isCooldownReduce)
+                return;
+
+            var character = target.GetComponent<Character>();
+            if (character == null)
+                return;
+
+            bool isPlayer = character is HeroComponent;
+
+            float percent = isPlayer ? 5f : 1f;
+
+            foreach (var skill in _hero.Abilities.Abilities)
+            {
+                if (skill.Cooldown.IsActive)
+                {
+                    float reduceValue = skill.Cooldown.RemainingTime * (percent / 100f);
+                    skill.Cooldown.Modify(-reduceValue);
+                }
+            }
         }
 
         [Command]

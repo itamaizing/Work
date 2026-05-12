@@ -74,8 +74,7 @@ public class ColdShield : MoveSkill
         if (targetShield == null) return;
 
         var shield = Instantiate(_shieldPref, targetShield.transform.position, Quaternion.identity);
-        SceneManager.MoveGameObjectToScene(shield.gameObject,
-            ((MinionComponent)_hero).CharacterParent.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(shield.gameObject,((MinionComponent)_hero).CharacterParent.NetworkSettings.MyRoom);
         NetworkServer.Spawn(shield.gameObject);
         _shield = shield.gameObject;
         ClientRpcShieldFollow(_shield, targetShield.transform);

@@ -85,7 +85,6 @@ public class FireBallSkill : Skill
     private void CmdCreateProjectile(GameObject target)
     {
         GameObject item = Instantiate(_projectile.gameObject, transform.position + Vector3.up, Quaternion.identity);
-        SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         var projectile = item.GetComponent<Projectile>();
         projectile.EndPointReached += OnEndPointReached;
@@ -123,6 +122,6 @@ public class FireBallSkill : Skill
         character.CharacterState.AddState(States.Stun, _stunDuration, 0, Hero.gameObject, name);
 
         for (int i = 0; i < _burnStacks; i++)
-            character.CharacterState.AddState(States.BurningStacked, _burnDuration, 0, Hero.gameObject, name);
+            character.CharacterState.AddState(States.Burning, _burnDuration, 0, Hero.gameObject, name);
     }
 }

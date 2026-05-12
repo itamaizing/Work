@@ -7,16 +7,15 @@ using UnityEngine.Rendering.Universal;
 
 namespace Gangdollarff
 {
-    public class Telekinesis : Skill, IGodLightSpell
+    public class Telekinesis : Skill
     {
         [SerializeField] private float _deleyTelekines = 0.5f;
         [SerializeField] private float _amountOfLift = 1.5f;
         [SerializeField] private DecalProjector _radiusEnemy;
+        [SerializeField] private float _secondClickWindow = 1f;
 
         private Character _tempChar;
-
         private Vector3 _secondClickPoint;
-        
         private float _originalGroundPosition;
         private float _tempCastDeley = 1;
         private float _clickRadius = 0.5f;
@@ -24,39 +23,36 @@ namespace Gangdollarff
 
         protected override int AnimTriggerCastDelay => 0;
 
-        protected override int AnimTriggerCast => Animator.StringToHash("Telekinesis");
+        protected override int AnimTriggerCast => Animator.StringToHash("TelekinesSkill");
 
-        private bool _isSecondClick;
         private bool _isLifted;
+
+        #region Talents
+        private bool _isApplyDamageTalent;
+        #endregion
 
         protected override bool IsCanCast => CheckCanCast();
 
-        public bool IsEnabled { get; private set; }
-
+        public void IsApplyDamageTalent(bool value)
+        {
+            if (_isApplyDamageTalent == value) return;
+            _isApplyDamageTalent = value;
+        }
+        
         private bool CheckCanCast()
         {
-            if (Targeting.GetTarget()?.Character != null)
-            {
-                if (!_isSecondClick && !_isLifted)
-                    return Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
-                else if(_isLifted)
-                    return Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius + _amountOfLift;
-                else
-                    return Vector3.Distance(Targeting.GetTarget().Transform.position, _secondClickPoint) <= AreaInfo.Radius;
-            }
+            if (Targeting.GetTarget()?.Character == null) return false;
 
-            return false;
+            if (!_isLifted)
+                return Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <=
+                       AreaInfo.Radius;
+
+            return Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <=
+                   AreaInfo.Radius + _amountOfLift;
         }
 
-        private void OnEnable()
-        {
-            Canceled += ForceDropTarget;
-        }
-
-        private void OnDisable()
-        {
-            Canceled -= ForceDropTarget;
-        }
+        private void OnEnable() => Canceled += ForceDropTarget;
+        private void OnDisable() => Canceled -= ForceDropTarget;
 
         public void AnimCastTelekinesis()
         {
@@ -70,113 +66,14 @@ namespace Gangdollarff
             _isLifted = false;
         }
 
-        public void ChangeMode()
-        {
-            if (IsEnabled)
-            {
-                IsEnabled = false;
-
-                _castDeley = _tempCastDeley;
-            }
-            else
-            {
-                IsEnabled = true;
-
-                _tempCastDeley = Cooldown.CooldownTime;
-                Cooldown.CooldownTime = 0;
-            }
-        }
-
         public override void LoadTargetData(TargetInfo targetInfo)
         {
             Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
-        }
 
-        protected override IEnumerator CastJob()
-        {
-            DisableMove();
-            _tempChar = Targeting.GetTarget()?.Character;
-            
-            if(!_tempChar) yield break;
-            _skillRender.SetPrepareCursor();
-            Hero.Abilities.SetAbilitiesDisactive(true);
-            
-            CmdAddState(_tempChar);
-            
-            var targetGO = _tempChar.gameObject;
-            _originalGroundPosition = _tempChar.transform.position.y;
-            Vector3 startPos = _tempChar.transform.position;
-            Vector3 hoverOffset = new Vector3(0, _amountOfLift, 0);
-
-            float castStartTime = Time.time;
-
-            CmdMoveTaget(targetGO, startPos + hoverOffset, _deleyTelekines);
-            yield return new WaitForSeconds(_deleyTelekines);
-            
-            _radiusEnemy.gameObject.SetActive(true);
-            _radiusEnemy.transform.parent = Targeting.GetTarget()?.Transform;
-            _radiusEnemy.transform.localPosition = Vector3.zero;
-
-            while (Time.time - castStartTime < _castDuration)
-            {
-                if (Input.GetMouseButtonDown(0) && !_isSecondClick)
-                {
-                    _secondClickPoint = Targeting.GetMousePoint();
-                    if (_secondClickPoint != Vector3.zero &&
-                        Vector3.Distance(_secondClickPoint, _tempChar.transform.position) <= AreaInfo.Radius)
-                    {
-                        _isLifted = false;
-                        _isSecondClick = true;
-                        _skillRender.ResetCursor();
-                        _radiusEnemy.gameObject.SetActive(false);
-
-                        Vector3 hoverTarget = new Vector3(
-                            _secondClickPoint.x,
-                            _originalGroundPosition + _amountOfLift,
-                            _secondClickPoint.z
-                        );
-
-                        float dist = Vector3.Distance(_tempChar.transform.position, hoverTarget);
-                        float t = dist * _secPerMeter;
-
-                        CmdMoveTaget(targetGO, hoverTarget, t);
-                    }
-                }
-
-                yield return null;
-            }
-
-            ForceDropTarget();
-        }
-
-        private void ForceDropTarget()
-        {
-            StopCoroutine(CastJob());
-            _skillRender.ResetCursor();
-            if (_tempChar != null)
-            {
-                Vector3 currentPos = _tempChar.transform.position;
-                Vector3 dropPos = new Vector3(currentPos.x, _originalGroundPosition, currentPos.z);
-
-                CmdForceDrop(_tempChar.gameObject, dropPos, _deleyTelekines);
-                CmdRemoveState(_tempChar);
-            }
-
-            _tempChar = null;
-            Hero.Abilities.SetAbilitiesDisactive(false);
-            EnableMove();
-
-            ClearData();
-        }
-        
-        protected override void ClearData()
-        {
-            Targeting.ClearTarget();
-            Targeting.ClearTempTarget();
-            //_target = null;
-            _radiusEnemy.gameObject.SetActive(false);
-            _isSecondClick = false;
-            _isLifted = false;
+            if (targetInfo.Points.Count > 0)
+                _secondClickPoint = (Vector3)targetInfo.Points[0];
+            else
+                _secondClickPoint = Vector3.zero;
         }
 
         protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -187,19 +84,134 @@ namespace Gangdollarff
                 if (GetMouseButton)
                 {
                     Vector3 clickPoint = Targeting.GetMousePoint();
-
                     Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
                 }
                 yield return null;
             }
-            TargetInfo targetInfo = new TargetInfo();
-            Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
-            targetInfo.AddTarget(Targeting.GetTarget()?.Character);
-            callbackDataSaved(targetInfo);
-           
-            yield return new WaitForSeconds(0.1f);
 
+            Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
             _skillRender.StopDrawRadius();
+
+            while (GetMouseButton)
+                yield return null;
+
+            _radiusEnemy.transform.SetParent(Targeting.GetTarget().Transform);
+            _radiusEnemy.transform.localPosition = Vector3.zero;
+            _radiusEnemy.gameObject.SetActive(true);
+
+            Vector3 destination = Vector3.zero;
+            float timeLeft = _secondClickWindow;
+
+            while (timeLeft > 0)
+            {
+                timeLeft -= Time.deltaTime;
+
+                if (GetMouseButton)
+                {
+                    Vector3 clickPoint = Targeting.GetMousePoint();
+                    if (clickPoint != Vector3.zero &&
+                        Vector3.Distance(clickPoint, Targeting.GetTarget().Transform.position) <= AreaInfo.Radius)
+                    {
+                        destination = clickPoint;
+                        break;
+                    }
+                }
+                yield return null;
+            }
+
+            _radiusEnemy.gameObject.SetActive(false);
+            _radiusEnemy.transform.SetParent(null);
+
+            TargetInfo targetInfo = new TargetInfo();
+            targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+            
+            if (destination != Vector3.zero)
+                targetInfo.Points.Add(destination);
+
+            callbackDataSaved(targetInfo);
+
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        protected override IEnumerator CastJob()
+        {
+            DisableMove();
+            _tempChar = Targeting.GetTarget()?.Character;
+
+            if (!_tempChar) yield break;
+
+            _skillRender.SetPrepareCursor();
+            Hero.Abilities.SetAbilitiesDisactive(true);
+            CmdAddState(_tempChar);
+
+            var targetGO = _tempChar.gameObject;
+            _originalGroundPosition = _tempChar.transform.position.y;
+            Vector3 startPos = _tempChar.transform.position;
+
+            float castEndTime = Time.time + _castDuration;
+
+            CmdMoveTaget(targetGO, startPos + new Vector3(0, _amountOfLift, 0), _deleyTelekines);
+            yield return new WaitForSeconds(_deleyTelekines);
+            
+            if(_isApplyDamageTalent)
+                CmdApplyPercentDamage(_tempChar.gameObject);
+
+            if (_secondClickPoint != Vector3.zero && Time.time < castEndTime)
+            {
+                Vector3 hoverTarget = new Vector3(
+                    _secondClickPoint.x,
+                    _originalGroundPosition + _amountOfLift,
+                    _secondClickPoint.z
+                );
+
+                float dist = Vector3.Distance(_tempChar.transform.position, hoverTarget);
+                float travelTime = dist * _secPerMeter;
+
+                bool destinationInRange = Vector3.Distance(
+                    new Vector3(_secondClickPoint.x, _tempChar.transform.position.y, _secondClickPoint.z),
+                    _tempChar.transform.position
+                ) <= AreaInfo.Radius;
+
+                if (destinationInRange)
+                {
+                    CmdMoveTaget(targetGO, hoverTarget, travelTime);
+                }
+            }
+            while (Time.time < castEndTime)
+            {
+                yield return null;
+            }
+
+            ForceDropTarget();
+        }
+
+        private void ForceDropTarget()
+        {
+            _skillRender.ResetCursor();
+
+            if (_tempChar != null)
+            {
+                Vector3 currentPos = _tempChar.transform.position;
+                Vector3 dropPos = new Vector3(currentPos.x, _originalGroundPosition, currentPos.z);
+
+                CmdForceDrop(_tempChar.gameObject, dropPos, _deleyTelekines);
+                CmdRemoveState(_tempChar);
+            }
+
+            _tempChar = null;
+            _isLifted = false;
+            Hero.Abilities.SetAbilitiesDisactive(false);
+            EnableMove();
+            ClearData();
+        }
+
+        protected override void ClearData()
+        {
+            Targeting.ClearTarget();
+            Targeting.ClearTempTarget();
+            _radiusEnemy.gameObject.SetActive(false);
+            _secondClickPoint = Vector3.zero;
+            _isLifted = false;
         }
 
         private void EnableMove()
@@ -212,9 +224,13 @@ namespace Gangdollarff
         {
             Hero.Move.IsMoveBlocked = true;
         }
-        
-        [Command] private void CmdAddState(Character target) => target.CharacterState.AddState(States.Stun, _castDuration, 0,Hero.gameObject, name);
-        [Command] private void CmdRemoveState(Character target) => target.CharacterState.RemoveState(States.Stun);
+
+        [Command]
+        private void CmdAddState(Character target) =>
+            target.CharacterState.AddState(States.Stun, _castDuration, 0, Hero.gameObject, name);
+
+        [Command]
+        private void CmdRemoveState(Character target) => target.CharacterState.RemoveState(States.Stun);
 
         [Command]
         private void CmdMoveTaget(GameObject target, Vector3 point, float duration)
@@ -222,12 +238,10 @@ namespace Gangdollarff
             var enemyMove = target.GetComponent<MoveComponent>();
             var targetCharacter = target.GetComponent<Character>();
 
-            float moveDuration = duration;
-
             if (targetCharacter.connectionToClient != null)
-                enemyMove.TargetRpcDoMove(point, moveDuration);
+                enemyMove.TargetRpcDoMove(point, duration);
             else
-                enemyMove.RpcDoMove(point, moveDuration);
+                enemyMove.RpcDoMove(point, duration);
         }
 
         [Command]
@@ -240,6 +254,17 @@ namespace Gangdollarff
                 enemyMove.TargetRpcForceDrop(targetCharacter.connectionToClient, dropPos, duration);
             else
                 enemyMove.RpcForceDrop(dropPos, duration);
+        }
+        
+        [Command]
+        private void CmdApplyPercentDamage(GameObject target)
+        {
+            var health = target.GetComponent<Health>();
+            if (health == null) return;
+
+            Damage dmg = new Damage();
+            dmg.Value = health.CurrentValue * 0.05f;
+            ApplyDamage(dmg, target);
         }
     }
 }

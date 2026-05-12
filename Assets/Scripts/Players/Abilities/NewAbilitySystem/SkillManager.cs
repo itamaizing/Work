@@ -33,6 +33,7 @@ public class SkillManager : MonoBehaviour
     public SkillQueue SkillQueue { get => _skillQueue; }
     public Skill[] SelectedSkills { get => _selectedSkills; }
     public Skill SelectedSkill { get => _selectedSkill; }
+    public SkillRenderer SkillRenderer => _skillRenderer;
     
     public Skill CurrentCastingSkill { get; private set; }
     public bool IsNextSkillFree { get; private set; }

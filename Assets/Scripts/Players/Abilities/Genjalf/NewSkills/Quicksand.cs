@@ -145,7 +145,6 @@ public class Quicksand : Skill, IGodLightSpell
     private void CmdUse(Vector3 startPoint, Vector3 endPoint, byte ownerTeamIndex)
     {
         GameObject item = Instantiate(_quicksandTile.gameObject, startPoint, Quaternion.identity);
-        SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(item);
 
         _quicksandTempTile = item.GetComponent<QuicksandTile>();

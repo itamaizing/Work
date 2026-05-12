@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
@@ -50,19 +50,21 @@ public class DomeOfLight : Skill, IPolaritySwitchable
     #endregion
 
     public override void LoadTargetData(TargetInfo targetInfo) { }
-
+    
     public override void Init(SkillRenderer render, Character hero)
     {
         base.Init(render, hero);
+        
         UpdateMode();
+        
+        _overhealMana = new OverhealManaBooster(this, Hero);
+        _domeProcBooster = new DomeProcBooster(this, this);
     }
+    
 
     private void OnEnable()
     {
         OnModeChange += UpdateMode;
-        
-        _overhealMana = new OverhealManaBooster(this, Hero);
-        _domeProcBooster = new DomeProcBooster(this, this);
     }
 
     private void OnDisable()

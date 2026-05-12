@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,8 +14,10 @@ public class TestShootAuto : Skill
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => false;
 
-    private void OnEnable()
+    public override void Init(SkillRenderer render, Character hero)
     {
+        base.Init(render, hero);
+    
        _damageCoroutine = StartCoroutine(DamageTickRoutine());
     }
 

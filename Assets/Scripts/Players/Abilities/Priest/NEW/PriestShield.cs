@@ -87,20 +87,11 @@ public class PriestShield : Skill
     {
         _audioSource = GetComponent<AudioSource>();
     }
-
+    
     public override void Init(SkillRenderer render, Character hero)
     {
         base.Init(render, hero);
-        Hero.DamageTracker.OnDamageTracked += TrackDarkDamage;
-        Hero.Health.DamageTaken += TrackPhysDamage;
-        Hero.DamageTracker.OnHealTracked += TrackHealDone;
-
-        foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.Info.School == Schools.Discipline))
-            skill.CastEnded += AddDisciplineStack;
-    }
-
-    private void OnEnable()
-    {        
+        
         _spiritShieldReflectionBooster = new SpiritShieldReflectionBooster(this);
         _lightShieldManaBooster = new LightShieldManaRestoreBooster(this);
         _healingBoostBooster = new HealingBoostBooster(this);
@@ -114,6 +105,13 @@ public class PriestShield : Skill
         RegisterBooster(PriestShieldBoosterType.HealingBoost, _healingBoostBooster);
         RegisterBooster(PriestShieldBoosterType.SpiritShieldReflection, _spiritShieldReflectionBooster);
         RegisterBooster(PriestShieldBoosterType.LightShieldManaRestore, _lightShieldManaBooster);
+        
+        Hero.DamageTracker.OnDamageTracked += TrackDarkDamage;
+        Hero.Health.DamageTaken += TrackPhysDamage;
+        Hero.DamageTracker.OnHealTracked += TrackHealDone;
+
+        foreach (var skill in Hero.Abilities.Abilities.Where(skill => skill.Info.School == Schools.Discipline))
+            skill.CastEnded += AddDisciplineStack;
     }
 
     private void OnDisable()
@@ -230,7 +228,7 @@ public class PriestShield : Skill
 
                 Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
 
-                if (Targeting.GetTempTarget().Character is Character character)
+                if (Targeting.GetTempTarget()?.Character is Character character)
                 {
                     if (Targeting.GetTempTarget().Character != null && !IsAllyTarget(character))
                     {

@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,7 +25,7 @@ public class NpcSpawn : MonoBehaviour
         if (!NetworkServer.active) return;
         
         SpawnNpcGroup(_spawnPointsEnemyNpc, _enemyNpcPrefab, roomScene);
-        //SpawnNpcGroup(_spawnPointsAlliesNpc, _alliesNpcPrefab, roomScene);
+        SpawnNpcGroup(_spawnPointsAlliesNpc, _alliesNpcPrefab, roomScene);
     }
 
     private void SpawnNpcGroup(List<Transform> points, Character prefab, Scene roomScene)
