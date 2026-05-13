@@ -3,12 +3,14 @@ using System.Collections;
 using Mirror;
 using UnityEngine;
 
-public class IgnitionSkill : Skill
+public class IgnitionSkill : Skill,IFireComboParticipatingSkill
 {
     private const float SlowedRegenAmount = 30f;
     private const float SlowedRegenRate = 5f;
     
     private bool _spreadInRingOfFire = true;
+
+    private float _comboPoints = 0;
 
     protected override bool IsCanCast =>
         Targeting.GetTarget() != null &&
@@ -65,9 +67,10 @@ public class IgnitionSkill : Skill
         var targetCharacter = targetGO.GetComponent<Character>();
         if (targetCharacter == null) return;
 
-        targetCharacter.CharacterState.AddState(States.Ignition, 6f, 0f, Hero.gameObject, nameof(IgnitionSkill));
+        targetCharacter.CharacterState.AddState(States.Ignition, 6f, 0f, Hero.gameObject, nameof(IgnitionSkill)+_comboPoints);
 
         RpcApplyEnergyPenalty();
+        _comboPoints = 0;
     }
     
     private void SpreadIgnitionToRingTargets(Character initialTarget)
@@ -121,5 +124,15 @@ public class IgnitionSkill : Skill
     {
         if (targetInfo.GetTargets().Count > 0)
             Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+    }
+
+    public void OnFinalComboSkill(GameObject target)
+    {
+        _comboPoints++;
+    }
+
+    public void OnTargetHasComboPoint(GameObject target, float comboPoints)
+    {
+        _comboPoints += comboPoints;
     }
 }

@@ -13,6 +13,7 @@ public class FireComboHandler : NetworkBehaviour
     private PassiveCombo_Scorpion _passiveCombo;
 
     private bool _isEnabled;
+    public bool IsEnabled => _isEnabled;
     private bool _isMultiTargetMode;
 
     private readonly Dictionary<Skill, int> _comboCharges = new();
@@ -37,14 +38,11 @@ public class FireComboHandler : NetworkBehaviour
         else Unsubscribe();
     }
 
-    public void SetMultiTargetMode(bool value) => _isMultiTargetMode = value;
-
     private void Subscribe()
     {
         foreach (var skill in _hero.Abilities.Abilities.Where(s => s.Info.School == Schools.Fire))
         {
             skill.Charges?.EnableChargers(true, MaxCharges, ChargeCD);
-            skill.Charges?.AddMax();
 
             _comboCharges[skill] = MaxCharges;
             _chargeEndTimes[skill] = new List<float>();
@@ -64,14 +62,14 @@ public class FireComboHandler : NetworkBehaviour
                 _ringEnabledHandler = () => OnFireSkillActivated(ring, null);
                 ring.OnRingEnabled += _ringEnabledHandler;
             }
-            else
+            /*else
             {
                 var capturedSkill = skill;
                 Action handler = () => OnFireSkillActivated(capturedSkill, capturedSkill.Targeting.GetTarget()?.Character);
                 
                 _castSuccessHandlers[skill] = handler;
                 skill.CastSuccess += handler;
-            }
+            }*/
         }
     }
     
@@ -108,33 +106,36 @@ public class FireComboHandler : NetworkBehaviour
         {
             var ign = _hero.Abilities.GetSkill<IgnitionSkill>();
             if (ign != null) ign.CastStarted -= _ignitionCastHandler;
+            ign.Charges?.EnableChargers(false, 0, ChargeCD);
         }
 
         if (_fireBreathCastStartedHandler != null)
         {
             var breath = _hero.Abilities.GetSkill<FireBreath_Scorpion>();
             if (breath != null) breath.CastStarted -= _fireBreathCastStartedHandler;
+            breath.Charges?.EnableChargers(false, 0, ChargeCD);
         }
 
         if (_ringEnabledHandler != null)
         {
             var ring = _hero.Abilities.GetSkill<RingOfFireSkill>();
             if (ring != null) ring.OnRingEnabled -= _ringEnabledHandler;
+            ring.Charges?.EnableChargers(false, 0, ChargeCD);
         }
 
-        foreach (var kvp in _castSuccessHandlers)
+        /*foreach (var kvp in _castSuccessHandlers)
         {
             kvp.Key.CastSuccess -= kvp.Value;
-        }
+        }*/
 
         _castSuccessHandlers.Clear();
         _comboCharges.Clear();
         _chargeEndTimes.Clear();
 
-        foreach (var skill in _hero.Abilities.Abilities.Where(s => s.Info.School == Schools.Fire))
+        /*foreach (var skill in _hero.Abilities.Abilities.Where(s => s.Info.School == Schools.Fire))
         {
             skill.Charges?.EnableChargers(false, MaxCharges, ChargeCD);
-        }
+        }*/
     }
 
     private void OnFireSkillActivated(Skill skill, Character target)

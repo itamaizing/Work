@@ -19,10 +19,15 @@ public class ConsumeCombo_Scorpion : Skill
     }
 
     protected override bool IsCanCast => true;
+    
+    private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+    private bool _ninjaTalentEnabled = false;
+    private bool _fireComboTalentEnabled = false; 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
     private bool isConsumeCombo_ScorpionPhysicStateClear;
+    public bool IsConsumeCombo_ScorpionPhysicStateClear => isConsumeCombo_ScorpionPhysicStateClear;
     private bool _canCastUnderPhysicalDisable = false;
     
     #region 3% heal per dispelled physical effect
@@ -146,6 +151,7 @@ public class ConsumeCombo_Scorpion : Skill
 
     public void ConsumeCombo_ScorpionPhysicStateClearTalent(bool value)
     {
+        if(isConsumeCombo_ScorpionPhysicStateClear == value) return;
         isConsumeCombo_ScorpionPhysicStateClear = value;
     }
     
@@ -158,7 +164,12 @@ public class ConsumeCombo_Scorpion : Skill
     {
         if (!isConsumeCombo_ScorpionPhysicStateClear) return;
         
-        CmdDispelPhysState(GetTargetWithCombo(),_healOnDispelBooster.Enabled,_energyOnDispelBooster.Enabled);
+        CmdDispelPhysState(GetTargetWithCombo(),_healOnDispelBooster.Enabled,_energyOnDispelBooster.Enabled,isDisplePhysState: true);
+    }
+
+    private void TryAddComboPoint()
+    {
+        CmdDispelPhysState(GetTargetWithCombo(),_healOnDispelBooster.Enabled,_energyOnDispelBooster.Enabled,isDisplePhysState: false);
     }
 
     private List<GameObject> GetTargetWithCombo()
@@ -170,7 +181,7 @@ public class ConsumeCombo_Scorpion : Skill
     }
 
     [Command]
-    private void CmdDispelPhysState(List<GameObject> targetsInRadius,bool healOnDispelEnabled,bool energyOnDispelEnabled)
+    private void CmdDispelPhysState(List<GameObject> targetsInRadius,bool healOnDispelEnabled,bool energyOnDispelEnabled,bool isDisplePhysState)
     {
         int totalDispelled = 0;
         
@@ -178,23 +189,26 @@ public class ConsumeCombo_Scorpion : Skill
         {
             var state = target.GetComponent<CharacterState>().GetState(States.ComboState) as ComboState;
             if (state == null || state.CurrentStacksCount <= 0) continue;
-            if (isConsumeCombo_ScorpionPhysicStateClear)
+            if (isConsumeCombo_ScorpionPhysicStateClear && isDisplePhysState)
             {
-                _hero.CharacterState.DispelStates(StateType.Physical, true, out int howMuchDispelled, true);
-                if (howMuchDispelled > 0)
+                _hero.CharacterState.DispelStatesStack(StateType.Physical, true, state.CurrentStacksCount);
+                if (state.CurrentStacksCount > 0)
                 {
-                    if(healOnDispelEnabled)
+                    if (healOnDispelEnabled)
                         _healOnDispelBooster?.ApplyHealForOneEffect();
-                    if(energyOnDispelEnabled)
-                        _energyOnDispelBooster?.ApplyEnergyForOneEffect(); 
+                    if (energyOnDispelEnabled)
+                        _energyOnDispelBooster?.ApplyEnergyForOneEffect();
                 }
             }
-            state.ReduceStack();
-            RpcReduceStack(target);
-            totalDispelled++;
+            for (int i = 0; i < state.CurrentStacksCount; i++)
+            {
+                state.ReduceStack();
+                RpcReduceStack(target);
+                totalDispelled++;
+            }
         }
         
-        if (totalDispelled > 0)
+        if (totalDispelled > 0 && !isDisplePhysState)
             _comboPoints?.Add(totalDispelled);
     }
 
@@ -212,13 +226,27 @@ public class ConsumeCombo_Scorpion : Skill
             {
                 Vector3 clickPoint = Targeting.GetMousePoint();
 
-                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: true);
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: isConsumeCombo_ScorpionPhysicStateClear);
 
-                if (Targeting.GetTempTarget()?.Character)
+                var tempCharacter = Targeting.GetTempTarget()?.Character;
+                if (tempCharacter != null)
                 {
-                    if (Targeting.GetTempTarget()?.Character != null && Targeting.GetTempTarget()?.Character != Hero)
+                    bool isSelf = tempCharacter == Hero;
+                    bool hasCombo = tempCharacter.CharacterState.CheckForState(States.ComboState);
+
+                    if (isSelf)
                     {
-                        Targeting.ClearTempTarget();
+                        if (!isConsumeCombo_ScorpionPhysicStateClear)
+                        {
+                            Targeting.ClearTempTarget();
+                        }
+                    }
+                    else
+                    {
+                        if (!hasCombo || !IsEnemyTarget(tempCharacter))
+                        {
+                            Targeting.ClearTempTarget();
+                        }
                     }
                 }
             }
@@ -234,7 +262,16 @@ public class ConsumeCombo_Scorpion : Skill
 
     protected override IEnumerator CastJob()
     {
-        TryConsumeComboAroundSelf();
+        var target = Targeting.GetTarget()?.Character;
+
+        if (target == Hero)
+        {
+            TryConsumeComboAroundSelf();
+        }
+        else if (target != null && IsEnemyTarget(target))
+        {
+            TryAddComboPoint();
+        }
 
         yield return null;
     }
@@ -266,6 +303,34 @@ public class ConsumeCombo_Scorpion : Skill
             {
                 _disactive = value;
             }
+        }
+    }
+    
+    public void SetNinjaTalentEnabled(bool value)
+    {
+        _ninjaTalentEnabled = value;
+        UpdateActivationState();
+    }
+
+    public void SetFireComboTalentEnabled(bool value)
+    {
+        _fireComboTalentEnabled = value;
+        UpdateActivationState();
+    }
+
+    private void UpdateActivationState()
+    {
+        bool shouldBeActive = _ninjaTalentEnabled || _fireComboTalentEnabled;
+
+        if (shouldBeActive)
+        {
+            if (!IsSkillActive)
+                _hero?.Abilities?.ActivateSkill(this);
+        }
+        else
+        {
+            if (IsSkillActive)
+                _hero?.Abilities?.DeactivateSkill(this);
         }
     }
 }

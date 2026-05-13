@@ -252,9 +252,6 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
             StopCoroutine(_hitsInRowCoroutine);
         _hitsInRowCoroutine = StartCoroutine(HitsInRowTimer());
 
-        Debug.Log($"_currentTarget: {_currentTarget}");
-        Debug.Log($"_lastTarget: {_lastTarget}");
-
         _currentTarget = target as Character;
 
         if (_lastTarget != null && _lastTarget == _currentTarget) _hitsInRow++;

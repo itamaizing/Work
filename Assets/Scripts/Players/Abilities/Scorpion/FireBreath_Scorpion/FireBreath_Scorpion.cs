@@ -25,9 +25,14 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
     private Dictionary<Health, int> _enemiesDict = new Dictionary<Health, int>();
     private WaitForSeconds _waitForApplyFireBreathDamage;
 
+    private readonly Dictionary<Health, int> _exposureTicks = new();
+    private readonly Dictionary<GameObject, int> _serverExposureTicks = new();
+
     public ConsumeCombo_Scorpion Notifier { get; set; }
     public int ConsumedAmount { get; set; }
-    
+
+    private bool _isIncreasedDamageExposure = false;
+
     public event Action<GameObject, Skill> OnDamaged;
     public void OnFinalComboSkill(GameObject target) { }
     public void OnTargetHasComboPoint(GameObject target, float comboPoints) { }
@@ -59,6 +64,31 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         return;
+    }
+    
+    public float GetExposureMultiplier(Health target)
+    {
+        if (target == null || !_exposureTicks.TryGetValue(target, out int ticks)) return 1f;
+        return 1f + ticks * 0.20f;
+    }
+
+    public void ClearExposureTicks()
+    {
+        _exposureTicks.Clear();
+    }
+
+    public void SetIncreasedExposuredDamage(bool value)
+    {
+        if(_isIncreasedDamageExposure == value) return;
+        _isIncreasedDamageExposure = value;
+        if(isClient)
+            CmdSetIncreasedExposuredDamage(value);
+    }
+
+    [Command]
+    private void CmdSetIncreasedExposuredDamage(bool value)
+    {
+        _isIncreasedDamageExposure = value;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -127,6 +157,11 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
     private void CmdOnDamageEnd(GameObject target)
     {
         OnDamaged?.Invoke(target, this);
+        _serverExposureTicks[target] = _serverExposureTicks.GetValueOrDefault(target, 0) + 1;
+
+        var ignition = target.GetComponent<CharacterState>()?.GetState(States.Ignition) as IgnitionState;
+        if (ignition != null && _isIncreasedDamageExposure)
+            ignition.UpdateFireBreathBonus(_serverExposureTicks[target] * 0.20f);
     }
 
     private void ApplyDamageAndDebuff(float elapsedTime, int dummyTickIndex)
@@ -166,6 +201,9 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
                 };
 
                 CmdApplyDamage(damage, enemy.gameObject);
+                
+                if(_isIncreasedDamageExposure)
+                    _exposureTicks[enemy] = _exposureTicks.GetValueOrDefault(enemy, 0) + 1;
 
                 if (_enemiesDict.ContainsKey(enemy))
                     _enemiesDict[enemy] *= (int)_damageScalePerTick;
@@ -235,7 +273,6 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
     protected override void ClearData()
     {
         _enemiesDict.Clear();
-
         if (_fireBreathInstance != null) Destroy(_fireBreathInstance.gameObject);
     }
 

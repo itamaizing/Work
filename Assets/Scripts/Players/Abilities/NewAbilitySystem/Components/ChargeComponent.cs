@@ -55,6 +55,7 @@ public class ChargeComponent : BaseSkillComponent
         _isComboPart = value;
         _maxCharges = maxChargers;
         _baseCooldown = baseCooldown;
+        OnCurrentChange?.Invoke(RemainingCharges);
     }
     
     public int MaxCharges {

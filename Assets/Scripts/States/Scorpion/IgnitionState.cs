@@ -1,13 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Text.RegularExpressions;
 
 public class IgnitionState : RefreshingState
 {
     private float _tickTimer = 0f;
     private int _currentTick = 0;
-    private const int MaxTicks = 6;
+    private int MaxTicks = 6;
     private const float TickInterval = 1f;
     private const float BaseScorchedChance = 5f;
+    private float _damageBonus = 0;
 
     public override States State => States.Ignition;
     public override StateType Type => StateType.Magic;
@@ -37,6 +39,12 @@ public class IgnitionState : RefreshingState
                 ExitState();
         }
     }
+    
+    public void UpdateFireBreathBonus(float bonus)
+    {
+        MaxTicks += (int)bonus;
+        _currentTick = (int)bonus;
+    }
 
     private void ApplyTick()
     {
@@ -61,16 +69,39 @@ public class IgnitionState : RefreshingState
     {
         _currentTick = 0;
         _tickTimer = 0f;
+        _damageBonus = 0f;
         characterState.RemoveState(this);
+    }
+    
+    private float ExtractNumber(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return 0f;
+
+        Match match = Regex.Match(text, @"-?\d+(\.\d+)?");
+
+        if (match.Success &&
+            float.TryParse(match.Value,
+                System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture,
+                out float value))
+        {
+            return value;
+        }
+
+        return 0f;
     }
 
     public override AbstractCharacterState TryApply(CharacterState character, float durationToExit,
         float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
         _currentTick = 0;
         _tickTimer = 0f;
         duration = MaxTicks;
+        _damageBonus = ExtractNumber(skillName);
+        MaxTicks += (int)_damageBonus;
+        _currentTick = (int)_damageBonus;
+        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
         return this;
     }
 }

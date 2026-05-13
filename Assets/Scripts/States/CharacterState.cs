@@ -106,8 +106,8 @@ public abstract class AbstractCharacterState
 
 	public virtual void ReduceStack()
 	{
-        ExitState();
-    }
+		ExitState();
+	}
 
 	protected virtual bool CanEnterState(CharacterState character)
 	{
@@ -145,6 +145,21 @@ public abstract class StackableState : AbstractCharacterState
 		duration = time;
 		return true; 
 	}
+
+    public override void ReduceStack()
+    {
+	    currentStacksCount--;
+
+	    if (currentStacksCount <= 0)
+	    {
+		    characterState.StateIcons.RemoveItemByState(State);
+		    ExitState();
+	    }
+	    else
+	    {
+		    characterState.StateIcons.ActivateIco(State, duration, -1, true, MaxStacksCount);
+	    }
+    }
 }
 
 public abstract class RefreshingState : StackableState
@@ -167,7 +182,17 @@ public abstract class RefreshingState : StackableState
 
     public override void ReduceStack()
     {
-		ExitState();
+	    currentStacksCount--;
+
+	    if (currentStacksCount <= 0)
+	    {
+		    characterState.StateIcons.RemoveItemByState(State);
+		    ExitState();
+	    }
+	    else
+	    {
+		    characterState.StateIcons.ActivateIco(State, duration, -1, true, MaxStacksCount);
+	    }
     }
 }
 
@@ -638,11 +663,11 @@ public class CharacterState : NetworkBehaviour
 			{
 				if (personWhoShooted.TryGetComponent<Character>(out var character))
                 {
-                    _currentStates[_currentStates.Count - 1].TryApply(this, duration, damageToExit, character, skillName);
+	                _currentStates[i].TryApply(this, duration, damageToExit, character, skillName);
                 }
                 else
                 {
-                    _currentStates[_currentStates.Count - 1].TryApply(this, duration, damageToExit, null, skillName);
+                    _currentStates[i].TryApply(this, duration, damageToExit, null, skillName);
                 }
                 //_currentStates[i].TryApply(this, duration, damageToExit, character, skillName);
 
@@ -820,7 +845,35 @@ public class CharacterState : NetworkBehaviour
 			_stateIcons.RemoveItemByState(state.State);
 		}
 	}
-	
+
+	public void DispelStatesStack(StateType type, bool isAlly, int howMuchToDispel)
+	{
+		if (_currentStates.Count == 0) return;
+
+		AbstractCharacterState stateToDispel = _currentStates.LastOrDefault(c => c.Type == type &&
+			((isAlly && c.BaffDebaff == BaffDebaff.Baff) ||
+			 (!isAlly && c.BaffDebaff == BaffDebaff.Debaff)));
+		if (stateToDispel != null)
+		{
+			int stacks = stateToDispel.CurrentStacksCount;
+
+			if (stateToDispel.PersonWhoMadeBuff != null)
+				NotifyDispelWhoMade(stateToDispel.PersonWhoMadeBuff.gameObject, stateToDispel.State, stateToDispel.CurrentStacksCount);
+			if (stacks <= howMuchToDispel)
+			{
+				RemoveState(stateToDispel.State);
+			}
+			else
+			{
+				for (int i = 0; i < howMuchToDispel; i++)
+				{
+					stateToDispel.ReduceStack();
+					ClientRpcRemoveIconCount();
+				}
+			}
+		}
+	}
+
 	[ClientRpc]
 	private void NotifyDispelWhoMade(GameObject whoMade, States state,int num)
 	{
