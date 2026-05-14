@@ -9605,8 +9605,6 @@ MonoBehaviour:
   character: {fileID: 5458554383432203635}
   consume: {fileID: 8732005787551451527}
   passiveCombo_Scorpion: {fileID: 5883639770937801120}
-  _fireComboHandler: {fileID: 2402640990303222928}
-  manager: {fileID: 5612755856390318882}
 --- !u!114 &7893984956880296540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11732,7 +11730,13 @@ MonoBehaviour:
       costType: 0
       shouldModify: 0
       showInDescription: 0
-  _skillEnergyCosts: []
+  _skillEnergyCosts:
+  - nameToShow: 10 Energy - Mandatory
+    type: 2
+    value: 10
+    costType: 0
+    shouldModify: 0
+    showInDescription: 0
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:

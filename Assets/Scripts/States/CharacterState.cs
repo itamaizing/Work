@@ -846,8 +846,9 @@ public class CharacterState : NetworkBehaviour
 		}
 	}
 
-	public void DispelStatesStack(StateType type, bool isAlly, int howMuchToDispel)
+	public void DispelStatesStack(StateType type, bool isAlly, int howMuchToDispel, out int dispelled)
 	{
+		dispelled = 0;
 		if (_currentStates.Count == 0) return;
 
 		AbstractCharacterState stateToDispel = _currentStates.LastOrDefault(c => c.Type == type &&
@@ -855,22 +856,25 @@ public class CharacterState : NetworkBehaviour
 			 (!isAlly && c.BaffDebaff == BaffDebaff.Debaff)));
 		if (stateToDispel != null)
 		{
-			int stacks = stateToDispel.CurrentStacksCount;
-
 			if (stateToDispel.PersonWhoMadeBuff != null)
 				NotifyDispelWhoMade(stateToDispel.PersonWhoMadeBuff.gameObject, stateToDispel.State, stateToDispel.CurrentStacksCount);
-			if (stacks <= howMuchToDispel)
+			
+			int available = stateToDispel.CurrentStacksCount;
+			int toRemove = Mathf.Min(available, howMuchToDispel);
+			
+			if (toRemove >= available)
 			{
 				RemoveState(stateToDispel.State);
 			}
 			else
 			{
-				for (int i = 0; i < howMuchToDispel; i++)
+				for (int i = 0; i < toRemove; i++)
 				{
 					stateToDispel.ReduceStack();
 					ClientRpcRemoveIconCount();
 				}
 			}
+			dispelled = toRemove;
 		}
 	}
 

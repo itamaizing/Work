@@ -11,6 +11,7 @@ public class IgnitionState : RefreshingState
     private const float BaseScorchedChance = 5f;
     private float _damageBonus = 0;
 
+    private float _fireBreathBonus = 0f;
     public override States State => States.Ignition;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
@@ -43,16 +44,18 @@ public class IgnitionState : RefreshingState
     public void UpdateFireBreathBonus(float bonus)
     {
         MaxTicks += (int)bonus;
-        _currentTick = (int)bonus;
+        _fireBreathBonus = (int)bonus;
     }
 
     private void ApplyTick()
     {
         if(characterState.isClient) return;
         
+        float finalDamage = _currentTick + _fireBreathBonus;
+
         var damage = new Damage
         {
-            Value = _currentTick,
+            Value = finalDamage,
             Type = DamageType.Magical,
         };
         health.TryTakeDamage(ref damage, skill);
@@ -70,6 +73,8 @@ public class IgnitionState : RefreshingState
         _currentTick = 0;
         _tickTimer = 0f;
         _damageBonus = 0f;
+        _fireBreathBonus = 0;
+        MaxTicks = 6;
         characterState.RemoveState(this);
     }
     

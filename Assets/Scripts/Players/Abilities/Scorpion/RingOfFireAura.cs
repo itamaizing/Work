@@ -15,10 +15,13 @@ public class RingOfFireAura : AuraStateHandler
     private const float SlowedRegenRate = 2f;
 
     public float _baseRadius = 4;
+    private float _originalEnergyRegen;
+    private int _slowRegenDebt = 0;
+    private bool _slowRegenActive = false;
 
     private FireBreath_Scorpion _fireBreath;
     private Coroutine _tickCoroutine;
-    private float _originalEnergyRegen;
+    private Coroutine _slowRegenCoroutine;
     private Resource _energy;
 
     protected override void OnAuraEnabled()
@@ -55,11 +58,11 @@ public class RingOfFireAura : AuraStateHandler
 
     protected override void OnAuraDisabled()
     {
-        if (_tickCoroutine != null)
-        {
-            StopCoroutine(_tickCoroutine);
-            _tickCoroutine = null;
-        }
+        if (_tickCoroutine != null) { StopCoroutine(_tickCoroutine); _tickCoroutine = null; }
+
+        if (_slowRegenCoroutine != null) { StopCoroutine(_slowRegenCoroutine); _slowRegenCoroutine = null; }
+        _slowRegenDebt = 0;
+        _slowRegenActive = false;
 
         _fireBreath?.ClearExposureTicks();
         SetBaseRadius();
@@ -98,7 +101,7 @@ public class RingOfFireAura : AuraStateHandler
             }
 
             _energy.CmdUse(1f);
-            SlowRegenForOneEnergy();
+            _energy.CmdAddSlowRegenDebt(1f,2);
 
             foreach (var target in _currentTargets.ToArray())
             {
@@ -118,36 +121,7 @@ public class RingOfFireAura : AuraStateHandler
             }
         }
     }
-
-
-    private void SlowRegenForOneEnergy()
-    {
-        StartCoroutine(SlowRegenJob());
-    }
-
-    private IEnumerator SlowRegenJob()
-    {
-        if (_energy == null) yield break;
-        ;
-        float savedRegen = _energy.RegenerationValue;
-        _energy.RegenerationValue = savedRegen / SlowedRegenRate;
-        CmdChangeRegenerationValue(_energy.RegenerationValue);
-        float restored = 0f;
-        while (restored < 1f)
-        {
-            restored += _energy.RegenerationValue * Time.deltaTime;
-            yield return null;
-        }
-
-        _energy.RegenerationValue = savedRegen;
-    }
-
-    [Command]
-    private void CmdChangeRegenerationValue(float value)
-    {
-        _energy.RegenerationValue = value;
-        _energy.TryUse(0);
-    }
+    
 
     [Command(requiresAuthority = false)]
     private void CmdApplyScorched(GameObject target, GameObject source)

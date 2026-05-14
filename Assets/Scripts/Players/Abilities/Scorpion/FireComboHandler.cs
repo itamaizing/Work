@@ -55,7 +55,7 @@ public class FireComboHandler : NetworkBehaviour
             else if (skill is FireBreath_Scorpion breath)
             {
                 _fireBreathCastStartedHandler = () => OnFireSkillActivated(breath, null);
-                breath.CastStarted += _fireBreathCastStartedHandler;
+                breath.OnFireBreathStarted += _fireBreathCastStartedHandler;
             }
             else if (skill is RingOfFireSkill ring)
             {
@@ -112,7 +112,7 @@ public class FireComboHandler : NetworkBehaviour
         if (_fireBreathCastStartedHandler != null)
         {
             var breath = _hero.Abilities.GetSkill<FireBreath_Scorpion>();
-            if (breath != null) breath.CastStarted -= _fireBreathCastStartedHandler;
+            if (breath != null) breath.OnFireBreathStarted -= _fireBreathCastStartedHandler;
             breath.Charges?.EnableChargers(false, 0, ChargeCD);
         }
 

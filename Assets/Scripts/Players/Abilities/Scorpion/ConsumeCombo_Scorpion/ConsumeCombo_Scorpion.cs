@@ -191,7 +191,7 @@ public class ConsumeCombo_Scorpion : Skill
             if (state == null || state.CurrentStacksCount <= 0) continue;
             if (isConsumeCombo_ScorpionPhysicStateClear && isDisplePhysState)
             {
-                _hero.CharacterState.DispelStatesStack(StateType.Physical, true, state.CurrentStacksCount);
+                _hero.CharacterState.DispelStatesStack(StateType.Physical, true, state.CurrentStacksCount, out int dispelled);
                 if (state.CurrentStacksCount > 0)
                 {
                     if (healOnDispelEnabled)
@@ -199,12 +199,16 @@ public class ConsumeCombo_Scorpion : Skill
                     if (energyOnDispelEnabled)
                         _energyOnDispelBooster?.ApplyEnergyForOneEffect();
                 }
+
+                totalDispelled = dispelled;
             }
-            for (int i = 0; i < state.CurrentStacksCount; i++)
+            if(!isDisplePhysState)
+                totalDispelled = state.CurrentStacksCount;
+            
+            for (int i = 0; i < totalDispelled; i++)
             {
                 state.ReduceStack();
                 RpcReduceStack(target);
-                totalDispelled++;
             }
         }
         

@@ -21,8 +21,10 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     [SyncVar(hook = nameof(HookMaxValueChanged)), SerializeField] protected float _maxValue;
     [SyncVar] protected float _regenerationValue;
     [SyncVar] protected float _regenerationPeriod;
+    private float _slowRegenDebt = 0f;
     
     protected Coroutine _regenCoroutine;
+    private Coroutine _slowRegenCoroutine;
     protected Attribute _maxValueAttribute;
     protected Attribute _regenValueAttribute;
 
@@ -331,6 +333,47 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     protected void CmdResetRegen()
     {
         ResetRegen();
+    }
+    
+    [Command(requiresAuthority = false)]
+    public void CmdAddSlowRegenDebt(float amount, float slowMultiplier)
+    {
+        _slowRegenDebt += amount;
+
+        if (_slowRegenCoroutine == null)
+            _slowRegenCoroutine = StartCoroutine(ProcessSlowRegenDebt(slowMultiplier));
+    }
+    
+    private IEnumerator ProcessSlowRegenDebt(float slowMultiplier)
+    {
+        float savedRegen = _regenerationValue;
+        _regenerationValue = savedRegen / slowMultiplier;
+
+        if (_regenCoroutine != null)
+        {
+            StopCoroutine(_regenCoroutine);
+            _regenCoroutine = StartCoroutine(RegenerateJob());
+        }
+
+        while (_slowRegenDebt > 0f)
+        {
+            if (_regenerationValue <= 0f) { _slowRegenDebt = 0f; break; }
+
+            yield return new WaitForSeconds(_regenerationPeriod);
+
+            if (_currentValue < _maxValue)
+                _slowRegenDebt = Mathf.Max(0f, _slowRegenDebt - _regenerationValue);
+        }
+
+        _regenerationValue = savedRegen;
+
+        if (_regenCoroutine != null)
+        {
+            StopCoroutine(_regenCoroutine);
+            _regenCoroutine = StartCoroutine(RegenerateJob());
+        }
+
+        _slowRegenCoroutine = null;
     }
 
     public void AddModifier(AttributeModifier modif)

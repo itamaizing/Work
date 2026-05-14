@@ -6,8 +6,7 @@ using UnityEngine;
 public class IgnitionSkill : Skill,IFireComboParticipatingSkill
 {
     private const float SlowedRegenAmount = 30f;
-    private const float SlowedRegenRate = 5f;
-    
+
     private bool _spreadInRingOfFire = true;
 
     private float _comboPoints = 0;
@@ -94,25 +93,8 @@ public class IgnitionSkill : Skill,IFireComboParticipatingSkill
     [TargetRpc]
     private void RpcApplyEnergyPenalty()
     {
-        StartCoroutine(SlowedEnergyRegenJob());
-    }
-
-    private IEnumerator SlowedEnergyRegenJob()
-    {
-        if (!Hero.Resources.TryGetValue(ResourceType.Energy, out var energy)) yield break;
-
-        float originalRegen = energy.RegenerationValue;
-        float remaining = SlowedRegenAmount;
-
-        energy.RegenerationValue = SlowedRegenRate;
-
-        while (remaining > 0f)
-        {
-            remaining -= SlowedRegenRate * Time.deltaTime;
-            yield return null;
-        }
-
-        energy.RegenerationValue = originalRegen;
+        if (Hero.Resources.TryGetValue(ResourceType.Energy, out var energy))
+            energy.CmdAddSlowRegenDebt(SlowedRegenAmount,2);
     }
 
     protected override void ClearData()

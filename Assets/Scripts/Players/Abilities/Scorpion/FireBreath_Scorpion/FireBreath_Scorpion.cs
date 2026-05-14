@@ -34,8 +34,7 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
     private bool _isIncreasedDamageExposure = false;
 
     public event Action<GameObject, Skill> OnDamaged;
-    public void OnFinalComboSkill(GameObject target) { }
-    public void OnTargetHasComboPoint(GameObject target, float comboPoints) { }
+    public event Action OnFireBreathStarted;
 
     protected override bool IsCanCast => true;
     protected override int AnimTriggerCastDelay => 0;
@@ -55,10 +54,30 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
     private const float MinDistanceMultiplier = 0.5f;
     private const float MaxDistanceRayCast = 100f;
     #endregion
+    
+    private float _lastEnergyTickPercent = 0f;
+    private float _energyCostPerPercent = 1f; 
+    
+    #region Combo Speed Bonus
+    [SerializeField] private float _speedBonusPerComboPoint = 0.20f;
+    [SerializeField] private float _speedBonusPerFullCombo = 0.20f;
+    private WaitForSeconds _currentWait;
+    private float _originalCastDuration;
+    private float _currentDurationReduction = 0f;
+    private float _initialSpeed = 1f;
+    private float _effectiveInterval;
+    #endregion
 
     private void Start()
     {
-        _waitForApplyFireBreathDamage = new WaitForSeconds(ApplyFireBreathDamageTickInterval);
+        _originalCastDuration = _channelComponent.CastDuration;
+        UpdateWaitInterval();
+    }
+    
+    private void UpdateWaitInterval()
+    {
+        _effectiveInterval = ApplyFireBreathDamageTickInterval * _initialSpeed;
+        _currentWait = new WaitForSeconds(_effectiveInterval);
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -75,6 +94,12 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
     public void ClearExposureTicks()
     {
         _exposureTicks.Clear();
+    }
+
+    [Command]
+    private void CmdClearServerExposureTicks()
+    {
+        _serverExposureTicks.Clear();
     }
 
     public void SetIncreasedExposuredDamage(bool value)
@@ -98,10 +123,15 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
             callbackDataSaved(new TargetInfo());
             yield return null;
         }
+        OnFireBreathStarted?.Invoke();
     }
 
     protected override IEnumerator CastJob()
     {
+        ClearExposureTicks();
+        if(isClient)
+            CmdClearServerExposureTicks();
+
         CmdSpawnFireBreath();
         yield return StartCoroutine(ApplyFireBreathDamage());
     }
@@ -226,14 +256,39 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
         {
             ApplyDamageAndDebuff(elapsed, baseDamage);
 
-            elapsed += ApplyFireBreathDamageTickInterval;
+            elapsed += _effectiveInterval;
+                
+            TrySpendEnergy(elapsed);
 
-            yield return _waitForApplyFireBreathDamage;
+            yield return _currentWait;
 
             baseDamage *= 2;
         }
         Hero.Move.SetCanMove(true);
         CmdDestroyFireBreath();
+    }
+
+    private void TrySpendEnergy(float elapsedTime)
+    {
+        if (_hero == null) return;
+
+        float progressPercent = (elapsedTime / CastStreamDuration) * 100f;
+        float current10PercentBlocks = Mathf.Floor(progressPercent / 10f);
+
+        int blocksToSpend = (int)(current10PercentBlocks - _lastEnergyTickPercent);
+
+        if (blocksToSpend > 0)
+        {
+            float energyToSpend = blocksToSpend * _energyCostPerPercent;
+
+            if (_hero.Resources.TryGetValue(ResourceType.Energy, out var energyResource))
+            {
+                energyResource.CmdUse(energyToSpend);
+                energyResource.CmdAddSlowRegenDebt(energyToSpend,2);
+            }
+
+            _lastEnergyTickPercent = current10PercentBlocks;
+        }
     }
 
     private IEnumerator FollowMouseRoutine()
@@ -273,7 +328,14 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
     protected override void ClearData()
     {
         _enemiesDict.Clear();
-        if (_fireBreathInstance != null) Destroy(_fireBreathInstance.gameObject);
+        _lastEnergyTickPercent = 0f;
+        _currentDurationReduction = 0f;
+        _initialSpeed = 1f;
+        _channelComponent.CastDuration = _originalCastDuration;
+        UpdateWaitInterval();
+        
+        if (_fireBreathInstance != null) 
+            Destroy(_fireBreathInstance.gameObject);
     }
 
     private Vector3 GetMouseWorldPosition()
@@ -283,5 +345,33 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
             return hit.point;
 
         return transform.position + transform.forward * FallbackMouseForwardDistance;
+    }
+    
+    public void OnTargetHasComboPoint(GameObject target, float comboPoints)
+    {
+        _currentDurationReduction = comboPoints * _speedBonusPerComboPoint;
+        _channelComponent.CastDuration = _originalCastDuration * (1f - _currentDurationReduction);
+        _channelComponent.CastDuration = Mathf.Max(_channelComponent.CastDuration, _originalCastDuration * 0.2f);
+        
+        RpcApplyCastDuration(_currentDurationReduction, _channelComponent.CastDuration);
+    }
+
+    public void OnFinalComboSkill(GameObject target)
+    {
+        _currentDurationReduction = _speedBonusPerFullCombo;
+        _channelComponent.CastDuration = _originalCastDuration * (1f - _currentDurationReduction);
+        _channelComponent.CastDuration = Mathf.Max(_channelComponent.CastDuration, _originalCastDuration * 0.2f);
+
+
+        RpcApplyCastDuration(_currentDurationReduction, _channelComponent.CastDuration);
+    }
+    
+    [ClientRpc]
+    private void RpcApplyCastDuration(float newSpeedMultiplier, float newCastDuration)
+    {
+        _initialSpeed -= newSpeedMultiplier;
+        _channelComponent.CastDuration = newCastDuration;
+        
+        UpdateWaitInterval();
     }
 }
