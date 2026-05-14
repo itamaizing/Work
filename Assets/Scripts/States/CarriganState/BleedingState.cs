@@ -16,6 +16,12 @@ public class BleedingState : RefreshingState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
+    public BleedingState()
+    {
+        MaxStacksCount = 1;
+        currentStacksCount = 0;
+    }
+
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _target = characterState.Character;

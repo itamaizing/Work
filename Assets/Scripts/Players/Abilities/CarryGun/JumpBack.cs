@@ -85,6 +85,7 @@ public class JumpBack : Skill
             yield return null;
         }
 
+        _mousePosition = targetPoint;
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(Hero);
         callbackDataSaved(targetInfo);
@@ -93,7 +94,14 @@ public class JumpBack : Skill
     protected override IEnumerator CastJob()
     {
         cooldownEnergy.CastCooldownEnergySkill(cooldownEnergyCost, this);
-        Vector3 jumpDir = -_hero.transform.forward;
+        Vector3 directionToMouse = (_mousePosition - _hero.transform.position);
+        directionToMouse.y = 0f;
+
+        if (directionToMouse.sqrMagnitude < 0.001f)
+            yield break;
+
+        Vector3 jumpDir = -directionToMouse.normalized;
+
         Vector3 targetPos = _hero.transform.position + jumpDir * jumpDistance;
 
         float duration = jumpDistance / 2f;

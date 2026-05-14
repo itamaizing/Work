@@ -66,7 +66,13 @@ public class RechargeGlands : Skill
             Charges.SendCurrentChange(_chargesGlands);
         }
 
+        UpdateDisactiveState();
         _activeCoroutines--;
+    }
+
+    private void UpdateDisactiveState()
+    {
+        Disactive = _chargesGlands >= MaxCharges;
     }
 
     public bool TryApplyDestructivePoison(Character target, float chance, Character caster)
@@ -79,6 +85,8 @@ public class RechargeGlands : Skill
 
         _chargesGlands--;
         Charges.SendCurrentChange(_chargesGlands);
+
+        UpdateDisactiveState();
 
         if (rand <= chance)
         {
@@ -95,6 +103,8 @@ public class RechargeGlands : Skill
         _chargesGlands = Mathf.Max(0, _chargesGlands);
 
         Charges.SendCurrentChange(_chargesGlands);
+
+        UpdateDisactiveState();
     }
 
     protected override void ClearData()
