@@ -2,15 +2,17 @@ using UnityEngine;
 
 public class GodAuraTalent : Talent
 {
-    [SerializeField] private GodAuraSkill _godAuraSkill;
+    [SerializeField] private GodAura _godAura;
 
     public override void Enter()
     {
-        _godAuraSkill.OnAuraEnabled(character.gameObject);
+        if(!_godAura.IsActive)
+            _godAura.ActivateAura(true,isAffectOnOwner: true);
     }
 
     public override void Exit()
     {
-        _godAuraSkill.OnAuraDisabled(character.gameObject);
+        if(_godAura.IsActive)
+            _godAura.ActivateAura(false, isAffectOnOwner: true);
     }
 }

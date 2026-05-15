@@ -2,92 +2,37 @@ using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
-public class GodAuraSkill : NetworkBehaviour
+public class GodAura : AuraStateHandler
 {
-    private bool _isActive = false;
-    public void OnAuraEnabled(GameObject character)
+    private float _buffDuration = -1f;
+
+    protected override void OnTargetEnter(Character target)
     {
-        CmdAddState(character);
+        CmdApplyStateToTarget(target.gameObject, States.GodAuraBuff, _buffDuration, Schools.None, 
+            _owner.gameObject, nameof(GodAura));
     }
 
-    public void OnAuraDisabled(GameObject character)
+    protected override void OnTargetExit(Character target)
     {
-        CmdRemoveState(character);
+        CmdRemoveStateFromTarget(target.gameObject, States.GodAuraBuff);
+    }
+
+    protected override void OnAuraDisabled()
+    {
+        RemoveEffectsFromAllTargets();
     }
     
-    
-    [Command]
-    private void CmdAddState(GameObject character)
-    {
-        if(character != null)
-            character.GetComponent<Character>().CharacterState.AddState(States.GodAura,0,0,character.gameObject,nameof(GodAura));
-    }
-
-    [Command]
-    private void CmdRemoveState(GameObject character)
-    {
-        if(character != null)
-            character.GetComponent<Character>().CharacterState.RemoveState(States.GodAura);
-    }
-}
-
-public class GodAura : AuraState
-{
-    public override States State => States.GodAura;
-    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
-    public override List<StatusEffect> Effects { get; }
-    public override float Distance => 8;
-    public override float EffectRate { get; }
-    public override LayerMask LayerMask => LayerMask.GetMask("Allies");
-
     public void AddTalentStack()
     {
-        foreach (var character in _charactersInRadius)
+        foreach (var character in _currentTargets)
         {
             if (character == null) continue;
             
             var buffState = character.CharacterState.GetState(States.GodAuraBuff) as GodAuraBuff;
             if(buffState != null)
                 character.CharacterState.AddState(States.GodAuraBuff, 3f, 0,
-                    characterState.Character.gameObject, nameof(GodAuraBuff));
-
+                    null, nameof(GodAuraBuff));
         }
-    }
-
-    public override void EffectOnEnter(Character character)
-    {
-        if (characterState.Character == character) return;
-        
-        if (character.CharacterState.CheckForState(States.GodAuraBuff)) return;
-    
-        character.CharacterState.AddState(States.GodAuraBuff, -1, 0, 
-            characterState.Character.gameObject, nameof(GodAuraBuff));
-    }
-
-    public override void EffectOnExit(Character character)
-    {
-        if (character.CharacterState.CheckForState(States.GodAuraBuff)) character.CharacterState.RemoveState(States.GodAuraBuff);
-    }
-
-    public override void EffectOnStay(List<Character> characters)
-    {
-        foreach (var character in characters)
-        {
-            if (character.CharacterState.CheckForState(States.GodAuraBuff)) continue;
-
-            character.CharacterState.AddState(States.GodAuraBuff, -1, 0, 
-                characterState.Character.gameObject, nameof(GodAuraBuff));
-        }
-    }
-
-    public override void ExitState()
-    {
-        foreach (var character in _charactersInRadius)
-        {
-            if (character != null && character.CharacterState.CheckForState(States.GodAuraBuff))
-                character.CharacterState.RemoveState(States.GodAuraBuff);
-        }
-        base.ExitState();
     }
 }
 

@@ -1298,7 +1298,7 @@ public abstract class Skill : NetworkBehaviour
 
     }
     [ClientRpc]
-    private void OnDamagedApplied(GameObject target)
+    protected void OnDamagedApplied(GameObject target)
     {
         OnDamageApplied?.Invoke(target, this);
     }

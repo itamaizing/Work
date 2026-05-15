@@ -12887,11 +12887,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1257681269524314154, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: TemporaryResourceDisplay.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1257681269524314154, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: TemporaryResourceDisplay.Array.data[0].TemporaryAttributeDisplay.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1919068868825876627, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Enabled
@@ -14442,7 +14442,7 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 8782633265950416607}
-  _godAuraSkill: {fileID: 3127105790014565672}
+  _godAura: {fileID: 3127105790014565672}
 --- !u!114 &3677902011510508796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16555,6 +16555,11 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _radius: 8
+  _checkInterval: 0.5
+  _targetLayer:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!114 &8035327156810534685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16678,9 +16683,9 @@ MonoBehaviour:
     _base: 10
     _costs: []
   _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
+  - nameToShow: 10 Mana - Mandatory mod desc
+    type: 1
+    value: 10
     costType: 0
     shouldModify: 1
     showInDescription: 1

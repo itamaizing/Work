@@ -15,6 +15,7 @@ public class WaveSkill : Skill
     private AttributeModifier _modifierWidth = new AttributeModifier(0,ModifierType.Flat);
 
     private Vector3 _waveStartPoint;
+    private Vector3 _originalDirection = Vector3.forward; 
     private Vector3 _waveDirection;
 
     public override string AdditionalDescription => "";
@@ -43,15 +44,24 @@ public class WaveSkill : Skill
 
     private bool _isBonusSizeEnabled;
     
+    private void OnEnable()
+    {
+        Canceled += OnSkillCancel;
+    }
+
+    private void OnDisable()
+    {
+        Canceled -= OnSkillCancel;
+    }
+    
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         StopCustomDraw();
-        
+       
         if (targetInfo.Points.Count >= 2)
         {
             _waveStartPoint = targetInfo.Points[0];
             Vector3 endPoint = targetInfo.Points[1];
-            _waveDirection = (endPoint - _waveStartPoint).normalized;
         }
     }
 
@@ -80,66 +90,89 @@ public class WaveSkill : Skill
     protected override IEnumerator CastJob()
     {
         DetachParticle();
-        
-        Vector3 waveCenter = _waveStartPoint + _waveDirection * (AreaInfo.CastLength / 2f);
+
+        Vector3 heroPosFlat = transform.position;
+        heroPosFlat.y = 0f;
+
+        Vector3 startPointFlat = _waveStartPoint;
+        startPointFlat.y = 0f;
+
+        Vector3 direction = (startPointFlat - heroPosFlat).normalized;
+
+        if (Vector3.Distance(heroPosFlat, startPointFlat) < 0.3f)
+        {
+            direction = _originalDirection;
+        }
+
+        Vector3 waveCenter = startPointFlat + direction * (AreaInfo.CastLength / 2f);
+        waveCenter.y = transform.position.y + 0.5f;
 
         if (_particle != null)
         {
             _particle.transform.position = waveCenter;
-            _particle.transform.rotation = Quaternion.LookRotation(_waveDirection);
+            _particle.transform.rotation = Quaternion.LookRotation(direction);
+            _particle.Clear();
+            _particle.Play();
         }
-        
+
         CmdSetActiveParticle(true);
-        
-        var colliders = Physics.OverlapBox(waveCenter, new Vector3(AreaInfo.CastWidth / 2f, 2f, AreaInfo.CastLength / 2f),
-            Quaternion.LookRotation(_waveDirection),
+
+        var colliders = Physics.OverlapBox(
+            waveCenter,
+            new Vector3(AreaInfo.CastWidth / 2f, 2f, AreaInfo.CastLength / 2f),
+            Quaternion.LookRotation(direction),
             Targeting.Layer
         );
 
         foreach (var collider in colliders)
         {
-            if (collider.TryGetComponent(out Character enemy))
+            if (!collider.TryGetComponent(out Character enemy) || enemy.IsDead)
+                continue;
+
+            Vector3 enemyPosFlat = enemy.transform.position;
+            enemyPosFlat.y = 0f;
+
+            Vector3 toEnemy = enemyPosFlat - startPointFlat;
+
+            float distanceAlongWave = Vector3.Dot(toEnemy, direction);
+            if (distanceAlongWave < 0 || distanceAlongWave > AreaInfo.CastLength)
+                continue;
+
+            Vector3 perpendicular = Vector3.Cross(direction, Vector3.up);
+            float distanceFromCenter = Mathf.Abs(Vector3.Dot(toEnemy, perpendicular));
+
+            if (distanceFromCenter > AreaInfo.CastWidth / 2f)
+                continue;
+
+            float casterRadius = ((CapsuleCollider)_hero.Collider).radius;
+            float enemyRadius = ((CapsuleCollider)enemy.Collider).radius;
+            float centerDist = Vector3.Distance(startPointFlat, enemyPosFlat);
+            float edgeDist = Mathf.Max(centerDist - (casterRadius + enemyRadius), 0f);
+
+            float damageMul = Mathf.Clamp01(1f - edgeDist / AreaInfo.CastLength);
+
+            Damage scaledDamage = new Damage
             {
-                Vector3 toEnemy = enemy.transform.position - _waveStartPoint;
-                toEnemy.y = 0;
+                Value = Buff.Damage.GetBuffedValue(Damage) * damageMul,
+                Type = Info.DamageType,
+                PhysicAttackType = Info.AttackRangeType,
+            };
 
-                float distanceAlongWave = Vector3.Dot(toEnemy, _waveDirection);
-                if (distanceAlongWave < 0 || distanceAlongWave > AreaInfo.CastLength)
-                    continue;
+            CmdApplyDamage(scaledDamage, enemy.gameObject);
 
-                Vector3 perpendicular = Vector3.Cross(_waveDirection, Vector3.up);
-                float distanceFromCenter = Mathf.Abs(Vector3.Dot(toEnemy, perpendicular));
-                if (distanceFromCenter > AreaInfo.CastWidth / 2f)
-                    continue;
+            Vector3 pushPoint = enemy.transform.position + direction * _pushRange;
+            pushPoint.y = enemy.transform.position.y;
 
-                float casterRadius = ((CapsuleCollider)_hero.Collider).radius;
-                float enemyRadius = ((CapsuleCollider)enemy.Collider).radius;
-
-                float centerDist = Vector3.Distance(_waveStartPoint, enemy.transform.position);
-                float edgeDist = Mathf.Max(centerDist - (casterRadius + enemyRadius), 0f);
-
-                float damageMul = Mathf.Clamp01(1f - edgeDist / AreaInfo.CastLength);
-
-                Damage scaledDamage = new Damage
-                {
-                    Value = Buff.Damage.GetBuffedValue(Damage) * damageMul,
-                    Type = Info.DamageType,
-                    PhysicAttackType = Info.AttackRangeType,
-                };
-
-                CmdApplyDamage(scaledDamage, enemy.gameObject);
-
-                Vector3 pointForPush = enemy.transform.position + _waveDirection * _pushRange;
-                CmdMoveTarget(enemy.gameObject, pointForPush, _pushDuration);
-            }
+            CmdMoveTarget(enemy.gameObject, pushPoint, _pushDuration);
         }
 
         yield return new WaitForSeconds(0.6f);
+
         CmdSetActiveParticle(false);
         ReturnParticleToPreview();
         _skillRender.ResetCursor();
     }
-    
+
     private void DetachParticle()
     {
         if (_particle == null) return;
@@ -157,14 +190,24 @@ public class WaveSkill : Skill
 
     protected override void ClearData()
     {
+        _originalDirection = Vector3.forward;
         _waveStartPoint = Vector3.zero;
-        _waveDirection = Vector3.zero;
+
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();
         StopCustomDraw();
 
         if (_lineVisual != null)
             _lineVisual.gameObject.SetActive(false);
+    }
+    
+    private void OnSkillCancel()
+    {
+        StopAllCoroutines();
+        CmdSetActiveParticle(false);
+        ReturnParticleToPreview();
+        Hero.Move?.StopLookAt();
+        ClearData();
     }
 
     public override void StopCustomDraw()
@@ -220,9 +263,6 @@ public class WaveSkill : Skill
             pivotTransform.position = startPosition;
             pivotTransform.rotation = Quaternion.LookRotation(direction, Vector3.up);
 
-            /*Debug.LogError("Cast width" + AreaInfo.CastWidth);
-            Debug.LogError("Cast Length" + AreaInfo.CastLength);*/
-            
             _lineVisual.SetSize(AreaInfo.CastWidth, AreaInfo.CastLength, damage);
 
             yield return null;
@@ -237,33 +277,29 @@ public class WaveSkill : Skill
         TargetInfo targetInfo = new();
 
         while (!Input.GetMouseButtonDown(0))
-        {
             yield return null;
-        }
 
         Vector3 clickPoint = Targeting.GetMousePoint();
-
         Vector3 directionToClick = clickPoint - transform.position;
         directionToClick.y = 0;
 
         if (directionToClick.magnitude > AreaInfo.Radius)
-        {
             directionToClick = directionToClick.normalized * AreaInfo.Radius;
-        }
 
         _waveStartPoint = transform.position + directionToClick;
-        _waveDirection = directionToClick.normalized;
+        _originalDirection = directionToClick.normalized;
 
-        Vector3 waveEndPoint = _waveStartPoint + _waveDirection * AreaInfo.CastLength;
+        Vector3 waveEndPoint = _waveStartPoint + _originalDirection * AreaInfo.CastLength;
 
         targetInfo.Points.Add(_waveStartPoint);
         targetInfo.Points.Add(waveEndPoint);
-        
+   
         StopCustomDraw();
         StopDynamicRender();
-        
+        _originalDirection = directionToClick.normalized;
         callbackDataSaved(targetInfo);
     }
+
     
     private Vector3 GetGroundMousePoint()
     {

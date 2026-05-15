@@ -154,28 +154,33 @@ namespace Gangdollarff
 
             CmdMoveTaget(targetGO, startPos + new Vector3(0, _amountOfLift, 0), _deleyTelekines);
             yield return new WaitForSeconds(_deleyTelekines);
-            
-            if(_isApplyDamageTalent)
-                CmdApplyPercentDamage(_tempChar.gameObject);
+
+            if (_isApplyDamageTalent)
+            {
+                var health = _tempChar.GetComponent<Health>();
+
+                Damage dmg = new Damage();
+                dmg.Value = health.CurrentValue * 0.05f;
+                if(isClient)
+                    CmdApplyDamage(dmg, _tempChar.gameObject);
+                //OnDamagedApplied(_tempChar);
+            }
 
             if (_secondClickPoint != Vector3.zero && Time.time < castEndTime)
             {
-                Vector3 hoverTarget = new Vector3(
-                    _secondClickPoint.x,
-                    _originalGroundPosition + _amountOfLift,
-                    _secondClickPoint.z
-                );
+                Vector3 finalDestination = GetClampedDestination(_secondClickPoint);
 
-                float dist = Vector3.Distance(_tempChar.transform.position, hoverTarget);
-                float travelTime = dist * _secPerMeter;
-
-                bool destinationInRange = Vector3.Distance(
-                    new Vector3(_secondClickPoint.x, _tempChar.transform.position.y, _secondClickPoint.z),
-                    _tempChar.transform.position
-                ) <= AreaInfo.Radius;
-
-                if (destinationInRange)
+                if (finalDestination != Vector3.zero)
                 {
+                    Vector3 hoverTarget = new Vector3(
+                        finalDestination.x,
+                        _originalGroundPosition + _amountOfLift,
+                        finalDestination.z
+                    );
+
+                    float dist = Vector3.Distance(_tempChar.transform.position, hoverTarget);
+                    float travelTime = dist * _secPerMeter;
+
                     CmdMoveTaget(targetGO, hoverTarget, travelTime);
                 }
             }
@@ -185,6 +190,22 @@ namespace Gangdollarff
             }
 
             ForceDropTarget();
+        }
+        
+        private Vector3 GetClampedDestination(Vector3 desiredPoint)
+        {
+            if (desiredPoint == Vector3.zero || _tempChar == null)
+                return Vector3.zero;
+            
+            Vector3 targetPos = _tempChar.transform.position;
+            Vector3 direction = new Vector3(
+                desiredPoint.x - targetPos.x,
+                0f,
+                desiredPoint.z - targetPos.z
+            );
+
+            Vector3 clamped = Vector3.ClampMagnitude(direction, AreaInfo.Radius);
+            return new Vector3(targetPos.x + clamped.x, desiredPoint.y, targetPos.z + clamped.z);
         }
         
         protected override bool CheckResourcesOnSkill()
@@ -269,17 +290,6 @@ namespace Gangdollarff
                 enemyMove.TargetRpcForceDrop(targetCharacter.connectionToClient, dropPos, duration);
             else
                 enemyMove.RpcForceDrop(dropPos, duration);
-        }
-        
-        [Command]
-        private void CmdApplyPercentDamage(GameObject target)
-        {
-            var health = target.GetComponent<Health>();
-            if (health == null) return;
-
-            Damage dmg = new Damage();
-            dmg.Value = health.CurrentValue * 0.05f;
-            ApplyDamage(dmg, target);
         }
     }
 }
