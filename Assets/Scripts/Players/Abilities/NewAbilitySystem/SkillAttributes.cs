@@ -28,11 +28,11 @@ public class SkillAttributes
         get
         {
             if (_heroAttributes == null)
-                return GetCombined(
-                    _attributes[SkillAttributeName.Cooldown],
-                    _heroAttributes[CharacterAttributeName.CooldownReduction],
-                    _attributes[SkillAttributeName.Cooldown].BaseValue);
-            return _attributes[SkillAttributeName.Cooldown].GetValue();
+                return _attributes[SkillAttributeName.Cooldown].GetValue();
+            return GetCombined(
+                _attributes[SkillAttributeName.Cooldown],
+                _heroAttributes[CharacterAttributeName.CooldownReduction],
+                _attributes[SkillAttributeName.Cooldown].BaseValue);
         }
     }
     public float ResourceCost
