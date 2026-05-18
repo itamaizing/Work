@@ -19,6 +19,7 @@ namespace Gangdollarff
 
         private const float RepulsionDuration = 2f;
         private const float RepulsionCheckInterval = 0.1f;
+        private const float RepulsionRange = 2f;
 
         private Transform _heroTransformClient;
 
@@ -107,7 +108,7 @@ namespace Gangdollarff
 
             while (elapsed < RepulsionDuration && _heroTransformClient != null)
             {
-                var hits = Physics.OverlapSphere(_heroTransformClient.position, _pushRange, Targeting.Layer);
+                var hits = Physics.OverlapSphere(_heroTransformClient.position, RepulsionRange, Targeting.Layer);
 
                 List<uint> netIds = new();
 
@@ -151,10 +152,10 @@ namespace Gangdollarff
 
                 float dist = Vector3.Distance(character.transform.position, _hero.transform.position);
 
-                if (dist > _pushRange + 0.5f)
+                if (dist > RepulsionRange + 0.5f)
                     continue;
 
-                float distToPush = _pushRange - dist;
+                float distToPush = RepulsionRange - dist;
                 if (distToPush <= 0f)
                     continue;
 

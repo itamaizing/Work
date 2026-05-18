@@ -58,6 +58,6 @@ MonoBehaviour:
     - nameToShow: VisionRadius
       type: 5
       value: 0
-    - nameToShow: CooldownReduction
-      type: 9
-      value: 0
+    - nameToShow: ResourceCost
+      type: 10
+      value: 5

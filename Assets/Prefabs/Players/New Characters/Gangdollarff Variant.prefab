@@ -12943,7 +12943,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
-      value: 24
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[0]'
@@ -13041,6 +13041,10 @@ PrefabInstance:
       propertyPath: '_skills.Array.data[23]'
       value: 
       objectReference: {fileID: 2644037635160296029}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_skills.Array.data[24]'
+      value: 
+      objectReference: {fileID: 6541281367918590680}
     - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: materialsCharacter.Array.size
       value: 2
@@ -13175,7 +13179,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.size
-      value: 13
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.size
@@ -13248,27 +13252,27 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[4]'
       value: 
-      objectReference: {fileID: 7291747353363309335}
+      objectReference: {fileID: 6264416715828074921}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[5]'
       value: 
-      objectReference: {fileID: 4838105019699818323}
+      objectReference: {fileID: 7291747353363309335}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[6]'
       value: 
-      objectReference: {fileID: 1996292563882327463}
+      objectReference: {fileID: 4838105019699818323}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[7]'
       value: 
-      objectReference: {fileID: 1494690297464286415}
+      objectReference: {fileID: 1996292563882327463}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[8]'
       value: 
-      objectReference: {fileID: 8494329667382761152}
+      objectReference: {fileID: 1494690297464286415}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[9]'
       value: 
-      objectReference: {fileID: 354514987631179107}
+      objectReference: {fileID: 8494329667382761152}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[0]'
       value: 
@@ -13360,13 +13364,17 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[10]'
       value: 
-      objectReference: {fileID: 2135330488917696545}
+      objectReference: {fileID: 354514987631179107}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[11]'
       value: 
-      objectReference: {fileID: 9161470001313387124}
+      objectReference: {fileID: 2135330488917696545}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[12]'
+      value: 
+      objectReference: {fileID: 9161470001313387124}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[13]'
       value: 
       objectReference: {fileID: 4710988972543738372}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -14465,6 +14473,7 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 8782633265950416607}
+  _godAura: {fileID: 3127105790014565672}
   _stackChance: 30
 --- !u!114 &308676296038382060
 MonoBehaviour:
@@ -15234,11 +15243,11 @@ MonoBehaviour:
   _costComponent:
     _base: 10
     _costs:
-    - nameToShow: 10 Mana - Mandatory
+    - nameToShow: 10 Mana - Mandatory mod
       type: 1
       value: 10
       costType: 0
-      shouldModify: 0
+      shouldModify: 1
       showInDescription: 0
   _skillEnergyCosts:
   - nameToShow: 10 Mana - Mandatory mod desc
@@ -15346,18 +15355,18 @@ MonoBehaviour:
   _costComponent:
     _base: 3
     _costs:
-    - nameToShow: 3 Mana - Mandatory
+    - nameToShow: 3 Mana - Mandatory mod
       type: 1
       value: 3
       costType: 0
-      shouldModify: 0
+      shouldModify: 1
       showInDescription: 0
   _skillEnergyCosts:
-  - nameToShow: 3 Mana - Mandatory
+  - nameToShow: 3 Mana - Mandatory mod
     type: 1
     value: 3
     costType: 0
-    shouldModify: 0
+    shouldModify: 1
     showInDescription: 0
   _additionalSkillEnergyCosts: []
   _cooldownTime: 16
@@ -15465,8 +15474,20 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _costs: []
-  _skillEnergyCosts: []
+    _costs:
+    - nameToShow: 0 Mana - Mandatory mod
+      type: 1
+      value: 0
+      costType: 0
+      shouldModify: 1
+      showInDescription: 0
+  _skillEnergyCosts:
+  - nameToShow: 0 Mana - Bonus mod
+    type: 1
+    value: 0
+    costType: 1
+    shouldModify: 1
+    showInDescription: 0
   _additionalSkillEnergyCosts: []
   _cooldownTime: 15
   _cooldownComponent:
@@ -15755,20 +15776,32 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 83e21c29a8358a84c98e9e3409e72dce, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 0
-    _costs: []
-  _skillEnergyCosts: []
+    _base: 12
+    _costs:
+    - nameToShow: 12 Mana - Mandatory mod
+      type: 1
+      value: 12
+      costType: 0
+      shouldModify: 1
+      showInDescription: 0
+  _skillEnergyCosts:
+  - nameToShow: 12 Mana - Mandatory mod
+    type: 1
+    value: 12
+    costType: 0
+    shouldModify: 1
+    showInDescription: 0
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
+  _cooldownTime: 8
   _cooldownComponent:
-    _baseCooldown: 5
+    _baseCooldown: 8
   _castDeley: 0
   _damageValue: 12
   _infoComponent:
-    _school: 0
+    _school: 4
     _form: 0
     _damageType: 0
-    _rangeType: 0
+    _rangeType: 1
     _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
@@ -15776,11 +15809,11 @@ MonoBehaviour:
     type: 0
     _clickLayer: 1
     _faction: 4
-    _unitType: 1
+    _unitType: 5
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   _obstacle:
     serializedVersion: 2
     m_Bits: 0
@@ -15804,7 +15837,7 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 7
+    _radius: 6
     _area: 0
     _castLength: 0
     _castWidth: 0
@@ -15827,9 +15860,11 @@ MonoBehaviour:
     _prepareAnimations: []
     _castAnimations: []
     _activeClip: 0
-  _agent: {fileID: 0}
   _particlePref: {fileID: 8634428716550452945, guid: 7291e60055d363e4f8faae9c7d00d8b0, type: 3}
-  _debuffChance: 15
+  _maxJumps: 5
+  _damageReductionPerJump: 0.2
+  _jumpDelay: 0.1
+  _jumpDistance: 3
 --- !u!114 &9150375643976407256
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17511,14 +17546,20 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 8faa57dfc66b18b40965ddd980bdc54e, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 0
-    _costs: []
+    _base: 120
+    _costs:
+    - nameToShow: 120 Mana - Mandatory mod
+      type: 1
+      value: 120
+      costType: 0
+      shouldModify: 1
+      showInDescription: 0
   _skillEnergyCosts:
-  - nameToShow: 120 Mana - Mandatory
+  - nameToShow: 120 Mana - Mandatory mod
     type: 1
     value: 120
     costType: 0
-    shouldModify: 0
+    shouldModify: 1
     showInDescription: 0
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0

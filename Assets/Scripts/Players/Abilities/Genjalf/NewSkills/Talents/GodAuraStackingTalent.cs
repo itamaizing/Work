@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GodAuraStackingTalent : Talent
 {
+    [SerializeField] private GodAura _godAura;
     [SerializeField] private float _stackChance = 30f;
     
     private bool _isProcessing = false;
@@ -28,13 +29,12 @@ public class GodAuraStackingTalent : Talent
         if (skill == null) return;
         if (_isProcessing) return;
         if (Random.Range(0f, 100f) > _stackChance) return;
-
-        var godAura = character.GetComponent<GodAura>();
-        if (godAura == null && !godAura.IsActive) return;
+        
+        if (_godAura == null && !_godAura.IsActive) return;
 
         _isProcessing = true;
 
-        godAura.AddTalentStack();
+        _godAura.AddTalentStack();
 
         _isProcessing = false;
     }

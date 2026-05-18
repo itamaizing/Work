@@ -423,6 +423,7 @@ public abstract class Skill : NetworkBehaviour
     /// </summary>
     protected virtual void CommitUse()
     {
+        if(_hero.Abilities.IsNextSkillFree) return;
         UseCooldownOrCharges();
         SpendResources();
     }

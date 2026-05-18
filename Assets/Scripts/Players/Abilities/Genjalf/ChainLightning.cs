@@ -5,10 +5,13 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ChainLightning : MoveSkill
+public class ChainLightning : Skill
 {
     [SerializeField] private ParticleSystem _particlePref;
-    [SerializeField, Range(0, 100)] private int _debuffChance = 15;
+    [SerializeField] private int _maxJumps = 5;
+    [SerializeField] private float _damageReductionPerJump = 0.20f;
+    [SerializeField] private float _jumpDelay = 0.1f;
+    [SerializeField] private float _jumpDistance = 3f;
 
     //private Character _target;
 
@@ -21,16 +24,6 @@ public class ChainLightning : MoveSkill
     private float _clickRadius = 0.5f;
     
     private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
-
-    private void OnEnable()
-    {
-        Canceled += CancelMove;
-    }
-
-    private void OnDisable()
-    {
-        Canceled -= CancelMove;
-    }
 
     private bool CheckCanCast()
     {
@@ -50,96 +43,137 @@ public class ChainLightning : MoveSkill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
-        
-        if (!IsCanCast)
-        {
-            MoveTo();
-        }
     }
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget()?.Character != null)
+        Character current = Targeting.GetTarget()?.Character;
+        if (current == null) yield break;
+
+        List<Character> hitTargets = new List<Character>();
+        float currentDamageMult = 1f;
+
+        for (int i = 0; i <= _maxJumps; i++)
         {
-            Attack(Targeting.GetTarget()?.Character);
-            yield return new WaitForSecondsRealtime(0.3f);
-            var temps = Physics.OverlapSphere(Targeting.GetTarget().Character.Position, AreaInfo.Radius, _targetsLayers);
+            if (current == null) break;
+            if (hitTargets.Contains(current)) break;
+
+            hitTargets.Add(current);
             
-            for (int i = 0; i < temps.Length; i++)
+            Damage damage = new Damage
             {
-                if (i <= 5 && temps[i].TryGetComponent(out Character character))
+                Value = Buff.Damage.GetBuffedValue(Damage) * currentDamageMult,
+                Type = Info.DamageType,
+                School = Schools.Air
+            };
+
+            CmdCreateParticle(current.Position);
+            CmdApplyDamage(damage, current.gameObject);
+
+            var discharge = current.CharacterState.GetState(States.Discharge);
+            if (discharge != null)
+            {
+                foreach (var target in FindNearestTarget(current))
                 {
-                    Attack(character);
-                    yield return new WaitForSecondsRealtime(0.3f);
+                    CmdApplyDischarge(target.gameObject);
                 }
             }
+
+            current = FindNextTarget(current, hitTargets);
+
+            currentDamageMult *= (1f - _damageReductionPerJump);
+
+            if (i < _maxJumps && current != null)
+                yield return new WaitForSeconds(_jumpDelay);
         }
+
         yield return null;
+    }
+    
+    private Character FindNextTarget(Character current, List<Character> alreadyHit)
+    {
+        if (current == null) return null;
+
+        Collider[] nearby = Physics.OverlapSphere(current.transform.position, _jumpDistance, Targeting.Layer);
+
+        Character target = null;
+        float bestDist = float.MaxValue;
+
+        foreach (var col in nearby)
+        {
+            if (!col.TryGetComponent<Character>(out var enemy)) continue;
+            if (enemy == current || enemy == Hero || alreadyHit.Contains(enemy)) continue;
+            if (!IsEnemyTarget(enemy)) continue;
+
+            float dist = Vector3.Distance(current.transform.position, enemy.transform.position);
+            if (dist < bestDist)
+            {
+                bestDist = dist;
+                target = enemy;
+            }
+        }
+
+        return target;
+    }
+    
+    
+    private List<Character> FindNearestTarget(Character current)
+    {
+        if (current == null) return null;
+
+        Collider[] nearby = Physics.OverlapSphere(current.transform.position, _jumpDistance, Targeting.Layer);
+
+        List<Character> targets = new();
+
+        foreach (var col in nearby)
+        {
+            if (!col.TryGetComponent<Character>(out var enemy)) continue;
+            if (enemy == current || enemy == Hero) continue;
+            if (!IsEnemyTarget(enemy)) continue;
+            
+            targets.Add(enemy);
+        }
+
+        return targets;
     }
 
     protected override void ClearData()
     {
         Targeting.ClearTarget();
-        //_target = null;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        TargetInfo targetInfo = new TargetInfo();
-
-        while (Targeting.GetTarget()?.Character == null)
+        while (Targeting.GetTempTarget()?.Character == null)
         {
             if (GetMouseButton)
             {
                 Vector3 clickPoint = Targeting.GetMousePoint();
-                
                 Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: false);
 
-                if (Targeting.GetTempTarget()?.Character is Character character)
-                {
-                    if (Targeting.GetTempTarget()?.Character != null && !IsEnemyTarget(character))
-                    {
-                        Targeting.ClearTempTarget();
-                    }
-                    else
-                    {
-                        if (character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
-                        break;
-                    }
-                }
+                var temp = Targeting.GetTempTarget()?.Character;
+                if (temp != null && !IsEnemyTarget(temp))
+                    Targeting.ClearTempTarget();
             }
             yield return null;
         }
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
-        Targeting.ClearTempTarget();
+
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
+        TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 
-    private void Attack(Character target)
+    [Command]
+    private void CmdApplyDischarge(GameObject target)
     {
-        Damage damage = new Damage
-        {
-            Value = Buff.Damage.GetBuffedValue(Damage),
-            Type = Info.DamageType,
-            PhysicAttackType = Info.AttackRangeType,
-        };
-        CmdApplyDamage(damage, target.gameObject);
-        
-        if (UnityEngine.Random.Range(1, 100) <= _debuffChance)
-        {
-            CmdAddState(Targeting.GetTarget()?.Character);
-        }
-
-        CmdCreateParticle(target.Position);
+        target.GetComponent<CharacterState>()?.AddState(States.Discharge, 4f, 0f, _hero.gameObject, Name);
     }
 
     private void CreateParticle(Vector3 position)
     {
         GameObject item = Instantiate(_particlePref.gameObject, position, Quaternion.identity);
     }
-    
-    [Command] private void CmdAddState(Character target) => target.CharacterState.AddState(States.Discharge, 2, 0,Hero.gameObject, name);
 
     [Command]
     protected void CmdCreateParticle(Vector3 position)

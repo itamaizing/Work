@@ -30,8 +30,8 @@ public class GodAura : AuraStateHandler
             
             var buffState = character.CharacterState.GetState(States.GodAuraBuff) as GodAuraBuff;
             if(buffState != null)
-                character.CharacterState.AddState(States.GodAuraBuff, 3f, 0,
-                    null, nameof(GodAuraBuff));
+                character.CharacterState.CmdAddState(States.GodAuraBuff, 3f, 0,
+                    character.gameObject, nameof(GodAuraBuff));
         }
     }
 }
@@ -82,7 +82,7 @@ public class GodAuraBuff : RefreshingState
         if (currentStacksCount == 0)
         {
             _character = character.Character;
-            MaxStacksCount = 4;
+            MaxStacksCount = 3;
             _baseDuration = durationToExit;
             _stackTimer = durationToExit;
             currentStacksCount = 1;
@@ -133,7 +133,11 @@ public class GodAuraBuff : RefreshingState
                 return;
             }
             
-            _stackTimer = _baseDuration;
+            _stackTimer = currentStacksCount == 1 ? -1f : _baseDuration;
+            if (_stackTimer == -1f)
+            {
+                characterState.StateIcons?.ActivateIco(State, _stackTimer, 0, true);    
+            }
             UpdateModifier(currentStacksCount);
         }
     }
@@ -152,6 +156,7 @@ public class GodAuraBuff : RefreshingState
             characterState.RemoveState(this);
     
         characterState = null;
+        
     }
 
     private void ApplyModifierToAllSkills(AttributeModifier modifier)
