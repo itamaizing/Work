@@ -9,7 +9,7 @@ public class RestorativeAttacksState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    private const float EnergyRestorePercent = 0.03f;
+    private const float EnergyRestorePercent = 0.2f;
     private const int SameSkillsToBreak = 3;
 
     private readonly List<Skill> _lastHits = new();

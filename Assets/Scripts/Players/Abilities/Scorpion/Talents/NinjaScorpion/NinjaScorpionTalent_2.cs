@@ -11,13 +11,11 @@ public class NinjaScorpionTalent_2 : Talent
     {
         consume.SetNinjaTalentEnabled(true);
         passiveCombo_Scorpion.ConsumeComboTalent(true);
-        consume.ConsumeCombo_ScorpionPhysicStateClearTalent(true);
     }
 
     public override void Exit()
     {
         consume.SetNinjaTalentEnabled(false);
         passiveCombo_Scorpion.ConsumeComboTalent(false);
-        consume.ConsumeCombo_ScorpionPhysicStateClearTalent(false);
     }
 }

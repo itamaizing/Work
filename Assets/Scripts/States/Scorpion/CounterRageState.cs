@@ -28,7 +28,7 @@ public class CounterRageState : RefreshingState
 
         _originalMaxValue = _energyResource.MaxValue;
 
-        float maxPossible = _originalMaxValue * 0.30f;
+        float maxPossible = _originalMaxValue * 0.50f;
         CurrentBonus = Mathf.Min(damageToExit, maxPossible);
 
         if (CurrentBonus > 0f)

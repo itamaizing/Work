@@ -4,7 +4,7 @@ public class ConsumeComboEnergyOnDispelBooster : SkillTalentHandler
 {
     private bool _enabled;
 
-    private const float EnergyPercentPerEffect = 0.05f;
+    private const float EnergyPercentPerEffect = 0.3f;
 
     public bool Enabled => _enabled;
 

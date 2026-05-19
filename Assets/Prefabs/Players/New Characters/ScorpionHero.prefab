@@ -8618,7 +8618,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.size
-      value: 9
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.size
@@ -8655,17 +8655,21 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[5]'
       value: 
-      objectReference: {fileID: 5850468796774605625}
+      objectReference: {fileID: 3806952925645873769}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[6]'
       value: 
-      objectReference: {fileID: 5624588270951971439}
+      objectReference: {fileID: 5850468796774605625}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[7]'
       value: 
-      objectReference: {fileID: 6056322227701384780}
+      objectReference: {fileID: 5624588270951971439}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[8]'
+      value: 
+      objectReference: {fileID: 6056322227701384780}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[9]'
       value: 
       objectReference: {fileID: 4616563741937414494}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -9342,6 +9346,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2565204186795419702}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3806952925645873769}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!1 &1049065473536513494 stripped
 GameObject:
@@ -10158,7 +10165,7 @@ MonoBehaviour:
       \u043D\u0430 50% \u043E\u0442 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u043D\u043E\u0433\u043E
       \u0443\u0440\u043E\u043D\u0430 \u043D\u0430 3 \u0441\u0435\u043A, \u043C\u0430\u043A\u0441\u0438\u043C\u0430\u043B\u044C\u043D\u043E
       \u0441\u0443\u043C\u043C\u0438\u0440\u0443\u0435\u0442\u0441\u044F \u0434\u043E
-      30%, \u043F\u0440\u0438 \u0441\u0443\u043C\u043C\u0438\u0440\u043E\u0432\u0430\u043D\u043D\u0438\u0438
+      50%, \u043F\u0440\u0438 \u0441\u0443\u043C\u043C\u0438\u0440\u043E\u0432\u0430\u043D\u043D\u0438\u0438
       \u0432\u0440\u0435\u043C\u044F \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F
       \u043E\u0431\u043D\u043E\u0432\u043B\u044F\u0435\u0442\u0441\u044F"
     _stateInfos: []
@@ -10529,6 +10536,32 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 5458554383432203635}
+--- !u!114 &3806952925645873769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8b9f2671989cea46aefabae5d600ed4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ConsumeCombo_ScorpionPhysicStateClearTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u043E\u0447\u043A\u0438 \u043A\u043E\u043C\u0431\u043E \u043C\u043E\u0436\u043D\u043E
+      \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u044C \u0434\u043B\u044F
+      \u0441\u043D\u044F\u0442\u0438\u044F \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u043A\u0433\u043E
+      \u044D\u0444\u0444\u0435\u043A\u0442\u0430"
+    _stateInfos: []
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 21300000, guid: 3c3e6d241aa0f644f911b5c1a63f77bb, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 5458554383432203635}
+  consume: {fileID: 8732005787551451527}
 --- !u!114 &1402913355469849604 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1629212415153807048, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -11059,6 +11092,8 @@ MonoBehaviour:
   _maxDistance: 5
   _minDistance: 1
   _coneAngle: 45
+  _speedBonusPerComboPoint: 0.2
+  _speedBonusPerFullCombo: 0.2
 --- !u!114 &3741212121368607163
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11515,13 +11550,25 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 2891930b3c588234ca09c770f75c92c2, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 0
-    _costs: []
-  _skillEnergyCosts: []
+    _base: 20
+    _costs:
+    - nameToShow: 20 Energy - Mandatory mod
+      type: 2
+      value: 20
+      costType: 0
+      shouldModify: 1
+      showInDescription: 0
+  _skillEnergyCosts:
+  - nameToShow: 20 Energy - Mandatory mod
+    type: 2
+    value: 20
+    costType: 0
+    shouldModify: 1
+    showInDescription: 0
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 16
+  _cooldownTime: 0
   _cooldownComponent:
-    _baseCooldown: 16
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -11564,7 +11611,7 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 0
+    _radius: 10
     _area: 0
     _castLength: 0
     _castWidth: 0
@@ -11608,18 +11655,24 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _costs: []
+    _costs:
+    - nameToShow: 40 Energy - Mandatory mod
+      type: 2
+      value: 40
+      costType: 0
+      shouldModify: 1
+      showInDescription: 0
   _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
+  - nameToShow: 40 Energy - Mandatory mod desc
+    type: 2
+    value: 40
     costType: 0
     shouldModify: 1
     showInDescription: 1
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 12
+  _cooldownTime: 0
   _cooldownComponent:
-    _baseCooldown: 12
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -11959,7 +12012,7 @@ MonoBehaviour:
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
-    _baseCooldown: 16
+    _baseCooldown: 0
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -11990,16 +12043,16 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _chargeComponent:
-    _usesCharges: 0
+    _usesCharges: 1
     _isComboPart: 0
-    _cooldownType: 0
-    _maxCharges: 0
+    _cooldownType: 2
+    _maxCharges: 2
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 0
+  _isUseCharges: 1
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
-  _maxCharges: 0
+  _maxCharges: 2
   _chargeCooldown: 0
   _areaComponent:
     _radius: 0

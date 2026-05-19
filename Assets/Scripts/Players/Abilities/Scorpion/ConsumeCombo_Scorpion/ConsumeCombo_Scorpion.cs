@@ -11,6 +11,23 @@ public class ConsumeCombo_Scorpion : Skill
     
     private List<Character> _comboTargetsQueue = new List<Character>();
 
+    [SyncVar]
+    private uint _lastCharacterNetId;
+    
+    public Character LastCharacterNet
+    {
+        get
+        {
+            if (_lastCharacterNetId == 0)
+                return null;
+
+            if (NetworkClient.spawned.TryGetValue(_lastCharacterNetId, out var identity))
+                return identity.GetComponent<Character>();
+
+            return null;
+        }
+    }
+    
     private CharacterState _lastCharacterState;
     public CharacterState LastCharacterState
     {
@@ -138,11 +155,13 @@ public class ConsumeCombo_Scorpion : Skill
             {
                 _lastCharacterState.RemoveState(States.ComboState);
                 _lastCharacterState = stateManager;
+                _lastCharacterNetId = stateManager.netId;
             }
         }
         else
         {
             _lastCharacterState = stateManager;
+            _lastCharacterNetId = stateManager.netId;
         }
 
         stateManager.AddState(States.ComboState, float.PositiveInfinity, 0f, _hero.gameObject,

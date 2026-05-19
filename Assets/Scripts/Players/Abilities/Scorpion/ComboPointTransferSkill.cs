@@ -4,7 +4,27 @@ using UnityEngine;
 
 public class ComboPointTransferSkill : Skill
 {
-    protected override bool IsCanCast => true;
+    protected override bool IsCanCast => CheckCanCast();
+    
+    private bool CheckCanCast()
+    {
+        Character target = Targeting.GetTarget()?.Character;
+
+        if (target == null)
+            return false;
+
+        if (Vector3.Distance(target.transform.position, transform.position) > AreaInfo.Radius)
+            return false;
+
+        ConsumeCombo_Scorpion comboScorpion = _hero.Abilities.GetSkill<ConsumeCombo_Scorpion>();
+        Character fromCharacter = comboScorpion.LastCharacterNet;
+
+        if (fromCharacter == null)
+            return false;
+
+        return Vector3.Distance(fromCharacter.transform.position, transform.position) <= AreaInfo.Radius;
+    }
+    
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0)
@@ -15,6 +35,8 @@ public class ComboPointTransferSkill : Skill
     
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
+
+    private CharacterState fromCharacter;
 
     protected override IEnumerator PrepareJob(System.Action<TargetInfo> callbackDataSaved)
     {
@@ -57,6 +79,8 @@ public class ComboPointTransferSkill : Skill
         
         if (fromCharacter == null) return;
 
+        //if(Vector3.Distance(fromCharacter.gameObject.transform.position, transform.position) <= AreaInfo.Radius) return;
+        
         var comboState = fromCharacter.GetState(States.ComboState) as ComboState;
 
         if (comboState != null && comboState.CurrentStacksCount > 0)
