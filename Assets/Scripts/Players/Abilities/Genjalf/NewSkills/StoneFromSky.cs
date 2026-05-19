@@ -39,7 +39,7 @@ public class StoneFromSky : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.Points.Count > 0)
-            _clickPoint = (Vector3)targetInfo.Points[0];
+            _clickPoint = targetInfo.Points[0];
     }
 
     protected override void ClearData()
@@ -53,19 +53,24 @@ public class StoneFromSky : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        TargetInfo targetInfo = new TargetInfo();
+        TargetInfo targetInfo = new();
 
         while (!GetMouseButton)
             yield return null;
 
-        _clickPoint = Targeting.GetMousePoint();
-        targetInfo.Points.Add(_clickPoint);
+        Vector3 clickPoint = Targeting.GetMousePoint();
+
+        targetInfo.Points.Add(clickPoint);
+
         callbackDataSaved(targetInfo);
     }
     
     protected override IEnumerator CastJob()
     {
-        CmdSpawnTemporaryStone(_clickPoint);
+        Vector3 castPoint = _clickPoint;
+
+        CmdSpawnTemporaryStone(castPoint);
+
         yield return null;
     }
     

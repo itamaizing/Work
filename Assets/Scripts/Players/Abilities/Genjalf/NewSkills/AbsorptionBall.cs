@@ -401,5 +401,15 @@ namespace Gangdollarff
             col.a += 0.2f;
             mat.color = col;
         }
+
+        private void OnDestroy()
+        {
+            if (_shield != null)
+            {
+                _shield.StopFollowTo();
+                NetworkServer.Destroy(_shield.gameObject);
+                _shield = null;
+            }
+        }
     }
 }

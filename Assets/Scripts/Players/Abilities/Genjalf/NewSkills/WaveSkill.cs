@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class WaveSkill : Skill
 {
-    [SerializeField] private ParticleSystem _particle;
+    [SerializeField] private GameObject _waveParticlePrefab;
     [SerializeField] private float _pushRange = 1f;
     [SerializeField] private float _pushDuration = 0.33f;
     [SerializeField] private Transform _previewPivot;
@@ -89,8 +89,12 @@ public class WaveSkill : Skill
 
     protected override IEnumerator CastJob()
     {
-        DetachParticle();
+        StartCoroutine(WaveJob());
+        yield return null;
+    }
 
+    private IEnumerator WaveJob()
+    {
         Vector3 heroPosFlat = transform.position;
         heroPosFlat.y = 0f;
 
@@ -98,24 +102,13 @@ public class WaveSkill : Skill
         startPointFlat.y = 0f;
 
         Vector3 direction = (startPointFlat - heroPosFlat).normalized;
-
         if (Vector3.Distance(heroPosFlat, startPointFlat) < 0.3f)
-        {
             direction = _originalDirection;
-        }
 
         Vector3 waveCenter = startPointFlat + direction * (AreaInfo.CastLength / 2f);
         waveCenter.y = transform.position.y + 0.5f;
 
-        if (_particle != null)
-        {
-            _particle.transform.position = waveCenter;
-            _particle.transform.rotation = Quaternion.LookRotation(direction);
-            _particle.Clear();
-            _particle.Play();
-        }
-
-        CmdSetActiveParticle(true);
+        CmdSpawnWaveEffect(waveCenter, Quaternion.LookRotation(direction));
 
         var colliders = Physics.OverlapBox(
             waveCenter,
@@ -168,25 +161,26 @@ public class WaveSkill : Skill
 
         yield return new WaitForSeconds(0.6f);
 
-        CmdSetActiveParticle(false);
-        ReturnParticleToPreview();
         _skillRender.ResetCursor();
     }
-
-    private void DetachParticle()
+    
+    [Command]
+    private void CmdSpawnWaveEffect(Vector3 position, Quaternion rotation)
     {
-        if (_particle == null) return;
+        if (_waveParticlePrefab == null) return;
 
-        _particle.transform.SetParent(null, true);
+        var fx = Instantiate(_waveParticlePrefab, position, rotation);
+        NetworkServer.Spawn(fx);
+        
+        StartCoroutine(DestroyAfterDelay(fx, 0.6f));
     }
-
-    private void ReturnParticleToPreview()
+    
+    private IEnumerator DestroyAfterDelay(GameObject obj, float delay)
     {
-        if (_particle == null || _previewPivot == null) return;
-
-        _particle.transform.SetParent(_previewPivot);
+        yield return new WaitForSeconds(delay);
+        if (obj != null)
+            NetworkServer.Destroy(obj);
     }
-
 
     protected override void ClearData()
     {
@@ -204,8 +198,6 @@ public class WaveSkill : Skill
     private void OnSkillCancel()
     {
         StopAllCoroutines();
-        CmdSetActiveParticle(false);
-        ReturnParticleToPreview();
         Hero.Move?.StopLookAt();
         ClearData();
     }
@@ -258,9 +250,8 @@ public class WaveSkill : Skill
             float distance = directionToMouse.magnitude;
             Vector3 direction = directionToMouse.normalized;
 
-            Vector3 startPosition = transform.position + direction * Mathf.Min(distance, AreaInfo.Radius);
-
-            pivotTransform.position = startPosition;
+            Vector3 centerPosition = transform.position + direction * Mathf.Min(distance, AreaInfo.Radius);
+            pivotTransform.position = centerPosition - direction * (AreaInfo.CastLength / 2f);
             pivotTransform.rotation = Quaternion.LookRotation(direction, Vector3.up);
 
             _lineVisual.SetSize(AreaInfo.CastWidth, AreaInfo.CastLength, damage);
@@ -286,17 +277,21 @@ public class WaveSkill : Skill
         if (directionToClick.magnitude > AreaInfo.Radius)
             directionToClick = directionToClick.normalized * AreaInfo.Radius;
 
-        _waveStartPoint = transform.position + directionToClick;
         _originalDirection = directionToClick.normalized;
 
-        Vector3 waveEndPoint = _waveStartPoint + _originalDirection * AreaInfo.CastLength;
+        Vector3 centerPoint = transform.position + directionToClick;
+        _waveStartPoint = centerPoint - _originalDirection * (AreaInfo.CastLength / 2f);
+
+        Vector3 waveEndPoint = centerPoint + _originalDirection * (AreaInfo.CastLength / 2f);
+
+        targetInfo.Points.Add(_waveStartPoint);
+        targetInfo.Points.Add(waveEndPoint);
 
         targetInfo.Points.Add(_waveStartPoint);
         targetInfo.Points.Add(waveEndPoint);
    
         StopCustomDraw();
         StopDynamicRender();
-        _originalDirection = directionToClick.normalized;
         callbackDataSaved(targetInfo);
     }
 
@@ -304,10 +299,9 @@ public class WaveSkill : Skill
     private Vector3 GetGroundMousePoint()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, (LayerMask.GetMask("Ground"))))
-        {
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Ground")))
             return hit.point;
-        }
+
         return Vector3.zero;
     }
 
@@ -320,19 +314,5 @@ public class WaveSkill : Skill
         if (enemyMove == null) return;
 
         enemyMove.RpcDoPush(point, time);
-    }
-
-    [Command]
-    private void CmdSetActiveParticle(bool status)
-    {
-        RpcSetActiveParticle(status);
-    }
-
-    [ClientRpc]
-    private void RpcSetActiveParticle(bool status)
-    {
-        if (_particle == null) return;
-
-        _particle.gameObject.SetActive(status);
     }
 }
