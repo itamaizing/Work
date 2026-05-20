@@ -231,16 +231,6 @@ public class PoisonBall : Skill, IAltAbility
         OnSkillCanceled += ClearData;
     }
 
-    private void Start()
-    {
-        _baseCastWidth = AreaInfo.CastWidth;
-        _originalChargeCooldown = _chargeCooldown;
-
-        _poisonBallInfo.StartTimeBetweenAttack = 15.0f;
-        _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
-        _poisonBallInfo.MaxCountProjectile = Charges.MaxCharges;
-    }
-
     private float GetAnimationClipLength()
     {
         RuntimeAnimatorController animController = _player.Animator.runtimeAnimatorController;
