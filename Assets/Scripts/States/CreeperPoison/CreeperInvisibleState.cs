@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -7,7 +7,6 @@ public class CreeperInvisibleState : AbstractCharacterState
     private List<Skill> _skills = new();
     private CreeperInvisible _creeperInvisible;
     private Character _player;
-    private AttributeModifier _modif;
 
     private float _reductionMoveSpeed = 0.3f;
     private float _originalMoveSpeed;
@@ -27,14 +26,11 @@ public class CreeperInvisibleState : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        _modif = new AttributeModifier(0, ModifierType.Flat, this);
         _player = characterState.Character;
-
-        _originalMoveSpeed = _player.Move.DefaultSpeed;
-        _originalStaminaRegen = _player.TryGetResource(ResourceType.Mana).RegenerationDelay;
 
         if (_player != null)
         {
+            ApplyInvisible();
             _skills = _player.CharacterState.Character.Abilities.Abilities;
             foreach (Skill ability in _skills)
             {
@@ -82,55 +78,24 @@ public class CreeperInvisibleState : AbstractCharacterState
 
     private void ApplyInvisible()
     {
-        if (_modif != null) return;
-
         _playerInInvisible = true;
 
-        float reductionMoveSpeed = _originalMoveSpeed * _reductionMoveSpeed;
-        _modif = new AttributeModifier(-reductionMoveSpeed, ModifierType.Flat, this);
-        _player.Move.AddModifier(_modif);
-        //float endReductionMoveSpeed = _originalMoveSpeed - reductionMoveSpeed;
+        _player.AttributeSystem[CharacterAttributeName.ResourceCost].
+            AddModifier(new AttributeModifier(0.3f, ModifierType.Multiplier, source: this));
 
-        //_player.Move.SetMoveSpeed(endReductionMoveSpeed);
+        _player.Resource.Attr_RegenPeriod.AddModifier
+            (new AttributeModifier(-0.3f, ModifierType.Multiplier, source: this));
 
         if (_player?.Move == null) return;
-
-        var mana = _player.TryGetResource(ResourceType.Mana);
-        if (mana != null) mana.RegenerationDelay *= (1 + _increaseStaminaRegen);
-
-        if (_isIncreasedManaCost == false)
-        {
-            foreach (Skill ability in _skills)
-            {
-                ability.Buff.ManaCost.IncreasePercentage(1.3f);
-            }
-            _isIncreasedManaCost = true;
-        }
+        _player.AttributeSystem[CharacterAttributeName.MoveSpeed].
+            AddModifier(new AttributeModifier(-0.3f, ModifierType.Multiplier, source: this));
     }
 
     private void ResetValues()
     {
-        // _player.Move.SetDefaultSpeed();
-        if (_modif != null)
-        {
-            _player.Move.RemoveModifier(_modif);
-            _modif = null;
-        }
-
-
-        if (_player.TryGetResource(ResourceType.Mana).RegenerationDelay != _originalStaminaRegen)
-        {
-            _player.TryGetResource(ResourceType.Mana).RegenerationDelay /= (1 + _increaseStaminaRegen);
-        }
-
-        if (_isIncreasedManaCost)
-        {
-            foreach (Skill ability in _skills)
-            {
-                ability.Buff.ManaCost.ReductionPercentage(1.3f);
-            }
-            _isIncreasedManaCost = false;
-        }
+        _player.AttributeSystem[CharacterAttributeName.MoveSpeed].RemoveBySource(this, all: true);
+        _player.AttributeSystem[CharacterAttributeName.ResourceCost].RemoveBySource(this, all: true);
+        _player.Resource.RemoveModifierBySource(ResourceAttributeName.RegenPeriod, this, all: true);
 
         _playerInInvisible = false;
     }
