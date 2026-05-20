@@ -1,6 +1,7 @@
 using Mirror;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum ResourceType
@@ -38,6 +39,8 @@ public abstract class Resource : NetworkBehaviour, IAttribute
             _maxValue = value;
         }
     }
+    
+    private readonly List<AttributeModifier> _incomingModifiers = new List<AttributeModifier>();
 
     public float RegenerationValue { get => _regenerationValue; set { _regenerationValue = value; } }
     public float RegenerationDelay { get => _regenerationPeriod; set { _regenerationPeriod = value; } }
@@ -115,11 +118,41 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         _regenCoroutine = StartCoroutine(RegenerateJob());
         ClientStartRegenirateJob();
     }
+    
+    public void AddIncomingModifier(AttributeModifier modifier)
+    {
+        _incomingModifiers.Add(modifier);
+    }
+
+    public void RemoveIncomingModifier(AttributeModifier modifier)
+    {
+        _incomingModifiers.Remove(modifier);
+    }
+    
+    protected float ApplyIncomingModifiers(float baseValue)
+    {
+        if (_incomingModifiers.Count == 0) 
+            return baseValue;
+
+        float multiplier = 1f;
+        float flatBonus = 0f;
+
+        foreach (var mod in _incomingModifiers)
+        {
+            if (mod.Type == ModifierType.Flat)
+                flatBonus += mod.Value;
+            else if (mod.Type == ModifierType.Percent)
+                multiplier += mod.Value;
+            else if (mod.Type == ModifierType.Multiplier)
+                multiplier *= (1f + mod.Value);
+        }
+
+        return (baseValue + flatBonus) * multiplier;
+    }
 
     public virtual void Add(float value)
     {
         Debug.Log("Try regen " + value);
-
         if (_maxValue >= _currentValue + value)
             _currentValue += value;
         else

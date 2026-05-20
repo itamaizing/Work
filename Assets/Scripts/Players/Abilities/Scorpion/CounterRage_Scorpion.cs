@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CounterRage_Scorpion : NetworkBehaviour
 {
-    [SerializeField] private float _baseChance = 0.8f;
+    [SerializeField] private float _baseChance = 0.2f;
     private Character _character;
     private bool _counterRageIsEnabled = false;
     private float _maxPossibleBonus = 0;
@@ -32,7 +32,13 @@ public class CounterRage_Scorpion : NetworkBehaviour
     private void OnDamageTaken(Damage damage, Skill from)
     {
         if (!isOwned) return;
-        if (Random.value > _baseChance) return;
+        float chance = _baseChance;
+        if (_character.Abilities.GetSkill<SwiftAttacks_Scorpion>().IsBonusTalent &&
+            _character.CharacterState.CheckForState(States.SwiftAttacks))
+        {
+            chance = _baseChance * 2;
+        }
+        if (Random.value > chance) return;
 
         float bonus = damage.Value * 0.5f;
         CmdAddRageState(bonus);

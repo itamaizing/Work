@@ -164,6 +164,12 @@ public class ConsumeCombo_Scorpion : Skill
             _lastCharacterNetId = stateManager.netId;
         }
 
+        if (_hero.Abilities.GetSkill<SwiftAttacks_Scorpion>().IsBonusTalent && _hero.CharacterState.CheckForState(States.SwiftAttacks))
+        {
+            stateManager.AddState(States.ComboState, float.PositiveInfinity, 0f, _hero.gameObject,
+                !_isComboStacksIncreased ? nameof(ConsumeCombo_Scorpion) : "ComboIncreaseStacks");
+        }
+        
         stateManager.AddState(States.ComboState, float.PositiveInfinity, 0f, _hero.gameObject,
             !_isComboStacksIncreased ? nameof(ConsumeCombo_Scorpion) : "ComboIncreaseStacks");
     }
@@ -210,7 +216,7 @@ public class ConsumeCombo_Scorpion : Skill
             if (state == null || state.CurrentStacksCount <= 0) continue;
             if (isConsumeCombo_ScorpionPhysicStateClear && isDisplePhysState)
             {
-                _hero.CharacterState.DispelStatesStack(StateType.Physical, true, state.CurrentStacksCount, out int dispelled);
+                _hero.CharacterState.DispelStatesStack(StateType.Physical, BaffDebaff.Baff, state.CurrentStacksCount, out int dispelled);
                 if (state.CurrentStacksCount > 0)
                 {
                     if (healOnDispelEnabled)

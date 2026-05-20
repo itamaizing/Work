@@ -846,14 +846,14 @@ public class CharacterState : NetworkBehaviour
 		}
 	}
 
-	public void DispelStatesStack(StateType type, bool isAlly, int howMuchToDispel, out int dispelled)
+	public void DispelStatesStack(StateType type, BaffDebaff buffDebaff, int howMuchToDispel, out int dispelled)
 	{
 		dispelled = 0;
 		if (_currentStates.Count == 0) return;
 
 		AbstractCharacterState stateToDispel = _currentStates.LastOrDefault(c => c.Type == type &&
-			((isAlly && c.BaffDebaff == BaffDebaff.Baff) ||
-			 (!isAlly && c.BaffDebaff == BaffDebaff.Debaff)));
+			buffDebaff == c.BaffDebaff);
+
 		if (stateToDispel != null)
 		{
 			if (stateToDispel.PersonWhoMadeBuff != null)

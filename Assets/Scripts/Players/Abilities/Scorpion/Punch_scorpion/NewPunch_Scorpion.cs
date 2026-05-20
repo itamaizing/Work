@@ -70,9 +70,34 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
 
     public void WarningUpAddState(bool value)
     {
+        if(_isWarningUpAddState == value) return;
+        _isWarningUpAddState = value;
+        if(isClient)
+            CmdWarningUpAddState(value);
+    }
+
+    private bool _isWarmingUpHealingIncrease;
+    public void WarmingUpHealingIncrease(bool value)
+    {
+        if(value == _isWarmingUpHealingIncrease) return;
+        _isWarmingUpHealingIncrease = value;
+        if(isClient)
+            CmdWarmingUpHealingIncrease(value);
+    }
+
+    [Command]
+    private void CmdWarningUpAddState(bool value)
+    {
+        if(_isWarningUpAddState == value) return;
         _isWarningUpAddState = value;
     }
 
+    [Command]
+    private void CmdWarmingUpHealingIncrease(bool value)
+    {
+        if(value == _isWarmingUpHealingIncrease) return;
+        _isWarmingUpHealingIncrease = value;
+    }
     #endregion
 
     private bool IsTargetInRange() { return Targeting.GetTarget() != null && Vector3.Distance(_playerLinks.transform.position, Targeting.GetTarget().Transform.position) <= AreaInfo.Radius; }
@@ -262,7 +287,11 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
         if (_isWarningUpAddState && _hitsInRow >= HitsInRowResetDelay)
         {
             var state = _hero.CharacterState;
-            state?.AddState(States.WarmingUpState, warmingUpDuration, 0, _hero.gameObject, name);
+            if(!_isWarmingUpHealingIncrease)
+                state.AddState(States.WarmingUpState, warmingUpDuration, 0, Schools.Physical, _hero.gameObject, nameof(WarmingUpState));
+            else
+                state.AddState(States.WarmingUpState, warmingUpDuration, 0, Schools.Physical, _hero.gameObject, nameof(WarmingUpState)+"HealingIncrease");
+                
             _hitsInRow = 0;
         }
 

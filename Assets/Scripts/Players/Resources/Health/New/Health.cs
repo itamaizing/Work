@@ -159,6 +159,9 @@ public class Health : Resource, IDamageable, IHealable
 
     public void Heal(ref Heal heal, string sourceName, Skill skill = null)
     {
+        Debug.LogError("base value: " + heal.Value);
+        heal.Value = ApplyIncomingModifiers(heal.Value);
+        Debug.LogError("new value: " + heal.Value);
         HealTakedServer?.Invoke(heal.Value, skill, sourceName);
         ClientRpcHealTaked(heal.Value, skill, sourceName);
         Add(heal.Value);
