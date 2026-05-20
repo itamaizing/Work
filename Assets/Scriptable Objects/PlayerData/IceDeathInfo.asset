@@ -27,6 +27,12 @@ MonoBehaviour:
     - nameToShow: Regen
       type: 1
       value: 1.7
+    - nameToShow: RegenDelay
+      type: 2
+      value: 0.5
+    - nameToShow: RegenInterval
+      type: 3
+      value: 0.5
   _mainResource:
     nameToShow: Energy
     type: 2
@@ -37,6 +43,12 @@ MonoBehaviour:
     - nameToShow: Regen
       type: 1
       value: 2
+    - nameToShow: RegenDelay
+      type: 2
+      value: 0.5
+    - nameToShow: RegenInterval
+      type: 3
+      value: 0.5
   _extraResources:
   - nameToShow: Rune
     type: 3
@@ -46,7 +58,13 @@ MonoBehaviour:
       value: 10
     - nameToShow: Regen
       type: 1
-      value: 0
+      value: 0.1
+    - nameToShow: RegenDelay
+      type: 2
+      value: 0.5
+    - nameToShow: RegenInterval
+      type: 3
+      value: 0.5
   _attributes:
     _attributes:
     - nameToShow: ResistancePhysical
@@ -67,15 +85,3 @@ MonoBehaviour:
     - nameToShow: VisionRadius
       type: 5
       value: 2
-    - nameToShow: CastSpeed
-      type: 6
-      value: 0
-    - nameToShow: CastSpeedPhysical
-      type: 7
-      value: 0
-    - nameToShow: CastSpeedMagical
-      type: 8
-      value: 0
-    - nameToShow: ResourceCost
-      type: 9
-      value: 0
