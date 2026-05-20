@@ -27,6 +27,12 @@ MonoBehaviour:
     - nameToShow: Regen
       type: 1
       value: 0.6
+    - nameToShow: RegenDelay
+      type: 2
+      value: 0.5
+    - nameToShow: RegenInterval
+      type: 3
+      value: 0.5
   _mainResource:
     nameToShow: Mana
     type: 1
@@ -37,6 +43,12 @@ MonoBehaviour:
     - nameToShow: Regen
       type: 1
       value: 0.6
+    - nameToShow: RegenDelay
+      type: 2
+      value: 0.5
+    - nameToShow: RegenInterval
+      type: 3
+      value: 0.5
   _extraResources: []
   _attributes:
     _attributes:

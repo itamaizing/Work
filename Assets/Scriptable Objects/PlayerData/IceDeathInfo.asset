@@ -27,6 +27,12 @@ MonoBehaviour:
     - nameToShow: Regen
       type: 1
       value: 1.7
+    - nameToShow: RegenDelay
+      type: 2
+      value: 0.5
+    - nameToShow: RegenInterval
+      type: 3
+      value: 0.5
   _mainResource:
     nameToShow: Energy
     type: 2
@@ -37,6 +43,12 @@ MonoBehaviour:
     - nameToShow: Regen
       type: 1
       value: 2
+    - nameToShow: RegenDelay
+      type: 2
+      value: 0.5
+    - nameToShow: RegenInterval
+      type: 3
+      value: 0.5
   _extraResources:
   - nameToShow: Rune
     type: 3
@@ -47,6 +59,12 @@ MonoBehaviour:
     - nameToShow: Regen
       type: 1
       value: 0.1
+    - nameToShow: RegenDelay
+      type: 2
+      value: 0.5
+    - nameToShow: RegenInterval
+      type: 3
+      value: 0.5
   _attributes:
     _attributes:
     - nameToShow: ResistancePhysical
