@@ -760,7 +760,6 @@ public abstract class Skill : NetworkBehaviour
             _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
             _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
 
-            CommitUse();
             _castCoroutine = StartCoroutine(CastJob());
             if (_castDuration > 0) _castStreamCoroutine = StartCoroutine(CastStreamJob());
             yield return _castCoroutine;
@@ -769,6 +768,7 @@ public abstract class Skill : NetworkBehaviour
         _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
         _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
 
+        CommitUse();
         CastSuccess?.Invoke();
         CastEnded?.Invoke();
         _isCasting = false;

@@ -60,12 +60,27 @@ public class helperCharData_ResourceInfo
     public void OnValidate()
     {
         nameToShow = type.ToString();
-        if (attributes.Count > 0)
-            return;
-        foreach (ResourceAttributeName attr in Enum.GetValues(typeof(ResourceAttributeName)))
+        if (attributes.Count != Enum.GetValues(typeof(ResourceAttributeName)).Length)
+            SyncronizeAttributes();
+    }
+
+    public void SyncronizeAttributes()
+    {
+        List<helperCharData_ResourceValue> newAttributes = new();
+
+        foreach (ResourceAttributeName enumVal in Enum.GetValues(typeof(ResourceAttributeName)))
         {
-            attributes.Add(new helperCharData_ResourceValue(attr));
+            var existing = attributes.FirstOrDefault(a => a.type == enumVal);
+            if (existing != null)
+            {
+                newAttributes.Add(existing);
+            }
+            else
+            {
+                newAttributes.Add(new helperCharData_ResourceValue(enumVal));
+            }
         }
+        attributes = newAttributes;
     }
 
     [Serializable]
@@ -75,10 +90,11 @@ public class helperCharData_ResourceInfo
         [HideInInspector] public ResourceAttributeName type;
         public float value;
 
-        public helperCharData_ResourceValue(ResourceAttributeName _type)
+        public helperCharData_ResourceValue(ResourceAttributeName _type, float _value=0.5f)
         {
             type = _type;
             nameToShow = _type.ToString();
+            value = _value;
         }
     }
 }
