@@ -44,6 +44,21 @@ public class BleedingState : RefreshingState
             _timeBetweenAttack = _startTimeBetweenAttack;
         }
     }
+    
+    public override void ReduceStack()
+    {
+        currentStacksCount--;
+
+        if (currentStacksCount <= 0)
+        {
+            characterState.StateIcons.RemoveItemByState(State);
+            ExitState();
+        }
+        else
+        {
+            duration = _baseDuration;
+        }
+    }
 
     public override void ExitState()
     {

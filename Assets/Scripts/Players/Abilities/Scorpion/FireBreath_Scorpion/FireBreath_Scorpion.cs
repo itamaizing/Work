@@ -284,7 +284,7 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
             if (_hero.Resources.TryGetValue(ResourceType.Energy, out var energyResource))
             {
                 energyResource.CmdUse(energyToSpend);
-                energyResource.CmdAddSlowRegenDebt(energyToSpend,2);
+                energyResource.CmdAddRegenModifier(energyToSpend,2,isFast:false);
             }
 
             _lastEnergyTickPercent = current10PercentBlocks;

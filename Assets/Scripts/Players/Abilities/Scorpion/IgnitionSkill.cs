@@ -94,7 +94,7 @@ public class IgnitionSkill : Skill,IFireComboParticipatingSkill
     private void RpcApplyEnergyPenalty()
     {
         if (Hero.Resources.TryGetValue(ResourceType.Energy, out var energy))
-            energy.CmdAddSlowRegenDebt(SlowedRegenAmount,2);
+            energy.CmdAddRegenModifier(SlowedRegenAmount,2,isFast:false);
     }
 
     protected override void ClearData()

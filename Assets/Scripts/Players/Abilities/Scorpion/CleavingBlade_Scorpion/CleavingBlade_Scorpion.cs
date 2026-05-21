@@ -80,16 +80,17 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill
         if (state != null)
         {
             state.AddState(States.Bleeding, BleedingDuration, BaseDamageBaf, _hero.gameObject, name);
-
-            int comboStacks = state.CheckStateStacks(States.ComboState);
-
-            for (int i = 0; i < comboStacks; i++) state.AddState(States.Bleeding, BleedingDuration, BaseDamageBaf, _hero.gameObject, name);
         }
     }
 
     public void OnTargetHasComboPoint(GameObject target, float comboPoints)
     {
-        
+        CharacterState state = target.GetComponent<CharacterState>();
+
+        if (state != null)
+        {
+            for (int i = 0; i < comboPoints; i++) state.AddState(States.Bleeding, BleedingDuration, BaseDamageBaf, _hero.gameObject, name);
+        }
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)

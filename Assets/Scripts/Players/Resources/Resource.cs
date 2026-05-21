@@ -41,6 +41,9 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     }
     
     private readonly List<AttributeModifier> _incomingModifiers = new List<AttributeModifier>();
+    
+    private readonly Dictionary<float, float> _regenMods = new();
+    private Coroutine _regenModCoroutine;
 
     public float RegenerationValue { get => _regenerationValue; set { _regenerationValue = value; } }
     public float RegenerationDelay { get => _regenerationPeriod; set { _regenerationPeriod = value; } }
@@ -279,7 +282,6 @@ public abstract class Resource : NetworkBehaviour, IAttribute
             if (_currentValue < _maxValue)
             {
                 yield return new WaitForSeconds(_regenerationDelay);
-
                 while (_currentValue < _maxValue)
                 {
                     Add(_regenerationValue);
@@ -369,33 +371,74 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     }
     
     [Command(requiresAuthority = false)]
-    public void CmdAddSlowRegenDebt(float amount, float slowMultiplier)
+    public void CmdAddRegenModifier(float energy, float multiplier, bool isFast)
     {
-        _slowRegenDebt += amount;
+        float delta = isFast ? -energy : energy;
+        _regenMods.TryGetValue(multiplier, out float current);
+        float newVal = current + delta;
 
-        if (_slowRegenCoroutine == null)
-            _slowRegenCoroutine = StartCoroutine(ProcessSlowRegenDebt(slowMultiplier));
+        if (Mathf.Approximately(newVal, 0f))
+            _regenMods.Remove(multiplier);
+        else
+            _regenMods[multiplier] = newVal;
+
+        if (_regenModCoroutine == null && _regenMods.Count > 0)
+            _regenModCoroutine = StartCoroutine(ProcessRegenMods());
     }
     
-    private IEnumerator ProcessSlowRegenDebt(float slowMultiplier)
+    [Command(requiresAuthority = false)]
+    public void CmdAddRegenModifierByTime(float seconds, float multiplier, bool isFast)
+    {
+        float regenPerSecond = _regenerationValue / _regenerationPeriod;
+        float energy = regenPerSecond * seconds * (isFast ? multiplier : 1f / multiplier);
+        CmdAddRegenModifier(energy, multiplier, isFast);
+    }
+    
+    private IEnumerator ProcessRegenMods()
     {
         float savedRegen = _regenerationValue;
-        _regenerationValue = savedRegen / slowMultiplier;
 
-        if (_regenCoroutine != null)
+        while (_regenMods.Count > 0)
         {
-            StopCoroutine(_regenCoroutine);
-            _regenCoroutine = StartCoroutine(RegenerateJob());
-        }
+            float mult = 0f, net = 0f;
+            foreach (var kv in _regenMods) { mult = kv.Key; net = kv.Value; break; }
 
-        while (_slowRegenDebt > 0f)
-        {
-            if (_regenerationValue <= 0f) { _slowRegenDebt = 0f; break; }
+            _regenerationValue = net > 0
+                ? savedRegen / mult
+                : savedRegen * mult;
 
-            yield return new WaitForSeconds(_regenerationPeriod);
+            if (_regenCoroutine != null)
+            {
+                StopCoroutine(_regenCoroutine);
+                _regenCoroutine = StartCoroutine(RegenerateJob());
+            }
 
-            if (_currentValue < _maxValue)
-                _slowRegenDebt = Mathf.Max(0f, _slowRegenDebt - _regenerationValue);
+            while (_regenMods.TryGetValue(mult, out float remaining)
+                   && !Mathf.Approximately(remaining, 0f))
+            {
+                if (_regenerationValue <= 0f) { _regenMods.Remove(mult); break; }
+
+                yield return new WaitForSeconds(_regenerationPeriod);
+
+                if (_currentValue < _maxValue)
+                {
+                    float regened = _regenerationValue;
+
+                    float updated = remaining > 0
+                        ? remaining - regened
+                        : remaining + regened;
+
+                    if (Mathf.Approximately(updated, 0f) || (remaining > 0 && updated <= 0) || (remaining < 0 && updated >= 0))
+                    {
+                        _regenMods.Remove(mult);
+                        break;
+                    }
+                    else
+                    {
+                        _regenMods[mult] = updated;
+                    }
+                }
+            }
         }
 
         _regenerationValue = savedRegen;
@@ -406,7 +449,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
             _regenCoroutine = StartCoroutine(RegenerateJob());
         }
 
-        _slowRegenCoroutine = null;
+        _regenModCoroutine = null;
     }
 
     public void AddModifier(AttributeModifier modif)

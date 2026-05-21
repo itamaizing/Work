@@ -101,7 +101,7 @@ public class RingOfFireAura : AuraStateHandler
             }
 
             _energy.CmdUse(1f);
-            _energy.CmdAddSlowRegenDebt(1f,2);
+            _energy.CmdAddRegenModifier(1f,2,isFast:false);
 
             foreach (var target in _currentTargets.ToArray())
             {

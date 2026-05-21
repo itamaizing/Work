@@ -8310,7 +8310,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
-      value: 13
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[0]'
@@ -8364,6 +8364,10 @@ PrefabInstance:
       propertyPath: '_skills.Array.data[12]'
       value: 
       objectReference: {fileID: 7515729527109596431}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_skills.Array.data[13]'
+      value: 
+      objectReference: {fileID: 4456664982614311635}
     - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: materialsCharacter.Array.size
       value: 4
@@ -8626,7 +8630,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.size
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[3]._talentRows.Array.data[0].Talents.Array.size
@@ -8730,6 +8734,10 @@ PrefabInstance:
       objectReference: {fileID: 8342491426874558004}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[4]'
+      value: 
+      objectReference: {fileID: 6909004097728667329}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[5]'
       value: 
       objectReference: {fileID: 646569489505946675}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -9234,6 +9242,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6547569093080466137}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4456664982614311635}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3359901628808772774}
@@ -9363,6 +9374,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5197925830669833054}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6909004097728667329}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!1 &1049065473536513494 stripped
 GameObject:
@@ -10633,6 +10647,31 @@ MonoBehaviour:
     IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: 5d33a4519b4de2341b165997ce85b77b, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 5458554383432203635}
+--- !u!114 &6909004097728667329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49c322ef3b0fb254f893526fbbf21e93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AbsorpationSwordTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435 2 \u0441\u0435\u043A\u0443\u043D\u0434
+      \u043F\u043E\u0433\u043B\u043E\u0449\u0430\u0435\u0442 1 \u0441\u043D\u0430\u0440\u044F\u0434\u043D\u043E\u0435
+      \u0437\u0430\u043A\u043B\u0438\u043D\u0430\u043D\u0438\u0435 \u043B\u0435\u0442\u044F\u0449\u0435\u0435
+      \u0432 \u0441\u043A\u043E\u0440\u043F\u0438\u043E\u043D\u0430"
+    _stateInfos: []
+    IsOpen: 0
+    Description: " \u041F\u043E\u0433\u043B\u0449\u0430\u044E\u0449\u0438\u0439 \u043C\u0435\u0447"
+    Icon: {fileID: 21300000, guid: aad58fe05c776024b9cbcc8dd111c711, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 5458554383432203635}
@@ -12167,6 +12206,111 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+--- !u!114 &4456664982614311635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8143091671269686944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5737d97ea9ff7114dbcd650e20688d3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AbsorbationSwordSkill
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 1
+  _isSkillActive: 0
+  _abilityInfo: {fileID: 11400000, guid: ee58913264f6b5e40898a4f4457bd9c5, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 10
+    _costs:
+    - nameToShow: 10 Energy - Mandatory mod
+      type: 2
+      value: 10
+      costType: 0
+      shouldModify: 1
+      showInDescription: 0
+  _skillEnergyCosts:
+  - nameToShow: 10 Energy - Mandatory mod
+    type: 2
+    value: 10
+    costType: 0
+    shouldModify: 1
+    showInDescription: 0
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
+  _castDeley: 0
+  _damageValue: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+  _targetingComponent:
+    type: 0
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _chargeComponent:
+    _usesCharges: 1
+    _isComboPart: 0
+    _cooldownType: 2
+    _maxCharges: 2
+    _baseCooldown: 0
+    affectedByCDR: 0
+  _isUseCharges: 1
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 2
+  _chargeCooldown: 0
+  _areaComponent:
+    _radius: 0
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
+  _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 1
+    _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
+  _duration: 2
 --- !u!4 &8811787553151181850 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
