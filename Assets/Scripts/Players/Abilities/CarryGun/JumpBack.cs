@@ -79,9 +79,9 @@ public class JumpBack : Skill
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         Vector3 targetPoint = Vector3.positiveInfinity;
-        while (Disactive && float.IsPositiveInfinity(targetPoint.x))
+        while (float.IsPositiveInfinity(targetPoint.x))
         {
-            if (GetMouseButton) targetPoint = Targeting.GetMousePoint();
+            targetPoint = Targeting.GetMousePoint();
             yield return null;
         }
 
@@ -93,6 +93,8 @@ public class JumpBack : Skill
 
     protected override IEnumerator CastJob()
     {
+        if (float.IsInfinity(_mousePosition.x) || float.IsNaN(_mousePosition.x)) yield break;
+
         cooldownEnergy.CastCooldownEnergySkill(cooldownEnergyCost, this);
         Vector3 directionToMouse = (_mousePosition - _hero.transform.position);
         directionToMouse.y = 0f;
