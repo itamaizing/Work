@@ -154,6 +154,7 @@ public class WombSpawn : Skill
 
     public void AnimTentaclesCast()
     {
+        CommitUse();
         AnimStartCastCoroutine();
     }
 
