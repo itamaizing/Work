@@ -322,6 +322,7 @@ namespace Gangdollarff
 
             _lastDamageTime = now;
             _damagePerSecond += damage.Value;
+            RpcManaSpendJob(_hero.gameObject, damage.Value);
 
             if (_damagePerSecond > 50f)
             {
@@ -333,8 +334,6 @@ namespace Gangdollarff
 
             if (_absorbedDamage >= _shieldValue)
                 _shieldBroken = true;
-
-            RpcManaSpendJob(_hero.gameObject, damage.Value);
 
             if (_shield)
                 RpcChangeShieldAlpha(_shield.gameObject);

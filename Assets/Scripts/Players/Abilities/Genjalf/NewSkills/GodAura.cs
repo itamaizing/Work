@@ -162,14 +162,17 @@ public class GodAuraBuff : RefreshingState
     private void ApplyModifierToAllSkills(AttributeModifier modifier)
     {
         if (_character == null) return;
-        foreach (var skill in _character.Abilities.Abilities)
-            skill.Attributes.Attributes[SkillAttributeName.Cooldown].AddModifier(modifier);
+        _character.AttributeSystem.Attributes[CharacterAttributeName.CooldownReduction].AddModifier(modifier);
+        /*foreach (var skill in _character.Abilities.Abilities)
+            skill.Attributes.Attributes[SkillAttributeName.Cooldown].AddModifier(modifier);*/
+        
     }
 
     private void RemoveModifierFromAllSkills(AttributeModifier modifier)
     {
         if (_character == null) return;
-        foreach (var skill in _character.Abilities.Abilities)
-            skill.Attributes.Attributes[SkillAttributeName.Cooldown].RemoveModifier(modifier);
+        _character.AttributeSystem.Attributes[CharacterAttributeName.CooldownReduction].RemoveModifier(modifier);
+        /*foreach (var skill in _character.Abilities.Abilities)
+            skill.Attributes.Attributes[SkillAttributeName.Cooldown].RemoveModifier(modifier);*/
     }
 }
