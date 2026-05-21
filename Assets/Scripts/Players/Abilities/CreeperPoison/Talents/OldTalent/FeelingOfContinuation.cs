@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class FeelingOfContinuation : Talent
@@ -26,7 +26,7 @@ public class FeelingOfContinuation : Talent
 
     public void IncreaseRegenerationMana(Character player, float playerCriticalDamage)
     {
-        _baseTimeRegenMana = character.TryGetResource(ResourceType.Mana).RegenerationDelay;
+        _baseTimeRegenMana = character.TryGetResource(ResourceType.Mana).RegenerationPeriod;
 
         _originalRegenerationMana = player.TryGetResource(ResourceType.Mana).RegenerationValue;
 
@@ -40,7 +40,7 @@ public class FeelingOfContinuation : Talent
         }
 
         _reductionTimeRegenMana = _baseTimeRegenMana / _reductionTimeManaRegenMultiplier;
-        player.TryGetResource(ResourceType.Mana).RegenerationDelay = _reductionTimeRegenMana;
+        player.TryGetResource(ResourceType.Mana).RegenerationPeriod = _reductionTimeRegenMana;
         _manaRegenerationCoroutine = StartCoroutine(ManaRegenerationJob(player, _remainingManaValue));
     }
 
@@ -70,6 +70,6 @@ public class FeelingOfContinuation : Talent
         StopCoroutine(_manaRegenerationCoroutine);
         _manaRegenerationCoroutine = null;
 
-        player.TryGetResource(ResourceType.Mana).RegenerationDelay = _baseTimeRegenMana;
+        player.TryGetResource(ResourceType.Mana).RegenerationPeriod = _baseTimeRegenMana;
     }
 }

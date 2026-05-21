@@ -140,7 +140,8 @@ public enum ResourceAttributeName
 {
     MaxValue,
     Regen,
-    //ResourceDelay,
+    RegenDelay,
+    RegenPeriod,
 }
 #endregion
 //атрибуты

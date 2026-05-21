@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -23,8 +23,18 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     [SyncVar] protected float _regenerationPeriod;
 
     protected Coroutine _regenCoroutine;
-    protected Attribute _maxValueAttribute;
-    protected Attribute _regenValueAttribute;
+
+    #region Attributes
+    protected Attribute _attr_maxValue;
+    protected Attribute _attr_regenValue;
+    protected Attribute _attr_regenPeriod;
+    protected Attribute _attr_regenDelay;
+
+    public Attribute Attr_MaxValue => _attr_maxValue;
+    public Attribute Attr_RegenValue => _attr_regenValue;
+    public Attribute Attr_RegenPeriod => _attr_regenPeriod;
+    public Attribute Attr_RegenDelay => _attr_regenDelay;
+    #endregion
 
     public float CurrentValue { get => _currentValue; set { ValueChanged?.Invoke(_currentValue, value); _currentValue = value; } }
     public float MaxValue
@@ -37,8 +47,18 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         }
     }
 
-    public float RegenerationValue { get => _regenerationValue; set { _regenerationValue = value; } }
-    public float RegenerationDelay { get => _regenerationPeriod; set { _regenerationPeriod = value; } }
+    public float RegenerationValue {
+        get => _attr_regenValue.GetValue();
+        set {
+            _attr_regenValue.SetBaseValue(value);
+        }
+    }
+    public float RegenerationPeriod {
+        get => _attr_regenPeriod.GetValue();
+        set {
+            _attr_regenPeriod.SetBaseValue(value);
+        }
+    }
 
     public ResourceType Type => _resourceType;
 
@@ -87,12 +107,15 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     {
         //Debug.Log("Init resourse " + maxValue.GetValue());
 
-        _regenValueAttribute = regenValue;
+        _attr_regenValue = regenValue;
         _regenerationValue = regenValue.GetValue();
 
-
-        _maxValueAttribute = maxValue;
+        _attr_maxValue = maxValue;
         _maxValue = maxValue.GetValue();
+        
+        _attr_regenDelay = new(0.5f);
+        _attr_regenPeriod = new(0.5f);
+        
         _currentValue = _maxValue;
 
         if (isServer) _regenCoroutine = StartCoroutine(RegenerateJob());
@@ -101,22 +124,23 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     // Можно перевести на такой же формат хранения атрибутов (ResourceAttribute) - тогда можно вообще весь хардкод убрать
     public virtual void Init(ResourceAttribute resource)
     {
-        _regenValueAttribute = resource.Attributes[ResourceAttributeName.Regen];
+        _attr_regenValue = resource.Attributes[ResourceAttributeName.Regen];
         _regenerationValue = resource.Attributes[ResourceAttributeName.Regen].GetValue();
 
-        _maxValueAttribute = resource.Attributes[ResourceAttributeName.MaxValue];
+        _attr_maxValue = resource.Attributes[ResourceAttributeName.MaxValue];
         _maxValue = resource.Attributes[ResourceAttributeName.MaxValue].GetValue();
+
+        _attr_regenDelay = resource.Attributes[ResourceAttributeName.RegenDelay];
+        _attr_regenPeriod = resource.Attributes[ResourceAttributeName.RegenPeriod];
+
         _currentValue = _maxValue;
-        //Debug.Log($"{CurrentValue}/{MaxValue} + {_regenerationValue}");
-        _regenerationPeriod = 0.5f; //TEMPORARY TEST
-        _regenerationDelay = 0.5f; //TEMPORARY TEST
         _regenCoroutine = StartCoroutine(RegenerateJob());
         ClientStartRegenirateJob();
     }
 
     public virtual void Add(float value)
     {
-        Debug.Log("Try regen " + value);
+        //Debug.Log($"Try regen {value}, period{_attr_regenPeriod.GetValue()}" );
 
         if (_maxValue >= _currentValue + value)
             _currentValue += value;
@@ -235,7 +259,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
                 continue;
             }
 
-            if (_regenerationValue <= 0)
+            if (_attr_regenValue.GetValue() <= 0)
             {
                 yield return null;
                 continue;
@@ -247,8 +271,8 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 
                 while (_currentValue < _maxValue)
                 {
-                    Add(_regenerationValue);
-                    yield return new WaitForSeconds(_regenerationPeriod);
+                    Add(_attr_regenValue.GetValue());
+                    yield return new WaitForSeconds(RegenerationPeriod);
                 }
             }
 
@@ -307,7 +331,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     protected void CmdRegen()
     {
 
-        Add(_regenerationValue);
+        Add(_attr_regenValue.GetValue());
     }
 
     [ClientRpc]
@@ -335,16 +359,95 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 
     public void AddModifier(AttributeModifier modif)
     {
-        _maxValueAttribute.AddModifier(modif);
+        _attr_maxValue.AddModifier(modif);
 
-        _maxValue = _maxValueAttribute.GetValue();
+        _maxValue = _attr_maxValue.GetValue();
     }
 
     public void RemoveModifier(AttributeModifier modif)
     {
-        _maxValueAttribute.RemoveModifier(modif);
+        _attr_maxValue.RemoveModifier(modif);
 
-        _maxValue = _maxValueAttribute.GetValue();
-
+        _maxValue = _attr_maxValue.GetValue();
     }
+
+    /*  Вроде если повесить модификатор напрямую на атрибут - все нормально работает по сети
+        Но если будут косяки - можно тут ставить значения для [syncvar] переменных (delay, period)
+    */
+    #region Potentially Useful
+    public void AddModifier(ResourceAttributeName _attr, AttributeModifier _modif)
+    {
+        Attribute attr = _attr_maxValue;
+        switch (_attr)
+        {
+            case ResourceAttributeName.MaxValue:
+                attr = _attr_maxValue;
+                break;
+
+            case ResourceAttributeName.Regen:
+                attr = _attr_regenValue;
+                break;
+
+            case ResourceAttributeName.RegenPeriod:
+                attr = _attr_regenPeriod;
+                break;
+
+            case ResourceAttributeName.RegenDelay:
+                attr = _attr_regenDelay;
+                break;
+        }
+
+        attr.AddModifier(_modif);
+    }
+
+    public void RemoveModifier(ResourceAttributeName _attr, AttributeModifier _modif)
+    {
+        Attribute attr = _attr_maxValue;
+        switch (_attr)
+        {
+            case ResourceAttributeName.MaxValue:
+                attr = _attr_maxValue;
+                break;
+
+            case ResourceAttributeName.Regen:
+                attr = _attr_regenValue;
+                break;
+
+            case ResourceAttributeName.RegenPeriod:
+                attr = _attr_regenPeriod;
+                break;
+
+            case ResourceAttributeName.RegenDelay:
+                attr = _attr_regenDelay;
+                break;
+        }
+
+        attr.RemoveModifier(_modif);
+    }
+
+    public void RemoveModifierBySource(ResourceAttributeName _attr, object source, bool all=true)
+    {
+        Attribute attr = _attr_maxValue;
+        switch (_attr)
+        {
+            case ResourceAttributeName.MaxValue:
+                attr = _attr_maxValue;
+                break;
+
+            case ResourceAttributeName.Regen:
+                attr = _attr_regenValue;
+                break;
+
+            case ResourceAttributeName.RegenPeriod:
+                attr = _attr_regenPeriod;
+                break;
+
+            case ResourceAttributeName.RegenDelay:
+                attr = _attr_regenDelay;
+                break;
+        }
+
+        attr.RemoveBySource(source, all);
+    }
+    #endregion
 }

@@ -144,7 +144,7 @@ public class AstralState : AbstractCharacterState
 
     private IEnumerator DotJob()
     {
-        float period = characterState.Character.Health.RegenerationDelay;
+        float period = characterState.Character.Health.RegenerationPeriod;
         if (period <= 0) period = 1f;
 
         while (true)
