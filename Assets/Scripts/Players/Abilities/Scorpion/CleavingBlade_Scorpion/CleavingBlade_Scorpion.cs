@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill
+public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill,ISwordSkill
 {
     [Header("Ability settings")]
     [SerializeField] private ScorpionPassive _scorpionPassive;

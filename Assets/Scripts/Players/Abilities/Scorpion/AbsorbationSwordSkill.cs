@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Mirror;
 using UnityEngine;
 
@@ -20,6 +22,14 @@ public class AbsorbationSwordSkill : Skill
     private bool _isAbsorbing = false;
 
     private Coroutine _absorbCoroutine;
+
+    #region Доп урон от поглощённых снарядов
+
+    private bool _isAbsorbedDamage;
+    private List<Skill> _swordSkills = new(); 
+    private List<Damage> _absorbedDamages = new();
+    #endregion
+    
 
     public override string AdditionalDescription =>
         $"Поглощает 1 снарядное заклинание.\n" +
@@ -45,6 +55,12 @@ public class AbsorbationSwordSkill : Skill
         Hero.Health.OnBeforeTakeDamage += OnHeroAbsorbed;
         Hero.Health.Block += EndAbsorb;
         _hero.Health.DamageTaken += OnHeroDamageTaken;
+        
+        _swordSkills = _hero.Abilities.Abilities.Where(s => s is ISwordSkill).ToList();
+        foreach (var swordSkill in _swordSkills)
+        {
+            swordSkill.CastSuccess += () => ApplyAbsorbedDamage(swordSkill);
+        }
     }
     
     private void OnDisable()
@@ -52,6 +68,32 @@ public class AbsorbationSwordSkill : Skill
         Hero.Health.OnBeforeTakeDamage -= OnHeroAbsorbed;
         Hero.Health.Block -= EndAbsorb;
         _hero.Health.DamageTaken -= OnHeroDamageTaken;
+        foreach (var swordSkill in _swordSkills)
+        {
+            swordSkill.CastSuccess -= () => ApplyAbsorbedDamage(swordSkill);
+        }
+    }
+
+    public void EnableAbsorbedDamage(bool value)
+    {
+        if(_isAbsorbedDamage == value) return;
+        _isAbsorbedDamage = value;
+    }
+
+    private void ApplyAbsorbedDamage(Skill skill)
+    {
+        if (_isAbsorbedDamage)
+        {
+            var target = skill.Targeting.GetTarget()?.Character;
+            if (target == null) return;
+            foreach (var damage in _absorbedDamages)
+            {
+                var newDamage = new Damage { Value = damage.Value / 2, School = damage.School };
+                if(isClient)
+                    skill.CmdApplyDamage(newDamage,target.gameObject);
+            }
+            _absorbedDamages.Clear();
+        }
     }
 
     private void OnHeroDamageTaken(Damage damage, Skill skill)
@@ -82,7 +124,15 @@ public class AbsorbationSwordSkill : Skill
             _hero.Health.BlockChance = 100;
             if(isClient)
                 _energy.CmdUse(_absorbEnergyReturn);
+            AddAbsorbedDamageToList(_hero.gameObject,damage);
         }
+    }
+
+    [TargetRpc]
+    private void AddAbsorbedDamageToList(GameObject target,Damage damage)
+    {
+        if(_isAbsorbedDamage)
+            _absorbedDamages.Add(damage);
     }
 
     private void AddCharge()
@@ -158,7 +208,8 @@ public class AbsorbationSwordSkill : Skill
         if (!_isAbsorbing) return;
 
         _isAbsorbing = false;
-        CmdSetAbsorbing(false);
+        if(isClient)
+            CmdSetAbsorbing(false);
         ControlMovement(true);
         Hero.Abilities?.SetAbilitiesDisactive(false);
 
