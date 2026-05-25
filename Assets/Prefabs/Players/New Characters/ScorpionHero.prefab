@@ -8310,7 +8310,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
-      value: 14
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[0]'
@@ -8368,6 +8368,14 @@ PrefabInstance:
       propertyPath: '_skills.Array.data[13]'
       value: 
       objectReference: {fileID: 4456664982614311635}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_skills.Array.data[14]'
+      value: 
+      objectReference: {fileID: 5117323362961484153}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_skills.Array.data[15]'
+      value: 
+      objectReference: {fileID: 3174753857147274348}
     - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: materialsCharacter.Array.size
       value: 4
@@ -8630,7 +8638,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.size
-      value: 9
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[3]._talentRows.Array.data[0].Talents.Array.size
@@ -8753,6 +8761,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2759671344184331756}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[9]'
+      value: 
+      objectReference: {fileID: 1284220684665181610}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[3]._talentRows.Array.data[0].Talents.Array.data[0]'
       value: 
       objectReference: {fileID: 6774836290520656516}
@@ -8784,6 +8796,10 @@ PrefabInstance:
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[12]'
       value: 
       objectReference: {fileID: 2565204186795419702}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[10]'
+      value: 
+      objectReference: {fileID: 1008116910640029176}
     - target: {fileID: 6397899444093627911, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.1387713
@@ -9201,6 +9217,9 @@ PrefabInstance:
       insertIndex: 16
       addedObject: {fileID: 1147250939410812164}
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: 18
+      addedObject: {fileID: 8046677360150043576}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6732054044553877427}
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -9257,6 +9276,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4456664982614311635}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5117323362961484153}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3174753857147274348}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3359901628808772774}
@@ -9401,6 +9426,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2759671344184331756}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1284220684665181610}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1008116910640029176}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!1 &1049065473536513494 stripped
 GameObject:
@@ -10807,6 +10838,67 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 5458554383432203635}
+--- !u!114 &1284220684665181610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e314ae13d2126f840881b1506a532762, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UndercutTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u043D\u0430\u043D\u043E\u0441\u0438\u0442 10 \u0443\u0440\u043E\u043D\u0430
+      \u0438 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 \xAB\u043E\u0431\u0435\u0441\u043A\u0443\u0440\u0430\u0436\u0438\u0432\u0430\u043D\u0438\u0435\"
+      (\u0434\u0435\u0431\u0430\u0444\u0444 \u0441 \u043F\u0440\u0438\u0442\u044F\u0433\u0438\u0432\u0430\u044E\u0449\u0435\u0433\u043E
+      \u043A\u043B\u0438\u043D\u043A\u0430 1\u0430) \u043D\u0430 3 \u0441\u0435\u043A\u0443\u043D\u0434\u044B.
+      \u0417\u0430 \u043A\u0430\u0436\u0434\u043E\u0435 \u043E\u0447\u043A\u043E
+      \u043A\u043E\u043C\u0431\u043E \u0438\u043B\u0438 \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435
+      \u0441\u0435\u0440\u0438\u0438: \u044D\u0444\u0444\u0435\u043A\u0442 \u043E\u0431\u0435\u0441\u043A\u0443\u0440\u0430\u0436\u0432\u0430\u043D\u0438\u044F
+      \u043F\u0440\u043E\u0434\u043B\u044F\u0435\u0442\u0441\u044F \u043D\u0430 1
+      \u0441\u0435\u043A\u0443\u043D\u0434\u0443. "
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u041F\u043E\u0434\u0441\u0435\u0447\u0435\u043D\u0438\u0435"
+    Icon: {fileID: 21300000, guid: 9204ae068284fba43b442c92c1ac501a, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 5458554383432203635}
+--- !u!114 &1008116910640029176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88ca23aa5e2730e4dbe79145983b7e99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LowHealthReductionTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0435\u0441\u043B\u0438 \u0443 \u0441\u043A\u043E\u0440\u043F\u0438\u043E\u043D\u0430
+      \u0437\u0430\u043F\u0430\u0441 \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044F
+      \u0441\u0442\u0430\u043D\u043E\u0432\u0438\u0442\u0441\u044F \u043C\u0435\u043D\u044C\u0448\u0435
+      80% \u0432\u043A\u043B\u044E\u0447\u0430\u0435\u0442\u0441\u044F \u043F\u0430\u0441\u0438\u0432\u043A\u0430
+      \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0438\u0435 3 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u044F
+      \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0435\u0433\u043E \u0443\u0440\u043E\u043D\u0430
+      \u043D\u0430\u043D\u0435\u0441\u0443\u0442 \u043D\u0430 80% \u043C\u0435\u043D\u044C\u0448\u0435
+      \u0443\u0440\u043E\u043D\u0430, \u0432\u043A\u043B\u044E\u0447\u0430\u0435\u0442\u0441\u044F
+      \u0440\u0430\u0437 \u0432 10 \u0441\u0435\u043A\u0443\u043D\u0434."
+    _stateInfos: []
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: 21300000, guid: db8a1145e53636c4d95ed269fa1e7b7b, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 5458554383432203635}
+  _lowHealthReductionPassive: {fileID: 3174753857147274348}
 --- !u!114 &1402913355469849604 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1629212415153807048, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -10919,6 +11011,21 @@ MonoBehaviour:
   _currentValue: 0
   _maxValue: 0
   _maxComboPoints: 3
+--- !u!114 &8046677360150043576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8143091671269686944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13908475130f2f9499878dff81a39a9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DiminishingReturnsTracker
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!114 &6732054044553877427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12443,6 +12550,202 @@ MonoBehaviour:
     _castAnimations: []
     _activeClip: 0
   _duration: 2
+--- !u!114 &5117323362961484153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8143091671269686944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a882af46662268047bf7c9b9b6cf940e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UndercutSkill
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 1
+  _isSkillActive: 0
+  _abilityInfo: {fileID: 11400000, guid: 9ddf1fc0bbd1c0d4db1d2276220253dd, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 30
+    _costs:
+    - nameToShow: 30 Energy - Mandatory mod
+      type: 2
+      value: 30
+      costType: 0
+      shouldModify: 1
+      showInDescription: 0
+  _skillEnergyCosts:
+  - nameToShow: 30 Energy - Mandatory mod
+    type: 2
+    value: 30
+    costType: 0
+    shouldModify: 1
+    showInDescription: 0
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
+  _castDeley: 0
+  _damageValue: 0
+  _infoComponent:
+    _school: 6
+    _form: 1
+    _damageType: 1
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+  _targetingComponent:
+    type: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: 5
+    _outOfRangeBehaviour: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _chargeComponent:
+    _usesCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
+    affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _areaComponent:
+    _radius: 1.1
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
+  _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 1
+    _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
+--- !u!114 &3174753857147274348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8143091671269686944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48861042c27b66645a8a3374b6d659cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LowHealthReductionPassive
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 1
+  _isSkillActive: 0
+  _abilityInfo: {fileID: 11400000, guid: 0159eb91c0cf0d843ba27421e445b1ff, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _costs: []
+  _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
+  _castDeley: 0
+  _damageValue: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+  _targetingComponent:
+    type: 0
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _chargeComponent:
+    _usesCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
+    affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _areaComponent:
+    _radius: 0
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
+  _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 1
+    _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
 --- !u!4 &8811787553151181850 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

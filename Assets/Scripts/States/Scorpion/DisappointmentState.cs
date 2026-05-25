@@ -9,7 +9,8 @@ public class DisappointmentState : RefreshingState
     private Animator _animator;
     private AnimatorStateInfo _currentState;
     private List<StatusEffect> _effects = new List<StatusEffect> { StatusEffect.Move, StatusEffect.Ability };
-    
+    public override DiminishingReturnGroup DrGroup => DiminishingReturnGroup.FearAndDisappointment;
+
     public override States State => States.DisappointmentState;
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
@@ -61,6 +62,16 @@ public class DisappointmentState : RefreshingState
             {
                 skill.Disactive = false;
             }
+        }
+        
+        if (characterState != null)
+        {
+            DiminishingReturnsTracker tracker;
+            if (personWhoMadeBuff == null)
+                tracker = characterState.Character.GetComponent<DiminishingReturnsTracker>();
+            else
+                tracker = personWhoMadeBuff.GetComponent<DiminishingReturnsTracker>();
+            tracker?.OnEffectEnded(DrGroup);
         }
         
         currentStacksCount = 0;

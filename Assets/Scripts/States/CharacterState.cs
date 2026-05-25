@@ -33,7 +33,7 @@ public abstract class AbstractCharacterState
 	protected Character personWhoMadeBuff;
 	protected Skill skill;
 	protected Schools _schoolState;
-
+	public virtual DiminishingReturnGroup DrGroup => DiminishingReturnGroup.None;
 	protected int currentStacksCount = 0;
 	protected bool isHidden = false;
 
@@ -653,56 +653,65 @@ public class CharacterState : NetworkBehaviour
 		RemoveStateLogic(stateName);
 	}
 
-	public void AddStateLogic(States state, float duration, float damageToExit, Schools school, GameObject personWhoShooted, string skillName, bool isCanDodgeMagState = false)
+	public void AddStateLogic(States state, float duration, float damageToExit, Schools school,
+		GameObject personWhoShooted, string skillName, bool isCanDodgeMagState = false)
 	{
 		if (invinsible) return;
+
+		duration = ApplyDiminishingReturns(state, duration, personWhoShooted);
+		if (duration <= 0f) return;
 
 		for (int i = 0; i < _currentStates.Count; i++)
 		{
 			if (_currentStates[i].State == state)
 			{
 				if (personWhoShooted.TryGetComponent<Character>(out var character))
-                {
-	                _currentStates[i].TryApply(this, duration, damageToExit, character, skillName);
-                }
-                else
-                {
-                    _currentStates[i].TryApply(this, duration, damageToExit, null, skillName);
-                }
-                //_currentStates[i].TryApply(this, duration, damageToExit, character, skillName);
+				{
+					_currentStates[i].TryApply(this, duration, damageToExit, character, skillName);
+				}
+				else
+				{
+					_currentStates[i].TryApply(this, duration, damageToExit, null, skillName);
+				}
+				//_currentStates[i].TryApply(this, duration, damageToExit, character, skillName);
 
-                if ((_currentStates[i] is RefreshingState) == false) break;
+				if ((_currentStates[i] is RefreshingState) == false) break;
 				if (_currentStates[i].MaxStacksCount == 0)
-                {
+				{
 					bool canStack = _currentStates[i].Stack(duration);
 					int newMaxStack = _currentStates[i].MaxStacksCount;
-                    if (!_currentStates[i].IsHidden)
-                        _stateIcons.ActivateIco(state, duration, 1, false, newMaxStack);
-					
+					if (!_currentStates[i].IsHidden)
+						_stateIcons.ActivateIco(state, duration, 1, false, newMaxStack);
+
 
 					float timeForIcon = duration;
 					if (state == States.Restoration || state == States.Destruction)
 					{
-						timeForIcon = _currentStates[i].RemainingDuration > 0f ? _currentStates[i].RemainingDuration : duration;
+						timeForIcon = _currentStates[i].RemainingDuration > 0f
+							? _currentStates[i].RemainingDuration
+							: duration;
 					}
+
 					_stateIcons.ActivateIco(state, timeForIcon, 1, canStack, newMaxStack);
 
 					MoveStateToEnd(i);
 				}
 
 				else
-                {
+				{
 					//_currentStates[i].Stack(duration);
 					//_currentStates[i].duration = Mathf.Max(_currentStates[i].RemainingDuration, duration);
-					float remaining = _currentStates[i].RemainingDuration > 0f ? _currentStates[i].RemainingDuration : duration;
+					float remaining = _currentStates[i].RemainingDuration > 0f
+						? _currentStates[i].RemainingDuration
+						: duration;
 
 					int newMaxStack = _currentStates[i].MaxStacksCount;
-                    if (!_currentStates[i].IsHidden)
-                        _stateIcons.ActivateIco(state, remaining, 1, true, newMaxStack);
+					if (!_currentStates[i].IsHidden)
+						_stateIcons.ActivateIco(state, remaining, 1, true, newMaxStack);
 
 					MoveStateToEnd(i);
 				}
-				
+
 				return;
 			}
 		}
@@ -877,6 +886,24 @@ public class CharacterState : NetworkBehaviour
 			dispelled = toRemove;
 		}
 	}
+	
+	private float ApplyDiminishingReturns(States state, float duration,GameObject whoMadeBuff = null)
+    {
+        if (!enumToState.TryGetValue(state, out var stateInstance)) return duration;
+        var group = stateInstance.DrGroup;
+        if (group == DiminishingReturnGroup.None) return duration;
+
+        DiminishingReturnsTracker tracker;
+        if (whoMadeBuff == null)
+	        tracker = _hero?.GetComponent<DiminishingReturnsTracker>();
+        else
+	        tracker = whoMadeBuff.GetComponent<DiminishingReturnsTracker>();
+        if (tracker == null) return duration;
+    
+        float modified = tracker.GetModifiedDuration(group, duration);
+        if (modified > 0f) tracker.ConsumeApplication(group);
+        return modified;
+    }
 
 	[ClientRpc]
 	private void NotifyDispelWhoMade(GameObject whoMade, States state,int num)

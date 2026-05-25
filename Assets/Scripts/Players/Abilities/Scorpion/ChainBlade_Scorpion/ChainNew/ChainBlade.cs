@@ -325,7 +325,7 @@ public class ChainBlade : Skill,IComboParticipatingSkill
     {
         var obj = NetworkClient.spawned[targetId].gameObject;
         var target = obj.GetComponent<Character>();
-        OnArrowHit.Invoke(target);
+        OnArrowHit?.Invoke(target);
         if (_pullCoroutine != null) StopCoroutine(_pullCoroutine);
         _pullCoroutine = StartCoroutine(PullTargetToPlayer(target, duration));
         
