@@ -33,6 +33,7 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
 
     private bool _isIncreasedDamageExposure = false;
 
+    public event IComboParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplyParticipatingDamage;
     public event Action<GameObject, Skill> OnDamaged;
     public event Action OnFireBreathStarted;
 

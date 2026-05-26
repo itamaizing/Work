@@ -11,6 +11,7 @@ public class Punch_Scorpion : AutoAttackSkill,IComboParticipatingSkill
     //[SerializeField] private float _damageValue = 9f;
 
     private Character _lastTarget = null;
+    public event IComboParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplyParticipatingDamage;
     public event Action<GameObject, Skill> OnDamaged;
 
     protected override int AnimTriggerCastDelay => 0;

@@ -13,7 +13,8 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill,ISwordSkill
     [SerializeField] private GameObject _blade;
 
     [SyncVar] private int _counter = 1;
-    
+
+    public event IComboParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplyParticipatingDamage;
     public event Action<GameObject, Skill> OnDamaged;
 
     private float _pendingFireDamageBonus = 0f;
@@ -183,6 +184,7 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill,ISwordSkill
     [Command]
     private void CmdAttack(Damage damage, GameObject target, bool shouldIncreaseCounter, float scorchedChance)
     {
+        OnBeforeApplyParticipatingDamage?.Invoke(ref damage,this,target);
         if (target == null) return;
         var damageable = target.GetComponent<IDamageable>();
         if (damageable == null) return;

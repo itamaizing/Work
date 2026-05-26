@@ -22,7 +22,8 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
 
     private Character _lastTarget;
     private Character _currentTarget;
-    
+
+    public event IComboParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplyParticipatingDamage;
     public event Action<GameObject, Skill> OnDamaged;
 
     #region Constants
@@ -236,6 +237,7 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
     [Command]
     private void CmdApplyDamage(GameObject target, Damage damage, float scorchedChance)
     {
+        OnBeforeApplyParticipatingDamage?.Invoke(ref damage,this,target);
         if (target == null) return;
         var damageable = target.GetComponent<IDamageable>();
         if (damageable == null) return;

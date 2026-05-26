@@ -27,7 +27,8 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
     private Animator _animator;
     private bool _wasDamageApplied = false;
     private WaitForSeconds _waitForHitsInRowTimer;
-    
+
+    public event IComboParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplyParticipatingDamage;
     public event Action<GameObject, Skill> OnDamaged;
     public void OnFinalComboSkill(GameObject target)
     {
@@ -268,10 +269,11 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
     [Command]
     private void CmdApplyDamage(GameObject target, Damage damage, float scorchedChance)
     {
+        OnBeforeApplyParticipatingDamage?.Invoke(ref damage,this,target);
         if (target == null) return;
         var damageable = target.GetComponent<IDamageable>();
         if (damageable == null) return;
-
+        
         bool isHit = damageable.TryTakeDamage(ref damage, this);
 
         if (isHit && damageable is Character character)

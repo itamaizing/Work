@@ -63,6 +63,7 @@ public class UndercutSkill : Skill,IComboParticipatingSkill
     [Command]
     private void CmdApplyDamage(Damage damage, GameObject target)
     {
+        OnBeforeApplyParticipatingDamage?.Invoke(ref damage,this,target);
         if (target == null) return;
         var damageable = target.GetComponent<IDamageable>();
         var isHit = damageable.TryTakeDamage(ref damage, this);
@@ -94,6 +95,7 @@ public class UndercutSkill : Skill,IComboParticipatingSkill
             Targeting.SetTarget((ITargetable)targetInfo.GetTargets()[0]);
     }
 
+    public event IComboParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplyParticipatingDamage;
     public event Action<GameObject, Skill> OnDamaged;
     public void OnFinalComboSkill(GameObject target)
     {

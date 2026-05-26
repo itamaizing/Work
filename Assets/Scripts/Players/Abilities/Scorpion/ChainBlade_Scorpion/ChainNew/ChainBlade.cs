@@ -28,6 +28,7 @@ public class ChainBlade : Skill,IComboParticipatingSkill
     private ChainArrow _currentChainArrowPrefab;
     private Vector3 _clickPoint = Vector3.positiveInfinity;
     private Animator _animator;
+    public event IComboParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplyParticipatingDamage;
     public event Action<GameObject, Skill> OnDamaged;
     public event Action<Character> OnArrowHit;
 
@@ -350,6 +351,7 @@ public class ChainBlade : Skill,IComboParticipatingSkill
     [Command]
     private void CmdAdditionalAttack(Damage damage, GameObject target, float scorchedChance)
     {
+        OnBeforeApplyParticipatingDamage?.Invoke(ref damage,this,target);
         if (target == null) return;
         var damageable = target.GetComponent<IDamageable>();
         if (damageable == null) return;

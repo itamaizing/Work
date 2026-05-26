@@ -90,7 +90,7 @@ public class AbsorbationSwordSkill : Skill
             {
                 var newDamage = new Damage { Value = damage.Value / 2, School = damage.School };
                 if(isClient)
-                    skill.CmdApplyDamage(newDamage,target.gameObject);
+                    CmdApplyDamage(newDamage,target.gameObject);
             }
             _absorbedDamages.Clear();
         }

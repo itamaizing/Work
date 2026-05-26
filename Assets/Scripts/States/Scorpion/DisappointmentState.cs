@@ -19,7 +19,7 @@ public class DisappointmentState : RefreshingState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _baseDuration = durationToExit;
-        _damageToExit = damageToExit == 0 ? 10000 : damageToExit;
+        _damageToExit = 1;
         _damageOnStart = characterState.Character.Health.SumDamageTaken;
 
         characterState.Character.Move.SetCanMove(false);
