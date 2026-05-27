@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,14 +9,13 @@ public static class DB_Attribute
 {
     private static Dictionary<ResourceType, SO_ResourceData> _resourceAttributes = new();
     private static Dictionary<CharacterAttributeName, SO_AttributeData> _characterAttributes = new();
-    //private static Dictionary<CharacterAttributeName, SO_AttributeData> _extraAttributes = new();
-
+    public static Dictionary<SkillAttributeName, SO_AttributeData> _skillAttributes = new();
+    
     public static Dictionary<ResourceType, SO_ResourceData> ResourceAttributes => _resourceAttributes;
     public static Dictionary<CharacterAttributeName, SO_AttributeData> CharacterAttributes => _characterAttributes;
-    //public static Dictionary<CharacterAttributeName, SO_AttributeData> ExtraAttributes => _extraAttributes;
+    public static Dictionary<SkillAttributeName, SO_AttributeData> SkillAttributes => _skillAttributes;
 
-
-
+    #region Static Lists
     public static List<CharacterAttributeName> BasicAttributes = new List<CharacterAttributeName>
     {
         CharacterAttributeName.ResistancePhysical,
@@ -25,16 +25,12 @@ public static class DB_Attribute
         CharacterAttributeName.MoveSpeed,
         CharacterAttributeName.VisionRadius,
     };
-    public static List<CharacterAttributeName> ExtraAttributes = new List<CharacterAttributeName>
-    {
-        CharacterAttributeName.CastSpeed,
-        CharacterAttributeName.CastSpeedPhysical,
-        CharacterAttributeName.CastSpeedMagical,
-        CharacterAttributeName.CooldownReduction,
-        CharacterAttributeName.ResourceCost,
-        CharacterAttributeName.OutgoingDamage,
-        CharacterAttributeName.DebuffDuration,
-    };
+
+    public static readonly List<CharacterAttributeName> ExtraAttributes =
+        Enum.GetValues(typeof(CharacterAttributeName))
+            .Cast<CharacterAttributeName>()
+            .Except(BasicAttributes)
+            .ToList();
 
     public static List<CharacterAttributeName> UpgradableAttributes = new List<CharacterAttributeName>
     {
@@ -43,7 +39,7 @@ public static class DB_Attribute
         CharacterAttributeName.EvasionPhysical,
         CharacterAttributeName.EvasionMagical,
     };
-
+    #endregion
 
     public readonly static string AttributeFolder = "Assets/Resources/AttributeSystem"; // По хорошему надо в отдельном конфиг-файле, но пока подобная система одна
     public readonly static string AttributeRelativeFolder = "AttributeSystem"; // По хорошему надо в отдельном конфиг-файле, но пока подобная система одна
@@ -61,8 +57,12 @@ public static class DB_Attribute
         
         var basic = Resources.LoadAll<SO_AttributeData>($"{AttributeRelativeFolder}/BasicAttributes");
         foreach ( var attribute in basic )
-            _characterAttributes.Add(attribute.type, attribute);
-        
+            _characterAttributes.Add(Enum.Parse<CharacterAttributeName>(attribute.type), attribute);
+
+        var skill = Resources.LoadAll<SO_AttributeData>($"{AttributeRelativeFolder}/SkillAttributes");
+        foreach (var attribute in skill )
+            _skillAttributes.Add(Enum.Parse<SkillAttributeName>(attribute.type), attribute);
+
         var extra = Resources.LoadAll<SO_AttributeData>($"{AttributeRelativeFolder}/ExtraAttributes");
         //foreach ( var attribute in extra )
         //    _extraAttributes.Add(attribute.type, attribute);
@@ -105,7 +105,20 @@ public static class DB_Attribute
             if (AssetDatabase.LoadAssetAtPath($"{path}/{attribute}.asset", typeof(SO_AttributeData)) != null) continue;
 
             var asset = ScriptableObject.CreateInstance<SO_AttributeData>();
-            asset.type = attribute;
+            asset.type = attribute.ToString();
+
+            AssetDatabase.CreateAsset(
+                asset,
+                $"{path}/{attribute}.asset"
+            );
+        }
+        path = $"{AttributeFolder}/SkillAttributes";
+        foreach (CharacterAttributeName attribute in Enum.GetValues(typeof(SkillAttributeName)))
+        {
+            if (AssetDatabase.LoadAssetAtPath($"{path}/{attribute}.asset", typeof(SO_AttributeData)) != null) continue;
+
+            var asset = ScriptableObject.CreateInstance<SO_AttributeData>();
+            asset.type = attribute.ToString();
 
             AssetDatabase.CreateAsset(
                 asset,
@@ -134,6 +147,7 @@ public enum CharacterAttributeName
     ResourceCost,
     OutgoingDamage,
     DebuffDuration,
+    ChanceModifier,
 }
 
 public enum ResourceAttributeName

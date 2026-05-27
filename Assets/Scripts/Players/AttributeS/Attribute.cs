@@ -57,6 +57,11 @@ public class Attribute
         _baseValue = _value; 
     }
 
+    public static implicit operator float (Attribute attribute)
+    {
+        return attribute.GetValue();
+    }
+
     public void AddModifier(AttributeModifier modifier)
     {
         _modifiers.Add(modifier);
