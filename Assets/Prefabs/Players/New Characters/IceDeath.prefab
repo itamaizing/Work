@@ -7713,7 +7713,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.size
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.size
@@ -7911,6 +7911,14 @@ PrefabInstance:
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[2]'
       value: 
       objectReference: {fileID: 1090044804548443068}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[3]'
+      value: 
+      objectReference: {fileID: 1830146359541469611}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[4]'
+      value: 
+      objectReference: {fileID: 5420442362572064916}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.data[0]'
       value: 
@@ -8561,6 +8569,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1090044804548443068}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1830146359541469611}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5420442362572064916}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3083348233968490285}
@@ -11397,7 +11411,7 @@ MonoBehaviour:
       30 \u0435\u0434\u0438\u043D\u0438\u0446 \u043E\u0431\u043D\u043E\u0432\u043B\u044F\u0435\u0442\u0441\u044F  "
     _stateInfos: []
     IsOpen: 0
-    Description: " \u0413\u043B\u0443\u0431\u043E\u043A\u043E\u0435 \u043E\u043A\u043E\u0447\u0435\u043D\u0435\u043D\u0438\u0435 "
+    Description: "\u0413\u043B\u0443\u0431\u043E\u043A\u0430\u044F \u0437\u0430\u043C\u043E\u0440\u043E\u0437\u043A\u0430"
     Icon: {fileID: 5970624007284352443, guid: 7418fdb7c020d2144b5470f7be425271, type: 3}
     Group: 0
     Row: 0
@@ -11544,6 +11558,56 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 4374618947117916461}
   ninjaResources: {fileID: 5945422429078664588}
+--- !u!114 &1830146359541469611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ff4173159f717048affb6e8686fb58f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeathTalent_4
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u043E\u0441\u043B\u0435 \u0441\u0443\u043C\u0430\u0440\u043D\u043E\u0433\u043E
+      \u043D\u0430\u043D\u0435\u0441\u0435\u043D\u0438\u044F 30 \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E
+      \u0443\u0440\u043E\u043D\u0430 \xAB\u0444\u0440\u043E\u0441\u0442 \u0434\u0435\u0437\u043E\u043C\xBB
+      \u0438\u043B\u0438 \xAB\u0442\u0440\u0443\u043F\u043E\u043C\xBB \u043D\u0430\u043A\u0430\u043F\u043B\u0438\u0432\u0430\u0435\u0442\u0441\u044F
+      \u0437\u0430\u0440\u044F\u0434 \u0441\u043F\u0438\u0440\u0430\u043B\u044C \u0441\u043C\u0435\u0440\u0442\u0438"
+    _stateInfos: []
+    IsOpen: 0
+    Description: " \u0427\u0430\u0441\u0442\u0438\u0446\u0430 \u0441\u043C\u0435\u0440\u0442\u0438"
+    Icon: {fileID: -2058098725262482123, guid: 7cdd14b828e4dea4483a9afc0eda5fb9, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 4374618947117916461}
+  _deathSpiral: {fileID: 5605713643324713456}
+  _ability: {fileID: 4220410774128686972}
+--- !u!114 &5420442362572064916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1c76e9cb6bb0db489a5b13b7b2eeb6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeathTalent_5
+  _data:
+    _descriptionsForInfoPanel: []
+    _stateInfos: []
+    IsOpen: 0
+    Description: '-'
+    Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 4374618947117916461}
+  _ninjaResources: {fileID: 5945422429078664588}
 --- !u!114 &3083348233968490285
 MonoBehaviour:
   m_ObjectHideFlags: 0
