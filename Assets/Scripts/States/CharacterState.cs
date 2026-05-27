@@ -635,11 +635,11 @@ public class CharacterState : NetworkBehaviour
 			{
 				if (personWhoShooted.TryGetComponent<Character>(out var character))
 				{
-					_currentStates[_currentStates.Count - 1].TryApply(this, duration, damageToExit, character, skillName);
+					_currentStates[i].TryApply(this, duration, damageToExit, character, skillName);
 				}
 				else
 				{
-					_currentStates[_currentStates.Count - 1].TryApply(this, duration, damageToExit, null, skillName);
+					_currentStates[i].TryApply(this, duration, damageToExit, null, skillName);
 				}
 				//_currentStates[i].TryApply(this, duration, damageToExit, character, skillName);
 
@@ -657,6 +657,7 @@ public class CharacterState : NetworkBehaviour
 					{
 						timeForIcon = _currentStates[i].RemainingDuration > 0f ? _currentStates[i].RemainingDuration : duration;
 					}
+
 					_stateIcons.ActivateIco(state, timeForIcon, 1, canStack, newMaxStack);
 
 					MoveStateToEnd(i);

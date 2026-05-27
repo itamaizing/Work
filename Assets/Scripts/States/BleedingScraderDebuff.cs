@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BleedingScraderDebuff : AbstractCharacterState
+public class BleedingScraderDebuff : RefreshingState
 {
     private Character _target;
 

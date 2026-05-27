@@ -240,7 +240,6 @@ public class ClawStrike : Skill
         Debug.Log($"_totalChanceApplyBleeding: {_totalChanceApplyBleeding}");
 
         float rand = UnityEngine.Random.Range(RandomChanceMin, RandomChanceMax);
-
         if (rand <= _totalChanceApplyBleeding) CmdAddBleeding(target);
 
         _jumpWithChelicera.IsCheliceraStrikeCast = false;
