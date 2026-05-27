@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8548505a2c5104980a6fa13739ca3d, type: 3}
   m_Name: DeathSpiral
   m_EditorClassIdentifier: 
-  _name: "\u0421\u043C\u0435\u0440\u0442\u0435\u043B\u044C\u043D\u0430\u044F \u0441\u043F\u0438\u0440\u0430\u043B\u044C"
+  _name: "\u0427\u0430\u0441\u0442\u0438\u0446\u0430 \u0441\u043C\u0435\u0440\u0442\u0438"
   _description: 
-  _icon: {fileID: 21300000, guid: 680d27ceee8f74048b436184fe24db69, type: 3}
+  _state: 
+  _descriptionState: 
+  _counter: 
+  _icon: {fileID: -2058098725262482123, guid: 7cdd14b828e4dea4483a9afc0eda5fb9, type: 3}

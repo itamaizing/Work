@@ -9225,6 +9225,8 @@ MonoBehaviour:
   _seriesOfStrikes: {fileID: 3083348233968490285}
   _spawnComponent: {fileID: 8420650248147052650}
   _plagueAbsorption: {fileID: 1352912860454630216}
+  _damageTracker: {fileID: 8829133113218603211}
+  _damageToCharge: 30
 --- !u!114 &1352912860454630216
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11644,3 +11646,14 @@ MonoBehaviour:
   character: {fileID: 4374618947117916461}
   _deathSpiral: {fileID: 5605713643324713456}
   _ability: {fileID: 4220410774128686972}
+--- !u!114 &8829133113218603211 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 582667559171038809, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+  m_PrefabInstance: {fileID: 8255499196023441042}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 465973236533830398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f9c63c6a7dd64748ac13474f5a6e770, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

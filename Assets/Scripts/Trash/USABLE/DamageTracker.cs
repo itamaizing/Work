@@ -17,11 +17,6 @@ public class DamageTracker : NetworkBehaviour
     public event System.Action<Damage, GameObject> OnDamageTracked;
     public event System.Action<Heal> OnHealTracked;
 
-    [SerializeField] private float _damageToCharge = 30f;
-
-    private float _currentAccumulatedDamage;
-    private DamageTracker _damageTracker;
-
     public void AddDamage(Damage damage, GameObject targetObject, bool isServerRequest = false)
     {
         if (!isServerRequest) CmdAddDamage(damage, targetObject);

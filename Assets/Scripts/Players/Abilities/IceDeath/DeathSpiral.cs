@@ -12,7 +12,10 @@ public class DeathSpiral : Skill
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 	[SerializeField] private SpawnComponent _spawnComponent;
 	[SerializeField] private PlagueAbsorption _plagueAbsorption;
+	[SerializeField] private DamageTracker _damageTracker;
+	[SerializeField] private float _damageToCharge = 30f;
 
+	private float _currentAccumulatedDamage;
 	private Heal _heal;
 	private float _timer = 1f;
 	private Vector3 _mousePos = Vector3.positiveInfinity;
@@ -34,6 +37,11 @@ public class DeathSpiral : Skill
 
     protected override int AnimTriggerCast => 0;
 
+	private void Start()
+	{
+		if (_damageTracker != null) _damageTracker.OnDamageTracked += TrackDamage;
+	}
+
 	private void Update()
 	{
 		Timer();
@@ -49,7 +57,12 @@ public class DeathSpiral : Skill
 		Chargers = 0;
 	}
 
-    public override void LoadTargetData(TargetInfo targetInfo)
+	private void OnDestroy()
+	{
+		if (_damageTracker != null) _damageTracker.OnDamageTracked -= TrackDamage;
+	}
+
+	public override void LoadTargetData(TargetInfo targetInfo)
     {
         Debug.LogError("DataError");
     }
@@ -283,7 +296,8 @@ public class DeathSpiral : Skill
 		{
 			Chargers = Chargers + 1;
 		}
-		//Debug.Log(Chargers + " curNum " + _maxCharges + " Max");
+
+		Debug.Log(Chargers + " curNum " + _maxCharges + " Max");
 	}
 
 	private void Timer()
@@ -296,6 +310,27 @@ public class DeathSpiral : Skill
 			_firstShot = true;
 			_inTheRow = false;
 			_timer = 1; 
+		}
+	}
+
+	private void TrackDamage(Damage damage, GameObject target)
+	{
+		if (target == null)	return;
+		if (damage.Type != DamageType.Physical)	return;
+		if (damage.SourceSkill == null) return;
+
+		string skillName = damage.SourceSkill.Name;
+
+		if (skillName != "FrostDeath" && skillName != "Corpse") return;
+
+		_currentAccumulatedDamage += damage.Value;
+
+		while (_currentAccumulatedDamage >= _damageToCharge)
+		{
+			_currentAccumulatedDamage -= _damageToCharge;
+			AddCharge();
+
+			Debug.Log($"[DeathSpiral] Charge Added. Current Charges: {Chargers}");
 		}
 	}
 
