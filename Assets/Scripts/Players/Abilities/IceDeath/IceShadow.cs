@@ -276,36 +276,38 @@ public class IceShadow : Skill
 
 	protected override bool TryPayCost(List<SkillResourceCost> skillEnergyCosts, bool startCooldown = true)
 	{
-		if (IsHaveResourceOnSkill)
+		if (!IsHaveResourceOnSkill)
+			return false;
+
+		foreach (var skillCost in skillEnergyCosts)
 		{
-			if (_evaded && _talentEvade)
+			if (_evaded &&
+				_talentEvade &&
+				skillCost.type == ResourceType.Rune)
 			{
-				/*foreach (var skillCost in _skillEnergyCosts)
-				{
-					var resource = _hero.Resources.First(r => r.Type == skillCost.type);
-					resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.value));
-				}*/
-				_evaded = false;
-			}
-			else
-			{
-				foreach (var skillCost in _skillEnergyCosts)
-				{
-					var resource = _hero.Resources[skillCost.type];
-					resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.value));
-				}
-				_evaded = false;
+				continue;
 			}
 
-			if (startCooldown)
-			{
-				Cooldown.SetIncreased(Cooldown.CooldownTime, shouldModify: false);
-			}
+			var resource = _hero.Resources[skillCost.type];
 
-			TryUseCharge();
-			return true;
+			resource.CmdUse(
+				Buff.ManaCost.GetBuffedValue(skillCost.value)
+			);
 		}
-		else return false;
+
+		_evaded = false;
+
+		if (startCooldown)
+		{
+			Cooldown.SetIncreased(
+				Cooldown.CooldownTime,
+				shouldModify: false
+			);
+		}
+
+		TryUseCharge();
+
+		return true;
 	}
 }
 
