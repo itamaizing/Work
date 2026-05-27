@@ -27824,7 +27824,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneId: 0
-  _assetId: 1522606611
+  _assetId: 2963495386
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
@@ -28530,9 +28530,14 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _firework: {fileID: 3150633468305956490}
   _damageRangeMin: -2
   _damageRangeMax: 1
+  _damageTickRate: 0.1
 --- !u!114 &4402813572123645427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28627,6 +28632,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _shieldPref: {fileID: 1158249924082485831, guid: 13647bb6f83d1b34c8c511be314fb9d3, type: 3}
   _shieldValue: 100
   _shieldDuration: 2
@@ -28732,9 +28741,14 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _deleyTelekines: 0.5
   _amountOfLift: 1.5
   _radiusEnemy: {fileID: 3441613440083509784}
+  _secondClickWindow: 1
 --- !u!114 &4651608391275017639
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28823,6 +28837,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _particle: {fileID: 3994345256487826021}
   _pushRange: 1
   _pushDuration: 0.33
@@ -28921,6 +28939,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _lineRenderer: {fileID: 3792777773710482975}
   _fisuraPref: {fileID: 3452147409339536588, guid: 68a5df5d1ae4ea54486b316ec8d2a89c, type: 3}
   _fisuraDuration: 6
@@ -29013,6 +29035,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
 --- !u!114 &6541281367918590680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29101,6 +29127,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _agent: {fileID: 0}
   _particlePref: {fileID: 8634428716550452945, guid: 7291e60055d363e4f8faae9c7d00d8b0, type: 3}
   _debuffChance: 15
@@ -29210,6 +29240,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
 --- !u!114 &483165492512868837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29304,6 +29338,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   duration: 2
 --- !u!114 &-6863981154326105301
 MonoBehaviour:
@@ -29399,6 +29437,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _particlePref: {fileID: 8634428716550452945, guid: 7291e60055d363e4f8faae9c7d00d8b0, type: 3}
   _beamPrefab: {fileID: 6286129620195013125, guid: 6c796b5dfb94dbb468a1ff41196448a3, type: 3}
   _debuffChance: 100
@@ -29500,6 +29542,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _particlePref: {fileID: 0}
   _schoolSolvent: {fileID: 8795641180420630933}
 --- !u!114 &4401943882256093312
@@ -29596,6 +29642,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _lineRenderer: {fileID: 4073253261590549315}
   _quicksandTile: {fileID: 7163465442160790319, guid: 230941d2d9516a94ba4549647e2156c6, type: 3}
   _quicksandDuration: 6
@@ -29687,6 +29737,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _particle: {fileID: 5826002358924147001}
   _pushRange: 3
   _pushDuration: 0.2
@@ -29786,6 +29840,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
 --- !u!114 &3127105790014565672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29895,6 +29953,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _meshTranformation: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
   _debuffDuration: 6
 --- !u!114 &4358863268785994334
@@ -29991,6 +30053,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _playerRenderers:
   - {fileID: 3976331384424644822}
   - {fileID: 6145141374176819678}
@@ -30119,6 +30185,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _buffDuration: 3
   _chainBreakTime: 2
   _invisDamageMultiplier: 2
@@ -30216,6 +30286,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _stoneVFX: {fileID: 3475698140105260331}
   _aoeRadius: 2
 --- !u!114 &8020773605070885895
@@ -30306,6 +30380,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _snapshotInterval: 0.1
   _rewindTime: 3
 --- !u!114 &4909088627474570662
@@ -30402,6 +30480,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _immortalityTime: 4
 --- !u!114 &7485692047686332734
 MonoBehaviour:
@@ -30497,6 +30579,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _whirlpoolTilePrefab: {fileID: 3817491765434079413, guid: c8368645c4192b2478d0f52dc9656d75, type: 3}
   _duration: 5
   _whirlRadius: 6
@@ -30597,6 +30683,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _projectile: {fileID: -7871612326811465604, guid: 3f48633abc1849a49a5ed18cb8f65a33, type: 3}
   _stunDuration: 4.5
   _burnDuration: 5
@@ -30695,6 +30785,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _counterSpell: {fileID: 8856192836074503412}
 --- !u!114 &1141373627185781475
 MonoBehaviour:
@@ -30784,6 +30878,10 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   _agent: {fileID: 3438971125766708576}
   _stopDistance: 0.5
 --- !u!114 &-1162350683604376873
