@@ -68,6 +68,33 @@ public class CountTalentsOpenCondition : OpenCondition
 }
 
 [Serializable]
+public class CountPointsCondition : OpenCondition
+{
+    public int count;
+    [SerializeField] private TalentSystem talentSystem;
+
+    public override string ConditionDescription()
+    {
+        _conditionDescription = $"Add {count} points to other talents";
+        return _conditionDescription;
+    }
+
+    protected override bool CanOpenMethod()
+    {
+        if (talentSystem == null) return true;
+        int countTemp = 0;
+        foreach (var talent in talentSystem.ActiveTalents)
+        {
+            countTemp += talent.Data.Level;
+        }
+
+        if (countTemp >= count)
+            return true;
+        return false;
+    }
+}
+
+[Serializable]
 public class EmptyCondition : OpenCondition
 {
     protected override bool CanOpenMethod()

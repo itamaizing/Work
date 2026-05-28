@@ -11015,23 +11015,25 @@ MonoBehaviour:
     _stateInfos: []
     IsOpen: 1
     Description: "\u0412\u043E\u0437\u043C\u0435\u0437\u0434\u0438\u0435 \u0441\u0432\u0435\u0442\u0430"
-    ConditionDescription: 
+    ConditionDescription: 'Open 5 talents '
     Icon: {fileID: 21300000, guid: e1eafea04aee5fa44b72a54b898c488c, type: 3}
     Group: 0
     Row: 0
     Level: 0
     MaxLvl: 0
   OpenCondition:
-    rid: 78937655467049073
+    rid: 78937885809311840
   character: {fileID: 4534754468497973439}
   _skillManager: {fileID: 4092227064955680494}
   _retributionLight: {fileID: 2384888892488266055}
   references:
     version: 2
     RefIds:
-    - rid: 78937655467049073
-      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
-      data: 
+    - rid: 78937885809311840
+      type: {class: CountTalentsOpenCondition, ns: , asm: Assembly-CSharp}
+      data:
+        count: 5
+        talentSystem: {fileID: 2475256402813157613}
 --- !u!114 &1440635593067955534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11141,22 +11143,22 @@ MonoBehaviour:
     _stateInfos: []
     IsOpen: 0
     Description: "\u0418\u0437\u043B\u0443\u0447\u0435\u043D\u0438\u0435 \u0441\u0432\u0435\u0442\u0430"
-    ConditionDescription: 'Open 5 talents '
+    ConditionDescription: Add 5 points to other talents
     Icon: {fileID: 21300000, guid: 6ee621bc049072e49a439414e31b85e2, type: 3}
     Group: 0
     Row: 0
     Level: 0
     MaxLvl: 0
   OpenCondition:
-    rid: 78937885809311831
+    rid: 78937885809311839
   character: {fileID: 4534754468497973439}
   _skillManager: {fileID: 4092227064955680494}
   _radianceOfLight: {fileID: 8095898515459106270}
   references:
     version: 2
     RefIds:
-    - rid: 78937885809311831
-      type: {class: CountTalentsOpenCondition, ns: , asm: Assembly-CSharp}
+    - rid: 78937885809311839
+      type: {class: CountPointsCondition, ns: , asm: Assembly-CSharp}
       data:
         count: 5
         talentSystem: {fileID: 2475256402813157613}
