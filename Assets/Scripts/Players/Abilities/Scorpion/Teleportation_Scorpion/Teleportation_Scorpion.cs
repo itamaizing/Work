@@ -11,8 +11,8 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     //[SerializeField] private VisualRender _visualRender;
     [SerializeField] private Character _playerLinks;
     [SerializeField] private DrawCircle _drawCircleSelf;
-    [SerializeField] private int _baseManaCost;
     [SerializeField] private int _manaCostPerTile = 5;
+    [SerializeField] private int _baseCost = 20;
     [SerializeField] private LayerMask _layerMask;
     [SerializeField] private float _offset = 0.5f;
 
@@ -55,7 +55,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
             }
 
-            return mana.CurrentValue >= _baseManaCost;
+            return mana.CurrentValue >= Cost.BaseCost;
         }
     }
 
@@ -167,7 +167,11 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     private int GetCurrentManaCost(float distance)
     {
         int dist = Mathf.CeilToInt(distance);
-        int baseCost = _baseManaCost + dist * _manaCostPerTile;
+        if ((int)Cost.BaseCost == 0)
+        {
+            return 0;
+        }
+        int baseCost = (int)Cost.BaseCost + dist * _manaCostPerTile;
 
         return baseCost;
     }
@@ -226,10 +230,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
         float distance = Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position);
         int manaToSpend = GetCurrentManaCost(distance);
 
-        if (manaToSpend > _hero.Resources[ResourceType.Energy].CurrentValue)
-            yield break;
-
-        _skillEnergyCosts[0].value = manaToSpend;
+        Cost.BaseCost = manaToSpend;
 
         TargetInfo targetInfo = new();
         targetInfo.AddTarget(Targeting.GetTarget()?.Character);
@@ -258,8 +259,6 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
             passive?.ActivateEnergyFreeAfterTeleport();
         }
-
-        _skillEnergyCosts[0].value = _baseManaCost;
         yield return null;
     }
 
@@ -267,6 +266,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     {
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();
+        Cost.BaseCost = _baseCost;
     }
 
     [Command]

@@ -268,6 +268,11 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
         Hero.Move.SetCanMove(true);
         CmdDestroyFireBreath();
     }
+    
+    protected override void CommitUse()
+    {
+        UseCooldownOrCharges();
+    }
 
     private void TrySpendEnergy(float elapsedTime)
     {
@@ -282,9 +287,11 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
         {
             float energyToSpend = blocksToSpend * _energyCostPerPercent;
 
+            Cost.TryPayMandatory();
+            
             if (_hero.Resources.TryGetValue(ResourceType.Energy, out var energyResource))
             {
-                energyResource.CmdUse(energyToSpend);
+                //energyResource.CmdUse(energyToSpend);
                 energyResource.CmdAddRegenModifier(energyToSpend,2,isFast:false);
             }
 

@@ -386754,6 +386754,7 @@ MonoBehaviour:
   m_MaxX: 64
   m_MinY: -64
   m_MaxY: 64
+  _limiter: {fileID: 8962416953741330646}
   Target: {fileID: 0}
   moveSpeed: 10
   fastMoveSpeed: 30

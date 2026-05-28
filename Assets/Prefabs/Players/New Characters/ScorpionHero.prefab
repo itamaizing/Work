@@ -8310,7 +8310,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
-      value: 20
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[0]'
@@ -8392,6 +8392,10 @@ PrefabInstance:
       propertyPath: '_skills.Array.data[19]'
       value: 
       objectReference: {fileID: 441611718746620835}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_skills.Array.data[20]'
+      value: 
+      objectReference: {fileID: 5358761953826108934}
     - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: materialsCharacter.Array.size
       value: 4
@@ -8650,7 +8654,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.size
-      value: 13
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.size
@@ -8820,6 +8824,10 @@ PrefabInstance:
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[12]'
       value: 
       objectReference: {fileID: 2565204186795419702}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[13]'
+      value: 
+      objectReference: {fileID: 1833124727211244140}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[10]'
       value: 
@@ -9326,6 +9334,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 441611718746620835}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5358761953826108934}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3359901628808772774}
@@ -9488,6 +9499,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6846782598137718682}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1833124727211244140}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!1 &1049065473536513494 stripped
 GameObject:
@@ -11075,6 +11089,39 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 5458554383432203635}
+--- !u!114 &1833124727211244140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049065473536513494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a6b22c1df6c0434b9cdc014e95d12c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HellTeleportTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u0442\u0435\u043B\u0435\u043F\u043E\u0440\u0442\u0438\u0440\u0443\u0435\u0442
+      \u0441\u0435\u0431\u044F \u0438 \u0446\u0435\u043B\u044C \u043D\u0430 \u0434\u0440\u0443\u0433\u0443\u044E
+      \u043A\u0430\u0440\u0442\u0443 - \u043F\u0440\u0435\u0438\u0441\u043F\u043E\u0434\u043D\u044E
+      \u043D\u0430 4 \u0441\u0435\u043A\u0443\u043D\u0434\u044B, \u0432 \u043F\u0440\u0435\u0438\u0441\u043F\u043E\u0434\u043D\u0435\u0435
+      \u0443 \u0441\u043A\u043E\u0440\u043F\u0438\u043E\u043D\u0430 \u043D\u0435
+      \u0437\u0430\u0442\u0440\u0430\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
+      \u044D\u043D\u0435\u0440\u0433\u0438\u044F \u043D\u0430 \u043C\u0430\u0433\u0438\u044E
+      \u043E\u0433\u043D\u044F, \u0446\u0435\u0440\u0435\u0437 4 \u0441\u0435\u043A\u0443\u043D\u0434\u044B
+      \u0446\u0435\u043B\u0438 \u0432\u043E\u0437\u0432\u0440\u0430\u0449\u0430\u044E\u0442\u0441\u044F
+      \u043D\u0430 \u043C\u0435\u0441\u0442\u0430 \u043E\u0442\u043A\u0443\u0434\u0430
+      \u0431\u044B\u043B\u0438 \u0442\u0435\u043B\u0435\u043F\u043E\u0440\u0442\u0438\u0440\u043E\u0432\u0430\u043D\u044B."
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u0422\u0435\u043B\u0435\u043F\u043E\u0440\u0442\u0430\u0446\u0438\u044F
+      \u0432 \u043F\u0440\u0435\u0438\u0441\u043F\u043E\u0434\u043D\u044E"
+    Icon: {fileID: 21300000, guid: 97a313d2d87bc874f8055ee747725d6f, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 5458554383432203635}
 --- !u!114 &1402913355469849604 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1629212415153807048, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -11529,8 +11576,14 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: dfeae01f5016d594abbb890b8c058c58, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 0
-    _costs: []
+    _base: 1
+    _costs:
+    - nameToShow: 1 Energy - Mandatory mod
+      type: 2
+      value: 1
+      costType: 0
+      shouldModify: 1
+      showInDescription: 0
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -11642,15 +11695,15 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 4ac214b92b88f1f43b4b3f39e43659fd, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 0
-    _costs: []
-  _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
+    _base: 20
+    _costs:
+    - nameToShow: 20 Energy - Mandatory mod desc
+      type: 2
+      value: 20
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
+  _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -11722,8 +11775,8 @@ MonoBehaviour:
     _activeClip: 0
   _playerLinks: {fileID: 5458554383432203635}
   _drawCircleSelf: {fileID: 1402913355469849604}
-  _baseManaCost: 20
   _manaCostPerTile: 5
+  _baseCost: 20
   _layerMask:
     serializedVersion: 2
     m_Bits: 896
@@ -12305,19 +12358,13 @@ MonoBehaviour:
   _costComponent:
     _base: 10
     _costs:
-    - nameToShow: 10 Energy - Mandatory
+    - nameToShow: 10 Energy - Mandatory mod
       type: 2
       value: 10
       costType: 0
-      shouldModify: 0
+      shouldModify: 1
       showInDescription: 0
-  _skillEnergyCosts:
-  - nameToShow: 10 Energy - Mandatory
-    type: 2
-    value: 10
-    costType: 0
-    shouldModify: 0
-    showInDescription: 0
+  _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -12429,8 +12476,14 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: eb168817ddadecd48a11f2d56e42fed9, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 0
-    _costs: []
+    _base: 1
+    _costs:
+    - nameToShow: 1 Energy - Mandatory mod
+      type: 2
+      value: 1
+      costType: 0
+      shouldModify: 1
+      showInDescription: 0
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -13317,6 +13370,113 @@ MonoBehaviour:
     _prepareAnimations: []
     _castAnimations: []
     _activeClip: 0
+--- !u!114 &5358761953826108934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8143091671269686944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f4a843ad4708ae43b31081995187151, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HellTeleportSkill
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 1
+  _isSkillActive: 0
+  _abilityInfo: {fileID: 11400000, guid: 83897f82a7657a64d8a70ed006846585, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 50
+    _costs:
+    - nameToShow: 50 Energy - Mandatory mod
+      type: 2
+      value: 50
+      costType: 0
+      shouldModify: 1
+      showInDescription: 0
+  _skillEnergyCosts:
+  - nameToShow: 50 Energy - Mandatory mod
+    type: 2
+    value: 50
+    costType: 0
+    shouldModify: 1
+    showInDescription: 0
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
+  _castDeley: 0
+  _damageValue: 0
+  _infoComponent:
+    _school: 2
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+  _targetingComponent:
+    type: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: 5
+    _outOfRangeBehaviour: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _chargeComponent:
+    _usesCharges: 1
+    _isComboPart: 0
+    _cooldownType: 2
+    _maxCharges: 1
+    _baseCooldown: 0
+    affectedByCDR: 0
+  _isUseCharges: 1
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 1
+  _chargeCooldown: 0
+  _areaComponent:
+    _radius: 1.1
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
+  _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 1
+    _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
+  _hellZonePrefab: {fileID: 212777845320910971, guid: 7a16bf7a430ddb444a53f1aabf8e1b29, type: 3}
+  _duration: 4
+  _regenSlowMultiplier: 2
 --- !u!4 &8811787553151181850 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

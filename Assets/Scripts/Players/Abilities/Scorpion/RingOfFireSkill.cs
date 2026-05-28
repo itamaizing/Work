@@ -78,6 +78,11 @@ public class RingOfFireSkill : Skill,IFireComboParticipatingSkill
         _ringOfFireAura.ActivateAura(false);
     }
 
+    protected override void CommitUse()
+    {
+        UseCooldownOrCharges();
+    }
+
     protected override void ClearData() { }
 
     public override void LoadTargetData(TargetInfo targetInfo) { }

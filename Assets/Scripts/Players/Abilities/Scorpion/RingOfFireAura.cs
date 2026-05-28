@@ -100,7 +100,7 @@ public class RingOfFireAura : AuraStateHandler
                 yield break;
             }
 
-            _energy.CmdUse(1f);
+            _fromSkill.Cost.TryPayMandatory();
             _energy.CmdAddRegenModifier(1f,2,isFast:false);
 
             foreach (var target in _currentTargets.ToArray())
