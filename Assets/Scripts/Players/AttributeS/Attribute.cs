@@ -13,7 +13,7 @@ public class Attribute
     [SerializeField] private List<AttributeModifier> _modifiers = new();
 
     private bool _isActual = false;
-    private float _flat = 0, _percent = 1, _multiplier = 1, _menuFlat = 0;
+    private float _flat = 0, _percent = 1, _multiplier = 1;
 
     #region Properties
     public string Name => _name;
@@ -51,9 +51,9 @@ public class Attribute
     }
     #endregion Properties
     //public Attribute(CharacterAttributeName name, float _value=0)
-    public Attribute(float _value=0)
+    public Attribute(string name, float _value=0)
     {
-        //Name = name;
+        _name = name;
         _baseValue = _value; 
     }
 
@@ -113,9 +113,6 @@ public class Attribute
                 case ModifierType.Multiplier:
                     multiplier *= (1 + modifier.Value);
                     break;
-                case ModifierType.MenuFlat:
-                    menuFlat += modifier.Value;
-                    break;
                 default:
                     break;
             }
@@ -123,7 +120,6 @@ public class Attribute
         _flat = flat;
         _percent = percent;
         _multiplier = multiplier;
-        _menuFlat = menuFlat;
     }
 
     public float GetValue()
@@ -137,7 +133,7 @@ public class Attribute
     public float CalculateFor(float value)
     {
         RecalculateMultipliers();
-        float final = (value + _flat + _menuFlat) * (1 + _percent) * _multiplier;
+        float final = (value + _flat) * (1 + _percent) * _multiplier;
         return final;
     }
 
@@ -186,7 +182,6 @@ public class AttributeModifier
 public enum ModifierType
 {
     Flat,
-    MenuFlat,
     Percent,
     Multiplier
 }

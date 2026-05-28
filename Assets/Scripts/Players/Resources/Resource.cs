@@ -113,8 +113,8 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         _attr_maxValue = maxValue;
         _maxValue = maxValue.GetValue();
         
-        _attr_regenDelay = new(0.5f);
-        _attr_regenPeriod = new(0.5f);
+        _attr_regenDelay = new(ResourceAttributeName.RegenDelay.ToString(), 0.5f);
+        _attr_regenPeriod = new(ResourceAttributeName.RegenPeriod.ToString(), 0.5f);
         
         _currentValue = _maxValue;
 

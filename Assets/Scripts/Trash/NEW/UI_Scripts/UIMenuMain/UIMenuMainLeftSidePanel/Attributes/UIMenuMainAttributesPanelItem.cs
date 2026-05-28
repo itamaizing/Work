@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -26,15 +27,16 @@ public class UIMenuMainAttributesPanelItem : MonoBehaviour, IPointerEnterHandler
         {
             _modifs.Add(modif);
         }
-        Debug.Log("Attribute " + _attributeValue.name + " " + _modifs.Count);
-        // _icon.sprite = _currentAttributes.Icon;
-        // Иконки атрибутов скорее всего будем доставть из ScriptableObjects. SO уже считываются и лежат в DB_Attribute
+        //Debug.Log("Attribute " + _attributeValue.name + " " + _modifs.Count);
+        Sprite attr_icon = DB_Attribute.CharacterAttributes[Enum.Parse<CharacterAttributeName>(attribute.Name)].icon;
+        if (attr_icon != null )
+            _icon.sprite = attr_icon;
         _attributeValue.ChangeKey(_modifs.Count);
     }
 
     public void Add()
     {
-        var modif = new AttributeModifier(1, ModifierType.MenuFlat);
+        var modif = new AttributeModifier(1, ModifierType.Flat, source: "AttributePoint");
         _modifs.Add(modif);
 
         SaveManager.Instance.AddAttributesModif(_currentAttributes, modif);

@@ -35,7 +35,7 @@ public class AttributeSystem : NetworkBehaviour
         mainResourceType = data.Resource.type;
         foreach (helperCharData_AttributeInfo info in data.Attributes.AttributeData)
         {
-            _attributes.TryAdd(info.type, new Attribute(info.value));
+            _attributes.TryAdd(info.type, new Attribute(info.type.ToString(), info.value));
         }
         foreach (helperCharData_ResourceInfo info in data.ExtraResources)
         {
@@ -54,7 +54,8 @@ public class AttributeSystem : NetworkBehaviour
                     baseValue = 0;
                     break;
             }
-            _attributes.TryAdd(attribute, new Attribute(baseValue));
+            Debug.Log(attribute.ToString());
+            _attributes.TryAdd(attribute, new Attribute(attribute.ToString(), baseValue));
         }
         TemporaryResourceDisplay = _resources.Values.ToList();
     }
@@ -89,7 +90,7 @@ public class ResourceAttribute
     {
         foreach (var attribute in info.attributes)
         {
-            _attributes.TryAdd(attribute.type, new Attribute(attribute.value));
+            _attributes.TryAdd(attribute.type, new Attribute(attribute.type.ToString(), attribute.value));
         }
         TemporaryAttributeDisplay = _attributes.Values.ToList();
     }

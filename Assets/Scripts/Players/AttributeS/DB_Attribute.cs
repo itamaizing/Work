@@ -113,7 +113,7 @@ public static class DB_Attribute
             );
         }
         path = $"{AttributeFolder}/SkillAttributes";
-        foreach (CharacterAttributeName attribute in Enum.GetValues(typeof(SkillAttributeName)))
+        foreach (SkillAttributeName attribute in Enum.GetValues(typeof(SkillAttributeName)))
         {
             if (AssetDatabase.LoadAssetAtPath($"{path}/{attribute}.asset", typeof(SO_AttributeData)) != null) continue;
 

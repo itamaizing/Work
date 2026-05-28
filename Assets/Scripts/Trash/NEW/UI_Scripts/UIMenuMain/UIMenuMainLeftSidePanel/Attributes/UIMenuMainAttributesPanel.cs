@@ -45,9 +45,11 @@ public class UIMenuMainAttributesPanel : MonoBehaviour
         ResetPanel();
 
         foreach (var item in _attributeSystem.Attributes.Values)
+        //foreach (var item in DB_Attribute.UpgradableAttributes)
         {
             var attribute = Instantiate(_attributeItem, _itemsParent);
             attribute.Fills(item);
+            //attribute.Fills(_attributeSystem.Attributes[item]);
             //Debug.Log(item.GetValue());
             //attribute.OnValueChange += UpdateAttributesPoints;
             attribute.OnPointerEntered += ShowDescription;

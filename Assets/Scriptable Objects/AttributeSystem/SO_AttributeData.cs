@@ -1,10 +1,24 @@
-﻿using System;
+﻿using Mirror;
+using System;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "AttributeSO", menuName = "ScriptableObjects/Attributes/Attribute")]
 [Serializable]
+#if UNITY_EDITOR
+public class SO_AttributeData : ScriptableObject, ISerializationCallbackReceiver
+{
+    public void OnAfterDeserialize() { }
+    public void OnBeforeSerialize()
+    {
+        OnValidate();
+        TypeName = type;
+    }
+    public string TypeName;
+#else
+
 public class SO_AttributeData : ScriptableObject
 {
+#endif
     [HideInInspector] public string type;
     public Sprite icon;
 
