@@ -85,9 +85,12 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
         }
         else
         {
-            Selected?.Invoke(_talent, !_talent.IsOpen, 1);
-            _lvlText.text = "1";
-            _lvlText.gameObject.SetActive(true);
+            if (_talent.condition.CanOpen)
+            {
+                Selected?.Invoke(_talent, !_talent.IsOpen, 1);
+                _lvlText.text = "1";
+                _lvlText.gameObject.SetActive(true);
+            }
         }
         activeState.isActive = _talent.IsOpen;
     }

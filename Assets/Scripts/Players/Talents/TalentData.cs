@@ -18,6 +18,8 @@ public class TalentData
 	public int Level = -1;
 	public int MaxLvl = -1;
 
+	public OpenCondition condition;
+
 	public string Name
 	{
 		get { return _name; }

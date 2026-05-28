@@ -15,6 +15,7 @@ public abstract class Talent : MonoBehaviour
 	private void OnValidate()
 	{
 		_data.Name = GetType().Name;
+		_data.condition = OpenCondition;
 		if(OpenCondition == null)
 		{
 			OpenCondition = new EmptyCondition();
