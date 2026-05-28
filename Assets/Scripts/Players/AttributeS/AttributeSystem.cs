@@ -54,7 +54,7 @@ public class AttributeSystem : NetworkBehaviour
                     baseValue = 0;
                     break;
             }
-            Debug.Log(attribute.ToString());
+            //Debug.Log(attribute.ToString());
             _attributes.TryAdd(attribute, new Attribute(attribute.ToString(), baseValue));
         }
         TemporaryResourceDisplay = _resources.Values.ToList();

@@ -93,7 +93,6 @@ public class SkillAttributes
     {
         foreach (SkillAttributeName attribute in Enum.GetValues(typeof(SkillAttributeName)))
         {
-            Debug.Log(attribute.ToString());
             _attributes.Add(attribute, new Attribute(attribute.ToString()));
         }
     }
