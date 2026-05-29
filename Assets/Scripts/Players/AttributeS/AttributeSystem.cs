@@ -7,16 +7,22 @@ using System;
 public class AttributeSystem : NetworkBehaviour
 {
     private CharacterData _data;
-
-    private Dictionary<CharacterAttributeName, Attribute> _attributes = new();    
-    public Dictionary<CharacterAttributeName, Attribute> Attributes => _attributes;
-    public Attribute this[CharacterAttributeName attribute] => _attributes[attribute];
-
     private ResourceType mainResourceType;
+
+    private Dictionary<CharacterAttributeName, Attribute> _attributes = new();
+    public Dictionary<CharacterAttributeName, Attribute> Attributes => _attributes;
+
+    private SyncDictionary<CharacterAttributeName, float> _syncAttributes = new();
+    public SyncDictionary<CharacterAttributeName, float> SyncAttributes { get => _syncAttributes; }
+
+
     private Dictionary<ResourceType, ResourceAttribute> _resources = new();
+    public Dictionary<ResourceType, ResourceAttribute> Resources => _resources;
+    private SyncDictionary<string, float> _syncResources = new();
+    public SyncDictionary<string, float> SyncResources { get => _syncResources; }
     [SerializeField] public List<ResourceAttribute> TemporaryResourceDisplay = new(); //TMP: Для простоты дебаггинга, потом убрать
 
-    public Dictionary<ResourceType, ResourceAttribute> Resources => _resources;
+    public Attribute this[CharacterAttributeName attribute] => _attributes[attribute];
     public Attribute HPMax => _resources[ResourceType.Health].Attributes[ResourceAttributeName.MaxValue];
     public Attribute HPRegen => _resources[ResourceType.Health].Attributes[ResourceAttributeName.Regen];
     public Attribute ResourceMax => _resources[mainResourceType].Attributes[ResourceAttributeName.MaxValue];
@@ -54,10 +60,51 @@ public class AttributeSystem : NetworkBehaviour
                     baseValue = 0;
                     break;
             }
-            //Debug.Log(attribute.ToString());
             _attributes.TryAdd(attribute, new Attribute(attribute.ToString(), baseValue));
         }
         TemporaryResourceDisplay = _resources.Values.ToList();
+        SubscribeToAttributeModify();
+    }
+
+    private void HandleAttributeModify(string name, float value)
+    {
+        if (!isServer)
+            return;
+
+        Debug.Log($"Attr Modify {_data.Name} {name}:{value}", gameObject);
+        if (!Enum.TryParse<CharacterAttributeName>(name, out CharacterAttributeName attr))
+            return;
+        if (_syncAttributes.ContainsKey(attr))
+            _syncAttributes[attr] = value;
+        else
+            _syncAttributes.Add(attr, value);
+    }
+
+    private void HandleResourceModify(string name, float value)
+    {
+        if (!isServer)
+            return;
+
+        Debug.Log($"Res Modify {_data.Name} {name}:{value}", gameObject); 
+        if (_syncResources.ContainsKey(name))
+            _syncResources[name] = value;
+        else
+            _syncResources.Add(name, value);
+    }
+
+    private void SubscribeToAttributeModify()
+    {
+        foreach (Attribute attribute in _attributes.Values)
+        {
+            //Debug.Log($"Subbed to SkillAttribute {attribute.Name}");
+            attribute.OnAttributeModify += HandleAttributeModify;
+        }
+
+        foreach (ResourceAttribute resource in _resources.Values)
+        {
+            //Debug.Log($"Subbed to Resource {resource.type}");
+            resource.OnResourceAttributeModify += HandleResourceModify;
+        }
     }
 
     //public void InitFromSave()
@@ -82,16 +129,27 @@ public class AttributeSystem : NetworkBehaviour
 [Serializable]
 public class ResourceAttribute
 {
+    public ResourceType type { get; private set; }
     private Dictionary<ResourceAttributeName, Attribute> _attributes = new ();
     public Dictionary<ResourceAttributeName, Attribute> Attributes => _attributes;
     [SerializeField] public List<Attribute> TemporaryAttributeDisplay = new();
 
+    public event Action<string, float> OnResourceAttributeModify;
     public ResourceAttribute(helperCharData_ResourceInfo info)
     {
+        type = info.type;
         foreach (var attribute in info.attributes)
         {
             _attributes.TryAdd(attribute.type, new Attribute(attribute.type.ToString(), attribute.value));
+            _attributes[attribute.type].OnAttributeModify += SendAttributeModify;
+            //Debug.Log($"Subbed to {type.ToString()}_{attribute.type.ToString()} modification");
         }
         TemporaryAttributeDisplay = _attributes.Values.ToList();
+    }
+
+    private void SendAttributeModify(string name, float value)
+    {
+        //Debug.Log("OnResourceAttributeModify");
+        OnResourceAttributeModify?.Invoke($"{type.ToString()}_{name}", value);
     }
 }

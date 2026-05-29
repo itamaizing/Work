@@ -88,6 +88,8 @@ public abstract class Skill : NetworkBehaviour
     protected Character _hero;
     private StatsBuff _statsBuff = new StatsBuff();
     protected SkillAttributes _skillAttributes = new SkillAttributes();
+    private readonly SyncDictionary<SkillAttributeName, float> _syncAttributes = new();
+    
     #endregion
     #region Coroutines
     //COOLDOWNS
@@ -155,6 +157,8 @@ public abstract class Skill : NetworkBehaviour
     public Character Hero { get => _hero; }
     public StatsBuff Buff => _statsBuff;
     public SkillAttributes Attributes => _skillAttributes; //TODO: Прикрепить SyncDictionary, чтобы аттрибуты синхронились по сети
+    public SyncDictionary<SkillAttributeName, float> SyncAttributes { get => _syncAttributes; }
+
     #region Scriptable Objects
     public string Name => _abilityInfo.Name;
     public string Description { get => _abilityInfo.AddingDescription; set => _abilityInfo.AddingDescription = value; }
@@ -223,6 +227,8 @@ public abstract class Skill : NetworkBehaviour
         _skillRender = render;
         _skillAttributes.Init(hero.AttributeSystem);
         InitComponents();
+        //Debug.Log($"Subbed to SkillAttributes modification");
+        _skillAttributes.OnAttributeModify += CmdSyncronizeAttributes;
     }
 
     public void InitComponents()
@@ -987,7 +993,8 @@ public abstract class Skill : NetworkBehaviour
     public void CmdCooldownStart(float duration)
     {
         _cooldownEndTime = NetworkTime.time + duration;
-        Debug.Log("CD STARTED " + duration);
+        if (duration >= 1) // чтобы не спамило ГКД/скиллы без КД
+            Debug.Log("CD STARTED " + duration);
     }
 
     [Command]
@@ -1203,6 +1210,19 @@ public abstract class Skill : NetworkBehaviour
     #endregion
 
     #region Server-side
+
+    [Command]
+    private void CmdSyncronizeAttributes(string name, float value)
+    {
+        Debug.Log($"Skill Attr Modify {Name} {name}: {value}");
+        if (!Enum.TryParse<SkillAttributeName>(name, out SkillAttributeName attr))
+            return;
+        if (_syncAttributes.Keys.Contains(attr))
+            _syncAttributes[attr] = value;
+        else
+            _syncAttributes.Add(attr, value);
+    }
+
     [ClientRpc]
     public void RpcResetSkillState()
     {

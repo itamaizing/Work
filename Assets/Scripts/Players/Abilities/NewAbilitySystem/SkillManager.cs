@@ -420,7 +420,7 @@ public class SkillManager : MonoBehaviour
         {
             if (item.IsSubjectToGlobalCooldownTime)
             {
-                item.Cooldown.SetIncreased(_globalCooldownTime, shouldModify: false);
+                item.Cooldown.SetIncreased(_globalCooldownTime, shouldModify: false, opModify: false);
             }
         }
     }
