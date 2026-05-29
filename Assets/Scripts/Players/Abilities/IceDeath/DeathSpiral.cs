@@ -14,10 +14,11 @@ public class DeathSpiral : Skill
 	[SerializeField] private PlagueAbsorption _plagueAbsorption;
 	[SerializeField] private DamageTracker _damageTracker;
 	[SerializeField] private float _damageToCharge = 30f;
-	[SerializeField] private List<GameObject> _deathSpiralCharges;
 
-
+	private const int MaxCharges = 3;
 	private float _currentAccumulatedDamage;
+	private int _chargesSpiral;
+
 	private Heal _heal;
 	private float _timer = 1f;
 	private Vector3 _mousePos = Vector3.positiveInfinity;
@@ -32,15 +33,10 @@ public class DeathSpiral : Skill
 	private bool _talentCorpseDeath = false;
 	private bool _talentCorpseBoostExplode;
 	private bool _firstShot = true;
-	private int _charges;
 
-	private const int MaxCharges = 2;
+	protected override bool IsCanCast => _chargesSpiral > 0;
 
-	public int ChargesSpiral => _charges;
-
-	protected override bool IsCanCast => _charges > 0;
-
-	protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCastDelay => 0;
 
     protected override int AnimTriggerCast => 0;
 
@@ -52,16 +48,14 @@ public class DeathSpiral : Skill
 	private void Update()
 	{
 		Timer();
-
-		if(Input.GetKeyDown(KeyCode.P))
-		{
-			AddCharge();
-		}
 	}
 
 	protected override void Awake()
 	{
-		Chargers = 0;
+		base.Awake();
+
+		_chargesSpiral = 0;
+		_maxCharges = MaxCharges;
 	}
 
 	private void OnDestroy()
@@ -297,32 +291,6 @@ public class DeathSpiral : Skill
 		Shoot(angle, _inTheRow, Targeting.GetTarget()?.Character.gameObject, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
 	}
 
-	public void AddCharge()
-	{
-		if (_charges >= MaxCharges)
-			return;
-
-		_charges++;
-
-		for (int i = 0; i < _deathSpiralCharges.Count; i++) _deathSpiralCharges[i].SetActive(i < _charges);
-
-		Charges.SendCurrentChange(_charges);
-	}
-
-	public bool UseCharge()
-	{
-		if (_charges <= 0)
-			return false;
-
-		_charges--;
-
-		for (int i = 0; i < _deathSpiralCharges.Count; i++) _deathSpiralCharges[i].SetActive(i < _charges);
-
-		Charges.SendCurrentChange(_charges);
-
-		return true;
-	}
-
 	private void Timer()
 	{
 		if (!_inTheRow) return;
@@ -338,36 +306,52 @@ public class DeathSpiral : Skill
 
 	private void TrackDamage(Damage damage, GameObject target)
 	{
-		if (target == null)	return;
-		if (damage.Type != DamageType.Physical)	return;
-		if (damage.SourceSkill == null) return;
-
-		string skillName = damage.SourceSkill.Name;
-
-		if (skillName != "FrostDeath" && skillName != "Corpse") return;
+		if (target == null) return;
+		if (damage.Type != DamageType.Physical) return;
 
 		_currentAccumulatedDamage += damage.Value;
 
 		while (_currentAccumulatedDamage >= _damageToCharge)
 		{
-			_currentAccumulatedDamage -= _damageToCharge;
-			AddCharge();
+			if (_chargesSpiral >= MaxCharges)
+			{
+				_currentAccumulatedDamage = 0;
+				return;
+			}
 
-			Debug.Log($"[DeathSpiral] Charge Added. Current Charges: {Chargers}");
+			_currentAccumulatedDamage -= _damageToCharge;
+
+			_chargesSpiral++;
+
+			Charges.SendCurrentChange(_chargesSpiral);
+
+			Debug.Log($"[DeathSpiral] Charge Added. Current Charges: {_chargesSpiral}");
 		}
+	}
+
+	public void UseSpiralCharge(int value = 1)
+	{
+		_chargesSpiral -= value;
+		_chargesSpiral = Mathf.Max(0, _chargesSpiral);
+
+		Charges.SendCurrentChange(_chargesSpiral);
 	}
 
 	protected override bool TryPayCost(List<SkillResourceCost> skillEnergyCosts, bool startCooldown = true)
 	{
-		if (_firstShot && TryUseCharge())
+		if (_firstShot && _chargesSpiral > 0)
 		{
+			UseSpiralCharge();
+
 			foreach (var skillCost in _skillEnergyCosts)
 			{
 				var resource = _hero.Resources[skillCost.type];
 				resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.value));
 			}
+
 			_firstShot = false;
 		}
+
 		return true;
 	}
 

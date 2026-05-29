@@ -1269,7 +1269,6 @@ public abstract class Skill : NetworkBehaviour
     {
         var damageable = target != null ? target.GetComponent<IDamageable>() : null;
         Character targetCharacter = target != null ? target.GetComponent<Character>() : null;
-        damage.SourceSkill = this;
 
         if (targetCharacter)
         {

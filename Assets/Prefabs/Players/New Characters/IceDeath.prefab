@@ -9167,9 +9167,9 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: -1
+    _faction: -1
+    _unitType: -1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -9191,10 +9191,10 @@ MonoBehaviour:
     _maxCharges: 3
     _baseCooldown: 0
     affectedByCDR: 0
-  _isUseCharges: 1
+  _isUseCharges: 0
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 0
-  _maxCharges: 3
+  _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
     _radius: 0
@@ -9227,6 +9227,10 @@ MonoBehaviour:
   _plagueAbsorption: {fileID: 1352912860454630216}
   _damageTracker: {fileID: 8829133113218603211}
   _damageToCharge: 30
+  _deathSpiralCharges:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &1352912860454630216
 MonoBehaviour:
   m_ObjectHideFlags: 0

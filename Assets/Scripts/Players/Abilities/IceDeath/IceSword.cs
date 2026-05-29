@@ -84,7 +84,6 @@ public class IceSword : CloseCombatSkill
 		}
 		if (_hitInTheRow > 2)
 		{
-			_deathSpiral.AddCharge();
 			_hitInTheRow = 0;
 		}
 		ApplyDamage(targetCharacter);
