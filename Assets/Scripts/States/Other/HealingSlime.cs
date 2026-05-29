@@ -15,6 +15,7 @@ public class HealingSlime : RefreshingState
     private float _timer;
     private float _remaining;
     private bool _infinite;
+    private float _addedMaxHealth;
 
     public override float RemainingDuration => _infinite ? 999f : _remaining;
 
@@ -59,6 +60,7 @@ public class HealingSlime : RefreshingState
             {
                 currentStacksCount--;
                 float removeValue = Mathf.Floor(health.MaxValue * PercentPerStack);
+                _addedMaxHealth -= removeValue;
                 health.AddMax(-removeValue);
                 characterState.StateIcons.RemoveIconCount();
             }
@@ -70,20 +72,21 @@ public class HealingSlime : RefreshingState
 
     public override bool Stack(float _)
     {
-        if (currentStacksCount < MaxStacksCount) currentStacksCount++;
         float addValue = Mathf.Floor(health.MaxValue * PercentPerStack);
+        _addedMaxHealth += addValue;
         health.AddMax(addValue);
 
         if (!_infinite) SwitchToInfinite();
+
         return true;
     }
-
+    
     public override void ExitState()
     {
         if (currentStacksCount > 0)
         {
-            float removeValue = Mathf.Floor(health.MaxValue * PercentPerStack * currentStacksCount);
-            health.AddMax(-removeValue);
+            health.AddMax(-_addedMaxHealth);
+            _addedMaxHealth = 0;
         }
 
         characterState.RemoveState(this);

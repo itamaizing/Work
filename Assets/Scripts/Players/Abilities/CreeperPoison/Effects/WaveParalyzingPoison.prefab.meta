@@ -1,12 +1,10 @@
 fileFormatVersion: 2
 <<<<<<<< HEAD:Assets/Scripts/Players/Abilities/CreeperPoison/Effects/WaveParalyzingPoison.prefab.meta
 guid: 9ac7308e589ae5749bac014d63ff8c5a
-PrefabImporter:
 ========
-guid: 61e6a5795b3147043abf436fa96e9f14
-folderAsset: yes
-DefaultImporter:
->>>>>>>> 6cf021b3 (Changes from priest, gandolarf):Assets/Scripts/Players/Abilities/Priest/NEW/Talents/TalentsInitializer.meta
+guid: 0238e11c48e9f4a43bd99f7509a0b2f0
+>>>>>>>> main:Assets/FX/Priest/BeamLight.prefab.meta
+PrefabImporter:
   externalObjects: {}
   userData: 
   assetBundleName: 

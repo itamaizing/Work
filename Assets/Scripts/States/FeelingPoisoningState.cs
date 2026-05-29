@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class FeelingPoisoningState : RefreshingState
@@ -6,7 +6,7 @@ public class FeelingPoisoningState : RefreshingState
     private const int MaxStacks = 6;
     private const float RegenPercentPerStack = 0.1f;
 
-    private Energy _energy;
+    private Resource resource;
     private float _baseRegen;
 
     public override States State => States.FeelingPoisoning;
@@ -21,20 +21,6 @@ public class FeelingPoisoningState : RefreshingState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         MaxStacksCount = MaxStacks;
-
-        _energy = character.Character.GetComponent<Energy>();
-
-        if (_energy == null)
-        {
-            Debug.LogError("FeelingPoisoningState: Energy not found");
-            return;
-        }
-
-        if (currentStacksCount == 0)
-        {
-            _baseRegen = _energy.RegenerationValue;
-        }
-
         ApplyRegenBonus();
     }
 
@@ -49,17 +35,16 @@ public class FeelingPoisoningState : RefreshingState
 
         if (currentStacksCount < MaxStacksCount)
         {
+            ApplyRegenBonus();
             currentStacksCount++;
         }
-
-        ApplyRegenBonus();
 
         return true;
     }
 
     public override void ExitState()
     {
-        RemoveRegenBonus();
+        characterState.Character.Resource.Attr_RegenValue.RemoveBySource(this, all: true);
         base.ExitState();
     }
 
@@ -72,22 +57,13 @@ public class FeelingPoisoningState : RefreshingState
             ExitState();
             return;
         }
-
-        ApplyRegenBonus();
+        characterState.Character.Resource.Attr_RegenValue.RemoveBySource(this, all: false);
     }
 
     private void ApplyRegenBonus()
     {
-        if (_energy == null) return;
-
-        float multiplier = 1f + (currentStacksCount * RegenPercentPerStack);
-        _energy.RegenerationValue = _baseRegen * multiplier;
+        characterState.Character.Resource.Attr_RegenValue.AddModifier(
+            new AttributeModifier(RegenPercentPerStack, ModifierType.Percent, source: this));
     }
 
-    private void RemoveRegenBonus()
-    {
-        if (_energy == null) return;
-
-        _energy.RegenerationValue = _baseRegen;
-    }
 }

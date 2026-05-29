@@ -18930,14 +18930,10 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 4
-    _costs: []
+    _additional: []
   _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
+  - resourceType: 1
+    resourceCost: 4
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -18953,7 +18949,6 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -18997,12 +18992,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
   _lightningStrikes: {fileID: 734640227586387152}
   _lightningMovement: {fileID: 7013613396998518356}
   _poisonBall: {fileID: 4719927588574066064}
@@ -19036,7 +19025,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _costs: []
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 1
@@ -19053,7 +19042,6 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -19097,12 +19085,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
   _coldBlood: {fileID: 4616268591970552908}
   _lightningMovement: {fileID: 7013613396998518356}
   _creeperStrike: {fileID: 6745892867125186241}
@@ -19128,14 +19110,10 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 10
-    _costs: []
+    _additional: []
   _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
+  - resourceType: 1
+    resourceCost: 10
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
@@ -19151,7 +19129,6 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
     _clickLayer: -1
     _faction: -1
     _unitType: -1
@@ -19195,12 +19172,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
   _projectile: {fileID: 6538247731923965443, guid: 482b668adc1f199488e67f043ae88aa9, type: 3}
   _player: {fileID: 2483674839823445686}
   _spawnPoint: {fileID: 6943497228995655184}
@@ -19230,7 +19201,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _costs: []
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -19247,7 +19218,6 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
     _clickLayer: -1
     _faction: -1
     _unitType: -1
@@ -19269,7 +19239,7 @@ MonoBehaviour:
     _usesCharges: 1
     _isComboPart: 0
     _cooldownType: 0
-    _maxCharges: 2
+    _maxCharges: 3
     _baseCooldown: 14
     affectedByCDR: 0
   _isUseCharges: 1
@@ -19291,12 +19261,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
   _spitPoison: {fileID: 4992365342693795224}
   _projectile: {fileID: 4167531903339531822, guid: 093409daf5f183d4493788550d4c1998, type: 3}
   _player: {fileID: 2483674839823445686}
@@ -19328,14 +19292,10 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 4
-    _costs: []
+    _additional: []
   _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
+  - resourceType: 1
+    resourceCost: 4
   _additionalSkillEnergyCosts: []
   _cooldownTime: 8
   _cooldownComponent:
@@ -19351,7 +19311,6 @@ MonoBehaviour:
     _whileMoving: 1
     _autoAttack: 0
   _targetingComponent:
-    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -19395,12 +19354,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
   _player: {fileID: 2483674839823445686}
   _creeperStrike: {fileID: 6745892867125186241}
   _poisonSlap: {fileID: 8577860281443816807}
@@ -19428,7 +19381,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 0
   _costComponent:
     _base: 0
-    _costs: []
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -19445,7 +19398,6 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -19489,12 +19441,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
   _creeperStrike: {fileID: 6745892867125186241}
   _coldBlood: {fileID: 4616268591970552908}
   _cooldown: 6
@@ -19524,7 +19470,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 0
   _costComponent:
     _base: 0
-    _costs: []
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -19541,7 +19487,6 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -19585,12 +19530,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
   _player: {fileID: 2483674839823445686}
   _coldBlood: {fileID: 4616268591970552908}
   _poisonBall: {fileID: 4719927588574066064}
@@ -19621,7 +19560,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _costs: []
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -19638,7 +19577,6 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -19682,12 +19620,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
   _player: {fileID: 2483674839823445686}
   _lightningMovement: {fileID: 7013613396998518356}
 --- !u!114 &4616268591970552908
@@ -19711,7 +19643,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _costs: []
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 8
@@ -19728,7 +19660,6 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -19772,12 +19703,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
   _creeperStrike: {fileID: 6745892867125186241}
   _reducingCooldownMultiplier: 2
 --- !u!114 &4939275121847811319
@@ -19801,7 +19726,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _costs: []
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -19818,7 +19743,6 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
     _clickLayer: -1
     _faction: -1
     _unitType: 5
@@ -19862,12 +19786,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
   _player: {fileID: 2483674839823445686}
   _creeperPoisonAura: {fileID: 2161342997938470374}
 --- !u!114 &8150686032681382611
@@ -19891,7 +19809,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _costs: []
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -19908,7 +19826,6 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -19952,12 +19869,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
   _player: {fileID: 2483674839823445686}
   _creeperStrike: {fileID: 6745892867125186241}
   _duration: 10
@@ -19982,7 +19893,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _costs: []
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -19999,7 +19910,6 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -20043,12 +19953,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
   _player: {fileID: 2483674839823445686}
   _poisonBall: {fileID: 4719927588574066064}
   _spitPoison: {fileID: 4992365342693795224}
@@ -20074,14 +19978,10 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 20
-    _costs: []
+    _additional: []
   _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
+  - resourceType: 1
+    resourceCost: 20
   _additionalSkillEnergyCosts: []
   _cooldownTime: 6
   _cooldownComponent:
@@ -20097,7 +19997,6 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -20141,12 +20040,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
   duration: 10
 --- !u!114 &1964640632880337021
 MonoBehaviour:
@@ -20169,14 +20062,10 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _costs: []
+    _additional: []
   _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
+  - resourceType: 1
+    resourceCost: 20
   _additionalSkillEnergyCosts: []
   _cooldownTime: 6
   _cooldownComponent:
@@ -20192,7 +20081,6 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -20236,12 +20124,6 @@ MonoBehaviour:
   _disactive: 1
   _earlyCooldown: 0
   maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
   _playerLinks: {fileID: 2483674839823445686}
   duration: 3
   durationErodedArmor: 6
@@ -20268,7 +20150,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _costs: []
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 6
@@ -20285,7 +20167,6 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -20329,12 +20210,6 @@ MonoBehaviour:
   _disactive: 1
   _earlyCooldown: 0
   maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
   durationWindowsBoost: 5
   blockChance: 50
 --- !u!114 &7643787431872027281
@@ -20377,7 +20252,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _costs: []
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -20394,7 +20269,6 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -20438,12 +20312,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
   _invisible: {fileID: 6857802422684928800}
   _creeperPoisonAura: {fileID: 2161342997938470374}
 --- !u!114 &5132379941379747870
@@ -20467,14 +20335,10 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _costs: []
+    _additional: []
   _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
+  - resourceType: 1
+    resourceCost: 40
   _additionalSkillEnergyCosts: []
   _cooldownTime: 24
   _cooldownComponent:
@@ -20490,7 +20354,6 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -20534,12 +20397,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
 --- !u!114 &3350435801472191630
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20561,7 +20418,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _costs: []
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -20578,7 +20435,6 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
     _clickLayer: -1
     _faction: -1
     _unitType: 5
@@ -20622,12 +20478,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
   _player: {fileID: 2483674839823445686}
   _waveDuration: 1.5
   _stepTime: 0.2
@@ -20677,7 +20527,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _costs: []
+    _additional: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 8
@@ -20694,7 +20544,6 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -20738,12 +20587,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
   _player: {fileID: 2483674839823445686}
   _projectile: {fileID: 2633956590774819317, guid: 6d4e598214ad8194197d8c3a24b69465, type: 3}
   _maxDistance: 10
@@ -20770,14 +20613,10 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _costs: []
+    _additional: []
   _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
+  - resourceType: 1
+    resourceCost: 140
   _additionalSkillEnergyCosts: []
   _cooldownTime: 24
   _cooldownComponent:
@@ -20793,7 +20632,6 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
     _clickLayer: -1
     _faction: 2
     _unitType: 1
@@ -20837,12 +20675,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
 --- !u!114 &6363943866240832142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20864,14 +20696,10 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _costs: []
+    _additional: []
   _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
+  - resourceType: 1
+    resourceCost: 20
   _additionalSkillEnergyCosts: []
   _cooldownTime: 12
   _cooldownComponent:
@@ -20887,7 +20715,6 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -20931,12 +20758,6 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
-  _tags:
-    skillType: 0
-    effect: 0
-    duration: 0
-    mobility: 0
-    control: 0
 --- !u!114 &2434123723962207148 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5590339039165547173, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -21022,7 +20843,7 @@ MonoBehaviour:
       \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C + 1000% \u043D\u0430 \u043A\u0430\u0436\u0434\u044B\u0439
       \u0443\u0434\u0430\u0440"
     _stateInfos: []
-    IsOpen: 1
+    IsOpen: 0
     Description: "\u041C\u043E\u043B\u043D\u0438\u0435\u043D\u043E\u0441\u043D\u044B\u0435
       \u0443\u0434\u0430\u0440\u044B"
     Icon: {fileID: 21300000, guid: 15a6d004456bc1c47897f234d7bc77ac, type: 3}
@@ -21098,7 +20919,7 @@ MonoBehaviour:
     _stateInfos: []
     IsOpen: 1
     Description: " \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0440\u0435\u043F\u0442\u0438\u043B\u0438\u0438"
-    Icon: {fileID: 21300000, guid: eb1e53bce0abfd940816bf6d5da4ce56, type: 3}
+    Icon: {fileID: 7595241771238511587, guid: eb1e53bce0abfd940816bf6d5da4ce56, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 2483674839823445686}
@@ -21118,7 +20939,7 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: '-'
     Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
     Group: 0
@@ -21209,7 +21030,7 @@ MonoBehaviour:
       10%, \u043A\u0430\u0436\u0434\u044B\u0439 \u0441\u0442\u0430\u043A \u044F\u0434\u0430
       \u0442\u043E\u0436\u0435 \u0441\u0447\u0438\u0442\u0430\u0435\u0442\u0441\u044F"
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0441\u0432\u043E\u044F \u0441\u0442\u0438\u0445\u0438\u044F"
     Icon: {fileID: 9134556171150595701, guid: 64973930cd9a4884b953600ae666b1ab, type: 3}
     Group: 0
@@ -21547,7 +21368,7 @@ MonoBehaviour:
       \u0438\u043B\u0438 \u043B\u0435\u0447\u0435\u043D\u0438\u0435 \u043D\u0430
       20%."
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u042D\u0444\u0444\u0435\u043A\u0442 \u0448\u0430\u0440\u0430"
     Icon: {fileID: -1558904516361034743, guid: b58f900a1dac3f241965284bed557139, type: 3}
     Group: 0
@@ -21587,7 +21408,7 @@ MonoBehaviour:
         \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u0438 \u0432\u0440\u0435\u043C\u044F
         \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F \u043E\u0431\u043D\u043E\u0432\u043B\u044F\u0435\u0442\u0441\u044F.
         \n"
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0440\u0430\u0437\u044A\u0435\u0434\u0435\u043D\u043D\u044B\u0439
       \u0434\u043E\u0441\u043F\u0435\u0445"
     Icon: {fileID: -7940820886254876669, guid: f42c89c464c0a214e9424bc9b8828b4f, type: 3}
@@ -21615,9 +21436,9 @@ MonoBehaviour:
       \"\u0412\u0437\u0440\u044B\u0432\u043D\u043E\u0433\u043E \u0449\u0430\u0440\u0430
       \u044F\u0434\u0430\" \u043D\u0430 1   "
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u042F\u0434 7"
-    Icon: {fileID: 21300000, guid: 37e2f5ff795d89441a4d306dd4f45782, type: 3}
+    Icon: {fileID: -4125687490052203788, guid: ef644501c6a48574d99b58d3c563b590, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 2483674839823445686}
@@ -21643,7 +21464,7 @@ MonoBehaviour:
       \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442\u0441\u044F
       1 \u0441\u0442\u0430\u043A \"\u044F\u0434\u0430 \u043A\u043E\u0441\u0442\u0435\u0439\"."
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u041E\u0442\u0440\u0430\u0432\u043B\u044F\u044E\u0449\u0435\u0435
       \u043E\u0431\u043B\u0430\u043A\u043E"
     Icon: {fileID: -933735038327110134, guid: 37cb6fe2522973c4f9d8f4f376aab3be, type: 3}
@@ -21749,7 +21570,7 @@ MonoBehaviour:
       \u043F\u043E\u0440\u0430\u0436\u0435\u043D\u0438\u044F 1 \u043C\u0435\u0442\u0440
       \u0432 \u0440\u0430\u0434\u0438\u0443\u0441\u0435,"
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0432\u0437\u0440\u044B\u0432 \u043E\u0431\u043B\u0430\u043A\u0430"
     Icon: {fileID: -9187347743565390613, guid: f863a16a4c731ce469496ac94ccd951f, type: 3}
     Group: 0
@@ -21784,7 +21605,7 @@ MonoBehaviour:
       \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u0438 \u0432\u0440\u0435\u043C\u044F
       \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F \u043E\u0431\u043D\u043E\u0432\u043B\u044F\u0435\u0442\u0441\u044F  "
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0447\u0443\u0432\u0441\u0442\u0432\u043E \u043E\u0442\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0439"
     Icon: {fileID: 6525149264358820603, guid: efb326e2166783443ada527b4657fe63, type: 3}
     Group: 0
@@ -21831,7 +21652,7 @@ MonoBehaviour:
         \u0432\u043E\u043B\u043D\u0430, \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C
         1 \u043C\u0435\u0442\u0440 \u0432 0.2 \u0441\u0435\u043A, \u0431\u0435\u0441\u0446\u0435\u043B\u0435\u0432\u0430\u044F
         \u0441 \u043A\u043B\u0438\u043A\u043E\u043C\n"
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0412\u043E\u043B\u043D\u0430 \u043F\u0430\u0440\u0430\u043B\u0438\u0437\u0438\u0440\u0443\u044E\u0449\u0435\u0433\u043E
       \u044F\u0434\u0430"
     Icon: {fileID: -7942494879149397082, guid: 88ed1bd6379225544b36aad09d35198b, type: 3}
@@ -21872,7 +21693,7 @@ MonoBehaviour:
       \u0431\u043B\u0438\u0436\u043D\u0435\u0433\u043E \u0431\u043E\u044F  +60% \u0434\u0430\u043B\u044C\u043D\u0435\u0433\u043E
       \u0431\u043E\u044F +100%."
     _stateInfos: []
-    IsOpen: 1
+    IsOpen: 0
     Description: "\u0424\u043E\u043A\u0443\u0441\u0438\u0440\u043E\u0432\u043A\u0430
       \u043D\u0430 \u0440\u0435\u0444\u043B\u0435\u043A\u0441\u0430\u0445 "
     Icon: {fileID: 21300000, guid: 5cd9984c9b0461848991092ddd38784e, type: 3}
@@ -21905,7 +21726,7 @@ MonoBehaviour:
       \u043F\u043E \u043E\u0434\u043D\u043E\u0439 \u0446\u0435\u043B\u0438 \u0438\u043B\u0438
       \u0443\u043A\u043B\u043E\u043D\u0435\u043D\u0438\u044F."
     _stateInfos: []
-    IsOpen: 1
+    IsOpen: 0
     Description: "\u041F\u043E\u0434\u043B\u044B\u0439 \u043F\u043B\u0435\u0432\u043E\u043A "
     Icon: {fileID: 21300000, guid: 60294cd46b0dc124693512fd643533f5, type: 3}
     Group: 0
@@ -21950,7 +21771,7 @@ MonoBehaviour:
       \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
       \u043D\u0430 30% "
     _stateInfos: []
-    IsOpen: 1
+    IsOpen: 0
     Description: 
     Icon: {fileID: 21300000, guid: 497fc8e355be5af48bb993ec3c6d117d, type: 3}
     Group: 0
@@ -22124,7 +21945,7 @@ MonoBehaviour:
       - \u0440\u0430\u043D\u044C\u0448\u0435 \u0431\u044B\u043B\u0430 \u0432\u0440\u043E\u0434\u0435
       \u0432 \u04401 "
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u043F\u0440\u043E\u0437\u0440\u0430\u0447\u043D\u044B\u0435 \u044F\u0434\u044B"
     Icon: {fileID: -1241958626550298057, guid: f877ddcc99be4ae439d43920da8a6d27, type: 3}
     Group: 0

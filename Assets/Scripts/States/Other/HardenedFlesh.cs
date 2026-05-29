@@ -16,7 +16,7 @@ public class HardenedFlesh : AbstractCharacterState
     private const int _maxStacks = 5;
 
     private float _originalDefPhysDamage;
-
+    
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;

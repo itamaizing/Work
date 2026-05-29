@@ -8,14 +8,19 @@ public class ParalyzingTentacles : SkillCreatureCarryGun
 
     protected override string AnimationTrigger => "ParalyzingTentacles";
 
-    private void OnEnable()
+    private void Start()
     {
-        if (Hero.Health != null) Hero.Health.DamageTaken += OnDamageTaken;
+        Invoke("OnDamageTakenSub", 0.5f);
     }
 
     private void OnDisable()
     {
         if (Hero.Health != null) Hero.Health.DamageTaken -= OnDamageTaken;
+    }
+
+    private void OnDamageTakenSub()
+    {
+        if (Hero.Health != null) Hero.Health.DamageTaken += OnDamageTaken;
     }
 
     private void OnDamageTaken(Damage damage, Skill skill) => TryCancel();

@@ -164,6 +164,12 @@ public class CheliceraStrike : Skill
         _jumpWithChelicera.IsJumpDone = false;
         _isClawStrike_Right = !_isClawStrike_Right;
 
+        Character currentTarget = Targeting.GetTarget()?.Targetable as Character;
+
+        JumpBackComboContext.LastTarget = currentTarget;
+        JumpBackComboContext.LastSkill = typeof(CheliceraStrike);
+        JumpBackComboContext.LastTime = Time.time;
+
         yield return null;
     }
 
@@ -213,7 +219,7 @@ public class CheliceraStrike : Skill
 
             if (_isChanceCritDamageIncrease && CheckStateForBleeding(targetCharacter)) _totalchanceCritDamage += _chanceCritDamageIncrease;
 
-            if (chanceCritValue <= _chanceCritDamageEvolutionFour) _criticalDamage = CriticalDamageDeal(Damage, chanceCritDamageValue);
+            if (chanceCritValue <= _totalchanceCritDamage) _criticalDamage = CriticalDamageDeal(Damage, chanceCritDamageValue);
         }
 
         _dealDamage = new Damage()

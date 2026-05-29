@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 using Mirror;
 
@@ -102,8 +102,8 @@ public class AmbushPoisons : Skill
         yield return new WaitForSeconds(ClearDelay);
 
         _currentStacks = 0;
-        Charges.SendCurrentChange(_currentStacks);
 
+        Charges.SendCurrentChange(_currentStacks);
         _clearRoutine = null;
     }
 

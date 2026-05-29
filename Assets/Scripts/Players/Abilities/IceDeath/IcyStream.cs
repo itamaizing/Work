@@ -5,140 +5,294 @@ using UnityEngine;
 
 public class IcyStream : Skill
 {
-	[SerializeField] private IcyStreamProjectile _projectile;
-	[SerializeField] private HeroComponent _playerLinks;
-	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
-	private bool _talent = false;
+    public struct IcyStreamState
+    {
+        public Character Target;
+        public int CurrentTick;
+        public int MaxTicks;
+    }
 
-	private Vector3 _mousePos = Vector3.positiveInfinity;
-	private Energy _energy;
-	//private Character _target = null;
-	//private RuneComponent _rune;
+    [Header("Stream Settings")]
+    [SerializeField] private float _tickInterval = 0.3f;
+    [SerializeField] private Transform _streamStartPoint;
 
-	protected override bool IsCanCast => IsCanCastCheck();
+    [Header("Visual")]
+    [SerializeField] private GameObject _icyStreamPrefab;
+
+    [SerializeField] private float _runeCost = 1f;
+    [SerializeField] private float _energyPerTick = 5f;
+
+    private Character _cachedTarget;
+    private Coroutine _streamCoroutine;
+    private GameObject _activeEffect;
+
+    private bool _isStreaming;
+    private int _currentTick;
+    private const int MaxTicks = 7;
+
+    private const float FrostEnergyCoolingBonusPerStack = 1f;
+
+    protected override bool IsCanCast => !_isStreaming && Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && HasEnoughResourcesToStart();
+
+    private bool HasEnoughResourcesToStart()
+    {
+        var energy = Hero.Resources[ResourceType.Energy];
+        var rune = Hero.Resources[ResourceType.Rune];
+
+        float minEnergy = _energyPerTick;
+
+        return energy.CurrentValue >= minEnergy && rune.CurrentValue >= _runeCost;
+    }
 
     protected override int AnimTriggerCastDelay => 0;
-
     protected override int AnimTriggerCast => 0;
 
-    private bool IsCanCastCheck()
-	{
-		if(Targeting.GetTarget()?.Character != null)
-		{
-			if(Vector3.Distance(Targeting.GetTarget().Character.transform.position, _playerLinks.transform.position) > AreaInfo.Radius)
-			{
-				return false;
-			}
-		}
-		return true;
-	}
+    public IcyStreamState CurrentState { get; private set; }
 
-	private void Start()
-	{
-        //_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
-    }
-
-    public override void LoadTargetData(TargetInfo targetInfo)
+    private void OnEnable()
     {
-        _mousePos = targetInfo.Points[0];
+        OnSkillCanceled += HandleCancel;
     }
 
-    private void Shoot()
-	{
-		Debug.Log("shot");
-		_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
-		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
-		CmdCreateProjecttile(angle);
+    private void OnDisable()
+    {
+        OnSkillCanceled -= HandleCancel;
+    }
 
-		_projectile.gameObject.SetActive(true);
-		_projectile.Init(_playerLinks, _energy.CurrentValue, _talent, this);
+    private void HandleCancel()
+    {
+        StopStream();
+    }
 
-		float usedEnergy = 0;
-		if (_energy.CurrentValue >= 40)
-		{
-			usedEnergy = 40;
-		}
-		else
-		{
-			usedEnergy = _energy.CurrentValue;
-		}
-		_energy.CmdUse(usedEnergy);
-		_seriesOfStrikes.MakeHit(null, Info.AbilityForm, 1, usedEnergy, 1);
-	}
+    public void StopStream()
+    {
+        if (_isStreaming) PayRemainingEnergy();
 
-	[Command]
-	private void CmdCreateProjecttile(float angle)
-	{
-		_projectile.gameObject.SetActive(true);
-		_projectile.Init(_playerLinks, _energy.CurrentValue, _talent, this);
+        if (_streamCoroutine != null)
+        {
+            StopCoroutine(_streamCoroutine);
+            _streamCoroutine = null;
+        }
 
-		/*IcyStreamProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, -angle, 0));
-		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
-		projectile.Init(_playerLinks, _energy.CurrentValue, _talent, this); //its talent bool, no last hit 
+        CmdDestroyIcyStreamEffect();
 
-		NetworkServer.Spawn(projectile.gameObject);*/
+        _isStreaming = false;
+    }
 
-		RpcInit(_projectile.gameObject, _energy.CurrentValue);
-	}
 
-	[ClientRpc]
-	private void RpcInit(GameObject obj, float manaValue)
-	{
-		//obj.gameObject.SetActive(true);
-		//obj.GetComponent<IcyStreamProjectile>().Init(_playerLinks, manaValue, false, this);
-	}
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    {
+        TargetInfo targetInfo = new TargetInfo();
 
-	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-	{
-		if (_energy == null)
-			_energy = (Energy)Hero.Resources[ResourceType.Energy];
-        //while (_target == null)
-        while (float.IsPositiveInfinity(_mousePos.x))
-		{
-			if (GetMouseButton)
-			{
-				_mousePos = Targeting.GetMousePoint();
-				/*if (Targeting.GetTarget() != null)
-				{
-					if (Targeting.GetTarget()?.Character != null)
-					{
-						_target = Targeting.GetTarget()?.Character;
-					}
-				}*/
-				//_mousePos = Targeting.GetMousePoint();
-			}
-			yield return null;
-		}
-		TargetInfo targetInfo = new TargetInfo();
-		targetInfo.Points.Add(_mousePos);
-		callbackDataSaved(targetInfo);
-	}
+        while (Targeting.GetTempTarget()?.Targetable == null && !_disactive)
+        {
+            if (GetMouseButton)
+            {
+                Targeting.FindTempTarget(Targeting.GetMousePoint(), 0.5f);
 
-	protected override IEnumerator CastJob()
-	{
-		Shoot();
-		yield return null;
-	}
+                var temp = Targeting.GetTempTarget()?.Targetable as Character;
 
-	protected override void ClearData()
-	{
-		Targeting.ClearTarget();
-		//_target = null;
-		StartCoroutine(TurnOff());
-		//_projectile.gameObject.SetActive(false);
-		//_projectile.Init(_playerLinks, _energy.CurrentValue, _talent, this);
-		_mousePos = Vector3.positiveInfinity;
-	}
+                if (temp != null)
+                {
+                    Targeting.SetTarget(temp);
 
-	private IEnumerator TurnOff()
-	{
-		yield return new WaitForSeconds(3);
-		_projectile.gameObject.SetActive(false);
-	}
+                    break;
+                }
+            }
 
-	public void Talent(bool value)
-	{
-		_talent = value;
-	}
+            yield return null;
+        }
+
+        var target = Targeting.GetTarget()?.Character;
+
+        if (target != null)
+        {
+            targetInfo.AddTarget(target);
+            callbackDataSaved(targetInfo);
+        }
+    }
+
+    protected override IEnumerator CastJob()
+    {
+        if (!HasEnoughResourcesToStart())
+        {
+            TryCancel(true);
+            yield break;
+        }
+
+        _cachedTarget = Targeting.GetTarget()?.Character;
+        if (_cachedTarget == null) yield break;
+
+        _isStreaming = true;
+
+        if (!Cost.TryPaySingle(_runeCost, ResourceType.Rune, shouldModify: false))
+        {
+            TryCancel(true);
+            yield break;
+        }
+
+        CmdSpawnIcyStreamEffect( _streamStartPoint.gameObject, _cachedTarget.gameObject);
+
+        _streamCoroutine = StartCoroutine(StreamRoutine());
+
+        yield return _streamCoroutine;
+
+        CmdDestroyIcyStreamEffect();
+        _isStreaming = false;
+    }
+
+    private IEnumerator StreamRoutine()
+    {
+        for (int tick = 1; tick <= MaxTicks; tick++)
+        {
+            yield return new WaitForSeconds(_tickInterval);
+
+            if (!IsStreamValid() || _cachedTarget.IsDead)
+            {
+                TryCancel(true);
+                yield break;
+            }
+
+            _currentTick = tick;
+
+            CurrentState = new IcyStreamState
+            {
+                Target = _cachedTarget,
+                CurrentTick = tick,
+                MaxTicks = MaxTicks
+            };
+
+            ApplyTick(tick);
+        }
+    }
+
+    public bool TryGetState(out IcyStreamState state)
+    {
+        if (!_isStreaming)
+        {
+            state = default;
+            return false;
+        }
+
+        state = CurrentState;
+        return true;
+    }
+
+    private bool IsStreamValid()
+    {
+        if (_cachedTarget == null) return false;
+        float distance = Vector3.Distance( _cachedTarget.transform.position, transform.position);
+
+        if (distance > AreaInfo.Radius) return false;
+        if (!Cost.TryPaySingle(_energyPerTick, ResourceType.Energy, shouldModify: false)) return false;
+
+        return true;
+    }
+
+    private void PayRemainingEnergy()
+    {
+        if (!_isStreaming) return;
+        if (_currentTick >= MaxTicks) return;
+
+        int remainingTicks = MaxTicks - _currentTick;
+        float totalEnergyToPay = remainingTicks * _energyPerTick;
+
+        if (Hero.TryGetResource(ResourceType.Energy, out var resource)) resource.CmdUse(totalEnergyToPay);
+    }
+
+    private void ApplyTick(int tickNumber)
+    {
+        if (_cachedTarget == null) return;
+        if (_cachedTarget.IsDead) return;
+
+        Damage damage = new Damage
+        {
+            Value = tickNumber,
+            Type = Info.DamageType
+        };
+
+        CmdApplyDamage(damage, _cachedTarget.gameObject);
+        CmdAddCooling(_cachedTarget);
+    }
+
+    private void ApplyCoolingWithFrostEnergyBonus(Character target)
+    {
+        bool hasFrostEnergy = target.CharacterState.CheckForState(States.FrostEnergy);
+
+        int currentStacks = target.CharacterState.CheckStateStacks(States.Cooling);
+        int stacksAfterApply = currentStacks + 1;
+
+        if (hasFrostEnergy)
+        {
+            float bonusDamage = stacksAfterApply * FrostEnergyCoolingBonusPerStack;
+
+            Damage bonus = new Damage
+            {
+                Value = bonusDamage,
+                Type = DamageType.Magical
+            };
+
+            target.Health.TryTakeDamage(ref bonus, this);
+        }
+
+        target.CharacterState.AddState(States.Cooling, 12f, 0, Hero.gameObject, Name);
+    }
+
+    [Command]
+    private void CmdSpawnIcyStreamEffect(GameObject startPoint, GameObject targetPoint)
+    {
+        if (_icyStreamPrefab == null || startPoint == null || targetPoint == null)
+            return;
+
+        GameObject effectInstance = Instantiate(_icyStreamPrefab, startPoint.transform.position, Quaternion.identity);
+
+        NetworkServer.Spawn(effectInstance);
+
+        RpcInitEffects(effectInstance, startPoint, targetPoint);
+
+        _activeEffect = effectInstance;
+    }
+
+    [Command]
+    private void CmdDestroyIcyStreamEffect()
+    {
+        if (_activeEffect != null)
+        {
+            NetworkServer.Destroy(_activeEffect);
+            _activeEffect = null;
+        }
+    }
+
+    [Command]
+    private void CmdAddCooling(Character character)
+    {
+        if (character == null) return;
+
+        ApplyCoolingWithFrostEnergyBonus(character);
+    }
+
+    [ClientRpc]
+    private void RpcInitEffects(GameObject effectGameObject, GameObject startPoint, GameObject targetPoint)
+    {
+        if (effectGameObject == null) return;
+
+        PullingHealthEffect[] effects = effectGameObject.GetComponentsInChildren<PullingHealthEffect>();
+
+        foreach (var effect in effects)
+        {
+            effect.Initialize(startPoint, targetPoint);
+            effect.Activate();
+        }
+    }
+
+    protected override void ClearData()
+    {
+        Targeting.ClearTarget();
+
+        if (_streamCoroutine != null)
+        {
+            StopCoroutine(_streamCoroutine);
+            _streamCoroutine = null;
+        }
+    }
 }

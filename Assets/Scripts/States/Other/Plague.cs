@@ -1,124 +1,60 @@
 ﻿using Mirror;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Plague : RefreshingState
 {
-	private int _stack = 0;
-	private float _damageTimer = 1f;
-	public int GetStack => _stack;
-	public override States State => States.Plague;
-	public override StateType Type => StateType.Magic;
-	public override List<StatusEffect> Effects => new List<StatusEffect>();
-	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
+    private int _stack = 1;
+    private float _tickTimer = 3f;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-	{
-		health = characterState.Character.Health;
-		abilities = character.Character.Abilities;
+    private const int MaxStacks = 3;
+    private const float TickInterval = 3f;
+    private const float DurationTime = 12f;
 
-		for (int i = 0; i < abilities.Abilities.Count; i++)
-		{
-			abilities.Abilities[i].Buff.Damage.ReductionPercentage(0.05f);
-		}
-		// reduce damage given
-	}
+    public override States State => States.Plague;
+    public override StateType Type => StateType.Physical;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
 
-	public override void UpdateState()
-	{
-		_damageTimer -= Time.deltaTime;
-		GameObject obj = null;
-		if (_damageTimer <= 0)
-		{
-			int damage = Random.Range(1, 4);
+    public override List<StatusEffect> Effects => throw new System.NotImplementedException();
 
-			//MakeDamage(damage, characterState.gameObject);
+    public override void EnterState(CharacterState character,
+        float durationToExit,
+        float damageToExit,
+        Character personWhoMadeBuff,
+        string skillName)
+    {
+        characterState = character;
+        duration = DurationTime;
+        _tickTimer = TickInterval;
+    }
 
-			Collider2D[] enemyDetected = Physics2D.OverlapCircleAll(characterState.transform.position, 5);
-			foreach (var enemy in enemyDetected)
-			{
-				if (enemy.TryGetComponent<Character>(out var enemyCharacter) && enemy != characterState.gameObject)
-				{
-					obj = enemy.gameObject;
-					Debug.Log(enemy);
-					MakeDamage(damage, enemy.gameObject);
-				}
-			}
-			if (obj != null)
-				MakeDamage(damage, obj);
+    public override void UpdateState()
+    {
+        if (!NetworkServer.active) return;
+
+        _tickTimer -= Time.deltaTime;
+
+        if (_tickTimer > 0) return;
+
+        _tickTimer = TickInterval;
+
+        float maxHp = characterState.Character.Health.MaxValue;
+
+        float damageValue = maxHp * 0.01f * _stack;
+
+        characterState.Character.Health.TryUse(damageValue);
+    }
+
+    public override bool Stack(float time)
+    {
+        if (_stack < MaxStacks) _stack++;
 
 
-			/*if (Random.Range(0, 100) < 50 && _personWhoMadeBuff != null)
-			{
-				/*DeathSpiral deathSpiral = (DeathSpiral)characterState.personWhoShoted.Abilities.GetAbilityByName("DeathSpiral");
-				if(deathSpiral != null) 
-				{
-					Debug.Log("ADD CHRAGE");
-					deathSpiral.RestoreCharge();
-				}
-			}*/
+        return true;
+    }
 
-			if (Random.Range(0, 5) < 1)
-			{
-				AddState();
-			}
-			_damageTimer = 10;
-			//20% chance of inflicting close enemy
-		}
-	}
-
-	public override void ExitState()
-	{
-		// return reduced damage given
-		for (int i = 0; i < abilities.Abilities.Count; i++)
-		{
-			abilities.Abilities[i].Buff.Damage.IncreasePercentage(0.05f);
-		}
-		characterState.RemoveState(this);
-	}
-
-	public override bool Stack(float time)
-	{
-		if (_stack <= 4)
-		{
-			duration = time;
-			_stack++;
-			return true;
-		}
-		else
-		{
-			duration = time;
-			return true;
-		}
-	}
-
-	[Command]
-	private void MakeDamage(float damages, GameObject gm)
-	{
-		Damage damage = new Damage
-		{
-			Value = damages,
-			Type = DamageType.Magical,
-			PhysicAttackType = AttackRangeType.RangeAttack,
-		};
-		//characterState.Character.Health.TryUse(10);
-		Character charac = gm.gameObject.GetComponent<Character>();
-		charac.Health.TryUse(10);
-	}
-
-	[Server]
-	private void AddState()
-	{
-		Collider2D[] colliders = Physics2D.OverlapCircleAll(characterState.gameObject.transform.position, 3);
-
-		foreach (Collider2D collider in colliders)
-		{
-			if (collider.TryGetComponent<Character>(out var enemy) && collider.gameObject != characterState.gameObject)
-			{
-				//enemy.Health.TryTakeDamage(damage / 2, Info.DamageType.Magical, Info.AttackRangeType.RangeAttack);
-				enemy.CharacterState.CmdAddState(States.Plague, 4, 0, null, null);
-			}
-		}
-	}
+    public override void ExitState()
+    {
+        base.ExitState();
+    }
 }

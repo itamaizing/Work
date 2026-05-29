@@ -20,10 +20,16 @@ public class SeriesOfStrikes : MonoBehaviour
 	private bool _seriesCompliteCompoTalent;
 	private bool _iceRuneTalent;
 	private bool _seriesCompliteCompo = false;
+	private bool _seriesCompleteDoubleCombo = false;
+	private bool _seriesAddNewCombo = false;
+
+	private bool _newCombosAdded = false;
 
 	private static List<AbilityForm> _formList = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical };
 	private static List<AbilityForm> _formList2 = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Magic };
 	private static List<AbilityForm> _formList3 = new List<AbilityForm> {AbilityForm.Physical, AbilityForm.Magic, AbilityForm.Physical, AbilityForm.Magic, AbilityForm.Physical, AbilityForm.Magic };
+	private static List<AbilityForm> _formList4 = new List<AbilityForm> { AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Magic, AbilityForm.Physical };
+	private static List<AbilityForm> _formList5 = new List<AbilityForm> { AbilityForm.Magic, AbilityForm.Physical, AbilityForm.Physical, AbilityForm.Magic };
 	//private static List<Info.AbilityForm> _formList3 = new List<Info.AbilityForm> { Info.AbilityForm.Physical, Info.AbilityForm.Magic, Info.AbilityForm.Physical };
 
 	private List<Series> _seriesOfStrikes = new List<Series>()
@@ -126,7 +132,9 @@ public class SeriesOfStrikes : MonoBehaviour
 		//Debug.Log("Last hit");
 		if (_seriesCompliteCompoTalent)
 		{
-			_rune.CmdAdd(usedRune * 2 + 1);
+			//if (_seriesCompleteDoubleCombo) _rune.CmdAdd(usedRune * 2);
+			//else _rune.CmdAdd(usedRune);
+
 			_energy.CmdAdd(usedEnergy * 0.4f);
 			_energy.ForceRegenNow();
 		}
@@ -159,9 +167,11 @@ public class SeriesOfStrikes : MonoBehaviour
 		_speedMultiplier = multiplier;
 	}
 
-    #region Talent
+	#region Talent
 
-    public void SeriesCompliteCompoTalentActive(bool value)
+	public void SeriesCompleteDoubleCombo(bool value) => _seriesCompleteDoubleCombo = value;
+
+	public void SeriesCompliteCompoTalentActive(bool value)
 	{
 		_seriesCompliteCompoTalent = value;
 	}
@@ -171,9 +181,29 @@ public class SeriesOfStrikes : MonoBehaviour
 		_iceRuneTalent = value;
 	}
 
-    #endregion
+	public void SeriesAddNewCombo(bool value)
+	{
+		_seriesAddNewCombo = value;
 
-    private void CheckCurse(Character target, float damage)
+		if (value && !_newCombosAdded)
+		{
+			_seriesOfStrikes.Add(new Series(_formList4));
+			_seriesOfStrikes.Add(new Series(_formList5));
+			_newCombosAdded = true;
+		}
+		else if (!value && _newCombosAdded)
+		{
+			_seriesOfStrikes.RemoveAll(s =>
+				s.formList == _formList4 ||
+				s.formList == _formList5);
+
+			_newCombosAdded = false;
+		}
+	}
+
+	#endregion
+
+	private void CheckCurse(Character target, float damage)
 	{
 		if(target == null) return;
 		if(target.CharacterState.CheckForState(States.Curse))

@@ -17,6 +17,7 @@ public class Tentacles : Skill
 
     private bool _isPlacingTentacles = false;
     private bool _isClickedOnGround = false;
+    private bool _usedSwarmCharge;
 
     private Vector3 _spawnPoint = Vector3.positiveInfinity;
     private HashSet<Character> _charactersInPreview = new HashSet<Character>();
@@ -48,7 +49,7 @@ public class Tentacles : Skill
     public event Action<bool> OnWombSpreadsMucusChanged;
     public event Action<bool> OnWombSpreadsParasitesChanged;
     //public event Action<bool> OnSpawnSpikeMucus;
-    
+
     public void ProtectiveCooconSpawn(bool value) => _isProtectiveCooconSpawn = value;
     public void PsionicsTalentThree(bool value) => _isPsionicsTalentThree = value;
     public void AttractionTentacleTalent(bool value) => _isAttractionTentacleTalent = value;
@@ -89,6 +90,19 @@ public class Tentacles : Skill
     _summoningSwarm != null && (Targeting.GetTarget()?.Character != null) &&
     _spawnPoint != Vector3.positiveInfinity &&
     IsCanRadius();
+
+    protected override void UseCooldownOrCharges()
+    {
+        bool hasSwarmCharges = _summoningSwarm != null &&  _summoningSwarm.ChargesSwarm > 0;
+
+        if (hasSwarmCharges)
+        {
+            _summoningSwarm.UseSwarmCharges(1);
+            return;
+        }
+
+        base.UseCooldownOrCharges();
+    }
 
     private bool IsCanRadius()
     {
@@ -134,12 +148,21 @@ public class Tentacles : Skill
 
     public void AnimTentaclesCast()
     {
+        CommitUse();
         AnimStartCastCoroutine();
     }
 
     public void AnimTentaclesCastEnd()
     {
         AnimCastEnded();
+    }
+
+    private bool IsValidEnemy(Character character)
+    {
+        if (character == null) return false;
+        if (((1 << character.gameObject.layer) & _alliesMask) != 0) return false;
+        if (((1 << character.gameObject.layer) & Targeting.Layer) == 0) return false;
+        return true;
     }
 
     protected override void ClearData()
@@ -183,32 +206,37 @@ public class Tentacles : Skill
 
         while (float.IsPositiveInfinity(targetPoint.x))
         {
-            if (_isProtectiveCooconSpawn)
+            if (GetMouseButton && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit clickHit))
             {
-                if (GetMouseButton &&
-                    Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
+                Character clickedCharacter = clickHit.collider.GetComponentInParent<Character>();
+
+                if (_isProtectiveCooconSpawn && clickedCharacter != null && ((1 << clickedCharacter.gameObject.layer) & _alliesMask) != 0)
                 {
-                    if (hit.collider.TryGetComponent<Character>(out Character clickedCharacter))
+                    _spawnPoint = clickedCharacter.transform.position;
+
+                    TargetInfo allyInfo = new TargetInfo();
+                    allyInfo.Points.Add(_spawnPoint);
+                    allyInfo.AddTarget(clickedCharacter);
+
+                    Targeting.SetTarget(clickedCharacter);
+
+                    _lockedTarget = null;
+                    _isPlacingTentacles = false;
+
+                    if (_previewInstance != null)
                     {
-                        if (((1 << clickedCharacter.gameObject.layer) & _alliesMask) != 0)
-                        {
-                            if (clickedCharacter == Hero)
-                            {
-                                _spawnPoint = clickedCharacter.transform.position;
-                                Targeting.SetTarget(clickedCharacter);
-
-                                TargetInfo info = new TargetInfo();
-                                info.Points.Add(_spawnPoint);
-                                info.AddTarget(clickedCharacter);
-
-                                callbackDataSaved(info);
-                                yield break;
-                            }
-                        }
+                        Destroy(_previewInstance.gameObject);
+                        _previewInstance = null;
                     }
 
-                    yield return null;
-                    continue;
+                    if (_previewInstancePrefab != null)
+                    {
+                        Destroy(_previewInstancePrefab.gameObject);
+                        _previewInstancePrefab = null;
+                    }
+
+                    callbackDataSaved(allyInfo);
+                    yield break;
                 }
             }
 
@@ -220,7 +248,7 @@ public class Tentacles : Skill
             {
                 if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hitTarget))
                 {
-                    if (_isAttractionTentacleTalent && hitTarget.collider.TryGetComponent<Character>(out Character character) && ((1 << character.gameObject.layer) & Targeting.Layer) != 0)
+                    if (_isAttractionTentacleTalent && hitTarget.collider.TryGetComponent<Character>(out Character character) && IsValidEnemy(character))
                     {
                         float distToHero = Vector3.Distance(Hero.transform.position, character.transform.position);
 
@@ -253,7 +281,7 @@ public class Tentacles : Skill
                         {
                             if (!collider.TryGetComponent<Character>(out Character targetHit)) continue;
 
-                            if (((1 << targetHit.gameObject.layer) & Targeting.Layer.value) != 0)
+                            if (IsValidEnemy(targetHit))
                             {
                                 float distToHero = Vector3.Distance(Hero.transform.position, targetHit.transform.position);
 
@@ -381,16 +409,13 @@ public class Tentacles : Skill
     {
         if (!IsValidVector(_spawnPoint)) yield break;
 
-        bool hadCharges = _summoningSwarm != null && _summoningSwarm.ChargesSwarm > 0;
+        Character targetCharacter = Targeting.GetTarget()?.Character;
 
-        if (hadCharges) _summoningSwarm.UseSwarmCharges(1);
+        bool isAlly = targetCharacter != null && ((1 << targetCharacter.gameObject.layer) & _alliesMask) != 0;
 
-        if (_isProtectiveCooconSpawn && Targeting.GetTarget()?.Character != null)
+        if (_isProtectiveCooconSpawn && isAlly)
         {
-            CmdSpawnProtectiveCocoon(Targeting.GetTarget()?.Character);
-
-            if (hadCharges) Cooldown.ForceEnd();
-
+            CmdSpawnProtectiveCocoon(targetCharacter);
             ClearData();
             yield break;
         }
@@ -409,8 +434,6 @@ public class Tentacles : Skill
             }
 
             CmdSpawnTentacles(_spawnPoint, Targeting.GetTarget()?.Character, _spentAttackingPsiEnergy);
-
-            if (hadCharges) Cooldown.ForceEnd();
         }
 
         ClearData();
@@ -464,7 +487,7 @@ public class Tentacles : Skill
                 isPreviewInsideRadius = distanceToPrefab <= AreaInfo.Radius;
             }
 
-            _previewInstance.SetRadiusColor(isCharacterInsidePreview ? Color.green : Color.red);
+            if (_previewInstance != null) _previewInstance.SetRadiusColor(isCharacterInsidePreview ? Color.green : Color.red);
             _skillRender.DrawRadiusColor(AreaInfo.Radius, isPreviewInsideRadius ? Color.green : Color.red);
 
             _charactersInPreview = newCharactersInPreview;

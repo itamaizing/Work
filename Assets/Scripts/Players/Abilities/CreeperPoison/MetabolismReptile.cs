@@ -24,16 +24,6 @@ public class MetabolismReptile : Skill
 
     protected override bool IsCanCast => true;
 
-    private void Start()
-    {
-        _originalHpRegen = _player.Health.RegenerationValue;
-
-        if (_player.TryGetResource(ResourceType.Mana, out Resource mana))
-        {
-            _originalManaRegen = mana.RegenerationValue;
-        }
-    }
-
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         
@@ -96,32 +86,23 @@ public class MetabolismReptile : Skill
     private void CmdIncreaseManaRegen(GameObject player, float originalManaRegen, float increaseManaRegen)
     {
         Character playerCharacter = player.GetComponent<Character>();
-
-        if (playerCharacter.TryGetResource(ResourceType.Mana, out Resource mana))
-        {
-            float increasedManaRegen = originalManaRegen * increaseManaRegen;
-            mana.RegenerationValue = increasedManaRegen;
-        }
+        playerCharacter.Resource.Attr_RegenValue.AddModifier(
+            new AttributeModifier(increaseManaRegen, ModifierType.Percent, source: this));
     }
 
     [Command]
     private void CmdRemoveManaRegen(GameObject player, float originalManaRegen)
     {
         Character playerCharacter = player.GetComponent<Character>();
-
-        if (playerCharacter.TryGetResource(ResourceType.Mana, out Resource mana))
-        {
-            mana.RegenerationValue = originalManaRegen;
-        }
+        playerCharacter.Resource.Attr_RegenValue.RemoveBySource(this, all: true);
     }
 
     [Command]
     private void CmdIncreaseHealthRegen(GameObject player, float originalHpRegen, float increaseHealthRegen)
     {
         Character playerCharacter = player.GetComponent<Character>();
-
-        float increasedHpRegen = originalHpRegen * increaseHealthRegen;
-        playerCharacter.Health.RegenerationValue = increasedHpRegen;
+        playerCharacter.Health.Attr_RegenValue.AddModifier(
+            new AttributeModifier(increaseHealthRegen, ModifierType.Percent, source: this));
     }
 
     [Command]
@@ -130,7 +111,7 @@ public class MetabolismReptile : Skill
 
         Character playerCharacter = player.GetComponent<Character>();
 
-        playerCharacter.Health.RegenerationValue = originalHealthRegen;
+        playerCharacter.Health.Attr_RegenValue.RemoveBySource(this, all: true);
     }
 
     #endregion

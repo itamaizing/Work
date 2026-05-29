@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class FrostingState : AbstractCharacterState
@@ -8,10 +10,14 @@ public class FrostingState : AbstractCharacterState
 
 	private GameObject _ice;
 	private AudioSource _audioSource;
+	private NinjaResources _ninjaResources;
+	private TalentSystem _talentSystem;
 	private float _duration;
 	private float _baseDuration;
 	private float _damageOnStart;
 	private float _damageToExit;
+
+	private bool _isFrostTalentActive;
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.AbilitySpeed };
 	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
@@ -24,7 +30,7 @@ public class FrostingState : AbstractCharacterState
 		//Debug.Log("Entering Frosting State");
 		if (damageToExit == 0)
 		{
-			_damageToExit = 10000;
+			_damageToExit = 30;
 		}
 		else
 		{
@@ -33,6 +39,10 @@ public class FrostingState : AbstractCharacterState
 		_duration = durationToExit;
 		_baseDuration = durationToExit;
 		_audioSource = character.GetComponent<AudioSource>();
+		if (personWhoMadeBuff.TryGetComponent<NinjaResources>(out NinjaResources resources)) _ninjaResources = resources;
+		if (personWhoMadeBuff.TryGetComponent<TalentSystem>(out TalentSystem talentSystem)) _talentSystem = talentSystem;
+
+		if (_talentSystem != null) _isFrostTalentActive = _talentSystem.ActiveTalents.Any(t => t.GetType().Name == "FrostTalent_12");
 
 		_damageOnStart = characterState.Character.Health.SumDamageTaken;
 		characterState.Character.Move.SetCanMoveState(false);
@@ -67,9 +77,23 @@ public class FrostingState : AbstractCharacterState
 
 	public override void UpdateState()
 	{
-		_duration -= Time.deltaTime;
-		if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || _duration < 0 || turnOff)
+		bool timeExpired = _duration < 0;
+		bool damageExceeded = characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit;
+
+		if (damageExceeded || turnOff)
 		{
+			ExitState();
+			return;
+		}
+
+		if (timeExpired)
+		{
+			if (_isFrostTalentActive)
+			{
+				RestartFrosting();
+				return;
+			}
+
 			ExitState();
 		}
 	}
@@ -86,16 +110,16 @@ public class FrostingState : AbstractCharacterState
 
 		characterState.Character.Move.StopLookAt();
 
-		if (!characterState.Check(StatusEffect.AbilitySpeed) && abilities != null)
-		{
-			foreach (var abil in abilities.Abilities)
-			{
-				if (abil.Info.AbilityForm == AbilityForm.Physical)
-				{
-					abil.Buff.CastSpeed.IncreasePercentage(.5f);
-				}
-			}
-		}
+		//if (!characterState.Check(StatusEffect.AbilitySpeed) && abilities != null)
+		//{
+		//	foreach (var abil in abilities.Abilities)
+		//	{
+		//		if (abil.Info.AbilityForm == AbilityForm.Physical)
+		//		{
+		//			abil.Buff.CastSpeed.IncreasePercentage(.5f);
+		//		}
+		//	}
+		//}
 
 		if (characterState.StateEffects.Ice != null) _ice.SetActive(false);
 	}
@@ -103,7 +127,20 @@ public class FrostingState : AbstractCharacterState
 	public override bool Stack(float time)
 	{
 		_duration = _baseDuration;
+		_damageOnStart = characterState.Character.Health.SumDamageTaken;
+
+		if (_damageToExit < 30) _damageToExit = 30;
+
+		if (_ninjaResources != null && _ninjaResources.IsRepeatedFrost)	AddFrozenCmd();
+
 		return true;
 	}
 
+	private void RestartFrosting()
+	{
+		_duration = _baseDuration;
+	}
+
+	[Command] private void AddFrozenCmd() => AddFrozenRpc();
+	[ClientRpc] private void AddFrozenRpc() => characterState.AddStateLogic(States.Frozen, _baseDuration, 0f, Schools.None, characterState.Character.gameObject, "RepeatedFrost");
 }

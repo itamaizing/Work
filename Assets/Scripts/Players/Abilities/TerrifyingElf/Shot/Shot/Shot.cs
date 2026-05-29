@@ -2,7 +2,6 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Shot : Skill
 {
@@ -49,21 +48,8 @@ public class Shot : Skill
 
     private bool CheckCanCast()
     {
-        if (Targeting.GetTarget() == null)
-            return false;
-        return Targeting.CanCast(Targeting.GetTarget());
-
-        //if (Targeting.GetTarget() != null)
-        //{
-        //    return Targeting.CanCast(Targeting.GetTarget());
-        //    return Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.CastLength;
-        //}
-        //if (_targetPoint != Vector3.positiveInfinity)
-        //{
-        //    return Targeting.CanCast(new TargetData(_targetPoint));
-        //    return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength;
-        //}
-        //return false;
+        if (Targeting.GetTarget() == null) return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength;
+        return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength || Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.CastLength;
     }
 
     private void OnDisable()
@@ -137,14 +123,16 @@ public class Shot : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        Targeting.SetTarget(Targeting.QueueInfoToTargetData(targetInfo));
-        //if (Targeting.GetTarget()?.Type == TargetType.Point)
-        //    _targetPoint = Targeting.GetTarget().Point;
-        //if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
-        _targetPoint = Targeting.GetTarget().Poisition;
-	}
+        if (targetInfo == null) return;
 
-	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+        Targeting.SetTarget(Targeting.QueueInfoToTargetData(targetInfo));
+
+        if (targetInfo.Points != null && targetInfo.Points.Count > 0) _targetPoint = targetInfo.Points[0];
+        else if (Targeting.GetTarget() != null) _targetPoint = Targeting.GetTarget().Poisition;
+        else _targetPoint = Vector3.positiveInfinity;
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
 		Vector3 targetPoint = Vector3.positiveInfinity;
 
@@ -178,19 +166,20 @@ public class Shot : Skill
 
     protected override IEnumerator CastJob()
     {
-		if (Targeting.GetTarget() == null && _targetPoint == Vector3.positiveInfinity) yield return null;
-        if (Targeting.GetTarget()?.Transform != null && !IsTargetInRange()) yield return null;
+        var targetData = Targeting.GetTarget();
+
+        if (targetData == null && _targetPoint == Vector3.positiveInfinity) yield break;
+        if (targetData?.Transform != null && !IsTargetInRange()) yield break;
 
         ShotAnimationMove();
         ProcessGhostCooldownReduction();
-
         HandleThirdShotRowOnCast();
 
-        if (Targeting.GetTarget() != null && Targeting.GetTarget() is IDamageable damageable) CmdCreateProjectileAtTarget(damageable.gameObject, Damage);
+        if (targetData?.Targetable is IDamageable damageable) CmdCreateProjectileAtTarget(damageable.gameObject, Damage);
         else CmdCreateProjectileAtPosition(_targetPoint, Damage);
-
         yield return null;
     }
+
     private bool IsTargetInRange() { return Targeting.GetTarget() != null && Vector3.Distance(transform.position, Targeting.GetTarget().Transform.position) <= AreaInfo.CastLength; }
     private void ProcessGhostCooldownReduction()
     {

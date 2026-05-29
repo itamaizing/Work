@@ -12,8 +12,9 @@ public class TerrifyingElfAura : NetworkBehaviour
     [Header("Chances")]
     [SerializeField, Range(0f, 100f)] private float calmnessChance = 10f;
     [SerializeField, Range(0, 100)] private float elvenSkillFromPhysChance = 10f;
-    [SerializeField, Range(0,100)] private float calmnessOnElvenSkillChance = 30f;
+    [SerializeField, Range(0, 100)] private float calmnessOnElvenSkillChance = 30f;
     [SerializeField, Range(0f, 100f)] private float huntressMarkApplyChance = 5f;
+    private const float innerDarknessChance = 20f;
 
     [Header("Durations")]
     [SerializeField] private float durationCalmess;
@@ -57,8 +58,11 @@ public class TerrifyingElfAura : NetworkBehaviour
     private bool _isElvenSkillPhysDamageHealthChance;
     private bool _isThirdShotRow;
     private bool _isCalmnessAura;
+    private bool _isSpellAddInnerDarkness;
 
     public bool IsThirdShotRowActive => _isThirdShotRow;
+
+    public void SpellAddInnerDarkness(bool value) => _isSpellAddInnerDarkness = value;
 
     public void ThirdShotRow(bool value) => _isThirdShotRow = value;
     public void ReductionRecharge(bool value) => _isReductionRecharge = value;
@@ -110,8 +114,8 @@ public class TerrifyingElfAura : NetworkBehaviour
     {
         if (currentSkill != null)
         {
-             currentSkill.CastSuccess -= ApplyCalmnessTalent;
-             currentSkill.CastStarted -= ApplyFireWorshipperTalent;
+            currentSkill.CastSuccess -= ApplyCalmnessTalent;
+            currentSkill.CastStarted -= ApplyFireWorshipperTalent;
         }
 
         if (_heroMana != null) _heroMana.ValueChanged -= OnManaChanged;
@@ -299,7 +303,7 @@ public class TerrifyingElfAura : NetworkBehaviour
         {
             CharacterState selfState = hero.CharacterState;
 
-            if (elvenSkillPhysicsTalent && UnityEngine.Random.Range(0f, 100f) <= elvenSkillFromPhysChance) 
+            if (elvenSkillPhysicsTalent && UnityEngine.Random.Range(0f, 100f) <= elvenSkillFromPhysChance)
                 selfState.AddState(States.ElvenSkill, durationElvenSkill, 0f, gameObject, "TerrifyingElfAura");
 
             else if (calmnessOnElvenSkillTalent && selfState.CheckForState(States.ElvenSkill) && UnityEngine.Random.Range(0f, 100f) <= calmnessOnElvenSkillChance)
@@ -312,6 +316,12 @@ public class TerrifyingElfAura : NetworkBehaviour
                 mana.Add(damage.Value * 0.25f * suppression.CurrentStacksCount);
 
             if (manaAbsorptionPhysicalTalent) OnDamageDealt(damage, target);
+
+            if (_isSpellAddInnerDarkness && damage.Type == DamageType.Magical && target != null && target.TryGetComponent<Character>(out var targetCharacter))  
+            {
+                float roll = UnityEngine.Random.Range(0f, 100f);
+                if (roll <= innerDarknessChance) targetCharacter.CharacterState.AddState(States.InnerDarkness, durationCalmess, 0f, hero.gameObject, "TerrifyingElfAura");
+            }
         }
     }
 
@@ -406,30 +416,30 @@ public class TerrifyingElfAura : NetworkBehaviour
 
     #region Helpers
     private int GetTreesCountInRadius(float radius)
+    {
+        var trees = FindObjectsOfType<Tree>();
+        int count = 0;
+        foreach (var t in trees)
         {
-            var trees = FindObjectsOfType<Tree>();
-            int count = 0;
-            foreach (var t in trees)
+            if (Vector3.Distance(t.transform.position, transform.position) <= radius)
             {
-                if (Vector3.Distance(t.transform.position, transform.position) <= radius)
-                {
-                    count++;
-                }
-            }
-            return count;
-        }
-
-        private IEnumerator DelayAndUpdateCalmness(CharacterState targetState, int treesCount)
-        {
-            yield return null;
-
-            //if (!isServer) yield break;
-
-            var calmness = targetState.GetState(States.Calmness) as Calmness;
-            if (calmness != null)
-            {
-                calmness.UpdateTreesCount(treesCount);
+                count++;
             }
         }
+        return count;
+    }
+
+    private IEnumerator DelayAndUpdateCalmness(CharacterState targetState, int treesCount)
+    {
+        yield return null;
+
+        //if (!isServer) yield break;
+
+        var calmness = targetState.GetState(States.Calmness) as Calmness;
+        if (calmness != null)
+        {
+            calmness.UpdateTreesCount(treesCount);
+        }
+    }
     #endregion
 }

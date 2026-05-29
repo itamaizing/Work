@@ -136,6 +136,11 @@ public class ColdBlood : Skill
         {
             Hero.CharacterState.CmdRemoveState(States.Immateriality);
         }
+
+        if (Hero.CharacterState.CheckForState(States.Immateriality))
+        {
+            Hero.CharacterState.CmdRemoveState(States.Immateriality);
+        }
     }
 
     private void StartWaitingForHit()

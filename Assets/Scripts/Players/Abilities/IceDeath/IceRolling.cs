@@ -31,6 +31,7 @@ public class IceRolling : Skill
 
 	private bool _isLastInSeries = false;
 	private bool _isJump = false;
+	private float _pendingFrozenDurationFromRoll;
 
 	private float _durationOfJump;
 	private float _jumpCount = 0;
@@ -40,13 +41,25 @@ public class IceRolling : Skill
 	private Character _attachedTarget;
 	private Animator _animator;
 
+	#region Talent
+
+	private bool _isDamageAddFrosting;
+	private bool _isAttackWithFrosenAddEvade;
+
+	public void AttackWithFrosenAddEvade(bool value) => _isAttackWithFrosenAddEvade = value;
+	public void DamageAddFrosting(bool value) => _isDamageAddFrosting = value;
+	public void TalentRollingPhys(bool value) => _rollingPhysTalent = value;
+	public void RollingWithEnemyTalentActive(bool value) => _rollingWithEnemyTalent = value;
+
+	#endregion
+
 	#region Constants
 	private const float BoxCastSize = 0.05f;
 	private const float ObstaclePushBackMultiplier = 1.2f;
 	private const float EnergyChunkValue = 5f;
 	private const float KnockbackDistance = 2f;
 	private const float KnockbackDuration = 0.5f;
-	private const float AttachedFrozenDuration = 2f;
+	private const float AttachedFrostingDuration = 2f;
 	private const float DynamicRendererJobTime = 0.2f;
 	private const float TargetSearchRadius = 0.5f;
 	private const float RayCastDistance = 1000f;
@@ -83,6 +96,16 @@ public class IceRolling : Skill
 		{
 			TimerDelay();
 		}
+	}
+
+	private void OnEnable()
+	{
+		if (Hero != null && Hero.Health != null) Hero.Health.OnBeforeDamage += HandleFrozenEvade;
+	}
+
+	private void OnDisable()
+	{
+		if (Hero != null && Hero.Health != null) Hero.Health.OnBeforeDamage -= HandleFrozenEvade;
 	}
 
 	private float GetJumpRange()
@@ -167,6 +190,26 @@ public class IceRolling : Skill
 		return false;
 	}
 
+	private void HandleFrozenEvade(ref Damage damage, Skill skill)
+	{
+		if (!_isAttackWithFrosenAddEvade) return;
+		if (skill == null || skill.Hero == null) return;
+
+		Character attacker = skill.Hero;
+
+		var frozen = attacker.CharacterState.GetState(States.Frozen) as FrozenState;
+		if (frozen == null) return;
+
+		float slowPercent = frozen.CurrentAttackSlowPercent;
+		float evadeChance = slowPercent * 40f;
+
+		if (UnityEngine.Random.Range(0f, 100f) <= evadeChance)
+		{
+			damage.Value = 0f;
+			Hero.Health.InvokeEvade();
+		}
+	}
+
 	private void Jump2()
 	{
 		Hero.Move.SetCanMove(false);
@@ -223,10 +266,16 @@ public class IceRolling : Skill
 		Hero.Move.LookAtPosition(jumpPos);
 		float actualDistance = Vector3.Distance(startPosition, stopPosition);
 
+		if (_isDamageAddFrosting)
+		{
+			int rolledCells = Mathf.RoundToInt(finalRange);
+			float frozenDuration = 0.7f * rolledCells;
+			_physicalAttack.SetNextHitFrozen(frozenDuration);
+		}
+
 		CmdPush(stopPosition, actualDistance);
 
-		if (_rollingWithEnemyTalent && Targeting.GetTarget()?.Character != null && hitTarget && characterHitTarget != null)
-			CmdPushWithCharacter(stopPosition, characterHitTarget, actualDistance);
+		if (_rollingWithEnemyTalent && Targeting.GetTarget()?.Character != null && hitTarget && characterHitTarget != null) CmdPushWithCharacter(stopPosition, characterHitTarget, actualDistance);
 
 		if (_rollingPhysTalent)
 		{
@@ -240,6 +289,7 @@ public class IceRolling : Skill
 			_mousePos = Vector3.positiveInfinity;
 			_lookDir = Vector3.zero;
 		}
+
 		else
 		{
 			Targeting.FindTempTarget();
@@ -387,11 +437,6 @@ public class IceRolling : Skill
 		}
 	}
 
-	#region Talent
-	public void TalentRollingPhys(bool value) => _rollingPhysTalent = value;
-	public void RollingWithEnemyTalentActive(bool value) => _rollingWithEnemyTalent = value;
-	#endregion
-
 	private void TimerDelay()
 	{
 		_afterJumpDelay -= Time.deltaTime;
@@ -410,7 +455,7 @@ public class IceRolling : Skill
 
 		if (_attachedTarget)
         {
-			_attachedTarget.CharacterState.AddState(States.Frozen, AttachedFrozenDuration, 0f, _playerLinks.gameObject, Name);
+			_attachedTarget.CharacterState.AddState(States.Frosting, AttachedFrostingDuration, 0f, _playerLinks.gameObject, Name);
 			_attachedTarget.transform.SetParent(null);
 			RpcReleaseTarget(_attachedTarget);
 			_attachedTarget = null;

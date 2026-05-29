@@ -3,16 +3,20 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class IceShadow : Skill
 {
 	[Header("Ability properties")]
 	[SerializeField] private IceShadowObject _shadow;
+	[SerializeField] private IcyStream _icyStream;
+	[SerializeField] private CircularFrosting _circularFrosting;
+	[ReadOnly][SerializeField] private IcyStreamShadow _icyStreamShadow;
 	[SerializeField] private HeroComponent _playerLinks; 
 	[SerializeField] private SeriesOfStrikes _combo;
 	[SerializeField] private AudioClip audioClip;
 	//[SerializeField] private bool isTest = true;
+
+	private IcyStream.IcyStreamState? _capturedState;
 
 	private AudioSource _audioSource;
 	private Energy _energy;
@@ -24,6 +28,7 @@ public class IceShadow : Skill
 	private bool _evaded = false;
 	private float _evadedTimer = 2f;
 	private float _manaUsed = 0;
+	private float _remainingDelayCircularFrostin;
 
 	#region Const
 	private const float MaxManaPerCast = 30f;
@@ -66,10 +71,21 @@ public class IceShadow : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		if (_energy == null)
-			_energy = (Energy)Hero.Resources[ResourceType.Energy];
+		_capturedState = null;
 
-        TargetInfo targetInfo = new TargetInfo();
+		if (_energy == null) _energy = (Energy)Hero.Resources[ResourceType.Energy];
+
+		if (_icyStream != null)
+		{
+			if (_icyStream.TryGetState(out var state)) _capturedState = state;
+
+			_icyStream.StopStream();
+			_icyStream.TryCancel(true);
+		}
+
+		if (_circularFrosting != null) _circularFrosting.TryCancel(true);
+
+		TargetInfo targetInfo = new TargetInfo();
 		targetInfo.AddTarget(Hero);
 		callbackDataSaved(targetInfo);
 		yield return null;
@@ -88,18 +104,81 @@ public class IceShadow : Skill
 
 	private void Shoot()
 	{
-		/*IceShadowObject projectileGm = Instantiate(_shadow, gameObject.transform.position, Quaternion.identity);
-		projectileGm.Init(_playerLinks.gameObject ,Mana.Value);*/
+		bool triggeredFromStream = _capturedState.HasValue;
+		bool triggeredFromFrosting = _circularFrosting != null && _circularFrosting.WasInterruptedInDelay;
+
+		bool triggeredFromOtherSkill = triggeredFromStream || triggeredFromFrosting;
+
+		if (triggeredFromFrosting)
+        {
+			_remainingDelayCircularFrostin = _circularFrosting.RemainingDelay;
+			Debug.Log($"_remainingDelayCircularFrostin: {_remainingDelayCircularFrostin}");
+		}
+			
 		_lastHit = _combo.MakeHit(null, Info.AbilityForm, 1, _manaUsed, 0, _combo.GetMultipliedSpeed() / SpeedScaleDivisor);
 
-		_manaUsed = Mathf.Min(_energy.CurrentValue, MaxManaPerCast);
-		_energy.CmdUse(_manaUsed);
+		if (!triggeredFromOtherSkill)
+		{
+			_manaUsed = Mathf.Min(_energy.CurrentValue, MaxManaPerCast);
+			_energy.CmdUse(_manaUsed);
+		}
 
-		CmdCreateProjecttile(0, _manaUsed, _lastHit, _talentDamage, _iceDeathInShadowTalent);
+		float bonusDuration = 0f;
+
+		if (triggeredFromFrosting)
+		{
+			bonusDuration += _circularFrosting.RemainingDelay;
+		}
+
+		if (_capturedState.HasValue)
+		{
+			float tickTime = 0.3f;
+			int remainingTicks = _capturedState.Value.MaxTicks - _capturedState.Value.CurrentTick;
+			bonusDuration += remainingTicks * tickTime;
+		}
+
+		CmdCreateProjecttile(_remainingDelayCircularFrostin, 0, _manaUsed, bonusDuration, _lastHit, _talentDamage,	_iceDeathInShadowTalent, _circularFrosting.WasInterruptedInDelay, _capturedState?.CurrentTick ?? -1, _capturedState?.MaxTicks ?? -1, _capturedState?.Target != null ? _capturedState.Value.Target.netIdentity : null);
+	}
+
+	private void SpawnShadow(float remainingDelay, float streamBonus, Vector3 position, Quaternion rotation, float manaValue, bool lastHit,
+		bool damage, bool inShadow, bool shouldSpawnCircularShadow, int animationHash, float normalizedTime, float velocityX, 
+		float velocityZ, int startTick, int maxTicks, Character target)
+	{
+		IceShadowObject shadow = Instantiate(_shadow, position, rotation);
+
+		shadow.InitShadow(_playerLinks, manaValue, streamBonus, lastHit, this);
+		shadow.TalentDamage(damage);
+
+		NetworkServer.Spawn(shadow.gameObject);
+
+		RpcSetShadowAnimation(shadow.gameObject, animationHash, normalizedTime, velocityX, velocityZ, rotation);
+		RpcInit(shadow.gameObject, manaValue, streamBonus, lastHit, damage, inShadow);
+
+		_icyStreamShadow = shadow.GetComponent<IcyStreamShadow>();
+
+		if (_icyStreamShadow != null && target != null && startTick > 0 && maxTicks > 0)
+		{
+			_icyStreamShadow.Init(Hero, target, startTick, maxTicks);
+			_icyStreamShadow.StartShadowStream();
+
+			_circularFrosting.ConsumeInterruptedDelay();
+		}
+
+		if (shouldSpawnCircularShadow)
+		{
+			var shadowFrost = shadow.GetComponent<CircularFrostingShadow>();
+
+			if (shadowFrost != null)
+			{
+
+				shadowFrost.Init(Hero, remainingDelay, _circularFrosting.AreaInfo.Radius);
+				shadowFrost.StartShadowFrost();
+			}
+		}
 	}
 
 	[Command]
-	private void CmdCreateProjecttile(float angle, float manaValue, bool lastHit, bool damage, bool inShadow)
+	private void CmdCreateProjecttile(float remainingDelay, float angle, float manaValue, float streamBonus, bool lastHit, bool damage, bool inShadow, bool shouldSpawnCircularShadow, int startTick, int maxTicks, NetworkIdentity targetIdentity)
 	{
 		AnimatorStateInfo stateInfo = _playerLinks.Animator.GetCurrentAnimatorStateInfo(0);
 		int animationHash = stateInfo.fullPathHash;
@@ -110,37 +189,28 @@ public class IceShadow : Skill
 
 		Vector3 basePosition = _playerLinks.transform.position;
 
+		if (shouldSpawnCircularShadow) _circularFrosting.PayEnergyOnInterruptedDelay();
+
+		Character target = null;
+		if (targetIdentity != null) target = targetIdentity.GetComponent<Character>();
+
 		if (lastHit)
 		{
 			Vector3 right = _playerLinks.transform.right;
 			Vector3 left = -_playerLinks.transform.right;
 			Vector3 forward = _playerLinks.transform.forward;
 
-			Vector3 offsetRight = basePosition + right;
-			Vector3 offsetLeft = basePosition + left;
-			Vector3 centerPosition = basePosition + forward;
-
-			SpawnShadow(offsetRight, rotation, manaValue, lastHit, damage, inShadow, animationHash, normalizedTime, velocityX, velocityZ);
-			SpawnShadow(offsetLeft, rotation, manaValue, lastHit, damage, inShadow, animationHash, normalizedTime, velocityX, velocityZ);
-			SpawnShadow(centerPosition, rotation, manaValue, lastHit, damage, inShadow, animationHash, normalizedTime, velocityX, velocityZ);
+			SpawnShadow(remainingDelay, streamBonus, basePosition + right, rotation, manaValue, lastHit, damage, inShadow, shouldSpawnCircularShadow, animationHash, normalizedTime, velocityX, velocityZ, startTick, maxTicks, target);
+			SpawnShadow(remainingDelay, streamBonus, basePosition + left, rotation, manaValue, lastHit, damage, inShadow, shouldSpawnCircularShadow, animationHash, normalizedTime, velocityX, velocityZ, startTick, maxTicks, target);
+			SpawnShadow(remainingDelay, streamBonus, basePosition + forward, rotation, manaValue, lastHit, damage, inShadow, shouldSpawnCircularShadow, animationHash, normalizedTime, velocityX, velocityZ, startTick, maxTicks, target);
 		}
 
-		else SpawnShadow(basePosition, rotation, manaValue, lastHit, damage, inShadow, animationHash, normalizedTime, velocityX, velocityZ);
+		else
+		{
+			SpawnShadow(remainingDelay, streamBonus, basePosition, rotation, manaValue, lastHit, damage, inShadow, shouldSpawnCircularShadow, animationHash, normalizedTime, velocityX, velocityZ, startTick, maxTicks, target);
+		}
 
 		RpcPlayShotSound();
-	}
-
-	private void SpawnShadow(Vector3 position, Quaternion rotation, float manaValue, bool lastHit, bool damage, bool inShadow,
-		int animationHash, float normalizedTime, float velocityX, float velocityZ)
-	{
-		IceShadowObject shadow = Instantiate(_shadow, position, rotation);
-		SceneManager.MoveGameObjectToScene(shadow.gameObject, _hero.NetworkSettings.MyRoom);
-		shadow.Init(_playerLinks, manaValue, lastHit, this);
-		shadow.TalentDamage(damage);
-
-		NetworkServer.Spawn(shadow.gameObject);
-		RpcSetShadowAnimation(shadow.gameObject, animationHash, normalizedTime, velocityX, velocityZ, rotation);
-		RpcInit(shadow.gameObject, manaValue, lastHit, damage, inShadow);
 	}
 
 	[ClientRpc]
@@ -153,11 +223,13 @@ public class IceShadow : Skill
 	}
 
 	[ClientRpc]
-	private void RpcInit(GameObject obj, float manaValue, bool lastHit, bool damage, bool inShadow)
+	private void RpcInit(GameObject obj, float manaValue, float streamBonus,  bool lastHit, bool damage, bool inShadow)
 	{
-		obj.GetComponent<IceShadowObject>().Init(_playerLinks, manaValue, lastHit, this);
+		obj.GetComponent<IceShadowObject>().InitShadow(_playerLinks, manaValue, streamBonus, lastHit, this);
 		obj.GetComponent<IceShadowObject>().TalentDamage(damage);
 		obj.GetComponent<IceShadowObject>().TalentDamage(inShadow);
+
+
 	}
 
 	[ClientRpc]
@@ -178,7 +250,7 @@ public class IceShadow : Skill
 		_talentDamage = value;
 	}
 
-	public void IceDeathInShadowTalentActive(bool value, string text)
+	public void IceDeathInShadowTalentActive(bool value)
     {
 		_iceDeathInShadowTalent = value;
 		//AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
@@ -204,39 +276,21 @@ public class IceShadow : Skill
 
 	protected override bool TryPayCost(List<SkillResourceCost> skillEnergyCosts, bool startCooldown = true)
 	{
-		if (IsHaveResourceOnSkill)
-		{
-			if (_evaded && _talentEvade)
-			{
-				/*foreach (var skillCost in _skillEnergyCosts)
-				{
-					var resource = _hero.Resources.First(r => r.Type == skillCost.type);
-					resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.value));
-				}*/
-				_evaded = false;
-			}
-			else
-			{
-				foreach (var skillCost in _skillEnergyCosts)
-				{
-					var resource = _hero.Resources[skillCost.type];
-					resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.value));
-				}
-				_evaded = false;
-			}
+		if (!IsHaveResourceOnSkill)	return false;
 
-			if (startCooldown)
-			{
-				Cooldown.SetIncreased(Cooldown.CooldownTime, shouldModify: false);
-			}
-
-			TryUseCharge();
-			return true;
-		}
-		else
+		foreach (var skillCost in skillEnergyCosts)
 		{
-			return false;
+			if (_evaded && _talentEvade && skillCost.type == ResourceType.Rune) continue;
+
+			var resource = _hero.Resources[skillCost.type];
+			resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.value));
 		}
+
+		_evaded = false;
+
+		if (startCooldown) Cooldown.SetIncreased(Cooldown.CooldownTime, shouldModify: false);
+		TryUseCharge();
+		return true;
 	}
 }
 

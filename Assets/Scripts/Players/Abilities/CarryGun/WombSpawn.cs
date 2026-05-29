@@ -1,7 +1,6 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 using Mirror;
-using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System;
 
@@ -155,6 +154,7 @@ public class WombSpawn : Skill
 
     public void AnimTentaclesCast()
     {
+        CommitUse();
         AnimStartCastCoroutine();
     }
 

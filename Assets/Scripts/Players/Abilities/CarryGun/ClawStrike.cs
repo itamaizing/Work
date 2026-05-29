@@ -14,10 +14,10 @@ public class ClawStrike : Skill
     [SerializeField] private JumpBack _jumpBack;
     [SerializeField] private float _animSpeed = 0.8f;
     [SerializeField] private float _chanceApplyBleeding = 0.15f;
-    [SerializeField] private float _chanceApplyBleedingWithJump = 0.4f;
     [SerializeField] private float _durationBleeding = 7f;
     [SerializeField] private float _buffDurationAfterJump = 1f;
     [SerializeField] private float _chanceApplyBleedingIncrease = 0.4f;
+    [SerializeField] private float _chanceApplyBleedingWithJump = 0.4f;
 
     [Header("Damage")]
     [SerializeField] private float _minDamage = 10f;
@@ -36,6 +36,9 @@ public class ClawStrike : Skill
     private const float PsiDispel_2 = 20f;
     private const float PsiDispel_1 = 10f;
 
+    private const float CheliceraBonusChance = 0.15f;
+    private const float JumpWithCheliceraBonusChance = 0.45f;
+
     private const float TargetSearchRadius = 0.5f;
 
     #endregion
@@ -49,6 +52,8 @@ public class ClawStrike : Skill
     private float _totalChanceApplyBleeding;
     private Coroutine coroutineDurationChanceApplyBleedingWithJump;
     private WaitForSeconds _waitForBuffDuration;
+
+    private const float JumpBackWindow = 1.5f;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("ClawStrikeTrigger");
@@ -130,11 +135,18 @@ public class ClawStrike : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget() == null) yield return null;
-        if (!IsTargetInRange()) yield return null;
+        if (Targeting.GetTarget() == null) yield break;
+        if (!IsTargetInRange()) yield break;
 
-        JumpBackClawStrike();
-        DamageDeal(Targeting.GetTarget()?.Targetable);
+        Character currentTarget = Targeting.GetTarget()?.Targetable as Character;
+
+        TryActivateJumpBack(currentTarget);
+
+        DamageDeal(currentTarget);
+
+        JumpBackComboContext.LastTarget = currentTarget;
+        JumpBackComboContext.LastSkill = typeof(ClawStrike);
+        JumpBackComboContext.LastTime = Time.time;
 
         yield return null;
     }
@@ -181,10 +193,32 @@ public class ClawStrike : Skill
         }
     }
 
-    private void JumpBackClawStrike()
+    private void TryActivateJumpBack(Character currentTarget)
     {
-        var lastSkill = _player.Abilities.LastCastedSkill;
-        if (_jumpBack != null && (lastSkill is CheliceraStrike || lastSkill is ClawStrike)) _jumpBack.EnableJumpBack();
+        if (_jumpBack == null) return;
+        if (currentTarget == null) return;
+
+        if (JumpBackComboContext.LastTarget != currentTarget)
+        {
+            JumpBackComboContext.Reset();
+            return;
+        }
+
+        bool validPrevious =
+            JumpBackComboContext.LastSkill == typeof(ClawStrike) ||
+            JumpBackComboContext.LastSkill == typeof(CheliceraStrike);
+
+        bool inWindow =
+            Time.time - JumpBackComboContext.LastTime <= JumpBackWindow;
+
+        if (validPrevious && inWindow)
+        {
+            _jumpBack.EnableJumpBack();
+        }
+        else
+        {
+            JumpBackComboContext.Reset();
+        }
     }
 
     private void TryApplyBleeding(Character target)
@@ -192,18 +226,26 @@ public class ClawStrike : Skill
         if (!_isBleedingClawStrike) return;
 
         _totalChanceApplyBleeding = _chanceApplyBleeding;
+
         var lastSkill = _player.Abilities.LastCastedSkill;
+
+        if (lastSkill is CheliceraStrike) _totalChanceApplyBleeding += CheliceraBonusChance;
+        if (lastSkill is JumpWithChelicera) _totalChanceApplyBleeding += JumpWithCheliceraBonusChance;
 
         if (_isDurationChanceApplyBleedingWithJump && _jumpWithChelicera.IsCheliceraStrikeCast && lastSkill is CheliceraStrike) _totalChanceApplyBleeding = _chanceApplyBleedingWithJump;
 
         if (_isChanceApplyBleedingIncrease && CheckStateForBleeding(target)) _totalChanceApplyBleeding += _chanceApplyBleedingIncrease;
+        _totalChanceApplyBleeding = Mathf.Clamp01(_totalChanceApplyBleeding);
+
+        Debug.Log($"_totalChanceApplyBleeding: {_totalChanceApplyBleeding}");
 
         float rand = UnityEngine.Random.Range(RandomChanceMin, RandomChanceMax);
         if (rand <= _totalChanceApplyBleeding) CmdAddBleeding(target);
 
         _jumpWithChelicera.IsCheliceraStrikeCast = false;
         _isDurationChanceApplyBleedingWithJump = false;
-        if (coroutineDurationChanceApplyBleedingWithJump != null) StopCoroutine(IDurationChanceApplyBleedingWithJump());
+
+        if (coroutineDurationChanceApplyBleedingWithJump != null) StopCoroutine(coroutineDurationChanceApplyBleedingWithJump);
     }
 
     public void ClawStrikePreparingForAnim()

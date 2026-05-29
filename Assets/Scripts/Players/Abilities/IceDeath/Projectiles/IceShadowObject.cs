@@ -7,7 +7,7 @@ using UnityEngine;
 public class IceShadowObject : Projectiles
 {
 	//[HideInInspector] public EnergyPlayer energyPlayer;
-	[HideInInspector] public float timeToDestroy = 2;
+	[HideInInspector] public float timeToDestroy = 4;
 
 	[SerializeField] private bool enemyShadow = true;
 	[SerializeField] private Animator anim;
@@ -19,6 +19,9 @@ public class IceShadowObject : Projectiles
 	private float _damageTimer = 1f;
 	private float _modifierRegen;
 	private float _lifeTimer;
+	private float _bonusDuration;
+
+	public Skill SkillShadow { get => _skill; set => _skill = value; }
 
 	#region Const
 	private const float MaxEnergyForShadow = 30f;
@@ -42,15 +45,20 @@ public class IceShadowObject : Projectiles
 	private const float DamageRadius = 4f;
 
 	private const float HitEffectLifetime = 5f;
+
+	private const float FrostEnergyCoolingBonusPerStack = 1f;
+	private const float FrostEnergyFrostingBonusPerStack = 5f;
+	private const float FrostEnergyFrozenBonusPerStack = 10f;
 	#endregion
 	/*
 	 * timer to destroy
 	 * buff player
 	 * */
-	public override void Init(Character dad, float energy, bool lastHit, Skill skill)
+	public void InitShadow(Character dad, float energy, float bonusDuration, bool lastHit, Skill skill)
 	{
 		_skill = skill;
 		_dad = dad;
+		_bonusDuration = bonusDuration;
 
 		_energyDad = Mathf.Min(energy, MaxEnergyForShadow);
 
@@ -140,25 +148,66 @@ public class IceShadowObject : Projectiles
 		{
 			float timeElapsed = Time.time - _lifeTimer;
 			float remainingLifetime = Mathf.Max(0f, timeToDestroy - timeElapsed);
+			float finalDuration = remainingLifetime + _bonusDuration;
 			//float freezeDuration = Mathf.Clamp(remainingLifetime, MinFreezeDuration, MaxFreezeDuration);
 
-			target.CharacterState.AddState(States.Frozen, remainingLifetime, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
+			ApplyStateWithFrostEnergyBonus(target, States.Frozen, remainingLifetime);
 			//GetComponent<Collider2D>().enabled = false;
 			//Destroy(gameObject);
-			if(_lastHit)
+			if (_lastHit)
 			{
 				Collider[] enemyDetected = Physics.OverlapSphere(transform.position, ChainFreezeRadius);
 				foreach (var enemy in enemyDetected) 
 				{
 					if (enemy.TryGetComponent<Character>(out var newTatget) && collision.gameObject != _dad.gameObject)
 					{
-						newTatget.CharacterState.AddState(States.Frozen, remainingLifetime, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
+						ApplyStateWithFrostEnergyBonus(newTatget, States.Frozen, finalDuration);
 					}
 				}
 			}
 			Explode();
 		}
 		//Explode();
+	}
+
+	private void ApplyStateWithFrostEnergyBonus(Character target, States state, float duration)
+	{
+		bool hasFrostEnergy = target.CharacterState.CheckForState(States.FrostEnergy);
+
+		int currentStacks = target.CharacterState.CheckStateStacks(state);
+		int stacksAfterApply = currentStacks + 1;
+
+		float bonusPerStack = 0f;
+
+		switch (state)
+		{
+			case States.Cooling:
+				bonusPerStack = FrostEnergyCoolingBonusPerStack;
+				break;
+
+			case States.Frosting:
+				bonusPerStack = FrostEnergyFrostingBonusPerStack;
+				break;
+
+			case States.Frozen:
+				bonusPerStack = FrostEnergyFrozenBonusPerStack;
+				break;
+		}
+
+		if (hasFrostEnergy && bonusPerStack > 0f)
+		{
+			float bonusDamage = stacksAfterApply * bonusPerStack;
+
+			Damage bonus = new Damage
+			{
+				Value = bonusDamage,
+				Type = DamageType.Magical
+			};
+
+			target.Health.TryTakeDamage(ref bonus, _skill);
+		}
+
+		target.CharacterState.AddState(state, duration,	target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
 	}
 
 	public void Explode()

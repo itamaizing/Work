@@ -179,7 +179,7 @@ public abstract class Skill : NetworkBehaviour
     public float AutoAttackDelay { get => _autoAttackDelay; }
     public ChargeCDUI LinkedChargeCDUI { get; set; }
     #endregion Properties
-
+    
     #region Events
     #region Casting Events
     public event Action<Skill> PreparingStarted;
@@ -1269,6 +1269,8 @@ public abstract class Skill : NetworkBehaviour
     {
         var damageable = target != null ? target.GetComponent<IDamageable>() : null;
         Character targetCharacter = target != null ? target.GetComponent<Character>() : null;
+        damage.SourceSkill = this;
+
         if (targetCharacter)
         {
             if (targetCharacter.IsDead)

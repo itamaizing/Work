@@ -1,4 +1,4 @@
-﻿using Mirror;
+using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ public class CreeperPoisonAura : NetworkBehaviour
 
     private Coroutine _poisonAuraRoutine;
     private int _lastStacks = 0;
-
+    
     private int _lastEnergyStacks = 0;
 
     private Health _health;
@@ -110,7 +110,6 @@ public class CreeperPoisonAura : NetworkBehaviour
         foreach (var skill in _owner.Abilities.Skills)
         {
             if (skill == null) continue;
-
             if (skill.Cooldown.IsActive) skill.Cooldown.Modify(-reduction);
         }
     }
