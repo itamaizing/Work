@@ -7713,7 +7713,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.size
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.size

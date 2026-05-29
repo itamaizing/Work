@@ -14,6 +14,8 @@ public class DeathSpiral : Skill
 	[SerializeField] private PlagueAbsorption _plagueAbsorption;
 	[SerializeField] private DamageTracker _damageTracker;
 	[SerializeField] private float _damageToCharge = 30f;
+	[SerializeField] private List<GameObject> _deathSpiralCharges;
+
 
 	private float _currentAccumulatedDamage;
 	private Heal _heal;
@@ -30,10 +32,15 @@ public class DeathSpiral : Skill
 	private bool _talentCorpseDeath = false;
 	private bool _talentCorpseBoostExplode;
 	private bool _firstShot = true;
+	private int _charges;
 
-	protected override bool IsCanCast => Chargers > 0;
+	private const int MaxCharges = 2;
 
-    protected override int AnimTriggerCastDelay => 0;
+	public int ChargesSpiral => _charges;
+
+	protected override bool IsCanCast => _charges > 0;
+
+	protected override int AnimTriggerCastDelay => 0;
 
     protected override int AnimTriggerCast => 0;
 
@@ -292,12 +299,28 @@ public class DeathSpiral : Skill
 
 	public void AddCharge()
 	{
-		if (Chargers < _maxCharges)
-		{
-			Chargers = Chargers + 1;
-		}
+		if (_charges >= MaxCharges)
+			return;
 
-		Debug.Log(Chargers + " curNum " + _maxCharges + " Max");
+		_charges++;
+
+		for (int i = 0; i < _deathSpiralCharges.Count; i++) _deathSpiralCharges[i].SetActive(i < _charges);
+
+		Charges.SendCurrentChange(_charges);
+	}
+
+	public bool UseCharge()
+	{
+		if (_charges <= 0)
+			return false;
+
+		_charges--;
+
+		for (int i = 0; i < _deathSpiralCharges.Count; i++) _deathSpiralCharges[i].SetActive(i < _charges);
+
+		Charges.SendCurrentChange(_charges);
+
+		return true;
 	}
 
 	private void Timer()
