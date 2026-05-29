@@ -24,3 +24,13 @@ MonoBehaviour:
     icon: {fileID: 0}
     name_locKey: Mana.Regen.description
     description_locKey: 
+  - nameToShow: RegenDelay
+    type: 2
+    icon: {fileID: 0}
+    name_locKey: Mana.RegenDelay.description
+    description_locKey: 
+  - nameToShow: RegenPeriod
+    type: 3
+    icon: {fileID: 0}
+    name_locKey: Mana.RegenPeriod.description
+    description_locKey: 

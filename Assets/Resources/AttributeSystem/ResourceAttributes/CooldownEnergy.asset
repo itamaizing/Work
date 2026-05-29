@@ -24,3 +24,13 @@ MonoBehaviour:
     icon: {fileID: 0}
     name_locKey: CooldownEnergy.Regen.description
     description_locKey: 
+  - nameToShow: RegenDelay
+    type: 2
+    icon: {fileID: 0}
+    name_locKey: CooldownEnergy.RegenDelay.description
+    description_locKey: 
+  - nameToShow: RegenPeriod
+    type: 3
+    icon: {fileID: 0}
+    name_locKey: CooldownEnergy.RegenPeriod.description
+    description_locKey: 

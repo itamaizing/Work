@@ -7,6 +7,7 @@ using UnityEngine;
 public class SO_ResourceData : ScriptableObject
 {
     [HideInInspector] public ResourceType type;
+    public Sprite resourceIcon;
     public List<helperSO_ResourceAttribute> attributes = new();
 
     public void Init(ResourceType _type)
@@ -46,7 +47,7 @@ public class SO_ResourceData : ScriptableObject
         {
             nameToShow = type.ToString();
             name_locKey = $"{res.ToString()}.{type.ToString()}.name";
-            name_locKey = $"{res.ToString()}.{type.ToString()}.description";
+            description_locKey = $"{res.ToString()}.{type.ToString()}.description";
         }
     }
 }

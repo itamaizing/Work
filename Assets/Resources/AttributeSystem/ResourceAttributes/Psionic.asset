@@ -24,3 +24,13 @@ MonoBehaviour:
     icon: {fileID: 0}
     name_locKey: Psionic.Regen.description
     description_locKey: 
+  - nameToShow: RegenDelay
+    type: 2
+    icon: {fileID: 0}
+    name_locKey: Psionic.RegenDelay.description
+    description_locKey: 
+  - nameToShow: RegenPeriod
+    type: 3
+    icon: {fileID: 0}
+    name_locKey: Psionic.RegenPeriod.description
+    description_locKey: 

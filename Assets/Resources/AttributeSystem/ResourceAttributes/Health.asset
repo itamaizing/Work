@@ -13,14 +13,25 @@ MonoBehaviour:
   m_Name: Health
   m_EditorClassIdentifier: Assembly-CSharp::SO_ResourceData
   type: 0
+  resourceIcon: {fileID: 21300000, guid: 466f5a56e8f6e4544bceac39c6637570, type: 3}
   attributes:
   - nameToShow: MaxValue
     type: 0
-    icon: {fileID: 0}
-    name_locKey: Health.MaxValue.description
-    description_locKey: 
+    icon: {fileID: 21300000, guid: 4463ef0b53358594abad4d6e301dee27, type: 3}
+    name_locKey: Health.MaxValue.name
+    description_locKey: Health.MaxValue.description
   - nameToShow: Regen
     type: 1
     icon: {fileID: 0}
-    name_locKey: Health.Regen.description
-    description_locKey: 
+    name_locKey: Health.Regen.name
+    description_locKey: Health.Regen.description
+  - nameToShow: RegenDelay
+    type: 2
+    icon: {fileID: 0}
+    name_locKey: Health.RegenDelay.name
+    description_locKey: Health.RegenDelay.description
+  - nameToShow: RegenPeriod
+    type: 3
+    icon: {fileID: 0}
+    name_locKey: Health.RegenPeriod.name
+    description_locKey: Health.RegenPeriod.description

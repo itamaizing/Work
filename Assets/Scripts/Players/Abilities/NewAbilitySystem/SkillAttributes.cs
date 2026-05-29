@@ -13,6 +13,7 @@ public enum SkillAttributeName
     CastSpeed,
     Cooldown,
     ResourceCost,
+    ChanceModifier,
 }
 
 public class SkillAttributes
@@ -92,7 +93,7 @@ public class SkillAttributes
     {
         foreach (SkillAttributeName attribute in Enum.GetValues(typeof(SkillAttributeName)))
         {
-            _attributes.Add(attribute, new Attribute());
+            _attributes.Add(attribute, new Attribute(attribute.ToString()));
         }
     }
 
@@ -115,5 +116,15 @@ public class SkillAttributes
     public float GetCombined(SkillAttributeName skill_atr, CharacterAttributeName hero_atr, float baseValue = float.MinValue)
     {
         return GetCombined(_attributes[skill_atr], _heroAttributes[hero_atr], baseValue);
+    }
+
+    public float GetChance(float value)
+    {
+        if (_heroAttributes == null)
+            return _attributes[SkillAttributeName.ChanceModifier].CalculateFor(value);
+        return GetCombined(
+            _attributes[SkillAttributeName.ChanceModifier],
+            _heroAttributes[CharacterAttributeName.ChanceModifier],
+            value);
     }
 }
