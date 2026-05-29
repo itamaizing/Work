@@ -17,6 +17,8 @@ public class DeathSpiral : Skill
 
 	private const int MaxCharges = 3;
 	private float _currentAccumulatedDamage;
+
+	[SyncVar(hook = nameof(OnChargesChanged))]
 	private int _chargesSpiral;
 
 	private Heal _heal;
@@ -34,7 +36,7 @@ public class DeathSpiral : Skill
 	private bool _talentCorpseBoostExplode;
 	private bool _firstShot = true;
 
-	protected override bool IsCanCast => _chargesSpiral > 0;
+	protected override bool IsCanCast => true;
 
     protected override int AnimTriggerCastDelay => 0;
 
@@ -63,27 +65,32 @@ public class DeathSpiral : Skill
 		if (_damageTracker != null) _damageTracker.OnDamageTracked -= TrackDamage;
 	}
 
+	private void OnChargesChanged(int oldValue, int newValue)
+	{
+		Charges.SendCurrentChange(newValue);
+	}
+
 	public override void LoadTargetData(TargetInfo targetInfo)
     {
         Debug.LogError("DataError");
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
 		while (Targeting.GetTarget()?.Character == null)
 		{
 			if (GetMouseButton)
 			{
 				Targeting.FindTempTarget();
-				if (GetRaycastTargetShadow() != null)
-				{
-					//Targeting.SetTarget(GetRaycastTargetShadow());
-					//_target = GetRaycastTargetShadow();					
-				}			
 			}
+
 			yield return null;
 		}
-		Debug.LogError("DataError");
+
+		TargetInfo targetInfo = new TargetInfo();
+		targetInfo.AddTarget(Targeting.GetTarget().Character);
+
+		callbackDataSaved(targetInfo);
 	}
 
 	protected override IEnumerator CastJob()
