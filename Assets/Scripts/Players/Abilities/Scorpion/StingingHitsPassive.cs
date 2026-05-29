@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class StingingHitsPassive : Skill, IPassiveSkill
 {
-    private float _critChance = 10f;
+    [SerializeField] private ScorpionPassive scorpionPassive;
+    private float _critChance = 0.1f;
     private float _critMultiplierLow = 1.7f;
     private float _critMultiplierHigh = 2.7f;
     protected override bool IsCanCast => false;
@@ -93,7 +94,12 @@ public class StingingHitsPassive : Skill, IPassiveSkill
         var characterTarget = target.GetComponent<Character>();
         
         if (WasDebuffAppliedByHandOrFoot(skill, characterTarget) && !isCritical) isCritical = true;
-        else if (UnityEngine.Random.value <= _critChance / 100f && !isCritical) isCritical = true;
+        else if (target.GetComponent<CharacterState>().CheckForState(States.Stun) && scorpionPassive.IsAddStateUpdateChance)
+        {
+            if(UnityEngine.Random.value <= _critChance + scorpionPassive.AdditionalAddStateChance&& !isCritical) 
+                isCritical = true;
+        }
+        else if (UnityEngine.Random.value <= _critChance && !isCritical) isCritical = true;
 
         if (isCritical)
         {

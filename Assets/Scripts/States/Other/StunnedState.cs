@@ -16,7 +16,7 @@ public class StunnedState : RefreshingState
 	{
 		MaxStacksCount = 1;
 		currentStacksCount = 1;
-		
+		duration = durationToExit;
 		if (character.TryGetComponent<Character>(out var ability))
 		{
 			abilities = ability.Abilities;
@@ -30,6 +30,10 @@ public class StunnedState : RefreshingState
 
 	public override void UpdateState()
 	{
+		if (duration <= 0)
+		{
+			ExitState();
+		}
 	}
 
 	public override bool Stack(float time)

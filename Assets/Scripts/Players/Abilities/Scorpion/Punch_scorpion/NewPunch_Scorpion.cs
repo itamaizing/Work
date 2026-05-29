@@ -63,7 +63,11 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
     [SerializeField] private float stunningAddChance = 0.1f;
     private bool _isStunningAddChance = false;
 
-    public void StunningAddChance(bool value) => _isStunningAddChance = value;
+    public void StunningAddChance(bool value)
+    {
+        if(value == _isStunningAddChance) return;
+        _isStunningAddChance = value;
+    }
 
     [Header("WarmingUp  talent")]
     [SerializeField] private float warmingUpDuration;
@@ -300,16 +304,16 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
         if (_isStunningAddChance)
         {
             var state = target.GetComponent<CharacterState>();
-
+            var chance = stunningAddChance;
             if (scorpionPassive.IsAddStateUpdateChance && state != null)
             {
-                if (state.CheckForState(States.DisappointmentState)) state.AddState(States.Stun, StunDuration, 0, _hero.gameObject, name);
+                if (state.CheckForState(States.DisappointmentState))
+                {
+                    chance += scorpionPassive.AdditionalAddStateChance;
+                }
             }
-
-            else
-            {
-                if (UnityEngine.Random.value <= stunningAddChance) state?.AddState(States.Stun, StunDuration, 0, _hero.gameObject, name);
-            }
+            if (UnityEngine.Random.value <= chance) 
+                state?.AddState(States.Stun, StunDuration, 0,Schools.Physical, _hero.gameObject, name);
         }
     }
 

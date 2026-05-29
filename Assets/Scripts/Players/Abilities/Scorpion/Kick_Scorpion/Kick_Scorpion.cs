@@ -232,28 +232,28 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
         _hitsInRowCoroutine = StartCoroutine(HitsInRowTimer());
 
         var state = target.GetComponent<CharacterState>();
-
+        float chance = BaseKnockdownChance;
         if (_scorpionPassive.IsAddStateUpdateChance)
         {
-            if (state.CheckForState(States.DisappointmentState)) 
-                state?.AddState(States.Knockdown, KnockdownDurationDefault, 0, _hero.gameObject, name);
+            if (state.CheckForState(States.DisappointmentState))
+            {
+                chance += _scorpionPassive.AdditionalAddStateChance;
+            }
         }
-
         if (_isKick_ScorpionRowTalent)
         {
             _kickHitsInRow++;
 
-            float chance = BaseKnockdownChance + (_kickHitsInRow * KnockDownPerHit);
-
-            if (Random.value <= chance)
-            {
-                target.CharacterState?.AddState(States.Knockdown, KnockdownDurationDefault, 0, _hero.gameObject, name);
-                _kickHitsInRow = 0;
-            }
+            chance += _kickHitsInRow * KnockDownPerHit;
         }
         else
         {
             _kickHitsInRow = 0;
+        }
+        
+        if (Random.value <= chance)
+        {
+            state?.AddState(States.Knockdown, KnockdownDurationDefault, 0, _hero.gameObject, name);
         }
 
         if (_isKick_ScorpionComboTalent && state != null)

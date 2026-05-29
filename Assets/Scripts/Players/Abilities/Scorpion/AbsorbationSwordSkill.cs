@@ -15,13 +15,14 @@ public class AbsorbationSwordSkill : Skill
     private float _absorbEnergyReturn = 10f;
     private float _chargeGainPerMagicDamage = 30f;
     private float _absorbedDamage = 0f;
-    private float _baseBlockChance;
-    
+
     private int _currentCharges = 2;
     
     private bool _isAbsorbing = false;
 
     private Coroutine _absorbCoroutine;
+
+    private float _baseBlockChance;
 
     #region Доп урон от поглощённых снарядов
 
@@ -50,11 +51,9 @@ public class AbsorbationSwordSkill : Skill
     public override void Init(SkillRenderer render, Character hero)
     {
         base.Init(render, hero);
-        _baseBlockChance = hero.Health.BlockChance;
         _energy = hero.Resources[ResourceType.Energy];
-        Hero.Health.OnBeforeTakeDamage += OnHeroAbsorbed;
-        Hero.Health.Block += EndAbsorb;
         _hero.Health.DamageTaken += OnHeroDamageTaken;
+        _baseBlockChance = hero.Health.BlockChance;
         
         _swordSkills = _hero.Abilities.Abilities.Where(s => s is ISwordSkill).ToList();
         foreach (var swordSkill in _swordSkills)
@@ -65,13 +64,23 @@ public class AbsorbationSwordSkill : Skill
     
     private void OnDisable()
     {
-        Hero.Health.OnBeforeTakeDamage -= OnHeroAbsorbed;
-        Hero.Health.Block -= EndAbsorb;
         _hero.Health.DamageTaken -= OnHeroDamageTaken;
         foreach (var swordSkill in _swordSkills)
         {
             swordSkill.CastSuccess -= () => ApplyAbsorbedDamage(swordSkill);
         }
+    }
+
+    private void OnSkillStarted()
+    {
+        _hero.Health.OnBeforeTakeDamage += OnHeroAbsorbed;
+        Hero.Health.Block += EndAbsorb;
+    }
+
+    private void OnSkillEnded()
+    {
+        _hero.Health.OnBeforeTakeDamage -= OnHeroAbsorbed;
+        Hero.Health.Block -= EndAbsorb;
     }
 
     public void EnableAbsorbedDamage(bool value)
@@ -98,7 +107,6 @@ public class AbsorbationSwordSkill : Skill
 
     private void OnHeroDamageTaken(Damage damage, Skill skill)
     {
-        if(!skill.IsSkillActive) return;
         if (damage.Type == DamageType.Magical)
         {
             _absorbedDamage += damage.Value;
@@ -118,7 +126,6 @@ public class AbsorbationSwordSkill : Skill
 
     private void OnHeroAbsorbed(Damage damage, Skill skill)
     {
-        if(!skill.IsSkillActive) return;
         if (_isAbsorbing && IsProjectileSkill(skill))
         {
             _hero.Health.BlockChance = 100;
@@ -179,7 +186,6 @@ public class AbsorbationSwordSkill : Skill
     protected override IEnumerator CastJob()
     {
         if (_currentCharges <= 0) yield break;
-        
         _isAbsorbing = true;
         CmdSetAbsorbing(true);
         ControlMovement(false);
@@ -193,7 +199,6 @@ public class AbsorbationSwordSkill : Skill
             timer += Time.deltaTime;
             yield return null;
         }
-
         EndAbsorb();
     }
 
@@ -201,6 +206,8 @@ public class AbsorbationSwordSkill : Skill
     private void CmdSetAbsorbing(bool value)
     {
         _isAbsorbing = value;
+        if(value)
+            OnSkillStarted();
     }
 
     private void EndAbsorb()
@@ -218,9 +225,10 @@ public class AbsorbationSwordSkill : Skill
             StopCoroutine(_absorbCoroutine);
             _absorbCoroutine = null;
         }
-        
-        CheckChargers();
+
         _hero.Health.BlockChance = _baseBlockChance;
+        OnSkillEnded();
+        CheckChargers();
     }
 
     private bool IsProjectileSkill(Skill skill)

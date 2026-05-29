@@ -189,6 +189,7 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
         for (int i = 0; i < amount; i++)
         {
             skill.TryUseCharge();
+            skill.Cost.TryPayMandatory();
         }
     }
 

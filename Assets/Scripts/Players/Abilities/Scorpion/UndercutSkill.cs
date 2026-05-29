@@ -17,6 +17,25 @@ public class UndercutSkill : Skill,IComboParticipatingSkill
     public void AnimUndercut() => AnimStartCastCoroutine();
     public void AnimUndercutEnd() => AnimCastEnded();
 
+    #region BleedingUpgradeTalent
+
+    private bool _isBleedingUpgrade;
+
+    public void EnableBleedingUpgrade(bool value)
+    {
+        if(value == _isBleedingUpgrade) return;
+        _isBleedingUpgrade = value;
+        CmdEnableBleedingUpgrade(_isBleedingUpgrade);
+    }
+    
+    [Command]
+    private void CmdEnableBleedingUpgrade(bool value)
+    {
+        _isBleedingUpgrade = value;
+    }
+
+    #endregion
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (Targeting.GetTempTarget()?.Character == null)
@@ -68,6 +87,18 @@ public class UndercutSkill : Skill,IComboParticipatingSkill
         var damageable = target.GetComponent<IDamageable>();
         var isHit = damageable.TryTakeDamage(ref damage, this);
 
+        if (_isBleedingUpgrade)
+        {
+            var targetState = target.GetComponent<CharacterState>();
+            var hasStun = targetState.CheckForState(States.Stun);
+            var hasDisappointment = targetState.CheckForState(States.DisappointmentState);
+
+            if (hasStun || hasDisappointment)
+            {
+                targetState.AddState(States.Bleeding,9f,1000,Schools.Physical,gameObject,nameof(UndercutSkill));
+            }
+        }
+
         if (isHit && damageable is Character character)
         {
             OnDamaged?.Invoke(target,this);
@@ -79,7 +110,14 @@ public class UndercutSkill : Skill,IComboParticipatingSkill
     {
         if (target == null) return;
         var state = target.GetComponent<CharacterState>();
-        state?.AddState(States.DisappointmentState, _disappointmentDuration + _disappointmentBonusDuration, 0f, Hero.gameObject, Name);
+        if (_isBleedingUpgrade)
+        {
+            state?.AddState(States.DisappointmentState, _disappointmentDuration + _disappointmentBonusDuration, 0f, Hero.gameObject, nameof(UndercutSkill)+"bleedingUpgrade");
+        }
+        else
+        {
+            state?.AddState(States.DisappointmentState, _disappointmentDuration + _disappointmentBonusDuration, 0f, Hero.gameObject, nameof(UndercutSkill));
+        }
         _disappointmentBonusDuration = 0f;
     }
 

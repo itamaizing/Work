@@ -11,14 +11,12 @@ public class NinjaScorpionTalent_1 : Talent
     public override void Enter()
     {
         skill.ActivateSkill(kick_Scorpion);
-        kick_Scorpion.Kick_ScorpionRowTalent(true);
         newPunch_Scorpion.StunningAddChance(true);
     }
 
     public override void Exit()
     {
         skill.DeactivateSkill(kick_Scorpion);
-        kick_Scorpion.Kick_ScorpionRowTalent(false);
         newPunch_Scorpion.StunningAddChance(false);
     }
 }

@@ -77,17 +77,17 @@ public class BleedingState : RefreshingState
         duration = _baseDuration;
         return true;
     }
-
-    [Server]
+    
     private void BleedingDamage()
     {
         Damage damage = new Damage()
         {
             Value = _baseDamage,
             Type = DamageType.Physical,
+            DamageKey = "bleeding"
         };
-
-        _target.Health.TryTakeDamage(ref damage, null);
+        if(_target.isServer)
+            _target.Health.TryTakeDamage(ref damage, null);
     }
     
     public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
