@@ -8,14 +8,15 @@ using UnityEngine;
 public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 {
     [Header("Ability settings")]
-    //[SerializeField] private VisualRender _visualRender;
-    [SerializeField] private Character _playerLinks;
-    [SerializeField] private DrawCircle _drawCircleSelf;
     [SerializeField] private int _manaCostPerTile = 5;
     [SerializeField] private int _baseCost = 20;
     [SerializeField] private LayerMask _layerMask;
     [SerializeField] private float _offset = 0.5f;
 
+    private Resource _energy;
+    private Attribute _radiusAttribute;
+    AttributeModifier _bonusCostModifier = new AttributeModifier(0, ModifierType.Flat);
+    private AttributeModifier _radiusModifierAttribute = new(0, ModifierType.Flat);
     private bool isTeleportation_ScorpionMagResist;
 
     #region Const
@@ -42,45 +43,45 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     {
         get
         {
-            if (Targeting.GetTarget()?.Character != null) return Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius;
-
-            var mana = _hero.Resources[ResourceType.Energy];
-            if (mana == null) return false;
+            var energy = _hero.Resources[ResourceType.Energy];
+            if (energy == null) return false;
 
             if (Targeting.GetTarget()?.Character != null)
             {
                 float distance = Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position);
-                int manaCost = GetCurrentManaCost(distance);
-                return distance <= AreaInfo.Radius && mana.CurrentValue >= manaCost;
+                int bonusCost = GetBonusCost(distance);
+                return distance <= AreaInfo.Radius && energy.CurrentValue >= bonusCost + _baseCost;
 
             }
 
-            return mana.CurrentValue >= Cost.BaseCost;
+            return energy.CurrentValue >= _baseCost;
         }
     }
 
-    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render,hero);
+        _energy = _hero.Resources[ResourceType.Energy];
+        _radiusAttribute = Attributes[SkillAttributeName.Radius];
+        PreparingStarted += SetRadius;
+    }
+
+    private void OnDestroy()
+    {
+        PreparingStarted -= SetRadius;
+    }
+
+    private void SetRadius(Skill skill)
+    {
+        _radiusAttribute.RemoveModifier(_radiusModifierAttribute);
+        var newRadius = (_energy.CurrentValue - _baseCost) / _manaCostPerTile;
+        _radiusModifierAttribute.Value = newRadius;
+        _radiusAttribute.AddModifier(_radiusModifierAttribute);
+    }
 
     protected override int AnimTriggerCastDelay => 0;
 
     protected override int AnimTriggerCast => 0;
-
-    //private void ResetValue()
-    //{
-    //    //IsCanCancle = true;
-    //    _drawCircleSelf.Clear();
-    //    //_target = null;
-    //}
-
-    //private bool IsMouseInRadius()
-    //{
-    //    float distance = Vector3.Distance(
-    //        new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, transform.position.z),
-    //        transform.position
-    //        );
-
-    //    return distance <= AreaInfo.Radius;
-    //}
 
     private Vector3 FindPlace(Character target)
     {
@@ -152,41 +153,13 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
         return false;
     }
 
-    //private int CalculateCurrentScale() // ��������� ���� ��� ����� ����������� ���������
-    //{
-    //    //_hero.Stamina.Value
-    //    //_mana.value;
-    //    if(_hero.Resources.First(o=>o.Type == ResourceType.Mana).CurrentValue >= _baseManaCost)
-    //    {
-    //        return (int)((_hero.Resources.First(o=>o.Type == ResourceType.Mana).CurrentValue - _baseManaCost) / 1);
-    //    }
-
-    //    return 0;
-    //}
-
-    private int GetCurrentManaCost(float distance)
+    private int GetBonusCost(float distance)
     {
         int dist = Mathf.CeilToInt(distance);
-        if ((int)Cost.BaseCost == 0)
-        {
-            return 0;
-        }
-        int baseCost = (int)Cost.BaseCost + dist * _manaCostPerTile;
+        int bonusCost = dist * _manaCostPerTile;
 
-        return baseCost;
+        return bonusCost;
     }
-    //public void TryUpgradeByConsumingCombo(int amount)
-    //{
-    //    if (!Notifier.IsActive)
-    //    {
-    //        ConsumedAmount = 0;
-    //        return;
-    //    }
-
-    //    ConsumedAmount =  Notifier.PayComboPoints(Mathf.Clamp(amount, 0, Notifier.AvailablePoints));
-
-    //    // Change values
-    //}
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -197,8 +170,6 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     {
         while (Targeting.GetTempTarget()?.Character == null)
         {
-            _drawCircleSelf.Draw(AreaInfo.Radius);
-
             if (GetMouseButton)
             {
                 Targeting.FindTempTarget(Targeting.GetMousePoint(), SearchTargetInRadius);
@@ -213,24 +184,24 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
                         if (dist > AreaInfo.Radius)
                         {
-                            Debug.Log("[Teleportation] Цель вне зоны действия");
                             continue;
                         }
 
                         break;
                     }
-                }         
+                }
             }
 
             yield return null;
         }
-        
+       
         Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
-        
+       
         float distance = Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position);
-        int manaToSpend = GetCurrentManaCost(distance);
+        int manaToSpend = GetBonusCost(distance);
 
-        Cost.BaseCost = manaToSpend;
+        _bonusCostModifier.Value = manaToSpend;
+        Attributes[SkillAttributeName.ResourceCost].AddModifier(_bonusCostModifier);
 
         TargetInfo targetInfo = new();
         targetInfo.AddTarget(Targeting.GetTarget()?.Character);
@@ -266,25 +237,12 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     {
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();
-        Cost.BaseCost = _baseCost;
+        Attributes[SkillAttributeName.ResourceCost].RemoveModifier(_bonusCostModifier);
     }
 
     [Command]
-    private void CmdChangePosition(Vector3 teleportPosition)
+    private void CmdTeleport(Vector3 newPosition)
     {
-        _hero.transform.position = teleportPosition;
-    }
-
-    [Command]
-    private void CmdTeleport(/*GameObject gameObject, */Vector3 newPosition)
-    {
-        //if (_tempTarget != gameObject)
-        //{
-        //    _tempTarget = gameObject;
-        //    _tempTargetMove = gameObject.GetComponent<MoveComponent>();
-        //}
-
-        //_tempTargetMove.TargetRpcSetTransformPosition(newPosition);
         _hero.Move.TargetRpcSetTransformPosition(newPosition);
     }
 

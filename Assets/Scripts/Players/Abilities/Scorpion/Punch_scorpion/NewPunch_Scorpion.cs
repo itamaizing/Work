@@ -31,7 +31,7 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
     private const float HitsInRowResetDelay = 2f;
     private const int MinHitsForWarmingUp = 2;
     private const float StunDuration = 1f;
-    private const float SearchTargetInRadius = 1f;
+    private const float SearchTargetInRadius = 0.5f;
     #endregion
 
     private static readonly int RightPunchTrigger = Animator.StringToHash("RightPunch");
@@ -40,6 +40,8 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => _isRightKick ? RightPunchTrigger : LeftPunchTrigger;
 
+    private IDamageable _castTarget;
+    
     protected override bool IsCanCast => Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Transform.position, transform.position, _obstacle);
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
@@ -148,12 +150,6 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
 
     }
 
-    public void NewPunch_ScorpionMoveTrue()
-    {
-        _hero.Move.SetCanMove(true);
-        Hero.Move.StopLookAt();
-    }
-
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         _wasDamageApplied = false;
@@ -188,7 +184,7 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget() == null) yield return null;
+        if (_castTarget == null) yield break;
         if (!IsTargetInRange()) yield return null;
 
         _isRightKick = !_isRightKick;
@@ -202,14 +198,12 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
     private void ApplyAttackDamage()
     {
         if (_wasDamageApplied) return;
+        if (_castTarget == null) return;
 
-        var targetData = Targeting.GetTarget();
-        if (targetData == null) return;
-
-        var target = targetData.Targetable as IDamageable;
+        var target = (_castTarget as MonoBehaviour)?.gameObject;
         if (target == null) return;
 
-        if (Vector3.Distance(_hero.transform.position, targetData.Transform.position) > AreaInfo.Radius)
+        if (Vector3.Distance(_hero.transform.position, target.transform.position) > AreaInfo.Radius)
             return;
 
         Damage damage = new Damage
@@ -255,25 +249,6 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
                 character.CharacterState.AddState(States.ScorchedSoul, 5f, 0f, _hero.gameObject, name);
         }
     }
-
-    //[TargetRpc]
-    //private void RpcSelfNotifyHitResult(bool isHit, Character targetObject)
-    //{
-    //    if (targetObject == null)
-    //    {
-    //        Debug.LogError("[NewPunch_Scorpion] RpcSelfNotifyHitResult: TargetObject is null!");
-    //        return;
-    //    }
-
-    //    if (isHit)
-    //    {
-    //        AttackPassed(targetObject);
-    //    }
-    //    else
-    //    {
-    //        AttackMissed();
-    //    }
-    //}
 
     private void AttackPassed(Character target)
     {
@@ -329,11 +304,16 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
+        if (targetInfo.GetTargets().Count > 0)
+        {
+            Targeting.SetTarget(targetInfo.GetTargets()[0]);
+            _castTarget = Targeting.GetTarget()?.Damageable;
+        }
     }
 
     protected override void ClearData()
     {
+        _castTarget = null;
         _wasDamageApplied = false;
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();

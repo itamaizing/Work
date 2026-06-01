@@ -9,7 +9,7 @@ public class ChainArrow : Projectiles
     [SerializeField] private float _speed = 20f;
     [SerializeField] private float _speedModifier = 1.2f;
     [SerializeField] private float _speedWithTarget = 4f;
-    [SerializeField] private float _stopDistance = 1.5f;
+    [SerializeField] private float _stopDistance = 0.5f;
     [SerializeField] private float _arrowYOffset = 1.5f;
     [SerializeField] private LayerMask _targetsLayer;
     [SerializeField] private Transform _chainPoint;

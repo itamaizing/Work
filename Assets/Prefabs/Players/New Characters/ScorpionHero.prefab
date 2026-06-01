@@ -11158,17 +11158,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 5458554383432203635}
---- !u!114 &1402913355469849604 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1629212415153807048, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-  m_PrefabInstance: {fileID: 424471191848786636}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6527aa781683d1643a6540f0c1b1306c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2865354444991856952 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2461163197728234484, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -11786,16 +11775,16 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 6
+    _radius: 0
     _area: 0
     _castLength: 0
     _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
-    _isAutoAreaRender: 1
+    _isAutoAreaRender: 0
     _isAutoLineRender: 0
-    _isDynamicRenderer: 1
+    _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
@@ -11809,8 +11798,6 @@ MonoBehaviour:
     _prepareAnimations: []
     _castAnimations: []
     _activeClip: 0
-  _playerLinks: {fileID: 5458554383432203635}
-  _drawCircleSelf: {fileID: 1402913355469849604}
   _manaCostPerTile: 5
   _baseCost: 20
   _layerMask:
@@ -12051,7 +12038,7 @@ MonoBehaviour:
     _activeClip: 0
   _minDamage: 3
   _maxDamage: 5
-  _arrowYOffset: 1.5
+  _arrowYOffset: 0.8
   _chainArrowPrefab: {fileID: 7293680978615570491, guid: 9903945e1d35e3f4699a288cf83c9e9c, type: 3}
   _playerLinks: {fileID: 5458554383432203635}
   _pullLineRenderer: {fileID: 6883317968976862022}
