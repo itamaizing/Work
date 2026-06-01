@@ -326,6 +326,7 @@ public class CharacterState : NetworkBehaviour
 		[States.SpiritEnergy] = new SpiritEnergyState(),
 		[States.SpiritHealth] = new SpiritHealthState(),
 		[States.DisciplineAura]   = new DisciplineAuraState(),
+		[States.BurningMatter]   = new BurningMatterDebuff(),
 
 		[States.Knockdown] = new Knockdown(),
 		[States.IdealEvade] = new IdealEvade(),
@@ -1020,7 +1021,8 @@ public enum States
 	ShackleState,
 	SlowFlowLight,
 	Retribution,
-	DisciplineAura
+	DisciplineAura,
+	BurningMatter
 }
 public enum BaffDebaff
 {

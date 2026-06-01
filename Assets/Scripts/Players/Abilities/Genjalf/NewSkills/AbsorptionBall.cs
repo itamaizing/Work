@@ -365,6 +365,7 @@ namespace Gangdollarff
         private void RpcControlMovement(bool canMove)
         {
             _hero.Move.SetCanMove(canMove);
+            _hero.Abilities.SetAbilitiesDisactive(!canMove);
             if (!canMove)
                 _hero.Move.StopMoveAndAnimationMove();
         }
