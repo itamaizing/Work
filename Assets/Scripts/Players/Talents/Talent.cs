@@ -1,9 +1,13 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Talent : MonoBehaviour
 {
 	[SerializeField]
 	private TalentData _data;
+
+	private List<TalentData> _dependentTalents = new();
 
 	[SerializeReference, SubclassSelector]
 	public OpenCondition OpenCondition;
@@ -21,6 +25,7 @@ public abstract class Talent : MonoBehaviour
 		}
         _data.condition = OpenCondition;
         _data.ConditionDescription = OpenCondition.ConditionDescription();
+		OpenCondition.Validete(Data);
 		//Debug.Log("Open condition " + OpenCondition.CanOpen);
 	}
 
@@ -40,5 +45,21 @@ public abstract class Talent : MonoBehaviour
 		{
 			Exit();
 		}
+	}
+
+	public bool CanClose()
+	{
+		if(_dependentTalents.Count <= 0) return true;
+
+		foreach(var talent in _dependentTalents)
+		{
+			if (talent.IsOpen) return false;
+		}
+		return true;
+	}
+
+	public void AddDependendTalent(TalentData data)
+	{
+		_dependentTalents.Add(data);
 	}
 }

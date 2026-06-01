@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     public event UnityAction<TalentData, bool, int> Selected;
     public event UnityAction<TalentData> PointerEntered;
@@ -41,12 +41,12 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
 
     public void SetActive()
     {
-		_button.onClick.AddListener(Select);
+		//_button.onClick.AddListener(Select);
 	}
 
     private void OnDestroy()
     {
-        _button.onClick.RemoveListener(Select);
+        //_button.onClick.RemoveListener(Select);
     }
 
     public void Fill(TalentData talent, int row, bool isInteractable)
@@ -68,7 +68,7 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
     
     public void Select()
     {
-        if (_talent.IsOpen)
+        /*if (_talent.IsOpen)
         {
             if (_talent.Level < _talent.MaxLvl)
             {
@@ -92,7 +92,7 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
                 _lvlText.gameObject.SetActive(true);
             }
         }
-        activeState.isActive = _talent.IsOpen;
+        activeState.isActive = _talent.IsOpen;*/
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -110,5 +110,55 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
 
         if (_talent.IsOpen == false)
             _frameImage.sprite = _iconState.Off;
+    }
+
+    private void OnLeftClick()
+    {
+        if (_talent.IsOpen)
+        {
+            if (_talent.Level < _talent.MaxLvl)
+            {
+                _lvlText.text = (_talent.Level + 1).ToString();
+                Selected?.Invoke(_talent, _talent.IsOpen, _talent.Level + 1);
+                _lvlText.gameObject.SetActive(true);
+            }
+            else
+            {
+                Selected?.Invoke(_talent, !_talent.IsOpen, 0);
+                _lvlText.text = "0";
+                _lvlText.gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            if (_talent.condition.CanOpen)
+            {
+                Selected?.Invoke(_talent, !_talent.IsOpen, 1);
+                _lvlText.text = "1";
+                _lvlText.gameObject.SetActive(true);
+            }
+        }
+        activeState.isActive = _talent.IsOpen;
+    }
+
+    private void OnRightClick()
+    {
+        Selected?.Invoke(_talent, false, 0);
+        _lvlText.text = "0";
+        _lvlText.gameObject.SetActive(false);
+
+        activeState.isActive = _talent.IsOpen;
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            OnLeftClick();
+        }
+        else if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            OnRightClick();
+        }
     }
 }

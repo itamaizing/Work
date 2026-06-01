@@ -10,6 +10,7 @@ public abstract class OpenCondition
     public virtual bool CanOpen => CanOpenMethod();
     protected abstract bool CanOpenMethod();
 
+    public virtual void Validete(TalentData data) { }
     public virtual string ConditionDescription() => _conditionDescription;
 }
 
@@ -42,6 +43,16 @@ public class SpecificTalentOpenCondition : OpenCondition
                 return false;
         }
         return true;
+    }
+
+    public override void Validete(TalentData data)
+    {
+        if (_talentsNeededToOpen.Count <= 0) return;
+
+        foreach (var talent in _talentsNeededToOpen)
+        {
+            talent.AddDependendTalent(data);
+        }
     }
 }
 
