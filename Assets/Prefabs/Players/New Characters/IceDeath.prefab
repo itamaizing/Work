@@ -9185,10 +9185,10 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _chargeComponent:
-    _usesCharges: 1
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 1
-    _maxCharges: 3
+    _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
   _isUseCharges: 0
@@ -9227,10 +9227,6 @@ MonoBehaviour:
   _plagueAbsorption: {fileID: 1352912860454630216}
   _damageTracker: {fileID: 8829133113218603211}
   _damageToCharge: 30
-  _deathSpiralCharges:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!114 &1352912860454630216
 MonoBehaviour:
   m_ObjectHideFlags: 0
