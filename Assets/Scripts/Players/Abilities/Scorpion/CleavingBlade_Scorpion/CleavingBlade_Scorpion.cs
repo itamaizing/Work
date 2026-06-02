@@ -27,7 +27,7 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill,ISwordSkill
     private const float DefaultAnimSpeed = 1f;
     private const float ReducedAnimSpeed = 0.8f;
     private const float DefaultDamageMultiplier = 1f;
-    private const float SearchTargetInRadius = 1f;
+    private const float SearchTargetInRadius = 0.5f;
     private const float ShouldIncreaseCounter = 2f;
     #endregion
 
@@ -41,6 +41,8 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill,ISwordSkill
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Cast Blade");
+    
+    private IDamageable _castTarget;
 
     private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
     private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
@@ -55,7 +57,11 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill,ISwordSkill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        Targeting.SetTarget(targetInfo.GetTargets()[0]);
+        if (targetInfo.GetTargets().Count > 0)
+        {
+            Targeting.SetTarget(targetInfo.GetTargets()[0]);
+            _castTarget = Targeting.GetTarget()?.Damageable;
+        }
     }
     
     public void AddFireBonus(float damagePercent, float scorchedChance)
@@ -110,7 +116,6 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill,ISwordSkill
 
                     else
                     {
-                        _hero.Move.LookAtTransform(Targeting.GetTempTarget()?.Targetable.Transform);
                         if (Targeting.GetTempTarget()?.Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
                         break;
                     }
@@ -128,6 +133,8 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill,ISwordSkill
 
     protected override IEnumerator CastJob()
     {
+        if (_castTarget == null) yield break;
+        _hero.Move.LookAtTransform(Targeting.GetTempTarget()?.Targetable.Transform);
         TryAttack(true, DefaultDamageMultiplier);
         yield return null;
     }
@@ -144,14 +151,13 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill,ISwordSkill
     private void TryAttack(bool shouldIncreaseCounter, float damageMultiplier)
     {
         if (_wasDamageApplied) return;
+        if (_castTarget == null) return;
 
-        var targetData = Targeting.GetTarget();
-        if (targetData == null) return;
-
-        var target = targetData.Targetable as IDamageable;
+        var target = (_castTarget as MonoBehaviour)?.gameObject;
         if (target == null) return;
 
-        if (Vector3.Distance(transform.position, targetData.Transform.position) > AreaInfo.Radius) return;
+        if (Vector3.Distance(_hero.transform.position, target.transform.position) > AreaInfo.Radius)
+            return;
 
         Damage damage = new Damage
         {
@@ -200,6 +206,7 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill,ISwordSkill
 
     protected override void ClearData()
     {
+        _castTarget = null;
         _wasDamageApplied = false;
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();

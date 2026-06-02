@@ -166,7 +166,6 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
 
                     else
                     {
-                        _hero.Move.LookAtTransform(Targeting.GetTempTarget()?.Targetable.Transform);
                         if (Targeting.GetTempTarget()?.Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
                         break;
                     }
@@ -186,7 +185,7 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
     {
         if (_castTarget == null) yield break;
         if (!IsTargetInRange()) yield return null;
-
+        _hero.Move.LookAtTransform(Targeting.GetTempTarget()?.Targetable.Transform);
         _isRightKick = !_isRightKick;
         _lastTarget = Targeting.GetTarget()?.Character;
 
