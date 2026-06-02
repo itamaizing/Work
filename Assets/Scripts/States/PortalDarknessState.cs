@@ -8,6 +8,9 @@ public class PortalDarknessState : RefreshingState
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
 
+    private int _maxToSpawn = 2;
+    private int _spawnedCount = 0;
+
     public override List<StatusEffect> Effects => new List<StatusEffect>
     {
         StatusEffect.Freezing
@@ -37,7 +40,7 @@ public class PortalDarknessState : RefreshingState
 
     public override void UpdateState()
     {
-        if (!NetworkServer.active) return;
+        if (_caster.isServer) return;
         if (_caster == null || _caster.SpawnComponent == null) return;
 
         _timer += Time.deltaTime;
@@ -70,16 +73,23 @@ public class PortalDarknessState : RefreshingState
 
     private void SpawnEnemyMinion()
     {
+        if (_spawnedCount >= _maxToSpawn) return;
+        _spawnedCount++;
         int enemyIndex = 0;
 
         Vector3 spawnPos = characterState.transform.position + Random.insideUnitSphere * 2f;
         spawnPos.y = characterState.transform.position.y;
 
         _caster.SpawnComponent.CmdSpawnEnemyPoint(spawnPos, Quaternion.identity, enemyIndex);
+        if (_spawnedCount >= _maxToSpawn)
+        {
+            ExitState();
+        }
     }
 
     public override void ExitState()
     {
         base.ExitState();
+        _spawnedCount = 0;
     }
 }

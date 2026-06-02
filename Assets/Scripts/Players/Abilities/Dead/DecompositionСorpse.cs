@@ -9,7 +9,7 @@ public class DecompositionCorpse : NetworkBehaviour
     private Health _health;
     private Coroutine _decompositionRoutine;
 
-    private const float DamagePerTick = 1f;
+    private const float DamagePerTick = 5f;
     private const float Interval = 1f;
 
     private void OnEnable()
@@ -19,20 +19,28 @@ public class DecompositionCorpse : NetworkBehaviour
         if (_health == null) return;
 
         _health.Died += OnDied;
-
-        _decompositionRoutine = StartCoroutine(DecompositionRoutine());
+        if(!_health.isServer)
+            _decompositionRoutine = StartCoroutine(DecompositionRoutine());
     }
 
     private IEnumerator DecompositionRoutine()
     {
+        if (isServer) yield break;
         while (true)
         {
             yield return new WaitForSeconds(Interval);
 
             if (_health == null) yield break;
 
-            bool alive = _health.TryUse(DamagePerTick);
+            var dmg = new Damage { Value = DamagePerTick, Form = AbilityForm.Physical };
+            if (_health.isClient)
+            {
+                _health.CmdTryTakeDamage(dmg, null);
+            }
 
+
+            bool alive = _health.CurrentValue >= 0;
+            
             if (!alive) yield break;
         }
     }
@@ -54,8 +62,7 @@ public class DecompositionCorpse : NetworkBehaviour
     {
         if (_health != null) _health.Died -= OnDied;
     }
-
-    [Command]
+    
     private void SpawnCloud(Vector3 position)
     {
         GameObject cloud = Instantiate(_plagueCloudPrefab, position, Quaternion.identity);

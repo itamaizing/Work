@@ -107,8 +107,11 @@ public class MoveComponent : NetworkBehaviour, IAttribute
 		_isHero = isHero;
 
 		InputHandler.OnPlayerMove += OnMove;
-		_flyChecker.OffedGround += OnOffedGround;
-		_flyChecker.ReachGround += OnReachGround;
+		if (_flyChecker)
+		{
+			_flyChecker.OffedGround += OnOffedGround;
+			_flyChecker.ReachGround += OnReachGround;
+		}
 
 		RotateModifier = 1;
 	}

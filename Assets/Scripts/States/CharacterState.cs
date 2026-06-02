@@ -532,7 +532,7 @@ public class CharacterState : NetworkBehaviour
 		return null;
 	}
 
-	[Command]
+	[Command(requiresAuthority = false)]
 	public void CmdAddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
 	{
 		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);

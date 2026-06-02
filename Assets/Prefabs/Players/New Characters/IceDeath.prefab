@@ -7713,7 +7713,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.size
@@ -7918,7 +7918,7 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[4]'
       value: 
-      objectReference: {fileID: 5420442362572064916}
+      objectReference: {fileID: 6704089103393728732}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.data[0]'
       value: 
@@ -8581,6 +8581,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 850994493169687921}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6704089103393728732}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!114 &323327819542905198 stripped
 MonoBehaviour:
@@ -9227,10 +9230,6 @@ MonoBehaviour:
   _plagueAbsorption: {fileID: 1352912860454630216}
   _damageTracker: {fileID: 8829133113218603211}
   _damageToCharge: 30
-  _deathSpiralCharges:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!114 &1352912860454630216
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10486,7 +10485,7 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 0
+    _radius: 2
     _area: 0
     _castLength: 0
     _castWidth: 0
@@ -11650,6 +11649,32 @@ MonoBehaviour:
   character: {fileID: 4374618947117916461}
   _deathSpiral: {fileID: 5605713643324713456}
   _ability: {fileID: 4220410774128686972}
+--- !u!114 &6704089103393728732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cc3a1da4a30aa94dafb502b55997a79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ExplodingCorpseTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u043A\u043E\u0433\u0434\u0430 \u0442\u0440\u0443\u043F \u0443\u043C\u0438\u0440\u0430\u0435\u0442
+      \u043E\u043D \u0432\u0440\u0437\u044B\u0432\u0430\u0435\u0442\u0441\u044F \u043D\u0430\u043D\u043E\u0441\u044F
+      20 \u0435\u0434 \u0444\u0438\u0437 \u0443\u0440\u043E\u043D\u0430 \u0432 \u0440\u0430\u0434\u0438\u0443\u0441\u0435
+      1 \u043C\u0435\u0442\u0440\u0430 \u043E\u0442 \u0441\u0435\u0431\u044F \u0438
+      \u0437\u0430\u0440\u0430\u0436\u0430\u044F \u0446\u0435\u043B\u0438 \u0447\u0443\u043C\u043E\u0439."
+    _stateInfos: []
+    IsOpen: 0
+    Description: 
+    Icon: {fileID: -9187347743565390613, guid: f863a16a4c731ce469496ac94ccd951f, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 4374618947117916461}
 --- !u!114 &8829133113218603211 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 582667559171038809, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
