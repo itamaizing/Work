@@ -29,14 +29,19 @@ public class DeathSpiral : Skill
 	private bool _talentCorpseBoostExplode;
 	private bool _firstShot = true;
 
+	[SyncVar(hook = nameof(OnChargesChanged))]
+	private int _chargesSpiral;
+
 	private float _currentAccumulatedDamage;
+
+	private const int MaxCharges = 3;
 
 	protected override bool IsCanCast
 	{
 		get
 		{
 			if (Targeting.GetTarget()?.Character == null) return false;
-			if (Chargers <= 0) return false;
+			if (_chargesSpiral <= 0) return false;
 			return Vector3.Distance(Hero.transform.position, Targeting.GetTarget().Character.transform.position) <= AreaInfo.CastLength;
 		}
 	}
@@ -57,17 +62,20 @@ public class DeathSpiral : Skill
 
 	protected override void Awake()
 	{
-		IsUseCharges = true;
-		_maxCharges = 3;
-
 		base.Awake();
 
-		Chargers = 0;
+		_chargesSpiral = 0;
+		_maxCharges = MaxCharges;
 	}
 
 	private void OnDestroy()
 	{
 		if (_damageTracker != null) _damageTracker.OnDamageTracked -= TrackDamage;
+	}
+
+	private void OnChargesChanged(int oldValue, int newValue)
+	{
+		Charges.SendCurrentChange(newValue);
 	}
 
 	public override void LoadTargetData(TargetInfo targetInfo)
@@ -95,7 +103,7 @@ public class DeathSpiral : Skill
 
 	protected override IEnumerator CastJob()
 	{
-		Chargers--;
+		UseSpiralCharge(1);
 
 		if (_plagueAbsorption.Charges >= 1)
 		{
@@ -120,6 +128,14 @@ public class DeathSpiral : Skill
 		Targeting.ClearTempTarget();
 
 		_mousePos = Vector3.positiveInfinity;
+	}
+
+	private void UseSpiralCharge(int value = 1)
+	{
+		_chargesSpiral -= value;
+		_chargesSpiral = Mathf.Max(0, _chargesSpiral);
+
+		Charges.SendCurrentChange(_chargesSpiral);
 	}
 
 	/*protected override void Cast()
@@ -317,6 +333,8 @@ public class DeathSpiral : Skill
 
 	private void TrackDamage(Damage damage, GameObject target)
 	{
+		if (!isServer) return;
+
 		if (target == null) return;
 		if (damage.Type != DamageType.Physical) return;
 
@@ -324,7 +342,7 @@ public class DeathSpiral : Skill
 
 		while (_currentAccumulatedDamage >= _damageToCharge)
 		{
-			if (Chargers >= _maxCharges)
+			if (_chargesSpiral >= MaxCharges)
 			{
 				_currentAccumulatedDamage = 0;
 				return;
@@ -332,11 +350,11 @@ public class DeathSpiral : Skill
 
 			_currentAccumulatedDamage -= _damageToCharge;
 
-			Chargers++;
+			_chargesSpiral++;
 
-			Charges.SendCurrentChange(Chargers);
+			Charges.SendCurrentChange(_chargesSpiral);
 
-			Debug.Log($"DeathSpiral charge added {Chargers}/{_maxCharges}");
+			Debug.Log($"DeathSpiral charge added {_chargesSpiral}/{MaxCharges}");
 		}
 	}
 
