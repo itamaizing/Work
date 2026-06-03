@@ -4,10 +4,9 @@ using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class CleavingBlade_Scorpion : Skill
+public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill,ISwordSkill
 {
     [Header("Ability settings")]
-    [SerializeField] private PassiveCombo_Scorpion _comboCounter;
     [SerializeField] private ScorpionPassive _scorpionPassive;
     [SerializeField] [Range(0, 100)] private float _minDamage = 18f;
     [SerializeField] [Range(0, 100)] private float _maxDamage = 26f;
@@ -15,13 +14,20 @@ public class CleavingBlade_Scorpion : Skill
 
     [SyncVar] private int _counter = 1;
 
+    public event IComboParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplyParticipatingDamage;
+    public event Action<GameObject, Skill> OnDamaged;
+
+    private float _pendingFireDamageBonus = 0f;
+    private float _pendingScorchedSoulChance = 0f;
+    
     #region Const
-    private const float BleedingDuration = 6f;
+    private const float BleedingDuration = 9f;
+    private const float BaseDamageBaf = 2f;
     private const int MaxComboCounter = 3;
     private const float DefaultAnimSpeed = 1f;
     private const float ReducedAnimSpeed = 0.8f;
     private const float DefaultDamageMultiplier = 1f;
-    private const float SearchTargetInRadius = 1f;
+    private const float SearchTargetInRadius = 0.5f;
     private const float ShouldIncreaseCounter = 2f;
     #endregion
 
@@ -35,6 +41,8 @@ public class CleavingBlade_Scorpion : Skill
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Cast Blade");
+    
+    private IDamageable _castTarget;
 
     private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
     private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
@@ -49,30 +57,46 @@ public class CleavingBlade_Scorpion : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        Targeting.SetTarget(targetInfo.GetTargets()[0]);
+        if (targetInfo.GetTargets().Count > 0)
+        {
+            Targeting.SetTarget(targetInfo.GetTargets()[0]);
+            _castTarget = Targeting.GetTarget()?.Damageable;
+        }
+    }
+    
+    public void AddFireBonus(float damagePercent, float scorchedChance)
+    {
+        _pendingFireDamageBonus += damagePercent;
+        _pendingScorchedSoulChance += scorchedChance;
     }
 
     private void AttackPassed(bool shouldIncreaseCounter, Character target)
     {
-        _comboCounter.AddSkill(target, this);
-
-        if (_comboCounter.IsFinalComboSkill(target, this))
-        {
-            CharacterState state = target.GetComponent<CharacterState>();
-
-            if (state != null)
-            {
-                state.AddState(States.Bleeding, BleedingDuration, 0, _hero.gameObject, name);
-
-                int comboStacks = state.CheckStateStacks(States.ComboState);
-
-                for (int i = 0; i < comboStacks; i++) state.AddState(States.Bleeding, BleedingDuration, 0, _hero.gameObject, name);
-            }
-        }
+        OnDamaged?.Invoke(target.gameObject,this);
 
         if (shouldIncreaseCounter)
         {
             _counter = _counter == MaxComboCounter ? 1 : _counter + 1;
+        }
+    }
+    
+    public void OnFinalComboSkill(GameObject target)
+    {
+        CharacterState state = target.GetComponent<CharacterState>();
+
+        if (state != null)
+        {
+            state.AddState(States.Bleeding, BleedingDuration, BaseDamageBaf, _hero.gameObject, name);
+        }
+    }
+
+    public void OnTargetHasComboPoint(GameObject target, float comboPoints)
+    {
+        CharacterState state = target.GetComponent<CharacterState>();
+
+        if (state != null)
+        {
+            for (int i = 0; i < comboPoints; i++) state.AddState(States.Bleeding, BleedingDuration, BaseDamageBaf, _hero.gameObject, name);
         }
     }
 
@@ -92,7 +116,6 @@ public class CleavingBlade_Scorpion : Skill
 
                     else
                     {
-                        _hero.Move.LookAtTransform(Targeting.GetTempTarget()?.Targetable.Transform);
                         if (Targeting.GetTempTarget()?.Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
                         break;
                     }
@@ -110,6 +133,8 @@ public class CleavingBlade_Scorpion : Skill
 
     protected override IEnumerator CastJob()
     {
+        if (_castTarget == null) yield break;
+        _hero.Move.LookAtTransform(Targeting.GetTempTarget()?.Targetable.Transform);
         TryAttack(true, DefaultDamageMultiplier);
         yield return null;
     }
@@ -126,14 +151,13 @@ public class CleavingBlade_Scorpion : Skill
     private void TryAttack(bool shouldIncreaseCounter, float damageMultiplier)
     {
         if (_wasDamageApplied) return;
+        if (_castTarget == null) return;
 
-        var targetData = Targeting.GetTarget();
-        if (targetData == null) return;
-
-        var target = targetData.Targetable as IDamageable;
+        var target = (_castTarget as MonoBehaviour)?.gameObject;
         if (target == null) return;
 
-        if (Vector3.Distance(transform.position, targetData.Transform.position) > AreaInfo.Radius) return;
+        if (Vector3.Distance(_hero.transform.position, target.transform.position) > AreaInfo.Radius)
+            return;
 
         Damage damage = new Damage
         {
@@ -143,25 +167,46 @@ public class CleavingBlade_Scorpion : Skill
 
         _wasDamageApplied = true;
 
-        CmdAttack(damage, target.gameObject, shouldIncreaseCounter);
+        CmdAttack(damage, target.gameObject, shouldIncreaseCounter,0);
+        
+        float bonus = _pendingFireDamageBonus;
+        float scorchedChance = _pendingScorchedSoulChance;
+        _pendingFireDamageBonus = 0f;
+        _pendingScorchedSoulChance = 0f;
+
+        Damage additionalDamage = new Damage
+        {
+            Value = damage.Value * bonus,
+            Type = Info.DamageType,
+            School = Schools.Fire
+        };
+
+        if (additionalDamage.Value > 0)
+        {
+            CmdAttack(additionalDamage, target.gameObject, false, scorchedChance);
+        }
     }
 
     [Command]
-    private void CmdAttack(Damage damage, GameObject target, bool shouldIncreaseCounter)
+    private void CmdAttack(Damage damage, GameObject target, bool shouldIncreaseCounter, float scorchedChance)
     {
+        OnBeforeApplyParticipatingDamage?.Invoke(ref damage,this,target);
         if (target == null) return;
-
         var damageable = target.GetComponent<IDamageable>();
-
         if (damageable == null) return;
 
         bool result = damageable.TryTakeDamage(ref damage, this);
-
-        if (result && damageable is Character character) AttackPassed(shouldIncreaseCounter, character);
+        if (result && damageable is Character character)
+        {
+            AttackPassed(shouldIncreaseCounter, character);
+            if (scorchedChance > 0f && Random.Range(0f, 100f) <= scorchedChance)
+                character.CharacterState.AddState(States.ScorchedSoul, 5f, 0f, _hero.gameObject, name);
+        }
     }
 
     protected override void ClearData()
     {
+        _castTarget = null;
         _wasDamageApplied = false;
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();

@@ -1,9 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Mirror;
+using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 public class PassiveCombo_Scorpion : NetworkBehaviour
 {
@@ -13,105 +16,169 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
 
     //[SerializeField] private Sub_LavaPool_Scorpion _poolPrefab;
 
-    [Header("Skills Reference")]
-    [SerializeField] private List<Skill> _skills = new();
-
     [Header("Combo Settings")]
     private List<Skill> _usedSkills = new();
-    private Character _currentTarget;
     [SerializeField] private float _comboTimeout = 1f;
     private Coroutine _comboTimerCoroutine;
 
+    [HideInInspector]
+    public Character CurrentTarget;
     [Header("Visuals")]
     [SerializeField] private ParticleSystem _particlesAddStack;
     ///[SerializeField] private ParticleSystem _particlesNoCharges;
     [SerializeField] private ParticleSystem _particlesFullCombo;
     [SerializeField] private ParticleSystem _particlesCancelCombo;
 
+    [Header("Talents")]
     private bool _consumeComboTalent = false;
+    private bool _multiTargetComboTalent = false;
 
-    #region Talent
     public void ConsumeComboTalent(bool value) => _consumeComboTalent = value;
+
+    public void SetMultiTargetComboTalent(bool value) => _multiTargetComboTalent = value;
+    
+    #region Новый талант 3о — Импульсный огонь
+    private ImpulseFireTalentBooster _impulseFireBooster;
+    public ImpulseFireTalentBooster ImpulseFireBooster => _impulseFireBooster;
     #endregion
 
     #region Add Skill (Комбо механика)
-
-    [Command]
-    public void CmdAddSkill(Character enemy, Skill skill)
+    
+    private void OnEnable()
     {
-        AddSkill(enemy, skill);
+        _impulseFireBooster = new ImpulseFireTalentBooster(this);
+
+        foreach (var skill in _hero.Abilities.Abilities)
+        {
+            if (skill is IComboParticipatingSkill)
+            {
+                IComboParticipatingSkill comboSkill = skill as IComboParticipatingSkill;
+                comboSkill.OnDamaged += OnSkillDamageApplied;
+            }
+        }
     }
 
-    public void AddSkill(Character enemy, Skill skill)
+    private void OnDisable()
     {
-        Debug.Log("Проверка добавления");
+        foreach (var skill in _hero.Abilities.Abilities)
+        {
+            if (skill is IComboParticipatingSkill)
+            {
+                IComboParticipatingSkill comboSkill = skill as IComboParticipatingSkill;
+                comboSkill.OnDamaged -= OnSkillDamageApplied;
+            }
+        }
+    }
+    public void RegisterFireComboHit(Skill skill, Character target)
+    {
+        if (skill == null || target == null) return;
+        CmdRegisterFireCombo(skill, target.gameObject);
+    }
+    
+    /*private void OnSkillDamageApplied(GameObject targetGO, Skill skill)
+    {
+        if (!_consumeComboTalent && !_multiTargetComboTalent) return;
+        if (targetGO == null) return;
 
-        if (!_consumeComboTalent) return;
+        var target = targetGO.GetComponent<Character>();
+        if (target == null) return;
+        
+        AddSkill(target, skill);
+    }*/
+    
+    private void OnSkillDamageApplied(GameObject targetGO, Skill skill)
+    {
+        if (!_consumeComboTalent && !_multiTargetComboTalent) return;
+        if (targetGO == null) return;
 
-        Debug.Log("Проверка добавления 2");
+        var target = targetGO.GetComponent<Character>();
+        if (target == null) return;
+
+        AddSkillInternal(target, skill, isFireSkill: false);
+    }
+    
+    [Command]
+    private void CmdRegisterFireCombo(Skill skill, GameObject targetGO)
+    {
+        var target = targetGO?.GetComponent<Character>();
+        if (target == null) return;
+        AddSkillInternal(target, skill, isFireSkill: true);
+    }
+
+    private void AddSkillInternal(Character enemy, Skill skill, bool isFireSkill)
+    {
+        if(!isFireSkill)
+            if (!_consumeComboTalent && !_multiTargetComboTalent) return;
+        if (!isFireSkill && !_impulseFireBooster.CanUseInCombo(skill)) return;
+
         if (enemy == null || skill == null) return;
+
+        var comboParticipating = skill as IComboParticipatingSkill;
+        var fireComboParticipating = skill as IFireComboParticipatingSkill;
 
         int currentStacks = enemy.CharacterState.CheckStateStacks(States.ComboState);
         int maxStacks = enemy.CharacterState.GetState(States.ComboState)?.MaxStacksCount ?? int.MaxValue;
 
-        if (currentStacks >= maxStacks) return;
+        if (CurrentTarget == null) CurrentTarget = enemy;
 
-        if (_currentTarget == null) _currentTarget = enemy;
-
-        if (_currentTarget != enemy)
+        if (!_multiTargetComboTalent && CurrentTarget != enemy)
         {
             ResetCounter();
-            _currentTarget = enemy;
+            CurrentTarget = enemy;
         }
 
         _usedSkills.Add(skill);
         StartOrRestartComboTimer();
 
-        if (_usedSkills.Count < 3) return;
-
-        var lastThreeHits = _usedSkills.Skip(Mathf.Max(0, _usedSkills.Count - 3)).ToList();
-
-        if (lastThreeHits.All(s => s == lastThreeHits[0])) return;
-
-        var grouped = lastThreeHits.GroupBy(s => s).ToDictionary(g => g.Key, g => g.Count());
-
-        foreach (var pair in grouped)
+        if (_usedSkills.Count >= 3)
         {
-            Skill usedSkill = pair.Key;
-            int requiredCharges = pair.Value;
+            var lastThreeHits = _usedSkills.Skip(Mathf.Max(0, _usedSkills.Count - 3)).ToList();
 
-            if (usedSkill.Chargers < requiredCharges) return;
+            if (lastThreeHits.All(s => s == lastThreeHits[0]))
+            {
+                ResetCounter();
+                return;
+            }
+
+            RpcPlayParticles("FullCombo");
+            TryUseChargersOnLasts(enemy, lastThreeHits);
+
+            if ((_consumeComboTalent || isFireSkill) && currentStacks < maxStacks)
+                ApplyComboState(enemy);
+
+            if (IsFinalComboSkill(enemy, skill))
+            {
+                comboParticipating?.OnFinalComboSkill(enemy.gameObject);
+                fireComboParticipating?.OnFinalComboSkill(enemy.gameObject);
+            }
+
+            ResetCounter();
         }
 
-        foreach (var pair in grouped)
+        if (_comboPlayer != null && _comboPlayer.HasPoints())
         {
-            UseCharges(pair.Key, pair.Value);
+            int points = _comboPlayer.CurrentComboPoints;
+            comboParticipating?.OnTargetHasComboPoint(enemy.gameObject, points);
+            fireComboParticipating?.OnTargetHasComboPoint(enemy.gameObject,points);
+            _comboPlayer.TryUse(points);
         }
-
-        RpcPlayParticles("FullCombo");
-        CastDebuff(enemy.transform, lastThreeHits.Last());
-        ApplyComboState(enemy);
-        AddComboPoint();
-        ResetCounter();
     }
 
-
-    private bool TryAddSkill(Skill skill)
+    private void TryUseChargersOnLasts(Character enemy, List<Skill> lastThreeHits)
     {
-        int availableCharges = skill.Chargers;
-        int currentUsage = _usedSkills.Count(s => s == skill);
+        if (_usedSkills.Count < 3) return;
+        if (lastThreeHits.All(s => s == lastThreeHits[0])) return;
 
-        Debug.Log($"Проверка добавления {skill.name}. Зарядов доступно: {availableCharges}, уже использовано в серии: {currentUsage}");
+        var grouped = lastThreeHits.GroupBy(s => s)
+            .ToDictionary(g => g.Key, g => g.Count());
 
-        if (currentUsage + 1 <= availableCharges)
+        bool hasEnoughCharges = grouped.All(pair => pair.Key.Chargers >= pair.Value);
+
+        if (hasEnoughCharges)
         {
-            _usedSkills.Add(skill);
-            StartOrRestartComboTimer();
-            return true;
+            foreach (var pair in grouped)
+                UseCharges(pair.Key, pair.Value);
         }
-
-        Debug.LogWarning($"Нет доступных зарядов для {skill.name}. {currentUsage + 1}/{availableCharges}");
-        return false;
     }
 
     [ClientRpc]
@@ -121,8 +188,8 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
 
         for (int i = 0; i < amount; i++)
         {
-            bool success = skill.TryUseCharge();
-            Debug.Log($"Попытка списать заряд {i + 1}/{amount} у {skill.name}. Успех: {success}. Осталось зарядов: {skill.Chargers}");
+            skill.TryUseCharge();
+            skill.Cost.TryPayMandatory();
         }
     }
 
@@ -167,8 +234,7 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
             timer -= Time.deltaTime;
             yield return null;
         }
-
-        Debug.Log("Таймаут комбо! Сброс связки.");
+        
         ResetCounter();
     }
 
@@ -179,80 +245,34 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
             StopCoroutine(_comboTimerCoroutine);
             _comboTimerCoroutine = null;
         }
-
-        Debug.Log("Сброс текущей серии комбо");
         _usedSkills.Clear();
-        _currentTarget = null;
+        CurrentTarget = null;
     }
 
     #endregion
 
     #region Debuff и ComboState
 
-    private void CastDebuff(Transform enemy, Skill lastSkillUsed)
-    {
-        if (enemy == null || lastSkillUsed == null) return;
-
-        if (lastSkillUsed == GetSkillByName("Punch"))
-        {
-            Debug.Log("Debuff: Stun");
-            enemy.GetComponent<CharacterState>()?.AddState(States.Stun, 1f, 0, _hero.gameObject, "Punch");
-        }
-        else if (lastSkillUsed == GetSkillByName("Kick"))
-        {
-            Debug.Log("Lava Pool");
-            SpawnLavaPool(enemy);
-        }
-        else if (lastSkillUsed == GetSkillByName("ChainBlade"))
-        {
-            Debug.Log("ChainBlade Effect");
-        }
-
-        enemy.GetComponent<CharacterState>()?.AddState(States.ScorchedSoul, 6f, 100f, _hero.gameObject, nameof(PassiveCombo_Scorpion));
-    }
-
     private void ApplyComboState(Character enemy)
     {
-        var consumeCombo = _hero.GetComponent<ConsumeCombo_Scorpion>();
+        var consumeCombo = _hero.Abilities.GetSkill<ConsumeCombo_Scorpion>();
         if (consumeCombo == null)
         {
-            Debug.LogWarning("ConsumeCombo_Scorpion не найден!");
             return;
         }
-
-        Debug.Log("Применение состояния ComboState к цели");
         consumeCombo.ApplyComboEffect(enemy.transform);
-
-
     }
 
-    public bool IsFinalComboSkill(Character target, Skill skill)
+    private bool IsFinalComboSkill(Character target, Skill skill)
     {
-        if (_currentTarget != target || _usedSkills.Count < 3)
-            return false;
-
-        var lastThreeHits = _usedSkills.Skip(Mathf.Max(0, _usedSkills.Count - 3)).ToList();
-
-        var groupedSkills = lastThreeHits
-            .GroupBy(s => s)
-            .OrderByDescending(g => g.Count())
-            .ToList();
-
-        if (groupedSkills.Count == 1 && groupedSkills[0].Count() == 3)
-            return false;
-
-        return lastThreeHits.Last() == skill;
+        if (_usedSkills.Count < 3) return false;
+        var lastThree = _usedSkills.Skip(_usedSkills.Count - 3).ToList();
+        return lastThree.Last() == skill;
     }
 
     #endregion
 
     #region Network Commands
-
-    private void AddComboPoint()
-    {
-        Debug.Log("Добавлен 1 очко комбо игроку");
-        _comboPlayer.Add(1);
-    }
 
     private void SpawnLavaPool(Transform enemy)
     {
@@ -263,15 +283,6 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
 
         pool.GetComponent<Sub_LavaPool_Scorpion>().Init();
         NetworkServer.Spawn(pool);*/
-    }
-
-    #endregion
-
-    #region Вспомогательные методы
-
-    private Skill GetSkillByName(string name)
-    {
-        return _skills.FirstOrDefault(s => s != null && s.name == name);
     }
 
     #endregion

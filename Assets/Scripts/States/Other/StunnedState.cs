@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class StunnedState : RefreshingState
 {
-	public bool turnOff = false;
-	private float _baseDuration;
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability };
 	public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
@@ -18,7 +16,7 @@ public class StunnedState : RefreshingState
 	{
 		MaxStacksCount = 1;
 		currentStacksCount = 1;
-		
+		duration = durationToExit;
 		if (character.TryGetComponent<Character>(out var ability))
 		{
 			abilities = ability.Abilities;
@@ -28,19 +26,11 @@ public class StunnedState : RefreshingState
 
 		characterState.Character.Move.IsMoveBlocked = true;
 		characterState.Character.Move.StopMoveAndAnimationMove();
-
-		_baseDuration = durationToExit;
 	}
 
 	public override void UpdateState()
 	{
-		_baseDuration -= Time.deltaTime;
-		if (_baseDuration < 0)
-		{
-			ExitState();
-			return;
-		}
-		if (turnOff)
+		if (duration <= 0)
 		{
 			ExitState();
 		}
@@ -48,8 +38,9 @@ public class StunnedState : RefreshingState
 
 	public override bool Stack(float time)
 	{
-		_baseDuration += time;
-		return false;
+		duration += time;
+		Debug.LogError("new duration: " + duration);
+		return true;
 	}
 
 	public override void ExitState()

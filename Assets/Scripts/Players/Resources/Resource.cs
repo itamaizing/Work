@@ -1,6 +1,7 @@
 ﻿using Mirror;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum ResourceType
@@ -23,6 +24,10 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     [SyncVar] protected float _regenerationPeriod;
 
     protected Coroutine _regenCoroutine;
+    
+    private readonly List<AttributeModifier> _incomingModifiers = new List<AttributeModifier>();
+    private readonly Dictionary<float, float> _regenMods = new();
+    private Coroutine _regenModCoroutine;
 
     #region Attributes
     protected Attribute _attr_maxValue;
@@ -369,6 +374,149 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         _attr_maxValue.RemoveModifier(modif);
 
         _maxValue = _attr_maxValue.GetValue();
+    }
+
+    public void CmdAddRegenModifier(float energy, float multiplier, bool isFast)
+    {
+        float delta = isFast ? -energy : energy;
+        _regenMods.TryGetValue(multiplier, out float current);
+        float newVal = current + delta;
+
+        if (Mathf.Approximately(newVal, 0f))
+            _regenMods.Remove(multiplier);
+        else
+            _regenMods[multiplier] = newVal;
+
+        if (_regenModCoroutine == null && _regenMods.Count > 0)
+            _regenModCoroutine = StartCoroutine(ProcessRegenMods());
+    }
+
+    [Command]
+    public void CmdRemoveAllRegenModifiers()
+    {
+        RemoveAllRegenModifiers();
+    }
+
+    private void RemoveAllRegenModifiers()
+    {
+        if (_regenMods.Count == 0) return;
+
+        _regenMods.Clear();
+        _regenerationValue = _attr_regenValue.GetValue();
+
+        if (_regenCoroutine != null)
+        {
+            StopCoroutine(_regenCoroutine);
+            _regenCoroutine = StartCoroutine(RegenerateJob());
+        }
+    }
+    
+    [Command(requiresAuthority = false)]
+    public void CmdAddRegenModifierByTime(float seconds, float multiplier, bool isFast)
+    {
+        float regenPerSecond = _regenerationValue / _regenerationPeriod;
+        float energy = regenPerSecond * seconds * (isFast ? multiplier : 1f / multiplier);
+        CmdAddRegenModifier(energy, multiplier, isFast);
+    }
+
+    private IEnumerator ProcessRegenMods()
+    {
+        float savedRegen = _regenerationValue;
+
+        while (_regenMods.Count > 0)
+        {
+            float mult = 0f, net = 0f;
+            foreach (var kv in _regenMods)
+            {
+                mult = kv.Key;
+                net = kv.Value;
+                break;
+            }
+
+            _regenerationValue = net > 0
+                ? savedRegen / mult
+                : savedRegen * mult;
+
+            if (_regenCoroutine != null)
+            {
+                StopCoroutine(_regenCoroutine);
+                _regenCoroutine = StartCoroutine(RegenerateJob());
+            }
+
+            while (_regenMods.TryGetValue(mult, out float remaining)
+                   && !Mathf.Approximately(remaining, 0f))
+            {
+                if (_regenerationValue <= 0f)
+                {
+                    _regenMods.Remove(mult);
+                    break;
+                }
+
+                yield return new WaitForSeconds(_regenerationPeriod);
+
+                if (_currentValue < _maxValue)
+                {
+                    float regened = _regenerationValue;
+
+                    float updated = remaining > 0
+                        ? remaining - regened
+                        : remaining + regened;
+
+                    if (Mathf.Approximately(updated, 0f) || (remaining > 0 && updated <= 0) ||
+                        (remaining < 0 && updated >= 0))
+                    {
+                        _regenMods.Remove(mult);
+                        break;
+                    }
+                    else
+                    {
+                        _regenMods[mult] = updated;
+                    }
+                }
+            }
+        }
+
+        _regenerationValue = savedRegen;
+
+        if (_regenCoroutine != null)
+        {
+            StopCoroutine(_regenCoroutine);
+            _regenCoroutine = StartCoroutine(RegenerateJob());
+        }
+
+        _regenModCoroutine = null;
+    }
+
+    public void AddIncomingModifier(AttributeModifier modifier)
+    {
+        _incomingModifiers.Add(modifier);
+    }
+
+    public void RemoveIncomingModifier(AttributeModifier modifier)
+    {
+        _incomingModifiers.Remove(modifier);
+    }
+
+    
+    protected float ApplyIncomingModifiers(float baseValue)
+    {
+        if (_incomingModifiers.Count == 0) 
+            return baseValue;
+
+        float multiplier = 1f;
+        float flatBonus = 0f;
+
+        foreach (var mod in _incomingModifiers)
+        {
+            if (mod.Type == ModifierType.Flat)
+                flatBonus += mod.Value;
+            else if (mod.Type == ModifierType.Percent)
+                multiplier += mod.Value;
+            else if (mod.Type == ModifierType.Multiplier)
+                multiplier *= (1f + mod.Value);
+        }
+
+        return (baseValue + flatBonus) * multiplier;
     }
 
     /*  Вроде если повесить модификатор напрямую на атрибут - все нормально работает по сети

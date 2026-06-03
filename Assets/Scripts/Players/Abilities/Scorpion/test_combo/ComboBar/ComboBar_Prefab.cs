@@ -44,7 +44,7 @@ public class ComboBar_Prefab : MonoBehaviour
     {
         for (int n = 0; n < value; n++)
         {
-            for (int i = ComboPoints.Count - 1; i >= 0; i--)//‚˚ÍÎ˛˜‡ÂÚ ÔÓÒÎÂ‰ÌËÈ ‚ÍÎ˛˜ÂÌÌ˚È ÍÓÏ·Ó-ÔÓËÌÚ
+            for (int i = ComboPoints.Count - 1; i >= 0; i--)//–≤—ã–∫–ª—é—á–∞–µ—Ç –ø–æ—Å–ª–µ–¥–Ω–∏–π –≤–∫–ª—é—á–µ–Ω–Ω—ã–π –∫–æ–º–±–æ-–ø–æ–∏–Ω—Ç
             {
                 if (ComboPoints[i].comboPointFillling.activeSelf)
                 {

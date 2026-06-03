@@ -47,6 +47,17 @@ public class ChargeComponent : BaseSkillComponent
     public ChargeCooldownType CooldownType => _cooldownType;
     public float BaseCooldown => _baseCooldown;
     public float CooldownTime => affectedByCDR ? _skillAttributes.GetCombined(skill_attr, char_attr, _baseCooldown) : _baseCooldown;
+
+    public void EnableChargers(bool value,int maxChargers,float baseCooldown)
+    {
+        if (value == _usesCharges) return;
+        _usesCharges = value;
+        _isComboPart = value;
+        _maxCharges = maxChargers;
+        _baseCooldown = baseCooldown;
+        OnCurrentChange?.Invoke(RemainingCharges);
+    }
+    
     public int MaxCharges {
         get { return _maxCharges; }
         set { 

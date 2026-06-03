@@ -12,6 +12,7 @@ public struct Damage : NetworkMessage
     public AbilityForm Form;
     public AttackRangeType PhysicAttackType;
     public SkillType SkillType;
+    public string DamageKey;
 }
 
 public interface IDamageable

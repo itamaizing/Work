@@ -2,27 +2,138 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Mirror;
 using UnityEngine;
 
 public class ConsumeCombo_Scorpion : Skill
 {
+    [SerializeField]private ComboPoints_Player _comboPoints;
+    
     private List<Character> _comboTargetsQueue = new List<Character>();
 
-    public int AvailablePoints => _comboTargetsQueue.Sum(target =>
+    [SyncVar]
+    private uint _lastCharacterNetId;
+    
+    public Character LastCharacterNet
     {
-        var state = target.CharacterState.GetState(States.ComboState) as ComboState;
-        return state?.CurrentStacksCount ?? 0;
-    });
+        get
+        {
+            if (_lastCharacterNetId == 0)
+                return null;
+
+            if (NetworkClient.spawned.TryGetValue(_lastCharacterNetId, out var identity))
+                return identity.GetComponent<Character>();
+
+            return null;
+        }
+    }
+    
+    private CharacterState _lastCharacterState;
+    public CharacterState LastCharacterState
+    {
+        get => _lastCharacterState;
+        set => _lastCharacterState = value;
+    }
 
     protected override bool IsCanCast => true;
+    
+    private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
+    private bool _ninjaTalentEnabled = false;
+    private bool _fireComboTalentEnabled = false; 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
     private bool isConsumeCombo_ScorpionPhysicStateClear;
+    public bool IsConsumeCombo_ScorpionPhysicStateClear => isConsumeCombo_ScorpionPhysicStateClear;
+    private bool _canCastUnderPhysicalDisable = false;
+    
+    #region 3% heal per dispelled physical effect
+    private ConsumeComboHealOnDispelBooster _healOnDispelBooster;
+    public ConsumeComboHealOnDispelBooster HealOnDispelBooster => _healOnDispelBooster;
+    #endregion
+    
+    #region 5% energy per dispelled physical effect
+    private ConsumeComboEnergyOnDispelBooster _energyOnDispelBooster;
+    public ConsumeComboEnergyOnDispelBooster EnergyOnDispelBooster => _energyOnDispelBooster;
+    #endregion
+
+    #region +1 stacks combo count
+    private bool _isComboStacksIncreased;
+    private int _newMaxStackCount = 4;
+    #endregion
+    
+    private float _clickRadius = 0.5f;
+    
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+        _comboPoints = hero.GetComponent<ComboPoints_Player>();
+    }
+
+    private void OnEnable()
+    {
+        _healOnDispelBooster = new ConsumeComboHealOnDispelBooster(this);
+        _energyOnDispelBooster = new ConsumeComboEnergyOnDispelBooster(this);
+    }
+
+    public void OnComboStacksIncreased(bool value)
+    {
+        if(_isComboStacksIncreased == value) return;
+        
+        _isComboStacksIncreased = value;
+
+        if (!value)
+        {
+            foreach (var target in GetTargetWithCombo())
+            {
+                var state = target.GetComponent<CharacterState>().GetState(States.ComboState) as ComboState;
+                if (state == null) return;
+
+                state.MaxStacksCount = state.InitialStackCount;
+                if(state.CurrentStacksCount > state.InitialStackCount)
+                    state.ReduceStack();
+                
+                if(isClient)
+                    CmdDecreaseStacksOnTargets(target);
+            }
+        }
+        else
+        {
+            foreach (var target in GetTargetWithCombo())
+            {
+                var state = target.GetComponent<CharacterState>().GetState(States.ComboState) as ComboState;
+                if (state == null) return;
+
+                state.MaxStacksCount = _newMaxStackCount;
+                
+                if(isClient)
+                    CmdIncreaseStackOnTargets(target);
+            }
+        }
+    }
+
+    [Command]
+    private void CmdIncreaseStackOnTargets(GameObject target)
+    {
+        var state = target.GetComponent<CharacterState>().GetState(States.ComboState) as ComboState;
+        if (state == null) return;
+        
+        state.MaxStacksCount = _newMaxStackCount; 
+    }
+
+    [Command]
+    private void CmdDecreaseStacksOnTargets(GameObject target)
+    {
+        var state = target.GetComponent<CharacterState>().GetState(States.ComboState) as ComboState;
+        if (state == null) return;
+        
+        state.MaxStacksCount = state.InitialStackCount;
+        if(state.CurrentStacksCount > state.InitialStackCount)
+            state.ReduceStack();
+    }
 
     public void ApplyComboEffect(Transform enemy)
     {
-        if (!isServer) return;
         if (enemy == null) return;
 
         var targetCharacter = enemy.GetComponent<Character>();
@@ -38,125 +149,217 @@ public class ConsumeCombo_Scorpion : Skill
                 _comboTargetsQueue.Add(targetCharacter);
         }
 
-        stateManager.AddState(States.ComboState, float.PositiveInfinity, 0f, _hero.gameObject, nameof(ConsumeCombo_Scorpion));
-    }
-
-    public int PayComboPoints(int amount, Character specificTarget = null)
-    {
-        int pointsConsumed = 0;
-
-        if (specificTarget != null)
+        if (_lastCharacterState != null)
         {
-            pointsConsumed = ConsumePointsFromTarget(specificTarget, amount);
+            if (_lastCharacterState != stateManager)
+            {
+                _lastCharacterState.RemoveState(States.ComboState);
+                _lastCharacterState = stateManager;
+                _lastCharacterNetId = stateManager.netId;
+            }
         }
         else
         {
-            pointsConsumed = ConsumePointsFromQueue(amount);
+            _lastCharacterState = stateManager;
+            _lastCharacterNetId = stateManager.netId;
         }
 
-        return pointsConsumed;
-    }
-
-    private int ConsumePointsFromTarget(Character target, int amount)
-    {
-        if (target == null) return 0;
-
-        var state = target.CharacterState.GetState(States.ComboState) as ComboState;
-        if (state == null) return 0;
-
-        int availablePoints = state.CurrentStacksCount;
-        int pointsToConsume = Mathf.Clamp(amount, 0, availablePoints);
-
-        for (int i = 0; i < pointsToConsume; i++)
+        if (_hero.Abilities.GetSkill<SwiftAttacks_Scorpion>().IsBonusTalent && _hero.CharacterState.CheckForState(States.SwiftAttacks))
         {
-            bool reduced = state.Stack(-1);
-            if (reduced && isConsumeCombo_ScorpionPhysicStateClear)
-            {
-                _hero.CharacterState.DispelStates(StateType.Physical, true, true);
-            }
-
-            if (!reduced)
-            {
-                target.CharacterState.RemoveState(state);
-                _comboTargetsQueue.Remove(target);
-                break;
-            }
+            stateManager.AddState(States.ComboState, float.PositiveInfinity, 0f, _hero.gameObject,
+                !_isComboStacksIncreased ? nameof(ConsumeCombo_Scorpion) : "ComboIncreaseStacks");
         }
-
-        return pointsToConsume;
-    }
-
-    private int ConsumePointsFromQueue(int amount)
-    {
-        int pointsToConsume = 0;
-
-        while (amount > 0 && _comboTargetsQueue.Count > 0)
-        {
-            var lastTarget = _comboTargetsQueue[_comboTargetsQueue.Count - 1];
-            var state = lastTarget.CharacterState.GetState(States.ComboState) as ComboState;
-
-            if (state == null)
-            {
-                _comboTargetsQueue.RemoveAt(_comboTargetsQueue.Count - 1);
-                continue;
-            }
-
-            bool reduced = state.Stack(-1);
-            pointsToConsume++;
-            amount--;
-
-            if (reduced && isConsumeCombo_ScorpionPhysicStateClear)
-            {
-                _hero.CharacterState.DispelStates(StateType.Physical, true, true);
-            }
-
-            if (!reduced)
-            {
-                lastTarget.CharacterState.RemoveState(state);
-                _comboTargetsQueue.RemoveAt(_comboTargetsQueue.Count - 1);
-            }
-        }
-
-        return pointsToConsume;
+        
+        stateManager.AddState(States.ComboState, float.PositiveInfinity, 0f, _hero.gameObject,
+            !_isComboStacksIncreased ? nameof(ConsumeCombo_Scorpion) : "ComboIncreaseStacks");
     }
 
     public void ConsumeCombo_ScorpionPhysicStateClearTalent(bool value)
     {
+        if(isConsumeCombo_ScorpionPhysicStateClear == value) return;
         isConsumeCombo_ScorpionPhysicStateClear = value;
     }
-
-    public void TryConsumeComboAroundSelf()
+    
+    public void SetCanCastUnderPhysicalDisable(bool value)
     {
-        if (!isConsumeCombo_ScorpionPhysicStateClear || !isServer) return;
+        _canCastUnderPhysicalDisable = value;
+    }
+    
+    private void TryConsumeComboAroundSelf()
+    {
+        if (!isConsumeCombo_ScorpionPhysicStateClear) return;
+        
+        CmdDispelPhysState(GetTargetWithCombo(),_healOnDispelBooster.Enabled,_energyOnDispelBooster.Enabled,isDisplePhysState: true);
+    }
 
-        List<Character> targetsInRadius = Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.Layer)
+    private void TryAddComboPoint()
+    {
+        CmdDispelPhysState(GetTargetWithCombo(),_healOnDispelBooster.Enabled,_energyOnDispelBooster.Enabled,isDisplePhysState: false);
+    }
+
+    private List<GameObject> GetTargetWithCombo()
+    {
+        return Physics.OverlapSphere(transform.position, AreaInfo.Radius, Targeting.Layer)
             .Select(c => c.GetComponent<Character>())
-            .Where(c => c != null && c.CharacterState.CheckForState(States.ComboState))
-            .ToList();
+            .Where(c => c != null && c != Hero && c.CharacterState.CheckForState(States.ComboState))
+            .Select(c => c.gameObject).ToList();
+    }
 
+    [Command]
+    private void CmdDispelPhysState(List<GameObject> targetsInRadius,bool healOnDispelEnabled,bool energyOnDispelEnabled,bool isDisplePhysState)
+    {
+        int totalDispelled = 0;
+        
         foreach (var target in targetsInRadius)
         {
-            var state = target.CharacterState.GetState(States.ComboState) as ComboState;
+            var state = target.GetComponent<CharacterState>().GetState(States.ComboState) as ComboState;
             if (state == null || state.CurrentStacksCount <= 0) continue;
-
-            bool reduced = state.Stack(-1);
-            if (reduced)
+            if (isConsumeCombo_ScorpionPhysicStateClear && isDisplePhysState)
             {
-                if (isConsumeCombo_ScorpionPhysicStateClear)
+                _hero.CharacterState.DispelStatesStack(StateType.Physical, BaffDebaff.Baff, state.CurrentStacksCount, out int dispelled);
+                if (state.CurrentStacksCount > 0)
                 {
-                    _hero.CharacterState.DispelStates(StateType.Physical, true, true);
+                    if (healOnDispelEnabled)
+                        _healOnDispelBooster?.ApplyHealForOneEffect();
+                    if (energyOnDispelEnabled)
+                        _energyOnDispelBooster?.ApplyEnergyForOneEffect();
                 }
 
-                if (state.CurrentStacksCount <= 0)
+                totalDispelled = dispelled;
+            }
+            if(!isDisplePhysState)
+                totalDispelled = state.CurrentStacksCount;
+            
+            for (int i = 0; i < totalDispelled; i++)
+            {
+                state.ReduceStack();
+                RpcReduceStack(target);
+            }
+        }
+        
+        if (totalDispelled > 0 && !isDisplePhysState)
+            _comboPoints?.Add(totalDispelled);
+    }
+
+    [ClientRpc]
+    private void RpcReduceStack(GameObject target)
+    {
+        target.GetComponent<CharacterState>()?.GetState(States.ComboState)?.ReduceStack();
+    }
+
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    {
+        while (Targeting.GetTempTarget()?.Character == null)
+        {
+            if (GetMouseButton)
+            {
+                Vector3 clickPoint = Targeting.GetMousePoint();
+
+                Targeting.FindTempTarget(clickPoint, _clickRadius, canTargetSelf: isConsumeCombo_ScorpionPhysicStateClear);
+
+                var tempCharacter = Targeting.GetTempTarget()?.Character;
+                if (tempCharacter != null)
                 {
-                    target.CharacterState.RemoveState(state);
+                    bool isSelf = tempCharacter == Hero;
+                    bool hasCombo = tempCharacter.CharacterState.CheckForState(States.ComboState);
+
+                    if (isSelf)
+                    {
+                        if (!isConsumeCombo_ScorpionPhysicStateClear)
+                        {
+                            Targeting.ClearTempTarget();
+                        }
+                    }
+                    else
+                    {
+                        if (!hasCombo || !IsEnemyTarget(tempCharacter))
+                        {
+                            Targeting.ClearTempTarget();
+                        }
+                    }
                 }
+            }
+
+            yield return null;
+        }
+
+        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+        callbackDataSaved(targetInfo);
+    }
+
+    protected override IEnumerator CastJob()
+    {
+        var target = Targeting.GetTarget()?.Character;
+
+        if (target == Hero)
+        {
+            TryConsumeComboAroundSelf();
+        }
+        else if (target != null && IsEnemyTarget(target))
+        {
+            TryAddComboPoint();
+        }
+
+        yield return null;
+    }
+
+    protected override void ClearData() { }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        if (targetInfo.GetTargets().Count > 0)
+            Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+    }
+    
+    public override bool IsSkillActive
+    {
+        get => _canCastUnderPhysicalDisable || base.IsSkillActive;
+        set => base.IsSkillActive = value;
+    }
+    
+    public override bool Disactive
+    {
+        get => _disactive;
+        set
+        {
+            if (_canCastUnderPhysicalDisable)
+            {
+                _disactive = false;
+            }
+            else if(_disactive != value && !_canCastUnderPhysicalDisable)
+            {
+                _disactive = value;
             }
         }
     }
+    
+    public void SetNinjaTalentEnabled(bool value)
+    {
+        _ninjaTalentEnabled = value;
+        UpdateActivationState();
+    }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved) => null;
-    protected override IEnumerator CastJob() => null;
-    protected override void ClearData() { }
-    public override void LoadTargetData(TargetInfo targetInfo) => throw new NotImplementedException();
-}
+    public void SetFireComboTalentEnabled(bool value)
+    {
+        _fireComboTalentEnabled = value;
+        UpdateActivationState();
+    }
+
+    private void UpdateActivationState()
+    {
+        bool shouldBeActive = _ninjaTalentEnabled || _fireComboTalentEnabled;
+
+        if (shouldBeActive)
+        {
+            if (!IsSkillActive)
+                _hero?.Abilities?.ActivateSkill(this);
+        }
+        else
+        {
+            if (IsSkillActive)
+                _hero?.Abilities?.DeactivateSkill(this);
+        }
+    }
+}
