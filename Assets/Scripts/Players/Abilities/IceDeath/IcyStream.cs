@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class IcyStream : Skill
+public class IcyStream : Skill,IEnergyDamagable
 {
     public struct IcyStreamState
     {
@@ -75,10 +75,9 @@ public class IcyStream : Skill
         }
 
         CmdDestroyIcyStreamEffect();
-
+        CmdResetEnergyMultiplier();
         _isStreaming = false;
     }
-
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
@@ -139,6 +138,7 @@ public class IcyStream : Skill
 
         CmdDestroyIcyStreamEffect();
         _isStreaming = false;
+        CmdResetEnergyMultiplier();
     }
 
     private IEnumerator StreamRoutine()
@@ -294,5 +294,13 @@ public class IcyStream : Skill
             StopCoroutine(_streamCoroutine);
             _streamCoroutine = null;
         }
+    }
+
+    public bool IsStreamSkill => true;
+
+    [Command]
+    private void CmdResetEnergyMultiplier()
+    {
+        _hero.Abilities.GetSkill<NinjaResources>()?.ResetMultiplierIfOwner(this);
     }
 }

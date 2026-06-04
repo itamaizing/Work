@@ -79,6 +79,8 @@ public class OtherForceState : RefreshingState
 
     public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+        float bonus = ParseHealthBonus(skillName);
+
         if (currentStacksCount == 0)
         {
             BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
@@ -87,10 +89,24 @@ public class OtherForceState : RefreshingState
         }
         else
         {
+            AddBonus(bonus);
             Stack(durationToExit);
         }
 
         return this;
+    }
+    
+    private void AddBonus(float value)
+    {
+        if (_healthResource == null || value <= 0f)
+            return;
+
+        _currentBonus += value;
+
+        if (!characterState.isClient)
+        {
+            _healthResource.AddMax(value, keepPercent: true);
+        }
     }
 
     private float ParseHealthBonus(string skillName)

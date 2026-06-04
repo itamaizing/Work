@@ -211,8 +211,7 @@ public class IcePuddleObject : Projectiles
 				Value = bonusDamage,
 				Type = DamageType.Magical
 			};
-
-			target.Health.TryTakeDamage(ref bonus, _skill);
+			_skill.ApplyDamage(bonus,target.gameObject);
 		}
 
 		target.CharacterState.AddState(state, duration, _damageToExit, _dad.gameObject, _skill.name);

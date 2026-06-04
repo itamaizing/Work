@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CircularFrosting : Skill
+public class CircularFrosting : Skill,IEnergyDamagable
 {
     [SerializeField] private Character _player;
     [SerializeField] private SeriesOfStrikes _seriesOfStrikes;
@@ -157,8 +157,8 @@ public class CircularFrosting : Skill
                 Value = bonusDamage,
                 Type = DamageType.Magical
             };
-
-            target.Health.TryTakeDamage(ref bonus, this);
+            ApplyDamage(bonus,target.gameObject);
+            //target.Health.TryTakeDamage(ref bonus, this);
         }
 
         target.CharacterState.AddState(state, duration, 0, Hero.gameObject, name);
@@ -221,4 +221,6 @@ public class CircularFrosting : Skill
 
         _wasInterruptedInDelay = false;
     }
+
+    public bool IsStreamSkill { get; }
 }

@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class PhysicalAttack : Skill
+public class PhysicalAttack : Skill,IEnergyDamagable
 {
 	[SerializeField] private SeriesOfStrikes _combo;
 	[SerializeField] private AudioClip[] _hits;
@@ -399,5 +399,7 @@ public class PhysicalAttack : Skill
 		Targeting.ClearTempTarget();
 		_hero.Move.StopLookAt();
 	}
+
+    public bool IsStreamSkill { get; }
 }
 

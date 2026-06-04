@@ -147,7 +147,8 @@ public class DeathSpiralProjectile : Projectiles
 		if (_inTheRow)
 		{
 			//_skill.CmdApplyDamage(damage, target.gameObject);
-			target.Health.TryTakeDamage(ref _damage, _skill);
+			_skill.ApplyDamage(_damage,target.gameObject);
+			//target.Health.TryTakeDamage(ref _damage, _skill);
 			if (_talentPlague)
 			{
 				target.CharacterState.AddState(States.Plague, 5, 0, _dad.gameObject, _skill.name);
@@ -168,7 +169,8 @@ public class DeathSpiralProjectile : Projectiles
 		else
 		{
 			//_skill.CmdApplyDamage(damage, target.gameObject);
-			target.Health.TryTakeDamage(ref _damage, _skill);
+			_skill.ApplyDamage(_damage,target.gameObject);
+			//target.Health.TryTakeDamage(ref _damage, _skill);
 			if (_talentPlague)
 			{
 				target.CharacterState.AddState(States.Plague, 5, 0, _dad.gameObject, _skill.name);
@@ -210,7 +212,8 @@ public class DeathSpiralProjectile : Projectiles
 					};
 
 					//_skill.CmdApplyDamage(damage, target.gameObject);
-					target.Health.TryTakeDamage(ref damage2, _skill);
+					_skill.ApplyDamage(_damage,target.gameObject);
+					//target.Health.TryTakeDamage(ref damage2, _skill);
 					enemy.CharacterState.AddState(States.Frosting, 40, 0, _dad.gameObject, _skill.name);
 				}
 			}
@@ -235,7 +238,8 @@ public class DeathSpiralProjectile : Projectiles
 						Type = DamageType.Magical,
 					};
 					//_skill.CmdApplyDamage(damage, target.gameObject);
-					target.Health.TryTakeDamage(ref damage2, _skill);
+					_skill.ApplyDamage(_damage,target.gameObject);
+					//target.Health.TryTakeDamage(ref damage2, _skill);
 					for (int i = 0; i < 5; i++)
 					{
 						enemy.CharacterState.AddState(States.Cooling, 4, 0, _dad.gameObject, _skill.name);

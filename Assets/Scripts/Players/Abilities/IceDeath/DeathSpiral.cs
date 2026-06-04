@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class DeathSpiral : Skill
+public class DeathSpiral : Skill,IEnergyDamagable
 {
 	[SerializeField] private DeathSpiralProjectile _projectile;
 	[SerializeField] private HeroComponent _playerLinks;
@@ -23,6 +23,7 @@ public class DeathSpiral : Skill
 
 	private Heal _heal;
 	private float _timer = 1f;
+	private const float RadiusSearchTarget = 0.5f;
 	private Vector3 _mousePos = Vector3.positiveInfinity;
 	//private GameObject _target;
 	private bool _superCharge = false;
@@ -35,6 +36,7 @@ public class DeathSpiral : Skill
 	private bool _talentCorpseDeath = false;
 	private bool _talentCorpseBoostExplode;
 	private bool _firstShot = true;
+	private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
 	protected override bool IsCanCast => true;
 
@@ -77,20 +79,35 @@ public class DeathSpiral : Skill
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		while (Targeting.GetTarget()?.Character == null)
+		TargetInfo targetInfo = new TargetInfo();
+        
+		while (Targeting.GetTempTarget()?.Character == null)
 		{
 			if (GetMouseButton)
 			{
-				Targeting.FindTempTarget();
-			}
+				Targeting.FindTempTarget(Targeting.GetMousePoint(), RadiusSearchTarget, true);
 
+				if (Targeting.GetTempTarget()?.Character != null)
+				{
+					var target = Targeting.GetTempTarget()?.Character;
+					if (IsAllyTarget(target) && target is not MinionComponent)
+					{
+						Targeting.ClearTempTarget();						
+					}
+					else
+					{
+						_hero.Move.LookAtTransform(Targeting.GetTempTarget().Character.transform);
+						break;
+					}
+				}
+			}
 			yield return null;
 		}
 
-		TargetInfo targetInfo = new TargetInfo();
-		targetInfo.AddTarget(Targeting.GetTarget().Character);
-
-		callbackDataSaved(targetInfo);
+		Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
+		Targeting.ClearTempTarget();
+		targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+		callbackDataSaved?.Invoke(targetInfo);
 	}
 
 	protected override IEnumerator CastJob()
@@ -183,7 +200,6 @@ public class DeathSpiral : Skill
 	{
 		//Debug.Log(target + " target name ");
 		DeathSpiralProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, -angle, 0));
-		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(_playerLinks, 0, false, this);
 		projectile.SetTarget(target);
 		projectile.Talents(talentBoostHpBody, talentHitState, inTheRow, talentPlague, talentChargesPlague, superCharge);
@@ -422,4 +438,6 @@ public class DeathSpiral : Skill
 	{
 		_superCharge = value;
 	}
+
+	public bool IsStreamSkill { get; }
 }

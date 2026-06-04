@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class BlockOfIce : Skill
+public class BlockOfIce : Skill,IEnergyDamagable
 {
 	[SerializeField] private BlockOfIceProjectile _iceArrow;
 	[SerializeField] private HeroComponent _playerLinks;
@@ -135,4 +135,6 @@ public class BlockOfIce : Skill
 	{
 		_mousePos = Vector2.positiveInfinity;
 	}
+
+	public bool IsStreamSkill { get; }
 }

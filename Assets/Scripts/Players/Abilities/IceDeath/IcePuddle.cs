@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class IcePuddle : Skill
+public class IcePuddle : Skill, IEnergyDamagable
 {
     [Header("Puddle prefabs & preview")]
     [SerializeField] private IcePuddleObject _puddle;
@@ -232,7 +232,7 @@ public class IcePuddle : Skill
     private void CmdCreateProjecttileBig(float angle, float timeToDestroy, Vector3 position, bool lastHit, bool talentEvade, bool talentFrostingFrozen)
     {
         IcePuddleObject projectile = Instantiate(_puddleBig, position, Quaternion.Euler(-90, -angle, 0));
-        SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
         projectile.Init(Hero, timeToDestroy, lastHit, this);
         projectile.SetTalents(talentEvade, talentFrostingFrozen);
 
@@ -246,7 +246,7 @@ public class IcePuddle : Skill
     private void CmdCreateProjecttile(float angle, float timeToDestroy, Vector3 position, bool lastHit, bool talentEvade, bool talentFrostingFrozen)
     {
         IcePuddleObject projectile = Instantiate(_puddle, position, Quaternion.Euler(-90, -angle, 0));
-        SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
+        //SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
         projectile.Init(Hero, timeToDestroy, lastHit, this);
         projectile.SetTalents(talentEvade, talentFrostingFrozen);
 
@@ -394,4 +394,5 @@ public class IcePuddle : Skill
         }
     }
     */
+    public bool IsStreamSkill { get; }
 }

@@ -11,6 +11,18 @@ public class HarvestOfEnergy : Skill
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
+    
+    #region HarvestTalent
+    
+    private bool _harvestTalentEnabled;
+
+    public void SetHarvestTalent(bool enabled)
+    {
+        if(_harvestTalentEnabled == enabled) return;
+        _harvestTalentEnabled = enabled;
+    }
+
+    #endregion
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -43,5 +55,8 @@ public class HarvestOfEnergy : Skill
         {
             harvestOfRunes.Cooldown.SetIncreased(harvestOfRunes.Cooldown.CooldownTime, shouldModify: false);
         }
+        
+        if (_harvestTalentEnabled)
+            Hero.Abilities.GetSkill<NinjaResources>()?.CmdSetNextEnergyDamageMultiplier(1.5f);
     }
 }

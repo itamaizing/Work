@@ -7713,7 +7713,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.size
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.size
@@ -7923,6 +7923,14 @@ PrefabInstance:
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[5]'
       value: 
       objectReference: {fileID: 2612455436425407303}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[6]'
+      value: 
+      objectReference: {fileID: 4791106817473003114}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[7]'
+      value: 
+      objectReference: {fileID: 1301816107117140889}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.data[0]'
       value: 
@@ -8591,6 +8599,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2612455436425407303}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4791106817473003114}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1301816107117140889}
   m_SourcePrefab: {fileID: 100100000, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
 --- !u!114 &323327819542905198 stripped
 MonoBehaviour:
@@ -9207,7 +9221,7 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 0
+    _radius: 5
     _area: 0
     _castLength: 5
     _castWidth: 1
@@ -9675,7 +9689,7 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 0
+    _school: 3
     _form: 0
     _damageType: 0
     _rangeType: 0
@@ -10445,22 +10459,10 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: a04aa234cf7b9fb41b6cd8c068b72528, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 40
-    _costs:
-    - nameToShow: 40 Energy - Mandatory mod
-      type: 2
-      value: 40
-      costType: 0
-      shouldModify: 1
-      showInDescription: 0
+    _base: 0
+    _costs: []
   _skillEnergyCosts: []
-  _additionalSkillEnergyCosts:
-  - nameToShow: 1 Rune - Mandatory mod
-    type: 3
-    value: 1
-    costType: 0
-    shouldModify: 1
-    showInDescription: 0
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
@@ -11760,6 +11762,63 @@ MonoBehaviour:
     IsOpen: 0
     Description: "\u041F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u0435"
     Icon: {fileID: 21300000, guid: a78251261ef4e80459022c6f987b7ee8, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 4374618947117916461}
+--- !u!114 &4791106817473003114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f166bf8d544f384ebfc7ad8b75167e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HarvestTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "- \"\u0436\u0430\u0442\u0432\u0430 \u0440\u0443\u043D\" \u043F\u043E\u044F\u0432\u043B\u044F\u0435\u0442\u0441\u044F
+      \u0442\u0440\u0443\u043F \u0440\u044F\u0434\u043E\u043C \u0441 \u0444\u0440\u043E\u0441\u0442
+      \u0434\u0435\u0437\u043E\u043C"
+    - "- \"\u0436\u0430\u0442\u0432\u0430 \u044D\u043D\u0435\u0440\u0433\u0438\u0438\"
+      \u0441\u043B\u0435\u0434\u0443\u044E\u0449\u0430\u044F \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C
+      \u043D\u0430\u043D\u043E\u0441\u044F\u0449\u0430\u044F \u0434\u043E\u043F\u043E\u043B\u043D\u0438\u0442\u0435\u044C\u043D\u044B\u0439
+      \u0443\u0440\u043E\u043D \u0432\u0440\u0430\u0433\u0443 \u0437\u0430 \u044D\u043D\u0435\u0440\u0433\u0438\u044E,
+      \u0431\u0443\u0434\u0435\u0442 \u0432\u044B\u0448\u0435 \u043D\u0430 50%."
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u0423\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u0435 \u0436\u0430\u0442\u0432"
+    Icon: {fileID: 21300000, guid: 320be945beda75f4b848dd57579ecb6c, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 4374618947117916461}
+--- !u!114 &1301816107117140889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8789458529339427208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4838d4e9b4124b144a2152912e8b25ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IncreaseVampiricTalent
+  _data:
+    _descriptionsForInfoPanel:
+    - "\xAB\u0412\u0430\u043C\u043F\u0438\u0440\u0438\u0437\u043C \u0441\u0438\u043B\"
+      (\u0442\u0430\u043B 5\u0441) \u043D\u0430 \u0444\u0440\u043E\u0441\u0442 \u0434\u0435\u0437\u0430
+      \u044D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u0435\u0435 \u0432 2
+      \u0440\u0430\u0437\u0430 \u0432\u043E \u0432\u0440\u0435\u043C\u044F \u0430\u043A\u0442\u0438\u0432\u043D\u043E\u0439
+      \"\u0423\u043F\u0440\u043E\u0447\u043D\u043D\u043D\u043E\u0439 \u043C\u0451\u0440\u0442\u0432\u043E\u0439
+      \u043F\u043B\u043E\u0442\u0438\" (\u0442\u0430\u043B 3\u0441) "
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u0423\u043B\u0443\u0447\u0448\u0435\u043D\u0438\u0435 \u0432\u0430\u043C\u0438\u0440\u0438\u0437\u043C\u0430
+      \u0441\u0438\u043B"
+    Icon: {fileID: 8056498707614395508, guid: f93099b36e559b64894be862e9aa53be, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}

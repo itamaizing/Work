@@ -4,7 +4,7 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 
-public class IceDeathAbsorbation : Skill
+public class IceDeathAbsorbation : Skill,IEnergyDamagable
 {
     private float _baseRuneCost = 1f;
     private float _maxEnergyCost = 40f;
@@ -165,22 +165,31 @@ public class IceDeathAbsorbation : Skill
 
         if (!CheckForRune()) yield break;
         ConsumeRune();
-        float percentToDrain = _enemyPercentPerRune;
-        float hpToDamage = enemy.Health.CurrentValue * (percentToDrain / 100f);
-        float energyToSpend = Mathf.Min(hpToDamage * 10f, _maxEnergyCost);
+        float targetHp = enemy.Health.CurrentValue;
+        float runePercent = _enemyPercentPerRune;
+        float energySpent = Mathf.Min(_energy.CurrentValue, _maxEnergyCost);
+        float energyPercent = energySpent * 0.1f;
+        float totalPercent = runePercent + energyPercent;
+        float hpToDamage = targetHp * (totalPercent / 100f);
 
+
+        CmdMakeDamage(hpToDamage,enemy.gameObject);
+
+        ApplyOtherForces(hpToDamage);
+
+        _energy.CmdUse(energySpent);
+    }
+
+    [Command]
+    private void CmdMakeDamage(float dmg,GameObject target)
+    {
         Damage damage = new Damage
         {
-            Value = hpToDamage,
+            Value = dmg,
             Type = DamageType.Magical,
             School = Schools.Dark
         };
-
-        enemy.Health.CmdTryTakeDamage(damage, Hero.gameObject);
-        
-        ApplyOtherForces(hpToDamage);
-
-        _energy.CmdUse(energyToSpend);
+        ApplyDamage(damage,target);
     }
 
     [Command]
@@ -205,4 +214,6 @@ public class IceDeathAbsorbation : Skill
         if(!isSpeedOnly)
             _hero.Animator.SetTrigger(AbsorbationTrigger);
     }
+
+    public bool IsStreamSkill { get; }
 }

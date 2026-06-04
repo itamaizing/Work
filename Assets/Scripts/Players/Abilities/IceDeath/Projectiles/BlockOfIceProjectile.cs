@@ -53,14 +53,16 @@ public class BlockOfIceProjectile : Projectiles
 				//_rune.SumDamageMake(curDamage);
 				TargetRpcDamageMake(_curDamage);
 
-				target.Health.TryTakeDamage(ref _damage, _skill);
+				_skill.ApplyDamage(_damage,target.gameObject);
+				//target.Health.TryTakeDamage(ref _damage, _skill);
 ;
 				target.CharacterState.AddState(States.Cooling, duration, 0, _dad.gameObject, _skill.name);
 				GetComponent<Collider>().enabled = false;
 			}
 			else
 			{
-				damageable.TryTakeDamage(ref _damage, _skill);
+				_skill.ApplyDamage(_damage,target.gameObject);
+				//damageable.TryTakeDamage(ref _damage, _skill);
 				if (_damage.Value <= 0)
 				{
 					Explode();

@@ -87,7 +87,8 @@ public class IceCloudProjectile : Projectiles
 			_damage.Value = finalDamage;
 
 			TargetRpcDamageMake(finalDamage);
-			target.Health.TryTakeDamage(ref _damage, _skill);
+			//target.Health.TryTakeDamage(ref _damage, _skill);
+			_skill.ApplyDamage(_damage,target.gameObject);
 
             StartCoroutine(CrutchDelay(target, _curFreezeDuration));
 
@@ -97,7 +98,8 @@ public class IceCloudProjectile : Projectiles
 		}
 		else
 		{
-			damageable.TryTakeDamage(ref _damage, _skill);
+			_skill.ApplyDamage(_damage,target.gameObject);
+			//damageable.TryTakeDamage(ref _damage, _skill);
 			Explode();
 		}
 	}
@@ -160,7 +162,8 @@ public class IceCloudProjectile : Projectiles
 				Type = DamageType.Magical
 			};
 
-			target.Health.TryTakeDamage(ref bonus, _skill);
+			_skill.ApplyDamage(_damage,target.gameObject);
+			//target.Health.TryTakeDamage(ref bonus, _skill);
 			TargetRpcDamageMake(bonusDamage);
 		}
 

@@ -53,7 +53,8 @@ public class IceShardProjectile : Projectiles
 				TargetRpcDamageMake(_curDamage);
 
 				//_skill.CmdApplyDamage(damage, target.gameObject);
-				target.Health.TryTakeDamage(ref _damage, _skill);
+				_skill.ApplyDamage(_damage,target.gameObject);
+				//target.Health.TryTakeDamage(ref _damage, _skill);
 
 				//target.Health.TryTakeDamage(curDamage, Info.DamageType.Physical, Info.AttackRangeType.RangeAttack);
 				target.CharacterState.AddState(States.Frozen, duration, 30, _dad.gameObject, _skill.name);
@@ -78,7 +79,8 @@ public class IceShardProjectile : Projectiles
 			}
 			else
 			{
-				damageable.TryTakeDamage(ref _damage, _skill);
+				_skill.ApplyDamage(_damage,target.gameObject);
+				//damageable.TryTakeDamage(ref _damage, _skill);
 				if (_damage.Value <= 0)
 				{
 					Explode();

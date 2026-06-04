@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class IceSword : CloseCombatSkill
+public class IceSword : CloseCombatSkill,IEnergyDamagable
 {
 	[SerializeField] private float _damage = 15f;
 	//[SerializeField] private GameObject _basePlayer;
@@ -231,4 +231,5 @@ public class IceSword : CloseCombatSkill
 	//      if (!_useChargesAsComboPart) TryUseCharge();
 	//      return true;
 	//  }
+	public bool IsStreamSkill { get; }
 }

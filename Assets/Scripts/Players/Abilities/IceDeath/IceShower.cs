@@ -4,7 +4,7 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class IceShower : Skill
+public class IceShower : Skill,IEnergyDamagable
 {
 	[SerializeField] private IceShowerProjectile _projectile;
 	[SerializeField] private SkillRenderer _skillRenderer;
@@ -197,5 +197,7 @@ public class IceShower : Skill
 	{
 		_frozwenTalent = value;
 	}
+
+	public bool IsStreamSkill { get; }
 }
 

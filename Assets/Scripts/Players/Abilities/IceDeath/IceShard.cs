@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class IceShard : Skill
+public class IceShard : Skill,IEnergyDamagable
 {
 	[SerializeField] private IceShardProjectile _projectile;
 	[SerializeField] private HeroComponent _playerLinks;
@@ -145,4 +145,6 @@ public class IceShard : Skill
 		Debug.Log("CLEARED");
 		_mousePos = Vector2.positiveInfinity;
 	}
+
+	public bool IsStreamSkill { get; }
 }

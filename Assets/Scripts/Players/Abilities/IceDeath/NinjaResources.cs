@@ -15,6 +15,20 @@ public class NinjaResources : Skill, IPassiveSkill
     public override void LoadTargetData(TargetInfo targetInfo) => throw new NotImplementedException();
     #endregion
 
+    #region IncreaseVampiricTalent
+
+    private bool _isVampiricIncrease;
+
+    private float _energyVampiricMultiplier = 2f;
+    
+    public void EnableIncreaseVampiric(bool value)
+    {
+        if(_isVampiricIncrease == value) return;
+        _isVampiricIncrease = value;
+    }
+
+    #endregion
+    
     #region Talent
     private bool _isIceRuneTalent;
     private bool _isHardenedFleshTalent;
@@ -49,7 +63,13 @@ public class NinjaResources : Skill, IPassiveSkill
         //AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
     }
     #endregion
-
+    
+    private float _nextEnergyDamageMultiplier = 1f;
+    private Skill  _multiplierOwner = null;
+    
+    [Command]
+    public void CmdSetNextEnergyDamageMultiplier(float value) => _nextEnergyDamageMultiplier = value;
+    
     private Coroutine _regenRoutine;
 
     public override void Init(SkillRenderer render, Character hero)
@@ -60,12 +80,6 @@ public class NinjaResources : Skill, IPassiveSkill
         if (isServer) _regenRoutine = StartCoroutine(UpdateRuneRegenRoutine());
     }
 
-    private void OnEnable()
-    {
-        TrySubscribe();
-    }
-
-
     private void OnDisable()
     {
         Hero.DamageTracker.OnDamageTracked -= OnDamageTaken;
@@ -75,6 +89,8 @@ public class NinjaResources : Skill, IPassiveSkill
         {
             rune.OnRuneSpent -= OnRuneSpent;
         }
+        
+        UnsubscribeForAdditionalEnergyDamage();
     }
 
     private void ModifyFrozenCrit(Character targetCharacter, ref Damage damage, Skill skill)
@@ -109,6 +125,57 @@ public class NinjaResources : Skill, IPassiveSkill
         {
             rune.OnRuneSpent += OnRuneSpent;
         }
+        
+        SubscribeForAdditionalEnergyDamage();
+    }
+
+    private void SubscribeForAdditionalEnergyDamage()
+    {
+        foreach (var energySkill in _hero.Abilities.Abilities)
+        {
+            if (energySkill is IEnergyDamagable)
+            {
+                energySkill.OnBeforeApplyDamage += AddDamageToSkill;
+            }
+        }
+    }
+    
+    private void UnsubscribeForAdditionalEnergyDamage()
+    {
+        foreach (var energySkill in _hero.Abilities.Abilities)
+        {
+            if (energySkill is IEnergyDamagable)
+            {
+                energySkill.OnBeforeApplyDamage -= AddDamageToSkill;
+            }
+        }
+    }
+
+    private void AddDamageToSkill(ref Damage dmg, Skill skill, GameObject target)
+    {
+        if (_nextEnergyDamageMultiplier <= 1f) return;
+
+        dmg.Value *= _nextEnergyDamageMultiplier;
+
+        bool isStream = (skill as IEnergyDamagable)?.IsStreamSkill ?? false;
+        if (isStream)
+        {
+            _multiplierOwner = skill;
+        }
+        else
+        {
+            _nextEnergyDamageMultiplier = 1f;
+            _multiplierOwner = null;
+        }
+    }
+
+    public void ResetMultiplierIfOwner(Skill skill)
+    {
+        if (_multiplierOwner == skill)
+        {
+            _nextEnergyDamageMultiplier = 1f;
+            _multiplierOwner = null;
+        }
     }
 
     private void OnDamageTaken(Damage damage, GameObject attacker)
@@ -116,6 +183,11 @@ public class NinjaResources : Skill, IPassiveSkill
         if (_isIceRuneTalent && damage.Value > 0  && Hero.TryGetResource(ResourceType.Energy) is Energy energy)
         {
             float energyToRestore = damage.Value * 0.2f;
+            if (_hero.CharacterState.CheckForState(States.HardenedFlesh) && _isVampiricIncrease)
+            {
+                energyToRestore *= _energyVampiricMultiplier;
+            }
+             
             energy.Add(energyToRestore);
         }
     }

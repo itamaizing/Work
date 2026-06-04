@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class IceCloud : Skill
+public class IceCloud : Skill,IEnergyDamagable
 {
 	[SerializeField] private IceCloudProjectile _projectile;
 	[SerializeField] private SeriesOfStrikes _combo;
@@ -190,5 +190,6 @@ public class IceCloud : Skill
 
 	public void CanMoveIceCloud() => Hero.Move.SetCanMove(true);
 	public void StopMoveIceCloud() => Hero.Move.SetCanMove(false);
+	public bool IsStreamSkill { get; }
 }
 
