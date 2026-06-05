@@ -16,6 +16,10 @@ public class URLLibrary
     private const string _startGame = "startGame.php";
     private const string _webSocketPort = "8888";
     private const string _webSocket = "ws://";
+    private const string _addFriend = "AddFriend.php";
+    private const string _getFriend = "GetFriendList.php";
+    private const string _getUserLogin = "GerUserLogin.php";
+    private const string _getFriendList = "GetFriendList.php";
 
     private readonly List<string> _heroName = new()
     {
@@ -27,14 +31,20 @@ public class URLLibrary
         "kerrigan"
     };
 
-    public static string Authorization { get { return _mainServer + _authorization; } }
-    public static string Registration { get { return _mainServer + _registration; } }
-    public static string SetBottle { get { return _mainServer + _setBottle; } }
-    public static string GetBottle { get { return _mainServer + _getBottle; } }
-    public static string SetHeroData { get { return _mainServer + _setHeroData; } }
-    public static string GetHeroData { get { return _mainServer + _getHeroData; } }
-    public static string StartGame { get { return _mainServer + _startGame; } }
+    public static string Authorization { get { return GameFolder + _authorization; } }
+    public static string Registration { get { return GameFolder + _registration; } }
+    public static string SetBottle { get { return GameFolder + _setBottle; } }
+    public static string GetBottle { get { return GameFolder + _getBottle; } }
+    public static string SetHeroData { get { return GameFolder + _setHeroData; } }
+    public static string GetHeroData { get { return GameFolder + _getHeroData; } }
+    public static string StartGame { get { return GameFolder + _startGame; } }
     public static string WebSocket { get { return _webSocket + _mainServer + ":" + _webSocketPort; } }
+    public static string HTTP { get { return "http://" + _mainServer + "/"; } }
+    public static string GameFolder { get { return "http://" + _mainServer + "/" + "Work/"; } }
+    public static string AddFriend { get { return GameFolder + _addFriend; } }
+    public static string GetFriend { get { return GameFolder + _getFriend; } }
+    public static string GetFriendList { get { return GameFolder + _getFriendList; } }
+    public static string GetUserLogin { get { return GameFolder + _getUserLogin; } }
 
     public static string MainServer => _mainServer;
     public static string LocalHost => _localHost;

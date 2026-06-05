@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using kcp2k;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -190,4 +191,40 @@ public class InputHandler : MonoBehaviour
 	{
 		_IsClick = false;
 	}
+
+	[ContextMenu("HELPME")]
+	private void help()
+	{
+		string ipAndPort = "89.169.1.90:7778";
+
+        string ip;
+        string port;
+
+        string[] parts = ipAndPort.Split(':');
+
+        if (parts.Length == 2)
+        {
+            ip = parts[0];
+            port = parts[1];
+
+            Debug.Log($"Try connect - {ip}:{port}");
+
+            var transport = MPNetworkManager.Instance.GetComponent<KcpTransport>();
+
+            if (transport == null)
+            {
+                Debug.LogError("Transport not found on NetworkManager");
+                return;
+            }
+            transport.port = ushort.Parse(port);
+            MPNetworkManager.Instance.networkAddress = ip;
+
+            MPNetworkManager.Instance.StartClient();
+        }
+        else
+        {
+            Debug.LogError("Samthing wrong " + parts.Length);
+            Debug.LogError(parts);
+        }
+    }
 }

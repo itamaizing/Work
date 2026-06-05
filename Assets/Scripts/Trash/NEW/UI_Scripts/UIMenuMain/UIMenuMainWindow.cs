@@ -36,7 +36,14 @@ public class UIMenuMainWindow : MonoBehaviour
 
     void Show()
     {
-		_charactersPanel.Show();
+        if (Application.isBatchMode ||
+    SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null ||
+    !Application.isPlaying)
+        {
+            return;
+        }
+
+        _charactersPanel.Show();
         _gameTypesPanel.Show();
         _savesPanel.Show();
         
