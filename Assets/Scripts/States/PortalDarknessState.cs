@@ -8,7 +8,7 @@ public class PortalDarknessState : RefreshingState
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
 
-    private int _maxToSpawn = 2;
+    private int _maxToSpawn = 1;
     private int _spawnedCount = 0;
 
     public override List<StatusEffect> Effects => new List<StatusEffect>
@@ -81,10 +81,10 @@ public class PortalDarknessState : RefreshingState
         spawnPos.y = characterState.transform.position.y;
 
         _caster.SpawnComponent.CmdSpawnEnemyPoint(spawnPos, Quaternion.identity, enemyIndex);
-        if (_spawnedCount >= _maxToSpawn)
+        /*if (_spawnedCount >= _maxToSpawn)
         {
             ExitState();
-        }
+        }*/
     }
 
     public override void ExitState()
