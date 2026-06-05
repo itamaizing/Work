@@ -10,14 +10,18 @@ public class MPNetworkManager : NetworkManager
 {
     public static MPNetworkManager Instance;
 
+    [SerializeField] private List<HeroComponent> _heroList;
+
     [SerializeField] private GameRules _gameRules;
 
     private List<GameObject> _players = new List<GameObject>();
-    private int _userID = -37;
+    [SerializeField] private int _userID = -37;
     private GameRules _currentGameRules;
 
     public int UserID { get => _userID; set { if(_userID == -37) _userID = value; } }
     public List<GameObject> Players => _players;
+
+    public List<HeroComponent> HeroList { get => _heroList; set => _heroList = value; }
 
     public event Action ConnectClosed;
     public event Action NewConnected;

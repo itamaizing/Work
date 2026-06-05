@@ -42,7 +42,7 @@ public class User : NetworkBehaviour
                 _id = MPNetworkManager.Instance.UserID;
                 InitializeManagers();
 
-                AddPlayer(gameObject, ServerManager.Instance.CurrentHeroIndex);
+                AddPlayer(ServerManager.Instance.CurrentHeroIndex);
             }
 
             else if (Instance != null && Instance != this)
@@ -54,10 +54,10 @@ public class User : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    private void AddPlayer(GameObject user, int characterIndex)
+    private void AddPlayer(int characterIndex)
     {
-        GameObject player = Instantiate(ServerManager.Instance.HeroList[characterIndex].gameObject);
-        NetworkServer.Spawn(player, user);
+        GameObject player = Instantiate(MPNetworkManager.Instance.HeroList[characterIndex].gameObject);
+        NetworkServer.Spawn(player, connectionToClient);
         MPNetworkManager.Instance.AddPlayer(player);
         RpcAddPlayer(player);
     }
