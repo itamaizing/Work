@@ -31,6 +31,8 @@ public class CreeperStrike : Skill
     [SerializeField] private float _multiplyCritDamage = 1.5f;
     [SerializeField ]private float _chanceOfCriticalStrike = 0.05f;
 
+    private Character _castTarget;
+
     private int _currentCountHit = 0;
     private int _currentHitForStrokesOfAspiration = 0;
     private int _countHitForDesireToHideTalent = 0;
@@ -128,9 +130,10 @@ public class CreeperStrike : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget() == null) yield return null;
+        if (_castTarget == null) yield break;
+
         _hero.Move.StopLookAt();
-        DamageDeal(Targeting.GetTarget()?.Damageable);
+        DamageDeal(_castTarget);
 
         yield return null;
     }
@@ -521,13 +524,22 @@ public class CreeperStrike : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo?.GetTargets()?.Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
+        if (targetInfo.GetTargets().Count > 0)
+        {
+            _castTarget = (Character)targetInfo.GetTargets()[0];
+            Targeting.SetTarget(_castTarget);
+        }
     }
+
     protected override void ClearData()
     {
+        _castTarget = null;
+
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();
+
         if (ClearTargetsCoroutine != null) StopCoroutine(ClearTargetsCoroutine);
+
         _hero.Move.StopLookAt();
     }
 
