@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class DeathSpiralProjectile : Projectiles
 {
+	[SerializeField] private float speed = 12f;
 	private IcyCorpse _icyCorpse;
 
 	private Vector3 startPos;
@@ -22,9 +23,11 @@ public class DeathSpiralProjectile : Projectiles
 	private Damage _damage;
 	private float _curDamage;
 
-	public void SetTarget(GameObject  target)
+	private Character _target;
+
+	public void SetTarget(Character target)
 	{
-		_rb.DOMove(target.transform.position, 0.5f);
+		_target = target;
 	}
 
 	private void Start()
@@ -48,10 +51,16 @@ public class DeathSpiralProjectile : Projectiles
 
 	private void Update()
 	{
-		if (Vector3.Distance(transform.position, startPos) > _distance * GlobalVariable.cellSize)
+		if (_target == null)
 		{
 			Explode();
+			return;
 		}
+
+		Vector3 direction =	(_target.transform.position - transform.position).normalized;
+		_rb.linearVelocity = direction * speed;
+
+		if (Vector3.Distance(transform.position, startPos) > _distance * GlobalVariable.cellSize) Explode();
 	}
 
 	[Server]

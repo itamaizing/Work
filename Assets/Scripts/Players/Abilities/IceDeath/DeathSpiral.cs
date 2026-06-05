@@ -3,9 +3,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class DeathSpiral : Skill,IEnergyDamagable
+public class DeathSpiral : Skill
 {
 	[SerializeField] private DeathSpiralProjectile _projectile;
 	[SerializeField] private HeroComponent _playerLinks;
@@ -15,15 +14,8 @@ public class DeathSpiral : Skill,IEnergyDamagable
 	[SerializeField] private DamageTracker _damageTracker;
 	[SerializeField] private float _damageToCharge = 30f;
 
-	private const int MaxCharges = 3;
-	private float _currentAccumulatedDamage;
-
-	[SyncVar(hook = nameof(OnChargesChanged))]
-	private int _chargesSpiral;
-
 	private Heal _heal;
 	private float _timer = 1f;
-	private const float RadiusSearchTarget = 0.5f;
 	private Vector3 _mousePos = Vector3.positiveInfinity;
 	//private GameObject _target;
 	private bool _superCharge = false;
@@ -36,11 +28,25 @@ public class DeathSpiral : Skill,IEnergyDamagable
 	private bool _talentCorpseDeath = false;
 	private bool _talentCorpseBoostExplode;
 	private bool _firstShot = true;
-	private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
-	protected override bool IsCanCast => true;
+	[SyncVar(hook = nameof(OnChargesChanged))]
+	private int _chargesSpiral;
 
-    protected override int AnimTriggerCastDelay => 0;
+	private float _currentAccumulatedDamage;
+
+	private const int MaxCharges = 3;
+
+	protected override bool IsCanCast
+	{
+		get
+		{
+			if (Targeting.GetTarget()?.Character == null) return false;
+			if (_chargesSpiral <= 0) return false;
+			return Vector3.Distance(Hero.transform.position, Targeting.GetTarget().Character.transform.position) <= AreaInfo.CastLength;
+		}
+	}
+
+	protected override int AnimTriggerCastDelay => 0;
 
     protected override int AnimTriggerCast => 0;
 
@@ -73,46 +79,33 @@ public class DeathSpiral : Skill,IEnergyDamagable
 	}
 
 	public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        Debug.LogError("DataError");
-    }
+	{
+		if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((ITargetable)(Character)targetInfo.GetTargets()[0]);
+	}
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		TargetInfo targetInfo = new TargetInfo();
-        
 		while (Targeting.GetTempTarget()?.Character == null)
 		{
 			if (GetMouseButton)
 			{
-				Targeting.FindTempTarget(Targeting.GetMousePoint(), RadiusSearchTarget, true);
-
-				if (Targeting.GetTempTarget()?.Character != null)
-				{
-					var target = Targeting.GetTempTarget()?.Character;
-					if (IsAllyTarget(target) && target is not MinionComponent)
-					{
-						Targeting.ClearTempTarget();						
-					}
-					else
-					{
-						_hero.Move.LookAtTransform(Targeting.GetTempTarget().Character.transform);
-						break;
-					}
-				}
+				Targeting.FindTempTarget();
 			}
+
 			yield return null;
 		}
 
 		Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
-		Targeting.ClearTempTarget();
+		TargetInfo targetInfo = new TargetInfo();
 		targetInfo.AddTarget(Targeting.GetTarget()?.Character);
-		callbackDataSaved?.Invoke(targetInfo);
+		callbackDataSaved(targetInfo);
 	}
 
 	protected override IEnumerator CastJob()
 	{
-		if(_plagueAbsorption.Charges>= 1)
+		UseSpiralCharge(1);
+
+		if (_plagueAbsorption.Charges >= 1)
 		{
 			_plagueAbsorption.CmdUseCharge(1);
 			PlagueAbsorptionCharge();
@@ -125,13 +118,24 @@ public class DeathSpiral : Skill,IEnergyDamagable
 		{
 			BasicShoot();
 		}
+
 		yield return null;
 	}
+
 	protected override void ClearData()
 	{
 		Targeting.ClearTarget();
-		//_target = null;
+		Targeting.ClearTempTarget();
+
 		_mousePos = Vector3.positiveInfinity;
+	}
+
+	private void UseSpiralCharge(int value = 1)
+	{
+		_chargesSpiral -= value;
+		_chargesSpiral = Mathf.Max(0, _chargesSpiral);
+
+		Charges.SendCurrentChange(_chargesSpiral);
 	}
 
 	/*protected override void Cast()
@@ -196,7 +200,7 @@ public class DeathSpiral : Skill,IEnergyDamagable
 	}*/
 
 	[Command]
-	private void Shoot(float angle, bool inTheRow, GameObject target, bool talentBoostHpBody, bool talentHitState, bool talentPlague, bool talentChargesPlague, bool superCharge, bool corpseDeath, bool corpseBoostExplode)
+	private void Shoot(float angle, bool inTheRow, Character target, bool talentBoostHpBody, bool talentHitState, bool talentPlague, bool talentChargesPlague, bool superCharge, bool corpseDeath, bool corpseBoostExplode)
 	{
 		//Debug.Log(target + " target name ");
 		DeathSpiralProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, -angle, 0));
@@ -212,7 +216,7 @@ public class DeathSpiral : Skill,IEnergyDamagable
 	}
 
 	[ClientRpc]
-	private void RpcInit(GameObject obj, GameObject target, bool talentBoostHpBody, bool talentHitState, bool inTheRow, bool talentPlague, bool talentChargesPlague, bool superCharge, bool corpseDeath, bool corpseBoostExplode)
+	private void RpcInit(GameObject obj, Character target, bool talentBoostHpBody, bool talentHitState, bool inTheRow, bool talentPlague, bool talentChargesPlague, bool superCharge, bool corpseDeath, bool corpseBoostExplode)
 	{
 		//Debug.Log(target + " target name ");
 		DeathSpiralProjectile projectile = obj.GetComponent<DeathSpiralProjectile>();
@@ -289,7 +293,7 @@ public class DeathSpiral : Skill,IEnergyDamagable
 		_seriesOfStrikes.MakeHit(null, Info.AbilityForm, 1, 0, 0);
 
 
-		Shoot(angle, _inTheRow, Targeting.GetTarget()?.Character.gameObject, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
+		Shoot(angle, _inTheRow, Targeting.GetTarget()?.Character, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
 	}
 
 	private void BasicShoot()
@@ -301,7 +305,7 @@ public class DeathSpiral : Skill,IEnergyDamagable
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 		_seriesOfStrikes.MakeHit(null, Info.AbilityForm, 1, 0, 0);
-		Shoot(angle, _inTheRow, Targeting.GetTarget()?.Character.gameObject, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
+		Shoot(angle, _inTheRow, Targeting.GetTarget()?.Character, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
 	}
 
 	private void SecondAttact()
@@ -311,7 +315,7 @@ public class DeathSpiral : Skill,IEnergyDamagable
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 		_seriesOfStrikes.MakeHit(null, Info.AbilityForm, 1, 0, 0);
-		Shoot(angle, _inTheRow, Targeting.GetTarget()?.Character.gameObject, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
+		Shoot(angle, _inTheRow, Targeting.GetTarget()?.Character, _talentBoostHPBOdy, _talentHitState, _talentPlague, _talentChragesPlague, _superCharge, _talentCorpseDeath, _talentCorpseBoostExplode);
 	}
 
 	private void Timer()
@@ -329,6 +333,8 @@ public class DeathSpiral : Skill,IEnergyDamagable
 
 	private void TrackDamage(Damage damage, GameObject target)
 	{
+		if (!isServer) return;
+
 		if (target == null) return;
 		if (damage.Type != DamageType.Physical) return;
 
@@ -348,34 +354,8 @@ public class DeathSpiral : Skill,IEnergyDamagable
 
 			Charges.SendCurrentChange(_chargesSpiral);
 
-			Debug.Log($"[DeathSpiral] Charge Added. Current Charges: {_chargesSpiral}");
+			Debug.Log($"DeathSpiral charge added {_chargesSpiral}/{MaxCharges}");
 		}
-	}
-
-	public void UseSpiralCharge(int value = 1)
-	{
-		_chargesSpiral -= value;
-		_chargesSpiral = Mathf.Max(0, _chargesSpiral);
-
-		Charges.SendCurrentChange(_chargesSpiral);
-	}
-
-	protected override bool TryPayCost(List<SkillResourceCost> skillEnergyCosts, bool startCooldown = true)
-	{
-		if (_firstShot && _chargesSpiral > 0)
-		{
-			UseSpiralCharge();
-
-			foreach (var skillCost in _skillEnergyCosts)
-			{
-				var resource = _hero.Resources[skillCost.type];
-				resource.CmdUse(Buff.ManaCost.GetBuffedValue(skillCost.value));
-			}
-
-			_firstShot = false;
-		}
-
-		return true;
 	}
 
 	[Command]
@@ -438,6 +418,4 @@ public class DeathSpiral : Skill,IEnergyDamagable
 	{
 		_superCharge = value;
 	}
-
-	public bool IsStreamSkill { get; }
 }

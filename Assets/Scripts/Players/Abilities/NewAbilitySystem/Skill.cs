@@ -150,6 +150,8 @@ public abstract class Skill : NetworkBehaviour
             }
         }
     }
+
+    public bool IsUseCharges { get => _isUseCharges; set => _isUseCharges = value; }
     public bool GetMouseButton { get => _click != TypeClick.None; }
     public bool IsSubjectToGlobalCooldownTime { get => _isSubjectToGlobalCooldownTime; }
     public Character Hero { get => _hero; }

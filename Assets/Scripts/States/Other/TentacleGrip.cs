@@ -20,6 +20,7 @@ public class TentacleGrip : AbstractCharacterState
 		if (character.TryGetComponent<Character>(out var ability))
 		{
 			abilities = ability.Abilities;
+			//abilities.SetPhysicalAbilitiesDisactive(true);
 		}
 		else Debug.Log("no ability at " + character.gameObject.name);
 

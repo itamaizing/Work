@@ -14,7 +14,7 @@ public class NinjaResources : Skill, IPassiveSkill
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved) => null;
     public override void LoadTargetData(TargetInfo targetInfo) => throw new NotImplementedException();
     #endregion
-
+    
     #region IncreaseVampiricTalent
 
     private bool _isVampiricIncrease;
@@ -28,6 +28,10 @@ public class NinjaResources : Skill, IPassiveSkill
     }
 
     #endregion
+    
+    private float _accumulatedDamageForRune;
+    private const float DamagePerRune = 100f;
+    private const float EnergyRestorePercent = 0.2f;
     
     #region Talent
     private bool _isIceRuneTalent;
@@ -180,15 +184,54 @@ public class NinjaResources : Skill, IPassiveSkill
 
     private void OnDamageTaken(Damage damage, GameObject attacker)
     {
-        if (_isIceRuneTalent && damage.Value > 0  && Hero.TryGetResource(ResourceType.Energy) is Energy energy)
+        if (!_isIceRuneTalent)
+            return;
+
+        if (!isServer)
+            return;
+
+        if (damage.Value <= 0)
+            return;
+
+        if (Hero.TryGetResource(ResourceType.Energy) is Energy energy)
         {
-            float energyToRestore = damage.Value * 0.2f;
+            float energyToRestore = damage.Value * EnergyRestorePercent;
             if (_hero.CharacterState.CheckForState(States.HardenedFlesh) && _isVampiricIncrease)
             {
                 energyToRestore *= _energyVampiricMultiplier;
             }
-             
             energy.Add(energyToRestore);
+        }
+
+        _accumulatedDamageForRune += damage.Value;
+
+        while (_accumulatedDamageForRune >= DamagePerRune)
+        {
+            _accumulatedDamageForRune -= DamagePerRune;
+
+            if (Hero.TryGetResource(ResourceType.Rune) is RuneComponent rune)
+            {
+                rune.CmdAdd(1);
+            }
+        }
+
+        RestoreResourcesToAllies(damage.Value);
+    }
+
+    private void RestoreResourcesToAllies(float damageValue)
+    {
+        float restoreValue = damageValue * EnergyRestorePercent;
+
+        foreach (Character character in FindObjectsOfType<Character>())
+        {
+            if (character == null) continue;
+            if (character == Hero) continue;
+            if (character.gameObject.layer != Hero.gameObject.layer) continue;
+
+            if (Vector3.Distance(Hero.transform.position, character.transform.position) > AreaInfo.Radius) continue;
+
+            if (character.TryGetResource(ResourceType.Energy) is Energy energy) energy.Add(restoreValue);
+            if (character.TryGetResource(ResourceType.Mana) is Mana mana) mana.Add(restoreValue);
         }
     }
 

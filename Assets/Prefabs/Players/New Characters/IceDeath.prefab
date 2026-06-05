@@ -8209,11 +8209,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8492809262968261936, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 8492809262968261936, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 8569747795464636412, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _flyChecker
@@ -9209,10 +9209,10 @@ MonoBehaviour:
   _manaCostRate: 0
   _manaCostPerTick: []
   _chargeComponent:
-    _usesCharges: 1
+    _usesCharges: 0
     _isComboPart: 0
     _cooldownType: 1
-    _maxCharges: 3
+    _maxCharges: 0
     _baseCooldown: 0
     affectedByCDR: 0
   _isUseCharges: 0
