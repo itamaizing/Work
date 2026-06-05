@@ -318,6 +318,8 @@ public abstract class Skill : NetworkBehaviour
     /// </summary>
     protected virtual void ClearData()
     {
+        Targeting.UnlockTarget();
+
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();
         AnimCastEnded();
@@ -475,6 +477,7 @@ public abstract class Skill : NetworkBehaviour
                 var targetInfo = _targetInfoQueue.Dequeue();
 
                 LoadTargetData(targetInfo);
+                Targeting.LockTarget();
 
                 if (targetInfo.GetTargets().Count > 0)
                 {

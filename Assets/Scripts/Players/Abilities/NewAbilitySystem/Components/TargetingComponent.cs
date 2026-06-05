@@ -140,11 +140,23 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
     }
     #endregion
 
+    private bool _targetLocked;
+
     #region Methods
     public override void Init(Skill skill)
     {
         base.Init(skill);
         SetUpPhysicLayers();
+    }
+
+    public void LockTarget()
+    {
+        _targetLocked = true;
+    }
+
+    public void UnlockTarget()
+    {
+        _targetLocked = false;
     }
 
     #region Get-Set
@@ -186,6 +198,9 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
 
     public void SetTarget(ITargetable character)
     {
+        if (_targetLocked)
+            return;
+
         if (character == null)
             return;
         _target = new TargetData((character as MonoBehaviour)?.gameObject);
@@ -193,6 +208,9 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
 
     public void SetTarget(TargetData target) // ??
     {
+        if (_targetLocked)
+            return;
+
         if (target == null)
             return;
         _target = target;
