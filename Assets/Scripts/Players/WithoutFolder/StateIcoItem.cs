@@ -14,6 +14,7 @@ public class StateIcoItem : MonoBehaviour
     public int count = 1;
     public int maxStack;
     public float currentDuration;
+    public string icoText;
 
     private States _states;
 

@@ -22,6 +22,7 @@ public class StateIcons : MonoBehaviour
     private CharacterState characterState;
     private List<StateIcoItem> _activeEffects = new List<StateIcoItem>();
     private bool _added = false;
+    private string _icoText;
 
     private void Awake()
     {
@@ -33,7 +34,7 @@ public class StateIcons : MonoBehaviour
         foreach (var data in _icoDatabase.Entries) if (!_icoDataDictionary.ContainsKey(data.State)) _icoDataDictionary.Add(data.State, data);
     }
 
-    public void ActivateIco(States state, float timeToDecrease, int stack, bool canStack, int maxStackValue = 1)
+    public void ActivateIco(States state, float timeToDecrease, int stack, bool canStack, int maxStackValue = 1, string icotext = "")
     {
         foreach (var ico in _activeEffects)
         {

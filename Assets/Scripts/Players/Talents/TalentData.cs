@@ -9,7 +9,8 @@ public class TalentData
 	[SerializeField] private List<TalentStateInfo> _stateInfos = new();
 
 	private string _name;
-	public bool IsOpen = false;
+	private List<TalentData> _dependentTalents = new();
+	private bool _isOpen = false;
 	
 	public string Description = string.Empty;
     public string ConditionDescription = string.Empty;
@@ -20,6 +21,7 @@ public class TalentData
 
 	public OpenCondition condition;
 
+	public bool IsOpen => _isOpen;
 	public string Name
 	{
 		get { return _name; }
@@ -30,12 +32,40 @@ public class TalentData
 		}
 	}
 
-	public List<string> DescriptionsForInfoPanel { get => _descriptionsForInfoPanel; }
+	public void SetOpen(bool value)
+    {
+        _isOpen = value;
+		if(condition != null)
+			condition.Validete(this);
+    }
+
+    public List<string> DescriptionsForInfoPanel { get => _descriptionsForInfoPanel; }
 	public List<TalentStateInfo> StateInfos => _stateInfos;
 
 	public TalentData(string name, bool isOpen)
 	{
-		// Name = name;
-		IsOpen = isOpen;
+        // Name = name;
+        _isOpen = isOpen;
 	}
+
+	public void AddDependentTalent(TalentData talent)
+    {
+		if (talent == null) return;
+		_dependentTalents.Clear();
+        if (!_dependentTalents.Contains(talent))
+        {
+            _dependentTalents.Add(talent);
+        }
+    }
+
+	public bool CanClose()
+    {
+        //return true;
+        if (_dependentTalents.Count <= 0) return true;
+        foreach (var talent in _dependentTalents)
+        {
+            if (talent.IsOpen) return false;
+        }
+        return true;
+    }
 }

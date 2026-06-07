@@ -6,7 +6,9 @@ using UnityEngine;
 public class UIGameWindowPopup : MonoBehaviour
 {
     [SerializeField] private UIMenuMainAttributesPanel _attributesPanel;
+    [SerializeField] private UIMenuMainAttributesPanel _attributesPanel2;
     [SerializeField] private UIMenuMainTalentsPanel _talentsPanel;
+    [SerializeField] private UIMenuMainTalentsPanel _talentsPanel2;
     [SerializeField] private PlayerIcon _playerIcon;
     [SerializeField] private MinionPanel _minionPanel;
     [SerializeField] private SkillPanel _skillPanel;
@@ -21,6 +23,7 @@ public class UIGameWindowPopup : MonoBehaviour
     private readonly Dictionary<Character, List<Skill>> _minionSkillMap = new();
 
     private HeroComponent _currentHero;
+    //private HeroComponent _enemyHero;
     private Character _currentCharacter;
 
     private void Awake()
@@ -69,6 +72,7 @@ public class UIGameWindowPopup : MonoBehaviour
     {
         _selectManager.UIVisibilityToggled += TeamSourceSwich;
         _selectManager.CharacterSelected += OnCharacterSelected;
+        //_selectManager.CharacterSelectedEnemy += OnCharacterSelectedEnemy;
         _selectManager.CharacterDeselected += OnCharacterDeselected;
     }
 
@@ -76,9 +80,16 @@ public class UIGameWindowPopup : MonoBehaviour
     {
         _selectManager.UIVisibilityToggled -= TeamSourceSwich;
         _selectManager.CharacterSelected -= OnCharacterSelected;
+        //_selectManager.CharacterSelectedEnemy -= OnCharacterSelectedEnemy;
         _selectManager.CharacterDeselected -= OnCharacterDeselected;
     }
-    
+
+   /* private void OnCharacterSelectedEnemy(Character character)
+    {
+        _currentEnemyCharacter = character;
+        UpdateCharacterPanelsEnemy();
+    }*/
+
     private void OnCharacterSelected(Character character)
     {
         _currentCharacter = character;
@@ -106,6 +117,12 @@ public class UIGameWindowPopup : MonoBehaviour
         _attributesPanel.gameObject.SetActive(false);
         _talentsPanel.HidePanels();
         _talentsPanel.gameObject.SetActive(false);
+
+        _attributesPanel2.ShowHide(false);
+        _attributesPanel2.gameObject.SetActive(false);
+        _talentsPanel2.HidePanels();
+        _talentsPanel2.gameObject.SetActive(false);
+
         _skillMinionPanel.gameObject.SetActive(false);
 
         _currentCharacter.SpawnComponent.UnitAdded -= OnMinionSpawned;
@@ -133,6 +150,23 @@ public class UIGameWindowPopup : MonoBehaviour
         _skillMinionPanel.gameObject.SetActive(true);
         _skillMinionPanel.SetHideUnusedButtons(true);
     }
+
+   /* private void UpdateCharacterPanelsEnemy()
+    {
+        if (_enemyHero == null)
+            return;
+
+        //_playerIcon.OnCharacterSelected(_currentHero);
+        //_minionPanel.OnCharacterSelected(_currentHero);
+        //_skillPanel.OnCharacterSelected(_currentHero);
+
+        _attributesPanel2.gameObject.SetActive(true);
+        _attributesPanel2.Show(_enemyHero, false);
+        _attributesPanel2.ShowHide(true);
+
+        _talentsPanel2.gameObject.SetActive(true);
+        _talentsPanel2.Show(_enemyHero.TalentManager, true);
+    }*/
 
     private void UpdateMinionSkills()
     {

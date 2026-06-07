@@ -25,7 +25,7 @@ public abstract class Talent : MonoBehaviour
 		}
         _data.condition = OpenCondition;
         _data.ConditionDescription = OpenCondition.ConditionDescription();
-		OpenCondition.Validete(Data);
+		//OpenCondition.Validete(Data);
 		//Debug.Log("Open condition " + OpenCondition.CanOpen);
 	}
 
@@ -35,7 +35,7 @@ public abstract class Talent : MonoBehaviour
 
 	public void SetActive(bool isActive, int lvl = -1)
 	{
-		_data.IsOpen = isActive;
+		_data.SetOpen(isActive);
 		_data.Level = lvl;
 		if (isActive && OpenCondition.CanOpen)
 		{
@@ -47,7 +47,7 @@ public abstract class Talent : MonoBehaviour
 		}
 	}
 
-	public bool CanClose()
+	/*public bool CanClose()
 	{
 		if(_dependentTalents.Count <= 0) return true;
 
@@ -56,10 +56,11 @@ public abstract class Talent : MonoBehaviour
 			if (talent.IsOpen) return false;
 		}
 		return true;
-	}
+	}*/
 
 	public void AddDependendTalent(TalentData data)
 	{
-		_dependentTalents.Add(data);
-	}
+		//_dependentTalents.Add(data);
+		_data.AddDependentTalent(data);
+    }
 }

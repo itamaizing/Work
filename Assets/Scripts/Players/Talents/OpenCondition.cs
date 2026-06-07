@@ -48,7 +48,6 @@ public class SpecificTalentOpenCondition : OpenCondition
     public override void Validete(TalentData data)
     {
         if (_talentsNeededToOpen.Count <= 0) return;
-
         foreach (var talent in _talentsNeededToOpen)
         {
             talent.AddDependendTalent(data);

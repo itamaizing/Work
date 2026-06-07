@@ -58,7 +58,7 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
         _talent = talent;
         
         activeState.isActive = _talent.IsOpen;
-        _lvlText.text = (talent.Level + 1).ToString();
+        _lvlText.text = (talent.Level).ToString();
         _lvlText.gameObject.SetActive(_talent.IsOpen);
         if (_talent.IsOpen == false)
             _frameImage.sprite = _iconState.Off;
@@ -124,6 +124,11 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
             }
             else
             {
+                if (!_talent.CanClose())
+                {
+                    Debug.Log("CANT CLOSE TALENT", this);
+                    return;
+                }
                 Selected?.Invoke(_talent, !_talent.IsOpen, 0);
                 _lvlText.text = "0";
                 _lvlText.gameObject.SetActive(false);
@@ -143,6 +148,12 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
 
     private void OnRightClick()
     {
+        if (!_talent.CanClose())
+        {
+            Debug.Log("CANT CLOSE TALENT", this);
+            return;
+        }
+
         Selected?.Invoke(_talent, false, 0);
         _lvlText.text = "0";
         _lvlText.gameObject.SetActive(false);

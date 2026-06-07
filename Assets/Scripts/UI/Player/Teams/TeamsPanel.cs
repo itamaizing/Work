@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using UnityEngine.UI;
 public class TeamsPanel : MonoBehaviour
 {
     public static TeamsPanel Instance;
+    public event Action<Character> onPlayerSelected; 
 
     [SerializeField] private SelectManager _selectManager;
     [SerializeField] private PlayerIcon _playerIconPref;
@@ -96,6 +98,11 @@ public class TeamsPanel : MonoBehaviour
                 break;
             }   
         }
+    }
+
+    public void OnButtonClick(Character character)
+    {
+        onPlayerSelected?.Invoke(character);
     }
 
     private IEnumerator UpdatePanelCurotine()

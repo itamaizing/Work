@@ -99,7 +99,8 @@ public class TalentSaveManager
 
         int isActive = _saveData.LoadInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", 0);
 		character.TalentManager.SetPoints(_saveData.LoadInt($"{character.Data.Name}_TalentPointsCount"));
-        talent.Data.IsOpen = isActive >= 1;
+        talent.Data.SetOpen(isActive >= 1);
+		Debug.Log("Lvl talent: " + talent.Data.Level + " " + isActive);
         talentGroup.SetActive(talent.Data, isActive >= 1, isActive);
 
         if (needActive)
@@ -136,7 +137,7 @@ public class TalentSaveManager
 				{
 					int isActive = _saveData.LoadInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", 0);
 					//int isActive = _saveData.LoadInt($"{character.Data.Name}_Group{saveGroup}_{talentGroup.Name}_{talent.Data.Name}", talent.Data.IsOpen ? 1 : 0);
-					talent.Data.IsOpen = isActive == 1;
+					talent.Data.SetOpen(isActive == 1);
 				}
 			}
         }
