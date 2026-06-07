@@ -522,6 +522,8 @@ public class SkillPanel : MonoBehaviour
     private IEnumerator LoadPanelJob()
     {
         yield return new WaitForEndOfFrame();
+        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForEndOfFrame();
         LoadPanel();
     }
 }

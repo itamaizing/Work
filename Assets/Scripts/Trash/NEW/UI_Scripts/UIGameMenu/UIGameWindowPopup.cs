@@ -46,6 +46,7 @@ public class UIGameWindowPopup : MonoBehaviour
 
     private void ShowSettings()
     {
+        if(_settings != null)
         if (_settings.activeSelf)
         {
             _settings.SetActive(false);
