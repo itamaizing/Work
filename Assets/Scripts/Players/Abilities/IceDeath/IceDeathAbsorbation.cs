@@ -27,6 +27,19 @@ public class IceDeathAbsorbation : Skill,IEnergyDamagable
     
     private int AbsorbationTrigger => Animator.StringToHash("Throw");
 
+    #region InstantAbsorptionTalent
+
+    private bool _isInstant;
+
+    public void EnableInstantAbsorption(bool value)
+    {
+        if(_isInstant == value) return;
+
+        _isInstant = value;
+    }
+
+    #endregion
+
     public override void Init(SkillRenderer render, Character hero)
     {
         base.Init(render,hero);
@@ -100,12 +113,25 @@ public class IceDeathAbsorbation : Skill,IEnergyDamagable
 
         Targeting.ClearTarget();
     }
+
+    private bool IsInstant(Character target)
+    {
+        if (_isInstant && target.CharacterState.CheckForState(States.PortalDarkness))
+        {
+            return true;
+        }
+
+        return false;
+    }
     
     private IEnumerator CastOnSelf()
     {
-        PlayAbsorptionAnim(AnimSpeedOnCorpseAndSelf,false);
-        yield return new WaitForSeconds(0.8f);
-        PlayAbsorptionAnim(AnimStandartSpeed,true);
+        if (!IsInstant(_hero))
+        {
+            PlayAbsorptionAnim(AnimSpeedOnCorpseAndSelf, false);
+            yield return new WaitForSeconds(0.8f);
+            PlayAbsorptionAnim(AnimStandartSpeed, true);
+        }
 
         if (!CheckForRune()) yield break;
         ConsumeRune();
@@ -126,9 +152,12 @@ public class IceDeathAbsorbation : Skill,IEnergyDamagable
     
     private IEnumerator CastOnCorpse(Character corpse)
     {
-        PlayAbsorptionAnim(AnimSpeedOnCorpseAndSelf,false);
-        yield return new WaitForSeconds(0.8f);
-        PlayAbsorptionAnim(AnimStandartSpeed,true);
+        if (!IsInstant(corpse))
+        {
+            PlayAbsorptionAnim(AnimSpeedOnCorpseAndSelf, false);
+            yield return new WaitForSeconds(0.8f);
+            PlayAbsorptionAnim(AnimStandartSpeed, true);
+        }
 
         if (!CheckForRune()) yield break;
         ConsumeRune();
@@ -159,25 +188,50 @@ public class IceDeathAbsorbation : Skill,IEnergyDamagable
 
     private IEnumerator CastOnEnemy(Character enemy)
     {
-        PlayAbsorptionAnim(AnimSpeedOnEnemy,false);
-        yield return new WaitForSeconds(2.5f);
-        PlayAbsorptionAnim(AnimStandartSpeed,true);
+        if (!IsInstant(enemy))
+        {
+            PlayAbsorptionAnim(AnimSpeedOnEnemy, false);
+            yield return new WaitForSeconds(2.5f);
+            PlayAbsorptionAnim(AnimStandartSpeed, true);
+        }
 
         if (!CheckForRune()) yield break;
         ConsumeRune();
+
+        float additionalHp = 0;
+
+        if (_isInstant && enemy.CharacterState.CheckForState(States.Plague))
+        {
+            if (enemy.CharacterState.GetState(States.Plague) is Plague plague)
+            {
+                additionalHp += plague.GetSumDamage();
+                plague.ReduceStack();
+                CmdReduceStack(enemy.gameObject,States.Plague);
+                _hero.Abilities.GetSkill<MagicDefenceSkill>().AddPlagueCharge(1);
+            }
+        }
+        
         float targetHp = enemy.Health.CurrentValue;
         float runePercent = _enemyPercentPerRune;
         float energySpent = Mathf.Min(_energy.CurrentValue, _maxEnergyCost);
         float energyPercent = energySpent * 0.1f;
         float totalPercent = runePercent + energyPercent;
         float hpToDamage = targetHp * (totalPercent / 100f);
-
+        float hpToAdd = hpToDamage + additionalHp;
 
         CmdMakeDamage(hpToDamage,enemy.gameObject);
 
-        ApplyOtherForces(hpToDamage);
+        ApplyOtherForces(hpToAdd);
 
         _energy.CmdUse(energySpent);
+    }
+
+    [Command]
+    private void CmdReduceStack(GameObject targetObj, States state)
+    {
+        if(targetObj == null) return;
+        var target = targetObj.GetComponent<Character>();
+        target.CharacterState.GetState(state).ReduceStack();
     }
 
     [Command]

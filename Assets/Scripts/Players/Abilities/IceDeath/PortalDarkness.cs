@@ -124,6 +124,16 @@ public class PortalDarkness : Skill
         target.CharacterState.AddState(States.PortalDarkness, _duration, 0, _playerLinks.gameObject, nameof(PortalDarkness));
     }
 
+
+    [Command]
+    public void CmdApplyPlague(GameObject targetObject,float duration)
+    {
+        var target = targetObject.GetComponent<Character>();
+        if (target == null) return;
+        
+        target.CharacterState.AddState(States.Plague, duration, 0, _hero.gameObject, nameof(PortalDarkness));
+    }
+    
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0)

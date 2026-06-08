@@ -2102,7 +2102,7 @@ PrefabInstance:
     - target: {fileID: 454093965362999032, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _hero
       value: 
-      objectReference: {fileID: 1871163040516354185}
+      objectReference: {fileID: 4029435414465220350}
     - target: {fileID: 680587800667431627, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchorMax.x
       value: 1
@@ -2166,7 +2166,7 @@ PrefabInstance:
     - target: {fileID: 2543507432100258222, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _character
       value: 
-      objectReference: {fileID: 1871163040516354185}
+      objectReference: {fileID: 4029435414465220350}
     - target: {fileID: 2642994550808720876, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: Hero
       value: 
@@ -2194,7 +2194,7 @@ PrefabInstance:
     - target: {fileID: 4185264856112098810, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _baseModel
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 6177063639829153055}
     - target: {fileID: 4387103593278668548, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -2206,10 +2206,10 @@ PrefabInstance:
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _hero
       value: 
-      objectReference: {fileID: 1871163040516354185}
+      objectReference: {fileID: 4029435414465220350}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[0]'
@@ -2219,6 +2219,10 @@ PrefabInstance:
       propertyPath: '_skills.Array.data[1]'
       value: 
       objectReference: {fileID: 4391980732130887373}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_skills.Array.data[2]'
+      value: 
+      objectReference: {fileID: 6036627646030104388}
     - target: {fileID: 5653443088679015109, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchorMax.x
       value: 1
@@ -2242,11 +2246,11 @@ PrefabInstance:
     - target: {fileID: 6328070790821935180, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _hero
       value: 
-      objectReference: {fileID: 1871163040516354185}
+      objectReference: {fileID: 0}
     - target: {fileID: 8388980576940739991, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _character
       value: 
-      objectReference: {fileID: 1871163040516354185}
+      objectReference: {fileID: 0}
     - target: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_Name
       value: Dead
@@ -2329,7 +2333,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: 8
-      addedObject: {fileID: 1871163040516354185}
+      addedObject: {fileID: 4029435414465220350}
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6036627646030104388}
@@ -2397,7 +2401,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
   m_PrefabInstance: {fileID: 6092456140968476374}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1871163040516354185
+--- !u!114 &4029435414465220350
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2406,9 +2410,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2335912879836011194}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4a13cc13c691cf48b313c3aceaea208, type: 3}
+  m_Script: {fileID: 11500000, guid: 086066ce90e28a74fb2f924e85b68e14, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::IceDeadMinion
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
@@ -2453,7 +2457,84 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _plagueCloudPrefab: {fileID: 2533957208652230379, guid: 8d59cdb432c550e4e806457d55212cd0, type: 3}
+  _isTalentSpell: 0
+  _isSkillActive: 1
+  _abilityInfo: {fileID: 0}
+  _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _costs: []
+  _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
+  _castDeley: 0
+  _damageValue: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+  _targetingComponent:
+    type: 0
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _chargeComponent:
+    _usesCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
+    affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _areaComponent:
+    _radius: 0
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
+  _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 1
+    _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
+  _plagueCloudPrefab: {fileID: 742790359319921167, guid: 8d59cdb432c550e4e806457d55212cd0, type: 3}
 --- !u!114 &5638586126392418701
 MonoBehaviour:
   m_ObjectHideFlags: 0

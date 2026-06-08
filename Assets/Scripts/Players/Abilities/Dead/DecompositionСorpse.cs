@@ -2,24 +2,23 @@ using Mirror;
 using UnityEngine;
 using System.Collections;
 
-public class DecompositionCorpse : NetworkBehaviour
+public class DecompositionCorpse : Skill, IPassiveSkill
 {
-    [SerializeField] private GameObject _plagueCloudPrefab;
+    [SerializeField] private PlagueCloudDamagePrefab _plagueCloudPrefab;
 
-    private Health _health;
     private Coroutine _decompositionRoutine;
 
     private const float DamagePerTick = 5f;
     private const float Interval = 1f;
 
-    private void OnEnable()
+    public override void Init(SkillRenderer render, Character hero)
     {
-        _health = GetComponent<Health>();
+        base.Init(render, hero);
 
-        if (_health == null) return;
+        if (_hero.Health == null) return;
 
-        _health.Died += OnDied;
-        if(!_health.isServer)
+        _hero.Health.Died += OnDied;
+        if (!_hero.isServer)
             _decompositionRoutine = StartCoroutine(DecompositionRoutine());
     }
 
@@ -30,17 +29,17 @@ public class DecompositionCorpse : NetworkBehaviour
         {
             yield return new WaitForSeconds(Interval);
 
-            if (_health == null) yield break;
+            if (_hero.Health == null) yield break;
 
             var dmg = new Damage { Value = DamagePerTick, Form = AbilityForm.Physical };
-            if (_health.isClient)
+            if (_hero.Health.isClient)
             {
-                _health.CmdTryTakeDamage(dmg, null);
+                _hero.Health.CmdTryTakeDamage(dmg, null);
             }
 
 
-            bool alive = _health.CurrentValue >= 0;
-            
+            bool alive = _hero.Health.CurrentValue >= 0;
+
             if (!alive) yield break;
         }
     }
@@ -53,20 +52,33 @@ public class DecompositionCorpse : NetworkBehaviour
             _decompositionRoutine = null;
         }
 
-        if (_health != null) _health.Died -= OnDied;
+        if (_hero.Health != null) _hero.Health.Died -= OnDied;
 
         SpawnCloud(transform.position);
     }
 
-    private void OnDestroy()
-    {
-        if (_health != null) _health.Died -= OnDied;
-    }
-    
     private void SpawnCloud(Vector3 position)
     {
-        GameObject cloud = Instantiate(_plagueCloudPrefab, position, Quaternion.identity);
+        PlagueCloudDamagePrefab cloud = Instantiate(_plagueCloudPrefab, position, Quaternion.identity);
 
-        NetworkServer.Spawn(cloud);
+        NetworkServer.Spawn(cloud.gameObject);
+        RpcInitCloud(cloud.gameObject);
+        cloud.StartDestroying();
     }
+
+    [ClientRpc]
+    private void RpcInitCloud(GameObject cloudObj)
+    {
+        if(cloudObj == null) return;
+        var cloud = cloudObj.GetComponent<PlagueCloudDamagePrefab>();
+        cloud.Init((_hero as MinionComponent)?.CharacterParent.gameObject);
+    }
+
+    protected override IEnumerator CastJob()
+    {
+        yield break;
+    }
+
+    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCast => 0;
 }
