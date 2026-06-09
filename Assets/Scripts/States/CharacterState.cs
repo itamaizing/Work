@@ -311,6 +311,19 @@ public class CharacterState : NetworkBehaviour
 
 	public bool invinsible = false;
 
+	[SyncVar] private bool _suppressStateEffectsBuff;
+	public bool SuppressStateEffectsBuff => _suppressStateEffectsBuff;
+	
+	[Server]
+	public void SetSuppressStateBuffEffects(bool value) => _suppressStateEffectsBuff = value;
+	
+	
+	[SyncVar] private bool _suppressStateDebuffEffects;
+	public bool SuppressStateEffects => _suppressStateDebuffEffects;
+	
+	[Server]
+	public void SetSuppressStateDebuffEffects(bool value) => _suppressStateDebuffEffects = value;
+	
 	public StateEffects StateEffects => _stateEffects;
 	public StateIcons StateIcons => _stateIcons;
 	public List<AbstractCharacterState> CurrentStates => _currentStates;
@@ -417,6 +430,7 @@ public class CharacterState : NetworkBehaviour
 		[States.FrostEnergy] = new FrostEnergyState(),
 		[States.PortalDarkness] = new PortalDarknessState(),
 		[States.OtherForces] = new OtherForceState(),
+		[States.MagicShield] = new MagicShieldState(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -590,7 +604,7 @@ public class CharacterState : NetworkBehaviour
 		ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
 	}
 
-	[Command]
+	[Command(requiresAuthority = false)]
 	public void CmdRemoveState(States state)
 	{
 		RemoveStateLogic(state);
@@ -661,6 +675,18 @@ public class CharacterState : NetworkBehaviour
 		GameObject personWhoShooted, string skillName, bool isCanDodgeMagState = false)
 	{
 		if (invinsible) return;
+
+		if (_suppressStateEffectsBuff)
+		{
+			AbstractCharacterState stateInst = enumToState[state];
+			if(stateInst.BaffDebaff == BaffDebaff.Baff) return;
+		}
+
+		if (_suppressStateDebuffEffects)
+		{
+			AbstractCharacterState stateInst = enumToState[state];
+			if(stateInst.BaffDebaff == BaffDebaff.Debaff) return;
+		}
 
 		duration = ApplyDiminishingReturns(state, duration, personWhoShooted);
 		if (duration <= 0f) return;
@@ -1126,7 +1152,8 @@ public enum States
 	FireCharge,
 	RestorativeAttacks,
 	KillingSpree,
-	OtherForces
+	OtherForces,
+	MagicShield
 }
 public enum BaffDebaff
 {

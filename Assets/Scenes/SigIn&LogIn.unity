@@ -1250,6 +1250,7 @@ MonoBehaviour:
   - {fileID: 7744228389031826322, guid: a86f2fafa49694e4bab52db8f4d3fc78, type: 3}
   - {fileID: 2335912879836011194, guid: 9076f8626dfb68e41972df7ea9f5e4ec, type: 3}
   - {fileID: 2533957208652230379, guid: 8d59cdb432c550e4e806457d55212cd0, type: 3}
+  - {fileID: 4656379208741956616, guid: e1f5d977bc8ba6b459096f1edfd01a0c, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -1265,7 +1266,7 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
-  _gameRules: {fileID: 669276037884193687, guid: 51af385f54fff2443b84b5bdc9b030ad, type: 3}
+  _gameRules: {fileID: 2955064748104778921, guid: 2ae4dc3e896cc6040afe290737e398a9, type: 3}
 --- !u!114 &452850708
 MonoBehaviour:
   m_ObjectHideFlags: 0

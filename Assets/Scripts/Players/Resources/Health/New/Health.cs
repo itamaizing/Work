@@ -51,6 +51,9 @@ public class Health : Resource, IDamageable, IHealable
 
     public delegate void BeforeDamageDelegate(ref Damage damage, Skill skill);
     public event BeforeDamageDelegate OnBeforeDamage;
+    
+    public delegate void BeforeHealDelegate(ref Heal heal, Skill skill);
+    public event BeforeHealDelegate OnBeforeHeal;
 
     public event Action<float, float> EvadeMeleeDamageChanged;
     public event Action<float, float> EvadeRangeDamageChanged;
@@ -159,6 +162,7 @@ public class Health : Resource, IDamageable, IHealable
 
     public void Heal(ref Heal heal, string sourceName, Skill skill = null)
     {
+        OnBeforeHeal?.Invoke(ref heal,skill);
         Debug.LogError("base value: " + heal.Value);
         heal.Value = ApplyIncomingModifiers(heal.Value);
         Debug.LogError("new value: " + heal.Value);

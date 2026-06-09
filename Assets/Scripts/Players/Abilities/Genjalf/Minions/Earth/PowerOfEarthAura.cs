@@ -7,7 +7,7 @@ public class PowerOfEarthAura : AuraStateHandler
 
     protected override void OnTargetEnter(Character target)
     {
-        CmdApplyStateToTarget(target.gameObject, States.PowerOfEarth, _buffDuration, Schools.Earth, _owner.gameObject, nameof(PowerOfEarthAura));
+        CmdApplyStateToTarget(target.gameObject, States.PowerOfEarth, _buffDuration, Schools.Earth, _owner.gameObject, nameof(PowerOfEarthAura),0);
     }
 
     protected override void OnTargetExit(Character target)
