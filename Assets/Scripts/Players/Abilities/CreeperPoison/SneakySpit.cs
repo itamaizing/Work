@@ -69,7 +69,32 @@ public class SneakySpit : Skill
         Hero.Health.Evaded += OnHeroEvade;
     }
 
-    public void TryStartSneakySpitBoostWindow(Character target) => _boostWindow = StartCoroutine(SneakySpitBoostWindow(target));
+    public void TryStartSneakySpitBoostWindow(Character target)
+    {
+        if (target == null)
+            return;
+
+        if (_boostWindow != null)
+        {
+            StopCoroutine(_boostWindow);
+            _boostWindow = null;
+        }
+
+        _boostWindow = StartCoroutine(SneakySpitBoostWindow(target));
+    }
+
+    private IEnumerator SneakySpitBoostWindow(Character target)
+    {
+        Targeting.SetTarget((ITargetable)target);
+
+        EnableSkillBoost();
+
+        yield return new WaitForSeconds(durationWindowsBoost);
+
+        DisableSkillBoost();
+
+        _boostWindow = null;
+    }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -135,16 +160,6 @@ public class SneakySpit : Skill
     {
         ApplyStateAndDamage();
         yield return null;
-    }
-
-    private IEnumerator SneakySpitBoostWindow(Character target)
-    {
-        Targeting.SetTarget((ITargetable)target);
-        if (_boostWindow != null) StopCoroutine(_boostWindow);
-        EnableSkillBoost();
-        yield return new WaitForSeconds(durationWindowsBoost);
-        DisableSkillBoost();
-        _boostWindow = null;
     }
 
     protected override void ClearData()

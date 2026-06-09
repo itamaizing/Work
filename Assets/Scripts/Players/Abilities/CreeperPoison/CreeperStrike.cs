@@ -1,99 +1,131 @@
 ﻿using Mirror;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CreeperStrike : Skill
 {
-    [Header("Talents")]
-    //[SerializeField] private RestorationOfGlands _restorationOfGlands;
-    //[SerializeField] private ReleaseFromSecrecy _releaseFromSecrecy;
-    //[SerializeField] private StrokesOfAspiration _strokesOfAspiration;
-    //[SerializeField] private AssasinPoison _assasinPoison;
-    //[SerializeField] private DesireToHide _desireToHide;
-    //[SerializeField] private FirstStrike _firstStrike;
-    //[SerializeField] private FeelingOfContinuation _feelingOfContinuation;
-    //[SerializeField] private PreparingForFight _preparingForFight;
-    //[SerializeField] private AmbushPoisons _ambushPoisons;
-
-    [Header("Abilities")]
+    [Header("Dependencies")]
+    [SerializeField] private Character _player;
     [SerializeField] private LightningStrikes _lightningStrikes;
-    [SerializeField] private LightningMovement _lightningMovement;
-    [SerializeField] private PoisonBall _poisonBall;
     [SerializeField] private CreeperInvisible _creeperInvisible;
     [SerializeField] private ColdBlood _coldBlood;
     [SerializeField] private CreeperPoisonAura _creeperPoisonAura;
+    [SerializeField] private SneakySpit _sneakySpit;
 
-    [Header("Ability properties")]
-    [SerializeField] private Character _player;
+    [Header("Damage")]
+    [SerializeField] private float _minDamage = 7f;
+    [SerializeField] private float _maxDamage = 11f;
     [SerializeField] private float _multiplyCritDamage = 1.5f;
-    [SerializeField ]private float _chanceOfCriticalStrike = 0.05f;
+    [SerializeField] private float _lifeTimePoisonBoneStacks = 6f;
+
+    [Header("Targeting")]
+    [SerializeField] private float _radiusSearchTarget = 0.5f;
+
+    [Header("SneakySpit combo")]
+    [SerializeField] private int _hitsForSneakySpitActivation = 3;
+    [SerializeField] private float _sneakySpitHitWindow = 1.5f;
+    [SerializeField] private float _sneakySpitReadyWindow = 2f;
+
+    [Header("Reptile talent")]
+    [SerializeField] private LayerMask _enemyLayer;
+    [SerializeField] private float _poisonSearchRadius = 30f;
+    [SerializeField] private float _baseIncreaseAttackSpeed = 0.1f;
+    [SerializeField] private float _maxMinimumAttackSpeed = 0.1f;
 
     private Character _castTarget;
 
-    private int _currentCountHit = 0;
-    private int _currentHitForStrokesOfAspiration = 0;
-    private int _countHitForDesireToHideTalent = 0;
-    private int _countCurrentHitForPreparingForFight = 0;
-    private int _poisonBoneStack = 0;
-    private float _radiusSearchTarget = 0.5f;
-
-    private float _animTime;
     private float _currentDamage;
-    private float _lifeTimePoisonBoneStacks = 6.0f;
+    private int _poisonBoneStack;
 
-    private bool _isTwoHit = false;
-    private bool _isHit = false;
+    private bool _isHit;
+    private bool _isTwoHit;
+    private bool _isSpeedOfReptileActive;
+    private bool _isColdBloodStrike;
+    private bool _isCheckForStatePoisonBone;
 
-    private bool _isSpeedOfReptileActive = false;
+    private Character _sneakySpitComboTarget;
 
-    private List<Character> _recentTargets = new();
-    private Coroutine ClearTargetsCoroutine;
-    private float _targetMemoryTime = 0.5f;
+    private int _sneakySpitCreeperHits;
+    private bool _sneakySpitHasLightningMovementHit;
+    private bool _isNextHitFromLightningMovement;
 
-    private Coroutine _timerForTwoHitVariableCoroutine;
+    private Coroutine _sneakySpitComboResetCoroutine;
+    private Coroutine _sneakySpitReadyCoroutine;
 
-    public int CurrentCountHit { get => _currentCountHit; set => _currentCountHit = value; }
-    public int CountHitForReleaseFromSecrecyTalent { get => _countHitForDesireToHideTalent; set => _countHitForDesireToHideTalent = value; }
-    public int PoisonBoneStack { get => _poisonBoneStack; set => _poisonBoneStack = value; }
-    public bool IsTwoHit { get => _isTwoHit; set => _isTwoHit = value; }
-    public bool IsHit { get => _isHit; set => _isHit = value; }
+    private bool _isReptileTalentActive;
+    private Coroutine _reptileCoroutine;
+
+    private int _currentStacksPoison;
+    private int _currentAllStacks;
+    private int _previousAllStacks;
+    private int _currentStacksAttackSpeed;
+
+    private float _baseAttackSpeed;
+    private float _currentAttackSpeedBonus;
+
+    private PoisonBoneState _poisonBoneState;
+    private EmpathicPoisonsState _empathicPoisonState;
+    private WitheringPoisonState _witheringPoisonState;
+    private BindingPoisonState _bindingPoisonState;
 
     protected override int AnimTriggerCast => Animator.StringToHash("CreeperStrikeAttacking");
     protected override int AnimTriggerCastDelay => 0;
-
     protected override bool IsCanCast => CheckIsCanCast();
-    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     public event Action OnCreeperStrikeEnd;
     public event Action OnHit;
 
-    #region Talent
+    public int CurrentCountHit
+    {
+        get => _sneakySpitCreeperHits;
+        set => _sneakySpitCreeperHits = value;
+    }
 
-    private bool _isColdBloodStrike = false;
-    private bool _isCheckForStatePoisonBone;
+    public int PoisonBoneStack
+    {
+        get => _poisonBoneStack;
+        set => _poisonBoneStack = value;
+    }
+
+    public bool IsTwoHit
+    {
+        get => _isTwoHit;
+        set => _isTwoHit = value;
+    }
+
+    public bool IsHit
+    {
+        get => _isHit;
+        set => _isHit = value;
+    }
+
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+
+        if (_player == null)
+            _player = hero;
+    }
+
+    private void OnDisable()
+    {
+        StopReptileTalent();
+        StopSneakySpitComboTimers();
+    }
 
     public void CheckForStatePoisonBone(bool value) => _isCheckForStatePoisonBone = value;
     public void ColdBloodStrike(bool value) => _isColdBloodStrike = value;
-
-    #endregion
-
-    private bool CheckIsCanCast()
-    {
-        return Targeting.GetTarget() != null &&
-            Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius &&
-            Targeting.NoObstacles(Targeting.GetTarget().Transform.position, transform.position, _obstacle);
-    }
-
-    #region CastAbility
-
     public void SetSpeedOfReptile(bool value) => _isSpeedOfReptileActive = value;
 
     public void AnimCreeperStrikeCast()
     {
         AnimStartCastCoroutine();
+    }
+
+    public void MarkNextHitFromLightningMovement()
+    {
+        _isNextHitFromLightningMovement = true;
     }
 
     public void AnimCreeperStrikeEnded()
@@ -102,9 +134,29 @@ public class CreeperStrike : Skill
         AnimCastEnded();
     }
 
+    public void ClearDataCreeperStrike()
+    {
+        TryCancel();
+        Renderer.HideSmartIndicator();
+    }
+
+    private bool CheckIsCanCast()
+    {
+        return Targeting.GetTarget() != null
+            && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius
+            && Targeting.NoObstacles(Targeting.GetTarget().Transform.position, transform.position, _obstacle);
+    }
+
+    private bool IsAllyTarget(IDamageable target)
+    {
+        return target.gameObject.layer == LayerMask.NameToLayer("Allies");
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
+
+        Targeting.ClearTempTarget();
 
         while (Targeting.GetTempTarget()?.Targetable == null)
         {
@@ -112,12 +164,21 @@ public class CreeperStrike : Skill
             {
                 Targeting.FindTempTarget(Targeting.GetMousePoint(), _radiusSearchTarget);
 
-                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
+                if (Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
                 {
-                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
-                    else break;
+                    Character character = damageable as Character;
+
+                    if (IsAllyTarget(damageable) || character == Hero)
+                    {
+                        Targeting.ClearTempTarget();
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
             }
+
             yield return null;
         }
 
@@ -125,292 +186,230 @@ public class CreeperStrike : Skill
 
         targetInfo.Points.Add(Targeting.GetTarget().Transform.position);
         targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
+
         callbackDataSaved.Invoke(targetInfo);
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _castTarget = null;
+
+        if (targetInfo == null)
+            return;
+
+        if (targetInfo.GetTargets().Count == 0)
+            return;
+
+        _castTarget = targetInfo.GetTargets()[0] as Character;
+
+        if (_castTarget == null)
+            return;
+
+        Targeting.SetTarget(_castTarget);
+        Hero.Move.LookAtTransform(_castTarget.transform);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_castTarget == null) yield break;
+        if (_castTarget == null)
+            yield break;
 
-        _hero.Move.StopLookAt();
-        DamageDeal(_castTarget);
+        Hero.Move.StopLookAt();
+
+        bool isLightningMovementHit = _isNextHitFromLightningMovement;
+        _isNextHitFromLightningMovement = false;
+
+        DamageDeal(_castTarget, isLightningMovementHit);
 
         yield return null;
     }
 
-    /*public void Targeting.SetTarget(Character target)
-    {
-       // _target = target;
-    }*/
-
-    public void ClearDataCreeperStrike()
-    {
-        TryCancel();
-        Renderer.HideSmartIndicator();
-    }
-
-    private void IncreaseAnimSpeed()
-    {
-        if (_animTime > 0)
-        {
-            float multiplier = _lightningMovement.DurationLeap - 4.9f; // тестовая скорость (изначально - 0.1)
-            float animTimeMultiplier = _animTime / multiplier;
-            _player.Animator.SetFloat("CreeperStrikeMultiplierSpeedAnimation", animTimeMultiplier);
-        }
-    }
-
-    private float GetClipLength()
-    {
-        RuntimeAnimatorController animController = _player.Animator.runtimeAnimatorController;
-        foreach (var clip in animController.animationClips)
-        {
-            if (clip.name == "CreeperStrikeAttack")
-            {
-                return clip.length;
-            }
-        }
-        return -1f;
-    }
-
-    private void TryApplyPoisonBone(Character character)
-    {
-        if (!_isSpeedOfReptileActive || character == null) return;
-
-        character.CharacterState.CmdAddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0, _player.gameObject, Name);
-    }
-
     public void DamageDeal(IDamageable target, bool isUsingLightningStrikes = false)
     {
-        var lastСast = _player.Abilities.LastCastedSkill;
-        var previewCast = _player.Abilities.PreviewCastedSkill;
+        if (target == null)
+            return;
 
         Character character = target as Character;
+
+        if (character == null)
+            return;
 
         TryApplyPoisonBone(character);
         TryApplyWitheringPoison(character);
 
-        if (target != null)
+        _currentDamage = UnityEngine.Random.Range(_minDamage, _maxDamage);
+
+        TryApplyInvisibleCritBonus();
+
+        _isHit = true;
+        OnHit?.Invoke();
+
+        TryReduceColdBloodCooldown(character);
+
+        if (CanDealColdBloodCriticalDamage())
         {
-            _currentDamage = UnityEngine.Random.Range(7.0f, 11.0f);
+            if (_player != null && _player.IsInvisible && _creeperInvisible != null)
+                _creeperInvisible.ExitingInvisible();
 
-            if (_creeperInvisible != null && _creeperInvisible.IsInvisibilitStrike && _creeperInvisible.StrikeCrit != 0)
+            DealCriticalDamage(character, _currentDamage, true);
+        }
+        else if (CanDealPoisonBoneCriticalDamage(character))
+        {
+            DealCriticalDamage(character, _currentDamage);
+        }
+        else
+        {
+            Damage damage = new Damage
             {
-                _currentDamage *= 4f;
-                _creeperInvisible.StrikeCrit = 0;
+                Value = Buff.Damage.GetBuffedValue(_currentDamage),
+                Type = DamageType.Physical,
+                PhysicAttackType = AttackRangeType.MeleeAttack,
+            };
 
-                Debug.Log("CreeperStrike: Invis Crit x4 applied");
-            }
-
-            int totalStacks = GetTotalPoisonStacks(character);
-
-            float critChance = 0.05f * totalStacks;
-            critChance = Mathf.Min(critChance, 1f);
-            float roll = UnityEngine.Random.Range(0f, 1f);
-
-            _isHit = true;
-            OnHit?.Invoke();
-            _currentCountHit++;
-
-            if (_isColdBloodStrike && _coldBlood != null && _coldBlood.IsCanCrit && character != null && character.CharacterState.CheckForState(States.Blind))
-            {
-                _coldBlood.ReducingAbilityCooldown();
-
-                Debug.Log("CreeperStrike: ColdBlood CD reduced (Blind synergy)");
-
-                _isColdBloodStrike = false;
-            }
-
-
-            //if (_absorptionOfPoisons != null && _absorptionOfPoisons.IsWorking)
-            //{
-            //    _absorptionOfPoisons.CheckTargetWithDebuffs(target.gameObject);
-            //}
-
-            //if (_strokesOfAspiration.Data.IsOpen)
-            //{
-            //    _currentHitForStrokesOfAspiration++;
-
-            //    if (_currentHitForStrokesOfAspiration == 2)
-            //    {
-            //        if (Targeting.GetTarget() != null)
-            //        {
-            //            _strokesOfAspiration.UseTalentStrokesOfAspiration();
-            //        }
-
-            //        _currentHitForStrokesOfAspiration = 0;
-            //    }
-            //}
-
-            //if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0 && character.CharacterState.CheckForState(States.PoisonBone))
-            //{
-            //    Debug.Log("CreeperStrike / if == true");
-            //    float baseChanceOfRestorationOfGlands = 0.9f;
-            //    float chanceOfRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
-
-            //    if (UnityEngine.Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
-            //    {
-            //        Debug.Log("CreeperStrike / restorationOfGlands");
-            //        _restorationOfGlands.ReductionCooldown();
-            //    }
-            //}
-
-            //if (_desireToHide.Data.IsOpen)
-            //{
-            //    _countHitForDesireToHideTalent++;
-
-            //    if (_countHitForDesireToHideTalent == 5)
-            //    {
-            //        _desireToHide.ApplyInvisible();
-            //        _countHitForDesireToHideTalent = 0;
-            //    }
-            //}
-
-            //if (_releaseFromSecrecy.Data.IsOpen && _creeperInvisible.IsInvisible)
-            //{
-            //    _creeperInvisible.ExitingInvisible();
-            //}
-
-            //if (_assasinPoison.Data.IsOpen)
-            //{
-            //    _assasinPoison.SpendCharge(character, _lifeTimePoisonBoneStacks);
-            //}
-
-            //if (_preparingForFight.Data.IsOpen && _creeperInvisible.IsReadyToThreeHitForPreparingForFightTalent)
-            //{
-            //    _countCurrentHitForPreparingForFight++;
-
-            //    CmdPreparingForFight(_player.gameObject);
-
-            //    if (_countCurrentHitForPreparingForFight == 3)
-            //    {
-            //        _countCurrentHitForPreparingForFight = 0;
-            //        _creeperInvisible.IsReadyToThreeHitForPreparingForFightTalent = false;
-            //    }
-            //}
-
-            if (_coldBlood.IsCanCrit || _coldBlood.IsCanCritLightningStrikes)
-            {
-                if (_player.IsInvisible)
-                    _creeperInvisible.ExitingInvisible();
-
-                DealCriticalDamage(character, _currentDamage, true);
-            }
-
-            //if (_isCheckForStatePoisonBone && character != null)
-            //{
-            //    if (roll <= critChance)
-            //    {
-            //        float critDamage = GetPoisonCritMultiplier(character, _currentDamage);
-
-            //        Damage damage = new Damage
-            //        {
-            //            Value = Buff.Damage.GetBuffedValue(critDamage),
-            //            Type = DamageType.Physical,
-            //            PhysicAttackType = AttackRangeType.MeleeAttack,
-            //        };
-
-            //        CmdApplyDamage(damage, character.gameObject);
-            //        return;
-            //    }
-            //}
-
-            else
-            {
-
-                Damage damage = new Damage
-                {
-                    Value = Buff.Damage.GetBuffedValue(_currentDamage),
-                    Type = DamageType.Physical,
-                    PhysicAttackType = AttackRangeType.MeleeAttack,
-                };
-
-                CmdDamageDeal(damage, target.gameObject);
-            }
-
-            //if (_firstStrike.Data.IsOpen)
-            //{
-            //    _firstStrike.ReturnBoolFalse();
-            //}
-
-            if (_currentCountHit == 2 || isUsingLightningStrikes && _currentCountHit == 2)
-            {
-                float time = 10f;
-
-                if (_timerForTwoHitVariableCoroutine != null)
-                {
-                    StopCoroutine(_timerForTwoHitVariableCoroutine);
-                }
-
-                _timerForTwoHitVariableCoroutine = StartCoroutine(TimerForTwoHit(time, isUsingLightningStrikes));
-
-                _currentCountHit = 0;
-
-                if (_coldBlood.IsCanCritLightningStrikes)
-                {
-                    _coldBlood.IsCanCritLightningStrikes = false;
-                }
-            }
-
-            _isHit = false;
+            CmdDamageDeal(damage, character.gameObject);
         }
 
-        //if (_ambushPoisons != null && character != null) _ambushPoisons.TryConsumeStack(character);
+        RegisterSneakySpitHit(character, isUsingLightningStrikes);
+
+        _isHit = false;
     }
 
-    private IEnumerator TimerForTwoHit(float duration, bool isUsingLightningStrikes)
+    private void TryApplyInvisibleCritBonus()
     {
-        float time = duration;
+        if (_creeperInvisible == null)
+            return;
 
-        _isTwoHit = true;
+        if (!_creeperInvisible.IsInvisibilitStrike)
+            return;
 
-        _lightningStrikes.IsUsedLightningStrikes = isUsingLightningStrikes;
+        if (_creeperInvisible.StrikeCrit == 0)
+            return;
 
-        while (time > 0)
+        _currentDamage *= 4f;
+        _creeperInvisible.StrikeCrit = 0;
+
+        Debug.Log("CreeperStrike: invisible crit x4 applied");
+    }
+
+    private void TryReduceColdBloodCooldown(Character target)
+    {
+        if (!_isColdBloodStrike)
+            return;
+
+        if (_coldBlood == null)
+            return;
+
+        if (!_coldBlood.IsCanCrit)
+            return;
+
+        if (target == null)
+            return;
+
+        if (!target.CharacterState.CheckForState(States.Blind))
+            return;
+
+        _coldBlood.ReducingAbilityCooldown();
+        _isColdBloodStrike = false;
+
+        Debug.Log("CreeperStrike: ColdBlood cooldown reduced");
+    }
+
+    private bool CanDealColdBloodCriticalDamage()
+    {
+        return _coldBlood != null
+            && (_coldBlood.IsCanCrit || _coldBlood.IsCanCritLightningStrikes);
+    }
+
+    private bool CanDealPoisonBoneCriticalDamage(Character target)
+    {
+        return _isCheckForStatePoisonBone
+            && target != null
+            && target.CharacterState.CheckForState(States.PoisonBone);
+    }
+
+    private void TryApplyPoisonBone(Character target)
+    {
+        if (!_isSpeedOfReptileActive)
+            return;
+
+        if (target == null)
+            return;
+
+        target.CharacterState.CmdAddState(
+            States.PoisonBone,
+            _lifeTimePoisonBoneStacks,
+            0,
+            _player.gameObject,
+            Name
+        );
+    }
+
+    private void TryApplyWitheringPoison(Character target)
+    {
+        if (target == null)
+            return;
+
+        if (_creeperPoisonAura == null)
+            return;
+
+        if (!_creeperPoisonAura.IsActiveWitheringPoison && !_creeperPoisonAura.IsActiveWitheringPoisonMetabolism)
+            return;
+
+        float finalChance = 0f;
+
+        if (_creeperPoisonAura.IsActiveWitheringPoison)
+            finalChance += 0.2f;
+
+        if (_creeperPoisonAura.IsActiveWitheringPoisonMetabolism)
+            finalChance += 0.3f;
+
+        if (UnityEngine.Random.value <= finalChance)
         {
-            time -= Time.deltaTime;
-            
-            if (time <= 0)
-            {
-                _isTwoHit = false;
-                _lightningStrikes.IsUsedLightningStrikes = false;
-            }
-
-            yield return null;
+            target.CharacterState.CmdAddState(
+                States.WitheringPoison,
+                10f,
+                0,
+                _player.gameObject,
+                Name
+            );
         }
-
-        StopCoroutine(_timerForTwoHitVariableCoroutine);
-        _timerForTwoHitVariableCoroutine = null;
     }
-    #endregion
 
-    #region CalculateCriticalDamage
-
-    private float CalculateCriticalDamage(Character target, float baseDamage)
+    private void DealCriticalDamage(Character target, float baseDamage, bool isTalentCritDamage = false)
     {
+        if (target == null)
+            return;
+
         float criticalDamage = baseDamage;
-        float multiplyDamage = _multiplyCritDamage;
-        //float firstStrikeTalentMultiplyDamage = 5.0f;
-        float coldBloodMultiplyDamage = 2.5f;
+
+        if (isTalentCritDamage || CanDealPoisonBoneCriticalDamage(target))
+            criticalDamage = CalculateCriticalDamage(baseDamage);
+
+        Damage damage = new Damage
+        {
+            Value = Buff.Damage.GetBuffedValue(criticalDamage),
+            Type = DamageType.Physical,
+            PhysicAttackType = AttackRangeType.MeleeAttack,
+        };
+
+        CmdApplyDamage(damage, target.gameObject);
+    }
+
+    private float CalculateCriticalDamage(float baseDamage)
+    {
+        float multiplier = _multiplyCritDamage;
 
         if (_poisonBoneStack > 0)
         {
             for (int i = 0; i < _poisonBoneStack; i++)
-            {
-                multiplyDamage += 0.5f;
-            }
+                multiplier += 0.5f;
         }
 
-        //if (_firstStrike.Data.IsOpen && _firstStrike.IsCanIncreaseCrit && _firstStrike.FirstHit)
-        //{
-        //    criticalDamage *= (multiplyDamage * firstStrikeTalentMultiplyDamage);
-        //    _firstStrike.ReturnBoolFalse();
-        //}
-
-        else if (_coldBlood.IsCanCrit || _coldBlood.IsCanCritLightningStrikes)
+        if (_coldBlood != null && (_coldBlood.IsCanCrit || _coldBlood.IsCanCritLightningStrikes))
         {
-            float endCriticalDamage = coldBloodMultiplyDamage + multiplyDamage;
+            multiplier += 2.5f;
 
-            if (_lightningStrikes.IsUsedLightningStrikes)
+            if (_lightningStrikes != null && _lightningStrikes.IsUsedLightningStrikes)
             {
                 _coldBlood.IsCanCrit = false;
             }
@@ -419,152 +418,121 @@ public class CreeperStrike : Skill
                 _coldBlood.IsCanCrit = false;
                 _coldBlood.IsCanCritLightningStrikes = false;
             }
-
-            criticalDamage *= endCriticalDamage;
         }
-        else
-        {
-            criticalDamage *= multiplyDamage;
-        }
-
-        return criticalDamage;
-    }
-
-    private void TryApplyWitheringPoison(Character target)
-    {
-        if (target == null) return;
-        if (_creeperPoisonAura == null) return;
-        if (!_creeperPoisonAura.IsActiveWitheringPoison || !_creeperPoisonAura.IsActiveWitheringPoisonMetabolism) return;
-
-        var finalChance = 0f;
-
-        if (_creeperPoisonAura.IsActiveWitheringPoison) finalChance += 0.2f;
-        if (_creeperPoisonAura.IsActiveWitheringPoisonMetabolism) finalChance += 0.3f;
-
-        if (UnityEngine.Random.value <= finalChance)
-        {
-            target.CharacterState.CmdAddState(States.WitheringPoison, 10f, 0, _player.gameObject, Name);
-        }
-    }
-
-    private void DealCriticalDamage(Character currentTarget, float criticalDamage, bool isTalentCritDamage = false)
-    {
-        if (isTalentCritDamage)
-        {
-            criticalDamage = CalculateCriticalDamage(currentTarget, criticalDamage);
-        }
-        else if (_isCheckForStatePoisonBone && currentTarget.CharacterState.CheckForState(States.PoisonBone))
-        {
-            criticalDamage = CalculateCriticalDamage(currentTarget, criticalDamage);
-        }
-        
-        Damage critDamage = new Damage
-        {
-            Value = Buff.Damage.GetBuffedValue(criticalDamage),
-            Type = DamageType.Physical,
-            PhysicAttackType = AttackRangeType.MeleeAttack,
-        };
-
-        CmdApplyDamage(critDamage, currentTarget.gameObject);
-
-        //if (_feelingOfContinuation.Data.IsOpen) CmdFeelingOfContinuation(_player.gameObject, critDamage.Value);
-    }
-
-    private int GetTotalPoisonStacks(Character target)
-    {
-        int stacks = 0;
-
-        if (target.CharacterState.GetState(States.BindingPoison) is BindingPoisonState bindingPoisonState)
-            stacks += bindingPoisonState.CurrentStacks;
-
-        if (target.CharacterState.GetState(States.PoisonBone) is PoisonBoneState poisonBoneState)
-            stacks += poisonBoneState.CurrentStacks;
-
-        if (target.CharacterState.GetState(States.EmpathicPoisons) is EmpathicPoisonsState empathicPoisonsState)
-            stacks += empathicPoisonsState.CurrentStacks;
-
-        if (target.CharacterState.GetState(States.WitheringPoison) is WitheringPoisonState witheringPoisonState)
-            stacks += witheringPoisonState.CurrentStacks;
-
-        return stacks;
-    }
-
-    private float GetPoisonCritMultiplier(Character target, float baseDamage)
-    {
-        int poisonBoneStacks = 0;
-
-        if (target.CharacterState.GetState(States.PoisonBone) is PoisonBoneState poisonBoneState)
-            poisonBoneStacks = poisonBoneState.CurrentStacks;
-
-        float multiplier = 2.5f + poisonBoneStacks;
 
         return baseDamage * multiplier;
     }
 
-    #endregion
-
-    #region CommandMethods
-
-    [Command]
-    private void CmdFeelingOfContinuation(GameObject player, float criticalDamage)
+    private void RegisterSneakySpitHit(Character target, bool isUsingLightningMovement)
     {
-        Character playerCharacter = player.GetComponent<Character>();
-        //_feelingOfContinuation.IncreaseRegenerationMana(playerCharacter, criticalDamage);
-    }
+        if (target == null)
+            return;
 
-    [Command]
-    private void CmdPreparingForFight(GameObject player)
-    {
-        Character playerCharacter = player.GetComponent<Character>();
-        //_preparingForFight.IncreaseManaRegeneration(playerCharacter);
-    }
+        bool targetChanged = _sneakySpitComboTarget != null && _sneakySpitComboTarget != target;
 
-    [Command] private void CmdDamageDeal(Damage damage, GameObject target) => ApplyDamage(damage, target);
-    #endregion
-
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        if (targetInfo.GetTargets().Count > 0)
+        if (targetChanged)
         {
-            _castTarget = (Character)targetInfo.GetTargets()[0];
-            Targeting.SetTarget(_castTarget);
+            ResetSneakySpitCombo();
         }
+
+        _sneakySpitComboTarget = target;
+
+        if (isUsingLightningMovement)
+        {
+            _sneakySpitHasLightningMovementHit = true;
+        }
+        else
+        {
+            _sneakySpitCreeperHits++;
+        }
+
+        RestartSneakySpitComboResetTimer();
+
+        bool hasThreeCreeperHits = _sneakySpitCreeperHits >= _hitsForSneakySpitActivation;
+        bool hasCreeperAndLightningMovement = _sneakySpitCreeperHits >= 1 && _sneakySpitHasLightningMovementHit;
+
+        Debug.Log(
+            $"SneakySpit combo: CreeperHits = {_sneakySpitCreeperHits}, " +
+            $"LightningMovement = {_sneakySpitHasLightningMovementHit}, " +
+            $"Target = {target.name}"
+        );
+
+        if (!hasThreeCreeperHits && !hasCreeperAndLightningMovement)
+            return;
+
+        Character comboTarget = _sneakySpitComboTarget;
+
+        ResetSneakySpitCombo();
+        ActivateSneakySpitWindow(comboTarget, isUsingLightningMovement);
     }
 
-    protected override void ClearData()
+    private void RestartSneakySpitComboResetTimer()
     {
-        _castTarget = null;
+        if (_sneakySpitComboResetCoroutine != null)
+        {
+            StopCoroutine(_sneakySpitComboResetCoroutine);
+            _sneakySpitComboResetCoroutine = null;
+        }
 
-        Targeting.ClearTarget();
-        Targeting.ClearTempTarget();
-
-        if (ClearTargetsCoroutine != null) StopCoroutine(ClearTargetsCoroutine);
-
-        _hero.Move.StopLookAt();
+        _sneakySpitComboResetCoroutine = StartCoroutine(SneakySpitComboResetTimer());
     }
 
-    #region Own Element
+    private IEnumerator SneakySpitComboResetTimer()
+    {
+        yield return new WaitForSeconds(_sneakySpitHitWindow);
 
-    private bool _isReptileTalentActive;
-    private Coroutine _reptileCoroutine;
+        _sneakySpitComboResetCoroutine = null;
+        ResetSneakySpitCombo(false);
 
-    private int _currentStacksPoison;
-    private int _currentAllStacks;
-    private int _previousAllStacks;
-    private int _currentStacksAtckSpeed;
+        Debug.Log("SneakySpit combo reset by timeout");
+    }
 
-    private float _baseIncreaseAttackSpeed = 0.1f;
-    private float _baseAttackSpeed;
-    private float _increasedAttackSpeed;
-    private float _maxMinimumAttackSpeed = 0.1f;
+    private void ResetSneakySpitCombo(bool stopTimer = true)
+    {
+        if (stopTimer && _sneakySpitComboResetCoroutine != null)
+        {
+            StopCoroutine(_sneakySpitComboResetCoroutine);
+            _sneakySpitComboResetCoroutine = null;
+        }
 
-    private float _radiusSearching = 3f;
-    [SerializeField] private LayerMask _enemyLayer;
+        _sneakySpitComboTarget = null;
+        _sneakySpitCreeperHits = 0;
+        _sneakySpitHasLightningMovementHit = false;
+    }
 
-    private PoisonBoneState _poisonBoneState;
-    private EmpathicPoisonsState _empathicPoisonState;
-    private WitheringPoisonState _witheringPoisonState;
-    private BindingPoisonState _bindingPoisonState;
+    private void ActivateSneakySpitWindow(Character target, bool isUsingLightningStrikes)
+    {
+        if (target == null)
+            return;
+
+        if (_sneakySpit != null)
+            _sneakySpit.TryStartSneakySpitBoostWindow(target);
+
+        if (_sneakySpitReadyCoroutine != null)
+        {
+            StopCoroutine(_sneakySpitReadyCoroutine);
+            _sneakySpitReadyCoroutine = null;
+        }
+
+        _sneakySpitReadyCoroutine = StartCoroutine(SneakySpitReadyWindow(isUsingLightningStrikes));
+    }
+
+    private IEnumerator SneakySpitReadyWindow(bool isUsingLightningStrikes)
+    {
+        _isTwoHit = true;
+
+        if (_lightningStrikes != null)
+            _lightningStrikes.IsUsedLightningStrikes = isUsingLightningStrikes;
+
+        yield return new WaitForSeconds(_sneakySpitReadyWindow);
+
+        _isTwoHit = false;
+
+        if (_lightningStrikes != null)
+            _lightningStrikes.IsUsedLightningStrikes = false;
+
+        _sneakySpitReadyCoroutine = null;
+    }
 
     public void SetReptileTalentActive(bool value)
     {
@@ -579,14 +547,21 @@ public class CreeperStrike : Skill
         }
         else
         {
-            if (_reptileCoroutine != null)
-            {
-                StopCoroutine(_reptileCoroutine);
-                _reptileCoroutine = null;
-            }
-
-            ResetAllAttackSpeed();
+            StopReptileTalent();
         }
+    }
+
+    private void StopReptileTalent()
+    {
+        _isReptileTalentActive = false;
+
+        if (_reptileCoroutine != null)
+        {
+            StopCoroutine(_reptileCoroutine);
+            _reptileCoroutine = null;
+        }
+
+        ResetAllAttackSpeed();
     }
 
     private IEnumerator ReptileLogic()
@@ -596,18 +571,22 @@ public class CreeperStrike : Skill
             _currentStacksPoison = 0;
             _currentAllStacks = 0;
 
-            Collider[] enemies = Physics.OverlapSphere(transform.position, 30, _enemyLayer);
+            Collider[] enemies = Physics.OverlapSphere(transform.position, _poisonSearchRadius, _enemyLayer);
 
-            foreach (Collider target in enemies)
+            foreach (Collider enemy in enemies)
             {
-                if (target == null) continue;
+                if (enemy == null)
+                    continue;
 
-                var state = target.GetComponent<CharacterState>();
-                if (state == null) continue;
+                CharacterState state = enemy.GetComponent<CharacterState>();
 
-                if (!state.Check(StatusEffect.Poison)) continue;
+                if (state == null)
+                    continue;
 
-                CacheStates(state);
+                if (!state.Check(StatusEffect.Poison))
+                    continue;
+
+                CachePoisonStates(state);
 
                 if (_bindingPoisonState != null)
                     _currentStacksPoison += _bindingPoisonState.CurrentStacks;
@@ -630,65 +609,116 @@ public class CreeperStrike : Skill
         }
     }
 
-    private void CacheStates(CharacterState state)
+    private void CachePoisonStates(CharacterState state)
     {
-        _bindingPoisonState = (BindingPoisonState)state.GetState(States.BindingPoison);
-        _poisonBoneState = (PoisonBoneState)state.GetState(States.PoisonBone);
-        _empathicPoisonState = (EmpathicPoisonsState)state.GetState(States.EmpathicPoisons);
-        _witheringPoisonState = (WitheringPoisonState)state.GetState(States.WitheringPoison);
+        _bindingPoisonState = state.GetState(States.BindingPoison) as BindingPoisonState;
+        _poisonBoneState = state.GetState(States.PoisonBone) as PoisonBoneState;
+        _empathicPoisonState = state.GetState(States.EmpathicPoisons) as EmpathicPoisonsState;
+        _witheringPoisonState = state.GetState(States.WitheringPoison) as WitheringPoisonState;
     }
 
     private void HandleAttackSpeed()
     {
-        if (_currentAllStacks != _previousAllStacks)
+        if (_currentAllStacks > _previousAllStacks)
         {
-            while (_currentStacksAtckSpeed < _currentAllStacks)
+            while (_currentStacksAttackSpeed < _currentAllStacks)
             {
-                if (_currentAllStacks > 0 && CastDeley > _maxMinimumAttackSpeed)
+                if (CastDeley > _maxMinimumAttackSpeed)
                 {
                     IncreaseAttackSpeed();
-                    _previousAllStacks = _currentAllStacks;
                 }
-                else break;
+                else
+                {
+                    break;
+                }
             }
+
+            _previousAllStacks = _currentAllStacks;
         }
 
-        if ((_currentAllStacks == 0 || _currentAllStacks < _previousAllStacks))
+        if (_currentAllStacks < _previousAllStacks)
         {
-            while (_currentStacksAtckSpeed > _currentAllStacks)
+            while (_currentStacksAttackSpeed > _currentAllStacks)
             {
                 ResetAttackSpeed();
             }
+
             _previousAllStacks = _currentAllStacks;
+        }
+
+        if (_currentAllStacks == 0 && _previousAllStacks != 0)
+        {
+            ResetAllAttackSpeed();
         }
     }
 
     private void IncreaseAttackSpeed()
     {
-        _currentStacksAtckSpeed++;
+        _currentStacksAttackSpeed++;
 
-        _increasedAttackSpeed = _baseAttackSpeed - _baseIncreaseAttackSpeed;
+        _currentAttackSpeedBonus = _baseIncreaseAttackSpeed;
 
-        Buff.AttackSpeed.IncreasePercentage(_increasedAttackSpeed);
+        Buff.AttackSpeed.IncreasePercentage(_currentAttackSpeedBonus);
     }
 
     private void ResetAttackSpeed()
     {
-        if (CastDeley < _baseAttackSpeed)
-        {
-            Buff.AttackSpeed.ReductionPercentage(_increasedAttackSpeed);
-            _currentStacksAtckSpeed--;
-        }
+        if (_currentStacksAttackSpeed <= 0)
+            return;
+
+        Buff.AttackSpeed.ReductionPercentage(_currentAttackSpeedBonus);
+
+        _currentStacksAttackSpeed--;
     }
 
     private void ResetAllAttackSpeed()
     {
-        while (_currentStacksAtckSpeed > 0)
+        while (_currentStacksAttackSpeed > 0)
         {
             ResetAttackSpeed();
         }
 
+        _currentStacksPoison = 0;
+        _currentAllStacks = 0;
         _previousAllStacks = 0;
     }
-    #endregion
+
+    private void StopSneakySpitComboTimers()
+    {
+        if (_sneakySpitComboResetCoroutine != null)
+        {
+            StopCoroutine(_sneakySpitComboResetCoroutine);
+            _sneakySpitComboResetCoroutine = null;
+        }
+
+        if (_sneakySpitReadyCoroutine != null)
+        {
+            StopCoroutine(_sneakySpitReadyCoroutine);
+            _sneakySpitReadyCoroutine = null;
+        }
+
+        _isTwoHit = false;
+
+        if (_lightningStrikes != null)
+            _lightningStrikes.IsUsedLightningStrikes = false;
+
+        ResetSneakySpitCombo(false);
+    }
+
+    protected override void ClearData()
+    {
+        _castTarget = null;
+        _isNextHitFromLightningMovement = false;
+
+        Targeting.ClearTarget();
+        Targeting.ClearTempTarget();
+
+        Hero.Move.StopLookAt();
+    }
+
+    [Command]
+    private void CmdDamageDeal(Damage damage, GameObject target)
+    {
+        ApplyDamage(damage, target);
+    }
 }

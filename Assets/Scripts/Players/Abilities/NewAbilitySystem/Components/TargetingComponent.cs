@@ -124,13 +124,15 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
     #endregion
 
     #region Properties
-    public LayerMask Layer {
+    public LayerMask Layer
+    {
         get => _targetLayer;
         set => _targetLayer = value;
     }
 
     public TargetData Target => _target;
-    public TargetData Temporary { 
+    public TargetData Temporary
+    {
         get => _tempTarget;
     }
     public TargetData ForDamage
@@ -140,23 +142,11 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
     }
     #endregion
 
-    private bool _targetLocked;
-
     #region Methods
     public override void Init(Skill skill)
     {
         base.Init(skill);
         SetUpPhysicLayers();
-    }
-
-    public void LockTarget()
-    {
-        _targetLocked = true;
-    }
-
-    public void UnlockTarget()
-    {
-        _targetLocked = false;
     }
 
     #region Get-Set
@@ -198,9 +188,6 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
 
     public void SetTarget(ITargetable character)
     {
-        if (_targetLocked)
-            return;
-
         if (character == null)
             return;
         _target = new TargetData((character as MonoBehaviour)?.gameObject);
@@ -208,9 +195,6 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
 
     public void SetTarget(TargetData target) // ??
     {
-        if (_targetLocked)
-            return;
-
         if (target == null)
             return;
         _target = target;
@@ -243,7 +227,7 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
 
         if (targetInfo.Points.Count > 0)
             return new TargetData(targetInfo.Points[0]);
-        
+
         return null;
     }
 
@@ -251,7 +235,7 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
     {
         if (target == null && (type & (SkillType.NonTargetWithClick | SkillType.NonTarget)) == 0)
             return false;
-        
+
         Vector3 point = new();
         switch (target.Type)
         {
@@ -309,7 +293,7 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
         }
         else if ((_clickLayer & TargetLayer.Unit) != 0) //Если нашли цель - проверяем команду
         {
-            foreach (var target in targets) 
+            foreach (var target in targets)
             {
                 if ((_targetLayer & (1 << target.Object.layer)) != 0)
                     return target;
@@ -317,7 +301,7 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
         }
         return null;
     }
-    
+
     /// <summary>
     /// Находит и устанавливает tempTarget, берет текущую точку курсора и значение радиуса из скилла
     /// </summary>
@@ -344,7 +328,7 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
     /// <summary>
     /// Предконечный метод поиска целей. Позволяет отфильтровать мертвых
     /// </summary>
-    public List<TargetData> FindTargets(Vector3 position, float radius, bool canTargetSelf=false, bool canTargetDead=false)
+    public List<TargetData> FindTargets(Vector3 position, float radius, bool canTargetSelf = false, bool canTargetDead = false)
     {
         List<TargetData> targets = GetClosestTargets(position, radius, canTargetSelf);
         if (targets == null || targets.Count <= 0)

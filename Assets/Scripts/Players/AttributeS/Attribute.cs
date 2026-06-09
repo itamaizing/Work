@@ -15,6 +15,8 @@ public class Attribute
     private bool _isActual = false;
     private float _flat = 0, _percent = 1, _multiplier = 1;
 
+    public event Action<string, float> OnAttributeModify;
+
     #region Properties
     public string Name => _name;
     public List<AttributeModifier> Modifiers => _modifiers;
@@ -51,13 +53,14 @@ public class Attribute
     }
     #endregion Properties
     //public Attribute(CharacterAttributeName name, float _value=0)
-    public Attribute(string name, float _value=0)
+    public Attribute(string name, float _value = 0)
     {
         _name = name;
-        _baseValue = _value; 
+        _baseValue = _value;
+        _isActual = false;
     }
 
-    public static implicit operator float (Attribute attribute)
+    public static implicit operator float(Attribute attribute)
     {
         return attribute.GetValue();
     }
@@ -66,16 +69,18 @@ public class Attribute
     {
         _modifiers.Add(modifier);
         _isActual = false;
+        UpdateCached(); // otherwise it would invoke event only when attribute is called directly
     }
 
     public void RemoveModifier(AttributeModifier modifier)
     {
-        if(_modifiers.Contains(modifier))
+        if (_modifiers.Contains(modifier))
             _modifiers.Remove(modifier);
         _isActual = false;
+        UpdateCached();
     }
 
-    public void RemoveBySource(object source, bool all=true)
+    public void RemoveBySource(object source, bool all = true)
     {
         //if(_modifiers.Contains(modifier))
         //    _modifiers.Remove(modifier);
@@ -89,11 +94,14 @@ public class Attribute
             }
         }
         _isActual = false;
+        UpdateCached();
     }
 
     public void SetBaseValue(float value)
     {
         _baseValue = value;
+        _isActual = false;
+        UpdateCached();
     }
 
     public void RecalculateMultipliers()
@@ -137,10 +145,11 @@ public class Attribute
         return final;
     }
 
-
     private void UpdateCached()
     {
         _cachedValue = CalculateFor(_baseValue);
+        OnAttributeModify?.Invoke(_name, _cachedValue);
+        //Debug.Log($"{_name}: {_cachedValue}");
         _isActual = true;
     }
 }
@@ -160,7 +169,7 @@ public class AttributeModifier
     /// All ModifierValues should be passed as percent. I.e. 0.30 = 30% boost
     /// </param>
     /// </summary>
-    public AttributeModifier(float value, ModifierType type, object source=null)
+    public AttributeModifier(float value, ModifierType type, object source = null)
     {
         Value = value;
         Type = type;
