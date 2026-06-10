@@ -17,12 +17,12 @@ public class ComboState : RefreshingState
 
     public ComboState()
     {
-        MaxStacksCount = 3;
         currentStacksCount = 0;
     }
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+        MaxStacksCount = 3;
         characterState = character;
         base.personWhoMadeBuff = personWhoMadeBuff;
         _durationRemaining = durationToExit;

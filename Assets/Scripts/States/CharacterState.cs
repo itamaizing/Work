@@ -132,7 +132,7 @@ public abstract class AbstractCharacterState
         }
         this.personWhoMadeBuff = personWhoMadeBuff;
 
-        skill = abilities.Abilities.FirstOrDefault(x => x.Name == skillName);
+        //skill = abilities.Abilities.FirstOrDefault(x => x.Name == skillName);
     }
 }
 

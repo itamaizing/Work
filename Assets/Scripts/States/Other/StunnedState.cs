@@ -11,6 +11,8 @@ public class StunnedState : RefreshingState
 	public override StateType Type => StateType.Physical;
 	public override List<StatusEffect> Effects => _effects;
 
+	private float _maxDuration = 4f;
+
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
@@ -35,16 +37,34 @@ public class StunnedState : RefreshingState
 			ExitState();
 		}
 	}
+	
+	public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	{
+		if (!CanEnterState(character)) return null;
+
+		BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+
+		if (currentStacksCount == 0)
+			EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+		else
+			Stack(duration);
+
+		return this;
+	}
 
 	public override bool Stack(float time)
 	{
 		duration += time;
-		Debug.LogError("new duration: " + duration);
+		if (duration > _maxDuration)
+		{
+			duration = _maxDuration;
+		}
 		return true;
 	}
 
 	public override void ExitState()
 	{
+		currentStacksCount = 0;
 		 characterState.Character.Move.IsMoveBlocked = false;
 		abilities.SetAbilitiesDisactive(false);
 		characterState.RemoveState(this);

@@ -8310,7 +8310,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
-      value: 21
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[0]'
@@ -8396,6 +8396,10 @@ PrefabInstance:
       propertyPath: '_skills.Array.data[20]'
       value: 
       objectReference: {fileID: 5358761953826108934}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_skills.Array.data[21]'
+      value: 
+      objectReference: {fileID: 3314343911270447806}
     - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: materialsCharacter.Array.size
       value: 4
@@ -9341,6 +9345,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5358761953826108934}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3314343911270447806}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3359901628808772774}
@@ -10484,10 +10491,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 5458554383432203635}
-  _punch: {fileID: 6732054044553877427}
-  _kick: {fileID: 8920276347339243132}
-  _cleavingBlade: {fileID: 1485408660127300276}
-  _chainBlade: {fileID: 220446193611464409}
 --- !u!114 &2920573181922060226
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13501,6 +13504,98 @@ MonoBehaviour:
     _activeClip: 0
   _hellZonePrefab: {fileID: 212777845320910971, guid: 7a16bf7a430ddb444a53f1aabf8e1b29, type: 3}
   _duration: 4
+--- !u!114 &3314343911270447806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8143091671269686944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65d85fb457a07a44aaddd7947391ec54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FireMagicActivationBooster
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 1
+  _isSkillActive: 0
+  _abilityInfo: {fileID: 0}
+  _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _costs: []
+  _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
+  _castDeley: 0
+  _damageValue: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+  _targetingComponent:
+    type: 0
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _chargeComponent:
+    _usesCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
+    affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _areaComponent:
+    _radius: 0
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
+  _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 1
+    _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
 --- !u!4 &8811787553151181850 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9200225510825688790, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

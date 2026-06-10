@@ -44,9 +44,9 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
         var state = target.GetComponent<CharacterState>();
         if (isServer)
         {
-            for (int i = 0; i < comboPoints - 1; i++)
+            for (int i = 0; i < comboPoints; i++)
             {
-                state?.AddState(States.Knockdown, comboPoints, 0, _hero.gameObject, name);
+                state?.AddState(States.Knockdown, KnockdownDurationDefault, 0, _hero.gameObject, name);
             }
         }
     }
@@ -136,8 +136,6 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        _wasDamageApplied = false;
-
         while (Targeting.GetTempTarget()?.Targetable == null)
         {
             if (GetMouseButton)
@@ -166,7 +164,7 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
 
     protected override IEnumerator CastJob()
     {
-        if (_castTarget == null) yield break;;
+        if (_castTarget == null) yield break;
         if (!IsCanCast) yield break;
 
         if (_hitsInRowCoroutine != null) StopCoroutine(_hitsInRowCoroutine);
@@ -299,6 +297,7 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
 
     public void Kick_ScorpionCast()
     {
+        if (_wasDamageApplied) return;
         AnimStartCastCoroutine();
     }
 

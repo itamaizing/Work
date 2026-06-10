@@ -335,6 +335,7 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
 
     protected override void ClearData()
     {
+        CmdClearData();
         _enemiesDict.Clear();
         _lastEnergyTickPercent = 0f;
         _currentDurationReduction = 0f;
@@ -344,6 +345,12 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
         
         if (_fireBreathInstance != null) 
             Destroy(_fireBreathInstance.gameObject);
+    }
+
+    [Command]
+    private void CmdClearData()
+    {
+        _currentDurationReduction = 0f;
     }
 
     private Vector3 GetMouseWorldPosition()
@@ -357,7 +364,11 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
     
     public void OnTargetHasComboPoint(GameObject target, float comboPoints)
     {
-        _currentDurationReduction = comboPoints * _speedBonusPerComboPoint;
+        if (_currentDurationReduction <= 0)
+            _currentDurationReduction = comboPoints * _speedBonusPerComboPoint;
+        else
+            _currentDurationReduction += comboPoints * _speedBonusPerComboPoint;
+
         _channelComponent.CastDuration = _originalCastDuration * (1f - _currentDurationReduction);
         _channelComponent.CastDuration = Mathf.Max(_channelComponent.CastDuration, _originalCastDuration * 0.2f);
         
@@ -366,7 +377,10 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
 
     public void OnFinalComboSkill(GameObject target)
     {
-        _currentDurationReduction = _speedBonusPerFullCombo;
+        if (_currentDurationReduction <= 0)
+            _currentDurationReduction = _speedBonusPerFullCombo;
+        else
+            _currentDurationReduction += _speedBonusPerFullCombo;
         _channelComponent.CastDuration = _originalCastDuration * (1f - _currentDurationReduction);
         _channelComponent.CastDuration = Mathf.Max(_channelComponent.CastDuration, _originalCastDuration * 0.2f);
 
@@ -377,6 +391,7 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
     [ClientRpc]
     private void RpcApplyCastDuration(float newSpeedMultiplier, float newCastDuration)
     {
+        _initialSpeed = 1f;
         _initialSpeed -= newSpeedMultiplier;
         _channelComponent.CastDuration = newCastDuration;
         
