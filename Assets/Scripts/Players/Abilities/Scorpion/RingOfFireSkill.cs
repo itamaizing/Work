@@ -9,6 +9,7 @@ public class RingOfFireSkill : Skill,IFireComboParticipatingSkill
 
     private const float RingDuration = 6f;
     protected override bool IsCanCast => true;
+    public bool IsAoe => true;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("FireRing");
     

@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
+public class FireBreath_Scorpion : Skill,IFireComboParticipatingSkill
 {
     [Header("Ability Settings")]
     [SerializeField] private FireBreath_Prefab _conePrefab;
@@ -27,14 +27,11 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
 
     private readonly Dictionary<Health, int> _exposureTicks = new();
     private readonly Dictionary<GameObject, int> _serverExposureTicks = new();
-
+    public bool IsAoe => true;
     public ConsumeCombo_Scorpion Notifier { get; set; }
     public int ConsumedAmount { get; set; }
 
     private bool _isIncreasedDamageExposure = false;
-
-    public event IComboParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplyParticipatingDamage;
-    public event Action<GameObject, Skill> OnDamaged;
     public event Action OnFireBreathStarted;
 
     protected override bool IsCanCast => true;
@@ -187,7 +184,7 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
     [Command]
     private void CmdOnDamageEnd(GameObject target)
     {
-        OnDamaged?.Invoke(target, this);
+        //OnDamaged?.Invoke(target, this);
         _serverExposureTicks[target] = _serverExposureTicks.GetValueOrDefault(target, 0) + 1;
 
         var ignition = target.GetComponent<CharacterState>()?.GetState(States.Ignition) as IgnitionState;
@@ -374,6 +371,7 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
         
         RpcApplyCastDuration(_currentDurationReduction, _channelComponent.CastDuration);
     }
+    
 
     public void OnFinalComboSkill(GameObject target)
     {

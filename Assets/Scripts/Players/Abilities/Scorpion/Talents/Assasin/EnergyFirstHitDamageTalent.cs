@@ -5,13 +5,11 @@ public class EnergyFirstHitDamageTalent : Talent
     private EnergyFirstHitDamageBooster _booster;
     public override void Enter()
     {
-        _booster ??= new EnergyFirstHitDamageBooster(character);
-        if(!_booster.IsEnabled)
-            _booster.Enable(true);
+        character.Abilities.GetSkill<EnergyFirstHitDamageBooster>().EnableBooster(true);
     }
 
     public override void Exit()
     {
-        _booster?.Enable(false);
+        character.Abilities.GetSkill<EnergyFirstHitDamageBooster>().EnableBooster(false);
     }
 }
