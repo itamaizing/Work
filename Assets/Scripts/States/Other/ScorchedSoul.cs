@@ -17,24 +17,19 @@ public class ScorchedSoul : RefreshingState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log("Entering ScorchedSoulDebuff State");
-
         characterState = character;
         
         abilities = characterState.Character.Abilities;
 
         foreach (var ability in abilities.Abilities)
         {
-            Debug.LogWarning($"Cast speed before: {ability.Buff.CastSpeed.Multiplier}");
             ability.Buff.CastSpeed.ReductionPercentage(_reducePercentage);
-            Debug.LogWarning("Cast speed reduced!!!! - CharacterState.EnterState()");
-            Debug.LogWarning($"Cast speed after: {ability.Buff.CastSpeed.Multiplier}");
-            Debug.LogWarning($"Cast speed after: {ability.Buff.CastSpeed.GetBuffedValue(1f)}");
         }
         
         _duration = durationToExit;
         _baseDuration = durationToExit;
         MaxStacksCount = 3;
+        currentStacksCount = 1;
     }
 
     public override void ExitState()
@@ -75,5 +70,23 @@ public class ScorchedSoul : RefreshingState
 
     public override void UpdateState()
     {
+        if (duration <= 0)
+        {
+            ExitState();
+        }
+    }
+    
+    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        if (!CanEnterState(character)) return null;
+
+        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+
+        if (currentStacksCount == 0)
+            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+        else
+            Stack(duration);
+        
+        return this;
     }
 }

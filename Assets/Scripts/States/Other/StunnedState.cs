@@ -18,7 +18,7 @@ public class StunnedState : RefreshingState
 	{
 		MaxStacksCount = 1;
 		currentStacksCount = 1;
-		duration = durationToExit;
+		duration = Mathf.Min(durationToExit, _maxDuration);
 		if (character.TryGetComponent<Character>(out var ability))
 		{
 			abilities = ability.Abilities;
@@ -52,12 +52,11 @@ public class StunnedState : RefreshingState
 		return this;
 	}
 
-	public override bool Stack(float time)
+	public override bool Stack(float newDuration)
 	{
-		duration += time;
-		if (duration > _maxDuration)
+		if (newDuration > duration)
 		{
-			duration = _maxDuration;
+			duration = newDuration - duration;
 		}
 		return true;
 	}

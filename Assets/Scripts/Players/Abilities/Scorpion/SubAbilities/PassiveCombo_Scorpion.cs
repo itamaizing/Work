@@ -137,7 +137,7 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
         
         if (CurrentTarget == null)
         {
-            if (!isAoe) CurrentTarget = enemy;
+            if (!isAoe || _comboPlayer.HasPoints()) CurrentTarget = enemy;
             if(_usedSkills.Count >= 2 && isAoe)
                 CurrentTarget = enemy;
         }
@@ -175,7 +175,10 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
                 fireComboParticipating?.OnFinalComboSkill(CurrentTarget.gameObject);
             }
 
-            ResetCounter();
+            if (!_comboPlayer.HasPoints())
+            {
+                ResetCounter();
+            }
         }
 
         if (_comboPlayer != null && _comboPlayer.HasPoints())

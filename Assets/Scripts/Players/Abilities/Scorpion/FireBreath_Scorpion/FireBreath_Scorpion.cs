@@ -71,7 +71,8 @@ public class FireBreath_Scorpion : Skill,IFireComboParticipatingSkill
         _originalCastDuration = _channelComponent.CastDuration;
         UpdateWaitInterval();
     }
-    
+
+
     private void UpdateWaitInterval()
     {
         _effectiveInterval = ApplyFireBreathDamageTickInterval * _initialSpeed;
@@ -263,7 +264,7 @@ public class FireBreath_Scorpion : Skill,IFireComboParticipatingSkill
             baseDamage *= 2;
         }
         Hero.Move.SetCanMove(true);
-        CmdDestroyFireBreath();
+        //CmdDestroyFireBreath();
     }
     
     protected override void CommitUse()
@@ -342,6 +343,9 @@ public class FireBreath_Scorpion : Skill,IFireComboParticipatingSkill
         
         if (_fireBreathInstance != null) 
             Destroy(_fireBreathInstance.gameObject);
+        
+        if(isClient)
+            CmdDestroyFireBreath();
     }
 
     [Command]
