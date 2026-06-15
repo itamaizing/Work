@@ -70,19 +70,22 @@ public class CreeperInvisible : Skill
     private int _strikeCrit;
 
     public int StrikeCrit { get => _strikeCrit; set => _strikeCrit = value; }
-    public bool IsInvisibilitStrike { get => _isInvisibilitStrike; set => _isInvisibilitStrike = value; }
+
+    public bool IsInvisibilitStrike
+    {
+        get => _isInvisibilitStrike;
+        set
+        {
+            if (_isInvisibilitStrike == value) return;
+
+            _isInvisibilitStrike = value;
+            SetCheckEnemiesRoutineState();
+        }
+    }
 
     public void InvisibilitStrike(bool value)
     {
-        _isInvisibilitStrike = value;
-
-        if (_isInvisibilitStrike) StartCheckEnemiesRoutine();
-
-        else
-        {
-            StopCheckEnemiesRoutine();
-            Disactive = false;
-        }
+        IsInvisibilitStrike = value;
     }
 
     #endregion
@@ -112,15 +115,25 @@ public class CreeperInvisible : Skill
             _player.Health.DamageTaken -= OnPlayerDamaged;
         }
 
-        StopCheckEnemiesRoutine();
+        if (_checkEnemiesRoutine != null)
+        {
+            StopCheckEnemiesRoutine();
+            _checkEnemiesRoutine = null;
+        }
 
         InputHandler.OnCast -= OnCastKeyPressed;
 
         if (_stopDrawRadiusRoutine != null)
         {
-            StopCoroutine(_stopDrawRadiusRoutine);
-            _stopDrawRadiusRoutine = null;
+            StopCoroutine(StopDrawRadiusAfterDelay());
+            _checkEnemiesRoutine = null;
         }
+    }
+
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+        SetCheckEnemiesRoutineState();
     }
 
     #region PrepareAndCastJob
@@ -160,6 +173,31 @@ public class CreeperInvisible : Skill
         return selected.Length > index && selected[index] == this;
     }
 
+    private void SetCheckEnemiesRoutineState()
+    {
+        if (_isInvisibilitStrike)
+            StartCheckEnemiesRoutine();
+        else
+            StopCheckEnemiesRoutine();
+    }
+
+    private void StartCheckEnemiesRoutine()
+    {
+        if (_checkEnemiesRoutine != null) return;
+
+        _checkEnemiesRoutine = StartCoroutine(CheckEnemiesInRadiusRoutine());
+    }
+
+    private void StopCheckEnemiesRoutine()
+    {
+        if (_checkEnemiesRoutine == null) return;
+
+        StopCoroutine(_checkEnemiesRoutine);
+        _checkEnemiesRoutine = null;
+
+        Disactive = false;
+    }
+
     private IEnumerator StopDrawRadiusAfterDelay()
     {
         yield return new WaitForSeconds(0.2f);
@@ -170,7 +208,7 @@ public class CreeperInvisible : Skill
     {
         WaitForSeconds delay = new WaitForSeconds(0.1f);
 
-        while (_isInvisibilitStrike)
+        while (true)
         {
             if (Cooldown.IsActive)
             {
@@ -188,11 +226,7 @@ public class CreeperInvisible : Skill
 
             bool hasEnemies = false;
 
-            Collider[] hitEnemies = Physics.OverlapSphere(
-                _player.transform.position,
-                AreaInfo.Radius,
-                _targetsLayers
-            );
+            Collider[] hitEnemies = Physics.OverlapSphere(_player.transform.position, AreaInfo.Radius, _targetsLayers);
 
             foreach (Collider enemy in hitEnemies)
             {
@@ -208,8 +242,6 @@ public class CreeperInvisible : Skill
 
             yield return delay;
         }
-
-        _checkEnemiesRoutine = null;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -314,23 +346,6 @@ public class CreeperInvisible : Skill
             _spitPoison.IsAltAbility = false;
             _poisonBall.IsAltAbility = false;
         }
-    }
-
-    private void StartCheckEnemiesRoutine()
-    {
-        if (_checkEnemiesRoutine != null)
-            return;
-
-        _checkEnemiesRoutine = StartCoroutine(CheckEnemiesInRadiusRoutine());
-    }
-
-    private void StopCheckEnemiesRoutine()
-    {
-        if (_checkEnemiesRoutine == null)
-            return;
-
-        StopCoroutine(_checkEnemiesRoutine);
-        _checkEnemiesRoutine = null;
     }
 
     #region CommandMethods
