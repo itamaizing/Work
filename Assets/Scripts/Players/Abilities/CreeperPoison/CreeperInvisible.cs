@@ -72,7 +72,18 @@ public class CreeperInvisible : Skill
     public int StrikeCrit { get => _strikeCrit; set => _strikeCrit = value; }
     public bool IsInvisibilitStrike { get => _isInvisibilitStrike; set => _isInvisibilitStrike = value; }
 
-    public void InvisibilitStrike(bool value) => _isInvisibilitStrike = value;
+    public void InvisibilitStrike(bool value)
+    {
+        _isInvisibilitStrike = value;
+
+        if (_isInvisibilitStrike) StartCheckEnemiesRoutine();
+
+        else
+        {
+            StopCheckEnemiesRoutine();
+            Disactive = false;
+        }
+    }
 
     #endregion
 
@@ -101,26 +112,15 @@ public class CreeperInvisible : Skill
             _player.Health.DamageTaken -= OnPlayerDamaged;
         }
 
-        if (_checkEnemiesRoutine != null)
-        {
-            StopCoroutine(CheckEnemiesInRadiusRoutine());
-            _checkEnemiesRoutine = null;
-        }
+        StopCheckEnemiesRoutine();
 
         InputHandler.OnCast -= OnCastKeyPressed;
 
         if (_stopDrawRadiusRoutine != null)
         {
-            StopCoroutine(StopDrawRadiusAfterDelay());
-            _checkEnemiesRoutine = null;
+            StopCoroutine(_stopDrawRadiusRoutine);
+            _stopDrawRadiusRoutine = null;
         }
-    }
-
-    public override void Init(SkillRenderer render, Character hero)
-    {
-        base.Init(render, hero);
-
-        if (_checkEnemiesRoutine == null) _checkEnemiesRoutine = StartCoroutine(CheckEnemiesInRadiusRoutine());
     }
 
     #region PrepareAndCastJob
@@ -170,7 +170,7 @@ public class CreeperInvisible : Skill
     {
         WaitForSeconds delay = new WaitForSeconds(0.1f);
 
-        while (true)
+        while (_isInvisibilitStrike)
         {
             if (Cooldown.IsActive)
             {
@@ -188,7 +188,11 @@ public class CreeperInvisible : Skill
 
             bool hasEnemies = false;
 
-            Collider[] hitEnemies = Physics.OverlapSphere(_player.transform.position, AreaInfo.Radius, _targetsLayers);
+            Collider[] hitEnemies = Physics.OverlapSphere(
+                _player.transform.position,
+                AreaInfo.Radius,
+                _targetsLayers
+            );
 
             foreach (Collider enemy in hitEnemies)
             {
@@ -204,6 +208,8 @@ public class CreeperInvisible : Skill
 
             yield return delay;
         }
+
+        _checkEnemiesRoutine = null;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -308,6 +314,23 @@ public class CreeperInvisible : Skill
             _spitPoison.IsAltAbility = false;
             _poisonBall.IsAltAbility = false;
         }
+    }
+
+    private void StartCheckEnemiesRoutine()
+    {
+        if (_checkEnemiesRoutine != null)
+            return;
+
+        _checkEnemiesRoutine = StartCoroutine(CheckEnemiesInRadiusRoutine());
+    }
+
+    private void StopCheckEnemiesRoutine()
+    {
+        if (_checkEnemiesRoutine == null)
+            return;
+
+        StopCoroutine(_checkEnemiesRoutine);
+        _checkEnemiesRoutine = null;
     }
 
     #region CommandMethods
