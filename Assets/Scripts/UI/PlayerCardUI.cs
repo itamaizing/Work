@@ -12,10 +12,12 @@ public class PlayerCardUI : MonoBehaviour
     [SerializeField] private CardButton[] _buttons;
 
     public int Id { get; private set; }
+    public string Name { get; private set; }
 
     public void Init(string name, int id)
     {
         _name.text = name;
+        Name = name;
         Id = id;
     }
 

@@ -20,6 +20,10 @@ public class URLLibrary
     private const string _getFriend = "GetFriendList.php";
     private const string _getUserLogin = "GerUserLogin.php";
     private const string _getFriendList = "GetFriendList.php";
+    private const string _getFriendRequest = "GetFriendRequest.php";
+    private const string _requestFriendship = "AddRequestFriendship.php";
+    private const string _removeFriendshipRequest = "RemoveFriendRequst.php";
+    private const string _removeFriend = "RemoveFriend.php";
 
     private readonly List<string> _heroName = new()
     {
@@ -45,6 +49,10 @@ public class URLLibrary
     public static string GetFriend { get { return GameFolder + _getFriend; } }
     public static string GetFriendList { get { return GameFolder + _getFriendList; } }
     public static string GetUserLogin { get { return GameFolder + _getUserLogin; } }
+    public static string GetFriendRequest { get { return GameFolder + _getFriendRequest; } }
+    public static string RequestFriendship { get { return GameFolder + _requestFriendship; } }
+    public static string RemoveFriendshipRequest { get { return GameFolder + _removeFriendshipRequest; } }
+    public static string RemoveFriend { get { return GameFolder + _removeFriend; } }
 
     public static string MainServer => _mainServer;
     public static string LocalHost => _localHost;

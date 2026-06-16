@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using Newtonsoft.Json;
 using TMPro;
 using UnityEngine;
@@ -63,8 +64,10 @@ public class FriendUI : MonoBehaviour
     private string _friendName;
     private string _myLogin = "Me";
     private FriendData[] _friends;
+    private FriendData[] _friendsRequst;
     private List<PlayerCardUI> _playersCards = new();
     private List<PlayerCardUI> _playersCardsGroup = new();
+    private List<PlayerCardUI> _playersCardsFriendRequst = new();
 
     public event Action<FriendData[]> FriendListUpdated;
 
@@ -90,6 +93,7 @@ public class FriendUI : MonoBehaviour
             };
             NetworkHTTP.Instance.Post(URLLibrary.GetFriendList, data1, UpdateFriendList);
         }
+        UpdateFriendRequests();
     }
 
     private void OnDisable()
@@ -151,6 +155,66 @@ public class FriendUI : MonoBehaviour
         string json = JsonConvert.SerializeObject(data);
 
         WebSocketClient.Instance.SendMessageToServer(json);
+
+        UpdateFriendRequests();
+    }
+
+    private void UpdateFriendRequests()
+    {
+        Dictionary<string, string> data = new Dictionary<string, string>()
+        {
+            {USERID, MPNetworkManager.Instance.UserID.ToString() },
+        };
+        NetworkHTTP.Instance.Post(URLLibrary.GetFriendRequest, data, OnFriendRequest);
+    }
+
+    private void OnFriendRequest(string data)
+    {
+        FriendsResponse response = JsonUtility.FromJson<FriendsResponse>(data);
+
+        if (response.success)
+        {
+            _friendsRequst = response.friends;
+        }
+        else
+        {
+            Debug.LogError("Îøèáêà: " + response.error);
+        }
+
+        foreach (FriendData friend in _friendsRequst)
+        {
+            if (_playersCardsFriendRequst.Any(card => card.Id == friend.id) == false)
+            {
+                var card = Instantiate(_playerCardPref, _panelRequests.transform);
+                _playersCardsFriendRequst.Add(card);
+
+                card.Init(friend.login, friend.id);
+                card.SetButtn(0, _addSprite, AcceptFriendship);
+                card.SetButtn(1, _exitSprite, CancelFriendships);
+            }
+
+        }
+    }
+
+    private void CancelFriendships(PlayerCardUI card)
+    {
+        _playersCardsFriendRequst.Remove(card);
+
+        Dictionary<string, string> data = new Dictionary<string, string>()
+        {
+            {USERID, MPNetworkManager.Instance.UserID.ToString() },
+            {"friendId", card.Id.ToString()}
+        };
+        NetworkHTTP.Instance.Post(URLLibrary.RemoveFriendshipRequest, data);
+
+        Destroy(card.gameObject);
+    }
+
+    private void AcceptFriendship(PlayerCardUI card)
+    {
+        AddFriend(card.Name);
+
+        CancelFriendships(card);
     }
 
     private void OnMessageReceived(Dictionary<string, string> dictionary, string json)
@@ -183,6 +247,23 @@ public class FriendUI : MonoBehaviour
         {
             {USERID, MPNetworkManager.Instance.UserID.ToString() },
             {LOGIN, _friendName}
+        };
+        NetworkHTTP.Instance.Post(URLLibrary.RequestFriendship, data, TestDebug);
+    }
+
+    private void TestDebug(string obj)
+    {
+        Debug.Log("test");
+        Debug.Log(obj);
+        Debug.Log("test");
+    }
+
+    private void AddFriend(string name)
+    {
+        Dictionary<string, string> data = new Dictionary<string, string>()
+        {
+            {USERID, MPNetworkManager.Instance.UserID.ToString() },
+            {LOGIN, name}
         };
         NetworkHTTP.Instance.Post(URLLibrary.AddFriend, data, OnFriendAdded);
     }
@@ -217,7 +298,7 @@ public class FriendUI : MonoBehaviour
             if (index != -1)
             {
                 card.Init(_friends[index].login, int.Parse(onlineFriend.playerId));
-                card.SetButtn(0, _addSprite, SendInvite);
+                card.SetButtn(0, _addSprite, SendGroupInvite);
             }
         }
 
@@ -336,7 +417,7 @@ public class FriendUI : MonoBehaviour
         UpdateRect();
     }
 
-    private void SendInvite(PlayerCardUI card)
+    private void SendGroupInvite(PlayerCardUI card)
     {
         ServerManager.Instance.GroupManager.SendInvite(card.Id);
     }
