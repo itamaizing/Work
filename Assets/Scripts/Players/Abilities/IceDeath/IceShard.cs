@@ -71,21 +71,26 @@ public class IceShard : Skill,IEnergyDamagable
 		}
 
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
+		lookDir.y = 0f;
+		lookDir.Normalize();
+
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
+
 		_seriesOfStrikes.MakeHit(null, Info.AbilityForm, 1, 5, 3);
 
-		CmdCreateProjecttile(angle, _energy.CurrentValue, _talentPlague, _talentChragesPlague);
+		CmdCreateProjecttile(angle, _energy.CurrentValue, _talentPlague, _talentChragesPlague, 4f);
 	}
 
 	[Command]
-	private void CmdCreateProjecttile(float angle, float manaValue, bool talentPlague, bool talentChargesPlague)
+	private void CmdCreateProjecttile(float angle, float manaValue, bool talentPlague, bool talentChargesPlague, float maxDistance)
 	{
-		IceShardProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, -angle, 0));
-		projectile.Init(_playerLinks, manaValue, false, this);
+		IceShardProjectile projectile = Instantiate(_projectile, transform.position, Quaternion.Euler(0, -angle, 0));
+    
+		projectile.Init(_hero, manaValue, false, this);
 		projectile.Talents(talentPlague, talentChargesPlague);
+		projectile.SetMaxDistance(maxDistance);
 
 		NetworkServer.Spawn(projectile.gameObject);
-
 		RpcInit(projectile.gameObject, manaValue, talentPlague, talentChargesPlague);
 	}
 
@@ -147,4 +152,5 @@ public class IceShard : Skill,IEnergyDamagable
 	}
 
 	public bool IsStreamSkill { get; }
+	public bool IsFrostingOfFrozenSkill { get; }
 }

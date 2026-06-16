@@ -29,7 +29,30 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
     private const float SearchTargetInRadius = 1f;
     #endregion
 
-    [SerializeField] private ConsumeCombo_Scorpion _consumeCombo_Scorpion;
+    #region CostDiscountTalent
+
+    private bool _isScorchedSoulDiscount;
+
+    public void EnableScorchedSoulDiscount(bool value)
+    {
+        if(value == _isScorchedSoulDiscount) return;
+        
+        _isScorchedSoulDiscount = value;
+    }
+    
+    private float GetScorchedSoulDivisor()
+    {
+        if (!_isScorchedSoulDiscount) return 1f;
+
+        var target = Targeting.GetTarget()?.Character;
+        if (target == null) return 1f;
+
+        int stacks = target.CharacterState.CheckStateStacks(States.ScorchedSoul);
+        return stacks > 0 ? stacks + 1f : 1f;
+    }
+
+    #endregion
+    
     [SerializeField] private ScorpionPassive _scorpionPassive;
     
 
@@ -37,7 +60,6 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
     [field: SerializeField]
     public ConsumeCombo_Scorpion Notifier { get; set; }
-    public int ConsumedAmount { get; set; }
 
     protected override bool IsCanCast
     {
@@ -54,7 +76,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
 
             }
 
-            return energy.CurrentValue >= _baseCost;
+            return energy.CurrentValue >= _baseCost / GetScorchedSoulDivisor();
         }
     }
 
@@ -198,9 +220,13 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
         Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
        
         float distance = Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position);
-        int manaToSpend = GetBonusCost(distance);
+        float divisor = GetScorchedSoulDivisor();
+        int totalCost  = GetBonusCost(distance) + _baseCost;
+        Debug.LogError("total cost: " + totalCost);
+        int discounted = Mathf.RoundToInt(totalCost / divisor);
+        Debug.LogError("discounted: " + discounted);
 
-        _bonusCostModifier.Value = manaToSpend;
+        _bonusCostModifier.Value = discounted - _baseCost;
         Attributes[SkillAttributeName.ResourceCost].AddModifier(_bonusCostModifier);
 
         TargetInfo targetInfo = new();

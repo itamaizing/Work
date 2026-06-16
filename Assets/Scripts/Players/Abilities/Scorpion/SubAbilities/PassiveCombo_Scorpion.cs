@@ -33,6 +33,9 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
     private bool _consumeComboTalent = false;
     private bool _multiTargetComboTalent = false;
 
+    private readonly Dictionary<Skill, float> _lastAoeHitTime = new();
+    private const float AoeDedupeWindow = 0.15f;
+    
     public void ConsumeComboTalent(bool value) => _consumeComboTalent = value;
 
     public void SetMultiTargetComboTalent(bool value) => _multiTargetComboTalent = value;
@@ -107,8 +110,10 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
 
     private void AddSkillInternal(Character enemy, Skill skill, bool isFireSkill)
     {
-        if(!isFireSkill)
-            if (!_consumeComboTalent && !_multiTargetComboTalent) return;
+        if (!isFireSkill)
+            if (!_consumeComboTalent && !_multiTargetComboTalent)
+                return;
+
         if (!isFireSkill && !_impulseFireBooster.CanUseInCombo(skill)) return;
 
         if (enemy == null || skill == null) return;
@@ -116,12 +121,27 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
         var comboParticipating = skill as IComboParticipatingSkill;
         var fireComboParticipating = skill as IFireComboParticipatingSkill;
 
-        int currentStacks = enemy.CharacterState.CheckStateStacks(States.ComboState);
-        int maxStacks = enemy.CharacterState.GetState(States.ComboState)?.MaxStacksCount ?? int.MaxValue;
+        bool isAoe = (skill as IFireComboParticipatingSkill)?.IsAoe ?? false;
+        
+        if (isAoe)
+        {
+            float now = Time.time;
+            if (_lastAoeHitTime.TryGetValue(skill, out float lastTime) && now - lastTime < AoeDedupeWindow)
+                return;
 
-        if (CurrentTarget == null) CurrentTarget = enemy;
+            _lastAoeHitTime[skill] = now;
 
-        if (!_multiTargetComboTalent && CurrentTarget != enemy)
+            if (CurrentTarget != null)
+                enemy = CurrentTarget;
+        }
+        
+        if (CurrentTarget == null)
+        {
+            if (!isAoe || _comboPlayer.HasPoints()) CurrentTarget = enemy;
+            if(_usedSkills.Count >= 2 && isAoe)
+                CurrentTarget = enemy;
+        }
+        else if (!isAoe && CurrentTarget != enemy)
         {
             ResetCounter();
             CurrentTarget = enemy;
@@ -129,6 +149,9 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
 
         _usedSkills.Add(skill);
         StartOrRestartComboTimer();
+
+        int currentStacks = enemy.CharacterState.CheckStateStacks(States.ComboState);
+        int maxStacks = enemy.CharacterState.GetState(States.ComboState)?.MaxStacksCount ?? int.MaxValue;
 
         if (_usedSkills.Count >= 3)
         {
@@ -141,25 +164,30 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
             }
 
             RpcPlayParticles("FullCombo");
-            TryUseChargersOnLasts(enemy, lastThreeHits);
+            TryUseChargersOnLasts(CurrentTarget, lastThreeHits);
 
             if ((_consumeComboTalent || isFireSkill) && currentStacks < maxStacks)
-                ApplyComboState(enemy);
+                ApplyComboState(CurrentTarget);
 
-            if (IsFinalComboSkill(enemy, skill))
+            if (IsFinalComboSkill(CurrentTarget, skill))
             {
-                comboParticipating?.OnFinalComboSkill(enemy.gameObject);
-                fireComboParticipating?.OnFinalComboSkill(enemy.gameObject);
+                comboParticipating?.OnFinalComboSkill(CurrentTarget.gameObject);
+                fireComboParticipating?.OnFinalComboSkill(CurrentTarget.gameObject);
             }
 
-            ResetCounter();
+            if (!_comboPlayer.HasPoints())
+            {
+                ResetCounter();
+            }
         }
 
         if (_comboPlayer != null && _comboPlayer.HasPoints())
         {
             int points = _comboPlayer.CurrentComboPoints;
-            comboParticipating?.OnTargetHasComboPoint(enemy.gameObject, points);
-            fireComboParticipating?.OnTargetHasComboPoint(enemy.gameObject,points);
+
+            comboParticipating?.OnTargetHasComboPoint(CurrentTarget.gameObject, points);
+            fireComboParticipating?.OnTargetHasComboPoint(CurrentTarget.gameObject, points);
+
             _comboPlayer.TryUse(points);
         }
     }
@@ -246,6 +274,7 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
             _comboTimerCoroutine = null;
         }
         _usedSkills.Clear();
+        _lastAoeHitTime.Clear();
         CurrentTarget = null;
     }
 

@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
+public class FireBreath_Scorpion : Skill,IFireComboParticipatingSkill
 {
     [Header("Ability Settings")]
     [SerializeField] private FireBreath_Prefab _conePrefab;
@@ -27,14 +27,11 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
 
     private readonly Dictionary<Health, int> _exposureTicks = new();
     private readonly Dictionary<GameObject, int> _serverExposureTicks = new();
-
+    public bool IsAoe => true;
     public ConsumeCombo_Scorpion Notifier { get; set; }
     public int ConsumedAmount { get; set; }
 
     private bool _isIncreasedDamageExposure = false;
-
-    public event IComboParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplyParticipatingDamage;
-    public event Action<GameObject, Skill> OnDamaged;
     public event Action OnFireBreathStarted;
 
     protected override bool IsCanCast => true;
@@ -74,7 +71,8 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
         _originalCastDuration = _channelComponent.CastDuration;
         UpdateWaitInterval();
     }
-    
+
+
     private void UpdateWaitInterval()
     {
         _effectiveInterval = ApplyFireBreathDamageTickInterval * _initialSpeed;
@@ -187,7 +185,7 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
     [Command]
     private void CmdOnDamageEnd(GameObject target)
     {
-        OnDamaged?.Invoke(target, this);
+        //OnDamaged?.Invoke(target, this);
         _serverExposureTicks[target] = _serverExposureTicks.GetValueOrDefault(target, 0) + 1;
 
         var ignition = target.GetComponent<CharacterState>()?.GetState(States.Ignition) as IgnitionState;
@@ -266,7 +264,7 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
             baseDamage *= 2;
         }
         Hero.Move.SetCanMove(true);
-        CmdDestroyFireBreath();
+        //CmdDestroyFireBreath();
     }
     
     protected override void CommitUse()
@@ -335,6 +333,7 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
 
     protected override void ClearData()
     {
+        CmdClearData();
         _enemiesDict.Clear();
         _lastEnergyTickPercent = 0f;
         _currentDurationReduction = 0f;
@@ -344,6 +343,15 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
         
         if (_fireBreathInstance != null) 
             Destroy(_fireBreathInstance.gameObject);
+        
+        if(isClient)
+            CmdDestroyFireBreath();
+    }
+
+    [Command]
+    private void CmdClearData()
+    {
+        _currentDurationReduction = 0f;
     }
 
     private Vector3 GetMouseWorldPosition()
@@ -357,16 +365,24 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
     
     public void OnTargetHasComboPoint(GameObject target, float comboPoints)
     {
-        _currentDurationReduction = comboPoints * _speedBonusPerComboPoint;
+        if (_currentDurationReduction <= 0)
+            _currentDurationReduction = comboPoints * _speedBonusPerComboPoint;
+        else
+            _currentDurationReduction += comboPoints * _speedBonusPerComboPoint;
+
         _channelComponent.CastDuration = _originalCastDuration * (1f - _currentDurationReduction);
         _channelComponent.CastDuration = Mathf.Max(_channelComponent.CastDuration, _originalCastDuration * 0.2f);
         
         RpcApplyCastDuration(_currentDurationReduction, _channelComponent.CastDuration);
     }
+    
 
     public void OnFinalComboSkill(GameObject target)
     {
-        _currentDurationReduction = _speedBonusPerFullCombo;
+        if (_currentDurationReduction <= 0)
+            _currentDurationReduction = _speedBonusPerFullCombo;
+        else
+            _currentDurationReduction += _speedBonusPerFullCombo;
         _channelComponent.CastDuration = _originalCastDuration * (1f - _currentDurationReduction);
         _channelComponent.CastDuration = Mathf.Max(_channelComponent.CastDuration, _originalCastDuration * 0.2f);
 
@@ -377,6 +393,7 @@ public class FireBreath_Scorpion : Skill, IComboParticipatingSkill
     [ClientRpc]
     private void RpcApplyCastDuration(float newSpeedMultiplier, float newCastDuration)
     {
+        _initialSpeed = 1f;
         _initialSpeed -= newSpeedMultiplier;
         _channelComponent.CastDuration = newCastDuration;
         

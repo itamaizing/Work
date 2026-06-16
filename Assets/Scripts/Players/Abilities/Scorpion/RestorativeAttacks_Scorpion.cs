@@ -98,8 +98,19 @@ public class RestorativeAttacks_Scorpion : Skill
 
         CheckChargers();
     }
-
+    
     private void OnAttackApplied(GameObject target, Skill sourceSkill)
+    {
+        if (Hero.CharacterState.CheckForState(States.RestorativeAttacks))
+        {
+            var state = Hero.CharacterState.GetState(States.RestorativeAttacks) as RestorativeAttacksState;
+            state?.OnAttackHit(sourceSkill);
+            RpcOnAttackApplied(sourceSkill);
+        }
+    }
+
+    [ClientRpc]
+    private void RpcOnAttackApplied(Skill sourceSkill)
     {
         if (Hero.CharacterState.CheckForState(States.RestorativeAttacks))
         {

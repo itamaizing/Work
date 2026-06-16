@@ -191,5 +191,6 @@ public class IceCloud : Skill,IEnergyDamagable
 	public void CanMoveIceCloud() => Hero.Move.SetCanMove(true);
 	public void StopMoveIceCloud() => Hero.Move.SetCanMove(false);
 	public bool IsStreamSkill { get; }
+	public bool IsFrostingOfFrozenSkill { get; }
 }
 

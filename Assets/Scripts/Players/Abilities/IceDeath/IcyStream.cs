@@ -3,18 +3,20 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class IcyStream : Skill,IEnergyDamagable
+public class IcyStream : Skill, IEnergyDamagable
 {
     public struct IcyStreamState
     {
-        public Character Target;
         public int CurrentTick;
         public int MaxTicks;
+        public Vector3 Direction;
+        public Vector3 StreamOrigin;
     }
 
     [Header("Stream Settings")]
     [SerializeField] private float _tickInterval = 0.3f;
-    [SerializeField] private Transform _streamStartPoint;
+    [SerializeField] private float _streamWidth = 1f;
+    [SerializeField] private float _streamLength = 4f;
 
     [Header("Visual")]
     [SerializeField] private GameObject _icyStreamPrefab;
@@ -22,47 +24,37 @@ public class IcyStream : Skill,IEnergyDamagable
     [SerializeField] private float _runeCost = 1f;
     [SerializeField] private float _energyPerTick = 5f;
 
-    private Character _cachedTarget;
     private Coroutine _streamCoroutine;
     private GameObject _activeEffect;
 
     private bool _isStreaming;
     private int _currentTick;
-    private const int MaxTicks = 7;
-
+    private const int MaxTicks = 8;
     private const float FrostEnergyCoolingBonusPerStack = 1f;
+    private const float MaxDistanceRayCast = 100f;
+    private const float MinRotationThresholdSqr = 0.01f;
 
-    protected override bool IsCanCast => !_isStreaming && Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && HasEnoughResourcesToStart();
+    public IcyStreamState CurrentState { get; private set; }
+    public bool IsStreamSkill => true;
+    public bool IsFrostingOfFrozenSkill { get; }
+
+    protected override bool IsCanCast =>
+        !_isStreaming && HasEnoughResourcesToStart();
 
     private bool HasEnoughResourcesToStart()
     {
         var energy = Hero.Resources[ResourceType.Energy];
-        var rune = Hero.Resources[ResourceType.Rune];
-
-        float minEnergy = _energyPerTick;
-
-        return energy.CurrentValue >= minEnergy && rune.CurrentValue >= _runeCost;
+        var rune   = Hero.Resources[ResourceType.Rune];
+        return energy.CurrentValue >= _energyPerTick && rune.CurrentValue >= _runeCost;
     }
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
 
-    public IcyStreamState CurrentState { get; private set; }
+    private void OnEnable()  => OnSkillCanceled += HandleCancel;
+    private void OnDisable() => OnSkillCanceled -= HandleCancel;
 
-    private void OnEnable()
-    {
-        OnSkillCanceled += HandleCancel;
-    }
-
-    private void OnDisable()
-    {
-        OnSkillCanceled -= HandleCancel;
-    }
-
-    private void HandleCancel()
-    {
-        StopStream();
-    }
+    private void HandleCancel() => StopStream();
 
     public void StopStream()
     {
@@ -81,34 +73,10 @@ public class IcyStream : Skill,IEnergyDamagable
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        TargetInfo targetInfo = new TargetInfo();
-
-        while (Targeting.GetTempTarget()?.Targetable == null && !_disactive)
-        {
-            if (GetMouseButton)
-            {
-                Targeting.FindTempTarget(Targeting.GetMousePoint(), 0.5f);
-
-                var temp = Targeting.GetTempTarget()?.Targetable as Character;
-
-                if (temp != null)
-                {
-                    Targeting.SetTarget(temp);
-
-                    break;
-                }
-            }
-
+        while (!GetMouseButton)
             yield return null;
-        }
 
-        var target = Targeting.GetTarget()?.Character;
-
-        if (target != null)
-        {
-            targetInfo.AddTarget(target);
-            callbackDataSaved(targetInfo);
-        }
+        callbackDataSaved(new TargetInfo());
     }
 
     protected override IEnumerator CastJob()
@@ -119,26 +87,22 @@ public class IcyStream : Skill,IEnergyDamagable
             yield break;
         }
 
-        _cachedTarget = Targeting.GetTarget()?.Character;
-        if (_cachedTarget == null) yield break;
-
-        _isStreaming = true;
-
         if (!Cost.TryPaySingle(_runeCost, ResourceType.Rune, shouldModify: false))
         {
             TryCancel(true);
             yield break;
         }
 
-        CmdSpawnIcyStreamEffect( _streamStartPoint.gameObject, _cachedTarget.gameObject);
+        _isStreaming = true;
+
+        CmdSpawnIcyStreamEffect();
 
         _streamCoroutine = StartCoroutine(StreamRoutine());
-
         yield return _streamCoroutine;
 
         CmdDestroyIcyStreamEffect();
-        _isStreaming = false;
         CmdResetEnergyMultiplier();
+        _isStreaming = false;
     }
 
     private IEnumerator StreamRoutine()
@@ -147,7 +111,7 @@ public class IcyStream : Skill,IEnergyDamagable
         {
             yield return new WaitForSeconds(_tickInterval);
 
-            if (!IsStreamValid() || _cachedTarget.IsDead)
+            if (!IsStreamValid())
             {
                 TryCancel(true);
                 yield break;
@@ -157,36 +121,70 @@ public class IcyStream : Skill,IEnergyDamagable
 
             CurrentState = new IcyStreamState
             {
-                Target = _cachedTarget,
-                CurrentTick = tick,
-                MaxTicks = MaxTicks
+                CurrentTick  = tick,
+                MaxTicks     = MaxTicks,
+                Direction    = transform.forward,
+                StreamOrigin = transform.position
             };
 
             ApplyTick(tick);
         }
     }
 
-    public bool TryGetState(out IcyStreamState state)
+    private bool IsStreamValid()
     {
-        if (!_isStreaming)
-        {
-            state = default;
+        if (!Cost.TryPaySingle(_energyPerTick, ResourceType.Energy, shouldModify: false))
             return false;
-        }
-
-        state = CurrentState;
         return true;
     }
 
-    private bool IsStreamValid()
+    private void ApplyTick(int tickNumber)
     {
-        if (_cachedTarget == null) return false;
-        float distance = Vector3.Distance( _cachedTarget.transform.position, transform.position);
+        Vector3 start = transform.position;
+        Vector3 end   = transform.position + transform.forward * _streamLength;
 
-        if (distance > AreaInfo.Radius) return false;
-        if (!Cost.TryPaySingle(_energyPerTick, ResourceType.Energy, shouldModify: false)) return false;
+        Collider[] hits = Physics.OverlapCapsule(start, end, _streamWidth * 0.5f, _targetsLayers);
 
-        return true;
+        foreach (var col in hits)
+        {
+            if ((_targetsLayers.value & (1 << col.gameObject.layer)) == 0) continue;
+
+            if (!col.TryGetComponent<Character>(out var target)) continue;
+            if (target.IsDead) continue;
+
+            Damage damage = new Damage
+            {
+                Value  = tickNumber,
+                Type   = Info.DamageType,
+                School = Schools.Water
+            };
+
+            CmdApplyDamage(damage, target.gameObject);
+            CmdAddCooling(target);
+        }
+    }
+
+    [Command]
+    private void CmdAddCooling(Character character)
+    {
+        if (character == null) return;
+        ApplyCoolingWithFrostEnergyBonus(character);
+    }
+
+    private void ApplyCoolingWithFrostEnergyBonus(Character target)
+    {
+        bool hasFrostEnergy = target.CharacterState.CheckForState(States.FrostEnergy);
+        int  currentStacks  = target.CharacterState.CheckStateStacks(States.Cooling);
+        int  stacksAfter    = currentStacks + 1;
+
+        if (hasFrostEnergy)
+        {
+            float bonusDamage = stacksAfter * FrostEnergyCoolingBonusPerStack;
+            Damage bonus = new Damage { Value = bonusDamage, Type = DamageType.Magical };
+            target.Health.TryTakeDamage(ref bonus, this);
+        }
+
+        target.CharacterState.AddState(States.Cooling, 12f, 0, Hero.gameObject, Name);
     }
 
     private void PayRemainingEnergy()
@@ -194,63 +192,62 @@ public class IcyStream : Skill,IEnergyDamagable
         if (!_isStreaming) return;
         if (_currentTick >= MaxTicks) return;
 
-        int remainingTicks = MaxTicks - _currentTick;
-        float totalEnergyToPay = remainingTicks * _energyPerTick;
+        int   remaining       = MaxTicks - _currentTick;
+        float totalEnergyLeft = remaining * _energyPerTick;
 
-        if (Hero.TryGetResource(ResourceType.Energy, out var resource)) resource.CmdUse(totalEnergyToPay);
-    }
-
-    private void ApplyTick(int tickNumber)
-    {
-        if (_cachedTarget == null) return;
-        if (_cachedTarget.IsDead) return;
-
-        Damage damage = new Damage
-        {
-            Value = tickNumber,
-            Type = Info.DamageType
-        };
-
-        CmdApplyDamage(damage, _cachedTarget.gameObject);
-        CmdAddCooling(_cachedTarget);
-    }
-
-    private void ApplyCoolingWithFrostEnergyBonus(Character target)
-    {
-        bool hasFrostEnergy = target.CharacterState.CheckForState(States.FrostEnergy);
-
-        int currentStacks = target.CharacterState.CheckStateStacks(States.Cooling);
-        int stacksAfterApply = currentStacks + 1;
-
-        if (hasFrostEnergy)
-        {
-            float bonusDamage = stacksAfterApply * FrostEnergyCoolingBonusPerStack;
-
-            Damage bonus = new Damage
-            {
-                Value = bonusDamage,
-                Type = DamageType.Magical
-            };
-
-            target.Health.TryTakeDamage(ref bonus, this);
-        }
-
-        target.CharacterState.AddState(States.Cooling, 12f, 0, Hero.gameObject, Name);
+        if (Hero.TryGetResource(ResourceType.Energy, out var resource))
+            resource.CmdUse(totalEnergyLeft);
     }
 
     [Command]
-    private void CmdSpawnIcyStreamEffect(GameObject startPoint, GameObject targetPoint)
+    private void CmdSpawnIcyStreamEffect()
     {
-        if (_icyStreamPrefab == null || startPoint == null || targetPoint == null)
-            return;
+        if (_icyStreamPrefab == null) return;
 
-        GameObject effectInstance = Instantiate(_icyStreamPrefab, startPoint.transform.position, Quaternion.identity);
+        GameObject fx = Instantiate(
+            _icyStreamPrefab,
+            transform.position,
+            Quaternion.identity);
 
-        NetworkServer.Spawn(effectInstance);
+        fx.transform.SetParent(transform);
+        fx.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+        NetworkServer.Spawn(fx, connectionToClient);
 
-        RpcInitEffects(effectInstance, startPoint, targetPoint);
+        _activeEffect = fx;
 
-        _activeEffect = effectInstance;
+        RpcStartFollowMouse(fx);
+    }
+
+    [ClientRpc]
+    private void RpcStartFollowMouse(GameObject fx)
+    {
+        if (isOwned)
+            StartCoroutine(FollowMouseRoutine(fx));
+    }
+
+    private IEnumerator FollowMouseRoutine(GameObject fx)
+    {
+        while (fx != null && _isStreaming)
+        {
+            Vector3 mousePos  = GetMouseWorldPosition();
+            Vector3 direction = mousePos - transform.position;
+            direction.y = 0f;
+
+            if (direction.sqrMagnitude > MinRotationThresholdSqr)
+            {
+                Quaternion rot = Quaternion.LookRotation(direction, Vector3.up);
+                CmdRotateEffects(rot);
+            }
+
+            yield return null;
+        }
+    }
+
+    [Command]
+    private void CmdRotateEffects(Quaternion rotation)
+    {
+        if (_activeEffect != null)
+            _activeEffect.transform.rotation = rotation;
     }
 
     [Command]
@@ -263,44 +260,35 @@ public class IcyStream : Skill,IEnergyDamagable
         }
     }
 
-    [Command]
-    private void CmdAddCooling(Character character)
+    private Vector3 GetMouseWorldPosition()
     {
-        if (character == null) return;
-
-        ApplyCoolingWithFrostEnergyBonus(character);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, MaxDistanceRayCast))
+            return hit.point;
+        return transform.position + transform.forward * _streamLength;
     }
 
-    [ClientRpc]
-    private void RpcInitEffects(GameObject effectGameObject, GameObject startPoint, GameObject targetPoint)
+    public bool TryGetState(out IcyStreamState state)
     {
-        if (effectGameObject == null) return;
-
-        PullingHealthEffect[] effects = effectGameObject.GetComponentsInChildren<PullingHealthEffect>();
-
-        foreach (var effect in effects)
-        {
-            effect.Initialize(startPoint, targetPoint);
-            effect.Activate();
-        }
+        if (!_isStreaming) { state = default; return false; }
+        state = CurrentState;
+        return true;
     }
-
-    protected override void ClearData()
-    {
-        Targeting.ClearTarget();
-
-        if (_streamCoroutine != null)
-        {
-            StopCoroutine(_streamCoroutine);
-            _streamCoroutine = null;
-        }
-    }
-
-    public bool IsStreamSkill => true;
 
     [Command]
     private void CmdResetEnergyMultiplier()
     {
         _hero.Abilities.GetSkill<NinjaResources>()?.ResetMultiplierIfOwner(this);
+    }
+
+    public override void LoadTargetData(TargetInfo targetInfo) { }
+
+    protected override void ClearData()
+    {
+        if (_streamCoroutine != null)
+        {
+            StopCoroutine(_streamCoroutine);
+            _streamCoroutine = null;
+        }
     }
 }

@@ -7,6 +7,8 @@ public class IgnitionSkill : Skill,IFireComboParticipatingSkill
 {
     private const float SlowedRegenAmount = 30f;
 
+    public bool IsAoe => false;
+    
     private bool _spreadInRingOfFire = true;
 
     private float _comboPoints = 0;

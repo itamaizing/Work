@@ -270,4 +270,5 @@ public class IceDeathAbsorbation : Skill,IEnergyDamagable
     }
 
     public bool IsStreamSkill { get; }
+    public bool IsFrostingOfFrozenSkill { get; }
 }

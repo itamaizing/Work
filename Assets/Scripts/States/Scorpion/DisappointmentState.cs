@@ -15,11 +15,12 @@ public class DisappointmentState : RefreshingState
     public override List<StatusEffect> Effects => _effects;
     
     private bool _isBleedingUpgrade = false;
+    private bool _isAdditionalTime = false;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+        characterState.Character.Health.DamageTaken -= OnDamaged;
         duration = durationToExit;
-        _baseDuration = durationToExit;
         characterState.Character.Health.DamageTaken += OnDamaged;
 
         characterState.Character.Move.SetCanMove(false);
@@ -50,7 +51,6 @@ public class DisappointmentState : RefreshingState
     {
         if (_isBleedingUpgrade && dmg.DamageKey == "bleeding")
         {
-            Debug.LogError("IsBleedingDamaged");
             return;
         }
 
@@ -83,14 +83,22 @@ public class DisappointmentState : RefreshingState
 
     public override bool Stack(float time)
     {
-        duration = _baseDuration;
+        if (_isAdditionalTime) duration = time;
+        else
+            duration = _baseDuration;
         return true;
     }
 
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit,
-        Character personWhoMadeBuff, string skillName)
+    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+        if (!CanEnterState(character)) return null;
+
         _isBleedingUpgrade = skillName.Contains("bleedingUpgrade");
-        return base.TryApply(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+        _isAdditionalTime = skillName.Contains("bonus");
+
+        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+        
+        EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+        return this;
     }
 }

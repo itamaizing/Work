@@ -13,6 +13,7 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
 
     private float _pendingFireDamageBonus = 0f;
     private float _pendingScorchedSoulChance = 0f;
+    private float _comboStunDuration = 0;
     
     private Coroutine _hitsInRowCoroutine;
     private Animator _animator;
@@ -33,7 +34,7 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
     private const float StunDuration = 1f;
     private const float SearchTargetInRadius = 0.5f;
     #endregion
-
+    
     private static readonly int RightPunchTrigger = Animator.StringToHash("RightPunch");
     private static readonly int LeftPunchTrigger = Animator.StringToHash("LeftPunch");
 
@@ -152,8 +153,6 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        _wasDamageApplied = false;
-
         while (Targeting.GetTempTarget()?.Targetable == null)
         {
             if (GetMouseButton)
@@ -184,7 +183,7 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
     protected override IEnumerator CastJob()
     {
         if (_castTarget == null) yield break;
-        if (!IsTargetInRange()) yield return null;
+        if (!IsTargetInRange()) yield break;
         _hero.Move.LookAtTransform(Targeting.GetTempTarget()?.Targetable.Transform);
         _isRightKick = !_isRightKick;
         _lastTarget = Targeting.GetTarget()?.Character;
@@ -227,8 +226,10 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
             School = Schools.Fire
         };
 
-        if(additionalDamage.Value > 0)
+        if (additionalDamage.Value > 0)
+        {
             CmdApplyDamage(target.gameObject, additionalDamage, scorchedChance);
+        }
     }
 
     [Command]
@@ -245,7 +246,9 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
         {
             AttackPassed(character);
             if (scorchedChance > 0f && Random.Range(0f, 100f) <= scorchedChance)
-                character.CharacterState.AddState(States.ScorchedSoul, 5f, 0f, _hero.gameObject, name);
+                character.CharacterState.AddState(States.ScorchedSoul, 5f, 0f, Schools.Fire, _hero.gameObject, name);
+            
+            TryAddComboStun(target.gameObject);
         }
     }
 
@@ -293,6 +296,7 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
 
     public void NewPunch_ScorpionCast()
     {
+        if (_wasDamageApplied) return;
         AnimStartCastCoroutine();
     }
 
@@ -330,18 +334,30 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
 
     public void OnFinalComboSkill(GameObject target)
     {
-        var state = target.GetComponent<CharacterState>();
-        if(isServer)
-            state?.AddState(States.Stun, StunDuration, 0, _hero.gameObject, name);
+        if (isServer)
+        {
+            _comboStunDuration++;
+        }
     }
 
     public void OnTargetHasComboPoint(GameObject target, float comboPoints)
     {
-        var state = target.GetComponent<CharacterState>();
-        if (isServer)
+        if (isServer && comboPoints > 0)
         {
-            Debug.LogError("ComboPoints: " + comboPoints);
-            state?.AddState(States.Stun, comboPoints, 0, _hero.gameObject, name);
+            float stunDuration = comboPoints * StunDuration;
+
+            _comboStunDuration += stunDuration;
+        }
+    }
+    
+    private void TryAddComboStun(GameObject target)
+    {
+        if(_comboStunDuration <= 0) return;
+        var state = target.GetComponent<CharacterState>();
+        if (state)
+        {
+            state.AddState(States.Stun, _comboStunDuration, 0, Schools.Physical, _hero.gameObject, "points");
+            _comboStunDuration = 0;
         }
     }
 

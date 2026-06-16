@@ -57,7 +57,10 @@ public class NewTargetFireBooster : SkillTalentHandler
         var target = _punch.Targeting.GetTarget()?.Character;
         if (target == null) return;
         if (target != _lastTarget)
+        {
             _punch.AddFireBonus(PunchKickDamagePercent, PunchKickScorchedChance);
+        }
+
         _lastTarget = target;
     }
 

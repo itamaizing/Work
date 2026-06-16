@@ -26,8 +26,6 @@ public class Knockdown : RefreshingState
             return;
         }
 
-        Debug.Log("Entering Knockdown State");
-
         _duration = durationToExit;
         _baseDuration = durationToExit;
         MaxStacksCount = 3;
@@ -38,8 +36,6 @@ public class Knockdown : RefreshingState
 
     public override void ExitState()
     {
-        Debug.Log("Exiting Knockdown State");
-
         RemoveDebuff();
         characterState.RemoveState(this);
     }

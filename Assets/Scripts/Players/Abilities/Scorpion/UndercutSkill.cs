@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class UndercutSkill : Skill,IComboParticipatingSkill
 {
-    private float _disappointmentDuration = 3f;
+    private const float DisappointmentDuration = 3f;
     private float _disappointmentBonusDuration = 0f;
 
     protected override bool IsCanCast => Targeting.GetTarget() != null &&
@@ -19,6 +19,8 @@ public class UndercutSkill : Skill,IComboParticipatingSkill
 
     #region BleedingUpgradeTalent
 
+    private float _bleedingDuration = 9f;
+    private float _bleedingDamage = 2f;
     private bool _isBleedingUpgrade;
 
     public void EnableBleedingUpgrade(bool value)
@@ -95,7 +97,7 @@ public class UndercutSkill : Skill,IComboParticipatingSkill
 
             if (hasStun || hasDisappointment)
             {
-                targetState.AddState(States.Bleeding,9f,1000,Schools.Physical,gameObject,nameof(UndercutSkill));
+                targetState.AddState(States.Bleeding,_bleedingDuration,_bleedingDamage,Schools.Physical,gameObject,nameof(UndercutSkill));
             }
         }
 
@@ -110,13 +112,22 @@ public class UndercutSkill : Skill,IComboParticipatingSkill
     {
         if (target == null) return;
         var state = target.GetComponent<CharacterState>();
+        string bonusString = "";
+        if (_disappointmentBonusDuration > 0)
+        {
+            bonusString = "bonus";
+        }
+
         if (_isBleedingUpgrade)
         {
-            state?.AddState(States.DisappointmentState, _disappointmentDuration + _disappointmentBonusDuration, 0f, Hero.gameObject, nameof(UndercutSkill)+"bleedingUpgrade");
+            
+            state?.AddState(States.DisappointmentState, DisappointmentDuration + _disappointmentBonusDuration, 0f, Hero.gameObject, 
+                nameof(UndercutSkill)+"bleedingUpgrade"+bonusString);
         }
         else
         {
-            state?.AddState(States.DisappointmentState, _disappointmentDuration + _disappointmentBonusDuration, 0f, Hero.gameObject, nameof(UndercutSkill));
+            state?.AddState(States.DisappointmentState, DisappointmentDuration + _disappointmentBonusDuration, 0f, Hero.gameObject, 
+                nameof(UndercutSkill)+bonusString);
         }
         _disappointmentBonusDuration = 0f;
     }

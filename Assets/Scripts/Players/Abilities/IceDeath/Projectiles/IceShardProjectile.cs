@@ -11,6 +11,7 @@ public class IceShardProjectile : Projectiles
 	private bool _talentChragesPlague = false;
 	private Damage _damage;
 	private float _curDamage;
+	private float _maxDistance = 4f;
 
 	private const float FrostEnergyFreezeChance = 60f;
 
@@ -24,10 +25,18 @@ public class IceShardProjectile : Projectiles
 		};
 	}
 
+	public void SetMaxDistance(float distance) => _maxDistance = distance;
+	public override void Init(Character dad, float energy, bool lastHit, Skill skill)
+	{
+		base.Init(dad, energy, lastHit, skill);
+
+		_startPos = transform.position;
+	}
+	
 	private void Update()
 	{
 		_spriteRenderer.DOFade(0, 1);
-		if (Vector3.Distance(transform.position, _startPos) > _distance * GlobalVariable.cellSize)
+		if (Vector3.Distance(transform.position, _startPos) > _maxDistance)
 		{
 			Explode();
 		}
@@ -39,56 +48,39 @@ public class IceShardProjectile : Projectiles
 		if (_dad == null) return;
 		if (collision.gameObject == _dad.gameObject || collision.CompareTag("Ability"))
 			return;
-		//damage, freez etc
+
 		if (collision.TryGetComponent<IDamageable>(out var damageable))
 		{
 			if (collision.TryGetComponent<Character>(out var target))
 			{
-				float duration = 1 + _energyDad / 20;
+				float duration = 1f + _energyDad / 20f;
 
 				if (target.CharacterState.CheckForState(States.Frozen) && Random.Range(0, 100) < 15)
-				{
 					_curDamage *= 2.2f;
-				}
+
 				TargetRpcDamageMake(_curDamage);
+				_skill.ApplyDamage(_damage, target.gameObject);
 
-				//_skill.CmdApplyDamage(damage, target.gameObject);
-				_skill.ApplyDamage(_damage,target.gameObject);
-				//target.Health.TryTakeDamage(ref _damage, _skill);
-
-				//target.Health.TryTakeDamage(curDamage, Info.DamageType.Physical, Info.AttackRangeType.RangeAttack);
 				target.CharacterState.AddState(States.Frozen, duration, 30, _dad.gameObject, _skill.name);
 
 				if (target.CharacterState.CheckForState(States.FrostEnergy))
 				{
-					if (Random.Range(0f, 100f) <= FrostEnergyFreezeChance) target.CharacterState.AddState(States.Cooling, 12f, 0f, _dad.gameObject, _skill.name);
+					if (Random.Range(0f, 100f) <= FrostEnergyFreezeChance)
+						target.CharacterState.AddState(States.Cooling, 12f, 0f, _dad.gameObject, _skill.name);
 				}
 
 				if (_talentPlague)
-				{
-					Debug.Log("ADD PLAGUE");
-					target.CharacterState.AddState(States.Plague, 5, 0, _dad.gameObject, _skill.name);
-				}
-				if (_talentChragesPlague)
-				{
-					//target.CharacterState.personWhoShoted = _dad;
-				}
-				//dad.Stamina.Use(duration * 20);
+					target.CharacterState.AddState(States.Plague, 5f, 0f, _dad.gameObject, _skill.name);
+
 				GetComponent<Collider>().enabled = false;
-				Explode();
 			}
 			else
 			{
-				_skill.ApplyDamage(_damage,target.gameObject);
-				//damageable.TryTakeDamage(ref _damage, _skill);
-				if (_damage.Value <= 0)
-				{
-					Explode();
-				}
-				return;
+				_skill.ApplyDamage(_damage, damageable.gameObject);
 			}
+
 			Explode();
-		}	
+		}
 	}
 
 	private void Explode()

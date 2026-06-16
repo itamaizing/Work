@@ -45,7 +45,11 @@ public class NinjaResources : Skill, IPassiveSkill
 
     public bool IsRepeatedFrost { get => _isRepeatedFrost; set => _isRepeatedFrost = value; }
 
-    public void FrozenCrit(bool value) => _isFrozenCrit = value;
+    public void FrozenCrit(bool value)
+    {
+        if(value == _isFrozenCrit) return;
+        _isFrozenCrit = value;
+    }
 
     /*  private void Update()
       {
@@ -97,22 +101,41 @@ public class NinjaResources : Skill, IPassiveSkill
         UnsubscribeForAdditionalEnergyDamage();
     }
 
-    private void ModifyFrozenCrit(Character targetCharacter, ref Damage damage, Skill skill)
+    #region AddCritForFrostingAndFrozen
+
+    private const float FrostingDamageBonus    = 1.10f;
+    private const float FrozenDamageBonus      = 1.10f;
+    private const float FrostingCritChance     = 0.15f;
+    private const float FrozenCritChance       = 0.30f;
+    private const float CritMultiplierMin      = 1.8f;
+    private const float CritMultiplierMax      = 2.3f;
+
+    private void ModifyFrostingAndFrozenCrit(ref Damage damage, Skill skill, GameObject target)
     {
-        if (!_isFrozenCrit) return;
-        if (targetCharacter == null || skill == null) return;
+        if(!_isFrozenCrit) return;
         if (skill.Hero != Hero) return;
-        if (skill is not IceSword) return;
-        if (!targetCharacter.CharacterState.CheckForState(States.Frozen))  return;
+        if (target == null) return;
+        var character = target.GetComponent<Character>();
+        if (character == null) return;
 
-        damage.Value *= 1.10f;
+        bool hasFrosting = character.CharacterState.CheckForState(States.Frosting);
+        bool hasFrozen   = character.CharacterState.CheckForState(States.Frozen);
 
-        if (UnityEngine.Random.Range(0f, 100f) < 30f)
+        if (!hasFrosting && !hasFrozen) return;
+
+        if (hasFrosting) damage.Value *= FrostingDamageBonus;
+        if (hasFrozen)   damage.Value *= FrozenDamageBonus;
+
+        float critChance = hasFrozen ? FrozenCritChance : FrostingCritChance;
+
+        if (UnityEngine.Random.value < critChance)
         {
-            float critMultiplier = UnityEngine.Random.Range(1.8f, 2.3f);
+            float critMultiplier = UnityEngine.Random.Range(CritMultiplierMin, CritMultiplierMax);
             damage.Value *= critMultiplier;
         }
     }
+
+    #endregion
 
     private void TrySubscribe()
     {
@@ -140,6 +163,7 @@ public class NinjaResources : Skill, IPassiveSkill
             if (energySkill is IEnergyDamagable)
             {
                 energySkill.OnBeforeApplyDamage += AddDamageToSkill;
+                energySkill.OnBeforeApplyDamage += ModifyFrostingAndFrozenCrit;
             }
         }
     }
@@ -151,6 +175,7 @@ public class NinjaResources : Skill, IPassiveSkill
             if (energySkill is IEnergyDamagable)
             {
                 energySkill.OnBeforeApplyDamage -= AddDamageToSkill;
+                energySkill.OnBeforeApplyDamage -= ModifyFrostingAndFrozenCrit;
             }
         }
     }

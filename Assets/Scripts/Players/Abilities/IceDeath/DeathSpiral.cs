@@ -15,7 +15,8 @@ public class DeathSpiral : Skill,IEnergyDamagable
     private float _energyToHeal = 0.5f;
 
     public bool IsStreamSkill { get; }
-    
+    public bool IsFrostingOfFrozenSkill { get; }
+
     private const int MaxCharges = 3;
     private const float AnimDuration = 0.8f;
     private const float SearchRadius = 0.5f;

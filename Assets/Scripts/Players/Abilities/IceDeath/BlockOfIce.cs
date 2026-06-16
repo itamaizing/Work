@@ -137,4 +137,5 @@ public class BlockOfIce : Skill,IEnergyDamagable
 	}
 
 	public bool IsStreamSkill { get; }
+	public bool IsFrostingOfFrozenSkill { get; }
 }

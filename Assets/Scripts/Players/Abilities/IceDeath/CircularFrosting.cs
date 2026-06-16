@@ -223,4 +223,5 @@ public class CircularFrosting : Skill,IEnergyDamagable
     }
 
     public bool IsStreamSkill { get; }
+    public bool IsFrostingOfFrozenSkill { get; }
 }

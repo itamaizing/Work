@@ -41,6 +41,8 @@ public class PhysicalAttack : Skill,IEnergyDamagable
 	private static readonly int LeftKickTrigger = Animator.StringToHash("LeftKick");
 	#endregion
 
+	private Character _castTarget;
+	
 	protected override int AnimTriggerCastDelay => 0;
 	protected override int AnimTriggerCast => _animTriggerToUse = UnityEngine.Random.value > RandomAttack ? RightKickTrigger : LeftKickTrigger;
 	protected override bool IsCanCast => Targeting.GetTarget()?.Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
@@ -144,10 +146,10 @@ public class PhysicalAttack : Skill,IEnergyDamagable
 
 	public void ApplyAttackDamage()
 	{
-		if (Targeting.GetTarget()?.Character == null) return;
+		if (_castTarget == null) return;
 
-		if (_seriesPhysicalTalent) Hit(Targeting.GetTarget()?.Character);
-		else SingleHit(Targeting.GetTarget()?.Character);
+		if (_seriesPhysicalTalent) Hit(_castTarget);
+		else SingleHit(_castTarget);
 
 		if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
 		{
@@ -390,16 +392,22 @@ public class PhysicalAttack : Skill,IEnergyDamagable
 
 	public override void LoadTargetData(TargetInfo targetInfo)
 	{
-		if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
+		if (targetInfo.GetTargets().Count > 0)
+		{
+			Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
+			_castTarget = Targeting.GetTarget()?.Character;
+		}
 	}
 
-    protected override void ClearData()
-    {
+	protected override void ClearData()
+	{
+		_castTarget = null;
 		Targeting.ClearTarget();
 		Targeting.ClearTempTarget();
 		_hero.Move.StopLookAt();
 	}
 
     public bool IsStreamSkill { get; }
+    public bool IsFrostingOfFrozenSkill { get; }
 }
 

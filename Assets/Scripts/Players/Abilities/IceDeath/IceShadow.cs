@@ -137,7 +137,17 @@ public class IceShadow : Skill
 			bonusDuration += remainingTicks * tickTime;
 		}
 
-		CmdCreateProjecttile(_remainingDelayCircularFrostin, 0, _manaUsed, bonusDuration, _lastHit, _talentDamage,	_iceDeathInShadowTalent, _circularFrosting.WasInterruptedInDelay, _capturedState?.CurrentTick ?? -1, _capturedState?.MaxTicks ?? -1, _capturedState?.Target != null ? _capturedState.Value.Target.netIdentity : null);
+		/*CmdCreateProjecttile(
+			_remainingDelayCircularFrostin, 
+			0, 
+			_manaUsed, 
+			bonusDuration, 
+			_lastHit, 
+			_talentDamage,	
+			_iceDeathInShadowTalent, 
+			_circularFrosting.WasInterruptedInDelay, 
+			_capturedState?.CurrentTick ?? -1, _capturedState?.MaxTicks ?? -1,
+			_capturedState?.Target != null ? _capturedState.Value.Target.netIdentity : null);*/
 	}
 
 	private void SpawnShadow(float remainingDelay, float streamBonus, Vector3 position, Quaternion rotation, float manaValue, bool lastHit,
