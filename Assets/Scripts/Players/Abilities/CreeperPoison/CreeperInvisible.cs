@@ -74,13 +74,7 @@ public class CreeperInvisible : Skill
     public bool IsInvisibilitStrike
     {
         get => _isInvisibilitStrike;
-        set
-        {
-            if (_isInvisibilitStrike == value) return;
-
-            _isInvisibilitStrike = value;
-            SetCheckEnemiesRoutineState();
-        }
+        set => _isInvisibilitStrike = value;
     }
 
     public void InvisibilitStrike(bool value)
@@ -130,12 +124,6 @@ public class CreeperInvisible : Skill
         }
     }
 
-    public override void Init(SkillRenderer render, Character hero)
-    {
-        base.Init(render, hero);
-        SetCheckEnemiesRoutineState();
-    }
-
     #region PrepareAndCastJob
 
     protected override void ClearData()
@@ -173,17 +161,21 @@ public class CreeperInvisible : Skill
         return selected.Length > index && selected[index] == this;
     }
 
-    private void SetCheckEnemiesRoutineState()
+    public void EnableEnemyCheck()
     {
-        if (_isInvisibilitStrike)
-            StartCheckEnemiesRoutine();
-        else
-            StopCheckEnemiesRoutine();
+        StartCheckEnemiesRoutine();
+    }
+
+    public void DisableEnemyCheck()
+    {
+        StopCheckEnemiesRoutine();
     }
 
     private void StartCheckEnemiesRoutine()
     {
         if (_checkEnemiesRoutine != null) return;
+
+        Debug.Log("Start");
 
         _checkEnemiesRoutine = StartCoroutine(CheckEnemiesInRadiusRoutine());
     }
@@ -191,6 +183,8 @@ public class CreeperInvisible : Skill
     private void StopCheckEnemiesRoutine()
     {
         if (_checkEnemiesRoutine == null) return;
+
+        Debug.Log("Stop");
 
         StopCoroutine(_checkEnemiesRoutine);
         _checkEnemiesRoutine = null;
