@@ -164,27 +164,42 @@ public class CreeperInvisible : Skill
     public void EnableEnemyCheck()
     {
         StartCheckEnemiesRoutine();
+
+        if (isServer)
+            RpcStartCheckEnemiesRoutine();
     }
 
     public void DisableEnemyCheck()
     {
         StopCheckEnemiesRoutine();
+
+        if (isServer)
+            RpcStopCheckEnemiesRoutine();
     }
 
     private void StartCheckEnemiesRoutine()
     {
         if (_checkEnemiesRoutine != null) return;
 
-        Debug.Log("Start");
 
         _checkEnemiesRoutine = StartCoroutine(CheckEnemiesInRadiusRoutine());
+    }
+
+    [ClientRpc]
+    private void RpcStartCheckEnemiesRoutine()
+    {
+        StartCheckEnemiesRoutine();
+    }
+
+    [ClientRpc]
+    private void RpcStopCheckEnemiesRoutine()
+    {
+        StopCheckEnemiesRoutine();
     }
 
     private void StopCheckEnemiesRoutine()
     {
         if (_checkEnemiesRoutine == null) return;
-
-        Debug.Log("Stop");
 
         StopCoroutine(_checkEnemiesRoutine);
         _checkEnemiesRoutine = null;
