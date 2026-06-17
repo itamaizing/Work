@@ -32,7 +32,8 @@ public class MagicDefenceSkill : Skill
     private MagicDomeZone _tempZone;
 
     public MagicDomeZone TempZone => _tempZone;
-
+    
+    private Coroutine _hoverPreviewCoroutine;
 
     private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
     protected override int AnimTriggerCast => 0;
@@ -98,6 +99,32 @@ public class MagicDefenceSkill : Skill
     protected override bool CheckResourcesOnSkill()
     {
         return _rune.CurrentValue >= _baseRuneCost;
+    }
+    
+    public override IEnumerator CustomDrawJob(float time = 0.2f)
+    {
+        while (true)
+        {
+            bool hoveredCharacter = IsHoveringCharacter();
+
+            if (_skillRender.TempDamageZone != null)
+                _skillRender.TempDamageZone.gameObject.SetActive(!hoveredCharacter);
+
+            yield return null;
+        }
+    }
+
+    private bool IsHoveringCharacter()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, _targetsLayers))
+            return hit.transform.TryGetComponent<Character>(out _);
+        return false;
+    }
+
+    public override void StopCustomDraw()
+    {
+        _skillRender.StopDrawArea();
     }
     
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)

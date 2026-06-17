@@ -395,5 +395,5 @@ public class IcePuddle : Skill, IEnergyDamagable
     }
     */
     public bool IsStreamSkill { get; }
-    public bool IsFrostingOfFrozenSkill { get; }
+    public bool IsFrostEnergyApplied => true;
 }

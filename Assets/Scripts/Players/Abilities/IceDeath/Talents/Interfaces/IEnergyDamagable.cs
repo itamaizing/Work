@@ -4,5 +4,5 @@ public interface IEnergyDamagable
 {
     bool IsStreamSkill { get; }
 
-    bool IsFrostingOfFrozenSkill { get; }
+    bool IsFrostEnergyApplied { get; }
 }

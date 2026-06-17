@@ -232,5 +232,5 @@ public class IceSword : CloseCombatSkill,IEnergyDamagable
 	//      return true;
 	//  }
 	public bool IsStreamSkill { get; }
-	public bool IsFrostingOfFrozenSkill { get; }
+	public bool IsFrostEnergyApplied { get; }
 }

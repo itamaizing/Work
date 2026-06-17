@@ -13,8 +13,6 @@ public class IceShardProjectile : Projectiles
 	private float _curDamage;
 	private float _maxDistance = 4f;
 
-	private const float FrostEnergyFreezeChance = 60f;
-
 	private void Start()
 	{
 		_curDamage = 3 + Random.Range(0, 3);
@@ -62,12 +60,6 @@ public class IceShardProjectile : Projectiles
 				_skill.ApplyDamage(_damage, target.gameObject);
 
 				target.CharacterState.AddState(States.Frozen, duration, 30, _dad.gameObject, _skill.name);
-
-				if (target.CharacterState.CheckForState(States.FrostEnergy))
-				{
-					if (Random.Range(0f, 100f) <= FrostEnergyFreezeChance)
-						target.CharacterState.AddState(States.Cooling, 12f, 0f, _dad.gameObject, _skill.name);
-				}
 
 				if (_talentPlague)
 					target.CharacterState.AddState(States.Plague, 5f, 0f, _dad.gameObject, _skill.name);

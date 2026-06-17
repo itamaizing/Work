@@ -195,7 +195,6 @@ public class PhysicalAttack : Skill,IEnergyDamagable
 			_rune.SumDamageMake(curDamage);
 			_energy.CmdUse(5);
 			CmdApplyDamage(damage, enemy.gameObject);
-			CmdTryApplyCooling(enemy.gameObject);
 			TryApplyNextHitFrozen(enemy);
 
 			if (_rollingPhysTalent)
@@ -228,7 +227,6 @@ public class PhysicalAttack : Skill,IEnergyDamagable
 				Type = DamageType.Physical,
 			};
 			CmdApplyDamage(damage, enemy.gameObject);
-			CmdTryApplyCooling(enemy.gameObject);
 			TryApplyNextHitFrozen(enemy);
 		}
 
@@ -371,20 +369,6 @@ public class PhysicalAttack : Skill,IEnergyDamagable
 		_nextHitFrozenDuration = 0f;
 	}
 
-	[Command]
-	private void CmdTryApplyCooling(GameObject enemyObj)
-	{
-		if (enemyObj == null) return;
-
-		var enemy = enemyObj.GetComponent<Character>();
-		if (enemy == null) return;
-
-		if (enemy.CharacterState.CheckForState(States.FrostEnergy))
-		{
-			if (UnityEngine.Random.Range(0f, 100f) <= FrostEnergyFreezeChance) enemy.CharacterState.AddState(States.Cooling, 12f, 0f, Hero.gameObject, Name);
-		}
-	}
-
 	public void ApplyRootFalse()
 	{
 		_animator.applyRootMotion = false;
@@ -408,6 +392,6 @@ public class PhysicalAttack : Skill,IEnergyDamagable
 	}
 
     public bool IsStreamSkill { get; }
-    public bool IsFrostingOfFrozenSkill { get; }
+    public bool IsFrostEnergyApplied { get; }
 }
 

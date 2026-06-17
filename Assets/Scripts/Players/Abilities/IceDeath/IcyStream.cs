@@ -36,7 +36,7 @@ public class IcyStream : Skill, IEnergyDamagable
 
     public IcyStreamState CurrentState { get; private set; }
     public bool IsStreamSkill => true;
-    public bool IsFrostingOfFrozenSkill { get; }
+    public bool IsFrostEnergyApplied => true;
 
     protected override bool IsCanCast =>
         !_isStreaming && HasEnoughResourcesToStart();
@@ -173,18 +173,9 @@ public class IcyStream : Skill, IEnergyDamagable
 
     private void ApplyCoolingWithFrostEnergyBonus(Character target)
     {
-        bool hasFrostEnergy = target.CharacterState.CheckForState(States.FrostEnergy);
-        int  currentStacks  = target.CharacterState.CheckStateStacks(States.Cooling);
-        int  stacksAfter    = currentStacks + 1;
-
-        if (hasFrostEnergy)
-        {
-            float bonusDamage = stacksAfter * FrostEnergyCoolingBonusPerStack;
-            Damage bonus = new Damage { Value = bonusDamage, Type = DamageType.Magical };
-            target.Health.TryTakeDamage(ref bonus, this);
-        }
-
         target.CharacterState.AddState(States.Cooling, 12f, 0, Hero.gameObject, Name);
+
+        _hero.Abilities.GetSkill<FrostEnergy>()?.ApplyFrostEnergyStateBonus(target, States.Cooling, this);
     }
 
     private void PayRemainingEnergy()

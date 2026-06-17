@@ -27,7 +27,13 @@ public class RuneComponent : Resource
         _regenerationDelay = 3;
 	}
 
-	private bool RemoveRune(float runeValue, Skill usedAbility)
+    public override bool TryUse(float value)
+    {
+        OnRuneSpent?.Invoke(value, null);
+        return base.TryUse(value);
+    }
+
+    private bool RemoveRune(float runeValue, Skill usedAbility)
     {
         if (_abilities.Count > 0)
         {

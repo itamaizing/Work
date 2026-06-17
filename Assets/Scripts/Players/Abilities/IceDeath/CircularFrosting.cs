@@ -28,10 +28,6 @@ public class CircularFrosting : Skill,IEnergyDamagable
     private Energy _energy;
     private bool _talentFrostingFrozen;
 
-    private const float FrostEnergyCoolingBonusPerStack = 1f;
-    private const float FrostEnergyFrostingBonusPerStack = 5f;
-    private const float FrostEnergyFrozenBonusPerStack = 10f;
-
     protected override bool IsCanCast => true;
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
@@ -117,51 +113,17 @@ public class CircularFrosting : Skill,IEnergyDamagable
         if (target == null) return;
 
         if (_seriesOfStrikes != null) _seriesOfStrikes.MakeHit(target, Info.AbilityForm, 1, usedEnergy, 0);
-        if (_talentFrostingFrozen && target.CharacterState.CheckForState(States.Frosting)) ApplyStateWithBonus(target, States.Frozen, duration);
-        ApplyStateWithBonus(target, States.Frosting, duration);
-    }
 
-    private void ApplyStateWithBonus(Character target, States state, float duration)
-    {
-        if (target == null || target.CharacterState == null) return;
+        var frostEnergy = Hero.Abilities.GetSkill<FrostEnergy>();
 
-        bool hasFrostEnergy = target.CharacterState.CheckForState(States.FrostEnergy);
-
-        int currentStacks = target.CharacterState.CheckStateStacks(state);
-
-        int stacksAfter = currentStacks + 1;
-
-        float bonusPerStack = 0f;
-
-        switch (state)
+        if (_talentFrostingFrozen && target.CharacterState.CheckForState(States.Frosting))
         {
-            case States.Cooling:
-                bonusPerStack = FrostEnergyCoolingBonusPerStack;
-                break;
-
-            case States.Frosting:
-                bonusPerStack = FrostEnergyFrostingBonusPerStack;
-                break;
-
-            case States.Frozen:
-                bonusPerStack = FrostEnergyFrozenBonusPerStack;
-                break;
+            target.CharacterState.AddState(States.Frozen, duration, 0, Hero.gameObject, name);
+            frostEnergy?.ApplyFrostEnergyStateBonus(target, States.Frozen, this);
         }
 
-        if (hasFrostEnergy && bonusPerStack > 0f)
-        {
-            float bonusDamage = stacksAfter * bonusPerStack;
-
-            Damage bonus = new Damage
-            {
-                Value = bonusDamage,
-                Type = DamageType.Magical
-            };
-            ApplyDamage(bonus,target.gameObject);
-            //target.Health.TryTakeDamage(ref bonus, this);
-        }
-
-        target.CharacterState.AddState(state, duration, 0, Hero.gameObject, name);
+        target.CharacterState.AddState(States.Frosting, duration, 0, Hero.gameObject, name);
+        frostEnergy?.ApplyFrostEnergyStateBonus(target, States.Frosting, this);
     }
 
     public void SetTalentFrostingFrozen(bool value)
@@ -223,5 +185,5 @@ public class CircularFrosting : Skill,IEnergyDamagable
     }
 
     public bool IsStreamSkill { get; }
-    public bool IsFrostingOfFrozenSkill { get; }
+    public bool IsFrostEnergyApplied => true;
 }

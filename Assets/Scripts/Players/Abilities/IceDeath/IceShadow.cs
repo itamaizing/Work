@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IceShadow : Skill
+public class IceShadow : Skill,IEnergyDamagable
 {
 	[Header("Ability properties")]
 	[SerializeField] private IceShadowObject _shadow;
@@ -137,7 +137,7 @@ public class IceShadow : Skill
 			bonusDuration += remainingTicks * tickTime;
 		}
 
-		/*CmdCreateProjecttile(
+		CmdCreateProjecttile(
 			_remainingDelayCircularFrostin, 
 			0, 
 			_manaUsed, 
@@ -147,7 +147,7 @@ public class IceShadow : Skill
 			_iceDeathInShadowTalent, 
 			_circularFrosting.WasInterruptedInDelay, 
 			_capturedState?.CurrentTick ?? -1, _capturedState?.MaxTicks ?? -1,
-			_capturedState?.Target != null ? _capturedState.Value.Target.netIdentity : null);*/
+			null);
 	}
 
 	private void SpawnShadow(float remainingDelay, float streamBonus, Vector3 position, Quaternion rotation, float manaValue, bool lastHit,
@@ -302,5 +302,8 @@ public class IceShadow : Skill
 		TryUseCharge();
 		return true;
 	}
+
+	public bool IsStreamSkill { get; }
+	public bool IsFrostEnergyApplied => true;
 }
 

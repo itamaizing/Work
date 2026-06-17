@@ -15,7 +15,7 @@ public class DeathSpiral : Skill,IEnergyDamagable
     private float _energyToHeal = 0.5f;
 
     public bool IsStreamSkill { get; }
-    public bool IsFrostingOfFrozenSkill { get; }
+    public bool IsFrostEnergyApplied { get; }
 
     private const int MaxCharges = 3;
     private const float AnimDuration = 0.8f;
@@ -132,7 +132,7 @@ public class DeathSpiral : Skill,IEnergyDamagable
         {
             if (GetMouseButton)
             {
-                Targeting.FindTempTarget(Targeting.GetMousePoint(), SearchRadius, true);
+                Targeting.FindTempTarget(Targeting.GetMousePoint(), SearchRadius, false);
 
                 if (Targeting.GetTempTarget()?.Character != null)
                 {
