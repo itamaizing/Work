@@ -346,13 +346,24 @@ public class CreeperStrike : Skill
 
     private void TryApplyWitheringPoison(Character target)
     {
-        if (target == null)
-            return;
+        if (target == null) return;
+        if (_creeperPoisonAura == null) return;
 
-        if (_creeperPoisonAura == null)
-            return;
+        CmdTryApplyWitheringPoison(target.gameObject);
+    }
 
-        if (!_creeperPoisonAura.IsActiveWitheringPoison && !_creeperPoisonAura.IsActiveWitheringPoisonMetabolism)
+    [Command]
+    private void CmdTryApplyWitheringPoison(GameObject targetObject)
+    {
+        if (targetObject == null) return;
+
+        Character target = targetObject.GetComponent<Character>();
+        if (target == null || target.CharacterState == null) return;
+
+        if (_creeperPoisonAura == null) return;
+
+        if (!_creeperPoisonAura.IsActiveWitheringPoison &&
+            !_creeperPoisonAura.IsActiveWitheringPoisonMetabolism)
             return;
 
         float finalChance = 0f;
@@ -363,16 +374,16 @@ public class CreeperStrike : Skill
         if (_creeperPoisonAura.IsActiveWitheringPoisonMetabolism)
             finalChance += 0.3f;
 
-        if (UnityEngine.Random.value <= finalChance)
-        {
-            target.CharacterState.CmdAddState(
-                States.WitheringPoison,
-                10f,
-                0,
-                _player.gameObject,
-                Name
-            );
-        }
+        if (UnityEngine.Random.value > finalChance)
+            return;
+
+        target.CharacterState.AddState(
+            States.WitheringPoison,
+            10f,
+            0f,
+            gameObject,
+            Name
+        );
     }
 
     private void DealCriticalDamage(Character target, float baseDamage, bool isTalentCritDamage = false)
