@@ -9458,7 +9458,7 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 0
+    _radius: 6
     _area: 0
     _castLength: 6
     _castWidth: 0.5
@@ -9466,7 +9466,7 @@ MonoBehaviour:
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 0
-    _isAutoLineRender: 0
+    _isAutoLineRender: 1
     _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
@@ -10651,9 +10651,6 @@ MonoBehaviour:
     _castAnimations: []
     _activeClip: 0
   _domePrefab: {fileID: -3899065207752285923, guid: e1f5d977bc8ba6b459096f1edfd01a0c, type: 3}
-  _groundLayer:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!114 &829006267482502751 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -11456,7 +11453,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
-  _ninjaResources: {fileID: 5945422429078664588}
 --- !u!114 &6843156634071377161
 MonoBehaviour:
   m_ObjectHideFlags: 0

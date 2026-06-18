@@ -13,7 +13,7 @@ public class BlockOfIce : Skill,IEnergyDamagable
 	[SerializeField] private float _damagePerStep = 3f;
 	[SerializeField] private float _maxEnergySpend = 25f;
 
-	private Vector3 _mousePos;
+	private Vector3 _mousePos = Vector3.positiveInfinity;
 	private Energy _energy;
 
 	protected override bool IsCanCast => IsCanCastCheck();
@@ -34,7 +34,8 @@ public class BlockOfIce : Skill,IEnergyDamagable
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-		Debug.LogError("data error");
+	    if (targetInfo.Points.Count > 0)
+		    _mousePos = targetInfo.Points[0];
     }
 
 	private void Shoot(float bonusDamage)
@@ -71,34 +72,17 @@ public class BlockOfIce : Skill,IEnergyDamagable
 		if (_energy == null)
 			_energy = (Energy)Hero.Resources[ResourceType.Energy];
 
-        while (float.IsPositiveInfinity(_mousePos.x))
-		{			
+		while (float.IsPositiveInfinity(_mousePos.x))
+		{
 			if (GetMouseButton)
-			{
 				_mousePos = Targeting.GetMousePoint();
-				/*if (Targeting.GetTarget().isCharater)
-				{
-					Debug.Log("Character try");
-					if (Targeting.GetTarget()?.Character != null)
-					{
-						//Debug.Log("Character");
-						_mousePos = Targeting.GetTarget().Character.transform.position;
-						Debug.Log(Vector3.Distance(_mousePos, transform.position) + " Distance");
-						if(Vector3.Distance(_mousePos, transform.position) < 0.2f)
-						{
-							_mousePos = Vector2.positiveInfinity;
-						}
-					}
-				}
-				else
-				{
-					Debug.Log("Position");
-					_mousePos = Targeting.GetMousePoint();
-				}*/
-			}
+
 			yield return null;
 		}
-		Debug.LogError("Error data");
+
+		TargetInfo targetInfo = new TargetInfo();
+		targetInfo.Points.Add(_mousePos);
+		callbackDataSaved(targetInfo);
 	}
 
 	protected override IEnumerator CastJob()
@@ -133,7 +117,7 @@ public class BlockOfIce : Skill,IEnergyDamagable
 
 	protected override void ClearData()
 	{
-		_mousePos = Vector2.positiveInfinity;
+		_mousePos = Vector3.positiveInfinity;
 	}
 
 	public bool IsStreamSkill { get; }

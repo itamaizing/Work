@@ -37,13 +37,8 @@ public class NinjaResources : Skill, IPassiveSkill
     private bool _isIceRuneTalent;
     private bool _isHardenedFleshTalent;
     private bool _isFrozenCrit;
-    private bool _isRepeatedFrost;
     private bool _isRuneRegenSpeed;
-
-    public void RepeatedFrost(bool value) => _isRepeatedFrost = value;
     public void RuneRegenSpeed(bool value) => _isRuneRegenSpeed = value;
-
-    public bool IsRepeatedFrost { get => _isRepeatedFrost; set => _isRepeatedFrost = value; }
 
     public void FrozenCrit(bool value)
     {
@@ -331,4 +326,71 @@ public class NinjaResources : Skill, IPassiveSkill
             yield return new WaitForSeconds(0.5f);
         }
     }
+
+    #region RepeatedFrosting
+    
+    private bool _isRepeatedFrost;
+    public bool IsRepeatedFrost { get => _isRepeatedFrost; set => _isRepeatedFrost = value; }
+    public void RepeatedFrost(bool value) => _isRepeatedFrost = value;
+
+    public void AddRepeatedFrosting(GameObject target)
+    {
+        CmdAddRepeatingFrost(target);
+    }
+
+    [Command]
+    private void CmdAddRepeatingFrost(GameObject target)
+    {
+        if(!target) return;
+        target.GetComponent<CharacterState>().AddState(States.Frosting, 2, 0f, Schools.Water, _hero.gameObject, "Frosting");
+    }
+
+    public void AddRepeatedFrozen(GameObject target,float duration)
+    {
+        CmdAddRepeatingFrozen(target,duration);
+    }
+    
+    [Command]
+    private void CmdAddRepeatingFrozen(GameObject target,float duration)
+    {
+        if(!target) return;
+        var state = target.GetComponent<CharacterState>();
+        state.AddState(States.Frozen, duration, 0f, Schools.Water, _hero.gameObject, "Frosting");
+        if (state.CheckForState(States.Frosting))
+        {
+            TargetRemoveFrosting(target);
+        }
+    }
+
+    [ClientRpc]
+    private void TargetRemoveFrosting(GameObject target)
+    {
+        if(!target) return;
+        var state = target.GetComponent<CharacterState>();
+        state.CmdRemoveState(States.Frosting);
+    }
+
+    
+    #endregion
+
+    #region DeepFrosting
+
+    private bool _isDeepFrosting;
+    public bool IsDeepFrosting => _isDeepFrosting;
+
+    public void EnableDeepFrosting(bool value)
+    {
+        if(value == _isDeepFrosting) return;
+
+        _isDeepFrosting = value;
+        CmdSetDeepFrosting(_isDeepFrosting);
+    }
+
+    [Command]
+    private void CmdSetDeepFrosting(bool value)
+    {
+        _isDeepFrosting = value;
+    }
+
+    #endregion
 }

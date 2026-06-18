@@ -84,7 +84,7 @@ public class CircularFrosting : Skill,IEnergyDamagable
     private void ExplosionFrosting()
     {
         float usedEnergy;
-
+        
         if (_energy.CurrentValue >= 30f)
         {
             usedEnergy = 30f;
@@ -116,11 +116,11 @@ public class CircularFrosting : Skill,IEnergyDamagable
 
         var frostEnergy = Hero.Abilities.GetSkill<FrostEnergy>();
 
-        if (_talentFrostingFrozen && target.CharacterState.CheckForState(States.Frosting))
+        /*if (_talentFrostingFrozen && target.CharacterState.CheckForState(States.Frosting))
         {
             target.CharacterState.AddState(States.Frozen, duration, 0, Hero.gameObject, name);
             frostEnergy?.ApplyFrostEnergyStateBonus(target, States.Frozen, this);
-        }
+        }*/
 
         target.CharacterState.AddState(States.Frosting, duration, 0, Hero.gameObject, name);
         frostEnergy?.ApplyFrostEnergyStateBonus(target, States.Frosting, this);

@@ -6,82 +6,73 @@ using UnityEngine;
 
 public class BlockOfIceProjectile : Projectiles
 {
-	private Vector3 startPos;
-	private Damage _damage;
-	private float _curDamage;
+    private Vector3 _startPos;
+    private Damage _damage;
+    private float _curDamage;
+    private float _maxDistance = 6;
+    
+    public override void Init(Character dad, float energy, bool lastHit, Skill skill)
+    {
+        base.Init(dad, energy, lastHit, skill);
 
-	private void Start()
-	{
-		_curDamage = 20 + Random.Range(0, 10);
-		_damage = new Damage
-		{
-			Value = _curDamage,
-			Type = DamageType.Magical,
-		};
-		Debug.Log("bullet");
-		startPos = transform.position;
-	}
+        _curDamage = energy;
+        _damage = new Damage
+        {
+            Value = _curDamage,
+            Type = DamageType.Magical,
+        };
 
-	private void Update()
-	{
-		if (!_initialized) return;
-		//_spriteRenderer.DOFade(0, 1);
-		if (Vector2.Distance(transform.position, startPos) > _distance * GlobalVariable.cellSize)
-		{
-			Explode();
-		}
-	}
+        _startPos = transform.position;
+    }
 
-	[Server]
-	private void OnTriggerEnter(Collider collision)
-	{
-		if (!_initialized || _dad == null) return;
-		if (collision.gameObject == _dad.gameObject || collision.CompareTag("Ability"))
-			return;
-		//damage, freez etc
-		if (collision.TryGetComponent<IDamageable>(out var damageable))
-		{
-			if (collision.TryGetComponent<Character>(out var target))
-			{
-				float duration = 9;
-				
-				if (target.CharacterState.CheckForState(States.Frozen))
-				{
-					_curDamage *= 1.4f;
-				}
-				//_energy.SumDamageMake(_curDamage);
-				//_rune.SumDamageMake(curDamage);
-				TargetRpcDamageMake(_curDamage);
+    private void Update()
+    {
+        if (!_initialized) return;
+        
+        if (Vector3.Distance(transform.position, _startPos) > _maxDistance)
+            Explode();
+    }
 
-				_skill.ApplyDamage(_damage,target.gameObject);
-				//target.Health.TryTakeDamage(ref _damage, _skill);
-;
-				target.CharacterState.AddState(States.Cooling, duration, 0, _dad.gameObject, _skill.name);
-				GetComponent<Collider>().enabled = false;
-			}
-			else
-			{
-				_skill.ApplyDamage(_damage,target.gameObject);
-				//damageable.TryTakeDamage(ref _damage, _skill);
-				if (_damage.Value <= 0)
-				{
-					Explode();
-				}
-				return;
-			}
-			Explode();
-		}		
-	}
+    [Server]
+    private void OnTriggerEnter(Collider collision)
+    {
+        if (!_initialized || _dad == null) return;
+        if (collision.gameObject == _dad.gameObject || collision.CompareTag("Ability")) return;
 
-	
+        if (!collision.TryGetComponent<IDamageable>(out var damageable)) return;
 
-	private void Explode()
-	{
-		if (_hitEffect != null)
-		{
-			GameObject hitEffect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
-			Destroy(hitEffect, 5f);
-		}
-		Destroy(gameObject);
-	}
+        if (collision.TryGetComponent<Character>(out var target))
+        {
+            if (target.CharacterState.CheckForState(States.Frozen))
+                _curDamage *= 1.4f;
+
+            _damage.Value = _curDamage;
+
+            TargetRpcDamageMake(_curDamage);
+            _skill.ApplyDamage(_damage, target.gameObject);
+
+            _dad.Abilities.GetSkill<FrostEnergy>()
+                ?.ApplyFrostEnergyStateBonus(target, States.Cooling, _skill);
+
+            target.CharacterState.AddState(States.Cooling, 9f, 0, _dad.gameObject, _skill.name);
+
+            GetComponent<Collider>().enabled = false;
+        }
+        else
+        {
+            _skill.ApplyDamage(_damage, damageable.gameObject);
+        }
+
+        Explode();
+    }
+
+    private void Explode()
+    {
+        if (_hitEffect != null)
+        {
+            GameObject hitEffect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
+            Destroy(hitEffect, 5f);
+        }
+        Destroy(gameObject);
+    }
 }
