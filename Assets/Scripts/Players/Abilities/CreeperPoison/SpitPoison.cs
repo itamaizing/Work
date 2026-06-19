@@ -171,7 +171,11 @@ public class SpitPoison : Skill, IAltAbility
 
     protected override IEnumerator CastJob()
     {
-        Vector3 spawnPosition = transform.position;
+        Vector3 spawnPosition = _spawnPoint != null
+            ? _spawnPoint.transform.position
+            : _player.transform.position;
+
+        spawnPosition += Vector3.up;
 
         Shoot(Targeting.GetTarget()?.Damageable, spawnPosition);
 
