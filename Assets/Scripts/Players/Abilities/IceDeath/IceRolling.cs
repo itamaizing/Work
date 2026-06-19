@@ -37,7 +37,6 @@ public class IceRolling : Skill
 	private float _jumpCount = 0;
 	private bool _afterJump;
 	private float _afterJumpDelay = 1;
-	//private Character _target;
 	private Character _attachedTarget;
 	private Animator _animator;
 
@@ -47,7 +46,45 @@ public class IceRolling : Skill
 	private bool _isAttackWithFrosenAddEvade;
 
 	public void AttackWithFrosenAddEvade(bool value) => _isAttackWithFrosenAddEvade = value;
-	public void DamageAddFrosting(bool value) => _isDamageAddFrosting = value;
+
+	#region NinjaTalent6
+
+	private float _frozenDuration;
+	public void DamageAddFrosting(bool value)
+	{
+		if(value == _isDamageAddFrosting) return;
+		_isDamageAddFrosting = value;
+		_frozenDuration = 0;
+		foreach (var ability in _hero.Abilities.Abilities)
+		{
+			if(ability == this) continue;
+			if (ability.Info.AbilityForm is AbilityForm.Physical or AbilityForm.Both && _isDamageAddFrosting)
+			{
+				ability.OnDamageApplied += AddFrostingToPhysical;
+			}
+			else if(ability.Info.AbilityForm is AbilityForm.Physical or AbilityForm.Both && !_isDamageAddFrosting)
+			{
+				ability.OnDamageApplied -= AddFrostingToPhysical;
+			}
+		}
+	}
+	private void AddFrostingToPhysical(GameObject target, Skill skill)
+	{
+		if(target == null) return;
+		CmdAddFrostingToPhysical(target,_frozenDuration);
+		_frozenDuration = 0;
+	}
+
+	[Command]
+	private void CmdAddFrostingToPhysical(GameObject target,float duration)
+	{
+		if(duration <= 0) return;
+		if(target == null) return;
+		var character = target.GetComponent<Character>();
+		character.CharacterState.AddState(States.Frosting,duration,0,Schools.Water,_hero.gameObject,"IceRolling");
+	}
+
+	#endregion
 	public void TalentRollingPhys(bool value) => _rollingPhysTalent = value;
 	public void RollingWithEnemyTalentActive(bool value) => _rollingWithEnemyTalent = value;
 
@@ -86,9 +123,7 @@ public class IceRolling : Skill
 	{
 		_animator = GetComponent<Animator>();
 		_audioSource = GetComponent<AudioSource>();
-
-        //_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
-    }
+	}
 
     private void Update()
 	{
@@ -146,20 +181,10 @@ public class IceRolling : Skill
 					{
 						stopPosition = hit.point - direction;
 						characterHit = character;
-
-						Debug.Log("1");
 						return true;
 					}
 				}
 			}
-			/*int objectLayer = hit.collider.gameObject.layer;
-			int objectLayerMask = 1 << objectLayer;
-			if ((_obstacle & objectLayerMask) > 0 )
-			{
-				stopPosition = hits[0].point - direction * 1.2f;
-				return true;
-			}*/
-			//stopPosition = hits[0].point - direction * 1.2f;
 			if (hit.collider.transform.root != transform.root)
 			{
 				Debug.Log(hit.collider.gameObject.name + " Stop point " + stopPosition);
@@ -214,7 +239,6 @@ public class IceRolling : Skill
 	{
 		Hero.Move.SetCanMove(false);
 		_isJump = true;
-
 		_lookDir = (_mousePos - _playerLinks.transform.position).normalized;
 		Vector3 startPosition = _playerLinks.transform.position;
 		Vector3 rawTargetPos = _mousePos;
@@ -222,7 +246,6 @@ public class IceRolling : Skill
 		float distanceToClick = Vector3.Distance(startPosition, rawTargetPos);
 		float finalRange;
 		int extraCells = 0;
-
 		if (distanceToClick <= 2f)
 		{
 			finalRange = 2f;
@@ -241,16 +264,7 @@ public class IceRolling : Skill
 
 		float additionalCost = extraCells * 5f;
 
-		//float totalCost = ManaCostRate + additionalCost;
-
-		//if (_energy.CurrentValue < totalCost)
-		//{
-		//	Debug.Log("Недостаточно энергии для прыжка.");
-		//	return;
-		//}
-
 		_energy.CmdUse(additionalCost);
-
 		if (_isLastInSeries && Targeting.GetTarget()?.Character == null && _rollingWithEnemyTalent)
 			finalRange *= 1.5f;
 
@@ -259,22 +273,18 @@ public class IceRolling : Skill
 		Vector3 stopPosition;
 		Character characterHit;
 		Character characterHitTarget;
-
 		bool hit = CheckObstacleBetween(_playerLinks.transform.position, jumpPos, out stopPosition, out characterHit);
 		bool hitTarget = IsTargetInCloseProximity(_playerLinks.transform.position, _lookDir, out characterHitTarget);
 
 		Hero.Move.LookAtPosition(jumpPos);
 		float actualDistance = Vector3.Distance(startPosition, stopPosition);
-
 		if (_isDamageAddFrosting)
 		{
 			int rolledCells = Mathf.RoundToInt(finalRange);
-			float frozenDuration = 0.7f * rolledCells;
-			_physicalAttack.SetNextHitFrozen(frozenDuration);
+			_frozenDuration = 0.7f * rolledCells;
 		}
 
 		CmdPush(stopPosition, actualDistance);
-
 		if (_rollingWithEnemyTalent && Targeting.GetTarget()?.Character != null && hitTarget && characterHitTarget != null) CmdPushWithCharacter(stopPosition, characterHitTarget, actualDistance);
 
 		if (_rollingPhysTalent)
@@ -282,14 +292,12 @@ public class IceRolling : Skill
 			_physicalAttack.TalentRollingPhys(_afterJump, finalRange);
 			_afterJump = true;
 		}
-
 		if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
 		{
 			Targeting.ClearTarget();
 			_mousePos = Vector3.positiveInfinity;
 			_lookDir = Vector3.zero;
 		}
-
 		else
 		{
 			Targeting.FindTempTarget();
@@ -297,70 +305,13 @@ public class IceRolling : Skill
 		}
 	}
 
-    #region old
- //   private void Jump()
-	//{
-	//	Hero.Move.CanMove = false;
-	//	_isJump = true;
-	//	float actualJumpRange = _jumprange;
-
-	//	_lookDir = (_mousePos - _playerLinks.transform.position).normalized;
-	//	Vector3 jumpPos = _lookDir * actualJumpRange + _playerLinks.transform.position;
-	//	Vector3 stopPosition;
-	//	Character characterHit;
-	//	if (CheckObstacleBetween(_playerLinks.transform.position, jumpPos, out stopPosition, out characterHit))
-	//	{
-	//		_jumpCount = 5;
-	//		CmdPush(stopPosition, Vector3.Distance(stopPosition, transform.position));
-	//	}
-	//	else
-	//	{
-	//		Debug.Log(Vector2.Distance(jumpPos, transform.position) + " Jump " + actualJumpRange);
-	//		//if(actualJumpRange)
-	//		for (int i = 0; i < 2; i++)
-	//		{
-	//			_jumpCount += 1f;
-	//			actualJumpRange += 1;
-	//			Vector3 jumpPos2 = _lookDir * actualJumpRange + _playerLinks.transform.position;
-	//			if (_energy.CurrentValue >= 5 && !CheckObstacleBetween(_playerLinks.transform.position, jumpPos2, out stopPosition, out characterHit))
-	//			{
-	//				_energy.CmdUse(5);
-	//				jumpPos = jumpPos2;
-	//				//Debug.Log("Additional jump " + i);
-	//			}
-	//		}
-	//		CmdPush(stopPosition, Vector3.Distance(jumpPos, transform.position));
-
-	//		if (_rollingPhysTalent)
-	//		{
-	//			_physicalAttack.TalentRollingPhys(_afterJump, _jumpCount);
-	//			_afterJump = true;
-	//		}
-	//	}
-
-	//	if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
-	//	{
-	//		Targeting.ClearTarget();
-	//		_mousePos = Vector3.positiveInfinity;
-	//		_lookDir = Vector3.zero;
-	//	}
-	//}
-    #endregion
-
-    public override void LoadTargetData(TargetInfo targetInfo)
+	public override void LoadTargetData(TargetInfo targetInfo)
 	{
 		if (targetInfo != null)
 		{
-			/*if (targetInfo.GetTargets() != null && targetInfo.GetTargets().Count > 0)
-			{
-				if (targetInfo.GetTargets()[0] is Character character)
-					Targeting.SetTarget(character);
-				else Targeting.SetTarget(ClosedTarget());
-			}*/
 			if(targetInfo.Points.Count > 0)
 			{
 				_mousePos = targetInfo.Points[0];
-				//targetInfo.Points.RemoveAt(0);
 			}
 		}
 		
@@ -391,7 +342,7 @@ public class IceRolling : Skill
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(candidatePoint);
         callbackDataSaved(targetInfo);
-    }
+	}
 
 	public override IEnumerator CustomDrawJob(float time = DynamicRendererJobTime)
 	{
@@ -406,7 +357,7 @@ public class IceRolling : Skill
 	{
 		if (!float.IsInfinity(_mousePos.x))
         {
-			_isLastInSeries = _seriesOfStrikes.MakeHit(Targeting.GetTarget()?.Character, Info.AbilityForm, 1, 0, 0);
+	        _isLastInSeries = _seriesOfStrikes.MakeHit(Targeting.GetTarget()?.Character, Info.AbilityForm, 1, 0, 0);
 			Jump2();
 			yield return null;
 		}
@@ -414,16 +365,15 @@ public class IceRolling : Skill
 
 	protected override void ClearData()
 	{
+		Targeting.ClearTarget();
+		Targeting.ClearTempTarget();
+		_hero.Move.StopLookAt();
 		if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
 		{
 			Targeting.ClearTarget();
 			//_target = null;
 			_mousePos = Vector3.positiveInfinity;
 		}
-		/*else
-		{
-			_mousePos = Targeting.GetMousePoint();
-		}*/
 		_isJump = false;
 		Hero.Move.StopLookAt();
 	}
@@ -447,19 +397,25 @@ public class IceRolling : Skill
 			_physicalAttack.TalentRollingPhys(_afterJump, 0);
 		}
 	}
+	
+	protected override bool CheckResourcesOnSkill()
+	{
+		bool result = base.CheckResourcesOnSkill(); 
+		Cooldown.ForceEnd();
+		return result;
+	}
 
 	private IEnumerator WaitForJumpEnd()
 	{
 		yield return new WaitForSeconds(_durationOfJump);
 		RpcOnJumpEnd();
-
 		if (_attachedTarget)
         {
 			_attachedTarget.CharacterState.AddState(States.Frosting, AttachedFrostingDuration, 0f, _playerLinks.gameObject, Name);
 			_attachedTarget.transform.SetParent(null);
 			RpcReleaseTarget(_attachedTarget);
 			_attachedTarget = null;
-		}
+        }
 	}
 
 	private void OnCollisionEnter(Collision collision)

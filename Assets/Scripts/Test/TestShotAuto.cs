@@ -18,7 +18,7 @@ public class TestShootAuto : Skill
     {
         base.Init(render, hero);
     
-       _damageCoroutine = StartCoroutine(DamageTickRoutine());
+       //_damageCoroutine = StartCoroutine(DamageTickRoutine());
     }
 
     private void OnDisable()

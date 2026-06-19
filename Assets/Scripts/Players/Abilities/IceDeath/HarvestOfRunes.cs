@@ -28,7 +28,7 @@ public class HarvestOfRunes : Skill
         Vector3 pos = _hero.transform.position
                       + new Vector3(UnityEngine.Random.Range(-1f, 1f), 0f, UnityEngine.Random.Range(-1f, 1f));
         pos.y = _hero.transform.position.y;
-        _hero.SpawnComponent.CmdSpawnEnemyPoint(pos, Quaternion.identity, enemyIndex);
+        _hero.SpawnComponent.CmdSpawnAliesPoint(pos, Quaternion.identity, enemyIndex);
     }
 
     #endregion

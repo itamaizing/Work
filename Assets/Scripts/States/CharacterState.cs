@@ -431,6 +431,7 @@ public class CharacterState : NetworkBehaviour
 		[States.PortalDarkness] = new PortalDarknessState(),
 		[States.OtherForces] = new OtherForceState(),
 		[States.MagicShield] = new MagicShieldState(),
+		[States.VampirismBuff] = new VampirismBuffState(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -1153,7 +1154,8 @@ public enum States
 	RestorativeAttacks,
 	KillingSpree,
 	OtherForces,
-	MagicShield
+	MagicShield,
+	VampirismBuff
 }
 public enum BaffDebaff
 {

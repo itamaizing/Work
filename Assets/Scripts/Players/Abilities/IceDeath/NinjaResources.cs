@@ -17,6 +17,8 @@ public class NinjaResources : Skill, IPassiveSkill
     
     #region IncreaseVampiricTalent
 
+    [SerializeField] private VampirismAura _vampirismAura;
+    
     private bool _isVampiricIncrease;
 
     private float _energyVampiricMultiplier = 2f;
@@ -25,6 +27,7 @@ public class NinjaResources : Skill, IPassiveSkill
     {
         if(_isVampiricIncrease == value) return;
         _isVampiricIncrease = value;
+        _vampirismAura.ActivateAura(_isVampiricIncrease,isAffectOnOwner: true);
     }
 
     #endregion
@@ -45,14 +48,6 @@ public class NinjaResources : Skill, IPassiveSkill
         if(value == _isFrozenCrit) return;
         _isFrozenCrit = value;
     }
-
-    /*  private void Update()
-      {
-          if(Input.GetKeyDown(KeyCode.T))
-          {
-              Hero.CharacterState.CmdAddState(States.HardenedFlesh, 9f, 0, Hero.gameObject, this.Name);
-          }
-      }*/
 
     public void EnergyToRestore(bool value, string text)
     {
@@ -85,7 +80,6 @@ public class NinjaResources : Skill, IPassiveSkill
 
     private void OnDisable()
     {
-        Hero.DamageTracker.OnDamageTracked -= OnDamageTaken;
         Hero.Health.DamageTaken -= HandleDamageTaken;
 
         if (Hero.TryGetResource(ResourceType.Rune) is RuneComponent rune)
@@ -140,7 +134,6 @@ public class NinjaResources : Skill, IPassiveSkill
             return;
         }
         //Debug.LogError("Hero was initialized", gameObject);
-        Hero.DamageTracker.OnDamageTracked += OnDamageTaken;
         Hero.Health.DamageTaken += HandleDamageTaken;
 
         if (Hero.TryGetResource(ResourceType.Rune) is RuneComponent rune)
@@ -199,59 +192,6 @@ public class NinjaResources : Skill, IPassiveSkill
         {
             _nextEnergyDamageMultiplier = 1f;
             _multiplierOwner = null;
-        }
-    }
-
-    private void OnDamageTaken(Damage damage, GameObject attacker)
-    {
-        if (!_isIceRuneTalent)
-            return;
-
-        if (!isServer)
-            return;
-
-        if (damage.Value <= 0)
-            return;
-
-        if (Hero.TryGetResource(ResourceType.Energy) is Energy energy)
-        {
-            float energyToRestore = damage.Value * EnergyRestorePercent;
-            if (_hero.CharacterState.CheckForState(States.HardenedFlesh) && _isVampiricIncrease)
-            {
-                energyToRestore *= _energyVampiricMultiplier;
-            }
-            energy.Add(energyToRestore);
-        }
-
-        _accumulatedDamageForRune += damage.Value;
-
-        while (_accumulatedDamageForRune >= DamagePerRune)
-        {
-            _accumulatedDamageForRune -= DamagePerRune;
-
-            if (Hero.TryGetResource(ResourceType.Rune) is RuneComponent rune)
-            {
-                rune.CmdAdd(1);
-            }
-        }
-
-        RestoreResourcesToAllies(damage.Value);
-    }
-
-    private void RestoreResourcesToAllies(float damageValue)
-    {
-        float restoreValue = damageValue * EnergyRestorePercent;
-
-        foreach (Character character in FindObjectsOfType<Character>())
-        {
-            if (character == null) continue;
-            if (character == Hero) continue;
-            if (character.gameObject.layer != Hero.gameObject.layer) continue;
-
-            if (Vector3.Distance(Hero.transform.position, character.transform.position) > AreaInfo.Radius) continue;
-
-            if (character.TryGetResource(ResourceType.Energy) is Energy energy) energy.Add(restoreValue);
-            if (character.TryGetResource(ResourceType.Mana) is Mana mana) mana.Add(restoreValue);
         }
     }
 

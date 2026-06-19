@@ -80,7 +80,7 @@ public class PortalDarknessState : RefreshingState
         Vector3 spawnPos = characterState.transform.position + Random.insideUnitSphere * 2f;
         spawnPos.y = characterState.transform.position.y;
 
-        _caster.SpawnComponent.CmdSpawnEnemyPoint(spawnPos, Quaternion.identity, enemyIndex);
+        _caster.SpawnComponent.CmdSpawnAliesPoint(spawnPos, Quaternion.identity, enemyIndex);
         /*if (_spawnedCount >= _maxToSpawn)
         {
             ExitState();
