@@ -21,15 +21,17 @@ public class IcyStream : Skill, IEnergyDamagable
     [Header("Visual")]
     [SerializeField] private GameObject _icyStreamPrefab;
 
-    [SerializeField] private float _runeCost = 1f;
-    [SerializeField] private float _energyPerTick = 5f;
+    private float _runeCost = 1f;
+    private float _energyPerTick = 5f;
+    private float _maxEnergySpend = 40f;
+    private float _energySpent;
 
+    private float _freeWindowDuration = 0.6f;
     private Coroutine _streamCoroutine;
     private GameObject _activeEffect;
 
     private bool _isStreaming;
     private int _currentTick;
-    private const int MaxTicks = 8;
     private const float FrostEnergyCoolingBonusPerStack = 1f;
     private const float MaxDistanceRayCast = 100f;
     private const float MinRotationThresholdSqr = 0.01f;
@@ -40,6 +42,12 @@ public class IcyStream : Skill, IEnergyDamagable
 
     protected override bool IsCanCast =>
         !_isStreaming && HasEnoughResourcesToStart();
+    
+    private int FreeTicks => Mathf.RoundToInt(_freeWindowDuration / _tickInterval);
+    
+    private int MaxPaidTicks => Mathf.FloorToInt(_maxEnergySpend / _energyPerTick);
+    
+    private int MaxTicks => FreeTicks + MaxPaidTicks;
 
     private bool HasEnoughResourcesToStart()
     {
@@ -58,8 +66,6 @@ public class IcyStream : Skill, IEnergyDamagable
 
     public void StopStream()
     {
-        if (_isStreaming) PayRemainingEnergy();
-
         if (_streamCoroutine != null)
         {
             StopCoroutine(_streamCoroutine);
@@ -81,12 +87,6 @@ public class IcyStream : Skill, IEnergyDamagable
 
     protected override IEnumerator CastJob()
     {
-        if (!HasEnoughResourcesToStart())
-        {
-            TryCancel(true);
-            yield break;
-        }
-
         if (!Cost.TryPaySingle(_runeCost, ResourceType.Rune, shouldModify: false))
         {
             TryCancel(true);
@@ -94,6 +94,8 @@ public class IcyStream : Skill, IEnergyDamagable
         }
 
         _isStreaming = true;
+        _energySpent = 0f;
+        _currentTick = 0;
 
         CmdSpawnIcyStreamEffect();
 
@@ -107,23 +109,33 @@ public class IcyStream : Skill, IEnergyDamagable
 
     private IEnumerator StreamRoutine()
     {
-        for (int tick = 1; tick <= MaxTicks; tick++)
+        int freeTicks = FreeTicks;
+        int maxTicks = MaxTicks;
+
+        for (int tick = 1; tick <= maxTicks; tick++)
         {
             yield return new WaitForSeconds(_tickInterval);
 
-            if (!IsStreamValid())
+            bool isFreeTick = tick <= freeTicks;
+
+            if (!isFreeTick)
             {
-                TryCancel(true);
-                yield break;
+                if (!Cost.TryPaySingle(_energyPerTick, ResourceType.Energy, shouldModify: false))
+                {
+                    TryCancel(true);
+                    yield break;
+                }
+
+                _energySpent += _energyPerTick;
             }
 
             _currentTick = tick;
 
             CurrentState = new IcyStreamState
             {
-                CurrentTick  = tick,
-                MaxTicks     = MaxTicks,
-                Direction    = transform.forward,
+                CurrentTick = tick,
+                MaxTicks = maxTicks,
+                Direction = transform.forward,
                 StreamOrigin = transform.position
             };
 
@@ -131,31 +143,23 @@ public class IcyStream : Skill, IEnergyDamagable
         }
     }
 
-    private bool IsStreamValid()
-    {
-        if (!Cost.TryPaySingle(_energyPerTick, ResourceType.Energy, shouldModify: false))
-            return false;
-        return true;
-    }
-
     private void ApplyTick(int tickNumber)
     {
         Vector3 start = transform.position;
-        Vector3 end   = transform.position + transform.forward * _streamLength;
+        Vector3 end = transform.position + transform.forward * _streamLength;
 
         Collider[] hits = Physics.OverlapCapsule(start, end, _streamWidth * 0.5f, _targetsLayers);
 
         foreach (var col in hits)
         {
             if ((_targetsLayers.value & (1 << col.gameObject.layer)) == 0) continue;
-
             if (!col.TryGetComponent<Character>(out var target)) continue;
             if (target.IsDead) continue;
 
             Damage damage = new Damage
             {
-                Value  = tickNumber,
-                Type   = Info.DamageType,
+                Value = tickNumber,
+                Type = Info.DamageType,
                 School = Schools.Water
             };
 

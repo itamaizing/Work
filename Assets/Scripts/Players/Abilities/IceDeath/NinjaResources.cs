@@ -15,19 +15,40 @@ public class NinjaResources : Skill, IPassiveSkill
     public override void LoadTargetData(TargetInfo targetInfo) => throw new NotImplementedException();
     #endregion
     
-    #region IncreaseVampiricTalent
+    #region DeathTalent_5
 
     [SerializeField] private VampirismAura _vampirismAura;
     
-    private bool _isVampiricIncrease;
+    private bool _isVampiricEnabled;
 
     private float _energyVampiricMultiplier = 2f;
     
-    public void EnableIncreaseVampiric(bool value)
+    public void EnableVampiric(bool value)
     {
-        if(_isVampiricIncrease == value) return;
-        _isVampiricIncrease = value;
-        _vampirismAura.ActivateAura(_isVampiricIncrease,isAffectOnOwner: true);
+        if(_isVampiricEnabled == value) return;
+        _isVampiricEnabled = value;
+        _vampirismAura.ActivateAura(_isVampiricEnabled,isAffectOnOwner: true);
+    }
+
+    #endregion
+
+    #region DeathTalent_9
+
+    private bool _isVampiricIncreased;
+
+    public bool IsVampricIncreased => _isVampiricIncreased;
+    
+    public void EnableIncreasedVampiric(bool value)
+    {
+        if(_isVampiricIncreased == value) return;
+        _isVampiricIncreased = value;
+        CmdEnableIncreasedVampiric(_isVampiricIncreased);
+    }
+
+    [Command]
+    private void CmdEnableIncreasedVampiric(bool value)
+    {
+        _isVampiricIncreased = value;
     }
 
     #endregion
@@ -275,7 +296,11 @@ public class NinjaResources : Skill, IPassiveSkill
 
     public void AddRepeatedFrosting(GameObject target)
     {
-        CmdAddRepeatingFrost(target);
+        if(isClient)
+            CmdAddRepeatingFrost(target);
+        
+        if(isServer && target)
+            target.GetComponent<CharacterState>().AddState(States.Frosting, 2, 0f, Schools.Water, _hero.gameObject, "Frosting");
     }
 
     [Command]

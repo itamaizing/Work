@@ -4,15 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class FrostingState : AbstractCharacterState
+public class FrostingState : RefreshingState
 {
 	public bool turnOff = false;
 
 	private GameObject _ice;
 	private AudioSource _audioSource;
 	private NinjaResources _ninjaResources;
-	private TalentSystem _talentSystem;
-	private float _duration;
 	private float _baseDuration;
 
 	private float _deepFrostDurability = 30f;
@@ -26,11 +24,13 @@ public class FrostingState : AbstractCharacterState
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => _effects;
 
+	public string SkillName = "";
+
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		currentStacksCount = 1;
 		_damageCount = 0;
-		//Debug.Log("Entering Frosting State");
+
 		this.damageToExit = damageToExit == 0 ? 1 : damageToExit;
 
 		if (_ninjaResources.IsDeepFrosting)
@@ -38,12 +38,9 @@ public class FrostingState : AbstractCharacterState
 			this.damageToExit = _deepFrostDurability;
 		}
 		
-		_duration = durationToExit;
+		duration = durationToExit;
 		_baseDuration = durationToExit;
 		_audioSource = character.GetComponent<AudioSource>();
-		if (personWhoMadeBuff.TryGetComponent<TalentSystem>(out TalentSystem talentSystem)) _talentSystem = talentSystem;
-
-		if (_talentSystem != null) _isFrostTalentActive = _talentSystem.ActiveTalents.Any(t => t.GetType().Name == "FrostTalent_12");
 
 		characterState.Character.Move.SetCanMoveState(false);
 		characterState.Character.Move.LookAtTransform(characterState.gameObject.transform);
@@ -73,14 +70,18 @@ public class FrostingState : AbstractCharacterState
 		}
 
 		if (characterState.StateEffects.FrostingAudio != null) _audioSource.PlayOneShot(characterState.StateEffects.FrostingAudio);
-
-		SubscribeOnDamage();
 	}
 
 	private void SubscribeOnDamage()
 	{
 		characterState.Character.Health.DamageTaken += OnDamaged;
 		characterState.Character.Health.OnBeforeTakeDamage += OnDamaged;
+	}
+
+	private void UnSubscribeOnDamage()
+	{
+		characterState.Character.Health.DamageTaken -= OnDamaged;
+		characterState.Character.Health.OnBeforeTakeDamage -= OnDamaged;
 	}
 
 	private void OnDamaged(Damage damage, Skill ability)
@@ -92,24 +93,11 @@ public class FrostingState : AbstractCharacterState
 
 	public override void UpdateState()
 	{
-		bool timeExpired = _duration < 0;
-
-		if (timeExpired)
-		{
-			if (_isFrostTalentActive)
-			{
-				RestartFrosting();
-				return;
-			}
-
-			ExitState();
-		}
 	}
 
 	public override void ExitState()
 	{
-		characterState.Character.Health.DamageTaken -= OnDamaged;
-		characterState.Character.Health.OnBeforeTakeDamage -= OnDamaged;
+		UnSubscribeOnDamage();
 		_damageCount = 0;
 		//Debug.Log("Exiting Frosting State");
 		characterState.RemoveState(this);
@@ -121,51 +109,42 @@ public class FrostingState : AbstractCharacterState
 
 		characterState.Character.Move.StopLookAt();
 
-		//if (!characterState.Check(StatusEffect.AbilitySpeed) && abilities != null)
-		//{
-		//	foreach (var abil in abilities.Abilities)
-		//	{
-		//		if (abil.Info.AbilityForm == AbilityForm.Physical)
-		//		{
-		//			abil.Buff.CastSpeed.IncreasePercentage(.5f);
-		//		}
-		//	}
-		//}
-
 		if (characterState.StateEffects.Ice != null) _ice.SetActive(false);
 	}
 
 	public override bool Stack(float time)
 	{
-		_duration = _baseDuration;
+		duration = Mathf.Max(duration, time);
 
 		if (_ninjaResources != null && _ninjaResources.IsRepeatedFrost)
 		{
 			currentStacksCount = 0;
-			_ninjaResources.AddRepeatedFrozen(characterState.gameObject,_baseDuration);
+			if(characterState.isClient)
+				_ninjaResources.AddRepeatedFrozen(characterState.gameObject,_baseDuration);
 		}
 
 		return true;
 	}
 
-	private void RestartFrosting()
-	{
-		_duration = _baseDuration;
-	}
-	
 	public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		if (!CanEnterState(character)) return null;
 
 		BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
+		SkillName = skillName;
+		
 		if(!_ninjaResources)
 			if (personWhoMadeBuff.TryGetComponent<NinjaResources>(out NinjaResources resources)) _ninjaResources = resources;
-	    
+
+		UnSubscribeOnDamage();
+		SubscribeOnDamage();
+		
 		if (currentStacksCount == 0)
+		{
 			EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+		}
 		else
-			Stack(duration);
+			Stack(durationToExit);
 
 		return this;
 	}

@@ -7717,7 +7717,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.size
-      value: 11
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.size
@@ -7922,27 +7922,27 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[4]'
       value: 
-      objectReference: {fileID: 6704089103393728732}
+      objectReference: {fileID: 5420442362572064916}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[5]'
       value: 
-      objectReference: {fileID: 2612455436425407303}
+      objectReference: {fileID: 6704089103393728732}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[6]'
       value: 
-      objectReference: {fileID: 4791106817473003114}
+      objectReference: {fileID: 2612455436425407303}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[7]'
       value: 
-      objectReference: {fileID: 1301816107117140889}
+      objectReference: {fileID: 4791106817473003114}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[8]'
       value: 
-      objectReference: {fileID: 8227483818893757246}
+      objectReference: {fileID: 1301816107117140889}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[9]'
       value: 
-      objectReference: {fileID: 7324349567343164473}
+      objectReference: {fileID: 8227483818893757246}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[1].Talents.Array.data[0]'
       value: 
@@ -7989,6 +7989,10 @@ PrefabInstance:
       objectReference: {fileID: 1827268369753905710}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[10]'
+      value: 
+      objectReference: {fileID: 7324349567343164473}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[11]'
       value: 
       objectReference: {fileID: 2584411674874024068}
     - target: {fileID: 6214007637544752149, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -8974,8 +8978,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _isTalentSpell: 0
-  _isSkillActive: 1
+  _isTalentSpell: 1
+  _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: f0fbbbbe7ed419f45a1c3c375281ecf1, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
@@ -9246,13 +9250,13 @@ MonoBehaviour:
   _areaComponent:
     _radius: 5
     _area: 0
-    _castLength: 5
-    _castWidth: 1
+    _castLength: 0
+    _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 1
     _isAutoAreaRender: 0
-    _isAutoLineRender: 1
+    _isAutoLineRender: 0
     _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
@@ -9772,8 +9776,6 @@ MonoBehaviour:
   _streamWidth: 1
   _streamLength: 4
   _icyStreamPrefab: {fileID: 7744228389031826322, guid: a86f2fafa49694e4bab52db8f4d3fc78, type: 3}
-  _runeCost: 1
-  _energyPerTick: 5
 --- !u!114 &2727420570257355857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11743,15 +11745,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeathTalent_5
   _data:
-    _descriptionsForInfoPanel: []
+    _descriptionsForInfoPanel:
+    - "\u0412\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
+      \u044D\u043D\u0435\u0440\u0433\u0438\u044E \u0432 \u0440\u0430\u0437\u043C\u0435\u0440\u0435
+      20% \u043E\u0442 \u043D\u0430\u043D\u0435\u0441\u0435\u043D\u043D\u043E\u0433\u043E
+      \u0443\u0440\u043E\u043D\u0430. \u041F\u0440\u0438 \u043D\u0430\u043D\u0435\u0441\u0435\u043D\u0438
+      100 \u0443\u0440\u043E\u043D\u0430 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
+      1 \u0440\u0443\u043D\u0443. \u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442
+      \u043A\u0430\u043A \u0430\u0443\u0440\u0430, \u0441\u043E\u044E\u0437\u043D\u0438\u043A\u0438
+      \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442
+      20% \u043C\u0430\u043D\u043D\u044B \u043E\u0442 \u043D\u0430\u043D\u0435\u0441\u0451\u043D\u043D\u043E\u0433\u043E
+      \u0443\u0440\u043E\u043D\u0430"
     _stateInfos: []
     IsOpen: 0
-    Description: '-'
+    Description: "\u0412\u0430\u043C\u043F\u0438\u0440\u0438\u0437\u043C \u0441\u0438\u043B"
     Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
-  _ninjaResources: {fileID: 5945422429078664588}
 --- !u!114 &3083348233968490285
 MonoBehaviour:
   m_ObjectHideFlags: 0

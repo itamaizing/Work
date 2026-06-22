@@ -84,7 +84,7 @@ public class IceShowerProjectile : Projectiles
                 //_energy.TryUse(_energyDad);
                 _energy.UseAllEnergy();
 				//ClientUse(_energyDad, _energy.gameObject);
-				target.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
+				target.CharacterState.AddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
 				//damage
 				GetComponent<Collider>().enabled = false;
 				Explode();

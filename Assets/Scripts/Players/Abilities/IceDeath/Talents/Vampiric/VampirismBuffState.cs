@@ -44,18 +44,15 @@ public class VampirismBuffState : RefreshingState
     {
         if (damage.Value <= 0) return;
 
+        float energyToRestore = damage.Value * ManaRestorePercent;
         if (_ninjaResources != null)
         {
-            if (characterState.Character.TryGetResource(ResourceType.Energy) is Energy energy)
+            if (characterState.CheckForState(States.HardenedFlesh) && _ninjaResources.IsVampricIncreased)
             {
-                float energyToRestore = damage.Value * ManaRestorePercent;
-                if (characterState.CheckForState(States.HardenedFlesh))
-                {
-                    energyToRestore *= _energyVampiricMultiplier;
-                }
-
-                energy.Add(energyToRestore);
+                energyToRestore *= _energyVampiricMultiplier;
             }
+
+            characterState.Character.Resource?.Add(energyToRestore);
 
             _accumulatedDamageForRune += damage.Value;
 
@@ -71,10 +68,7 @@ public class VampirismBuffState : RefreshingState
         }
         else
         {
-            if (characterState.Character.TryGetResource(ResourceType.Mana) is Mana mana)
-            {
-                mana.Add(damage.Value * ManaRestorePercent);
-            }
+            characterState.Character.Resource?.Add(energyToRestore);
         }
     }
 }

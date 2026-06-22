@@ -71,7 +71,11 @@ public class PortalDarkness : Skill
 
                 var temp = Targeting.GetTempTarget()?.Targetable as Character;
 
-                if (temp != null)
+                if (temp is IceDeadMinion)
+                {
+                    Targeting.ClearTempTarget();
+                }
+                else if(temp != null)
                 {
                     Targeting.SetTarget(temp);
                     break;

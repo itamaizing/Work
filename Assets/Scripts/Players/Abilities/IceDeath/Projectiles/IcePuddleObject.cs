@@ -144,23 +144,44 @@ public class IcePuddleObject : Projectiles
 
     private IEnumerator CheckAndApplyFrosting(Character enemy)
     {
-        float timeInZone = 0f;
         const float FrostingDelay = 0.8f;
+        float timeWithoutFrosting = 0f;
+        bool hadFrosting = false;
 
         while (_enemiesInZone.Contains(enemy))
         {
             yield return _waitShort;
             if (enemy == null || enemy.CharacterState == null) continue;
 
-            timeInZone += 0.1f;
+            var stateFrosting = enemy.CharacterState.GetState(States.Frosting) as FrostingState;
+            
+            bool hasFrosting = enemy.CharacterState.CheckForState(States.Frosting);
 
-            if (timeInZone >= FrostingDelay && !enemy.CharacterState.CheckForState(States.Frosting))
+            if (stateFrosting != null)
             {
-                float duration = RemainingLifetime();
-                if (duration > 0.05f)
-                    ApplyStateWithFrostEnergyBonus(enemy, States.Frosting, duration);
+                if (!stateFrosting.SkillName.Contains("Puddle"))
+                {
+                    ApplyStateWithFrostEnergyBonus(enemy, States.Frosting, RemainingLifetime());
+                }
+                else
+                {
+                    timeWithoutFrosting = 0f;
+                }
+                hadFrosting = true;
+            }
+            else
+            {
+                timeWithoutFrosting += 0.1f;
 
-                timeInZone = 0f;
+                if (timeWithoutFrosting >= FrostingDelay)
+                {
+                    float duration = RemainingLifetime();
+                    if (duration > 0.05f)
+                        ApplyStateWithFrostEnergyBonus(enemy, States.Frosting, duration);
+
+                    timeWithoutFrosting = 0f;
+                    hadFrosting = false;
+                }
             }
         }
 
@@ -171,8 +192,31 @@ public class IcePuddleObject : Projectiles
     {
         if (target == null || target.CharacterState == null) return;
 
-        target.CharacterState.AddState(state, duration, GetDamageToExit(),
-            _dad.gameObject, _skill.name);
+        var ninjaResources = _dad?.Abilities?.GetSkill<NinjaResources>();
+        bool deepFrostingActive = ninjaResources != null && ninjaResources.IsDeepFrosting;
+
+        if (state == States.Frosting && target.CharacterState.CheckForState(States.Frosting))
+        {
+            if (deepFrostingActive)
+            {
+                target.CharacterState.AddState(state, duration, GetDamageToExit(),
+                    _dad.gameObject, _skill.name + "Puddle");
+            }
+            else
+            {
+                var existingState = target.CharacterState.GetState(States.Frosting);
+                if (existingState != null && duration > existingState.RemainingDuration)
+                {
+                    target.CharacterState.AddState(state, duration, GetDamageToExit(),
+                        _dad.gameObject, _skill.name + "Puddle");
+                }
+            }
+        }
+        else
+        {
+            target.CharacterState.AddState(state, duration, GetDamageToExit(),
+                _dad.gameObject, _skill.name + "Puddle");
+        }
 
         _dad.Abilities.GetSkill<FrostEnergy>()?.ApplyFrostEnergyStateBonus(target, state, _skill);
     }

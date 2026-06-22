@@ -100,7 +100,7 @@ public class IceCloudProjectile : Projectiles
 		yield return null;
 
 		target.CharacterState.AddState(States.Frozen, duration,
-			target.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
+			0, _dad.gameObject, _skill.name);
 
 		_dad.Abilities.GetSkill<FrostEnergy>()
 			?.ApplyFrostEnergyStateBonus(target, States.Frozen, _skill);

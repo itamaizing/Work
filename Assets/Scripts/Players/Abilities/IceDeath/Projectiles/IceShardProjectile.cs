@@ -59,7 +59,7 @@ public class IceShardProjectile : Projectiles
 				TargetRpcDamageMake(_curDamage);
 				_skill.ApplyDamage(_damage, target.gameObject);
 
-				target.CharacterState.AddState(States.Frozen, duration, 30, _dad.gameObject, _skill.name);
+				target.CharacterState.AddState(States.Frozen, duration, 0, _dad.gameObject, _skill.name);
 
 				if (_talentPlague)
 					target.CharacterState.AddState(States.Plague, 5f, 0f, _dad.gameObject, _skill.name);

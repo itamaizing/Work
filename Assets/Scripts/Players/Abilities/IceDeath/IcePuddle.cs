@@ -64,6 +64,7 @@ public class IcePuddle : Skill, IEnergyDamagable
     {
         get
         {
+            if (TargetInfoQueue.Count > 0) return true;
             return _shooted;
         }
     }

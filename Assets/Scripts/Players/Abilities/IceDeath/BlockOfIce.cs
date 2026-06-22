@@ -15,6 +15,9 @@ public class BlockOfIce : Skill,IEnergyDamagable
 
 	private Vector3 _mousePos = Vector3.positiveInfinity;
 	private Energy _energy;
+	
+	private float _baseDamageMin = 20f;
+	private float _baseDamageMax = 25f;
 
 	protected override bool IsCanCast => IsCanCastCheck();
 
@@ -52,12 +55,12 @@ public class BlockOfIce : Skill,IEnergyDamagable
 	{
 		BlockOfIceProjectile projectile = Instantiate(_iceArrow, transform.position, Quaternion.Euler(0, -angle, 0));
 
-		float finalDamage = Damage + bonusDamage;
+		float baseDamage = UnityEngine.Random.Range(_baseDamageMin, _baseDamageMax);
+		float finalDamage = baseDamage + bonusDamage;
 
 		projectile.Init(_playerLinks, finalDamage, false, this);
 
 		NetworkServer.Spawn(projectile.gameObject);
-
 		RpcInit(projectile.gameObject, finalDamage);
 	}
 

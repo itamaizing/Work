@@ -24,6 +24,9 @@ public class CircularFrosting : Skill,IEnergyDamagable
 
     private float _baseDuration = 2f;
     private float _duration = 2f;
+    private float _runeCost = 3f; 
+    private float _maxEnergyForBonus = 30f;
+    private float _energyPerSecondStep = 10f;
 
     private Energy _energy;
     private bool _talentFrostingFrozen;
@@ -60,6 +63,12 @@ public class CircularFrosting : Skill,IEnergyDamagable
         if (_energy == null) yield break;
         if (!IsCasting) yield break;
 
+        if (!Cost.TryPaySingle(_runeCost, ResourceType.Rune, shouldModify: false))
+        {
+            TryCancel(true);
+            yield break;
+        }
+        
         FindEnemies();
         ExplosionFrosting();
 
@@ -83,22 +92,13 @@ public class CircularFrosting : Skill,IEnergyDamagable
 
     private void ExplosionFrosting()
     {
-        float usedEnergy;
-        
-        if (_energy.CurrentValue >= 30f)
-        {
-            usedEnergy = 30f;
-            _duration = _baseDuration + 3f;
-        }
-        else
-        {
-            usedEnergy = _energy.CurrentValue;
-            _duration = _baseDuration + usedEnergy / 10f;
-        }
+        float usedEnergy = Mathf.Min(_energy.CurrentValue, _maxEnergyForBonus);
 
-        if (usedEnergy <= 0f) return;
+        int bonusSteps = Mathf.FloorToInt(usedEnergy / _energyPerSecondStep);
+        _duration = _baseDuration + bonusSteps;
 
-        _energy.CmdUse(usedEnergy);
+        if (usedEnergy > 0f)
+            _energy.CmdUse(usedEnergy);
 
         foreach (Character target in _enemies)
         {
