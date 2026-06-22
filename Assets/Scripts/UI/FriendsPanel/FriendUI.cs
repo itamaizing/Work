@@ -70,6 +70,9 @@ public class FriendUI : MonoBehaviour
     private List<PlayerCardUI> _playersCardsFriendRequst = new();
 
     public event Action<FriendData[]> FriendListUpdated;
+    public event Action FriendWentOffline;
+    public event Action FriendWentOnline;
+    public event Action FriendAcceptedInvite;
 
     public void Start()
     {
@@ -232,6 +235,18 @@ public class FriendUI : MonoBehaviour
                 break;   
             case "acceptInvite":
                 OnInviteAccept(dictionary);
+                FriendAcceptedInvite?.Invoke();
+                break;
+            case "needUpdateFriendUI":
+                UpdateFriendUI();
+                break;
+            case "friend_offline":
+                UpdateFriendUI();
+                FriendWentOffline?.Invoke();
+                break;
+            case "friend_online":
+                UpdateFriendUI();
+                FriendWentOnline?.Invoke();
                 break;
         }
     }
@@ -248,14 +263,7 @@ public class FriendUI : MonoBehaviour
             {USERID, MPNetworkManager.Instance.UserID.ToString() },
             {LOGIN, _friendName}
         };
-        NetworkHTTP.Instance.Post(URLLibrary.RequestFriendship, data, TestDebug);
-    }
-
-    private void TestDebug(string obj)
-    {
-        Debug.Log("test");
-        Debug.Log(obj);
-        Debug.Log("test");
+        NetworkHTTP.Instance.Post(URLLibrary.RequestFriendship, data);
     }
 
     private void AddFriend(string name)
@@ -270,7 +278,6 @@ public class FriendUI : MonoBehaviour
 
     private void OnFriendAdded(string data)
     {
-        Debug.Log(data);
         Dictionary<string, string> data1 = new Dictionary<string, string>()
         {
             {USERID, MPNetworkManager.Instance.UserID.ToString() },
@@ -428,5 +435,17 @@ public class FriendUI : MonoBehaviour
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(item);
         }
+    }
+
+    private void SendUpdateRequest(int id)
+    {
+        var data = new
+        {
+            type = "needUpdateFriendUI",
+            id = id
+        };
+        string json = JsonConvert.SerializeObject(data);
+
+        WebSocketClient.Instance.SendMessageToServer(json);
     }
 }
