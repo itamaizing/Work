@@ -43,22 +43,26 @@ public class Impatica : Skill
 
                 if (Targeting.GetTempTarget()?.Character != null)
                 {
-                    if (IsAllyTarget(Targeting.GetTempTarget()?.Character) || Targeting.GetTempTarget()?.Character == Hero)
+                    Character tempTarget = Targeting.GetTempTarget().Character;
+
+                    if (!IsAllyTarget(tempTarget) || tempTarget == Hero)
                     {
                         Targeting.ClearTempTarget();
                     }
                     else
                     {
-                        Targeting.GetTempTarget().Character.SelectedCircle.IsActive = true;
+                        tempTarget.SelectedCircle.IsActive = true;
                         break;
                     }
                 }
             }
+
             yield return null;
         }
 
         Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
         Targeting.ClearTempTarget();
+
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
