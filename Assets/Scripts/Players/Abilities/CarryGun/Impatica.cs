@@ -8,7 +8,30 @@ public class Impatica : Skill
     [SerializeField] private Character _playerLinks;
     [SerializeField] private float duration;
 
-    protected override bool IsCanCast => Charges.HasCharges && Targeting.GetTarget()?.Character != null;
+    protected override bool IsCanCast
+    {
+        get
+        {
+            Character target = Targeting.GetTarget()?.Character;
+
+            if (target == null)
+                return false;
+
+            if (!Charges.HasCharges)
+                return false;
+
+            if (!IsAllyTarget(target))
+                return false;
+
+            if (target == Hero)
+                return false;
+
+            float distance = Vector3.Distance(Hero.transform.position, target.transform.position);
+
+            return distance <= AreaInfo.Radius;
+        }
+    }
+
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     private const float TargetSearchRadius = 0.5f;
@@ -45,10 +68,11 @@ public class Impatica : Skill
                 {
                     Character tempTarget = Targeting.GetTempTarget().Character;
 
-                    if (!IsAllyTarget(tempTarget) || tempTarget == Hero)
+                    if (!IsAllyTarget(tempTarget) || tempTarget == Hero || Vector3.Distance(Hero.transform.position, tempTarget.transform.position) > AreaInfo.Radius)
                     {
                         Targeting.ClearTempTarget();
                     }
+
                     else
                     {
                         tempTarget.SelectedCircle.IsActive = true;
