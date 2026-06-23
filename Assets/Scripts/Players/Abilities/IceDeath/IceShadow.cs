@@ -11,8 +11,7 @@ public class IceShadow : Skill,IEnergyDamagable
 	[SerializeField] private IcyStream _icyStream;
 	[SerializeField] private CircularFrosting _circularFrosting;
 	[ReadOnly][SerializeField] private IcyStreamShadow _icyStreamShadow;
-	[SerializeField] private HeroComponent _playerLinks; 
-	[SerializeField] private SeriesOfStrikes _combo;
+	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private AudioClip audioClip;
 	//[SerializeField] private bool isTest = true;
 
@@ -114,8 +113,6 @@ public class IceShadow : Skill,IEnergyDamagable
 			_remainingDelayCircularFrostin = _circularFrosting.RemainingDelay;
 			Debug.Log($"_remainingDelayCircularFrostin: {_remainingDelayCircularFrostin}");
 		}
-			
-		_lastHit = _combo.MakeHit(null, Info.AbilityForm, 1, _manaUsed, 0, _combo.GetMultipliedSpeed() / SpeedScaleDivisor);
 
 		if (!triggeredFromOtherSkill)
 		{

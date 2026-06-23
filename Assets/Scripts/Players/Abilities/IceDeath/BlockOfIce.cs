@@ -7,7 +7,6 @@ public class BlockOfIce : Skill,IEnergyDamagable
 {
 	[SerializeField] private BlockOfIceProjectile _iceArrow;
 	[SerializeField] private HeroComponent _playerLinks;
-	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 	[SerializeField] private float _runeCost = 1f;
 	[SerializeField] private float _energyStep = 5f;
 	[SerializeField] private float _damagePerStep = 3f;
@@ -47,7 +46,6 @@ public class BlockOfIce : Skill,IEnergyDamagable
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 
 		CmdCreateProjecttile(angle, bonusDamage);
-		_seriesOfStrikes.MakeHit(null, AbilityForm.Magic, 1, 0, 0);
 	}
 
 	[Command]

@@ -7,7 +7,6 @@ public class IceShard : Skill,IEnergyDamagable
 {
 	[SerializeField] private IceShardProjectile _projectile;
 	[SerializeField] private HeroComponent _playerLinks;
-	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 
 	[SerializeField] private float _baseEnergyCost = 5f;
 	[SerializeField] private float _maxAdditionalCost = 0f;
@@ -75,8 +74,6 @@ public class IceShard : Skill,IEnergyDamagable
 		lookDir.Normalize();
 
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
-
-		_seriesOfStrikes.MakeHit(null, Info.AbilityForm, 1, 5, 3);
 
 		CmdCreateProjecttile(angle, _energy.CurrentValue, _talentPlague, _talentChragesPlague, 4f);
 	}

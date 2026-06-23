@@ -7,7 +7,6 @@ using UnityEngine;
 public class CircularFrosting : Skill,IEnergyDamagable
 {
     [SerializeField] private Character _player;
-    [SerializeField] private SeriesOfStrikes _seriesOfStrikes;
     [SerializeField] private ParticleSystemController _particleSystem;
 
     private float _delayDuration;
@@ -111,8 +110,6 @@ public class CircularFrosting : Skill,IEnergyDamagable
     private void CmdApplyFrosting(Character target, float usedEnergy, float duration)
     {
         if (target == null) return;
-
-        if (_seriesOfStrikes != null) _seriesOfStrikes.MakeHit(target, Info.AbilityForm, 1, usedEnergy, 0);
 
         var frostEnergy = Hero.Abilities.GetSkill<FrostEnergy>();
 

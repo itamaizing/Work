@@ -8524,6 +8524,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 216189140795677596}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5942653815601784646}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8581182762776661264}
@@ -8692,7 +8695,7 @@ MonoBehaviour:
   _damageValue: 8
   _infoComponent:
     _school: 6
-    _form: 2
+    _form: 1
     _damageType: 1
     _rangeType: 0
     _skillType: 0
@@ -8753,7 +8756,6 @@ MonoBehaviour:
     _prepareAnimations: []
     _castAnimations: []
     _activeClip: 0
-  _combo: {fileID: 3083348233968490285}
   _hits:
   - {fileID: 8300000, guid: 38dd5da71cb5afd46a2d5744de079417, type: 3}
   - {fileID: 8300000, guid: 8ef68e5faeaffc54da9fe368168308ba, type: 3}
@@ -8856,7 +8858,6 @@ MonoBehaviour:
     _castAnimations: []
     _activeClip: 0
   _projectile: {fileID: 3779490377558770127, guid: 911d5f174dbe7ac4b8da163e8aaf32a1, type: 3}
-  _combo: {fileID: 3083348233968490285}
   _audioClip: {fileID: 8300000, guid: f609f46a7f40ad84b9b010044a07b747, type: 3}
 --- !u!114 &3068634069238352843
 MonoBehaviour:
@@ -8961,7 +8962,6 @@ MonoBehaviour:
   _circularFrosting: {fileID: 2727420570257355857}
   _icyStreamShadow: {fileID: 1550736018203531800, guid: 9076f8626dfb68e41972df7ea9f5e4ec, type: 3}
   _playerLinks: {fileID: 4374618947117916461}
-  _combo: {fileID: 3083348233968490285}
   audioClip: {fileID: 8300000, guid: 424858f5206c73b4186512fa60be6047, type: 3}
 --- !u!114 &4310610476984543593
 MonoBehaviour:
@@ -9064,7 +9064,6 @@ MonoBehaviour:
   _puddle: {fileID: -4751265457872843896, guid: 49b94ed23b9d6a447b459769dcbb348d, type: 3}
   _puddleBig: {fileID: -4751265457872843896, guid: 846556c08d21ee240b3671a600246389, type: 3}
   preViewPuddlePrefab: {fileID: 8842404529923409551, guid: c543d7786e879d14cb91ce31839db008, type: 3}
-  _seriesOfStrikes: {fileID: 3083348233968490285}
   _timeToDestroy: 3
   _maxLifePuddleTime: 7
   _move: {fileID: 323327819542905198}
@@ -9166,7 +9165,6 @@ MonoBehaviour:
     _activeClip: 0
   _playerLinks: {fileID: 4374618947117916461}
   _physicalAttack: {fileID: 7407653808177717906}
-  _seriesOfStrikes: {fileID: 3083348233968490285}
   _jumprange: 2
   _durationOfJumpPerCell: 0.3
   _audioClip: {fileID: 0}
@@ -9478,7 +9476,6 @@ MonoBehaviour:
     _activeClip: 0
   _iceArrow: {fileID: -4716538455152202873, guid: 2b98bf57809a2ea488381e132571282f, type: 3}
   _playerLinks: {fileID: 4374618947117916461}
-  _seriesOfStrikes: {fileID: 3083348233968490285}
   _runeCost: 1
   _energyStep: 5
   _damagePerStep: 3
@@ -9577,7 +9574,6 @@ MonoBehaviour:
     _activeClip: 0
   _projectile: {fileID: -5318331524605723407, guid: 972ffc3bac4d76048b18c6e9bbdcfb98, type: 3}
   _playerLinks: {fileID: 4374618947117916461}
-  _seriesOfStrikes: {fileID: 3083348233968490285}
   _baseEnergyCost: 5
   _maxAdditionalCost: 0
 --- !u!114 &5084671336121015661
@@ -9675,7 +9671,6 @@ MonoBehaviour:
   _damage: 15
   _playerLinks: {fileID: 4374618947117916461}
   _deathSpiral: {fileID: 5605713643324713456}
-  _seriesOfStrikes: {fileID: 3083348233968490285}
   _sword: {fileID: 1545470976515082280}
   audioClip: {fileID: 8300000, guid: 7b90008d29cc7d14db8ede5bfe287bf1, type: 3}
   _baseEnergyCost: 40
@@ -9875,7 +9870,6 @@ MonoBehaviour:
     _castAnimations: []
     _activeClip: 0
   _player: {fileID: 4374618947117916461}
-  _seriesOfStrikes: {fileID: 3083348233968490285}
   _particleSystem: {fileID: 8916151325973806605}
 --- !u!114 &2036370849879020904
 MonoBehaviour:
@@ -9978,7 +9972,6 @@ MonoBehaviour:
   _projectile: {fileID: 6346210437348289638, guid: 795c930bd55158742a432f093fa0c89e, type: 3}
   _skillRenderer: {fileID: 2643045369493803655}
   _playerLinks: {fileID: 4374618947117916461}
-  _combo: {fileID: 3083348233968490285}
 --- !u!114 &5945422429078664588
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10665,6 +10658,35 @@ MonoBehaviour:
   _targetLayer:
     serializedVersion: 2
     m_Bits: 512
+--- !u!114 &5942653815601784646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 465973236533830398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fcf2694bddcb1d409a326e23057b996, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ComboSeriesSystem
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _comboTimeout: 6
+  _energyPerHit: 5
+  _energyRestorePercentOnComplete: 0.4
+  _speedBonusPerHit: 0.3
+  _availablePatterns:
+  - name: "\u0424\u0424\u0424\u0424\u0424\u0424"
+    sequence: 010000000100000001000000010000000100000001000000
+    isActive: 1
+  - name: "\u0424\u0424\u0424\u0424\u0424\u041C"
+    sequence: 010000000100000001000000010000000100000000000000
+    isActive: 1
+  - name: "\u0424"
+    sequence: 01000000
+    isActive: 1
 --- !u!114 &829006267482502751 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -10847,7 +10869,7 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
-  _physicalAttack: {fileID: 7407653808177717906}
+  _comboSeries: {fileID: 5942653815601784646}
 --- !u!114 &1789533417509439406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11638,7 +11660,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4374618947117916461}
-  _seriesOfStrikes: {fileID: 3083348233968490285}
   _skillManager: {fileID: 4220410774128686972}
   _portalDarkness: {fileID: 5339826369234288012}
 --- !u!114 &7185321803913916173
@@ -11775,7 +11796,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fcf2694bddcb1d409a326e23057b996, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerLinks: {fileID: 4374618947117916461}
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _comboTimeout: 6
+  _energyPerHit: 5
+  _energyRestorePercentOnComplete: 0.4
+  _speedBonusPerHit: 0.3
+  _availablePatterns: []
 --- !u!114 &850994493169687921
 MonoBehaviour:
   m_ObjectHideFlags: 0

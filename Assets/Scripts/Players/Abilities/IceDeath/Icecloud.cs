@@ -6,7 +6,6 @@ using UnityEngine;
 public class IceCloud : Skill,IEnergyDamagable
 {
 	[SerializeField] private IceCloudProjectile _projectile;
-	[SerializeField] private SeriesOfStrikes _combo;
 	[SerializeField] private AudioClip _audioClip;
 
 	private Vector3 _mousePos = Vector3.positiveInfinity;
@@ -70,7 +69,6 @@ public class IceCloud : Skill,IEnergyDamagable
 
         Vector3 lookDir = _mousePos - Hero.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - AngleOffset;
-		if (_combo.MakeHit(null, Info.AbilityForm, 1, 0, 0, _combo.GetMultipliedSpeed() / ComboSpeedDivider)) _lastHit = true;
 
 		float energyToUse = _energy.CurrentValue;
 		_energy.CmdUse(energyToUse);

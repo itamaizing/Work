@@ -16,7 +16,6 @@ public class IcePuddle : Skill, IEnergyDamagable
     //[SerializeField] private DecalProjector _puddleProjector;
 
     [Header("Ability settings")]
-    [SerializeField] private SeriesOfStrikes _seriesOfStrikes;
     [SerializeField] private float _timeToDestroy = 3f;
     [SerializeField] private float _maxLifePuddleTime = 7f;
     [SerializeField] private MoveComponent _move;
@@ -180,8 +179,6 @@ public class IcePuddle : Skill, IEnergyDamagable
 
     protected override IEnumerator CastJob()
     {
-        _lastHit = _seriesOfStrikes.MakeHit(null, Info.AbilityForm, 1, 0, 0, _seriesOfStrikes.GetMultipliedSpeed() / 100);
-
         Shoot();
         yield return null;
     }

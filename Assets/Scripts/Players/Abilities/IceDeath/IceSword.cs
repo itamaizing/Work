@@ -11,7 +11,6 @@ public class IceSword : CloseCombatSkill,IEnergyDamagable
 	//[SerializeField] private GameObject _basePlayer;
 	[SerializeField] private Character _playerLinks;
 	[SerializeField] private DeathSpiral _deathSpiral;
-	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 	[SerializeField] private GameObject _sword;
 	[SerializeField] private AudioClip audioClip;
 
@@ -72,7 +71,6 @@ public class IceSword : CloseCombatSkill,IEnergyDamagable
 			yield break;
 		}
 
-		_seriesOfStrikes.MakeHit(Targeting.GetTarget()?.Character, Info.AbilityForm, 0, 10, 0);
 		if (Targeting.GetTarget()?.Character == _oldtarget)
 		{
 			_hitInTheRow++;
