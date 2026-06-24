@@ -122,8 +122,9 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
                 Selected?.Invoke(_talent, _talent.IsOpen, _talent.Level + 1);
                 _lvlText.gameObject.SetActive(true);
             }
-            else
+           /* else
             {
+                
                 if (!_talent.CanClose())
                 {
                     Debug.Log("CANT CLOSE TALENT", this);
@@ -132,7 +133,7 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
                 Selected?.Invoke(_talent, !_talent.IsOpen, 0);
                 _lvlText.text = "0";
                 _lvlText.gameObject.SetActive(false);
-            }
+            }*/
         }
         else
         {
@@ -148,6 +149,14 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
 
     private void OnRightClick()
     {
+        if(_talent.Level >= 2)
+        {
+            _lvlText.text = (_talent.Level - 1).ToString();
+            Selected?.Invoke(_talent, _talent.IsOpen, _talent.Level - 1);
+            _lvlText.gameObject.SetActive(true);
+
+            return;
+        }
         if (!_talent.CanClose())
         {
             Debug.Log("CANT CLOSE TALENT", this);

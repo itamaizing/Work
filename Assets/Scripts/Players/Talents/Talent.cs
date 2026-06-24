@@ -7,7 +7,7 @@ public abstract class Talent : MonoBehaviour
 	[SerializeField]
 	private TalentData _data;
 
-	private List<TalentData> _dependentTalents = new();
+	//private List<TalentData> _dependentTalents = new();
 
 	[SerializeReference, SubclassSelector]
 	public OpenCondition OpenCondition;
@@ -18,25 +18,34 @@ public abstract class Talent : MonoBehaviour
 
 	private void OnValidate()
 	{
-		_data.Name = GetType().Name;
-		if(OpenCondition == null)
-		{
-			OpenCondition = new EmptyCondition();
-		}
-        _data.condition = OpenCondition;
-        _data.ConditionDescription = OpenCondition.ConditionDescription();
-		//OpenCondition.Validete(Data);
-		//Debug.Log("Open condition " + OpenCondition.CanOpen);
+		Init();
 	}
 
-	public abstract void Enter();
+    private void Awake()
+    {
+		Init();
+    }
+
+    private void Init()
+    {
+        _data.Name = GetType().Name;
+        if (OpenCondition == null)
+        {
+            OpenCondition = new EmptyCondition();
+        }
+        _data.condition = OpenCondition;
+        _data.ConditionDescription = OpenCondition.ConditionDescription();
+    }
+
+    public abstract void Enter();
 
 	public abstract void Exit();
 
-	public void SetActive(bool isActive, int lvl = -1)
+	public void SetActive(bool isActive, int lvl = 0)
 	{
+		Debug.Log(isActive + "Lvl: " + lvl);
 		_data.SetOpen(isActive);
-		_data.Level = lvl;
+		_data.SetLevel(lvl);
 		if (isActive && OpenCondition.CanOpen)
 		{
 			Enter();

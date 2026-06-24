@@ -17,6 +17,7 @@ public class TalentSaveManager
 	public void SaveTalent(HeroComponent character, int idGroup, int row, string idTalent, bool isActive, int lvl, int saveGroup)
     {
         var isTalentActive = isActive ? lvl : 0;
+		Debug.Log("IsActive: " + isActive + " isTalentActive: " + isTalentActive + " lvl: " + lvl);
 		//var talentGroup = character.TalentManager.TalentsGroups.FirstOrDefault(o => o.ID == idGroup);
 		// var talent = talentGroup?.TalentsData.FirstOrDefault(o => o.Data.Name == idTalent);
 		if (isActive && !character.TalentManager.CanOpenTalent) return;
@@ -102,6 +103,7 @@ public class TalentSaveManager
         talent.Data.SetOpen(isActive >= 1);
 		Debug.Log("Lvl talent: " + talent.Data.Level + " " + isActive);
         talentGroup.SetActive(talent.Data, isActive >= 1, isActive);
+		Debug.Log("Lvl talent2: " + talent.Data.Level + " " + isActive);
 
         if (needActive)
         {

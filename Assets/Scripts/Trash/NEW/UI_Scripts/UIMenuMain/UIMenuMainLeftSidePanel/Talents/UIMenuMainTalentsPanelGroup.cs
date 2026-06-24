@@ -104,7 +104,7 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
     void UpdateActiveTalentsCount()
     {
         //var activeTalentsCount = _talentsGroup.TalentsData.Count(o => o.Data.IsOpen);
-        var activeTalentsCount = GetActiveTalents();
+        var activeTalentsCount = GetCountTalents();
 
 		_talentsCount.ChangeKey(activeTalentsCount);
     }
@@ -138,6 +138,24 @@ public class UIMenuMainTalentsPanelGroup : MonoBehaviour, IPointerEnterHandler, 
 		return activeTalents.Count;
 
 	}
+
+    private int GetCountTalents()
+    {
+        List<Talent> activeTalents = new();
+        int count = 0;
+        foreach (TalentRow row in _talentsGroup.TalentRows)
+        {
+            foreach (Talent talent in row.Talents)
+            {
+                if (talent.Data.IsOpen)
+                {
+                    count += talent.Data.Level;
+                }
+            }
+        }
+
+        return count;
+    }
 
     private int GetItemsInRowCount()
     {

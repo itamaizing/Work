@@ -8,7 +8,7 @@ public abstract class OpenCondition
 {
     protected string _conditionDescription = string.Empty;
     public virtual bool CanOpen => CanOpenMethod();
-    protected abstract bool CanOpenMethod();
+    protected virtual bool CanOpenMethod() { return true; }
 
     public virtual void Validete(TalentData data) { }
     public virtual string ConditionDescription() => _conditionDescription;
