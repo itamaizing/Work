@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-public class TalentData
+public class TalentData : IDisposable
 {
 	[SerializeField] private List<string> _descriptionsForInfoPanel;
 	[SerializeField] private List<TalentStateInfo> _stateInfos = new();
@@ -58,7 +58,7 @@ public class TalentData
 	public void AddDependentTalent(TalentData talent)
     {
 		if (talent == null) return;
-		/*var talentFind = _dependentTalents.FirstOrDefault(t => t.Name == talent.Name);
+        /*var talentFind = _dependentTalents.FirstOrDefault(t => t.Name == talent.Name);
         if (talentFind != null)
 		{ 
 			talentFind = talent;
@@ -66,6 +66,21 @@ public class TalentData
         }*/
 
         //_dependentTalents.Clear();
+        Debug.Log("NEWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+
+        Debug.Log(_dependentTalents.Count);
+        Debug.Log(_dependentTalents.Contains(talent));
+        foreach (var item in _dependentTalents)
+        {
+            Debug.Log("___");
+            Debug.Log(item);
+            Debug.Log(talent);
+            Debug.Log(talent == item);
+            Debug.Log("___");
+        }
+
+
+        Debug.Log("DDDDNEWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
         if (!_dependentTalents.Contains(talent))
         {
             _dependentTalents.Add(talent);
@@ -88,5 +103,11 @@ public class TalentData
             if (talent.IsOpen) return false;
         }
         return true;
+    }
+
+    public void Dispose()
+    {
+        Debug.Log("talentClearClearClearClearClearClearClearClearClearClearClear");
+        _dependentTalents.Clear();
     }
 }

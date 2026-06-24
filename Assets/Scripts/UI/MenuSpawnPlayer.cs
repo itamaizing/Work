@@ -44,9 +44,10 @@ public class MenuSpawnPlayer : MonoBehaviour
             Destroy(_currentHero.gameObject);
         }
 
-        GameObject spawnedHero = Instantiate(hero.MenuPreview, _placeToSpawn.position, Quaternion.Euler(0, 180, 0));
+        HeroComponent spawnedHero = Instantiate(hero, _placeToSpawn.position, Quaternion.Euler(0, 180, 0));
+        spawnedHero.Initialize();
         spawnedHero.gameObject.transform.localScale = Vector3.one * _scaleMultiplier;
-        _currentHero = spawnedHero;
+        _currentHero = spawnedHero.gameObject;
     }
 
     private void RotateHero()
