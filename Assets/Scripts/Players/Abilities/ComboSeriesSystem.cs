@@ -7,7 +7,7 @@ using UnityEngine;
 public class ComboSeriesSystem : NetworkBehaviour
 {
     [Header("Series Settings")]
-    [SerializeField] private float _comboTimeout = 6f;
+    [SerializeField] private float _comboTimeout = 2f;
     [SerializeField] private float _energyPerHit = 5f;
     [SerializeField] private float _energyRestorePercentOnComplete = 0.4f;
     [SerializeField] private float _speedBonusPerHit = 0.3f;
@@ -28,6 +28,8 @@ public class ComboSeriesSystem : NetworkBehaviour
     private bool _isInSeries = false;
 
     private bool _seriesIsEnable;
+
+    private Skill _lastPreparedSkill;
 
     public void EnableSeries(bool value)
     {
@@ -92,7 +94,10 @@ public class ComboSeriesSystem : NetworkBehaviour
         {
             _timer -= Time.deltaTime;
             if (_timer <= 0)
+            {
                 BreakSeries();
+                RefreshPreparedSkill();
+            }
         }
     }
     
@@ -100,12 +105,23 @@ public class ComboSeriesSystem : NetworkBehaviour
     {
         if (!_seriesIsEnable || skill == null) return;
 
+        _lastPreparedSkill = skill;
+        
         IComboSeriesParticipatingSkill seriesSkill = skill as IComboSeriesParticipatingSkill;
         if (seriesSkill == null) return;
 
         bool willCompleteSeries = WillCompleteSeriesOnNextHit(skill);
 
         seriesSkill.OnSeriesPotentialFinal(skill, willCompleteSeries);
+    }
+    
+    private void RefreshPreparedSkill()
+    {
+        if (_lastPreparedSkill is not IComboSeriesParticipatingSkill comboSkill)
+            return;
+
+        comboSkill.OnSeriesPotentialFinal(_lastPreparedSkill, false);
+        _lastPreparedSkill = null;
     }
     
     private bool WillCompleteSeriesOnNextHit(Skill skill)
@@ -139,12 +155,12 @@ public class ComboSeriesSystem : NetworkBehaviour
     private void RegisterHit(GameObject targetGo,Skill skill)
     {
         if(!_seriesIsEnable) return;
-        if (skill == null || targetGo == null) return;
+        if (skill == null) return;
 
         if (_energy == null)
             _energy = (Energy)_hero.Resources[ResourceType.Energy];
 
-        Character target = targetGo.GetComponent<Character>();
+        Character target = targetGo == null ? null : targetGo.GetComponent<Character>();
         IComboSeriesParticipatingSkill series = skill as IComboSeriesParticipatingSkill;
         
         if (!CanPayEnergy(series)) 
@@ -154,8 +170,11 @@ public class ComboSeriesSystem : NetworkBehaviour
         }
 
         PayEnergy(series);
-
-        bool isSameTarget = target == _currentTarget || _currentTarget == null;
+        bool isSameTarget;
+        if(target == null)
+            isSameTarget = true;
+        else
+            isSameTarget = target == _currentTarget || _currentTarget == null;
 
         if (!isSameTarget)
         {
@@ -195,6 +214,8 @@ public class ComboSeriesSystem : NetworkBehaviour
 
     private void StartNewSeries(Character target)
     {
+        if(target == null) BreakSeries();
+        
         _currentTarget = target;
         _currentHitCount = 0;
         _currentSequence.Clear();
@@ -266,7 +287,6 @@ public class ComboSeriesSystem : NetworkBehaviour
         _totalEnergySpentThisSeries = 0f;
         _currentSpeedMultiplier = 1f;
         _isInSeries = false;
-        
         ResetSpeedBoost();
     }
 

@@ -119,6 +119,7 @@ public class CircularFrosting : Skill,IEnergyDamagable
             frostEnergy?.ApplyFrostEnergyStateBonus(target, States.Frozen, this);
         }*/
 
+        Debug.LogError("TryFrosting: "+duration);
         target.CharacterState.AddState(States.Frosting, duration, 0, Hero.gameObject, name);
         frostEnergy?.ApplyFrostEnergyStateBonus(target, States.Frosting, this);
     }

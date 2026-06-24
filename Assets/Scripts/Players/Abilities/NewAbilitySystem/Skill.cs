@@ -1288,8 +1288,8 @@ public abstract class Skill : NetworkBehaviour
         {
             damageable.TryTakeDamage(ref damage, this);
             OnDamagedApplied(target);
-            _hero.DamageTracker.AddDamage(damage, target, isServerRequest: isServer);
-            _hero.DamageGet(damage, target);
+            /*_hero.DamageTracker.AddDamage(damage, target, isServerRequest: isServer);
+            _hero.DamageGet(damage, target);*/
             TryCountGettedDamage(damage);
         }
 

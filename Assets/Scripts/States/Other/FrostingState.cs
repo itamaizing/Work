@@ -120,7 +120,7 @@ public class FrostingState : RefreshingState
 		{
 			currentStacksCount = 0;
 			if(characterState.isClient)
-				_ninjaResources.AddRepeatedFrozen(characterState.gameObject,_baseDuration);
+				_ninjaResources.AddRepeatedFrozen(characterState.gameObject,time);
 		}
 
 		return true;

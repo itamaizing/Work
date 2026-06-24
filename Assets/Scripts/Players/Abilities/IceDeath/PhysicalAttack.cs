@@ -215,7 +215,7 @@ public class PhysicalAttack : Skill,IEnergyDamagable, IComboSeriesParticipatingS
 	public event IComboSeriesParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplySeriesDamage;
 	public event Action<GameObject, Skill> OnSeriesDamaged;
 
-	public float EnergyCostOnHit => EnergyPerAttack;
+	public float EnergyCostOnHit => 0;
 
 	public void OnSeriesHit(int hitCountInCurrentSeries, Character target)
 	{

@@ -23,6 +23,7 @@ public class VampirismBuffState : RefreshingState
         if(_ninjaResources == null)
             if (characterState.Character.TryGetComponent<NinjaResources>(out NinjaResources resources)) _ninjaResources = resources;
 
+        characterState.Character.DamageTracker.OnDamageTracked -= OnDamageDealt;
         characterState.Character.DamageTracker.OnDamageTracked += OnDamageDealt;
     }
 
@@ -53,7 +54,6 @@ public class VampirismBuffState : RefreshingState
             }
 
             characterState.Character.Resource?.Add(energyToRestore);
-
             _accumulatedDamageForRune += damage.Value;
 
             while (_accumulatedDamageForRune >= DamagePerRune)

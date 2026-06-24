@@ -36,6 +36,8 @@ public class IcePuddleObject : Projectiles
     private const float FrostEnergyFrostingBonusPerStack = 5f;
     private const float FrostEnergyFrozenBonusPerStack   = 10f;
 
+    private HashSet<Character> _alreadyDebuffed = new();
+
     public DecalProjector Decal { get => decalProjector; set => decalProjector = value; }
 
     private void OnDisable()
@@ -192,6 +194,11 @@ public class IcePuddleObject : Projectiles
     {
         if (target == null || target.CharacterState == null) return;
 
+        if (_alreadyDebuffed.Contains(target))
+            return;
+        
+        _alreadyDebuffed.Add(target);
+        
         var ninjaResources = _dad?.Abilities?.GetSkill<NinjaResources>();
         bool deepFrostingActive = ninjaResources != null && ninjaResources.IsDeepFrosting;
 
@@ -200,7 +207,7 @@ public class IcePuddleObject : Projectiles
             if (deepFrostingActive)
             {
                 target.CharacterState.AddState(state, duration, GetDamageToExit(),
-                    _dad.gameObject, _skill.name + "Puddle");
+                    _dad.gameObject, "Puddle");
             }
             else
             {
@@ -208,7 +215,7 @@ public class IcePuddleObject : Projectiles
                 if (existingState != null && duration > existingState.RemainingDuration)
                 {
                     target.CharacterState.AddState(state, duration, GetDamageToExit(),
-                        _dad.gameObject, _skill.name + "Puddle");
+                        _dad.gameObject, "Puddle");
                 }
             }
         }
@@ -234,7 +241,14 @@ public class IcePuddleObject : Projectiles
         foreach (var enemy in _enemiesInZone)
         {
             if (enemy != null && enemy.CharacterState != null)
-                enemy.CharacterState.RemoveState(States.Frosting);
+            {
+                if(enemy.CharacterState.CheckForState(States.Frosting))
+                {
+                    var state = enemy.CharacterState.GetState(States.Frosting) as FrostingState;
+                    if(state.SkillName.Contains("Puddle"))
+                        enemy.CharacterState.RemoveState(States.Frosting);
+                }
+            }
         }
 
         _enemiesInZone.Clear();

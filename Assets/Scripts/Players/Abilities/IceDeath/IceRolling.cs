@@ -158,25 +158,35 @@ public class IceRolling : Skill,IComboSeriesParticipatingSkill
 		Vector3 direction = (end - start).normalized;
 		float distance = Vector3.Distance(start, end);
 
-		RaycastHit[] hits = Physics.BoxCastAll(start, new Vector3(BoxCastSize, BoxCastSize, BoxCastSize), 
-			direction, Quaternion.identity, distance, _obstacle);
+		RaycastHit[] hits = Physics.BoxCastAll(start, new Vector3(BoxCastSize, BoxCastSize, BoxCastSize), direction, Quaternion.identity, distance, _obstacle);
 
 		stopPosition = end;
 		characterHit = null;
 
-		if (hits.Length == 0) return false;
+		if (hits.Length == 0)
+			return false;
 
-		foreach (RaycastHit hit in hits.OrderBy(h => h.distance))
+		var sortedHits = hits.OrderBy(h => h.distance).ToArray();
+
+		foreach (var hit in sortedHits)
 		{
-			if (hit.collider.transform.root == transform.root) continue;
+			if (hit.collider.transform.root == transform.root)
+				continue;
 
 			if (hit.collider.TryGetComponent<Character>(out Character character) && character != _hero)
 			{
 				characterHit = character;
-				stopPosition = hit.point - direction * ObstaclePushBackMultiplier;
-				return true;
+				
+				if (_shouldCaptureTarget)
+				{
+					continue;
+				}
+				else
+				{
+					stopPosition = hit.point - direction * ObstaclePushBackMultiplier;
+					return true;
+				}
 			}
-
 			stopPosition = hit.point - direction * ObstaclePushBackMultiplier;
 			return true;
 		}
@@ -205,89 +215,90 @@ public class IceRolling : Skill,IComboSeriesParticipatingSkill
 		}
 	}
 
-	    private void Jump2()
-    {
-        Hero.Move.SetCanMove(false);
+	private void Jump2()
+	{
+		Hero.Move.SetCanMove(false);
 
-        _lookDir = (_mousePos - _hero.transform.position).normalized;
-        Vector3 startPosition = _hero.transform.position;
+		_lookDir = (_mousePos - _hero.transform.position).normalized;
+		Vector3 startPosition = _hero.transform.position;
 
-        float finalRange = GetFinalJumpRange();
+		float finalRange = GetFinalJumpRange();
 
-        float distanceToClick = Vector3.Distance(startPosition, _mousePos);
-        int extraCells = 0;
+		float distanceToClick = Vector3.Distance(startPosition, _mousePos);
+		int extraCells = 0;
+		float maxRangeWithBonus =
+			4f * (_isSeriesCompletedThisCast || _isSeriesPotentialFinal ? _seriesRangeMultiplier : 1f);
 
-        float maxRangeWithBonus = 4f * (_isSeriesCompletedThisCast || _isSeriesPotentialFinal ? _seriesRangeMultiplier : 1f);
+		if (distanceToClick <= 2f)
+		{
+			finalRange = 2f;
+			extraCells = 0;
+		}
+		else if (distanceToClick < maxRangeWithBonus)
+		{
+			finalRange = distanceToClick;
+			extraCells = Mathf.CeilToInt(finalRange) - 2;
+		}
+		else
+		{
+			finalRange = maxRangeWithBonus;
+			extraCells = 2;
+		}
 
-        if (distanceToClick <= 2f)
-        {
-            finalRange = 2f;
-            extraCells = 0;
-        }
-        else if (distanceToClick < maxRangeWithBonus)
-        {
-            finalRange = distanceToClick;
-            extraCells = Mathf.CeilToInt(finalRange) - 2;
-        }
-        else
-        {
-            finalRange = maxRangeWithBonus;
-            extraCells = 2;
-        }
+		_currentRollRange = finalRange;
+		_additionalCost = extraCells * 5f;
 
-        _currentRollRange = finalRange;
-        _additionalCost = extraCells * 5f;
+		OnSeriesDamaged?.Invoke(gameObject, this);
+		_energy.CmdUse(_additionalCost);
 
-        OnSeriesDamaged?.Invoke(gameObject, this);
-        _energy.CmdUse(_additionalCost);
+		Vector3 intendedJumpPos = startPosition + _lookDir * _currentRollRange;
 
-        Vector3 jumpPos = startPosition + _lookDir * _currentRollRange;
+		Vector3 stopPosition;
+		Character characterHit;
+		bool hitObstacle = CheckObstacleBetween(startPosition, intendedJumpPos, out stopPosition, out characterHit);
 
-        _shouldCaptureTarget = _isSeriesCompletedThisCast;
-        _targetToCapture = null;
+		Hero.Move.LookAtPosition(stopPosition);
+		float actualDistance = Vector3.Distance(startPosition, stopPosition);
 
-        if (_shouldCaptureTarget)
-        {
-	        _targetToCapture = GetBestTargetForCapture(startPosition, jumpPos);
-        }
+		if (_isDamageAddFrosting)
+		{
+			int rolledCells = Mathf.RoundToInt(actualDistance);
+			_frozenDuration = 0.7f * rolledCells;
+		}
 
-        Vector3 stopPosition;
-        Character obstacleCharacter;
-        bool hitObstacle = CheckObstacleBetween(startPosition, jumpPos, out stopPosition, out obstacleCharacter);
+		_shouldCaptureTarget = _isSeriesCompletedThisCast;
+		_targetToCapture = null;
 
-        if (_targetToCapture == null && obstacleCharacter != null)
-	        _targetToCapture = obstacleCharacter;
+		if (hitObstacle && !_shouldCaptureTarget)
+		{
+			CmdPush(stopPosition, actualDistance);
+		}
+		else if (_shouldCaptureTarget)
+		{
+			if (characterHit != null)
+			{
+				_targetToCapture = characterHit;
+			}
+			else
+			{
+				_targetToCapture = GetBestTargetForCapture(startPosition, intendedJumpPos);
+			}
 
-        Hero.Move.LookAtPosition(jumpPos);
-        float actualDistance = Vector3.Distance(startPosition, stopPosition);
+			if (_targetToCapture != null)
+				CmdPushWithCharacter(stopPosition, _targetToCapture, actualDistance);
+			else
+				CmdPush(stopPosition, actualDistance);
+		}
+		else
+		{
+			CmdPush(stopPosition, actualDistance);
+		}
 
-        if (_isDamageAddFrosting)
-        {
-	        int rolledCells = Mathf.RoundToInt(_currentRollRange);
-	        _frozenDuration = 0.7f * rolledCells;
-        }
-
-        if (_targetToCapture != null && _shouldCaptureTarget)
-        {
-	        CmdPushWithCharacter(stopPosition, _targetToCapture, actualDistance);
-        }
-        else
-        {
-	        CmdPush(stopPosition, actualDistance);
-        }
-
-        if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
-        {
-	        Targeting.ClearTarget();
-	        _mousePos = Vector3.positiveInfinity;
-	        _lookDir = Vector3.zero;
-        }
-
-        _isSeriesCompletedThisCast = false;
-        _isSeriesPotentialFinal = false;
-        _additionalCost = 0;
-        _currentRollRange = 0;
-    }
+		_isSeriesCompletedThisCast = false;
+		_isSeriesPotentialFinal = false;
+		_additionalCost = 0;
+		_currentRollRange = 0;
+	}
 
 	public override void LoadTargetData(TargetInfo targetInfo)
 	{
@@ -496,30 +507,32 @@ public class IceRolling : Skill,IComboSeriesParticipatingSkill
 		Vector3 startPlayerPos = _hero.transform.position;
 
 		float timer = 0f;
-
 		var targetMove = target.GetComponent<MoveComponent>();
 		if (targetMove != null) targetMove.SetCanMove(false);
+
+		const float FinalAttachDistance = 1.2f;
 
 		while (timer < duration)
 		{
 			timer += Time.deltaTime;
-			float t = Mathf.Clamp01(timer / duration);
+			float t = timer / duration;
 
 			Vector3 currentPlayerPos = Vector3.Lerp(startPlayerPos, playerEndPos, t);
-			Vector3 initialOffset = startTargetPos - startPlayerPos;
-			float initialDist = initialOffset.magnitude;
 
-			float currentDesiredDist = Mathf.Lerp(initialDist, AttachDistance, t * 1.3f);
+			Vector3 dirToTarget = (startTargetPos - startPlayerPos).normalized;
+			float currentDistance = Mathf.Lerp(Vector3.Distance(startTargetPos, startPlayerPos), FinalAttachDistance, t * 1.4f);
 
-			Vector3 desiredTargetPos = currentPlayerPos + initialOffset.normalized * currentDesiredDist;
+			Vector3 desiredTargetPos = currentPlayerPos + dirToTarget * currentDistance;
 
-			target.transform.position = Vector3.Lerp(target.transform.position, desiredTargetPos, 8f * Time.deltaTime);
+			target.transform.position = Vector3.Lerp(target.transform.position, desiredTargetPos, 12f * Time.deltaTime);
 
 			yield return null;
 		}
-		if (targetMove != null) targetMove.SetCanMove(true);
 
-		target.transform.position = _hero.transform.position + (_hero.transform.forward * 0.7f);
+		target.transform.position = _hero.transform.position + _hero.transform.forward * FinalAttachDistance;
+
+		if (targetMove != null) 
+			targetMove.SetCanMove(true);
 
 		_capturedTarget = null;
 	}
@@ -545,15 +558,19 @@ public class IceRolling : Skill,IComboSeriesParticipatingSkill
 	[ClientRpc]
 	private void RpcAttachTarget(Character target)
 	{
+		if (target == null) return;
+
 		if (target.TryGetComponent(out MoveComponent move)) move.SetCanMove(false);
 		if (target.TryGetComponent(out NavMeshAgent agent)) agent.enabled = false;
-
 		if (target.TryGetComponent(out Rigidbody rb))
 		{
 			rb.isKinematic = true;
 			rb.linearVelocity = Vector3.zero;
 		}
+
 		target.transform.SetParent(_hero.transform);
+		target.transform.localPosition = new Vector3(0, 0.4f, 1.2f);
+		target.transform.localRotation = Quaternion.identity;
 	}
 
 	#region Series
