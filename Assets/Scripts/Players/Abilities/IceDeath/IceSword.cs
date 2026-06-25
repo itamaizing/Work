@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class IceSword : CloseCombatSkill,IEnergyDamagable
+public class IceSword : CloseCombatSkill,IEnergyDamagable, IComboSeriesParticipatingSkill
 {
 	[SerializeField] private float _damage = 15f;
 	//[SerializeField] private GameObject _basePlayer;
@@ -28,12 +28,7 @@ public class IceSword : CloseCombatSkill,IEnergyDamagable
 	private AudioSource _audioSource;
 	protected override bool IsCanCast => IsCanCastCheck();
 
-	#region Talent
-
-
-    #endregion
-
-    protected override int AnimTriggerCastDelay => 0;
+	protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("IceSword");
 
 	private bool IsCanCastCheck()
@@ -70,6 +65,8 @@ public class IceSword : CloseCombatSkill,IEnergyDamagable
 			TryCancel(true);
 			yield break;
 		}
+		
+		OnSeriesDamaged?.Invoke(targetCharacter.gameObject,this);
 
 		if (Targeting.GetTarget()?.Character == _oldtarget)
 		{
@@ -85,8 +82,9 @@ public class IceSword : CloseCombatSkill,IEnergyDamagable
 			_hitInTheRow = 0;
 		}
 		ApplyDamage(targetCharacter);
-		CmdAdd(Targeting.GetTarget()?.Character.gameObject);
+		CmdAdd(Targeting.GetTarget()?.Character.gameObject,_seriesComplete);
 		yield return null;
+		_seriesComplete = false;
 	}
 
 	protected override void ClearData()
@@ -98,15 +96,6 @@ public class IceSword : CloseCombatSkill,IEnergyDamagable
 
 	private void ApplyDamage(Character targetCharacter)
 	{
-		//Debug.Log("111111111111");
-		/*float energyBonus = 0;
-
-        if (_energy.CurrentValue >= 10)
-			energyBonus = Mathf.Min(_energy.CurrentValue, 10);*/
-		
-		//_energy.CmdUse(energyBonus);
-
-		//float totalDamage = _damage + energyBonus;
 		float totalDamage = _damage + _additionalDamage;
 
 		Damage damage2 = new Damage
@@ -115,12 +104,11 @@ public class IceSword : CloseCombatSkill,IEnergyDamagable
 			Type = DamageType.Physical,
 			PhysicAttackType = AttackRangeType.RangeAttack,
 		};
-		Debug.Log("Damage " + totalDamage);
+		
+		CmdApplyDamage(damage2, targetCharacter.gameObject);
 
-		CmdApplyDamage(damage2, Targeting.GetTarget()?.Character.gameObject);
-
-		_energy.SumDamageMake(damage2.Value);
-		_rune.SumDamageMake(damage2.Value);
+		//_energy.SumDamageMake(damage2.Value);
+		//_rune.SumDamageMake(damage2.Value);
 	}
 
 	private IEnumerator ISwordTimer()
@@ -136,11 +124,19 @@ public class IceSword : CloseCombatSkill,IEnergyDamagable
 	}
 
 	[Command]
-	private void CmdAdd(GameObject enemy)
+	private void CmdAdd(GameObject enemy, bool isFinal)
 	{
 		Character enemyCharacter = enemy.GetComponent<Character>();
 		RpcPlayShotSound();
-		enemyCharacter.CharacterState.AddState(States.Cooling, _duration, 0, _playerLinks.gameObject, name);
+		if (!isFinal)
+			enemyCharacter.CharacterState.AddState(States.Cooling, _duration, 0, Schools.Water, _playerLinks.gameObject, name);
+		else
+		{
+			for (int i = 0; i < _frostingStacks; i++)
+			{
+				enemyCharacter.CharacterState.AddState(States.Cooling, _duration, 0, Schools.Water, _playerLinks.gameObject, name);
+			}
+		}
 	}
 
 	[ClientRpc]
@@ -148,12 +144,6 @@ public class IceSword : CloseCombatSkill,IEnergyDamagable
 	{
 		if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
 	}
-
-	public void CorutineSwordTimeStart()
-	{
-        if (coroutineSwordTime != null) StopCoroutine(coroutineSwordTime);
-        coroutineSwordTime = StartCoroutine(ISwordTimer());
-    }
 
 	public void IceSwordCast()
 	{
@@ -178,57 +168,61 @@ public class IceSword : CloseCombatSkill,IEnergyDamagable
 		float baseCost = Buff.ManaCost.GetBuffedValue(_baseEnergyCost);
 		float currentEnergy = _energy.CurrentValue;
 
-		if (currentEnergy < baseCost + 1f) return false;
+		if (currentEnergy < baseCost)
+			return false;
 
-		float additionalEnergy = Mathf.Min(currentEnergy - baseCost, _maxAdditionalCost);
-		additionalEnergy = Mathf.Clamp(additionalEnergy, 1f, _maxAdditionalCost);
+		float additionalEnergy = Mathf.Clamp(currentEnergy - baseCost, 0f, _maxAdditionalCost);
 
 		_additionalDamage = additionalEnergy;
 
 		float totalEnergyToUse = baseCost + additionalEnergy;
-		if (!Cost.TryPaySingle(totalEnergyToUse, ResourceType.Energy, shouldModify: false)) return false;
 
-		return true;
+		if (Cost.TryPaySingle(totalEnergyToUse, ResourceType.Energy, shouldModify: false))
+		{
+			_totalEnergySpend = totalEnergyToUse;
+			return true;
+		}
+
+		return false;
 	}
 
 	protected override bool CheckResourcesOnSkill()
 	{
 		EnsureResources();
-
 		float baseCost = Buff.ManaCost.GetBuffedValue(_baseEnergyCost);
-		return _energy.CurrentValue >= baseCost + 1f;
+		return _energy.CurrentValue >= baseCost;
 	}
 
-	//  protected override bool TryPayCost(List<SkillResourceCost> skillEnergyCosts, bool startCooldown = true)
-	//  {
-	//if (!IsHaveResourceOnSkill)
-	//{
-	//	return false;
-	//}
+	#region Series
 
-	//      _additionalDamage = 0;
+	private float _frostingStacks = 5f;
+	private float _totalEnergySpend = 0f;
+	private bool _seriesComplete = false;
+	public event IComboSeriesParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplySeriesDamage;
+	public event Action<GameObject, Skill> OnSeriesDamaged;
+	public float EnergyCostOnHit => _totalEnergySpend;
+	public float RuneCostOnHit { get; }
 
-	//      foreach (var skillCost in skillEnergyCosts)
-	//      {
-	//	var baseCost = skillCost.value;
+	public void OnSeriesHit(int hitCountInCurrentSeries, Character target)
+	{
+	}
 
-	//          if (_energy.CurrentValue > baseCost)
-	//	{
-	//              _additionalDamage = Mathf.Min(_energy.CurrentValue-baseCost, _maxAdditionalCost);
-	//              //Debug.Log($"Add damage {_additionalDamage}, | currEnergy {_energy.CurrentValue} ");
-	//              _energy.CmdUse(_additionalDamage);
-	//          }
-	//          _energy.CmdUse(Buff.ManaCost.GetBuffedValue(baseCost));
-	//      }
+	public void OnSeriesCompleted(Character target, int totalHits, float totalEnergySpent)
+	{
+		Debug.LogError("Series complete");
+		_seriesComplete = true;
+	}
 
-	//if (startCooldown)
-	//{
-	//	Cooldown.SetIncreased(Cooldown.CooldownTime, shouldModify: false);
-	//}
+	public void OnSeriesBroken(Character target)
+	{
+	}
 
-	//      if (!_useChargesAsComboPart) TryUseCharge();
-	//      return true;
-	//  }
+	public void OnSeriesPotentialFinal(Skill skill, bool isPotentialFinal)
+	{
+	}
+
+	#endregion
 	public bool IsStreamSkill { get; }
 	public bool IsFrostEnergyApplied { get; }
+
 }

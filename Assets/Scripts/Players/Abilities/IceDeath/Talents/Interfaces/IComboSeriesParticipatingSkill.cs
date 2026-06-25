@@ -10,6 +10,7 @@ public interface IComboSeriesParticipatingSkill
     public event Action<GameObject, Skill> OnSeriesDamaged;
 
     float EnergyCostOnHit { get; }
+    float RuneCostOnHit { get; }
 
     void OnSeriesHit(int hitCountInCurrentSeries, Character target);
     void OnSeriesCompleted(Character target, int totalHits, float totalEnergySpent);

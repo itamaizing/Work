@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class CircularFrosting : Skill,IEnergyDamagable
 {
-    [SerializeField] private Character _player;
     [SerializeField] private ParticleSystemController _particleSystem;
 
     private float _delayDuration;
@@ -112,14 +111,7 @@ public class CircularFrosting : Skill,IEnergyDamagable
         if (target == null) return;
 
         var frostEnergy = Hero.Abilities.GetSkill<FrostEnergy>();
-
-        /*if (_talentFrostingFrozen && target.CharacterState.CheckForState(States.Frosting))
-        {
-            target.CharacterState.AddState(States.Frozen, duration, 0, Hero.gameObject, name);
-            frostEnergy?.ApplyFrostEnergyStateBonus(target, States.Frozen, this);
-        }*/
-
-        Debug.LogError("TryFrosting: "+duration);
+        
         target.CharacterState.AddState(States.Frosting, duration, 0, Hero.gameObject, name);
         frostEnergy?.ApplyFrostEnergyStateBonus(target, States.Frosting, this);
     }

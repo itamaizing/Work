@@ -1,27 +1,33 @@
 ﻿using System;
+using System.Collections;
 using Mirror;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ComboSeriesSystem : NetworkBehaviour
+public class ComboSeriesSystem : Skill
 {
     [Header("Series Settings")]
     [SerializeField] private float _comboTimeout = 2f;
     [SerializeField] private float _energyPerHit = 5f;
     [SerializeField] private float _energyRestorePercentOnComplete = 0.4f;
-    [SerializeField] private float _speedBonusPerHit = 0.3f;
-
-    private float _currentSpeedMultiplier = 1f;
     
-    private Character _hero;
+    private float _speedBonusPerHit = 0.3f;
+        
+    private float _currentSpeedMultiplier = 1f;
+ 
     private Energy _energy;
+    private RuneComponent _rune;
 
     private Character _currentTarget;
     private float _timer;
     private int _currentHitCount = 0;
     private float _totalEnergySpentThisSeries = 0f;
+    private float _totalRuneSpentThisSeries = 0f;
     private List<AbilityForm> _currentSequence = new();
+
+    private const float BaseSpeedMultiplier = 1.3f;
+    private const float BaseRuneRecovery = 1f;
 
     [SerializeField] private List<SeriesPattern> _availablePatterns = new();
 
@@ -30,6 +36,70 @@ public class ComboSeriesSystem : NetworkBehaviour
     private bool _seriesIsEnable;
 
     private Skill _lastPreparedSkill;
+
+    #region AdditionalRuneTalent
+
+    private bool _isAdditionalRuneOnSeries;
+
+    public void EnableAdditionalRuneOnSeries(bool value)
+    {
+        if(_isAdditionalRuneOnSeries == value) return;
+        _isAdditionalRuneOnSeries = value;
+    }
+
+    #endregion
+
+    #region IncreasedSpeed
+
+    private bool _isSpeedIncreased;
+
+    private const float IncreasedSpeedMultiplier = 1.6f;
+    
+    public void EnableSpeedIncreasedOnSeries(bool value)
+    {
+        if(_isSpeedIncreased == value) return;
+        _isSpeedIncreased = value;
+    }
+
+    #endregion
+
+    #region NewPatterns
+
+    List<AbilityForm> pattern1 = new()
+    {
+        AbilityForm.Physical,
+        AbilityForm.Physical,
+        AbilityForm.Magic,
+        AbilityForm.Physical
+    };
+    List<AbilityForm> pattern2 = new()
+    {
+        AbilityForm.Magic,
+        AbilityForm.Magic,
+        AbilityForm.Physical,
+        AbilityForm.Magic
+    };
+
+    private bool _patternsIsAdded;
+
+    public void AddNewPatterns(bool value)
+    {
+        if(_patternsIsAdded == value) return;
+        if (!_patternsIsAdded)
+        {
+            AddPattern(pattern1, "pattern1");
+            AddPattern(pattern2, "pattern2");
+        }
+        else
+        {
+            RemovePattern("pattern1");
+            RemovePattern("pattern2");
+        }
+
+        _patternsIsAdded = value;
+    }
+
+    #endregion
 
     public void EnableSeries(bool value)
     {
@@ -82,12 +152,6 @@ public class ComboSeriesSystem : NetworkBehaviour
         }
     }
 
-    private void Start()
-    {
-        if(!_hero)
-            _hero = GetComponent<Character>();
-    }
-
     private void Update()
     {
         if (_isInSeries)
@@ -100,7 +164,7 @@ public class ComboSeriesSystem : NetworkBehaviour
             }
         }
     }
-    
+
     private void OnSkillPreparingStarted(Skill skill)
     {
         if (!_seriesIsEnable || skill == null) return;
@@ -129,7 +193,6 @@ public class ComboSeriesSystem : NetworkBehaviour
         if (_currentHitCount == 0) return false;
 
         AbilityForm nextForm = skill.Info.AbilityForm;
-
         foreach (var pattern in _availablePatterns)
         {
             if (!pattern.isActive) continue;
@@ -159,6 +222,9 @@ public class ComboSeriesSystem : NetworkBehaviour
 
         if (_energy == null)
             _energy = (Energy)_hero.Resources[ResourceType.Energy];
+        
+        if(_rune == null)
+            _rune = (RuneComponent)_hero.Resources[ResourceType.Rune];
 
         Character target = targetGo == null ? null : targetGo.GetComponent<Character>();
         IComboSeriesParticipatingSkill series = skill as IComboSeriesParticipatingSkill;
@@ -208,8 +274,10 @@ public class ComboSeriesSystem : NetworkBehaviour
     private void PayEnergy(IComboSeriesParticipatingSkill skill)
     {
         float cost = skill.EnergyCostOnHit + _energyPerHit;
-        _energy.CmdUse(cost);
+        _energy.CmdUse(_energyPerHit);
         _totalEnergySpentThisSeries += cost;
+        if(_isAdditionalRuneOnSeries)
+            _totalRuneSpentThisSeries += skill.RuneCostOnHit;
     }
 
     private void StartNewSeries(Character target)
@@ -220,6 +288,8 @@ public class ComboSeriesSystem : NetworkBehaviour
         _currentHitCount = 0;
         _currentSequence.Clear();
         _totalEnergySpentThisSeries = 0f;
+        _totalRuneSpentThisSeries = 0f;
+
         _isInSeries = true;
         _timer = _comboTimeout;
     }
@@ -242,8 +312,14 @@ public class ComboSeriesSystem : NetworkBehaviour
         float restored = _totalEnergySpentThisSeries * _energyRestorePercentOnComplete;
         _energy.CmdAdd(restored);
 
-        lastSkill.OnSeriesCompleted(target, _currentHitCount, _totalEnergySpentThisSeries);
+        if (_isAdditionalRuneOnSeries)
+        {
+            _rune.CmdAdd(_totalRuneSpentThisSeries + BaseRuneRecovery);
+            _totalRuneSpentThisSeries = 0f;
+        }
 
+        lastSkill.OnSeriesCompleted(target, _currentHitCount, _totalEnergySpentThisSeries);
+        
         ResetSeries();
     }
 
@@ -255,13 +331,24 @@ public class ComboSeriesSystem : NetworkBehaviour
     private void UpdateSpeedBoost()
     {
         ResetSpeedBoost();
-        if (_currentHitCount >= 2)
+
+        if (_currentHitCount < 2)
         {
-            _currentSpeedMultiplier = 1f + (_speedBonusPerHit * (_currentHitCount - 1));
+            _currentSpeedMultiplier = 1f;
+        }
+        else if (_isSpeedIncreased)
+        {
+            _currentSpeedMultiplier = IncreasedSpeedMultiplier;
+
+            if (_currentHitCount > 2)
+            {
+                _currentSpeedMultiplier += _speedBonusPerHit * (_currentHitCount - 2);
+            }
         }
         else
         {
-            _currentSpeedMultiplier = 1f;
+            _currentSpeedMultiplier = BaseSpeedMultiplier + 
+                                      _speedBonusPerHit * (_currentHitCount - 2);
         }
 
         ApplyCurrentSpeedBoost();
@@ -285,6 +372,7 @@ public class ComboSeriesSystem : NetworkBehaviour
         _currentHitCount = 0;
         _currentSequence.Clear();
         _totalEnergySpentThisSeries = 0f;
+        _totalRuneSpentThisSeries = 0f;
         _currentSpeedMultiplier = 1f;
         _isInSeries = false;
         ResetSpeedBoost();
@@ -301,13 +389,37 @@ public class ComboSeriesSystem : NetworkBehaviour
             }
         }
     }
-
+    
     public void AddPattern(List<AbilityForm> sequence, string name = "")
     {
-        _availablePatterns.Add(new SeriesPattern 
-        { 
-            name = name, 
-            sequence = new List<AbilityForm>(sequence) 
+        if (sequence == null || sequence.Count == 0)
+            return;
+
+        _availablePatterns.Add(new SeriesPattern
+        {
+            name = string.IsNullOrEmpty(name) ? $"Pattern_{_availablePatterns.Count + 1}" : name,
+            sequence = new List<AbilityForm>(sequence),
+            isActive = true
         });
     }
+
+    public void RemovePattern(string name)
+    {
+        if (string.IsNullOrEmpty(name))
+            return;
+
+        int removedCount = _availablePatterns.RemoveAll(pattern => 
+            pattern.name.Equals(name, System.StringComparison.OrdinalIgnoreCase));
+    }
+
+    #region Skill
+
+    protected override IEnumerator CastJob()
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override int AnimTriggerCastDelay { get; }
+    protected override int AnimTriggerCast { get; }
+    #endregion
 }

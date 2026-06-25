@@ -200,10 +200,13 @@ public class IcePuddle : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
         float energyToSpend = timeToAdd * 5f;
         float lifeTime = LifeTimePuddle(timeToAdd);
 
-        OnSeriesDamaged?.Invoke(null, this);
         _energy.CmdUse(energyToSpend);
+        _totalEnergySpend = energyToSpend;
 
-        bool isBig = _lastHit && _talentPuddleSize;
+        
+        OnSeriesDamaged?.Invoke(null, this);
+        
+        bool isBig = _lastHit;
 
         if (isBig)
             CmdCreateProjecttileBig(angle, position, lifeTime, _lastHit, _talentEvadeDadBoost, _talentFrostingFrozen);
@@ -273,8 +276,6 @@ public class IcePuddle : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
         if (_audioSource != null && _audioClip != null)
             _audioSource.PlayOneShot(_audioClip);
     }
-
-    public void SetTalentPuddleSize(bool active) => _talentPuddleSize = active;
     public void SetTalentFrostingFrozen(bool value) => _talentFrostingFrozen = value;
     public void SetTalentEvadeDadBoost(bool value) => _talentEvadeDadBoost = value;
     public void IceDeathInIcePudleTalentActive(bool value)
@@ -301,10 +302,13 @@ public class IcePuddle : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
     
     private bool _isSeriesPotentialFinal;
     private bool _previewDirty;
+    private float _totalEnergySpend = 0f;
     
     public event IComboSeriesParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplySeriesDamage;
     public event Action<GameObject, Skill> OnSeriesDamaged;
-    public float EnergyCostOnHit { get; }
+    public float EnergyCostOnHit => _totalEnergySpend;
+    public float RuneCostOnHit { get; }
+
     public void OnSeriesHit(int hitCountInCurrentSeries, Character target)
     {
     }

@@ -4,17 +4,13 @@ using UnityEngine;
 
 public class NinjaTalent_5 : Talent
 {
-    [SerializeField] private ComboSeriesSystem _seriesOfStrikes;
-
     public override void Enter()
     {
-        //_seriesOfStrikes.SeriesCompleteDoubleCombo(true);
-        //_seriesOfStrikes.SeriesCompliteCompoTalentActive(true);
+        character.Abilities.GetSkill<ComboSeriesSystem>().EnableAdditionalRuneOnSeries(true);
     }
 
     public override void Exit()
     {
-        //_seriesOfStrikes.SeriesCompleteDoubleCombo(false);
-        //_seriesOfStrikes.SeriesCompliteCompoTalentActive(false);
+        character.Abilities.GetSkill<ComboSeriesSystem>().EnableAdditionalRuneOnSeries(false);
     }
 }

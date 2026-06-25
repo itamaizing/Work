@@ -216,6 +216,7 @@ public class PhysicalAttack : Skill,IEnergyDamagable, IComboSeriesParticipatingS
 	public event Action<GameObject, Skill> OnSeriesDamaged;
 
 	public float EnergyCostOnHit => 0;
+	public float RuneCostOnHit { get; }
 
 	public void OnSeriesHit(int hitCountInCurrentSeries, Character target)
 	{

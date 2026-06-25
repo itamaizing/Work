@@ -33,6 +33,9 @@ public class FrozenState : RefreshingState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
     
+    private Renderer[] _renderers;
+    private readonly Dictionary<Renderer, Material[]> _originalMaterials = new();
+    
     public float CurrentAttackSlowPercent => CastSlowPerStack * currentStacksCount;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
@@ -65,9 +68,8 @@ public class FrozenState : RefreshingState
             _frozenEffectInstance.SetActive(true);
         }
 
-        foreach (var mat in characterState.StateEffects.MaterialsCharacter)
-            mat.color = Color.cyan;
-
+        ApplyFrozenColor();
+        
         if (characterState.StateEffects.FrozenAudio != null && _audioSource != null)
             _audioSource.PlayOneShot(characterState.StateEffects.FrozenAudio);
 
@@ -79,6 +81,36 @@ public class FrozenState : RefreshingState
     {
         characterState.Character.Health.DamageTaken += OnDamaged;
         characterState.Character.Health.OnBeforeTakeDamage += OnDamaged;
+    }
+    
+    private void ApplyFrozenColor()
+    {
+        _renderers = characterState.GetComponentsInChildren<Renderer>();
+
+        foreach (var renderer in _renderers)
+        {
+            _originalMaterials[renderer] = renderer.sharedMaterials;
+
+            Material[] frozenMaterials = new Material[renderer.sharedMaterials.Length];
+
+            for (int i = 0; i < renderer.sharedMaterials.Length; i++)
+            {
+                frozenMaterials[i] = new Material(renderer.sharedMaterials[i]);
+                frozenMaterials[i].color = Color.cyan;
+            }
+
+            renderer.materials = frozenMaterials;
+        }
+    }
+    
+    private void RestoreMaterials()
+    {
+        foreach (var pair in _originalMaterials)
+        {
+            pair.Key.materials = pair.Value;
+        }
+
+        _originalMaterials.Clear();
     }
     
     private void OnDamaged(Damage damage, Skill ability)
@@ -106,6 +138,8 @@ public class FrozenState : RefreshingState
 
     public override void ExitState()
     {
+        RestoreMaterials();
+        
         characterState.Character.Health.DamageTaken -= OnDamaged;
         characterState.Character.Health.OnBeforeTakeDamage -= OnDamaged;
         RemoveEffects();
@@ -115,9 +149,7 @@ public class FrozenState : RefreshingState
 
         if (_frozenEffectInstance != null)
             _frozenEffectInstance.SetActive(false);
-
-        foreach (var mat in characterState.StateEffects.MaterialsCharacter)
-            mat.color = Color.white;
+        
     }
 
     public override bool Stack(float time)
