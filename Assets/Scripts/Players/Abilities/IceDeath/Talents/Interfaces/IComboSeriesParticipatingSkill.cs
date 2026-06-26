@@ -11,6 +11,9 @@ public interface IComboSeriesParticipatingSkill
 
     float EnergyCostOnHit { get; }
     float RuneCostOnHit { get; }
+    
+    bool IsTicking { get; }
+    bool IgnoresEnergyCostCheck => false;
 
     void OnSeriesHit(int hitCountInCurrentSeries, Character target);
     void OnSeriesCompleted(Character target, int totalHits, float totalEnergySpent);

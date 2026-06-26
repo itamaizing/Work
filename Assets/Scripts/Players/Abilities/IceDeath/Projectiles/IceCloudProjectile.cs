@@ -100,7 +100,7 @@ public class IceCloudProjectile : Projectiles
 		yield return null;
 
 		target.CharacterState.AddState(States.Frozen, duration,
-			0, _dad.gameObject, _skill.name);
+			_damageToExit, _dad.gameObject, _skill.name);
 
 		_dad.Abilities.GetSkill<FrostEnergy>()
 			?.ApplyFrostEnergyStateBonus(target, States.Frozen, _skill);
@@ -118,13 +118,11 @@ public class IceCloudProjectile : Projectiles
 		Destroy(gameObject);
 	}
 
-    public void Talent(bool value, bool frozenState, bool lastHit)
+    public void Talent(bool lastHit)
 	{
-		_boostDmg = value;
 		if(lastHit)
 		{
-			if (frozenState) _damageToExit = 60;
-			else _damageToExit = 30;
+			_damageToExit = 30;
 		}
 		else
 		{

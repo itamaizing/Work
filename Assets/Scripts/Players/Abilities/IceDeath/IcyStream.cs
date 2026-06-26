@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class IcyStream : Skill, IEnergyDamagable
+public class IcyStream : Skill, IEnergyDamagable,IComboSeriesParticipatingSkill
 {
     public struct IcyStreamState
     {
@@ -32,6 +32,7 @@ public class IcyStream : Skill, IEnergyDamagable
 
     private bool _isStreaming;
     private int _currentTick;
+    private const float BaseStreamWidth = 1f;
     private const float FrostEnergyCoolingBonusPerStack = 1f;
     private const float MaxDistanceRayCast = 100f;
     private const float MinRotationThresholdSqr = 0.01f;
@@ -97,14 +98,15 @@ public class IcyStream : Skill, IEnergyDamagable
         _energySpent = 0f;
         _currentTick = 0;
 
-        CmdSpawnIcyStreamEffect();
-
         _streamCoroutine = StartCoroutine(StreamRoutine());
+        CmdSpawnIcyStreamEffect(_isFinalHit);
         yield return _streamCoroutine;
 
         CmdDestroyIcyStreamEffect();
         CmdResetEnergyMultiplier();
         _isStreaming = false;
+        _isFinalHit = false;
+        _isTicking = false;
     }
 
     private IEnumerator StreamRoutine()
@@ -112,6 +114,17 @@ public class IcyStream : Skill, IEnergyDamagable
         int freeTicks = FreeTicks;
         int maxTicks = MaxTicks;
 
+        if (_isFinalHit)
+        {
+            _streamWidth = BaseStreamWidth * 2f;
+        }
+        else
+        {
+            _streamWidth = BaseStreamWidth;
+        }
+
+        _isTicking = true;
+        
         for (int tick = 1; tick <= maxTicks; tick++)
         {
             yield return new WaitForSeconds(_tickInterval);
@@ -130,6 +143,12 @@ public class IcyStream : Skill, IEnergyDamagable
             }
 
             _currentTick = tick;
+            if (_currentTick == maxTicks)
+            {
+                _isTicking = false;
+            }
+            
+            OnSeriesDamaged?.Invoke(null,this);
 
             CurrentState = new IcyStreamState
             {
@@ -187,7 +206,7 @@ public class IcyStream : Skill, IEnergyDamagable
         if (!_isStreaming) return;
         if (_currentTick >= MaxTicks) return;
 
-        int   remaining       = MaxTicks - _currentTick;
+        int remaining = MaxTicks - _currentTick;
         float totalEnergyLeft = remaining * _energyPerTick;
 
         if (Hero.TryGetResource(ResourceType.Energy, out var resource))
@@ -195,7 +214,7 @@ public class IcyStream : Skill, IEnergyDamagable
     }
 
     [Command]
-    private void CmdSpawnIcyStreamEffect()
+    private void CmdSpawnIcyStreamEffect(bool isFinalHit)
     {
         if (_icyStreamPrefab == null) return;
 
@@ -206,11 +225,30 @@ public class IcyStream : Skill, IEnergyDamagable
 
         fx.transform.SetParent(transform);
         fx.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+
         NetworkServer.Spawn(fx, connectionToClient);
 
         _activeEffect = fx;
+        
+        if (isFinalHit)
+        {
+            var ps = fx.GetComponentInChildren<ParticleSystem>();
+            var main = ps.main;
+            main.startSize = main.startSize.constant * 2;
+            
+            SetParticleSizeOnClients(fx);
+        }
 
         RpcStartFollowMouse(fx);
+    }
+
+    [ClientRpc]
+    private void SetParticleSizeOnClients(GameObject particleObject)
+    {
+        if(particleObject == null) return;
+        var ps = particleObject.GetComponentInChildren<ParticleSystem>();
+        var main = ps.main;
+        main.startSize = main.startSize.constant * 2;
     }
 
     [ClientRpc]
@@ -286,4 +324,35 @@ public class IcyStream : Skill, IEnergyDamagable
             _streamCoroutine = null;
         }
     }
+
+    #region Series
+
+    private bool _isFinalHit;
+    private bool _isTicking;
+    public event IComboSeriesParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplySeriesDamage;
+    public event Action<GameObject, Skill> OnSeriesDamaged;
+    public float EnergyCostOnHit => _energyPerTick;
+    public float RuneCostOnHit { get; }
+    public bool IsTicking => _isTicking;
+
+    public void OnSeriesHit(int hitCountInCurrentSeries, Character target)
+    {
+    }
+
+    public void OnSeriesCompleted(Character target, int totalHits, float totalEnergySpent)
+    {
+        _isFinalHit = true;
+    }
+
+    public void OnSeriesBroken(Character target)
+    {
+    }
+
+    public void OnSeriesPotentialFinal(Skill skill, bool isPotentialFinal)
+    {
+        _isFinalHit = isPotentialFinal;
+    }
+
+    #endregion
+
 }

@@ -228,7 +228,14 @@ public class ComboSeriesSystem : Skill
 
         Character target = targetGo == null ? null : targetGo.GetComponent<Character>();
         IComboSeriesParticipatingSkill series = skill as IComboSeriesParticipatingSkill;
-        
+
+        if (series is { IsTicking: true })
+        {
+            _totalEnergySpentThisSeries += series.EnergyCostOnHit;
+            _timer = _comboTimeout;
+            return;
+        }
+
         if (!CanPayEnergy(series)) 
         {
             BreakSeries();
@@ -256,17 +263,28 @@ public class ComboSeriesSystem : Skill
         _timer = _comboTimeout;
 
         UpdateSpeedBoost();
-        
         series?.OnSeriesHit(_currentHitCount, target);
+
+        RefreshPotentialFinalForPreparedSkill();
 
         if (CheckPatternCompleted())
         {
             CompleteSeries(series, target);
         }
     }
+    
+    private void RefreshPotentialFinalForPreparedSkill()
+    {
+        if (_lastPreparedSkill is not IComboSeriesParticipatingSkill comboSkill) return;
+    
+        bool willComplete = WillCompleteSeriesOnNextHit(_lastPreparedSkill);
+        comboSkill.OnSeriesPotentialFinal(_lastPreparedSkill, willComplete);
+    }
 
     private bool CanPayEnergy(IComboSeriesParticipatingSkill skill)
     {
+        if (skill.IgnoresEnergyCostCheck) return true;
+        
         float cost = skill.EnergyCostOnHit + _energyPerHit;
         return _energy.CurrentValue >= cost;
     }
@@ -390,7 +408,7 @@ public class ComboSeriesSystem : Skill
         }
     }
     
-    public void AddPattern(List<AbilityForm> sequence, string name = "")
+    private void AddPattern(List<AbilityForm> sequence, string name = "")
     {
         if (sequence == null || sequence.Count == 0)
             return;
@@ -403,7 +421,7 @@ public class ComboSeriesSystem : Skill
         });
     }
 
-    public void RemovePattern(string name)
+    private void RemovePattern(string name)
     {
         if (string.IsNullOrEmpty(name))
             return;

@@ -287,7 +287,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
 
     public void Regenerate() => _regenCoroutine = StartCoroutine(RegenerateJob());
 
-    protected IEnumerator RegenerateJob()
+    protected virtual IEnumerator RegenerateJob()
     {
         while (true)
         {

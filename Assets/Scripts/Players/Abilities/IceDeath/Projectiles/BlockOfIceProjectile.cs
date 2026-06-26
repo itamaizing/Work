@@ -24,6 +24,11 @@ public class BlockOfIceProjectile : Projectiles
 
         _startPos = transform.position;
     }
+    
+    public void SetMaxDistance(float distance)
+    {
+        _maxDistance = distance;
+    }
 
     private void Update()
     {
@@ -55,6 +60,9 @@ public class BlockOfIceProjectile : Projectiles
                 ?.ApplyFrostEnergyStateBonus(target, States.Cooling, _skill);
 
             target.CharacterState.AddState(States.Cooling, 9f, 0, _dad.gameObject, _skill.name);
+
+            if (_skill is BlockOfIce blockOfIce)
+                blockOfIce.RegisterSeriesHit(target.gameObject);
 
             GetComponent<Collider>().enabled = false;
         }

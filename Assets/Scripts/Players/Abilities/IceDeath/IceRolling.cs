@@ -498,6 +498,7 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
 
     public float EnergyCostOnHit => _additionalCost + Cost.BaseCost;
     public float RuneCostOnHit => 0f;
+    public bool IsTicking { get; }
 
     public void OnSeriesHit(int hitCountInCurrentSeries, Character target)
     {

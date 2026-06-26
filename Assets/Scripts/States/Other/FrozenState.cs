@@ -105,19 +105,24 @@ public class FrozenState : RefreshingState
     
     private void RestoreMaterials()
     {
+        if (_originalMaterials.Count <= 0) return;
+    
         foreach (var pair in _originalMaterials)
         {
+            if (pair.Key == null) continue;
             pair.Key.materials = pair.Value;
         }
 
         _originalMaterials.Clear();
     }
-    
     private void OnDamaged(Damage damage, Skill ability)
     {
         _damageCount += damage.Value;
-        if(_damageCount > damageToExit)
+        if (_damageCount > damageToExit)
+        {
+            if (characterState == null || characterState.gameObject == null) return;
             ExitState();
+        }
     }
 
     public override void UpdateState()

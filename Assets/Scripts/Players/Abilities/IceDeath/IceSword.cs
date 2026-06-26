@@ -202,6 +202,7 @@ public class IceSword : CloseCombatSkill,IEnergyDamagable, IComboSeriesParticipa
 	public event Action<GameObject, Skill> OnSeriesDamaged;
 	public float EnergyCostOnHit => _totalEnergySpend;
 	public float RuneCostOnHit { get; }
+	public bool IsTicking { get; }
 
 	public void OnSeriesHit(int hitCountInCurrentSeries, Character target)
 	{

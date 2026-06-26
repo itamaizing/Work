@@ -10769,7 +10769,13 @@ MonoBehaviour:
     isActive: 1
   - name: FFForTest
     sequence: 0100000001000000
-    isActive: 0
+    isActive: 1
+  - name: FMForTest
+    sequence: 0100000000000000
+    isActive: 1
+  - name: MMForTest
+    sequence: 0000000000000000
+    isActive: 1
 --- !u!114 &829006267482502751 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8723564878656041165, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

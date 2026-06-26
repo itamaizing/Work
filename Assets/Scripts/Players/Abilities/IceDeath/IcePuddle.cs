@@ -34,6 +34,7 @@ public class IcePuddle : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
     private bool _talentFrostingFrozen = false;
     private bool _talentEvadeDadBoost = false;
     private bool _iceDeathInIcePudleTalent;
+    private bool _radiusNeedsRedraw = false;
 
     private void OnEnable()
     {
@@ -43,22 +44,34 @@ public class IcePuddle : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
     private void OnDisable()
     {
         OnSkillCanceled -= ClearData;
+        
+        foreach (var skill in _hero.Abilities.Abilities)
+            skill.OnSkillCanceled -= OnAnySkillCanceled;
     }
 
-    protected override bool IsCanCast
+    protected override bool IsCanCast => CheckCanCast();
+    
+    private bool CheckCanCast()
     {
-        get
-        {
-            return Vector3.Distance(_placedPosition, transform.position) <= AreaInfo.Radius;
-        }
+        return Vector3.Distance(_placedPosition, transform.position) <= AreaInfo.Radius;
     }
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("IcePuddle");
 
-    private void Start()
+    
+    public override void Init(SkillRenderer render, Character hero)
     {
+        base.Init(render, hero);
         _audioSource = GetComponent<AudioSource>();
+        foreach (var skill in hero.Abilities.Abilities)
+            skill.OnSkillCanceled += OnAnySkillCanceled;
+    }
+    
+    private void OnAnySkillCanceled()
+    {
+        if (IsPreparing)
+            _radiusNeedsRedraw = true;
     }
 
     private void RefreshPreview()
@@ -71,14 +84,19 @@ public class IcePuddle : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
             return;
         }
 
-        bool needBig =
-            _preViewPuddle.name.Contains(preViewBigPuddlePrefab.name);
+        bool needBig = _preViewPuddle.name.Contains(preViewBigPuddlePrefab.name);
 
         if (needBig != _isSeriesPotentialFinal)
         {
             Destroy(_preViewPuddle);
             _preViewPuddle = Instantiate(prefab);
         }
+    }
+
+    private void RedrawRadius()
+    {
+        SkillRender.StopDrawRadius();
+        SkillRender.DrawRadius(AreaInfo.Radius);
     }
     
     private void UpdatePreviewAtMouse()
@@ -118,7 +136,7 @@ public class IcePuddle : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
     {
         if (targetInfo.Points.Count > 0)
         {
-            _placedPosition = (Vector3)targetInfo.Points[0];
+            _placedPosition = targetInfo.Points[0];
         }
     }
 
@@ -129,18 +147,17 @@ public class IcePuddle : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
 
         if (_preViewPuddle == null)
         {
-            _preViewPuddle = Instantiate(
-                _isSeriesPotentialFinal
-                    ? preViewBigPuddlePrefab
-                    : preViewPuddlePrefab);
+            _preViewPuddle = Instantiate(_isSeriesPotentialFinal ? preViewBigPuddlePrefab : preViewPuddlePrefab);
         }
         
         while (true)
         {
-            if (_previewDirty)
+            if (_previewDirty || _radiusNeedsRedraw)
             {
                 RefreshPreview();
+                RedrawRadius();
                 _previewDirty = false;
+                _radiusNeedsRedraw = false;
             }
             
             UpdatePreviewAtMouse();
@@ -148,19 +165,8 @@ public class IcePuddle : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
 
             if (GetMouseButton)
             {
-                Vector3 clickPoint = GetMousePointOnGround();
-                if (float.IsPositiveInfinity(clickPoint.x))
-                {
-                    yield return null;
-                    continue;
-                }
+                Vector3 clickPoint = Targeting.GetMousePoint();
 
-                float dist = Vector3.Distance(_hero.transform.position, clickPoint);
-                if (dist > AreaInfo.Radius)
-                {
-                    yield return null;
-                    continue;
-                }
                 Vector3 direction = (_hero.transform.position - _placedPosition).normalized;
                 if (direction != Vector3.zero)
                 {
@@ -221,7 +227,6 @@ public class IcePuddle : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
         _move?.StopLookAt();
 
         _shooted = false;
-        _placedPosition = Vector3.positiveInfinity;
         //_placedAngleDeg = 0f;
 
         if (_preViewPuddle)
@@ -308,6 +313,7 @@ public class IcePuddle : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
     public event Action<GameObject, Skill> OnSeriesDamaged;
     public float EnergyCostOnHit => _totalEnergySpend;
     public float RuneCostOnHit { get; }
+    public bool IsTicking { get; }
 
     public void OnSeriesHit(int hitCountInCurrentSeries, Character target)
     {

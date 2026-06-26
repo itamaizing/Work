@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CircularFrosting : Skill,IEnergyDamagable
+public class CircularFrosting : Skill,IEnergyDamagable,IComboSeriesParticipatingSkill
 {
     [SerializeField] private ParticleSystemController _particleSystem;
 
@@ -25,8 +25,10 @@ public class CircularFrosting : Skill,IEnergyDamagable
     private float _runeCost = 3f; 
     private float _maxEnergyForBonus = 30f;
     private float _energyPerSecondStep = 10f;
-
+    private float _currentRuneCost;
+    private float _currentEnergyCost;
     private Energy _energy;
+    private RuneComponent _rune;
     private bool _talentFrostingFrozen;
 
     protected override bool IsCanCast => true;
@@ -47,6 +49,13 @@ public class CircularFrosting : Skill,IEnergyDamagable
         OnSkillCanceled -= OnSkillCanceledHandler;
     }
 
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+        if (_energy == null) _energy = (Energy)hero.Resources[ResourceType.Energy];
+        if(_rune == null) _rune = (RuneComponent)hero.Resources[ResourceType.Rune];
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
@@ -57,7 +66,6 @@ public class CircularFrosting : Skill,IEnergyDamagable
 
     protected override IEnumerator CastJob()
     {
-        if (_energy == null) _energy = (Energy)Hero.Resources[ResourceType.Energy];
         if (_energy == null) yield break;
         if (!IsCasting) yield break;
 
@@ -66,13 +74,23 @@ public class CircularFrosting : Skill,IEnergyDamagable
             TryCancel(true);
             yield break;
         }
-        
+
+        _currentRuneCost = _runeCost;
+
         FindEnemies();
         ExplosionFrosting();
+
+        if (_isSeriesComplete)
+        {
+            OnSeriesDamaged?.Invoke(null, this);
+            _isSeriesComplete = false;
+        }
 
         _particleSystem?.Play();
 
         yield return null;
+        _currentEnergyCost = 0;
+        _currentRuneCost = 0;
     }
 
     private void FindEnemies()
@@ -90,18 +108,18 @@ public class CircularFrosting : Skill,IEnergyDamagable
 
     private void ExplosionFrosting()
     {
-        float usedEnergy = Mathf.Min(_energy.CurrentValue, _maxEnergyForBonus);
+        _currentEnergyCost = Mathf.Min(_energy.CurrentValue, _maxEnergyForBonus);
 
-        int bonusSteps = Mathf.FloorToInt(usedEnergy / _energyPerSecondStep);
+        int bonusSteps = Mathf.FloorToInt(_currentEnergyCost / _energyPerSecondStep);
         _duration = _baseDuration + bonusSteps;
 
-        if (usedEnergy > 0f)
-            _energy.CmdUse(usedEnergy);
+        if (_currentEnergyCost > 0f)
+            _energy.CmdUse(_currentEnergyCost);
 
         foreach (Character target in _enemies)
         {
             if (target == null) continue;
-            CmdApplyFrosting(target, usedEnergy, _duration);
+            CmdApplyFrosting(target, _currentEnergyCost, _duration);
         }
     }
 
@@ -174,6 +192,39 @@ public class CircularFrosting : Skill,IEnergyDamagable
         _wasInterruptedInDelay = false;
     }
 
+    #region Series
+
     public bool IsStreamSkill { get; }
     public bool IsFrostEnergyApplied => true;
+
+    public event IComboSeriesParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplySeriesDamage;
+    public event Action<GameObject, Skill> OnSeriesDamaged;
+    public float EnergyCostOnHit => _currentEnergyCost;
+    public float RuneCostOnHit => _currentRuneCost;
+    public bool IsTicking { get; }
+
+    private bool _isSeriesComplete;
+
+    public void OnSeriesHit(int hitCountInCurrentSeries, Character target) { }
+
+    public void OnSeriesCompleted(Character target, int totalHits, float totalEnergySpent)
+    {
+
+    }
+
+    public void OnSeriesBroken(Character target)
+    {
+        _isSeriesComplete = false;
+    }
+
+    public void OnSeriesPotentialFinal(Skill skill, bool isPotentialFinal)
+    {
+        if (isPotentialFinal && _energy.CurrentValue > 5 && _rune.CurrentValue >= _runeCost)
+        {
+            Hero.Abilities.SetNextSkillNoCast();
+            _isSeriesComplete = true;
+        }
+    }
+
+    #endregion
 }

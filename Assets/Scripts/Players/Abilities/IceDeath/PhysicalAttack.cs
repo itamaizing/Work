@@ -217,6 +217,7 @@ public class PhysicalAttack : Skill,IEnergyDamagable, IComboSeriesParticipatingS
 
 	public float EnergyCostOnHit => 0;
 	public float RuneCostOnHit { get; }
+	public bool IsTicking { get; }
 
 	public void OnSeriesHit(int hitCountInCurrentSeries, Character target)
 	{
