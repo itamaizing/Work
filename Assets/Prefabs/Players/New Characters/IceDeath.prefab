@@ -10108,8 +10108,8 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 6
-    _form: 2
+    _school: 1
+    _form: 0
     _damageType: 5
     _rangeType: 0
     _skillType: 0
@@ -10208,8 +10208,8 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 0
-    _form: 2
+    _school: 1
+    _form: 0
     _damageType: 5
     _rangeType: 0
     _skillType: 0

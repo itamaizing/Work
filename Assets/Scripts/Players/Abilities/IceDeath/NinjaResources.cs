@@ -62,7 +62,28 @@ public class NinjaResources : Skill, IPassiveSkill
     private bool _isHardenedFleshTalent;
     private bool _isFrozenCrit;
     private bool _isRuneRegenSpeed;
-    public void RuneRegenSpeed(bool value) => _isRuneRegenSpeed = value;
+
+    public void RuneRegenSpeed(bool value)
+    {
+        if(_isRuneRegenSpeed == value) return;
+        _isRuneRegenSpeed = value;
+
+        if (_isRuneRegenSpeed)
+        {
+            if (_regenRoutine == null)
+                _regenRoutine = StartCoroutine(UpdateRuneRegenRoutine());
+        }
+        else
+        {
+            if (_regenRoutine != null)
+            {
+                StopCoroutine(_regenRoutine);
+                _regenRoutine = null;
+            }
+            if (Hero.TryGetResource(ResourceType.Rune) is RuneComponent rune)
+                rune.SetExternalRegenMultiplier(1f);
+        }
+    }
 
     public void FrozenCrit(bool value)
     {
@@ -95,8 +116,6 @@ public class NinjaResources : Skill, IPassiveSkill
     {
         base.Init(render, hero);
         TrySubscribe();
-
-        if (isServer) _regenRoutine = StartCoroutine(UpdateRuneRegenRoutine());
     }
 
     private void OnDisable()
@@ -284,7 +303,7 @@ public class NinjaResources : Skill, IPassiveSkill
                 if (Hero.TryGetResource(ResourceType.Rune) is RuneComponent rune) rune.SetExternalRegenMultiplier(1f);
             }
 
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.1f);
         }
     }
 

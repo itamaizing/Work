@@ -33,6 +33,27 @@ public class RuneComponent : Resource
         return base.TryUse(value);
     }
 
+    protected override IEnumerator RegenerateJob()
+    {
+        while (true)
+        {
+            if (!isServer) { yield return null; continue; }
+            if (_attr_regenValue.GetValue() <= 0) { yield return null; continue; }
+
+            if (_currentValue < _maxValue)
+            {
+                yield return new WaitForSeconds(_attr_regenDelay.GetValue());
+                while (_currentValue < _maxValue)
+                {
+                    Add(_attr_regenValue.GetValue() * _externalRegenMultiplier);
+                    yield return new WaitForSeconds(_attr_regenPeriod.GetValue());
+                }
+            }
+
+            yield return null;
+        }
+    }
+    
     private bool RemoveRune(float runeValue, Skill usedAbility)
     {
         if (_abilities.Count > 0)

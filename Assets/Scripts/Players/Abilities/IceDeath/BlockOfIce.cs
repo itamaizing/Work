@@ -202,7 +202,7 @@ public class BlockOfIce : Skill,IEnergyDamagable,IComboSeriesParticipatingSkill
 
 	public void OnSeriesCompleted(Character target, int totalHits, float totalEnergySpent)
 	{
-		_isSeriesComplete = false;
+		_isSeriesComplete = true;
 	}
 
 	public void OnSeriesBroken(Character target)
@@ -212,12 +212,6 @@ public class BlockOfIce : Skill,IEnergyDamagable,IComboSeriesParticipatingSkill
 
 	public void OnSeriesPotentialFinal(Skill skill, bool isPotentialFinal)
 	{
-		if (_isSeriesComplete) return;
-    
-		if (isPotentialFinal && _energy.CurrentValue > 5 && _rune.CurrentValue >= _runeCost)
-		{
-			_isSeriesComplete = true;
-		}
 	}
 
 	#endregion

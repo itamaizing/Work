@@ -36,6 +36,8 @@ public class ComboSeriesSystem : Skill
     private bool _seriesIsEnable;
 
     private Skill _lastPreparedSkill;
+    
+    private bool _timerPaused = false;
 
     #region AdditionalRuneTalent
 
@@ -134,6 +136,11 @@ public class ComboSeriesSystem : Skill
                 skill.PreparingStarted -= OnSkillPreparingStarted;
                 skill.PreparingStarted += OnSkillPreparingStarted;
 
+                skill.CastStarted -= OnSkillCastStarted;
+                skill.CastStarted += OnSkillCastStarted;
+
+                skill.OnSkillCanceled -= OnSkillCanceledHandler;
+                skill.OnSkillCanceled += OnSkillCanceledHandler;
             }
         }
     }
@@ -148,13 +155,16 @@ public class ComboSeriesSystem : Skill
             {
                 comboSkill.OnSeriesDamaged -= RegisterHit;
                 skill.PreparingStarted -= OnSkillPreparingStarted;
+                skill.CastStarted -= OnSkillCastStarted;
+                skill.OnSkillCanceled -= OnSkillCanceledHandler;
             }
         }
     }
 
+
     private void Update()
     {
-        if (_isInSeries)
+        if (_isInSeries && !_timerPaused)
         {
             _timer -= Time.deltaTime;
             if (_timer <= 0)
@@ -163,6 +173,18 @@ public class ComboSeriesSystem : Skill
                 RefreshPreparedSkill();
             }
         }
+    }
+    
+    private void OnSkillCastStarted()
+    {
+        if (!_seriesIsEnable || !_isInSeries) return;
+        _timerPaused = true;
+    }
+
+    private void OnSkillCanceledHandler()
+    {
+        if (!_seriesIsEnable || !_isInSeries) return;
+        _timerPaused = false;
     }
 
     private void OnSkillPreparingStarted(Skill skill)
@@ -217,8 +239,10 @@ public class ComboSeriesSystem : Skill
     
     private void RegisterHit(GameObject targetGo,Skill skill)
     {
-        if(!_seriesIsEnable) return;
+        if (!_seriesIsEnable) return;
         if (skill == null) return;
+        
+        _timerPaused = false;
 
         if (_energy == null)
             _energy = (Energy)_hero.Resources[ResourceType.Energy];
