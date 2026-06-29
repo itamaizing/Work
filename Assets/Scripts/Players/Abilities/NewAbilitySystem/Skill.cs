@@ -432,6 +432,19 @@ public abstract class Skill : NetworkBehaviour
         UseCooldownOrCharges();
         SpendResources();
     }
+
+    protected virtual float GetCastSpeed()
+    {
+        switch (Info.AbilityForm)
+        {
+            case AbilityForm.Physical:
+                return Attributes.CastSpeedPhysical;
+            case AbilityForm.Magic:
+                return Attributes.CastSpeedMagical;
+            default:
+                return Attributes.CastSpeed;
+        }
+    }
     #endregion Skill Execution Loop
 
 
@@ -705,7 +718,8 @@ public abstract class Skill : NetworkBehaviour
             _isPlayCastAnim = true;
             //_isWaitingForCastCoroutine = true;
 
-            float finalCastSpeed = Buff.CastSpeed.Multiplier * ExtraAnimationSpeedMultiplier;
+            float finalCastSpeed = GetCastSpeed() * ExtraAnimationSpeedMultiplier;
+            Debug.Log($"CastSpeed: {finalCastSpeed}");
             Hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, finalCastSpeed);
             _hero.Animator.SetTrigger(AnimTriggerCast);
             _hero.NetworkAnimator.SetTrigger(AnimTriggerCast);
@@ -808,7 +822,7 @@ public abstract class Skill : NetworkBehaviour
     {
         CastDeleyStarted?.Invoke(delayTime);
 
-        Hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, Buff.CastSpeed.Multiplier);
+        Hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, GetCastSpeed() * ExtraAnimationSpeedMultiplier);
         _hero.Animator.SetTrigger(AnimTriggerCastDelay);
         _hero.NetworkAnimator.SetTrigger(AnimTriggerCastDelay);
 

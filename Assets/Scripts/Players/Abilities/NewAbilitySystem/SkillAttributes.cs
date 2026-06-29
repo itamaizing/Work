@@ -68,8 +68,8 @@ public class SkillAttributes
             var skill = _attributes[SkillAttributeName.CastSpeed];
 
             return (skill.BaseValue + skill.FlatBonus + heroB.FlatBonus + heroP.FlatBonus) *
-                (1 + skill.PercentBonus + heroB.FlatBonus + heroP.FlatBonus) *
-                (skill.MultiplierBonus + heroB.MultiplierBonus + heroP.MultiplierBonus);
+                (1 + skill.PercentBonus + heroB.PercentBonus + heroP.PercentBonus) *
+                (skill.MultiplierBonus * heroB.MultiplierBonus * heroP.MultiplierBonus);
         }
     }
     public float CastSpeedMagical
@@ -83,8 +83,8 @@ public class SkillAttributes
             var skill = _attributes[SkillAttributeName.CastSpeed];
 
             return (skill.BaseValue + skill.FlatBonus + heroB.FlatBonus + heroM.FlatBonus) *
-                (1 + skill.PercentBonus + heroB.FlatBonus + heroM.FlatBonus) *
-                (skill.MultiplierBonus + heroB.MultiplierBonus + heroM.MultiplierBonus);
+                (1 + skill.PercentBonus + heroB.PercentBonus + heroM.PercentBonus) *
+                (skill.MultiplierBonus * heroB.MultiplierBonus * heroM.MultiplierBonus);
         }
     }
     #endregion Properties
@@ -102,7 +102,8 @@ public class SkillAttributes
     public void Init(AttributeSystem characterAttributes)
     {
         if (characterAttributes == null)
-            Debug.Log("Skill Attributes was null on Init()");
+            throw new NullReferenceException("Skill Attributes was null on Init()");
+        CastSpeed = 1;
         _heroAttributes = characterAttributes;
         SubscribeToAttributeModify();
     }

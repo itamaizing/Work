@@ -18,42 +18,22 @@ public class AreaComponent : BaseSkillComponent
     #region Properties
     public float Radius
     {
-        get
-        {
-            float baseValue = _skillAttributes.Attributes[SkillAttributeName.Radius].GetValue();
-            return _skill.Buff.Radius.GetBuffedValue(baseValue);
-        }
-
+        get { return _skillAttributes.Attributes[SkillAttributeName.Radius].GetValue(); }
         set { _skillAttributes.Attributes[SkillAttributeName.Radius].SetBaseValue(value); }
     }
     public float Area
     {
-        get
-        {
-            float baseValue = _skillAttributes.Attributes[SkillAttributeName.Area].GetValue();
-            return _skill.Buff.Area.GetBuffedValue(baseValue);
-        }
-
+        get { return _skillAttributes.Attributes[SkillAttributeName.Area].GetValue(); }
         set { _skillAttributes.Attributes[SkillAttributeName.Area].SetBaseValue(value); }
     }
     public float CastLength
     {
-        get
-        {
-            float baseValue = _skillAttributes.Attributes[SkillAttributeName.Length].GetValue();
-            return _skill.Buff.Length.GetBuffedValue(baseValue);
-        }
-
+        get { return _skillAttributes.Attributes[SkillAttributeName.Length].GetValue(); }
         set { _skillAttributes.Attributes[SkillAttributeName.Length].SetBaseValue(value); }
     }
     public float CastWidth
     {
-        get
-        {
-            float baseValue = _skillAttributes.Attributes[SkillAttributeName.Width].GetValue();
-            return _skill.Buff.Width.GetBuffedValue(baseValue);
-        }
-
+        get { return _skillAttributes.Attributes[SkillAttributeName.Width].GetValue(); }
         set { _skillAttributes.Attributes[SkillAttributeName.Width].SetBaseValue(value); }
     }
     #endregion

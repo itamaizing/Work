@@ -54,6 +54,7 @@ public class AttributeSystem : NetworkBehaviour
             switch (attribute)
             {
                 case CharacterAttributeName.CooldownReduction:
+                case CharacterAttributeName.CastSpeed:
                     baseValue = 1;
                     break;
                 default:
