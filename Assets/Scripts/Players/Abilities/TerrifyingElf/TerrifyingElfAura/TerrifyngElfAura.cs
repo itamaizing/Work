@@ -151,7 +151,7 @@ public class TerrifyingElfAura : NetworkBehaviour
         if (newValue > 0f) return;
 
         Debug.Log("Маны нет");
-        ApplyElvenSkill();
+        //ApplyElvenSkill();
         StartCoroutine(ReSubscribeAfterDelay());
     }
 
@@ -280,7 +280,13 @@ public class TerrifyingElfAura : NetworkBehaviour
     #region PhysicsTalent
 
     public void HuntressMarkPhysicsTalentActive(bool value) => huntressMarkPhysicsTalent = value;
-    public void ElvenSkillPhysicsTalent(bool value) => elvenSkillPhysicsTalent = value;
+
+    public void ElvenSkillPhysicsTalent(bool value)
+    {
+        if(elvenSkillPhysicsTalent == value) return;
+        elvenSkillPhysicsTalent = value;
+    }
+        
     public void CalmnessOnElvenSkillTalent(bool value) => calmnessOnElvenSkillTalent = value;
     public void SuppressionManaAbsorption(bool value) => suppressionManaAbsorptionTalent = value;
 

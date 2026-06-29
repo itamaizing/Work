@@ -228,7 +228,8 @@ public abstract class Skill : NetworkBehaviour
         _skillAttributes.Init(hero.AttributeSystem);
         InitComponents();
         //Debug.Log($"Subbed to SkillAttributes modification");
-        _skillAttributes.OnAttributeModify += CmdSyncronizeAttributes;
+        if(isClient)
+            _skillAttributes.OnAttributeModify += CmdSyncronizeAttributes;
     }
 
     public void InitComponents()
@@ -1303,8 +1304,8 @@ public abstract class Skill : NetworkBehaviour
         {
             damageable.TryTakeDamage(ref damage, this);
             OnDamagedApplied(target);
-            _hero.DamageTracker.AddDamage(damage, target, isServerRequest: isServer);
-            _hero.DamageGet(damage, target);
+            //_hero.DamageTracker.AddDamage(damage, target, isServerRequest: isServer);
+            //_hero.DamageGet(damage, target);
             TryCountGettedDamage(damage);
         }
 

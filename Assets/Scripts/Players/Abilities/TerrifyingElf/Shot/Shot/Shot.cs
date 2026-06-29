@@ -48,8 +48,9 @@ public class Shot : Skill
 
     private bool CheckCanCast()
     {
-        if (Targeting.GetTarget() == null) return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength;
-        return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength || Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.CastLength;
+        return true;
+        //if (Targeting.GetTarget() == null) return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength;
+        //return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength || Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.CastLength;
     }
 
     private void OnDisable()
