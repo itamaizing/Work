@@ -89,6 +89,8 @@ public class SkillAttributes
     }
     #endregion Properties
 
+    public event Action<string, float> OnAttributeModify;
+
     public SkillAttributes()
     {
         foreach (SkillAttributeName attribute in Enum.GetValues(typeof(SkillAttributeName)))
@@ -102,6 +104,7 @@ public class SkillAttributes
         if (characterAttributes == null)
             Debug.Log("Skill Attributes was null on Init()");
         _heroAttributes = characterAttributes;
+        SubscribeToAttributeModify();
     }
 
     public float GetCombined(Attribute skill, Attribute hero, float baseValue = float.MinValue)
@@ -126,5 +129,16 @@ public class SkillAttributes
             _attributes[SkillAttributeName.ChanceModifier],
             _heroAttributes[CharacterAttributeName.ChanceModifier],
             value);
+    }
+
+    private void SubscribeToAttributeModify()
+    {
+        foreach (Attribute attribute in _attributes.Values)
+            attribute.OnAttributeModify += SendAttributeModify;
+    }
+
+    public void SendAttributeModify(string name, float value)
+    {
+        OnAttributeModify?.Invoke(name, value);
     }
 }

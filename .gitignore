@@ -72,3 +72,9 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+Assets/Downloadeds/PixPlays/ElementalShields/ElementalShields_URP.unitypackage.meta
+Assets/Downloadeds/PixPlays/ElementalProjectiles/ElementalProjectiles_URP.unitypackage.meta
+Assets/Downloadeds/PixPlays/ElementalBlastVFX/ElementalBlasts_URP.unitypackage.meta
+Assets/Downloadeds/PixPlays/ElementalBeams/ElementalBeams_URP.unitypackage.meta
+Assets/Downloadeds/PixPlays/ElementalAuras/ElementalAuras_URP.unitypackage.meta
+Assets/Downloadeds/PixPlays/ElementalAOE/ElementalAoe_URP.unitypackage.meta

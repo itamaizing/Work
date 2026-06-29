@@ -15,6 +15,8 @@ public class Attribute
     private bool _isActual = false;
     private float _flat = 0, _percent = 1, _multiplier = 1;
 
+    public event Action<string, float> OnAttributeModify;
+
     #region Properties
     public string Name => _name;
     public List<AttributeModifier> Modifiers => _modifiers;
@@ -54,7 +56,8 @@ public class Attribute
     public Attribute(string name, float _value=0)
     {
         _name = name;
-        _baseValue = _value; 
+        _baseValue = _value;
+        _isActual = false;
     }
 
     public static implicit operator float (Attribute attribute)
@@ -66,6 +69,7 @@ public class Attribute
     {
         _modifiers.Add(modifier);
         _isActual = false;
+        UpdateCached(); // otherwise it would invoke event only when attribute is called directly
     }
 
     public void RemoveModifier(AttributeModifier modifier)
@@ -73,6 +77,7 @@ public class Attribute
         if(_modifiers.Contains(modifier))
             _modifiers.Remove(modifier);
         _isActual = false;
+        UpdateCached();
     }
 
     public void RemoveBySource(object source, bool all=true)
@@ -89,11 +94,14 @@ public class Attribute
             }
         }
         _isActual = false;
+        UpdateCached();
     }
 
     public void SetBaseValue(float value)
     {
         _baseValue = value;
+        _isActual = false;
+        UpdateCached();
     }
 
     public void RecalculateMultipliers()
@@ -137,10 +145,11 @@ public class Attribute
         return final;
     }
 
-
     private void UpdateCached()
     {
         _cachedValue = CalculateFor(_baseValue);
+        OnAttributeModify?.Invoke(_name, _cachedValue);
+        //Debug.Log($"{_name}: {_cachedValue}");
         _isActual = true;
     }
 }
