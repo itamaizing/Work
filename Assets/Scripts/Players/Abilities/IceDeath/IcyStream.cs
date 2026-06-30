@@ -332,7 +332,7 @@ public class IcyStream : Skill, IEnergyDamagable,IComboSeriesParticipatingSkill
     public event IComboSeriesParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplySeriesDamage;
     public event Action<GameObject, Skill> OnSeriesDamaged;
     public float EnergyCostOnHit => _energyPerTick;
-    public float RuneCostOnHit { get; }
+    public float RuneCostOnHit => _runeCost;
     public bool IsTicking => _isTicking;
 
     public void OnSeriesHit(int hitCountInCurrentSeries, Character target)

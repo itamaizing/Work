@@ -72,6 +72,12 @@ public class IcePuddle : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
     {
         if (IsPreparing)
             _radiusNeedsRedraw = true;
+        
+        if (_preViewPuddle)
+        {
+            Destroy(_preViewPuddle);
+            _preViewPuddle = null;
+        }
     }
 
     private void RefreshPreview()
@@ -165,7 +171,7 @@ public class IcePuddle : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
 
             if (GetMouseButton)
             {
-                Vector3 clickPoint = Targeting.GetMousePoint();
+                Vector3 clickPoint = GetMousePointOnGround();
 
                 Vector3 direction = (_hero.transform.position - _placedPosition).normalized;
                 if (direction != Vector3.zero)
@@ -228,12 +234,6 @@ public class IcePuddle : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
 
         _shooted = false;
         //_placedAngleDeg = 0f;
-
-        if (_preViewPuddle)
-        {
-            Destroy(_preViewPuddle);
-            _preViewPuddle = null;
-        }
     }
 
     private float LifeTimePuddle(float timeToAdd)
@@ -256,8 +256,17 @@ public class IcePuddle : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
     [Command]
     private void CmdCreateProjecttileBig(float angle, Vector3 position, float timeToDestroy, bool lastHit, bool talentEvade, bool talentFrostingFrozen)
     {
-        IcePuddleObject projectile = Instantiate(_puddleBig, position, Quaternion.Euler(-90, -angle, 0));
-        //SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
+        Vector3 direction = (_hero.transform.position - position).normalized;
+    
+        float yRotation = 0f;
+        if (direction != Vector3.zero)
+        {
+            Quaternion lookRot = Quaternion.LookRotation(direction, Vector3.up);
+            yRotation = lookRot.eulerAngles.y;
+        }
+
+        IcePuddleObject projectile = Instantiate(_puddleBig, position, Quaternion.Euler(-90f, yRotation, 0f));
+
         projectile.Init(Hero, timeToDestroy, lastHit, this);
         projectile.SetTalents(talentEvade, talentFrostingFrozen);
 

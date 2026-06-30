@@ -356,7 +356,8 @@ public class ComboSeriesSystem : Skill
 
         if (_isAdditionalRuneOnSeries)
         {
-            _rune.CmdAdd(_totalRuneSpentThisSeries + BaseRuneRecovery);
+            float runeToAdd = (_totalRuneSpentThisSeries * 2) + BaseRuneRecovery;
+            _rune.CmdAdd(runeToAdd);
             _totalRuneSpentThisSeries = 0f;
         }
 
