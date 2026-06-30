@@ -160,7 +160,6 @@ public class GhostAura : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        throw new NotImplementedException();
     }
 
     #region Talents
@@ -169,16 +168,15 @@ public class GhostAura : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        throw new NotImplementedException();
+        yield break;
     }
 
     protected override IEnumerator CastJob()
     {
-        throw new System.NotImplementedException();
+        yield break;
     }
 
     protected override void ClearData()
     {
-        throw new System.NotImplementedException();
     }
 }

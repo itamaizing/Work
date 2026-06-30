@@ -21,6 +21,7 @@ public class GrowTreeAura : NetworkBehaviour
     private Coroutine _routine;
     private const float TreeMultiplier = 1.2f;
     private const float VisionBonus = 3f;
+    private const float TreeBuffPercent = 1.5f;
 
     private readonly Dictionary<Skill, SkillBaseData> _baseValues = new();
     private bool _isBuffApplied = false;
@@ -65,7 +66,7 @@ public class GrowTreeAura : NetworkBehaviour
         if (_skillManager == null) return;
         if (_Hero != character) return;
 
-        if (character != null) RemoveTreeBuff(character);
+        RemoveTreeBuff(character);
 
         character.VisionComponent.VisionRange += VisionBonus;
 
@@ -73,8 +74,8 @@ public class GrowTreeAura : NetworkBehaviour
         {
             if (skill == null) continue;
 
-            skill.Buff.Length.IncreasePercentage(TreeMultiplier);
-            skill.Buff.Radius.IncreasePercentage(TreeMultiplier);
+            skill.Attributes[SkillAttributeName.Length].AddModifier(new AttributeModifier(TreeBuffPercent, ModifierType.Flat, source: this));
+            skill.Attributes[SkillAttributeName.Radius].AddModifier(new AttributeModifier(TreeBuffPercent, ModifierType.Flat, source: this));
         }
     }
 
@@ -89,8 +90,8 @@ public class GrowTreeAura : NetworkBehaviour
         {
             if (skill == null) continue;
 
-            skill.Buff.Length.ReductionPercentage(TreeMultiplier);
-            skill.Buff.Radius.ReductionPercentage(TreeMultiplier);
+            skill.Attributes[SkillAttributeName.Length].RemoveBySource(this, all: true);
+            skill.Attributes[SkillAttributeName.Radius].RemoveBySource(this, all: true);
         }
     }
 

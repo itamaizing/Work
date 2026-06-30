@@ -8,6 +8,9 @@ public class SleepSpell : Skill
     [SerializeField] private Character _playerLinks;
     [SerializeField] private float duration;
 
+
+    private const float HeroDuration = 6f;
+    private const float CreatureDuration = 40f;
     //private Character _target;
     //private Character _runtimeTarget;
     private bool _isSleepInnerDarknessTalentActive = false;
@@ -90,7 +93,7 @@ public class SleepSpell : Skill
         var targetCharacter = targetGameObject.GetComponent<Character>();
         if (targetCharacter != null)
         {
-            targetCharacter.CharacterState.AddState(States.Sleep, duration, 0, _playerLinks.gameObject, name);
+            targetCharacter.CharacterState.AddState(States.Sleep, targetCharacter is HeroComponent ? HeroDuration : CreatureDuration, 0, _playerLinks.gameObject, name);
         }
     }
 

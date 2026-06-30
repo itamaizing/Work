@@ -61,10 +61,9 @@ public class GrowTree : Skill
     private const float TreeTeleportYOffset = 5f;
     private const float CastStreamDurationFirst = 3f;
     private const float CastStreamDurationSecond = 1.5f;
-    private const float SearchRadiusTarget = 1f;
     private const float SearchMousClickTarget = 1f;
     private const float MagicEvade = 100f;
-    private const float TreeMultiplier = 1.2f;
+
 
     private const string GrowTreeCastDelayExit = "GrowTreeCastDelayExit";
     private const string GrowTreeCastDelay = "GrowTreeCastDelay";
@@ -343,6 +342,11 @@ public class GrowTree : Skill
         GrowTreeStopMove();
         if (_streamCoroutine != null) StopCoroutine(_streamCoroutine);
 
+        float currentStreamDuration = CastStreamDuration;
+        WaitForSeconds waitFirst  = new WaitForSeconds(currentStreamDuration / CastStreamDurationFirst);
+        WaitForSeconds waitSecond = new WaitForSeconds(currentStreamDuration / CastStreamDurationSecond);
+        WaitForSeconds waitThird  = new WaitForSeconds(currentStreamDuration);
+
         _streamCoroutine = StartCoroutine(StreamDuration());
         Renderer.HideAOEIndicator(isCommand: false);
 
@@ -354,21 +358,19 @@ public class GrowTree : Skill
 
         Vector3 spawnPos = _targetPoint;
 
-
         if (!_castFromExtendedRadius)
         {
             _hero.Animator.SetTrigger(_growHash);
             _hero.NetworkAnimator.SetTrigger(_growHash);
 
-            yield return _waitForCastStreamDurationFirst;
+            yield return waitFirst;
         }
 
         if (_isSpawnHero) CmdSpawnTreeAndTeleport(_hero.transform.position);
         else CmdSpawnTree(spawnPos, _castFromExtendedRadius);
 
-
-        if (!_castFromExtendedRadius) yield return _waitForCastStreamDurationSecond;
-        else yield return _waitForCastStreamDurationThird;
+        if (!_castFromExtendedRadius) yield return waitSecond;
+        else yield return waitThird;
 
         while (!_streamFinished) yield return null;
     }

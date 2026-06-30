@@ -39,6 +39,8 @@ public class Silence : Skill
     private bool _isGhostDeathSilence;
     public bool IsSilenceAddAllCharacterWithDeabaffElf { get => _isSilenceAddAllCharacterWithDeabaffElf; }
     
+    private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
+    
     public void WeakeningSilenceTalentActive(bool value) => _weakeningSilenceTalentActive = value;
 
     private void OnEnable()
@@ -162,6 +164,7 @@ public class Silence : Skill
     {
         if (hitCollider.TryGetComponent<HeroComponent>(out HeroComponent enemy))
         {
+            if(IsAllyTarget(enemy)) return;
             var targetState = enemy.GetComponent<CharacterState>();
             if (targetState != null)
             {
@@ -171,6 +174,7 @@ public class Silence : Skill
 
         if (hitCollider.TryGetComponent<MinionComponent>(out MinionComponent minion))
         {
+            if(IsAllyTarget(minion)) return;
             var targetState = minion.GetComponent<CharacterState>();
 
             if (targetState != null)

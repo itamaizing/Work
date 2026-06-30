@@ -51,7 +51,7 @@ public class TerrifyingElfAura : NetworkBehaviour
     private bool huntressMarkPhysicsTalent;
     private bool manaAbsorptionPhysicalTalent;
     private bool elvenSkillTalent;
-    private bool elvenSkillPhysicsTalent;
+    private bool elvenSkillPhysicsTalent = false;
     private bool calmnessOnElvenSkillTalent;
     private bool suppressionManaAbsorptionTalent;
     private bool _isReductionRecharge;
@@ -66,7 +66,12 @@ public class TerrifyingElfAura : NetworkBehaviour
 
     public void ThirdShotRow(bool value) => _isThirdShotRow = value;
     public void ReductionRecharge(bool value) => _isReductionRecharge = value;
-    public void CalmnessTalentActive(bool value) => calmnessTalent = value;
+
+    public void CalmnessTalentActive(bool value)
+    {
+        if(value == calmnessTalent) return;
+        calmnessTalent = value;
+    }
     public void ElvenSkillPhysDamageHealthChance(bool value) => _isElvenSkillPhysDamageHealthChance = value;
     public void CalmnessAura(bool value)
     {

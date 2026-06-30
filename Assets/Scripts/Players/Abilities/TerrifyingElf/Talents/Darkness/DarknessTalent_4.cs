@@ -9,13 +9,13 @@ public class DarknessTalent_4 : Talent
 
     public override void Enter()
     {
-        ghost.SendingGhostTargetTalentActive(true);
-        skillManager.ActivateSkill(ghost);
+        //ghost.SendingGhostTargetTalentActive(true);
+        //skillManager.ActivateSkill(ghost);
     }
 
     public override void Exit()
     {
-        ghost.SendingGhostTargetTalentActive(false);
-        skillManager.DeactivateSkill(ghost);
+        //ghost.SendingGhostTargetTalentActive(false);
+        //skillManager.DeactivateSkill(ghost);
     }
 }
