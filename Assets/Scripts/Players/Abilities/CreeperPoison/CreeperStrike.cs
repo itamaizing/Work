@@ -120,6 +120,8 @@ public class CreeperStrike : Skill
 
     public void AnimCreeperStrikeCast()
     {
+        if (_castTarget == null) return;
+
         AnimStartCastCoroutine();
     }
 
@@ -142,9 +144,11 @@ public class CreeperStrike : Skill
 
     private bool CheckIsCanCast()
     {
-        return Targeting.GetTarget() != null
-            && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius
-            && Targeting.NoObstacles(Targeting.GetTarget().Transform.position, transform.position, _obstacle);
+        Character target = _castTarget != null ? _castTarget : Targeting.GetTarget()?.Character;
+
+        if (target == null) return false;
+
+        return Vector3.Distance(target.transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(target.transform.position, transform.position, _obstacle);
     }
 
     private bool IsAllyTarget(IDamageable target)
@@ -211,15 +215,24 @@ public class CreeperStrike : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_castTarget == null)
+        Character target = _castTarget;
+
+        if (target == null)
             yield break;
+
+        if (Vector3.Distance(target.transform.position, transform.position) > AreaInfo.Radius ||
+            !Targeting.NoObstacles(target.transform.position, transform.position, _obstacle))
+        {
+            TryCancel(true);
+            yield break;
+        }
 
         Hero.Move.StopLookAt();
 
         bool isLightningMovementHit = _isNextHitFromLightningMovement;
         _isNextHitFromLightningMovement = false;
 
-        DamageDeal(_castTarget, isLightningMovementHit);
+        DamageDeal(target, isLightningMovementHit);
 
         yield return null;
     }
