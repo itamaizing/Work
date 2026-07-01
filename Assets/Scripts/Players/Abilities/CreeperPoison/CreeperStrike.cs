@@ -11,7 +11,6 @@ public class CreeperStrike : Skill
     [SerializeField] private CreeperInvisible _creeperInvisible;
     [SerializeField] private ColdBlood _coldBlood;
     [SerializeField] private CreeperPoisonAura _creeperPoisonAura;
-    [SerializeField] private SneakySpit _sneakySpit;
 
     [Header("Damage")]
     [SerializeField] private float _minDamage = 7f;
@@ -22,11 +21,6 @@ public class CreeperStrike : Skill
     [Header("Targeting")]
     [SerializeField] private float _radiusSearchTarget = 0.5f;
 
-    [Header("SneakySpit combo")]
-    [SerializeField] private int _hitsForSneakySpitActivation = 3;
-    [SerializeField] private float _sneakySpitHitWindow = 1.5f;
-    [SerializeField] private float _sneakySpitReadyWindow = 2f;
-
     [Header("Reptile talent")]
     [SerializeField] private LayerMask _enemyLayer;
     [SerializeField] private float _poisonSearchRadius = 30f;
@@ -34,6 +28,7 @@ public class CreeperStrike : Skill
     [SerializeField] private float _maxMinimumAttackSpeed = 0.1f;
 
     private Character _castTarget;
+    private Character _lastHitTarget;
 
     private float _currentDamage;
     private int _poisonBoneStack;
@@ -44,10 +39,10 @@ public class CreeperStrike : Skill
     private bool _isColdBloodStrike;
     private bool _isCheckForStatePoisonBone;
 
+    private bool _isCreeperStrikeDamageAppliedThisCast;
+
     private Character _sneakySpitComboTarget;
 
-    private int _sneakySpitCreeperHits;
-    private bool _sneakySpitHasLightningMovementHit;
     private bool _isNextHitFromLightningMovement;
 
     private Coroutine _sneakySpitComboResetCoroutine;
@@ -76,11 +71,7 @@ public class CreeperStrike : Skill
     public event Action OnCreeperStrikeEnd;
     public event Action OnHit;
 
-    public int CurrentCountHit
-    {
-        get => _sneakySpitCreeperHits;
-        set => _sneakySpitCreeperHits = value;
-    }
+    public Character LastHitTarget => _lastHitTarget;
 
     public int PoisonBoneStack
     {
@@ -111,7 +102,6 @@ public class CreeperStrike : Skill
     private void OnDisable()
     {
         StopReptileTalent();
-        StopSneakySpitComboTimers();
     }
 
     public void CheckForStatePoisonBone(bool value) => _isCheckForStatePoisonBone = value;
@@ -121,6 +111,8 @@ public class CreeperStrike : Skill
     public void AnimCreeperStrikeCast()
     {
         if (_castTarget == null) return;
+        if (_isCreeperStrikeDamageAppliedThisCast) return;
+        _isCreeperStrikeDamageAppliedThisCast = true;
 
         AnimStartCastCoroutine();
     }
@@ -133,6 +125,7 @@ public class CreeperStrike : Skill
     public void AnimCreeperStrikeEnded()
     {
         OnCreeperStrikeEnd?.Invoke();
+        _isCreeperStrikeDamageAppliedThisCast = false;
         AnimCastEnded();
     }
 
@@ -144,11 +137,9 @@ public class CreeperStrike : Skill
 
     private bool CheckIsCanCast()
     {
-        Character target = _castTarget != null ? _castTarget : Targeting.GetTarget()?.Character;
-
-        if (target == null) return false;
-
-        return Vector3.Distance(target.transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(target.transform.position, transform.position, _obstacle);
+        return Targeting.GetTarget() != null
+            && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius
+            && Targeting.NoObstacles(Targeting.GetTarget().Transform.position, transform.position, _obstacle);
     }
 
     private bool IsAllyTarget(IDamageable target)
@@ -215,24 +206,15 @@ public class CreeperStrike : Skill
 
     protected override IEnumerator CastJob()
     {
-        Character target = _castTarget;
-
-        if (target == null)
+        if (_castTarget == null)
             yield break;
-
-        if (Vector3.Distance(target.transform.position, transform.position) > AreaInfo.Radius ||
-            !Targeting.NoObstacles(target.transform.position, transform.position, _obstacle))
-        {
-            TryCancel(true);
-            yield break;
-        }
 
         Hero.Move.StopLookAt();
 
         bool isLightningMovementHit = _isNextHitFromLightningMovement;
         _isNextHitFromLightningMovement = false;
 
-        DamageDeal(target, isLightningMovementHit);
+        DamageDeal(_castTarget, isLightningMovementHit);
 
         yield return null;
     }
@@ -253,6 +235,8 @@ public class CreeperStrike : Skill
         _currentDamage = UnityEngine.Random.Range(_minDamage, _maxDamage);
 
         TryApplyInvisibleCritBonus();
+
+        _lastHitTarget = character;
 
         _isHit = true;
         OnHit?.Invoke();
@@ -281,8 +265,6 @@ public class CreeperStrike : Skill
 
             CmdDamageDeal(damage, character.gameObject);
         }
-
-        RegisterSneakySpitHit(character, isUsingLightningStrikes);
 
         _isHit = false;
     }
@@ -447,117 +429,6 @@ public class CreeperStrike : Skill
         return baseDamage * multiplier;
     }
 
-    private void RegisterSneakySpitHit(Character target, bool isUsingLightningMovement)
-    {
-        if (target == null)
-            return;
-
-        bool targetChanged = _sneakySpitComboTarget != null && _sneakySpitComboTarget != target;
-
-        if (targetChanged)
-        {
-            ResetSneakySpitCombo();
-        }
-
-        _sneakySpitComboTarget = target;
-
-        if (isUsingLightningMovement)
-        {
-            _sneakySpitHasLightningMovementHit = true;
-        }
-        else
-        {
-            _sneakySpitCreeperHits++;
-        }
-
-        RestartSneakySpitComboResetTimer();
-
-        bool hasThreeCreeperHits = _sneakySpitCreeperHits >= _hitsForSneakySpitActivation;
-        bool hasCreeperAndLightningMovement = _sneakySpitCreeperHits >= 1 && _sneakySpitHasLightningMovementHit;
-
-        Debug.Log(
-            $"SneakySpit combo: CreeperHits = {_sneakySpitCreeperHits}, " +
-            $"LightningMovement = {_sneakySpitHasLightningMovementHit}, " +
-            $"Target = {target.name}"
-        );
-
-        if (!hasThreeCreeperHits && !hasCreeperAndLightningMovement)
-            return;
-
-        Character comboTarget = _sneakySpitComboTarget;
-
-        ResetSneakySpitCombo();
-        ActivateSneakySpitWindow(comboTarget, isUsingLightningMovement);
-    }
-
-    private void RestartSneakySpitComboResetTimer()
-    {
-        if (_sneakySpitComboResetCoroutine != null)
-        {
-            StopCoroutine(_sneakySpitComboResetCoroutine);
-            _sneakySpitComboResetCoroutine = null;
-        }
-
-        _sneakySpitComboResetCoroutine = StartCoroutine(SneakySpitComboResetTimer());
-    }
-
-    private IEnumerator SneakySpitComboResetTimer()
-    {
-        yield return new WaitForSeconds(_sneakySpitHitWindow);
-
-        _sneakySpitComboResetCoroutine = null;
-        ResetSneakySpitCombo(false);
-
-        Debug.Log("SneakySpit combo reset by timeout");
-    }
-
-    private void ResetSneakySpitCombo(bool stopTimer = true)
-    {
-        if (stopTimer && _sneakySpitComboResetCoroutine != null)
-        {
-            StopCoroutine(_sneakySpitComboResetCoroutine);
-            _sneakySpitComboResetCoroutine = null;
-        }
-
-        _sneakySpitComboTarget = null;
-        _sneakySpitCreeperHits = 0;
-        _sneakySpitHasLightningMovementHit = false;
-    }
-
-    private void ActivateSneakySpitWindow(Character target, bool isUsingLightningStrikes)
-    {
-        if (target == null)
-            return;
-
-        if (_sneakySpit != null)
-            _sneakySpit.TryStartSneakySpitBoostWindow(target);
-
-        if (_sneakySpitReadyCoroutine != null)
-        {
-            StopCoroutine(_sneakySpitReadyCoroutine);
-            _sneakySpitReadyCoroutine = null;
-        }
-
-        _sneakySpitReadyCoroutine = StartCoroutine(SneakySpitReadyWindow(isUsingLightningStrikes));
-    }
-
-    private IEnumerator SneakySpitReadyWindow(bool isUsingLightningStrikes)
-    {
-        _isTwoHit = true;
-
-        if (_lightningStrikes != null)
-            _lightningStrikes.IsUsedLightningStrikes = isUsingLightningStrikes;
-
-        yield return new WaitForSeconds(_sneakySpitReadyWindow);
-
-        _isTwoHit = false;
-
-        if (_lightningStrikes != null)
-            _lightningStrikes.IsUsedLightningStrikes = false;
-
-        _sneakySpitReadyCoroutine = null;
-    }
-
     public void SetReptileTalentActive(bool value)
     {
         _isReptileTalentActive = value;
@@ -707,31 +578,10 @@ public class CreeperStrike : Skill
         _previousAllStacks = 0;
     }
 
-    private void StopSneakySpitComboTimers()
-    {
-        if (_sneakySpitComboResetCoroutine != null)
-        {
-            StopCoroutine(_sneakySpitComboResetCoroutine);
-            _sneakySpitComboResetCoroutine = null;
-        }
-
-        if (_sneakySpitReadyCoroutine != null)
-        {
-            StopCoroutine(_sneakySpitReadyCoroutine);
-            _sneakySpitReadyCoroutine = null;
-        }
-
-        _isTwoHit = false;
-
-        if (_lightningStrikes != null)
-            _lightningStrikes.IsUsedLightningStrikes = false;
-
-        ResetSneakySpitCombo(false);
-    }
-
     protected override void ClearData()
     {
         _castTarget = null;
+        _lastHitTarget = null;
         _isNextHitFromLightningMovement = false;
 
         Targeting.ClearTarget();

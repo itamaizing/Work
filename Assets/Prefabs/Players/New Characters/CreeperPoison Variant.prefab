@@ -19027,7 +19027,7 @@ MonoBehaviour:
   _radiusSearchTarget: 0.5
   _hitsForSneakySpitActivation: 3
   _sneakySpitHitWindow: 1.5
-  _sneakySpitReadyWindow: 2
+  _sneakySpitReadyWindow: 4
   _enemyLayer:
     serializedVersion: 2
     m_Bits: 0
