@@ -8,11 +8,11 @@ public class HuntressTalent_9 : Talent
 
     public override void Enter()
     {
-        reconnaissanceFire.FireWorshipperTalentActive(true);
+        //reconnaissanceFire.FireWorshipperTalentActive(true);
     }
 
     public override void Exit()
     {
-        reconnaissanceFire.FireWorshipperTalentActive(false);
+        //reconnaissanceFire.FireWorshipperTalentActive(false);
     }
 }

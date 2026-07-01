@@ -24,6 +24,7 @@ public class ShotsIntoSky : Skill
     private bool _tripleShootPlanned;
     private const float _extraShotDelay = 1f;
 
+    private float _impactLifeTime = 2;
     private float _baseCastDelay;
     private Coroutine _boostWindow;
     private WaitForSeconds _boostDuration = new WaitForSeconds(2f);
@@ -121,15 +122,22 @@ public class ShotsIntoSky : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        Vector3 localTarget = Vector3.positiveInfinity;
+
         Hero.Animator.speed = Hero.Animator.speed / CastDeley;
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
+        while (float.IsPositiveInfinity(localTarget.x) && !_disactive)
         {
-            if (GetMouseButton) if (TryGetGroundPoint(out Vector3 ground) && Targeting.IsPointInRadius(AreaInfo.Radius, ground)) _targetPoint = ground;
+            if (GetMouseButton)
+                if (TryGetGroundPoint(out Vector3 ground) && Targeting.IsPointInRadius(AreaInfo.Radius, ground))
+                    localTarget = ground;
             yield return null;
         }
 
+        _targetPoint = localTarget;
+
         CmdSpawnImpact(_targetPoint, Damage, false);
+        _secondShotPlanned = true;
 
         if (tripleShotTalentActive && reconnaissanceFire != null && reconnaissanceFire.CurrentFireAura != null)
         {
@@ -142,19 +150,18 @@ public class ShotsIntoSky : Skill
                 if (reconnaissanceFire.CurrentFireAura.StateDark)
                 {
                     CmdSpawnImpact(_targetPoint, Damage / 2, false);
-                    _secondShotPlanned = true;
 
                     CmdSpawnImpact(_targetPoint, Damage / 4, true);
                     _tripleShootPlanned = true;
                 }
-
                 else
                 {
                     CmdSpawnImpact(_targetPoint, Damage / 2, true);
-                    _secondShotPlanned = true;
                 }
             }
         }
+
+        CmdSpawnImpact(_targetPoint, Damage, false);
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(_targetPoint);
@@ -165,23 +172,30 @@ public class ShotsIntoSky : Skill
     {
         CmdExecuteCast();
 
+        yield return new WaitForSeconds(_dropDelayTime);
+
         if (_secondShotPlanned)
         {
+            int shotHash = Animator.StringToHash("ShotsSkyCastDelay");
+            _hero.Animator.SetTrigger(shotHash);
+            _hero.NetworkAnimator.SetTrigger(shotHash);
+            
             yield return new WaitForSeconds(_extraShotDelay);
+            
             CmdExecuteCast();
             _secondShotPlanned = false;
 
             if (_tripleShootPlanned)
             {
+                yield return new WaitForSeconds(_dropDelayTime);
+
+                _hero.Animator.SetTrigger(shotHash);
+                _hero.NetworkAnimator.SetTrigger(shotHash);
                 yield return new WaitForSeconds(_extraShotDelay);
                 CmdExecuteCast();
-
                 _tripleShootPlanned = false;
             }
         }
-
-        yield return null;
-
         _hero.Animator.speed = 1f;
         ClearData();
     }
@@ -213,7 +227,6 @@ public class ShotsIntoSky : Skill
         if (!impactPrefab) return;
 
         ArrowsIntoSkyProjectile impact = Instantiate(impactPrefab, position, Quaternion.identity);
-        SceneManager.MoveGameObjectToScene(impact.gameObject, _hero.NetworkSettings.MyRoom);
         impact.Init(playerLinks, this, damage, lastStreamTalent, shotMagicDebuffActive);
         NetworkServer.Spawn(impact.gameObject);
 
@@ -298,4 +311,4 @@ public class ShotsIntoSky : Skill
         tripleShotTalentActive = value;
     }
     #endregion
-}
+}

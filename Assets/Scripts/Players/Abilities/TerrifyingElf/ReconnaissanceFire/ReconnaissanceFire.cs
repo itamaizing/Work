@@ -308,7 +308,17 @@ public class ReconnaissanceFire : Skill
         _currentFireAura = fireAura;
         _currentFireAura.FireDarkTalent = _fireDarkTalent;
 
-        if (_fireWorshipperTalent) _currentFireAura.ApplyFireWorshipperTalentEffect(true);
+        if (_fireWorshipperTalent)
+        {
+            _currentFireAura.ApplyFireWorshipperTalentEffect(true);
+            CmdApplyFireWorshipper();
+        }
+    }
+
+    [Command]
+    private void CmdApplyFireWorshipper()
+    {
+        _currentFireAura.ApplyFireWorshipperTalentEffect(true);
     }
 
     protected override void ClearData()
@@ -362,7 +372,14 @@ public class ReconnaissanceFire : Skill
     #region FireWorshipperTalent
     public void FireWorshipperTalentActive(bool value)
     {
+        if(value == _fireWorshipperTalent) return;
+        
         _fireWorshipperTalent = value;
+
+        if (_fireWorshipperTalent)
+            AreaInfo.Area += 2;
+        else
+            AreaInfo.Area -= 2;
     }
 
     #endregion

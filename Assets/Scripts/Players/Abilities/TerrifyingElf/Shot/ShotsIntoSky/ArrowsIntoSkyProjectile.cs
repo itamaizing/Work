@@ -147,7 +147,7 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
         if (characterState == null) return;
 
         if (lastStreamTalent) characterState.AddState(States.InnerDarkness, 13, 0, _character.gameObject, name);
-        characterState.AddState(States.Irradiation, 9, 0, _character.gameObject, name);
+        //characterState.AddState(States.Irradiation, 9, 0, _character.gameObject, name);
 
         if (shotMagicDebuffActive && characterState.HasMagicDebuff()) RestoreMana();
 

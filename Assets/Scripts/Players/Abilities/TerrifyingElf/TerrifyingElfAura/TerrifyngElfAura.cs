@@ -3,12 +3,8 @@ using UnityEngine;
 using System.Collections;
 using System;
 
-public class TerrifyingElfAura : NetworkBehaviour
+public class TerrifyingElfAura : Skill
 {
-    [Header("Main fields")]
-    [SerializeField] private SkillManager skillManager;
-    [SerializeField] private HeroComponent hero;
-
     [Header("Chances")]
     [SerializeField, Range(0f, 100f)] private float calmnessChance = 10f;
     [SerializeField, Range(0, 100)] private float elvenSkillFromPhysChance = 10f;
@@ -42,6 +38,8 @@ public class TerrifyingElfAura : NetworkBehaviour
     #endregion
 
     public GameObject ElvenSkillEffect { get => elvenSkillEffect; set => elvenSkillEffect = value; }
+
+    private SkillManager _skillManager;
 
     #region boolTalent
 
@@ -105,13 +103,16 @@ public class TerrifyingElfAura : NetworkBehaviour
     public bool IsReductionRecharge { get => _isReductionRecharge; }
     public bool IsElvenSkillPhysDamageHealthChance { get => _isElvenSkillPhysDamageHealthChance; }
 
-    private void OnEnable()
+    public override void Init(SkillRenderer render, Character hero)
     {
-        CacheHeroMana();
-        if (skillManager != null && skillManager.SkillQueue != null) skillManager.SkillQueue.SkillAdded += OnSkillAdded;
+        base.Init(render, hero);
+        _skillManager = _hero.Abilities;
+        _heroMana =  _hero.TryGetResource(ResourceType.Mana) as Mana;
+        
+        if (_skillManager != null && _skillManager.SkillQueue != null) _skillManager.SkillQueue.SkillAdded += OnSkillAdded;
         if (hero != null && hero.DamageTracker != null) hero.DamageTracker.OnDamageTracked += OnDamageTracked;
         if (manaAbsorptionPhysicalTalent) hero.DamageTracker.OnDamageTracked += OnDamageDealt;
-        if (_heroMana != null) _heroMana.ValueChanged += OnManaChanged;
+        _heroMana.ValueChanged += OnManaChanged;
         _baseAreaReconnaissanceFire = reconnaissanceFire.BaseArea;
     }
 
@@ -124,8 +125,8 @@ public class TerrifyingElfAura : NetworkBehaviour
         }
 
         if (_heroMana != null) _heroMana.ValueChanged -= OnManaChanged;
-        hero.DamageTracker.OnDamageTracked -= OnDamageDealt;
-        if (hero != null && hero.DamageTracker != null) hero.DamageTracker.OnDamageTracked -= OnDamageTracked;
+        _hero.DamageTracker.OnDamageTracked -= OnDamageDealt;
+        if (_hero != null && _hero.DamageTracker != null) _hero.DamageTracker.OnDamageTracked -= OnDamageTracked;
     }
 
     private void OnSkillAdded(Skill skill)
@@ -140,32 +141,10 @@ public class TerrifyingElfAura : NetworkBehaviour
 
     #region Work with mana
 
-    private void CacheHeroMana()
-    {
-        if (hero == null) return;
-        if (_heroMana != null) return;
-
-        //_heroMana = hero.TryGetResource(ResourceType.Mana, out _heroMana) as Mana;
-        Resource res;
-        hero.TryGetResource(ResourceType.Mana, out res);
-        _heroMana = res as Mana;
-    }
-
     private void OnManaChanged(float oldValue, float newValue)
     {
         if (newValue > 0f) return;
-
-        Debug.Log("Маны нет");
-        //ApplyElvenSkill();
-        StartCoroutine(ReSubscribeAfterDelay());
-    }
-
-    private IEnumerator ReSubscribeAfterDelay()
-    {
-        yield return new WaitForSeconds(durationElvenSkill);
-
-        if (_heroMana != null)
-            _heroMana.ValueChanged += OnManaChanged;
+        ApplyElvenSkill(newValue);
     }
 
     #endregion
@@ -208,13 +187,13 @@ public class TerrifyingElfAura : NetworkBehaviour
         {
             yield return wait;
 
-            if (hero == null || hero.CharacterState == null)
+            if (_hero == null || _hero.CharacterState == null)
                 continue;
 
-            float radius = hero.VisionComponent.VisionRange;
+            float radius = _hero.VisionComponent.VisionRange;
 
             var colliders = Physics.OverlapSphere(
-                hero.transform.position,
+                _hero.transform.position,
                 radius,
                 _characterLayer
             );
@@ -222,12 +201,12 @@ public class TerrifyingElfAura : NetworkBehaviour
             foreach (var col in colliders)
             {
                 if (!col.TryGetComponent<Character>(out var target)) continue;
-                if (target == hero) continue;
+                if (target == _hero) continue;
 
-                if (target.NetworkSettings.TeamIndex != hero.NetworkSettings.TeamIndex) continue;
+                if (target.NetworkSettings.TeamIndex != _hero.NetworkSettings.TeamIndex) continue;
                 if (target.CharacterState == null) continue;
 
-                target.CharacterState.AddState(States.Calmness, durationCalmess, 0f, hero.gameObject, "CalmnessAura");
+                target.CharacterState.AddState(States.Calmness, durationCalmess, 0f, _hero.gameObject, "CalmnessAura");
             }
         }
     }
@@ -310,9 +289,9 @@ public class TerrifyingElfAura : NetworkBehaviour
 
     private void OnDamageTracked(Damage damage, GameObject target)
     {
-        if (damage.Type == DamageType.Physical && hero != null && hero.CharacterState != null)
+        if (damage.Type == DamageType.Physical && _hero != null && _hero.CharacterState != null)
         {
-            CharacterState selfState = hero.CharacterState;
+            CharacterState selfState = _hero.CharacterState;
 
             if (elvenSkillPhysicsTalent && UnityEngine.Random.Range(0f, 100f) <= elvenSkillFromPhysChance)
                 selfState.AddState(States.ElvenSkill, durationElvenSkill, 0f, gameObject, "TerrifyingElfAura");
@@ -323,7 +302,7 @@ public class TerrifyingElfAura : NetworkBehaviour
             //if (huntressMarkPhysicsTalent && UnityEngine.Random.Range(0f, 100f) <= huntressMarkApplyChance && target != null && target.TryGetComponent<CharacterState>(out var victimState))
             //    victimState.AddState(States.HuntressMark, durationHuntressMark, 0f, gameObject, "HuntressMark");
 
-            if (suppressionManaAbsorptionTalent && selfState.GetState(States.Suppression) is SuppressionState suppression && suppression.CurrentStacksCount > 0 && hero.TryGetResource(ResourceType.Mana) is Mana mana)
+            if (suppressionManaAbsorptionTalent && selfState.GetState(States.Suppression) is SuppressionState suppression && suppression.CurrentStacksCount > 0 && _hero.TryGetResource(ResourceType.Mana) is Mana mana)
                 mana.Add(damage.Value * 0.25f * suppression.CurrentStacksCount);
 
             if (manaAbsorptionPhysicalTalent) OnDamageDealt(damage, target);
@@ -331,7 +310,7 @@ public class TerrifyingElfAura : NetworkBehaviour
             if (_isSpellAddInnerDarkness && damage.Type == DamageType.Magical && target != null && target.TryGetComponent<Character>(out var targetCharacter))  
             {
                 float roll = UnityEngine.Random.Range(0f, 100f);
-                if (roll <= innerDarknessChance) targetCharacter.CharacterState.AddState(States.InnerDarkness, durationCalmess, 0f, hero.gameObject, "TerrifyingElfAura");
+                if (roll <= innerDarknessChance) targetCharacter.CharacterState.AddState(States.InnerDarkness, durationCalmess, 0f, _hero.gameObject, "TerrifyingElfAura");
             }
         }
     }
@@ -364,7 +343,7 @@ public class TerrifyingElfAura : NetworkBehaviour
         {
             _shotCounter = 0;
 
-            foreach (var skill in skillManager.Skills)
+            foreach (var skill in _skillManager.Skills)
             {
                 if (skill == null) continue;
 
@@ -384,7 +363,7 @@ public class TerrifyingElfAura : NetworkBehaviour
 
     private void OnDamageDealt(Damage damage, GameObject target)
     {
-        if (damage.Type == DamageType.Physical && hero != null)
+        if (damage.Type == DamageType.Physical && _hero != null)
         {
             float manaToRestore = damage.Value * 0.3f;
             RestoreMana(manaToRestore, target);
@@ -404,22 +383,24 @@ public class TerrifyingElfAura : NetworkBehaviour
             }
         }
 
-        if (hero.TryGetResource(ResourceType.Mana) is Mana manaResource) manaResource.Add(amount);
+        if (_hero.TryGetResource(ResourceType.Mana) is Mana manaResource) manaResource.Add(amount);
     }
 
     #endregion
 
     #region The Elf has run out of mana
 
-    private void ApplyElvenSkill()
+    private void ApplyElvenSkill(float newValue)
     {
-        if (elvenSkillTalent && hero == null && hero.CharacterState == null) return;
+        if (!elvenSkillTalent && _hero == null && _hero.CharacterState == null && newValue > 0) return;
 
-        hero.CharacterState.CmdAddState(States.ElvenSkill, durationElvenSkill, 0f, gameObject, "TerrifyingElfAura");
+        if(isClient)
+            _hero.CharacterState.CmdAddState(States.ElvenSkill, durationElvenSkill, 0f, gameObject, "TerrifyingElfAura");
     }
 
     public void ElvenSkillTalent(bool value)
     {
+        if(value == elvenSkillTalent) return;
         elvenSkillTalent = value;
     }
 
@@ -453,4 +434,17 @@ public class TerrifyingElfAura : NetworkBehaviour
         }
     }
     #endregion
+
+    #region Skill
+
+    protected override IEnumerator CastJob()
+    {
+        yield break;
+    }
+
+    protected override int AnimTriggerCastDelay { get; }
+    protected override int AnimTriggerCast { get; }
+
+    #endregion
+
 }

@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class HuntressTalent_6 : Talent
 {
-    [SerializeField] private TerrifyingElfAura terrifyingElfAura;
-
     public override void Enter()
     {
-        terrifyingElfAura.ElvenSkillTalent(true);
+        character.Abilities.GetSkill<ReconnaissanceFire>().FireWorshipperTalentActive(true);
+        //terrifyingElfAura.ElvenSkillTalent(true);
     }
 
     public override void Exit()
     {
-        terrifyingElfAura.ElvenSkillTalent(false);
+        character.Abilities.GetSkill<ReconnaissanceFire>().FireWorshipperTalentActive(false);
+        //terrifyingElfAura.ElvenSkillTalent(false);
     }
 }

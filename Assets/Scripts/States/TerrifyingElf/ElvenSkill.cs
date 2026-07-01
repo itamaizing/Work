@@ -53,6 +53,8 @@ public class ElvenSkill : RefreshingState
             _elvenSkillEffect = _aura.ElvenSkillEffect;
             _elvenSkillEffect.SetActive(true);
         }
+
+        abilities.GetSkill<ElvenReflexes>().Disactive = false;
     }
 
     public override bool Stack(float time)
@@ -84,8 +86,19 @@ public class ElvenSkill : RefreshingState
     
     public override void ReduceStack()
     {
+        ReduceStackExternal();
+    }
+
+    public void ReduceStackExternal(bool isExternal = false)
+    {
         currentStacksCount--;
         duration = _baseDuration;
+        
+        if (isExternal)
+        {
+            characterState.StateIcons.ActivateIco(States.ElvenSkill,duration,-1,true,MaxStacksCount);
+        }
+        
         if (currentStacksCount > 0)
         {
             RemoveOneStack();
@@ -131,7 +144,8 @@ public class ElvenSkill : RefreshingState
 
         if (_elvenSkillEffect != null)
             _elvenSkillEffect.SetActive(false);
-
+        
+        abilities.GetSkill<ElvenReflexes>().Disactive = true;
         base.ExitState();
     }
 

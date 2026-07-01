@@ -220,6 +220,7 @@ public class Health : Resource, IDamageable, IHealable
 
     protected virtual void HookEvadeMeleeDamageChanged(float oldValue, float newValue)
     {
+        Debug.LogError($"[Value changed] old: {oldValue}, new {newValue}");
         EvadeMeleeDamageChanged?.Invoke(oldValue, newValue);
     }
 

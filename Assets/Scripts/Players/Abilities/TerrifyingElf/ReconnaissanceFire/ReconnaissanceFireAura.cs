@@ -11,6 +11,7 @@ public class ReconnaissanceFireAura : NetworkBehaviour
     [SerializeField] private float _innerDarknessDuration = 13;
     [SerializeField] private GameObject _fireEffect;
     [SerializeField] private GameObject _fireEffectDark;
+    [SerializeField] private GameObject _fireAuraTrigger;
     [SerializeField] private bool _fireDarkTalent;
     [SerializeField] private bool _partialBlindnessTalent;
     [SerializeField] private FlameLightPulse _flameLightPulse;
@@ -167,16 +168,19 @@ public class ReconnaissanceFireAura : NetworkBehaviour
     {
         if (isActive)
         {
-            transform.localScale += Vector3.one;
-            if (_fireEffect != null) _fireEffect.transform.localScale += Vector3.one;
-            if (_fireEffectDark != null) _fireEffectDark.transform.localScale += Vector3.one;
-            if (this.TryGetComponent<VisionComponent>(out VisionComponent vision)) vision.VisionRange += 1;
+            Vector3 vectorBonus = new Vector3(2, 2, 2);
+
+            _fireAuraTrigger.transform.localScale *= 2.5f;
+            //transform.localScale += vectorBonus;
+            if (_fireEffect != null) _fireEffect.transform.localScale += vectorBonus;
+            if (_fireEffectDark != null) _fireEffectDark.transform.localScale += vectorBonus;
+            if (this.TryGetComponent<VisionComponent>(out VisionComponent vision)) vision.VisionRange += 2;
 
             if (_flameLightPulse != null)
             {
-                _flameLightPulse.FlameLight.range += 1;
+                _flameLightPulse.FlameLight.range += 2;
                 Vector3 position = _flameLightPulse.transform.position;
-                position.y -= 1f;
+                //position.y -= 2f;
                 _flameLightPulse.transform.position = position;
             }
         }

@@ -131,13 +131,20 @@ public class ShotIntoSky : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
+        Vector3 localTarget = Vector3.positiveInfinity;
+
         Hero.Animator.speed = Hero.Animator.speed / CastDeley;
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
+        while (float.IsPositiveInfinity(localTarget.x) && !_disactive)
         {
-            if (GetMouseButton) if (TryGetGroundPoint(out Vector3 ground) && Targeting.IsPointInRadius(AreaInfo.Radius, ground)) _targetPoint = ground;
+            if (GetMouseButton)
+                if (TryGetGroundPoint(out Vector3 ground) && Targeting.IsPointInRadius(AreaInfo.Radius, ground))
+                    localTarget = ground;
+
             yield return null;
         }
+
+        _targetPoint = localTarget;
 
         CmdSpawnImpact(_targetPoint, Damage, false);
 
@@ -157,7 +164,6 @@ public class ShotIntoSky : Skill
                     CmdSpawnImpact(_targetPoint, Damage / 4, true);
                     _tripleShootPlanned = true;
                 }
-
                 else
                 {
                     CmdSpawnImpact(_targetPoint, Damage / 2, true);
@@ -174,7 +180,6 @@ public class ShotIntoSky : Skill
     protected override IEnumerator CastJob()
     {
         CmdExecuteCast();
-
         if (_secondShotPlanned)
         {
             yield return new WaitForSeconds(_extraShotDelay);

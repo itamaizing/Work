@@ -397,6 +397,7 @@ public class CharacterState : NetworkBehaviour
 		[States.HuntressMark] = new HuntressMark(),
 		[States.Sleep] = new Sleep(),
 		[States.ElvenSkill] = new ElvenSkill(),
+		[States.ElvenReflexes] = new ElvenReflexesState(),
 		[States.Bound] = new Bound(),
 		[States.ShadowTree] = new ShadowTree(),
 		[States.MultiMagic] = new MultiMagic(),
@@ -1027,7 +1028,8 @@ public enum States
 	Retribution,
 	DisciplineAura,
 	FrostEnergy,
-	PortalDarkness
+	PortalDarkness,
+	ElvenReflexes
 }
 
 public enum BaffDebaff

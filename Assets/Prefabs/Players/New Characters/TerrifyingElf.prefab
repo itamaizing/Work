@@ -18371,7 +18371,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _skills.Array.size
-      value: 20
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_skills.Array.data[0]'
@@ -18453,6 +18453,14 @@ PrefabInstance:
       propertyPath: '_skills.Array.data[19]'
       value: 
       objectReference: {fileID: 10595332369431687}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_skills.Array.data[20]'
+      value: 
+      objectReference: {fileID: 3083395416414514002}
+    - target: {fileID: 5188294081543664110, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_skills.Array.data[21]'
+      value: 
+      objectReference: {fileID: 6686568037796463366}
     - target: {fileID: 5293857831816092782, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: ice
       value: 
@@ -19744,6 +19752,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 10595332369431687}
+    - targetCorrespondingSourceObject: {fileID: 8423443208040621164, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3083395416414514002}
     - targetCorrespondingSourceObject: {fileID: 8739993138692873955, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: 2
       addedObject: {fileID: 6586971803846960611}
@@ -20449,9 +20460,9 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 3
+    _faction: 4
+    _unitType: -1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -21380,10 +21391,85 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  skillManager: {fileID: 4092227064955680494}
-  hero: {fileID: 4534754468497973439}
+  _isTalentSpell: 0
+  _isSkillActive: 0
+  _abilityInfo: {fileID: 11400000, guid: 1f2a5a037601fdd438b17c4c4917caaa, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _costs: []
+  _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
+  _castDeley: 0
+  _damageValue: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+  _targetingComponent:
+    type: 0
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _chargeComponent:
+    _usesCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
+    affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _areaComponent:
+    _radius: 0
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
+  _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 1
+    _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
   calmnessChance: 10
-  elvenSkillFromPhysChance: 10
+  elvenSkillFromPhysChance: 100
   calmnessOnElvenSkillChance: 30
   huntressMarkApplyChance: 5
   durationCalmess: 8
@@ -22083,6 +22169,98 @@ MonoBehaviour:
     _prepareAnimations: []
     _castAnimations: []
     _activeClip: 0
+--- !u!114 &3083395416414514002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300637093874885484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2a154f432f26ee4a8ecc8af6d81d5fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ElvenReflexes
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _isTalentSpell: 0
+  _isSkillActive: 1
+  _abilityInfo: {fileID: 11400000, guid: 07accd82545060d4f8c785f048d5a3d2, type: 2}
+  _isSubjectToGlobalCooldownTime: 1
+  _costComponent:
+    _base: 0
+    _costs: []
+  _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
+  _cooldownTime: 0
+  _cooldownComponent:
+    _baseCooldown: 0
+  _castDeley: 0
+  _damageValue: 0
+  _infoComponent:
+    _school: 0
+    _form: 0
+    _damageType: 0
+    _rangeType: 0
+    _skillType: 0
+    _whileMoving: 0
+    _autoAttack: 0
+  _targetingComponent:
+    type: 0
+    _clickLayer: 0
+    _faction: 0
+    _unitType: 0
+    _outOfRangeBehaviour: 0
+  _targetsLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  _obstacle:
+    serializedVersion: 2
+    m_Bits: 0
+  _channelComponent:
+    _castDuration: 0
+    _tickInterval: 0
+    _baseCostPerTick: []
+  _castDuration: 0
+  _manaCostRate: 0
+  _manaCostPerTick: []
+  _chargeComponent:
+    _usesCharges: 0
+    _isComboPart: 0
+    _cooldownType: 0
+    _maxCharges: 0
+    _baseCooldown: 0
+    affectedByCDR: 0
+  _isUseCharges: 0
+  _useChargesAsComboPart: 0
+  _chargesHaveSeparateCooldown: 0
+  _maxCharges: 0
+  _chargeCooldown: 0
+  _areaComponent:
+    _radius: 0
+    _area: 0
+    _castLength: 0
+    _castWidth: 0
+  _autoAttackDelay: 0
+  _informationRenderComponent:
+    _isAutoRadiusRender: 1
+    _isAutoAreaRender: 1
+    _isAutoLineRender: 1
+    _isDynamicRenderer: 0
+  _disactive: 0
+  _earlyCooldown: 0
+  maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animations:
+    _prepareAnimations: []
+    _castAnimations: []
+    _activeClip: 0
 --- !u!114 &443563987953287420 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8569747795464636412, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -22388,29 +22566,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u042D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u043E\u0441\u0442\u044C
-      \xAB\u0427\u0430\u0441\u0442\u0438\u0447\u043D\u043E\u0433\u043E \u043E\u0441\u043B\u0435\u043F\u043B\u0435\u043D\u0438\u044F\xBB
-      \u043E\u0442 \xAB\u0420\u0430\u0437\u0432\u0435\u0434\u044B\u0432\u0430\u0442\u0435\u043B\u044C\u043D\u043E\u0433\u043E
-      \u043E\u0433\u043D\u044F\xBB \u0438 \u0432\u0435\u0440\u043E\u044F\u0442\u043D\u043E\u0441\u0442\u044C
-      \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u044F \xAB\u0412\u043D\u0443\u0442\u0440\u0435\u043D\u043D\u0435\u0439
-      \u0442\u044C\u043C\u044B\xBB \u043E\u0442 \xAB\u0421\u0443\u043C\u0435\u0440\u0435\u0447\u043D\u043E\u0433\u043E
-      \u043E\u0433\u043D\u044F\xBB \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
-      \u0432 2 \u0440\u0430\u0437\u0430."
-    - "\u041A\u043E\u0433\u0434\u0430 \u0443 \u0422\u044D\u0440\u0440\u0430\u0444\u0430\u0439\u043D
-      \u0437\u0430\u043A\u0430\u043D\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
-      \u043C\u0430\u043D\u043D\u0430 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442\u0441\u044F
-      \u201C\u042D\u043B\u044C\u0444\u0438\u0439\u0441\u043A\u043E\u0435 \u043C\u0430\u0441\u0442\u0435\u0440\u0441\u0442\u0432\u043E\u201D."
-    _stateInfos:
-    - StateName: "\u042D\u043B\u044C\u0444\u0438\u0439\u0441\u043A\u043E\u0435 \u043C\u0430\u0441\u0442\u0435\u0440\u0441\u0442\u0432\u043E"
-      Description: "\u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0435
-        \u0441\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u0435, \u0434\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C
-        3 \u0441\u0435\u043A\u0443\u043D\u0434\u044B,\_\u043F\u043E\u0437\u0432\u043E\u043B\u044F\u0435\u0442
-        \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u044C
-        \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0435 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438
-        \u043D\u0430 \u0445\u043E\u0434\u0443."
+    - " \u0432\u043E \u0432\u0440\u0435\u043C\u044F \u0430\u043A\u0442\u0438\u0432\u043D\u043E\u0433\u043E
+      \u044D\u043B\u044C\u0444\u0438\u0439\u0441\u043A\u043E\u0433\u043E \u043C\u0430\u0441\u0442\u0435\u0440\u0441\u0442\u0432\u0430
+      \u043C\u043E\u0436\u043D\u043E \u0430\u043A\u0442\u0438\u0432\u0438\u0440\u043E\u0432\u0430\u0442\u044C
+      \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C \u044D\u043B\u044C\u0444\u0438\u0439\u0441\u043A\u0438\u0435
+      \u0440\u0435\u0444\u043B\u0435\u043A\u0441\u044B, \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442\u0441\u044F
+      \u0441\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u0435 \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u043E\u0435
+      \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u044E\u0449\u0435\u0435
+      \u0448\u0430\u043D\u0441 \u0443\u043A\u043B\u043E\u043D\u0435\u043D\u0438\u044F
+      \u043E\u0442 \u0444\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0430\u0442\u0430\u043A
+      +80%, \u043A\u0430\u0436\u0434\u0443\u044E \u0441\u0435\u043A\u0443\u043D\u0434\u0443
+      \u0442\u0440\u0430\u0442\u0438\u0442\u0441\u044F \u043E\u0434\u0438\u043D \u0441\u0442\u0430\u043A
+      \xAB\u044D\u043B\u044C\u0444\u0441\u0438\u043A\u043E\u0433\u043E \u043C\u0430\u0441\u0442\u0435\u0440\u0441\u0442\u0432\u0430\""
+    _stateInfos: []
     IsOpen: 0
-    Description: "\u0411\u0435\u0437\u043C\u0430\u043D\u043D\u0438\u0446\u0430 "
-    Icon: {fileID: 21300000, guid: 9abaa859cdccc5c41b6c730b64ae3810, type: 3}
+    Description: "\u042D\u043B\u044C\u0444\u0438\u0439\u0441\u043A\u0438\u0435 \u0440\u0435\u0444\u043B\u0435\u043A\u0441\u044B"
+    Icon: {fileID: 21300000, guid: 720f4733233d2764a92a5c68516b9174, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
@@ -22457,7 +22628,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  terrifyingElfAura: {fileID: 6686568037796463366}
 --- !u!114 &2808444879270764260
 MonoBehaviour:
   m_ObjectHideFlags: 0
