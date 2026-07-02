@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Analytics;
 using UnityEngine.UI;
 
 public class FillAmountOverTime : MonoBehaviour
@@ -13,6 +11,9 @@ public class FillAmountOverTime : MonoBehaviour
     private float _currentTime;
     private float _duration;
     private Coroutine _fillJob;
+
+    private float _startValue;
+    private float _endValue;
 
     public event Action<FillAmountOverTime> Ended;
 
@@ -27,58 +28,65 @@ public class FillAmountOverTime : MonoBehaviour
         {
             StopCoroutine(_fillJob);
             _fillJob = null;
-            gameObject.SetActive(false);
         }
+        gameObject.SetActive(false);
     }
 
-    public void StartFill(float duration, float startValue = 0, float endValue = 1, bool addTime = true, float curretTime = 0, int type = -1)
+    public void StartFill(float duration, float startValue = 0, float endValue = 1, 
+                         bool addTime = true, float currentTime = 0, int type = -1)
     {
         gameObject.SetActive(true);
 
         if (type >= 0)
-        {
             _image.fillOrigin = type;
-        }
         else
-        {
             _image.fillOrigin = _defaultFillOrigin;
-        }
 
         if (_fillJob != null)
-        {
-            if (addTime)
-            {
-                _duration += -_currentTime + duration;
-                StopCoroutine(_fillJob);
-                _fillJob = StartCoroutine(ChangeFillAmountOverTimeCoroutine(_duration, curretTime, startValue, endValue));
-            }
-            else
-            {
-                _duration = duration;
-                StopCoroutine(_fillJob);
-                _fillJob = StartCoroutine(ChangeFillAmountOverTimeCoroutine(_duration, curretTime, startValue, endValue));
-            }
-        }
+            StopCoroutine(_fillJob);
+
+        if (addTime && _fillJob != null)
+            _duration += duration;
         else
-        {
             _duration = duration;
-            gameObject.SetActive(true);
-            _fillJob = StartCoroutine(ChangeFillAmountOverTimeCoroutine(_duration, curretTime, startValue, endValue));
-        }
+
+        _startValue = startValue;
+        _endValue = endValue;
+
+        _fillJob = StartCoroutine(FillCoroutine(duration, currentTime, startValue, endValue));
     }
 
-    IEnumerator ChangeFillAmountOverTimeCoroutine(float duration, float curretTime = 0, float startValue = 0, float endValue = 1)
+    private IEnumerator FillCoroutine(float duration, float currentTime, float startValue, float endValue)
     {
-        while (curretTime < duration)
+        _currentTime = Mathf.Clamp(currentTime, 0, duration);
+
+        while (_currentTime < duration)
         {
-            _image.fillAmount = Mathf.Lerp(startValue, endValue, curretTime / duration);
-            curretTime += Time.deltaTime;
-            _currentTime = curretTime;
+            float progress = _currentTime / duration;
+            _image.fillAmount = Mathf.Lerp(startValue, endValue, progress);
+
+            _currentTime += Time.deltaTime;
             yield return null;
         }
-        _fillJob = null;
+
         _image.fillAmount = endValue;
+        _fillJob = null;
         Ended?.Invoke(this);
         gameObject.SetActive(false);
     }
+    
+    public void Rollback(float timeToRollback)
+    {
+        if (_fillJob == null || timeToRollback <= 0f) return;
+
+        Debug.LogError("RollBack");
+        
+        StopCoroutine(_fillJob);
+
+        _currentTime = Mathf.Max(0f, _currentTime - timeToRollback);
+
+        _fillJob = StartCoroutine(FillCoroutine(_duration, _currentTime, _startValue, _endValue));
+    }
+
+    public float CurrentProgress => _duration > 0 ? _currentTime / _duration : 0f;
 }

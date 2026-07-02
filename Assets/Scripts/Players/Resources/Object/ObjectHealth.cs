@@ -46,6 +46,10 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
     public bool IsDestroyOnDeath { get => isDestroyOnDeath; set => isDestroyOnDeath = value; }
     public ObjectData ObjectData => _objectData;
     public float ResistMagicDamage => _resistMagicDamage;
+    
+    private float _fillDuration;
+    private float _fillTime;
+    private float _fillTargetValue;
 
     public float CurrentHealth
     {
@@ -135,7 +139,25 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
     public void ServerStartFillHP(float targetValue, float duration)
     {
         if (_fillCoroutine != null) StopCoroutine(_fillCoroutine);
-        _fillCoroutine = StartCoroutine(FillHPCoroutine(targetValue, duration));
+    
+        _fillTargetValue = targetValue;
+        _fillDuration = duration;
+        _fillTime = 0f;
+
+        _fillCoroutine = StartCoroutine(FillHPCoroutine());
+    }
+    
+    [Server]
+    public void ServerRollbackFillHP(float timeToRollback)
+    {
+        if (_fillCoroutine == null) return;
+
+        _fillTime = Mathf.Max(0f, _fillTime - timeToRollback);
+
+        float t = _fillDuration > 0 ? Mathf.Clamp01(_fillTime / _fillDuration) : 1f;
+        _currentHealth = Mathf.Lerp(0f, _fillTargetValue, t);
+
+        RpcSyncHP(_currentHealth);
     }
 
     [Server]
@@ -196,17 +218,14 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
     }
 
 
-    private IEnumerator FillHPCoroutine(float targetValue, float duration)
+    private IEnumerator FillHPCoroutine()
     {
-        float startValue = _currentHealth;
-        float time = 0f;
-
-        while (time < duration)
+        while (_fillTime < _fillDuration)
         {
-            time += Time.deltaTime;
-            float t = Mathf.Clamp01(time / duration);
+            _fillTime += Time.deltaTime;
+            float t = _fillDuration > 0 ? Mathf.Clamp01(_fillTime / _fillDuration) : 1f;
 
-            float newHP = Mathf.Lerp(startValue, targetValue, t);
+            float newHP = Mathf.Lerp(0f, _fillTargetValue, t);
             _currentHealth = newHP;
 
             OnHealthChanged(_currentHealth, _currentHealth);
@@ -214,7 +233,7 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
             yield return null;
         }
 
-        _currentHealth = targetValue;
+        _currentHealth = _fillTargetValue;
         OnHealthChanged(_currentHealth, _currentHealth);
 
         _fillCoroutine = null;

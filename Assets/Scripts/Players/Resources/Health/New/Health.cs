@@ -51,6 +51,8 @@ public class Health : Resource, IDamageable, IHealable
 
     public delegate void BeforeDamageDelegate(ref Damage damage, Skill skill);
     public event BeforeDamageDelegate OnBeforeDamage;
+    
+    public event Action<float, DamageType, bool> OnDirectDamageProcessed;
 
     public event Action<float, float> EvadeMeleeDamageChanged;
     public event Action<float, float> EvadeRangeDamageChanged;
@@ -130,12 +132,20 @@ public class Health : Resource, IDamageable, IHealable
                 if (ability is IDamageGivenModifier modifier) damage.Value = modifier.ModifyOutgoingDamage(damage);
             }
         }
-
+        
+        float preShieldValue = damage.Value;
         UseShields(ref damage, skill);
+        
+        if (!_isDot)
+        {
+            bool fullyAbsorbed = damage.Value == 0 && preShieldValue > 0;
+            //skill.HandleDirectDamageDuringCast(preShieldValue,damage.Type,fullyAbsorbed);
+            OnDirectDamage(gameObject, preShieldValue, damage.Type, fullyAbsorbed);
+        }
 
         if (damage.Value == 0)
             return true;
-
+        
         if (!TryUse(damage.Value))
         {
             if (isServer)
@@ -155,6 +165,12 @@ public class Health : Resource, IDamageable, IHealable
     public void CmdTryTakeDamage(Damage damage, GameObject skillCanBeNull)
     {
         TryTakeDamage(ref damage, null);
+    }
+
+    [TargetRpc]
+    private void OnDirectDamage(GameObject target, float preShieldValue, DamageType type, bool fullyAbsorbed)
+    {
+        OnDirectDamageProcessed?.Invoke(preShieldValue, type, fullyAbsorbed);
     }
 
     public void Heal(ref Heal heal, string sourceName, Skill skill = null)

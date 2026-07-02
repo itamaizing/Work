@@ -83,6 +83,16 @@ public abstract class Skill : NetworkBehaviour
     [SerializeField] public AnimationComponent _animations;
     #endregion InspectorSettings
 
+    #region CastReduction
+    
+    public event Action<float> CastTimeRolledBack;
+    
+    protected float _castTimeRollback = 0f;
+    
+    private const float PhysRollbackBase   = 0.20f;
+    private const float MagRollbackBase    = 0.10f;
+    private const float RollbackPerDamage  = 0.01f;
+    #endregion
     #region Context
     protected SkillRenderer _skillRender;
     protected Character _hero;
@@ -230,6 +240,9 @@ public abstract class Skill : NetworkBehaviour
         //Debug.Log($"Subbed to SkillAttributes modification");
         if(isClient)
             _skillAttributes.OnAttributeModify += CmdSyncronizeAttributes;
+        
+        /*if (_hero.Health != null)
+            _hero.Health.OnDirectDamageProcessed += HandleDirectDamageDuringCast;*/
     }
 
     public void InitComponents()
@@ -348,6 +361,52 @@ public abstract class Skill : NetworkBehaviour
         yield return TargetingBehaviour(targetDataSavedCallback);
     }
 
+    
+    public void HandleDirectDamageDuringCast(float damageValue, DamageType type, bool fullyAbsorbed)
+    {
+        Debug.LogError(Name);
+        Debug.LogError("_isCasting " + _isCasting);
+        Debug.LogError($"_castDeleyCoroutine null ? {_castDeleyCoroutine == null}");
+        Debug.LogError($"_castStreamCoroutine null ? {_castStreamCoroutine == null}");
+        if (fullyAbsorbed) return;
+        if (!_isCasting) return;
+        if (_castDeleyCoroutine == null && _castStreamCoroutine == null) return;
+
+        float totalDuration = _castDeleyCoroutine != null ? _castDeley : CastStreamDuration;
+
+        float rollbackPercent = type == DamageType.Physical
+            ? PhysRollbackBase + damageValue * RollbackPerDamage
+            : MagRollbackBase + damageValue * RollbackPerDamage;
+
+        float rollbackAmount = totalDuration * Mathf.Clamp01(rollbackPercent);
+        _castTimeRollback += rollbackAmount;
+
+        CastTimeRolledBack?.Invoke(rollbackAmount);
+    }
+
+    /*private void RpcHandleDirectDamageDuringCast(float damageValue, DamageType type, bool fullyAbsorbed)
+    {
+        Debug.LogError("fullyAbsorbed: " + fullyAbsorbed);
+        Debug.LogError("_isCasting " + _isCasting);
+        Debug.LogError($"_castDeleyCoroutine null ? {_castDeleyCoroutine == null}");
+        Debug.LogError($"_castStreamCoroutine null ? {_castStreamCoroutine == null}");
+        
+        if (fullyAbsorbed) return;
+        if (!_isCasting) return;
+        if (_castDeleyCoroutine == null && _castStreamCoroutine == null) return;
+
+        float totalDuration = _castDeleyCoroutine != null ? _castDeley : CastStreamDuration;
+
+        float rollbackPercent = type == DamageType.Physical
+            ? PhysRollbackBase + damageValue * RollbackPerDamage
+            : MagRollbackBase + damageValue * RollbackPerDamage;
+
+        float rollbackAmount = totalDuration * Mathf.Clamp01(rollbackPercent);
+        _castTimeRollback += rollbackAmount;
+
+        CastTimeRolledBack?.Invoke(rollbackAmount);
+    }*/
+    
     /// <summary>
     ///  Каст способности.
     ///  CommitUse => LoadTargetData => CastJob
@@ -583,6 +642,8 @@ public abstract class Skill : NetworkBehaviour
 
             CancelCoroutine(_castDeleyCoroutine);
             CancelCoroutine(_castStreamCoroutine);
+            
+            _castTimeRollback = 0f;
 
             if (_actionWrapperForPreparingCoroutine != null)
             {
@@ -685,6 +746,7 @@ public abstract class Skill : NetworkBehaviour
         }
 
         Hero.Abilities.NotifySkillPrepared(this);
+        Hero.Abilities.NotifySkillIsPreparing(this, true); 
         CastStarted?.Invoke();
         _isCasting = true;
 
@@ -780,6 +842,8 @@ public abstract class Skill : NetworkBehaviour
         CastEnded?.Invoke();
         _isCasting = false;
 
+        Hero.Abilities.NotifySkillIsPreparing(this, false); 
+        
         ClearData();
 
         /// test
@@ -821,6 +885,13 @@ public abstract class Skill : NetworkBehaviour
             {
                 TryCancel(true);
             }
+
+            if (_castTimeRollback > 0f)
+            {
+                time = Mathf.Max(0f, time - _castTimeRollback);
+                _castTimeRollback = 0f;
+            }
+
             time += Time.deltaTime;
             yield return null;
         }
@@ -1055,6 +1126,12 @@ public abstract class Skill : NetworkBehaviour
 
         while (time < CastStreamDuration)
         {
+            if (_castTimeRollback > 0f)
+            {
+                time = Mathf.Max(0f, time - _castTimeRollback);
+                _castTimeRollback = 0f;
+            }
+            
             time += _manaCostRate;
 
             foreach (var skillCost in _manaCostPerTick)
