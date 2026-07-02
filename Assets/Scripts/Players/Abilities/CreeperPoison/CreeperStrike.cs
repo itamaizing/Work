@@ -11,6 +11,7 @@ public class CreeperStrike : Skill
     [SerializeField] private CreeperInvisible _creeperInvisible;
     [SerializeField] private ColdBlood _coldBlood;
     [SerializeField] private CreeperPoisonAura _creeperPoisonAura;
+    [SerializeField] private CreeperCombo _creeperCombo;
 
     [Header("Damage")]
     [SerializeField] private float _minDamage = 7f;
@@ -264,6 +265,11 @@ public class CreeperStrike : Skill
             };
 
             CmdDamageDeal(damage, character.gameObject);
+        }
+
+        if (_creeperCombo != null)
+        {
+            _creeperCombo.RegisterDamageToTarget(character);
         }
 
         _isHit = false;

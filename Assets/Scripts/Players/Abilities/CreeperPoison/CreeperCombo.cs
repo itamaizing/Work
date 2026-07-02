@@ -1,168 +1,122 @@
 ﻿using Mirror;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CreeperCombo : NetworkBehaviour
 {
-    [SerializeField] private SneakySpit sneakySpit;
-    [SerializeField] private BlockPassiveSkill blockPassiveSkill;
-    [SerializeField] private SkillManager _skillManager;
+    [Header("Dependencies")]
+    [SerializeField] private Character _player;
+    [SerializeField] private SneakySpit _sneakySpit;
+    [SerializeField] private BlockPassiveSkill _blockPassiveSkill;
+
+    [Header("SneakySpit Combo")]
+    [SerializeField] private int _hitsForSneakySpitActivation = 3;
     [SerializeField] private float _comboResetDelay = 1f;
+    [SerializeField] private float _sneakySpitWindowDuration = 1.5f;
 
-    private Queue<Skill> _sneakyComboQueue = new();
-    private Queue<Skill> _blockComboQueue = new();
-
+    private Character _currentSneakySpitTarget;
     private Coroutine _resetCoroutine;
 
-    private const int SneakyComboSize = 3;
-    private const int BlockComboSize = 2;
+    public Character CurrentSneakySpitTarget => _currentSneakySpitTarget;
 
-    private void OnEnable()
+    public void RegisterDamageToTarget(Character target)
     {
-        _skillManager.SkillCastEnded += HandleSneakyCombo;
-        _skillManager.SkillCastEnded += HandleBlockCombo;
+        if (target == null) return;
+
+        if (isServer) ApplySneakySpitComboEffect(target);
+        else CmdRegisterDamageToTarget(target.gameObject);
     }
 
-    private void OnDisable()
+    [Command]
+    private void CmdRegisterDamageToTarget(GameObject targetObject)
     {
-        _skillManager.SkillCastEnded -= HandleSneakyCombo;
-        _skillManager.SkillCastEnded -= HandleBlockCombo;
+        if (targetObject == null) return;
+        Character target = targetObject.GetComponent<Character>();
+        if (target == null) return;
+
+        ApplySneakySpitComboEffect(target);
     }
 
-    private IEnumerator ResetTimer()
+    private void ApplySneakySpitComboEffect(Character target)
     {
-        yield return new WaitForSeconds(_comboResetDelay);
-        ClearComboQueue();
+        if (!isServer) return;
+        if (target == null) return;
+
+        if (_player == null || _player.CharacterState == null) return;
+        if (_currentSneakySpitTarget != null && _currentSneakySpitTarget != target) ClearSneakySpitComboState();
+
+        _currentSneakySpitTarget = target;
+        _player.CharacterState.AddState(States.CreeperCombo, _comboResetDelay, 0f, _player.gameObject, nameof(CreeperCombo));
+
+        RestartResetTimer();
+
+        CreeperComboState comboState = GetCreeperComboState();
+
+        int currentStacks = comboState != null ? comboState.CurrentStacksCount : 0;
+
+        Debug.Log($"currentStacks: {currentStacks}");
+
+        if (currentStacks < _hitsForSneakySpitActivation) return;
+
+        ClearSneakySpitComboState();
+        TargetRpcStartSneakySpitWindow(connectionToClient, target.netId);
     }
 
-    private void ClearComboQueue()
+    private CreeperComboState GetCreeperComboState()
     {
-        _sneakyComboQueue.Clear();
-        _blockComboQueue.Clear();
+        if (_player == null || _player.CharacterState == null) return null;
+        return _player.CharacterState.GetState(States.CreeperCombo) as CreeperComboState;
+    }
 
+    private void RestartResetTimer()
+    {
         if (_resetCoroutine != null)
         {
             StopCoroutine(_resetCoroutine);
             _resetCoroutine = null;
         }
-    }
 
-    private void HandleSneakyCombo(Skill skill)
-    {
-        if (skill is not CreeperStrike && skill is not LightningStrikes)
-        {
-            _sneakyComboQueue.Clear();
-            return;
-        }
-
-        if (_sneakyComboQueue.Count >= SneakyComboSize)
-            _sneakyComboQueue.Dequeue();
-
-        if (_resetCoroutine != null) StopCoroutine(_resetCoroutine);
         _resetCoroutine = StartCoroutine(ResetTimer());
-
-        _sneakyComboQueue.Enqueue(skill);
-        TryTriggerSneakyCombo();
     }
 
-    private void TryTriggerSneakyCombo()
+    private IEnumerator ResetTimer()
     {
-        var combo = _sneakyComboQueue.ToArray();
-        if (combo.Length < 2) return;
+        yield return new WaitForSeconds(_comboResetDelay);
+        ClearSneakySpitComboState();
+    }
 
-        int creeperCount = 0;
-        int lightningCount = 0;
-
-        foreach (var skill in combo)
+    private void ClearSneakySpitComboState()
+    {
+        if (_resetCoroutine != null)
         {
-            if (skill is CreeperStrike) creeperCount++;
-            else if (skill is LightningStrikes) lightningCount++;
+            StopCoroutine(_resetCoroutine);
+            _resetCoroutine = null;
         }
 
-        bool validCombo =
-       lightningCount == 2 ||
-       creeperCount == 3 ||
-       (lightningCount == 1 && creeperCount == 2) ||
-       (lightningCount == 1 && creeperCount == 1);
-
-        if (validCombo)
+        if (_player != null && _player.CharacterState != null)
         {
-            Skill lastSkill = combo[^1];
-            CmdTriggerSneakySpitFreeWindow(lastSkill.Targeting.GetTarget()?.Character);
-            _sneakyComboQueue.Clear();
+            CreeperComboState comboState = GetCreeperComboState();
 
-            if (_resetCoroutine != null)
+            if (comboState != null)
             {
-                StopCoroutine(_resetCoroutine);
-                _resetCoroutine = null;
+                comboState.ResetStacks();
+
+                _player.CharacterState.RemoveState(States.CreeperCombo);
             }
         }
+
+        _currentSneakySpitTarget = null;
     }
 
-    private void HandleBlockCombo(Skill skill)
+    [TargetRpc]
+    private void TargetRpcStartSneakySpitWindow(NetworkConnection targetConnection, uint targetNetId)
     {
-        if (skill is not CreeperStrike && skill is not LightningStrikes)
-        {
-            _blockComboQueue.Clear();
-            return;
-        }
+        if (_sneakySpit == null) return;
+        if (!NetworkClient.spawned.TryGetValue(targetNetId, out NetworkIdentity identity)) return;
 
-        if (_blockComboQueue.Count >= BlockComboSize)
-            _blockComboQueue.Dequeue();
+        Character target = identity.GetComponent<Character>();
+        if (target == null) return;
 
-        if (_resetCoroutine != null) StopCoroutine(_resetCoroutine);
-        _resetCoroutine = StartCoroutine(ResetTimer());
-
-        _blockComboQueue.Enqueue(skill);
-        TryTriggerBlockCombo();
-    }
-
-    private void TryTriggerBlockCombo()
-    {
-        var combo = _blockComboQueue.ToArray();
-        if (combo.Length < 1) return;
-
-        int creeperCount = 0;
-        int lightningCount = 0;
-
-        foreach (var skill in combo)
-        {
-            if (skill is CreeperStrike) creeperCount++;
-            else if (skill is LightningStrikes) lightningCount++;
-        }
-
-        bool validCombo =
-            lightningCount == 1 ||
-            creeperCount == 2 ||
-            (creeperCount == 1 && lightningCount == 1);
-
-        if (validCombo)
-        {
-            Skill lastSkill = combo[^1];
-            CmdBlockPassiveSkillFreeWindow(lastSkill.Targeting.GetTarget()?.Character);
-            _blockComboQueue.Clear();
-
-            if (_resetCoroutine != null)
-            {
-                StopCoroutine(_resetCoroutine);
-                _resetCoroutine = null;
-            }
-        }
-    }
-
-    [Command] private void CmdTriggerSneakySpitFreeWindow(Character target) => RpcTriggerSneakySpitWindow(target);
-    [Command] private void CmdBlockPassiveSkillFreeWindow(Character target) => RpcBlockPassiveSkillFreeWindow(target);
-
-    [ClientRpc]
-    private void RpcTriggerSneakySpitWindow(Character target)
-    {
-        sneakySpit?.TryStartSneakySpitBoostWindow(target);
-    }
-
-    [ClientRpc]
-    private void RpcBlockPassiveSkillFreeWindow(Character target)
-    {
-        blockPassiveSkill?.TryStartBlockPassiveSkillBoostWindow(target);
+        _sneakySpit.TryStartSneakySpitBoostWindow(target, _sneakySpitWindowDuration);
     }
 }

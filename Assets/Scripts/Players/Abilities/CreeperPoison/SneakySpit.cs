@@ -72,6 +72,11 @@ public class SneakySpit : Skill
 
     public void TryStartSneakySpitBoostWindow(Character target)
     {
+        TryStartSneakySpitBoostWindow(target, durationWindowsBoost);
+    }
+
+    public void TryStartSneakySpitBoostWindow(Character target, float windowDuration)
+    {
         if (target == null)
             return;
 
@@ -81,16 +86,16 @@ public class SneakySpit : Skill
             _boostWindow = null;
         }
 
-        _boostWindow = StartCoroutine(SneakySpitBoostWindow(target));
+        _boostWindow = StartCoroutine(SneakySpitBoostWindow(target, windowDuration));
     }
 
-    private IEnumerator SneakySpitBoostWindow(Character target)
+    private IEnumerator SneakySpitBoostWindow(Character target, float windowDuration)
     {
         Targeting.SetTarget((ITargetable)target);
 
         EnableSkillBoost();
 
-        yield return new WaitForSeconds(durationWindowsBoost);
+        yield return new WaitForSeconds(windowDuration);
 
         DisableSkillBoost();
 
