@@ -122,6 +122,11 @@ public class SkillAttributes
         return GetCombined(_attributes[skill_atr], _heroAttributes[hero_atr], baseValue);
     }
 
+    // Добавить такой же GetDamage. Вероятно вынести их в Skill.cs, чтобы сервер главентсовавал
+    // и можно было override'ить
+    /// <summary>
+    /// Возвращает шанс с учетом модификаторов на скилле и герое
+    /// </summary>
     public float GetChance(float value)
     {
         if (_heroAttributes == null)
@@ -138,7 +143,7 @@ public class SkillAttributes
             attribute.OnAttributeModify += SendAttributeModify;
     }
 
-    public void SendAttributeModify(string name, float value)
+    private void SendAttributeModify(string name, float value)
     {
         OnAttributeModify?.Invoke(name, value);
     }

@@ -108,15 +108,16 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         //Debug.Log("Init resourse " + maxValue.GetValue());
 
         _attr_regenValue = regenValue;
-        _regenerationValue = regenValue.GetValue();
+        _regenerationValue = _attr_regenValue.GetValue();
 
         _attr_maxValue = maxValue;
-        _maxValue = maxValue.GetValue();
-        
+        MaxValue = _attr_maxValue.GetValue();
+        _attr_maxValue.OnAttributeModify += OnMaxAttributeChange;
+
         _attr_regenDelay = new(ResourceAttributeName.RegenDelay.ToString(), 0.5f);
         _attr_regenPeriod = new(ResourceAttributeName.RegenPeriod.ToString(), 0.5f);
         
-        _currentValue = _maxValue;
+        CurrentValue = _maxValue;
 
         if (isServer) _regenCoroutine = StartCoroutine(RegenerateJob());
     }
@@ -125,17 +126,26 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     public virtual void Init(ResourceAttribute resource)
     {
         _attr_regenValue = resource.Attributes[ResourceAttributeName.Regen];
-        _regenerationValue = resource.Attributes[ResourceAttributeName.Regen].GetValue();
+        _regenerationValue = _attr_regenValue.GetValue();
 
         _attr_maxValue = resource.Attributes[ResourceAttributeName.MaxValue];
-        _maxValue = resource.Attributes[ResourceAttributeName.MaxValue].GetValue();
+        MaxValue = _attr_maxValue.GetValue();
+        _attr_maxValue.OnAttributeModify += OnMaxAttributeChange;
 
         _attr_regenDelay = resource.Attributes[ResourceAttributeName.RegenDelay];
         _attr_regenPeriod = resource.Attributes[ResourceAttributeName.RegenPeriod];
 
-        _currentValue = _maxValue;
+        CurrentValue = _maxValue;
         _regenCoroutine = StartCoroutine(RegenerateJob());
         ClientStartRegenirateJob();
+    }
+
+    public void OnMaxAttributeChange(string name, float value)
+    {
+        //Debug.Log("OnMaxChanged: " + value);
+        MaxValue = value;
+        if (CurrentValue > MaxValue)
+            CurrentValue = MaxValue;
     }
 
     public virtual void Add(float value)

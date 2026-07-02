@@ -80,7 +80,8 @@ public abstract class Skill : NetworkBehaviour
     [Header("Counter settings")]
     [SerializeField] protected float maxCounter;
     [SerializeField] public TagComponent _tags;
-    [SerializeField] public AnimationComponent _animations;
+    [SerializeField] private AnimationComponent _animationComponent;
+    public AnimationComponent Animation => _animationComponent;
     #endregion InspectorSettings
 
     #region Context
@@ -225,10 +226,10 @@ public abstract class Skill : NetworkBehaviour
     {
         _hero = hero;
         _skillRender = render;
+        if (isServer)   // подписываемся до инициализации, чтобы сразу наполнить SyncDictionary
+            _skillAttributes.OnAttributeModify += OnSkillAttributeChange;
         _skillAttributes.Init(hero.AttributeSystem);
         InitComponents();
-        //Debug.Log($"Subbed to SkillAttributes modification");
-        _skillAttributes.OnAttributeModify += CmdSyncronizeAttributes;
     }
 
     public void InitComponents()
@@ -241,7 +242,8 @@ public abstract class Skill : NetworkBehaviour
         Targeting.Init(this);
         Cooldown.Init(this);
         Cost.Init(this);
-        //CastBar, Sound, Animation
+        Animation.Init(this);
+        //CastBar, Sound
     }
 
     protected virtual void Awake()
@@ -433,7 +435,7 @@ public abstract class Skill : NetworkBehaviour
         SpendResources();
     }
 
-    protected virtual float GetCastSpeed()
+    public virtual float GetCastSpeed()
     {
         switch (Info.AbilityForm)
         {
@@ -613,8 +615,7 @@ public abstract class Skill : NetworkBehaviour
             //_tempTargetbase = null; => Targeting.ClearTemporary()?
             Targeting.ClearTempTarget();
 
-            _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
-            _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+            CancelAnim();
             OnSkillCanceled?.Invoke();
 
             return true;
@@ -672,8 +673,7 @@ public abstract class Skill : NetworkBehaviour
         _isCasting = false;
         _isPlayCastAnim = false;
 
-        _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
-        _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+        CancelAnim();
 
         _hero.Move.StopLookAt();
         _hero.Move.SetCanMove(true);
@@ -718,11 +718,7 @@ public abstract class Skill : NetworkBehaviour
             _isPlayCastAnim = true;
             //_isWaitingForCastCoroutine = true;
 
-            float finalCastSpeed = GetCastSpeed() * ExtraAnimationSpeedMultiplier;
-            Debug.Log($"CastSpeed: {finalCastSpeed}");
-            Hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, finalCastSpeed);
-            _hero.Animator.SetTrigger(AnimTriggerCast);
-            _hero.NetworkAnimator.SetTrigger(AnimTriggerCast);
+            PlayCastAnim();
 
             if (_forceFailCastEarly)
             {
@@ -730,8 +726,7 @@ public abstract class Skill : NetworkBehaviour
                 _isCasting = false;
                 _isPlayCastAnim = false;
 
-                _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
-                _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+                CancelAnim();
                 _hero.Move.StopLookAt();
                 Hero.Move.SetCanMove(true);
 
@@ -777,16 +772,14 @@ public abstract class Skill : NetworkBehaviour
                 yield break;
             }
 
-            _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
-            _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+            CancelAnim();
 
             _castCoroutine = StartCoroutine(CastJob());
             if (_castDuration > 0) _castStreamCoroutine = StartCoroutine(CastStreamJob());
             yield return _castCoroutine;
         }
 
-        _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
-        _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+        CancelAnim();
 
         CommitUse();
         CastSuccess?.Invoke();
@@ -821,11 +814,7 @@ public abstract class Skill : NetworkBehaviour
     private IEnumerator CastDeleyJob(float delayTime)
     {
         CastDeleyStarted?.Invoke(delayTime);
-
-        Hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, GetCastSpeed() * ExtraAnimationSpeedMultiplier);
-        _hero.Animator.SetTrigger(AnimTriggerCastDelay);
-        _hero.NetworkAnimator.SetTrigger(AnimTriggerCastDelay);
-
+        PlayPrepareAnim();
         float time = 0;
 
         while (time < delayTime)
@@ -1147,9 +1136,38 @@ public abstract class Skill : NetworkBehaviour
         _isPlayCastAnim = false;
     }
 
-    protected virtual void PlayCastAnim(bool value)
+    protected virtual void PlayCastAnim()
     {
-        _isPlayCastAnim = value;
+        _isPlayCastAnim = true;
+        if (Animation.CastTriggers.Count > 0)
+        {
+            Animation.PlayCasting();
+        }
+        else if (AnimTriggerCast != 0) //Временное решение, пока названия анимаций не перенесены в компонент
+        {
+            _hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, GetCastSpeed());
+            _hero.Animator.SetTrigger(AnimTriggerCast);
+            _hero.NetworkAnimator.SetTrigger(AnimTriggerCast);
+        }
+    }
+
+    protected virtual void PlayPrepareAnim()
+    {
+        if (Animation.PrepareTriggers.Count > 0)
+        {
+            Animation.PlayPreparing();
+        }
+        else if (AnimTriggerCastDelay != 0) //Временное решение, пока названия анимаций не перенесены в компонент
+        {
+            _hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, GetCastSpeed());
+            _hero.Animator.SetTrigger(AnimTriggerCastDelay);
+            _hero.NetworkAnimator.SetTrigger(AnimTriggerCastDelay);
+        }
+    }
+
+    protected virtual void CancelAnim()
+    {
+        Animation.Cancel();
     }
     #endregion
     
@@ -1225,10 +1243,10 @@ public abstract class Skill : NetworkBehaviour
 
     #region Server-side
 
-    [Command]
-    private void CmdSyncronizeAttributes(string name, float value)
+    [Server]
+    private void OnSkillAttributeChange(string name, float value)
     {
-        Debug.Log($"Skill Attr Modify {Name} {name}: {value}");
+        Debug.Log($"[Skill Attribute] {Name} {name}: {value}");
         if (!Enum.TryParse<SkillAttributeName>(name, out SkillAttributeName attr))
             return;
         if (_syncAttributes.Keys.Contains(attr))
