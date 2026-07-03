@@ -16,6 +16,9 @@ public class CreeperCombo : NetworkBehaviour
 
     private Character _currentSneakySpitTarget;
     private Coroutine _resetCoroutine;
+    private Coroutine _sneakySpitWindowCoroutine;
+
+    private bool _isSneakySpitWindowActive;
 
     public Character CurrentSneakySpitTarget => _currentSneakySpitTarget;
 
@@ -31,6 +34,7 @@ public class CreeperCombo : NetworkBehaviour
     private void CmdRegisterDamageToTarget(GameObject targetObject)
     {
         if (targetObject == null) return;
+
         Character target = targetObject.GetComponent<Character>();
         if (target == null) return;
 
@@ -41,25 +45,72 @@ public class CreeperCombo : NetworkBehaviour
     {
         if (!isServer) return;
         if (target == null) return;
-
         if (_player == null || _player.CharacterState == null) return;
+
+        if (_isSneakySpitWindowActive)
+        {
+            RefreshSneakySpitWindow(target);
+            return;
+        }
+
         if (_currentSneakySpitTarget != null && _currentSneakySpitTarget != target) ClearSneakySpitComboState();
 
         _currentSneakySpitTarget = target;
+
         _player.CharacterState.AddState(States.CreeperCombo, _comboResetDelay, 0f, _player.gameObject, nameof(CreeperCombo));
 
         RestartResetTimer();
 
         CreeperComboState comboState = GetCreeperComboState();
-
         int currentStacks = comboState != null ? comboState.CurrentStacksCount : 0;
-
-        Debug.Log($"currentStacks: {currentStacks}");
 
         if (currentStacks < _hitsForSneakySpitActivation) return;
 
+        ActivateSneakySpitWindow(target);
+    }
+
+    private void ActivateSneakySpitWindow(Character target)
+    {
         ClearSneakySpitComboState();
-        TargetRpcStartSneakySpitWindow(connectionToClient, target.netId);
+
+        _isSneakySpitWindowActive = true;
+        _currentSneakySpitTarget = target;
+
+        TargetRpcStartSneakySpitWindow(connectionToClient, target.netId, _sneakySpitWindowDuration);
+        RestartSneakySpitWindowTimer();
+    }
+
+    private void RefreshSneakySpitWindow(Character target)
+    {
+        if (target == null) return;
+        if (_currentSneakySpitTarget != null && _currentSneakySpitTarget != target) return;
+
+        _currentSneakySpitTarget = target;
+
+        TargetRpcStartSneakySpitWindow(connectionToClient, target.netId, _sneakySpitWindowDuration);
+        RestartSneakySpitWindowTimer();
+
+        Debug.Log("SneakySpit window refreshed");
+    }
+
+    private void RestartSneakySpitWindowTimer()
+    {
+        if (_sneakySpitWindowCoroutine != null)
+        {
+            StopCoroutine(_sneakySpitWindowCoroutine);
+            _sneakySpitWindowCoroutine = null;
+        }
+
+        _sneakySpitWindowCoroutine = StartCoroutine(SneakySpitWindowTimer());
+    }
+
+    private IEnumerator SneakySpitWindowTimer()
+    {
+        yield return new WaitForSeconds(_sneakySpitWindowDuration);
+
+        _isSneakySpitWindowActive = false;
+        _sneakySpitWindowCoroutine = null;
+        _currentSneakySpitTarget = null;
     }
 
     private CreeperComboState GetCreeperComboState()
@@ -100,16 +151,15 @@ public class CreeperCombo : NetworkBehaviour
             if (comboState != null)
             {
                 comboState.ResetStacks();
-
                 _player.CharacterState.RemoveState(States.CreeperCombo);
             }
         }
 
-        _currentSneakySpitTarget = null;
+        if (!_isSneakySpitWindowActive) _currentSneakySpitTarget = null;
     }
 
     [TargetRpc]
-    private void TargetRpcStartSneakySpitWindow(NetworkConnection targetConnection, uint targetNetId)
+    private void TargetRpcStartSneakySpitWindow(NetworkConnection targetConnection, uint targetNetId, float duration)
     {
         if (_sneakySpit == null) return;
         if (!NetworkClient.spawned.TryGetValue(targetNetId, out NetworkIdentity identity)) return;
@@ -117,6 +167,6 @@ public class CreeperCombo : NetworkBehaviour
         Character target = identity.GetComponent<Character>();
         if (target == null) return;
 
-        _sneakySpit.TryStartSneakySpitBoostWindow(target, _sneakySpitWindowDuration);
+        _sneakySpit.TryStartSneakySpitBoostWindow(target, duration);
     }
 }
