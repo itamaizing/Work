@@ -4,15 +4,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IceShadow : Skill
+public class IceShadow : Skill,IEnergyDamagable
 {
 	[Header("Ability properties")]
 	[SerializeField] private IceShadowObject _shadow;
 	[SerializeField] private IcyStream _icyStream;
 	[SerializeField] private CircularFrosting _circularFrosting;
 	[ReadOnly][SerializeField] private IcyStreamShadow _icyStreamShadow;
-	[SerializeField] private HeroComponent _playerLinks; 
-	[SerializeField] private SeriesOfStrikes _combo;
+	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private AudioClip audioClip;
 	//[SerializeField] private bool isTest = true;
 
@@ -114,8 +113,6 @@ public class IceShadow : Skill
 			_remainingDelayCircularFrostin = _circularFrosting.RemainingDelay;
 			Debug.Log($"_remainingDelayCircularFrostin: {_remainingDelayCircularFrostin}");
 		}
-			
-		_lastHit = _combo.MakeHit(null, Info.AbilityForm, 1, _manaUsed, 0, _combo.GetMultipliedSpeed() / SpeedScaleDivisor);
 
 		if (!triggeredFromOtherSkill)
 		{
@@ -137,7 +134,17 @@ public class IceShadow : Skill
 			bonusDuration += remainingTicks * tickTime;
 		}
 
-		CmdCreateProjecttile(_remainingDelayCircularFrostin, 0, _manaUsed, bonusDuration, _lastHit, _talentDamage,	_iceDeathInShadowTalent, _circularFrosting.WasInterruptedInDelay, _capturedState?.CurrentTick ?? -1, _capturedState?.MaxTicks ?? -1, _capturedState?.Target != null ? _capturedState.Value.Target.netIdentity : null);
+		CmdCreateProjecttile(
+			_remainingDelayCircularFrostin, 
+			0, 
+			_manaUsed, 
+			bonusDuration, 
+			_lastHit, 
+			_talentDamage,	
+			_iceDeathInShadowTalent, 
+			_circularFrosting.WasInterruptedInDelay, 
+			_capturedState?.CurrentTick ?? -1, _capturedState?.MaxTicks ?? -1,
+			null);
 	}
 
 	private void SpawnShadow(float remainingDelay, float streamBonus, Vector3 position, Quaternion rotation, float manaValue, bool lastHit,
@@ -292,5 +299,8 @@ public class IceShadow : Skill
 		TryUseCharge();
 		return true;
 	}
+
+	public bool IsStreamSkill { get; }
+	public bool IsFrostEnergyApplied => true;
 }
 

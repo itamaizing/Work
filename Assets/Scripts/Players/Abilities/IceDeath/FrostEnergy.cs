@@ -13,10 +13,18 @@ public class FrostEnergy : Skill
     private const float StartDelay = 2f;
     private const float DrainInterval = 0.1f;
     private const float EnergyPerTick = 1f;
+    private const float FrostEnergyCoolingBonusPerStack = 1f;
+    private const float FrostEnergyFrostingBonus = 5f;
+    private const float FrostEnergyFrozenBonus = 10f;
+    private const float FrostEnergyPhysicalCoolingChance = 60f;
+    private const float SelfCastingThreshold = 0.2f;
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
+    public bool HeroHasFrostEnergy => Hero.CharacterState.CheckForState(States.FrostEnergy);
+    
+    private bool _isSelfActivating = false;
 
     #region Talent
 
@@ -25,22 +33,63 @@ public class FrostEnergy : Skill
     public void _UseRuneBonusEffect(bool value) => _isUseRuneBonusEffect = value;
     #endregion
 
-    private void Start()
+    public override void Init(SkillRenderer render, Character hero)
     {
-        Invoke("addResourceTypeRune", 1);
+        base.Init(render, hero);
+        AddResourceTypeRune();
+        SubscribeForAdditionalEnergyDamage();
     }
 
     private void OnDestroy()
     {
         if (_rune != null) _rune.OnRuneSpent -= HandleRuneSpent;
+        UnsubscribeForAdditionalEnergyDamage();
     }
 
-    private void addResourceTypeRune()
+    private void AddResourceTypeRune()
     {
         if (Hero.TryGetResource(ResourceType.Rune, out var resource))
         {
             _rune = resource as RuneComponent;
             if (_rune != null) _rune.OnRuneSpent += HandleRuneSpent;
+        }
+    }
+    
+    private void SubscribeForAdditionalEnergyDamage()
+    {
+        foreach (var energySkill in _hero.Abilities.Abilities)
+        {
+            if (energySkill is IEnergyDamagable { IsFrostEnergyApplied: true })
+            {
+                energySkill.OnBeforeApplyDamage += ModifyFrostEnergyBonus;
+            }
+
+            if (energySkill is IEnergyDamagable)
+            {
+                if (energySkill is PhysicalAttack || energySkill is IceShard)
+                {
+                    energySkill.OnBeforeApplyDamage += TryApplyFrostEnergyCooling;
+                }
+            }
+        }
+    }
+    
+    private void UnsubscribeForAdditionalEnergyDamage()
+    {
+        foreach (var energySkill in _hero.Abilities.Abilities)
+        {
+            if (energySkill is IEnergyDamagable { IsFrostEnergyApplied: true })
+            {
+                energySkill.OnBeforeApplyDamage -= ModifyFrostEnergyBonus;
+            }
+            
+            if (energySkill is IEnergyDamagable)
+            {
+                if (energySkill is PhysicalAttack || energySkill is IceShard)
+                {
+                    energySkill.OnBeforeApplyDamage -= TryApplyFrostEnergyCooling;
+                }
+            }
         }
     }
 
@@ -56,12 +105,6 @@ public class FrostEnergy : Skill
     {
         if (Hero == null || Hero.CharacterState == null)
             yield break;
-
-        if (!Cost.TryPaySingle(_runeCost, ResourceType.Rune, shouldModify: false))
-        {
-            TryCancel(true);
-            yield break;
-        }
 
         SkillToggleFrostEnergyState(Hero.gameObject);
         yield break;
@@ -81,18 +124,30 @@ public class FrostEnergy : Skill
         }
         else
         {
-            character.CharacterState.CmdAddState( States.FrostEnergy, 999f, 0f, character.gameObject, name);
+            if (!Cost.TryPaySingle(_runeCost, ResourceType.Rune, shouldModify: false))
+                return;
+
+            StartCoroutine(ClearSelfActivatingFlag());
+            _isSelfActivating = true;
+
+            character.CharacterState.CmdAddState(States.FrostEnergy, 999f, 0f,
+                Schools.Water, character.gameObject, name);
             StartDrain(character);
         }
     }
 
-    private void HandleRuneSpent(float amount, Skill skill)
+    private IEnumerator ClearSelfActivatingFlag()
     {
-        if (!_isUseRuneBonusEffect) return;
+        yield return new WaitForSeconds(SelfCastingThreshold);
+        _isSelfActivating = false;
+    }
 
+    private void HandleRuneSpent(float value, Skill skill)
+    {
+        if (_isSelfActivating) return;
         if (!Hero.CharacterState.CheckForState(States.FrostEnergy)) return;
-
-        ApplyEnergyBonusEffect(amount);
+        if (isClient)
+            SkillToggleFrostEnergyState(_hero.gameObject);
     }
 
     private void StartDrain(Character character)
@@ -134,16 +189,76 @@ public class FrostEnergy : Skill
     {
         if (_rune == null) return;
 
-        //float bonusRune = spentRune * 2f;
         float bonusEnergy = spentRune * 0.4f;
-
-        //_rune.CmdAdd(bonusRune);
 
         if (Hero.TryGetResource(ResourceType.Energy, out var resource))
         {
             Energy energy = resource as Energy;
             energy?.CmdAdd(bonusEnergy);
             energy?.ForceRegenNow();
+        }
+    }
+
+    private void ModifyFrostEnergyBonus(ref Damage damage, Skill skill, GameObject target)
+    {
+        if (!HeroHasFrostEnergy) return;
+        if (target == null) return;
+    
+        var character = target.GetComponent<Character>();
+        if (character == null) return;
+ 
+        int coolingStacks = character.CharacterState.CheckStateStacks(States.Cooling);
+        if (coolingStacks > 0)
+            damage.Value += coolingStacks * FrostEnergyCoolingBonusPerStack;
+
+        if (character.CharacterState.CheckForState(States.Frosting))
+            damage.Value += FrostEnergyFrostingBonus;
+
+        if (character.CharacterState.CheckForState(States.Frozen))
+            damage.Value += FrostEnergyFrozenBonus;
+    }
+    
+    public void ApplyFrostEnergyStateBonus(Character target, States appliedState, Skill sourceSkill)
+    {
+        if (!HeroHasFrostEnergy) return;
+        if (target == null || sourceSkill == null) return;
+
+        float bonusDamage = 0f;
+
+        switch (appliedState)
+        {
+            case States.Cooling:
+                int stacksAfterApply = target.CharacterState.CheckStateStacks(States.Cooling) + 1;
+                bonusDamage = stacksAfterApply * FrostEnergyCoolingBonusPerStack;
+                break;
+
+            case States.Frosting:
+                bonusDamage = FrostEnergyFrostingBonus;
+                break;
+
+            case States.Frozen:
+                bonusDamage = FrostEnergyFrozenBonus;
+                break;
+        }
+
+        if (bonusDamage <= 0f) return;
+
+        Damage bonus = new Damage { Value = bonusDamage, Type = DamageType.Magical };
+        sourceSkill.ApplyDamage(bonus, target.gameObject);
+    }
+    
+    private void TryApplyFrostEnergyCooling(ref Damage damage, Skill skill, GameObject target)
+    {
+        if (!HeroHasFrostEnergy) return;
+        if (!isServer) return;
+        if (target == null) return;
+
+        var character = target.GetComponent<Character>();
+        if (character == null) return;
+
+        if (UnityEngine.Random.Range(0f, 100f) <= FrostEnergyPhysicalCoolingChance)
+        {
+            character.CharacterState.AddState(States.Cooling, 12f, 0f,Schools.Water , Hero.gameObject, skill.Name);
         }
     }
 }

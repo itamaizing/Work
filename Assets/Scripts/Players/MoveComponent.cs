@@ -107,8 +107,11 @@ public class MoveComponent : NetworkBehaviour, IAttribute
 		_isHero = isHero;
 
 		InputHandler.OnPlayerMove += OnMove;
-		_flyChecker.OffedGround += OnOffedGround;
-		_flyChecker.ReachGround += OnReachGround;
+		if (_flyChecker)
+		{
+			_flyChecker.OffedGround += OnOffedGround;
+			_flyChecker.ReachGround += OnReachGround;
+		}
 
 		RotateModifier = 1;
 	}
@@ -479,6 +482,29 @@ public class MoveComponent : NetworkBehaviour, IAttribute
 	public void TargetRpcDoPush(Vector3 targetPos, float duration)
 	{
 		StartCoroutine(DoPushWithAgent(targetPos, duration));
+	}
+	
+	[TargetRpc]
+	public void TargetRpcDoLiftAndThrow(Vector3 startPos, Vector3 endPos, float duration)
+	{
+		transform.position = startPos;
+
+		Vector3 midPoint = (startPos + endPos) / 2f;
+		midPoint.y += 2.2f;
+
+		Vector3[] path = new Vector3[]
+		{
+			startPos,
+			midPoint,
+			endPos
+		};
+
+		transform.DOPath(path, duration, PathType.CatmullRom)
+			.SetEase(Ease.OutQuad)
+			.OnComplete(() =>
+			{
+				transform.DOMoveY(endPos.y, 0.15f).SetEase(Ease.OutBounce);
+			});
 	}
 
     public void AddModifier(AttributeModifier modif)

@@ -4,23 +4,13 @@ using UnityEngine;
 
 public class AbsotptionTalent : Talent
 {
-	[SerializeField] private Absorption _absorption;
-	[SerializeField] private SkillManager _ability;
 	public override void Enter()
 	{
-		_ability.ActivateSkill(_absorption);
+		character.Abilities.ActivateSkill(character.Abilities.GetSkill<IceDeathAbsorbation>());
 	}
 
 	public override void Exit()
 	{
-		_ability.DeactivateSkill(_absorption);
-	}
-
-	private void Update()
-	{
-		if(Input.GetKeyUp(KeyCode.R)) 
-		{
-			//Enter();
-		}
+		character.Abilities.DeactivateSkill(character.Abilities.GetSkill<IceDeathAbsorbation>());
 	}
 }

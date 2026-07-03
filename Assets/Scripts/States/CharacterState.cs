@@ -9,20 +9,20 @@ using Random = UnityEngine.Random;
 
 public class StateInfo
 {
-	public States State;
-	public float Duration;
-	public float DamageToExit;
-	public GameObject PersonWhoShooted;
-	public string SkillName;
+    public States State;
+    public float Duration;
+    public float DamageToExit;
+    public GameObject PersonWhoShooted;
+    public string SkillName;
 
 	public StateInfo(States state, float duration, float damageToExit, GameObject personWhoShooted, string skillName)
-	{
-		State = state;
-		Duration = duration;
-		DamageToExit = damageToExit;
-		PersonWhoShooted = personWhoShooted;
-		SkillName = skillName;
-	}
+    {
+        State = state;
+        Duration = duration;
+        DamageToExit = damageToExit;
+        PersonWhoShooted = personWhoShooted;
+        SkillName = skillName;
+    }
 }
 
 public abstract class AbstractCharacterState
@@ -33,14 +33,14 @@ public abstract class AbstractCharacterState
 	protected Character personWhoMadeBuff;
 	protected Skill skill;
 	protected Schools _schoolState;
-
+	public virtual DiminishingReturnGroup DrGroup => DiminishingReturnGroup.None;
 	protected int currentStacksCount = 0;
 	protected bool isHidden = false;
 
 	public int CurrentStacksCount => currentStacksCount;
 
 	public Skill Skill => skill;
-	public int MaxStacksCount = 0;
+    public int MaxStacksCount = 0;
 	protected float duration = -1;
 	protected float damageToExit = 0;
 	//protected float _duration;
@@ -60,48 +60,48 @@ public abstract class AbstractCharacterState
 	public virtual Schools Schools { get; }
 	public virtual DispelType dispelType => DispelType.None;
 
-	public virtual AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    public virtual AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		if (!CanEnterState(character)) return null;
+		if(!CanEnterState(character)) return null;
 
 		BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
 
-		EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-
+        EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);  
+		
 		return this;
 	}
 
 	public abstract void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName);
-	public abstract void UpdateState();
+    public abstract void UpdateState();
 
-	public virtual void GloabalUpdate()
+    public virtual void GloabalUpdate()
 	{
 		UpdateState();
-		if (duration >= 0 && duration != -1)
+		if(duration >= 0 && duration != -1)
 		{
 			duration -= Time.deltaTime;
 
-			if (duration <= 0)
+			if(duration <= 0)
 			{
-				if (currentStacksCount > 0)
+				if(currentStacksCount > 0)
 				{
 					ReduceStack();
-				}
+                }
 				else
 					ExitState();
 			}
 		}
-	}
+    }
 
 	public virtual void ExitState()
 	{
-		characterState.RemoveState(this);
-	}
-
+        characterState.RemoveState(this);
+    }
+	
 	public virtual bool Stack(float time)
 	{
 		duration = time;
-		return true;
+		return true; 
 	}
 
 	public virtual void ReduceStack()
@@ -111,71 +111,96 @@ public abstract class AbstractCharacterState
 
 	protected virtual bool CanEnterState(CharacterState character)
 	{
-		return true;
+		return true; 
 	}
 
 	protected virtual void BaseInit(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		characterState = character;
-		health = character.Character.Health;
-		abilities = character.Character.Abilities;
-		this.personWhoMadeBuff = personWhoMadeBuff;
-		duration = durationToExit;
+        characterState = character;
+        health = character.Character.Health;
+        abilities = character.Character.Abilities;
+        this.personWhoMadeBuff = personWhoMadeBuff;
+        duration = durationToExit;
 
-		if (this.damageToExit == 0)
-		{
-			this.damageToExit = 10000;
-		}
-		else
-		{
-			this.damageToExit = damageToExit;
-		}
-		this.personWhoMadeBuff = personWhoMadeBuff;
+        if (this.damageToExit == 0)
+        {
+            this.damageToExit = 10000;
+        }
+        else
+        {
+            this.damageToExit = damageToExit;
+        }
+        this.personWhoMadeBuff = personWhoMadeBuff;
 
-		skill = abilities.Abilities.FirstOrDefault(x => x.Name == skillName);
-	}
+        //skill = abilities.Abilities.FirstOrDefault(x => x.Name == skillName);
+    }
 }
 
 public abstract class StackableState : AbstractCharacterState
 {
 	public override Schools Schools => Schools.Physical;
 
-	public override bool Stack(float time)
+    public override bool Stack(float time)
 	{
 		duration = time;
-		return true;
+		return true; 
 	}
+
+    public override void ReduceStack()
+    {
+	    currentStacksCount--;
+
+	    if (currentStacksCount <= 0)
+	    {
+		    characterState.StateIcons.RemoveItemByState(State);
+		    ExitState();
+	    }
+	    else
+	    {
+		    characterState.StateIcons.ActivateIco(State, duration, -1, true, MaxStacksCount);
+	    }
+    }
 }
 
 public abstract class RefreshingState : StackableState
 {
-	public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-	{
-		if (!CanEnterState(character)) return null;
+    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        if (!CanEnterState(character)) return null;
 
-		BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
 
-		if (currentStacksCount == 0)
+        if (currentStacksCount == 0)
 			EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
 		else
 			Stack(duration);
 
 		currentStacksCount++;
 
-		return this;
-	}
+			return this;
+    }
 
-	public override void ReduceStack()
-	{
-		ExitState();
-	}
+    public override void ReduceStack()
+    {
+	    currentStacksCount--;
+
+	    if (currentStacksCount <= 0)
+	    {
+		    characterState.StateIcons.RemoveItemByState(State);
+		    ExitState();
+	    }
+	    else
+	    {
+		    characterState.StateIcons.ActivateIco(State, duration, -1, true, MaxStacksCount);
+	    }
+    }
 }
 
-public abstract class IndependentState : StackableState
+public abstract class IndependentState: StackableState
 {
-	public override bool Stack(float time)
-	{
-		if (currentStacksCount >= MaxStacksCount)
+    public override bool Stack(float time)
+    {
+		if(currentStacksCount >= MaxStacksCount)
 		{
 			//_timers
 		}
@@ -184,58 +209,58 @@ public abstract class IndependentState : StackableState
 			currentStacksCount++;
 		}
 		return false;
-	}
+    }
 
-	public override void ReduceStack()
-	{
-		currentStacksCount--;
-	}
+    public override void ReduceStack()
+    {
+        currentStacksCount--;
+    }
 }
 
 public abstract class AuraState : AbstractCharacterState
 {
 	protected Character _self;
-	private Transform _auraCentre;
-	protected List<Character> _charactersInRadius = new();
-	private List<Collider> _collidersKeysForRemove = new();
+    private Transform _auraCentre;
+    protected List<Character> _charactersInRadius = new();
+    private List<Collider> _collidersKeysForRemove = new();
 	private Dictionary<Collider, Character> _colliderToCharacter = new();
 	private float _timeAfterLastEffect = 0;
 
 	public abstract float Distance { get; }
-	public abstract float EffectRate { get; }
-	public abstract LayerMask LayerMask { get; }
+    public abstract float EffectRate { get; }
+    public abstract LayerMask LayerMask { get; }
 
-	public abstract void EffectOnEnter(Character character);
-	public abstract void EffectOnExit(Character character);
-	public abstract void EffectOnStay(List<Character> characters);
+    public abstract void EffectOnEnter(Character character);
+    public abstract void EffectOnExit(Character character);
+    public abstract void EffectOnStay(List<Character> characters);
 
-	public override StateType Type => StateType.Aura;
+    public override StateType Type => StateType.Aura;
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-	{
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
 		_auraCentre = character.transform;
 		_self = personWhoMadeBuff;
 		duration = durationToExit;
-	}
+    }
 
-	public override void UpdateState()
-	{
-		if (NetworkServer.active == false)
-		{
-			_timeAfterLastEffect += Time.deltaTime;
+    public override void UpdateState()
+    {
+        if (NetworkServer.active == false)
+        {
+            _timeAfterLastEffect += Time.deltaTime;
 
-			if (EffectRate > _timeAfterLastEffect)
+            if (EffectRate > _timeAfterLastEffect)
 				return;
 
 			_timeAfterLastEffect = 0;
 
-			var colliders = Physics.OverlapSphere(_auraCentre.position, Distance, LayerMask);
+            var colliders = Physics.OverlapSphere(_auraCentre.position, Distance, LayerMask);
 
-			foreach (KeyValuePair<Collider, Character> collider in _colliderToCharacter)
+            foreach (KeyValuePair<Collider, Character> collider in _colliderToCharacter)
 			{
 				if (colliders.Contains(collider.Key) == false)
 				{
-					EffectOnExit(collider.Value);
+                    EffectOnExit(collider.Value);
 					_charactersInRadius.Remove(collider.Value);
 					_collidersKeysForRemove.Add(collider.Key);
 				}
@@ -246,7 +271,7 @@ public abstract class AuraState : AbstractCharacterState
 			}
 			_collidersKeysForRemove.Clear();
 
-			foreach (var collider in colliders)
+            foreach (var collider in colliders)
 			{
 				if (_colliderToCharacter.ContainsKey(collider) == false && collider.TryGetComponent(out Character character))
 				{
@@ -256,19 +281,19 @@ public abstract class AuraState : AbstractCharacterState
 				}
 			}
 
-			EffectOnStay(_charactersInRadius);
-		}
-	}
+            EffectOnStay(_charactersInRadius);
+        }
+    }
 
-	public override void ExitState()
-	{
-		characterState.RemoveState(this);
-	}
+    public override void ExitState()
+    {
+        characterState.RemoveState(this);
+    }
 
-	public override bool Stack(float time)
-	{
-		return false;
-	}
+    public override bool Stack(float time)
+    {
+        return false;
+    }
 }
 
 
@@ -286,6 +311,19 @@ public class CharacterState : NetworkBehaviour
 
 	public bool invinsible = false;
 
+	[SyncVar] private bool _suppressStateEffectsBuff;
+	public bool SuppressStateEffectsBuff => _suppressStateEffectsBuff;
+	
+	[Server]
+	public void SetSuppressStateBuffEffects(bool value) => _suppressStateEffectsBuff = value;
+	
+	
+	[SyncVar] private bool _suppressStateDebuffEffects;
+	public bool SuppressStateEffects => _suppressStateDebuffEffects;
+	
+	[Server]
+	public void SetSuppressStateDebuffEffects(bool value) => _suppressStateDebuffEffects = value;
+	
 	public StateEffects StateEffects => _stateEffects;
 	public StateIcons StateIcons => _stateIcons;
 	public List<AbstractCharacterState> CurrentStates => _currentStates;
@@ -325,7 +363,7 @@ public class CharacterState : NetworkBehaviour
 		[States.ReversePolarity] = new ReversePolarityState(),
 		[States.SpiritEnergy] = new SpiritEnergyState(),
 		[States.SpiritHealth] = new SpiritHealthState(),
-		[States.DisciplineAura] = new DisciplineAuraState(),
+		[States.DisciplineAura]   = new DisciplineAuraState(),
 
 		[States.Knockdown] = new Knockdown(),
 		[States.IdealEvade] = new IdealEvade(),
@@ -378,13 +416,22 @@ public class CharacterState : NetworkBehaviour
 		[States.LightningEvade] = new LightningEvadeState(),
 		[States.ReptilianStasis] = new ReptilianStasisState(),
 		[States.ReflectiveScales] = new ReflectiveScalesState(),
+		[States.SwiftAttacks] = new SwiftAttacksState(),
+		[States.FireCharge] = new FireChargeState(),
+		[States.RestorativeAttacks] = new RestorativeAttacksState(),
+		[States.CounterRage] = new CounterRageState(),
+		[States.Ignition] = new IgnitionState(),
 		[States.MergeDark] = new MergeDarkState(),
 		[States.DarkFormState] = new DarkFormState(),
 		[States.ShackleState] = new ShackleState(),
 		[States.SlowFlowLight] = new SlowFlowLightState(),
 		[States.Retribution] = new RetributionState(),
+		[States.KillingSpree] = new KillingSpreeState(),
 		[States.FrostEnergy] = new FrostEnergyState(),
 		[States.PortalDarkness] = new PortalDarknessState(),
+		[States.OtherForces] = new OtherForceState(),
+		[States.MagicShield] = new MagicShieldState(),
+		[States.VampirismBuff] = new VampirismBuffState(),
 
 		#region TerrifyingElfStates
 		[States.InnerDarkness] = new InnerDarkness(),
@@ -403,7 +450,7 @@ public class CharacterState : NetworkBehaviour
 		[States.MultiMagic] = new MultiMagic(),
 		[States.FireFlash] = new FireFlash(),
 		[States.WarmingUpState] = new WarmingUpState(),
-
+		
 		#endregion
 
 		#region Gandollarf	
@@ -411,14 +458,14 @@ public class CharacterState : NetworkBehaviour
 		[States.EarthsHealth] = new EarthsHealthBuff(),
 		[States.MagicWater] = new MagicWater(),
 		[States.HotBloodBuff] = new HotAuraBuff(),
-		[States.GodAura] = new GodAura(),
-		[States.GodAuraBuff] = new GodAuraBuff(),
-		[States.TransformationDebuff] = new TransformationDebuff(),
-		[States.PetrificationDebuff] = new PetrificationState(),
-		[States.PushingWindBuff] = new PushingWindBuff(States.PushingWindBuff),
-		[States.PushingWindAura] = new PushingWindBuff(States.PushingWindAura),
-		[States.Burning] = new Burning(),
-		[States.Burn] = new Burn(),
+        [States.GodAura] = new GodAura(),
+        [States.GodAuraBuff] = new GodAuraBuff(),
+        [States.TransformationDebuff] = new TransformationDebuff(),
+        [States.PetrificationDebuff] = new PetrificationState(),
+        [States.PushingWindBuff] = new PushingWindBuff(States.PushingWindBuff),
+        [States.PushingWindAura] = new PushingWindBuff(States.PushingWindAura),
+        [States.Burning] = new Burning(),
+        [States.Burn] = new Burn(),
 		[States.Discharge] = new Gangdollarff.AirElemental.Discharge(),
 		[States.CoolingDamaged] = new CoolingDamaged(),
 		[States.MagicalExcitement] = new MagicalExcitement(),
@@ -427,15 +474,15 @@ public class CharacterState : NetworkBehaviour
 		[States.ImmortalityState] = new ImmortalityState(),
 		#endregion
 
-		#region Test Baff and Debaff
-		[States.BaffState] = new BaffState(),
+        #region Test Baff and Debaff
+        [States.BaffState] = new BaffState(),
 		[States.DebaffState] = new DebaffState(),
-		#endregion
+        #endregion
 
-		#region Test
-		[States.TestAuraState] = new TestAuraState(),
-		#endregion
-	};
+        #region Test
+        [States.TestAuraState] = new TestAuraState(),
+        #endregion
+    };
 
 	public void Initialize(Character hero)
 	{
@@ -539,7 +586,7 @@ public class CharacterState : NetworkBehaviour
 		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
 		ClientAddState(state, duration, damageToExit, schools, personWhoShooted, skillName);
 	}
-
+	
 	public void AddState(States state, float duration, float damageToExit, Schools schools, GameObject personWhoShooted, string skillName)
 	{
 		AddStateLogic(state, duration, damageToExit, schools, personWhoShooted, skillName);
@@ -559,7 +606,7 @@ public class CharacterState : NetworkBehaviour
 		ClientAddState(state, duration, damageToExit, Schools.None, personWhoShooted, skillName);
 	}
 
-	[Command]
+	[Command(requiresAuthority = false)]
 	public void CmdRemoveState(States state)
 	{
 		RemoveStateLogic(state);
@@ -582,12 +629,12 @@ public class CharacterState : NetworkBehaviour
 		{
 			RemoveShield(damageableShield);
 		}
-		if (_currentStates.Contains(newState))
+        if (_currentStates.Contains(newState))
 		{
-			_currentStates.Remove(newState);
+            _currentStates.Remove(newState);
 			_stateIcons?.RemoveItemByState(newState.State);
 		}
-	}
+    }
 
 	private void RemoveStateLogic(States stateName)
 	{
@@ -626,9 +673,25 @@ public class CharacterState : NetworkBehaviour
 		RemoveStateLogic(stateName);
 	}
 
-	public void AddStateLogic(States state, float duration, float damageToExit, Schools school, GameObject personWhoShooted, string skillName, bool isCanDodgeMagState = false)
+	public void AddStateLogic(States state, float duration, float damageToExit, Schools school,
+		GameObject personWhoShooted, string skillName, bool isCanDodgeMagState = false)
 	{
 		if (invinsible) return;
+
+		if (_suppressStateEffectsBuff)
+		{
+			AbstractCharacterState stateInst = enumToState[state];
+			if(stateInst.BaffDebaff == BaffDebaff.Baff) return;
+		}
+
+		if (_suppressStateDebuffEffects)
+		{
+			AbstractCharacterState stateInst = enumToState[state];
+			if(stateInst.BaffDebaff == BaffDebaff.Debaff) return;
+		}
+
+		duration = ApplyDiminishingReturns(state, duration, personWhoShooted);
+		if (duration <= 0f) return;
 
 		for (int i = 0; i < _currentStates.Count; i++)
 		{
@@ -656,7 +719,9 @@ public class CharacterState : NetworkBehaviour
 					float timeForIcon = duration;
 					if (state == States.Restoration || state == States.Destruction)
 					{
-						timeForIcon = _currentStates[i].RemainingDuration > 0f ? _currentStates[i].RemainingDuration : duration;
+						timeForIcon = _currentStates[i].RemainingDuration > 0f
+							? _currentStates[i].RemainingDuration
+							: duration;
 					}
 
 					_stateIcons.ActivateIco(state, timeForIcon, 1, canStack, newMaxStack);
@@ -668,7 +733,9 @@ public class CharacterState : NetworkBehaviour
 				{
 					//_currentStates[i].Stack(duration);
 					//_currentStates[i].duration = Mathf.Max(_currentStates[i].RemainingDuration, duration);
-					float remaining = _currentStates[i].RemainingDuration > 0f ? _currentStates[i].RemainingDuration : duration;
+					float remaining = _currentStates[i].RemainingDuration > 0f
+						? _currentStates[i].RemainingDuration
+						: duration;
 
 					int newMaxStack = _currentStates[i].MaxStacksCount;
 					if (!_currentStates[i].IsHidden)
@@ -727,7 +794,7 @@ public class CharacterState : NetworkBehaviour
 
 		float remaining = state.RemainingDuration;
 		int maxStacksCount = state.MaxStacksCount;
-		if (!state.IsHidden)
+		if(!state.IsHidden)
 			_stateIcons.ActivateIco(stateName, remaining, 1, stack, maxStacksCount);
 	}
 
@@ -783,8 +850,9 @@ public class CharacterState : NetworkBehaviour
 		}
 	}
 
-	public void DispelStates(StateType type, bool isAlly, bool isDispelOneState = false)
+	public void DispelStates(StateType type, bool isAlly,out int howMuchDispelled , bool isDispelOneState = false)
 	{
+		howMuchDispelled = 0;
 		if (_currentStates.Count == 0) return;
 
 		List<AbstractCharacterState> statesToRemove = new List<AbstractCharacterState>();
@@ -797,7 +865,8 @@ public class CharacterState : NetworkBehaviour
 				((isAlly && state.BaffDebaff == BaffDebaff.Baff) ||
 				 (!isAlly && state.BaffDebaff == BaffDebaff.Debaff)))
 			{
-				NotifyDispelWhoMade(state.PersonWhoMadeBuff.gameObject, state.State, state.CurrentStacksCount);
+				if(state.PersonWhoMadeBuff != null)
+					NotifyDispelWhoMade(state.PersonWhoMadeBuff.gameObject,state.State,state.CurrentStacksCount);
 				if (state.CurrentStacksCount > 1)
 				{
 					//state.currentStacksCount--;
@@ -818,20 +887,70 @@ public class CharacterState : NetworkBehaviour
 		}
 	}
 
-	[ClientRpc]
-	private void NotifyDispelWhoMade(GameObject whoMade, States state, int num)
+	public void DispelStatesStack(StateType type, BaffDebaff buffDebaff, int howMuchToDispel, out int dispelled)
 	{
-		if (whoMade == null) return;
-		whoMade.TryGetComponent(out Character c);
-		if (c == null) return;
+		dispelled = 0;
+		if (_currentStates.Count == 0) return;
 
-		c.CharacterState.OnOwnStateDispelled(state, num);
+		AbstractCharacterState stateToDispel = _currentStates.LastOrDefault(c => c.Type == type &&
+			buffDebaff == c.BaffDebaff);
+
+		if (stateToDispel != null)
+		{
+			if (stateToDispel.PersonWhoMadeBuff != null)
+				NotifyDispelWhoMade(stateToDispel.PersonWhoMadeBuff.gameObject, stateToDispel.State, stateToDispel.CurrentStacksCount);
+			
+			int available = stateToDispel.CurrentStacksCount;
+			int toRemove = Mathf.Min(available, howMuchToDispel);
+			
+			if (toRemove >= available)
+			{
+				RemoveState(stateToDispel.State);
+			}
+			else
+			{
+				for (int i = 0; i < toRemove; i++)
+				{
+					stateToDispel.ReduceStack();
+					ClientRpcRemoveIconCount();
+				}
+			}
+			dispelled = toRemove;
+		}
+	}
+	
+	private float ApplyDiminishingReturns(States state, float duration,GameObject whoMadeBuff = null)
+    {
+        if (!enumToState.TryGetValue(state, out var stateInstance)) return duration;
+        var group = stateInstance.DrGroup;
+        if (group == DiminishingReturnGroup.None) return duration;
+
+        DiminishingReturnsTracker tracker;
+        if (whoMadeBuff == null)
+	        tracker = _hero?.GetComponent<DiminishingReturnsTracker>();
+        else
+	        tracker = whoMadeBuff.GetComponent<DiminishingReturnsTracker>();
+        if (tracker == null) return duration;
+    
+        float modified = tracker.GetModifiedDuration(group, duration);
+        if (modified > 0f) tracker.ConsumeApplication(group);
+        return modified;
+    }
+
+	[ClientRpc]
+	private void NotifyDispelWhoMade(GameObject whoMade, States state,int num)
+	{
+		if(whoMade == null) return;
+		whoMade.TryGetComponent(out Character c);
+		if(c == null) return;
+		
+		c.CharacterState.OnOwnStateDispelled(state,num);
 	}
 
 	public void OnOwnStateDispelled(States state, int num)
 	{
 		if (!isOwned) return;
-		OnStateDispelled?.Invoke(state, num);
+		OnStateDispelled?.Invoke(state,num);
 	}
 
 	[ClientRpc]
@@ -968,24 +1087,24 @@ public enum States
 	Sleep,
 	ElvenSkill,
 	BaffState,
-	DebaffState,
+    DebaffState,
 	Bound,
 	ShadowTree,
-	PowerOfEarth,
-	EarthsHealth,
-	MagicWater,
-	Burning,
-	Burn,
-	TestAuraState,
+    PowerOfEarth,
+    EarthsHealth,
+    MagicWater,
+    Burning,
+    Burn,
+    TestAuraState,
 	MultiMagic,
 	FireFlash,
 	Stupefaction,
 	TentacleGrip,
-	Discharge,
-	Restoration,
-	RestorationStacking,
-	Destruction,
-	DestructionStacking,
+    Discharge,
+    Restoration,
+    RestorationStacking,
+    Destruction,
+    DestructionStacking,
 	HardenedFlesh,
 	FocusingOnReflexesState,
 	WarmingUpState,
@@ -1021,6 +1140,9 @@ public enum States
 	LightningEvade,
 	ReptilianStasis,
 	ReflectiveScales,
+	SwiftAttacks,
+	CounterRage,
+	Ignition,
 	MergeDark,
 	DarkFormState,
 	ShackleState,
@@ -1029,9 +1151,14 @@ public enum States
 	DisciplineAura,
 	FrostEnergy,
 	PortalDarkness,
-	ElvenReflexes
+	ElvenReflexes,
+	FireCharge,
+	RestorativeAttacks,
+	KillingSpree,
+	OtherForces,
+	MagicShield,
+	VampirismBuff
 }
-
 public enum BaffDebaff
 {
 	Baff,
@@ -1044,5 +1171,5 @@ public enum DispelType
 	None,
 	Magic,
 	Physic,
-	Immaterial
+    Immaterial
 }

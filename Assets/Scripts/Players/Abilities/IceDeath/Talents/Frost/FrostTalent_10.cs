@@ -15,6 +15,6 @@ public class FrostTalent_10 : Talent
 
     public override void Exit()
     {
-        _skillManager.ActivateSkill(_blockOfIce);
+        _skillManager.DeactivateSkill(_blockOfIce);
     }
 }

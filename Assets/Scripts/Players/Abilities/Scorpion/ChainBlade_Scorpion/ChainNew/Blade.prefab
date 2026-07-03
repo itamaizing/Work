@@ -1584,7 +1584,7 @@ MonoBehaviour:
   _speed: 5
   _speedModifier: 1.2
   _speedWithTarget: 4
-  _stopDistance: 1.5
+  _stopDistance: 0.5
   _arrowYOffset: 1.5
   _targetsLayer:
     serializedVersion: 2

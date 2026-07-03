@@ -13,6 +13,42 @@ public class PortalDarkness : Skill
 
     private Energy _energy;
 
+    #region ExplodingCorpseTalent
+
+    private bool _isCorpseExploding;
+    public bool IsCorpseExploding => _isCorpseExploding;
+
+    public void EnableExplodingCorpse(bool value)
+    {
+        if(value == _isCorpseExploding) return;
+        _isCorpseExploding = value;
+        CmdEnableExplodingCorpse(_isCorpseExploding);
+        if (_isCorpseExploding)
+        {
+            _hero.SpawnComponent.UnitAdded -= OnUnitSpawned;
+            _hero.SpawnComponent.UnitAdded += OnUnitSpawned;
+        }
+        else
+        {
+            _hero.SpawnComponent.UnitAdded -= OnUnitSpawned;
+        }
+    }
+
+    [Command]
+    private void CmdEnableExplodingCorpse(bool value)
+    {
+        _isCorpseExploding = value;
+
+    }
+
+    private void OnUnitSpawned(Character minionCharacter)
+    {
+        if(minionCharacter == null) return;
+        minionCharacter.Abilities.GetSkill<ExplodingCorpse>().OnCreatureSpawned();
+    }
+
+    #endregion
+
     protected override bool IsCanCast => Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
 
     protected override int AnimTriggerCastDelay => 0;
@@ -35,7 +71,11 @@ public class PortalDarkness : Skill
 
                 var temp = Targeting.GetTempTarget()?.Targetable as Character;
 
-                if (temp != null)
+                if (temp is IceDeadMinion)
+                {
+                    Targeting.ClearTempTarget();
+                }
+                else if(temp != null)
                 {
                     Targeting.SetTarget(temp);
                     break;
@@ -84,10 +124,20 @@ public class PortalDarkness : Skill
     {
         var target = targetObject.GetComponent<Character>();
         if (target == null) return;
-
-        target.CharacterState.AddState(States.PortalDarkness, _duration, 0, _playerLinks.gameObject, name);
+        
+        target.CharacterState.AddState(States.PortalDarkness, _duration, 0, _playerLinks.gameObject, nameof(PortalDarkness));
     }
 
+
+    [Command]
+    public void CmdApplyPlague(GameObject targetObject,float duration)
+    {
+        var target = targetObject.GetComponent<Character>();
+        if (target == null) return;
+        
+        target.CharacterState.AddState(States.Plague, duration, 0, _hero.gameObject, nameof(PortalDarkness));
+    }
+    
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0)

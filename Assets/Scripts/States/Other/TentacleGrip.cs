@@ -20,7 +20,7 @@ public class TentacleGrip : AbstractCharacterState
 		if (character.TryGetComponent<Character>(out var ability))
 		{
 			abilities = ability.Abilities;
-			abilities.SetPhysicalAbilitiesDisactive(true);
+			//abilities.SetPhysicalAbilitiesDisactive(true);
 		}
 		else Debug.Log("no ability at " + character.gameObject.name);
 
@@ -39,7 +39,6 @@ public class TentacleGrip : AbstractCharacterState
 	{
 		characterState.RemoveState(this);
 		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.IsMoveBlocked = false;
-		if (!characterState.Check(StatusEffect.Ability) && abilities != null) abilities.SetPhysicalAbilitiesDisactive(false);
 	}
 
 	public override bool Stack(float time)

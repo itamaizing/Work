@@ -3,11 +3,10 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class IceShard : Skill
+public class IceShard : Skill,IEnergyDamagable
 {
 	[SerializeField] private IceShardProjectile _projectile;
 	[SerializeField] private HeroComponent _playerLinks;
-	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 
 	[SerializeField] private float _baseEnergyCost = 5f;
 	[SerializeField] private float _maxAdditionalCost = 0f;
@@ -71,21 +70,24 @@ public class IceShard : Skill
 		}
 
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
-		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
-		_seriesOfStrikes.MakeHit(null, Info.AbilityForm, 1, 5, 3);
+		lookDir.y = 0f;
+		lookDir.Normalize();
 
-		CmdCreateProjecttile(angle, _energy.CurrentValue, _talentPlague, _talentChragesPlague);
+		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
+
+		CmdCreateProjecttile(angle, _energy.CurrentValue, _talentPlague, _talentChragesPlague, 4f);
 	}
 
 	[Command]
-	private void CmdCreateProjecttile(float angle, float manaValue, bool talentPlague, bool talentChargesPlague)
+	private void CmdCreateProjecttile(float angle, float manaValue, bool talentPlague, bool talentChargesPlague, float maxDistance)
 	{
-		IceShardProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, -angle, 0));
-		projectile.Init(_playerLinks, manaValue, false, this);
+		IceShardProjectile projectile = Instantiate(_projectile, transform.position, Quaternion.Euler(0, -angle, 0));
+    
+		projectile.Init(_hero, manaValue, false, this);
 		projectile.Talents(talentPlague, talentChargesPlague);
+		projectile.SetMaxDistance(maxDistance);
 
 		NetworkServer.Spawn(projectile.gameObject);
-
 		RpcInit(projectile.gameObject, manaValue, talentPlague, talentChargesPlague);
 	}
 
@@ -145,4 +147,7 @@ public class IceShard : Skill
 		Debug.Log("CLEARED");
 		_mousePos = Vector2.positiveInfinity;
 	}
+
+	public bool IsStreamSkill { get; }
+	public bool IsFrostEnergyApplied { get; }
 }

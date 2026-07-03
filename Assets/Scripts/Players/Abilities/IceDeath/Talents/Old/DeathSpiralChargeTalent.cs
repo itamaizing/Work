@@ -8,11 +8,11 @@ public class DeathSpiralChargeTalent : Talent
 
 	public override void Enter()
 	{
-		_deathSpiral.TalentMaxCharges(3);
+		//_deathSpiral.TalentMaxCharges(3);
 	}
 
 	public override void Exit()
 	{
-		_deathSpiral.TalentMaxCharges(1);
+		//_deathSpiral.TalentMaxCharges(1);
 	}
 }

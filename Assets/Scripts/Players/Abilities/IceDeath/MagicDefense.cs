@@ -124,7 +124,7 @@ public class MagicDefense : Skill
 				_rune.CmdUse(1);
 				_energy.CmdUse(70);
 				_plagueAbsorption.CmdUseCharge(1);
-				_deathSpiral.CmdUseCharge(1);
+				//_deathSpiral.CmdUseCharge(1);
 				return true;
 			}
 		}
@@ -135,7 +135,7 @@ public class MagicDefense : Skill
 			_rune.CmdUse(2);
 			_energy.CmdUse(70);
 			_plagueAbsorption.CmdUseCharge(2);
-			_deathSpiral.CmdUseCharge(2);
+			//_deathSpiral.CmdUseCharge(2);
 			return true;
 		}
 		return true;	

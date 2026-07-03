@@ -115,7 +115,7 @@ public class Dispel : Skill
 
         bool isAlly = c.gameObject.layer == LayerMask.NameToLayer("Allies");
 
-        c.CharacterState.DispelStates(StateType.Magic, isAlly, true);
+        c.CharacterState.DispelStates(StateType.Magic, isAlly,out int howMuchDispelled, true);
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)

@@ -145,12 +145,12 @@ public abstract class Skill : NetworkBehaviour
     }
     public bool IsCanCancel { get => _isCanCancel; set => _isCanCancel = value; }
     public bool IsTalentSpell => _isTalentSpell;
-    public bool IsSkillActive
+    public virtual bool IsSkillActive
     {
         get => _isSkillActive;
         set => _isSkillActive = value;
     }
-    public bool Disactive
+    public virtual bool Disactive
     {
         get => _disactive;
         set
@@ -162,6 +162,8 @@ public abstract class Skill : NetworkBehaviour
             }
         }
     }
+
+    public bool IsUseCharges { get => _isUseCharges; set => _isUseCharges = value; }
     public bool GetMouseButton { get => _click != TypeClick.None; }
     public bool IsSubjectToGlobalCooldownTime { get => _isSubjectToGlobalCooldownTime; }
     public Character Hero { get => _hero; }
@@ -215,6 +217,9 @@ public abstract class Skill : NetworkBehaviour
     public event Action BoostDisabled;
     public event Action<GameObject, Skill> OnDamageApplied;
     public event Action<GameObject, Skill> OnHealApplied;
+    
+    public delegate void OnBeforeApplyDamageDelegate(ref Damage damage, Skill skill,GameObject target);
+    public event OnBeforeApplyDamageDelegate OnBeforeApplyDamage;
 
     protected void SkillAfterCastJob() => AfterCast?.Invoke();
     protected void CastEndedJob() => CastEnded?.Invoke();
@@ -1365,9 +1370,9 @@ public abstract class Skill : NetworkBehaviour
 
     public void ApplyDamage(Damage damage, GameObject target)
     {
+        OnBeforeApplyDamage?.Invoke(ref damage, this, target);
         var damageable = target != null ? target.GetComponent<IDamageable>() : null;
         Character targetCharacter = target != null ? target.GetComponent<Character>() : null;
-        damage.SourceSkill = this;
 
         if (targetCharacter)
         {
@@ -1381,6 +1386,7 @@ public abstract class Skill : NetworkBehaviour
         {
             damageable.TryTakeDamage(ref damage, this);
             OnDamagedApplied(target);
+
             //_hero.DamageTracker.AddDamage(damage, target, isServerRequest: isServer);
             //_hero.DamageGet(damage, target);
             TryCountGettedDamage(damage);

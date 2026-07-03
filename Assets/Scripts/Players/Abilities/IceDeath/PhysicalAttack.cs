@@ -3,9 +3,8 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class PhysicalAttack : Skill
+public class PhysicalAttack : Skill,IEnergyDamagable, IComboSeriesParticipatingSkill
 {
-	[SerializeField] private SeriesOfStrikes _combo;
 	[SerializeField] private AudioClip[] _hits;
 
 	private AudioSource _audioSource;
@@ -14,15 +13,11 @@ public class PhysicalAttack : Skill
 	private Energy _energy;
 	private RuneComponent _rune;
 	private float _multiplier = 1;
-	private bool _talentActive = false;
-	private bool _rollingPhysTalent = false;
-	private bool _seriesPhysicalTalent;
-	private float _stunCount = 0;
+	private float _energyUsedSum;
 	private int _animTriggerToUse = 0;
 	private bool _isRightKick = true;
 	private Animator _animator;
-
-	private bool _nextHitAppliesFrozen;
+	
 	private float _nextHitFrozenDuration;
 
 	#region Const
@@ -41,6 +36,8 @@ public class PhysicalAttack : Skill
 	private static readonly int LeftKickTrigger = Animator.StringToHash("LeftKick");
 	#endregion
 
+	private Character _castTarget;
+	
 	protected override int AnimTriggerCastDelay => 0;
 	protected override int AnimTriggerCast => _animTriggerToUse = UnityEngine.Random.value > RandomAttack ? RightKickTrigger : LeftKickTrigger;
 	protected override bool IsCanCast => Targeting.GetTarget()?.Character != null && Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
@@ -144,10 +141,9 @@ public class PhysicalAttack : Skill
 
 	public void ApplyAttackDamage()
 	{
-		if (Targeting.GetTarget()?.Character == null) return;
+		if (_castTarget == null) return;
 
-		if (_seriesPhysicalTalent) Hit(Targeting.GetTarget()?.Character);
-		else SingleHit(Targeting.GetTarget()?.Character);
+		SingleHit(_castTarget);
 
 		if (!_hero.Abilities.SkillQueue.Skills.Contains(this))
 		{
@@ -156,141 +152,19 @@ public class PhysicalAttack : Skill
 		CmdPlayShotSound();
 	}
 
-	private void Hit(Character enemy)
-	{
-		if (_energy == null)
-			_energy = (Energy)Hero.Resources[ResourceType.Energy];
-		if (_rune == null)
-			_rune = (RuneComponent)Hero.Resources[ResourceType.Rune];
-		if (_curTarget == enemy && _energy.CurrentValue >= EnergyPerAttack)
-		{
-			float curDamage = _damageValue + UnityEngine.Random.Range(0, HitVariationMax);
-			_combo.GetMultipliedSpeed();
-			_multiplier = DefaultMultiplier + _combo.LastKnownSpeedMultiplier / 100;
-			Debug.Log($"_multiplier: {_multiplier}");
-
-			if (_energy.CurrentValue >= EnergyPerAttack)
-			{
-				if (_combo.MakeHit(enemy, Info.AbilityForm, 0, EnergyPerAttack, curDamage, _multiplier))
-				{
-					Debug.Log("Last hit");
-					LastHit();
-				}
-			}
-
-			Damage damage = new Damage
-			{
-				Value = curDamage,
-				Type = DamageType.Physical,
-			};
-
-
-			if (enemy.CharacterState.CheckForState(States.Frozen))
-			{
-				curDamage *= 1.4f;
-			}
-			_energy.SumDamageMake(curDamage);
-			_rune.SumDamageMake(curDamage);
-			_energy.CmdUse(5);
-			CmdApplyDamage(damage, enemy.gameObject);
-			CmdTryApplyCooling(enemy.gameObject);
-			TryApplyNextHitFrozen(enemy);
-
-			if (_rollingPhysTalent)
-			{
-				CmdState(_curTarget.gameObject, RollingStunTimeMultiplier * _stunCount);
-			}
-		}
-		else
-		{
-			Buff.AttackSpeed.IncreasePercentage(_multiplier);
-			_multiplier = 1;
-			_curTarget = enemy;
-
-			float curDamage = _damageValue + UnityEngine.Random.Range(0, HitVariationMax);
-			_energy.SumDamageMake(curDamage);
-			Debug.Log(_rune, _rune.gameObject);
-			_rune.SumDamageMake(curDamage);
-
-			_combo.MakeHit(enemy, Info.AbilityForm, 0, 0, curDamage, _multiplier);
-
-			if (_energy.CurrentValue >= 5)
-			{
-				_energy.CmdUse(5);
-				_multiplier = DefaultMultiplier + _combo.GetMultipliedSpeed() / 100;
-				Buff.AttackSpeed.ReductionPercentage(_multiplier);
-			}
-			Damage damage = new Damage
-			{
-				Value = curDamage,
-				Type = DamageType.Physical,
-			};
-			CmdApplyDamage(damage, enemy.gameObject);
-			CmdTryApplyCooling(enemy.gameObject);
-			TryApplyNextHitFrozen(enemy);
-		}
-
-		if (UnityEngine.Random.Range(0, 100) < TalentProcChance && _talentActive)
-		{
-			_rune.CmdAdd(DefaultMultiplier);
-		}
-	}
-
-	private void LastHit()
-	{
-		if (_energy.CurrentValue >= 10)
-		{
-			Damage damage = new Damage
-			{
-				Value = _damageValue * LastHitDamageMultiplier,
-				Type = DamageType.Physical,
-			};
-			CmdApplyDamage(damage, _curTarget.gameObject);
-			float curDamage = _damageValue * LastHitDamageMultiplier;
-			_energy.SumDamageMake(curDamage);
-			_rune.SumDamageMake(curDamage);
-			CmdState(_curTarget.gameObject, LastHitStunTime);
-			PushBackEnemy(_curTarget); 			
-		}
-		_curTarget = null;
-	}
 
 	private void SingleHit(Character enemy)
 	{
-		Debug.Log("Single hit");
+		OnSeriesDamaged?.Invoke(enemy.gameObject,this);
 		float curDamage = _damageValue + UnityEngine.Random.Range(0, HitVariationMax);
 
 		Damage damage = new Damage
 		{
-			Value = curDamage,
+			Value = curDamage * _currentDamageMultiplier,
 			Type = DamageType.Physical,
 		};
-		_combo.MakeHit(enemy, Info.AbilityForm, 0, EnergyPerAttack, curDamage, _multiplier);
 		CmdApplyDamage(damage, enemy.gameObject);
-		TryApplyNextHitFrozen(enemy);
-	}
-
-	[Command]
-	private void CmdState(GameObject enemy, float time)
-	{
-		Character enemyChar = enemy.GetComponent<Character>();
-		enemyChar.CharacterState.AddState(States.Stun, time, 0, Hero.gameObject, name);
-	}
-
-	private void PushBackEnemy(Character enemy)
-	{
-		Vector3 lookDir = (Targeting.GetTarget().Character.transform.position - Hero.transform.position).normalized;
-		Vector3 jumpPos = lookDir * DefaultMultiplier + Targeting.GetTarget().Character.transform.position;
-		if (!CheckObstacleBetween(Hero.transform.position, jumpPos))
-		{
-			CmdPush(Targeting.GetTarget()?.Character.gameObject, jumpPos);
-		}
-	}
-
-	[Command]
-	private void CmdPush(GameObject gameObject, Vector2 force)
-	{
-		MoveComponent tempTargetMove = gameObject.GetComponent<MoveComponent>();
+		_currentDamageMultiplier = 1;
 	}
 
 	[Command]
@@ -309,95 +183,92 @@ public class PhysicalAttack : Skill
 		}
 	}
 
-	private bool CheckObstacleBetween(Vector3 start, Vector3 end)
-	{
-		Vector2 direction = (end - start).normalized;
-		float distance = Vector3.Distance(start, end);
-
-		RaycastHit2D[] hits =
-			Physics2D.BoxCastAll(start, ObstacleCheckSize, 0f, direction, distance, _obstacle);
-
-		foreach (RaycastHit2D hit in hits)
-		{
-			Debug.Log(hit.collider.gameObject.name);
-			_jumpPos = hits[0].point - direction;
-			return true;
-		}
-
-		return false;
-	}
-
-	#region Talent
-
-	public void SeriesPhysicalTalentActive(bool value)
-	{
-		_seriesPhysicalTalent = value;
-	}
-
-	public void SetTalentActive(bool active)
-	{
-		_talentActive = active;
-	}
-
-	public void TalentRollingPhys(bool value, float count)
-	{
-		_rollingPhysTalent = value;
-		_stunCount = count;
-	}
-
-	#endregion
-
 	public void ApplyRootTrue()
 	{
 		Hero.Move.SetCanMove(false);
 		_animator.applyRootMotion = true;
 	}
 
-	public void SetNextHitFrozen(float duration)
+	public override void LoadTargetData(TargetInfo targetInfo)
 	{
-		_nextHitAppliesFrozen = true;
-		_nextHitFrozenDuration = duration;
-	}
-
-	private void TryApplyNextHitFrozen(Character enemy)
-	{
-		if (!_nextHitAppliesFrozen || enemy == null) return;
-
-		enemy.CharacterState.AddState(States.Frozen, _nextHitFrozenDuration, 0f, Hero.gameObject, Name);
-
-		_nextHitAppliesFrozen = false;
-		_nextHitFrozenDuration = 0f;
-	}
-
-	[Command]
-	private void CmdTryApplyCooling(GameObject enemyObj)
-	{
-		if (enemyObj == null) return;
-
-		var enemy = enemyObj.GetComponent<Character>();
-		if (enemy == null) return;
-
-		if (enemy.CharacterState.CheckForState(States.FrostEnergy))
+		if (targetInfo.GetTargets().Count > 0)
 		{
-			if (UnityEngine.Random.Range(0f, 100f) <= FrostEnergyFreezeChance) enemy.CharacterState.AddState(States.Cooling, 12f, 0f, Hero.gameObject, Name);
+			Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
+			_castTarget = Targeting.GetTarget()?.Character;
 		}
 	}
 
-	public void ApplyRootFalse()
+	protected override void ClearData()
 	{
-		_animator.applyRootMotion = false;
-	}
-
-	public override void LoadTargetData(TargetInfo targetInfo)
-	{
-		if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
-	}
-
-    protected override void ClearData()
-    {
+		_castTarget = null;
 		Targeting.ClearTarget();
 		Targeting.ClearTempTarget();
 		_hero.Move.StopLookAt();
 	}
+
+	#region Series
+	
+	private const float KnockbackDistance = 1f;
+	private const float KnockbackDuration = 0.35f;
+	private float _bonusDamageMultiplier = 1.5f;
+	private float _currentDamageMultiplier = 1f;
+	public event IComboSeriesParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplySeriesDamage;
+	public event Action<GameObject, Skill> OnSeriesDamaged;
+
+	public float EnergyCostOnHit => 0;
+	public float RuneCostOnHit { get; }
+	public bool IsTicking { get; }
+
+	public void OnSeriesHit(int hitCountInCurrentSeries, Character target)
+	{
+	}
+
+	public void OnSeriesCompleted(Character target, int totalHits, float totalEnergySpent)
+	{
+		_currentDamageMultiplier = _bonusDamageMultiplier;
+		PushBackEnemy(target);
+	}
+
+	public void OnSeriesBroken(Character target)
+	{
+		_currentDamageMultiplier = 1;
+	}
+
+	public void OnSeriesPotentialFinal(Skill skill, bool isPotentialFinal)
+	{
+	}
+
+	private void PushBackEnemy(Character enemy)
+	{
+		if (enemy == null) return;
+
+		Vector3 direction = (enemy.transform.position - Hero.transform.position).normalized;
+		direction.y = 0;
+
+		Vector3 pushPosition = enemy.transform.position + direction * KnockbackDistance;
+
+		CmdKnockback(enemy.gameObject, pushPosition);
+	}
+
+	[Command]
+	private void CmdKnockback(GameObject target, Vector3 pushPosition)
+	{
+		if (target == null) return;
+
+		var moveComponent = target.GetComponent<MoveComponent>();
+		if (moveComponent != null)
+		{
+			moveComponent.RpcDoPush(pushPosition, KnockbackDuration);
+		}
+		else
+		{
+			Debug.LogWarning($"[PhysicalAttack] MoveComponent not found on {target.name}");
+		}
+	}
+
+	#endregion
+
+    public bool IsStreamSkill { get; }
+    public bool IsFrostEnergyApplied { get; }
 }
 

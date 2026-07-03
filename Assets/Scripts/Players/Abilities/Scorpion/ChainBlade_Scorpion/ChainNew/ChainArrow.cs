@@ -9,7 +9,7 @@ public class ChainArrow : Projectiles
     [SerializeField] private float _speed = 20f;
     [SerializeField] private float _speedModifier = 1.2f;
     [SerializeField] private float _speedWithTarget = 4f;
-    [SerializeField] private float _stopDistance = 1.5f;
+    [SerializeField] private float _stopDistance = 0.5f;
     [SerializeField] private float _arrowYOffset = 1.5f;
     [SerializeField] private LayerMask _targetsLayer;
     [SerializeField] private Transform _chainPoint;
@@ -20,7 +20,7 @@ public class ChainArrow : Projectiles
     private float _damage;
     private float _flightTime = 0f;
 
-    public Action<Character, float> OnHitTarget;
+    public Action<Character, float,float> OnHitTarget;
     private Coroutine _flyCoroutine;
     private Coroutine _returnCoroutine;
     private bool _isReturning = false;
@@ -88,11 +88,9 @@ public class ChainArrow : Projectiles
         if (other.TryGetComponent<Character>(out Character character))
         {
             AttachToTarget(character);
-            AddSkillCombo(character);
-            AddState(character);
             ApplyDamage(_damage, DamageType.Physical, character.gameObject);
 
-            OnHitTarget?.Invoke(character, _flightTime);
+            OnHitTarget?.Invoke(character, _flightTime,_damage);
         }
     }
     private IEnumerator FlyCoroutine()
@@ -211,35 +209,6 @@ public class ChainArrow : Projectiles
         };
 
         _skill.ApplyDamage(_damage, target);
-    }
-
-    private void AddSkillCombo(Character character)
-    {
-        if (character == null) return;
-
-        if (_skill is ChainBlade skill)
-        {
-            skill.ComboCounter.AddSkill(character, skill);
-        }
-    }
-
-    private void AddState(Character character)
-    {
-        if (character == null) return;
-
-        float pullDistance = Vector3.Distance(_playerTransform.position, character.transform.position);
-
-        if (pullDistance > 1f)
-        {
-            float duration = 1f;
-
-            if (_skill is ChainBlade skill) if (skill.ComboCounter.IsFinalComboSkill(character, skill)) duration += 2f;
-
-            int comboStacks = character.CharacterState.CheckStateStacks(States.ComboState);
-            duration += comboStacks;
-
-            character.CharacterState.AddState(States.DisappointmentState, duration, 0f, _dad.gameObject, _skill.name);
-        }
     }
 
     private Vector3 _startPoint;

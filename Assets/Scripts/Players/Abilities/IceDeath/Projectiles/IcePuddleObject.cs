@@ -1,291 +1,290 @@
-﻿using DG.Tweening;
+﻿// IcePuddleObject.cs — полная замена
+
+using DG.Tweening;
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Serialization;
 
 public class IcePuddleObject : Projectiles
 {
-	[FormerlySerializedAs("healthPlayer")]  private Health _healthComponent;
+    [FormerlySerializedAs("healthPlayer")] private Health _healthComponent;
 
-	[SerializeField] private DecalProjector decalProjector;
-	private float _timeToDestroy = 0;
-    private float _damageToExit = 30;
-    private float _curEvade = 0;
-	private float _spawnTime;
-	private bool _talentEvadeDadBoost = false;
-	private bool _talentFrostingFrozen = false;
-	private bool _iceDeathInIcePudleTalent = false;
-	private UserNetworkSettings _dadSettings;
-	private readonly List<Character> _enemiesInZone = new();
-	private readonly Dictionary<Character, Coroutine> _frostingCoroutines = new();
-	private readonly WaitForSeconds _waitApplyDelay = new WaitForSeconds(0.7f);
-	private readonly WaitForSeconds _waitShort = new(0.1f);
+    [SerializeField] private DecalProjector decalProjector;
 
-	private const float FrostEnergyCoolingBonusPerStack = 1f;
-	private const float FrostEnergyFrostingBonusPerStack = 5f;
-	private const float FrostEnergyFrozenBonusPerStack = 10f;
+    private float _timeToDestroy   = 0;
+    private float _damageToExit    = 0;
+    private float _curEvade        = 0;
+    private float _spawnTime;
 
-	//private List<CharacterState> _enemies = new List<CharacterState>();
-	private List<EnemyToState> _targets = new List<EnemyToState>();
+    private bool _talentEvadeDadBoost    = false;
+    private bool _talentFrostingFrozen   = false;
+    private bool _iceDeathInIcePudleTalent = false;
 
-	public DecalProjector Decal { get => decalProjector; set => decalProjector = value; }
-	/*
-	 * buff player
-	 * */
+    private bool  _deepColdTalent      = false;
+    private const float DeepColdDamageToExit = 30f;
 
-	private void OnDisable()
-	{
-		if (!isServer) return;
+    private UserNetworkSettings _dadSettings;
+    private readonly List<Character>                  _enemiesInZone      = new();
+    private readonly Dictionary<Character, Coroutine> _frostingCoroutines = new();
+    private readonly WaitForSeconds _waitApplyDelay = new WaitForSeconds(0.7f);
+    private readonly WaitForSeconds _waitShort      = new WaitForSeconds(0.1f);
 
-		foreach (var coroutine in _frostingCoroutines.Values)
-		{
-			if (coroutine != null) StopCoroutine(coroutine);
-		}
+    private const float FrostEnergyCoolingBonusPerStack  = 1f;
+    private const float FrostEnergyFrostingBonusPerStack = 5f;
+    private const float FrostEnergyFrozenBonusPerStack   = 10f;
 
-		_frostingCoroutines.Clear();
-		_enemiesInZone.Clear();
-	}
+    private HashSet<Character> _alreadyDebuffed = new();
 
-	public override void Init(Character dad, float timeToDestroy, bool lastHit, Skill skill)
-	{
-		_dad = dad;
-		_skill = skill;
-		_initialized = true;
-		_lastHit = lastHit;
-		_healthComponent = _dad.Health;
-		_timeToDestroy = timeToDestroy;
-		_spawnTime = Time.time;
+    public DecalProjector Decal { get => decalProjector; set => decalProjector = value; }
 
-		_dadSettings = _dad?.GetComponent<UserNetworkSettings>();
-
-		Debug.Log($"_timeToDestroy: {_timeToDestroy}");
-		 
-		if (_lastHit) transform.localScale = Vector3.one * 1.7f;
-		StartCoroutine(DestroyPuddle());
-	}
-
-	private bool IsEnemy(GameObject target)
-	{
-		if (_dad == null) return IsEnemyByLayer(target);
-
-		if (!_dadSettings || !target.TryGetComponent(out UserNetworkSettings targetSettings))
-			return IsEnemyByLayer(target);
-
-		if (!IsTeamAssigned(_dadSettings) || !IsTeamAssigned(targetSettings))
-			return IsEnemyByLayer(target);
-
-		return _dadSettings.TeamIndex != targetSettings.TeamIndex;
-	}
-
-	private bool IsTeamAssigned(UserNetworkSettings settings)
-	{
-		return settings.TeamIndex != 0;
-	}
-
-	private bool IsEnemyByLayer(GameObject target)
-	{
-		return ((1 << target.layer) & _skill.Targeting.Layer) != 0;
-	}
-
-	public void SetTalents(bool talentEvadeDadBoost, bool talentFrostingFrozen)
-	{
-		_talentEvadeDadBoost= talentEvadeDadBoost;
-		_talentFrostingFrozen= talentFrostingFrozen;
-	}
-
-	private void Start()
-	{
-		_spriteRenderer.DOFade(1, 1);
-	}
-
-	[Server]
-	private void OnTriggerExit(Collider collision)
-	{
-		if (!collision.TryGetComponent<Character>(out var target)) return;
-		if (!_enemiesInZone.Contains(target)) return;
-
-		_enemiesInZone.Remove(target);
-
-		if (_talentEvadeDadBoost && _enemiesInZone.Count == 0)
-		{
-			SetEvade(_dad.gameObject, -_curEvade);
-			_curEvade = 0;
-		}
-
-		if (_frostingCoroutines.TryGetValue(target, out var routine))
-		{
-			StopCoroutine(routine);
-			_frostingCoroutines.Remove(target);
-		}
-	}
-
-	[Server]
-	private void OnTriggerEnter(Collider collision)
-	{
-		if (!_initialized || !collision.TryGetComponent<Character>(out var target)) return;
-		if (target == _dad) return;
-		if (!IsEnemy(target.gameObject)) return;
-		if (_enemiesInZone.Contains(target)) return;
-
-		_enemiesInZone.Add(target);
-
-		if (_talentFrostingFrozen && target.CharacterState.CheckForState(States.Frosting))
-		{
-			ApplyStateWithFrostEnergyBonus(target, States.Frozen, _timeToDestroy);
-		}
-
-		if (_talentEvadeDadBoost && _curEvade == 0)
-		{
-			_curEvade = 3;
-			SetEvade(_dad.gameObject, _curEvade);
-		}
-
-		if (!_frostingCoroutines.ContainsKey(target))
-		{
-			Coroutine routine = StartCoroutine(CheckAndApplyFrosting(target));
-			_frostingCoroutines[target] = routine;
-		}
-	}
-
-	private IEnumerator CheckAndApplyFrosting(Character enemy)
-	{
-		while (_enemiesInZone.Contains(enemy))
-		{
-			yield return _waitShort;
-
-			if (enemy == null || enemy.CharacterState == null) continue;
-
-			if (!enemy.CharacterState.CheckForState(States.Frosting))
-			{
-				float remainingLife = Mathf.Max(0.1f, _timeToDestroy - (Time.time - _spawnTime));
-
-				yield return _waitApplyDelay;
-
-				if (enemy != null && enemy.CharacterState != null && !enemy.CharacterState.CheckForState(States.Frosting))
-				{
-					ApplyStateWithFrostEnergyBonus(enemy, States.Frosting, remainingLife);
-				}
-			}
-		}
-
-		_frostingCoroutines.Remove(enemy);
-	}
-
-	private void ApplyStateWithFrostEnergyBonus(Character target, States state, float duration)
-	{
-		if (target == null || target.CharacterState == null)
-			return;
-
-		bool hasFrostEnergy = target.CharacterState.CheckForState(States.FrostEnergy);
-
-		int currentStacks = target.CharacterState.CheckStateStacks(state);
-		int stacksAfterApply = currentStacks + 1;
-
-		float bonusPerStack = 0f;
-
-		switch (state)
-		{
-			case States.Cooling:
-				bonusPerStack = FrostEnergyCoolingBonusPerStack;
-				break;
-
-			case States.Frosting:
-				bonusPerStack = FrostEnergyFrostingBonusPerStack;
-				break;
-
-			case States.Frozen:
-				bonusPerStack = FrostEnergyFrozenBonusPerStack;
-				break;
-		}
-
-		if (hasFrostEnergy && bonusPerStack > 0f)
-		{
-			float bonusDamage = stacksAfterApply * bonusPerStack;
-
-			Damage bonus = new Damage
-			{
-				Value = bonusDamage,
-				Type = DamageType.Magical
-			};
-
-			target.Health.TryTakeDamage(ref bonus, _skill);
-		}
-
-		target.CharacterState.AddState(state, duration, _damageToExit, _dad.gameObject, _skill.name);
-	}
-
-	private void Explode()
-	{
-		if (_hitEffect != null)
-		{
-			GameObject hitEffect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
-			Destroy(hitEffect, 5f);
-		}
-
-		if (isServer) ClientRpcSetEvade(_dad.gameObject, -_curEvade);
-		_curEvade = 0;
-		//_dad.Health.SetEvadeAll(-_curEvade);
-		for (int i = _targets.Count - 1; i >= 0; i--) 
-		{
-			_targets[i].enemy.CharacterState.CmdRemoveState(States.Frosting);
-			_targets.Remove(_targets[i]);
-		}
-		Destroy(gameObject);
-	}
-
-	private IEnumerator DestroyPuddle()
-	{
-		yield return new WaitForSeconds(_timeToDestroy);
-		_dad.Health.SetEvadeAll(-_curEvade);
-		Destroy(gameObject);
-		//turn off energy boost
-		//destroy
-	}
-
-	private IEnumerator StartFade()
-	{
-		yield return new WaitForSeconds(_timeToDestroy-2);
-		//_spriteRenderer.DOFade(0, 2);
-		//turn off energy boost
-		//destroy
-	}
-
-	private IEnumerator AddStateToEnemy(Character enemy, float duration)
-	{
-		yield return new WaitForSeconds(1);
-		enemy.CharacterState.AddState(States.Frosting, duration, 0, _dad.gameObject, _skill.name);
-	}
-
-	[ClientRpc]
-	private void ClientRpcSetEvade(GameObject player, float value)
-	{
-		Debug.Log(value + " EVADERPC");
-		var health = player.GetComponent<Health>();
-		health.SetEvadeAll(value);
-	}
-	private void SetEvade(GameObject player, float value)
-	{
-		Debug.Log(value + " EVADE");
-		var health = player.GetComponent<Health>();
-		health.SetEvadeAll(value);
-
-		ClientRpcSetEvade(player, value);
-	}
-
-	public void IceDeathInIcePudleTalentActive(bool value)
+    private void OnDisable()
     {
-		_iceDeathInIcePudleTalent = value;
-    }
-}
+        if (!isServer) return;
 
-public class EnemyToState
-{
-	public Character enemy;
-	public float time = 0.5f;
-	public float duration = 1;
-	public Coroutine applyCoroutine;
+        foreach (var coroutine in _frostingCoroutines.Values)
+            if (coroutine != null) StopCoroutine(coroutine);
+
+        _frostingCoroutines.Clear();
+        _enemiesInZone.Clear();
+    }
+
+    public override void Init(Character dad, float timeToDestroy, bool lastHit, Skill skill)
+    {
+        _dad          = dad;
+        _skill        = skill;
+        _initialized  = true;
+        _lastHit      = lastHit;
+        _healthComponent = _dad.Health;
+        _timeToDestroy   = timeToDestroy;
+        _spawnTime       = Time.time;
+
+        _dadSettings = _dad?.GetComponent<UserNetworkSettings>();
+
+        if (_lastHit) transform.localScale = Vector3.one * 1.7f;
+
+        StartCoroutine(DestroyPuddle());
+    }
+
+    public void SetTalents(bool talentEvadeDadBoost, bool talentFrostingFrozen)
+    {
+        _talentEvadeDadBoost  = talentEvadeDadBoost;
+        _talentFrostingFrozen = talentFrostingFrozen;
+    }
+
+    public void IceDeathInIcePudleTalentActive(bool value) => _iceDeathInIcePudleTalent = value;
+
+    public void SetDeepColdTalent(bool value) => _deepColdTalent = value;
+
+    private float GetDamageToExit() => _deepColdTalent ? DeepColdDamageToExit : 0f;
+
+    private bool IsEnemy(GameObject target)
+    {
+        if (_dad == null) return IsEnemyByLayer(target);
+
+        if (!_dadSettings || !target.TryGetComponent(out UserNetworkSettings targetSettings))
+            return IsEnemyByLayer(target);
+
+        if (!IsTeamAssigned(_dadSettings) || !IsTeamAssigned(targetSettings))
+            return IsEnemyByLayer(target);
+
+        return _dadSettings.TeamIndex != targetSettings.TeamIndex;
+    }
+
+    private bool IsTeamAssigned(UserNetworkSettings s) => s.TeamIndex != 0;
+
+    private bool IsEnemyByLayer(GameObject target) =>
+        ((1 << target.layer) & _skill.Targeting.Layer) != 0;
+
+    private void Start() => _spriteRenderer.DOFade(1, 1);
+
+    [Server]
+    private void OnTriggerExit(Collider collision)
+    {
+        if (!collision.TryGetComponent<Character>(out var target)) return;
+        if (!_enemiesInZone.Contains(target)) return;
+
+        _enemiesInZone.Remove(target);
+
+        if (_talentEvadeDadBoost && _enemiesInZone.Count == 0)
+        {
+            SetEvade(_dad.gameObject, -_curEvade);
+            _curEvade = 0;
+        }
+
+        if (_frostingCoroutines.TryGetValue(target, out var routine))
+        {
+            StopCoroutine(routine);
+            _frostingCoroutines.Remove(target);
+        }
+    }
+
+    [Server]
+    private void OnTriggerEnter(Collider collision)
+    {
+        if (!_initialized || !collision.TryGetComponent<Character>(out var target)) return;
+        if (target == _dad) return;
+        if (!IsEnemy(target.gameObject)) return;
+        if (_enemiesInZone.Contains(target)) return;
+
+        _enemiesInZone.Add(target);
+
+        if (_talentFrostingFrozen && target.CharacterState.CheckForState(States.Frosting))
+            ApplyStateWithFrostEnergyBonus(target, States.Frozen, RemainingLifetime());
+
+        if (_talentEvadeDadBoost && _curEvade == 0)
+        {
+            _curEvade = 3;
+            SetEvade(_dad.gameObject, _curEvade);
+        }
+
+        if (!_frostingCoroutines.ContainsKey(target))
+            _frostingCoroutines[target] = StartCoroutine(CheckAndApplyFrosting(target));
+    }
+
+    private IEnumerator CheckAndApplyFrosting(Character enemy)
+    {
+        const float FrostingDelay = 0.8f;
+        float timeWithoutFrosting = 0f;
+        bool hadFrosting = false;
+
+        while (_enemiesInZone.Contains(enemy))
+        {
+            yield return _waitShort;
+            if (enemy == null || enemy.CharacterState == null) continue;
+
+            var stateFrosting = enemy.CharacterState.GetState(States.Frosting) as FrostingState;
+            
+            bool hasFrosting = enemy.CharacterState.CheckForState(States.Frosting);
+
+            if (stateFrosting != null)
+            {
+                if (!stateFrosting.SkillName.Contains("Puddle"))
+                {
+                    ApplyStateWithFrostEnergyBonus(enemy, States.Frosting, RemainingLifetime());
+                }
+                else
+                {
+                    timeWithoutFrosting = 0f;
+                }
+                hadFrosting = true;
+            }
+            else
+            {
+                timeWithoutFrosting += 0.1f;
+
+                if (timeWithoutFrosting >= FrostingDelay)
+                {
+                    float duration = RemainingLifetime();
+                    if (duration > 0.05f)
+                        ApplyStateWithFrostEnergyBonus(enemy, States.Frosting, duration);
+
+                    timeWithoutFrosting = 0f;
+                    hadFrosting = false;
+                }
+            }
+        }
+
+        _frostingCoroutines.Remove(enemy);
+    }
+
+    private void ApplyStateWithFrostEnergyBonus(Character target, States state, float duration)
+    {
+        if (target == null || target.CharacterState == null) return;
+
+        if (_alreadyDebuffed.Contains(target))
+            return;
+        
+        _alreadyDebuffed.Add(target);
+        
+        var ninjaResources = _dad?.Abilities?.GetSkill<NinjaResources>();
+        bool deepFrostingActive = ninjaResources != null && ninjaResources.IsDeepFrosting;
+
+        if (state == States.Frosting && target.CharacterState.CheckForState(States.Frosting))
+        {
+            if (deepFrostingActive)
+            {
+                target.CharacterState.AddState(state, duration, GetDamageToExit(),
+                    _dad.gameObject, "Puddle");
+            }
+            else
+            {
+                var existingState = target.CharacterState.GetState(States.Frosting);
+                if (existingState != null && duration > existingState.RemainingDuration)
+                {
+                    target.CharacterState.AddState(state, duration, GetDamageToExit(),
+                        _dad.gameObject, "Puddle");
+                }
+            }
+        }
+        else
+        {
+            target.CharacterState.AddState(state, duration, GetDamageToExit(),
+                _dad.gameObject, _skill.name + "Puddle");
+        }
+
+        _dad.Abilities.GetSkill<FrostEnergy>()?.ApplyFrostEnergyStateBonus(target, state, _skill);
+    }
+
+    private IEnumerator DestroyPuddle()
+    {
+        yield return new WaitForSeconds(_timeToDestroy);
+        Explode();
+    }
+
+    private void Explode()
+    {
+        if (!isServer) return;
+
+        foreach (var enemy in _enemiesInZone)
+        {
+            if (enemy != null && enemy.CharacterState != null)
+            {
+                if(enemy.CharacterState.CheckForState(States.Frosting))
+                {
+                    var state = enemy.CharacterState.GetState(States.Frosting) as FrostingState;
+                    if(state.SkillName.Contains("Puddle"))
+                        enemy.CharacterState.RemoveState(States.Frosting);
+                }
+            }
+        }
+
+        _enemiesInZone.Clear();
+
+        foreach (var routine in _frostingCoroutines.Values)
+            if (routine != null) StopCoroutine(routine);
+        _frostingCoroutines.Clear();
+
+        if (_curEvade != 0)
+        {
+            ClientRpcSetEvade(_dad.gameObject, -_curEvade);
+            _dad.Health.SetEvadeAll(-_curEvade);
+            _curEvade = 0;
+        }
+
+        if (_hitEffect != null)
+        {
+            GameObject hitEffect = Instantiate(_hitEffect, transform.position, Quaternion.identity);
+            Destroy(hitEffect, 5f);
+        }
+
+        NetworkServer.Destroy(gameObject);
+    }
+
+    private float RemainingLifetime() =>
+        Mathf.Max(0f, _timeToDestroy - (Time.time - _spawnTime));
+
+    [ClientRpc]
+    private void ClientRpcSetEvade(GameObject player, float value)
+    {
+        player.GetComponent<Health>()?.SetEvadeAll(value);
+    }
+
+    private void SetEvade(GameObject player, float value)
+    {
+        player.GetComponent<Health>()?.SetEvadeAll(value);
+        ClientRpcSetEvade(player, value);
+    }
 }

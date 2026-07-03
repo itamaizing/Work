@@ -53,6 +53,9 @@ public class Health : Resource, IDamageable, IHealable
     public event BeforeDamageDelegate OnBeforeDamage;
     
     public event Action<float, DamageType, bool> OnDirectDamageProcessed;
+    
+    public delegate void BeforeHealDelegate(ref Heal heal, Skill skill);
+    public event BeforeHealDelegate OnBeforeHeal;
 
     public event Action<float, float> EvadeMeleeDamageChanged;
     public event Action<float, float> EvadeRangeDamageChanged;
@@ -175,6 +178,8 @@ public class Health : Resource, IDamageable, IHealable
 
     public void Heal(ref Heal heal, string sourceName, Skill skill = null)
     {
+        OnBeforeHeal?.Invoke(ref heal,skill);
+        heal.Value = ApplyIncomingModifiers(heal.Value);
         HealTakedServer?.Invoke(heal.Value, skill, sourceName);
         ClientRpcHealTaked(heal.Value, skill, sourceName);
         Add(heal.Value);
