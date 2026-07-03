@@ -138,9 +138,22 @@ public class CreeperStrike : Skill
 
     private bool CheckIsCanCast()
     {
-        return Targeting.GetTarget() != null
-            && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius
-            && Targeting.NoObstacles(Targeting.GetTarget().Transform.position, transform.position, _obstacle);
+        Character target = GetTargetForCurrentCastCheck();
+
+        if (target == null) return false;
+        return Vector3.Distance(target.transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(target.transform.position, transform.position, _obstacle);
+    }
+
+    private Character GetTargetForCurrentCastCheck()
+    {
+        if (IsCasting) return _castTarget;
+
+        if (TargetInfoQueue.TryPeek(out TargetInfo queuedTargetInfo))
+        {
+            if (queuedTargetInfo.GetTargets().Count > 0) return queuedTargetInfo.GetTargets()[0] as Character;
+        }
+
+        return Targeting.GetTarget()?.Character;
     }
 
     private bool IsAllyTarget(IDamageable target)
@@ -178,12 +191,15 @@ public class CreeperStrike : Skill
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
+        TargetData preparedTarget = Targeting.GetTempTarget();
 
-        targetInfo.Points.Add(Targeting.GetTarget().Transform.position);
-        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
+        if (preparedTarget == null || preparedTarget.Targetable == null) yield break;
+        if (!IsCasting) Targeting.SetTarget(preparedTarget.Targetable);
 
-        callbackDataSaved.Invoke(targetInfo);
+        targetInfo.Points.Add(preparedTarget.Transform.position);
+        targetInfo.AddTarget(preparedTarget.Targetable);
+
+        callbackDataSaved?.Invoke(targetInfo);
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
