@@ -11,6 +11,7 @@ public class SneakySpit : Skill
     [SerializeField] private float durationErodedArmor = 6f;
     [SerializeField] private float durationWindowsBoost = 2f;
     [SerializeField] private ColdBlood _coldBlood;
+    [SerializeField] private CreeperCombo _creeperCombo;
 
     private Character _attacker;
     private Coroutine _boostWindow;
@@ -250,7 +251,17 @@ public class SneakySpit : Skill
         Targeting.ClearTarget();
     }
 
-    public void SneakySpitCast() => AnimStartCastCoroutine();
+    private void ConsumeSneakySpitBoost()
+    {
+        if (_creeperCombo == null) return;
+        _creeperCombo.ConsumeSneakySpitBoost();
+    }
+
+    public void SneakySpitCast()
+    {
+        ConsumeSneakySpitBoost();
+        AnimStartCastCoroutine();
+    }
 
     public void SneakySpitEnd()
     {

@@ -158,6 +158,50 @@ public class CreeperCombo : NetworkBehaviour
         if (!_isSneakySpitWindowActive) _currentSneakySpitTarget = null;
     }
 
+    public void ConsumeSneakySpitBoost()
+    {
+        if (isServer)
+        {
+            ServerCloseSneakySpitWindow();
+        }
+        else
+        {
+            CmdConsumeSneakySpitBoost();
+        }
+    }
+
+    [Command]
+    private void CmdConsumeSneakySpitBoost()
+    {
+        ServerCloseSneakySpitWindow();
+    }
+
+    [Server]
+    private void ServerCloseSneakySpitWindow()
+    {
+        if (!_isSneakySpitWindowActive) return;
+
+        if (_sneakySpitWindowCoroutine != null)
+        {
+            StopCoroutine(_sneakySpitWindowCoroutine);
+            _sneakySpitWindowCoroutine = null;
+        }
+
+        _isSneakySpitWindowActive = false;
+        _currentSneakySpitTarget = null;
+
+        TargetRpcCloseSneakySpitWindow(connectionToClient);
+    }
+
+    [TargetRpc]
+    private void TargetRpcCloseSneakySpitWindow(NetworkConnection targetConnection)
+    {
+        if (_sneakySpit == null)
+            return;
+
+        _sneakySpit.CancelBoostWindow();
+    }
+
     [TargetRpc]
     private void TargetRpcStartSneakySpitWindow(NetworkConnection targetConnection, uint targetNetId, float duration)
     {
