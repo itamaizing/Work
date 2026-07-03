@@ -45,6 +45,7 @@ public class PullingHealth : Skill
     private const float MaxPositionShift = 1f;
     private const float MaxGhost = 2f;
 
+    private const float ManaCostPerTick = 2f;
     private const float PullingHealthExitCrossFadeDuration = 0.1f;
     private const int GhostsToAddAtFirstThreshold = 1;
     private const int GhostsToAddAtSecondThreshold = 2;
@@ -62,6 +63,10 @@ public class PullingHealth : Skill
 
     private readonly List<IDamageable> _extraTargets = new();
     private readonly List<GameObject> _extraEffects = new();
+    
+    private Coroutine _streamCoroutine;
+    private float _streamAccumulatedRollback = 0f;
+    protected override bool IsCustomStreamActive => _isStreaming;
 
     #region Talent
     private bool _pullingHealthThroughGhosts;
@@ -105,12 +110,19 @@ public class PullingHealth : Skill
     {
         _ghostSkill.Teleported -= OnGhostTeleport;
         OnSkillCanceled -= HandleSkillCanceled;
+        CastStreamRolledBack -= OnStreamRollbackReceived;
     }
 
     private void OnEnable()
     {
         OnSkillCanceled += HandleSkillCanceled;
         _ghostSkill.Teleported += OnGhostTeleport;
+        CastStreamRolledBack += OnStreamRollbackReceived;
+    }
+    
+    private void OnStreamRollbackReceived(float amount)
+    {
+        _streamAccumulatedRollback += amount;
     }
 
     private void OnGhostTeleport(Character character, Vector3 _)
@@ -244,7 +256,7 @@ public class PullingHealth : Skill
         }
 
         AfterCastJob();
-        StartCoroutine(StreamDuration());
+        _streamCoroutine = StartCoroutine(StreamDuration());
         while (!_streamFinished)  yield return null;
     }
 
@@ -317,11 +329,18 @@ public class PullingHealth : Skill
 
         while (elapsed < CastStreamDuration)
         {
+            if (_streamAccumulatedRollback > 0f)
+            {
+                elapsed += _streamAccumulatedRollback;
+                _streamAccumulatedRollback = 0f;
+            }
+            
             var target = Targeting.GetTarget()?.Character;
             if (target == null || target.IsDead)
             {
                 EndAnimDestroyEffect();
                 _isStreaming = false;
+                _streamCoroutine = null;
                 TryCancel();
                 yield break;
             }
@@ -351,8 +370,8 @@ public class PullingHealth : Skill
             {
                 ApplyDamageToTarget();
                 HealPlayer();
-
                 foreach (var ghost in _ghost) ApplyDamageThroughGhost(ghost);
+                manaResource.CmdUse(ManaCostPerTick);
                 damageTickElapsed = 0f;
             }
 
@@ -360,6 +379,7 @@ public class PullingHealth : Skill
             {
                 CmdDestroyEffect();
                 _isStreaming = false;
+                _streamCoroutine = null;
                 yield break;
             }
 
@@ -369,6 +389,7 @@ public class PullingHealth : Skill
         }
 
         FinishStream();
+        _streamCoroutine = null;
     }
 
     private void FinishStream()
@@ -452,19 +473,28 @@ public class PullingHealth : Skill
     {
         if (_hero != null && _hero.Move != null)
         {
-            Hero.Move.IsMoveBlocked = false; 
+            Hero.Move.IsMoveBlocked = false;
             Hero.Move.StopLookAt();
-           Hero.Animator.speed = 1;
+            Hero.Animator.speed = 1;
         }
 
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();
         _extraTargets.Clear();
         _extraEffects.Clear();
-        StopCoroutine(StreamDuration());
+
+        if (_streamCoroutine != null)
+        {
+            StopCoroutine(_streamCoroutine);
+            _streamCoroutine = null;
+        }
+        _isStreaming = false;
+        _streamAccumulatedRollback = 0f;
+
         AfterCastJob();
         StopShotSound();
     }
+    
     [Command] private void CmdSyncGhosts(GameObject ghostObj) => _ghost.Add(ghostObj);
 
     [Command]

@@ -172,11 +172,11 @@ public class UIPlayerComponents : MonoBehaviour
     {
         _castLine.gameObject.SetActive(true);
         _castLine.StartFill(time + _fixDuration, 1, 0);
-        
+
         if (_character.Abilities.CurrentCastingSkill != null)
         {
-            _character.Abilities.CurrentCastingSkill.CastTimeRolledBack -= OnCastTimeRollback;
-            _character.Abilities.CurrentCastingSkill.CastTimeRolledBack += OnCastTimeRollback;
+            _character.Abilities.CurrentCastingSkill.CastStreamRolledBack -= OnCastStreamRollback;
+            _character.Abilities.CurrentCastingSkill.CastStreamRolledBack += OnCastStreamRollback;
         }
     }
 
@@ -185,7 +185,13 @@ public class UIPlayerComponents : MonoBehaviour
         _castLine.gameObject.SetActive(false);
         _castLine.Stop();
         if (_character.Abilities.CurrentCastingSkill != null)
-            _character.Abilities.CurrentCastingSkill.CastTimeRolledBack -= OnCastTimeRollback;
+            _character.Abilities.CurrentCastingSkill.CastStreamRolledBack -= OnCastStreamRollback;
+    }
+    
+    private void OnCastStreamRollback(float rollbackAmount)
+    {
+        if (_castLine != null)
+            _castLine.SkipForward(rollbackAmount);
     }
     
     private void OnCastTimeRollback(float rollbackAmount)

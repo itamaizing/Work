@@ -10,13 +10,11 @@ public class DarknessTalent_2 : Talent
 
     public override void Enter()
     {
-        //ability.ActivateSkill(pullingHealth);
         ability.ActivateSkill(silence);
     }
 
     public override void Exit()
     {
-        //ability.DeactivateSkill(pullingHealth);
         ability.DeactivateSkill(silence);
     }
 }

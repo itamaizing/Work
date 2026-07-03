@@ -1,8 +1,8 @@
 ﻿using Mirror;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using System;
 
 public class AttributeSystem : NetworkBehaviour
 {
@@ -54,6 +54,7 @@ public class AttributeSystem : NetworkBehaviour
             switch (attribute)
             {
                 case CharacterAttributeName.CooldownReduction:
+                case CharacterAttributeName.CastSpeed:
                     baseValue = 1;
                     break;
                 default:
@@ -66,12 +67,10 @@ public class AttributeSystem : NetworkBehaviour
         SubscribeToAttributeModify();
     }
 
+    [Server]
     private void HandleAttributeModify(string name, float value)
     {
-        if (!isServer)
-            return;
-
-        Debug.Log($"Attr Modify {_data.Name} {name}:{value}", gameObject);
+        Debug.Log($"[Hero Attribute] {_data.Name} {name}: {value}", gameObject);
         if (!Enum.TryParse<CharacterAttributeName>(name, out CharacterAttributeName attr))
             return;
         if (_syncAttributes.ContainsKey(attr))
@@ -80,30 +79,31 @@ public class AttributeSystem : NetworkBehaviour
             _syncAttributes.Add(attr, value);
     }
 
+    [Server]
     private void HandleResourceModify(string name, float value)
     {
-        if (!isServer)
-            return;
-
-        Debug.Log($"Res Modify {_data.Name} {name}:{value}", gameObject); 
+        Debug.Log($"[Hero Resource Attribute] {_data.Name} {name}:{value}", gameObject); 
         if (_syncResources.ContainsKey(name))
             _syncResources[name] = value;
         else
             _syncResources.Add(name, value);
     }
 
+    //Дергаем GetValue() руками, чтобы сразу "отправить" значение на сервер => наполнить SyncDictionary
+    [Server]
     private void SubscribeToAttributeModify()
     {
         foreach (Attribute attribute in _attributes.Values)
         {
-            //Debug.Log($"Subbed to SkillAttribute {attribute.Name}");
             attribute.OnAttributeModify += HandleAttributeModify;
+            attribute.GetValue();
         }
 
         foreach (ResourceAttribute resource in _resources.Values)
         {
-            //Debug.Log($"Subbed to Resource {resource.type}");
             resource.OnResourceAttributeModify += HandleResourceModify;
+            foreach (Attribute resourceAttribute in resource.Attributes.Values)
+                resourceAttribute.GetValue();
         }
     }
 
@@ -142,14 +142,24 @@ public class ResourceAttribute
         {
             _attributes.TryAdd(attribute.type, new Attribute(attribute.type.ToString(), attribute.value));
             _attributes[attribute.type].OnAttributeModify += SendAttributeModify;
-            //Debug.Log($"Subbed to {type.ToString()}_{attribute.type.ToString()} modification");
         }
         TemporaryAttributeDisplay = _attributes.Values.ToList();
     }
 
+    // Формат {ResourceType_Attribute}
     private void SendAttributeModify(string name, float value)
     {
-        //Debug.Log("OnResourceAttributeModify");
         OnResourceAttributeModify?.Invoke($"{type.ToString()}_{name}", value);
     }
+
+    /*
+    Можно достать так
+    var parts = name.Split('_
+    ResourceType resource = Enum.Parse<ResourceType>(parts[0]);
+    if (Enum.TryParse(typeof(ResourceAttributeName), parts[1], out var attr) && (ResourceAttributeName)attr == ResourceAttributeName.MaxValue)
+    {
+        if (gameObject.GetComponent<Character>().Resources.TryGetValue(resource, out var res))
+            Debug.Log(res, attr);
+    }
+    */
 }

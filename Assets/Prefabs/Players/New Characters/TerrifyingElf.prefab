@@ -19969,10 +19969,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _projectile: {fileID: 727437498118149735, guid: e444badf466360e41a896340462c6a62, type: 3}
   _playerLinks: {fileID: 4534754468497973439}
   _ghostSkill: {fileID: 1718052129104348959}
@@ -20073,10 +20072,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   skillRenderer: {fileID: 2807589928063243029}
   groundLayer:
     serializedVersion: 2
@@ -20187,10 +20185,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _projectile: {fileID: 7795660894077134963, guid: 8e56a73e4e78d7841ac2f37176fe2356, type: 3}
   _playerLinks: {fileID: 4534754468497973439}
   _ghostSkill: {fileID: 1718052129104348959}
@@ -20304,10 +20301,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _effectPrefab: {fileID: 4195082103051815756, guid: 2d76beef07956e948946e409a372473d, type: 3}
   _reducedCooldown: 0
   _audioClip: {fileID: 8300000, guid: 0e697ad5442a11a4990c66e9b6fb2e18, type: 3}
@@ -20409,10 +20405,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _playerLinks: {fileID: 4534754468497973439}
   duration: 6
 --- !u!114 &826193211731534654
@@ -20509,10 +20504,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   skillRenderer: {fileID: 2807589928063243029}
   tripleShotTalentActive: 0
   groundLayer:
@@ -20623,10 +20617,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _pullingHealthPrefab: {fileID: 7744228389031826322, guid: 01d3359ced6c7904e8d18b398f189893, type: 3}
   _spawnPoint: {fileID: 1110070738435946966}
   _health: {fileID: 2320460443592093226}
@@ -20734,10 +20727,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   extendedRadius: 2
   baseRadius: 3
   teleportManaUse: 6
@@ -20842,10 +20834,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _playerLinks: {fileID: 4534754468497973439}
   duration: 5
 --- !u!114 &3491896792666520145
@@ -20942,10 +20933,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _projectile: {fileID: 2123849334646659443, guid: 8e3073b46604e4040ac3eb03dabfd124, type: 3}
   _spawnPoint: {fileID: 7608591018717630632}
   _playerLinks: {fileID: 4534754468497973439}
@@ -21037,10 +21027,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   trapPrefab: {fileID: 4405999295883627067, guid: 634880f733438024cbf14d239d494d86, type: 3}
   owner: {fileID: 4534754468497973439}
   minDistanceRadiusCircle: {fileID: 6586971803846960611}
@@ -21086,7 +21075,7 @@ MonoBehaviour:
   _cooldownTime: 12
   _cooldownComponent:
     _baseCooldown: 12
-  _castDeley: 0
+  _castDeley: 1.5
   _damageValue: 0
   _infoComponent:
     _school: 5
@@ -21109,10 +21098,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   _channelComponent:
-    _castDuration: 1.5
+    _castDuration: 0
     _tickInterval: 0
     _baseCostPerTick: []
-  _castDuration: 1.5
+  _castDuration: 0
   _manaCostRate: 0
   _manaCostPerTick: []
   _chargeComponent:
@@ -21147,10 +21136,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   extendedRadius: 8
   _moveDuration: 0.5
   _arrowEffectLifetime: 2
@@ -21263,10 +21251,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _attackZoneSize: 1
   _attackDelay: 1
   _chargeAttackDelay: 0
@@ -21362,10 +21349,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _fireAura: {fileID: 8163329122190285983, guid: 57f4b1dca44be5d41bcdf5931936f545, type: 3}
   _arrowFireProjectile: {fileID: 2545325199570042187, guid: 25ced05e8e27cec46bee956e4622103e, type: 3}
   _fireData: {fileID: 11400000, guid: 67c31e48e164c944a90e72fd98b08a37, type: 2}
@@ -21464,10 +21450,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   calmnessChance: 10
   elvenSkillFromPhysChance: 100
   calmnessOnElvenSkillChance: 30
@@ -21579,10 +21564,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _subjugationMindPrefab: {fileID: 7744228389031826322, guid: 9b8d8a2206325ef4787d2a10b24b74a5, type: 3}
   _breakDistance: 6
 --- !u!114 &5245378433989923716
@@ -21679,10 +21663,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   playerLinks: {fileID: 4534754468497973439}
   drawCircle: {fileID: 6586971803846960611}
   duration: 6
@@ -21780,10 +21763,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &1094805825435644166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21878,10 +21860,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &127445238161157264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21976,10 +21957,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _playerLinks: {fileID: 4534754468497973439}
   duration: 6
 --- !u!114 &1457342243689941384
@@ -22070,10 +22050,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _playerLinks: {fileID: 4534754468497973439}
   duration: 30
   _baseDamage: 10
@@ -22165,10 +22144,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &3083395416414514002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22257,10 +22235,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &443563987953287420 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8569747795464636412, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -23087,10 +23064,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u041F\u043E\u0433\u0440\u0443\u0436\u0430\u0435\u0442 \u0432 \u0441\u043E\u043D
-      \u043F\u0435\u0440\u0441\u043E\u043D\u0430\u0436\u0435\u0439 \u043D\u0430 6
-      \u0441\u0435\u043A\u0443\u043D\u0434, \u0441\u0443\u0449\u0435\u0441\u0442\u0432
-      \u043D\u0430 40 \u0441\u0435\u043A\u0443\u043D\u0434."
+    - "\u041D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 \u043D\u0430
+      \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u0430 \u043F\u043E\u0442\u043E\u043A,
+      \u043A\u043E\u0442\u043E\u0440\u044B\u0439 \u0437\u0430\u0431\u0438\u0440\u0430\u0435\u0442
+      \u0436\u0438\u0437\u043D\u0438 \u0438 \u043F\u0435\u0440\u0435\u0434\u0430\u0451\u0442
+      \u0433\u0435\u0440\u043E\u044E."
     _stateInfos:
     - StateName: "\u0421\u043E\u043D"
       Description: "\u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0439
@@ -23100,8 +23078,9 @@ MonoBehaviour:
         \u0441\u043F\u0430\u0434\u0430\u0435\u0442 \u043F\u0440\u0438 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0438\u0438
         \u0443\u0440\u043E\u043D\u0430."
     IsOpen: 1
-    Description: "\u041F\u0440\u0438\u0440\u043E\u0434\u0430 7"
-    Icon: {fileID: -1557883857, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
+    Description: "\u0412\u044B\u0442\u044F\u0433\u0438\u0432\u0430\u043D\u0438\u0435
+      \u0436\u0438\u0437\u043D\u0438"
+    Icon: {fileID: 21300000, guid: 193371c19b9788944b31bf44c9e0c270, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
@@ -23353,16 +23332,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _data:
     _descriptionsForInfoPanel:
-    - "\u0412\u044B\u0442\u044F\u0433\u0438\u0432\u0430\u043D\u0438\u0435 \u0436\u0438\u0437\u043D\u0438
-      \u2013 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 \u043D\u0430
-      \u0446\u0435\u043B\u044C \u043F\u043E\u0442\u043E\u043A\_\u043A\u043E\u0442\u043E\u0440\u044B\u0439
-      \u0437\u0430\u0431\u0438\u0440\u0430\u0435\u0442 \u0436\u0438\u0437\u043D\u0438
-      \u0438 \u043F\u0435\u0440\u0435\u0434\u0430\u0451\u0442 \u0422\u044D\u0440\u0440\u0430\u0444\u0430\u0439\u043D\_"
-    _stateInfos: []
+    - "\u041D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442 \"\u0431\u0435\u0437\u043C\u043E\u043B\u0432\u0438\u0435\"
+      \u043D\u0430 \u043F\u0440\u043E\u0442\u0438\u0432\u043D\u0438\u043A\u043E\u0432
+      \u0432 \u043E\u0431\u043B\u0430\u0441\u0442\u0438. \u0414\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C
+      0.5 \u0441\u0435\u043A \u0437\u0430 \u043A\u0430\u0436\u0434\u0443\u044E \u0435\u0434\u0438\u043D\u0438\u0446\u0443
+      \u043C\u0430\u043D\u044B, \u0432\u043F\u043B\u043E\u0442\u044C \u0434\u043E
+      4 \u0441\u0435\u043A"
+    _stateInfos:
+    - StateName: "\u0411\u0435\u0437\u043C\u043E\u043B\u0432\u0438\u0435"
+      Description: "\u0437\u0430\u043F\u0440\u0435\u0449\u0430\u0435\u0442 \u043F\u0440\u0438\u043C\u0435\u043D\u0435\u043D\u0438\u0435
+        \u0437\u0430\u043A\u043B\u0438\u043D\u0430\u043D\u0438\u0439. \u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
+        \u0434\u0435\u0431\u0430\u0444\u0444"
     IsOpen: 1
-    Description: "\u0412\u044B\u0442\u044F\u0433\u0438\u0432\u0430\u043D\u0438\u0435
-      \u0436\u0438\u0437\u043D\u0438"
-    Icon: {fileID: 21300000, guid: 193371c19b9788944b31bf44c9e0c270, type: 3}
+    Description: "\u0411\u0435\u0437\u043C\u043E\u043B\u0432\u0438\u0435"
+    Icon: {fileID: 21300000, guid: 28ac766020ba79d41b1e77139a03a2e1, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}

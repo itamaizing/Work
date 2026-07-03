@@ -78,13 +78,20 @@ public class FillAmountOverTime : MonoBehaviour
     public void Rollback(float timeToRollback)
     {
         if (_fillJob == null || timeToRollback <= 0f) return;
-
-        Debug.LogError("RollBack");
         
         StopCoroutine(_fillJob);
 
         _currentTime = Mathf.Max(0f, _currentTime - timeToRollback);
 
+        _fillJob = StartCoroutine(FillCoroutine(_duration, _currentTime, _startValue, _endValue));
+    }
+    
+    public void SkipForward(float timeToSkip)
+    {
+        if (_fillJob == null || timeToSkip <= 0f) return;
+
+        StopCoroutine(_fillJob);
+        _currentTime = Mathf.Min(_duration, _currentTime + timeToSkip);
         _fillJob = StartCoroutine(FillCoroutine(_duration, _currentTime, _startValue, _endValue));
     }
 
