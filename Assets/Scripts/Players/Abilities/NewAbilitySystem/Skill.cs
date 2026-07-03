@@ -387,7 +387,6 @@ public abstract class Skill : NetworkBehaviour
         switch (target.Type)
         {
             case TargetType.Object:
-                Targeting.SetTarget(target.Targetable);
                 targetInfo.AddTarget(target.Targetable);
                 break;
 
