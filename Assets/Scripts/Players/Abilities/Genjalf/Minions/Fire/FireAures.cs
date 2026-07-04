@@ -28,7 +28,7 @@ public class Burn : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
         _enemyLayer = LayerMask.GetMask("Enemy");
@@ -99,7 +99,7 @@ public class Burning : RefreshingState
 
     public override float RemainingDuration => _baseDuration;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Damage damage = new Damage
         {

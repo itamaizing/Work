@@ -13,7 +13,7 @@ public class IdealEvade : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Debug.Log("Entering IdealEvadeBuff State");
         characterState = character;

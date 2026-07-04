@@ -15,7 +15,7 @@ public class DisappointmentState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _baseDuration = durationToExit;
         _damageToExit = damageToExit == 0 ? 10000 : damageToExit;

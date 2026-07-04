@@ -18,7 +18,7 @@ public class WeakeningSilence : AbstractCharacterState
 
     public WeakeningSilence() => MaxStacksCount = 6;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         health = character.Character.Health;
         _damagePerTick = damageToExit;

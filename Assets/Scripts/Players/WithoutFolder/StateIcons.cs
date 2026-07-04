@@ -24,6 +24,7 @@ public class StateIcons : MonoBehaviour
     private bool _added = false;
     private string _icoText;
 
+
     private void Awake()
     {
         characterState = GetComponentInParent<CharacterState>();
@@ -32,6 +33,11 @@ public class StateIcons : MonoBehaviour
 
         _icoDataDictionary = new();
         foreach (var data in _icoDatabase.Entries) if (!_icoDataDictionary.ContainsKey(data.State)) _icoDataDictionary.Add(data.State, data);
+    }
+
+    public void EventOnChangeState()
+    {
+        Debug.Log("EventOnChangeState");
     }
 
     public void ActivateIco(States state, float timeToDecrease, int stack, bool canStack, int maxStackValue = 1, string icotext = "")
@@ -209,6 +215,11 @@ public class StateIcons : MonoBehaviour
             Destroy(ico.gameObject);
         }
         _activeEffects.Clear();
+    }
+
+    public void AddState(AbstractCharacterState state)
+    {
+        Debug.Log($"Adding state: {state.State}");
     }
 }
 /*

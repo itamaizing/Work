@@ -21,7 +21,7 @@ public class CorrodedArmorState : AbstractCharacterState
         currentStacksCount = 1;
     }
 
-    public override void EnterState(CharacterState character,
+    protected override void EnterState(CharacterState character,
         float durationToExit,
         float damageToExit,
         Character personWhoMadeBuff,

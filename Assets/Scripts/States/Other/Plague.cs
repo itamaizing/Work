@@ -13,7 +13,7 @@ public class Plague : RefreshingState
 	public override List<StatusEffect> Effects => new List<StatusEffect>();
 	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		health = characterState.Character.Health;
 		abilities = character.Character.Abilities;

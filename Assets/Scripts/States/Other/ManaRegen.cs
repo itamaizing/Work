@@ -13,7 +13,7 @@ public class ManaRegen : AbstractCharacterState
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _manaRegen = characterState.StateEffects.ManaRegen;
 

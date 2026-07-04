@@ -22,7 +22,7 @@ public class DestructivePoisonState : RefreshingState
         MaxStacksCount = 3;
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         health = character.Character.Health;

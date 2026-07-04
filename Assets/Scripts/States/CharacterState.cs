@@ -43,6 +43,7 @@ public abstract class AbstractCharacterState
     public int MaxStacksCount = 0;
 	protected float duration = -1;
 	protected float damageToExit = 0;
+	protected float maxDuration;
 	//protected float _duration;
 	//public bool CanStack = true;
 
@@ -51,7 +52,7 @@ public abstract class AbstractCharacterState
 		get => duration;
 		set => duration = value;
 	}
-	public bool IsHidden => isHidden;
+    public bool IsHidden => isHidden;
 	public Character PersonWhoMadeBuff => personWhoMadeBuff;
 	public abstract States State { get; }
 	public abstract StateType Type { get; }
@@ -59,6 +60,9 @@ public abstract class AbstractCharacterState
 	public abstract List<StatusEffect> Effects { get; }
 	public virtual Schools Schools { get; }
 	public virtual DispelType dispelType => DispelType.None;
+
+	public event Action<AbstractCharacterState> OnStateAdded;
+	public event Action OnStateAdded2;
 
     public virtual AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
@@ -68,10 +72,13 @@ public abstract class AbstractCharacterState
 
         EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);  
 		
-		return this;
+		OnStateAdded?.Invoke(this);
+		OnStateAdded2?.Invoke();
+
+        return this;
 	}
 
-	public abstract void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName);
+	protected abstract void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName);
     public abstract void UpdateState();
 
     public virtual void GloabalUpdate()
@@ -83,12 +90,12 @@ public abstract class AbstractCharacterState
 
 			if(duration <= 0)
 			{
-				if(currentStacksCount > 0)
+				/*if(currentStacksCount > 0)
 				{
 					ReduceStack();
                 }
-				else
-					ExitState();
+				else*/
+				ExitState();
 			}
 		}
     }
@@ -138,9 +145,12 @@ public abstract class AbstractCharacterState
 
 public abstract class StackableState : AbstractCharacterState
 {
-	public override Schools Schools => Schools.Physical;
+    protected int currentStacksCount = 0;
+    public int MaxStacksCount = 0;
+    public int CurrentStacksCount => currentStacksCount;
+    public override Schools Schools => Schools.Physical;
 
-    public override bool Stack(float time)
+    public virtual bool Stack(float time)
 	{
 		duration = time;
 		return true; 
@@ -165,7 +175,7 @@ public abstract class RefreshingState : StackableState
 			return this;
     }
 
-    public override void ReduceStack()
+    public virtual void ReduceStack()
     {
 		ExitState();
     }
@@ -186,7 +196,7 @@ public abstract class IndependentState: StackableState
 		return false;
     }
 
-    public override void ReduceStack()
+    public virtual void ReduceStack()
     {
         currentStacksCount--;
     }
@@ -211,7 +221,7 @@ public abstract class AuraState : AbstractCharacterState
 
     public override StateType Type => StateType.Aura;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
 		_auraCentre = character.transform;
 		_self = personWhoMadeBuff;
@@ -265,17 +275,17 @@ public abstract class AuraState : AbstractCharacterState
         characterState.RemoveState(this);
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         return false;
-    }
+    }*/
 }
 
-
+/*
 public abstract class HealStates : AbstractCharacterState
 {
 	public float HealingValue { get; set; }
-}
+}*/
 
 public class CharacterState : NetworkBehaviour
 {
@@ -495,7 +505,12 @@ public class CharacterState : NetworkBehaviour
 		{
 			if (states.State == state)
 			{
-				return states.CurrentStacksCount;
+				if (state is StackableState)
+				{
+					var stackableState = states as StackableState;
+                    return stackableState.CurrentStacksCount;
+				}
+				return 0;
 			}
 		}
 		return 0;
@@ -627,10 +642,12 @@ public class CharacterState : NetworkBehaviour
 	{
 		if (invinsible) return;
 
+		
 		for (int i = 0; i < _currentStates.Count; i++)
 		{
 			if (_currentStates[i].State == state)
 			{
+				
 				if (personWhoShooted.TryGetComponent<Character>(out var character))
                 {
                     _currentStates[_currentStates.Count - 1].TryApply(this, duration, damageToExit, character, skillName);
@@ -691,7 +708,7 @@ public class CharacterState : NetworkBehaviour
 		}
 
 		CreateState(stateInstance, state, duration, damageToExit, personWhoShooted, skillName, false);
-
+		
 		OnStateAdded?.Invoke(stateInstance);
 
 		if (stateInstance is IDamageable damageableShield)
@@ -709,10 +726,10 @@ public class CharacterState : NetworkBehaviour
 	private void CreateState(AbstractCharacterState state, States stateName, float duration, float damageToExit, GameObject personWhoShooted, string skillName, bool stack)
 	{
 		_currentStates.Add(state);
-
+		state.OnStateAdded += _stateIcons.AddState;
 		//state.duration = duration;
-
-		if (personWhoShooted.TryGetComponent<Character>(out var character))
+        //state.OnStateChanged += _stateIcons.EventOnChangeState;
+        if (personWhoShooted.TryGetComponent<Character>(out var character))
 		{
 			_currentStates[_currentStates.Count - 1].TryApply(this, duration, damageToExit, character, skillName);
 		}

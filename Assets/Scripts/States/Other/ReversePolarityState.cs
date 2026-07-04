@@ -12,7 +12,7 @@ public class ReversePolarityState : AbstractCharacterState
     private const float _damagePercent = 0.01f;
     private float _tickTimer = 0f;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _tickTimer = 0f;
     }

@@ -12,8 +12,8 @@ public class PetrificationState : StackableState
 
 	private float _baseMagicResist;
 	private float _basePhysicsResist;
-	
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit,
 		Character personWhoMadeBuff, string skillName)
 	{
 		characterState = character;

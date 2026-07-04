@@ -42,7 +42,7 @@ public class MagicWater : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
         duration = durationToExit;

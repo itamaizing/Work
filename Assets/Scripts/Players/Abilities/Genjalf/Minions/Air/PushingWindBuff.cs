@@ -19,7 +19,7 @@ public class PushingWindBuff : AbstractCharacterState
 		State = stateType;
 	}
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		characterState = character;
 

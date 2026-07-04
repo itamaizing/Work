@@ -13,7 +13,7 @@ public class SlowFlowLightState : RefreshingState
 	public override List<StatusEffect> Effects => _effects;
 
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		_modif = new AttributeModifier(_speedDebuf, ModifierType.Percent);
     

@@ -15,7 +15,7 @@ public class DivineEnhancementState : AbstractCharacterState, IDamageGivenModifi
 
     private List<Skill> _costSkills = new();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _character = character.Character;

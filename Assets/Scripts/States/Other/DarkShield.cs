@@ -17,7 +17,7 @@ public class DarkShield : AbstractCharacterState
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _duration = durationToExit;

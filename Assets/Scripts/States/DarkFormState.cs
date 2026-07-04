@@ -14,7 +14,7 @@ public class DarkFormState : AbstractCharacterState
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    public override void EnterState(CharacterState characterStateComp, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState characterStateComp, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = characterStateComp;
         _character     = characterStateComp.Character;

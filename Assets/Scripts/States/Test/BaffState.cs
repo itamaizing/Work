@@ -20,7 +20,7 @@ public class BaffState : AbstractCharacterState
         currentStacksCount = 1;
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         base.personWhoMadeBuff = personWhoMadeBuff;

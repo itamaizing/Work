@@ -18,7 +18,7 @@ public class PsionicGenerationState : AbstractCharacterState
     public override StateType Type => StateType.Magic;
     public override System.Collections.Generic.List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character,
+    protected override void EnterState(CharacterState character,
         float durationToExit,
         float damageToExit,
         Character personWhoMadeBuff,

@@ -36,7 +36,7 @@ public class FireFlash : AbstractCharacterState
         duration = 9999;
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
         characterState = character;
         duration = durationToExit;

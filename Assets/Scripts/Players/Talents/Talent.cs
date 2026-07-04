@@ -10,16 +10,16 @@ public abstract class Talent : MonoBehaviour
 	//private List<TalentData> _dependentTalents = new();
 
 	[SerializeReference, SubclassSelector]
-	public OpenCondition OpenCondition;
+	public OpenCondition OpenCondition = new EmptyCondition();
 
     public Character character;
 
 	public TalentData Data => _data;
 
-	private void OnValidate()
+/*	private void OnValidate()
 	{
 		Init();
-	}
+	}*/
 
     private void Awake()
     {

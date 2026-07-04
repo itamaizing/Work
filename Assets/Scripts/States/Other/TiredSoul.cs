@@ -10,7 +10,7 @@ public class TiredSoul : AbstractCharacterState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _baseDuration = durationToExit;

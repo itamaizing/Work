@@ -34,7 +34,7 @@ public class PowerOfEarth : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff,
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff,
         string skillName)
     {
         _character = characterState.Character;

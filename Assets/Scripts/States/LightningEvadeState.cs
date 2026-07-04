@@ -16,7 +16,7 @@ public class LightningEvadeState : StackableState
         StatusEffect.Strengthening
     };
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         MaxStacksCount = 4;
 

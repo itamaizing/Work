@@ -16,7 +16,7 @@ public class ReflectiveScalesState : StackableState
     public override List<StatusEffect> Effects => _effects;
     public override float RemainingDuration => _durationRemaining;
 
-    public override void EnterState(CharacterState character,
+    protected override void EnterState(CharacterState character,
         float durationToExit,
         float damageToExit,
         Character personWhoMadeBuff,

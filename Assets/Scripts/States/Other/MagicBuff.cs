@@ -17,7 +17,7 @@ public class MagicBuff : AbstractCharacterState, IDamageable
     public Transform transform => throw new NotImplementedException();
     public GameObject gameObject => throw new NotImplementedException();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		_character = character.Character;
 		_shieldCapacity = damageToExit;

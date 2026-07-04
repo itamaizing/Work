@@ -43,7 +43,7 @@ public class PoisonCloudState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         MaxStacksCount = _maxStacks;
         _poisonBall = personWhoMadeBuff.GetComponent<PoisonBall>();

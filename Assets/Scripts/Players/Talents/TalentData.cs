@@ -18,7 +18,7 @@ public class TalentData
     public string ConditionDescription = string.Empty;
     public Sprite Icon;
 	public int Group, Row = 0;
-	public int MaxLvl = -1;
+	public int MaxLvl = 1;
 
 	public OpenCondition condition;
 

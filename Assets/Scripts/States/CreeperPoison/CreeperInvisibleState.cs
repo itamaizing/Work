@@ -23,8 +23,8 @@ public class CreeperInvisibleState : AbstractCharacterState
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
-    
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _modif = new AttributeModifier(0, ModifierType.Flat, this);

@@ -8,7 +8,7 @@ public class TrueSight : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => new();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personMadeBuff, string skillName)
     {
         characterState = character;
         abilities = character.Character.GetComponent<SkillManager>();

@@ -24,9 +24,9 @@ public class MultiMagic : AuraState
     public override LayerMask LayerMask => _targetsMask;
     public override float RemainingDuration => duration;
 
-    public Character LastTarget { get => _lastTarget; set => _lastTarget = value; }  
+    public Character LastTarget { get => _lastTarget; set => _lastTarget = value; }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
         characterState = character;
         _skills = caster.GetComponent<SkillManager>();

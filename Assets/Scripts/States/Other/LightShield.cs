@@ -22,7 +22,7 @@ public class LightShield : AbstractCharacterState, IDamageable
     public Transform transform => throw new NotImplementedException();
     public GameObject gameObject => throw new NotImplementedException();
 
-    public override void EnterState(CharacterState character, float durationToExit, float maxDamageAbsorbed, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float maxDamageAbsorbed, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _duration = durationToExit;

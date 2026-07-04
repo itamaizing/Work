@@ -15,7 +15,7 @@ public class SelfHarmState : AbstractCharacterState
 
     private Health _healthComponent;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {        
         _healthComponent = characterState.GetComponent<Health>();
 

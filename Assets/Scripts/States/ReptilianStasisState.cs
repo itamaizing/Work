@@ -14,7 +14,7 @@ public class ReptilianStasisState : StackableState
         StatusEffect.Stunning,
     };
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _owner = character.GetComponent<Character>();
         if (_owner == null) return;

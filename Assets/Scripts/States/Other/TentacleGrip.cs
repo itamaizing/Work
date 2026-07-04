@@ -15,7 +15,7 @@ public class TentacleGrip : AbstractCharacterState
 	public override List<StatusEffect> Effects => _effects;
 
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		if (character.TryGetComponent<Character>(out var ability))
 		{

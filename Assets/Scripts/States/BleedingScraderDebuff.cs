@@ -23,7 +23,7 @@ public class BleedingScraderDebuff : AbstractCharacterState
         currentStacksCount = 1;
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _target = characterState.Character;
         _damage = damageToExit;

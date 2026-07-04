@@ -119,7 +119,7 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
             if (_talent.Level < _talent.MaxLvl)
             {
                 _lvlText.text = (_talent.Level + 1).ToString();
-                Selected?.Invoke(_talent, _talent.IsOpen, _talent.Level + 1);
+                Selected?.Invoke(_talent, true, _talent.Level + 1);
                 _lvlText.gameObject.SetActive(true);
             }
            /* else
@@ -139,7 +139,7 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
         {
             if (_talent.condition.CanOpen)
             {
-                Selected?.Invoke(_talent, !_talent.IsOpen, 1);
+                Selected?.Invoke(_talent, true, 1);
                 _lvlText.text = "1";
                 _lvlText.gameObject.SetActive(true);
             }
@@ -152,7 +152,7 @@ public class UIMenuMainTalentsPanelGroupItem : MonoBehaviour, IPointerEnterHandl
         if(_talent.Level >= 2)
         {
             _lvlText.text = (_talent.Level - 1).ToString();
-            Selected?.Invoke(_talent, _talent.IsOpen, _talent.Level - 1);
+            Selected?.Invoke(_talent, true, _talent.Level - 1);
             _lvlText.gameObject.SetActive(true);
 
             return;

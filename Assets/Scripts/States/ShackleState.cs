@@ -11,7 +11,7 @@ public class ShackleState : AbstractCharacterState
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    public override void EnterState(CharacterState characterState, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void EnterState(CharacterState characterState, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         this.characterState = characterState;
         _character     = characterState.Character;

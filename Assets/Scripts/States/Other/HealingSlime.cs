@@ -37,7 +37,7 @@ public class HealingSlime : RefreshingState
         duration = 999f;
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
         health = character.Character.Health;
 

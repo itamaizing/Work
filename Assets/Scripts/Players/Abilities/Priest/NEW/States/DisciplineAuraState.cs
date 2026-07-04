@@ -21,7 +21,7 @@ public class DisciplineAuraState : RefreshingState
     private Character  _priest;
     private float      _checkTimer;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
         characterState     = character;
