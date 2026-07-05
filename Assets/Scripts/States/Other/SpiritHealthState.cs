@@ -62,7 +62,7 @@ public class SpiritHealthState : RefreshingState
         return true;
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         if (_healthComponent != null)
             _healthComponent.DamageTaken -= OnDamageTaken;
@@ -79,7 +79,7 @@ public class SpiritHealthState : RefreshingState
         _character = null;
         _spiritHealthStateEffectInstance = null;
 
-        characterState?.RemoveState(this);
+        characterState?.RemoveStateFromList(this);
         characterState = null;
     }
 

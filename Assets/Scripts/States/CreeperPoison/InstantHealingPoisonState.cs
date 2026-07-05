@@ -27,7 +27,7 @@ public class InstantHealingPoisonState : AbstractCharacterState
 
     protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        MaxStacksCount = _maxStacks;
+        //MaxStacksCount = _maxStacks;
 
         characterState = character;
 
@@ -39,15 +39,11 @@ public class InstantHealingPoisonState : AbstractCharacterState
         MakeHeal();
     }
 
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
-    }
 
-    public override bool Stack(float time)
+   /* public override bool Stack(float time)
     {
         return false;
-    }
+    }*/
 
     [Server]
     private void MakeHeal()
@@ -71,6 +67,6 @@ public class InstantHealingPoisonState : AbstractCharacterState
 
         characterState.Character.Health.Heal(ref heal, null);
 
-        ExitState();
+        GlobalExit();
     }
 }

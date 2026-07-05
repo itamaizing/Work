@@ -43,11 +43,9 @@ public class PowerOfEarth : AbstractCharacterState
 
     public override void UpdateState() { }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         _character.Health.DamageTaken -= OnDamageGeted;
-        
-        base.ExitState();
     }
 
     private void OnDamageGeted(Damage damage, Skill skill)

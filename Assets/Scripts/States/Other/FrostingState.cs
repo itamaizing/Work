@@ -70,14 +70,14 @@ public class FrostingState : AbstractCharacterState
 		_duration -= Time.deltaTime;
 		if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || _duration < 0 || turnOff)
 		{
-			ExitState();
+			GlobalExit();
 		}
 	}
 
-	public override void ExitState()
+	protected override void ExitState()
 	{
 		//Debug.Log("Exiting Frosting State");
-		characterState.RemoveState(this);
+		characterState.RemoveStateFromList(this);
 
 		if (!characterState.Check(StatusEffect.Move))
 		{
@@ -100,10 +100,10 @@ public class FrostingState : AbstractCharacterState
 		if (characterState.StateEffects.Ice != null) _ice.SetActive(false);
 	}
 
-	public override bool Stack(float time)
+	/*public override bool Stack(float time)
 	{
 		_duration = _baseDuration;
 		return true;
-	}
+	}*/
 
 }

@@ -37,20 +37,20 @@ public class Stupefaction : AbstractCharacterState
 	{
 		if (turnOff)
 		{
-			ExitState();
+			GlobalExit();
 		}
 	}
 
-	public override void ExitState()
+	protected override void ExitState()
 	{
 		characterState.Character.Health.DamageTaken -= OnAnyDamage;
-		characterState.RemoveState(this);
+		characterState.RemoveStateFromList(this);
 		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.IsMoveBlocked = false;
 		if (!characterState.Check(StatusEffect.Ability) && abilities != null) abilities.SetAbilitiesDisactive(false);
 		turnOff = false;
 	}
 
-	public override bool Stack(float time)
+	/*public override bool Stack(float time)
 	{
 		if (_baseDuration > time)
 		{
@@ -61,7 +61,7 @@ public class Stupefaction : AbstractCharacterState
 			duration = time;
 			return true;
 		}
-	}
+	}*/
 
 	private void OnAnyDamage(Damage damage, Skill fromSkill) => turnOff = true;
 

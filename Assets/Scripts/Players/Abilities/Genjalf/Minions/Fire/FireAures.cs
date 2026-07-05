@@ -70,12 +70,11 @@ public class Burn : AbstractCharacterState
         }
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         if (characterState?.Character != null)
             characterState.Character.Health.DamageTaken -= OnDamageTaken;
         
-        characterState?.RemoveState(this);
     }
 }
 
@@ -133,7 +132,7 @@ public class Burning : RefreshingState
             currentStacksCount--;
             if (CurrentStacksCount <= 0)
             {
-                ExitState();
+                GlobalExit();
                 return;
             }
 
@@ -149,9 +148,5 @@ public class Burning : RefreshingState
         _timeAfterLastEffect = 0;
     }
 
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
-    }
 }
 

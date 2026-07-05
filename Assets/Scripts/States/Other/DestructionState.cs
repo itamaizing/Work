@@ -111,13 +111,12 @@ public class DestructionState : RefreshingState
         return true;
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         _isActive = false;
         duration = 0f;
         _timer = 0f;
         currentStacksCount = 0;
-        characterState?.RemoveState(this);
         characterState = null;
     }
 

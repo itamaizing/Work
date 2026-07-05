@@ -36,15 +36,10 @@ public class ReducingHealingState : AbstractCharacterState
 
     }
 
-    public override void ExitState()
-    {
-
-    }
-
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         return false;
-    }
+    }*/
 
     private void UdpatingDictionaries()
     {

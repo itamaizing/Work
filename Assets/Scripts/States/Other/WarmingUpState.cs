@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class WarmingUpState : AbstractCharacterState
+public class WarmingUpState : StackableState
 {
 	private const float BonusPerStack = 1f;
 
@@ -53,14 +53,12 @@ public class WarmingUpState : AbstractCharacterState
 	{
 		if (turnOff)
 		{
-			ExitState();
+			GlobalExit();
 		}
 	}
 
-	public override void ExitState()
+	protected override void ExitState()
 	{
-		characterState.RemoveState(this);
-
 		foreach (var skill in _affectedSkills)
 		{
 			if (skill != null)

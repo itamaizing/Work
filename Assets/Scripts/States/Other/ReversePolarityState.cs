@@ -38,8 +38,8 @@ public class ReversePolarityState : AbstractCharacterState
         characterState.Character.TryTakeDamage(ref damage, skill);
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         return false;
-    }
+    }*/
 }

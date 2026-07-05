@@ -78,7 +78,7 @@ public class ProtectiveScalesState : StackableState
         }
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         if (health != null)
         {
@@ -86,8 +86,5 @@ public class ProtectiveScalesState : StackableState
         }
 
         _appliedResist = 0f;
-
-        characterState.StateIcons.RemoveItemByState(State);
-        characterState.RemoveState(this);
     }
 }

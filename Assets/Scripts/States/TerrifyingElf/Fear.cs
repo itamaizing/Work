@@ -5,7 +5,7 @@ using DG.Tweening;
 
 public class Fear : AbstractCharacterState
 {
-    private float _duration;
+    //private float _duration;
     private float _baseDuration;
     private Character _source;
     private bool _previousIsSelect;
@@ -22,9 +22,8 @@ public class Fear : AbstractCharacterState
     {
         characterState = character;
         _source = personWhoMadeBuff;
-        _duration = durationToExit;
         _baseDuration = durationToExit;
-        MaxStacksCount = 1;
+        //MaxStacksCount = 1;
 
         MoveComponent moveComponent = characterState.Character.Move;
         _skillManager = characterState.Character.Abilities;
@@ -58,15 +57,9 @@ public class Fear : AbstractCharacterState
                 }
             }
         }
-
-        _duration -= Time.deltaTime;
-        if (_duration <= 0f)
-        {
-            ExitState();
-        }
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         if (_moveCoroutine != null)
         {
@@ -91,18 +84,18 @@ public class Fear : AbstractCharacterState
             skill.Disactive = false;
         }
         _disabledSkills.Clear();
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         return false;
-    }
+    }*/
 
     private void InitializeFirstStack()
     {
-        _duration = _baseDuration;
-        currentStacksCount++;
+        duration = _baseDuration;
+        //currentStacksCount++;
     }
 
     private IEnumerator MoveAwayCoroutine(MoveComponent moveComp)
@@ -124,9 +117,8 @@ public class Fear : AbstractCharacterState
         float changeDirectionInterval = Random.Range(0.5f, 1.5f);
         float timeSinceLastChange = 0f;
 
-        while (_duration > 0f)
+        while (duration > 0f)
         {
-            _duration -= Time.deltaTime;
             timeSinceLastChange += Time.deltaTime;
 
             if (_source) fleeDir = (moveComp.transform.position - _source.transform.position).normalized;

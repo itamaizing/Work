@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbsorptionOfPoisonsState : AbstractCharacterState
+public class AbsorptionOfPoisonsState : StackableState
 {
     private Character _player;
 
@@ -36,12 +36,6 @@ public class AbsorptionOfPoisonsState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-
-        if (_duration <= 0)
-        {
-            ExitState();
-        }
     }
 
     public override bool Stack(float time)
@@ -55,14 +49,12 @@ public class AbsorptionOfPoisonsState : AbstractCharacterState
         return true;
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         _player.Health.RemoveModifier(_attributeModifiers);
         //_player.Health.ChangedMaxValue(-_allIncreasedHealth);
 
         ResetValues();
-
-        characterState.RemoveState(this);
     }
 
     private void IncreaseHealth()

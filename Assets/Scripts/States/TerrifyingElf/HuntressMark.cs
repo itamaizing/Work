@@ -20,21 +20,12 @@ public class HuntressMark : AbstractCharacterState
         base.personWhoMadeBuff = personWhoMadeBuff;
     }
 
-    public override void ExitState()
-    {
-        characterState.StateIcons.RemoveItemByState(State);
-        characterState.RemoveState(this);
-    }
-
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         return false;
-    }
+    }*/
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-
-        if (_duration <= 0) ExitState();
     }
 }

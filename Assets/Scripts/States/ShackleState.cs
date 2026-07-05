@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShackleState : AbstractCharacterState
+public class ShackleState : StackableState
 {
     private float _duration;
     private Character _character;
@@ -23,15 +23,11 @@ public class ShackleState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0f)
-            ExitState();
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         _character.Move.SetCanMove(true);
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time) => false;

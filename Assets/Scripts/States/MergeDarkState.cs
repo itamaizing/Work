@@ -21,7 +21,7 @@ public class MergeDarkState : AbstractCharacterState
         _character     = characterStateComp.Character;
         _skillManager  = _character.Abilities;
         _duration      = durationToExit;
-        MaxStacksCount = 1;
+        //MaxStacksCount = 1;
 
         _character.Health.SetEvadeAll(_evadeBonus);
         _character.Health.SetEvadeMagic(_character.Health.ResistMagDamage + _magResBonus);
@@ -35,12 +35,9 @@ public class MergeDarkState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0f)
-            ExitState();
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         _character.Health.SetEvadeAll(-_evadeBonus);
         _character.Health.SetEvadeMagic(_character.Health.ResistMagDamage - _magResBonus);
@@ -52,11 +49,8 @@ public class MergeDarkState : AbstractCharacterState
         }
 
         _character.IsInvisible = false;
-
-        characterState.RemoveState(this);
     }
 
-    public override bool Stack(float time) => false;
 
     private bool IsInstantSkill(Skill skill)
     {

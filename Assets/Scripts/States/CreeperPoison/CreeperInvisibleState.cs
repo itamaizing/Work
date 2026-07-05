@@ -64,21 +64,20 @@ public class CreeperInvisibleState : AbstractCharacterState
         }
         else
         {
-            ExitState();
+            GlobalExit();
         }
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         _playerInInvisible = false;
         ResetValues();
-        characterState.RemoveState(this);
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         return false;
-    }
+    }*/
 
     private void ApplyInvisible()
     {

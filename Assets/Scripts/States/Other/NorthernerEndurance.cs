@@ -19,16 +19,10 @@ public class NorthernerEndurance : AbstractCharacterState
 	{
 	}
 
-	public override void ExitState()
-	{
-		characterState.RemoveState(this);
-		
-		//_health.BoostHpReverse(_damageToExit);
-	}
 
-	public override bool Stack(float time)
+	/*public override bool Stack(float time)
 	{
 		duration = time;
 		return true;
-	}
+	}*/
 }

@@ -73,9 +73,8 @@ public class MagicWater : AbstractCharacterState
     {
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
-        base.ExitState();
         RestoreMana();
 
         _mana = null;

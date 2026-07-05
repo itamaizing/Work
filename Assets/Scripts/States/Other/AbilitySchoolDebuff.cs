@@ -50,22 +50,21 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 	{
 		if (turnOff)
 		{
-			ExitState();
+			GlobalExit();
 		}
 	}
 
-	public override void ExitState()
+	protected override void ExitState()
 	{
-		characterState.RemoveState(this);
 		if (!characterState.Check(StatusEffect.Ability) && abilities != null)
 		{
 			abilities.SwitchAvaliable(canceledSchoool, true);
 		}
 	}
 
-	public override bool Stack(float time)
+	/*public override bool Stack(float time)
 	{
 		duration = time;
 		return true;
-	}
+	}*/
 }

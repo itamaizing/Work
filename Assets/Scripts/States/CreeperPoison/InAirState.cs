@@ -25,15 +25,15 @@ public class InAirState : AbstractCharacterState
     }
 
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         characterState.Character.Move.SetCanMove(true);
         
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         return false;
-    }
+    }*/
 }

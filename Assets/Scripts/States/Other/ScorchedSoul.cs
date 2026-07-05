@@ -27,7 +27,7 @@ public class ScorchedSoul : RefreshingState
         }
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         if (!characterState.Check(StatusEffect.AbilitySpeed))
         {
@@ -45,7 +45,7 @@ public class ScorchedSoul : RefreshingState
         //{
         //    //return abilitys' CD speed
         //}
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
     }
 
     public override bool Stack(float time)

@@ -99,7 +99,7 @@ public class RestorationState : RefreshingState
         return true;
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         _isActive = false;
         duration = 0f;
@@ -112,7 +112,7 @@ public class RestorationState : RefreshingState
             _targetCharacter = null;
         }
         
-        characterState?.RemoveState(this);
+        characterState?.RemoveStateFromList(this);
         characterState = null;
     }
 

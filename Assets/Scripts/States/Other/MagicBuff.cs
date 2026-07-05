@@ -29,29 +29,29 @@ public class MagicBuff : AbstractCharacterState, IDamageable
 	{
 		if (_shieldCapacity <= 0)
 		{
-			ExitState();
+			GlobalExit();
 		}
 	}
 
-	public override void ExitState()
+	protected override void ExitState()
 	{
 		_character.Health.Shields.Remove(this);
-		characterState.RemoveState(this);
+		characterState.RemoveStateFromList(this);
 		//_character.Health.SetMagAbsorb(0);
 	}
 
-	public override bool Stack(float time)
+	/*public override bool Stack(float time)
 	{
 		duration = time;
 		return true;
-	}
+	}*/
 
 	public bool TryTakeDamage(ref Damage damage, Skill skill)
 	{
 		_shieldCapacity -= damage.Value;
 		if(_shieldCapacity < 0)
 		{
-			ExitState();
+			GlobalExit();
 		}
 
 		return true;

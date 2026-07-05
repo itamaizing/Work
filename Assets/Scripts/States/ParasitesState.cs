@@ -65,9 +65,4 @@ public class ParasitesState : RefreshingState
 
         return true;
     }
-
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
-    }
 }

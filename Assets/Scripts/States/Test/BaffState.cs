@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaffState : AbstractCharacterState
+public class BaffState : StackableState
 {
     private float _durationRemaining;
     private string _skillName;
@@ -37,11 +37,6 @@ public class BaffState : AbstractCharacterState
         }
 
         _durationRemaining -= Time.deltaTime;
-    }
-
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

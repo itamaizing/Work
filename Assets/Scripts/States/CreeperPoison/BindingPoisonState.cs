@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BindingPoisonState : AbstractCharacterState
+public class BindingPoisonState : StackableState
 {
     private SkillManager _skillManager;
 
@@ -39,19 +39,19 @@ public class BindingPoisonState : AbstractCharacterState
     {
         if (currentStacksCount <= 0)
         {
-            ExitState();
+            GlobalExit();
         }
 
         //Debug.Log($"BindingPoisonState / UpdateState / CharacterManager = {_skillManager}");
 
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         //Debug.Log($"BindingPoisonState / ExitState / CharacterManager = {_skillManager}");
         ResetValues();
 
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
     }
 
     public override bool Stack(float time)
@@ -93,7 +93,7 @@ public class BindingPoisonState : AbstractCharacterState
         {
             _skillManager.SkillQueue.SkillAdded += OnSkillAdded;
         }
-        ExitState();
+        GlobalExit();
     }
 
     private void OnSkillAdded(Skill skill)

@@ -30,20 +30,20 @@ public class SparkTalentHealthState : AbstractCharacterState
 
         if (_healthBuffActiveTime <= 0)
         {
-            ExitState();
+            GlobalExit();
         }
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         RemoveBuff();
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         return false;
-    }
+    }*/
 
     private void ApplyBuff()
     {

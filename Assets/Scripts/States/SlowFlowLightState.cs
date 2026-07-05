@@ -29,13 +29,12 @@ public class SlowFlowLightState : RefreshingState
 	{
 	}
 
-	public override void ExitState()
+	protected override void ExitState()
 	{
 		characterState.Character.Move.RemoveModifier(_modif);
 		currentStacksCount = 0;
 		_modif = new AttributeModifier(_speedDebuf, ModifierType.Percent);
 		characterState.Character.Abilities.Abilities.ForEach(s => s.Buff.CastSpeed.Reset());
-		characterState.RemoveState(this);
 	}
 
     public override bool Stack(float time)

@@ -89,7 +89,7 @@ public class DisciplineAuraState : RefreshingState
         return true;
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         foreach (var character in new List<Character>(_modifiers.Keys))
             RemoveAllModifiersFromCharacter(character);
@@ -99,7 +99,7 @@ public class DisciplineAuraState : RefreshingState
         currentStacksCount = 0;
         duration           = 0f;
 
-        characterState?.RemoveState(this);
+        characterState?.RemoveStateFromList(this);
         characterState = null;
         _priest        = null;
     }

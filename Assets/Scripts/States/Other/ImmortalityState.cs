@@ -35,15 +35,11 @@ public class ImmortalityState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0)
-            ExitState();
+
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
-        _duration = 0;
-
         if (_player != null && _player.Health != null)
         {
             _player.Health.BlockChance       = _savedBlockChance;
@@ -51,13 +47,11 @@ public class ImmortalityState : AbstractCharacterState
             _player.Health.EvadeRangeDamage  = _savedEvadeRange;
             _player.Health.ResistMagDamage   = _savedResistMag;
         }
-
-        characterState.RemoveState(this);
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         return false;
-    }
+    }*/
 }
 

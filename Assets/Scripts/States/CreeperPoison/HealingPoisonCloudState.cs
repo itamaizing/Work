@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealingPoisonCloudState : AbstractCharacterState
+public class HealingPoisonCloudState : StackableState
 {
 
     private int _maxStacks = 5;
@@ -59,11 +59,11 @@ public class HealingPoisonCloudState : AbstractCharacterState
         }
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         ResetValues();
 
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
     }
 
     public override bool Stack(float time)

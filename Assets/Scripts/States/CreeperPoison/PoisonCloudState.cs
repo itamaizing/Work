@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoisonCloudState : AbstractCharacterState
+public class PoisonCloudState : StackableState
 {
     private List<Skill> _skills = new();
     private List<Talent> _talents = new();
@@ -85,12 +85,12 @@ public class PoisonCloudState : AbstractCharacterState
         }
     }
 
-    public override void ExitState()
+    /*public override void ExitState()
     {
         ResetValues();
 
-        characterState.RemoveState(this);
-    }
+        characterState.RemoveStateFromList(this);
+    }*/
 
     public override bool Stack(float time)
     {

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class DebaffState : AbstractCharacterState
+public class DebaffState : StackableState
 {
     private float _durationRemaining;
     private string _skillName;
@@ -31,19 +31,8 @@ public class DebaffState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        if (_durationRemaining <= 0f)
-        {
-            ExitState();
-            return;
-        }
-
-        _durationRemaining -= Time.deltaTime;
     }
 
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
-    }
 
     public override bool Stack(float time)
     {

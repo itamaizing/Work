@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeakeningSilence : AbstractCharacterState
+public class WeakeningSilence : StackableState
 {
     private float _damagePerTick;
     private float _currentDamage;
@@ -33,10 +33,10 @@ public class WeakeningSilence : AbstractCharacterState
 
         characterState.StartCoroutine(PeriodicDamageRoutine());
     }
-
-    public override void ExitState()
+    
+    protected override void ExitState()
     {
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
         damageTick = false;
         characterState.StopCoroutine(PeriodicDamageRoutine());
     }

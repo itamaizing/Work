@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoisonBoneState : AbstractCharacterState
+public class PoisonBoneState : StackableState
 {
     public bool turnOff = false;
 
@@ -109,15 +109,13 @@ public class PoisonBoneState : AbstractCharacterState
 
         if (currentStacksCount == 0)
         {
-            ExitState();
+            GlobalExit();
         }
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         ResetValues();
-
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

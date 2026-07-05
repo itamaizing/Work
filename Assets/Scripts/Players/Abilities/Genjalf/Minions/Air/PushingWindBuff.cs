@@ -36,19 +36,19 @@ public class PushingWindBuff : AbstractCharacterState
 		_duration -= Time.deltaTime;
 		if (_duration < 0)
 		{
-			ExitState();
+			GlobalExit();
 		}
 	}
 
-	public override void ExitState()
+	protected override void ExitState()
 	{
 		characterState.Character.Move.RemoveModifier(_modifier);
-		characterState.RemoveState(this);
+		characterState.RemoveStateFromList(this);
 
     }
 
-	public override bool Stack(float time)
+	/*public override bool Stack(float time)
 	{
 		return false;
-	}
+	}*/
 }

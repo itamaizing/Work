@@ -52,7 +52,8 @@ public class PassiveCombo_Scorpion : NetworkBehaviour
         if (enemy == null || skill == null) return;
 
         int currentStacks = enemy.CharacterState.CheckStateStacks(States.ComboState);
-        int maxStacks = enemy.CharacterState.GetState(States.ComboState)?.MaxStacksCount ?? int.MaxValue;
+        //int maxStacks = enemy.CharacterState.GetState(States.ComboState)?.MaxStacksCount ?? int.MaxValue;
+        int maxStacks = 1;
 
         if (currentStacks >= maxStacks) return;
 

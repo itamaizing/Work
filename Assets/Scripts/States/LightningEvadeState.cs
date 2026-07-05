@@ -44,10 +44,9 @@ public class LightningEvadeState : StackableState
         _totalEvade += value;
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         RemoveEvade();
-        base.ExitState();
     }
 
     public override void ReduceStack()
@@ -55,7 +54,7 @@ public class LightningEvadeState : StackableState
         RemoveEvade(_evadePerStack);
         currentStacksCount--;
 
-        if (currentStacksCount <= 0) ExitState();
+        if (currentStacksCount <= 0) GlobalExit();
     }
 
     private void RemoveEvade(float value = -1)

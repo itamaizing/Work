@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
+public class EmpathicPoisonsState : StackableState, IDamageable
 {
     private PoisonCloudState _poisonCloud;
     private Character _player;
@@ -137,7 +137,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
         if (currentStacksCount <= 0)
         {
-            ExitState();
+            GlobalExit();
         }
 
         _timeBeforeReductionDebuff -= Time.deltaTime;
@@ -157,10 +157,10 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
         }
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         ResetValues();
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
     }
 
     public override bool Stack(float time)

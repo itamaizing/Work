@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealingPoisonPerSecondState : AbstractCharacterState
+public class HealingPoisonPerSecondState : StackableState
 {    
     /* For PoisonBall Ability */
 
@@ -59,11 +59,6 @@ public class HealingPoisonPerSecondState : AbstractCharacterState
 
             _timeBetweenHeal = _startTimeBetweenHeal;
         }
-    }
-
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

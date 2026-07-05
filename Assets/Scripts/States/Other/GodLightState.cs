@@ -17,19 +17,14 @@ public class GodLightState : AbstractCharacterState
         characterState.Character.Abilities.SetNextSkillNoCast();
     }
 
-    public override void ExitState()
-    {
-        characterState.StateIcons.RemoveItemByState(State);
-        characterState.RemoveState(this);
-    }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         return true;
-    }
+    }*/
 
     public override void UpdateState()
     {
-        if (!characterState.Character.Abilities.IsNextSkillNoCast) ExitState();
+        if (!characterState.Character.Abilities.IsNextSkillNoCast) GlobalExit();
     }
 }

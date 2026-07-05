@@ -68,14 +68,14 @@ public class Plague : RefreshingState
 		}
 	}
 
-	public override void ExitState()
+	protected override void ExitState()
 	{
 		// return reduced damage given
 		for (int i = 0; i < abilities.Abilities.Count; i++)
 		{
 			abilities.Abilities[i].Buff.Damage.IncreasePercentage(0.05f);
 		}
-		characterState.RemoveState(this);
+		characterState.RemoveStateFromList(this);
 	}
 
 	public override bool Stack(float time)

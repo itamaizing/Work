@@ -27,18 +27,12 @@ public class InvisibleState : AbstractCharacterState
 
 	public override void UpdateState()
 	{
-		//Debug.Log("Updating Invisible State");
-		_duration -= Time.deltaTime;
-		if (_duration < 0 || turnOff)
-		{
-			ExitState();
-		}
 	}
 
-	public override void ExitState()
+	protected override void ExitState()
 	{
 		//Debug.Log("Exiting Invisible State");
-		characterState.RemoveState(this);
+		characterState.RemoveStateFromList(this);
 		if (!characterState.Check(StatusEffect.Others))
 		{
 			//characterState.Health.SetInvincible(false);
@@ -46,7 +40,7 @@ public class InvisibleState : AbstractCharacterState
 		}
 	}
 
-	public override bool Stack(float time)
+	/*public override bool Stack(float time)
 	{
 		if (_baseDuration > time)
 		{
@@ -57,5 +51,5 @@ public class InvisibleState : AbstractCharacterState
 			_duration = time;
 			return true;
 		}
-	}
+	}*/
 }

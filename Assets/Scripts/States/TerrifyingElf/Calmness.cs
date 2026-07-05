@@ -34,12 +34,10 @@ public class Calmness : RefreshingState
     {
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         currentStacksCount = 0;
         if (_regenRoutine != null) characterState.StopCoroutine(_regenRoutine);
-        characterState.StateIcons.RemoveItemByState(State);
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float newDuration)

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HardenedFlesh : AbstractCharacterState
+public class HardenedFlesh : StackableState
 {
     private List<StatusEffect> _effects = new() { StatusEffect.Destruction };
 
@@ -12,8 +12,6 @@ public class HardenedFlesh : AbstractCharacterState
     public override List<StatusEffect> Effects => _effects;
 
     private float _buffPercent = 5;
-    private int _currentStacks = 0;
-    private const int _maxStacks = 5;
 
     private float _originalDefPhysDamage;
 
@@ -24,7 +22,7 @@ public class HardenedFlesh : AbstractCharacterState
         abilities = character.Character.Abilities;
         base.personWhoMadeBuff = personWhoMadeBuff;
 
-        if (_currentStacks == 0) _originalDefPhysDamage = health.DefPhysDamage;
+        if (currentStacksCount == 0) _originalDefPhysDamage = health.DefPhysDamage;
 
         duration = durationToExit;
 
@@ -33,18 +31,17 @@ public class HardenedFlesh : AbstractCharacterState
         Debug.Log("Def " + health.DefPhysDamage);
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         health.DefPhysDamage = _originalDefPhysDamage;
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
     {
-        if (_currentStacks < _maxStacks)
+        if (currentStacksCount < MaxStacksCount)
         {
             duration = time;
-            _currentStacks++;
+            currentStacksCount++;
 			health.DefPhysDamage = health.DefPhysDamage + _buffPercent;
 
 			Debug.Log("Def " + health.DefPhysDamage);
@@ -55,12 +52,5 @@ public class HardenedFlesh : AbstractCharacterState
 
     public override void UpdateState()
     {
-        duration -= Time.deltaTime;
-
-        if (duration <= 0)
-        {
-            ExitState();
-            return;
-        }
     }
 }

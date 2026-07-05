@@ -3,7 +3,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RegeneratingPoisonState : AbstractCharacterState
+public class RegeneratingPoisonState : StackableState
 {
     /* For SpitPoison Ability */
 
@@ -50,11 +50,9 @@ public class RegeneratingPoisonState : AbstractCharacterState
         }
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         ResetValues();
-
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

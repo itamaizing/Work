@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DarkFormState : AbstractCharacterState
+public class DarkFormState : StackableState
 {
     private Character _character;
     private SkillManager _skillManager;
@@ -31,13 +31,11 @@ public class DarkFormState : AbstractCharacterState
     {
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         _character.Move.RemoveModifier(_speedModifier);
 
         SetShadowSkillActive(false);
-
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time) => false;

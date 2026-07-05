@@ -15,16 +15,10 @@ public class DischargePsiState : AbstractCharacterState
     {
     }
 
-    public override void ExitState()
-    {
-        characterState.StateIcons.RemoveItemByState(State);
-        characterState.RemoveState(this);
-    }
-
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         return false;
-    }
+    }*/
 
     public override void UpdateState()
     {

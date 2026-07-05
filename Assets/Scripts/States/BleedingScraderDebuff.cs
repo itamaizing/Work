@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BleedingScraderDebuff : AbstractCharacterState
+public class BleedingScraderDebuff : StackableState
 {
     private Character _target;
 
@@ -30,11 +30,6 @@ public class BleedingScraderDebuff : AbstractCharacterState
         _baseDamage = damageToExit;
 
         _baseDuration = durationToExit;
-    }
-
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -82,7 +77,7 @@ public class BleedingScraderDebuff : AbstractCharacterState
                 duration = _baseDuration;
             }
 
-            else ExitState();
+            else GlobalExit();
         }
     }
 }

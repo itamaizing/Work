@@ -38,13 +38,13 @@ public class DisappointmentState : AbstractCharacterState
     {
         if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit)
         {
-            ExitState();
+            GlobalExit();
         }
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
 
         if (!characterState.Check(StatusEffect.Move))
         {
@@ -61,9 +61,9 @@ public class DisappointmentState : AbstractCharacterState
         }
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         duration = _baseDuration;
         return true;
-    }
+    }*/
 }

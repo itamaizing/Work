@@ -36,7 +36,7 @@ public class RetributionState : RefreshingState
 
     private void CastingSkillOnCastEnded()
     {
-        ExitState();
+        GlobalExit();
     }
 
     public override void UpdateState()
@@ -90,12 +90,12 @@ public class RetributionState : RefreshingState
         return true;
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         duration = 0f;
         currentStacksCount = 0;
         ReturnToBaseDamage();
-        characterState?.RemoveState(this);
+        characterState?.RemoveStateFromList(this);
         characterState = null;
     }
 

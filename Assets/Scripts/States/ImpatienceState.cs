@@ -51,7 +51,7 @@ public class ImpatienceState : AbstractCharacterState
 
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         if (characterState.Character.isServer)
         {
@@ -61,8 +61,6 @@ public class ImpatienceState : AbstractCharacterState
 
             if (_casterPsionic != null) _casterPsionic.OnAccumulationPsionicChanged -= HandleAccumulationChanged;
         }
-
-        characterState.RemoveState(this);
     }
 
     private void HandleAccumulationChanged(bool value) => _isAccumulationActive = value;

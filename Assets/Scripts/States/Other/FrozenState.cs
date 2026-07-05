@@ -22,7 +22,7 @@ public class FrozenState : AbstractCharacterState
 
     protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
-		MaxStacksCount = 3;
+		//MaxStacksCount = 3;
 		if (damageToExit == 0)
 		{
 			_damageToExit = 10000;
@@ -83,15 +83,15 @@ public class FrozenState : AbstractCharacterState
 		if(!_isInited) return;
 		if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit )//|| turnOff)
 		{
-			ExitState();
+            GlobalExit();
 		}
 	}
 
-	public override void ExitState()
+	protected override void ExitState()
 	{
 		//Debug.Log("Exiting Frozen State");
 
-		characterState.RemoveState(this);
+		characterState.RemoveStateFromList(this);
 		if (!characterState.Check(StatusEffect.Move))
 		{
 			characterState.Character.Move.SetCanMove(true);

@@ -113,7 +113,7 @@ public class CoolingDamaged : AbstractCharacterState
     {
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         if (characterState?.Character != null)
         {
@@ -122,6 +122,5 @@ public class CoolingDamaged : AbstractCharacterState
         }
 
         _savedPhysResist = 0f;
-        characterState?.RemoveState(this);
     }
 }

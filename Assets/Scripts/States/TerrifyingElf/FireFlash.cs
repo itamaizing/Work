@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FireFlash : AbstractCharacterState
+public class FireFlash : StackableState
 {
     private readonly List<StatusEffect> _effects = new() { StatusEffect.Ability };
 
@@ -61,11 +61,9 @@ public class FireFlash : AbstractCharacterState
             }
 
             _remaining--;
-            if (currentStacksCount <= 0) ExitState();
+            if (currentStacksCount <= 0) GlobalExit();
         }
     }
-
-    public override void ExitState() => characterState.RemoveState(this);
 
     public override bool Stack(float time)
     {

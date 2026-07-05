@@ -36,28 +36,24 @@ public class MultiMagic : AuraState
             (ability => ability.Info.SkillType == SkillType.Target && (ability.Info.AbilityForm == AbilityForm.Magic || ability.Info.AbilityForm == AbilityForm.Both)))
         {
             skill.PreparingSuccess += OnTargetSkillCast;
-            skill.AfterCast += ExitState;
+            skill.AfterCast += GlobalExit;
         }
     }
 
     public override void UpdateState()
     {
-        duration -= Time.deltaTime;
-        if (duration <= 0f) ExitState();
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         foreach (var skill in _skills.Abilities.Where(ability => ability.Info.SkillType == SkillType.Target))
         {
             skill.PreparingSuccess -= OnTargetSkillCast;
-            skill.AfterCast -= ExitState;
+            skill.AfterCast -= GlobalExit;
         }
-        Debug.Log("выход из мульти");
-        characterState.RemoveState(this);
     }
 
-    public override bool Stack(float time) => false;
+    //public override bool Stack(float time) => false;
     public override void EffectOnEnter(Character character) { }
     public override void EffectOnExit(Character character) { }
 

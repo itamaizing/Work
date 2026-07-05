@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class WitheringPoisonState : AbstractCharacterState
+public class WitheringPoisonState : StackableState
 {
     private List<Skill> _skills = new();
     private List<Talent> _talents = new();
@@ -74,15 +74,13 @@ public class WitheringPoisonState : AbstractCharacterState
 
         if (currentStacksCount <= 0)
         {
-            ExitState();
+            GlobalExit();
         }
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         ResetValues();
-
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

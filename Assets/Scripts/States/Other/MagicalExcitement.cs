@@ -19,25 +19,17 @@ public class MagicalExcitement : AbstractCharacterState
         personWhoMadeBuff = personWhoMadeBuff;
     }
 
-    public override void ExitState()
-    {
-        characterState.StateIcons.RemoveItemByState(State);
-        characterState.RemoveState(this);
-    }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         currentStacksCount++;
 
         _duration = time;
 
         return true;
-    }
+    }*/
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-
-        if (_duration <= 0) ExitState();
     }
 }

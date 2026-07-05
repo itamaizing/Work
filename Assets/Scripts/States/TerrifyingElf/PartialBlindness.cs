@@ -41,22 +41,14 @@ public class PartialBlindness : StackableState
         _character.Abilities.OnSkillPreparedSuccessfully += HandleSkillPrepared;
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         _character.Abilities.OnSkillPreparedSuccessfully -= HandleSkillPrepared;
-        characterState.RemoveState(this);
         currentStacksCount = 0;
     }
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0f)
-        {
-            ExitState();
-            return;
-        }
-
     }
 
     public override bool Stack(float time)

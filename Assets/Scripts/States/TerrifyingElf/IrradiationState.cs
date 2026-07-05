@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IrradiationState : AbstractCharacterState
+public class IrradiationState : StackableState
 {
     private float _baseDuration;
     private float _durationIncrease = 1;
@@ -33,14 +33,11 @@ public class IrradiationState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        duration -= Time.deltaTime;
-        if (duration <= 0) ExitState();
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         RestoreMagicDefense();
-        characterState.RemoveState(this);
         characterState.OnStateAdded -= OnNewStateAdded;
     }
 
@@ -88,7 +85,8 @@ public class IrradiationState : AbstractCharacterState
     private void ExtendState(AbstractCharacterState state)
     {
         //state.duration += _durationIncrease;
+        throw new System.NotImplementedException("DONT DO LIKE THAT!!!");
         state.RemainingDuration += _durationIncrease;
-        characterState.StateIcons?.ActivateIco(state.State, state.RemainingDuration, 0, false, state.MaxStacksCount);
+        //characterState.StateIcons?.ActivateIco(state.State, state.RemainingDuration, 0, false, state.MaxStacksCount);
     }
 }

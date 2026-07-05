@@ -32,20 +32,20 @@ public class ShieldBaff : AbstractCharacterState, IDamageable
     {
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         Debug.Log("LightShield state exited.");
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
         ResetCharacterShieldValues();
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         //_duration = time;
         //_damageAbsorbed = 0;
         currentStacksCount += 1;
         return false;
-    }
+    }*/
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {

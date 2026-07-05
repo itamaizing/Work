@@ -73,20 +73,18 @@ namespace Gangdollarff.EarthElemental
             }
         }
 
-        public override void ExitState()
-        {
-            base.ExitState();
-            
+        protected override void ExitState()
+        {           
             RestoreHealth();
 
             _health = null;
             _character = null;
         }
 
-        public override bool Stack(float time)
+       /* public override bool Stack(float time)
         {
             return false;
-        }
+        }*/
 
         public override void UpdateState()
         {

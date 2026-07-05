@@ -87,14 +87,6 @@ public class Sleep : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-
-        if (_duration <= 0f || turnOff)
-        {
-            ExitState();
-            return;
-        }
-
         if (_giveInnerDarkness)
         {
             _tickTimer += Time.deltaTime;
@@ -107,7 +99,7 @@ public class Sleep : AbstractCharacterState
 
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         Debug.Log("������ ��� ����������");
 
@@ -130,7 +122,7 @@ public class Sleep : AbstractCharacterState
 
         _disabledSkills.Clear();
         characterState.StateIcons.RemoveItemByState(State);
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
 
         var networkSettings = characterState.Character.NetworkSettings;
 
@@ -141,11 +133,11 @@ public class Sleep : AbstractCharacterState
         }
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         _duration = _baseDuration;
         return false;
-    }
+    }*/
 
     private void OnAnyDamage(Damage damage, Skill fromSkill) => turnOff = true;
 

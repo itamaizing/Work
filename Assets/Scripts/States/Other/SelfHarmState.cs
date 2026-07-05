@@ -40,7 +40,7 @@ public class SelfHarmState : AbstractCharacterState
     {
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         foreach (var skill in characterState.Character.Abilities.Abilities)
         {
@@ -56,15 +56,15 @@ public class SelfHarmState : AbstractCharacterState
             _healthComponent.DamageTaken -= OnDamageTaken;
         }
         
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
         
         Debug.Log("SelfHarm exit");
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         return false;
-    }
+    }*/
 
     private void OnDamageTaken(Damage damage, Skill skill)
     {

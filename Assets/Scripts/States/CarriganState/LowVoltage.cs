@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LowVoltage : AbstractCharacterState
+public class LowVoltage : StackableState
 {
     private const float ReductionPerStack = 0.15f;
     private const int MaxStack = 6;
@@ -38,27 +38,15 @@ public class LowVoltage : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _remainingDuration -= Time.deltaTime;
-
-        if (_remainingDuration <= 0)
-        {
-            ExitState();
-            characterState.RemoveState(this);
-            return;
-        }
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         Debug.Log("[LowVoltage] ExitState called");
 
         currentStacksCount = 0;
 
         characterState.OnStateAdded -= OnNewStateAdded;
-
-        characterState.StateIcons.RemoveItemByState(State);
-
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

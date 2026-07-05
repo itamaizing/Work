@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbsorptionState : AbstractCharacterState, IDamageable
+public class AbsorptionState : StackableState, IDamageable
 {
     private float _damageAbsorbed;
     private float _maxAbsorption;
@@ -33,10 +33,8 @@ public class AbsorptionState : AbstractCharacterState, IDamageable
     {
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
-        Debug.Log("Absorption state exited.");
-        characterState.RemoveState(this);
         ResetCharacterShieldValues();
     }
 
@@ -74,7 +72,7 @@ public class AbsorptionState : AbstractCharacterState, IDamageable
 
         if (_damageAbsorbed >= _maxAbsorption)
         {
-            ExitState();
+            GlobalExit();
             return true;
         }
 
@@ -99,6 +97,6 @@ public class AbsorptionState : AbstractCharacterState, IDamageable
 
     public void ShowPhantomValue(Damage phantomValue)
     {
-        throw new NotImplementedException();
+        
     }
 }

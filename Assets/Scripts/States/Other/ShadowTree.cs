@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShadowTree : AbstractCharacterState
+public class ShadowTree : StackableState
 {
     public override States State => States.ShadowTree;
     public override StateType Type => StateType.Physical;
@@ -65,7 +65,7 @@ public class ShadowTree : AbstractCharacterState
             }
             
             _remaining -= 1f;
-            if (_remaining <= 0f || currentStacksCount <= 0) ExitState();
+            if (_remaining <= 0f || currentStacksCount <= 0) GlobalExit();
         }
     }
 
@@ -80,9 +80,9 @@ public class ShadowTree : AbstractCharacterState
         return true;
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         if (currentStacksCount > 0)  characterState.Character.Health.AddMax(-currentStacksCount * BonusPerStack);
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
     }
 }

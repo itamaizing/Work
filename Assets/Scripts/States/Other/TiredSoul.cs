@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TiredSoul : AbstractCharacterState
+public class TiredSoul : StackableState
 {
     private float _baseDuration;
 
@@ -27,17 +27,15 @@ public class TiredSoul : AbstractCharacterState
 
             if (currentStacksCount == 0)
             {
-                ExitState();
+                GloabalUpdate();
             }
         }
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
        if(!characterState.CheckForState(States.TiredSoul)) 
            return;
-       
-       characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

@@ -42,17 +42,16 @@ public class BleedingState : AbstractCharacterState
         }
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         _target.Health.IsDot = false;
-        characterState.RemoveState(this);
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         duration = _baseDuration;
         return true;
-    }
+    }*/
 
     [Server]
     private void BleedingDamage()

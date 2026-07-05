@@ -8,7 +8,6 @@ public class Bound : AbstractCharacterState
 {
 	public bool turnOff = false;
 	private float _baseDuration;
-	private float _duration;
 	private static readonly int _stunTrigger = Animator.StringToHash("Rope");
 	private static readonly int _stunTriggerExit = Animator.StringToHash("RopeExit");
 	private GameObject _spawnedTrap;
@@ -57,7 +56,6 @@ public class Bound : AbstractCharacterState
 
 		if (characterState.TryGetComponent<StateEffects>(out StateEffects stateEffects)) stateEffects.RopeTrap.SetActive(true);
 
-		_duration = durationToExit;
 		_baseDuration = durationToExit;
 	}
 
@@ -71,15 +69,14 @@ public class Bound : AbstractCharacterState
 
 	public override void UpdateState()
 	{
-		_duration -= Time.deltaTime;
-		if (_duration < 0 || turnOff) ExitState();
+		if (turnOff) GlobalExit();
 	}
 
-	public override void ExitState()
+	protected override void ExitState()
 	{
 		_stateClosing = true;
 		if (_spawnedTrap) NetworkServer.Destroy(_spawnedTrap);
-		characterState.RemoveState(this);
+		characterState.RemoveStateFromList(this);
 		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.IsMoveBlocked = false;
 		if (!characterState.Check(StatusEffect.Ability) && abilities != null) foreach (var skill in abilities.Abilities) if (skill.Info.Moving == Moving.NonStatic) skill.Disactive = false;
 		if (characterState.TryGetComponent<StateEffects>(out StateEffects stateEffects)) stateEffects.RopeTrap.SetActive(false);
@@ -98,7 +95,7 @@ public class Bound : AbstractCharacterState
 		if (!characterState.Check(StatusEffect.Ability) && abilities != null) foreach (var skill in abilities.Abilities) skill.Disactive = false;
 	}
 
-	public override bool Stack(float time)
+	/*public override bool Stack(float time)
 	{
 		if (_baseDuration > time) return false;
 		else
@@ -106,7 +103,7 @@ public class Bound : AbstractCharacterState
 			_duration = time;
 			return true;
 		}
-	}
+	}*/
 
 	[Server]
 	private IEnumerator ServerSpawnTrapNextFrame()

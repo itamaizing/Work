@@ -45,9 +45,4 @@ public class ReflectiveScalesState : StackableState
 
         return true;
     }
-
-    public override void ExitState()
-    {
-
-    }
 }

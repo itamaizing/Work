@@ -34,14 +34,10 @@ public class LastBreath : AbstractCharacterState
 
 	public override void UpdateState()
 	{
-		_durationToExit -= Time.deltaTime;
-		if (_durationToExit < 0)
-		{
-			ExitState();
-		}
+
 	}
 
-	public override void ExitState()
+	protected override void ExitState()
 	{
         //decrease -regen
         //_character.Move.ChangeMoveSpeedBack(1.2f);
@@ -53,8 +49,8 @@ public class LastBreath : AbstractCharacterState
 		health.RegenerationValue /= 4;
 	}
 
-	public override bool Stack(float time)
+	/*public override bool Stack(float time)
 	{
 		return true;
-	}
+	}*/
 }

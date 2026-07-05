@@ -28,17 +28,17 @@ public class ImmaterialityState : AbstractCharacterState
 
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         TargetRpcResetPlayerComponents();
         duration = 0;
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         return false;
-    }
+    }*/
 
     private void DisabledCollider()
     {

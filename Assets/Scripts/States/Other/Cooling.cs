@@ -34,19 +34,14 @@ public class Cooling : RefreshingState
 	{
 		if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || turnOff)
 		{
-			ExitState();
+			GlobalExit();
 		}
 	}
 
-	public override void ExitState()
+	protected override void ExitState()
 	{
 		characterState.Character.Move.RemoveModifier(_modif);
-		currentStacksCount = 0;
-		turnOff = false;
-		_damageOnStart = 0;
-		_damageToExit = 0;
 		_modif = new AttributeModifier(_speedDebuf, ModifierType.Percent);
-		characterState.RemoveState(this);
 	}
 
     public override bool Stack(float time)

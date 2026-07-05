@@ -37,12 +37,12 @@ public class StunnedState : RefreshingState
 		_baseDuration -= Time.deltaTime;
 		if (_baseDuration < 0)
 		{
-			ExitState();
+			GlobalExit();
 			return;
 		}
 		if (turnOff)
 		{
-			ExitState();
+			GlobalExit();
 		}
 	}
 
@@ -52,10 +52,10 @@ public class StunnedState : RefreshingState
 		return false;
 	}
 
-	public override void ExitState()
+	protected override void ExitState()
 	{
-		 characterState.Character.Move.IsMoveBlocked = false;
+		characterState.Character.Move.IsMoveBlocked = false;
 		abilities.SetAbilitiesDisactive(false);
-		characterState.RemoveState(this);
+		characterState.RemoveStateFromList(this);
 	}
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Knockdown : AbstractCharacterState
+public class Knockdown : StackableState
 {
     private float _baseDuration;
     private float _duration;
@@ -36,12 +36,12 @@ public class Knockdown : AbstractCharacterState
         ApplyDebuff();
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         Debug.Log("Exiting Knockdown State");
 
         RemoveDebuff();
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
     }
 
     public override bool Stack(float time)
@@ -60,11 +60,6 @@ public class Knockdown : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0)
-        {
-            ExitState();
-        }
     }
 
     private void ApplyDebuff()

@@ -80,7 +80,7 @@ public class GodAura : AuraState
         }
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         foreach (var character in _charactersInRadius)
         {
@@ -184,7 +184,7 @@ public class GodAuraBuff : RefreshingState
 
             if (currentStacksCount <= 0)
             {
-                ExitState();
+                GlobalExit();
                 return;
             }
             
@@ -193,7 +193,7 @@ public class GodAuraBuff : RefreshingState
         }
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         RemoveModifierFromAllSkills(_modifier);
 
@@ -204,7 +204,7 @@ public class GodAuraBuff : RefreshingState
         _character = null;
     
         if (characterState != null && characterState.CheckForState(States.GodAuraBuff))
-            characterState.RemoveState(this);
+            characterState.RemoveStateFromList(this);
     
         characterState = null;
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
-public class LightShield : AbstractCharacterState, IDamageable
+public class LightShield : StackableState, IDamageable
 {
     private BladeMailPriestTalent _bladeMailPriestTalent;
     private GameObject _lightShield;
@@ -49,18 +49,18 @@ public class LightShield : AbstractCharacterState, IDamageable
 
         if (_duration <= 0 || _damageAbsorbed >= _maxAbsorption)
         {
-            ExitState();
+            GlobalExit();
         }
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         if (characterState.TryGetComponent<Health>(out var health))
         {
             health.ResetShieldValues();
         }
 
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
 
         if (_lightShield != null)
             _lightShield.SetActive(false);
@@ -84,7 +84,7 @@ public class LightShield : AbstractCharacterState, IDamageable
     {
         if (_damageAbsorbed >= _maxAbsorption)
         {
-            ExitState();
+            GlobalExit();
             return false;
         }
 
@@ -124,7 +124,7 @@ public class LightShield : AbstractCharacterState, IDamageable
 
         if (_damageAbsorbed >= _maxAbsorption)
         {
-            ExitState();
+            GlobalExit();
             return true;
         }
 
@@ -134,6 +134,6 @@ public class LightShield : AbstractCharacterState, IDamageable
 
     public void ShowPhantomValue(Damage phantomValue)
     {
-        throw new NotImplementedException();
+        
     }
 }

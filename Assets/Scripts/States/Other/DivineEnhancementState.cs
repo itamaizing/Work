@@ -25,21 +25,19 @@ public class DivineEnhancementState : AbstractCharacterState, IDamageGivenModifi
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0) ExitState();
+
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         ResetManaCost();
-        characterState.RemoveState(this);
     }
 
-    public override bool Stack(float time)
+   /* public override bool Stack(float time)
     {
         _duration = time;
         return true;
-    }
+    }*/
 
     private void ModifyManaCost()
     {

@@ -48,14 +48,9 @@ public class PsionicGenerationState : AbstractCharacterState
         }
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         _durationRemaining = time;
         return false;
-    }
-
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
-    }
+    }*/
 }

@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class TransformationDebuff : StackableState
 {
-	private float _duration;
 	private float _damageOnStart;
 	private float _damageToExit;
 
@@ -19,7 +18,6 @@ public class TransformationDebuff : StackableState
 		characterState = character;
 		//CanStack = true;
 		_damageToExit = 1;
-		_duration = durationToExit;
 
 		characterState.Character.Move.AddModifier(_modifier);
 
@@ -31,16 +29,15 @@ public class TransformationDebuff : StackableState
 
     public override void UpdateState()
 	{
-		_duration -= Time.deltaTime;
-		if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || _duration < 0)
+		if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit)
 		{
-			ExitState();
+			GlobalExit();
 		}
 	}
 
-	public override void ExitState()
+	protected override void ExitState()
 	{
-		characterState.RemoveState(this);
+		
 		characterState.Character.TransformationComponent.ReturnToInitial();
 		foreach (var ability in characterState.Character.Abilities.Abilities)
 		{

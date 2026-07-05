@@ -37,12 +37,12 @@ public class MagicInstantaneityState : StackableState
             skill.Buff.CastSpeed.IncreasePercentage(1 - (_percent * CurrentStacksCount)); ;
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         foreach (var skill in _buffedSkills)
             skill.Buff.CastSpeed.Reset();
         _buffedSkills.Clear();
-        _character.CharacterState.RemoveState(this);
+        _character.CharacterState.RemoveStateFromList(this);
     }
 
     public override bool Stack(float time)
@@ -62,10 +62,5 @@ public class MagicInstantaneityState : StackableState
 
     public override void UpdateState()
     {
-        _time -= Time.deltaTime;
-        if (_time <= 0)
-        {
-            ExitState();
-        }
     }
 }

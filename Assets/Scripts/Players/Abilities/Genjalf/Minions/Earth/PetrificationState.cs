@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class PetrificationState : StackableState
 {
-	private float _duration;
 	private float _curSpeedDebuf = 0f;
 	public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
 	public override States State => States.PetrificationDebuff;
@@ -18,7 +17,6 @@ public class PetrificationState : StackableState
 	{
 		characterState = character;
 		//CanStack = true;
-		_duration = durationToExit;
 
 		_baseMagicResist = characterState.Character.Health.ResistMagDamage;
 		_basePhysicsResist = characterState.Character.Health.DefPhysDamage;
@@ -35,16 +33,10 @@ public class PetrificationState : StackableState
 
 	public override void UpdateState()
 	{
-		_duration -= Time.deltaTime;
-		if (_duration < 0)
-		{
-			ExitState();
-		}
 	}
 
-	public override void ExitState()
+	protected override void ExitState()
 	{
-		characterState.RemoveState(this);
 		foreach (var ability in characterState.Character.Abilities.Abilities)
 		{
 			ability.Disactive = false;

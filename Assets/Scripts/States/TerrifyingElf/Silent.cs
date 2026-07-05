@@ -5,8 +5,6 @@ using UnityEngine;
 public class Silent : AbstractCharacterState
 {
     private float _baseDuration;
-    private int _currentStacks = 1;
-    private const int _maxStacks = 1;
     private float _duration;
     private Silence _silence;
     private bool _isSilenceAddAllCharacterWithDeabaffElf;
@@ -67,18 +65,13 @@ public class Silent : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0)
-        {
-            ExitState();
-        }
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         Debug.Log("Exiting Silent State");
         characterState.StateIcons.RemoveItemByState(State);
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
 
         UnblockMagicAbilities();
     }

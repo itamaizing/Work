@@ -2,11 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ComboState : AbstractCharacterState
+public class ComboState : StackableState
 {
-    private float _durationRemaining;
-    private string _skillName;
-
     public override States State => States.ComboState;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
@@ -23,24 +20,11 @@ public class ComboState : AbstractCharacterState
     {
         characterState = character;
         base.personWhoMadeBuff = personWhoMadeBuff;
-        _durationRemaining = durationToExit;
-        _skillName = skillName;
+        //this.s = skillName;
     }
 
     public override void UpdateState()
     {
-        if (_durationRemaining <= 0f)
-        {
-            ExitState();
-            return;
-        }
-
-        _durationRemaining -= Time.deltaTime;
-    }
-
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -48,7 +32,7 @@ public class ComboState : AbstractCharacterState
         if (currentStacksCount < MaxStacksCount)
         {
             currentStacksCount++;
-            _durationRemaining = time;
+            duration = time;
 
             return false;
         }

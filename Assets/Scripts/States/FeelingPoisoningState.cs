@@ -57,10 +57,9 @@ public class FeelingPoisoningState : RefreshingState
         return true;
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         RemoveRegenBonus();
-        base.ExitState();
     }
 
     public override void ReduceStack()
@@ -69,7 +68,7 @@ public class FeelingPoisoningState : RefreshingState
 
         if (currentStacksCount <= 0)
         {
-            ExitState();
+            GlobalExit();
             return;
         }
 

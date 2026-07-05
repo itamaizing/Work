@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class Anxiety : AbstractCharacterState
+public class Anxiety : StackableState
 {
     private float spellSpeedReduction = 0.1f;
     private float manaCostIncrease = 0.1f;
@@ -27,7 +27,7 @@ public class Anxiety : AbstractCharacterState
     {
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         RemoveEffects();
         Debug.Log($"Anxiety state removed: {currentStacksCount}/{MaxStacksCount} stacks");

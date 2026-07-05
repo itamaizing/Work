@@ -48,9 +48,8 @@ public class HotAuraBuff : AbstractCharacterState
         }
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
-        base.ExitState();
         if (_character != null)
         {
             foreach (var skill in _character.Abilities.Abilities)
@@ -61,10 +60,10 @@ public class HotAuraBuff : AbstractCharacterState
         }
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         return false;
-    }
+    }*/
 
     public override void UpdateState()
     {

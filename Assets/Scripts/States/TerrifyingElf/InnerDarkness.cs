@@ -48,15 +48,8 @@ public class InnerDarkness : RefreshingState
 
     public override void UpdateState()
     {
-        _durationRemaining -= Time.deltaTime;
-        if (_durationRemaining <= 0) ExitState();
     }
 
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
-        currentStacksCount = 1;
-    }
 
     public override bool Stack(float time)
     {

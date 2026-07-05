@@ -64,7 +64,7 @@ public class HealingSlime : RefreshingState
             }
 
             _remaining -= 1f;
-            if (_remaining <= 0f || currentStacksCount <= 0) ExitState();
+            if (_remaining <= 0f || currentStacksCount <= 0) GlobalExit();
         }
     }
 
@@ -78,14 +78,12 @@ public class HealingSlime : RefreshingState
         return true;
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         if (currentStacksCount > 0)
         {
             float removeValue = Mathf.Floor(health.MaxValue * PercentPerStack * currentStacksCount);
             health.AddMax(-removeValue);
         }
-
-        characterState.RemoveState(this);
     }
 }

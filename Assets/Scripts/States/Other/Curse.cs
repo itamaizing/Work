@@ -25,21 +25,15 @@ public class Curse : AbstractCharacterState
 		_durationToExit -= Time.deltaTime;
 		if (_durationToExit < 0)
 		{
-			ExitState();
+			GlobalExit();
 		}
 	}
-
-	public override void ExitState()
-	{
-		characterState.RemoveState(this);
-	}
-
-	public override bool Stack(float time)
+	/*public override bool Stack(float time)
 	{
 		/*if (characterState.personWhoShoted != null)
 		{
 			_personWhoShooted = characterState.personWhoShoted;
-		}*/
+		}
 		return true;
-	}
+	}*/
 }

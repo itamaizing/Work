@@ -20,18 +20,18 @@ public class ManaRegen : AbstractCharacterState
         if (_manaRegen) _manaRegen.SetActive(true);
     }
 
-    public override void ExitState()
+    protected override void ExitState()
     {
         if (_manaRegen) _manaRegen.SetActive(false);
 
         characterState.StateIcons.RemoveItemByState(State);
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         return false;
-    }
+    }*/
 
     public override void UpdateState()
     {

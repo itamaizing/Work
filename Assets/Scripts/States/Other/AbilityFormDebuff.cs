@@ -37,24 +37,21 @@ public class AbilityFormDebuff : AbstractCharacterState
 
 	public override void UpdateState()
 	{
-		Debug.Log("Updating AbilityFormDebuff State");
 		if (turnOff)
 		{
-			ExitState();
+			GlobalExit();
 		}
 	}
 
-	public override void ExitState()
+	protected override void ExitState()
 	{
-		Debug.Log("Exiting AbilityFormDebuff State");
-		characterState.RemoveState(this);
 		if (!characterState.Check(StatusEffect.Ability) && abilities != null)
 		{
 			abilities.SwitchAvaliable(canceledForm, true);
 		}
 	}
 
-	public override bool Stack(float time)
+	/*public override bool Stack(float time)
 	{
 
 		if (duration > time)
@@ -66,5 +63,5 @@ public class AbilityFormDebuff : AbstractCharacterState
 			duration = time;
 			return true;
 		}
-	}
+	}*/
 }
