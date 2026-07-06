@@ -188,7 +188,7 @@ public abstract class Skill : NetworkBehaviour
     public bool IsPreparing => _isPreparing;
     public SkillRenderer SkillRender => _skillRender;
     public bool IsHaveResourceOnSkill { get => CheckResourcesOnSkill(); }
-    public bool IsHaveResources { get => IsHaveResourceOnSkill && !Cooldown.IsActive && Charges.HasCharges; }
+    public virtual bool IsHaveResources { get => IsHaveResourceOnSkill && !Cooldown.IsActive && Charges.HasCharges; }
     public List<SkillResourceCost> SkillEnergyCosts { get => _skillEnergyCosts; }
     public List<SkillResourceCost> AdditionalSkillEnergyCosts { get => _additionalSkillEnergyCosts; }
     public float CastDeley { get => Buff.CastSpeed.GetBuffedValue(_castDeley); set => _castDeley = value; }
@@ -518,7 +518,7 @@ public abstract class Skill : NetworkBehaviour
     /// Главная точка входа
     /// Отсюда начинается каст
     /// </summary>
-    public bool TryCast()
+    public virtual bool TryCast()
     {
         if (_isCasting || _isPreparing)
             return false;

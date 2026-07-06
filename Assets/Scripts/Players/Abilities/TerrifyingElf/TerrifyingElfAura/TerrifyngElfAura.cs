@@ -392,7 +392,7 @@ public class TerrifyingElfAura : Skill
 
     private void ApplyElvenSkill(float newValue)
     {
-        if (!elvenSkillTalent && _hero == null && _hero.CharacterState == null && newValue > 0) return;
+        if (!elvenSkillTalent || _hero == null || _hero.CharacterState == null || newValue > 0) return;
 
         if(isClient)
             _hero.CharacterState.CmdAddState(States.ElvenSkill, durationElvenSkill, 0f, gameObject, "TerrifyingElfAura");

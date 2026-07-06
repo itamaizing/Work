@@ -12,14 +12,14 @@ public class DarknessTalent_6 : Talent
     public override void Enter()
     {
         ghost.PassingThroughGhost(true);
-        ability.ActivateSkill(suppression);
-        reconnaissanceFire.ReconnaissanceFireAuraDarknesActive(true);
+        //ability.ActivateSkill(suppression);
+        //reconnaissanceFire.ReconnaissanceFireAuraDarknesActive(true);
     }
 
     public override void Exit()
     {
         ghost.PassingThroughGhost(false);
-        ability.DeactivateSkill(suppression);
-        reconnaissanceFire.ReconnaissanceFireAuraDarknesActive(true);
+        //ability.DeactivateSkill(suppression);
+        //reconnaissanceFire.ReconnaissanceFireAuraDarknesActive(true);
     }
 }

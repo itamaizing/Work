@@ -329,6 +329,7 @@ public class GrowTree : Skill
             _checkExtendedRadiusCoroutine = null;
         }
         HideExtendedRadius();
+        Renderer.HideAOEIndicator(isCommand: false);
 
         if (_hero != null && _hero.Move != null) Hero.Animator.speed = 1;
         TreeHealthTalentExit();

@@ -6,56 +6,42 @@ using UnityEngine;
 public class Suppression : Skill
 {
     [SerializeField] private Character _playerLinks;
-    [SerializeField] private float duration;
-    //private Character _target;
+    [SerializeField] private float duration = 6f;
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     protected override bool IsCanCast => Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
     protected override int AnimTriggerCastDelay => Animator.StringToHash("SpellCastDelayAnimTrigger");
+    private bool IsEnemyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Enemy");
     protected override int AnimTriggerCast => 0;
 
     #region Talent
-
     private bool _isSuppressionManaAbsorbtion;
-
     public bool IsSuppressionManaAbsorbtion { get => _isSuppressionManaAbsorbtion; set => _isSuppressionManaAbsorbtion = value; }
-
     public void SuppressionManaAbsorbtion(bool value) => _isSuppressionManaAbsorbtion = value;
-
     #endregion
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
-
         TargetInfo targetInfo = new TargetInfo();
 
-        while (Targeting.GetTempTarget()?.Targetable == null && !_disactive)
+        while (true)
         {
             if (GetMouseButton)
             {
                 Targeting.FindTempTarget(Targeting.GetMousePoint(), 0.5f);
-
                 var temp = Targeting.GetTempTarget()?.Targetable as Character;
 
-                if (temp != null)
+                if (temp != null && IsEnemyTarget(temp))
                 {
-                    Targeting.SetTarget(temp);
-
+                    targetInfo.AddTarget(temp);
                     if (multiMagic != null) multiMagic.LastTarget = temp;
                     break;
                 }
             }
-
             yield return null;
         }
-
-        var target = Targeting.GetTarget()?.Character;
-
-        if (target != null)
-        {
-            targetInfo.AddTarget(target);
-            callbackDataSaved(targetInfo);
-        }
+        
+        callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
@@ -68,7 +54,6 @@ public class Suppression : Skill
         CmdApplyAbsorptionState(target.gameObject);
 
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
-
         if (multiMagic != null)
         {
             foreach (var character in multiMagic.PopPendingTargets())
@@ -85,7 +70,6 @@ public class Suppression : Skill
     {
         _targetPoint = Vector3.positiveInfinity;
         Targeting.ClearTarget();
-        //_target = null;
     }
 
     [Command]

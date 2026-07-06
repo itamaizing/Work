@@ -1907,7 +1907,7 @@ MonoBehaviour:
   - {fileID: 8782633265950416607, guid: 66af4295160d8ef47ac761be1372ec59, type: 3}
   - {fileID: 5458554383432203635, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
   - {fileID: 4534754468497973439, guid: ff1c8ecb71d19674e8778e3d04716b40, type: 3}
-  _gameRules: {fileID: 2955064748104778921, guid: 2ae4dc3e896cc6040afe290737e398a9, type: 3}
+  _gameRules: {fileID: 669276037884193687, guid: 51af385f54fff2443b84b5bdc9b030ad, type: 3}
   _userID: -37
 --- !u!114 &452850708
 MonoBehaviour:

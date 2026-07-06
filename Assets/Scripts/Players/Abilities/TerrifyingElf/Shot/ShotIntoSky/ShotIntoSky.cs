@@ -22,6 +22,8 @@ public class ShotIntoSky : Skill
     private Vector3 _targetPoint = Vector3.positiveInfinity;
     private bool _secondShotPlanned;
     private bool _tripleShootPlanned;
+    private bool _isRealCasting;
+    private bool _shouldDequeue;
     private float _baseRadius;
     private const float _extraShotDelay = 1f;
 
@@ -127,6 +129,34 @@ public class ShotIntoSky : Skill
             if (isServer) ServerDestroyPendingImpacts();
             else CmdDestroyPendingImpacts();
         }
+
+        _isRealCasting = false;
+        _shouldDequeue = false;
+    }
+    
+    public override bool TryCast()
+    {
+        if (_shouldDequeue)
+        {
+            _shouldDequeue = false;
+            return true; 
+        }
+
+        if (_isRealCasting)
+        {
+            return false; 
+        }
+
+        if (IsCanCast)
+        {
+            if (base.TryCast())
+            {
+                _isRealCasting = true;
+                return false;
+            }
+        }
+
+        return false;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -180,6 +210,9 @@ public class ShotIntoSky : Skill
     protected override IEnumerator CastJob()
     {
         CmdExecuteCast();
+
+        _shouldDequeue = true; 
+
         if (_secondShotPlanned)
         {
             yield return new WaitForSeconds(_extraShotDelay);
@@ -308,6 +341,9 @@ public class ShotIntoSky : Skill
         _targetPoint = Vector3.positiveInfinity;
         _hero.Move.StopLookAt();
         _hero.Move.SetCanMove(true);
+
+        _isRealCasting = false;
+        _shouldDequeue = false;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo) => _targetPoint = targetInfo.Points[0];

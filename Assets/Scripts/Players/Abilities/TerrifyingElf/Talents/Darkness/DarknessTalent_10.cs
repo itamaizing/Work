@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class DarknessTalent_10 : Talent
 {
-    [SerializeField] private TerrifyingElfAura terrifyingElfAura;
 
     public override void Enter()
     {
-        terrifyingElfAura.SuppressionManaAbsorption(true);
+        character.Abilities.ActivateSkill(character.Abilities.GetSkill<Suppression>());
     }
 
     public override void Exit()
     {
-        terrifyingElfAura.SuppressionManaAbsorption(false);
+        character.Abilities.DeactivateSkill(character.Abilities.GetSkill<Suppression>());
     }
 }

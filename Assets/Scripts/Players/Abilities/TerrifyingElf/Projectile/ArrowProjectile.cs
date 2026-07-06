@@ -28,6 +28,8 @@ public class ArrowProjectile : Projectiles
 
     private float _magDamage;
     private float _damage;
+    
+    private float _maxTravelDistance = -1f;
 
     public bool ArrowDark { get => _arrowDark; set => _arrowDark = value; }
 
@@ -68,7 +70,8 @@ public class ArrowProjectile : Projectiles
         if (_startPosition != Vector3.zero)
         {
             float distanceTravelled = Vector3.Distance(_startPosition, transform.position);
-            if (distanceTravelled > _skill.AreaInfo.CastLength)
+            float limit = _maxTravelDistance > 0f ? _maxTravelDistance : _skill.AreaInfo.CastLength;
+            if (distanceTravelled > limit)
             {
                 Destroy(gameObject);
             }
@@ -124,12 +127,13 @@ public class ArrowProjectile : Projectiles
         StartCoroutine(FollowTargetCoroutine());
     }
 
-    public void Init(HeroComponent dad, float energy, bool lastHit, Skill skill, float damage, bool ElvenSkillCrit)
+    public void Init(HeroComponent dad, float energy, bool lastHit, Skill skill, float damage, bool ElvenSkillCrit, float maxTravelDistance)
     {
         base.Init(dad, energy, lastHit, skill);
         _damage = damage;
         _magDamage = energy;
         _isElvenSkillCrit = ElvenSkillCrit;
+        _maxTravelDistance = maxTravelDistance;
     }
 
     [Server]
