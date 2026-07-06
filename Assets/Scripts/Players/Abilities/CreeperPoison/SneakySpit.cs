@@ -260,6 +260,7 @@ public class SneakySpit : Skill
     public void SneakySpitCast()
     {
         ConsumeSneakySpitBoost();
+        CancelBoostWindow();
         AnimStartCastCoroutine();
     }
 
