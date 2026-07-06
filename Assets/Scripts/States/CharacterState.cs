@@ -742,12 +742,14 @@ public class CharacterState : NetworkBehaviour
 				((targetTeamIndex == playerTeamIndex && state.BaffDebaff == BaffDebaff.Debaff) ||
 				 (targetTeamIndex != playerTeamIndex && state.BaffDebaff == BaffDebaff.Baff)))
 			{
-				/*if (state.CurrentStacksCount > 1)
+				if (state is StackableState)
 				{
+					var stackableState = state as StackableState;
 					//state.currentStacksCount--;
-					ClientRpcRemoveIconCount();
+					//ClientRpcRemoveIconCount();
+					stackableState.GlobalReduceStack();
 				}
-				else*/
+				else
 				{
 					statesToRemove.Add(state);
 					if (isDispelOneState) break;
