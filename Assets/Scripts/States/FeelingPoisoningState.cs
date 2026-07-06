@@ -62,7 +62,7 @@ public class FeelingPoisoningState : RefreshingState
         RemoveRegenBonus();
     }
 
-    public override void ReduceStack()
+    protected override void ReduceStack()
     {
         currentStacksCount--;
 

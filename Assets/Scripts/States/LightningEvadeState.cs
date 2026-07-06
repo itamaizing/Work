@@ -49,7 +49,7 @@ public class LightningEvadeState : StackableState
         RemoveEvade();
     }
 
-    public override void ReduceStack()
+    protected override void ReduceStack()
     {
         RemoveEvade(_evadePerStack);
         currentStacksCount--;

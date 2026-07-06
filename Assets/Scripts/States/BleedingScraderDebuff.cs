@@ -66,7 +66,7 @@ public class BleedingScraderDebuff : StackableState
         _target.Health.TryTakeDamage(ref damage, null);
     }
 
-    public override void ReduceStack()
+    protected override void ReduceStack()
     {
         if (duration < 0)
         {
