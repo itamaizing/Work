@@ -119,8 +119,8 @@ public class CreeperInvisible : Skill
 
         if (_stopDrawRadiusRoutine != null)
         {
-            StopCoroutine(StopDrawRadiusAfterDelay());
-            _checkEnemiesRoutine = null;
+            StopCoroutine(_stopDrawRadiusRoutine);
+            _stopDrawRadiusRoutine = null;
         }
     }
 
@@ -144,8 +144,8 @@ public class CreeperInvisible : Skill
 
             if (_stopDrawRadiusRoutine != null)
             {
-                StopCoroutine(StopDrawRadiusAfterDelay());
-                _checkEnemiesRoutine = null;
+                StopCoroutine(_stopDrawRadiusRoutine);
+                _stopDrawRadiusRoutine = null;
             }
 
             _stopDrawRadiusRoutine = StartCoroutine(StopDrawRadiusAfterDelay());

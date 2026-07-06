@@ -181,6 +181,7 @@ public class SneakySpit : Skill
         targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
 
+        CancelBoostWindow();
         LockControlDuringCast();
     }
 
@@ -260,7 +261,6 @@ public class SneakySpit : Skill
     public void SneakySpitCast()
     {
         ConsumeSneakySpitBoost();
-        CancelBoostWindow();
         AnimStartCastCoroutine();
     }
 
@@ -268,7 +268,6 @@ public class SneakySpit : Skill
     {
         AnimCastEnded();
         isAnimStart = false;
-        CancelBoostWindow();
         UnlockControlAfterCast();
     }
 
