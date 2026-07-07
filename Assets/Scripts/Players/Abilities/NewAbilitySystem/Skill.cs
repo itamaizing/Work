@@ -89,7 +89,11 @@ public abstract class Skill : NetworkBehaviour
     public event Action<float> CastTimeRolledBack;
     public event Action<float> CastStreamRolledBack;
     
+    public event Action<float> CastStreamProgressApplied;
+    protected void RaiseCastStreamProgressApplied(float amount) => CastStreamProgressApplied?.Invoke(amount);
+    
     protected virtual bool IsCustomStreamActive => false;
+    protected virtual bool SkipLegacyCastStreamJob => false;
     
     protected float _castTimeRollback = 0f;
     
@@ -280,6 +284,11 @@ public abstract class Skill : NetworkBehaviour
     private void Update()
     {
         TickTimers();
+        
+        if (_isPreparing)
+        {
+            Renderer.UpdateSmartIndicator();
+        }
     }
 
     private void TickTimers()
@@ -633,7 +642,8 @@ public abstract class Skill : NetworkBehaviour
                 _isCasting = false;
                 ClearData();
 
-                CastEnded?.Invoke();
+                try { CastEnded?.Invoke(); }
+                catch (Exception ex) { Debug.LogError($"[Skill:{Name}] CastEnded subscriber threw: {ex}"); }
             }
 
             CancelCoroutine(_castDeleyCoroutine);
@@ -659,7 +669,9 @@ public abstract class Skill : NetworkBehaviour
             Targeting.ClearTempTarget();
 
             CancelAnim();
-            OnSkillCanceled?.Invoke();
+            try { OnSkillCanceled?.Invoke(); }
+            catch (Exception ex) { Debug.LogError($"[Skill:{Name}] OnSkillCanceled subscriber threw: {ex}"); }
+
 
             return true;
         }
@@ -819,7 +831,7 @@ public abstract class Skill : NetworkBehaviour
             CancelAnim();
 
             _castCoroutine = StartCoroutine(CastJob());
-            if (_castDuration > 0) _castStreamCoroutine = StartCoroutine(CastStreamJob());
+            if (_castDuration > 0 && !SkipLegacyCastStreamJob) _castStreamCoroutine = StartCoroutine(CastStreamJob());
             yield return _castCoroutine;
         }
 

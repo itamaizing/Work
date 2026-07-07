@@ -142,9 +142,8 @@ public class Health : Resource, IDamageable, IHealable
         if (!_isDot)
         {
             bool fullyAbsorbed = damage.Value == 0 && preShieldValue > 0;
-            //skill.HandleDirectDamageDuringCast(preShieldValue,damage.Type,fullyAbsorbed);
-            if(isOwned)
-                OnDirectDamage(gameObject, preShieldValue, damage.Type, fullyAbsorbed);
+            
+            OnDirectDamage(gameObject, preShieldValue, damage.Type, fullyAbsorbed);
         }
 
         if (damage.Value == 0)

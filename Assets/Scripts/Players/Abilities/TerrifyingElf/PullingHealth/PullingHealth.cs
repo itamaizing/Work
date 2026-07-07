@@ -67,6 +67,7 @@ public class PullingHealth : Skill
     private Coroutine _streamCoroutine;
     private float _streamAccumulatedRollback = 0f;
     protected override bool IsCustomStreamActive => _isStreaming;
+    protected override bool SkipLegacyCastStreamJob => true;
 
     #region Talent
     private bool _pullingHealthThroughGhosts;
@@ -118,6 +119,11 @@ public class PullingHealth : Skill
         OnSkillCanceled += HandleSkillCanceled;
         _ghostSkill.Teleported += OnGhostTeleport;
         CastStreamRolledBack += OnStreamRollbackReceived;
+    }
+    
+    protected override void PlayPrepareAnim()
+    {
+        Animation.PlayTrigger(PullingHealthCastDelay);
     }
     
     private void OnStreamRollbackReceived(float amount)
@@ -268,8 +274,11 @@ public class PullingHealth : Skill
         if (damageable != null) _cachedTarget = damageable.gameObject;
         else yield break;
 
+        _streamAccumulatedRollback = 0f;
+        
         _isStreaming = true;
         _streamFinished = false;
+        
         float elapsed = 0f;
         float damageTickElapsed = 0f;
         var manaResource = Hero.TryGetResource(ResourceType.Mana);
@@ -280,6 +289,8 @@ public class PullingHealth : Skill
             _isStreaming = false;
             yield break;
         }
+        
+        InvokeCastStreamStarted(CastStreamDuration);
 
         Vector3 initialPosition = transform.position;
 
@@ -331,8 +342,10 @@ public class PullingHealth : Skill
         {
             if (_streamAccumulatedRollback > 0f)
             {
-                elapsed += _streamAccumulatedRollback;
+                float consumed = _streamAccumulatedRollback;
+                elapsed += consumed;
                 _streamAccumulatedRollback = 0f;
+                RaiseCastStreamProgressApplied(consumed);
             }
             
             var target = Targeting.GetTarget()?.Character;

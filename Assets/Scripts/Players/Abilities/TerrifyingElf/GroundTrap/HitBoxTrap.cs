@@ -33,10 +33,14 @@ public class HitBoxTrap : NetworkBehaviour, IDamageable
         if (owner != null) owner.ShowPhantomValue(phantomValue);
     }
 
+    public void SetHit(bool hit)
+    {
+        isHit = hit;
+    }
+
     [Server]
     private void OnTriggerEnter(Collider other)
     {
         if (_trap != null && !isHit) _trap.HandleHit(other);
     }
-
 }

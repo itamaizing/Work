@@ -20578,13 +20578,7 @@ MonoBehaviour:
       showInDescription: 1
   _castDuration: 6
   _manaCostRate: 0.1
-  _manaCostPerTick:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
+  _manaCostPerTick: []
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
@@ -21036,7 +21030,7 @@ MonoBehaviour:
   arrowTrapProjectile: {fileID: 8210468906149221731, guid: 1f4d53244aee70742bb830f397fd8636, type: 3}
   spawnPoint: {fileID: 7608591018717630632}
   minDistanceRadius: 2
-  newHealth: 80
+  newHealth: 23
   groundData: {fileID: 11400000, guid: a946fba021bc52f4c94cefbea6b2b5c7, type: 2}
   isGroundHealthTalent: 0
   groundLayer:

@@ -22,6 +22,7 @@ public class Trap : Projectiles
     private const float YFix = 0.2f;
 
     private List<Character> _charactersInTrigger = new List<Character>();
+    private bool _hasSnapped = false;
 
     private void Awake()
     {
@@ -46,18 +47,6 @@ public class Trap : Projectiles
         _startPosition = startPosition;
         _endPosition = endPosition;
         _initialized = true;
-
-        SetupTrapShape();
-    }
-
-    public void ResetPreview()
-    {
-        SetLine(pointTrapRight.position, pointTrapLeft.position);
-
-        pointTrapLeft.gameObject.SetActive(true);
-        foreach (var hitBox in hitBoxes) hitBox?.SetActive(false);
-
-        _secondFixed = false;
     }
 
     public void FixSecondPoint()
@@ -73,36 +62,128 @@ public class Trap : Projectiles
         lineRenderer.SetPosition(0, a);
         lineRenderer.SetPosition(1, b);
     }
-
-    private void SetupTrapShape()
-    {
-        foreach (GameObject rope in ropes)
-            if (rope.TryGetComponent<MeshRenderer>(out MeshRenderer meshRenderer))
-                meshRenderer.material = ropeMaterial;
-    }
+    
 
     public void Finalise()
     {
         SetLine(pointTrapRight.position, pointTrapLeft.position);
         FixSecondPoint();
     }
-
+    
+    [Server]
     public void HandleHit(Collider other)
     {
         if (!_initialized) return;
+        if (!other.TryGetComponent<Character>(out var target)) return;
+        if (_charactersInTrigger.Contains(target)) return;
 
-        if (other.TryGetComponent<Character>(out var target) && !_charactersInTrigger.Contains(target))
+        _charactersInTrigger.Add(target);
+
+        if (target.TryGetComponent<CharacterState>(out CharacterState state))
         {
-            _charactersInTrigger.Add(target);
+            state.AddState(States.Bound, 99f, 0, _owner.gameObject, _skill.Name);
 
-            if (target.TryGetComponent<CharacterState>(out CharacterState state))
-            {
-                state.AddState(States.Bound, 99999f, 0, _owner.gameObject, _skill.name);
-            }
+            var boundState = state.GetState(States.Bound) as Bound;
+            boundState?.SetTrapObject(this.gameObject);
+
+            if (TryGetComponent<TrapStateLife>(out var trapStateLife))
+                trapStateLife.Init(target.gameObject);
+            else
+                gameObject.AddComponent<TrapStateLife>().Init(target.gameObject);
+
+            ConfigureHitboxForTarget(target);
+            RpcHideGroundVisuals();
+            RpcConfigureHitboxForTarget(target.gameObject);
+        }
+    }
+    
+    [ClientRpc]
+    private void RpcConfigureHitboxForTarget(GameObject targetGo)
+    {
+        if (targetGo == null) return;
+
+        foreach (var hitBox in hitBoxes)
+        {
+            if (hitBox != null) hitBox.SetActive(false);
         }
 
-        Destroy(gameObject);
+        if (hitBoxes != null && hitBoxes.Count > 0 && hitBoxes[0] != null)
+        {
+            GameObject mainHitbox = hitBoxes[0];
+            mainHitbox.transform.position = targetGo.transform.position + Vector3.up * 1f;
+            mainHitbox.transform.rotation = Quaternion.identity;
+            mainHitbox.SetActive(true);
+
+            if (mainHitbox.TryGetComponent<HitBoxTrap>(out var hitBoxTrap))
+            {
+                hitBoxTrap.SetHit(true);
+            }
+        }
+    }
+    
+    public void ResetPreview()
+    {
+        SetLine(pointTrapRight.position, pointTrapLeft.position);
+
+        pointTrapLeft.gameObject.SetActive(true);
+        foreach (var hitBox in hitBoxes) hitBox?.SetActive(false);
+
+        _secondFixed = false;
+    }
+    
+    [ClientRpc]
+    private void RpcTryShowBar()
+    {
+        if (TryGetComponent<ObjectBar>(out var bar))
+        {
+            Debug.LogError("TryShowBar");
+                    
+            bar.ShowHealthBar();
+        }
     }
 
     public void UpdateLinePreview() => SetLine(pointTrapRight.position, pointTrapLeft.position);
+
+    [ClientRpc]
+    private void RpcHideGroundVisuals()
+    {
+        if (lineRenderer != null) lineRenderer.enabled = false;
+        if (pointTrapRight != null) pointTrapRight.gameObject.SetActive(false);
+        if (pointTrapLeft != null) pointTrapLeft.gameObject.SetActive(false);
+        
+        if (ropes != null)
+        {
+            foreach (var rope in ropes)
+            {
+                if (rope != null) rope.SetActive(false);
+            }
+        }
+    }
+
+    private void ConfigureHitboxForTarget(Character target)
+    {
+        foreach (var hitBox in hitBoxes)
+        {
+            if (hitBox != null) hitBox.SetActive(false);
+        }
+
+        if (hitBoxes != null && hitBoxes.Count > 0 && hitBoxes[0] != null)
+        {
+            GameObject mainHitbox = hitBoxes[0];
+            mainHitbox.transform.position = target.transform.position + Vector3.up * 1f;
+            mainHitbox.transform.rotation = Quaternion.identity;
+            mainHitbox.SetActive(true);
+
+            if (mainHitbox.TryGetComponent<HitBoxTrap>(out var hitBoxTrap))
+            {
+                hitBoxTrap.SetHit(true);
+            }
+
+            if (mainHitbox.TryGetComponent<BoxCollider>(out var boxCollider))
+            {
+                boxCollider.isTrigger = true;
+                boxCollider.size = new Vector3(1.5f, 2f, 1.5f);
+            }
+        }
+    }
 }
