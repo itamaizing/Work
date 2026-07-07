@@ -49,11 +49,17 @@ public class TalentData
     public List<string> DescriptionsForInfoPanel { get => _descriptionsForInfoPanel; }
 	public List<TalentStateInfo> StateInfos => _stateInfos;
 
+    public void Init()
+    {
+        _dependentTalents = new();
+    }
+
 	public TalentData(string name, bool isOpen)
 	{
         // Name = name;
         _isOpen = isOpen;
-	}
+        _dependentTalents = new();
+    }
 
 	public void AddDependentTalent(TalentData talent)
     {

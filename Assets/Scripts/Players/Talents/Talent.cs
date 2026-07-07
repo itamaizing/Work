@@ -15,8 +15,8 @@ public abstract class Talent : MonoBehaviour
     public Character character;
 
 	public TalentData Data => _data;
-
-/*	private void OnValidate()
+	/*
+	private void OnValidate()
 	{
 		Init();
 	}*/
@@ -26,8 +26,9 @@ public abstract class Talent : MonoBehaviour
 		Init();
     }
 
-    private void Init()
+    public void Init()
     {
+		_data.Init();
         _data.Name = GetType().Name;
         if (OpenCondition == null)
         {

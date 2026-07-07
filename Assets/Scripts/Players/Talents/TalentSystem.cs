@@ -15,6 +15,7 @@ public struct TalentStateInfo
 public class TalentSystem : NetworkBehaviour
 {
     [SerializeField] private List<TalentsGroup> _talents;
+    [SerializeField] private List<Talent> _allTalents;
 
     private Level _lvl;
     private int _points = 1;
@@ -48,6 +49,13 @@ public class TalentSystem : NetworkBehaviour
     public int Points => _points;
     public bool CanOpenTalent => _points > 0;
 
+    private void Awake()
+    {
+        GetComponentsInChildren<Talent>(true, _allTalents);
+
+        foreach (var item in _allTalents)
+            item.Init();
+    }
 
     private void OnDisable()
     {
