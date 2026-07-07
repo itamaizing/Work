@@ -292,7 +292,7 @@ public abstract class Skill : NetworkBehaviour
 
     #region Targeting
     protected IHealable _tempForHealing;
-    private Queue<TargetInfo> _targetInfoQueue = new();
+    protected Queue<TargetInfo> _targetInfoQueue = new();
     public Queue<TargetInfo> TargetInfoQueue { get => _targetInfoQueue; }
 
     /// <summary>
@@ -363,7 +363,7 @@ public abstract class Skill : NetworkBehaviour
     /// </summary>
     protected virtual IEnumerator TargetingBehaviour(Action<TargetInfo> callbackDataSaved)
     {
-        if (Info.SkillType == SkillType.NonTarget)
+        if (Targeting.SkillType == SkillType.NonTarget)
             yield break;
 
         TargetData targetData = null;
@@ -397,8 +397,7 @@ public abstract class Skill : NetworkBehaviour
             default:
                 return false;
         }
-        if (callbackDataSaved != null)
-            callbackDataSaved(targetInfo);
+        callbackDataSaved?.Invoke(targetInfo);
         return true;
     }
 
