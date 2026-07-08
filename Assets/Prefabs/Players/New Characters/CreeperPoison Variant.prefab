@@ -20315,6 +20315,7 @@ MonoBehaviour:
   durationErodedArmor: 6
   durationWindowsBoost: 2
   _coldBlood: {fileID: 4616268591970552908}
+  _creeperCombo: {fileID: 0}
 --- !u!114 &2446571645698719713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20760,9 +20761,9 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: -1
+    _faction: -1
+    _unitType: -1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
