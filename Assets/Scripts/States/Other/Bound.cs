@@ -25,7 +25,6 @@ public class Bound : AbstractCharacterState
 	public void SetTrapObject(GameObject trap)
 	{
 		_spawnedTrap = trap;
-		_trapDamageable = trap != null ? trap.GetComponentInChildren<HitBoxTrap>(true) : null;
 	}
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
