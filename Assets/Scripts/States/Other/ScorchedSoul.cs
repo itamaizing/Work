@@ -11,7 +11,7 @@ public class ScorchedSoul : RefreshingState
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Debug.Log("Entering ScorchedSoulDebuff State");
 
@@ -27,7 +27,7 @@ public class ScorchedSoul : RefreshingState
         }
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         if (!characterState.Check(StatusEffect.AbilitySpeed))
         {
@@ -68,7 +68,7 @@ public class ScorchedSoul : RefreshingState
         return true;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 }

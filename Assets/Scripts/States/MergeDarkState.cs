@@ -15,7 +15,7 @@ public class MergeDarkState : AbstractCharacterState
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    protected override void EnterState(CharacterState characterStateComp, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState characterStateComp, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = characterStateComp;
         _character     = characterStateComp.Character;
@@ -33,11 +33,11 @@ public class MergeDarkState : AbstractCharacterState
         }
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         _character.Health.SetEvadeAll(-_evadeBonus);
         _character.Health.SetEvadeMagic(_character.Health.ResistMagDamage - _magResBonus);

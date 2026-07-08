@@ -48,7 +48,7 @@ public class EmpathicPoisonsState : StackableState, IDamageable
     public Transform transform => throw new NotImplementedException();
     public GameObject gameObject => throw new NotImplementedException();
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         MaxStacksCount = _maxStacks;
 
@@ -130,14 +130,14 @@ public class EmpathicPoisonsState : StackableState, IDamageable
         return true;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         _playerPosition = _player.transform.position;
         _characterPosition = characterState.transform.position;
 
         if (currentStacksCount <= 0)
         {
-            GlobalExit();
+            ExitState();
         }
 
         _timeBeforeReductionDebuff -= Time.deltaTime;
@@ -157,7 +157,7 @@ public class EmpathicPoisonsState : StackableState, IDamageable
         }
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         ResetValues();
         characterState.RemoveStateFromList(this);

@@ -14,7 +14,7 @@ public class StunnedState : RefreshingState
 	public override List<StatusEffect> Effects => _effects;
 
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		MaxStacksCount = 1;
 		currentStacksCount = 1;
@@ -32,17 +32,17 @@ public class StunnedState : RefreshingState
 		_baseDuration = durationToExit;
 	}
 
-	public override void UpdateState()
+	public override void OnUpdateState()
 	{
 		_baseDuration -= Time.deltaTime;
 		if (_baseDuration < 0)
 		{
-			GlobalExit();
+			ExitState();
 			return;
 		}
 		if (turnOff)
 		{
-			GlobalExit();
+			ExitState();
 		}
 	}
 
@@ -52,7 +52,7 @@ public class StunnedState : RefreshingState
 		return false;
 	}
 
-	protected override void ExitState()
+	protected override void OnExitState()
 	{
 		characterState.Character.Move.IsMoveBlocked = false;
 		abilities.SetAbilitiesDisactive(false);

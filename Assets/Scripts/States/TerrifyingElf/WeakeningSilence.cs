@@ -18,7 +18,7 @@ public class WeakeningSilence : StackableState
 
     public WeakeningSilence() => MaxStacksCount = 6;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         health = character.Character.Health;
         _damagePerTick = damageToExit;
@@ -34,14 +34,14 @@ public class WeakeningSilence : StackableState
         characterState.StartCoroutine(PeriodicDamageRoutine());
     }
     
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         characterState.RemoveStateFromList(this);
         damageTick = false;
         characterState.StopCoroutine(PeriodicDamageRoutine());
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 

@@ -12,7 +12,7 @@ public class PetrificationState : StackableState
 	private float _baseMagicResist;
 	private float _basePhysicsResist;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit,
 		Character personWhoMadeBuff, string skillName)
 	{
 		characterState = character;
@@ -31,11 +31,11 @@ public class PetrificationState : StackableState
 		}
 	}
 
-	public override void UpdateState()
+	public override void OnUpdateState()
 	{
 	}
 
-	protected override void ExitState()
+	protected override void OnExitState()
 	{
 		foreach (var ability in characterState.Character.Abilities.Abilities)
 		{

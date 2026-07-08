@@ -11,7 +11,7 @@ public class DischargePsiState : AbstractCharacterState
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
     }
 
@@ -20,7 +20,7 @@ public class DischargePsiState : AbstractCharacterState
         return false;
     }*/
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 }

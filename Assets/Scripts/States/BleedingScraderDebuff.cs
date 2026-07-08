@@ -23,7 +23,7 @@ public class BleedingScraderDebuff : StackableState
         currentStacksCount = 1;
     }
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _target = characterState.Character;
         _damage = damageToExit;
@@ -43,7 +43,7 @@ public class BleedingScraderDebuff : StackableState
         return true;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         timerTick += Time.deltaTime;
 
@@ -66,18 +66,18 @@ public class BleedingScraderDebuff : StackableState
         _target.Health.TryTakeDamage(ref damage, null);
     }
 
-    protected override void ReduceStack()
+    protected override void OnReduceStack(int count = 1)
     {
         if (duration < 0)
         {
             if (currentStacksCount > 0)
             {
-                currentStacksCount--;
+                currentStacksCount-= count;
                 _baseDamage -= _damage;
                 duration = _baseDuration;
             }
 
-            else GlobalExit();
+            else ExitState();
         }
     }
 }

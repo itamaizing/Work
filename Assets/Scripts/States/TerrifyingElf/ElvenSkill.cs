@@ -24,7 +24,7 @@ public class ElvenSkill : RefreshingState
         currentStacksCount = 1;
     }
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         base.personWhoMadeBuff = personWhoMadeBuff;
@@ -105,7 +105,7 @@ public class ElvenSkill : RefreshingState
         }
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         if (_move) _move.SetCanMoveState(false);
 
@@ -133,7 +133,7 @@ public class ElvenSkill : RefreshingState
             _elvenSkillEffect.SetActive(false);
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 

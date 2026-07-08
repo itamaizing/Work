@@ -20,7 +20,7 @@ public class Bound : AbstractCharacterState
 	public override List<StatusEffect> Effects => _effects;
 
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		characterState = character;
 		_stateClosing = false;
@@ -64,15 +64,15 @@ public class Bound : AbstractCharacterState
 		if (_stateClosing) return;
 		_stateClosing = true;
 		_spawnedTrap = null;
-		ExitState();
+		OnExitState();
 	}
 
-	public override void UpdateState()
+	public override void OnUpdateState()
 	{
-		if (turnOff) GlobalExit();
+		if (turnOff) ExitState();
 	}
 
-	protected override void ExitState()
+	protected override void OnExitState()
 	{
 		_stateClosing = true;
 		if (_spawnedTrap) NetworkServer.Destroy(_spawnedTrap);

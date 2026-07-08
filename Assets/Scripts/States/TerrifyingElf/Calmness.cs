@@ -18,7 +18,7 @@ public class Calmness : RefreshingState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         health = character.Character.Health;
         manaResource = character.Character.TryGetResource(ResourceType.Mana);
@@ -30,11 +30,11 @@ public class Calmness : RefreshingState
         if (character.isServer) _regenRoutine = character.StartCoroutine(RegenTick());
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         currentStacksCount = 0;
         if (_regenRoutine != null) characterState.StopCoroutine(_regenRoutine);

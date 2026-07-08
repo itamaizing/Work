@@ -13,7 +13,7 @@ public class TransformationDebuff : StackableState
 	public override List<StatusEffect> Effects { get; }
 
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		characterState = character;
 		//CanStack = true;
@@ -27,15 +27,15 @@ public class TransformationDebuff : StackableState
 		}
 	}
 
-    public override void UpdateState()
+    public override void OnUpdateState()
 	{
 		if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit)
 		{
-			GlobalExit();
+			ExitState();
 		}
 	}
 
-	protected override void ExitState()
+	protected override void OnExitState()
 	{
 		
 		characterState.Character.TransformationComponent.ReturnToInitial();

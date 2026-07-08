@@ -16,7 +16,7 @@ public class LightningEvadeState : StackableState
         StatusEffect.Strengthening
     };
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         MaxStacksCount = 4;
 
@@ -44,17 +44,17 @@ public class LightningEvadeState : StackableState
         _totalEvade += value;
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         RemoveEvade();
     }
 
-    protected override void ReduceStack()
+    protected override void OnReduceStack(int count = 1)
     {
         RemoveEvade(_evadePerStack);
-        currentStacksCount--;
+        currentStacksCount-= count;
 
-        if (currentStacksCount <= 0) GlobalExit();
+        if (currentStacksCount <= 0) ExitState();
     }
 
     private void RemoveEvade(float value = -1)
@@ -65,5 +65,5 @@ public class LightningEvadeState : StackableState
         _totalEvade -= value;
     }
 
-    public override void UpdateState() { }
+    public override void OnUpdateState() { }
 }

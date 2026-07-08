@@ -33,7 +33,7 @@ public class PoisonBoneState : StackableState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         MaxStacksCount = _maxStacks;
         _player = personWhoMadeBuff;
@@ -95,7 +95,7 @@ public class PoisonBoneState : StackableState
         }
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         if (currentStacksCount <= MaxStacksCount)
         {
@@ -109,11 +109,11 @@ public class PoisonBoneState : StackableState
 
         if (currentStacksCount == 0)
         {
-            GlobalExit();
+            ExitState();
         }
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         ResetValues();
     }

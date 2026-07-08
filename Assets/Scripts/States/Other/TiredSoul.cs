@@ -10,7 +10,7 @@ public class TiredSoul : StackableState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _baseDuration = durationToExit;
@@ -18,7 +18,7 @@ public class TiredSoul : StackableState
         MaxStacksCount = 2;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     { 
         if (duration <= _baseDuration * (currentStacksCount - 1) && currentStacksCount > 0)
         {
@@ -27,12 +27,12 @@ public class TiredSoul : StackableState
 
             if (currentStacksCount == 0)
             {
-                GloabalUpdate();
+                UpdateState();
             }
         }
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
        if(!characterState.CheckForState(States.TiredSoul)) 
            return;

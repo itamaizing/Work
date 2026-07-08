@@ -20,7 +20,7 @@ public class BindingPoisonState : StackableState
 
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _skillManager = characterState.Character.Abilities;
 
@@ -35,18 +35,18 @@ public class BindingPoisonState : StackableState
         BlockingOrCancleingAbility();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         if (currentStacksCount <= 0)
         {
-            GlobalExit();
+            ExitState();
         }
 
         //Debug.Log($"BindingPoisonState / UpdateState / CharacterManager = {_skillManager}");
 
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         //Debug.Log($"BindingPoisonState / ExitState / CharacterManager = {_skillManager}");
         ResetValues();
@@ -93,7 +93,7 @@ public class BindingPoisonState : StackableState
         {
             _skillManager.SkillQueue.SkillAdded += OnSkillAdded;
         }
-        GlobalExit();
+        ExitState();
     }
 
     private void OnSkillAdded(Skill skill)

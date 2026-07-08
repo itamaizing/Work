@@ -15,7 +15,7 @@ public class Stupefaction : AbstractCharacterState
 	public override List<StatusEffect> Effects => _effects;
 
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		characterState = character;
 
@@ -33,15 +33,15 @@ public class Stupefaction : AbstractCharacterState
 		characterState.Character.Health.DamageTaken += OnAnyDamage;
 	}
 
-	public override void UpdateState()
+	public override void OnUpdateState()
 	{
 		if (turnOff)
 		{
-			GlobalExit();
+			ExitState();
 		}
 	}
 
-	protected override void ExitState()
+	protected override void OnExitState()
 	{
 		characterState.Character.Health.DamageTaken -= OnAnyDamage;
 		characterState.RemoveStateFromList(this);

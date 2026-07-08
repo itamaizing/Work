@@ -22,7 +22,7 @@ public class InjectionAdrenalineState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         health = character.Character.Health;
@@ -47,7 +47,7 @@ public class InjectionAdrenalineState : AbstractCharacterState
         _damageTickTimer = 1f;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         _damageTickTimer -= Time.deltaTime;
 
@@ -68,7 +68,7 @@ public class InjectionAdrenalineState : AbstractCharacterState
         }
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         if (_animator != null)
         {

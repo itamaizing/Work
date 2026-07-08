@@ -71,41 +71,40 @@ public abstract class AbstractCharacterState
 
 		BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
 
-        EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);  
+        OnEnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);  
 		
 		OnStateAdded?.Invoke(this);
 
         return this;
 	}
 
-	protected abstract void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName);
-    public abstract void UpdateState();
+	protected abstract void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName);
+    public abstract void OnUpdateState();
 
-	protected virtual void ExitState() {}
+	protected virtual void OnExitState() {}
 
-    public virtual void GloabalUpdate()
+    public virtual void UpdateState()
 	{
-		UpdateState();
+		OnUpdateState();
 		if(duration >= 0 && duration != -1)
 		{
 			duration -= Time.deltaTime;
 
 			if(duration <= 0)
 			{
-                GlobalExit();
+                ExitState();
 			}
 		}
     }
 	
-	public virtual void GlobalExit()
+	public virtual void ExitState()
 	{
         OnStateExit?.Invoke(this);
-		ExitState();
+		OnExitState();
         characterState.RemoveStateFromList(this);
     }
 
 	protected void UpdateStateEvent(AbstractCharacterState state) => OnStateUpdate?.Invoke(state);
-    
 
     protected virtual bool CanEnterState(CharacterState character) => true;
     public virtual bool CanReEnterState() => true;
@@ -150,34 +149,36 @@ public abstract class StackableState : AbstractCharacterState
 
         BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
 
-        if (currentStacksCount == 0)
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        else
-            Stack(duration);
-
-        currentStacksCount++;
+		if (currentStacksCount == 0)
+		{
+			currentStacksCount = 1;
+			OnEnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+		}
+		else
+			Stack(duration);
 
         return this;
     }
 
     public virtual bool Stack(float time)
 	{
-		duration = time;
+        currentStacksCount++;
+        duration = time;
 		return true; 
 	}
 
-    public virtual void GlobalReduceStack()
+    public virtual void ReduceStack(int count = 1)
     {
-		ReduceStack();
+		OnReduceStack(count);
 		UpdateStateEvent(this);
         currentStacksCount--;
         if (currentStacksCount <= 0)
         {
-            GlobalExit();
+            ExitState();
         }
     }
 
-	protected virtual void ReduceStack() {}
+	protected virtual void OnReduceStack(int count) {}
 }
 
 public abstract class RefreshingState : StackableState
@@ -204,14 +205,14 @@ public abstract class AuraState : AbstractCharacterState
 
     public override StateType Type => StateType.Aura;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
 		_auraCentre = character.transform;
 		_self = personWhoMadeBuff;
 		duration = durationToExit;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         if (NetworkServer.active == false)
         {
@@ -253,7 +254,7 @@ public abstract class AuraState : AbstractCharacterState
         }
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         characterState.RemoveStateFromList(this);
     }
@@ -433,7 +434,7 @@ public class CharacterState : NetworkBehaviour
 		{
 			for (int i = 0; i < _currentStates.Count; i++)
 			{
-				_currentStates[i].GloabalUpdate();
+				_currentStates[i].UpdateState();
 			}
 		}
 	}
@@ -444,7 +445,7 @@ public class CharacterState : NetworkBehaviour
 		{
 			if (state.Type == type)
 			{
-				state.GlobalExit();
+				state.ExitState();
 			}
 		}
 	}
@@ -588,7 +589,7 @@ public class CharacterState : NetworkBehaviour
 					RemoveShield(damageableShield);
 				}
 
-				state.GlobalExit();
+				state.ExitState();
 				_currentStates.Remove(state);
 
 				_stateIcons?.RemoveItemByState(stateName);
@@ -728,7 +729,7 @@ public class CharacterState : NetworkBehaviour
 		}
 	}
 
-	public void DispelStates(StateType type, int targetTeamIndex, int playerTeamIndex, bool isDispelOneState = false)
+	public void DispelStates(StateType type, int targetTeamIndex, int playerTeamIndex, bool isDispelOneState = false, int countStackReduce = 1)
 	{
 		if (_currentStates.Count == 0) return;
 
@@ -747,7 +748,7 @@ public class CharacterState : NetworkBehaviour
 					var stackableState = state as StackableState;
 					//state.currentStacksCount--;
 					//ClientRpcRemoveIconCount();
-					stackableState.GlobalReduceStack();
+					stackableState.ReduceStack(countStackReduce);
 				}
 				else
 				{
@@ -764,7 +765,7 @@ public class CharacterState : NetworkBehaviour
 		}
 	}
 
-	public void DispelStates(StateType type, bool isAlly, bool isDispelOneState = false)
+	public void DispelStates(StateType type, bool isAlly, bool isDispelOneState = false, int countStackReduce = 1)
 	{
 		if (_currentStates.Count == 0) return;
 
@@ -778,13 +779,15 @@ public class CharacterState : NetworkBehaviour
 				((isAlly && state.BaffDebaff == BaffDebaff.Baff) ||
 				 (!isAlly && state.BaffDebaff == BaffDebaff.Debaff)))
 			{
-				//NotifyDispelWhoMade(state.PersonWhoMadeBuff.gameObject,state.State,state.CurrentStacksCount);
-				/*if (state.CurrentStacksCount > 1)
-				{
-					//state.currentStacksCount--;
-					ClientRpcRemoveIconCount();
-				}
-				else*/
+                NotifyDispelWhoMade(state.PersonWhoMadeBuff.gameObject, state.State,0 );
+                if (state is StackableState)
+                {
+                    var stackableState = state as StackableState;
+                    //state.currentStacksCount--;
+                    //ClientRpcRemoveIconCount();
+                    stackableState.ReduceStack(countStackReduce);
+                }
+                else 
 				{
 					statesToRemove.Add(state);
 					if (isDispelOneState) break;
@@ -847,7 +850,7 @@ public class CharacterState : NetworkBehaviour
 	{
 		var statesCopy = new List<AbstractCharacterState>(_currentStates);
 
-		foreach (var state in statesCopy) state.GlobalExit();
+		foreach (var state in statesCopy) state.ExitState();
 		_currentStates.Clear();
 		RpcClearStateIcons();
 	}

@@ -27,7 +27,7 @@ public class Sleep : AbstractCharacterState
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Debug.Log("������ ��������� � ���");
 
@@ -85,7 +85,7 @@ public class Sleep : AbstractCharacterState
         }
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         if (_giveInnerDarkness)
         {
@@ -99,7 +99,7 @@ public class Sleep : AbstractCharacterState
 
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         Debug.Log("������ ��� ����������");
 

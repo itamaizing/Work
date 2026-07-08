@@ -20,7 +20,7 @@ public class FrozenState : AbstractCharacterState
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		//MaxStacksCount = 3;
 		if (damageToExit == 0)
@@ -78,16 +78,16 @@ public class FrozenState : AbstractCharacterState
 		_isInited = true;
 	}
 
-	public override void UpdateState()
+	public override void OnUpdateState()
 	{		
 		if(!_isInited) return;
 		if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit )//|| turnOff)
 		{
-            GlobalExit();
+            ExitState();
 		}
 	}
 
-	protected override void ExitState()
+	protected override void OnExitState()
 	{
 		//Debug.Log("Exiting Frozen State");
 

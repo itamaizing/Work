@@ -22,7 +22,7 @@ public class LightShield : StackableState, IDamageable
     public Transform transform => throw new NotImplementedException();
     public GameObject gameObject => throw new NotImplementedException();
 
-    protected override void EnterState(CharacterState character, float durationToExit, float maxDamageAbsorbed, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float maxDamageAbsorbed, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _duration = durationToExit;
@@ -43,17 +43,17 @@ public class LightShield : StackableState, IDamageable
         }
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         _duration -= Time.deltaTime;
 
         if (_duration <= 0 || _damageAbsorbed >= _maxAbsorption)
         {
-            GlobalExit();
+            ExitState();
         }
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         if (characterState.TryGetComponent<Health>(out var health))
         {
@@ -84,7 +84,7 @@ public class LightShield : StackableState, IDamageable
     {
         if (_damageAbsorbed >= _maxAbsorption)
         {
-            GlobalExit();
+            ExitState();
             return false;
         }
 
@@ -124,7 +124,7 @@ public class LightShield : StackableState, IDamageable
 
         if (_damageAbsorbed >= _maxAbsorption)
         {
-            GlobalExit();
+            ExitState();
             return true;
         }
 

@@ -70,6 +70,7 @@ public abstract class Talent : MonoBehaviour
 	public void AddDependendTalent(TalentData data)
 	{
 		//_dependentTalents.Add(data);
-		_data.AddDependentTalent(data);
+		if(data != null)
+			_data.AddDependentTalent(data);
     }
 }

@@ -18,7 +18,7 @@ public class AbsorptionState : StackableState, IDamageable
     public Transform transform => throw new NotImplementedException();
     public GameObject gameObject => throw new NotImplementedException();
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _maxAbsorption = damageToExit;
         _curentAbsorption = _maxAbsorption;
@@ -29,11 +29,11 @@ public class AbsorptionState : StackableState, IDamageable
         UpdateShieldValues();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         ResetCharacterShieldValues();
     }
@@ -72,7 +72,7 @@ public class AbsorptionState : StackableState, IDamageable
 
         if (_damageAbsorbed >= _maxAbsorption)
         {
-            GlobalExit();
+            ExitState();
             return true;
         }
 
