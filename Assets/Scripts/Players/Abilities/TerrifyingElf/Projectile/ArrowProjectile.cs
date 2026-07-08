@@ -141,10 +141,9 @@ public class ArrowProjectile : Projectiles
     {
         if (_dad == null) return;
 
-        if (!other.TryGetComponent<Character>(out var target))
-            return;
+        other.TryGetComponent<Character>(out var target);
 
-        if (target.CharacterState.CheckForState(States.ReflectiveScales) && _arrowDark)
+        if (target != null && target.CharacterState.CheckForState(States.ReflectiveScales) && _arrowDark)
         {
             if (_isReflected) return;
 

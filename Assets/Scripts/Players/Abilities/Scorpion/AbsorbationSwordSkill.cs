@@ -235,7 +235,7 @@ public class AbsorbationSwordSkill : Skill
     {
         if (skill == null) return false;
 
-        return skill.Info.SkillType == SkillType.Projectile;
+        return skill.Targeting.SkillType == SkillType.Projectile;
     }
 
     private void ControlMovement(bool canMove)

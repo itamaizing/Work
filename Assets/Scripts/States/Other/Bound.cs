@@ -27,12 +27,6 @@ public class Bound : AbstractCharacterState
 		_spawnedTrap = trap;
 		_trapDamageable = trap != null ? trap.GetComponentInChildren<HitBoxTrap>(true) : null;
 	}
-	
-	public bool TryRedirectDamageToTrap(ref Damage damage, Skill skill)
-	{
-		if (_trapDamageable == null) return false;
-		return _trapDamageable.TryTakeDamage(ref damage, skill);
-	}
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{

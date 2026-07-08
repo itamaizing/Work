@@ -58,14 +58,10 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
     [Server]
     private void OnTriggerStay(Collider other)
     {
-        //if (other.gameObject == _dad.gameObject) return;
         if (((1 << other.gameObject.layer) & _skill.Targeting.Layer.value) == 0) return;
-
         if (!_damagedThisTick.Add(other)) return;
 
         ApplyDamageEnemy(other);
-
-        if (other.TryGetComponent<Character>(out var victim)) ApplyStatesAndTalents(victim);
     }
 
     #region ApplyAdditionalDamage
@@ -143,11 +139,16 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
 
     private void ApplyDamageEnemy(Collider other)
     {
+        if (!other.TryGetComponent<IDamageable>(out var damageTarget)) return;
+
         float damageToDeal = UnityEngine.Random.Range(minDamage, maxDamage + 1);
 
-        float distance = Vector3.Distance(_character.transform.position, other.transform.position);
-        float distanceMultiplier = 1f + (distance * 0.05f);
-
+        float distanceMultiplier = 1f;
+        if (_character != null)
+        {
+            float distance = Vector3.Distance(_character.transform.position, other.transform.position);
+            distanceMultiplier = 1f + (distance * 0.05f);
+        }
         damageToDeal *= distanceMultiplier;
 
         if (Random.value * 100f < criticalChance)
@@ -156,8 +157,12 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
             damageToDeal *= critMultiplier;
         }
 
-        if (other.TryGetComponent<Character>(out var targetCharacter)) damageToDeal = ApplyElvenCritModifier(damageToDeal, targetCharacter);
-        if (other.TryGetComponent<IDamageable>(out var damageTarget)) ApplyDamage(damageToDeal, DamageType.Physical, damageTarget);
+        if (other.TryGetComponent<Character>(out var targetCharacter)) 
+        {
+            damageToDeal = ApplyElvenCritModifier(damageToDeal, targetCharacter);
+        }
+
+        ApplyDamage(damageToDeal, DamageType.Physical, damageTarget);
 
         _skill.Damage = damageToDeal;
     }

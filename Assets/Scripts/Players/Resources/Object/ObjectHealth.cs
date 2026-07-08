@@ -499,7 +499,7 @@ public class ObjectHealth : Resource, IDamageable, ITargetable
 
         if (_ignoredSchools.Contains(skill.Info.School)) return true;
         if (_ignoredForms.Contains(skill.Info.AbilityForm)) return true;
-        if (_ignoredSkillTypes.Contains(skill.Info.SkillType)) return true;
+        if (_ignoredSkillTypes.Contains(skill.Targeting.SkillType)) return true;
         return false;
     }
 

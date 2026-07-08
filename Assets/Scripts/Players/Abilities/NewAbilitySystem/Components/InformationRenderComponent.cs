@@ -84,7 +84,7 @@ public class InformationRenderComponent : BaseSkillComponent
             _skill.SkillRender.DrawLine(_skill.AreaInfo.CastLength, _skill.AreaInfo.CastWidth, damage, _skill.Targeting.Layer);
         }
 
-        switch (_skill.Info.SkillType)
+        switch (_skill.Targeting.SkillType)
         {
             case SkillType.Target:
                 _skill.SkillRender.DrawClosestTarget(_skill.AreaInfo.Radius, _skill.Targeting.Layer, _character);
@@ -130,7 +130,7 @@ public class InformationRenderComponent : BaseSkillComponent
         _skill.SkillRender.StopDynamicRadiusColor();
         _skill.SkillRender.StopPreview();
 
-        if (_skill.Info.SkillType == SkillType.Zone)
+        if (_skill.Targeting.SkillType == SkillType.Zone)
         {
             _skill.SkillRender.StopDrawLineForZone();
         }
@@ -150,7 +150,7 @@ public class InformationRenderComponent : BaseSkillComponent
         _skill.SkillRender.StopPreview();
         _skill.StopDynamicRender();
 
-        if (_skill.Info.SkillType == SkillType.Zone)
+        if (_skill.Targeting.SkillType == SkillType.Zone)
         {
             _skill.SkillRender.StopDrawLineForZone();
         }
