@@ -183,7 +183,7 @@ public class ServerManager : NetworkBehaviour
 
     public void SetPlayer(HeroComponent hero)
     {
-        _currentHeroIndex = _heroList.IndexOf(hero);
+        _currentHeroIndex = _heroList.FindIndex(h => h.Data.Name == hero.Data.Name);
 
         if (LevelCharacterManager.Instance != null)
         {

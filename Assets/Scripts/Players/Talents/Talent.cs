@@ -21,11 +21,6 @@ public abstract class Talent : MonoBehaviour
 		Init();
 	}*/
 
-    private void Awake()
-    {
-		Init();
-    }
-
     public void Init()
     {
 		_data.Init();
