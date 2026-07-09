@@ -190,7 +190,8 @@ public class GroundTrap : Skill
 
         Debug.Log($"GroundTrapHealth: {groundData.MaxHealth}");
 
-        Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+        if (CastDeley > 0f)
+            Hero.Animator.speed = Hero.Animator.speed / CastDeley;
 
         _preview = Instantiate(trapPrefab);
         _preview.ResetPreview();

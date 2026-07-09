@@ -18819,7 +18819,7 @@ PrefabInstance:
       objectReference: {fileID: 3623982303959407510}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.size
-      value: 13
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.size
@@ -18956,9 +18956,13 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[11]'
       value: 
-      objectReference: {fileID: 3454667140215066753}
+      objectReference: {fileID: 1591870033198380293}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[12]'
+      value: 
+      objectReference: {fileID: 3454667140215066753}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[13]'
       value: 
       objectReference: {fileID: 4487867154051678385}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
@@ -19791,6 +19795,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7590989661635297986}
+    - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1591870033198380293}
     - targetCorrespondingSourceObject: {fileID: 822752670108208922, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3454667140215066753}
@@ -21057,14 +21064,14 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 15
-    _costs: []
-  _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
+    _costs:
+    - nameToShow: 15 Mana - Mandatory mod desc
+      type: 1
+      value: 15
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
+  _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 12
   _cooldownComponent:
@@ -21902,9 +21909,9 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: 5
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -22651,7 +22658,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  shotIntoSky: {fileID: 6009180366675701932}
 --- !u!114 &1046202040625647134
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22688,7 +22694,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  reconnaissanceFire: {fileID: 2750012758126725032}
 --- !u!114 &5570433275319391096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22721,7 +22726,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  terrifyingElfAura: {fileID: 6686568037796463366}
 --- !u!114 &7590989661635297986
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22756,6 +22760,33 @@ MonoBehaviour:
   _shotIntoSky: {fileID: 6009180366675701932}
   _shotsIntoSky: {fileID: 826193211731534654}
   _groundTrap: {fileID: 8199207747846444516}
+--- !u!114 &1591870033198380293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908408265001011226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e99cafc4268e83f418e56d034578dedc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HuntressTalent_12
+  _data:
+    _descriptionsForInfoPanel:
+    - "\u042D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u043E\u0441\u0442\u044C
+      \xAB\u0427\u0430\u0441\u0442\u0438\u0447\u043D\u043E\u0433\u043E \u043E\u0441\u043B\u0435\u043F\u043B\u0435\u043D\u0438\u044F\xBB
+      \u043E\u0442 \xAB\u0420\u0430\u0437\u0432\u0435\u0434\u044B\u0432\u0430\u0442\u0435\u043B\u044C\u043D\u043E\u0433\u043E
+      \u043E\u0433\u043D\u044F\xBB \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
+      \u0432 2 \u0440\u0430\u0437\u0430."
+    _stateInfos: []
+    IsOpen: 0
+    Description: "\u042D\u0444\u0444\u0435\u043A\u0442\u0438\u0432\u043D\u043E\u0441\u0442\u044C
+      \xAB\u0427\u0430\u0441\u0442\u0438\u0447\u043D\u043E\u0433\u043E \u043E\u0441\u043B\u0435\u043F\u043B\u0435\u043D\u0438\u044F\xBB"
+    Icon: {fileID: 21300000, guid: 9abaa859cdccc5c41b6c730b64ae3810, type: 3}
+    Group: 0
+    Row: 0
+  character: {fileID: 4534754468497973439}
 --- !u!114 &3454667140215066753
 MonoBehaviour:
   m_ObjectHideFlags: 0

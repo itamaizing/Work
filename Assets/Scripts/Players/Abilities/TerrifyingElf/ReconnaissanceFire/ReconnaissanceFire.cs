@@ -37,7 +37,6 @@ public class ReconnaissanceFire : Skill
     private const float FireAuraBoostedHealth = 65f;
     private const float FireAuraWorshipperBonusDuration = 6f;
     private const float AuraSpawnYOffset = 0.1f;
-    private const float ElvenBoostWindowChance = 0.30f;
     private const float AnimationFireMoveMagnitude = 0.0001f;
 
     private const int ArcResolution = 30;
@@ -51,7 +50,6 @@ public class ReconnaissanceFire : Skill
 
     private bool _fireDarkTalent;
     private bool _fireHealthTalent;
-    private bool _partialBlindnessTalent;
     private bool _fireWorshipperTalent;
     private bool _isSkillEnableBoostLogicActiveTalent;
 
@@ -68,12 +66,18 @@ public class ReconnaissanceFire : Skill
     {
         CastDeley = 0;
         _isSkillEnableBoostLogic = true;
+        CmdSetBoostLogic(true);
     }
+
     protected override void SkillDisableBoostLogic()
     {
         CastDeley = _baseCastDelay;
         _isSkillEnableBoostLogic = false;
+        CmdSetBoostLogic(false);
     }
+
+    [Command]
+    private void CmdSetBoostLogic(bool value) => _isSkillEnableBoostLogic = value;
 
     public override void Init(SkillRenderer render, Character hero)
     {
@@ -145,8 +149,6 @@ public class ReconnaissanceFire : Skill
     public void TryStartElvenBoostWindow()
     {
         if (!_isSkillEnableBoostLogicActiveTalent) return;
-        if (UnityEngine.Random.value > ElvenBoostWindowChance) return;
-
         if (_boostWindow != null) StopCoroutine(_boostWindow);
         _boostWindow = StartCoroutine(ElvenBoostWindow());
     }
@@ -327,7 +329,6 @@ public class ReconnaissanceFire : Skill
         if (_arcRenderer != null) _arcRenderer.positionCount = 0;
         AnimCastEnded();
         if (_auraLifeCoroutine != null) StopCoroutine(_auraLifeCoroutine);
-        if (_boostWindow != null) StopCoroutine(_boostWindow);
     }
 
     #region ReconnaissanceFireAuraDarknesTalent
@@ -362,10 +363,15 @@ public class ReconnaissanceFire : Skill
     #endregion
 
     #region partialBlindnessTalent
+    
+    private bool _partialBlindnessTalent;
+
     public void partialBlindnessTalentActive(bool value)
     {
+        if(_partialBlindnessTalent == value) return;
+        
         _partialBlindnessTalent = value;
-        if (_currentFireAura != null) _currentFireAura.FireDarkTalent = _partialBlindnessTalent;
+        if (_currentFireAura != null) _currentFireAura.PartialBlindnessTalent = _partialBlindnessTalent;
     }
     #endregion
 

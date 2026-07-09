@@ -39,12 +39,23 @@ public class ShotIntoSky : Skill
 
     public void ShotsIntoSkyMagicDebuffTalentActive(bool value) => shotMagicDebuffActive = value;
     public void SetTripleShotTalentActive(bool value) => tripleShotTalentActive = value;
+    
+    private const float LengthBonusTalent = 3f;
+    
     public void ShotRadiusUpgradeActive(bool value)
     {
+        if(value == _isShotRadiusUpgradeActive) return;
         _isShotRadiusUpgradeActive = value;
 
-        if (_isShotRadiusUpgradeActive) AreaInfo.Radius *= 3;
-        else AreaInfo.Radius = _baseRadius;
+        if (_isShotRadiusUpgradeActive)
+        {
+            Attributes[SkillAttributeName.Radius].AddModifier(
+                new AttributeModifier(LengthBonusTalent, ModifierType.Percent, source: typeof(HuntressTalent_10)));
+        }
+        else
+        {
+            Attributes[SkillAttributeName.Radius].RemoveBySource(typeof(HuntressTalent_10), all: true);
+        }
     }
 
     public void SkillEnableBoostLogicActiveTalent(bool value) => _isSkillEnableBoostLogicActiveTalent = value;
@@ -163,7 +174,8 @@ public class ShotIntoSky : Skill
     {
         Vector3 localTarget = Vector3.positiveInfinity;
 
-        Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+        if (CastDeley > 0f)
+            Hero.Animator.speed = Hero.Animator.speed / CastDeley;
 
         while (float.IsPositiveInfinity(localTarget.x) && !_disactive)
         {

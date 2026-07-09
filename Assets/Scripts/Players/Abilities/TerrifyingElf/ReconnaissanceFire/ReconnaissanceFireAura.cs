@@ -17,6 +17,7 @@ public class ReconnaissanceFireAura : NetworkBehaviour
     [SerializeField] private FlameLightPulse _flameLightPulse;
     [SerializeField] private LayerMask _characterLayer;
     
+    public bool PartialBlindnessTalent { get => _partialBlindnessTalent; set => _partialBlindnessTalent = value; }
     public event Action<bool> OnStateDarkTalentChanged;
     private Character _ownerHero;
 
@@ -35,7 +36,6 @@ public class ReconnaissanceFireAura : NetworkBehaviour
     private bool stateDark;
 
     public bool FireDarkTalent { get => _fireDarkTalent; set => _fireDarkTalent = value; }
-    //public bool PartialBlindnessTalent { get => _partialBlindnessTalent; set => _partialBlindnessTalent = value; }
     public bool StateDark { get => stateDark; set => stateDark = value; }
 
     private bool IsEnemy(Character characterTarget, GameObject target)
@@ -154,8 +154,10 @@ public class ReconnaissanceFireAura : NetworkBehaviour
                     continue;
                 }
 
-                if (_partialBlindnessTalent) state.AddState(States.PartialBlindness, _partialBlindnessDuration, 0f, gameObject, "partialBlindnessTalent");
-                else state.AddState(States.PartialBlindness, _partialBlindnessDuration, 0f, gameObject, "ReconnaissanceFireAura");
+                if (_partialBlindnessTalent)
+                    state.AddState(States.PartialBlindness, _partialBlindnessDuration, 0f, gameObject, "partialBlindnessTalent");
+                else
+                    state.AddState(States.PartialBlindness, _partialBlindnessDuration, 0f, gameObject, "ReconnaissanceFireAura");
             }
 
             yield return _waitForSecond;

@@ -6,28 +6,34 @@ using UnityEngine;
 public class NinjaResources : Skill, IPassiveSkill
 {
     #region Skill
+
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => false;
     protected override IEnumerator CastJob() => null;
-    protected override void ClearData() { }
+
+    protected override void ClearData()
+    {
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved) => null;
     public override void LoadTargetData(TargetInfo targetInfo) => throw new NotImplementedException();
+
     #endregion
-    
+
     #region DeathTalent_5
 
     [SerializeField] private VampirismAura _vampirismAura;
-    
+
     private bool _isVampiricEnabled;
 
     private float _energyVampiricMultiplier = 2f;
-    
+
     public void EnableVampiric(bool value)
     {
-        if(_isVampiricEnabled == value) return;
+        if (_isVampiricEnabled == value) return;
         _isVampiricEnabled = value;
-        _vampirismAura.ActivateAura(_isVampiricEnabled,isAffectOnOwner: true);
+        _vampirismAura.ActivateAura(_isVampiricEnabled, isAffectOnOwner: true);
     }
 
     #endregion
@@ -37,10 +43,10 @@ public class NinjaResources : Skill, IPassiveSkill
     private bool _isVampiricIncreased;
 
     public bool IsVampricIncreased => _isVampiricIncreased;
-    
+
     public void EnableIncreasedVampiric(bool value)
     {
-        if(_isVampiricIncreased == value) return;
+        if (_isVampiricIncreased == value) return;
         _isVampiricIncreased = value;
         CmdEnableIncreasedVampiric(_isVampiricIncreased);
     }
@@ -52,12 +58,13 @@ public class NinjaResources : Skill, IPassiveSkill
     }
 
     #endregion
-    
+
     private float _accumulatedDamageForRune;
     private const float DamagePerRune = 100f;
     private const float EnergyRestorePercent = 0.2f;
-    
+
     #region Talent
+
     private bool _isIceRuneTalent;
     private bool _isHardenedFleshTalent;
     private bool _isFrozenCrit;
@@ -65,7 +72,7 @@ public class NinjaResources : Skill, IPassiveSkill
 
     public void RuneRegenSpeed(bool value)
     {
-        if(_isRuneRegenSpeed == value) return;
+        if (_isRuneRegenSpeed == value) return;
         _isRuneRegenSpeed = value;
 
         if (_isRuneRegenSpeed)
@@ -80,6 +87,7 @@ public class NinjaResources : Skill, IPassiveSkill
                 StopCoroutine(_regenRoutine);
                 _regenRoutine = null;
             }
+
             if (Hero.TryGetResource(ResourceType.Rune) is RuneComponent rune)
                 rune.SetExternalRegenMultiplier(1f);
         }
@@ -87,7 +95,7 @@ public class NinjaResources : Skill, IPassiveSkill
 
     public void FrozenCrit(bool value)
     {
-        if(value == _isFrozenCrit) return;
+        if (value == _isFrozenCrit) return;
         _isFrozenCrit = value;
     }
 
@@ -102,14 +110,15 @@ public class NinjaResources : Skill, IPassiveSkill
         _isHardenedFleshTalent = value;
         //AbilityInfoHero.FinalDescription = value ? AbilityInfoHero.Description + $" {text}" : AbilityInfoHero.Description;
     }
+
     #endregion
-    
+
     private float _nextEnergyDamageMultiplier = 1f;
-    private Skill  _multiplierOwner = null;
-    
+    private Skill _multiplierOwner = null;
+
     [Command]
     public void CmdSetNextEnergyDamageMultiplier(float value) => _nextEnergyDamageMultiplier = value;
-    
+
     private Coroutine _regenRoutine;
 
     public override void Init(SkillRenderer render, Character hero)
@@ -126,34 +135,34 @@ public class NinjaResources : Skill, IPassiveSkill
         {
             rune.OnRuneSpent -= OnRuneSpent;
         }
-        
+
         UnsubscribeForAdditionalEnergyDamage();
     }
 
     #region AddCritForFrostingAndFrozen
 
-    private const float FrostingDamageBonus    = 1.10f;
-    private const float FrozenDamageBonus      = 1.10f;
-    private const float FrostingCritChance     = 0.15f;
-    private const float FrozenCritChance       = 0.30f;
-    private const float CritMultiplierMin      = 1.8f;
-    private const float CritMultiplierMax      = 2.3f;
+    private const float FrostingDamageBonus = 1.10f;
+    private const float FrozenDamageBonus = 1.10f;
+    private const float FrostingCritChance = 0.15f;
+    private const float FrozenCritChance = 0.30f;
+    private const float CritMultiplierMin = 1.8f;
+    private const float CritMultiplierMax = 2.3f;
 
     private void ModifyFrostingAndFrozenCrit(ref Damage damage, Skill skill, GameObject target)
     {
-        if(!_isFrozenCrit) return;
+        if (!_isFrozenCrit) return;
         if (skill.Hero != Hero) return;
         if (target == null) return;
         var character = target.GetComponent<Character>();
         if (character == null) return;
 
         bool hasFrosting = character.CharacterState.CheckForState(States.Frosting);
-        bool hasFrozen   = character.CharacterState.CheckForState(States.Frozen);
+        bool hasFrozen = character.CharacterState.CheckForState(States.Frozen);
 
         if (!hasFrosting && !hasFrozen) return;
 
         if (hasFrosting) damage.Value *= FrostingDamageBonus;
-        if (hasFrozen)   damage.Value *= FrozenDamageBonus;
+        if (hasFrozen) damage.Value *= FrozenDamageBonus;
 
         float critChance = hasFrozen ? FrozenCritChance : FrostingCritChance;
 
@@ -173,6 +182,7 @@ public class NinjaResources : Skill, IPassiveSkill
             //Debug.LogError("Hero was not initialized yet", gameObject);
             return;
         }
+
         //Debug.LogError("Hero was initialized", gameObject);
         Hero.Health.DamageTaken += HandleDamageTaken;
 
@@ -180,7 +190,7 @@ public class NinjaResources : Skill, IPassiveSkill
         {
             rune.OnRuneSpent += OnRuneSpent;
         }
-        
+
         SubscribeForAdditionalEnergyDamage();
     }
 
@@ -195,7 +205,7 @@ public class NinjaResources : Skill, IPassiveSkill
             }
         }
     }
-    
+
     private void UnsubscribeForAdditionalEnergyDamage()
     {
         foreach (var energySkill in _hero.Abilities.Abilities)
@@ -296,7 +306,8 @@ public class NinjaResources : Skill, IPassiveSkill
             {
                 float bonus = CalculateRuneRegenBonus();
 
-                if (Hero.TryGetResource(ResourceType.Rune) is RuneComponent rune) rune.SetExternalRegenMultiplier(1f + bonus);
+                if (Hero.TryGetResource(ResourceType.Rune) is RuneComponent rune)
+                    rune.SetExternalRegenMultiplier(1f + bonus);
             }
             else
             {
@@ -308,36 +319,44 @@ public class NinjaResources : Skill, IPassiveSkill
     }
 
     #region RepeatedFrosting
-    
+
     private bool _isRepeatedFrost;
-    public bool IsRepeatedFrost { get => _isRepeatedFrost; set => _isRepeatedFrost = value; }
+
+    public bool IsRepeatedFrost
+    {
+        get => _isRepeatedFrost;
+        set => _isRepeatedFrost = value;
+    }
+
     public void RepeatedFrost(bool value) => _isRepeatedFrost = value;
 
     public void AddRepeatedFrosting(GameObject target)
     {
-        if(isClient)
+        if (isClient)
             CmdAddRepeatingFrost(target);
-        
-        if(isServer && target)
-            target.GetComponent<CharacterState>().AddState(States.Frosting, 2, 0f, Schools.Water, _hero.gameObject, "Frosting");
+
+        if (isServer && target)
+            target.GetComponent<CharacterState>()
+                .AddState(States.Frosting, 2, 0f, Schools.Water, _hero.gameObject, "Frosting");
     }
 
     [Command]
     private void CmdAddRepeatingFrost(GameObject target)
     {
-        if(!target) return;
-        target.GetComponent<CharacterState>().AddState(States.Frosting, 2, 0f, Schools.Water, _hero.gameObject, "Frosting");
+        if (!target) return;
+        target.GetComponent<CharacterState>()
+            .AddState(States.Frosting, 2, 0f, Schools.Water, _hero.gameObject, "Frosting");
     }
 
-    public void AddRepeatedFrozen(GameObject target,float duration)
+    public void AddRepeatedFrozen(GameObject target, float duration)
     {
-        CmdAddRepeatingFrozen(target,duration);
+        CmdAddRepeatingFrozen(target, duration);
     }
-    
+
     [Command]
-    private void CmdAddRepeatingFrozen(GameObject target,float duration)
+    private void CmdAddRepeatingFrozen(GameObject target, float duration)
     {
-        if(!target) return;
+        if (!target) return;
         var state = target.GetComponent<CharacterState>();
         state.AddState(States.Frozen, duration, 0f, Schools.Water, _hero.gameObject, "Frosting");
         if (state.CheckForState(States.Frosting))
@@ -349,12 +368,12 @@ public class NinjaResources : Skill, IPassiveSkill
     [ClientRpc]
     private void TargetRemoveFrosting(GameObject target)
     {
-        if(!target) return;
+        if (!target) return;
         var state = target.GetComponent<CharacterState>();
         state.CmdRemoveState(States.Frosting);
     }
 
-    
+
     #endregion
 
     #region DeepFrosting
@@ -364,7 +383,7 @@ public class NinjaResources : Skill, IPassiveSkill
 
     public void EnableDeepFrosting(bool value)
     {
-        if(value == _isDeepFrosting) return;
+        if (value == _isDeepFrosting) return;
 
         _isDeepFrosting = value;
         CmdSetDeepFrosting(_isDeepFrosting);

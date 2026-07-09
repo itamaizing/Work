@@ -124,7 +124,8 @@ public class ShotsIntoSky : Skill
     {
         Vector3 localTarget = Vector3.positiveInfinity;
 
-        Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+        if (CastDeley > 0f)
+            Hero.Animator.speed = Hero.Animator.speed / CastDeley;
 
         while (float.IsPositiveInfinity(localTarget.x) && !_disactive)
         {

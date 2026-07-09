@@ -9,6 +9,7 @@ public class ElvenSkill : RefreshingState
     private float _baseDuration;
 
     private const float PercentBonusPerStack = 0.1f;
+    private const float ElvenBoostWindowChance = 0.3f;
 
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override States State => States.ElvenSkill;
@@ -29,8 +30,18 @@ public class ElvenSkill : RefreshingState
 
         AddStack();
 
+        _aura = character.GetComponent<TerrifyingElfAura>();
+        if (_aura != null && _aura.ElvenSkillEffect != null)
+        {
+            _elvenSkillEffect = _aura.ElvenSkillEffect;
+            _elvenSkillEffect.SetActive(true);
+        }
+
+        abilities.GetSkill<ElvenReflexes>().Disactive = false;
+        
         if (abilities != null)
         {
+            if (Random.value > ElvenBoostWindowChance) return;
             foreach (var skill in abilities.Abilities)
             {
                 if (skill == null) continue;
@@ -40,21 +51,12 @@ public class ElvenSkill : RefreshingState
                 else
                     skill.CastStarted += NotPhysCastStarted;
 
-                if (skill is ReconnaissanceFire reconnaissanceFire) reconnaissanceFire.TryStartElvenBoostWindow();
-                if (skill is ShotIntoSky shotIntoSky) shotIntoSky.TryStartBoost();
-                if (skill is ShotsIntoSky shotsIntoSky) shotsIntoSky.TryStartBoost();
-                if (skill is GroundTrap groundTrap) groundTrap.TryStartBoost();
+                if (skill is ReconnaissanceFire rf) rf.TryStartElvenBoostWindow();
+                if (skill is ShotIntoSky si) si.TryStartBoost();
+                if (skill is ShotsIntoSky sis) sis.TryStartBoost();
+                if (skill is GroundTrap gt) gt.TryStartBoost();
             }
         }
-
-        _aura = character.GetComponent<TerrifyingElfAura>();
-        if (_aura != null && _aura.ElvenSkillEffect != null)
-        {
-            _elvenSkillEffect = _aura.ElvenSkillEffect;
-            _elvenSkillEffect.SetActive(true);
-        }
-
-        abilities.GetSkill<ElvenReflexes>().Disactive = false;
     }
 
     public override bool Stack(float time)
@@ -62,10 +64,23 @@ public class ElvenSkill : RefreshingState
         duration = time;
 
         if (currentStacksCount >= MaxStacksCount)
-        {
             return false;
-        }
+
         AddStack();
+
+        if (abilities != null)
+        {
+            if (Random.value > ElvenBoostWindowChance) return true;
+            foreach (var skill in abilities.Abilities)
+            {
+                if (skill == null) continue;
+                if (skill is ReconnaissanceFire rf) rf.TryStartElvenBoostWindow();
+                if (skill is ShotIntoSky si) si.TryStartBoost();
+                if (skill is ShotsIntoSky sis) sis.TryStartBoost();
+                if (skill is GroundTrap gt) gt.TryStartBoost();
+            }
+        }
+
         return true;
     }
 

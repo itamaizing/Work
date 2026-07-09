@@ -5,39 +5,45 @@ using System;
 
 public class TerrifyingElfAura : Skill
 {
-    [Header("Chances")]
-    [SerializeField, Range(0f, 100f)] private float calmnessChance = 10f;
+    [Header("Chances")] [SerializeField, Range(0f, 100f)]
+    private float calmnessChance = 10f;
+
     [SerializeField, Range(0, 100)] private float elvenSkillFromPhysChance = 10f;
     [SerializeField, Range(0, 100)] private float calmnessOnElvenSkillChance = 30f;
     [SerializeField, Range(0f, 100f)] private float huntressMarkApplyChance = 5f;
     private const float innerDarknessChance = 20f;
 
-    [Header("Durations")]
-    [SerializeField] private float durationCalmess;
+    [Header("Durations")] [SerializeField] private float durationCalmess;
     [SerializeField] private float durationHuntressMark;
     [SerializeField] private float durationElvenSkill;
 
-    [Header("Effects")]
-    [SerializeField] private GameObject elvenSkillEffect;
+    [Header("Effects")] [SerializeField] private GameObject elvenSkillEffect;
 
-    [Header("Radius")]
-    [SerializeField] private float radiusTreeCalmess = 12f;
+    [Header("Radius")] [SerializeField] private float radiusTreeCalmess = 12f;
 
-    [Header("Skills")]
-    [SerializeField] private ReconnaissanceFire reconnaissanceFire;
+    [Header("Skills")] [SerializeField] private ReconnaissanceFire reconnaissanceFire;
 
     #region Calmness aura
+
     [SerializeField] private float _auraTick = 1f;
     [SerializeField] private LayerMask _characterLayer;
     private Coroutine _calmnessAuraRoutine;
+
     #endregion
+
     #region Physical skill crit
+
     [SerializeField] private Shot _shot;
     [SerializeField] private ShotIntoSky _shotIntoSky;
     [SerializeField] private ShotDarkness _shotDarkness;
+
     #endregion
 
-    public GameObject ElvenSkillEffect { get => elvenSkillEffect; set => elvenSkillEffect = value; }
+    public GameObject ElvenSkillEffect
+    {
+        get => elvenSkillEffect;
+        set => elvenSkillEffect = value;
+    }
 
     private SkillManager _skillManager;
 
@@ -67,10 +73,12 @@ public class TerrifyingElfAura : Skill
 
     public void CalmnessTalentActive(bool value)
     {
-        if(value == calmnessTalent) return;
+        if (value == calmnessTalent) return;
         calmnessTalent = value;
     }
+
     public void ElvenSkillPhysDamageHealthChance(bool value) => _isElvenSkillPhysDamageHealthChance = value;
+
     public void CalmnessAura(bool value)
     {
         _isCalmnessAura = value;
@@ -91,6 +99,7 @@ public class TerrifyingElfAura : Skill
             }
         }
     }
+
     #endregion
 
     private Skill currentSkill;
@@ -100,16 +109,24 @@ public class TerrifyingElfAura : Skill
     private int _shotCounter = 0;
     private Character _lastTarget;
 
-    public bool IsReductionRecharge { get => _isReductionRecharge; }
-    public bool IsElvenSkillPhysDamageHealthChance { get => _isElvenSkillPhysDamageHealthChance; }
+    public bool IsReductionRecharge
+    {
+        get => _isReductionRecharge;
+    }
+
+    public bool IsElvenSkillPhysDamageHealthChance
+    {
+        get => _isElvenSkillPhysDamageHealthChance;
+    }
 
     public override void Init(SkillRenderer render, Character hero)
     {
         base.Init(render, hero);
         _skillManager = _hero.Abilities;
-        _heroMana =  _hero.TryGetResource(ResourceType.Mana) as Mana;
-        
-        if (_skillManager != null && _skillManager.SkillQueue != null) _skillManager.SkillQueue.SkillAdded += OnSkillAdded;
+        _heroMana = _hero.TryGetResource(ResourceType.Mana) as Mana;
+
+        if (_skillManager != null && _skillManager.SkillQueue != null)
+            _skillManager.SkillQueue.SkillAdded += OnSkillAdded;
         if (hero != null && hero.DamageTracker != null) hero.DamageTracker.OnDamageTracked += OnDamageTracked;
         if (manaAbsorptionPhysicalTalent) hero.DamageTracker.OnDamageTracked += OnDamageDealt;
         _heroMana.ValueChanged += OnManaChanged;
@@ -127,6 +144,8 @@ public class TerrifyingElfAura : Skill
         if (_heroMana != null) _heroMana.ValueChanged -= OnManaChanged;
         _hero.DamageTracker.OnDamageTracked -= OnDamageDealt;
         if (_hero != null && _hero.DamageTracker != null) _hero.DamageTracker.OnDamageTracked -= OnDamageTracked;
+
+        StopManaRegenBoost();
     }
 
     private void OnSkillAdded(Skill skill)
@@ -165,7 +184,8 @@ public class TerrifyingElfAura : Skill
 
                 if (isCalmnessChance)
                 {
-                    character.CharacterState.CmdAddState(States.Calmness, durationCalmess, 0f, this.gameObject, currentSkill.Name);
+                    character.CharacterState.CmdAddState(States.Calmness, durationCalmess, 0f, this.gameObject,
+                        currentSkill.Name);
 
                     if (treeRadiusCalmessTalent)
                     {
@@ -230,7 +250,8 @@ public class TerrifyingElfAura : Skill
             return;
 
         var character = currentSkill.Hero;
-        var targets = currentSkill.Targeting.GetClosestTargets(currentSkill.transform.position, currentSkill.AreaInfo.Radius);
+        var targets =
+            currentSkill.Targeting.GetClosestTargets(currentSkill.transform.position, currentSkill.AreaInfo.Radius);
         if (targets == null || targets.Count == 0) return;
 
         foreach (var target in targets)
@@ -241,7 +262,8 @@ public class TerrifyingElfAura : Skill
 
                 if (isCalmnessChance)
                 {
-                    character.CharacterState.CmdAddState(States.Calmness, durationCalmess, 0f, target.Character.gameObject, currentSkill.Name);
+                    character.CharacterState.CmdAddState(States.Calmness, durationCalmess, 0f,
+                        target.Character.gameObject, currentSkill.Name);
 
                     if (treeRadiusCalmessTalent)
                     {
@@ -267,10 +289,10 @@ public class TerrifyingElfAura : Skill
 
     public void ElvenSkillPhysicsTalent(bool value)
     {
-        if(elvenSkillPhysicsTalent == value) return;
+        if (elvenSkillPhysicsTalent == value) return;
         elvenSkillPhysicsTalent = value;
     }
-        
+
     public void CalmnessOnElvenSkillTalent(bool value) => calmnessOnElvenSkillTalent = value;
     public void SuppressionManaAbsorption(bool value) => suppressionManaAbsorptionTalent = value;
 
@@ -296,21 +318,27 @@ public class TerrifyingElfAura : Skill
             if (elvenSkillPhysicsTalent && UnityEngine.Random.Range(0f, 100f) <= elvenSkillFromPhysChance)
                 selfState.AddState(States.ElvenSkill, durationElvenSkill, 0f, gameObject, "TerrifyingElfAura");
 
-            else if (calmnessOnElvenSkillTalent && selfState.CheckForState(States.ElvenSkill) && UnityEngine.Random.Range(0f, 100f) <= calmnessOnElvenSkillChance)
+            else if (calmnessOnElvenSkillTalent && selfState.CheckForState(States.ElvenSkill) &&
+                     UnityEngine.Random.Range(0f, 100f) <= calmnessOnElvenSkillChance)
                 selfState.AddState(States.Calmness, durationCalmess, 0f, gameObject, "TerrifyingElfAura");
 
             //if (huntressMarkPhysicsTalent && UnityEngine.Random.Range(0f, 100f) <= huntressMarkApplyChance && target != null && target.TryGetComponent<CharacterState>(out var victimState))
             //    victimState.AddState(States.HuntressMark, durationHuntressMark, 0f, gameObject, "HuntressMark");
 
-            if (suppressionManaAbsorptionTalent && selfState.GetState(States.Suppression) is SuppressionState suppression && suppression.CurrentStacksCount > 0 && _hero.TryGetResource(ResourceType.Mana) is Mana mana)
+            if (suppressionManaAbsorptionTalent &&
+                selfState.GetState(States.Suppression) is SuppressionState suppression &&
+                suppression.CurrentStacksCount > 0 && _hero.TryGetResource(ResourceType.Mana) is Mana mana)
                 mana.Add(damage.Value * 0.25f * suppression.CurrentStacksCount);
 
             if (manaAbsorptionPhysicalTalent) OnDamageDealt(damage, target);
 
-            if (_isSpellAddInnerDarkness && damage.Type == DamageType.Magical && target != null && target.TryGetComponent<Character>(out var targetCharacter))  
+            if (_isSpellAddInnerDarkness && damage.Type == DamageType.Magical && target != null &&
+                target.TryGetComponent<Character>(out var targetCharacter))
             {
                 float roll = UnityEngine.Random.Range(0f, 100f);
-                if (roll <= innerDarknessChance) targetCharacter.CharacterState.AddState(States.InnerDarkness, durationCalmess, 0f, _hero.gameObject, "TerrifyingElfAura");
+                if (roll <= innerDarknessChance)
+                    targetCharacter.CharacterState.AddState(States.InnerDarkness, durationCalmess, 0f, _hero.gameObject,
+                        "TerrifyingElfAura");
             }
         }
     }
@@ -394,19 +422,21 @@ public class TerrifyingElfAura : Skill
     {
         if (!elvenSkillTalent || _hero == null || _hero.CharacterState == null || newValue > 0) return;
 
-        if(isClient)
-            _hero.CharacterState.CmdAddState(States.ElvenSkill, durationElvenSkill, 0f, gameObject, "TerrifyingElfAura");
+        if (isClient)
+            _hero.CharacterState.CmdAddState(States.ElvenSkill, durationElvenSkill, 0f, gameObject,
+                "TerrifyingElfAura");
     }
 
     public void ElvenSkillTalent(bool value)
     {
-        if(value == elvenSkillTalent) return;
+        if (value == elvenSkillTalent) return;
         elvenSkillTalent = value;
     }
 
     #endregion
 
     #region Helpers
+
     private int GetTreesCountInRadius(float radius)
     {
         var trees = FindObjectsOfType<Tree>();
@@ -418,6 +448,7 @@ public class TerrifyingElfAura : Skill
                 count++;
             }
         }
+
         return count;
     }
 
@@ -433,6 +464,7 @@ public class TerrifyingElfAura : Skill
             calmness.UpdateTreesCount(treesCount);
         }
     }
+
     #endregion
 
     #region Skill
@@ -444,6 +476,107 @@ public class TerrifyingElfAura : Skill
 
     protected override int AnimTriggerCastDelay { get; }
     protected override int AnimTriggerCast { get; }
+
+    #endregion
+
+    #region ManaIncreasedRegen
+
+    private bool _isManaRegenIncreased;
+    private Coroutine _manaWatchRoutine;
+    private Coroutine _manaRegenRoutine;
+
+    private const float ManaRegenBoostedValue = 100f;
+    private const float ManaRegenIdleTime = 6f;
+    private const float ManaWatchInterval = 0.1f;
+
+    public void IncreaseManaRegen(bool value)
+    {
+        if (_isManaRegenIncreased == value) return;
+        _isManaRegenIncreased = value;
+
+        if (_isManaRegenIncreased)
+        {
+            if (_manaWatchRoutine != null) StopCoroutine(_manaWatchRoutine);
+            _manaWatchRoutine = StartCoroutine(ManaWatcher());
+        }
+        else
+        {
+            StopManaRegenBoost();
+        }
+    }
+
+    private IEnumerator ManaWatcher()
+    {
+        var wait = new WaitForSeconds(ManaWatchInterval);
+        float prevMana = GetCurrentMana();
+
+        if (_manaRegenRoutine != null) StopCoroutine(_manaRegenRoutine);
+        _manaRegenRoutine = StartCoroutine(ManaRegenWatcher());
+
+        while (_isManaRegenIncreased)
+        {
+            yield return wait;
+
+            float currentMana = GetCurrentMana();
+
+            if (currentMana < prevMana - 0.01f)
+            {
+                ApplyManaRegenBoost(false);
+
+                if (_manaRegenRoutine != null) StopCoroutine(_manaRegenRoutine);
+                _manaRegenRoutine = StartCoroutine(ManaRegenWatcher());
+            }
+
+            prevMana = currentMana;
+        }
+
+        _manaWatchRoutine = null;
+    }
+
+    private IEnumerator ManaRegenWatcher()
+    {
+        yield return new WaitForSeconds(ManaRegenIdleTime);
+        ApplyManaRegenBoost(true);
+        _manaRegenRoutine = null;
+    }
+
+    private void ApplyManaRegenBoost(bool active)
+    {
+        if (Hero.TryGetResource(ResourceType.Mana) is not Resource mana) return;
+
+        mana.RemoveModifierBySource(ResourceAttributeName.Regen, this, all: true);
+
+        if (active)
+        {
+            float baseRegen = mana.Attr_RegenValue?.GetValue() ?? 0f;
+            float flatBonus = ManaRegenBoostedValue - baseRegen;
+            if (flatBonus > 0f)
+                mana.AddModifier(ResourceAttributeName.Regen,
+                    new AttributeModifier(flatBonus, ModifierType.Flat, source: this));
+        }
+    }
+
+    private float GetCurrentMana()
+    {
+        return Hero.TryGetResource(ResourceType.Mana) is Resource mana ? mana.CurrentValue : 0f;
+    }
+
+    private void StopManaRegenBoost()
+    {
+        if (_manaWatchRoutine != null)
+        {
+            StopCoroutine(_manaWatchRoutine);
+            _manaWatchRoutine = null;
+        }
+
+        if (_manaRegenRoutine != null)
+        {
+            StopCoroutine(_manaRegenRoutine);
+            _manaRegenRoutine = null;
+        }
+
+        ApplyManaRegenBoost(false);
+    }
 
     #endregion
 
