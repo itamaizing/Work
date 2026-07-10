@@ -15,6 +15,8 @@ public class PullingHealth : Skill
     [SerializeField] private float _tickInterval;
     [SerializeField] private AudioClip _audioClip;
     [SerializeField] private Ghost _ghostSkill;
+    
+    [SerializeField] private float _chainPathWidth = 3f;
 
     private GameObject _cachedTarget;
     private AudioSource _audioSource;
@@ -41,7 +43,7 @@ public class PullingHealth : Skill
     private const int MinManaToStream = 2;
     private const float GhostChainRangeStep1 = 3f;
     private const float GhostChainRangeStep2 = 6f;
-    private const float MaxGhostRadiusIncrease = 4f;
+    private const float MaxGhostRadiusIncrease = 6f;
     private const float MaxPositionShift = 1f;
     private const float MaxGhost = 2f;
 
@@ -50,7 +52,7 @@ public class PullingHealth : Skill
     private const int GhostsToAddAtFirstThreshold = 1;
     private const int GhostsToAddAtSecondThreshold = 2;
     private const int GhostsToAddDefault = 0;
-    private const float RadiusIncreasePerGhost = 2f;
+    private const float RadiusIncreasePerGhost = 3f;
     private const float SearchTargetRadius = 1f;
 
     private const string PullingHealthCastDelay = "PullingHealthCastDelay";
@@ -143,52 +145,108 @@ public class PullingHealth : Skill
     {
         if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
 
-        if (_pullingHealthThroughGhosts) UpdateRadiusBasedOnGhosts();
+        //if (_pullingHealthThroughGhosts) UpdateRadiusBasedOnGhostsAndTrees();
     }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (Targeting.GetTempTarget()?.Targetable == null)
+        while (true)
         {
+            Vector3 mousePoint = Targeting.GetMousePoint();
+
+            if (_pullingHealthThroughGhosts)
+            {
+                Collider[] hoverHits = Physics.OverlapSphere(mousePoint, SearchTargetRadius);
+                Character hoveredCharacter = null;
+                foreach (var h in hoverHits)
+                {
+                    if (h.TryGetComponent<Character>(out var c) && c != Hero
+                                                                && !IsAllyTarget(c))
+                    {
+                        hoveredCharacter = c;
+                        break;
+                    }
+                }
+
+                if (hoveredCharacter != null)
+                    UpdateRadiusBasedOnGhosts(hoveredCharacter.transform.position);
+                else
+                {
+                    AreaInfo.Radius = _baseRadius;
+                    if (_skillRender != null) _skillRender.DrawRadius(AreaInfo.Radius);
+                }
+            }
+
             if (GetMouseButton)
             {
-                Targeting.FindTempTarget(Targeting.GetMousePoint(), SearchTargetRadius);
+                Targeting.FindTempTarget(mousePoint, SearchTargetRadius);
 
-                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
+                if (Targeting.GetTempTarget()?.Targetable != null
+                    && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
                 {
-                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
-
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero)
+                    {
+                        Targeting.ClearTempTarget();
+                    }
                     else
                     {
-                        if (Targeting.GetTempTarget()?.Targetable is Character character && character.SelectedCircle != null)
+                        if (Targeting.GetTempTarget()?.Targetable is Character character
+                            && character.SelectedCircle != null)
                         {
                             character.SelectedCircle.IsActive = false;
                             var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
                             if (multiMagic != null) multiMagic.LastTarget = character;
                         }
 
-                        if (_pullingHealthThroughGhosts) UpdateRadiusBasedOnGhosts();
+                        if (_pullingHealthThroughGhosts)
+                            UpdateRadiusBasedOnGhosts(Targeting.GetTempTarget().Transform.position);
 
                         break;
                     }
                 }
             }
+
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
-
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Targetable);
         callbackDataSaved(targetInfo);
     }
 
-    private void UpdateRadiusBasedOnGhosts()
+    private void UpdateRadiusBasedOnGhosts(Vector3 targetPosition)
     {
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius);
-        int ghostCount = 0;
-        foreach (var collider in hitColliders) if (collider.TryGetComponent<GhostAura>(out var ghostAura)) ghostCount++;
-        AreaInfo.Radius = _baseRadius + ghostCount * RadiusIncreasePerGhost;
-        AreaInfo.Radius = Mathf.Clamp(AreaInfo.Radius, _baseRadius, _baseRadius + MaxGhostRadiusIncrease);
+        Vector3 heroPos = transform.position;
+        Vector3 direction = targetPosition - heroPos;
+        float distanceToTarget = direction.magnitude;
+
+        int objectCount = 0;
+        float searchRadius = _baseRadius + MaxGhostRadiusIncrease;
+        Collider[] hitColliders = Physics.OverlapSphere(heroPos, searchRadius);
+
+        foreach (var collider in hitColliders)
+        {
+            bool isGhost = collider.TryGetComponent<GhostAura>(out _);
+            bool isTree = collider.TryGetComponent<GrowTreeAura>(out _);
+            if (!isGhost && !isTree) continue;
+
+            Vector3 toObject = collider.transform.position - heroPos;
+            float projection = Vector3.Dot(toObject, direction.normalized);
+
+            if (projection < 0f || projection > distanceToTarget) continue;
+
+            Vector3 closestPoint = heroPos + direction.normalized * projection;
+            float lateralDistance = Vector3.Distance(collider.transform.position, closestPoint);
+            if (lateralDistance > _chainPathWidth) continue;
+
+            objectCount++;
+        }
+
+        AreaInfo.Radius = Mathf.Clamp(
+            _baseRadius + objectCount * RadiusIncreasePerGhost,
+            _baseRadius,
+            _baseRadius + MaxGhostRadiusIncrease);
+
         if (_skillRender != null) _skillRender.DrawRadius(AreaInfo.Radius);
     }
 

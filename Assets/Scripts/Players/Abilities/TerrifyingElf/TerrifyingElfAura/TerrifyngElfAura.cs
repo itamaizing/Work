@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 public class TerrifyingElfAura : Skill
 {
@@ -27,7 +28,6 @@ public class TerrifyingElfAura : Skill
 
     [SerializeField] private float _auraTick = 1f;
     [SerializeField] private LayerMask _characterLayer;
-    private Coroutine _calmnessAuraRoutine;
 
     #endregion
 
@@ -63,7 +63,7 @@ public class TerrifyingElfAura : Skill
     private bool _isThirdShotRow;
     private bool _isCalmnessAura;
     private bool _isSpellAddInnerDarkness;
-
+    
     public bool IsThirdShotRowActive => _isThirdShotRow;
 
     public void SpellAddInnerDarkness(bool value) => _isSpellAddInnerDarkness = value;
@@ -79,26 +79,159 @@ public class TerrifyingElfAura : Skill
 
     public void ElvenSkillPhysDamageHealthChance(bool value) => _isElvenSkillPhysDamageHealthChance = value;
 
+    #region CalmlessOnAllyTalent
+    
+    private bool _isCalmnessAllyTalent;
+    private readonly HashSet<Character> _trackedAllies = new();
+    private int _totalAllyCalmnessStacks = 0;
+    private const float ManaPerCalmnessStack = 0.03f;
+    private Coroutine _allyCalmnessTracker;
     public void CalmnessAura(bool value)
     {
-        _isCalmnessAura = value;
+        _isCalmnessAllyTalent = value;
 
-        if (!isServer) return;
-
-        if (_isCalmnessAura)
+        if (!value)
         {
-            if (_calmnessAuraRoutine == null)
-                _calmnessAuraRoutine = StartCoroutine(CalmnessAuraRoutine());
-        }
-        else
-        {
-            if (_calmnessAuraRoutine != null)
+            if (_allyCalmnessTracker != null)
             {
-                StopCoroutine(_calmnessAuraRoutine);
-                _calmnessAuraRoutine = null;
+                StopCoroutine(_allyCalmnessTracker);
+                _allyCalmnessTracker = null;
             }
+            _trackedAllies.Clear();
+            _totalAllyCalmnessStacks = 0;
+            if(isClient)
+                CmdUpdateManaMaxModifier(_totalAllyCalmnessStacks);
         }
     }
+
+    private void ApplyCalmnessTalent()
+    {
+        if (!calmnessTalent || currentSkill == null) return;
+
+        if (currentSkill.Info.AbilityForm == AbilityForm.Magic)
+        {
+            var character = currentSkill.Hero;
+            if (character != null && character.CharacterState != null)
+            {
+                bool isCalmnessChance = UnityEngine.Random.Range(0f, 100f) <= calmnessChance;
+
+                if (isCalmnessChance)
+                {
+                    character.CharacterState.CmdAddState(States.Calmness, durationCalmess, 0f,
+                        this.gameObject, currentSkill.Name);
+
+                    if (treeRadiusCalmessTalent)
+                    {
+                        int treesCount = GetTreesCountInRadius(radiusTreeCalmess);
+                        StartCoroutine(DelayAndUpdateCalmness(character.CharacterState, treesCount));
+                    }
+
+                    if (_isCalmnessAllyTalent)
+                        ApplyCalmnessToAllies(durationCalmess);
+                }
+            }
+        }
+
+        currentSkill = null;
+    }
+
+    private void ApplyCalmnessToAllies(float duration)
+    {
+        if (_hero == null) return;
+
+        float visionRange = _hero.VisionComponent.VisionRange;
+        var colliders = Physics.OverlapSphere(_hero.transform.position, visionRange, _characterLayer);
+
+        foreach (var col in colliders)
+        {
+            if (!col.TryGetComponent<Character>(out var target)) continue;
+            if (target == _hero) continue;
+            if (target.CharacterState == null) continue;
+
+            target.CharacterState.AddState(States.Calmness, duration, 0f, _hero.gameObject, "CalmnessAura");
+            _trackedAllies.Add(target);
+        }
+
+        if (_trackedAllies.Count > 0 && _allyCalmnessTracker == null)
+            _allyCalmnessTracker = StartCoroutine(TrackAllyCalmnessStacks());
+    }
+
+    [Command]
+    private void CmdAddCalmness(GameObject target, float duration)
+    {
+        target.GetComponent<CharacterState>().AddState(States.Calmness, duration, 0f, _hero.gameObject, "CalmnessAura");
+    }
+    
+    private IEnumerator TrackAllyCalmnessStacks()
+    {
+        var wait = new WaitForSeconds(0.5f);
+
+        while (_isCalmnessAllyTalent && _trackedAllies.Count > 0)
+        {
+            RecalcTotalAllyStacks();
+            yield return wait;
+        }
+
+        if (_totalAllyCalmnessStacks != 0)
+        {
+            _totalAllyCalmnessStacks = 0;
+            CmdUpdateManaMaxModifier(_totalAllyCalmnessStacks);
+        }
+        _allyCalmnessTracker = null;
+    }
+
+    private void RecalcTotalAllyStacks()
+    {
+        int total = 0;
+        var toRemove = new List<Character>();
+
+        foreach (var ally in _trackedAllies)
+        {
+            if (ally == null)
+            {
+                toRemove.Add(ally);
+                continue;
+            }
+
+            if (!ally.CharacterState.CheckForState(States.Calmness))
+            {
+                toRemove.Add(ally);
+                continue;
+            }
+
+            if (ally.CharacterState.GetState(States.Calmness) is Calmness state) 
+            {
+                total += state.CurrentStacksCount;
+            }
+        }
+        foreach (var key in toRemove)
+        {
+            _trackedAllies.Remove(key);
+        }
+
+        if (total != _totalAllyCalmnessStacks) 
+        {
+            _totalAllyCalmnessStacks = total;
+            CmdUpdateManaMaxModifier(_totalAllyCalmnessStacks);
+        }
+    }
+
+    [Command]
+    private void CmdUpdateManaMaxModifier(int totalAllyCount)
+    {
+        if (Hero?.TryGetResource(ResourceType.Mana) is not Resource mana) return;
+        
+        mana.RemoveModifierBySource(ResourceAttributeName.MaxValue, this, all: true);
+
+        if (totalAllyCount > 0)
+        {
+            float bonus = ManaPerCalmnessStack * totalAllyCount;
+            mana.AddModifier(ResourceAttributeName.MaxValue,
+                new AttributeModifier(bonus, ModifierType.Percent, source: this));
+        }
+    }
+
+    #endregion
 
     #endregion
 
@@ -168,79 +301,7 @@ public class TerrifyingElfAura : Skill
 
     #endregion
 
-    #region CalmnessTalent
-
-
-    private void ApplyCalmnessTalent()
-    {
-        if (!calmnessTalent || currentSkill == null) return;
-
-        if (currentSkill.Info.AbilityForm == AbilityForm.Magic)
-        {
-            var character = currentSkill.Hero;
-            if (character != null && character.CharacterState != null)
-            {
-                bool isCalmnessChance = UnityEngine.Random.Range(0f, 100f) <= calmnessChance;
-
-                if (isCalmnessChance)
-                {
-                    character.CharacterState.CmdAddState(States.Calmness, durationCalmess, 0f, this.gameObject,
-                        currentSkill.Name);
-
-                    if (treeRadiusCalmessTalent)
-                    {
-                        int treesCount = GetTreesCountInRadius(radiusTreeCalmess);
-                        StartCoroutine(DelayAndUpdateCalmness(character.CharacterState, treesCount));
-                    }
-                }
-            }
-        }
-
-        currentSkill = null;
-    }
-
-    private IEnumerator CalmnessAuraRoutine()
-    {
-        var wait = new WaitForSeconds(_auraTick);
-
-        while (_isCalmnessAura)
-        {
-            yield return wait;
-
-            if (_hero == null || _hero.CharacterState == null)
-                continue;
-
-            float radius = _hero.VisionComponent.VisionRange;
-
-            var colliders = Physics.OverlapSphere(
-                _hero.transform.position,
-                radius,
-                _characterLayer
-            );
-
-            foreach (var col in colliders)
-            {
-                if (!col.TryGetComponent<Character>(out var target)) continue;
-                if (target == _hero) continue;
-
-                if (target.NetworkSettings.TeamIndex != _hero.NetworkSettings.TeamIndex) continue;
-                if (target.CharacterState == null) continue;
-
-                target.CharacterState.AddState(States.Calmness, durationCalmess, 0f, _hero.gameObject, "CalmnessAura");
-            }
-        }
-    }
-
-    #endregion
-
     #region FireWorshipperTalent
-
-    public void FireWorshipperTalentActive(bool value)
-    {
-        fireWorshipperTalent = value;
-        if (!fireWorshipperTalent) reconnaissanceFire.AreaInfo.Area = _baseAreaReconnaissanceFire;
-        else reconnaissanceFire.AreaInfo.Area += 1;
-    }
 
     private void ApplyFireWorshipperTalent()
     {

@@ -9,13 +9,15 @@ public class NatureTalent_5 : Talent
 
     public override void Enter()
     {
-        terrifyingElfAura.TreeRadiusCalmessTalentActive(true);
-        sleep.SleepInnerDarknessTalent(true);
+        character.Abilities.GetSkill<GrowTree>().TreeManaRegenTalentActive(true);
+        //terrifyingElfAura.TreeRadiusCalmessTalentActive(true);
+        //sleep.SleepInnerDarknessTalent(true);
     }
 
     public override void Exit()
     {
-        terrifyingElfAura.TreeRadiusCalmessTalentActive(false);
-        sleep.SleepInnerDarknessTalent(true);
+        character.Abilities.GetSkill<GrowTree>().TreeManaRegenTalentActive(false);
+        //terrifyingElfAura.TreeRadiusCalmessTalentActive(false);
+        //sleep.SleepInnerDarknessTalent(true);
     }
 }

@@ -20,8 +20,7 @@ public class ElvenReflexes : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        callbackDataSaved(new TargetInfo());
-        yield break;
+        yield return null;
     }
 
     protected override IEnumerator CastJob()
@@ -36,9 +35,14 @@ public class ElvenReflexes : Skill
         else
         {
             if (isServer)
-                _hero.CharacterState.AddStateLogic(States.ElvenReflexes, -1f, 0f, Schools.None, _hero.gameObject, name);
+            {
+                _hero.CharacterState.AddState(States.ElvenReflexes, 1000f, 0f, Schools.None, _hero.gameObject, name);
+                
+            }
             else
-                _hero.CharacterState.CmdAddState(States.ElvenReflexes, -1f, 0f, Schools.None, _hero.gameObject, name);
+            {
+                _hero.CharacterState.CmdAddState(States.ElvenReflexes, 1000f, 0f, Schools.None, _hero.gameObject, name);
+            }
         }
 
         yield break;

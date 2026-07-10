@@ -136,6 +136,8 @@ public class InformationRenderComponent : BaseSkillComponent
         }
 
         ShowSmartIndicator();
+        
+        _skill.SkillRender.SetPrepareCursor();
     }
 
     public void HideSmartIndicator()

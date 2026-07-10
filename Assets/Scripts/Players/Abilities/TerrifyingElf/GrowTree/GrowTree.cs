@@ -56,6 +56,7 @@ public class GrowTree : Skill
     private const float TreeFillDuration = 1f;
     private const float SearchMousClickTarget = 1f;
     private const float MagicEvade = 100f;
+    private const float ManaBaseValue = 15f;
 
 
     private const string GrowTreeCastDelayExit = "GrowTreeCastDelayExit";
@@ -358,7 +359,7 @@ public class GrowTree : Skill
         var tree = Instantiate(_treePrefab, position, Quaternion.identity);
         _currentTree = tree;
 
-        tree.Init(_skillManager, Hero);
+        tree.Init(_skillManager, Hero, _treeManaRegenTalent);
         NetworkServer.Spawn(_currentTree.gameObject, connectionToClient);
 
         _healthTree = tree.GetComponentInChildren<ObjectHealth>();
@@ -383,7 +384,7 @@ public class GrowTree : Skill
         var tree = Instantiate(_treePrefab, spawnPosition, Quaternion.identity);
         _currentTree = tree;
 
-        tree.Init(_skillManager, Hero);
+        tree.Init(_skillManager, Hero, _treeManaRegenTalent);
         NetworkServer.Spawn(_currentTree.gameObject, connectionToClient);
 
         RpcTeleportToTree(_currentTree.gameObject);
@@ -441,7 +442,7 @@ public class GrowTree : Skill
     {
         _currentTree = currentTree;
         _currentTree.GrowTreeIncreasesMaxHealth = _growTreeIncreasesMaxHealth;
-        _currentTree.Init(_skillManager, Hero);
+        _currentTree.Init(_skillManager, Hero, _treeManaRegenTalent);
         if (NetworkClient.spawned.TryGetValue(netId, out var networkIdentity)) _activeTrees.Add(networkIdentity.GetComponent<GrowTreeAura>());
     }
 
@@ -508,4 +509,25 @@ public class GrowTree : Skill
 
     protected override void ClearData() => _targetPoint = Vector3.positiveInfinity;
     public override void LoadTargetData(TargetInfo targetInfo) => _targetPoint = targetInfo.Points[0];
+    
+    #region TreeManaRegenTalent
+    
+    private bool _treeManaRegenTalent;
+
+    public void TreeManaRegenTalentActive(bool value)
+    {
+        if(_treeManaRegenTalent == value) return;
+        _treeManaRegenTalent = value;
+
+        if (_treeManaRegenTalent)
+        {
+            Attributes[SkillAttributeName.ResourceCost].AddModifier(new AttributeModifier(-1,ModifierType.Percent,typeof(NatureTalent_5)));
+        }
+        else
+        {
+            Attributes[SkillAttributeName.ResourceCost].RemoveBySource(typeof(NatureTalent_5));
+        }
+    }
+
+    #endregion
 }

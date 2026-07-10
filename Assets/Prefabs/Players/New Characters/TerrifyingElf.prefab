@@ -20628,6 +20628,7 @@ MonoBehaviour:
   _tickInterval: 1
   _audioClip: {fileID: 8300000, guid: 409e6a4f7b85bff4dacaacb82d4640b7, type: 3}
   _ghostSkill: {fileID: 1718052129104348959}
+  _chainPathWidth: 3
 --- !u!114 &1718052129104348959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21454,7 +21455,7 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
-  calmnessChance: 10
+  calmnessChance: 100
   elvenSkillFromPhysChance: 100
   calmnessOnElvenSkillChance: 30
   huntressMarkApplyChance: 5
@@ -21467,7 +21468,7 @@ MonoBehaviour:
   _auraTick: 1
   _characterLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   _shot: {fileID: 2084815787699506460}
   _shotIntoSky: {fileID: 6009180366675701932}
   _shotDarkness: {fileID: 3150488009405324217}
@@ -22187,9 +22188,9 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: -1
+    _faction: -1
+    _unitType: -1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -23074,7 +23075,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  growTree: {fileID: 2248569995468415066}
 --- !u!114 &8747300072688510514
 MonoBehaviour:
   m_ObjectHideFlags: 0

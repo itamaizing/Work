@@ -63,11 +63,6 @@ public class ElvenSkill : RefreshingState
     {
         duration = time;
 
-        if (currentStacksCount >= MaxStacksCount)
-            return false;
-
-        AddStack();
-
         if (abilities != null)
         {
             if (Random.value > ElvenBoostWindowChance) return true;
@@ -80,7 +75,12 @@ public class ElvenSkill : RefreshingState
                 if (skill is GroundTrap gt) gt.TryStartBoost();
             }
         }
+        
+        if (currentStacksCount >= MaxStacksCount)
+            return false;
 
+        AddStack();
+        
         return true;
     }
 

@@ -24,7 +24,6 @@ public class Calmness : RefreshingState
         manaResource = character.Character.TryGetResource(ResourceType.Mana);
         base.personWhoMadeBuff = personWhoMadeBuff;
         MaxStacksCount = _baseMaxStacks;
-        currentStacksCount = 1;
 
         RecalcRegenAmount();
         if (character.isServer) _regenRoutine = character.StartCoroutine(RegenTick());
@@ -48,8 +47,6 @@ public class Calmness : RefreshingState
 
         if (currentStacksCount < MaxStacksCount)
         {
-            currentStacksCount++;
-
             RecalcRegenAmount();
         }
         return true;

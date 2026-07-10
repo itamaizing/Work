@@ -69,6 +69,10 @@ public class Sleep : AbstractCharacterState
         {
             var sleep = _source.Abilities.Abilities.OfType<SleepSpell>().FirstOrDefault();
             if (sleep != null) _giveInnerDarkness = sleep.IsSleepInnerDarknessTalentActive;
+            if (_giveInnerDarkness)
+            {
+                CmdStateInnerDarkness();
+            }
         }
 
         var networkSettings = characterState.Character.NetworkSettings;
