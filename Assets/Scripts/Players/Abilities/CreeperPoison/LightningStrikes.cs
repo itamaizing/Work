@@ -14,7 +14,7 @@ public class LightningStrikes : Skill
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private Character _player;
     
-    //private Character _currentTarget;
+    private Character _currentTarget;
 
     private float _animTime;
     private float _cooldownMultiplier = 2f;
@@ -35,8 +35,9 @@ public class LightningStrikes : Skill
     {
         get
         {
-            if (Targeting.GetTarget() == null)return false;
-            return Targeting.NoObstacles(Targeting.GetTarget().Transform.position, _obstacle) && Targeting.IsTargetInRadius(AreaInfo.Radius, Targeting.GetTarget().Transform);
+            Character target = _currentTarget != null ? _currentTarget : Targeting.GetTarget()?.Character;
+            if (target == null) return false;
+            return Targeting.NoObstacles(target.transform.position, _obstacle) && Targeting.IsTargetInRadius(AreaInfo.Radius, target.transform);
         }
     }
 
@@ -66,6 +67,8 @@ public class LightningStrikes : Skill
 
     protected override void ClearData()
     {
+        _currentTarget = null;
+
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();
         _hero.Move.StopLookAt();
@@ -75,7 +78,17 @@ public class LightningStrikes : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo?.GetTargets()?.Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
+        _currentTarget = null;
+
+        if (targetInfo == null) return;
+        if (targetInfo.GetTargets().Count == 0) return;
+
+        _currentTarget = targetInfo.GetTargets()[0] as Character;
+
+        if (_currentTarget == null) return;
+
+        Targeting.SetTarget(_currentTarget);
+        Hero.Move.LookAtTransform(_currentTarget.transform);
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
@@ -106,13 +119,15 @@ public class LightningStrikes : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget() == null || !IsTargetInRange())
+        Character target = _currentTarget;
+
+        if (target == null || !IsTargetInRange(target))
         {
             AnimCastEnded();
             yield break;
         }
 
-        if (_lightningMovement.IsInMovement)
+        if (_lightningMovement != null && _lightningMovement.IsInMovement)
         {
             _animTime = GetClipLength();
             IncreaseAnimSpeed();
@@ -120,7 +135,7 @@ public class LightningStrikes : Skill
 
         Debug.Log("LightningStrikes / CastAction");
 
-        if (_coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime == false)
+        if (_coldBlood != null && _coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime == false)
         {
             float newCooldownTime = Cooldown.BaseCooldownTime * _cooldownMultiplier;
             Cooldown.CooldownTime = newCooldownTime;
@@ -132,17 +147,15 @@ public class LightningStrikes : Skill
             Cooldown.CooldownTime = Cooldown.BaseCooldownTime;
         }
 
-        /*if (_currentTarget == null)
-            _currentTarget = _target;*/
-
-        DamageDeal();
+        DamageDeal(target);
 
         yield return null;
     }
 
-    private bool IsTargetInRange()
+    private bool IsTargetInRange(Character target)
     {
-        return Targeting.GetTarget() != null && Vector3.Distance(_player.transform.position, Targeting.GetTarget().Transform.position) <= AreaInfo.Radius;
+        if (target == null) return false;
+        return Vector3.Distance(_player.transform.position, target.transform.position) <= AreaInfo.Radius;
     }
 
     private float GetClipLength()
@@ -169,19 +182,16 @@ public class LightningStrikes : Skill
         }
     }
 
-    private void DamageDeal()
+    private void DamageDeal(Character target)
     {
+        if (target == null) return;
         Debug.Log("LightningStrikes / DamageDeal");
 
         if (_player.Abilities.LastCastedSkill is CreeperStrike) _player.Abilities.PreviewCastedSkill = this;
         _player.Abilities.LastCastedSkill = this;
-        _creeperStrike.DamageDeal(Targeting.GetTarget()?.Character, true);
+        _creeperStrike.DamageDeal(target, true);
 
-       _isCanDamageDeal = false;
-
-        //if (_heatedGlands.Data.IsOpen)
-        //    _player.CharacterState.CmdAddState(States.HeatedGlands, _heatedGlandsDuration, 0, _player.gameObject, null);
-
-        if (_coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime == true) _isIncreaseCooldownTime = false;
+        _isCanDamageDeal = false;
+        if (_coldBlood != null && _coldBlood.IsCanCritLightningStrikes && _isIncreaseCooldownTime) _isIncreaseCooldownTime = false;
     }
 }

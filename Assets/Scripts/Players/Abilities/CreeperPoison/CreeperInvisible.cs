@@ -70,9 +70,17 @@ public class CreeperInvisible : Skill
     private int _strikeCrit;
 
     public int StrikeCrit { get => _strikeCrit; set => _strikeCrit = value; }
-    public bool IsInvisibilitStrike { get => _isInvisibilitStrike; set => _isInvisibilitStrike = value; }
 
-    public void InvisibilitStrike(bool value) => _isInvisibilitStrike = value;
+    public bool IsInvisibilitStrike
+    {
+        get => _isInvisibilitStrike;
+        set => _isInvisibilitStrike = value;
+    }
+
+    public void InvisibilitStrike(bool value)
+    {
+        IsInvisibilitStrike = value;
+    }
 
     #endregion
 
@@ -103,7 +111,7 @@ public class CreeperInvisible : Skill
 
         if (_checkEnemiesRoutine != null)
         {
-            StopCoroutine(CheckEnemiesInRadiusRoutine());
+            StopCheckEnemiesRoutine();
             _checkEnemiesRoutine = null;
         }
 
@@ -111,16 +119,9 @@ public class CreeperInvisible : Skill
 
         if (_stopDrawRadiusRoutine != null)
         {
-            StopCoroutine(StopDrawRadiusAfterDelay());
-            _checkEnemiesRoutine = null;
+            StopCoroutine(_stopDrawRadiusRoutine);
+            _stopDrawRadiusRoutine = null;
         }
-    }
-
-    public override void Init(SkillRenderer render, Character hero)
-    {
-        base.Init(render, hero);
-
-        if (_checkEnemiesRoutine == null) _checkEnemiesRoutine = StartCoroutine(CheckEnemiesInRadiusRoutine());
     }
 
     #region PrepareAndCastJob
@@ -143,8 +144,8 @@ public class CreeperInvisible : Skill
 
             if (_stopDrawRadiusRoutine != null)
             {
-                StopCoroutine(StopDrawRadiusAfterDelay());
-                _checkEnemiesRoutine = null;
+                StopCoroutine(_stopDrawRadiusRoutine);
+                _stopDrawRadiusRoutine = null;
             }
 
             _stopDrawRadiusRoutine = StartCoroutine(StopDrawRadiusAfterDelay());
@@ -158,6 +159,52 @@ public class CreeperInvisible : Skill
 
         var selected = manager.SelectedSkills;
         return selected.Length > index && selected[index] == this;
+    }
+
+    public void EnableEnemyCheck()
+    {
+        StartCheckEnemiesRoutine();
+
+        if (isServer)
+            RpcStartCheckEnemiesRoutine();
+    }
+
+    public void DisableEnemyCheck()
+    {
+        StopCheckEnemiesRoutine();
+
+        if (isServer)
+            RpcStopCheckEnemiesRoutine();
+    }
+
+    private void StartCheckEnemiesRoutine()
+    {
+        if (_checkEnemiesRoutine != null) return;
+
+
+        _checkEnemiesRoutine = StartCoroutine(CheckEnemiesInRadiusRoutine());
+    }
+
+    [ClientRpc]
+    private void RpcStartCheckEnemiesRoutine()
+    {
+        StartCheckEnemiesRoutine();
+    }
+
+    [ClientRpc]
+    private void RpcStopCheckEnemiesRoutine()
+    {
+        StopCheckEnemiesRoutine();
+    }
+
+    private void StopCheckEnemiesRoutine()
+    {
+        if (_checkEnemiesRoutine == null) return;
+
+        StopCoroutine(_checkEnemiesRoutine);
+        _checkEnemiesRoutine = null;
+
+        Disactive = false;
     }
 
     private IEnumerator StopDrawRadiusAfterDelay()

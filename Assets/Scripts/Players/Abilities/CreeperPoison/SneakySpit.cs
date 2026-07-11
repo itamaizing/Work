@@ -11,12 +11,14 @@ public class SneakySpit : Skill
     [SerializeField] private float durationErodedArmor = 6f;
     [SerializeField] private float durationWindowsBoost = 2f;
     [SerializeField] private ColdBlood _coldBlood;
+    [SerializeField] private CreeperCombo _creeperCombo;
 
     private Character _attacker;
     private Coroutine _boostWindow;
     private NetworkIdentity identity;
     private bool isAbilityQueue = false;
     private bool isAnimStart = false;
+    private bool _isCastControlLocked = false;
 
     #region Talent
 
@@ -69,7 +71,37 @@ public class SneakySpit : Skill
         Hero.Health.Evaded += OnHeroEvade;
     }
 
-    public void TryStartSneakySpitBoostWindow(Character target) => _boostWindow = StartCoroutine(SneakySpitBoostWindow(target));
+    public void TryStartSneakySpitBoostWindow(Character target)
+    {
+        TryStartSneakySpitBoostWindow(target, durationWindowsBoost);
+    }
+
+    public void TryStartSneakySpitBoostWindow(Character target, float windowDuration)
+    {
+        if (target == null)
+            return;
+
+        if (_boostWindow != null)
+        {
+            StopCoroutine(_boostWindow);
+            _boostWindow = null;
+        }
+
+        _boostWindow = StartCoroutine(SneakySpitBoostWindow(target, windowDuration));
+    }
+
+    private IEnumerator SneakySpitBoostWindow(Character target, float windowDuration)
+    {
+        Targeting.SetTarget((ITargetable)target);
+
+        EnableSkillBoost();
+
+        yield return new WaitForSeconds(windowDuration);
+
+        DisableSkillBoost();
+
+        _boostWindow = null;
+    }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
@@ -84,9 +116,12 @@ public class SneakySpit : Skill
 
     private bool CheckCanCast()
     {
-        return Targeting.GetTarget()?.Character != null &&
-        Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position) <= AreaInfo.Radius &&
-        Targeting.NoObstacles(Targeting.GetTarget().Character.transform.position, transform.position, _obstacle);
+        Character target = Targeting.GetTarget()?.Character;
+
+        if (target == null) return false;
+
+        return Vector3.Distance(target.transform.position, transform.position) <= AreaInfo.Radius &&
+               Targeting.NoObstacles(target.transform.position, transform.position, _obstacle);
     }
 
     private void OnHeroEvade()
@@ -117,34 +152,43 @@ public class SneakySpit : Skill
         CmdApplyDamage(damage, target.gameObject);
     }
 
+    private void LockControlDuringCast()
+    {
+        _isCastControlLocked = true;
+        Disactive = true;
+    }
+
+    private void UnlockControlAfterCast()
+    {
+        _isCastControlLocked = false;
+
+        if (_boostWindow != null) Disactive = false;
+        else Disactive = true;
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         while (isAbilityQueue) yield return null;
+
         while (Disactive || Targeting.GetTarget()?.Character == null) yield return null;
 
         Targeting.FindTempTarget();
+
         isAbilityQueue = true;
         isAnimStart = true;
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
+
+        CancelBoostWindow();
+        LockControlDuringCast();
     }
 
     protected override IEnumerator CastJob()
     {
         ApplyStateAndDamage();
         yield return null;
-    }
-
-    private IEnumerator SneakySpitBoostWindow(Character target)
-    {
-        Targeting.SetTarget((ITargetable)target);
-        if (_boostWindow != null) StopCoroutine(_boostWindow);
-        EnableSkillBoost();
-        yield return new WaitForSeconds(durationWindowsBoost);
-        DisableSkillBoost();
-        _boostWindow = null;
     }
 
     protected override void ClearData()
@@ -197,24 +241,34 @@ public class SneakySpit : Skill
 
     public void SneakySpitDisactive()
     {
-        if (Disactive)
-        {
-            _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
-            _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+        if (!Disactive) return;
+        if (isAnimStart || _isCastControlLocked) return;
 
-            isAnimStart = false;
-            CancelBoostWindow();
-            Targeting.ClearTarget();
-        }
+        _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
+        _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+
+        isAnimStart = false;
+        CancelBoostWindow();
+        Targeting.ClearTarget();
     }
 
-    public void SneakySpitCast() => AnimStartCastCoroutine();
+    private void ConsumeSneakySpitBoost()
+    {
+        if (_creeperCombo == null) return;
+        _creeperCombo.ConsumeSneakySpitBoost();
+    }
+
+    public void SneakySpitCast()
+    {
+        ConsumeSneakySpitBoost();
+        AnimStartCastCoroutine();
+    }
 
     public void SneakySpitEnd()
     {
         AnimCastEnded();
         isAnimStart = false;
-        CancelBoostWindow();
+        UnlockControlAfterCast();
     }
 
     [Command] private void CmdAddState(Character target)

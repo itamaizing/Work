@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class NinjaPoisonTalent_3 : Talent
@@ -10,11 +8,12 @@ public class NinjaPoisonTalent_3 : Talent
     public override void Enter()
     {
         manager.ActivateSkill(creeperInvisible);
+        creeperInvisible.EnableEnemyCheck();
     }
 
     public override void Exit()
     {
+        creeperInvisible.DisableEnemyCheck();
         manager.DeactivateSkill(creeperInvisible);
     }
 }
-
