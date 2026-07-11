@@ -36,7 +36,7 @@ public class BlindnessState : RefreshingState
         {
             abilities = ability.Abilities;
             foreach (var abil in abilities.Abilities)
-                if (abil.Info.SkillType == SkillType.Target)
+                if (abil.Targeting.SkillType == SkillType.Target)
                     abil.Disactive = true;
         }
     }
@@ -55,7 +55,7 @@ public class BlindnessState : RefreshingState
         if (characterState.TryGetComponent<Character>(out var ability))
         {
             abilities = ability.Abilities;
-            foreach (var abil in abilities.Abilities) if (abil.Info.SkillType == SkillType.Target) abil.Disactive = false;
+            foreach (var abil in abilities.Abilities) if (abil.Targeting.SkillType == SkillType.Target) abil.Disactive = false;
         }
 
         characterState.RemoveState(this);

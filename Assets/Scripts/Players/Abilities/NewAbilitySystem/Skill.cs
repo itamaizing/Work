@@ -1,4 +1,4 @@
-﻿using Mirror;
+﻿﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -80,7 +80,8 @@ public abstract class Skill : NetworkBehaviour
     [Header("Counter settings")]
     [SerializeField] protected float maxCounter;
     [SerializeField] public TagComponent _tags;
-    [SerializeField] public AnimationComponent _animations;
+    [SerializeField] private AnimationComponent _animationComponent;
+    public AnimationComponent Animation => _animationComponent;
     #endregion InspectorSettings
 
     #region Context
@@ -89,7 +90,7 @@ public abstract class Skill : NetworkBehaviour
     private StatsBuff _statsBuff = new StatsBuff();
     protected SkillAttributes _skillAttributes = new SkillAttributes();
     private readonly SyncDictionary<SkillAttributeName, float> _syncAttributes = new();
-
+    
     #endregion
     #region Coroutines
     //COOLDOWNS
@@ -183,7 +184,7 @@ public abstract class Skill : NetworkBehaviour
     public float AutoAttackDelay { get => _autoAttackDelay; }
     public ChargeCDUI LinkedChargeCDUI { get; set; }
     #endregion Properties
-
+    
     #region Events
     #region Casting Events
     public event Action<Skill> PreparingStarted;
@@ -225,10 +226,10 @@ public abstract class Skill : NetworkBehaviour
     {
         _hero = hero;
         _skillRender = render;
+        if (isServer)   // подписываемся до инициализации, чтобы сразу наполнить SyncDictionary
+            _skillAttributes.OnAttributeModify += OnSkillAttributeChange;
         _skillAttributes.Init(hero.AttributeSystem);
         InitComponents();
-        //Debug.Log($"Subbed to SkillAttributes modification");
-        _skillAttributes.OnAttributeModify += CmdSyncronizeAttributes;
     }
 
     public void InitComponents()
@@ -241,7 +242,8 @@ public abstract class Skill : NetworkBehaviour
         Targeting.Init(this);
         Cooldown.Init(this);
         Cost.Init(this);
-        //CastBar, Sound, Animation
+        Animation.Init(this);
+        //CastBar, Sound
     }
 
     protected virtual void Awake()
@@ -290,7 +292,7 @@ public abstract class Skill : NetworkBehaviour
 
     #region Targeting
     protected IHealable _tempForHealing;
-    private Queue<TargetInfo> _targetInfoQueue = new();
+    protected Queue<TargetInfo> _targetInfoQueue = new();
     public Queue<TargetInfo> TargetInfoQueue { get => _targetInfoQueue; }
 
     /// <summary>
@@ -361,7 +363,7 @@ public abstract class Skill : NetworkBehaviour
     /// </summary>
     protected virtual IEnumerator TargetingBehaviour(Action<TargetInfo> callbackDataSaved)
     {
-        if (Info.SkillType == SkillType.NonTarget)
+        if (Targeting.SkillType == SkillType.NonTarget)
             yield break;
 
         TargetData targetData = null;
@@ -377,7 +379,7 @@ public abstract class Skill : NetworkBehaviour
     /// <summary>
     /// Сохранение цели в _targetInfoQueue
     /// </summary>
-    protected virtual bool SetQueueTarget(TargetData target, Action<TargetInfo> callbackDataSaved = null)
+    protected virtual bool SetQueueTarget(TargetData target, Action<TargetInfo> callbackDataSaved=null)
     {
         if (target == null)
             return false;
@@ -385,11 +387,6 @@ public abstract class Skill : NetworkBehaviour
         switch (target.Type)
         {
             case TargetType.Object:
-                if (!_isCasting)
-                {
-                    Targeting.SetTarget(target.Targetable);
-                }
-
                 targetInfo.AddTarget(target.Targetable);
                 break;
 
@@ -400,8 +397,7 @@ public abstract class Skill : NetworkBehaviour
             default:
                 return false;
         }
-        if (callbackDataSaved != null)
-            callbackDataSaved(targetInfo);
+        callbackDataSaved?.Invoke(targetInfo);
         return true;
     }
 
@@ -435,6 +431,19 @@ public abstract class Skill : NetworkBehaviour
     {
         UseCooldownOrCharges();
         SpendResources();
+    }
+
+    public virtual float GetCastSpeed()
+    {
+        switch (Info.AbilityForm)
+        {
+            case AbilityForm.Physical:
+                return Attributes.CastSpeedPhysical;
+            case AbilityForm.Magic:
+                return Attributes.CastSpeedMagical;
+            default:
+                return Attributes.CastSpeed;
+        }
     }
     #endregion Skill Execution Loop
 
@@ -604,8 +613,7 @@ public abstract class Skill : NetworkBehaviour
             //_tempTargetbase = null; => Targeting.ClearTemporary()?
             Targeting.ClearTempTarget();
 
-            _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
-            _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+            CancelAnim();
             OnSkillCanceled?.Invoke();
 
             return true;
@@ -663,8 +671,7 @@ public abstract class Skill : NetworkBehaviour
         _isCasting = false;
         _isPlayCastAnim = false;
 
-        _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
-        _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+        CancelAnim();
 
         _hero.Move.StopLookAt();
         _hero.Move.SetCanMove(true);
@@ -709,10 +716,7 @@ public abstract class Skill : NetworkBehaviour
             _isPlayCastAnim = true;
             //_isWaitingForCastCoroutine = true;
 
-            float finalCastSpeed = Buff.CastSpeed.Multiplier * ExtraAnimationSpeedMultiplier;
-            Hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, finalCastSpeed);
-            _hero.Animator.SetTrigger(AnimTriggerCast);
-            _hero.NetworkAnimator.SetTrigger(AnimTriggerCast);
+            PlayCastAnim();
 
             if (_forceFailCastEarly)
             {
@@ -720,8 +724,7 @@ public abstract class Skill : NetworkBehaviour
                 _isCasting = false;
                 _isPlayCastAnim = false;
 
-                _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
-                _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+                CancelAnim();
                 _hero.Move.StopLookAt();
                 Hero.Move.SetCanMove(true);
 
@@ -767,16 +770,14 @@ public abstract class Skill : NetworkBehaviour
                 yield break;
             }
 
-            _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
-            _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+            CancelAnim();
 
             _castCoroutine = StartCoroutine(CastJob());
             if (_castDuration > 0) _castStreamCoroutine = StartCoroutine(CastStreamJob());
             yield return _castCoroutine;
         }
 
-        _hero.Animator.SetTrigger(HashAnimPlayer.AnimCancled);
-        _hero.NetworkAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+        CancelAnim();
 
         CommitUse();
         CastSuccess?.Invoke();
@@ -797,7 +798,7 @@ public abstract class Skill : NetworkBehaviour
 
         _castCoroutine = null;
     }
-
+    
     #region CastDelay
     protected Coroutine StartCastDeleyCoroutine(float time = float.MinValue)
     {
@@ -811,11 +812,7 @@ public abstract class Skill : NetworkBehaviour
     private IEnumerator CastDeleyJob(float delayTime)
     {
         CastDeleyStarted?.Invoke(delayTime);
-
-        Hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, Buff.CastSpeed.Multiplier);
-        _hero.Animator.SetTrigger(AnimTriggerCastDelay);
-        _hero.NetworkAnimator.SetTrigger(AnimTriggerCastDelay);
-
+        PlayPrepareAnim();
         float time = 0;
 
         while (time < delayTime)
@@ -1137,12 +1134,41 @@ public abstract class Skill : NetworkBehaviour
         _isPlayCastAnim = false;
     }
 
-    protected virtual void PlayCastAnim(bool value)
+    protected virtual void PlayCastAnim()
     {
-        _isPlayCastAnim = value;
+        _isPlayCastAnim = true;
+        if (Animation.CastTriggers.Count > 0)
+        {
+            Animation.PlayCasting();
+        }
+        else if (AnimTriggerCast != 0) //Временное решение, пока названия анимаций не перенесены в компонент
+        {
+            _hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, GetCastSpeed());
+            _hero.Animator.SetTrigger(AnimTriggerCast);
+            _hero.NetworkAnimator.SetTrigger(AnimTriggerCast);
+        }
+    }
+
+    protected virtual void PlayPrepareAnim()
+    {
+        if (Animation.PrepareTriggers.Count > 0)
+        {
+            Animation.PlayPreparing();
+        }
+        else if (AnimTriggerCastDelay != 0) //Временное решение, пока названия анимаций не перенесены в компонент
+        {
+            _hero.Animator.SetFloat(HashAnimPlayer.CastSpeed, GetCastSpeed());
+            _hero.Animator.SetTrigger(AnimTriggerCastDelay);
+            _hero.NetworkAnimator.SetTrigger(AnimTriggerCastDelay);
+        }
+    }
+
+    protected virtual void CancelAnim()
+    {
+        Animation.Cancel();
     }
     #endregion
-
+    
     #region Boost
     protected virtual void SkillEnableBoostLogic() { }
 
@@ -1169,7 +1195,7 @@ public abstract class Skill : NetworkBehaviour
     }
     public virtual void StopCustomDraw()
     {
-
+        
     }
     public virtual IEnumerator CustomDrawJob(float time = 0.2f)
     {
@@ -1215,10 +1241,10 @@ public abstract class Skill : NetworkBehaviour
 
     #region Server-side
 
-    [Command]
-    private void CmdSyncronizeAttributes(string name, float value)
+    [Server]
+    private void OnSkillAttributeChange(string name, float value)
     {
-        Debug.Log($"Skill Attr Modify {Name} {name}: {value}");
+        Debug.Log($"[Skill Attribute] {Name} {name}: {value}");
         if (!Enum.TryParse<SkillAttributeName>(name, out SkillAttributeName attr))
             return;
         if (_syncAttributes.Keys.Contains(attr))
@@ -1293,6 +1319,7 @@ public abstract class Skill : NetworkBehaviour
     {
         var damageable = target != null ? target.GetComponent<IDamageable>() : null;
         Character targetCharacter = target != null ? target.GetComponent<Character>() : null;
+        damage.SourceSkill = this;
 
         if (targetCharacter)
         {

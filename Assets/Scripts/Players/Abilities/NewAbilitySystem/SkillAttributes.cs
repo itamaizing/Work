@@ -68,8 +68,8 @@ public class SkillAttributes
             var skill = _attributes[SkillAttributeName.CastSpeed];
 
             return (skill.BaseValue + skill.FlatBonus + heroB.FlatBonus + heroP.FlatBonus) *
-                (1 + skill.PercentBonus + heroB.FlatBonus + heroP.FlatBonus) *
-                (skill.MultiplierBonus + heroB.MultiplierBonus + heroP.MultiplierBonus);
+                (1 + skill.PercentBonus + heroB.PercentBonus + heroP.PercentBonus) *
+                (skill.MultiplierBonus * heroB.MultiplierBonus * heroP.MultiplierBonus);
         }
     }
     public float CastSpeedMagical
@@ -83,8 +83,8 @@ public class SkillAttributes
             var skill = _attributes[SkillAttributeName.CastSpeed];
 
             return (skill.BaseValue + skill.FlatBonus + heroB.FlatBonus + heroM.FlatBonus) *
-                (1 + skill.PercentBonus + heroB.FlatBonus + heroM.FlatBonus) *
-                (skill.MultiplierBonus + heroB.MultiplierBonus + heroM.MultiplierBonus);
+                (1 + skill.PercentBonus + heroB.PercentBonus + heroM.PercentBonus) *
+                (skill.MultiplierBonus * heroB.MultiplierBonus * heroM.MultiplierBonus);
         }
     }
     #endregion Properties
@@ -102,7 +102,8 @@ public class SkillAttributes
     public void Init(AttributeSystem characterAttributes)
     {
         if (characterAttributes == null)
-            Debug.Log("Skill Attributes was null on Init()");
+            throw new NullReferenceException("Skill Attributes was null on Init()");
+        CastSpeed = 1;
         _heroAttributes = characterAttributes;
         SubscribeToAttributeModify();
     }
@@ -121,6 +122,11 @@ public class SkillAttributes
         return GetCombined(_attributes[skill_atr], _heroAttributes[hero_atr], baseValue);
     }
 
+    // Добавить такой же GetDamage. Вероятно вынести их в Skill.cs, чтобы сервер главентсовавал
+    // и можно было override'ить
+    /// <summary>
+    /// Возвращает шанс с учетом модификаторов на скилле и герое
+    /// </summary>
     public float GetChance(float value)
     {
         if (_heroAttributes == null)
@@ -137,7 +143,7 @@ public class SkillAttributes
             attribute.OnAttributeModify += SendAttributeModify;
     }
 
-    public void SendAttributeModify(string name, float value)
+    private void SendAttributeModify(string name, float value)
     {
         OnAttributeModify?.Invoke(name, value);
     }

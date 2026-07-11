@@ -61,9 +61,9 @@ public class TargetSeeker : MonoBehaviour
 		return null;
 	}*/
 
-	public ITargetable ClosedTarget(bool isCanTargetHimself = false)
+	public ITargetable ClosedTarget(bool isCanTargetHimself = false, LayerMask? customMask = null)
 	{
-		var closerTargets = GetCloserTargets(transform.position, 1000, isCanTargetHimself);
+		var closerTargets = GetCloserTargets(transform.position, 1000, isCanTargetHimself, customMask.HasValue ? customMask.Value : TargetsLayers);
 
 		if (closerTargets != null && closerTargets.Count > 0)
 		{
@@ -80,10 +80,10 @@ public class TargetSeeker : MonoBehaviour
 		return null;
 	}
 
-	public List<ITargetable> GetCloserTargets(Vector3 position, float radius, bool isCanTargetHimself = false)
+	public List<ITargetable> GetCloserTargets(Vector3 position, float radius, bool isCanTargetHimself = false, LayerMask? customMask = null)
 	{
 		List<ITargetable> targets = new List<ITargetable>();
-		Collider[] collider = Physics.OverlapSphere(position, radius, TargetsLayers);
+		Collider[] collider = Physics.OverlapSphere(position, radius, customMask.HasValue ? customMask.Value : TargetsLayers);
 
 		foreach (var item in collider)
 		{
@@ -132,10 +132,10 @@ public class TargetSeeker : MonoBehaviour
 		return null;
 	}
 
-	public List<Character> GetCloserTargetsCharacter(Vector3 position, float radius, bool isCanTargetHimself = false)
+	public List<Character> GetCloserTargetsCharacter(Vector3 position, float radius, bool isCanTargetHimself = false, LayerMask? customMask = null)
 	{
 		List<Character> targets = new List<Character>();
-		Collider[] collider = Physics.OverlapSphere(position, radius, TargetsLayers);
+		Collider[] collider = Physics.OverlapSphere(position, radius, customMask.HasValue ? customMask.Value : TargetsLayers);
 
 		foreach (var item in collider)
 		{
@@ -163,11 +163,11 @@ public class TargetSeeker : MonoBehaviour
 		return targets;
 	}
 
-	public IDamageable GetRaycastTarget(Skill skill, bool isCanTargetHimself = false)
+	public IDamageable GetRaycastTarget(Skill skill, bool isCanTargetHimself = false, LayerMask? customMask = null)
 	{
 		_skill = skill;
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		RaycastHit[] rayHit = Physics.RaycastAll(ray, 100f, TargetsLayers);
+		RaycastHit[] rayHit = Physics.RaycastAll(ray, 100f, customMask.HasValue ? customMask.Value : TargetsLayers);
 
 		foreach (var hit in rayHit)
 		{

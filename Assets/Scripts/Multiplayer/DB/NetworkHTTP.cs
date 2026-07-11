@@ -33,7 +33,7 @@ public class NetworkHTTP : MonoBehaviour
         }
     }
 
-    public void Post(string uri, Dictionary<string, string> data, Action<string> success, Action<string> error = null)
+    public void Post(string uri, Dictionary<string, string> data, Action<string> success = null, Action<string> error = null)
     {
         _postCoroutine = StartCoroutine(PostJob(uri, data, success, error = null));
     }
