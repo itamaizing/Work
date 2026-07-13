@@ -25,10 +25,9 @@ public class ElvenSkill : RefreshingState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+        AddStack();
         _move = character.GetComponent<MoveComponent>();
         _move.SetCanMoveState(true);
-
-        AddStack();
 
         _aura = character.GetComponent<TerrifyingElfAura>();
         if (_aura != null && _aura.ElvenSkillEffect != null)
@@ -62,7 +61,7 @@ public class ElvenSkill : RefreshingState
     public override bool Stack(float time)
     {
         duration = time;
-
+        AddStack();
         if (abilities != null)
         {
             if (Random.value > ElvenBoostWindowChance) return true;
@@ -75,19 +74,18 @@ public class ElvenSkill : RefreshingState
                 if (skill is GroundTrap gt) gt.TryStartBoost();
             }
         }
-        
-        if (currentStacksCount >= MaxStacksCount)
-            return false;
 
-        AddStack();
-        
         return true;
     }
 
     private void AddStack()
     {
         if (abilities == null) return;
-        currentStacksCount++;
+        if (currentStacksCount < MaxStacksCount)
+        {
+            currentStacksCount++;
+        }
+
         foreach (var skill in abilities.Abilities)
         {
             if (skill == null) continue;
@@ -108,7 +106,6 @@ public class ElvenSkill : RefreshingState
     {
         currentStacksCount--;
         duration = _baseDuration;
-        
         if (isExternal)
         {
             characterState.StateIcons.ActivateIco(States.ElvenSkill,duration,-1,true,MaxStacksCount);
@@ -175,9 +172,13 @@ public class ElvenSkill : RefreshingState
         BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
 
         if (currentStacksCount == 0)
+        {
             EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+        }
         else
+        {
             Stack(duration);
+        }
 
         return this;
     }

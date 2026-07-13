@@ -47,6 +47,10 @@ public class Ghost : Skill
     private Coroutine _boostWindow;
     private List<GrowTreeAura> _allGrowTrees = new();
 
+    private const float ManaPercentToCheckTeleport = 0.05f;
+
+    private Resource _manaResource;
+
     private readonly Queue<Vector3> _pendingSpawn = new();
 
     #region Talent
@@ -112,7 +116,24 @@ public class Ghost : Skill
     public void EffectsInnerDarknessTalentActive(bool value) => _effectsInnerDarknessTalent = value;
     public void SendingGhostTargetTalentActive(bool value) => _sendingGhostTargetTalentActive = value;
     public void CooldownGhostShotActiveTalent(bool value) => _cooldownGhostShotActive = value;
-    public void MovingToGhostWithZeroMana(bool value) => _movingToGhostWithZeroMana = value;
+
+    public void MovingToGhostWithZeroMana(bool value)
+    {
+        if(_movingToGhostWithZeroMana == value) return;
+        
+        _movingToGhostWithZeroMana = value;
+        
+        if (_movingToGhostWithZeroMana)
+        {
+            _manaResource.ValueChanged -= CheckForMana;
+            _manaResource.ValueChanged += CheckForMana;
+        }
+        else
+        {
+            _manaResource.ValueChanged -= CheckForMana;
+        }
+    }
+
     public void PassingThroughGhost(bool value) => _passingThroughGhost = value;
     public void PullingHealthGostTeleport(bool value) => _isPullingHealthGostTeleport = value;
     public void GhostSpawnInRadiusTree(bool value) => _isGhostSpawnInRadiusTree = value;
@@ -129,10 +150,20 @@ public class Ghost : Skill
         InitializeFields();
         RegisterSpawnEvents();
 
+        _manaResource = _hero.Resources[ResourceType.Mana];
+        
         AreaInfo.Radius = baseRadius;
         if (_extendedRadiusCircle == null) _extendedRadiusCircle = GetComponentInChildren<DrawCircle>(true);
     }
 
+    private void CheckForMana(float oldValue, float newValue)
+    {
+        if (newValue < _manaResource.MaxValue * ManaPercentToCheckTeleport)
+            EnableSkillBoost();
+        else
+            DisableSkillBoost();
+    }
+    
     protected override void SkillEnableBoostLogic() => isSkillEnableBoostLogic = true;
     protected override void SkillDisableBoostLogic() => isSkillEnableBoostLogic = false;
 
@@ -563,10 +594,9 @@ public class Ghost : Skill
 
     private bool TryConsumeMana(float amount)
     {
-        var manaResource = _hero.Resources[ResourceType.Mana];
-        if (manaResource != null && manaResource.CurrentValue >= amount)
+        if (_manaResource != null && _manaResource.CurrentValue >= amount)
         {
-            manaResource.CmdUse(amount);
+            _manaResource.CmdUse(amount);
             return true;
         }
         return false;
@@ -698,8 +728,7 @@ public class Ghost : Skill
 
     private bool manaTeleportToGhost()
     {
-        var manaResource = Hero.TryGetResource(ResourceType.Mana);
-        return manaResource.CurrentValue > 0;
+        return _manaResource.CurrentValue > _manaResource.MaxValue * ManaPercentToCheckTeleport;
     }
 
     [Command] private void CmdAcSummoningGhost() => RpcAcSummoningGhost();

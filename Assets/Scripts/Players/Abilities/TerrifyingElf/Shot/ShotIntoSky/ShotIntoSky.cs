@@ -19,11 +19,9 @@ public class ShotIntoSky : Skill
     [SerializeField] private ParticleSystem arrowIntoSkyEffect;
 
     private readonly SyncList<uint> _arrowIntoSkyProjectileIds = new SyncList<uint>();
-    private Vector3 _targetPoint = Vector3.positiveInfinity;
+    private Vector3 _targetPoint = Vector3.positiveInfinity; 
     private bool _secondShotPlanned;
     private bool _tripleShootPlanned;
-    private bool _isRealCasting;
-    private bool _shouldDequeue;
     private float _baseRadius;
     private const float _extraShotDelay = 1f;
 
@@ -74,22 +72,7 @@ public class ShotIntoSky : Skill
         Canceled += HandleSkillCanceled;
     }
 
-    protected override bool IsCanCast
-    {
-        get
-        {
-            if (_disactive) return false;
-
-            if (TargetInfoQueue.Count > 0 && TargetInfoQueue.TryPeek(out var target) && target != null && target.Points.Count > 0)
-            {
-                var point = target.Points[0];
-                if (float.IsInfinity(point.x)) return false;
-                return Targeting.IsPointInRadius(AreaInfo.Radius, point);
-            }
-
-            return Targeting.IsPointInRadius(AreaInfo.Radius, _targetPoint);
-        }
-    }
+    protected override bool IsCanCast => Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.Radius;
 
     protected override void SkillEnableBoostLogic() => CastDeley = 0;
     protected override void SkillDisableBoostLogic() => CastDeley = _baseCastDelay;
@@ -140,53 +123,44 @@ public class ShotIntoSky : Skill
             if (isServer) ServerDestroyPendingImpacts();
             else CmdDestroyPendingImpacts();
         }
-
-        _isRealCasting = false;
-        _shouldDequeue = false;
-    }
-    
-    public override bool TryCast()
-    {
-        if (_shouldDequeue)
-        {
-            _shouldDequeue = false;
-            return true; 
-        }
-
-        if (_isRealCasting)
-        {
-            return false; 
-        }
-
-        if (IsCanCast)
-        {
-            if (base.TryCast())
-            {
-                _isRealCasting = true;
-                return false;
-            }
-        }
-
-        return false;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        Vector3 localTarget = Vector3.positiveInfinity;
-
         if (CastDeley > 0f)
             Hero.Animator.speed = Hero.Animator.speed / CastDeley;
 
-        while (float.IsPositiveInfinity(localTarget.x) && !_disactive)
+        Vector3 targetPoint = Vector3.positiveInfinity;
+
+        while (float.IsPositiveInfinity(targetPoint.x) && !_disactive)
         {
             if (GetMouseButton)
-                if (TryGetGroundPoint(out Vector3 ground) && Targeting.IsPointInRadius(AreaInfo.Radius, ground))
-                    localTarget = ground;
+            {
+                if (TryGetGroundPoint(out Vector3 ground))
+                {
+                    targetPoint = ground;
+
+                    if (Targeting.IsPointInRadius(AreaInfo.Radius, targetPoint))
+                    {
+                        Hero.Move.LookAtPosition(targetPoint);
+                    }
+                }
+            }
 
             yield return null;
         }
 
-        _targetPoint = localTarget;
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(targetPoint);
+        callbackDataSaved(targetInfo);
+    }
+
+    protected override IEnumerator CastJob()
+    {
+        if (float.IsInfinity(_targetPoint.x)) yield break;
+
+        Hero.Move.StopLookAt();
+        Hero.Move.SetCanMove(true);
 
         CmdSpawnImpact(_targetPoint, Damage, false);
 
@@ -214,16 +188,7 @@ public class ShotIntoSky : Skill
             }
         }
 
-        TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_targetPoint);
-        callbackDataSaved(targetInfo);
-    }
-
-    protected override IEnumerator CastJob()
-    {
         CmdExecuteCast();
-
-        _shouldDequeue = true; 
 
         if (_secondShotPlanned)
         {
@@ -241,7 +206,7 @@ public class ShotIntoSky : Skill
         }
 
         yield return null;
-        _hero.Animator.speed = 1f;
+        Hero.Animator.speed = 1f;
         ClearData();
     }
 
@@ -353,10 +318,10 @@ public class ShotIntoSky : Skill
         _targetPoint = Vector3.positiveInfinity;
         _hero.Move.StopLookAt();
         _hero.Move.SetCanMove(true);
-
-        _isRealCasting = false;
-        _shouldDequeue = false;
     }
 
-    public override void LoadTargetData(TargetInfo targetInfo) => _targetPoint = targetInfo.Points[0];
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _targetPoint = targetInfo.Points[0];
+    }
 }

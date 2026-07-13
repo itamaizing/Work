@@ -6,11 +6,9 @@ using UnityEngine;
 public class SleepSpell : Skill
 {
     [SerializeField] private Character _playerLinks;
-    [SerializeField] private float duration;
-
-
-    private const float HeroDuration = 6f;
-    private const float CreatureDuration = 40f;
+    [SerializeField] private float _heroDuration = 6f;
+    [SerializeField] private float _creatureDuration = 40f;
+    
     //private Character _target;
     //private Character _runtimeTarget;
     private bool _isSleepInnerDarknessTalentActive = false;
@@ -37,8 +35,6 @@ public class SleepSpell : Skill
 
                 if (temp != null)
                 {
-                    Targeting.SetTarget(temp);
-
                     if (multiMagic != null)
                         multiMagic.LastTarget = temp;
 
@@ -49,7 +45,7 @@ public class SleepSpell : Skill
             yield return null;
         }
 
-        var target = Targeting.GetTarget()?.Character;
+        var target = Targeting.GetTempTarget()?.Targetable;
 
         if (target != null)
         {
@@ -93,7 +89,7 @@ public class SleepSpell : Skill
         var targetCharacter = targetGameObject.GetComponent<Character>();
         if (targetCharacter != null)
         {
-            targetCharacter.CharacterState.AddState(States.Sleep, targetCharacter is HeroComponent ? HeroDuration : CreatureDuration, 0, _playerLinks.gameObject, name);
+            targetCharacter.CharacterState.AddState(States.Sleep, targetCharacter is HeroComponent ? _heroDuration : _creatureDuration, 0, _playerLinks.gameObject, name);
         }
     }
 
