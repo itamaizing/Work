@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -43,10 +43,8 @@ public class Throw_Scorpion : Skill, IComboParticipatingSkill
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
-
         TargetInfo info = new TargetInfo();
-        info.AddTarget(Targeting.GetTarget()?.Character);
+        info.AddTarget(Targeting.GetTempTarget()?.Character);
         callbackDataSaved(info);
     }
 
@@ -63,7 +61,7 @@ public class Throw_Scorpion : Skill, IComboParticipatingSkill
 
         float energyCost = hasControlDebuff ? _reducedEnergyCost : _normalEnergyCost;
         
-        _hero.Resources[ResourceType.Energy].CmdUse(energyCost);
+        Cost.TryPaySingle(energyCost, ResourceType.Energy);
         
         yield return new WaitForSeconds(_animationDuration * 0.5f);
 

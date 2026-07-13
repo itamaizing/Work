@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
@@ -106,9 +106,8 @@ public class HellTeleportSkill : Skill
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
         var info = new TargetInfo();
-        info.AddTarget(Targeting.GetTarget()?.Character);
+        info.AddTarget(Targeting.GetTempTarget()?.Character);
         callbackDataSaved(info);
     }
 

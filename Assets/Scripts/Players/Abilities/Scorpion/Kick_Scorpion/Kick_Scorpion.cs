@@ -28,8 +28,6 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
     private bool _wasDamageApplied = false;
     private WaitForSeconds _waitForHitsInRowTimer;
     
-    private IDamageable _castTarget;
-
     public event IComboParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplyParticipatingDamage;
     public event Action<GameObject, Skill> OnDamaged;
     public void OnFinalComboSkill(GameObject target)
@@ -84,7 +82,6 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
 
     private void HandleSkillCanceled()
     {
-        _castTarget = null;
         _wasDamageApplied = false;
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();
@@ -105,7 +102,7 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
     {
         if (_hero == null || _hero.Move == null) return;
 
-        var target = _castTarget != null ? Targeting.GetTarget()?.Character : _lastTarget;
+        var target = Targeting.GetTarget()?.Character;
         if (target == null)
         {
             _hero.Move.StopLookAt();
@@ -156,29 +153,28 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Targetable);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_castTarget == null) yield break;
+        if (Targeting.GetTarget() == null) yield break;
         if (!IsCanCast) yield break;
 
         if (_hitsInRowCoroutine != null) StopCoroutine(_hitsInRowCoroutine);
-        _hero.Move.LookAtTransform(Targeting.GetTempTarget()?.Targetable.Transform);
-        _lastTarget = _castTarget as Character;
+        _hero.Move.LookAtTransform(Targeting.GetTarget()?.Targetable.Transform);
+        _lastTarget = Targeting.GetTarget()?.Character;
 
         ApplyAttackDamageKick();
     }
 
     private void ApplyAttackDamageKick()
     {
-        if (_wasDamageApplied || _castTarget == null) return;
+        if (_wasDamageApplied) return;
 
-        var targetGO = (_castTarget as MonoBehaviour)?.gameObject;
+        var targetGO = Targeting.GetTarget()?.Object;
         if (targetGO == null) return;
 
         if (Vector3.Distance(_hero.transform.position, targetGO.transform.position) > AreaInfo.Radius)
@@ -311,7 +307,6 @@ public class Kick_Scorpion : Skill, IComboParticipatingSkill
         if (targetInfo.GetTargets().Count > 0)
         {
             Targeting.SetTarget(targetInfo.GetTargets()[0]);
-            _castTarget = Targeting.GetTarget()?.Damageable;
         }
     }
 

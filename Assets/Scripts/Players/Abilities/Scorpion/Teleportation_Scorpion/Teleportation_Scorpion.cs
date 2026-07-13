@@ -40,11 +40,9 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
         _isScorchedSoulDiscount = value;
     }
     
-    private float GetScorchedSoulDivisor()
+    private float GetScorchedSoulDivisor(Character target)
     {
         if (!_isScorchedSoulDiscount) return 1f;
-
-        var target = Targeting.GetTarget()?.Character;
         if (target == null) return 1f;
 
         int stacks = target.CharacterState.CheckStateStacks(States.ScorchedSoul);
@@ -72,11 +70,9 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
             {
                 float distance = Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position);
                 int bonusCost = GetBonusCost(distance);
-                return distance <= AreaInfo.Radius && energy.CurrentValue >= bonusCost + _baseCost;
-
+                return energy.CurrentValue >= (_baseCost+bonusCost) / GetScorchedSoulDivisor(Targeting.GetTarget().Character);
             }
-
-            return energy.CurrentValue >= _baseCost / GetScorchedSoulDivisor();
+            return false;
         }
     }
 
@@ -217,10 +213,8 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
             yield return null;
         }
        
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
-       
-        float distance = Vector3.Distance(Targeting.GetTarget().Character.transform.position, transform.position);
-        float divisor = GetScorchedSoulDivisor();
+        float distance = Vector3.Distance(Targeting.GetTempTarget().Character.transform.position, transform.position);
+        float divisor = GetScorchedSoulDivisor(Targeting.GetTempTarget().Character);
         int totalCost  = GetBonusCost(distance) + _baseCost;
         Debug.LogError("total cost: " + totalCost);
         int discounted = Mathf.RoundToInt(totalCost / divisor);
@@ -230,7 +224,7 @@ public class Teleportation_Scorpion : Skill /*, ICanConsumeComboPoints */
         Attributes[SkillAttributeName.ResourceCost].AddModifier(_bonusCostModifier);
 
         TargetInfo targetInfo = new();
-        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 
