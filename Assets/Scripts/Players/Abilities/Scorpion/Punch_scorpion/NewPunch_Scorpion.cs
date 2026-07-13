@@ -40,8 +40,6 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => _isRightKick ? RightPunchTrigger : LeftPunchTrigger;
-
-    private IDamageable _castTarget;
     
     protected override bool IsCanCast => Targeting.GetTarget() != null && Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius && Targeting.NoObstacles(Targeting.GetTarget().Transform.position, transform.position, _obstacle);
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
@@ -173,18 +171,17 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
 
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Targetable);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_castTarget == null) yield break;
+        if (Targeting.GetTarget() == null) yield break;
         if (!IsTargetInRange()) yield break;
-        _hero.Move.LookAtTransform(Targeting.GetTempTarget()?.Targetable.Transform);
+        _hero.Move.LookAtTransform(Targeting.GetTarget()?.Targetable.Transform);
         _isRightKick = !_isRightKick;
         _lastTarget = Targeting.GetTarget()?.Character;
 
@@ -196,9 +193,9 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
     private void ApplyAttackDamage()
     {
         if (_wasDamageApplied) return;
-        if (_castTarget == null) return;
+        if (Targeting.GetTarget() == null) return;
 
-        var target = (_castTarget as MonoBehaviour)?.gameObject;
+        var target = Targeting.GetTarget().Object;
         if (target == null) return;
 
         if (Vector3.Distance(_hero.transform.position, target.transform.position) > AreaInfo.Radius)
@@ -310,13 +307,11 @@ public class NewPunch_Scorpion : Skill, IComboParticipatingSkill
         if (targetInfo.GetTargets().Count > 0)
         {
             Targeting.SetTarget(targetInfo.GetTargets()[0]);
-            _castTarget = Targeting.GetTarget()?.Damageable;
         }
     }
 
     protected override void ClearData()
     {
-        _castTarget = null;
         _wasDamageApplied = false;
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();

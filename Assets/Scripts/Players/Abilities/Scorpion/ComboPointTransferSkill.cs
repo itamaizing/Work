@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using Mirror;
 using UnityEngine;
 
@@ -49,9 +49,8 @@ public class ComboPointTransferSkill : Skill
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 

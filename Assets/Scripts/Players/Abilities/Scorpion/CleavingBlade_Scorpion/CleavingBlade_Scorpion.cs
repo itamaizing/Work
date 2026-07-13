@@ -42,8 +42,6 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill,ISwordSkill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Cast Blade");
     
-    private IDamageable _castTarget;
-
     private void OnDisable() => OnSkillCanceled -= HandleSkillCanceled;
     private void OnEnable() => OnSkillCanceled += HandleSkillCanceled;
 
@@ -60,7 +58,6 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill,ISwordSkill
         if (targetInfo.GetTargets().Count > 0)
         {
             Targeting.SetTarget(targetInfo.GetTargets()[0]);
-            _castTarget = Targeting.GetTarget()?.Damageable;
         }
     }
     
@@ -124,16 +121,14 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill,ISwordSkill
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
-
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Targetable);
         callbackDataSaved(targetInfo);
     }
 
     protected override IEnumerator CastJob()
     {
-        if (_castTarget == null) yield break;
+        if (Targeting.GetTarget() == null) yield break;
         _hero.Move.LookAtTransform(Targeting.GetTempTarget()?.Targetable.Transform);
         TryAttack(true, DefaultDamageMultiplier);
         yield return null;
@@ -151,9 +146,8 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill,ISwordSkill
     private void TryAttack(bool shouldIncreaseCounter, float damageMultiplier)
     {
         if (_wasDamageApplied) return;
-        if (_castTarget == null) return;
 
-        var target = (_castTarget as MonoBehaviour)?.gameObject;
+        var target = Targeting.GetTarget().Object;
         if (target == null) return;
 
         if (Vector3.Distance(_hero.transform.position, target.transform.position) > AreaInfo.Radius)
@@ -206,9 +200,7 @@ public class CleavingBlade_Scorpion : Skill,IComboParticipatingSkill,ISwordSkill
 
     protected override void ClearData()
     {
-        _castTarget = null;
         _wasDamageApplied = false;
-        Targeting.ClearTarget();
         Targeting.ClearTempTarget();
         AnimCastEnded();
     }

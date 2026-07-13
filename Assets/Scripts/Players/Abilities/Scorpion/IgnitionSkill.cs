@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -43,9 +43,8 @@ public class IgnitionSkill : Skill,IFireComboParticipatingSkill
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
         var targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
         callbackDataSaved(targetInfo);
     }
 
