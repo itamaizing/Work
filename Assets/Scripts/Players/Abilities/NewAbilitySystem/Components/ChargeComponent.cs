@@ -76,7 +76,6 @@ public class ChargeComponent : BaseSkillComponent
     public event Action<float> OnRechargeStart;
     public event Action<int> OnRechargeEnd;
     #endregion Events
-
     
     #region Methods
     public void Init(Skill skill, bool isServer)

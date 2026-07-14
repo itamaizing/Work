@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Linq;
 using Mirror;
@@ -298,4 +298,4 @@ public class ShotsIntoSky : Skill
         tripleShotTalentActive = value;
     }
     #endregion
-}
+}

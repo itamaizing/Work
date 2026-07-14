@@ -80,13 +80,13 @@ public class PlagueAbsorption : Skill
 			_plagueEnemy = (Plague)enemy.CharacterState.GetState(States.Plague);
 			if (_plagueEnemy == null) return;
 
-			if (_plagueEnemy.GetStack >= 0)
-			{
-				Debug.Log("CHECK FOR TEst@@");
-				_charges++;
-				//_deathSpiral.TalentAddSuperCharge();
-				enemy.CharacterState.RemoveState(States.Plague);
-			}
+			//if (_plagueEnemy.GetStack >= 0)
+			//{
+			//	Debug.Log("CHECK FOR TEst@@");
+			//	_charges++;
+			//	//_deathSpiral.TalentAddSuperCharge();
+			//	enemy.CharacterState.RemoveState(States.Plague);
+			//}
 		}
 	}
 

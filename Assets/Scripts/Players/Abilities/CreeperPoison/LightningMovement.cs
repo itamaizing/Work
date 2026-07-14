@@ -258,7 +258,7 @@ public class LightningMovement : Skill
                         _lightningStrikes.OnLightningStrikesEnd += HandleLightningStrikesEnd;
                         _lightningStrikes.Targeting.SetTarget((ITargetable)character);
                         _lightningStrikes.TryCast();
-                        _creeperStrike.DamageDeal(character);
+                        _creeperStrike.DamageDeal(character, true);
                         _damagedCharacter = character;
                         break;
                     }
@@ -275,6 +275,9 @@ public class LightningMovement : Skill
 
                     _creeperStrike.OnCreeperStrikeEnd += HandleCreeperStrikeEnd;
                     _creeperStrike.Targeting.SetTarget((ITargetable)character);
+
+                    _creeperStrike.MarkNextHitFromLightningMovement();
+
                     _creeperStrike.TryCast();
                     _damagedCharacter = character;
                 }

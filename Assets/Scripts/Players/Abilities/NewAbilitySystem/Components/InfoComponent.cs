@@ -78,7 +78,7 @@ public class InfoComponent : BaseSkillComponent
     [SerializeField] protected AbilityForm _form;
     [SerializeField] protected DamageType _damageType;
     [SerializeField] protected AttackRangeType _rangeType;
-    [SerializeField] protected SkillType _skillType; // в Casting?
+    [SerializeField] protected SkillType _skillType; // будет удален отсюда. берем из TargetingComponent
     [SerializeField] protected Moving _whileMoving;
     [SerializeField] protected AutoAttack _autoAttack;
     #endregion
@@ -96,7 +96,6 @@ public class InfoComponent : BaseSkillComponent
     public AbilityForm AbilityForm => _form;
     public DamageType DamageType => _damageType;
     public AttackRangeType AttackRangeType => _rangeType;
-    public SkillType SkillType => _skillType;
     public Moving Moving => _whileMoving;
     public AutoAttack AutoAttack => _autoAttack;
     #endregion

@@ -2,7 +2,6 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class IceShard : Skill
 {
@@ -10,24 +9,67 @@ public class IceShard : Skill
 	[SerializeField] private HeroComponent _playerLinks;
 	[SerializeField] private SeriesOfStrikes _seriesOfStrikes;
 
+	[SerializeField] private float _baseEnergyCost = 5f;
+	[SerializeField] private float _maxAdditionalCost = 0f;
+
 	private Vector3 _mousePos = Vector2.positiveInfinity;
 	private bool _talentPlague = false;
 	private bool _talentChragesPlague = false;
 	private Energy _energy;
+	private float _spentEnergyForShard;
 
 	protected override bool IsCanCast => true;
 
-    protected override int AnimTriggerCastDelay => 0;
+	protected override int AnimTriggerCastDelay => Animator.StringToHash("Throw");
 
-    protected override int AnimTriggerCast => 0;
+	protected override int AnimTriggerCast => 0;
 
     private void Start()
 	{
         //_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
     }
 
-    private void Shoot()
+	private void EnsureResources()
 	{
+		if (_energy == null) _energy = (Energy)Hero.Resources[ResourceType.Energy];
+	}
+
+	protected override bool CheckResourcesOnSkill()
+	{
+		EnsureResources();
+
+		float baseCost = Buff.ManaCost.GetBuffedValue(_baseEnergyCost);
+		return _energy.CurrentValue >= baseCost + 1f;
+	}
+
+	private bool ConsumeEnergy()
+	{
+		EnsureResources();
+
+		float baseCost = Buff.ManaCost.GetBuffedValue(_baseEnergyCost);
+		float currentEnergy = _energy.CurrentValue;
+
+		if (currentEnergy < baseCost + 1f)	return false;
+
+		float additionalEnergy = Mathf.Min(currentEnergy - baseCost, _maxAdditionalCost);
+		additionalEnergy = Mathf.Clamp(additionalEnergy, 1f, _maxAdditionalCost);
+
+		_spentEnergyForShard = baseCost + additionalEnergy;
+
+		_energy.CmdUse(_spentEnergyForShard);
+		return true;
+	}
+
+	private void Shoot()
+	{
+		EnsureResources();
+
+		if (!ConsumeEnergy())
+		{
+			TryCancel(true);
+			return;
+		}
+
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 		_seriesOfStrikes.MakeHit(null, Info.AbilityForm, 1, 5, 3);
@@ -39,7 +81,6 @@ public class IceShard : Skill
 	private void CmdCreateProjecttile(float angle, float manaValue, bool talentPlague, bool talentChargesPlague)
 	{
 		IceShardProjectile projectile = Instantiate(_projectile, gameObject.transform.position, Quaternion.Euler(0, -angle, 0));
-		SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
 		projectile.Init(_playerLinks, manaValue, false, this);
 		projectile.Talents(talentPlague, talentChargesPlague);
 

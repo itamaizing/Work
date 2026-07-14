@@ -2,7 +2,6 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Shot : Skill
 {
@@ -44,27 +43,6 @@ public class Shot : Skill
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash(_startAnimTrigger);
-    protected override bool IsCanCast { get => CheckCanCast(); }
-    private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
-
-    private bool CheckCanCast()
-    {
-        if (Targeting.GetTarget() == null)
-            return false;
-        return Targeting.CanCast(Targeting.GetTarget());
-
-        //if (Targeting.GetTarget() != null)
-        //{
-        //    return Targeting.CanCast(Targeting.GetTarget());
-        //    return Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.CastLength;
-        //}
-        //if (_targetPoint != Vector3.positiveInfinity)
-        //{
-        //    return Targeting.CanCast(new TargetData(_targetPoint));
-        //    return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength;
-        //}
-        //return false;
-    }
 
     private void OnDisable()
     {
@@ -135,63 +113,21 @@ public class Shot : Skill
         _hero.Move.SetCanMove(false);
     }
 
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        Targeting.SetTarget(Targeting.QueueInfoToTargetData(targetInfo));
-        //if (Targeting.GetTarget()?.Type == TargetType.Point)
-        //    _targetPoint = Targeting.GetTarget().Point;
-        //if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
-        _targetPoint = Targeting.GetTarget().Poisition;
-	}
-
-	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-    {
-		Vector3 targetPoint = Vector3.positiveInfinity;
-
-        while (float.IsPositiveInfinity(targetPoint.x))
-        {
-            if (GetMouseButton)
-            {
-                Targeting.FindTempTarget(Targeting.GetMousePoint(), RadiusTargetCheck);
-                targetPoint = GetMousePoint(_groundLayerMask);
-
-                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
-                {
-                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
-
-                    else
-                    {
-                        if (Targeting.GetTempTarget()?.Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
-                        break;
-                    }
-                }
-            }
-			yield return null;
-        }
-
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
-		TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
-        targetInfo.Points.Add(targetPoint);
-        callbackDataSaved(targetInfo);
-    }
-
     protected override IEnumerator CastJob()
     {
-		if (Targeting.GetTarget() == null && _targetPoint == Vector3.positiveInfinity) yield return null;
-        if (Targeting.GetTarget()?.Transform != null && !IsTargetInRange()) yield return null;
+        var targetData = Targeting.GetTarget();
+
+        if (targetData == null) yield break;
 
         ShotAnimationMove();
         ProcessGhostCooldownReduction();
-
         HandleThirdShotRowOnCast();
 
-        if (Targeting.GetTarget() != null && Targeting.GetTarget() is IDamageable damageable) CmdCreateProjectileAtTarget(damageable.gameObject, Damage);
-        else CmdCreateProjectileAtPosition(_targetPoint, Damage);
-
+        if (targetData.Type ==  TargetType.Object) CmdCreateProjectileAtTarget(targetData.Object, Damage);
+        else CmdCreateProjectileAtPosition(targetData.Poisition, Damage);
         yield return null;
     }
-    private bool IsTargetInRange() { return Targeting.GetTarget() != null && Vector3.Distance(transform.position, Targeting.GetTarget().Transform.position) <= AreaInfo.CastLength; }
+
     private void ProcessGhostCooldownReduction()
     {
         if (!_ghostSkill || !_ghostSkill.CooldownGhostShotActive) return;
@@ -228,14 +164,6 @@ public class Shot : Skill
         if (targetData == null || targetData.Character == null) return;
 
         _terrifyingElfAura.ProcessShot(targetData.Character);
-    }
-
-    private Vector3 GetMousePoint(LayerMask mask)
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, RayCastDistance, mask)) return hit.point;
-
-        return Vector3.positiveInfinity;
     }
 
     [Command]

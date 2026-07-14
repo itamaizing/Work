@@ -5,17 +5,18 @@ using UnityEngine;
 public class DeathTalent_1 : Talent
 {
     [SerializeField] private SeriesOfStrikes _seriesOfStrikes;
-    [SerializeField] private NinjaResources _ninjaResources;
+    [SerializeField] private SkillManager _skillManager;
+    [SerializeField] private PortalDarkness _portalDarkness;
 
     public override void Enter()
     {
         _seriesOfStrikes.IceRuneTalentActive(true);
-        _ninjaResources.EnergyToRestore(true, Data.DescriptionsForInfoPanel[0]);
+        _skillManager.ActivateSkill(_portalDarkness);
     }
 
     public override void Exit()
     {
         _seriesOfStrikes.IceRuneTalentActive(false);
-        _ninjaResources.EnergyToRestore(false, Data.DescriptionsForInfoPanel[0]);
+        _skillManager.DeactivateSkill(_portalDarkness);
     }
 }

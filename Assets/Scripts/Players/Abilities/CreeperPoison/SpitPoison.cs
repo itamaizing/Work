@@ -40,8 +40,6 @@ public class SpitPoison : Skill, IAltAbility
 
     #endregion
 
-    private SpitPoisonSpawnPointInfo _spawnPointInfo = new SpitPoisonSpawnPointInfo();
-
     private Vector3 _mousePos = Vector3.positiveInfinity;
 
     private int _poisonBoneStack = 0;
@@ -113,7 +111,7 @@ public class SpitPoison : Skill, IAltAbility
     public void AnimSpitPoisonCast()
     {
         AnimStartCastCoroutine();
-    }   
+    }
 
     public void AnimSpitPoisonCastEnd()
     {
@@ -173,9 +171,14 @@ public class SpitPoison : Skill, IAltAbility
 
     protected override IEnumerator CastJob()
     {
-        SetSpawnPoint(transform.position.x, transform.position.y, transform.position.z);
+        Vector3 spawnPosition = _spawnPoint != null
+            ? _spawnPoint.transform.position
+            : _player.transform.position;
 
-        Shoot(Targeting.GetTarget()?.Damageable);
+        spawnPosition += Vector3.up;
+
+        Shoot(Targeting.GetTarget()?.Damageable, spawnPosition);
+
         ResetAbilityParameters?.Invoke();
 
         yield return null;
@@ -271,111 +274,135 @@ public class SpitPoison : Skill, IAltAbility
         }
     }
 
-    private void Shoot(IDamageable damageable)
+    private void Shoot(IDamageable damageable, Vector3 spawnPosition)
     {
         if (damageable != null)
         {
-            CmdInstantiateProjectileToTarget(damageable.gameObject, _player.Resource.CurrentValue,
-                _isActiveHealingSpitPoison, _isActiveRestorationOfGlands, IsAltAbility,
-                _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies, _isTransparentPoisons);
-
-            //CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
+            CmdInstantiateProjectileToTarget(
+                damageable.gameObject,
+                spawnPosition,
+                _player.Resource.CurrentValue,
+                _isActiveHealingSpitPoison,
+                _isActiveRestorationOfGlands,
+                IsAltAbility,
+                _isOriginalTargetPlayer,
+                _isOriginalTargetEnemy,
+                _isOriginalTargetAllies,
+                _isTransparentPoisons
+            );
         }
         else
         {
-            CmdInstantiateProjectileToPoint(_mousePos, _player.Resource.CurrentValue,
-                _isActiveHealingSpitPoison, _isActiveRestorationOfGlands, IsAltAbility,
-                _isOriginalTargetPlayer, _isOriginalTargetEnemy, _isOriginalTargetAllies, _isTransparentPoisons);
-
-            //CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
+            CmdInstantiateProjectileToPoint(
+                _mousePos,
+                spawnPosition,
+                _player.Resource.CurrentValue,
+                _isActiveHealingSpitPoison,
+                _isActiveRestorationOfGlands,
+                IsAltAbility,
+                _isOriginalTargetPlayer,
+                _isOriginalTargetEnemy,
+                _isOriginalTargetAllies,
+                _isTransparentPoisons
+            );
         }
 
         _player.Move.SetCanMove(true);
 
-        if (_isErodedArmorState && (_isOriginalTargetAllies || _isOriginalTargetPlayer)) Cooldown.Modify(-3f);
+        if (_isErodedArmorState && (_isOriginalTargetAllies || _isOriginalTargetPlayer))
+            Cooldown.Modify(-3f);
 
-        if (_canSpawnPoisonCloud) CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
-        if (_isErodedArmorState) _player.CharacterState.CmdAddState(States.ErodedArmor, durationErodedArmor, 0, _player.gameObject, Name);
+        if (_canSpawnPoisonCloud)
+            CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
+
+        if (_isErodedArmorState)
+            _player.CharacterState.CmdAddState(States.ErodedArmor, durationErodedArmor, 0, _player.gameObject, Name);
     }
 
     #region Command Methods
-
     [Command]
-    private void SetSpawnPoint(float spawnPointX, float spawnPointY, float spawnPointZ)
-    {
-        _spawnPointInfo.SpawnPointX = spawnPointX;
-        _spawnPointInfo.SpawnPointY = spawnPointY;
-        _spawnPointInfo.SpawnPointZ = spawnPointZ;
-    }
-
-    [Command]
-    private void CmdInstantiateProjectileToTarget(GameObject target, float manaValue,
-        bool isActiveHealingSpitPoison, bool isActiveRestorationOfGlands, bool isPlayerInvisible,
-        bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, bool isTransparentPoisons)
+    private void CmdInstantiateProjectileToTarget(
+    GameObject target,
+    Vector3 spawnPosition,
+    float manaValue,
+    bool isActiveHealingSpitPoison,
+    bool isActiveRestorationOfGlands,
+    bool isPlayerInvisible,
+    bool isTargetPlayer,
+    bool isTargetEnemy,
+    bool isTargetAllies,
+    bool isTransparentPoisons)
     {
         int ownerLayer = _player.gameObject.layer;
 
-        Vector3 spawnPosition = new Vector3 (_spawnPointInfo.SpawnPointX, _spawnPointInfo.SpawnPointY, _spawnPointInfo.SpawnPointZ);
-
         GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
-
-        //SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
+        projectile.InitializationProjectile(
+            _player,
+            this,
+            _player.Resource.CurrentValue,
+            isActiveHealingSpitPoison,
+            isActiveRestorationOfGlands,
+            isPlayerInvisible,
+            isTargetPlayer,
+            isTargetEnemy,
+            isTargetAllies,
+            PoisonBoneStack,
+            _creeperPoisonAura.IsFeelingPoisoning,
+            isTransparentPoisons,
+            ownerLayer,
+            _isColdBloodCrit && _coldBlood.IsCanCrit
+        );
+
         if (_isColdBloodCrit)
-        {
-            projectile.InitializationProjectile(_player, this, _player.Resource.CurrentValue,
-          isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
-          isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack, _creeperPoisonAura.IsFeelingPoisoning, isTransparentPoisons, ownerLayer, _coldBlood.IsCanCrit);
-
             _coldBlood.IsCanCrit = false;
-        }
-
-        else
-        {
-            projectile.InitializationProjectile(_player, this, _player.Resource.CurrentValue,
-           isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
-           isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack, _creeperPoisonAura.IsFeelingPoisoning, isTransparentPoisons, ownerLayer, false);
-        }
 
         projectile.MoveBallToTarget(target.transform.position);
 
         NetworkServer.Spawn(item);
-
         projectile.RpcInitTransparent(isTransparentPoisons, ownerLayer);
     }
 
     [Command]
-    private void CmdInstantiateProjectileToPoint(Vector3 point, float manaValue,
-        bool isActiveHealingSpitPoison, bool isActiveRestorationOfGlands, bool isPlayerInvisible,
-        bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, bool isTransparentPoisons)
+    private void CmdInstantiateProjectileToPoint(
+    Vector3 point,
+    Vector3 spawnPosition,
+    float manaValue,
+    bool isActiveHealingSpitPoison,
+    bool isActiveRestorationOfGlands,
+    bool isPlayerInvisible,
+    bool isTargetPlayer,
+    bool isTargetEnemy,
+    bool isTargetAllies,
+    bool isTransparentPoisons)
     {
         int ownerLayer = _player.gameObject.layer;
 
-        Vector3 spawnPosition = new Vector3(_spawnPointInfo.SpawnPointX, _spawnPointInfo.SpawnPointY, _spawnPointInfo.SpawnPointZ);
-
         GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
-
-        //SceneManager.MoveGameObjectToScene(item, _hero.NetworkSettings.MyRoom);
 
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
+        projectile.InitializationProjectile(
+            _player,
+            this,
+            _player.Resource.CurrentValue,
+            isActiveHealingSpitPoison,
+            isActiveRestorationOfGlands,
+            isPlayerInvisible,
+            isTargetPlayer,
+            isTargetEnemy,
+            isTargetAllies,
+            PoisonBoneStack,
+            _creeperPoisonAura.IsFeelingPoisoning,
+            isTransparentPoisons,
+            ownerLayer,
+            _isColdBloodCrit && _coldBlood.IsCanCrit
+        );
+
         if (_isColdBloodCrit)
-        {
-            projectile.InitializationProjectile(_player, this, _player.Resource.CurrentValue,
-          isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
-          isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack, _creeperPoisonAura.IsFeelingPoisoning, isTransparentPoisons, ownerLayer, _coldBlood.IsCanCrit);
-
             _coldBlood.IsCanCrit = false;
-        }
-
-        else
-        {
-            projectile.InitializationProjectile(_player, this, _player.Resource.CurrentValue,
-           isActiveHealingSpitPoison, isActiveRestorationOfGlands, isPlayerInvisible,
-           isTargetPlayer, isTargetEnemy, isTargetAllies, PoisonBoneStack, _creeperPoisonAura.IsFeelingPoisoning, isTransparentPoisons, ownerLayer, false);
-        }
 
         Vector3 direction = point - spawnPosition;
         direction.y = 0;
@@ -388,7 +415,6 @@ public class SpitPoison : Skill, IAltAbility
         projectile.MoveBallOnMaxDistance(point);
 
         NetworkServer.Spawn(item);
-
         projectile.RpcInitTransparent(isTransparentPoisons, ownerLayer);
     }
 

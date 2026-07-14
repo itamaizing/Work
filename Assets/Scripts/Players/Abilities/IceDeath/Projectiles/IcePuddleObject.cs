@@ -25,6 +25,10 @@ public class IcePuddleObject : Projectiles
 	private readonly WaitForSeconds _waitApplyDelay = new WaitForSeconds(0.7f);
 	private readonly WaitForSeconds _waitShort = new(0.1f);
 
+	private const float FrostEnergyCoolingBonusPerStack = 1f;
+	private const float FrostEnergyFrostingBonusPerStack = 5f;
+	private const float FrostEnergyFrozenBonusPerStack = 10f;
+
 	//private List<CharacterState> _enemies = new List<CharacterState>();
 	private List<EnemyToState> _targets = new List<EnemyToState>();
 
@@ -131,7 +135,7 @@ public class IcePuddleObject : Projectiles
 
 		if (_talentFrostingFrozen && target.CharacterState.CheckForState(States.Frosting))
 		{
-			target.CharacterState.AddState(States.Frozen, _timeToDestroy, _damageToExit, _dad.gameObject, _skill.name);
+			ApplyStateWithFrostEnergyBonus(target, States.Frozen, _timeToDestroy);
 		}
 
 		if (_talentEvadeDadBoost && _curEvade == 0)
@@ -163,12 +167,55 @@ public class IcePuddleObject : Projectiles
 
 				if (enemy != null && enemy.CharacterState != null && !enemy.CharacterState.CheckForState(States.Frosting))
 				{
-					enemy.CharacterState.AddState(States.Frosting, remainingLife, _damageToExit, _dad.gameObject, _skill.name);
+					ApplyStateWithFrostEnergyBonus(enemy, States.Frosting, remainingLife);
 				}
 			}
 		}
 
 		_frostingCoroutines.Remove(enemy);
+	}
+
+	private void ApplyStateWithFrostEnergyBonus(Character target, States state, float duration)
+	{
+		if (target == null || target.CharacterState == null)
+			return;
+
+		bool hasFrostEnergy = target.CharacterState.CheckForState(States.FrostEnergy);
+
+		int currentStacks = target.CharacterState.CheckStateStacks(state);
+		int stacksAfterApply = currentStacks + 1;
+
+		float bonusPerStack = 0f;
+
+		switch (state)
+		{
+			case States.Cooling:
+				bonusPerStack = FrostEnergyCoolingBonusPerStack;
+				break;
+
+			case States.Frosting:
+				bonusPerStack = FrostEnergyFrostingBonusPerStack;
+				break;
+
+			case States.Frozen:
+				bonusPerStack = FrostEnergyFrozenBonusPerStack;
+				break;
+		}
+
+		if (hasFrostEnergy && bonusPerStack > 0f)
+		{
+			float bonusDamage = stacksAfterApply * bonusPerStack;
+
+			Damage bonus = new Damage
+			{
+				Value = bonusDamage,
+				Type = DamageType.Magical
+			};
+
+			target.Health.TryTakeDamage(ref bonus, _skill);
+		}
+
+		target.CharacterState.AddState(state, duration, _damageToExit, _dad.gameObject, _skill.name);
 	}
 
 	private void Explode()

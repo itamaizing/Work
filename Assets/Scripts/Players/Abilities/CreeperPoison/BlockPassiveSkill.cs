@@ -29,12 +29,13 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
     private bool _isMagicOrPhysicRessist = false;
 
     public void MagicOrPhysicRessist(bool value) => _isMagicOrPhysicRessist = value;
+
     #endregion
 
     public override void Init(SkillRenderer render, Character hero)
     {
         base.Init(render, hero);
-    
+
         Hero.Health.Block += PlayBlockAnimation;
         Hero.Health.Evaded += OnHeroEvade;
         Hero.Health.OnBeforeTakeDamage += OnBeforeTakeDamage;
@@ -44,6 +45,7 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
 
     private void OnEnable()
     {
+
     }
 
     private void OnDisable()
@@ -153,5 +155,5 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
     {
         _validAttackers.Clear();
         _validAttackers.Add(target);
-    }    
+    }
 }

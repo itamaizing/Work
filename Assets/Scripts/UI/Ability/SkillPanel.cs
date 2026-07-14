@@ -21,7 +21,7 @@ public class SkillPanel : MonoBehaviour
     private List<DraggableIcon> _skills = new List<DraggableIcon>();
     private Character _currentCharacter;
     private SkillManager _playerAbilities;
-    private HeroComponent _hero;
+    private Character _hero;
     private TalentSystem _talentSystem; 
     private bool _isActive;
     private bool _isSelect;
@@ -86,7 +86,7 @@ public class SkillPanel : MonoBehaviour
         LoadPanel();
     }
 
-    public void FillMenu(SkillManager abilities, HeroComponent hero)
+    public void FillMenu(SkillManager abilities, Character character)
     {
         _isMenu = true;
 
@@ -353,7 +353,7 @@ public class SkillPanel : MonoBehaviour
 
         if (_skills.Any(icon => icon.Skill == skill)) return;
 
-        //FillMenu(_playerAbilities, _hero);Сен
+        //FillMenu(_playerAbilities, _hero);
 
         var freeIcon = _skillIcons.FirstOrDefault(icon => icon.CurrentIcon == null);
         if (freeIcon == null) return;

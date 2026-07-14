@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class DarknessTalent_9 : Talent
 {
-    [SerializeField] private Ghost ghost;
+    [SerializeField] private RetributiveReckoning _retributiveReckoning;
 
     public override void Enter()
     {
-        ghost.GhostSpawnInRadiusTree(true);
+        _retributiveReckoning.MagicAbilityInstantly(true);
     }
 
     public override void Exit()
     {
-        ghost.GhostSpawnInRadiusTree(false);
+        _retributiveReckoning.MagicAbilityInstantly(false);
     }
 }

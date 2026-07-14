@@ -209,6 +209,13 @@ public class SpawnComponent : NetworkBehaviour
         {
             _units.Remove(character);
 
+            var netComponent = connectionToClient.identity.GetComponent<NetworkComponent>();
+
+            if (netComponent != null)
+            {
+                netComponent.controllableUnits.Remove(character);
+            }
+
             if (character is MinionComponent minion)
             {
                 minion.Destroyed -= OnUnitDestroyed;
@@ -237,6 +244,15 @@ public class SpawnComponent : NetworkBehaviour
         {
             Debug.LogError("Attempted to add a null character to the units list.");
             return;
+        }
+
+        if (character.NetworkSettings.TeamIndex == _hero.NetworkSettings.TeamIndex)
+        {
+            var netComponent = connectionToClient.identity.GetComponent<NetworkComponent>();
+            if (netComponent != null && !netComponent.controllableUnits.Contains(character))
+            {
+                netComponent.controllableUnits.Add(character);
+            }
         }
 
         _units.Add(character);

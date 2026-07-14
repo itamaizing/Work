@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class DestructivePoisonState : RefreshingState
 {
+    private Character _target;
+    private Health _health;
+
     private const float TickInterval = 1f;
     private const float DamagePerTick = 1f;
 
@@ -16,7 +19,7 @@ public class DestructivePoisonState : RefreshingState
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;
     public override Schools Schools => Schools.Earth;
-    
+
     public DestructivePoisonState()
     {
         MaxStacksCount = 3;
@@ -25,36 +28,30 @@ public class DestructivePoisonState : RefreshingState
     protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        health = character.Character.Health;
-        this.personWhoMadeBuff = personWhoMadeBuff;
+
+        _target = character.Character;
+        _health = _target.Health;
 
         duration = durationToExit;
-        currentStacksCount = 1;
 
         _tickTimer = TickInterval;
     }
 
     public override void OnUpdateState()
     {
-        if (!NetworkServer.active) return;
-        if (health == null) return;
-
         _tickTimer -= Time.deltaTime;
 
         if (_tickTimer <= 0f)
         {
             _tickTimer = TickInterval;
 
+            if (_health == null || _target == null || _target.IsDead) return;
+
             float damageValue = DamagePerTick * currentStacksCount;
 
-            Damage damage = new Damage
-            {
-                Value = damageValue,
-                Type = DamageType.Physical,
-                School = Schools.Earth
-            };
+            if (NetworkServer.active) DestructiveDamage();
 
-            health.TryTakeDamage(ref damage, skill);
+            _health.barCharacter.PreviewDoTTick(damageValue);
         }
     }
 
@@ -65,8 +62,31 @@ public class DestructivePoisonState : RefreshingState
         if (currentStacksCount >= MaxStacksCount)
             return false;
 
-        currentStacksCount++;
         return true;
     }
 
+    public override void OnExitState()
+    {
+        currentStacksCount = 0;
+    }
+
+
+    [Server]
+    private void DestructiveDamage()
+    {
+        if (_target == null || _target.IsDead) return;
+
+        float damageValue = DamagePerTick * currentStacksCount;
+
+        Debug.Log($"damageValue: {damageValue}");
+
+        Damage damage = new Damage
+        {
+            Value = damageValue,
+            Type = DamageType.Physical,
+            School = Schools.Earth
+        };
+
+        _health.TryTakeDamage(ref damage, null);
+    }
 }

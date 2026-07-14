@@ -4,22 +4,17 @@ using UnityEngine;
 
 public class FrostTalent_4 : Talent
 {
-    [SerializeField] private IcePuddle _icePuddle;
+    [SerializeField] IceShadow _iceShadow;
+    [SerializeField] private SkillManager _skillManager;
+
 
     public override void Enter()
     {
-        _icePuddle.IceDeathInIcePudleTalentActive(true);
-        AddingDescriptionSet(true);
+        _skillManager.ActivateSkill(_iceShadow);
     }
 
     public override void Exit()
     {
-        _icePuddle.IceDeathInIcePudleTalentActive(false);
-        AddingDescriptionSet(false);
-    }
-
-    private void AddingDescriptionSet(bool value)
-    {
-        _icePuddle.AddingDescriptionSet(value, Data.DescriptionsForInfoPanel[0]);
-    }    
+        _skillManager.ActivateSkill(_iceShadow);
+    }  
 }

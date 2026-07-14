@@ -1677,6 +1677,8 @@ MonoBehaviour:
   syncInterval: 0
   _resourceType: 0
   _regenerationDelay: 0
+  _currentValue: 0
+  _maxValue: 0
   _objectBar: {fileID: 7413096228921928745}
   _objectData: {fileID: 11400000, guid: ec826efa35c5876498bd9e427ec967d9, type: 2}
   obj: {fileID: 0}
@@ -1742,7 +1744,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  _lifetime: 20
+  _lifetime: 6
   _regenBuffDuration: 20
 --- !u!136 &5203634066366645836
 CapsuleCollider:

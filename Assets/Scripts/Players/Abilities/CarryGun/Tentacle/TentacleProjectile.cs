@@ -160,8 +160,6 @@ public class TentacleProjectile : NetworkBehaviour
             return;
 
         SpikeTentacle spike = Instantiate(_spike, transform.position, Quaternion.identity);
-
-        SceneManager.MoveGameObjectToScene(spike.gameObject, _player.NetworkSettings.MyRoom);
         spike.Init(_target, _player, _skill);
 
         NetworkServer.Spawn(spike.gameObject);

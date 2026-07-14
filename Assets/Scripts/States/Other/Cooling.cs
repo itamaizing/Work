@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ public class Cooling : RefreshingState
 	private float _damageOnStart;
 	private float _damageToExit;
 	private float _speedDebuf = -0.05f;
+	private NinjaResources _ninjaResources;
 	private AttributeModifier _modif = new AttributeModifier(0f, ModifierType.Percent);
 
 	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.MoveSpeed, StatusEffect.AbilitySpeed };
@@ -25,7 +27,8 @@ public class Cooling : RefreshingState
 		MaxStacksCount = 6;
 		_damageToExit = damageToExit == 0 ? 10000 : damageToExit;
 		_damageOnStart = characterState.Character.Health.SumDamageTaken;
-    
+		if (personWhoMadeBuff.TryGetComponent<NinjaResources>(out NinjaResources resources)) _ninjaResources = resources;
+
 		characterState.Character.Move.AddModifier(_modif);
 		currentStacksCount = 1;
 	}
@@ -53,7 +56,17 @@ public class Cooling : RefreshingState
             currentStacksCount++;
 			_modif.Value = currentStacksCount * _speedDebuf;
 			characterState.Character.Move.AddModifier(_modif);
+
+			if (currentStacksCount == MaxStacksCount) TryApplyFrosting();
 		}
         return true;
     }
+
+	private void TryApplyFrosting()
+    {
+		if (!characterState.CheckForState(States.Frosting)) AddFrostingCmd();
+	}
+
+	[Command] private void AddFrostingCmd() => AddFrostingRpc();
+	[ClientRpc] private void AddFrostingRpc() => characterState.AddStateLogic(States.Frosting, 2, 0f, Schools.None, characterState.Character.gameObject, "Frosting");
 }

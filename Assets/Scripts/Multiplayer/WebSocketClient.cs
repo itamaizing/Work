@@ -9,13 +9,14 @@ using System.Collections.Generic;
 public class WebSocketClient : MonoBehaviour
 {
     public static WebSocketClient Instance { get; private set; }
+    public bool IsConnected { get => _isConnected; set => _isConnected = value; }
 
     private WebSocket _webSocket;
     private bool _isConnected = false;
 
     public event Action Connected;
     public event Action Disconnected;
-    public event Action<Dictionary<string, string>> MessageReceived;
+    public event Action<Dictionary<string, string>, string> MessageReceived;
 
     private void Awake()
     {
@@ -76,8 +77,16 @@ public class WebSocketClient : MonoBehaviour
     private void OnWebSocketMessage(byte[] bytes)
     {
         string json = Encoding.UTF8.GetString(bytes);
-        var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-        MessageReceived?.Invoke(data);
+        Dictionary<string, string> data;
+        try
+        {
+            data = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+        }
+        catch
+        {
+            data = new Dictionary<string, string>();
+        }
+        MessageReceived?.Invoke(data, json);
     }
 
     private void OnOpen()

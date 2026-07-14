@@ -1,78 +1,129 @@
 ﻿using Mirror;
-using Org.BouncyCastle.Pkcs;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEditor.Animations;
 using UnityEngine;
-
 
 [Serializable]
 public class AnimationComponent : BaseSkillComponent
 {
     #region InspectorFields
-    [SerializeField] List<string> _prepareAnimations;
-    [SerializeField] List<string> _castAnimations;
+    //[SerializeField] private bool usePrepareAnimation;
+    [SerializeField] private List<string> _prepareTriggers;
+    //[SerializeField] private bool useCastAnimation;
+    [SerializeField] private List<string> _castTriggers;
     #endregion
 
     #region RuntimeVariables
     private Animator _animator;
     private NetworkAnimator _netAnimator;
-    public int _activeClip = 0;
+    private AnimationClip _activeClip = null;
+    private int _activeTrigger = 0;
     private float _activeClipDuration = -1;
-    private Dictionary<int, float> animLengths = new();
+    private Dictionary<string, float> _clipDurations = new();           //[clipName] => duration
+    private Dictionary<string, AnimationClip> _triggerToClip = new();   //[triggerName] => clip
     #endregion
 
     #region Properties
-    public float CastSpeed
-    {
-        get
-        {
-            if (_skill.Info.AbilityForm == AbilityForm.Physical)
-                return _skillAttributes.CastSpeedPhysical;
-            else
-                return _skillAttributes.CastSpeedMagical;
-        }
-    }
-
+    public List<string> PrepareTriggers => _prepareTriggers;
+    public List<string> CastTriggers => _castTriggers;
+    public float CastSpeed { get => _skill.GetCastSpeed(); }
+    public AnimationClip ActiveClip { get =>  _activeClip; }
     public float ActiveClipDuration { get => _activeClipDuration; }
     #endregion
 
     #region Methods
+    #region Initialization
     public override void Init(Skill skill)
     {
         base.Init(skill);
         _animator = _character.GetComponent<Animator>();
         _netAnimator = _character.GetComponent<NetworkAnimator>();
-        //тут можно захэшировать анимации
+
+        CashTriggers();
     }
 
-    public void PlayAnimation(int clipHash, float castSpeed = float.MinValue)
+    public void CashTriggers()
+    {
+        foreach (string trigger in _prepareTriggers)
+        {
+            var clip = GetAnimationFromTrigger(trigger);
+            if (clip != null)
+            {
+                _clipDurations.TryAdd(clip.name, clip.length);
+            }
+        }
+
+        foreach (string trigger in _castTriggers)
+        {
+            var clip = GetAnimationFromTrigger(trigger);
+            if (clip != null)
+            {
+                _clipDurations.TryAdd(clip.name, clip.length);
+            }
+        }
+    }
+    #endregion
+
+    #region Playing
+    public void PlayTrigger(string triggerName, float castSpeed = float.MinValue)
     {
         if (castSpeed == float.MinValue)
             castSpeed = CastSpeed;
-        _animator.SetFloat(HashAnimPlayer.AnimCancled, castSpeed);
-        _animator.SetTrigger(clipHash);
-        _netAnimator.SetTrigger(clipHash);
+        //Debug.Log("CastSpeed" + castSpeed);
 
-        _activeClip = clipHash;
-        _activeClipDuration = GetDuration(clipHash);
+        int hash = Animator.StringToHash(triggerName);
+        _animator.SetFloat(HashAnimPlayer.CastSpeed, castSpeed);
+        _animator.SetTrigger(hash);
+        _netAnimator.SetTrigger(hash);
+
+        _activeTrigger = hash;
+        _activeClip = GetAnimationFromTrigger(triggerName);
+        if (_activeClip == null)
+        {
+            Debug.LogError($"Couldn't find clip for trigger {triggerName}");
+            return;
+        }
+        _activeClipDuration = GetClipDuration(_activeClip.name);
     }
 
     public void PlayPreparing()
     {
-        var anim = GetRandom(_prepareAnimations);
+        var anim = GetRandom(_prepareTriggers);
         if (anim == null)
             return;
 
-        PlayAnimation(Animator.StringToHash(anim));
+        PlayTrigger(anim);
     }
 
     public void PlayCasting()
     {
-        var anim = GetRandom(_prepareAnimations);
+        var anim = GetRandom(_castTriggers);
         if (anim == null)
             return;
 
-        PlayAnimation(Animator.StringToHash(anim));
+        PlayTrigger(anim);
+    }
+
+
+    public void Cancel()
+    {
+        ResetCurrentTrigger();
+
+        _animator.SetTrigger(HashAnimPlayer.AnimCancled);
+        _netAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
+    }
+
+    public void ResetCurrentTrigger()
+    {
+        if (_activeClip == null)
+            return;
+        _animator.ResetTrigger(_activeTrigger);
+        _netAnimator.ResetTrigger(_activeTrigger);
+        _activeClip = null;
+        _activeClipDuration = -1;
+        _activeTrigger = 0;
     }
 
     public string GetRandom(List<string> list)
@@ -84,17 +135,22 @@ public class AnimationComponent : BaseSkillComponent
             return list[0];
         return list[UnityEngine.Random.Range(0, list.Count)];
     }
+    #endregion
 
-    public float GetDuration(int clipHash)
+    #region Caching
+    /// <summary>
+    /// Находит длительность анимации по названию
+    /// Кэширует [clip]:duration в _clipDurations
+    /// </summary>
+    public float GetClipDuration(string clipName)
     {
-        if (animLengths.TryGetValue(clipHash, out float duration))
+        if (_clipDurations.TryGetValue(clipName, out float duration))
             return duration / CastSpeed;
 
         AnimationClip animation = null;
-
         foreach (AnimationClip anim in _animator.runtimeAnimatorController.animationClips)
         {
-            if (Animator.StringToHash(anim.name) == clipHash)
+            if (anim.name == clipName)
             {
                 animation = anim;
                 break;
@@ -102,29 +158,56 @@ public class AnimationComponent : BaseSkillComponent
         }
 
         if (animation == null)
+        {
+            Debug.LogError($"Couldn't find animation {clipName}", _character.gameObject);
             return -1;
-
-        Debug.Log($"animation length: {animation.length / CastSpeed}");
-        animLengths.Add(clipHash, animation.length);
+        }
+        //Debug.Log($"animation length: {animation.length / CastSpeed}");
+        _clipDurations.TryAdd(clipName, animation.length);
         return animation.length / CastSpeed;
     }
 
-    public void Cancel()
+    /// <summary>
+    /// Ищет в Animator 1 анимацию,
+    /// которая запускается по триггеру.
+    /// Кэширует связь [trigger]:clip в _triggerToClip
+    /// Кэширует длительность [clip]:length в _clipDurations
+    /// </summary>
+    public AnimationClip GetAnimationFromTrigger(string trigger)
     {
-        ResetCurrent();
+        if (_triggerToClip.ContainsKey(trigger))
+            return _triggerToClip[trigger];
 
-        _animator.SetTrigger(HashAnimPlayer.AnimCancled);
-        _netAnimator.SetTrigger(HashAnimPlayer.AnimCancled);
-    }
+        AnimatorController controller = _animator.runtimeAnimatorController as AnimatorController;
+        if (controller == null)
+        {
+            Debug.LogError("No runtime controller");
+            return null;
+        }
 
-    public void ResetCurrent()
-    {
-        if (_activeClip == 0)
-            return;
-        _animator.ResetTrigger(_activeClip);
-        _netAnimator.ResetTrigger(_activeClip);
-        _activeClip = 0;
-        _activeClipDuration = -1;
+        foreach (var layer in controller.layers)
+        {
+            // Apparently, Unity хранит переходы из "AnyState -> state" отдельно от ВСЕХ переходов)))
+            var allTransitions = layer.stateMachine.anyStateTransitions.Concat(layer.stateMachine.states.SelectMany(s => s.state.transitions));
+
+            foreach (var transition in allTransitions)
+            {
+                foreach (var condition in transition.conditions)
+                {
+                    if (condition.parameter == trigger)
+                    {
+                        var clip = transition.destinationState.motion as AnimationClip;
+                        _triggerToClip.TryAdd(trigger, clip);
+                        _clipDurations.TryAdd(clip.name, clip.length);
+                        //Debug.Log($"[Animation] Cached [{trigger}]: {clip.name}");
+                        return clip;
+                    }
+                }
+            }
+        }
+        Debug.LogError($"Couldn't find any transition for trigger{trigger}");
+        return null;
     }
+    #endregion
     #endregion
 }

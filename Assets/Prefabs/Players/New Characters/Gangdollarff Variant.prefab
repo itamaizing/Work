@@ -15247,8 +15247,6 @@ MonoBehaviour:
   _shieldPref: {fileID: 1158249924082485831, guid: 13647bb6f83d1b34c8c511be314fb9d3, type: 3}
   _shieldValue: 100
   _shieldDuration: 2
-  IsAllyTargetAvailable: 0
-  IsManaRegenActive: 0
 --- !u!114 &7914139750777672279
 MonoBehaviour:
   m_ObjectHideFlags: 0

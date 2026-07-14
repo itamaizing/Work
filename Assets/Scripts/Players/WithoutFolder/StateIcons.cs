@@ -40,13 +40,18 @@ public class StateIcons : MonoBehaviour
     {
         foreach (var ico in _activeEffects)
         {
-            if (ico.State == state && canStack)
+            if (ico.State == state)
             {
                 ico.FadeFront.DOKill();
-                ico.count = canStack ? Mathf.Min(ico.count + stack, maxStackValue) : 1;
-                ico.maxStack = maxStackValue;
+
                 StartProgress(ico, timeToDecrease);
+
+                if (canStack) ico.count = Mathf.Min(ico.count + stack, maxStackValue);
+
+                ico.maxStack = maxStackValue;
+
                 RefreshText(ico);
+
                 MoveIcoToEnd(_activeEffects.IndexOf(ico));
                 return;
             }

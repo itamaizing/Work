@@ -121,7 +121,7 @@ public class CooldownComponent : BaseSkillComponent
     /// </summary>
     /// <param name="duration"></param>
     /// <param name="shouldModify"></param>
-    public void SetIncreased(float duration, bool shouldModify = false, bool opModify = true)
+    public void SetIncreased(float duration, bool shouldModify = false, bool opModify = false)
     {
         if (shouldModify)
             duration = CalculateValue(duration);
@@ -137,7 +137,7 @@ public class CooldownComponent : BaseSkillComponent
     /// </summary>
     /// <param name="duration"></param>
     /// <param name="shouldModify"></param>
-    public void SetReduced(float duration, bool shouldModify = false, bool opModify = true)
+    public void SetReduced(float duration, bool shouldModify = false, bool opModify = false)
     {
         if (shouldModify)
             duration = CalculateValue(duration);

@@ -7,7 +7,7 @@ public class SelectedCircle : MonoBehaviour
     [SerializeField] private DecalProjector _selectProjectorHero;
     [SerializeField] private DecalProjector _selectProjectorTargetVariant;
     [SerializeField] private DecalProjector _stroke;
-
+    
     private bool _isActive;
 
     public bool IsActive

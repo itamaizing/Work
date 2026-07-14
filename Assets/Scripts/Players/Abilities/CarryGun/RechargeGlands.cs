@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -65,7 +66,13 @@ public class RechargeGlands : Skill
             Charges.SendCurrentChange(_chargesGlands);
         }
 
+        UpdateDisactiveState();
         _activeCoroutines--;
+    }
+
+    private void UpdateDisactiveState()
+    {
+        Disactive = _chargesGlands >= MaxCharges;
     }
 
     public bool TryApplyDestructivePoison(Character target, float chance, Character caster)
@@ -79,9 +86,11 @@ public class RechargeGlands : Skill
         _chargesGlands--;
         Charges.SendCurrentChange(_chargesGlands);
 
+        UpdateDisactiveState();
+
         if (rand <= chance)
         {
-            target.CharacterState.AddStateLogic(States.DestructivePoison, _durationDestructivePoison, 0, Schools.None, caster.gameObject, null);
+            CmdAddDestructivePoison(target, caster);
             return true;
         }
 
@@ -94,6 +103,8 @@ public class RechargeGlands : Skill
         _chargesGlands = Mathf.Max(0, _chargesGlands);
 
         Charges.SendCurrentChange(_chargesGlands);
+
+        UpdateDisactiveState();
     }
 
     protected override void ClearData()
@@ -115,5 +126,11 @@ public class RechargeGlands : Skill
 
         callbackDataSaved(targetInfo);
         yield break;
+    }
+
+    [Command]
+    private void CmdAddDestructivePoison(Character target, Character caster)
+    {
+        target.CharacterState.AddState(States.DestructivePoison, _durationDestructivePoison, 0, caster.gameObject, null);
     }
 }

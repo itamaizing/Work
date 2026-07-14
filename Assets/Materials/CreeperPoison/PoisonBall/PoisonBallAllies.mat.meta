@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Materials/CreeperPoison/PoisonBall/PoisonBallAllies.mat.meta
 guid: 88e95aaee0b630b4e83b856e2b23ef59
 NativeFormatImporter:
+========
+guid: e7e8358d65acdc04ab6e39ec3ec72887
+PrefabImporter:
+>>>>>>>> main:Assets/FX/Priest/RadianceLight.prefab.meta
   externalObjects: {}
   mainObjectFileID: 2100000
   userData: 

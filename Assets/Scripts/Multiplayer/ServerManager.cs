@@ -1,4 +1,5 @@
-﻿using Mirror;
+﻿using kcp2k;
+using Mirror;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -9,6 +10,7 @@ using UnityEngine.Rendering;
 
 public class ServerManager : NetworkBehaviour
 {
+    private const string STARTGAME = "startGame";
     private const string HEROINDEX = "heroIndex";
     private const string GAMEMODE = "gameMode";
     private const string USERID = "userID";
@@ -85,7 +87,7 @@ public class ServerManager : NetworkBehaviour
 
         var startData = new
         {
-            type = URLLibrary.StartGame,
+            type = STARTGAME,
             playerId = MPNetworkManager.Instance.UserID,
             playerIdForAddGroup = _groupManager.GetPlayerInGroup()
         };
@@ -99,8 +101,11 @@ public class ServerManager : NetworkBehaviour
         _menuEnv.gameObject.SetActive(true);
     }
 
-    private void OnMessageReceived(Dictionary<string, string> dictionary)
+    private void OnMessageReceived(Dictionary<string, string> dictionary, string json)
     {
+        if (dictionary.Count == 0)
+            return;
+
         string type = dictionary["type"].ToString();
 
         switch (type)
@@ -136,6 +141,16 @@ public class ServerManager : NetworkBehaviour
             port = parts[1];
 
             Debug.Log($"Try connect - {ip}:{port}");
+
+            var transport = MPNetworkManager.Instance.GetComponent<KcpTransport>();
+
+            if (transport == null)
+            {
+                Debug.LogError("Transport not found on NetworkManager");
+                return;
+            }
+            transport.port = ushort.Parse(port);
+            MPNetworkManager.Instance.networkAddress = ip;
 
             MPNetworkManager.Instance.StartClient();
         }
@@ -199,9 +214,8 @@ public class ServerManager : NetworkBehaviour
 public class GroupManager
 {
     private const string INVITE = "invite";
+    private const string ACCEPTINVITE = "acceptInvite";
     private const string PLAYERID = "playerId";
-    private const string ANSWER = "answer";
-    private const string ADDEDTOGROUP = "AddedToGroup";
 
     private List<int> _ids = new List<int>();
     
@@ -210,8 +224,21 @@ public class GroupManager
         var invData = new
         {
             type = INVITE,
-            playerId = MPNetworkManager.Instance.UserID,
-            playerIdForAddGroup = id
+            hostplayerId = MPNetworkManager.Instance.UserID,
+            playerId = id
+        };
+        string json = JsonConvert.SerializeObject(invData);
+
+        WebSocketClient.Instance.SendMessageToServer(json);
+    }    
+
+    public void AcceptInvite(int id)
+    {
+        var invData = new
+        {
+            type = ACCEPTINVITE,
+            HostplayerId = MPNetworkManager.Instance.UserID,
+            playerId = id
         };
         string json = JsonConvert.SerializeObject(invData);
 
@@ -237,6 +264,8 @@ public class GroupManager
         _ids.Remove(id);
     }
 
+    public void Clear() { _ids.Clear(); }
+
     public void RemovePlayerInGroup(string id)
     {
         if (int.TryParse(id, out int idInt))
@@ -248,6 +277,9 @@ public class GroupManager
     public string GetPlayerInGroup()
     {
         string playerIdForAddGroup = "";
+
+        if(_ids.Count == 0)
+            return playerIdForAddGroup;
 
         foreach (var id in _ids)
         {

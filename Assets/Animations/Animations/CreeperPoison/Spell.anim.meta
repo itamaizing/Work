@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Animations/Animations/CreeperPoison/Spell.anim.meta
 guid: d9fbbbeabc081d94e83715e407fcb450
 NativeFormatImporter:
+========
+guid: 271423b0a9cb3c0498760b02dec03d9b
+PrefabImporter:
+>>>>>>>> main:Assets/FX/Priest/Fear.prefab.meta
   externalObjects: {}
   mainObjectFileID: 7400000
   userData: 

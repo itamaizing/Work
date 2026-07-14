@@ -15,21 +15,26 @@ public class IceSword : CloseCombatSkill
 	[SerializeField] private GameObject _sword;
 	[SerializeField] private AudioClip audioClip;
 
+	[SerializeField] private float _baseEnergyCost = 40f;
+	[SerializeField] private float _maxAdditionalCost = 10f;
 
 	private int _hitInTheRow = 0;
 	private float _additionalDamage = 0;
-    [SerializeField] private float _maxAdditionalCost = 10f;
 	private Character _oldtarget;
 	//private Character _target;
-	private float _duration = 3;
+	private float _duration = 12;
 	private Energy _energy;
 	private Coroutine coroutineSwordTime;
 	private RuneComponent _rune;
-	private bool _critDmg = false;
 	private AudioSource _audioSource;
 	protected override bool IsCanCast => IsCanCastCheck();
 
-	protected override int AnimTriggerCastDelay => 0;
+	#region Talent
+
+
+    #endregion
+
+    protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("IceSword");
 
 	private bool IsCanCastCheck()
@@ -58,13 +63,16 @@ public class IceSword : CloseCombatSkill
 
 	protected override IEnumerator CastJob()
 	{
-		if (_energy == null)
-			_energy = (Energy)Hero.Resources[ResourceType.Energy];
+		Character targetCharacter = Targeting.GetTarget()?.Character;
+		if (targetCharacter == null) yield break;
 
-		if (_rune == null)
-			_rune = (RuneComponent)Hero.Resources[ResourceType.Rune];
+		if (!ConsumeEnergy())
+		{
+			TryCancel(true);
+			yield break;
+		}
 
-        _seriesOfStrikes.MakeHit(Targeting.GetTarget()?.Character, Info.AbilityForm, 0, 10, 0);
+		_seriesOfStrikes.MakeHit(Targeting.GetTarget()?.Character, Info.AbilityForm, 0, 10, 0);
 		if (Targeting.GetTarget()?.Character == _oldtarget)
 		{
 			_hitInTheRow++;
@@ -76,10 +84,9 @@ public class IceSword : CloseCombatSkill
 		}
 		if (_hitInTheRow > 2)
 		{
-			_deathSpiral.AddCharge();
 			_hitInTheRow = 0;
 		}
-		ApplyDamage();
+		ApplyDamage(targetCharacter);
 		CmdAdd(Targeting.GetTarget()?.Character.gameObject);
 		yield return null;
 	}
@@ -91,7 +98,7 @@ public class IceSword : CloseCombatSkill
 		//_target = null;
 	}
 
-	private void ApplyDamage()
+	private void ApplyDamage(Character targetCharacter)
 	{
 		//Debug.Log("111111111111");
 		/*float energyBonus = 0;
@@ -111,11 +118,6 @@ public class IceSword : CloseCombatSkill
 			PhysicAttackType = AttackRangeType.RangeAttack,
 		};
 		Debug.Log("Damage " + totalDamage);
-
-		if (_critDmg && Targeting.GetTarget().Character.CharacterState.CheckForState(States.Frozen))
-		{
-			damage2.Value *= (Random.Range(0, 100) < 15) ? 1.8f : 1.1f;
-		}
 
 		CmdApplyDamage(damage2, Targeting.GetTarget()?.Character.gameObject);
 
@@ -140,18 +142,13 @@ public class IceSword : CloseCombatSkill
 	{
 		Character enemyCharacter = enemy.GetComponent<Character>();
 		RpcPlayShotSound();
-		enemyCharacter.CharacterState.AddState(States.Frozen, _duration, 0, _playerLinks.gameObject, name);
+		enemyCharacter.CharacterState.AddState(States.Cooling, _duration, 0, _playerLinks.gameObject, name);
 	}
 
 	[ClientRpc]
 	private void RpcPlayShotSound()
 	{
 		if (_audioSource != null && audioClip != null) _audioSource.PlayOneShot(audioClip);
-	}
-
-	public void TalentCritDmg(bool value)
-	{
-		_critDmg = value;
 	}
 
 	public void CorutineSwordTimeStart()
@@ -169,34 +166,69 @@ public class IceSword : CloseCombatSkill
 	{
 		AnimCastEnded();
 	}
-    protected override bool TryPayCost(List<SkillResourceCost> skillEnergyCosts, bool startCooldown = true)
-    {
-		if (!IsHaveResourceOnSkill)
-		{
-			return false;
-		}
 
-        _additionalDamage = 0;
+	private void EnsureResources()
+	{
+		if (_energy == null) _energy = (Energy)Hero.Resources[ResourceType.Energy];
+		if (_rune == null) _rune = (RuneComponent)Hero.Resources[ResourceType.Rune];
+	}
 
-        foreach (var skillCost in skillEnergyCosts)
-        {
-			var baseCost = skillCost.value;
+	private bool ConsumeEnergy()
+	{
+		EnsureResources();
 
-            if (_energy.CurrentValue > baseCost)
-			{
-                _additionalDamage = Mathf.Min(_energy.CurrentValue-baseCost, _maxAdditionalCost);
-                //Debug.Log($"Add damage {_additionalDamage}, | currEnergy {_energy.CurrentValue} ");
-                _energy.CmdUse(_additionalDamage);
-            }
-            _energy.CmdUse(Buff.ManaCost.GetBuffedValue(baseCost));
-        }
+		float baseCost = Buff.ManaCost.GetBuffedValue(_baseEnergyCost);
+		float currentEnergy = _energy.CurrentValue;
 
-		if (startCooldown)
-		{
-			Cooldown.SetIncreased(Cooldown.CooldownTime, shouldModify: false);
-		}
+		if (currentEnergy < baseCost + 1f) return false;
 
-        if (!_useChargesAsComboPart) TryUseCharge();
-        return true;
-    }
+		float additionalEnergy = Mathf.Min(currentEnergy - baseCost, _maxAdditionalCost);
+		additionalEnergy = Mathf.Clamp(additionalEnergy, 1f, _maxAdditionalCost);
+
+		_additionalDamage = additionalEnergy;
+
+		float totalEnergyToUse = baseCost + additionalEnergy;
+		if (!Cost.TryPaySingle(totalEnergyToUse, ResourceType.Energy, shouldModify: false)) return false;
+
+		return true;
+	}
+
+	protected override bool CheckResourcesOnSkill()
+	{
+		EnsureResources();
+
+		float baseCost = Buff.ManaCost.GetBuffedValue(_baseEnergyCost);
+		return _energy.CurrentValue >= baseCost + 1f;
+	}
+
+	//  protected override bool TryPayCost(List<SkillResourceCost> skillEnergyCosts, bool startCooldown = true)
+	//  {
+	//if (!IsHaveResourceOnSkill)
+	//{
+	//	return false;
+	//}
+
+	//      _additionalDamage = 0;
+
+	//      foreach (var skillCost in skillEnergyCosts)
+	//      {
+	//	var baseCost = skillCost.value;
+
+	//          if (_energy.CurrentValue > baseCost)
+	//	{
+	//              _additionalDamage = Mathf.Min(_energy.CurrentValue-baseCost, _maxAdditionalCost);
+	//              //Debug.Log($"Add damage {_additionalDamage}, | currEnergy {_energy.CurrentValue} ");
+	//              _energy.CmdUse(_additionalDamage);
+	//          }
+	//          _energy.CmdUse(Buff.ManaCost.GetBuffedValue(baseCost));
+	//      }
+
+	//if (startCooldown)
+	//{
+	//	Cooldown.SetIncreased(Cooldown.CooldownTime, shouldModify: false);
+	//}
+
+	//      if (!_useChargesAsComboPart) TryUseCharge();
+	//      return true;
+	//  }
 }

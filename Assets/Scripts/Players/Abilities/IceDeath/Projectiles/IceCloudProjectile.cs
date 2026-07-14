@@ -15,6 +15,10 @@ public class IceCloudProjectile : Projectiles
 	private float _damageToExit = 1;
 	private float _usedEnergy;
 
+	private const float FrostEnergyCoolingBonusPerStack = 1f;
+	private const float FrostEnergyFrostingBonusPerStack = 5f;
+	private const float FrostEnergyFrozenBonusPerStack = 10f;
+
 	private bool _isReflected;
 
 	private void Start()
@@ -102,8 +106,8 @@ public class IceCloudProjectile : Projectiles
     {
         //yield return new WaitForSecondsRealtime(0.1f);
         yield return null;
-        target.CharacterState.AddState(States.Frozen, duration, target.Health.SumDamageTaken + 1, _dad.gameObject, _skill.name);
-        Explode();
+		ApplyStateWithFrostEnergyBonus(target, States.Frozen, duration);
+		Explode();
     }
 
     private void Explode()
@@ -114,6 +118,53 @@ public class IceCloudProjectile : Projectiles
 			Destroy(hitEffect, 5f);
 		}
 		Destroy(gameObject);
+	}
+
+	private void ApplyStateWithFrostEnergyBonus(Character target, States state, float duration)
+	{
+		bool hasFrostEnergy = target.CharacterState.CheckForState(States.FrostEnergy);
+
+		int currentStacks = target.CharacterState.CheckStateStacks(state);
+		int stacksAfterApply = currentStacks + 1;
+
+		float bonusPerStack = 0f;
+
+		switch (state)
+		{
+			case States.Cooling:
+				bonusPerStack = FrostEnergyCoolingBonusPerStack;
+				break;
+
+			case States.Frosting:
+				bonusPerStack = FrostEnergyFrostingBonusPerStack;
+				break;
+
+			case States.Frozen:
+				bonusPerStack = FrostEnergyFrozenBonusPerStack;
+				break;
+
+			default:
+				bonusPerStack = 0f;
+				break;
+		}
+
+		float bonusDamage = 0f;
+
+		if (hasFrostEnergy && bonusPerStack > 0f)
+		{
+			bonusDamage = stacksAfterApply * bonusPerStack;
+
+			Damage bonus = new Damage
+			{
+				Value = bonusDamage,
+				Type = DamageType.Magical
+			};
+
+			target.Health.TryTakeDamage(ref bonus, _skill);
+			TargetRpcDamageMake(bonusDamage);
+		}
+
+		target.CharacterState.AddState(state, duration,	target.Health.SumDamageTaken + _damageToExit, _dad.gameObject, _skill.name);
 	}
 
 	public void Talent(bool value, bool frozenState, bool lastHit)

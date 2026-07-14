@@ -79,13 +79,14 @@ public class AbilityPanel : MonoBehaviour
     private void OnCharacterSelected(Character character)
     {
         Debug.Log(character);
-        if (character != null && character != _currentCharacter)
-        {
-            gameObject.SetActive(true);
-            _currentCharacter = character;
-            Fill(_currentCharacter.Abilities);
-            _queuePanel.Init(character.Abilities.SkillQueue);
-        }
+        if (character == null) return;
+
+        ClearPanel();
+
+        gameObject.SetActive(true);
+        _currentCharacter = character;
+        Fill(_currentCharacter.Abilities);
+        _queuePanel.Init(character.Abilities.SkillQueue);
     } 
 
     private void OnCharacterDeselected(Character character)

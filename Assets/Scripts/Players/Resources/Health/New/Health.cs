@@ -169,6 +169,8 @@ public class Health : Resource, IDamageable, IHealable
         _resistMagDamage = value;
     }
 
+    public void InvokeEvade() => Evaded?.Invoke();
+
     public void SetEvadeMagicDecrease(float value)
     {
         _resistMagDamage *= 1 - (value / 100);

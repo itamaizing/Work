@@ -13,6 +13,7 @@ public enum SkillAttributeName
     CastSpeed,
     Cooldown,
     ResourceCost,
+    ChanceModifier,
 }
 
 public class SkillAttributes
@@ -28,11 +29,11 @@ public class SkillAttributes
         get
         {
             if (_heroAttributes == null)
-                return GetCombined(
-                    _attributes[SkillAttributeName.Cooldown],
-                    _heroAttributes[CharacterAttributeName.CooldownReduction],
-                    _attributes[SkillAttributeName.Cooldown].BaseValue);
-            return _attributes[SkillAttributeName.Cooldown].GetValue();
+                return _attributes[SkillAttributeName.Cooldown].GetValue();
+            return GetCombined(
+                _attributes[SkillAttributeName.Cooldown],
+                _heroAttributes[CharacterAttributeName.CooldownReduction],
+                _attributes[SkillAttributeName.Cooldown].BaseValue);
         }
     }
     public float ResourceCost
@@ -67,8 +68,8 @@ public class SkillAttributes
             var skill = _attributes[SkillAttributeName.CastSpeed];
 
             return (skill.BaseValue + skill.FlatBonus + heroB.FlatBonus + heroP.FlatBonus) *
-                (1 + skill.PercentBonus + heroB.FlatBonus + heroP.FlatBonus) *
-                (skill.MultiplierBonus + heroB.MultiplierBonus + heroP.MultiplierBonus);
+                (1 + skill.PercentBonus + heroB.PercentBonus + heroP.PercentBonus) *
+                (skill.MultiplierBonus * heroB.MultiplierBonus * heroP.MultiplierBonus);
         }
     }
     public float CastSpeedMagical
@@ -82,25 +83,29 @@ public class SkillAttributes
             var skill = _attributes[SkillAttributeName.CastSpeed];
 
             return (skill.BaseValue + skill.FlatBonus + heroB.FlatBonus + heroM.FlatBonus) *
-                (1 + skill.PercentBonus + heroB.FlatBonus + heroM.FlatBonus) *
-                (skill.MultiplierBonus + heroB.MultiplierBonus + heroM.MultiplierBonus);
+                (1 + skill.PercentBonus + heroB.PercentBonus + heroM.PercentBonus) *
+                (skill.MultiplierBonus * heroB.MultiplierBonus * heroM.MultiplierBonus);
         }
     }
     #endregion Properties
+
+    public event Action<string, float> OnAttributeModify;
 
     public SkillAttributes()
     {
         foreach (SkillAttributeName attribute in Enum.GetValues(typeof(SkillAttributeName)))
         {
-            _attributes.Add(attribute, new Attribute());
+            _attributes.Add(attribute, new Attribute(attribute.ToString()));
         }
     }
 
     public void Init(AttributeSystem characterAttributes)
     {
         if (characterAttributes == null)
-            Debug.Log("Skill Attributes was null on Init()");
+            throw new NullReferenceException("Skill Attributes was null on Init()");
+        CastSpeed = 1;
         _heroAttributes = characterAttributes;
+        SubscribeToAttributeModify();
     }
 
     public float GetCombined(Attribute skill, Attribute hero, float baseValue = float.MinValue)
@@ -115,5 +120,31 @@ public class SkillAttributes
     public float GetCombined(SkillAttributeName skill_atr, CharacterAttributeName hero_atr, float baseValue = float.MinValue)
     {
         return GetCombined(_attributes[skill_atr], _heroAttributes[hero_atr], baseValue);
+    }
+
+    // Добавить такой же GetDamage. Вероятно вынести их в Skill.cs, чтобы сервер главентсовавал
+    // и можно было override'ить
+    /// <summary>
+    /// Возвращает шанс с учетом модификаторов на скилле и герое
+    /// </summary>
+    public float GetChance(float value)
+    {
+        if (_heroAttributes == null)
+            return _attributes[SkillAttributeName.ChanceModifier].CalculateFor(value);
+        return GetCombined(
+            _attributes[SkillAttributeName.ChanceModifier],
+            _heroAttributes[CharacterAttributeName.ChanceModifier],
+            value);
+    }
+
+    private void SubscribeToAttributeModify()
+    {
+        foreach (Attribute attribute in _attributes.Values)
+            attribute.OnAttributeModify += SendAttributeModify;
+    }
+
+    private void SendAttributeModify(string name, float value)
+    {
+        OnAttributeModify?.Invoke(name, value);
     }
 }

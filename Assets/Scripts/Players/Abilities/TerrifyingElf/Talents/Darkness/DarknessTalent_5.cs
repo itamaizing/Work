@@ -7,11 +7,13 @@ public class DarknessTalent_5 : Talent
 
     public override void Enter()
     {
+        silence.SilenceAddAllCharacterWithDeabaffElf(true);
         terrifyingElfAura.ManaAbsorptionPhysicalTalentActive(true);
     }
 
     public override void Exit()
     {
+        silence.SilenceAddAllCharacterWithDeabaffElf(false);
         terrifyingElfAura.ManaAbsorptionPhysicalTalentActive(false);
     }
 }
