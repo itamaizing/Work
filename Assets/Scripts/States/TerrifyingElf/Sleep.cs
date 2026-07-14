@@ -69,10 +69,6 @@ public class Sleep : AbstractCharacterState
         {
             var sleep = _source.Abilities.Abilities.OfType<SleepSpell>().FirstOrDefault();
             if (sleep != null) _giveInnerDarkness = sleep.IsSleepInnerDarknessTalentActive;
-            if (_giveInnerDarkness)
-            {
-                CmdStateInnerDarkness();
-            }
         }
 
         var networkSettings = characterState.Character.NetworkSettings;
@@ -105,13 +101,6 @@ public class Sleep : AbstractCharacterState
     public override void UpdateState()
     {
         //duration -= Time.deltaTime;
-
-        if (duration <= 0f || turnOff)
-        {
-            ExitState();
-            return;
-        }
-
         if (_giveInnerDarkness)
         {
             _tickTimer += Time.deltaTime;
@@ -121,7 +110,12 @@ public class Sleep : AbstractCharacterState
                 CmdStateInnerDarkness();
             }
         }
-
+        
+        if (duration <= 0f || turnOff)
+        {
+            ExitState();
+            return;
+        }
     }
 
     public override void ExitState()

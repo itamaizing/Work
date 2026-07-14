@@ -667,20 +667,30 @@ public class Ghost : Skill
 
     private IEnumerator CheckExtendedRadiusJob()
     {
+        float lastCalculatedRadius = -1f;
+
         while (true)
         {
+            float currentTargetRadius = AreaInfo.Radius + extendedRadius;
+
             bool ghostWithAuraInExtendedRadius = _ghosts.Any(ghost =>
                 ghost != null &&
                 ghost.GetComponent<GhostAura>() != null &&
-                IsWithinRadius(ghost.transform.position, AreaInfo.Radius + extendedRadius));
+                IsWithinRadius(ghost.transform.position, currentTargetRadius));
 
             if (_extendedRadiusCircle != null)
             {
                 var color = ghostWithAuraInExtendedRadius ? Color.green : extendedRadiusColor;
                 _extendedRadiusCircle.SetColor(color);
-                _extendedRadiusCircle.Draw(AreaInfo.Radius + extendedRadius);
-            }
 
+                if (!Mathf.Approximately(lastCalculatedRadius, currentTargetRadius))
+                {
+                    lastCalculatedRadius = currentTargetRadius;
+                    
+                    _extendedRadiusCircle.Clear(); 
+                    _extendedRadiusCircle.Draw(currentTargetRadius);
+                }
+            }
             yield return new WaitForSeconds(0.1f);
         }
     }

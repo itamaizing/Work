@@ -59,7 +59,6 @@ public class Fear : AbstractCharacterState
             }
         }
 
-        _duration -= Time.deltaTime;
         if (_duration <= 0f)
         {
             ExitState();

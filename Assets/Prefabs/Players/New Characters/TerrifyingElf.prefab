@@ -20805,30 +20805,24 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 4
-    _costs: []
-  _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
-  _additionalSkillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
+    _costs:
+    - nameToShow: 4 Mana - Mandatory mod desc
+      type: 1
+      value: 4
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
+  _skillEnergyCosts: []
+  _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 0
   _castDeley: 0
   _damageValue: 6
   _infoComponent:
-    _school: 1
-    _form: 3
-    _damageType: 4
+    _school: 6
+    _form: 1
+    _damageType: 1
     _rangeType: 1
     _skillType: 0
     _whileMoving: 0
@@ -20867,7 +20861,7 @@ MonoBehaviour:
   _areaComponent:
     _radius: 0
     _area: 0
-    _castLength: 7
+    _castLength: 6
     _castWidth: 0.1
   _autoAttackDelay: 0
   _informationRenderComponent:
@@ -20981,7 +20975,7 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 10
+    _radius: 5
     _area: 3
     _castLength: 0
     _castWidth: 0
@@ -21129,15 +21123,15 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 41dc99a2dc0db1b48bfe3ab875799e50, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 2
-    _costs: []
-  _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
+    _base: 40
+    _costs:
+    - nameToShow: 40 Mana - Mandatory mod desc
+      type: 1
+      value: 40
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
+  _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 8
   _cooldownComponent:
@@ -24067,7 +24061,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  pullingHealth: {fileID: 679409545534796012}
   silence: {fileID: 4161291845396503115}
   ability: {fileID: 4092227064955680494}
 --- !u!114 &3161208881145151031
@@ -24215,10 +24208,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  suppression: {fileID: 6063604074090390129}
-  ability: {fileID: 4092227064955680494}
-  reconnaissanceFire: {fileID: 2750012758126725032}
-  ghost: {fileID: 1718052129104348959}
 --- !u!114 &183809737086991779
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24266,7 +24255,6 @@ MonoBehaviour:
   character: {fileID: 4534754468497973439}
   subjugationMind: {fileID: 6728227519922462803}
   ability: {fileID: 4092227064955680494}
-  retributiveReckoning: {fileID: 1612167112411553268}
 --- !u!114 &6150019603701913108
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24328,7 +24316,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  _retributiveReckoning: {fileID: 1612167112411553268}
 --- !u!114 &7436968993412666211
 MonoBehaviour:
   m_ObjectHideFlags: 0

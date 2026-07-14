@@ -151,10 +151,8 @@ public class ShotDarkness : Skill
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
-
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Targetable);
         targetInfo.Points.Add(targetPoint);
         callbackDataSaved(targetInfo);
     }
@@ -190,7 +188,7 @@ public class ShotDarkness : Skill
             _multiMagicSpell.Cooldown.Modify(-reduce);
         }
 
-        else CmdUseMana(666);
+        else CmdUseMana(_magicDamage);
     }
 
 

@@ -43,23 +43,8 @@ public class ShotsIntoSky : Skill
     protected override int AnimTriggerCast => 0;
 
 
-    protected override bool IsCanCast
-    {
-        get
-        {
-            if (_disactive) return false;
-
-            if (TargetInfoQueue.Count > 0 && TargetInfoQueue.TryPeek(out var target) && target != null && target.Points.Count > 0)
-            {
-                var point = target.Points[0];
-                if (float.IsInfinity(point.x)) return false;
-                return Targeting.IsPointInRadius(AreaInfo.Radius, point);
-            }
-
-            return Targeting.IsPointInRadius(AreaInfo.Radius, _targetPoint);
-        }
-    }
-
+    protected override bool IsCanCast => Targeting.IsPointInRadius(AreaInfo.Radius, _targetPoint);
+    
     private void OnDestroy() => Canceled -= HandleSkillCanceled;
 
     private void OnEnable()
@@ -122,20 +107,39 @@ public class ShotsIntoSky : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        Vector3 localTarget = Vector3.positiveInfinity;
-
         if (CastDeley > 0f)
             Hero.Animator.speed = Hero.Animator.speed / CastDeley;
 
-        while (float.IsPositiveInfinity(localTarget.x) && !_disactive)
+        Vector3 targetPoint = Vector3.positiveInfinity;
+
+        while (float.IsPositiveInfinity(targetPoint.x) && !_disactive)
         {
             if (GetMouseButton)
-                if (TryGetGroundPoint(out Vector3 ground) && Targeting.IsPointInRadius(AreaInfo.Radius, ground))
-                    localTarget = ground;
+            {
+                if (TryGetGroundPoint(out Vector3 ground))
+                {
+                    targetPoint = ground;
+                    
+                    if (Targeting.IsPointInRadius(AreaInfo.Radius, targetPoint))
+                    {
+                        Hero.Move.LookAtPosition(targetPoint);
+                    }
+                }
+            }
             yield return null;
         }
 
-        _targetPoint = localTarget;
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(targetPoint);
+        callbackDataSaved(targetInfo);
+    }
+
+    protected override IEnumerator CastJob()
+    {
+        if (float.IsInfinity(_targetPoint.x)) yield break;
+
+        Hero.Move.StopLookAt();
+        Hero.Move.SetCanMove(true);
 
         CmdSpawnImpact(_targetPoint, Damage, false);
         _secondShotPlanned = true;
@@ -164,13 +168,6 @@ public class ShotsIntoSky : Skill
 
         CmdSpawnImpact(_targetPoint, Damage, false);
 
-        TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_targetPoint);
-        callbackDataSaved(targetInfo);
-    }
-
-    protected override IEnumerator CastJob()
-    {
         CmdExecuteCast();
 
         yield return new WaitForSeconds(_dropDelayTime);
@@ -197,6 +194,7 @@ public class ShotsIntoSky : Skill
                 _tripleShootPlanned = false;
             }
         }
+        
         _hero.Animator.speed = 1f;
         ClearData();
     }
@@ -304,7 +302,13 @@ public class ShotsIntoSky : Skill
         _hero.Move.SetCanMove(true);
     }
 
-    public override void LoadTargetData(TargetInfo targetInfo) => _targetPoint = targetInfo.Points[0];
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        if (targetInfo != null && targetInfo.Points.Count > 0)
+        {
+            _targetPoint = targetInfo.Points[0];
+        }
+    }
 
     #region ReconnaissanceFireArrowIntoSkyTalent
     public void SetTripleShotTalentActive(bool value)

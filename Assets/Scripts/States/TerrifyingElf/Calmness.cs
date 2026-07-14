@@ -8,6 +8,7 @@ public class Calmness : RefreshingState
     private const int _baseMaxStacks = 2;
     private int _lastTreesCount;
     private float _regenAmount;
+    private float _baseDuration;
     
     private Resource manaResource;
     private Coroutine _regenRoutine;
@@ -20,22 +21,38 @@ public class Calmness : RefreshingState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
+        _baseDuration = durationToExit;
         health = character.Character.Health;
-        manaResource = character.Character.TryGetResource(ResourceType.Mana);
+        manaResource = character.Character.Resource;
         base.personWhoMadeBuff = personWhoMadeBuff;
         MaxStacksCount = _baseMaxStacks;
 
-        RecalcRegenAmount();
-        if (character.isServer) _regenRoutine = character.StartCoroutine(RegenTick());
+        if (!character.isServer)
+        {
+            manaResource.ValueChanged -= RecalcRegenAmount;
+            manaResource.ValueChanged += RecalcRegenAmount;
+            _regenRoutine = character.StartCoroutine(RegenTick());
+        }
     }
 
     public override void UpdateState()
     {
     }
 
+    public override void ReduceStack()
+    {
+        duration = _baseDuration;
+        currentStacksCount--;
+        if (currentStacksCount == 0)
+        {
+            ExitState();
+        }
+    }
+
     public override void ExitState()
     {
         currentStacksCount = 0;
+        manaResource.ValueChanged -= RecalcRegenAmount;
         if (_regenRoutine != null) characterState.StopCoroutine(_regenRoutine);
         characterState.StateIcons.RemoveItemByState(State);
         characterState.RemoveState(this);
@@ -44,11 +61,7 @@ public class Calmness : RefreshingState
     public override bool Stack(float newDuration)
     {
         duration = Mathf.Max(duration, newDuration);
-
-        if (currentStacksCount < MaxStacksCount)
-        {
-            RecalcRegenAmount();
-        }
+        
         return true;
     }
 
@@ -58,18 +71,14 @@ public class Calmness : RefreshingState
         MaxStacksCount = _baseMaxStacks + _lastTreesCount;
 
         if (currentStacksCount > MaxStacksCount) currentStacksCount = MaxStacksCount;
-
-        RecalcRegenAmount();
     }
 
-    public void ApplyRegen()
+    private void RecalcRegenAmount(float oldValue, float newValue)
     {
-        if (manaResource != null && _regenAmount > 0) manaResource.Add(_regenAmount);
-    }
-
-    private void RecalcRegenAmount()
-    {
-        if (manaResource != null) _regenAmount = manaResource.MaxValue * _manaRegenPercent * currentStacksCount;
+        if (manaResource != null)
+        {
+            _regenAmount = manaResource.MaxValue * _manaRegenPercent * currentStacksCount;
+        }
     }
 
     private IEnumerator RegenTick()
@@ -81,13 +90,12 @@ public class Calmness : RefreshingState
             yield return wait;
 
             if (manaResource == null) continue;
-            if (!characterState.isServer) continue;
 
             float missing = manaResource.MaxValue - manaResource.CurrentValue;
             if (missing <= 0f) continue;
 
             float amount = Mathf.Min(_regenAmount, missing);
-            manaResource.Add(amount);
+            manaResource.CmdAdd(amount);
         }
     }
 

@@ -14,7 +14,8 @@ public class TerrifyingElfAura : Skill
     [SerializeField, Range(0f, 100f)] private float huntressMarkApplyChance = 5f;
     private const float innerDarknessChance = 20f;
 
-    [Header("Durations")] [SerializeField] private float durationCalmess;
+    [Header("Durations")] 
+    [SerializeField] private float durationCalmess;
     [SerializeField] private float durationHuntressMark;
     [SerializeField] private float durationElvenSkill;
 

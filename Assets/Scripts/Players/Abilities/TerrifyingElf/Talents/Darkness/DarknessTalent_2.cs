@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class DarknessTalent_2 : Talent
 {
-    [SerializeField] private PullingHealth pullingHealth;
     [SerializeField] private Silence silence;
     [SerializeField] private SkillManager ability;
 
