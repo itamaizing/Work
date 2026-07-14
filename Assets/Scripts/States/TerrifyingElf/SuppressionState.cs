@@ -30,7 +30,7 @@ public class SuppressionState : StackableState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit,
                                     Character caster, string skillName)
     {
         characterState = character;
@@ -59,14 +59,14 @@ public class SuppressionState : StackableState
         if (_suppressionMove) _suppressionMove.SetActive(false);
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         float deltaDist = CalcHorizontalDistanceThisFrame();
         HandleVisuals(deltaDist);
         DrainManaByDistance(deltaDist);
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         if (_suppressionIdle) _suppressionIdle.SetActive(false);
         if (_suppressionMove) _suppressionMove.SetActive(false);

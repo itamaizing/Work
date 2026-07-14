@@ -15,7 +15,7 @@ public class HardenedFlesh : StackableState
 
     private float _originalDefPhysDamage;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         health = character.Character.Health;
@@ -31,7 +31,7 @@ public class HardenedFlesh : StackableState
         Debug.Log("Def " + health.DefPhysDamage);
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         health.DefPhysDamage = _originalDefPhysDamage;
     }
@@ -50,7 +50,7 @@ public class HardenedFlesh : StackableState
         return false;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 }

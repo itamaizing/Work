@@ -33,7 +33,7 @@ public class WitheringPoisonState : StackableState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         MaxStacksCount = _maxStacks;
         _baseDuration = durationToExit;
@@ -63,7 +63,7 @@ public class WitheringPoisonState : StackableState
         }
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         _timeBetweenTakeAwayMana -= Time.deltaTime;
         if (_timeBetweenTakeAwayMana <= 0)
@@ -74,11 +74,11 @@ public class WitheringPoisonState : StackableState
 
         if (currentStacksCount <= 0)
         {
-            GlobalExit();
+            ExitState();
         }
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         ResetValues();
     }

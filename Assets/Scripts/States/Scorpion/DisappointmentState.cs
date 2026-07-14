@@ -15,7 +15,7 @@ public class DisappointmentState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _baseDuration = durationToExit;
         _damageToExit = damageToExit == 0 ? 10000 : damageToExit;
@@ -34,15 +34,15 @@ public class DisappointmentState : AbstractCharacterState
         }
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit)
         {
-            GlobalExit();
+            ExitState();
         }
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         characterState.RemoveStateFromList(this);
 

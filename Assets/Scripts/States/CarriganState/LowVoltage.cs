@@ -20,7 +20,7 @@ public class LowVoltage : StackableState
         MaxStacksCount = MaxStack;
     }
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         base.personWhoMadeBuff = personWhoMadeBuff;
@@ -36,11 +36,11 @@ public class LowVoltage : StackableState
         ApplyDebuffToActiveMagicBuffs();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         Debug.Log("[LowVoltage] ExitState called");
 

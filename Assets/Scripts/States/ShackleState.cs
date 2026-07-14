@@ -11,7 +11,7 @@ public class ShackleState : StackableState
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    protected override void EnterState(CharacterState characterState, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState characterState, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         this.characterState = characterState;
         _character     = characterState.Character;
@@ -21,11 +21,11 @@ public class ShackleState : StackableState
         _character.Move.SetCanMove(false);
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         _character.Move.SetCanMove(true);
     }

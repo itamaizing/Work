@@ -13,7 +13,7 @@ public class Anxiety : StackableState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         abilities = character.Character.Abilities;
         health = character.Character.Health;
@@ -23,11 +23,11 @@ public class Anxiety : StackableState
         Debug.Log($"Anxiety state applied: {currentStacksCount}/{MaxStacksCount} stacks, duration {duration}s");
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         RemoveEffects();
         Debug.Log($"Anxiety state removed: {currentStacksCount}/{MaxStacksCount} stacks");

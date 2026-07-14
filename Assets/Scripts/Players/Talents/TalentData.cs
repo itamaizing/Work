@@ -72,6 +72,7 @@ public class TalentData
         }*/
 
         //_dependentTalents.Clear();
+        if(_dependentTalents != null) 
         if (!_dependentTalents.Contains(talent))
         {
             _dependentTalents.Add(talent);

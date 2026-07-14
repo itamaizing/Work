@@ -13,7 +13,7 @@ public class InvisibleState : AbstractCharacterState
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 	//	Debug.Log("Entering Invisible State");
 		//effects.Add(StatusEffect.Others);
@@ -25,11 +25,11 @@ public class InvisibleState : AbstractCharacterState
 		_baseDuration = durationToExit;
 	}
 
-	public override void UpdateState()
+	public override void OnUpdateState()
 	{
 	}
 
-	protected override void ExitState()
+	protected override void OnExitState()
 	{
 		//Debug.Log("Exiting Invisible State");
 		characterState.RemoveStateFromList(this);

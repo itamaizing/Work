@@ -16,7 +16,7 @@ public class ImmortalityState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _player = characterState.Character;
@@ -33,12 +33,12 @@ public class ImmortalityState : AbstractCharacterState
         _player.Health.ResistMagDamage   = 100f;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
 
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         if (_player != null && _player.Health != null)
         {

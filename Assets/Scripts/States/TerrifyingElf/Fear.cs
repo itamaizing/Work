@@ -18,7 +18,7 @@ public class Fear : AbstractCharacterState
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _source = personWhoMadeBuff;
@@ -44,7 +44,7 @@ public class Fear : AbstractCharacterState
         Debug.Log("Страх");
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         if (_skillManager != null)
         {
@@ -59,7 +59,7 @@ public class Fear : AbstractCharacterState
         }
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         if (_moveCoroutine != null)
         {

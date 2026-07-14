@@ -36,7 +36,7 @@ public class FireFlash : StackableState
         duration = 9999;
     }
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
         characterState = character;
         duration = durationToExit;
@@ -44,7 +44,7 @@ public class FireFlash : StackableState
         currentStacksCount = 1;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         if (_infinite) return;
 
@@ -61,7 +61,7 @@ public class FireFlash : StackableState
             }
 
             _remaining--;
-            if (currentStacksCount <= 0) GlobalExit();
+            if (currentStacksCount <= 0) ExitState();
         }
     }
 

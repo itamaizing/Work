@@ -12,7 +12,7 @@ public class Knockdown : StackableState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => new List<StatusEffect> { StatusEffect.Strengthening };
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
 
@@ -22,7 +22,7 @@ public class Knockdown : StackableState
         if (Random.Range(0f, 100f) > chanceToApply)
         {
             Debug.Log("Knockdown was resisted due to high physical resistance");
-            ExitState();
+            OnExitState();
             return;
         }
 
@@ -36,7 +36,7 @@ public class Knockdown : StackableState
         ApplyDebuff();
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         Debug.Log("Exiting Knockdown State");
 
@@ -58,7 +58,7 @@ public class Knockdown : StackableState
         return false;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 

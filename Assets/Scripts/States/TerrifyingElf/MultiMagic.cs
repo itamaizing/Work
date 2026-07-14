@@ -26,7 +26,7 @@ public class MultiMagic : AuraState
 
     public Character LastTarget { get => _lastTarget; set => _lastTarget = value; }
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
         characterState = character;
         _skills = caster.GetComponent<SkillManager>();
@@ -36,20 +36,20 @@ public class MultiMagic : AuraState
             (ability => ability.Info.SkillType == SkillType.Target && (ability.Info.AbilityForm == AbilityForm.Magic || ability.Info.AbilityForm == AbilityForm.Both)))
         {
             skill.PreparingSuccess += OnTargetSkillCast;
-            skill.AfterCast += GlobalExit;
+            skill.AfterCast += ExitState;
         }
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         foreach (var skill in _skills.Abilities.Where(ability => ability.Info.SkillType == SkillType.Target))
         {
             skill.PreparingSuccess -= OnTargetSkillCast;
-            skill.AfterCast -= GlobalExit;
+            skill.AfterCast -= ExitState;
         }
     }
 

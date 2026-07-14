@@ -19,7 +19,7 @@ public class FrostingState : AbstractCharacterState
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		//Debug.Log("Entering Frosting State");
 		if (damageToExit == 0)
@@ -65,16 +65,16 @@ public class FrostingState : AbstractCharacterState
 		if (characterState.StateEffects.FrostingAudio != null) _audioSource.PlayOneShot(characterState.StateEffects.FrostingAudio);
 	}
 
-	public override void UpdateState()
+	public override void OnUpdateState()
 	{
 		_duration -= Time.deltaTime;
 		if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || _duration < 0 || turnOff)
 		{
-			GlobalExit();
+			ExitState();
 		}
 	}
 
-	protected override void ExitState()
+	protected override void OnExitState()
 	{
 		//Debug.Log("Exiting Frosting State");
 		characterState.RemoveStateFromList(this);

@@ -25,7 +25,7 @@ public class WarmingUpState : StackableState
 	}
 
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		if (character.TryGetComponent<Character>(out var ability))
 		{
@@ -49,15 +49,15 @@ public class WarmingUpState : StackableState
 		currentStacksCount = 1;
 	}
 
-	public override void UpdateState()
+	public override void OnUpdateState()
 	{
 		if (turnOff)
 		{
-			GlobalExit();
+			ExitState();
 		}
 	}
 
-	protected override void ExitState()
+	protected override void OnExitState()
 	{
 		foreach (var skill in _affectedSkills)
 		{

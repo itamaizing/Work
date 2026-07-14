@@ -25,7 +25,7 @@ public class HealingPoisonPerSecondState : StackableState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         MaxStacksCount = _maxStack;
 
@@ -47,7 +47,7 @@ public class HealingPoisonPerSecondState : StackableState
         }
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         _timeBetweenHeal -= Time.deltaTime;
         if (_timeBetweenHeal <= 0)

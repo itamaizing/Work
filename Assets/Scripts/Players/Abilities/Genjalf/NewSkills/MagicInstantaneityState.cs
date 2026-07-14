@@ -19,7 +19,7 @@ public class MagicInstantaneityState : StackableState
 
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         //CanStack = true;
         _time = durationToExit;
@@ -37,7 +37,7 @@ public class MagicInstantaneityState : StackableState
             skill.Buff.CastSpeed.IncreasePercentage(1 - (_percent * CurrentStacksCount)); ;
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         foreach (var skill in _buffedSkills)
             skill.Buff.CastSpeed.Reset();
@@ -60,7 +60,7 @@ public class MagicInstantaneityState : StackableState
         return true;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 }

@@ -18,7 +18,7 @@ public class PsionicGenerationState : AbstractCharacterState
     public override StateType Type => StateType.Magic;
     public override System.Collections.Generic.List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character,
+    protected override void OnEnterState(CharacterState character,
         float durationToExit,
         float damageToExit,
         Character personWhoMadeBuff,
@@ -35,7 +35,7 @@ public class PsionicGenerationState : AbstractCharacterState
         _psionicEnergy = character.GetComponent<BasePsionicEnergy>();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         if (!characterState.Character.isServer) return;
 

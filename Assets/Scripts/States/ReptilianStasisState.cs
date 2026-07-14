@@ -14,7 +14,7 @@ public class ReptilianStasisState : StackableState
         StatusEffect.Stunning,
     };
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _owner = character.GetComponent<Character>();
         if (_owner == null) return;
@@ -33,7 +33,7 @@ public class ReptilianStasisState : StackableState
         _owner.Abilities.CancleAllSkills();
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         RemoveStasis();
         ResetCooldowns();
@@ -71,5 +71,5 @@ public class ReptilianStasisState : StackableState
         return false;
     }
 
-    public override void UpdateState() { }
+    public override void OnUpdateState() { }
 }

@@ -13,7 +13,7 @@ public class Plague : RefreshingState
 	public override List<StatusEffect> Effects => new List<StatusEffect>();
 	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		health = characterState.Character.Health;
 		abilities = character.Character.Abilities;
@@ -25,7 +25,7 @@ public class Plague : RefreshingState
 		// reduce damage given
 	}
 
-	public override void UpdateState()
+	public override void OnUpdateState()
 	{
 		_damageTimer -= Time.deltaTime;
 		GameObject obj = null;
@@ -68,7 +68,7 @@ public class Plague : RefreshingState
 		}
 	}
 
-	protected override void ExitState()
+	protected override void OnExitState()
 	{
 		// return reduced damage given
 		for (int i = 0; i < abilities.Abilities.Count; i++)

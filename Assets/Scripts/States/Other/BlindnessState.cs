@@ -20,7 +20,7 @@ public class BlindnessState : RefreshingState
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         //  Debug.Log($"Entering Blindness State on Character netId: {character.netId}");
         _baseDuration = durationToExit;
@@ -40,11 +40,11 @@ public class BlindnessState : RefreshingState
     }
 
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         if (characterState.isOwned) RemoveEffectFromLocalCamera();
 

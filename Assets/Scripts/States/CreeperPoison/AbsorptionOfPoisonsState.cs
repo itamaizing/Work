@@ -20,7 +20,7 @@ public class AbsorptionOfPoisonsState : StackableState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _attributeModifiers = new AttributeModifier(0, ModifierType.Flat);
         characterState = character;
@@ -34,7 +34,7 @@ public class AbsorptionOfPoisonsState : StackableState
         IncreaseHealth();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 
@@ -49,7 +49,7 @@ public class AbsorptionOfPoisonsState : StackableState
         return true;
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         _player.Health.RemoveModifier(_attributeModifiers);
         //_player.Health.ChangedMaxValue(-_allIncreasedHealth);

@@ -31,7 +31,7 @@ public class AstralState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _modif.Value = .5f;
         _modif.Type = ModifierType.Multiplier;
@@ -91,11 +91,11 @@ public class AstralState : AbstractCharacterState
         if (characterState.isServer) _dotJob = characterState.StartCoroutine(DotJob());
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         Debug.Log("Exiting Astral State");
 

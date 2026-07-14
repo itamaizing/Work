@@ -13,7 +13,7 @@ public class HuntressMark : AbstractCharacterState
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _duration = durationToExit;
         characterState = character;
@@ -25,7 +25,7 @@ public class HuntressMark : AbstractCharacterState
         return false;
     }*/
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 }

@@ -23,7 +23,7 @@ public class ErodedArmorState : StackableState
         currentStacksCount = 1;
     }
 
-    protected override void EnterState(CharacterState character,
+    protected override void OnEnterState(CharacterState character,
         float durationToExit,
         float damageToExit,
         Character personWhoMadeBuff,
@@ -43,7 +43,7 @@ public class ErodedArmorState : StackableState
         ApplyReduction();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 
@@ -74,7 +74,7 @@ public class ErodedArmorState : StackableState
         health.DefPhysDamage -= _appliedReduction;
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         if (health != null)
         {

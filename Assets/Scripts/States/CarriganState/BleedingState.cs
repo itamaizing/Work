@@ -19,7 +19,7 @@ public class BleedingState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _target = characterState.Character;
 ;
@@ -31,7 +31,7 @@ public class BleedingState : AbstractCharacterState
         _target.Health.IsDot = true;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {        
         _timeBetweenAttack -= Time.deltaTime;
         if (_timeBetweenAttack <= 0)
@@ -42,7 +42,7 @@ public class BleedingState : AbstractCharacterState
         }
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         _target.Health.IsDot = false;
     }

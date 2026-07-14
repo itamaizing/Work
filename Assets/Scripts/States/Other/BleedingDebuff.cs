@@ -12,7 +12,7 @@ public class BleedingDebuff : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => throw new System.NotImplementedException();
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Debug.Log("Entering KnockdownDebuff State");
         characterState = character;
@@ -28,7 +28,7 @@ public class BleedingDebuff : AbstractCharacterState
         return true;
     }*/
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         timer += Time.deltaTime;
 

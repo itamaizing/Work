@@ -37,7 +37,7 @@ public class HealingSlime : RefreshingState
         duration = 999f;
     }
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
         health = character.Character.Health;
 
@@ -46,7 +46,7 @@ public class HealingSlime : RefreshingState
         Stack(0);
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         if (_infinite) return;
 
@@ -64,7 +64,7 @@ public class HealingSlime : RefreshingState
             }
 
             _remaining -= 1f;
-            if (_remaining <= 0f || currentStacksCount <= 0) GlobalExit();
+            if (_remaining <= 0f || currentStacksCount <= 0) ExitState();
         }
     }
 
@@ -78,7 +78,7 @@ public class HealingSlime : RefreshingState
         return true;
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         if (currentStacksCount > 0)
         {

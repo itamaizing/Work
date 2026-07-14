@@ -18,7 +18,7 @@ public class FeelingPoisoningState : RefreshingState
         StatusEffect.Strengthening
     };
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         MaxStacksCount = MaxStacks;
 
@@ -38,7 +38,7 @@ public class FeelingPoisoningState : RefreshingState
         ApplyRegenBonus();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
 
     }
@@ -57,18 +57,18 @@ public class FeelingPoisoningState : RefreshingState
         return true;
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         RemoveRegenBonus();
     }
 
-    public override void ReduceStack()
+    protected override void OnReduceStack(int count = 1)
     {
-        currentStacksCount--;
+        currentStacksCount-=count;
 
         if (currentStacksCount <= 0)
         {
-            GlobalExit();
+            ExitState();
             return;
         }
 

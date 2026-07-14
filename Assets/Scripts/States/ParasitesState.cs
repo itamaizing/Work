@@ -21,7 +21,7 @@ public class ParasitesState : RefreshingState
         MaxStacksCount = 2;
     }
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         health = character.Character.Health;
@@ -33,7 +33,7 @@ public class ParasitesState : RefreshingState
         _tickTimer = TickInterval;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         if (!NetworkServer.active) return;
         if (health == null) return;

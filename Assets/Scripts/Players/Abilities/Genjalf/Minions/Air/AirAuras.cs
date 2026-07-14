@@ -23,14 +23,14 @@ namespace Gangdollarff.AirElemental
 
         public override Schools Schools => Schools.Air;
 
-        protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+        protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
         {
             MaxStacksCount = 1;
 
             DischargeTick();
         }
 
-        public override void UpdateState()
+        public override void OnUpdateState()
         {
             _timeAfterLastEffect += Time.deltaTime;
 

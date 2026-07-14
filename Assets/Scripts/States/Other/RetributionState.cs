@@ -16,7 +16,7 @@ public class RetributionState : RefreshingState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
@@ -36,10 +36,10 @@ public class RetributionState : RefreshingState
 
     private void CastingSkillOnCastEnded()
     {
-        GlobalExit();
+        ExitState();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 
@@ -90,7 +90,7 @@ public class RetributionState : RefreshingState
         return true;
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         duration = 0f;
         currentStacksCount = 0;
@@ -108,7 +108,7 @@ public class RetributionState : RefreshingState
 
         if (currentStacksCount == 0)
         {
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+            OnEnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
             currentStacksCount = 1;
         }
         else

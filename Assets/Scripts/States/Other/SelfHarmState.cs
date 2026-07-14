@@ -15,7 +15,7 @@ public class SelfHarmState : AbstractCharacterState
 
     private Health _healthComponent;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {        
         _healthComponent = characterState.GetComponent<Health>();
 
@@ -36,11 +36,11 @@ public class SelfHarmState : AbstractCharacterState
         Debug.Log("SelfHarm enter");
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         foreach (var skill in characterState.Character.Abilities.Abilities)
         {

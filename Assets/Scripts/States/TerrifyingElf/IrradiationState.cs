@@ -14,7 +14,7 @@ public class IrradiationState : StackableState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
 
         Debug.Log("Entering Irradiation State");
@@ -31,11 +31,11 @@ public class IrradiationState : StackableState
         ApplyMagicDefenseReduction();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         RestoreMagicDefense();
         characterState.OnStateAdded -= OnNewStateAdded;

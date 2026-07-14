@@ -15,7 +15,7 @@ public class Desiccuration : AbstractCharacterState
 	public override StateType Type => StateType.Physical;
 	public override List<StatusEffect> Effects => _effects;
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 	//	Debug.Log("Entering Desiccuration State");
 
@@ -37,16 +37,16 @@ public class Desiccuration : AbstractCharacterState
 		_damageToExit = 0.01f;
 	}
 
-	public override void UpdateState()
+	public override void OnUpdateState()
 	{
 	//	Debug.Log("Updating Desiccuration State");
 		if (_duration < 0 || turnOff || characterState.Character.Health.SumDamageTaken >= _damageToExit)
 		{
-			GlobalExit();
+			ExitState();
 		}
 	}
 
-	protected override void ExitState()
+	protected override void OnExitState()
 	{
 	//	Debug.Log("Exiting Desiccuration State");
 		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.SetCanMove(true);

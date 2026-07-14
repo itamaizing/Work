@@ -38,7 +38,7 @@ public class ShadowTree : StackableState
         duration = 9999;
     }
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
         characterState = character;
         personWhoMadeBuff = caster;
@@ -48,7 +48,7 @@ public class ShadowTree : StackableState
         Stack(0);
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         if (_infinite) return;
 
@@ -65,7 +65,7 @@ public class ShadowTree : StackableState
             }
             
             _remaining -= 1f;
-            if (_remaining <= 0f || currentStacksCount <= 0) GlobalExit();
+            if (_remaining <= 0f || currentStacksCount <= 0) ExitState();
         }
     }
 
@@ -80,7 +80,7 @@ public class ShadowTree : StackableState
         return true;
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         if (currentStacksCount > 0)  characterState.Character.Health.AddMax(-currentStacksCount * BonusPerStack);
         characterState.RemoveStateFromList(this);

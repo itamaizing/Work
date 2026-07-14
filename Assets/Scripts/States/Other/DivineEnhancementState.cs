@@ -15,7 +15,7 @@ public class DivineEnhancementState : AbstractCharacterState, IDamageGivenModifi
 
     private List<Skill> _costSkills = new();
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _character = character.Character;
@@ -23,12 +23,12 @@ public class DivineEnhancementState : AbstractCharacterState, IDamageGivenModifi
         ModifyManaCost();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
 
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         ResetManaCost();
     }

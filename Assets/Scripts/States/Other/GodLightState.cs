@@ -9,7 +9,7 @@ public class GodLightState : AbstractCharacterState
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         
@@ -23,8 +23,8 @@ public class GodLightState : AbstractCharacterState
         return true;
     }*/
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
-        if (!characterState.Character.Abilities.IsNextSkillNoCast) GlobalExit();
+        if (!characterState.Character.Abilities.IsNextSkillNoCast) ExitState();
     }
 }

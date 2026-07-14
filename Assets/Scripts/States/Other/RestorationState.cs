@@ -32,7 +32,7 @@ public class RestorationState : RefreshingState
     {
     }
 
-    protected override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
@@ -53,7 +53,7 @@ public class RestorationState : RefreshingState
         ApplyHealTick();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         if (!_isActive) return;
 
@@ -99,7 +99,7 @@ public class RestorationState : RefreshingState
         return true;
     }
 
-    protected override void ExitState()
+    protected override void OnExitState()
     {
         _isActive = false;
         duration = 0f;
@@ -156,7 +156,7 @@ public class RestorationState : RefreshingState
 
         if (currentStacksCount == 0)
         {
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+            OnEnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
             currentStacksCount = 1;
         }
         else

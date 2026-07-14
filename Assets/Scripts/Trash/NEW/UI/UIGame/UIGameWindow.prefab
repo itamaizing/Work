@@ -4533,7 +4533,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _attributesPanel: {fileID: 7828323760375949542}
+  _attributesPanel2: {fileID: 7890914551294934312}
   _talentsPanel: {fileID: 209712219416889120}
+  _talentsPanel2: {fileID: 5639774638080434157}
   _playerIcon: {fileID: 6426325379526978492}
   _minionPanel: {fileID: 3958597216608867300}
   _skillPanel: {fileID: 9072973448013671613}
@@ -4547,6 +4549,7 @@ MonoBehaviour:
   - {fileID: 9104052375712026333}
   - {fileID: 8411501008073136895}
   - {fileID: 1245912761225712934}
+  _teamsPanel: {fileID: 7061859934681692012}
   _teamSource: {fileID: 5691334368756215407}
 --- !u!1 &2349759185007151392
 GameObject:
@@ -18019,6 +18022,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8362629740803185944, guid: e4bea1e3923b2ff4cb5524002614aac9, type: 3}
   m_PrefabInstance: {fileID: 4367714122297024362}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5639774638080434157 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8275854686472503431, guid: e4bea1e3923b2ff4cb5524002614aac9, type: 3}
+  m_PrefabInstance: {fileID: 4367714122297024362}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7650271903bf41f4dbd3f942920cfbed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4566872818837504403
 PrefabInstance:
   m_ObjectHideFlags: 0
