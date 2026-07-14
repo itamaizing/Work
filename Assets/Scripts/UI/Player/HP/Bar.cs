@@ -1,4 +1,4 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using JetBrains.Annotations;
 using System;
 using System.Collections;
@@ -180,7 +180,7 @@ public class Bar : MonoBehaviour
 
 	public void PreviewChange(float damage)
 	{
-		Debug.Log("Try phantom value");
+		//Debug.Log("Try phantom value");
 		float newValue = _currentValue - damage;
 		//Debug.Log(newValue + " new " + _currentValue + " cur " + _maxValue + " max" );
 		if (_barPlus != null)

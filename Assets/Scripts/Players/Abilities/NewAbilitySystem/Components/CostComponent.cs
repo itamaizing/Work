@@ -97,10 +97,10 @@ public class CostComponent : BaseSkillComponent
 
         atr_skill.RecalculateMultipliers();
         atr_char.RecalculateMultipliers();
-        Debug.Log($"{value} {atr_skill.FlatBonus} {atr_char.FlatBonus}," +
-            $"s%{atr_skill.PercentBonus} c%{atr_char.PercentBonus}," +
-            $"s*{atr_skill.MultiplierBonus} c*{atr_char.MultiplierBonus}" +
-            $"Final:{(value + atr_skill.FlatBonus + atr_char.FlatBonus) * (1 + atr_skill.PercentBonus + atr_char.PercentBonus) * (atr_skill.MultiplierBonus * atr_char.MultiplierBonus)}");
+        //Debug.Log($"{value} {atr_skill.FlatBonus} {atr_char.FlatBonus}," +
+        //    $"s%{atr_skill.PercentBonus} c%{atr_char.PercentBonus}," +
+        //    $"s*{atr_skill.MultiplierBonus} c*{atr_char.MultiplierBonus}" +
+        //    $"Final:{(value + atr_skill.FlatBonus + atr_char.FlatBonus) * (1 + atr_skill.PercentBonus + atr_char.PercentBonus) * (atr_skill.MultiplierBonus * atr_char.MultiplierBonus)}");
         return _skillAttributes.GetCombined(atr_skill, atr_char, value);
     }
 
@@ -132,7 +132,7 @@ public class CostComponent : BaseSkillComponent
     {
         if (!_resources.TryGetValue(type, out var resource))
         {
-            Debug.LogError($"{_character.name} doesnt have {type.ToString()}");
+            Debug.Log($"{_character.name} doesnt have {type.ToString()}");
             return false;
         }
         if (shouldModify)

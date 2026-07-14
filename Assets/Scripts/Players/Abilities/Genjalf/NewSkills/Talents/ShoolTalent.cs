@@ -44,7 +44,7 @@ public class ShoolTalent : Talent
 
         skill.PreparingStarted -= OnPreparingStarted;
         
-        mod_cost = new AttributeModifier(-_multiple, ModifierType.Multiplier, source: this);
+        mod_cost = new AttributeModifier(_multiple, ModifierType.Multiplier, source: this);
         _skill.Attributes[SkillAttributeName.ResourceCost].AddModifier(mod_cost);
         //foreach (var item in skill.SkillEnergyCosts)
         //{
