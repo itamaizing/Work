@@ -95,8 +95,8 @@ public class FriendUI : MonoBehaviour
             {USERID, MPNetworkManager.Instance.UserID.ToString() },
             };
             NetworkHTTP.Instance.Post(URLLibrary.GetFriendList, data1, UpdateFriendList);
+            UpdateFriendRequests();
         }
-        UpdateFriendRequests();
     }
 
     private void OnDisable()
