@@ -65,7 +65,7 @@ public class DestructivePoisonState : RefreshingState
         return true;
     }
 
-    public override void OnExitState()
+    protected override void OnExitState()
     {
         currentStacksCount = 0;
     }

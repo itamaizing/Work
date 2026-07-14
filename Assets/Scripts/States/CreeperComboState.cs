@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CreeperComboState : RefreshingState
 {
-    public override States State => States.CreeperCombo;
+    public override States State => throw new System.Exception("none");
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 
@@ -15,7 +15,7 @@ public class CreeperComboState : RefreshingState
         currentStacksCount = 0;
     }
 
-    public override void EnterState(
+    protected override void OnEnterState(
         CharacterState character,
         float durationToExit,
         float damageToExit,
@@ -27,7 +27,7 @@ public class CreeperComboState : RefreshingState
         duration = durationToExit;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 
@@ -48,6 +48,6 @@ public class CreeperComboState : RefreshingState
         ResetStacks();
 
         if (characterState != null)
-            characterState.RemoveState(this);
+            characterState.RemoveState(State);
     }
 }
