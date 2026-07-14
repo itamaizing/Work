@@ -24,7 +24,7 @@ public class ReverseDisciplineBooster : SkillTalentHandler
                 //skill.Buff.ManaCost.IncreasePercentage(isActive ? 0:1);
                 if (isActive)
                     skill.Attributes[SkillAttributeName.ResourceCost].AddModifier(
-                        new AttributeModifier(-1, ModifierType.Multiplier, source: this));
+                        new AttributeModifier(0, ModifierType.Multiplier, source: this));
                 else
                     skill.Attributes[SkillAttributeName.ResourceCost].RemoveBySource(this);
             }

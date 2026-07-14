@@ -8,10 +8,9 @@ public class CreeperInvisibleState : AbstractCharacterState
     private CreeperInvisible _creeperInvisible;
     private Character _player;
 
-    private float _reductionMoveSpeed = 0.3f;
-    private float _originalMoveSpeed;
-    private float _increaseStaminaRegen = 0.3f;
-    private float _originalStaminaRegen;
+    private float _multMoveSpeed = 0.7f; //-30%
+    private float _multManaRegen = 1.3f; //+30%
+    private float _multSkillCost = 1.3f; //+30%
 
     private bool _isIncreasedManaCost = false;
     private bool _isCanApplyInvisible;
@@ -81,14 +80,14 @@ public class CreeperInvisibleState : AbstractCharacterState
         _playerInInvisible = true;
 
         _player.AttributeSystem[CharacterAttributeName.ResourceCost].
-            AddModifier(new AttributeModifier(0.3f, ModifierType.Multiplier, source: this));
+            AddModifier(new AttributeModifier(_multSkillCost, ModifierType.Multiplier, source: this));
 
         _player.Resource.Attr_RegenPeriod.AddModifier
-            (new AttributeModifier(-0.3f, ModifierType.Multiplier, source: this));
+            (new AttributeModifier(_multManaRegen, ModifierType.Multiplier, source: this));
 
         if (_player?.Move == null) return;
         _player.AttributeSystem[CharacterAttributeName.MoveSpeed].
-            AddModifier(new AttributeModifier(-0.3f, ModifierType.Multiplier, source: this));
+            AddModifier(new AttributeModifier(_multMoveSpeed, ModifierType.Multiplier, source: this));
     }
 
     private void ResetValues()

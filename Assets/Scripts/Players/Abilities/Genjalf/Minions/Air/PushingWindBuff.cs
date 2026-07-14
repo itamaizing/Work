@@ -25,7 +25,7 @@ public class PushingWindBuff : AbstractCharacterState
 
 		_speedModifier = isAuraState ? 0.1f : 0.3f;
 
-		_modifier.Value = _speedModifier;
+		_modifier.Value = 1 + _speedModifier;
 		_modifier.Type = ModifierType.Multiplier;
 		characterState.Character.Move.AddModifier(_modifier);
 	}
