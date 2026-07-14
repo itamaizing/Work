@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ElvenSkill : RefreshingState
 {
-    private float _duration;
+    //private float _duration;
     private MoveComponent _move;
     private GameObject _elvenSkillEffect;
     private TerrifyingElfAura _aura;
@@ -24,9 +24,8 @@ public class ElvenSkill : RefreshingState
         currentStacksCount = 1;
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _duration = durationToExit;
         characterState = character;
         base.personWhoMadeBuff = personWhoMadeBuff;
 
@@ -65,7 +64,7 @@ public class ElvenSkill : RefreshingState
 
     public override bool Stack(float time)
     {
-        _duration = time;
+        duration = time;
 
         if (currentStacksCount >= MaxStacksCount)
             return false;
@@ -106,7 +105,7 @@ public class ElvenSkill : RefreshingState
         }
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         if (_move) _move.SetCanMoveState(false);
 
@@ -132,17 +131,10 @@ public class ElvenSkill : RefreshingState
 
         if (_elvenSkillEffect != null)
             _elvenSkillEffect.SetActive(false);
-
-        characterState.StateIcons.RemoveItemByState(State);
-        characterState.RemoveState(this);
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
-        _duration -= Time.deltaTime;
-
-        if (_duration <= 0)
-            ExitState();
     }
 
     private void OnPhysCastStarted()

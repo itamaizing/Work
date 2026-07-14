@@ -44,7 +44,7 @@ namespace Gangdollarff.EarthElemental
         public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
         public override List<StatusEffect> Effects => _effects;
 
-        public override void EnterState(CharacterState characterState, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+        protected override void OnEnterState(CharacterState characterState, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
         {
             _character = characterState.Character;
 
@@ -73,22 +73,20 @@ namespace Gangdollarff.EarthElemental
             }
         }
 
-        public override void ExitState()
-        {
-            base.ExitState();
-            
+        protected override void OnExitState()
+        {           
             RestoreHealth();
 
             _health = null;
             _character = null;
         }
 
-        public override bool Stack(float time)
+       /* public override bool Stack(float time)
         {
             return false;
-        }
+        }*/
 
-        public override void UpdateState()
+        public override void OnUpdateState()
         {
         }
     }

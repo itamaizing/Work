@@ -7,16 +7,12 @@ public class ColdBloodEnabledTalent : Talent
 
     public override void Enter()
     {
-        SetActive(true);
-
         _skillManager.ActivateSkill(_coldBlood);
 
     }
 
     public override void Exit()
     {
-        SetActive(false);
-
         _skillManager.DeactivateSkill(_coldBlood);
         
     }

@@ -78,7 +78,7 @@ public class SwarmSpeedState : AuraState
         return base.TryApply(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         foreach (var character in _buffedCharacters)
         {
@@ -89,8 +89,7 @@ public class SwarmSpeedState : AuraState
         }
 
         _buffedCharacters.Clear();
-        base.ExitState();
     }
 
-    public override void UpdateState() { }
+    public override void OnUpdateState() { }
 }

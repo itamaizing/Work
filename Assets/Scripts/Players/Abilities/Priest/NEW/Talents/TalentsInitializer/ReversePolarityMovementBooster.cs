@@ -42,7 +42,7 @@ public class ReversePolarityMovementBooster : SkillTalentHandler
         {
             if (state.Effects.Contains(StatusEffect.MoveSpeed))
             {
-                character.CharacterState.RemoveState(state);
+                character.CharacterState.RemoveStateFromList(state);
             }
         }
     }

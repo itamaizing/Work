@@ -13,7 +13,7 @@ public class SlowFlowLightState : RefreshingState
 	public override List<StatusEffect> Effects => _effects;
 
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		_modif = new AttributeModifier(_speedDebuf, ModifierType.Percent);
     
@@ -25,17 +25,16 @@ public class SlowFlowLightState : RefreshingState
 			s.Buff.CastSpeed.IncreasePercentage(1 - _speedDebuf));
 	}
 
-	public override void UpdateState()
+	public override void OnUpdateState()
 	{
 	}
 
-	public override void ExitState()
+	protected override void OnExitState()
 	{
 		characterState.Character.Move.RemoveModifier(_modif);
 		currentStacksCount = 0;
 		_modif = new AttributeModifier(_speedDebuf, ModifierType.Percent);
 		characterState.Character.Abilities.Abilities.ForEach(s => s.Buff.CastSpeed.Reset());
-		characterState.RemoveState(this);
 	}
 
     public override bool Stack(float time)

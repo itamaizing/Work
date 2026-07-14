@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
+public class EmpathicPoisonsState : StackableState, IDamageable
 {
     private PoisonCloudState _poisonCloud;
     private Character _player;
@@ -48,7 +48,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
     public Transform transform => throw new NotImplementedException();
     public GameObject gameObject => throw new NotImplementedException();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         MaxStacksCount = _maxStacks;
 
@@ -130,7 +130,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
         return true;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         _playerPosition = _player.transform.position;
         _characterPosition = characterState.transform.position;
@@ -157,10 +157,10 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
         }
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         ResetValues();
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
     }
 
     public override bool Stack(float time)

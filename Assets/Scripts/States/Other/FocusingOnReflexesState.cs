@@ -16,7 +16,7 @@ public class FocusingOnReflexesState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _duration = durationToExit;
@@ -33,23 +33,17 @@ public class FocusingOnReflexesState : AbstractCharacterState
         health.Evaded += OnEvaded;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
-        _duration -= Time.deltaTime;
-
-        if (_duration <= 0f)
-        {
-            ExitState();
-        }
     }
 
-    public override bool Stack(float time)
+   /* public override bool Stack(float time)
     {
         _duration = Mathf.Max(_duration, time);
         return true;
-    }
+    }*/
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         if (_character != null)
         {
@@ -59,8 +53,6 @@ public class FocusingOnReflexesState : AbstractCharacterState
             health.EvadeRangeDamage = _originalEvadeRange;
             health.Evaded -= OnEvaded;
         }
-
-        characterState.RemoveState(this);
     }
 
     private void OnEvaded()

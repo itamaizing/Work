@@ -8,27 +8,21 @@ public class NorthernerEndurance : AbstractCharacterState
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => throw new System.NotImplementedException();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		health = character.Character.Health;
 		//_health.BoostHpBonus(damageToExit);
 		_damageToExit = damageToExit;
 	}
 
-	public override void UpdateState()
+	public override void OnUpdateState()
 	{
 	}
 
-	public override void ExitState()
-	{
-		characterState.RemoveState(this);
-		
-		//_health.BoostHpReverse(_damageToExit);
-	}
 
-	public override bool Stack(float time)
+	/*public override bool Stack(float time)
 	{
 		duration = time;
 		return true;
-	}
+	}*/
 }

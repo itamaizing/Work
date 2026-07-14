@@ -19,7 +19,7 @@ public class Cooling : RefreshingState
 	public override List<StatusEffect> Effects => _effects;
 
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		_modif = new AttributeModifier(_speedDebuf, ModifierType.Percent);
     
@@ -33,7 +33,7 @@ public class Cooling : RefreshingState
 		currentStacksCount = 1;
 	}
 
-	public override void UpdateState()
+	public override void OnUpdateState()
 	{
 		if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit || turnOff)
 		{
@@ -41,15 +41,10 @@ public class Cooling : RefreshingState
 		}
 	}
 
-	public override void ExitState()
+	protected override void OnExitState()
 	{
 		characterState.Character.Move.RemoveModifier(_modif);
-		currentStacksCount = 0;
-		turnOff = false;
-		_damageOnStart = 0;
-		_damageToExit = 0;
 		_modif = new AttributeModifier(_speedDebuf, ModifierType.Percent);
-		characterState.RemoveState(this);
 	}
 
     public override bool Stack(float time)

@@ -16,7 +16,7 @@ public class AbilityFormDebuff : AbstractCharacterState
 	public override StateType Type => StateType.Immaterial;
 	public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		Debug.Log("Entering AbilityFormDebuff State");
 		characterState = character;
@@ -35,26 +35,23 @@ public class AbilityFormDebuff : AbstractCharacterState
 		_baseDuration = durationToExit;
 	}
 
-	public override void UpdateState()
+	public override void OnUpdateState()
 	{
-		Debug.Log("Updating AbilityFormDebuff State");
 		if (turnOff)
 		{
 			ExitState();
 		}
 	}
 
-	public override void ExitState()
+	protected override void OnExitState()
 	{
-		Debug.Log("Exiting AbilityFormDebuff State");
-		characterState.RemoveState(this);
 		if (!characterState.Check(StatusEffect.Ability) && abilities != null)
 		{
 			abilities.SwitchAvaliable(canceledForm, true);
 		}
 	}
 
-	public override bool Stack(float time)
+	/*public override bool Stack(float time)
 	{
 
 		if (duration > time)
@@ -66,5 +63,5 @@ public class AbilityFormDebuff : AbstractCharacterState
 			duration = time;
 			return true;
 		}
-	}
+	}*/
 }

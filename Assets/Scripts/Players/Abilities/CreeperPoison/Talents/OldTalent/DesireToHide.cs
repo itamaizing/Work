@@ -20,13 +20,11 @@ public class DesireToHide : Talent
 
     public override void Enter()
     {
-        SetActive(true);
         _timeForApplicationInvisible = _startTimeForApplicationInvisible;
     }
 
     public override void Exit()
     {
-        SetActive(false);
     }
 
     public void ApplyInvisible()

@@ -198,7 +198,7 @@ public class ServerManager : NetworkBehaviour
 
     public void SetPlayer(HeroComponent hero)
     {
-        _currentHeroIndex = _heroList.IndexOf(hero);
+        _currentHeroIndex = _heroList.FindIndex(h => h.Data.Name == hero.Data.Name);
 
         if (LevelCharacterManager.Instance != null)
         {
@@ -243,6 +243,7 @@ public class GroupManager
         string json = JsonConvert.SerializeObject(invData);
 
         WebSocketClient.Instance.SendMessageToServer(json);
+        Debug.Log("Try inv" + id);
     }
 
     public void AddPlayerInGroup(int id)

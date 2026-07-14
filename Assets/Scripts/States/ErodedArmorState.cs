@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ErodedArmorState : AbstractCharacterState
+public class ErodedArmorState : StackableState
 {
     private const float ReductionPerStackPercent = 0.05f;
     private float _durationRemaining;
@@ -23,7 +23,7 @@ public class ErodedArmorState : AbstractCharacterState
         currentStacksCount = 1;
     }
 
-    public override void EnterState(CharacterState character,
+    protected override void OnEnterState(CharacterState character,
         float durationToExit,
         float damageToExit,
         Character personWhoMadeBuff,
@@ -43,14 +43,8 @@ public class ErodedArmorState : AbstractCharacterState
         ApplyReduction();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
-        _durationRemaining -= Time.deltaTime;
-
-        if (_durationRemaining <= 0f)
-        {
-            ExitState();
-        }
     }
 
     public override bool Stack(float time)
@@ -80,7 +74,7 @@ public class ErodedArmorState : AbstractCharacterState
         health.DefPhysDamage -= _appliedReduction;
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         if (health != null)
         {
@@ -89,8 +83,5 @@ public class ErodedArmorState : AbstractCharacterState
 
         currentStacksCount = 1;
         _appliedReduction = 0f;
-
-        characterState.StateIcons.RemoveItemByState(State);
-        characterState.RemoveState(this);
     }
 }

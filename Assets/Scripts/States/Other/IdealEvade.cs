@@ -13,7 +13,7 @@ public class IdealEvade : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Debug.Log("Entering IdealEvadeBuff State");
         characterState = character;
@@ -25,32 +25,13 @@ public class IdealEvade : AbstractCharacterState
         _baseDuration = durationToExit;
     }
 
-    public override void ExitState()
-    {
-        Debug.Log("Exiting IdealEvadeBuff State");
-
-        if (!characterState.Check(StatusEffect.Others))
-        {
-            //return evade chance
-        }
-
-        characterState.RemoveState(this);
-    }
-
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         _duration = _baseDuration;
         return true;
-    }
+    }*/
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
-        Debug.Log("Updating IdealEvadeBuff State");
-        _duration -= Time.deltaTime;
-
-        if (_duration < 0 /*|| turnOff*/)
-        {
-            ExitState();
-        }
     }
 }

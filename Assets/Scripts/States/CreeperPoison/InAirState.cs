@@ -14,26 +14,26 @@ public class InAirState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState.Character.Move.SetCanMove(false);
         _baseDuration = durationToExit;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         characterState.Character.Move.SetCanMove(true);
         
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         return false;
-    }
+    }*/
 }

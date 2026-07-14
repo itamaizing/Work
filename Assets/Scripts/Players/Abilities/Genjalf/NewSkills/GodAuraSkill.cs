@@ -80,14 +80,14 @@ public class GodAura : AuraState
         }
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         foreach (var character in _charactersInRadius)
         {
             if (character != null && character.CharacterState.CheckForState(States.GodAuraBuff))
                 character.CharacterState.RemoveState(States.GodAuraBuff);
         }
-        base.ExitState();
+        base.OnExitState();
     }
 }
 
@@ -107,7 +107,7 @@ public class GodAuraBuff : RefreshingState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
     }
@@ -167,12 +167,12 @@ public class GodAuraBuff : RefreshingState
         ApplyModifierToAllSkills(_modifier);
     }
 
-    public override void GloabalUpdate()
+    public override void UpdateState()
     {
-        UpdateState();
+        OnUpdateState();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         if (_stackTimer <= -1) return;
 
@@ -193,7 +193,7 @@ public class GodAuraBuff : RefreshingState
         }
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         RemoveModifierFromAllSkills(_modifier);
 
@@ -204,7 +204,7 @@ public class GodAuraBuff : RefreshingState
         _character = null;
     
         if (characterState != null && characterState.CheckForState(States.GodAuraBuff))
-            characterState.RemoveState(this);
+            characterState.RemoveStateFromList(this);
     
         characterState = null;
     }

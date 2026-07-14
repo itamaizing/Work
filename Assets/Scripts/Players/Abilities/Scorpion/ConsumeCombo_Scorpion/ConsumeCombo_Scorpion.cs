@@ -77,7 +77,7 @@ public class ConsumeCombo_Scorpion : Skill
 
             if (!reduced)
             {
-                target.CharacterState.RemoveState(state);
+                target.CharacterState.RemoveStateFromList(state);
                 _comboTargetsQueue.Remove(target);
                 break;
             }
@@ -112,7 +112,7 @@ public class ConsumeCombo_Scorpion : Skill
 
             if (!reduced)
             {
-                lastTarget.CharacterState.RemoveState(state);
+                lastTarget.CharacterState.RemoveStateFromList(state);
                 _comboTargetsQueue.RemoveAt(_comboTargetsQueue.Count - 1);
             }
         }
@@ -149,7 +149,7 @@ public class ConsumeCombo_Scorpion : Skill
 
                 if (state.CurrentStacksCount <= 0)
                 {
-                    target.CharacterState.RemoveState(state);
+                    target.CharacterState.RemoveStateFromList(state);
                 }
             }
         }

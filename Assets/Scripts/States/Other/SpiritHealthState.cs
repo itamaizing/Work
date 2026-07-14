@@ -21,7 +21,7 @@ public class SpiritHealthState : RefreshingState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
@@ -44,7 +44,7 @@ public class SpiritHealthState : RefreshingState
         RecalcRegenAmount();
     }
 
-    public override void UpdateState() { }
+    public override void OnUpdateState() { }
 
     public override bool Stack(float time)
     {
@@ -62,7 +62,7 @@ public class SpiritHealthState : RefreshingState
         return true;
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         if (_healthComponent != null)
             _healthComponent.DamageTaken -= OnDamageTaken;
@@ -79,7 +79,7 @@ public class SpiritHealthState : RefreshingState
         _character = null;
         _spiritHealthStateEffectInstance = null;
 
-        characterState?.RemoveState(this);
+        characterState?.RemoveStateFromList(this);
         characterState = null;
     }
 

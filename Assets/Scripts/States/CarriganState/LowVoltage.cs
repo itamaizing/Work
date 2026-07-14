@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LowVoltage : AbstractCharacterState
+public class LowVoltage : StackableState
 {
     private const float ReductionPerStack = 0.15f;
     private const int MaxStack = 6;
@@ -20,7 +20,7 @@ public class LowVoltage : AbstractCharacterState
         MaxStacksCount = MaxStack;
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         base.personWhoMadeBuff = personWhoMadeBuff;
@@ -36,29 +36,17 @@ public class LowVoltage : AbstractCharacterState
         ApplyDebuffToActiveMagicBuffs();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
-        _remainingDuration -= Time.deltaTime;
-
-        if (_remainingDuration <= 0)
-        {
-            ExitState();
-            characterState.RemoveState(this);
-            return;
-        }
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         Debug.Log("[LowVoltage] ExitState called");
 
         currentStacksCount = 0;
 
         characterState.OnStateAdded -= OnNewStateAdded;
-
-        characterState.StateIcons.RemoveItemByState(State);
-
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

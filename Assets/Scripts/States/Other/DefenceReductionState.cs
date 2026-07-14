@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class DefenceReductionState : AbstractCharacterState
 {
-    private float _healthBuffActiveTime = 2f;
     private float _healthBoostPercentage = 0.25f;
     private float _defaultPhysDef = 0;
 
@@ -13,34 +12,28 @@ public class DefenceReductionState : AbstractCharacterState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        _healthBuffActiveTime = durationToExit;
+        duration = durationToExit;
         _healthBoostPercentage = damageToExit;
         ApplyBuff();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
-        _healthBuffActiveTime -= Time.deltaTime;
 
-        if (_healthBuffActiveTime <= 0)
-        {
-            ExitState();
-        }
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         RemoveBuff();
-        characterState.RemoveState(this);
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         return false;
-    }
+    }*/
 
     private void ApplyBuff()
     {

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class FeelingPoisoningState : RefreshingState
@@ -6,7 +6,7 @@ public class FeelingPoisoningState : RefreshingState
     private const int MaxStacks = 6;
     private const float RegenPercentPerStack = 0.1f;
 
-    private Resource resource;
+    private Energy _energy;
     private float _baseRegen;
 
     public override States State => States.FeelingPoisoning;
@@ -18,13 +18,27 @@ public class FeelingPoisoningState : RefreshingState
         StatusEffect.Strengthening
     };
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         MaxStacksCount = MaxStacks;
+
+        _energy = character.Character.GetComponent<Energy>();
+
+        if (_energy == null)
+        {
+            Debug.LogError("FeelingPoisoningState: Energy not found");
+            return;
+        }
+
+        if (currentStacksCount == 0)
+        {
+            _baseRegen = _energy.RegenerationValue;
+        }
+
         ApplyRegenBonus();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
 
     }
@@ -35,35 +49,44 @@ public class FeelingPoisoningState : RefreshingState
 
         if (currentStacksCount < MaxStacksCount)
         {
-            ApplyRegenBonus();
             currentStacksCount++;
         }
+
+        ApplyRegenBonus();
 
         return true;
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
-        characterState.Character.Resource.Attr_RegenValue.RemoveBySource(this, all: true);
-        base.ExitState();
+        RemoveRegenBonus();
     }
 
-    public override void ReduceStack()
+    protected override void OnReduceStack(int count = 1)
     {
-        currentStacksCount--;
+        currentStacksCount-=count;
 
         if (currentStacksCount <= 0)
         {
             ExitState();
             return;
         }
-        characterState.Character.Resource.Attr_RegenValue.RemoveBySource(this, all: false);
+
+        ApplyRegenBonus();
     }
 
     private void ApplyRegenBonus()
     {
-        characterState.Character.Resource.Attr_RegenValue.AddModifier(
-            new AttributeModifier(RegenPercentPerStack, ModifierType.Percent, source: this));
+        if (_energy == null) return;
+
+        float multiplier = 1f + (currentStacksCount * RegenPercentPerStack);
+        _energy.RegenerationValue = _baseRegen * multiplier;
     }
 
+    private void RemoveRegenBonus()
+    {
+        if (_energy == null) return;
+
+        _energy.RegenerationValue = _baseRegen;
+    }
 }

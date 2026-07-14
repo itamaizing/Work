@@ -11,7 +11,9 @@ public class TalentsGroup
 	//[SerializeField] private List<Talent> _talentGroup;
 	[SerializeField] private List<TalentRow> _talentRows;
 
-	public int ID => _id;
+    /*[SerializeReference, SubclassSelector]
+    public OpenCondition OpenCondition;*/
+    public int ID => _id;
 	public string Name => _name;
 	//public List<Talent> TalentsData => _talentGroup;
 	public List<TalentRow> TalentRows => _talentRows;
@@ -61,7 +63,7 @@ public class TalentsGroup
 		return count;
 	}
 
-	public void SetActive(TalentData data, bool isActive)
+	public void SetActive(TalentData data, bool isActive, int lvl)
 	{
 		Talent talents = null;
 		foreach(TalentRow row in _talentRows)
@@ -74,7 +76,7 @@ public class TalentsGroup
 		}
 		if (talents == null) return;
 
-		talents.SetActive(isActive);
+		talents.SetActive(isActive, lvl);
 	}
 
 	/*  [Command]

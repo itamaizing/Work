@@ -22,8 +22,8 @@ public class CreeperInvisibleState : AbstractCharacterState
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
-    
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _player = characterState.Character;
@@ -45,7 +45,7 @@ public class CreeperInvisibleState : AbstractCharacterState
         }
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         if (_creeperInvisible == null) return;
 
@@ -64,17 +64,16 @@ public class CreeperInvisibleState : AbstractCharacterState
         }
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         _playerInInvisible = false;
         ResetValues();
-        characterState.RemoveState(this);
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         return false;
-    }
+    }*/
 
     private void ApplyInvisible()
     {

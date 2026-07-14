@@ -6,7 +6,7 @@ using UnityEngine;
 public class AstralState : AbstractCharacterState
 {
     private float _baseDuration;
-    private int _currentStacks = 1;
+    //private int _currentStacks = 1;
     private const int _maxStacks = 1;
 
     private float _defMagDamageMod = 50f;
@@ -31,7 +31,7 @@ public class AstralState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _modif.Value = .5f;
         _modif.Type = ModifierType.Multiplier;
@@ -91,15 +91,13 @@ public class AstralState : AbstractCharacterState
         if (characterState.isServer) _dotJob = characterState.StartCoroutine(DotJob());
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         Debug.Log("Exiting Astral State");
-
-        characterState.RemoveState(this);
 
         if (_characterRenderer != null) _characterRenderer.materials = _originalMaterials;
         if (_weapon != null) _weaponRenderer.material = _originalWeaponMaterial;
@@ -118,8 +116,6 @@ public class AstralState : AbstractCharacterState
 
         foreach (var (skill, baseDamage) in _modifiedSkills) skill.Damage = baseDamage;
         _modifiedSkills.Clear();
-
-        characterState.RemoveState(this);
     }
 
     private void BlockPhysicalAbilities()
@@ -134,13 +130,13 @@ public class AstralState : AbstractCharacterState
             if (skill.Info.AbilityForm == AbilityForm.Physical) skill.Disactive = false;
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         if (_currentStacks < _maxStacks) _currentStacks++;
 
         duration = _baseDuration;
         return true;
-    }
+    }*/
 
     private IEnumerator DotJob()
     {

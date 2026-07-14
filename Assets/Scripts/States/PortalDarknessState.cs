@@ -4,7 +4,7 @@ using Mirror;
 
 public class PortalDarknessState : RefreshingState
 {
-    public override States State => States.PortalDarkness;
+    public override States State => throw new System.Exception("none");
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
 
@@ -24,7 +24,7 @@ public class PortalDarknessState : RefreshingState
     private Character _caster;
     private MoveComponent _moveComponent;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _caster = personWhoMadeBuff;
@@ -35,7 +35,7 @@ public class PortalDarknessState : RefreshingState
         _currentSpawnChance = BaseSpawnChance;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         if (!NetworkServer.active) return;
         if (_caster == null || _caster.SpawnComponent == null) return;

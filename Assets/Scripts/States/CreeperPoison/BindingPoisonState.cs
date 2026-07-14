@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BindingPoisonState : AbstractCharacterState
+public class BindingPoisonState : StackableState
 {
     private SkillManager _skillManager;
 
@@ -20,7 +20,7 @@ public class BindingPoisonState : AbstractCharacterState
 
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _skillManager = characterState.Character.Abilities;
 
@@ -35,7 +35,7 @@ public class BindingPoisonState : AbstractCharacterState
         BlockingOrCancleingAbility();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         if (currentStacksCount <= 0)
         {
@@ -46,12 +46,12 @@ public class BindingPoisonState : AbstractCharacterState
 
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         //Debug.Log($"BindingPoisonState / ExitState / CharacterManager = {_skillManager}");
         ResetValues();
 
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
     }
 
     public override bool Stack(float time)

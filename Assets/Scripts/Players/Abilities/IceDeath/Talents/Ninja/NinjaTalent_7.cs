@@ -8,11 +8,13 @@ public class NinjaTalent_7 : Talent
 
     public override void Enter()
     {
-        _iceRolling.AttackWithFrosenAddEvade(true);
+        Debug.LogError("miss AttackWithFrosenAddEvade");
+        //_iceRolling.AttackWithFrosenAddEvade(true);
     }
 
     public override void Exit()
     {
-        _iceRolling.AttackWithFrosenAddEvade(false);
+        Debug.LogError("miss AttackWithFrosenAddEvade");
+        //_iceRolling.AttackWithFrosenAddEvade(false);
     }
 }

@@ -354,19 +354,22 @@ public abstract class GameRules : NetworkBehaviour
 
         foreach (var item in _playersSyncList)
         {
-            var playerSettings = item.GetComponent<Character>();
-            if (playerSettings != null)
+            //var playerSettings = item.GetComponent<Character>();
+            if (item.TryGetComponent<Character>(out var playerSettings))
             {
-                _players.Add(playerSettings);
-            }
+                if (playerSettings != null)
+                {
+                    _players.Add(playerSettings);
+                }
 
-            if (playerSettings.NetworkSettings.TeamIndex == 1)
-            {
-                _gameManager.Source.AddInFirstTeam(playerSettings);
-            }
-            else
-            {
-                _gameManager.Source.AddInSecondTeam(playerSettings);
+                if (playerSettings.NetworkSettings.TeamIndex == 1)
+                {
+                    _gameManager.Source.AddInFirstTeam(playerSettings);
+                }
+                else
+                {
+                    _gameManager.Source.AddInSecondTeam(playerSettings);
+                }
             }
         }
 

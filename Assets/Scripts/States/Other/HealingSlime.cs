@@ -15,7 +15,6 @@ public class HealingSlime : RefreshingState
     private float _timer;
     private float _remaining;
     private bool _infinite;
-    private float _addedMaxHealth;
 
     public override float RemainingDuration => _infinite ? 999f : _remaining;
 
@@ -38,7 +37,7 @@ public class HealingSlime : RefreshingState
         duration = 999f;
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
         health = character.Character.Health;
 
@@ -47,7 +46,7 @@ public class HealingSlime : RefreshingState
         Stack(0);
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         if (_infinite) return;
 
@@ -60,7 +59,6 @@ public class HealingSlime : RefreshingState
             {
                 currentStacksCount--;
                 float removeValue = Mathf.Floor(health.MaxValue * PercentPerStack);
-                _addedMaxHealth -= removeValue;
                 health.AddMax(-removeValue);
                 characterState.StateIcons.RemoveIconCount();
             }
@@ -72,23 +70,20 @@ public class HealingSlime : RefreshingState
 
     public override bool Stack(float _)
     {
+        if (currentStacksCount < MaxStacksCount) currentStacksCount++;
         float addValue = Mathf.Floor(health.MaxValue * PercentPerStack);
-        _addedMaxHealth += addValue;
         health.AddMax(addValue);
 
         if (!_infinite) SwitchToInfinite();
-
         return true;
     }
-    
-    public override void ExitState()
+
+    protected override void OnExitState()
     {
         if (currentStacksCount > 0)
         {
-            health.AddMax(-_addedMaxHealth);
-            _addedMaxHealth = 0;
+            float removeValue = Mathf.Floor(health.MaxValue * PercentPerStack * currentStacksCount);
+            health.AddMax(-removeValue);
         }
-
-        characterState.RemoveState(this);
     }
 }

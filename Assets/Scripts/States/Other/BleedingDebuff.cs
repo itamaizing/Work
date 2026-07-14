@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class BleedingDebuff : AbstractCharacterState
 {
-    private float _duration;
     private float _baseDuration;
     private float timer = 0;
     public override States State => States.Bleeding;
@@ -13,35 +12,24 @@ public class BleedingDebuff : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => throw new System.NotImplementedException();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Debug.Log("Entering KnockdownDebuff State");
         characterState = character;
 
         //effects.Add(StatusEffect.Others);
 
-        _duration = durationToExit;
         _baseDuration = durationToExit;
     }
 
-    public override void ExitState()
-    {
-        Debug.Log("Exiting KnockdownDebuff State");
-
-        characterState.RemoveState(this);
-    }
-
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         _duration = _baseDuration;
         return true;
-    }
+    }*/
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
-        Debug.Log("Updating KnockdownDebuff State");
-        _duration -= Time.deltaTime;
-
         timer += Time.deltaTime;
 
         if (timer >= 1f)
@@ -49,12 +37,6 @@ public class BleedingDebuff : AbstractCharacterState
             DealDamage();
             timer = 0f;
         }
-
-        if (_duration < 0)
-        {
-            ExitState();
-        }
-
     }
 
     private void DealDamage()

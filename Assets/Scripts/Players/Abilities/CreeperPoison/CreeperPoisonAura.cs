@@ -150,7 +150,7 @@ public class CreeperPoisonAura : NetworkBehaviour
 
         else if (delta < 0)
         {
-            for (int i = 0; i < -delta; i++) state.ReduceStack();
+            for (int i = 0; i < -delta; i++) state.ReduceStack(1);
         }
 
         _lastEnergyStacks = stacks;

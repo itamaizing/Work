@@ -52,7 +52,7 @@ public class Explosion : MoveSkill
             {
                 Debug.LogError(states.State);
             }
-            var state = Targeting.GetTarget().Character.CharacterState.GetState(States.Burning);
+            var state = (StackableState)Targeting.GetTarget().Character.CharacterState.GetState(States.Burning);
             if (state == null) yield break;
             
             int stacks = state.CurrentStacksCount;

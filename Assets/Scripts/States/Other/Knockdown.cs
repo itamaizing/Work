@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Knockdown : AbstractCharacterState
+public class Knockdown : StackableState
 {
     private float _baseDuration;
     private float _duration;
@@ -12,7 +12,7 @@ public class Knockdown : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => new List<StatusEffect> { StatusEffect.Strengthening };
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
 
@@ -22,7 +22,7 @@ public class Knockdown : AbstractCharacterState
         if (Random.Range(0f, 100f) > chanceToApply)
         {
             Debug.Log("Knockdown was resisted due to high physical resistance");
-            ExitState();
+            OnExitState();
             return;
         }
 
@@ -36,12 +36,12 @@ public class Knockdown : AbstractCharacterState
         ApplyDebuff();
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         Debug.Log("Exiting Knockdown State");
 
         RemoveDebuff();
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
     }
 
     public override bool Stack(float time)
@@ -58,13 +58,8 @@ public class Knockdown : AbstractCharacterState
         return false;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0)
-        {
-            ExitState();
-        }
     }
 
     private void ApplyDebuff()

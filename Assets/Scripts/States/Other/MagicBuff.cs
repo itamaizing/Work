@@ -17,7 +17,7 @@ public class MagicBuff : AbstractCharacterState, IDamageable
     public Transform transform => throw new NotImplementedException();
     public GameObject gameObject => throw new NotImplementedException();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		_character = character.Character;
 		_shieldCapacity = damageToExit;
@@ -25,7 +25,7 @@ public class MagicBuff : AbstractCharacterState, IDamageable
 		//_character.Health.SetMagAbsorb(_shieldCapacity);
 	}
 
-	public override void UpdateState()
+	public override void OnUpdateState()
 	{
 		if (_shieldCapacity <= 0)
 		{
@@ -33,18 +33,18 @@ public class MagicBuff : AbstractCharacterState, IDamageable
 		}
 	}
 
-	public override void ExitState()
+	protected override void OnExitState()
 	{
 		_character.Health.Shields.Remove(this);
-		characterState.RemoveState(this);
+		characterState.RemoveStateFromList(this);
 		//_character.Health.SetMagAbsorb(0);
 	}
 
-	public override bool Stack(float time)
+	/*public override bool Stack(float time)
 	{
 		duration = time;
 		return true;
-	}
+	}*/
 
 	public bool TryTakeDamage(ref Damage damage, Skill skill)
 	{

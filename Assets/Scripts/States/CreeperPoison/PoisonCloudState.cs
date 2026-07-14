@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoisonCloudState : AbstractCharacterState
+public class PoisonCloudState : StackableState
 {
     private List<Skill> _skills = new();
     private List<Talent> _talents = new();
@@ -43,7 +43,7 @@ public class PoisonCloudState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         MaxStacksCount = _maxStacks;
         _poisonBall = personWhoMadeBuff.GetComponent<PoisonBall>();
@@ -71,7 +71,7 @@ public class PoisonCloudState : AbstractCharacterState
         }
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         _timeBetweenAttack -= Time.deltaTime;
 
@@ -85,12 +85,12 @@ public class PoisonCloudState : AbstractCharacterState
         }
     }
 
-    public override void ExitState()
+    /*public override void ExitState()
     {
         ResetValues();
 
-        characterState.RemoveState(this);
-    }
+        characterState.RemoveStateFromList(this);
+    }*/
 
     public override bool Stack(float time)
     {

@@ -15,7 +15,7 @@ public class DisappointmentState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _baseDuration = durationToExit;
         _damageToExit = damageToExit == 0 ? 10000 : damageToExit;
@@ -34,7 +34,7 @@ public class DisappointmentState : AbstractCharacterState
         }
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit)
         {
@@ -42,9 +42,9 @@ public class DisappointmentState : AbstractCharacterState
         }
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
 
         if (!characterState.Check(StatusEffect.Move))
         {
@@ -61,9 +61,9 @@ public class DisappointmentState : AbstractCharacterState
         }
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         duration = _baseDuration;
         return true;
-    }
+    }*/
 }

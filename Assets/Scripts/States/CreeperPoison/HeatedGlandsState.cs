@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HeatedGlandsState : AbstractCharacterState
+public class HeatedGlandsState : StackableState
 {
     private int _maxStacks = 7;
 
@@ -20,7 +20,7 @@ public class HeatedGlandsState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Debug.Log("HeatedGlands / EnterState");
 
@@ -39,12 +39,12 @@ public class HeatedGlandsState : AbstractCharacterState
         }
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
 
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         personWhoMadeBuff.TryGetResource(ResourceType.Mana).RegenerationValue = _baseManaRegen;
         
@@ -52,7 +52,7 @@ public class HeatedGlandsState : AbstractCharacterState
 
         currentStacksCount = 0;
 
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
     }
 
     public override bool Stack(float time)

@@ -7,14 +7,12 @@ public class ExplosionCloudEnabled : Talent
 
     public override void Enter()
     {
-        SetActive(true);
         _skillManager.ActivateSkill(_explosionCloud);
         
     }
 
     public override void Exit()
     {
-        SetActive(false);
         _skillManager.DeactivateSkill(_explosionCloud);
         
     }

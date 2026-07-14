@@ -21,6 +21,7 @@ public class SelectManager : MonoBehaviour
 
     public event Action<bool> UIVisibilityToggled;
     public event Action<Character> CharacterSelected;
+    public event Action<Character> CharacterSelectedEnemy;
     public event Action<Character> CharacterDeselected;
     public event Action OnListUpdated;
 
@@ -29,6 +30,11 @@ public class SelectManager : MonoBehaviour
         _dragBox.gameObject.SetActive(false);
         _dragBox.SetSelectManager(this);
     }
+
+    /*private void Start()
+    {
+        TeamsPanel.Instance.onPlayerSelected += SelectOnButton;
+    }*/
 
     private void UpdateList()
     {
@@ -153,10 +159,28 @@ public class SelectManager : MonoBehaviour
             SelectedControllableUnits.Remove(character);
             character.SelectComponent.Deselect();
             CharacterDeselected?.Invoke(character);
+
+            //CharacterSelectedEnemy?.Invoke(character);
         }
 
         SelectedControllableUnits.FirstOrDefault()!.SelectComponent.IsCurrentPlayer = true;
     }
+
+   /* public void SelectOnButton(Character character)
+    {
+        //DeselectAll();
+        if (!_canContollUnits.Contains(character))
+        {
+            CharacterSelectedEnemy?.Invoke(character);
+        }
+        else
+        {
+            if(SelectedControllableUnits.Contains(character))
+            {
+                CharacterSelected?.Invoke(character);
+            }
+        }
+    }*/
 
     public void Deselect(Character character)
     {

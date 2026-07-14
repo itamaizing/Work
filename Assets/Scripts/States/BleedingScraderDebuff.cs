@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BleedingScraderDebuff : RefreshingState
+public class BleedingScraderDebuff : StackableState
 {
     private Character _target;
 
@@ -23,18 +23,13 @@ public class BleedingScraderDebuff : RefreshingState
         currentStacksCount = 1;
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _target = characterState.Character;
         _damage = damageToExit;
         _baseDamage = damageToExit;
 
         _baseDuration = durationToExit;
-    }
-
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)
@@ -48,7 +43,7 @@ public class BleedingScraderDebuff : RefreshingState
         return true;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         timerTick += Time.deltaTime;
 
@@ -71,13 +66,13 @@ public class BleedingScraderDebuff : RefreshingState
         _target.Health.TryTakeDamage(ref damage, null);
     }
 
-    public override void ReduceStack()
+    protected override void OnReduceStack(int count = 1)
     {
         if (duration < 0)
         {
             if (currentStacksCount > 0)
             {
-                currentStacksCount--;
+                currentStacksCount-= count;
                 _baseDamage -= _damage;
                 duration = _baseDuration;
             }

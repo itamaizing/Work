@@ -21,7 +21,7 @@ public class InnerDarkness : RefreshingState
         currentStacksCount = 1;
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         base.personWhoMadeBuff = personWhoMadeBuff;
@@ -46,17 +46,10 @@ public class InnerDarkness : RefreshingState
         }
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
-        _durationRemaining -= Time.deltaTime;
-        if (_durationRemaining <= 0) ExitState();
     }
 
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
-        currentStacksCount = 1;
-    }
 
     public override bool Stack(float time)
     {

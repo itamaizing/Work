@@ -13,7 +13,7 @@ public class LastBreath : AbstractCharacterState
 	public override List<StatusEffect> Effects => throw new System.NotImplementedException();
 	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		_modif.Value = 1.2f;
 		_modif.Type = ModifierType.Multiplier;
@@ -32,16 +32,12 @@ public class LastBreath : AbstractCharacterState
 		//increase -regen
 	}
 
-	public override void UpdateState()
+	public override void OnUpdateState()
 	{
-		_durationToExit -= Time.deltaTime;
-		if (_durationToExit < 0)
-		{
-			ExitState();
-		}
+
 	}
 
-	public override void ExitState()
+	protected override void OnExitState()
 	{
         //decrease -regen
         //_character.Move.ChangeMoveSpeedBack(1.2f);
@@ -53,8 +49,8 @@ public class LastBreath : AbstractCharacterState
 		health.RegenerationValue /= 4;
 	}
 
-	public override bool Stack(float time)
+	/*public override bool Stack(float time)
 	{
 		return true;
-	}
+	}*/
 }

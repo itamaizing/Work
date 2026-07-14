@@ -24,9 +24,9 @@ public class MultiMagic : AuraState
     public override LayerMask LayerMask => _targetsMask;
     public override float RemainingDuration => duration;
 
-    public Character LastTarget { get => _lastTarget; set => _lastTarget = value; }  
+    public Character LastTarget { get => _lastTarget; set => _lastTarget = value; }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
         characterState = character;
         _skills = caster.GetComponent<SkillManager>();
@@ -40,24 +40,20 @@ public class MultiMagic : AuraState
         }
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
-        duration -= Time.deltaTime;
-        if (duration <= 0f) ExitState();
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         foreach (var skill in _skills.Abilities.Where(ability => ability.Targeting.SkillType == SkillType.Target))
         {
             skill.PreparingSuccess -= OnTargetSkillCast;
             skill.AfterCast -= ExitState;
         }
-        Debug.Log("выход из мульти");
-        characterState.RemoveState(this);
     }
 
-    public override bool Stack(float time) => false;
+    //public override bool Stack(float time) => false;
     public override void EffectOnEnter(Character character) { }
     public override void EffectOnExit(Character character) { }
 

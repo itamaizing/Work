@@ -13,7 +13,7 @@ public class InvisibleState : AbstractCharacterState
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 	//	Debug.Log("Entering Invisible State");
 		//effects.Add(StatusEffect.Others);
@@ -25,20 +25,14 @@ public class InvisibleState : AbstractCharacterState
 		_baseDuration = durationToExit;
 	}
 
-	public override void UpdateState()
+	public override void OnUpdateState()
 	{
-		//Debug.Log("Updating Invisible State");
-		_duration -= Time.deltaTime;
-		if (_duration < 0 || turnOff)
-		{
-			ExitState();
-		}
 	}
 
-	public override void ExitState()
+	protected override void OnExitState()
 	{
 		//Debug.Log("Exiting Invisible State");
-		characterState.RemoveState(this);
+		characterState.RemoveStateFromList(this);
 		if (!characterState.Check(StatusEffect.Others))
 		{
 			//characterState.Health.SetInvincible(false);
@@ -46,7 +40,7 @@ public class InvisibleState : AbstractCharacterState
 		}
 	}
 
-	public override bool Stack(float time)
+	/*public override bool Stack(float time)
 	{
 		if (_baseDuration > time)
 		{
@@ -57,5 +51,5 @@ public class InvisibleState : AbstractCharacterState
 			_duration = time;
 			return true;
 		}
-	}
+	}*/
 }

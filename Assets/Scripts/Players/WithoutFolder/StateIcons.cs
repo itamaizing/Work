@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -22,6 +23,8 @@ public class StateIcons : MonoBehaviour
     private CharacterState characterState;
     private List<StateIcoItem> _activeEffects = new List<StateIcoItem>();
     private bool _added = false;
+    private string _icoText;
+
 
     private void Awake()
     {
@@ -33,7 +36,7 @@ public class StateIcons : MonoBehaviour
         foreach (var data in _icoDatabase.Entries) if (!_icoDataDictionary.ContainsKey(data.State)) _icoDataDictionary.Add(data.State, data);
     }
 
-    public void ActivateIco(States state, float timeToDecrease, int stack, bool canStack, int maxStackValue = 1)
+    public void ActivateIco(States state, float timeToDecrease, int stack, bool canStack, int maxStackValue = 1, string icotext = "")
     {
         foreach (var ico in _activeEffects)
         {
@@ -214,31 +217,86 @@ public class StateIcons : MonoBehaviour
         }
         _activeEffects.Clear();
     }
-}
-/*
-    public void RemoveIconCount()
+
+    public void AddState(AbstractCharacterState state)
+    {
+        foreach(var ico in _activeEffects)
+        {
+            if (ico.State == state.State && state.CanReEnterState())
+            {
+                ico.FadeFront.DOKill();
+                if (state is StackableState)
+                {
+                    var stackableState = state as StackableState;
+                    ico.count = stackableState.CurrentStacksCount;
+                    ico.maxStack = stackableState.MaxStacksCount;
+                }
+                StartProgress(ico, state.RemainingDuration);
+                RefreshText(ico);
+                MoveIcoToEnd(_activeEffects.IndexOf(ico));
+                return;
+            }
+        }
+
+
+        var newIco = Instantiate(_template, _spawnPos.transform);
+        newIco.State = state.State;
+
+        if (state is StackableState)
+        {
+            var stackableState = state as StackableState;
+            newIco.count = stackableState.CurrentStacksCount;
+            newIco.maxStack = stackableState.MaxStacksCount;
+        }
+
+
+        if (_icoDataDictionary.TryGetValue(state.State, out var data))
+        {
+            if (data.Icon != null) newIco.Icon.sprite = data.Icon;
+            newIco.border.color = data.BorderColor == Color.white ? GetBorderColor(state.State) : data.BorderColor;
+        }
+        else
+        {
+            newIco.border.color = GetFallbackColor(state.State);
+        }
+
+        newIco.Text.color = GetTextColor(state.State);
+        StartProgress(newIco, state.RemainingDuration);
+        RefreshText(newIco);
+
+
+        _activeEffects.Add(newIco);
+        MoveIcoToEnd(_activeEffects.Count - 1);
+    }
+
+    public void ExitState(AbstractCharacterState state)
     {
         for (int i = _activeEffects.Count - 1; i >= 0; i--)
         {
-            if (_activeEffects[i].count > 0)
+            if (_activeEffects[i].State == state.State)
             {
-                _activeEffects[i].count -= 1;
-                _activeEffects[i].Text.text = _activeEffects[i].count.ToString();
+                Destroy(_activeEffects[i].gameObject);
+                _activeEffects.RemoveAt(i);
                 break;
             }
         }
     }
 
-    public void DeactivateIcon()
+    public void UpdateState(AbstractCharacterState state)
     {
         for (int i = _activeEffects.Count - 1; i >= 0; i--)
         {
-            _activeEffects[i].FadeFront.fillAmount = 0;
-            Destroy(_activeEffects[i].gameObject);
-            _activeEffects.RemoveAt(i);
-            break;
+            if (_activeEffects[i].State == state.State)
+            {
+                if (state is StackableState)
+                {
+                    var stackableState = state as StackableState;
+                    _activeEffects[i].count = stackableState.CurrentStacksCount;
+                    _activeEffects[i].maxStack = stackableState.MaxStacksCount;
+                }
+                _activeEffects[i].FadeFront.fillAmount = state.RemainingDuration / state.MaxDuration;
+                break;
+            }
         }
     }
-
-   
-}*/
+}
