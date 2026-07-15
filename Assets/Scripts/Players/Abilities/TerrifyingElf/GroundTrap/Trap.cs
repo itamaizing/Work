@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
-public class Trap : Projectiles, IDamageable
+public class Trap : Projectiles
 {
     [Header("Visual Components")]
     [SerializeField] private LineRenderer lineRenderer;
@@ -35,12 +35,6 @@ public class Trap : Projectiles, IDamageable
     private GameObject _caughtTarget;
 
     private IDamageable _caughtTargetDamageable;
-
-    public event Action<Damage, Skill> DamageTaken
-    {
-        add { if (_objectHealth != null) _objectHealth.DamageTaken += value; }
-        remove { if (_objectHealth != null) _objectHealth.DamageTaken -= value; }
-    }
 
     private void Awake()
     {
@@ -141,29 +135,6 @@ public class Trap : Projectiles, IDamageable
         transform.localPosition = new Vector3(0f, 1f, 0f);
         transform.localRotation = Quaternion.identity;
         transform.parent = null;
-    }
-
-    public bool TryTakeDamage(ref Damage damage, Skill skill)
-    {
-        if (!isServer) return false;
-
-        if (_caughtTarget == null)
-        {
-            if (skill != null && skill.Hero != null && skill.Hero.NetworkSettings.TeamIndex == _ownerTeamIndex)
-                return false;
-            return _objectHealth != null && _objectHealth.TryTakeDamage(ref damage, skill);
-        }
-
-        if (skill != null && skill.Hero != null && skill.Hero.NetworkSettings.TeamIndex == _ownerTeamIndex)
-        {
-            if (_caughtTargetDamageable != null)
-            {
-                return _caughtTargetDamageable.TryTakeDamage(ref damage, skill);
-            }
-            return false;
-        }
-        if (_objectHealth == null) return false;
-        return _objectHealth.TryTakeDamage(ref damage, skill);
     }
 
     public void ShowPhantomValue(Damage phantomValue)

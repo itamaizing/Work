@@ -287,6 +287,9 @@ public class GroundTrap : Skill
         trap.Init(owner, this, spawnPos, startPosition);
         trap.Finalise();
         NetworkServer.Spawn(trap.gameObject);
+
+        trap.GetComponent<Object>().IndexTeam = _hero.NetworkSettings.TeamIndex;
+        
         RpcInit(trap.netIdentity, spawnPos, rotation);
     }
 

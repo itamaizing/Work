@@ -11011,19 +11011,17 @@ GameObject:
   - component: {fileID: 90827108107398664}
   - component: {fileID: 5712722701688939530}
   - component: {fileID: 8635874584311858127}
-  - component: {fileID: 2205651950121639594}
-  - component: {fileID: 5460708121446048413}
   - component: {fileID: 8163329122190285983}
   - component: {fileID: 732501578659559874}
   - component: {fileID: 5645184583812709282}
   - component: {fileID: 2949505129263188247}
-  - component: {fileID: 4775933495824851193}
-  - component: {fileID: 2352179588393561415}
-  - component: {fileID: 6864330886098452151}
   - component: {fileID: 1532225068962727413}
-  m_Layer: 9
+  - component: {fileID: 2959483807478874451}
+  - component: {fileID: 5258065775100563163}
+  - component: {fileID: 1152357989049004974}
+  m_Layer: 8
   m_Name: ReconnaissanceFire
-  m_TagString: Allies
+  m_TagString: Enemies
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11117,47 +11115,6 @@ MonoBehaviour:
   pulseSpeed: 1
   minIntensity: 10
   maxIntensity: 17
---- !u!114 &2205651950121639594
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9075096416490859393}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22a2d253528cb6049b89a105cbabd1ee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _selectedCircle: {fileID: 0}
-  _minimapMarker: {fileID: 0}
-  _objectData: {fileID: 11400000, guid: 67c31e48e164c944a90e72fd98b08a37, type: 2}
-  _objectHealth: {fileID: 4775933495824851193}
-  _resources:
-  - {fileID: 4775933495824851193}
-  _indexTeam: 0
-  uiComponent: {fileID: 0}
-  live: 0
-  isDestroyOnDeath: 1
-  isTower: 0
---- !u!114 &5460708121446048413
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9075096416490859393}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e6e2f7ef2762b14c85f37a211ace137, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _healthSlider: {fileID: 5172800506436319354}
-  objectBar: {fileID: 1651152013591758598}
-  _healthText: {fileID: 2524332826892657533}
 --- !u!114 &8163329122190285983
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11227,7 +11184,53 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
---- !u!114 &4775933495824851193
+--- !u!65 &1532225068962727413
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9075096416490859393}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 2.3033512, z: 1}
+  m_Center: {x: 0, y: 1.2683359, z: 0}
+--- !u!114 &2959483807478874451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9075096416490859393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22a2d253528cb6049b89a105cbabd1ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Object
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _selectedCircle: {fileID: 0}
+  _minimapMarker: {fileID: 0}
+  _objectData: {fileID: 11400000, guid: 67c31e48e164c944a90e72fd98b08a37, type: 2}
+  _objectHealth: {fileID: 5258065775100563163}
+  _resources: []
+  _indexTeam: 0
+  uiComponent: {fileID: 0}
+  live: 0
+  isDestroyOnDeath: 1
+  isTower: 0
+--- !u!114 &5258065775100563163
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -11246,9 +11249,9 @@ MonoBehaviour:
   _regenerationDelay: 0
   _currentValue: 0
   _maxValue: 0
-  _objectBar: {fileID: 5460708121446048413}
+  _objectBar: {fileID: 1152357989049004974}
   _objectData: {fileID: 11400000, guid: 67c31e48e164c944a90e72fd98b08a37, type: 2}
-  obj: {fileID: 0}
+  obj: {fileID: 9075096416490859393}
   _ignoredSchools: 
   _ignoredForms: 00000000
   _ignoredSkillTypes: 
@@ -11258,7 +11261,7 @@ MonoBehaviour:
   live: 0
   isDestroyOnDeath: 1
   isRegenerationEnabled: 0
---- !u!114 &2352179588393561415
+--- !u!114 &1152357989049004974
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -11267,55 +11270,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 9075096416490859393}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0515ed66db198b34aa36ae44b9b73122, type: 3}
+  m_Script: {fileID: 11500000, guid: 4e6e2f7ef2762b14c85f37a211ace137, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  reconnaissanceFireAura: {fileID: 8163329122190285983}
---- !u!65 &6864330886098452151
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9075096416490859393}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Size: {x: 1, y: 0.08570218, z: 1}
-  m_Center: {x: 0, y: 0.11, z: 0}
---- !u!65 &1532225068962727413
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9075096416490859393}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Size: {x: 1, y: 2.3033512, z: 1}
-  m_Center: {x: 0, y: 1.2683359, z: 0}
+  _healthSlider: {fileID: 5172800506436319354}
+  objectBar: {fileID: 1651152013591758598}
+  _healthText: {fileID: 2524332826892657533}
 --- !u!1 &9111231575585891813
 GameObject:
   m_ObjectHideFlags: 0

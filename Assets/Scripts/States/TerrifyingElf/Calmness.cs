@@ -26,11 +26,11 @@ public class Calmness : RefreshingState
         manaResource = character.Character.Resource;
         base.personWhoMadeBuff = personWhoMadeBuff;
         MaxStacksCount = _baseMaxStacks;
-
+        
         if (!character.isServer)
         {
-            manaResource.ValueChanged -= RecalcRegenAmount;
-            manaResource.ValueChanged += RecalcRegenAmount;
+            manaResource.MaxValueChanged -= RecalcRegenAmount;
+            manaResource.MaxValueChanged += RecalcRegenAmount;
             _regenRoutine = character.StartCoroutine(RegenTick());
         }
     }
@@ -61,7 +61,6 @@ public class Calmness : RefreshingState
     public override bool Stack(float newDuration)
     {
         duration = Mathf.Max(duration, newDuration);
-        
         return true;
     }
 
@@ -97,6 +96,24 @@ public class Calmness : RefreshingState
             float amount = Mathf.Min(_regenAmount, missing);
             manaResource.CmdAdd(amount);
         }
+    }
+    
+    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        if (!CanEnterState(character)) return null;
+
+        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+
+        if (currentStacksCount == 0)
+            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+        else
+            Stack(duration);
+        
+        currentStacksCount++;
+        
+        RecalcRegenAmount(0, 0);
+
+        return this;
     }
 
 }

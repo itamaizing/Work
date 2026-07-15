@@ -43,10 +43,61 @@ public class ArrowProjectile : Projectiles
     private bool IsEnemy(GameObject target)
     {
         if (_dad == null) return IsEnemyByLayer(target);
-        if (!_dad.TryGetComponent(out UserNetworkSettings ownerSettings) || !target.TryGetComponent(out UserNetworkSettings targetSettings)) return IsEnemyByLayer(target);
-        if (!IsTeamAssigned(ownerSettings) || !IsTeamAssigned(targetSettings)) return IsEnemyByLayer(target);
 
-        return ownerSettings.TeamIndex != targetSettings.TeamIndex;
+        if (target == _dad.gameObject) return false;
+
+        UserNetworkSettings ownerSettings = null;
+        if (_dad.TryGetComponent(out UserNetworkSettings foundOwnerSettings))
+        {
+            ownerSettings = foundOwnerSettings;
+        }
+        else if (_dad.NetworkSettings != null)
+        {
+            ownerSettings = _dad.NetworkSettings;
+        }
+
+        int ownerTeam = (ownerSettings != null) ? ownerSettings.TeamIndex : 0;
+
+        if (target.TryGetComponent<Object>(out var obj))
+        {
+            if (ownerTeam != 0)
+            {
+                return ownerTeam != obj.IndexTeam;
+            }
+
+            if (obj.IndexTeam != 0)
+            {
+                return true;
+            }
+        }
+
+        UserNetworkSettings targetSettings = null;
+        if (target.TryGetComponent(out UserNetworkSettings foundTargetSettings))
+        {
+            targetSettings = foundTargetSettings;
+        }
+        else if (target.TryGetComponent<Character>(out var targetChar) && targetChar.NetworkSettings != null)
+        {
+            targetSettings = targetChar.NetworkSettings;
+        }
+
+        if (ownerSettings != null && targetSettings != null)
+        {
+            bool isOwnerAssigned = IsTeamAssigned(ownerSettings);
+            bool isTargetAssigned = IsTeamAssigned(targetSettings);
+
+            if (isOwnerAssigned && isTargetAssigned)
+            {
+                return ownerSettings.TeamIndex != targetSettings.TeamIndex;
+            }
+
+            if (isOwnerAssigned && !isTargetAssigned)
+            {
+                return true;
+            }
+        }
+
+        return IsEnemyByLayer(target);
     }
 
     private bool IsTeamAssigned(UserNetworkSettings settings)
@@ -141,6 +192,12 @@ public class ArrowProjectile : Projectiles
     {
         if (_dad == null) return;
 
+        if (other.gameObject == _dad.gameObject) return;
+
+        if (!other.TryGetComponent<IDamageable>(out _)) return;
+
+        if (!IsEnemy(other.gameObject)) return;
+
         other.TryGetComponent<Character>(out var target);
 
         if (target != null && target.CharacterState.CheckForState(States.ReflectiveScales) && _arrowDark)
@@ -152,20 +209,17 @@ public class ArrowProjectile : Projectiles
             return;
         }
 
-        if (other.gameObject == _dad?.gameObject) return;
-        if (!other.TryGetComponent<IDamageable>(out _)) return;
-
         if (_arrowDark && other.GetComponentInParent<ReconnaissanceFireAura>() != null)
         {
             Destroy(gameObject);
             return;
         }
 
-        if (!IsEnemy(other.gameObject)) return;
-
         if (other.TryGetComponent<ObjectHealth>(out ObjectHealth objectHealth) &&
             objectHealth.ResistMagicDamage >= ResistMagicDamageMaxValue && _arrowDark)
+        {
             return;
+        }
 
         ApplyEnemy(other);
         Destroy(gameObject);

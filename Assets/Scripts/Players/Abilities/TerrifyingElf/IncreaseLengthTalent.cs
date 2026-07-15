@@ -20,6 +20,8 @@ public class IncreaseLengthTalent : Skill
 
     private bool visualsApplied = false;
 
+    public bool IsHuntressTalent_1 => _isHuntressTalent_1;
+    
     private bool _isHuntressTalent_1;
 
     public void EnableHuntressTalent_1(bool value)

@@ -382,6 +382,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: a946fba021bc52f4c94cefbea6b2b5c7, type: 2}
     - target: {fileID: 6127363919028890537, guid: 801be1780d351184eba795b59511228b, type: 3}
+      propertyPath: _objectHealth
+      value: 
+      objectReference: {fileID: 2181189542994253159}
+    - target: {fileID: 6127363919028890537, guid: 801be1780d351184eba795b59511228b, type: 3}
       propertyPath: _minimapMarker
       value: 
       objectReference: {fileID: 8945408077743643584}
@@ -389,6 +393,10 @@ PrefabInstance:
       propertyPath: _selectedCircle
       value: 
       objectReference: {fileID: 353344253582175034}
+    - target: {fileID: 6127363919028890537, guid: 801be1780d351184eba795b59511228b, type: 3}
+      propertyPath: '_resources.Array.data[0]'
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6364738670652806213, guid: 801be1780d351184eba795b59511228b, type: 3}
       propertyPath: regenSpawn
       value: 
@@ -418,7 +426,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8523081882904878252}
     m_RemovedComponents:
-    - {fileID: 6127363919028890537, guid: 801be1780d351184eba795b59511228b, type: 3}
     - {fileID: 2834973452897169227, guid: 801be1780d351184eba795b59511228b, type: 3}
     - {fileID: 2327976221635376660, guid: 801be1780d351184eba795b59511228b, type: 3}
     m_RemovedGameObjects: []
@@ -448,12 +455,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7460133517014728669, guid: 801be1780d351184eba795b59511228b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 606122942120320747}
-    - targetCorrespondingSourceObject: {fileID: 4056782493907202825, guid: 801be1780d351184eba795b59511228b, type: 3}
+    - targetCorrespondingSourceObject: {fileID: 7460133517014728669, guid: 801be1780d351184eba795b59511228b, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6575835636828494985}
-    - targetCorrespondingSourceObject: {fileID: 4056782493907202825, guid: 801be1780d351184eba795b59511228b, type: 3}
+      addedObject: {fileID: 2181189542994253159}
+    - targetCorrespondingSourceObject: {fileID: 7460133517014728669, guid: 801be1780d351184eba795b59511228b, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4939422070895480}
+      addedObject: {fileID: 2775384508008837214}
   m_SourcePrefab: {fileID: 100100000, guid: 801be1780d351184eba795b59511228b, type: 3}
 --- !u!4 &170362930723621364 stripped
 Transform:
@@ -476,57 +483,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1199352022688229088, guid: 801be1780d351184eba795b59511228b, type: 3}
   m_PrefabInstance: {fileID: 1516937054756860666}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &3261072434533777907 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4056782493907202825, guid: 801be1780d351184eba795b59511228b, type: 3}
-  m_PrefabInstance: {fileID: 1516937054756860666}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &6575835636828494985
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3261072434533777907}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d336e9dc8383bdd4fa5d830e725255df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  _resourceType: 0
-  _regenerationDelay: 0
-  _currentValue: 0
-  _maxValue: 0
-  _objectBar: {fileID: 4939422070895480}
-  _objectData: {fileID: 11400000, guid: a946fba021bc52f4c94cefbea6b2b5c7, type: 2}
-  obj: {fileID: 0}
-  _ignoredSchools: 
-  _ignoredForms: 
-  _ignoredSkillTypes: 
-  _abilityBanDatabase: {fileID: 11400000, guid: 0347e9f996adc3643b0c7b091ea06255, type: 2}
-  _selectedAbilityName: Absorption
-  _regenModification: 1
-  live: 0
-  isDestroyOnDeath: 1
-  isRegenerationEnabled: 0
---- !u!114 &4939422070895480
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3261072434533777907}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e6e2f7ef2762b14c85f37a211ace137, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _healthSlider: {fileID: 6354616408657085189}
-  objectBar: {fileID: 3952546088972914743}
-  _healthText: {fileID: 3929589420916792906}
 --- !u!114 &3929589420916792906 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2559604748060208304, guid: 801be1780d351184eba795b59511228b, type: 3}
@@ -705,6 +661,52 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
+--- !u!114 &2181189542994253159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8253560855125101863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d336e9dc8383bdd4fa5d830e725255df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  _resourceType: 0
+  _regenerationDelay: 0
+  _currentValue: 0
+  _maxValue: 0
+  _objectBar: {fileID: 2775384508008837214}
+  _objectData: {fileID: 11400000, guid: a946fba021bc52f4c94cefbea6b2b5c7, type: 2}
+  obj: {fileID: 8253560855125101863}
+  _ignoredSchools: 
+  _ignoredForms: 
+  _ignoredSkillTypes: 
+  _abilityBanDatabase: {fileID: 11400000, guid: 0347e9f996adc3643b0c7b091ea06255, type: 2}
+  _selectedAbilityName: Absorption
+  _regenModification: 1
+  live: 0
+  isDestroyOnDeath: 1
+  isRegenerationEnabled: 0
+--- !u!114 &2775384508008837214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8253560855125101863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e6e2f7ef2762b14c85f37a211ace137, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _healthSlider: {fileID: 6354616408657085189}
+  objectBar: {fileID: 3952546088972914743}
+  _healthText: {fileID: 3929589420916792906}
 --- !u!114 &8945408077743643584 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7577666423040321850, guid: 801be1780d351184eba795b59511228b, type: 3}

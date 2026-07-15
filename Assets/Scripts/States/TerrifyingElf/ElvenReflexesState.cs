@@ -27,8 +27,10 @@ public class ElvenReflexesState : AbstractCharacterState
         _currentEvasionBonus = _baseEvade * EvasionBonus;
         characterState.Character.Health.EvadeMeleeDamage += _currentEvasionBonus;*/
 
+        var bonus = character.Character.AttributeSystem[CharacterAttributeName.EvasionPhysical].GetValue() * EvasionBonus;
+        
         character.Character.AttributeSystem[CharacterAttributeName.EvasionPhysical]
-            .AddModifier(new AttributeModifier(EvasionBonus, ModifierType.Multiplier, source: this));
+            .AddModifier(new AttributeModifier(bonus, ModifierType.Flat, source: this));
     }
 
     public override void UpdateState()

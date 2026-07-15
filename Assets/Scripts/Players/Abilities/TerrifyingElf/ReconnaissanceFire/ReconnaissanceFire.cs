@@ -275,11 +275,13 @@ public class ReconnaissanceFire : Skill
         position.y += AuraSpawnYOffset;
         var aura = Instantiate(_fireAura, position, Quaternion.identity);
         aura.Init(Hero);
-        //SceneManager.MoveGameObjectToScene(aura.gameObject, Hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(aura.gameObject, connectionToClient);
+
+        aura.GetComponent<Object>().IndexTeam = _hero.NetworkSettings.TeamIndex;
 
         _currentFireAura = aura;
         _currentFireAura.FireDarkTalent = _fireDarkTalent;
+
         RpcSetCurrentFireAura(aura);
 
         float life = _baseDuration + (_fireWorshipperTalent ? FireAuraWorshipperBonusDuration : 0f);
@@ -315,6 +317,7 @@ public class ReconnaissanceFire : Skill
             _currentFireAura.ApplyFireWorshipperTalentEffect(true);
             CmdApplyFireWorshipper();
         }
+        _currentFireAura.GetComponent<Object>().IndexTeam = _hero.NetworkSettings.TeamIndex;
     }
 
     [Command]

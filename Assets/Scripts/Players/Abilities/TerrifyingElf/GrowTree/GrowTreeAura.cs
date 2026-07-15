@@ -34,15 +34,37 @@ public class GrowTreeAura : NetworkBehaviour
     
     public bool GrowTreeIncreasesMaxHealth { get => _growTreeIncreasesMaxHealth; set => _growTreeIncreasesMaxHealth = value; }
 
-    public void Init(SkillManager skill, Character hero,bool IsRegenTalent)
+    public void Init(SkillManager skill, Character hero)
     {
         _skillManager = skill;
         _Hero = hero;
-        _treeManaRegenTalent = IsRegenTalent;
+    }
+    
+    public void EnableTreeManaRegen(bool isEnable)
+    {
+        _treeManaRegenTalent = isEnable;
 
-        if (!isClient && _treeManaRegenTalent)
+        EnableManaRegen(_treeManaRegenTalent);
+    }
+
+    private void EnableManaRegen(bool value)
+    {
+        if (value)
         {
-            _manaRegenRoutine = StartCoroutine(ApplyTreeManaRegenPeriodically());
+            if(_manaRegenRoutine == null)
+                _manaRegenRoutine = StartCoroutine(ApplyTreeManaRegenPeriodically());
+        }
+        else
+        {
+            if (_manaRegenRoutine != null)
+            {
+                StopCoroutine(_manaRegenRoutine);
+                _manaRegenRoutine = null;
+            }
+            if (_Hero.TryGetResource(ResourceType.Mana) is Mana manaResource)
+            {
+                ResetTreeManaModifier(manaResource);
+            }
         }
     }
 

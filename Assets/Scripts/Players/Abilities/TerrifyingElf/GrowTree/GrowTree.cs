@@ -359,9 +359,11 @@ public class GrowTree : Skill
         var tree = Instantiate(_treePrefab, position, Quaternion.identity);
         _currentTree = tree;
 
-        tree.Init(_skillManager, Hero, _treeManaRegenTalent);
+        tree.Init(_skillManager, Hero);
         NetworkServer.Spawn(_currentTree.gameObject, connectionToClient);
 
+        tree.EnableTreeManaRegen(_treeManaRegenTalent);
+        
         _healthTree = tree.GetComponentInChildren<ObjectHealth>();
         if (_healthTree != null)
         {
@@ -384,10 +386,12 @@ public class GrowTree : Skill
         var tree = Instantiate(_treePrefab, spawnPosition, Quaternion.identity);
         _currentTree = tree;
 
-        tree.Init(_skillManager, Hero, _treeManaRegenTalent);
+        tree.Init(_skillManager, Hero);
         NetworkServer.Spawn(_currentTree.gameObject, connectionToClient);
 
         RpcTeleportToTree(_currentTree.gameObject);
+
+        tree.EnableTreeManaRegen(_treeManaRegenTalent);
 
         _healthTree = _currentTree.GetComponentInChildren<ObjectHealth>();
         if (_healthTree != null)
@@ -442,7 +446,7 @@ public class GrowTree : Skill
     {
         _currentTree = currentTree;
         _currentTree.GrowTreeIncreasesMaxHealth = _growTreeIncreasesMaxHealth;
-        _currentTree.Init(_skillManager, Hero, _treeManaRegenTalent);
+        _currentTree.Init(_skillManager, Hero);
         if (NetworkClient.spawned.TryGetValue(netId, out var networkIdentity)) _activeTrees.Add(networkIdentity.GetComponent<GrowTreeAura>());
     }
 
@@ -526,6 +530,16 @@ public class GrowTree : Skill
         else
         {
             Attributes[SkillAttributeName.ResourceCost].RemoveBySource(typeof(NatureTalent_5));
+        }
+        TryEnableTreeRegenAura(_treeManaRegenTalent);
+    }
+
+    private void TryEnableTreeRegenAura(bool value)
+    {
+        if(isClient) return;
+        foreach (var tree in _activeTrees)
+        {
+            tree.EnableTreeManaRegen(value);
         }
     }
 

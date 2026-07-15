@@ -10,6 +10,7 @@ public class Sleep : AbstractCharacterState
     private float _baseDuration;
     private bool _previousIsSelect;
     private int _initialLayer;
+    private int _lastTickedSecond;
     private bool _giveInnerDarkness;
     private float _tickTimer;
     private const float _tickInterval = 1f;
@@ -34,6 +35,8 @@ public class Sleep : AbstractCharacterState
         _giveInnerDarkness = false;
 
         _tickTimer = 0f;
+        
+        _lastTickedSecond = Mathf.CeilToInt(durationToExit); 
 
         _initialLayer = character.gameObject.layer;
         character.gameObject.layer = LayerMask.NameToLayer(_enemyLayerName);
@@ -80,7 +83,7 @@ public class Sleep : AbstractCharacterState
             networkSettings.RpcUpdateLayers();
         }
     }
-    
+
     private void SubscribeOnDamage()
     {
         characterState.Character.Health.DamageTaken += OnDamaged;
@@ -98,24 +101,32 @@ public class Sleep : AbstractCharacterState
         ExitState();
     }
 
-    public override void UpdateState()
+    public override void GloabalUpdate()
     {
-        //duration -= Time.deltaTime;
-        if (_giveInnerDarkness)
+        if(duration >= 0 && duration != -1)
         {
-            _tickTimer += Time.deltaTime;
-            if (_tickTimer >= _tickInterval)
+            duration -= Time.deltaTime;
+
+            if (_giveInnerDarkness)
             {
-                _tickTimer = 0f;
-                CmdStateInnerDarkness();
+                int currentSecond = Mathf.CeilToInt(duration);
+                
+                if (currentSecond < _lastTickedSecond)
+                {
+                    CmdStateInnerDarkness();
+                    _lastTickedSecond = currentSecond;
+                }
+            }
+
+            if(duration <= 0)
+            {
+                ExitState();
             }
         }
-        
-        if (duration <= 0f || turnOff)
-        {
-            ExitState();
-            return;
-        }
+    }
+    
+    public override void UpdateState()
+    {
     }
 
     public override void ExitState()

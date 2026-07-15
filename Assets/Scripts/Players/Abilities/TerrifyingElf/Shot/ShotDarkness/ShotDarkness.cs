@@ -188,7 +188,7 @@ public class ShotDarkness : Skill
             _multiMagicSpell.Cooldown.Modify(-reduce);
         }
 
-        else CmdUseMana(_magicDamage);
+        else CmdUseMana(666);
     }
 
 

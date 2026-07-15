@@ -131,6 +131,7 @@ public class Ghost : Skill
         else
         {
             _manaResource.ValueChanged -= CheckForMana;
+            DisableSkillBoost();
         }
     }
 
@@ -164,8 +165,8 @@ public class Ghost : Skill
             DisableSkillBoost();
     }
     
-    protected override void SkillEnableBoostLogic() => isSkillEnableBoostLogic = true;
-    protected override void SkillDisableBoostLogic() => isSkillEnableBoostLogic = false;
+    //protected override void SkillEnableBoostLogic() => isSkillEnableBoostLogic = true;
+    //protected override void SkillDisableBoostLogic() => isSkillEnableBoostLogic = false;
 
     private void OnEnable()
     {
