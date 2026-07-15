@@ -285,7 +285,7 @@ public class FireBreath_Scorpion : Skill,IFireComboParticipatingSkill
         {
             float energyToSpend = blocksToSpend * _energyCostPerPercent;
 
-            Cost.TryPayMandatory();
+            Cost.TryPaySingle(energyToSpend, ResourceType.Energy);
             
             if (_hero.Resources.TryGetValue(ResourceType.Energy, out var energyResource))
             {
