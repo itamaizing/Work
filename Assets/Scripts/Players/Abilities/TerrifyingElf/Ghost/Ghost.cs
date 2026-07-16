@@ -563,6 +563,8 @@ public class Ghost : Skill
         if (ghost == null || _ghosts.Contains(ghost) || !(ghost is MinionComponent)) return;
         _ghosts.Add(ghost);
 
+        ghost.NetworkSettings.TeamIndex = Hero.NetworkSettings.TeamIndex;
+        
         if (ghost.TryGetComponent<GhostAura>(out var ghostAura))
         {
             if (_effectsInnerDarknessTalent) ghostAura.EffectsInnerDarknessTalent = true;

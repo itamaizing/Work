@@ -43,6 +43,7 @@ public class Calmness : RefreshingState
     {
         duration = _baseDuration;
         currentStacksCount--;
+        RecalcRegenAmount(0, 0);
         if (currentStacksCount == 0)
         {
             ExitState();
@@ -52,7 +53,7 @@ public class Calmness : RefreshingState
     public override void ExitState()
     {
         currentStacksCount = 0;
-        manaResource.ValueChanged -= RecalcRegenAmount;
+        manaResource.MaxValueChanged -= RecalcRegenAmount;
         if (_regenRoutine != null) characterState.StopCoroutine(_regenRoutine);
         characterState.StateIcons.RemoveItemByState(State);
         characterState.RemoveState(this);
@@ -109,7 +110,8 @@ public class Calmness : RefreshingState
         else
             Stack(duration);
         
-        currentStacksCount++;
+        if(currentStacksCount < _baseMaxStacks)
+            currentStacksCount++;
         
         RecalcRegenAmount(0, 0);
 

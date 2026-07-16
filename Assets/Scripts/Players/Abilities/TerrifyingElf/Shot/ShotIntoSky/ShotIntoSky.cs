@@ -59,6 +59,27 @@ public class ShotIntoSky : Skill
     public void SkillEnableBoostLogicActiveTalent(bool value) => _isSkillEnableBoostLogicActiveTalent = value;
     #endregion
 
+    #region UtilitaryArrow
+
+    [Server]
+    public void SpawnUtilityArrow(Vector3 position, Action<Vector3> onLandedCallback)
+    {
+        if (!impactPrefab) return;
+
+        ArrowIntoSkyProjectile impact = Instantiate(impactPrefab, position, Quaternion.identity);
+        impact.Init(playerLinks, this, 0f, false, false, false);
+
+        impact.OnLanded = onLandedCallback;
+
+        NetworkServer.Spawn(impact.gameObject);
+        RpcInit(impact.gameObject, 0f, false);
+
+        impact.Activate();
+        RpcActivate(impact);
+    }
+    
+    #endregion
+    
     protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotSkyCastDelay");
     protected override int AnimTriggerCast => 0;
 

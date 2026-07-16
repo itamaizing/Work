@@ -32,6 +32,8 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
 
     public GameObject Arrow { get => arrow; set => arrow = value; }
     public GameObject Circle { get => circle; set => circle = value; }
+    
+    public System.Action<Vector3> OnLanded;
 
     public virtual void Init(HeroComponent dad, Skill skill, float damage, bool lastStreamTalent, bool shotMagicDebuffActive, bool isElvenSkillCrit)
     {
@@ -43,17 +45,26 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
         _isElvenSkillCrit = isElvenSkillCrit;
 
         if (_dad != null && _dad.TryGetComponent<Character>(out Character character)) _character = character;
+        
+        if (circle != null) circle.SetActive(true);
     }
 
     public void Activate()
     {
         Arrow.SetActive(true);
         circle.SetActive(true);
-        Invoke("ActiveCollider", nextDamageTime);       
+        Invoke("ActiveCollider", nextDamageTime);
         Destroy(gameObject, impactLifeTime);
     }
 
-    private void ActiveCollider() => sphereCollider.enabled = true;
+    private void ActiveCollider()
+    {
+        sphereCollider.enabled = true;
+
+        OnLanded?.Invoke(transform.position);
+        OnLanded = null; 
+    }
+        
 
     [Server]
     private void OnTriggerStay(Collider other)

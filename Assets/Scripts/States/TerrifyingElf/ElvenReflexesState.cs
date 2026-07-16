@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ElvenReflexesState : AbstractCharacterState
 {
-    private const float EvasionBonus = 0.8f;
+    private const float EvasionBonus = 80;
     private const float TickInterval = 1f;
 
     private float _tickTimer = 0f;
@@ -27,10 +27,7 @@ public class ElvenReflexesState : AbstractCharacterState
         _currentEvasionBonus = _baseEvade * EvasionBonus;
         characterState.Character.Health.EvadeMeleeDamage += _currentEvasionBonus;*/
 
-        var bonus = character.Character.AttributeSystem[CharacterAttributeName.EvasionPhysical].GetValue() * EvasionBonus;
-        
-        character.Character.AttributeSystem[CharacterAttributeName.EvasionPhysical]
-            .AddModifier(new AttributeModifier(bonus, ModifierType.Flat, source: this));
+        character.Character.AttributeSystem[CharacterAttributeName.EvasionPhysical].AddModifier(new AttributeModifier(EvasionBonus, ModifierType.Flat, source: this));
     }
 
     public override void UpdateState()

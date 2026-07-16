@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GrowTree : Skill
 {
@@ -116,6 +115,14 @@ public class GrowTree : Skill
     
     protected override void PlayPrepareAnim()
     {
+        float dist = Vector3.Distance(transform.position, _targetPoint);
+        _castFromExtendedRadius = _isGrowTreeArrowIntoSkyRadiusTalent && (dist > AreaInfo.Radius);
+
+        int nearCount = _activeTrees.Count(tree => tree != null && Vector3.Distance(tree.transform.position, _targetPoint) <= AreaInfo.Radius);
+        CastDeley = _castFromExtendedRadius
+            ? _baseCastDelay
+            : (nearCount == 0 ? _baseCastDelay : _baseCastDelay * Mathf.Pow(2, nearCount));
+
         string trigger = _castFromExtendedRadius ? ShotSkyWithTreeCastDelay : GrowTreeCastDelay;
         Animation.PlayTrigger(trigger);
     }
@@ -181,7 +188,6 @@ public class GrowTree : Skill
     {
         TreeHealthTalentEnter();
         _activeTrees.RemoveAll(tree => tree == null);
-
         CmdRemoveTree();
 
         if (_isGrowTreeArrowIntoSkyRadiusTalent)
@@ -191,9 +197,6 @@ public class GrowTree : Skill
             _checkExtendedRadiusCoroutine = StartCoroutine(CheckExtendedRadiusJob());
         }
 
-        int treeCount = _activeTrees.Count;
-        CastDeley = treeCount == 0 ? _baseCastDelay : _baseCastDelay * Mathf.Pow(2, treeCount);
-
         Vector3 targetPoint = Vector3.positiveInfinity;
 
         while (float.IsPositiveInfinity(targetPoint.x))
@@ -201,7 +204,6 @@ public class GrowTree : Skill
             if (GetMouseButton)
             {
                 Vector3 mousePoint = Targeting.GetMousePoint();
-
                 bool clickedOnHero = false;
 
                 Collider[] colliders = Physics.OverlapSphere(mousePoint, SearchMousClickTarget);
@@ -213,7 +215,7 @@ public class GrowTree : Skill
                         break;
                     }
                 }
-
+                
                 targetPoint = mousePoint;
 
                 if (clickedOnHero)
@@ -221,23 +223,10 @@ public class GrowTree : Skill
                     targetPoint = _hero.transform.position;
                     _isSpawnHero = true;
                 }
-
-                else
-                {
-                    float dist = Vector3.Distance(transform.position, targetPoint);
-                    if (dist <= AreaInfo.Radius) _castFromExtendedRadius = false;
-                }
             }
 
             yield return null;
         }
-
-        int nearCount = _activeTrees.Count(tree => tree != null && Vector3.Distance(tree.transform.position, targetPoint) <= AreaInfo.Radius);
-        CastDeley = _castFromExtendedRadius
-            ? 0f
-            : (nearCount == 0 ? _baseCastDelay : _baseCastDelay * Mathf.Pow(2, nearCount));
-
-        CmdSetCastDelayByProximity(targetPoint, AreaInfo.Radius, _castFromExtendedRadius);
 
         if (_checkExtendedRadiusCoroutine != null)
         {
@@ -247,12 +236,6 @@ public class GrowTree : Skill
         HideExtendedRadius();
 
         Renderer.ShowAOEIndicator(targetPoint, isCommand: false);
-
-        if (_castFromExtendedRadius)
-        {
-            _hero.Animator.SetTrigger(_shotHash);
-            _hero.NetworkAnimator.SetTrigger(_shotHash);
-        }
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(targetPoint);
@@ -275,7 +258,7 @@ public class GrowTree : Skill
         Vector3 spawnPos = _targetPoint;
 
         if (_isSpawnHero) CmdSpawnTreeAndTeleport(_hero.transform.position, TreeFillDuration);
-        else CmdSpawnTree(spawnPos, _castFromExtendedRadius, TreeFillDuration);
+        else CmdSpawnTree(spawnPos, _castFromExtendedRadius, _isGrowTreeArrowIntoSkyRadiusTalent, TreeFillDuration);
 
         if (_growVisualExitRoutine != null) StopCoroutine(_growVisualExitRoutine);
         _growVisualExitRoutine = StartCoroutine(FinishGrowthVisualAfterDelay(TreeFillDuration, wasFromExtendedRadius));
@@ -353,22 +336,45 @@ public class GrowTree : Skill
     [Command] private void CmdSetMaxHealth(float maxHealth) => _treeData.MaxHealth = maxHealth;
     [Command] private void CmdRemoveTree() => _activeTrees.RemoveAll(tree => tree == null);
 
+    
+    private NetworkConnectionToClient _ownerConnection;
+    
     [Command]
-    private void CmdSpawnTree(Vector3 position, bool castFromExtendedRadius, float remainingDuration)
+    private void CmdSpawnTree(Vector3 position, bool castFromExtendedRadius, bool isArrowIntoSkyRadiusTalent, float remainingDuration)
+    {
+        _ownerConnection = connectionToClient;
+
+        if (castFromExtendedRadius && isArrowIntoSkyRadiusTalent && _shotIntoSky != null)
+        {
+            _shotIntoSky.SpawnUtilityArrow(position, landedPos =>
+            {
+                SpawnTreeInstant(landedPos, remainingDuration);
+            });
+        }
+        else
+        {
+            SpawnTreeInstant(position, remainingDuration);
+        }
+    }
+
+    private void SpawnTreeInstant(Vector3 position, float remainingDuration)
     {
         var tree = Instantiate(_treePrefab, position, Quaternion.identity);
         _currentTree = tree;
 
         tree.Init(_skillManager, Hero);
-        NetworkServer.Spawn(_currentTree.gameObject, connectionToClient);
+        
+        NetworkConnectionToClient spawnConnection = _ownerConnection != null ? _ownerConnection : connectionToClient;
+
+        NetworkServer.Spawn(_currentTree.gameObject, spawnConnection);
 
         tree.EnableTreeManaRegen(_treeManaRegenTalent);
-        
+        tree.GetComponent<Object>().IndexTeam = _hero.NetworkSettings.TeamIndex;
+
         _healthTree = tree.GetComponentInChildren<ObjectHealth>();
         if (_healthTree != null)
         {
             if (_treeData.MinEndurance) _healthTree.ServerStartFillHP(_healthTree.ObjectData.MaxHealth, remainingDuration);
-
             if (_treeMagicEvadeTalent) _healthTree.SetMagicEvade(MagicEvade);
         }
         ResetShotCooldowns();
@@ -376,6 +382,8 @@ public class GrowTree : Skill
         _activeTrees.Add(tree);
         _currentTree.GrowTreeIncreasesMaxHealth = _growTreeIncreasesMaxHealth;
         RpcClientAddTree(tree.GetComponent<NetworkIdentity>().netId, _currentTree);
+
+        _ownerConnection = null;
     }
 
     [Command]
@@ -423,30 +431,13 @@ public class GrowTree : Skill
         _hero.Animator.CrossFade(GrowTreeCastDelayExit, AnimatorCrossFadeDuration);
     }
 
-    [Command]
-    private void CmdSetCastDelayByProximity(Vector3 plannedPos, float checkRadius, bool castFromExtendedRadius)
-    {
-        _activeTrees.RemoveAll(tree => tree == null);
-
-        if (castFromExtendedRadius)
-        {
-            CastDeley = 0f;
-            return;
-        }
-
-        int nearCount = 0;
-        foreach (var tree in _activeTrees)
-            if (tree != null && Vector3.Distance(tree.transform.position, plannedPos) <= checkRadius) nearCount++;
-
-        CastDeley = nearCount == 0 ? _baseCastDelay : _baseCastDelay * Mathf.Pow(2, nearCount);
-    }
-
     [ClientRpc]
     private void RpcClientAddTree(uint netId, GrowTreeAura currentTree)
     {
         _currentTree = currentTree;
         _currentTree.GrowTreeIncreasesMaxHealth = _growTreeIncreasesMaxHealth;
         _currentTree.Init(_skillManager, Hero);
+        _currentTree.GetComponent<Object>().IndexTeam = _hero.NetworkSettings.TeamIndex;
         if (NetworkClient.spawned.TryGetValue(netId, out var networkIdentity)) _activeTrees.Add(networkIdentity.GetComponent<GrowTreeAura>());
     }
 
@@ -472,7 +463,12 @@ public class GrowTree : Skill
 
     #region Talent
     public void ShotTreeCooldownTalent(bool value) => _treeShotCooldownTalent = value;
-    public void GrowTreeArrowIntoSkyRadius(bool value) => _isGrowTreeArrowIntoSkyRadiusTalent = value;
+
+    public void GrowTreeArrowIntoSkyRadius(bool value)
+    {
+        if (value == _isGrowTreeArrowIntoSkyRadiusTalent) return;
+        _isGrowTreeArrowIntoSkyRadiusTalent = value;
+    }
     #endregion
 
     #region Talent for doubling HP

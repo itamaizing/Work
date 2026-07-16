@@ -21315,6 +21315,7 @@ MonoBehaviour:
   _audioClip: {fileID: 8300000, guid: 409e6a4f7b85bff4dacaacb82d4640b7, type: 3}
   _ghostSkill: {fileID: 1718052129104348959}
   _chainPathWidth: 3
+  _chainUnitRadiusPrefab: {fileID: 7454699290023613669}
 --- !u!114 &1718052129104348959
 MonoBehaviour:
   m_ObjectHideFlags: 0
