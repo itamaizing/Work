@@ -32,8 +32,6 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
 
     public GameObject Arrow { get => arrow; set => arrow = value; }
     public GameObject Circle { get => circle; set => circle = value; }
-    
-    public System.Action<Vector3> OnLanded;
 
     public virtual void Init(HeroComponent dad, Skill skill, float damage, bool lastStreamTalent, bool shotMagicDebuffActive, bool isElvenSkillCrit)
     {
@@ -60,9 +58,6 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
     private void ActiveCollider()
     {
         sphereCollider.enabled = true;
-
-        OnLanded?.Invoke(transform.position);
-        OnLanded = null; 
     }
         
 
@@ -73,6 +68,13 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
         if (!_damagedThisTick.Add(other)) return;
 
         ApplyDamageEnemy(other);
+    }
+    
+    public void ActivateVisualOnly()
+    {
+        Arrow.SetActive(true);
+        circle.SetActive(true);
+        Destroy(gameObject, impactLifeTime);
     }
 
     #region ApplyAdditionalDamage

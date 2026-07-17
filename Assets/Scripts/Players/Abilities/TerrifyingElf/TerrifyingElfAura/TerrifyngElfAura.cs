@@ -542,66 +542,77 @@ public class TerrifyingElfAura : Skill
     #endregion
 
     #region ManaIncreasedRegen
-
-    private bool _isManaRegenIncreased;
-    private Coroutine _manaWatchRoutine;
+    
+    [SyncVar] private bool _isManaRegenIncreased;
     private Coroutine _manaRegenRoutine;
 
     private const float ManaRegenBoostedValue = 100f;
     private const float ManaRegenIdleTime = 6f;
-    private const float ManaWatchInterval = 0.1f;
 
     public void IncreaseManaRegen(bool value)
+    {
+        if (isClient)
+        {
+            CmdIncreaseManaRegen(value);
+            return;
+        }
+
+        ServerSetManaRegenIncreased(value);
+    }
+
+    [Command(requiresAuthority = false)]
+    private void CmdIncreaseManaRegen(bool value)
+    {
+        ServerSetManaRegenIncreased(value);
+    }
+
+    [Server]
+    private void ServerSetManaRegenIncreased(bool value)
     {
         if (_isManaRegenIncreased == value) return;
         _isManaRegenIncreased = value;
 
         if (_isManaRegenIncreased)
         {
-            if (_manaWatchRoutine != null) StopCoroutine(_manaWatchRoutine);
-            _manaWatchRoutine = StartCoroutine(ManaWatcher());
+            if (_heroMana != null)
+            {
+                _heroMana.ValueChanged -= OnManaSpentForRegenBoost;
+                _heroMana.ValueChanged += OnManaSpentForRegenBoost;
+            }
+            RestartIdleTimer();
         }
         else
         {
+            if (_heroMana != null) _heroMana.ValueChanged -= OnManaSpentForRegenBoost;
             StopManaRegenBoost();
         }
     }
 
-    private IEnumerator ManaWatcher()
+    [Server]
+    private void OnManaSpentForRegenBoost(float oldValue, float newValue)
     {
-        var wait = new WaitForSeconds(ManaWatchInterval);
-        float prevMana = GetCurrentMana();
+        if (newValue < oldValue)
+        {
+            ApplyManaRegenBoost(false);
+            RestartIdleTimer();
+        }
+    }
 
+    [Server]
+    private void RestartIdleTimer()
+    {
         if (_manaRegenRoutine != null) StopCoroutine(_manaRegenRoutine);
         _manaRegenRoutine = StartCoroutine(ManaRegenWatcher());
-
-        while (_isManaRegenIncreased)
-        {
-            yield return wait;
-
-            float currentMana = GetCurrentMana();
-
-            if (currentMana < prevMana - 0.01f)
-            {
-                ApplyManaRegenBoost(false);
-
-                if (_manaRegenRoutine != null) StopCoroutine(_manaRegenRoutine);
-                _manaRegenRoutine = StartCoroutine(ManaRegenWatcher());
-            }
-
-            prevMana = currentMana;
-        }
-
-        _manaWatchRoutine = null;
     }
 
     private IEnumerator ManaRegenWatcher()
     {
         yield return new WaitForSeconds(ManaRegenIdleTime);
-        ApplyManaRegenBoost(true);
+        if (isServer) ApplyManaRegenBoost(true);
         _manaRegenRoutine = null;
     }
 
+    [Server]
     private void ApplyManaRegenBoost(bool active)
     {
         if (Hero.TryGetResource(ResourceType.Mana) is not Resource mana) return;
@@ -618,19 +629,9 @@ public class TerrifyingElfAura : Skill
         }
     }
 
-    private float GetCurrentMana()
-    {
-        return Hero.TryGetResource(ResourceType.Mana) is Resource mana ? mana.CurrentValue : 0f;
-    }
-
+    [Server]
     private void StopManaRegenBoost()
     {
-        if (_manaWatchRoutine != null)
-        {
-            StopCoroutine(_manaWatchRoutine);
-            _manaWatchRoutine = null;
-        }
-
         if (_manaRegenRoutine != null)
         {
             StopCoroutine(_manaRegenRoutine);

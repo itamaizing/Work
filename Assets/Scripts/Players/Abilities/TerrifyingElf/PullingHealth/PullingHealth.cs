@@ -15,15 +15,12 @@ public class PullingHealth : Skill
     [SerializeField] private AudioClip _audioClip;
     [SerializeField] private Ghost _ghostSkill;
     [SerializeField] private float _radiusIncreasePerGhost = 3f;
-    
-    [SerializeField] private float _chainPathWidth = 3f;
 
     private GameObject _cachedTarget;
     private AudioSource _audioSource;
     private GameObject _activeEffect;
     private List<GameObject> _activeGhostEffects = new List<GameObject>();
     private List<GameObject> _allActiveEffects = new List<GameObject>();
-    private float _baseRadius;
     private float _baseTickInterval;
     private float _baseCastStreamDuration;
     private float _ignoreMoveTimeLeft;
@@ -88,7 +85,7 @@ public class PullingHealth : Skill
                     BuildChain();
                     return IsPositionReachable(target.Transform.position);
                 }
-                return Vector3.Distance(target.Transform.position, transform.position) <= _baseRadius;
+                return Vector3.Distance(target.Transform.position, transform.position) <= AreaInfo.Radius;
             }
             return false;
         }
@@ -108,7 +105,6 @@ public class PullingHealth : Skill
     {
         base.Init(render, hero);
         _audioSource = GetComponent<AudioSource>();
-        _baseRadius = AreaInfo.Radius;
         _baseCastStreamDuration = CastStreamDuration;
         _baseTickInterval = _tickInterval;
     }
@@ -222,7 +218,7 @@ public class PullingHealth : Skill
         var visited = new HashSet<GameObject>();
         var queue = new Queue<GameObject>();
 
-        var initialHits = Physics.OverlapSphere(transform.position, _baseRadius);
+        var initialHits = Physics.OverlapSphere(transform.position, AreaInfo.Radius);
         foreach (var hit in initialHits)
         {
             if (!IsChainUnit(hit)) continue;
@@ -253,7 +249,7 @@ public class PullingHealth : Skill
 
     private bool IsPositionReachable(Vector3 targetPosition)
     {
-        if (Vector3.Distance(transform.position, targetPosition) <= _baseRadius)
+        if (Vector3.Distance(transform.position, targetPosition) <= AreaInfo.Radius)
             return true;
 
         foreach (var unit in _currentChain)
@@ -333,7 +329,7 @@ public class PullingHealth : Skill
         var path = new List<GameObject>();
         Vector3 targetPos = target.transform.position;
 
-        if (Vector3.Distance(transform.position, targetPos) <= _baseRadius)
+        if (Vector3.Distance(transform.position, targetPos) <= AreaInfo.Radius)
         {
             path.Add(gameObject);
             path.Add(target);
@@ -499,7 +495,7 @@ public class PullingHealth : Skill
 
             if (_currentChain.Count == 0)
             {
-                if (Vector3.Distance(transform.position, damageable.transform.position) <= _baseRadius)
+                if (Vector3.Distance(transform.position, damageable.transform.position) <= AreaInfo.Radius)
                     CmdSpawnPullingHealthEffect(gameObject, damageable.gameObject);
             }
             else
@@ -512,7 +508,7 @@ public class PullingHealth : Skill
         else
         {
             float targetDistance = Vector3.Distance(transform.position, damageable.transform.position);
-            if (targetDistance <= _baseRadius) CmdSpawnPullingHealthEffect(gameObject, damageable.gameObject);
+            if (targetDistance <= AreaInfo.Radius) CmdSpawnPullingHealthEffect(gameObject, damageable.gameObject);
         }
         #endregion
 
@@ -551,7 +547,7 @@ public class PullingHealth : Skill
             }
             else
             {
-                isTargetOutOfRange = Vector3.Distance(transform.position, damageable.transform.position) > _baseRadius;
+                isTargetOutOfRange = Vector3.Distance(transform.position, damageable.transform.position) > AreaInfo.Radius;
             }
 
             if (damageable != null && (Input.GetMouseButtonDown(1) || isTargetOutOfRange || Vector3.Distance(initialPosition, transform.position) > MaxPositionShift && !_ignoreMoveCheck))
@@ -820,6 +816,5 @@ public class PullingHealth : Skill
         _currentChain.Clear();
         Targeting.ClearTempTarget();
         Targeting.ClearTarget();
-        AreaInfo.Radius = _baseRadius;
     }
 }

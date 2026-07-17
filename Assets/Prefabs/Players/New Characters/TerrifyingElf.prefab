@@ -21314,8 +21314,9 @@ MonoBehaviour:
   _tickInterval: 1
   _audioClip: {fileID: 8300000, guid: 409e6a4f7b85bff4dacaacb82d4640b7, type: 3}
   _ghostSkill: {fileID: 1718052129104348959}
+  _radiusIncreasePerGhost: 3
   _chainPathWidth: 3
-  _chainUnitRadiusPrefab: {fileID: 7454699290023613669}
+  _chainUnitRadiusPrefab: {fileID: 5857312309245348591, guid: 87d3b047a21aefc4d9aae1f8341dad18, type: 3}
 --- !u!114 &1718052129104348959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21727,6 +21728,8 @@ MonoBehaviour:
   minDistanceRadius: 2
   newHealth: 23
   groundData: {fileID: 11400000, guid: a946fba021bc52f4c94cefbea6b2b5c7, type: 2}
+  _extendedRadiusCircle: {fileID: 7454699290023613669}
+  _extendedRadiusColor: {r: 0.8, g: 0.3, b: 0, a: 1}
   isGroundHealthTalent: 0
   groundLayer:
     serializedVersion: 2
@@ -21828,7 +21831,6 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
-  extendedRadius: 8
   _moveDuration: 0.5
   _arrowEffectLifetime: 2
   _treePrefab: {fileID: 5108004075575563715, guid: 82b70bdb0fc80c343859665623ea7ed8, type: 3}
@@ -22019,7 +22021,7 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 10
+    _radius: 6
     _area: 3
     _castLength: 0
     _castWidth: 0
@@ -22051,6 +22053,8 @@ MonoBehaviour:
     m_Bits: 8192
   _arcRenderer: {fileID: 1856762127157205582}
   _arcHeight: 6
+  _extendedRadiusCircle: {fileID: 7454699290023613669}
+  _extendedRadiusColor: {r: 0.8, g: 0.3, b: 0, a: 1}
 --- !u!114 &6686568037796463366
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -38,7 +38,7 @@ public class ShotIntoSky : Skill
     public void ShotsIntoSkyMagicDebuffTalentActive(bool value) => shotMagicDebuffActive = value;
     public void SetTripleShotTalentActive(bool value) => tripleShotTalentActive = value;
     
-    private const float LengthBonusTalent = 3f;
+    private const float LengthBonusTalent = 2f;
     
     public void ShotRadiusUpgradeActive(bool value)
     {
@@ -61,21 +61,24 @@ public class ShotIntoSky : Skill
 
     #region UtilitaryArrow
 
+    public float DropDelayTime => _dropDelayTime;
+
     [Server]
-    public void SpawnUtilityArrow(Vector3 position, Action<Vector3> onLandedCallback)
+    public void SpawnUtilityArrowVisual(Vector3 position)
     {
         if (!impactPrefab) return;
 
         ArrowIntoSkyProjectile impact = Instantiate(impactPrefab, position, Quaternion.identity);
-        impact.Init(playerLinks, this, 0f, false, false, false);
-
-        impact.OnLanded = onLandedCallback;
-
         NetworkServer.Spawn(impact.gameObject);
-        RpcInit(impact.gameObject, 0f, false);
+        RpcActivateVisualOnly(impact);
+    }
 
-        impact.Activate();
-        RpcActivate(impact);
+    [ClientRpc]
+    private void RpcActivateVisualOnly(ArrowIntoSkyProjectile projectile)
+    {
+        projectile.ActivateVisualOnly();
+                    
+        Cooldown.Start();
     }
     
     #endregion
@@ -294,7 +297,10 @@ public class ShotIntoSky : Skill
         if (gameObject == null) return;
 
         ArrowIntoSkyProjectile impact = gameObject.GetComponent<ArrowIntoSkyProjectile>();
-        if (impact != null) impact.Init(playerLinks, this, damage, lastStreamTalent, shotMagicDebuffActive, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
+        if (impact == null) return;
+
+        bool elvenCrit = _terrifyingElfAura != null && _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance;
+        impact.Init(playerLinks, this, damage, lastStreamTalent, shotMagicDebuffActive, elvenCrit);
     }
  
     [ClientRpc] private void RpcActivate(ArrowIntoSkyProjectile projectile) => projectile.Activate();
