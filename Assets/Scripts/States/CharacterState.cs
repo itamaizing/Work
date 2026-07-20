@@ -38,6 +38,8 @@ public abstract class AbstractCharacterState
 	protected bool isHidden = false;
 
 	public int CurrentStacksCount => currentStacksCount;
+	
+	public float BaseDurationValue { get; private set; } = -1f;
 
 	public Skill Skill => skill;
     public int MaxStacksCount = 0;
@@ -122,6 +124,8 @@ public abstract class AbstractCharacterState
         this.personWhoMadeBuff = personWhoMadeBuff;
         duration = durationToExit;
 
+        if (BaseDurationValue < 0f) BaseDurationValue = durationToExit;
+        
         if (this.damageToExit == 0)
         {
             this.damageToExit = 10000;

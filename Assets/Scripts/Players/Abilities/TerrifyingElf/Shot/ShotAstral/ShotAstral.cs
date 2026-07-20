@@ -2,7 +2,6 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class ShotAstral : Skill
 {
@@ -121,8 +120,7 @@ public class ShotAstral : Skill
         if (direction == Vector3.zero) return;
 
         var projectile = Instantiate(_projectile, spawnPoition, Quaternion.LookRotation(direction));
-        projectile.Init(_playerLinks, 0, false, this);
-        SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
+        projectile.Init(_playerLinks, 0, false, this); 
         NetworkServer.Spawn(projectile.gameObject);
         projectile.StartFly(direction);
         RpcInit(projectile.gameObject);

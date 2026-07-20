@@ -642,5 +642,76 @@ public class TerrifyingElfAura : Skill
     }
 
     #endregion
+    
+    #region CooldownReduceTalent
+    private Resource _manaResource;
 
+    private bool _isCooldownReduceTalent;
+    
+    private const float BaseManaThreshold = 500f;
+    private const float ManaStep = 100f;
+    private const float ReductionPerStep = 1f;
+
+    public void EnableCooldownReduceTalent(bool value)
+    {
+        if (_isCooldownReduceTalent == value) return;
+        _isCooldownReduceTalent = value;
+
+        if (_manaResource == null)
+            _manaResource = _hero.TryGetResource(ResourceType.Mana);
+
+        if (_isCooldownReduceTalent)
+        {
+            _manaResource.MaxValueChanged += OnMaxManaChanged;
+            ApplyCooldownReduction(_manaResource.MaxValue);
+        }
+        else
+        {
+            _manaResource.MaxValueChanged -= OnMaxManaChanged;
+            RemoveCooldownReduction();
+        }
+    }
+
+    private void OnMaxManaChanged(float oldMaxValue, float newMaxValue)
+    {
+        ApplyCooldownReduction(newMaxValue);
+    }
+
+    private void ApplyCooldownReduction(float maxMana)
+    {
+        if (_hero == null || _hero.Abilities == null || _hero.Abilities.Skills == null) return;
+
+        float reduction = 0f;
+        if (maxMana > BaseManaThreshold)
+        {
+            float excessMana = maxMana - BaseManaThreshold;
+            reduction = Mathf.Floor(excessMana / ManaStep) * ReductionPerStep;
+        }
+
+        foreach (var skill in _hero.Abilities.Skills)
+        {
+            if (skill == null) continue;
+            
+            skill.Attributes[SkillAttributeName.Cooldown].RemoveBySource(this, all: true);
+
+            if (reduction > 0f)
+            {
+                var modifier = new AttributeModifier(-reduction, ModifierType.Flat, source: this);
+                skill.Attributes[SkillAttributeName.Cooldown].AddModifier(modifier);
+            }
+        }
+    }
+
+    private void RemoveCooldownReduction()
+    {
+        if (_hero == null || _hero.Abilities == null || _hero.Abilities.Skills == null) return;
+
+        foreach (var skill in _hero.Abilities.Skills)
+        {
+            if (skill == null) continue;
+            skill.Attributes[SkillAttributeName.Cooldown].RemoveBySource(this, all: true);
+        }
+    }
+    
+    #endregion
 }

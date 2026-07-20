@@ -227,7 +227,8 @@ public class ShotsIntoSky : Skill
 
         ArrowsIntoSkyProjectile impact = Instantiate(impactPrefab, position, Quaternion.identity);
         impact.Init(playerLinks, this, damage, lastStreamTalent, shotMagicDebuffActive);
-        NetworkServer.Spawn(impact.gameObject);
+        
+        NetworkServer.Spawn(impact.gameObject, connectionToClient);
 
         _arrowsIntoSkyProjectileIds.Add(impact.GetComponent<NetworkIdentity>().netId);
 

@@ -3,12 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AstralState : AbstractCharacterState
+public class AstralState : RefreshingState
 {
-    private float _baseDuration;
-    private int _currentStacks = 1;
-    private const int _maxStacks = 1;
-
     private float _defMagDamageMod = 50f;
     private float _originalRegenerationValue;
     private float _originalDefPhysDamage;
@@ -21,7 +17,7 @@ public class AstralState : AbstractCharacterState
     private Material[] _originalMaterials;
 
     private Coroutine _dotJob;
-    private AttributeModifier _modif;
+    private AttributeModifier _modif = new AttributeModifier(0.5f,ModifierType.Multiplier);
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability, StatusEffect.Move };
     private readonly Dictionary<Skill, float> _modifiedSkills = new();
@@ -33,9 +29,10 @@ public class AstralState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _modif.Value = .5f;
+        currentStacksCount = 1;
+        
+        _modif.Value = -0.5f;
         _modif.Type = ModifierType.Multiplier;
-        _baseDuration = durationToExit;
 
         _stateEffects = characterState.GetComponent<StateEffects>();
         if (_stateEffects == null)
@@ -81,7 +78,7 @@ public class AstralState : AbstractCharacterState
 
         foreach (var skill in characterState.Character.Abilities.Abilities)
         {
-            if (skill.Info.AbilityForm == AbilityForm.Magic)
+            if (skill.Info.AbilityForm == AbilityForm.Magic || skill.Info.AbilityForm == AbilityForm.Both)
             {
                 _modifiedSkills[skill] = skill.Damage;
                 skill.Damage *= 1.5f;
@@ -97,8 +94,6 @@ public class AstralState : AbstractCharacterState
 
     public override void ExitState()
     {
-        Debug.Log("Exiting Astral State");
-
         characterState.RemoveState(this);
 
         if (_characterRenderer != null) _characterRenderer.materials = _originalMaterials;
@@ -118,8 +113,6 @@ public class AstralState : AbstractCharacterState
 
         foreach (var (skill, baseDamage) in _modifiedSkills) skill.Damage = baseDamage;
         _modifiedSkills.Clear();
-
-        characterState.RemoveState(this);
     }
 
     private void BlockPhysicalAbilities()
@@ -134,14 +127,6 @@ public class AstralState : AbstractCharacterState
             if (skill.Info.AbilityForm == AbilityForm.Physical) skill.Disactive = false;
     }
 
-    public override bool Stack(float time)
-    {
-        if (_currentStacks < _maxStacks) _currentStacks++;
-
-        duration = _baseDuration;
-        return true;
-    }
-
     private IEnumerator DotJob()
     {
         float period = characterState.Character.Health.RegenerationPeriod;
@@ -151,8 +136,35 @@ public class AstralState : AbstractCharacterState
         {
             yield return new WaitForSeconds(period);
 
-            float damage = _originalRegenerationValue;
-            if (damage > 0) characterState.Character.Health.TryUse(damage);
+            float value = _originalRegenerationValue;
+            if (value <= 0) continue;
+
+            Damage damage = new Damage { Value = value, Type = DamageType.Magical };
+            characterState.Character.Health.TryTakeDamage(ref damage, null);
         }
+    }
+    
+    public override bool Stack(float time)
+    {
+        duration = BaseDurationValue;
+        return false;
+    }
+    
+    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        if (!CanEnterState(character)) return null;
+
+        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+
+        if (currentStacksCount == 0)
+        {
+            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+        }
+        else
+        {
+            Stack(duration);
+        }
+
+        return this;
     }
 }
