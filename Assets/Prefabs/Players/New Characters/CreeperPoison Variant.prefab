@@ -19010,10 +19010,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 2483674839823445686}
   _lightningStrikes: {fileID: 734640227586387152}
   _creeperInvisible: {fileID: 6857802422684928800}
@@ -19119,10 +19118,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _coldBlood: {fileID: 4616268591970552908}
   _lightningMovement: {fileID: 7013613396998518356}
   _creeperStrike: {fileID: 6745892867125186241}
@@ -19221,10 +19219,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _projectile: {fileID: 6538247731923965443, guid: 482b668adc1f199488e67f043ae88aa9, type: 3}
   _player: {fileID: 2483674839823445686}
   _spawnPoint: {fileID: 6943497228995655184}
@@ -19321,10 +19318,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _spitPoison: {fileID: 4992365342693795224}
   _projectile: {fileID: 4167531903339531822, guid: 093409daf5f183d4493788550d4c1998, type: 3}
   _player: {fileID: 2483674839823445686}
@@ -19429,10 +19425,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 2483674839823445686}
   _creeperStrike: {fileID: 6745892867125186241}
   _poisonSlap: {fileID: 8577860281443816807}
@@ -19527,10 +19522,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _creeperStrike: {fileID: 6745892867125186241}
   _coldBlood: {fileID: 4616268591970552908}
   _cooldown: 6
@@ -19627,10 +19621,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 2483674839823445686}
   _coldBlood: {fileID: 4616268591970552908}
   _poisonBall: {fileID: 4719927588574066064}
@@ -19728,10 +19721,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 2483674839823445686}
   _lightningMovement: {fileID: 7013613396998518356}
 --- !u!114 &4616268591970552908
@@ -19822,10 +19814,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _creeperStrike: {fileID: 6745892867125186241}
   _reducingCooldownMultiplier: 2
 --- !u!114 &4939275121847811319
@@ -19916,10 +19907,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 2483674839823445686}
   _creeperPoisonAura: {fileID: 2161342997938470374}
 --- !u!114 &8150686032681382611
@@ -20010,10 +20000,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 2483674839823445686}
   _creeperStrike: {fileID: 6745892867125186241}
   _duration: 10
@@ -20105,10 +20094,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 2483674839823445686}
   _poisonBall: {fileID: 4719927588574066064}
   _spitPoison: {fileID: 4992365342693795224}
@@ -20207,10 +20195,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   duration: 10
 --- !u!114 &1964640632880337021
 MonoBehaviour:
@@ -20306,10 +20293,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _playerLinks: {fileID: 2483674839823445686}
   duration: 3
   durationErodedArmor: 6
@@ -20404,10 +20390,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   durationWindowsBoost: 5
   blockChance: 50
 --- !u!114 &3254515559312903057
@@ -20498,10 +20483,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _invisible: {fileID: 6857802422684928800}
   _creeperPoisonAura: {fileID: 2161342997938470374}
 --- !u!114 &5132379941379747870
@@ -20598,10 +20582,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &3350435801472191630
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20690,10 +20673,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 2483674839823445686}
   _waveDuration: 1.5
   _stepTime: 0.2
@@ -20810,13 +20792,11 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 2483674839823445686}
   _projectile: {fileID: 2633956590774819317, guid: 6d4e598214ad8194197d8c3a24b69465, type: 3}
-  _maxDistance: 10
   _throwDuration: 0.2
   _pullDuration: 0.6
 --- !u!114 &4320175696667952190
@@ -20913,10 +20893,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &6363943866240832142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21011,10 +20990,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &4177039254838831636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21197,7 +21175,7 @@ MonoBehaviour:
     _stateInfos: []
     IsOpen: 0
     Description: " \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0440\u0435\u043F\u0442\u0438\u043B\u0438\u0438"
-    Icon: {fileID: 7595241771238511587, guid: eb1e53bce0abfd940816bf6d5da4ce56, type: 3}
+    Icon: {fileID: -1130486450, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 2483674839823445686}

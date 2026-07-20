@@ -172,9 +172,7 @@ public class CreeperInvisible : Skill
     public void DisableEnemyCheck()
     {
         StopCheckEnemiesRoutine();
-
-        if (isServer)
-            RpcStopCheckEnemiesRoutine();
+        if (isServer) RpcStopCheckEnemiesRoutine();
     }
 
     private void StartCheckEnemiesRoutine()
