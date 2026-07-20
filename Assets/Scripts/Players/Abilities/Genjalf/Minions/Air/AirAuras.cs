@@ -5,11 +5,6 @@ using UnityEngine;
 
 namespace Gangdollarff.AirElemental
 {
-    public class AirAuras : MonoBehaviour
-    {
-
-    }
-
     public class Discharge : RefreshingState
     {
         private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
@@ -28,19 +23,14 @@ namespace Gangdollarff.AirElemental
 
         public override Schools Schools => Schools.Air;
 
-        public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+        protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
         {
             MaxStacksCount = 1;
 
             DischargeTick();
         }
 
-        public override void ExitState()
-        {
-            characterState.RemoveState(this);
-        }
-
-        public override void UpdateState()
+        public override void OnUpdateState()
         {
             _timeAfterLastEffect += Time.deltaTime;
 
@@ -54,7 +44,7 @@ namespace Gangdollarff.AirElemental
             if (_effectRate > _timeAfterLastEffect && Random.Range(1, 100) >= _chance)
                 return;
             
-            characterState.RemoveState(characterState.CurrentStates.FirstOrDefault(item => item.BaffDebaff == BaffDebaff.Baff));
+            characterState.RemoveStateFromList(characterState.CurrentStates.FirstOrDefault(item => item.BaffDebaff == BaffDebaff.Baff));
         }
     }
 

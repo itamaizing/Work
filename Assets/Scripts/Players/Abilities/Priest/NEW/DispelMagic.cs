@@ -85,7 +85,7 @@ public class DispelMagic : Skill
 
         if (stateToDispel == null) return;
 
-        RpcNotifyDispel(targetGO, stateToDispel.State, stateToDispel.CurrentStacksCount);
+        /*RpcNotifyDispel(targetGO, stateToDispel.State, stateToDispel.CurrentStacksCount);
 
         if (stateToDispel.CurrentStacksCount > 1)
         {
@@ -94,7 +94,7 @@ public class DispelMagic : Skill
         else
         {
             characterState.RemoveState(stateToDispel.State);
-        }
+        }*/
     }
 
     [ClientRpc]
@@ -116,7 +116,7 @@ public class DispelMagic : Skill
         var stateInstance = characterState.GetState(state);
         if (stateInstance == null) return;
 
-        stateInstance.ReduceStack();
+        //stateInstance.ReduceStack();
         characterState.StateIcons.RemoveIconCount();
     }
 }

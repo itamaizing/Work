@@ -25,7 +25,7 @@ public class PartialBlindness : StackableState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
 
@@ -41,22 +41,14 @@ public class PartialBlindness : StackableState
         _character.Abilities.OnSkillPreparedSuccessfully += HandleSkillPrepared;
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         _character.Abilities.OnSkillPreparedSuccessfully -= HandleSkillPrepared;
-        characterState.RemoveState(this);
         currentStacksCount = 0;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0f)
-        {
-            ExitState();
-            return;
-        }
-
     }
 
     public override bool Stack(float time)

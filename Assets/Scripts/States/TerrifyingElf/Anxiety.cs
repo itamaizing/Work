@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class Anxiety : AbstractCharacterState
+public class Anxiety : StackableState
 {
     private float spellSpeedReduction = 0.1f;
     private float manaCostIncrease = 0.1f;
@@ -13,7 +13,7 @@ public class Anxiety : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         abilities = character.Character.Abilities;
         health = character.Character.Health;
@@ -23,11 +23,11 @@ public class Anxiety : AbstractCharacterState
         Debug.Log($"Anxiety state applied: {currentStacksCount}/{MaxStacksCount} stacks, duration {duration}s");
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         RemoveEffects();
         Debug.Log($"Anxiety state removed: {currentStacksCount}/{MaxStacksCount} stacks");

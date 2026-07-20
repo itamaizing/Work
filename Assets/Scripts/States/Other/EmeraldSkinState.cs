@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class EmeraldSkinState : AbstractCharacterState
 {
-    private float _buffDuration = 2f;
+    //private float _buffDuration = 2f;
     private float _defenseIncrease = 0.9f;
     private float _physDefenseIncrease = 0f;
     private float _magDefenseIncrease = 0f;
@@ -20,10 +20,10 @@ public class EmeraldSkinState : AbstractCharacterState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        _buffDuration = durationToExit;
+        duration = durationToExit;
         _isTalentActive = damageToExit > 0;
         
         ApplyBuff();
@@ -49,17 +49,11 @@ public class EmeraldSkinState : AbstractCharacterState
         }
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
-        _buffDuration -= Time.deltaTime;
-
-        if (_buffDuration <= 0)
-        {
-            ExitState();
-        }
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         foreach (var skill in characterState.Character.Abilities.Abilities)
         {
@@ -82,37 +76,37 @@ public class EmeraldSkinState : AbstractCharacterState
 
         Debug.Log("Emerald Skin state Exit");
         RemoveBuff();
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         _buffDuration += time;
         return true;
-    }
+    }*/
 
     private void AddTimeByFlash()
     {
         Debug.Log("Add time by flash - " + _flashBuffDuration);
-        _buffDuration += _flashBuffDuration;
+        duration += _flashBuffDuration;
 
-        characterState.StateIcons?.ActivateIco(State, _buffDuration, 1, false);
+        characterState.StateIcons?.ActivateIco(State, duration, 1, false);
     }
 
     private void AddTimeByShield()
     {
         Debug.Log("Add time by shield - " + _shieldBuffDuration);
-        _buffDuration += _shieldBuffDuration;
+        duration += _shieldBuffDuration;
 
-        characterState.StateIcons?.ActivateIco(State, _buffDuration, 1, false);
+        characterState.StateIcons?.ActivateIco(State, duration, 1, false);
     }
     
     private void AddTimeByLightMagic()
     {
         Debug.Log("Add time by light - " + _lightMagicBuffDuration);
-        _buffDuration += _lightMagicBuffDuration;
+        duration += _lightMagicBuffDuration;
 
-        characterState.StateIcons?.ActivateIco(State, _buffDuration, 1, false);
+        characterState.StateIcons?.ActivateIco(State, duration, 1, false);
     }
 
     private void ApplyBuff()

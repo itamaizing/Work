@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoisonBoneState : AbstractCharacterState
+public class PoisonBoneState : StackableState
 {
     public bool turnOff = false;
 
@@ -33,7 +33,7 @@ public class PoisonBoneState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         MaxStacksCount = _maxStacks;
         _player = personWhoMadeBuff;
@@ -95,7 +95,7 @@ public class PoisonBoneState : AbstractCharacterState
         }
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         if (currentStacksCount <= MaxStacksCount)
         {
@@ -113,11 +113,9 @@ public class PoisonBoneState : AbstractCharacterState
         }
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         ResetValues();
-
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

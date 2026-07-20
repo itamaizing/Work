@@ -24,7 +24,7 @@ public class ImpatienceState : AbstractCharacterState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         health = character.Character.Health;
@@ -46,12 +46,12 @@ public class ImpatienceState : AbstractCharacterState
         }
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
 
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         if (characterState.Character.isServer)
         {
@@ -61,8 +61,6 @@ public class ImpatienceState : AbstractCharacterState
 
             if (_casterPsionic != null) _casterPsionic.OnAccumulationPsionicChanged -= HandleAccumulationChanged;
         }
-
-        characterState.RemoveState(this);
     }
 
     private void HandleAccumulationChanged(bool value) => _isAccumulationActive = value;

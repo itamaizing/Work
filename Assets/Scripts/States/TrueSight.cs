@@ -8,7 +8,7 @@ public class TrueSight : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => new();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personMadeBuff, string skillName)
     {
         characterState = character;
         abilities = character.Character.GetComponent<SkillManager>();
@@ -16,29 +16,29 @@ public class TrueSight : AbstractCharacterState
         personWhoMadeBuff = personMadeBuff;
 
         duration = durationToExit;
-        MaxStacksCount = 0;
+        //MaxStacksCount = 0;
 
         CheckInvisibility();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
 
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         var character = characterState.GetComponent<Character>();
         if (characterState.CheckForState(States.Invisible) || characterState.CheckForState(States.CreeperInvisible)) LostInvisibleEnemy(character);
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         duration = Mathf.Max(duration, time);
         CheckInvisibility();
         return false;
-    }
+    }*/
 
     private void CheckInvisibility()
     {

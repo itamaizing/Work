@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class WarmingUpState : AbstractCharacterState
+public class WarmingUpState : StackableState
 {
 	private const float BonusPerStack = 1f;
 
@@ -25,7 +25,7 @@ public class WarmingUpState : AbstractCharacterState
 	}
 
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		if (character.TryGetComponent<Character>(out var ability))
 		{
@@ -49,7 +49,7 @@ public class WarmingUpState : AbstractCharacterState
 		currentStacksCount = 1;
 	}
 
-	public override void UpdateState()
+	public override void OnUpdateState()
 	{
 		if (turnOff)
 		{
@@ -57,10 +57,8 @@ public class WarmingUpState : AbstractCharacterState
 		}
 	}
 
-	public override void ExitState()
+	protected override void OnExitState()
 	{
-		characterState.RemoveState(this);
-
 		foreach (var skill in _affectedSkills)
 		{
 			if (skill != null)

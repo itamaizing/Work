@@ -28,7 +28,7 @@ public class Burn : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
         _enemyLayer = LayerMask.GetMask("Enemy");
@@ -46,7 +46,7 @@ public class Burn : AbstractCharacterState
             characterState.Character.gameObject, nameof(Burning));
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         _timer += Time.deltaTime;
         if (_timer < 1f) return;
@@ -70,12 +70,11 @@ public class Burn : AbstractCharacterState
         }
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         if (characterState?.Character != null)
             characterState.Character.Health.DamageTaken -= OnDamageTaken;
         
-        characterState?.RemoveState(this);
     }
 }
 
@@ -99,7 +98,7 @@ public class Burning : RefreshingState
 
     public override float RemainingDuration => _baseDuration;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Damage damage = new Damage
         {
@@ -119,12 +118,12 @@ public class Burning : RefreshingState
         return true;
     }
 
-    public override void GloabalUpdate()
+    public override void UpdateState()
     {
-        UpdateState();
+        OnUpdateState();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         _stackTimer -= Time.deltaTime;
 
@@ -149,9 +148,5 @@ public class Burning : RefreshingState
         _timeAfterLastEffect = 0;
     }
 
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
-    }
 }
 

@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class PetrificationState : StackableState
 {
-	private float _duration;
 	private float _curSpeedDebuf = 0f;
 	public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
 	public override States State => States.PetrificationDebuff;
@@ -12,13 +11,12 @@ public class PetrificationState : StackableState
 
 	private float _baseMagicResist;
 	private float _basePhysicsResist;
-	
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit,
 		Character personWhoMadeBuff, string skillName)
 	{
 		characterState = character;
 		//CanStack = true;
-		_duration = durationToExit;
 
 		_baseMagicResist = characterState.Character.Health.ResistMagDamage;
 		_basePhysicsResist = characterState.Character.Health.DefPhysDamage;
@@ -33,18 +31,12 @@ public class PetrificationState : StackableState
 		}
 	}
 
-	public override void UpdateState()
+	public override void OnUpdateState()
 	{
-		_duration -= Time.deltaTime;
-		if (_duration < 0)
-		{
-			ExitState();
-		}
 	}
 
-	public override void ExitState()
+	protected override void OnExitState()
 	{
-		characterState.RemoveState(this);
 		foreach (var ability in characterState.Character.Abilities.Abilities)
 		{
 			ability.Disactive = false;

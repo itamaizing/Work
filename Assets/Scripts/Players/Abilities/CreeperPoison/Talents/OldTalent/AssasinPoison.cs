@@ -25,7 +25,6 @@ public class AssasinPoison : Talent
     public bool IsCanSpendCharge { get => _isCanSpendCharge; }
     public override void Enter()
     {
-        SetActive(true);
         if (_accumulateChargesCoroutine == null)
         {
             _accumulateChargesCoroutine = StartCoroutine(AccumulateChargeJob());
@@ -34,7 +33,6 @@ public class AssasinPoison : Talent
 
     public override void Exit()
     {
-        SetActive(false);
         if (_accumulateChargesCoroutine != null)
         {
             StopCoroutine(AccumulateChargeJob());

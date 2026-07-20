@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeakeningSilence : AbstractCharacterState
+public class WeakeningSilence : StackableState
 {
     private float _damagePerTick;
     private float _currentDamage;
@@ -18,7 +18,7 @@ public class WeakeningSilence : AbstractCharacterState
 
     public WeakeningSilence() => MaxStacksCount = 6;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         health = character.Character.Health;
         _damagePerTick = damageToExit;
@@ -33,15 +33,15 @@ public class WeakeningSilence : AbstractCharacterState
 
         characterState.StartCoroutine(PeriodicDamageRoutine());
     }
-
-    public override void ExitState()
+    
+    protected override void OnExitState()
     {
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
         damageTick = false;
         characterState.StopCoroutine(PeriodicDamageRoutine());
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 

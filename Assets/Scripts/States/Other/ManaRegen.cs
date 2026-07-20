@@ -13,27 +13,27 @@ public class ManaRegen : AbstractCharacterState
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _manaRegen = characterState.StateEffects.ManaRegen;
 
         if (_manaRegen) _manaRegen.SetActive(true);
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         if (_manaRegen) _manaRegen.SetActive(false);
 
         characterState.StateIcons.RemoveItemByState(State);
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         return false;
-    }
+    }*/
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 }

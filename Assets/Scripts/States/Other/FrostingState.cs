@@ -25,7 +25,7 @@ public class FrostingState : AbstractCharacterState
 	public override StateType Type => StateType.Magic;
 	public override List<StatusEffect> Effects => _effects;
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		//Debug.Log("Entering Frosting State");
 		if (damageToExit == 0)
@@ -75,7 +75,7 @@ public class FrostingState : AbstractCharacterState
 		if (characterState.StateEffects.FrostingAudio != null) _audioSource.PlayOneShot(characterState.StateEffects.FrostingAudio);
 	}
 
-	public override void UpdateState()
+	public override void OnUpdateState()
 	{
 		bool timeExpired = _duration < 0;
 		bool damageExceeded = characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit;
@@ -98,10 +98,10 @@ public class FrostingState : AbstractCharacterState
 		}
 	}
 
-	public override void ExitState()
+	protected override void OnExitState()
 	{
 		//Debug.Log("Exiting Frosting State");
-		characterState.RemoveState(this);
+		characterState.RemoveStateFromList(this);
 
 		if (!characterState.Check(StatusEffect.Move))
 		{
@@ -124,7 +124,7 @@ public class FrostingState : AbstractCharacterState
 		if (characterState.StateEffects.Ice != null) _ice.SetActive(false);
 	}
 
-	public override bool Stack(float time)
+	/*public override bool Stack(float time)
 	{
 		_duration = _baseDuration;
 		_damageOnStart = characterState.Character.Health.SumDamageTaken;
@@ -134,7 +134,7 @@ public class FrostingState : AbstractCharacterState
 		if (_ninjaResources != null && _ninjaResources.IsRepeatedFrost)	AddFrozenCmd();
 
 		return true;
-	}
+	}*/
 
 	private void RestartFrosting()
 	{

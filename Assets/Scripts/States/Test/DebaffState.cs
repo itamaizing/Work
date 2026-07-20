@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class DebaffState : AbstractCharacterState
+public class DebaffState : StackableState
 {
     private float _durationRemaining;
     private string _skillName;
@@ -21,7 +21,7 @@ public class DebaffState : AbstractCharacterState
         currentStacksCount = 1;
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         base.personWhoMadeBuff = personWhoMadeBuff;
@@ -29,21 +29,10 @@ public class DebaffState : AbstractCharacterState
         _skillName = skillName;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
-        if (_durationRemaining <= 0f)
-        {
-            ExitState();
-            return;
-        }
-
-        _durationRemaining -= Time.deltaTime;
     }
 
-    public override void ExitState()
-    {
-        characterState.RemoveState(this);
-    }
 
     public override bool Stack(float time)
     {

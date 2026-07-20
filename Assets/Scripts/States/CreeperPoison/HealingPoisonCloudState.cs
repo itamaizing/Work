@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealingPoisonCloudState : AbstractCharacterState
+public class HealingPoisonCloudState : StackableState
 {
 
     private int _maxStacks = 5;
@@ -29,7 +29,7 @@ public class HealingPoisonCloudState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _baseDuration = durationToExit;
 
@@ -48,7 +48,7 @@ public class HealingPoisonCloudState : AbstractCharacterState
         }
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
 
         _timeBetweenHeal -= Time.deltaTime;
@@ -59,11 +59,11 @@ public class HealingPoisonCloudState : AbstractCharacterState
         }
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         ResetValues();
 
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
     }
 
     public override bool Stack(float time)

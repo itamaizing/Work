@@ -207,7 +207,7 @@ public class SneakySpitCombo : Skill
 
             if (!reduced || state.CurrentStacksCount <= 0)
             {
-                target.CharacterState.RemoveState(state);
+                target.CharacterState.RemoveState(state.State);
                 _comboTargetsQueue.Remove(target);
                 break;
             }
@@ -244,7 +244,7 @@ public class SneakySpitCombo : Skill
 
             if (!reduced || state.CurrentStacksCount <= 0)
             {
-                lastTarget.CharacterState.RemoveState(state);
+                lastTarget.CharacterState.RemoveState(state.State);
                 _comboTargetsQueue.RemoveAt(_comboTargetsQueue.Count - 1);
             }
         }
@@ -292,7 +292,7 @@ public class SneakySpitCombo : Skill
             var state = target.CharacterState.GetState(States.ComboState) as ComboState;
 
             if (state != null)
-                target.CharacterState.RemoveState(state);
+                target.CharacterState.RemoveState(state.State);
         }
 
         _comboTargetsQueue.Clear();

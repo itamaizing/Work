@@ -8,10 +8,9 @@ public class CreeperInvisibleState : AbstractCharacterState
     private CreeperInvisible _creeperInvisible;
     private Character _player;
 
-    private float _reductionMoveSpeed = 0.3f;
-    private float _originalMoveSpeed;
-    private float _increaseStaminaRegen = 0.3f;
-    private float _originalStaminaRegen;
+    private float _multMoveSpeed = 0.7f; //-30%
+    private float _multManaRegen = 1.3f; //+30%
+    private float _multSkillCost = 1.3f; //+30%
 
     private bool _isIncreasedManaCost = false;
     private bool _isCanApplyInvisible;
@@ -22,8 +21,8 @@ public class CreeperInvisibleState : AbstractCharacterState
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
-    
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _player = characterState.Character;
@@ -45,7 +44,7 @@ public class CreeperInvisibleState : AbstractCharacterState
         }
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         if (_creeperInvisible == null) return;
 
@@ -64,31 +63,30 @@ public class CreeperInvisibleState : AbstractCharacterState
         }
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         _playerInInvisible = false;
         ResetValues();
-        characterState.RemoveState(this);
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         return false;
-    }
+    }*/
 
     private void ApplyInvisible()
     {
         _playerInInvisible = true;
 
         _player.AttributeSystem[CharacterAttributeName.ResourceCost].
-            AddModifier(new AttributeModifier(0.3f, ModifierType.Multiplier, source: this));
+            AddModifier(new AttributeModifier(_multSkillCost, ModifierType.Multiplier, source: this));
 
         _player.Resource.Attr_RegenPeriod.AddModifier
-            (new AttributeModifier(-0.3f, ModifierType.Multiplier, source: this));
+            (new AttributeModifier(_multManaRegen, ModifierType.Multiplier, source: this));
 
         if (_player?.Move == null) return;
         _player.AttributeSystem[CharacterAttributeName.MoveSpeed].
-            AddModifier(new AttributeModifier(-0.3f, ModifierType.Multiplier, source: this));
+            AddModifier(new AttributeModifier(_multMoveSpeed, ModifierType.Multiplier, source: this));
     }
 
     private void ResetValues()

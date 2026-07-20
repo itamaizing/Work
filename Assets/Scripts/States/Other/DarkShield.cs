@@ -6,7 +6,6 @@ public class DarkShield : AbstractCharacterState
 {
     private float _damageDebuffDelay = 0.2f;
     private float _maxDamagePerTick;
-    private float _duration;
     private Health _healthComponent;
     private GameObject _darkShield;
 
@@ -17,10 +16,9 @@ public class DarkShield : AbstractCharacterState
     public override StateType Type => StateType.Immaterial;
     public override List<StatusEffect> Effects => new List<StatusEffect>();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
-        _duration = durationToExit;
         _maxDamagePerTick = damageToExit;
 
         _healthComponent = character.GetComponent<Health>();
@@ -36,7 +34,7 @@ public class DarkShield : AbstractCharacterState
         }
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         if (_healthComponent != null)
         {
@@ -50,7 +48,6 @@ public class DarkShield : AbstractCharacterState
         }
 
         if (_darkShield != null) _darkShield.SetActive(false);
-        characterState.RemoveState(this);
     }
 
     private void HandleDamageTaken(Damage damage, Skill skill)
@@ -77,18 +74,13 @@ public class DarkShield : AbstractCharacterState
         _healthComponent.GetComponent<Character>().DamageTracker.AddDamage(damageToTake, null, isServerRequest: true);
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         _duration = time;
         return true;
-    }
+    }*/
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0)
-        {
-            ExitState();
-        }
     }
 }

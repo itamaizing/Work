@@ -21,7 +21,7 @@ public class DisciplineAuraState : RefreshingState
     private Character  _priest;
     private float      _checkTimer;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
         characterState     = character;
@@ -34,7 +34,7 @@ public class DisciplineAuraState : RefreshingState
         AddModifierToCharacter(_priest, isPriest: true);
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         if (characterState == null || !characterState.isOwned) return;
         _checkTimer += Time.deltaTime;
@@ -89,7 +89,7 @@ public class DisciplineAuraState : RefreshingState
         return true;
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         foreach (var character in new List<Character>(_modifiers.Keys))
             RemoveAllModifiersFromCharacter(character);
@@ -99,7 +99,7 @@ public class DisciplineAuraState : RefreshingState
         currentStacksCount = 0;
         duration           = 0f;
 
-        characterState?.RemoveState(this);
+        characterState?.RemoveStateFromList(this);
         characterState = null;
         _priest        = null;
     }

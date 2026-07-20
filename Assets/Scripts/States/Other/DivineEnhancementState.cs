@@ -15,7 +15,7 @@ public class DivineEnhancementState : AbstractCharacterState, IDamageGivenModifi
 
     private List<Skill> _costSkills = new();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _character = character.Character;
@@ -23,23 +23,21 @@ public class DivineEnhancementState : AbstractCharacterState, IDamageGivenModifi
         ModifyManaCost();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0) ExitState();
+
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         ResetManaCost();
-        characterState.RemoveState(this);
     }
 
-    public override bool Stack(float time)
+   /* public override bool Stack(float time)
     {
         _duration = time;
         return true;
-    }
+    }*/
 
     private void ModifyManaCost()
     {

@@ -3,7 +3,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RegeneratingPoisonState : AbstractCharacterState
+public class RegeneratingPoisonState : StackableState
 {
     /* For SpitPoison Ability */
 
@@ -26,7 +26,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         MaxStacksCount = _maxStacks;
 
@@ -40,7 +40,7 @@ public class RegeneratingPoisonState : AbstractCharacterState
         }
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         _timeBetweenHeal -= Time.deltaTime;
         if (_timeBetweenHeal <= 0)
@@ -50,11 +50,9 @@ public class RegeneratingPoisonState : AbstractCharacterState
         }
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         ResetValues();
-
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

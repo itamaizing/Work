@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbsorptionState : AbstractCharacterState, IDamageable
+public class AbsorptionState : StackableState, IDamageable
 {
     private float _damageAbsorbed;
     private float _maxAbsorption;
@@ -18,7 +18,7 @@ public class AbsorptionState : AbstractCharacterState, IDamageable
     public Transform transform => throw new NotImplementedException();
     public GameObject gameObject => throw new NotImplementedException();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _maxAbsorption = damageToExit;
         _curentAbsorption = _maxAbsorption;
@@ -29,14 +29,12 @@ public class AbsorptionState : AbstractCharacterState, IDamageable
         UpdateShieldValues();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
-        Debug.Log("Absorption state exited.");
-        characterState.RemoveState(this);
         ResetCharacterShieldValues();
     }
 
@@ -99,6 +97,6 @@ public class AbsorptionState : AbstractCharacterState, IDamageable
 
     public void ShowPhantomValue(Damage phantomValue)
     {
-        throw new NotImplementedException();
+        
     }
 }

@@ -17,7 +17,7 @@ public class ShieldBaff : AbstractCharacterState, IDamageable
     public Transform transform => throw new NotImplementedException();
     public GameObject gameObject => throw new NotImplementedException();
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _maxAbsorption = damageToExit;
         _curentAbsorption = _maxAbsorption;
@@ -28,24 +28,24 @@ public class ShieldBaff : AbstractCharacterState, IDamageable
         UpdateShieldValues();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         Debug.Log("LightShield state exited.");
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
         ResetCharacterShieldValues();
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         //_duration = time;
         //_damageAbsorbed = 0;
         currentStacksCount += 1;
         return false;
-    }
+    }*/
 
     public bool TryTakeDamage(ref Damage damage, Skill skill)
     {
@@ -73,7 +73,7 @@ public class ShieldBaff : AbstractCharacterState, IDamageable
 
         if (_damageAbsorbed >= _maxAbsorption)
         {
-            ExitState();
+            OnExitState();
             return true;
         }
 

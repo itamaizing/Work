@@ -27,7 +27,7 @@ public class DestructionState : RefreshingState
 
     public DestructionState() { }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
@@ -45,7 +45,7 @@ public class DestructionState : RefreshingState
         ApplyDamageTick();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         if (!_isActive) return;
 
@@ -111,13 +111,12 @@ public class DestructionState : RefreshingState
         return true;
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         _isActive = false;
         duration = 0f;
         _timer = 0f;
         currentStacksCount = 0;
-        characterState?.RemoveState(this);
         characterState = null;
     }
 
@@ -132,7 +131,7 @@ public class DestructionState : RefreshingState
 
         if (currentStacksCount == 0)
         {
-            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+            OnEnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
             currentStacksCount = 1;
         }
         else

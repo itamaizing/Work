@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class WitheringPoisonState : AbstractCharacterState
+public class WitheringPoisonState : StackableState
 {
     private List<Skill> _skills = new();
     private List<Talent> _talents = new();
@@ -33,7 +33,7 @@ public class WitheringPoisonState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         MaxStacksCount = _maxStacks;
         _baseDuration = durationToExit;
@@ -63,7 +63,7 @@ public class WitheringPoisonState : AbstractCharacterState
         }
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         _timeBetweenTakeAwayMana -= Time.deltaTime;
         if (_timeBetweenTakeAwayMana <= 0)
@@ -78,11 +78,9 @@ public class WitheringPoisonState : AbstractCharacterState
         }
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         ResetValues();
-
-        characterState.RemoveState(this);
     }
 
     public override bool Stack(float time)

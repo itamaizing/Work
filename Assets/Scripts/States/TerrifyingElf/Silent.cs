@@ -5,8 +5,6 @@ using UnityEngine;
 public class Silent : AbstractCharacterState
 {
     private float _baseDuration;
-    private int _currentStacks = 1;
-    private const int _maxStacks = 1;
     private float _duration;
     private Silence _silence;
     private bool _isSilenceAddAllCharacterWithDeabaffElf;
@@ -17,7 +15,7 @@ public class Silent : AbstractCharacterState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         Debug.Log("Entering Silent State");
         characterState = character;
@@ -65,20 +63,15 @@ public class Silent : AbstractCharacterState
         BlockMagicAbilities();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0)
-        {
-            ExitState();
-        }
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         Debug.Log("Exiting Silent State");
         characterState.StateIcons.RemoveItemByState(State);
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
 
         UnblockMagicAbilities();
     }

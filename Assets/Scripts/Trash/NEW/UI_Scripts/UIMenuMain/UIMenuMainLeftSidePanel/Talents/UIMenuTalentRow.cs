@@ -25,7 +25,7 @@ public class UIMenuTalentRow : MonoBehaviour
         _talents.Add(item);
     }
 
-    public void ActivateRow(TalentData data, bool isOpen)
+    public void ActivateRow(TalentData data, bool isOpen, int lvl)
     {
         if (isOpen)
         {

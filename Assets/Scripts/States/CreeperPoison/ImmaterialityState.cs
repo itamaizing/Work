@@ -13,7 +13,7 @@ public class ImmaterialityState : AbstractCharacterState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _defualtPlayerLayer = characterState.gameObject.layer;
@@ -23,22 +23,22 @@ public class ImmaterialityState : AbstractCharacterState
         DisabledCollider();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
 
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         TargetRpcResetPlayerComponents();
         duration = 0;
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         return false;
-    }
+    }*/
 
     private void DisabledCollider()
     {

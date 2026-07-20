@@ -124,7 +124,9 @@ public class Attribute
                     percent += modifier.Value;
                     break;
                 case ModifierType.Multiplier:
-                    multiplier *= (1 + modifier.Value);
+                    if (modifier.Value < 0 && multiplier > 0)
+                        multiplier *= -1;
+                    multiplier *= Mathf.Abs(modifier.Value);
                     break;
                 default:
                     break;
@@ -205,9 +207,17 @@ public class AttributeModifier
 
 /// <summary>
 /// <code>
-/// Flat: add to base value
-/// Percent: additive multiplier. 0.30 + 0.20 = *50%
-/// Multiplier: multiplicative multiplier. 0.30 * 0.20 = *56%
+/// - Flat: add to base value
+/// - Percent: additive modifier. 0.30 + 0.20 = +50%
+/// - Multiplier: multiplicative modifier. 1.30 * 1.20 = +56%;
+///   &gt;1 - increase 
+///      Increase 2 TIMES: "2f"; 3 TIMES: "3f"
+///      Increase by 20%: "1.2f"; by 170%: "2.7f"
+///   &lt;1 - decrease
+///      Decrease 2 TIMES: "1/2=0.5f"; 3 TIMES: "1/3=0.33f";
+///      Decrease by 80%: "1-0.8=0.2f"; By 30%: "1-0.3=0.7f"
+///    ANY negative multipler negates WHOLE thing (regen -> damage, positive->negative).
+///    Use carefully only for very niche use-cases. 
 /// </code>
 /// </summary>
 public enum ModifierType

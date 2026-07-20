@@ -15,7 +15,7 @@ public class ParalyzingPoisonState : AbstractCharacterState
 	public override List<StatusEffect> Effects => _effects;
 
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 
 		if (character.TryGetComponent<Character>(out var ability))
@@ -31,7 +31,7 @@ public class ParalyzingPoisonState : AbstractCharacterState
 		_baseDuration = durationToExit;
 	}
 
-	public override void UpdateState()
+	public override void OnUpdateState()
 	{
 		if (turnOff)
 		{
@@ -39,9 +39,8 @@ public class ParalyzingPoisonState : AbstractCharacterState
 		}
 	}
 
-	public override void ExitState()
+	protected override void OnExitState()
 	{
-		characterState.RemoveState(this);
 		if (!characterState.Check(StatusEffect.Move)) characterState.Character.Move.IsMoveBlocked = false;
 		if (!characterState.Check(StatusEffect.Ability) && abilities != null) abilities.SetAbilitiesDisactive(false);
 	}

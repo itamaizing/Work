@@ -16,7 +16,10 @@ public class UIMenuMainCharactersPanelItem : MonoBehaviour, IPointerEnterHandler
     public void Fill(HeroComponent hero)
     {
         _icon.sprite = hero.Data.Icon;
-        CurrentHero = hero;
+        var spawnedHero = Instantiate(hero, transform);
+        spawnedHero.Initialize();
+        CurrentHero = spawnedHero;
+        spawnedHero.Rigidbody.isKinematic = true;
 
         LevelCharacterManager.Instance.PreloadHeroLevelData(hero);
 

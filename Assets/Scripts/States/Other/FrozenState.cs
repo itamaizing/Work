@@ -1,189 +1,118 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class FrozenState : AbstractCharacterState
 {
-    private GameObject _frozenEffectInstance;
-    private AudioSource _audioSource;
-    private TalentSystem _talentSystem;
+	//public bool turnOff = false;
+	private GameObject _frozenEffectInstance;
+	private AudioSource _audioSource;
+	private float _damageToExit;
+	private float _damageOnStart = 0;
+	private bool _isInited = false;
 
-    private float _duration;
-    private float _baseDuration;
-    private float _damageToExit;
-    private float _damageOnStart;
-    private bool _isInited;
+	private Animator _animator;
+	private AnimatorStateInfo _currentState;
 
-    private bool _isFrostTalentActive;
+	private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Move, StatusEffect.Ability };
+	public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
+	public override States State => States.Frozen;
+	public override StateType Type => StateType.Magic;
+	public override List<StatusEffect> Effects => _effects;
 
-    private int _currentStacks = 1;
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	{
+		//MaxStacksCount = 3;
+		if (damageToExit == 0)
+		{
+			_damageToExit = 10000;
+		}
+		else
+		{
+			_damageToExit = damageToExit;
+		}
 
-    private const int MaxStacks = 5;
-    private const float MoveSlowPerStack = 0.05f;
-    private const float CastSlowPerStack = 0.10f;
+		//_damageOnStart = characterState.Character.Health.SumDamageTaken;
+		_damageOnStart = 0;
+		characterState.Character.Move.SetCanMove(false);
+		characterState.Character.Move.Rigidbody.isKinematic = true;
+		characterState.Character.Move.LookAtTransform(characterState.gameObject.transform);
+		_audioSource = character.GetComponent<AudioSource>();
 
-    private AttributeModifier _moveSpeedModifier;
+		if (character.TryGetComponent<Character>(out var ability))
+		{
+			abilities = ability.Abilities;
 
-    private readonly List<Skill> _affectedSkills = new();
-    private float _appliedCastSlow;
+			foreach (var abil in abilities.Abilities)
+			{
+				abil.Disactive = true;
+				if (abil.Info.AbilityForm == AbilityForm.Physical)
+				{
+					abil.Buff.CastSpeed.ReductionPercentage(.5f);
+				}
+			}
+		}
+		else
+		{
+			Debug.Log("no ability at " + character.gameObject.name);
+		}
+		if (characterState.StateEffects.FrozenStateEffect != null)
+		{
+			_frozenEffectInstance = characterState.StateEffects.FrozenStateEffect;
+			_frozenEffectInstance.SetActive(true);
+		}
 
-    private List<StatusEffect> _effects = new() { StatusEffect.Move, StatusEffect.AbilitySpeed };
+		foreach (var mat in characterState.StateEffects.MaterialsCharacter) mat.color = Color.cyan;
+		if (characterState.StateEffects.FrostingAudio != null) _audioSource.PlayOneShot(characterState.StateEffects.FrozenAudio);
 
-    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
-    public override States State => States.Frozen;
-    public override StateType Type => StateType.Magic;
-    public override List<StatusEffect> Effects => _effects;
+		_animator = characterState.GetComponent<Animator>();
 
-    public int CurrentStacks => _currentStacks;
-    public float CurrentAttackSlowPercent => CastSlowPerStack * _currentStacks;
+		if (_animator != null)
+		{
+			_currentState = _animator.GetCurrentAnimatorStateInfo(0);
+			float normalizedTime = _currentState.normalizedTime % 1f;
+			_animator.Play(_currentState.fullPathHash, 0, normalizedTime);
+			_animator.Update(0);
+			_animator.enabled = false;
+		}
+		_isInited = true;
+	}
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        MaxStacksCount = MaxStacks;
-
-        _duration = durationToExit;
-        _baseDuration = durationToExit;
-        _damageToExit = damageToExit == 0 ? 10000 : damageToExit;
-        _damageOnStart = characterState.Character.Health.SumDamageTaken;
-
-        _audioSource = character.GetComponent<AudioSource>();
-
-        if (personWhoMadeBuff.TryGetComponent<TalentSystem>(out TalentSystem talentSystem)) _talentSystem = talentSystem;
-        if (_talentSystem != null) _isFrostTalentActive = _talentSystem.ActiveTalents.Any(t => t.GetType().Name == "FrostTalent_12");
-
-        if (character.TryGetComponent<Character>(out var abilityCharacter))
-        {
-            abilities = abilityCharacter.Abilities;
-        }
-
-        ApplyEffects();
-
-        if (characterState.StateEffects.FrozenStateEffect != null)
-        {
-            _frozenEffectInstance = characterState.StateEffects.FrozenStateEffect;
-            _frozenEffectInstance.SetActive(true);
-        }
-
-        foreach (var mat in characterState.StateEffects.MaterialsCharacter)
-            mat.color = Color.cyan;
-
-        if (characterState.StateEffects.FrozenAudio != null && _audioSource != null)
-            _audioSource.PlayOneShot(characterState.StateEffects.FrozenAudio);
-
-        _isInited = true;
-    }
-
-    public override void UpdateState()
-    {
-        bool timeExpired = _duration < 0;
-        bool damageExceeded = characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit;
-
-        if (damageExceeded)
-        {
+	public override void OnUpdateState()
+	{		
+		if(!_isInited) return;
+		if (characterState.Character.Health.SumDamageTaken - _damageOnStart >= _damageToExit )//|| turnOff)
+		{
             ExitState();
-            return;
-        }
+		}
+	}
 
-        if (timeExpired)
-        {
-            if (_isFrostTalentActive)
-            {
-                RestartFrozen();
-                return;
-            }
+	protected override void OnExitState()
+	{
+		//Debug.Log("Exiting Frozen State");
 
-            ExitState();
-        }
-    }
+		characterState.RemoveStateFromList(this);
+		if (!characterState.Check(StatusEffect.Move))
+		{
+			characterState.Character.Move.SetCanMove(true);
+			characterState.Character.Move.Rigidbody.isKinematic = false;
+			characterState.Character.Move.StopLookAt();
+		}
+		if (!characterState.Check(StatusEffect.Ability) && abilities != null)
+		{
+			foreach (var abil in abilities.Abilities)
+			{
+				abil.Disactive = false;
+			}
+		}
 
-    public override void ExitState()
-    {
-        RemoveEffects();
+		if (_frozenEffectInstance != null) _frozenEffectInstance.SetActive(false);
+		foreach (var mat in characterState.StateEffects.MaterialsCharacter) mat.color = Color.white;
 
-        characterState.RemoveState(this);
-
-        if (_frozenEffectInstance != null)
-            _frozenEffectInstance.SetActive(false);
-
-        foreach (var mat in characterState.StateEffects.MaterialsCharacter)
-            mat.color = Color.white;
-    }
-
-    public override bool Stack(float time)
-    {
-        RemoveEffects();
-
-        if (_currentStacks < MaxStacks) _currentStacks++;
-
-        if (_damageToExit < 30) _damageToExit = 30;
-        _duration = time;
-
-        ApplyEffects();
-        return true;
-    }
-
-    private void RestartFrozen()
-    {
-        _duration = _baseDuration;
-    }
-
-    private void ApplyEffects()
-    {
-        ApplyMoveSlow();
-        ApplyCastSlow();
-    }
-
-    private void RemoveEffects()
-    {
-        RemoveMoveSlow();
-        RemoveCastSlow();
-    }
-
-    private void ApplyMoveSlow()
-    {
-        float moveSlow = MoveSlowPerStack * _currentStacks;
-
-        _moveSpeedModifier = new AttributeModifier(-moveSlow, ModifierType.Multiplier, this);
-        characterState.Character.Move.AddModifier(_moveSpeedModifier);
-    }
-
-    private void RemoveMoveSlow()
-    {
-        if (_moveSpeedModifier != null)
-        {
-            characterState.Character.Move.RemoveModifier(_moveSpeedModifier);
-            _moveSpeedModifier = null;
-        }
-    }
-
-    private void ApplyCastSlow()
-    {
-        _affectedSkills.Clear();
-        _appliedCastSlow = CastSlowPerStack * _currentStacks;
-
-        if (abilities == null) return;
-
-        foreach (var ability in abilities.Abilities)
-        {
-            if (ability != null && ability.Info.AbilityForm == AbilityForm.Physical)
-            {
-                ability.Buff.CastSpeed.ReductionPercentage(_appliedCastSlow);
-                _affectedSkills.Add(ability);
-            }
-        }
-    }
-
-    private void RemoveCastSlow()
-    {
-        foreach (var ability in _affectedSkills)
-        {
-            if (ability != null)
-            {
-                ability.Buff.CastSpeed.IncreasePercentage(_appliedCastSlow);
-            }
-        }
-
-        _affectedSkills.Clear();
-        _appliedCastSlow = 0f;
-    }
+		if (_animator != null)
+		{
+			_animator.enabled = true;
+			_animator.speed = 1;
+		}
+	}
 }

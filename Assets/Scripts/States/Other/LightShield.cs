@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
-public class LightShield : AbstractCharacterState, IDamageable
+public class LightShield : StackableState, IDamageable
 {
     private BladeMailPriestTalent _bladeMailPriestTalent;
     private GameObject _lightShield;
@@ -22,7 +22,7 @@ public class LightShield : AbstractCharacterState, IDamageable
     public Transform transform => throw new NotImplementedException();
     public GameObject gameObject => throw new NotImplementedException();
 
-    public override void EnterState(CharacterState character, float durationToExit, float maxDamageAbsorbed, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float maxDamageAbsorbed, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _duration = durationToExit;
@@ -43,7 +43,7 @@ public class LightShield : AbstractCharacterState, IDamageable
         }
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         _duration -= Time.deltaTime;
 
@@ -53,14 +53,14 @@ public class LightShield : AbstractCharacterState, IDamageable
         }
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         if (characterState.TryGetComponent<Health>(out var health))
         {
             health.ResetShieldValues();
         }
 
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
 
         if (_lightShield != null)
             _lightShield.SetActive(false);
@@ -134,6 +134,6 @@ public class LightShield : AbstractCharacterState, IDamageable
 
     public void ShowPhantomValue(Damage phantomValue)
     {
-        throw new NotImplementedException();
+        
     }
 }

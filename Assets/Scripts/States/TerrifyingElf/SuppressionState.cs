@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SuppressionState : AbstractCharacterState
+public class SuppressionState : StackableState
 {
     private const int MaxStacks = 1;
 
@@ -19,7 +19,6 @@ public class SuppressionState : AbstractCharacterState
 
     private float _baseDuration;
     private float _duration;
-    private int _currentStacks = 1;
 
     private float _distBuffer;
     private bool _isMoving;
@@ -31,7 +30,7 @@ public class SuppressionState : AbstractCharacterState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit,
                                     Character caster, string skillName)
     {
         characterState = character;
@@ -60,34 +59,27 @@ public class SuppressionState : AbstractCharacterState
         if (_suppressionMove) _suppressionMove.SetActive(false);
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0f)
-        {
-            ExitState();
-            return;
-        }
-
         float deltaDist = CalcHorizontalDistanceThisFrame();
         HandleVisuals(deltaDist);
         DrainManaByDistance(deltaDist);
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         if (_suppressionIdle) _suppressionIdle.SetActive(false);
         if (_suppressionMove) _suppressionMove.SetActive(false);
 
         characterState.StateIcons.RemoveItemByState(State);
-        characterState.RemoveState(this);
+        characterState.RemoveStateFromList(this);
 
         if (health != null) health.DamageTaken -= OnDamageTaken;
     }
 
     public override bool Stack(float time)
     {
-        if (_currentStacks < MaxStacks) _currentStacks++;
+        if (currentStacksCount < MaxStacks) currentStacksCount++;
         _duration = _baseDuration;
         return true;
     }

@@ -19,18 +19,18 @@ public class PushingWindBuff : AbstractCharacterState
 		State = stateType;
 	}
 
-	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		characterState = character;
 
 		_speedModifier = isAuraState ? 0.1f : 0.3f;
 
-		_modifier.Value = _speedModifier;
+		_modifier.Value = 1 + _speedModifier;
 		_modifier.Type = ModifierType.Multiplier;
 		characterState.Character.Move.AddModifier(_modifier);
 	}
 
-	public override void UpdateState()
+	public override void OnUpdateState()
 	{
 		if(isAuraState) return;
 		_duration -= Time.deltaTime;
@@ -40,15 +40,15 @@ public class PushingWindBuff : AbstractCharacterState
 		}
 	}
 
-	public override void ExitState()
+	protected override void OnExitState()
 	{
 		characterState.Character.Move.RemoveModifier(_modifier);
-		characterState.RemoveState(this);
+		characterState.RemoveStateFromList(this);
 
     }
 
-	public override bool Stack(float time)
+	/*public override bool Stack(float time)
 	{
 		return false;
-	}
+	}*/
 }

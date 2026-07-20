@@ -7,14 +7,12 @@ public class MetabolismReptileTalent : Talent
 
     public override void Enter()
     {
-        SetActive(true);
         _skillManager.ActivateSkill(_metabolismReptile);
 
     }
 
     public override void Exit()
     {
-        SetActive(false);
         _skillManager.DeactivateSkill(_metabolismReptile);
 
     }

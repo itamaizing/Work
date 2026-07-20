@@ -16,7 +16,7 @@ public class ReflectiveScalesState : StackableState
     public override List<StatusEffect> Effects => _effects;
     public override float RemainingDuration => _durationRemaining;
 
-    public override void EnterState(CharacterState character,
+    protected override void OnEnterState(CharacterState character,
         float durationToExit,
         float damageToExit,
         Character personWhoMadeBuff,
@@ -29,7 +29,7 @@ public class ReflectiveScalesState : StackableState
         _durationRemaining = durationToExit;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 
@@ -41,13 +41,8 @@ public class ReflectiveScalesState : StackableState
 
     private bool TryReflect(Damage damage)
     {
-        ExitState();
+        OnExitState();
 
         return true;
-    }
-
-    public override void ExitState()
-    {
-
     }
 }

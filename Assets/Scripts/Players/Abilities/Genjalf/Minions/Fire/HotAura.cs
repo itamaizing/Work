@@ -38,7 +38,7 @@ public class HotAuraBuff : AbstractCharacterState
 
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _character = character.Character;
         foreach (var skill in character.Character.Abilities.Abilities)
@@ -48,9 +48,8 @@ public class HotAuraBuff : AbstractCharacterState
         }
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
-        base.ExitState();
         if (_character != null)
         {
             foreach (var skill in _character.Abilities.Abilities)
@@ -61,12 +60,12 @@ public class HotAuraBuff : AbstractCharacterState
         }
     }
 
-    public override bool Stack(float time)
+    /*public override bool Stack(float time)
     {
         return false;
-    }
+    }*/
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
     }
 }

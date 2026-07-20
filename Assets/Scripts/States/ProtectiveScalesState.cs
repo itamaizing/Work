@@ -19,7 +19,7 @@ public class ProtectiveScalesState : StackableState
     public override List<StatusEffect> Effects => _effects;
     public override float RemainingDuration => _durationRemaining;
 
-    public override void EnterState(CharacterState character,
+    protected override void OnEnterState(CharacterState character,
         float durationToExit,
         float damageToExit,
         Character personWhoMadeBuff,
@@ -35,7 +35,7 @@ public class ProtectiveScalesState : StackableState
         TryDispelMagicDebuffs();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
      
     }
@@ -78,7 +78,7 @@ public class ProtectiveScalesState : StackableState
         }
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         if (health != null)
         {
@@ -86,8 +86,5 @@ public class ProtectiveScalesState : StackableState
         }
 
         _appliedResist = 0f;
-
-        characterState.StateIcons.RemoveItemByState(State);
-        characterState.RemoveState(this);
     }
 }

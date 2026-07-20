@@ -58,6 +58,8 @@ public class MPNetworkManager : NetworkManager
 
         if (_currentGameRules == null)
             CreateGameRules();
+
+        Debug.Log("TEST");
     }
 
     public override void OnClientDisconnect()
@@ -89,6 +91,8 @@ public class MPNetworkManager : NetworkManager
             StartClient();
         else
             Debug.LogError("Already connected");
+
+        Debug.Log("TEST");
     }
 
     public void AddPlayer(GameObject player)

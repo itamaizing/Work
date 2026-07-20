@@ -7,12 +7,10 @@ public class ContinuationAmbush : Talent
 
     public override void Enter()
     {
-        SetActive(true);
     }
 
     public override void Exit()
     {
-        SetActive(false);
     }
 
     public void CanApplyInvisible(bool isCanApplyInvisible)

@@ -20,6 +20,15 @@ public class TalentInfoPanel : MonoBehaviour
         int pairCnt = Mathf.Max(descCnt, stateCnt);
         TalentInfoCell cell = null;
 
+        //Condition TEXT
+        var conditionCell = Instantiate(_cellPref, transform);
+        _cells.Add(conditionCell);
+
+        conditionCell.TextDescription.text = data.ConditionDescription;
+        conditionCell.ShowDividingLine();
+
+        //Condition TEXT
+
         for (int i = 0; i < pairCnt; i++)
         {
             if (i < descCnt)

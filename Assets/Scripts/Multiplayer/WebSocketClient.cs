@@ -40,7 +40,7 @@ public class WebSocketClient : MonoBehaviour
 
     private void Update()
     {
-#if !UNITY_WEBGL // || UNITY_EDITOR
+#if !UNITY_WEBGL  || UNITY_EDITOR
         if (_webSocket != null)
         {
             _webSocket.DispatchMessageQueue();
@@ -64,6 +64,8 @@ public class WebSocketClient : MonoBehaviour
     public async Task Connect()
     {
         await _webSocket.Connect();
+
+        Debug.Log("TEST");
     }
 
     public void SendMessageToServer(string message)

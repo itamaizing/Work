@@ -264,8 +264,6 @@ public class SkillPanel : MonoBehaviour
         if (_playerAbilities?.SelectedSkills == null) return;
         if (index < 0 || index >= _playerAbilities.SelectedSkills.Length) return;
 
-        Debug.Log("Test" + skill);
-
         _playerAbilities.SelectedSkills[index] = skill;
     }
 
@@ -523,6 +521,8 @@ public class SkillPanel : MonoBehaviour
 
     private IEnumerator LoadPanelJob()
     {
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForSeconds(0.1f);
         yield return new WaitForEndOfFrame();
         LoadPanel();
     }

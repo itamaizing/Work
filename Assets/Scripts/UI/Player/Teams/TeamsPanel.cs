@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using UnityEngine.UI;
 
 public class TeamsPanel : MonoBehaviour
 {
-    public static TeamsPanel Instance;
+    public event Action<Character> onPlayerSelected; 
 
     [SerializeField] private SelectManager _selectManager;
     [SerializeField] private PlayerIcon _playerIconPref;
@@ -18,14 +19,6 @@ public class TeamsPanel : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-        }
         if (_selectManager != null)
             _selectManager.OnListUpdated += UpdateTeams;
 
@@ -75,14 +68,14 @@ public class TeamsPanel : MonoBehaviour
     public void AddInFirstTeam(Character character)
     {
         var icon = Instantiate(_playerIconPref, _team1.transform);
-        icon.Init(character);
+        icon.Init(character, this);
         _playerIcons.Add(icon);
     }
 
     public void AddInSecondTeam(Character character)
     {
         var icon = Instantiate(_playerIconPref, _team2.transform);
-        icon.Init(character);
+        icon.Init(character, this);
         _playerIcons.Add(icon);
     }
 
@@ -96,6 +89,12 @@ public class TeamsPanel : MonoBehaviour
                 break;
             }   
         }
+    }
+
+    public void OnButtonClick(Character character)
+    {
+        onPlayerSelected?.Invoke(character);
+        Debug.Log("Player click " + character);
     }
 
     private IEnumerator UpdatePanelCurotine()

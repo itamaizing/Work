@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IrradiationState : AbstractCharacterState
+public class IrradiationState : StackableState
 {
     private float _baseDuration;
     private float _durationIncrease = 1;
@@ -14,7 +14,7 @@ public class IrradiationState : AbstractCharacterState
     public override StateType Type => StateType.Magic;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
 
         Debug.Log("Entering Irradiation State");
@@ -31,16 +31,13 @@ public class IrradiationState : AbstractCharacterState
         ApplyMagicDefenseReduction();
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
-        duration -= Time.deltaTime;
-        if (duration <= 0) ExitState();
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         RestoreMagicDefense();
-        characterState.RemoveState(this);
         characterState.OnStateAdded -= OnNewStateAdded;
     }
 
@@ -88,7 +85,8 @@ public class IrradiationState : AbstractCharacterState
     private void ExtendState(AbstractCharacterState state)
     {
         //state.duration += _durationIncrease;
+        throw new System.NotImplementedException("DONT DO LIKE THAT!!!");
         state.RemainingDuration += _durationIncrease;
-        characterState.StateIcons?.ActivateIco(state.State, state.RemainingDuration, 0, false, state.MaxStacksCount);
+        //characterState.StateIcons?.ActivateIco(state.State, state.RemainingDuration, 0, false, state.MaxStacksCount);
     }
 }

@@ -25,7 +25,7 @@ public class DestructivePoisonState : RefreshingState
         MaxStacksCount = 3;
     }
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    protected override void OnEnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
 
@@ -37,7 +37,7 @@ public class DestructivePoisonState : RefreshingState
         _tickTimer = TickInterval;
     }
 
-    public override void UpdateState()
+    public override void OnUpdateState()
     {
         _tickTimer -= Time.deltaTime;
 
@@ -62,14 +62,12 @@ public class DestructivePoisonState : RefreshingState
         if (currentStacksCount >= MaxStacksCount)
             return false;
 
-        currentStacksCount++;
         return true;
     }
 
-    public override void ExitState()
+    protected override void OnExitState()
     {
         currentStacksCount = 0;
-        characterState.RemoveState(this);
     }
 
 
