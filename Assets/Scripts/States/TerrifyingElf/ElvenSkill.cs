@@ -52,7 +52,6 @@ public class ElvenSkill : RefreshingState
 
                 if (skill is ReconnaissanceFire rf) rf.TryStartElvenBoostWindow();
                 if (skill is ShotIntoSky si) si.TryStartBoost();
-                if (skill is ShotsIntoSky sis) sis.TryStartBoost();
                 if (skill is GroundTrap gt) gt.TryStartBoost();
             }
         }
@@ -70,7 +69,6 @@ public class ElvenSkill : RefreshingState
                 if (skill == null) continue;
                 if (skill is ReconnaissanceFire rf) rf.TryStartElvenBoostWindow();
                 if (skill is ShotIntoSky si) si.TryStartBoost();
-                if (skill is ShotsIntoSky sis) sis.TryStartBoost();
                 if (skill is GroundTrap gt) gt.TryStartBoost();
             }
         }
@@ -84,16 +82,16 @@ public class ElvenSkill : RefreshingState
         if (currentStacksCount < MaxStacksCount)
         {
             currentStacksCount++;
-        }
+            
+            foreach (var skill in abilities.Abilities)
+            {
+                if (skill == null) continue;
 
-        foreach (var skill in abilities.Abilities)
-        {
-            if (skill == null) continue;
-
-            skill.Attributes[SkillAttributeName.Length].AddModifier(
-                new AttributeModifier(PercentBonusPerStack, ModifierType.Percent, source: this));
-            skill.Attributes[SkillAttributeName.Radius].AddModifier(
-                new AttributeModifier(PercentBonusPerStack, ModifierType.Percent, source: this));
+                skill.Attributes[SkillAttributeName.Length].AddModifier(
+                    new AttributeModifier(PercentBonusPerStack, ModifierType.Percent, source: this));
+                skill.Attributes[SkillAttributeName.Radius].AddModifier(
+                    new AttributeModifier(PercentBonusPerStack, ModifierType.Percent, source: this));
+            }
         }
     }
     

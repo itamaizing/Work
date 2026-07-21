@@ -25,7 +25,7 @@ public class GroundTrap : Skill
     [SerializeField] private LayerMask groundLayer;
 
     private ShotIntoSky _shotIntoSky;
-    
+
     private Color minDistanceGreenColor = Color.green;
     private Color minDistanceRedColor = Color.red;
 
@@ -307,6 +307,9 @@ public class GroundTrap : Skill
     protected override IEnumerator CastJob()
     {
         KillFirstQueuedPreview();
+        float dist = Vector3.Distance(transform.position, _startPosition);
+        _castFromExtendedRadius = _isTrapArrowIntoSkyRadiusTalent && (dist > AreaInfo.Radius);
+
         CmdSpawnGroundTrap(_startPosition, _startRotation, _castFromExtendedRadius, _isTrapArrowIntoSkyRadiusTalent);
 
         SkillCastEnd();
@@ -354,10 +357,12 @@ public class GroundTrap : Skill
     {
         if (castFromExtendedRadius && isTrapArrowIntoSkyRadiusTalent && _shotIntoSky != null)
         {
-            _shotIntoSky.SpawnUtilityArrowVisual(startPosition);
-
             if (_pendingTrapSpawnCoroutine != null) StopCoroutine(_pendingTrapSpawnCoroutine);
-            _pendingTrapSpawnCoroutine = StartCoroutine(SpawnTrapAfterArrowDelay(startPosition, rotation, _shotIntoSky.DropDelayTime));
+
+            _shotIntoSky.SpawnFullImpact(startPosition, _shotIntoSky.Damage, () =>
+            {
+                StartCoroutine(SpawnTrapAfterArrowDelay(startPosition, rotation,0.5f));
+            });
         }
         else
         {
@@ -368,7 +373,6 @@ public class GroundTrap : Skill
     private IEnumerator SpawnTrapAfterArrowDelay(Vector3 startPosition, Quaternion rotation, float delay)
     {
         yield return new WaitForSeconds(delay);
-        _pendingTrapSpawnCoroutine = null;
         SpawnTrapInstant(startPosition, rotation);
     }
 
@@ -396,7 +400,7 @@ public class GroundTrap : Skill
         NetworkServer.Spawn(trap.gameObject, playerConnection);
 
         trap.GetComponent<Object>().IndexTeam = _hero.NetworkSettings.TeamIndex;
-        
+    
         RpcInit(trap.netIdentity, spawnPos, rotation);
     }
 

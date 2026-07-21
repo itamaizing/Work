@@ -305,13 +305,16 @@ public class ReconnaissanceFire : Skill
     private void CmdSpawnProjectile(Vector3 targetPoint, bool castFromExtendedRadius, bool isFireArrowIntoSkyRadiusTalent)
     {
         if (float.IsInfinity(targetPoint.x) || float.IsNaN(targetPoint.x)) return;
-        
+    
         if (castFromExtendedRadius && isFireArrowIntoSkyRadiusTalent && _shotIntoSky != null)
         {
-            _shotIntoSky.SpawnUtilityArrowVisual(targetPoint);
-
             if (_pendingFireSpawnCoroutine != null) StopCoroutine(_pendingFireSpawnCoroutine);
-            _pendingFireSpawnCoroutine = StartCoroutine(SpawnFireAfterArrowDelay(targetPoint, _shotIntoSky.DropDelayTime));
+
+            _shotIntoSky.SpawnFullImpact(targetPoint, _shotIntoSky.Damage, () =>
+            {
+                _pendingFireSpawnCoroutine = null;
+                StartCoroutine(SpawnFireAfterArrowDelay(targetPoint,0.5f));
+            });
         }
         else
         {

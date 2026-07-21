@@ -1,7 +1,9 @@
-﻿using Mirror;
+﻿using System;
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class ArrowIntoSkyProjectile : NetworkBehaviour
 {
@@ -32,8 +34,10 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
 
     public GameObject Arrow { get => arrow; set => arrow = value; }
     public GameObject Circle { get => circle; set => circle = value; }
+    
+    private Action _onImpactActivated;
 
-    public virtual void Init(HeroComponent dad, Skill skill, float damage, bool lastStreamTalent, bool shotMagicDebuffActive, bool isElvenSkillCrit)
+    public virtual void Init(HeroComponent dad, Skill skill, float damage, bool lastStreamTalent, bool shotMagicDebuffActive, bool isElvenSkillCrit, Action onImpactActivated = null)
     {
         this.lastStreamTalent = lastStreamTalent;
         this.shotMagicDebuffActive = shotMagicDebuffActive;
@@ -41,7 +45,8 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
         _skill = skill;
         _damage = damage;
         _isElvenSkillCrit = isElvenSkillCrit;
-
+        _onImpactActivated = onImpactActivated;
+        
         if (_dad != null && _dad.TryGetComponent<Character>(out Character character)) _character = character;
         
         if (circle != null) circle.SetActive(true);
@@ -52,6 +57,7 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
         Arrow.SetActive(true);
         circle.SetActive(true);
         Invoke("ActiveCollider", nextDamageTime);
+
         Destroy(gameObject, impactLifeTime);
     }
 
@@ -68,6 +74,15 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
         if (!_damagedThisTick.Add(other)) return;
 
         ApplyDamageEnemy(other);
+    }
+    
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        { 
+            _onImpactActivated?.Invoke();
+            _onImpactActivated = null;
+        }
     }
     
     public void ActivateVisualOnly()
@@ -152,6 +167,7 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
 
     private void ApplyDamageEnemy(Collider other)
     {
+
         if (!other.TryGetComponent<IDamageable>(out var damageTarget)) return;
 
         float damageToDeal = UnityEngine.Random.Range(minDamage, maxDamage + 1);

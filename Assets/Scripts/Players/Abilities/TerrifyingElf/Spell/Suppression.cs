@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class Suppression : Skill
+public class Suppression : Skill, IMultiMagicSkill
 {
     [SerializeField] private Character _playerLinks;
     [SerializeField] private float duration = 6f;
@@ -53,16 +53,6 @@ public class Suppression : Skill
 
         CmdApplyAbsorptionState(target.gameObject);
 
-        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
-        if (multiMagic != null)
-        {
-            foreach (var character in multiMagic.PopPendingTargets())
-            {
-                TryPayCost();
-                CmdApplyAbsorptionState(character.gameObject);
-            }
-        }
-
         AfterCastJob();
     }
 
@@ -85,5 +75,11 @@ public class Suppression : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((targetInfo.GetTargets()[0] as Character));
+    }
+
+    public void HandleExtraTarget(Character target)
+    {
+        TryPayCost();
+        CmdApplyAbsorptionState(target.gameObject);
     }
 }

@@ -21580,9 +21580,9 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: 5
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -21612,14 +21612,14 @@ MonoBehaviour:
   _areaComponent:
     _radius: 5
     _area: 0
-    _castLength: 5
+    _castLength: 0
     _castWidth: 0
   _autoAttackDelay: 0
   _informationRenderComponent:
-    _isAutoRadiusRender: 0
+    _isAutoRadiusRender: 1
     _isAutoAreaRender: 0
-    _isAutoLineRender: 1
-    _isDynamicRenderer: 1
+    _isAutoLineRender: 0
+    _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0

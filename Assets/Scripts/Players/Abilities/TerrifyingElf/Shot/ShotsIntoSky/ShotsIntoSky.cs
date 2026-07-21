@@ -30,12 +30,10 @@ public class ShotsIntoSky : Skill
     private WaitForSeconds _boostDuration = new WaitForSeconds(2f);
 
     #region Talent
-
-    private bool _isSkillEnableBoostLogicActiveTalent;
+    
     private bool shotMagicDebuffActive;
 
     public void ShotsIntoSkyMagicDebuffTalentActive(bool value) => shotMagicDebuffActive = value;
-    public void SkillEnableBoostLogicActiveTalent(bool value) => _isSkillEnableBoostLogicActiveTalent = value;
 
     #endregion
 
@@ -79,7 +77,6 @@ public class ShotsIntoSky : Skill
 
     public void TryStartBoost()
     {
-        if (!_isSkillEnableBoostLogicActiveTalent) return;
         if (_boostWindow != null) StopCoroutine(_boostWindow);
 
         _boostWindow = StartCoroutine(BoostWindow());

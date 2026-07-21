@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PullingHealth : Skill
+public class PullingHealth : Skill, IMultiMagicSkill
 {
     [Header("Pulling Health Settings")]
     [SerializeField] private GameObject _pullingHealthPrefab;
@@ -15,6 +15,8 @@ public class PullingHealth : Skill
     [SerializeField] private AudioClip _audioClip;
     [SerializeField] private Ghost _ghostSkill;
     [SerializeField] private float _radiusIncreasePerGhost = 3f;
+    
+    private float ChainNodeRadius => AreaInfo.Radius + _radiusIncreasePerGhost;
 
     private GameObject _cachedTarget;
     private AudioSource _audioSource;
@@ -233,7 +235,7 @@ public class PullingHealth : Skill
         while (queue.Count > 0)
         {
             var current = queue.Dequeue();
-            var hits = Physics.OverlapSphere(current.transform.position, _radiusIncreasePerGhost);
+            var hits = Physics.OverlapSphere(current.transform.position, ChainNodeRadius);
             foreach (var hit in hits)
             {
                 if (!IsChainUnit(hit)) continue;
@@ -254,7 +256,7 @@ public class PullingHealth : Skill
 
         foreach (var unit in _currentChain)
         {
-            if (Vector3.Distance(unit.transform.position, targetPosition) <= _radiusIncreasePerGhost)
+            if (Vector3.Distance(unit.transform.position, targetPosition) <= ChainNodeRadius)
                 return true;
         }
 
@@ -311,7 +313,7 @@ public class PullingHealth : Skill
             if (_chainUnitRadiusPrefab == null) break;
             var circle = Instantiate(_chainUnitRadiusPrefab, unit.transform);
             circle.SetColor(circleColor);
-            circle.Draw(_radiusIncreasePerGhost);
+            circle.Draw(ChainNodeRadius);
             _activeChainCircles.Add(circle);
         }
     }
@@ -342,7 +344,7 @@ public class PullingHealth : Skill
         foreach (var unit in _currentChain)
         {
             float dist = Vector3.Distance(unit.transform.position, targetPos);
-            if (dist <= _radiusIncreasePerGhost)
+            if (dist <= ChainNodeRadius)
             {
                 if (dist < minDistanceToTarget)
                 {
@@ -442,24 +444,16 @@ public class PullingHealth : Skill
         }
         #endregion
 
-        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
-        if (multiMagic != null)
-        {
-            foreach (var characterTarget in multiMagic.PopPendingTargets())
-            {
-                if (characterTarget == Targeting.GetTarget()?.Character)
-                {
-                    _extraTargets.Add(characterTarget);
-
-                    TryPayCost();
-                    CmdSpawnExtraPullingEffect(gameObject, characterTarget.gameObject);
-                }
-            }
-        }
-
         AfterCastJob();
         _streamCoroutine = StartCoroutine(StreamDuration());
         while (!_streamFinished)  yield return null;
+    }
+    
+    public void HandleExtraTarget(Character target)
+    {
+        _extraTargets.Add(target);
+        TryPayCost();
+        CmdSpawnExtraPullingEffect(gameObject, target.gameObject);
     }
 
     private IEnumerator StreamDuration()

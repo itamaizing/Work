@@ -61,26 +61,24 @@ public class ShotIntoSky : Skill
 
     #region UtilitaryArrow
 
-    public float DropDelayTime => _dropDelayTime;
-
     [Server]
-    public void SpawnUtilityArrowVisual(Vector3 position)
+    public void SpawnFullImpact(Vector3 position, float damage, Action onImpactActivated = null)
     {
         if (!impactPrefab) return;
 
         ArrowIntoSkyProjectile impact = Instantiate(impactPrefab, position, Quaternion.identity);
+        bool elvenCrit = _terrifyingElfAura != null && _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance;
+
+        impact.Init(playerLinks, this, damage, false, shotMagicDebuffActive, elvenCrit, onImpactActivated);
+    
         NetworkServer.Spawn(impact.gameObject);
-        RpcActivateVisualOnly(impact);
+
+        _arrowIntoSkyProjectileIds.Add(impact.GetComponent<NetworkIdentity>().netId);
+        RpcInit(impact.gameObject, damage, false);
+
+        StartCoroutine(ActivateAfterDelay(impact.GetComponent<NetworkIdentity>().netId));
     }
 
-    [ClientRpc]
-    private void RpcActivateVisualOnly(ArrowIntoSkyProjectile projectile)
-    {
-        projectile.ActivateVisualOnly();
-                    
-        Cooldown.Start();
-    }
-    
     #endregion
     
     protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotSkyCastDelay");

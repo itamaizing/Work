@@ -12,7 +12,6 @@ public class HuntressTalent_11 : Talent
     public override void Enter()
     {
         _shotIntoSky.SkillEnableBoostLogicActiveTalent(true);
-        _shotsIntoSky.SkillEnableBoostLogicActiveTalent(true);
         _groundTrap.SkillEnableBoostLogicActiveTalent(true);
         reconnaissanceFire.SkillEnableBoostLogicActiveTalent(true);
     }
@@ -20,7 +19,6 @@ public class HuntressTalent_11 : Talent
     public override void Exit()
     {
         _shotIntoSky.SkillEnableBoostLogicActiveTalent(false);
-        _shotsIntoSky.SkillEnableBoostLogicActiveTalent(false);
         _groundTrap.SkillEnableBoostLogicActiveTalent(false);
         reconnaissanceFire.SkillEnableBoostLogicActiveTalent(false);
     }

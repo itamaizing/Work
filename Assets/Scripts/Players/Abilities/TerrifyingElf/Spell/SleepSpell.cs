@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class SleepSpell : Skill
+public class SleepSpell : Skill, IMultiMagicSkill
 {
     [SerializeField] private Character _playerLinks;
     [SerializeField] private float _heroDuration = 6f;
@@ -35,9 +35,7 @@ public class SleepSpell : Skill
 
                 if (temp != null)
                 {
-                    if (multiMagic != null)
-                        multiMagic.LastTarget = temp;
-
+                    if (multiMagic != null) multiMagic.LastTarget = temp;
                     break;
                 }
             }
@@ -62,17 +60,6 @@ public class SleepSpell : Skill
             yield break;
 
         CmdApplyAbsorptionState(target.gameObject);
-
-        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
-
-        if (multiMagic != null)
-        {
-            foreach (var character in multiMagic.PopPendingTargets())
-            {
-                TryPayCost();
-                CmdApplyAbsorptionState(character.gameObject);
-            }
-        }
 
         AfterCastJob();
     }
@@ -103,4 +90,10 @@ public class SleepSpell : Skill
     public void SleepInnerDarknessTalent(bool value) => _isSleepInnerDarknessTalentActive = value;
 
     #endregion
+
+    public void HandleExtraTarget(Character target)
+    {
+        TryPayCost();
+        CmdApplyAbsorptionState(target.gameObject);
+    }
 }

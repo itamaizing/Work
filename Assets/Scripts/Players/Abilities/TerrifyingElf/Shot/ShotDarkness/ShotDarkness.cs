@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ShotDarkness : Skill
+public class ShotDarkness : Skill, IMultiMagicSkill
 {
     [SerializeField] private ArrowProjectile _projectile;
     [SerializeField] private HeroComponent _playerLinks;
@@ -173,22 +173,7 @@ public class ShotDarkness : Skill
         if (Targeting.GetTarget() != null) CmdCreateProjectileAtTarget(Targeting.GetTarget().Transform, Damage, _magicDamage,castLengthAtCast);
         else CmdCreateProjectileAtPosition(new Vector3(_targetPoint.x, _targetPoint.y, _targetPoint.z), Damage, _magicDamage,castLengthAtCast);
 
-        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
-
-        if (multiMagic != null)
-        {
-            foreach (var character in multiMagic.PopPendingTargets())
-            {
-                TryPayCost();
-                CmdUseMana(_magicDamage);
-                CmdCreateProjectileAtPosition(character.transform.position, Damage, _magicDamage, castLengthAtCast);
-            }
-
-            float reduce = _multiMagicSpell.Cooldown.RemainingTime * 0.1f;
-            _multiMagicSpell.Cooldown.Modify(-reduce);
-        }
-
-        else CmdUseMana(_magicDamage);
+        CmdUseMana(_magicDamage);
     }
 
 
@@ -318,5 +303,19 @@ public class ShotDarkness : Skill
         Targeting.ClearTempTarget();
         _consecutiveShots = 0;
         AnimCastEnded();
+    }
+
+    public void HandleExtraTarget(Character target)
+    {
+        TryPayCost();
+        CmdUseMana(_magicDamage);
+        float castLengthAtCast = AreaInfo.CastLength;
+        CmdCreateProjectileAtPosition(target.transform.position, Damage, _magicDamage, castLengthAtCast);
+
+        if (_multiMagicSpell != null)
+        {
+            float reduce = _multiMagicSpell.Cooldown.RemainingTime * 0.1f;
+            _multiMagicSpell.Cooldown.Modify(-reduce);
+        }
     }
 }

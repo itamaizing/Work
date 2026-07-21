@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class ShotAstral : Skill
+public class ShotAstral : Skill, IMultiMagicSkill
 {
     [SerializeField] private ArrowAstralProjectile _projectile;
     [SerializeField] private Transform _spawnPoint;
@@ -76,17 +76,6 @@ public class ShotAstral : Skill
 
         CmdCreateProjectileAtPosition(_targetPoint);
 
-        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
-
-        if (multiMagic != null)
-        {
-            foreach (var character in multiMagic.PopPendingTargets())
-            {
-                TryPayCost();
-                CmdCreateProjectileAtPosition(character.transform.position);
-            }
-        }
-
         WorkAnimator(_startAnimTrigger, _endAnimTrigger);
 
         HandleSkillCanceled();
@@ -142,4 +131,9 @@ public class ShotAstral : Skill
     }
 
     public override void LoadTargetData(TargetInfo targetInfo) => _targetPoint = targetInfo.Points[0];
+    public void HandleExtraTarget(Character target)
+    {
+        TryPayCost();
+        CmdCreateProjectileAtPosition(target.transform.position);
+    }
 }

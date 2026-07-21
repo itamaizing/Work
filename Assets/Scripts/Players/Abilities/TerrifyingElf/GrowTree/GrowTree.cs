@@ -132,6 +132,11 @@ public class GrowTree : Skill
 
         string trigger = _castFromExtendedRadius ? ShotSkyWithTreeCastDelay : GrowTreeCastDelay;
         Animation.PlayTrigger(trigger);
+        
+        if (_castFromExtendedRadius)
+        {
+            GrowTreeStopMove();
+        }
     }
 
     private void HandleSkillDeleted(Skill skill)
@@ -284,6 +289,7 @@ public class GrowTree : Skill
         _growVisualExitRoutine = StartCoroutine(FinishGrowthVisualAfterDelay(TreeFillDuration, wasFromExtendedRadius));
 
         GrowTreeStartMove();
+
         ResetData();
         StopRangeWatch();
 
@@ -364,10 +370,13 @@ public class GrowTree : Skill
     {
         if (castFromExtendedRadius && isArrowIntoSkyRadiusTalent && _shotIntoSky != null)
         {
-            _shotIntoSky.SpawnUtilityArrowVisual(position);
-
             if (_pendingTreeSpawnCoroutine != null) StopCoroutine(_pendingTreeSpawnCoroutine);
-            _pendingTreeSpawnCoroutine = StartCoroutine(SpawnTreeAfterArrowDelay(position, remainingDuration, _shotIntoSky.DropDelayTime));
+            
+            _shotIntoSky.SpawnFullImpact(position, _shotIntoSky.Damage, () =>
+            {
+                _pendingTreeSpawnCoroutine = null;
+                StartCoroutine(SpawnTreeAfterDelay(position, remainingDuration, 0.5f));
+            });
         }
         else
         {
@@ -375,7 +384,7 @@ public class GrowTree : Skill
         }
     }
 
-    private IEnumerator SpawnTreeAfterArrowDelay(Vector3 position, float remainingDuration, float delay)
+    private IEnumerator SpawnTreeAfterDelay(Vector3 position, float remainingDuration, float delay)
     {
         yield return new WaitForSeconds(delay);
         _pendingTreeSpawnCoroutine = null;
