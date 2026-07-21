@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,13 +41,20 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     protected Attribute _maxValueAttribute;
     protected Attribute _regenValueAttribute;
 
-	public float CurrentValue { get => _currentValue; set { ValueChanged?.Invoke(_currentValue, value); _currentValue = value; } }
+	public float CurrentValue { get => _currentValue;
+        set {
+            if (!Mathf.Approximately(_currentValue, value))
+                ValueChanged?.Invoke(_currentValue, value);
+            _currentValue = value;
+        }
+    }
     public float MaxValue
     {
         get => _maxValue;
         private set
         {
-            MaxValueChanged?.Invoke(_maxValue, value);
+            if (!Mathf.Approximately(_maxValue, value))
+                MaxValueChanged?.Invoke(_maxValue, value);
             _maxValue = value;
         }
     }
@@ -67,6 +74,12 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         get => _attr_regenPeriod.GetValue();
         set {
             _attr_regenPeriod.SetBaseValue(value);
+        }
+    }
+    public float RegenerationDelay {
+        get => _attr_regenDelay.GetValue();
+        set {
+            _attr_regenDelay.SetBaseValue(value);
         }
     }
 
@@ -129,7 +142,9 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         
         CurrentValue = _maxValue;
 
-        if (isServer) _regenCoroutine = StartCoroutine(RegenerateJob());
+        if (isServer)
+            _regenCoroutine = StartCoroutine(RegenerateJob());
+        ClientStartRegenirateJob();
     }
 
     // Можно перевести на такой же формат хранения атрибутов (ResourceAttribute) - тогда можно вообще весь хардкод убрать
@@ -146,7 +161,8 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         _attr_regenPeriod = resource.Attributes[ResourceAttributeName.RegenPeriod];
 
         CurrentValue = _maxValue;
-        _regenCoroutine = StartCoroutine(RegenerateJob());
+        if (isServer)
+            _regenCoroutine = StartCoroutine(RegenerateJob());
         ClientStartRegenirateJob();
     }
     
@@ -181,21 +197,24 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         return (baseValue + flatBonus) * multiplier;
     }
 
-    public void OnMaxAttributeChange(string name, float value)
+    public virtual void OnMaxAttributeChange(string name, float value)
     {
-        //Debug.Log("OnMaxChanged: " + value);
-        MaxValue = value;
-        if (CurrentValue > MaxValue)
-            CurrentValue = MaxValue;
+        float ratio = 0;
+        if (_maxValue > 0)
+        {
+            ratio = (CurrentValue / MaxValue);
+        }
+        MaxValue = _attr_maxValue.GetValue();
+        CurrentValue = ratio * MaxValue;
     }
 
     public virtual void Add(float value)
     {
         Debug.Log("Try regen " + value);
         if (_maxValue >= _currentValue + value)
-            _currentValue += value;
+            CurrentValue += value;
         else
-            _currentValue = _maxValue;
+            CurrentValue = _maxValue;
     }
 
     public virtual bool TryUse(float value)
@@ -212,12 +231,12 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         Debug.Log($"Used {value}, now {_currentValue}");
         if (_currentValue - value >= 0)
         {
-            _currentValue -= value;
+            CurrentValue -= value;
             return true;
         }
         else
         {
-            _currentValue = 0;
+            CurrentValue = 0;
             return false;
         }
     }
@@ -309,18 +328,12 @@ public abstract class Resource : NetworkBehaviour, IAttribute
                 continue;
             }
 
-            if (_attr_regenValue.GetValue() <= 0)
+            if (_currentValue < _maxValue || RegenerationValue < 0)
             {
-                yield return null;
-                continue;
-            }
-
-            if (_currentValue < _maxValue)
-            {
-                yield return new WaitForSeconds(_regenerationDelay);
-                while (_currentValue < _maxValue)
+                yield return new WaitForSeconds(RegenerationDelay);
+                while (_currentValue < _maxValue || RegenerationValue < 0)
                 {
-                    Add(_attr_regenValue.GetValue());
+                    Add(RegenerationValue);
                     yield return new WaitForSeconds(RegenerationPeriod);
                 }
             }

@@ -105,7 +105,7 @@ public class CostComponent : BaseSkillComponent
     }
 
     #region Checks
-    public bool EnoughResources(List<SkillResourceCost> costs=null, bool shouldModify=false)
+    public bool EnoughResources(List<SkillResourceCost> costs=null, bool shouldModify=true)
     {
         if (costs == null)
             costs = _costs;

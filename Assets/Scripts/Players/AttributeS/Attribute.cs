@@ -152,10 +152,12 @@ public class Attribute
 
     private void UpdateCached()
     {
+        if (_isActual)
+            return;
+
         _cachedValue = CalculateFor(_baseValue);
-        OnAttributeModify?.Invoke(_name, _cachedValue);
-        //Debug.Log($"{_name}: {_cachedValue}");
         _isActual = true;
+        OnAttributeModify?.Invoke(_name, _cachedValue);
     }
 
     private void OnModifierValueChange(float value)
