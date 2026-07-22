@@ -6,6 +6,7 @@ using UnityEngine;
 public class GroundTrap : Skill
 {
     [SerializeField] private Trap trapPrefab;
+    [SerializeField] private Trap trapPrefabPreview;
     [SerializeField] private HeroComponent owner;
     [SerializeField] private DrawCircleAlternative minDistanceRadiusCircle;
     [SerializeField] private ArrowTrapProjectile arrowTrapProjectile;
@@ -36,13 +37,13 @@ public class GroundTrap : Skill
 
     private float baseHealth = 23;
 
+    private float _arrowImpactHeightOffset = 0.8f;
     private float _baseCastDelay;
     private float _extendedRadius;
     private bool _castFromExtendedRadius;
     private bool _isTrapArrowIntoSkyRadiusTalent;
     private Coroutine _boostWindow;
     private Coroutine _checkExtendedRadiusCoroutine;
-    private Coroutine _pendingTrapSpawnCoroutine;
     private WaitForSeconds _boostDuration = new WaitForSeconds(2f);
     private WaitForSeconds _waitForExtendedRadiusInterval = new WaitForSeconds(0.1f);
 
@@ -161,8 +162,6 @@ public class GroundTrap : Skill
         }
         HideExtendedRadius();
 
-        CmdCancelPendingTrapSpawn();
-
         if (_preview != null)
         {
             Destroy(_preview.gameObject);
@@ -227,17 +226,15 @@ public class GroundTrap : Skill
 
         string trigger = _castFromExtendedRadius ? "ShotSkyCastDelay" : "Shot";
         Animation.PlayTrigger(trigger);
+        
+        if (CastDeley > 0f)
+            Hero.Animator.speed = Hero.Animator.speed / CastDeley;
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         if (isGroundHealthTalent) SetGroundNewHealth();
         else SetGroundBaseHealth();
-
-        Debug.Log($"GroundTrapHealth: {groundData.MaxHealth}");
-
-        if (CastDeley > 0f)
-            Hero.Animator.speed = Hero.Animator.speed / CastDeley;
 
         if (_isTrapArrowIntoSkyRadiusTalent)
         {
@@ -246,7 +243,7 @@ public class GroundTrap : Skill
             _checkExtendedRadiusCoroutine = StartCoroutine(CheckExtendedRadiusJob());
         }
 
-        _preview = Instantiate(trapPrefab);
+        _preview = Instantiate(trapPrefabPreview);
         _preview.ResetPreview();
 
         minDistanceRadiusCircle?.SetColor(minDistanceGreenColor);
@@ -289,6 +286,7 @@ public class GroundTrap : Skill
 
             yield return null;
         }
+
 
         if (_checkExtendedRadiusCoroutine != null)
         {
@@ -357,11 +355,11 @@ public class GroundTrap : Skill
     {
         if (castFromExtendedRadius && isTrapArrowIntoSkyRadiusTalent && _shotIntoSky != null)
         {
-            if (_pendingTrapSpawnCoroutine != null) StopCoroutine(_pendingTrapSpawnCoroutine);
+            Vector3 arrowImpactPosition = startPosition + Vector3.up * _arrowImpactHeightOffset;
 
-            _shotIntoSky.SpawnFullImpact(startPosition, _shotIntoSky.Damage, () =>
+            _shotIntoSky.SpawnFullImpact(arrowImpactPosition, _shotIntoSky.Damage, () =>
             {
-                StartCoroutine(SpawnTrapAfterArrowDelay(startPosition, rotation,0.5f));
+                StartCoroutine(SpawnTrapAfterArrowDelay(startPosition, rotation, 0.5f));
             });
         }
         else
@@ -375,14 +373,7 @@ public class GroundTrap : Skill
         yield return new WaitForSeconds(delay);
         SpawnTrapInstant(startPosition, rotation);
     }
-
-    [Command]
-    private void CmdCancelPendingTrapSpawn()
-    {
-        if (_pendingTrapSpawnCoroutine == null) return;
-        StopCoroutine(_pendingTrapSpawnCoroutine);
-        _pendingTrapSpawnCoroutine = null;
-    }
+    
 
     [Server]
     private void SpawnTrapInstant(Vector3 startPosition, Quaternion rotation)

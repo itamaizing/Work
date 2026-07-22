@@ -85,19 +85,12 @@ public class ReconnaissanceFire : Skill
     protected override void SkillEnableBoostLogic()
     {
         CastDeley = 0;
-        _isSkillEnableBoostLogic = true;
-        SetBoostLogic(true);
     }
 
     protected override void SkillDisableBoostLogic()
     {
         CastDeley = _baseCastDelay;
-        _isSkillEnableBoostLogic = false;
-        SetBoostLogic(false);
     }
-
-
-    private void SetBoostLogic(bool value) => _isSkillEnableBoostLogic = value;
 
     public override void Init(SkillRenderer render, Character hero)
     {
@@ -157,6 +150,8 @@ public class ReconnaissanceFire : Skill
 
         string trigger = _castFromExtendedRadius ? "ShotSkyCastDelay" : "ThrowCastDelay";
         Animation.PlayTrigger(trigger);
+        
+        Hero.Animator.speed = Hero.Animator.speed / AnimSlowdownFactor;
     }
 
     public void AnimationFireMove()
@@ -192,8 +187,6 @@ public class ReconnaissanceFire : Skill
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        Hero.Animator.speed = Hero.Animator.speed / AnimSlowdownFactor;
-
         ReconnaissanceFireHealthTalentEnter();
 
         if (_isFireArrowIntoSkyRadiusTalent)
@@ -257,6 +250,9 @@ public class ReconnaissanceFire : Skill
         Hero.Move.StopLookAt();
         Hero.Move.SetCanMove(true);
 
+        float dist = Vector3.Distance(transform.position, _targetPoint);
+        _castFromExtendedRadius = _isFireArrowIntoSkyRadiusTalent && (dist > AreaInfo.Radius);
+        
         CmdSpawnProjectile(_targetPoint, _castFromExtendedRadius, _isFireArrowIntoSkyRadiusTalent);
         
         ResetData();

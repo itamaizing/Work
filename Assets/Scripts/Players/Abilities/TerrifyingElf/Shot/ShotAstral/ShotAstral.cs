@@ -22,11 +22,16 @@ public class ShotAstral : Skill, IMultiMagicSkill
         Targeting.NoObstacles(_targetPoint, transform.position, _obstacle);
 
     private void OnDestroy() => OnSkillCanceled -= HandleSkillCanceled;
+    
+    protected override void PlayPrepareAnim()
+    {
+        if (CastDeley > 0f)
+            Hero.Animator.speed /= CastDeley;
+    }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callback)
     {
         OnSkillCanceled += HandleSkillCanceled;
-        Hero.Animator.speed /= CastDeley;
         var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
         while (float.IsPositiveInfinity(_targetPoint.x))

@@ -35,6 +35,9 @@ public class ShotIntoSky : Skill
     private bool _isShotRadiusUpgradeActive;
     private bool _isSkillEnableBoostLogicActiveTalent;
 
+    public bool IsSkillBoostEnabled => _isSkillBoostEnabled;
+    private bool _isSkillBoostEnabled;
+
     public void ShotsIntoSkyMagicDebuffTalentActive(bool value) => shotMagicDebuffActive = value;
     public void SetTripleShotTalentActive(bool value) => tripleShotTalentActive = value;
     
@@ -77,6 +80,13 @@ public class ShotIntoSky : Skill
         RpcInit(impact.gameObject, damage, false);
 
         StartCoroutine(ActivateAfterDelay(impact.GetComponent<NetworkIdentity>().netId));
+        RpcCooldownFullImpact();
+    }
+    
+    [ClientRpc]
+    private void RpcCooldownFullImpact()
+    {
+        Cooldown.Start();
     }
 
     #endregion
@@ -96,8 +106,25 @@ public class ShotIntoSky : Skill
 
     protected override bool IsCanCast => Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.Radius;
 
-    protected override void SkillEnableBoostLogic() => CastDeley = 0;
-    protected override void SkillDisableBoostLogic() => CastDeley = _baseCastDelay;
+    protected override void SkillEnableBoostLogic()
+    {
+        CastDeley = 0;
+        CmdSetDelay(CastDeley);
+        _isSkillBoostEnabled = true;
+    }
+
+    protected override void SkillDisableBoostLogic()
+    {
+        CastDeley = _baseCastDelay;
+        CmdSetDelay(CastDeley);
+        _isSkillBoostEnabled = false;
+    }
+
+    [Command]
+    private void CmdSetDelay(float newValue)
+    {
+        CastDeley = newValue;
+    }
 
     public void TryStartBoost()
     {
@@ -146,12 +173,15 @@ public class ShotIntoSky : Skill
             else CmdDestroyPendingImpacts();
         }
     }
-
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    
+    protected override void PlayPrepareAnim()
     {
         if (CastDeley > 0f)
             Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+    }
 
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    {
         Vector3 targetPoint = Vector3.positiveInfinity;
 
         while (float.IsPositiveInfinity(targetPoint.x) && !_disactive)
@@ -245,8 +275,7 @@ public class ShotIntoSky : Skill
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         var hits = Physics.RaycastAll(ray, 100f, ~0).OrderBy(hit => hit.distance);
-
-
+        
         foreach (var hit in hits)
         {
             if (hit.collider.GetComponent<Character>() != null) continue;

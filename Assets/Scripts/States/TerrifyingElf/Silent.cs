@@ -25,44 +25,6 @@ public class Silent : AbstractCharacterState
 
         Debug.Log($"duration: {duration}");
 
-        if (base.personWhoMadeBuff != null && base.personWhoMadeBuff.TryGetComponent<Silence>(out var silence))
-        {
-            _isSilenceAddAllCharacterWithDeabaffElf = silence.IsSilenceAddAllCharacterWithDeabaffElf;
-            _silence = silence;
-        }
-
-        if (NetworkServer.active && _silence != null && _isSilenceAddAllCharacterWithDeabaffElf)
-        {
-            HashSet<States> targetDebuffsFromCaster = new();
-
-            foreach (var state in characterState.CurrentStates) 
-                if (state.BaffDebaff == BaffDebaff.Debaff && state.PersonWhoMadeBuff == base.personWhoMadeBuff) 
-                    targetDebuffsFromCaster.Add(state.State);
-
-            if (targetDebuffsFromCaster.Count > 0)
-            {
-                GameObject casterObj = base.personWhoMadeBuff != null ? base.personWhoMadeBuff.gameObject : characterState.gameObject;
-
-                foreach (var target in GameObject.FindObjectsOfType<Character>())
-                {
-                    if (target == characterState.Character)
-                        continue;
-
-                    var state = target.CharacterState;
-                    if (state == null) continue;
-
-                    foreach (var targetState in state.CurrentStates)
-                    {
-                        if (targetState.BaffDebaff == BaffDebaff.Debaff && targetState.PersonWhoMadeBuff == base.personWhoMadeBuff && targetDebuffsFromCaster.Contains(targetState.State))
-                        {
-                            CmdStateSilent(target, duration, casterObj);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
         BlockMagicAbilities();
     }
 

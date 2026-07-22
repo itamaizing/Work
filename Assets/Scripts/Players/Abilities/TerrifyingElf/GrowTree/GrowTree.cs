@@ -126,9 +126,15 @@ public class GrowTree : Skill
         _castFromExtendedRadius = _isGrowTreeArrowIntoSkyRadiusTalent && (dist > AreaInfo.Radius);
 
         int nearCount = _activeTrees.Count(tree => tree != null && Vector3.Distance(tree.transform.position, _targetPoint) <= AreaInfo.Radius);
-        CastDeley = _castFromExtendedRadius
-            ? _baseCastDelay
-            : (nearCount == 0 ? _baseCastDelay : _baseCastDelay * Mathf.Pow(2, nearCount));
+
+        if (_castFromExtendedRadius)
+        {
+            CastDeley = 0f;
+        }
+        else
+        {
+            CastDeley = (nearCount == 0 ? _baseCastDelay : _baseCastDelay * Mathf.Pow(2, nearCount));
+        }
 
         string trigger = _castFromExtendedRadius ? ShotSkyWithTreeCastDelay : GrowTreeCastDelay;
         Animation.PlayTrigger(trigger);
@@ -260,6 +266,15 @@ public class GrowTree : Skill
         }
         HideExtendedRadius();
 
+        float dist = Vector3.Distance(transform.position, targetPoint);
+        _castFromExtendedRadius = _isGrowTreeArrowIntoSkyRadiusTalent && (dist > AreaInfo.Radius);
+        bool isBoostActive = _shotIntoSky != null && _shotIntoSky.IsSkillBoostEnabled;
+
+        if (_castFromExtendedRadius && isBoostActive)
+        {
+            CastDeley = 0f;
+        }
+        
         Renderer.ShowAOEIndicator(targetPoint, isCommand: false);
 
         TargetInfo targetInfo = new TargetInfo();

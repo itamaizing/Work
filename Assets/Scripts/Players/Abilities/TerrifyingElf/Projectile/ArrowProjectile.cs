@@ -10,7 +10,6 @@ public class ArrowProjectile : Projectiles
     [SerializeField] private float _arrowYOffset = 1.5f;
     [SerializeField] private bool _arrowDark;
     [SerializeField] private float _duration;
-    [SerializeField] private DamageType _damageTypePhysics;
     [SerializeField] private GameObject _arrow;
     [SerializeField] private SphereCollider _sphereCollider;
 
@@ -238,11 +237,11 @@ public class ArrowProjectile : Projectiles
                 if (character != null)
                 {
                     float modifiedDamage = ApplyElvenCritModifier(_damage, character);
-                    ApplyDamage(modifiedDamage, _damageTypePhysics, collider.gameObject);
+                    ApplyDamage(modifiedDamage, DamageType.Physical, collider.gameObject);
                 }
 
-                else ApplyDamage(_damage, _damageTypePhysics, collider.gameObject);
-                if (TryApplyDamage(_damageTypePhysics, _skill.Info.AttackRangeType, collider.gameObject)) return;
+                else ApplyDamage(_damage, DamageType.Physical, collider.gameObject);
+                if (TryApplyDamage(DamageType.Physical, _skill.Info.AttackRangeType, collider.gameObject)) return;
             }
 
             float totalMagDamage = _magDamage;
@@ -250,7 +249,7 @@ public class ArrowProjectile : Projectiles
 
             Debug.Log($"totalMagDamage: {totalMagDamage}");
 
-            ApplyDamage(totalMagDamage, _skill.Info.DamageType, collider.gameObject);
+            ApplyDamage(totalMagDamage, DamageType.Magical, collider.gameObject);
 
             if (character != null) character.CharacterState.AddState(States.InnerDarkness, _duration, 0, _skill.Hero.gameObject, _skill.name);
         }
@@ -260,10 +259,10 @@ public class ArrowProjectile : Projectiles
             if (character != null)
             {
                 float modifiedDamage = ApplyElvenCritModifier(_damage, character);
-                ApplyDamage(modifiedDamage, _damageTypePhysics, collider.gameObject);
+                ApplyDamage(modifiedDamage, DamageType.Physical, collider.gameObject);
             }
 
-            else ApplyDamage(_damage, _damageTypePhysics, collider.gameObject);
+            else ApplyDamage(_damage, DamageType.Physical, collider.gameObject);
         }
     }
     #endregion

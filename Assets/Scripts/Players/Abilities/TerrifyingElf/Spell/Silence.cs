@@ -23,6 +23,7 @@ public class Silence : Skill
     private const float GhostHealthCheckDelay = 0.1f;
     private const float BaseDarknessMultiplier = 1.4f;
     private const float StackMultiplierBonus = 0.1f;
+    private const float StatesCacheInterval = 1f;
     #endregion
 
     private AudioSource _audioSource;
@@ -40,6 +41,13 @@ public class Silence : Skill
     private bool _isApplyingSilenceChain = false;
     public bool IsSilenceAddAllCharacterWithDeabaffElf { get => _isSilenceAddAllCharacterWithDeabaffElf; }
     
+    private readonly HashSet<CharacterState> _targetsToSilence = new HashSet<CharacterState>();
+    private readonly Collider[] _overlapBuffer = new Collider[64];
+    private readonly List<CharacterState> _cachedCharacterStates = new List<CharacterState>();
+    private float _lastStatesCacheTime;
+    
+    private readonly List<CharacterState> _batchTargetsList = new List<CharacterState>();
+
     private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
     
     public void WeakeningSilenceTalentActive(bool value) => _weakeningSilenceTalentActive = value;
@@ -123,60 +131,121 @@ public class Silence : Skill
         yield return null;
     }
 
-    private void ApplyStateToEnemiesInZone(Vector3 target)
+     private void ApplyStateToEnemiesInZone(Vector3 target)
     {
-        Collider[] hitColliders = Physics.OverlapSphere(target, AreaInfo.Area - SilenceAreaRadiusOffset, Targeting.Layer);
+        if (_isApplyingSilenceChain) return;
+        _isApplyingSilenceChain = true;
 
-        int minionHitCount = 0;
-        int ghostAuraMinionHitCount = 0;
-
-        HashSet<CharacterState> targetsToSilence = new HashSet<CharacterState>();
-
-        foreach (var hitCollider in hitColliders)
+        try
         {
-            if (hitCollider.gameObject != Hero.gameObject)
+            int hitCount = Physics.OverlapSphereNonAlloc(target, AreaInfo.Area - SilenceAreaRadiusOffset, _overlapBuffer, Targeting.Layer);
+
+            int minionHitCount = 0;
+            int ghostAuraMinionHitCount = 0;
+
+            _targetsToSilence.Clear();
+
+            for (int i = 0; i < hitCount; i++)
             {
-                ApplyEnemiesZone(hitCollider, ref minionHitCount, ref ghostAuraMinionHitCount, targetsToSilence);
-            }
-        }
-        
-        if (_isSilenceAddAllCharacterWithDeabaffElf)
-        {
-            bool anyTargetHasDebuff = false;
-            foreach (var tState in targetsToSilence)
-            {
-                if (tState != null && tState.CheckForState(States.InnerDarkness))
+                Collider hitCollider = _overlapBuffer[i];
+                if (hitCollider != null && hitCollider.gameObject != Hero.gameObject)
                 {
-                    anyTargetHasDebuff = true;
-                    break;
+                    ApplyEnemiesZone(hitCollider, ref minionHitCount, ref ghostAuraMinionHitCount, _targetsToSilence);
                 }
             }
 
-            if (anyTargetHasDebuff)
+            Array.Clear(_overlapBuffer, 0, hitCount);
+            
+            if (_isSilenceAddAllCharacterWithDeabaffElf)
             {
-                var allCharacterStates = FindObjectsOfType<CharacterState>();
-                foreach (var state in allCharacterStates)
+                bool anyTargetHasDebuff = false;
+                foreach (var tState in _targetsToSilence)
                 {
-                    if (state != null && state.CheckForState(States.InnerDarkness))
+                    if (tState != null && tState.CheckForState(States.InnerDarkness))
                     {
-                        targetsToSilence.Add(state);
+                        anyTargetHasDebuff = true;
+                        break;
+                    }
+                }
+
+                if (anyTargetHasDebuff)
+                {
+                    if (Time.time - _lastStatesCacheTime > StatesCacheInterval || _cachedCharacterStates.Count == 0)
+                    {
+                        _cachedCharacterStates.Clear();
+                        CharacterState[] allStates = FindObjectsOfType<CharacterState>();
+                        _cachedCharacterStates.AddRange(allStates);
+                        _lastStatesCacheTime = Time.time;
+                    }
+                    else
+                    {
+                        _cachedCharacterStates.RemoveAll(x => x == null);
+                    }
+
+                    foreach (var state in _cachedCharacterStates)
+                    {
+                        if (state != null && state.CheckForState(States.InnerDarkness))
+                        {
+                            _targetsToSilence.Add(state);
+                        }
                     }
                 }
             }
-        }
 
-        foreach (var targetState in targetsToSilence)
-        {
-            if (targetState != null)
+            _batchTargetsList.Clear();
+            foreach (var targetState in _targetsToSilence)
             {
-                CmdApplySilenceState(targetState);
+                if (targetState != null)
+                {
+                    _batchTargetsList.Add(targetState);
+                }
             }
-        }
 
-        if (minionHitCount > 0 && _isSilenceEffectsOnMinionMagic)
-            Cooldown.Modify(-(GhostCooldownPerMinion * minionHitCount));
-        if (ghostAuraMinionHitCount >= 2 && _isSilenceEffectGhostCast) CmdTriggerGhostFreeWindow();
+            if (_batchTargetsList.Count > 0)
+            {
+                CmdApplySilenceStatesBatch(_batchTargetsList);
+            }
+
+            if (minionHitCount > 0 && _isSilenceEffectsOnMinionMagic)
+                Cooldown.Modify(-(GhostCooldownPerMinion * minionHitCount));
+            if (ghostAuraMinionHitCount >= 2 && _isSilenceEffectGhostCast) CmdTriggerGhostFreeWindow();
+        }
+        finally
+        {
+            _isApplyingSilenceChain = false;
+        }
     }
+     
+     [Command]
+     private void CmdApplySilenceStatesBatch(List<CharacterState> targetStates)
+     {
+         if (targetStates == null || targetStates.Count == 0) return;
+
+         RpcPlayShotSound();
+
+         for (int i = 0; i < targetStates.Count; i++)
+         {
+             var targetState = targetStates[i];
+             if (targetState == null) continue;
+
+             float duration = _finalDuration;
+             bool hasInnerDarkness = targetState.CheckForState(States.InnerDarkness);
+
+             if (_effectsDarknessTalent && hasInnerDarkness)
+             {
+                 int stacks = targetState.CheckStateStacks(States.InnerDarkness);
+                 float durationMultiplier = BaseDarknessMultiplier + StackMultiplierBonus * (stacks - 1);
+                 duration += durationMultiplier;
+             }
+
+             targetState.AddState(States.Silent, duration, 0, Hero.gameObject, this.name);
+
+             if (_weakeningSilenceTalentActive && hasInnerDarkness) 
+             {
+                 targetState.AddState(States.WeakeningSilence, 4f, 4f, Hero.gameObject, this.name);
+             }
+         }
+     }
 
     [Command]
     private void CalculateFinalDurationAndSpendMana()
@@ -264,7 +333,6 @@ public class Silence : Skill
         {
             if (ghostAura.TryGetComponent<Health>(out var health))
             {
-                //if (health.CurrentValue <= 0) _ghost.ResetCurrentChargeCooldown(0);
                 if (health.CurrentValue <= 0) _ghost.Charges.RestoreCharge(0);
             }
         }
@@ -289,7 +357,6 @@ public class Silence : Skill
     [Command]
     private void CmdSpawnEffectAtTargetPoint(Vector3 point)
     {
-        RpcSpawnEffect(point);
         RpcSpawnEffect(point);
     }
 

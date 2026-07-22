@@ -6,7 +6,6 @@ public class HuntressTalent_11 : Talent
 {
     [SerializeField] private ReconnaissanceFire reconnaissanceFire;
     [SerializeField] private ShotIntoSky _shotIntoSky;
-    [SerializeField] private ShotsIntoSky _shotsIntoSky;
     [SerializeField] private GroundTrap _groundTrap;
 
     public override void Enter()

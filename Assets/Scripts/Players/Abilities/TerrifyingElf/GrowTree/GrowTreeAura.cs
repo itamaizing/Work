@@ -115,9 +115,11 @@ public class GrowTreeAura : NetworkBehaviour
         foreach (var skill in _skillManager.Abilities)
         {
             if (skill == null) continue;
-
-            skill.Attributes[SkillAttributeName.Length].AddModifier(new AttributeModifier(TreeBuffPercent, ModifierType.Flat, source: this));
-            skill.Attributes[SkillAttributeName.Radius].AddModifier(new AttributeModifier(TreeBuffPercent, ModifierType.Flat, source: this));
+            if (skill.Info.AbilityForm == AbilityForm.Physical || skill.Info.AbilityForm == AbilityForm.Both)
+            {
+                skill.Attributes[SkillAttributeName.Length].AddModifier(new AttributeModifier(TreeBuffPercent, ModifierType.Flat, source: this));
+                skill.Attributes[SkillAttributeName.Radius].AddModifier(new AttributeModifier(TreeBuffPercent, ModifierType.Flat, source: this));
+            }
         }
     }
 

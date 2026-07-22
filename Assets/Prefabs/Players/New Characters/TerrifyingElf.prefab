@@ -21675,12 +21675,12 @@ MonoBehaviour:
   _targetingComponent:
     type: 0
     _clickLayer: 0
-    _faction: 0
+    _faction: 4
     _unitType: 0
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   _obstacle:
     serializedVersion: 2
     m_Bits: 128
@@ -21727,6 +21727,7 @@ MonoBehaviour:
     _prepareTriggers: []
     _castTriggers: []
   trapPrefab: {fileID: 4405999295883627067, guid: 634880f733438024cbf14d239d494d86, type: 3}
+  trapPrefabPreview: {fileID: 4405999295883627067, guid: 2f58c581e2410464bbec79edd2988375, type: 3}
   owner: {fileID: 4534754468497973439}
   minDistanceRadiusCircle: {fileID: 6586971803846960611}
   arrowTrapProjectile: {fileID: 8210468906149221731, guid: 1f4d53244aee70742bb830f397fd8636, type: 3}
@@ -23444,7 +23445,6 @@ MonoBehaviour:
   character: {fileID: 4534754468497973439}
   reconnaissanceFire: {fileID: 2750012758126725032}
   _shotIntoSky: {fileID: 6009180366675701932}
-  _shotsIntoSky: {fileID: 826193211731534654}
   _groundTrap: {fileID: 8199207747846444516}
 --- !u!114 &1591870033198380293
 MonoBehaviour:

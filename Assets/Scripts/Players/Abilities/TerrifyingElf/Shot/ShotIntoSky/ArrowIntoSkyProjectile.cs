@@ -72,24 +72,17 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
     {
         if (((1 << other.gameObject.layer) & _skill.Targeting.Layer.value) == 0) return;
         if (!_damagedThisTick.Add(other)) return;
-
+        
         ApplyDamageEnemy(other);
     }
     
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
-        { 
+        {
             _onImpactActivated?.Invoke();
             _onImpactActivated = null;
         }
-    }
-    
-    public void ActivateVisualOnly()
-    {
-        Arrow.SetActive(true);
-        circle.SetActive(true);
-        Destroy(gameObject, impactLifeTime);
     }
 
     #region ApplyAdditionalDamage

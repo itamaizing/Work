@@ -101,12 +101,17 @@ public class ShotsIntoSky : Skill
         yield return _boostDuration;
         DisableSkillBoost();
     }
-
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    
+    protected override void PlayPrepareAnim()
     {
         if (CastDeley > 0f)
             Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+        
+        base.PlayPrepareAnim();
+    }
 
+    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
+    {
         Vector3 targetPoint = Vector3.positiveInfinity;
 
         while (float.IsPositiveInfinity(targetPoint.x) && !_disactive)
@@ -138,8 +143,10 @@ public class ShotsIntoSky : Skill
         Hero.Move.StopLookAt();
         Hero.Move.SetCanMove(true);
 
+        int projectileCount = 0;
+
         CmdSpawnImpact(_targetPoint, Damage, false);
-        _secondShotPlanned = true;
+        projectileCount++;
 
         if (tripleShotTalentActive && reconnaissanceFire != null && reconnaissanceFire.CurrentFireAura != null)
         {
@@ -152,44 +159,29 @@ public class ShotsIntoSky : Skill
                 if (reconnaissanceFire.CurrentFireAura.StateDark)
                 {
                     CmdSpawnImpact(_targetPoint, Damage / 2, false);
+                    projectileCount++;
 
                     CmdSpawnImpact(_targetPoint, Damage / 4, true);
-                    _tripleShootPlanned = true;
+                    projectileCount++;
                 }
                 else
                 {
                     CmdSpawnImpact(_targetPoint, Damage / 2, true);
+                    projectileCount++;
                 }
             }
         }
-
+        
         CmdSpawnImpact(_targetPoint, Damage, false);
-
-        CmdExecuteCast();
+        projectileCount++;
+        
+        CmdExecuteAllWaves();
 
         yield return new WaitForSeconds(_dropDelayTime);
 
-        if (_secondShotPlanned)
+        for (int i = 1; i < projectileCount; i++)
         {
-            int shotHash = Animator.StringToHash("ShotsSkyCastDelay");
-            _hero.Animator.SetTrigger(shotHash);
-            _hero.NetworkAnimator.SetTrigger(shotHash);
-            
             yield return new WaitForSeconds(_extraShotDelay);
-            
-            CmdExecuteCast();
-            _secondShotPlanned = false;
-
-            if (_tripleShootPlanned)
-            {
-                yield return new WaitForSeconds(_dropDelayTime);
-
-                _hero.Animator.SetTrigger(shotHash);
-                _hero.NetworkAnimator.SetTrigger(shotHash);
-                yield return new WaitForSeconds(_extraShotDelay);
-                CmdExecuteCast();
-                _tripleShootPlanned = false;
-            }
         }
         
         _hero.Animator.speed = 1f;
@@ -233,16 +225,38 @@ public class ShotsIntoSky : Skill
     }
 
     [Command]
-    private void CmdExecuteCast()
+    private void CmdExecuteAllWaves()
     {
+        StartCoroutine(ServerExecuteAllWavesRoutine());
+    }
+
+    [Server]
+    private IEnumerator ServerExecuteAllWavesRoutine()
+    {
+        yield return new WaitForSeconds(_dropDelayTime);
+
         CleanupProjectileList();
 
-        if (_arrowsIntoSkyProjectileIds.Count == 0) return;
+        while (_arrowsIntoSkyProjectileIds.Count > 0)
+        {
+            uint id = _arrowsIntoSkyProjectileIds[0];
+            _arrowsIntoSkyProjectileIds.RemoveAt(0);
 
-        uint id = _arrowsIntoSkyProjectileIds[0];
-        _arrowsIntoSkyProjectileIds.RemoveAt(0);
+            if (NetworkServer.spawned.TryGetValue(id, out var netIdentity) && netIdentity != null)
+            {
+                var projectile = netIdentity.GetComponent<ArrowsIntoSkyProjectile>();
+                if (projectile != null)
+                {
+                    projectile.Activate();
+                    RpcActivate(projectile);
+                }
+            }
 
-        StartCoroutine(ActivateAfterDelay(id));
+            if (_arrowsIntoSkyProjectileIds.Count > 0)
+            {
+                yield return new WaitForSeconds(_extraShotDelay);
+            }
+        }
     }
 
     [Command] private void CmdDestroyPendingImpacts() => ServerDestroyPendingImpacts();
