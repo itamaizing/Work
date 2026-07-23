@@ -87,7 +87,7 @@ public class MultiMagic : RefreshingState
 
     private void OnTargetSkillCast(Skill skill)
     {
-        float distance = skill.AreaInfo.Radius;
+        float distance = Mathf.Max(skill.AreaInfo.Radius,Skill.AreaInfo.CastLength);
         LayerMask targetsMask = skill.Targeting.Layer;
 
         var colliders = Physics.OverlapSphere(characterState.transform.position, distance, targetsMask);

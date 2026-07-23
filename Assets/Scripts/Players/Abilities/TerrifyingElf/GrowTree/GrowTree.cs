@@ -70,7 +70,7 @@ public class GrowTree : Skill
         {
             if (float.IsPositiveInfinity(_targetPoint.x)) return false;
 
-            float allowedRadius = _isGrowTreeArrowIntoSkyRadiusTalent ? _extendedRadius : AreaInfo.Radius;
+            float allowedRadius = IsExtendedRadiusAvailable() ? _extendedRadius : AreaInfo.Radius;
             return Targeting.IsPointInRadius(allowedRadius, _targetPoint);
         }
     }
@@ -123,7 +123,7 @@ public class GrowTree : Skill
     protected override void PlayPrepareAnim()
     {
         float dist = Vector3.Distance(transform.position, _targetPoint);
-        _castFromExtendedRadius = _isGrowTreeArrowIntoSkyRadiusTalent && (dist > AreaInfo.Radius);
+        _castFromExtendedRadius = IsExtendedRadiusAvailable() && (dist > AreaInfo.Radius);
 
         int nearCount = _activeTrees.Count(tree => tree != null && Vector3.Distance(tree.transform.position, _targetPoint) <= AreaInfo.Radius);
 
@@ -145,13 +145,18 @@ public class GrowTree : Skill
         }
     }
 
+    private bool IsExtendedRadiusAvailable()
+    {
+        return _hero.Abilities.GetSkill<ShotIntoSky>().IsSkillActive && _isGrowTreeArrowIntoSkyRadiusTalent;
+    }
+
     private void HandleSkillDeleted(Skill skill)
     {
         if (skill == this) Renderer.HideAOEIndicator(isCommand: false);
     }
     private void ShowExtendedRadius()
     {
-        if (_extendedRadiusCircle == null) _extendedRadiusCircle = GetComponentInChildren<DrawCircle>(true);
+        if (_extendedRadiusCircle == null && IsExtendedRadiusAvailable()) _extendedRadiusCircle = GetComponentInChildren<DrawCircle>(true);
     }
 
     private void HideExtendedRadius()
@@ -221,7 +226,7 @@ public class GrowTree : Skill
         _activeTrees.RemoveAll(tree => tree == null);
         CmdRemoveTree();
 
-        if (_isGrowTreeArrowIntoSkyRadiusTalent)
+        if (IsExtendedRadiusAvailable())
         {
             ShowExtendedRadius();
             if (_checkExtendedRadiusCoroutine != null) StopCoroutine(_checkExtendedRadiusCoroutine);
@@ -267,7 +272,7 @@ public class GrowTree : Skill
         HideExtendedRadius();
 
         float dist = Vector3.Distance(transform.position, targetPoint);
-        _castFromExtendedRadius = _isGrowTreeArrowIntoSkyRadiusTalent && (dist > AreaInfo.Radius);
+        _castFromExtendedRadius = IsExtendedRadiusAvailable() && (dist > AreaInfo.Radius);
         bool isBoostActive = _shotIntoSky != null && _shotIntoSky.IsSkillBoostEnabled;
 
         if (_castFromExtendedRadius && isBoostActive)
@@ -298,7 +303,7 @@ public class GrowTree : Skill
         Vector3 spawnPos = _targetPoint;
 
         if (_isSpawnHero) CmdSpawnTreeAndTeleport(_hero.transform.position, TreeFillDuration);
-        else CmdSpawnTree(spawnPos, _castFromExtendedRadius, _isGrowTreeArrowIntoSkyRadiusTalent, TreeFillDuration);
+        else CmdSpawnTree(spawnPos, _castFromExtendedRadius, IsExtendedRadiusAvailable(), TreeFillDuration);
 
         if (_growVisualExitRoutine != null) StopCoroutine(_growVisualExitRoutine);
         _growVisualExitRoutine = StartCoroutine(FinishGrowthVisualAfterDelay(TreeFillDuration, wasFromExtendedRadius));

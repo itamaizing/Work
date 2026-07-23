@@ -13,7 +13,6 @@ public class ShotAstral : Skill, IMultiMagicSkill
     private const string _endAnimTrigger = "ShotCastDelayEndAnimTrigger";
 
     private Vector3 _targetPoint = Vector3.positiveInfinity;
-    //private Character _target;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash(_startAnimTrigger);
     protected override int AnimTriggerCast => 0;
@@ -26,13 +25,13 @@ public class ShotAstral : Skill, IMultiMagicSkill
     protected override void PlayPrepareAnim()
     {
         if (CastDeley > 0f)
-            Hero.Animator.speed /= CastDeley;
+            Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+        base.PlayPrepareAnim();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callback)
     {
         OnSkillCanceled += HandleSkillCanceled;
-        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
         while (float.IsPositiveInfinity(_targetPoint.x))
         {
@@ -40,26 +39,19 @@ public class ShotAstral : Skill, IMultiMagicSkill
             {
                 Vector3 click = Targeting.GetMousePoint();
 
-                if (Targeting.IsPointInRadius(AreaInfo.Radius, click) && Targeting.NoObstacles(click, transform.position, _obstacle))
+                if (Targeting.NoObstacles(click, transform.position, _obstacle))
                 {
                     _targetPoint = click;
                     Targeting.FindTempTarget();
-                    if (Targeting.GetTarget()?.Character is Character player && player == _playerLinks)
-                    {
-                        _playerLinks.CharacterState.CmdAddState(States.Astral, _projectile.Duration, 0, gameObject, "ShotAstral");
-                        TryCancel(true);
-                        yield break;
-                    }
 
                     if (Targeting.GetTarget()?.Character is Character character)
                     {
-                        //_target = character;
-                        if (multiMagic != null) multiMagic.LastTarget = Targeting.GetTarget()?.Character;
                         Hero.Move.LookAtTransform(character.transform);
                     }
-
-                    else Hero.Move.LookAtPosition(_targetPoint);
-                    Hero.Move.SetCanMove(false);
+                    else
+                    {
+                        Hero.Move.LookAtPosition(_targetPoint);
+                    }
                 }
             }
             yield return null;
@@ -78,6 +70,9 @@ public class ShotAstral : Skill, IMultiMagicSkill
             ClearData();
             yield break;
         }
+        
+        
+        Hero.Move.SetCanMove(false);
 
         CmdCreateProjectileAtPosition(_targetPoint);
 
@@ -131,7 +126,6 @@ public class ShotAstral : Skill, IMultiMagicSkill
     protected override void ClearData()
     {
         Targeting.ClearTarget();
-       // _target = null;
         _targetPoint = Vector3.positiveInfinity;
     }
 

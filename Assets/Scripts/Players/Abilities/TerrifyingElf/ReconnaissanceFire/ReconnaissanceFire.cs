@@ -74,7 +74,7 @@ public class ReconnaissanceFire : Skill
         {
             if (float.IsPositiveInfinity(_targetPoint.x)) return false;
 
-            float allowedRadius = _isFireArrowIntoSkyRadiusTalent ? _extendedRadius : AreaInfo.Radius;
+            float allowedRadius = IsExtendedRadiusAvailable() ? _extendedRadius : AreaInfo.Radius;
             return Targeting.IsPointInRadius(allowedRadius, _targetPoint);
         }
     }
@@ -146,7 +146,7 @@ public class ReconnaissanceFire : Skill
     protected override void PlayPrepareAnim()
     {
         float dist = Vector3.Distance(transform.position, _targetPoint);
-        _castFromExtendedRadius = _isFireArrowIntoSkyRadiusTalent && (dist > AreaInfo.Radius);
+        _castFromExtendedRadius = IsExtendedRadiusAvailable() && (dist > AreaInfo.Radius);
 
         string trigger = _castFromExtendedRadius ? "ShotSkyCastDelay" : "ThrowCastDelay";
         Animation.PlayTrigger(trigger);
@@ -189,7 +189,7 @@ public class ReconnaissanceFire : Skill
     {
         ReconnaissanceFireHealthTalentEnter();
 
-        if (_isFireArrowIntoSkyRadiusTalent)
+        if (IsExtendedRadiusAvailable())
         {
             ShowExtendedRadius();
             if (_checkExtendedRadiusCoroutine != null) StopCoroutine(_checkExtendedRadiusCoroutine);
@@ -205,7 +205,7 @@ public class ReconnaissanceFire : Skill
             if (_arcRenderer != null && hoverPoint.IsFinite())
             {
                 float dist = Vector3.Distance(transform.position, hoverPoint);
-                bool isExtended = _isFireArrowIntoSkyRadiusTalent && (dist > AreaInfo.Radius);
+                bool isExtended = IsExtendedRadiusAvailable() && (dist > AreaInfo.Radius);
 
                 if (!isExtended)
                 {
@@ -251,9 +251,9 @@ public class ReconnaissanceFire : Skill
         Hero.Move.SetCanMove(true);
 
         float dist = Vector3.Distance(transform.position, _targetPoint);
-        _castFromExtendedRadius = _isFireArrowIntoSkyRadiusTalent && (dist > AreaInfo.Radius);
+        _castFromExtendedRadius = IsExtendedRadiusAvailable() && (dist > AreaInfo.Radius);
         
-        CmdSpawnProjectile(_targetPoint, _castFromExtendedRadius, _isFireArrowIntoSkyRadiusTalent);
+        CmdSpawnProjectile(_targetPoint, _castFromExtendedRadius, IsExtendedRadiusAvailable());
         
         ResetData();
 
@@ -588,6 +588,11 @@ public class ReconnaissanceFire : Skill
             if (_checkExtendedRadiusCoroutine != null) StopCoroutine(_checkExtendedRadiusCoroutine);
             _checkExtendedRadiusCoroutine = StartCoroutine(CheckExtendedRadiusJob());
         }
+    }
+    
+    private bool IsExtendedRadiusAvailable()
+    {
+        return _hero.Abilities.GetSkill<ShotIntoSky>().IsSkillActive && _isFireArrowIntoSkyRadiusTalent;
     }
     #endregion
 }

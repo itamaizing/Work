@@ -177,13 +177,6 @@ public class ShotsIntoSky : Skill
         
         CmdExecuteAllWaves();
 
-        yield return new WaitForSeconds(_dropDelayTime);
-
-        for (int i = 1; i < projectileCount; i++)
-        {
-            yield return new WaitForSeconds(_extraShotDelay);
-        }
-        
         _hero.Animator.speed = 1f;
         ClearData();
     }

@@ -178,6 +178,7 @@ public class ShotIntoSky : Skill
     {
         if (CastDeley > 0f)
             Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+        base.PlayPrepareAnim();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)

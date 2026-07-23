@@ -61,7 +61,7 @@ public class GroundTrap : Skill
         {
             if (_disactive) return false;
 
-            float allowedRadius = _isTrapArrowIntoSkyRadiusTalent ? _extendedRadius : AreaInfo.Radius;
+            float allowedRadius = IsExtendedRadiusAvailable() ? _extendedRadius : AreaInfo.Radius;
 
             if (TargetInfoQueue.Count > 0 && TargetInfoQueue.TryPeek(out var target) && target != null && target.Points.Count > 0)
             {
@@ -222,7 +222,7 @@ public class GroundTrap : Skill
     protected override void PlayPrepareAnim()
     {
         float dist = Vector3.Distance(transform.position, _startPosition);
-        _castFromExtendedRadius = _isTrapArrowIntoSkyRadiusTalent && (dist > AreaInfo.Radius);
+        _castFromExtendedRadius = IsExtendedRadiusAvailable() && (dist > AreaInfo.Radius);
 
         string trigger = _castFromExtendedRadius ? "ShotSkyCastDelay" : "Shot";
         Animation.PlayTrigger(trigger);
@@ -236,7 +236,7 @@ public class GroundTrap : Skill
         if (isGroundHealthTalent) SetGroundNewHealth();
         else SetGroundBaseHealth();
 
-        if (_isTrapArrowIntoSkyRadiusTalent)
+        if (IsExtendedRadiusAvailable())
         {
             ShowExtendedRadius();
             if (_checkExtendedRadiusCoroutine != null) StopCoroutine(_checkExtendedRadiusCoroutine);
@@ -255,7 +255,7 @@ public class GroundTrap : Skill
             if (float.IsPositiveInfinity(mousePos.x)) { yield return null; continue; }
 
             float dist = Vector3.Distance(transform.position, mousePos);
-            float allowedRadius = _isTrapArrowIntoSkyRadiusTalent ? _extendedRadius : AreaInfo.Radius;
+            float allowedRadius = IsExtendedRadiusAvailable() ? _extendedRadius : AreaInfo.Radius;
 
             bool inOuterRadius = dist <= allowedRadius;
             bool outOfInnerRing = dist >= minDistanceRadius;
@@ -306,9 +306,9 @@ public class GroundTrap : Skill
     {
         KillFirstQueuedPreview();
         float dist = Vector3.Distance(transform.position, _startPosition);
-        _castFromExtendedRadius = _isTrapArrowIntoSkyRadiusTalent && (dist > AreaInfo.Radius);
+        _castFromExtendedRadius = IsExtendedRadiusAvailable() && (dist > AreaInfo.Radius);
 
-        CmdSpawnGroundTrap(_startPosition, _startRotation, _castFromExtendedRadius, _isTrapArrowIntoSkyRadiusTalent);
+        CmdSpawnGroundTrap(_startPosition, _startRotation, _castFromExtendedRadius, IsExtendedRadiusAvailable());
 
         SkillCastEnd();
         _preview = null;
@@ -475,7 +475,12 @@ public class GroundTrap : Skill
 
     #region Talent
     public void GroundTrapHealthActiveTalent(bool value) => isGroundHealthTalent = value;
-
+    
+    private bool IsExtendedRadiusAvailable()
+    {
+        return _hero.Abilities.GetSkill<ShotIntoSky>().IsSkillActive && _isTrapArrowIntoSkyRadiusTalent;
+    }
+    
     public void TrapArrowIntoSkyRadius(bool value)
     {
         if (value == _isTrapArrowIntoSkyRadiusTalent) return;

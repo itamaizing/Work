@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PartialBlindness : StackableState
+public class PartialBlindness : RefreshingState
 {
     private float _baseDuration;
     private float _duration;
@@ -53,20 +53,11 @@ public class PartialBlindness : StackableState
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0f)
-        {
-            ExitState();
-            return;
-        }
-
     }
 
     public override bool Stack(float time)
     {
         _duration = _baseDuration;
-
-        if (CurrentStacksCount < MaxStacksCount) currentStacksCount++;
 
         return true;
     }

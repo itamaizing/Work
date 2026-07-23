@@ -20007,11 +20007,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8492809262968261936, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 8492809262968261936, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 8569747795464636412, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _flyChecker
@@ -20618,7 +20618,7 @@ MonoBehaviour:
   _damageValue: 8
   _infoComponent:
     _school: 6
-    _form: 2
+    _form: 1
     _damageType: 1
     _rangeType: 1
     _skillType: 0
@@ -24295,7 +24295,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 4534754468497973439}
-  silence: {fileID: 4161291845396503115}
 --- !u!114 &6329989501365168688
 MonoBehaviour:
   m_ObjectHideFlags: 0

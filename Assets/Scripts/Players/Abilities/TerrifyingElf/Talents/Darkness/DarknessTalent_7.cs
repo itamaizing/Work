@@ -9,12 +9,14 @@ public class DarknessTalent_7 : Talent
 
     public override void Enter()
     {
-        ability.ActivateSkill(subjugationMind);
+        //ability.ActivateSkill(subjugationMind); #ПЕРЕНЕСТИ В 13М
+        character.Abilities.ActivateSkill(character.Abilities.GetSkill<Suppression>());
 
     }
 
     public override void Exit()
     {
-        ability.DeactivateSkill(subjugationMind);
+        //ability.DeactivateSkill(subjugationMind); #ПЕРЕНЕСТИ В 13М
+        character.Abilities.DeactivateSkill(character.Abilities.GetSkill<Suppression>());
     }
 }
