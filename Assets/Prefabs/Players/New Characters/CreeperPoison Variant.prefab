@@ -12014,6 +12014,7 @@ SkinnedMeshRenderer:
   - {fileID: 2100000, guid: 417c31bf4a47a334aad9ac34cad5b638, type: 2}
   - {fileID: 2100000, guid: 0f9707a0d098fab4eba8912fe9f820df, type: 2}
   - {fileID: 2100000, guid: 2c0eaae75319c0a448714918097cf4b2, type: 2}
+  - {fileID: 2100000, guid: 395738b3ce1d1e340a82a3dfbc70659c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -21099,15 +21100,24 @@ MonoBehaviour:
       \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C + 1000% \u043D\u0430 \u043A\u0430\u0436\u0434\u044B\u0439
       \u0443\u0434\u0430\u0440"
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041C\u043E\u043B\u043D\u0438\u0435\u043D\u043E\u0441\u043D\u044B\u0435
       \u0443\u0434\u0430\u0440\u044B"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 15a6d004456bc1c47897f234d7bc77ac, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109890
   character: {fileID: 2483674839823445686}
   skillManager: {fileID: 2617687491934927079}
   lightningStrikes: {fileID: 734640227586387152}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109890
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &5042264585882244307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21136,15 +21146,24 @@ MonoBehaviour:
       \u043A\u0440\u0438\u043F\u0435\u0440 \u0442\u0430\u043A \u0436\u0435 \u043D\u0430\u043D\u043E\u0441\u0438\u0442
       \u0443\u0434\u0430\u0440\u044B \u0441 \u0440\u0443\u043A\u0438. "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041C\u043E\u043B\u043D\u0438\u0435\u043D\u043E\u0441\u043D\u043E\u0435
       \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0436\u0435\u043D\u0438\u0435"
+    ConditionDescription: 
     Icon: {fileID: -2889036831652375965, guid: 0ecb6aa3d380cce48bb2d427267b10be, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109905
   character: {fileID: 2483674839823445686}
   _grabTongue: {fileID: 565901441313688860}
   _skillManager: {fileID: 2617687491934927079}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109905
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &8303087721396363938
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21173,13 +21192,22 @@ MonoBehaviour:
       \u0432\u043D\u0443\u0442\u0440\u0435\u043D\u043D\u044F\u044F \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0430\u044F
       \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C"
     _stateInfos: []
-    IsOpen: 0
     Description: " \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0440\u0435\u043F\u0442\u0438\u043B\u0438\u0438"
+    ConditionDescription: 
     Icon: {fileID: -1130486450, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109917
   character: {fileID: 2483674839823445686}
   _creeperPoisonAura: {fileID: 2161342997938470374}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109917
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &965364833510229628
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21195,14 +21223,23 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: '-'
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109886
   character: {fileID: 2483674839823445686}
   skillManager: {fileID: 2617687491934927079}
   lightningMovement: {fileID: 7013613396998518356}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109886
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3990197728858337664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21226,13 +21263,22 @@ MonoBehaviour:
       10%, \u043A\u0430\u0436\u0434\u044B\u0439 \u0441\u0442\u0430\u043A \u044F\u0434\u0430
       \u0442\u043E\u0436\u0435 \u0441\u0447\u0438\u0442\u0430\u0435\u0442\u0441\u044F"
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0441\u0432\u043E\u044F \u0441\u0442\u0438\u0445\u0438\u044F"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: a538aa3f3c7f21744bdd9f0be36dd23a, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109901
   character: {fileID: 2483674839823445686}
   _creeperPoisonAura: {fileID: 2161342997938470374}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109901
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &9053993306267233736
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21258,13 +21304,22 @@ MonoBehaviour:
       \u0441\u0443\u043C\u0438\u0440\u043E\u0432\u0430\u043D \u0434\u043E 4\u0451\u0445
       \u0440\u0430\u0437"
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0420\u0435\u043F\u0442\u0438\u043B\u0438\u044F 6"
+    ConditionDescription: 
     Icon: {fileID: -827746748188887365, guid: 78a2cc80f7e751a42ab2e639b934dbd4, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109921
   character: {fileID: 2483674839823445686}
   _lightningMovement: {fileID: 7013613396998518356}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109921
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &536535723249904053
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21286,15 +21341,24 @@ MonoBehaviour:
       10%, \u043A\u0430\u0436\u0434\u044B\u0439 \u0441\u0442\u0430\u043A \u044F\u0434\u0430
       \u0442\u043E\u0436\u0435 \u0441\u0447\u0438\u0442\u0430\u0435\u0442\u0441\u044F"
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0441\u0432\u043E\u044F \u0441\u0442\u0438\u0445\u0438\u044F"
+    ConditionDescription: 
     Icon: {fileID: 9134556171150595701, guid: 64973930cd9a4884b953600ae666b1ab, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109883
   character: {fileID: 2483674839823445686}
   skillManager: {fileID: 2617687491934927079}
   _creeperStrike: {fileID: 6745892867125186241}
   speed: {fileID: 8150686032681382611}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109883
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3197566967140553242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21316,14 +21380,23 @@ MonoBehaviour:
       \u043D\u0430 10%, \u043A\u0430\u0436\u0434\u044B\u0439 \u0441\u0442\u0430\u043A
       \u044F\u0434\u0430 \u0442\u043E\u0436\u0435 \u0441\u0447\u0438\u0442\u0430\u0435\u0442\u0441\u044F  "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0443\u0434\u043E\u0432\u043E\u043B\u044C\u0441\u0442\u0432\u0438\u0435
       \u043E\u0442\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0439"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 9e7cc7c0d2568c7488f977837518c754, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109897
   character: {fileID: 2483674839823445686}
   _creeperPoisonAura: {fileID: 2161342997938470374}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109897
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &7962128115380230153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21346,14 +21419,23 @@ MonoBehaviour:
       \u0438 \u0441\u0442\u0430\u043D\u0435\u0442 \u0432\u0440\u0430\u0436\u0434\u0435\u0431\u043D\u044B\u043C
       \u0434\u043B\u044F \u0432\u0440\u0430\u0433\u0430. "
     _stateInfos: []
-    IsOpen: 1
     Description: "\u041E\u0442\u0440\u0430\u0436\u0430\u044E\u0449\u0430\u044F \u0447\u0435\u0448\u0443\u044F"
+    ConditionDescription: 
     Icon: {fileID: -307085699197752814, guid: 7f05f44f84a019d43b55ce202988e516, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109915
   character: {fileID: 2483674839823445686}
   _reflectiveScales: {fileID: 6363943866240832142}
   _skillManager: {fileID: 2617687491934927079}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109915
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &6605119092001046139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21379,15 +21461,24 @@ MonoBehaviour:
       \u0446\u0435\u043B\u0438 \xAB\u0438\u0441\u0441\u0443\u0448\u0430\u044E\u0449\u0438\u043C
       \u044F\u0434\u043E\u043C\xBB"
     _stateInfos: []
-    IsOpen: 0
     Description: "\u043C\u0435\u0442\u0430\u0431\u043E\u043B\u0438\u0437\u043C \u0440\u0435\u043F\u0442\u0438\u043B\u0438\u0438"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 1769f25c7b0c5614a95a094ddfb76d45, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109910
   character: {fileID: 2483674839823445686}
   _metabolismReptile: {fileID: 1218428867352848936}
   _skillManager: {fileID: 2617687491934927079}
   _creeperPoisonAura: {fileID: 2161342997938470374}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109910
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &6226116417743377566
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21408,13 +21499,22 @@ MonoBehaviour:
       \u043E\u0441\u0442\u0430\u0432\u0448\u0435\u0435\u0441\u044F \u043A\u0434 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439
       \u043D\u0430 1 \u0441\u0435\u043A. "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0420\u0435\u043F\u0442\u0438\u043B\u0438\u044F 11"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: b0e188c000d602d4fb9e4faef638d8bc, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109908
   character: {fileID: 2483674839823445686}
   _creeperPoisonAura: {fileID: 2161342997938470374}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109908
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &4590320037838898502
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21437,14 +21537,23 @@ MonoBehaviour:
       \u043E\u0431\u043D\u0443\u043B\u044F\u044E\u0442\u0441\u044F \u0432\u0441\u0435
       \u043A\u0443\u043B\u0434\u0430\u0443\u043D\u044B. "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0421\u0442\u0430\u0437\u0438\u0441 \u0420\u0435\u043F\u0442\u0438\u043B\u0438"
+    ConditionDescription: 
     Icon: {fileID: -7188099409668787510, guid: 7b27e32cc10286343bb27c632c52ae06, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109904
   character: {fileID: 2483674839823445686}
   _reptilianStasis: {fileID: 4320175696667952190}
   _skillManager: {fileID: 2617687491934927079}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109904
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &4403101704771608953
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21471,13 +21580,22 @@ MonoBehaviour:
       \u0434\u0430\u044E\u0442 5% \u0448\u0430\u043D\u0441 \u04452.5 +1 +1 = \u04455,5 
       \u043A\u0440\u0438\u0442 \u0443\u0434\u0430\u0440 "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0420\u0435\u043F\u0442\u0438\u043B\u0438\u044F 13"
+    ConditionDescription: 
     Icon: {fileID: 1769666723, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109903
   character: {fileID: 2483674839823445686}
   creeperStrike: {fileID: 6745892867125186241}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109903
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &1774296685369443077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21515,12 +21633,21 @@ MonoBehaviour:
         \u0435\u0441\u043B\u0438 \u043A\u0440\u0438\u043F\u0435\u0440\u0430 \u043D\u0435
         \u0432\u0438\u0434\u044F\u0442 \u0446\u0435\u043B\u0438 \u0438 \u043E\u043D
         \u043C\u043E\u0436\u0435\u0442 \u0443\u0439\u0442\u0438 \u0432 \u043D\u0435\u0432\u0438\u0434\u0438\u043C\u043E\u0441\u0442\u044C"
-    IsOpen: 1
     Description: '-'
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109892
   character: {fileID: 2483674839823445686}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109892
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3640861181852123848
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21545,17 +21672,26 @@ MonoBehaviour:
       \u0432\u0440\u0430\u0433 \u043E\u0442\u043B\u0435\u0442\u0430\u0435\u0442 \u0432
       \u0443\u043A\u0430\u0437\u0430\u043D\u043D\u0443\u044E \u0441\u0442\u043E\u0440\u043E\u043D\u0443. "
     _stateInfos: []
-    IsOpen: 1
     Description: "\u0412\u0437\u0440\u044B\u0432\u043D\u043E\u0439 \u0448\u0430\u0440
       \u044F\u0434\u0430 "
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 3b961c01b58408841b2d43cf61a5a242, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109899
   character: {fileID: 2483674839823445686}
   poisonBall: {fileID: 4719927588574066064}
   poisonSlap: {fileID: 8577860281443816807}
   spitPoison: {fileID: 4992365342693795224}
   skillManager: {fileID: 2617687491934927079}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109899
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &964801864059339207
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21587,14 +21723,23 @@ MonoBehaviour:
       1.6 \u0441\u0435\u043A\u0443\u043D\u0434, \u0432\u0440\u0435\u043C\u044F \u043A\u0430\u0441\u0442\u0430
       0.4, \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0430\u044F \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C. "
     _stateInfos: []
-    IsOpen: 1
     Description: "\u042F\u0434\u043E\u0432\u0438\u0442\u044B\u0439 \u0448\u043B\u0435\u043F\u043E\u043A"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 4fc8c5bb98c96964bafef79982466cbf, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109885
   character: {fileID: 2483674839823445686}
   skillManager: {fileID: 2617687491934927079}
   _poisonSlap: {fileID: 8577860281443816807}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109885
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &5274005076901417186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21616,14 +21761,23 @@ MonoBehaviour:
       4-12 \u0443\u0440\u043E\u043D\u0430  \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442
       \u0434\u0435\u0431\u0430\u0444 \xAB\u043E\u0441\u043B\u0435\u043F\u043B\u0435\u043D\u0438\u0435\xBB "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041F\u043B\u0435\u0432\u043E\u043A \u043A\u0438\u0441\u043B\u043E\u0442\u043E\u0439"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 6fa6c3f6d5eb01a4cb43016c18d8b73b, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109906
   character: {fileID: 2483674839823445686}
   skillManager: {fileID: 2617687491934927079}
   spitPoison: {fileID: 4992365342693795224}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109906
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &1394518891378483386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21646,13 +21800,22 @@ MonoBehaviour:
       \u0438\u043B\u0438 \u043B\u0435\u0447\u0435\u043D\u0438\u0435 \u043D\u0430
       20%."
     _stateInfos: []
-    IsOpen: 0
     Description: "\u042D\u0444\u0444\u0435\u043A\u0442 \u0448\u0430\u0440\u0430"
+    ConditionDescription: 
     Icon: {fileID: -1558904516361034743, guid: b58f900a1dac3f241965284bed557139, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109889
   character: {fileID: 2483674839823445686}
   _poisonBall: {fileID: 4719927588574066064}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109889
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3656495943832638022
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21686,15 +21849,24 @@ MonoBehaviour:
         \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u0438 \u0432\u0440\u0435\u043C\u044F
         \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F \u043E\u0431\u043D\u043E\u0432\u043B\u044F\u0435\u0442\u0441\u044F.
         \n"
-    IsOpen: 1
     Description: "\u0440\u0430\u0437\u044A\u0435\u0434\u0435\u043D\u043D\u044B\u0439
       \u0434\u043E\u0441\u043F\u0435\u0445"
+    ConditionDescription: 
     Icon: {fileID: -7940820886254876669, guid: f42c89c464c0a214e9424bc9b8828b4f, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109900
   character: {fileID: 2483674839823445686}
   _sneakySpit: {fileID: 1964640632880337021}
   _spitPoison: {fileID: 4992365342693795224}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109900
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3157481039742532545
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21714,13 +21886,22 @@ MonoBehaviour:
       \"\u0412\u0437\u0440\u044B\u0432\u043D\u043E\u0433\u043E \u0449\u0430\u0440\u0430
       \u044F\u0434\u0430\" \u043D\u0430 1   "
     _stateInfos: []
-    IsOpen: 1
     Description: "\u042F\u0434 7"
+    ConditionDescription: 
     Icon: {fileID: -4125687490052203788, guid: ef644501c6a48574d99b58d3c563b590, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109896
   character: {fileID: 2483674839823445686}
   _poisonBall: {fileID: 4719927588574066064}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109896
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &8041204729760657720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21742,14 +21923,23 @@ MonoBehaviour:
       \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442\u0441\u044F
       1 \u0441\u0442\u0430\u043A \"\u044F\u0434\u0430 \u043A\u043E\u0441\u0442\u0435\u0439\"."
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041E\u0442\u0440\u0430\u0432\u043B\u044F\u044E\u0449\u0435\u0435
       \u043E\u0431\u043B\u0430\u043A\u043E"
+    ConditionDescription: 
     Icon: {fileID: -933735038327110134, guid: 37cb6fe2522973c4f9d8f4f376aab3be, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109916
   character: {fileID: 2483674839823445686}
   _poisonBall: {fileID: 4719927588574066064}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109916
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &8711396586475798565
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21786,14 +21976,23 @@ MonoBehaviour:
       \u044F\u0434\u0430 \u044D\u0444\u0444\u0435\u043A\u0442 \u043B\u0435\u0447\u0438\u0442
       \u043C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u043E 14 \u0445.\u043F. "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041B\u0435\u0447\u044F\u0449\u0438\u0439 \u0448\u0430\u0440"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 4fc8c5bb98c96964bafef79982466cbf, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109919
   character: {fileID: 2483674839823445686}
   _poisonBall: {fileID: 4719927588574066064}
   _spitPoison: {fileID: 4992365342693795224}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109919
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &5622163883072666357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21818,13 +22017,22 @@ MonoBehaviour:
       \u0441\u0442\u0430\u043A \"\u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u044E\u0449\u0435\u0433\u043E
       \u044F\u0434\u0430\"  "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u042F\u0434 10"
+    ConditionDescription: 
     Icon: {fileID: -811072399, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109907
   character: {fileID: 2483674839823445686}
   _explosionCloud: {fileID: 4939275121847811319}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109907
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &2435486984149934093
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21848,14 +22056,23 @@ MonoBehaviour:
       \u043F\u043E\u0440\u0430\u0436\u0435\u043D\u0438\u044F 1 \u043C\u0435\u0442\u0440
       \u0432 \u0440\u0430\u0434\u0438\u0443\u0441\u0435,"
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0432\u0437\u0440\u044B\u0432 \u043E\u0431\u043B\u0430\u043A\u0430"
+    ConditionDescription: 
     Icon: {fileID: -9187347743565390613, guid: f863a16a4c731ce469496ac94ccd951f, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109893
   character: {fileID: 2483674839823445686}
   _explosionCloud: {fileID: 4939275121847811319}
   skillManager: {fileID: 2617687491934927079}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109893
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &7712686978828366250
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21883,13 +22100,22 @@ MonoBehaviour:
       \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u0438 \u0432\u0440\u0435\u043C\u044F
       \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F \u043E\u0431\u043D\u043E\u0432\u043B\u044F\u0435\u0442\u0441\u044F  "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0447\u0443\u0432\u0441\u0442\u0432\u043E \u043E\u0442\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0439"
+    ConditionDescription: 
     Icon: {fileID: 6525149264358820603, guid: efb326e2166783443ada527b4657fe63, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109913
   character: {fileID: 2483674839823445686}
   _creeperPoisonAura: {fileID: 2161342997938470374}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109913
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &8390387529358146644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21930,15 +22156,24 @@ MonoBehaviour:
         \u0432\u043E\u043B\u043D\u0430, \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C
         1 \u043C\u0435\u0442\u0440 \u0432 0.2 \u0441\u0435\u043A, \u0431\u0435\u0441\u0446\u0435\u043B\u0435\u0432\u0430\u044F
         \u0441 \u043A\u043B\u0438\u043A\u043E\u043C\n"
-    IsOpen: 0
     Description: "\u0412\u043E\u043B\u043D\u0430 \u043F\u0430\u0440\u0430\u043B\u0438\u0437\u0438\u0440\u0443\u044E\u0449\u0435\u0433\u043E
       \u044F\u0434\u0430"
+    ConditionDescription: 
     Icon: {fileID: -7942494879149397082, guid: 88ed1bd6379225544b36aad09d35198b, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109918
   character: {fileID: 2483674839823445686}
   _waveParalyzingPoison: {fileID: 3350435801472191630}
   _skillManager: {fileID: 2617687491934927079}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109918
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &1734068584079679132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21971,15 +22206,24 @@ MonoBehaviour:
       \u0431\u043B\u0438\u0436\u043D\u0435\u0433\u043E \u0431\u043E\u044F  +60% \u0434\u0430\u043B\u044C\u043D\u0435\u0433\u043E
       \u0431\u043E\u044F +100%."
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0424\u043E\u043A\u0443\u0441\u0438\u0440\u043E\u0432\u043A\u0430
       \u043D\u0430 \u0440\u0435\u0444\u043B\u0435\u043A\u0441\u0430\u0445 "
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 5cd9984c9b0461848991092ddd38784e, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109891
   character: {fileID: 2483674839823445686}
   focusingOnReflexes: {fileID: 3881582397650996729}
   skillManager: {fileID: 2617687491934927079}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109891
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &6689918021131749657
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22004,14 +22248,23 @@ MonoBehaviour:
       \u043F\u043E \u043E\u0434\u043D\u043E\u0439 \u0446\u0435\u043B\u0438 \u0438\u043B\u0438
       \u0443\u043A\u043B\u043E\u043D\u0435\u043D\u0438\u044F."
     _stateInfos: []
-    IsOpen: 1
     Description: "\u041F\u043E\u0434\u043B\u044B\u0439 \u043F\u043B\u0435\u0432\u043E\u043A "
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 60294cd46b0dc124693512fd643533f5, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109911
   character: {fileID: 2483674839823445686}
   sneakySpit: {fileID: 1964640632880337021}
   skillManager: {fileID: 2617687491934927079}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109911
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &6456863432087837353
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22049,14 +22302,23 @@ MonoBehaviour:
       \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
       \u043D\u0430 30% "
     _stateInfos: []
-    IsOpen: 1
     Description: 
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 497fc8e355be5af48bb993ec3c6d117d, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109909
   character: {fileID: 2483674839823445686}
   creeperInvisible: {fileID: 6857802422684928800}
   manager: {fileID: 2617687491934927079}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109909
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &7941594611277133375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22096,15 +22358,24 @@ MonoBehaviour:
       \u0431\u044C\u0451\u0442 \u0438\u0437 \u043D\u0435\u0437\u0430\u043C\u0435\u0442\u043D\u043E\u0441\u0438,
       \u043D\u0430\u0437\u0430\u043C\u0435\u0442\u043D\u043E\u0441\u0442\u044C \u0441\u043F\u0430\u0434\u0430\u0435\u0442. "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0441\u043A\u043E\u043D\u0446\u0435\u043D\u0442\u0440\u0438\u0440\u043E\u0432\u0430\u043D\u043D\u044B\u0439
       \u0443\u0434\u0430\u0440"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 48c49cf3a6d525049bc761f9f84d48c8, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109914
   character: {fileID: 2483674839823445686}
   coldBlood: {fileID: 4616268591970552908}
   skillManager: {fileID: 2617687491934927079}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109914
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &827767455665323477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22129,14 +22400,23 @@ MonoBehaviour:
       \u044D\u0444\u0444\u0435\u043A\u0442 \u0441\u0440\u0430\u0431\u0430\u0442\u044B\u0432\u0430\u0435\u0442
       \u0440\u0430\u0437 \u0432 6 \u0441\u0435\u043A. "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0411\u043B\u043E\u043A\u0438\u0440\u043E\u0432\u043A\u0430 \u0443\u0434\u0430\u0440\u0430"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: eaacf832bd396904fa733a48d7240860, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109884
   character: {fileID: 2483674839823445686}
   block: {fileID: 2446571645698719713}
   manager: {fileID: 2617687491934927079}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109884
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &2756343518254616569
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22163,14 +22443,23 @@ MonoBehaviour:
       \u0447\u0435\u0440\u0435\u0437 3 \u0441\u0435\u043A. \u043F\u0440\u043E\u043F\u0430\u0434\u0430\u044E\u0442
       \u0432\u0441\u0435 \u0437\u0430\u0440\u044F\u0434\u044B \u044F\u0434\u044B.     "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u042F\u0434\u044B \u0437\u0430\u0441\u0430\u0434\u044B"
+    ConditionDescription: 
     Icon: {fileID: -3657576443839135803, guid: 5b60be5f626a3a84c98675e0fe63abd6, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109894
   character: {fileID: 2483674839823445686}
   _ambushPoisons: {fileID: 3254515559312903057}
   _skillManager: {fileID: 2617687491934927079}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109894
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &1217830514159963980
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22192,14 +22481,23 @@ MonoBehaviour:
       \u0443\u043A\u043B\u043E\u043D\u0435\u043D\u0438\u044F \u043A\u0440\u0438\u043F\u0435\u0440\u0430
       \u043D\u0430 5% \u043E\u0442 \u044D\u0442\u043E\u0439 \u0446\u0435\u043B\u0438 "
     _stateInfos: []
-    IsOpen: 1
     Description: "\u041E\u0449\u0443\u0449\u0435\u043D\u0438\u0435 \u043E\u0442\u0440\u0430\u0432\u043B\u0435\u043D\u043D\u043E\u0439
       \u0436\u0435\u0440\u0442\u0432\u044B"
+    ConditionDescription: 
     Icon: {fileID: -1161293298, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109888
   character: {fileID: 2483674839823445686}
   _creeperPoisonAura: {fileID: 2161342997938470374}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109888
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &8887524501104309569
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22223,14 +22521,23 @@ MonoBehaviour:
       - \u0440\u0430\u043D\u044C\u0448\u0435 \u0431\u044B\u043B\u0430 \u0432\u0440\u043E\u0434\u0435
       \u0432 \u04401 "
     _stateInfos: []
-    IsOpen: 1
     Description: "\u043F\u0440\u043E\u0437\u0440\u0430\u0447\u043D\u044B\u0435 \u044F\u0434\u044B"
+    ConditionDescription: 
     Icon: {fileID: -1241958626550298057, guid: f877ddcc99be4ae439d43920da8a6d27, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109920
   character: {fileID: 2483674839823445686}
   _spitPoison: {fileID: 4992365342693795224}
   _poison: {fileID: 4719927588574066064}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109920
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &4318163990653874616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22253,13 +22560,22 @@ MonoBehaviour:
       \u0443\u0434\u0430\u0440\u0430\" \u043C\u0435\u043D\u044C\u0448\u0435 \u0432
       2 \u0440\u0430\u0437\u0430."
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 9"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 8d177058b628a854487d1af8f3aba693, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109902
   character: {fileID: 2483674839823445686}
   _creeperStrike: {fileID: 6745892867125186241}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109902
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &988417320158050719
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22281,15 +22597,24 @@ MonoBehaviour:
       \u0436\u0435 \u044D\u0444\u0444\u0435\u043A\u0442 \u043A\u0440\u0438\u0442\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E
       \u0443\u0440\u043E\u043D\u0430. "
     _stateInfos: []
-    IsOpen: 1
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 10"
+    ConditionDescription: 
     Icon: {fileID: 1547656469, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109887
   character: {fileID: 2483674839823445686}
   _sneakySpit: {fileID: 1964640632880337021}
   _poisonSlap: {fileID: 8577860281443816807}
   _poisonBall: {fileID: 4719927588574066064}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109887
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3398652400627994800
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22315,13 +22640,22 @@ MonoBehaviour:
       \u0431\u043B\u043E\u043A\u0438\u0440\u043E\u0432\u043A\u0430 \u0438 \u0440\u0435\u0437\u0438\u0441\u0442
       \u043D\u0435 \u043C\u043E\u0433\u0443\u0442 \u0431\u044B\u0442\u044C \u0441\u0440\u0430\u0431\u043E\u0442\u0430\u043D\u044B. "
     _stateInfos: []
-    IsOpen: 1
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 11"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 1a0a07e66c539064f9e89bb626ea33b5, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109898
   character: {fileID: 2483674839823445686}
   block: {fileID: 2446571645698719713}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109898
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3096915051999318309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22344,13 +22678,22 @@ MonoBehaviour:
       \u0441 \"\u0441\u043A\u043E\u043D\u0446\u0435\u043D\u0442\u0440\u0438\u0440\u043E\u0432\u0430\u043D\u043D\u044B\u043C
       \u0443\u0434\u0430\u0440\u043E\u043C\"  "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 12"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 1769f25c7b0c5614a95a094ddfb76d45, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109895
   character: {fileID: 2483674839823445686}
   _creeperInvisible: {fileID: 6857802422684928800}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109895
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &7566935048732947578
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22374,14 +22717,23 @@ MonoBehaviour:
       \u0442\u043E\u0436\u0435 \u0438\u043C\u0435\u044E\u0442 90% \u0441\u043D\u044F\u0442\u0438\u044F
       \u0432 \u043C\u043E\u043C\u0435\u043D\u0442 \u0430\u043A\u0442\u0438\u0432\u0430\u0446\u0438\u0438. "
     _stateInfos: []
-    IsOpen: 1
     Description: "\u0437\u0430\u0449\u0438\u0442\u043D\u0430\u044F \u0447\u0435\u0448\u0443\u044F"
+    ConditionDescription: 
     Icon: {fileID: -3398794806397297794, guid: 78a0951e991afaf498657966fd5958a4, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 7624768376613109912
   character: {fileID: 2483674839823445686}
   protectiveScales: {fileID: 5132379941379747870}
   skillManager: {fileID: 2617687491934927079}
+  references:
+    version: 2
+    RefIds:
+    - rid: 7624768376613109912
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!136 &8777955822381329859 stripped
 CapsuleCollider:
   m_CorrespondingSourceObject: {fileID: 1550066538247365834, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

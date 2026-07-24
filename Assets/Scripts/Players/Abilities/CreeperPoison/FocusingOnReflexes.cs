@@ -5,7 +5,7 @@ using UnityEngine;
 public class FocusingOnReflexes : Skill
 {
     [SerializeField] private float duration = 1f;
-    protected override int AnimTriggerCastDelay => 0;
+    protected override int AnimTriggerCastDelay => Animator.StringToHash("Spell");
     protected override int AnimTriggerCast => 0;
     protected override bool IsCanCast => true;
 
