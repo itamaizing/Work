@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using Mirror;
 using UnityEngine;
@@ -143,7 +143,7 @@ public class MagicDefenceSkill : Skill
             {
                 var ch = temp.Character;
                 _castTarget = ch;
-                Targeting.SetTarget(ch);
+                Targeting.SetTempTarget(ch);
 
                 if (ch == _hero)
                     _castMode = CastMode.Self;

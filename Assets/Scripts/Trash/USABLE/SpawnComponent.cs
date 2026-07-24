@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
@@ -31,12 +31,16 @@ public class SpawnComponent : NetworkBehaviour
     [Command]
     public void CmdSpawnCharacter(int prefabIndex, Vector3 position, Quaternion rotation, byte teamId)
     {
+        var list = _enemyPrefabs;
+        if (teamId == 0)
+            list = _allyPrefabs;
+
         if (prefabIndex < 0 || prefabIndex >= _enemyPrefabs.Count)
         {
             Debug.LogError($"Invalid prefab index {prefabIndex}");
             return;
         }
-        var prefab = _enemyPrefabs[prefabIndex];
+        var prefab = list[prefabIndex];
         var spawned = Instantiate(prefab, position, rotation);
         spawned.Initialize();
         

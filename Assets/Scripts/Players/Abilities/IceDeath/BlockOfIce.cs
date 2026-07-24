@@ -47,14 +47,10 @@ public class BlockOfIce : Skill,IEnergyDamagable,IComboSeriesParticipatingSkill
 	    if(_rune == null) _rune = (RuneComponent)hero.Resources[ResourceType.Rune];
     }
 
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-	    if (targetInfo.Points.Count > 0)
-		    _mousePos = targetInfo.Points[0];
-    }
 
 	private void Shoot(float bonusDamage)
 	{
+		_mousePos = Targeting.GetTarget().Poisition;
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 
@@ -83,22 +79,12 @@ public class BlockOfIce : Skill,IEnergyDamagable,IComboSeriesParticipatingSkill
 
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		while (float.IsPositiveInfinity(_mousePos.x))
-		{
-			if (GetMouseButton)
-				_mousePos = Targeting.GetMousePoint();
-
-			yield return null;
-		}
-
-		TargetInfo targetInfo = new TargetInfo();
-		targetInfo.Points.Add(_mousePos);
-		callbackDataSaved(targetInfo);
+		return base.PrepareJob(callbackDataSaved);
 	}
 
 	protected override IEnumerator CastJob()
 	{
-		if (!Cost.TryPaySingle(_runeCost, ResourceType.Rune, shouldModify: false))
+		if (Targeting.GetTarget() == null || !Cost.TryPaySingle(_runeCost, ResourceType.Rune, shouldModify: false))
 		{
 			TryCancel(true);
 			yield break;

@@ -72,7 +72,7 @@ public class IceCloud : Skill,IEnergyDamagable, IComboSeriesParticipatingSkill
 		
 		_energy.CmdUse(_energyToUse);
 
-		
+		_mousePos = Targeting.GetTarget().Poisition;
         Vector3 lookDir = _mousePos - Hero.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - AngleOffset;
 		
@@ -117,47 +117,9 @@ public class IceCloud : Skill,IEnergyDamagable, IComboSeriesParticipatingSkill
 		if (_audioSource != null && _audioClip != null) _audioSource.PlayOneShot(_audioClip);
 	}
 
-	public override void LoadTargetData(TargetInfo targetInfo)
-	{
-		if (targetInfo.Points.Count > 0) _mousePos = targetInfo.Points[0];
-		if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
-	}
-
 	protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
 	{
-		while (float.IsPositiveInfinity(_mousePos2.x))
-		{
-			if (GetMouseButton)
-			{
-				if(Targeting.GetTarget()?.Character == null) yield return null;
-				if (Targeting.GetTarget()?.Character != null)
-				{
-					float distance = Vector3.Distance(_hero.transform.position, _mousePos);
-
-					if (distance <= AreaInfo.Radius) _mousePos2 = Targeting.GetTarget().Character.transform.position;
-
-					else
-					{
-						//Targeting.FindTempTarget();
-
-						//_target = Targeting.GetTarget()?.Character;
-						Damage = _baseDamage + _energy.CurrentValue / EnergyPerDamageUnit;
-						_mousePos2 = Targeting.GetTarget().Character.transform.position;
-					}
-				}
-
-				else _mousePos2 = Targeting.GetMousePoint();
-			}
-			yield return null;
-		}        
-
-        TargetInfo targetInfo = new TargetInfo();
-		if (Targeting.GetTarget()?.Character != null) targetInfo.Points.Add(Targeting.GetTarget().Character.Position);
-		else if (_mousePos2 != Vector3.positiveInfinity) targetInfo.Points.Add(_mousePos2);
-		callbackDataSaved(targetInfo);
-
-        _mousePos = _mousePos2;
-        _mousePos2 = Vector3.positiveInfinity;
+		return base.PrepareJob(callbackDataSaved);
     }
 
 	protected override IEnumerator CastJob()
