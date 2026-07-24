@@ -152,11 +152,9 @@ public class DeathSpiral : Skill,IEnergyDamagable
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
-        Targeting.ClearTempTarget();
-
-        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+		targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
         callbackDataSaved?.Invoke(targetInfo);
+        Targeting.ClearTempTarget();
     }
 
     protected override IEnumerator CastJob()

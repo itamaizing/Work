@@ -23,9 +23,10 @@ public class IceShard : Skill,IEnergyDamagable
 
 	protected override int AnimTriggerCast => 0;
 
-    private void Start()
-	{
-        //_energy = (Energy)_playerLinks.Resources[ResourceType.Energy];
+    public override void Init(SkillRenderer render, Character hero)
+    {
+		base.Init(render, hero);
+		_energy = (Energy)hero.Resources[ResourceType.Energy];
     }
 
 	private void EnsureResources()
@@ -68,7 +69,7 @@ public class IceShard : Skill,IEnergyDamagable
 			TryCancel(true);
 			return;
 		}
-
+		_mousePos = Targeting.GetTarget().Poisition;
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		lookDir.y = 0f;
 		lookDir.Normalize();
@@ -104,36 +105,6 @@ public class IceShard : Skill,IEnergyDamagable
 	public void TalentChargesPlague(bool value)
 	{
 		_talentChragesPlague = value;
-	}
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        _mousePos = targetInfo.Points[0];
-    }
-
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-	{
-		if (_energy == null)
-			_energy = (Energy)Hero.Resources[ResourceType.Energy];
-        //Debug.Log("MOUSE POS " + float.IsPositiveInfinity(_mousePos.x));
-        while (float.IsPositiveInfinity(_mousePos.x))
-		{
-			if (GetMouseButton)
-			{
-				_mousePos = Targeting.GetMousePoint();
-				/*if (Targeting.GetTarget()?.Character == null)
-				{
-					_mousePos = Targeting.GetTarget().Position;
-				}
-				else
-				{
-					_mousePos = Targeting.GetTarget().Character.transform.position;
-				}*/
-			}
-			yield return null;
-		}
-		TargetInfo targetInfo = new();
-		targetInfo.Points.Add( _mousePos );
-		callbackDataSaved( targetInfo );
 	}
 
 	protected override IEnumerator CastJob()

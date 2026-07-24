@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -77,7 +77,7 @@ public class PortalDarkness : Skill
                 }
                 else if(temp != null)
                 {
-                    Targeting.SetTarget(temp);
+                    Targeting.SetTempTarget(temp);
                     break;
                 }
             }
@@ -85,11 +85,9 @@ public class PortalDarkness : Skill
             yield return null;
         }
 
-        var target = Targeting.GetTarget()?.Character;
-
-        if (target != null)
+        if (Targeting.GetTempTarget()?.Character != null)
         {
-            targetInfo.AddTarget(target);
+            targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
             callbackDataSaved(targetInfo);
         }
     }

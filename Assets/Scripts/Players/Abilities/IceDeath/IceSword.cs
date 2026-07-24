@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class IceSword : CloseCombatSkill,IEnergyDamagable, IComboSeriesParticipatingSkill
+public class IceSword : Skill, IEnergyDamagable, IComboSeriesParticipatingSkill
 {
 	[SerializeField] private float _damage = 15f;
 	//[SerializeField] private GameObject _basePlayer;
@@ -50,11 +50,6 @@ public class IceSword : CloseCombatSkill,IEnergyDamagable, IComboSeriesParticipa
         //_rune = (RuneComponent)_playerLinks.Resources[ResourceType.Rune];
 	}
 
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
-    }
-
 	protected override IEnumerator CastJob()
 	{
 		Character targetCharacter = Targeting.GetTarget()?.Character;
@@ -68,24 +63,24 @@ public class IceSword : CloseCombatSkill,IEnergyDamagable, IComboSeriesParticipa
 		
 		OnSeriesDamaged?.Invoke(targetCharacter.gameObject,this);
 
-		if (Targeting.GetTarget()?.Character == _oldtarget)
+		if (targetCharacter == _oldtarget)
 		{
 			_hitInTheRow++;
 		}
 		else
 		{
 			_hitInTheRow = 1;
-			_oldtarget = Targeting.GetTarget()?.Character;
+			_oldtarget = targetCharacter;
 		}
 		if (_hitInTheRow > 2)
 		{
 			_hitInTheRow = 0;
 		}
 		ApplyDamage(targetCharacter);
-		CmdAdd(Targeting.GetTarget()?.Character.gameObject,_seriesComplete);
+		CmdAdd(targetCharacter.gameObject, _seriesComplete);
 		yield return null;
 		_seriesComplete = false;
-	}
+    }
 
 	protected override void ClearData()
 	{

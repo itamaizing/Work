@@ -108,10 +108,9 @@ public class PhysicalAttack : Skill,IEnergyDamagable, IComboSeriesParticipatingS
 			yield return null;
 		}
 
-		Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
+		targetInfo.Points.Add(Targeting.GetTempTarget().Character.transform.position);
         Targeting.ClearTempTarget();
-        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
-		targetInfo.Points.Add(Targeting.GetTarget().Character.transform.position);
 		callbackDataSaved?.Invoke(targetInfo);
 	}
 
