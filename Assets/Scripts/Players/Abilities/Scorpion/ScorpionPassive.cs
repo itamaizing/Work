@@ -21,10 +21,19 @@ public class ScorpionPassive : Skill, IPassiveSkill
     private bool _isAddStateUpdateChance = false;
     private bool _isImpulseMatter = false;
 
-    public bool IsAddStateUpdateChance { get => _isAddStateUpdateChance; set => _isAddStateUpdateChance = value; }
+    public bool IsAddStateUpdateChance
+    {
+        get => _isAddStateUpdateChance;
+    }
+    public float AdditionalAddStateChance = 0.3f;
     public bool IsImpulseMatter { get => _isImpulseMatter; }
 
-    public void AddStateUpdateChance(bool value) => _isAddStateUpdateChance = value;
+    public void AddStateUpdateChance(bool value)
+    {
+        if(value == _isAddStateUpdateChance) return;
+        _isAddStateUpdateChance = value;
+    }
+        
     public void ImpulseMatter(bool value) => _isImpulseMatter = value;
     #endregion
 

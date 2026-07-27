@@ -9,14 +9,14 @@ public class ChargesPlagueTalent : Talent
 	public override void Enter()
 	{
 		Debug.Log("entered talent " + GetType().Name);
-		_deathSpiral.TalentChargesPlague(true);
+		//_deathSpiral.TalentChargesPlague(true);
 		_iceShard.TalentChargesPlague(true);
 	}
 
 	public override void Exit()
 	{
 		Debug.Log("exit talent " + GetType().Name);
-		_deathSpiral.TalentChargesPlague(false);
+		//_deathSpiral.TalentChargesPlague(false);
 		_iceShard.TalentChargesPlague(false);
 	}
 }

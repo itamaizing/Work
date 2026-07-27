@@ -20,6 +20,12 @@ public class Bound : AbstractCharacterState
 	public override StateType Type => StateType.Physical;
 	public override List<StatusEffect> Effects => _effects;
 
+	private IDamageable _trapDamageable;
+
+	public void SetTrapObject(GameObject trap)
+	{
+		_spawnedTrap = trap;
+	}
 
 	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
@@ -47,12 +53,6 @@ public class Bound : AbstractCharacterState
         {
 			networkAnimation.ResetTrigger(_stunTriggerExit);
 			networkAnimation.SetTrigger(_stunTrigger);
-		}
-
-		if (character.isServer && character.StateEffects.TrapPrefab)
-		{
-			characterState = character;
-			character.StartCoroutine(ServerSpawnTrapNextFrame());
 		}
 
 		if (characterState.TryGetComponent<StateEffects>(out StateEffects stateEffects)) stateEffects.RopeTrap.SetActive(true);
@@ -106,29 +106,6 @@ public class Bound : AbstractCharacterState
 			_duration = time;
 			return true;
 		}
-	}
-
-	[Server]
-	private IEnumerator ServerSpawnTrapNextFrame()
-	{
-		yield return null;
-
-		var character = characterState.Character;
-
-		Vector3 position = character.transform.position;
-
-		if (Physics.Raycast(position + Vector3.up * 2f, Vector3.down, out var hit, 5f))
-			position = hit.point;
-
-		Quaternion rot = Quaternion.LookRotation(character.transform.forward, Vector3.up);
-
-		_spawnedTrap = GameObject.Instantiate(characterState.StateEffects.TrapPrefab, position, rot);
-
-		var life = _spawnedTrap.GetComponent<TrapStateLife>();
-		life.Init(character.gameObject);
-
-		SceneManager.MoveGameObjectToScene(_spawnedTrap.gameObject, character.NetworkSettings.MyRoom);
-		NetworkServer.Spawn(_spawnedTrap);
 	}
 }
 

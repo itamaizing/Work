@@ -60,7 +60,7 @@ public class CoolingAura : AuraStateHandler
     {
         for (int i = 0; i < _stackPerUnit; i++)
         {
-            CmdApplyStateToTarget(target.gameObject, States.Cooling, _buffDuration, Schools.Water, _owner.gameObject, nameof(CoolingAura));
+            CmdApplyStateToTarget(target.gameObject, States.Cooling, _buffDuration, Schools.Water, _owner.gameObject, nameof(CoolingAura),0);
         }
         
     }

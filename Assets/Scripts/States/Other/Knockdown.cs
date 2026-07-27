@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Knockdown : AbstractCharacterState
+public class Knockdown : RefreshingState
 {
     private float _baseDuration;
     private float _duration;
@@ -26,8 +26,6 @@ public class Knockdown : AbstractCharacterState
             return;
         }
 
-        Debug.Log("Entering Knockdown State");
-
         _duration = durationToExit;
         _baseDuration = durationToExit;
         MaxStacksCount = 3;
@@ -38,8 +36,6 @@ public class Knockdown : AbstractCharacterState
 
     public override void ExitState()
     {
-        Debug.Log("Exiting Knockdown State");
-
         RemoveDebuff();
         characterState.RemoveState(this);
     }
@@ -85,5 +81,17 @@ public class Knockdown : AbstractCharacterState
             float reduction = 1f + (0.01f * currentStacksCount);
             ability.Buff.Damage.IncreasePercentage(reduction);
         }
+    }
+    
+    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        if (!CanEnterState(character)) return null;
+
+        if (currentStacksCount == 0)
+            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+        else
+            Stack(duration);
+
+        return this;
     }
 }

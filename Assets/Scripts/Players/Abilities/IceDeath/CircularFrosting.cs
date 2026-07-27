@@ -4,10 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CircularFrosting : Skill
+public class CircularFrosting : Skill,IEnergyDamagable,IComboSeriesParticipatingSkill
 {
-    [SerializeField] private Character _player;
-    [SerializeField] private SeriesOfStrikes _seriesOfStrikes;
     [SerializeField] private ParticleSystemController _particleSystem;
 
     private float _delayDuration;
@@ -24,13 +22,14 @@ public class CircularFrosting : Skill
 
     private float _baseDuration = 2f;
     private float _duration = 2f;
-
+    private float _runeCost = 3f; 
+    private float _maxEnergyForBonus = 30f;
+    private float _energyPerSecondStep = 10f;
+    private float _currentRuneCost;
+    private float _currentEnergyCost;
     private Energy _energy;
+    private RuneComponent _rune;
     private bool _talentFrostingFrozen;
-
-    private const float FrostEnergyCoolingBonusPerStack = 1f;
-    private const float FrostEnergyFrostingBonusPerStack = 5f;
-    private const float FrostEnergyFrozenBonusPerStack = 10f;
 
     protected override bool IsCanCast => true;
     protected override int AnimTriggerCastDelay => 0;
@@ -50,6 +49,13 @@ public class CircularFrosting : Skill
         OnSkillCanceled -= OnSkillCanceledHandler;
     }
 
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+        if (_energy == null) _energy = (Energy)hero.Resources[ResourceType.Energy];
+        if(_rune == null) _rune = (RuneComponent)hero.Resources[ResourceType.Rune];
+    }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
         TargetInfo targetInfo = new TargetInfo();
@@ -60,16 +66,31 @@ public class CircularFrosting : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (_energy == null) _energy = (Energy)Hero.Resources[ResourceType.Energy];
         if (_energy == null) yield break;
         if (!IsCasting) yield break;
+
+        if (!Cost.TryPaySingle(_runeCost, ResourceType.Rune, shouldModify: false))
+        {
+            TryCancel(true);
+            yield break;
+        }
+
+        _currentRuneCost = _runeCost;
 
         FindEnemies();
         ExplosionFrosting();
 
+        if (_isSeriesComplete)
+        {
+            OnSeriesDamaged?.Invoke(null, this);
+            _isSeriesComplete = false;
+        }
+
         _particleSystem?.Play();
 
         yield return null;
+        _currentEnergyCost = 0;
+        _currentRuneCost = 0;
     }
 
     private void FindEnemies()
@@ -87,27 +108,18 @@ public class CircularFrosting : Skill
 
     private void ExplosionFrosting()
     {
-        float usedEnergy;
+        _currentEnergyCost = Mathf.Min(_energy.CurrentValue, _maxEnergyForBonus);
 
-        if (_energy.CurrentValue >= 30f)
-        {
-            usedEnergy = 30f;
-            _duration = _baseDuration + 3f;
-        }
-        else
-        {
-            usedEnergy = _energy.CurrentValue;
-            _duration = _baseDuration + usedEnergy / 10f;
-        }
+        int bonusSteps = Mathf.FloorToInt(_currentEnergyCost / _energyPerSecondStep);
+        _duration = _baseDuration + bonusSteps;
 
-        if (usedEnergy <= 0f) return;
-
-        _energy.CmdUse(usedEnergy);
+        if (_currentEnergyCost > 0f)
+            _energy.CmdUse(_currentEnergyCost);
 
         foreach (Character target in _enemies)
         {
             if (target == null) continue;
-            CmdApplyFrosting(target, usedEnergy, _duration);
+            CmdApplyFrosting(target, _currentEnergyCost, _duration);
         }
     }
 
@@ -116,52 +128,10 @@ public class CircularFrosting : Skill
     {
         if (target == null) return;
 
-        if (_seriesOfStrikes != null) _seriesOfStrikes.MakeHit(target, Info.AbilityForm, 1, usedEnergy, 0);
-        if (_talentFrostingFrozen && target.CharacterState.CheckForState(States.Frosting)) ApplyStateWithBonus(target, States.Frozen, duration);
-        ApplyStateWithBonus(target, States.Frosting, duration);
-    }
-
-    private void ApplyStateWithBonus(Character target, States state, float duration)
-    {
-        if (target == null || target.CharacterState == null) return;
-
-        bool hasFrostEnergy = target.CharacterState.CheckForState(States.FrostEnergy);
-
-        int currentStacks = target.CharacterState.CheckStateStacks(state);
-
-        int stacksAfter = currentStacks + 1;
-
-        float bonusPerStack = 0f;
-
-        switch (state)
-        {
-            case States.Cooling:
-                bonusPerStack = FrostEnergyCoolingBonusPerStack;
-                break;
-
-            case States.Frosting:
-                bonusPerStack = FrostEnergyFrostingBonusPerStack;
-                break;
-
-            case States.Frozen:
-                bonusPerStack = FrostEnergyFrozenBonusPerStack;
-                break;
-        }
-
-        if (hasFrostEnergy && bonusPerStack > 0f)
-        {
-            float bonusDamage = stacksAfter * bonusPerStack;
-
-            Damage bonus = new Damage
-            {
-                Value = bonusDamage,
-                Type = DamageType.Magical
-            };
-
-            target.Health.TryTakeDamage(ref bonus, this);
-        }
-
-        target.CharacterState.AddState(state, duration, 0, Hero.gameObject, name);
+        var frostEnergy = Hero.Abilities.GetSkill<FrostEnergy>();
+        
+        target.CharacterState.AddState(States.Frosting, duration, 0, Hero.gameObject, name);
+        frostEnergy?.ApplyFrostEnergyStateBonus(target, States.Frosting, this);
     }
 
     public void SetTalentFrostingFrozen(bool value)
@@ -221,4 +191,40 @@ public class CircularFrosting : Skill
 
         _wasInterruptedInDelay = false;
     }
+
+    #region Series
+
+    public bool IsStreamSkill { get; }
+    public bool IsFrostEnergyApplied => true;
+
+    public event IComboSeriesParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplySeriesDamage;
+    public event Action<GameObject, Skill> OnSeriesDamaged;
+    public float EnergyCostOnHit => _currentEnergyCost;
+    public float RuneCostOnHit => _currentRuneCost;
+    public bool IsTicking { get; }
+
+    private bool _isSeriesComplete;
+
+    public void OnSeriesHit(int hitCountInCurrentSeries, Character target) { }
+
+    public void OnSeriesCompleted(Character target, int totalHits, float totalEnergySpent)
+    {
+
+    }
+
+    public void OnSeriesBroken(Character target)
+    {
+        _isSeriesComplete = false;
+    }
+
+    public void OnSeriesPotentialFinal(Skill skill, bool isPotentialFinal)
+    {
+        if (isPotentialFinal && _energy.CurrentValue > 5 && _rune.CurrentValue >= _runeCost)
+        {
+            Hero.Abilities.SetNextSkillNoCast();
+            _isSeriesComplete = true;
+        }
+    }
+
+    #endregion
 }

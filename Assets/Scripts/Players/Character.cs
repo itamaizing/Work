@@ -150,6 +150,11 @@ public abstract class Character : NetworkBehaviour, IDamageable, IHealable, ITar
 		if (_initialized) return;
 
 		_initialized = true;
+		if (Data == null)
+		{
+			Debug.LogWarning("Data is null initialize not complete");
+			return;
+		}
 		AttributeSystem.Init(Data);
 		EnsureResources();
 		//Debug.Log($"Resources{_resources.Count}", gameObject);

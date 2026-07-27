@@ -7,13 +7,15 @@ public class HuntressTalent_5 : Talent
 
     public override void Enter()
     {
-        terrifyingElfAura.CalmnessOnElvenSkillTalent(true);
-        growTree.GrowTreeArrowIntoSkyRadius(true);
+        character.Abilities.ActivateSkill(character.Abilities.GetSkill<ElvenReflexes>());
+        //terrifyingElfAura.CalmnessOnElvenSkillTalent(true);
+        //growTree.GrowTreeArrowIntoSkyRadius(true);
     }
 
     public override void Exit()
     {
-        terrifyingElfAura.CalmnessOnElvenSkillTalent(false);
-        growTree.GrowTreeArrowIntoSkyRadius(false);
+        character.Abilities.DeactivateSkill(character.Abilities.GetSkill<ElvenReflexes>());
+        //terrifyingElfAura.CalmnessOnElvenSkillTalent(false);
+        //growTree.GrowTreeArrowIntoSkyRadius(false);
     }
 }

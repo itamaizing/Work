@@ -12,7 +12,7 @@ public class MagicWaterAura : AuraStateHandler
     protected override void OnTargetEnter(Character target)
     {
         CmdApplyStateToTarget(target.gameObject, States.MagicWater, _buffDuration, Schools.Water, _owner.gameObject,
-            nameof(MagicWater));
+            nameof(MagicWater),0);
     }
 
     protected override void OnTargetExit(Character target)

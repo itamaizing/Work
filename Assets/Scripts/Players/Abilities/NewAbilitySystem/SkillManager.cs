@@ -89,6 +89,11 @@ public class SkillManager : MonoBehaviour
             AddToSkillLists(item);
             SkillInit(item);
         }
+        
+        if (_hero != null && _hero.Health != null)
+        {
+            _hero.Health.OnDirectDamageProcessed += HandleHeroDirectDamage;
+        }
     }
 
     #region Test
@@ -137,6 +142,14 @@ public class SkillManager : MonoBehaviour
         {
             if (CurrentCastingSkill == skill)
                 CurrentCastingSkill = null;
+        }
+    }
+    
+    private void HandleHeroDirectDamage(float damageValue, DamageType type, bool fullyAbsorbed)
+    {
+        if (CurrentCastingSkill != null)
+        {
+            CurrentCastingSkill.HandleDirectDamageDuringCast(damageValue, type, fullyAbsorbed);
         }
     }
 
@@ -420,7 +433,7 @@ public class SkillManager : MonoBehaviour
         {
             if (item.IsSubjectToGlobalCooldownTime)
             {
-                item.Cooldown.SetIncreased(_globalCooldownTime, shouldModify: false);
+                item.Cooldown.SetIncreased(_globalCooldownTime, shouldModify: false, opModify: false);
             }
         }
     }
@@ -526,6 +539,11 @@ public class SkillManager : MonoBehaviour
         /*
         AbilitiesManager.Instance.RemovePanel(_abilityPanel);
         */
+        
+        if (_hero != null && _hero.Health != null)
+        {
+            _hero.Health.OnDirectDamageProcessed -= HandleHeroDirectDamage;
+        }
     }
 
     public void SetAbilitiesPanelSelect(bool isSelect)

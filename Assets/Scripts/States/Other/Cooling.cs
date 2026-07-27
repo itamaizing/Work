@@ -27,7 +27,6 @@ public class Cooling : RefreshingState
 		MaxStacksCount = 6;
 		_damageToExit = damageToExit == 0 ? 10000 : damageToExit;
 		_damageOnStart = characterState.Character.Health.SumDamageTaken;
-		if (personWhoMadeBuff.TryGetComponent<NinjaResources>(out NinjaResources resources)) _ninjaResources = resources;
 
 		characterState.Character.Move.AddModifier(_modif);
 		currentStacksCount = 1;
@@ -39,6 +38,7 @@ public class Cooling : RefreshingState
 		{
 			ExitState();
 		}
+		if(duration <= 0) ExitState();
 	}
 
 	public override void ExitState()
@@ -61,17 +61,30 @@ public class Cooling : RefreshingState
             currentStacksCount++;
 			_modif.Value = currentStacksCount * _speedDebuf;
 			characterState.Character.Move.AddModifier(_modif);
-
-			if (currentStacksCount == MaxStacksCount) TryApplyFrosting();
 		}
-        return true;
+		return true;
     }
-
-	private void TryApplyFrosting()
+    
+    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-		if (!characterState.CheckForState(States.Frosting)) AddFrostingCmd();
-	}
+	    if (!CanEnterState(character)) return null;
 
-	[Command] private void AddFrostingCmd() => AddFrostingRpc();
-	[ClientRpc] private void AddFrostingRpc() => characterState.AddStateLogic(States.Frosting, 2, 0f, Schools.None, characterState.Character.gameObject, "Frosting");
+	    BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+
+	    if(!_ninjaResources)
+			if (personWhoMadeBuff.TryGetComponent<NinjaResources>(out NinjaResources resources)) _ninjaResources = resources;
+	    
+	    if (currentStacksCount == 0)
+		    EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+	    else
+		    Stack(duration);
+	    
+	    if (currentStacksCount == MaxStacksCount && _ninjaResources.IsRepeatedFrost)
+	    {
+		    if (!characterState.CheckForState(States.Frosting))
+			    _ninjaResources.AddRepeatedFrosting(characterState.gameObject);
+	    }
+
+	    return this;
+    }
 }

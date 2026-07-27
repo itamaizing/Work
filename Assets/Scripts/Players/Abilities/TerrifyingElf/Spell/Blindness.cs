@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Blindness : Skill
+public class Blindness : Skill, IMultiMagicSkill
 {
     [SerializeField] private Character _playerLinks;
     [SerializeField] private float duration;
@@ -47,17 +47,6 @@ public class Blindness : Skill
         if (Targeting.GetTarget()?.Character != null)
         {
             CmdApplyAbsorptionState(Targeting.GetTarget()?.Character.gameObject);
-
-            var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
-
-            if (multiMagic != null)
-            {
-                foreach (var character in multiMagic.PopPendingTargets())
-                {
-                    TryPayCost();
-                    CmdApplyAbsorptionState(character.gameObject);
-                }
-            }
         }
 
         AfterCastJob();
@@ -79,5 +68,11 @@ public class Blindness : Skill
         {
             targetCharacter.CharacterState.AddState(States.Blind, duration, 0, _playerLinks.gameObject, name);
         }
+    }
+
+    public void HandleExtraTarget(Character target)
+    {
+        TryPayCost();
+        CmdApplyAbsorptionState(target.gameObject);
     }
 }

@@ -6,17 +6,17 @@ public class DarknessTalent_7 : Talent
 {
     [SerializeField] private SubjugationMind subjugationMind;
     [SerializeField] private SkillManager ability;
-    [SerializeField] private RetributiveReckoning retributiveReckoning;
 
     public override void Enter()
     {
-        ability.ActivateSkill(subjugationMind);
-        ability.ActivateSkill(retributiveReckoning);
+        //ability.ActivateSkill(subjugationMind); #ПЕРЕНЕСТИ В 13М
+        character.Abilities.ActivateSkill(character.Abilities.GetSkill<Suppression>());
+
     }
 
     public override void Exit()
     {
-        ability.DeactivateSkill(subjugationMind);
-        ability.DeactivateSkill(retributiveReckoning);
+        //ability.DeactivateSkill(subjugationMind); #ПЕРЕНЕСТИ В 13М
+        character.Abilities.DeactivateSkill(character.Abilities.GetSkill<Suppression>());
     }
 }

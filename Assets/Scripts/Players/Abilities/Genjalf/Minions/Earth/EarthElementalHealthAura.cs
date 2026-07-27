@@ -11,7 +11,7 @@ namespace Gangdollarff.EarthElemental
 
         protected override void OnTargetEnter(Character target)
         {
-            CmdApplyStateToTarget(target.gameObject, States.EarthsHealth, _buffDuration, Schools.Earth, _owner.gameObject, nameof(EarthElementalHealthAura));
+            CmdApplyStateToTarget(target.gameObject, States.EarthsHealth, _buffDuration, Schools.Earth, _owner.gameObject, nameof(EarthElementalHealthAura),0);
         }
 
         protected override void OnTargetExit(Character target)

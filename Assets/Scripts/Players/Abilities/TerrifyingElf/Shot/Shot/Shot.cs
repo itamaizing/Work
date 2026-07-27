@@ -48,8 +48,10 @@ public class Shot : Skill
 
     private bool CheckCanCast()
     {
-        if (Targeting.GetTarget() == null) return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength;
-        return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength || Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.CastLength;
+        return Targeting.CanCast(Targeting.GetTarget());
+        return true;
+        //if (Targeting.GetTarget() == null) return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength;
+        //return Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.CastLength || Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.CastLength;
     }
 
     private void OnDisable()
@@ -156,10 +158,9 @@ public class Shot : Skill
             }
 			yield return null;
         }
-
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
+        
 		TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Targetable);
         targetInfo.Points.Add(targetPoint);
         callbackDataSaved(targetInfo);
     }
@@ -175,8 +176,10 @@ public class Shot : Skill
         ProcessGhostCooldownReduction();
         HandleThirdShotRowOnCast();
 
-        if (targetData?.Targetable is IDamageable damageable) CmdCreateProjectileAtTarget(damageable.gameObject, Damage);
-        else CmdCreateProjectileAtPosition(_targetPoint, Damage);
+        float castLengthAtCast = AreaInfo.CastLength;
+
+        if (targetData?.Targetable is IDamageable damageable) CmdCreateProjectileAtTarget(damageable.gameObject, Damage, castLengthAtCast);
+        else CmdCreateProjectileAtPosition(_targetPoint, Damage, castLengthAtCast);
         yield return null;
     }
 
@@ -228,49 +231,44 @@ public class Shot : Skill
     }
 
     [Command]
-    public void CmdCreateProjectileAtTarget(GameObject targetObject, float damage)
+    public void CmdCreateProjectileAtTarget(GameObject targetObject, float damage, float maxTravelDistance)
     {
         if (targetObject == null) return;
 
         Transform target = targetObject.transform;
-
         Vector3 direction = (target.transform.position - transform.position).normalized;
-
         if (direction == Vector3.zero) return;
 
         ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffsetUp, Quaternion.LookRotation(direction));
-        proj.Init(_playerLinks, 0, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
-        //SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
+        proj.Init(_playerLinks, 0, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance, maxTravelDistance);
         NetworkServer.Spawn(proj.gameObject);
         proj.StartFly(target);
-        RpcInit(proj.gameObject, damage);
+        RpcInit(proj.gameObject, damage, maxTravelDistance);
         RpcPlayShotSound();
     }
 
     [Command]
-    public void CmdCreateProjectileAtPosition(Vector3 position, float damage)
+    public void CmdCreateProjectileAtPosition(Vector3 position, float damage, float maxTravelDistance)
     {
         Vector3 flatTargetPoint = new Vector3(position.x, position.y, position.z);
         Vector3 direction = (flatTargetPoint - transform.position).normalized;
-
         if (direction == Vector3.zero) return;
 
         ArrowProjectile proj = Instantiate(_projectile, transform.position + Vector3.up * _arrowYOffsetDown, Quaternion.LookRotation(direction));
-        proj.Init(_playerLinks, 0, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
-        //SceneManager.MoveGameObjectToScene(proj.gameObject, _hero.NetworkSettings.MyRoom);
+        proj.Init(_playerLinks, 0, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance, maxTravelDistance);
         NetworkServer.Spawn(proj.gameObject);
         proj.StartFly(direction);
-        RpcInit(proj.gameObject, damage);
+        RpcInit(proj.gameObject, damage, maxTravelDistance);
         RpcPlayShotSound();
     }
 
     [ClientRpc]
-    protected void RpcInit(GameObject gameObject, float damage)
+    protected void RpcInit(GameObject gameObject, float damage, float maxTravelDistance)
     {
         if (gameObject == null) return;
 
         ArrowProjectile proj = gameObject.GetComponent<ArrowProjectile>();
-        if (proj != null) proj.Init(_playerLinks, 0, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
+        if (proj != null) proj.Init(_playerLinks, 0, false, this, damage, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance, maxTravelDistance);
     }
 
     [ClientRpc]

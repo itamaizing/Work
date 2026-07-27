@@ -4,12 +4,11 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class IceShower : Skill
+public class IceShower : Skill,IEnergyDamagable
 {
 	[SerializeField] private IceShowerProjectile _projectile;
 	[SerializeField] private SkillRenderer _skillRenderer;
 	[SerializeField] private HeroComponent _playerLinks;
-	[SerializeField] private SeriesOfStrikes _combo;
 
 	private Vector3 _targetPoint = Vector3.positiveInfinity;
 	private Energy _energy;
@@ -69,14 +68,6 @@ public class IceShower : Skill
 
 	private void Shoot()
 	{
-		//Vector3 lookDir = _mousePos - _playerLinks.transform.position;
-		//float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
-		if (_combo.MakeHit(null, Info.AbilityForm, 1, 0, 0, _combo.GetMultipliedSpeed() / 100))
-		{
-			Debug.LogError("some talents i guess in ice cloud");
-			//_playerLinks.RuneComponent.IceCloudBonus();
-		}
-
 		_targetPoint.y += 5;
 		CmdCreateProjecttile(_targetPoint, _energy.CurrentValue);
 		ClearData();
@@ -197,5 +188,8 @@ public class IceShower : Skill
 	{
 		_frozwenTalent = value;
 	}
+
+	public bool IsStreamSkill { get; }
+	public bool IsFrostEnergyApplied { get; }
 }
 

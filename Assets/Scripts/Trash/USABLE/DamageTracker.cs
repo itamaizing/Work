@@ -30,7 +30,6 @@ public class DamageTracker : NetworkBehaviour
         RemoveOldLocalEntries();
 
         //Debug.Log($"[DamageTracker] Damage added: {damage.Value}, Time: {Time.time}, Info.School: {damage.Info.School}, Info.DamageType: {damage.Type}");
-
         OnDamageTracked?.Invoke(damage, targetObject);
     }
 

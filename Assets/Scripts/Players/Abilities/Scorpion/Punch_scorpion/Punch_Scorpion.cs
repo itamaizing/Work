@@ -1,8 +1,9 @@
-﻿using Mirror;
+﻿using System;
+using Mirror;
 using System.Linq.Expressions;
 using UnityEngine;
 
-public class Punch_Scorpion : AutoAttackSkill
+public class Punch_Scorpion : AutoAttackSkill,IComboParticipatingSkill
 {
     [Header("Ability settings")]
     [SerializeField] private Character _playerLinks;
@@ -10,6 +11,8 @@ public class Punch_Scorpion : AutoAttackSkill
     //[SerializeField] private float _damageValue = 9f;
 
     private Character _lastTarget = null;
+    public event IComboParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplyParticipatingDamage;
+    public event Action<GameObject, Skill> OnDamaged;
 
     protected override int AnimTriggerCastDelay => 0;
 
@@ -48,7 +51,7 @@ public class Punch_Scorpion : AutoAttackSkill
     {
         Debug.LogWarning("Punch_Scorppion .AttackPassed - �����");
 
-        _comboCounter.AddSkill(target, this);
+        OnDamaged?.Invoke(target.gameObject, this);
     }
     private void AttackMissed()
     {
@@ -87,4 +90,6 @@ public class Punch_Scorpion : AutoAttackSkill
     {
         throw new System.NotImplementedException();
     }
+    public void OnFinalComboSkill(GameObject target) { }
+    public void OnTargetHasComboPoint(GameObject target, float comboPoints) { }
 }

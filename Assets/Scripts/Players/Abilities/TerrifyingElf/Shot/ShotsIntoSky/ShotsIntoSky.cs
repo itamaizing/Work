@@ -24,17 +24,16 @@ public class ShotsIntoSky : Skill
     private bool _tripleShootPlanned;
     private const float _extraShotDelay = 1f;
 
+    private float _impactLifeTime = 2;
     private float _baseCastDelay;
     private Coroutine _boostWindow;
     private WaitForSeconds _boostDuration = new WaitForSeconds(2f);
 
     #region Talent
-
-    private bool _isSkillEnableBoostLogicActiveTalent;
+    
     private bool shotMagicDebuffActive;
 
     public void ShotsIntoSkyMagicDebuffTalentActive(bool value) => shotMagicDebuffActive = value;
-    public void SkillEnableBoostLogicActiveTalent(bool value) => _isSkillEnableBoostLogicActiveTalent = value;
 
     #endregion
 
@@ -42,23 +41,8 @@ public class ShotsIntoSky : Skill
     protected override int AnimTriggerCast => 0;
 
 
-    protected override bool IsCanCast
-    {
-        get
-        {
-            if (_disactive) return false;
-
-            if (TargetInfoQueue.Count > 0 && TargetInfoQueue.TryPeek(out var target) && target != null && target.Points.Count > 0)
-            {
-                var point = target.Points[0];
-                if (float.IsInfinity(point.x)) return false;
-                return Targeting.IsPointInRadius(AreaInfo.Radius, point);
-            }
-
-            return Targeting.IsPointInRadius(AreaInfo.Radius, _targetPoint);
-        }
-    }
-
+    protected override bool IsCanCast => Targeting.IsPointInRadius(AreaInfo.Radius, _targetPoint);
+    
     private void OnDestroy() => Canceled -= HandleSkillCanceled;
 
     private void OnEnable()
@@ -93,7 +77,6 @@ public class ShotsIntoSky : Skill
 
     public void TryStartBoost()
     {
-        if (!_isSkillEnableBoostLogicActiveTalent) return;
         if (_boostWindow != null) StopCoroutine(_boostWindow);
 
         _boostWindow = StartCoroutine(BoostWindow());
@@ -118,18 +101,52 @@ public class ShotsIntoSky : Skill
         yield return _boostDuration;
         DisableSkillBoost();
     }
+    
+    protected override void PlayPrepareAnim()
+    {
+        if (CastDeley > 0f)
+            Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+        
+        base.PlayPrepareAnim();
+    }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+        Vector3 targetPoint = Vector3.positiveInfinity;
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
+        while (float.IsPositiveInfinity(targetPoint.x) && !_disactive)
         {
-            if (GetMouseButton) if (TryGetGroundPoint(out Vector3 ground) && Targeting.IsPointInRadius(AreaInfo.Radius, ground)) _targetPoint = ground;
+            if (GetMouseButton)
+            {
+                if (TryGetGroundPoint(out Vector3 ground))
+                {
+                    targetPoint = ground;
+                    
+                    if (Targeting.IsPointInRadius(AreaInfo.Radius, targetPoint))
+                    {
+                        Hero.Move.LookAtPosition(targetPoint);
+                    }
+                }
+            }
             yield return null;
         }
 
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(targetPoint);
+        callbackDataSaved(targetInfo);
+    }
+
+    protected override IEnumerator CastJob()
+    {
+        if (float.IsInfinity(_targetPoint.x)) yield break;
+
+        Hero.Move.StopLookAt();
+        Hero.Move.SetCanMove(true);
+
+        int projectileCount = 0;
+
         CmdSpawnImpact(_targetPoint, Damage, false);
+        projectileCount++;
 
         if (tripleShotTalentActive && reconnaissanceFire != null && reconnaissanceFire.CurrentFireAura != null)
         {
@@ -142,45 +159,23 @@ public class ShotsIntoSky : Skill
                 if (reconnaissanceFire.CurrentFireAura.StateDark)
                 {
                     CmdSpawnImpact(_targetPoint, Damage / 2, false);
-                    _secondShotPlanned = true;
+                    projectileCount++;
 
                     CmdSpawnImpact(_targetPoint, Damage / 4, true);
-                    _tripleShootPlanned = true;
+                    projectileCount++;
                 }
-
                 else
                 {
                     CmdSpawnImpact(_targetPoint, Damage / 2, true);
-                    _secondShotPlanned = true;
+                    projectileCount++;
                 }
             }
         }
-
-        TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_targetPoint);
-        callbackDataSaved(targetInfo);
-    }
-
-    protected override IEnumerator CastJob()
-    {
-        CmdExecuteCast();
-
-        if (_secondShotPlanned)
-        {
-            yield return new WaitForSeconds(_extraShotDelay);
-            CmdExecuteCast();
-            _secondShotPlanned = false;
-
-            if (_tripleShootPlanned)
-            {
-                yield return new WaitForSeconds(_extraShotDelay);
-                CmdExecuteCast();
-
-                _tripleShootPlanned = false;
-            }
-        }
-
-        yield return null;
+        
+        CmdSpawnImpact(_targetPoint, Damage, false);
+        projectileCount++;
+        
+        CmdExecuteAllWaves();
 
         _hero.Animator.speed = 1f;
         ClearData();
@@ -213,9 +208,9 @@ public class ShotsIntoSky : Skill
         if (!impactPrefab) return;
 
         ArrowsIntoSkyProjectile impact = Instantiate(impactPrefab, position, Quaternion.identity);
-        SceneManager.MoveGameObjectToScene(impact.gameObject, _hero.NetworkSettings.MyRoom);
         impact.Init(playerLinks, this, damage, lastStreamTalent, shotMagicDebuffActive);
-        NetworkServer.Spawn(impact.gameObject);
+        
+        NetworkServer.Spawn(impact.gameObject, connectionToClient);
 
         _arrowsIntoSkyProjectileIds.Add(impact.GetComponent<NetworkIdentity>().netId);
 
@@ -223,16 +218,38 @@ public class ShotsIntoSky : Skill
     }
 
     [Command]
-    private void CmdExecuteCast()
+    private void CmdExecuteAllWaves()
     {
+        StartCoroutine(ServerExecuteAllWavesRoutine());
+    }
+
+    [Server]
+    private IEnumerator ServerExecuteAllWavesRoutine()
+    {
+        yield return new WaitForSeconds(_dropDelayTime);
+
         CleanupProjectileList();
 
-        if (_arrowsIntoSkyProjectileIds.Count == 0) return;
+        while (_arrowsIntoSkyProjectileIds.Count > 0)
+        {
+            uint id = _arrowsIntoSkyProjectileIds[0];
+            _arrowsIntoSkyProjectileIds.RemoveAt(0);
 
-        uint id = _arrowsIntoSkyProjectileIds[0];
-        _arrowsIntoSkyProjectileIds.RemoveAt(0);
+            if (NetworkServer.spawned.TryGetValue(id, out var netIdentity) && netIdentity != null)
+            {
+                var projectile = netIdentity.GetComponent<ArrowsIntoSkyProjectile>();
+                if (projectile != null)
+                {
+                    projectile.Activate();
+                    RpcActivate(projectile);
+                }
+            }
 
-        StartCoroutine(ActivateAfterDelay(id));
+            if (_arrowsIntoSkyProjectileIds.Count > 0)
+            {
+                yield return new WaitForSeconds(_extraShotDelay);
+            }
+        }
     }
 
     [Command] private void CmdDestroyPendingImpacts() => ServerDestroyPendingImpacts();
@@ -290,7 +307,13 @@ public class ShotsIntoSky : Skill
         _hero.Move.SetCanMove(true);
     }
 
-    public override void LoadTargetData(TargetInfo targetInfo) => _targetPoint = targetInfo.Points[0];
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        if (targetInfo != null && targetInfo.Points.Count > 0)
+        {
+            _targetPoint = targetInfo.Points[0];
+        }
+    }
 
     #region ReconnaissanceFireArrowIntoSkyTalent
     public void SetTripleShotTalentActive(bool value)
@@ -298,4 +321,4 @@ public class ShotsIntoSky : Skill
         tripleShotTalentActive = value;
     }
     #endregion
-}
+}

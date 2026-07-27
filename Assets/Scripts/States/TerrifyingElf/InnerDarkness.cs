@@ -18,7 +18,6 @@ public class InnerDarkness : RefreshingState
     public InnerDarkness()
     {
         MaxStacksCount = 6;
-        currentStacksCount = 1;
     }
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
@@ -27,7 +26,6 @@ public class InnerDarkness : RefreshingState
         base.personWhoMadeBuff = personWhoMadeBuff;
         _durationRemaining = durationToExit;
         var terrifyingElfAura = personWhoMadeBuff.GetComponent<TerrifyingElfAura>();
-
 
         if (personWhoMadeBuff != null && terrifyingElfAura.IsReductionRecharge)
         {
@@ -48,14 +46,13 @@ public class InnerDarkness : RefreshingState
 
     public override void UpdateState()
     {
-        _durationRemaining -= Time.deltaTime;
         if (_durationRemaining <= 0) ExitState();
     }
 
     public override void ExitState()
     {
         characterState.RemoveState(this);
-        currentStacksCount = 1;
+        currentStacksCount = 0;
     }
 
     public override bool Stack(float time)
@@ -91,6 +88,25 @@ public class InnerDarkness : RefreshingState
         _durationRemaining = time - (currentStacksCount - 1) * TimeDecreasePerStack;
         CmdStateFear();
         Debug.Log("обновление при максимальном стаке");
+    }
+    
+    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        if (!CanEnterState(character)) return null;
+
+        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+
+        if (currentStacksCount == 0)
+        {
+            currentStacksCount = 1;
+            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+        }
+        else
+        {
+            Stack(durationToExit);
+        }
+
+        return this;
     }
 
     [Command] private void CmdStateFear() => ClientRpcStateFear();

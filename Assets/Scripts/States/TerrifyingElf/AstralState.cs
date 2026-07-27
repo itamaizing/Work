@@ -3,15 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AstralState : AbstractCharacterState
+public class AstralState : RefreshingState
 {
-    private float _baseDuration;
-    private int _currentStacks = 1;
-    private const int _maxStacks = 1;
-
     private float _defMagDamageMod = 50f;
     private float _originalRegenerationValue;
-    private float _originalDefPhysDamage;
 
     private StateEffects _stateEffects;
     private SkinnedMeshRenderer _characterRenderer;
@@ -21,10 +16,13 @@ public class AstralState : AbstractCharacterState
     private Material[] _originalMaterials;
 
     private Coroutine _dotJob;
-    private AttributeModifier _modif;
+    private AttributeModifier _moveMod = new AttributeModifier(-0.5f, ModifierType.Multiplier);
+    private AttributeModifier _regenMod = new AttributeModifier(-1f, ModifierType.Percent);
+    private AttributeModifier _magResMod;
+    private AttributeModifier _physResMod;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability, StatusEffect.Move };
-    private readonly Dictionary<Skill, float> _modifiedSkills = new();
+    private readonly Dictionary<Skill, AttributeModifier> _skillModifiers = new();
 
     public override States State => States.Astral;
     public override StateType Type => StateType.Magic;
@@ -33,14 +31,21 @@ public class AstralState : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _modif.Value = .5f;
-        _modif.Type = ModifierType.Multiplier;
-        _baseDuration = durationToExit;
+        currentStacksCount = 1;
+        
+        _moveMod.Value = -0.5f;
+        _moveMod.Type = ModifierType.Multiplier;
+        _moveMod.Source = this;
+
+        _regenMod.Value = -1f;
+        _regenMod.Type = ModifierType.Percent;
+        _regenMod.Source = this;
+
+        _magResMod = new AttributeModifier(-_defMagDamageMod, ModifierType.Flat, this);
 
         _stateEffects = characterState.GetComponent<StateEffects>();
         if (_stateEffects == null)
         {
-            Debug.LogWarning("StateEffects component is missing on character.");
             return;
         }
 
@@ -65,26 +70,31 @@ public class AstralState : AbstractCharacterState
         }
 
         var characterHealth = characterState.Character.Health;
-
-        _originalDefPhysDamage = characterHealth.DefPhysDamage;
         _originalRegenerationValue = characterHealth.RegenerationValue;
-        characterHealth.DefMagDamage -= _defMagDamageMod;
-        characterHealth.DefPhysDamage = 100;
 
-        characterState.Character.Health.RegenerationValue = 0;
+        characterHealth.AddModifier(ResourceAttributeName.Regen, _regenMod);
+        
+        var attributes = characterState.Character.AttributeSystem;
+        if (attributes != null)
+        {
+            attributes[CharacterAttributeName.ResistanceMagical].AddModifier(_magResMod);
 
+            float currentPhysRes = attributes[CharacterAttributeName.ResistancePhysical].GetValue();
+            _physResMod = new AttributeModifier(100f - currentPhysRes, ModifierType.Flat, this);
+            attributes[CharacterAttributeName.ResistancePhysical].AddModifier(_physResMod);
+        }
 
-       // characterState.Character.Move.ChangeMoveSpeed(0.5f);
-        characterState.Character.Move.AddModifier(_modif);
+        characterState.Character.Move.AddModifier(_moveMod);
 
         BlockPhysicalAbilities();
 
         foreach (var skill in characterState.Character.Abilities.Abilities)
         {
-            if (skill.Info.AbilityForm == AbilityForm.Magic)
+            if (skill.Info.AbilityForm == AbilityForm.Magic || skill.Info.AbilityForm == AbilityForm.Both)
             {
-                _modifiedSkills[skill] = skill.Damage;
-                skill.Damage *= 1.5f;
+                var damageMod = new AttributeModifier(0.5f, ModifierType.Percent, this);
+                skill.Attributes[SkillAttributeName.Damage].AddModifier(damageMod);
+                _skillModifiers[skill] = damageMod;
             }
         }
 
@@ -97,29 +107,34 @@ public class AstralState : AbstractCharacterState
 
     public override void ExitState()
     {
-        Debug.Log("Exiting Astral State");
-
         characterState.RemoveState(this);
 
         if (_characterRenderer != null) _characterRenderer.materials = _originalMaterials;
         if (_weapon != null) _weaponRenderer.material = _originalWeaponMaterial;
 
         var characterHealth = characterState.Character.Health;
+        characterHealth.RemoveModifierBySource(ResourceAttributeName.Regen, this);
 
-        characterHealth.DefMagDamage += _defMagDamageMod;
-        characterHealth.DefPhysDamage = _originalDefPhysDamage;
+        var attributes = characterState.Character.AttributeSystem;
+        if (attributes != null)
+        {
+            attributes[CharacterAttributeName.ResistanceMagical].RemoveBySource(this);
+            if (_physResMod != null)
+            {
+                attributes[CharacterAttributeName.ResistancePhysical].RemoveBySource(this);
+            }
+        }
 
-        characterState.Character.Move.RemoveModifier(_modif);
-        //characterState.Character.Move.ChangeMoveSpeed(2);
+        characterState.Character.Move.RemoveModifier(_moveMod);
 
         if (_dotJob != null) characterState.StopCoroutine(_dotJob);
-        characterHealth.RegenerationValue = _originalRegenerationValue;
         UnblockPhysicalAbilities();
 
-        foreach (var (skill, baseDamage) in _modifiedSkills) skill.Damage = baseDamage;
-        _modifiedSkills.Clear();
-
-        characterState.RemoveState(this);
+        foreach (var kvp in _skillModifiers)
+        {
+            kvp.Key.Attributes[SkillAttributeName.Damage].RemoveBySource(this);
+        }
+        _skillModifiers.Clear();
     }
 
     private void BlockPhysicalAbilities()
@@ -134,14 +149,6 @@ public class AstralState : AbstractCharacterState
             if (skill.Info.AbilityForm == AbilityForm.Physical) skill.Disactive = false;
     }
 
-    public override bool Stack(float time)
-    {
-        if (_currentStacks < _maxStacks) _currentStacks++;
-
-        duration = _baseDuration;
-        return true;
-    }
-
     private IEnumerator DotJob()
     {
         float period = characterState.Character.Health.RegenerationPeriod;
@@ -151,8 +158,35 @@ public class AstralState : AbstractCharacterState
         {
             yield return new WaitForSeconds(period);
 
-            float damage = _originalRegenerationValue;
-            if (damage > 0) characterState.Character.Health.TryUse(damage);
+            float value = _originalRegenerationValue;
+            if (value <= 0) continue;
+
+            Damage damage = new Damage { Value = value, Type = DamageType.Magical };
+            characterState.Character.Health.TryTakeDamage(ref damage, null);
         }
+    }
+    
+    public override bool Stack(float time)
+    {
+        duration = BaseDurationValue;
+        return false;
+    }
+    
+    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        if (!CanEnterState(character)) return null;
+
+        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+
+        if (currentStacksCount == 0)
+        {
+            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+        }
+        else
+        {
+            Stack(duration);
+        }
+
+        return this;
     }
 }

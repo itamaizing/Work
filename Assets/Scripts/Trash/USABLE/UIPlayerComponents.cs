@@ -171,23 +171,52 @@ public class UIPlayerComponents : MonoBehaviour
     private void OnStartStreaming(float time)
     {
         _castLine.gameObject.SetActive(true);
-        _castLine.StartFill(time + _fixDuration, 1, 0);
+        _castLine.StartFill(time, 1, 0);
+
+        if (_character.Abilities.CurrentCastingSkill != null)
+        {
+            _character.Abilities.CurrentCastingSkill.CastStreamProgressApplied -= OnCastStreamRollback;
+            _character.Abilities.CurrentCastingSkill.CastStreamProgressApplied += OnCastStreamRollback;
+        }
     }
 
     private void OnStopStreaming()
     {
         _castLine.gameObject.SetActive(false);
         _castLine.Stop();
+        if (_character.Abilities.CurrentCastingSkill != null)
+            _character.Abilities.CurrentCastingSkill.CastStreamProgressApplied -= OnCastStreamRollback;
+    }
+    
+    private void OnCastStreamRollback(float rollbackAmount)
+    {
+        if (_castLine != null)
+            _castLine.SkipForward(rollbackAmount);
+    }
+    
+    private void OnCastTimeRollback(float rollbackAmount)
+    {
+        if (_castLine != null)
+            _castLine.Rollback(rollbackAmount);
     }
 
     private void OnStartCastDeley(float time)
     {
         _castLine.gameObject.SetActive(true);
-        _castLine.StartFill(time);
+        _castLine.StartFill(time, 0, 1);
+
+        if (_character.Abilities.CurrentCastingSkill != null)
+        {
+            _character.Abilities.CurrentCastingSkill.CastTimeRolledBack -= OnCastTimeRollback;
+            _character.Abilities.CurrentCastingSkill.CastTimeRolledBack += OnCastTimeRollback;
+        }
     }
 
     private void OnStopCastDeley()
     {
+        if (_character.Abilities.CurrentCastingSkill != null)
+            _character.Abilities.CurrentCastingSkill.CastTimeRolledBack -= OnCastTimeRollback;
+
         _castLine.gameObject.SetActive(false);
         _castLine.Stop();
     }

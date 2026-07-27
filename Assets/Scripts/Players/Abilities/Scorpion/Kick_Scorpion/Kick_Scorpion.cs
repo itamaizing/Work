@@ -2,12 +2,12 @@
 using UnityEngine;
 using Mirror;
 using System;
+using Random = UnityEngine.Random;
 
-public class Kick_Scorpion : Skill
+public class Kick_Scorpion : Skill, IComboParticipatingSkill
 {
     [Header("Ability settings")]
     [SerializeField] private Character _playerLinks;
-    [SerializeField] private PassiveCombo_Scorpion _comboCounter;
     [SerializeField] private ScorpionPassive _scorpionPassive;
     [SerializeField] [Range(0, 100)] private float _minDamage = 10f;
     [SerializeField] [Range(0, 100)] private float _maxDamage = 15f;
@@ -18,22 +18,49 @@ public class Kick_Scorpion : Skill
     private bool _isKick_ScorpionRowBonusTalent;
 
     [Header("Internal State")]
-    [SerializeField] [Range(0f, 1f)] private float _baseDebuffChance = 0.3f;
-    [SerializeField] [ReadOnly] private byte _hitsInRow = 1;
+    private byte _kickHitsInRow = 0;
+    private const float BaseKnockdownChance = 0.30f;
+    private const float KnockDownPerHit = 0.20f;
 
     private Coroutine _hitsInRowCoroutine;
     private Character _lastTarget = null;
     private Animator _animator;
     private bool _wasDamageApplied = false;
     private WaitForSeconds _waitForHitsInRowTimer;
+    
+    private IDamageable _castTarget;
 
+    public event IComboParticipatingSkill.OnBeforeApplyDamageDelegate OnBeforeApplyParticipatingDamage;
+    public event Action<GameObject, Skill> OnDamaged;
+    public void OnFinalComboSkill(GameObject target)
+    {
+        var state = target.GetComponent<CharacterState>();
+        if(isServer)
+            state?.AddState(States.Knockdown, KnockdownDurationDefault, 0, _hero.gameObject, name);
+    }
+
+    public void OnTargetHasComboPoint(GameObject target, float comboPoints)
+    {
+        var state = target.GetComponent<CharacterState>();
+        if (isServer)
+        {
+            for (int i = 0; i < comboPoints; i++)
+            {
+                state?.AddState(States.Knockdown, KnockdownDurationDefault, 0, _hero.gameObject, name);
+            }
+        }
+    }
+
+    private float _pendingFireDamageBonus = 0f;
+    private float _pendingScorchedSoulChance = 0f;
+    
     #region Сonst
     private const float HitsInRowResetDelay = 2f;
     private const float MinDirectionSqrMagnitude = 0.0001f;
     private const float KnockdownDurationDefault = 13f;
     private const float KnockdownDurationCombo = 6f;
     private const float MaxHitsInRow = 4f;
-    private const float SearchTargetInRadius = 1f;
+    private const float SearchTargetInRadius = 0.5f;
     #endregion
 
     private static readonly int KickTrigger = Animator.StringToHash("KickAA");
@@ -57,6 +84,7 @@ public class Kick_Scorpion : Skill
 
     private void HandleSkillCanceled()
     {
+        _castTarget = null;
         _wasDamageApplied = false;
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();
@@ -66,12 +94,18 @@ public class Kick_Scorpion : Skill
         AnimCastEnded();
         if (_hitsInRowCoroutine != null) StopCoroutine(_hitsInRowCoroutine);
     }
+    
+    public void AddFireBonus(float damagePercent, float scorchedChance)
+    {
+        _pendingFireDamageBonus += damagePercent;
+        _pendingScorchedSoulChance += scorchedChance;
+    }
 
     public void Kick_ScorpionMoveFalse()
     {
         if (_hero == null || _hero.Move == null) return;
 
-        var target = Targeting.GetTarget()?.Character != null ? Targeting.GetTarget()?.Character : _lastTarget;
+        var target = _castTarget != null ? Targeting.GetTarget()?.Character : _lastTarget;
         if (target == null)
         {
             _hero.Move.StopLookAt();
@@ -100,15 +134,8 @@ public class Kick_Scorpion : Skill
         Hero.Move.StopLookAt();
     }
 
-    private bool IsTargetInRange()
-    {
-        return Vector3.Distance(_playerLinks.transform.position, Targeting.GetTarget().Character.transform.position) <= AreaInfo.Radius;
-    }
-
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        _wasDamageApplied = false;
-
         while (Targeting.GetTempTarget()?.Targetable == null)
         {
             if (GetMouseButton)
@@ -121,7 +148,6 @@ public class Kick_Scorpion : Skill
 
                     else
                     {
-                        _hero.Move.LookAtTransform(Targeting.GetTempTarget()?.Targetable.Transform);
                         if (Targeting.GetTempTarget()?.Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
                         break;
                     }
@@ -131,7 +157,6 @@ public class Kick_Scorpion : Skill
         }
 
         Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
-
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
         callbackDataSaved(targetInfo);
@@ -139,92 +164,93 @@ public class Kick_Scorpion : Skill
 
     protected override IEnumerator CastJob()
     {
-        if (Targeting.GetTarget() == null) yield return null;
-        if (!IsTargetInRange()) yield return null;
-
-        if (_lastTarget != null && _lastTarget != Targeting.GetTarget()?.Character as Character) _comboCounter.ResetCounter();
+        if (_castTarget == null) yield break;
+        if (!IsCanCast) yield break;
 
         if (_hitsInRowCoroutine != null) StopCoroutine(_hitsInRowCoroutine);
-
-        _lastTarget = Targeting.GetTarget()?.Character;
+        _hero.Move.LookAtTransform(Targeting.GetTempTarget()?.Targetable.Transform);
+        _lastTarget = _castTarget as Character;
 
         ApplyAttackDamageKick();
     }
 
     private void ApplyAttackDamageKick()
     {
-        if (_wasDamageApplied) return;
+        if (_wasDamageApplied || _castTarget == null) return;
 
-        var targetData = Targeting.GetTarget();
-        if (targetData == null) return;
+        var targetGO = (_castTarget as MonoBehaviour)?.gameObject;
+        if (targetGO == null) return;
 
-        var target = targetData.Targetable as IDamageable;
-        if (target == null) return;
-
-        if (Vector3.Distance(_hero.transform.position, targetData.Transform.position) > AreaInfo.Radius)
+        if (Vector3.Distance(_hero.transform.position, targetGO.transform.position) > AreaInfo.Radius)
             return;
 
         Damage damage = new Damage
         {
             Value = Buff.Damage.GetBuffedValue(_damageValue),
             Type = Info.DamageType,
+            School = Schools.Physical
         };
 
         _wasDamageApplied = true;
 
-        CmdApplyDamage(target.gameObject, damage);
+        CmdApplyDamage(targetGO, damage,0);
+        
+        float bonus = _pendingFireDamageBonus;
+        float scorchedChance = _pendingScorchedSoulChance;
+        _pendingFireDamageBonus = 0f;
+        _pendingScorchedSoulChance = 0f;
+
+        Damage additionalDamage = new Damage
+        {
+            Value = damage.Value * bonus,
+            Type = Info.DamageType,
+            School = Schools.Fire
+        };
+
+        if(additionalDamage.Value > 0)
+            CmdApplyDamage(targetGO, additionalDamage, scorchedChance);
     }
 
     private IEnumerator HitsInRowTimer()
     {
         yield return _waitForHitsInRowTimer;
-        _hitsInRow = 1;
+        _kickHitsInRow = 0;
         _hitsInRowCoroutine = null;
     }
 
     private void AttackPassed(Character target)
     {
-        _comboCounter.AddSkill(target, this);
-
+        OnDamaged?.Invoke(target.gameObject,this);
+        
         if (_hitsInRowCoroutine != null)
             StopCoroutine(_hitsInRowCoroutine);
 
         _hitsInRowCoroutine = StartCoroutine(HitsInRowTimer());
 
         var state = target.GetComponent<CharacterState>();
-        float chance = 0f;
-
-        if (_isKick_ScorpionRowTalent)
+        float chance = BaseKnockdownChance;
+        if (_scorpionPassive.IsAddStateUpdateChance)
         {
-            if (_scorpionPassive.IsAddStateUpdateChance)
+            if (state.CheckForState(States.DisappointmentState))
             {
-                if (state.CheckForState(States.DisappointmentState)) state?.AddState(States.Knockdown, KnockdownDurationDefault, 0, _hero.gameObject, name);
-            }
-
-            else
-            {
-                if (_isKick_ScorpionRowBonusTalent)
-                {
-                    chance = _baseDebuffChance * Mathf.Pow(2, _hitsInRow - 1);
-
-                    if (UnityEngine.Random.value <= Mathf.Clamp01(chance))
-                    {
-                        state?.AddState(States.Knockdown, KnockdownDurationDefault, 0, _hero.gameObject, name);
-                        _hitsInRow = 1;
-                    }
-
-                    else _hitsInRow = (byte)Mathf.Min(_hitsInRow + 1, MaxHitsInRow);
-                }
-
-                else
-                {
-                    chance = _baseDebuffChance;
-                    if (UnityEngine.Random.value <= Mathf.Clamp01(chance)) state?.AddState(States.Knockdown, KnockdownDurationDefault, 0, _hero.gameObject, name);
-                }
+                chance += _scorpionPassive.AdditionalAddStateChance;
             }
         }
+        if (_isKick_ScorpionRowTalent)
+        {
+            _kickHitsInRow++;
 
-        else _hitsInRow = 1;
+            chance += _kickHitsInRow * KnockDownPerHit;
+        }
+        else
+        {
+            _kickHitsInRow = 0;
+        }
+        
+        if (Random.value <= chance)
+        {
+            state?.AddState(States.Knockdown, KnockdownDurationDefault, 0, _hero.gameObject, name);
+        }
 
         if (_isKick_ScorpionComboTalent && state != null)
         {
@@ -237,17 +263,21 @@ public class Kick_Scorpion : Skill
     }
 
     [Command]
-    private void CmdApplyDamage(GameObject target, Damage damage)
+    private void CmdApplyDamage(GameObject target, Damage damage, float scorchedChance)
     {
+        OnBeforeApplyParticipatingDamage?.Invoke(ref damage,this,target);
         if (target == null) return;
+        var damageable = target.GetComponent<IDamageable>();
+        if (damageable == null) return;
+        
+        bool isHit = damageable.TryTakeDamage(ref damage, this);
 
-        IDamageable targetHealth = target.GetComponent<IDamageable>();
-        if (targetHealth == null) return;
-
-        bool isHit = targetHealth.TryTakeDamage(ref damage, this);
-        Hero.DamageTracker.AddDamage(damage, target, isServerRequest: true);
-
-        if (isHit && targetHealth is Character character) AttackPassed(character);
+        if (isHit && damageable is Character character)
+        {
+            AttackPassed(character);
+            if (scorchedChance > 0f && Random.Range(0f, 100f) <= scorchedChance)
+                character.CharacterState.AddState(States.ScorchedSoul, 5f, 0f, _hero.gameObject, name);
+        }
     }
 
     public void Kick_ScorpionRowTalent(bool value)
@@ -267,6 +297,7 @@ public class Kick_Scorpion : Skill
 
     public void Kick_ScorpionCast()
     {
+        if (_wasDamageApplied) return;
         AnimStartCastCoroutine();
     }
 
@@ -277,7 +308,11 @@ public class Kick_Scorpion : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
+        if (targetInfo.GetTargets().Count > 0)
+        {
+            Targeting.SetTarget(targetInfo.GetTargets()[0]);
+            _castTarget = Targeting.GetTarget()?.Damageable;
+        }
     }
 
     protected override void ClearData()

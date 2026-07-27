@@ -2,46 +2,51 @@
 using UnityEngine;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
-public class TerrifyingElfAura : NetworkBehaviour
+public class TerrifyingElfAura : Skill
 {
-    [Header("Main fields")]
-    [SerializeField] private SkillManager skillManager;
-    [SerializeField] private HeroComponent hero;
+    [Header("Chances")] [SerializeField, Range(0f, 100f)]
+    private float calmnessChance = 10f;
 
-    [Header("Chances")]
-    [SerializeField, Range(0f, 100f)] private float calmnessChance = 10f;
     [SerializeField, Range(0, 100)] private float elvenSkillFromPhysChance = 10f;
     [SerializeField, Range(0, 100)] private float calmnessOnElvenSkillChance = 30f;
     [SerializeField, Range(0f, 100f)] private float huntressMarkApplyChance = 5f;
     private const float innerDarknessChance = 20f;
 
-    [Header("Durations")]
+    [Header("Durations")] 
     [SerializeField] private float durationCalmess;
     [SerializeField] private float durationHuntressMark;
     [SerializeField] private float durationElvenSkill;
 
-    [Header("Effects")]
-    [SerializeField] private GameObject elvenSkillEffect;
+    [Header("Effects")] [SerializeField] private GameObject elvenSkillEffect;
 
-    [Header("Radius")]
-    [SerializeField] private float radiusTreeCalmess = 12f;
+    [Header("Radius")] [SerializeField] private float radiusTreeCalmess = 12f;
 
-    [Header("Skills")]
-    [SerializeField] private ReconnaissanceFire reconnaissanceFire;
+    [Header("Skills")] [SerializeField] private ReconnaissanceFire reconnaissanceFire;
 
     #region Calmness aura
+
     [SerializeField] private float _auraTick = 1f;
     [SerializeField] private LayerMask _characterLayer;
-    private Coroutine _calmnessAuraRoutine;
+
     #endregion
+
     #region Physical skill crit
+
     [SerializeField] private Shot _shot;
     [SerializeField] private ShotIntoSky _shotIntoSky;
     [SerializeField] private ShotDarkness _shotDarkness;
+
     #endregion
 
-    public GameObject ElvenSkillEffect { get => elvenSkillEffect; set => elvenSkillEffect = value; }
+    public GameObject ElvenSkillEffect
+    {
+        get => elvenSkillEffect;
+        set => elvenSkillEffect = value;
+    }
+
+    private SkillManager _skillManager;
 
     #region boolTalent
 
@@ -51,7 +56,7 @@ public class TerrifyingElfAura : NetworkBehaviour
     private bool huntressMarkPhysicsTalent;
     private bool manaAbsorptionPhysicalTalent;
     private bool elvenSkillTalent;
-    private bool elvenSkillPhysicsTalent;
+    private bool elvenSkillPhysicsTalent = false;
     private bool calmnessOnElvenSkillTalent;
     private bool suppressionManaAbsorptionTalent;
     private bool _isReductionRecharge;
@@ -59,114 +64,46 @@ public class TerrifyingElfAura : NetworkBehaviour
     private bool _isThirdShotRow;
     private bool _isCalmnessAura;
     private bool _isSpellAddInnerDarkness;
-
+    
     public bool IsThirdShotRowActive => _isThirdShotRow;
 
     public void SpellAddInnerDarkness(bool value) => _isSpellAddInnerDarkness = value;
 
     public void ThirdShotRow(bool value) => _isThirdShotRow = value;
     public void ReductionRecharge(bool value) => _isReductionRecharge = value;
-    public void CalmnessTalentActive(bool value) => calmnessTalent = value;
+
+    public void CalmnessTalentActive(bool value)
+    {
+        if (value == calmnessTalent) return;
+        calmnessTalent = value;
+    }
+
     public void ElvenSkillPhysDamageHealthChance(bool value) => _isElvenSkillPhysDamageHealthChance = value;
+
+    #region CalmlessOnAllyTalent
+    
+    private bool _isCalmnessAllyTalent;
+    private readonly HashSet<Character> _trackedAllies = new();
+    private int _totalAllyCalmnessStacks = 0;
+    private const float ManaPerCalmnessStack = 0.03f;
+    private Coroutine _allyCalmnessTracker;
     public void CalmnessAura(bool value)
     {
-        _isCalmnessAura = value;
+        _isCalmnessAllyTalent = value;
 
-        if (!isServer) return;
-
-        if (_isCalmnessAura)
+        if (!value)
         {
-            if (_calmnessAuraRoutine == null)
-                _calmnessAuraRoutine = StartCoroutine(CalmnessAuraRoutine());
-        }
-        else
-        {
-            if (_calmnessAuraRoutine != null)
+            if (_allyCalmnessTracker != null)
             {
-                StopCoroutine(_calmnessAuraRoutine);
-                _calmnessAuraRoutine = null;
+                StopCoroutine(_allyCalmnessTracker);
+                _allyCalmnessTracker = null;
             }
+            _trackedAllies.Clear();
+            _totalAllyCalmnessStacks = 0;
+            if(isClient)
+                CmdUpdateManaMaxModifier(_totalAllyCalmnessStacks);
         }
     }
-    #endregion
-
-    private Skill currentSkill;
-    private Mana _heroMana;
-    private float _baseAreaReconnaissanceFire;
-
-    private int _shotCounter = 0;
-    private Character _lastTarget;
-
-    public bool IsReductionRecharge { get => _isReductionRecharge; }
-    public bool IsElvenSkillPhysDamageHealthChance { get => _isElvenSkillPhysDamageHealthChance; }
-
-    private void OnEnable()
-    {
-        CacheHeroMana();
-        if (skillManager != null && skillManager.SkillQueue != null) skillManager.SkillQueue.SkillAdded += OnSkillAdded;
-        if (hero != null && hero.DamageTracker != null) hero.DamageTracker.OnDamageTracked += OnDamageTracked;
-        if (manaAbsorptionPhysicalTalent) hero.DamageTracker.OnDamageTracked += OnDamageDealt;
-        if (_heroMana != null) _heroMana.ValueChanged += OnManaChanged;
-        _baseAreaReconnaissanceFire = reconnaissanceFire.BaseArea;
-    }
-
-    private void OnDisable()
-    {
-        if (currentSkill != null)
-        {
-            currentSkill.CastSuccess -= ApplyCalmnessTalent;
-            currentSkill.CastStarted -= ApplyFireWorshipperTalent;
-        }
-
-        if (_heroMana != null) _heroMana.ValueChanged -= OnManaChanged;
-        hero.DamageTracker.OnDamageTracked -= OnDamageDealt;
-        if (hero != null && hero.DamageTracker != null) hero.DamageTracker.OnDamageTracked -= OnDamageTracked;
-    }
-
-    private void OnSkillAdded(Skill skill)
-    {
-        currentSkill = skill;
-        if (skill == null) return;
-
-        if (calmnessTalent) skill.CastSuccess += ApplyCalmnessTalent;
-
-        if (fireWorshipperTalent) skill.CastStarted += ApplyFireWorshipperTalent;
-    }
-
-    #region Work with mana
-
-    private void CacheHeroMana()
-    {
-        if (hero == null) return;
-        if (_heroMana != null) return;
-
-        //_heroMana = hero.TryGetResource(ResourceType.Mana, out _heroMana) as Mana;
-        Resource res;
-        hero.TryGetResource(ResourceType.Mana, out res);
-        _heroMana = res as Mana;
-    }
-
-    private void OnManaChanged(float oldValue, float newValue)
-    {
-        if (newValue > 0f) return;
-
-        Debug.Log("Маны нет");
-        ApplyElvenSkill();
-        StartCoroutine(ReSubscribeAfterDelay());
-    }
-
-    private IEnumerator ReSubscribeAfterDelay()
-    {
-        yield return new WaitForSeconds(durationElvenSkill);
-
-        if (_heroMana != null)
-            _heroMana.ValueChanged += OnManaChanged;
-    }
-
-    #endregion
-
-    #region CalmnessTalent
-
 
     private void ApplyCalmnessTalent()
     {
@@ -181,13 +118,17 @@ public class TerrifyingElfAura : NetworkBehaviour
 
                 if (isCalmnessChance)
                 {
-                    character.CharacterState.CmdAddState(States.Calmness, durationCalmess, 0f, this.gameObject, currentSkill.Name);
+                    character.CharacterState.CmdAddState(States.Calmness, durationCalmess, 0f,
+                        this.gameObject, currentSkill.Name);
 
                     if (treeRadiusCalmessTalent)
                     {
                         int treesCount = GetTreesCountInRadius(radiusTreeCalmess);
                         StartCoroutine(DelayAndUpdateCalmness(character.CharacterState, treesCount));
                     }
+
+                    if (_isCalmnessAllyTalent)
+                        ApplyCalmnessToAllies(durationCalmess);
                 }
             }
         }
@@ -195,48 +136,173 @@ public class TerrifyingElfAura : NetworkBehaviour
         currentSkill = null;
     }
 
-    private IEnumerator CalmnessAuraRoutine()
+    private void ApplyCalmnessToAllies(float duration)
     {
-        var wait = new WaitForSeconds(_auraTick);
+        if (_hero == null) return;
 
-        while (_isCalmnessAura)
+        float visionRange = _hero.VisionComponent.VisionRange;
+        var colliders = Physics.OverlapSphere(_hero.transform.position, visionRange, _characterLayer);
+
+        foreach (var col in colliders)
         {
+            if (!col.TryGetComponent<Character>(out var target)) continue;
+            if (target == _hero) continue;
+            if (target.CharacterState == null) continue;
+
+            target.CharacterState.AddState(States.Calmness, duration, 0f, _hero.gameObject, "CalmnessAura");
+            _trackedAllies.Add(target);
+        }
+
+        if (_trackedAllies.Count > 0 && _allyCalmnessTracker == null)
+            _allyCalmnessTracker = StartCoroutine(TrackAllyCalmnessStacks());
+    }
+
+    [Command]
+    private void CmdAddCalmness(GameObject target, float duration)
+    {
+        target.GetComponent<CharacterState>().AddState(States.Calmness, duration, 0f, _hero.gameObject, "CalmnessAura");
+    }
+    
+    private IEnumerator TrackAllyCalmnessStacks()
+    {
+        var wait = new WaitForSeconds(0.5f);
+
+        while (_isCalmnessAllyTalent && _trackedAllies.Count > 0)
+        {
+            RecalcTotalAllyStacks();
             yield return wait;
+        }
 
-            if (hero == null || hero.CharacterState == null)
-                continue;
+        if (_totalAllyCalmnessStacks != 0)
+        {
+            _totalAllyCalmnessStacks = 0;
+            CmdUpdateManaMaxModifier(_totalAllyCalmnessStacks);
+        }
+        _allyCalmnessTracker = null;
+    }
 
-            float radius = hero.VisionComponent.VisionRange;
+    private void RecalcTotalAllyStacks()
+    {
+        int total = 0;
+        var toRemove = new List<Character>();
 
-            var colliders = Physics.OverlapSphere(
-                hero.transform.position,
-                radius,
-                _characterLayer
-            );
-
-            foreach (var col in colliders)
+        foreach (var ally in _trackedAllies)
+        {
+            if (ally == null)
             {
-                if (!col.TryGetComponent<Character>(out var target)) continue;
-                if (target == hero) continue;
-
-                if (target.NetworkSettings.TeamIndex != hero.NetworkSettings.TeamIndex) continue;
-                if (target.CharacterState == null) continue;
-
-                target.CharacterState.AddState(States.Calmness, durationCalmess, 0f, hero.gameObject, "CalmnessAura");
+                toRemove.Add(ally);
+                continue;
             }
+
+            if (!ally.CharacterState.CheckForState(States.Calmness))
+            {
+                toRemove.Add(ally);
+                continue;
+            }
+
+            if (ally.CharacterState.GetState(States.Calmness) is Calmness state) 
+            {
+                total += state.CurrentStacksCount;
+            }
+        }
+        foreach (var key in toRemove)
+        {
+            _trackedAllies.Remove(key);
+        }
+
+        if (total != _totalAllyCalmnessStacks) 
+        {
+            _totalAllyCalmnessStacks = total;
+            CmdUpdateManaMaxModifier(_totalAllyCalmnessStacks);
+        }
+    }
+
+    [Command]
+    private void CmdUpdateManaMaxModifier(int totalAllyCount)
+    {
+        if (Hero?.TryGetResource(ResourceType.Mana) is not Resource mana) return;
+        
+        mana.RemoveModifierBySource(ResourceAttributeName.MaxValue, this, all: true);
+
+        if (totalAllyCount > 0)
+        {
+            float bonus = ManaPerCalmnessStack * totalAllyCount;
+            mana.AddModifier(ResourceAttributeName.MaxValue,
+                new AttributeModifier(bonus, ModifierType.Percent, source: this));
         }
     }
 
     #endregion
 
-    #region FireWorshipperTalent
+    #endregion
 
-    public void FireWorshipperTalentActive(bool value)
+    private Skill currentSkill;
+    private Mana _heroMana;
+    private float _baseAreaReconnaissanceFire;
+
+    private int _shotCounter = 0;
+    private Character _lastTarget;
+
+    public bool IsReductionRecharge
     {
-        fireWorshipperTalent = value;
-        if (!fireWorshipperTalent) reconnaissanceFire.AreaInfo.Area = _baseAreaReconnaissanceFire;
-        else reconnaissanceFire.AreaInfo.Area += 1;
+        get => _isReductionRecharge;
     }
+
+    public bool IsElvenSkillPhysDamageHealthChance
+    {
+        get => _isElvenSkillPhysDamageHealthChance;
+    }
+
+    public override void Init(SkillRenderer render, Character hero)
+    {
+        base.Init(render, hero);
+        _skillManager = _hero.Abilities;
+        _heroMana = _hero.TryGetResource(ResourceType.Mana) as Mana;
+
+        if (_skillManager != null && _skillManager.SkillQueue != null)
+            _skillManager.SkillQueue.SkillAdded += OnSkillAdded;
+        if (hero != null && hero.DamageTracker != null) hero.DamageTracker.OnDamageTracked += OnDamageTracked;
+        if (manaAbsorptionPhysicalTalent) hero.DamageTracker.OnDamageTracked += OnDamageDealt;
+        _heroMana.ValueChanged += OnManaChanged;
+        _baseAreaReconnaissanceFire = reconnaissanceFire.BaseArea;
+    }
+
+    private void OnDisable()
+    {
+        if (currentSkill != null)
+        {
+            currentSkill.CastSuccess -= ApplyCalmnessTalent;
+            currentSkill.CastStarted -= ApplyFireWorshipperTalent;
+        }
+
+        if (_heroMana != null) _heroMana.ValueChanged -= OnManaChanged;
+        _hero.DamageTracker.OnDamageTracked -= OnDamageDealt;
+        if (_hero != null && _hero.DamageTracker != null) _hero.DamageTracker.OnDamageTracked -= OnDamageTracked;
+
+        StopManaRegenBoost();
+    }
+
+    private void OnSkillAdded(Skill skill)
+    {
+        currentSkill = skill;
+        if (skill == null) return;
+
+        if (calmnessTalent) skill.CastSuccess += ApplyCalmnessTalent;
+
+        if (fireWorshipperTalent) skill.CastStarted += ApplyFireWorshipperTalent;
+    }
+
+    #region Work with mana
+
+    private void OnManaChanged(float oldValue, float newValue)
+    {
+        if (newValue > 0f) return;
+        ApplyElvenSkill(newValue);
+    }
+
+    #endregion
+
+    #region FireWorshipperTalent
 
     private void ApplyFireWorshipperTalent()
     {
@@ -246,7 +312,8 @@ public class TerrifyingElfAura : NetworkBehaviour
             return;
 
         var character = currentSkill.Hero;
-        var targets = currentSkill.Targeting.GetClosestTargets(currentSkill.transform.position, currentSkill.AreaInfo.Radius);
+        var targets =
+            currentSkill.Targeting.GetClosestTargets(currentSkill.transform.position, currentSkill.AreaInfo.Radius);
         if (targets == null || targets.Count == 0) return;
 
         foreach (var target in targets)
@@ -257,7 +324,8 @@ public class TerrifyingElfAura : NetworkBehaviour
 
                 if (isCalmnessChance)
                 {
-                    character.CharacterState.CmdAddState(States.Calmness, durationCalmess, 0f, target.Character.gameObject, currentSkill.Name);
+                    character.CharacterState.CmdAddState(States.Calmness, durationCalmess, 0f,
+                        target.Character.gameObject, currentSkill.Name);
 
                     if (treeRadiusCalmessTalent)
                     {
@@ -280,7 +348,13 @@ public class TerrifyingElfAura : NetworkBehaviour
     #region PhysicsTalent
 
     public void HuntressMarkPhysicsTalentActive(bool value) => huntressMarkPhysicsTalent = value;
-    public void ElvenSkillPhysicsTalent(bool value) => elvenSkillPhysicsTalent = value;
+
+    public void ElvenSkillPhysicsTalent(bool value)
+    {
+        if (elvenSkillPhysicsTalent == value) return;
+        elvenSkillPhysicsTalent = value;
+    }
+
     public void CalmnessOnElvenSkillTalent(bool value) => calmnessOnElvenSkillTalent = value;
     public void SuppressionManaAbsorption(bool value) => suppressionManaAbsorptionTalent = value;
 
@@ -299,28 +373,34 @@ public class TerrifyingElfAura : NetworkBehaviour
 
     private void OnDamageTracked(Damage damage, GameObject target)
     {
-        if (damage.Type == DamageType.Physical && hero != null && hero.CharacterState != null)
+        if (damage.Type == DamageType.Physical && _hero != null && _hero.CharacterState != null)
         {
-            CharacterState selfState = hero.CharacterState;
+            CharacterState selfState = _hero.CharacterState;
 
             if (elvenSkillPhysicsTalent && UnityEngine.Random.Range(0f, 100f) <= elvenSkillFromPhysChance)
                 selfState.AddState(States.ElvenSkill, durationElvenSkill, 0f, gameObject, "TerrifyingElfAura");
 
-            else if (calmnessOnElvenSkillTalent && selfState.CheckForState(States.ElvenSkill) && UnityEngine.Random.Range(0f, 100f) <= calmnessOnElvenSkillChance)
+            else if (calmnessOnElvenSkillTalent && selfState.CheckForState(States.ElvenSkill) &&
+                     UnityEngine.Random.Range(0f, 100f) <= calmnessOnElvenSkillChance)
                 selfState.AddState(States.Calmness, durationCalmess, 0f, gameObject, "TerrifyingElfAura");
 
             //if (huntressMarkPhysicsTalent && UnityEngine.Random.Range(0f, 100f) <= huntressMarkApplyChance && target != null && target.TryGetComponent<CharacterState>(out var victimState))
             //    victimState.AddState(States.HuntressMark, durationHuntressMark, 0f, gameObject, "HuntressMark");
 
-            if (suppressionManaAbsorptionTalent && selfState.GetState(States.Suppression) is SuppressionState suppression && suppression.CurrentStacksCount > 0 && hero.TryGetResource(ResourceType.Mana) is Mana mana)
+            if (suppressionManaAbsorptionTalent &&
+                selfState.GetState(States.Suppression) is SuppressionState suppression &&
+                suppression.CurrentStacksCount > 0 && _hero.TryGetResource(ResourceType.Mana) is Mana mana)
                 mana.Add(damage.Value * 0.25f * suppression.CurrentStacksCount);
 
             if (manaAbsorptionPhysicalTalent) OnDamageDealt(damage, target);
 
-            if (_isSpellAddInnerDarkness && damage.Type == DamageType.Magical && target != null && target.TryGetComponent<Character>(out var targetCharacter))  
+            if (_isSpellAddInnerDarkness && damage.Type == DamageType.Magical && target != null &&
+                target.TryGetComponent<Character>(out var targetCharacter))
             {
                 float roll = UnityEngine.Random.Range(0f, 100f);
-                if (roll <= innerDarknessChance) targetCharacter.CharacterState.AddState(States.InnerDarkness, durationCalmess, 0f, hero.gameObject, "TerrifyingElfAura");
+                if (roll <= innerDarknessChance)
+                    targetCharacter.CharacterState.AddState(States.InnerDarkness, durationCalmess, 0f, _hero.gameObject,
+                        "TerrifyingElfAura");
             }
         }
     }
@@ -353,7 +433,7 @@ public class TerrifyingElfAura : NetworkBehaviour
         {
             _shotCounter = 0;
 
-            foreach (var skill in skillManager.Skills)
+            foreach (var skill in _skillManager.Skills)
             {
                 if (skill == null) continue;
 
@@ -373,7 +453,7 @@ public class TerrifyingElfAura : NetworkBehaviour
 
     private void OnDamageDealt(Damage damage, GameObject target)
     {
-        if (damage.Type == DamageType.Physical && hero != null)
+        if (damage.Type == DamageType.Physical && _hero != null)
         {
             float manaToRestore = damage.Value * 0.3f;
             RestoreMana(manaToRestore, target);
@@ -393,28 +473,32 @@ public class TerrifyingElfAura : NetworkBehaviour
             }
         }
 
-        if (hero.TryGetResource(ResourceType.Mana) is Mana manaResource) manaResource.Add(amount);
+        if (_hero.TryGetResource(ResourceType.Mana) is Mana manaResource) manaResource.Add(amount);
     }
 
     #endregion
 
     #region The Elf has run out of mana
 
-    private void ApplyElvenSkill()
+    private void ApplyElvenSkill(float newValue)
     {
-        if (elvenSkillTalent && hero == null && hero.CharacterState == null) return;
+        if (!elvenSkillTalent || _hero == null || _hero.CharacterState == null || newValue > 0) return;
 
-        hero.CharacterState.CmdAddState(States.ElvenSkill, durationElvenSkill, 0f, gameObject, "TerrifyingElfAura");
+        if (isClient)
+            _hero.CharacterState.CmdAddState(States.ElvenSkill, durationElvenSkill, 0f, gameObject,
+                "TerrifyingElfAura");
     }
 
     public void ElvenSkillTalent(bool value)
     {
+        if (value == elvenSkillTalent) return;
         elvenSkillTalent = value;
     }
 
     #endregion
 
     #region Helpers
+
     private int GetTreesCountInRadius(float radius)
     {
         var trees = FindObjectsOfType<Tree>();
@@ -426,6 +510,7 @@ public class TerrifyingElfAura : NetworkBehaviour
                 count++;
             }
         }
+
         return count;
     }
 
@@ -441,5 +526,192 @@ public class TerrifyingElfAura : NetworkBehaviour
             calmness.UpdateTreesCount(treesCount);
         }
     }
+
+    #endregion
+
+    #region Skill
+
+    protected override IEnumerator CastJob()
+    {
+        yield break;
+    }
+
+    protected override int AnimTriggerCastDelay { get; }
+    protected override int AnimTriggerCast { get; }
+
+    #endregion
+
+    #region ManaIncreasedRegen
+    
+    [SyncVar] private bool _isManaRegenIncreased;
+    private Coroutine _manaRegenRoutine;
+
+    private const float ManaRegenBoostedValue = 100f;
+    private const float ManaRegenIdleTime = 6f;
+
+    public void IncreaseManaRegen(bool value)
+    {
+        if (isClient)
+        {
+            CmdIncreaseManaRegen(value);
+            return;
+        }
+
+        ServerSetManaRegenIncreased(value);
+    }
+
+    [Command(requiresAuthority = false)]
+    private void CmdIncreaseManaRegen(bool value)
+    {
+        ServerSetManaRegenIncreased(value);
+    }
+
+    [Server]
+    private void ServerSetManaRegenIncreased(bool value)
+    {
+        if (_isManaRegenIncreased == value) return;
+        _isManaRegenIncreased = value;
+
+        if (_isManaRegenIncreased)
+        {
+            if (_heroMana != null)
+            {
+                _heroMana.ValueChanged -= OnManaSpentForRegenBoost;
+                _heroMana.ValueChanged += OnManaSpentForRegenBoost;
+            }
+            RestartIdleTimer();
+        }
+        else
+        {
+            if (_heroMana != null) _heroMana.ValueChanged -= OnManaSpentForRegenBoost;
+            StopManaRegenBoost();
+        }
+    }
+
+    [Server]
+    private void OnManaSpentForRegenBoost(float oldValue, float newValue)
+    {
+        if (newValue < oldValue)
+        {
+            ApplyManaRegenBoost(false);
+            RestartIdleTimer();
+        }
+    }
+
+    [Server]
+    private void RestartIdleTimer()
+    {
+        if (_manaRegenRoutine != null) StopCoroutine(_manaRegenRoutine);
+        _manaRegenRoutine = StartCoroutine(ManaRegenWatcher());
+    }
+
+    private IEnumerator ManaRegenWatcher()
+    {
+        yield return new WaitForSeconds(ManaRegenIdleTime);
+        if (isServer) ApplyManaRegenBoost(true);
+        _manaRegenRoutine = null;
+    }
+
+    [Server]
+    private void ApplyManaRegenBoost(bool active)
+    {
+        if (Hero.TryGetResource(ResourceType.Mana) is not Resource mana) return;
+
+        mana.RemoveModifierBySource(ResourceAttributeName.Regen, this, all: true);
+
+        if (active)
+        {
+            float baseRegen = mana.Attr_RegenValue?.GetValue() ?? 0f;
+            float flatBonus = ManaRegenBoostedValue - baseRegen;
+            if (flatBonus > 0f)
+                mana.AddModifier(ResourceAttributeName.Regen,
+                    new AttributeModifier(flatBonus, ModifierType.Flat, source: this));
+        }
+    }
+
+    [Server]
+    private void StopManaRegenBoost()
+    {
+        if (_manaRegenRoutine != null)
+        {
+            StopCoroutine(_manaRegenRoutine);
+            _manaRegenRoutine = null;
+        }
+
+        ApplyManaRegenBoost(false);
+    }
+
+    #endregion
+    
+    #region CooldownReduceTalent
+    private Resource _manaResource;
+
+    private bool _isCooldownReduceTalent;
+    
+    private const float BaseManaThreshold = 500f;
+    private const float ManaStep = 100f;
+    private const float ReductionPerStep = 1f;
+
+    public void EnableCooldownReduceTalent(bool value)
+    {
+        if (_isCooldownReduceTalent == value) return;
+        _isCooldownReduceTalent = value;
+
+        if (_manaResource == null)
+            _manaResource = _hero.TryGetResource(ResourceType.Mana);
+
+        if (_isCooldownReduceTalent)
+        {
+            _manaResource.MaxValueChanged += OnMaxManaChanged;
+            ApplyCooldownReduction(_manaResource.MaxValue);
+        }
+        else
+        {
+            _manaResource.MaxValueChanged -= OnMaxManaChanged;
+            RemoveCooldownReduction();
+        }
+    }
+
+    private void OnMaxManaChanged(float oldMaxValue, float newMaxValue)
+    {
+        ApplyCooldownReduction(newMaxValue);
+    }
+
+    private void ApplyCooldownReduction(float maxMana)
+    {
+        if (_hero == null || _hero.Abilities == null || _hero.Abilities.Skills == null) return;
+
+        float reduction = 0f;
+        if (maxMana > BaseManaThreshold)
+        {
+            float excessMana = maxMana - BaseManaThreshold;
+            reduction = Mathf.Floor(excessMana / ManaStep) * ReductionPerStep;
+        }
+
+        foreach (var skill in _hero.Abilities.Skills)
+        {
+            if (skill == null) continue;
+            
+            skill.Attributes[SkillAttributeName.Cooldown].RemoveBySource(this, all: true);
+
+            if (reduction > 0f)
+            {
+                var modifier = new AttributeModifier(-reduction, ModifierType.Flat, source: this);
+                skill.Attributes[SkillAttributeName.Cooldown].AddModifier(modifier);
+            }
+        }
+    }
+
+    private void RemoveCooldownReduction()
+    {
+        if (_hero == null || _hero.Abilities == null || _hero.Abilities.Skills == null) return;
+
+        foreach (var skill in _hero.Abilities.Skills)
+        {
+            if (skill == null) continue;
+            skill.Attributes[SkillAttributeName.Cooldown].RemoveBySource(this, all: true);
+        }
+    }
+    
     #endregion
 }

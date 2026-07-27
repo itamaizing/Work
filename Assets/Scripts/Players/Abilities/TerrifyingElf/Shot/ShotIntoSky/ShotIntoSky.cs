@@ -19,7 +19,7 @@ public class ShotIntoSky : Skill
     [SerializeField] private ParticleSystem arrowIntoSkyEffect;
 
     private readonly SyncList<uint> _arrowIntoSkyProjectileIds = new SyncList<uint>();
-    private Vector3 _targetPoint = Vector3.positiveInfinity;
+    private Vector3 _targetPoint = Vector3.positiveInfinity; 
     private bool _secondShotPlanned;
     private bool _tripleShootPlanned;
     private float _baseRadius;
@@ -35,19 +35,62 @@ public class ShotIntoSky : Skill
     private bool _isShotRadiusUpgradeActive;
     private bool _isSkillEnableBoostLogicActiveTalent;
 
+    public bool IsSkillBoostEnabled => _isSkillBoostEnabled;
+    private bool _isSkillBoostEnabled;
+
     public void ShotsIntoSkyMagicDebuffTalentActive(bool value) => shotMagicDebuffActive = value;
     public void SetTripleShotTalentActive(bool value) => tripleShotTalentActive = value;
+    
+    private const float LengthBonusTalent = 2f;
+    
     public void ShotRadiusUpgradeActive(bool value)
     {
+        if(value == _isShotRadiusUpgradeActive) return;
         _isShotRadiusUpgradeActive = value;
 
-        if (_isShotRadiusUpgradeActive) AreaInfo.Radius *= 3;
-        else AreaInfo.Radius = _baseRadius;
+        if (_isShotRadiusUpgradeActive)
+        {
+            Attributes[SkillAttributeName.Radius].AddModifier(
+                new AttributeModifier(LengthBonusTalent, ModifierType.Percent, source: typeof(HuntressTalent_10)));
+        }
+        else
+        {
+            Attributes[SkillAttributeName.Radius].RemoveBySource(typeof(HuntressTalent_10), all: true);
+        }
     }
 
     public void SkillEnableBoostLogicActiveTalent(bool value) => _isSkillEnableBoostLogicActiveTalent = value;
     #endregion
 
+    #region UtilitaryArrow
+
+    [Server]
+    public void SpawnFullImpact(Vector3 position, float damage, Action onImpactActivated = null)
+    {
+        if (!impactPrefab) return;
+
+        ArrowIntoSkyProjectile impact = Instantiate(impactPrefab, position, Quaternion.identity);
+        bool elvenCrit = _terrifyingElfAura != null && _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance;
+
+        impact.Init(playerLinks, this, damage, false, shotMagicDebuffActive, elvenCrit, onImpactActivated);
+    
+        NetworkServer.Spawn(impact.gameObject);
+
+        _arrowIntoSkyProjectileIds.Add(impact.GetComponent<NetworkIdentity>().netId);
+        RpcInit(impact.gameObject, damage, false);
+
+        StartCoroutine(ActivateAfterDelay(impact.GetComponent<NetworkIdentity>().netId));
+        RpcCooldownFullImpact();
+    }
+    
+    [ClientRpc]
+    private void RpcCooldownFullImpact()
+    {
+        Cooldown.Start();
+    }
+
+    #endregion
+    
     protected override int AnimTriggerCastDelay => Animator.StringToHash("ShotSkyCastDelay");
     protected override int AnimTriggerCast => 0;
 
@@ -61,25 +104,27 @@ public class ShotIntoSky : Skill
         Canceled += HandleSkillCanceled;
     }
 
-    protected override bool IsCanCast
+    protected override bool IsCanCast => Vector3.Distance(_targetPoint, transform.position) <= AreaInfo.Radius;
+
+    protected override void SkillEnableBoostLogic()
     {
-        get
-        {
-            if (_disactive) return false;
-
-            if (TargetInfoQueue.Count > 0 && TargetInfoQueue.TryPeek(out var target) && target != null && target.Points.Count > 0)
-            {
-                var point = target.Points[0];
-                if (float.IsInfinity(point.x)) return false;
-                return Targeting.IsPointInRadius(AreaInfo.Radius, point);
-            }
-
-            return Targeting.IsPointInRadius(AreaInfo.Radius, _targetPoint);
-        }
+        CastDeley = 0;
+        CmdSetDelay(CastDeley);
+        _isSkillBoostEnabled = true;
     }
 
-    protected override void SkillEnableBoostLogic() => CastDeley = 0;
-    protected override void SkillDisableBoostLogic() => CastDeley = _baseCastDelay;
+    protected override void SkillDisableBoostLogic()
+    {
+        CastDeley = _baseCastDelay;
+        CmdSetDelay(CastDeley);
+        _isSkillBoostEnabled = false;
+    }
+
+    [Command]
+    private void CmdSetDelay(float newValue)
+    {
+        CastDeley = newValue;
+    }
 
     public void TryStartBoost()
     {
@@ -128,16 +173,47 @@ public class ShotIntoSky : Skill
             else CmdDestroyPendingImpacts();
         }
     }
+    
+    protected override void PlayPrepareAnim()
+    {
+        if (CastDeley > 0f)
+            Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+        base.PlayPrepareAnim();
+    }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+        Vector3 targetPoint = Vector3.positiveInfinity;
 
-        while (float.IsPositiveInfinity(_targetPoint.x) && !_disactive)
+        while (float.IsPositiveInfinity(targetPoint.x) && !_disactive)
         {
-            if (GetMouseButton) if (TryGetGroundPoint(out Vector3 ground) && Targeting.IsPointInRadius(AreaInfo.Radius, ground)) _targetPoint = ground;
+            if (GetMouseButton)
+            {
+                if (TryGetGroundPoint(out Vector3 ground))
+                {
+                    targetPoint = ground;
+
+                    if (Targeting.IsPointInRadius(AreaInfo.Radius, targetPoint))
+                    {
+                        Hero.Move.LookAtPosition(targetPoint);
+                    }
+                }
+            }
+
             yield return null;
         }
+
+        TargetInfo targetInfo = new TargetInfo();
+        targetInfo.Points.Add(targetPoint);
+        callbackDataSaved(targetInfo);
+    }
+
+    protected override IEnumerator CastJob()
+    {
+        if (float.IsInfinity(_targetPoint.x)) yield break;
+
+        Hero.Move.StopLookAt();
+        Hero.Move.SetCanMove(true);
 
         CmdSpawnImpact(_targetPoint, Damage, false);
 
@@ -157,7 +233,6 @@ public class ShotIntoSky : Skill
                     CmdSpawnImpact(_targetPoint, Damage / 4, true);
                     _tripleShootPlanned = true;
                 }
-
                 else
                 {
                     CmdSpawnImpact(_targetPoint, Damage / 2, true);
@@ -166,13 +241,6 @@ public class ShotIntoSky : Skill
             }
         }
 
-        TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(_targetPoint);
-        callbackDataSaved(targetInfo);
-    }
-
-    protected override IEnumerator CastJob()
-    {
         CmdExecuteCast();
 
         if (_secondShotPlanned)
@@ -191,7 +259,7 @@ public class ShotIntoSky : Skill
         }
 
         yield return null;
-        _hero.Animator.speed = 1f;
+        Hero.Animator.speed = 1f;
         ClearData();
     }
 
@@ -208,8 +276,7 @@ public class ShotIntoSky : Skill
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         var hits = Physics.RaycastAll(ray, 100f, ~0).OrderBy(hit => hit.distance);
-
-
+        
         foreach (var hit in hits)
         {
             if (hit.collider.GetComponent<Character>() != null) continue;
@@ -258,7 +325,10 @@ public class ShotIntoSky : Skill
         if (gameObject == null) return;
 
         ArrowIntoSkyProjectile impact = gameObject.GetComponent<ArrowIntoSkyProjectile>();
-        if (impact != null) impact.Init(playerLinks, this, damage, lastStreamTalent, shotMagicDebuffActive, _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance);
+        if (impact == null) return;
+
+        bool elvenCrit = _terrifyingElfAura != null && _terrifyingElfAura.IsElvenSkillPhysDamageHealthChance;
+        impact.Init(playerLinks, this, damage, lastStreamTalent, shotMagicDebuffActive, elvenCrit);
     }
  
     [ClientRpc] private void RpcActivate(ArrowIntoSkyProjectile projectile) => projectile.Activate();
@@ -305,5 +375,8 @@ public class ShotIntoSky : Skill
         _hero.Move.SetCanMove(true);
     }
 
-    public override void LoadTargetData(TargetInfo targetInfo) => _targetPoint = targetInfo.Points[0];
+    public override void LoadTargetData(TargetInfo targetInfo)
+    {
+        _targetPoint = targetInfo.Points[0];
+    }
 }

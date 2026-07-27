@@ -1,98 +1,114 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class MultiMagic : AuraState
+public class MultiMagic : RefreshingState
 {
     private readonly List<StatusEffect> _effects = new() { StatusEffect.Ability };
 
     private SkillManager _skills;
-    private Skill _pendingSkill;
     private Character _lastTarget;
-    private readonly List<Character> _characters = new();
-
-    private float _distance;
-    private LayerMask _targetsMask;
 
     public override States State => States.MultiMagic;
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override float Distance => _distance;
-    public override float EffectRate => 1f;
-    public override LayerMask LayerMask => _targetsMask;
-    public override float RemainingDuration => duration;
-
     public Character LastTarget { get => _lastTarget; set => _lastTarget = value; }  
+    
+    private readonly Dictionary<Skill, Action> _castSuccessHandlers = new();
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
-        characterState = character;
+        BaseInit(character, durationToExit, damageToExit, caster, skillName);
         _skills = caster.GetComponent<SkillManager>();
-        duration = durationToExit;
 
-        foreach (var skill in _skills.Abilities.Where
-            (ability => ability.Info.SkillType == SkillType.Target && (ability.Info.AbilityForm == AbilityForm.Magic || ability.Info.AbilityForm == AbilityForm.Both)))
-        {
-            skill.PreparingSuccess += OnTargetSkillCast;
-            skill.AfterCast += ExitState;
-        }
+        if (character.isServer && !character.isClient) return;
+
+        SubscribeToSkills();
     }
 
+    private void SubscribeToSkills()
+    {
+        if (_skills == null || _skills.Abilities == null) return;
+
+        foreach (var skill in _skills.Abilities)
+        {
+            if (skill is not IMultiMagicSkill) continue;
+            if (_castSuccessHandlers.ContainsKey(skill)) continue;
+
+            if (skill.CastStreamDuration > 0)
+            {
+                skill.PreparingSuccess += OnTargetSkillCast;
+                _castSuccessHandlers[skill] = null;
+            }
+            else
+            {
+                Skill capturedSkill = skill;
+                Action handler = () => OnTargetSkillCast(capturedSkill);
+                skill.CastSuccess += handler;
+                _castSuccessHandlers[skill] = handler;
+            }
+        }
+    }
+    
+    private void UnsubscribeFromSkills()
+    {
+        if (_skills != null && _skills.Abilities != null)
+        {
+            foreach (var skill in _skills.Abilities)
+            {
+                if (skill is not IMultiMagicSkill) continue;
+
+                if (skill.CastStreamDuration > 0)
+                    skill.PreparingSuccess -= OnTargetSkillCast;
+                else if (_castSuccessHandlers.TryGetValue(skill, out var handler) && handler != null)
+                    skill.CastSuccess -= handler;
+            }
+        }
+
+        _castSuccessHandlers.Clear();
+    }
+    
     public override void UpdateState()
     {
-        duration -= Time.deltaTime;
-        if (duration <= 0f) ExitState();
     }
 
     public override void ExitState()
     {
-        foreach (var skill in _skills.Abilities.Where(ability => ability.Info.SkillType == SkillType.Target))
-        {
-            skill.PreparingSuccess -= OnTargetSkillCast;
-            skill.AfterCast -= ExitState;
-        }
-        Debug.Log("выход из мульти");
-        characterState.RemoveState(this);
+        currentStacksCount = 0;
+        UnsubscribeFromSkills();
+
+        base.ExitState();
     }
 
     public override bool Stack(float time) => false;
-    public override void EffectOnEnter(Character character) { }
-    public override void EffectOnExit(Character character) { }
-
-    public override void EffectOnStay(List<Character> characters)
-    {
-        if (_pendingSkill == null) return;
-
-        foreach (var character in characters)
-        {
-            if (character == characterState.Character) continue;
-
-            _characters.Add(character);
-        }
-
-        _pendingSkill = null;
-    }
-
-    public List<Character> PopPendingTargets()
-    {
-        var list = new List<Character>(_characters);
-        _characters.Clear();
-        return list;
-    }
 
     private void OnTargetSkillCast(Skill skill)
     {
-        _characters.Clear();
+        float distance = Mathf.Max(skill.AreaInfo.Radius,Skill.AreaInfo.CastLength);
+        LayerMask targetsMask = skill.Targeting.Layer;
 
-        _distance = skill.AreaInfo.Radius;
-        _targetsMask = skill.Targeting.Layer;
+        var colliders = Physics.OverlapSphere(characterState.transform.position, distance, targetsMask);
+        var extraCharacters = new List<Character>();
 
-        var colliders = Physics.OverlapSphere(characterState.transform.position, _distance, _targetsMask);
+        foreach (var collider in colliders)
+        {
+            if (collider.TryGetComponent(out Character character) && character != characterState.Character && character != _lastTarget)
+            {
+                extraCharacters.Add(character);
+            }
+        }
 
-        foreach (var collider in colliders) if (collider.TryGetComponent(out Character character) && character != characterState.Character && character != _lastTarget)
-                _characters.Add(character);
+        if (extraCharacters.Count > 0 && skill is IMultiMagicSkill multiSkill)
+        {
+            foreach (var target in extraCharacters)
+            {
+                multiSkill.HandleExtraTarget(target);
+            }
+        }
+        
+        ExitState();
     }
-
 }

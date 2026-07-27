@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class NatureTalent_6 : Talent
 {
-	[SerializeField] private GrowTree growTree;
+	//[SerializeField] private GrowTree growTree;
 
 	public override void Enter()
 	{
-		growTree.treeHealthTalentActive(true);
+		character.Abilities.GetSkill<SleepSpell>().SleepInnerDarknessTalent(true);
+		//growTree.treeHealthTalentActive(true);
 	}
 
 	public override void Exit()
 	{
-		growTree.treeHealthTalentActive(false);
+		character.Abilities.GetSkill<SleepSpell>().SleepInnerDarknessTalent(false);
+		//growTree.treeHealthTalentActive(false);
 	}
 }

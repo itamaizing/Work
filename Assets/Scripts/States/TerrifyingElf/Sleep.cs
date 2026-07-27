@@ -7,10 +7,10 @@ using UnityEngine;
 public class Sleep : AbstractCharacterState
 {
     public bool turnOff = false;
-    private float _duration;
     private float _baseDuration;
     private bool _previousIsSelect;
     private int _initialLayer;
+    private int _lastTickedSecond;
     private bool _giveInnerDarkness;
     private float _tickTimer;
     private const float _tickInterval = 1f;
@@ -29,15 +29,14 @@ public class Sleep : AbstractCharacterState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Debug.Log("������ ��������� � ���");
-
         characterState = character;
         _source = personWhoMadeBuff;
-        _duration = durationToExit;
         _baseDuration = durationToExit;
         _giveInnerDarkness = false;
 
         _tickTimer = 0f;
+        
+        _lastTickedSecond = Mathf.CeilToInt(durationToExit); 
 
         _initialLayer = character.gameObject.layer;
         character.gameObject.layer = LayerMask.NameToLayer(_enemyLayerName);
@@ -85,32 +84,53 @@ public class Sleep : AbstractCharacterState
         }
     }
 
-    public override void UpdateState()
+    private void SubscribeOnDamage()
     {
-        _duration -= Time.deltaTime;
+        characterState.Character.Health.DamageTaken += OnDamaged;
+        characterState.Character.Health.OnBeforeTakeDamage += OnDamaged;
+    }
 
-        if (_duration <= 0f || turnOff)
-        {
-            ExitState();
-            return;
-        }
+    private void UnSubscribeOnDamage()
+    {
+        characterState.Character.Health.DamageTaken -= OnDamaged;
+        characterState.Character.Health.OnBeforeTakeDamage -= OnDamaged;
+    }
 
-        if (_giveInnerDarkness)
+    private void OnDamaged(Damage damage, Skill ability)
+    {
+        ExitState();
+    }
+
+    public override void GloabalUpdate()
+    {
+        if(duration >= 0 && duration != -1)
         {
-            _tickTimer += Time.deltaTime;
-            if (_tickTimer >= _tickInterval)
+            duration -= Time.deltaTime;
+
+            if (_giveInnerDarkness)
             {
-                _tickTimer = 0f;
-                CmdStateInnerDarkness();
+                int currentSecond = Mathf.CeilToInt(duration);
+                
+                if (currentSecond < _lastTickedSecond)
+                {
+                    CmdStateInnerDarkness();
+                    _lastTickedSecond = currentSecond;
+                }
+            }
+
+            if(duration <= 0)
+            {
+                ExitState();
             }
         }
-
+    }
+    
+    public override void UpdateState()
+    {
     }
 
     public override void ExitState()
     {
-        Debug.Log("������ ��� ����������");
-
         characterState.gameObject.layer = _initialLayer;
 
         //if (_giveInnerDarkness) for (int i = 0; i < 3; i++) CmdStateInnerDarkness();
@@ -143,7 +163,7 @@ public class Sleep : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        _duration = _baseDuration;
+        duration = _baseDuration;
         return false;
     }
 
@@ -152,6 +172,20 @@ public class Sleep : AbstractCharacterState
     [Command] private void CmdStateInnerDarkness() => ClientRpcStateInnerDarkness();
     [ClientRpc] private void ClientRpcStateInnerDarkness() { characterState.AddStateLogic(States.InnerDarkness, 13, 0f, Schools.None, _source.gameObject, null); }
 
+    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        if (!CanEnterState(character)) return null;
+
+        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+        
+        UnSubscribeOnDamage();
+        SubscribeOnDamage();
+
+        EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+
+        return this;
+    }
+    
 
     //private bool ShouldApplyInnerDarkness()
     //{

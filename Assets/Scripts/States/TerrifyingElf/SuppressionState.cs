@@ -12,17 +12,14 @@ public class SuppressionState : AbstractCharacterState
     private GameObject _suppressionIdle;
     private GameObject _suppressionMove;
 
-    private MoveComponent _move;
-    private Rigidbody _rigidbody;
     private Resource manaResource;
     private Suppression _suppression;
 
     private float _baseDuration;
-    private float _duration;
-    private int _currentStacks = 1;
-
     private float _distBuffer;
     private bool _isMoving;
+
+    private Vector3 _lastPosition; 
 
     private static readonly List<StatusEffect> _effects = new() { StatusEffect.Move };
 
@@ -37,16 +34,19 @@ public class SuppressionState : AbstractCharacterState
         characterState = character;
         personWhoMadeBuff = caster;
 
-        _suppression = personWhoMadeBuff.GetComponent<Suppression>();
+        if (personWhoMadeBuff != null)
+        {
+            _suppression = personWhoMadeBuff.GetComponent<Suppression>();
+        }
 
         _baseDuration = durationToExit;
-        _duration = _baseDuration;
-
-        _move = character.Character.GetComponent<MoveComponent>();
-        _rigidbody = _move != null ? _move.Rigidbody : character.Character.GetComponent<Rigidbody>();
+        duration = _baseDuration;
 
         _distBuffer = 0f;
         _isMoving = false;
+
+        _lastPosition = characterState.transform.position;
+        _lastPosition.y = 0f;
 
         manaResource = character.Character.TryGetResource(ResourceType.Mana);
 
@@ -62,8 +62,7 @@ public class SuppressionState : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-        if (_duration <= 0f)
+        if (duration <= 0f)
         {
             ExitState();
             return;
@@ -87,19 +86,17 @@ public class SuppressionState : AbstractCharacterState
 
     public override bool Stack(float time)
     {
-        if (_currentStacks < MaxStacks) _currentStacks++;
-        _duration = _baseDuration;
+        duration = _baseDuration;
         return true;
     }
 
     private void OnDamageTaken(Damage damage, Skill skill)
     {
-        if (!characterState.isServer) return;
-        if (!_suppression.IsSuppressionManaAbsorbtion) return;
+        if (characterState.isServer) return;
+        if (_suppression == null || !_suppression.IsSuppressionManaAbsorbtion) return;
         if (skill == null || skill.Hero == null) return;
 
         Character attacker = skill.Hero;
-
         if (!IsFromRequiredSource(attacker)) return;
 
         ApplyManaBurn(damage.Value);
@@ -108,10 +105,8 @@ public class SuppressionState : AbstractCharacterState
     private bool IsFromRequiredSource(Character attacker)
     {
         if (attacker == null) return false;
-
         if (attacker.TryGetComponent<TerrifyingElfAura>(out _)) return true;
         if (attacker.TryGetComponent<GhostAura>(out _)) return true;
-
         return false;
     }
 
@@ -120,29 +115,30 @@ public class SuppressionState : AbstractCharacterState
         if (manaResource == null) return;
 
         float burnAmount = damageValue * 0.25f;
-
         float currentMana = manaResource.CurrentValue;
         float newMana = Mathf.Max(0, currentMana - burnAmount);
 
-        manaResource.TryUse(newMana);
+        manaResource.CmdUse(burnAmount); 
     }
 
     #region Helpers
     private float CalcHorizontalDistanceThisFrame()
     {
-        if (_rigidbody == null) return 0f;
+        Vector3 currentPos = characterState.transform.position;
+        currentPos.y = 0f;
 
-        Vector3 distance = _rigidbody.linearVelocity;
-        distance.y = 0f;
-        return distance.magnitude * Time.deltaTime;
+        float dist = Vector3.Distance(currentPos, _lastPosition);
+        _lastPosition = currentPos;
+        return dist;
     }
 
     private void HandleVisuals(float deltaDist)
     {
-        bool nowMoving = deltaDist / Time.deltaTime > MoveEpsilon;
+        if (Time.deltaTime <= 0f) return;
+        
+        bool nowMoving = (deltaDist / Time.deltaTime) > MoveEpsilon;
 
         if (nowMoving == _isMoving) return;
-
         _isMoving = nowMoving;
 
         if (_isMoving)
@@ -159,7 +155,7 @@ public class SuppressionState : AbstractCharacterState
 
     private void DrainManaByDistance(float deltaDist)
     {
-        if (deltaDist <= 0f) return;
+        if (deltaDist <= 0f || manaResource == null) return;
 
         _distBuffer += deltaDist;
 
@@ -168,10 +164,10 @@ public class SuppressionState : AbstractCharacterState
 
         _distBuffer -= cells * CellLength;
 
-        if (characterState.Character.TryGetResource(ResourceType.Mana) is Mana mana)
+        if (characterState.isServer)
         {
-            float loss = cells * mana.MaxValue * ManaLossPerCell;
-            mana.TryUse(loss);
+            float loss = cells * manaResource.MaxValue * ManaLossPerCell;
+            manaResource.TryUse(loss);
         }
     }
     #endregion

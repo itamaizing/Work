@@ -1,11 +1,10 @@
-﻿ using Mirror;
+﻿using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class PullingHealth : Skill
+public class PullingHealth : Skill, IMultiMagicSkill
 {
     [Header("Pulling Health Settings")]
     [SerializeField] private GameObject _pullingHealthPrefab;
@@ -15,13 +14,15 @@ public class PullingHealth : Skill
     [SerializeField] private float _tickInterval;
     [SerializeField] private AudioClip _audioClip;
     [SerializeField] private Ghost _ghostSkill;
+    [SerializeField] private float _radiusIncreasePerGhost = 3f;
+    
+    private float ChainNodeRadius => AreaInfo.Radius + _radiusIncreasePerGhost;
 
     private GameObject _cachedTarget;
     private AudioSource _audioSource;
     private GameObject _activeEffect;
     private List<GameObject> _activeGhostEffects = new List<GameObject>();
     private List<GameObject> _allActiveEffects = new List<GameObject>();
-    private float _baseRadius;
     private float _baseTickInterval;
     private float _baseCastStreamDuration;
     private float _ignoreMoveTimeLeft;
@@ -39,17 +40,13 @@ public class PullingHealth : Skill
     private const int InnerDarknessSecondThreshold = 4;
     private const float FearTickSpeedMultiplier = 0.5f;
     private const int MinManaToStream = 2;
-    private const float GhostChainRangeStep1 = 3f;
-    private const float GhostChainRangeStep2 = 6f;
-    private const float MaxGhostRadiusIncrease = 4f;
     private const float MaxPositionShift = 1f;
-    private const float MaxGhost = 2f;
 
+    private const float ManaCostPerTick = 2f;
     private const float PullingHealthExitCrossFadeDuration = 0.1f;
     private const int GhostsToAddAtFirstThreshold = 1;
     private const int GhostsToAddAtSecondThreshold = 2;
     private const int GhostsToAddDefault = 0;
-    private const float RadiusIncreasePerGhost = 2f;
     private const float SearchTargetRadius = 1f;
 
     private const string PullingHealthCastDelay = "PullingHealthCastDelay";
@@ -62,6 +59,11 @@ public class PullingHealth : Skill
 
     private readonly List<IDamageable> _extraTargets = new();
     private readonly List<GameObject> _extraEffects = new();
+    
+    private Coroutine _streamCoroutine;
+    private float _streamAccumulatedRollback = 0f;
+    protected override bool IsCustomStreamActive => _isStreaming;
+    protected override bool SkipLegacyCastStreamJob => true;
 
     #region Talent
     private bool _pullingHealthThroughGhosts;
@@ -77,7 +79,16 @@ public class PullingHealth : Skill
         get
         {
             if (_isStreaming) return false;
-            if (Targeting.GetTarget() != null) return Vector3.Distance(Targeting.GetTarget().Transform.position, transform.position) <= AreaInfo.Radius;
+            var target = Targeting.GetTarget();
+            if (target != null)
+            {
+                if (_pullingHealthThroughGhosts)
+                {
+                    BuildChain();
+                    return IsPositionReachable(target.Transform.position);
+                }
+                return Vector3.Distance(target.Transform.position, transform.position) <= AreaInfo.Radius;
+            }
             return false;
         }
     }
@@ -96,7 +107,6 @@ public class PullingHealth : Skill
     {
         base.Init(render, hero);
         _audioSource = GetComponent<AudioSource>();
-        _baseRadius = AreaInfo.Radius;
         _baseCastStreamDuration = CastStreamDuration;
         _baseTickInterval = _tickInterval;
     }
@@ -105,12 +115,24 @@ public class PullingHealth : Skill
     {
         _ghostSkill.Teleported -= OnGhostTeleport;
         OnSkillCanceled -= HandleSkillCanceled;
+        CastStreamRolledBack -= OnStreamRollbackReceived;
     }
 
     private void OnEnable()
     {
         OnSkillCanceled += HandleSkillCanceled;
         _ghostSkill.Teleported += OnGhostTeleport;
+        CastStreamRolledBack += OnStreamRollbackReceived;
+    }
+    
+    protected override void PlayPrepareAnim()
+    {
+        Animation.PlayTrigger(PullingHealthCastDelay);
+    }
+    
+    private void OnStreamRollbackReceived(float amount)
+    {
+        _streamAccumulatedRollback += amount;
     }
 
     private void OnGhostTeleport(Character character, Vector3 _)
@@ -124,56 +146,248 @@ public class PullingHealth : Skill
     public override void LoadTargetData(TargetInfo targetInfo)
     {
         if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
-
-        if (_pullingHealthThroughGhosts) UpdateRadiusBasedOnGhosts();
     }
+
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        while (Targeting.GetTempTarget()?.Targetable == null)
+        while (true)
         {
+            Vector3 mousePoint = Targeting.GetMousePoint();
+
+            if (_pullingHealthThroughGhosts)
+            {
+                Collider[] hoverHits = Physics.OverlapSphere(mousePoint, SearchTargetRadius);
+                Character hoveredCharacter = null;
+                foreach (var h in hoverHits)
+                {
+                    if (h.TryGetComponent<Character>(out var c) && c != Hero && !IsAllyTarget(c))
+                    {
+                        hoveredCharacter = c;
+                        break;
+                    }
+                }
+                
+                if (hoveredCharacter != null)
+                    UpdateChainVisuals(hoveredCharacter.transform.position);
+                else
+                    UpdateChainVisuals(null); 
+            }
+
             if (GetMouseButton)
             {
-                Targeting.FindTempTarget(Targeting.GetMousePoint(), SearchTargetRadius);
-
-                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
+                Targeting.FindTempTarget(mousePoint, SearchTargetRadius);
+                if (Targeting.GetTempTarget()?.Targetable != null
+                    && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
                 {
-                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
-
+                    if (IsAllyTarget(damageable) || damageable as Character == Hero)
+                        Targeting.ClearTempTarget();
                     else
                     {
-                        if (Targeting.GetTempTarget()?.Targetable is Character character && character.SelectedCircle != null)
+                        if (Targeting.GetTempTarget()?.Targetable is Character character
+                            && character.SelectedCircle != null)
                         {
                             character.SelectedCircle.IsActive = false;
                             var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
                             if (multiMagic != null) multiMagic.LastTarget = character;
                         }
 
-                        if (_pullingHealthThroughGhosts) UpdateRadiusBasedOnGhosts();
-
+                        ClearChainVisuals(); 
                         break;
                     }
                 }
             }
+
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
-
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Targetable);
         callbackDataSaved(targetInfo);
     }
 
-    private void UpdateRadiusBasedOnGhosts()
+    #region ChainSystem
+
+    [SerializeField] private DrawCircle _chainUnitRadiusPrefab;
+    private readonly List<DrawCircle> _activeChainCircles = new();
+    private readonly List<GameObject> _currentChain = new();
+    private readonly Dictionary<GameObject, GameObject> _chainParents = new();
+
+    private void BuildChain()
     {
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius);
-        int ghostCount = 0;
-        foreach (var collider in hitColliders) if (collider.TryGetComponent<GhostAura>(out var ghostAura)) ghostCount++;
-        AreaInfo.Radius = _baseRadius + ghostCount * RadiusIncreasePerGhost;
-        AreaInfo.Radius = Mathf.Clamp(AreaInfo.Radius, _baseRadius, _baseRadius + MaxGhostRadiusIncrease);
-        if (_skillRender != null) _skillRender.DrawRadius(AreaInfo.Radius);
+        _currentChain.Clear();
+        _chainParents.Clear();
+
+        var visited = new HashSet<GameObject>();
+        var queue = new Queue<GameObject>();
+
+        var initialHits = Physics.OverlapSphere(transform.position, AreaInfo.Radius);
+        foreach (var hit in initialHits)
+        {
+            if (!IsChainUnit(hit)) continue;
+            if (visited.Add(hit.gameObject))
+            {
+                _currentChain.Add(hit.gameObject);
+                queue.Enqueue(hit.gameObject);
+                _chainParents[hit.gameObject] = gameObject;
+            }
+        }
+
+        while (queue.Count > 0)
+        {
+            var current = queue.Dequeue();
+            var hits = Physics.OverlapSphere(current.transform.position, ChainNodeRadius);
+            foreach (var hit in hits)
+            {
+                if (!IsChainUnit(hit)) continue;
+                if (visited.Add(hit.gameObject))
+                {
+                    _currentChain.Add(hit.gameObject);
+                    queue.Enqueue(hit.gameObject);
+                    _chainParents[hit.gameObject] = current;
+                }
+            }
+        }
     }
 
+    private bool IsPositionReachable(Vector3 targetPosition)
+    {
+        if (Vector3.Distance(transform.position, targetPosition) <= AreaInfo.Radius)
+            return true;
+
+        foreach (var unit in _currentChain)
+        {
+            if (Vector3.Distance(unit.transform.position, targetPosition) <= ChainNodeRadius)
+                return true;
+        }
+
+        return false;
+    }
+    
+    private bool IsAllied(GameObject obj)
+    {
+        if (obj == null) return false;
+        
+        if (obj.TryGetComponent<Object>(out var targetObj))
+        {
+            return targetObj.IndexTeam == Hero.NetworkSettings.TeamIndex;
+        }
+
+        if (obj.TryGetComponent<Character>(out var minion))
+        {
+            return minion.NetworkSettings.TeamIndex == Hero.NetworkSettings.TeamIndex;
+        }
+
+        return false;
+    }
+
+    private bool IsChainUnit(Collider collider)
+    {
+        var ghost = collider.GetComponentInParent<GhostAura>();
+        var tree = collider.GetComponentInParent<GrowTreeAura>();
+
+        if (ghost == null && tree == null) return false;
+
+        GameObject rootObj = ghost != null ? ghost.gameObject : tree.gameObject;
+
+        return IsAllied(rootObj);
+    }
+
+    private void UpdateChainVisuals(Vector3? targetPosition)
+    {
+        BuildChain();
+
+        foreach (var circle in _activeChainCircles)
+            if (circle != null)
+                Destroy(circle.gameObject);
+        _activeChainCircles.Clear();
+
+        Color circleColor = Color.green;
+        if (targetPosition.HasValue)
+        {
+            bool canReach = IsPositionReachable(targetPosition.Value);
+            circleColor = canReach ? Color.green : Color.yellow;
+        }
+
+        foreach (var unit in _currentChain)
+        {
+            if (_chainUnitRadiusPrefab == null) break;
+            var circle = Instantiate(_chainUnitRadiusPrefab, unit.transform);
+            circle.SetColor(circleColor);
+            circle.Draw(ChainNodeRadius);
+            _activeChainCircles.Add(circle);
+        }
+    }
+
+    private void ClearChainVisuals()
+    {
+        foreach (var circle in _activeChainCircles)
+            if (circle != null)
+                Destroy(circle.gameObject);
+        _activeChainCircles.Clear();
+    }
+
+    private List<GameObject> BuildEffectivePath(GameObject target)
+    {
+        var path = new List<GameObject>();
+        Vector3 targetPos = target.transform.position;
+
+        if (Vector3.Distance(transform.position, targetPos) <= AreaInfo.Radius)
+        {
+            path.Add(gameObject);
+            path.Add(target);
+            return path;
+        }
+
+        GameObject reachingNode = null;
+        float minDistanceToTarget = float.MaxValue;
+
+        foreach (var unit in _currentChain)
+        {
+            float dist = Vector3.Distance(unit.transform.position, targetPos);
+            if (dist <= ChainNodeRadius)
+            {
+                if (dist < minDistanceToTarget)
+                {
+                    minDistanceToTarget = dist;
+                    reachingNode = unit;
+                }
+            }
+        }
+
+        if (reachingNode != null)
+        {
+            List<GameObject> tempPath = new List<GameObject> { target };
+            GameObject current = reachingNode;
+
+            while (current != gameObject && current != null)
+            {
+                tempPath.Add(current);
+                if (_chainParents.TryGetValue(current, out GameObject parent))
+                {
+                    current = parent;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (!tempPath.Contains(gameObject))
+            {
+                tempPath.Add(gameObject);
+            }
+
+            tempPath.Reverse();
+            return tempPath;
+        }
+
+        path.Add(gameObject);
+        path.Add(target);
+        return path;
+    }
+
+    #endregion
+    
     protected override IEnumerator CastJob()
     {
         if (Targeting.GetTarget() == null) yield return null;
@@ -202,6 +416,8 @@ public class PullingHealth : Skill
 
                     if (obj.TryGetComponent<GhostAura>(out GhostAura ghostAura))
                     {
+                        if (!IsAllied(obj.gameObject)) continue;
+
                         float distanceToTarget = Vector3.Distance(obj.transform.position, character.transform.position);
                         if (distanceToTarget <= AreaInfo.Radius && !_ghost.Contains(obj.gameObject))
                         {
@@ -228,26 +444,17 @@ public class PullingHealth : Skill
         }
         #endregion
 
-        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
-        if (multiMagic != null)
-        {
-            foreach (var characterTarget in multiMagic.PopPendingTargets())
-            {
-                if (characterTarget == Targeting.GetTarget()?.Character)
-                {
-                    _extraTargets.Add(characterTarget);
-
-                    TryPayCost();
-                    CmdSpawnExtraPullingEffect(gameObject, characterTarget.gameObject);
-                }
-            }
-        }
-
         AfterCastJob();
-        StartCoroutine(StreamDuration());
+        _streamCoroutine = StartCoroutine(StreamDuration());
         while (!_streamFinished)  yield return null;
     }
-
+    
+    public void HandleExtraTarget(Character target)
+    {
+        _extraTargets.Add(target);
+        TryPayCost();
+        CmdSpawnExtraPullingEffect(gameObject, target.gameObject);
+    }
 
     private IEnumerator StreamDuration()
     {
@@ -256,8 +463,10 @@ public class PullingHealth : Skill
         if (damageable != null) _cachedTarget = damageable.gameObject;
         else yield break;
 
+        _streamAccumulatedRollback = 0f;
         _isStreaming = true;
         _streamFinished = false;
+        
         float elapsed = 0f;
         float damageTickElapsed = 0f;
         var manaResource = Hero.TryGetResource(ResourceType.Mana);
@@ -268,60 +477,51 @@ public class PullingHealth : Skill
             _isStreaming = false;
             yield break;
         }
-
+        
+        InvokeCastStreamStarted(CastStreamDuration);
         Vector3 initialPosition = transform.position;
-
         PlayShotSound();
 
         #region Pulling through Ghosts (Length)
         if (_pullingHealthThroughGhosts)
         {
-            Collider[] hitColliders = Physics.OverlapSphere(transform.position, AreaInfo.Radius);
-            List<GameObject> pullingZone = new List<GameObject>();
+            BuildChain();
 
-            foreach (var collider in hitColliders)
+            if (_currentChain.Count == 0)
             {
-                if (collider.TryGetComponent<GhostAura>(out var ghostAura)) pullingZone.Add(ghostAura.gameObject);
-                else if (collider.TryGetComponent<GrowTreeAura>(out var growTreeAura)) pullingZone.Add(growTreeAura.gameObject);
+                if (Vector3.Distance(transform.position, damageable.transform.position) <= AreaInfo.Radius)
+                    CmdSpawnPullingHealthEffect(gameObject, damageable.gameObject);
             }
-
-            pullingZone.Sort((a, b) => Vector3.Distance(transform.position, a.transform.position).CompareTo(Vector3.Distance(transform.position, b.transform.position)));
-
-            float targetDistance = Vector3.Distance(transform.position, damageable.transform.position);
-            if (targetDistance <= _baseRadius) CmdSpawnPullingHealthEffect(gameObject, damageable.gameObject);
-
-            if (targetDistance <= _baseRadius + GhostChainRangeStep1 && pullingZone.Count == 1)
+            else
             {
-                GameObject nearestGhost = pullingZone[0];
-                CmdSpawnPullingHealthEffect(gameObject, nearestGhost);
-                CmdSpawnPullingHealthEffect(nearestGhost, damageable.transform.gameObject);
-            }
-
-            else if (targetDistance <= _baseRadius + GhostChainRangeStep2 && pullingZone.Count == MaxGhost)
-            {
-                GameObject ghost1 = pullingZone[0];
-                GameObject ghost2 = pullingZone[1];
-
-                CmdSpawnPullingHealthEffect(gameObject, ghost1);
-                CmdSpawnPullingHealthEffect(ghost1, ghost2);
-                CmdSpawnPullingHealthEffect(ghost2, damageable.gameObject);
+                var effectivePath = BuildEffectivePath(damageable.gameObject);
+                for (int i = 0; i < effectivePath.Count - 1; i++)
+                    CmdSpawnPullingHealthEffect(effectivePath[i], effectivePath[i + 1]);
             }
         }
-        #endregion
-
         else
         {
             float targetDistance = Vector3.Distance(transform.position, damageable.transform.position);
-            if (targetDistance <= _baseRadius) CmdSpawnPullingHealthEffect(gameObject, damageable.gameObject);
+            if (targetDistance <= AreaInfo.Radius) CmdSpawnPullingHealthEffect(gameObject, damageable.gameObject);
         }
+        #endregion
 
         while (elapsed < CastStreamDuration)
         {
+            if (_streamAccumulatedRollback > 0f)
+            {
+                float consumed = _streamAccumulatedRollback;
+                elapsed += consumed;
+                _streamAccumulatedRollback = 0f;
+                RaiseCastStreamProgressApplied(consumed);
+            }
+            
             var target = Targeting.GetTarget()?.Character;
             if (target == null || target.IsDead)
             {
                 EndAnimDestroyEffect();
                 _isStreaming = false;
+                _streamCoroutine = null;
                 TryCancel();
                 yield break;
             }
@@ -333,10 +533,23 @@ public class PullingHealth : Skill
                 if (_ignoreMoveTimeLeft <= 0f) _ignoreMoveCheck = false;
             }
 
-            if (damageable != null && (Input.GetMouseButtonDown(1) || ( Vector3.Distance(transform.position, damageable.transform.position) > AreaInfo.Radius)) || Vector3.Distance(initialPosition, transform.position) > MaxPositionShift && !_ignoreMoveCheck)
+            bool isTargetOutOfRange = false;
+            if (_pullingHealthThroughGhosts)
+            {
+                BuildChain();
+                isTargetOutOfRange = !IsPositionReachable(damageable.transform.position);
+            }
+            else
+            {
+                isTargetOutOfRange = Vector3.Distance(transform.position, damageable.transform.position) > AreaInfo.Radius;
+            }
+
+            if (damageable != null && (Input.GetMouseButtonDown(1) || isTargetOutOfRange || Vector3.Distance(initialPosition, transform.position) > MaxPositionShift && !_ignoreMoveCheck))
             {
                 EndAnimDestroyEffect();
                 _isStreaming = false;
+                _streamCoroutine = null;
+                TryCancel();
                 yield break;
             }
 
@@ -351,8 +564,8 @@ public class PullingHealth : Skill
             {
                 ApplyDamageToTarget();
                 HealPlayer();
-
                 foreach (var ghost in _ghost) ApplyDamageThroughGhost(ghost);
+                manaResource.CmdUse(ManaCostPerTick);
                 damageTickElapsed = 0f;
             }
 
@@ -360,6 +573,7 @@ public class PullingHealth : Skill
             {
                 CmdDestroyEffect();
                 _isStreaming = false;
+                _streamCoroutine = null;
                 yield break;
             }
 
@@ -369,6 +583,7 @@ public class PullingHealth : Skill
         }
 
         FinishStream();
+        _streamCoroutine = null;
     }
 
     private void FinishStream()
@@ -415,7 +630,6 @@ public class PullingHealth : Skill
 
             float ghostHealValue = Damage * GhostHealPercent;
             ghostHealth.CmdAdd(ghostHealValue);
-
         }
     }
 
@@ -452,19 +666,30 @@ public class PullingHealth : Skill
     {
         if (_hero != null && _hero.Move != null)
         {
-            Hero.Move.IsMoveBlocked = false; 
+            Hero.Move.IsMoveBlocked = false;
             Hero.Move.StopLookAt();
-           Hero.Animator.speed = 1;
+            Hero.Animator.speed = 1;
         }
 
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();
         _extraTargets.Clear();
         _extraEffects.Clear();
-        StopCoroutine(StreamDuration());
+        ClearChainVisuals();
+        _currentChain.Clear();
+
+        if (_streamCoroutine != null)
+        {
+            StopCoroutine(_streamCoroutine);
+            _streamCoroutine = null;
+        }
+        _isStreaming = false;
+        _streamAccumulatedRollback = 0f;
+
         AfterCastJob();
         StopShotSound();
     }
+    
     [Command] private void CmdSyncGhosts(GameObject ghostObj) => _ghost.Add(ghostObj);
 
     [Command]
@@ -473,7 +698,6 @@ public class PullingHealth : Skill
         if (_pullingHealthPrefab == null || startPoint == null || targetPoint == null) return;
 
         GameObject effectInstance = Instantiate(_pullingHealthPrefab, startPoint.transform.position, Quaternion.identity);
-        //SceneManager.MoveGameObjectToScene(effectInstance, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(effectInstance);
         RpcInitEffects(effectInstance, startPoint, targetPoint);
 
@@ -490,7 +714,6 @@ public class PullingHealth : Skill
         {
             GameObject ghostEffectInstance = Instantiate(_pullingHealthPrefab, _ghost[i].transform.position, Quaternion.identity);
             _activeGhostEffects.Add(ghostEffectInstance);
-            //SceneManager.MoveGameObjectToScene(ghostEffectInstance, _hero.NetworkSettings.MyRoom);
             NetworkServer.Spawn(ghostEffectInstance);
             RpcInitEffects(ghostEffectInstance, _ghost[i], targetPoint);
         }
@@ -503,7 +726,6 @@ public class PullingHealth : Skill
 
         var effect = Instantiate(_pullingHealthPrefab, start.transform.position, Quaternion.identity);
         _extraEffects.Add(effect);
-        //SceneManager.MoveGameObjectToScene(effect, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(effect);
         RpcInitEffects(effect, start, target);
     }
@@ -513,7 +735,6 @@ public class PullingHealth : Skill
     {
         if (_activeEffect != null)
         {
-            Debug.Log($"Destroying active effect: {_activeEffect.name}");
             NetworkServer.Destroy(_activeEffect);
             RpcDestroyClientEffect(_activeEffect);
             _activeEffect = null;
@@ -531,14 +752,12 @@ public class PullingHealth : Skill
         foreach (var effect in _extraEffects) if (effect != null) NetworkServer.Destroy(effect);
 
         _activeGhostEffects.Clear();
-
         _ghost.Clear();
 
         for (int i = 0; i < _allActiveEffects.Count; i++)
         {
             if (_allActiveEffects[i] != null)
             {
-                Debug.Log($"Destroying additional effect: {_allActiveEffects[i].name}");
                 NetworkServer.Destroy(_allActiveEffects[i]);
                 RpcDestroyClientEffect(_allActiveEffects[i]);
             }
@@ -566,7 +785,6 @@ public class PullingHealth : Skill
     {
         if (effect != null)
         {
-            Debug.Log($"Destroying effect on client: {effect.name}");
             Destroy(effect);
         }
 
@@ -588,8 +806,9 @@ public class PullingHealth : Skill
         _cachedTarget = null;
         _extraTargets.Clear();
         _extraEffects.Clear();
+        ClearChainVisuals();
+        _currentChain.Clear();
         Targeting.ClearTempTarget();
         Targeting.ClearTarget();
-        AreaInfo.Radius = _baseRadius;
     }
 }

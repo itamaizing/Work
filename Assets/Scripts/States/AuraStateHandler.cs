@@ -10,11 +10,12 @@ public abstract class AuraStateHandler : NetworkBehaviour
     [Header("Aura Settings")]
     [SerializeField] protected float _radius = 8f;
     [SerializeField] protected float _checkInterval = 0.5f;
-    [SerializeField] LayerMask _targetLayer;
+    [SerializeField] protected LayerMask _targetLayer;
 
     protected virtual float GetCurrentRadius() => _radius;
     protected Character _owner;
     protected readonly HashSet<Character> _currentTargets = new();
+    protected Skill _fromSkill;
 
     private Coroutine _checkCoroutine;
     private Coroutine _durationCoroutine;
@@ -22,11 +23,12 @@ public abstract class AuraStateHandler : NetworkBehaviour
 
     public bool IsActive => _isActive;
 
-    public void ActivateAura(bool active, float duration = -1f, bool isAffectOnOwner = false)
+    public void ActivateAura(bool active, float duration = -1f, bool isAffectOnOwner = false, Skill fromSkill = null, GameObject ownerObject = null)
     {
         if (_isActive == active) return;
-
         _isActive = active;
+
+        if (fromSkill != null) _fromSkill = fromSkill;
 
         if (_checkCoroutine != null)
         {
@@ -43,7 +45,11 @@ public abstract class AuraStateHandler : NetworkBehaviour
 
         if (active)
         {
-            if (_owner == null)
+            if (ownerObject)
+            {
+                _owner = ownerObject.GetComponent<Character>();
+            }
+            else
                 _owner = GetComponent<Character>();
 
             _checkCoroutine = StartCoroutine(CheckTargetsRoutine(isAffectOnOwner));
@@ -74,7 +80,7 @@ public abstract class AuraStateHandler : NetworkBehaviour
     {
         yield return null;
         
-        while (_isActive && _owner != null && !_owner.IsDead)
+        while (_isActive && _owner != null)
         {
             var colliders = Physics.OverlapSphere(transform.position, GetCurrentRadius(), _targetLayer);
             var newTargets = new HashSet<Character>();
@@ -138,9 +144,9 @@ public abstract class AuraStateHandler : NetworkBehaviour
     protected virtual void OnTargetStay(Character target) { }
     
     [Command]
-    protected void CmdApplyStateToTarget(GameObject target, States state, float duration, Schools school, GameObject source, string skillName)
+    protected void CmdApplyStateToTarget(GameObject target, States state, float duration, Schools school, GameObject source, string skillName,float damageToExit)
     {
-        target.GetComponent<CharacterState>().AddState(state, duration, 0, school, source, skillName);
+        target.GetComponent<CharacterState>().AddState(state, duration, damageToExit, school, source, skillName);
     }
 
     [Command]

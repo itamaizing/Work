@@ -9,13 +9,11 @@ public class DarknessTalent_3 : Talent
 
     public override void Enter()
     {
-        terrifyingElfAura.ReductionRecharge(true);
-        silence.SetCanAttackMinions(true);
+        character.Abilities.ActivateSkill(character.Abilities.GetSkill<RetributiveReckoning>());
     }
 
     public override void Exit()
     {
-        terrifyingElfAura.ReductionRecharge(false);
-        silence.SetCanAttackMinions(false);
+        character.Abilities.DeactivateSkill(character.Abilities.GetSkill<RetributiveReckoning>());
     }
 }

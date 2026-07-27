@@ -2,9 +2,8 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class ShotAstral : Skill
+public class ShotAstral : Skill, IMultiMagicSkill
 {
     [SerializeField] private ArrowAstralProjectile _projectile;
     [SerializeField] private Transform _spawnPoint;
@@ -14,7 +13,6 @@ public class ShotAstral : Skill
     private const string _endAnimTrigger = "ShotCastDelayEndAnimTrigger";
 
     private Vector3 _targetPoint = Vector3.positiveInfinity;
-    //private Character _target;
 
     protected override int AnimTriggerCastDelay => Animator.StringToHash(_startAnimTrigger);
     protected override int AnimTriggerCast => 0;
@@ -23,12 +21,17 @@ public class ShotAstral : Skill
         Targeting.NoObstacles(_targetPoint, transform.position, _obstacle);
 
     private void OnDestroy() => OnSkillCanceled -= HandleSkillCanceled;
+    
+    protected override void PlayPrepareAnim()
+    {
+        if (CastDeley > 0f)
+            Hero.Animator.speed = Hero.Animator.speed / CastDeley;
+        base.PlayPrepareAnim();
+    }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callback)
     {
         OnSkillCanceled += HandleSkillCanceled;
-        Hero.Animator.speed /= CastDeley;
-        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
 
         while (float.IsPositiveInfinity(_targetPoint.x))
         {
@@ -36,26 +39,19 @@ public class ShotAstral : Skill
             {
                 Vector3 click = Targeting.GetMousePoint();
 
-                if (Targeting.IsPointInRadius(AreaInfo.Radius, click) && Targeting.NoObstacles(click, transform.position, _obstacle))
+                if (Targeting.NoObstacles(click, transform.position, _obstacle))
                 {
                     _targetPoint = click;
                     Targeting.FindTempTarget();
-                    if (Targeting.GetTarget()?.Character is Character player && player == _playerLinks)
-                    {
-                        _playerLinks.CharacterState.CmdAddState(States.Astral, _projectile.Duration, 0, gameObject, "ShotAstral");
-                        TryCancel(true);
-                        yield break;
-                    }
 
                     if (Targeting.GetTarget()?.Character is Character character)
                     {
-                        //_target = character;
-                        if (multiMagic != null) multiMagic.LastTarget = Targeting.GetTarget()?.Character;
                         Hero.Move.LookAtTransform(character.transform);
                     }
-
-                    else Hero.Move.LookAtPosition(_targetPoint);
-                    Hero.Move.SetCanMove(false);
+                    else
+                    {
+                        Hero.Move.LookAtPosition(_targetPoint);
+                    }
                 }
             }
             yield return null;
@@ -74,19 +70,11 @@ public class ShotAstral : Skill
             ClearData();
             yield break;
         }
+        
+        
+        Hero.Move.SetCanMove(false);
 
         CmdCreateProjectileAtPosition(_targetPoint);
-
-        var multiMagic = Hero.CharacterState.GetState(States.MultiMagic) as MultiMagic;
-
-        if (multiMagic != null)
-        {
-            foreach (var character in multiMagic.PopPendingTargets())
-            {
-                TryPayCost();
-                CmdCreateProjectileAtPosition(character.transform.position);
-            }
-        }
 
         WorkAnimator(_startAnimTrigger, _endAnimTrigger);
 
@@ -121,8 +109,7 @@ public class ShotAstral : Skill
         if (direction == Vector3.zero) return;
 
         var projectile = Instantiate(_projectile, spawnPoition, Quaternion.LookRotation(direction));
-        projectile.Init(_playerLinks, 0, false, this);
-        SceneManager.MoveGameObjectToScene(projectile.gameObject, _hero.NetworkSettings.MyRoom);
+        projectile.Init(_playerLinks, 0, false, this); 
         NetworkServer.Spawn(projectile.gameObject);
         projectile.StartFly(direction);
         RpcInit(projectile.gameObject);
@@ -139,9 +126,13 @@ public class ShotAstral : Skill
     protected override void ClearData()
     {
         Targeting.ClearTarget();
-       // _target = null;
         _targetPoint = Vector3.positiveInfinity;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo) => _targetPoint = targetInfo.Points[0];
+    public void HandleExtraTarget(Character target)
+    {
+        TryPayCost();
+        CmdCreateProjectileAtPosition(target.transform.position);
+    }
 }

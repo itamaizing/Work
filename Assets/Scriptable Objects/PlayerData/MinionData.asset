@@ -23,7 +23,7 @@ MonoBehaviour:
     attributes:
     - nameToShow: MaxValue
       type: 0
-      value: 0
+      value: 40
     - nameToShow: Regen
       type: 1
       value: 0
@@ -39,7 +39,7 @@ MonoBehaviour:
     attributes:
     - nameToShow: MaxValue
       type: 0
-      value: 0
+      value: 50
     - nameToShow: Regen
       type: 1
       value: 0

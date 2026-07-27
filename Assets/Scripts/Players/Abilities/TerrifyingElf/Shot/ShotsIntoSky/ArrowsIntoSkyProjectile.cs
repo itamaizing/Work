@@ -49,96 +49,21 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
 
     private void ActiveCollider() => sphereCollider.enabled = true;
 
-    [Server]
     private void OnTriggerStay(Collider other)
     {
-        //if (other.gameObject == _dad.gameObject) return;
-        if (((1 << other.gameObject.layer) & _skill.Targeting.Layer.value) == 0) return;
+        if (!isOwned) return; 
         if (!_damagedThisTick.Add(other)) return;
 
-        TryApplyDamageAndEffects(other);
-    }
-
-    #region ApplyAdditionalDamage(Old)
-    //private void ApplyAdditionalDamage(float damageValue)
-    //{
-    //    foreach (var enemyCollider in enemyColliders)
-    //    {
-    //        if (enemyCollider.TryGetComponent<IDamageable>(out IDamageable target) && enemyCollider != _character.gameObject)
-    //        {
-    //            ApplyDamage(damageValue, Info.DamageType.Magical, target);
-
-    //            if (enemyCollider.TryGetComponent<Character>(out Character character))
-    //            {
-    //                var targetState = character.CharacterState;
-
-    //                if (targetState != null)
-    //                {
-    //                    targetState.AddState(States.Irradiation, 9, 0, _character.gameObject, this.name);
-
-    //                    if (shotAstralManaActive && targetState.CheckForState(States.Astral)) RestoreMana();
-    //                    if (targetState.CheckForState(States.Silent) && silenceTalentActive) targetState.AddState(States.WeakeningSilence, 4, 4, _character.gameObject, this.name);
-    //                }
-    //            }
-    //        }
-    //    }
-
-    //    //foreach (var objectCollider in objectColliders)
-    //    //{
-    //    //    if (objectCollider.TryGetComponent<ReconnaissanceFireAura>(out ReconnaissanceFireAura aura) && tripleShotTalentActive)
-    //    //        if (FindObjectOfType<NatureTalent_6>() != null && !_tripleShot) StartCoroutine(SpawnAdditionalDamageZones(aura));
-    //    //}
-    //}
-    #endregion
-
-    #region ApplyDamageToEnemiesInZone(Old)
-    //private void ApplyDamageToEnemiesInZone(Collider collider)
-    //{
-    //    foreach (var enemyCollider in enemyColliders)
-    //    {
-    //        if (enemyCollider.TryGetComponent<IDamageable>(out IDamageable target) && enemyCollider != _character.gameObject)
-    //        {
-    //            ApplyDamage(_damage, Info.DamageType.Magical, target);
-
-    //            if (enemyCollider.TryGetComponent<Character>(out Character character))
-    //            {
-    //                var targetState = character.CharacterState;
-
-    //                if (targetState != null)
-    //                {
-    //                    targetState.AddState(States.Irradiation, 9, 0, _character.gameObject, this.name);
-
-    //                    if (shotAstralManaActive && targetState.CheckForState(States.Astral)) RestoreMana();
-
-    //                    if (targetState.CheckForState(States.Silent) && silenceTalentActive) targetState.AddState(States.WeakeningSilence, 4, 4, _character.gameObject, this.name);
-    //                }
-    //            }
-    //        }
-    //    }
-
-    //    //foreach (var objectCollider in objectColliders)
-    //    //{
-    //    //    if (objectCollider.TryGetComponent<ReconnaissanceFireAura>(out ReconnaissanceFireAura aura) && tripleShotTalentActive)
-    //    //    {
-    //    //        if (FindObjectOfType<NatureTalent_6>() != null && !_tripleShot)
-    //    //        {
-    //    //            _tripleShot = true;
-    //    //            StartCoroutine(SpawnAdditionalDamageZones(aura));
-    //    //        }
-    //    //    }
-    //    //}
-
-    //    //if (!_tripleShot) HideAOEIndicator();
-    //}
-    #endregion
-
-    private void TryApplyDamageAndEffects(Collider colldier)
-    {
-        if (colldier.TryGetComponent<IDamageable>(out var dmgTarget))
-            ApplyDamage(_damage, DamageType.Magical, dmgTarget);
-
-        if (colldier.TryGetComponent<Character>(out var victim))
+        if (other.gameObject.TryGetComponent<Character>(out var victim))
+        {
+            ApplyDamage(_damage, DamageType.Magical, victim);
             ApplyStatesAndTalents(victim);
+            return;
+        }
+
+        
+        if (other.gameObject.TryGetComponent<IDamageable>(out var dmgTarget))
+            ApplyDamage(_damage, DamageType.Magical, dmgTarget);
     }
 
     private void ApplyStatesAndTalents(Character character)
@@ -146,16 +71,57 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
         CharacterState characterState = character.CharacterState;
         if (characterState == null) return;
 
-        if (lastStreamTalent) characterState.AddState(States.InnerDarkness, 13, 0, _character.gameObject, name);
-        characterState.AddState(States.Irradiation, 9, 0, _character.gameObject, name);
+        if (lastStreamTalent && !IsAlly(character)) characterState.CmdAddState(States.InnerDarkness, 13, 0, _character.gameObject, name);
 
-        if (shotMagicDebuffActive && characterState.HasMagicDebuff()) RestoreMana();
+        if (shotMagicDebuffActive)
+        {
+            CmdRefreshExistingMagicStates(characterState, character);
+        }
+    }
+    
+    [Command]
+    private void CmdRefreshExistingMagicStates(CharacterState targetState, Character target)
+    {
+        if (_character == null) return;
 
-        //if (silenceTalentActive && characterState.CheckForState(States.Silent)) characterState.AddState(States.WeakeningSilence, 4, 3, _character.gameObject, name);
+        bool isAlly = IsAlly(target);
+        BaffDebaff wanted = isAlly ? BaffDebaff.Baff : BaffDebaff.Debaff;
+        var statesCopy = new List<AbstractCharacterState>(targetState.CurrentStates);
+
+        foreach (var state in statesCopy)
+        {
+            if (state.Type != StateType.Magic) continue;
+            if (state.BaffDebaff != wanted) continue;
+            if (state.BaseDurationValue < 0f) continue;
+
+            targetState.AddState(state.State,state.BaseDurationValue,0,state.PersonWhoMadeBuff.gameObject,name);
+        }
+    }
+
+    private bool IsAlly(Character target)
+    {
+        if (target == null) return false;
+        if (target == _character) return true;
+
+        if (target.TryGetComponent<UserNetworkSettings>(out var targetSettings) &&
+            _character.TryGetComponent<UserNetworkSettings>(out var casterSettings) &&
+            targetSettings.TeamIndex != 0 && casterSettings.TeamIndex != 0)
+        {
+            return targetSettings.TeamIndex == casterSettings.TeamIndex;
+        }
+
+        int enemyLayer = LayerMask.NameToLayer("Enemy");
+        return target.gameObject.layer != enemyLayer;
     }
 
     private void ApplyDamage(float damage, DamageType damageType, IDamageable target)
     {
+        if (target.gameObject.TryGetComponent<Character>(out var victim))
+        {
+            if(IsAlly(victim))
+                return;
+        }
+        
         Damage _damage = new Damage
         {
             Value = damage,
@@ -165,37 +131,7 @@ public class ArrowsIntoSkyProjectile : NetworkBehaviour
 
         if (target is Component targetComponent)
         {
-            _skill.ApplyDamage(_damage, targetComponent.gameObject);
-            //CmdApplyDamage(targetComponent.gameObject, _damage, null);
+            _skill.CmdApplyDamage(_damage, targetComponent.gameObject);
         }
     }
-
-    private void RestoreMana()
-    {
-        if (_character.TryGetResource(ResourceType.Mana) is Mana manaResource)
-        {
-            float manaToRestore = manaResource.MaxValue * 0.01f;
-            manaResource.Add(manaToRestore);
-            _character.CharacterState.AddState(States.ManaRegen, 1, 0, _character.gameObject, this.name);
-        }
-    }
-
-    //private IEnumerator SpawnAdditionalDamageZones(ReconnaissanceFireAura aura)
-    //{
-    //    yield return new WaitForSeconds(1f);
-    //    ApplyAdditionalDamage(Damage / 2);
-
-    //    if (aura.StateDark)
-    //    {
-    //        yield return new WaitForSeconds(1f);
-    //        ApplyAdditionalDamage(Damage / 4);
-    //        _tripleShot = false;
-    //        HideAOEIndicator();
-    //        yield break;
-    //    }
-
-    //    _tripleShot = false;
-    //    HideAOEIndicator();
-    //    yield break;
-    //}
 }

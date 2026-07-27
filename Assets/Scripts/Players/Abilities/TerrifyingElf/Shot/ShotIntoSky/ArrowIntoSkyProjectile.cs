@@ -1,7 +1,9 @@
-﻿using Mirror;
+﻿using System;
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class ArrowIntoSkyProjectile : NetworkBehaviour
 {
@@ -32,8 +34,10 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
 
     public GameObject Arrow { get => arrow; set => arrow = value; }
     public GameObject Circle { get => circle; set => circle = value; }
+    
+    private Action _onImpactActivated;
 
-    public virtual void Init(HeroComponent dad, Skill skill, float damage, bool lastStreamTalent, bool shotMagicDebuffActive, bool isElvenSkillCrit)
+    public virtual void Init(HeroComponent dad, Skill skill, float damage, bool lastStreamTalent, bool shotMagicDebuffActive, bool isElvenSkillCrit, Action onImpactActivated = null)
     {
         this.lastStreamTalent = lastStreamTalent;
         this.shotMagicDebuffActive = shotMagicDebuffActive;
@@ -41,31 +45,44 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
         _skill = skill;
         _damage = damage;
         _isElvenSkillCrit = isElvenSkillCrit;
-
+        _onImpactActivated = onImpactActivated;
+        
         if (_dad != null && _dad.TryGetComponent<Character>(out Character character)) _character = character;
+        
+        if (circle != null) circle.SetActive(true);
     }
 
     public void Activate()
     {
         Arrow.SetActive(true);
         circle.SetActive(true);
-        Invoke("ActiveCollider", nextDamageTime);       
+        Invoke("ActiveCollider", nextDamageTime);
+
         Destroy(gameObject, impactLifeTime);
     }
 
-    private void ActiveCollider() => sphereCollider.enabled = true;
+    private void ActiveCollider()
+    {
+        sphereCollider.enabled = true;
+    }
+        
 
     [Server]
     private void OnTriggerStay(Collider other)
     {
-        //if (other.gameObject == _dad.gameObject) return;
         if (((1 << other.gameObject.layer) & _skill.Targeting.Layer.value) == 0) return;
-
         if (!_damagedThisTick.Add(other)) return;
-
+        
         ApplyDamageEnemy(other);
-
-        if (other.TryGetComponent<Character>(out var victim)) ApplyStatesAndTalents(victim);
+    }
+    
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
+            _onImpactActivated?.Invoke();
+            _onImpactActivated = null;
+        }
     }
 
     #region ApplyAdditionalDamage
@@ -143,11 +160,17 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
 
     private void ApplyDamageEnemy(Collider other)
     {
+
+        if (!other.TryGetComponent<IDamageable>(out var damageTarget)) return;
+
         float damageToDeal = UnityEngine.Random.Range(minDamage, maxDamage + 1);
 
-        float distance = Vector3.Distance(_character.transform.position, other.transform.position);
-        float distanceMultiplier = 1f + (distance * 0.05f);
-
+        float distanceMultiplier = 1f;
+        if (_character != null)
+        {
+            float distance = Vector3.Distance(_character.transform.position, other.transform.position);
+            distanceMultiplier = 1f + (distance * 0.05f);
+        }
         damageToDeal *= distanceMultiplier;
 
         if (Random.value * 100f < criticalChance)
@@ -156,8 +179,12 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
             damageToDeal *= critMultiplier;
         }
 
-        if (other.TryGetComponent<Character>(out var targetCharacter)) damageToDeal = ApplyElvenCritModifier(damageToDeal, targetCharacter);
-        if (other.TryGetComponent<IDamageable>(out var damageTarget)) ApplyDamage(damageToDeal, DamageType.Physical, damageTarget);
+        if (other.TryGetComponent<Character>(out var targetCharacter)) 
+        {
+            damageToDeal = ApplyElvenCritModifier(damageToDeal, targetCharacter);
+        }
+
+        ApplyDamage(damageToDeal, DamageType.Physical, damageTarget);
 
         _skill.Damage = damageToDeal;
     }

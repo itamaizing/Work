@@ -378,7 +378,7 @@ public class CheliceraStrike : Skill
     [Command]
     private void CmdDispel(Character targetCharacter, int count)
     {
-        for (int i = 0; i < count; i++) targetCharacter.CharacterState.DispelStates(StateType.Magic, true, isDispelOneState: true);
+        for (int i = 0; i < count; i++) targetCharacter.CharacterState.DispelStates(StateType.Magic, true,out int howMuchDispelled, isDispelOneState: true);
     }
     protected override void ClearData()
     {
