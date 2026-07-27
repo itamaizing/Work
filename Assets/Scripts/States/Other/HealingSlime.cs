@@ -15,7 +15,9 @@ public class HealingSlime : RefreshingState
     private float _timer;
     private float _remaining;
     private bool _infinite;
-    private float _addedMaxHealth;
+
+    private AttributeModifier _maxHealthModifier = new AttributeModifier(0,ModifierType.Percent);
+    private AttributeModifier _regenModifier = new AttributeModifier(0,ModifierType.Percent);
 
     public override float RemainingDuration => _infinite ? 999f : _remaining;
 
@@ -40,11 +42,13 @@ public class HealingSlime : RefreshingState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
+        currentStacksCount = 0;
+        characterState = character;
         health = character.Character.Health;
 
-        currentStacksCount = 0;
         SwitchToInfinite();
-        Stack(0);
+
+        Stack(1);
     }
 
     public override void UpdateState()
@@ -59,9 +63,7 @@ public class HealingSlime : RefreshingState
             if (currentStacksCount > 0)
             {
                 currentStacksCount--;
-                float removeValue = Mathf.Floor(health.MaxValue * PercentPerStack);
-                _addedMaxHealth -= removeValue;
-                health.AddMax(-removeValue);
+                UpdateAttributeModifiers();
                 characterState.StateIcons.RemoveIconCount();
             }
 
@@ -72,23 +74,64 @@ public class HealingSlime : RefreshingState
 
     public override bool Stack(float _)
     {
-        float addValue = Mathf.Floor(health.MaxValue * PercentPerStack);
-        _addedMaxHealth += addValue;
-        health.AddMax(addValue);
+        if (currentStacksCount < MaxStacksCount)
+        {
+            currentStacksCount++;
+        }
+
+        UpdateAttributeModifiers();
 
         if (!_infinite) SwitchToInfinite();
 
         return true;
     }
     
+    private void UpdateAttributeModifiers()
+    {
+        if (health == null) return;
+
+        RemoveModifiers();
+
+        if (currentStacksCount <= 0) return;
+
+        float totalPercent = currentStacksCount * PercentPerStack;
+        
+        _maxHealthModifier.Value = totalPercent;
+        _maxHealthModifier.Source = this;
+        _regenModifier.Value = totalPercent;
+        _regenModifier.Source = this;
+
+        health.AddModifier(ResourceAttributeName.MaxValue, _maxHealthModifier);
+        health.AddModifier(ResourceAttributeName.Regen, _regenModifier);
+    }
+
+    private void RemoveModifiers()
+    {
+        if (health == null) return;
+
+        health.RemoveModifierBySource(ResourceAttributeName.MaxValue, this);
+        health.RemoveModifierBySource(ResourceAttributeName.Regen, this);
+    }
+
     public override void ExitState()
     {
-        if (currentStacksCount > 0)
-        {
-            health.AddMax(-_addedMaxHealth);
-            _addedMaxHealth = 0;
-        }
-
+        currentStacksCount = 0;
+        _infinite = false;
+        RemoveModifiers();
         characterState.RemoveState(this);
+    }
+    
+    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        if (!CanEnterState(character)) return null;
+
+        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+
+        if (currentStacksCount == 0)
+            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+        else
+            Stack(duration);
+
+        return this;
     }
 }

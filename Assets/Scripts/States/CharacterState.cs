@@ -1156,7 +1156,7 @@ public enum States
 	DisciplineAura,
 	FrostEnergy,
 	PortalDarkness,
-	CreeperCombo
+	CreeperCombo,
 	ElvenReflexes,
 	FireCharge,
 	RestorativeAttacks,

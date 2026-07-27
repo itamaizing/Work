@@ -202,13 +202,11 @@ public class SkillQueue : MonoBehaviour
 
     private void OnCastEnded()
     {
+
         if (_currentSkill.TargetInfoQueue.TryPeek(out TargetInfo targetInfo))
         {
-            foreach (var item in targetInfo.GetTargets())
-            {
-                if (item is Character character && character != null && character.SelectedCircle != null)
-                    character.SelectedCircle.SwitchSelectCircle(false);
-            }
+            _targetInfo = targetInfo;
+            foreach (var item in _targetInfo.GetTargets()) if (item is Character character) character.SelectedCircle.SwitchSelectCircle(false);
         }
 
         _currentSkill.CastEnded -= OnCastEnded;

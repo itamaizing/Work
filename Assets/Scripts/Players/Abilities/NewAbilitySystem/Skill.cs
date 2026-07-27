@@ -245,12 +245,10 @@ public abstract class Skill : NetworkBehaviour
     {
         _hero = hero;
         _skillRender = render;
-        if (isServer)   // подписываемся до инициализации, чтобы сразу наполнить SyncDictionary
+        if (isServer)
             _skillAttributes.OnAttributeModify += OnSkillAttributeChange;
         _skillAttributes.Init(hero.AttributeSystem);
         InitComponents();
-        //Debug.Log($"Subbed to SkillAttributes modification");
-        _skillAttributes.OnAttributeModify += CmdSyncronizeAttributes;
     }
 
     public void InitComponents()
@@ -1320,10 +1318,10 @@ public abstract class Skill : NetworkBehaviour
 
     #region Server-side
 
-    [Command]
-    private void CmdSyncronizeAttributes(string name, float value)
+    [Server]
+    private void OnSkillAttributeChange(string name, float value)
     {
-        Debug.Log($"Skill Attr Modify {Name} {name}: {value}");
+        Debug.Log($"[Skill Attribute] {Name} {name}: {value}");
         if (!Enum.TryParse<SkillAttributeName>(name, out SkillAttributeName attr))
             return;
         if (_syncAttributes.Keys.Contains(attr))

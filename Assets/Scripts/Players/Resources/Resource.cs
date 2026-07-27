@@ -204,8 +204,8 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         {
             ratio = (CurrentValue / MaxValue);
         }
-        MaxValue = _attr_maxValue.GetValue();
-        CurrentValue = ratio * MaxValue;
+        _maxValue = value; 
+        CurrentValue = ratio * _maxValue;
     }
 
     public virtual void Add(float value)

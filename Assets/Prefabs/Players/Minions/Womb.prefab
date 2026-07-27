@@ -21325,6 +21325,7 @@ MonoBehaviour:
   _hero: {fileID: 6271332717105215193}
   _characterPrefabs:
   - {fileID: 6271332717105215193, guid: 8ff2c2f4f50e6834ebff05e5a40c88be, type: 3}
+  _clonePrefabs: []
   _enemyPrefabs: []
   _allyPrefabs: []
 --- !u!195 &4697272463135853912
@@ -21584,7 +21585,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -21601,6 +21602,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -21644,6 +21646,15 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   points:
   - {fileID: 6068758352887179223}
   - {fileID: 2017824503523596151}
@@ -21674,7 +21685,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -21691,6 +21702,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -21734,6 +21746,15 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _tick: 0.1
   _radiusGrowthInterval: 1
   _maxRadius: 6
@@ -21808,7 +21829,7 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _additional: []
+    _costs: []
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -21825,6 +21846,7 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
@@ -21868,10 +21890,19 @@ MonoBehaviour:
   _disactive: 0
   _earlyCooldown: 0
   maxCounter: 0
+  _tags:
+    skillType: 0
+    effect: 0
+    duration: 0
+    mobility: 0
+    control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   spawnComponent: {fileID: 7099943676139532891}
   minionMove: {fileID: 321651727084008340}
   minion: {fileID: 6271332717105215193}
-  tentacle: {fileID: 0}
+  wombSpawn: {fileID: 0}
 --- !u!1 &3916150586135684334
 GameObject:
   m_ObjectHideFlags: 0

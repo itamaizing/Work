@@ -210,6 +210,9 @@ public class WombSpawn : Skill
         yield return null;
     }
 
+
+    public void SpawnWombExternal(Vector3 pos) => SpawnWomb(pos);
+    
     private void SpawnWomb(Vector3 position)
     {
         if (!IsValidVector(position)) return;
@@ -220,7 +223,6 @@ public class WombSpawn : Skill
     [Command]
     private void CmdTentacleWomb()
     {
-
         RpcTentacleWomb();
         _skillRender.StopDrawRadius();
     }

@@ -65,8 +65,8 @@ public class Mucus : NetworkBehaviour
             if (_objectHealth != null)
             {
                 _objectHealth.IsDestroyOnDeath = true;
-                _objectHealth.ÑmdStopCustomRegeneration();
-                _objectHealth.ÑmdStartCustomNegativeRegeneration();
+                _objectHealth.Ð¡mdStopCustomRegeneration();
+                _objectHealth.Ð¡mdStartCustomNegativeRegeneration();
             }
         }
     }

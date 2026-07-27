@@ -17,7 +17,7 @@ public class ClawStrike : Skill
     [SerializeField] private float _durationBleeding = 7f;
     [SerializeField] private float _buffDurationAfterJump = 1f;
     [SerializeField] private float _chanceApplyBleedingIncrease = 0.4f;
-    [SerializeField] private float _chanceApplyBleedingWithJump = 0.4f;
+    [SerializeField] private float _chanceApplyBleedingWithJump = 0.6f;
 
     [Header("Damage")]
     [SerializeField] private float _minDamage = 10f;
@@ -101,38 +101,6 @@ public class ClawStrike : Skill
         if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-    {
-        TargetInfo targetInfo = new TargetInfo();
-
-        while (Targeting.GetTempTarget()?.Targetable == null)
-        {
-            if (GetMouseButton)
-            {
-                Targeting.FindTempTarget(Targeting.GetMousePoint(), TargetSearchRadius);
-
-                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
-                {
-                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
-
-                    else
-                    {
-                        if (Targeting.GetTempTarget()?.Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
-                        break;
-                    }
-                }
-            }
-            yield return null;
-        }
-
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
-
-        targetInfo.Points.Add(Targeting.GetTarget().Transform.position);
-        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
-        callbackDataSaved.Invoke(targetInfo);
-    }
-
-
     protected override IEnumerator CastJob()
     {
         if (Targeting.GetTarget() == null) yield break;
@@ -147,6 +115,8 @@ public class ClawStrike : Skill
         JumpBackComboContext.LastTarget = currentTarget;
         JumpBackComboContext.LastSkill = typeof(ClawStrike);
         JumpBackComboContext.LastTime = Time.time;
+
+        BleedingComboContext.Set(typeof(ClawStrike));
 
         yield return null;
     }
@@ -220,25 +190,26 @@ public class ClawStrike : Skill
             JumpBackComboContext.Reset();
         }
     }
-
+    
     private void TryApplyBleeding(Character target)
     {
         if (!_isBleedingClawStrike) return;
 
         _totalChanceApplyBleeding = _chanceApplyBleeding;
 
-        var lastSkill = _player.Abilities.LastCastedSkill;
+        Type lastSkill = BleedingComboContext.IsRecent ? BleedingComboContext.LastSkill : null;
 
-        if (lastSkill is CheliceraStrike) _totalChanceApplyBleeding += CheliceraBonusChance;
-        if (lastSkill is JumpWithChelicera) _totalChanceApplyBleeding += JumpWithCheliceraBonusChance;
+        if (lastSkill == typeof(CheliceraStrike)) _totalChanceApplyBleeding += CheliceraBonusChance;
+        if (lastSkill == typeof(JumpWithChelicera)) _totalChanceApplyBleeding += JumpWithCheliceraBonusChance;
 
-        if (_isDurationChanceApplyBleedingWithJump && _jumpWithChelicera.IsCheliceraStrikeCast && lastSkill is CheliceraStrike) _totalChanceApplyBleeding = _chanceApplyBleedingWithJump;
+        if (_isDurationChanceApplyBleedingWithJump && _jumpWithChelicera.IsCheliceraStrikeCast && lastSkill == typeof(CheliceraStrike))
+            _totalChanceApplyBleeding = _chanceApplyBleedingWithJump;
 
         if (_isChanceApplyBleedingIncrease && CheckStateForBleeding(target)) _totalChanceApplyBleeding += _chanceApplyBleedingIncrease;
         _totalChanceApplyBleeding = Mathf.Clamp01(_totalChanceApplyBleeding);
 
         Debug.Log($"_totalChanceApplyBleeding: {_totalChanceApplyBleeding}");
-
+        
         float rand = UnityEngine.Random.Range(RandomChanceMin, RandomChanceMax);
         if (rand <= _totalChanceApplyBleeding) CmdAddBleeding(target);
 
@@ -252,7 +223,7 @@ public class ClawStrike : Skill
     {
         var lastSkill = _player.Abilities.LastCastedSkill;
         float multiplier;
-
+        Debug.LogError("ClawStrikePrepareAnim");
         if (_isAnimationAcceleration)
         {
             if ((lastSkill is ClawStrike && _isLastClawStrike) || lastSkill is CheliceraStrike)
@@ -260,7 +231,6 @@ public class ClawStrike : Skill
                 multiplier = AnimationSpeedFast;
                 _isLastClawStrike = false;
             }
-
             else
             {
                 multiplier = AnimationSpeedDefault;

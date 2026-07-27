@@ -22939,9 +22939,9 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: -1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -22988,10 +22988,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 8319872899575431858}
   _rechargeGlands: {fileID: 5181332647309301388}
   _basePsionicEnergy: {fileID: 369466722820063190}
@@ -23045,9 +23044,9 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: -1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -23094,10 +23093,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 8319872899575431858}
   _rechargeGlands: {fileID: 5181332647309301388}
   _basePsionicEnergy: {fileID: 369466722820063190}
@@ -23154,9 +23152,9 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: -1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -23203,10 +23201,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 8319872899575431858}
   _cheliceraeStrike: {fileID: 640134254429411212}
   _clawStrike: {fileID: 1846342972592633463}
@@ -23302,10 +23299,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 8319872899575431858}
   _tentaclesPrefab: {fileID: 6610701520137683841, guid: d14badff952bb714c90f1fd43e07201c, type: 3}
   _tentaclesPreview: {fileID: 6610701520137683841, guid: e433350a5f6dd4446b1ae7716a074700, type: 3}
@@ -23402,10 +23398,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _psionicEnergy: {fileID: 369466722820063190}
   _attackingPsionicEnergy: {fileID: 1487487552333656207}
 --- !u!114 &2069191703388085909
@@ -23496,10 +23491,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   basePsionicEnergy: {fileID: 369466722820063190}
   modifier: 1
 --- !u!114 &369466722820063190
@@ -23651,10 +23645,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _playerLinks: {fileID: 8319872899575431858}
   jumpWithChelicera: {fileID: 7634851756353439263}
   cooldownEnergy: {fileID: 5998867522025010555}
@@ -23747,10 +23740,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   cooldownEnergy: {fileID: 5998867522025010555}
   jumpDistance: 1.2
   jumpWindow: 1
@@ -23843,10 +23835,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 8319872899575431858}
   cheliceraStrike: {fileID: 640134254429411212}
   cooldownEnergy: {fileID: 5998867522025010555}
@@ -23970,10 +23961,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &7709957828632342126
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24062,10 +24052,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _playerLinks: {fileID: 8319872899575431858}
   duration: 6
 --- !u!114 &1206870191879820980
@@ -24156,10 +24145,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &1223713190726253118
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24248,10 +24236,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _swarmCapacity: {fileID: 3168550865384704014}
 --- !u!114 &8267736736109211900
 MonoBehaviour:
@@ -24341,10 +24328,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &5181332647309301388
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24433,10 +24419,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _durationDestructivePoison: 12
   _cooldownEnergy: {fileID: 5998867522025010555}
   _cooldownEnergyCost: 6
@@ -24531,10 +24516,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 8319872899575431858}
   _spawnComponent: {fileID: 4260348460032838645}
   _summoningSwarm: {fileID: 8267736736109211900}

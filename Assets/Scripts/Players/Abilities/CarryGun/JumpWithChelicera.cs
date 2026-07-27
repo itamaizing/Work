@@ -94,37 +94,6 @@ public class JumpWithChelicera : Skill
         if (Targeting.GetTarget()?.Character is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-    {
-        TargetInfo targetInfo = new TargetInfo();
-
-        while (Targeting.GetTempTarget()?.Targetable == null)
-        {
-            if (GetMouseButton)
-            {
-                Targeting.FindTempTarget(Targeting.GetMousePoint(), TargetSearchRadius);
-
-                if (Targeting.GetTempTarget()?.Targetable != null && Targeting.GetTempTarget()?.Targetable is IDamageable damageable)
-                {
-                    if (IsAllyTarget(damageable) || damageable as Character == Hero) Targeting.ClearTempTarget();
-
-                    else
-                    {
-                        if (Targeting.GetTempTarget()?.Targetable is Character character && character.SelectedCircle != null) character.SelectedCircle.IsActive = false;
-                        break;
-                    }
-                }
-            }
-            yield return null;
-        }
-
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
-
-        targetInfo.Points.Add(Targeting.GetTarget().Transform.position);
-        targetInfo.AddTarget(Targeting.GetTarget()?.Targetable);
-        callbackDataSaved.Invoke(targetInfo);
-    }
-
     protected override IEnumerator CastJob()
     {
         if (Targeting.GetTarget() == null)
@@ -155,6 +124,8 @@ public class JumpWithChelicera : Skill
 
         _isCheliceraStrikeCast = true;
         _clawStrike.DurationChanceApplyBleedingWithJump();
+
+        BleedingComboContext.Set(typeof(JumpWithChelicera));
 
         if (target is Character character)
         {

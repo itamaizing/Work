@@ -27,7 +27,6 @@ public class Tentacles : Skill
     private TentacleProjectile _previewInstancePrefab;
     private TentacleProjectile _currentTentacle;
     private Coroutine _radiusUpdateCoroutine;
-    //private MinionComponent _currentMinion;
     private float _spentAttackingPsiEnergy;
     private WaitForSeconds _waitForSeconds;
 
@@ -48,7 +47,6 @@ public class Tentacles : Skill
     public event Action<bool> OnSpawnGetomirChanged;
     public event Action<bool> OnWombSpreadsMucusChanged;
     public event Action<bool> OnWombSpreadsParasitesChanged;
-    //public event Action<bool> OnSpawnSpikeMucus;
 
     public void ProtectiveCooconSpawn(bool value) => _isProtectiveCooconSpawn = value;
     public void PsionicsTalentThree(bool value) => _isPsionicsTalentThree = value;
@@ -78,6 +76,18 @@ public class Tentacles : Skill
 
     #endregion
 
+    #region WombSpawning
+
+    private bool _isWombSpawning;
+    
+    public void ActivateWombSpawning(bool value)
+    {
+        if (value == _isWombSpawning) return;
+        _isWombSpawning = value;
+    }
+
+    #endregion
+    
     #endregion
 
     public TentacleProjectile CurrentTentacle { get => _currentTentacle; set => _currentTentacle = value; }
@@ -86,14 +96,16 @@ public class Tentacles : Skill
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Spell");
+
     protected override bool IsCanCast =>
-    _summoningSwarm != null && (Targeting.GetTarget()?.Character != null) &&
-    _spawnPoint != Vector3.positiveInfinity &&
-    IsCanRadius();
+        _summoningSwarm != null &&
+        _spawnPoint != Vector3.positiveInfinity &&
+        IsCanRadius() &&
+        (Targeting.GetTarget()?.Character != null || _isWombSpawning);
 
     protected override void UseCooldownOrCharges()
     {
-        bool hasSwarmCharges = _summoningSwarm != null &&  _summoningSwarm.ChargesSwarm > 0;
+        bool hasSwarmCharges = _summoningSwarm != null && _summoningSwarm.ChargesSwarm > 0;
 
         if (hasSwarmCharges)
         {
@@ -271,7 +283,6 @@ public class Tentacles : Skill
                         yield return _waitForSeconds;
                         break;
                     }
-
                     else
                     {
                         bool foundEnemy = false;
@@ -311,6 +322,17 @@ public class Tentacles : Skill
 
                         if (!foundEnemy)
                         {
+                            if (_isWombSpawning)
+                            {
+                                float distToGround = Vector3.Distance(Hero.transform.position, mousePoint);
+                                if (distToGround <= AreaInfo.Radius)
+                                {
+                                    targetPoint = mousePoint;
+                                    yield return _waitForSeconds;
+                                    break;
+                                }
+                            }
+
                             yield return null;
                             continue;
                         }
@@ -321,9 +343,9 @@ public class Tentacles : Skill
             yield return null;
         }
 
-        if (!_isAttractionTentacleTalent) targetPoint = _lockedTarget.transform.position;
+        if (!_isAttractionTentacleTalent && _lockedTarget != null) targetPoint = _lockedTarget.transform.position;
 
-        if (_isAttractionTentacleTalent)
+        if (_isAttractionTentacleTalent && _lockedTarget != null)
         {
             while (true)
             {
@@ -394,14 +416,17 @@ public class Tentacles : Skill
             }
         }
 
-        Targeting.SetTarget(_lockedTarget);
+        if (_lockedTarget != null)
+            Targeting.SetTarget(_lockedTarget);
 
         TrySpendAttackingPsi();
         if (_previewInstance != null) Destroy(_previewInstance.gameObject);
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.Points.Add(targetPoint);
-        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+        if (Targeting.GetTarget()?.Character != null)
+            targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+
         callbackDataSaved(targetInfo);
     }
 
@@ -420,9 +445,9 @@ public class Tentacles : Skill
             yield break;
         }
 
-        if (Targeting.GetTarget()?.Character)
+        if (targetCharacter != null)
         {
-            float distance = Vector3.Distance(_spawnPoint, Targeting.GetTarget().Character.transform.position);
+            float distance = Vector3.Distance(_spawnPoint, targetCharacter.transform.position);
 
             float tentacleRange = _previewInstancePrefab != null ? _previewInstancePrefab.Radius : AreaInfo.Radius;
 
@@ -433,12 +458,22 @@ public class Tentacles : Skill
                 yield break;
             }
 
-            CmdSpawnTentacles(_spawnPoint, Targeting.GetTarget()?.Character, _spentAttackingPsiEnergy);
+            CmdSpawnTentacles(_spawnPoint, targetCharacter, _spentAttackingPsiEnergy);
+        }
+        else if (_isWombSpawning)
+        {
+            _hero.Abilities.GetSkill<WombSpawn>().SpawnWombExternal(_spawnPoint);
         }
 
         ClearData();
         _skillRender.StopDrawRadius();
         yield return null;
+    }
+    
+    private void SpawnWomb(Vector3 position)
+    {
+        if (!IsValidVector(position) || _spawnComponent == null) return;
+        _spawnComponent.CmdSpawnEnemyPoint(position, Quaternion.identity, null, 0, false, Hero);
     }
 
     private IEnumerator UpdateRadiusColor()
@@ -535,7 +570,6 @@ public class Tentacles : Skill
         Vector3 spawnPos = target.transform.position;
 
         var cocoon = Instantiate(_protectiveCocoonPrefab, spawnPos, Quaternion.identity);
-        //SceneManager.MoveGameObjectToScene(cocoon.gameObject, _hero.NetworkSettings.MyRoom);
         NetworkServer.Spawn(cocoon.gameObject);
 
         int damage = 0;
@@ -561,7 +595,6 @@ public class Tentacles : Skill
         if (target == null) return;
 
         _currentTentacle = Instantiate(_tentaclesPrefab, position, Quaternion.identity);
-        //SceneManager.MoveGameObjectToScene(_currentTentacle.gameObject, _hero.NetworkSettings.MyRoom);
 
         _currentTentacle.Init(_player, target, position, target.transform.position, true, _isPsionicsTalentThree, _isAttractionTentacleTalent, _isSpawnSpike, _spentAttackingPsiEnergy, this);
 
@@ -604,9 +637,4 @@ public class Tentacles : Skill
         _spawnPoint = targetInfo.Points[0];
         if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
     }
-
-    //public void SetCurrentMinion(MinionComponent newMinion)
-    //{
-    //    _currentMinion = newMinion;
-    //}
 }

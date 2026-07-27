@@ -8,7 +8,7 @@ public class CooldownEnergy : Resource
 {
     [Header("Main Settings")]
     [SerializeField] private Character _player;
-    [SerializeField] private Slider ÒooldownEnergySlider;
+    [SerializeField] private Slider —ÅooldownEnergySlider;
     [SerializeField] private float durationCooldown = 12f;
     [SerializeField] private float cooldownCharger = 2f;
 
@@ -97,6 +97,6 @@ public class CooldownEnergy : Resource
 
     private void UpdateSlider()
     {
-        if (ÒooldownEnergySlider != null) ÒooldownEnergySlider.value = _currentValue / _maxValue;
+        if (—ÅooldownEnergySlider != null) —ÅooldownEnergySlider.value = _currentValue / _maxValue;
     }
 }
