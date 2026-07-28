@@ -68,6 +68,7 @@ public class Attribute
     public void AddModifier(AttributeModifier modifier)
     {
         _modifiers.Add(modifier);
+        modifier.OnValueChange += HandleModifierValueChange;
         _isActual = false;
         UpdateCached(); // otherwise it would invoke event only when attribute is called directly
     }
@@ -75,19 +76,21 @@ public class Attribute
     public void RemoveModifier(AttributeModifier modifier)
     {
         if (_modifiers.Contains(modifier))
+        {
             _modifiers.Remove(modifier);
+            modifier.OnValueChange -= HandleModifierValueChange;
+        }
         _isActual = false;
         UpdateCached();
     }
 
     public void RemoveBySource(object source, bool all = true)
     {
-        //if(_modifiers.Contains(modifier))
-        //    _modifiers.Remove(modifier);
         for (int i = _modifiers.Count - 1; i >= 0; i--)
         {
             if (_modifiers[i].Source == source)
             {
+                _modifiers[i].OnValueChange -= HandleModifierValueChange;
                 _modifiers.RemoveAt(i);
                 if (all == false)
                     break;
@@ -106,7 +109,7 @@ public class Attribute
 
     public void RecalculateMultipliers()
     {
-        float flat = 0, percent = 0, multiplier = 1, menuFlat = 0;
+        float flat = 0, percent = 0, multiplier = 1;
 
         foreach (var modifier in _modifiers)
         {
@@ -149,10 +152,42 @@ public class Attribute
 
     private void UpdateCached()
     {
+        if (_isActual)
+            return;
+
         _cachedValue = CalculateFor(_baseValue);
-        OnAttributeModify?.Invoke(_name, _cachedValue);
-        //Debug.Log($"{_name}: {_cachedValue}");
         _isActual = true;
+        OnAttributeModify?.Invoke(_name, _cachedValue);
+    }
+
+    private void HandleModifierValueChange(float value)
+    {
+        //Debug.Log("ModifierValueChanged");
+        _isActual = false;
+        UpdateCached();
+    }
+
+    /// <summary>
+    /// Возвращает Value, обработанное суммой всех атрибутов
+    /// </summary>
+    public static float SumFor(float value, params Attribute[] attributes)
+    {
+        if (attributes == null || attributes.Length == 0)
+            throw new ArgumentNullException("Missing parameters");
+
+        float flat = value,
+                percent = 1,
+                mult = 1;
+
+        foreach (Attribute attr in attributes)
+        {
+            if (!attr._isActual)
+                attr.RecalculateMultipliers();
+            flat += attr.FlatBonus;
+            percent += attr.PercentBonus;
+            mult *= attr.MultiplierBonus;
+        }
+        return (flat * percent) * mult;
     }
 }
 #endregion
@@ -173,14 +208,25 @@ public class AttributeModifier
     /// </summary>
     public AttributeModifier(float value, ModifierType type, object source = null)
     {
-        Value = value;
+        _value = value;
         Type = type;
         Source = source;
     }
+    private float _value;
 
-    public float Value;
+    public float Value
+    {
+        get => _value;
+        set
+        {
+            _value = value;
+            OnValueChange?.Invoke(_value);
+        }
+    }
     public ModifierType Type;
     public object Source;
+
+    public event Action<float> OnValueChange;
 }
 
 /// <summary>

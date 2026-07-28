@@ -53,7 +53,8 @@ public class SkillAttributes
         {
             if (_heroAttributes == null)
                 return _attributes[SkillAttributeName.CastSpeed].GetValue();
-            return GetCombined(_attributes[SkillAttributeName.CastSpeed], _heroAttributes[CharacterAttributeName.CastSpeed]);
+            return GetCombined(_attributes[SkillAttributeName.CastSpeed],
+                _heroAttributes[CharacterAttributeName.CastSpeed]);
         }
         set { _attributes[SkillAttributeName.CastSpeed].SetBaseValue(value); }
     }
@@ -67,11 +68,7 @@ public class SkillAttributes
             var heroP = _heroAttributes[CharacterAttributeName.CastSpeedPhysical];
             var skill = _attributes[SkillAttributeName.CastSpeed];
 
-            //Debug.Log($"phys ({skill.BaseValue} + {skill.FlatBonus} + {heroB.FlatBonus} + {heroP.FlatBonus}) * (1 + {skill.PercentBonus} + {heroB.PercentBonus} + {heroP.PercentBonus}) * ({skill.MultiplierBonus} * {heroB.MultiplierBonus} * {heroP.MultiplierBonus})");
-
-            return (skill.BaseValue + skill.FlatBonus + heroB.FlatBonus + heroP.FlatBonus) *
-                (1 + skill.PercentBonus + heroB.PercentBonus + heroP.PercentBonus) *
-                (skill.MultiplierBonus * heroB.MultiplierBonus * heroP.MultiplierBonus);
+            return Attribute.SumFor(skill.BaseValue, skill, heroB, heroP);
         }
     }
     public float CastSpeedMagical
@@ -80,16 +77,12 @@ public class SkillAttributes
         {
             if (_heroAttributes == null)
                 return _attributes[SkillAttributeName.CastSpeed].GetValue();
+
             var heroB = _heroAttributes[CharacterAttributeName.CastSpeed];
             var heroM = _heroAttributes[CharacterAttributeName.CastSpeedMagical];
             var skill = _attributes[SkillAttributeName.CastSpeed];
-            
-            //Debug.Log($"mag ({skill.BaseValue} + {skill.FlatBonus} + {heroB.FlatBonus} + {heroM.FlatBonus}) * (1 + {skill.PercentBonus} + {heroB.PercentBonus} + {heroM.PercentBonus}) * ({skill.MultiplierBonus} * {heroB.MultiplierBonus} * {heroM.MultiplierBonus})");
 
-
-            return (skill.BaseValue + skill.FlatBonus + heroB.FlatBonus + heroM.FlatBonus) *
-                (1 + skill.PercentBonus + heroB.PercentBonus + heroM.PercentBonus) *
-                (skill.MultiplierBonus * heroB.MultiplierBonus * heroM.MultiplierBonus);
+            return Attribute.SumFor(skill.BaseValue, skill, heroB, heroM);
         }
     }
     #endregion Properties
