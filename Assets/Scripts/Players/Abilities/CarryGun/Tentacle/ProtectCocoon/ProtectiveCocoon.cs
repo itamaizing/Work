@@ -100,7 +100,7 @@ public class ProtectiveCocoon : NetworkBehaviour
     {
         if (_hero == null) return;
 
-        foreach (var resource in _hero.GetComponents<Resource>())
+        foreach (var resource in _hero.Resources.Values)
         {
             if (resource.RegenerationValue > 0)
             {
@@ -114,7 +114,7 @@ public class ProtectiveCocoon : NetworkBehaviour
     {
         if (_hero == null) return;
 
-        foreach (var resource in _hero.GetComponents<Resource>())
+        foreach (var resource in _hero.Resources.Values)
         {
             if (resource.RegenerationValue > 0)
             {
