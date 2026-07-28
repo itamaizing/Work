@@ -227,18 +227,19 @@ public class ClawStrike : Skill
         {
             if ((lastSkill is ClawStrike && _isLastClawStrike) || lastSkill is CheliceraStrike)
             {
-                multiplier = AnimationSpeedFast;
+                multiplier = GetCastSpeed() * AnimationSpeedFast;
                 _isLastClawStrike = false;
             }
             else
             {
-                multiplier = AnimationSpeedDefault;
+                multiplier = GetCastSpeed();
                 _isLastClawStrike = lastSkill is ClawStrike;
             }
         }
+        else
+            multiplier = AnimationSpeedDefault;
 
-        else multiplier = AnimationSpeedDefault;
-
+        Debug.Log($"Setting ClawStrike Speed {multiplier}");
         Hero.Animator.SetFloat("ClawStrikeSpeed", multiplier);
 
         if (_attackingPsionicEnergy.IsAttackingPsiEnergy && _attackingPsionicEnergy.CurrentValue > 0f) TrySpendAttackingPsi();
