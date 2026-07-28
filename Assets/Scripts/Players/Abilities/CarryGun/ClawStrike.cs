@@ -223,7 +223,6 @@ public class ClawStrike : Skill
     {
         var lastSkill = _player.Abilities.LastCastedSkill;
         float multiplier;
-        Debug.LogError("ClawStrikePrepareAnim");
         if (_isAnimationAcceleration)
         {
             if ((lastSkill is ClawStrike && _isLastClawStrike) || lastSkill is CheliceraStrike)

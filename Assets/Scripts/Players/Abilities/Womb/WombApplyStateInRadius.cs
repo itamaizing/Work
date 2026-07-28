@@ -47,7 +47,7 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
             _creatureSpawn.WombSpawn.OnWombSpreadsMucusChanged += HandleWombSpreadsMucusChanged;
             _creatureSpawn.WombSpawn.OnWombSpreadsParasitesChanged += HandleWombSpreadsParasitesChanged;
 
-            Invoke("InvokeHandleWombSpreadsMucusChanged", 6f);
+            InvokeHandleWombSpreadsMucusChanged();
         }
     }
 
@@ -62,6 +62,7 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
 
     private IEnumerator RadiusGrowthRoutine()
     {
+        _currentRadius = 0f;
         WaitForSeconds wait = new(_radiusGrowthInterval);
         while (_currentRadius < _maxRadius)
         {
@@ -181,8 +182,16 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
             if (state.GetState(States.HealingSlime) is HealingSlime healingSlime)
             {
                 healingSlime.SwitchToFinite();
+                CmdSwitchSlimeToFinite(state);
             }
         }
+    }
+
+    [Command]
+    private void CmdSwitchSlimeToFinite(CharacterState state)
+    {
+        if (state.GetState(States.HealingSlime) is HealingSlime healingSlime)
+            healingSlime.SwitchToFinite();
     }
 
     private void ClearAllStates()
@@ -199,6 +208,8 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
 
     private void StartCorutines()
     {
+        _currentRadius = 0f;
+
         if (_mainRoutine == null)
             _mainRoutine = StartCoroutine(CheckZoneRoutine());
 

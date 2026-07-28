@@ -148,7 +148,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
     }
 
     // Можно перевести на такой же формат хранения атрибутов (ResourceAttribute) - тогда можно вообще весь хардкод убрать
-    public virtual void Init(ResourceAttribute resource) 
+    public virtual void Init(ResourceAttribute resource)
     {
         _attr_regenValue = resource.Attributes[ResourceAttributeName.Regen];
         _regenerationValue = _attr_regenValue.GetValue();
@@ -161,8 +161,7 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         _attr_regenPeriod = resource.Attributes[ResourceAttributeName.RegenPeriod];
 
         CurrentValue = _maxValue;
-        if (isServer)
-            _regenCoroutine = StartCoroutine(RegenerateJob());
+        _regenCoroutine = StartCoroutine(RegenerateJob());
         ClientStartRegenirateJob();
     }
     
@@ -197,24 +196,22 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         return (baseValue + flatBonus) * multiplier;
     }
 
-    public virtual void OnMaxAttributeChange(string name, float value)
+    public void OnMaxAttributeChange(string name, float value)
     {
-        float ratio = 0;
-        if (_maxValue > 0)
-        {
-            ratio = (CurrentValue / MaxValue);
-        }
-        _maxValue = value; 
-        CurrentValue = ratio * _maxValue;
+        //Debug.Log("OnMaxChanged: " + value);
+        MaxValue = value;
+        if (CurrentValue > MaxValue)
+            CurrentValue = MaxValue;
     }
-
+    
     public virtual void Add(float value)
     {
-        Debug.Log("Try regen " + value);
+        //Debug.Log($"Try regen {value}, period{_attr_regenPeriod.GetValue()}" );
+
         if (_maxValue >= _currentValue + value)
-            CurrentValue += value;
+            _currentValue += value;
         else
-            CurrentValue = _maxValue;
+            _currentValue = _maxValue;
     }
 
     public virtual bool TryUse(float value)
@@ -328,12 +325,19 @@ public abstract class Resource : NetworkBehaviour, IAttribute
                 continue;
             }
 
-            if (_currentValue < _maxValue || RegenerationValue < 0)
+            if (_attr_regenValue.GetValue() <= 0)
             {
-                yield return new WaitForSeconds(RegenerationDelay);
-                while (_currentValue < _maxValue || RegenerationValue < 0)
+                yield return null;
+                continue;
+            }
+
+            if (_currentValue < _maxValue)
+            {
+                yield return new WaitForSeconds(_regenerationDelay);
+
+                while (_currentValue < _maxValue)
                 {
-                    Add(RegenerationValue);
+                    Add(_attr_regenValue.GetValue());
                     yield return new WaitForSeconds(RegenerationPeriod);
                 }
             }

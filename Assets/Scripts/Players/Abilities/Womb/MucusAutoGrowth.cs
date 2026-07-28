@@ -83,26 +83,13 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
 
     private IEnumerator ApplyMucusPeriodically()
     {
+        _currentCircleIndex = 0;
+        AreaInfo.Radius = 0;
+
         while (_infinite || _remaining > 0)
         {
-            yield return new WaitForSeconds(TickRate);
-
-            AreaInfo.Radius = Mathf.Min(AreaInfo.Radius + 1, 6);
-
-            if (!_infinite)
-            {
-                _timer += TickRate;
-                _remaining--;
-
-                if (_remaining <= 0)
-                {
-                    CleanupAllMucus();
-                    yield break;
-                }
-            }
-
             bool isNewCircleStarted = false;
-
+            
             if (_currentCircleIndex < MaxCircles && _currentCircleIndex < points.Count)
             {
                 Transform parent = points[_currentCircleIndex];
@@ -133,16 +120,13 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
                         if (j < _mucusByCircle[i].Count)
                         {
                             GameObject obj = _mucusByCircle[i][j];
-                            if (obj != null)
+                            if (obj != null && !obj.activeSelf)
                             {
-                                if (!obj.activeSelf)
+                                if (obj.TryGetComponent<ObjectHealth>(out ObjectHealth objectHealth))
                                 {
-                                    if (obj.TryGetComponent<ObjectHealth>(out ObjectHealth objectHealth))
-                                    {
-                                        CmdSetCurrentHealth(objectHealth);
-                                        obj.SetActive(true);
-                                        CmdStartCustomRegeneration(objectHealth);
-                                    }
+                                    CmdSetCurrentHealth(objectHealth);
+                                    obj.SetActive(true);
+                                    CmdStartCustomRegeneration(objectHealth);
                                 }
                             }
                         }
@@ -151,6 +135,8 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
                     }
                 }
             }
+
+            AreaInfo.Radius = _currentCircleIndex;
 
             if (isNewCircleStarted && isServer)
             {
@@ -172,6 +158,20 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
                     if (!_mucusByCircle[circleIndex].Contains(mucus.gameObject)) _mucusByCircle[circleIndex].Add(mucus.gameObject);
                 }
             }
+
+            yield return new WaitForSeconds(TickRate);
+
+            if (!_infinite)
+            {
+                _timer += TickRate;
+                _remaining--;
+
+                if (_remaining <= 0)
+                {
+                    CleanupAllMucus();
+                    yield break;
+                }
+            }
         }
     }
 
@@ -187,7 +187,6 @@ public class MucusAutoGrowth : Skill, IPassiveSkill
         {
             if (_spawnRoutine == null) _spawnRoutine = StartCoroutine(ApplyMucusPeriodically());
         }
-
         else StopSpawnRoutine();
     }
 

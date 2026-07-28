@@ -42,13 +42,13 @@ public class HealingSlime : RefreshingState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character caster, string skillName)
     {
-        currentStacksCount = 0;
+        currentStacksCount = 1;
         characterState = character;
         health = character.Character.Health;
 
         SwitchToInfinite();
-
-        Stack(1);
+        
+        UpdateAttributeModifiers();
     }
 
     public override void UpdateState()
@@ -77,9 +77,9 @@ public class HealingSlime : RefreshingState
         if (currentStacksCount < MaxStacksCount)
         {
             currentStacksCount++;
+            UpdateAttributeModifiers();
         }
 
-        UpdateAttributeModifiers();
 
         if (!_infinite) SwitchToInfinite();
 
@@ -89,7 +89,8 @@ public class HealingSlime : RefreshingState
     private void UpdateAttributeModifiers()
     {
         if (health == null) return;
-
+        if(characterState.isClient) return;
+        
         RemoveModifiers();
 
         if (currentStacksCount <= 0) return;
@@ -100,7 +101,6 @@ public class HealingSlime : RefreshingState
         _maxHealthModifier.Source = this;
         _regenModifier.Value = totalPercent;
         _regenModifier.Source = this;
-
         health.AddModifier(ResourceAttributeName.MaxValue, _maxHealthModifier);
         health.AddModifier(ResourceAttributeName.Regen, _regenModifier);
     }
@@ -108,7 +108,7 @@ public class HealingSlime : RefreshingState
     private void RemoveModifiers()
     {
         if (health == null) return;
-
+        if(characterState.isClient) return;
         health.RemoveModifierBySource(ResourceAttributeName.MaxValue, this);
         health.RemoveModifierBySource(ResourceAttributeName.Regen, this);
     }

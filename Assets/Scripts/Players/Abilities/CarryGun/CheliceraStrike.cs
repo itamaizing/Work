@@ -25,6 +25,8 @@ public class CheliceraStrike : Skill
     [Header("Damage")]
     [SerializeField] private float _minDamage = 11f;
     [SerializeField] private float _maxDamage = 16f;
+    
+    public bool IsTriggeredByJump { get; set; }
 
     #region Constants
 
@@ -136,7 +138,12 @@ public class CheliceraStrike : Skill
         JumpBackComboContext.LastSkill = typeof(CheliceraStrike);
         JumpBackComboContext.LastTime = Time.time;
 
-        BleedingComboContext.Set(typeof(CheliceraStrike));
+        if (!IsTriggeredByJump)
+        {
+            BleedingComboContext.Set(typeof(CheliceraStrike));
+        }
+        
+        IsTriggeredByJump = false;
 
         yield return null;
     }

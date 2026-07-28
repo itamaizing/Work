@@ -31,7 +31,8 @@ public class TentacleProjectile : NetworkBehaviour
     private bool _isAttractionTentacle;
     private bool _isSpawnSpike;
     private float _spentAttackingPsiEnergy;
-
+    
+    private float _remainingLifeTime;
     private float _radius = 4f;
     private bool _radiusView;
     private bool _isCollidedWithOtherCharacter = false;
@@ -40,6 +41,7 @@ public class TentacleProjectile : NetworkBehaviour
     private bool _isPsionicsTalentThree = false;
 
     private Coroutine _radiusUpdateCoroutine;
+    private Coroutine _lifeTimeCoroutine;
 
     private Skill _skill;
 
@@ -81,7 +83,6 @@ public class TentacleProjectile : NetworkBehaviour
         _isAttackingPsiEnergyActive = isAttackingPsiEnergyActive;
         _isAttractionTentacleActive = isAttractionTentacleTalent;
         _spentAttackingPsiEnergy = currentDamage;
-        _isPsionicsTalentThree =
         _skill = skill;
         _isSpawnSpike = isSpawnSpike;
 
@@ -89,7 +90,33 @@ public class TentacleProjectile : NetworkBehaviour
 
         _maxPullDistance = Vector3.Distance(endPosition, target.transform.position);
 
-        Invoke(nameof(ReleaseTarget), lifeTentacle);
+        _remainingLifeTime = lifeTentacle;
+        if (!isClient)
+        {
+            _lifeTimeCoroutine = StartCoroutine(LifeTimeRoutine());
+        }
+    }
+    
+    private IEnumerator LifeTimeRoutine()
+    {
+        while (_remainingLifeTime > 0f)
+        {
+            _remainingLifeTime -= Time.deltaTime;
+            yield return null;
+        }
+
+        ReleaseTarget();
+        RpcReleaseTarget();
+    }
+    
+    [Server]
+    public void ExtendLifeTime(float damage)
+    {
+        if (damage <= 0) return;
+
+        float addTime = lifeTentacle * 0.01f * damage;
+
+        _remainingLifeTime += addTime;
     }
 
     private IEnumerator DrawAndPullTarget()
@@ -164,11 +191,7 @@ public class TentacleProjectile : NetworkBehaviour
 
         NetworkServer.Spawn(spike.gameObject);
     }
-
-    public void SetRadiusColor(Color color)
-    {
-        _drawCircle?.SetColor(color);
-    }
+    
     private IEnumerator PullTarget()
     {
         if (_target == null || tentaclePoint == null) yield break;
@@ -245,6 +268,12 @@ public class TentacleProjectile : NetworkBehaviour
                 if (_isPsionicsTalentThree) ApplyLowVoltageDebuff(attackingPsiValue);
             }
         }
+    }
+
+    [ClientRpc]
+    private void RpcReleaseTarget()
+    {
+        ReleaseTarget();
     }
 
     private void ReleaseTarget()
