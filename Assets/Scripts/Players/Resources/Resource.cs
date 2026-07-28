@@ -196,12 +196,16 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         return (baseValue + flatBonus) * multiplier;
     }
 
-    public void OnMaxAttributeChange(string name, float value)
+    public virtual void OnMaxAttributeChange(string name, float value)
     {
         //Debug.Log("OnMaxChanged: " + value);
-        MaxValue = value;
-        if (CurrentValue > MaxValue)
-            CurrentValue = MaxValue;
+        float ratio = 0;
+        if (MaxValue > 0)
+        {
+            ratio = (CurrentValue / MaxValue);
+        }
+        MaxValue = _attr_maxValue.GetValue();
+        CurrentValue = ratio * MaxValue;
     }
     
     public virtual void Add(float value)
@@ -209,9 +213,9 @@ public abstract class Resource : NetworkBehaviour, IAttribute
         //Debug.Log($"Try regen {value}, period{_attr_regenPeriod.GetValue()}" );
 
         if (_maxValue >= _currentValue + value)
-            _currentValue += value;
+            CurrentValue += value;
         else
-            _currentValue = _maxValue;
+            CurrentValue = _maxValue;
     }
 
     public virtual bool TryUse(float value)
@@ -325,19 +329,13 @@ public abstract class Resource : NetworkBehaviour, IAttribute
                 continue;
             }
 
-            if (_attr_regenValue.GetValue() <= 0)
+            if (_currentValue < _maxValue || RegenerationValue < 0)
             {
-                yield return null;
-                continue;
-            }
+                yield return new WaitForSeconds(RegenerationDelay);
 
-            if (_currentValue < _maxValue)
-            {
-                yield return new WaitForSeconds(_regenerationDelay);
-
-                while (_currentValue < _maxValue)
+                while (_currentValue < _maxValue || RegenerationValue < 0)
                 {
-                    Add(_attr_regenValue.GetValue());
+                    Add(RegenerationValue);
                     yield return new WaitForSeconds(RegenerationPeriod);
                 }
             }
