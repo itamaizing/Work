@@ -65,6 +65,8 @@ public class DoubleCheliceraStrike : Skill
 
         cooldownEnergy.CastCooldownEnergySkill(cooldownEnergyCost, this);
 
+        ComboContext.ClawStrikeContext.Set(typeof(DoubleCheliceraStrike));
+        
         yield return null;
     }
 

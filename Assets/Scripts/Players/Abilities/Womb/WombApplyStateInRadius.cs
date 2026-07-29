@@ -18,6 +18,8 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
     private Coroutine _mainRoutine;
     private Coroutine _radiusRoutine;
 
+    private const float StackInterval = 1f;
+    
     private bool _isWombSpreadsParasites = false;
 
     private void Start()
@@ -91,7 +93,7 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
 
                 if (_inZoneCharacters.Add(target))
                 {
-                    AddHealingSlime(target);
+                    HandleZoneEntry(target);
 
                     var slimeRoutine = StartCoroutine(ApplyHealingSlimeRoutine(target));
                     _slimeCoroutines[target] = slimeRoutine;
@@ -115,6 +117,23 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
             yield return wait;
         }
     }
+    
+    private void HandleZoneEntry(Character character)
+    {
+        if (!character.TryGetComponent(out CharacterState state)) return;
+
+        if (state.GetState(States.HealingSlime) is HealingSlime existingSlime)
+        {
+            existingSlime.SwitchToInfinite();
+            CmdSwitchSlimeToInfinite(state);
+            return;
+        }
+
+        state.CmdAddState(States.HealingSlime, 9999f, 0f, gameObject, name);
+
+        if (state.GetState(States.HealingSlime) is HealingSlime newSlime)
+            newSlime.NextStackDueTime = Time.time + StackInterval;
+    }
 
     private IEnumerator ApplyParasitesRoutine(Character character)
     {
@@ -130,17 +149,26 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
 
     private IEnumerator ApplyHealingSlimeRoutine(Character character)
     {
-        WaitForSeconds wait = new(1f);
+        if (!character.TryGetComponent(out CharacterState state)) yield break;
+
+        float initialWait = StackInterval;
+        if (state.GetState(States.HealingSlime) is HealingSlime existingSlime && existingSlime.NextStackDueTime > Time.time)
+        {
+            initialWait = existingSlime.NextStackDueTime - Time.time;
+        }
+
+        if (initialWait > 0f) yield return new WaitForSeconds(initialWait);
+
+        WaitForSeconds wait = new(StackInterval);
 
         while (_inZoneCharacters.Contains(character))
         {
-            if (character.TryGetComponent(out CharacterState state))
+            if (character.TryGetComponent(out CharacterState st) && st.GetState(States.HealingSlime) is HealingSlime slime)
             {
-                if (state.GetState(States.HealingSlime) is HealingSlime slime)
-                {
-                    if (slime.CurrentStacksCount < slime.MaxStacksCount)
-                        state.CmdAddState(States.HealingSlime, 9999f, 0f, gameObject, name);
-                }
+                if (slime.CurrentStacksCount < slime.MaxStacksCount)
+                    st.CmdAddState(States.HealingSlime, 9999f, 0f, gameObject, name);
+
+                slime.NextStackDueTime = Time.time + StackInterval;
             }
 
             yield return wait;
@@ -192,6 +220,13 @@ public class WombApplyStateInRadius : Skill, IPassiveSkill
     {
         if (state.GetState(States.HealingSlime) is HealingSlime healingSlime)
             healingSlime.SwitchToFinite();
+    }
+    
+    [Command]
+    private void CmdSwitchSlimeToInfinite(CharacterState state)
+    {
+        if (state.GetState(States.HealingSlime) is HealingSlime healingSlime)
+            healingSlime.SwitchToInfinite();
     }
 
     private void ClearAllStates()

@@ -134,14 +134,16 @@ public class CheliceraStrike : Skill
 
         Character currentTarget = Targeting.GetTarget()?.Targetable as Character;
 
-        JumpBackComboContext.LastTarget = currentTarget;
-        JumpBackComboContext.LastSkill = typeof(CheliceraStrike);
-        JumpBackComboContext.LastTime = Time.time;
+        ComboContext.JumpBack.LastTarget = currentTarget;
+        ComboContext.JumpBack.LastSkill = typeof(CheliceraStrike);
+        ComboContext.JumpBack.LastTime = Time.time;
 
         if (!IsTriggeredByJump)
         {
-            BleedingComboContext.Set(typeof(CheliceraStrike));
+            ComboContext.Bleeding.Set(typeof(CheliceraStrike));
         }
+        
+        ComboContext.ClawStrikeContext.Set(typeof(CheliceraStrike));
         
         IsTriggeredByJump = false;
 

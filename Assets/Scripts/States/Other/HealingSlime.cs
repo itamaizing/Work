@@ -11,6 +11,8 @@ public class HealingSlime : RefreshingState
     private readonly List<StatusEffect> _effects = new() { StatusEffect.Healing };
 
     private const float PercentPerStack = 0.01f;
+    
+    public float NextStackDueTime { get; set; } = -1f;
 
     private float _timer;
     private float _remaining;
@@ -44,11 +46,19 @@ public class HealingSlime : RefreshingState
     {
         currentStacksCount = 1;
         characterState = character;
-        health = character.Character.Health;
 
         SwitchToInfinite();
         
-        UpdateAttributeModifiers();
+        _maxHealthModifier.Source = this;
+        _regenModifier.Source = this;
+
+        if (health != null)
+        {
+            health.AddModifier(ResourceAttributeName.MaxValue, _maxHealthModifier);
+            health.AddModifier(ResourceAttributeName.Regen, _regenModifier);
+        }
+        
+        UpdateAttributeValues(currentStacksCount);
     }
 
     public override void UpdateState()
@@ -63,61 +73,50 @@ public class HealingSlime : RefreshingState
             if (currentStacksCount > 0)
             {
                 currentStacksCount--;
-                UpdateAttributeModifiers();
+
                 characterState.StateIcons.RemoveIconCount();
             }
 
+            UpdateAttributeValues(currentStacksCount);
+            
             _remaining -= 1f;
             if (_remaining <= 0f || currentStacksCount <= 0) ExitState();
         }
     }
-
+    
     public override bool Stack(float _)
     {
         if (currentStacksCount < MaxStacksCount)
         {
             currentStacksCount++;
-            UpdateAttributeModifiers();
-        }
 
+        }
+        UpdateAttributeValues(currentStacksCount);
 
         if (!_infinite) SwitchToInfinite();
 
         return true;
     }
-    
-    private void UpdateAttributeModifiers()
+
+    private void UpdateAttributeValues(int stacks)
     {
-        if (health == null) return;
-        if(characterState.isClient) return;
-        
-        RemoveModifiers();
+        float newValue = PercentPerStack * stacks;
 
-        if (currentStacksCount <= 0) return;
-
-        float totalPercent = currentStacksCount * PercentPerStack;
-        
-        _maxHealthModifier.Value = totalPercent;
-        _maxHealthModifier.Source = this;
-        _regenModifier.Value = totalPercent;
-        _regenModifier.Source = this;
-        health.AddModifier(ResourceAttributeName.MaxValue, _maxHealthModifier);
-        health.AddModifier(ResourceAttributeName.Regen, _regenModifier);
-    }
-
-    private void RemoveModifiers()
-    {
-        if (health == null) return;
-        if(characterState.isClient) return;
-        health.RemoveModifierBySource(ResourceAttributeName.MaxValue, this);
-        health.RemoveModifierBySource(ResourceAttributeName.Regen, this);
+        _maxHealthModifier.Value = newValue;
+        _regenModifier.Value = newValue;
     }
 
     public override void ExitState()
     {
         currentStacksCount = 0;
         _infinite = false;
-        RemoveModifiers();
+
+        if (health != null && !characterState.isClient)
+        {
+            health.RemoveModifierBySource(ResourceAttributeName.MaxValue, this);
+            health.RemoveModifierBySource(ResourceAttributeName.Regen, this);
+        }
+
         characterState.RemoveState(this);
     }
     

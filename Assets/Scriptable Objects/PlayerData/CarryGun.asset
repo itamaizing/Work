@@ -49,7 +49,22 @@ MonoBehaviour:
     - nameToShow: RegenInterval
       type: 3
       value: 0.5
-  _extraResources: []
+  _extraResources:
+  - nameToShow: Psionic
+    type: 4
+    attributes:
+    - nameToShow: MaxValue
+      type: 0
+      value: 555
+    - nameToShow: Regen
+      type: 1
+      value: 0
+    - nameToShow: RegenDelay
+      type: 2
+      value: 0
+    - nameToShow: RegenPeriod
+      type: 3
+      value: 0
   _attributes:
     _attributes:
     - nameToShow: ResistancePhysical

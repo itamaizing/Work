@@ -130,7 +130,9 @@ public class JumpWithChelicera : Skill
         _isCheliceraStrikeCast = true;
         _clawStrike.DurationChanceApplyBleedingWithJump();
 
-        BleedingComboContext.Set(typeof(JumpWithChelicera));
+        ComboContext.Bleeding.Set(typeof(JumpWithChelicera));
+        
+        ComboContext.ClawStrikeContext.Set(typeof(JumpWithChelicera));
 
         if (target is Character character)
         {

@@ -26,7 +26,7 @@ public class ClawStrike : Skill
     #region Constants
 
     private const float AnimationSpeedDefault = 1f;
-    private const float AnimationSpeedFast = 1.4f;
+    private const float SpeedBonusMultiplier = 1.4f;
 
     private const float RandomChanceMin = 0f;
     private const float RandomChanceMax = 1f;
@@ -44,7 +44,6 @@ public class ClawStrike : Skill
     #endregion
 
     private bool _isDurationChanceApplyBleedingWithJump = false;
-    private bool _isAnimationAcceleration = false;
     private bool _isLastClawStrike;
     private float _spentAttackingPsiEnergy;
     private float _baseDamage;
@@ -58,6 +57,7 @@ public class ClawStrike : Skill
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("ClawStrikeTrigger");
     protected override bool IsCanCast => CheckIsCanCast();
+    private AttributeModifier _speedBonusModifier;
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     public float CastWindowDuration { get => _castWindowDuration; set => _castWindowDuration = value; }
@@ -88,9 +88,12 @@ public class ClawStrike : Skill
     private bool _isBleedingClawStrike = false;
     private bool _isChanceApplyBleedingIncrease = false;
 
+    private bool _isClawStrikeComboTalentActive = false;
+    private bool _wasCurrentCastBoosted;
+
     public void ClawStrikeSpeed(bool value)
     {
-        _isAnimationAcceleration = value;
+        _isClawStrikeComboTalentActive = value;
     }
 
     public void BleedingClawStrike(bool value) => _isBleedingClawStrike = value;
@@ -112,11 +115,13 @@ public class ClawStrike : Skill
 
         DamageDeal(currentTarget);
 
-        JumpBackComboContext.LastTarget = currentTarget;
-        JumpBackComboContext.LastSkill = typeof(ClawStrike);
-        JumpBackComboContext.LastTime = Time.time;
+        ComboContext.JumpBack.LastTarget = currentTarget;
+        ComboContext.JumpBack.LastSkill = typeof(ClawStrike);
+        ComboContext.JumpBack.LastTime = Time.time;
 
-        BleedingComboContext.Set(typeof(ClawStrike));
+        ComboContext.Bleeding.Set(typeof(ClawStrike));
+
+        ComboContext.ClawStrikeContext.Set(typeof(ClawStrike), _wasCurrentCastBoosted);
 
         yield return null;
     }
@@ -168,18 +173,18 @@ public class ClawStrike : Skill
         if (_jumpBack == null) return;
         if (currentTarget == null) return;
 
-        if (JumpBackComboContext.LastTarget != currentTarget)
+        if (ComboContext.JumpBack.LastTarget != currentTarget)
         {
-            JumpBackComboContext.Reset();
+            ComboContext.JumpBack.Reset();
             return;
         }
 
         bool validPrevious =
-            JumpBackComboContext.LastSkill == typeof(ClawStrike) ||
-            JumpBackComboContext.LastSkill == typeof(CheliceraStrike);
+            ComboContext.JumpBack.LastSkill == typeof(ClawStrike) ||
+            ComboContext.JumpBack.LastSkill == typeof(CheliceraStrike);
 
         bool inWindow =
-            Time.time - JumpBackComboContext.LastTime <= JumpBackWindow;
+            Time.time - ComboContext.JumpBack.LastTime <= JumpBackWindow;
 
         if (validPrevious && inWindow)
         {
@@ -187,7 +192,7 @@ public class ClawStrike : Skill
         }
         else
         {
-            JumpBackComboContext.Reset();
+            ComboContext.JumpBack.Reset();
         }
     }
     
@@ -197,7 +202,7 @@ public class ClawStrike : Skill
 
         _totalChanceApplyBleeding = _chanceApplyBleeding;
 
-        Type lastSkill = BleedingComboContext.IsRecent ? BleedingComboContext.LastSkill : null;
+        Type lastSkill = ComboContext.Bleeding.IsRecent ? ComboContext.Bleeding.LastSkill : null;
 
         if (lastSkill == typeof(CheliceraStrike)) _totalChanceApplyBleeding += CheliceraBonusChance;
         if (lastSkill == typeof(JumpWithChelicera)) _totalChanceApplyBleeding += JumpWithCheliceraBonusChance;
@@ -219,31 +224,32 @@ public class ClawStrike : Skill
         if (coroutineDurationChanceApplyBleedingWithJump != null) StopCoroutine(coroutineDurationChanceApplyBleedingWithJump);
     }
 
+    protected override void PlayCastAnim()
+    {
+        RemoveSpeedModifier();
+
+        _wasCurrentCastBoosted = _isClawStrikeComboTalentActive && ComboContext.ClawStrikeContext.IsValidPreviousSkill();
+
+        if (_wasCurrentCastBoosted)
+        {
+            _speedBonusModifier = new AttributeModifier(SpeedBonusMultiplier, ModifierType.Multiplier, this);
+            _hero.AttributeSystem[CharacterAttributeName.CastSpeedPhysical].AddModifier(_speedBonusModifier);
+        }
+
+        
+        float currentCastSpeed = GetCastSpeed();
+        _player.Animator.SetFloat(HashAnimPlayer.CastSpeed, currentCastSpeed);
+
+        _hero.Animator.SetTrigger(AnimTriggerCast);
+        _hero.NetworkAnimator.SetTrigger(AnimTriggerCast);
+    }
+
     public void ClawStrikePreparingForAnim()
     {
-        var lastSkill = _player.Abilities.LastCastedSkill;
-        float multiplier;
-        if (_isAnimationAcceleration)
-        {
-            if ((lastSkill is ClawStrike && _isLastClawStrike) || lastSkill is CheliceraStrike)
-            {
-                multiplier = GetCastSpeed() * AnimationSpeedFast;
-                _isLastClawStrike = false;
-            }
-            else
-            {
-                multiplier = GetCastSpeed();
-                _isLastClawStrike = lastSkill is ClawStrike;
-            }
-        }
+        if (_attackingPsionicEnergy.IsAttackingPsiEnergy && _attackingPsionicEnergy.CurrentValue > 0f)
+            TrySpendAttackingPsi();
         else
-            multiplier = AnimationSpeedDefault;
-
-        Debug.Log($"Setting ClawStrike Speed {multiplier}");
-        Hero.Animator.SetFloat("ClawStrikeSpeed", multiplier);
-
-        if (_attackingPsionicEnergy.IsAttackingPsiEnergy && _attackingPsionicEnergy.CurrentValue > 0f) TrySpendAttackingPsi();
-        else _spentAttackingPsiEnergy = 0;
+            _spentAttackingPsiEnergy = 0;
     }
 
     public void ClawStrikeCast()
@@ -254,6 +260,15 @@ public class ClawStrike : Skill
     public void ClawStrikeEnded()
     {
         AnimCastEnded();
+    }
+    
+    private void RemoveSpeedModifier()
+    {
+        if (_speedBonusModifier != null)
+        {
+            _hero.AttributeSystem[CharacterAttributeName.CastSpeedPhysical].RemoveModifier(_speedBonusModifier);
+            _speedBonusModifier = null;
+        }
     }
 
     private void HandleSkillCanceled()
@@ -311,6 +326,7 @@ public class ClawStrike : Skill
     }
     protected override void ClearData()
     {
+        RemoveSpeedModifier();
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();
         if (coroutineDurationChanceApplyBleedingWithJump != null) StopCoroutine(IDurationChanceApplyBleedingWithJump());
