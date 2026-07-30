@@ -9,6 +9,6 @@ public class SwarmTalent_5 : Talent
 
     public override void Exit()
     {
-        character.Abilities.GetSkill<Tentacles>().ExtendDurationOnDamageTalent(true);
+        character.Abilities.GetSkill<Tentacles>().ExtendDurationOnDamageTalent(false);
     }
 }

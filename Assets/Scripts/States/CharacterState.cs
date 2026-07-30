@@ -891,6 +891,38 @@ public class CharacterState : NetworkBehaviour
 			_stateIcons.RemoveItemByState(state.State);
 		}
 	}
+	
+	public void DispelStates(StateType type, int targetTeamIndex, int playerTeamIndex, int maxStatesToDispel)
+	{
+		if (_currentStates.Count == 0 || maxStatesToDispel <= 0) return;
+
+		List<AbstractCharacterState> statesToRemove = new List<AbstractCharacterState>();
+
+		for (int i = _currentStates.Count - 1; i >= 0 && statesToRemove.Count < maxStatesToDispel; i--)
+		{
+			AbstractCharacterState state = _currentStates[i];
+
+			if (state.Type == type &&
+			    ((targetTeamIndex == playerTeamIndex && state.BaffDebaff == BaffDebaff.Debaff) ||
+			     (targetTeamIndex != playerTeamIndex && state.BaffDebaff == BaffDebaff.Baff)))
+			{
+				if (state.CurrentStacksCount > 1)
+				{
+					ClientRpcRemoveIconCount();
+				}
+				else
+				{
+					statesToRemove.Add(state);
+				}
+			}
+		}
+
+		foreach (var state in statesToRemove)
+		{
+			RemoveState(state.State);
+			_stateIcons.RemoveItemByState(state.State);
+		}
+	}
 
 	public void DispelStatesStack(StateType type, BaffDebaff buffDebaff, int howMuchToDispel, out int dispelled)
 	{

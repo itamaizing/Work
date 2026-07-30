@@ -153,12 +153,13 @@ public class ClawStrike : Skill
         if (_spentAttackingPsiEnergy > 0 && targetCharacter != null)
         {
             float psi = _spentAttackingPsiEnergy;
-
             var psiMagicDamage = new Damage
             {
                 Value = psi,
                 Type = DamageType.Magical,
                 PhysicAttackType = AttackRangeType.MeleeAttack,
+                School = Schools.Air,
+                Form = AbilityForm.Magic,
             };
 
             CmdApplyDamage(psiMagicDamage, targetCharacter.gameObject);
@@ -309,7 +310,7 @@ public class ClawStrike : Skill
     [Command]
     private void CmdAddBleeding(Character target)
     {
-        target.CharacterState.AddState(States.Bleeding, _durationBleeding, 0, _player.gameObject, null);
+        target.CharacterState.AddState(States.Bleeding, _durationBleeding, 0.03f, _player.gameObject, "percentDamageNoReducing");
     }
 
     [Command]
@@ -320,9 +321,9 @@ public class ClawStrike : Skill
 
 
     [Command]
-    private void CmdDispel(Character targetCharacter, float dispelCount)
+    private void CmdDispel(Character targetCharacter, int dispelCount)
     {
-        targetCharacter.CharacterState.DispelStates(StateType.Magic, targetCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, dispelCount > 0);
+        targetCharacter.CharacterState.DispelStates(StateType.Magic, targetCharacter.NetworkSettings.TeamIndex, _player.NetworkSettings.TeamIndex, dispelCount);
     }
     protected override void ClearData()
     {

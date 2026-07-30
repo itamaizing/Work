@@ -22,7 +22,7 @@ public class JumpWithChelicera : Skill
     private const float JumpEndTransitionDuration = 0.15f;
 
     private const float StopDistanceExtra = 0.5f;
-    private const float PsiStepDistance = 0.1f;
+    private const float PsiStepDistance = 1f;
 
     private const float JumpSpeedDivider = 10f;
 

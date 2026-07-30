@@ -32,18 +32,21 @@ public class SwarmCapacity : Skill, IPassiveSkill, ICounterSkill
 
             _isAddCounter = value;
 
-            if (_isAddCounter) _baseCounter += 1;
+            if (_isAddCounter)
+            {
+                MaxCounter += 1;
+            }
             else
             {
-                _baseCounter -= 1;
-
-                if (_baseCounter < MaxCounter) _baseCounter = MaxCounter;
+                MaxCounter -= 1;
             }
+            _baseCounter = MaxCounter;
+
+            UpdateCounter();
         }
     }
 
     public void BoostSpeedSwarmDamage(bool value) => _isBoostSpeedSwarmDamage = value;
-    public void AddCounter(bool value) => _isAddCounter = value;
 
     #endregion
 

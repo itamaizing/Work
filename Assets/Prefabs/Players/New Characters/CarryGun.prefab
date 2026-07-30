@@ -23553,6 +23553,7 @@ MonoBehaviour:
   _attackingPsionicEnergy: {fileID: 1487487552333656207}
   basePsionicsSlider: {fileID: 8327061482150587068}
   psionicEnergySkill: {fileID: 2069191703388085909}
+  _psionicaDecayTime: 12
 --- !u!114 &1487487552333656207
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23778,6 +23779,7 @@ MonoBehaviour:
     _prepareTriggers: []
     _castTriggers: []
   cooldownEnergy: {fileID: 5998867522025010555}
+  basePsionicEnergy: {fileID: 369466722820063190}
   jumpDistance: 1.2
   jumpWindow: 1
   cooldownEnergyCost: 4
@@ -23988,7 +23990,7 @@ MonoBehaviour:
     _isDynamicRenderer: 0
   _disactive: 0
   _earlyCooldown: 0
-  maxCounter: 10
+  maxCounter: 1
   _tags:
     skillType: 0
     effect: 0

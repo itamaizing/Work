@@ -37,7 +37,7 @@ public class Conversion : Skill
         }
 
         var lastSkill = Hero.Abilities.LastCastedSkill;
-        if (lastSkill.Info.AutoAttack == AutoAttack.autoAttack) lastSkill.TryPreparing();
+        //if (lastSkill.Info.AutoAttack == AutoAttack.autoAttack) lastSkill.TryPreparing();
 
         yield break;
     }
@@ -45,9 +45,10 @@ public class Conversion : Skill
     [Command]
     private void CmdConvertEnergy()
     {
-        _psionicEnergy.ConvertToAttackingEnergy(_attackingPsionicEnergy.MaxAttackingPsiEnergy);
-        RpcConvertEnergy();
-    }
+        float availableCapacity = Mathf.Max(0f,
+            _attackingPsionicEnergy.MaxAttackingPsiEnergy - _attackingPsionicEnergy.CurrentValue);
 
-    private void RpcConvertEnergy() => _attackingPsionicEnergy.IsAttackingPsiEnergy = true;
+        _psionicEnergy.ConvertToAttackingEnergy(availableCapacity);
+        _attackingPsionicEnergy.IsAttackingPsiEnergy = true;
+    }
 }

@@ -10,21 +10,22 @@ public class BasePsionicEnergy : Resource, IDamageable
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
     [SerializeField] private Slider basePsionicsSlider;
     [SerializeField] private PsionicEnergySkill psionicEnergySkill;
+    [SerializeField] private float _psionicaDecayTime = 12f;
 
     private const float BasePsionicaThreshold = 30f;
     private const float BaseSliderFillPercent = 0.3f;
     private const float RemainingSliderFillPercent = 0.7f;
-    private const float DamageToPsiConversionRate = 0.1f;
+    private const float DamageToPsiConversionRate = 0.2f;
     private const float DistanceStep = 1f;
-    private const float PsiPercentPerStep = 0.01f;
-
-    private float _psionicaDecayTime;
+    private const float PsiPerMeter = 1f;
+    
     private Vector3 _lastPosition;
     private float _distanceAccumulator;
     private bool _isInternalPsiEnergy = false;
     private bool _isAccumulationPsionicRunning = false;
     private bool _isTakesAnyDamage = false;
     private Coroutine _energyDecayCoroutine;
+    private bool _isInitialized = false;
 
     private float MaxPsi => _player.Health.MaxValue;
     public bool IsAttackingPsiEnergyActive => _attackingPsionicEnergy.IsAttackingPsiEnergy;
@@ -38,7 +39,23 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     private void Start()
     {
-        _psionicaDecayTime = psionicEnergySkill.Cooldown.CooldownTime;
+        InitializePsionicResource();
+    }
+
+    private void InitializePsionicResource()
+    {
+        if (_isInitialized) return;
+        if (_player == null || _player.Health == null) return;
+
+        _maxValue = _player.Health.MaxValue;
+        CurrentValue = 0f;
+
+        if (!_player.Health.Shields.Contains(this))
+            _player.Health.Shields.Add(this);
+
+        UpdatePsionicaBar();
+
+        _isInitialized = true;
     }
 
     public override void Initialize(Attribute maxValue, Attribute regenValue, CharacterData data)
@@ -62,8 +79,19 @@ public class BasePsionicEnergy : Resource, IDamageable
         if (_player != null)
         {
             _maxValue = _player.AttributeSystem.HPMax.GetValue();
-            _player.Health.Shields.Add(this);
+
+            if (!_player.Health.Shields.Contains(this))
+                _player.Health.Shields.Add(this);
         }
+
+        CurrentValue = 0f;
+
+        if (isServer)
+            RpcOnEnergyChanged(CurrentValue);
+
+        UpdatePsionicaBar();
+
+        _isInitialized = true;
     }
 
     private void Update()
@@ -78,12 +106,16 @@ public class BasePsionicEnergy : Resource, IDamageable
         {
             _player.DamageTracker.OnDamageTracked += OnDamageDealt;
         }
-        if (_player.Health != null) _player.Health.OnBeforeDamage += psionicEnergySkill.HandleIncomingDamage;
 
         if (_player.SpawnComponent != null)
         {
             _player.SpawnComponent.UnitAdded += OnMinionSpawned;
             _player.SpawnComponent.UnitRemoved += OnMinionRemoved;
+        }
+        
+        if (_player.Health != null)
+        {
+            _player.Health.MaxValueChanged += OnHealthMaxValueChanged;
         }
 
         _player.Reset += PsiEnergyDecayServer;
@@ -92,7 +124,6 @@ public class BasePsionicEnergy : Resource, IDamageable
     private void OnDisable()
     {
         if (_player != null && _player.DamageTracker != null) _player.DamageTracker.OnDamageTracked -= OnDamageDealt;
-        if (_player.Health != null) _player.Health.OnBeforeDamage -= psionicEnergySkill.HandleIncomingDamage;
 
         if (_player.SpawnComponent != null)
         {
@@ -105,7 +136,25 @@ public class BasePsionicEnergy : Resource, IDamageable
             }
         }
 
+        if (_player.Health != null)
+        {
+            _player.Health.MaxValueChanged -= OnHealthMaxValueChanged;
+        }
+
         _player.Reset -= PsiEnergyDecayServer;
+    }
+
+    private void OnHealthMaxValueChanged(float oldMax, float newMax)
+    {
+        _maxValue = newMax;
+
+        if (CurrentValue > _maxValue)
+        {
+            CurrentValue = _maxValue;
+            RpcOnEnergyChanged(CurrentValue);
+        }
+
+        UpdatePsionicaBar();
     }
 
     private void PsionicRunning()
@@ -123,7 +172,8 @@ public class BasePsionicEnergy : Resource, IDamageable
         {
             int steps = Mathf.FloorToInt(_distanceAccumulator / DistanceStep);
             _distanceAccumulator -= steps * DistanceStep;
-            float psiGain = MaxPsi * PsiPercentPerStep * steps;
+            
+            float psiGain = steps * PsiPerMeter;
             AddPsiAndRestartDecay(psiGain);
         }
 
@@ -207,6 +257,8 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     private void UpdatePsionicaBar()
     {
+        if (basePsionicsSlider == null || MaxPsi <= 0f) return;
+
         float normalizedValue = 0f;
 
         if (CurrentValue <= BasePsionicaThreshold)
@@ -296,5 +348,10 @@ public class BasePsionicEnergy : Resource, IDamageable
         if (psionicEnergySkill == null || !psionicEnergySkill.IsPsiEnergyActive) return;
 
         base.Add(value);
+    }
+    
+    protected override IEnumerator RegenerateJob()
+    {
+        yield return null;
     }
 }

@@ -281,6 +281,7 @@ public class Tentacles : Skill
                 if (_isAttractionTentacleTalent)
                 {
                     TargetData enemyTarget = Targeting.GetTargetOrPoint();
+
                     if (enemyTarget != null && enemyTarget.Type == TargetType.Object &&
                         IsValidEnemy(enemyTarget.Character))
                     {
@@ -289,6 +290,12 @@ public class Tentacles : Skill
                         targetPoint = lockedTarget.transform.position;
 
                         SetupAttractionPreview(lockedTarget);
+                        yield return _waitForSeconds;
+                        break;
+                    }
+                    else if (_isWombSpawning)
+                    {
+                        targetPoint = mousePoint;
                         yield return _waitForSeconds;
                         break;
                     }
@@ -347,9 +354,10 @@ public class Tentacles : Skill
                     _previewInstancePrefab.transform.position = potentialSpawnPoint;
                 }
 
-                if (GetMouseButton && !Cooldown.IsActive)
+                if (GetMouseButton)
                 {
-                    if (Targeting.NoObstacles(potentialSpawnPoint, targetCenter, _obstacle) && IsValidVector(potentialSpawnPoint))
+                    if (Targeting.NoObstacles(potentialSpawnPoint, targetCenter, _obstacle) &&
+                        IsValidVector(potentialSpawnPoint))
                     {
                         targetPoint = potentialSpawnPoint;
                         yield return _waitForSeconds;
@@ -371,7 +379,7 @@ public class Tentacles : Skill
 
         callbackDataSaved(targetInfo);
     }
-    
+
     private bool IsAlly(Character character)
     {
         if (character == null) return false;

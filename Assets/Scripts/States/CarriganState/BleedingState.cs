@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class BleedingState : RefreshingState
 {
-    private Character _target;
-    
     private float _baseDamage;
+    private float _percentDamage;
+    private string _skillName;
 
     private float _baseDuration;
     
@@ -21,14 +21,21 @@ public class BleedingState : RefreshingState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _target = characterState.Character;
-;
         _baseDuration = durationToExit;
-        _baseDamage = damageToExit;
+        _skillName = skillName;
+        if (_skillName == "percentDamageNoReducing")
+        {
+            _percentDamage = damageToExit;
+            _baseDamage = health.CurrentValue * _percentDamage;
+        }
+        else
+        {
+            _baseDamage = damageToExit;
+        }
 
         _timeBetweenAttack = _startTimeBetweenAttack;
 
-        _target.Health.IsDot = true;
+        health.IsDot = true;
         
         MaxStacksCount = 3;
         currentStacksCount = 1;
@@ -49,6 +56,11 @@ public class BleedingState : RefreshingState
     {
         currentStacksCount--;
 
+        if (_skillName == "percentDamageNoReducing")
+        {
+            ExitState();
+        }
+        
         if (currentStacksCount <= 0)
         {
             characterState.StateIcons.RemoveItemByState(State);
@@ -62,7 +74,7 @@ public class BleedingState : RefreshingState
 
     public override void ExitState()
     {
-        _target.Health.IsDot = false;
+        health.IsDot = false;
         characterState.RemoveState(this);
     }
 
@@ -71,23 +83,33 @@ public class BleedingState : RefreshingState
         if (currentStacksCount < 3)
         {
             currentStacksCount++;
-            duration = _baseDuration;
-            return true;
         }
-        duration = _baseDuration;
+        if (_skillName == "percentDamageNoReducing")
+        {
+            duration = _baseDuration * currentStacksCount;
+        }
+        else
+        {
+            duration = _baseDuration;
+        }
         return true;
     }
     
     private void BleedingDamage()
     {
+        if (_skillName == "percentDamageNoReducing")
+        {
+            _baseDamage = health.CurrentValue * _percentDamage;
+        }
+        
         Damage damage = new Damage()
         {
             Value = _baseDamage,
             Type = DamageType.Physical,
             DamageKey = "bleeding"
         };
-        if(_target.isServer)
-            _target.Health.TryTakeDamage(ref damage, null);
+        if(characterState.isServer)
+            health.TryTakeDamage(ref damage, null);
     }
     
     public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)

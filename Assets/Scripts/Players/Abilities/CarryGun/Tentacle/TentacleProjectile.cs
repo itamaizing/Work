@@ -26,6 +26,10 @@ public class TentacleProjectile : NetworkBehaviour
 
     private float _maxPullDistance;
 
+    private const float PsiStepDistance = 1f;
+    private float _pullPsiDistanceAccumulator;
+    private BasePsionicEnergy _casterPsiEnergy;
+
     private bool _isAttackingPsiEnergyActive;
     private bool _isAttractionTentacleActive;
     private bool _isAttractionTentacle;
@@ -85,6 +89,8 @@ public class TentacleProjectile : NetworkBehaviour
         _spentAttackingPsiEnergy = currentDamage;
         _skill = skill;
         _isSpawnSpike = isSpawnSpike;
+
+        if (_player != null) _player.TryGetComponent(out _casterPsiEnergy);
 
         transform.position = startPosition;
 
@@ -203,6 +209,8 @@ public class TentacleProjectile : NetworkBehaviour
         if (agent != null && agent.enabled) agent.enabled = false;
 
         float timer = 0f;
+        Vector3 previousPos = start;
+        _pullPsiDistanceAccumulator = 0f;
 
         if (isServer)
         {
@@ -222,6 +230,19 @@ public class TentacleProjectile : NetworkBehaviour
 
             Vector3 currentPos = Vector3.Lerp(start, end, t);
             targetTransform.position = currentPos;
+
+            if (isServer && _casterPsiEnergy != null)
+            {
+                _pullPsiDistanceAccumulator += Vector3.Distance(currentPos, previousPos);
+
+                while (_pullPsiDistanceAccumulator >= PsiStepDistance)
+                {
+                    _pullPsiDistanceAccumulator -= PsiStepDistance;
+                    _casterPsiEnergy.AddPsiAndRestartDecay(basePsi);
+                }
+            }
+
+            previousPos = currentPos;
 
             if (Vector3.Distance(currentPos, transform.position) <= _maxPullDistance)
             {

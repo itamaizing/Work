@@ -7,6 +7,7 @@ using UnityEngine;
 public class JumpBack : Skill
 {
     [SerializeField] private CooldownEnergy cooldownEnergy;
+    [SerializeField] private BasePsionicEnergy basePsionicEnergy;
     [SerializeField] private float jumpDistance = 1.2f;
     [SerializeField] private float jumpWindow = 1f;
     [SerializeField] private float cooldownEnergyCost = 4;
@@ -132,6 +133,11 @@ public class JumpBack : Skill
         float speed = 2f;
         float duration = Mathf.Max(0.01f, distance / speed);
 
+        if (basePsionicEnergy != null && distance > 0f)
+        {
+            basePsionicEnergy.AddPsiAndRestartDecay(distance);
+        }
+
         _hero.Move.TargetRpcDoMove(targetPos, duration);
         StartCoroutine(JumpBackEndServerCoroutine(duration));
     }
@@ -152,4 +158,4 @@ public class JumpBack : Skill
 
         HandleJumpBackEnd();
     }
-}
+}
