@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class BasePsionicEnergy : Resource, IDamageable
 {
-    [SerializeField] private Character _player;
+    [SerializeField] protected Character _heroCharacter;
     [SerializeField] private AttackingPsionicEnergy _attackingPsionicEnergy;
     [SerializeField] private Slider basePsionicsSlider;
     [SerializeField] private PsionicEnergySkill psionicEnergySkill;
@@ -31,7 +31,7 @@ public class BasePsionicEnergy : Resource, IDamageable
     private Coroutine _energyDecayCoroutine;
     private bool _isInitialized = false;
 
-    private float MaxPsi => _player.Health.MaxValue;
+    private float MaxPsi => _heroCharacter.Health.MaxValue;
     public bool IsAttackingPsiEnergyActive => _attackingPsionicEnergy.IsAttackingPsiEnergy;
     
     public static float PsiPerMeter => 1f;
@@ -51,13 +51,13 @@ public class BasePsionicEnergy : Resource, IDamageable
     private void InitializePsionicResource()
     {
         if (_isInitialized) return;
-        if (_player == null || _player.Health == null) return;
+        if (_heroCharacter == null || _heroCharacter.Health == null) return;
 
-        _maxValue = _player.Health.MaxValue;
+        _maxValue = _heroCharacter.Health.MaxValue;
         CurrentValue = 0f;
 
-        if (!_player.Health.Shields.Contains(this))
-            _player.Health.Shields.Add(this);
+        if (!_heroCharacter.Health.Shields.Contains(this))
+            _heroCharacter.Health.Shields.Add(this);
 
         UpdatePsionicaBar();
 
@@ -80,7 +80,7 @@ public class BasePsionicEnergy : Resource, IDamageable
     public void AccumulationPsionicRunning(bool value)
     {
         _isAccumulationPsionicRunning = value;
-        _lastPosition = _player.transform.position;
+        _lastPosition = _heroCharacter.transform.position;
         _distanceAccumulator = 0f;
     }
 
@@ -88,12 +88,12 @@ public class BasePsionicEnergy : Resource, IDamageable
     {
         base.Init(resource);
 
-        if (_player != null)
+        if (_heroCharacter != null)
         {
-            _maxValue = _player.AttributeSystem.HPMax.GetValue();
+            _maxValue = _heroCharacter.AttributeSystem.HPMax.GetValue();
 
-            if (!_player.Health.Shields.Contains(this))
-                _player.Health.Shields.Add(this);
+            if (!_heroCharacter.Health.Shields.Contains(this))
+                _heroCharacter.Health.Shields.Add(this);
         }
 
         CurrentValue = 0f;
@@ -114,46 +114,46 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     private void OnEnable()
     {
-        if (_player.DamageTracker != null)
+        if (_heroCharacter.DamageTracker != null)
         {
-            _player.DamageTracker.OnDamageTracked += OnDamageDealt;
+            _heroCharacter.DamageTracker.OnDamageTracked += OnDamageDealt;
         }
 
-        if (_player.SpawnComponent != null)
+        if (_heroCharacter.SpawnComponent != null)
         {
-            _player.SpawnComponent.UnitAdded += OnMinionSpawned;
-            _player.SpawnComponent.UnitRemoved += OnMinionRemoved;
+            _heroCharacter.SpawnComponent.UnitAdded += OnMinionSpawned;
+            _heroCharacter.SpawnComponent.UnitRemoved += OnMinionRemoved;
         }
         
-        if (_player.Health != null)
+        if (_heroCharacter.Health != null)
         {
-            _player.Health.MaxValueChanged += OnHealthMaxValueChanged;
+            _heroCharacter.Health.MaxValueChanged += OnHealthMaxValueChanged;
         }
 
-        _player.Reset += PsiEnergyDecayServer;
+        _heroCharacter.Reset += PsiEnergyDecayServer;
     }
 
     private void OnDisable()
     {
-        if (_player != null && _player.DamageTracker != null) _player.DamageTracker.OnDamageTracked -= OnDamageDealt;
+        if (_heroCharacter != null && _heroCharacter.DamageTracker != null) _heroCharacter.DamageTracker.OnDamageTracked -= OnDamageDealt;
 
-        if (_player.SpawnComponent != null)
+        if (_heroCharacter.SpawnComponent != null)
         {
-            _player.SpawnComponent.UnitAdded -= OnMinionSpawned;
-            _player.SpawnComponent.UnitRemoved -= OnMinionRemoved;
+            _heroCharacter.SpawnComponent.UnitAdded -= OnMinionSpawned;
+            _heroCharacter.SpawnComponent.UnitRemoved -= OnMinionRemoved;
 
-            foreach (var unit in _player.SpawnComponent.Units)
+            foreach (var unit in _heroCharacter.SpawnComponent.Units)
             {
                 if (unit != null && unit.DamageTracker != null) unit.DamageTracker.OnDamageTracked -= OnDamageDealt;
             }
         }
 
-        if (_player.Health != null)
+        if (_heroCharacter.Health != null)
         {
-            _player.Health.MaxValueChanged -= OnHealthMaxValueChanged;
+            _heroCharacter.Health.MaxValueChanged -= OnHealthMaxValueChanged;
         }
 
-        _player.Reset -= PsiEnergyDecayServer;
+        _heroCharacter.Reset -= PsiEnergyDecayServer;
     }
 
     private void OnHealthMaxValueChanged(float oldMax, float newMax)
@@ -180,7 +180,7 @@ public class BasePsionicEnergy : Resource, IDamageable
         if (!_isAccumulationPsionicRunning) return;
         if (!_attackingPsionicEnergy.IsAttackingPsiEnergy) return;
 
-        Vector3 currentPos = _player.transform.position;
+        Vector3 currentPos = _heroCharacter.transform.position;
         float distanceDelta = Vector3.Distance(currentPos, _lastPosition);
         if (distanceDelta <= 0.001f) return;
 
@@ -333,13 +333,13 @@ public class BasePsionicEnergy : Resource, IDamageable
         float splashDamageValue = absorbedAmount * PsiDissipationPercent;
         if (splashDamageValue <= 0f) return;
 
-        Collider[] hits = Physics.OverlapSphere(_player.transform.position, PsiDissipationRadius);
+        Collider[] hits = Physics.OverlapSphere(_heroCharacter.transform.position, PsiDissipationRadius);
 
         foreach (var hit in hits)
         {
             Character target = hit.GetComponent<Character>();
             if (target == null) continue;
-            if (target == _player) continue;
+            if (target == _heroCharacter) continue;
             if (target.IsDead) continue;
 
             Damage splashDamage = new Damage

@@ -23550,7 +23550,7 @@ MonoBehaviour:
   _regenerationDelay: 0
   _currentValue: 0
   _maxValue: 0
-  _player: {fileID: 8319872899575431858}
+  _heroCharacter: {fileID: 8319872899575431858}
   _attackingPsionicEnergy: {fileID: 1487487552333656207}
   basePsionicsSlider: {fileID: 8327061482150587068}
   psionicEnergySkill: {fileID: 2069191703388085909}
@@ -23574,7 +23574,6 @@ MonoBehaviour:
   _regenerationDelay: 0
   _currentValue: 0
   _maxValue: 0
-  _sumDamageGiven: 0
   attackingPsionicsSlider: {fileID: 3249209933658034755}
   _player: {fileID: 8319872899575431858}
 --- !u!114 &7664291950465520178

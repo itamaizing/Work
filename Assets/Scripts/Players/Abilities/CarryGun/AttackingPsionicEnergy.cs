@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AttackingPsionicEnergy : BasePsionicEnergy
+public class AttackingPsionicEnergy : Resource
 {
     [SerializeField] private Slider attackingPsionicsSlider;
     [SerializeField] private Character _player;
