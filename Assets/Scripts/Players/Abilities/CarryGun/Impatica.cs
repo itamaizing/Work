@@ -17,9 +17,6 @@ public class Impatica : Skill
             if (target == null)
                 return false;
 
-            if (!Charges.HasCharges)
-                return false;
-
             if (!IsAllyTarget(target))
                 return false;
 
@@ -31,6 +28,10 @@ public class Impatica : Skill
             return distance <= AreaInfo.Radius;
         }
     }
+    
+    public override bool IsHaveResources =>
+        IsHaveResourceOnSkill &&
+        (Charges.UsesCharges ? Charges.RemainingCharges > 0 : !Cooldown.IsActive);
 
     private bool IsAllyTarget(IDamageable target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
@@ -48,10 +49,14 @@ public class Impatica : Skill
 
     public void SecondCharge(bool value)
     {
-        //if (value) AddMaxChargeCount();
-        if (value) Charges.ModifyMax(1);
-        else Charges.ModifyMax(-1);
-        //else DeductMaxChargeCount();
+        if (value) Charges.EnableChargers(true, 2, Cooldown.CooldownTime);
+        else Charges.EnableChargers(false, 1, Cooldown.CooldownTime);
+    }
+    
+    protected override void UseCooldownOrCharges()
+    {
+        if (Charges.UsesCharges) Charges.TryUse();
+        else Cooldown.Start();
     }
 
     #endregion
@@ -68,7 +73,7 @@ public class Impatica : Skill
                 {
                     Character tempTarget = Targeting.GetTempTarget().Character;
 
-                    if (!IsAllyTarget(tempTarget) || tempTarget == Hero || Vector3.Distance(Hero.transform.position, tempTarget.transform.position) > AreaInfo.Radius)
+                    if (!IsAllyTarget(tempTarget) || tempTarget == Hero)
                     {
                         Targeting.ClearTempTarget();
                     }
@@ -84,11 +89,10 @@ public class Impatica : Skill
             yield return null;
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
+        Character selectedTarget = Targeting.GetTempTarget()?.Character;
         Targeting.ClearTempTarget();
-
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+        targetInfo.AddTarget(selectedTarget);
         callbackDataSaved(targetInfo);
     }
 
@@ -107,7 +111,6 @@ public class Impatica : Skill
     {
         Targeting.ClearTarget();
         Targeting.ClearTempTarget();
-        //_target = null;
     }
 
     [Command]

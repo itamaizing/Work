@@ -135,9 +135,9 @@ public class JumpBack : Skill
 
         if (basePsionicEnergy != null && distance > 0f)
         {
-            basePsionicEnergy.AddPsiAndRestartDecay(distance);
+            basePsionicEnergy.AddPsiByDistance(distance);
         }
-
+        
         _hero.Move.TargetRpcDoMove(targetPos, duration);
         StartCoroutine(JumpBackEndServerCoroutine(duration));
     }

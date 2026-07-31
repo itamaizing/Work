@@ -139,7 +139,7 @@ public class Health : Resource, IDamageable, IHealable
         float preShieldValue = damage.Value;
         UseShields(ref damage, skill);
         
-        if (!_isDot)
+        if (damage.Type != DamageType.DOTPhys && damage.Type != DamageType.DOTMag)
         {
             bool fullyAbsorbed = damage.Value == 0 && preShieldValue > 0;
             

@@ -197,7 +197,7 @@ public class TentacleProjectile : NetworkBehaviour
 
         NetworkServer.Spawn(spike.gameObject);
     }
-    
+
     private IEnumerator PullTarget()
     {
         if (_target == null || tentaclePoint == null) yield break;
@@ -210,7 +210,6 @@ public class TentacleProjectile : NetworkBehaviour
 
         float timer = 0f;
         Vector3 previousPos = start;
-        _pullPsiDistanceAccumulator = 0f;
 
         if (isServer)
         {
@@ -233,12 +232,10 @@ public class TentacleProjectile : NetworkBehaviour
 
             if (isServer && _casterPsiEnergy != null)
             {
-                _pullPsiDistanceAccumulator += Vector3.Distance(currentPos, previousPos);
-
-                while (_pullPsiDistanceAccumulator >= PsiStepDistance)
+                float movedDelta = Vector3.Distance(currentPos, previousPos);
+                if (movedDelta > 0.001f)
                 {
-                    _pullPsiDistanceAccumulator -= PsiStepDistance;
-                    _casterPsiEnergy.AddPsiAndRestartDecay(basePsi);
+                    _casterPsiEnergy.AddPsiByDistance(movedDelta);
                 }
             }
 

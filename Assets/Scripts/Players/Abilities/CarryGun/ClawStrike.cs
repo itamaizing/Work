@@ -217,7 +217,7 @@ public class ClawStrike : Skill
         Debug.Log($"_totalChanceApplyBleeding: {_totalChanceApplyBleeding}");
         
         float rand = UnityEngine.Random.Range(RandomChanceMin, RandomChanceMax);
-        if (rand <= _totalChanceApplyBleeding) CmdAddBleeding(target);
+        if (rand <= 100) CmdAddBleeding(target);
 
         _jumpWithChelicera.IsCheliceraStrikeCast = false;
         _isDurationChanceApplyBleedingWithJump = false;
@@ -310,7 +310,7 @@ public class ClawStrike : Skill
     [Command]
     private void CmdAddBleeding(Character target)
     {
-        target.CharacterState.AddState(States.Bleeding, _durationBleeding, 0.03f, _player.gameObject, "percentDamageNoReducing");
+        target.CharacterState.AddState(States.BleedingCarry, _durationBleeding, 0.003f, _player.gameObject, "ClawStrike");
     }
 
     [Command]

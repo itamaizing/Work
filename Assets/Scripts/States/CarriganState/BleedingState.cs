@@ -6,7 +6,6 @@ public class BleedingState : RefreshingState
 {
     private float _baseDamage;
     private float _percentDamage;
-    private string _skillName;
 
     private float _baseDuration;
     
@@ -22,21 +21,10 @@ public class BleedingState : RefreshingState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         _baseDuration = durationToExit;
-        _skillName = skillName;
-        if (_skillName == "percentDamageNoReducing")
-        {
-            _percentDamage = damageToExit;
-            _baseDamage = health.CurrentValue * _percentDamage;
-        }
-        else
-        {
-            _baseDamage = damageToExit;
-        }
+        _baseDamage = damageToExit;
 
         _timeBetweenAttack = _startTimeBetweenAttack;
 
-        health.IsDot = true;
-        
         MaxStacksCount = 3;
         currentStacksCount = 1;
     }
@@ -56,11 +44,6 @@ public class BleedingState : RefreshingState
     {
         currentStacksCount--;
 
-        if (_skillName == "percentDamageNoReducing")
-        {
-            ExitState();
-        }
-        
         if (currentStacksCount <= 0)
         {
             characterState.StateIcons.RemoveItemByState(State);
@@ -74,7 +57,6 @@ public class BleedingState : RefreshingState
 
     public override void ExitState()
     {
-        health.IsDot = false;
         characterState.RemoveState(this);
     }
 
@@ -84,28 +66,17 @@ public class BleedingState : RefreshingState
         {
             currentStacksCount++;
         }
-        if (_skillName == "percentDamageNoReducing")
-        {
-            duration = _baseDuration * currentStacksCount;
-        }
-        else
-        {
-            duration = _baseDuration;
-        }
+        duration = _baseDuration;
+        
         return true;
     }
     
     private void BleedingDamage()
     {
-        if (_skillName == "percentDamageNoReducing")
-        {
-            _baseDamage = health.CurrentValue * _percentDamage;
-        }
-        
         Damage damage = new Damage()
         {
             Value = _baseDamage,
-            Type = DamageType.Physical,
+            Type = DamageType.DOTPhys,
             DamageKey = "bleeding"
         };
         if(characterState.isServer)

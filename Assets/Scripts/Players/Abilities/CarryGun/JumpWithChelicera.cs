@@ -186,8 +186,6 @@ public class JumpWithChelicera : Skill
     private IEnumerator TrackMovementDuringJumpCoroutine(MoveComponent playerMove, uint targetNetId, float additionalDamage)
     {
         Vector3 lastPlayerPos = playerMove.transform.position;
-
-        float playerDistanceAccumulator = 0f;
         float stopDistance = _minDistance + StopDistanceExtra;
 
         Transform targetTransform = null;
@@ -203,12 +201,10 @@ public class JumpWithChelicera : Skill
         {
             Vector3 currentPlayerPos = playerMove.transform.position;
             float playerMoved = Vector3.Distance(lastPlayerPos, currentPlayerPos);
-            playerDistanceAccumulator += playerMoved;
-
-            while (playerDistanceAccumulator >= PsiStepDistance)
+            
+            if (playerMoved > 0.001f && _player != null && _player.TryGetComponent(out BasePsionicEnergy psiEnergy))
             {
-                playerDistanceAccumulator -= PsiStepDistance;
-                if (_player != null && _player.TryGetComponent(out BasePsionicEnergy psiEnergy)) psiEnergy.AddPsiAndRestartDecay(_basePsi);
+                psiEnergy.AddPsiByDistance(playerMoved);
             }
 
             lastPlayerPos = currentPlayerPos;

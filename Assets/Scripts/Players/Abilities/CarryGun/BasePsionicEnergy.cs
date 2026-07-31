@@ -17,7 +17,11 @@ public class BasePsionicEnergy : Resource, IDamageable
     private const float RemainingSliderFillPercent = 0.7f;
     private const float DamageToPsiConversionRate = 0.2f;
     private const float DistanceStep = 1f;
-    private const float PsiPerMeter = 1f;
+
+    private const float PsiDissipationPercent = 0.3f;
+    private const float PsiDissipationRadius = 3f;
+
+    private bool _isDissipatingPsi = false;
     
     private Vector3 _lastPosition;
     private float _distanceAccumulator;
@@ -29,6 +33,8 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     private float MaxPsi => _player.Health.MaxValue;
     public bool IsAttackingPsiEnergyActive => _attackingPsionicEnergy.IsAttackingPsiEnergy;
+    
+    public static float PsiPerMeter => 1f;
     
     public event Action<Damage, Skill> DamageTaken;
     public event Action<float> OnEnergyChanged;
@@ -65,6 +71,12 @@ public class BasePsionicEnergy : Resource, IDamageable
 
     public void TakesAnyDamage(bool value) => _isTakesAnyDamage = value;
     public void AccumulationPsionicChanged(bool value) => OnAccumulationPsionicChanged?.Invoke(value);
+
+    public void DissipatingPsi(bool value)
+    {
+        if(value == _isDissipatingPsi) return;
+        _isDissipatingPsi = value;
+    }
     public void AccumulationPsionicRunning(bool value)
     {
         _isAccumulationPsionicRunning = value;
@@ -156,6 +168,12 @@ public class BasePsionicEnergy : Resource, IDamageable
 
         UpdatePsionicaBar();
     }
+    
+    public void AddPsiByDistance(float distance)
+    {
+        if (distance <= 0f) return;
+        AddPsiAndRestartDecay(distance * PsiPerMeter);
+    }
 
     private void PsionicRunning()
     {
@@ -166,16 +184,7 @@ public class BasePsionicEnergy : Resource, IDamageable
         float distanceDelta = Vector3.Distance(currentPos, _lastPosition);
         if (distanceDelta <= 0.001f) return;
 
-        _distanceAccumulator += distanceDelta;
-
-        if (_distanceAccumulator >= DistanceStep)
-        {
-            int steps = Mathf.FloorToInt(_distanceAccumulator / DistanceStep);
-            _distanceAccumulator -= steps * DistanceStep;
-            
-            float psiGain = steps * PsiPerMeter;
-            AddPsiAndRestartDecay(psiGain);
-        }
+        AddPsiByDistance(distanceDelta);
 
         _lastPosition = currentPos;
     }
@@ -309,10 +318,40 @@ public class BasePsionicEnergy : Resource, IDamageable
             RpcInternalPsiEnergyChanged(_isInternalPsiEnergy);
             UpdatePsionicaBar();
 
+            if (_isDissipatingPsi) DissipatePsiDamage(absorbingDamage, skill);
+
             return true;
         }
 
         return false;
+    }
+
+    private void DissipatePsiDamage(float absorbedAmount, Skill skill)
+    {
+        if (!isServer) return;
+
+        float splashDamageValue = absorbedAmount * PsiDissipationPercent;
+        if (splashDamageValue <= 0f) return;
+
+        Collider[] hits = Physics.OverlapSphere(_player.transform.position, PsiDissipationRadius);
+
+        foreach (var hit in hits)
+        {
+            Character target = hit.GetComponent<Character>();
+            if (target == null) continue;
+            if (target == _player) continue;
+            if (target.IsDead) continue;
+
+            Damage splashDamage = new Damage
+            {
+                Value = splashDamageValue,
+                Type = DamageType.Magical,
+                School = Schools.Air,
+                Form = AbilityForm.Magic,
+            };
+
+            target.Health.TryTakeDamage(ref splashDamage, skill);
+        }
     }
 
     public void ConvertToAttackingEnergy(float amount)

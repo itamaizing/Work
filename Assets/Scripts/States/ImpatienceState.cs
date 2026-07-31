@@ -10,7 +10,6 @@ public class ImpatienceState : AbstractCharacterState
     private static bool _isProcessingSharedDamage;
 
     private bool _isAccumulationActive;
-    private bool _extendDamageAbsorption;
     private BasePsionicEnergy _casterPsionic;
     private Impatica _impatica;
 
@@ -69,7 +68,6 @@ public class ImpatienceState : AbstractCharacterState
 
     private void HandleBeforeDamage(ref Damage damage, Skill skill)
     {
-        if (!NetworkServer.active) return;
         if (_isProcessingSharedDamage) return;
         if (damage.Value <= 0) return;
 
@@ -82,7 +80,7 @@ public class ImpatienceState : AbstractCharacterState
             _casterPsionic.AddPsiAndRestartDecay(psiGain);
         }
 
-        if (_extendDamageAbsorption && _casterPsionic != null)
+        if (_impatica != null && _impatica.IsExtendDamageAbsorption && _casterPsionic != null)
         {
             if (_casterPsionic.CurrentValue > 0)
             {
@@ -121,9 +119,9 @@ public class ImpatienceState : AbstractCharacterState
                         enemiesHitCount++;
                     }
 
-                    var psionicEnergy = _casterPsionic.GetComponent<PsionicEnergySkill>();
+                    var psionicEnergy = _casterPsionic.PsionicEnergySkill;
 
-                    if (psionicEnergy.IsExtendedDuration && enemiesHitCount > 0)
+                    if (psionicEnergy != null && psionicEnergy.IsExtendedDuration && enemiesHitCount > 0)
                     {
                         float bonusTime = enemiesHitCount * 0.1f;
 
