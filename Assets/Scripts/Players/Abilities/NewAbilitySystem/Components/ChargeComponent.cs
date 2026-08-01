@@ -48,12 +48,12 @@ public class ChargeComponent : BaseSkillComponent
     public float BaseCooldown => _baseCooldown;
     public float CooldownTime => affectedByCDR ? _skillAttributes.GetCombined(skill_attr, char_attr, _baseCooldown) : _baseCooldown;
 
-    public void EnableChargers(bool value,int maxChargers,float baseCooldown)
+    public void EnableChargers(bool value,int maxChargers,float baseCooldown, bool isComboPart=false)
     {
         if (value == _usesCharges) return;
         _usesCharges = value;
-        _isComboPart = value;
-        _maxCharges = maxChargers;
+        _isComboPart = isComboPart;
+        MaxCharges = maxChargers;
         _baseCooldown = baseCooldown;
         OnCurrentChange?.Invoke(RemainingCharges);
     }
@@ -89,7 +89,7 @@ public class ChargeComponent : BaseSkillComponent
     #endregion Events
     
     #region Methods
-    public void Init(Skill skill, bool isServer)
+    public override void Init(Skill skill)
     {
         if (isInitialized)
             return;
@@ -176,7 +176,7 @@ public class ChargeComponent : BaseSkillComponent
         return true;
     }
 
-    private void StartRecharge(float rechargeTime)
+    public void StartRecharge(float rechargeTime)
     {
         _skill.CmdStartRecharge(rechargeTime);
     }

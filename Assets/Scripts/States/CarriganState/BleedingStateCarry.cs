@@ -58,8 +58,6 @@ public class BleedingStateCarry : RefreshingState
     {
         duration = Mathf.Min(duration + time, MaxDuration);
 
-        _timeBetweenAttack = _startTimeBetweenAttack;
-
         return true;
     }
 

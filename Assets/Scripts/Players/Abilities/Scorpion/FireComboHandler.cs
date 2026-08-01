@@ -42,7 +42,7 @@ public class FireComboHandler : NetworkBehaviour
     {
         foreach (var skill in _hero.Abilities.Abilities.Where(s => s.Info.School == Schools.Fire))
         {
-            skill.Charges?.EnableChargers(true, MaxCharges, ChargeCD);
+            skill.Charges?.EnableChargers(true, MaxCharges, ChargeCD, isComboPart: true);
 
             _comboCharges[skill] = MaxCharges;
             _chargeEndTimes[skill] = new List<float>();

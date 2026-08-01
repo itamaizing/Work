@@ -49,8 +49,20 @@ public class Impatica : Skill
 
     public void SecondCharge(bool value)
     {
-        if (value) Charges.EnableChargers(true, 2, Cooldown.CooldownTime);
-        else Charges.EnableChargers(false, 1, Cooldown.CooldownTime);
+        if (value)
+        {
+            Charges.EnableChargers(true, 2, Cooldown.BaseCooldownTime);
+            if (Cooldown.IsActive)
+                Charges.StartRecharge(Cooldown.RemainingTime);
+        }
+        else
+        {
+            //из-за пинга на сервере пишет 2 - Count, а на клиенте уже 0 - count
+            if (Charges.RemainingCharges <= 0 && RechargeTimers.Count > 0)
+                Cooldown.StartCustom((float)(RechargeTimers[^1] - NetworkTime.time));
+
+            Charges.EnableChargers(false, 0, Cooldown.BaseCooldownTime);
+        }
     }
     
     protected override void UseCooldownOrCharges()
