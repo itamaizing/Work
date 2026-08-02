@@ -12,7 +12,7 @@ public class ServerManager : NetworkBehaviour
 {
     private const string STARTGAME = "startGame";
     private const string HEROINDEX = "heroIndex";
-    private const string GAMEMODE = "gameMode";
+    private const string GAMEMODE = "gamemode";
     private const string USERID = "userID";
     private const string GROUPUSERS = "groupUsers";
     private const string ROOMREADY = "roomReady";
@@ -89,7 +89,8 @@ public class ServerManager : NetworkBehaviour
         {
             type = STARTGAME,
             playerId = MPNetworkManager.Instance.UserID,
-            playerIdForAddGroup = _groupManager.GetPlayerInGroup()
+            playerIdForAddGroup = _groupManager.GetPlayerInGroup(),
+            gamemode = CurrentGameMode
         };
         string json = JsonConvert.SerializeObject(startData);
 
@@ -205,6 +206,7 @@ public class ServerManager : NetworkBehaviour
             LevelCharacterManager.Instance.SetHero(hero);
         }
     }
+
     public void SetMode(GameMode mode)
     {
         _currentGameMode = mode;

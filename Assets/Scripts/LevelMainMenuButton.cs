@@ -14,11 +14,12 @@ public class LevelMainMenuButton : MonoBehaviour
 
     private void AddLevel()
     {
+        /*
         if (User.Instance == null)
         {
             Debug.LogWarning("User.Instance is null");
             return;
-        }
+        }*/
 
         Debug.Log("Add Level");
         LevelCharacterManager.Instance.AddExperience(100);

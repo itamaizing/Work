@@ -2,17 +2,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
+using Unity.VisualScripting;
 using UnityEngine;
 //using UnityEngine.SceneManagement;
 //using static UnityEditor.Progress;
+
+[Serializable]
+public class GameRule
+{
+    public GameMode GameMode;
+    public GameRules GameObjcet;
+}
 
 public class MPNetworkManager : NetworkManager
 {
     public static MPNetworkManager Instance;
 
     [SerializeField] private List<HeroComponent> _heroList;
-
-    [SerializeField] private GameRules _gameRules;
+    [SerializeField] private List<GameRule> _gameRules;
+    [SerializeField] private int _currentGameRulesIndex;
 
     private List<GameObject> _players = new List<GameObject>();
     [SerializeField] private int _userID = -37;
@@ -22,6 +30,8 @@ public class MPNetworkManager : NetworkManager
     public List<GameObject> Players => _players;
 
     public List<HeroComponent> HeroList { get => _heroList; set => _heroList = value; }
+    public int CurrentGameRulesIndex { get => _currentGameRulesIndex; set => _currentGameRulesIndex = value; }
+    public GameMode CurrentGameMode { get; set; }
 
     public event Action ConnectClosed;
     public event Action NewConnected;
@@ -105,6 +115,16 @@ public class MPNetworkManager : NetworkManager
             StartGame();
     }
 
+    private Dictionary<GameMode, GameRules> GetGameRulesAsDictionary()
+    {
+        var dict = new Dictionary<GameMode, GameRules>();
+        foreach (var rule in _gameRules)
+        {
+            dict[rule.GameMode] = rule.GameObjcet;
+        }
+        return dict;
+    }
+
     private void StartGame()
     {
         _currentGameRules.Init();
@@ -114,7 +134,8 @@ public class MPNetworkManager : NetworkManager
 
     private void CreateGameRules()
     {
-        GameObject obj = Instantiate(_gameRules.gameObject);
+        var dictionary = GetGameRulesAsDictionary();
+        GameObject obj = Instantiate(dictionary[CurrentGameMode].gameObject);
         NetworkServer.Spawn(obj);
 
         GameRules item = obj.GetComponent<GameRules>();

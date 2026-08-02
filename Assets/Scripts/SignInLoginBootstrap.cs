@@ -23,6 +23,7 @@ public class SignInLoginBootstrap : MonoBehaviour
     private int _id;
     private string _bindIP = "localhost";
     private ushort _bindPort = 7777;
+    private GameMode _gameMode;
     private bool _isDedicatedServer = false;
 
 #if UNITY_EDITOR
@@ -59,6 +60,28 @@ public class SignInLoginBootstrap : MonoBehaviour
     private void OnDisable()
     {
         _authorization.Successed -= OnSuccessed;
+    }
+
+    public void SetGameMode(string gameMode)
+    {
+        switch (gameMode)
+        {
+            case "Single":
+                _gameMode = GameMode.GMSingle;
+                break;
+
+            case "Battlegrounds":
+                _gameMode = GameMode.Battlegrounds;
+                break;
+
+            case "TestRules":
+                _gameMode = GameMode.GM1vs1MaximumMode;
+                break;
+
+            default:
+                _gameMode = GameMode.GMSingle;
+                break;
+        }
     }
 
     public void OnButtonStartServer()
@@ -139,10 +162,28 @@ public class SignInLoginBootstrap : MonoBehaviour
                 _bindIP = args[i].Substring("-ip=".Length);
                 _isDedicatedServer = true;
             }
+            else if (args[i].StartsWith("-gamemode="))
+            {
+                string modeStr = args[i].Substring("-gamemode=".Length);
+                if (int.TryParse(modeStr, out int modeValue))
+                {
+                    if (Enum.IsDefined(typeof(GameMode), modeValue))
+                    {
+                        _gameMode = (GameMode)modeValue;
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Недопустимое значение GameMode: {modeValue}");
+                        _gameMode = GameMode.None;
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"Не удалось распарсить GameMode: {modeStr}");
+                    _gameMode = GameMode.None;
+                }
+            }
         }
-
-        Debug.LogError(_bindPort + _bindIP);
-        Debug.Log(_bindPort + _bindIP);
     }
 
     private async Task StartDedicatedServer()
@@ -158,6 +199,7 @@ public class SignInLoginBootstrap : MonoBehaviour
         MPNetworkManager.Instance.networkAddress = _bindIP;
 
         await SceneManager.LoadSceneAsync(_menuSceneIndex);
+        MPNetworkManager.Instance.CurrentGameMode = _gameMode;
         MPNetworkManager.Instance.StartServer();
     }
 }

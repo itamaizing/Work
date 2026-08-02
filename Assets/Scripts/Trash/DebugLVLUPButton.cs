@@ -16,7 +16,7 @@ public class DebugLVLUPButton : MonoBehaviour
 
     private void AddLevel()
     {
-        if (User.Instance == null) return;
+        //if (User.Instance == null) return;
         if (_selectManager.SelectedControllableUnits.Count == 0) return;
         var selectedHero = _selectManager.SelectedControllableUnits[0];
 
