@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ImpatienceState : AbstractCharacterState
+public class ImpatienceState : RefreshingState
 {
     private float _durationRemaining;
 
@@ -44,10 +44,33 @@ public class ImpatienceState : AbstractCharacterState
             if (_casterPsionic != null) _casterPsionic.OnAccumulationPsionicChanged += HandleAccumulationChanged;
         }
     }
+    
+    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        if (!CanEnterState(character)) return null;
+
+        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+
+        if (currentStacksCount == 0)
+        {
+            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+            currentStacksCount = 1;
+        }
+        else
+            Stack(durationToExit);
+
+        return this;
+    }
 
     public override void UpdateState()
     {
 
+    }
+    
+    public override bool Stack(float time)
+    {
+        duration = time;
+        return false;
     }
 
     public override void ExitState()
@@ -61,6 +84,7 @@ public class ImpatienceState : AbstractCharacterState
             if (_casterPsionic != null) _casterPsionic.OnAccumulationPsionicChanged -= HandleAccumulationChanged;
         }
 
+        currentStacksCount = 0;
         characterState.RemoveState(this);
     }
 

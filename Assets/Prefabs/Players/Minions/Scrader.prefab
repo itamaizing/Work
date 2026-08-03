@@ -46,8 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spawnPos: {fileID: 1816582864147950907}
-  _template: {fileID: 0}
-  _icoDatabase: {fileID: 0}
+  _template: {fileID: 7378013951281155230, guid: e2e0fde8cffd89f49ba789c80aaf293b, type: 3}
+  _icoDatabase: {fileID: 11400000, guid: 1576c3a74a8fb0840aaea86b8863413f, type: 2}
   _baffColor: {r: 0.23, g: 0.9, b: 0.23, a: 1}
   _debaffColor: {r: 0.9, g: 0.15, b: 0.15, a: 1}
   _neutralColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -13810,9 +13810,9 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: -1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -13859,10 +13859,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _moveCreature: {fileID: 2196113789592555911}
   _animator: {fileID: 1215395125402789392}
   _stopDistance: 1.5
@@ -13958,10 +13957,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _moveCreature: {fileID: 2196113789592555911}
   attackDistance: 1.5
   damageDelay: 0.7
@@ -14153,10 +14151,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _duration: 5
 --- !u!1 &4348563488435226753
 GameObject:

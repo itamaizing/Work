@@ -10146,8 +10146,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spawnPos: {fileID: 7306033800174525868}
-  _template: {fileID: 0}
-  _icoDatabase: {fileID: 0}
+  _template: {fileID: 7378013951281155230, guid: e2e0fde8cffd89f49ba789c80aaf293b, type: 3}
+  _icoDatabase: {fileID: 11400000, guid: 1576c3a74a8fb0840aaea86b8863413f, type: 2}
   _baffColor: {r: 0.23, g: 0.9, b: 0.23, a: 1}
   _debaffColor: {r: 0.9, g: 0.15, b: 0.15, a: 1}
   _neutralColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -21159,7 +21159,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   _stateIcons: {fileID: 848616324900679658}
-  _stateEffects: {fileID: 0}
+  _stateEffects: {fileID: 3186035349475421007}
   invinsible: 0
 --- !u!114 &3186035349475421007
 MonoBehaviour:

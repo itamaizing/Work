@@ -1,96 +1,58 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SwarmSpeedState : AuraState
+public class SwarmSpeedState : RefreshingState
 {
-    private float _currentCountWarm;
-    private float _appliedMultiplier;
-
-    private const float AuraRadius = 10f;
     private const float BaseBonus = 0.30f;
-    private const float PerStackBonus = 0.05f;
+    private const float PerUnitBonus = 0.05f;
 
-    private readonly HashSet<Character> _buffedCharacters = new();
+    private AttributeModifier _speedModifier;
 
+    private readonly List<StatusEffect> _effects = new() { StatusEffect.AbilitySpeed };
+
+    private List<Skill> _skills = new();
+    
     public override States State => States.SwarmSpeed;
     public override StateType Type => StateType.Aura;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
-    public override List<StatusEffect> Effects => new() { StatusEffect.AbilitySpeed };
-
-    public override float Distance => AuraRadius;
-    public override float EffectRate => 0.2f;
-    public override LayerMask LayerMask => LayerMask.GetMask("Allies");
-
-    public override void EffectOnEnter(Character character)
+    public override List<StatusEffect> Effects => _effects;
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        if (character == null) return;
-        if (character == _self) return;
-        if (_buffedCharacters.Contains(character)) return;
-
-        ApplySpeed(character);
-    }
-
-    public override void EffectOnExit(Character character)
-    {
-        if (character == null) return;
-        RemoveSpeed(character);
-    }
-
-    public override void EffectOnStay(List<Character> characters)
-    {
-
-    }
-
-    private void ApplySpeed(Character character)
-    {
-        foreach (var skill in character.Abilities.Abilities)
+        float occupiedCapacity = damageToExit;
+        
+        float multiplier = 1f + BaseBonus + (occupiedCapacity * PerUnitBonus);
+  
+        foreach (var ability in character.Character.Abilities.Abilities)
         {
-            skill.Buff.CastSpeed.IncreasePercentage(_appliedMultiplier);
-        }
-
-        _buffedCharacters.Add(character);
-    }
-
-    private void RemoveSpeed(Character character)
-    {
-        if (!_buffedCharacters.Contains(character)) return;
-
-        foreach (var skill in character.Abilities.Abilities)
-        {
-            skill.Buff.CastSpeed.ReductionPercentage(_appliedMultiplier);
-        }
-
-        _buffedCharacters.Remove(character);
-    }
-
-    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
-    {
-        _currentCountWarm = damageToExit;
-        _appliedMultiplier = 1f + BaseBonus + (_currentCountWarm * PerStackBonus);
-
-        var existing = character.GetState(State);
-        if (existing != null)
-        {
-            existing.RemainingDuration = durationToExit;
-            return existing;
-        }
-
-        return base.TryApply(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-    }
-
-    public override void ExitState()
-    {
-        foreach (var character in _buffedCharacters)
-        {
-            foreach (var skill in character.Abilities.Abilities)
+            if (ability.Info.AbilityForm == AbilityForm.Physical || ability.Info.AbilityForm == AbilityForm.Both)
             {
-                skill.Buff.CastSpeed.ReductionPercentage(_appliedMultiplier);
+                _speedModifier = new AttributeModifier(multiplier, ModifierType.Multiplier, this);
+                ability.Attributes[SkillAttributeName.CastSpeed].AddModifier(_speedModifier);
+                _skills.Add(ability);
             }
         }
-
-        _buffedCharacters.Clear();
-        base.ExitState();
     }
 
     public override void UpdateState() { }
+
+    public override void ExitState()
+    {
+        currentStacksCount = 0;
+        RemoveSpeedModifier();
+        base.ExitState();
+    }
+
+    private void RemoveSpeedModifier()
+    {
+        if (_speedModifier == null) return;
+
+        foreach (var ability in _skills)
+        {
+            ability.Attributes[SkillAttributeName.CastSpeed].RemoveModifier(_speedModifier);
+        }
+
+        _skills.Clear();
+        
+        _speedModifier = null;
+    }
 }

@@ -96,7 +96,8 @@ public class Tentacles : Skill
         if(_isExtendDurationOnDamageTalent == value) return;
         
         _isExtendDurationOnDamageTalent = value;
-        CmdEnableExtendDurationOnDamage(_isExtendDurationOnDamageTalent);
+        if(isClient)
+            CmdEnableExtendDurationOnDamage(_isExtendDurationOnDamageTalent);
     }
 
     [Command]
