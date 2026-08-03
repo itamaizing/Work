@@ -65,6 +65,21 @@ MonoBehaviour:
     - nameToShow: RegenPeriod
       type: 3
       value: 0
+  - nameToShow: CooldownEnergy
+    type: 5
+    attributes:
+    - nameToShow: MaxValue
+      type: 0
+      value: 24
+    - nameToShow: Regen
+      type: 1
+      value: 1
+    - nameToShow: RegenDelay
+      type: 2
+      value: 1
+    - nameToShow: RegenPeriod
+      type: 3
+      value: 1
   _attributes:
     _attributes:
     - nameToShow: ResistancePhysical

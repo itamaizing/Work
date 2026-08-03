@@ -22254,8 +22254,8 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 8319872899575431858}
-  cheliceraStrike: {fileID: 0}
-  jumpWithChelicera: {fileID: 0}
+  cheliceraStrike: {fileID: 640134254429411212}
+  jumpWithChelicera: {fileID: 7634851756353439263}
 --- !u!114 &1846317173275019928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23909,10 +23909,10 @@ MonoBehaviour:
   "\u0441ooldownEnergySlider": {fileID: 3573390916933889620}
   durationCooldown: 12
   cooldownCharger: 2
-  cheliceraStrike: {fileID: 640134254429411212}
-  deafeningScream: {fileID: 4459667108316582062}
-  doubleCheliceraStrike: {fileID: 7764012948064342089}
-  jumpBack: {fileID: 5778966895328886112}
+  cheliceraStrike: {fileID: 0}
+  deafeningScream: {fileID: 0}
+  doubleCheliceraStrike: {fileID: 0}
+  jumpBack: {fileID: 0}
 --- !u!114 &3168550865384704014
 MonoBehaviour:
   m_ObjectHideFlags: 0
