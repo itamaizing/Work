@@ -515,7 +515,7 @@ public class CreeperStrike : Skill
                     _currentStacksPoison += _empathicPoisonState.CurrentStacks;
 
                 if (_witheringPoisonState != null)
-                    _currentStacksPoison += _witheringPoisonState.CurrentStacks;
+                    _currentStacksPoison += _witheringPoisonState.CurrentStacksCount;
             }
 
             _currentAllStacks = _currentStacksPoison;

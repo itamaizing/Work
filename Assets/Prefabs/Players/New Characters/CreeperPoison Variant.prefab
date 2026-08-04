@@ -18179,27 +18179,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._id
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: _talents.Array.data[1]._id
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: _talents.Array.data[2]._id
+      propertyPath: _talents.Array.data[1]._id
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: _talents.Array.data[0]._name
-      value: Ninja
+      propertyPath: _talents.Array.data[2]._id
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: _talents.Array.data[1]._name
+      propertyPath: _talents.Array.data[0]._name
       value: Reptile
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
-      propertyPath: _talents.Array.data[2]._name
+      propertyPath: _talents.Array.data[1]._name
       value: Poison
+      objectReference: {fileID: 0}
+    - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
+      propertyPath: _talents.Array.data[2]._name
+      value: Ninja
       objectReference: {fileID: 0}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: _talents.Array.data[0]._talentRow.Array.size
@@ -18404,83 +18404,83 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[0]'
       value: 
-      objectReference: {fileID: 1734068584079679132}
+      objectReference: {fileID: 1642371375121005174}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[1]'
       value: 
-      objectReference: {fileID: 6689918021131749657}
+      objectReference: {fileID: 5042264585882244307}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[2]'
       value: 
-      objectReference: {fileID: 6456863432087837353}
+      objectReference: {fileID: 8303087721396363938}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[3]'
       value: 
-      objectReference: {fileID: 7941594611277133375}
+      objectReference: {fileID: 965364833510229628}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[4]'
       value: 
-      objectReference: {fileID: 827767455665323477}
+      objectReference: {fileID: 3990197728858337664}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[5]'
       value: 
-      objectReference: {fileID: 2756343518254616569}
+      objectReference: {fileID: 9053993306267233736}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[6]'
       value: 
-      objectReference: {fileID: 1217830514159963980}
+      objectReference: {fileID: 536535723249904053}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[7]'
       value: 
-      objectReference: {fileID: 8887524501104309569}
+      objectReference: {fileID: 3197566967140553242}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[8]'
       value: 
-      objectReference: {fileID: 4318163990653874616}
+      objectReference: {fileID: 7962128115380230153}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[9]'
       value: 
-      objectReference: {fileID: 988417320158050719}
+      objectReference: {fileID: 6605119092001046139}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[0]'
       value: 
-      objectReference: {fileID: 1642371375121005174}
+      objectReference: {fileID: 1774296685369443077}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[1]'
       value: 
-      objectReference: {fileID: 5042264585882244307}
+      objectReference: {fileID: 3640861181852123848}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[2]'
       value: 
-      objectReference: {fileID: 8303087721396363938}
+      objectReference: {fileID: 964801864059339207}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[3]'
       value: 
-      objectReference: {fileID: 965364833510229628}
+      objectReference: {fileID: 5274005076901417186}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[4]'
       value: 
-      objectReference: {fileID: 3990197728858337664}
+      objectReference: {fileID: 1394518891378483386}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[5]'
       value: 
-      objectReference: {fileID: 9053993306267233736}
+      objectReference: {fileID: 3656495943832638022}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[6]'
       value: 
-      objectReference: {fileID: 536535723249904053}
+      objectReference: {fileID: 3157481039742532545}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[7]'
       value: 
-      objectReference: {fileID: 3197566967140553242}
+      objectReference: {fileID: 8041204729760657720}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[8]'
       value: 
-      objectReference: {fileID: 7962128115380230153}
+      objectReference: {fileID: 8711396586475798565}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[9]'
       value: 
-      objectReference: {fileID: 6605119092001046139}
+      objectReference: {fileID: 5622163883072666357}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRow.Array.data[0].Talents.Array.data[10]'
       value: 
@@ -18488,79 +18488,79 @@ PrefabInstance:
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[0]'
       value: 
-      objectReference: {fileID: 1774296685369443077}
+      objectReference: {fileID: 1734068584079679132}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[1]'
       value: 
-      objectReference: {fileID: 3640861181852123848}
+      objectReference: {fileID: 6689918021131749657}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[2]'
       value: 
-      objectReference: {fileID: 964801864059339207}
+      objectReference: {fileID: 6456863432087837353}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[3]'
       value: 
-      objectReference: {fileID: 5274005076901417186}
+      objectReference: {fileID: 7941594611277133375}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[4]'
       value: 
-      objectReference: {fileID: 1394518891378483386}
+      objectReference: {fileID: 827767455665323477}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[5]'
       value: 
-      objectReference: {fileID: 3656495943832638022}
+      objectReference: {fileID: 2756343518254616569}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[6]'
       value: 
-      objectReference: {fileID: 3157481039742532545}
+      objectReference: {fileID: 1217830514159963980}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[7]'
       value: 
-      objectReference: {fileID: 8041204729760657720}
+      objectReference: {fileID: 8887524501104309569}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[8]'
       value: 
-      objectReference: {fileID: 8711396586475798565}
+      objectReference: {fileID: 4318163990653874616}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[9]'
       value: 
-      objectReference: {fileID: 5622163883072666357}
+      objectReference: {fileID: 988417320158050719}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[10]'
       value: 
-      objectReference: {fileID: 3398652400627994800}
+      objectReference: {fileID: 6226116417743377566}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[11]'
       value: 
-      objectReference: {fileID: 3096915051999318309}
+      objectReference: {fileID: 4590320037838898502}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[0]._talentRows.Array.data[0].Talents.Array.data[12]'
       value: 
-      objectReference: {fileID: 7566935048732947578}
+      objectReference: {fileID: 4403101704771608953}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[10]'
       value: 
-      objectReference: {fileID: 6226116417743377566}
+      objectReference: {fileID: 2435486984149934093}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[11]'
       value: 
-      objectReference: {fileID: 4590320037838898502}
+      objectReference: {fileID: 7712686978828366250}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[1]._talentRows.Array.data[0].Talents.Array.data[12]'
       value: 
-      objectReference: {fileID: 4403101704771608953}
+      objectReference: {fileID: 8390387529358146644}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[10]'
       value: 
-      objectReference: {fileID: 2435486984149934093}
+      objectReference: {fileID: 3398652400627994800}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[11]'
       value: 
-      objectReference: {fileID: 7712686978828366250}
+      objectReference: {fileID: 3096915051999318309}
     - target: {fileID: 5950354320950511597, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: '_talents.Array.data[2]._talentRows.Array.data[0].Talents.Array.data[12]'
       value: 
-      objectReference: {fileID: 8390387529358146644}
+      objectReference: {fileID: 7566935048732947578}
     - target: {fileID: 6226204041481316500, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -18599,11 +18599,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8492809262968261936, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 8492809262968261936, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 8630238717969952997, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchorMax.x
@@ -18961,9 +18961,9 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: -1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -19010,10 +19010,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 2483674839823445686}
   _lightningStrikes: {fileID: 734640227586387152}
   _creeperInvisible: {fileID: 6857802422684928800}
@@ -19027,7 +19026,7 @@ MonoBehaviour:
   _radiusSearchTarget: 0.5
   _enemyLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   _poisonSearchRadius: 30
   _baseIncreaseAttackSpeed: 0.1
   _maxMinimumAttackSpeed: 0.1
@@ -19070,9 +19069,9 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: -1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -19119,10 +19118,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _coldBlood: {fileID: 4616268591970552908}
   _lightningMovement: {fileID: 7013613396998518356}
   _creeperStrike: {fileID: 6745892867125186241}
@@ -19221,10 +19219,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _projectile: {fileID: 6538247731923965443, guid: 482b668adc1f199488e67f043ae88aa9, type: 3}
   _player: {fileID: 2483674839823445686}
   _spawnPoint: {fileID: 6943497228995655184}
@@ -19321,10 +19318,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _spitPoison: {fileID: 4992365342693795224}
   _projectile: {fileID: 4167531903339531822, guid: 093409daf5f183d4493788550d4c1998, type: 3}
   _player: {fileID: 2483674839823445686}
@@ -19347,7 +19343,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3937b4f7a865f3b498a887200f7e8325, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 1
+  syncDirection: 0
   syncMode: 0
   syncInterval: 0
   _isTalentSpell: 1
@@ -19355,17 +19351,17 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 7d0ee064be7acc0469ab7540e835c7f9, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 4
-    _costs: []
-  _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
+    _base: 40
+    _costs:
+    - nameToShow: 40 Mana - Mandatory mod desc
+      type: 1
+      value: 40
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
+  _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 8
+  _cooldownTime: 0
   _cooldownComponent:
     _baseCooldown: 8
   _castDeley: 0
@@ -19380,9 +19376,9 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 3
+    _faction: 4
+    _unitType: -1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -19429,16 +19425,16 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
-  _player: {fileID: 2483674839823445686}
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _creeperStrike: {fileID: 6745892867125186241}
   _poisonSlap: {fileID: 8577860281443816807}
   _lightningStrikes: {fileID: 734640227586387152}
-  _durationLeap: 5
+  _durationLeap: 3
   _radiusAttack: 1.15
+  _returnCooldownDivider: 0.5
+  _castSpeedValue: 4
 --- !u!114 &6857802422684928800
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19527,10 +19523,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _creeperStrike: {fileID: 6745892867125186241}
   _coldBlood: {fileID: 4616268591970552908}
   _cooldown: 6
@@ -19627,10 +19622,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 2483674839823445686}
   _coldBlood: {fileID: 4616268591970552908}
   _poisonBall: {fileID: 4719927588574066064}
@@ -19728,10 +19722,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 2483674839823445686}
   _lightningMovement: {fileID: 7013613396998518356}
 --- !u!114 &4616268591970552908
@@ -19822,10 +19815,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _creeperStrike: {fileID: 6745892867125186241}
   _reducingCooldownMultiplier: 2
 --- !u!114 &4939275121847811319
@@ -19916,10 +19908,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 2483674839823445686}
   _creeperPoisonAura: {fileID: 2161342997938470374}
 --- !u!114 &8150686032681382611
@@ -20010,10 +20001,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 2483674839823445686}
   _creeperStrike: {fileID: 6745892867125186241}
   _duration: 10
@@ -20105,10 +20095,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 2483674839823445686}
   _poisonBall: {fileID: 4719927588574066064}
   _spitPoison: {fileID: 4992365342693795224}
@@ -20135,13 +20124,7 @@ MonoBehaviour:
   _costComponent:
     _base: 20
     _costs: []
-  _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
+  _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 6
   _cooldownComponent:
@@ -20207,10 +20190,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   duration: 10
 --- !u!114 &1964640632880337021
 MonoBehaviour:
@@ -20234,13 +20216,7 @@ MonoBehaviour:
   _costComponent:
     _base: 0
     _costs: []
-  _skillEnergyCosts:
-  - nameToShow: 0 Health - Mandatory mod desc
-    type: 0
-    value: 0
-    costType: 0
-    shouldModify: 1
-    showInDescription: 1
+  _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 6
   _cooldownComponent:
@@ -20306,10 +20282,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _playerLinks: {fileID: 2483674839823445686}
   duration: 3
   durationErodedArmor: 6
@@ -20404,10 +20379,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   durationWindowsBoost: 5
   blockChance: 50
 --- !u!114 &3254515559312903057
@@ -20498,10 +20472,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _invisible: {fileID: 6857802422684928800}
   _creeperPoisonAura: {fileID: 2161342997938470374}
 --- !u!114 &5132379941379747870
@@ -20598,10 +20571,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &3350435801472191630
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20690,10 +20662,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 2483674839823445686}
   _waveDuration: 1.5
   _stepTime: 0.2
@@ -20810,13 +20781,11 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _player: {fileID: 2483674839823445686}
   _projectile: {fileID: 2633956590774819317, guid: 6d4e598214ad8194197d8c3a24b69465, type: 3}
-  _maxDistance: 10
   _throwDuration: 0.2
   _pullDuration: 0.6
 --- !u!114 &4320175696667952190
@@ -20913,10 +20882,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &6363943866240832142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21011,10 +20979,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
-  _animations:
-    _prepareAnimations: []
-    _castAnimations: []
-    _activeClip: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &4177039254838831636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21181,23 +21148,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ReptileTalent_3
   _data:
     _descriptionsForInfoPanel:
-    - "\u043A\u0440\u0438\u043F\u0435\u0440 \u0443\u0441\u043A\u043E\u0440\u044F\u0435\u0442\u0441\u044F,
-      \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0435\u0433\u043E \u0431\u0435\u0433\u0430,
-      \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0445 \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439,
-      \u0443\u043A\u043B\u043E\u043D\u0435\u043D\u0438\u0435 \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
-      \u0432 \u0434\u0432\u0430 \u0440\u0430\u0437\u0430  80 \u044D\u043D\u0435\u0440\u0433\u0438\u0438
-      , 14 \u0441\u0435\u043A. \u041A\u0434, \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C
-      \u0431\u0435\u0433\u0430, \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0445
-      \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439, \u0448\u0430\u043D\u0441
-      \u0443\u043A\u043B\u043E\u043D\u0435\u043D\u0438\u0435  \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
-      \u0432 2 \u0440\u0430\u0437\u0430, \u0434\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C
-      3 \u0441\u0435\u043A., \u043C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u0430\u044F, 
-      \u0432\u043D\u0443\u0442\u0440\u0435\u043D\u043D\u044F\u044F \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0430\u044F
-      \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C"
+    - "\u041F\u0440\u0438 \u0443\u0434\u0430\u0440\u0435 \u0441 \u0440\u0443\u043A\u0438
+      \u0438\u043C\u0435\u0435\u0442 20% \u0448\u0430\u043D\u0441 \u0437\u0430\u0440\u043E\u0437\u0438\u0442\u044C
+      \u0446\u0435\u043B\u044C \xAB\u0438\u0441\u0441\u0443\u0448\u0430\u044E\u0449\u0438\u043C
+      \u044F\u0434\u043E\u043C\xBB \u0432\u044B\u0436\u0438\u0433\u0430\u044E\u0449\u0438\u0439
+      \u043C\u0430\u043D\u043D\u0443 \u0443 \u0446\u0435\u043B\u0438 1% \u043E\u0442
+      \u0438\u043C\u0435\u044E\u0449\u0435\u0433\u043E\u0441\u044F \u0437\u0430\u043F\u0430\u0441\u0430
+      \u043A\u0430\u0436\u0434\u044B\u0435 2 \u0441\u0435\u043A\u0443\u043D\u0434\u044B,
+      \u0434\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C 10
+      \u0441\u0435\u043A\u0443\u043D\u0434, \u0441\u0443\u043C\u043C\u0438\u0440\u0443\u0435\u0442\u0441\u044F
+      \u0434\u043E \u0434\u0432\u0443\u0445 \u0440\u0430\u0437. "
     _stateInfos: []
     IsOpen: 0
-    Description: " \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C \u0440\u0435\u043F\u0442\u0438\u043B\u0438\u0438"
-    Icon: {fileID: 7595241771238511587, guid: eb1e53bce0abfd940816bf6d5da4ce56, type: 3}
+    Description: "\u042F\u0434\u043E\u0432\u0438\u0442\u044B\u0435 \u0443\u0434\u0430\u0440\u044B"
+    Icon: {fileID: 21300000, guid: 0f7f61a3695bc9a4eaa8f363a84a6bed, type: 3}
     Group: 0
     Row: 0
   character: {fileID: 2483674839823445686}

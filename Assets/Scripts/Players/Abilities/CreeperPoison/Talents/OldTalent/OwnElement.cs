@@ -90,7 +90,7 @@ public class OwnElement : Talent
                         }
                         if (_witheringPoisonState != null)
                         {
-                            _currentStacksPoison += _witheringPoisonState.CurrentStacks;
+                            _currentStacksPoison += _witheringPoisonState.CurrentStacksCount;
                         }
 
                     }

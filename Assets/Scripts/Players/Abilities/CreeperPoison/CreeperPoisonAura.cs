@@ -21,6 +21,8 @@ public class CreeperPoisonAura : NetworkBehaviour
     private Character _owner;
 
     private float _tempEvadeBonus = 0f;
+    
+    private readonly AttributeModifier _castSpeedModifier = new AttributeModifier(1, ModifierType.Multiplier);
 
     #region Talent
     private bool _isFeelingPoisoning = false;
@@ -240,7 +242,7 @@ public class CreeperPoisonAura : NetworkBehaviour
         if (state.GetState(States.BindingPoison) is BindingPoisonState bindingPoisonState) stacks += bindingPoisonState.CurrentStacks;
         if (state.GetState(States.PoisonBone) is PoisonBoneState poisonBoneState) stacks += poisonBoneState.CurrentStacks;
         if (state.GetState(States.EmpathicPoisons) is EmpathicPoisonsState empathicPoisonsState) stacks += empathicPoisonsState.CurrentStacks;
-        if (state.GetState(States.WitheringPoison) is WitheringPoisonState witheringPoisonState) stacks += witheringPoisonState.CurrentStacks;
+        if (state.GetState(States.WitheringPoison) is WitheringPoisonState witheringPoisonState) stacks += witheringPoisonState.CurrentStacksCount;
 
         return stacks;
     }
@@ -250,25 +252,24 @@ public class CreeperPoisonAura : NetworkBehaviour
     private void ApplyAttackSpeed(int stacks)
     {
         float newBonus = stacks * _attackSpeedPerStack;
+        float newValue = 1f + newBonus;
 
-        if (Mathf.Approximately(newBonus, _currentBonus)) return;
+        if (Mathf.Approximately(newValue, _castSpeedModifier.Value)) return;
 
-        float delta = newBonus - _currentBonus;
+        _castSpeedModifier.Value = newValue;
+        _castSpeedModifier.Source = this;
 
         if (_owner == null || _owner.Abilities == null) return;
 
-        var skills = _owner.Abilities.Skills;
-
-        foreach (var skill in skills)
+        foreach (var skill in _owner.Abilities.Skills)
         {
             if (skill == null) continue;
-
             if (skill.Info.DamageType != DamageType.Physical) continue;
 
-            if (delta > 0) skill.Buff.CastSpeed.IncreasePercentage(delta);
-            else skill.Buff.CastSpeed.ReductionPercentage(-delta);
-        }
+            var castSpeedAttribute = skill.Attributes[SkillAttributeName.CastSpeed];
 
-        _currentBonus = newBonus;
+            if (!castSpeedAttribute.Modifiers.Contains(_castSpeedModifier))
+                castSpeedAttribute.AddModifier(_castSpeedModifier);
+        }
     }
 }

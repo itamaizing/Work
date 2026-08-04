@@ -752,7 +752,7 @@ AnimatorState:
   m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: d415b6db769000e46abb6033f5e88f4f, type: 2}
   m_Tag: 
-  m_SpeedParameter: LightningStrikesMultiplierSpeedAnimation
+  m_SpeedParameter: CastSpeed
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
@@ -877,7 +877,7 @@ AnimatorState:
   m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: 11754a01d39517c4da61e86a0887fb93, type: 2}
   m_Tag: 
-  m_SpeedParameter: CreeperStrikeMultiplierSpeedAnimation
+  m_SpeedParameter: CastSpeed
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 

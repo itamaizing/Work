@@ -4,11 +4,13 @@ using UnityEngine;
 public class LightningEvadeState : StackableState
 {
     private float _evadePerStack = 10f;
-    private float _totalEvade = 0f;
 
     public override States State => States.LightningEvade;
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
+
+    private readonly AttributeModifier _evadePhysicalModifier = new AttributeModifier(0, ModifierType.Percent);
+    private readonly AttributeModifier _evadeMagicalModifier = new AttributeModifier(0, ModifierType.Percent);
 
     public override List<StatusEffect> Effects => new()
     {
@@ -19,6 +21,9 @@ public class LightningEvadeState : StackableState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         MaxStacksCount = 4;
+
+        _evadePhysicalModifier.Source = this;
+        _evadeMagicalModifier.Source = this;
 
         ApplyEvade();
     }
@@ -38,10 +43,19 @@ public class LightningEvadeState : StackableState
 
     private void ApplyEvade()
     {
-        float value = _evadePerStack;
+        float newValue = _evadePhysicalModifier.Value + _evadePerStack;
 
-        health.AddEvade(value);
-        _totalEvade += value;
+        _evadePhysicalModifier.Value = newValue;
+        _evadeMagicalModifier.Value = newValue;
+
+        var physical = characterState.Character.AttributeSystem[CharacterAttributeName.EvasionPhysical];
+        var magical = characterState.Character.AttributeSystem[CharacterAttributeName.EvasionMagical];
+
+        if (!physical.Modifiers.Contains(_evadePhysicalModifier))
+            physical.AddModifier(_evadePhysicalModifier);
+
+        if (!magical.Modifiers.Contains(_evadeMagicalModifier))
+            magical.AddModifier(_evadeMagicalModifier);
     }
 
     public override void ExitState()
@@ -52,18 +66,21 @@ public class LightningEvadeState : StackableState
 
     public override void ReduceStack()
     {
-        RemoveEvade(_evadePerStack);
+        _evadePhysicalModifier.Value -= _evadePerStack;
+        _evadeMagicalModifier.Value -= _evadePerStack;
+
         currentStacksCount--;
 
         if (currentStacksCount <= 0) ExitState();
     }
 
-    private void RemoveEvade(float value = -1)
+    private void RemoveEvade()
     {
-        if (value < 0) value = _totalEvade;
+        characterState.Character.AttributeSystem[CharacterAttributeName.EvasionPhysical].RemoveBySource(this);
+        characterState.Character.AttributeSystem[CharacterAttributeName.EvasionMagical].RemoveBySource(this);
 
-        health.RemoveEvade(value);
-        _totalEvade -= value;
+        _evadePhysicalModifier.Value = 0;
+        _evadeMagicalModifier.Value = 0;
     }
 
     public override void UpdateState() { }

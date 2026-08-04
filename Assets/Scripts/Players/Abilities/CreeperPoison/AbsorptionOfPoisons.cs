@@ -107,9 +107,9 @@ public class AbsorptionOfPoisons : Skill
                 {
                     poisonDurations[_empathicPoison] = _empathicPoison.StacksDuration;
                 }
-                if (_witheringPoison != null && _witheringPoison.CurrentStacks > 0)
+                if (_witheringPoison != null && _witheringPoison.CurrentStacksCount > 0)
                 {
-                    poisonDurations[_witheringPoison] = _witheringPoison.StacksDuration;
+                    poisonDurations[_witheringPoison] = _witheringPoison.RemainingDuration;
                 }
                 if (_bindingPoison != null && _bindingPoison.CurrentStacks > 0)
                 {
@@ -130,7 +130,7 @@ public class AbsorptionOfPoisons : Skill
                     }
                     else if (stateWithMinDuration is WitheringPoisonState witheringPoisonState)
                     {
-                        witheringPoisonState.CurrentStacks--;
+                        witheringPoisonState.ReduceStack();
                     }
                     else if (stateWithMinDuration is BindingPoisonState bindingPoisonState)
                     {

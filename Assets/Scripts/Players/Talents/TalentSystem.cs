@@ -168,20 +168,39 @@ public class TalentSystem : NetworkBehaviour
     }
 
     public void SwitchTalent(int id, int row, string talentName, bool isActive)
-	{
-		var talentGroup = TalentsGroups.FirstOrDefault(o => o.ID == id);
-        var talentRow = talentGroup.TalentRows[row];
-		var talent = talentRow.Talents?.FirstOrDefault(o => o.Data.Name == talentName);
+    {
+        var talentGroup = TalentsGroups?.FirstOrDefault(o => o.ID == id);
+        if (talentGroup == null)
+        {
+            return;
+        }
 
-		if (isActive)
-		{
-			talent.Enter();
-		}
-		else
-		{
-			talent.Exit();
-		}
-	}
+        if (talentGroup.TalentRows == null || row < 0 || row >= talentGroup.TalentRows.Count)
+        {
+            return;
+        }
+
+        var talentRow = talentGroup.TalentRows[row];
+        
+        var talent = talentRow.Talents?.FirstOrDefault(o => 
+            (o.Data != null && o.Data.Name == talentName) || 
+            o.GetType().Name == talentName
+        );
+
+        if (talent == null)
+        {
+            return;
+        }
+
+        if (isActive)
+        {
+            talent.Enter();
+        }
+        else
+        {
+            talent.Exit();
+        }
+    }
 
 	[Command]
 	public void CmdSwitchTalent(int id, int row, string talentName, bool isActive)
