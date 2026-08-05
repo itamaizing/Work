@@ -9,36 +9,37 @@ using UnityEngine;
 public class LightningMovement : Skill
 {
     [Header("Talents & Abilities")]
-    //[SerializeField] private SuperFastScales _superFastScales;
-    //[SerializeField] private HeatedGlands _heatedGlands;
-    //[SerializeField] private LightningFastPoisonSlap _lightningFastPoisonSlap;
     [SerializeField] private CreeperStrike _creeperStrike;
     [SerializeField] private PoisonSlap _poisonSlap;
     [SerializeField] private LightningStrikes _lightningStrikes;
 
+    [Header("Movement Settings")]
     [SerializeField] private float _durationLeap;
     [SerializeField] private float _radiusAttack;
     [SerializeField] private float _returnCooldownDivider = 0.5f;
     [SerializeField] private float _castSpeedValue = 4f;
 
-    private AttributeModifier _cooldownModifier = new AttributeModifier(0,ModifierType.Multiplier);
-    private AttributeModifier _castModifier = new AttributeModifier(0,ModifierType.Multiplier);
-    
+    [Header("Visuals")]
+    [SerializeField] private AbilityLineRenderer _lineRendererPrefab;
+
+    private AttributeModifier _cooldownModifier = new AttributeModifier(0, ModifierType.Multiplier);
+    private AttributeModifier _castModifier = new AttributeModifier(0, ModifierType.Multiplier);
 
     private Vector3 _leapPoint = Vector3.positiveInfinity;
-    private Vector3 _secondLeapPoint;
-    private bool _hasSecondLeap;
+    private Vector3 _secondLeapPoint = Vector3.positiveInfinity;
+    private bool _hasSecondLeapInput;
+    private bool _enemyHitDuringLeap;
 
     private Vector3 _startPosition;
-
     private Coroutine _movementRoutine;
+    private Coroutine _secondVectorDrawRoutine;
+
+    private BoxArea _secondVectorLineInstance;
 
     private readonly HashSet<Character> _damagedCharacters = new HashSet<Character>();
 
     #region Talent
-
     private bool _isLightningEvade;
-
     public void LightningEvade(bool value) => _isLightningEvade = value;
     #endregion
 
@@ -68,6 +69,8 @@ public class LightningMovement : Skill
             _movementRoutine = null;
         }
 
+        StopSecondVectorDraw();
+
         if (_hero?.Move != null)
         {
             Hero.Move.SetCanMove(true);
@@ -85,7 +88,22 @@ public class LightningMovement : Skill
 
         RaycastHit hit;
         return Physics.SphereCast(start, 0.2f, direction, out hit, distance, _obstacle);
+    }
 
+    private bool HasEnemiesOnPath(Vector3 start, Vector3 end)
+    {
+        Vector3 direction = (end - start).normalized;
+        float distance = Vector3.Distance(start, end);
+
+        RaycastHit[] hits = Physics.SphereCastAll(start, _radiusAttack, direction, distance, Targeting.Layer);
+        foreach (var hit in hits)
+        {
+            if (hit.collider.TryGetComponent<Character>(out var character) && character != _hero)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private bool IsValidLeapPoint(Vector3 point)
@@ -95,7 +113,21 @@ public class LightningMovement : Skill
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        _leapPoint = targetInfo.Points[0];
+        if (targetInfo.Points.Count > 0)
+        {
+            _leapPoint = targetInfo.Points[0];
+        }
+
+        if (targetInfo.Points.Count > 1)
+        {
+            _secondLeapPoint = targetInfo.Points[1];
+            _hasSecondLeapInput = true;
+        }
+        else
+        {
+            _secondLeapPoint = Vector3.positiveInfinity;
+            _hasSecondLeapInput = false;
+        }
     }
 
     private void FinalizeMovement()
@@ -115,37 +147,147 @@ public class LightningMovement : Skill
     protected override void ClearData()
     {
         Target = null;
-        _hasSecondLeap = false;
+        _hasSecondLeapInput = false;
+        _enemyHitDuringLeap = false;
         _secondLeapPoint = Vector3.positiveInfinity;
         _leapPoint = Vector3.positiveInfinity;
         _damagedCharacters.Clear();
         _castModifier.Value = 1;
+        
+        StopSecondVectorDraw();
         base.ClearData();
     }
 
     protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
     {
-        Vector3 targetPoint = Vector3.positiveInfinity;
+        Vector3 firstPoint = Vector3.positiveInfinity;
+        Vector3 secondPoint = Vector3.positiveInfinity;
 
-        while (float.IsPositiveInfinity(targetPoint.x) && !Disactive)
+        while (float.IsPositiveInfinity(firstPoint.x) && !Disactive)
         {
             if (GetMouseButton)
             {
                 Vector3 clickedPoint = Targeting.GetMousePoint();
-
                 if (Targeting.IsPointInRadius(AreaInfo.Radius, clickedPoint))
                 {
-                    targetPoint = CalculateLeapPoint(Targeting.GetMousePoint());
+                    firstPoint = CalculateLeapPoint(_hero.transform.position, clickedPoint);
                 }
             }
 
             yield return null;
         }
 
+        if (Disactive) yield break;
+
+        while (GetMouseButton && !Disactive)
+        {
+            yield return null;
+        }
+
+        if (Disactive) yield break;
+
+        bool enemiesAhead = HasEnemiesOnPath(_hero.transform.position, firstPoint);
+        if (enemiesAhead)
+        {
+            SkillRender.StopDrawLine();
+            StartSecondVectorDraw(firstPoint);
+
+            float debounceTimer = 0.15f;
+            while (debounceTimer > 0f && !Disactive)
+            {
+                debounceTimer -= Time.deltaTime;
+                yield return null;
+            }
+
+            while (float.IsPositiveInfinity(secondPoint.x) && !Disactive)
+            {
+                if (GetMouseButton)
+                {
+                    Vector3 clickedPoint = Targeting.GetMousePoint();
+
+                    if (IsValidLeapPoint(clickedPoint) &&
+                        Targeting.IsPointInRadius(AreaInfo.Radius, clickedPoint))
+                    {
+                        secondPoint = CalculateLeapPoint(firstPoint, clickedPoint);
+                    }
+                }
+
+                yield return null;
+            }
+            StopSecondVectorDraw();
+        }
+
+        if (Disactive) yield break;
+
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(targetPoint);
+        targetInfo.Points.Add(firstPoint);
+
+        if (IsValidLeapPoint(secondPoint) && !float.IsPositiveInfinity(secondPoint.x))
+        {
+            targetInfo.Points.Add(secondPoint);
+        }
+
         callbackDataSaved(targetInfo);
     }
+
+    #region Custom Line Renderer For Second Vector
+
+    private void StartSecondVectorDraw(Vector3 originPoint)
+    {
+        StopSecondVectorDraw();
+        _secondVectorDrawRoutine = StartCoroutine(SecondVectorDrawJob(originPoint));
+    }
+
+    private void StopSecondVectorDraw()
+    {
+        if (_secondVectorDrawRoutine != null)
+        {
+            StopCoroutine(_secondVectorDrawRoutine);
+            _secondVectorDrawRoutine = null;
+        }
+
+        if (_secondVectorLineInstance != null)
+        {
+            Destroy(_secondVectorLineInstance.gameObject);
+            _secondVectorLineInstance = null;
+        }
+    }
+
+    private IEnumerator SecondVectorDrawJob(Vector3 originPoint)
+    {
+        if (_lineRendererPrefab == null || _lineRendererPrefab.Start == null)
+        {
+            yield break;
+        }
+
+        Damage damage = new Damage { Value = Damage, Type = Info.DamageType };
+
+        _secondVectorLineInstance = Instantiate(_lineRendererPrefab.Start);
+        _secondVectorLineInstance.transform.position = originPoint;
+        _secondVectorLineInstance.SetColor(Color.yellow);
+
+        while (true)
+        {
+            Vector3 mousePoint = Targeting.GetMousePoint();
+            Vector3 finalSecondPoint = CalculateLeapPoint(originPoint, mousePoint);
+            Vector3 dir = finalSecondPoint - originPoint;
+            
+            float dynamicLength = dir.magnitude;
+
+            if (dynamicLength > 0.01f)
+            {
+                _secondVectorLineInstance.SetSize(AreaInfo.CastWidth, dynamicLength, damage);
+
+                float angle = Mathf.Atan2(dir.z, dir.x) * Mathf.Rad2Deg;
+                _secondVectorLineInstance.transform.rotation = Quaternion.Euler(90, -angle + 90, 0);
+            }
+
+            yield return null;
+        }
+    }
+
+    #endregion
+
 
     protected override IEnumerator CastJob()
     {
@@ -154,7 +296,7 @@ public class LightningMovement : Skill
         _movementRoutine = StartCoroutine(MovementRoutine());
         yield return _movementRoutine;
     }
-    
+
     private IEnumerator ExecuteLeapSecond(Vector3 pointSecond)
     {
         if (!IsValidLeapPoint(pointSecond) || float.IsPositiveInfinity(pointSecond.x))
@@ -174,15 +316,15 @@ public class LightningMovement : Skill
 
         _hero.Move.StopMoveAndAnimationMove();
     }
-    
+
     private void ApplyReturnCooldownReduction()
     {
         if (Cooldown == null) return;
 
         _cooldownModifier.Value = _returnCooldownDivider;
         _cooldownModifier.Source = this;
-        
-        if(!Attributes[SkillAttributeName.Cooldown].Modifiers.Contains(_cooldownModifier)) 
+
+        if (!Attributes[SkillAttributeName.Cooldown].Modifiers.Contains(_cooldownModifier))
             Attributes[SkillAttributeName.Cooldown].AddModifier(_cooldownModifier);
     }
 
@@ -196,8 +338,9 @@ public class LightningMovement : Skill
 
         if (_isLightningEvade) _hero.CharacterState.CmdAddState(States.LightningEvade, 3f, 0, _hero.gameObject, Name);
         _damagedCharacters.Clear();
+        _enemyHitDuringLeap = false;
 
-        _leapPoint = CalculateLeapPoint(_leapPoint);
+        _leapPoint = CalculateLeapPoint(_hero.transform.position, _leapPoint);
 
         if (!IsValidLeapPoint(_leapPoint))
         {
@@ -217,34 +360,25 @@ public class LightningMovement : Skill
 
         _hero.Move.SetAnimationMovement(direction * _hero.Move.CurrentSpeed);
 
-        if (Vector3.Distance(_hero.transform.position, _leapPoint) < 0.1f)
+        if (Vector3.Distance(_hero.transform.position, _leapPoint) >= 0.1f)
         {
-            FinalizeMovement();
-            yield break;
+            Tween moveTween = _hero.Rigidbody.DOMove(_leapPoint, _durationLeap)
+                .SetEase(Ease.InSine)
+                .OnUpdate(() =>
+                {
+                    Vector3 velocity = (_leapPoint - _hero.transform.position).normalized * _hero.Move.CurrentSpeed;
+                    _hero.Move.SetAnimationMovement(velocity);
+                });
+
+            yield return moveTween.WaitForCompletion();
         }
-
-        Tween moveTween = _hero.Rigidbody.DOMove(_leapPoint, _durationLeap)
-            .SetEase(Ease.InSine)
-            .OnUpdate(() =>
-            {
-                Vector3 velocity = (_leapPoint - _hero.transform.position).normalized * _hero.Move.CurrentSpeed;
-                _hero.Move.SetAnimationMovement(velocity);
-            });
-
-        yield return moveTween.WaitForCompletion();
 
         _hero.Move.StopMoveAndAnimationMove();
 
-        if (!IsValidLeapPoint(_leapPoint))
-        {
-            FinalizeMovement();
-            yield break;
-        }
-
-        if (_hasSecondLeap && _damagedCharacters.Count > 0 && IsValidLeapPoint(_secondLeapPoint))
+        if (_hasSecondLeapInput && _enemyHitDuringLeap && IsValidLeapPoint(_secondLeapPoint))
         {
             if (_isLightningEvade) _hero.CharacterState.CmdAddState(States.LightningEvade, 3f, 0, _hero.gameObject, Name);
-            
+
             _damagedCharacters.Clear();
 
             yield return ExecuteLeapSecond(_secondLeapPoint);
@@ -259,32 +393,30 @@ public class LightningMovement : Skill
     private void RegisterHit(Character character)
     {
         _damagedCharacters.Add(character);
-
-        if (!_hasSecondLeap)
-        {
-            _hasSecondLeap = true;
-            _secondLeapPoint = _startPosition;
-        }
+        _enemyHitDuringLeap = true;
     }
 
     private IEnumerator DamageCheckRoutine()
     {
         _castModifier.Value = _castSpeedValue;
         _castModifier.Source = this;
-        
+
         if (!_poisonSlap.Attributes[SkillAttributeName.CastSpeed].Modifiers.Contains(_castModifier))
         {
             _poisonSlap.Attributes[SkillAttributeName.CastSpeed].AddModifier(_castModifier);
             _creeperStrike.Attributes[SkillAttributeName.CastSpeed].AddModifier(_castModifier);
-            _lightningStrikes.Attributes[SkillAttributeName.CastSpeed].AddModifier(_castModifier);   
+            _lightningStrikes.Attributes[SkillAttributeName.CastSpeed].AddModifier(_castModifier);
         }
 
         while (IsInMovement)
         {
             List<TargetData> targets = _creeperStrike.Targeting.FindTargets(_hero.transform.position, _radiusAttack);
 
-            if (targets != null)
+            if (targets != null && targets.Count > 0)
             {
+                bool isLightningPreparing = _hero.Abilities.SelectedSkills.Contains(_lightningStrikes) && _lightningStrikes.IsPreparing;
+                bool isPoisonPreparing = _hero.Abilities.SelectedSkills.Contains(_poisonSlap) && _poisonSlap.IsPreparing;
+
                 foreach (TargetData targetData in targets)
                 {
                     var character = targetData.Character;
@@ -294,28 +426,26 @@ public class LightningMovement : Skill
                         TargetInfo hitInfo = new TargetInfo();
                         hitInfo.AddTarget((ITargetable)character);
 
-                        if (_hero.Abilities.SelectedSkills.Contains(_lightningStrikes) && _lightningStrikes.IsPreparing)
+                        if (isLightningPreparing)
                         {
                             _lightningStrikes.TryCancel(true);
                             _lightningStrikes.OnLightningStrikesEnd += HandleLightningStrikesEnd;
                             _lightningStrikes.TryCast(hitInfo);
                             RegisterHit(character);
-                            break;
+                            continue;
                         }
 
-                        if (_hero.Abilities.SelectedSkills.Contains(_poisonSlap) && _poisonSlap.IsPreparing)
+                        if (isPoisonPreparing)
                         {
                             _poisonSlap.TryCancel(true);
                             _poisonSlap.OnPoisonSlapEnd += HandlePoisonSlapEnd;
                             _poisonSlap.TryCast(hitInfo);
                             RegisterHit(character);
-                            break;
+                            continue;
                         }
 
                         _creeperStrike.OnCreeperStrikeEnd += HandleCreeperStrikeEnd;
-
                         _creeperStrike.MarkNextHitFromLightningMovement();
-
                         _creeperStrike.TryCast(hitInfo);
                         RegisterHit(character);
                     }
@@ -326,11 +456,25 @@ public class LightningMovement : Skill
         }
     }
 
-    private Vector3 CalculateLeapPoint(Vector3 targetPoint)
+    private Vector3 CalculateLeapPoint(Vector3 origin, Vector3 targetPoint)
     {
-        Vector3 direction = (targetPoint - transform.position).normalized;
-        Vector3 leapPoint = transform.position + direction * Mathf.Min(AreaInfo.Radius, Vector3.Distance(transform.position, targetPoint));
+        Vector3 direction = (targetPoint - origin).normalized;
+
+        Vector3 leapPoint = origin + direction * Mathf.Min(AreaInfo.Radius, Vector3.Distance(origin, targetPoint));
         leapPoint.y = 1f;
+
+        Vector3 heroPos = _hero.transform.position;
+        heroPos.y = 1f;
+
+        float distanceFromHero = Vector3.Distance(heroPos, leapPoint);
+    
+        if (distanceFromHero > AreaInfo.Radius)
+        {
+            Vector3 dirFromHero = (leapPoint - heroPos).normalized;
+            leapPoint = heroPos + dirFromHero * AreaInfo.Radius;
+            leapPoint.y = 1f;
+        }
+
         return leapPoint;
     }
 

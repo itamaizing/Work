@@ -37,6 +37,7 @@ public class SpitPoisonProjectile : Test_Projectile
     private bool _isFeelingPoisoning;
     private bool _isTransparentPoisons;
     private bool _isColdBloodCrit;
+    private bool _isErodedArmorState;
 
     private bool _isReflected;
 
@@ -86,7 +87,7 @@ public class SpitPoisonProjectile : Test_Projectile
             {
                 if (collision.gameObject == _player.gameObject)
                 {
-                    _player.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
+                    //_player.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
                     Destroy(gameObject);
                 }
             }
@@ -96,7 +97,7 @@ public class SpitPoisonProjectile : Test_Projectile
                 {
                     if (collision.TryGetComponent<Character>(out var alliesHealth))
                     {
-                        alliesHealth.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
+                        //alliesHealth.CharacterState.AddState(States.RegeneratingPoison, 6.0f, 0, _player.gameObject, _skill.Name);
                         Destroy(gameObject);
                     }
                 }
@@ -156,7 +157,7 @@ public class SpitPoisonProjectile : Test_Projectile
             
         }
 
-        if (_isFeelingPoisoning) _player.CharacterState.AddState(States.FeelingPoisoning, 2f, 0, _player.gameObject, _skill.Name);
+        //if (_isFeelingPoisoning) _player.CharacterState.AddState(States.FeelingPoisoning, 2f, 0, _player.gameObject, _skill.Name);
     }
 
     #endregion
@@ -199,7 +200,12 @@ public class SpitPoisonProjectile : Test_Projectile
         _target.Health.TryTakeDamage(ref _baseDamage, _skill);
         _target.DamageTracker.AddDamage(_baseDamage, null, isServerRequest: isServer);
 
-        _target.CharacterState.AddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0, _player.gameObject, _skill.Name);
+        if (_isErodedArmorState)
+        {
+            _target.CharacterState.AddState(States.ErodedArmor, 6f, 0, _player.gameObject, _skill.Name);
+        }
+        
+        //_target.CharacterState.AddState(States.PoisonBone, _lifeTimePoisonBoneStacks, 0, _player.gameObject, _skill.Name);
 
         if (_isActiveRestorationOfGlands && _poisonBoneStack > 0 && _target.CharacterState.CheckForState(States.PoisonBone))
         {
@@ -248,7 +254,7 @@ public class SpitPoisonProjectile : Test_Projectile
 
     public void InitializationProjectile(Character dad, Skill skill, float energy,
         bool isActiveHealingSpitPoison, bool isActiveRestorationOfGlands, bool isPlayerInvisible, 
-        bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, int poisonBoneStack, bool isFeelingPoisoning, bool isTransparentPoisons, int ownerLayer, bool isColdBloodCrit)
+        bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, int poisonBoneStack, bool isFeelingPoisoning, bool isTransparentPoisons, int ownerLayer, bool isColdBloodCrit, bool isErodedArmorState)
     {
         _player = dad;
         _energyDad = energy;
@@ -265,6 +271,7 @@ public class SpitPoisonProjectile : Test_Projectile
         _ownerLayer = ownerLayer;
         _isTransparentPoisons = isTransparentPoisons;
         _isColdBloodCrit = isColdBloodCrit;
+        _isErodedArmorState = isErodedArmorState;
 
         if (_particleSystem != null) _particleSystemRenderer = _particleSystem.GetComponent<ParticleSystemRenderer>();
 

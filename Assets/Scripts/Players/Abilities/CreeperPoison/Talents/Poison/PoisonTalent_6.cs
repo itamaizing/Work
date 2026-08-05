@@ -10,10 +10,12 @@ public class PoisonTalent_6 : Talent
     public override void Enter()
     {
         _sneakySpit.ErodedArmorState(true);
+        _spitPoison.ErodedArmorState(true);
     }
 
     public override void Exit()
     {
         _sneakySpit.ErodedArmorState(false);
+        _spitPoison.ErodedArmorState(false);
     }
 }

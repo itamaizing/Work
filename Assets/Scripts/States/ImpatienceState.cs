@@ -41,7 +41,11 @@ public class ImpatienceState : RefreshingState
             _casterPsionic = personWhoMadeBuff.GetComponent<BasePsionicEnergy>();
             _impatica = personWhoMadeBuff.GetComponent<Impatica>();
 
-            if (_casterPsionic != null) _casterPsionic.OnAccumulationPsionicChanged += HandleAccumulationChanged;
+            if (_casterPsionic != null)
+            {
+                _isAccumulationActive = _casterPsionic.IsPsionicsTalentActive;
+                _casterPsionic.OnAccumulationPsionicChanged += HandleAccumulationChanged;
+            }
         }
     }
     
@@ -97,10 +101,9 @@ public class ImpatienceState : RefreshingState
 
         float originalDamage = damage.Value;
 
-        if (_isAccumulationActive && _casterPsionic != null)
+        if (_isAccumulationActive && _casterPsionic != null && damage.Type == DamageType.Physical && _casterPsionic.IsAttackingPsiEnergyActive)
         {
             float psiGain = originalDamage;
-
             _casterPsionic.AddPsiAndRestartDecay(psiGain);
         }
 

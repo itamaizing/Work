@@ -62,7 +62,7 @@ public class EmpathicPoisonsState : AbstractCharacterState, IDamageable
 
         _player.Health.Shields.Add(this);
         _poisonCloud = (PoisonCloudState)_player.CharacterState.GetState(States.PoisonCloud);
-        _radiusCloud = _poisonCloud.RadiusCloud;
+        //_radiusCloud = _poisonCloud.RadiusCloud;
 
         _baseDuration = durationToExit;
 

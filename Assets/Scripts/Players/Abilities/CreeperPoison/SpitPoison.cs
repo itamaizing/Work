@@ -5,13 +5,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
 
-public struct SpitPoisonSpawnPointInfo : NetworkMessage
-{
-    public float SpawnPointX;
-    public float SpawnPointY;
-    public float SpawnPointZ;
-}
-
 public class SpitPoison : Skill, IAltAbility
 {
     [Header("Talents")]
@@ -90,6 +83,8 @@ public class SpitPoison : Skill, IAltAbility
 
     public void SetPoisonCloudEnabled(bool value)
     {
+        if(value == _canSpawnPoisonCloud) return;
+        
         _canSpawnPoisonCloud = value;
     }
 
@@ -315,27 +310,21 @@ public class SpitPoison : Skill, IAltAbility
         if (_canSpawnPoisonCloud)
             CmdApplyPoisonCloud(_isHealingPoisonCloud, _durationPoisonCloud);
 
-        if (_isErodedArmorState)
-            _player.CharacterState.CmdAddState(States.ErodedArmor, durationErodedArmor, 0, _player.gameObject, Name);
+        //if (_isErodedArmorState)
+            //_player.CharacterState.CmdAddState(States.ErodedArmor, durationErodedArmor, 0, _player.gameObject, Name);
     }
 
     #region Command Methods
     [Command]
-    private void CmdInstantiateProjectileToTarget(
-    GameObject target,
-    Vector3 spawnPosition,
-    float manaValue,
-    bool isActiveHealingSpitPoison,
-    bool isActiveRestorationOfGlands,
-    bool isPlayerInvisible,
-    bool isTargetPlayer,
-    bool isTargetEnemy,
-    bool isTargetAllies,
-    bool isTransparentPoisons)
+    private void CmdInstantiateProjectileToTarget(GameObject target, Vector3 spawnPosition, float manaValue, bool isActiveHealingSpitPoison,
+        bool isActiveRestorationOfGlands, bool isPlayerInvisible, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, bool isTransparentPoisons)
     {
         int ownerLayer = _player.gameObject.layer;
 
-        GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
+        Vector3 direction = (target.transform.position - spawnPosition).normalized;
+        if (direction == Vector3.zero) direction = _player.transform.forward;
+
+        GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.LookRotation(direction));
 
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
@@ -353,7 +342,8 @@ public class SpitPoison : Skill, IAltAbility
             _creeperPoisonAura.IsFeelingPoisoning,
             isTransparentPoisons,
             ownerLayer,
-            _isColdBloodCrit && _coldBlood.IsCanCrit
+            _isColdBloodCrit && _coldBlood.IsCanCrit,
+            _isErodedArmorState
         );
 
         if (_isColdBloodCrit)
@@ -366,21 +356,17 @@ public class SpitPoison : Skill, IAltAbility
     }
 
     [Command]
-    private void CmdInstantiateProjectileToPoint(
-    Vector3 point,
-    Vector3 spawnPosition,
-    float manaValue,
-    bool isActiveHealingSpitPoison,
-    bool isActiveRestorationOfGlands,
-    bool isPlayerInvisible,
-    bool isTargetPlayer,
-    bool isTargetEnemy,
-    bool isTargetAllies,
-    bool isTransparentPoisons)
+    private void CmdInstantiateProjectileToPoint(Vector3 point, Vector3 spawnPosition, float manaValue, bool isActiveHealingSpitPoison,
+    bool isActiveRestorationOfGlands, bool isPlayerInvisible, bool isTargetPlayer, bool isTargetEnemy, bool isTargetAllies, bool isTransparentPoisons)
     {
         int ownerLayer = _player.gameObject.layer;
 
-        GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.identity);
+        Vector3 direction = point - spawnPosition;
+        direction.y = 0;
+        direction = direction.normalized;
+        if (direction == Vector3.zero) direction = _player.transform.forward;
+
+        GameObject item = Instantiate(_projectile.gameObject, spawnPosition, Quaternion.LookRotation(direction));
 
         SpitPoisonProjectile projectile = item.GetComponent<SpitPoisonProjectile>();
 
@@ -398,15 +384,12 @@ public class SpitPoison : Skill, IAltAbility
             _creeperPoisonAura.IsFeelingPoisoning,
             isTransparentPoisons,
             ownerLayer,
-            _isColdBloodCrit && _coldBlood.IsCanCrit
+            _isColdBloodCrit && _coldBlood.IsCanCrit,
+            _isErodedArmorState
         );
 
         if (_isColdBloodCrit)
             _coldBlood.IsCanCrit = false;
-
-        Vector3 direction = point - spawnPosition;
-        direction.y = 0;
-        direction = direction.normalized;
 
         point = spawnPosition + direction * AreaInfo.CastLength;
         point.y = spawnPosition.y;
@@ -425,13 +408,9 @@ public class SpitPoison : Skill, IAltAbility
         {
             if (_poisonDamagingCloud == null && _poisonDamagingCloudPrefab.PoisonDamageCloud == null)
             {
-                _player.CharacterState.AddState(States.PoisonCloud, duration, 0, _player.gameObject, Name);
-
                 _poisonDamagingCloud = Instantiate(_poisonDamagingCloudPrefab, transform.position, Quaternion.identity);
                 _poisonDamagingCloudPrefab.PoisonDamageCloud = _poisonDamagingCloud;
-
-                //SceneManager.MoveGameObjectToScene(_poisonDamagingCloudPrefab.PoisonDamageCloud.gameObject, _hero.NetworkSettings.MyRoom);
-
+                
                 _poisonDamagingCloudPrefab.PoisonDamageCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
                 _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
 
@@ -439,14 +418,12 @@ public class SpitPoison : Skill, IAltAbility
             }
             else
             {
-
-                _player.CharacterState.AddState(States.PoisonCloud, duration, 0, _player.gameObject, Name);
                 _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
             }
         }
         else
         {
-            if (_poisonHealingCloud == null && _poisonHealingCloudPrefab.PoisonHealingCloud == null)
+            /*if (_poisonHealingCloud == null && _poisonHealingCloudPrefab.PoisonHealingCloud == null)
             {
                 _player.CharacterState.AddState(States.HealingPoisonCloud, duration, 0, _player.gameObject, Name);
 
@@ -460,15 +437,15 @@ public class SpitPoison : Skill, IAltAbility
 
                 NetworkServer.Spawn(_poisonHealingCloud.gameObject);
 
-            }
-            else
+            }*/
+            /*else
             {
                 _player.CharacterState.AddState(States.HealingPoisonCloud, duration, 0, _player.gameObject, Name);
                 _poisonHealingCloudPrefab.PoisonHealingCloud.AddStack();
-            }
+            }*/
         }
 
-        if (_creeperPoisonAura.IsFeelingPoisoning) _player.CharacterState.AddState(States.FeelingPoisoning, 2f, 0, _player.gameObject, name);
+        //if (_creeperPoisonAura.IsFeelingPoisoning) _player.CharacterState.AddState(States.FeelingPoisoning, 2f, 0, _player.gameObject, name);
 
         RpcApply(_poisonDamagingCloudPrefab.PoisonDamageCloud, _poisonHealingCloudPrefab.PoisonHealingCloud, duration, isHealingCloud);
     }

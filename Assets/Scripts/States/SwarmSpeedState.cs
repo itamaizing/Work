@@ -9,9 +9,6 @@ public class SwarmSpeedState : RefreshingState
     private AttributeModifier _speedModifier;
 
     private readonly List<StatusEffect> _effects = new() { StatusEffect.AbilitySpeed };
-
-    private List<Skill> _skills = new();
-    
     public override States State => States.SwarmSpeed;
     public override StateType Type => StateType.Aura;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
@@ -21,16 +18,8 @@ public class SwarmSpeedState : RefreshingState
         float occupiedCapacity = damageToExit;
         
         float multiplier = 1f + BaseBonus + (occupiedCapacity * PerUnitBonus);
-  
-        foreach (var ability in character.Character.Abilities.Abilities)
-        {
-            if (ability.Info.AbilityForm == AbilityForm.Physical || ability.Info.AbilityForm == AbilityForm.Both)
-            {
-                _speedModifier = new AttributeModifier(multiplier, ModifierType.Multiplier, this);
-                ability.Attributes[SkillAttributeName.CastSpeed].AddModifier(_speedModifier);
-                _skills.Add(ability);
-            }
-        }
+        _speedModifier = new AttributeModifier(multiplier, ModifierType.Multiplier, this);
+        characterState.Character.AttributeSystem[CharacterAttributeName.CooldownReduction].AddModifier(_speedModifier);
     }
 
     public override void UpdateState() { }
@@ -46,13 +35,8 @@ public class SwarmSpeedState : RefreshingState
     {
         if (_speedModifier == null) return;
 
-        foreach (var ability in _skills)
-        {
-            ability.Attributes[SkillAttributeName.CastSpeed].RemoveModifier(_speedModifier);
-        }
+        characterState.Character.AttributeSystem[CharacterAttributeName.CooldownReduction].RemoveBySource(this);
 
-        _skills.Clear();
-        
         _speedModifier = null;
     }
 }

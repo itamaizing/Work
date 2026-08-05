@@ -1,6 +1,5 @@
 using Mirror;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PoisonDamagingCloudPrefab : NetworkBehaviour
@@ -9,30 +8,19 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
     private ParticleSystem _instancePoisonDamagingCloud;
 
     [SerializeField] private LayerMask _enemyLayer;
-    [SerializeField] private float _damageTickRate = 1f;
-
-    private Coroutine _damageCoroutine;
-
-    [SerializeField] private int _maxStacks = 5;
-    private int _currentStacks;
-
     [SerializeField] private float _radiusCloud;
+    [SerializeField] private float _tickRate = 1f;
+
+    private Coroutine _applyStateCoroutine;
+    private Coroutine _lifetimeCoroutine;
+    private Coroutine _activateParticleCoroutine;
+
     private float _baseDuration;
     private float _duration;
-
-    [SerializeField] private float _damageModifier = 0.005f;
 
     private PoisonDamagingCloudPrefab _poisonDamageCloud;
     private Character _player;
     [ReadOnly][SerializeField] private Skill _skill;
-
-    private Coroutine _lifetimeStacksCoroutine;
-    private Coroutine _activateParticlePoisonCloudCoroutine;
-
-    private bool _isFeelingPoisoning;
-
-    private Dictionary<Character, float> _poisonBoneTimers = new();
-    private float _poisonBoneInterval = 3f;
 
     public PoisonDamagingCloudPrefab PoisonDamageCloud { get => _poisonDamageCloud; set => _poisonDamageCloud = value; }
 
@@ -48,7 +36,6 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
     {
         _player = player;
         _skill = skill;
-        _isFeelingPoisoning = isFeelingPoisoning;
 
         _duration = duration;
         _baseDuration = duration;
@@ -56,43 +43,21 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
 
     public void AddStack()
     {
-        //Debug.Log("PoisonDamagingCloud / AddStack");
-        //Debug.Log("PoisonDamagingCloud / AddStack / currentStacks = " + _currentStacks);
-        if (_currentStacks < _maxStacks)
+        /*if (_activateParticleCoroutine == null && _poisonDamageCloud == null)
         {
-            _currentStacks++;
-
-            if (_activateParticlePoisonCloudCoroutine == null && _poisonDamageCloud == null)
-            {
-                _activateParticlePoisonCloudCoroutine = StartCoroutine(ActivatePoisonCloud());
-            }
-            else
-            {
-                UpdateInstanceCloud();
-            }
-
-            if (_lifetimeStacksCoroutine != null)
-            {
-                StopCoroutine(_lifetimeStacksCoroutine);
-            }
-
-            _duration = _baseDuration;
-            _lifetimeStacksCoroutine = StartCoroutine(LifeTimeStacks());
+            _activateParticleCoroutine = StartCoroutine(ActivatePoisonCloud());
         }
         else
         {
             UpdateInstanceCloud();
+        }*/
 
-            if (_lifetimeStacksCoroutine != null)
-            {
-                StopCoroutine(_lifetimeStacksCoroutine);
-            }
+        if (_lifetimeCoroutine != null) StopCoroutine(_lifetimeCoroutine);
 
-            _duration = _baseDuration;
-            _lifetimeStacksCoroutine = StartCoroutine(LifeTimeStacks());
-        }
+        _duration = _baseDuration;
+        _lifetimeCoroutine = StartCoroutine(LifeTimeJob());
 
-        if (_damageCoroutine == null) _damageCoroutine = StartCoroutine(DamageEnemies());
+        if (_applyStateCoroutine == null) _applyStateCoroutine = StartCoroutine(ApplyPoisonCloudStateJob());
     }
 
     private void InstantiateCloud()
@@ -115,57 +80,20 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
         }
     }
 
-    private IEnumerator DamageEnemies()
+    private IEnumerator ApplyPoisonCloudStateJob()
     {
         while (true)
         {
-            DealDamageInRadius();
-            yield return new WaitForSeconds(_damageTickRate);
+            ApplyToEnemiesInRadius();
+            yield return new WaitForSeconds(_tickRate);
         }
     }
 
-    private IEnumerator ActivatePoisonCloud()
-    {
-        InstantiateCloud();
-        yield return null;
-    }
-
-    private IEnumerator LifeTimeStacks()
-    {
-        float time = _duration;
-
-        while (time > 0)
-        {
-            time -= Time.deltaTime;
-            yield return null;
-        }
-
-        if (_activateParticlePoisonCloudCoroutine != null)
-        {
-            StopCoroutine(_activateParticlePoisonCloudCoroutine);
-            _activateParticlePoisonCloudCoroutine = null;
-        }
-
-        if (_lifetimeStacksCoroutine != null)
-        {
-            StopCoroutine(_lifetimeStacksCoroutine);
-            _lifetimeStacksCoroutine = null;
-        }
-
-        _currentStacks = 0;
-
-        _instancePoisonDamagingCloud.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-        Destroy(_instancePoisonDamagingCloud.gameObject);
-
-        Destroy(gameObject);
-        PoisonDamageCloud = null;
-    }
-
-    private void DealDamageInRadius()
+    private void ApplyToEnemiesInRadius()
     {
         if (_player == null) return;
 
-        Collider[] targets = Physics.OverlapSphere( _player.transform.position, _radiusCloud, _enemyLayer);
+        Collider[] targets = Physics.OverlapSphere(_player.transform.position, _radiusCloud, _enemyLayer);
 
         foreach (var col in targets)
         {
@@ -176,35 +104,49 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
             if (target == _player) continue;
             if (target.IsDead) continue;
 
-            float damageValue = target.Health.MaxValue * _damageModifier;
-
-            Damage damage = new Damage
-            {
-                Value = damageValue,
-                Type = DamageType.Magical,
-                PhysicAttackType = AttackRangeType.RangeAttack
-            };
-
-            _skill.CmdApplyDamage(damage, target.gameObject);
-
-            if (!_poisonBoneTimers.ContainsKey(target))
-            {
-                _poisonBoneTimers[target] = 0f;
-            }
-
-            _poisonBoneTimers[target] += _damageTickRate;
-
-            if (_poisonBoneTimers[target] >= _poisonBoneInterval)
-            {
-                if (_skill.TryGetComponent<PoisonBall>(out PoisonBall poisonBall) && poisonBall.IsPoisonCloudAddPoisonBone)
-                {
-                    target.CharacterState.AddStateLogic( States.PoisonBone, 6, 0, Schools.None, _player.gameObject, null);
-                    if (_isFeelingPoisoning) _player.CharacterState.AddStateLogic(States.FeelingPoisoning, 2f, 0, Schools.None, _player.gameObject, _skill.Name);
-                }
-
-                _poisonBoneTimers[target] = 0f;
-            }
+            if(!isClient)
+                target.CharacterState.AddState(States.PoisonCloud, _baseDuration, 0, _player.gameObject, _skill != null ? _skill.Name : null);
         }
     }
 
+    private IEnumerator ActivatePoisonCloud()
+    {
+        InstantiateCloud();
+        yield return null;
+    }
+
+    private IEnumerator LifeTimeJob()
+    {
+        float time = _duration;
+
+        while (time > 0)
+        {
+            time -= Time.deltaTime;
+            yield return null;
+        }
+
+        if (_activateParticleCoroutine != null)
+        {
+            StopCoroutine(_activateParticleCoroutine);
+            _activateParticleCoroutine = null;
+        }
+
+        if (_lifetimeCoroutine != null)
+        {
+            StopCoroutine(_lifetimeCoroutine);
+            _lifetimeCoroutine = null;
+        }
+
+        if (_applyStateCoroutine != null)
+        {
+            StopCoroutine(_applyStateCoroutine);
+            _applyStateCoroutine = null;
+        }
+
+        //_instancePoisonDamagingCloud.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        //Destroy(_instancePoisonDamagingCloud.gameObject);
+
+        Destroy(gameObject);
+        PoisonDamageCloud = null;
+    }
 }

@@ -18599,11 +18599,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8492809262968261936, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_SizeDelta.x
-      value: -2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8492809262968261936, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_SizeDelta.y
-      value: -2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8630238717969952997, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}
       propertyPath: m_AnchorMax.x
@@ -19435,6 +19435,7 @@ MonoBehaviour:
   _radiusAttack: 1.15
   _returnCooldownDivider: 0.5
   _castSpeedValue: 4
+  _lineRendererPrefab: {fileID: 11400000, guid: 7faf4d32cfcc4f54d967e4d01a0c4b65, type: 2}
 --- !u!114 &6857802422684928800
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19552,7 +19553,7 @@ MonoBehaviour:
   _isTalentSpell: 1
   _isSkillActive: 0
   _abilityInfo: {fileID: 11400000, guid: 99ddb513034121044845fa2d5c1fd25a, type: 2}
-  _isSubjectToGlobalCooldownTime: 0
+  _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
     _costs: []
@@ -19573,9 +19574,9 @@ MonoBehaviour:
     _autoAttack: 0
   _targetingComponent:
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: -1
     _outOfRangeBehaviour: 0
   _targetsLayers:
     serializedVersion: 2
@@ -19633,7 +19634,6 @@ MonoBehaviour:
   _poisonDamagingCloudPrefab: {fileID: 8376359178360537337, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
   _poisonHealingCloudPrefab: {fileID: -4967518069141830548, guid: 835486046afaafa48885a183fcb94bd6, type: 3}
   _creeperPoisonAura: {fileID: 2161342997938470374}
-  _arrowPrefab: {fileID: 9064051009418913030, guid: bc01ef0a119629945958526e596df4ec, type: 3}
 --- !u!114 &7910504212405209002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21608,8 +21608,6 @@ MonoBehaviour:
     Group: 0
     Row: 0
   character: {fileID: 2483674839823445686}
-  skillManager: {fileID: 2617687491934927079}
-  spitPoison: {fileID: 4992365342693795224}
 --- !u!114 &1394518891378483386
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,16 +12,10 @@ public class PoisonTalent_2 : Talent
     public override void Enter()
     {
         skillManager.ActivateSkill(poisonBall);
-        poisonBall.SetPoisonCloudEnabled(true);
-        poisonSlap.SetPoisonCloudEnabled(true);
-        spitPoison.SetPoisonCloudEnabled(true);
     }
 
     public override void Exit()
     {
         skillManager.DeactivateSkill(poisonBall);
-        poisonBall.SetPoisonCloudEnabled(false);
-        poisonSlap.SetPoisonCloudEnabled(false);
-        spitPoison.SetPoisonCloudEnabled(false);
     }
 }

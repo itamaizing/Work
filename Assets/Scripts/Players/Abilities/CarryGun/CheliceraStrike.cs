@@ -233,7 +233,7 @@ public class CheliceraStrike : Skill
 
         float baseMagicDamage = psiValue;
         float mainTargetDamage = baseMagicDamage * (1f + MagicDamagePerPsiMainTarget);
-        
+
         var magicDamageToMain = new Damage
         {
             Value = mainTargetDamage,
@@ -245,31 +245,44 @@ public class CheliceraStrike : Skill
 
         int psiStacks = Mathf.FloorToInt(psiValue / PsiPerStack);
 
-        if (psiStacks > 0)
+        float radius;
+        if (psiStacks == 0)
         {
-            CmdDispel(targetCharacter, psiStacks);
+            radius = 0.5f;
+        }
+        else
+        {
+            radius = (psiStacks - 1) + 1.0f;
+        }
 
-            float radius = RadiusLow + (psiStacks - 1) * RadiusStepIncrease;
+        Collider[] nearbyEnemies = Physics.OverlapSphere(targetCharacter.transform.position, radius, _targetsLayers);
 
-            Collider[] nearbyEnemies = Physics.OverlapSphere(transform.position, radius, _targetsLayers);
-
-            foreach (var enemyCollider in nearbyEnemies)
+        foreach (var enemyCollider in nearbyEnemies)
+        {
+            if (enemyCollider.TryGetComponent<Character>(out var enemy) &&
+                enemy != targetCharacter && enemy != _player)
             {
-                if (enemyCollider.TryGetComponent<Character>(out var enemy) &&
-                    enemy != targetCharacter && enemy != _player)
+                float nearbyDamage = baseMagicDamage * MagicDamagePerPsiNearby;
+
+                var magicDamageToEnemy = new Damage
                 {
-                    float nearbyDamage = baseMagicDamage * MagicDamagePerPsiNearby;
+                    Value = nearbyDamage,
+                    Type = DamageType.Magical,
+                    PhysicAttackType = AttackRangeType.MeleeAttack,
+                };
 
-                    var magicDamageToEnemy = new Damage
-                    {
-                        Value = nearbyDamage,
-                        Type = DamageType.Magical,
-                        PhysicAttackType = AttackRangeType.MeleeAttack,
-                    };
+                CmdApplyDamage(magicDamageToEnemy, enemy.gameObject);
 
-                    CmdApplyDamage(magicDamageToEnemy, enemy.gameObject);
+                if (psiStacks > 0)
+                {
+                    CmdDispel(enemy, 1);
                 }
             }
+        }
+
+        if (psiStacks > 0)
+        {
+            CmdDispel(targetCharacter, 1);
         }
     }
 

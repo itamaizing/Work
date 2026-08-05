@@ -1,26 +1,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ErodedArmorState : AbstractCharacterState
+public class ErodedArmorState : RefreshingState
 {
     private const float ReductionPerStackPercent = 0.05f;
-    private float _durationRemaining;
 
-    private float _originalDef;
-    private float _appliedReduction;
+    private AttributeModifier _armorModifier;
 
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
 
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
-    public override States State => States.CorrodedArmor;
+    public override States State => States.ErodedArmor;
     public override StateType Type => StateType.Physical;
     public override List<StatusEffect> Effects => _effects;
-    public override float RemainingDuration => _durationRemaining;
 
     public ErodedArmorState()
     {
         MaxStacksCount = 3;
-        currentStacksCount = 1;
     }
 
     public override void EnterState(CharacterState character,
@@ -33,24 +29,15 @@ public class ErodedArmorState : AbstractCharacterState
         health = character.Character.Health;
         this.personWhoMadeBuff = personWhoMadeBuff;
 
-        _durationRemaining = durationToExit;
-
-        if (health != null)
-        {
-            _originalDef = health.DefPhysDamage;
-        }
+        currentStacksCount = 1;
+        
+        _armorModifier = new AttributeModifier(ReductionPerStackPercent, ModifierType.Percent, this);
 
         ApplyReduction();
     }
 
     public override void UpdateState()
     {
-        _durationRemaining -= Time.deltaTime;
-
-        if (_durationRemaining <= 0f)
-        {
-            ExitState();
-        }
     }
 
     public override bool Stack(float time)
@@ -60,7 +47,7 @@ public class ErodedArmorState : AbstractCharacterState
             currentStacksCount++;
         }
 
-        _durationRemaining = time;
+        duration = time;
 
         ApplyReduction();
         return true;
@@ -68,29 +55,49 @@ public class ErodedArmorState : AbstractCharacterState
 
     private void ApplyReduction()
     {
-        if (health == null) return;
-
-        health.DefPhysDamage += _appliedReduction;
-
-        float totalPercent = currentStacksCount * ReductionPerStackPercent;
-        float newReduction = _originalDef * totalPercent;
-
-        _appliedReduction = newReduction;
-
-        health.DefPhysDamage -= _appliedReduction;
+        if (characterState == null || characterState.Character == null) return;
+        
+        _armorModifier.Value = -(currentStacksCount * ReductionPerStackPercent);
+        
+        var armorAttribute = characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical];
+        
+        if (armorAttribute != null && !armorAttribute.Modifiers.Contains(_armorModifier))
+        {
+            armorAttribute.AddModifier(_armorModifier);
+        }
     }
 
     public override void ExitState()
     {
-        if (health != null)
+        if (characterState != null && characterState.Character != null)
         {
-            health.DefPhysDamage += _appliedReduction;
+            var armorAttribute = characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical];
+
+            if (armorAttribute != null && armorAttribute.Modifiers.Contains(_armorModifier))
+            {
+                armorAttribute.RemoveModifier(_armorModifier);
+            }
         }
 
-        currentStacksCount = 1;
-        _appliedReduction = 0f;
+        currentStacksCount = 0;
 
         characterState.StateIcons.RemoveItemByState(State);
         characterState.RemoveState(this);
+    }
+    
+    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        if (!CanEnterState(character)) return null;
+
+        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+
+        if (currentStacksCount == 0)
+        {
+            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+        }
+        else
+            Stack(duration);
+
+        return this;
     }
 }

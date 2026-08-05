@@ -271,10 +271,15 @@ public class SneakySpit : Skill
         UnlockControlAfterCast();
     }
 
-    [Command] private void CmdAddState(Character target)
+    [Command] 
+    private void CmdAddState(Character target)
     {
-        if (_isErodedArmorState) target.CharacterState.AddState(States.ErodedArmor, durationErodedArmor, 0, _playerLinks.gameObject, name);
-        target.CharacterState.AddState(States.Blind, duration, 0, _playerLinks.gameObject, name);
+        GameObject casterObj = Hero != null ? Hero.gameObject : (_playerLinks != null ? _playerLinks.gameObject : gameObject);
+
+        if (_isErodedArmorState) 
+            target.CharacterState.AddState(States.ErodedArmor, durationErodedArmor, 0, casterObj, Name);
+
+        target.CharacterState.AddState(States.Blind, duration, 0, casterObj, Name);
     }
 
     [TargetRpc]

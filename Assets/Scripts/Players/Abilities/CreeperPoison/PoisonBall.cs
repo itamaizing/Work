@@ -190,11 +190,15 @@ public class PoisonBall : Skill, IAltAbility
 
     public void SetPoisonCloudEnabled(bool value)
     {
+        if(value == _isCanSpawnPoisonCloud) return;
+        
         _isCanSpawnPoisonCloud = value;
     }
 
     public void PoisonCloudAddPoisonBone(bool value)
     {
+        if(value == _isPoisonCloudAddPoisonBone) return;
+        
         _isPoisonCloudAddPoisonBone = value;
     }
 
@@ -969,12 +973,9 @@ public class PoisonBall : Skill, IAltAbility
         {
             if (_poisonDamagingCloud == null && _poisonDamagingCloudPrefab.PoisonDamageCloud == null)
             {
-                _player.CharacterState.AddState(States.PoisonCloud, duration, 0, _player.gameObject, Name);
-
                 _poisonDamagingCloud = Instantiate(_poisonDamagingCloudPrefab, _player.transform.position, Quaternion.identity);
 
                 _poisonDamagingCloudPrefab.PoisonDamageCloud = _poisonDamagingCloud;
-                //SceneManager.MoveGameObjectToScene(_poisonDamagingCloudPrefab.PoisonDamageCloud.gameObject, _hero.NetworkSettings.MyRoom);
 
                 _poisonDamagingCloudPrefab.PoisonDamageCloud.InitializationProjectile(_player, duration, this, _creeperPoisonAura.IsFeelingPoisoning);
                 _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
@@ -987,7 +988,6 @@ public class PoisonBall : Skill, IAltAbility
             else
             {
                 //Debug.Log("PoisonBall / CmdApplyPoisonCloud / else / _poisonDamagingCloud = " + _poisonDamagingCloudPrefab.PoisonDamageCloud);
-                _player.CharacterState.AddState(States.PoisonCloud, duration, 0, _player.gameObject, Name);
                 _poisonDamagingCloudPrefab.PoisonDamageCloud.AddStack();
             }
         }

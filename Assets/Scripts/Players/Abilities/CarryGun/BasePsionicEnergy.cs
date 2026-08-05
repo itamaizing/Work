@@ -70,7 +70,18 @@ public class BasePsionicEnergy : Resource, IDamageable
     }
 
     public void TakesAnyDamage(bool value) => _isTakesAnyDamage = value;
-    public void AccumulationPsionicChanged(bool value) => OnAccumulationPsionicChanged?.Invoke(value);
+    
+    
+    private bool _isPsionicsTalentActive = false;
+    public bool IsPsionicsTalentActive => _isPsionicsTalentActive;
+
+    public void AccumulationPsionicChanged(bool value)
+    {
+        if (_isPsionicsTalentActive == value) return;
+
+        _isPsionicsTalentActive = value;
+        OnAccumulationPsionicChanged?.Invoke(value);
+    }
 
     public void DissipatingPsi(bool value)
     {
