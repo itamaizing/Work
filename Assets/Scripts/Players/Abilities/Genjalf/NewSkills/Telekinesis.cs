@@ -91,13 +91,12 @@ namespace Gangdollarff
                 yield return null;
             }
 
-            Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
             _skillRender.StopDrawRadius();
 
             while (GetMouseButton)
                 yield return null;
 
-            _radiusEnemy.transform.SetParent(Targeting.GetTarget().Transform);
+            _radiusEnemy.transform.SetParent(Targeting.GetTempTarget().Transform);
             _radiusEnemy.transform.localPosition = Vector3.zero;
             _radiusEnemy.gameObject.SetActive(true);
 
@@ -110,7 +109,7 @@ namespace Gangdollarff
                     Vector3 clickPoint = Targeting.GetMousePoint();
                     if (clickPoint != Vector3.zero)
                     {
-                        var targetTransform = Targeting.GetTarget().Transform;
+                        var targetTransform = Targeting.GetTempTarget().Transform;
                         if (Vector3.Distance(clickPoint, targetTransform.position) > AreaInfo.Radius)
                             clickPoint = Targeting.ClampToRadius(targetTransform.position, clickPoint, AreaInfo.Radius);
 
@@ -125,7 +124,7 @@ namespace Gangdollarff
             _radiusEnemy.transform.SetParent(null);
 
             TargetInfo targetInfo = new TargetInfo();
-            targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+            targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
 
             if (destination != Vector3.zero)
                 targetInfo.Points.Add(destination);

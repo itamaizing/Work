@@ -80,10 +80,11 @@ public class SchoolSolvent : Skill
             }
             yield return null;
         }
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
+
         TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
         targetDataSavedCallback(targetInfo);
+        Targeting.ClearTempTarget();
     }
 
     protected override IEnumerator CastJob()

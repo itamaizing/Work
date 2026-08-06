@@ -146,11 +146,10 @@ public class CounterSpell : Skill
             }
             yield return null;
         }
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Targetable);
-        Targeting.ClearTempTarget();
 
-        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
+        targetInfo.AddTarget(Targeting.GetTempTarget()?.Character);
         callbackDataSaved(targetInfo);
+        Targeting.ClearTempTarget();
     }
 
     [Command]
