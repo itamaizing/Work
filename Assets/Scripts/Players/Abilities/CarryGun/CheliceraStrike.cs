@@ -255,7 +255,7 @@ public class CheliceraStrike : Skill
             radius = (psiStacks - 1) + 1.0f;
         }
 
-        Collider[] nearbyEnemies = Physics.OverlapSphere(targetCharacter.transform.position, radius, _targetsLayers);
+        Collider[] nearbyEnemies = Physics.OverlapSphere(targetCharacter.transform.position, radius, Targeting.Layer);
 
         foreach (var enemyCollider in nearbyEnemies)
         {
