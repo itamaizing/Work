@@ -106,7 +106,13 @@ public class CreeperStrike : Skill
     }
 
     public void CheckForStatePoisonBone(bool value) => _isCheckForStatePoisonBone = value;
-    public void ColdBloodStrike(bool value) => _isColdBloodStrike = value;
+
+    public void ColdBloodStrike(bool value)
+    {
+        if (value == _isColdBloodStrike) return;
+            
+        _isColdBloodStrike = value;
+    }
     public void SetSpeedOfReptile(bool value) => _isSpeedOfReptileActive = value;
 
     public void AnimCreeperStrikeCast()
@@ -258,7 +264,7 @@ public class CreeperStrike : Skill
         _isHit = true;
         OnHit?.Invoke();
 
-        TryReduceColdBloodCooldown(character);
+        //TryReduceColdBloodCooldown(character);
 
         if (CanDealColdBloodCriticalDamage())
         {

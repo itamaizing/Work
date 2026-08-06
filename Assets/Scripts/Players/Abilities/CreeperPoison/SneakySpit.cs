@@ -60,6 +60,7 @@ public class SneakySpit : Skill
     {
         Hero.Health.OnBeforeTakeDamage -= HandleBeforeTakeDamage;
         Hero.Health.Evaded -= OnHeroEvade;
+        CastStarted -= HandleCastStarted;
     }
 
     private void TrySubscribe()
@@ -69,6 +70,7 @@ public class SneakySpit : Skill
 
         Hero.Health.OnBeforeTakeDamage += HandleBeforeTakeDamage;
         Hero.Health.Evaded += OnHeroEvade;
+        CastStarted += HandleCastStarted;
     }
 
     public void TryStartSneakySpitBoostWindow(Character target)
@@ -98,9 +100,38 @@ public class SneakySpit : Skill
 
         yield return new WaitForSeconds(windowDuration);
 
+        _boostWindow = null;
+        FinishBoostWindow();
+    }
+    
+    private void FinishBoostWindow()
+    {
         DisableSkillBoost();
 
-        _boostWindow = null;
+        if (!isAnimStart)
+        {
+            CancelQueuedCast();
+        }
+    }
+
+    private void CancelQueuedCast()
+    {
+        if (!isAbilityQueue) return;
+        
+        TryCancel();
+        
+        if (_hero.Abilities != null)
+            _hero.Abilities.SkillQueue.RemoveNeededSkillFromQueue(this);
+
+        ClearQueueTarget();
+        isAbilityQueue = false;
+    }
+
+    private void HandleCastStarted()
+    {
+        isAnimStart = true;
+        CancelBoostWindow();
+        LockControlDuringCast();
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -175,14 +206,10 @@ public class SneakySpit : Skill
         Targeting.FindTempTarget();
 
         isAbilityQueue = true;
-        isAnimStart = true;
 
         TargetInfo targetInfo = new TargetInfo();
         targetInfo.AddTarget(Targeting.GetTarget()?.Character);
         callbackDataSaved(targetInfo);
-
-        CancelBoostWindow();
-        LockControlDuringCast();
     }
 
     protected override IEnumerator CastJob()
@@ -205,7 +232,7 @@ public class SneakySpit : Skill
         {
             StopCoroutine(_boostWindow);
             _boostWindow = null;
-            DisableSkillBoost();
+            FinishBoostWindow();
         }
     }
 

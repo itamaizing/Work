@@ -43,14 +43,14 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
 
     public void AddStack()
     {
-        /*if (_activateParticleCoroutine == null && _poisonDamageCloud == null)
+        if (_activateParticleCoroutine == null && _poisonDamageCloud == null)
         {
             _activateParticleCoroutine = StartCoroutine(ActivatePoisonCloud());
         }
         else
         {
             UpdateInstanceCloud();
-        }*/
+        }
 
         if (_lifetimeCoroutine != null) StopCoroutine(_lifetimeCoroutine);
 
@@ -143,8 +143,8 @@ public class PoisonDamagingCloudPrefab : NetworkBehaviour
             _applyStateCoroutine = null;
         }
 
-        //_instancePoisonDamagingCloud.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-        //Destroy(_instancePoisonDamagingCloud.gameObject);
+        _instancePoisonDamagingCloud.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        Destroy(_instancePoisonDamagingCloud.gameObject);
 
         Destroy(gameObject);
         PoisonDamageCloud = null;

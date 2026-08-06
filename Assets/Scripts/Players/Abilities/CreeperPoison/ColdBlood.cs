@@ -18,6 +18,7 @@ public class ColdBlood : Skill
     private bool _isCanCritLightningStrikes;
 
     private bool _isWaitingForHit = false;
+    private bool _isColdBloodTalentActive = false;
 
     public bool IsCanCrit
     {
@@ -36,9 +37,9 @@ public class ColdBlood : Skill
 
     protected override bool IsCanCast => !_isWaitingForHit;
 
-    protected override void Awake()
+    public void SetTalentActive(bool value)
     {
-        base.Awake();
+        _isColdBloodTalentActive = value;
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
@@ -55,36 +56,32 @@ public class ColdBlood : Skill
     {
         UseAbilityWithoutTalent();
 
-        CmdApplyImmateriality();
+        EnableTargetBoosts();
         StartWaitingForHit();
 
         yield return null;
     }
 
-    /// <summary>
-    /// ВАЖНО:
-    /// Базовый Skill вызывает CommitUse() после CastJob(),
-    /// а CommitUse() вызывает UseCooldownOrCharges().
-    /// Поэтому здесь запрещаем старт КД при нажатии ColdBlood.
-    /// КД стартует только после усиленного удара.
-    /// </summary>
     protected override void UseCooldownOrCharges()
     {
-        // Ничего не делаем.
-        // Cooldown.Start() будет вызван после OnCreeperStrikeHit().
     }
 
     protected override void ClearData()
     {
-        Debug.Log("ColdBlood / ClearData");
-
         _mousePosition = Vector3.positiveInfinity;
         _isPlayer = false;
+    }
 
-        if (Hero != null && Hero.CharacterState.CheckForState(States.Immateriality))
-        {
-            Hero.CharacterState.CmdRemoveState(States.Immateriality);
-        }
+    private void EnableTargetBoosts()
+    {
+        _hero.Abilities.GetSkill<CreeperStrike>().EnableSkillBoost();
+        _hero.Abilities.GetSkill<LightningStrikes>().EnableSkillBoost();
+    }
+
+    private void DisableTargetBoosts()
+    {
+        _hero.Abilities.GetSkill<CreeperStrike>().DisableSkillBoost();
+        _hero.Abilities.GetSkill<LightningStrikes>().DisableSkillBoost();
     }
 
     private void StartWaitingForHit()
@@ -107,9 +104,14 @@ public class ColdBlood : Skill
 
         _isWaitingForHit = false;
 
+        DisableTargetBoosts();
+        
         Cooldown.Start();
 
-        ReducingAbilityCooldown();
+        if (_isColdBloodTalentActive)
+        {
+            ReducingAbilityCooldown();
+        }
     }
 
     public void ReducingAbilityCooldown()
@@ -119,46 +121,11 @@ public class ColdBlood : Skill
             float newCooldownTime = Cooldown.RemainingTime / _reducingCooldownMultiplier;
             Cooldown.SetReduced(newCooldownTime, shouldModify: false);
         }
-
-        RemoveImmaterialityIfActive();
-    }
-
-    private void UseAbilityWithTalent()
-    {
-        if (_isPlayer)
-        {
-            Cooldown.SetReduced(_cooldownTimeWithTalent, shouldModify: true);
-
-            Debug.Log("ColdBlood / UseAbilityWithTalent / _isPlayer == true");
-
-            Hero.CharacterState.DispelStates(
-                StateType.Physical,
-                Targeting.GetTarget().Character.NetworkSettings.TeamIndex,
-                Hero.NetworkSettings.TeamIndex,
-                true
-            );
-        }
-        else
-        {
-            Debug.Log("ColdBlood / UseAbilityWithTalent / _isPlayer == false");
-
-            _isCanCrit = true;
-        }
     }
 
     private void UseAbilityWithoutTalent()
     {
-        Debug.Log("ColdBlood / UseAbilityWithoutTalent");
-
         _isCanCrit = true;
-    }
-
-    private void RemoveImmaterialityIfActive()
-    {
-        if (Hero != null && Hero.CharacterState.CheckForState(States.Immateriality))
-        {
-            Hero.CharacterState.CmdRemoveState(States.Immateriality);
-        }
     }
 
     private void OnDisable()
@@ -166,12 +133,7 @@ public class ColdBlood : Skill
         if (_creeperStrike != null)
             _creeperStrike.OnHit -= OnCreeperStrikeHit;
 
+        DisableTargetBoosts();
         _isWaitingForHit = false;
-    }
-
-    [Command]
-    private void CmdApplyImmateriality()
-    {
-        Hero.CharacterState.AddState(States.Immateriality, 999, 0, Hero.gameObject, Name);
     }
 }

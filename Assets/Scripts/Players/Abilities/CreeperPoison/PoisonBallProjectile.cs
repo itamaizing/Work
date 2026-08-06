@@ -1,5 +1,6 @@
 ﻿using Mirror;
 using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 
 public class PoisonBallProjectile : Test_Projectile
@@ -256,13 +257,10 @@ public class PoisonBallProjectile : Test_Projectile
 
     public void MoveBallOnMaxDistance(Vector3 point, bool isFast)
     {
-        Debug.Log("PoisonBallProjectile / MoveBallOnMaxDistance");
         _isFast = isFast;
         _directionOfFlight = (point - transform.position).normalized;
 
         float speed = isFast ? _fastMovementSpeed : _slowMovementSpeed;
-        Debug.Log("PoisonBallProjectile / MoveBallOnMaxDistance / speed = " + speed);
-        Debug.Log("PoisonBallProjectile / MoveBallOnMaxDistance / point = " + point);
 
         Vector3 finalPoint = transform.position + _directionOfFlight * Mathf.Min(Vector3.Distance(transform.position, point), _skill.AreaInfo.CastLength);
         ScheduleAutoDestroy(finalPoint, speed);
@@ -276,7 +274,7 @@ public class PoisonBallProjectile : Test_Projectile
     public override void DamageDeal()
     {
         float multiplier = 1f;
-
+        
         if (_isActiveBallEffect && _currentCountBall >= 1)
         {
             multiplier += (_currentCountBall - 1) * 0.2f;
@@ -293,29 +291,22 @@ public class PoisonBallProjectile : Test_Projectile
         };
 
         _target.Health.TryTakeDamage(ref _baseDamage, _skill);
-        //_target.DamageTracker.AddDamage(_baseDamage, isServerRequest: isServer);
 
         if (_isActiveWitheringPoison)
         {
             _target.CharacterState.AddState(States.WitheringPoison, 6f, 0, _player.gameObject, _skill.Name);
         }
 
-        //if (_restorationOfGlands.Data.IsOpen && _poisonBoneStack > 0 && _target.CharacterState.CheckForState(States.PoisonBone))
-        //{
-        //    ReductionCooldownFromRestorationOfGlands();
-        //}
-
         _target.CharacterState.AddState(States.InAir, _durationInAir, 0, _player.gameObject, _skill.Name);
-       // _target.CharacterState.AddState(States.PoisonBone, poisonBone, 0, _player.gameObject, _skill.Name);
 
         PushEnemyDependingOnCountProjectile(_target, _baseDurationPush);
-        
+    
         DestroyProjectile();
     }
 
     private void PushEnemyDependingOnCountProjectile(Character target, float durationPush)
     {
-        if (_isActiveBallEffect && _currentCountBall >= 2)
+        if (_isActiveBallEffect && _currentCountBall >= 1)
         {
             float additionalDistance = (_currentCountBall - 1);
             _newDistancePush = _baseDistancePush + additionalDistance + _multiplierDistanceFromTalent;
@@ -325,8 +316,6 @@ public class PoisonBallProjectile : Test_Projectile
             _newDistancePush = _baseDistancePush;
         }
 
-        _newDistancePush = _baseDistancePush;
-
         PushEnemy(target.gameObject, _newDistancePush, durationPush, _isPushTarget);
     }
 
@@ -335,36 +324,30 @@ public class PoisonBallProjectile : Test_Projectile
         if (targetObj.TryGetComponent(out Character target))
         {
             MoveComponent targetMove = target.GetComponent<MoveComponent>();
+            if (targetMove == null) return;
 
-            Vector3 direction = _directionOfFlight;
-            direction.y = 0;
+            Vector3 pushDirection;
 
-            Vector3 finalPoint = target.transform.position + (isPushAway ? direction : -direction) * distancePush;
+            if (_player != null)
+            {
+                pushDirection = (target.transform.position - _player.transform.position);
+            }
+            else
+            {
+                pushDirection = _directionOfFlight;
+            }
+
+            pushDirection.y = 0;
+            pushDirection.Normalize();
+
+            if (pushDirection == Vector3.zero) 
+                pushDirection = target.transform.forward;
+
+            Vector3 finalPoint = target.transform.position + (isPushAway ? pushDirection : -pushDirection) * distancePush;
             finalPoint.y = target.transform.position.y;
 
             StartCoroutine(HandlePushWithFly(targetMove, finalPoint, durationPush));
         }
-    }
-
-    private void ReductionCooldownFromRestorationOfGlands()
-    {
-        RpcReductionCooldownFromRestorationOfGlands(_player.gameObject);
-    }
-
-    private IEnumerator ServerMove(MoveComponent targetMove, Vector3 finalPoint, float duration)
-    {
-        float elapsed = 0f;
-        Vector3 start = targetMove.transform.position;
-
-        while (elapsed < duration)
-        {
-            float time = elapsed / duration;
-            targetMove.transform.position = Vector3.Lerp(start, finalPoint, time);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        targetMove.transform.position = finalPoint;
     }
 
     private IEnumerator HandlePushWithFly(MoveComponent targetMove, Vector3 finalPoint, float duration)
@@ -373,9 +356,22 @@ public class PoisonBallProjectile : Test_Projectile
 
         targetMove.SetFlyState(true);
 
-        if (targetMove.connectionToClient != null) targetMove.TargetRpcDoMove(finalPoint, duration);
-        else targetMove.RpcDoMove(finalPoint, duration);
+        targetMove.RpcDoPush(finalPoint, duration);
+
+        var agent = targetMove.GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (agent != null && agent.enabled)
+            agent.enabled = false;
+
+        if (targetMove.Rigidbody != null)
+        {
+            targetMove.Rigidbody.DOKill();
+            targetMove.Rigidbody.DOMove(finalPoint, duration).SetEase(DG.Tweening.Ease.Linear);
+        }
+
         yield return new WaitForSeconds(duration);
+
+        if (agent != null)
+            agent.enabled = true;
 
         targetMove.SetFlyState(false);
     }
@@ -555,7 +551,6 @@ public class PoisonBallProjectile : Test_Projectile
         
         if (Random.Range(0f, 1f) <= chanceRestorationOfGlands)
         {
-            Debug.Log("SpitPoisonProj / If RestorationOfGlands.IsActive = true");
             restorationOfGlands.ReductionCooldown();
         }
     }
@@ -565,15 +560,11 @@ public class PoisonBallProjectile : Test_Projectile
     {
         if (!_renderer) return;
 
-        Debug.Log("смена");
-
         if (!_isTransparentPoisons)
         {
             _renderer.material = _projectileMaterialBase;
             return;
         }
-
-        Debug.Log("смена прозрачности");
 
         if (_ownerLayer == LayerMask.NameToLayer("Allies")) _renderer.material = _projectileMaterialAllies;
         else if (_ownerLayer == LayerMask.NameToLayer("Enemy")) _renderer.material = _projectileMaterialEnemy;

@@ -19,7 +19,7 @@ public class SwarmSpeedState : RefreshingState
         
         float multiplier = 1f + BaseBonus + (occupiedCapacity * PerUnitBonus);
         _speedModifier = new AttributeModifier(multiplier, ModifierType.Multiplier, this);
-        characterState.Character.AttributeSystem[CharacterAttributeName.CooldownReduction].AddModifier(_speedModifier);
+        characterState.Character.AttributeSystem[CharacterAttributeName.CastSpeedPhysical].AddModifier(_speedModifier);
     }
 
     public override void UpdateState() { }
@@ -35,7 +35,7 @@ public class SwarmSpeedState : RefreshingState
     {
         if (_speedModifier == null) return;
 
-        characterState.Character.AttributeSystem[CharacterAttributeName.CooldownReduction].RemoveBySource(this);
+        characterState.Character.AttributeSystem[CharacterAttributeName.CastSpeedPhysical].RemoveBySource(this);
 
         _speedModifier = null;
     }

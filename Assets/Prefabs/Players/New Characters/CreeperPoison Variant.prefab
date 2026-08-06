@@ -19250,8 +19250,14 @@ MonoBehaviour:
   _abilityInfo: {fileID: 11400000, guid: 5e12a4e98f6c3dd42ad804c36ea87337, type: 2}
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
-    _base: 0
-    _costs: []
+    _base: 10
+    _costs:
+    - nameToShow: 10 Mana - Mandatory mod desc
+      type: 1
+      value: 10
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -19297,7 +19303,7 @@ MonoBehaviour:
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 1
   _maxCharges: 2
-  _chargeCooldown: 14
+  _chargeCooldown: 24
   _areaComponent:
     _radius: 0
     _area: 0
@@ -20123,7 +20129,13 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 20
-    _costs: []
+    _costs:
+    - nameToShow: 20 Mana - Mandatory mod desc
+      type: 1
+      value: 20
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 6
@@ -21539,8 +21551,6 @@ MonoBehaviour:
     Row: 0
   character: {fileID: 2483674839823445686}
   poisonBall: {fileID: 4719927588574066064}
-  poisonSlap: {fileID: 8577860281443816807}
-  spitPoison: {fileID: 4992365342693795224}
   skillManager: {fileID: 2617687491934927079}
 --- !u!114 &964801864059339207
 MonoBehaviour:
