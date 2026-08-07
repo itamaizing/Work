@@ -40,8 +40,19 @@ public class CreeperPoisonAura : NetworkBehaviour
     public void DecreaseCooldownDamage(bool value) => _isDecreaseCooldownDamage = value;
     public void ActiveWitheringPoisonMetabolism(bool value) => _isActiveWitheringPoisonMetabolism = value;
     public void ActiveWitheringPoison(bool value) => _isActiveWitheringPoison = value;
-    public void PleasurePoisoning(bool value) => _isPleasurePoisoning = value;
-    public void OwnElement(bool value) => _isOwnElement = value;
+
+    public void PleasurePoisoning(bool value)
+    {
+        _isPleasurePoisoning = value;
+        EvaluateAuraState();
+    }
+
+    public void OwnElement(bool value)
+    {
+        _isOwnElement = value;
+        EvaluateAuraState();
+    }
+
     public void FeelingPoisoning(bool value) => _isFeelingPoisoning = value;
     public void EvadePoison(bool value) => _isEvadePoison = value;
     #endregion
@@ -63,8 +74,8 @@ public class CreeperPoisonAura : NetworkBehaviour
         {
             _owner.DamageTracker.OnDamageTracked += OnDamageDealt;
         }
-
-        _poisonAuraRoutine = StartCoroutine(PoisonAuraRoutine());
+        
+        EvaluateAuraState();
     }
 
     public override void OnStopServer()
@@ -80,7 +91,47 @@ public class CreeperPoisonAura : NetworkBehaviour
             _owner.DamageTracker.OnDamageTracked -= OnDamageDealt;
         }
 
-        if (_poisonAuraRoutine != null) StopCoroutine(_poisonAuraRoutine);
+        StopAuraRoutine();
+    }
+    
+    private void EvaluateAuraState()
+    {
+        if (!isServer) return;
+
+        bool needsAuraRoutine = _isOwnElement || _isPleasurePoisoning;
+
+        if (needsAuraRoutine)
+        {
+            if (_poisonAuraRoutine == null)
+            {
+                _poisonAuraRoutine = StartCoroutine(PoisonAuraRoutine());
+            }
+        }
+        else
+        {
+            StopAuraRoutine();
+            ResetAuraEffects();
+        }
+    }
+
+    private void StopAuraRoutine()
+    {
+        if (_poisonAuraRoutine != null)
+        {
+            StopCoroutine(_poisonAuraRoutine);
+            _poisonAuraRoutine = null;
+        }
+    }
+
+    private void ResetAuraEffects()
+    {
+        if (_lastStacks != 0)
+        {
+            ApplyAttackSpeed(0);
+            _lastStacks = 0;
+        }
+
+        ResetEnergyRegen();
     }
 
     private void OnBeforeTakeDamage(Damage damage, Skill skill)
@@ -149,7 +200,6 @@ public class CreeperPoisonAura : NetworkBehaviour
         {
             for (int i = 0; i < delta; i++) state.Stack(999f);
         }
-
         else if (delta < 0)
         {
             for (int i = 0; i < -delta; i++) state.ReduceStack();
@@ -175,24 +225,20 @@ public class CreeperPoisonAura : NetworkBehaviour
     {
         while (true)
         {
-            if (!_isOwnElement)
-            {
-                if (_lastStacks != 0)
-                {
-                    ApplyAttackSpeed(0);
-                    _lastStacks = 0;
-                }
-
-                yield return new WaitForSeconds(_tickRate);
-                continue;
-            }
-
             int totalStacks = CalculatePoisonStacks();
 
-            if (totalStacks != _lastStacks)
+            if (_isOwnElement)
             {
-                ApplyAttackSpeed(totalStacks);
-                _lastStacks = totalStacks;
+                if (totalStacks != _lastStacks)
+                {
+                    ApplyAttackSpeed(totalStacks);
+                    _lastStacks = totalStacks;
+                }
+            }
+            else if (_lastStacks != 0)
+            {
+                ApplyAttackSpeed(0);
+                _lastStacks = 0;
             }
 
             if (_isPleasurePoisoning)
@@ -259,17 +305,8 @@ public class CreeperPoisonAura : NetworkBehaviour
         _castSpeedModifier.Value = newValue;
         _castSpeedModifier.Source = this;
 
-        if (_owner == null || _owner.Abilities == null) return;
-
-        foreach (var skill in _owner.Abilities.Skills)
-        {
-            if (skill == null) continue;
-            if (skill.Info.DamageType != DamageType.Physical) continue;
-
-            var castSpeedAttribute = skill.Attributes[SkillAttributeName.CastSpeed];
-
-            if (!castSpeedAttribute.Modifiers.Contains(_castSpeedModifier))
-                castSpeedAttribute.AddModifier(_castSpeedModifier);
-        }
+        if (_owner == null) return;
+        
+        _owner.AttributeSystem[CharacterAttributeName.CastSpeed].AddModifier(_castSpeedModifier);
     }
 }

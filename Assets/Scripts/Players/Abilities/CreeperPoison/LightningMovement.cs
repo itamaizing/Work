@@ -77,6 +77,11 @@ public class LightningMovement : Skill
             _hero.Move.StopMoveAndAnimationMove();
         }
 
+        if (IsInMovement)
+        {
+            Cooldown.Start();
+        }
+
         FinalizeMovement();
         ClearData();
     }
@@ -168,9 +173,10 @@ public class LightningMovement : Skill
             if (GetMouseButton)
             {
                 Vector3 clickedPoint = Targeting.GetMousePoint();
-                if (Targeting.IsPointInRadius(AreaInfo.Radius, clickedPoint))
+                if (IsValidLeapPoint(clickedPoint))
                 {
-                    firstPoint = CalculateLeapPoint(_hero.transform.position, clickedPoint);
+                    Vector3 clampedPoint = Targeting.ClampToRadius(_hero.transform.position, clickedPoint, AreaInfo.Radius);
+                    firstPoint = CalculateLeapPoint(_hero.transform.position, clampedPoint);
                 }
             }
 
@@ -204,11 +210,10 @@ public class LightningMovement : Skill
                 if (GetMouseButton)
                 {
                     Vector3 clickedPoint = Targeting.GetMousePoint();
-
-                    if (IsValidLeapPoint(clickedPoint) &&
-                        Targeting.IsPointInRadius(AreaInfo.Radius, clickedPoint))
+                    if (IsValidLeapPoint(clickedPoint))
                     {
-                        secondPoint = CalculateLeapPoint(firstPoint, clickedPoint);
+                        Vector3 clampedPoint = Targeting.ClampToRadius(firstPoint, clickedPoint, AreaInfo.Radius);
+                        secondPoint = CalculateLeapPoint(firstPoint, clampedPoint);
                     }
                 }
 

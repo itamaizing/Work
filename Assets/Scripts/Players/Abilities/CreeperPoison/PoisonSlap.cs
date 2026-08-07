@@ -1,6 +1,7 @@
 ﻿using Mirror;
 using System;
 using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 
 public class PoisonSlap : Skill
@@ -18,11 +19,6 @@ public class PoisonSlap : Skill
     [SerializeField] private SkillManager _skillManager;
 
     [Header("Talents")]
-    //[SerializeField] private RestorationOfGlands _restorationOfGlands;
-    //[SerializeField] private LightningFastPoisonSlap _lightningFastPoisonSlap;
-    //[SerializeField] private LightweightSlap _lightweightSlap;
-    //[SerializeField] private PoisonSlapTalent _poisonSlapTalent;
-
     [SerializeField] private PoisonDamagingCloudPrefab _poisonDamagingCloudPrefab;
     [SerializeField] private PoisonHealingCloudPrefab _poisonHealingCloudPrefab;
 
@@ -42,7 +38,6 @@ public class PoisonSlap : Skill
     private float _durationPush = 1.0f;
 
     private bool _isUsedPoisonBallCharger = true;
-    private float _radiusTargetSearch = 0.5f;
 
     private readonly AttributeModifier _castSpeedModifier = new AttributeModifier(1, ModifierType.Multiplier);
 
@@ -55,7 +50,7 @@ public class PoisonSlap : Skill
 
     public void SetPoisonCloudEnabled(bool value)
     {
-        if(value == _canSpawnPoisonCloud) return;
+        if (value == _canSpawnPoisonCloud) return;
         
         _canSpawnPoisonCloud = value;
     }
@@ -70,7 +65,6 @@ public class PoisonSlap : Skill
     public bool IsCanDamageDeal { get => _isCanDamageDeal; set => _isCanDamageDeal = value; }
 
     protected override bool IsCanCast => CheckCanCast();
-    private bool IsAllyTarget(Character target) => target.gameObject.layer == LayerMask.NameToLayer("Allies");
 
     public event System.Action OnPoisonSlapEnd;
 
@@ -80,18 +74,24 @@ public class PoisonSlap : Skill
 
     private void OnDisable()
     {
-        OnSkillCanceled -= ClearData;
+        OnSkillCanceled -= ClearDataPoisonSlap;
     }
 
     private void OnEnable()
     {
-        OnSkillCanceled += ClearData;
+        OnSkillCanceled += ClearDataPoisonSlap;
     }
 
     public void PoisonSlapPreparation()
     {
-        _hero.Move.StopMoveAndAnimationMove();
-        _hero.Move.SetCanMove(false);
+        // Блокируем движение ТОЛЬКО если способность реально исполняется/подготавливается
+        if (!IsCasting && !IsPreparing) return;
+
+        if (Hero != null && Hero.Move != null)
+        {
+            Hero.Move.StopMoveAndAnimationMove();
+            Hero.Move.SetCanMove(false);
+        }
     }
 
     public void AnimPoisonSlapCast()
@@ -112,52 +112,34 @@ public class PoisonSlap : Skill
     public void ClearDataPoisonSlap()
     {
         ClearData();
-        Renderer.HideSmartIndicator();
+        Renderer?.HideSmartIndicator();
     }
 
     public override void LoadTargetData(TargetInfo targetInfo)
     {
-        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget(targetInfo.GetTargets()[0]);
+        if (targetInfo != null && targetInfo.GetTargets().Count > 0) 
+        {
+            Targeting.SetTarget(targetInfo.GetTargets()[0]);
+        }
         SwitchPayCost();
     }
 
     protected override void ClearData()
     {
         _castSpeedModifier.Value = 1;
-
         _isUsedPoisonBallCharger = true;
-        Hero.Move.StopLookAt();
-        Hero.Move.SetCanMove(true);
 
-        Targeting.ClearTarget();
-        Targeting.ClearTempTarget();
-
-        _castDeley = 0;
-    }
-
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-    {
-        while (Targeting.GetTempTarget()?.Character == null)
+        if (Hero != null && Hero.Move != null)
         {
-            if (GetMouseButton)
-            {
-                Targeting.FindTempTarget(Targeting.GetMousePoint(), _radiusTargetSearch);
-
-                if (Targeting.GetTempTarget()?.Character != null)
-                {
-                    if (IsAllyTarget(Targeting.GetTempTarget()?.Character) || Targeting.GetTempTarget()?.Character == Hero)
-                        Targeting.ClearTempTarget();
-                }
-            }
-
-            yield return null;
+            Hero.Move.StopLookAt();
+            Hero.Move.SetCanMove(true); // Гарантированная разблокировка движения
         }
 
-        Targeting.SetTarget(Targeting.GetTempTarget()?.Character);
+        Targeting.ClearTempTarget();
+        Targeting.ClearTarget();
 
-        TargetInfo targetInfo = new TargetInfo();
-        targetInfo.AddTarget(Targeting.GetTarget()?.Character);
-        callbackDataSaved(targetInfo);
+        _castDeley = 0;
+        base.ClearData();
     }
 
     protected override IEnumerator CastJob()
@@ -264,17 +246,6 @@ public class PoisonSlap : Skill
                 CmdApplyDamage(damage, target.gameObject);
             }
 
-            //if (target.CharacterState.CheckForState(States.PoisonBone) && _restorationOfGlands && _poisonBoneStack > 0)
-            //{
-            //    float baseChanceOfRestorationOfGlands = 0.1f;
-            //    float chanceOfRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
-
-            //    if (Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
-            //    {
-            //        _restorationOfGlands.ReductionCooldown();
-            //    }
-            //}
-
             PushTarget(target, _distancePush, _durationPush);
         }
 
@@ -301,17 +272,6 @@ public class PoisonSlap : Skill
 
             CmdApplyDamage(damage, Targeting.GetTarget()?.Character.gameObject);
 
-            //if (Targeting.GetTarget().Character.CharacterState.CheckForState(States.PoisonBone) && _restorationOfGlands && _poisonBoneStack > 0)
-            //{
-            //    float baseChanceOfRestorationOfGlands = 0.1f;
-            //    float chanceOfRestorationOfGlands = baseChanceOfRestorationOfGlands * _poisonBoneStack;
-
-            //    if (Random.Range(0f, 1f) <= chanceOfRestorationOfGlands)
-            //    {
-            //        _restorationOfGlands.ReductionCooldown();
-            //    }
-            //}
-
             PushTarget(Targeting.GetTarget()?.Character, _distancePush, _durationPush);
         }
         UseRecharge();
@@ -320,11 +280,6 @@ public class PoisonSlap : Skill
     private void UseRecharge()
     {
         float baseCooldownTime = _cooldownTime;
-
-        //if (_lightweightSlap.Data.IsOpen)
-        //{
-        //    _cooldownTime /= 2;
-        //}
 
         _isCanDamageDeal = false;
         TryPayCost(true);
@@ -351,24 +306,26 @@ public class PoisonSlap : Skill
     [Command]
     private void CmdPushEnemy(Character target, float distancePush, float durationPush)
     {
-        MoveComponent targetMoveComponent = target.GetComponent<MoveComponent>();
-        
+        if (target == null) return;
+
         Vector3 directionPush = _player.transform.forward;
         directionPush.y = 0f;
         directionPush.Normalize();
 
         Vector3 pushTarget = target.transform.position + directionPush * distancePush;
+        pushTarget.y = target.transform.position.y;
 
-        if (targetMoveComponent.connectionToClient != null)
-            targetMoveComponent.TargetRpcDoPush(pushTarget, durationPush);
-        else
-            targetMoveComponent.RpcDoPush(pushTarget, durationPush);
+        MoveComponent targetMove = target.GetComponent<MoveComponent>();
+        if (targetMove != null)
+        {
+            StartCoroutine(HandlePushWithFly(targetMove, pushTarget, durationPush));
+        }
     }
 
     [Command]
     private void CmdPushEnemyInLightningMovement(Character target, float distancePush, float durationPush)
     {
-        MoveComponent targetMoveComponent = target.GetComponent<MoveComponent>();
+        if (target == null) return;
 
         Vector3 directionPush = (target.transform.position - _player.transform.position).normalized;
         Vector3 perpendicularDirection;
@@ -379,11 +336,40 @@ public class PoisonSlap : Skill
             perpendicularDirection = new Vector3(-directionPush.y, directionPush.x, 0).normalized;
 
         Vector3 pushTarget = target.transform.position + perpendicularDirection * distancePush;
+        pushTarget.y = target.transform.position.y;
 
-        if (targetMoveComponent.connectionToClient != null) targetMoveComponent.TargetRpcDoPush(pushTarget, durationPush);
-        else targetMoveComponent.RpcDoPush(pushTarget, durationPush);
+        MoveComponent targetMove = target.GetComponent<MoveComponent>();
+        if (targetMove != null)
+        {
+            StartCoroutine(HandlePushWithFly(targetMove, pushTarget, durationPush));
+        }
     }
 
+    private IEnumerator HandlePushWithFly(MoveComponent targetMove, Vector3 finalPoint, float duration)
+    {
+        if (targetMove == null) yield break;
+
+        targetMove.SetFlyState(true);
+
+        targetMove.RpcDoPush(finalPoint, duration);
+
+        var agent = targetMove.GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (agent != null && agent.enabled)
+            agent.enabled = false;
+
+        if (targetMove.Rigidbody != null)
+        {
+            targetMove.Rigidbody.DOKill();
+            targetMove.Rigidbody.DOMove(finalPoint, duration).SetEase(Ease.Linear);
+        }
+
+        yield return new WaitForSeconds(duration);
+
+        if (agent != null)
+            agent.enabled = true;
+
+        targetMove.SetFlyState(false);
+    }
     [Command]
     private void CmdApplyPoisonCloud(bool isHealingCloud, float duration)
     {

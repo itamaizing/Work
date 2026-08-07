@@ -1,4 +1,5 @@
-﻿using Mirror;
+﻿using System;
+using Mirror;
 using System.Collections;
 using UnityEngine;
 
@@ -14,19 +15,46 @@ public class CreeperCombo : NetworkBehaviour
     [SerializeField] private float _comboResetDelay = 1f;
     [SerializeField] private float _sneakySpitWindowDuration = 1.5f;
 
+    [Header("Block Combo")]
+    [SerializeField] private int _hitsForBlockBoostActivation = 2;
+    [SerializeField] private float _blockComboMaxIntervalBetweenHits = 1.5f;
+
     private Character _currentSneakySpitTarget;
     private Coroutine _resetCoroutine;
     private Coroutine _sneakySpitWindowCoroutine;
 
     private bool _isSneakySpitWindowActive;
 
+    private Character _currentBlockComboTarget;
+    private int _blockComboHitCount;
+    private float _lastBlockComboHitTime;
+
     public Character CurrentSneakySpitTarget => _currentSneakySpitTarget;
+
+    private void OnEnable()
+    {
+        _sneakySpit.BoostDisabled += OnSpitCastEnd;
+    }
+
+    private void OnSpitCastEnd()
+    {
+        CmdDisableSneakySpitWindow();
+    }
+
+    [Command]
+    private void CmdDisableSneakySpitWindow()
+    {
+        if (_sneakySpit)
+        {
+            _isSneakySpitWindowActive = false;
+        }
+    }
 
     public void RegisterDamageToTarget(Character target)
     {
         if (target == null) return;
 
-        if (isServer) ApplySneakySpitComboEffect(target);
+        if (isServer) ApplyComboEffects(target);
         else CmdRegisterDamageToTarget(target.gameObject);
     }
 
@@ -38,7 +66,16 @@ public class CreeperCombo : NetworkBehaviour
         Character target = targetObject.GetComponent<Character>();
         if (target == null) return;
 
+        ApplyComboEffects(target);
+    }
+
+    private void ApplyComboEffects(Character target)
+    {
+        if (!isServer) return;
+        if (target == null) return;
+
         ApplySneakySpitComboEffect(target);
+        ApplyBlockComboEffect(target);
     }
 
     private void ApplySneakySpitComboEffect(Character target)
@@ -69,6 +106,45 @@ public class CreeperCombo : NetworkBehaviour
         ActivateSneakySpitWindow(target);
     }
 
+    private void ApplyBlockComboEffect(Character target)
+    {
+        if (!isServer) return;
+        if (target == null) return;
+        if (_blockPassiveSkill == null) return;
+
+        bool isSameTarget = target == _currentBlockComboTarget;
+        bool isWithinInterval = Time.time - _lastBlockComboHitTime <= _blockComboMaxIntervalBetweenHits;
+
+        if (isSameTarget && isWithinInterval)
+        {
+            _blockComboHitCount++;
+        }
+        else
+        {
+            _currentBlockComboTarget = target;
+            _blockComboHitCount = 1;
+        }
+
+        _lastBlockComboHitTime = Time.time;
+
+        if (_blockComboHitCount < _hitsForBlockBoostActivation) return;
+
+        _blockComboHitCount = 0;
+
+        TargetRpcStartBlockBoostWindow(connectionToClient, target.netId);
+    }
+
+    [TargetRpc]
+    private void TargetRpcStartBlockBoostWindow(NetworkConnection targetConnection, uint enemyNetId)
+    {
+        if (_blockPassiveSkill == null) return;
+        if (!NetworkClient.spawned.TryGetValue(enemyNetId, out NetworkIdentity identity)) return;
+        Character enemy = identity.GetComponent<Character>();
+        if (enemy == null) return;
+
+        _blockPassiveSkill.TryStartBlockPassiveSkillBoostWindow(enemy);
+    }
+
     private void ActivateSneakySpitWindow(Character target)
     {
         ClearSneakySpitComboState();
@@ -89,8 +165,6 @@ public class CreeperCombo : NetworkBehaviour
 
         TargetRpcStartSneakySpitWindow(connectionToClient, target.netId, _sneakySpitWindowDuration);
         RestartSneakySpitWindowTimer();
-
-        Debug.Log("SneakySpit window refreshed");
     }
 
     private void RestartSneakySpitWindowTimer()
@@ -179,6 +253,8 @@ public class CreeperCombo : NetworkBehaviour
     [Server]
     private void ServerCloseSneakySpitWindow()
     {
+        ClearSneakySpitComboState();
+
         if (!_isSneakySpitWindowActive) return;
 
         if (_sneakySpitWindowCoroutine != null)
@@ -188,7 +264,6 @@ public class CreeperCombo : NetworkBehaviour
         }
 
         _isSneakySpitWindowActive = false;
-        _currentSneakySpitTarget = null;
 
         TargetRpcCloseSneakySpitWindow(connectionToClient);
     }

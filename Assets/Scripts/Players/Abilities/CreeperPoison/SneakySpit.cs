@@ -54,6 +54,9 @@ public class SneakySpit : Skill
     private void OnEnable()
     {
         TrySubscribe();
+        
+        isAnimStart = false;
+        isAbilityQueue = false;
     }
 
     private void OnDisable()
@@ -118,8 +121,8 @@ public class SneakySpit : Skill
     {
         if (!isAbilityQueue) return;
         
-        TryCancel();
-        
+        TryCancel(true);
+
         if (_hero.Abilities != null)
             _hero.Abilities.SkillQueue.RemoveNeededSkillFromQueue(this);
 
@@ -223,6 +226,7 @@ public class SneakySpit : Skill
         Targeting.ClearTarget();
         Hero.Move.StopLookAt();
         isAbilityQueue = false;
+        isAnimStart = false;
         //_target = null;
     }
 

@@ -8,12 +8,13 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
 {
     [SerializeField] private float durationWindowsBoost = 2f;
     [SerializeField] private float blockChance = 50;
+    [SerializeField] private float cooldownPerTarget = 6f;
 
-    private Coroutine _boostWindow;
-    private bool _isCooldownActive = false;
+    private Dictionary<Character, Coroutine> _boostWindows = new();
+    private Dictionary<Character, float> _cooldownEndTime = new();
+
     private Character _attacker;
-    //private Character _target;
-    private List<Character> _validAttackers = new();
+    private HashSet<Character> _validAttackers = new();
 
     #region Skill
     protected override int AnimTriggerCastDelay => 0;
@@ -43,11 +44,6 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
         Hero.Health.OnTryResist += TryResist;
     }
 
-    private void OnEnable()
-    {
-
-    }
-
     private void OnDisable()
     {
         Hero.Health.Block -= PlayBlockAnimation;
@@ -59,7 +55,7 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
 
     private void OnHeroEvade()
     {
-        if (_boostWindow != null || _attacker == null) return;
+        if (_attacker == null) return;
         TargetRpcStartBlockPassiveSkillBoostWindow(connectionToClient, _attacker.netId);
     }
 
@@ -73,26 +69,40 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
 
     public void TryStartBlockPassiveSkillBoostWindow(Character target)
     {
-        if (_isCooldownActive || _boostWindow != null || target == null) return;
-        CmdAddAttacker(target);
-        _boostWindow = StartCoroutine(BlockPassiveSkillBoostWindow());
-    }
+        if (target == null) return;
+        if (_boostWindows.ContainsKey(target)) return;
+        if (_cooldownEndTime.TryGetValue(target, out float endTime) && Time.time < endTime) return;
 
-    private IEnumerator BlockPassiveSkillBoostWindow()
-    {
-        if (_boostWindow != null) StopCoroutine(_boostWindow);
-        Hero.Health.CmdSetBlockChance(blockChance);
-        _isCooldownActive = true;
-        Hero.Health.BlockChance = blockChance;
+        CmdAddAttacker(target);
+        _validAttackers.Add(target);
         Disactive = false;
 
+        _boostWindows[target] = StartCoroutine(BlockPassiveSkillBoostWindow(target));
+    }
+
+    private IEnumerator BlockPassiveSkillBoostWindow(Character target)
+    {
+        Hero.Health.CmdSetBlockChance(blockChance);
+        Hero.Health.BlockChance = blockChance;
+        EnableSkillBoost();
+        
+        
         yield return new WaitForSeconds(durationWindowsBoost);
 
-        Hero.Health.CmdResetBlockChance();
-        ResetDisactive();
+        EndBoostWindow(target);
+    }
 
-        yield return new WaitForSeconds(6f);
-        _isCooldownActive = false;
+    private void EndBoostWindow(Character target)
+    {
+        _boostWindows.Remove(target);
+        _validAttackers.Remove(target);
+        _cooldownEndTime[target] = Time.time + cooldownPerTarget;
+        DisableSkillBoost();
+        if (_boostWindows.Count == 0)
+        {
+            Hero.Health.CmdResetBlockChance();
+            Disactive = true;
+        }
     }
 
     private bool TryResist(Damage damage)
@@ -124,19 +134,24 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
     {
         if (isServer) TargetRpcPlayBlockAnimation(Hero.connectionToClient);
         Hero.Health.ResetBlockChance();
-        ClientRpcResetDisactive();
+        ClientRpcResetAllBoostWindows();
     }
 
-    private void ResetDisactive()
+    private void ResetAllBoostWindows()
     {
+        foreach (var kvp in _boostWindows)
+        {
+            if (kvp.Value != null) StopCoroutine(kvp.Value);
+        }
+
+        _boostWindows.Clear();
+        _validAttackers.Clear();
         _attacker = null;
         Targeting.ClearTarget();
-        //_target = null;
         Disactive = true;
-        _boostWindow = null;
     }
 
-    [ClientRpc] private void ClientRpcResetDisactive() => ResetDisactive();
+    [ClientRpc] private void ClientRpcResetAllBoostWindows() => ResetAllBoostWindows();
 
     [TargetRpc]
     private void TargetRpcStartBlockPassiveSkillBoostWindow(NetworkConnection target, uint attackerNetId)
@@ -153,7 +168,6 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
     [Command]
     private void CmdAddAttacker(Character target)
     {
-        _validAttackers.Clear();
-        _validAttackers.Add(target);
+        if (!_validAttackers.Contains(target)) _validAttackers.Add(target);
     }
 }

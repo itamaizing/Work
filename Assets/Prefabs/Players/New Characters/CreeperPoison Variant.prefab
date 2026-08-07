@@ -20394,8 +20394,9 @@ MonoBehaviour:
   _animationComponent:
     _prepareTriggers: []
     _castTriggers: []
-  durationWindowsBoost: 5
+  durationWindowsBoost: 1
   blockChance: 50
+  cooldownPerTarget: 6
 --- !u!114 &3254515559312903057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21015,6 +21016,8 @@ MonoBehaviour:
   _hitsForSneakySpitActivation: 3
   _comboResetDelay: 2
   _sneakySpitWindowDuration: 3
+  _hitsForBlockBoostActivation: 2
+  _blockComboMaxIntervalBetweenHits: 1.5
 --- !u!114 &2434123723962207148 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5590339039165547173, guid: 3a165d79672ade54ba8ca1306e0c922d, type: 3}

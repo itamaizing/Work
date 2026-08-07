@@ -11,8 +11,6 @@ public class ColdBlood : Skill
 
     private Vector3 _mousePosition = Vector3.positiveInfinity;
 
-    private float _cooldownTimeWithTalent = 4f;
-
     private bool _isPlayer = false;
     private bool _isCanCrit;
     private bool _isCanCritLightningStrikes;
@@ -118,8 +116,7 @@ public class ColdBlood : Skill
     {
         if (Cooldown.RemainingTime > 0)
         {
-            float newCooldownTime = Cooldown.RemainingTime / _reducingCooldownMultiplier;
-            Cooldown.SetReduced(newCooldownTime, shouldModify: false);
+            Cooldown.StartCustom(Cooldown.CooldownTime / 2);
         }
     }
 
