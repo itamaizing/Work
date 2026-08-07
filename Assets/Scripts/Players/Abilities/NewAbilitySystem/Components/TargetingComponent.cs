@@ -110,9 +110,11 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
     [SerializeField] protected TargetFaction _faction;
     [SerializeField] protected UnitType _unitType;
     [SerializeField] protected OutOfRangeClick _outOfRangeBehaviour;
+    [SerializeField] protected bool _needLineOfSight;
     #endregion
 
     #region Runtime Variables
+    protected const float _defaultSearchRadius = 0.3f;
     protected LayerMask _targetLayer;
     protected LayerMask _obstacles;
 
@@ -143,6 +145,7 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
         get => _forDamage;
         set => _forDamage = value;
     }
+    public bool NeedLineOfSight { get => _needLineOfSight; }
     #endregion
 
     #region Methods
@@ -256,9 +259,7 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
         switch (type)
         {
             case SkillType.Target:
-                if (!IsPointInRadius(radius.Value, point))
-                    return false;
-                return true;
+                return (IsPointInRadius(radius.Value, point));
 
             case SkillType.Projectile:
             case SkillType.Zone:
@@ -279,7 +280,7 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
         }
     }
 
-    public TargetData GetTargetOrPoint(float searchRadius = 0.3f, bool useLayerMask = true)
+    public TargetData GetTargetOrPoint(float searchRadius = _defaultSearchRadius, bool useLayerMask = true)
     {
         var clickPoint = GetMousePoint(useLayerMask: useLayerMask);
         if (clickPoint == null || clickPoint == Vector3.zero)
@@ -314,7 +315,7 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
     /// </summary>
     public TargetData FindTempTarget(bool? canTargetSelf = null, bool canTargetDead = false)
     {
-        return FindTempTarget(GetMousePoint(), _skill.AreaInfo.Radius, canTargetSelf.HasValue ? canTargetSelf.Value : _faction.HasFlag(TargetFaction.Self), canTargetDead);
+        return FindTempTarget(GetMousePoint(), _defaultSearchRadius, canTargetSelf.HasValue ? canTargetSelf.Value : _faction.HasFlag(TargetFaction.Self), canTargetDead);
     }
 
     /// <summary>
@@ -455,8 +456,8 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
 
     public bool NoObstacles()
     {
-        if (_tempTarget != null)
-            return NoObstacles(_tempTarget.Character.transform.position, _character.transform.position, _obstacles);
+        if (_target != null)
+            return NoObstacles(_target.Position, _character.transform.position, _obstacles);
 
         return true;
     }
@@ -509,7 +510,7 @@ public class TargetData
         Object = gameObject;
     }
 
-    public Vector3 Poisition
+    public Vector3 Position
     {
         get
         {

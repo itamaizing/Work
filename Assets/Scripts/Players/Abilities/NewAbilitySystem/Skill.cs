@@ -304,12 +304,8 @@ public abstract class Skill : NetworkBehaviour
     {
         get
         {
-            _targetInfoQueue.TryPeek(out TargetInfo temp);
-
-            if (temp == null)
-                return true;
-
-            return Targeting.CanCast(Targeting.QueueInfoToTargetData(temp));
+            return Targeting.NeedLineOfSight ? (Targeting.CanCast(Targeting.GetTarget()) && Targeting.NoObstacles())
+                : Targeting.CanCast(Targeting.GetTarget());
         }
     }
 
@@ -435,10 +431,6 @@ public abstract class Skill : NetworkBehaviour
         switch (target.Type)
         {
             case TargetType.Object:
-                if (!_isCasting)
-                {
-                    Targeting.SetTarget(target.Targetable);
-                }
                 targetInfo.AddTarget(target.Targetable);
                 break;
 
@@ -533,7 +525,7 @@ public abstract class Skill : NetworkBehaviour
             return false;
 
         LoadTargetDataForCheckCast();
-        if (IsHaveResources && IsCanCast && _isCasting == false && Targeting.NoObstacles() && Hero.IsDead == false)
+        if (IsHaveResources && IsCanCast && _isCasting == false && Hero.IsDead == false)
         {
             _isCasting = true;
             //TryPayCost(IsPayCostStartCooldown); //moved to ActionWrapper
@@ -571,7 +563,7 @@ public abstract class Skill : NetworkBehaviour
             return false;
 
         LoadTargetDataForCheckCast();
-        if (IsHaveResources && _isCasting == false && Targeting.NoObstacles() && Hero.IsDead == false)
+        if (IsHaveResources && _isCasting == false && Hero.IsDead == false)
         {
             LoadTargetData(targetInfo);
 
@@ -877,7 +869,7 @@ public abstract class Skill : NetworkBehaviour
 
         while (time < delayTime)
         {
-            if (Targeting.NoObstacles() == false)
+            if (Targeting.NeedLineOfSight && Targeting.NoObstacles() == false)
                 TryCancel(true);
 
             if (_castTimeRollback > 0f)
@@ -1321,7 +1313,7 @@ public abstract class Skill : NetworkBehaviour
     [Server]
     private void OnSkillAttributeChange(string name, float value)
     {
-        Debug.Log($"[Skill Attribute] {Name} {name}: {value}");
+        Debug.Log($"[Skill Attribute] {Hero.name} {Name} {name}: {value}", gameObject);
         if (!Enum.TryParse<SkillAttributeName>(name, out SkillAttributeName attr))
             return;
         if (_syncAttributes.Keys.Contains(attr))
