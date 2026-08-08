@@ -26463,6 +26463,7 @@ MonoBehaviour:
       isOpen: 0
     - Talents: []
       isOpen: 0
+  _allTalents: []
 --- !u!114 &2311228646035138989
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26479,14 +26480,23 @@ MonoBehaviour:
     _descriptionsForInfoPanel:
     - "\u0418\u0437\u0443\u0447\u0438\u0442\u044C \u0422\u0435\u043B\u0435\u043A\u0438\u043D\u0435\u0437"
     _stateInfos: []
-    IsOpen: 1
     Description: "\u0422\u0435\u043B\u0435\u043A\u0438\u043D\u0435\u0437"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: f5579b5d10247654cae4bdc55ae23486, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586752
   character: {fileID: -1162350683604376873}
   _telekinesis: {fileID: 7914139750777672279}
   _ability: {fileID: 9207050407313082510}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586752
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &6565566035012974792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26510,14 +26520,23 @@ MonoBehaviour:
       \u0443\u0440\u043E\u043D \u0432 \u0442\u0435\u0447\u0435\u043D\u0438\u0435
       2 \u0441\u0435\u043A\u0443\u043D\u0434"
     _stateInfos: []
-    IsOpen: 1
     Description: "\u0428\u0430\u0440 \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 3c709b466f53c0141944292653b6dff8, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586753
   character: {fileID: -1162350683604376873}
   _absorbationBall: {fileID: 4402813572123645427}
   _ability: {fileID: 9207050407313082510}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586753
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &4710988972543738372
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26538,14 +26557,23 @@ MonoBehaviour:
       \u0447\u0435\u0440\u0435\u0437 \u043A\u043E\u0442\u043E\u0440\u0443\u044E \u043D\u0435
       \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E \u043F\u0440\u043E\u0439\u0442\u0438."
     _stateInfos: []
-    IsOpen: 1
     Description: "\u0420\u0430\u0441\u043A\u043E\u043B \u0437\u0435\u043C\u043B\u0438"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 02a620129ceab05499a5576ff306c13a, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586754
   character: {fileID: -1162350683604376873}
   _fisura: {fileID: 4513784415459898283}
   _ability: {fileID: 9207050407313082510}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586754
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &2261566965996094557
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26564,15 +26592,24 @@ MonoBehaviour:
       \u0443\u0440\u043E\u043D \u0413\u0430\u043D\u0433\u0434\u043E\u043B\u043B\u0430\u0440\u0444\u0444\u043E\u043C
       \u0432 2 \u0440\u0430\u0437\u0430 \u043D\u0430 2 \u0441\u0435\u043A\u0443\u043D\u0434\u044B."
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0411\u043E\u0436\u0435\u0441\u0442\u0432\u0435\u043D\u043D\u043E\u0435
       \u0443\u0441\u0438\u043B\u0435\u043D\u0438\u0435"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 765b5465876568f4e8e23fcd242b4b24, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586755
   character: {fileID: -1162350683604376873}
   _divineEnhancement: {fileID: 483165492512868837}
   _ability: {fileID: 9207050407313082510}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586755
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &916624143046240507
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26595,14 +26632,23 @@ MonoBehaviour:
       \u043E\u0442\u0431\u0440\u043E\u0441\u0430 \u043C\u0430\u043A\u0441\u0438\u043C\u0430\u043B\u044C\u043D\u044B\u0439
       \u043F\u043E \u0431\u043B\u0438\u0436\u0430\u0439\u0448\u0438\u043C \u0446\u0435\u043B\u044F\u043C."
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0425\u043B\u043E\u043F\u043E\u043A \u0432\u043E\u0434\u044B"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: efaec6374d1b5054d9037d5d0446e029, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586756
   character: {fileID: -1162350683604376873}
   _clapOfLight: {fileID: 4651608391275017639}
   _ability: {fileID: 9207050407313082510}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586756
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &5690333344640738226
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26626,16 +26672,25 @@ MonoBehaviour:
     - "\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442 \u043A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E
       \u0437\u0430\u0440\u044F\u0434\u043E\u0432 \u0428\u0430\u0440 \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F "
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0423\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442
       \u043A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u0437\u0430\u0440\u044F\u0434\u043E\u0432"
+    ConditionDescription: 
     Icon: {fileID: 0}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586757
   character: {fileID: -1162350683604376873}
   _clapOfLight: {fileID: 4651608391275017639}
   _fisura: {fileID: 4513784415459898283}
   _absorptionBall: {fileID: 4402813572123645427}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586757
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3396465724686444970
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26664,14 +26719,23 @@ MonoBehaviour:
       \u0434\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C 3
       \u0441\u0435\u043A\u0443\u043D\u0434\u044B"
     _stateInfos: []
-    IsOpen: 1
     Description: "\u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0430\u0437\u0430\u0440\u0442"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: ba33a9f74e760af40acd84c6b94a4ea3, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586758
   character: {fileID: -1162350683604376873}
   _increaseManaRegenerationPercentages: 1.1
   _increaseManaRegenerationDuration: 3
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586758
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &1870278782762362650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26690,15 +26754,24 @@ MonoBehaviour:
       \u0430\u0437\u0430\u0440\u0442\u0430\" \u0443\u0432\u0435\u043B\u0438\u0447\u0438\u0432\u0430\u0435\u0442\u0441\u044F
       \u0434\u043E 9 \u0441\u0435\u043A\u0443\u043D\u0434"
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0414\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C
       \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E \u0430\u0437\u0430\u0440\u0442\u0430"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: ba33a9f74e760af40acd84c6b94a4ea3, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586759
   character: {fileID: -1162350683604376873}
   _magicalExcitementTalent: {fileID: 3396465724686444970}
   _excitementDuration: 9
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586759
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3619341477206878948
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26714,13 +26787,22 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: 
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 09e359aa32a9ff04ea7bbdf596fa2faa, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586760
   character: {fileID: -1162350683604376873}
   _increasePercentages: 1.1
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586760
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &6264416715828074921
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26736,15 +26818,24 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: 
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: ae29ded27bedede4eaa0a76e40eeffe8, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586761
   character: {fileID: -1162350683604376873}
   _skill: {fileID: 6541281367918590680}
   _skillManagerGangdollarff: {fileID: 9207050407313082510}
   _airElementPref: {fileID: 2740777870113441289, guid: 7ed1fbac60109864085628ac0b32ca3b, type: 3}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586761
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &7455309169927626993
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26760,13 +26851,22 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: added fireElement Explosion
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: ae29ded27bedede4eaa0a76e40eeffe8, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586762
   character: {fileID: -1162350683604376873}
   _fireElementPref: {fileID: 8575489330000523180, guid: 0b5e7e50988911349b6cd72ac7343494, type: 3}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586762
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3551611631032480463
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26787,13 +26887,22 @@ MonoBehaviour:
       \u0434\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u043E\u0441\u0442\u044C \u0432
       2 \u0440\u0430\u0437\u0430 \u0434\u043E\u043B\u044C\u0448\u0435"
     _stateInfos: []
-    IsOpen: 1
     Description: "\u0414\u043B\u0438\u0442\u0435\u043B\u044C\u043D\u044B\u0439 \u0448\u0430\u0440"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 09e359aa32a9ff04ea7bbdf596fa2faa, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586763
   character: {fileID: -1162350683604376873}
   _absorptionBall: {fileID: 4402813572123645427}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586763
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3798895398071013150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26809,13 +26918,22 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: Baff whater clap
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 09e359aa32a9ff04ea7bbdf596fa2faa, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586764
   character: {fileID: -1162350683604376873}
   _skill: {fileID: 4651608391275017639}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586764
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &7473555118888481984
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26831,12 +26949,21 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: school
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 09e359aa32a9ff04ea7bbdf596fa2faa, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586765
   character: {fileID: -1162350683604376873}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586765
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &4967712319262753113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26852,13 +26979,22 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: Baff whater clap cd
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 09e359aa32a9ff04ea7bbdf596fa2faa, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586766
   character: {fileID: -1162350683604376873}
   _skill: {fileID: 4651608391275017639}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586766
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &8944577713485279746
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26874,13 +27010,22 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 1
     Description: God ability
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 75313173717aca84aa7a265b4075c961, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586767
   character: {fileID: -1162350683604376873}
   _skillManager: {fileID: 9207050407313082510}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586767
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &5031629748469295442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26896,14 +27041,23 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: CounterSpell
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: a42f881e303f5ec41ab1065e45b5b380, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586768
   character: {fileID: -1162350683604376873}
   _counterSpell: {fileID: 8856192836074503412}
   _ability: {fileID: 9207050407313082510}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586768
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &4599828457609018234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26936,14 +27090,23 @@ MonoBehaviour:
       \u043D\u0430 50%, \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439
       \u044D\u0444\u0444\u0435\u043A\u0442, \u0448\u043A\u043E\u043B\u0430 \u0432\u043E\u0437\u0434\u0443\u0445\u0430."
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0423\u0434\u0430\u0440 \u043C\u043E\u043B\u043D\u0438\u0435\u0439"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: afb4088ce8c9f604bba0499e15cb3202, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586769
   character: {fileID: -1162350683604376873}
   _skill: {fileID: -6863981154326105301}
   _skillManagerGangdollarff: {fileID: 9207050407313082510}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586769
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &5040640883951079247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26962,14 +27125,23 @@ MonoBehaviour:
       \u043C\u043E\u0436\u043D\u043E \u043F\u0440\u0438\u043C\u0435\u043D\u044F\u0442\u044C
       \u043D\u0430 \u0441\u043E\u044E\u0437\u043D\u0438\u043A\u0430"
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0428\u0430\u0440 \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F
       \u043D\u0430 \u0441\u043E\u044E\u0437\u043D\u0438\u043A\u043E\u0432"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 893f912149befbd4980a4594fa3e744a, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586770
   character: {fileID: -1162350683604376873}
   _absorptionBall: {fileID: 4402813572123645427}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586770
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &4700997506177914789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26991,14 +27163,23 @@ MonoBehaviour:
       \u043E\u0442 \u043F\u043E\u0433\u043B\u043E\u0449\u0451\u043D\u043D\u043E\u0433\u043E
       \u0443\u0440\u043E\u043D\u0430."
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0428\u0430\u0440 \u043F\u043E\u0433\u043B\u043E\u0449\u0435\u043D\u0438\u044F
       \u043C\u0430\u043D\u0430 X2"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 5b53cad99487f0147be177f5009be820, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586771
   character: {fileID: -1162350683604376873}
   _absorptionBall: {fileID: 4402813572123645427}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586771
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &8754650027447273081
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27019,14 +27200,23 @@ MonoBehaviour:
       \u0447\u0435\u0440\u0435\u0437 \u043D\u0435\u0451 \u0442\u0435\u0440\u044F\u044E\u0442
       80% \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u0438 \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0436\u0435\u043D\u0438\u044F"
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0417\u044B\u0431\u0443\u0447\u0438\u0435 \u043F\u0435\u0441\u043A\u0438"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 02a620129ceab05499a5576ff306c13a, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586772
   character: {fileID: -1162350683604376873}
   _quicksand: {fileID: 4401943882256093312}
   _ability: {fileID: 9207050407313082510}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586772
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &6486027622897545265
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27045,14 +27235,23 @@ MonoBehaviour:
       \u0446\u0435\u043B\u0438 1 \u0431\u0430\u0444\u0444 \u0438 \u043D\u0430\u043A\u043B\u0430\u0434\u044B\u0432\u0430\u0435\u0442
       \u043D\u0430 \u0441\u0435\u0431\u044F"
     _stateInfos: []
-    IsOpen: 0
     Description: 
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: de1bca2bb34e47e4c98398017802a954, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586773
   character: {fileID: -1162350683604376873}
   _skillThief: {fileID: -8766991205734610211}
   _ability: {fileID: 9207050407313082510}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586773
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3178008927153590645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27072,14 +27271,23 @@ MonoBehaviour:
       \u0432\u0440\u0430\u0433\u043E\u0432 \u0432 \u043E\u0431\u0440\u0430\u0442\u043D\u043E\u043C
       \u043D\u0430\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u0438"
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0412\u043E\u043B\u043D\u0430"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: efaec6374d1b5054d9037d5d0446e029, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586774
   character: {fileID: -1162350683604376873}
   _skillWave: {fileID: 8803268676381394891}
   _ability: {fileID: 9207050407313082510}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586774
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &4777950773765639936
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27101,15 +27309,24 @@ MonoBehaviour:
       \u0438 \u043E\u0442\u0431\u0440\u0430\u0441\u044B\u0432\u0430\u044F\_\u0432\u0440\u0430\u0433\u043E\u0432
       \u043D\u0430\u0445\u043E\u0434\u044F\u0449\u0438\u0445 \u0440\u044F\u0434\u043E\u043C."
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0411\u043E\u0436\u0435\u0441\u0442\u0432\u0435\u043D\u043D\u0430\u044F
       \u043B\u0435\u0433\u043A\u043E\u0441\u0442\u044C"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 3ef8f17a384cf20408be7fc7617759f7, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586775
   character: {fileID: -1162350683604376873}
   _skillGodLight: {fileID: 9150375643976407256}
   _ability: {fileID: 9207050407313082510}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586775
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &4853264508304941808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27129,13 +27346,22 @@ MonoBehaviour:
       \u0441\u043E\u044E\u0437\u043D\u0438\u043A\u043E\u0432 \u043D\u0430 10% \u0432
       \u0440\u0430\u0434\u0438\u0443\u0441\u0435 8 \u043A\u043B\u0435\u0442\u043E\u0432"
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0410\u0443\u0440\u0430 \u0431\u043E\u0433\u0430"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 6ee621bc049072e49a439414e31b85e2, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586776
   character: {fileID: -1162350683604376873}
   _godAuraSkill: {fileID: 3127105790014565672}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586776
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3677902011510508796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27152,13 +27378,22 @@ MonoBehaviour:
     _descriptionsForInfoPanel:
     - ......
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0410\u0443\u0440\u0430 \u0431\u043E\u0433\u0430 \u0441\u0442\u0430\u043A"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 6ee621bc049072e49a439414e31b85e2, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586777
   character: {fileID: -1162350683604376873}
   _stackChance: 30
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586777
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &308676296038382060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27174,14 +27409,23 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041F\u0440\u0435\u0432\u0440\u0430\u0449\u0435\u043D\u0438\u0435"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: ee0fb337505e68442a4822376f993c92, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586778
   character: {fileID: -1162350683604376873}
   _skillTransformation: {fileID: 8035327156810534685}
   _ability: {fileID: 9207050407313082510}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586778
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &710480506604598471
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27203,14 +27447,23 @@ MonoBehaviour:
       \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0435\u0439 \u0441\u043D\u0438\u043C\u0430\u0435\u0442
       \u044D\u0444\u0444\u0435\u043A\u0442"
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041D\u0435\u0432\u0438\u0434\u0438\u043C\u043E\u0441\u0442\u044C"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 8fec67b05db2c844ca3c6d4bf2d102f3, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586779
   character: {fileID: -1162350683604376873}
   _skillInvisible: {fileID: 4358863268785994334}
   _ability: {fileID: 9207050407313082510}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586779
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &7291747353363309335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27226,14 +27479,23 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041F\u0440\u0438\u0437\u044B\u0432 \u044D\u043B\u0435\u043C\u0435\u043D\u0442\u0430\u043B\u044F"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 056dec7639a920649bcddbf484dd066b, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586780
   character: {fileID: -1162350683604376873}
   _skillManager: {fileID: 9207050407313082510}
   _elementalSpawn: {fileID: 4721215928311503787}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586780
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &4756528340343799191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27252,14 +27514,23 @@ MonoBehaviour:
       \u0438\u043C\u0435\u0435\u0442 \u0448\u0430\u043D\u0441 50% \u043E\u0441\u043B\u0435\u043F\u0438\u0442\u044C
       \u0446\u0435\u043B\u044C \u043D\u0430 2 \u0441\u0435\u043A\u0443\u043D\u0434\u044B"
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041E\u0433\u043D\u0435\u043D\u043D\u044B\u0439 \u043F\u043E\u0442\u043E\u043A
       \u043E\u0441\u043B\u0435\u043F\u043B\u0435\u043D\u0438\u0435"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 840c426cfdccc2548b12c7fca38a27e6, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586781
   character: {fileID: -1162350683604376873}
   _fireworkDsplay: {fileID: 6475350108398029262}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586781
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &3042591342335496185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27275,14 +27546,23 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0430\u044F \u043C\u0433\u043D\u043E\u0432\u0435\u043D\u043D\u043E\u0441\u0442\u044C"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 7e4991e1e04622047bb6749a09522dd8, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586782
   character: {fileID: -1162350683604376873}
   _skillManager: {fileID: 9207050407313082510}
   _magicInstantaneity: {fileID: 4183694722060512585}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586782
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &1996292563882327463
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27303,14 +27583,23 @@ MonoBehaviour:
       \u0446\u0435\u043B\u044F\u043C \u0438 \u043E\u0433\u043B\u0443\u0448\u0430\u044F
       \u043D\u0430 2 \u0441\u0435\u043A\u0443\u043D\u0434\u044B"
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041A\u0430\u043C\u0435\u043D\u044C \u0441 \u043D\u0435\u0431\u0430"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 7764d8d6cfaf60840af322c247c9896b, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586783
   character: {fileID: -1162350683604376873}
   _stoneFromSky: {fileID: 8207944199575136639}
   _skillManager: {fileID: 9207050407313082510}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586783
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &8494329667382761152
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27333,17 +27622,26 @@ MonoBehaviour:
       \u043D\u0430 2 \u043C\u0435\u0442\u0440\u0430, \u0448\u0438\u0440\u0438\u043D\u0430
       \u043D\u0430 1 \u043C\u0435\u0442\u0440."
     _stateInfos: []
-    IsOpen: 0
     Description: "\u041D\u0435\u0432\u0438\u0434\u0438\u043C\u044B\u0435 \u0437\u044B\u0431\u0443\u0447\u0438\u0435
       \u043F\u0435\u0441\u043A\u0438"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 02a620129ceab05499a5576ff306c13a, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586784
   character: {fileID: -1162350683604376873}
   _quicksand: {fileID: 4401943882256093312}
   _waveSkill: {fileID: 8803268676381394891}
   _waveBonusSize: {x: 2, y: 1}
   _lightningStrike: {fileID: -6863981154326105301}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586784
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &8405535604584004599
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27361,14 +27659,23 @@ MonoBehaviour:
     - "\u0412\u043E\u0432\u0437\u0440\u0430\u0449\u0430\u0435\u0442 \u043D\u0430
       3 \u0441\u0435\u043A\u0443\u043D\u0434\u044B \u043D\u0430\u0437\u0430\u0434."
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0412\u043E\u0437\u0432\u0440\u0430\u0442 \u0432\u043E \u0432\u0440\u0435\u043C\u0435\u043D\u0438"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 5711d4c2b5c281147ab022c75cb66999, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586785
   character: {fileID: -1162350683604376873}
   _skillManager: {fileID: 9207050407313082510}
   _timeBackSkill: {fileID: 8020773605070885895}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586785
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &133323943878450836
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27389,14 +27696,23 @@ MonoBehaviour:
       \u043D\u0435 \u0443\u043C\u0438\u0440\u0430\u0435\u0442 \u0434\u0430\u0436\u0435
       \u043F\u0440\u0438 \u043D\u0443\u043B\u0435\u0432\u043E\u043C \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u0435"
     _stateInfos: []
-    IsOpen: 1
     Description: "\u0411\u0435\u0441\u0441\u043C\u0435\u0440\u0442\u0438\u0435"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: c9e058e06c95fa04fbfd12767e30935e, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586786
   character: {fileID: -1162350683604376873}
   _skillManager: {fileID: 9207050407313082510}
   _immortalitySkill: {fileID: 4909088627474570662}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586786
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &2135330488917696545
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27415,14 +27731,23 @@ MonoBehaviour:
       \u043F\u0440\u0438\u0442\u044F\u0433\u0438\u0432\u0430\u044E\u0449\u0438\u0439
       \u0432\u0440\u0430\u0433\u043E\u0432 \u043A \u0446\u0435\u043D\u0442\u0440\u0443"
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0412\u043E\u0434\u043E\u0432\u043E\u0440\u043E\u0442"
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 9499c35003f5fb14387943ad17f06e37, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586787
   character: {fileID: -1162350683604376873}
   _whirlpool: {fileID: 7485692047686332734}
   _skillManager: {fileID: 9207050407313082510}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586787
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &9161470001313387124
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27438,14 +27763,23 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
     Description: 
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: 3daccdca469e8c7408109fb56b87cf0b, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586788
   character: {fileID: -1162350683604376873}
   _skillManager: {fileID: 9207050407313082510}
   _fireBallSkill: {fileID: 30305542705024185}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586788
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!114 &4046937515647064683
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27480,14 +27814,23 @@ MonoBehaviour:
       \u043D\u0430\u043A\u043E\u043F\u043B\u0435\u043D\u043D\u044B\u0435 \u0448\u043A\u043E\u043B\u044B
       \u0442\u0435\u0440\u044F\u044E\u0442\u0441\u044F."
     _stateInfos: []
-    IsOpen: 0
     Description: "\u0420\u0430\u0441\u0441\u0442\u0432\u043E\u0440\u0438\u0442\u0435\u043B\u044C
       \u0448\u043A\u043E\u043B "
+    ConditionDescription: 
     Icon: {fileID: 21300000, guid: ad21cf949ffd1354c9af7b1196ea1c83, type: 3}
     Group: 0
     Row: 0
+    MaxLvl: 0
+  OpenCondition:
+    rid: 8832856330986586789
   character: {fileID: -1162350683604376873}
   _solventSkill: {fileID: 8795641180420630933}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8832856330986586789
+      type: {class: EmptyCondition, ns: , asm: Assembly-CSharp}
+      data: 
 --- !u!1 &4469750806910940301
 GameObject:
   m_ObjectHideFlags: 0
@@ -27824,7 +28167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneId: 0
-  _assetId: 1522606611
+  _assetId: 2963495386
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
@@ -28530,9 +28873,13 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _firework: {fileID: 3150633468305956490}
   _damageRangeMin: -2
   _damageRangeMax: 1
+  _damageTickRate: 0.1
 --- !u!114 &4402813572123645427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28627,6 +28974,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _shieldPref: {fileID: 1158249924082485831, guid: 13647bb6f83d1b34c8c511be314fb9d3, type: 3}
   _shieldValue: 100
   _shieldDuration: 2
@@ -28732,9 +29082,13 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _deleyTelekines: 0.5
   _amountOfLift: 1.5
   _radiusEnemy: {fileID: 3441613440083509784}
+  _secondClickWindow: 1
 --- !u!114 &4651608391275017639
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28823,6 +29177,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _particle: {fileID: 3994345256487826021}
   _pushRange: 1
   _pushDuration: 0.33
@@ -28921,6 +29278,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _lineRenderer: {fileID: 3792777773710482975}
   _fisuraPref: {fileID: 3452147409339536588, guid: 68a5df5d1ae4ea54486b316ec8d2a89c, type: 3}
   _fisuraDuration: 6
@@ -29013,6 +29373,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &6541281367918590680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29101,6 +29464,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _agent: {fileID: 0}
   _particlePref: {fileID: 8634428716550452945, guid: 7291e60055d363e4f8faae9c7d00d8b0, type: 3}
   _debuffChance: 15
@@ -29210,6 +29576,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &483165492512868837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29304,6 +29673,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   duration: 2
 --- !u!114 &-6863981154326105301
 MonoBehaviour:
@@ -29399,6 +29771,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _particlePref: {fileID: 8634428716550452945, guid: 7291e60055d363e4f8faae9c7d00d8b0, type: 3}
   _beamPrefab: {fileID: 6286129620195013125, guid: 6c796b5dfb94dbb468a1ff41196448a3, type: 3}
   _debuffChance: 100
@@ -29500,6 +29875,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _particlePref: {fileID: 0}
   _schoolSolvent: {fileID: 8795641180420630933}
 --- !u!114 &4401943882256093312
@@ -29596,6 +29974,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _lineRenderer: {fileID: 4073253261590549315}
   _quicksandTile: {fileID: 7163465442160790319, guid: 230941d2d9516a94ba4549647e2156c6, type: 3}
   _quicksandDuration: 6
@@ -29687,6 +30068,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _particle: {fileID: 5826002358924147001}
   _pushRange: 3
   _pushDuration: 0.2
@@ -29786,6 +30170,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
 --- !u!114 &3127105790014565672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29895,6 +30282,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _meshTranformation: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
   _debuffDuration: 6
 --- !u!114 &4358863268785994334
@@ -29991,6 +30381,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _playerRenderers:
   - {fileID: 3976331384424644822}
   - {fileID: 6145141374176819678}
@@ -30119,6 +30512,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _buffDuration: 3
   _chainBreakTime: 2
   _invisDamageMultiplier: 2
@@ -30216,6 +30612,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _stoneVFX: {fileID: 3475698140105260331}
   _aoeRadius: 2
 --- !u!114 &8020773605070885895
@@ -30306,6 +30705,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _snapshotInterval: 0.1
   _rewindTime: 3
 --- !u!114 &4909088627474570662
@@ -30402,6 +30804,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _immortalityTime: 4
 --- !u!114 &7485692047686332734
 MonoBehaviour:
@@ -30497,6 +30902,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _whirlpoolTilePrefab: {fileID: 3817491765434079413, guid: c8368645c4192b2478d0f52dc9656d75, type: 3}
   _duration: 5
   _whirlRadius: 6
@@ -30597,6 +31005,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _projectile: {fileID: -7871612326811465604, guid: 3f48633abc1849a49a5ed18cb8f65a33, type: 3}
   _stunDuration: 4.5
   _burnDuration: 5
@@ -30695,6 +31106,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _counterSpell: {fileID: 8856192836074503412}
 --- !u!114 &1141373627185781475
 MonoBehaviour:
@@ -30784,6 +31198,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _agent: {fileID: 3438971125766708576}
   _stopDistance: 0.5
 --- !u!114 &-1162350683604376873

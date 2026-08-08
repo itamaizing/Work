@@ -766,7 +766,7 @@ MonoBehaviour:
   - {fileID: 4374618947117916461, guid: f7c4989fc7d96e64e898c577137242d1, type: 3}
   - {fileID: 4534754468497973439, guid: 40044d92dc9a52a44b73b5569f957a7a, type: 3}
   - {fileID: 2483674839823445686, guid: 4c3c788ff06ea9f48abda93ece76c4e3, type: 3}
-  - {fileID: 8782633265950416607, guid: 66af4295160d8ef47ac761be1372ec59, type: 3}
+  - {fileID: 3076017348610547827, guid: 66af4295160d8ef47ac761be1372ec59, type: 3}
   - {fileID: 5458554383432203635, guid: a2f5a75a4aeee1744b09a2290f22d1e3, type: 3}
   - {fileID: 4534754468497973439, guid: ff1c8ecb71d19674e8778e3d04716b40, type: 3}
   _menuEnv: {fileID: 228420900}
@@ -2706,6 +2706,26 @@ PrefabInstance:
     - target: {fileID: 4609920808532616243, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
       propertyPath: m_Name
       value: UIMenuMain
+      objectReference: {fileID: 0}
+    - target: {fileID: 4833966189310429751, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4833966189310429751, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4833966189310429751, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4833966189310429751, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4833966189310429751, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4884070171226425076, guid: c722ef5bfa58d8643a44aaf9c543993d, type: 3}
       propertyPath: _uiCamera
