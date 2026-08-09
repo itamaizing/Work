@@ -32,23 +32,30 @@ public class NpcSpawn : MonoBehaviour
     {
         if (prefab == null) return;
 
-        foreach (var point in points)
+        foreach (Transform point in points)
         {
             if (point == null) continue;
 
-            var npc = Instantiate(prefab, point.position, point.rotation);
+            Character npc = Instantiate(prefab, point.position, point.rotation);
+            SceneManager.MoveGameObjectToScene(npc.gameObject, roomScene);
+
+            NetworkServer.Spawn(npc.gameObject);
 
             npc.NetworkSettings.TeamIndex = NpcTeamIndex;
 
-            foreach (var player in FindObjectsOfType<UserNetworkSettings>())
-            {
-                if (!player.Players.Contains(npc.gameObject)) player.Players.Add(npc.gameObject);
-            }
-
-            SceneManager.MoveGameObjectToScene(npc.gameObject, roomScene);
-            NetworkServer.Spawn(npc.gameObject);
-
+            if (npc.TryGetComponent(out UnitLayerSync layerSync)) layerSync.TeamIndex = NpcTeamIndex;
+            AddNpcToPlayerLists(npc.gameObject);
             _spawnedNpcs.Add(npc.gameObject);
+        }
+    }
+
+    private void AddNpcToPlayerLists(GameObject npc)
+    {
+        foreach (UserNetworkSettings settings in FindObjectsOfType<UserNetworkSettings>())
+        {
+            if (settings == null) continue;
+            if (settings.connectionToClient == null) continue;
+            if (!settings.Players.Contains(npc)) settings.Players.Add(npc);
         }
     }
 
