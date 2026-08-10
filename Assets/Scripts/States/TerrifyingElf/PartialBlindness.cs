@@ -5,7 +5,6 @@ using UnityEngine;
 public class PartialBlindness : RefreshingState
 {
     private float _baseDuration;
-    private float _duration;
     
     #region Const
     private const int MaxStacks = 3;
@@ -29,11 +28,31 @@ public class PartialBlindness : RefreshingState
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
 
+    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        if (!CanEnterState(character)) return null;
+
+        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+
+        if (currentStacksCount == 0)
+        {
+            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+        }
+        else
+        {
+            Stack(duration);
+
+            if (currentStacksCount < MaxStacksCount)
+                currentStacksCount++;
+        }
+
+        return this;
+    }
+
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         characterState = character;
         _baseDuration = durationToExit;
-        _duration = _baseDuration;
 
         MaxStacksCount = MaxStacks;
         currentStacksCount = 1;
@@ -57,9 +76,12 @@ public class PartialBlindness : RefreshingState
 
     public override bool Stack(float time)
     {
-        _duration = _baseDuration;
-
         return true;
+    }
+    
+    public override void ReduceStack()
+    {
+        ExitState();
     }
 
     private void HandleSkillPrepared(Skill skill)
@@ -68,7 +90,7 @@ public class PartialBlindness : RefreshingState
         if (skill.Info.AbilityForm != AbilityForm.Physical) return;
         if (skill.Hero != characterState.Character) return;
 
-        _effectivenessLoss = Mathf.Max(MinEffectiveness, (_baseDuration - _duration) * EffectivenessDecayPerSecond);
+        _effectivenessLoss = Mathf.Max(MinEffectiveness, (_baseDuration - duration) * EffectivenessDecayPerSecond);
 
         float missChancePerStack = _isDoubleMissChance
             ? BaseMissChancePerStack * DoubleMissChanceMultiplier
@@ -78,7 +100,8 @@ public class PartialBlindness : RefreshingState
 
         if (UnityEngine.Random.Range(0f, 100f) < totalMissChance)
         {
-            skill.CmdForceFailCastJobOnce();
+            if(_character.isClient)
+                skill.CmdForceFailCastJobOnce();
         }
     }
 }

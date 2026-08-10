@@ -730,15 +730,31 @@ public abstract class Skill : NetworkBehaviour
         CancelAnim();
 
         _hero.Move.StopLookAt();
-        _hero.Move.SetCanMove(true);
+        if (_hero != null && _hero.Move != null)
+        {
+            _hero.Move.SetCanMove(true);
+        }
 
         ClearData();
+
+        if (_hero != null && _hero.Abilities != null)
+        {
+            _hero.Abilities.NotifySkillIsPreparing(this, false);
+
+            if (_hero.Abilities.SkillQueue != null)
+            {
+                _hero.Abilities.SkillQueue.TryCancel();
+            }
+        }
 
         CastEnded?.Invoke();
         OnSkillCanceled?.Invoke();
         Canceled?.Invoke();
 
-        Hero.UIComponent.Miss();
+        if (_hero != null && _hero.UIComponent != null)
+        {
+            _hero.UIComponent.Miss();
+        }
     }
 
     private IEnumerator ActionWrapperForCastingJob()
@@ -791,12 +807,19 @@ public abstract class Skill : NetworkBehaviour
                 Canceled?.Invoke();
                 _actionWrapperForCastCoroutine = null;
                 Hero.UIComponent.Miss();
-                yield return null;
+                yield break;
             }
 
             while (_isPlayCastAnim)
             {
-                //*
+                if (_forceFailCastEarly)
+                {
+                    _forceFailCastEarly = false;
+                    CancelCastEarly();
+                    _actionWrapperForCastCoroutine = null;
+                    yield break;
+                }
+                
                 if (Targeting.ForDamage?.Damageable != null && !IsValidTarget(Targeting.ForDamage?.Damageable))
                 {
                     _isCanCancel = true;
@@ -876,6 +899,13 @@ public abstract class Skill : NetworkBehaviour
 
         while (time < delayTime)
         {
+            if (_forceFailCastEarly)
+            {
+                _forceFailCastEarly = false;
+                CancelCastEarly();
+                yield break;
+            }
+            
             if (Targeting.NoObstacles() == false)
                 TryCancel(true);
 
