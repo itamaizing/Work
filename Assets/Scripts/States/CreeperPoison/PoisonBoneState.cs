@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoisonBoneState : AbstractCharacterState
+public class PoisonBoneState : RefreshingState
 {
     public bool turnOff = false;
 
@@ -32,6 +32,20 @@ public class PoisonBoneState : AbstractCharacterState
     public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override List<StatusEffect> Effects => _effects;
+
+    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        if (!CanEnterState(character)) return null;
+
+        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+
+        if (currentStacksCount == 0)
+            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+        else
+            Stack(duration);
+
+        return this;
+    }
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
@@ -134,6 +148,11 @@ public class PoisonBoneState : AbstractCharacterState
             UpdatePoisonBoneStackAtSkills();
             return true;
         }
+    }
+    
+    public override void ReduceStack()
+    {
+        ExitState();
     }
 
     private void AddStacks()

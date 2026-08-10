@@ -22,6 +22,7 @@ public class AmbushPoisons : Skill
 
     private void OnEnable()
     {
+        Disactive = true;
         if (_invisible != null) _invisible.OnInvisibleChanged += OnInvisibleChanged;
     }
 
@@ -107,16 +108,17 @@ public class AmbushPoisons : Skill
         _clearRoutine = null;
     }
 
-    public bool TryConsumeStack(Character target)
+    public void TryConsumeStack(Character target)
     {
-        if (_currentStacks <= 0) return false;
-        if (target == null) return false;
+        if (_currentStacks <= 0) return;
+        if (target == null) return;
 
         _currentStacks--;
 
         Charges.SendCurrentChange(_currentStacks);
 
-        target.CharacterState.AddStateLogic(States.PoisonBone, 6, 0, Schools.None, Hero.gameObject, null);
+        CmdAddPoisonBone(target);
+        
         if (_creeperPoisonAura.IsFeelingPoisoning) Hero.CharacterState.AddStateLogic(States.FeelingPoisoning, 2f, 0, Schools.None, Hero.gameObject, null);
 
 
@@ -124,8 +126,12 @@ public class AmbushPoisons : Skill
         {
             StartStacking();
         }
+    }
 
-        return true;
+    [Command]
+    private void CmdAddPoisonBone(Character target)
+    {
+        target.CharacterState.AddState(States.PoisonBone, 6, 0, Schools.None, Hero.gameObject, nameof(AmbushPoisons));
     }
 
     public int GetStacks() => _currentStacks;

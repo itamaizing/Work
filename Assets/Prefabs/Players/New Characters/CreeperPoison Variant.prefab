@@ -18965,6 +18965,7 @@ MonoBehaviour:
     _faction: 4
     _unitType: -1
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -19073,6 +19074,7 @@ MonoBehaviour:
     _faction: 4
     _unitType: -1
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -19174,6 +19176,7 @@ MonoBehaviour:
     _faction: -1
     _unitType: -1
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -19279,6 +19282,7 @@ MonoBehaviour:
     _faction: -1
     _unitType: -1
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -19386,6 +19390,7 @@ MonoBehaviour:
     _faction: 4
     _unitType: -1
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -19485,6 +19490,7 @@ MonoBehaviour:
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -19584,6 +19590,7 @@ MonoBehaviour:
     _faction: 4
     _unitType: -1
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -19683,6 +19690,7 @@ MonoBehaviour:
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -19776,6 +19784,7 @@ MonoBehaviour:
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -19869,6 +19878,7 @@ MonoBehaviour:
     _faction: -1
     _unitType: 5
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -19962,6 +19972,7 @@ MonoBehaviour:
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -20056,6 +20067,7 @@ MonoBehaviour:
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -20157,6 +20169,7 @@ MonoBehaviour:
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -20249,6 +20262,7 @@ MonoBehaviour:
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -20346,6 +20360,7 @@ MonoBehaviour:
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -20435,11 +20450,12 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
+    type: 3
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -20539,6 +20555,7 @@ MonoBehaviour:
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -20630,6 +20647,7 @@ MonoBehaviour:
     _faction: -1
     _unitType: 5
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -20749,6 +20767,7 @@ MonoBehaviour:
     _faction: -1
     _unitType: -1
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -20850,6 +20869,7 @@ MonoBehaviour:
     _faction: 2
     _unitType: 1
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -20947,6 +20967,7 @@ MonoBehaviour:
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0

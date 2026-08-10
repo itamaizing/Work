@@ -165,6 +165,7 @@ public class CreeperStrike : Skill
 
         TryApplyPoisonBone(character);
         TryApplyWitheringPoison(character);
+        TryConsumeAmbushPoison(character);
 
         _currentDamage = UnityEngine.Random.Range(_minDamage, _maxDamage);
 
@@ -284,6 +285,14 @@ public class CreeperStrike : Skill
         if (_creeperPoisonAura == null) return;
 
         CmdTryApplyWitheringPoison(target.gameObject);
+    }
+
+    private void TryConsumeAmbushPoison(Character target)
+    {
+        if (_hero.Abilities.GetSkill<AmbushPoisons>() == null) return;
+        if (target == null) return;
+
+        _hero.Abilities.GetSkill<AmbushPoisons>().TryConsumeStack(target);
     }
 
     [Command]

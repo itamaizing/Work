@@ -130,7 +130,7 @@ public class Shot : Skill
         Targeting.SetTarget(Targeting.QueueInfoToTargetData(targetInfo));
 
         if (targetInfo.Points != null && targetInfo.Points.Count > 0) _targetPoint = targetInfo.Points[0];
-        else if (Targeting.GetTarget() != null) _targetPoint = Targeting.GetTarget().Poisition;
+        else if (Targeting.GetTarget() != null) _targetPoint = Targeting.GetTarget().Position;
         else _targetPoint = Vector3.positiveInfinity;
     }
 
