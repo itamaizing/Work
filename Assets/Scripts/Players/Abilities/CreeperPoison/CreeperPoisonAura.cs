@@ -22,7 +22,7 @@ public class CreeperPoisonAura : NetworkBehaviour
 
     private float _tempEvadeBonus = 0f;
     
-    private readonly AttributeModifier _castSpeedModifier = new AttributeModifier(1, ModifierType.Multiplier);
+    private readonly AttributeModifier _castSpeedModifier = new AttributeModifier(1, ModifierType.Percent);
 
     #region Talent
     private bool _isFeelingPoisoning = false;
@@ -48,6 +48,16 @@ public class CreeperPoisonAura : NetworkBehaviour
     }
 
     public void OwnElement(bool value)
+    {
+        if(_isOwnElement == value) return;
+
+        _isOwnElement = value;
+        if(isClient)
+            CmdOwnElement(value);
+    }
+
+    [Command]
+    private void CmdOwnElement(bool value)
     {
         _isOwnElement = value;
         EvaluateAuraState();
@@ -297,16 +307,18 @@ public class CreeperPoisonAura : NetworkBehaviour
 
     private void ApplyAttackSpeed(int stacks)
     {
-        float newBonus = stacks * _attackSpeedPerStack;
-        float newValue = 1f + newBonus;
+        float newValue = stacks * _attackSpeedPerStack;
+
+        if (_owner == null) return;
+
+        if (!_owner.AttributeSystem[CharacterAttributeName.CastSpeed].Modifiers.Contains(_castSpeedModifier))
+        {
+            _castSpeedModifier.Source = this;
+            _owner.AttributeSystem[CharacterAttributeName.CastSpeed].AddModifier(_castSpeedModifier);
+        }
 
         if (Mathf.Approximately(newValue, _castSpeedModifier.Value)) return;
 
         _castSpeedModifier.Value = newValue;
-        _castSpeedModifier.Source = this;
-
-        if (_owner == null) return;
-        
-        _owner.AttributeSystem[CharacterAttributeName.CastSpeed].AddModifier(_castSpeedModifier);
     }
 }

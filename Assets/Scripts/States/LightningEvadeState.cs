@@ -1,16 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LightningEvadeState : StackableState
+public class LightningEvadeState : RefreshingState
 {
-    private float _evadePerStack = 10f;
+    private float _evadePerStack = 0.10f; 
 
     public override States State => States.LightningEvade;
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 
-    private readonly AttributeModifier _evadePhysicalModifier = new AttributeModifier(0, ModifierType.Percent);
-    private readonly AttributeModifier _evadeMagicalModifier = new AttributeModifier(0, ModifierType.Percent);
+    private readonly AttributeModifier _evadePhysicalModifier = new AttributeModifier(0f, ModifierType.Percent);
+    private readonly AttributeModifier _evadeMagicalModifier = new AttributeModifier(0f, ModifierType.Percent);
 
     public override List<StatusEffect> Effects => new()
     {
@@ -25,6 +25,8 @@ public class LightningEvadeState : StackableState
         _evadePhysicalModifier.Source = this;
         _evadeMagicalModifier.Source = this;
 
+        currentStacksCount = 1;
+
         ApplyEvade();
     }
 
@@ -35,18 +37,15 @@ public class LightningEvadeState : StackableState
         if (currentStacksCount >= MaxStacksCount)
             return false;
 
-        ApplyEvade();
         currentStacksCount++;
+        ApplyEvade();
 
         return true;
     }
 
     private void ApplyEvade()
     {
-        float newValue = _evadePhysicalModifier.Value + _evadePerStack;
-
-        _evadePhysicalModifier.Value = newValue;
-        _evadeMagicalModifier.Value = newValue;
+        float newValue = currentStacksCount * _evadePerStack;
 
         var physical = characterState.Character.AttributeSystem[CharacterAttributeName.EvasionPhysical];
         var magical = characterState.Character.AttributeSystem[CharacterAttributeName.EvasionMagical];
@@ -56,32 +55,49 @@ public class LightningEvadeState : StackableState
 
         if (!magical.Modifiers.Contains(_evadeMagicalModifier))
             magical.AddModifier(_evadeMagicalModifier);
-    }
 
-    public override void ExitState()
-    {
-        RemoveEvade();
-        base.ExitState();
+        _evadePhysicalModifier.Value = newValue;
+        _evadeMagicalModifier.Value = newValue;
     }
 
     public override void ReduceStack()
     {
-        _evadePhysicalModifier.Value -= _evadePerStack;
-        _evadeMagicalModifier.Value -= _evadePerStack;
-
         currentStacksCount--;
+        ExitState();
+    }
 
-        if (currentStacksCount <= 0) ExitState();
+    public override void ExitState()
+    {
+        currentStacksCount = 0;
+        RemoveEvade();
+        base.ExitState();
     }
 
     private void RemoveEvade()
     {
-        characterState.Character.AttributeSystem[CharacterAttributeName.EvasionPhysical].RemoveBySource(this);
-        characterState.Character.AttributeSystem[CharacterAttributeName.EvasionMagical].RemoveBySource(this);
+        var physical = characterState.Character.AttributeSystem[CharacterAttributeName.EvasionPhysical];
+        var magical = characterState.Character.AttributeSystem[CharacterAttributeName.EvasionMagical];
 
-        _evadePhysicalModifier.Value = 0;
-        _evadeMagicalModifier.Value = 0;
+        physical.RemoveModifier(_evadePhysicalModifier);
+        magical.RemoveModifier(_evadeMagicalModifier);
+
+        _evadePhysicalModifier.Value = 0f;
+        _evadeMagicalModifier.Value = 0f;
     }
 
     public override void UpdateState() { }
+    
+    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+    {
+        if (!CanEnterState(character)) return null;
+
+        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+
+        if (currentStacksCount == 0)
+            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+        else
+            Stack(duration);
+
+        return this;
+    }
 }

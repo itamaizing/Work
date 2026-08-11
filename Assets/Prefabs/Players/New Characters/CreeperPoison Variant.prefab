@@ -19442,7 +19442,7 @@ MonoBehaviour:
   _creeperStrike: {fileID: 6745892867125186241}
   _poisonSlap: {fileID: 8577860281443816807}
   _lightningStrikes: {fileID: 734640227586387152}
-  _durationLeap: 3
+  _durationLeap: 2
   _radiusAttack: 1.15
   _returnCooldownDivider: 0.5
   _castSpeedValue: 4
@@ -20722,7 +20722,7 @@ MonoBehaviour:
   _enemyLayer:
     serializedVersion: 2
     m_Bits: 256
-  _attackSpeedPerStack: 0.1
+  _attackSpeedPerStack: 0.8
   _tickRate: 0.2
 --- !u!114 &565901441313688860
 MonoBehaviour:
