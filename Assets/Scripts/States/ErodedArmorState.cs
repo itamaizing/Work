@@ -3,88 +3,93 @@ using UnityEngine;
 
 public class ErodedArmorState : RefreshingState
 {
-    private const float ReductionPerStackPercent = 0.05f;
+    private const float ReductionPerStackPercent = -0.05f;
 
-    private AttributeModifier _armorModifier;
-
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Ability };
-
-    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
     public override States State => States.ErodedArmor;
     public override StateType Type => StateType.Physical;
-    public override List<StatusEffect> Effects => _effects;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
+    
+    private readonly AttributeModifier _armorModifier = new AttributeModifier(0f, ModifierType.Percent);
 
-    public ErodedArmorState()
+    public override List<StatusEffect> Effects => new()
+    {
+        StatusEffect.Ability
+    };
+
+    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         MaxStacksCount = 3;
-    }
 
-    public override void EnterState(CharacterState character,
-        float durationToExit,
-        float damageToExit,
-        Character personWhoMadeBuff,
-        string skillName)
-    {
-        characterState = character;
-        health = character.Character.Health;
-        this.personWhoMadeBuff = personWhoMadeBuff;
+        _armorModifier.Source = this;
 
         currentStacksCount = 1;
-        
-        _armorModifier = new AttributeModifier(ReductionPerStackPercent, ModifierType.Percent, this);
 
         ApplyReduction();
-    }
-
-    public override void UpdateState()
-    {
     }
 
     public override bool Stack(float time)
     {
-        if (currentStacksCount < MaxStacksCount)
-        {
-            currentStacksCount++;
-        }
-
         duration = time;
 
+        if (currentStacksCount >= MaxStacksCount)
+        {
+            ApplyReduction();
+            return false;
+        }
+
+        currentStacksCount++;
         ApplyReduction();
+
         return true;
     }
 
     private void ApplyReduction()
     {
         if (characterState == null || characterState.Character == null) return;
-        
-        _armorModifier.Value = -(currentStacksCount * ReductionPerStackPercent);
-        
+
+        float newValue = currentStacksCount * ReductionPerStackPercent;
+
         var armorAttribute = characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical];
-        
-        if (armorAttribute != null && !armorAttribute.Modifiers.Contains(_armorModifier))
+
+        if (armorAttribute != null)
         {
-            armorAttribute.AddModifier(_armorModifier);
+            if (!armorAttribute.Modifiers.Contains(_armorModifier))
+                armorAttribute.AddModifier(_armorModifier);
+            
+            _armorModifier.Value = newValue;
         }
+    }
+
+    public override void ReduceStack()
+    {
+        currentStacksCount = 0;
+        ExitState();
+            
     }
 
     public override void ExitState()
     {
-        if (characterState != null && characterState.Character != null)
-        {
-            var armorAttribute = characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical];
+        RemoveReduction();
+        currentStacksCount = 0;
+        base.ExitState();
+    }
 
-            if (armorAttribute != null && armorAttribute.Modifiers.Contains(_armorModifier))
-            {
-                armorAttribute.RemoveModifier(_armorModifier);
-            }
+    private void RemoveReduction()
+    {
+        if (characterState == null || characterState.Character == null) return;
+
+        var armorAttribute = characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical];
+
+        if (armorAttribute != null)
+        {
+            armorAttribute.RemoveModifier(_armorModifier);
         }
 
-        currentStacksCount = 0;
-
-        characterState.StateIcons.RemoveItemByState(State);
-        characterState.RemoveState(this);
+        _armorModifier.Value = 0f;
     }
-    
+
+    public override void UpdateState() { }
+
     public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
         if (!CanEnterState(character)) return null;
@@ -92,9 +97,7 @@ public class ErodedArmorState : RefreshingState
         BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
 
         if (currentStacksCount == 0)
-        {
             EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
-        }
         else
             Stack(duration);
 

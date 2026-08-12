@@ -8,8 +8,8 @@ public class PoisonCloudState : RefreshingState
     private Character _caster;
 
     private int _maxStacks = 5;
-
-    private float _baseDamage = 0.005f;
+    private float _baseDamagePercent = 0.005f;
+    private float _auraRadius = 5f;
 
     private float _tickRate = 1f;
     private float _timeToNextTick;
@@ -19,11 +19,13 @@ public class PoisonCloudState : RefreshingState
     private float _timeToApplyPoisonBone = 3f;
     private float _poisonBoneTimer;
 
-    private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Poison };
+    private LayerMask _enemyLayer;
+
+    private List<StatusEffect> _effects = new List<StatusEffect>();
 
     public override States State => States.PoisonCloud;
     public override StateType Type => StateType.Physical;
-    public override BaffDebaff BaffDebaff => BaffDebaff.Debaff;
+    public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
     public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
@@ -52,8 +54,10 @@ public class PoisonCloudState : RefreshingState
         health = character.Character.Health;
         this.personWhoMadeBuff = personWhoMadeBuff;
 
-        _caster = personWhoMadeBuff;
-        _poisonBall = personWhoMadeBuff != null ? personWhoMadeBuff.GetComponent<PoisonBall>() : null;
+        _enemyLayer = LayerMask.GetMask("Enemy");
+
+        _caster = character.Character;
+        _poisonBall = _caster != null ? _caster.GetComponent<PoisonBall>() : null;
 
         _baseDuration = durationToExit;
         duration = durationToExit;
@@ -64,15 +68,17 @@ public class PoisonCloudState : RefreshingState
 
     public override void UpdateState()
     {
+        if (!characterState.isServer) return;
+
         _timeToNextTick -= Time.deltaTime;
 
         if (_timeToNextTick <= 0f)
         {
-            DealDamage();
+            DealAuraDamage();
             _timeToNextTick = _tickRate;
         }
     }
-    
+
     public override void ReduceStack()
     {
         currentStacksCount = 0;
@@ -91,32 +97,46 @@ public class PoisonCloudState : RefreshingState
         return true;
     }
 
-    private void DealDamage()
+    private void DealAuraDamage()
     {
-        if (health == null) return;
+        if (_caster == null || _caster.IsDead) return;
 
-        float increasedDamage = _baseDamage * currentStacksCount;
-        float endDamage = health.MaxValue * increasedDamage;
+        Collider[] targets = Physics.OverlapSphere(_caster.transform.position, _auraRadius, _enemyLayer);
 
-        Damage damage = new Damage()
+        bool dealtDamageThisTick = false;
+
+        foreach (var col in targets)
         {
-            Value = endDamage,
-            Type = DamageType.Physical,
-        };
+            if (col == null) continue;
 
-        if(!characterState.isServer)
-            health.CmdTryTakeDamage(damage, null);
+            Character target = col.GetComponent<Character>();
+            if (target == null || target == _caster || target.IsDead) continue;
+            
+            float percentDamage = _baseDamagePercent * currentStacksCount;
+            float endDamageValue = target.Health.MaxValue * percentDamage;
 
-        _poisonBoneTimer += _tickRate;
-
-        if (_poisonBoneTimer >= _timeToApplyPoisonBone)
-        {
-            if (_poisonBall != null && _poisonBall.IsPoisonCloudAddPoisonBone)
+            Damage damage = new Damage()
             {
-                characterState.AddState(States.PoisonBone, 6, 0, _caster != null ? _caster.gameObject : null, null);
-            }
+                Value = endDamageValue,
+                Type = DamageType.Physical,
+            };
 
-            _poisonBoneTimer = 0f;
+            target.Health.TryTakeDamage(ref damage, _poisonBall);
+            dealtDamageThisTick = true;
+
+            if (_poisonBoneTimer >= _timeToApplyPoisonBone && _poisonBall != null && _poisonBall.IsPoisonCloudAddPoisonBone)
+            {
+                target.CharacterState.AddState(States.PoisonBone, 6f, 0, _caster.gameObject, null);
+            }
+        }
+
+        if (dealtDamageThisTick)
+        {
+            _poisonBoneTimer += _tickRate;
+            if (_poisonBoneTimer >= _timeToApplyPoisonBone)
+            {
+                _poisonBoneTimer = 0f;
+            }
         }
     }
 

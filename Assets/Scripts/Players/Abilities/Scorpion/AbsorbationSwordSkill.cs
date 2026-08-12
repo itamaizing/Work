@@ -22,8 +22,6 @@ public class AbsorbationSwordSkill : Skill
 
     private Coroutine _absorbCoroutine;
 
-    private float _baseBlockChance;
-
     #region Доп урон от поглощённых снарядов
 
     private bool _isAbsorbedDamage;
@@ -53,7 +51,6 @@ public class AbsorbationSwordSkill : Skill
         base.Init(render, hero);
         _energy = hero.Resources[ResourceType.Energy];
         _hero.Health.DamageTaken += OnHeroDamageTaken;
-        _baseBlockChance = hero.Health.BlockChance;
         
         _swordSkills = _hero.Abilities.Abilities.Where(s => s is ISwordSkill).ToList();
         foreach (var swordSkill in _swordSkills)
@@ -73,13 +70,13 @@ public class AbsorbationSwordSkill : Skill
 
     private void OnSkillStarted()
     {
-        _hero.Health.OnBeforeTakeDamage += OnHeroAbsorbed;
+        _hero.Health.OnTryResist += TryAbsorb;
         Hero.Health.Block += EndAbsorb;
     }
 
     private void OnSkillEnded()
     {
-        _hero.Health.OnBeforeTakeDamage -= OnHeroAbsorbed;
+        _hero.Health.OnTryResist -= TryAbsorb;
         Hero.Health.Block -= EndAbsorb;
     }
 
@@ -124,15 +121,19 @@ public class AbsorbationSwordSkill : Skill
         }
     }
 
-    private void OnHeroAbsorbed(Damage damage, Skill skill)
+
+    private bool TryAbsorb(Damage damage, Skill skill)
     {
-        if (_isAbsorbing && IsProjectileSkill(skill))
-        {
-            _hero.Health.BlockChance = 100;
-            if(isClient)
-                _energy.CmdUse(_absorbEnergyReturn);
-            AddAbsorbedDamageToList(_hero.gameObject,damage);
-        }
+        if (!_isAbsorbing || !IsProjectileSkill(skill)) return false;
+
+        if (isClient)
+            _energy.CmdUse(_absorbEnergyReturn);
+
+        AddAbsorbedDamageToList(_hero.gameObject, damage);
+
+        EndAbsorb();
+
+        return true;
     }
 
     [TargetRpc]
@@ -226,7 +227,6 @@ public class AbsorbationSwordSkill : Skill
             _absorbCoroutine = null;
         }
 
-        _hero.Health.BlockChance = _baseBlockChance;
         OnSkillEnded();
         CheckChargers();
     }

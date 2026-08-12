@@ -275,7 +275,7 @@ public class PoisonBallProjectile : Test_Projectile
     {
         float multiplier = 1f;
         
-        if (_isActiveBallEffect && _currentCountBall >= 1)
+        if (_isActiveBallEffect && _currentCountBall > 1)
         {
             multiplier += (_currentCountBall - 1) * 0.2f;
         }
@@ -306,7 +306,7 @@ public class PoisonBallProjectile : Test_Projectile
 
     private void PushEnemyDependingOnCountProjectile(Character target, float durationPush)
     {
-        if (_isActiveBallEffect && _currentCountBall >= 1)
+        if (_isActiveBallEffect && _currentCountBall > 1)
         {
             float additionalDistance = (_currentCountBall - 1);
             _newDistancePush = _baseDistancePush + additionalDistance + _multiplierDistanceFromTalent;

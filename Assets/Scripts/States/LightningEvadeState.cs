@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class LightningEvadeState : RefreshingState
 {
-    private float _evadePerStack = 0.10f; 
+    private float _evadePerStack = 10f; 
 
     public override States State => States.LightningEvade;
     public override StateType Type => StateType.Physical;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
 
-    private readonly AttributeModifier _evadePhysicalModifier = new AttributeModifier(0f, ModifierType.Percent);
-    private readonly AttributeModifier _evadeMagicalModifier = new AttributeModifier(0f, ModifierType.Percent);
+    private readonly AttributeModifier _evadePhysicalModifier = new AttributeModifier(0f, ModifierType.Flat);
+    private readonly AttributeModifier _evadeMagicalModifier = new AttributeModifier(0f, ModifierType.Flat);
 
     public override List<StatusEffect> Effects => new()
     {

@@ -131,7 +131,7 @@ public class PoisonBall : Skill, IAltAbility
 
     protected override int AnimTriggerCast => 0;
     protected override int AnimTriggerCastDelay => Animator.StringToHash("PoisonBallCastDelayAnimTrigger");
-    protected override bool IsCanCast => CheckCanCast();
+    //protected override bool IsCanCast => CheckCanCast();
 
     public event Action ResetAbilityParameters;
     public event Action AbilityChange;
@@ -733,21 +733,18 @@ public class PoisonBall : Skill, IAltAbility
     {
         int ownerLayer = _player.gameObject.layer;
 
-        CurrentTarget = target;
-
-        if (LastTarget == CurrentTarget)
+        if (_poisonBallInfo.IsActiveTimer)
         {
             _poisonBallInfo.CountProjectiles += 1;
-            _poisonBallInfo.IsProjectileCreate = true;
         }
         else
         {
-            _poisonBallInfo.IsActiveTimer = false;
-            _poisonBallInfo.IsThreeProjectileOnOnetarget = false;
-            _poisonBallInfo.IsCanApplyInvisible = false;
-            _poisonBallInfo.CountProjectiles = 1;
-            _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
+            _poisonBallInfo.CountProjectiles = 0;
         }
+
+        _poisonBallInfo.IsProjectileCreate = true;
+        _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
+        _poisonBallInfo.IsActiveTimer = true;
 
         if (_poisonBallInfo.CountProjectiles < maxCountProjectiles && LastTarget == CurrentTarget)
         {
@@ -999,7 +996,7 @@ public class PoisonBall : Skill, IAltAbility
         Vector3 thirdPoint = targetInfo.Points.Count > 2 ? targetInfo.Points[2] : secondPoint;
 
         ChooseSpeed(secondPoint, anchorPlayerPos);
-        ChooseDirectionPush(secondPoint, thirdPoint, anchorPlayerPos);
+        ChooseDirectionPush(thirdPoint, anchorPlayerPos);
 
         _activeCastIsFast = _isFast;
         _activeCastIsPushTarget = _isPushTarget;
@@ -1018,12 +1015,12 @@ public class PoisonBall : Skill, IAltAbility
         _isFast = Vector3.Dot(castDirection.normalized, secondClickVector.normalized) > 0f;
     }
 
-    private void ChooseDirectionPush(Vector3 secondPoint, Vector3 thirdPoint, Vector3 anchorPlayerPos)
+    private void ChooseDirectionPush(Vector3 thirdPoint, Vector3 anchorPlayerPos)
     {
         Vector3 castDirection = _firstMousePosition - anchorPlayerPos;
         castDirection.y = 0f;
 
-        Vector3 thirdVector = thirdPoint - secondPoint;
+        Vector3 thirdVector = thirdPoint - _firstMousePosition;
         thirdVector.y = 0f;
 
         _isPushTarget = Vector3.Dot(castDirection.normalized, thirdVector.normalized) > 0f;

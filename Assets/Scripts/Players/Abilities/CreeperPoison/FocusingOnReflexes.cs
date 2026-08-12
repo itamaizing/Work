@@ -21,6 +21,7 @@ public class FocusingOnReflexes : Skill
         if (Hero != null && Hero.Health != null)
         {
             Hero.Health.Evaded -= OnEvaded;
+            Hero.Health.DamageTaken -= OnDamageTaken;
         }
     }
 
@@ -45,7 +46,16 @@ public class FocusingOnReflexes : Skill
     protected override IEnumerator CastJob()
     {
         CmdApplyReflexesBuff();
+        SubscribeOnDamage();
         yield break;
+    }
+
+    private void SubscribeOnDamage()
+    {
+        if (Hero != null && Hero.Health != null)
+        {
+            Hero.Health.DamageTaken += OnDamageTaken;
+        }
     }
 
     [Command]
@@ -78,14 +88,18 @@ public class FocusingOnReflexes : Skill
         }
     }
 
-    private void OnEvaded()
+    private void OnEvaded(Skill skill)
     {
-        if (_isBuffActive)
-        {
-            RemoveBuffLogic();
-        }
+        RemoveBuffLogic();
     }
 
+    private void OnDamageTaken(Damage damage, Skill skill)
+    {
+        if(damage.Type == DamageType.DOTMag || damage.Type == DamageType.DOTPhys) return;
+        CmdRemoveBuffLogic();
+        Hero.Health.DamageTaken -= OnDamageTaken;
+    }
+    
     private void RemoveBuffLogic()
     {
         _isBuffActive = false;
@@ -102,5 +116,14 @@ public class FocusingOnReflexes : Skill
         Hero.Health.EvadeRangeDamage -= EvadeRangeBonus;
         
         Hero.CharacterState.RemoveState(States.FocusingOnReflexesState);
+    }
+
+    [Command]
+    private void CmdRemoveBuffLogic()
+    {
+        if (_isBuffActive)
+        {
+            RemoveBuffLogic();
+        }
     }
 }

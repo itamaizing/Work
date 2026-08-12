@@ -6,14 +6,15 @@ using UnityEngine;
 
 public class BlockPassiveSkill : Skill, IPassiveSkill
 {
-    [SerializeField] private float durationWindowsBoost = 2f;
+    [SerializeField] private float durationWindowsBoost = 1f;
     [SerializeField] private float blockChance = 50;
     [SerializeField] private float cooldownPerTarget = 6f;
+    [SerializeField] private int meleeHitsToTrigger = 2;
 
     private Dictionary<Character, Coroutine> _boostWindows = new();
     private Dictionary<Character, float> _cooldownEndTime = new();
+    private Dictionary<Character, int> _meleeHitCounts = new();
 
-    private Character _attacker;
     private HashSet<Character> _validAttackers = new();
 
     #region Skill
@@ -39,7 +40,6 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
 
         Hero.Health.Block += PlayBlockAnimation;
         Hero.Health.Evaded += OnHeroEvade;
-        Hero.Health.OnBeforeTakeDamage += OnBeforeTakeDamage;
 
         Hero.Health.OnTryResist += TryResist;
     }
@@ -48,23 +48,16 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
     {
         Hero.Health.Block -= PlayBlockAnimation;
         Hero.Health.Evaded -= OnHeroEvade;
-        Hero.Health.OnBeforeTakeDamage -= OnBeforeTakeDamage;
 
         Hero.Health.OnTryResist -= TryResist;
     }
 
-    private void OnHeroEvade()
+    private void OnHeroEvade(Skill skill)
     {
-        if (_attacker == null) return;
-        TargetRpcStartBlockPassiveSkillBoostWindow(connectionToClient, _attacker.netId);
-    }
+        Character attacker = skill?.Hero as Character;
+        if (attacker == null) return;
 
-    private void OnBeforeTakeDamage(Damage damage, Skill skill)
-    {
-        if (skill == null || skill.Hero == null) return;
-
-        _attacker = skill.Hero;
-        if (!_validAttackers.Contains(_attacker)) Hero.Health.BlockChance = 0f;
+        TargetRpcStartBlockPassiveSkillBoostWindow(connectionToClient, attacker.netId);
     }
 
     public void TryStartBlockPassiveSkillBoostWindow(Character target)
@@ -82,11 +75,8 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
 
     private IEnumerator BlockPassiveSkillBoostWindow(Character target)
     {
-        Hero.Health.CmdSetBlockChance(blockChance);
-        Hero.Health.BlockChance = blockChance;
         EnableSkillBoost();
-        
-        
+
         yield return new WaitForSeconds(durationWindowsBoost);
 
         EndBoostWindow(target);
@@ -96,34 +86,58 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
     {
         _boostWindows.Remove(target);
         _validAttackers.Remove(target);
+        CmdRemoveAttacker(target);
+        _meleeHitCounts.Remove(target);
         _cooldownEndTime[target] = Time.time + cooldownPerTarget;
         DisableSkillBoost();
         if (_boostWindows.Count == 0)
         {
-            Hero.Health.CmdResetBlockChance();
             Disactive = true;
         }
     }
+    
+    private bool TryResist(Damage damage, Skill skill)
+    {
+        if (IsDot(damage)) return false;
 
-    private bool TryResist(Damage damage)
+        Character attacker = skill?.Hero as Character;
+
+        if (TryBlock(damage, attacker)) return true;
+        if (TryMagicOrPhysicResist(damage, attacker)) return true;
+
+        return false;
+    }
+
+    private static bool IsDot(Damage damage) =>
+        damage.Type == DamageType.DOTPhys || damage.Type == DamageType.DOTMag;
+
+    private bool TryBlock(Damage damage, Character attacker)
+    {
+        if (damage.Type != DamageType.Physical) return false;
+        if (attacker == null) return false;
+        if (!_validAttackers.Contains(attacker)) return false;
+
+        if (UnityEngine.Random.Range(0f, 100f) > blockChance) return false;
+
+        Hero.Health.InvokeBlock();
+        return true;
+    }
+
+    private bool TryMagicOrPhysicResist(Damage damage, Character attacker)
     {
         if (!_isMagicOrPhysicRessist) return false;
-        if (_attacker == null) return false;
+        if (attacker == null) return false;
 
         float chance = 50f;
 
-        float roll = UnityEngine.Random.Range(0f, 100f);
-
-        if (roll > chance) return false;
+        if (UnityEngine.Random.Range(0f, 100f) > chance) return false;
 
         switch (damage.Type)
         {
             case DamageType.Magical:
-                Debug.Log("Magic resist triggered");
                 return true;
 
             case DamageType.Physical:
-                Debug.Log("Physical resist triggered");
                 return true;
         }
 
@@ -133,7 +147,6 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
     private void PlayBlockAnimation()
     {
         if (isServer) TargetRpcPlayBlockAnimation(Hero.connectionToClient);
-        Hero.Health.ResetBlockChance();
         ClientRpcResetAllBoostWindows();
     }
 
@@ -146,7 +159,8 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
 
         _boostWindows.Clear();
         _validAttackers.Clear();
-        _attacker = null;
+        CmdClearAttackers();
+        _meleeHitCounts.Clear();
         Targeting.ClearTarget();
         Disactive = true;
     }
@@ -169,5 +183,17 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
     private void CmdAddAttacker(Character target)
     {
         if (!_validAttackers.Contains(target)) _validAttackers.Add(target);
+    }
+
+    [Command]
+    private void CmdRemoveAttacker(Character target)
+    {
+        if (_validAttackers.Contains(target)) _validAttackers.Remove(target);
+    }
+
+    [Command]
+    private void CmdClearAttackers()
+    {
+        _validAttackers.Clear();
     }
 }

@@ -5,7 +5,6 @@ public class ImmortalityState : AbstractCharacterState
 {
     private float _duration;
     private Character _player;
-    private float _savedBlockChance;
     private float _savedEvadeMelee;
     private float _savedEvadeRange;
     private float _savedResistMag;
@@ -22,15 +21,15 @@ public class ImmortalityState : AbstractCharacterState
         _player = characterState.Character;
         _duration = durationToExit;
 
-        _savedBlockChance = _player.Health.BlockChance;
         _savedEvadeMelee  = _player.Health.EvadeMeleeDamage;
         _savedEvadeRange  = _player.Health.EvadeRangeDamage;
         _savedResistMag   = _player.Health.ResistMagDamage;
 
-        _player.Health.BlockChance       = 100f;
         _player.Health.EvadeMeleeDamage  = 100f;
         _player.Health.EvadeRangeDamage  = 100f;
         _player.Health.ResistMagDamage   = 100f;
+        
+        _player.Health.OnTryResist += NegateAllDamage;
     }
 
     public override void UpdateState()
@@ -46,18 +45,20 @@ public class ImmortalityState : AbstractCharacterState
 
         if (_player != null && _player.Health != null)
         {
-            _player.Health.BlockChance       = _savedBlockChance;
             _player.Health.EvadeMeleeDamage  = _savedEvadeMelee;
             _player.Health.EvadeRangeDamage  = _savedEvadeRange;
             _player.Health.ResistMagDamage   = _savedResistMag;
+
+            _player.Health.OnTryResist -= NegateAllDamage;
         }
 
         characterState.RemoveState(this);
     }
+
+    private bool NegateAllDamage(Damage damage, Skill skill) => true;
 
     public override bool Stack(float time)
     {
         return false;
     }
 }
-

@@ -19277,11 +19277,11 @@ MonoBehaviour:
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
-    _clickLayer: -1
+    type: 1
+    _clickLayer: 3
     _faction: -1
     _unitType: -1
-    _outOfRangeBehaviour: 0
+    _outOfRangeBehaviour: 1
     _needLineOfSight: 0
   _targetsLayers:
     serializedVersion: 2
@@ -20412,6 +20412,7 @@ MonoBehaviour:
   durationWindowsBoost: 1
   blockChance: 50
   cooldownPerTarget: 6
+  meleeHitsToTrigger: 2
 --- !u!114 &3254515559312903057
 MonoBehaviour:
   m_ObjectHideFlags: 0

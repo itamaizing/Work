@@ -158,7 +158,7 @@ public class SneakySpit : Skill
                Targeting.NoObstacles(target.transform.position, transform.position, _obstacle);
     }
 
-    private void OnHeroEvade()
+    private void OnHeroEvade(Skill skill)
     {
         Debug.Log($"_attacker: {_attacker}");
         if (_attacker == null || _boostWindow != null) return;

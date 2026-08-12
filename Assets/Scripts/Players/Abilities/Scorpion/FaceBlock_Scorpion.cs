@@ -11,7 +11,6 @@ public class FaceBlock_Scorpion : Skill
     [SerializeField] private float _blockReduction = 90f;
     [SerializeField] private float _blockAngle = 45f;
 
-    private float _originalBlockChance;
     private bool _isBlocking = false;
     
     private static readonly int _faceBlockTrigger = Animator.StringToHash("FaceBlock");
@@ -27,8 +26,7 @@ public class FaceBlock_Scorpion : Skill
     public override void Init(SkillRenderer render, Character hero)
     {
         base.Init(render, hero);
-        _originalBlockChance = hero.Health.BlockChance;
-        
+
         if (_hero?.Health != null)
             _hero.Health.OnBeforeDamage += OnBeforeTakeDamage;
     }

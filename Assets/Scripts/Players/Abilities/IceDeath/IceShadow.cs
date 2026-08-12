@@ -266,7 +266,7 @@ public class IceShadow : Skill,IEnergyDamagable
 
     #endregion
 
-    public void Evaded()
+    public void Evaded(Skill skill)
 	{
 		if( _talentEvade) 
 		{

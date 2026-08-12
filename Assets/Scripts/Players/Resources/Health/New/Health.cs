@@ -18,11 +18,9 @@ public class Health : Resource, IDamageable, IHealable
     private List<IDamageable> _shields = new List<IDamageable>();
     [SyncVar] private float _sumDamageTaken = 0;
     private float _totalMaxAbsorption = 0;
-    private float _blockChance;
     private bool _isDot = false;
 
     public Bar barCharacter { get => bar; }
-    public float BlockChance { get => _blockChance; set => _blockChance = value; }
     //public float SumDamageTaken { get { Debug.Log("Sum dmg " + _sumDamageTaken); return _sumDamageTaken; }} //=> _sumDamageTaken; }
     public float SumDamageTaken { get => _sumDamageTaken; }
     public float EvadeMeleeDamage { get => _evadeMeleeDamage; set => _evadeMeleeDamage = value; }
@@ -32,8 +30,8 @@ public class Health : Resource, IDamageable, IHealable
     public float DefMagDamage { get => _defMagDamage; set => _defMagDamage = value; }
     public float TotalMaxAbsorption { get => _totalMaxAbsorption; set => _totalMaxAbsorption = value; }
     public List<IDamageable> Shields { get => _shields; }
-
-    public event Action Evaded;
+    
+    public event Action<Skill> Evaded;
     public event Action Block;
     public event Action<float , Skill , string> HealTaked;
     public event Action<float, Skill, string> HealTakedServer;
@@ -45,8 +43,8 @@ public class Health : Resource, IDamageable, IHealable
 
     public event Action<float, DamageType, Skill> ShieldDamageTaken;
     public event Action<Damage, Skill> OnBeforeTakeDamage; //Test
-
-    public delegate bool TryResistDelegate(Damage damage);
+    
+    public delegate bool TryResistDelegate(Damage damage, Skill skill);
     public event TryResistDelegate OnTryResist;
 
     public delegate void BeforeDamageDelegate(ref Damage damage, Skill skill);
@@ -96,7 +94,7 @@ public class Health : Resource, IDamageable, IHealable
         if (TryEvade(damage.Type, damage.PhysicAttackType))
         {
             //Debug.Log($"Evade");
-            Evaded?.Invoke();
+            Evaded?.Invoke(skill);
             ClientRpcEvade();
             return false;
         }
@@ -105,18 +103,11 @@ public class Health : Resource, IDamageable, IHealable
         {
             foreach (TryResistDelegate resist in OnTryResist.GetInvocationList())
             {
-                if (resist.Invoke(damage))
+                if (resist.Invoke(damage, skill))
                 {
                     return false;
                 }
             }
-        }
-
-        else if (UnityEngine.Random.Range(0f, 100f) <= _blockChance)
-        {
-            //Debug.Log($"Block");
-            Block?.Invoke();
-            return false;
         }
 
         Defence(ref damage);
@@ -190,7 +181,9 @@ public class Health : Resource, IDamageable, IHealable
         _resistMagDamage = value;
     }
 
-    public void InvokeEvade() => Evaded?.Invoke();
+    public void InvokeEvade(Skill skill = null) => Evaded?.Invoke(skill);
+
+    public void InvokeBlock() => Block?.Invoke();
 
     public void SetEvadeMagicDecrease(float value)
     {
@@ -425,11 +418,6 @@ public class Health : Resource, IDamageable, IHealable
 
 		PhantomValueShow(curDamage);
 	}
-
-    [Command] public void CmdSetBlockChance(float chance) => _blockChance = chance;
-    [Command] public void CmdResetBlockChance() => ResetBlockChance();
-
-    public void ResetBlockChance() => _blockChance = 0;
 
     public void IncreaseRegen(float percentValue)
     {
