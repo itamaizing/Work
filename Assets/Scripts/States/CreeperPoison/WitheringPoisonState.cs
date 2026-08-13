@@ -67,6 +67,12 @@ public class WitheringPoisonState : RefreshingState
             ExitState();
         }
     }
+    
+    public override void ReduceStack()
+    {
+        currentStacksCount = 0;
+        ExitState();
+    }
 
     public override bool Stack(float time)
     {

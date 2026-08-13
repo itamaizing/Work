@@ -94,11 +94,6 @@ public class GrabTongue : Skill
         if (preparedCharacter == null)
             yield break;
 
-        /*
-         * Как в CreeperStrike:
-         * если сейчас НЕ кастуем — можно поставить текущую цель.
-         * если каст уже идет — НЕ трогаем текущую цель активного каста.
-         */
         if (!IsCasting)
             Targeting.SetTarget(preparedTarget.Targetable);
 
@@ -160,8 +155,7 @@ public class GrabTongue : Skill
             if (skill == null)
                 continue;
 
-            if (skill.IsCasting || skill.IsPreparing)
-                skill.CmdCancelActiveSkill();
+            skill.CmdCancelActiveSkill();
         }
     }
 

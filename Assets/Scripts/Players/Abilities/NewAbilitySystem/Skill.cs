@@ -1346,7 +1346,8 @@ public abstract class Skill : NetworkBehaviour
 
     [Command] public void CmdForceFailCastJobOnce() => RpcForceFailCastJobOnce();
 
-    [Command]
+    
+    [Command(requiresAuthority = false)]
     public void CmdCancelActiveSkill() => RpcCancelActiveSkill();
 
     public void ResetSkillState()

@@ -12,7 +12,7 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
     [SerializeField] private int meleeHitsToTrigger = 2;
 
     private Dictionary<Character, Coroutine> _boostWindows = new();
-    private Dictionary<Character, float> _cooldownEndTime = new();
+    private Dictionary<Character, double> _cooldownEndTime = new();
     private Dictionary<Character, int> _meleeHitCounts = new();
 
     private HashSet<Character> _validAttackers = new();
@@ -62,9 +62,10 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
 
     public void TryStartBlockPassiveSkillBoostWindow(Character target)
     {
+        Debug.LogError("TryStartBlockPassiveSkillBoostWindow");
         if (target == null) return;
         if (_boostWindows.ContainsKey(target)) return;
-        if (_cooldownEndTime.TryGetValue(target, out float endTime) && Time.time < endTime) return;
+        if (_cooldownEndTime.TryGetValue(target, out double endTime) && NetworkTime.time < endTime) return;
 
         CmdAddAttacker(target);
         _validAttackers.Add(target);
@@ -88,7 +89,7 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
         _validAttackers.Remove(target);
         CmdRemoveAttacker(target);
         _meleeHitCounts.Remove(target);
-        _cooldownEndTime[target] = Time.time + cooldownPerTarget;
+        _cooldownEndTime[target] = NetworkTime.time + cooldownPerTarget;
         DisableSkillBoost();
         if (_boostWindows.Count == 0)
         {
@@ -100,10 +101,11 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
     {
         if (IsDot(damage)) return false;
 
+        Debug.LogError("TryResist");
+        
         Character attacker = skill?.Hero as Character;
 
         if (TryBlock(damage, attacker)) return true;
-        if (TryMagicOrPhysicResist(damage, attacker)) return true;
 
         return false;
     }
@@ -119,53 +121,28 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
 
         if (UnityEngine.Random.Range(0f, 100f) > blockChance) return false;
 
+        if (_boostWindows.TryGetValue(attacker, out Coroutine coroutine) && coroutine != null)
+            StopCoroutine(coroutine);
+
         Hero.Health.InvokeBlock();
+        EndBoostWindow(attacker);
+
         return true;
-    }
-
-    private bool TryMagicOrPhysicResist(Damage damage, Character attacker)
-    {
-        if (!_isMagicOrPhysicRessist) return false;
-        if (attacker == null) return false;
-
-        float chance = 50f;
-
-        if (UnityEngine.Random.Range(0f, 100f) > chance) return false;
-
-        switch (damage.Type)
-        {
-            case DamageType.Magical:
-                return true;
-
-            case DamageType.Physical:
-                return true;
-        }
-
-        return false;
     }
 
     private void PlayBlockAnimation()
     {
-        if (isServer) TargetRpcPlayBlockAnimation(Hero.connectionToClient);
-        ClientRpcResetAllBoostWindows();
-    }
-
-    private void ResetAllBoostWindows()
-    {
-        foreach (var kvp in _boostWindows)
+        if (isServer) 
         {
-            if (kvp.Value != null) StopCoroutine(kvp.Value);
+            ClientRpcPlayBlockAnimation();
         }
-
-        _boostWindows.Clear();
-        _validAttackers.Clear();
-        CmdClearAttackers();
-        _meleeHitCounts.Clear();
-        Targeting.ClearTarget();
-        Disactive = true;
     }
-
-    [ClientRpc] private void ClientRpcResetAllBoostWindows() => ResetAllBoostWindows();
+    
+    [ClientRpc]
+    private void ClientRpcPlayBlockAnimation()
+    {
+        Hero.Animator.SetTrigger(Animator.StringToHash("BlockTrigger"));
+    }
 
     [TargetRpc]
     private void TargetRpcStartBlockPassiveSkillBoostWindow(NetworkConnection target, uint attackerNetId)
@@ -176,9 +153,7 @@ public class BlockPassiveSkill : Skill, IPassiveSkill
             if (attacker != null) TryStartBlockPassiveSkillBoostWindow(attacker);
         }
     }
-
-    [TargetRpc] private void TargetRpcPlayBlockAnimation(NetworkConnection target) => Hero.Animator.SetTrigger(Animator.StringToHash("BlockTrigger"));
-
+    
     [Command]
     private void CmdAddAttacker(Character target)
     {

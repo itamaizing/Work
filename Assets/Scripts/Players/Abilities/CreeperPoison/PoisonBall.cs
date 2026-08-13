@@ -93,6 +93,8 @@ public class PoisonBall : Skill, IAltAbility
     private float _radiusFindTarget = 0.5f;
     private float _increaseManaCostValue = 1.3f;
     private float _baseIncreaseManaCostValue = 1f;
+    
+    private double _serverLastCastTime = -999;
 
     #region BoolVariables
 
@@ -729,19 +731,13 @@ public class PoisonBall : Skill, IAltAbility
         bool isActiveBallEffect,
         bool isActiveInertialGlands, bool isActiveContinuationAmbush,
         bool isTargetEnemy, bool isTargetPlayer, bool isTargetAllies, bool isTransparentPoisons)
-
     {
         int ownerLayer = _player.gameObject.layer;
 
-        if (_poisonBallInfo.IsActiveTimer)
-        {
-            _poisonBallInfo.CountProjectiles += 1;
-        }
-        else
-        {
-            _poisonBallInfo.CountProjectiles = 0;
-        }
+        bool comboExpired = NetworkTime.time - _serverLastCastTime > _poisonBallInfo.StartTimeBetweenAttack;
+        _serverLastCastTime = NetworkTime.time;
 
+        _poisonBallInfo.CountProjectiles = comboExpired ? 0 : _poisonBallInfo.CountProjectiles + 1;
         _poisonBallInfo.IsProjectileCreate = true;
         _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
         _poisonBallInfo.IsActiveTimer = true;
@@ -768,7 +764,6 @@ public class PoisonBall : Skill, IAltAbility
                 isPushTarget, isPlayerInvisible,
                 isTransparentPoisons, ownerLayer, _coldBlood.IsCanCrit);
         }
-
         else
         {
             poisonBallProjectile.InitializationProjectileForPoisonBall(_player, this,
@@ -785,16 +780,6 @@ public class PoisonBall : Skill, IAltAbility
         NetworkServer.Spawn(item);
 
         poisonBallProjectile.RpcInitTransparent(isTransparentPoisons, ownerLayer);
-
-        if (_poisonBallInfo.CountProjectiles > maxCountProjectiles)
-        {
-            _poisonBallInfo.IsActiveTimer = false;
-
-            _poisonBallInfo.CountProjectiles = 1;
-            _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
-            _poisonBallInfo.IsThreeProjectileOnOnetarget = false;
-            _poisonBallInfo.IsCanApplyInvisible = false;
-        }
     }
 
     [Command]
@@ -809,9 +794,12 @@ public class PoisonBall : Skill, IAltAbility
     {
         int ownerLayer = _player.gameObject.layer;
 
+        bool comboExpired = NetworkTime.time - _serverLastCastTime > _poisonBallInfo.StartTimeBetweenAttack;
+        _serverLastCastTime = NetworkTime.time;
+
         CurrentTarget = LastTarget;
 
-        if (LastTarget == CurrentTarget)
+        if (!comboExpired && LastTarget == CurrentTarget)
         {
             _poisonBallInfo.CountProjectiles += 1;
             _poisonBallInfo.IsProjectileCreate = true;
@@ -866,7 +854,6 @@ public class PoisonBall : Skill, IAltAbility
                 isPushTarget, isPlayerInvisible,
                 isTransparentPoisons, ownerLayer, _coldBlood.IsCanCrit);
         }
-
         else
         {
             poisonBallProjectile.InitializationProjectileForPoisonBall(_player, this,
@@ -883,16 +870,6 @@ public class PoisonBall : Skill, IAltAbility
         NetworkServer.Spawn(item);
 
         poisonBallProjectile.RpcInitTransparent(isTransparentPoisons, ownerLayer);
-
-        if (_poisonBallInfo.CountProjectiles >= maxCountProjectiles)
-        {
-            _poisonBallInfo.IsActiveTimer = false;
-
-            _poisonBallInfo.CountProjectiles = 1;
-            _poisonBallInfo.TimeBetweenAttack = _poisonBallInfo.StartTimeBetweenAttack;
-            _poisonBallInfo.IsThreeProjectileOnOnetarget = false;
-            _poisonBallInfo.IsCanApplyInvisible = false;
-        }
     }
 
     [Command]
