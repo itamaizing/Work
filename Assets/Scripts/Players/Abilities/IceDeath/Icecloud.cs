@@ -72,7 +72,7 @@ public class IceCloud : Skill,IEnergyDamagable, IComboSeriesParticipatingSkill
 		
 		_energy.CmdUse(_energyToUse);
 
-		_mousePos = Targeting.GetTarget().Poisition;
+		_mousePos = Targeting.GetTarget().Position;
         Vector3 lookDir = _mousePos - Hero.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - AngleOffset;
 		

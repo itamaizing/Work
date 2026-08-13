@@ -50,7 +50,7 @@ public class BlockOfIce : Skill,IEnergyDamagable,IComboSeriesParticipatingSkill
 
 	private void Shoot(float bonusDamage)
 	{
-		_mousePos = Targeting.GetTarget().Poisition;
+		_mousePos = Targeting.GetTarget().Position;
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		float angle = Mathf.Atan2(lookDir.z, lookDir.x) * Mathf.Rad2Deg - 90f;
 

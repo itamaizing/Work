@@ -69,7 +69,7 @@ public class IceShard : Skill,IEnergyDamagable
 			TryCancel(true);
 			return;
 		}
-		_mousePos = Targeting.GetTarget().Poisition;
+		_mousePos = Targeting.GetTarget().Position;
 		Vector3 lookDir = _mousePos - _playerLinks.transform.position;
 		lookDir.y = 0f;
 		lookDir.Normalize();
