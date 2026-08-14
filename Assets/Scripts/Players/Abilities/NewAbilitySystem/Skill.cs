@@ -827,7 +827,7 @@ public abstract class Skill : NetworkBehaviour
             yield return _castCoroutine;
         }
 
-        CancelAnim();
+        //CancelAnim();
 
         CommitUse();
         CastSuccess?.Invoke();

@@ -9,7 +9,7 @@ public class ChainArrow : Projectiles
     [SerializeField] private float _speed = 20f;
     [SerializeField] private float _speedModifier = 1.2f;
     [SerializeField] private float _speedWithTarget = 4f;
-    [SerializeField] private float _stopDistance = 0.5f;
+    [SerializeField] private float _stopDistance = 1.5f;
     [SerializeField] private float _arrowYOffset = 1.5f;
     [SerializeField] private LayerMask _targetsLayer;
     [SerializeField] private Transform _chainPoint;
@@ -20,7 +20,7 @@ public class ChainArrow : Projectiles
     private float _damage;
     private float _flightTime = 0f;
 
-    public Action<Character, float,float> OnHitTarget;
+    public Action<Character, float, float> OnHitTarget;
     private Coroutine _flyCoroutine;
     private Coroutine _returnCoroutine;
     private bool _isReturning = false;
@@ -90,7 +90,7 @@ public class ChainArrow : Projectiles
             AttachToTarget(character);
             ApplyDamage(_damage, DamageType.Physical, character.gameObject);
 
-            OnHitTarget?.Invoke(character, _flightTime,_damage);
+            OnHitTarget?.Invoke(character, _flightTime, _damage);
         }
     }
     private IEnumerator FlyCoroutine()

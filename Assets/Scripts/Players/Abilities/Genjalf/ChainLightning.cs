@@ -63,7 +63,7 @@ public class ChainLightning : MoveSkill
         {
             Attack(Targeting.GetTarget()?.Character);
             yield return new WaitForSecondsRealtime(0.3f);
-            var temps = Physics.OverlapSphere(Targeting.GetTarget().Character.Position, AreaInfo.Radius, _targetsLayers);
+            var temps = Physics.OverlapSphere(Targeting.GetTarget().Character.Position, AreaInfo.Radius, Targeting.Layer);
             
             for (int i = 0; i < temps.Length; i++)
             {

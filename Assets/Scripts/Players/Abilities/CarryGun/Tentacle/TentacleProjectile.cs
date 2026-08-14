@@ -13,7 +13,6 @@ public class TentacleProjectile : NetworkBehaviour
     [SerializeField] private LayerMask obstecls;
     [SerializeField] private float basePsi = 1f;
     [SerializeField] private float grabDuration = 1.2f;
-    [SerializeField] private float lifeTentacle = 4f;
     [SerializeField] private LineRenderer tentacleLine;
     [SerializeField] private Transform tentaclePoint;
     [SerializeField] private SpikeTentacle _spike;
@@ -36,6 +35,7 @@ public class TentacleProjectile : NetworkBehaviour
     private bool _isSpawnSpike;
     private float _spentAttackingPsiEnergy;
     
+    private float lifeTentacle;
     private float _remainingLifeTime;
     private float _radius = 4f;
     private bool _radiusView;
@@ -76,7 +76,7 @@ public class TentacleProjectile : NetworkBehaviour
         if (isServer && _target.CharacterState.CheckForState(States.TentacleGrip)) _target.CharacterState.RemoveState(States.TentacleGrip);
     }
 
-    public void Init(Character player, Character target, Vector3 startPosition, Vector3 endPosition,
+    public void Init(Character player, Character target, Vector3 startPosition, Vector3 endPosition, float lifetime,
         bool isAttackingPsiEnergyActive, bool isPsionicsTalentThree, bool isAttractionTentacleTalent, bool isSpawnSpike, float currentDamage, Skill skill)
     {
         _isPsionicsTalentThree = isPsionicsTalentThree;
@@ -96,7 +96,8 @@ public class TentacleProjectile : NetworkBehaviour
 
         _maxPullDistance = Vector3.Distance(endPosition, target.transform.position);
 
-        _remainingLifeTime = lifeTentacle;
+        lifeTentacle = lifetime;
+        _remainingLifeTime = lifetime;
         if (!isClient)
         {
             _lifeTimeCoroutine = StartCoroutine(LifeTimeRoutine());

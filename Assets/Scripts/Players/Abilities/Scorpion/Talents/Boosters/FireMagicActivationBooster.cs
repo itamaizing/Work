@@ -13,7 +13,7 @@ public class FireMagicActivationBooster : Skill, IPassiveSkill
     private readonly Dictionary<Skill, float> _cooldowns = new();
 
     private float _chargeConsumedAt = float.NegativeInfinity;
-    private bool  _isEnabled;
+    private bool _isEnabled;
 
     public void Enable(bool value)
     {
@@ -86,7 +86,7 @@ public class FireMagicActivationBooster : Skill, IPassiveSkill
                 break;
         }
     }
-    
+
     protected override IEnumerator CastJob()
     {
         throw new System.NotImplementedException();

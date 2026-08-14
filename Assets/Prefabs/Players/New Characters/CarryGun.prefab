@@ -21780,7 +21780,7 @@ MonoBehaviour:
         \u0434\u0435\u043B\u0438\u0442\u0441\u044F \u043F\u043E\u0440\u043E\u0432\u043D\u0443
         \u043C\u0435\u0436\u0434\u0443 \u043A\u044D\u0440\u0440\u0438\u0433\u0430\u043D
         \u0438 \u0446\u0435\u043B\u044F\u043C\u0438 \u0441 \u0438\u043C\u043F\u0430\u0442\u0438\u043A\u043E\u0439."
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0418\u043C\u043F\u0430\u0442\u0438\u043A\u0430"
     Icon: {fileID: 21300000, guid: 8d177058b628a854487d1af8f3aba693, type: 3}
     Group: 0
@@ -21832,7 +21832,7 @@ MonoBehaviour:
       \u043C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u043E\u0435 \u0441\u043E\u0441\u0442\u043E\u044F\u043D\u0438\u0435
       \xAB\u0440\u0430\u0437\u0440\u044F\u0436\u0435\u043D\u0438\u0435\xBB 3 \u0441\u0442\u0430\u043A "
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0420\u0430\u0441\u0441\u0435\u0438\u0432\u0430\u044E\u0449\u0430\u044F\u0441\u044F
       \u043F\u0441\u0438"
     Icon: {fileID: 615579297, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
@@ -21900,7 +21900,7 @@ MonoBehaviour:
       \u043D\u0430\u043D\u043E\u0441\u044F \u0444\u0438\u0437 \u0443\u0440\u043E\u043D
       \u043D\u0430\u043A\u0430\u043F\u043B\u0438\u0432\u0430\u044E\u0442 \u043F\u0441\u0438"
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u041F\u0441\u0438\u043E\u043D\u0438\u043A\u0430 6"
     Icon: {fileID: 577668657, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
@@ -22303,7 +22303,7 @@ MonoBehaviour:
       \u043A\u0440\u0438\u0442\u0430 \u0441 \u0445\u044D\u043B\u0438\u0446\u0435\u0440\u044B 
       +30%"
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: Evolution 7
     Icon: {fileID: 21300000, guid: 3afd1a22fce0ef748bc5c2c64b19e872, type: 3}
     Group: 0
@@ -22431,7 +22431,7 @@ MonoBehaviour:
         \u043D\u0430\u043B\u043E\u0436\u0435\u043D\u0438\u0438 \u043E\u0431\u043D\u043E\u0432\u043B\u044F\u0435\u0442\u0441\u044F
         \u0432\u0440\u0435\u043C\u044F, \u0444\u0438\u0437 \u0434\u0435\u0431\u0430\u0444,
         \u0443\u0440\u043E\u043D \u0437\u0435\u043C\u043B\u044F."
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u042D\u0432\u043E\u043B\u044E\u0446\u0438\u044F 13"
     Icon: {fileID: 21300000, guid: 37e2f5ff795d89441a4d306dd4f45782, type: 3}
     Group: 0
@@ -22472,7 +22472,7 @@ MonoBehaviour:
       \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0435\u0442\u0441\u044F \u0434\u043B\u044F
       \u0440\u043E\u0436\u0434\u0435\u043D\u0438\u044F \u0441\u0443\u0449\u0435\u0441\u0442\u0432.  "
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0429\u0443\u043F\u0430\u043B\u044C\u0446\u0430"
     Icon: {fileID: 21300000, guid: 58e44ea1eb75bab42a26767369e4183c, type: 3}
     Group: 0
@@ -22526,7 +22526,7 @@ MonoBehaviour:
       \u0440\u043E\u044F \u0441\u043E\u0441\u0442\u0430\u0432\u043B\u044F\u0435\u0442
       1 \u0435\u0434\u0438\u043D\u0438\u0446\u0430"
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u041A\u043E\u043A\u043E\u043D_2"
     Icon: {fileID: 21300000, guid: ee0f08a0ce484464e9adff1b91a3cba8, type: 3}
     Group: 0
@@ -22972,19 +22972,23 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 0
+    _school: 8
     _form: 1
-    _damageType: 0
+    _damageType: 1
     _rangeType: 0
-    _skillType: 0
-    _whileMoving: 0
+    _whileMoving: 1
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 1
     _faction: 4
     _unitType: -1
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 1
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -23011,7 +23015,7 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 1.5
+    _radius: 1.1
     _area: 0
     _castLength: 0
     _castWidth: 0
@@ -23045,8 +23049,8 @@ MonoBehaviour:
   _buffDurationAfterJump: 1
   _chanceApplyBleedingIncrease: 0.4
   _chanceApplyBleedingWithJump: 0.4
-  _minDamage: 10
-  _maxDamage: 11
+  _minDamage: 5
+  _maxDamage: 7
 --- !u!114 &640134254429411212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23077,19 +23081,23 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 0
-    _form: 0
-    _damageType: 0
+    _school: 8
+    _form: 1
+    _damageType: 1
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 1
     _faction: 4
     _unitType: -1
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -23116,7 +23124,7 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 1.5
+    _radius: 1.1
     _area: 0
     _castLength: 0
     _castWidth: 0
@@ -23182,19 +23190,23 @@ MonoBehaviour:
   _castDeley: 0.3
   _damageValue: 0
   _infoComponent:
-    _school: 0
-    _form: 0
-    _damageType: 0
+    _school: 8
+    _form: 1
+    _damageType: 1
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 1
     _faction: 4
     _unitType: -1
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -23248,7 +23260,6 @@ MonoBehaviour:
   _clawStrike: {fileID: 1846342972592633463}
   _cooldownEnergy: {fileID: 5998867522025010555}
   _basePsi: 1
-  _distanceJump: 4
   _cooldownJump: 12
 --- !u!114 &431818094498011482
 MonoBehaviour:
@@ -23280,19 +23291,23 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 0
-    _form: 0
-    _damageType: 0
+    _school: 8
+    _form: 1
+    _damageType: 1
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: -1
     _faction: -1
     _unitType: 5
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -23349,6 +23364,7 @@ MonoBehaviour:
   _spawnComponent: {fileID: 4260348460032838645}
   _summoningSwarm: {fileID: 8267736736109211900}
   _radiusTarget: 0.5
+  _tentacleLifetime: 4
 --- !u!114 &1791349742383392303
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23379,19 +23395,23 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 0
+    _school: 4
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
+    oldType: 3
+    type: 3
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -23472,19 +23492,23 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 0
+    _school: 4
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -23626,19 +23650,23 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 0
-    _form: 0
-    _damageType: 0
+    _school: 8
+    _form: 1
+    _damageType: 1
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: 5
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -23665,7 +23693,7 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 0
+    _radius: 1.1
     _area: 0
     _castLength: 0
     _castWidth: 0
@@ -23721,19 +23749,23 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 0
-    _form: 0
-    _damageType: 0
+    _school: 8
+    _form: 1
+    _damageType: 5
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -23817,19 +23849,23 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 0
-    _form: 0
-    _damageType: 0
+    _school: 8
+    _form: 1
+    _damageType: 1
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: -1
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -23856,7 +23892,7 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 0
+    _radius: 1.2
     _area: 0
     _castLength: 0
     _castWidth: 0
@@ -23947,15 +23983,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -24030,23 +24070,27 @@ MonoBehaviour:
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
-    _baseCooldown: 0
+    _baseCooldown: 14
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 0
+    _school: 4
     _form: 0
     _damageType: 0
-    _rangeType: 0
-    _skillType: 0
-    _whileMoving: 0
+    _rangeType: 1
+    _whileMoving: 1
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 1
     _faction: 2
     _unitType: 5
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -24063,10 +24107,10 @@ MonoBehaviour:
   _chargeComponent:
     _usesCharges: 0
     _isComboPart: 0
-    _cooldownType: 0
-    _maxCharges: 0
-    _baseCooldown: 0
-    affectedByCDR: 0
+    _cooldownType: 1
+    _maxCharges: 1
+    _baseCooldown: 14
+    affectedByCDR: 1
   _isUseCharges: 1
   _useChargesAsComboPart: 0
   _chargesHaveSeparateCooldown: 1
@@ -24131,15 +24175,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -24222,15 +24270,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -24337,15 +24389,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -24428,15 +24484,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -24521,19 +24581,23 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 0
-    _form: 0
-    _damageType: 0
+    _school: 8
+    _form: 1
+    _damageType: 5
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
-    _autoAttack: 0
+    _autoAttack: 1
   _targetingComponent:
-    type: 0
-    _clickLayer: -1
-    _faction: -1
+    oldType: 2
+    type: 2
+    _clickLayer: 2
+    _faction: 2
     _unitType: -1
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0

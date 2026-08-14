@@ -249,7 +249,7 @@ public class DeathSpiral : Skill,IEnergyDamagable
     [ClientRpc]
     private void RpcCheckForSecondary(float newDamage,Vector3 positionToCheck)
     {
-	    Collider[] hits = Physics.OverlapSphere(positionToCheck, 3, _targetsLayers);
+	    Collider[] hits = Physics.OverlapSphere(positionToCheck, 3, Targeting.Layer);
 	    foreach (var hit in hits)
 	    {
 		    if (hit.TryGetComponent<Character>(out Character enemy) && enemy != _hero && enemy.CharacterState.CheckForState(States.PortalDarkness))

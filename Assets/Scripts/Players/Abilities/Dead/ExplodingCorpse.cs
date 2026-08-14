@@ -24,7 +24,7 @@ public class ExplodingCorpse : SkillCreatureIceDeath
         if(!isClient) return;
         if(!_isEnabled) return;
         if (_hero == null) return;
-        var colliders = Physics.OverlapSphere(transform.position, ExplodingRange, _targetsLayers);
+        var colliders = Physics.OverlapSphere(transform.position, ExplodingRange, Targeting.Layer);
 
         foreach (var col in colliders)
         {

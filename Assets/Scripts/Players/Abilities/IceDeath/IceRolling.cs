@@ -261,7 +261,7 @@ public class IceRolling : Skill, IComboSeriesParticipatingSkill
             RaycastHit[] hits = Physics.SphereCastAll(
                 origin, _castRadius, direction,
                 speed * Time.deltaTime + 0.1f,
-                _obstacle | _targetsLayers);
+                _obstacle | Targeting.Layer);
 
             bool shouldStop = false;
             Vector3 perpDirBase = Vector3.Cross(direction, Vector3.up).normalized;

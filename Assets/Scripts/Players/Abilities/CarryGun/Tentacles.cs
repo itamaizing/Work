@@ -15,6 +15,7 @@ public class Tentacles : Skill
     [SerializeField] private SpawnComponent _spawnComponent;
     [SerializeField] private SummoningSwarm _summoningSwarm;
     [SerializeField] private float _radiusTarget = 0.5f;
+    [SerializeField] private float _tentacleLifetime = 4f;
 
     private bool _isPlacingTentacles = false;
     private bool _isClickedOnGround = false;
@@ -154,7 +155,6 @@ public class Tentacles : Skill
     public override void Init(SkillRenderer render, Character hero)
     {
         base.Init(render, hero);
-        
         SubscribeCharacterSkills(_hero.gameObject);
 
         if (_spawnComponent != null)
@@ -514,7 +514,7 @@ public class Tentacles : Skill
 
         _currentTentacle = Instantiate(_tentaclesPrefab, position, Quaternion.identity);
 
-        _currentTentacle.Init(_player, target, position, target.transform.position, true, _isPsionicsTalentThree, _isAttractionTentacleTalent, _isSpawnSpike, _spentAttackingPsiEnergy, this);
+        _currentTentacle.Init(_player, target, position, target.transform.position, _tentacleLifetime, true, _isPsionicsTalentThree, _isAttractionTentacleTalent, _isSpawnSpike, _spentAttackingPsiEnergy, this);
 
         NetworkServer.Spawn(_currentTentacle.gameObject);
         
@@ -544,7 +544,7 @@ public class Tentacles : Skill
         if (!IsValidVector(position)) return;
         if (tentacleObject == null) return;
 
-        tentacleObject.GetComponent<TentacleProjectile>().Init(_player, target, position, target.transform.position, true, _isPsionicsTalentThree, _isAttractionTentacleTalent, _isSpawnSpike, _spentAttackingPsiEnergy, this);
+        tentacleObject.GetComponent<TentacleProjectile>().Init(_player, target, position, target.transform.position, _tentacleLifetime, true, _isPsionicsTalentThree, _isAttractionTentacleTalent, _isSpawnSpike, _spentAttackingPsiEnergy, this);
     }
 
     [ClientRpc]

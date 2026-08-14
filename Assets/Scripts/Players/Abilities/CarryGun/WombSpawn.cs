@@ -108,16 +108,6 @@ public class WombSpawn : Skill
 
     protected override int AnimTriggerCastDelay => 0;
     protected override int AnimTriggerCast => Animator.StringToHash("Spell");
-    protected override bool IsCanCast =>
-    _summoningSwarm != null && _spawnPoint != Vector3.positiveInfinity && IsCanRadius();
-
-    private bool IsCanRadius()
-    {
-        if (!IsValidVector(_spawnPoint)) return false;
-
-        float distance = Vector3.Distance(Hero.transform.position, _spawnPoint);
-        return distance <= AreaInfo.Radius;
-    }
 
     private bool IsValidVector(Vector3 vector)
     {
@@ -142,19 +132,20 @@ public class WombSpawn : Skill
     private void HandleSkillCanceled()
     {
         Targeting.ClearTarget();
-        _skillRender.StopDrawRadius();
+        ClearData();
     }
 
     public void MoveStop()
     {
         Hero.Move.SetCanMove(false);
-        if (Targeting.GetTarget()?.Character) _player.Move.LookAtPosition(Targeting.GetTarget().Character.transform.position);
+        if (Targeting.GetTarget() != null) _player.Move.LookAtPosition(Targeting.GetTarget().Position);
         Hero.Move.StopMoveAndAnimationMove();
     }
 
     public void AnimTentaclesCast()
     {
-        CommitUse();
+        if (isClient)
+            CommitUse();
         AnimStartCastCoroutine();
     }
 
@@ -168,6 +159,7 @@ public class WombSpawn : Skill
         _skillRender.IsOverrideClosestTarget = false;
         _isClickedOnGround = false;
         _skillRender.StopDrawRadius();
+        _isPlayCastAnim = false;
 
         _spawnPoint = Vector3.positiveInfinity;
         Targeting.ClearTarget();
@@ -175,26 +167,9 @@ public class WombSpawn : Skill
         _player.Move.StopLookAt();
     }
 
-    protected override IEnumerator PrepareJob(Action<TargetInfo> callbackDataSaved)
-    {
-        Vector3 targetPoint = Vector3.positiveInfinity;
-
-        while (float.IsPositiveInfinity(targetPoint.x))
-        {
-            Vector3 mousePoint = Targeting.GetMousePoint();
-
-            if (GetMouseButton) targetPoint = mousePoint;
-
-            yield return null;
-        }
-
-        TargetInfo targetInfo = new TargetInfo();
-        targetInfo.Points.Add(targetPoint);
-        callbackDataSaved(targetInfo);
-    }
-
     protected override IEnumerator CastJob()
     {
+        _spawnPoint = Targeting.GetTarget().Position;
         if (!IsValidVector(_spawnPoint)) yield break;
 
         bool hadCharges = _summoningSwarm != null && _summoningSwarm.ChargesSwarm > 0;
@@ -206,7 +181,6 @@ public class WombSpawn : Skill
         if (hadCharges) Cooldown.ForceEnd();
 
         ClearData();
-        _skillRender.StopDrawRadius();
         yield return null;
     }
 
@@ -235,11 +209,5 @@ public class WombSpawn : Skill
             if (womb.TryGetComponent<CreatureSpawn>(out CreatureSpawn creatureSpawn)) creatureSpawn.WombSpawn = this;
             _spawnedWombs.Add(womb.gameObject);
         }
-    }
-
-    public override void LoadTargetData(TargetInfo targetInfo)
-    {
-        _spawnPoint = targetInfo.Points[0];
-        if (targetInfo.GetTargets().Count > 0) Targeting.SetTarget((Character)targetInfo.GetTargets()[0]);
     }
 }

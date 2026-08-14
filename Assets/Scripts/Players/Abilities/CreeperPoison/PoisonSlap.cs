@@ -23,6 +23,7 @@ public class PoisonSlap : Skill
     [SerializeField] private PoisonHealingCloudPrefab _poisonHealingCloudPrefab;
 
     [SerializeField] private CreeperPoisonAura _creeperPoisonAura;
+    [SerializeField] private float _baseDamage = 30f;
 
     private PoisonDamagingCloudPrefab _poisonDamagingCloud;
     private PoisonHealingCloudPrefab _poisonHealingCloud;
@@ -33,7 +34,6 @@ public class PoisonSlap : Skill
 
     private float _creeperStrikeCastSpeedMultiplier = 1.5f;
     private float _lightningStrikesCastSpeedMultiplier = 2f;
-    private float _baseDamage = 30f;
     private float _distancePush = 3.0f;
     private float _durationPush = 1.0f;
 

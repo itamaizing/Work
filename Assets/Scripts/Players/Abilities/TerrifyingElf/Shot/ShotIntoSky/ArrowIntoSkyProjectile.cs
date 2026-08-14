@@ -12,8 +12,6 @@ public class ArrowIntoSkyProjectile : NetworkBehaviour
     [SerializeField] private float minDamage;
     [SerializeField] private float maxDamage;
     [SerializeField, Range(0f, 100f)] private float criticalChance = 30f;
-    [SerializeField] private float criticalMultiplier = 2.4f;
-
     [SerializeField] private GameObject arrow;
     [SerializeField] private GameObject circle;
     [SerializeField] private SphereCollider sphereCollider;

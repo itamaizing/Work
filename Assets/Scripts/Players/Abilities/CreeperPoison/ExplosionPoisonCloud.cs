@@ -79,7 +79,7 @@ public class ExplosionPoisonCloud : Skill
         Collider[] hitEnemies = Physics.OverlapSphere(
             transform.position,
             _radiusExplosion,
-            _targetsLayers
+            Targeting.Layer
         );
 
         foreach (Collider enemy in hitEnemies)

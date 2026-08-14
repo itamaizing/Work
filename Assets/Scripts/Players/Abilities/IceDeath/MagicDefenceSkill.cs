@@ -117,7 +117,7 @@ public class MagicDefenceSkill : Skill
     private bool IsHoveringCharacter()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, _targetsLayers))
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, Targeting.Layer))
             return hit.transform.TryGetComponent<Character>(out _);
         return false;
     }

@@ -10,7 +10,6 @@ public class JumpWithChelicera : Skill
     [SerializeField] private ClawStrike _clawStrike;
     [SerializeField] private CooldownEnergy _cooldownEnergy;
     [SerializeField] private float _basePsi = 1f;
-    [SerializeField] private float _distanceJump = 4f;
     [SerializeField] private float _cooldownJump = 12f;
 
     #region Constants
@@ -168,7 +167,7 @@ public class JumpWithChelicera : Skill
 
         MoveComponent playerMove = player.GetComponent<MoveComponent>();
         Vector3 jumpPosition = Vector3.MoveTowards(targetCharacter.transform.position, player.transform.position, _minDistance);
-        playerMove.TargetRpcDoMove(jumpPosition, _distanceJump / JumpSpeedDivider);
+        playerMove.TargetRpcDoMove(jumpPosition, AreaInfo.Radius / JumpSpeedDivider);
         StartCoroutine(TrackMovementDuringJumpCoroutine(playerMove, targetCharacter.netId, additionalDamage));
     }
 
@@ -177,7 +176,7 @@ public class JumpWithChelicera : Skill
     {
         MoveComponent playerMove = player.GetComponent<MoveComponent>();
         Vector3 jumpPosition = Vector3.MoveTowards(targetPosition, player.transform.position, _minDistance);
-        playerMove.TargetRpcDoMove(jumpPosition, _distanceJump / 10);
+        playerMove.TargetRpcDoMove(jumpPosition, AreaInfo.Radius / 10);
 
         if (_trackMovementDuringJumpCoroutine != null) StopCoroutine(TrackMovementDuringJumpCoroutine(playerMove, targetNetId, additionalDamage));
         _trackMovementDuringJumpCoroutine = StartCoroutine(TrackMovementDuringJumpCoroutine(playerMove, targetNetId, additionalDamage));
@@ -259,7 +258,7 @@ public class JumpWithChelicera : Skill
 
     public void JumpEndSpeedAnim()
     {
-        float timeDelay = _distanceJump / JumpSpeedDivider;
+        float timeDelay = AreaInfo.Radius / JumpSpeedDivider;
         _player.Animator.SetFloat("JumpEndSpeed", 1f / timeDelay);
     }
 

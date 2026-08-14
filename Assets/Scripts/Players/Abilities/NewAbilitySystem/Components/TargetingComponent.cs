@@ -59,8 +59,8 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
     /// Б) Не затирались значения, если дергать тип туда-сюда
     /// По идее не живет между запусками Юнити, да и ладно
     /// </summary>
-    private Dictionary<SkillType, TargetLayer> editorBackupValue = new();
-    private SkillType oldType = new();
+    [SerializeField, HideInInspector] private Dictionary<SkillType, TargetLayer> editorBackupValue = new();
+    [SerializeField, HideInInspector] private SkillType oldType = new();
 
     public void OnBeforeSerialize()
     {
@@ -91,8 +91,8 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
                         _clickLayer = TargetLayer.None;
                         break;
                 }
+            oldType = type;
         }
-        oldType = type;
     }
 
     public void OnAfterDeserialize() { }
@@ -115,7 +115,7 @@ public class TargetingComponent : BaseSkillComponent, ISerializationCallbackRece
 
     #region Runtime Variables
     protected const float _defaultSearchRadius = 0.3f;
-    protected LayerMask _targetLayer;
+    [SerializeField, Mirror.ReadOnly] protected LayerMask _targetLayer;
     protected LayerMask _obstacles;
 
     protected TargetData _target;

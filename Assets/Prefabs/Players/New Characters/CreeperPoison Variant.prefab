@@ -18952,20 +18952,23 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 5
-    _form: 2
+    _school: 8
+    _form: 1
     _damageType: 1
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 1
     _faction: 4
     _unitType: -1
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -18992,7 +18995,7 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 2
+    _radius: 1.1
     _area: 0
     _castLength: 0
     _castWidth: 0
@@ -19052,12 +19055,18 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _costs: []
+    _costs:
+    - nameToShow: 40 Mana - Mandatory mod desc
+      type: 1
+      value: 40
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 1
+  _cooldownTime: 8
   _cooldownComponent:
-    _baseCooldown: 1
+    _baseCooldown: 8
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
@@ -19065,16 +19074,19 @@ MonoBehaviour:
     _form: 2
     _damageType: 1
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 1
     _faction: 4
     _unitType: -1
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -19101,7 +19113,7 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 2
+    _radius: 1.1
     _area: 0
     _castLength: 0
     _castWidth: 0
@@ -19148,7 +19160,13 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 10
-    _costs: []
+    _costs:
+    - nameToShow: 10 Mana - Mandatory mod desc
+      type: 1
+      value: 10
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _skillEnergyCosts:
   - nameToShow: 0 Health - Mandatory mod desc
     type: 0
@@ -19157,26 +19175,29 @@ MonoBehaviour:
     shouldModify: 1
     showInDescription: 1
   _additionalSkillEnergyCosts: []
-  _cooldownTime: 0
+  _cooldownTime: 9
   _cooldownComponent:
-    _baseCooldown: 0
+    _baseCooldown: 9
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
     _school: 5
-    _form: 0
+    _form: 1
     _damageType: 0
-    _rangeType: 0
-    _skillType: 0
+    _rangeType: 1
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
-    type: 0
-    _clickLayer: -1
-    _faction: -1
-    _unitType: -1
+    oldType: 1
+    type: 1
+    _clickLayer: 3
+    _faction: 4
+    _unitType: 5
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -19203,10 +19224,10 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 12
+    _radius: 5
     _area: 0
-    _castLength: 6
-    _castWidth: 1
+    _castLength: 5
+    _castWidth: 0.75
   _autoAttackDelay: 0
   _informationRenderComponent:
     _isAutoRadiusRender: 0
@@ -19265,24 +19286,27 @@ MonoBehaviour:
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
   _cooldownComponent:
-    _baseCooldown: 0
+    _baseCooldown: 24
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
     _school: 5
-    _form: 2
+    _form: 1
     _damageType: 0
     _rangeType: 1
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 1
     type: 1
     _clickLayer: 3
-    _faction: -1
-    _unitType: -1
+    _faction: 4
+    _unitType: 5
     _outOfRangeBehaviour: 1
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -19377,20 +19401,23 @@ MonoBehaviour:
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 5
-    _form: 0
-    _damageType: 0
+    _school: 8
+    _form: 1
+    _damageType: 1
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 1
-    _autoAttack: 0
+    _autoAttack: 1
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 3
     _faction: 4
     _unitType: -1
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -19481,16 +19508,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -19568,7 +19598,13 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _costs: []
+    _costs:
+    - nameToShow: 30 Mana - Mandatory mod desc
+      type: 1
+      value: 30
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 0
@@ -19581,16 +19617,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
-    _autoAttack: 0
+    _autoAttack: 1
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 1
     _faction: 4
-    _unitType: -1
+    _unitType: 5
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -19617,7 +19656,7 @@ MonoBehaviour:
   _maxCharges: 0
   _chargeCooldown: 0
   _areaComponent:
-    _radius: 3
+    _radius: 1.1
     _area: 0
     _castLength: 0
     _castWidth: 0
@@ -19647,6 +19686,7 @@ MonoBehaviour:
   _poisonDamagingCloudPrefab: {fileID: 8376359178360537337, guid: 6684174cfea68c84b9bd06aa086faa01, type: 3}
   _poisonHealingCloudPrefab: {fileID: -4967518069141830548, guid: 835486046afaafa48885a183fcb94bd6, type: 3}
   _creeperPoisonAura: {fileID: 2161342997938470374}
+  _baseDamage: 30
 --- !u!114 &7910504212405209002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19681,16 +19721,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -19775,16 +19818,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -19869,16 +19915,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 2
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: -1
     _faction: -1
     _unitType: 5
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -19963,16 +20012,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -20058,16 +20110,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -20152,24 +20207,27 @@ MonoBehaviour:
   _additionalSkillEnergyCosts: []
   _cooldownTime: 6
   _cooldownComponent:
-    _baseCooldown: 0
+    _baseCooldown: 6
   _castDeley: 0
   _damageValue: 0
   _infoComponent:
-    _school: 5
-    _form: 2
+    _school: 8
+    _form: 1
     _damageType: 5
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -20240,7 +20298,13 @@ MonoBehaviour:
   _isSubjectToGlobalCooldownTime: 1
   _costComponent:
     _base: 0
-    _costs: []
+    _costs:
+    - nameToShow: 20 Mana - Mandatory mod desc
+      type: 1
+      value: 20
+      costType: 0
+      shouldModify: 1
+      showInDescription: 1
   _skillEnergyCosts: []
   _additionalSkillEnergyCosts: []
   _cooldownTime: 6
@@ -20250,19 +20314,22 @@ MonoBehaviour:
   _damageValue: 12
   _infoComponent:
     _school: 5
-    _form: 2
+    _form: 1
     _damageType: 1
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: 5
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -20351,16 +20418,19 @@ MonoBehaviour:
     _form: 2
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -20447,16 +20517,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 3
     type: 3
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -20547,16 +20620,19 @@ MonoBehaviour:
     _form: 2
     _damageType: 1
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -20639,16 +20715,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 4
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: -1
     _faction: -1
     _unitType: 5
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -20752,23 +20831,26 @@ MonoBehaviour:
   _cooldownTime: 8
   _cooldownComponent:
     _baseCooldown: 8
-  _castDeley: 0
+  _castDeley: 0.2
   _damageValue: 0
   _infoComponent:
     _school: 0
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: -1
     _faction: -1
     _unitType: -1
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 256
@@ -20861,16 +20943,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: -1
     _faction: 2
     _unitType: 1
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -20959,16 +21044,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
     _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -21125,7 +21213,7 @@ MonoBehaviour:
       \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u044C + 1000% \u043D\u0430 \u043A\u0430\u0436\u0434\u044B\u0439
       \u0443\u0434\u0430\u0440"
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u041C\u043E\u043B\u043D\u0438\u0435\u043D\u043E\u0441\u043D\u044B\u0435
       \u0443\u0434\u0430\u0440\u044B"
     Icon: {fileID: 21300000, guid: 15a6d004456bc1c47897f234d7bc77ac, type: 3}
@@ -21162,7 +21250,7 @@ MonoBehaviour:
       \u043A\u0440\u0438\u043F\u0435\u0440 \u0442\u0430\u043A \u0436\u0435 \u043D\u0430\u043D\u043E\u0441\u0438\u0442
       \u0443\u0434\u0430\u0440\u044B \u0441 \u0440\u0443\u043A\u0438. "
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u041C\u043E\u043B\u043D\u0438\u0435\u043D\u043E\u0441\u043D\u043E\u0435
       \u043F\u0435\u0440\u0435\u0434\u0432\u0438\u0436\u0435\u043D\u0438\u0435"
     Icon: {fileID: -2889036831652375965, guid: 0ecb6aa3d380cce48bb2d427267b10be, type: 3}
@@ -21218,7 +21306,7 @@ MonoBehaviour:
   _data:
     _descriptionsForInfoPanel: []
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: '-'
     Icon: {fileID: 21300000, guid: 18d4488e43959814eb04e8100bf1d12c, type: 3}
     Group: 0
@@ -21369,7 +21457,7 @@ MonoBehaviour:
       \u0438 \u0441\u0442\u0430\u043D\u0435\u0442 \u0432\u0440\u0430\u0436\u0434\u0435\u0431\u043D\u044B\u043C
       \u0434\u043B\u044F \u0432\u0440\u0430\u0433\u0430. "
     _stateInfos: []
-    IsOpen: 1
+    IsOpen: 0
     Description: "\u041E\u0442\u0440\u0430\u0436\u0430\u044E\u0449\u0430\u044F \u0447\u0435\u0448\u0443\u044F"
     Icon: {fileID: -307085699197752814, guid: 7f05f44f84a019d43b55ce202988e516, type: 3}
     Group: 0
@@ -21665,7 +21753,7 @@ MonoBehaviour:
       \u0438\u043B\u0438 \u043B\u0435\u0447\u0435\u043D\u0438\u0435 \u043D\u0430
       20%."
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u042D\u0444\u0444\u0435\u043A\u0442 \u0448\u0430\u0440\u0430"
     Icon: {fileID: -1558904516361034743, guid: b58f900a1dac3f241965284bed557139, type: 3}
     Group: 0
@@ -21733,7 +21821,7 @@ MonoBehaviour:
       \"\u0412\u0437\u0440\u044B\u0432\u043D\u043E\u0433\u043E \u0449\u0430\u0440\u0430
       \u044F\u0434\u0430\" \u043D\u0430 1   "
     _stateInfos: []
-    IsOpen: 1
+    IsOpen: 0
     Description: "\u042F\u0434 7"
     Icon: {fileID: -4125687490052203788, guid: ef644501c6a48574d99b58d3c563b590, type: 3}
     Group: 0
@@ -21990,7 +22078,7 @@ MonoBehaviour:
       \u0431\u043B\u0438\u0436\u043D\u0435\u0433\u043E \u0431\u043E\u044F  +60% \u0434\u0430\u043B\u044C\u043D\u0435\u0433\u043E
       \u0431\u043E\u044F +100%."
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0424\u043E\u043A\u0443\u0441\u0438\u0440\u043E\u0432\u043A\u0430
       \u043D\u0430 \u0440\u0435\u0444\u043B\u0435\u043A\u0441\u0430\u0445 "
     Icon: {fileID: 21300000, guid: 5cd9984c9b0461848991092ddd38784e, type: 3}
@@ -22148,7 +22236,7 @@ MonoBehaviour:
       \u044D\u0444\u0444\u0435\u043A\u0442 \u0441\u0440\u0430\u0431\u0430\u0442\u044B\u0432\u0430\u0435\u0442
       \u0440\u0430\u0437 \u0432 6 \u0441\u0435\u043A. "
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u0411\u043B\u043E\u043A\u0438\u0440\u043E\u0432\u043A\u0430 \u0443\u0434\u0430\u0440\u0430"
     Icon: {fileID: 21300000, guid: eaacf832bd396904fa733a48d7240860, type: 3}
     Group: 0
@@ -22182,7 +22270,7 @@ MonoBehaviour:
       \u0447\u0435\u0440\u0435\u0437 3 \u0441\u0435\u043A. \u043F\u0440\u043E\u043F\u0430\u0434\u0430\u044E\u0442
       \u0432\u0441\u0435 \u0437\u0430\u0440\u044F\u0434\u044B \u044F\u0434\u044B.     "
     _stateInfos: []
-    IsOpen: 0
+    IsOpen: 1
     Description: "\u042F\u0434\u044B \u0437\u0430\u0441\u0430\u0434\u044B"
     Icon: {fileID: -3657576443839135803, guid: 5b60be5f626a3a84c98675e0fe63abd6, type: 3}
     Group: 0
@@ -22211,7 +22299,7 @@ MonoBehaviour:
       \u0443\u043A\u043B\u043E\u043D\u0435\u043D\u0438\u044F \u043A\u0440\u0438\u043F\u0435\u0440\u0430
       \u043D\u0430 5% \u043E\u0442 \u044D\u0442\u043E\u0439 \u0446\u0435\u043B\u0438 "
     _stateInfos: []
-    IsOpen: 1
+    IsOpen: 0
     Description: "\u041E\u0449\u0443\u0449\u0435\u043D\u0438\u0435 \u043E\u0442\u0440\u0430\u0432\u043B\u0435\u043D\u043D\u043E\u0439
       \u0436\u0435\u0440\u0442\u0432\u044B"
     Icon: {fileID: -1161293298, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
@@ -22242,7 +22330,7 @@ MonoBehaviour:
       - \u0440\u0430\u043D\u044C\u0448\u0435 \u0431\u044B\u043B\u0430 \u0432\u0440\u043E\u0434\u0435
       \u0432 \u04401 "
     _stateInfos: []
-    IsOpen: 1
+    IsOpen: 0
     Description: "\u043F\u0440\u043E\u0437\u0440\u0430\u0447\u043D\u044B\u0435 \u044F\u0434\u044B"
     Icon: {fileID: -1241958626550298057, guid: f877ddcc99be4ae439d43920da8a6d27, type: 3}
     Group: 0
@@ -22300,7 +22388,7 @@ MonoBehaviour:
       \u0436\u0435 \u044D\u0444\u0444\u0435\u043A\u0442 \u043A\u0440\u0438\u0442\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E
       \u0443\u0440\u043E\u043D\u0430. "
     _stateInfos: []
-    IsOpen: 1
+    IsOpen: 0
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 10"
     Icon: {fileID: 1547656469, guid: 450f293acf89da048a19ade6648c9d5a, type: 3}
     Group: 0
@@ -22334,7 +22422,7 @@ MonoBehaviour:
       \u0431\u043B\u043E\u043A\u0438\u0440\u043E\u0432\u043A\u0430 \u0438 \u0440\u0435\u0437\u0438\u0441\u0442
       \u043D\u0435 \u043C\u043E\u0433\u0443\u0442 \u0431\u044B\u0442\u044C \u0441\u0440\u0430\u0431\u043E\u0442\u0430\u043D\u044B. "
     _stateInfos: []
-    IsOpen: 1
+    IsOpen: 0
     Description: "\u041D\u0438\u043D\u0434\u0437\u044F 11"
     Icon: {fileID: 21300000, guid: 1a0a07e66c539064f9e89bb626ea33b5, type: 3}
     Group: 0
@@ -22393,7 +22481,7 @@ MonoBehaviour:
       \u0442\u043E\u0436\u0435 \u0438\u043C\u0435\u044E\u0442 90% \u0441\u043D\u044F\u0442\u0438\u044F
       \u0432 \u043C\u043E\u043C\u0435\u043D\u0442 \u0430\u043A\u0442\u0438\u0432\u0430\u0446\u0438\u0438. "
     _stateInfos: []
-    IsOpen: 1
+    IsOpen: 0
     Description: "\u0437\u0430\u0449\u0438\u0442\u043D\u0430\u044F \u0447\u0435\u0448\u0443\u044F"
     Icon: {fileID: -3398794806397297794, guid: 78a0951e991afaf498657966fd5958a4, type: 3}
     Group: 0

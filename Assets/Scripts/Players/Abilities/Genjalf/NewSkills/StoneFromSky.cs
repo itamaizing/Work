@@ -134,7 +134,7 @@ public class StoneFromSky : Skill
 
     private void ApplyAreaDamage(Vector3 position)
     {
-        Collider[] hits = Physics.OverlapSphere(position, _aoeRadius, _targetsLayers);
+        Collider[] hits = Physics.OverlapSphere(position, _aoeRadius, Targeting.Layer);
 
         foreach (var hit in hits)
         {
