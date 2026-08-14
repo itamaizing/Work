@@ -29,64 +29,64 @@ namespace Gangdollarff.EarthElemental
     {
         private List<StatusEffect> _effects = new();
 
-        private readonly Dictionary<Character, float> _charactersMaxHealth = new();
+        private const float HealthMaxPercent = 0.10f;
+        private const float HealthRegenPercent = 0.002f;
         
-        private float _healthRegenProcent = 0.002f;
-        private float _healthMaxProcent = 0.1f;
-        private float _originalRegenValue = 0;
-        private float _currentDelta = 0;
-
-        private Character _character;
-        private Resource _health;
+        private readonly AttributeModifier _maxHealthModifier =
+            new AttributeModifier(HealthMaxPercent, ModifierType.Percent);
+        
+        private readonly AttributeModifier _healthRegenModifier =
+            new AttributeModifier(HealthRegenPercent, ModifierType.Flat);
 
         public override States State => States.EarthsHealth;
         public override StateType Type => StateType.Magic;
         public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
         public override List<StatusEffect> Effects => _effects;
 
-        public override void EnterState(CharacterState characterState, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+        public override void EnterState(CharacterState characterState, float durationToExit, float damageToExit,
+            Character personWhoMadeBuff, string skillName)
         {
-            _character = characterState.Character;
+            this.characterState = characterState;
 
-            float initialMaxHealth = _character.Health.MaxValue;
-            _charactersMaxHealth[_character] = initialMaxHealth;
+            _maxHealthModifier.Source = this;
+            _healthRegenModifier.Source = this;
 
-            if (_character.Resources.Count > 0)
+            ApplyBuffs();
+        }
+
+        private void ApplyBuffs()
+        {
+            if (characterState == null || characterState.Character == null) return;
+
+            if (health != null)
             {
-                _character.Resources.TryGetValue(ResourceType.Health, out _health);
-                if (_health != null)
-                {
-                    _originalRegenValue = _health.RegenerationValue;
-                    _health.RegenerationValue += _health.MaxValue * _healthRegenProcent;
-                    _currentDelta = _health.MaxValue * _healthMaxProcent;
-                    _health.AddMax(_currentDelta,true);
-                }
+                health.AddModifier(ResourceAttributeName.MaxValue, _maxHealthModifier);
+                
+                _healthRegenModifier.Value = HealthRegenPercent * health.MaxValue;
+                
+                health.AddModifier(ResourceAttributeName.Regen, _healthRegenModifier);
             }
         }
-        
-        private void RestoreHealth()
+
+        private void RemoveBuffs()
         {
-            if (_health != null)
+            if (characterState == null || characterState.Character == null) return;
+
+            if (health != null)
             {
-                _health.RegenerationValue = _originalRegenValue;
-                _health.AddMax(-_currentDelta,true);
+                health.RemoveModifierBySource(ResourceAttributeName.MaxValue,this);
+                health.RemoveModifierBySource(ResourceAttributeName.Regen,this);
             }
         }
 
         public override void ExitState()
         {
+            currentStacksCount = 0;
+            RemoveBuffs();
             base.ExitState();
-            
-            RestoreHealth();
-
-            _health = null;
-            _character = null;
         }
 
-        public override bool Stack(float time)
-        {
-            return false;
-        }
+        public override bool Stack(float time) => false;
 
         public override void UpdateState()
         {

@@ -101,16 +101,16 @@ public class Burning : RefreshingState
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        Damage damage = new Damage
-        {
-            Value = _damage,
-        };
-        if(character.isClient)
-            character.Character.CmdTryTakeDamage(damage, null);
-
         MaxStacksCount = 5;
         _baseDuration = durationToExit;
         _stackTimer = durationToExit;
+
+        Damage damage = new Damage
+        {
+            Value = _damage * (currentStacksCount + 1)
+        };
+        if (character.isClient)
+            character.Character.CmdTryTakeDamage(damage, null);
     }
 
     public override bool Stack(float time)
@@ -143,8 +143,8 @@ public class Burning : RefreshingState
 
         if (_timeAfterLastEffect < _effectRate) return;
 
-        Damage damage = new Damage { Value = _damage };
-        if(characterState.isClient)
+        Damage damage = new Damage { Value = _damage * currentStacksCount };
+        if (characterState.isClient)
             characterState.Character.CmdTryTakeDamage(damage, null);
         _timeAfterLastEffect = 0;
     }

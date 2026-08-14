@@ -22,6 +22,6 @@ public class MagicWaterPassive : Skill, IPassiveSkill
 
     public void EnableMagicWaterAura(bool value)
     {
-        magicWaterAura.ActivateAura(value);
+        magicWaterAura.ActivateAura(value, isAffectOnOwner: true);
     }
 }

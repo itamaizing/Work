@@ -16,6 +16,11 @@ namespace Gangdollarff.AirElemental
         private float _timeAfterLastEffect = 0;
         private float _effectRate = 1;
 
+        private const float SlowPercent = -0.50f;
+        
+        private readonly AttributeModifier _moveSpeedModifier = new AttributeModifier(SlowPercent, ModifierType.Percent);
+
+        
         private int _chance = 50;
 
         public override States State => States.Discharge;
@@ -31,12 +36,18 @@ namespace Gangdollarff.AirElemental
         public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
         {
             MaxStacksCount = 1;
+            _moveSpeedModifier.Source = this;
 
-            DischargeTick();
+            ApplySlow();
+            
+            //Пока не буду удалять, может пригодится
+            //DischargeTick();
         }
 
         public override void ExitState()
         {
+            currentStacksCount = 0;
+            RemoveSlow();
             characterState.RemoveState(this);
         }
 
@@ -44,9 +55,36 @@ namespace Gangdollarff.AirElemental
         {
             _timeAfterLastEffect += Time.deltaTime;
 
-            DischargeTick();
+            //DischargeTick();
             
             _timeAfterLastEffect = 0;
+        }
+        
+        private void ApplySlow()
+        {
+            if (characterState == null || characterState.Character == null) return;
+            
+            var moveSpeedAttribute = characterState.Character.AttributeSystem[CharacterAttributeName.MoveSpeed];
+
+            if (moveSpeedAttribute != null)
+            {
+                if (!moveSpeedAttribute.Modifiers.Contains(_moveSpeedModifier))
+                {
+                    moveSpeedAttribute.AddModifier(_moveSpeedModifier);
+                }
+            }
+        }
+
+        private void RemoveSlow()
+        {
+            if (characterState == null || characterState.Character == null) return;
+
+            var moveSpeedAttribute = characterState.Character.AttributeSystem[CharacterAttributeName.MoveSpeed];
+
+            if (moveSpeedAttribute != null)
+            {
+                moveSpeedAttribute.RemoveModifier(_moveSpeedModifier);
+            }
         }
 
         private void DischargeTick()

@@ -59,13 +59,25 @@ public class AbsorbationSwordSkill : Skill
         }
     }
     
+    private void OnEnable()
+    {
+        OnSkillCanceled += HandleSkillCanceled;
+    }
+    
     private void OnDisable()
     {
+        OnSkillCanceled -= HandleSkillCanceled;
+
         _hero.Health.DamageTaken -= OnHeroDamageTaken;
         foreach (var swordSkill in _swordSkills)
         {
             swordSkill.CastSuccess -= () => ApplyAbsorbedDamage(swordSkill);
         }
+    }
+    
+    private void HandleSkillCanceled()
+    {
+        EndAbsorb();
     }
 
     private void OnSkillStarted()

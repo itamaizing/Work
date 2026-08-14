@@ -28,57 +28,69 @@ public class MagicWaterAura : AuraStateHandler
 
 public class MagicWater : AbstractCharacterState
 {
-    private Character _character;
-    private Resource _mana;
     private List<StatusEffect> _effects = new List<StatusEffect>();
-    private float _manaRegenProcent = 0.003f;
-    private float _manaMaxProcent = 0.1f;
 
-    private float _originalRegenValue = 0;
-    private float _currentDelta = 0;
+    private const float ManaMaxPercent = 0.10f;      // +10% к максимальному запасу маны
+    private const float ManaRegenPercent = 0.003f;    // 0.3% от максимальной маны идет в регенерацию
+
+    private readonly AttributeModifier _maxManaModifier =
+        new AttributeModifier(ManaMaxPercent, ModifierType.Percent);
+
+    private readonly AttributeModifier _manaRegenModifier =
+        new AttributeModifier(0f, ModifierType.Flat);
 
     public override States State => States.MagicWater;
-    public override StateType Type { get; }
+    public override StateType Type => StateType.Magic;
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
     public override List<StatusEffect> Effects => _effects;
 
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
+    public override void EnterState(CharacterState characterState, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
         duration = durationToExit;
-        _character = character.Character;
-        if (_character.Resources.Count > 0)
+        this.characterState = characterState;
+
+        _maxManaModifier.Source = this;
+        _manaRegenModifier.Source = this;
+
+        ApplyBuffs();
+    }
+
+    private void ApplyBuffs()
+    {
+        if (characterState == null || characterState.Character == null) return;
+
+        if (characterState.Character.Resources.TryGetValue(ResourceType.Mana, out var mana) && mana != null)
         {
-            _character.Resources.TryGetValue(ResourceType.Mana, out _mana);
-            if (_mana != null)
-            {
-                _originalRegenValue = _mana.RegenerationValue;
-                _mana.RegenerationValue += _mana.MaxValue * _manaRegenProcent;
-                _currentDelta = _mana.MaxValue * _manaMaxProcent;
-                _mana.AddMax(_currentDelta, true);
-            }
+            mana.AddModifier(ResourceAttributeName.MaxValue, _maxManaModifier);
+
+            _manaRegenModifier.Value = ManaRegenPercent * mana.MaxValue;
+
+            mana.AddModifier(ResourceAttributeName.Regen, _manaRegenModifier);
         }
     }
 
-    private void RestoreMana()
+    private void RemoveBuffs()
     {
-        if (_mana != null)
-        {
-            _mana.RegenerationValue = _originalRegenValue;
-            _mana.AddMax(-_currentDelta, true);
-        }
-    }
+        if (characterState == null || characterState.Character == null) return;
 
-    public override void UpdateState()
-    {
+        if (characterState.Character.Resources.TryGetValue(ResourceType.Mana, out var mana) && mana != null)
+        {
+            mana.RemoveModifierBySource(ResourceAttributeName.MaxValue, this);
+            mana.RemoveModifierBySource(ResourceAttributeName.Regen, this);
+        }
     }
 
     public override void ExitState()
     {
+        currentStacksCount = 0;
+        RemoveBuffs();
         base.ExitState();
-        RestoreMana();
+    }
 
-        _mana = null;
-        _character = null;
+    public override bool Stack(float time) => false;
+
+    public override void UpdateState()
+    {
     }
 }

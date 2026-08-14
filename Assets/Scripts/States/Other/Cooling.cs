@@ -78,11 +78,14 @@ public class Cooling : RefreshingState
 		    EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
 	    else
 		    Stack(duration);
-	    
-	    if (currentStacksCount == MaxStacksCount && _ninjaResources.IsRepeatedFrost)
+
+	    if (skillName != "Minion")
 	    {
-		    if (!characterState.CheckForState(States.Frosting))
-			    _ninjaResources.AddRepeatedFrosting(characterState.gameObject);
+		    if (currentStacksCount == MaxStacksCount && _ninjaResources.IsRepeatedFrost)
+		    {
+			    if (!characterState.CheckForState(States.Frosting))
+				    _ninjaResources.AddRepeatedFrosting(characterState.gameObject);
+		    }
 	    }
 
 	    return this;

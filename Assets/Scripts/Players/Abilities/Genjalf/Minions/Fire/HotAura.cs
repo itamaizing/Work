@@ -27,46 +27,55 @@ public class HotBloodAura : AuraStateHandler
 public class HotAuraBuff : AbstractCharacterState
 {
     private List<StatusEffect> _effects = new List<StatusEffect>();
-    private float _percentage = 0.1f;
-    private Character _character;
+    
+    private const float CastSpeedBonusPercent = 0.10f;
+    
+    private readonly AttributeModifier _castSpeedModifier = new AttributeModifier(CastSpeedBonusPercent, ModifierType.Percent);
 
     public override States State => States.HotBloodBuff;
-
     public override StateType Type => StateType.Magic;
-
     public override BaffDebaff BaffDebaff => BaffDebaff.Baff;
-
     public override List<StatusEffect> Effects => _effects;
 
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
     {
-        _character = character.Character;
-        foreach (var skill in character.Character.Abilities.Abilities)
+        characterState = character;
+        _castSpeedModifier.Source = this;
+
+        ApplyCastSpeedBuff();
+    }
+
+    private void ApplyCastSpeedBuff()
+    {
+        if (characterState == null || characterState.Character == null) return;
+
+        var castSpeedAttr = characterState.Character.AttributeSystem[CharacterAttributeName.CastSpeed];
+
+        if (castSpeedAttr != null && !castSpeedAttr.Modifiers.Contains(_castSpeedModifier))
         {
-            skill.Buff.CastSpeed.IncreasePercentage(1 - _percentage);
-            skill.Buff.AttackSpeed.IncreasePercentage(1 - _percentage);
+            castSpeedAttr.AddModifier(_castSpeedModifier);
+        }
+    }
+
+    private void RemoveCastSpeedBuff()
+    {
+        if (characterState == null || characterState.Character == null) return;
+
+        var castSpeedAttr = characterState.Character.AttributeSystem[CharacterAttributeName.CastSpeed];
+
+        if (castSpeedAttr != null)
+        {
+            castSpeedAttr.RemoveModifier(_castSpeedModifier);
         }
     }
 
     public override void ExitState()
     {
+        RemoveCastSpeedBuff();
         base.ExitState();
-        if (_character != null)
-        {
-            foreach (var skill in _character.Abilities.Abilities)
-            {
-                skill.Buff.CastSpeed.Reset();
-                skill.Buff.AttackSpeed.Reset();
-            }
-        }
     }
 
-    public override bool Stack(float time)
-    {
-        return false;
-    }
+    public override bool Stack(float time) => false;
 
-    public override void UpdateState()
-    {
-    }
+    public override void UpdateState() { }
 }

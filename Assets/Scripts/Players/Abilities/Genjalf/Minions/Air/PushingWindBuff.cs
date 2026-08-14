@@ -33,7 +33,6 @@ public class PushingWindBuff : AbstractCharacterState
 	public override void UpdateState()
 	{
 		if(isAuraState) return;
-		_duration -= Time.deltaTime;
 		if (_duration < 0)
 		{
 			ExitState();

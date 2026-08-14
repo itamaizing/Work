@@ -171,7 +171,7 @@ public class ElementalSpawn : Skill
 
         bool actuallyActivate = _elementalsAuraTalent && shouldBeActive;
 
-        auraComponent.ActivateAura(actuallyActivate);
+        auraComponent.ActivateAura(actuallyActivate, isAffectOnOwner: true);
     }
 
     private void HandleSkill<T>(bool shouldBeActive,bool talentBool) where T : Skill

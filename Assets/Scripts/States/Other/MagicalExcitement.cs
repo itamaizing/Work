@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class MagicalExcitement : AbstractCharacterState
+public class MagicalExcitement : RefreshingState
 {
     private float _duration;
 
@@ -16,7 +16,8 @@ public class MagicalExcitement : AbstractCharacterState
     {
         _duration = durationToExit;
         characterState = character;
-        personWhoMadeBuff = personWhoMadeBuff;
+        base.personWhoMadeBuff = personWhoMadeBuff;
+        MaxStacksCount = int.MaxValue;
     }
 
     public override void ExitState()
@@ -36,8 +37,26 @@ public class MagicalExcitement : AbstractCharacterState
 
     public override void UpdateState()
     {
-        _duration -= Time.deltaTime;
-
         if (_duration <= 0) ExitState();
+    }
+    
+    public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit,
+        Character personWhoMadeBuff, string skillName)
+    {
+        if (!CanEnterState(character)) return null;
+
+        BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+
+        if (currentStacksCount == 0)
+        {
+            EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+            currentStacksCount = 1;
+        }
+        else
+        {
+            Stack(durationToExit);
+        }
+
+        return this;
     }
 }

@@ -81,8 +81,9 @@ public class CoolingDamaged : AbstractCharacterState
 {
     private List<StatusEffect> _effects = new List<StatusEffect>() { StatusEffect.Others };
 
-    private float _physResistPercent = 0.1f;
-    private float _savedPhysResist;
+    private const float PhysResistPercent = 0.10f;
+
+    private readonly AttributeModifier _physResistModifier = new AttributeModifier(PhysResistPercent, ModifierType.Percent);
 
     public override States State => States.CoolingDamaged;
     public override StateType Type => StateType.Magic;
@@ -92,21 +93,54 @@ public class CoolingDamaged : AbstractCharacterState
     public override void EnterState(CharacterState character, float durationToExit, float damageToExit,
         Character personWhoMadeBuff, string skillName)
     {
-        _savedPhysResist = character.Character.Health.DefPhysDamage;
-        character.Character.Health.SetPhysicDef(
-            _savedPhysResist + _savedPhysResist * _physResistPercent);
+        characterState = character;
+        _physResistModifier.Source = this;
 
-        character.Character.Health.DamageTaken += OnDamageTaken;
+        ApplyBuffs();
+
+        if (characterState?.Character?.Health != null)
+        {
+            characterState.Character.Health.DamageTaken += OnDamageTaken;
+        }
+    }
+
+    private void ApplyBuffs()
+    {
+        if (characterState == null || characterState.Character == null) return;
+
+        var physResistAttr = characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical];
+
+        if (physResistAttr != null && !physResistAttr.Modifiers.Contains(_physResistModifier))
+        {
+            physResistAttr.AddModifier(_physResistModifier);
+        }
+    }
+
+    private void RemoveBuffs()
+    {
+        if (characterState == null || characterState.Character == null) return;
+
+        var physResistAttr = characterState.Character.AttributeSystem[CharacterAttributeName.ResistancePhysical];
+
+        if (physResistAttr != null)
+        {
+            physResistAttr.RemoveModifier(_physResistModifier);
+        }
     }
 
     private void OnDamageTaken(Damage damage, Skill skill)
     {
-        if (skill == null) return;
+        if (skill == null || skill.Hero == null) return;
         if (damage.Type != DamageType.Physical) return;
         if (damage.PhysicAttackType != AttackRangeType.MeleeAttack) return;
 
-        skill.Hero.CharacterState.AddState(States.Cooling, 6f, 0,
-            characterState.Character.gameObject, nameof(Cooling));
+        skill.Hero.CharacterState.AddState(
+            States.Cooling, 
+            6f, 
+            0,
+            characterState.Character.gameObject, 
+            nameof(Cooling)
+        );
     }
 
     public override void UpdateState()
@@ -115,13 +149,12 @@ public class CoolingDamaged : AbstractCharacterState
 
     public override void ExitState()
     {
-        if (characterState?.Character != null)
+        if (characterState?.Character?.Health != null)
         {
-            characterState.Character.Health.SetPhysicDef(_savedPhysResist);
             characterState.Character.Health.DamageTaken -= OnDamageTaken;
         }
 
-        _savedPhysResist = 0f;
-        characterState?.RemoveState(this);
+        RemoveBuffs();
+        base.ExitState();
     }
 }

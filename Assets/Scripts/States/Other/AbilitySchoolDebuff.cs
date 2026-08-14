@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AbilitySchoolDebuff : AbstractCharacterState
+public class AbilitySchoolDebuff : RefreshingState
 {
 	public bool turnOff = false;
 	private float _baseDuration;
@@ -16,43 +16,14 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 	public override StateType Type => StateType.Immaterial;
 	public override List<StatusEffect> Effects => _effects;
 
-  
-
-    public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
+	public override void EnterState(CharacterState character, float durationToExit, float damageToExit, Character personWhoMadeBuff, string skillName)
 	{
 		characterState = character;
 		
 		_character = character.GetComponent<Character>();
-		
-		var abilities = _character.Abilities;
-		
-		Debug.LogError(abilities.CurrentCastingSkill);
-		
-		if (abilities.CurrentCastingSkill != null)
-		{
-			Debug.LogError("Casting not null");
-			abilities.CurrentCastingSkill.CmdCancelActiveSkill();
-		}
-
-		if (character.TryGetComponent<Character>(out var ability))
-		{
-			abilities = ability.Abilities;
-			abilities.SwitchAvaliable(canceledSchoool, false);
-		}
-		else
-		{
-			Debug.Log("no ability at " + character.gameObject.name);
-		}
-		_baseDuration = durationToExit;
 	}
 
-	public override void UpdateState()
-	{
-		if (turnOff)
-		{
-			ExitState();
-		}
-	}
+	public override void UpdateState() { }
 
 	public override void ExitState()
 	{
@@ -67,5 +38,48 @@ public class AbilitySchoolDebuff : AbstractCharacterState
 	{
 		duration = time;
 		return true;
+	}
+	public override AbstractCharacterState TryApply(CharacterState character, float durationToExit, float damageToExit,
+		Character personWhoMadeBuff, string skillName)
+	{
+		if (!CanEnterState(character)) return null;
+
+		MaxStacksCount = 1;
+		
+		BaseInit(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+
+		TryCancel(character);
+
+		if (currentStacksCount == 0)
+		{
+			EnterState(character, durationToExit, damageToExit, personWhoMadeBuff, skillName);
+			currentStacksCount = 1;
+		}
+		else
+		{
+			Stack(durationToExit);
+		}
+
+		return this;
+	}
+	
+	private void TryCancel(CharacterState character)
+	{
+		var targetAbilities = character.Character?.Abilities;
+		if (targetAbilities?.CurrentCastingSkill == null) return;
+
+		var school = targetAbilities.CurrentCastingSkill.Info.School;
+
+		targetAbilities.CurrentCastingSkill.CmdCancelActiveSkill();
+
+		if (school != Schools.None)
+		{
+			canceledSchoool = school;
+			if (character.TryGetComponent<Character>(out var ability))
+			{
+				abilities = ability.Abilities;
+				abilities.SwitchAvaliable(canceledSchoool, false);
+			}
+		}
 	}
 }

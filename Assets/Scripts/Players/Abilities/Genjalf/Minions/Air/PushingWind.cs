@@ -33,8 +33,8 @@ public class PushingWind : MoveSkill
     {
         Character originalTarget = Targeting.GetTarget()?.Character;
         if (originalTarget == null) yield break;
-        
-        CmdAddState(originalTarget.gameObject,_buffDuration);
+
+        CmdAddState(originalTarget.gameObject);
         yield return null;
     }
 
@@ -74,9 +74,9 @@ public class PushingWind : MoveSkill
     }
 
     [Command]
-    private void CmdAddState(GameObject enemy, float time)
+    private void CmdAddState(GameObject enemy)
     {
         Character enemyChar = enemy.GetComponent<Character>();
-        enemyChar.CharacterState.AddState(States.PushingWindBuff, time, 0, Hero.gameObject, name);
+        enemyChar.CharacterState.AddState(States.PushingWindBuff, _buffDuration, 0, Hero.gameObject, name);
     }
 }

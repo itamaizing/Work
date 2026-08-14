@@ -464,15 +464,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 1
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
-    _clickLayer: 0
-    _faction: 0
-    _unitType: 0
+    _clickLayer: 1
+    _faction: 4
+    _unitType: -1
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -518,6 +522,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _agent: {fileID: 8521629497404255749}
   _projectile: {fileID: -7871612326811465604, guid: 3f48633abc1849a49a5ed18cb8f65a33, type: 3}
   _debuffTime: 7
@@ -579,15 +586,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 3
     _faction: 4
     _unitType: 5
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 768
@@ -633,6 +644,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _agent: {fileID: 8521629497404255749}
   _particlePref: {fileID: 2607017853375542456, guid: ac2586615ed6e5948983d73649d16e00, type: 3}
 --- !u!114 &-2837521630394622147
@@ -669,15 +683,19 @@ MonoBehaviour:
     _form: 0
     _damageType: 0
     _rangeType: 0
-    _skillType: 0
     _whileMoving: 0
     _autoAttack: 0
   _targetingComponent:
+    oldType: 0
     type: 0
     _clickLayer: 0
     _faction: 0
     _unitType: 0
     _outOfRangeBehaviour: 0
+    _needLineOfSight: 0
+    _targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
   _targetsLayers:
     serializedVersion: 2
     m_Bits: 512
@@ -723,6 +741,9 @@ MonoBehaviour:
     duration: 0
     mobility: 0
     control: 0
+  _animationComponent:
+    _prepareTriggers: []
+    _castTriggers: []
   _agent: {fileID: 8521629497404255749}
   _shieldPref: {fileID: 1158249924082485831, guid: 76bad0db0083fe84cb4e710c0db55e53, type: 3}
   _baffDuration: 9
@@ -746,7 +767,7 @@ MonoBehaviour:
   _targetLayer:
     serializedVersion: 2
     m_Bits: 512
-  _buffDuration: -1
+  _buffDuration: 999
 --- !u!4 &6980196994501872204 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1021000915379606889, guid: 78a648e1dab3b6e47a85b2a3a9e0d033, type: 3}
